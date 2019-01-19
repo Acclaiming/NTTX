@@ -12,5 +12,5 @@
 <classpathentry kind="lib" path="libs/twitter4j/twitter4j-core-4.0.7.jar"/>
 <classpathentry kind="lib" path="libs/twitter4j/twitter4j-stream-4.0.7.jar"/>
 <classpathentry kind="lib" path="libs/taip/taip-4.3.2.jar"/>
-
+<classpathentry kind="lib" path="libs/bot/java-telegram-bot-api-full.jar"/>
 </classpath>
