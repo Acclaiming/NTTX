@@ -94,8 +94,6 @@ public class UserInterface {
         
         if (msg.from().equals(Constants.thisUser)) {
 
-            log.debug("/main when return");
-            
             MsgExt.Edit edit = new MsgExt.Edit(msg,"NTTBot 一个简陋的菜单 ~")
                 .inlineCallbackButton("API管理", CB_API_MANAGE)
                 .inlineCallbackButton("账号管理", CB_ACCOUNT_MANAGE);
@@ -147,8 +145,10 @@ public class UserInterface {
 
         if (Constants.needInvitationCode) {
 
-            new MsgExt.Send(callbackQuery.message().chat(),
-                            "暂时不能直接注册呢 ~");
+            new MsgExt.CallbackReply(callbackQuery)
+            .text("暂时不能直接注册呢 ~")
+            .cacheTime(60)
+            .reply();
 
         } else {
 
@@ -161,8 +161,10 @@ public class UserInterface {
             userData.setRegistered(true);
             userData.save();
 
-            new MsgExt.Send(callbackQuery.message().chat(),
-                            "注册成功 ~").send();
+            new MsgExt.CallbackReply(callbackQuery)
+                            .text("注册成功 ~")
+                            .cacheTime(60)
+                            .reply();
 
             onMain(callbackQuery.message());
 

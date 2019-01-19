@@ -12,4 +12,8 @@ for jar in ./libs/taip/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
 done
 
-java -classpath $CLASSPATH io.kurumi.nt.cmd.NTMain
+for jar in ./libs/bot/*.jar;do
+ export CLASSPATH=$CLASSPATH:$jar
+done
+
+java -classpath $CLASSPATH io.kurumi.ntbot.BotMain

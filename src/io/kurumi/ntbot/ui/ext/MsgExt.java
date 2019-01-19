@@ -66,8 +66,61 @@ public class MsgExt {
 
     }
     
-    public static class Answer {
+    public static class CallbackReply {
         
+        private AnswerCallbackQuery answer;
+        
+        public CallbackReply(CallbackQuery query) {
+            
+            this(query.id());
+            
+        }
+        
+        public CallbackReply(String id) {
+            
+            answer = new AnswerCallbackQuery(id);
+            
+        }
+        
+        public CallbackReply text(String text) {
+            
+            answer.text(text);
+            
+            return this;
+            
+        }
+        
+        public CallbackReply alert(String text) {
+            
+            text(text);
+            
+            answer.showAlert(true);
+            
+            return this;
+            
+        }
+        
+        public CallbackReply url(String url) {
+            
+            answer.url(url);
+            
+            return this;
+            
+        }
+        
+        public CallbackReply cacheTime(int sec) {
+            
+            answer.cacheTime(sec);
+            
+            return this;
+            
+        }
+        
+        public void reply() {
+            
+            Constants.bot.execute(answer);
+            
+        }
         
         
     }
