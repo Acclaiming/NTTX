@@ -2,7 +2,6 @@ package io.kurumi.nt.cmd.entries;
 
 import io.kurumi.nt.*;
 import io.kurumi.nt.cmd.*;
-import java.util.*;
 import io.kurumi.nt.twitter.*;
 import twitter4j.*;
 

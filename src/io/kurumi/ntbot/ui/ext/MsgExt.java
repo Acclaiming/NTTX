@@ -146,10 +146,18 @@ public class MsgExt {
             edit = new EditMessageText(msg.chat().id(), msg.messageId(), text);
 
         }
+        
+        public Edit(CallbackQuery query) {
+            
+            this(query,null);
+            
+        }
 
         public Edit(CallbackQuery query, String text) {
 
             this.query = query;
+            
+            if (text == null) text = query.message().text();
 
             edit = new EditMessageText(query.inlineMessageId(), text);
 
