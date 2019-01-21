@@ -8,6 +8,7 @@ import java.util.*;
 import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntbot.ui.ext.*;
 import com.pengrad.telegrambot.response.*;
+import io.kurumi.ntbot.auth.*;
 
 public class BotMain {
 
@@ -24,8 +25,26 @@ public class BotMain {
 
         log = StaticLog.get("NTTBot");
 
-        log.info("正在启动 版本 : " + version);
+        log.info("NTTBot 正在启动 版本 : " + version);
+        
+        AuthManager auth = new AuthManager();
 
+        log.info("正在启动OAuth认证服务器...");
+        
+        if (auth.init("ntt.kurumi.io")) {
+            
+            log.info("认证服务器启动成功..");
+            
+            } else {
+            
+            log.error("认证服务器启动失败...");
+            log.error("将使用用户发回URL的认证方法...");
+            
+            
+        }
+        
+        
+        
         this.data = new Data(rootDir);
 
         adapter = new MainAdapter(this);
@@ -68,7 +87,7 @@ public class BotMain {
 
             });
 
-
+            
 
 
     }

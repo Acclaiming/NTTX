@@ -14,13 +14,15 @@ public class AuthManager {
     public static Log log = StaticLog.get("AuthManager");
 
     public HashMap<String,RequestToken> cache = new HashMap<>();
-    public AuthServer server = new AuthServer(this, 19150);
+    public HashMap<String,AuthListener> listeners = new HashMap<>();
+    
+    public NanoAuthServer server = new NanoAuthServer(this, 18964);
 
     public String domain = "127.0.0.1";
     
     public Twitter api = ApiToken.defaultToken.createApi();
 
-    public void init(String domain) {
+    public boolean init(String domain) {
 
         try {
 
@@ -30,8 +32,8 @@ public class AuthManager {
 
             log.error(e, "认证服务器启动失败");
 
-            return;
-
+            return false;
+            
         }
 
         try {
@@ -41,6 +43,8 @@ public class AuthManager {
                 log.debug("认证服务器正常...");
 
                 this.domain = domain;
+                
+                return true;
 
             }
 
@@ -49,11 +53,13 @@ public class AuthManager {
             log.error(e, "认证服务器无法访问.. nginx配置好了吗..？");
 
         }
+        
+        return false;
 
     }
 
 
-    public String newRequest() {
+    public String newRequest(AuthListener listener) {
 
         try {
 
@@ -106,6 +112,8 @@ public class AuthManager {
                 log.error("账号刷新失败...");
                 
             }
+            
+            listeners.get(oauthToken).onAuth(acc);
             
             return acc;
 
