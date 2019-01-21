@@ -21,13 +21,10 @@ public class NanoAuthServer extends NanoHTTPD {
 
         URL url = URLUtil.url(session.getUri());
 
-        switch (url.getPath()) {
+        if (url.getPath().equals("/check")) return Response.newFixedLengthResponse("ok");
+        if (url.getPath().startsWith("/callback")) return callback(session);
 
-            case "/check": return Response.newFixedLengthResponse("ok");
 
-            case "/callback" : return callback(session);
-
-        }
 
         return super.handle(session);
     }
@@ -48,17 +45,17 @@ public class NanoAuthServer extends NanoHTTPD {
             };
 
         } else {
-            
+
             msg = new String[] {
-                
+
                 "# NTTBot 添加账号","",
-                
+
                 "Twitter 账号 : " + account.getFormatedName() + " 添加成功！","",
-                
+
                 "请返回Bot (◦˙▽˙◦)"
-                
+
             };
-            
+
         }
 
         return Response.newFixedLengthResponse(Markdown.toHtml(ArrayUtil.join(msg, "\n")));
