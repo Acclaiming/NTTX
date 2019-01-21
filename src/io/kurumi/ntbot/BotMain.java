@@ -9,6 +9,8 @@ import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntbot.ui.ext.*;
 import com.pengrad.telegrambot.response.*;
 import io.kurumi.ntbot.auth.*;
+import cn.hutool.core.lang.caller.*;
+import java.lang.reflect.*;
 
 public class BotMain {
 
@@ -37,8 +39,8 @@ public class BotMain {
             
             } else {
             
-            log.error("认证服务器启动失败...");
-            log.error("将使用用户发回URL的认证方法...");
+            log.info("认证服务器启动失败...");
+            log.info("将使用用户发回URL的认证方法...");
             
             
         }
@@ -133,6 +135,20 @@ public class BotMain {
         try {
 
             Class.forName("android.os.Build");
+            
+            try {
+                
+                Field caller = CallerUtil.class.getDeclaredField("INSTANCE");
+
+                caller.setAccessible(true);
+                
+                caller.set(null,new StackTraceCaller());
+                
+            } catch (Exception e) {
+                
+                e.printStackTrace();
+                
+            }
 
         } catch (ClassNotFoundException ex) {  
 
