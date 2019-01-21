@@ -12,6 +12,6 @@ public class Constants {
     
     public static Data data;
     
-    public static boolean needInvitationCode = true;
+    public static boolean enableRegister = true;
     
 }

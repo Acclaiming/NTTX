@@ -17,6 +17,7 @@ public class TopLevel {
 
                 case COMMAND_START : start(userData, msg);break;
                 case MainUI.COMMAND : MainUI.main(userData, msg);break;
+                case UserManageUI.COMMAND : UserManageUI.main(userData,msg);break;
 
             }
 
@@ -47,7 +48,7 @@ public class TopLevel {
 
         };
 
-        new MsgExt.Send(msg.chat(), ArrayUtil.join(startMessag, "\n")).send();
+        new MsgExt.Send(msg.chat(), startMessag).send();
 
     }
 

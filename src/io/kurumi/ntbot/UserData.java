@@ -157,15 +157,6 @@ public class UserData {
 
     }
 
-    private UserInterface ui;
-
-    public UserInterface getInterface() {
-
-        if (ui == null) ui = new UserInterface(this);
-
-        return ui;
-
-    }
-
+   
 
 }

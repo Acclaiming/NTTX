@@ -16,4 +16,8 @@ for jar in ./libs/bot/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
 done
 
+for jar in ./libs/t-io/*.jar;do
+ export CLASSPATH=$CLASSPATH:$jar
+done
+
 java -classpath $CLASSPATH io.kurumi.ntbot.BotMain

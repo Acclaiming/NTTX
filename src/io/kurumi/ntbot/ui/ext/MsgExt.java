@@ -138,7 +138,9 @@ public class MsgExt {
 
         }
 
-        public Edit(Message msg, String text) {
+        public Edit(Message msg, String... textArray) {
+            
+            String text = ArrayUtil.join(textArray,"\n");
 
             this.msg = msg;
             if (text == null) text = msg.text();
@@ -153,9 +155,11 @@ public class MsgExt {
             
         }
 
-        public Edit(CallbackQuery query, String text) {
+        public Edit(CallbackQuery query, String... textArray) {
 
             this.query = query;
+            
+            String text = ArrayUtil.join(textArray,"\n");
             
             if (text == null) text = query.message().text();
 
@@ -229,15 +233,15 @@ public class MsgExt {
 
         private SendMessage send;
 
-        public Send(Chat chat, String content) {
+        public Send(Chat chat, String... textArray) {
 
-            send = new SendMessage(chat.id(), content);
+            send = new SendMessage(chat.id(), ArrayUtil.join(textArray,"\n"));
 
         }
 
-        public Send(Message msg, String content) {
+        public Send(Message msg, String... textArray) {
 
-            this(msg.chat(), content);
+            this(msg.chat(), textArray);
 
             replyToMessageId(msg.messageId());
 

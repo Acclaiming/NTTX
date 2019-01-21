@@ -9,10 +9,10 @@ import java.util.*;
 public class MainAdapter implements UpdatesListener {
 
     public Log log;
-    
+
     public BotMain bot;
     public Data data;
-    
+
     public MainAdapter(BotMain bot) {
         this.bot = bot;
         data = bot.data;
@@ -22,13 +22,26 @@ public class MainAdapter implements UpdatesListener {
     @Override
     public int process(List<Update> updates) {
 
-        for (Update update : updates) {
+        try {
 
-            ProcessIndex.processUpdate(update);
+            for (Update update : updates) {
+
+                ProcessIndex.processUpdate(update);
+
+            }
+
+            return CONFIRMED_UPDATES_ALL;
+
+        } catch (Exception e) {
+
+            log.error(e, "处理更新失败");
+
+            return CONFIRMED_UPDATES_NONE;
 
         }
 
-        return CONFIRMED_UPDATES_ALL;
+
+
 
     }
 

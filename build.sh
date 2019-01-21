@@ -14,6 +14,10 @@ for jar in ./libs/bot/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
 done
 
+for jar in ./libs/t-io/*.jar;do
+ export CLASSPATH=$CLASSPATH:$jar
+done
+
 find -name "*.java" > sources.txt
 
 rm -rf ./classes
