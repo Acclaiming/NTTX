@@ -14,7 +14,7 @@ import java.util.*;
 
 public class BotMain {
 
-    public static final String version = "0.1 build 1";
+    public static final String version = "0.1 build 2";
 
     public Log log;
 
@@ -28,25 +28,24 @@ public class BotMain {
         log = StaticLog.get("NTTBot");
 
         log.info("NTTBot 正在启动 版本 : " + version);
-        
-        AuthManager auth = new AuthManager();
+
+        Constants.auth = new AuthManager();
 
         log.info("正在启动OAuth认证服务器...");
-        
-        if (auth.init("ntt.kurumi.io")) {
-            
+
+        if (Constants.auth.init(18964, "https://ntt.kurumi.io")) {
+
             log.info("认证服务器启动成功..");
-            
-            } else {
-            
+
+        } else {
+
             log.error("认证服务器启动失败...");
             log.error("将使用用户发回URL的认证方法...");
             
-            
         }
-        
-        
-        
+
+
+
         this.data = new Data(rootDir);
 
         adapter = new MainAdapter(this);
@@ -82,12 +81,12 @@ public class BotMain {
                 @Override
                 public void onFailure(GetMe req, IOException ex) {
 
-                    log.error(ex,"初始化失败，请检查网络...");
+                    log.error(ex, "初始化失败，请检查网络...");
                 }
 
             });
 
-            
+
 
 
     }
@@ -133,19 +132,19 @@ public class BotMain {
         try {
 
             Class.forName("android.os.Build");
-            
+
             try {
-                
+
                 Field caller = CallerUtil.class.getDeclaredField("INSTANCE");
 
                 caller.setAccessible(true);
-                
-                caller.set(null,new StackTraceCaller());
-                
+
+                caller.set(null, new StackTraceCaller());
+
             } catch (Exception e) {
-                
+
                 e.printStackTrace();
-                
+
             }
 
         } catch (ClassNotFoundException ex) {  

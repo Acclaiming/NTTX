@@ -1,11 +1,11 @@
 package io.kurumi.ntbot.auth;
 
 import cn.hutool.core.util.*;
-import io.kurumi.ntbot.markdown.*;
 import io.kurumi.ntbot.twitter.*;
 import java.net.*;
 import org.nanohttpd.protocols.http.*;
 import org.nanohttpd.protocols.http.response.*;
+import io.kurumi.ntbot.md.*;
 
 public class NanoAuthServer extends NanoHTTPD {
 
@@ -61,7 +61,7 @@ public class NanoAuthServer extends NanoHTTPD {
             
         }
 
-        return Response.newFixedLengthResponse(MD.toHtml(ArrayUtil.join(msg, "\n")));
+        return Response.newFixedLengthResponse(Markdown.toHtml(ArrayUtil.join(msg, "\n")));
     }
 
 

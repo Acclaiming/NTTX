@@ -14,7 +14,7 @@ for jar in ./libs/bot/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
 done
 
-for jar in ./libs/t-io/*.jar;do
+for jar in ./libs/markdown/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
 done
 

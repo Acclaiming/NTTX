@@ -59,6 +59,12 @@ public class MsgExt {
         }
 
     }
+    
+    public static void confirm(CallbackQuery query) {
+        
+        new MsgExt.CallbackReply(query).reply();
+        
+    }
 
     public static void delete(Message msg) {
         

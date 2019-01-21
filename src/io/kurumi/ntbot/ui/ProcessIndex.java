@@ -30,9 +30,9 @@ public class ProcessIndex {
                 new MsgExt.Send(message, "没有上下文呢 T^T ").send();
 
             } else {
-                
+
                 userData.point = "";
-                
+
                 userData.save();
 
                 new MsgExt.Send(message, "已经取消上下文 T^T ").removeKeyboard().send();
@@ -41,15 +41,18 @@ public class ProcessIndex {
 
         }
 
+        
         switch (userData.point) {
 
             case "" : 
 
                 TopLevel.processTopLevel(userData, message);break;
 
-            case UserManageUI.POINT_MAIN : 
+            case AccountUI.POINT_MAIN:
+            case AccountUI.POINT_ADD : 
 
-                UserManageUI.userManageMain(userData, message);break;
+
+                AccountUI.processPoint(userData, message);break;
 
         }
 
