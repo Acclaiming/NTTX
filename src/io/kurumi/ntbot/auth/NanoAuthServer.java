@@ -34,7 +34,10 @@ public class NanoAuthServer extends NanoHTTPD {
 
     private Response callback(IHTTPSession session) {
 
-        TwiAccount account = manager.authByUrl(session.getUri());
+        String oauth_token = session.getParms().get("oauth_token");
+        String oauth_verifier = session.getParms().get("oauth_verifier");
+        
+        TwiAccount account = manager.auth(oauth_token,oauth_verifier);
 
         String[] msg;
 
