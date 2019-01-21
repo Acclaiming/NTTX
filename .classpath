@@ -13,10 +13,4 @@
 <classpathentry kind="lib" path="libs/twitter4j/twitter4j-stream-4.0.7.jar"/>
 <classpathentry kind="lib" path="libs/taip/taip-4.3.2.jar"/>
 <classpathentry kind="lib" path="libs/bot/java-telegram-bot-api-full.jar"/>
-<classpathentry kind="lib" path="libs/nanohttpd/asm-4.1.jar"/>
-<classpathentry kind="lib" path="libs/nanohttpd/asm-analysis-4.1.jar"/>
-<classpathentry kind="lib" path="libs/nanohttpd/asm-tree-4.1.jar"/>
-<classpathentry kind="lib" path="libs/nanohttpd/asm-util-4.1.jar"/>
-<classpathentry kind="lib" path="libs/nanohttpd/parboiled-java-1.1.5.jar"/>
-<classpathentry kind="lib" path="libs/nanohttpd/pegdown-1.4.1.jar"/>
 </classpath>

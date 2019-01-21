@@ -1,16 +1,16 @@
 package io.kurumi.ntbot;
 
-import com.pengrad.telegrambot.*;
-import io.kurumi.ntbot.ui.*;
-import java.io.*;
+import cn.hutool.core.lang.caller.*;
 import cn.hutool.log.*;
-import java.util.*;
+import com.pengrad.telegrambot.*;
 import com.pengrad.telegrambot.request.*;
-import io.kurumi.ntbot.ui.ext.*;
 import com.pengrad.telegrambot.response.*;
 import io.kurumi.ntbot.auth.*;
-import cn.hutool.core.lang.caller.*;
+import io.kurumi.ntbot.ui.*;
+import io.kurumi.ntbot.ui.ext.*;
+import java.io.*;
 import java.lang.reflect.*;
+import java.util.*;
 
 public class BotMain {
 
@@ -39,8 +39,8 @@ public class BotMain {
             
             } else {
             
-            log.info("认证服务器启动失败...");
-            log.info("将使用用户发回URL的认证方法...");
+            log.error("认证服务器启动失败...");
+            log.error("将使用用户发回URL的认证方法...");
             
             
         }
@@ -71,7 +71,7 @@ public class BotMain {
 
                     Constants.thisUser = resp.user();
 
-                    log.info("初始化成功 /");
+                    log.info("初始化成功");
 
                     bot.setUpdatesListener(adapter);
 
@@ -82,9 +82,7 @@ public class BotMain {
                 @Override
                 public void onFailure(GetMe req, IOException ex) {
 
-                    log.error(ex);
-
-                    log.error("初始化失败...");
+                    log.error(ex,"初始化失败，请检查网络...");
                 }
 
             });

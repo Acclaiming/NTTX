@@ -59,10 +59,10 @@ public class UserData {
             registered = userData.getBool("registered", false);
             isAdmin = userData.getBool("is_admin", false);
             isSpam = userData.getBool("is_spam",false);
-            userName = userData.getStr("user_name");
-            name = userData.getStr("name");
-             isBot = userData.getBool("is_bot");
-            point = userData.getStr("point");
+            userName = userData.getStr("user_name","");
+            name = userData.getStr("name","");
+             isBot = userData.getBool("is_bot",false);
+            point = userData.getStr("point","");
 
             JSONArray twitterAccountList = userData.getJSONArray("twitter_accounts");
 

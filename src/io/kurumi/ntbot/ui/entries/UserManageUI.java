@@ -10,9 +10,9 @@ import twitter4j.*;
 public class UserManageUI {
 
     public static final String COMMAND = "users";
-    
+
     public static final String POINT_MAIN = "users|main";
-    
+
     public static final String[] userManageMessages = new String[] {
 
         "这里是Twitter账号管理菜单 ~","",
@@ -21,15 +21,15 @@ public class UserManageUI {
         "或者使用 /cancel 退出 +_+"
 
     };
-    
+
     public static void main(final UserData userData, Message msg) {
 
-        
-        
+        userData.point = POINT_MAIN;
+
         new MsgExt.Send(msg.chat(), userManageMessages) {{
 
                 keyBoardButton("添加账号");
-                
+
                 for (TwiAccount account : userData.twitterAccounts) {
 
                     keyBoardButton(account.getFormatedName());
@@ -38,13 +38,13 @@ public class UserManageUI {
 
             }}.send();
 
-    }
-    
-  //  public static void
+        userData.save();
 
-    public static void startOAuth(UserData userData, CallbackQuery query) {
-        
-        
+    }
+
+    public static void userManageMain(UserData userData, Message msg) {
+
+
 
     }
 

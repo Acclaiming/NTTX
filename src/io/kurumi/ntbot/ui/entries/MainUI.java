@@ -13,7 +13,7 @@ public class MainUI {
     public static String[] mainMessages = new String[] {
 
         "你好呢... 这里是咱的菜单呢 (◦˙▽˙◦)","",
-        "有点简单... 不过乃可以点 「建议」 跟咱的小号说哦！ (≧▽≦)"
+        "有点简单... 不过乃可以点 「建议」 跟咱说哦！ (≧▽≦)"
 
     };
 
@@ -49,7 +49,7 @@ public class MainUI {
 
     }
 
-    public void onCallback(UserData userData, CallbackQuery query) {
+    public static void onCallback(UserData userData, CallbackQuery query) {
 
         switch (query.data()) {
 
