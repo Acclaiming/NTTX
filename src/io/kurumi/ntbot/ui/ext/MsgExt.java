@@ -16,6 +16,8 @@ public class MsgExt {
 
     public static String getCommandName(Message msg) {
 
+        if (msg.text() == null) return null;
+        
         if (!msg.text().contains("/")) return null;
 
         String body = StrUtil.subAfter(msg.text(), "/", false);
