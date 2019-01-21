@@ -92,11 +92,10 @@ public class AuthManager {
 
     public TwiAccount authByUrl(String url) {
 
+        log.debug(url);
         
-        HashMap<String, String> params = HttpUtil.decodeParamMap(StrUtil.subAfter(url, "?", true), "UTF-8");
+        HashMap<String, String> params = HttpUtil.decodeParamMap(url, "UTF-8");
 
-        if (params == null) return null;
-        
         String requestToken = params.get("oauth_token");
         String oauthVerifier = params.get("oauth_verifier");
         
