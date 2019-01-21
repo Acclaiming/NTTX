@@ -47,7 +47,8 @@ public class NanoAuthServer extends NanoHTTPD {
 
                 "# NTTBot 添加账号","",
 
-                "失败了 T^T 乃可以返回Bot重试"
+                "失败了 T^T 乃可以返回Bot重试",
+                "是不是刷新了这个界面？",
             };
 
         } else {

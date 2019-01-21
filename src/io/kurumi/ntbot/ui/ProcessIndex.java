@@ -20,6 +20,7 @@ public class ProcessIndex {
     public static void processPrivateMessage(Message message) {
 
         if (message == null) return;
+        if (message.text() == null) return;
 
         UserData userData = Constants.data.getUser(message.from());
 

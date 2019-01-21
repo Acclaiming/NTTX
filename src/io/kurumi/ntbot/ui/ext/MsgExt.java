@@ -10,6 +10,8 @@ public class MsgExt {
 
     public static boolean isCommand(Message msg) {
 
+        if (msg.text() == null) return false;
+        
         return msg.text().startsWith("/");
 
     }
