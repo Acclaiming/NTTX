@@ -77,6 +77,8 @@ public class AuthManager {
             RequestToken token = api.getOAuthRequestToken(domain + "/callback");
 
             cache.put(token.getToken(), token);
+            
+            listeners.put(token.getToken(),listener);
 
             return token.getAuthenticationURL();
 
@@ -119,7 +121,7 @@ public class AuthManager {
 
         try {
 
-            AccessToken accToken = api.getOAuthAccessToken(cache.get(requestToken), oauthVerifier);
+            AccessToken accToken = api.getOAuthAccessToken(cache.remove(requestToken), oauthVerifier);
 
             TwiAccount acc =  new TwiAccount(ApiToken.defaultToken.apiToken, ApiToken.defaultToken.apiSecToken, accToken.getToken(), accToken.getTokenSecret());
 
@@ -129,7 +131,7 @@ public class AuthManager {
 
             }
 
-            listeners.get(requestToken).onAuth(acc);
+            listeners.remove(requestToken).onAuth(acc);
 
             return acc;
 
