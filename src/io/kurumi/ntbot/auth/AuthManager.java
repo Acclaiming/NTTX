@@ -74,7 +74,7 @@ public class AuthManager {
 
         try {
 
-            RequestToken token = api.getOAuthRequestToken(domain);
+            RequestToken token = api.getOAuthRequestToken(domain + "/callback");
 
             cache.put(token.getToken(), token);
 
