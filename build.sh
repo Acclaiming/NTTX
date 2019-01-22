@@ -18,7 +18,7 @@ for jar in ./libs/markdown/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
 done
 
-find -name "src/*.java" > sources.txt
+find src -name "*.java" > sources.txt
 
 rm -rf ./classes
 
