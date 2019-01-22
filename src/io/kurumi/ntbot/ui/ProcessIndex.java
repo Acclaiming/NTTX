@@ -42,7 +42,7 @@ public class ProcessIndex {
 
         }
 
-        
+
         switch (userData.point) {
 
             case "" : 
@@ -88,6 +88,14 @@ public class ProcessIndex {
                 MainUI.onCallback(userData, callbackQuery);break;
 
         }
+
+        if (callbackQuery.data().startsWith(AccountUI.ACC_DEL)) {
+
+            AccountUI.onCallback(userData, callbackQuery);
+
+        }
+
+
 
     }
 

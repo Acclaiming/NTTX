@@ -106,4 +106,17 @@ public class TwiAccount {
 
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        
+        if (super.equals(obj)) return true;
+        
+        if (!(obj instanceof TwiAccount)) return false;
+        
+        if (((TwiAccount)obj).accountId != accountId) return false;
+        
+        return true;
+        
+    }
+
 }

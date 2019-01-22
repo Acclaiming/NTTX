@@ -27,45 +27,77 @@ public class NanoAuthServer extends NanoHTTPD {
 
             case "/callback" : return callback(session);
 
+            case "/success" : return success(session);
+
+            case "/failed" : return failed(session);
+
         }
 
         return super.handle(session);
     }
 
+    private Response success(IHTTPSession session) {
+
+        String[] msg = new String[] {
+
+            "# NTTBot 添加账号","",
+
+            "Twitter 账号 : " + URLUtil.decode(session.getParms().get("user")) + " 添加成功！","",
+
+            "请返回Bot (◦˙▽˙◦)"
+
+        };
+
+        String page = Markdown.parsePage("成功 \\(≧▽≦)/", ArrayUtil.join(msg, "\n"));
+
+        return Response.newFixedLengthResponse(page);
+
+
+    }
+
+    private Response failed(IHTTPSession session) {
+
+        String[] msg = new String[] {
+
+            "# NTTBot 添加账号","",
+
+            "失败了 T^T 乃可以返回Bot重试",
+            "是不是刷新了这个界面？",
+
+        };
+
+        String page = Markdown.parsePage("失败了呢.. T^T ", ArrayUtil.join(msg, "\n"));
+
+        return Response.newFixedLengthResponse(page);
+
+    }
+
+
+
     private Response callback(IHTTPSession session) {
 
         String oauth_token = session.getParms().get("oauth_token");
         String oauth_verifier = session.getParms().get("oauth_verifier");
+
+        TwiAccount account = manager.auth(oauth_token, oauth_verifier);
+
+        Response resp = Response.newFixedLengthResponse(Status.REDIRECT_SEE_OTHER, MIME_PLAINTEXT, "");
+        URL url = URLUtil.url(session.getUri());
         
-        TwiAccount account = manager.auth(oauth_token,oauth_verifier);
-
-        String[] msg;
-
         if (account == null) {
+            
+            resp.addHeader("Location", url.getProtocol() + "://" + url.getHost() + "/failed");
 
-            msg = new String[] {
-
-                "# NTTBot 添加账号","",
-
-                "失败了 T^T 乃可以返回Bot重试",
-                "是不是刷新了这个界面？",
-            };
+            return resp;
 
         } else {
-            
-            msg = new String[] {
-                
-                "# NTTBot 添加账号","",
-                
-                "Twitter 账号 : " + account.getFormatedName() + " 添加成功！","",
-                
-                "请返回Bot (◦˙▽˙◦)"
-                
-            };
-            
+
+            resp.addHeader("Location", url.getProtocol() + "://" + url.getHost() + "/success?user=" + URLUtil.encode(account.getFormatedName()));
+
+            return resp;
+
         }
 
-        return Response.newFixedLengthResponse(Markdown.toHtml(ArrayUtil.join(msg, "\n")));
     }
 
 

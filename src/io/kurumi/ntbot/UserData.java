@@ -32,12 +32,12 @@ public class UserData {
     public String userName;
     public String name;
     public boolean isBot = false;
-    
+
     public String point = "";
 
-    public LinkedList<ApiToken> apiTokens = new LinkedList<>();
-    public LinkedList<TwiAccount> twitterAccounts = new LinkedList<>();
-    
+    // public LinkedList<ApiToken> apiTokens = new LinkedList<>();
+    public LinkedHashSet<TwiAccount> twitterAccounts = new LinkedHashSet<>();
+
     public void setName(String first, String last) {
 
         if (last != null && !"".equals(last)) {
@@ -58,11 +58,11 @@ public class UserData {
 
             registered = userData.getBool("registered", false);
             isAdmin = userData.getBool("is_admin", false);
-            isSpam = userData.getBool("is_spam",false);
-            userName = userData.getStr("user_name","");
-            name = userData.getStr("name","");
-             isBot = userData.getBool("is_bot",false);
-            point = userData.getStr("point","");
+            isSpam = userData.getBool("is_spam", false);
+            userName = userData.getStr("user_name", "");
+            name = userData.getStr("name", "");
+            isBot = userData.getBool("is_bot", false);
+            point = userData.getStr("point", "");
 
             JSONArray twitterAccountList = userData.getJSONArray("twitter_accounts");
 
@@ -73,72 +73,73 @@ public class UserData {
                 twitterAccounts.add(new TwiAccount((JSONObject)obj));
 
             }
-            
-            JSONArray apiTokenList = userData.getJSONArray("api_tokens");
 
-            apiTokens.clear();
+            /*
 
-            for (Object obj : apiTokenList) {
+             JSONArray apiTokenList = userData.getJSONArray("api_tokens");
 
-                apiTokens.add(new ApiToken((JSONObject)obj));
+             apiTokens.clear();
 
-            }
-            
+             for (Object obj : apiTokenList) {
+
+             apiTokens.add(new ApiToken((JSONObject)obj));
+
+             }
+
+             */
+
 
         } catch (Exception e) {}
 
     }
 
-    public JSONObject getBaseData() {
+    public JSONObject toJSONObject() {
 
         JSONObject userData = new JSONObject();
 
-        JSONArray apiTokenList = new JSONArray();
-
-        for (ApiToken apiToken : apiTokens) {
-
-            apiTokenList.add(apiToken.toJSONObject());
-
-        }
-        
-        JSONArray twitterAccountList = new JSONArray();
-
-        for (TwiAccount account : twitterAccounts) {
-            
-            twitterAccountList.add(account.toJsonObject());
-            
-        }
-        
-        userData.put("api_tokens",apiTokenList);
-        userData.put("twitter_accounts",twitterAccountList);
-        
-        return userData;
-
-    }
-
-    public JSONObject toJSONObject() {
-
-        JSONObject userData = getBaseData();
-
         userData.put("registered", registered);
         userData.put("is_admin", isAdmin);
-        userData.put("is_spam",isSpam);
-        
+        userData.put("is_spam", isSpam);
+
         userData.put("user_name", userName);
         userData.put("name", name);
 
         userData.put("is_bot", isBot);
-        
-        userData.put("point",point);
-        
+
+        userData.put("point", point);
+
+        /*
+
+         JSONArray apiTokenList = new JSONArray();
+
+         for (ApiToken apiToken : apiTokens) {
+
+         apiTokenList.add(apiToken.toJSONObject());
+
+         }
+
+         */
+
+        JSONArray twitterAccountList = new JSONArray();
+
+        for (TwiAccount account : twitterAccounts) {
+
+            twitterAccountList.add(account.toJsonObject());
+
+        }
+
+        //  userData.put("api_tokens", apiTokenList);
+        userData.put("twitter_accounts", twitterAccountList);
+
+
         return userData;
-        
+
     }
 
     public void save() {
-        
-        FileUtil.writeUtf8String(toJSONObject().toStringPretty(),userDataFile);
-        
+
+        FileUtil.writeUtf8String(toJSONObject().toStringPretty(), userDataFile);
+
     }
 
     public void update(User from) {
@@ -151,12 +152,38 @@ public class UserData {
 
     }
 
+    public TwiAccount find(String accountId) {
+
+        long id = Long.parseLong(accountId);
+
+        for (TwiAccount acc : twitterAccounts) {
+
+            if (acc.accountId == id) {
+
+                return acc;
+
+            }
+
+        }
+
+        return null;
+
+    }
+
+    public boolean put(TwiAccount acc) {
+
+        if (twitterAccounts.contains(acc)) return false;
+
+        twitterAccounts.add(acc); return true;
+
+    }
+
     public void delete() {
 
         FileUtil.del(userDataFile);
 
     }
 
-   
+
 
 }

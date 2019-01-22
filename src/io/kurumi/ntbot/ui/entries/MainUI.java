@@ -54,12 +54,13 @@ public class MainUI {
         switch (query.data()) {
 
             case USER_MANAGE : {
-                AccountUI.main(userData, query.message());
-                MsgExt.confirm(query);break;
-}
+                    AccountUI.main(userData, query.message());
+                    MsgExt.confirm(query);break;
+                }
+                
         }
-        
-        
+
+
 
     }
 
