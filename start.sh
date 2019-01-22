@@ -20,4 +20,4 @@ for jar in ./libs/markdown/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
 done
 
-java -classpath $CLASSPATH io.kurumi.ntbot.BotMain
+java -classpath $CLASSPATH io.kurumi.ntt.BotMain
