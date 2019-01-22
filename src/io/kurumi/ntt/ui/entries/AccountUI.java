@@ -99,7 +99,7 @@ public class AccountUI {
                 @Override
                 public void onAuth(TwiAccount account) {
                     
-                    userData.twitterAccounts.add(account);
+                    userData.put(account);
                     userData.save();
 
                     new MsgExt.Send(msg.chat(), account.getFormatedName() + " 认证成功 ~").send();
