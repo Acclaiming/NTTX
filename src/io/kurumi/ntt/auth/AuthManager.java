@@ -26,7 +26,7 @@ public class AuthManager {
 
         try {
 
-            server = new NanoAuthServer(this, port);
+            server = new NanoAuthServer(this, port,domain);
 
             server.start();
 

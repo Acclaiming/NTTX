@@ -10,11 +10,14 @@ import io.kurumi.ntt.md.*;
 public class NanoAuthServer extends NanoHTTPD {
 
     private AuthManager manager;
+    private String domain;
 
-    public NanoAuthServer(AuthManager manager, int port) {
+    public NanoAuthServer(AuthManager manager, int port,String domain) {
         super(port);
         this.manager = manager;
+        this.domain = domain;
     }
+    
 
     @Override
     public Response handle(IHTTPSession session) {
@@ -82,17 +85,16 @@ public class NanoAuthServer extends NanoHTTPD {
         TwiAccount account = manager.auth(oauth_token, oauth_verifier);
 
         Response resp = Response.newFixedLengthResponse(Status.REDIRECT_SEE_OTHER, MIME_PLAINTEXT, "");
-        URL url = URLUtil.url(session.getUri());
         
         if (account == null) {
             
-            resp.addHeader("Location", url.getProtocol() + "://" + url.getHost() + "/failed");
+            resp.addHeader("Location", domain + "/failed");
 
             return resp;
 
         } else {
 
-            resp.addHeader("Location", url.getProtocol() + "://" + url.getHost() + "/success?user=" + URLUtil.encode(account.getFormatedName()));
+            resp.addHeader("Location", domain + "/success?user=" + URLUtil.encode(account.getFormatedName()));
 
             return resp;
 
