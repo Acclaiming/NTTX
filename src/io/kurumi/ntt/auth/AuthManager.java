@@ -76,6 +76,8 @@ public class AuthManager {
 
             RequestToken token = api.getOAuthRequestToken(domain + "/callback");
 
+            log.debug("请求RequestToken成功...");
+            
             cache.put(token.getToken(), token);
             
             listeners.put(token.getToken(),listener);
@@ -118,6 +120,8 @@ public class AuthManager {
             log.error("是你的服务器重启了吗？");
 
         }
+        
+        log.debug("正在请求认证");
 
         try {
 
@@ -130,6 +134,8 @@ public class AuthManager {
                 log.error("账号刷新失败...");
 
             }
+            
+            log.debug("认证成功...");
 
             listeners.remove(requestToken).onAuth(acc);
 
