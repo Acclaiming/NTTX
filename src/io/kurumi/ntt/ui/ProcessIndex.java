@@ -33,6 +33,7 @@ public class ProcessIndex {
             } else {
 
                 userData.point = "";
+                userData.save();
                 
                 new MsgExt.Send(message, "已经取消上下文 T^T ").removeKeyboard().send();
 
@@ -40,6 +41,7 @@ public class ProcessIndex {
 
         }
 
+        log.error("point : " + userData.point);
 
         switch (userData.point) {
 

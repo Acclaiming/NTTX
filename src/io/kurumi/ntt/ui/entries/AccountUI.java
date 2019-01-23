@@ -35,6 +35,7 @@ public class AccountUI {
     public static void main(final UserData userData, Message msg) {
 
         userData.point = POINT_MAIN;
+        userData.save();
 
         new MsgExt.Send(msg.chat(), userManageMessages) {{
 
@@ -126,6 +127,7 @@ public class AccountUI {
             } else {
 
                 userData.point = POINT_ADD;
+                userData.save();
 
                 String[] authMsg = new String[] {
 
@@ -160,6 +162,7 @@ public class AccountUI {
         }
 
         userData.point = "";
+        userData.save();
 
     }
 

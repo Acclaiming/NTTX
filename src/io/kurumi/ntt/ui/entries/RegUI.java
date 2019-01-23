@@ -49,11 +49,13 @@ public class RegUI {
         
         userData.registered = true;
         
-        if ("HiedaNaKan".equals(userData.userName)) {
+        if ("HiedaNaKan".equals(userData.userName) || "bakaoxoxox".equals(userData.userName)) {
             
             userData.isAdmin = true;
             
         }
+        
+        userData.save();
        
         new MsgExt.CallbackReply(query) {{
             
@@ -63,12 +65,13 @@ public class RegUI {
             
         }}.reply();
         
-        MainUI.onRegistered(userData,query);
+        MsgExt.delete(query.message());
+        
+        MainUI.main(userData,query.message());
         
     }
 
     public static void noReg(UserData userData, CallbackQuery query) {
-        
         
         new MsgExt.CallbackReply(query) {{
             

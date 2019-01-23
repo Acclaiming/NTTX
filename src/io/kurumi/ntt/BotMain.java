@@ -29,7 +29,7 @@ public class BotMain {
 
         log.info("NTTBot 正在启动 版本 : " + version);
 
-        Runtime.getRuntime().addShutdownHook(new Thread(new SaveData()));
+     //   Runtime.getRuntime().addShutdownHook(new Thread(new SaveData()));
 
         Constants.data = this.data = new Data(rootDir);
 

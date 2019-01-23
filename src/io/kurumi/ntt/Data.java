@@ -63,7 +63,14 @@ public class Data {
             JSONObject botData = new JSONObject(FileUtil.readUtf8String(dataFile));
             
             botToken = botData.getStr("bot_token");
-
+            
+            JSONObject authServer = botData.getJSONObject("auth_server");
+            
+            useAuthServer = authServer.getBool("enable",useAuthServer);
+            authServerPort = authServer.getInt("local_port",authServerPort);
+            authServerDomain = authServer.getStr("domain");
+            
+            
         } catch (Exception e) {}
 
     }

@@ -37,18 +37,6 @@ public class MainUI {
 
     }
 
-    public static void onRegistered(UserData userData, CallbackQuery query) {
-
-        new MsgExt.Edit(query, mainMessages) {{
-
-                inlineCallbackButton("账号管理", USER_MANAGE);
-
-                inlineOpenUrlButton("建议", "https://t.me/HiedaNaKan");
-
-            }}.edit();
-
-    }
-
     public static void onCallback(UserData userData, CallbackQuery query) {
 
         switch (query.data()) {
