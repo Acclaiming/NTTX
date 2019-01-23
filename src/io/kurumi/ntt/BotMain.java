@@ -29,7 +29,7 @@ public class BotMain {
 
         log.info("NTTBot 正在启动 版本 : " + version);
 
-     //   Runtime.getRuntime().addShutdownHook(new Thread(new SaveData()));
+        //   Runtime.getRuntime().addShutdownHook(new Thread(new SaveData()));
 
         Constants.data = this.data = new Data(rootDir);
 
@@ -41,12 +41,13 @@ public class BotMain {
 
         }
 
-       Constants.bot = bot = new TelegramBot(data.botToken);
+        Constants.bot = bot = new TelegramBot(data.botToken);
+
+
+        Constants.auth = new AuthManager();
 
         if (data.useAuthServer) {
-
-            Constants.auth = new AuthManager();
-
+            
             log.info("正在启动OAuth认证服务器...");
 
             if (Constants.auth.init(data.authServerPort, data.authServerDomain)) {
@@ -63,7 +64,7 @@ public class BotMain {
         } else {
 
             log.info("未设置认证服务器 将使用用户发回URL的认证方法...");
-            
+
         }
 
         bot.execute(new GetMe(), new Callback<GetMe,GetMeResponse>() {
@@ -85,9 +86,9 @@ public class BotMain {
                 public void onFailure(GetMe req, IOException ex) {
 
                     log.error(ex, "初始化失败，请检查网络...");
-                    
+
                     log.info("正在常识重启");
-                    
+
                     main(null);
                 }
 

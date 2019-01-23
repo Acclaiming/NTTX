@@ -94,6 +94,8 @@ public class AccountUI {
 
     public static void addUser(final UserData userData, final Message msg) {
 
+        new MsgExt.Send(msg.chat(), "正在请求验证...").removeKeyboard().send();
+
         final String authUrl = Constants.auth.newRequest(new AuthListener() {
 
                 @Override
@@ -109,11 +111,11 @@ public class AccountUI {
 
         if (authUrl == null) {
 
-            new MsgExt.Send(msg.chat(), "请求认证失败... 请稍后再试 (T＿T)").removeKeyboard().send();
+            new MsgExt.Send(msg.chat(), "请求认证失败... 请稍后再试 (T＿T)").send();
 
         } else {
 
-            new MsgExt.Send(msg.chat(), "请求认证成功... 正在准备开始 *٩(๑´∀`๑)ง*").removeKeyboard().send();
+            new MsgExt.Send(msg.chat(), "请求认证成功... 正在准备开始 *٩(๑´∀`๑)ง*").send();
 
 
             if (Constants.auth.server != null) {
@@ -176,6 +178,8 @@ public class AccountUI {
             return;
 
         }
+        
+        new MsgExt.Send(msg.chat()).removeKeyboard().send();
 
         String[] manageMsg = new String[] {
 
@@ -185,6 +189,7 @@ public class AccountUI {
 
         new MsgExt.Send(msg.chat(), manageMsg) {{
 
+                inlineCallbackButton("删除账号", ACC_DEL + account.accountId);
                 inlineOpenUrlButton("查看主页", "https://twitter.com/" + account.screenName);
 
             }}.send();
@@ -201,9 +206,12 @@ public class AccountUI {
 
                 if (account.accountId == accountId) {
 
-                    MsgExt.delete(query.message());
+                    userData.twitterAccounts.remove(account);
+                    userData.save();
+                    
                     new MsgExt.Send(query.message().chat(), account.getFormatedName() + "已移除！");
-
+                    MsgExt.delete(query.message());
+                    
                 }
 
             }

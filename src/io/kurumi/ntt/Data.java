@@ -34,11 +34,25 @@ public class Data {
         
     }
     
+    public UserData getUser(Message msg) {
+
+        UserData userData = getUser(msg.from().id());
+
+        userData.update(msg);
+        
+        userData.save();
+
+        return userData;
+
+    }
+    
     public UserData getUser(User user) {
         
         UserData userData = getUser(user.id());
         
         userData.update(user);
+        
+        userData.save();
         
         return userData;
         

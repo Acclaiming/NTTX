@@ -13,6 +13,8 @@ public class UserData {
     public Data data;
     public long id;
     public File userDataFile;
+    
+    public Chat chat;
 
     public UserData(Data data, long id) {
 
@@ -63,6 +65,7 @@ public class UserData {
             name = userData.getStr("name", "");
             isBot = userData.getBool("is_bot", false);
             point = userData.getStr("point", "");
+            chat = userData.getBean("chat",Chat.class);
 
             JSONArray twitterAccountList = userData.getJSONArray("twitter_accounts");
 
@@ -105,8 +108,10 @@ public class UserData {
         userData.put("name", name);
 
         userData.put("is_bot", isBot);
-
+        
         userData.put("point", point);
+        
+        userData.put("chat",chat);
 
         /*
 
@@ -141,6 +146,14 @@ public class UserData {
         FileUtil.writeUtf8String(toJSONObject().toStringPretty(), userDataFile);
 
     }
+    
+    public void update(Message from) {
+
+        update(from.from());
+        chat = from.chat();
+
+    }
+    
 
     public void update(User from) {
 

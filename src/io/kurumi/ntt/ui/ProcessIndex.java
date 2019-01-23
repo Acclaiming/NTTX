@@ -22,7 +22,7 @@ public class ProcessIndex {
         if (message == null) return;
         if (message.text() == null) return;
 
-        UserData userData = Constants.data.getUser(message.from());
+        UserData userData = Constants.data.getUser(message);
 
         if ("cancel".equals(MsgExt.getCommandName(message))) {
 
@@ -38,10 +38,11 @@ public class ProcessIndex {
                 new MsgExt.Send(message, "已经取消上下文 T^T ").removeKeyboard().send();
 
             }
+            
+            return;
 
         }
 
-        log.error("point : " + userData.point);
 
         switch (userData.point) {
 
