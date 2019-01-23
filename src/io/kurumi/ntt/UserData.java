@@ -148,8 +148,6 @@ public class UserData {
         setName(from.firstName() , from.lastName());
         isBot = from.isBot();
 
-        save();
-
     }
 
     public TwiAccount find(String accountId) {

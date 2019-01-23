@@ -33,9 +33,7 @@ public class ProcessIndex {
             } else {
 
                 userData.point = "";
-
-                userData.save();
-
+                
                 new MsgExt.Send(message, "已经取消上下文 T^T ").removeKeyboard().send();
 
             }
@@ -51,7 +49,6 @@ public class ProcessIndex {
 
             case AccountUI.POINT_MAIN:
             case AccountUI.POINT_ADD : 
-
 
                 AccountUI.processPoint(userData, message);break;
 

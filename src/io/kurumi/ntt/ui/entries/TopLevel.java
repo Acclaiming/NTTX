@@ -33,7 +33,7 @@ public class TopLevel {
     
     public static String[] startMessage = new String[] {
 
-        " 你好呀！ 这里是NTTBot ！ (不是复读机！)","",
+        "你好呀！ 这里是NTTBot ！ (不是复读机！)","",
 
         "Bot的源码在这里 ！ [NTTools](https://github.com/HiedaNaKan/NTTools)",
         "可以的话能给个star吗 (◦˙▽˙◦)","",
@@ -48,6 +48,8 @@ public class TopLevel {
     public static void start(UserData userData, Message msg) {
 
         String[] sendMsg = Markdown.encode(startMessage);
+        
+        sendMsg[0] = userData.name + " " + sendMsg[0];
 
         new MsgExt.Send(msg.chat(), sendMsg).markdown().disableWebPagePreview().send();
 

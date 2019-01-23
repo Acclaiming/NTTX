@@ -10,7 +10,13 @@ public class Data {
 
     public File dataDir;
     public File dataFile;
-
+    
+    public String botToken;
+    
+    public boolean useAuthServer = false;
+    public int authServerPort = 19132;
+    public String authServerDomain;
+    
     public Data(File rootDir) {
 
         dataDir = new File(rootDir, "data");
@@ -21,6 +27,12 @@ public class Data {
     }
     
     private HashMap<Long,UserData> userDataCache = new HashMap<>();
+    
+    public LinkedList<UserData> getUsers() {
+        
+        return new LinkedList<UserData>(userDataCache.values());
+        
+    }
     
     public UserData getUser(User user) {
         
@@ -43,42 +55,35 @@ public class Data {
         return userData;
         
     }
-
-    public JSONObject botData;
-
+    
     public void refresh() {
 
         try {
 
-            botData = new JSONObject(FileUtil.readUtf8String(dataFile));
-
-        } catch (Exception e) {
-
-            botData = new JSONObject();
+            JSONObject botData = new JSONObject(FileUtil.readUtf8String(dataFile));
             
-            setBotToken("");
+            botToken = botData.getStr("bot_token");
 
-        }
+        } catch (Exception e) {}
 
     }
 
     public void save() {
 
+        JSONObject botData = new JSONObject();
+        
+        botData.put("bot_token",botToken);
+        
+        JSONObject authServer = new JSONObject();
+        
+        authServer.put("enable",useAuthServer);
+        authServer.put("local_port",authServerPort);
+        authServer.put("domain",authServerDomain);
+        
+        botData.put("auth_server",authServer);
+        
         FileUtil.writeUtf8String(botData.toStringPretty(), dataFile);
 
-    }
-    
-    public String getBotToken() {
-        
-        return botData.getStr("bot_token","");
-        
-    }
-    
-    public void setBotToken(String token) {
-        
-        botData.put("bot_token",token);
-        save();
-        
     }
 
 }

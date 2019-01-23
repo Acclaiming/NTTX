@@ -14,7 +14,7 @@ import java.util.*;
 
 public class BotMain {
 
-    public static final String version = "0.1 build 2";
+    public static final String version = "0.1 build 4";
 
     public Log log;
 
@@ -29,39 +29,42 @@ public class BotMain {
 
         log.info("NTTBot 正在启动 版本 : " + version);
 
-        Constants.auth = new AuthManager();
+        Runtime.getRuntime().addShutdownHook(new Thread(new SaveData()));
 
-        log.info("正在启动OAuth认证服务器...");
-
-        if (Constants.auth.init(18964, "https://ntt.kurumi.io")) {
-
-            log.info("认证服务器启动成功..");
-
-        } else {
-
-            log.error("认证服务器启动失败...");
-            log.error("将使用用户发回URL的认证方法...");
-            
-        }
-
-
-
-        this.data = new Data(rootDir);
+        Constants.data = this.data = new Data(rootDir);
 
         adapter = new MainAdapter(this);
 
-        if ("".equals(data.getBotToken())) {
+        if (data.botToken == null) {
 
-            log.error("未设置 BotToken");
-
-            tryInputToken();
+            Setup.start();
 
         }
 
-        bot = new TelegramBot(data.getBotToken());
+       Constants.bot = bot = new TelegramBot(data.botToken);
 
-        Constants.bot = bot;
-        Constants.data = data;
+        if (data.useAuthServer) {
+
+            Constants.auth = new AuthManager();
+
+            log.info("正在启动OAuth认证服务器...");
+
+            if (Constants.auth.init(data.authServerPort, data.authServerDomain)) {
+
+                log.info("认证服务器启动成功..");
+
+            } else {
+
+                log.error("认证服务器启动失败...");
+                log.error("将使用用户发回URL的认证方法...");
+
+            }
+
+        } else {
+
+            log.info("未设置认证服务器 将使用用户发回URL的认证方法...");
+            
+        }
 
         bot.execute(new GetMe(), new Callback<GetMe,GetMeResponse>() {
 
@@ -82,40 +85,16 @@ public class BotMain {
                 public void onFailure(GetMe req, IOException ex) {
 
                     log.error(ex, "初始化失败，请检查网络...");
+                    
+                    log.info("正在常识重启");
+                    
+                    main(null);
                 }
 
             });
 
 
 
-
-    }
-
-    public void tryInputToken() {
-
-        Scanner session = new Scanner(System.in);
-
-        System.out.println();
-        System.out.print("输入BotToken : ");
-
-        String token = session.next();
-
-        System.out.print("确定吗？ y/N : ");
-
-        String confirm = session.next();
-
-        if ("n".equals(confirm.trim())) {
-
-            tryInputToken();
-
-            return;
-
-        }
-
-        data.setBotToken(token);
-        data.save();
-
-        log.debug("BotToken 已设置");
 
     }
 

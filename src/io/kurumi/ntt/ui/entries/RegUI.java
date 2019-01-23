@@ -54,9 +54,7 @@ public class RegUI {
             userData.isAdmin = true;
             
         }
-        
-        userData.save();
-      
+       
         new MsgExt.CallbackReply(query) {{
             
             text("注册成功 ~");

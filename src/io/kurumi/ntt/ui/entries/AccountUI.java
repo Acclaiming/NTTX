@@ -35,7 +35,6 @@ public class AccountUI {
     public static void main(final UserData userData, Message msg) {
 
         userData.point = POINT_MAIN;
-        userData.save();
 
         new MsgExt.Send(msg.chat(), userManageMessages) {{
 
@@ -43,7 +42,7 @@ public class AccountUI {
 
                 for (TwiAccount account : userData.twitterAccounts) {
 
-                    keyBoardButton(account.getFormatedName());
+                    keyBoardButton(account.screenName);
 
                 }
 
@@ -78,7 +77,7 @@ public class AccountUI {
 
         for (TwiAccount account : userData.twitterAccounts) {
 
-            if (account.getFormatedName().equals(msg.text())) {
+            if (account.screenName.equals(msg.text())) {
 
                 userManage(userData, msg, account);
 
@@ -98,9 +97,8 @@ public class AccountUI {
 
                 @Override
                 public void onAuth(TwiAccount account) {
-                    
+
                     userData.put(account);
-                    userData.save();
 
                     new MsgExt.Send(msg.chat(), account.getFormatedName() + " 认证成功 ~").send();
 
@@ -128,7 +126,6 @@ public class AccountUI {
             } else {
 
                 userData.point = POINT_ADD;
-                userData.save();
 
                 String[] authMsg = new String[] {
 
@@ -164,8 +161,6 @@ public class AccountUI {
 
         userData.point = "";
 
-        userData.save();
-
     }
 
 
@@ -196,11 +191,20 @@ public class AccountUI {
     public static void onCallback(UserData userData, CallbackQuery query) {
 
         if (query.data().startsWith(ACC_DEL)) {
-            
-            String accountId = StrUtil.subAfter(query.data(),ACC_DEL,false);
-            
-            
-            
+
+            long accountId = Long.parseLong(StrUtil.subAfter(query.data(), ACC_DEL, false));
+
+            for (TwiAccount account : userData.twitterAccounts) {
+
+                if (account.accountId == accountId) {
+
+                    MsgExt.delete(query.message());
+                    new MsgExt.Send(query.message().chat(), account.getFormatedName() + "已移除！");
+
+                }
+
+            }
+
         }
 
     }
