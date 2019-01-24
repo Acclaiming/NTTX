@@ -43,14 +43,13 @@ public class BotMain {
 
         Constants.bot = bot = new TelegramBot(data.botToken);
 
-
         Constants.auth = new AuthManager();
 
         if (data.useAuthServer) {
             
             log.info("正在启动OAuth认证服务器...");
 
-            if (Constants.auth.init(data.authServerPort, data.authServerDomain)) {
+            if (Constants.auth.initServer(data.authServerPort, data.authServerDomain)) {
 
                 log.info("认证服务器启动成功..");
 
@@ -93,7 +92,6 @@ public class BotMain {
                 }
 
             });
-
 
 
 

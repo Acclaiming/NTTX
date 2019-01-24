@@ -43,14 +43,24 @@ public class MainAdapter implements UpdatesListener {
                         StringBuilder err = new StringBuilder();
 
                         err.append("Bot出错 : ");
-                        
+
                         err.append("\n更新 : " + update);
-                        err.append("\n错误 : " + e.getClass().getName());
-                        
-                        for (StackTraceElement stack : e.getStackTrace())  {
-                            
-                            
-                            err.append("at : " + stack.toString());
+
+                        Throwable cause = e;
+
+                        while (cause != null) {
+
+                            err.append("\n\n错误 : " + cause.getClass().getName());
+
+                            err.append("\n\n" + cause.getMessage());
+
+                            for (StackTraceElement stack : cause.getStackTrace())  {
+
+                                err.append("\nat : " + stack.toString());
+                            }
+
+                            cause = cause.getCause();
+
                         }
 
                         new MsgExt.Send(userData.chat, err.toString()).send();

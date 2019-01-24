@@ -7,6 +7,7 @@ import com.pengrad.telegrambot.model.*;
 import io.kurumi.ntt.ui.entries.*;
 import java.util.*;
 import io.kurumi.ntt.twitter.*;
+import io.kurumi.ntt.serialize.*;
 
 public class UserData {
 
@@ -38,7 +39,7 @@ public class UserData {
     public String point = "";
 
     // public LinkedList<ApiToken> apiTokens = new LinkedList<>();
-    public LinkedHashSet<TwiAccount> twitterAccounts = new LinkedHashSet<>();
+    public LinkedList<TwiAccount> twitterAccounts = new LinkedList<>();
 
     public void setName(String first, String last) {
 
@@ -65,7 +66,7 @@ public class UserData {
             name = userData.getStr("name", "");
             isBot = userData.getBool("is_bot", false);
             point = userData.getStr("point", "");
-            chat = userData.getBean("chat",Chat.class);
+            chat = SerUtil.toObject(userData.getStr("char"));
 
             JSONArray twitterAccountList = userData.getJSONArray("twitter_accounts");
 
@@ -111,7 +112,9 @@ public class UserData {
         
         userData.put("point", point);
         
-        userData.put("chat",chat);
+        userData.put("chat",SerUtil.toString(chat));
+        
+        
 
         /*
 

@@ -22,7 +22,7 @@ public class AuthManager {
 
     public Twitter api = ApiToken.defaultToken.createApi();
 
-    public boolean init(int port, String domain) {
+    public boolean initServer(int port, String domain) {
 
         try {
 

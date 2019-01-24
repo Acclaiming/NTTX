@@ -178,7 +178,7 @@ public class AccountUI {
             return;
 
         }
-        
+
         new MsgExt.Send(msg.chat()).removeKeyboard().send();
 
         String[] manageMsg = new String[] {
@@ -208,10 +208,10 @@ public class AccountUI {
 
                     userData.twitterAccounts.remove(account);
                     userData.save();
-                    
-                    new MsgExt.Send(query.message().chat(), account.getFormatedName() + "已移除！");
+
+                    new MsgExt.Send(query.message().chat(), account.getFormatedName() + "已移除！").send();
                     MsgExt.delete(query.message());
-                    
+
                 }
 
             }
