@@ -20,8 +20,6 @@ public class AuthManager {
 
     public String domain = "http://127.0.0.1";
 
-    public Twitter api = ApiToken.defaultToken.createApi();
-
     public boolean initServer(int port, String domain) {
 
         try {
@@ -74,7 +72,7 @@ public class AuthManager {
 
         try {
 
-            RequestToken token = api.getOAuthRequestToken(domain + "/callback");
+            RequestToken token = ApiToken.defaultToken.createApi().getOAuthRequestToken(domain + "/callback");
 
             log.debug("请求RequestToken成功...");
             
@@ -125,7 +123,7 @@ public class AuthManager {
 
         try {
 
-            AccessToken accToken = api.getOAuthAccessToken(cache.remove(requestToken), oauthVerifier);
+            AccessToken accToken = ApiToken.defaultToken.createApi().getOAuthAccessToken(cache.remove(requestToken), oauthVerifier);
 
             TwiAccount acc =  new TwiAccount(ApiToken.defaultToken.apiToken, ApiToken.defaultToken.apiSecToken, accToken.getToken(), accToken.getTokenSecret());
 
