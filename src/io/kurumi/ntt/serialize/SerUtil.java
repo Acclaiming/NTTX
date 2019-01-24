@@ -1,14 +1,14 @@
 package io.kurumi.ntt.serialize;
 
 import java.io.*;
-import org.apache.commons.codec.binary.*;
 import cn.hutool.core.util.*;
+import cn.hutool.core.codec.*;
 
 public class SerUtil {
     
     public static <T> T toObject(String str) {
 
-        ByteArrayInputStream bytes = new ByteArrayInputStream(Base64.decodeBase64(str));
+        ByteArrayInputStream bytes = new ByteArrayInputStream(Base64.decode(str));
 
         try {
 
@@ -38,7 +38,7 @@ public class SerUtil {
             
             out.close();
             
-            return Base64.encodeBase64String(bytes.toByteArray());
+            return Base64.encode(bytes.toByteArray());
 
         } catch (IOException e) {}
         
