@@ -37,31 +37,9 @@ public class NanoAuthServer extends NanoHTTPD {
 
             case "/failed" : return failed(session);
 
-            case "/js/closePage.js" : return js(session);
-
         }
 
         return super.handle(session);
-    }
-
-    private Response js(IHTTPSession session) {
-
-        InputStream in = NanoAuthServer.class.getResourceAsStream("/io/kurumi/ntt/auth/js/closePage.js");
-
-        try {
-
-            return Response.newChunkedResponse(Status.ACCEPTED, MIME_TYPES.get("js"), in);
-
-        } finally {
-
-            try {
-
-                in.close();
-                
-            } catch (IOException e) {}
-
-        }
-
     }
 
     private Response main(IHTTPSession session) {
