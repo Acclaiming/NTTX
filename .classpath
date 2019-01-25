@@ -14,4 +14,10 @@
 <classpathentry kind="lib" path="libs/taip/taip-4.3.2.jar"/>
 <classpathentry kind="lib" path="libs/bot/java-telegram-bot-api-full.jar"/>
 <classpathentry kind="lib" path="libs/markdown/commonmark-0.12.1.jar"/>
+<classpathentry kind="lib" path="libs/markdown/commonmark-ext-autolink-0.12.1.jar"/>
+<classpathentry kind="lib" path="libs/markdown/commonmark-ext-gfm-strikethrough-0.12.1.jar"/>
+<classpathentry kind="lib" path="libs/markdown/commonmark-ext-gfm-tables-0.12.1.jar"/>
+<classpathentry kind="lib" path="libs/markdown/commonmark-ext-heading-anchor-0.12.1.jar"/>
+<classpathentry kind="lib" path="libs/markdown/commonmark-ext-ins-0.12.1.jar"/>
+<classpathentry kind="lib" path="libs/markdown/autolink-0.10.0.jar"/>
 </classpath>

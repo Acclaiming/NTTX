@@ -1,10 +1,13 @@
 package io.kurumi.ntt.auth;
 
+import cn.hutool.core.lang.caller.*;
+import cn.hutool.core.util.*;
+import cn.hutool.http.*;
+import io.kurumi.ntt.md.*;
 import java.io.*;
+import java.lang.reflect.*;
 import org.nanohttpd.protocols.http.*;
 import org.nanohttpd.protocols.http.response.*;
-import io.kurumi.ntt.md.*;
-import cn.hutool.core.util.*;
 
 public class ServerTest extends NanoHTTPD {
     
@@ -17,7 +20,24 @@ public class ServerTest extends NanoHTTPD {
     public static void main(String[] args) {
         
         try {
+
+            Field caller = CallerUtil.class.getDeclaredField("INSTANCE");
+
+            caller.setAccessible(true);
+
+            caller.set(null, new StackTraceCaller());
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
+        
+        try {
             new ServerTest().start();
+            
+           HttpUtil.get("http://127.0.0.1:3399");
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -29,8 +49,8 @@ public class ServerTest extends NanoHTTPD {
         
         String[] args = new String[] {
             
-            "#成功...？","",
-            "大概....？ [N](https://kurumi.io)",
+            "## 成功...？","",
+            "大概....？ [N](https://kurumi.io)  ","",
             "*emmmmm*",
             
         };
