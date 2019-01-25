@@ -104,6 +104,7 @@ public class AccountUI {
                     if (userData.twitterAccounts.contains(account)) {
 
                         new MsgExt.Send(msg.chat(), account.getFormatedName() + " 更新成功 ~").send();
+                        
                         userData.twitterAccounts.remove(account);
 
 
@@ -114,6 +115,8 @@ public class AccountUI {
                     }
 
                     userData.twitterAccounts.add(account);
+                    
+                    userData.save();
 
 
 
