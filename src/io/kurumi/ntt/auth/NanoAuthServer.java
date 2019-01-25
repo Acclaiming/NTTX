@@ -6,6 +6,7 @@ import java.net.*;
 import org.nanohttpd.protocols.http.*;
 import org.nanohttpd.protocols.http.response.*;
 import io.kurumi.ntt.md.*;
+import java.io.*;
 
 public class NanoAuthServer extends NanoHTTPD {
 
@@ -36,9 +37,31 @@ public class NanoAuthServer extends NanoHTTPD {
 
             case "/failed" : return failed(session);
 
+            case "/js/closePage.js" : return js(session);
+
         }
 
         return super.handle(session);
+    }
+
+    private Response js(IHTTPSession session) {
+
+        InputStream in = NanoAuthServer.class.getResourceAsStream("/io/kurumi/ntt/auth/js/closePage.js");
+
+        try {
+
+            return Response.newChunkedResponse(Status.ACCEPTED, MIME_TYPES.get("js"), in);
+
+        } finally {
+
+            try {
+
+                in.close();
+                
+            } catch (IOException e) {}
+
+        }
+
     }
 
     private Response main(IHTTPSession session) {
@@ -59,7 +82,7 @@ public class NanoAuthServer extends NanoHTTPD {
 
             "Twitter 账号 : " + URLUtil.decode(session.getParms().get("user")) + " 添加成功！","",
 
-            "请返回Bot (◦˙▽˙◦)"
+            "请[返回Bot](javascript:closePage()) (◦˙▽˙◦)"
 
         };
 
@@ -77,7 +100,6 @@ public class NanoAuthServer extends NanoHTTPD {
             "# NTTBot 添加账号","",
 
             "失败了 T^T 乃可以返回Bot重试",
-            "是不是刷新了这个界面？",
 
         };
 
