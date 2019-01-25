@@ -60,7 +60,7 @@ public class NanoAuthServer extends NanoHTTPD {
 
             "Twitter 账号 : " + URLUtil.decode(session.getParms().get("user")) + " 添加成功！","",
 
-            "请[返回Bot](javascript:closePage()) (◦˙▽˙◦)"
+            "请返回Bot( (◦˙▽˙◦)"
 
         };
 

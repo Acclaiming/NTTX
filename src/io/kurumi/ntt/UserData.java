@@ -184,14 +184,6 @@ public class UserData {
 
     }
 
-    public boolean put(TwiAccount acc) {
-
-        if (twitterAccounts.contains(acc)) return false;
-
-        twitterAccounts.add(acc); return true;
-
-    }
-
     public void delete() {
 
         FileUtil.del(userDataFile);

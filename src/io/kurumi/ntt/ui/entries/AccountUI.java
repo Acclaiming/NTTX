@@ -55,8 +55,8 @@ public class AccountUI {
 
         switch (userData.point) {
 
-            case POINT_MAIN : userManageMenu(userData, msg);break;
-            case POINT_ADD : onInputUrl(userData, msg);break;
+                case POINT_MAIN : userManageMenu(userData, msg);break;
+                case POINT_ADD : onInputUrl(userData, msg);break;
 
         }
 
@@ -101,9 +101,21 @@ public class AccountUI {
                 @Override
                 public void onAuth(TwiAccount account) {
 
-                    userData.put(account);
+                    if (userData.twitterAccounts.contains(account)) {
 
-                    new MsgExt.Send(msg.chat(), account.getFormatedName() + " 认证成功 ~").send();
+                        new MsgExt.Send(msg.chat(), account.getFormatedName() + " 更新成功 ~").send();
+                        userData.twitterAccounts.remove(account);
+
+
+                    } else {
+
+                        new MsgExt.Send(msg.chat(), account.getFormatedName() + " 认证成功 ~").send();
+
+                    }
+
+                    userData.twitterAccounts.add(account);
+
+
 
                 }
 
