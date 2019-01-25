@@ -8,6 +8,8 @@ public class SerUtil {
     
     public static <T> T toObject(String str) {
 
+        if (str == null || str.trim().equals("")) return null;
+        
         ByteArrayInputStream bytes = new ByteArrayInputStream(Base64.decode(str));
 
         try {
