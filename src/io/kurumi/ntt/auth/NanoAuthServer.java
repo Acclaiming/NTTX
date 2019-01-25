@@ -12,12 +12,12 @@ public class NanoAuthServer extends NanoHTTPD {
     private AuthManager manager;
     private String domain;
 
-    public NanoAuthServer(AuthManager manager, int port,String domain) {
+    public NanoAuthServer(AuthManager manager, int port, String domain) {
         super(port);
         this.manager = manager;
         this.domain = domain;
     }
-    
+
 
     @Override
     public Response handle(IHTTPSession session) {
@@ -25,6 +25,8 @@ public class NanoAuthServer extends NanoHTTPD {
         URL url = URLUtil.url(session.getUri());
 
         switch (url.getPath()) {
+
+            case "/": return main(session);
 
             case "/check": return Response.newFixedLengthResponse("ok");
 
@@ -37,6 +39,16 @@ public class NanoAuthServer extends NanoHTTPD {
         }
 
         return super.handle(session);
+    }
+
+    private Response main(IHTTPSession session) {
+
+        Response resp = Response.newFixedLengthResponse(Status.REDIRECT_SEE_OTHER, MIME_PLAINTEXT, "");
+
+        resp.addHeader("Location", "https://github.com/HiedaNaKan/NTTools");
+
+        return resp;
+
     }
 
     private Response success(IHTTPSession session) {
@@ -85,9 +97,9 @@ public class NanoAuthServer extends NanoHTTPD {
         TwiAccount account = manager.auth(oauth_token, oauth_verifier);
 
         Response resp = Response.newFixedLengthResponse(Status.REDIRECT_SEE_OTHER, MIME_PLAINTEXT, "");
-        
+
         if (account == null) {
-            
+
             resp.addHeader("Location", domain + "/failed");
 
             return resp;
