@@ -228,7 +228,7 @@ public class Account {
 
                 delAccountObj.put("accountId", account.accountId);
 
-                inlineCallbackButton("删除账号", DEL_ACCOUNT);
+                inlineCallbackButton("删除账号", delAccountObj);
 
                 inlineOpenUrlButton("打开主页", account.getUrl());
 
