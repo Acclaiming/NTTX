@@ -6,6 +6,7 @@ import io.kurumi.ntt.ui.ext.*;
 import cn.hutool.log.*;
 import io.kurumi.ntt.ui.entries.*;
 import io.kurumi.ntt.ui.request.*;
+import io.kurumi.ntt.ui.funcs.*;
 
 public class ProcessIndex {
 
@@ -25,6 +26,10 @@ public class ProcessIndex {
         
         UserData userData = Constants.data.getUser(message);
 
+        // funcs
+        
+        SeeYouNextTime.processGrpupMessage(userData,message);
+        
         if (MsgExt.isCommand(message)) {
             
             switch(MsgExt.getCommandName(message)) {}
