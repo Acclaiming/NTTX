@@ -90,6 +90,7 @@ public class ProcessIndex {
 
                 case Account.BACK_TO_USERLIST :
 
+                case Account.DEL_ACCOUNT :
                 case Account.CANCEL_DEL_ACCOUNT :
                 case Account.CONFIRM_DEL_ACCOUNT :
 
