@@ -197,26 +197,7 @@ public class SendMsg extends AbsSendMsg {
             
         }
         
-        Constants.bot.execute(send, new Callback<SendMessage,SendResponse>() {
-
-                @Override
-                public void onResponse(SendMessage p1, SendResponse p2) {
-                 
-                    if (!p2.isOk()) {
-                        
-                        StaticLog.error(p2.errorCode() + ":" + p2.description());
-                        
-                    }
-                    
-                }
-
-                @Override
-                public void onFailure(SendMessage p1, IOException p2) {
-                    
-                    p2.printStackTrace();
-                    
-                }
-            });
+        Constants.bot.execute(send);
 
     }
 

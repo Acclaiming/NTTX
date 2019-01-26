@@ -97,16 +97,16 @@ public class EditMsg extends AbsSendMsg {
 
         if (inlineKeyBoardGroups.size() != 0) {
 
-            LinkedList<InlineKeyboardButton[]> markups = new LinkedList<>();
+            InlineKeyboardButton[][]  markup = new InlineKeyboardButton[inlineKeyBoardGroups.size()][];
 
-            for (InlineButtonGroup group : inlineKeyBoardGroups) {
+            for(int index = 0;index < inlineKeyBoardGroups.size();index ++) {
 
-                markups.add(group.getButtonArray());
+                markup[index] = inlineKeyBoardGroups.get(index).getButtonArray();
 
             }
 
-            edit.replyMarkup(new InlineKeyboardMarkup(markups.toArray(new InlineKeyboardButton[markups.size()][])));
-
+            edit.replyMarkup(new InlineKeyboardMarkup(markup));
+            
         }
 
         Constants.bot.execute(edit);

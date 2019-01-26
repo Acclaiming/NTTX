@@ -53,7 +53,7 @@ public class InlineButtonGroup extends LinkedList<InlineKeyboardButton> {
     
     public InlineKeyboardButton[] getButtonArray() {
         
-        return new InlineKeyboardButton[size()];
+        return toArray(new InlineKeyboardButton[size()]);
         
     }
 
