@@ -98,7 +98,7 @@ public class ProcessIndex {
 
         }
 
-        new MsgExt.CallbackReply(obj.query()).text("Error : " + obj.getPoint());
+        obj.reply().alert("Error : " + obj.getPoint()).reply();
 
 
     }

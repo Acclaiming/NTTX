@@ -31,21 +31,22 @@ public class Account {
 
     public static void onCallBack(UserData userData, DataObject obj) {
 
-        obj.confirmQuery();
-
         switch (obj.getPoint()) {
 
                 case ADD_ACCOUNT :
 
                 addAccount(userData, obj);
+                obj.confirmQuery();
                 return;
                 
                 case DEL_ACCOUNT :
                 confirmDelete(userData,obj);
+                obj.confirmQuery();
                 return;
 
                 case MANAGE_ACCOUNT : 
                 manageAccount(userData, obj);
+                obj.confirmQuery();
                 return;
 
                 case CONFIRM_DEL_ACCOUNT :
@@ -55,6 +56,8 @@ public class Account {
                 
                 case BACK_TO_USERLIST :
                 changeTo(userData,obj);
+                obj.confirmQuery();
+                return;
 
         }
 
@@ -272,13 +275,13 @@ public class Account {
 
             userData.twitterAccounts.remove(userData.find(obj.getLong("accountId")));
 
-            new MsgExt.CallbackReply(obj.query()).text("已删除 ~").reply();
+            obj.reply().text("已删除 ~").reply();
 
             changeTo(userData, obj);
 
         } else {
 
-            new MsgExt.CallbackReply(obj.query()).text("已取消 ~").reply();
+            obj.reply().text("已取消 ~").reply();
 
             manageAccount(userData, obj);
 
