@@ -14,7 +14,7 @@ import java.util.*;
 
 public class BotMain {
 
-    public static final String version = "0.1 build 4";
+    public static final String version = "0.1 build 5";
 
     public Log log;
 
