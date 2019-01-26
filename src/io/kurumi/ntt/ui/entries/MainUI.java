@@ -43,7 +43,7 @@ public class MainUI {
 
     public static void changeBack(UserData userData, DataObject obj) {
 
-        new MsgExt.Edit(obj.query(), mainMessages) {{
+        new MsgExt.Edit(obj.msg(), mainMessages) {{
 
                 inlineCallbackButton("账号管理", USER_MANAGE);
 
@@ -80,14 +80,6 @@ public class MainUI {
                     Account.changeTo(userData, obj);
                     obj.confirmQuery();
                     return;
-
-                case Account.ADD_ACCOUNT :
-
-                    Account.addAccount(userData, obj);
-                    obj.confirmQuery();
-
-                    return;
-              
 
         }
 

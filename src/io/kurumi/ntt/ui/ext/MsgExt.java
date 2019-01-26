@@ -160,6 +160,8 @@ public class MsgExt {
 
         }
         
+        /*
+        
         public Edit(CallbackQuery query) {
             
             this(query,null);
@@ -177,6 +179,8 @@ public class MsgExt {
             edit = new EditMessageText(query.inlineMessageId(), text);
 
         }
+        
+        */
 
 
         public Edit html() {

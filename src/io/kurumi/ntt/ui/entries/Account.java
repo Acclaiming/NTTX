@@ -52,7 +52,7 @@ public class Account {
 
     public static void changeTo(final UserData userData, DataObject obj) {
 
-        new MsgExt.Edit(obj.query(), userManageMsg) {{
+        new MsgExt.Edit(obj.msg(), userManageMsg) {{
 
                 inlineCallbackButton("添加账号", ADD_ACCOUNT);
 
@@ -115,7 +115,8 @@ public class Account {
 
                 "认证之后会跳转到一个本地 (127.0.0.1) 网页",
                 "复制链接发给咱就行了呢...","",
-                "注意 : 只能认证一次哦.. 注意复制链接地址 〒▽〒"
+                "注意 : 只能认证一次哦.. 注意复制链接地址 〒▽〒",
+                "取消认证用 /cancel 哦 ！ "
 
             };
 
@@ -160,7 +161,7 @@ public class Account {
 
         final TwiAccount account = userData.find(obj.getLong("accountId"));
 
-        new MsgExt.Edit(obj.query(), "编辑账号 : " + account.getFormatedName()) {{
+        new MsgExt.Edit(obj.msg(), "编辑账号 : " + account.getFormatedName()) {{
 
                 DataObject delAccountObj = new DataObject();
 
@@ -182,7 +183,7 @@ public class Account {
 
         final TwiAccount account = userData.find(obj.getLong("accountId"));
 
-        new MsgExt.Edit(obj.query(), "删除账号 : " + account.getFormatedName()) {{
+        new MsgExt.Edit(obj.msg(), "删除账号 : " + account.getFormatedName()) {{
 
                 DataObject confirmDelAccountObj = new DataObject();
 

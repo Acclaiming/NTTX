@@ -63,16 +63,12 @@ public class ProcessIndex {
         if (callbackQuery == null) return;
 
         UserData userData = Constants.data.getUser(callbackQuery.from());
-
+        
         if (!"".equals(userData.point)) {
 
-            new MsgExt.CallbackReply(callbackQuery) {{
+            new MsgExt.CallbackReply(callbackQuery).alert("有未退出的上下文 T^T \n 使用命令 /cancel 退出上下文").cacheTime(3).reply();
 
-                    alert("有未退出的上下文 T^T \n 使用命令 /cancel 退出上下文");
-
-                    cacheTime(3);
-
-                }}.reply();
+            return;
 
         }
 
@@ -91,16 +87,16 @@ public class ProcessIndex {
 
                 case Account.ADD_ACCOUNT :
                 case Account.MANAGE_ACCOUNT :
-                    
+
                 case Account.BACK_TO_USERLIST :
-                    
+
                 case Account.CANCEL_DEL_ACCOUNT :
                 case Account.CONFIRM_DEL_ACCOUNT :
 
                 Account.onCallBack(userData, obj);break;
 
         }
-        
+
         new MsgExt.CallbackReply(obj.query()).text("Error : " + obj.getPoint());
 
 
