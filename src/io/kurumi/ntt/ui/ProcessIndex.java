@@ -66,7 +66,7 @@ public class ProcessIndex {
 
         if ("cancel".equals(MsgExt.getCommandName(message))) {
 
-            if ("".equals(userData.point)) {
+            if (userData.point == null) {
 
                 new SendMsg(message, "没有上下文呢 T^T ").exec();
 
@@ -104,7 +104,7 @@ public class ProcessIndex {
 
         UserData userData = Constants.data.getUser(callbackQuery.from());
 
-        if (!"".equals(userData.point)) {
+        if (userData.point != null) {
 
             new AnswerCallback(callbackQuery).alert("有未退出的上下文 T^T \n 使用命令 /cancel 退出上下文").cacheTime(3).exec();
 
