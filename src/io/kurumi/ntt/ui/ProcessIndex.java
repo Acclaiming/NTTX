@@ -140,13 +140,14 @@ public class ProcessIndex {
                 return;
 
                 case Admin.ADMIN_MAIN : 
+                case Admin.STOP_BOT :
 
                 Admin.main(userData, obj);
                 return;
 
         }
 
-        obj.reply().alert("Error : " + obj.getPoint()).exec();
+        obj.reply().alert("Error : 没有那样的函数指针入口 " + obj.getPoint()).exec();
 
 
     }
