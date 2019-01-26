@@ -14,7 +14,10 @@ public class Admin {
 
         switch (obj.getPoint()) {
 
-                case ADMIN_MAIN : main(userData, obj);return;
+                case ADMIN_MAIN : main(userData, obj);
+                obj.confirmQuery();
+                return;
+                
                 case STOP_BOT : stopBot(userData, obj);
 
         }
@@ -52,7 +55,7 @@ public class Admin {
 
         }
 
-        obj.reply().alert("正在停止BOT").cacheTime(3).exec();
+        obj.reply().alert("正在停止BOT...").cacheTime(3).exec();
 
         Constants.auth.server.stop();
 
