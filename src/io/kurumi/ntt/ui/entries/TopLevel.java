@@ -11,14 +11,14 @@ public class TopLevel {
 
     public static final String COMMAND_START = "start";
 
-    public static void processTopLevel(UserData userData, Message msg) {
+    public static AbsResuest processTopLevel(UserData userData, Message msg) {
 
         if (MsgExt.isCommand(msg)) {
 
             switch (MsgExt.getCommandName(msg)) {
 
-                case COMMAND_START : start(userData, msg);return;
-                case MainUI.COMMAND : MainUI.main(userData, msg);return;
+                case COMMAND_START : return start(userData, msg);
+                case MainUI.COMMAND : return MainUI.main(userData, msg);
                 
                 
             }
@@ -28,7 +28,7 @@ public class TopLevel {
         //  repeat(userData, msg);
 
       
-        new SendMsg(msg.chat(),"嘤").exec();
+        return new SendMsg(msg.chat(),"嘤");
         
     }
     
@@ -46,19 +46,19 @@ public class TopLevel {
 
     };
 
-    public static void start(UserData userData, Message msg) {
+    public static AbsResuest start(UserData userData, Message msg) {
 
         String[] sendMsg = Markdown.encode(startMessage);
         
         sendMsg[0] = userData.name + " " + sendMsg[0];
 
-        new SendMsg(msg.chat(), sendMsg).markdown().disableWebPagePreview().exec();
+        return new SendMsg(msg.chat(), sendMsg).markdown().disableWebPagePreview();
 
     }
 
-    public static void repeat(UserData userData, Message msg) {
+    public static AbsResuest repeat(UserData userData, Message msg) {
 
-        new SendMsg(msg, msg.text()).exec();
+        return new SendMsg(msg, msg.text());
 
     }
 

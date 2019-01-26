@@ -29,8 +29,10 @@ public class MainAdapter implements UpdatesListener {
 
             try {
 
-                ProcessIndex.processUpdate(update);
+                AbsResuest resp = ProcessIndex.processUpdate(update);
 
+                if (resp != null) resp.exec();
+                
             } catch (Exception e) {
 
                 log.error(e, "处理更新失败");

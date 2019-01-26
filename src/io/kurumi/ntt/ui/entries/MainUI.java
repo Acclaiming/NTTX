@@ -22,23 +22,23 @@ public class MainUI {
 
     };
 
-    public static void main(UserData userData, Message msg) {
+    public static AbsResuest main(UserData userData, Message msg) {
 
         StaticLog.debug("main");
-        
+
         if (!userData.registered) {
 
-            Register.main(userData, msg);
+            return Register.main(userData, msg);
 
         } else {
 
-            sendMain(userData, msg, false);
+            return sendMain(userData, msg, false);
 
         }
 
     }
 
-    public static void sendMain(UserData userData, Message msg , boolean edit) {
+    public static AbsResuest sendMain(UserData userData, Message msg , boolean edit) {
 
         AbsSendMsg send;
 
@@ -50,14 +50,13 @@ public class MainUI {
 
         if (userData.isAdmin) {
 
-            send.singleLineButton("管理员菜单 *٩(๑´∀`๑)ง*", Admin.ADMIN_MAIN);
+            send.singleLineButton("管理员菜单 *٩(๑´∀`๑)ง*", Admin.MAIN);
 
         }
-        
+
         send.singleLineOpenUrlButton("给咱建议！ 「新功能/报错...」", "https://t.me/HiedaNaKan");
 
-        send.exec();
-
+        return send;
 
     }
 
@@ -71,18 +70,17 @@ public class MainUI {
 
     }
 
-    public static void onCallback(UserData userData, DataObject obj) {
+    public static AbsResuest onCallback(UserData userData, DataObject obj) {
 
         switch (obj.getPoint()) {
 
                 case BACK_TO_MAIN :
 
-                sendMain(userData, obj.msg(), true);
-                obj.confirmQuery();
-
-                return;
+                return sendMain(userData, obj.msg(), true);
 
         }
+
+        return obj.reply().alert("无效的主页指针 : " + obj.getPoint());
 
     }
 

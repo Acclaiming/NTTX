@@ -9,7 +9,7 @@ import cn.hutool.json.JSONObject;
 public class ApiToken {
 
     public static final ApiToken defaultToken = new ApiToken("Twitter for Nakan", "pLkoUI2q5ZncKKIm7dQNqtpXT", "Yp59pXMXoHKD8dj2g1m6RUc7VNIJybBHH1NtM70MhOB0OKl00S");
-    public static final ApiToken twidereToken = new ApiToken("Twitter for Android", "0WEJk1x6AlgtjGRhyABXw", "gWXNqEFhO3fMkAqoIKpTdjK0MOJs68xnOky0FRdDTP8");
+    public static final ApiToken twidereToken = new ApiToken("Twidere for Android", "0WEJk1x6AlgtjGRhyABXw", "gWXNqEFhO3fMkAqoIKpTdjK0MOJs68xnOky0FRdDTP8");
 
     public String apiName;
     public String apiToken;

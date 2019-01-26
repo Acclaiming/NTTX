@@ -74,6 +74,12 @@ public class DataObject extends JSONObject {
 
     }
     
+    public SendMsg reply(String... msg) {
+
+        return new SendMsg(msg(),msg);
+
+    }
+    
     public EditMsg edit(String... msg) {
         
         return new EditMsg(msg(),msg);

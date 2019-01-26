@@ -7,60 +7,54 @@ import cn.hutool.log.*;
 import io.kurumi.ntt.ui.entries.*;
 import io.kurumi.ntt.ui.request.*;
 import io.kurumi.ntt.ui.funcs.*;
+import com.pengrad.telegrambot.request.*;
 
 public class ProcessIndex {
 
-    public static Log log = StaticLog.get("ProcessIndex");
+    public static Log log = StaticLog.get(ProcessIndex.class);
 
-    public static void processUpdate(Update update) {
+    public static AbsResuest processUpdate(Update update) {
 
         if (update.message() != null) {
 
             switch (update.message().chat().type()) {
 
                     case supergroup : 
-                    case group : processGroupMessage(update.message());return;
-                    case Private :processPrivateMessage(update.message());return; 
+                    case group : return processGroupMessage(update.message());
+                    case Private : return processPrivateMessage(update.message());
 
             }
 
-        }
+        } else if (update.callbackQuery() != null) {
 
-        processCallbackQuery(update.callbackQuery());
+            return processCallbackQuery(update.callbackQuery());
+
+        }
+        
+        return null;
 
     }
 
-    public static void processGroupMessage(Message message) {
+    public static AbsResuest processGroupMessage(Message message) {
 
-        if (message == null) return;
-        if (message.text() == null) return;
+        if (message == null) return null;
+        if (message.text() == null) return null;
 
         UserData userData = Constants.data.getUser(message);
-
-        // funcs
-
-        SeeYouNextTime.processGrpupMessage(userData, message);
-
-        if (MsgExt.isCommand(message)) {
-
-            switch (MsgExt.getCommandName(message)) {}
-
-        }
-
+        
+        return null;
     }
 
-    public static void processPrivateMessage(Message message) {
+    public static AbsResuest processPrivateMessage(Message message) {
 
-        if (message == null) return;
-        if (message.text() == null) return;
+        if (message == null) return null;
+        if (message.text() == null) return null;
 
         UserData userData = Constants.data.getUser(message);
 
         if (userData.isBanned) {
 
-            new SendMsg(message, "you are **banned**").markdown().exec();
-
-            return;
+            return new SendMsg(message, "you are **banned**").markdown();
 
         }
 
@@ -68,18 +62,16 @@ public class ProcessIndex {
 
             if (userData.point == null) {
 
-                new SendMsg(message, "没有上下文呢 T^T ").exec();
+                return new SendMsg(message, "没有上下文呢 T^T ");
 
             } else {
 
                 userData.point = null;
                 userData.save();
 
-                new SendMsg(message, "已经取消上下文 T^T ").removeKeyboard().exec();
+                return new SendMsg(message, "已经取消上下文 T^T ").removeKeyboard();
 
             }
-
-            return;
 
         }
 
@@ -88,27 +80,27 @@ public class ProcessIndex {
 
                 case "" : 
 
-                TopLevel.processTopLevel(userData, message);break;
+                return TopLevel.processTopLevel(userData, message);
 
                 case Account.POINT_INPUT_AUTH_URL : 
 
-                Account.onInputUrl(userData, message);break;
+                return Account.onInputUrl(userData, message);
 
         }
+        
+        return new SendMsg(message,"非法上下文 : " + userData.getPoint());
 
     }
 
-    private static void processCallbackQuery(CallbackQuery callbackQuery) {
+    private static AbsResuest processCallbackQuery(CallbackQuery callbackQuery) {
 
-        if (callbackQuery == null) return;
+        if (callbackQuery == null) return null;
 
         UserData userData = Constants.data.getUser(callbackQuery.from());
 
         if (userData.point != null) {
 
-            new AnswerCallback(callbackQuery).alert("有未退出的上下文 T^T \n 使用命令 /cancel 退出上下文").cacheTime(3).exec();
-
-            return;
+            return new AnswerCallback(callbackQuery).alert("有未退出的上下文 T^T \n 使用命令 /cancel 退出上下文").cacheTime(3);
 
         }
 
@@ -118,13 +110,12 @@ public class ProcessIndex {
 
                 case Register.REG_DIRECT : 
 
-                Register.onCallback(userData, obj);
-                return;
+                return Register.onCallback(userData, obj);
 
                 case MainUI.BACK_TO_MAIN :
 
-                MainUI.onCallback(userData, obj);
-                return;
+                return MainUI.onCallback(userData, obj);
+   
 
                 case Account.MAIN: 
                 case Account.ADD_ACCOUNT :
@@ -136,18 +127,16 @@ public class ProcessIndex {
                 case Account.CANCEL_DEL_ACCOUNT :
                 case Account.CONFIRM_DEL_ACCOUNT :
 
-                Account.onCallBack(userData, obj);
-                return;
-
-                case Admin.ADMIN_MAIN : 
+                return Account.onCallBack(userData, obj);
+                
+                case Admin.MAIN : 
                 case Admin.STOP_BOT :
 
-                Admin.onCallback(userData, obj);
-                return;
+                return Admin.onCallback(userData, obj);
 
         }
 
-        obj.reply().alert("Error : 没有那样的函数指针入口 " + obj.getPoint()).exec();
+        return obj.reply().alert("Error : 没有那样的函数指针入口 " + obj.getPoint());
 
 
     }

@@ -1,6 +1,7 @@
 package io.kurumi.ntt.ui.ext;
 
 import cn.hutool.core.util.*;
+import com.pengrad.telegrambot.*;
 import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntt.*;
@@ -72,10 +73,15 @@ public class MsgExt {
         }
 
     }
-
+    
     public static void delete(Message msg) {
+    
+        delete(Constants.bot,msg);
+    }
+        
+    public static void delete(TelegramBot bot,Message msg) {
 
-        Constants.bot.execute(new DeleteMessage(msg.chat().id(), msg.messageId()));
+        bot.execute(new DeleteMessage(msg.chat().id(), msg.messageId()));
 
     }
 

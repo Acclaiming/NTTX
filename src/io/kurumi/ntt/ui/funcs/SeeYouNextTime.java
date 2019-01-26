@@ -8,43 +8,44 @@ import com.pengrad.telegrambot.*;
 import java.io.*;
 import io.kurumi.ntt.ui.request.*;
 
-public class SeeYouNextTime {
+public class SeeYouNextTime extends UserBot {
 
     public static String COMMAND = "see you next time";
 
-    public static void processGrpupMessage(UserData userData, final Message msg) {
+    public SeeYouNextTime(String token) {
+        super(token);
+    }
 
-        if (msg.text() == null) return;
-        
-        if (msg.text().contains(COMMAND)) {
+    @Override
+    public String[] allowUpdates() {
+        return new String[] { UPDATE_TYPE_MESSAGE };
+    }
 
-            RestrictChatMember restrict = new RestrictChatMember(msg.chat().id(), msg.from().id())
-                .untilDate(1)
-                .canSendMessages(false)
-                .canSendMediaMessages(false)
-                .canSendOtherMessages(false)
-                .canAddWebPagePreviews(false);
+    @Override
+    public AbsResuest processUpdate(Update update) {
 
-            Constants.bot.execute(restrict,new Callback<RestrictChatMember,BaseResponse>() {
 
-                    @Override
-                    public void onResponse(RestrictChatMember request, BaseResponse resp) {
-                        
-                        if (resp.isOk()) {
-                            
-                            new SendMsg(msg,"~").exec();
-                            
-                        }
-                        
-                    }
+        return processGrpupMessage(update.message());
 
-                    @Override
-                    public void onFailure(RestrictChatMember p1, IOException p2) {
-                    }
-                    
-                });
+    }
+
+    public AbsResuest processGrpupMessage(final Message msg) {
+
+        if (msg.text() == null) return null;
+
+        if (msg.text().toLowerCase().trim().contains(COMMAND)) {
+
+            return new Pack<RestrictChatMember>
+            (new RestrictChatMember(msg.chat().id(), msg.from().id())
+             .untilDate(1)
+             .canSendMessages(false)
+             .canSendMediaMessages(false)
+             .canSendOtherMessages(false)
+             .canAddWebPagePreviews(false));
 
         }
+        
+        return null;
 
     }
 

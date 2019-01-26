@@ -41,6 +41,8 @@ public class UserData {
 
     public DataObject point;
     
+    public JSONObject ext;
+    
     public void setPoint(String pointStr) {
         
         point = new DataObject();
@@ -105,6 +107,14 @@ public class UserData {
                 twitterAccounts.add(new TwiAccount((JSONObject)obj));
 
             }
+            
+            ext= userData.getJSONObject("ext");
+            
+            if (ext == null) {
+                
+                ext = new JSONObject();
+                
+            }
 
             /*
 
@@ -142,7 +152,7 @@ public class UserData {
 
         userData.put("chat", SerUtil.toString(chat));
 
-
+        userData.put("ext",ext);
 
         /*
 

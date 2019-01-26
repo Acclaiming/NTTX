@@ -6,60 +6,56 @@ import io.kurumi.ntt.ui.request.*;
 
 public class Admin {
 
-    public static final String ADMIN_MAIN = "admins|main";
+    public static final String MAIN = "admins|main";
 
     public static final String STOP_BOT = "admin|exit";
 
-    public static void onCallback(UserData userData, DataObject obj) {
+    public static AbsResuest onCallback(UserData userData, DataObject obj) {
 
         switch (obj.getPoint()) {
 
-                case ADMIN_MAIN : main(userData, obj);
-                obj.confirmQuery();
-                return;
+                case MAIN : return main(userData, obj);
                 
-                case STOP_BOT : stopBot(userData, obj);
+                case STOP_BOT : return stopBot(userData, obj);
 
         }
+        
+        return obj.reply().alert("没有那样的管理员指针 : " + obj.getPoint());
 
     }
 
-    public static void main(UserData userData, DataObject obj) {
+    public static AbsResuest main(UserData userData, DataObject obj) {
 
         if (!userData.isAdmin) {
 
-            obj.reply().alert("u are not ADMIN！").exec();
-
-            return;
+            return obj.reply().alert("u are not ADMIN！");
 
         }
 
-        new EditMsg(obj.msg()) {{
+        return new EditMsg(obj.msg()) {{
 
                 singleLineButton("停止BOT", STOP_BOT);
                 
                 singleLineButton("<< 返回主菜单",MainUI.BACK_TO_MAIN);
 
-            }}.exec();
+            }};
 
 
     }
 
-    public static void stopBot(UserData userData, DataObject obj) {
+    public static AbsResuest stopBot(UserData userData, DataObject obj) {
 
         if (!userData.isAdmin) {
 
-            obj.reply().alert("u are not ADMIN！").exec();
-
-            return;
+            return obj.reply().alert("u are not ADMIN！");
 
         }
-
-        obj.reply().alert("正在结束进程...").cacheTime(3).exec();
 
         Constants.auth.server.stop();
 
         Constants.bot.removeGetUpdatesListener();
+        
+        BotControl.stopAll();
         
         new Thread(new Runnable() {
 
@@ -75,6 +71,8 @@ public class Admin {
                 }
                 
             }).start();
+            
+        return obj.reply().alert("正在结束进程...").cacheTime(3);
         
     }
 

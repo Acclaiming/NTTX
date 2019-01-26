@@ -17,6 +17,7 @@ import cn.hutool.log.*;
 public class SendMsg extends AbsSendMsg {
 
     private SendMessage send;
+    public TelegramBot bot = Constants.bot;
 
     public SendMsg(Chat chat, String... sendMsg) {
 
@@ -28,6 +29,20 @@ public class SendMsg extends AbsSendMsg {
 
         this(msg.chat(), sendMsg);
         send.replyToMessageId(msg.messageId());
+
+    }
+    
+    public SendMsg(TelegramBot bot,Chat chat, String... sendMsg) {
+
+        this(chat,sendMsg);
+        this.bot = bot;
+        
+    }
+
+    public SendMsg(TelegramBot bot,Message msg, String... sendMsg) {
+
+        this(msg, sendMsg);
+        this.bot = bot;
 
     }
     
@@ -158,23 +173,22 @@ public class SendMsg extends AbsSendMsg {
         return this;
 
     }
-
-    @Override
-    public void exec() {
-
+    
+    private void init() {
+        
         if (replyButtonGroups.size() != 0) {
-            
+
             KeyboardButton[][]  markup = new KeyboardButton[replyButtonGroups.size()][];
-            
+
             for(int index = 0;index < replyButtonGroups.size();index ++) {
-                
+
                 markup[index] = replyButtonGroups.get(index).getButtonArray();
-                
+
             }
-            
+
             send.replyMarkup(new ReplyKeyboardMarkup(markup));
-            
-            
+
+
         } else if (inlineKeyBoardGroups.size() != 0) {
 
             InlineKeyboardButton[][]  markup = new InlineKeyboardButton[inlineKeyBoardGroups.size()][];
@@ -186,19 +200,37 @@ public class SendMsg extends AbsSendMsg {
             }
 
             send.replyMarkup(new InlineKeyboardMarkup(markup));
-            
+
         } else if (keyboaordType == 1) {
-            
+
             send.replyMarkup(new ReplyKeyboardHide());
-            
+
         } else if (keyboaordType == 2) {
-            
+
             send.replyMarkup(new ReplyKeyboardRemove());
-            
+
         }
         
-        Constants.bot.execute(send);
+    }
 
+    @Override
+    public void exec() {
+        
+        init();
+        
+        bot.execute(send);
+
+    }
+    
+    
+    @Override
+    public String toWebHookResp() {
+        
+        init();
+        
+        return send.toWebhookResponse();
+        
     }
 
 }
+

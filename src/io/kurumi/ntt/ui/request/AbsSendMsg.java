@@ -5,7 +5,7 @@ import io.kurumi.ntt.ui.model.*;
 import io.kurumi.ntt.ui.*;
 import io.kurumi.ntt.twitter.*;
 
-public abstract class AbsSendMsg {
+public abstract class AbsSendMsg implements AbsResuest {
     
     public abstract AbsSendMsg html();
     public abstract AbsSendMsg markdown();

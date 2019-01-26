@@ -34,7 +34,7 @@ public class BotMain {
         Constants.data = this.data = new Data(rootDir);
 
         data.doClean();
-        
+
         adapter = new MainAdapter(this);
 
         if (data.botToken == null) {
@@ -48,7 +48,7 @@ public class BotMain {
         Constants.auth = new AuthManager();
 
         if (data.useAuthServer) {
-            
+
             log.info("正在启动OAuth认证服务器...");
 
             if (Constants.auth.initServer(data.authServerPort, data.authServerDomain)) {
@@ -76,8 +76,13 @@ public class BotMain {
                     Constants.thisUser = resp.user();
 
                     log.info("初始化成功");
+                    
+                    String[] allows = new String[] {
+                        UserBot.UPDATE_TYPE_MESSAGE,
+                        UserBot.UPDATE_TYPE_CALLBACK_QUERY
+                    };
 
-                    bot.setUpdatesListener(adapter);
+                    bot.setUpdatesListener(adapter, new GetUpdates().allowedUpdates(allows));
 
                     log.info("启动完成");
 

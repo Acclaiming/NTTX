@@ -1,25 +1,42 @@
 package io.kurumi.ntt.ui.request;
 
+import com.pengrad.telegrambot.*;
 import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntt.*;
 
-public class AnswerCallback {
+public class AnswerCallback implements AbsResuest {
     
     private AnswerCallbackQuery answer;
-
-    public AnswerCallback(CallbackQuery query) {
-
-        this(query.id());
-
-    }
+    private TelegramBot bot = Constants.bot;
 
     public AnswerCallback(String id) {
 
         answer = new AnswerCallbackQuery(id);
 
     }
+    
+    public AnswerCallback(TelegramBot bot,String id) {
 
+        this(id);
+        this.bot = bot;
+
+    }
+    
+    public AnswerCallback(CallbackQuery query) {
+
+        this(query.id());
+
+    }
+    
+    public AnswerCallback(TelegramBot bot,CallbackQuery query) {
+        
+        this(query);
+        this.bot = bot;
+        
+    }
+
+    
     public AnswerCallback text(String text) {
 
         answer.text(text);
@@ -54,10 +71,18 @@ public class AnswerCallback {
 
     }
 
+    @Override
     public void exec() {
 
-        Constants.bot.execute(answer);
+        bot.execute(answer);
 
+    }
+
+    @Override
+    public String toWebHookResp() {
+       
+        return answer.toWebhookResponse();
+    
     }
     
 }

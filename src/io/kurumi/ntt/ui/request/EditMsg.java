@@ -1,19 +1,20 @@
 package io.kurumi.ntt.ui.request;
 
 import cn.hutool.core.util.*;
+import com.pengrad.telegrambot.*;
 import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.model.request.*;
 import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntt.*;
 import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.ui.*;
-import io.kurumi.ntt.ui.model.*;
-import java.util.*;
 
 public class EditMsg extends AbsSendMsg {
 
     private EditMessageText edit;
-
+    
+    private TelegramBot bot = Constants.bot;
+    
     public EditMsg(Message msg, String... editMsg) {
 
         String contnet = msg.text();
@@ -26,6 +27,13 @@ public class EditMsg extends AbsSendMsg {
 
         edit = new EditMessageText(msg.chat().id(), msg.messageId(), contnet);
 
+    }
+    
+    public EditMsg(TelegramBot bot,Message msg, String... editMsg) {
+        
+        this(msg,editMsg);
+        this.bot = bot;
+        
     }
 
     @Override
@@ -91,10 +99,9 @@ public class EditMsg extends AbsSendMsg {
         return this;
 
     }
-
-    @Override
-    public void exec() {
-
+    
+    private void init() {
+        
         if (inlineKeyBoardGroups.size() != 0) {
 
             InlineKeyboardButton[][]  markup = new InlineKeyboardButton[inlineKeyBoardGroups.size()][];
@@ -106,11 +113,27 @@ public class EditMsg extends AbsSendMsg {
             }
 
             edit.replyMarkup(new InlineKeyboardMarkup(markup));
-            
-        }
 
-        Constants.bot.execute(edit);
+        }
+        
+    }
+
+    @Override
+    public void exec() {
+
+        init();
+        bot.execute(edit);
 
     }
+
+    @Override
+    public String toWebHookResp() {
+        
+        init();
+        
+        return edit.toWebhookResponse();
+        
+    }
+    
 
 }
