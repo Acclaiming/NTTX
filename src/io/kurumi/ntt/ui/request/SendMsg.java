@@ -1,14 +1,17 @@
 package io.kurumi.ntt.ui.request;
 
 import cn.hutool.core.util.*;
+import com.pengrad.telegrambot.*;
 import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.model.request.*;
 import com.pengrad.telegrambot.request.*;
+import com.pengrad.telegrambot.response.*;
 import io.kurumi.ntt.*;
 import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.ui.*;
 import io.kurumi.ntt.ui.model.*;
 import java.util.*;
+import java.io.*;
 
 public class SendMsg extends AbsSendMsg {
 
@@ -173,15 +176,15 @@ public class SendMsg extends AbsSendMsg {
             
         } else if (inlineKeyBoardGroups.size() != 0) {
 
-            LinkedList<InlineKeyboardButton[]> markups = new LinkedList<>();
+            LinkedList<InlineKeyboardButton[]> groups = new LinkedList<>();
 
             for (InlineButtonGroup group : inlineKeyBoardGroups) {
 
-                markups.add(group.getButtonArray());
+                groups.add(group.getButtonArray());
 
             }
-
-            send.replyMarkup(new InlineKeyboardMarkup(markups.toArray(new InlineKeyboardButton[markups.size()][])));
+            
+            send.replyMarkup(new InlineKeyboardMarkup(groups.toArray(new InlineKeyboardButton[groups.size()][])));
 
         } else if (keyboaordType == 1) {
             
@@ -193,7 +196,20 @@ public class SendMsg extends AbsSendMsg {
             
         }
         
-        Constants.bot.execute(send);
+        Constants.bot.execute(send, new Callback<SendMessage,SendResponse>() {
+
+                @Override
+                public void onResponse(SendMessage p1, SendResponse p2) {
+                    // TODO: Implement this method
+                }
+
+                @Override
+                public void onFailure(SendMessage p1, IOException p2) {
+                    
+                    p2.printStackTrace();
+                    
+                }
+            });
 
     }
 

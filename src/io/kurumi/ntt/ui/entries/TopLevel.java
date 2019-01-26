@@ -13,9 +13,6 @@ public class TopLevel {
 
     public static void processTopLevel(UserData userData, Message msg) {
 
-        StaticLog.debug(msg.text());
-        StaticLog.debug(MsgExt.getCommandName(msg));
-        
         if (MsgExt.isCommand(msg)) {
 
             switch (MsgExt.getCommandName(msg)) {
