@@ -34,11 +34,11 @@ public class ProcessIndex {
 
                 userData.point = "";
                 userData.save();
-                
+
                 new MsgExt.Send(message, "已经取消上下文 T^T ").removeKeyboard().send();
 
             }
-            
+
             return;
 
         }
@@ -46,14 +46,13 @@ public class ProcessIndex {
 
         switch (userData.point) {
 
-            case "" : 
+                case "" : 
 
                 TopLevel.processTopLevel(userData, message);break;
 
-            case AccountUI.POINT_MAIN:
-            case AccountUI.POINT_ADD : 
+                case Account.POINT_INPUT_AUTH_URL : 
 
-                AccountUI.processPoint(userData, message);break;
+                Account.onInputUrl(userData, message);break;
 
         }
 
@@ -77,24 +76,32 @@ public class ProcessIndex {
 
         }
 
-        switch (callbackQuery.data()) {
+        DataObject obj = new DataObject(callbackQuery);
 
-            case RegUI.REG_DIRECT : 
+        switch (obj.getPoint()) {
 
-                RegUI.onCallback(userData, callbackQuery);break;
+                case Register.REG_DIRECT : 
 
-            case MainUI.USER_MANAGE :
+                Register.onCallback(userData, obj);break;
 
-                MainUI.onCallback(userData, callbackQuery);break;
+                case MainUI.USER_MANAGE :
+                case MainUI.BACK_TO_MAIN :
+
+                MainUI.onCallback(userData, obj);break;
+
+                case Account.ADD_ACCOUNT :
+                case Account.MANAGE_ACCOUNT :
+                    
+                case Account.BACK_TO_USERLIST :
+                    
+                case Account.CANCEL_DEL_ACCOUNT :
+                case Account.CONFIRM_DEL_ACCOUNT :
+
+                Account.onCallBack(userData, obj);break;
 
         }
-
-        if (callbackQuery.data().startsWith(AccountUI.ACC_DEL)) {
-
-            AccountUI.onCallback(userData, callbackQuery);
-
-        }
-
+        
+        new MsgExt.CallbackReply(obj.query()).text("Error : " + obj.getPoint());
 
 
     }

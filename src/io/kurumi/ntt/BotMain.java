@@ -33,6 +33,8 @@ public class BotMain {
 
         Constants.data = this.data = new Data(rootDir);
 
+        data.doClean();
+        
         adapter = new MainAdapter(this);
 
         if (data.botToken == null) {

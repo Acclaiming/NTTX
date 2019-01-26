@@ -17,8 +17,8 @@ public class TopLevel {
 
                 case COMMAND_START : start(userData, msg);return;
                 case MainUI.COMMAND : MainUI.main(userData, msg);return;
-                case AccountUI.COMMAND : AccountUI.main(userData, msg);return;
-
+                
+                
             }
 
         }

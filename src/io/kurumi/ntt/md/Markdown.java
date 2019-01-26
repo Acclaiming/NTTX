@@ -9,6 +9,7 @@ import org.commonmark.ext.gfm.strikethrough.*;
 import org.commonmark.ext.gfm.tables.*;
 import org.commonmark.ext.heading.anchor.*;
 import org.commonmark.ext.ins.*;
+import cn.hutool.core.util.*;
 
 public class Markdown {
 
@@ -77,6 +78,24 @@ public class Markdown {
 
         return content.replace("_", "\\_");
 
+    }
+    
+    public static String[] format(String[] content,Object... params) {
+        
+        for (int index = 0;index < content.length;index ++) {
+
+            content[index] = format(content[index],params);
+
+        }
+
+        return content;
+        
+    }
+    
+    public static String format(String content,Object... params) {
+        
+        return StrUtil.format(content,params);
+        
     }
 
 }

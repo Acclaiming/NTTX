@@ -5,6 +5,7 @@ import cn.hutool.json.*;
 import cn.hutool.core.io.*;
 import java.util.*;
 import com.pengrad.telegrambot.model.*;
+import cn.hutool.core.util.*;
 
 public class Data {
 
@@ -27,6 +28,38 @@ public class Data {
     }
     
     private HashMap<Long,UserData> userDataCache = new HashMap<>();
+
+    public void doClean() {
+        
+        for (Map.Entry<Long,UserData> userData : userDataCache.entrySet()) {
+            
+            if (userData.getValue().registered == false) {
+                
+                userData.getValue().delete();
+                
+                userDataCache.remove(userData.getKey());
+                
+            }
+            
+        }
+        
+    }
+    
+    public LinkedList<UserData> loadUsers() {
+        
+        for (File userDataFile : new File(dataDir,"users").listFiles()) {
+            
+            Long userId = Long.parseLong(StrUtil.subBefore(userDataFile.getName(), ".json", true));
+            
+            if (userDataCache.containsKey(userId)) continue;
+            
+            userDataCache.put(userId,new UserData(this,userId));
+
+        }
+        
+        return getUsers();
+        
+    }
     
     public LinkedList<UserData> getUsers() {
         

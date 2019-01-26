@@ -14,7 +14,7 @@ public class UserData {
     public Data data;
     public long id;
     public File userDataFile;
-    
+
     public Chat chat;
 
     public UserData(Data data, long id) {
@@ -109,12 +109,12 @@ public class UserData {
         userData.put("name", name);
 
         userData.put("is_bot", isBot);
-        
+
         userData.put("point", point);
-        
-        userData.put("chat",SerUtil.toString(chat));
-        
-        
+
+        userData.put("chat", SerUtil.toString(chat));
+
+
 
         /*
 
@@ -149,14 +149,14 @@ public class UserData {
         FileUtil.writeUtf8String(toJSONObject().toStringPretty(), userDataFile);
 
     }
-    
+
     public void update(Message from) {
 
         update(from.from());
         chat = from.chat();
 
     }
-    
+
 
     public void update(User from) {
 
@@ -165,14 +165,18 @@ public class UserData {
         isBot = from.isBot();
 
     }
-
+    
     public TwiAccount find(String accountId) {
+        
+        return find(Long.parseLong(accountId));
+        
+    }
 
-        long id = Long.parseLong(accountId);
+    public TwiAccount find(long accountId) {
 
         for (TwiAccount acc : twitterAccounts) {
 
-            if (acc.accountId == id) {
+            if (acc.accountId == accountId) {
 
                 return acc;
 

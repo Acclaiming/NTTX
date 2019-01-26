@@ -48,6 +48,12 @@ public class TwiAccount {
         this.accToken = accToken;
         this.accSecToken = accSecToken;
     }
+
+    public String getUrl() {
+        
+        return "https://twitter.com/" + screenName;
+        
+    }
     
     public String getFormatedName() {
         

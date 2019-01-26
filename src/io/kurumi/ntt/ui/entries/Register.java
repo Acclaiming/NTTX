@@ -4,8 +4,9 @@ import com.pengrad.telegrambot.model.*;
 import io.kurumi.ntt.*;
 import io.kurumi.ntt.ui.ext.*;
 import cn.hutool.core.util.*;
+import io.kurumi.ntt.ui.*;
 
-public class RegUI {
+public class Register {
     
     public static final String REG_DIRECT = "reg|direct";
     
@@ -25,13 +26,13 @@ public class RegUI {
 
     }
     
-    public static void onCallback(UserData userData,CallbackQuery query) {
+    public static void onCallback(UserData userData,DataObject obj) {
         
-        switch(query.data()) {
+        switch(obj.getPoint()) {
             
             case REG_DIRECT : {
                 
-                regDirect(userData,query);
+                regDirect(userData,obj);
                 
             }
             
@@ -39,11 +40,11 @@ public class RegUI {
         
     }
 
-    public static void regDirect(UserData userData, CallbackQuery query) {
+    public static void regDirect(UserData userData, DataObject obj) {
         
         if (!Constants.enableRegister) {
             
-            noReg(userData,query);
+            noReg(userData,obj);
             
         }
         
@@ -57,7 +58,7 @@ public class RegUI {
         
         userData.save();
        
-        new MsgExt.CallbackReply(query) {{
+        new MsgExt.CallbackReply(obj.query()) {{
             
             text("注册成功 ~");
             
@@ -65,15 +66,15 @@ public class RegUI {
             
         }}.reply();
         
-        MsgExt.delete(query.message());
+        MsgExt.delete(obj.query().message());
         
-        MainUI.main(userData,query.message());
+        MainUI.main(userData,obj.query().message());
         
     }
 
-    public static void noReg(UserData userData, CallbackQuery query) {
+    public static void noReg(UserData userData, DataObject obj) {
         
-        new MsgExt.CallbackReply(query) {{
+        new MsgExt.CallbackReply(obj.query()) {{
             
             alert("注册已关闭 T^T ");
             

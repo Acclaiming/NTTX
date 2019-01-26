@@ -3,12 +3,16 @@ package io.kurumi.ntt.ui.entries;
 import com.pengrad.telegrambot.model.*;
 import io.kurumi.ntt.*;
 import io.kurumi.ntt.ui.ext.*;
+import io.kurumi.ntt.ui.*;
+import io.kurumi.ntt.twitter.*;
+import io.kurumi.ntt.auth.*;
 
 public class MainUI {
 
     public static final String COMMAND = "main";
 
     public static final String USER_MANAGE = "main|user_manage";
+    public static final String BACK_TO_MAIN = "main|back";
 
     public static String[] mainMessages = new String[] {
 
@@ -21,7 +25,7 @@ public class MainUI {
 
         if (!userData.registered) {
 
-            RegUI.main(userData, msg);
+            Register.main(userData, msg);
 
         } else {
 
@@ -37,19 +41,57 @@ public class MainUI {
 
     }
 
-    public static void onCallback(UserData userData, CallbackQuery query) {
+    public static void changeBack(UserData userData, DataObject obj) {
 
-        switch (query.data()) {
+        new MsgExt.Edit(obj.query(), mainMessages) {{
 
-            case USER_MANAGE : {
-                    AccountUI.main(userData, query.message());
-                    MsgExt.confirm(query);break;
-                }
-                
-        }
+                inlineCallbackButton("账号管理", USER_MANAGE);
 
+                inlineOpenUrlButton("建议", "https://t.me/HiedaNaKan");
+
+            }}.edit();
 
 
     }
+    
+    public static void processPoint(UserData userData,Message msg) {
+        
+        switch(userData.point) {
+            
+            case Account.POINT_INPUT_AUTH_URL : Account.onInputUrl(userData,msg);return;
+            
+        }
+        
+    }
+
+    public static void onCallback(UserData userData, DataObject obj) {
+
+        switch (obj.getPoint()) {
+
+                case BACK_TO_MAIN : {
+
+                    changeBack(userData, obj);
+                    obj.confirmQuery();
+
+                    return;
+                }
+
+                case USER_MANAGE : Account.changeTo(userData, obj); return;
+
+                case Account.ADD_ACCOUNT : {
+
+                    Account.addAccount(userData, obj);
+                    obj.confirmQuery();
+
+                    return;
+                }
+
+        }
+
+    }
+
+
+
+    
 
 }

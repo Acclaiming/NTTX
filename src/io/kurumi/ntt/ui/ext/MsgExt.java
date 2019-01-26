@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.model.request.*;
 import com.pengrad.telegrambot.request.*;
 import java.util.*;
+import io.kurumi.ntt.ui.*;
 
 public class MsgExt {
 
@@ -214,13 +215,26 @@ public class MsgExt {
 
         public Edit inlineCallbackButton(String button, String callbackData) {
 
-            inlineKeyboardButtons.add(new InlineKeyboardButton(button).callbackData(callbackData));
+            DataObject obj = new DataObject();
+            
+            obj.setPoint(callbackData);
+            
+            inlineCallbackButton(button,obj);
+
+            return this;
+
+        }
+        
+        public Edit inlineCallbackButton(String button, DataObject callbackData) {
+
+            inlineKeyboardButtons.add(new InlineKeyboardButton(button).callbackData(callbackData.toString()));
 
             //    InlineCallback.registerListener(callbackData,listener);
 
             return this;
 
         }
+        
 
         public void edit() {
 
@@ -348,14 +362,26 @@ public class MsgExt {
 
         public Send inlineCallbackButton(String button, String callbackData) {
 
-            inlineKeyboardButtons.add(new InlineKeyboardButton(button).callbackData(callbackData));
+            DataObject obj = new DataObject();
+
+            obj.setPoint(callbackData);
+
+            inlineCallbackButton(button,obj);
+
+            return this;
+
+        }
+
+        public Send inlineCallbackButton(String button, DataObject callbackData) {
+
+            inlineKeyboardButtons.add(new InlineKeyboardButton(button).callbackData(callbackData.toString()));
 
             //    InlineCallback.registerListener(callbackData,listener);
 
             return this;
 
         }
-
+        
         public void send() {
 
             if (keyboardButtons.size() != 0) {
