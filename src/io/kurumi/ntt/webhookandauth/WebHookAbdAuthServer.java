@@ -51,7 +51,9 @@ public class WebHookAbdAuthServer extends NanoHTTPD {
 
         path = StrUtil.subAfter(path,"/",true);
         
-        Update update = BotUtils.parseUpdate(IoUtil.read(session.getInputStream(),CharsetUtil.CHARSET_UTF_8));
+        System.out.println(path);
+        
+        Update update = BotUtils.parseUpdate(new InputStreamReader(session.getInputStream(),CharsetUtil.CHARSET_UTF_8));
 
         AbsResuest req;
         
