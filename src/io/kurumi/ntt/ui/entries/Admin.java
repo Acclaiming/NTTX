@@ -55,11 +55,26 @@ public class Admin {
 
         }
 
-        obj.reply().alert("正在停止BOT...").cacheTime(3).exec();
+        obj.reply().alert("正在结束进程...").cacheTime(3).exec();
 
         Constants.auth.server.stop();
 
         Constants.bot.removeGetUpdatesListener();
+        
+        new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    
+                    try {
+                        Thread.sleep(10 * 1000);
+                    } catch (InterruptedException e) {}
+                    
+                    System.exit(0);
+                    
+                }
+                
+            }).start();
         
     }
 
