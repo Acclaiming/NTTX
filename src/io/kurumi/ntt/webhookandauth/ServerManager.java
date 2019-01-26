@@ -41,7 +41,7 @@ public class ServerManager {
 
         try {
 
-            if ("ok".equals(HttpUtil.get(domain + "/check"))) {
+            if ("ok".equals(HttpUtil.get("https://" + domain + "/check"))) {
 
                 log.debug("认证和消息回调服务器正常...");
 
