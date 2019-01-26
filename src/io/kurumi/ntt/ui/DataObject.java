@@ -94,7 +94,7 @@ public class DataObject extends JSONObject {
     
     public void setUser(TwiAccount account) {
         
-        put("accountId",account);
+        put("accountId",account.accountId);
         
     }
     
