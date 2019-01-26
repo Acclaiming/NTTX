@@ -5,6 +5,7 @@ import io.kurumi.ntt.*;
 import io.kurumi.ntt.ui.ext.*;
 import io.kurumi.ntt.md.*;
 import io.kurumi.ntt.ui.request.*;
+import cn.hutool.log.*;
 
 public class TopLevel {
 
@@ -12,6 +13,9 @@ public class TopLevel {
 
     public static void processTopLevel(UserData userData, Message msg) {
 
+        StaticLog.debug(msg.text());
+        StaticLog.debug(MsgExt.getCommandName(msg));
+        
         if (MsgExt.isCommand(msg)) {
 
             switch (MsgExt.getCommandName(msg)) {

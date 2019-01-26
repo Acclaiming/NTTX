@@ -10,7 +10,7 @@ public class MsgExt {
     public static boolean isCommand(Message msg) {
 
         if (msg.text() == null) return false;
-        
+
         return msg.text().startsWith("/");
 
     }
@@ -18,31 +18,29 @@ public class MsgExt {
     public static String getCommandName(Message msg) {
 
         if (msg.text() == null) return null;
-        
+
         if (!msg.text().contains("/")) return null;
 
         String body = StrUtil.subAfter(msg.text(), "/", false);
 
-        if (!body.contains(" ") && body.contains("@")) {
-            
-            return StrUtil.subBefore(body,"@",false);
-            
-        }
-        
         if (body.contains(" ")) {
 
             String cmdAndUser =  StrUtil.subBefore(body, " ", false);
-            
+
             if (cmdAndUser.contains("@")) {
-                
-                return StrUtil.subBefore(cmdAndUser,"@",false);
-                
+
+                return StrUtil.subBefore(cmdAndUser, "@", false);
+
             } else {
-                
+
                 return cmdAndUser;
-                
+
             }
 
+        } else if (body.contains("@")) {
+
+            return StrUtil.subBefore(body, "@", false);
+            
         } else {
 
             return body;
@@ -76,7 +74,7 @@ public class MsgExt {
     }
 
     public static void delete(Message msg) {
-        
+
         Constants.bot.execute(new DeleteMessage(msg.chat().id(), msg.messageId()));
 
     }
