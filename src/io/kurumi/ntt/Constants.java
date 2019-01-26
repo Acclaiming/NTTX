@@ -1,9 +1,8 @@
 package io.kurumi.ntt;
 
 import com.pengrad.telegrambot.*;
-import io.kurumi.ntt.*;
 import com.pengrad.telegrambot.model.*;
-import io.kurumi.ntt.auth.*;
+import io.kurumi.ntt.webhookandauth.*;
 
 public class Constants {
     
@@ -13,7 +12,7 @@ public class Constants {
     
     public static Data data;
     
-    public static AuthManager auth;
+    public static ServerManager auth;
     
     public static boolean enableRegister = true;
     

@@ -1,13 +1,10 @@
 package io.kurumi.ntt.ui.entries;
 
+import cn.hutool.log.*;
 import com.pengrad.telegrambot.model.*;
 import io.kurumi.ntt.*;
-import io.kurumi.ntt.ui.ext.*;
 import io.kurumi.ntt.ui.*;
-import io.kurumi.ntt.twitter.*;
-import io.kurumi.ntt.auth.*;
 import io.kurumi.ntt.ui.request.*;
-import cn.hutool.log.*;
 
 public class MainUI {
 

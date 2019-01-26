@@ -5,12 +5,10 @@ import cn.hutool.log.*;
 import com.pengrad.telegrambot.*;
 import com.pengrad.telegrambot.request.*;
 import com.pengrad.telegrambot.response.*;
-import io.kurumi.ntt.auth.*;
 import io.kurumi.ntt.ui.*;
-import io.kurumi.ntt.ui.ext.*;
+import io.kurumi.ntt.webhookandauth.*;
 import java.io.*;
 import java.lang.reflect.*;
-import java.util.*;
 
 public class BotMain {
 
@@ -45,7 +43,7 @@ public class BotMain {
 
         Constants.bot = bot = new TelegramBot(data.botToken);
 
-        Constants.auth = new AuthManager();
+        Constants.auth = new ServerManager();
 
         if (data.useAuthServer) {
 

@@ -12,8 +12,8 @@ public class SeeYouNextTime extends UserBot {
 
     public static String COMMAND = "see you next time";
 
-    public SeeYouNextTime(String token) {
-        super(token);
+    public SeeYouNextTime(UserData owner,String token) {
+        super(owner,token);
     }
 
     @Override

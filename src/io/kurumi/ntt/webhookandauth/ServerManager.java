@@ -1,4 +1,4 @@
-package io.kurumi.ntt.auth;
+package io.kurumi.ntt.webhookandauth;
 
 import java.util.*;
 import twitter4j.auth.*;
@@ -9,22 +9,23 @@ import cn.hutool.http.*;
 import twitter4j.*;
 import cn.hutool.core.util.*;
 
-public class AuthManager {
+public class ServerManager {
 
     public static Log log = StaticLog.get("AuthManager");
 
     public HashMap<String,RequestToken> cache = new HashMap<>();
     public HashMap<String,AuthListener> listeners = new HashMap<>();
 
-    public NanoAuthServer server;
-
-    public String domain = "http://127.0.0.1";
+    private String domain;
+    public WebHookAbdAuthServer server;
 
     public boolean initServer(int port, String domain) {
 
+        this.domain = domain;
+        
         try {
 
-            server = new NanoAuthServer(this, port,domain);
+            server = new WebHookAbdAuthServer(domain,port);
 
             server.start();
 
@@ -42,9 +43,7 @@ public class AuthManager {
 
             if ("ok".equals(HttpUtil.get(domain + "/check"))) {
 
-                log.debug("认证服务器正常...");
-
-                this.domain = domain;
+                log.debug("认证和消息回调服务器正常...");
 
                 return true;
 
@@ -56,7 +55,7 @@ public class AuthManager {
 
         }
 
-        log.error("认证服务器无法访问.. nginx配置好了吗..？");
+        log.error("认证和消息回调服务器无法访问.. nginx配置好了吗..？");
 
         server.stop();
         

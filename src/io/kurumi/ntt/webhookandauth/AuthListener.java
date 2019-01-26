@@ -1,4 +1,4 @@
-package io.kurumi.ntt.auth;
+package io.kurumi.ntt.webhookandauth;
 
 import io.kurumi.ntt.twitter.*;
 

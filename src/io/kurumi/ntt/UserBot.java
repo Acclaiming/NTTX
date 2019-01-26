@@ -26,9 +26,7 @@ public abstract class UserBot {
         this.owner = owner;
         this.token = token;
         this.bot = new TelegramBot(token);
-        
-        deleteHook();
-        
+
     }
     
     public void deleteHook() {
