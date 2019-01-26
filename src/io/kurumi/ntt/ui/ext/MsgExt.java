@@ -2,10 +2,8 @@ package io.kurumi.ntt.ui.ext;
 
 import cn.hutool.core.util.*;
 import com.pengrad.telegrambot.model.*;
-import com.pengrad.telegrambot.model.request.*;
 import com.pengrad.telegrambot.request.*;
-import java.util.*;
-import io.kurumi.ntt.ui.*;
+import io.kurumi.ntt.*;
 
 public class MsgExt {
 
@@ -25,13 +23,25 @@ public class MsgExt {
 
         String body = StrUtil.subAfter(msg.text(), "/", false);
 
+        if (!body.contains(" ") && body.contains("@")) {
+            
+            return StrUtil.subBefore(body,"@",false);
+            
+        }
+        
         if (body.contains(" ")) {
 
-            return StrUtil.subBefore(body, " ", false);
-
-        } else if (body.contains("@")) {
-
-            return StrUtil.subBefore(body, "@", false);
+            String cmdAndUser =  StrUtil.subBefore(body, " ", false);
+            
+            if (cmdAndUser.contains("@")) {
+                
+                return StrUtil.subBefore(cmdAndUser,"@",false);
+                
+            } else {
+                
+                return cmdAndUser;
+                
+            }
 
         } else {
 
@@ -55,7 +65,7 @@ public class MsgExt {
 
         } else if (body.contains("@")) {
 
-            return ("@" + StrUtil.subAfter(body, "@", false)).split(" ");
+            return StrUtil.subAfter(body, "@", false).split(" ");
 
         } else {
 

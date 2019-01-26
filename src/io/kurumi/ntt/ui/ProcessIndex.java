@@ -18,12 +18,35 @@ public class ProcessIndex {
 
     }
 
+    public static void processGroupMessage(Message message) {
+
+        if (message == null) return;
+        if (message.text() == null) return;
+        
+        UserData userData = Constants.data.getUser(message);
+
+        if (MsgExt.isCommand(message)) {
+            
+            switch(MsgExt.getCommandName(message)) {}
+            
+        }
+
+    }
+
     public static void processPrivateMessage(Message message) {
 
         if (message == null) return;
         if (message.text() == null) return;
 
         UserData userData = Constants.data.getUser(message);
+
+        if (userData.isBanned) {
+
+            new SendMsg(message, "you are **banned**").markdown().exec();
+
+            return;
+
+        }
 
         if ("cancel".equals(MsgExt.getCommandName(message))) {
 
@@ -33,7 +56,7 @@ public class ProcessIndex {
 
             } else {
 
-                userData.point = "";
+                userData.point = null;
                 userData.save();
 
                 new SendMsg(message, "已经取消上下文 T^T ").removeKeyboard().exec();
@@ -45,7 +68,7 @@ public class ProcessIndex {
         }
 
 
-        switch (userData.point) {
+        switch (userData.getPoint()) {
 
                 case "" : 
 
@@ -64,7 +87,7 @@ public class ProcessIndex {
         if (callbackQuery == null) return;
 
         UserData userData = Constants.data.getUser(callbackQuery.from());
-        
+
         if (!"".equals(userData.point)) {
 
             new AnswerCallback(callbackQuery).alert("有未退出的上下文 T^T \n 使用命令 /cancel 退出上下文").cacheTime(3).exec();

@@ -141,7 +141,7 @@ public class Account {
 
         if (!Constants.data.useAuthServer) {
 
-            userData.point = POINT_INPUT_AUTH_URL;
+            userData.setPoint(POINT_INPUT_AUTH_URL);
             userData.save();
 
             authMsg = new String[] {
@@ -187,7 +187,7 @@ public class Account {
 
         }
 
-        userData.point = "";
+        userData.point = null;
         userData.save();
 
     }

@@ -4,11 +4,11 @@ import cn.hutool.core.util.*;
 import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.model.request.*;
 import com.pengrad.telegrambot.request.*;
+import io.kurumi.ntt.*;
 import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.ui.*;
 import io.kurumi.ntt.ui.model.*;
 import java.util.*;
-import io.kurumi.ntt.ui.ext.*;
 
 public class SendMsg extends AbsSendMsg {
 

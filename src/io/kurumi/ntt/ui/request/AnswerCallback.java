@@ -2,7 +2,7 @@ package io.kurumi.ntt.ui.request;
 
 import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.request.*;
-import io.kurumi.ntt.ui.ext.*;
+import io.kurumi.ntt.*;
 
 public class AnswerCallback {
     

@@ -17,6 +17,10 @@ public class DataObject extends JSONObject {
         super();
     }
     
+    public DataObject(String json) {
+        super(json);
+    }
+    
     public DataObject(CallbackQuery query) {
         super(query.data());
         this.query = query;

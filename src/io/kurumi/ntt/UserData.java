@@ -1,15 +1,16 @@
 package io.kurumi.ntt;
 
-import java.io.File;
-import cn.hutool.json.*;
 import cn.hutool.core.io.*;
+import cn.hutool.json.*;
 import com.pengrad.telegrambot.model.*;
-import io.kurumi.ntt.ui.entries.*;
-import java.util.*;
-import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.serialize.*;
-import io.kurumi.ntt.ui.ext.*;
+import io.kurumi.ntt.twitter.*;
+import io.kurumi.ntt.ui.*;
 import io.kurumi.ntt.ui.request.*;
+import java.io.*;
+import java.util.*;
+
+import java.io.File;
 
 public class UserData {
 
@@ -32,13 +33,30 @@ public class UserData {
 
     public boolean registered = false;
     public boolean isAdmin = false;
-    public boolean isSpam = false;
+    public boolean isBanned = false;
 
     public String userName;
     public String name;
     public boolean isBot = false;
 
-    public String point = "";
+    public DataObject point;
+    
+    public void setPoint(String pointStr) {
+        
+        point = new DataObject();
+ 
+        point.setPoint(pointStr);
+        
+    }
+    
+    public String getPoint() {
+
+        if (point == null) return "";
+        
+        else return point.getPoint();
+
+    }
+    
 
     // public LinkedList<ApiToken> apiTokens = new LinkedList<>();
     public LinkedList<TwiAccount> twitterAccounts = new LinkedList<>();
@@ -63,11 +81,19 @@ public class UserData {
 
             registered = userData.getBool("registered", false);
             isAdmin = userData.getBool("is_admin", false);
-            isSpam = userData.getBool("is_spam", false);
+            isBanned = userData.getBool("is_banned", false);
             userName = userData.getStr("user_name", "");
             name = userData.getStr("name", "");
             isBot = userData.getBool("is_bot", false);
-            point = userData.getStr("point", "");
+            
+            String pointStr = userData.getStr("point");
+            
+            if (pointStr != null) {
+                
+                point = new DataObject(pointStr);
+                
+            }
+
             chat = SerUtil.toObject(userData.getStr("char"));
 
             JSONArray twitterAccountList = userData.getJSONArray("twitter_accounts");
@@ -105,14 +131,14 @@ public class UserData {
 
         userData.put("registered", registered);
         userData.put("is_admin", isAdmin);
-        userData.put("is_spam", isSpam);
+        userData.put("is_banned", isBanned);
 
         userData.put("user_name", userName);
         userData.put("name", name);
 
         userData.put("is_bot", isBot);
 
-        userData.put("point", point);
+        userData.put("point", point.toString());
 
         userData.put("chat", SerUtil.toString(chat));
 

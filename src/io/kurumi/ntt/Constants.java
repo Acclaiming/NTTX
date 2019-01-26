@@ -1,4 +1,4 @@
-package io.kurumi.ntt.ui.ext;
+package io.kurumi.ntt;
 
 import com.pengrad.telegrambot.*;
 import io.kurumi.ntt.*;

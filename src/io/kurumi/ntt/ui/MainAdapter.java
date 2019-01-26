@@ -25,8 +25,6 @@ public class MainAdapter implements UpdatesListener {
     @Override
     public int process(List<Update> updates) {
 
-
-
         for (Update update : updates) {
 
             try {
@@ -77,11 +75,6 @@ public class MainAdapter implements UpdatesListener {
         }
 
         return CONFIRMED_UPDATES_ALL;
-
-
-
-
-
 
     }
 

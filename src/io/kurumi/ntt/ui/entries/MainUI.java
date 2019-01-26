@@ -30,32 +30,38 @@ public class MainUI {
 
         } else {
 
-            sendMain(userData,msg,false);
-            
+            sendMain(userData, msg, false);
+
         }
 
     }
 
     public static void sendMain(UserData userData, Message msg , boolean edit) {
-       
+
         AbsSendMsg send;
-        
+
         if (edit) send = new EditMsg(msg, mainMessages);
-        else send = new SendMsg(msg.chat(),mainMessages);
-        
-    
-                send.singleLineButton("管理已认证的账号 (‵▽′)", USER_MANAGE);
+        else send = new SendMsg(msg.chat(), mainMessages);
 
-               send.singleLineOpenUrlButton("给咱建议！ 「新功能/报错...」", "https://t.me/HiedaNaKan");
 
-         send.exec();
+        send.singleLineButton("管理已认证的账号 (‵▽′)", USER_MANAGE);
+
+        if (userData.isAdmin) {
+
+            send.singleLineButton("管理员菜单 *٩(๑´∀`๑)ง*", Admin.ADMIN_MAIN);
+
+        }
         
-            
+        send.singleLineOpenUrlButton("给咱建议！ 「新功能/报错...」", "https://t.me/HiedaNaKan");
+
+        send.exec();
+
+
     }
 
     public static void processPoint(UserData userData, Message msg) {
 
-        switch (userData.point) {
+        switch (userData.getPoint()) {
 
                 case Account.POINT_INPUT_AUTH_URL : Account.onInputUrl(userData, msg);return;
 
@@ -69,7 +75,7 @@ public class MainUI {
 
                 case BACK_TO_MAIN :
 
-                sendMain(userData, obj.msg(),true);
+                sendMain(userData, obj.msg(), true);
                 obj.confirmQuery();
 
                 return;
