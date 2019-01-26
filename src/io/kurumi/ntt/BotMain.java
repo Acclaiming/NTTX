@@ -45,7 +45,7 @@ public class BotMain {
         
         bot.execute(new DeleteWebhook());
 
-        Constants.auth = new ServerManager();
+        Constants.authandwebhook = new ServerManager();
         
         final String[] allows = new String[] {
             UserBot.UPDATE_TYPE_MESSAGE,
@@ -57,7 +57,7 @@ public class BotMain {
 
             log.info("正在启动认证和消息回调服务器...");
 
-            if (Constants.auth.initServer(data.serverPort, data.serverDomain)) {
+            if (Constants.authandwebhook.initServer(data.serverPort, data.serverDomain)) {
 
                 log.info("服务器启动成功..");
                 

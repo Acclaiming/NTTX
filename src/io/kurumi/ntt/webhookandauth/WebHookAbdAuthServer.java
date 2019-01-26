@@ -129,7 +129,7 @@ public class WebHookAbdAuthServer extends NanoHTTPD {
         String oauth_token = session.getParms().get("oauth_token");
         String oauth_verifier = session.getParms().get("oauth_verifier");
 
-        TwiAccount account = Constants.auth.auth(oauth_token, oauth_verifier);
+        TwiAccount account = Constants.authandwebhook.auth(oauth_token, oauth_verifier);
 
         Response resp = Response.newFixedLengthResponse(Status.REDIRECT_SEE_OTHER, MIME_PLAINTEXT, "");
 

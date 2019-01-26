@@ -84,7 +84,7 @@ public class Account {
 
     public static AbsResuest addAccount(final UserData userData, final DataObject obj) {
 
-        final String authUrl = Constants.auth.newRequest(new AuthListener() {
+        final String authUrl = Constants.authandwebhook.newRequest(new AuthListener() {
 
                 @Override
                 public void onAuth(TwiAccount account) {
@@ -172,7 +172,7 @@ public class Account {
 
     public static AbsResuest onInputUrl(UserData userData, Message msg) {
 
-        TwiAccount account = Constants.auth.authByUrl(msg.text());
+        TwiAccount account = Constants.authandwebhook.authByUrl(msg.text());
 
         if (account == null) {
 

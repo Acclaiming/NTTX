@@ -12,7 +12,7 @@ public class Constants {
     
     public static Data data;
     
-    public static ServerManager auth;
+    public static ServerManager authandwebhook;
     
     public static boolean enableRegister = true;
     
