@@ -139,7 +139,6 @@ public class MsgExt {
     public static class Edit {
 
         private Message msg;
-        private CallbackQuery query;
 
         private EditMessageText edit;
 

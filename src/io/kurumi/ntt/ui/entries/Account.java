@@ -7,12 +7,14 @@ import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.ui.*;
 import io.kurumi.ntt.ui.ext.*;
 import io.kurumi.ntt.md.*;
+import io.kurumi.ntt.ui.ext.MsgExt.*;
 
 public class Account {
 
     public static final String BACK_TO_USERLIST = "users|back";
 
     public static final String ADD_ACCOUNT = "users|add";
+
     public static final String MANAGE_ACCOUNT = "users|manage";
 
     public static final String DEL_ACCOUNT = "users|del";
@@ -52,6 +54,30 @@ public class Account {
 
     public static void changeTo(final UserData userData, DataObject obj) {
 
+        if (obj == null) {
+
+            MsgExt.Send send = userData.send(userManageMsg);
+            send.inlineCallbackButton("添加账号", ADD_ACCOUNT);
+
+            for (TwiAccount account : userData.twitterAccounts) {
+
+                DataObject manageUserObj = new DataObject();
+
+                manageUserObj.setPoint(MANAGE_ACCOUNT);
+
+                manageUserObj.put("accountId", account.accountId);
+
+                send.inlineCallbackButton("@" + account.screenName, manageUserObj);
+
+            }
+
+            send.inlineCallbackButton("<< 返回主页", MainUI.BACK_TO_MAIN);
+            send.send();
+            
+            return;
+
+        }
+
         new MsgExt.Edit(obj.msg(), userManageMsg) {{
 
                 inlineCallbackButton("添加账号", ADD_ACCOUNT);
@@ -85,14 +111,14 @@ public class Account {
 
                     if (userData.twitterAccounts.contains(account)) {
 
-                        new MsgExt.Send(obj.chat(), account.getFormatedName() + " 更新成功 ~").send();
+                        obj.send(account.getFormatedName() + " 更新成功 ~").send();
 
                         userData.twitterAccounts.remove(account);
 
 
                     } else {
 
-                        new MsgExt.Send(obj.chat(), account.getFormatedName() + " 认证成功 ~").send();
+                        obj.send(account.getFormatedName() + " 认证成功 ~").send();
 
                     }
 
@@ -106,37 +132,57 @@ public class Account {
 
             });
 
+        if (authUrl == null) {
+
+            obj.reply().alert("请求认证失败... 请稍后再试").reply();
+
+        } else {
+
+            obj.reply().text("请求认证成功 ~").reply();
+
+        }
+
+        startAuth(userData, obj, authUrl);
+
+    }
+
+    public static void startAuth(UserData userData, DataObject obj, final String authUrl) {
+
+        String[] authMsg;
+
         if (!Constants.data.useAuthServer) {
 
             userData.point = POINT_INPUT_AUTH_URL;
             userData.save();
 
-            String[] authMsg = new String[] {
+            authMsg = new String[] {
 
+                "点击 「认证」 来登录哦！",
                 "认证之后会跳转到一个本地 (127.0.0.1) 网页",
                 "复制链接发给咱就行了呢...","",
                 "注意 : 只能认证一次哦.. 注意复制链接地址 〒▽〒",
-                "取消认证用 /cancel 哦 ！ "
+                "取消认证用 /cancel 和 「取消」 哦 ！ "
 
             };
 
-            new MsgExt.Send(obj.chat() , authMsg).send();
+        } else {
+
+            authMsg = new String[] {
+
+                "点击 「认证」 按钮来登录哦！",
+                "取消登录用 「取消」 ~",
+
+            };
 
         }
 
-        new MsgExt.CallbackReply(obj.query()) {{
+        new MsgExt.Edit(obj.msg() , authMsg) {{
 
-                if (authUrl == null) {
+                inlineOpenUrlButton("认证", authUrl);
 
-                    alert("请求认证失败... 请稍后再试");
+                inlineCallbackButton("退出", BACK_TO_USERLIST);
 
-                } else {
-
-                    url(authUrl);
-
-                }
-
-            }}.reply();
+            }}.edit();
 
     }
 
@@ -217,15 +263,15 @@ public class Account {
             userData.twitterAccounts.remove(userData.find(obj.getLong("accountId")));
 
             new MsgExt.CallbackReply(obj.query()).text("已删除 ~").reply();
-            
-            changeTo(userData,obj);
+
+            changeTo(userData, obj);
 
         } else {
-            
+
             new MsgExt.CallbackReply(obj.query()).text("已取消 ~").reply();
-            
-            manageAccount(userData,obj);
-            
+
+            manageAccount(userData, obj);
+
         }
 
     }

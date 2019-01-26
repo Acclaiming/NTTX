@@ -43,25 +43,22 @@ public class MainUI {
 
     public static void changeBack(UserData userData, DataObject obj) {
 
-        new MsgExt.Edit(obj.msg(), mainMessages) {{
-
-                inlineCallbackButton("账号管理", USER_MANAGE);
-
-                inlineOpenUrlButton("建议", "https://t.me/HiedaNaKan");
-
-            }}.edit();
+        obj.edit(mainMessages)
+            .inlineCallbackButton("账号管理", USER_MANAGE)
+            .inlineOpenUrlButton("建议", "https://t.me/HiedaNaKan")
+            .edit();
 
 
     }
-    
-    public static void processPoint(UserData userData,Message msg) {
-        
-        switch(userData.point) {
-            
-            case Account.POINT_INPUT_AUTH_URL : Account.onInputUrl(userData,msg);return;
-            
+
+    public static void processPoint(UserData userData, Message msg) {
+
+        switch (userData.point) {
+
+                case Account.POINT_INPUT_AUTH_URL : Account.onInputUrl(userData, msg);return;
+
         }
-        
+
     }
 
     public static void onCallback(UserData userData, DataObject obj) {
@@ -70,16 +67,16 @@ public class MainUI {
 
                 case BACK_TO_MAIN :
 
-                    changeBack(userData, obj);
-                    obj.confirmQuery();
+                changeBack(userData, obj);
+                obj.confirmQuery();
 
-                    return;
-              
+                return;
+
 
                 case USER_MANAGE : 
-                    Account.changeTo(userData, obj);
-                    obj.confirmQuery();
-                    return;
+                Account.changeTo(userData, obj);
+                obj.confirmQuery();
+                return;
 
         }
 
@@ -87,6 +84,6 @@ public class MainUI {
 
 
 
-    
+
 
 }

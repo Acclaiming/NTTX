@@ -8,6 +8,7 @@ import io.kurumi.ntt.ui.entries.*;
 import java.util.*;
 import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.serialize.*;
+import io.kurumi.ntt.ui.ext.*;
 
 public class UserData {
 
@@ -194,6 +195,10 @@ public class UserData {
 
     }
 
-
+    public MsgExt.Send send(String... msg) {
+        
+        return new MsgExt.Send(chat,msg);
+        
+    }
 
 }
