@@ -42,16 +42,16 @@ public class BotMain {
         }
 
         Constants.bot = bot = new TelegramBot(data.botToken);
-        
+
         bot.execute(new DeleteWebhook());
 
         Constants.authandwebhook = new ServerManager();
-        
+
         final String[] allows = new String[] {
             UserBot.UPDATE_TYPE_MESSAGE,
             UserBot.UPDATE_TYPE_CALLBACK_QUERY
         };
-        
+
 
         if (data.useServer) {
 
@@ -60,7 +60,7 @@ public class BotMain {
             if (Constants.authandwebhook.initServer(data.serverPort, data.serverDomain)) {
 
                 log.info("服务器启动成功..");
-                
+
                 bot.execute(new GetMe(), new Callback<GetMe,GetMeResponse>() {
 
                         @Override
@@ -70,7 +70,29 @@ public class BotMain {
 
                             log.info("初始化成功");
 
-                            bot.execute(new SetWebhook().url("https://" + data.serverDomain + "/" + data.botToken).allowedUpdates(allows));
+                            Callback cb = new Callback<SetWebhook,BaseResponse>() {
+
+                                @Override
+                                public void onResponse(SetWebhook p1, BaseResponse resp) {
+
+                                    if (!resp.isOk()) {
+
+                                        System.err.println(resp.errorCode() + " : " + resp.description());
+                                        System.exit(1);
+
+                                    }
+
+                                }
+
+                                @Override
+                                public void onFailure(SetWebhook p1, IOException ex) {
+                                    ex.printStackTrace();
+                                    System.exit(1);
+                                }
+
+                            };
+
+                            bot.execute(new SetWebhook().url("https://" + data.serverDomain + "/" + data.botToken).allowedUpdates(allows), cb);
 
                             log.info("启动完成");
 
@@ -87,15 +109,15 @@ public class BotMain {
                         }
 
                     });
-                
-                
+
+
 
             } else {
 
                 log.error("服务器启动失败...");
-                
-                }
-        
+
+            }
+
 
         } else {
 
@@ -110,7 +132,7 @@ public class BotMain {
 
                         log.info("初始化成功");
 
-                        
+
                         bot.setUpdatesListener(adapter, new GetUpdates().allowedUpdates(allows));
 
                         log.info("启动完成");
@@ -128,10 +150,10 @@ public class BotMain {
                     }
 
                 });
-            
+
         }
 
-        
+
 
 
 
