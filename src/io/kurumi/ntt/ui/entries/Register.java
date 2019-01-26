@@ -5,6 +5,7 @@ import io.kurumi.ntt.*;
 import io.kurumi.ntt.ui.ext.*;
 import cn.hutool.core.util.*;
 import io.kurumi.ntt.ui.*;
+import io.kurumi.ntt.ui.request.*;
 
 public class Register {
     
@@ -12,17 +13,17 @@ public class Register {
     
     public static void main(UserData userData, Message msg) {
 
-        String[] regMessages = new String[] {
+        String[] regMsg = new String[] {
             "这是一个注册菜单 (ง •_•)ง","",
             "话说为什么要弄注册喵？....",
             "好奇怪 T^T"
         };
         
-        new MsgExt.Send(msg.chat(),ArrayUtil.join(regMessages,"\n")) {{
+        new SendMsg(msg.chat(),regMsg) {{
             
-            inlineCallbackButton("直接注册 ⊙∀⊙",REG_DIRECT);
+            singleLineButton("直接注册 ⊙∀⊙",REG_DIRECT);
             
-        }}.send();
+        }}.exec();
 
     }
     
@@ -40,7 +41,7 @@ public class Register {
         
     }
 
-    public static void regDirect(UserData userData, DataObject obj) {
+    public static void regDirect(final UserData userData, DataObject obj) {
         
         if (!Constants.enableRegister) {
             
@@ -58,29 +59,37 @@ public class Register {
         
         userData.save();
        
-        new MsgExt.CallbackReply(obj.query()) {{
+        new AnswerCallback(obj.query()) {{
+            
+            if (userData.isAdmin) {
+                
+                alert("行政员账号注册成功 ( for you only ！");
+                
+            } else {
             
             text("注册成功 ~");
             
+            }
+            
             cacheTime(10);
             
-        }}.reply();
+        }}.exec();
         
-        MsgExt.delete(obj.query().message());
+       obj.deleteMsg();
         
-        MainUI.main(userData,obj.query().message());
+        MainUI.sendMain(userData,obj.msg(), false);
         
     }
 
     public static void noReg(UserData userData, DataObject obj) {
         
-        new MsgExt.CallbackReply(obj.query()) {{
+        new AnswerCallback(obj.query()) {{
             
             alert("注册已关闭 T^T ");
             
             cacheTime(60);
             
-        }}.reply();
+        }}.exec();
         
     }
 

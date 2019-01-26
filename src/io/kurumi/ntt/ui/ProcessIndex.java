@@ -5,6 +5,7 @@ import io.kurumi.ntt.*;
 import io.kurumi.ntt.ui.ext.*;
 import cn.hutool.log.*;
 import io.kurumi.ntt.ui.entries.*;
+import io.kurumi.ntt.ui.request.*;
 
 public class ProcessIndex {
 
@@ -28,14 +29,14 @@ public class ProcessIndex {
 
             if ("".equals(userData.point)) {
 
-                new MsgExt.Send(message, "没有上下文呢 T^T ").send();
+                new SendMsg(message, "没有上下文呢 T^T ").exec();
 
             } else {
 
                 userData.point = "";
                 userData.save();
 
-                new MsgExt.Send(message, "已经取消上下文 T^T ").removeKeyboard().send();
+                new SendMsg(message, "已经取消上下文 T^T ").removeKeyboard().exec();
 
             }
 
@@ -66,7 +67,7 @@ public class ProcessIndex {
         
         if (!"".equals(userData.point)) {
 
-            new MsgExt.CallbackReply(callbackQuery).alert("有未退出的上下文 T^T \n 使用命令 /cancel 退出上下文").cacheTime(3).reply();
+            new AnswerCallback(callbackQuery).alert("有未退出的上下文 T^T \n 使用命令 /cancel 退出上下文").cacheTime(3).exec();
 
             return;
 
@@ -98,7 +99,7 @@ public class ProcessIndex {
 
         }
 
-        obj.reply().alert("Error : " + obj.getPoint()).reply();
+        obj.reply().alert("Error : " + obj.getPoint()).exec();
 
 
     }

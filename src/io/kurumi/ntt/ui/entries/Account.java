@@ -8,6 +8,7 @@ import io.kurumi.ntt.ui.*;
 import io.kurumi.ntt.ui.ext.*;
 import io.kurumi.ntt.md.*;
 import io.kurumi.ntt.ui.ext.MsgExt.*;
+import io.kurumi.ntt.ui.request.*;
 
 public class Account {
 
@@ -38,9 +39,9 @@ public class Account {
                 addAccount(userData, obj);
                 obj.confirmQuery();
                 return;
-                
+
                 case DEL_ACCOUNT :
-                confirmDelete(userData,obj);
+                confirmDelete(userData, obj);
                 obj.confirmQuery();
                 return;
 
@@ -53,9 +54,9 @@ public class Account {
                 case CANCEL_DEL_ACCOUNT :
                 onAccountDel(userData, obj);
                 return;
-                
+
                 case BACK_TO_USERLIST :
-                changeTo(userData,obj);
+                changeTo(userData, obj);
                 obj.confirmQuery();
                 return;
 
@@ -65,51 +66,26 @@ public class Account {
 
     public static void changeTo(final UserData userData, DataObject obj) {
 
+        AbsSendMsg send;
+
         if (obj == null) {
-            
-            new MsgExt.Send(userData.chat,userManageMsg) {{
 
-                    inlineCallbackButton("添加账号", ADD_ACCOUNT);
+            send = new SendMsg(userData.chat, userManageMsg);
 
-                    for (TwiAccount account : userData.twitterAccounts) {
-
-                        DataObject manageUserObj = new DataObject();
-
-                        manageUserObj.setPoint(MANAGE_ACCOUNT);
-
-                        manageUserObj.put("accountId", account.accountId);
-
-                        inlineCallbackButton("@" + account.screenName, manageUserObj);
-
-                    }
-
-                    inlineCallbackButton("<< 返回主页", MainUI.BACK_TO_MAIN);
-
-                }}.send();
-                
-                return;
-            
+        } else {
+            send =  new EditMsg(obj.msg(), userManageMsg);
         }
-        
-        new MsgExt.Edit(obj.msg(), userManageMsg) {{
+        send.singleLineButton("添加新账号 (●'◡'●)", ADD_ACCOUNT);
 
-                inlineCallbackButton("添加新的Twitter账号 (●'◡'●)", ADD_ACCOUNT);
+        for (TwiAccount account : userData.twitterAccounts) {
 
-                for (TwiAccount account : userData.twitterAccounts) {
+            send.singleLineButton("管理 @" + account.screenName, MANAGE_ACCOUNT, account);
 
-                    DataObject manageUserObj = new DataObject();
+        }
 
-                    manageUserObj.setPoint(MANAGE_ACCOUNT);
+        send.singleLineButton("<< 返回 ପ( ˘ᵕ˘ ) ੭ ☆", MainUI.BACK_TO_MAIN);
 
-                    manageUserObj.put("accountId", account.accountId);
-
-                    inlineCallbackButton("管理账号 @" + account.screenName, manageUserObj);
-
-                }
-
-                inlineCallbackButton("<< 返回主页 ପ( ˘ᵕ˘ ) ੭ ☆", MainUI.BACK_TO_MAIN);
-
-            }}.edit();
+        send.exec();
 
     }
 
@@ -121,17 +97,17 @@ public class Account {
                 public void onAuth(TwiAccount account) {
 
                     obj.deleteMsg();
-                    
+
                     if (userData.twitterAccounts.contains(account)) {
 
-                        obj.send(account.getFormatedName() + " 更新成功 ~").send();
+                        obj.send(account.getFormatedName() + " 更新成功 ~").exec();
 
                         userData.twitterAccounts.remove(account);
 
 
                     } else {
 
-                        obj.send(account.getFormatedName() + " 认证成功 ~").send();
+                        obj.send(account.getFormatedName() + " 认证成功 ~").exec();
 
                     }
 
@@ -147,11 +123,11 @@ public class Account {
 
         if (authUrl == null) {
 
-            obj.reply().alert("请求认证失败... 请稍后再试").reply();
+            obj.reply().alert("请求认证失败... 请稍后再试").exec();
 
         } else {
 
-            obj.reply().text("请求认证成功 ~").reply();
+            obj.reply().text("请求认证成功 ~").exec();
 
         }
 
@@ -189,13 +165,13 @@ public class Account {
 
         }
 
-        new MsgExt.Edit(obj.msg() , authMsg) {{
+        new EditMsg(obj.msg() , authMsg) {{
 
-                inlineOpenUrlButton("认证", authUrl);
+                newInlineButtonGroup()
+                    .newOpenUrlButton("认证", authUrl)
+                    .newButton("退出", BACK_TO_USERLIST);
 
-                inlineCallbackButton("退出", BACK_TO_USERLIST);
-
-            }}.edit();
+            }}.exec();
 
     }
 
@@ -206,7 +182,7 @@ public class Account {
 
         if (account == null) {
 
-            new MsgExt.Send(msg.chat(), "链接无效 ( •̥́ ˍ •̀ू ) 请重新发送\n或者使用 /cancel 以取消认证..").send();
+            new SendMsg(msg.chat(), "链接无效 ( •̥́ ˍ •̀ू ) 请重新发送\n或者使用 /cancel 以取消认证..").exec();
             return;
 
         }
@@ -218,53 +194,35 @@ public class Account {
 
     public static void manageAccount(UserData userData, DataObject obj) {
 
-        final TwiAccount account = userData.find(obj.getLong("accountId"));
+        final TwiAccount account = obj.getUser(userData);
 
-        new MsgExt.Edit(obj.msg(), "编辑账号 : " + account.getFormatedName()) {{
+        new EditMsg(obj.msg(), "编辑账号 : " + account.getFormatedName()) {{
 
-                DataObject delAccountObj = new DataObject();
+                singleLineButton("删除 y( ˙ᴗ. )~", DEL_ACCOUNT, account);
 
-                delAccountObj.setPoint(DEL_ACCOUNT);
+                singleLineButton("打开主页 ପ( ˘ᵕ˘ ) ੭ ☆", account.getUrl());
 
-                delAccountObj.put("accountId", account.accountId);
+                singleLineButton("<< 返回账号列表", BACK_TO_USERLIST);
 
-                inlineCallbackButton("删除这个账号 y( ˙ᴗ. )~", delAccountObj);
-
-                inlineOpenUrlButton("打开主页 ପ( ˘ᵕ˘ ) ੭ ☆", account.getUrl());
-
-                inlineCallbackButton("<< 返回账号列表", BACK_TO_USERLIST);
-
-            }}.edit();
+            }}.exec();
 
     }
 
     public static void confirmDelete(UserData userData, DataObject obj) {
 
-        final TwiAccount account = userData.find(obj.getLong("accountId"));
+        final TwiAccount account = obj.getUser(userData);
 
-        new MsgExt.Edit(obj.msg(), "真的要删除账号 : " + account.getFormatedName() + " 吗？") {{
+        new EditMsg(obj.msg(), "真的要删除账号 : " + account.getFormatedName() + " 吗？") {{
 
-                DataObject confirmDelAccountObj = new DataObject();
+                singleLineButton("是点错了 ！ 请不要删掉这个账号 （ｉДｉ）", CANCEL_DEL_ACCOUNT, account);
 
-                confirmDelAccountObj.setPoint(CONFIRM_DEL_ACCOUNT);
+                singleLineButton("是的，删掉这个账号吧 ！ (￣▽￣)~*", CONFIRM_DEL_ACCOUNT, account);
 
-                confirmDelAccountObj.put("accountId", account.accountId);
+                singleLineButton("不要删掉啦！ (。・`ω´・)", CANCEL_DEL_ACCOUNT, account);
 
-                DataObject cancelDelAccountObj = new DataObject();
+                singleLineButton("<< 返回 继续管理这个账号 (ﾉ｀⊿´)ﾉ", MANAGE_ACCOUNT , account);
 
-                cancelDelAccountObj.setPoint(CANCEL_DEL_ACCOUNT);
-
-                cancelDelAccountObj.put("accountId", account.accountId);
-
-                inlineCallbackButton("是点错了 ！ 请不要删掉这个账号 （ｉДｉ）", cancelDelAccountObj);
-
-                inlineCallbackButton("是的，删掉这个账号吧 ！ (￣▽￣)~*", confirmDelAccountObj);
-
-                inlineCallbackButton("不要删掉啦！ (。・`ω´・)", cancelDelAccountObj);
-
-                inlineCallbackButton("<< 返回 继续管理这个账号 (ﾉ｀⊿´)ﾉ", BACK_TO_USERLIST);
-
-            }}.edit();
+            }}.exec();
 
 
     }
@@ -273,15 +231,15 @@ public class Account {
 
         if (CONFIRM_DEL_ACCOUNT.equals(obj.getPoint())) {
 
-            userData.twitterAccounts.remove(userData.find(obj.getLong("accountId")));
+            userData.twitterAccounts.remove(obj.getUser(userData));
 
-            obj.reply().text("已删除 ~").reply();
+            obj.reply().text("已删除 ~").exec();
 
             changeTo(userData, obj);
 
         } else {
 
-            obj.reply().text("已取消 ~").reply();
+            obj.reply().text("已取消 ~").exec();
 
             manageAccount(userData, obj);
 

@@ -7,6 +7,7 @@ import io.kurumi.ntt.*;
 import java.util.*;
 import io.kurumi.ntt.ui.ext.*;
 import com.pengrad.telegrambot.request.*;
+import io.kurumi.ntt.ui.request.*;
 
 public class MainAdapter implements UpdatesListener {
 
@@ -63,7 +64,7 @@ public class MainAdapter implements UpdatesListener {
 
                         }
 
-                        new MsgExt.Send(userData.chat, err.toString()).send();
+                        new SendMsg(userData.chat, err.toString()).exec();
 
                     }
 

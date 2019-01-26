@@ -5,6 +5,9 @@ import io.kurumi.ntt.serialize.*;
 import java.io.*;
 import com.pengrad.telegrambot.model.*;
 import io.kurumi.ntt.ui.ext.*;
+import io.kurumi.ntt.twitter.*;
+import io.kurumi.ntt.*;
+import io.kurumi.ntt.ui.request.*;
 
 public class DataObject extends JSONObject {
     
@@ -21,7 +24,7 @@ public class DataObject extends JSONObject {
     
     public void confirmQuery() {
         
-        new MsgExt.CallbackReply(query()).reply();
+        new AnswerCallback(query()).exec();
         
     }
     
@@ -55,21 +58,21 @@ public class DataObject extends JSONObject {
         
     }
     
-    public MsgExt.Send send(String... msg) {
+    public SendMsg send(String... msg) {
         
-        return new MsgExt.Send(msg().chat(),msg);
+        return new SendMsg(msg().chat(),msg);
         
     }
     
-    public MsgExt.CallbackReply reply() {
+    public AnswerCallback reply() {
 
-        return new MsgExt.CallbackReply(query());
+        return new AnswerCallback(query());
 
     }
     
-    public MsgExt.Edit edit(String... msg) {
+    public EditMsg edit(String... msg) {
         
-        return new MsgExt.Edit(msg(),msg);
+        return new EditMsg(msg(),msg);
         
     }
     
@@ -82,6 +85,18 @@ public class DataObject extends JSONObject {
     public String getPoint() {
         
         return getStr("point");
+        
+    }
+    
+    public void setUser(TwiAccount account) {
+        
+        put("accountId",account);
+        
+    }
+    
+    public TwiAccount getUser(UserData UserData) {
+        
+        return UserData.find(getLong("accountId",-1L));
         
     }
     

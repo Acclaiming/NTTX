@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.*;
 import io.kurumi.ntt.*;
 import io.kurumi.ntt.ui.ext.*;
 import io.kurumi.ntt.md.*;
+import io.kurumi.ntt.ui.request.*;
 
 public class TopLevel {
 
@@ -25,10 +26,9 @@ public class TopLevel {
 
         //  repeat(userData, msg);
 
-        new MsgExt.Send(msg.chat(), "嘤").send();
-
-
-
+      
+        new SendMsg(msg.chat(),"嘤").exec();
+        
     }
     
     public static String[] startMessage = new String[] {
@@ -51,13 +51,13 @@ public class TopLevel {
         
         sendMsg[0] = userData.name + " " + sendMsg[0];
 
-        new MsgExt.Send(msg.chat(), sendMsg).markdown().disableWebPagePreview().send();
+        new SendMsg(msg.chat(), sendMsg).markdown().disableWebPagePreview().exec();
 
     }
 
     public static void repeat(UserData userData, Message msg) {
 
-        new MsgExt.Send(msg, msg.text()).send();
+        new SendMsg(msg, msg.text()).exec();
 
     }
 

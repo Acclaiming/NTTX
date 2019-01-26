@@ -6,6 +6,7 @@ import io.kurumi.ntt.ui.ext.*;
 import io.kurumi.ntt.ui.*;
 import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.auth.*;
+import io.kurumi.ntt.ui.request.*;
 
 public class MainUI {
 
@@ -29,26 +30,27 @@ public class MainUI {
 
         } else {
 
-            new MsgExt.Send(msg.chat(), mainMessages) {{
-
-                    inlineCallbackButton("账号管理", USER_MANAGE);
-
-                    inlineOpenUrlButton("建议", "https://t.me/HiedaNaKan");
-
-                }}.send();
-
+            sendMain(userData,msg,false);
+            
         }
 
     }
 
-    public static void changeBack(UserData userData, DataObject obj) {
+    public static void sendMain(UserData userData, Message msg , boolean edit) {
+       
+        AbsSendMsg send;
+        
+        if (edit) send = new EditMsg(msg, mainMessages);
+        else send = new SendMsg(msg.chat(),mainMessages);
+        
+    
+                send.singleLineButton("管理已认证的账号 (‵▽′)", USER_MANAGE);
 
-        obj.edit(mainMessages)
-            .inlineCallbackButton("账号管理", USER_MANAGE)
-            .inlineOpenUrlButton("建议", "https://t.me/HiedaNaKan")
-            .edit();
+               send.singleLineOpenUrlButton("给咱建议！ 「新功能/报错...」", "https://t.me/HiedaNaKan");
 
-
+         send.exec();
+        
+            
     }
 
     public static void processPoint(UserData userData, Message msg) {
@@ -67,7 +69,7 @@ public class MainUI {
 
                 case BACK_TO_MAIN :
 
-                changeBack(userData, obj);
+                sendMain(userData, obj.msg(),true);
                 obj.confirmQuery();
 
                 return;
