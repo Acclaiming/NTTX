@@ -60,9 +60,7 @@ public class Admin {
         Constants.auth.server.stop();
 
         Constants.bot.removeGetUpdatesListener();
-
-        System.exit(0);
-
+        
     }
 
 
