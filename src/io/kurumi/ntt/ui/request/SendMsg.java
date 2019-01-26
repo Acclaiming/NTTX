@@ -12,6 +12,7 @@ import io.kurumi.ntt.ui.*;
 import io.kurumi.ntt.ui.model.*;
 import java.util.*;
 import java.io.*;
+import cn.hutool.log.*;
 
 public class SendMsg extends AbsSendMsg {
 
@@ -200,7 +201,13 @@ public class SendMsg extends AbsSendMsg {
 
                 @Override
                 public void onResponse(SendMessage p1, SendResponse p2) {
-                    // TODO: Implement this method
+                 
+                    if (!p2.isOk()) {
+                        
+                        StaticLog.error(p2.errorCode() + ":" + p2.description());
+                        
+                    }
+                    
                 }
 
                 @Override
