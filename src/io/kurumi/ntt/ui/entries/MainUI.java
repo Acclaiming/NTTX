@@ -7,6 +7,7 @@ import io.kurumi.ntt.ui.*;
 import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.auth.*;
 import io.kurumi.ntt.ui.request.*;
+import cn.hutool.log.*;
 
 public class MainUI {
 
@@ -24,6 +25,8 @@ public class MainUI {
 
     public static void main(UserData userData, Message msg) {
 
+        StaticLog.debug("main");
+        
         if (!userData.registered) {
 
             Register.main(userData, msg);
