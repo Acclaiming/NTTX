@@ -47,6 +47,10 @@ public class Account {
                 case CONFIRM_DEL_ACCOUNT :
                 case CANCEL_DEL_ACCOUNT :
                 onAccountDel(userData, obj);
+                return;
+                
+                case BACK_TO_USERLIST :
+                changeTo(userData,obj);
 
         }
 
@@ -54,6 +58,32 @@ public class Account {
 
     public static void changeTo(final UserData userData, DataObject obj) {
 
+        if (obj == null) {
+            
+            new MsgExt.Send(userData.chat,userManageMsg) {{
+
+                    inlineCallbackButton("添加账号", ADD_ACCOUNT);
+
+                    for (TwiAccount account : userData.twitterAccounts) {
+
+                        DataObject manageUserObj = new DataObject();
+
+                        manageUserObj.setPoint(MANAGE_ACCOUNT);
+
+                        manageUserObj.put("accountId", account.accountId);
+
+                        inlineCallbackButton("@" + account.screenName, manageUserObj);
+
+                    }
+
+                    inlineCallbackButton("<< 返回主页", MainUI.BACK_TO_MAIN);
+
+                }}.send();
+                
+                return;
+            
+        }
+        
         new MsgExt.Edit(obj.msg(), userManageMsg) {{
 
                 inlineCallbackButton("添加账号", ADD_ACCOUNT);
@@ -83,6 +113,8 @@ public class Account {
                 @Override
                 public void onAuth(TwiAccount account) {
 
+                    obj.deleteMsg();
+                    
                     if (userData.twitterAccounts.contains(account)) {
 
                         obj.send(account.getFormatedName() + " 更新成功 ~").send();
@@ -100,7 +132,7 @@ public class Account {
 
                     userData.save();
 
-                    changeTo(userData, obj);
+                    changeTo(userData, null);
 
                 }
 
