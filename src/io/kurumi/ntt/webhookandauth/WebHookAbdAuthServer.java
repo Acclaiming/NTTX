@@ -12,6 +12,7 @@ import java.io.*;
 import java.net.*;
 import org.nanohttpd.protocols.http.*;
 import org.nanohttpd.protocols.http.response.*;
+import cn.hutool.core.io.*;
 
 public class WebHookAbdAuthServer extends NanoHTTPD {
     
@@ -50,7 +51,7 @@ public class WebHookAbdAuthServer extends NanoHTTPD {
 
         path = StrUtil.subAfter(path,"/",true);
         
-        Update update = BotUtils.parseUpdate(new InputStreamReader(session.getInputStream()));
+        Update update = BotUtils.parseUpdate(IoUtil.read(session.getInputStream(),CharsetUtil.CHARSET_UTF_8));
 
         AbsResuest req;
         
