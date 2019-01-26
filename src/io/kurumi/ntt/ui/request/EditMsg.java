@@ -13,7 +13,7 @@ import java.util.*;
 public class EditMsg extends AbsSendMsg {
 
     private EditMessageText edit;
-    
+
     public EditMsg(Message msg, String... editMsg) {
 
         String contnet = msg.text();
@@ -23,78 +23,78 @@ public class EditMsg extends AbsSendMsg {
             contnet = ArrayUtil.join(editMsg, "\n");
 
         }
-        
-        edit = new EditMessageText(msg.chat(),msg.messageId(),contnet);
+
+        edit = new EditMessageText(msg.chat(), msg.messageId(), contnet);
 
     }
 
     @Override
     public EditMsg html() {
-        
+
         edit.parseMode(ParseMode.HTML);
-        
+
         return this;
-        
+
     }
 
     @Override
     public EditMsg markdown() {
-        
+
         edit.parseMode(ParseMode.Markdown);
-        
+
         return this;
-        
+
     }
 
     @Override
     public EditMsg disableWebPagePreview() {
-        
+
         edit.disableWebPagePreview(true);
-        
+
         return this;
-        
+
     }
 
     @Override
     public EditMsg disableNotification() {
-       
+
         edit.disableWebPagePreview(true);
-        
+
         return this;
-        
+
     }
 
     @Override
     public EditMsg singleLineButton(String text, DataObject obj) {
-        
+
         super.singleLineButton(text, obj);
-        
+
         return this;
-        
+
     }
 
     @Override
     public EditMsg singleLineButton(String text, String point) {
-      
+
         super.singleLineButton(text, point);
-        
+
         return this;
-        
+
     }
 
 
     @Override
     public EditMsg singleLineButton(String text, String point, TwiAccount acc) {
-        
+
         super.singleLineButton(text, point, acc);
-        
+
         return this;
-        
+
     }
 
     @Override
     public void exec() {
-       
+
         if (inlineKeyBoardGroups.size() != 0) {
 
             LinkedList<InlineKeyboardButton[]> markups = new LinkedList<>();
@@ -106,11 +106,11 @@ public class EditMsg extends AbsSendMsg {
             }
 
             edit.replyMarkup(new InlineKeyboardMarkup(markups.toArray(new InlineKeyboardButton[markups.size()][])));
-            
-            }
-            
-            Constants.bot.execute(edit);
-        
-   }
+
+        }
+
+        Constants.bot.execute(edit);
+
+    }
 
 }

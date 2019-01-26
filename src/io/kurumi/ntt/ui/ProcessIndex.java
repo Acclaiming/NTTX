@@ -13,8 +13,19 @@ public class ProcessIndex {
     public static Log log = StaticLog.get("ProcessIndex");
 
     public static void processUpdate(Update update) {
-
-        processPrivateMessage(update.message());
+        
+        if (update.message() != null) {
+        
+        switch (update.message().chat().type()) {
+            
+            case supergroup : 
+            case group : processGroupMessage(update.message());return;
+            case Private :processPrivateMessage(update.message());return; 
+            
+        }
+        
+        }
+        
         processCallbackQuery(update.callbackQuery());
 
     }
