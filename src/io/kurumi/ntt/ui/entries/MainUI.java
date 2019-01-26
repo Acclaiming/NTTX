@@ -68,23 +68,26 @@ public class MainUI {
 
         switch (obj.getPoint()) {
 
-                case BACK_TO_MAIN : {
+                case BACK_TO_MAIN :
 
                     changeBack(userData, obj);
                     obj.confirmQuery();
 
                     return;
-                }
+              
 
-                case USER_MANAGE : Account.changeTo(userData, obj); return;
+                case USER_MANAGE : 
+                    Account.changeTo(userData, obj);
+                    obj.confirmQuery();
+                    return;
 
-                case Account.ADD_ACCOUNT : {
+                case Account.ADD_ACCOUNT :
 
                     Account.addAccount(userData, obj);
                     obj.confirmQuery();
 
                     return;
-                }
+              
 
         }
 

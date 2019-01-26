@@ -246,8 +246,6 @@ public class MsgExt {
 
             Constants.bot.execute(edit);
 
-
-
         }
 
 
