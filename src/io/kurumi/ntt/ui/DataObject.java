@@ -115,5 +115,5 @@ public class DataObject extends JSONObject {
         return SerUtil.toObject(getStr(key));
         
     }
-    
+
 }

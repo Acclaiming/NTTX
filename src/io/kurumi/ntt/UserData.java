@@ -137,8 +137,8 @@ public class UserData {
         userData.put("name", name);
 
         userData.put("is_bot", isBot);
-
-        userData.put("point", point.toString());
+        
+        userData.put("point", point);
 
         userData.put("chat", SerUtil.toString(chat));
 
