@@ -54,30 +54,6 @@ public class Account {
 
     public static void changeTo(final UserData userData, DataObject obj) {
 
-        if (obj == null) {
-
-            MsgExt.Send send = userData.send(userManageMsg);
-            send.inlineCallbackButton("添加账号", ADD_ACCOUNT);
-
-            for (TwiAccount account : userData.twitterAccounts) {
-
-                DataObject manageUserObj = new DataObject();
-
-                manageUserObj.setPoint(MANAGE_ACCOUNT);
-
-                manageUserObj.put("accountId", account.accountId);
-
-                send.inlineCallbackButton("@" + account.screenName, manageUserObj);
-
-            }
-
-            send.inlineCallbackButton("<< 返回主页", MainUI.BACK_TO_MAIN);
-            send.send();
-            
-            return;
-
-        }
-
         new MsgExt.Edit(obj.msg(), userManageMsg) {{
 
                 inlineCallbackButton("添加账号", ADD_ACCOUNT);
@@ -106,8 +82,6 @@ public class Account {
 
                 @Override
                 public void onAuth(TwiAccount account) {
-
-                    obj.deleteMsg();
 
                     if (userData.twitterAccounts.contains(account)) {
 
