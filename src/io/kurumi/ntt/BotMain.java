@@ -12,7 +12,7 @@ import java.lang.reflect.*;
 
 public class BotMain {
 
-    public static final String version = "0.1 build 5";
+    public static final String version = "0.2";
 
     public Log log;
 
@@ -42,61 +42,96 @@ public class BotMain {
         }
 
         Constants.bot = bot = new TelegramBot(data.botToken);
+        
+        bot.execute(new DeleteWebhook());
 
         Constants.auth = new ServerManager();
+        
+        final String[] allows = new String[] {
+            UserBot.UPDATE_TYPE_MESSAGE,
+            UserBot.UPDATE_TYPE_CALLBACK_QUERY
+        };
+        
 
         if (data.useServer) {
 
-            log.info("正在启动OAuth认证服务器...");
+            log.info("正在启动认证和消息回调服务器...");
 
             if (Constants.auth.initServer(data.serverPort, data.serverDomain)) {
 
-                log.info("认证服务器启动成功..");
+                log.info("服务器启动成功..");
+                
+                bot.execute(new GetMe(), new Callback<GetMe,GetMeResponse>() {
+
+                        @Override
+                        public void onResponse(GetMe req, GetMeResponse resp) {
+
+                            Constants.thisUser = resp.user();
+
+                            log.info("初始化成功");
+
+                            bot.execute(new SetWebhook().url("https://" + data.serverDomain + "/" + data.botToken).allowedUpdates(allows));
+
+                            log.info("启动完成");
+
+                        }
+
+                        @Override
+                        public void onFailure(GetMe req, IOException ex) {
+
+                            log.error(ex, "初始化失败，请检查网络...");
+
+                            log.info("正在尝试重启");
+
+                            main(null);
+                        }
+
+                    });
+                
+                
 
             } else {
 
-                log.error("认证服务器启动失败...");
-                log.error("将使用用户发回URL的认证方法...");
-
-            }
+                log.error("服务器启动失败...");
+                
+                }
+        
 
         } else {
 
-            log.info("未设置认证服务器 将使用用户发回URL的认证方法...");
+            log.info("未设置认证和消息服务器 将使用用户发回URL的认证方法和GetUpdates读取消息...");
 
+            bot.execute(new GetMe(), new Callback<GetMe,GetMeResponse>() {
+
+                    @Override
+                    public void onResponse(GetMe req, GetMeResponse resp) {
+
+                        Constants.thisUser = resp.user();
+
+                        log.info("初始化成功");
+
+                        
+                        bot.setUpdatesListener(adapter, new GetUpdates().allowedUpdates(allows));
+
+                        log.info("启动完成");
+
+                    }
+
+                    @Override
+                    public void onFailure(GetMe req, IOException ex) {
+
+                        log.error(ex, "初始化失败，请检查网络...");
+
+                        log.info("正在尝试重启");
+
+                        main(null);
+                    }
+
+                });
+            
         }
 
-        bot.execute(new GetMe(), new Callback<GetMe,GetMeResponse>() {
-
-                @Override
-                public void onResponse(GetMe req, GetMeResponse resp) {
-
-                    Constants.thisUser = resp.user();
-
-                    log.info("初始化成功");
-                    
-                    String[] allows = new String[] {
-                        UserBot.UPDATE_TYPE_MESSAGE,
-                        UserBot.UPDATE_TYPE_CALLBACK_QUERY
-                    };
-
-                    bot.setUpdatesListener(adapter, new GetUpdates().allowedUpdates(allows));
-
-                    log.info("启动完成");
-
-                }
-
-                @Override
-                public void onFailure(GetMe req, IOException ex) {
-
-                    log.error(ex, "初始化失败，请检查网络...");
-
-                    log.info("正在常识重启");
-
-                    main(null);
-                }
-
-            });
+        
 
 
 

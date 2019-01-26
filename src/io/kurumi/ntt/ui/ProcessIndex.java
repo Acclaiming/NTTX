@@ -15,25 +15,69 @@ public class ProcessIndex {
 
     public static AbsResuest processUpdate(Update update) {
 
-        if (update.message() != null) {
+        try {
 
-            switch (update.message().chat().type()) {
+            if (update.message() != null) {
 
-                    case supergroup : 
-                    case group : return processGroupMessage(update.message());
-                    case Private : return processPrivateMessage(update.message());
+                switch (update.message().chat().type()) {
+
+                        case supergroup : 
+                        case group : return processGroupMessage(update.message());
+                        case Private : return processPrivateMessage(update.message());
+
+                }
+
+            } else if (update.callbackQuery() != null) {
+
+                return processCallbackQuery(update.callbackQuery());
 
             }
 
-        } else if (update.callbackQuery() != null) {
+        } catch (Exception e) {
 
-            return processCallbackQuery(update.callbackQuery());
+            log.error(e, "处理更新失败");
+
+            for (UserData userData : Constants.data.getUsers()) {
+
+                if (userData.isAdmin && userData.chat != null) {
+
+                    StringBuilder err = new StringBuilder();
+
+                    err.append("Bot出错 : ");
+
+                    err.append("\n更新 : " + update);
+
+                    Throwable cause = e;
+
+                    while (cause != null) {
+
+                        err.append("\n\n错误 : " + cause.getClass().getName());
+
+                        err.append("\n\n" + cause.getMessage());
+
+                        for (StackTraceElement stack : cause.getStackTrace())  {
+
+                            err.append("\nat : " + stack.toString());
+                        }
+
+                        cause = cause.getCause();
+
+                    }
+
+                    new SendMsg(userData.chat, err.toString()).exec();
+
+                }
+
+                System.exit(1);
+
+            }
 
         }
-        
+
         return null;
 
     }
+
 
     public static AbsResuest processGroupMessage(Message message) {
 
@@ -41,7 +85,7 @@ public class ProcessIndex {
         if (message.text() == null) return null;
 
         UserData userData = Constants.data.getUser(message);
-        
+
         return null;
     }
 
@@ -87,8 +131,8 @@ public class ProcessIndex {
                 return Account.onInputUrl(userData, message);
 
         }
-        
-        return new SendMsg(message,"非法上下文 : " + userData.getPoint());
+
+        return new SendMsg(message, "非法上下文 : " + userData.getPoint());
 
     }
 
@@ -115,7 +159,7 @@ public class ProcessIndex {
                 case MainUI.BACK_TO_MAIN :
 
                 return MainUI.onCallback(userData, obj);
-   
+
 
                 case Account.MAIN: 
                 case Account.ADD_ACCOUNT :
@@ -128,7 +172,7 @@ public class ProcessIndex {
                 case Account.CONFIRM_DEL_ACCOUNT :
 
                 return Account.onCallBack(userData, obj);
-                
+
                 case Admin.MAIN : 
                 case Admin.STOP_BOT :
 

@@ -27,53 +27,17 @@ public class MainAdapter implements UpdatesListener {
 
         for (Update update : updates) {
 
-            try {
+          
 
                 AbsResuest resp = ProcessIndex.processUpdate(update);
 
                 if (resp != null) resp.exec();
                 
-            } catch (Exception e) {
 
-                log.error(e, "处理更新失败");
-
-                for (UserData userData : Constants.data.getUsers()) {
-
-                    if (userData.isAdmin && userData.chat != null) {
-
-                        StringBuilder err = new StringBuilder();
-
-                        err.append("Bot出错 : ");
-
-                        err.append("\n更新 : " + update);
-
-                        Throwable cause = e;
-
-                        while (cause != null) {
-
-                            err.append("\n\n错误 : " + cause.getClass().getName());
-
-                            err.append("\n\n" + cause.getMessage());
-
-                            for (StackTraceElement stack : cause.getStackTrace())  {
-
-                                err.append("\nat : " + stack.toString());
-                            }
-
-                            cause = cause.getCause();
-
-                        }
-
-                        new SendMsg(userData.chat, err.toString()).exec();
-
-                    }
-
-                }
 
                 return CONFIRMED_UPDATES_NONE;
 
-            }
-
+          
         }
 
         return CONFIRMED_UPDATES_ALL;
