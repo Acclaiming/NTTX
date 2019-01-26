@@ -13,7 +13,7 @@ public class ProcessIndex {
     public static Log log = StaticLog.get("ProcessIndex");
 
     public static void processUpdate(Update update) {
-        
+
         if (update.message() != null) {
 
             switch (update.message().chat().type()) {
@@ -120,11 +120,11 @@ public class ProcessIndex {
 
                 Register.onCallback(userData, obj);break;
 
-                case MainUI.USER_MANAGE :
                 case MainUI.BACK_TO_MAIN :
 
                 MainUI.onCallback(userData, obj);break;
 
+                case Account.MAIN: 
                 case Account.ADD_ACCOUNT :
                 case Account.MANAGE_ACCOUNT :
 

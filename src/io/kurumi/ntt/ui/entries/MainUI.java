@@ -13,7 +13,6 @@ public class MainUI {
 
     public static final String COMMAND = "main";
 
-    public static final String USER_MANAGE = "main|user_manage";
     public static final String BACK_TO_MAIN = "main|back";
 
     public static String[] mainMessages = new String[] {
@@ -47,7 +46,7 @@ public class MainUI {
         else send = new SendMsg(msg.chat(), mainMessages);
 
 
-        send.singleLineButton("管理已认证的账号 (‵▽′)", USER_MANAGE);
+        send.singleLineButton("管理账号 (‵▽′)", Account.MAIN);
 
         if (userData.isAdmin) {
 
@@ -81,12 +80,6 @@ public class MainUI {
                 sendMain(userData, obj.msg(), true);
                 obj.confirmQuery();
 
-                return;
-
-
-                case USER_MANAGE : 
-                Account.changeTo(userData, obj);
-                obj.confirmQuery();
                 return;
 
         }

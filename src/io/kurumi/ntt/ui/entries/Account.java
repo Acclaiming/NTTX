@@ -12,6 +12,8 @@ import io.kurumi.ntt.ui.request.*;
 
 public class Account {
 
+    public static final String MAIN = "users|main";
+
     public static final String BACK_TO_USERLIST = "users|back";
 
     public static final String ADD_ACCOUNT = "users|add";
@@ -33,6 +35,9 @@ public class Account {
     public static void onCallBack(UserData userData, DataObject obj) {
 
         switch (obj.getPoint()) {
+
+                case MAIN :
+                main(userData, obj);return;
 
                 case ADD_ACCOUNT :
 
@@ -56,7 +61,7 @@ public class Account {
                 return;
 
                 case BACK_TO_USERLIST :
-                changeTo(userData, obj);
+                main(userData, obj);
                 obj.confirmQuery();
                 return;
 
@@ -64,7 +69,7 @@ public class Account {
 
     }
 
-    public static void changeTo(final UserData userData, DataObject obj) {
+    public static void main(final UserData userData, DataObject obj) {
 
         AbsSendMsg send;
 
@@ -75,6 +80,7 @@ public class Account {
         } else {
             send =  new EditMsg(obj.msg(), userManageMsg);
         }
+
         send.singleLineButton("添加新账号 (●'◡'●)", ADD_ACCOUNT);
 
         for (TwiAccount account : userData.twitterAccounts) {
@@ -115,7 +121,7 @@ public class Account {
 
                     userData.save();
 
-                    changeTo(userData, null);
+                    main(userData, null);
 
                 }
 
@@ -235,7 +241,7 @@ public class Account {
 
             obj.reply().text("已删除 ~").exec();
 
-            changeTo(userData, obj);
+            main(userData, obj);
 
         } else {
 
