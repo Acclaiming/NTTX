@@ -25,6 +25,9 @@ public class WebHookAbdAuthServer extends NanoHTTPD {
     @Override
     public Response handle(IHTTPSession session) {
         
+        System.out.println(session.getUri());
+       // System.out.println(session.getInputStream());
+        
         URL url = URLUtil.url(session.getUri());
 
         switch (url.getPath()) {
@@ -41,7 +44,7 @@ public class WebHookAbdAuthServer extends NanoHTTPD {
 
         }
         
-        if (!"application/json".equals(session.getHeaders().get("Content-Type"))) return super.handle(session);
+     //   if (!"application/json".equals(session.getHeaders().get("Content-Type"))) return super.handle(session);
 
         String path = URLUtil.url(session.getUri()).getPath();
 
