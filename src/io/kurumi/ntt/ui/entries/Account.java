@@ -103,11 +103,11 @@ public class Account {
 
                     manageUserObj.put("accountId", account.accountId);
 
-                    inlineCallbackButton("管理 @" + account.screenName, manageUserObj);
+                    inlineCallbackButton("管理账号 @" + account.screenName, manageUserObj);
 
                 }
 
-                inlineCallbackButton("<< 返回主页", MainUI.BACK_TO_MAIN);
+                inlineCallbackButton("<< 返回主页 ପ( ˘ᵕ˘ ) ੭ ☆", MainUI.BACK_TO_MAIN);
 
             }}.edit();
 
@@ -256,13 +256,13 @@ public class Account {
 
                 cancelDelAccountObj.put("accountId", account.accountId);
 
-                inlineCallbackButton("是点错了 ！ 不要删掉 （ｉДｉ）", cancelDelAccountObj);
+                inlineCallbackButton("是点错了 ！ 请不要删掉这个账号 （ｉДｉ）", cancelDelAccountObj);
 
-                inlineCallbackButton("是的，删掉吧 ！ (￣▽￣)~*", confirmDelAccountObj);
+                inlineCallbackButton("是的，删掉这个账号吧 ！ (￣▽￣)~*", confirmDelAccountObj);
 
-                inlineCallbackButton("是手贱了！", cancelDelAccountObj);
+                inlineCallbackButton("不要删掉啦！ (。・`ω´・)", cancelDelAccountObj);
 
-                inlineCallbackButton("<< 返回账号", BACK_TO_USERLIST);
+                inlineCallbackButton("<< 返回 继续管理这个账号 (ﾉ｀⊿´)ﾉ", BACK_TO_USERLIST);
 
             }}.edit();
 
