@@ -93,7 +93,7 @@ public class Account {
         
         new MsgExt.Edit(obj.msg(), userManageMsg) {{
 
-                inlineCallbackButton("添加账号", ADD_ACCOUNT);
+                inlineCallbackButton("添加新的Twitter账号 (●'◡'●)", ADD_ACCOUNT);
 
                 for (TwiAccount account : userData.twitterAccounts) {
 
@@ -103,7 +103,7 @@ public class Account {
 
                     manageUserObj.put("accountId", account.accountId);
 
-                    inlineCallbackButton("@" + account.screenName, manageUserObj);
+                    inlineCallbackButton("管理 @" + account.screenName, manageUserObj);
 
                 }
 
@@ -228,9 +228,9 @@ public class Account {
 
                 delAccountObj.put("accountId", account.accountId);
 
-                inlineCallbackButton("删除账号", delAccountObj);
+                inlineCallbackButton("删除这个账号 y( ˙ᴗ. )~", delAccountObj);
 
-                inlineOpenUrlButton("打开主页", account.getUrl());
+                inlineOpenUrlButton("打开主页 ପ( ˘ᵕ˘ ) ੭ ☆", account.getUrl());
 
                 inlineCallbackButton("<< 返回账号列表", BACK_TO_USERLIST);
 
@@ -242,7 +242,7 @@ public class Account {
 
         final TwiAccount account = userData.find(obj.getLong("accountId"));
 
-        new MsgExt.Edit(obj.msg(), "删除账号 : " + account.getFormatedName()) {{
+        new MsgExt.Edit(obj.msg(), "真的要删除账号 : " + account.getFormatedName() + " 吗？") {{
 
                 DataObject confirmDelAccountObj = new DataObject();
 
@@ -256,9 +256,9 @@ public class Account {
 
                 cancelDelAccountObj.put("accountId", account.accountId);
 
-                inlineCallbackButton("是手贱了 ！", cancelDelAccountObj);
+                inlineCallbackButton("是点错了 ！ 不要删掉 （ｉДｉ）", cancelDelAccountObj);
 
-                inlineCallbackButton("删掉吧 ！", confirmDelAccountObj);
+                inlineCallbackButton("是的，删掉吧 ！ (￣▽￣)~*", confirmDelAccountObj);
 
                 inlineCallbackButton("是手贱了！", cancelDelAccountObj);
 
