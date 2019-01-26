@@ -164,29 +164,29 @@ public class SendMsg extends AbsSendMsg {
 
         if (replyButtonGroups.size() != 0) {
             
-            LinkedList<KeyboardButton[]> groups = new LinkedList<>();
-
-            for (ReplyButtonGroup group : replyButtonGroups) {
-
-                groups.add(group.getButtonArray());
-
+            KeyboardButton[][]  markup = new KeyboardButton[replyButtonGroups.size()][];
+            
+            for(int index = 0;index < replyButtonGroups.size();index ++) {
+                
+                markup[index] = replyButtonGroups.get(index).getButtonArray();
+                
             }
-
-            send.replyMarkup(new ReplyKeyboardMarkup(groups.toArray(new KeyboardButton[groups.size()][])));
+            
+            send.replyMarkup(new ReplyKeyboardMarkup(markup));
             
             
         } else if (inlineKeyBoardGroups.size() != 0) {
 
-            LinkedList<InlineKeyboardButton[]> groups = new LinkedList<>();
+            InlineKeyboardButton[][]  markup = new InlineKeyboardButton[inlineKeyBoardGroups.size()][];
 
-            for (InlineButtonGroup group : inlineKeyBoardGroups) {
+            for(int index = 0;index < inlineKeyBoardGroups.size();index ++) {
 
-                groups.add(group.getButtonArray());
+                markup[index] = inlineKeyBoardGroups.get(index).getButtonArray();
 
             }
-            
-            send.replyMarkup(new InlineKeyboardMarkup(groups.toArray(new InlineKeyboardButton[groups.size()][])));
 
+            send.replyMarkup(new InlineKeyboardMarkup(markup));
+            
         } else if (keyboaordType == 1) {
             
             send.replyMarkup(new ReplyKeyboardHide());
