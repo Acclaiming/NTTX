@@ -15,17 +15,17 @@ public class ProcessIndex {
     public static void processUpdate(Update update) {
         
         if (update.message() != null) {
-        
-        switch (update.message().chat().type()) {
-            
-            case supergroup : 
-            case group : processGroupMessage(update.message());return;
-            case Private :processPrivateMessage(update.message());return; 
-            
+
+            switch (update.message().chat().type()) {
+
+                    case supergroup : 
+                    case group : processGroupMessage(update.message());return;
+                    case Private :processPrivateMessage(update.message());return; 
+
+            }
+
         }
-        
-        }
-        
+
         processCallbackQuery(update.callbackQuery());
 
     }
@@ -34,17 +34,17 @@ public class ProcessIndex {
 
         if (message == null) return;
         if (message.text() == null) return;
-        
+
         UserData userData = Constants.data.getUser(message);
 
         // funcs
-        
-        SeeYouNextTime.processGrpupMessage(userData,message);
-        
+
+        SeeYouNextTime.processGrpupMessage(userData, message);
+
         if (MsgExt.isCommand(message)) {
-            
-            switch(MsgExt.getCommandName(message)) {}
-            
+
+            switch (MsgExt.getCommandName(message)) {}
+
         }
 
     }
