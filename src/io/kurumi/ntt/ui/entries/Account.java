@@ -39,6 +39,10 @@ public class Account {
 
                 addAccount(userData, obj);
                 return;
+                
+                case DEL_ACCOUNT :
+                confirmDelete(userData,obj);
+                return;
 
                 case MANAGE_ACCOUNT : 
                 manageAccount(userData, obj);
