@@ -19,14 +19,14 @@ public class Setup {
 
         System.out.println();
 
-        System.out.println("要使用认证服务器吗？\n您必须反向代理本地端口到输入的域名");
+        System.out.println("要使用认证和消息回调服务器吗？\n您必须反向代理本地端口到输入的域名");
 
         System.out.print("y / N : ");
 
-        if (data.useAuthServer = confirm()) {
+        if (data.useServer = confirm()) {
 
-            data.authServerPort = loopInputInt("本地端口");
-            data.authServerDomain = loopInput("域名");
+            data.serverPort = loopInputInt("本地端口");
+            data.serverDomain = loopInput("域名");
          //   data.authServerEnableSSL = loopInputBoolean();
             
         }

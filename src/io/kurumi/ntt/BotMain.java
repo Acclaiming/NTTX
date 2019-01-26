@@ -45,11 +45,11 @@ public class BotMain {
 
         Constants.auth = new ServerManager();
 
-        if (data.useAuthServer) {
+        if (data.useServer) {
 
             log.info("正在启动OAuth认证服务器...");
 
-            if (Constants.auth.initServer(data.authServerPort, data.authServerDomain)) {
+            if (Constants.auth.initServer(data.serverPort, data.serverDomain)) {
 
                 log.info("认证服务器启动成功..");
 

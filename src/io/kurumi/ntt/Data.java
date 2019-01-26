@@ -14,9 +14,9 @@ public class Data {
     
     public String botToken;
     
-    public boolean useAuthServer = false;
-    public int authServerPort = 19132;
-    public String authServerDomain;
+    public boolean useServer = false;
+    public int serverPort = 19132;
+    public String serverDomain;
     
     public Data(File rootDir) {
 
@@ -111,11 +111,11 @@ public class Data {
             
             botToken = botData.getStr("bot_token");
             
-            JSONObject authServer = botData.getJSONObject("auth_server");
+            JSONObject server = botData.getJSONObject("server");
             
-            useAuthServer = authServer.getBool("enable",useAuthServer);
-            authServerPort = authServer.getInt("local_port",authServerPort);
-            authServerDomain = authServer.getStr("domain");
+            useServer = server.getBool("enable",useServer);
+            serverPort = server.getInt("local_port",serverPort);
+            serverDomain = server.getStr("domain");
             
             
         } catch (Exception e) {}
@@ -128,13 +128,13 @@ public class Data {
         
         botData.put("bot_token",botToken);
         
-        JSONObject authServer = new JSONObject();
+        JSONObject server = new JSONObject();
         
-        authServer.put("enable",useAuthServer);
-        authServer.put("local_port",authServerPort);
-        authServer.put("domain",authServerDomain);
+        server.put("enable",useServer);
+        server.put("local_port",serverPort);
+        server.put("domain",serverDomain);
         
-        botData.put("auth_server",authServer);
+        botData.put("server",server);
         
         FileUtil.writeUtf8String(botData.toStringPretty(), dataFile);
 

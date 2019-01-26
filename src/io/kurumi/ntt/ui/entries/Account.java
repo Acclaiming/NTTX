@@ -133,7 +133,7 @@ public class Account {
 
         String[] authMsg;
 
-        if (!Constants.data.useAuthServer) {
+        if (!Constants.data.useServer) {
 
             userData.setPoint(POINT_INPUT_AUTH_URL);
             userData.save();

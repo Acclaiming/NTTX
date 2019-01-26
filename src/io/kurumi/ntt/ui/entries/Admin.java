@@ -31,8 +31,16 @@ public class Admin {
             return obj.reply().alert("u are not ADMIN！");
 
         }
+        
+        String[] adminMsg = new String[] {
+            
+            "乃就是咱Bot的Master吗！！！","",
+            "( 其实是根据id判断的",
+            "有一种钦定的感觉...",
+            
+        };
 
-        return new EditMsg(obj.msg()) {{
+        return new EditMsg(obj.msg(),adminMsg) {{
 
                 singleLineButton("停止BOT", STOP_BOT);
                 
@@ -50,12 +58,12 @@ public class Admin {
             return obj.reply().alert("u are not ADMIN！");
 
         }
+        
+        BotControl.stopAll();
 
         Constants.auth.server.stop();
 
         Constants.bot.removeGetUpdatesListener();
-        
-        BotControl.stopAll();
         
         new Thread(new Runnable() {
 
@@ -63,7 +71,9 @@ public class Admin {
                 public void run() {
                     
                     try {
+                        
                         Thread.sleep(10 * 1000);
+                        
                     } catch (InterruptedException e) {}
                     
                     System.exit(0);
@@ -72,7 +82,7 @@ public class Admin {
                 
             }).start();
             
-        return obj.reply().alert("正在结束进程...").cacheTime(3);
+        return obj.reply().alert("BOT已结束 正在结束进程...").cacheTime(10);
         
     }
 
