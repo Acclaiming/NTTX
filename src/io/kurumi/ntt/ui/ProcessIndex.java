@@ -118,11 +118,13 @@ public class ProcessIndex {
 
                 case Register.REG_DIRECT : 
 
-                Register.onCallback(userData, obj);break;
+                Register.onCallback(userData, obj);
+                return;
 
                 case MainUI.BACK_TO_MAIN :
 
-                MainUI.onCallback(userData, obj);break;
+                MainUI.onCallback(userData, obj);
+                return;
 
                 case Account.MAIN: 
                 case Account.ADD_ACCOUNT :
@@ -134,7 +136,13 @@ public class ProcessIndex {
                 case Account.CANCEL_DEL_ACCOUNT :
                 case Account.CONFIRM_DEL_ACCOUNT :
 
-                Account.onCallBack(userData, obj);break;
+                Account.onCallBack(userData, obj);
+                return;
+
+                case Admin.ADMIN_MAIN : 
+
+                Admin.main(userData, obj);
+                return;
 
         }
 

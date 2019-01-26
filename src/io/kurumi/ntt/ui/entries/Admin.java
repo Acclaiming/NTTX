@@ -34,6 +34,8 @@ public class Admin {
         new EditMsg(obj.msg()) {{
 
                 singleLineButton("停止BOT", STOP_BOT);
+                
+                singleLineButton("<< 返回主菜单",MainUI.BACK_TO_MAIN);
 
             }}.exec();
 
