@@ -142,7 +142,7 @@ public class ProcessIndex {
                 case Admin.ADMIN_MAIN : 
                 case Admin.STOP_BOT :
 
-                Admin.main(userData, obj);
+                Admin.onCallback(userData, obj);
                 return;
 
         }
