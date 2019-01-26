@@ -24,7 +24,7 @@ public class EditMsg extends AbsSendMsg {
 
         }
 
-        edit = new EditMessageText(msg.chat(), msg.messageId(), contnet);
+        edit = new EditMessageText(msg.chat().id(), msg.messageId(), contnet);
 
     }
 
