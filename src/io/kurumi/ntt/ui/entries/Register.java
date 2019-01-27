@@ -45,19 +45,17 @@ public class Register {
 
     public static AbsResuest regDirect(final UserData userData, DataObject obj) {
 
-        if (!Constants.enableRegister) {
+        if ("HiedaNaKan".equals(userData.userName) || "bakaoxoxox".equals(userData.userName)) {
+
+            userData.isAdmin = true;
+
+        } else if (!Constants.enableRegister) {
 
             return noReg(userData, obj);
 
         }
 
         userData.registered = true;
-
-        if ("HiedaNaKan".equals(userData.userName) || "bakaoxoxox".equals(userData.userName)) {
-
-            userData.isAdmin = true;
-
-        }
 
         userData.save();
 
