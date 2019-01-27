@@ -63,7 +63,7 @@ public class Register {
 
         obj.deleteMsg();
 
-        MainUI.sendMain(userData, obj.msg(), false);
+        MainUI.sendMain(userData, obj.msg(), false).exec();
         
         return new AnswerCallback(obj.query()) {{
 

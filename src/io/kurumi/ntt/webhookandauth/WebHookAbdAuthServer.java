@@ -13,6 +13,7 @@ import java.net.*;
 import org.nanohttpd.protocols.http.*;
 import org.nanohttpd.protocols.http.response.*;
 import cn.hutool.core.io.*;
+import org.nanohttpd.protocols.http.request.*;
 
 public class WebHookAbdAuthServer extends NanoHTTPD {
 
@@ -55,9 +56,9 @@ public class WebHookAbdAuthServer extends NanoHTTPD {
                 case "/failed" : return failed(session);
 
         }
-
-        //   if (!"application/json".equals(session.getHeaders().get("Content-Type"))) return super.handle(session);
-
+        
+        if (session.getMethod() != Method.POST) return failed(session);
+        
         String path = URLUtil.url(session.getUri()).getPath();
 
         path = StrUtil.subAfter(path, "/", true);

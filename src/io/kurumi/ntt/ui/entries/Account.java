@@ -108,7 +108,7 @@ public class Account {
 
                     userData.save();
 
-                    main(userData, null);
+                    main(userData, null).exec();
 
                 }
 
@@ -195,7 +195,7 @@ public class Account {
 
                 singleLineButton("删除 y( ˙ᴗ. )~", DEL_ACCOUNT, account);
 
-                singleLineButton("打开主页 ପ( ˘ᵕ˘ ) ੭ ☆", account.getUrl());
+                singleLineOpenUrlButton("打开主页 ପ( ˘ᵕ˘ ) ੭ ☆", account.getUrl());
 
                 singleLineButton("<< 返回账号列表", BACK_TO_USERLIST);
 
@@ -228,13 +228,15 @@ public class Account {
 
             userData.twitterAccounts.remove(obj.getUser(userData));
 
-            main(userData, obj);
+            userData.save();
+            
+            main(userData, obj).exec();
             
             return obj.reply().text("已删除 ~");
 
         } else {
             
-            manageAccount(userData, obj);
+            manageAccount(userData, obj).exec();
            
             return obj.reply().text("已取消 ~");
 
