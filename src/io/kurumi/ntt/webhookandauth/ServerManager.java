@@ -71,7 +71,7 @@ public class ServerManager {
 
         try {
 
-            RequestToken token = ApiToken.defaultToken.createApi().getOAuthRequestToken(domain + "/callback");
+            RequestToken token = ApiToken.defaultToken.createApi().getOAuthRequestToken("https://" + domain + "/callback");
 
             log.debug("请求RequestToken成功...");
             
