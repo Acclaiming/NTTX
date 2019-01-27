@@ -34,7 +34,7 @@ public class Account {
         switch (obj.getPoint()) {
 
                 case MAIN : case BACK_TO_USERLIST : 
-                return main(userData, obj);
+                return main(userData, obj,true);
 
                 case ADD_ACCOUNT :
                     
@@ -56,15 +56,16 @@ public class Account {
 
     }
 
-    public static AbsResuest main(final UserData userData, DataObject obj) {
+    public static AbsResuest main(final UserData userData, DataObject obj,boolean edit) {
 
         AbsSendMsg send;
 
-        if (obj == null) {
+        if (!edit) {
 
-            send = new SendMsg(userData.chat, userManageMsg);
+            send = new SendMsg(obj.chat(), userManageMsg);
 
         } else {
+            
             send =  new EditMsg(obj.msg(), userManageMsg);
         }
 
@@ -108,7 +109,7 @@ public class Account {
 
                     userData.save();
 
-                    main(userData, null).exec();
+                    main(userData, obj,false).exec();
 
                 }
 
@@ -230,7 +231,7 @@ public class Account {
 
             userData.save();
             
-            main(userData, obj).exec();
+            main(userData, obj,false).exec();
             
             return obj.reply().text("已删除 ~");
 

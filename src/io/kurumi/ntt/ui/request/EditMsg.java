@@ -8,6 +8,7 @@ import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntt.*;
 import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.ui.*;
+import com.pengrad.telegrambot.response.*;
 
 public class EditMsg extends AbsSendMsg {
 
@@ -119,10 +120,10 @@ public class EditMsg extends AbsSendMsg {
     }
 
     @Override
-    public void exec() {
+    public BaseResponse exec() {
 
         init();
-        bot.execute(edit);
+        return bot.execute(edit);
 
     }
 

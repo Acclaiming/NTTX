@@ -3,6 +3,7 @@ package io.kurumi.ntt.ui.request;
 import com.pengrad.telegrambot.request.*;
 import com.pengrad.telegrambot.*;
 import io.kurumi.ntt.*;
+import com.pengrad.telegrambot.response.*;
 
 public class Pack<T extends BaseRequest> implements AbsResuest {
 
@@ -23,9 +24,9 @@ public class Pack<T extends BaseRequest> implements AbsResuest {
     }
 
     @Override
-    public void exec() {
+    public BaseResponse exec() {
         
-        bot.execute(request);
+        return bot.execute(request);
         
     }
 

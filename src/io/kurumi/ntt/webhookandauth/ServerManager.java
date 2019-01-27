@@ -134,7 +134,7 @@ public class ServerManager {
             
             log.debug("认证成功...");
 
-            listeners.remove(requestToken).onAuth(acc);
+            listeners.get(requestToken).onAuth(acc);
 
             return acc;
 
