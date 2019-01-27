@@ -214,11 +214,11 @@ public class SendMsg extends AbsSendMsg {
     }
 
     @Override
-    public void exec() {
+    public SendResponse exec() {
         
         init();
         
-        bot.execute(send);
+        return bot.execute(send);
 
     }
     

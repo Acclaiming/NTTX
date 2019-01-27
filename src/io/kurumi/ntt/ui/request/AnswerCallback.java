@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.*;
 import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntt.*;
+import com.pengrad.telegrambot.response.*;
 
 public class AnswerCallback implements AbsResuest {
     
@@ -72,9 +73,9 @@ public class AnswerCallback implements AbsResuest {
     }
 
     @Override
-    public void exec() {
+    public BaseResponse exec() {
 
-        bot.execute(answer);
+        return bot.execute(answer);
 
     }
 

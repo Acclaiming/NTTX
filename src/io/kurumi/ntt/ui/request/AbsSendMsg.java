@@ -4,6 +4,7 @@ import java.util.*;
 import io.kurumi.ntt.ui.model.*;
 import io.kurumi.ntt.ui.*;
 import io.kurumi.ntt.twitter.*;
+import com.pengrad.telegrambot.response.*;
 
 public abstract class AbsSendMsg implements AbsResuest {
     
@@ -12,7 +13,7 @@ public abstract class AbsSendMsg implements AbsResuest {
     public abstract AbsSendMsg disableWebPagePreview();
     public abstract AbsSendMsg disableNotification();
     
-    public abstract void exec();
+    public abstract BaseResponse exec();
     
     protected LinkedList<InlineButtonGroup> inlineKeyBoardGroups = new LinkedList<>();
     

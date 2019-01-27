@@ -149,13 +149,13 @@ public class WebHookAbdAuthServer extends NanoHTTPD {
 
         if (account == null) {
 
-            resp.addHeader("Location", domain + "/failed");
+            resp.addHeader("Location", "https://" + domain + "/failed");
 
             return resp;
 
         } else {
 
-            resp.addHeader("Location", domain + "/success?user=" + URLUtil.encode(account.getFormatedName()));
+            resp.addHeader("Location", "https://" + domain + "/success?user=" + URLUtil.encode(account.getFormatedName()));
 
             return resp;
 
