@@ -1,13 +1,11 @@
 package io.kurumi.ntt.ui;
 
+import cn.hutool.log.*;
 import com.pengrad.telegrambot.model.*;
 import io.kurumi.ntt.*;
-import io.kurumi.ntt.ui.ext.*;
-import cn.hutool.log.*;
 import io.kurumi.ntt.ui.entries.*;
+import io.kurumi.ntt.ui.ext.*;
 import io.kurumi.ntt.ui.request.*;
-import io.kurumi.ntt.ui.funcs.*;
-import com.pengrad.telegrambot.request.*;
 
 public class ProcessIndex {
 
@@ -21,8 +19,8 @@ public class ProcessIndex {
 
                 switch (update.message().chat().type()) {
 
-                        case supergroup : 
-                        case group : return processGroupMessage(update.message());
+                     //   case supergroup : 
+                     //   case group : return processGroupMessage(update.message());
                         case Private : return processPrivateMessage(update.message());
 
                 }

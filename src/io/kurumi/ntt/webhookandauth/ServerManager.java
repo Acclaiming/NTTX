@@ -16,7 +16,7 @@ public class ServerManager {
     public HashMap<String,RequestToken> cache = new HashMap<>();
     public HashMap<String,AuthListener> listeners = new HashMap<>();
 
-    private String domain;
+    public String domain;
     public WebHookAbdAuthServer server;
 
     public boolean initServer(int port, String domain) {

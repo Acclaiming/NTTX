@@ -8,6 +8,8 @@ import com.pengrad.telegrambot.response.*;
 
 public abstract class AbsSendMsg implements AbsResuest {
     
+    public void processObject(DataObject obj) {}
+    
     public abstract AbsSendMsg html();
     public abstract AbsSendMsg markdown();
     public abstract AbsSendMsg disableWebPagePreview();
@@ -19,7 +21,7 @@ public abstract class AbsSendMsg implements AbsResuest {
     
     public InlineButtonGroup newInlineButtonGroup() {
         
-        InlineButtonGroup markup = new InlineButtonGroup();
+        InlineButtonGroup markup = new InlineButtonGroup(this);
         
         inlineKeyBoardGroups.add(markup);
         
@@ -44,7 +46,7 @@ public abstract class AbsSendMsg implements AbsResuest {
     }
     
     public AbsSendMsg singleLineButton(String text,String point) {
-
+        
         newInlineButtonGroup().newButton(text,point);
 
         return this;

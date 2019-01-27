@@ -1,32 +1,49 @@
 package io.kurumi.ntt;
 
 import com.pengrad.telegrambot.model.*;
+import com.pengrad.telegrambot.request.*;
+import io.kurumi.ntt.bots.*;
+import io.kurumi.ntt.ui.confs.*;
 import io.kurumi.ntt.ui.request.*;
 import java.util.*;
 import com.pengrad.telegrambot.*;
-import com.pengrad.telegrambot.request.*;
 
 public class BotControl {
     
-    public static HashMap<String,UserBot> bots = new HashMap<>();
+    public static HashMap<UserData,LinkedList<UserBot>> bots = new HashMap<>();
+    public static HashMap<String,TelegramUserBot> telegramBots = new HashMap<>();
+    
+    public static HashMap<UserBot,ConfRoot> confs = new HashMap<>();
+
+    public static void remove(UserData owner, UserBot p1) {
+        // TODO: Implement this method
+    }
+
+    public static void put(UserData owner, UserBot p1) {
+        // TODO: Implement this method
+    }
     
     public static AbsResuest process(String bot,Update update) {
         
-        if (!bots.containsKey(bot)) {
+        if (!telegramBots.containsKey(bot)) {
             
             return new Pack<DeleteWebhook> (new DeleteWebhook());
             
         }
         
-        return bots.get(bot).processUpdate(update);
+        return telegramBots.get(bot).processUpdate(update);
         
     }
     
     public static void stopAll() {
         
-        for (Map.Entry<String,UserBot> bot : bots.entrySet()) {
+        for (LinkedList<UserBot> botList : bots.values()) {
             
-            bot.getValue().deleteHook();
+            for (UserBot bot : botList) {
+                
+                bot.interrupt();
+                
+            }
             
         }
         

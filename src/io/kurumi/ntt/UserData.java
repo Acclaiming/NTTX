@@ -3,6 +3,7 @@ package io.kurumi.ntt;
 import cn.hutool.core.io.*;
 import cn.hutool.json.*;
 import com.pengrad.telegrambot.model.*;
+import io.kurumi.ntt.bots.*;
 import io.kurumi.ntt.serialize.*;
 import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.ui.*;
@@ -74,6 +75,8 @@ public class UserData {
         name = first;
 
     }
+    
+    public LinkedList<UserBot> bots = new LinkedList<>();
 
     public void refresh() {
 
@@ -98,13 +101,23 @@ public class UserData {
 
             chat = SerUtil.toObject(userData.getStr("char"));
 
-            JSONArray twitterAccountList = userData.getJSONArray("twitter_accounts");
+            List<JSONObject> botArray = userData.getJSONArray("bots").toList(JSONObject.class);
+            
+            bots.clear();
+            
+            for (JSONObject botObj : botArray) {
+                
+                bots.add(UserBot.fromJSONObject(this,botObj));
+                
+            }
+            
+            List<JSONObject> twitterAccountList = userData.getJSONArray("twitter_accounts").toList(JSONObject.class);
 
             twitterAccounts.clear();
 
-            for (Object obj : twitterAccountList) {
+            for (JSONObject obj : twitterAccountList) {
 
-                twitterAccounts.add(new TwiAccount((JSONObject)obj));
+                twitterAccounts.add(new TwiAccount(obj));
 
             }
             
@@ -154,6 +167,16 @@ public class UserData {
 
         userData.put("ext",ext);
 
+        JSONArray botArray = new JSONArray();
+        
+        for (UserBot bot : bots) {
+            
+            botArray.add(bot.toJSONObject());
+            
+        }
+        
+        userData.put("bots",botArray);
+        
         /*
 
          JSONArray apiTokenList = new JSONArray();
@@ -235,6 +258,19 @@ public class UserData {
     public SendMsg send(String... msg) {
         
         return new SendMsg(chat,msg);
+        
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        
+        if (super.equals(obj)) return true;
+        
+        if (!(obj instanceof UserData)) return false;
+        
+        if (((UserData)obj).id != id) return false;
+        
+        return true;
         
     }
 

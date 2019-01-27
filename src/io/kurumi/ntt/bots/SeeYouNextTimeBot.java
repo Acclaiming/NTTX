@@ -1,20 +1,29 @@
-package io.kurumi.ntt.ui.funcs;
+package io.kurumi.ntt.bots;
 
-import io.kurumi.ntt.*;
 import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.request.*;
-import com.pengrad.telegrambot.response.*;
-import com.pengrad.telegrambot.*;
-import java.io.*;
+import io.kurumi.ntt.*;
+import io.kurumi.ntt.ui.confs.*;
 import io.kurumi.ntt.ui.request.*;
+import java.util.*;
 
-public class SeeYouNextTime extends UserBot {
+public class SeeYouNextTimeBot extends TelegramUserBot {
 
+    public static String NAME = "SeeYouNextTimeBot";
     public static String COMMAND = "see you next time";
 
-    public SeeYouNextTime(UserData owner,String token) {
-        super(owner,token);
+    public static final String TYPE = "see_you_next_tume";
+
+    public SeeYouNextTimeBot(UserData owner,String name) {
+        super(owner,name);
     }
+
+    @Override
+    public String type() {
+        
+        return TYPE;
+        
+     }
 
     @Override
     public String[] allowUpdates() {
@@ -24,8 +33,16 @@ public class SeeYouNextTime extends UserBot {
     @Override
     public AbsResuest processUpdate(Update update) {
 
+        switch (update.message().chat().type()) {
 
-        return processGrpupMessage(update.message());
+                case group : 
+                case supergroup :
+
+                return processGrpupMessage(update.message());
+
+        }
+
+        return null;
 
     }
 
@@ -44,7 +61,7 @@ public class SeeYouNextTime extends UserBot {
              .canAddWebPagePreviews(false));
 
         }
-        
+
         return null;
 
     }

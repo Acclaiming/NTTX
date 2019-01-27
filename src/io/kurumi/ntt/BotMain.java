@@ -5,6 +5,7 @@ import cn.hutool.log.*;
 import com.pengrad.telegrambot.*;
 import com.pengrad.telegrambot.request.*;
 import com.pengrad.telegrambot.response.*;
+import io.kurumi.ntt.bots.*;
 import io.kurumi.ntt.ui.*;
 import io.kurumi.ntt.webhookandauth.*;
 import java.io.*;
@@ -48,8 +49,8 @@ public class BotMain {
         Constants.authandwebhook = new ServerManager();
 
         final String[] allows = new String[] {
-            UserBot.UPDATE_TYPE_MESSAGE,
-            UserBot.UPDATE_TYPE_CALLBACK_QUERY
+            TelegramUserBot.UPDATE_TYPE_MESSAGE,
+            TelegramUserBot.UPDATE_TYPE_CALLBACK_QUERY
         };
 
 
@@ -152,10 +153,6 @@ public class BotMain {
                 });
 
         }
-
-
-
-
 
     }
 
