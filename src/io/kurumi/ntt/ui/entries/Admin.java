@@ -9,7 +9,7 @@ public class Admin {
 
     public static final String MAIN = "admins|main";
 
-    public static final String STOP_BOT = "admin|exit";
+    public static final String STOP_BOT = "admins|exit";
 
     public static AbsResuest onCallback(UserData userData, DataObject obj) {
 
