@@ -15,20 +15,34 @@ import org.nanohttpd.protocols.http.response.*;
 import cn.hutool.core.io.*;
 
 public class WebHookAbdAuthServer extends NanoHTTPD {
-    
+
     private String domain;
-    
-    public WebHookAbdAuthServer(String domain,int port) {
-        super(domain,port);
+
+    public WebHookAbdAuthServer(String domain, int port) {
+        super(domain, port);
         this.domain = domain;
+    }
+
+    public String readBodyString(IHTTPSession session) {
+
+        int contentLength = Integer.parseInt(session.getHeaders().get("content-length"));
+        byte[] buf = new byte[contentLength];
+        try {
+            session.getInputStream().read(buf, 0, contentLength);
+            return StrUtil.str(buf,CharsetUtil.CHARSET_UTF_8);
+        } catch (IOException ex) {
+        }
+        
+        return null;
+
     }
 
     @Override
     public Response handle(IHTTPSession session) {
-        
+
         System.out.println(session.getUri());
-       // System.out.println(session.getInputStream());
-        
+        // System.out.println(session.getInputStream());
+
         URL url = URLUtil.url(session.getUri());
 
         switch (url.getPath()) {
@@ -44,41 +58,41 @@ public class WebHookAbdAuthServer extends NanoHTTPD {
                 case "/failed" : return failed(session);
 
         }
-        
-     //   if (!"application/json".equals(session.getHeaders().get("Content-Type"))) return super.handle(session);
+
+        //   if (!"application/json".equals(session.getHeaders().get("Content-Type"))) return super.handle(session);
 
         String path = URLUtil.url(session.getUri()).getPath();
 
-        path = StrUtil.subAfter(path,"/",true);
-        
+        path = StrUtil.subAfter(path, "/", true);
+
         System.out.println(path);
-        
-        Update update = BotUtils.parseUpdate(new InputStreamReader(session.getInputStream(),CharsetUtil.CHARSET_UTF_8));
+
+        Update update = BotUtils.parseUpdate(readBodyString(session));
 
         AbsResuest req;
-        
+
         if (Constants.data.botToken.equals(path)) {
 
             req = ProcessIndex.processUpdate(update);
-            
+
         } else {
 
-            req = BotControl.process(path,update);
+            req = BotControl.process(path, update);
 
         }
-        
+
         if (req != null) {
 
             Response resp = Response.newFixedLengthResponse(req.toWebHookResp());
 
             resp.setMimeType("application/json");
-            
+
             return resp;
 
         }
 
         return Response.newFixedLengthResponse("");
-        
+
     }
 
     private Response main(IHTTPSession session) {
@@ -152,5 +166,5 @@ public class WebHookAbdAuthServer extends NanoHTTPD {
         }
 
     }
-    
+
 }
