@@ -21,8 +21,6 @@ public class MainUI {
 
     public static AbsResuest main(UserData userData, Message msg) {
 
-        StaticLog.debug("main");
-
         if (!userData.registered) {
 
             return Register.main(userData, msg);

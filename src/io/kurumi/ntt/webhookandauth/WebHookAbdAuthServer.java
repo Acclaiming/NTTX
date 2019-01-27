@@ -20,7 +20,7 @@ public class WebHookAbdAuthServer extends NanoHTTPD {
     private String domain;
 
     public WebHookAbdAuthServer(String domain, int port) {
-        super(domain, port);
+        super(port);
         this.domain = domain;
     }
 
@@ -87,7 +87,7 @@ public class WebHookAbdAuthServer extends NanoHTTPD {
 
         }
 
-        return Response.newFixedLengthResponse("");
+        return Response.newFixedLengthResponse("{}");
 
     }
 

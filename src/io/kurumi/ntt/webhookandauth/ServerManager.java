@@ -25,7 +25,7 @@ public class ServerManager {
         
         try {
 
-            server = new WebHookAbdAuthServer("0.0.0.0",port);
+            server = new WebHookAbdAuthServer(domain,port);
 
             server.start(19132);
 
