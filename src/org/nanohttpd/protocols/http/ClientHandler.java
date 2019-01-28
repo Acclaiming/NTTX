@@ -77,7 +77,7 @@ public class ClientHandler implements Runnable {
             }
         } catch (Exception e) {
             
-            StaticLog.error(e,"Nanohttpd server error : ");
+           // StaticLog.error(e,"Nanohttpd server error : ");
             
             // When the socket is closed by the client,
             // we throw our own SocketException
@@ -92,7 +92,7 @@ public class ClientHandler implements Runnable {
         } finally {
             NanoHTTPD.safeClose(outputStream);
             NanoHTTPD.safeClose(this.inputStream);
-            NanoHTTPD.safeClose(this.acceptSocket);
+           NanoHTTPD.safeClose(this.acceptSocket);
             httpd.asyncRunner.closed(this);
         }
     }

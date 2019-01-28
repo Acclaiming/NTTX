@@ -154,6 +154,16 @@ public class BotMain {
 
         }
 
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+
+                                                     @Override
+                                                     public void run() {
+                                                         
+                                                         main(null);
+                                                         
+                                                     }
+                                                 }));
+        
     }
 
     public void stop() {

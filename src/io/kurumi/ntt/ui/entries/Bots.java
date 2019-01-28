@@ -53,6 +53,8 @@ public class Bots {
         if (send) msg = new SendMsg(message, "Bot菜单！");
         else msg = new EditMsg(message, "Bot菜单！");
 
+        msg.singleLineButton("<< 返回主页",MainUI.BACK_TO_MAIN);
+        
         msg.singleLineButton("新建Bot (◦˙▽˙◦)", NEW_BOT);
 
         for (UserBot bot : userData.bots) {
