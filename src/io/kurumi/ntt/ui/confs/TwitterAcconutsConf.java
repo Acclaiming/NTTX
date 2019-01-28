@@ -97,7 +97,7 @@ public class TwitterAcconutsConf extends BaseConf<List<TwiAccount>> {
                 
                 switchQuery.setindex(INDEX_SWITCH);
                 
-                switchQuery.setUser(account);
+                switchQuery.setUserIndex(bot.owner,account);
                 
                 if (accounts.contains(account)) {
                     
@@ -120,7 +120,7 @@ public class TwitterAcconutsConf extends BaseConf<List<TwiAccount>> {
     
     public AbsResuest switchAccount(DataObject obj,AtomicBoolean refresh) {
         
-        TwiAccount account = obj.getUser(bot.owner);
+        TwiAccount account = obj.getUserByIndex(bot.owner);
         
         List<TwiAccount> list = get();
 
