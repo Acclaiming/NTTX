@@ -101,8 +101,8 @@ public class Bots {
                 singleLineButton("<< 返回Bot菜单", MAIN);
 
                 bot.root.applySettings(this);
-
-                singleLineButton("启动Bot", "未实现");
+                
+              //  singleLineButton("启动Bot", "未实现");
 
             }};
             

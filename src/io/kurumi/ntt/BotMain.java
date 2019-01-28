@@ -124,6 +124,8 @@ public class BotMain {
 
             log.info("未设置认证和消息服务器 将使用用户发回URL的认证方法和GetUpdates读取消息...");
 
+            bot.execute(new DeleteWebhook());
+            
             bot.execute(new GetMe(), new Callback<GetMe,GetMeResponse>() {
 
                     @Override
