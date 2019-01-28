@@ -234,15 +234,9 @@ public class UserData {
 
     }
     
-    public UserBot findBot(String name) {
+    public UserBot findBot(int index) {
         
-        for (UserBot bot : bots) {
-            
-            if (bot.name.equals(name)) return bot;
-            
-        }
-        
-        return null;
+        return bots.get(index);
         
     }
     

@@ -164,11 +164,15 @@ public class Bots {
                 case BaseConf.CONF_CALLBACK : return bot.root.onCallback(userData, obj);
                 case BaseConf.CONF_BACK : 
 
-                JSONObject backToObj = obj.getJSONObject("backTo");
+                String key = obj.getStr("bk");
+                String index = obj.getStr("bi");
 
-                if (backToObj != null) {
+                if (key != null && index == null) {
 
-                    DataObject backTo = new DataObject(backToObj);
+                    DataObject backTo = new DataObject(BaseConf.CONF_CALLBACK);
+                    
+                    backTo.put("k",key);
+                    backTo.setindex(index);
                     
                     backTo.query = obj.query;
 
@@ -219,12 +223,8 @@ public class Bots {
 
             return new SendMsg(msg.chat(), "无效的BotName (つд⊂)", "请重新输入 >_<", "", "取消新建使用 /cancel");
 
-        } else if (userData.findBot(userData.point.getIndex()) != null) {
-
-            return new SendMsg(msg.chat(), "该名称已存在...", "请重新输入 >_<", "", "取消新建使用 /cancel");
-
         }
-
+        
         UserBot bot = UserBot.create(userData.point.getIndex(), userData, msg.text().trim());
 
         userData.point = null;

@@ -10,9 +10,9 @@ import java.util.concurrent.atomic.*;
 
 public abstract class BaseConf<T> {
     
-    public static final String CONF_CALLBACK = "conf|callback";
-    public static final String CONF_BACK = "conf|back";
-    public static final String POINT_CONF_INPUT = "conf|input";
+    public static final String CONF_CALLBACK = "c|c";
+    public static final String CONF_BACK = "c|b";
+    public static final String POINT_CONF_INPUT = "c|i";
     
     public String name;
     public UserBot bot;
@@ -40,12 +40,13 @@ public abstract class BaseConf<T> {
 
         point.setPoint(POINT_CONF_INPUT);
 
-        point.put("bn",bot.name);
+        point.put("b",bot.name);
 
         point.put("key",key);
         
-        point.put("back",createBackQuery());
-
+        point.put("bk",backTo.get("k"));
+        point.put("bi",backTo.get("i"));
+        
         return point;
 
     }
@@ -57,9 +58,9 @@ public abstract class BaseConf<T> {
         
         obj.setPoint(CONF_CALLBACK);
         
-        obj.put("bn",bot.name);
+        obj.setBot(bot);
 
-        obj.put("key",key);
+        obj.put("k",key);
         
         return obj;
         
@@ -71,13 +72,14 @@ public abstract class BaseConf<T> {
 
         obj.setPoint(CONF_BACK);
         
-        obj.put("bn",bot.name);
+        obj.setBot(bot);
 
-        obj.put("key",key);
+        obj.put("k",key);
         
         if (backTo != null) {
             
-            obj.put("backTo",backTo);
+            obj.put("bk",backTo.get("k"));
+            obj.put("bi",backTo.get("i"));
             
         }
 

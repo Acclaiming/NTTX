@@ -34,13 +34,22 @@ public abstract class ConfRoot extends LinkedList<BaseConf> {
 
     public AbsResuest processInput(UserData userData, Message msg) {
 
-        BaseConf target = getTargetConf(userData.point.getStr("key"), null);
+        BaseConf target = getTargetConf(userData.point.getStr("k"), null);
 
         AtomicBoolean back = new AtomicBoolean(false);
 
-        DataObject backObj = userData.point.getData("back");
+        DataObject backObj = new DataObject();
+        
+        backObj.setPoint(BaseConf.CONF_CALLBACK);
+        
+        String key = userData.point.getStr("bk");
+        String index = userData.point.getStr("bi");
+        
+        backObj.put("k",key);
+        backObj.setindex(index);
         
         backObj.msg = msg;
+        
 
         try {
 

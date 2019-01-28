@@ -98,49 +98,49 @@ public class DataObject extends JSONObject {
     
     public void setPoint(String point) {
         
-        put("point",point);
+        put("p",point);
         
     }
     
     public String getPoint() {
         
-        return getStr("point");
+        return getStr("p");
         
     }
     
     public void setindex(String point) {
 
-        put("index",point);
+        put("i",point);
 
     }
 
     public String getIndex() {
 
-        return getStr("index");
+        return getStr("i");
 
     }
     
     public void setBot(UserBot bot) {
 
-        put("bn",bot.name);
+        put("b",bot.owner.bots.indexOf(bot));
 
     }
 
     public UserBot getBot(UserData userData) {
 
-        return userData.findBot(getStr("bn"));
+        return userData.findBot(getInt("b"));
 
     }
     
     public void setUser(TwiAccount account) {
         
-        put("accountId",account.accountId);
+        put("a",account.accountId);
         
     }
     
     public TwiAccount getUser(UserData UserData) {
         
-        return UserData.findUser(getLong("accountId",-1L));
+        return UserData.findUser(getLong("a",-1L));
         
     }
     

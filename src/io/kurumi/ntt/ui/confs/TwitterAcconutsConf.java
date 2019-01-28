@@ -101,12 +101,12 @@ public class TwitterAcconutsConf extends BaseConf<List<TwiAccount>> {
                 
                 if (accounts.contains(account)) {
                     
-                    switchQuery.put("target",false);
+                    switchQuery.put("t",false);
                     singleLineButton("关闭 " + account.name,switchQuery);
                     
                 } else {
                     
-                    switchQuery.put("target",true);
+                    switchQuery.put("t",true);
                     singleLineButton("开启 " + account.name,switchQuery);
                     
                     
@@ -124,7 +124,7 @@ public class TwitterAcconutsConf extends BaseConf<List<TwiAccount>> {
         
         List<TwiAccount> list = get();
 
-        if (obj.getBool("target")) {
+        if (obj.getBool("t")) {
             
             list.add(account);
             
