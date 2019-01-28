@@ -66,9 +66,7 @@ public class ProcessIndex {
                     new SendMsg(userData.chat, err.toString()).exec();
 
                 }
-
-                System.exit(1);
-
+                
             }
 
         }

@@ -32,11 +32,7 @@ public class MainAdapter implements UpdatesListener {
                 AbsResuest resp = ProcessIndex.processUpdate(update);
 
                 if (resp != null) resp.exec();
-                
-
-
-                return CONFIRMED_UPDATES_NONE;
-
+               
           
         }
 
