@@ -27,7 +27,7 @@ public class ServerManager {
 
             server = new WebHookAbdAuthServer(domain,port);
 
-            server.start(19132);
+            server.start();
 
         } catch (IOException e) {
 
