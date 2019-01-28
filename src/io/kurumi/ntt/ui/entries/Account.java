@@ -92,7 +92,7 @@ public class Account {
        
         Twitter api =  obj.getUser(userData).createApi();
         
-        ResponseList<Status> tl = api.getUserTimeline(new Paging().count(200));
+        ResponseList<Status> tl = api.timelines().getMentionsTimeline(new Paging().count(200));
 
         while (tl.size() != 0) {
             
