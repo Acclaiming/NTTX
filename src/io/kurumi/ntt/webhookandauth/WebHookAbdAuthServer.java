@@ -80,7 +80,7 @@ public class WebHookAbdAuthServer extends NanoHTTPD {
         if (req != null) {
             
             System.out.println(req.toWebHookResp());
-
+            
             Response resp = Response.newFixedLengthResponse(req.toWebHookResp());
 
             resp.setMimeType("application/json");

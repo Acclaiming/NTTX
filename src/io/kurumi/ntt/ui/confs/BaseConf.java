@@ -40,9 +40,7 @@ public abstract class BaseConf<T> {
 
         point.setPoint(POINT_CONF_INPUT);
 
-        point.put("userId",bot.owner.id);
-
-        point.put("botName",bot.name);
+        point.put("bn",bot.name);
 
         point.put("key",key);
         
@@ -59,9 +57,7 @@ public abstract class BaseConf<T> {
         
         obj.setPoint(CONF_CALLBACK);
         
-        obj.put("userId",bot.owner.id);
-
-        obj.put("botName",bot.name);
+        obj.put("bn",bot.name);
 
         obj.put("key",key);
         
@@ -74,10 +70,8 @@ public abstract class BaseConf<T> {
         DataObject obj = new DataObject();
 
         obj.setPoint(CONF_BACK);
-
-        obj.put("userId",bot.owner.id);
-
-        obj.put("botName",bot.name);
+        
+        obj.put("bn",bot.name);
 
         obj.put("key",key);
         

@@ -88,7 +88,7 @@ public class InlineButtonGroup extends LinkedList<InlineKeyboardButton> {
 
         msg.processObject(obj);
         
-        add(new InlineKeyboardButton(text).callbackData(StrUtil.str(ZipUtil.zlib(obj.toString().getBytes(CharsetUtil.CHARSET_UTF_8),9),CharsetUtil.CHARSET_UTF_8)));
+        add(new InlineKeyboardButton(text).callbackData(obj.toString()));
 
         return this;
 

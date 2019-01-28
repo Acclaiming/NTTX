@@ -28,7 +28,7 @@ public class DataObject extends JSONObject {
     }
     
     public DataObject(CallbackQuery query) {
-        super(StrUtil.str(ZipUtil.unZlib(query.data().getBytes(CharsetUtil.CHARSET_UTF_8)),CharsetUtil.CHARSET_UTF_8));
+        super(query.data());
         this.query = query;
     }
     
@@ -118,13 +118,13 @@ public class DataObject extends JSONObject {
     
     public void setBot(UserBot bot) {
 
-        put("botName",bot.name);
+        put("bn",bot.name);
 
     }
 
     public UserBot getBot(UserData userData) {
 
-        return userData.findBot(getStr("botName"));
+        return userData.findBot(getStr("bn"));
 
     }
     
