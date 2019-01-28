@@ -176,6 +176,8 @@ public class ProcessIndex {
                 case Account.CANCEL_DEL_ACCOUNT :
                 case Account.CONFIRM_DEL_ACCOUNT :
 
+                case Account.DEL_ALL_STATUS :
+                    
                 return Account.onCallBack(userData, obj);
                 
                 case Bots.MAIN :

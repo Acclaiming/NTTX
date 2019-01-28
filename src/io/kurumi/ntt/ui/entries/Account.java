@@ -6,6 +6,7 @@ import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.ui.*;
 import io.kurumi.ntt.ui.request.*;
 import io.kurumi.ntt.webhookandauth.*;
+import twitter4j.*;
 
 public class Account {
 
@@ -18,6 +19,8 @@ public class Account {
     public static final String MANAGE_ACCOUNT = "users|manage";
 
     public static final String DEL_ACCOUNT = "users|del";
+    public static final String DEL_ALL_STATUS = "users|dels";
+    
     public static final String CANCEL_DEL_ACCOUNT = "users|del|cancel";
     public static final String CONFIRM_DEL_ACCOUNT = "users|del|comfirm";
 
@@ -49,11 +52,51 @@ public class Account {
                 case CONFIRM_DEL_ACCOUNT :
                 case CANCEL_DEL_ACCOUNT :
                 return onAccountDel(userData, obj);
+                
+                
+                case DEL_ALL_STATUS :
+                    
+                return delAllStatus(userData,obj);
 
         }
         
         return obj.reply().alert("非法的用户管理指针 : " + obj.getPoint());
 
+    }
+
+    private static AbsResuest delAllStatus(UserData userData, DataObject obj) throws TwitterException {
+        
+        obj.reply().text("正在开始");
+        
+        Twitter api =  obj.getUser(userData).createApi();
+        
+        ResponseList<Status> tl = api.getUserTimeline(new Paging().count(200));
+
+        while (tl.size() != 0) {
+            
+            for(Status s : tl) {
+                
+                api.destroyStatus(s.getId());
+                
+                String text = s.getText();
+                
+                if (text.length() > 10) {
+                    
+                    text = text.subSequence(0,10).toString();
+                    
+                }
+                
+                obj.send("已删除 : " + text).exec();
+                
+            }
+            
+            tl = api.getUserTimeline(new Paging().count(200));
+            
+        }
+        
+        obj.send("删除完成").exec();
+        
+        return null;
     }
 
     public static AbsResuest main(final UserData userData, DataObject obj,boolean edit) {
@@ -198,6 +241,9 @@ public class Account {
 
                 singleLineOpenUrlButton("打开主页 ପ( ˘ᵕ˘ ) ੭ ☆", account.getUrl());
 
+                singleLineButton("删除所有推文 (慎用)", DEL_ALL_STATUS, account);
+                
+                
                 singleLineButton("<< 返回账号列表", BACK_TO_USERLIST);
 
             }};
