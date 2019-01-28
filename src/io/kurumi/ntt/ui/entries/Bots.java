@@ -10,6 +10,7 @@ import io.kurumi.ntt.bots.template.*;
 import io.kurumi.ntt.ui.confs.*;
 import cn.hutool.json.*;
 import cn.hutool.log.*;
+import com.pengrad.telegrambot.response.*;
 
 public class Bots {
 
@@ -95,7 +96,7 @@ public class Bots {
 
         StaticLog.info("manage...");
 
-        return new EditMsg(obj.msg(), "「" + bot.name + "」") {{
+        EditMsg exec =  new EditMsg(obj.msg(), "「" + bot.name + "」") {{
 
                 singleLineButton("<< 返回Bot菜单", MAIN);
 
@@ -104,6 +105,10 @@ public class Bots {
                 singleLineButton("启动Bot", "未实现");
 
             }};
+            
+        BaseResponse resp = exec.exec();
+        
+        return obj.reply().alert(resp.errorCode() + " : " + resp.description());
 
     }   
 
