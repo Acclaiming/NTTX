@@ -131,7 +131,7 @@ public class Bots {
 
                 } else {
 
-                    return manageBot(userData, obj);
+                    return onCallback(userData, obj);
 
                 }
 
