@@ -5,24 +5,56 @@ import io.kurumi.ntt.ui.*;
 import java.util.*;
 import java.util.concurrent.atomic.*;
 import io.kurumi.ntt.ui.request.*;
+import io.kurumi.ntt.bots.*;
+import com.pengrad.telegrambot.model.*;
 
 // conf root for a bot
 
-public class ConfRoot extends LinkedList<BaseConf> {
+public abstract class ConfRoot extends LinkedList<BaseConf> {
 
-    public ConfRoot() {}
-    
-    public void onCallback(UserData userData, DataObject obj) {
+    public ConfRoot(UserBot bot) {
+
+        bot.confs(this);
+
+    }
+
+    public abstract void refresh(DataObject obj);
+  
+    public AbsResuest onCallback(UserData userData, DataObject obj) {
 
         switch (obj.getPoint()) {
 
-                case BaseConf.CONF_BACK : onItemCallback(obj);
+                case BaseConf.CONF_CALLBACK : return onItemCallback(obj);
+
+        }
+
+        return obj.reply().alert("非法的设置回调指针 : " + obj.getPoint());
+
+    }
+
+    public AbsResuest processInput(UserData userData, Message msg) {
+
+        BaseConf target = getTargetConf(userData.point.getStr("key"), null);
+
+        AtomicBoolean back = new AtomicBoolean(false);
+
+        try {
+
+            return target.onMessage(msg, back);
+
+        } finally {
+
+            if (back.get()) {
+
+                refresh(userData.point.getData("back"));
+
+            }
 
         }
 
     }
 
-    private void onItemCallback(DataObject obj) {
+    private AbsResuest onItemCallback(DataObject obj) {
 
         BaseConf target = getTargetConf(obj.getStr("key"), null);
 
@@ -30,7 +62,7 @@ public class ConfRoot extends LinkedList<BaseConf> {
 
         try {
 
-            target.onCallback(obj, refresh);
+            return target.onCallback(obj, refresh);
 
 
         } finally {
@@ -39,12 +71,12 @@ public class ConfRoot extends LinkedList<BaseConf> {
 
                 if (target.backTo == null) {
 
-                    
+                    refresh(obj);
 
                 } else {
-                    
-                    onItemCallback(target.backTo);
-                    
+
+                    refresh(target.backTo);
+
                 }
 
             }
@@ -54,14 +86,14 @@ public class ConfRoot extends LinkedList<BaseConf> {
 
     }
 
-    private void applySettings(AbsSendMsg obj) {
+    public void applySettings(AbsSendMsg obj) {
 
         for (BaseConf item : this) {
-            
+
             item.applySetting(obj);
-            
+
         }
-        
+
     }
 
     private BaseConf getTargetConf(String key, List<BaseConf> items) {

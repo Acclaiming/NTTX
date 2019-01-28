@@ -6,6 +6,7 @@ import io.kurumi.ntt.*;
 import io.kurumi.ntt.ui.entries.*;
 import io.kurumi.ntt.ui.ext.*;
 import io.kurumi.ntt.ui.request.*;
+import io.kurumi.ntt.ui.confs.*;
 
 public class ProcessIndex {
 
@@ -128,6 +129,14 @@ public class ProcessIndex {
 
                 return Account.onInputUrl(userData, message);
 
+                case Bots.POINT_INPUT_NAME : 
+                    
+                return Bots.onInputName(userData,message);
+                
+                case BaseConf.POINT_CONF_INPUT :
+                
+                return Bots.onConfInput(userData,message);
+                
         }
 
         return new SendMsg(message, "非法上下文 : " + userData.getPoint());
@@ -170,6 +179,16 @@ public class ProcessIndex {
                 case Account.CONFIRM_DEL_ACCOUNT :
 
                 return Account.onCallBack(userData, obj);
+                
+                case Bots.MAIN :
+                case Bots.NEW_BOT : 
+                case Bots.INPUT_NAME : 
+                case Bots.MANAGE_BOT :
+                case BaseConf.CONF_BACK : 
+                case BaseConf.CONF_CALLBACK :
+                    
+                return Bots.onCallback(userData,obj);
+                 
 
                 case Admin.MAIN : 
                 case Admin.STOP_BOT :

@@ -1,11 +1,10 @@
-package io.kurumi.ntt.bots;
+package io.kurumi.ntt.bots.template;
 
 import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntt.*;
-import io.kurumi.ntt.ui.confs.*;
+import io.kurumi.ntt.bots.*;
 import io.kurumi.ntt.ui.request.*;
-import java.util.*;
 
 public class SeeYouNextTimeBot extends TelegramUserBot {
 

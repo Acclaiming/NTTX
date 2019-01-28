@@ -5,6 +5,8 @@ import io.kurumi.ntt.ui.model.*;
 import io.kurumi.ntt.ui.*;
 import io.kurumi.ntt.twitter.*;
 import com.pengrad.telegrambot.response.*;
+import io.kurumi.ntt.bots.*;
+import cn.hutool.core.lang.*;
 
 public abstract class AbsSendMsg implements AbsResuest {
     
@@ -29,35 +31,39 @@ public abstract class AbsSendMsg implements AbsResuest {
 
     }
     
-    public AbsSendMsg singleLineOpenUrlButton(String text,String url) {
+    public void singleLineOpenUrlButton(String text,String url) {
 
         newInlineButtonGroup().newOpenUrlButton(text,url);
 
-        return this;
-
     }
     
-    public AbsSendMsg singleLineButton(String text,DataObject obj) {
+    public void singleLineButton(String text,DataObject obj) {
         
         newInlineButtonGroup().newButton(text,obj);
-        
-        return this;
-        
+     
     }
     
-    public AbsSendMsg singleLineButton(String text,String point) {
+    public void singleLineButton(String text,String point) {
         
         newInlineButtonGroup().newButton(text,point);
 
-        return this;
-
     }
     
-    public AbsSendMsg singleLineButton(String text,String point,TwiAccount acc) {
+    public void singleLineButton(String text,String point,TwiAccount acc) {
 
         newInlineButtonGroup().newButton(text,point,acc);
 
-        return this;
+    }
+    
+    public void singleLineButton(String text,String point,UserBot bot) {
+
+        newInlineButtonGroup().newButton(text,point,bot);
+
+    }
+    
+    public void singleLineButton(String text,String point,String index) {
+
+        newInlineButtonGroup().newButton(text,point,index);
 
     }
     

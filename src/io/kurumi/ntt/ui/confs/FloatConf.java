@@ -31,7 +31,9 @@ public class FloatConf extends BaseConf<Float> {
     @Override
     public AbsResuest onCallback(DataObject obj, AtomicBoolean refresh) {
 
-        bot.owner.setPoint(POINT_CONF_INPUT);
+        obj.deleteMsg();
+        
+        bot.owner.point = createInputPoint();
         bot.owner.save();
 
         return new SendMsg(obj.chat(), "请输入新浮点数 : (使用 /cancel 取消)");

@@ -32,7 +32,9 @@ public class StrConf extends BaseConf<String> {
     @Override
     public AbsResuest onCallback(DataObject obj,AtomicBoolean refresh) {
         
-        bot.owner.setPoint(POINT_CONF_INPUT);
+        obj.deleteMsg();
+        
+        bot.owner.point = createInputPoint();
         bot.owner.save();
         
         return new SendMsg(obj.chat(),"请输入新内容 : ");

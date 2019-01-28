@@ -227,13 +227,25 @@ public class UserData {
 
     }
     
-    public TwiAccount find(String accountId) {
+    public UserBot findBot(String name) {
         
-        return find(Long.parseLong(accountId));
+        for (UserBot bot : bots) {
+            
+            if (bot.name.equals(name)) return bot;
+            
+        }
+        
+        return null;
+        
+    }
+    
+    public TwiAccount findUser(String accountId) {
+        
+        return findUser(Long.parseLong(accountId));
         
     }
 
-    public TwiAccount find(long accountId) {
+    public TwiAccount findUser(long accountId) {
 
         for (TwiAccount acc : twitterAccounts) {
 

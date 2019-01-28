@@ -30,7 +30,7 @@ public class LongConf extends BaseConf<Long> {
     @Override
     public AbsResuest onCallback(DataObject obj, AtomicBoolean refresh) {
 
-        bot.owner.setPoint(POINT_CONF_INPUT);
+        bot.owner.point = createInputPoint();
         bot.owner.save();
 
         return new SendMsg(obj.chat(), "请输入新长整数 : (使用 /cancel 取消)");

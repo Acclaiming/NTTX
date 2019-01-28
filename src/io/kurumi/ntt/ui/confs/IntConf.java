@@ -30,7 +30,9 @@ public class IntConf extends BaseConf<Integer> {
     @Override
     public AbsResuest onCallback(DataObject obj, AtomicBoolean refresh) {
 
-        bot.owner.setPoint(POINT_CONF_INPUT);
+        obj.deleteMsg();
+        
+        bot.owner.point = createInputPoint();
         bot.owner.save();
 
         return new SendMsg(obj.chat(), "请输入新整数 : (使用 /cancel 取消)");

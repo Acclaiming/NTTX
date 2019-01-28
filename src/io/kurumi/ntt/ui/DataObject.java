@@ -8,6 +8,7 @@ import io.kurumi.ntt.ui.ext.*;
 import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.*;
 import io.kurumi.ntt.ui.request.*;
+import io.kurumi.ntt.bots.*;
 
 public class DataObject extends JSONObject {
     
@@ -18,6 +19,10 @@ public class DataObject extends JSONObject {
     }
     
     public DataObject(String json) {
+        super(json);
+    }
+    
+    public DataObject(JSONObject json) {
         super(json);
     }
     
@@ -110,6 +115,18 @@ public class DataObject extends JSONObject {
 
     }
     
+    public void setBot(UserBot bot) {
+
+        put("botName",bot.name);
+
+    }
+
+    public UserBot getBot(UserData UserData) {
+
+        return UserData.findBot(getStr("botName"));
+
+    }
+    
     public void setUser(TwiAccount account) {
         
         put("accountId",account.accountId);
@@ -118,9 +135,16 @@ public class DataObject extends JSONObject {
     
     public TwiAccount getUser(UserData UserData) {
         
-        return UserData.find(getLong("accountId",-1L));
+        return UserData.findUser(getLong("accountId",-1L));
         
     }
+    
+    public DataObject getData(String key) {
+
+        return new DataObject(getJSONObject(key));
+
+    }
+    
     
     public void putSerializable(String key,Serializable obj) {
         

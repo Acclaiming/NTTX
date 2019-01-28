@@ -1,11 +1,11 @@
 package io.kurumi.ntt.bots;
 
 import cn.hutool.json.*;
-import com.pengrad.telegrambot.model.*;
 import io.kurumi.ntt.*;
+import io.kurumi.ntt.bots.template.*;
+import io.kurumi.ntt.ui.*;
 import io.kurumi.ntt.ui.confs.*;
 import io.kurumi.ntt.ui.request.*;
-import io.kurumi.ntt.ui.*;
 
 public abstract class UserBot {
     
@@ -15,6 +15,7 @@ public abstract class UserBot {
 
     public JSONObject data = new JSONObject();
     
+    public ConfRoot root;
  
     public UserBot(UserData owner,String name) {
         
@@ -45,17 +46,25 @@ public abstract class UserBot {
         
     }
     
+    public static <T extends UserBot> T create(String type,UserData userData,String name) {
+        
+        switch(type) {
+
+                case SeeYouNextTimeBot.TYPE : return (T)new SeeYouNextTimeBot(userData,name);
+
+        }
+        
+        return null;
+        
+    }
+    
     public static <T extends UserBot> T fromJSONObject(UserData userData,JSONObject obj) {
        
         String name = obj.getStr("name");
  
         T bot = null;
         
-        switch(obj.getStr("type")) {
-            
-            case SeeYouNextTimeBot.TYPE : bot = (T)new SeeYouNextTimeBot(userData,name);
-            
-        }
+        bot = create(obj.getStr("type"),userData,name);
         
         bot.data = obj.getJSONObject("data");
         

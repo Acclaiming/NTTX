@@ -9,13 +9,14 @@ import io.kurumi.ntt.*;
 import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.ui.*;
 import com.pengrad.telegrambot.response.*;
+import io.kurumi.ntt.bots.*;
 
 public class EditMsg extends AbsSendMsg {
 
     private EditMessageText edit;
-    
+
     private TelegramBot bot = Constants.bot;
-    
+
     public EditMsg(Message msg, String... editMsg) {
 
         String contnet = msg.text();
@@ -29,12 +30,12 @@ public class EditMsg extends AbsSendMsg {
         edit = new EditMessageText(msg.chat().id(), msg.messageId(), contnet);
 
     }
-    
-    public EditMsg(TelegramBot bot,Message msg, String... editMsg) {
-        
-        this(msg,editMsg);
+
+    public EditMsg(TelegramBot bot, Message msg, String... editMsg) {
+
+        this(msg, editMsg);
         this.bot = bot;
-        
+
     }
 
     @Override
@@ -73,41 +74,13 @@ public class EditMsg extends AbsSendMsg {
 
     }
 
-    @Override
-    public EditMsg singleLineButton(String text, DataObject obj) {
-
-        super.singleLineButton(text, obj);
-
-        return this;
-
-    }
-
-    @Override
-    public EditMsg singleLineButton(String text, String point) {
-
-        super.singleLineButton(text, point);
-
-        return this;
-
-    }
-
-
-    @Override
-    public EditMsg singleLineButton(String text, String point, TwiAccount acc) {
-
-        super.singleLineButton(text, point, acc);
-
-        return this;
-
-    }
-    
     private void init() {
-        
+
         if (inlineKeyBoardGroups.size() != 0) {
 
             InlineKeyboardButton[][]  markup = new InlineKeyboardButton[inlineKeyBoardGroups.size()][];
 
-            for(int index = 0;index < inlineKeyBoardGroups.size();index ++) {
+            for (int index = 0;index < inlineKeyBoardGroups.size();index ++) {
 
                 markup[index] = inlineKeyBoardGroups.get(index).getButtonArray();
 
@@ -116,7 +89,7 @@ public class EditMsg extends AbsSendMsg {
             edit.replyMarkup(new InlineKeyboardMarkup(markup));
 
         }
-        
+
     }
 
     @Override
@@ -129,12 +102,12 @@ public class EditMsg extends AbsSendMsg {
 
     @Override
     public String toWebHookResp() {
-        
+
         init();
-        
+
         return edit.toWebhookResponse();
-        
+
     }
-    
+
 
 }

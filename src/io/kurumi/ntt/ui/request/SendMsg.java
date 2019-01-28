@@ -136,43 +136,6 @@ public class SendMsg extends AbsSendMsg {
         return group;
         
     }
-
-    @Override
-    public SendMsg singleLineOpenUrlButton(String text, String url) {
-       
-        super.singleLineOpenUrlButton(text, url);
-        
-        return this;
-        
-    }
-  
-    
-    @Override
-    public SendMsg singleLineButton(String text, DataObject obj) {
-
-        super.singleLineButton(text, obj);
-
-        return this;
-
-    }
-
-    @Override
-    public SendMsg singleLineButton(String text, String point) {
-
-        super.singleLineButton(text, point);
-
-        return this;
-
-    }
-
-    @Override
-    public SendMsg singleLineButton(String text, String point, TwiAccount acc) {
-
-        super.singleLineButton(text, point, acc);
-
-        return this;
-
-    }
     
     private void init() {
         

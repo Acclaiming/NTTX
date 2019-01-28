@@ -26,7 +26,7 @@ public class TwitterAcconutsConf extends BaseConf<List<TwiAccount>> {
         
         for (Long accountId : accountIdArray.toList(Long.class)) {
             
-            TwiAccount account = bot.owner.find(accountId);
+            TwiAccount account = bot.owner.findUser(accountId);
             
             if (account != null) {
                 
@@ -60,27 +60,11 @@ public class TwitterAcconutsConf extends BaseConf<List<TwiAccount>> {
     @Override
     public void applySetting(AbsSendMsg msg) {
         
-        List<TwiAccount> accounts = get();
-
-        String actionMsg = "无";
-        
-        if (!accounts.isEmpty()) {
-            
-            actionMsg = accounts.get(0).screenName;
-            
-            
-            if (accounts.size() > 1) {
-                
-                actionMsg = actionMsg + " ...";
-            }
-            
-        }
-        
         DataObject chooseAccountsQuery = createQuery();
         
         chooseAccountsQuery.setindex(INDEX_MAIN);
         
-        msg.singleLineButton(name + " : " + actionMsg,chooseAccountsQuery);
+        msg.singleLineButton("选择" + name + " >>",chooseAccountsQuery);
         
     }
     

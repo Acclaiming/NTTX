@@ -34,6 +34,25 @@ public abstract class BaseConf<T> {
         
     }
     
+    public DataObject createInputPoint() {
+
+        DataObject point = new DataObject();
+
+        point.setPoint(POINT_CONF_INPUT);
+
+        point.put("userId",bot.owner.id);
+
+        point.put("botName",bot.name);
+
+        point.put("key",key);
+        
+        point.put("back",createBackQuery());
+
+        return point;
+
+    }
+    
+    
     public DataObject createQuery() {
         
         DataObject obj = new DataObject();
