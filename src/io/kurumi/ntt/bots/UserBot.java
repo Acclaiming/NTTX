@@ -6,6 +6,7 @@ import io.kurumi.ntt.bots.template.*;
 import io.kurumi.ntt.ui.*;
 import io.kurumi.ntt.ui.confs.*;
 import io.kurumi.ntt.ui.request.*;
+import java.util.*;
 
 public abstract class UserBot {
     
@@ -24,7 +25,11 @@ public abstract class UserBot {
         this.owner = owner;
         this.name = name;
         
-        BotControl.put(owner,this);
+        LinkedList<UserBot> bots = BotControl.bots.getOrDefault(owner,new LinkedList<UserBot>());
+        
+        bots.add(this);
+        
+        BotControl.bots.put(owner,bots);
         
     }
 
@@ -35,7 +40,7 @@ public abstract class UserBot {
     
     public void interrupt() {
         
-        BotControl.remove(owner,this);
+        BotControl.bots.get(owner).remove(this);
         
     }
     

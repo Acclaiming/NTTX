@@ -15,13 +15,6 @@ public class BotControl {
     
     public static HashMap<UserBot,ConfRoot> confs = new HashMap<>();
 
-    public static void remove(UserData owner, UserBot p1) {
-        // TODO: Implement this method
-    }
-
-    public static void put(UserData owner, UserBot p1) {
-        // TODO: Implement this method
-    }
     
     public static AbsResuest process(String bot,Update update) {
         

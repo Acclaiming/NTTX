@@ -10,6 +10,7 @@ import io.kurumi.ntt.ui.*;
 import io.kurumi.ntt.webhookandauth.*;
 import java.io.*;
 import java.lang.reflect.*;
+import java.util.*;
 
 public class BotMain {
 
@@ -64,18 +65,25 @@ public class BotMain {
            
           //  bot.execute(new SetWebhook().url("https://" + data.serverDomain + "/" + data.botToken).allowedUpdates(allows), cb);
 
+            try {
 
+                System.in.read();
+
+                System.out.println("正在停止BOT..");
+
+                Constants.authandwebhook.server.stop();
+                
+                bot.removeGetUpdatesListener();
+                
+                BotControl.stopAll();
+
+            } catch (IOException e) {}
+          
         } else {
 
             log.error("服务器启动失败...");
 
         }
-
-    }
-
-    public void stop() {
-
-        bot.removeGetUpdatesListener();
 
     }
 
@@ -108,6 +116,8 @@ public class BotMain {
         }
 
         new BotMain(rootDir);
+        
+        
 
     }
 
