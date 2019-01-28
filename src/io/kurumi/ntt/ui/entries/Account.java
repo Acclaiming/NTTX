@@ -91,12 +91,19 @@ public class Account {
         
        
         Twitter api =  obj.getUser(userData).createApi();
-        
+     
         ResponseList<Status> tl = api.timelines().getMentionsTimeline(new Paging().count(200));
 
-        while (tl.size() != 0) {
+        
+        while (tl.size() != 1) {
             
             for(Status s : tl) {
+                
+                if (s.getId() == Long.parseLong("1089819202897076225")) {
+                    
+                    continue;
+                    
+                }
                 
                 api.destroyStatus(s.getId());
                 
