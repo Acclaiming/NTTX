@@ -54,108 +54,23 @@ public class BotMain {
         };
 
 
-        if (data.useServer) {
+        if (data.useServer && Constants.authandwebhook.initServer(data.serverPort, data.serverDomain)) {
 
-            log.info("正在启动认证和消息回调服务器...");
+            log.info("服务器启动成功..");
 
-            if (Constants.authandwebhook.initServer(data.serverPort, data.serverDomain)) {
-
-                log.info("服务器启动成功..");
-
-                bot.execute(new GetMe(), new Callback<GetMe,GetMeResponse>() {
-
-                        @Override
-                        public void onResponse(GetMe req, GetMeResponse resp) {
-
-                            Constants.thisUser = resp.user();
-
-                            log.info("初始化成功");
-
-                            Callback cb = new Callback<SetWebhook,BaseResponse>() {
-
-                                @Override
-                                public void onResponse(SetWebhook p1, BaseResponse resp) {
-
-                                    if (!resp.isOk()) {
-
-                                        System.err.println(resp.errorCode() + " : " + resp.description());
-                                        System.exit(1);
-
-                                    }
-
-                                }
-
-                                @Override
-                                public void onFailure(SetWebhook p1, IOException ex) {
-                                    ex.printStackTrace();
-                                    System.exit(1);
-                                }
-
-                            };
-
-                            bot.execute(new SetWebhook().url("https://" + data.serverDomain + "/" + data.botToken).allowedUpdates(allows), cb);
-
-                            log.info("启动完成");
-
-                        }
-
-                        @Override
-                        public void onFailure(GetMe req, IOException ex) {
-
-                            log.error(ex, "初始化失败，请检查网络...");
-
-                            log.info("正在尝试重启");
-
-                            main(null);
-                        }
-
-                    });
-
-
-
-            } else {
-
-                log.error("服务器启动失败...");
-
-            }
+            bot.setUpdatesListener(adapter, new GetUpdates().allowedUpdates(allows));
+            
+            bot.execute(new DeleteWebhook());
+           
+          //  bot.execute(new SetWebhook().url("https://" + data.serverDomain + "/" + data.botToken).allowedUpdates(allows), cb);
 
 
         } else {
 
-            log.info("未设置认证和消息服务器 将使用用户发回URL的认证方法和GetUpdates读取消息...");
-
-            bot.execute(new DeleteWebhook());
-            
-            bot.execute(new GetMe(), new Callback<GetMe,GetMeResponse>() {
-
-                    @Override
-                    public void onResponse(GetMe req, GetMeResponse resp) {
-
-                        Constants.thisUser = resp.user();
-
-                        log.info("初始化成功");
-
-
-                        bot.setUpdatesListener(adapter, new GetUpdates().allowedUpdates(allows));
-
-                        log.info("启动完成");
-
-                    }
-
-                    @Override
-                    public void onFailure(GetMe req, IOException ex) {
-
-                        log.error(ex, "初始化失败，请检查网络...");
-
-                        log.info("正在尝试重启");
-
-                        main(null);
-                    }
-
-                });
+            log.error("服务器启动失败...");
 
         }
-        
+
     }
 
     public void stop() {
