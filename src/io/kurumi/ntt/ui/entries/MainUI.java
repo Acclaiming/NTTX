@@ -42,7 +42,9 @@ public class MainUI {
 
 
         send.singleLineButton("管理账号 (‵▽′)", Account.MAIN);
-
+        send.singleLineButton("BOT菜单 ⊙∀⊙", Bots.MAIN);
+        
+        
         if (userData.isAdmin) {
 
             send.singleLineButton("管理员菜单 *٩(๑´∀`๑)ง*", Admin.MAIN);
