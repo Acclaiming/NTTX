@@ -60,9 +60,15 @@ public class Account {
 
                         @Override
                         public void run() {
+                            
                             try {
+                                
+                                try {
+                                    Thread.sleep(10 * 1000);
+                                } catch (InterruptedException e) {}
 
                                 delAllStatus(userData, obj);
+                                
                             } catch (TwitterException e) {
 
                                 obj.send("api limit... ").exec();
@@ -73,7 +79,7 @@ public class Account {
                     
                 
                 
-                return null;
+                return obj.reply().text("正在开始");
 
         }
         
@@ -83,8 +89,7 @@ public class Account {
 
     private static AbsResuest delAllStatus(UserData userData, DataObject obj) throws TwitterException {
         
-        obj.reply().text("正在开始").exec();
-        
+       
         Twitter api =  obj.getUser(userData).createApi();
         
         ResponseList<Status> tl = api.getUserTimeline(new Paging().count(200));
