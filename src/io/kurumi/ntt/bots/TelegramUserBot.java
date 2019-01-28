@@ -23,7 +23,7 @@ public abstract class TelegramUserBot extends UserBot {
     public static final String UPDATE_TYPE_PRE_CHECKOUT_QUERY = "pre_checkout_query";
 
     public BotConf botTokenConf = new BotConf(this, "Bot Api Token", "bot_token");
-
+    
     public TelegramBot bot;
     public User thisUser;
 
@@ -56,7 +56,7 @@ public abstract class TelegramUserBot extends UserBot {
 
             return obj.reply().alert("BotToken 未设置 >_<");
 
-        } else {
+        }  else {
 
             bot = new TelegramBot(token);
 
