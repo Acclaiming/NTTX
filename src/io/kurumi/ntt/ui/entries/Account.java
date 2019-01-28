@@ -106,7 +106,7 @@ public class Account {
             
         }
         
-        obj.send("删除完成").exec();
+        obj.send("删除完成 (￣▽￣)~*").exec();
         
         return null;
     }
