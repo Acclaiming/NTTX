@@ -41,6 +41,7 @@ import java.net.SocketTimeoutException;
 import java.util.logging.Level;
 
 import org.nanohttpd.protocols.http.tempfiles.ITempFileManager;
+import cn.hutool.log.*;
 
 /**
  * The runnable that will be used for every new client connection.
@@ -75,6 +76,9 @@ public class ClientHandler implements Runnable {
                 session.execute();
             }
         } catch (Exception e) {
+            
+            StaticLog.error(e,"Nanohttpd server error : ");
+            
             // When the socket is closed by the client,
             // we throw our own SocketException
             // to break the "keep alive" loop above. If

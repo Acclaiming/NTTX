@@ -8,10 +8,9 @@ import io.kurumi.ntt.ui.request.*;
 
 public class SeeYouNextTimeBot extends TelegramUserBot {
 
-    public static String NAME = "SeeYouNextTimeBot";
+    public static final String TYPE = "SeeYouNextTimeBot";
+    
     public static String COMMAND = "see you next time";
-
-    public static final String TYPE = "see_you_next_tume";
 
     public SeeYouNextTimeBot(UserData owner,String name) {
         super(owner,name);
