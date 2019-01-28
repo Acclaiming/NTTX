@@ -6,6 +6,7 @@ import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.ui.*;
 import io.kurumi.ntt.ui.request.*;
 import java.util.*;
+import cn.hutool.core.util.*;
 
 public class InlineButtonGroup extends LinkedList<InlineKeyboardButton> {   
 
@@ -87,7 +88,7 @@ public class InlineButtonGroup extends LinkedList<InlineKeyboardButton> {
 
         msg.processObject(obj);
         
-        add(new InlineKeyboardButton(text).callbackData(obj.toString()));
+        add(new InlineKeyboardButton(text).callbackData(StrUtil.str(ZipUtil.zlib(obj.toString().getBytes(CharsetUtil.CHARSET_UTF_8),9),CharsetUtil.CHARSET_UTF_8)));
 
         return this;
 

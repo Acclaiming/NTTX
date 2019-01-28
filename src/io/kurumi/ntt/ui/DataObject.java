@@ -9,6 +9,7 @@ import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.*;
 import io.kurumi.ntt.ui.request.*;
 import io.kurumi.ntt.bots.*;
+import cn.hutool.core.util.*;
 
 public class DataObject extends JSONObject {
     
@@ -27,7 +28,7 @@ public class DataObject extends JSONObject {
     }
     
     public DataObject(CallbackQuery query) {
-        super(query.data());
+        super(StrUtil.str(ZipUtil.unZlib(query.data().getBytes(CharsetUtil.CHARSET_UTF_8)),CharsetUtil.CHARSET_UTF_8));
         this.query = query;
     }
     
