@@ -83,7 +83,7 @@ public class Account {
 
     private static AbsResuest delAllStatus(UserData userData, DataObject obj) throws TwitterException {
         
-        obj.reply().text("正在开始");
+        obj.reply().text("正在开始").exec();
         
         Twitter api =  obj.getUser(userData).createApi();
         
