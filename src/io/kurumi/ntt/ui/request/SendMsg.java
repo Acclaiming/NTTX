@@ -21,7 +21,12 @@ public class SendMsg extends AbsSendMsg {
 
     public SendMsg(Chat chat, String... sendMsg) {
 
-        send = new SendMessage(chat.id(), ArrayUtil.join(sendMsg, "\n"));
+        this(chat.id(),sendMsg);
+    }
+    
+    public SendMsg(long chatId, String... sendMsg) {
+
+        send = new SendMessage(chatId, ArrayUtil.join(sendMsg, "\n"));
 
     }
 

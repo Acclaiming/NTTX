@@ -60,7 +60,8 @@ public abstract class UserBot {
         switch(type) {
 
                 case SeeYouNextTimeBot.TYPE : return (T)new SeeYouNextTimeBot(userData,name);
-
+                case TwitterReFoBot.TYPE : return (T)new TwitterReFoBot(userData,name);
+                
         }
         
         return null;

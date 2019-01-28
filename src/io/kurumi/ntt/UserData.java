@@ -19,7 +19,7 @@ public class UserData {
     public long id;
     public File userDataFile;
 
-    public Chat chat;
+    public Long chatId;
 
     public UserData(Data data, long id) {
 
@@ -106,7 +106,7 @@ public class UserData {
                 
             }
 
-            chat = SerUtil.toObject(userData.getStr("char"));
+            chatId = userData.getLong("chatId");
 
             List<JSONObject> botArray = (List<JSONObject>)(Object)userData.getJSONArray("bots");
             
@@ -170,7 +170,7 @@ public class UserData {
         
         userData.put("point", point);
 
-        userData.put("chat", SerUtil.toString(chat));
+        userData.put("chatId", chatId);
 
         userData.put("ext",ext);
 
@@ -221,7 +221,7 @@ public class UserData {
     public void update(Message from) {
 
         update(from.from());
-        chat = from.chat();
+        chatId = from.chat().id();
 
     }
 
@@ -276,7 +276,7 @@ public class UserData {
 
     public SendMsg send(String... msg) {
         
-        return new SendMsg(chat,msg);
+        return new SendMsg(chatId,msg);
         
     }
 

@@ -38,7 +38,7 @@ public class ProcessIndex {
 
             for (UserData userData : Constants.data.getUsers()) {
 
-                if (userData.isAdmin && userData.chat != null) {
+                if (userData.isAdmin && userData.chatId != null) {
 
                     StringBuilder err = new StringBuilder();
 
@@ -63,7 +63,7 @@ public class ProcessIndex {
 
                     }
 
-                    new SendMsg(userData.chat, err.toString()).exec();
+                    new SendMsg(userData.chatId, err.toString()).exec();
 
                 }
                 

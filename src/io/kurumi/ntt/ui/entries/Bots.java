@@ -193,7 +193,8 @@ public class Bots {
                 singleLineButton("取消添加", MAIN);
 
                 singleLineButton(SeeYouNextTimeBot.TYPE, INPUT_NAME, SeeYouNextTimeBot.TYPE);
-
+                singleLineButton(TwitterReFoBot.TYPE, INPUT_NAME, TwitterReFoBot.TYPE);
+                
             }};
 
     }
