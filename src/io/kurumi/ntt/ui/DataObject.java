@@ -14,6 +14,7 @@ import cn.hutool.core.util.*;
 public class DataObject extends JSONObject {
     
     public CallbackQuery query;
+    public Message msg;
     
     public DataObject() {
         super();
@@ -30,6 +31,7 @@ public class DataObject extends JSONObject {
     public DataObject(CallbackQuery query) {
         super(query.data());
         this.query = query;
+        this.msg = query.message();
     }
     
     public void confirmQuery() {

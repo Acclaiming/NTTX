@@ -39,6 +39,8 @@ public abstract class ConfRoot extends LinkedList<BaseConf> {
         AtomicBoolean back = new AtomicBoolean(false);
 
         DataObject backObj = userData.point.getData("back");
+        
+        backObj.msg = msg;
 
         try {
 
@@ -76,6 +78,8 @@ public abstract class ConfRoot extends LinkedList<BaseConf> {
                     refresh(obj);
 
                 } else {
+                    
+                    target.backTo.msg = obj.msg;
 
                     refresh(target.backTo);
 
