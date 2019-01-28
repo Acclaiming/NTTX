@@ -86,12 +86,7 @@ public class Account {
                 
                 String text = s.getText();
                 
-                if (text.length() > 10) {
-                    
-                    text = text.subSequence(0,10).toString();
-                    
-                }
-                
+           
                 obj.send("已删除 : " + text).exec();
                 
             }
