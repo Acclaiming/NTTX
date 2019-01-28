@@ -180,6 +180,8 @@ public class ProcessIndex {
                     
                 return Account.onCallBack(userData, obj);
                 
+                /*
+                
                 case Bots.MAIN :
                 case Bots.NEW_BOT : 
                 case Bots.INPUT_NAME : 
@@ -192,6 +194,7 @@ public class ProcessIndex {
                     
                 return Bots.onCallback(userData,obj);
                  
+                */
 
                 case Admin.MAIN : 
         //        case Admin.STOP_BOT :
