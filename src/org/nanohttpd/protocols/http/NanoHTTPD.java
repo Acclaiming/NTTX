@@ -625,11 +625,13 @@ public abstract class NanoHTTPD {
      */
     public void stop() {
         try {
+            /*
             safeClose(this.myServerSocket);
             this.asyncRunner.closeAll();
             if (this.myThread != null) {
                 this.myThread.join();
             }
+            */
         } catch (Exception e) {
             NanoHTTPD.LOG.log(Level.SEVERE, "Could not stop all connections", e);
         }
