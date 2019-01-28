@@ -32,7 +32,7 @@ public class Account {
 
     };
 
-    public static AbsResuest onCallBack(UserData userData, DataObject obj) {
+    public static AbsResuest onCallBack(final UserData userData, final DataObject obj) {
 
         switch (obj.getPoint()) {
 
@@ -56,13 +56,24 @@ public class Account {
                 
                 case DEL_ALL_STATUS :
                     
-                try {
-                    return delAllStatus(userData, obj);
-                } catch (TwitterException e) {
+                new Thread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            try {
+
+                                delAllStatus(userData, obj);
+                            } catch (TwitterException e) {
+
+                                obj.send("api limit... ").exec();
+
+                            }
+                        }
+                    }).start(); 
                     
-                    obj.send("api limit... ").exec();
-                    
-                }
+                
+                
+                return null;
 
         }
         
