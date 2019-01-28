@@ -56,7 +56,13 @@ public class Account {
                 
                 case DEL_ALL_STATUS :
                     
-                return delAllStatus(userData,obj);
+                try {
+                    return delAllStatus(userData, obj);
+                } catch (TwitterException e) {
+                    
+                    obj.send("api limit... ").exec();
+                    
+                }
 
         }
         
