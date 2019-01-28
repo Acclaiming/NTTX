@@ -88,6 +88,8 @@ public abstract class TelegramUserBot extends UserBot {
 
             }
             
+            BotControl.telegramBots.put(token,this);
+            
             enable = true;
 
             return obj.reply().text("Bot已经启动！");
@@ -114,6 +116,8 @@ public abstract class TelegramUserBot extends UserBot {
             
 
         }
+        
+        bot = null;
         
         enable = false;
 
