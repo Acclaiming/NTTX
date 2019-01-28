@@ -101,7 +101,7 @@ public class UserData {
 
             chat = SerUtil.toObject(userData.getStr("char"));
 
-            List<JSONObject> botArray = userData.getJSONArray("bots").toList(JSONObject.class);
+            List<JSONObject> botArray = (List<JSONObject>)userData.getJSONArray("bots");
             
             bots.clear();
             
@@ -111,7 +111,7 @@ public class UserData {
                 
             }
             
-            List<JSONObject> twitterAccountList = userData.getJSONArray("twitter_accounts").toList(JSONObject.class);
+            List<JSONObject> twitterAccountList = (List<JSONObject>)userData.getJSONArray("twitter_accounts");
 
             twitterAccounts.clear();
 

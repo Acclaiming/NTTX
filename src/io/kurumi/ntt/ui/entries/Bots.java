@@ -29,8 +29,10 @@ public class Bots {
                 case MAIN : return main(userData, obj.msg(), false);
                 case NEW_BOT : return chooseType(userData, obj);
                 case INPUT_NAME : return inputName(userData, obj);
-                
-                case MANAGE_BOT : return manageBot(userData,obj);
+
+                case MANAGE_BOT : 
+                    
+                    return manageBot(userData, obj);
 
                 case BaseConf.CONF_CALLBACK :
                 case BaseConf.CONF_BACK :
@@ -39,14 +41,14 @@ public class Bots {
 
         }
 
-        return null;
+        return obj.reply().alert("没有那样的BOT主控制指针 : " + obj.getPoint());
 
     }
 
-    public static AbsResuest onConfInput(UserData userData,Message message) {
-        
-        return userData.point.getBot(userData).root.processInput(userData,message);
-        
+    public static AbsResuest onConfInput(UserData userData, Message message) {
+
+        return userData.point.getBot(userData).root.processInput(userData, message);
+
     }
 
     public static AbsResuest main(final UserData userData, Message message, Boolean send) {
@@ -56,8 +58,8 @@ public class Bots {
         if (send) msg = new SendMsg(message.chat(), "Bot菜单！");
         else msg = new EditMsg(message, "Bot菜单！");
 
-        msg.singleLineButton("<< 返回主页",MainUI.BACK_TO_MAIN);
-        
+        msg.singleLineButton("<< 返回主页", MainUI.BACK_TO_MAIN);
+
         msg.singleLineButton("新建Bot (◦˙▽˙◦)", NEW_BOT);
 
         for (UserBot bot : userData.bots) {
@@ -75,31 +77,31 @@ public class Bots {
         final UserBot bot = obj.getBot(userData);
 
         if (bot == null) return obj.reply().alert("不存在的Bot ...");
-        
+
         if (bot.root == null) {
-            
+
             bot.root = new ConfRoot(bot) {
-                
+
                 @Override
                 public void refresh(DataObject obj) {
 
-                    onConfCallback(userData,obj);
+                    onConfCallback(userData, obj);
 
                 }
 
             };
-            
+
         }
-        
+
         StaticLog.info("manage...");
-        
+
         return new EditMsg(obj.msg(), "「" + bot.name + "」") {{
 
                 singleLineButton("<< 返回Bot菜单", MAIN);
-                
+
                 bot.root.applySettings(this);
-                
-                singleLineButton("启动Bot","未实现");
+
+                singleLineButton("启动Bot", "未实现");
 
             }};
 
@@ -108,28 +110,28 @@ public class Bots {
     public static AbsResuest onConfCallback(UserData userData, DataObject obj) {
 
         UserBot bot = obj.getBot(userData);
-        
+
         switch (obj.getPoint()) {
-            
-            case BaseConf.CONF_CALLBACK : return bot.root.onCallback(userData,obj);
-            case BaseConf.CONF_BACK : 
-                
+
+                case BaseConf.CONF_CALLBACK : return bot.root.onCallback(userData, obj);
+                case BaseConf.CONF_BACK : 
+
                 JSONObject backToObj = obj.getJSONObject("backTo");
-                
+
                 if (backToObj != null) {
-                    
+
                     DataObject backTo = new DataObject(backToObj);
-                    
-                    return onCallback(userData,backTo);
-                    
+
+                    return onCallback(userData, backTo);
+
                 } else {
-                    
-                    return manageBot(userData,obj);
-                    
+
+                    return manageBot(userData, obj);
+
                 }
 
         }
-        
+
         return obj.reply().alert("非法的设置回调中心指针 : " + obj.getPoint());
 
     }
@@ -140,7 +142,7 @@ public class Bots {
 
                 singleLineButton("取消添加", MAIN);
 
-                singleLineButton(SeeYouNextTimeBot.TYPE,INPUT_NAME,SeeYouNextTimeBot.TYPE);
+                singleLineButton(SeeYouNextTimeBot.TYPE, INPUT_NAME, SeeYouNextTimeBot.TYPE);
 
             }};
 
@@ -180,10 +182,9 @@ public class Bots {
 
         userData.save();
 
-   
-            return main(userData, msg, true);
+        return main(userData, msg, true);
 
-      
+
 
     }
 

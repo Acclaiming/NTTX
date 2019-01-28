@@ -121,9 +121,9 @@ public class DataObject extends JSONObject {
 
     }
 
-    public UserBot getBot(UserData UserData) {
+    public UserBot getBot(UserData userData) {
 
-        return UserData.findBot(getStr("botName"));
+        return userData.findBot(getStr("botName"));
 
     }
     
