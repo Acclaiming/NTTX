@@ -48,6 +48,9 @@ public class FloatConf extends BaseConf<Float> {
             float value = Float.parseFloat(msg.text());
 
             set(value);
+            
+            bot.owner.point = null;
+            bot.owner.save();
 
             back.set(true);
 

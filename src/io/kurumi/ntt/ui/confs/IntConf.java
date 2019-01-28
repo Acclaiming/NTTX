@@ -47,6 +47,9 @@ public class IntConf extends BaseConf<Integer> {
             int value = Integer.parseInt(msg.text());
 
             set(value);
+            
+            bot.owner.point = null;
+            bot.owner.save();
 
             back.set(true);
             

@@ -45,6 +45,9 @@ public class LongConf extends BaseConf<Long> {
             long value = Long.parseLong(msg.text());
 
             set(value);
+            
+            bot.owner.point = null;
+            bot.owner.save();
 
             back.set(true);
 
