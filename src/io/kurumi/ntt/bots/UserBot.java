@@ -36,6 +36,7 @@ public abstract class UserBot {
     public abstract String type();
     public abstract void confs(ConfRoot confs);
 
+    public abstract void startAtBackground();
     public abstract AbsResuest start(DataObject obj);
     
     public void interrupt() {

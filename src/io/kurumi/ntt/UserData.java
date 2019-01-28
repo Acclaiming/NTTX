@@ -33,7 +33,7 @@ public class UserData {
         
         for(UserBot bot : bots) {
             
-            if (bot.enable) bot.start(new DataObject());
+            if (bot.enable) bot.startAtBackground();
             
         }
 

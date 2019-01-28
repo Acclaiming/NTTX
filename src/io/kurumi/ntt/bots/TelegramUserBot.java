@@ -42,6 +42,53 @@ public abstract class TelegramUserBot extends UserBot {
     public Log log = StaticLog.get(name);
 
     @Override
+    public void startAtBackground() {
+        
+
+        String token = botTokenConf.get();
+
+        if (bot == null && token != null) {
+
+            bot = new TelegramBot(token);
+
+            GetMeResponse resp = bot.execute(new GetMe());
+
+            if (!resp.isOk()) {
+
+                bot = null;
+
+                interrupt();
+
+                return;
+
+            }
+
+            thisUser = resp.user();
+
+            String callbackUrl = "https://" + Constants.authandwebhook.domain + "/" + token;
+
+            BaseResponse init = bot.execute(new SetWebhook().url(callbackUrl).allowedUpdates(allowUpdates()));
+
+            if (!init.isOk()) {
+
+                bot = null;
+
+                interrupt();
+
+                return;
+
+            }
+
+            BotControl.telegramBots.put(token,this);
+
+            enable = true;
+
+        }
+        
+        
+   }
+    
+    @Override
     public AbsResuest start(DataObject obj) {
 
         String token = botTokenConf.get();

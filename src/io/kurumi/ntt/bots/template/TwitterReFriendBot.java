@@ -52,6 +52,14 @@ public class TwitterReFriendBot extends UserBot {
 
         return obj.reply().text("已开启...");
     }
+
+    @Override
+    public void startAtBackground() {
+        // TODO: Implement this method
+    }
+
+    
+    
     
     private AtomicBoolean stopped = new AtomicBoolean(false);
     
