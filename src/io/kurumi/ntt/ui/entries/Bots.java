@@ -155,12 +155,30 @@ public class Bots {
 
     }   
 
-    public static AbsResuest onConfCallback(UserData userData, DataObject obj) {
+    public static AbsResuest onConfCallback(final UserData userData, DataObject obj) {
 
         UserBot bot = obj.getBot(userData);
 
+        if (bot.root == null) {
+
+            bot.root = new ConfRoot(bot) {
+
+                @Override
+                public void refresh(DataObject obj) {
+
+                    onConfCallback(userData, obj);
+
+                }
+
+            };
+            
+            
+            }
+            
+        
         switch (obj.getPoint()) {
 
+   
                 case BaseConf.CONF_CALLBACK : return bot.root.onCallback(userData, obj);
                 case BaseConf.CONF_BACK : 
 
