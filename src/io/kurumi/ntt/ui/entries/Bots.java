@@ -96,7 +96,7 @@ public class Bots {
 
         StaticLog.info("manage...");
 
-        EditMsg exec =  new EditMsg(obj.msg(), "「" + bot.name + "」") {{
+        return new EditMsg(obj.msg(), "「" + bot.name + "」") {{
 
                 singleLineButton("<< 返回Bot菜单", MAIN);
 
@@ -106,9 +106,9 @@ public class Bots {
 
             }};
             
-        BaseResponse resp = exec.exec();
+    //    BaseResponse resp = exec.exec();
         
-        return obj.reply().alert(resp.errorCode() + " : " + resp.description());
+      //  return obj.reply().alert(resp.errorCode() + " : " + resp.description());
 
     }   
 
