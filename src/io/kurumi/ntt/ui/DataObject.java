@@ -13,7 +13,7 @@ import cn.hutool.core.util.*;
 
 public class DataObject extends JSONObject {
     
-    private CallbackQuery query;
+    public CallbackQuery query;
     
     public DataObject() {
         super();

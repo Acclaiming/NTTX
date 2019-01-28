@@ -126,12 +126,14 @@ public class Bots {
                 if (backToObj != null) {
 
                     DataObject backTo = new DataObject(backToObj);
+                    
+                    backTo.query = obj.query;
 
                     return onCallback(userData, backTo);
 
                 } else {
 
-                    return onCallback(userData, obj);
+                    return manageBot(userData, obj);
 
                 }
 
