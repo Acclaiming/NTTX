@@ -78,6 +78,8 @@ public class WebHookAbdAuthServer extends NanoHTTPD {
         }
 
         if (req != null) {
+            
+            System.out.println(req.toWebHookResp());
 
             Response resp = Response.newFixedLengthResponse(req.toWebHookResp());
 
@@ -87,7 +89,7 @@ public class WebHookAbdAuthServer extends NanoHTTPD {
 
         }
 
-        return Response.newFixedLengthResponse("{}");
+        return Response.newFixedLengthResponse("");
 
     }
 
