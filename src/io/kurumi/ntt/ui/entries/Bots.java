@@ -28,6 +28,8 @@ public class Bots {
                 case MAIN : return main(userData, obj.msg(), false);
                 case NEW_BOT : return chooseType(userData, obj);
                 case INPUT_NAME : return inputName(userData, obj);
+                
+                case MANAGE_BOT : return manageBot(userData,obj);
 
                 case BaseConf.CONF_CALLBACK :
                 case BaseConf.CONF_BACK :
@@ -50,7 +52,7 @@ public class Bots {
 
         AbsSendMsg msg;
 
-        if (send) msg = new SendMsg(message, "Bot菜单！");
+        if (send) msg = new SendMsg(message.chat(), "Bot菜单！");
         else msg = new EditMsg(message, "Bot菜单！");
 
         msg.singleLineButton("<< 返回主页",MainUI.BACK_TO_MAIN);
@@ -91,6 +93,8 @@ public class Bots {
                 singleLineButton("<< 返回Bot菜单", MAIN);
                 
                 bot.root.applySettings(this);
+                
+                singleLineButton("启动Bot","未实现");
 
             }};
 
