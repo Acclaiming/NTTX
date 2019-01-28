@@ -42,7 +42,7 @@ public class DataObject extends JSONObject {
     
     public Message msg() {
         
-        return query().message();
+        return msg;
         
     }
     
