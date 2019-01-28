@@ -29,6 +29,13 @@ public class UserData {
         userDataFile = new File(data.dataDir, "users/" + id + ".json");
 
         refresh();
+        
+        
+        for(UserBot bot : bots) {
+            
+            if (bot.enable) bot.start(new DataObject());
+            
+        }
 
     }
 

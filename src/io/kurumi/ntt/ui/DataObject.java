@@ -15,6 +15,7 @@ public class DataObject extends JSONObject {
     
     public CallbackQuery query;
     public Message msg;
+    public Chat chat;
     
     public DataObject() {
         super();
@@ -31,7 +32,8 @@ public class DataObject extends JSONObject {
     public DataObject(CallbackQuery query) {
         super(query.data());
         this.query = query;
-        this.msg = query.message();
+        this.msg = query().message();
+        this.chat = msg().chat();
     }
     
     public void confirmQuery() {
@@ -48,7 +50,7 @@ public class DataObject extends JSONObject {
     
     public Chat chat() {
         
-        return msg().chat();
+        return chat;
         
     }
     
@@ -72,7 +74,7 @@ public class DataObject extends JSONObject {
     
     public SendMsg send(String... msg) {
         
-        return new SendMsg(msg().chat(),msg);
+        return new SendMsg(chat,msg);
         
     }
     
