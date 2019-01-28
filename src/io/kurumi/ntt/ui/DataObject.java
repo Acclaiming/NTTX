@@ -105,13 +105,13 @@ public class DataObject extends JSONObject {
     
     public void setindex(String point) {
 
-        put("point",point);
+        put("index",point);
 
     }
 
     public String getIndex() {
 
-        return getStr("point");
+        return getStr("index");
 
     }
     

@@ -131,7 +131,7 @@ public class Bots {
 
                 singleLineButton("取消添加", MAIN);
 
-                singleLineButton(SeeYouNextTimeBot.TYPE, INPUT_NAME, SeeYouNextTimeBot.TYPE);
+                singleLineButton(SeeYouNextTimeBot.TYPE,INPUT_NAME,SeeYouNextTimeBot.TYPE);
 
             }};
 
