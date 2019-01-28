@@ -54,8 +54,8 @@ public class TwitterAcconutsConf extends BaseConf<List<TwiAccount>> {
         
     }
     
-    public static final String INDEX_MAIN = "main";
-    public static final String INDEX_SWITCH = "switch";
+    public static final String INDEX_MAIN = "m";
+    public static final String INDEX_SWITCH = "s";
 
     @Override
     public void applySetting(AbsSendMsg msg) {
