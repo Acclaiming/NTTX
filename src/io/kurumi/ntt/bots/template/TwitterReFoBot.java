@@ -24,8 +24,8 @@ public class TwitterReFoBot extends UserBot {
         return TYPE;
     }
 
-    public TwitterAcconutsConf twitterAccounts = new TwitterAcconutsConf(this, "开启的账号", "accounts");
-    public IntConf sleepTime = new IntConf(this, "回Fo间隔 (分钟)", "sleep_time");
+    public TwitterAcconutsConf twitterAccounts = new TwitterAcconutsConf(this, "开启的账号", "a");
+    public IntConf sleepTime = new IntConf(this, "回Fo间隔 (分钟)", "s");
 
 
     @Override

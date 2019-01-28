@@ -69,7 +69,7 @@ public abstract class ConfRoot extends LinkedList<BaseConf> {
 
     private AbsResuest onItemCallback(DataObject obj) {
 
-        BaseConf target = getTargetConf(obj.getStr("key"), null);
+        BaseConf target = getTargetConf(obj.getStr("k"), null);
 
         AtomicBoolean refresh = new AtomicBoolean(false);
 
