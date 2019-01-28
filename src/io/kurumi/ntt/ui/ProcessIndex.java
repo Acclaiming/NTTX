@@ -182,6 +182,9 @@ public class ProcessIndex {
                 case Bots.NEW_BOT : 
                 case Bots.INPUT_NAME : 
                 case Bots.MANAGE_BOT :
+                case Bots.START_BOT :
+                case Bots.STOP_BOT :
+                
                 case BaseConf.CONF_BACK : 
                 case BaseConf.CONF_CALLBACK :
                     
