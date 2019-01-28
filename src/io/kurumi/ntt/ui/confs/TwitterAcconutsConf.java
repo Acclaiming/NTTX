@@ -134,6 +134,8 @@ public class TwitterAcconutsConf extends BaseConf<List<TwiAccount>> {
             
         }
         
+        set(list);
+        
         return chooseAccount(obj,refresh);
         
     }
