@@ -73,6 +73,8 @@ public class Bots {
 
         final UserBot bot = obj.getBot(userData);
 
+        if (bot == null) return obj.reply().alert("不存在的Bot ...");
+        
         if (bot.root == null) {
             
             bot.root = new ConfRoot(bot) {
@@ -175,15 +177,10 @@ public class Bots {
 
         userData.save();
 
-        try {
+   
+            return main(userData, msg, true);
 
-            return new SendMsg(msg, "添加成功！");
-
-        } finally {
-
-            main(userData, msg, true).exec();
-
-        }
+      
 
     }
 
