@@ -9,6 +9,7 @@ import cn.hutool.core.util.*;
 import io.kurumi.ntt.bots.template.*;
 import io.kurumi.ntt.ui.confs.*;
 import cn.hutool.json.*;
+import cn.hutool.log.*;
 
 public class Bots {
 
@@ -89,6 +90,8 @@ public class Bots {
             };
             
         }
+        
+        StaticLog.info("manage...");
         
         return new EditMsg(obj.msg(), "「" + bot.name + "」") {{
 
