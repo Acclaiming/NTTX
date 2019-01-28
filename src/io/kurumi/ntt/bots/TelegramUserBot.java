@@ -87,6 +87,8 @@ public abstract class TelegramUserBot extends UserBot {
                 return obj.reply().alert("set webhook failed : " + init.errorCode() + "\n\n" + init.description() + "\n\n请截图联系 @HiedaNaKan 修复");
 
             }
+            
+            enable = true;
 
             return obj.reply().text("Bot已经启动！");
 
@@ -108,8 +110,12 @@ public abstract class TelegramUserBot extends UserBot {
                 log.error("delete webhook failed : " + resp.errorCode() + "\n\n" + resp.description());
 
             }
+            
+            
 
         }
+        
+        enable = false;
 
     }
 

@@ -11,6 +11,7 @@ import io.kurumi.ntt.ui.confs.*;
 import cn.hutool.json.*;
 import cn.hutool.log.*;
 import com.pengrad.telegrambot.response.*;
+import java.util.*;
 
 public class Bots {
 
@@ -18,7 +19,9 @@ public class Bots {
 
     public static final String NEW_BOT = "bots|new";
     public static final String MANAGE_BOT = "bots|manage";
-
+    public static final String START_BOT = "bots|start";
+    public static final String STOP_BOT = "bots|stop";
+    
     public static final String INPUT_NAME = "bots|input_name";
 
     public static final String POINT_INPUT_NAME = INPUT_NAME;
@@ -39,10 +42,34 @@ public class Bots {
                 case BaseConf.CONF_BACK :
 
                 return onConfCallback(userData, obj);
+                
+                case START_BOT : return startBot(userData,obj);
+                
+               case STOP_BOT : return stopBot(userData,obj);
 
         }
 
         return obj.reply().alert("没有那样的BOT主控制指针 : " + obj.getPoint());
+
+    }
+
+    private static AbsResuest startBot(UserData userData, DataObject obj) {
+        
+        AbsResuest resp = obj.getBot(userData).start(obj);
+
+        manageBot(userData,obj).exec();
+        
+        return resp;
+        
+    }
+    
+    private static AbsResuest stopBot(UserData userData, DataObject obj) {
+
+         obj.getBot(userData).interrupt();
+         
+         manageBot(userData,obj).exec();
+         
+         return obj.reply().text("Bot已停止...");
 
     }
 
@@ -56,8 +83,15 @@ public class Bots {
 
         AbsSendMsg msg;
 
-        if (send) msg = new SendMsg(message.chat(), "Bot菜单！");
-        else msg = new EditMsg(message, "Bot菜单！");
+        String[] mainMsg = new String[] {
+            
+            "这是Bot菜单！可以创建自己的Bot ⊙∀⊙","",
+            
+            
+        };
+        
+        if (send) msg = new SendMsg(message.chat(), mainMsg);
+        else msg = new EditMsg(message,mainMsg);
 
         msg.singleLineButton("<< 返回主页", MainUI.BACK_TO_MAIN);
 
@@ -94,15 +128,24 @@ public class Bots {
 
         }
 
-        StaticLog.info("manage...");
 
-        return new EditMsg(obj.msg(), "「" + bot.name + "」") {{
+        return new EditMsg(obj.msg(), "管理 " + bot.type() + " 「" + bot.name + "」") {{
 
                 singleLineButton("<< 返回Bot菜单", MAIN);
 
                 bot.root.applySettings(this);
                 
-              //  singleLineButton("启动Bot", "未实现");
+                if (bot.enable) {
+                    
+                    singleLineButton("停止Bot", STOP_BOT,bot);
+                    
+                } else {
+                    
+                    singleLineButton("启动Bot", START_BOT,bot);
+                    
+                }
+                
+                
 
             }};
             

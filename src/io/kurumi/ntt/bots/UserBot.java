@@ -16,6 +16,8 @@ public abstract class UserBot {
     public JSONObject data = new JSONObject();
     
     public ConfRoot root;
+    
+    public boolean enable = false;
  
     public UserBot(UserData owner,String name) {
         
@@ -41,6 +43,7 @@ public abstract class UserBot {
         
         return new JSONObject()
         .put("name",name)
+        .put("enable",enable)
         .put("type",type())
         .put("data",data);
         
@@ -66,6 +69,7 @@ public abstract class UserBot {
         
         bot = create(obj.getStr("type"),userData,name);
         
+        bot.enable = obj.getBool("enable",false);
         bot.data = obj.getJSONObject("data");
         
         return bot;
