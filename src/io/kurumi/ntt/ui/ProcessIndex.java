@@ -127,6 +127,8 @@ public class ProcessIndex {
 
                 return Account.onInputUrl(userData, message);
 
+                /*
+                
                 case Bots.POINT_INPUT_NAME : 
                     
                 return Bots.onInputName(userData,message);
@@ -134,6 +136,8 @@ public class ProcessIndex {
                 case BaseConf.POINT_CONF_INPUT :
                 
                 return Bots.onConfInput(userData,message);
+                
+                */
                 
         }
 
