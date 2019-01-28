@@ -132,15 +132,15 @@ public class DataObject extends JSONObject {
 
     }
     
-    public void setUser(TwiAccount account) {
+    public void setUser(UserData userData,TwiAccount account) {
         
-        put("a",account.accountId);
+        put("a",userData.twitterAccounts.indexOf(account));
         
     }
     
-    public TwiAccount getUser(UserData UserData) {
+    public TwiAccount getUser(UserData userData) {
         
-        return UserData.findUser(getLong("a",-1L));
+        return userData.twitterAccounts.get(getInt("a"));
         
     }
     

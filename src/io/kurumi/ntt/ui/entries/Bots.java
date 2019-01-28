@@ -21,7 +21,7 @@ public class Bots {
     public static final String MANAGE_BOT = "bots|manage";
     public static final String START_BOT = "bots|start";
     public static final String STOP_BOT = "bots|stop";
-    
+
     public static final String INPUT_NAME = "bots|input_name";
 
     public static final String POINT_INPUT_NAME = INPUT_NAME;
@@ -35,17 +35,17 @@ public class Bots {
                 case INPUT_NAME : return inputName(userData, obj);
 
                 case MANAGE_BOT : 
-                    
-                    return manageBot(userData, obj);
+
+                return manageBot(userData, obj);
 
                 case BaseConf.CONF_CALLBACK :
                 case BaseConf.CONF_BACK :
 
                 return onConfCallback(userData, obj);
-                
-                case START_BOT : return startBot(userData,obj);
-                
-               case STOP_BOT : return stopBot(userData,obj);
+
+                case START_BOT : return startBot(userData, obj);
+
+                case STOP_BOT : return stopBot(userData, obj);
 
         }
 
@@ -54,22 +54,22 @@ public class Bots {
     }
 
     private static AbsResuest startBot(UserData userData, DataObject obj) {
-        
+
         AbsResuest resp = obj.getBot(userData).start(obj);
 
-        manageBot(userData,obj).exec();
-        
+        manageBot(userData, obj).exec();
+
         return resp;
-        
+
     }
-    
+
     private static AbsResuest stopBot(UserData userData, DataObject obj) {
 
-         obj.getBot(userData).interrupt();
-         
-         manageBot(userData,obj).exec();
-         
-         return obj.reply().text("Bot已停止...");
+        obj.getBot(userData).interrupt();
+
+        manageBot(userData, obj).exec();
+
+        return obj.reply().text("Bot已停止...");
 
     }
 
@@ -84,14 +84,14 @@ public class Bots {
         AbsSendMsg msg;
 
         String[] mainMsg = new String[] {
-            
+
             "这是Bot菜单！可以创建自己的Bot ⊙∀⊙","",
-            
-            
+
+
         };
-        
+
         if (send) msg = new SendMsg(message.chat(), mainMsg);
-        else msg = new EditMsg(message,mainMsg);
+        else msg = new EditMsg(message, mainMsg);
 
         msg.singleLineButton("<< 返回主页", MainUI.BACK_TO_MAIN);
 
@@ -134,24 +134,24 @@ public class Bots {
                 singleLineButton("<< 返回Bot菜单", MAIN);
 
                 bot.root.applySettings(this);
-                
+
                 if (bot.enable) {
-                    
-                    singleLineButton("停止Bot", STOP_BOT,bot);
-                    
+
+                    singleLineButton("停止Bot", STOP_BOT, bot);
+
                 } else {
-                    
-                    singleLineButton("启动Bot", START_BOT,bot);
-                    
+
+                    singleLineButton("启动Bot", START_BOT, bot);
+
                 }
-                
-                
+
+
 
             }};
-            
-    //    BaseResponse resp = exec.exec();
-        
-      //  return obj.reply().alert(resp.errorCode() + " : " + resp.description());
+
+        //    BaseResponse resp = exec.exec();
+
+        //  return obj.reply().alert(resp.errorCode() + " : " + resp.description());
 
     }   
 
@@ -171,14 +171,14 @@ public class Bots {
                 }
 
             };
-            
-            
-            }
-            
-        
+
+
+        }
+
+
         switch (obj.getPoint()) {
 
-   
+
                 case BaseConf.CONF_CALLBACK : return bot.root.onCallback(userData, obj);
                 case BaseConf.CONF_BACK : 
 
@@ -188,10 +188,10 @@ public class Bots {
                 if (key != null && index == null) {
 
                     DataObject backTo = new DataObject(BaseConf.CONF_CALLBACK);
-                    
-                    backTo.put("k",key);
+
+                    backTo.put("k", key);
                     backTo.setindex(index);
-                    
+
                     backTo.query = obj.query;
 
                     return onCallback(userData, backTo);
@@ -216,7 +216,7 @@ public class Bots {
 
                 singleLineButton(SeeYouNextTimeBot.TYPE, INPUT_NAME, SeeYouNextTimeBot.TYPE);
                 singleLineButton(TwitterReFoBot.TYPE, INPUT_NAME, TwitterReFoBot.TYPE);
-                
+
             }};
 
     }
@@ -242,7 +242,7 @@ public class Bots {
             return new SendMsg(msg.chat(), "无效的BotName (つд⊂)", "请重新输入 >_<", "", "取消新建使用 /cancel");
 
         }
-        
+
         UserBot bot = UserBot.create(userData.point.getIndex(), userData, msg.text().trim());
 
         userData.point = null;
