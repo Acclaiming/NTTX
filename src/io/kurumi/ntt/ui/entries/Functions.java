@@ -70,7 +70,7 @@ public class Functions {
 
                     Status s = api.showStatus(id);
                     
-                    return new SendMsg(msg.chat(), printStatus(s));
+                    return new SendMsg(msg.chat(), printStatus(s)).markdown();
 
                 } catch (TwitterException exc) {
                     
@@ -199,7 +199,7 @@ public class Functions {
 
             .append("注册时间 : ").append(u.getCreatedAt().toLocaleString()).append("\n\n")
 
-            .append("主页地址 : ").append(u.getURL()).toString();
+            .append("主页地址 : https://twitter.com/").append(u.getScreenName()).toString();
 
 
     }

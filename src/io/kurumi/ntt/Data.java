@@ -28,8 +28,6 @@ public class Data {
     }
     
     private HashMap<Long,UserData> userDataCache = new HashMap<>();
-
-    
     
     public LinkedList<UserData> loadUsers() {
         
