@@ -7,6 +7,7 @@ import io.kurumi.ntt.ui.request.*;
 import io.kurumi.ntt.twitter.*;
 import twitter4j.User;
 import twitter4j.*;
+import io.kurumi.ntt.md.*;
 
 public class Functions {
 
@@ -17,8 +18,8 @@ public class Functions {
 
         String name = MsgExt.getCommandName(msg);
         String[] params = MsgExt.getCommandParms(msg);
-        
-       
+
+
 
         switch (name) {
 
@@ -61,7 +62,7 @@ public class Functions {
         try {
 
             long id = Long.parseLong(params[0]);
-            
+
             for (TwiAccount acc : userData.twitterAccounts) {
 
                 try {
@@ -69,26 +70,26 @@ public class Functions {
                     Twitter api =  acc.createApi();
 
                     Status s = api.showStatus(id);
-                    
+
                     return new SendMsg(msg.chat(), printStatus(s)).markdown();
 
                 } catch (TwitterException exc) {
-                    
-                    
-                    
+
+
+
                 }
 
             }
-            
+
             return new SendMsg(msg.chat(), "没有这个推文或所有锁推/所有认证的账号被B无法取得");
 
-          } catch( Exception ex) {
-              
-              return new SendMsg(msg.chat(), usage);
-              
-          }
+        } catch ( Exception ex) {
 
-        
+            return new SendMsg(msg.chat(), usage);
+
+        }
+
+
 
     };
 
@@ -154,30 +155,32 @@ public class Functions {
         }
 
     }
-    
+
     private static String printStatus(Status s) {
 
         StringBuilder desc =  new StringBuilder("推文 : ")
+
             .append("ID : ").append(s.getId()).append("\n")
-            
+
             .append("发送者 : [").append(TApi.formatUserName(s.getUser()))
             .append("](https://twitter.com/").append(s.getUser().getScreenName())
-            .append("/").append(s.getId()).append(")").append("\n\n")
-        
-        .append("内容 : ").append("\n\n")
-        .append("发送者信息 : ").append(printUser(s.getUser()));
-        
+            .append(")").append("\n\n")
+
+            .append("内容 : ").append(s.getText()).append("\n\n")
+
+            .append("地址 : https://twitter.com/").append(s.getUser().getScreenName()).append("/status/").append(s.getId());
+
         if (s.getQuotedStatus() != null) {
-            
+
             desc.append("回复给 : \n\n").append(printStatus(s.getQuotedStatus()));
-            
+
         }
-        
-        return desc.toString();
-       
+
+        return Markdown.encode(desc.toString());
+
 
     }
-    
+
 
     private static String printUser(User u) {
 
@@ -190,7 +193,7 @@ public class Functions {
             .append("简介 : ").append(u.getDescription()).append("\n\n")
 
             .append("关注者 : ").append(u.getFollowersCount())
-            .append("正在关注 : ").append(u.getFriendsCount()).append("\n\n")
+            .append(" 正在关注 : ").append(u.getFriendsCount()).append("\n\n")
 
             .append("位置 : ").append(u.getLocation()).append("\n\n")
             .append("锁推 : ").append(u.isProtected() ? "是" : "否").append("\n\n")
