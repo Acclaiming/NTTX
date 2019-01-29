@@ -60,8 +60,6 @@ public class Admin {
 
         }
 
-        BotControl.stopAll();
-
         if (Constants.authandwebhook.server != null) {
 
             Constants.authandwebhook.server.stop();

@@ -5,11 +5,8 @@ import com.pengrad.telegrambot.*;
 import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.model.request.*;
 import com.pengrad.telegrambot.request.*;
-import io.kurumi.ntt.*;
-import io.kurumi.ntt.twitter.*;
-import io.kurumi.ntt.ui.*;
 import com.pengrad.telegrambot.response.*;
-import io.kurumi.ntt.bots.*;
+import io.kurumi.ntt.*;
 
 public class EditMsg extends AbsSendMsg {
 

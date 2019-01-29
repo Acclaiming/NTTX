@@ -6,7 +6,6 @@ import io.kurumi.ntt.*;
 import io.kurumi.ntt.ui.entries.*;
 import io.kurumi.ntt.ui.ext.*;
 import io.kurumi.ntt.ui.request.*;
-import io.kurumi.ntt.ui.confs.*;
 
 public class ProcessIndex {
 
@@ -184,6 +183,8 @@ public class ProcessIndex {
                     
                 return Account.onCallBack(userData, obj);
                 
+                
+
                 /*
                 
                 case Bots.MAIN :

@@ -3,8 +3,6 @@ package io.kurumi.ntt;
 import cn.hutool.core.io.*;
 import cn.hutool.json.*;
 import com.pengrad.telegrambot.model.*;
-import io.kurumi.ntt.bots.*;
-import io.kurumi.ntt.serialize.*;
 import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.ui.*;
 import io.kurumi.ntt.ui.request.*;
@@ -29,13 +27,6 @@ public class UserData {
         userDataFile = new File(data.dataDir, "users/" + id + ".json");
 
         refresh();
-        
-        
-        for(UserBot bot : bots) {
-            
-            if (bot.enable) bot.startAtBackground();
-            
-        }
 
     }
 
@@ -83,8 +74,6 @@ public class UserData {
 
     }
     
-    public LinkedList<UserBot> bots = new LinkedList<>();
-
     public void refresh() {
 
         try {
@@ -107,16 +96,6 @@ public class UserData {
             }
 
             chatId = userData.getLong("chatId");
-
-            List<JSONObject> botArray = (List<JSONObject>)(Object)userData.getJSONArray("bots");
-            
-            bots.clear();
-            
-            for (JSONObject botObj : botArray) {
-                
-                bots.add(UserBot.fromJSONObject(this,botObj));
-                
-            }
             
             List<JSONObject> twitterAccountList = (List<JSONObject>)(Object)userData.getJSONArray("twitter_accounts");
 
@@ -173,16 +152,6 @@ public class UserData {
         userData.put("chatId", chatId);
 
         userData.put("ext",ext);
-
-        JSONArray botArray = new JSONArray();
-        
-        for (UserBot bot : bots) {
-            
-            botArray.add(bot.toJSONObject());
-            
-        }
-        
-        userData.put("bots",botArray);
         
         /*
 
@@ -232,12 +201,6 @@ public class UserData {
         setName(from.firstName() , from.lastName());
         isBot = from.isBot();
 
-    }
-    
-    public UserBot findBot(int index) {
-        
-        return bots.get(index);
-        
     }
     
     public TwiAccount findUser(String accountId) {

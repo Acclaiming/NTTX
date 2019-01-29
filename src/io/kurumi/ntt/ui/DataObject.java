@@ -1,15 +1,13 @@
 package io.kurumi.ntt.ui;
 
 import cn.hutool.json.*;
-import io.kurumi.ntt.serialize.*;
-import java.io.*;
 import com.pengrad.telegrambot.model.*;
-import io.kurumi.ntt.ui.ext.*;
-import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.*;
+import io.kurumi.ntt.serialize.*;
+import io.kurumi.ntt.twitter.*;
+import io.kurumi.ntt.ui.ext.*;
 import io.kurumi.ntt.ui.request.*;
-import io.kurumi.ntt.bots.*;
-import cn.hutool.core.util.*;
+import java.io.*;
 
 public class DataObject extends JSONObject {
     
@@ -117,18 +115,6 @@ public class DataObject extends JSONObject {
     public String getIndex() {
 
         return getStr("i");
-
-    }
-    
-    public void setBot(UserBot bot) {
-
-        put("b",bot.owner.bots.indexOf(bot));
-
-    }
-
-    public UserBot getBot(UserData userData) {
-
-        return userData.findBot(getInt("b"));
 
     }
     

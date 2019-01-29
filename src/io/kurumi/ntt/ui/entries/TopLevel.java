@@ -20,6 +20,9 @@ public class TopLevel {
                 case COMMAND_START : return start(userData, msg);
                 case MainUI.COMMAND : return MainUI.main(userData, msg);
                 
+                    case Functions.FUNC_GET_TWITTER_USER :
+
+                    return Functions.main(userData,msg);
                 
             }
 

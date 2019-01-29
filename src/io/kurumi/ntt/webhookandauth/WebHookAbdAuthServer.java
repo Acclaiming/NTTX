@@ -71,24 +71,8 @@ public class WebHookAbdAuthServer extends NanoHTTPD {
 
             req = ProcessIndex.processUpdate(update);
 
-        } else {
-
-            req = BotControl.process(path, update);
-
         }
-
-        if (req != null) {
-            
-            System.out.println(req.toWebHookResp());
-            
-            Response resp = Response.newFixedLengthResponse(req.toWebHookResp());
-
-            resp.setMimeType("application/json");
-
-            return resp;
-
-        }
-
+        
         return Response.newFixedLengthResponse("");
 
     }

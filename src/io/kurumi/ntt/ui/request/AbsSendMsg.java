@@ -1,12 +1,10 @@
 package io.kurumi.ntt.ui.request;
 
-import java.util.*;
-import io.kurumi.ntt.ui.model.*;
-import io.kurumi.ntt.ui.*;
-import io.kurumi.ntt.twitter.*;
 import com.pengrad.telegrambot.response.*;
-import io.kurumi.ntt.bots.*;
-import cn.hutool.core.lang.*;
+import io.kurumi.ntt.twitter.*;
+import io.kurumi.ntt.ui.*;
+import io.kurumi.ntt.ui.model.*;
+import java.util.*;
 
 public abstract class AbsSendMsg implements AbsResuest {
     
@@ -52,12 +50,6 @@ public abstract class AbsSendMsg implements AbsResuest {
     public void singleLineButton(String text,String point,TwiAccount acc) {
 
         newInlineButtonGroup().newButton(text,point,acc);
-
-    }
-    
-    public void singleLineButton(String text,String point,UserBot bot) {
-
-        newInlineButtonGroup().newButton(text,point,bot);
 
     }
     
