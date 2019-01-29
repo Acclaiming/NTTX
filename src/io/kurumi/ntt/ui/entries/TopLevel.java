@@ -21,6 +21,7 @@ public class TopLevel {
                 case MainUI.COMMAND : return MainUI.main(userData, msg);
                 
                     case Functions.FUNC_GET_TWITTER_USER :
+                        case Functions.FUNC_GET_TWITTER_STATUS : 
 
                     return Functions.main(userData,msg);
                 

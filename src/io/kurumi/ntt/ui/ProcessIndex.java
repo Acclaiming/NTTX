@@ -91,6 +91,8 @@ public class ProcessIndex {
         if (message.text() == null) return null;
 
         UserData userData = Constants.data.getUser(message);
+        
+        log.debug("onMsg : " + userData.userName + " : " + message.text());
 
         if (userData.isBanned) {
 
