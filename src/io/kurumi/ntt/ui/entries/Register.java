@@ -9,6 +9,8 @@ import io.kurumi.ntt.ui.request.*;
 
 public class Register {
 
+    /*
+    
     public static final String REG_DIRECT = "reg|direct";
 
     public static AbsResuest main(UserData userData, Message msg) {
@@ -87,6 +89,8 @@ public class Register {
         return obj.reply().alert("注册已关闭 T^T ").cacheTime(60);
         
     }
+    
+    */
 
 
 }

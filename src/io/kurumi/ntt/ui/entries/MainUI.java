@@ -21,15 +21,11 @@ public class MainUI {
 
     public static AbsResuest main(UserData userData, Message msg) {
 
-        if (!userData.registered) {
-
-            return Register.main(userData, msg);
-
-        } else {
+        
 
             return sendMain(userData, msg, false);
 
-        }
+        
 
     }
 
@@ -42,12 +38,6 @@ public class MainUI {
 
 
         send.singleLineButton("管理账号 (‵▽′)", Account.MAIN);
-        
-        if (userData.isAdmin) {
-
-            send.singleLineButton("管理员菜单 *٩(๑´∀`๑)ง*", Admin.MAIN);
-
-        }
 
         send.singleLineOpenUrlButton("给咱建议！ 「新功能/报错...」", "https://t.me/HiedaNaKan");
 

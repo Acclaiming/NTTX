@@ -29,21 +29,7 @@ public class Data {
     
     private HashMap<Long,UserData> userDataCache = new HashMap<>();
 
-    public void doClean() {
-        
-        for (Map.Entry<Long,UserData> userData : userDataCache.entrySet()) {
-            
-            if (userData.getValue().registered == false) {
-                
-                userData.getValue().delete();
-                
-                userDataCache.remove(userData.getKey());
-                
-            }
-            
-        }
-        
-    }
+    
     
     public LinkedList<UserData> loadUsers() {
         

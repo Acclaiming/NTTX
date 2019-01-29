@@ -160,9 +160,9 @@ public class ProcessIndex {
 
         switch (obj.getPoint()) {
 
-                case Register.REG_DIRECT : 
+         //       case Register.REG_DIRECT : 
 
-                return Register.onCallback(userData, obj);
+        //        return Register.onCallback(userData, obj);
 
                 case MainUI.BACK_TO_MAIN :
 

@@ -14,7 +14,4 @@ public class Constants {
     
     public static ServerManager authandwebhook;
     
-    public static boolean enableRegister = true;
-    
-    
 }

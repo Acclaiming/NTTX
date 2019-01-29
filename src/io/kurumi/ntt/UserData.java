@@ -30,7 +30,7 @@ public class UserData {
 
     }
 
-    public boolean registered = false;
+ 
     public boolean isAdmin = false;
     public boolean isBanned = false;
 
@@ -80,7 +80,7 @@ public class UserData {
 
             JSONObject userData = new JSONObject(FileUtil.readUtf8String(userDataFile));
 
-            registered = userData.getBool("registered", false);
+           // registered = userData.getBool("registered", false);
             isAdmin = userData.getBool("is_admin", false);
             isBanned = userData.getBool("is_banned", false);
             userName = userData.getStr("user_name", "");
@@ -138,7 +138,7 @@ public class UserData {
 
         JSONObject userData = new JSONObject();
 
-        userData.put("registered", registered);
+     //   userData.put("registered", registered);
         userData.put("is_admin", isAdmin);
         userData.put("is_banned", isBanned);
 
