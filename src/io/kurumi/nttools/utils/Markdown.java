@@ -59,10 +59,27 @@ public class Markdown {
 
     public static String toHtml(String content) {
 
-        return renderer.render(parser.parse(content));
+        return toHtml(content.split("\n"));
 
     }
     
+    public static String toHtml(String[] content) {
+        
+        for (int index = 0;index < content.length;index ++) {
+
+            if (content[index].endsWith("  ")) {
+                
+                content[index] = content[index] + " <br />";
+                
+            }
+            
+            content[index] = renderer.render(parser.parse(content[index]));
+
+        }
+        
+        return ArrayUtil.join(content,"\n");
+
+    }
 
     public static String[] encode(String[] content) {
 
