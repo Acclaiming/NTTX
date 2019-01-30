@@ -71,6 +71,8 @@ public class Encoder {
     
     public String decode(String hash) {
         
+        try {
+        
         StringBuilder str = new StringBuilder();
 
         StringBuilder cache = new StringBuilder();
@@ -94,6 +96,10 @@ public class Encoder {
         }
 
         return str.toString();
+        
+        } catch (Exception e) {}
+        
+        return null;
         
     }
 

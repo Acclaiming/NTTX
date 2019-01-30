@@ -13,6 +13,8 @@ import com.pengrad.telegrambot.model.request.InlineQueryResultGame;
 import com.pengrad.telegrambot.model.request.InlineQueryResultArticle;
 import io.kurumi.nttools.utils.Encoder;
 import cn.hutool.core.util.StrUtil;
+import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.request.SendMessage;
 
 public class CoreValuesBot extends Fragment {
 
@@ -38,6 +40,23 @@ public class CoreValuesBot extends Fragment {
 
         }
 
+    }
+
+    @Override
+    public void processPrivateMessage(UserData user, Message msg) {
+        
+        String text = encoder.decode(msg.text());
+
+        if (text != null) {
+            
+            bot.execute(new SendMessage(msg.chat().id(),"解码完成 : \n「" + text + "」").replyToMessageId(msg.messageId()));
+            
+        } else {
+            
+            bot.execute(new SendMessage(msg.chat().id(),"解码失败..."));
+            
+        }
+        
     }
 
 }
