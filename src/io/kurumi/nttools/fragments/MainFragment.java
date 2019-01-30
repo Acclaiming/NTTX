@@ -22,6 +22,7 @@ import java.util.Map;
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
+import com.pengrad.telegrambot.response.BaseResponse;
 
 public class MainFragment extends Fragment {
 
@@ -215,8 +216,14 @@ public class MainFragment extends Fragment {
 
         } else {
 
-            bot.execute(new EditMessageText(msg.chat().id(), msg.messageId(), userMsg).replyMarkup(markup));
-
+            
+            
+            EditMessageText editre1 = new EditMessageText(msg.chat().id(), msg.messageId(), userMsg).replyMarkup(markup);
+            System.out.println(editre1.toWebhookResponse());
+            BaseResponse resp = bot.execute(editre1);
+            
+            System.out.println(resp);
+            
         }
 
     }
