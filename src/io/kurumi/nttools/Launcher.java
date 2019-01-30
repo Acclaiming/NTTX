@@ -9,35 +9,33 @@ import java.io.*;
 import io.kurumi.nttools.bots.CoreValuesBot;
 
 public class Launcher {
-    
+
     public static void main(String[] args) {
-        
+
         MainFragment mainBot = new MainFragment(new File("./data"));
-        
+
         CoreValuesBot coreValuesBot = new CoreValuesBot(mainBot);
-        
-        if (mainBot.token == null) {
-            
-            new Setup(mainBot).addFregment(coreValuesBot).start();
-            
-        }
-        
+
+        new Setup(mainBot)
+            .addFregment(coreValuesBot)
+            .start();
+
         coreValuesBot.setWebHook();
-        
+
         mainBot.startGetUpdates();
-        
+
         try {
-            
+
             BotServer.INSTANCE = new BotServer(mainBot);
-            
+
             BotServer.INSTANCE.start();
-            
+
         } catch (IOException exc) {
-            
+
             exc.printStackTrace();
-            
+
         }
 
     }
-    
+
 }

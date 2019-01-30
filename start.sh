@@ -1,18 +1,10 @@
 export CLASSPATH=./classes
 
-for jar in ./libs/hutool/*.jar;do
+for jar in ./libs/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
 done
 
 for jar in ./libs/twitter4j/*.jar;do
- export CLASSPATH=$CLASSPATH:$jar
-done
-
-for jar in ./libs/taip/*.jar;do
- export CLASSPATH=$CLASSPATH:$jar
-done
-
-for jar in ./libs/bot/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
 done
 

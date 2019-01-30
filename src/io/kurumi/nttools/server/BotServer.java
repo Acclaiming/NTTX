@@ -3,6 +3,7 @@ package io.kurumi.nttools.server;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
+import cn.hutool.http.HttpUtil;
 import com.pengrad.telegrambot.BotUtils;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
@@ -42,6 +43,23 @@ public class BotServer extends NanoHTTPD {
         
         Response C404 = Response.newFixedLengthResponse(Status.NOT_FOUND, MIME_PLAINTEXT, "");
 
+        if (URLUtil.url(session.getUri()).getPath().equals("/callback")) {
+            
+            HashMap<String, String> params = HttpUtil.decodeParamMap(StrUtil.subAfter(session.getUri(), "?", true), "UTF-8");
+
+            if (params == null) return null;
+
+            String requestToken = params.get("oauth_token");
+            String oauthVerifier = params.get("oauth_verifier");
+            
+            if (AuthCache.cache.containsKey(requestToken)) {
+                
+                AuthCache.cache.remove(requestToken).onAuth(oauthVerifier);
+                
+            }
+           
+        }
+        
         if (session.getMethod() != Method.POST) return C404;
 
         String path = URLUtil.url(session.getUri()).getPath();
