@@ -51,12 +51,8 @@ public class MainFragment extends Fragment {
 
         botData.put("bot_token", new JSONObject(tokens));
 
-        JSONObject server = new JSONObject();
-
-        server.put("local_port",serverPort);
-        server.put("domain",serverDomain);
-
-        botData.put("server",server);
+        botData.put("local_port",serverPort);
+        botData.put("server_domain",serverDomain);
 
         FileUtil.writeUtf8String(botData.toStringPretty(), new File(dataDir,"config.json"));
 
