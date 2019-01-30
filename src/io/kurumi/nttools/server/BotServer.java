@@ -17,6 +17,7 @@ import org.nanohttpd.protocols.http.NanoHTTPD;
 import org.nanohttpd.protocols.http.request.Method;
 import org.nanohttpd.protocols.http.response.Response;
 import org.nanohttpd.protocols.http.response.Status;
+import io.kurumi.nttools.utils.Markdown;
 
 public class BotServer extends NanoHTTPD {
 
@@ -57,6 +58,8 @@ public class BotServer extends NanoHTTPD {
                 AuthCache.cache.remove(requestToken).onAuth(oauthVerifier);
                 
             }
+            
+            return Response.newFixedLengthResponse(Markdown.parsePage("请返回Bot","#NTTBot 账号认证 ~\n到底成功了没 ？ (´▽`ʃƪ)"));
            
         }
         

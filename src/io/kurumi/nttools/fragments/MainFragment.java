@@ -248,7 +248,7 @@ public class MainFragment extends Fragment {
 
                             bot.execute(new SendMessage(msg.chat().id(), account.getFormatedName() + " 认证成功  (*^▽^*)"));
 
-                        } catch (TwitterException e) {
+                        } catch (Exception e) {
 
                             bot.execute(new SendMessage(msg.chat().id(), e.toString()));
 
