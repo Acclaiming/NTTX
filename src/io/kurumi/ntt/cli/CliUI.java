@@ -61,9 +61,10 @@ public abstract class CliUI {
         String commandName = MsgExt.getCommandName(obj.msg());
 
         String[] args = MsgExt.getCommandParms(obj.msg());
+        
+        if (args == null) args = new String[0];
 
         try {
-
 
             CommandLine cmd = parser.parse(getOptions(commandName), args , true);
 
