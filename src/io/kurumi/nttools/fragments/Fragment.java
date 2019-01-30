@@ -23,6 +23,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import com.pengrad.telegrambot.model.Document;
+import com.pengrad.telegrambot.request.GetFile;
+import cn.hutool.http.HttpUtil;
 
 public abstract class Fragment {
 
@@ -358,6 +361,18 @@ public abstract class Fragment {
 
     }
 
-
+    public File getFile(Document doc) {
+        
+        File local = new File(main.dataDir,"/files/" + doc.fileId());
+        
+        if (local.isFile()) return local;
+        
+        String path = bot.getFullFilePath(bot.execute(new GetFile(doc.fileId())).file());
+        
+        HttpUtil.downloadFile(path,local);
+        
+        return local;
+        
+    }
 
 }

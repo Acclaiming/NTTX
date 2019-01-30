@@ -1,7 +1,5 @@
 package io.kurumi.nttools.fragments;
 
-
-
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
@@ -450,13 +448,14 @@ public class MainFragment extends Fragment {
 
         switch (doc.fileName()) {
 
-                case "follower.js" : processFollowers(user, msg, doc);
-
+                case "following.js" : processAccounts(user, msg, doc,true);return;
+                case "follower.js" : processAccounts(user, msg, doc,false);return;
+                
         }
 
     }
 
-    private void processFollowers(UserData user, Message msg, Document doc) {
+    private void processAccounts(UserData user, Message msg, Document doc, boolean friend) {
 
         if (user.twitterAccounts.size() == 0) {
 
@@ -465,19 +464,11 @@ public class MainFragment extends Fragment {
 
         }
 
-        GetFileResponse resp = bot.execute(new GetFile(doc.fileId()));
-
-        File local = new File(dataDir, name() + "/cache/follower_js/" + resp.file().fileId());
+        File local = getFile(doc);
 
         try {
 
             Twitter api = user.twitterAccounts.getFirst().createApi();
-
-            if (!local.isFile()) {
-
-                HttpUtil.downloadFile(bot.getFullFilePath(resp.file()), local);
-
-            }
 
             String js = FileUtil.readUtf8String(local);
 
@@ -489,7 +480,17 @@ public class MainFragment extends Fragment {
 
             for (JSONObject obj : (List<JSONObject>)(Object)json) {
 
-                long id = obj.getJSONObject("follower").getLong("accountId");
+                long id;
+
+                if (friend) {
+
+                    id = obj.getJSONObject("following").getLong("accountId");
+
+                } else {
+
+                    id = obj.getJSONObject("follower").getLong("accountId");
+
+                }
 
                 if (showCache.size() < 100) {
 
@@ -512,7 +513,7 @@ public class MainFragment extends Fragment {
 
                     }
 
-                    bot.execute(new SendMessage(msg.chat().id(), page.toString()).parseMode(ParseMode.Markdown));
+                    bot.execute(new SendMessage(msg.chat().id(), page.toString()).disableWebPagePreview(true).parseMode(ParseMode.Markdown));
 
                     page = new StringBuilder();
 
