@@ -217,7 +217,11 @@ public class MainFragment extends Fragment {
 
         } else {
             
-            BaseResponse resp = bot.execute(new EditMessageText(query.id(), userMsg).replyMarkup(markup));
+            EditMessageText req = new EditMessageText(query.id(), userMsg).replyMarkup(markup);
+
+            System.out.println(req.toWebhookResponse());
+            
+            BaseResponse resp = bot.execute(req);
             
             System.out.println(resp.isOk());
             System.out.println(resp.description());
