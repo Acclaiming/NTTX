@@ -49,7 +49,7 @@ public class CoreValuesBot extends Fragment {
 
         if (text != null) {
             
-            bot.execute(new SendMessage(msg.chat().id(),"解码完成 : \n「" + text + "」").replyToMessageId(msg.messageId()));
+            bot.execute(new SendMessage(msg.chat().id(),"解码完成 : \n" + text).replyToMessageId(msg.messageId()));
             
         } else {
             
