@@ -156,6 +156,7 @@ public class MainFragment extends Fragment {
                         for(User u : users) {
                             
                             update.append(TApi.formatUserNameMarkdown(u));
+                            update.append("\n");
                             
                         }
                         
