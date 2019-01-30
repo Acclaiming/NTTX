@@ -60,7 +60,7 @@ public class Telegraph {
 
         try {
 
-            JSONObject resp = new JSONObject(HttpUtil.get(API_URL + "createAccount"));
+            JSONObject resp = new JSONObject(HttpUtil.get(API_URL + "createAccount",paramsMap));
 
             if (resp.getBool("ok", false)) {
 
@@ -95,7 +95,7 @@ public class Telegraph {
     
     public static Page createPage(String authorName, String authorUrl, String title, String content, Boolean returnContent) {
     
-        return createPageWithAuth(createAccount(authorName,authorName).getAccessToken(),authorName,authorUrl,title,content,returnContent);
+        return createPageWithAuth(null,authorName,authorUrl,title,content,returnContent);
 
     }
     
@@ -164,7 +164,7 @@ public class Telegraph {
 
         try {
 
-            JSONObject resp = new JSONObject(HttpUtil.get(API_URL + "createPage"));
+            JSONObject resp = new JSONObject(HttpUtil.get(API_URL + "createPage",paramsMap));
 
             if (resp.getBool("ok", false)) {
 
