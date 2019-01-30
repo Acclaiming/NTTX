@@ -28,6 +28,8 @@ import io.kurumi.nttools.twitter.TApi;
 import twitter4j.User;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import twitter4j.ResponseList;
+import twitter4j.Paging;
+import twitter4j.Status;
 
 public class MainFragment extends Fragment {
 
@@ -103,6 +105,7 @@ public class MainFragment extends Fragment {
 
                 case POINT_DELETE_FOLLOWRS : deleteFollowers(user, callbackQuery, data);return;
                 case POINT_DELETE_FRIENDS : deleteFriends(user, callbackQuery, data);return;
+                case POINT_DELETE_FRIENDS : deleteStatus(user, callbackQuery, data);return;
                 
         }
 
@@ -111,6 +114,53 @@ public class MainFragment extends Fragment {
     }
 
     private Thread deleteThread;
+    
+    public class DeleteStatusThread extends Thread {
+
+        private UserData user;
+        private CallbackQuery query;
+        private CData data;
+        private TwiAccount acc;
+
+        public boolean fr;
+
+        public DeleteStatusThread(UserData user, CallbackQuery query, CData data) {
+            this.user = user;
+            this.query = query;
+            this.data = data;
+            this.acc = data.getUser(user);
+        }
+
+        @Override
+        public void run() {
+
+            Twitter api =  acc.createApi();
+            
+            try {
+                
+                ResponseList<Status> tl =  api.getUserTimeline(new Paging().count(200));
+                
+                for (Status s : tl) {
+                    
+                    api.destroyStatus(s.getId());
+                    
+                    update(s.getText());
+                    
+                }
+
+            } catch (TwitterException e) {}
+
+        }
+        
+        public void update(String msg) {
+
+            bot.execute(new SendMessage(query.message().chat().id(), msg).parseMode(ParseMode.Markdown));
+
+        }
+        
+        
+        
+    }
 
     public class DeleteThread extends Thread {
 
@@ -256,6 +306,25 @@ public class MainFragment extends Fragment {
 
 
     }
+    
+    private void deleteStatus(UserData user, CallbackQuery callbackQuery, CData data) {
+
+        if (deleteThread == null) {
+
+            bot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("正在开始..."));
+
+            deleteThread = new DeleteStatusThread(user, callbackQuery, data);
+
+            deleteThread.start();
+
+            return;
+
+        }
+
+        bot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("还未结束..."));
+
+    
+        }
     
 
     private void refreshUser(UserData user, CallbackQuery callbackQuery, CData data) {
