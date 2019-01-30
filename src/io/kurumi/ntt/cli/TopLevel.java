@@ -5,6 +5,7 @@ import io.kurumi.ntt.*;
 import io.kurumi.ntt.ui.*;
 import java.util.*;
 import com.pengrad.telegrambot.request.*;
+import cn.hutool.core.util.*;
 
 public class TopLevel extends CliUI {
 
@@ -22,7 +23,7 @@ public class TopLevel extends CliUI {
     @Override
     protected void applyCommands(HashMap<String, Options> commands) {
 
-        commands.put("rand", new Options().addOption("m", "msg", true, "发送的信息"));
+        commands.put("rand", new Options().addRequiredOption("m", "msg", true, "发送的信息"));
 
     }
 
@@ -73,7 +74,7 @@ public class TopLevel extends CliUI {
 
         LinkedList<UserData> users = Constants.data.getUsers();
 
-        users.remove(obj.msg.from());
+        users.remove(userData);
 
         if (users.size() == 0) {
 
@@ -83,11 +84,10 @@ public class TopLevel extends CliUI {
 
         UserData user = users.get(random.nextInt(users.size()));
 
-        Constants.bot.execute(new ForwardMessage(user.chatId, obj.chat.id(), obj.msg.messageId()));
-
+        user.send("随机消息来自 : @" + userData.userName,ArrayUtil.join(cmd.getOptionValues("msg")," "));
+        
         obj.reply("发送成功！ 已发给 : @" + user.userName).exec();
 
     }
-
 
 }
