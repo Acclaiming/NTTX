@@ -32,13 +32,13 @@ public abstract class CliUI {
 
         PrintWriter printer = new PrintWriter(out);
 
-        printer.print(cmdLineSyntax() + " usage :");
+        printer.print(cmdLineSyntax() + " 帮助 :");
 
         for (Map.Entry<String,Options> cmd : commands.entrySet()) {
 
             printer.println();
 
-            formatter.printHelp(printer, cmd.getKey(), cmd.getValue());
+            formatter.printHelp(printer, "/" + cmd.getKey(), cmd.getValue());
 
         }
 
