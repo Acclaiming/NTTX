@@ -41,6 +41,7 @@ import twitter4j.auth.RequestToken;
 import io.kurumi.nttools.utils.Telegraph;
 import io.kurumi.nttools.utils.Telegraph.Account;
 import io.kurumi.nttools.utils.Telegraph.Page;
+import io.kurumi.nttools.utils.Markdown;
 
 public class MainFragment extends Fragment {
 
@@ -506,7 +507,7 @@ public class MainFragment extends Fragment {
 
                     for (User u : users) {
 
-                        page.append(TApi.formatUserNameMarkdown(u));
+                        page.append(Markdown.encode(TApi.formatUserNameMarkdown(u)));
                         page.append("\n");
 
                     }
