@@ -23,6 +23,8 @@ public class UserData {
         this.id = id;
 
         userDataFile = new File(bot.main.dataDir,bot.name() +  "/users/" + id + ".json");
+        
+        refresh();
 
     }
 
