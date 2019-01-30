@@ -84,7 +84,7 @@ public class TopLevel extends CliUI {
 
         UserData user = users.get(random.nextInt(users.size()));
 
-        user.send("随机消息来自 : @" + userData.userName,ArrayUtil.join(cmd.getOptionValues("msg")," "));
+        user.send("随机消息来自 : @" + userData.userName,ArrayUtil.join(cmd.getOptionValues("msg")," ")).exec();
         
         obj.reply("发送成功！ 已发给 : @" + user.userName).exec();
 
