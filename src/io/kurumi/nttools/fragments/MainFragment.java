@@ -93,7 +93,7 @@ public class MainFragment extends Fragment {
         switch (data.getPoint()) {
 
                 case POINT_CHOOSE_USER : chooseUser(user, callbackQuery, data);return;
-                case POINT_BACK_TO_USERS : users(user, callbackQuery.message(), true);return;
+                case POINT_BACK_TO_USERS : users(user, callbackQuery.message(), callbackQuery);return;
                 case POINT_REFRESH_USER : refreshUser(user, callbackQuery, data);return;
 
         }
@@ -175,7 +175,7 @@ public class MainFragment extends Fragment {
 
                         case "users" : 
 
-                        users(user, msg, false);
+                        users(user, msg, null);
 
 
                 }
@@ -186,12 +186,13 @@ public class MainFragment extends Fragment {
 
     }
 
-    public void users(UserData user, Message msg , boolean edit) {
+    public void users(UserData user, Message msg , CallbackQuery query) {
 
         if (user.twitterAccounts.size() == 0) {
 
             bot.execute(new SendMessage(msg.chat().id(), "还没有认证账号啦！ (*σ´∀`)σ"));
-
+            return;
+            
         }
 
         String userMsg = "这是所有已经认证的账号 ~\n也可以用/auth添加新账号哦 ~";
@@ -210,17 +211,13 @@ public class MainFragment extends Fragment {
 
         InlineKeyboardMarkup markup = markup(buttons);
 
-        if (edit) {
+        if (query == null) {
 
             bot.execute(new SendMessage(msg.chat().id(), userMsg).replyMarkup(markup));
 
         } else {
-
             
-            
-            EditMessageText editre1 = new EditMessageText(msg.chat().id(), msg.messageId(), userMsg).replyMarkup(markup);
-            System.out.println(editre1.toWebhookResponse());
-            BaseResponse resp = bot.execute(editre1);
+            BaseResponse resp = bot.execute(new EditMessageText(query.id(), userMsg).replyMarkup(markup));
             
             System.out.println(resp.isOk());
             System.out.println(resp.description());
