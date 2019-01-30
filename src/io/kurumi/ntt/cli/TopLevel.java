@@ -40,6 +40,8 @@ public class TopLevel extends CliUI {
                 rand(userData, obj, cmd);return;
                 
         }
+        
+        obj.send("嘤嘤嘤").exec();
 
     }
 
