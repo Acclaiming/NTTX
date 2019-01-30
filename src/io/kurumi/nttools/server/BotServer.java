@@ -55,12 +55,19 @@ public class BotServer extends NanoHTTPD {
             
             if (AuthCache.cache.containsKey(requestToken)) {
                 
+                
                 AuthCache.cache.remove(requestToken).onAuth(oauthVerifier);
+                return Response.newFixedLengthResponse(Markdown.parsePage("请返回Bot","#NTTBot 账号认证 ~\n到底成功了没 ？ (´▽`ʃƪ)"));
+                
+                
+            } else {
+                
+                return Response.newFixedLengthResponse(Markdown.parsePage("请返回Bot","#NTTBot 账号认证 ~\n这个认证链接过期了啦 再试试 ？ (´▽`ʃƪ)"));
+                
                 
             }
             
-            return Response.newFixedLengthResponse(Markdown.parsePage("请返回Bot","#NTTBot 账号认证 ~\n到底成功了没 ？ (´▽`ʃƪ)"));
-           
+            
         }
         
         if (session.getMethod() != Method.POST) return C404;
