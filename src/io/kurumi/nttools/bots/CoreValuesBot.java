@@ -12,35 +12,32 @@ import com.pengrad.telegrambot.model.request.InputTextMessageContent;
 import com.pengrad.telegrambot.model.request.InlineQueryResultGame;
 import com.pengrad.telegrambot.model.request.InlineQueryResultArticle;
 import io.kurumi.nttools.utils.Encoder;
+import cn.hutool.core.util.StrUtil;
 
 public class CoreValuesBot extends Fragment {
 
     public CoreValuesBot(MainFragment main) { super(main); }
-    
+
     @Override
     public String name() {
-        
+
         return "CoreValuesBot";
-        
+
     }
 
     static Encoder encoder = new Encoder(Encoder.coreValus);
-    
+
     @Override
     public void processInlineQuery(UserData user, InlineQuery inlineQuery) {
 
-        InlineQueryResultArticle result = new InlineQueryResultArticle(inlineQuery.id(), "编码完成", new InputTextMessageContent(encoder.encode(inlineQuery.query())));
+        if (!StrUtil.isBlank(inlineQuery.query())) {
 
-        bot.execute(new AnswerInlineQuery(inlineQuery.id(),result));
-        
-        
-    }
+            InlineQueryResultArticle result = new InlineQueryResultArticle(inlineQuery.id(), "编码完成 点这里发送 y( ˙ᴗ. ) ~", encoder.encode(inlineQuery.query()));
 
-    @Override
-    public void processChosenInlineQueryResult(UserData user, InlineQuery inlineQuery) {
-        
-       
-        
+            bot.execute(new AnswerInlineQuery(inlineQuery.id(), result));
+
+        }
+
     }
 
 }
