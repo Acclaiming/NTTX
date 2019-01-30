@@ -105,7 +105,7 @@ public class MainFragment extends Fragment {
 
                 case POINT_DELETE_FOLLOWRS : deleteFollowers(user, callbackQuery, data);return;
                 case POINT_DELETE_FRIENDS : deleteFriends(user, callbackQuery, data);return;
-                case POINT_DELETE_FRIENDS : deleteStatus(user, callbackQuery, data);return;
+                case POINT_DELETE_STATUS : deleteStatus(user, callbackQuery, data);return;
                 
         }
 
