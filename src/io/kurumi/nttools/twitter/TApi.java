@@ -12,6 +12,12 @@ public class TApi {
         return "「" + u.getName() + "」 (@" + u.getScreenName() + ")";
 
     }
+    
+    public static String formatUserNameMarkdown(User u) {
+
+        return "「" + u.getName() + "」 [(@" + u.getScreenName() + ")](https://twttter.com/" + u.getScreenName() + ")";
+
+    }
 
     public static LinkedList<User> getListUsers(Twitter api, long id) throws TwitterException {
 

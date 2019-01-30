@@ -1,6 +1,7 @@
 package io.kurumi.nttools.fragments;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.log.StaticLog;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.CallbackQuery;
@@ -12,6 +13,7 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.DeleteWebhook;
+import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetWebhook;
 import io.kurumi.nttools.server.BotServer;
 import io.kurumi.nttools.twitter.TwiAccount;
@@ -21,8 +23,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import cn.hutool.log.StaticLog;
-import com.pengrad.telegrambot.request.SendMessage;
 
 public abstract class Fragment {
 

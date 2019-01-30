@@ -11,6 +11,7 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.AnswerCallbackQuery;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.response.BaseResponse;
 import io.kurumi.nttools.server.AuthCache;
 import io.kurumi.nttools.twitter.ApiToken;
 import io.kurumi.nttools.twitter.TwiAccount;
@@ -22,7 +23,10 @@ import java.util.Map;
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
-import com.pengrad.telegrambot.response.BaseResponse;
+import twitter4j.Twitter;
+import io.kurumi.nttools.twitter.TApi;
+import twitter4j.User;
+import com.pengrad.telegrambot.model.request.ParseMode;
 
 public class MainFragment extends Fragment {
 
@@ -93,10 +97,93 @@ public class MainFragment extends Fragment {
         switch (data.getPoint()) {
 
                 case POINT_CHOOSE_USER : chooseUser(user, callbackQuery, data);return;
-                case POINT_BACK_TO_USERS : users(user, callbackQuery.message(),true);return;
+                case POINT_BACK_TO_USERS : users(user, callbackQuery.message(), true);return;
                 case POINT_REFRESH_USER : refreshUser(user, callbackQuery, data);return;
 
+                case POINT_DELETE_FOLLOWRS : deleteFollowers(user, callbackQuery, data);return;
+
         }
+
+        bot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("无效的指针 : " + data.getPoint()).showAlert(true));
+
+    }
+
+    private Thread deleteThread;
+
+    public class DeleteFollowersThread extends Thread {
+
+        private UserData user;
+        private CallbackQuery query;
+        private CData data;
+        private TwiAccount acc;
+
+        public DeleteFollowersThread(UserData user, CallbackQuery query, CData data) {
+            this.user = user;
+            this.query = query;
+            this.data = data;
+            this.acc = data.getUser(user);
+        }
+
+        @Override
+        public void run() {
+            
+            Twitter api =  acc.createApi();
+            
+            try {
+                
+               long[] fo = TApi.getAllFo(api);
+               
+               long[] fr = TApi.getAllFr(api);
+               
+               for(long id : fo) {
+                   
+                   if (!ArrayUtil.contains(fr,id)) {
+                       
+                       api.createBlock(id);
+                       api.destroyBlock(id);
+                       
+                       User u =api.showUser(id);
+
+                       update("清FO : " + TApi.formatUserNameMarkdown(u));
+                       
+                   }
+                   
+               }
+                
+            } catch (TwitterException e) {
+                
+                update(e.toString());
+                
+            }
+            
+            deleteThread = null;
+
+        }
+
+        public void update(String msg) {
+            
+            bot.execute(new SendMessage(query.message().chat().id(), msg).parseMode(ParseMode.Markdown));
+
+        }
+        
+    }
+
+    private void deleteFollowers(UserData user, CallbackQuery callbackQuery, CData data) {
+
+        if (deleteThread == null) {
+            
+            bot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("正在开始..."));
+            
+            deleteThread = new DeleteFollowersThread(user,callbackQuery,data);
+            
+            deleteThread.start();
+            
+            return;
+            
+        }
+        
+        bot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("还未结束..."));
+        
 
     }
 
@@ -105,13 +192,13 @@ public class MainFragment extends Fragment {
         if (data.getUser(user).refresh()) {
 
             bot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("刷新成功 ~"));
-            
-            chooseUser(user,callbackQuery,data);
+
+            chooseUser(user, callbackQuery, data);
 
         } else {
-            
+
             bot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("刷新失败 ~").showAlert(true));
-            
+
         }
 
     }
@@ -150,7 +237,7 @@ public class MainFragment extends Fragment {
 
                     });
 
-        bot.execute(new EditMessageText(callbackQuery.message().chat().id(),callbackQuery.message().messageId(), ArrayUtil.join(userMsg, "\n")).replyMarkup(markup(buttons)));
+        bot.execute(new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), ArrayUtil.join(userMsg, "\n")).replyMarkup(markup(buttons)));
 
     }
 
@@ -192,7 +279,7 @@ public class MainFragment extends Fragment {
 
             bot.execute(new SendMessage(msg.chat().id(), "还没有认证账号啦！ (*σ´∀`)σ"));
             return;
-            
+
         }
 
         String userMsg = "这是所有已经认证的账号 ~\n也可以用/auth添加新账号哦 ~";
@@ -216,20 +303,9 @@ public class MainFragment extends Fragment {
             bot.execute(new SendMessage(msg.chat().id(), userMsg).replyMarkup(markup));
 
         } else {
-            
-            EditMessageText req = new EditMessageText(msg.chat().id(),msg.messageId(), userMsg).replyMarkup(markup);
 
-            System.out.println(req.toWebhookResponse());
-            
-            BaseResponse resp = bot.execute(req);
-            
-            System.out.println(resp.isOk());
-            System.out.println(resp.description());
-            
-            System.out.println(resp);
-            
-            
-            
+            bot.execute(new EditMessageText(msg.chat().id(), msg.messageId(), userMsg).replyMarkup(markup));
+
         }
 
     }
@@ -248,7 +324,7 @@ public class MainFragment extends Fragment {
                     public void onAuth(String oauthVerifier) {
 
                         System.out.println("authing");
-                        
+
                         try {
 
                             AccessToken accessToken =  ApiToken.defaultToken.createApi().getOAuthAccessToken(requestToken, oauthVerifier);
