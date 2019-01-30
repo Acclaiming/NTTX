@@ -47,15 +47,11 @@ public class BotServer extends NanoHTTPD {
 
         if (URLUtil.url(session.getUri()).getPath().equals("/callback")) {
             
-            HashMap<String, String> params = HttpUtil.decodeParamMap(StrUtil.subAfter(session.getUri(), "?", true), "UTF-8");
-
-            if (params == null) return null;
-
-            String requestToken = params.get("oauth_token");
-            String oauthVerifier = params.get("oauth_verifier");
+            
+            String requestToken = session.getParms().get("oauth_token");
+            String oauthVerifier = session.getParms().get("oauth_verifier");
             
             if (AuthCache.cache.containsKey(requestToken)) {
-                
                 
                 AuthCache.cache.remove(requestToken).onAuth(oauthVerifier);
                 
@@ -64,7 +60,7 @@ public class BotServer extends NanoHTTPD {
                 
             } else {
                 
-                return Response.newFixedLengthResponse(Markdown.parsePage("请返回Bot","#NTTBot 账号认证 ~\n这个认证链接过期了啦 再试试 ？ (´▽`ʃƪ)\n\nrequestToken" + requestToken + "\ncaches : \n" + ArrayUtil.join(AuthCache.cache.keySet().toArray(),"\n")));
+                return Response.newFixedLengthResponse(Markdown.parsePage("请返回Bot","#NTTBot 账号认证 ~\n这个认证链接过期了啦 再试试 ？ (´▽`ʃƪ)\n\nrequestToken : " + requestToken + "\ncaches : \n" + ArrayUtil.join(AuthCache.cache.keySet().toArray(),"\n")));
                 
                 
             }
