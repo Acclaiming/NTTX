@@ -93,7 +93,7 @@ public class MainFragment extends Fragment {
         switch (data.getPoint()) {
 
                 case POINT_CHOOSE_USER : chooseUser(user, callbackQuery, data);return;
-                case POINT_BACK_TO_USERS : users(user, callbackQuery.message(), callbackQuery);return;
+                case POINT_BACK_TO_USERS : users(user, null, callbackQuery);return;
                 case POINT_REFRESH_USER : refreshUser(user, callbackQuery, data);return;
 
         }
