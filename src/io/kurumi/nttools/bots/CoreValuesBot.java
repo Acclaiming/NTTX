@@ -53,7 +53,7 @@ public class CoreValuesBot extends Fragment {
             
         } else {
             
-            bot.execute(new SendMessage(msg.chat().id(),"解码失败..."));
+            bot.execute(new SendMessage(msg.chat().id(),"解码失败 请直接发送需要解码的内容"));
             
         }
         

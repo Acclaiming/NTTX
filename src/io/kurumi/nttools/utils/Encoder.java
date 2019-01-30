@@ -91,7 +91,7 @@ public class Encoder {
                 
                 cache = new StringBuilder();
                 
-            }
+            } else return null;
 
         }
 
