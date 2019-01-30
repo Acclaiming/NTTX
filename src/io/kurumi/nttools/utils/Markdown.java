@@ -69,7 +69,7 @@ public class Markdown {
 
             if (content[index].endsWith("  ")) {
                 
-                content[index] = content[index] + " <br />";
+        //        content[index] = content[index] + " <br />";
                 
             }
             
