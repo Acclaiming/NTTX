@@ -21,6 +21,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import cn.hutool.log.StaticLog;
+import com.pengrad.telegrambot.request.SendMessage;
 
 public abstract class Fragment {
 
@@ -83,41 +85,82 @@ public abstract class Fragment {
 
     public void processUpdate(Update update) {
 
-        if (update.message() != null) {
+        UserData user = null;
 
-            UserData user = getUser(update.message());
+        try {
 
-            switch (update.message().chat().type()) {
+            if (update.message() != null) {
 
-                    case Private : processPrivateMessage(user, update.message());return;
-                    case group : processGroupMessage(user, false, update.message());return;
-                    case supergroup : processGroupMessage(user, true, update.message());return;
+                user = getUser(update.message());
+
+                switch (update.message().chat().type()) {
+
+                        case Private : processPrivateMessage(user, update.message());return;
+                        case group : processGroupMessage(user, false, update.message());return;
+                        case supergroup : processGroupMessage(user, true, update.message());return;
+
+                }
+
+            } else if (update.channelPost() != null) {
+
+                user = getUser(update.message().from());
+
+                processChannelPost(user, update.channelPost());
+
+            } else if (update.callbackQuery() != null) {
+
+                user = getUser(update.callbackQuery().from());
+
+                processCallbackQuery(user, update.callbackQuery());
+
+            } else if (update.inlineQuery() != null) {
+
+                user = getUser(update.inlineQuery().from());
+
+                processInlineQuery(user, update.inlineQuery());
+
+            } else if (update.chosenInlineResult() != null) {
+
+                user = getUser(update.chosenInlineResult().from());
+
+                processChosenInlineQueryResult(user, update.inlineQuery());
 
             }
 
-        } else if (update.channelPost() != null) {
+        } catch (Exception e) {
 
-            UserData user = getUser(update.message().from());
+            StaticLog.error(e, "处理更新失败");
 
-            processChannelPost(user, update.channelPost());
+            if (user.chatId != null) {
 
-        } else if (update.callbackQuery() != null) {
+                StringBuilder err = new StringBuilder();
 
-            UserData user = getUser(update.callbackQuery().from());
+                err.append("Bot出错 : ");
 
-            processCallbackQuery(user, update.callbackQuery());
+                err.append("\n更新 : " + update);
 
-        } else if (update.inlineQuery() != null) {
+                Throwable cause = e;
 
-            UserData user = getUser(update.inlineQuery().from());
+                while (cause != null) {
 
-            processInlineQuery(user, update.inlineQuery());
+                    err.append("\n\n错误 : " + cause.getClass().getName());
 
-        } else if (update.chosenInlineResult() != null) {
+                    err.append("\n\n" + cause.getMessage());
 
-            UserData user = getUser(update.chosenInlineResult().from());
+                    for (StackTraceElement stack : cause.getStackTrace())  {
 
-            processChosenInlineQueryResult(user, update.inlineQuery());
+                        err.append("\nat : " + stack.toString());
+                    }
+
+                    cause = cause.getCause();
+
+                }
+
+                bot.execute(new SendMessage(user.chatId, err.toString()));
+
+            }
+
+
 
         }
 
@@ -256,47 +299,47 @@ public abstract class Fragment {
         }
 
     }
-    
+
     public CData cdata(String point) {
-        
+
         CData data = new CData();
-        
+
         data.setPoint(point);
-        
+
         return data;
 
     }
-    
-    public CData cdata(String point,String index) {
-        
+
+    public CData cdata(String point, String index) {
+
         CData data = cdata(point);
 
         data.setindex(index);
-        
+
         return data;
-        
+
     }
-    
-    public CData cdata(String point,UserData userData,TwiAccount account) {
+
+    public CData cdata(String point, UserData userData, TwiAccount account) {
 
         CData data = cdata(point);
 
-        data.setUser(userData,account);
+        data.setUser(userData, account);
 
         return data;
 
     }
-    
-    public CData cdata(String point,String index,UserData userData,TwiAccount account) {
-        
+
+    public CData cdata(String point, String index, UserData userData, TwiAccount account) {
+
         CData data = cdata(point, index);
-        
-        data.setUser(userData,account);
-        
+
+        data.setUser(userData, account);
+
         return data;
 
     }
-    
+
     public void delete(Message msg) {
 
         bot.execute(new DeleteMessage(msg.chat().id(), msg.messageId()));
