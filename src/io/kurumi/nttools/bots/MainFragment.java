@@ -15,7 +15,7 @@ public class MainFragment extends Fragment {
 
         if (msg != null) {
 
-            if (msg.from().username().equals("HiedaNaKan") && msg.replyToMessage() != null && msg.replyToMessage().forwardFrom().username().equals("NTToolsBot")) {
+            if (msg.from().username().equals("HiedaNaKan") && msg.replyToMessage() != null && msg.replyToMessage() != null) {
 
                 bot.execute(new ForwardMessage(msg.replyToMessage().forwardFromChat().id(), msg.chat(), msg.messageId()));
 

@@ -58,8 +58,15 @@ public class BotServer extends NanoHTTPD {
             
         }
         
+        try {
+        
         fragment.processUpdate(update);
 
+        } catch (Exception exc) {
+            
+           exc.printStackTrace();
+            
+        }
         
         return Response.newFixedLengthResponse("");
     }
