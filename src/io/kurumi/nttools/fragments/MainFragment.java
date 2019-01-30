@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class MainFragment extends Fragment {
     
-    public int serverPort = 19132;
+    public int serverPort = -1;
     public String serverDomain;
     public File dataDir;
 

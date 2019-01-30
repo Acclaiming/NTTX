@@ -13,8 +13,6 @@ public class Launcher {
     public static void main(String[] args) {
         
         MainFragment mainBot = new MainFragment(new File("./data"));
-
-        mainBot.refresh();
         
         CoreValuesBot coreValuesBot = new CoreValuesBot(mainBot);
         
@@ -24,9 +22,9 @@ public class Launcher {
             
         }
         
-        coreValuesBot.initBot().setWebHook();
+        coreValuesBot.setWebHook();
         
-        mainBot.initBot().startGetUpdates();
+        mainBot.startGetUpdates();
         
         try {
             

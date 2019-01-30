@@ -13,36 +13,48 @@ public class Setup {
     public Setup(MainFragment main) {
 
         this.main = main;
-        
+
         addFregment(main);
 
     }
-    
+
     public Setup addFregment(Fragment bot) {
-        
+
         fragments.add(bot);
-        
+
         return this;
-        
+
     }
 
     static Scanner session = new Scanner(System.in);
 
     public void start() {
 
-        System.out.println("正在开始初始化...");
-
-        System.out.println();
-        
         for (Fragment bot :  fragments) {
-            
-            main.tokens.put(bot.name(),loopInput("BotToken for " + bot.name()));
-            
+
+            if (!main.tokens.containsKey(bot.name())) {
+
+                main.tokens.put(bot.name(), loopInput("BotToken for " + bot.name()));
+
+            }
+
+            bot.initBot();
+
         }
 
-        main.serverPort = loopInputInt("本地端口");
-        main.serverDomain = loopInput("域名");
-        
+        if (main.serverPort == -1) {
+
+            main.serverPort = loopInputInt("本地端口");
+
+
+        }
+
+        if (main.serverDomain == null) {
+
+            main.serverDomain = loopInput("域名");
+
+        }
+
         main.save();
 
     }
