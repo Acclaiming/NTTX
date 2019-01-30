@@ -496,9 +496,9 @@ public class MainFragment extends Fragment {
 
                 long id = obj.getJSONObject("follower").getLong("accountId");
 
-                if (showCache.size() < 200) {
+                if (showCache.size() < 100) {
                     
-                    // lookUpUsers 上限 200
+                    // lookUpUsers 上限 100
 
                     showCache.add(id);
 
