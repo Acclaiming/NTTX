@@ -36,7 +36,7 @@ public class Setup {
         
         for (Fragment bot :  fragments) {
             
-            bot.token = loopInput("BotToken for " + bot.name());
+            main.tokens.put(bot.name(),loopInput("BotToken for " + bot.name()));
             
         }
 
