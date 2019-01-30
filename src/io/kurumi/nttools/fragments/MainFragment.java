@@ -150,7 +150,7 @@ public class MainFragment extends Fragment {
 
                     });
 
-        bot.execute(new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), ArrayUtil.join(userMsg, "\n")).replyMarkup(markup(buttons)));
+        bot.execute(new EditMessageText(callbackQuery.inlineMessageId(), ArrayUtil.join(userMsg, "\n")).replyMarkup(markup(buttons)));
 
     }
 
@@ -217,7 +217,7 @@ public class MainFragment extends Fragment {
 
         } else {
             
-            EditMessageText req = new EditMessageText(query.id(), userMsg).replyMarkup(markup);
+            EditMessageText req = new EditMessageText(query.inlineMessageId(), userMsg).replyMarkup(markup);
 
             System.out.println(req.toWebhookResponse());
             
