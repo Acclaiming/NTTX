@@ -1,35 +1,46 @@
 package io.kurumi.nttools.fragments;
 
 
+
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import com.pengrad.telegrambot.model.CallbackQuery;
+import com.pengrad.telegrambot.model.Document;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.AnswerCallbackQuery;
 import com.pengrad.telegrambot.request.EditMessageText;
+import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendMessage;
-import com.pengrad.telegrambot.response.BaseResponse;
+import com.pengrad.telegrambot.response.GetFileResponse;
 import io.kurumi.nttools.server.AuthCache;
 import io.kurumi.nttools.twitter.ApiToken;
+import io.kurumi.nttools.twitter.TApi;
 import io.kurumi.nttools.twitter.TwiAccount;
 import io.kurumi.nttools.utils.CData;
 import io.kurumi.nttools.utils.UserData;
 import java.io.File;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import twitter4j.Paging;
+import twitter4j.ResponseList;
+import twitter4j.Status;
+import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
-import twitter4j.Twitter;
-import io.kurumi.nttools.twitter.TApi;
-import twitter4j.User;
-import com.pengrad.telegrambot.model.request.ParseMode;
-import twitter4j.ResponseList;
-import twitter4j.Paging;
-import twitter4j.Status;
+import io.kurumi.nttools.utils.Telegraph;
+import io.kurumi.nttools.utils.Telegraph.Account;
+import io.kurumi.nttools.utils.Telegraph.Page;
 
 public class MainFragment extends Fragment {
 
@@ -44,7 +55,7 @@ public class MainFragment extends Fragment {
         this.dataDir = dataDir;
 
         refresh();
-       
+
 
     }
 
@@ -107,7 +118,7 @@ public class MainFragment extends Fragment {
                 case POINT_DELETE_FOLLOWRS : deleteFollowers(user, callbackQuery, data);return;
                 case POINT_DELETE_FRIENDS : deleteFriends(user, callbackQuery, data);return;
                 case POINT_DELETE_STATUS : deleteStatus(user, callbackQuery, data);return;
-                
+
         }
 
         bot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("无效的指针 : " + data.getPoint()).showAlert(true));
@@ -115,7 +126,7 @@ public class MainFragment extends Fragment {
     }
 
     private Thread deleteThread;
-    
+
     public class DeleteStatusThread extends Thread {
 
         private UserData user;
@@ -136,31 +147,31 @@ public class MainFragment extends Fragment {
         public void run() {
 
             Twitter api =  acc.createApi();
-            
+
             try {
-                
+
                 ResponseList<Status> tl =  api.getUserTimeline(new Paging().count(200));
-                
+
                 for (Status s : tl) {
-                    
+
                     api.destroyStatus(s.getId());
-                    
+
                     update(s.getText());
-                    
+
                 }
 
             } catch (TwitterException e) {}
 
         }
-        
+
         public void update(String msg) {
 
             bot.execute(new SendMessage(query.message().chat().id(), msg).parseMode(ParseMode.Markdown));
 
         }
-        
-        
-        
+
+
+
     }
 
     public class DeleteThread extends Thread {
@@ -205,8 +216,16 @@ public class MainFragment extends Fragment {
 
                 for (long id : fo) {
 
-                    api.createBlock(id);
-                    api.destroyBlock(id);
+                    if (fr) {
+
+                        api.destroyFriendship(id);
+
+                    } else {
+
+                        api.createBlock(id);
+                        api.destroyBlock(id);
+
+                    }
 
                     if (showCache.size() < 20) {
 
@@ -276,7 +295,7 @@ public class MainFragment extends Fragment {
 
             bot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("正在开始..."));
 
-            deleteThread = new DeleteThread(user, callbackQuery, data,false);
+            deleteThread = new DeleteThread(user, callbackQuery, data, false);
 
             deleteThread.start();
 
@@ -284,18 +303,18 @@ public class MainFragment extends Fragment {
 
         }
 
-        bot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("还未结束..."));
+        bot.execute(new AnswerCallbackQuery(callbackQuery.id()).text(" 还未结束..."));
 
 
     }
-    
+
     private void deleteFriends(UserData user, CallbackQuery callbackQuery, CData data) {
 
         if (deleteThread == null) {
 
             bot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("正在开始..."));
 
-            deleteThread = new DeleteThread(user, callbackQuery, data,true);
+            deleteThread = new DeleteThread(user, callbackQuery, data, true);
 
             deleteThread.start();
 
@@ -307,7 +326,7 @@ public class MainFragment extends Fragment {
 
 
     }
-    
+
     private void deleteStatus(UserData user, CallbackQuery callbackQuery, CData data) {
 
         if (deleteThread == null) {
@@ -324,9 +343,9 @@ public class MainFragment extends Fragment {
 
         bot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("还未结束..."));
 
-    
-        }
-    
+
+    }
+
 
     private void refreshUser(UserData user, CallbackQuery callbackQuery, CData data) {
 
@@ -387,6 +406,14 @@ public class MainFragment extends Fragment {
 
         if (user.point == null) {
 
+            if (msg.document() != null) {
+
+                processDocument(user, msg);
+
+                return;
+
+            }
+
             if (isCommand(msg)) {
 
                 String commandName = getCommandName(msg);
@@ -410,6 +437,98 @@ public class MainFragment extends Fragment {
 
             }
 
+        }
+
+    }
+
+    private void processDocument(UserData user, Message msg) {
+
+        Document doc = msg.document();
+
+        // "application/javascript".equals(doc.mimeType().toLowerCase());
+
+        switch (doc.fileName()) {
+
+                case "follower.js" : processFollowers(user, msg, doc);
+
+        }
+
+    }
+
+    private void processFollowers(UserData user, Message msg, Document doc) {
+
+        if (user.twitterAccounts.size() == 0) {
+
+            bot.execute(new SendMessage(msg.chat().id(), "还没有认证账号 (◦˙▽˙◦) \n无法访问showUser API"));
+            return;
+
+        }
+
+        GetFileResponse resp = bot.execute(new GetFile(doc.fileId()));
+
+        File local = new File(dataDir, name() + "/cache/follower_js/" + resp.file().filePath());
+
+        if (local.isFile()) {
+
+            String path = "https://telegra.ph/FollowesForJS%20:%20" + SecureUtil.md5(local).toUpperCase();
+
+            bot.execute(new SendMessage(msg.chat(), "已经有分析了 : " + path));
+
+            return;
+
+        }
+
+        try {
+
+            Twitter api = user.twitterAccounts.getFirst().createApi();
+
+            HttpUtil.downloadFile(bot.getFullFilePath(resp.file()), local);
+
+            String js = FileUtil.readUtf8String(local);
+
+            JSONArray json = new JSONArray(StrUtil.subAfter(js, " = ", false));
+
+            StringBuilder page = new StringBuilder();
+
+            LinkedList<Long> showCache = new LinkedList<>();
+
+            for (JSONObject obj : (List<JSONObject>)(Object)json) {
+
+                long id = obj.getJSONObject("follower").getLong("accountId");
+
+                if (showCache.size() < 200) {
+                    
+                    // lookUpUsers 上限 200
+
+                    showCache.add(id);
+
+                } else {
+
+                    long[] ids = ArrayUtil.unWrap(showCache.toArray(new Long[200]));
+
+                    showCache.clear();
+
+                    ResponseList<User> users = api.lookupUsers(ids);
+
+                    for (User u : users) {
+
+                        page.append(TApi.formatUserNameMarkdown(u));
+                        page.append("\n");
+
+                    }
+
+                }
+
+            }
+            
+            Telegraph.Page graph = Telegraph.createPage("NTTBot", "https://t.me/NTToolsBot", "FollowesForJS%20:%20" + SecureUtil.md5(local).toUpperCase(), page.toString());
+
+           bot.execute(new SendMessage(msg.chat().id(),"分析完成 ~\n" + graph.getUrl()));
+
+        } catch (Exception ex) {
+            
+            bot.execute(new SendMessage(msg.chat().id(),ex.toString()));
+            
         }
 
     }

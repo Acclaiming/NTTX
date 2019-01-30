@@ -15,7 +15,7 @@ public class TApi {
     
     public static String formatUserNameMarkdown(User u) {
 
-        return "「" + u.getName() + "」 [(@" + u.getScreenName() + ")](https://twttter.com/" + u.getScreenName() + ")";
+        return "「" + u.getName() + "」 [(@" + u.getScreenName() + ")](https://twitter.com/" + u.getScreenName() + ")";
 
     }
 
