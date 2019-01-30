@@ -44,6 +44,7 @@ public class MainFragment extends Fragment {
         this.dataDir = dataDir;
 
         refresh();
+       
 
     }
 
