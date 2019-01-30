@@ -234,6 +234,8 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onAuth(String oauthVerifier) {
 
+                        System.out.println("authing");
+                        
                         try {
 
                             AccessToken accessToken =  ApiToken.defaultToken.createApi().getOAuthAccessToken(requestToken, oauthVerifier);
