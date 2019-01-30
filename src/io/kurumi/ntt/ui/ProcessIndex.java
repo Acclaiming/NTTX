@@ -5,13 +5,10 @@ package io.kurumi.ntt.ui;
 import cn.hutool.log.*;
 import com.pengrad.telegrambot.model.*;
 import io.kurumi.ntt.*;
-import io.kurumi.ntt.cli.*;
-import io.kurumi.ntt.ui.*;
 import io.kurumi.ntt.ui.entries.*;
 import io.kurumi.ntt.ui.ext.*;
 import io.kurumi.ntt.ui.request.*;
 
-import io.kurumi.ntt.cli.TopLevel;
 
 public class ProcessIndex {
 
@@ -125,7 +122,6 @@ public class ProcessIndex {
         
         DataObject obj = new DataObject(message);
 
-        TopLevel.INSTANCE.process(userData, obj);
         
         return null;
         
