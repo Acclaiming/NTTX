@@ -527,7 +527,7 @@ public class MainFragment extends Fragment {
 
         } catch (Exception ex) {
             
-            bot.execute(new SendMessage(msg.chat().id(),ex.toString()));
+            throw new RuntimeException(ex);
             
         }
 

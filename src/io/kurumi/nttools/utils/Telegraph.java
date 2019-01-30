@@ -95,7 +95,7 @@ public class Telegraph {
     
     public static Page createPage(String authorName, String authorUrl, String title, String content, Boolean returnContent) {
     
-        return createPageWithAuth(null,authorName,authorUrl,title,content,returnContent);
+        return createPageWithAuth(createAccount(authorName,authorName).getAccessToken(),authorName,authorUrl,title,content,returnContent);
 
     }
     
