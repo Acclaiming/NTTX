@@ -222,7 +222,12 @@ public class MainFragment extends Fragment {
             System.out.println(editre1.toWebhookResponse());
             BaseResponse resp = bot.execute(editre1);
             
+            System.out.println(resp.isOk());
+            System.out.println(resp.description());
+            
             System.out.println(resp);
+            
+            
             
         }
 
