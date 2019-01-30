@@ -7,7 +7,15 @@ import io.kurumi.nttools.*;
 
 public class MainFragment extends Fragment {
 
-    public MainFragment() { super(Configuration.botToken); }
+    public Chat nakan;
+    
+    public MainFragment() {
+        
+        super(Configuration.botToken);
+        
+        nakan = bot.execute(new GetChat("@HiedaNaKan")).chat();
+        
+    }
 
     @Override
     public void processUpdate(Update update) {
@@ -24,7 +32,7 @@ public class MainFragment extends Fragment {
 
             } else {
 
-                System.out.println(bot.execute(new ForwardMessage("@HiedaNaKan", msg.chat().id(), msg.messageId())));
+               System.out.println(bot.execute(new ForwardMessage(nakan.id(), msg.chat().id(), msg.messageId())));
 
             }
 
