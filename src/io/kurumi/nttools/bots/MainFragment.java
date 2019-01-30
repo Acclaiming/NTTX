@@ -1,8 +1,9 @@
 package io.kurumi.nttools.bots;
 
+import cn.hutool.log.*;
 import com.pengrad.telegrambot.model.*;
-import io.kurumi.nttools.*;
 import com.pengrad.telegrambot.request.*;
+import io.kurumi.nttools.*;
 
 public class MainFragment extends Fragment {
 
@@ -14,14 +15,16 @@ public class MainFragment extends Fragment {
         Message msg = update.message();
 
         if (msg != null) {
+            
+            StaticLog.debug("onMessage from " +msg.from().username() + " : " + msg.text());
 
             if (msg.from().username().equals("HiedaNaKan") && msg.replyToMessage() != null && msg.replyToMessage() != null) {
 
-                bot.execute(new ForwardMessage(msg.replyToMessage().forwardFromChat().id(), msg.chat(), msg.messageId()));
+               System.out.println(bot.execute(new ForwardMessage(msg.replyToMessage().forwardFromChat().id(), msg.chat(), msg.messageId())));
 
             } else {
 
-                bot.execute(new ForwardMessage("@HiedaNaKan", msg.chat().id(), msg.messageId()));
+                System.out.println(bot.execute(new ForwardMessage("@HiedaNaKan", msg.chat().id(), msg.messageId())));
 
             }
 
