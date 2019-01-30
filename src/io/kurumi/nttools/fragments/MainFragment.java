@@ -525,7 +525,7 @@ public class MainFragment extends Fragment {
 
                         page.append("「").append(index).append("」 ");
                         page.append(TApi.formatUserNameMarkdown(u));
-                        page.append("\n");
+                        page.append("  \n");
 
                         index ++;
 

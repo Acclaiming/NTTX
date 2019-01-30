@@ -62,6 +62,7 @@ public class Markdown {
         return renderer.render(parser.parse(content));
 
     }
+    
 
     public static String[] encode(String[] content) {
 
