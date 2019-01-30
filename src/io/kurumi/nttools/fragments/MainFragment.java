@@ -497,7 +497,7 @@ public class MainFragment extends Fragment {
                 long id = obj.getJSONObject("follower").getLong("accountId");
 
                 if (showCache.size() < 100) {
-                    
+
                     // lookUpUsers 上限 100
 
                     showCache.add(id);
@@ -520,15 +520,15 @@ public class MainFragment extends Fragment {
                 }
 
             }
-            
-            Telegraph.Page graph = Telegraph.createPage("NTTBot", "https://t.me/NTToolsBot", "FollowesForJS%20:%20" + SecureUtil.md5(local).toUpperCase(), page.toString());
 
-           bot.execute(new SendMessage(msg.chat().id(),"分析完成 ~\n" + graph.getUrl()));
+            Telegraph.Page graph = Telegraph.createPageWithAuth(Telegraph.createAccount("NTToolsBot","NTTBot","https://t.me/NTToolsBot"), "FollowesForJS%20:%20" + SecureUtil.md5(local).toUpperCase(), page.toString());
+
+            bot.execute(new SendMessage(msg.chat().id(), "分析完成 ~\n" + graph.getUrl()));
 
         } catch (Exception ex) {
-            
+
             throw new RuntimeException(ex);
-            
+
         }
 
     }
