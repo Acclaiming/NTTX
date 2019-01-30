@@ -36,7 +36,6 @@ public class Functions {
 
         "还没有认证Twitter账号 🤔",
         "这个功能使用的TwitterApi需要用户上下文 (",
-        "使用 /newTwitterAuth 认证",
 
     };
 
@@ -198,7 +197,7 @@ public class Functions {
             .append("位置 : ").append(u.getLocation()).append("\n\n")
             .append("锁推 : ").append(u.isProtected() ? "是" : "否").append("\n\n")
 
-            .append("创建的列表数量 : ").append(u.getListedCount()).append("\n\n")
+            .append("相关列表数量 : ").append(u.getListedCount()).append("\n\n")
 
             .append("注册时间 : ").append(u.getCreatedAt().toLocaleString()).append("\n\n")
 

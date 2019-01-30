@@ -27,6 +27,12 @@ public class DataObject extends JSONObject {
         super(json);
     }
     
+    public DataObject(Message msg) {
+        super();
+        this.msg = msg;
+        this.chat = msg.chat();
+    }
+    
     public DataObject(CallbackQuery query) {
         super(query.data());
         this.query = query;
@@ -36,7 +42,7 @@ public class DataObject extends JSONObject {
     
     public void confirmQuery() {
         
-        new AnswerCallback(query()).exec();
+        new AnswerCallback(query).exec();
         
     }
     
