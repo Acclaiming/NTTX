@@ -78,7 +78,9 @@ public class TopLevel extends CliUI {
 
         if (users.size() == 0) {
 
-            obj.send("发送失败 只有乃在用这个Bot！");
+            obj.send("发送失败 只有乃在用这个Bot！").exec();
+            
+            return;
 
         }
 
