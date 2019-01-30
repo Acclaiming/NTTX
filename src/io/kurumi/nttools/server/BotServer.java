@@ -1,23 +1,25 @@
 package io.kurumi.nttools.server;
 
-import cn.hutool.core.util.*;
-import com.pengrad.telegrambot.*;
-import com.pengrad.telegrambot.model.*;
-import io.kurumi.ntt.*;
-import io.kurumi.ntt.ui.*;
-import io.kurumi.ntt.ui.request.*;
-import io.kurumi.nttools.bots.*;
-import java.io.*;
-import java.util.*;
-import org.nanohttpd.protocols.http.*;
-import org.nanohttpd.protocols.http.request.*;
-import org.nanohttpd.protocols.http.response.*;
-import com.pengrad.telegrambot.request.*;
-import io.kurumi.nttools.*;
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
+import com.pengrad.telegrambot.BotUtils;
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.DeleteWebhook;
+import io.kurumi.nttools.fragments.Fragment;
+import io.kurumi.nttools.fragments.MainFragment;
+import java.io.IOException;
+import java.util.HashMap;
+import org.nanohttpd.protocols.http.IHTTPSession;
+import org.nanohttpd.protocols.http.NanoHTTPD;
+import org.nanohttpd.protocols.http.request.Method;
+import org.nanohttpd.protocols.http.response.Response;
+import org.nanohttpd.protocols.http.response.Status;
 
 public class BotServer extends NanoHTTPD {
 
-    public BotServer() { super(Configuration.localPort); }
+    public BotServer(MainFragment bot) { super(bot.serverPort); }
     
     public static HashMap<String,Fragment> bots = new HashMap<>();
     
@@ -71,6 +73,6 @@ public class BotServer extends NanoHTTPD {
         return Response.newFixedLengthResponse("");
     }
     
-    public static final BotServer INSTANCE = new BotServer();
+    public static BotServer INSTANCE;
     
 }

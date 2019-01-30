@@ -1,4 +1,4 @@
-package io.kurumi.ntt.naiveboom;
+ package io.kurumi.nttools.utils;
 
 import cn.hutool.http.*;
 import java.util.*;

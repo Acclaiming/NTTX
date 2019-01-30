@@ -1,4 +1,4 @@
-package io.kurumi.ntt.twitter;
+package io.kurumi.nttools.twitter;
 
 import cn.hutool.json.*;
 import twitter4j.*;

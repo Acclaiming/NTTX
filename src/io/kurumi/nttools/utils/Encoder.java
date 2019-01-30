@@ -1,4 +1,4 @@
-package io.kurumi.ntt.encode;
+package io.kurumi.nttools.utils;
 
 import java.util.*;
 

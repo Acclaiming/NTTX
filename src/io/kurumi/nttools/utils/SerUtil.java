@@ -1,4 +1,4 @@
-package io.kurumi.ntt.serialize;
+package io.kurumi.nttools.utils;
 
 import java.io.*;
 import cn.hutool.core.util.*;

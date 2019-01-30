@@ -1,4 +1,4 @@
-package io.kurumi.ntt.md;
+package io.kurumi.nttools.utils;
 
 import java.util.*;
 import org.commonmark.*;

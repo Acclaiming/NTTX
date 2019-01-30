@@ -1,63 +1,53 @@
-package io.kurumi.ntt;
-
-import cn.hutool.core.io.*;
-import cn.hutool.json.*;
-import com.pengrad.telegrambot.model.*;
-import io.kurumi.ntt.twitter.*;
-import io.kurumi.ntt.ui.*;
-import io.kurumi.ntt.ui.request.*;
-import java.io.*;
-import java.util.*;
+package io.kurumi.nttools.utils;
 
 import java.io.File;
+import cn.hutool.json.*;
+import com.pengrad.telegrambot.model.*;
+import cn.hutool.core.io.*;
+import java.util.*;
+import io.kurumi.nttools.fragments.Fragment;
+import io.kurumi.nttools.twitter.TwiAccount;
+import cn.hutool.core.util.ArrayUtil;
 
 public class UserData {
 
-    public Data data;
+    public Fragment bot;
     public long id;
     public File userDataFile;
-
+    
     public Long chatId;
 
-    public UserData(Data data, long id) {
+    public UserData(Fragment bot, long id) {
 
-        this.data = data;
+        this.bot = bot;
         this.id = id;
 
-        userDataFile = new File(data.dataDir, "users/" + id + ".json");
-
-        refresh();
+        userDataFile = new File(bot.main.dataDir,bot.name() +  "/users/" + id + ".json");
 
     }
 
- 
-    public boolean isAdmin = false;
-    public boolean isBanned = false;
-
+    public boolean isAdmin() {
+        
+        String[] admins = new String[] {
+            "HiedaNaKan",
+            "dodolookyukina",
+            "bakaoxoxox",
+            "qtqjaq",
+            "shinoharaMia",
+        };
+        
+        return ArrayUtil.contains(admins,userName);
+        
+    }
+    
     public String userName;
     public String name;
     public boolean isBot = false;
 
-    public DataObject point;
-    
+    public String point;
+
     public JSONObject ext;
-    
-    public void setPoint(String pointStr) {
-        
-        point = new DataObject();
- 
-        point.setPoint(pointStr);
-        
-    }
-    
-    public String getPoint() {
 
-        if (point == null) return "";
-        
-        else return point.getPoint();
-
-    }
-    
 
     // public LinkedList<ApiToken> apiTokens = new LinkedList<>();
     public LinkedList<TwiAccount> twitterAccounts = new LinkedList<>();
@@ -73,30 +63,23 @@ public class UserData {
         name = first;
 
     }
-    
+
     public void refresh() {
 
         try {
 
             JSONObject userData = new JSONObject(FileUtil.readUtf8String(userDataFile));
 
-           // registered = userData.getBool("registered", false);
-            isAdmin = userData.getBool("is_admin", false);
-            isBanned = userData.getBool("is_banned", false);
-            userName = userData.getStr("user_name", "");
+                       userName = userData.getStr("user_name", "");
             name = userData.getStr("name", "");
             isBot = userData.getBool("is_bot", false);
-            
-            String pointStr = userData.getStr("point");
-            
-            if (pointStr != null) {
-                
-                point = new DataObject(pointStr);
-                
-            }
+
+            point = userData.getStr("point");
+
+
 
             chatId = userData.getLong("chatId");
-            
+
             List<JSONObject> twitterAccountList = (List<JSONObject>)(Object)userData.getJSONArray("twitter_accounts");
 
             twitterAccounts.clear();
@@ -106,13 +89,13 @@ public class UserData {
                 twitterAccounts.add(new TwiAccount(obj));
 
             }
-            
+
             ext= userData.getJSONObject("ext");
-            
+
             if (ext == null) {
-                
+
                 ext = new JSONObject();
-                
+
             }
 
             /*
@@ -138,21 +121,17 @@ public class UserData {
 
         JSONObject userData = new JSONObject();
 
-     //   userData.put("registered", registered);
-        userData.put("is_admin", isAdmin);
-        userData.put("is_banned", isBanned);
-
         userData.put("user_name", userName);
         userData.put("name", name);
 
         userData.put("is_bot", isBot);
-        
+
         userData.put("point", point);
 
         userData.put("chatId", chatId);
 
         userData.put("ext",ext);
-        
+
         /*
 
          JSONArray apiTokenList = new JSONArray();
@@ -202,11 +181,11 @@ public class UserData {
         isBot = from.isBot();
 
     }
-    
+
     public TwiAccount findUser(String accountId) {
-        
+
         return findUser(Long.parseLong(accountId));
-        
+
     }
 
     public TwiAccount findUser(long accountId) {
@@ -231,23 +210,18 @@ public class UserData {
 
     }
 
-    public SendMsg send(String... msg) {
-        
-        return new SendMsg(chatId,msg);
-        
-    }
-
     @Override
     public boolean equals(Object obj) {
-        
+
         if (super.equals(obj)) return true;
-        
+
         if (!(obj instanceof UserData)) return false;
-        
+
         if (((UserData)obj).id != id) return false;
-        
+
         return true;
-        
+
     }
 
 }
+

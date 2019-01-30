@@ -1,37 +1,49 @@
-package io.kurumi.ntt;
+package io.kurumi.nttools;
 
-import io.kurumi.ntt.ui.ext.*;
-import java.util.*;
+import io.kurumi.nttools.fragments.Fragment;
+import io.kurumi.nttools.fragments.MainFragment;
+import java.util.LinkedList;
+import java.util.Scanner;
 
 public class Setup {
 
-    static Data data = Constants.data;
+    MainFragment main;
+    LinkedList<Fragment> fragments = new LinkedList<>();
+
+    public Setup(MainFragment main) {
+
+        this.main = main;
+        
+        addFregment(main);
+
+    }
+    
+    public Setup addFregment(Fragment bot) {
+        
+        fragments.add(bot);
+        
+        return this;
+        
+    }
 
     static Scanner session = new Scanner(System.in);
 
-    public static void start() {
+    public void start() {
 
         System.out.println("正在开始初始化...");
 
         System.out.println();
-
-        data.botToken = loopInput("BotToken");
-
-        System.out.println();
-
-        System.out.println("要使用认证和消息回调服务器吗？\n您必须反向代理本地端口到输入的域名");
-
-        System.out.print("y / N : ");
-
-        if (data.useServer = confirm()) {
-
-            data.serverPort = loopInputInt("本地端口");
-            data.serverDomain = loopInput("域名");
-         //   data.authServerEnableSSL = loopInputBoolean();
+        
+        for (Fragment bot :  fragments) {
+            
+            bot.token = loopInput("BotToken for " + bot.name());
             
         }
+
+        main.serverPort = loopInputInt("本地端口");
+        main.serverDomain = loopInput("域名");
         
-        data.save();
+        main.save();
 
     }
 
@@ -48,9 +60,9 @@ public class Setup {
                 return content;
 
             } else {
-                
+
                 System.out.print("请重新输入 : ");
-                
+
             }
 
         } while(true);
@@ -72,7 +84,7 @@ public class Setup {
                 if (defaultConfirm()) {
 
                     return i;
-                    
+
                 } else {
 
                     System.out.print("请重新输入 :");

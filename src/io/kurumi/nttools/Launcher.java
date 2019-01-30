@@ -1,24 +1,36 @@
 package io.kurumi.nttools;
 
-import io.kurumi.nttools.bots.*;
+import io.kurumi.nttools.fragments.*;
 import cn.hutool.core.io.*;
 import cn.hutool.core.util.*;
 import io.kurumi.nttools.server.*;
 import twitter4j.conf.*;
 import java.io.*;
+import io.kurumi.nttools.bots.CoreValuesBot;
 
 public class Launcher {
     
-    public static Fragment mainBot;
-    public static BotServer server;
-    
     public static void main(String[] args) {
         
-        mainBot = new MainFragment();
+        MainFragment mainBot = new MainFragment(new File("./data"));
+
+        mainBot.refresh();
         
-        mainBot.startGetUpdates();
+        CoreValuesBot coreValuesBot = new CoreValuesBot(mainBot);
+        
+        if (mainBot.token == null) {
+            
+            new Setup(mainBot).addFregment(coreValuesBot).start();
+            
+        }
+        
+        coreValuesBot.initBot().setWebHook();
+        
+        mainBot.initBot().startGetUpdates();
         
         try {
+            
+            BotServer.INSTANCE = new BotServer(mainBot);
             
             BotServer.INSTANCE.start();
             
