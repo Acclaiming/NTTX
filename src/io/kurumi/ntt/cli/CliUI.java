@@ -65,8 +65,12 @@ public abstract class CliUI {
         if (args == null) args = new String[0];
 
         try {
+            
+            Options options = getOptions(commandName);
+            
+            if (options == null) options = new Options();
 
-            CommandLine cmd = parser.parse(getOptions(commandName), args , true);
+            CommandLine cmd = parser.parse(options, args);
 
             onCommand(userData, obj, commandName, cmd);
 
