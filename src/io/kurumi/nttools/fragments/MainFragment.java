@@ -143,7 +143,7 @@ public class MainFragment extends Fragment {
                     api.createBlock(id);
                     api.destroyBlock(id);
                     
-                    if (showCache.size() < 20) {
+                    if (showCache.size() < 10) {
                         
                         showCache.add(id);
                         
