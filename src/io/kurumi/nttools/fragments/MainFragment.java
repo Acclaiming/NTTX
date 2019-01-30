@@ -162,6 +162,8 @@ public class MainFragment extends Fragment {
                         
                         update(update.toString());
                         
+                        showCache.clear();
+                        
                     }
 
 
