@@ -42,7 +42,7 @@ public class TopLevel extends CliUI {
                 
         }
         
-        obj.send("嘤嘤嘤").exec();
+        obj.send(printHelp()).exec();
 
     }
 
