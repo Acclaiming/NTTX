@@ -507,7 +507,7 @@ public class MainFragment extends Fragment {
 
                     for (User u : users) {
 
-                        page.append(Markdown.encode(TApi.formatUserNameMarkdown(u)));
+                        page.append(TApi.formatUserNameMarkdown(u));
                         page.append("\n");
 
                     }

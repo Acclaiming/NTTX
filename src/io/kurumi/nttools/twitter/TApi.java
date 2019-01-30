@@ -4,6 +4,7 @@ import twitter4j.*;
 import java.util.*;
 import java.lang.reflect.*;
 import cn.hutool.core.util.*;
+import io.kurumi.nttools.utils.Markdown;
 
 public class TApi {
 
@@ -15,7 +16,7 @@ public class TApi {
     
     public static String formatUserNameMarkdown(User u) {
 
-        return "「" + u.getName() + "」 [(@" + u.getScreenName() + ")](https://twitter.com/" + u.getScreenName() + ")";
+        return "「" + Markdown.encode((u.getName()) + "」 [(@" + u.getScreenName() + ")](https://twitter.com/" + u.getScreenName() + ")";
 
     }
 
