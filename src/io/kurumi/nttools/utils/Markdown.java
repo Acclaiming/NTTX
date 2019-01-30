@@ -43,6 +43,7 @@ public class Markdown {
         builder.append("<html>");
         builder.append("<head>");
 
+        builder.append("<meta charset=\"UTF-8\">");
         builder.append("<meta content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;\" name=\"viewport\" />");
         builder.append("<title>").append(title).append("</title>");
                 

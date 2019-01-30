@@ -555,11 +555,14 @@ public class MainFragment extends Fragment {
 
 
             }
-            String html = Markdown.parsePage("所有 " + (friend ? "关注的人" : "关注者"), page.toString());
+            String html = Markdown.parsePage("所有 " + (friend ? "关注的人" : "关注者"), "# 这是你的结果 (｡>∀<｡)\n" + page.toString());
 
             FileUtil.writeUtf8String(html, result);
 
             bot.execute(new SendMessage(msg.chat().id(), "分析成功 (｡>∀<｡) :"));
+            
+           
+            
             bot.execute(new SendDocument(msg.chat().id(), result));
 
 
