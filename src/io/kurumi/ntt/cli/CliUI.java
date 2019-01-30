@@ -76,7 +76,7 @@ public abstract class CliUI {
 
         } catch (ParseException e) {
 
-            obj.send(printHelp(commandName));
+            obj.send(printHelp(commandName)).exec();
 
         }
 
