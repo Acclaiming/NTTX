@@ -466,23 +466,17 @@ public class MainFragment extends Fragment {
 
         GetFileResponse resp = bot.execute(new GetFile(doc.fileId()));
 
-        File local = new File(dataDir, name() + "/cache/follower_js/" + resp.file().filePath());
-
-        if (local.isFile()) {
-
-            String path = "https://telegra.ph/FollowesForJS%20:%20" + SecureUtil.md5(local).toUpperCase();
-
-            bot.execute(new SendMessage(msg.chat(), "已经有分析了 : " + path));
-
-            return;
-
-        }
+        File local = new File(dataDir, name() + "/cache/follower_js/" + resp.file().fileId());
 
         try {
 
             Twitter api = user.twitterAccounts.getFirst().createApi();
 
-            HttpUtil.downloadFile(bot.getFullFilePath(resp.file()), local);
+            if (!local.isFile()) {
+
+                HttpUtil.downloadFile(bot.getFullFilePath(resp.file()), local);
+
+            }
 
             String js = FileUtil.readUtf8String(local);
 
@@ -516,16 +510,16 @@ public class MainFragment extends Fragment {
                         page.append("\n");
 
                     }
-                    
-                    bot.execute(new SendMessage(msg.chat().id(),page.toString()).parseMode(ParseMode.Markdown));
-                    
+
+                    bot.execute(new SendMessage(msg.chat().id(), page.toString()).parseMode(ParseMode.Markdown));
+
                     page = new StringBuilder();
 
                 }
 
             }
 
-            
+
         } catch (Exception ex) {
 
             throw new RuntimeException(ex);
