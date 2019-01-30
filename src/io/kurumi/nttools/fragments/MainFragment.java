@@ -93,7 +93,7 @@ public class MainFragment extends Fragment {
         switch (data.getPoint()) {
 
                 case POINT_CHOOSE_USER : chooseUser(user, callbackQuery, data);return;
-                case POINT_BACK_TO_USERS : users(user, null, callbackQuery);return;
+                case POINT_BACK_TO_USERS : users(user, callbackQuery.message(),true);return;
                 case POINT_REFRESH_USER : refreshUser(user, callbackQuery, data);return;
 
         }
@@ -150,7 +150,7 @@ public class MainFragment extends Fragment {
 
                     });
 
-        bot.execute(new EditMessageText(callbackQuery.inlineMessageId(), ArrayUtil.join(userMsg, "\n")).replyMarkup(markup(buttons)));
+        bot.execute(new EditMessageText(callbackQuery.message().chat().id(),callbackQuery.message().messageId(), ArrayUtil.join(userMsg, "\n")).replyMarkup(markup(buttons)));
 
     }
 
@@ -175,7 +175,7 @@ public class MainFragment extends Fragment {
 
                         case "users" : 
 
-                        users(user, msg, null);
+                        users(user, msg, false);
 
 
                 }
@@ -186,7 +186,7 @@ public class MainFragment extends Fragment {
 
     }
 
-    public void users(UserData user, Message msg , CallbackQuery query) {
+    public void users(UserData user, Message msg , boolean edit) {
 
         if (user.twitterAccounts.size() == 0) {
 
@@ -211,13 +211,13 @@ public class MainFragment extends Fragment {
 
         InlineKeyboardMarkup markup = markup(buttons);
 
-        if (query == null) {
+        if (!edit) {
 
             bot.execute(new SendMessage(msg.chat().id(), userMsg).replyMarkup(markup));
 
         } else {
             
-            EditMessageText req = new EditMessageText(query.inlineMessageId(), userMsg).replyMarkup(markup);
+            EditMessageText req = new EditMessageText(msg.chat().id(),msg.messageId(), userMsg).replyMarkup(markup);
 
             System.out.println(req.toWebhookResponse());
             
