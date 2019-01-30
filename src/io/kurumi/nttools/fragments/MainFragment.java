@@ -27,6 +27,7 @@ import twitter4j.Twitter;
 import io.kurumi.nttools.twitter.TApi;
 import twitter4j.User;
 import com.pengrad.telegrambot.model.request.ParseMode;
+import twitter4j.ResponseList;
 
 public class MainFragment extends Fragment {
 
@@ -126,64 +127,97 @@ public class MainFragment extends Fragment {
 
         @Override
         public void run() {
-            
+
             Twitter api =  acc.createApi();
             
-            try {
-                
-               long[] fo = TApi.getAllFo(api);
-               
-               long[] fr = TApi.getAllFr(api);
-               
-               for(long id : fo) {
-                   
-                   if (!ArrayUtil.contains(fr,id)) {
-                       
-                       api.createBlock(id);
-                       api.destroyBlock(id);
-                       
-                       User u =api.showUser(id);
-
-                       update("清FO : " + TApi.formatUserNameMarkdown(u));
-                       
-                   }
-                   
-               }
-                
-            } catch (TwitterException e) {
-                
-                update(e.toString());
-                
-            }
+            LinkedList<Long> showCache = new LinkedList<>();
             
+
+            try {
+
+                long[] fo = TApi.getAllFo(api);
+
+                
+                for (long id : fo) {
+
+                    api.createBlock(id);
+                    api.destroyBlock(id);
+                    
+                    if (showCache.size() < 200) {
+                        
+                        showCache.add(id);
+                        
+                    } else {
+                        
+                        ResponseList<User> users = api.lookupUsers(ArrayUtil.unWrap(showCache.toArray(new Long[showCache.size()])));
+
+                        StringBuilder update = new StringBuilder();
+                        
+                        for(User u : users) {
+                            
+                            update.append(TApi.formatUserNameMarkdown(u));
+                            
+                        }
+                        
+                        update(update.toString());
+                        
+                    }
+
+
+                }
+                
+                if (showCache.size() > 0) {
+                    
+                    ResponseList<User> users = api.lookupUsers(ArrayUtil.unWrap(showCache.toArray(new Long[showCache.size()])));
+
+                    StringBuilder update = new StringBuilder();
+
+                    for(User u : users) {
+
+                        update.append(TApi.formatUserNameMarkdown(u));
+                        
+                        update.append("\n");
+
+                    }
+                    
+                    update(update.toString());
+                    
+                }
+
+            } catch (TwitterException e) {
+
+                update(e.toString());
+
+            }
+
             deleteThread = null;
 
         }
 
         public void update(String msg) {
-            
+
             bot.execute(new SendMessage(query.message().chat().id(), msg).parseMode(ParseMode.Markdown));
 
         }
-        
+
     }
 
     private void deleteFollowers(UserData user, CallbackQuery callbackQuery, CData data) {
 
         if (deleteThread == null) {
-            
+
             bot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("正在开始..."));
-            
-            deleteThread = new DeleteFollowersThread(user,callbackQuery,data);
-            
+
+            deleteThread = new DeleteFollowersThread(user, callbackQuery, data);
+
             deleteThread.start();
-            
+
             return;
-            
+
         }
-        
+
         bot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("还未结束..."));
-        
+
 
     }
 
