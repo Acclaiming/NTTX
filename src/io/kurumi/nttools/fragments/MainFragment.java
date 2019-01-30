@@ -40,6 +40,7 @@ import io.kurumi.nttools.utils.Telegraph;
 import io.kurumi.nttools.utils.Telegraph.Account;
 import io.kurumi.nttools.utils.Telegraph.Page;
 import io.kurumi.nttools.utils.Markdown;
+import com.pengrad.telegrambot.request.SendDocument;
 
 public class MainFragment extends Fragment {
 
@@ -448,9 +449,9 @@ public class MainFragment extends Fragment {
 
         switch (doc.fileName()) {
 
-                case "following.js" : processAccounts(user, msg, doc,true);return;
-                case "follower.js" : processAccounts(user, msg, doc,false);return;
-                
+                case "following.js" : processAccounts(user, msg, doc, true);return;
+                case "follower.js" : processAccounts(user, msg, doc, false);return;
+
         }
 
     }
@@ -464,7 +465,19 @@ public class MainFragment extends Fragment {
 
         }
 
+        
+        File result = new File(dataDir, name() + "/cache/twittr_data_parse/follow_friends/" + doc.fileId() + ".html");
+
+        if (result.isFile()) {
+
+            bot.execute(new SendMessage(msg.chat().id(), "这份结果已经被分析过啦 (｡>∀<｡) :"));
+            bot.execute(new SendDocument(msg.chat().id(), result));
+            return;
+
+        }
+        
         File local = getFile(doc);
+        
 
         try {
 
@@ -475,8 +488,10 @@ public class MainFragment extends Fragment {
             JSONArray json = new JSONArray(StrUtil.subAfter(js, " = ", false));
 
             StringBuilder page = new StringBuilder();
-
+            
             LinkedList<Long> showCache = new LinkedList<>();
+
+            int index = 1;
 
             for (JSONObject obj : (List<JSONObject>)(Object)json) {
 
@@ -508,18 +523,44 @@ public class MainFragment extends Fragment {
 
                     for (User u : users) {
 
+                        page.append("「").append(index).append("」 ");
                         page.append(TApi.formatUserNameMarkdown(u));
                         page.append("\n");
 
+                        index ++;
+
                     }
-
-                    bot.execute(new SendMessage(msg.chat().id(), page.toString()).disableWebPagePreview(true).parseMode(ParseMode.Markdown));
-
-                    page = new StringBuilder();
 
                 }
 
             }
+
+            if (showCache.size() != 0) {
+
+                long[] ids = ArrayUtil.unWrap(showCache.toArray(new Long[showCache.size()]));
+
+                showCache.clear();
+
+                ResponseList<User> users = api.lookupUsers(ids);
+
+                for (User u : users) {
+
+                    page.append("「").append(index).append("」 ");
+                    page.append(TApi.formatUserNameMarkdown(u));
+                    page.append("\n");
+
+                    index ++;
+
+                }
+
+
+            }
+            String html = Markdown.parsePage("所有 " + (friend ? "关注的人" : "关注者"), page.toString());
+
+            FileUtil.writeUtf8String(html, result);
+
+            bot.execute(new SendMessage(msg.chat().id(), "分析成功 (｡>∀<｡) :"));
+            bot.execute(new SendDocument(msg.chat().id(), result));
 
 
         } catch (Exception ex) {
