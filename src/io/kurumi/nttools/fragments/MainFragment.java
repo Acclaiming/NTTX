@@ -2,32 +2,26 @@ package io.kurumi.nttools.fragments;
 
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.json.JSONObject;
-import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.request.DeleteMessage;
+import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
+import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.request.AnswerCallbackQuery;
+import com.pengrad.telegrambot.request.EditMessageText;
+import com.pengrad.telegrambot.request.SendMessage;
+import io.kurumi.nttools.server.AuthCache;
+import io.kurumi.nttools.twitter.ApiToken;
+import io.kurumi.nttools.twitter.TwiAccount;
+import io.kurumi.nttools.utils.CData;
 import io.kurumi.nttools.utils.UserData;
 import java.io.File;
-import java.util.Map;
-import com.pengrad.telegrambot.request.SendMessage;
-import cn.hutool.core.util.ArrayUtil;
-import io.kurumi.nttools.twitter.ApiToken;
-import twitter4j.TwitterException;
-import twitter4j.auth.RequestToken;
-import io.kurumi.nttools.server.AuthCache;
-import twitter4j.auth.AccessToken;
-import io.kurumi.nttools.twitter.TwiAccount;
-import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
-import io.kurumi.nttools.utils.InlineButtonGroup;
 import java.util.LinkedList;
-import io.kurumi.nttools.utils.CData;
-import com.pengrad.telegrambot.model.CallbackQuery;
-import org.apache.http.impl.client.AbstractHttpClient;
-import com.pengrad.telegrambot.request.AbstractSendRequest;
-import com.pengrad.telegrambot.request.EditMessageText;
-import com.pengrad.telegrambot.request.AnswerCallbackQuery;
+import java.util.Map;
+import twitter4j.TwitterException;
+import twitter4j.auth.AccessToken;
+import twitter4j.auth.RequestToken;
 
 public class MainFragment extends Fragment {
 
