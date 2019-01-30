@@ -102,7 +102,8 @@ public class MainFragment extends Fragment {
                 case POINT_REFRESH_USER : refreshUser(user, callbackQuery, data);return;
 
                 case POINT_DELETE_FOLLOWRS : deleteFollowers(user, callbackQuery, data);return;
-
+                case POINT_DELETE_FRIENDS : deleteFriends(user, callbackQuery, data);return;
+                
         }
 
         bot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("无效的指针 : " + data.getPoint()).showAlert(true));
@@ -111,80 +112,93 @@ public class MainFragment extends Fragment {
 
     private Thread deleteThread;
 
-    public class DeleteFollowersThread extends Thread {
+    public class DeleteThread extends Thread {
 
         private UserData user;
         private CallbackQuery query;
         private CData data;
         private TwiAccount acc;
 
-        public DeleteFollowersThread(UserData user, CallbackQuery query, CData data) {
+        public boolean fr;
+
+        public DeleteThread(UserData user, CallbackQuery query, CData data, boolean fr) {
             this.user = user;
             this.query = query;
             this.data = data;
             this.acc = data.getUser(user);
+            this.fr = fr;
         }
 
         @Override
         public void run() {
 
             Twitter api =  acc.createApi();
-            
+
             LinkedList<Long> showCache = new LinkedList<>();
-            
+
 
             try {
 
-                long[] fo = TApi.getAllFo(api);
+                long[] fo;
 
-                
+                if (fr) {
+
+                    fo = TApi.getAllFr(api);
+
+                } else {
+
+                    fo = TApi.getAllFo(api);
+
+                }
+
+
                 for (long id : fo) {
 
                     api.createBlock(id);
                     api.destroyBlock(id);
-                    
+
                     if (showCache.size() < 20) {
-                        
+
                         showCache.add(id);
-                        
+
                     } else {
-                        
+
                         ResponseList<User> users = api.lookupUsers(ArrayUtil.unWrap(showCache.toArray(new Long[showCache.size()])));
 
                         StringBuilder update = new StringBuilder();
-                        
-                        for(User u : users) {
-                            
+
+                        for (User u : users) {
+
                             update.append(TApi.formatUserNameMarkdown(u));
                             update.append("\n");
-                            
+
                         }
-                        
+
                         update(update.toString());
-                        
+
                         showCache.clear();
-                        
+
                     }
 
 
                 }
-                
+
                 if (showCache.size() > 0) {
-                    
+
                     ResponseList<User> users = api.lookupUsers(ArrayUtil.unWrap(showCache.toArray(new Long[showCache.size()])));
 
                     StringBuilder update = new StringBuilder();
 
-                    for(User u : users) {
+                    for (User u : users) {
 
                         update.append(TApi.formatUserNameMarkdown(u));
-                        
+
                         update.append("\n");
 
                     }
-                    
+
                     update(update.toString());
-                    
+
                 }
 
             } catch (TwitterException e) {
@@ -211,7 +225,7 @@ public class MainFragment extends Fragment {
 
             bot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("正在开始..."));
 
-            deleteThread = new DeleteFollowersThread(user, callbackQuery, data);
+            deleteThread = new DeleteThread(user, callbackQuery, data,false);
 
             deleteThread.start();
 
@@ -223,6 +237,26 @@ public class MainFragment extends Fragment {
 
 
     }
+    
+    private void deleteFriends(UserData user, CallbackQuery callbackQuery, CData data) {
+
+        if (deleteThread == null) {
+
+            bot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("正在开始..."));
+
+            deleteThread = new DeleteThread(user, callbackQuery, data,true);
+
+            deleteThread.start();
+
+            return;
+
+        }
+
+        bot.execute(new AnswerCallbackQuery(callbackQuery.id()).text("还未结束..."));
+
+
+    }
+    
 
     private void refreshUser(UserData user, CallbackQuery callbackQuery, CData data) {
 
