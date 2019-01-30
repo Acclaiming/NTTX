@@ -504,7 +504,7 @@ public class MainFragment extends Fragment {
 
                 } else {
 
-                    long[] ids = ArrayUtil.unWrap(showCache.toArray(new Long[200]));
+                    long[] ids = ArrayUtil.unWrap(showCache.toArray(new Long[showCache.size()]));
 
                     showCache.clear();
 
