@@ -28,8 +28,6 @@ public class MainAdapter implements UpdatesListener {
         for (Update update : updates) {
 
                 AbsResuest resp = ProcessIndex.processUpdate(update);
-
-                System.out.println(resp.toWebHookResp());
                 
                 if (resp != null) resp.exec();
                
