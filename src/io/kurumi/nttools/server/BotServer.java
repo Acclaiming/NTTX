@@ -60,7 +60,7 @@ public class BotServer extends NanoHTTPD {
                 
             } else {
                 
-                return Response.newFixedLengthResponse(Markdown.parsePage("请返回Bot","#NTTBot 账号认证 ~\n这个认证链接过期了啦 再试试 ？ (´▽`ʃƪ)\n\nrequestToken : " + requestToken + "\ncaches : \n" + ArrayUtil.join(AuthCache.cache.keySet().toArray(),"\n")));
+                return Response.newFixedLengthResponse(Markdown.parsePage("请返回Bot","#NTTBot 账号认证 ~\n这个认证链接过期了啦 ~\n是不是刷新了界面/登录了两次 ？ (´▽`ʃƪ)\n\n\nrequestToken : " + requestToken + "\ncaches : \n" + ArrayUtil.join(AuthCache.cache.keySet().toArray(),"\n")));
                 
                 
             }
