@@ -150,7 +150,7 @@ public class MainFragment extends Fragment {
 
                     });
 
-        bot.execute(new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), ArrayUtil.join(userMsg, "\n")));
+        bot.execute(new EditMessageText(callbackQuery.message().chat().id(), callbackQuery.message().messageId(), ArrayUtil.join(userMsg, "\n")).replyMarkup(markup(buttons)));
 
     }
 
