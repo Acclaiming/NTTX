@@ -516,15 +516,16 @@ public class MainFragment extends Fragment {
                         page.append("\n");
 
                     }
+                    
+                    bot.execute(new SendMessage(msg.chat().id(),page.toString()).parseMode(ParseMode.Markdown));
+                    
+                    page = new StringBuilder();
 
                 }
 
             }
 
-            Telegraph.Page graph = Telegraph.createPageWithAuth(Telegraph.createAccount("NTToolsBot","NTTBot","https://t.me/NTToolsBot"), "FollowesForJS%20:%20" + SecureUtil.md5(local).toUpperCase(), page.toString());
-
-            bot.execute(new SendMessage(msg.chat().id(), "分析完成 ~\n" + graph.getUrl()));
-
+            
         } catch (Exception ex) {
 
             throw new RuntimeException(ex);
