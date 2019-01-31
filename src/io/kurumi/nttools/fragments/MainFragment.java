@@ -451,9 +451,58 @@ public class MainFragment extends Fragment {
 
                 case "following.js" : processAccounts(user, msg, doc, true);return;
                 case "follower.js" : processAccounts(user, msg, doc, false);return;
+                
+                case "follow.txt" : processFollow(user,msg,doc);return;
+                
 
         }
 
+    }
+
+    private void processFollow(UserData user, final Message msg, final Document doc) {
+     
+        TwiAccount acc = user.twitterAccounts.getFirst();
+        
+        bot.execute(new SendMessage(msg.chat().id(),"正在开始... 使用" + acc.getFormatedName()));
+        
+        final String[] target = FileUtil.readUtf8String(getFile(doc)).split("\n");
+
+        final Twitter api = acc.createApi();
+        
+
+        new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    
+                    StringBuilder cache = new StringBuilder();
+                    
+                    int succ = 0;
+                    
+                    for (String id : target) {
+                    
+                        try {
+                            
+                            api.createFriendship(id);
+                            
+                            succ ++;
+                            
+                            cache.append(TApi.formatUserNameMarkdown(api.showUser(id)));
+                            
+                        } catch (TwitterException e) {
+                            
+                            bot.execute(new SendMessage(msg.chat().id(),"api limit..."));
+                            
+                        }
+
+                    }
+                    
+                    bot.execute(new SendMessage(msg.chat().id(),"完成 关注了 : " + succ + " 个账号 \n\n"+cache.toString()).parseMode(ParseMode.Markdown));
+                    
+                }
+                
+            }).start();
+        
     }
 
     private void processAccounts(UserData user, Message msg, Document doc, boolean friend) {
