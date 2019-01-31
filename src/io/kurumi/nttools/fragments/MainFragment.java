@@ -491,7 +491,7 @@ public class MainFragment extends Fragment {
                             
                         } catch (TwitterException e) {
                             
-                            bot.execute(new SendMessage(msg.chat().id(),"api limit..."));
+                            bot.execute(new SendMessage(msg.chat().id(),e.toString()));
                             
                         }
 
