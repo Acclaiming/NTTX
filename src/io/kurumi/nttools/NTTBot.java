@@ -21,7 +21,7 @@ public class NTTBot extends MainFragment {
        
         switch(msg.commandName()) {
             
-            case "start" : case "start" : help(user,msg); return;
+            case "start" : case "help" : help(user,msg); return;
             
         }
         
