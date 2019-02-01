@@ -1,10 +1,13 @@
 package io.kurumi.nttools.twitter;
 
-import cn.hutool.json.*;
-import twitter4j.*;
-import twitter4j.conf.*;
-
 import cn.hutool.json.JSONObject;
+import io.kurumi.nttools.utils.Markdown;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.User;
+import twitter4j.conf.Configuration;
+import twitter4j.conf.ConfigurationBuilder;
 
 public class TwiAccount {
 
@@ -59,6 +62,12 @@ public class TwiAccount {
         
         return "「" + name + "」" + " (@" + screenName + ")";
         
+    }
+    
+    public String getMarkdowName() {
+
+        return Markdown.toHtml("「" + Markdown.encode(name + "」 [(@" + screenName + ")](" + getUrl() + ")"));
+
     }
 
     public boolean refresh() {
@@ -125,4 +134,11 @@ public class TwiAccount {
         
     }
 
+    @Override
+    public String toString() {
+        
+        return screenName + "「" + name + "」";
+
+    }
+    
 }

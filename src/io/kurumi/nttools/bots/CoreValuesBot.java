@@ -42,7 +42,6 @@ public class CoreValuesBot extends Fragment {
 
     }
 
-    @Override
     public void processPrivateMessage(UserData user, Message msg) {
         
         String text = encoder.decode(msg.text());

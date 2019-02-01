@@ -5,14 +5,14 @@ import io.kurumi.nttools.fragments.MainFragment;
 import io.kurumi.nttools.utils.UserData;
 import com.pengrad.telegrambot.model.Message;
 
-public class CleanTwitterBot extends Fragment {
+public class ListenBot extends Fragment {
     
-    public CleanTwitterBot(MainFragment main) { super(main); }
+    public ListenBot(MainFragment main) { super(main); }
 
     @Override
     public String name() {
         
-        return "CleanTwitterBot";
+        return "ListenBot";
         
     }
 

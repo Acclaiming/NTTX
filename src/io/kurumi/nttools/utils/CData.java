@@ -13,6 +13,10 @@ public class CData extends JSONObject {
     public CData(String json) {
         super(json);
     }
+    
+    public CData(JSONObject json) {
+        super(json);
+    }
 
     public void setPoint(String point) {
 
@@ -40,13 +44,13 @@ public class CData extends JSONObject {
 
     public void setUser(UserData u,TwiAccount account) {
 
-        put("ai",u.twitterAccounts.indexOf(account));
+        put("ai",u.getTwitterAccounts().indexOf(account));
 
     }
 
     public TwiAccount getUser(UserData userData) {
 
-        return userData.twitterAccounts.get(getInt("ai"));
+        return userData.getTwitterAccounts().get(getInt("ai"));
 
     }
 

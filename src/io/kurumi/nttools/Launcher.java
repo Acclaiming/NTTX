@@ -9,10 +9,10 @@ import java.io.*;
 import io.kurumi.nttools.bots.CoreValuesBot;
 
 public class Launcher {
-
+    
     public static void main(String[] args) {
 
-        MainFragment mainBot = new MainFragment(new File("./data"));
+        NTTBot mainBot = new NTTBot();
 
         CoreValuesBot coreValuesBot = new CoreValuesBot(mainBot);
 
