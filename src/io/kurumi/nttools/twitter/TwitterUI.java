@@ -66,11 +66,11 @@ public class TwitterUI {
 
         if (!edit) {
 
-            msg.send(sendMsg);
+            send = msg.send(sendMsg);
 
         } else {
 
-            msg.edit(sendMsg);
+            send = msg.edit(sendMsg);
 
         }
 
