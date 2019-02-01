@@ -34,25 +34,27 @@ public class TwitterUI extends CommandUI {
 
         options.addOption("a", "auth", false, "认证新Twitter账号");
 
+        options.addOption("l", "list", false, "查看所有账号");
+        
         options.addOption(Option.builder("r")
                           .longOpt("refresh")
                           .desc("刷新Twitter账号")
                           .hasArg()
-                          .argName("用户名/数字ID/指针")
+                          .argName("账号/指针")
                           .build());
 
         options.addOption(Option.builder("d")
                           .longOpt("delete")
                           .desc("移除Twitter账号")
                           .hasArg()
-                          .argName("用户名/数字ID/指针")
+                          .argName("账号/指针")
                           .build());
 
     }
 
     @Override
     protected void onCommand(final UserData user, Msg msg, CommandLine cmd) {
-        
+
         if (cmd.hasOption("auth")) {
 
             final Msg status = msg.send("正在请求认证链接 (｡>∀<｡)").send();
@@ -145,7 +147,7 @@ public class TwitterUI extends CommandUI {
 
         if (account == null) {
 
-            msg.send("没有那样的Twitter账号 (ﾟ⊿ﾟ)ﾂ", "所有账号 : ","",ArrayUtil.join(accounts.toArray(new TwiAccount[accounts.size()]), "\n")).exec();
+            msg.send("没有那样的Twitter账号 (ﾟ⊿ﾟ)ﾂ", "所有账号 : ", "", ArrayUtil.join(accounts.toArray(new TwiAccount[accounts.size()]), "\n")).exec();
 
             return;
 
