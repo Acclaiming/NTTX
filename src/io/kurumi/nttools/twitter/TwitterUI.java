@@ -251,8 +251,50 @@ public class TwitterUI {
                 case POINT_REMOVE : {
 
                     remove(user, callback);
+                    
+                    return;
 
                 }
+                
+                case POINT_CLEAN : {
+                    
+                    clean(user,callback);
+                    
+                    return;
+                    
+                }
+                
+               case POINT_CLEAN_ALL : {
+                   
+                   doClean(user,callback,true,true,true);
+                   
+                   return;
+                   
+               }
+               
+               case POINT_CLEAN_STATUS : {
+                   
+                   doClean(user,callback,true,false,false);
+                   
+                   return;
+                   
+               }
+               
+               case POINT_CLEAN_FOLLOWERS : {
+                   
+                   doClean(user,callback,false,true,false);
+                   
+                   return;
+                   
+               }
+               
+               case POINT_CLEAN_FRIDENDS : {
+                   
+                   doClean(user,callback,false,false,true);
+                   
+                   return;
+                   
+               }
 
         }
 
