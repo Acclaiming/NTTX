@@ -3,6 +3,7 @@ package io.kurumi.nttools.utils;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import java.util.HashMap;
+import cn.hutool.log.StaticLog;
 
 // 没有好用的所以写了一个简单的API
 
@@ -170,9 +171,17 @@ public class Telegraph {
 
                 return new Page(resp);
 
+            } else {
+                
+                StaticLog.error(resp.toStringPretty());
+                
             }
 
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            
+            StaticLog.error(e);
+            
+        }
         
         return null;
 
