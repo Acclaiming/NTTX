@@ -18,7 +18,7 @@ import cn.hutool.core.util.ArrayUtil;
 
 public class TwitterUI extends CommandUI {
 
-    public static TwitterUI INSTANCE;
+    public static TwitterUI INSTANCE = new TwitterUI();
 
     public static final String FUNC = "twitter";
 
