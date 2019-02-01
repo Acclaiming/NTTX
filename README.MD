@@ -34,10 +34,3 @@ chmod 777 *.sh
 ### 注意
 
 因为不会powershell win的脚本暂不可用
-
-### AIDE
-
-在AIDE默认项目目录下 :  
-
--- 克隆Git仓库 https://github.com/HiedaNaKan/NTTools  
--- 进入项目 点击打开 点击右上角运行

@@ -51,13 +51,16 @@ public class Edit extends AbstractSend<Edit> {
     }
 
     @Override
+    public Edit buttons(ButtonMarkup markup) {
+        
+        request.replyMarkup(markup.markup());
+        
+        return this;
+        
+   }
+
+    @Override
     public BaseResponse exec() {
-
-        if (!lines.isEmpty()) {
-
-            request.replyMarkup(markup());
-
-        }
 
         BaseResponse resp = fragment.bot.execute(request);
         

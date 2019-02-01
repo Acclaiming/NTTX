@@ -25,7 +25,7 @@ public class Send extends AbstractSend<Send> {
 
     @Override
     public Send disableLinkPreview() {
-        
+
         request.disableWebPagePreview(true);
 
         return this;
@@ -92,30 +92,32 @@ public class Send extends AbstractSend<Send> {
         return this;
 
     }
-    
+
+    @Override
+    public Send buttons(ButtonMarkup markup) {
+
+        request.replyMarkup(markup.markup());
+
+        return this;
+
+    }
+
     public Msg send() {
-        
-        return new Msg(fragment,exec().message());
-        
+
+        return new Msg(fragment, exec().message());
+
     }
 
     @Override
     public SendResponse exec() {
-
-        if (!lines.isEmpty()) {
-
-            request.replyMarkup(markup());
-
-        }
-
         SendResponse resp = fragment.bot.execute(request);
-        
+
         if (!resp.isOk()) {
 
             StaticLog.error("SendMseeage Error " + resp.errorCode() + " : " + resp.description());
 
         }
-        
+
         return resp;
 
     }

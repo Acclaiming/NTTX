@@ -3,6 +3,7 @@ package io.kurumi.nttools.model;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import io.kurumi.nttools.fragments.Fragment;
 import io.kurumi.nttools.model.request.AnswerCallback;
+import io.kurumi.nttools.utils.CData;
 
 public class Callback extends Msg {
     
@@ -39,6 +40,9 @@ public class Callback extends Msg {
         answer().url(url).exec();
 
     }
+    
+    public CData data = new CData(query.data());
+
     
     public AnswerCallback answer() {
         

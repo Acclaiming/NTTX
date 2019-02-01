@@ -4,7 +4,7 @@ import io.kurumi.nttools.fragments.MainFragment;
 import java.io.File;
 import io.kurumi.nttools.utils.UserData;
 import io.kurumi.nttools.model.Msg;
-import io.kurumi.nttools.twitter.TwitterUI;
+import io.kurumi.nttools.twitter.TwitterCli;
 
 public class NTTBot extends MainFragment {
     
@@ -25,7 +25,7 @@ public class NTTBot extends MainFragment {
             
         }
         
-        TwitterUI.INSTANCE.process(user,msg);
+        TwitterCli.INSTANCE.process(user,msg);
         
     }
     
@@ -35,7 +35,7 @@ public class NTTBot extends MainFragment {
             
             "这里是奈间家的BOT (◦˙▽˙◦)","",
             
-            TwitterUI.INSTANCE.help(user)
+            TwitterCli.INSTANCE.help(user)
             
         };
         

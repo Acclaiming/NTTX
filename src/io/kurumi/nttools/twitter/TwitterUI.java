@@ -1,6 +1,12 @@
 package io.kurumi.nttools.twitter;
 
+import com.pengrad.telegrambot.request.DeleteMessage;
+import com.pengrad.telegrambot.response.BaseResponse;
+import com.pengrad.telegrambot.response.SendResponse;
+import io.kurumi.nttools.model.Callback;
 import io.kurumi.nttools.model.Msg;
+import io.kurumi.nttools.model.request.AbstractSend;
+import io.kurumi.nttools.model.request.ButtonMarkup;
 import io.kurumi.nttools.server.AuthCache;
 import io.kurumi.nttools.twitter.ApiToken;
 import io.kurumi.nttools.twitter.TwiAccount;
@@ -9,192 +15,227 @@ import java.util.LinkedList;
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.OptionGroup;
-import org.apache.commons.cli.Option;
-import io.kurumi.nttools.utils.CommandUI;
-import org.apache.commons.cli.CommandLine;
-import cn.hutool.core.util.ArrayUtil;
 
-public class TwitterUI extends CommandUI {
+public class TwitterUI {
 
-    public static TwitterUI INSTANCE = new TwitterUI();
+    public static final String COMMAND = "twitter";
 
-    public static final String FUNC = "twitter";
+    public static final String POINT_NEW_AUTH = "t|n";
+    public static final String POINT_BACK = "t|b";
+    public static final String POINT_MANAGE = "t|m";
+    public static final String POINT_REMOVE = "t|r";
+    public static final String POINT_CLEAN = "t|c";
 
-    @Override
-    protected String cmdLineSyntax() {
+    public static final String POINT_CLEAN_STATUS = "t|c|s";
+    public static final String POINT_CLEAN_FOLLOWERS = "t|c|fo";
+    public static final String POINT_CLEAN_FRIDENDS = "t|c|fr";
 
-        return "twitter";
 
-    }
+    public void process(UserData userData, Msg msg) {
 
-    @Override
-    protected void applyOptions(UserData user, Options options) {
-
-        options.addOption("a", "auth", false, "认证新Twitter账号");
-
-        options.addOption("l", "list", false, "查看所有账号");
-        
-        options.addOption(Option.builder("r")
-                          .longOpt("refresh")
-                          .desc("刷新Twitter账号")
-                          .hasArg()
-                          .argName("账号/指针")
-                          .build());
-
-        options.addOption(Option.builder("d")
-                          .longOpt("delete")
-                          .desc("移除Twitter账号")
-                          .hasArg()
-                          .argName("账号/指针")
-                          .build());
+        main(userData, msg, false);
 
     }
 
-    @Override
-    protected void onCommand(final UserData user, Msg msg, CommandLine cmd) {
+    public void main(final UserData userData, Msg msg, boolean edit) {
 
-        if (cmd.hasOption("auth")) {
+        Integer lastMsgId = userData.getByPath("twitter_ui.last_msg_id." + msg.fragment.name() + "." + userData.id(), Integer.class);
 
-            final Msg status = msg.send("正在请求认证链接 (｡>∀<｡)").send();
+        if (lastMsgId != null) {
 
-            try {
-
-                final RequestToken requestToken = ApiToken.defaultToken.createApi().getOAuthRequestToken("https://" + msg.fragment.main.serverDomain + "/callback");
-
-                AuthCache.cache.put(requestToken.getToken(), new AuthCache.Listener() {
-
-                        @Override
-                        public void onAuth(String oauthVerifier) {
-
-                            System.out.println("authing");
-
-                            try {
-
-                                AccessToken accessToken =  ApiToken.defaultToken.createApi().getOAuthAccessToken(requestToken, oauthVerifier);
-
-                                TwiAccount account = new TwiAccount(ApiToken.defaultToken.apiToken, ApiToken.defaultToken.apiSecToken, accessToken.getToken(), accessToken.getTokenSecret());
-
-                                account.refresh();
-
-                                LinkedList<TwiAccount> acc = user.getTwitterAccounts();
-
-                                acc.add(account);
-
-                                user.setTwitterAccounts(acc);
-
-                                user.save();
-
-                                status.edit("认证成功 (｡>∀<｡) 乃的账号", account.getFormatedName()).markdown().exec();
-
-                            } catch (Exception e) {
-
-                                status.edit(e.toString()).exec();
-
-                            }
-
-                        }
-
-                    });
-
-                status.edit("请求成功 ╰(*´︶`*)╯\n 点这里认证 : ", requestToken.getAuthenticationURL()).exec();
-
-
-
-            } catch (TwitterException e) {
-
-                status.edit(e.toString()).exec();
-
-            }
-
-            return;
+            msg.fragment.bot.execute(new DeleteMessage(userData.id(), lastMsgId));
 
         }
 
-        LinkedList<TwiAccount> accounts = user.getTwitterAccounts();
+        AbstractSend send = null;
 
-        if (accounts.isEmpty()) {
+        String sendMsg = "这是Twitter盒子！有什么用呢？ (｡>∀<｡)";
 
-            msg.send("你还没有认证账号 (ﾟ⊿ﾟ)ﾂ", "使用 /twitter -auth 认证哦 (｡>∀<｡)").exec();
+        if (!edit) {
 
-            return;
+            msg.send(sendMsg);
+
+        } else {
+
+            msg.edit(sendMsg);
 
         }
 
-        String screenName = cmd.getOptionValue("r");
+        BaseResponse resp = send.buttons(new ButtonMarkup() {{
 
+                    newButtonLine("认证新账号 (｡>∀<｡)", POINT_NEW_AUTH);
 
-        TwiAccount account;
+                    for (TwiAccount account : userData.getTwitterAccounts()) {
+
+                        newButtonLine(account.name, POINT_MANAGE, userData, account);
+
+                    }
+
+                }}).exec();
+
+        if (resp instanceof SendResponse) {
+
+            userData.putByPath("twitter_ui.last_msg_id." + msg.fragment.name() + "." + userData.id(), ((SendResponse)resp).message().messageId());
+
+        }
+
+    }
+
+    public void newAuth(final UserData user, final Callback callback) {
+
+        callback.confirm();
+
+        final Msg status = callback.send("正在请求认证链接 (｡>∀<｡)").send();
 
         try {
 
-            long accountId = Long.parseLong(screenName);
+            final RequestToken requestToken = ApiToken.defaultToken.createApi().getOAuthRequestToken("https://" + callback.fragment.main.serverDomain + "/callback");
 
-            account = user.findUser(accountId);
+            AuthCache.cache.put(requestToken.getToken(), new AuthCache.Listener() {
 
-            if (account == null || accounts.size() > accountId) {
+                    @Override
+                    public void onAuth(String oauthVerifier) {
 
-                account =  accounts.get((int)accountId);
+                        try {
 
-            }
+                            AccessToken accessToken =  ApiToken.defaultToken.createApi().getOAuthAccessToken(requestToken, oauthVerifier);
 
-        } catch (Exception ex) {
+                            TwiAccount account = new TwiAccount(ApiToken.defaultToken.apiToken, ApiToken.defaultToken.apiSecToken, accessToken.getToken(), accessToken.getTokenSecret());
 
-            account = user.findUser(screenName);
+                            account.refresh();
 
-        }
+                            LinkedList<TwiAccount> acc = user.getTwitterAccounts();
 
-        if (account == null) {
+                            if (acc.contains(account)) {
 
-            msg.send("没有那样的Twitter账号 (ﾟ⊿ﾟ)ﾂ", "所有账号 : ", "", ArrayUtil.join(accounts.toArray(new TwiAccount[accounts.size()]), "\n")).exec();
+                                status.edit("乃已经认证过这个账号了！ (ﾟ⊿ﾟ)ﾂ").exec();
 
-            return;
+                                return;
 
-        }
+                            }
 
-        if (cmd.hasOption("refresh")) {
+                            acc.add(account);
 
-            if (account.refresh()) {
+                            user.setTwitterAccounts(acc);
 
-                msg.send("刷新成功 (｡>∀<｡)", account.getMarkdowName()).html().exec();
+                            user.save();
 
-            } else {
-
-                if (cmd.hasOption("remove")) {
-
-                    accounts.remove(account);
-
-                    user.setTwitterAccounts(accounts);
-
-                    user.save();
-
-                    msg.send("账号不可用 已移除 >_<").exec();
-
-                } else {
-
-                    msg.send("账号不可用 >_<").exec();
-
-                }
-
-            }
+                            status.edit("认证成功 (｡>∀<｡) 乃的账号", account.getFormatedName()).markdown().exec();
 
 
-        } else if (cmd.hasOption("delete")) {
 
-            accounts.remove(account);
+                            main(user, callback, true);
 
-            user.setTwitterAccounts(accounts);
+                        } catch (Exception e) {
 
-            user.save();
+                            status.edit(e.toString()).exec();
 
-            msg.send("已移除 >_<").exec();
+                        }
+
+                    }
+
+                });
+
+            status.edit("请求成功 ╰(*´︶`*)╯\n 点这里认证 : ", requestToken.getAuthenticationURL()).exec();
+
+        } catch (TwitterException e) {
+
+            status.edit(e.toString()).exec();
 
         }
-
 
 
     }
 
+    public void manage(final UserData user, Callback callback) {
+
+        final TwiAccount account = callback.data.getUser(user);
+
+        callback.edit("(｡>∀<｡) 你好呀" +  account.name)
+            .buttons(new ButtonMarkup() {{
+
+                    newButtonLine("<< 返回上级 (*σ´∀`)σ", POINT_BACK);
+
+                    newButtonLine("移除账号", POINT_REMOVE, user, account);
+
+                    newButtonLine("账号清理 >>", POINT_CLEAN, user, account);
+
+                }}).exec();
+
+    }
+
+    public void remove(UserData user, Callback callback) {
+
+        callback.text("已移除");
+
+        LinkedList<TwiAccount> accounts = user.getTwitterAccounts();
+
+        accounts.remove(callback.data.getUser(user));
+
+        user.setTwitterAccounts(accounts);
+
+        user.save();
+
+        main(user, callback, true);
+
+    }
+
+    public void clean(final UserData user, final Callback callback) {
+
+        final TwiAccount account = callback.data.getUser(user);
+
+        callback.edit("清理Twitter账号 [ 慎用 ！ ]", "注意 : 不可停止 、 不可撤销")
+            .buttons(new ButtonMarkup() {{
+
+                    newButtonLine("删推文", POINT_CLEAN_STATUS, user, account);
+                    newButtonLine("删关注", POINT_CLEAN_FRIDENDS, user, account);
+                    newButtonLine("删关注者", POINT_CLEAN_FOLLOWERS, user, account);
+                    newButtonLine("全都要！", POINT_CLEAN_ALL, user, account);
+                    
+                    newButtonLine("<< 返回账号", POINT_MANAGE, user, account);
+
+                }}).exec();
+
+    }
+    
+    public void doClean(UserData userData) {}
+
+    public void callback(UserData user, Callback callback) {
+
+        switch (callback.data.getPoint()) {
+
+                case POINT_NEW_AUTH : {
+
+                    newAuth(user, callback);
+
+                    return;
+
+                }
+
+                case POINT_MANAGE : {
+
+                    manage(user, callback);
+
+                    return;
+
+                }
+
+                case POINT_BACK : {
+
+                    main(user, callback, true);
+
+                    return;
+
+                }
+
+                case POINT_REMOVE : {
+
+                    remove(user, callback);
+
+                }
+
+        }
+
+    }
 
 }
