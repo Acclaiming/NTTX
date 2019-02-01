@@ -22,6 +22,13 @@ public abstract class CommandUI {
 
         if (!msg.isCommand() || !cmdLineSyntax().equals(msg.commandName())) return;
 
+        if (msg.commandParms().length == 0) {
+            
+            msg.send(help(user));
+            return;
+            
+        }
+        
         Options options = new Options() {{ applyOptions(user, this); }};
 
         try {

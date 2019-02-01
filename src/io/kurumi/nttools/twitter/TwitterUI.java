@@ -41,8 +41,8 @@ public class TwitterUI extends CommandUI {
                           .argName("用户名/数字ID/指针")
                           .build());
 
-        options.addOption(Option.builder("r")
-                          .longOpt("remove")
+        options.addOption(Option.builder("d")
+                          .longOpt("delete")
                           .desc("移除Twitter账号")
                           .hasArg()
                           .argName("用户名/数字ID/指针")
@@ -52,7 +52,7 @@ public class TwitterUI extends CommandUI {
 
     @Override
     protected void onCommand(final UserData user, Msg msg, CommandLine cmd) {
-
+        
         if (cmd.hasOption("auth")) {
 
             final Msg status = msg.send("正在请求认证链接 (｡>∀<｡)").send();
@@ -145,7 +145,7 @@ public class TwitterUI extends CommandUI {
 
         if (account == null) {
 
-            msg.send("没有那样的Twitter账号 (ﾟ⊿ﾟ)ﾂ", "所有账号 : " + ArrayUtil.join(accounts.toArray(new TwiAccount[accounts.size()]), "\n")).exec();
+            msg.send("没有那样的Twitter账号 (ﾟ⊿ﾟ)ﾂ", "所有账号 : ","",ArrayUtil.join(accounts.toArray(new TwiAccount[accounts.size()]), "\n")).exec();
 
             return;
 
@@ -161,7 +161,7 @@ public class TwitterUI extends CommandUI {
 
                 if (cmd.hasOption("remove")) {
 
-                    accounts.remove(accounts);
+                    accounts.remove(account);
 
                     user.setTwitterAccounts(accounts);
 
@@ -178,9 +178,9 @@ public class TwitterUI extends CommandUI {
             }
 
 
-        } else if (cmd.hasOption("remove")) {
+        } else if (cmd.hasOption("delete")) {
 
-            accounts.remove(accounts);
+            accounts.remove(account);
 
             user.setTwitterAccounts(accounts);
 
