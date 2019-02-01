@@ -1,46 +1,57 @@
 package io.kurumi.nttools;
 
 import io.kurumi.nttools.fragments.MainFragment;
-import java.io.File;
-import io.kurumi.nttools.utils.UserData;
 import io.kurumi.nttools.model.Msg;
-import io.kurumi.nttools.twitter.TwitterCli;
+import io.kurumi.nttools.utils.UserData;
+import java.io.File;
+import io.kurumi.nttools.twitter.TwitterUI;
+import io.kurumi.nttools.model.Callback;
+import io.kurumi.nttools.twitter.TelegraphUI;
 
 public class NTTBot extends MainFragment {
-    
+
     public NTTBot() {
-        
+
         super(new File("./data"));
-        
+
     }
 
     @Override
     public void processPrivateMessage(UserData user, Msg msg) {
-        
-        if (!msg.isCommand()) help(user,msg);
-       
-        switch(msg.commandName()) {
-            
-            case "start" : case "help" : help(user,msg); return;
-            
+
+        if (!msg.isCommand()) help(user, msg);
+
+        switch (msg.commandName()) {
+
+                case "start" : case "help" : help(user, msg); return;
+
         }
+
+        TwitterUI.process(user, msg);
         
-        TwitterCli.INSTANCE.process(user,msg);
-        
+        TelegraphUI.test(user,msg);
+
     }
-    
-    public void help(UserData user,Msg msg) {
-        
+
+    @Override
+    public void processCallbackQuery(UserData user, Callback callback) {
+
+        TwitterUI.callback(user, callback);
+
+    }
+
+    public void help(UserData user, Msg msg) {
+
         String[] helpMsg = new String[] {
-            
+
             "这里是奈间家的BOT (◦˙▽˙◦)","",
-            
-            TwitterCli.INSTANCE.help(user)
-            
+
+            TwitterUI.help()
+
         };
-        
+
         msg.send(helpMsg).exec();
-        
+
     }
-    
+
 }

@@ -15,6 +15,11 @@ import java.util.LinkedList;
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
+import io.kurumi.nttools.fragments.Fragment;
+import twitter4j.Twitter;
+import twitter4j.Paging;
+import twitter4j.ResponseList;
+import twitter4j.Status;
 
 public class TwitterUI {
 
@@ -29,15 +34,23 @@ public class TwitterUI {
     public static final String POINT_CLEAN_STATUS = "t|c|s";
     public static final String POINT_CLEAN_FOLLOWERS = "t|c|fo";
     public static final String POINT_CLEAN_FRIDENDS = "t|c|fr";
+    public static final String POINT_CLEAN_ALL = "t|c|a";
+    
+    public static String help() {
+        
+        return "/twitter Twitter相关 ~";
+        
+    }
+    
+    public static void process(UserData userData, Msg msg) {
 
-
-    public void process(UserData userData, Msg msg) {
-
+        if (!msg.isCommand() || !COMMAND.equals(msg.commandName())) return;
+        
         main(userData, msg, false);
 
     }
 
-    public void main(final UserData userData, Msg msg, boolean edit) {
+    public static void main(final UserData userData, Msg msg, boolean edit) {
 
         Integer lastMsgId = userData.getByPath("twitter_ui.last_msg_id." + msg.fragment.name() + "." + userData.id(), Integer.class);
 
@@ -81,7 +94,7 @@ public class TwitterUI {
 
     }
 
-    public void newAuth(final UserData user, final Callback callback) {
+    public static void newAuth(final UserData user, final Callback callback) {
 
         callback.confirm();
 
@@ -147,7 +160,7 @@ public class TwitterUI {
 
     }
 
-    public void manage(final UserData user, Callback callback) {
+    public static void manage(final UserData user, Callback callback) {
 
         final TwiAccount account = callback.data.getUser(user);
 
@@ -164,7 +177,7 @@ public class TwitterUI {
 
     }
 
-    public void remove(UserData user, Callback callback) {
+    public static void remove(UserData user, Callback callback) {
 
         callback.text("已移除");
 
@@ -180,7 +193,7 @@ public class TwitterUI {
 
     }
 
-    public void clean(final UserData user, final Callback callback) {
+    public static void clean(final UserData user, final Callback callback) {
 
         final TwiAccount account = callback.data.getUser(user);
 
@@ -198,9 +211,16 @@ public class TwitterUI {
 
     }
     
-    public void doClean(UserData userData) {}
-
-    public void callback(UserData user, Callback callback) {
+    public static void doClean(UserData userData,Callback callbeck,boolean status,boolean followers,boolean friends) {
+        
+        callbeck.text("正在开始...");
+        
+       new CleanThread(userData,callbeck,status,followers,friends).start();
+        
+    }
+    
+    
+    public static void callback(UserData user, Callback callback) {
 
         switch (callback.data.getPoint()) {
 

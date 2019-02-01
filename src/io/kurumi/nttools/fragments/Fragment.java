@@ -216,19 +216,5 @@ public abstract class Fragment {
         return data;
 
     }
-
-    public File getFile(Document doc) {
-        
-        File local = new File(main.dataDir,"/files/" + doc.fileId());
-        
-        if (local.isFile()) return local;
-        
-        String path = bot.getFullFilePath(bot.execute(new GetFile(doc.fileId())).file());
-        
-        HttpUtil.downloadFile(path,local);
-        
-        return local;
-        
-    }
-
+    
 }

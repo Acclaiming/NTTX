@@ -3,8 +3,10 @@ package io.kurumi.nttools.model;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.request.ChatAction;
 import com.pengrad.telegrambot.request.SendChatAction;
+import com.pengrad.telegrambot.request.SendDocument;
 import io.kurumi.nttools.fragments.Fragment;
 import io.kurumi.nttools.model.request.Send;
+import java.io.File;
 
 public class Context {
     
@@ -33,6 +35,24 @@ public class Context {
     public Send send(String... msg)  {
 
         return new Send(fragment,chatId(),msg);
+
+    }
+    
+    public Msg sendFile(String file) {
+        
+        return new Msg(fragment,fragment.bot.execute(new SendDocument(chatId(), file)).message());
+
+    }
+    
+    public Msg sendFile(File file) {
+
+        return new Msg(fragment,fragment.bot.execute(new SendDocument(chatId(), file)).message());
+
+    }
+    
+    public Msg sendFile(byte[] file) {
+
+        return new Msg(fragment,fragment.bot.execute(new SendDocument(chatId(), file)).message());
 
     }
 

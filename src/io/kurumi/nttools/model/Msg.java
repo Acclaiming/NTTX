@@ -1,12 +1,15 @@
 package io.kurumi.nttools.model;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpUtil;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.request.DeleteMessage;
+import com.pengrad.telegrambot.request.GetFile;
 import io.kurumi.nttools.fragments.Fragment;
 import io.kurumi.nttools.model.request.Edit;
 import io.kurumi.nttools.model.request.Send;
-import io.kurumi.nttools.utils.UserData;
+import java.io.File;
+import com.pengrad.telegrambot.model.Document;
 
 public class Msg extends Context {
 
@@ -60,6 +63,25 @@ public class Msg extends Context {
         fragment.bot.execute(new DeleteMessage(chatId(),messageId()));
         
     }
+    
+    public File getFile() {
+        
+        Document doc = message.document();
+        
+        if (doc == null) return null;
+
+        File local = new File(fragment.main.dataDir,"/files/" + doc.fileId());
+
+        if (local.isFile()) return local;
+
+        String path = fragment.bot.getFullFilePath(fragment.bot.execute(new GetFile(doc.fileId())).file());
+
+        HttpUtil.downloadFile(path,local);
+
+        return local;
+
+    }
+    
     
     public boolean isCommand() {
 
