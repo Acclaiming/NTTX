@@ -112,28 +112,6 @@ public class UserData extends JSONObject {
         put("is_bot", bot);
 
     }
-
-    public Long chatId(Fragment fragment) {
-
-        JSONObject chats = getJSONObject("chats");
-        
-        if (chats == null) return -1L;
-        
-        return chats.getLong(fragment.name(),-1L);
-
-    }
-    
-    public void setChatId(Fragment fragment,long chatId) {
-
-        JSONObject chats = getJSONObject("chats");
-
-        if (chats == null) chats = new JSONObject();
-
-        chats.put(fragment.name(),chatId);
-        
-        put("chqts",chats);
-
-    }
     
     public LinkedList<TwiAccount> getTwitterAccounts() {
 
@@ -226,8 +204,6 @@ public class UserData extends JSONObject {
 
     public void update(Fragment fragment,Message from) {
         update(from.from());
-        setChatId(fragment,from.chat().id());
-
     }
 
 

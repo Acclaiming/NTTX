@@ -137,8 +137,7 @@ public abstract class Fragment {
 
             StaticLog.error(e, "处理更新失败");
 
-            if (user.chatId(this) != null) {
-
+          
                 StringBuilder err = new StringBuilder();
 
                 err.append("Bot出错 : ");
@@ -162,10 +161,9 @@ public abstract class Fragment {
 
                 }
 
-                bot.execute(new SendMessage(user.chatId(this), err.toString()));
+                bot.execute(new SendMessage(user.id(), err.toString()));
 
-            }
-
+          
 
 
         }
