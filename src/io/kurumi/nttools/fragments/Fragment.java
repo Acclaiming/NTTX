@@ -95,9 +95,9 @@ public abstract class Fragment {
 
         try {
             
-            user = getUserData(update.message());
-
             if (update.message() != null) {
+                
+                user = getUserData(update.message());
 
                 switch (update.message().chat().type()) {
 
