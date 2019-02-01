@@ -9,11 +9,15 @@ public class Callback extends Msg {
     
     private CallbackQuery query;
     
+    public CData data;
+    
     public Callback(Fragment fragment, CallbackQuery query) {
 
         super(fragment,query.message());
 
         this.query = query;
+        
+        data = new CData(query.data());
         
     }
     
@@ -40,9 +44,6 @@ public class Callback extends Msg {
         answer().url(url).exec();
 
     }
-    
-    public CData data = new CData(query.data());
-
     
     public AnswerCallback answer() {
         
