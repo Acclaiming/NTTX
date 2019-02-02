@@ -1,13 +1,12 @@
 package io.kurumi.nttools;
 
 import io.kurumi.nttools.fragments.MainFragment;
+import io.kurumi.nttools.model.Callback;
 import io.kurumi.nttools.model.Msg;
+import io.kurumi.nttools.twitter.DataParser;
+import io.kurumi.nttools.twitter.TwitterUI;
 import io.kurumi.nttools.utils.UserData;
 import java.io.File;
-import io.kurumi.nttools.twitter.TwitterUI;
-import io.kurumi.nttools.model.Callback;
-import io.kurumi.nttools.twitter.TelegraphUI;
-import io.kurumi.nttools.twitter.DataParser;
 
 public class NTTBot extends MainFragment {
 

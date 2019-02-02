@@ -44,13 +44,13 @@ public class CData extends JSONObject {
 
     public void setUser(UserData u,TwiAccount account) {
 
-        put("ai",u.getTwitterAccounts().indexOf(account));
+        put("a",u.twitterAccounts.indexOf(account));
 
     }
 
     public TwiAccount getUser(UserData userData) {
 
-        return userData.getTwitterAccounts().get(getInt("ai"));
+        return userData.twitterAccounts.get(getInt("a"));
 
     }
 

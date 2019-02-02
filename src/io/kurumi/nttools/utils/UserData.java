@@ -17,7 +17,8 @@ import java.util.List;
 
 public class UserData extends JSONObject {
 
-    private Long id;
+    public final Long id;
+    
     public File userDataFile;
 
     public UserData(MainFragment main, Long id) {
@@ -30,38 +31,17 @@ public class UserData extends JSONObject {
 
     }
 
-    public boolean isAdmin() {
-
-        String[] admins = new String[] {
-            "HiedaNaKan",
-            "dodolookyukina",
-            "bakaoxoxox",
-            "qtqjaq",
-            "shinoharaMia",
-        };
-
-        return ArrayUtil.contains(admins, userName()) || getBool("is_admin", false);
-
-    }
-
-    public void setAdmin(boolean admin) {
-
-        put("is_admin", admin);
-
-    }
-
+    public String name;
     
-    public Long id() {
-        
-        return id;
-        
-    }
-
-    public String name() {
-
-        return getStr("name");
-
-    }
+    public String userName;
+    
+    public boolean isAdmin;
+    
+    public boolean isBot;
+    
+    public CData point;
+    
+    public LinkedList<TwiAccount> twitterAccounts;
 
     public void setName(String first, String last) {
 
@@ -71,7 +51,7 @@ public class UserData extends JSONObject {
 
         }
 
-        put("name", first);
+        name = first;
 
     }
 
@@ -86,71 +66,73 @@ public class UserData extends JSONObject {
             putAll(userData);
 
         } catch (Exception e) {}
+        
+        name = getStr("name");
+        
+        userName = getStr("user_name");
+        
+        isBot = getBool("is_bot");
+        
+        String[] admins = new String[] {
+            "HiedaNaKan",
+            "dodolookyukina",
+            "bakaoxoxox",
+            "qtqjaq",
+            "shinoharaMia",
+        };
 
-    }
-
-    public String userName() {
-
-        return getStr("user_name");
-
-    }
-
-    public void setUserName(String name) {
-
-        put("user_name", name);
-
-    }
-
-    public Boolean isBot() {
-
-        return getBool("is_bot", false);
-
-    }
-
-    public void setIsBot(boolean bot) {
-
-        put("is_bot", bot);
-
-    }
-    
-    public LinkedList<TwiAccount> getTwitterAccounts() {
-
-        LinkedList<TwiAccount> accounts = new LinkedList<>();
-
+        isAdmin =  ArrayUtil.contains(admins, userName) || getBool("is_admin", false);
+        
+        JSONObject pointObj = getJSONObject("point");
+        
+        if (pointObj == null) point = null;
+        else point = new CData(pointObj);
+        
+        twitterAccounts.clear();
+        
         List<JSONObject> twitterAccountList = (List<JSONObject>)(Object)getJSONArray("twitter_accounts");
 
         if (twitterAccountList != null) {
 
             for (JSONObject obj : twitterAccountList) {
 
-                accounts.add(new TwiAccount(obj));
+                twitterAccounts.add(new TwiAccount(obj));
 
             }
 
         }
 
-        return accounts;
-
     }
     
+    public void save() {
 
-    public void setTwitterAccounts(LinkedList<TwiAccount> accounts) {
-    
+        put("name",name);
+        
+        put("user_name",userName);
+        
+        put("is_bot",isBot);
+        
+        put("is_admin",isAdmin);
+        
+        put("point",point);
+        
         JSONArray twitterAccountList = new JSONArray();
 
-        for (TwiAccount account : accounts) {
+        for (TwiAccount account : twitterAccounts) {
 
             twitterAccountList.add(account.toJSONObject());
 
         }
-
+        
         put("twitter_accounts", twitterAccountList);
+
+        FileUtil.writeUtf8String(toStringPretty(), userDataFile);
 
     }
     
     public TwiAccount findUser(String screenName) {
 
-        for (TwiAccount acc : getTwitterAccounts()) {
+        for (TwiAccount acc : twitterAccounts) {
 
             if (screenName.equals(acc.screenName)) {
 
@@ -166,7 +148,7 @@ public class UserData extends JSONObject {
 
     public TwiAccount findUser(long accountId) {
 
-        for (TwiAccount acc : getTwitterAccounts()) {
+        for (TwiAccount acc : twitterAccounts) {
 
             if (acc.accountId == accountId) {
 
@@ -180,45 +162,24 @@ public class UserData extends JSONObject {
 
     }
     
-    public CData getPoint() {
-        
-        JSONObject point = getJSONObject("point");
+    public void delete() {
 
-        if (point == null) return null;
-        
-        return new CData(point);
-        
+        FileUtil.del(userDataFile);
+
     }
     
-    public void setPoint(CData point) {
-        
-        put("point",point);
-        
-    }
-
-    public void save() {
-
-        FileUtil.writeUtf8String(toStringPretty(), userDataFile);
-
-    }
-
     public void update(Fragment fragment,Message from) {
+
         update(from.from());
+
     }
 
 
     public void update(User from) {
 
-        setUserName(from.username());
+        userName = from.username();
         setName(from.firstName() , from.lastName());
-        setIsBot(from.isBot());
-
-    }
-
-    
-    public void delete() {
-
-        FileUtil.del(userDataFile);
+        isBot = from.isBot();
 
     }
 

@@ -38,9 +38,7 @@ public class DataParser {
 
     public static void processTweets(UserData user, Msg msg) {
 
-        LinkedList<TwiAccount> accounts = user.getTwitterAccounts();
-
-        if (accounts.isEmpty()) {
+        if (user.twitterAccounts.isEmpty()) {
 
             msg.send("还没有认证账号 无法调用接口 >_<").exec();
 
@@ -48,7 +46,7 @@ public class DataParser {
 
         }
 
-        TwiAccount account = accounts.getFirst();
+        TwiAccount account = user.twitterAccounts.getFirst();
         Twitter api = account.createApi();
 
         File doc = msg.getFile();
@@ -160,9 +158,7 @@ public class DataParser {
 
     public static void processAccounts(UserData user, Msg msg, boolean friend) {
 
-        LinkedList<TwiAccount> accounts = user.getTwitterAccounts();
-
-        if (accounts.isEmpty()) {
+        if (user.twitterAccounts.isEmpty()) {
 
             msg.send("还没有认证账号 无法调用接口 >_<").exec();
 
@@ -170,7 +166,7 @@ public class DataParser {
 
         }
 
-        Twitter api = accounts.getFirst().createApi();
+        Twitter api = user.twitterAccounts.getFirst().createApi();
 
         File doc = msg.getFile();
 

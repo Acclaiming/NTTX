@@ -20,6 +20,7 @@ import twitter4j.Twitter;
 import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Status;
+import twitter4j.UploadedMedia;
 
 public class TwitterUI {
 
@@ -52,11 +53,13 @@ public class TwitterUI {
 
     public static void main(final UserData userData, Msg msg, boolean edit) {
 
-        Integer lastMsgId = userData.getByPath("twitter_ui.last_msg_id." + msg.fragment.name() + "." + userData.id(), Integer.class);
+
+
+        Integer lastMsgId = userData.getByPath("twitter_ui.last_msg_id." + msg.fragment.name() + "." + userData.id, Integer.class);
 
         if (lastMsgId != null && !edit) {
 
-            msg.fragment.bot.execute(new DeleteMessage(userData.id(), lastMsgId));
+            msg.fragment.bot.execute(new DeleteMessage(userData.id, lastMsgId));
 
         }
 
@@ -78,7 +81,7 @@ public class TwitterUI {
 
                     newButtonLine("认证新账号 (｡>∀<｡)", POINT_NEW_AUTH);
 
-                    for (TwiAccount account : userData.getTwitterAccounts()) {
+                    for (TwiAccount account : userData.twitterAccounts) {
 
                         newButtonLine(account.name, POINT_MANAGE, userData, account);
 
@@ -88,10 +91,10 @@ public class TwitterUI {
 
         if (resp instanceof SendResponse) {
 
-            userData.putByPath("twitter_ui.last_msg_id." + msg.fragment.name() + "." + userData.id(), ((SendResponse)resp).message().messageId());
+            userData.putByPath("twitter_ui.last_msg_id." + msg.fragment.name() + "." + userData.id, ((SendResponse)resp).message().messageId());
 
         }
-        
+
         userData.save();
 
     }
@@ -119,9 +122,7 @@ public class TwitterUI {
 
                             account.refresh();
 
-                            LinkedList<TwiAccount> acc = user.getTwitterAccounts();
-
-                            if (acc.contains(account)) {
+                            if (user.twitterAccounts.contains(account)) {
 
                                 status.edit("乃已经认证过这个账号了！ (ﾟ⊿ﾟ)ﾂ").exec();
 
@@ -129,9 +130,7 @@ public class TwitterUI {
 
                             }
 
-                            acc.add(account);
-
-                            user.setTwitterAccounts(acc);
+                            user.twitterAccounts.add(account);
 
                             user.save();
 
@@ -181,11 +180,7 @@ public class TwitterUI {
 
         callback.text("已移除");
 
-        LinkedList<TwiAccount> accounts = user.getTwitterAccounts();
-
-        accounts.remove(callback.data.getUser(user));
-
-        user.setTwitterAccounts(accounts);
+        user.twitterAccounts.remove(callback.data.getUser(user));
 
         user.save();
 

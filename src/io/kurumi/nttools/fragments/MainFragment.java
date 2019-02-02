@@ -27,7 +27,9 @@ public abstract class MainFragment extends Fragment {
     public UserData getUserData(User user) {
 
         UserData ud = getUserData(user.id());
+      
         ud.update(user);
+        
         return ud;
 
     }

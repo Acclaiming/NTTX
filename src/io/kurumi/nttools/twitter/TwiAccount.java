@@ -16,7 +16,7 @@ public class TwiAccount {
     private String accToken;
     private String accSecToken;
 
-    public Long accountId;
+    public long accountId;
     public String screenName;
     
     public String name;
@@ -25,13 +25,13 @@ public class TwiAccount {
     public JSONObject userData;
 
     public TwiAccount(JSONObject json) {
-
+        
         this(json.getStr("apiToken"),
              json.getStr("apiSecToken"),
              json.getStr("accToken"),
              json.getStr("accSecToken"));
 
-        accountId = json.getLong("accountId");
+        accountId = json.getLong("accountId",-1L);
         screenName = json.getStr("screenName");
         name = json.getStr("name");
         userData = json.getJSONObject("userData");
@@ -124,13 +124,7 @@ public class TwiAccount {
     @Override
     public boolean equals(Object obj) {
         
-        if (super.equals(obj)) return true;
-        
-        if (!(obj instanceof TwiAccount)) return false;
-        
-        if (((TwiAccount)obj).accountId != accountId) return false;
-        
-        return true;
+        return super.equals(obj) || (obj instanceof TwiAccount && ((TwiAccount)obj).accountId == accountId);
         
     }
 
