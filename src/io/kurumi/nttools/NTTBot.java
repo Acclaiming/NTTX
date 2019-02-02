@@ -39,6 +39,8 @@ public class NTTBot extends MainFragment {
     @Override
     public void processCallbackQuery(UserData user, Callback callback) {
 
+        callback.send(user.name()).exec();
+        
         TwitterUI.callback(user, callback);
 
     }
