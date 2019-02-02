@@ -122,7 +122,7 @@ public class DataParser {
 
         for (MediaEntity e :s.getMediaEntities()) {
 
-            page.append("<div  align=\"center\">[![](").append(e.getMediaURLHttps()).append(")](").append(e.getExpandedURL()).append(")\n</div>");
+            page.append("<div align=\"center\">\n[![](").append(e.getMediaURLHttps()).append(")](").append(e.getExpandedURL()).append(")\n</div>");
 
         }
 
