@@ -76,7 +76,7 @@ public class Markdown {
 
         // builder.append("<body class \"mdui-theme-primary-pink mdui-theme-accent-indigo\">")
 
-        builder.append("<body>").append(toHtml(content)).append("</body>");
+        builder.append("<body style=\"overflow:auto;overflow-x: hidden\">").append(toHtml(content)).append("</body>");
 
         builder.append("</html>");
 
