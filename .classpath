@@ -15,4 +15,6 @@
 <classpathentry kind="lib" path="libs/hutool-all-4.4.3.jar"/>
 <classpathentry kind="lib" path="libs/java-telegram-bot-api-full-4.1.1.jar"/>
 <classpathentry kind="lib" path="libs/taip-4.3.2.jar"/>
+<classpathentry kind="lib" path="libs/telegraph/telegraph-1.0.jar"/>
+<classpathentry kind="lib" path="libs/telegraph/telegraph-meta-1.0.jar"/>
 </classpath>

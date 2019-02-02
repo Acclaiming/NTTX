@@ -35,17 +35,17 @@ public class TwitterUI {
     public static final String POINT_CLEAN_FOLLOWERS = "t|c|fo";
     public static final String POINT_CLEAN_FRIDENDS = "t|c|fr";
     public static final String POINT_CLEAN_ALL = "t|c|a";
-    
+
     public static String help() {
-        
+
         return "/twitter Twitter相关 ~";
-        
+
     }
-    
+
     public static void process(UserData userData, Msg msg) {
 
         if (!msg.isCommand() || !COMMAND.equals(msg.commandName())) return;
-        
+
         main(userData, msg, false);
 
     }
@@ -54,7 +54,7 @@ public class TwitterUI {
 
         Integer lastMsgId = userData.getByPath("twitter_ui.last_msg_id." + msg.fragment.name() + "." + userData.id(), Integer.class);
 
-        if (lastMsgId != null) {
+        if (lastMsgId != null && !edit) {
 
             msg.fragment.bot.execute(new DeleteMessage(userData.id(), lastMsgId));
 
@@ -135,9 +135,7 @@ public class TwitterUI {
 
                             status.edit("认证成功 (｡>∀<｡) 乃的账号", account.getFormatedName()).markdown().exec();
 
-
-
-                            main(user, callback, true);
+                            main(user, callback, false);
 
                         } catch (Exception e) {
 
@@ -204,22 +202,22 @@ public class TwitterUI {
                     newButtonLine("删关注", POINT_CLEAN_FRIDENDS, user, account);
                     newButtonLine("删关注者", POINT_CLEAN_FOLLOWERS, user, account);
                     newButtonLine("全都要！", POINT_CLEAN_ALL, user, account);
-                    
+
                     newButtonLine("<< 返回账号", POINT_MANAGE, user, account);
 
                 }}).exec();
 
     }
-    
-    public static void doClean(UserData userData,Callback callbeck,boolean status,boolean followers,boolean friends) {
-        
+
+    public static void doClean(UserData userData, Callback callbeck, boolean status, boolean followers, boolean friends) {
+
         callbeck.text("正在开始...");
-        
-       new CleanThread(userData,callbeck,status,followers,friends).start();
-        
+
+        new CleanThread(userData, callbeck, status, followers, friends).start();
+
     }
-    
-    
+
+
     public static void callback(UserData user, Callback callback) {
 
         switch (callback.data.getPoint()) {
@@ -251,50 +249,50 @@ public class TwitterUI {
                 case POINT_REMOVE : {
 
                     remove(user, callback);
-                    
+
                     return;
 
                 }
-                
+
                 case POINT_CLEAN : {
-                    
-                    clean(user,callback);
-                    
+
+                    clean(user, callback);
+
                     return;
-                    
+
                 }
-                
-               case POINT_CLEAN_ALL : {
-                   
-                   doClean(user,callback,true,true,true);
-                   
-                   return;
-                   
-               }
-               
-               case POINT_CLEAN_STATUS : {
-                   
-                   doClean(user,callback,true,false,false);
-                   
-                   return;
-                   
-               }
-               
-               case POINT_CLEAN_FOLLOWERS : {
-                   
-                   doClean(user,callback,false,true,false);
-                   
-                   return;
-                   
-               }
-               
-               case POINT_CLEAN_FRIDENDS : {
-                   
-                   doClean(user,callback,false,false,true);
-                   
-                   return;
-                   
-               }
+
+                case POINT_CLEAN_ALL : {
+
+                    doClean(user, callback, true, true, true);
+
+                    return;
+
+                }
+
+                case POINT_CLEAN_STATUS : {
+
+                    doClean(user, callback, true, false, false);
+
+                    return;
+
+                }
+
+                case POINT_CLEAN_FOLLOWERS : {
+
+                    doClean(user, callback, false, true, false);
+
+                    return;
+
+                }
+
+                case POINT_CLEAN_FRIDENDS : {
+
+                    doClean(user, callback, false, false, true);
+
+                    return;
+
+                }
 
         }
 
