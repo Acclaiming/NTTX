@@ -11,11 +11,11 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public abstract class MainFragment extends Fragment {
-
+    
     public int serverPort = -1;
     public String serverDomain;
     public File dataDir;
-    
+
     private HashMap<Long,UserData> userDataCache = new HashMap<>();
 
     public LinkedList<UserData> getUsers() {
@@ -23,44 +23,50 @@ public abstract class MainFragment extends Fragment {
         return new LinkedList<UserData>(userDataCache.values());
 
     }
-    
+
     public UserData getUserData(User user) {
 
         UserData ud = getUserData(user.id());
         ud.update(user);
         return ud;
-        
-   }
-    
-    public UserData getUserData(long id) {
-        
-        if (userDataCache.containsKey(id)) return userDataCache.get(id);
-        
-        UserData ud = new UserData(this,id);
-        
-        userDataCache.put(id,ud);
-        
-        return ud;
-        
+
     }
-    
+
+    public UserData getUserData(long id) {
+
+        if (userDataCache.containsKey(id)) return userDataCache.get(id);
+
+        UserData ud = new UserData(this, id);
+
+        userDataCache.put(id, ud);
+
+        return ud;
+
+    }
+
     public MainFragment(File dataDir) {
 
         super(null);
         main = this;
         this.dataDir = dataDir;
 
-        for (File userDataFile : new File(main.dataDir, "/users").listFiles()) {
+        File[] ul = new File(main.dataDir, "/users").listFiles();
 
-            long userId = Long.parseLong(StrUtil.subBefore(userDataFile.getName(), ".json", true));
-            
-            if (userDataCache.containsKey(userId)) continue;
+        if (ul != null) {
 
-            userDataCache.put(userId, new UserData(main, userId));
+            for (File userDataFile : ul) {
+
+                long userId = Long.parseLong(StrUtil.subBefore(userDataFile.getName(), ".json", true));
+
+                if (userDataCache.containsKey(userId)) continue;
+
+                userDataCache.put(userId, new UserData(main, userId));
+
+            }
 
         }
-        
-        
+
+
         refresh();
 
 
