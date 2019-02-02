@@ -115,7 +115,7 @@ public abstract class Fragment {
 
             } else if (update.callbackQuery() != null) {
 
-                user = getUserData(update.callbackQuery().message());
+                user = main.getUserData(update.callbackQuery().from());
 
                 processCallbackQuery(user, new Callback(this,update.callbackQuery()));
 
