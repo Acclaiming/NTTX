@@ -29,7 +29,7 @@ public class DataParser {
 
                 case "following.js" : processAccounts(user, msg, true);return;
                 case "follower.js" : processAccounts(user, msg, false);return;
-                case "tweets.js" : processTweets(user, msg); return;
+                case "tweet.js" : processTweets(user, msg); return;
 
         }
 
@@ -65,6 +65,8 @@ public class DataParser {
             return;
 
         }
+        
+        msg.send("正在开始分析...","这可能需要几分钟的时间 (◦˙▽˙◦)").exec();
 
         JSONArray json = new JSONArray(StrUtil.subAfter(FileUtil.readUtf8String(doc), " = ", false));
 
@@ -168,6 +170,9 @@ public class DataParser {
             return;
 
         }
+        
+        msg.send("正在开始分析...","这可能需要几分钟的时间 (◦˙▽˙◦)").exec();
+        
 
         JSONArray json = new JSONArray(StrUtil.subAfter(FileUtil.readUtf8String(doc), " = ", false));
 
