@@ -83,13 +83,13 @@ public class DataParser {
 
                 page.append("\n\n---\n\n");
 
-                parseStatus(page, s, api);
+                parseStatus(page, s, current.getScreenName());
 
             }
 
             String html = Markdown.parsePage("所有推文", "# 你的所有推文 (◦˙▽˙◦)\n" + page);
 
-            FileUtil.writeUtf8String(html, result ,current.getScreenName());
+            FileUtil.writeUtf8String(html, result);
 
             msg.send("分析成功 (｡>∀<｡) : ").exec();
 
