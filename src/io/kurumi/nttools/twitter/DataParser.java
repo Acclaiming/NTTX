@@ -106,7 +106,8 @@ public class DataParser {
         if (s.getInReplyToScreenName() != null) {
 
             page.append("回复给 : [").append(Markdown.encode(s.getInReplyToScreenName())).append("](").append("https://twitter.com/").append(s.getInReplyToScreenName()).append(")");
-
+            page.append("\n\n");
+            
         }
 
         if (s.isRetweetedByMe()) {
@@ -137,13 +138,13 @@ public class DataParser {
 
         if (s.getRetweetCount() != 0) {
 
-            page.append("转推 : ").append(s.getRetweetCount());
+            page.append("转推 : ").append(s.getRetweetCount()).append("  ");
 
         }
 
         if (s.getFavoriteCount() != 0) {
 
-            page.append("喜欢 : ").append(s.getFavoriteCount());
+            page.append("喜欢 : ").append(s.getFavoriteCount()).append("  ");
 
         }
         
