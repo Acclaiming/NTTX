@@ -54,7 +54,7 @@ public class DataParser {
 
         File result = new File(msg.fragment.main.dataDir, "/cache/twittr_data_parse/tweets/" + msg.message().document().fileId() + ".html");
 
-        if (result.isFile()) {
+        if (result.isFile() && false) {
 
             msg.send("这份结果已经被分析过啦 (｡>∀<｡) :");
 
