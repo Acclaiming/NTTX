@@ -21,6 +21,8 @@ import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.UploadedMedia;
+import io.kurumi.nttools.model.request.Send;
+import java.util.Date;
 
 public class TwitterUI {
 
@@ -55,7 +57,7 @@ public class TwitterUI {
 
 
 
-        Integer lastMsgId = userData.getByPath("twitter_ui.last_msg_id." + msg.fragment.name() + "." + userData.id, Integer.class);
+        Integer lastMsgId = userData.getByPath("last_msg_id.twitter_ui." + msg.fragment.name() + "." + userData.id, Integer.class);
 
         if (lastMsgId != null && !edit) {
 
@@ -91,7 +93,7 @@ public class TwitterUI {
 
         if (resp instanceof SendResponse) {
 
-            userData.putByPath("twitter_ui.last_msg_id." + msg.fragment.name() + "." + userData.id, ((SendResponse)resp).message().messageId());
+            userData.putByPath("last_msg_id.twitter_ui." + msg.fragment.name() + "." + userData.id, ((SendResponse)resp).message().messageId());
 
         }
 
@@ -100,6 +102,14 @@ public class TwitterUI {
     }
 
     public static void newAuth(final UserData user, final Callback callback) {
+
+        if (user.twitterAccounts.size() > 0) {
+
+            callback.alert("由于Bot内部处理问题，用户不能添加更多账号");
+
+            return;
+
+        }
 
         callback.confirm();
 
@@ -122,11 +132,19 @@ public class TwitterUI {
 
                             account.refresh();
 
-                            if (user.twitterAccounts.contains(account)) {
+                            for (UserData u : callback.fragment.main.getUsers()) {
 
-                                status.edit("乃已经认证过这个账号了！ (ﾟ⊿ﾟ)ﾂ").exec();
+                                if (u.twitterAccounts.contains(account)) {
 
-                                return;
+                                    if (!u.equals(user)) {
+
+                                        new Send(callback.fragment, u.id, "您的Twitter账号 " + account.getMarkdowName(), "已经被 @" + user.userName + "认证 已从您的列表移除", "如果这不是您本人的操作 请立即修改Twitter密码并在 [ 账号 -> 应用和会话 ] 取消不信任的应用链接",new Date().toLocaleString()).markdown().exec();
+
+                                    }
+                                    
+                                    u.twitterAccounts.remove(account);
+
+                                }
 
                             }
 

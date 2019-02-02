@@ -6,9 +6,10 @@ import io.kurumi.nttools.model.Msg;
 import io.kurumi.nttools.twitter.TwiAccount;
 import io.kurumi.nttools.utils.CData;
 import io.kurumi.nttools.utils.UserData;
+import io.kurumi.nttools.model.request.AbstractSend;
 
 public abstract class FragmentBase {
-    
+
     public void processPrivateMessage(UserData user, Msg msg) {}
     public void processGroupMessage(UserData user, Msg msg) {}
     public void processChannelPost(UserData user, Msg msg) {}
@@ -16,7 +17,6 @@ public abstract class FragmentBase {
     public void processInlineQuery(UserData user, InlineQuery inlineQuery) {}
     public void processChosenInlineQueryResult(UserData user, InlineQuery inlineQuery) {}
 
-    
     public CData cdata(String point) {
 
         CData data = new CData();
@@ -56,5 +56,12 @@ public abstract class FragmentBase {
         return data;
 
     }
-    
+
+    public AbstractSend sendOrEdit(Msg msg, boolean edit, String... contnent) {
+
+        if (!edit)return msg.send(contnent);
+        else return msg.edit(contnent);
+
+    }
+
 }

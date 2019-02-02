@@ -186,13 +186,7 @@ public class UserData extends JSONObject {
     @Override
     public boolean equals(Object obj) {
 
-        if (super.equals(obj)) return true;
-
-        if (!(obj instanceof UserData)) return false;
-
-        if (((UserData)obj).id != id) return false;
-
-        return true;
+        return super.equals(obj) || (obj instanceof UserData && id.equals(((UserData)obj).id));
 
     }
 

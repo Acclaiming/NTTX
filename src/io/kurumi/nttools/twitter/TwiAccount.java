@@ -16,7 +16,7 @@ public class TwiAccount {
     private String accToken;
     private String accSecToken;
 
-    public long accountId;
+    public Long accountId;
     public String screenName;
     
     public String name;
@@ -124,7 +124,7 @@ public class TwiAccount {
     @Override
     public boolean equals(Object obj) {
         
-        return super.equals(obj) || (obj instanceof TwiAccount && ((TwiAccount)obj).accountId == accountId);
+        return super.equals(obj) || (obj instanceof TwiAccount && accountId.equals(((TwiAccount)obj).accountId));
         
     }
 

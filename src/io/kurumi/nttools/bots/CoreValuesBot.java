@@ -15,6 +15,7 @@ import io.kurumi.nttools.utils.Encoder;
 import cn.hutool.core.util.StrUtil;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.request.SendMessage;
+import io.kurumi.nttools.model.Msg;
 
 public class CoreValuesBot extends Fragment {
 
@@ -41,18 +42,19 @@ public class CoreValuesBot extends Fragment {
         }
 
     }
-
-    public void processPrivateMessage(UserData user, Message msg) {
+    
+    @Override
+    public void processPrivateMessage(UserData user, Msg msg) {
         
         String text = encoder.decode(msg.text());
 
         if (text != null) {
             
-            bot.execute(new SendMessage(msg.chat().id(),"解码完成 : \n" + text).replyToMessageId(msg.messageId()));
+            msg.reply("解码完成 : \n" + text).replyToMessageId(msg.messageId()).exec();
             
         } else {
             
-            bot.execute(new SendMessage(msg.chat().id(),"解码失败 请直接发送需要解码的内容"));
+            msg.reply("解码失败 请直接发送需要解码的内容");
             
         }
         

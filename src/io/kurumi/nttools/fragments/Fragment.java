@@ -99,86 +99,95 @@ public abstract class Fragment extends FragmentBase {
 
         try {
 
-        if (update.message() != null) {
+            if (update.message() != null) {
 
-        user = getUserData(update.message());
+                user = getUserData(update.message());
 
-        switch (update.message().chat().type()) {
+                switch (update.message().chat().type()) {
 
-        case Private : {
+                        case Private : {
 
-        for (FragmentBase fragment : fragments) {
+                            for (FragmentBase fragment : fragments) {
 
-        fragment.processPrivateMessage(user, new Msg(this, update.message()));
+                                fragment.processPrivateMessage(user, new Msg(this, update.message()));
 
-        }
+                            }
 
-        return;
+                            return;
 
-        }
+                        }
 
-        case group : {
+                        case group : {
 
-        for (FragmentBase fragment : fragments) {
+                            for (FragmentBase fragment : fragments) {
 
-        fragment.processGroupMessage(user, new Msg(this, update.message()));
+                                fragment.processGroupMessage(user, new Msg(this, update.message()));
 
-        }
+                            }
 
-        return;
+                            return;
 
-        }
+                        }
 
-        case supergroup : {
+                        case supergroup : {
 
-        for (FragmentBase fragment : fragments) {
+                            for (FragmentBase fragment : fragments) {
 
-        fragment.processGroupMessage(user, new Msg(this, update.message()));
+                                fragment.processGroupMessage(user, new Msg(this, update.message()));
 
-        }
+                            }
 
-        return;
+                            return;
 
-        }
+                        }
 
-        }
+                }
 
-        } else if (update.channelPost() != null) {
+            } else if (update.channelPost() != null) {
 
+                user = getUserData(update.channelPost());
 
+                for (FragmentBase fragment : fragments) {
 
-        user = getUserData(update.channelPost());
+                    fragment. processChannelPost(user, new Msg(this, update.channelPost()));
 
-        for (FragmentBase fragment : fragments) {
-        
-        fragment. processChannelPost(user, new Msg(this, update.channelPost()));
+                }
 
-        }
+            } else if (update.callbackQuery() != null) {
 
-        } else if (update.callbackQuery() != null) {
+                user = main.getUserData(update.callbackQuery().from());
 
-        user = main.getUserData(update.callbackQuery().from());
+                for (FragmentBase fragment : fragments) {
 
-        processCallbackQuery(user, new Callback(this, update.callbackQuery()));
+                    fragment.processCallbackQuery(user, new Callback(this, update.callbackQuery()));
 
-        } else if (update.inlineQuery() != null) {
+                }
 
-        user = main.getUserData(update.inlineQuery().from());
+            } else if (update.inlineQuery() != null) {
 
-        processInlineQuery(user, update.inlineQuery());
+                user = main.getUserData(update.inlineQuery().from());
 
-        } else if (update.chosenInlineResult() != null) {
+                for (FragmentBase fragment : fragments) {
 
-        user = main.getUserData(update.chosenInlineResult().from());
+                    fragment.processInlineQuery(user, update.inlineQuery());
 
-        processChosenInlineQueryResult(user, update.inlineQuery());
+                }
 
-        }
+            } else if (update.chosenInlineResult() != null) {
 
-        } catch (Exceptione) {
+                user = main.getUserData(update.chosenInlineResult().from());
+
+                for (FragmentBase fragment : fragments) {
+
+                    fragment.processChosenInlineQueryResult(user, update.inlineQuery());
+
+                }
+
+            }
+
+        } catch (Exception e) {
 
             StaticLog.error(e, "处理更新失败");
-
 
             StringBuilder err = new StringBuilder();
 
