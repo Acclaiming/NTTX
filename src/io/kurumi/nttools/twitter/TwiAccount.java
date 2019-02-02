@@ -106,7 +106,7 @@ public class TwiAccount {
 
     }
 
-    public JSONObject toJsonObject() {
+    public JSONObject toJSONObject() {
 
         return new JSONObject()
             .put("apiToken", apiToken)
