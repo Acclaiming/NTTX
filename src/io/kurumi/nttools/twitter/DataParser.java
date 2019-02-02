@@ -83,7 +83,7 @@ public class DataParser {
 
                 Status s = ObjectUtil.parseStatus(obj.toString(), account);
 
-                page.append("---\\[ 第 " + (json.size() -  index) + " 条推文 : \\]\n\n");
+                page.append("---\n\\[ 第 " + (json.size() -  index) + " 条推文 : \\]\n\n");
 
                 parseStatus(page, s, current.getScreenName());
                 
