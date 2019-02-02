@@ -69,63 +69,72 @@ public class DataParser {
         JSONArray json = new JSONArray(StrUtil.subAfter(FileUtil.readUtf8String(doc), " = ", false));
 
         StringBuilder page = new StringBuilder("# 所有推文 (◦˙▽˙◦)\n");
-
-        int index = 1;
-
+        
         for (JSONObject obj : (List<JSONObject>)(Object)json) {
 
             Status s = ObjectUtil.parseStatus(obj.toString(), account);
-
             
+            page.append("\n\n---\n\n");
+            
+            parseStatus(page,s,api);
+
+        }
+        
+        String html = Markdown.parsePage("所有推文","# 你的所有推文 (◦˙▽˙◦)\n" + page);
+
+        FileUtil.writeUtf8String(html, result);
+
+        msg.send("分析成功 (｡>∀<｡) : ").exec();
+
+        msg.sendUpdatingFile();
+
+        msg.sendFile(result);
+
+    }
+
+    private static void parseStatus(StringBuilder page, Status s, Twitter api) {
+
+        if (s.getQuotedStatus() != null) {
+
+            page.append("回复给 :\n");
+
+            parseStatus(page, s.getQuotedStatus(), api);
 
         }
 
+        if (s.isRetweet() && s.isRetweetedByMe()) {
 
-    }
-    
-    private static void parseStatus(StringBuilder page,Status s,Twitter api) {
-        
-            if (s.getQuotedStatus() != null) {
-                
-                page.append("回复给 :\n");
-                
-                parseStatus(page,s.getQuotedStatus(),api);
-                
-            }
-            
-            if (s.isRetweet() && s.isRetweetedByMe()) {
-            
             page.append("你转推了 : \n");
-            
-            }
 
-            page.append("[")
-                .append(Markdown.encode(s.getUser().getName()))
-                .append("](https://twitter.com/")
-                .append(s.getUser().getScreenName()).append(")")
-                .append(" @").append(s.getUser().getScreenName()).append("\n\n");
-                
-            page.append(s.getText()).append("\n");
-            
-            for (MediaEntity e :s.getMediaEntities()) {
-                
-                page.append("[![](").append(e.getMediaURLHttps()).append(")](").append(e.getExpandedURL()).append(")\n");
-                
-            }
-            
-            page.append("\n");
+        }
 
-            if (s.getRetweetCount() != 0) {
+        page.append("[")
+            .append(Markdown.encode(s.getUser().getName()))
+            .append("](https://twitter.com/")
+            .append(s.getUser().getScreenName()).append(")")
+            .append(" @").append(s.getUser().getScreenName()).append("\n\n");
 
-                page.append("转推 : ").append(s.getRetweetCount());
-                
-            }
+        page.append(s.getText()).append("\n");
 
-            if (s.getFavoriteCount() != 0) {
+        for (MediaEntity e :s.getMediaEntities()) {
 
-                page.append("喜欢 : ").append(s.getFavoriteCount());
+            page.append("[![](").append(e.getMediaURLHttps()).append(")](").append(e.getExpandedURL()).append(")\n");
 
-            }
+        }
+
+        page.append("\n");
+
+        if (s.getRetweetCount() != 0) {
+
+            page.append("转推 : ").append(s.getRetweetCount());
+
+        }
+
+        if (s.getFavoriteCount() != 0) {
+
+            page.append("喜欢 : ").append(s.getFavoriteCount());
+
+        }
 
 
     }
