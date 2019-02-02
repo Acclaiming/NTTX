@@ -20,6 +20,7 @@ import twitter4j.Twitter;
 import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Status;
+import org.w3c.dom.UserDataHandler;
 
 public class TwitterUI {
 
@@ -91,6 +92,8 @@ public class TwitterUI {
             userData.putByPath("twitter_ui.last_msg_id." + msg.fragment.name() + "." + userData.id(), ((SendResponse)resp).message().messageId());
 
         }
+        
+        userData.save();
 
     }
 
@@ -119,7 +122,7 @@ public class TwitterUI {
 
                             LinkedList<TwiAccount> acc = user.getTwitterAccounts();
 
-                            if (acc.contains(account)) {
+                            if (user.findUser(account.accountId) != null) {
 
                                 status.edit("乃已经认证过这个账号了！ (ﾟ⊿ﾟ)ﾂ").exec();
 
