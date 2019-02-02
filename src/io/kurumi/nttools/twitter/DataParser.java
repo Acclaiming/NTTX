@@ -54,7 +54,7 @@ public class DataParser {
 
         File result = new File(msg.fragment.main.dataDir, "/cache/twittr_data_parse/tweets/" + msg.message().document().fileId() + ".html");
 
-        if (result.isFile()) {
+        if (result.isFile() && false) {
 
             msg.send("这份结果已经被分析过啦 (｡>∀<｡) :");
 
@@ -122,7 +122,7 @@ public class DataParser {
 
         for (MediaEntity e :s.getMediaEntities()) {
 
-            page.append("[![](").append(e.getMediaURLHttps()).append(")](").append(e.getExpandedURL()).append(")\n");
+            page.append("<div  align=\"center\">[![](").append(e.getMediaURLHttps()).append(")](").append(e.getExpandedURL()).append(")\n</div>");
 
         }
 
