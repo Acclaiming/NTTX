@@ -106,7 +106,7 @@ public class DataParser {
         if (s.getInReplyToScreenName() != null) {
 
             page.append("回复给 : [").append(Markdown.encode(s.getInReplyToScreenName())).append("](").append("https://twitter.com/").append(s.getInReplyToScreenName()).append(")");
-            page.append("\n\n");
+            page.append(" 的 [推文](https://twitter.com/").append(s.getInReplyToScreenName()).append("/status/").append(s.getInReplyToStatusId()).append(")\n\n");
             
         }
 
