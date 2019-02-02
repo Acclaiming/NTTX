@@ -36,10 +36,12 @@ public class Markdown {
 
         parser = Parser.builder()
             .extensions(extensions)
+            
             .build();
 
         renderer = HtmlRenderer.builder()
             .extensions(extensions)
+            .escapeHtml(true)
             .attributeProviderFactory(new AttributeProviderFactory() {
 
                 @Override
@@ -66,6 +68,8 @@ public class Markdown {
         builder.append("<script src=\"//cdnjs.loli.net/ajax/libs/mdui/0.4.2/js/mdui.min.js\"></script>");
 
         builder.append("<title>").append(title).append("</title>");
+        
+        builder.append("<style> img { height : auto; width: auto\\9; width:100%; } </style>");
 
         builder.append("</head>");
 
