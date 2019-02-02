@@ -36,21 +36,22 @@ public class Markdown {
 
         parser = Parser.builder()
             .extensions(extensions)
-            
+
             .build();
 
         renderer = HtmlRenderer.builder()
             .extensions(extensions)
             .escapeHtml(true)
-            .attributeProviderFactory(new AttributeProviderFactory() {
+           /* .attributeProviderFactory(new AttributeProviderFactory() {
 
                 @Override
                 public AttributeProvider create(AttributeProviderContext context) {
-                    
+
                     return new MDUIAttributeProvider();
+
                 }
-                
-            })
+
+            }) */
             .build();
 
     }
@@ -64,16 +65,18 @@ public class Markdown {
 
         builder.append("<meta charset=\"UTF-8\">");
         builder.append("<meta content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;\" name=\"viewport\" />");
-        builder.append("<link rel=\"stylesheet\" href=\"//cdnjs.loli.net/ajax/libs/mdui/0.4.2/css/mdui.min.css\">");
-        builder.append("<script src=\"//cdnjs.loli.net/ajax/libs/mdui/0.4.2/js/mdui.min.js\"></script>");
+        //    builder.append("<link rel=\"stylesheet\" href=\"//cdnjs.loli.net/ajax/libs/mdui/0.4.2/css/mdui.min.css\">");
+        //     builder.append("<script src=\"//cdnjs.loli.net/ajax/libs/mdui/0.4.2/js/mdui.min.js\"></script>");
 
         builder.append("<title>").append(title).append("</title>");
-        
+
         builder.append("<style> img { height : auto; width:80%; } </style>");
 
         builder.append("</head>");
 
-        builder.append("<body class \"mdui-theme-primary-pink mdui-theme-accent-indigo\">").append(toHtml(content)).append("</body>");
+        // builder.append("<body class \"mdui-theme-primary-pink mdui-theme-accent-indigo\">")
+
+        builder.append("<body>").append(toHtml(content)).append("</body>");
 
         builder.append("</html>");
 
@@ -84,7 +87,7 @@ public class Markdown {
     public static String encode(String source) {
 
         return source
-            
+
             .replace("\\", "\\\\")
             .replace("`", "\\`")
             .replace("*", "\\*")
