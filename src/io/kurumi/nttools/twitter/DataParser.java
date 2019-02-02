@@ -71,19 +71,24 @@ public class DataParser {
 
         JSONArray json = new JSONArray(StrUtil.subAfter(FileUtil.readUtf8String(doc), " = ", false));
 
-        StringBuilder page = new StringBuilder("# 所有推文 (◦˙▽˙◦)\n");
+        StringBuilder page = new StringBuilder("");
 
         try {
             
             User current = api.verifyCredentials();
 
+            int index = 0;
+            
             for (JSONObject obj : (List<JSONObject>)(Object)json) {
 
                 Status s = ObjectUtil.parseStatus(obj.toString(), account);
 
-                page.append("\n\n---\n\n");
+                page.append("---\\[ 第 " + (json.size() -  index) + " 条推文 : \\]\n\n");
 
                 parseStatus(page, s, current.getScreenName());
+                
+                index ++;
+                
 
             }
 
