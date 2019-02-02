@@ -65,24 +65,24 @@ public class DataParser {
             return;
 
         }
-        
-        msg.send("正在开始分析...","这可能需要几分钟的时间 (◦˙▽˙◦)").exec();
+
+        msg.send("正在开始分析...", "这可能需要几分钟的时间 (◦˙▽˙◦)").exec();
 
         JSONArray json = new JSONArray(StrUtil.subAfter(FileUtil.readUtf8String(doc), " = ", false));
 
         StringBuilder page = new StringBuilder("# 所有推文 (◦˙▽˙◦)\n");
-        
+
         for (JSONObject obj : (List<JSONObject>)(Object)json) {
 
             Status s = ObjectUtil.parseStatus(obj.toString(), account);
-            
+
             page.append("\n\n---\n\n");
-            
-            parseStatus(page,s,api);
+
+            parseStatus(page, s, api);
 
         }
-        
-        String html = Markdown.parsePage("所有推文","# 你的所有推文 (◦˙▽˙◦)\n" + page);
+
+        String html = Markdown.parsePage("所有推文", "# 你的所有推文 (◦˙▽˙◦)\n" + page);
 
         FileUtil.writeUtf8String(html, result);
 
@@ -96,25 +96,27 @@ public class DataParser {
 
     private static void parseStatus(StringBuilder page, Status s, Twitter api) {
 
-        if (s.getQuotedStatus() != null) {
+        if (s.getInReplyToScreenName() != null) {
 
-            page.append("回复给 :\n");
-
-            parseStatus(page, s.getQuotedStatus(), api);
+            page.append("回复给 : [").append(Markdown.encode(s.getInReplyToScreenName()));
 
         }
 
-        if (s.isRetweet() && s.isRetweetedByMe()) {
+        if (s.isRetweetedByMe()) {
 
             page.append("你转推了 : \n");
 
         }
 
-        page.append("[")
-            .append(Markdown.encode(s.getUser().getName()))
-            .append("](https://twitter.com/")
-            .append(s.getUser().getScreenName()).append(")")
-            .append(" @").append(s.getUser().getScreenName()).append("\n\n");
+        if (s.getUser() != null) {
+
+            page.append("[")
+                .append(Markdown.encode(s.getUser().getName()))
+                .append("](https://twitter.com/")
+                .append(s.getUser().getScreenName()).append(")")
+                .append(" @").append(s.getUser().getScreenName()).append("\n\n");
+
+        }
 
         page.append(s.getText()).append("\n");
 
@@ -170,9 +172,9 @@ public class DataParser {
             return;
 
         }
-        
-        msg.send("正在开始分析...","这可能需要几分钟的时间 (◦˙▽˙◦)").exec();
-        
+
+        msg.send("正在开始分析...", "这可能需要几分钟的时间 (◦˙▽˙◦)").exec();
+
 
         JSONArray json = new JSONArray(StrUtil.subAfter(FileUtil.readUtf8String(doc), " = ", false));
 
