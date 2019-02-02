@@ -7,6 +7,7 @@ import java.io.File;
 import io.kurumi.nttools.twitter.TwitterUI;
 import io.kurumi.nttools.model.Callback;
 import io.kurumi.nttools.twitter.TelegraphUI;
+import io.kurumi.nttools.twitter.DataParser;
 
 public class NTTBot extends MainFragment {
 
@@ -19,17 +20,19 @@ public class NTTBot extends MainFragment {
     @Override
     public void processPrivateMessage(UserData user, Msg msg) {
 
-        if (!msg.isCommand()) help(user, msg);
+        if (msg.isCommand()) {
 
-        switch (msg.commandName()) {
+            switch (msg.commandName()) {
 
-                case "start" : case "help" : help(user, msg); return;
+                    case "start" : case "help" : help(user, msg); return;
+
+            }
 
         }
 
         TwitterUI.process(user, msg);
-        
-        TelegraphUI.test(user,msg);
+
+        DataParser.process(user,msg);
 
     }
 
