@@ -24,7 +24,7 @@ public class UserData extends JSONObject {
 
         this.id = id;
 
-        userDataFile = new File(main.dataDir, "/users/" + id + ".json");
+        userDataFile = new File(main.dataDir, "users/" + id + ".json");
 
         refresh();
 
