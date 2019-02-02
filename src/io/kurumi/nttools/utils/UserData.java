@@ -17,10 +17,10 @@ import java.util.List;
 
 public class UserData extends JSONObject {
 
-    private Integer id;
+    private Long id;
     public File userDataFile;
 
-    public UserData(MainFragment main, Integer id) {
+    public UserData(MainFragment main, Long id) {
 
         this.id = id;
 
@@ -51,7 +51,7 @@ public class UserData extends JSONObject {
     }
 
     
-    public Integer id() {
+    public Long id() {
         
         return id;
         

@@ -16,7 +16,7 @@ public abstract class MainFragment extends Fragment {
     public String serverDomain;
     public File dataDir;
     
-    private HashMap<Integer,UserData> userDataCache = new HashMap<>();
+    private HashMap<Long,UserData> userDataCache = new HashMap<>();
 
     public LinkedList<UserData> getUsers() {
 
@@ -32,7 +32,7 @@ public abstract class MainFragment extends Fragment {
         
    }
     
-    public UserData getUserData(int id) {
+    public UserData getUserData(long id) {
         
         if (userDataCache.containsKey(id)) return userDataCache.get(id);
         
@@ -52,8 +52,8 @@ public abstract class MainFragment extends Fragment {
 
         for (File userDataFile : new File(main.dataDir, "/users").listFiles()) {
 
-            Integer userId = Integer.parseInt(StrUtil.subBefore(userDataFile.getName(), ".json", true));
-
+            long userId = Long.parseLong(StrUtil.subBefore(userDataFile.getName(), ".json", true));
+            
             if (userDataCache.containsKey(userId)) continue;
 
             userDataCache.put(userId, new UserData(main, userId));
