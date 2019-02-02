@@ -14,6 +14,7 @@ import io.kurumi.nttools.utils.UserData;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import cn.hutool.core.io.IORuntimeException;
 
 public class DataParser {
 
@@ -72,33 +73,39 @@ public class DataParser {
 
         StringBuilder page = new StringBuilder("# 所有推文 (◦˙▽˙◦)\n");
 
-        for (JSONObject obj : (List<JSONObject>)(Object)json) {
+        try {
+            
+            User current = api.verifyCredentials();
 
-            Status s = ObjectUtil.parseStatus(obj.toString(), account);
+            for (JSONObject obj : (List<JSONObject>)(Object)json) {
 
-            page.append("\n\n---\n\n");
+                Status s = ObjectUtil.parseStatus(obj.toString(), account);
 
-            parseStatus(page, s, api);
+                page.append("\n\n---\n\n");
 
-        }
+                parseStatus(page, s, api);
 
-        String html = Markdown.parsePage("所有推文", "# 你的所有推文 (◦˙▽˙◦)\n" + page);
+            }
 
-        FileUtil.writeUtf8String(html, result);
+            String html = Markdown.parsePage("所有推文", "# 你的所有推文 (◦˙▽˙◦)\n" + page);
 
-        msg.send("分析成功 (｡>∀<｡) : ").exec();
+            FileUtil.writeUtf8String(html, result ,current.getScreenName());
 
-        msg.sendUpdatingFile();
+            msg.send("分析成功 (｡>∀<｡) : ").exec();
 
-        msg.sendFile(result);
+            msg.sendUpdatingFile();
+
+            msg.sendFile(result);
+            
+        } catch (TwitterException e) {}
 
     }
 
-    private static void parseStatus(StringBuilder page, Status s, Twitter api) {
-
+    private static void parseStatus(StringBuilder page, Status s, String screenName) {
+        
         if (s.getInReplyToScreenName() != null) {
 
-            page.append("回复给 : [").append(Markdown.encode(s.getInReplyToScreenName()));
+            page.append("回复给 : [").append(Markdown.encode(s.getInReplyToScreenName())).append("](").append("https://twitter.com/").append(s.getInReplyToScreenName()).append(")");
 
         }
 
@@ -139,6 +146,8 @@ public class DataParser {
             page.append("喜欢 : ").append(s.getFavoriteCount());
 
         }
+        
+        page.append("[打开](https://twitter.com/").append(screenName).append("/status/").append(s.getId()).append(")");
 
 
     }

@@ -69,7 +69,7 @@ public class Markdown {
 
         builder.append("<title>").append(title).append("</title>");
         
-        builder.append("<style> img { height : auto; width: auto\\9; width:100%; } </style>");
+        builder.append("<style> img { height : auto; width:80%; } </style>");
 
         builder.append("</head>");
 
