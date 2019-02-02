@@ -56,7 +56,7 @@ public class DataParser {
 
         if (result.isFile() && false) {
 
-            msg.send("这份结果已经被分析过啦 (｡>∀<｡) :");
+            msg.send("这份结果已经被分析过啦 (｡>∀<｡) :").exec();
 
             msg.sendUpdatingFile();
 
@@ -163,7 +163,7 @@ public class DataParser {
 
         if (result.isFile()) {
 
-            msg.send("这份结果已经被分析过啦 (｡>∀<｡) :");
+            msg.send("这份结果已经被分析过啦 (｡>∀<｡) :").exec();
 
             msg.sendUpdatingFile();
 
