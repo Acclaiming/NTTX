@@ -114,7 +114,7 @@ public class Send extends AbstractSend<Send> {
 
         if (!resp.isOk()) {
 
-            StaticLog.error("SendMseeage Error " + resp.errorCode() + " : " + resp.description());
+            StaticLog.error(new RuntimeException(),"SendMseeage Error " + resp.errorCode() + " : " + resp.description());
 
         }
 
