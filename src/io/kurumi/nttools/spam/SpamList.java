@@ -30,9 +30,11 @@ public class SpamList extends JSONObject {
 
         spamFile = new File(main.dataDir, "twitter_spam/" + id + ".json");
         
+        load();
+        
     }
 
-    public void laod() {
+    public void load() {
 
         try {
 
