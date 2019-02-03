@@ -8,6 +8,7 @@ import io.kurumi.nttools.twitter.TwitterUI;
 import io.kurumi.nttools.utils.UserData;
 import java.io.File;
 import io.kurumi.nttools.spam.SpamUI;
+import io.kurumi.nttools.model.request.Send;
 
 public class NTTBot extends MainFragment {
 
@@ -45,6 +46,12 @@ public class NTTBot extends MainFragment {
                         return true;
 
                     }
+                    
+                    case "admin" :
+                        
+                      admin(user,msg);
+                      
+                      return true;
 
             }
 
@@ -65,6 +72,40 @@ public class NTTBot extends MainFragment {
 
         } else return false;
 
+    }
+    
+    public void admin(UserData user, Msg msg) {
+        
+        if (user.isAdmin && msg.commandParms().length == 2) {
+            
+            switch (msg.commandParms()[0]) {
+                
+                case "set" : {
+                    
+                    String targetStr =  (msg.commandParms()[1]);
+                    
+                    if (targetStr.startsWith("@"))  {
+                        
+                        UserData target = findUserData(targetStr.substring(1));
+
+                        target.isAdmin = true;
+
+                        target.save();
+
+                        msg.send(target.name + " (@" + target.userName + ") 已被设为管理员 (◦˙▽˙◦)").send();
+
+                        new Send(this,target.id,"您已被 " + user.name + " (@" + user.userName + ") 设为管理员 (◦˙▽˙◦)").exec();
+                        
+                    }
+
+                    
+                    
+                }
+                
+            }
+            
+        }
+        
     }
 
     public void help(UserData user, Msg msg) {

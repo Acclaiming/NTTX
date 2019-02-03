@@ -24,6 +24,19 @@ public abstract class MainFragment extends Fragment {
         return new LinkedList<UserData>(userDataCache.values());
 
     }
+    
+    public UserData findUserData(String userName) {
+        
+        for (UserData user : userDataCache.values()) {
+            
+            if (userName.equals(user.userName)) return user;
+            
+        }
+        
+        return null;
+        
+    }
+    
 
     public UserData getUserData(User user) {
 
