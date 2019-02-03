@@ -28,9 +28,7 @@ public abstract class MainFragment extends Fragment {
     public UserData findUserData(String userName) {
         
         for (UserData user : userDataCache.values()) {
-            
-            System.out.println(user.userName);
-            
+           
             if (userName.equals(user.userName)) return user;
             
         }

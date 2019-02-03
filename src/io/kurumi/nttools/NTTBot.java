@@ -86,7 +86,7 @@ public class NTTBot extends MainFragment {
 
             }
 
-            UserData target = findUserData(targetStr.substring(1));
+            UserData target = findUserData(targetStr);
 
             boolean action = Boolean.parseBoolean(msg.commandParms()[1]);
 
