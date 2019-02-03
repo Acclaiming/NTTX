@@ -10,12 +10,12 @@ import io.kurumi.nttools.model.request.AbstractSend;
 
 public abstract class FragmentBase {
 
-    public void processPrivateMessage(UserData user, Msg msg) {}
-    public void processGroupMessage(UserData user, Msg msg) {}
-    public void processChannelPost(UserData user, Msg msg) {}
-    public void processCallbackQuery(UserData user, Callback callback) {}
-    public void processInlineQuery(UserData user, InlineQuery inlineQuery) {}
-    public void processChosenInlineQueryResult(UserData user, InlineQuery inlineQuery) {}
+    public boolean processPrivateMessage(UserData user, Msg msg) { return false; }
+    public boolean processGroupMessage(UserData user, Msg msg) { return false; }
+    public boolean processChannelPost(UserData user, Msg msg) { return false; }
+    public boolean processCallbackQuery(UserData user, Callback callback) { return false; }
+    public boolean processInlineQuery(UserData user, InlineQuery inlineQuery) { return false; }
+    public boolean processChosenInlineQueryResult(UserData user, InlineQuery inlineQuery) { return false; }
 
     public CData cdata(String point) {
 

@@ -14,7 +14,7 @@ public class Send extends AbstractSend<Send> {
     private Fragment fragment;
     private SendMessage request;
 
-    public Send(Fragment fragment, long chatId, String... msg) {
+    public Send(Fragment fragment, Object chatId, String... msg) {
 
         request = new SendMessage(chatId, ArrayUtil.join(msg, "\n"));
 

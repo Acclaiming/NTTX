@@ -23,39 +23,43 @@ import twitter4j.Status;
 import twitter4j.UploadedMedia;
 import io.kurumi.nttools.model.request.Send;
 import java.util.Date;
+import io.kurumi.nttools.fragments.FragmentBase;
 
-public class TwitterUI {
+public class TwitterUI extends FragmentBase {
 
-    public static final String COMMAND = "twitter";
+    private static final String COMMAND = "twitter";
 
-    public static final String POINT_NEW_AUTH = "t|n";
-    public static final String POINT_BACK = "t|b";
-    public static final String POINT_MANAGE = "t|m";
-    public static final String POINT_REMOVE = "t|r";
-    public static final String POINT_CLEAN = "t|c";
+    private static final String POINT_NEW_AUTH = "t|n";
+    private static final String POINT_BACK = "t|b";
+    private static final String POINT_MANAGE = "t|m";
+    private static final String POINT_REMOVE = "t|r";
+    private static final String POINT_CLEAN = "t|c";
 
-    public static final String POINT_CLEAN_STATUS = "t|c|s";
-    public static final String POINT_CLEAN_FOLLOWERS = "t|c|fo";
-    public static final String POINT_CLEAN_FRIDENDS = "t|c|fr";
-    public static final String POINT_CLEAN_ALL = "t|c|a";
+    private static final String POINT_CLEAN_STATUS = "t|c|s";
+    private static final String POINT_CLEAN_FOLLOWERS = "t|c|fo";
+    private static final String POINT_CLEAN_FRIDENDS = "t|c|fr";
+    private static final String POINT_CLEAN_ALL = "t|c|a";
 
+    public static final TwitterUI INSTANCE = new TwitterUI();
+    
     public static String help() {
 
         return "/twitter Twitter相关 ~";
 
     }
 
-    public static void process(UserData userData, Msg msg) {
+    @Override
+    public boolean processPrivateMessage(UserData user, Msg msg) {
 
-        if (!msg.isCommand() || !COMMAND.equals(msg.commandName())) return;
+        if (!msg.isCommand() || !COMMAND.equals(msg.commandName())) return false;
 
-        main(userData, msg, false);
+        main(user, msg, false);
+
+        return true;
 
     }
 
-    public static void main(final UserData userData, Msg msg, boolean edit) {
-
-
+    public void main(final UserData userData, Msg msg, boolean edit) {
 
         Integer lastMsgId = userData.getByPath("last_msg_id.twitter_ui." + msg.fragment.name() + "." + userData.id, Integer.class);
 
@@ -101,7 +105,7 @@ public class TwitterUI {
 
     }
 
-    public static void newAuth(final UserData user, final Callback callback) {
+    public void newAuth(final UserData user, final Callback callback) {
 
         if (user.twitterAccounts.size() > 0) {
 
@@ -138,10 +142,10 @@ public class TwitterUI {
 
                                     if (!u.equals(user)) {
 
-                                        new Send(callback.fragment, u.id, "您的Twitter账号 " + account.getMarkdowName(), "已经被 @" + user.userName + "认证 已从您的列表移除", "如果这不是您本人的操作 请立即修改Twitter密码并在 [ 账号 -> 应用和会话 ] 取消不信任的应用链接",new Date().toLocaleString()).markdown().exec();
+                                        new Send(callback.fragment, u.id, "您的Twitter账号 " + account.getMarkdowName(), "已经被 @" + user.userName + "认证 已从您的列表移除", "如果这不是您本人的操作 请立即修改Twitter密码并在 [ 账号 -> 应用和会话 ] 取消不信任的应用链接", new Date().toLocaleString()).markdown().exec();
 
                                     }
-                                    
+
                                     u.twitterAccounts.remove(account);
 
                                 }
@@ -177,7 +181,7 @@ public class TwitterUI {
 
     }
 
-    public static void manage(final UserData user, Callback callback) {
+    public void manage(final UserData user, Callback callback) {
 
         final TwiAccount account = callback.data.getUser(user);
 
@@ -194,7 +198,7 @@ public class TwitterUI {
 
     }
 
-    public static void remove(UserData user, Callback callback) {
+    public void remove(UserData user, Callback callback) {
 
         callback.text("已移除");
 
@@ -206,7 +210,7 @@ public class TwitterUI {
 
     }
 
-    public static void clean(final UserData user, final Callback callback) {
+    public void clean(final UserData user, final Callback callback) {
 
         final TwiAccount account = callback.data.getUser(user);
 
@@ -224,7 +228,7 @@ public class TwitterUI {
 
     }
 
-    public static void doClean(UserData userData, Callback callbeck, boolean status, boolean followers, boolean friends) {
+    public void doClean(UserData userData, Callback callbeck, boolean status, boolean followers, boolean friends) {
 
         callbeck.text("正在开始...");
 
@@ -232,8 +236,8 @@ public class TwitterUI {
 
     }
 
-
-    public static void callback(UserData user, Callback callback) {
+    @Override
+    public boolean processCallbackQuery(UserData user, Callback callback) {
 
         switch (callback.data.getPoint()) {
 
@@ -241,7 +245,7 @@ public class TwitterUI {
 
                     newAuth(user, callback);
 
-                    return;
+                    return true;
 
                 }
 
@@ -249,7 +253,7 @@ public class TwitterUI {
 
                     manage(user, callback);
 
-                    return;
+                    return true;
 
                 }
 
@@ -257,7 +261,7 @@ public class TwitterUI {
 
                     main(user, callback, true);
 
-                    return;
+                    return true;
 
                 }
 
@@ -265,7 +269,7 @@ public class TwitterUI {
 
                     remove(user, callback);
 
-                    return;
+                    return true;
 
                 }
 
@@ -273,7 +277,7 @@ public class TwitterUI {
 
                     clean(user, callback);
 
-                    return;
+                    return true;
 
                 }
 
@@ -281,7 +285,7 @@ public class TwitterUI {
 
                     doClean(user, callback, true, true, true);
 
-                    return;
+                    return true;
 
                 }
 
@@ -289,7 +293,7 @@ public class TwitterUI {
 
                     doClean(user, callback, true, false, false);
 
-                    return;
+                    return true;
 
                 }
 
@@ -297,7 +301,7 @@ public class TwitterUI {
 
                     doClean(user, callback, false, true, false);
 
-                    return;
+                    return true;
 
                 }
 
@@ -305,11 +309,13 @@ public class TwitterUI {
 
                     doClean(user, callback, false, false, true);
 
-                    return;
+                    return true;
 
                 }
 
         }
+
+        return false;
 
     }
 

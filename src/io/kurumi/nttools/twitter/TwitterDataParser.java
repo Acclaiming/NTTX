@@ -8,35 +8,45 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import com.pengrad.telegrambot.model.Document;
+import io.kurumi.nttools.fragments.FragmentBase;
 import io.kurumi.nttools.model.Msg;
 import io.kurumi.nttools.utils.Markdown;
 import io.kurumi.nttools.utils.UserData;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import cn.hutool.core.io.IORuntimeException;
 
-public class DataParser {
+public class TwitterDataParser extends FragmentBase {
 
-    private static Document doc;
+    public static final TwitterDataParser INSTANCE = new TwitterDataParser();
+    
+    public static String help() {
+        
+        return "Twitter数据解析 : 发送 tweet.js / follow.js / follower.js 到Bot即可自动解析";
+        
+    }
+    
+    @Override
+    public boolean processPrivateMessage(UserData user, Msg msg) {
+        
+        Document doc = msg.message().document();
 
-    public static void process(UserData user, Msg msg) {
-
-        doc = msg.message().document();
-
-        if (doc == null) return;
+        if (doc == null) return false;
 
         switch (doc.fileName()) {
 
-                case "following.js" : processAccounts(user, msg, true);return;
-                case "follower.js" : processAccounts(user, msg, false);return;
-                case "tweet.js" : processTweets(user, msg); return;
+                case "following.js" : processAccounts(user, msg, true);break;
+                case "follower.js" : processAccounts(user, msg, false);break;
+                case "tweet.js" : processTweets(user, msg); break;
+                default : return false;
 
         }
+        
+        return true;
 
     }
 
-    public static void processTweets(UserData user, Msg msg) {
+    public void processTweets(UserData user, Msg msg) {
 
         if (user.twitterAccounts.isEmpty()) {
 
@@ -104,7 +114,7 @@ public class DataParser {
 
     }
 
-    private static void parseStatus(StringBuilder page, Status s, String screenName) {
+    private void parseStatus(StringBuilder page, Status s, String screenName) {
         
         if (s.getInReplyToScreenName() != null) {
 
@@ -156,7 +166,7 @@ public class DataParser {
 
     }
 
-    public static void processAccounts(UserData user, Msg msg, boolean friend) {
+    public void processAccounts(UserData user, Msg msg, boolean friend) {
 
         if (user.twitterAccounts.isEmpty()) {
 

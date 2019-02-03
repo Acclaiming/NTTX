@@ -31,7 +31,7 @@ public class CoreValuesBot extends Fragment {
     static Encoder encoder = new Encoder(Encoder.coreValus);
 
     @Override
-    public void processInlineQuery(UserData user, InlineQuery inlineQuery) {
+    public boolean processInlineQuery(UserData user, InlineQuery inlineQuery) {
 
         if (!StrUtil.isBlank(inlineQuery.query())) {
 
@@ -39,12 +39,16 @@ public class CoreValuesBot extends Fragment {
 
             bot.execute(new AnswerInlineQuery(inlineQuery.id(), result));
 
+            return true;
+            
         }
+        
+        return false;
 
     }
     
     @Override
-    public void processPrivateMessage(UserData user, Msg msg) {
+    public boolean processPrivateMessage(UserData user, Msg msg) {
         
         String text = encoder.decode(msg.text());
 
@@ -57,6 +61,8 @@ public class CoreValuesBot extends Fragment {
             msg.reply("解码失败 请直接发送需要解码的内容");
             
         }
+        
+        return true;
         
     }
 

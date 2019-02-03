@@ -109,7 +109,7 @@ public abstract class Fragment extends FragmentBase {
 
                             for (FragmentBase fragment : fragments) {
 
-                                fragment.processPrivateMessage(user, new Msg(this, update.message()));
+                                if (fragment.processPrivateMessage(user, new Msg(this, update.message()))) return;
 
                             }
 
@@ -121,7 +121,7 @@ public abstract class Fragment extends FragmentBase {
 
                             for (FragmentBase fragment : fragments) {
 
-                                fragment.processGroupMessage(user, new Msg(this, update.message()));
+                                if (fragment.processGroupMessage(user, new Msg(this, update.message()))) return;
 
                             }
 
@@ -133,7 +133,7 @@ public abstract class Fragment extends FragmentBase {
 
                             for (FragmentBase fragment : fragments) {
 
-                                fragment.processGroupMessage(user, new Msg(this, update.message()));
+                               if (fragment.processGroupMessage(user, new Msg(this, update.message()))) return;
 
                             }
 
@@ -149,7 +149,7 @@ public abstract class Fragment extends FragmentBase {
 
                 for (FragmentBase fragment : fragments) {
 
-                    fragment. processChannelPost(user, new Msg(this, update.channelPost()));
+                    if (fragment. processChannelPost(user, new Msg(this, update.channelPost()))) return;
 
                 }
 
@@ -159,7 +159,7 @@ public abstract class Fragment extends FragmentBase {
 
                 for (FragmentBase fragment : fragments) {
 
-                    fragment.processCallbackQuery(user, new Callback(this, update.callbackQuery()));
+                    if (fragment.processCallbackQuery(user, new Callback(this, update.callbackQuery()))) return;
 
                 }
 
@@ -169,7 +169,7 @@ public abstract class Fragment extends FragmentBase {
 
                 for (FragmentBase fragment : fragments) {
 
-                    fragment.processInlineQuery(user, update.inlineQuery());
+                    if (fragment.processInlineQuery(user, update.inlineQuery())) return;
 
                 }
 
@@ -179,7 +179,7 @@ public abstract class Fragment extends FragmentBase {
 
                 for (FragmentBase fragment : fragments) {
 
-                    fragment.processChosenInlineQueryResult(user, update.inlineQuery());
+                    if (fragment.processChosenInlineQueryResult(user, update.inlineQuery())) return;
 
                 }
 
