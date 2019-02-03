@@ -21,14 +21,26 @@ public class UserData extends JSONObject {
     
     public File userDataFile;
 
-    public UserData(MainFragment main, Long id) {
+    public UserData(Fragment fragment, long id) {
 
         this.id = id;
 
-        userDataFile = new File(main.dataDir, "users/" + id + ".json");
+        userDataFile = new File(fragment.main.dataDir, "users/" + id + ".json");
 
         refresh();
 
+    }
+    
+    public void update(User user) {
+
+        setName(user.firstName(),user.lastName());
+        
+        userName = user.username();
+        
+        isBot = user.isBot();
+        
+        save();
+        
     }
 
     public String name;
@@ -71,7 +83,7 @@ public class UserData extends JSONObject {
         
         userName = getStr("user_name");
         
-        isBot = getBool("is_bot");
+        isBot = getBool("is_bot",false);
         
         String[] admins = new String[] {
             "HiedaNaKan",
@@ -167,22 +179,7 @@ public class UserData extends JSONObject {
         FileUtil.del(userDataFile);
 
     }
-    
-    public void update(Fragment fragment,Message from) {
-
-        update(from.from());
-
-    }
-
-
-    public void update(User from) {
-
-        userName = from.username();
-        setName(from.firstName() , from.lastName());
-        isBot = from.isBot();
-
-    }
-
+ 
     @Override
     public boolean equals(Object obj) {
 

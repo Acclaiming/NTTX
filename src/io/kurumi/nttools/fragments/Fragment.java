@@ -1,27 +1,19 @@
 package io.kurumi.nttools.fragments;
 
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpUtil;
 import cn.hutool.log.StaticLog;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
-import com.pengrad.telegrambot.model.Document;
-import com.pengrad.telegrambot.model.InlineQuery;
-import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.DeleteWebhook;
-import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetWebhook;
 import io.kurumi.nttools.model.Callback;
 import io.kurumi.nttools.model.Msg;
 import io.kurumi.nttools.server.BotServer;
-import io.kurumi.nttools.twitter.TwiAccount;
-import io.kurumi.nttools.utils.CData;
 import io.kurumi.nttools.utils.UserData;
-import java.io.File;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 
 public abstract class Fragment extends FragmentBase {
 
@@ -84,15 +76,6 @@ public abstract class Fragment extends FragmentBase {
 
     }
 
-
-    private UserData getUserData(Message msg) {
-
-        UserData ud = main.getUserData(msg.from().id());
-        ud.update(this, msg);
-        return ud;
-
-    }
-
     public void processUpdate(Update update) {
 
         UserData user = null;
@@ -101,7 +84,7 @@ public abstract class Fragment extends FragmentBase {
 
             if (update.message() != null) {
 
-                user = getUserData(update.message());
+                user = main.getUserData(update.message().from());
 
                 switch (update.message().chat().type()) {
 
@@ -145,7 +128,7 @@ public abstract class Fragment extends FragmentBase {
 
             } else if (update.channelPost() != null) {
 
-                user = getUserData(update.channelPost());
+                user = main.getUserData(update.channelPost().from());
 
                 for (FragmentBase fragment : fragments) {
 
