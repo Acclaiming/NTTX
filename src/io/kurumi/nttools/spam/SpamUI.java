@@ -138,7 +138,7 @@ public class SpamUI extends FragmentBase {
 
         msg.send("创建成功 ⊙∀⊙ ~").exec();
 
-        sendMain(user, msg, false);
+        publicLists(user, msg, false);
 
     }
 
