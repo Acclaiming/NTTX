@@ -125,7 +125,7 @@ public class SpamUI extends FragmentBase {
 
         callback.text("好的");
 
-        callback.send("输入列表的名称 (◦˙▽˙◦) : ").exec();
+        callback.send("输入列表的名称 (◦˙▽˙◦) : ","","使用 /cancel 取消创建 ~").exec();
 
     }
 
@@ -181,7 +181,7 @@ public class SpamUI extends FragmentBase {
 
         user.save();
 
-        callback.send("输入新的名称 (｡>∀<｡) :").exec();
+        callback.send("输入新的名称 (｡>∀<｡) :","","使用 /cancel 取消修改 ~").exec();
 
     }
 
@@ -211,7 +211,7 @@ public class SpamUI extends FragmentBase {
 
         user.save();
 
-        callback.send("输入新的简介 (｡>∀<｡) :").exec();
+        callback.send("输入新的简介 (｡>∀<｡) :","","使用 /cancel 取消修改 ~").exec();
 
     }
 
