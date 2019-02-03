@@ -84,7 +84,7 @@ public abstract class FragmentBase {
     
     public void saveLastSent(UserData user,Msg msg,String key,int messageId) {
         
-        user.putByPath("last_msg_id." + key + "." + msg.fragment.name() + "." + user,messageId);
+        user.putByPath("last_msg_id." + key + "." + msg.fragment.name() + "." + user.id,messageId);
         
     }
 
