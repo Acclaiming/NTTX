@@ -46,12 +46,12 @@ public class NTTBot extends MainFragment {
                         return true;
 
                     }
-                    
+
                     case "admin" :
-                        
-                      admin(user,msg);
-                      
-                      return true;
+
+                    admin(user, msg);
+
+                    return true;
 
             }
 
@@ -73,39 +73,45 @@ public class NTTBot extends MainFragment {
         } else return false;
 
     }
-    
+
     public void admin(UserData user, Msg msg) {
-        
+
         if (user.isAdmin && msg.commandParms().length == 2) {
-            
-            switch (msg.commandParms()[0]) {
-                
-                case "set" : {
-                    
-                    String targetStr =  (msg.commandParms()[1]);
-                    
-                    if (targetStr.startsWith("@"))  {
-                        
-                        UserData target = findUserData(targetStr.substring(1));
 
-                        target.isAdmin = true;
+            String targetStr =  msg.commandParms()[0];
 
-                        target.save();
+            if (targetStr.startsWith("@"))  {
 
-                        msg.send(target.name + " (@" + target.userName + ") 已被设为管理员 (◦˙▽˙◦)").send();
+                targetStr = targetStr.substring(1);
 
-                        new Send(this,target.id,"您已被 " + user.name + " (@" + user.userName + ") 设为管理员 (◦˙▽˙◦)").exec();
-                        
-                    }
+            }
 
-                    
-                    
+            UserData target = findUserData(targetStr.substring(1));
+
+            boolean action = Boolean.parseBoolean(msg.commandParms()[1]);
+
+            if (target != null) {
+
+                target.isAdmin = action;
+
+                target.save();
+
+                msg.send(target.name + " (@" + target.userName + ") 已被设置了管理员权限 : " + action).send();
+
+                if (action) {
+
+                    new Send(this, target.id, "您已被 " + user.name + " (@" + user.userName + ") 设为管理员 (◦˙▽˙◦)").exec();
+
                 }
-                
+
+            } else {
+
+                msg.send("本地没有此用户的数据 : @" + targetStr).exec();
+
             }
             
         }
-        
+
     }
 
     public void help(UserData user, Msg msg) {
@@ -116,7 +122,7 @@ public class NTTBot extends MainFragment {
 
             TwitterUI.help,
             SpamUI.help,
-            
+
             "",
             "",
 
