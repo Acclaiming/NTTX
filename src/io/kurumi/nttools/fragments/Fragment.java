@@ -4,16 +4,17 @@ import cn.hutool.log.StaticLog;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.DeleteWebhook;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetWebhook;
 import io.kurumi.nttools.model.Callback;
 import io.kurumi.nttools.model.Msg;
+import io.kurumi.nttools.model.request.Send;
 import io.kurumi.nttools.server.BotServer;
 import io.kurumi.nttools.utils.UserData;
 import java.util.LinkedList;
 import java.util.List;
+import io.kurumi.nttools.model.request.AnswerCallback;
 
 public abstract class Fragment extends FragmentBase {
 
@@ -86,6 +87,26 @@ public abstract class Fragment extends FragmentBase {
 
                 user = main.getUserData(update.message().from());
 
+                if ("/cancel".equals(update.message().text())) {
+
+                    if (user.point != null) {
+
+                        user.point = null;
+                        user.save();
+
+                        new Send(this, user.id, "已经取消输入 (｡>∀<｡)").exec();
+
+                    } else {
+
+                        new Send(this, user.id, "好像没有什么需要取消的 (｡>∀<｡)").exec();
+
+
+                    }
+                    
+                    return;
+
+                }
+
                 switch (update.message().chat().type()) {
 
                         case Private : {
@@ -116,7 +137,7 @@ public abstract class Fragment extends FragmentBase {
 
                             for (FragmentBase fragment : fragments) {
 
-                               if (fragment.processGroupMessage(user, new Msg(this, update.message()))) return;
+                                if (fragment.processGroupMessage(user, new Msg(this, update.message()))) return;
 
                             }
 
@@ -130,6 +151,26 @@ public abstract class Fragment extends FragmentBase {
 
                 user = main.getUserData(update.channelPost().from());
 
+                if ("/cancel".equals(update.message().text())) {
+
+                    if (user.point != null) {
+
+                        user.point = null;
+                        user.save();
+
+                        new Send(this, user.id, "已经取消输入 (｡>∀<｡)").exec();
+
+                    } else {
+
+                        new Send(this, user.id, "好像没有什么需要取消的 (｡>∀<｡)").exec();
+
+
+                    }
+
+                    return;
+
+                }
+                
                 for (FragmentBase fragment : fragments) {
 
                     if (fragment. processChannelPost(user, new Msg(this, update.channelPost()))) return;
@@ -140,6 +181,14 @@ public abstract class Fragment extends FragmentBase {
 
                 user = main.getUserData(update.callbackQuery().from());
 
+                if (user.point != null) {
+                    
+                    new AnswerCallback(this,update.callbackQuery().id()).alert("乃好像需要输入什么东西 (ﾟ⊿ﾟ)ﾂ \n\n取消输入使用 /cancel 哦！").exec();
+                    
+                    return;
+                    
+                }
+                
                 for (FragmentBase fragment : fragments) {
 
                     if (fragment.processCallbackQuery(user, new Callback(this, update.callbackQuery()))) return;

@@ -20,11 +20,7 @@ public class TwitterDataParser extends FragmentBase {
 
     public static final TwitterDataParser INSTANCE = new TwitterDataParser();
     
-    public static String help() {
-        
-        return "Twitter数据解析 : 发送 tweet.js / follow.js / follower.js 到Bot即可自动解析";
-        
-    }
+    public static String help = "Twitter数据解析 : 发送 tweet.js / follow.js / follower.js 到Bot即可自动解析";
     
     @Override
     public boolean processPrivateMessage(UserData user, Msg msg) {

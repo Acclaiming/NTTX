@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import io.kurumi.nttools.spam.SpamList;
 
 public abstract class MainFragment extends Fragment {
     
@@ -45,7 +46,45 @@ public abstract class MainFragment extends Fragment {
         return ud;
 
     }
+    
+    private HashMap<String,SpamList> spamListCahche = new HashMap<>();
 
+    public SpamList getSpamList(String id) {
+        
+        return spamListCahche.get(id);
+        
+    }
+    
+    public SpamList deleteSpamList(String id) {
+
+        SpamList list = spamListCahche.remove(id);
+        
+        list.delete();
+        
+        return list;
+
+    }
+    
+    public LinkedList<SpamList> getSpamLists() {
+        
+        return new LinkedList<SpamList>(spamListCahche.values());
+       
+    }
+    
+    public SpamList newSpamList(String name) {
+        
+        SpamList list = new SpamList(this, SpamList.nextId(this));
+
+        list.name = name;
+
+        list.save();
+        
+        spamListCahche.put(list.id,list);
+        
+        return list;
+        
+    }
+    
     public MainFragment(File dataDir) {
 
         super(null);
@@ -67,6 +106,23 @@ public abstract class MainFragment extends Fragment {
             }
 
         }
+        
+        File[] sl = new File(main.dataDir, "/twitter_spam").listFiles();
+
+        if (sl != null) {
+
+            for (File userDataFile : sl) {
+
+                String listId = StrUtil.subBefore(userDataFile.getName(), ".json", true);
+
+                if (spamListCahche.containsKey(listId)) continue;
+
+                spamListCahche.put(listId,new SpamList(main, listId));
+
+            }
+
+        }
+        
 
 
         refresh();

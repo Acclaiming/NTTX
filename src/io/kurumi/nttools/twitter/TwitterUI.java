@@ -1,34 +1,29 @@
 package io.kurumi.nttools.twitter;
 
-import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.response.BaseResponse;
-import com.pengrad.telegrambot.response.SendResponse;
+import io.kurumi.nttools.fragments.FragmentBase;
 import io.kurumi.nttools.model.Callback;
 import io.kurumi.nttools.model.Msg;
 import io.kurumi.nttools.model.request.AbstractSend;
 import io.kurumi.nttools.model.request.ButtonMarkup;
+import io.kurumi.nttools.model.request.Send;
 import io.kurumi.nttools.server.AuthCache;
 import io.kurumi.nttools.twitter.ApiToken;
 import io.kurumi.nttools.twitter.TwiAccount;
 import io.kurumi.nttools.utils.UserData;
-import java.util.LinkedList;
+import java.util.Date;
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
-import io.kurumi.nttools.fragments.Fragment;
-import twitter4j.Twitter;
-import twitter4j.Paging;
-import twitter4j.ResponseList;
-import twitter4j.Status;
-import twitter4j.UploadedMedia;
-import io.kurumi.nttools.model.request.Send;
-import java.util.Date;
-import io.kurumi.nttools.fragments.FragmentBase;
 
 public class TwitterUI extends FragmentBase {
 
-    private static final String COMMAND = "twitter";
+    public static final TwitterUI INSTANCE = new TwitterUI();
 
+    public static String help =  "/twitter Twitter相关 ~";
+    
+    private static final String COMMAND = "twitter";
+    
     private static final String POINT_NEW_AUTH = "t|n";
     private static final String POINT_BACK = "t|b";
     private static final String POINT_MANAGE = "t|m";
@@ -39,14 +34,6 @@ public class TwitterUI extends FragmentBase {
     private static final String POINT_CLEAN_FOLLOWERS = "t|c|fo";
     private static final String POINT_CLEAN_FRIDENDS = "t|c|fr";
     private static final String POINT_CLEAN_ALL = "t|c|a";
-
-    public static final TwitterUI INSTANCE = new TwitterUI();
-    
-    public static String help() {
-
-        return "/twitter Twitter相关 ~";
-
-    }
 
     @Override
     public boolean processPrivateMessage(UserData user, Msg msg) {
@@ -59,15 +46,9 @@ public class TwitterUI extends FragmentBase {
 
     }
 
-    public void main(final UserData userData, Msg msg, boolean edit) {
+    public void main(final UserData user, Msg msg, boolean edit) {
 
-        Integer lastMsgId = userData.getByPath("last_msg_id.twitter_ui." + msg.fragment.name() + "." + userData.id, Integer.class);
-
-        if (lastMsgId != null && !edit) {
-
-            msg.fragment.bot.execute(new DeleteMessage(userData.id, lastMsgId));
-
-        }
+        deleteLastSend(user,msg,"twitter_ui");
 
         AbstractSend send = null;
 
@@ -87,21 +68,15 @@ public class TwitterUI extends FragmentBase {
 
                     newButtonLine("认证新账号 (｡>∀<｡)", POINT_NEW_AUTH);
 
-                    for (TwiAccount account : userData.twitterAccounts) {
+                    for (TwiAccount account : user.twitterAccounts) {
 
-                        newButtonLine(account.name, POINT_MANAGE, userData, account);
+                        newButtonLine(account.name, POINT_MANAGE, user, account);
 
                     }
 
                 }}).exec();
 
-        if (resp instanceof SendResponse) {
-
-            userData.putByPath("last_msg_id.twitter_ui." + msg.fragment.name() + "." + userData.id, ((SendResponse)resp).message().messageId());
-
-        }
-
-        userData.save();
+        saveLastSent(user,msg,"twitter_ui",resp);
 
     }
 

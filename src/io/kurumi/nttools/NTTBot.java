@@ -7,6 +7,7 @@ import io.kurumi.nttools.twitter.TwitterDataParser;
 import io.kurumi.nttools.twitter.TwitterUI;
 import io.kurumi.nttools.utils.UserData;
 import java.io.File;
+import io.kurumi.nttools.spam.SpamUI;
 
 public class NTTBot extends MainFragment {
 
@@ -17,6 +18,7 @@ public class NTTBot extends MainFragment {
         super(new File("./data"));
 
         fragments.add(TwitterUI.INSTANCE);
+        fragments.add(SpamUI.INSTANCE);
         fragments.add(TwitterDataParser.INSTANCE);
 
     }
@@ -71,9 +73,13 @@ public class NTTBot extends MainFragment {
 
             "这里是奈间家的BOT (◦˙▽˙◦)","",
 
-            TwitterUI.help(),"","",
+            TwitterUI.help,
+            SpamUI.help,
+            
+            "",
+            "",
 
-            TwitterDataParser.help()
+            TwitterDataParser.help
 
 
         };

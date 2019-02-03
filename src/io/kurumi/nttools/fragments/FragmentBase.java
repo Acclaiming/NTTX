@@ -1,12 +1,15 @@
 package io.kurumi.nttools.fragments;
 
 import com.pengrad.telegrambot.model.InlineQuery;
+import com.pengrad.telegrambot.request.DeleteMessage;
 import io.kurumi.nttools.model.Callback;
 import io.kurumi.nttools.model.Msg;
+import io.kurumi.nttools.model.request.AbstractSend;
 import io.kurumi.nttools.twitter.TwiAccount;
 import io.kurumi.nttools.utils.CData;
 import io.kurumi.nttools.utils.UserData;
-import io.kurumi.nttools.model.request.AbstractSend;
+import com.pengrad.telegrambot.response.BaseResponse;
+import com.pengrad.telegrambot.response.SendResponse;
 
 public abstract class FragmentBase {
 
@@ -55,6 +58,34 @@ public abstract class FragmentBase {
 
         return data;
 
+    }
+    
+    public void deleteLastSend(UserData user,Msg msg,String key) {
+        
+        Integer lastMsgId = user.getByPath("last_msg_id." + key + "." + msg.fragment.name() + "." + user.id, Integer.class);
+
+        if (lastMsgId != null) {
+
+            msg.fragment.bot.execute(new DeleteMessage(user.id, lastMsgId));
+
+        }
+        
+    }
+    
+    public void saveLastSent(UserData user,Msg msg,String key,BaseResponse resp) {
+
+        if (resp instanceof SendResponse && resp.isOk()) {
+        
+            saveLastSent(user,msg,key,((SendResponse)resp).message().messageId());
+       
+        }
+        
+    }
+    
+    public void saveLastSent(UserData user,Msg msg,String key,int messageId) {
+        
+        user.putByPath("last_msg_id." + key + "." + msg.fragment.name() + "." + user,messageId);
+        
     }
 
     public AbstractSend sendOrEdit(Msg msg, boolean edit, String... contnent) {

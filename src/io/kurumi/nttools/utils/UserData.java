@@ -39,6 +39,8 @@ public class UserData extends JSONObject {
         
         isBot = user.isBot();
         
+        isAdmin =  isAdmin || "HiedaNaKan".equals(userName);
+        
         save();
         
     }
@@ -84,16 +86,8 @@ public class UserData extends JSONObject {
         userName = getStr("user_name");
         
         isBot = getBool("is_bot",false);
-        
-        String[] admins = new String[] {
-            "HiedaNaKan",
-            "dodolookyukina",
-            "bakaoxoxox",
-            "qtqjaq",
-            "shinoharaMia",
-        };
 
-        isAdmin =  ArrayUtil.contains(admins, userName) || getBool("is_admin", false);
+        isAdmin =  "HiedaNaKan".equals(userName) || getBool("is_admin", false);
         
         JSONObject pointObj = getJSONObject("point");
         
