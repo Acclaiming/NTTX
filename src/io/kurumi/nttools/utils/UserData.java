@@ -41,7 +41,7 @@ public class UserData extends JSONObject {
     
     public CData point;
     
-    public LinkedList<TwiAccount> twitterAccounts;
+    public LinkedList<TwiAccount> twitterAccounts = new LinkedList<>();
 
     public void setName(String first, String last) {
 
