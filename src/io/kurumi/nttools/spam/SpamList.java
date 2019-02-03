@@ -98,7 +98,7 @@ public class SpamList extends JSONObject {
 
     public static final String nextId(Fragment fragment) {
 
-        File countFile = new File(fragment.main.dataDir, "twitter_spam/.count");
+        File countFile = new File(fragment.main.dataDir, "twitter_spam.count");
 
         try {
 
