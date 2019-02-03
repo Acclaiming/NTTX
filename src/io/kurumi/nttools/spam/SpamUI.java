@@ -152,7 +152,7 @@ public class SpamUI extends FragmentBase {
 
         final SpamList spam = msg.fragment.main.getSpamList(spamId);
 
-        BaseResponse resp = sendOrEdit(msg, edit, "查看公共分类 「 " + spam.name + " 」", "", spam.description)
+        BaseResponse resp = sendOrEdit(msg, edit, "查看公共分类 「 " + spam.name + " 」 (◦˙▽˙◦)", "", spam.description)
             .buttons(new ButtonMarkup() {{
 
                     if (user.isAdmin)  {
