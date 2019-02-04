@@ -175,6 +175,11 @@ public class SpamUI extends FragmentBase {
 
                     newButtonLine("「 查看所有分类用户 」", POINT_SHOW_SPAM_USERS, spam.id);
 
+
+                    newButtonLine("「 发起新投票 」", POINT_NEW_SPAM, spam.id);
+                    newButtonLine("「 管理员 - 直接添加 」", POINT_ADD_SPAM, spam.id);
+                    
+                    
                     newButtonLine("「 返回分类列表 」", POINT_PUBLIC_LISTS);
 
                 }}).exec();
@@ -302,12 +307,9 @@ public class SpamUI extends FragmentBase {
         }
 
         callback.edit(all.toString()).buttons(new ButtonMarkup() {{
+    newButtonLine("<< 返回列表", POINT_SHOW_LIST, list.id);
 
-                    newButtonLine("「 发起新投票 」", POINT_NEW_SPAM, list.id);
-                    newButtonLine("「 管理员 - 直接添加 」", POINT_ADD_SPAM, list.id);
-                    newButtonLine("<< 返回列表", POINT_SHOW_LIST, list.id);
-
-                }}).exec();
+                }}).markdown().exec();
 
     }
 
@@ -408,6 +410,8 @@ public class SpamUI extends FragmentBase {
         
         user.point = null;
         user.save();
+        
+        showList(user,msg,false,list.id);
 
     }
 

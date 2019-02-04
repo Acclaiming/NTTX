@@ -44,8 +44,8 @@ public class TwitterSpam {
         
         String[] passMsg = new String[] {
             
-            "投票通过了将 [「" + Markdown.encode(spam.twitterDisplyName) + "」](https://twitter.com/" + spam.twitterScreenName + ") 添加到公共列表 「 " + spam.belongTo.name + " 」 的决定",
-            "https://t.me/" + PUBLIC_CHANNEL
+            "投票通过了将 [「" + Markdown.encode(spam.twitterDisplyName) + "」](https://twitter.com/" + spam.twitterScreenName + ")","","添加到公共列表 「 " + spam.belongTo.name + " 」 的决定",
+            "","https://t.me/" + PUBLIC_CHANNEL
             
         };
         
@@ -57,8 +57,8 @@ public class TwitterSpam {
         
         String[] passMsg = new String[] {
 
-            "投票否决了将 [「" + Markdown.encode(vote.twitterDisplyName) + "」](https://twitter.com/" + vote.twitterScreenName + ") 添加到公共列表 「 " + fragment.main.getSpamList(vote.listId).name + " 」 的决定",
-            "https://t.me/" + PUBLIC_CHANNEL
+            "投票否决了将 [「" + Markdown.encode(vote.twitterDisplyName) + "」](https://twitter.com/" + vote.twitterScreenName + ")","","添加到公共列表 「 " + fragment.main.getSpamList(vote.listId).name + " 」 的决定",
+            "","https://t.me/" + PUBLIC_CHANNEL
 
         };
 
@@ -74,9 +74,9 @@ public class TwitterSpam {
 
         String[] newSpamMsg = new String[] {
             
-            "Twitter #用户" + spam.twitterAccountId + " [" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ") \\ #" + spam.twitterScreenName + " 已被添加到 公共分类 「 " + spam.belongTo.name + " 」","",
+            "Twitter #用户" + spam.twitterAccountId + "\n\n[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ") \n\n #" + spam.twitterScreenName + "\n\n已被添加到 公共分类 「 " + spam.belongTo.name + " 」","",
             "原因 : " + spam.spamCause,"",
-            "操作人 : [" + Markdown.encode(origin.screenName) + "](" + origin.getUrl() + ")"
+            "操作人 : [" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")"
             
         };
         
