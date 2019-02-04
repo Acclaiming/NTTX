@@ -5,13 +5,14 @@ import io.kurumi.nttools.fragments.Fragment;
 import io.kurumi.nttools.fragments.FragmentBase;
 import io.kurumi.nttools.fragments.MainFragment;
 import io.kurumi.nttools.model.Callback;
+import io.kurumi.nttools.model.Msg;
+import io.kurumi.nttools.model.request.ButtonMarkup;
+import io.kurumi.nttools.model.request.Edit;
 import io.kurumi.nttools.model.request.Send;
 import io.kurumi.nttools.timer.TimerTask;
 import io.kurumi.nttools.twitter.TwiAccount;
 import io.kurumi.nttools.utils.Markdown;
 import io.kurumi.nttools.utils.UserData;
-import io.kurumi.nttools.model.Msg;
-import io.kurumi.nttools.model.request.ButtonMarkup;
 
 public class VoteUI extends FragmentBase implements TimerTask {
 
@@ -36,13 +37,13 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         }
 
-        msg.append(" 提议将 #账号").append(spam.twitterAccountId);
+        msg.append("\n\n提议将 #账号").append(spam.twitterAccountId);
 
-        msg.append(" [").append(Markdown.encode(spam.twitterDisplyName)).append("](https://twitter.com/").append(spam.twitterScreenName).append(") ");
+        msg.append("\n\n[").append(Markdown.encode(spam.twitterDisplyName)).append("](https://twitter.com/").append(spam.twitterScreenName).append(") ");
 
-        msg.append("添加到公共分类 「").append(fragment.main.getSpamList(spam.listId).name).append(" 」");
+        msg.append("\n\n添加到公共分类 「").append(fragment.main.getSpamList(spam.listId).name).append(" 」");
 
-        msg.append("原因是 : ").append(spam.spamCause).append("\n\n");
+        msg.append("\n\n原因是 : ").append(spam.spamCause).append("\n\n");
 
         Msg voteMsg = new Send(fragment, "@" + TwitterSpam.VOTE_CHANNEL, msg.toString())
         
@@ -51,7 +52,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
                 newButtonLine("同意",POINT_VOTE_AGREE,spam.id);
                 newButtonLine("反对",POINT_VOTE_DISAGREE,spam.id);
                     
-                }}).send();
+                }}).markdown().send();
                 
        spam.vote_message_id = voteMsg.messageId();
        spam.save();
@@ -132,7 +133,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
     }
 
-    public void updateVote(Fragment fragment, SpamVote spam) {
+    public void updateVote(Fragment fragment, final SpamVote spam) {
 
         StringBuilder msg = new StringBuilder();
 
@@ -199,8 +200,13 @@ public class VoteUI extends FragmentBase implements TimerTask {
             }
 
         }
+        
+        new Edit(fragment,"@" + TwitterSpam.VOTE_CHANNEL, spam.vote_message_id, msg.toString()).buttons(new ButtonMarkup() {{
 
-        fragment.bot.execute(new EditMessageText("@" + TwitterSpam.VOTE_CHANNEL, spam.vote_message_id, msg.toString()));
+                    newButtonLine("同意",POINT_VOTE_AGREE,spam.id);
+                    newButtonLine("反对",POINT_VOTE_DISAGREE,spam.id);
+
+                }}).markdown().exec();
         
     }
 
