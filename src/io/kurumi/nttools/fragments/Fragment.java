@@ -21,7 +21,7 @@ public abstract class Fragment extends FragmentBase {
     public MainFragment main;
     public TelegramBot bot;
     public LinkedList<FragmentBase> fragments = new LinkedList<>();
-
+    
     public Fragment(MainFragment main) {
 
         this.main = main;
@@ -76,10 +76,18 @@ public abstract class Fragment extends FragmentBase {
         BotServer.bots.remove(main.tokens.get(name()));
 
     }
+    
+    public void printUpdate(Update update) {
+        
+        StaticLog.debug(update.toString());
+        
+    }
 
     public void processUpdate(Update update) {
 
         UserData user = null;
+        
+       // printUpdate(update);
 
         try {
 

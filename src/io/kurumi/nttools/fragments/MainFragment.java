@@ -4,19 +4,27 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import com.pengrad.telegrambot.model.User;
+import io.kurumi.nttools.spam.SpamList;
+import io.kurumi.nttools.spam.SpamVote;
+import io.kurumi.nttools.timer.TimerThread;
 import io.kurumi.nttools.utils.UserData;
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import io.kurumi.nttools.spam.SpamList;
+import io.kurumi.nttools.spam.TwitterSpam;
 
 public abstract class MainFragment extends Fragment {
-    
+
     public int serverPort = -1;
     public String serverDomain;
     public File dataDir;
-
+    
+    public TimerThread timer = new TimerThread(this,10 * 60 * 1000) {{ start(); }};
+    
+    public TwitterSpam spam = new TwitterSpam(this);
+    
+    
     private HashMap<Long,UserData> userDataCache = new HashMap<>();
 
     public LinkedList<UserData> getUsers() {
@@ -24,26 +32,26 @@ public abstract class MainFragment extends Fragment {
         return new LinkedList<UserData>(userDataCache.values());
 
     }
-    
+
     public UserData findUserData(String userName) {
-        
+
         for (UserData user : userDataCache.values()) {
-           
+
             if (userName.equals(user.userName)) return user;
-            
+
         }
-        
+
         return null;
-        
+
     }
-    
+
 
     public UserData getUserData(User user) {
 
         UserData ud = getUserData(user.id());
-      
+
         ud.update(user);
-        
+
         return ud;
 
     }
@@ -59,45 +67,90 @@ public abstract class MainFragment extends Fragment {
         return ud;
 
     }
-    
+
     private HashMap<String,SpamList> spamListCahche = new HashMap<>();
 
     public SpamList getSpamList(String id) {
-        
+
         return spamListCahche.get(id);
-        
+
     }
-    
+
     public SpamList deleteSpamList(String id) {
 
         SpamList list = spamListCahche.remove(id);
-        
+
         list.delete();
-        
+
         return list;
 
     }
-    
+
     public LinkedList<SpamList> getSpamLists() {
-        
+
         return new LinkedList<SpamList>(spamListCahche.values());
-       
+
     }
-    
+
     public SpamList newSpamList(String name) {
-        
+
         SpamList list = new SpamList(this, SpamList.nextId(this));
 
         list.name = name;
 
         list.save();
-        
-        spamListCahche.put(list.id,list);
-        
+
+        spamListCahche.put(list.id, list);
+
         return list;
+
+    }
+   
+    private HashMap<String,SpamVote> spamVoteCahche = new HashMap<>();
+
+    public SpamVote getSpamVote(String id) {
+
+        return spamVoteCahche.get(id);
+
+    }
+
+    public SpamVote deleteSpamVote(String id) {
+
+        SpamVote vote = spamVoteCahche.remove(id);
         
+        vote.delete();
+
+        return vote;
+
+    }
+
+    public LinkedList<SpamVote> getSpamVotes() {
+
+        return new LinkedList<SpamVote>(spamVoteCahche.values());
+
+    }
+
+    public SpamVote newSpamVote(String name,Long origin,Long accountId,String screenName,String displayName,String cause) {
+
+        SpamVote vote = new SpamVote(this,SpamVote.nextId(this));
+        
+        vote.origin = origin;
+        
+        vote.twitterAccountId = accountId;
+        
+        vote.twitterScreenName = screenName;
+        
+        vote.twitterDisplyName = displayName;
+
+        vote.spamCause = cause;
+
+        spamVoteCahche.put(vote.id,vote);
+
+        return vote;
+
     }
     
+
     public MainFragment(File dataDir) {
 
         super(null);
@@ -119,8 +172,8 @@ public abstract class MainFragment extends Fragment {
             }
 
         }
-        
-        File[] sl = new File(main.dataDir, "/twitter_spam").listFiles();
+
+        File[] sl = new File(main.dataDir, "/twitter_spam_list").listFiles();
 
         if (sl != null) {
 
@@ -130,12 +183,12 @@ public abstract class MainFragment extends Fragment {
 
                 if (spamListCahche.containsKey(listId)) continue;
 
-                spamListCahche.put(listId,new SpamList(main, listId));
+                spamListCahche.put(listId, new SpamList(main, listId));
 
             }
 
         }
-        
+
 
 
         refresh();

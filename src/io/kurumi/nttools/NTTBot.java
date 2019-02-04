@@ -9,6 +9,7 @@ import io.kurumi.nttools.utils.UserData;
 import java.io.File;
 import io.kurumi.nttools.spam.SpamUI;
 import io.kurumi.nttools.model.request.Send;
+import io.kurumi.nttools.spam.VoteUI;
 
 public class NTTBot extends MainFragment {
 
@@ -20,7 +21,10 @@ public class NTTBot extends MainFragment {
 
         fragments.add(TwitterUI.INSTANCE);
         fragments.add(SpamUI.INSTANCE);
+        fragments.add(VoteUI.INSTANCE);
         fragments.add(TwitterDataParser.INSTANCE);
+        
+        timer.tasks.add(VoteUI.INSTANCE);
 
     }
 
@@ -39,14 +43,22 @@ public class NTTBot extends MainFragment {
 
             switch (msg.commandName()) {
 
-                    case "start" : case "help" : {
+                    case "start" : 
 
-                        help(user, msg);
+                    if (msg.commandParms().length != 0) {
 
-                        return true;
+                        return SpamUI.INSTANCE.processPrivateMessage(user, msg);
 
-                    }
+                    } else help(user,msg); break;
 
+                    case "help" : 
+
+                    help(user, msg);
+
+
+                    return true;
+
+                    
                     case "admin" :
 
                     admin(user, msg);
@@ -109,7 +121,7 @@ public class NTTBot extends MainFragment {
                 msg.send("本地没有此用户的数据 : @" + targetStr).exec();
 
             }
-            
+
         }
 
     }

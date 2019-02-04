@@ -8,6 +8,9 @@ import io.kurumi.nttools.fragments.MainFragment;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.Map;
 
 public class SpamList extends JSONObject {
     
@@ -23,12 +26,14 @@ public class SpamList extends JSONObject {
 
     public LinkedList<UserSpam> spamUsers = new LinkedList<>();
 
+    public HashMap<Long,Integer> subscribers = new HashMap<>();
+    
     public SpamList(Fragment fragment, String id) {
 
         main = fragment.main;
         this.id = id;
 
-        spamFile = new File(main.dataDir, "twitter_spam/" + id + ".json");
+        spamFile = new File(main.dataDir, "twitter_spam_list/" + id + ".json");
         
         load();
         
@@ -60,6 +65,20 @@ public class SpamList extends JSONObject {
             }
 
         }
+        
+        JSONObject subscriberMap = getJSONObject("subscribers");
+
+        subscribers.clear();
+
+        if (subscriberMap != null) {
+            
+            for (String key : subscriberMap.keySet()) {
+
+                subscribers.put(Long.parseLong(key),subscriberMap.getInt(key));
+
+            }
+
+        }
 
     }
     
@@ -78,6 +97,16 @@ public class SpamList extends JSONObject {
         }
         
         put("spam_users",spamUsers);
+        
+        JSONObject subscriberMap = new JSONObject();
+        
+        for (Map.Entry<Long,Integer> subscriber : subscribers.entrySet()) {
+            
+            subscriberMap.put(subscriber.getKey().toString(),subscriber.getValue());
+            
+        }
+        
+        put("subscribers",subscriberMap);
         
         FileUtil.writeUtf8String(toStringPretty(),spamFile);
         
@@ -98,7 +127,7 @@ public class SpamList extends JSONObject {
 
     public static final String nextId(Fragment fragment) {
 
-        File countFile = new File(fragment.main.dataDir, "twitter_spam.count");
+        File countFile = new File(fragment.main.dataDir, "twitter_spam_list.count");
 
         try {
 

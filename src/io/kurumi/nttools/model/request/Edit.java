@@ -66,7 +66,7 @@ public class Edit extends AbstractSend<Edit> {
         
         if (!resp.isOk()) {
             
-            StaticLog.error(new RuntimeException(),"EditMseeage Error " + resp.errorCode() + " : " + resp.description());
+            StaticLog.error(new RuntimeException(),"request : " + request.toWebhookResponse() + "\n\nEditMseeage Error " + resp.errorCode() + " : " + resp.description());
             
         }
         

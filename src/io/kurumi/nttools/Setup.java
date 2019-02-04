@@ -46,7 +46,6 @@ public class Setup {
 
             main.serverPort = loopInputInt("本地端口");
 
-
         }
 
         if (main.serverDomain == null) {
