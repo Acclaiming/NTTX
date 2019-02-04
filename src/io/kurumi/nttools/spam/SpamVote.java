@@ -75,7 +75,7 @@ public class SpamVote extends JSONObject {
 
         JSONArray disagreeArray = getJSONArray("disagree");
 
-        disagreeArray.clear();
+        disagree.clear();
 
         if (disagreeArray != null) {
 
