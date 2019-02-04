@@ -199,7 +199,7 @@ public abstract class MainFragment extends Fragment {
 
         if (vl != null) {
 
-            for (File voteFile : sl) {
+            for (File voteFile : vl) {
 
                 String voteId = StrUtil.subBefore(voteFile.getName(), ".json", true);
 
