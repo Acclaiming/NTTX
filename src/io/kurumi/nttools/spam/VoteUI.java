@@ -52,7 +52,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
                 newButtonLine("同意",POINT_VOTE_AGREE,spam.id);
                 newButtonLine("反对",POINT_VOTE_DISAGREE,spam.id);
                     
-                }}).markdown().send();
+                }}).markdown().disableLinkPreview().send();
                 
        spam.vote_message_id = voteMsg.messageId();
        spam.save();
@@ -206,7 +206,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
                     newButtonLine("同意",POINT_VOTE_AGREE,spam.id);
                     newButtonLine("反对",POINT_VOTE_DISAGREE,spam.id);
 
-                }}).markdown().exec();
+                }}).markdown().disableLinkPreview().exec();
         
     }
 

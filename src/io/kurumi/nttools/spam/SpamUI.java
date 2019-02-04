@@ -178,10 +178,10 @@ public class SpamUI extends FragmentBase {
 
                     newButtonLine("「 发起新投票 」", POINT_NEW_SPAM, spam.id);
                     newButtonLine("「 管理员 - 直接添加 」", POINT_ADD_SPAM, spam.id);
-                    
-                    
-                    newButtonLine("「 返回分类列表 」", POINT_PUBLIC_LISTS);
 
+
+                    newButtonLine("「 返回分类列表 」", POINT_PUBLIC_LISTS);
+                    
                 }}).exec();
 
         saveLastSent(user, msg, "spam_ui", resp);
@@ -307,7 +307,7 @@ public class SpamUI extends FragmentBase {
         }
 
         callback.edit(all.toString()).buttons(new ButtonMarkup() {{
-    newButtonLine("<< 返回列表", POINT_SHOW_LIST, list.id);
+                    newButtonLine("<< 返回列表", POINT_SHOW_LIST, list.id);
 
                 }}).markdown().exec();
 
@@ -336,6 +336,32 @@ public class SpamUI extends FragmentBase {
 
             screenName = screenName.substring(1);
 
+        }
+        
+        SpamList list = msg.fragment.main.getSpamList(user.point.getIndex());
+        
+        for (UserSpam spam :  list.spamUsers) {
+            
+            if (screenName.equals(spam.twitterDisplyName)) {
+                
+                msg.send("该用户已在公共分类 「 " + list.name + " 」 中！","","请重新输入 或使用 /cancel 取消").exec();
+                
+                return;
+                
+            }
+            
+        }
+        
+        for (SpamVote vote : msg.fragment.main.getSpamVotes()) {
+            
+            if (screenName.equals(vote.twitterDisplyName)) {
+
+                msg.send("该用户已经被提交！","正在 [这里](https://t.me/" + TwitterSpam.VOTE_CHANNEL + "/" + vote.vote_message_id + ") 投票"  ,"","请重新输入 或使用 /cancel 取消").exec();
+
+                return;
+
+            }
+            
         }
 
         try {
@@ -377,41 +403,41 @@ public class SpamUI extends FragmentBase {
         String displayName = user.point.getStr("displayName");
 
         if (user.isAdmin && user.point.getBool("direct")) {
-            
+
             UserSpam spam = new UserSpam(list);
-            
+
             spam.origin = user.id;
-            
+
             spam.twitterAccountId = accountId;
 
             spam.twitterScreenName = screenName;
-            
+
             spam.twitterDisplyName = displayName;
-            
+
             spam.spamCause = msg.text();
-            
+
             list.spamUsers.add(spam);
-            
+
             list.save();
-            
+
             msg.fragment.main.spam.newSpam(spam);
-            
+
             msg.send("添加成功 ~").exec();
-            
+
         } else {
-            
-            SpamVote spam = msg.fragment.main.newSpamVote(list,user.id,accountId,screenName,displayName,msg.text());
-            
-            VoteUI.INSTANCE.startVote(msg.fragment,spam);
-            
+
+            SpamVote spam = msg.fragment.main.newSpamVote(list, user.id, accountId, screenName, displayName, msg.text());
+
+            VoteUI.INSTANCE.startVote(msg.fragment, spam);
+
             msg.send("发起投票成功 ~").exec();
-            
+
         }
-        
+
         user.point = null;
         user.save();
-        
-        showList(user,msg,false,list.id);
+
+        showList(user, msg, false, list.id);
 
     }
 
