@@ -157,7 +157,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         msg.append("\n\n原因是 : ").append(spam.spamCause).append("\n\n");
         
-        msg.append("\n**同意 : **").append(spam.agree.size()).append("\n\n");
+        msg.append("同意 : ").append(spam.agree.size()).append("\n\n");
 
         for (Long uid : spam.agree) {
 
@@ -179,7 +179,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         }
 
-        msg.append("\n**反对 : **").append(spam.agree.size()).append("\n\n");
+        msg.append("\n反对 : ").append(spam.disagree.size()).append("\n\n");
 
         for (Long uid : spam.disagree) {
 
