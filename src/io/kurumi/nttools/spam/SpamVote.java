@@ -25,9 +25,6 @@ public class SpamVote extends JSONObject {
 
     public Integer vote_message_id;
 
-    public Long bot_invite_status;
-    public Long origin_invite_status;
-    
     public Long startTime;
 
     public LinkedList<Long> agree = new LinkedList<>();

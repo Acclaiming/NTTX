@@ -322,7 +322,7 @@ public class SpamUI extends FragmentBase {
 
         callback.confirm();
 
-        callback.send("现在发送给我目标的TwitterId @开头 (也可以不带@)", "", "使用 /cancel 取消 >_<");
+        callback.send("现在发送给我目标的TwitterId @开头 (也可以不带@)", "", "使用 /cancel 取消 >_<").exec();
 
     }
 
@@ -358,7 +358,7 @@ public class SpamUI extends FragmentBase {
 
         } catch (Exception ex) {
 
-            msg.send("找不到 https://twitter.com/" + screenName + " 或您的Twitter账号认证被取消了...", "", "请重新发送用户名 取消使用 /cancel (Ｔ▽Ｔ)").exec();
+            msg.send("找不到用户 https://twitter.com/" + screenName + " 或您的Twitter账号认证被取消了...", "", "请重新发送用户名 取消使用 /cancel (Ｔ▽Ｔ)").exec();
 
         }
 
@@ -394,7 +394,20 @@ public class SpamUI extends FragmentBase {
             
             msg.fragment.main.spam.newSpam(spam);
             
+            msg.send("添加成功 ~").exec();
+            
+        } else {
+            
+            SpamVote spam = msg.fragment.main.newSpamVote(user.id,accountId,screenName,displayName,msg.text());
+            
+            VoteUI.INSTANCE.startVote(msg.fragment,spam);
+            
+            msg.send("发起投票成功 ~").exec();
+            
         }
+        
+        user.point = null;
+        user.save();
 
     }
 
@@ -410,7 +423,7 @@ public class SpamUI extends FragmentBase {
                 case POINT_SHOW_SPAM_USERS : showListSpams(user, callback);break;
 
                 case POINT_NEW_SPAM : newSpamRequest(user, callback, false);break;
-                case POINT_ADD_SPAM : newSpamRequest(user, callback, false);break;
+                case POINT_ADD_SPAM : newSpamRequest(user, callback, true);break;
 
                 case POINT_EDIT_LIST_NAME : editName(user, callback);break;
                 case POINT_EDIT_LIST_DESC : editDesc(user, callback);break;

@@ -21,6 +21,7 @@ public class TwitterSpam {
         
     }
     
+
     public void votePassed(SpamVote vote) {
         
         SpamList list = fragment.main.getSpamList(vote.listId);

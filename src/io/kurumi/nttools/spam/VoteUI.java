@@ -1,31 +1,73 @@
 package io.kurumi.nttools.spam;
 
-import cn.hutool.core.io.FileUtil;
+import com.pengrad.telegrambot.request.EditMessageText;
 import io.kurumi.nttools.fragments.Fragment;
 import io.kurumi.nttools.fragments.FragmentBase;
-import io.kurumi.nttools.model.Callback;
-import io.kurumi.nttools.utils.UserData;
-import java.io.File;
-import io.kurumi.nttools.model.Msg;
-import java.lang.annotation.Target;
-import com.pengrad.telegrambot.request.EditMessageText;
-import io.kurumi.nttools.utils.Markdown;
-import io.kurumi.nttools.twitter.TwiAccount;
-import io.kurumi.nttools.timer.TimerTask;
 import io.kurumi.nttools.fragments.MainFragment;
+import io.kurumi.nttools.model.Callback;
+import io.kurumi.nttools.model.request.Send;
+import io.kurumi.nttools.timer.TimerTask;
+import io.kurumi.nttools.twitter.TwiAccount;
+import io.kurumi.nttools.utils.Markdown;
+import io.kurumi.nttools.utils.UserData;
+import io.kurumi.nttools.model.Msg;
+import io.kurumi.nttools.model.request.ButtonMarkup;
 
 public class VoteUI extends FragmentBase implements TimerTask {
 
     public static final VoteUI INSTANCE = new VoteUI();
 
-    private static final String POINT_VOTE = "p|v";
+    private static final String POINT_VOTE_AGREE = "p|a";
+    private static final String POINT_VOTE_DISAGREE = "p|d";
+    
+    public void startVote(Fragment fragment, final SpamVote spam) {
 
-    public void startVote(Fragment fragment, SpamVote spam) {}
+        StringBuilder msg = new StringBuilder();
+
+        if (spam.origin != null) {
+
+            UserData origin = fragment.main.getUserData(spam.origin);
+
+            msg.append("[").append(Markdown.encode(origin.twitterAccounts.getFirst().name)).append("](https://twitter.com/").append(origin.twitterAccounts.getFirst().screenName).append(")");
+
+        } else {
+
+            msg.append("匿名用户");
+
+        }
+
+        msg.append(" 提议将 #账号").append(spam.twitterAccountId);
+
+        msg.append(" [").append(Markdown.encode(spam.twitterDisplyName)).append("](https://twitter.com/").append(spam.twitterScreenName).append(") ");
+
+        msg.append("添加到公共分类 「").append(fragment.main.getSpamList(spam.listId).name).append(" 」");
+
+        msg.append("原因是 : ").append(spam.spamCause).append("\n\n");
+
+        Msg voteMsg = new Send(fragment, "@" + TwitterSpam.VOTE_CHANNEL, msg.toString())
+        
+            .buttons(new ButtonMarkup() {{
+
+                newButtonLine("同意",POINT_VOTE_AGREE,spam.id);
+                newButtonLine("反对",POINT_VOTE_DISAGREE,spam.id);
+                    
+                }}).send();
+                
+       spam.vote_message_id = voteMsg.messageId();
+       spam.save();
+
+    }
 
     @Override
     public boolean processCallbackQuery(UserData user, Callback callback) {
 
-        if (!POINT_VOTE.equals(callback.data.getPoint())) return false;
+        switch (callback.data.getPoint()) {
+            
+            case POINT_VOTE_AGREE: break;
+            case POINT_VOTE_DISAGREE :break;
+            default : return false;
+            
+        }
 
         if (user.twitterAccounts.size() == 0) {
 
@@ -36,9 +78,9 @@ public class VoteUI extends FragmentBase implements TimerTask {
         }
 
 
-        String id = callback.data.getStr("v");
-
-        Boolean target = callback.data.getInt("t") == 1;
+        String id = callback.data.getIndex();
+        
+        Boolean target = callback.data.getPoint().equals(POINT_VOTE_AGREE);
 
         SpamVote vote = callback.fragment.main.getSpamVote(id);
 
@@ -85,7 +127,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
         }
 
         updateVote(callback.fragment, vote);
-        
+
         return true;
 
     }
@@ -166,23 +208,23 @@ public class VoteUI extends FragmentBase implements TimerTask {
     public void run(MainFragment fragment) {
 
         for (SpamVote vote : fragment.getSpamVotes()) {
-            
-            updateVote(fragment,vote);
-            
+
+            updateVote(fragment, vote);
+
             if (System.currentTimeMillis() - vote.startTime > 1 * 24 * 60 * 60 * 1000) {
-                
+
                 if (vote.agree.size() > vote.disagree.size()) {
-                    
+
                     fragment.main.spam.votePassed(vote);
-                    
+
                 } else {
-                    
+
                     fragment.main.spam.voteRejected(vote);
-                    
+
                 }
-                
+
             }
-            
+
         }
 
     }

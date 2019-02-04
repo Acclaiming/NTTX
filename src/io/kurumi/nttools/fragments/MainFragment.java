@@ -130,7 +130,7 @@ public abstract class MainFragment extends Fragment {
 
     }
 
-    public SpamVote newSpamVote(String name,Long origin,Long accountId,String screenName,String displayName,String cause) {
+    public SpamVote newSpamVote(Long origin,Long accountId,String screenName,String displayName,String cause) {
 
         SpamVote vote = new SpamVote(this,SpamVote.nextId(this));
         
@@ -143,6 +143,10 @@ public abstract class MainFragment extends Fragment {
         vote.twitterDisplyName = displayName;
 
         vote.spamCause = cause;
+        
+        vote.startTime = System.currentTimeMillis();
+        
+        vote.save();
 
         spamVoteCahche.put(vote.id,vote);
 
