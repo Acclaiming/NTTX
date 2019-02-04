@@ -130,11 +130,13 @@ public abstract class MainFragment extends Fragment {
 
     }
 
-    public SpamVote newSpamVote(Long origin,Long accountId,String screenName,String displayName,String cause) {
+    public SpamVote newSpamVote(SpamList list,Long origin,Long accountId,String screenName,String displayName,String cause) {
 
         SpamVote vote = new SpamVote(this,SpamVote.nextId(this));
         
         vote.origin = origin;
+        
+        vote.listId = list.id;
         
         vote.twitterAccountId = accountId;
         
