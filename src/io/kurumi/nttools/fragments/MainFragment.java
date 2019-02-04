@@ -111,7 +111,7 @@ public abstract class MainFragment extends Fragment {
 
     public SpamVote getSpamVote(String id) {
 
-        System.out.println(ArrayUtil.join(spamVoteCahche.values(),"\n"));
+        System.out.println(ArrayUtil.join(new LinkedList(spamVoteCahche.values()).toArray(),"\n"));
         
         return spamVoteCahche.get(id);
 
