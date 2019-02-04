@@ -3,6 +3,7 @@ package io.kurumi.nttools.timer;
 import io.kurumi.nttools.fragments.Fragment;
 import io.kurumi.nttools.fragments.MainFragment;
 import java.util.LinkedList;
+import cn.hutool.log.StaticLog;
 
 public class TimerThread extends Thread {
 
@@ -35,7 +36,12 @@ public class TimerThread extends Thread {
 
             } while(true);
 
-        } catch (InterruptedException e) {}
+        } catch (InterruptedException e) {
+        } catch (Exception ex) {
+            
+            StaticLog.error(ex);
+            
+        }
 
     }
 
