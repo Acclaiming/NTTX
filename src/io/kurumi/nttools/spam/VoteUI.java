@@ -201,7 +201,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
         }
 
         fragment.bot.execute(new EditMessageText("@" + TwitterSpam.VOTE_CHANNEL, spam.vote_message_id, msg.toString()));
-
+        
     }
 
     @Override

@@ -86,6 +86,8 @@ public class Markdown {
 
     public static String encode(String source) {
 
+        if (source == null) return null;
+        
         return source
 
             .replace("\\", "\\\\")
