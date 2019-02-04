@@ -195,6 +195,22 @@ public abstract class MainFragment extends Fragment {
 
         }
 
+        File[] vl = new File(main.dataDir, "/twitter_spam_vote").listFiles();
+
+        if (vl != null) {
+
+            for (File voteFile : sl) {
+
+                String voteId = StrUtil.subBefore(voteFile.getName(), ".json", true);
+
+                if (spamVoteCahche.containsKey(voteId)) continue;
+
+                spamVoteCahche.put(voteId, new SpamVote(main, voteId));
+
+            }
+
+        }
+        
 
 
         refresh();
