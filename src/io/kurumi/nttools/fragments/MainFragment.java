@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import io.kurumi.nttools.spam.TwitterSpam;
+import cn.hutool.core.util.ArrayUtil;
 
 public abstract class MainFragment extends Fragment {
 
@@ -110,6 +111,8 @@ public abstract class MainFragment extends Fragment {
 
     public SpamVote getSpamVote(String id) {
 
+        System.out.println(ArrayUtil.join(spamVoteCahche.values(),"\n"));
+        
         return spamVoteCahche.get(id);
 
     }

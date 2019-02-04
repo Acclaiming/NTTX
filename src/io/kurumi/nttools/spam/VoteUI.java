@@ -85,6 +85,8 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         SpamVote vote = callback.fragment.main.getSpamVote(id);
 
+        System.out.println(vote);
+        
         if (target) {
 
             if (vote.agree.contains(user.id))  {
