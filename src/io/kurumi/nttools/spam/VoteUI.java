@@ -81,14 +81,10 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         String id = callback.data.getIndex();
         
-        System.out.println("hejejjwue / " + id);
-        
         Boolean target = callback.data.getPoint().equals(POINT_VOTE_AGREE);
 
         SpamVote vote = callback.fragment.main.getSpamVote(id);
 
-        System.out.println(vote);
-        
         if (target) {
 
             if (vote.agree.contains(user.id))  {

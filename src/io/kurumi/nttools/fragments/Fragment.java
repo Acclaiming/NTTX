@@ -42,7 +42,7 @@ public abstract class Fragment extends FragmentBase {
 
     public void startGetUpdates() {
 
-        deleteWebHook();
+       // deleteWebHook();
 
         bot.setUpdatesListener(new UpdatesListener() {
 
