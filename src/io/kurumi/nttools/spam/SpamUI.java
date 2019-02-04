@@ -338,9 +338,9 @@ public class SpamUI extends FragmentBase {
 
         }
         
-        SpamList list = msg.fragment.main.getSpamList(user.point.getIndex());
+        SpamList list = msg.fragment.main.getSpamList(user.point.getStr("listId"));
         
-        for (UserSpam spam :  list.spamUsers) {
+        for (UserSpam spam : list.spamUsers) {
             
             if (screenName.equals(spam.twitterDisplyName)) {
                 
