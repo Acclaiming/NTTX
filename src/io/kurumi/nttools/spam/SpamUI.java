@@ -356,7 +356,7 @@ public class SpamUI extends FragmentBase {
             
             if (screenName.equals(vote.twitterDisplyName)) {
 
-                msg.send("该用户已经被提交！","正在 [这里](https://t.me/" + TwitterSpam.VOTE_CHANNEL + "/" + vote.vote_message_id + ") 投票"  ,"","请重新输入 或使用 /cancel 取消").exec();
+                msg.send("该用户已经被提交！","正在 [这里](https://t.me/" + TwitterSpam.VOTE_CHANNEL + "/" + vote.vote_message_id + ") 投票"  ,"","请重新输入 或使用 /cancel 取消").markdown().disableLinkPreview().exec();
 
                 return;
 
