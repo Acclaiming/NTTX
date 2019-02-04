@@ -283,7 +283,7 @@ public class SpamUI extends FragmentBase {
 
     private void showListSpams(UserData user, Callback callback) {
 
-        final SpamList list = callback.fragment.main.getSpamList(user.point.getIndex());
+        final SpamList list = callback.fragment.main.getSpamList(callback.data.getIndex());
 
         StringBuilder all = new StringBuilder("公共列表 「 " + list.name + " 」 的所有内容 :\n\n");
 
