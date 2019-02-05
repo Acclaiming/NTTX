@@ -20,8 +20,6 @@ public class Launcher {
 
         } catch (ClassNotFoundException e) {
 
-            e.printStackTrace();
-            
             isAndroid = false;
 
         }

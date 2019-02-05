@@ -133,13 +133,13 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
     }
 
-    public void updateVote(Fragment fragment, final SpamVote spam) {
+    public void updateVote(Fragment fragment, final SpamVote vote) {
 
         StringBuilder msg = new StringBuilder();
 
-        if (spam.origin != null) {
+        if (vote.origin != null) {
 
-            UserData origin = fragment.main.getUserData(spam.origin);
+            UserData origin = fragment.main.getUserData(vote.origin);
 
             msg.append("[").append(Markdown.encode(origin.twitterAccounts.getFirst().name)).append("](https://twitter.com/").append(origin.twitterAccounts.getFirst().screenName).append(")");
 
@@ -149,17 +149,17 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         }
 
-        msg.append("\n\n提议将 #账号").append(spam.twitterAccountId);
+        msg.append("\n\n提议将 #账号").append(vote.twitterAccountId);
 
-        msg.append("\n\n[").append(Markdown.encode(spam.twitterDisplyName)).append("](https://twitter.com/").append(spam.twitterScreenName).append(") ");
+        msg.append("\n\n[").append(Markdown.encode(vote.twitterDisplyName)).append("](https://twitter.com/").append(spam.twitterScreenName).append(") ");
 
         msg.append("\n\n添加到公共分类 「").append(fragment.main.getSpamList(spam.listId).name).append(" 」");
 
-        msg.append("\n\n原因是 : ").append(spam.spamCause).append("\n\n");
+        msg.append("\n\n原因是 : ").append(vote.spamCause).append("\n\n");
         
-        msg.append("同意 : ").append(spam.agree.size()).append("\n\n");
+        msg.append("同意 : ").append(vote.agree.size()).append("\n\n");
 
-        for (Long uid : spam.agree) {
+        for (Long uid : vote.agree) {
 
             UserData u = fragment.main.getUserData(uid);
 
@@ -167,9 +167,9 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
             if (uacc == null) {
 
-                spam.agree.remove(uid);
+                vote.agree.remove(uid);
 
-                spam.save();
+                vote.save();
 
             } else {
 
@@ -179,9 +179,9 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         }
 
-        msg.append("\n反对 : ").append(spam.disagree.size()).append("\n\n");
+        msg.append("\n反对 : ").append(vote.disagree.size()).append("\n\n");
 
-        for (Long uid : spam.disagree) {
+        for (Long uid : vote.disagree) {
 
             UserData u = fragment.main.getUserData(uid);
 
@@ -189,9 +189,9 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
             if (uacc == null) {
 
-                spam.disagree.remove(uid);
+                vote.disagree.remove(uid);
 
-                spam.save();
+                vote.save();
 
             } else {
 
@@ -201,10 +201,12 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         }
         
-        new Edit(fragment,"@" + TwitterSpam.VOTE_CHANNEL, spam.vote_message_id, msg.toString()).buttons(new ButtonMarkup() {{
+        System.out.println("voteId : " + vote.id);
+        
+        new Edit(fragment,"@" + TwitterSpam.VOTE_CHANNEL, vote.vote_message_id, msg.toString()).buttons(new ButtonMarkup() {{
 
-                    newButtonLine("同意 : " + spam.agree.size(),POINT_VOTE_AGREE,spam.id);
-                    newButtonLine("反对 : " + spam.disagree.size(),POINT_VOTE_DISAGREE,spam.id);
+                    newButtonLine("同意 : " + vote.agree.size(),POINT_VOTE_AGREE,vote.id);
+                    newButtonLine("反对 : " + vote.disagree.size(),POINT_VOTE_DISAGREE,vote.id);
 
                 }}).markdown().disableLinkPreview().exec();
         
