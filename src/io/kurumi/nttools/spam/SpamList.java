@@ -31,6 +31,7 @@ public class SpamList extends JSONObject {
     public SpamList(Fragment fragment, String id) {
 
         main = fragment.main;
+        
         this.id = id;
 
         spamFile = new File(main.dataDir, "twitter_spam_list/" + id + ".json");
@@ -49,8 +50,6 @@ public class SpamList extends JSONObject {
 
         } catch (Exception e) {}
         
-        id = getStr("id");
-
         name = getStr("name", "未命名");
         description = getStr("description", "暂无简介");
 
@@ -85,9 +84,7 @@ public class SpamList extends JSONObject {
     }
     
     public void save() {
-        
-        put("id",id);
-        
+       
         put("name",name);
         
         put("description",description);
