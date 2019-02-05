@@ -8,6 +8,7 @@ import io.kurumi.nttools.model.request.ButtonMarkup;
 import io.kurumi.nttools.utils.Markdown;
 import io.kurumi.nttools.utils.UserData;
 import twitter4j.User;
+import io.kurumi.nttools.model.request.ButtonLine;
 
 public class SpamUI extends FragmentBase {
 
@@ -26,6 +27,8 @@ public class SpamUI extends FragmentBase {
     private static final String POINT_ADD_SPAM = "s|a";
     private static final String POINT_REM_SPAM = "s|r";
 
+    private static final String POINT_MANAGE_VOTE = "s|m";
+    
     private static final String POINT_EDIT_LIST_NAME = "s|e";
     private static final String POINT_EDIT_LIST_DESC = "s|ed";
 
@@ -187,9 +190,13 @@ public class SpamUI extends FragmentBase {
 
                     newButtonLine("「 查看所有分类中的用户 」", POINT_SHOW_SPAM_USERS, spam.id);
 
-                    newButtonLine("「 发起新投票 」", POINT_NEW_SPAM, spam.id);
+                    ButtonLine voteLine = newButtonLine();
+                    
+                   voteLine.newButton("「 发起新投票 」", POINT_NEW_SPAM, spam.id);
 
                     if (user.isAdmin) {
+                        
+                        voteLine.newButton("「 管理投票 」",POINT_MANAGE_VOTE,spam.id);
 
                         newButtonLine()
                             .newButton("「 添加 」", POINT_ADD_SPAM, spam.id)

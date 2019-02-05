@@ -20,7 +20,7 @@ public class TwiAccount {
     public String screenName;
     
     public String name;
- //   public String email;
+    public String email;
  
     public JSONObject userData;
 
@@ -42,7 +42,7 @@ public class TwiAccount {
             
         }
         
-      //  email = json.getStr("email");
+        email = json.getStr("email");
     }
 
     public TwiAccount(String apiToken, String apiSecToken, String accToken, String accSecToken) {
@@ -79,7 +79,7 @@ public class TwiAccount {
             accountId = thisAcc.getId();
             screenName = thisAcc.getScreenName();
             name = thisAcc.getName();
-         //   email = thisAcc.getEmail();
+            email = thisAcc.getEmail();
             return true;
 
         } catch (TwitterException e) {}
@@ -116,7 +116,7 @@ public class TwiAccount {
             .put("accountId", accountId)
             .put("screenName", screenName)
             .put("name",name)
-         //   .put("email",email)
+            .put("email",email)
             .put("userData",userData);
 
     }
