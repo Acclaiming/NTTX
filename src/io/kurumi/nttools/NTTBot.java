@@ -15,15 +15,15 @@ public class NTTBot extends MainFragment {
 
     public static final boolean debug = true;
 
-    public NTTBot() {
+    public NTTBot(File dataDir) {
 
-        super(new File("./data"));
+        super(dataDir);
 
         fragments.add(TwitterUI.INSTANCE);
         fragments.add(SpamUI.INSTANCE);
         fragments.add(VoteUI.INSTANCE);
         fragments.add(TwitterDataParser.INSTANCE);
-        
+
         timer.tasks.add(VoteUI.INSTANCE);
 
     }
@@ -49,7 +49,7 @@ public class NTTBot extends MainFragment {
 
                         return SpamUI.INSTANCE.processPrivateMessage(user, msg);
 
-                    } else help(user,msg); break;
+                    } else help(user, msg); break;
 
                     case "help" : 
 
@@ -58,12 +58,13 @@ public class NTTBot extends MainFragment {
 
                     return true;
 
-                    
+
                     case "admin" :
 
                     admin(user, msg);
 
                     return true;
+
 
             }
 

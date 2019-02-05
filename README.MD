@@ -34,3 +34,8 @@ chmod 777 *.sh
 ### 注意
 
 因为不会powershell win的脚本暂不可用
+
+
+### Run on Android
+
+app_process -Djava.class.path=<DEX绝对路径> /data/local/tmp io.kurumi.nttools.Launcher

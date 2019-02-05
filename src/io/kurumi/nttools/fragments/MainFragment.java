@@ -222,7 +222,7 @@ public abstract class MainFragment extends Fragment {
     @Override
     public String name() { return "main"; }
 
-    public Map<String,String> tokens;
+    public Map<String,String> tokens = new HashMap<>();;
 
     public void refresh() {
 

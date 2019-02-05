@@ -15,15 +15,21 @@ import java.util.Date;
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
+import io.kurumi.nttools.Launcher;
+import io.kurumi.nttools.server.BotServer;
+import cn.hutool.core.util.URLUtil;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.core.util.CharsetUtil;
+import java.util.HashMap;
 
 public class TwitterUI extends FragmentBase {
 
     public static final TwitterUI INSTANCE = new TwitterUI();
 
     public static String help =  "/twitter Twitter相关 ~";
-    
+
     private static final String COMMAND = "twitter";
-    
+
     private static final String POINT_NEW_AUTH = "t|n";
     private static final String POINT_BACK = "t|b";
     private static final String POINT_MANAGE = "t|m";
@@ -35,8 +41,24 @@ public class TwitterUI extends FragmentBase {
     private static final String POINT_CLEAN_FRIDENDS = "t|c|fr";
     private static final String POINT_CLEAN_ALL = "t|c|a";
 
+    private static final String POINT_INPUT_CALLBACK_URL = "t|ic";
+
     @Override
     public boolean processPrivateMessage(UserData user, Msg msg) {
+
+        if (user.point != null) {
+
+            switch (user.point.getPoint()) {
+
+                    case POINT_INPUT_CALLBACK_URL : onInputCallbackUrl(user, msg);break;
+
+                    default : return false;
+
+            }
+
+            return true;
+
+        }
 
         if (!msg.isCommand() || !COMMAND.equals(msg.commandName())) return false;
 
@@ -48,7 +70,7 @@ public class TwitterUI extends FragmentBase {
 
     public void main(final UserData user, Msg msg, boolean edit) {
 
-        deleteLastSend(user,msg,"twitter_ui");
+        deleteLastSend(user, msg, "twitter_ui");
 
         AbstractSend send = null;
 
@@ -76,7 +98,7 @@ public class TwitterUI extends FragmentBase {
 
                 }}).exec();
 
-        saveLastSent(user,msg,"twitter_ui",resp);
+        saveLastSent(user, msg, "twitter_ui", resp);
 
     }
 
@@ -132,11 +154,26 @@ public class TwitterUI extends FragmentBase {
                             user.save();
 
                             status.edit("认证成功 (｡>∀<｡) 乃的账号", account.getFormatedName()).markdown().exec();
+                            
+                            if (BotServer.INSTANCE == null) {
+                                
+                                user.point = null;
+                                user.save();
+                                
+                            }
 
                             main(user, callback, false);
+                            
+                            AuthCache.cache.remove(requestToken.getToken());
 
                         } catch (Exception e) {
 
+                            if (BotServer.INSTANCE == null) {
+                                
+                                callback.send("输入的Url有误或已失效 请重新输入","或使用 /cancel 退出 (｡>∀<｡)").exec();
+                                
+                            }
+                            
                             status.edit(e.toString()).exec();
 
                         }
@@ -147,12 +184,46 @@ public class TwitterUI extends FragmentBase {
 
             status.edit("请求成功 ╰(*´︶`*)╯\n 点这里认证 : ", requestToken.getAuthenticationURL()).exec();
 
+            if (BotServer.INSTANCE == null) {
+
+                callback.send("抱歉 由于Bot正暂时运行在非公网上 无法得到认证的回调", "请在认证完成之后 复制 跳转到的Url(链接) 发送给Bot即可完成验证 (｡>∀<｡)").exec();
+
+                user.point = cdata(POINT_INPUT_CALLBACK_URL);
+
+                user.save();
+
+            }
+
         } catch (TwitterException e) {
 
             status.edit(e.toString()).exec();
 
         }
 
+
+    }
+
+    public void onInputCallbackUrl(UserData user, Msg msg) {
+
+        String url = msg.text();
+
+        HashMap<String, String> params = HttpUtil.decodeParamMap(url, CharsetUtil.UTF_8);
+
+        String requestToken = params.get("oauth_token");
+        String oauthVerifier = params.get("oauth_verifier");
+        
+        if (AuthCache.cache.containsKey(requestToken)) {
+            
+            AuthCache.cache.get(requestToken).onAuth(oauthVerifier);
+            
+        } else {
+            
+            msg.send("Bot可能已经重启...","请重新点击新认证 (｡>∀<｡)").exec();
+            
+            user.point = null;
+            user.save();
+            
+        }
 
     }
 

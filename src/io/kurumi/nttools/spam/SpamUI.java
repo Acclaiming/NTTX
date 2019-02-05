@@ -73,6 +73,14 @@ public class SpamUI extends FragmentBase {
             deleteLastSend(user, msg, "spam_ui");
 
         }
+        
+        if (user.twitterAccounts.isEmpty()) {
+            
+            msg.send("联合封禁使用Twitter以发起申请等...","","请先在 /twitter 认证账号 (｡>∀<｡)").exec();
+            
+            return;
+            
+        }
 
         String[] spamMsg = new String[] {
 
@@ -324,7 +332,7 @@ public class SpamUI extends FragmentBase {
 
         callback.confirm();
 
-        callback.send("现在发送给我目标的TwitterId @开头 (也可以不带@)", "", "使用 /cancel 取消 >_<").exec();
+        callback.send("输入TwitterId (可以带@)", "", "使用 /cancel 取消 >_<").exec();
 
     }
 
@@ -342,7 +350,7 @@ public class SpamUI extends FragmentBase {
         
         for (UserSpam spam : list.spamUsers) {
             
-            if (screenName.equals(spam.twitterDisplyName)) {
+            if (screenName.equals(spam.twitterScreenName)) {
                 
                 msg.send("该用户已在公共分类 「 " + list.name + " 」 中！","","请重新输入 或使用 /cancel 取消").exec();
                 
@@ -354,7 +362,7 @@ public class SpamUI extends FragmentBase {
         
         for (SpamVote vote : msg.fragment.main.getSpamVotes()) {
             
-            if (screenName.equals(vote.twitterDisplyName)) {
+            if (screenName.equals(vote.twitterScreenName)) {
 
                 msg.send("该用户已经被提交！","正在 [这里](https://t.me/" + TwitterSpam.VOTE_CHANNEL + "/" + vote.vote_message_id + ") 投票"  ,"","请重新输入 或使用 /cancel 取消").markdown().disableLinkPreview().exec();
 
@@ -469,5 +477,5 @@ public class SpamUI extends FragmentBase {
         return true;
 
     }
-
+    
 }

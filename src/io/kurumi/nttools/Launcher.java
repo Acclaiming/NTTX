@@ -9,10 +9,40 @@ import java.io.*;
 import io.kurumi.nttools.bots.CoreValuesBot;
 
 public class Launcher {
-    
-    public static void main(String[] args) {
 
-        NTTBot mainBot = new NTTBot();
+    public static boolean isAndroid; static {
+       
+        try {
+
+            Class.forName("android.app.Activity");
+
+            isAndroid = true;
+
+        } catch (ClassNotFoundException e) {
+
+            e.printStackTrace();
+            
+            isAndroid = false;
+
+        }
+
+    }
+
+    public static void main(String[] args) {
+        
+        File dataDir = new File("./data");
+        
+        if (isAndroid) {
+            
+            dataDir = new File("/sdcard/AppProjects/NTTools/data");
+            
+        } else {
+            
+            
+            
+        }
+        
+        NTTBot mainBot = new NTTBot(dataDir);
 
         CoreValuesBot coreValuesBot = new CoreValuesBot(mainBot);
 
@@ -20,21 +50,32 @@ public class Launcher {
             .addFregment(coreValuesBot)
             .start();
 
-        coreValuesBot.setWebHook();
-
         mainBot.startGetUpdates();
+        
+        if (!isAndroid) {
 
-        try {
+            coreValuesBot.setWebHook();
 
-            BotServer.INSTANCE = new BotServer(mainBot);
+            try {
 
-            BotServer.INSTANCE.start();
+                BotServer.INSTANCE = new BotServer(mainBot);
 
-        } catch (IOException exc) {
+                BotServer.INSTANCE.start();
 
-            exc.printStackTrace();
+            } catch (IOException exc) {
+
+                exc.printStackTrace();
+
+            }
+
 
         }
+        
+        try {
+            
+            System.in.read();
+            
+        } catch (IOException e) {}
 
     }
 
