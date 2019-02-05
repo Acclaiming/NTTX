@@ -203,8 +203,8 @@ public class VoteUI extends FragmentBase implements TimerTask {
         
         new Edit(fragment,"@" + TwitterSpam.VOTE_CHANNEL, spam.vote_message_id, msg.toString()).buttons(new ButtonMarkup() {{
 
-                    newButtonLine("同意",POINT_VOTE_AGREE,spam.id);
-                    newButtonLine("反对",POINT_VOTE_DISAGREE,spam.id);
+                    newButtonLine("同意 : " + spam.agree.size(),POINT_VOTE_AGREE,spam.id);
+                    newButtonLine("反对 : " + spam.disagree.size(),POINT_VOTE_DISAGREE,spam.id);
 
                 }}).markdown().disableLinkPreview().exec();
         

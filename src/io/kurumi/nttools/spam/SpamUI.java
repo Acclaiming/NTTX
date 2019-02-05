@@ -56,7 +56,7 @@ public class SpamUI extends FragmentBase {
 
         } else {
 
-            if (!msg.isCommand()) return false;
+            if (!msg.isCommand() || !"spam".equals(msg.commandName())) return false;
 
             sendMain(user, msg, false);
 
