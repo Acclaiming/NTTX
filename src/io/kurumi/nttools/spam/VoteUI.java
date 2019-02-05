@@ -157,7 +157,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         msg.append("\n\n原因是 : ").append(vote.spamCause).append("\n\n");
         
-        msg.append("同意 : ").append(vote.agree.size()).append("\n\n");
+     //   msg.append("同意 : ").append(vote.agree.size()).append("\n\n");
 
         for (Long uid : vote.agree) {
 
@@ -173,13 +173,13 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
             } else {
 
-         //       msg.append("[").append(Markdown.encode(uacc.name)).append("[(").append(uacc.getUrl()).append(")\n");
+           //     msg.append("[").append(Markdown.encode(uacc.name)).append("[(").append(uacc.getUrl()).append(")\n");
 
             }
 
         }
 
-        msg.append("\n反对 : ").append(vote.disagree.size()).append("\n\n");
+       // msg.append("\n反对 : ").append(vote.disagree.size()).append("\n\n");
 
         for (Long uid : vote.disagree) {
 
@@ -195,14 +195,12 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
             } else {
 
-          //      msg.append("[").append(Markdown.encode(uacc.name)).append("[(").append(uacc.getUrl()).append(")\n");
+         //       msg.append("[").append(Markdown.encode(uacc.name)).append("[(").append(uacc.getUrl()).append(")\n");
 
             }
 
         }
-        
-        System.out.println("voteId : " + vote.id);
-        
+
         new Edit(fragment,"@" + TwitterSpam.VOTE_CHANNEL, vote.vote_message_id, msg.toString()).buttons(new ButtonMarkup() {{
 
                     newButtonLine("同意 : " + vote.agree.size(),POINT_VOTE_AGREE,vote.id);

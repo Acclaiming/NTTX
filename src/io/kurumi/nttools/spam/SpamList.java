@@ -48,6 +48,8 @@ public class SpamList extends JSONObject {
             putAll(spam);
 
         } catch (Exception e) {}
+        
+        id = getStr("id");
 
         name = getStr("name", "未命名");
         description = getStr("description", "暂无简介");
@@ -83,6 +85,8 @@ public class SpamList extends JSONObject {
     }
     
     public void save() {
+        
+        put("id",id);
         
         put("name",name);
         
