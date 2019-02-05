@@ -50,6 +50,8 @@ public class SpamVote extends JSONObject {
 
         } catch (Exception e) {}
 
+        listId = getStr("list_id");
+        
         twitterAccountId = getLong("twitter_account_id");
 
         twitterScreenName = getStr("twitter_screen_name");
@@ -96,6 +98,9 @@ public class SpamVote extends JSONObject {
     public void save() {
 
         put("origin", origin);
+        
+        put("list_id",id);
+        
         put("twitter_account_id", twitterAccountId);
         put("twitter_screen_name", twitterScreenName);
         put("twitter_disply_name", twitterDisplyName);
