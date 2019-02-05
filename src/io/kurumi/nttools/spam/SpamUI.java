@@ -356,7 +356,7 @@ public class SpamUI extends FragmentBase {
 
         }
 
-        if (!user.point.getBool("rem")) {
+        if (!user.point.getBool("remove")) {
 
             SpamList list = msg.fragment.main.getSpamList(user.point.getStr("listId"));
 
