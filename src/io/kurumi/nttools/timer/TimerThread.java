@@ -10,9 +10,9 @@ public class TimerThread extends Thread {
     private MainFragment main;
     private long sleep;
 
-    public TimerThread(Fragment fragment,long sleep) {
+    public TimerThread(MainFragment fragment,long sleep) {
 
-        this.main = fragment.main;
+        this.main = fragment;
         this.sleep = sleep;
 
     }
