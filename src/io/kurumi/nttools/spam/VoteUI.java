@@ -13,6 +13,7 @@ import io.kurumi.nttools.timer.TimerTask;
 import io.kurumi.nttools.twitter.TwiAccount;
 import io.kurumi.nttools.utils.Markdown;
 import io.kurumi.nttools.utils.UserData;
+import com.pengrad.telegrambot.request.EditMessageReplyMarkup;
 
 public class VoteUI extends FragmentBase implements TimerTask {
 
@@ -135,6 +136,8 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
     public void updateVote(Fragment fragment, final SpamVote vote) {
 
+        /*
+        
         StringBuilder msg = new StringBuilder();
 
         if (vote.origin != null) {
@@ -200,13 +203,15 @@ public class VoteUI extends FragmentBase implements TimerTask {
             }
 
         }
-
-        new Edit(fragment,"@" + TwitterSpam.VOTE_CHANNEL, vote.vote_message_id, msg.toString()).buttons(new ButtonMarkup() {{
+        
+        */
+        
+       fragment.bot.execute(new EditMessageReplyMarkup("@" + TwitterSpam.VOTE_CHANNEL, vote.vote_message_id).replyMarkup(new ButtonMarkup() {{
 
                     newButtonLine("同意 : " + vote.agree.size(),POINT_VOTE_AGREE,vote.id);
                     newButtonLine("反对 : " + vote.disagree.size(),POINT_VOTE_DISAGREE,vote.id);
 
-                }}).markdown().disableLinkPreview().exec();
+                }}.markup()));
         
     }
 
