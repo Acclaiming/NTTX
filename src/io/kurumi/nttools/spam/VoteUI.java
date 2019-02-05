@@ -21,7 +21,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
     private static final String POINT_VOTE_AGREE = "p|a";
     private static final String POINT_VOTE_DISAGREE = "p|d";
-    
+
     public void startVote(Fragment fragment, final SpamVote spam) {
 
         StringBuilder msg = new StringBuilder();
@@ -47,16 +47,16 @@ public class VoteUI extends FragmentBase implements TimerTask {
         msg.append("\n\n原因是 : ").append(spam.spamCause).append("\n\n");
 
         Msg voteMsg = new Send(fragment, "@" + TwitterSpam.VOTE_CHANNEL, msg.toString())
-        
+
             .buttons(new ButtonMarkup() {{
 
-                newButtonLine("同意",POINT_VOTE_AGREE,spam.id);
-                newButtonLine("反对",POINT_VOTE_DISAGREE,spam.id);
-                    
+                    newButtonLine("同意", POINT_VOTE_AGREE, spam.id);
+                    newButtonLine("反对", POINT_VOTE_DISAGREE, spam.id);
+
                 }}).markdown().disableLinkPreview().send();
-                
-       spam.vote_message_id = voteMsg.messageId();
-       spam.save();
+
+        spam.vote_message_id = voteMsg.messageId();
+        spam.save();
 
     }
 
@@ -64,11 +64,11 @@ public class VoteUI extends FragmentBase implements TimerTask {
     public boolean processCallbackQuery(UserData user, Callback callback) {
 
         switch (callback.data.getPoint()) {
-            
-            case POINT_VOTE_AGREE: break;
-            case POINT_VOTE_DISAGREE :break;
-            default : return false;
-            
+
+                case POINT_VOTE_AGREE: break;
+                case POINT_VOTE_DISAGREE :break;
+                default : return false;
+
         }
 
         if (user.twitterAccounts.size() == 0) {
@@ -81,7 +81,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
 
         String id = callback.data.getIndex();
-        
+
         Boolean target = callback.data.getPoint().equals(POINT_VOTE_AGREE);
 
         SpamVote vote = callback.fragment.main.getSpamVote(id);
@@ -136,8 +136,6 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
     public void updateVote(Fragment fragment, final SpamVote vote) {
 
-        /*
-        
         StringBuilder msg = new StringBuilder();
 
         if (vote.origin != null) {
@@ -158,61 +156,67 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         msg.append("\n\n添加到公共分类 「").append(fragment.main.getSpamList(vote.listId).name).append(" 」");
 
-        msg.append("\n\n原因是 : ").append(vote.spamCause).append("\n\n");
-        
-     //   msg.append("同意 : ").append(vote.agree.size()).append("\n\n");
+        msg.append("\n\n原因是 : ").append(vote.spamCause).append("\n");
 
-        for (Long uid : vote.agree) {
+        if (!vote.agree.isEmpty()) {
 
-            UserData u = fragment.main.getUserData(uid);
+            msg.append("\n同意 : ").append("\n\n");
 
-            TwiAccount uacc = u.twitterAccounts.getFirst();
+            for (Long uid : vote.agree) {
 
-            if (uacc == null) {
+                UserData u = fragment.main.getUserData(uid);
 
-                vote.agree.remove(uid);
+                TwiAccount uacc = u.twitterAccounts.getFirst();
 
-                vote.save();
+                if (uacc == null) {
 
-            } else {
+                    vote.agree.remove(uid);
 
-           //     msg.append("[").append(Markdown.encode(uacc.name)).append("[(").append(uacc.getUrl()).append(")\n");
+                    vote.save();
+
+                } else {
+
+                    msg.append("[").append(Markdown.encode(uacc.name)).append("](").append(uacc.getUrl()).append(")\n");
+
+                }
+
+            }
+
+        }
+
+        if (!vote.disagree.isEmpty()) {
+
+            msg.append("\n反对 : ").append(vote.disagree.size()).append("\n\n");
+
+            for (Long uid : vote.disagree) {
+
+                UserData u = fragment.main.getUserData(uid);
+
+                TwiAccount uacc = u.twitterAccounts.getFirst();
+
+                if (uacc == null) {
+
+                    vote.disagree.remove(uid);
+
+                    vote.save();
+
+                } else {
+
+                    msg.append("[").append(Markdown.encode(uacc.name)).append("](").append(uacc.getUrl()).append(")\n");
+
+                }
 
             }
 
         }
 
-       // msg.append("\n反对 : ").append(vote.disagree.size()).append("\n\n");
+        fragment.bot.execute(new EditMessageReplyMarkup("@" + TwitterSpam.VOTE_CHANNEL, vote.vote_message_id).replyMarkup(new ButtonMarkup() {{
 
-        for (Long uid : vote.disagree) {
+                                                                                                                                  newButtonLine("同意 : " + vote.agree.size(), POINT_VOTE_AGREE, vote.id);
+                                                                                                                                  newButtonLine("反对 : " + vote.disagree.size(), POINT_VOTE_DISAGREE, vote.id);
 
-            UserData u = fragment.main.getUserData(uid);
+                                                                                                                              }}.markup()));
 
-            TwiAccount uacc = u.twitterAccounts.getFirst();
-
-            if (uacc == null) {
-
-                vote.disagree.remove(uid);
-
-                vote.save();
-
-            } else {
-
-         //       msg.append("[").append(Markdown.encode(uacc.name)).append("[(").append(uacc.getUrl()).append(")\n");
-
-            }
-
-        }
-        
-        */
-        
-       fragment.bot.execute(new EditMessageReplyMarkup("@" + TwitterSpam.VOTE_CHANNEL, vote.vote_message_id).replyMarkup(new ButtonMarkup() {{
-
-                    newButtonLine("同意 : " + vote.agree.size(),POINT_VOTE_AGREE,vote.id);
-                    newButtonLine("反对 : " + vote.disagree.size(),POINT_VOTE_DISAGREE,vote.id);
-
-                }}.markup()));
-        
     }
 
     @Override
@@ -222,7 +226,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
             updateVote(fragment, vote);
 
-            if (System.currentTimeMillis() - vote.startTime > 10 * 60 * 1000) {
+            if (System.currentTimeMillis() - vote.startTime > 24 * 60 * 60 * 1000) {
 
                 if (vote.agree.size() > vote.disagree.size()) {
 
