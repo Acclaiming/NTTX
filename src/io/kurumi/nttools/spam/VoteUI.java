@@ -151,9 +151,9 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         msg.append("\n\n提议将 #账号").append(vote.twitterAccountId);
 
-        msg.append("\n\n[").append(Markdown.encode(vote.twitterDisplyName)).append("](https://twitter.com/").append(spam.twitterScreenName).append(") ");
+        msg.append("\n\n[").append(Markdown.encode(vote.twitterDisplyName)).append("](https://twitter.com/").append(vote.twitterScreenName).append(") ");
 
-        msg.append("\n\n添加到公共分类 「").append(fragment.main.getSpamList(spam.listId).name).append(" 」");
+        msg.append("\n\n添加到公共分类 「").append(fragment.main.getSpamList(vote.listId).name).append(" 」");
 
         msg.append("\n\n原因是 : ").append(vote.spamCause).append("\n\n");
         
