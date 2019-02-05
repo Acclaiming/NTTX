@@ -137,8 +137,6 @@ public abstract class MainFragment extends Fragment {
         
         vote.origin = origin;
         
-        vote.listId = list.id;
-        
         vote.twitterAccountId = accountId;
         
         vote.twitterScreenName = screenName;

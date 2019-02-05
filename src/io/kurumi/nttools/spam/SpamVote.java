@@ -32,7 +32,9 @@ public class SpamVote extends JSONObject {
 
     public SpamVote(Fragment fragment, String voteId) {
 
-        voteFile = new File(fragment.main.dataDir, "twitter_spam_vote/" + voteId + ".json");
+        id = voteId;
+        
+        voteFile = new File(fragment.main.dataDir, "twitter_spam_vote/" + id + ".json");
 
         load();
 
