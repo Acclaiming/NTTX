@@ -106,5 +106,21 @@ public class TwitterSpam {
         new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).markdown().disableLinkPreview().exec();
 
     }
+    
+    public void remSpam(UserSpam spam) {
+
+        TwiAccount origin = fragment.main.getUserData(spam.origin).twitterAccounts.getFirst();
+
+        String[] newSpamMsg = new String[] {
+
+            "Twitter #用户" + spam.twitterAccountId + "\n\n[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ") \n\n #" + spam.twitterScreenName + "\n\n已被从 公共分类 「 " + spam.belongTo.name + " 」 移出","",
+            "原因 : " + spam.spamCause,"",
+            "操作人 : [" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")"
+
+        };
+
+        new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).markdown().disableLinkPreview().exec();
+
+    }
 
 }

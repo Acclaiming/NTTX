@@ -24,6 +24,7 @@ public class SpamUI extends FragmentBase {
 
     private static final String POINT_NEW_SPAM = "s|ns";
     private static final String POINT_ADD_SPAM = "s|a";
+    private static final String POINT_REM_SPAM = "s|r";
 
     private static final String POINT_EDIT_LIST_NAME = "s|e";
     private static final String POINT_EDIT_LIST_DESC = "s|ed";
@@ -73,13 +74,13 @@ public class SpamUI extends FragmentBase {
             deleteLastSend(user, msg, "spam_ui");
 
         }
-        
+
         if (user.twitterAccounts.isEmpty()) {
-            
-            msg.send("联合封禁使用Twitter以发起申请等...","","请先在 /twitter 认证账号 (｡>∀<｡)").exec();
-            
+
+            msg.send("联合封禁使用Twitter以发起申请等...", "", "请先在 /twitter 认证账号 (｡>∀<｡)").exec();
+
             return;
-            
+
         }
 
         String[] spamMsg = new String[] {
@@ -113,7 +114,7 @@ public class SpamUI extends FragmentBase {
 
                     if (user.isAdmin) {
 
-                        newButtonLine("「 管理员 : 新建分类 」", POINT_NEW_LIST);
+                        newButtonLine("「 新建分类 」", POINT_NEW_LIST);
 
                     }
 
@@ -171,25 +172,33 @@ public class SpamUI extends FragmentBase {
         BaseResponse resp = sendOrEdit(msg, edit, "查看公共分类 「 " + spam.name + " 」 (◦˙▽˙◦)", "", spam.description)
             .buttons(new ButtonMarkup() {{
 
+
+
                     if (user.isAdmin)  {
 
-                        newButtonLine("「 管理员 - 修改名称 」", POINT_EDIT_LIST_NAME, spam.id);
-                        newButtonLine("「 管理员 - 修改介绍 」", POINT_EDIT_LIST_DESC, spam.id);
-                        newButtonLine("「 管理员 - 删除分类 」", POINT_DELETE_LIST, spam.id);
+                        newButtonLine()
+                            .newButton("「 修改名称 」", POINT_EDIT_LIST_NAME, spam.id)
+                            .newButton("「 修改介绍 」", POINT_EDIT_LIST_DESC, spam.id)
+                            .newButton("「 删除分类 」", POINT_DELETE_LIST, spam.id);
 
                         //     newButtonLine("「 管理员 - 设为向官方举报的列表 」", POINT_DELETE_LIST, spam.id);
 
                     }
 
-                    newButtonLine("「 查看所有分类用户 」", POINT_SHOW_SPAM_USERS, spam.id);
-
+                    newButtonLine("「 查看所有分类中的用户 」", POINT_SHOW_SPAM_USERS, spam.id);
 
                     newButtonLine("「 发起新投票 」", POINT_NEW_SPAM, spam.id);
-                    newButtonLine("「 管理员 - 直接添加 」", POINT_ADD_SPAM, spam.id);
 
+                    if (user.isAdmin) {
+
+                        newButtonLine()
+                            .newButton("「 添加 」", POINT_ADD_SPAM, spam.id)
+                            .newButton("「 解除 」", POINT_REM_SPAM, spam.id);
+
+                    }
 
                     newButtonLine("「 返回分类列表 」", POINT_PUBLIC_LISTS);
-                    
+
                 }}).exec();
 
         saveLastSent(user, msg, "spam_ui", resp);
@@ -321,12 +330,13 @@ public class SpamUI extends FragmentBase {
 
     }
 
-    public void newSpamRequest(UserData user, Callback callback, boolean direct) {
+    public void newSpamRequest(UserData user, Callback callback, boolean direct , boolean remove) {
 
         user.point = cdata(POINT_INPUT_SCREEN_NAME);
 
         user.point.put("listId", callback.data.getIndex());
         user.point.put("direct", direct);
+        user.point.put("remove", remove);
 
         user.save();
 
@@ -345,31 +355,36 @@ public class SpamUI extends FragmentBase {
             screenName = screenName.substring(1);
 
         }
-        
-        SpamList list = msg.fragment.main.getSpamList(user.point.getStr("listId"));
-        
-        for (UserSpam spam : list.spamUsers) {
-            
-            if (screenName.equals(spam.twitterScreenName)) {
-                
-                msg.send("该用户已在公共分类 「 " + list.name + " 」 中！","","请重新输入 或使用 /cancel 取消").exec();
-                
-                return;
-                
-            }
-            
-        }
-        
-        for (SpamVote vote : msg.fragment.main.getSpamVotes()) {
-            
-            if (screenName.equals(vote.twitterScreenName)) {
 
-                msg.send("该用户已经被提交！","正在 [这里](https://t.me/" + TwitterSpam.VOTE_CHANNEL + "/" + vote.vote_message_id + ") 投票"  ,"","请重新输入 或使用 /cancel 取消").markdown().disableLinkPreview().exec();
+        if (!user.point.getBool("rem")) {
 
-                return;
+            SpamList list = msg.fragment.main.getSpamList(user.point.getStr("listId"));
+
+            for (UserSpam spam : list.spamUsers) {
+
+                if (screenName.equals(spam.twitterScreenName)) {
+
+                    msg.send("该用户已在公共分类 「 " + list.name + " 」 中！", "", "请重新输入 或使用 /cancel 取消").exec();
+
+                    return;
+
+                }
 
             }
-            
+
+            for (SpamVote vote : msg.fragment.main.getSpamVotes()) {
+
+                if (screenName.equals(vote.twitterScreenName)) {
+
+                    msg.send("该用户已经被提交！", "正在 [这里](https://t.me/" + TwitterSpam.VOTE_CHANNEL + "/" + vote.vote_message_id + ") 投票"  , "", "请重新输入 或使用 /cancel 取消").markdown().disableLinkPreview().exec();
+
+
+                    return;
+
+                }
+
+            }
+
         }
 
         try {
@@ -410,7 +425,21 @@ public class SpamUI extends FragmentBase {
 
         String displayName = user.point.getStr("displayName");
 
-        if (user.isAdmin && user.point.getBool("direct")) {
+        if (user.isAdmin && user.point.getBool("remove")) {
+
+            for (UserSpam spam : list.spamUsers) {
+
+                if (accountId.equals(spam.twitterAccountId)) {
+
+                    list.spamUsers.remove(spam);
+
+                    msg.fragment.main.spam.remSpam(spam);
+
+                }
+
+            }
+
+        } else if (user.isAdmin && user.point.getBool("direct")) {
 
             UserSpam spam = new UserSpam(list);
 
@@ -460,8 +489,9 @@ public class SpamUI extends FragmentBase {
 
                 case POINT_SHOW_SPAM_USERS : showListSpams(user, callback);break;
 
-                case POINT_NEW_SPAM : newSpamRequest(user, callback, false);break;
-                case POINT_ADD_SPAM : newSpamRequest(user, callback, true);break;
+                case POINT_NEW_SPAM : newSpamRequest(user, callback, false, false);break;
+                case POINT_ADD_SPAM : newSpamRequest(user, callback, true, false);break;
+                case POINT_REM_SPAM : newSpamRequest(user, callback, false, true);break;
 
                 case POINT_EDIT_LIST_NAME : editName(user, callback);break;
                 case POINT_EDIT_LIST_DESC : editDesc(user, callback);break;
@@ -477,5 +507,5 @@ public class SpamUI extends FragmentBase {
         return true;
 
     }
-    
+
 }
