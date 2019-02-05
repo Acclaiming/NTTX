@@ -173,7 +173,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
             } else {
 
-                msg.append("[").append(Markdown.encode(uacc.name)).append("[(").append(uacc.getUrl()).append(")\n");
+         //       msg.append("[").append(Markdown.encode(uacc.name)).append("[(").append(uacc.getUrl()).append(")\n");
 
             }
 
@@ -195,7 +195,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
             } else {
 
-                msg.append("[").append(Markdown.encode(uacc.name)).append("[(").append(uacc.getUrl()).append(")\n");
+          //      msg.append("[").append(Markdown.encode(uacc.name)).append("[(").append(uacc.getUrl()).append(")\n");
 
             }
 
