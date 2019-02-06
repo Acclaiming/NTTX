@@ -11,7 +11,7 @@ import twitter4j.User;
 public class TwitterFunc extends FragmentBase {
 
     public static TwitterFunc INSTANCE = new TwitterFunc();
-    
+
     @Override
     public boolean processPrivateMessage(UserData user, Msg msg) {
 
@@ -133,56 +133,59 @@ public class TwitterFunc extends FragmentBase {
 
             msg.send(usage).exec();
 
-            String idOrScreenName = msg.commandParms()[0];
+            return;
+
+        }
+
+        String idOrScreenName = msg.commandParms()[0];
+
+        try {
+
+            long id = Long.parseLong(idOrScreenName);
 
             try {
 
-                long id = Long.parseLong(idOrScreenName);
+                User u = user.twitterAccounts.getFirst().createApi().showUser(id);
 
-                try {
+                msg.send(printUser(u)).exec();
 
-                    User u = user.twitterAccounts.getFirst().createApi().showUser(id);
-
-                    msg.send(printUser(u)).exec();
-
-                    return;
+                return;
 
 
-                } catch (Exception ecc) {
+            } catch (Exception ecc) {
 
-                    msg.send("没有那样的Twitter用户 : " + id).exec();
+                msg.send("没有那样的Twitter用户 : " + id).exec();
 
-                    return;
-
-                }
-
-
-
-            } catch (Exception ex) {
-
-                if (!idOrScreenName.startsWith("@")) {
-
-                    msg.send(usage).exec();
-                    return;
-
-                }
-
-                String screenName = idOrScreenName;
-
-                try {
-
-                    User u = user.twitterAccounts.getFirst().createApi().showUser(screenName.substring(1));
-
-                    msg.send(printUser(u)).exec();
-
-                } catch (Exception ecc) {
-
-                    msg.send("没有那样的Twitter用户 : " + screenName).exec();
-
-                }
-
+                return;
 
             }
+
+
+
+        } catch (Exception ex) {
+
+            if (!idOrScreenName.startsWith("@")) {
+
+                msg.send(usage).exec();
+                
+                return;
+
+            }
+
+            String screenName = idOrScreenName;
+
+            try {
+
+                User u = user.twitterAccounts.getFirst().createApi().showUser(screenName.substring(1));
+
+                msg.send(printUser(u)).exec();
+
+            } catch (Exception ecc) {
+
+                msg.send("没有那样的Twitter用户 : " + screenName).exec();
+
+            }
+
 
         }
 
