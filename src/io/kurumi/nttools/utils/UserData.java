@@ -126,7 +126,7 @@ public class UserData extends JSONObject {
 
         for (TwiAccount account : twitterAccounts) {
 
-            twitterAccountList.add(account.toJSONObject());
+            twitterAccountList.add(account.save());
 
         }
         

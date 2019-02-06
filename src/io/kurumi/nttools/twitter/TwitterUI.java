@@ -35,7 +35,11 @@ public class TwitterUI extends FragmentBase {
     private static final String POINT_MANAGE = "t|m";
     private static final String POINT_REMOVE = "t|r";
     private static final String POINT_CLEAN = "t|c";
-
+    private static final String POINT_TRACK = "t|t";
+    
+    private static final String POINT_TRACK_NOTICE = "t|t|n";
+    private static final String POINT_TRACK_STATUS = "t|t|s";
+    
     private static final String POINT_CLEAN_STATUS = "t|c|s";
     private static final String POINT_CLEAN_FOLLOWERS = "t|c|fo";
     private static final String POINT_CLEAN_FRIDENDS = "t|c|fr";
@@ -70,18 +74,18 @@ public class TwitterUI extends FragmentBase {
 
     public void main(final UserData user, Msg msg, boolean edit) {
 
-        deleteLastSend(user, msg, "twitter_ui");
-
         AbstractSend send = null;
 
         String sendMsg = "这是Twitter盒子！有什么用呢？ (｡>∀<｡)";
 
         if (!edit) {
+            
+            deleteLastSend(user, msg, "twitter_ui");
 
             send = msg.send(sendMsg);
 
         } else {
-
+           
             send = msg.edit(sendMsg);
 
         }
@@ -233,13 +237,15 @@ public class TwitterUI extends FragmentBase {
 
         final TwiAccount account = callback.data.getUser(user);
 
-        callback.edit("(｡>∀<｡) 你好呀" +  account.name)
+        callback.edit("(｡>∀<｡) 你好呀 " +  account.name)
             .buttons(new ButtonMarkup() {{
 
                     newButtonLine("<< 返回上级 (*σ´∀`)σ", POINT_BACK);
 
                     newButtonLine("移除账号", POINT_REMOVE, user, account);
 
+                    newButtonLine("关注监听 >>", POINT_TRACK,user,account);
+                    
                     newButtonLine("账号清理 >>", POINT_CLEAN, user, account);
 
                 }}).exec();
@@ -265,6 +271,25 @@ public class TwitterUI extends FragmentBase {
         callback.edit("清理Twitter账号 [ 慎用 ！ ]", "注意 : 不可停止 、 不可撤销")
             .buttons(new ButtonMarkup() {{
 
+                    newButtonLine("删推文", POINT_CLEAN_STATUS, user, account);
+                    newButtonLine("删关注", POINT_CLEAN_FRIDENDS, user, account);
+                    newButtonLine("删关注者", POINT_CLEAN_FOLLOWERS, user, account);
+                    newButtonLine("全都要！", POINT_CLEAN_ALL, user, account);
+
+                    newButtonLine("<< 返回账号", POINT_MANAGE, user, account);
+
+                }}).exec();
+
+    }
+    
+    public void track(final UserData user, final Callback callback) {
+
+        final TwiAccount account = callback.data.getUser(user);
+
+        callback.edit("关注者监听 (｡>∀<｡)","","如果开启...每隔五分钟就会检测一次FO变动呢 〒▽〒")
+            .buttons(new ButtonMarkup() {{
+
+                
                     newButtonLine("删推文", POINT_CLEAN_STATUS, user, account);
                     newButtonLine("删关注", POINT_CLEAN_FRIDENDS, user, account);
                     newButtonLine("删关注者", POINT_CLEAN_FOLLOWERS, user, account);

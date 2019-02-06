@@ -62,7 +62,7 @@ public class Edit extends AbstractSend<Edit> {
     @Override
     public BaseResponse exec() {
 
-        System.out.println(request.toWebhookResponse());
+      //  System.out.println(request.toWebhookResponse());
         
         BaseResponse resp = fragment.bot.execute(request);
         

@@ -9,7 +9,7 @@ import twitter4j.User;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
-public class TwiAccount {
+public class TwiAccount extends JSONObject {
 
     private String apiToken;
     private String apiSecToken;
@@ -18,30 +18,32 @@ public class TwiAccount {
 
     public Long accountId;
     public String screenName;
-    
+
     public String name;
     public String email;
- 
+
     public JSONObject userData;
 
     public TwiAccount(JSONObject json) {
-        
+
         this(json.getStr("apiToken"),
              json.getStr("apiSecToken"),
              json.getStr("accToken"),
              json.getStr("accSecToken"));
 
-        accountId = json.getLong("accountId",-1L);
+        putAll(json);
+
+        accountId = json.getLong("accountId", -1L);
         screenName = json.getStr("screenName");
         name = json.getStr("name");
         userData = json.getJSONObject("userData");
-        
+
         if (userData == null) {
-            
+
             userData = new JSONObject();
-            
+
         }
-        
+
         email = json.getStr("email");
     }
 
@@ -53,33 +55,33 @@ public class TwiAccount {
     }
 
     public String getUrl() {
-        
+
         return "https://twitter.com/" + screenName;
-        
+
     }
-    
+
     public String getFormatedName() {
-        
+
         return "「" + name + "」" + " (@" + screenName + ")";
-        
+
     }
-    
+
     public String getFormatedNameHtml() {
 
         return Markdown.toHtml(getFormatedNameMarkdown());
 
     }
-    
+
     public String getFormatedNameMarkdown() {
-    
-    return "「" + Markdown.encode(name) + "」 [(@" + screenName + ")](" + getUrl() + ")";
+
+        return "「" + Markdown.encode(name) + "」 [(@" + screenName + ")](" + getUrl() + ")";
 
     }
 
     public boolean refresh() {
 
         try {
-            
+
             Twitter api = createApi();
             User thisAcc = api.verifyCredentials();
             accountId = thisAcc.getId();
@@ -89,7 +91,7 @@ public class TwiAccount {
             return true;
 
         } catch (TwitterException e) {}
-        
+
         return false;
 
     }
@@ -107,38 +109,40 @@ public class TwiAccount {
             .setOAuthConsumerSecret(apiSecToken)
             .setOAuthAccessToken(accToken)
             .setOAuthAccessTokenSecret(accSecToken)
-       //    .setUserStreamBaseURL( "https://userstream.twitter.com/2/" )
+            //    .setUserStreamBaseURL( "https://userstream.twitter.com/2/" )
             .build();
 
     }
 
-    public JSONObject toJSONObject() {
+    public JSONObject save() {
 
-        return new JSONObject()
-            .put("apiToken", apiToken)
-            .put("apiSecToken", apiSecToken)
-            .put("accToken", accToken)
-            .put("accSecToken", accSecToken)
-            .put("accountId", accountId)
-            .put("screenName", screenName)
-            .put("name",name)
-            .put("email",email)
-            .put("userData",userData);
+      
+            put("apiToken", apiToken);
+            put("apiSecToken", apiSecToken);
+            put("accToken", accToken);
+            put("accSecToken", accSecToken);
+            put("accountId", accountId);
+            put("screenName", screenName);
+            put("name", name);
+            put("email", email);
+            put("userData", userData);
 
+            return this;
+            
     }
 
     @Override
     public boolean equals(Object obj) {
-        
+
         return super.equals(obj) || (obj instanceof TwiAccount && accountId.equals(((TwiAccount)obj).accountId));
-        
+
     }
 
     @Override
     public String toString() {
-        
+
         return screenName + "「" + name + "」";
 
     }
-    
+
 }

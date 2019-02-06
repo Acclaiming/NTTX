@@ -111,7 +111,7 @@ public class Send extends AbstractSend<Send> {
     @Override
     public SendResponse exec() {
         
-        System.out.println(request.toWebhookResponse());
+   //     System.out.println(request.toWebhookResponse());
         
         SendResponse resp = fragment.bot.execute(request);
 
