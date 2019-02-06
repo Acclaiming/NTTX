@@ -64,9 +64,15 @@ public class TwiAccount {
         
     }
     
-    public String getMarkdowName() {
+    public String getFormatedNameHtml() {
 
-        return Markdown.toHtml("「" + Markdown.encode(name) + "」 [(@" + screenName + ")](" + getUrl() + ")");
+        return Markdown.toHtml(getFormatedNameMarkdown());
+
+    }
+    
+    public String getFormatedNameMarkdown() {
+    
+    return "「" + Markdown.encode(name) + "」 [(@" + screenName + ")](" + getUrl() + ")";
 
     }
 

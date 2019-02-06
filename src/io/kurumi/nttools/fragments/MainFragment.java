@@ -25,6 +25,7 @@ public abstract class MainFragment extends Fragment {
     
     public TwitterSpam spam = new TwitterSpam(this);
     
+    public JSONObject data;
     
     private HashMap<Long,UserData> userDataCache = new HashMap<>();
 
@@ -235,6 +236,9 @@ public abstract class MainFragment extends Fragment {
             serverPort = botData.getInt("local_port", serverPort);
             serverDomain = botData.getStr("server_domain");
 
+            data = botData.getJSONObject("data");
+            
+            if (data == null) data = new JSONObject();
 
         } catch (Exception e) {}
 
@@ -248,6 +252,8 @@ public abstract class MainFragment extends Fragment {
 
         botData.put("local_port", serverPort);
         botData.put("server_domain", serverDomain);
+        
+        botData.put("data",data);
 
         FileUtil.writeUtf8String(botData.toStringPretty(), new File(dataDir, "config.json"));
 
