@@ -174,9 +174,9 @@ public class TwitterUI extends FragmentBase {
 
         if (user.twitterAccounts.size() > 0) {
 
-            callback.alert("由于Bot内部处理问题，用户不能添加更多账号");
+           // callback.alert("由于Bot内部处理问题，用户不能添加更多账号");
 
-            return;
+            // return;
 
         }
 
