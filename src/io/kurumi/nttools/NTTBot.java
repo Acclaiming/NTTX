@@ -70,13 +70,7 @@ public class NTTBot extends MainFragment {
     @Override
     public boolean processCallbackQuery(UserData user, Callback callback) {
 
-        if (debug && !user.isAdmin) {
-
-            callback.alert("对不起 但是BOT正在维护中 (Ｔ▽Ｔ)\n请稍后再来 (◦˙▽˙◦)");
-
-            return true;
-
-        } else return false;
+        return false;
 
     }
 

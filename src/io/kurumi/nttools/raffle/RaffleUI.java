@@ -125,6 +125,8 @@ public class RaffleUI extends FragmentBase implements TimerTask  {
                 default : return false;
 
         }
+        
+        return true;
 
     }
 
