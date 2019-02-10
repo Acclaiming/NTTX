@@ -53,6 +53,12 @@ public class CData extends JSONObject {
         return userData.twitterAccounts.get(getInt("a"));
 
     }
+    
+    public CData getData(String key) {
+        
+        return new CData(getJSONObject(key));
+        
+    }
 
     public void putSerializable(String key,Serializable obj) {
 

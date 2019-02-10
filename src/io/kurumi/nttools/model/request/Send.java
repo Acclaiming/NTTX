@@ -20,7 +20,6 @@ public class Send extends AbstractSend<Send> {
 
         this.fragment = fragment;
 
-
     }
 
     @Override
@@ -77,7 +76,7 @@ public class Send extends AbstractSend<Send> {
 
     }
 
-    public Send hideKeyBoard() {
+    public Send hideKeyboard() {
 
         request.replyMarkup(new ReplyKeyboardHide());
 
@@ -85,12 +84,20 @@ public class Send extends AbstractSend<Send> {
 
     }
 
-    public Send removeKeyBoard() {
+    public Send removeKeyboard() {
 
         request.replyMarkup(new ReplyKeyboardHide());
 
         return this;
 
+    }
+    
+    public Send keyboard(Keyboard keyboard) {
+        
+        request.replyMarkup(keyboard.markup());
+        
+        return this;
+        
     }
 
     @Override

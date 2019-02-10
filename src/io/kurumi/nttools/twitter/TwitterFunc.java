@@ -20,6 +20,9 @@ public class TwitterFunc extends FragmentBase {
         switch (msg.commandName()) {
 
                 case "gtu" : gtu(user, msg);break;
+                
+                case "guf" : guf(user,msg);break;
+                
                 case "gts" : gts(user, msg);break;
 
                 default : return false;
@@ -30,21 +33,30 @@ public class TwitterFunc extends FragmentBase {
 
     }
 
-    private static String[] noAccount = new String[] {
+    private String[] noAccount = new String[] {
 
         "还没有认证Twitter账号 🤔",
         "这个功能使用的TwitterApi需要用户上下文 (",
-        "使用 /newTwitterAuth 认证",
+        "使用 /twitter 认证",
 
     };
 
-    private static boolean noAccount(UserData userData) {
+    private boolean noAccount(UserData userData) {
 
         return userData.twitterAccounts.size() == 0;
 
     }
+    
+    
+    private void guf(UserData user,Msg msg) {
+        
+        Twitter api = user.twitterAccounts.getFirst().createApi();
 
-    private static void gts(UserData user, Msg msg) {
+        
+        
+    }
+    
+    private void gts(UserData user, Msg msg) {
 
         if (noAccount(user)) {
 

@@ -7,15 +7,13 @@ import java.util.LinkedList;
 import io.kurumi.nttools.twitter.TwiAccount;
 import io.kurumi.nttools.utils.UserData;
 
-public class ButtonMarkup {
-
-    public LinkedList<ButtonLine> lines = new LinkedList<>();
-
+public class ButtonMarkup extends LinkedList<ButtonLine> {
+    
     public ButtonLine newButtonLine() {
 
         ButtonLine ButtonLine = new ButtonLine();
 
-        lines.add(ButtonLine);
+        add(ButtonLine);
 
         return ButtonLine;
 
@@ -86,13 +84,13 @@ public class ButtonMarkup {
 
         LinkedList<InlineKeyboardButton[]> buttons = new LinkedList<>();
 
-        for(ButtonLine ButtonLine : lines)  {
+        for(ButtonLine ButtonLine : this)  {
 
             buttons.add(ButtonLine.toArray());
 
         }
 
-        return new InlineKeyboardMarkup(buttons.toArray(new InlineKeyboardButton[lines.size()][]));
+        return new InlineKeyboardMarkup(buttons.toArray(new InlineKeyboardButton[size()][]));
 
     }
     

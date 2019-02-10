@@ -34,10 +34,6 @@ public class Launcher {
             
             dataDir = new File("/sdcard/AppProjects/NTTools/data");
             
-        } else {
-            
-            
-            
         }
         
         NTTBot mainBot = new NTTBot(dataDir);
@@ -69,12 +65,6 @@ public class Launcher {
 
         }
         
-        try {
-            
-            System.in.read();
-            
-        } catch (IOException e) {}
-
     }
 
 }

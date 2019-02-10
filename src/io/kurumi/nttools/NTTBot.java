@@ -14,8 +14,6 @@ import io.kurumi.nttools.twitter.TwitterFunc;
 
 public class NTTBot extends MainFragment {
 
-    public static final boolean debug = true;
-
     public NTTBot(File dataDir) {
 
         super(dataDir);
@@ -33,14 +31,6 @@ public class NTTBot extends MainFragment {
 
     @Override
     public boolean processPrivateMessage(UserData user, Msg msg) {
-
-        if (debug && !user.isAdmin) {
-
-            msg.send("对不起 但是BOT正在维护中 (Ｔ▽Ｔ)", "请稍后再来 (◦˙▽˙◦)").exec();
-
-            return true;
-
-        }
 
         if (msg.isCommand()) {
 

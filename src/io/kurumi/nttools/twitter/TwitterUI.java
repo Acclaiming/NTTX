@@ -1,5 +1,7 @@
 package io.kurumi.nttools.twitter;
 
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.http.HttpUtil;
 import com.pengrad.telegrambot.response.BaseResponse;
 import io.kurumi.nttools.fragments.FragmentBase;
 import io.kurumi.nttools.model.Callback;
@@ -8,25 +10,85 @@ import io.kurumi.nttools.model.request.AbstractSend;
 import io.kurumi.nttools.model.request.ButtonMarkup;
 import io.kurumi.nttools.model.request.Send;
 import io.kurumi.nttools.server.AuthCache;
+import io.kurumi.nttools.server.BotServer;
 import io.kurumi.nttools.twitter.ApiToken;
 import io.kurumi.nttools.twitter.TwiAccount;
+import io.kurumi.nttools.utils.CData;
 import io.kurumi.nttools.utils.UserData;
 import java.util.Date;
+import java.util.HashMap;
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
-import io.kurumi.nttools.Launcher;
-import io.kurumi.nttools.server.BotServer;
-import cn.hutool.core.util.URLUtil;
-import cn.hutool.http.HttpUtil;
-import cn.hutool.core.util.CharsetUtil;
-import java.util.HashMap;
+import io.kurumi.nttools.model.request.Keyboard;
 
 public class TwitterUI extends FragmentBase {
 
     public static final TwitterUI INSTANCE = new TwitterUI();
 
     public static String help =  "/twitter Twitter相关 ~";
+
+    private static final String POINT_CHOOSE = "t|c";
+
+    private static String[] noAccount = new String[] {
+
+        "还没有认证Twitter账号 🤔",
+        "这个功能使用的TwitterApi需要用户上下文 (",
+        "使用 /twitter 认证",
+
+    };
+
+    public void choseAccount(final UserData user, Msg msg, CData callback) {
+
+        if (user.twitterAccounts.isEmpty()) {
+
+            msg.send(noAccount).exec();
+
+            return;
+
+        }
+
+        user.point = cdata(POINT_CHOOSE);
+        user.point.put("callback", callback);
+        user.save();
+
+        msg.send("好，现在选择Twitter账号 ~").keyboard(new Keyboard() {{
+
+                    for (TwiAccount account : user.twitterAccounts) {
+
+                        newButtonLine("@" + account.screenName);
+
+                    }
+
+                }}).exec();
+
+    }
+
+    private void chooseCallback(UserData user, Msg msg) {
+
+        String screenName = msg.text().substring(1);
+
+        TwiAccount account = user.findUser(screenName);
+
+        if (account == null) {
+
+            msg.send("无效的用户名...").exec();
+
+        } else {
+
+            msg.send("选择成功 (✿ﾟ▽ﾟ) ~").removeKeyboard().exec();
+
+            user.point = user.point.getData("callback");
+
+            user.point.setUser(user, account);
+
+            user.save();
+
+            msg.fragment.processPrivateMessage(user, msg);
+
+        }
+
+    }
 
     private static final String COMMAND = "twitter";
 
@@ -36,10 +98,10 @@ public class TwitterUI extends FragmentBase {
     private static final String POINT_REMOVE = "t|r";
     private static final String POINT_CLEAN = "t|c";
     private static final String POINT_TRACK = "t|t";
-    
+
     private static final String POINT_TRACK_NOTICE = "t|t|n";
     private static final String POINT_TRACK_STATUS = "t|t|s";
-    
+
     private static final String POINT_CLEAN_STATUS = "t|c|s";
     private static final String POINT_CLEAN_FOLLOWERS = "t|c|fo";
     private static final String POINT_CLEAN_FRIDENDS = "t|c|fr";
@@ -53,6 +115,8 @@ public class TwitterUI extends FragmentBase {
         if (user.point != null) {
 
             switch (user.point.getPoint()) {
+
+                    case POINT_CHOOSE : chooseCallback(user, msg);break;
 
                     case POINT_INPUT_CALLBACK_URL : onInputCallbackUrl(user, msg);break;
 
@@ -79,13 +143,13 @@ public class TwitterUI extends FragmentBase {
         String sendMsg = "这是Twitter盒子！有什么用呢？ (｡>∀<｡)";
 
         if (!edit) {
-            
+
             deleteLastSend(user, msg, "twitter_ui");
 
             send = msg.send(sendMsg);
 
         } else {
-           
+
             send = msg.edit(sendMsg);
 
         }
@@ -150,7 +214,7 @@ public class TwitterUI extends FragmentBase {
                                     u.twitterAccounts.remove(account);
 
                                 }
-                                
+
                                 u.save();
 
                             }
@@ -160,26 +224,26 @@ public class TwitterUI extends FragmentBase {
                             user.save();
 
                             status.edit("认证成功 (｡>∀<｡) 乃的账号", account.getFormatedName()).markdown().exec();
-                            
+
                             if (BotServer.INSTANCE == null) {
-                                
+
                                 user.point = null;
                                 user.save();
-                                
+
                             }
 
                             main(user, callback, false);
-                            
+
                             AuthCache.cache.remove(requestToken.getToken());
 
                         } catch (Exception e) {
 
                             if (BotServer.INSTANCE == null) {
-                                
-                                callback.send("输入的Url有误或已失效 请重新输入","或使用 /cancel 退出 (｡>∀<｡)").exec();
-                                
+
+                                callback.send("输入的Url有误或已失效 请重新输入", "或使用 /cancel 退出 (｡>∀<｡)").exec();
+
                             }
-                            
+
                             status.edit(e.toString()).exec();
 
                         }
@@ -217,18 +281,18 @@ public class TwitterUI extends FragmentBase {
 
         String requestToken = params.get("oauth_token");
         String oauthVerifier = params.get("oauth_verifier");
-        
+
         if (AuthCache.cache.containsKey(requestToken)) {
-            
+
             AuthCache.cache.get(requestToken).onAuth(oauthVerifier);
-            
+
         } else {
-            
-            msg.send("Bot可能已经重启...","请重新点击新认证 (｡>∀<｡)").exec();
-            
+
+            msg.send("Bot可能已经重启...", "请重新点击新认证 (｡>∀<｡)").exec();
+
             user.point = null;
             user.save();
-            
+
         }
 
     }
@@ -244,8 +308,8 @@ public class TwitterUI extends FragmentBase {
 
                     newButtonLine("移除账号", POINT_REMOVE, user, account);
 
-                    newButtonLine("关注监听 >>", POINT_TRACK,user,account);
-                    
+                    //        newButtonLine("关注监听 >>", POINT_TRACK,user,account);
+
                     newButtonLine("账号清理 >>", POINT_CLEAN, user, account);
 
                 }}).exec();
@@ -281,15 +345,15 @@ public class TwitterUI extends FragmentBase {
                 }}).exec();
 
     }
-    
+
     public void track(final UserData user, final Callback callback) {
 
         final TwiAccount account = callback.data.getUser(user);
 
-        callback.edit("关注者监听 (｡>∀<｡)","","如果开启...每隔五分钟就会检测一次FO变动呢 〒▽〒")
+        callback.edit("关注者监听 (｡>∀<｡)", "", "如果开启...每隔五分钟就会检测一次FO变动呢 〒▽〒")
             .buttons(new ButtonMarkup() {{
 
-                
+
                     newButtonLine("删推文", POINT_CLEAN_STATUS, user, account);
                     newButtonLine("删关注", POINT_CLEAN_FRIDENDS, user, account);
                     newButtonLine("删关注者", POINT_CLEAN_FOLLOWERS, user, account);
@@ -385,6 +449,7 @@ public class TwitterUI extends FragmentBase {
                     return true;
 
                 }
+
 
         }
 
