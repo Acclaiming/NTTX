@@ -370,7 +370,7 @@ public class SpamUI extends FragmentBase {
         for (UserSpam spam : list.spamUsers) {
 
             all.append("[").append(Markdown.encode(spam.twitterDisplyName)).append("](");
-            
+
             all.append("https://t.me/").append(TwitterSpam.PUBLIC_CHANNEL).append("/").append(spam.public_message_id).append(")");
 
             all.append("\n\n");
@@ -440,29 +440,29 @@ public class SpamUI extends FragmentBase {
             }
 
         } else {
-            
+
             SpamList list = msg.fragment.main.getSpamList(user.point.getStr("listId"));
-            
+
             boolean exists = false;
-            
+
             for (UserSpam spam : list.spamUsers) {
 
                 if (screenName.equals(spam.twitterScreenName)) {
 
                     exists = true;
-                    
+
                 }
 
             }
-            
+
             if (!exists) {
-            
-            msg.send("该用户不在公共分类 「 " + list.name + " 」 中！", "", "请重新输入 或使用 /cancel 取消").exec();
+
+                msg.send("该用户不在公共分类 「 " + list.name + " 」 中！", "", "请重新输入 或使用 /cancel 取消").exec();
 
             }
-            
+
             return;
-            
+
         }
 
         try {
@@ -531,7 +531,7 @@ public class SpamUI extends FragmentBase {
 
             spam.spamCause = msg.text();
 
-            msg.fragment.main.spam.newSpam(list,spam);
+            msg.fragment.main.spam.newSpam(list, spam);
 
             msg.send("添加成功 ~").exec();
 
