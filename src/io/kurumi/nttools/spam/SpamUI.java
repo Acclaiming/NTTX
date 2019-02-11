@@ -428,10 +428,9 @@ public class SpamUI extends FragmentBase {
 
             for (SpamVote vote : msg.fragment.main.getSpamVotes()) {
 
-                if (screenName.equals(vote.twitterScreenName)) {
+                if (screenName.equals(vote.twitterScreenName) && !user.point.getBool("direct")) {
 
                     msg.send("该用户已经被提交！", "正在 [这里](https://t.me/" + TwitterSpam.VOTE_CHANNEL + "/" + vote.vote_message_id + ") 投票"  , "", "请重新输入 或使用 /cancel 取消").markdown().disableLinkPreview().exec();
-
 
                     return;
 
@@ -460,10 +459,10 @@ public class SpamUI extends FragmentBase {
                 msg.send("该用户不在公共分类 「 " + list.name + " 」 中！", "", "请重新输入 或使用 /cancel 取消").exec();
 
                 return;
-                
+
             }
 
-            
+
 
         }
 
@@ -521,6 +520,24 @@ public class SpamUI extends FragmentBase {
 
         } else if (user.isAdmin && user.point.getBool("direct")) {
 
+            SpamVote vote = null;
+
+            for (SpamVote v : msg.fragment.main.getSpamVotes()) {
+
+                if (screenName.equals(v.twitterScreenName)) {
+
+                    vote = v;
+
+                }
+
+            }
+            
+            if (vote != null) {
+                
+                msg.fragment.main.spam.adminPassed(vote,msg.text());
+                
+            } else {
+
             UserSpam spam = new UserSpam(list);
 
             spam.origin = user.id;
@@ -536,6 +553,8 @@ public class SpamUI extends FragmentBase {
             msg.fragment.main.spam.newSpam(list, spam);
 
             msg.send("添加成功 ~").exec();
+            
+            }
 
         } else {
 
