@@ -64,11 +64,7 @@ public class TwitterSpam {
 
         spam.spamCause = vote.spamCause;
 
-        spam.vote_message_id = vote.vote_message_id;
-
         list.spamUsers.add(spam);
-
-        list.save();
 
         String[] passMsg = new String[] {
 
@@ -82,6 +78,8 @@ public class TwitterSpam {
                 newUrlButtonLine("投票地址","https://t.me/" + VOTE_CHANNEL + "/" + vote.vote_message_id);
             
         }}).markdown().disableLinkPreview().send();
+        
+        spam.public_message_id = pubMsg.messageId();
 
         fragment.bot.execute(new EditMessageReplyMarkup("@" + VOTE_CHANNEL, vote.vote_message_id)
                              .replyMarkup(new ButtonMarkup() {{
@@ -120,10 +118,10 @@ public class TwitterSpam {
 
     }
 
-    public void newSpam(UserSpam spam) {
+    public void newSpam(SpamList list,UserSpam spam) {
 
         TwiAccount origin = fragment.main.getUserData(spam.origin).twitterAccounts.getFirst();
-
+        
         String[] newSpamMsg = new String[] {
 
             "Twitter #用户" + spam.twitterAccountId + "\n\n[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ") \n\n #" + spam.twitterScreenName + "\n\n已被添加到 公共分类 「 " + spam.belongTo.name + " 」","",
@@ -132,7 +130,14 @@ public class TwitterSpam {
 
         };
 
-        new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).markdown().disableLinkPreview().exec();
+        Msg pubMsg = new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).markdown().disableLinkPreview().send();
+        
+        spam.public_message_id = pubMsg.messageId();
+        
+        list.spamUsers.add(spam);
+        
+        list.save();
+       
 
     }
     

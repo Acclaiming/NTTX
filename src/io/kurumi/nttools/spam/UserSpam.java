@@ -2,7 +2,7 @@ package io.kurumi.nttools.spam;
 
 import cn.hutool.json.JSONObject;
 
-public class UserSpam {
+public class UserSpam extends JSONObject {
 
     public SpamList belongTo;
 
@@ -14,8 +14,8 @@ public class UserSpam {
 
     public String spamCause;
 
-    public Integer vote_message_id;
-    
+    public Integer public_message_id;
+
     public UserSpam(SpamList list) {
 
         belongTo = list;
@@ -26,26 +26,29 @@ public class UserSpam {
 
         this(list);
 
-        twitterAccountId = data.getLong("twitter_account_id");
+        putAll(data);
 
-        twitterScreenName = data.getStr("twitter_screen_name");
-        twitterDisplyName = data.getStr("twitter_disply_name");
+        twitterAccountId = getLong("twitter_account_id");
 
-        spamCause = data.getStr("spam_cause");
-        
-        vote_message_id = data.getInt("vote_message_id");
+        twitterScreenName = getStr("twitter_screen_name");
+        twitterDisplyName = getStr("twitter_disply_name");
+
+        spamCause = getStr("spam_cause");
+
+        public_message_id = getInt("public_message_id");
 
     }
 
-    public JSONObject toJSONObject() {
+    public JSONObject save() {
 
-        return new JSONObject()
-            .put("origin", origin)
-            .put("twitter_account_id", twitterAccountId)
-            .put("twitter_screen_name", twitterScreenName)
-            .put("twitter_disply_name", twitterDisplyName)
-            .put("spam_cause", spamCause)
-            .put("vote_message_id", vote_message_id);
+        put("origin", origin);
+        put("twitter_account_id", twitterAccountId);
+        put("twitter_screen_name", twitterScreenName);
+        put("twitter_disply_name", twitterDisplyName);
+        put("spam_cause", spamCause);
+        put("public_message_id", public_message_id);
+
+        return this;
 
     }
 

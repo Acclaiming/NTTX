@@ -200,7 +200,7 @@ public class SpamUI extends FragmentBase {
 
                     if (user.isAdmin) {
 
-                   //     voteLine.newButton("「 管理投票 」", POINT_MANAGE_VOTE, spam.id);
+                        //     voteLine.newButton("「 管理投票 」", POINT_MANAGE_VOTE, spam.id);
 
                         newButtonLine()
                             .newButton("「 添加 」", POINT_ADD_SPAM, spam.id)
@@ -369,13 +369,9 @@ public class SpamUI extends FragmentBase {
 
         for (UserSpam spam : list.spamUsers) {
 
-            all.append("[").append(Markdown.encode(spam.twitterDisplyName)).append("](https://twitter.com/").append(spam.twitterScreenName).append(")");
-
-            if (spam.vote_message_id != null) {
-
-                all.append(" [投票地址](https://t.me/").append(TwitterSpam.VOTE_CHANNEL).append("/").append(spam.vote_message_id).append(")");
-
-            }
+            all.append("[").append(Markdown.encode(spam.twitterDisplyName)).append("](");
+            
+            all.append("https://t.me/").append(TwitterSpam.PUBLIC_CHANNEL).append("/").append(spam.public_message_id).append(")");
 
             all.append("\n\n");
 
@@ -384,7 +380,7 @@ public class SpamUI extends FragmentBase {
         callback.edit(all.toString()).buttons(new ButtonMarkup() {{
                     newButtonLine("<< 返回列表", POINT_SHOW_LIST, list.id);
 
-                }}).markdown().exec();
+                }}).markdown().disableLinkPreview().exec();
 
     }
 
@@ -511,11 +507,7 @@ public class SpamUI extends FragmentBase {
 
             spam.spamCause = msg.text();
 
-            list.spamUsers.add(spam);
-
-            list.save();
-
-            msg.fragment.main.spam.newSpam(spam);
+            msg.fragment.main.spam.newSpam(list,spam);
 
             msg.send("添加成功 ~").exec();
 
