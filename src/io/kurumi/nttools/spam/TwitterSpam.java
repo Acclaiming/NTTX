@@ -218,9 +218,9 @@ public class TwitterSpam {
 
          //   "Twitter #用户" + spam.twitterAccountId,
             "",
-            "[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + Markdown.encode(spam.twitterScreenName) + ")",
+        //    "[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + Markdown.encode(spam.twitterScreenName) + ")",
             "",
-            "#" + spam.twitterScreenName ,
+           "#" + spam.twitterScreenName ,
             "",
         //    "已被添加到 公共分类 「 " + spam.belongTo.name + " 」","",
        //     "原因 : " + Markdown.encode(spam.spamCause),
