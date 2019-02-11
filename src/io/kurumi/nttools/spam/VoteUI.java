@@ -159,57 +159,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         msg.append("\n\n原因是 : ").append(vote.spamCause).append("\n");
 
-        if (vote.agree.size() != 0) {
-
-            msg.append("\n同意 : ").append("\n\n");
-
-            for (Long uid : vote.agree) {
-
-                UserData u = fragment.main.getUserData(uid);
-
-                TwiAccount uacc = u.twitterAccounts.getFirst();
-
-                if (uacc == null) {
-
-                    vote.agree.remove(uid);
-
-                    vote.save();
-
-                } else {
-
-                    msg.append("[").append(Markdown.encode(uacc.name)).append("](").append(uacc.getUrl()).append(")\n");
-
-                }
-
-            }
-
-        }
-
-        if (vote.disagree.size() != 0) {
-
-            msg.append("\n反对 : ").append(vote.disagree.size()).append("\n\n");
-
-            for (Long uid : vote.disagree) {
-
-                UserData u = fragment.main.getUserData(uid);
-
-                TwiAccount uacc = u.twitterAccounts.getFirst();
-
-                if (uacc == null) {
-
-                    vote.disagree.remove(uid);
-
-                    vote.save();
-
-                } else {
-
-                    msg.append("[").append(Markdown.encode(uacc.name)).append("](").append(uacc.getUrl()).append(")\n");
-
-                }
-
-            }
-
-        }
+        msg.append(fragment.main.spam.formatSpam(vote));
 
         fragment.bot.execute(new EditMessageReplyMarkup("@" + TwitterSpam.VOTE_CHANNEL, vote.vote_message_id)
                              .replyMarkup(new ButtonMarkup() {{
@@ -225,6 +175,26 @@ public class VoteUI extends FragmentBase implements TimerTask {
     @Override
     public void run(MainFragment fragment) {
 
+        for (SpamVote vote : fragment.getSpamVotes()) {
+
+            updateVote(fragment, vote);
+
+            if (System.currentTimeMillis() - vote.startTime > 0 * 24 * 60 * 60 * 1000) {
+
+                if (vote.agree.size() > vote.disagree.size()) {
+
+                    fragment.main.spam.votePassed(vote);
+
+                } else {
+
+                    fragment.main.spam.voteRejected(vote);
+
+                }
+
+            }
+
+        }
+        
         for (SpamList list : fragment.getSpamLists()) {
 
             long lastTime = list.getLong("last_spam_time", -1L);
@@ -250,25 +220,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         }
 
-        for (SpamVote vote : fragment.getSpamVotes()) {
-
-            updateVote(fragment, vote);
-
-            if (System.currentTimeMillis() - vote.startTime > 0 * 24 * 60 * 60 * 1000) {
-
-                if (vote.agree.size() > vote.disagree.size()) {
-
-                    fragment.main.spam.votePassed(vote);
-
-                } else {
-
-                    fragment.main.spam.voteRejected(vote);
-
-                }
-
-            }
-
-        }
+        
 
     }
 

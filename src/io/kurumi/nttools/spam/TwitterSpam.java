@@ -22,6 +22,33 @@ public class TwitterSpam {
 
     }
 
+    public String formatSpam(SpamVote vote) {
+        
+        StringBuilder str = new StringBuilder();
+        
+        str.append("同意 : \n\n");
+        
+        for (Long u : vote.agree) {
+            
+           str.append(fragment.main.getUserData(u).twitterAccounts.getFirst().getFormatedNameMarkdown());
+            str.append("\n");
+            
+        }
+        
+        str.append("\n反对 : ");
+        
+        for (Long u : vote.agree) {
+
+            str.append(fragment.main.getUserData(u).twitterAccounts.getFirst().getFormatedNameMarkdown());
+            str.append("\n");
+
+        }
+        
+        str.append("\n");
+        
+        return str.toString();
+        
+    }
 
     public void votePassed(final SpamVote vote) {
 
