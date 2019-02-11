@@ -7,6 +7,7 @@ import io.kurumi.nttools.model.request.ButtonMarkup;
 import io.kurumi.nttools.model.request.Send;
 import io.kurumi.nttools.twitter.TwiAccount;
 import io.kurumi.nttools.utils.Markdown;
+import cn.hutool.core.util.ArrayUtil;
 
 public class TwitterSpam {
 
@@ -136,19 +137,16 @@ public class TwitterSpam {
 
         String[] newSpamMsg = new String[] {
 
-            "Twitter #用户" + spam.twitterAccountId,
+            "Twitter #用户" + spam.twitterAccountId + Markdown.toHtml("\n\n[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ")"),
             "",
-            "[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ")",
-            "",
-            "#" + spam.twitterScreenName,
-            "",
-            "已被添加到 公共分类 「 " + spam.belongTo.name + " 」",
-            "",
-            "原因 : " + spam.spamCause,
-            "",
-            "操作人 : " + "[" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")"
+            "#" + spam.twitterScreenName + "\n\n已被添加到 公共分类 「 " + spam.belongTo.name + " 」","",
+            "原因 : " + spam.spamCause,"",
+            "操作人 : " + Markdown.toHtml("[" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")")
 
         };
+        
+        System.out.println(ArrayUtil.join(newSpamMsg,"\n"));
+        
 
         Msg pubMsg = new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).markdown().disableLinkPreview().send();
 
@@ -174,7 +172,8 @@ public class TwitterSpam {
             "操作人 : " + Markdown.toHtml("[" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")")
 
         };
-
+        
+        
         new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).html().disableLinkPreview().exec();
 
     }
