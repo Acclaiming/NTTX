@@ -9,6 +9,7 @@ import io.kurumi.nttools.utils.Markdown;
 import io.kurumi.nttools.utils.UserData;
 import twitter4j.User;
 import io.kurumi.nttools.model.request.ButtonLine;
+import io.kurumi.nttools.twitter.TwiAccount;
 
 public class SpamUI extends FragmentBase {
 
@@ -28,7 +29,7 @@ public class SpamUI extends FragmentBase {
     private static final String POINT_REM_SPAM = "s|r";
 
     private static final String POINT_MANAGE_VOTE = "s|m";
-    
+
     private static final String POINT_EDIT_LIST_NAME = "s|e";
     private static final String POINT_EDIT_LIST_DESC = "s|ed";
 
@@ -37,6 +38,9 @@ public class SpamUI extends FragmentBase {
     private static final String POINT_INPUT_LIST_NAME = "s|il";
     private static final String POINT_INPUT_SCREEN_NAME= "s|is";
     private static final String POINT_INPUT_CAUSE = "s|ic";
+
+    private static final String POINT_OPEN = "s|o";
+    private static final String POINT_CLOSE = "s|c";
 
     @Override
     public boolean processPrivateMessage(UserData user, Msg msg) {
@@ -191,16 +195,31 @@ public class SpamUI extends FragmentBase {
                     newButtonLine("「 查看所有分类中的用户 」", POINT_SHOW_SPAM_USERS, spam.id);
 
                     ButtonLine voteLine = newButtonLine();
-                    
-                   voteLine.newButton("「 发起新投票 」", POINT_NEW_SPAM, spam.id);
+
+                    voteLine.newButton("「 发起新投票 」", POINT_NEW_SPAM, spam.id);
 
                     if (user.isAdmin) {
-                        
-                        voteLine.newButton("「 管理投票 」",POINT_MANAGE_VOTE,spam.id);
+
+                        voteLine.newButton("「 管理投票 」", POINT_MANAGE_VOTE, spam.id);
 
                         newButtonLine()
                             .newButton("「 添加 」", POINT_ADD_SPAM, spam.id)
                             .newButton("「 解除 」", POINT_REM_SPAM, spam.id);
+
+                    }
+
+                    for (TwiAccount account : user.twitterAccounts) {
+
+                        if (!spam.subscribers.containsKey(account.accountId)) {
+
+                            newButtonLine("「启用」", POINT_OPEN, spam.id, user, account);
+
+                        } else {
+
+                            newButtonLine("「关闭」", POINT_CLOSE, spam.id, user, account);
+
+
+                        }
 
                     }
 
@@ -209,6 +228,38 @@ public class SpamUI extends FragmentBase {
                 }}).exec();
 
         saveLastSent(user, msg, "spam_ui", resp);
+
+    }
+    
+    private void enable(UserData user,Callback callback) {
+        
+        callback.text("开启成功 ~");
+        
+        SpamList list = callback.fragment.main.getSpamList(callback.data.getIndex());
+        
+        TwiAccount account = callback.data.getUser(user);
+
+        list.subscribers.put(account.accountId,user.id);
+        
+        list.save();
+        
+        showList(user,callback,true,list.id);
+        
+    }
+    
+    private void disable(UserData user,Callback callback) {
+
+        callback.text("关闭成功 ~");
+
+        SpamList list = callback.fragment.main.getSpamList(callback.data.getIndex());
+
+        TwiAccount account = callback.data.getUser(user);
+
+        list.subscribers.remove(account.accountId);
+
+        list.save();
+
+        showList(user,callback,true,list.id);
 
     }
 
@@ -504,6 +555,9 @@ public class SpamUI extends FragmentBase {
                 case POINT_EDIT_LIST_DESC : editDesc(user, callback);break;
 
                 case POINT_DELETE_LIST : deleteList(user, callback);break;
+                
+                case POINT_OPEN : enable(user,callback);break;
+                case POINT_CLOSE : disable(user,callback);break;
 
                 case POINT_BACK : sendMain(user, callback, true);callback.confirm();break;
 

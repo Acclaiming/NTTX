@@ -239,7 +239,7 @@ public class TwitterFunc extends FragmentBase {
             .append("简介 : ").append(u.getDescription()).append("\n\n")
 
             .append("关注者 : ").append(u.getFollowersCount())
-            .append("正在关注 : ").append(u.getFriendsCount()).append("\n\n")
+            .append(" 正在关注 : ").append(u.getFriendsCount()).append("\n\n")
 
             .append("位置 : ").append(u.getLocation()).append("\n\n")
             .append("锁推 : ").append(u.isProtected() ? "是" : "否").append("\n\n")
@@ -248,7 +248,7 @@ public class TwitterFunc extends FragmentBase {
 
             .append("注册时间 : ").append(u.getCreatedAt().toLocaleString()).append("\n\n")
 
-            .append("主页地址 : ").append(u.getURL()).toString();
+            .append("主页地址 : https://twitter.com/").append(u.getScreenName()).append("/").toString();
 
 
     }

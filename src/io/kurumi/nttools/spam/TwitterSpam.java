@@ -67,18 +67,20 @@ public class TwitterSpam {
 
     }
 
-    public void voteRejected(SpamVote vote) {
+    public void voteRejected(final SpamVote vote) {
 
         String[] passMsg = new String[] {
 
             "投票否决了将 [「" + Markdown.encode(vote.twitterDisplyName) + "」](https://twitter.com/" + vote.twitterScreenName + ")","","添加到公共列表 「 " + fragment.main.getSpamList(vote.listId).name + " 」 的决定",
-            "","https://t.me/" + PUBLIC_CHANNEL
-
+         
         };
 
-        new Send(fragment, "@" + PUBLIC_CHANNEL, passMsg).markdown().disableLinkPreview().exec();
+        final Msg pubMsg = new Send(fragment, "@" + PUBLIC_CHANNEL, passMsg)
+            .buttons(new ButtonMarkup() {{
 
-        final Msg pubMsg = new Send(fragment, "@" + PUBLIC_CHANNEL, passMsg).markdown().disableLinkPreview().send();
+                    newUrlButtonLine("投票地址","https://t.me/" + VOTE_CHANNEL + "/" + vote.vote_message_id);
+
+                }}).markdown().disableLinkPreview().send();
 
         fragment.bot.execute(new EditMessageReplyMarkup("@" + VOTE_CHANNEL, vote.vote_message_id)
                              .replyMarkup(new ButtonMarkup() {{

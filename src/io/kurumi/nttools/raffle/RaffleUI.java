@@ -87,7 +87,7 @@ public class RaffleUI extends FragmentBase implements TimerTask  {
 
 
     public void add(UserData user, Callback callback) {
-
+        
         if (user.twitterAccounts.isEmpty()) {
 
             callback.alert(noAccount);
