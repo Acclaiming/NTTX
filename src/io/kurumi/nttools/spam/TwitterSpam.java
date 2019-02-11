@@ -99,6 +99,8 @@ public class TwitterSpam {
                                               }}.markup()));
 
         fragment.main.deleteSpamVote(vote.id);
+        
+        list.save();
 
     }
 

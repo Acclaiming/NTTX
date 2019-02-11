@@ -177,7 +177,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
             updateVote(fragment, vote);
 
-            if (System.currentTimeMillis() - vote.startTime > 0 * 24 * 60 * 60 * 1000) {
+            if (System.currentTimeMillis() - vote.startTime > 0.5 * 24 * 60 * 60 * 1000) {
 
                 if (vote.agree.size() > vote.disagree.size()) {
 
