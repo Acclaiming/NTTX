@@ -1,5 +1,6 @@
 package io.kurumi.nttools.spam;
 
+import cn.hutool.core.util.ArrayUtil;
 import com.pengrad.telegrambot.request.EditMessageReplyMarkup;
 import io.kurumi.nttools.fragments.Fragment;
 import io.kurumi.nttools.model.Msg;
@@ -7,7 +8,7 @@ import io.kurumi.nttools.model.request.ButtonMarkup;
 import io.kurumi.nttools.model.request.Send;
 import io.kurumi.nttools.twitter.TwiAccount;
 import io.kurumi.nttools.utils.Markdown;
-import cn.hutool.core.util.ArrayUtil;
+import io.kurumi.nttools.utils.UserData;
 
 public class TwitterSpam {
 
@@ -105,7 +106,7 @@ public class TwitterSpam {
 
     }
     
-    public void adminPassed(final SpamVote vote,String cause) {
+    public void adminPassed(UserData user,final SpamVote vote,String cause) {
 
         SpamList list = fragment.main.getSpamList(vote.listId);
 
@@ -123,9 +124,11 @@ public class TwitterSpam {
 
         String[] passMsg = new String[] {
 
-            "管理员投票通过了将 [「" + Markdown.encode(spam.twitterDisplyName) + "」](https://twitter.com/" + spam.twitterScreenName + ")","","添加到公共列表 「 " + spam.belongTo.name + " 」 的决定",
+            "管理员通过了将 [「" + Markdown.encode(spam.twitterDisplyName) + "」](https://twitter.com/" + spam.twitterScreenName + ")","","添加到公共列表 「 " + spam.belongTo.name + " 」 的决定",
             "",
             "原因是 : " + cause,
+            "",
+            "操作人 : " + user.twitterAccounts.getFirst().getFormatedNameMarkdown()
 
         };
 
@@ -141,7 +144,7 @@ public class TwitterSpam {
         fragment.bot.execute(new EditMessageReplyMarkup("@" + VOTE_CHANNEL, vote.vote_message_id)
                              .replyMarkup(new ButtonMarkup() {{
 
-                                                  newUrlButtonLine("结果 : 已通过", "https://t.me/" + PUBLIC_CHANNEL + "/" + pubMsg.messageId());
+                                                  newUrlButtonLine("结果 : 管理员通过", "https://t.me/" + PUBLIC_CHANNEL + "/" + pubMsg.messageId());
 
                                               }}.markup()));
 
