@@ -36,7 +36,7 @@ public class Callback extends Msg {
     
     public void text(String text) {
 
-        answer().text(text).exec();
+        answer().cacheTime(0).text(text).exec();
 
     }
     

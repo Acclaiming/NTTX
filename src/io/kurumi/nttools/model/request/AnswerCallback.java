@@ -15,6 +15,14 @@ public class AnswerCallback {
         
     }
     
+    public AnswerCallback cacheTime(int sec) {
+        
+        answer.cacheTime(sec);
+        
+        return this;
+        
+    }
+    
     public AnswerCallback text(String text) {
         
         answer.text(text);
