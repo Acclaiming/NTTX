@@ -152,7 +152,7 @@ public class TwitterSpam {
         
         System.out.println(ArrayUtil.join(newSpamMsg,"\n"));
         
-        Msg pubMsg = new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).html().disableLinkPreview().send();
+        Msg pubMsg = new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).markdown().disableLinkPreview().send();
 
         spam.public_message_id = pubMsg.messageId();
 
