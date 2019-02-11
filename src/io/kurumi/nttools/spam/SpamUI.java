@@ -418,7 +418,7 @@ public class SpamUI extends FragmentBase {
 
             all.append("https://t.me/").append(TwitterSpam.PUBLIC_CHANNEL).append("/").append(spam.public_message_id).append(")");
 
-            all.append("\n\n");
+            all.append("\n");
 
         }
 

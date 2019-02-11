@@ -218,7 +218,7 @@ public class TwitterSpam {
 
             "Twitter #用户" + spam.twitterAccountId,
             "",
-            "[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ")",
+            "[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + Markdown.encode(spam.twitterScreenName) + ")",
             "",
             "#" + spam.twitterScreenName ,
             "",
@@ -250,7 +250,7 @@ public class TwitterSpam {
 
             "Twitter #用户" + spam.twitterAccountId,
             "",
-            "[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ")",
+            "[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + Markdown.encode(spam.twitterScreenName) + ")",
             "",
             "#" + spam.twitterScreenName,
             "",
