@@ -26,21 +26,31 @@ public class TwitterSpam {
 
         StringBuilder str = new StringBuilder();
 
-        str.append("同意 : \n\n");
+        if (!vote.disagree.isEmpty()) {
 
-        for (Long u : vote.agree) {
+            str.append("同意 : \n\n");
 
-            str.append(fragment.main.getUserData(u).twitterAccounts.getFirst().getFormatedNameMarkdown());
+            for (Long u : vote.agree) {
+
+                str.append(fragment.main.getUserData(u).twitterAccounts.getFirst().getFormatedNameMarkdown());
+                str.append("\n");
+
+            }
+
             str.append("\n");
 
         }
 
-        str.append("\n反对 : ");
+        if (!vote.disagree.isEmpty()) {
 
-        for (Long u : vote.agree) {
+            str.append("反对 : ");
 
-            str.append(fragment.main.getUserData(u).twitterAccounts.getFirst().getFormatedNameMarkdown());
-            str.append("\n");
+            for (Long u : vote.disagree) {
+
+                str.append(fragment.main.getUserData(u).twitterAccounts.getFirst().getFormatedNameMarkdown());
+                str.append("\n");
+
+            }
 
         }
 

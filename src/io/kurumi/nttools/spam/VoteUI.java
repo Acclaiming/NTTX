@@ -157,7 +157,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         msg.append("\n\n添加到公共分类 「").append(fragment.main.getSpamList(vote.listId).name).append(" 」");
 
-        msg.append("\n\n原因是 : ").append(vote.spamCause).append("\n");
+        msg.append("\n\n原因是 : ").append(vote.spamCause).append("\n\n");
 
         msg.append(fragment.main.spam.formatSpam(vote));
 
@@ -167,7 +167,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
                     newButtonLine("同意 : " + vote.agree.size(), POINT_VOTE_AGREE, vote.id);
                     newButtonLine("反对 : " + vote.disagree.size(), POINT_VOTE_DISAGREE, vote.id);
 
-                }}).markdown().exec();
+                }}).markdown().disableLinkPreview().exec();
     }
 
     @Override
