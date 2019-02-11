@@ -93,7 +93,7 @@ public class SpamList extends JSONObject {
         
         for (UserSpam spam : spamUsers) {
             
-            spamUserArray.add(spam);
+            spamUserArray.add(spam.save());
             
         }
         
