@@ -70,14 +70,79 @@ public class TApi {
 
         return ArrayUtil.unWrap(set.toArray(new Long[set.size()]));
     }
+    
+    public static long[] getAllBlockIDs(Twitter api) throws TwitterException {
 
-    public static long[] getAllFr(Twitter api) throws TwitterException {
+        LinkedList<Long> all = new LinkedList<>();
 
-        long[] all = new long[api.verifyCredentials().getFriendsCount()];
+        IDs users = api.getBlocksIDs(-1);
+
+        for (Long id : users.getIDs()) all.add(id);
+
+        while (users.hasNext()) {
+
+            users = api.getBlocksIDs(users.getNextCursor());
+
+
+            for (Long id : users.getIDs()) all.add(id);
+            
+
+        }
+
+        return ArrayUtil.unWrap(all.toArray(new Long[all.size()]));
+
+    }
+    
+    
+    public static LinkedList<User> getAllBlock(Twitter api) throws TwitterException {
+
+        LinkedList<User> all = new LinkedList<>();
+
+        PagableResponseList<User> users = api.getBlocksList(-1);
+
+        all.addAll(users);
+
+        while (users.hasNext()) {
+
+            users = api.getBlocksList(users.getNextCursor());
+
+            all.addAll(users);
+
+        }
+
+        return all;
+
+    }
+    
+    
+    public static LinkedList<User> getAllFr(Twitter api,Long target) throws TwitterException {
+
+        LinkedList<User> all = new LinkedList<>();
+
+        PagableResponseList<User> users = api.getFriendsList(target, -1);
+
+        all.addAll(users);
+
+        while (users.hasNext()) {
+
+            users = api.getFriendsList(target,users.getNextCursor());
+
+            all.addAll(users);
+
+        }
+
+        return all;
+
+    }
+    
+
+    public static long[] getAllFrIDs(Twitter api,Long target) throws TwitterException {
+
+        long[] all = new long[api.showUser(target).getFriendsCount()];
 
         int index = 0;
 
-        IDs ids = api.getFriendsIDs(-1);
+        IDs ids = api.getFriendsIDs(target,-1);
 
         for (long id : ids.getIDs()) {
 
@@ -89,7 +154,7 @@ public class TApi {
 
         while (ids.hasNext()) {
 
-            ids = api.getFriendsIDs(ids.getNextCursor());
+            ids = api.getFriendsIDs(target,ids.getNextCursor());
 
             for (long id : ids.getIDs()) {
 
@@ -104,14 +169,34 @@ public class TApi {
         return all;
 
     }
+    
+    public static LinkedList<User> getAllFo(Twitter api,Long target) throws TwitterException {
 
-    public static long[] getAllFo(Twitter api) throws TwitterException {
+        LinkedList<User> all = new LinkedList<>();
 
-        long[] all = new long[api.verifyCredentials().getFollowersCount()];
+        PagableResponseList<User> users = api.getFollowersList(target, -1);
+
+        all.addAll(users);
+
+        while (users.hasNext()) {
+
+            users = api.getFollowersList(target,users.getNextCursor());
+            
+            all.addAll(users);
+
+        }
+
+        return all;
+
+    }
+
+    public static long[] getAllFoIDs(Twitter api,Long target) throws TwitterException {
+
+        long[] all = new long[api.showUser(target).getFollowersCount()];
 
         int index = 0;
 
-        IDs ids = api.getFollowersIDs(-1);
+        IDs ids = api.getFollowersIDs(target,-1);
 
         for (long id : ids.getIDs()) {
 
@@ -123,7 +208,7 @@ public class TApi {
 
         while (ids.hasNext()) {
 
-            ids = api.getFollowersIDs(ids.getNextCursor());
+            ids = api.getFollowersIDs(target,ids.getNextCursor());
 
             for (long id : ids.getIDs()) {
 

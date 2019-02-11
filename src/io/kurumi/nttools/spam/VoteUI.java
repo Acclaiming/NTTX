@@ -14,6 +14,7 @@ import io.kurumi.nttools.twitter.TwiAccount;
 import io.kurumi.nttools.utils.Markdown;
 import io.kurumi.nttools.utils.UserData;
 import com.pengrad.telegrambot.request.EditMessageReplyMarkup;
+import java.util.Map;
 
 public class VoteUI extends FragmentBase implements TimerTask {
 
@@ -218,9 +219,36 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
                                               }}.markup()));
     }
+    
+    public void startSpamTask() {}
 
     @Override
     public void run(MainFragment fragment) {
+
+        for (SpamList list : fragment.getSpamLists()) {
+
+            long lastTime = list.getLong("last_spam_time", -1L);
+
+            if (System.currentTimeMillis() - lastTime > 10 * 60 * 1000) {
+
+                for(Map.Entry<Long,Long> sub : list.subscribers.entrySet()) {
+                    
+                    UserData user = fragment.getUserData(sub.getValue());
+                    
+                    TwiAccount account = user.findUser(sub.getKey());
+                    
+                    new SpamTask(list,account).start();
+
+                }
+                
+                
+                fragment.data.put("last_spam_time", System.currentTimeMillis());
+                
+            }
+
+            
+
+        }
 
         for (SpamVote vote : fragment.getSpamVotes()) {
 

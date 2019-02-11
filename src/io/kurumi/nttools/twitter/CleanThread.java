@@ -55,20 +55,22 @@ public class CleanThread extends Thread {
 
                 LinkedList<String> cache = new LinkedList<>();
 
-                long[] fo = TApi.getAllFo(api);
+                LinkedList<User> fo = TApi.getAllFo(api, api.getId());
 
-                for(long id : fo) {
+                for (User id : fo) {
 
-                    api.createBlock(id);
-                    api.destroyBlock(id);
+                    api.createBlock(id.getId());
+                    api.destroyBlock(id.getId());
 
                     if (cache.size() < 20) {
 
-                        cache.add(TApi.formatUserNameMarkdown(api.showUser(id)));
+                        cache.add(TApi.formatUserNameHtml((id)));
 
                     } else {
 
                         callback.send(cache.toArray(new String[cache.size()])).html().exec();
+                        
+                        cache.clear();
 
                     }
 
@@ -88,15 +90,15 @@ public class CleanThread extends Thread {
 
                 LinkedList<String> cache = new LinkedList<>();
 
-                long[] fo = TApi.getAllFr(api);
+                LinkedList<User> fo = TApi.getAllFr(api, api.getId());
 
-                for(long id : fo) {
+                for (User id : fo) {
 
-                    api.destroyFriendship(id);
+                    api.destroyFriendship(id.getId());
 
                     if (cache.size() < 20) {
 
-                        cache.add(TApi.formatUserNameMarkdown(api.showUser(id)));
+                        cache.add(TApi.formatUserNameHtml(id));
 
                     } else {
 

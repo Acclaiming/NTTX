@@ -200,7 +200,7 @@ public class SpamUI extends FragmentBase {
 
                     if (user.isAdmin) {
 
-                        voteLine.newButton("「 管理投票 」", POINT_MANAGE_VOTE, spam.id);
+                   //     voteLine.newButton("「 管理投票 」", POINT_MANAGE_VOTE, spam.id);
 
                         newButtonLine()
                             .newButton("「 添加 」", POINT_ADD_SPAM, spam.id)
@@ -377,7 +377,7 @@ public class SpamUI extends FragmentBase {
 
             }
 
-            all.append("\n");
+            all.append("\n\n");
 
         }
 
