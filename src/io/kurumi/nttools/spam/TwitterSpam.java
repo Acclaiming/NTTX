@@ -137,21 +137,21 @@ public class TwitterSpam {
 
         String[] newSpamMsg = new String[] {
 
-            "Twitter #用户" + spam.twitterAccountId,
+            "Twitter \\#用户" + spam.twitterAccountId,
             "",
-            Markdown.toHtml("[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ")"),
+            "[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ")",
             "",
             "#" + spam.twitterScreenName ,
             "",
             "已被添加到 公共分类 「 " + spam.belongTo.name + " 」","",
-            "原因 : " + spam.spamCause,"",
-            "操作人 : " + Markdown.toHtml("[" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")")
+            "原因 : " + Markdown.encode(spam.spamCause),
+            "",
+            "操作人 : [" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")"
 
         };
         
         System.out.println(ArrayUtil.join(newSpamMsg,"\n"));
         
-
         Msg pubMsg = new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).html().disableLinkPreview().send();
 
         spam.public_message_id = pubMsg.messageId();
@@ -169,16 +169,22 @@ public class TwitterSpam {
 
         String[] newSpamMsg = new String[] {
 
-            "Twitter #用户" + spam.twitterAccountId + Markdown.toHtml("\n\n[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ")"),
+            "Twitter \\#用户" + spam.twitterAccountId,
             "",
-            "#" + spam.twitterScreenName + "\n\n已被从 公共分类 「 " + spam.belongTo.name + " 」 移出","",
-            "原因 : " + spam.spamCause,"",
-            "操作人 : " + Markdown.toHtml("[" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")")
+            "[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ")",
+            "",
+            "#" + spam.twitterScreenName,
+            "",
+            "已被从 公共分类 「 " + spam.belongTo.name + " 」 移出",
+            "",
+            "原因 : " + spam.spamCause,
+            "",
+            "操作人 : [" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")"
 
         };
         
         
-        new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).html().disableLinkPreview().exec();
+        new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).markdown().disableLinkPreview().exec();
 
     }
 
