@@ -161,15 +161,15 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         msg.append(fragment.main.spam.formatSpam(vote));
 
-        fragment.bot.execute(new EditMessageReplyMarkup("@" + TwitterSpam.VOTE_CHANNEL, vote.vote_message_id)
-                             .replyMarkup(new ButtonMarkup() {{
+        new Edit(fragment, "@" + TwitterSpam.VOTE_CHANNEL, vote.vote_message_id,msg.toString())
+            .buttons(new ButtonMarkup() {{
 
-                                                  newButtonLine("同意 : " + vote.agree.size(), POINT_VOTE_AGREE, vote.id);
-                                                  newButtonLine("反对 : " + vote.disagree.size(), POINT_VOTE_DISAGREE, vote.id);
+                    newButtonLine("同意 : " + vote.agree.size(), POINT_VOTE_AGREE, vote.id);
+                    newButtonLine("反对 : " + vote.disagree.size(), POINT_VOTE_DISAGREE, vote.id);
 
-                                              }}.markup()));
+                }}).markdown().exec();
     }
-    
+
     public void startSpamTask() {}
 
     @Override
@@ -194,33 +194,33 @@ public class VoteUI extends FragmentBase implements TimerTask {
             }
 
         }
-        
+
         for (SpamList list : fragment.getSpamLists()) {
 
             long lastTime = list.getLong("last_spam_time", -1L);
 
             if (System.currentTimeMillis() - lastTime > 10 * 60 * 1000) {
 
-                for(Map.Entry<Long,Long> sub : list.subscribers.entrySet()) {
-                    
+                for (Map.Entry<Long,Long> sub : list.subscribers.entrySet()) {
+
                     UserData user = fragment.getUserData(sub.getValue());
-                    
+
                     TwiAccount account = user.findUser(sub.getKey());
-                    
-                    new SpamTask(list,account).start();
+
+                    new SpamTask(list, account).start();
 
                 }
-                
-                
+
+
                 fragment.data.put("last_spam_time", System.currentTimeMillis());
-                
+
             }
 
-            
+
 
         }
 
-        
+
 
     }
 
