@@ -87,13 +87,15 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         SpamVote vote = callback.fragment.main.getSpamVote(id);
 
+        String msg;
+        
         if (target) {
 
             if (vote.agree.contains(user.id))  {
 
                 vote.agree.remove(user.id);
 
-                callback.text("取消投票成功 o(´^｀)o");
+                msg = "取消投票成功 o(´^｀)o";
 
             } else {
 
@@ -103,7 +105,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
                 vote.save();
 
-                callback.text("投票成功 *٩(๑´∀`๑)ง*");
+                msg = "投票成功 *٩(๑´∀`๑)ง*";
 
             }
 
@@ -113,7 +115,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
                 vote.disagree.remove(user.id);
 
-                callback.text("取消投票成功 o(´^｀)o");
+                msg = "取消投票成功 o(´^｀)o";
 
             } else {
 
@@ -123,13 +125,15 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
                 vote.save();
 
-                callback.text("投票成功 *٩(๑´∀`๑)ง*");
+                msg = "投票成功 *٩(๑´∀`๑)ง*";
 
             }
 
         }
 
         updateVote(callback.fragment, vote);
+        
+        callback.text(msg);
 
         return true;
 
