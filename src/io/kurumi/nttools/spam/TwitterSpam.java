@@ -99,7 +99,7 @@ public class TwitterSpam {
                                               }}.markup()));
 
         fragment.main.deleteSpamVote(vote.id);
-        
+
         list.save();
 
     }
@@ -136,9 +136,11 @@ public class TwitterSpam {
 
         String[] newSpamMsg = new String[] {
 
-            "Twitter #用户" + spam.twitterAccountId + "\n\n[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ") \n\n #" + spam.twitterScreenName + "\n\n已被添加到 公共分类 「 " + spam.belongTo.name + " 」","",
+            "Twitter #用户" + spam.twitterAccountId + Markdown.toHtml("\n\n[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ")"),
+            "",
+            "#" + spam.twitterScreenName + "\n\n已被添加到 公共分类 「 " + spam.belongTo.name + " 」","",
             "原因 : " + spam.spamCause,"",
-            "操作人 : [" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")"
+            "操作人 : " + Markdown.toHtml("[" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")")
 
         };
 
@@ -159,9 +161,11 @@ public class TwitterSpam {
 
         String[] newSpamMsg = new String[] {
 
-            "Twitter #用户" + spam.twitterAccountId + "\n\n[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ") \n\n #" + spam.twitterScreenName + "\n\n已被从 公共分类 「 " + spam.belongTo.name + " 」 移出","",
+            "Twitter #用户" + spam.twitterAccountId + Markdown.toHtml("\n\n[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ")"),
+            "",
+            "#" + spam.twitterScreenName + "\n\n已被从 公共分类 「 " + spam.belongTo.name + " 」 移出","",
             "原因 : " + spam.spamCause,"",
-            "操作人 : [" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")"
+            "操作人 : " + Markdown.toHtml("[" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")")
 
         };
 
