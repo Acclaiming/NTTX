@@ -207,7 +207,7 @@ public class TwitterUI extends FragmentBase {
 
                                     if (!u.equals(user)) {
 
-                                        new Send(callback.fragment, u.id, "您的Twitter账号 " + account.getFormatedNameMarkdown(), "已经被 @" + user.userName + "认证 已从您的列表移除", "如果这不是您本人的操作 请立即修改Twitter密码并在 [ 账号 -> 应用和会话 ] 取消不信任的应用链接", new Date().toLocaleString()).markdown().exec();
+                                        new Send(callback.fragment, u.id, "您的Twitter账号 " + account.getFormatedNameMarkdown(),"", "已经被 @" + user.userName + " 认证 已从您的列表移除","", "如果这不是您本人的操作 请立即修改Twitter密码并在 [ 账号 -> 应用和会话 ] 取消不信任的应用链接","", new Date().toLocaleString()).markdown().disableLinkPreview().exec();
 
                                     }
 

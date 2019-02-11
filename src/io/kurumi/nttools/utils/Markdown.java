@@ -83,8 +83,20 @@ public class Markdown {
         return builder.toString();
 
     }
-
+    
     public static String encode(String source) {
+
+        if (source == null) return null;
+        
+        return source
+
+            .replace("*", "\\*")
+            .replace("_", "\\_");
+        
+    
+    }
+
+    public static String encodeAll(String source) {
 
         if (source == null) return null;
         
