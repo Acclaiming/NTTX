@@ -158,7 +158,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         msg.append("\n\n原因是 : ").append(vote.spamCause).append("\n");
 
-        if (!vote.agree.isEmpty()) {
+        if (vote.agree.size() != 0) {
 
             msg.append("\n同意 : ").append("\n\n");
 
@@ -184,7 +184,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         }
 
-        if (!vote.disagree.isEmpty()) {
+        if (vote.disagree.size() != 0) {
 
             msg.append("\n反对 : ").append(vote.disagree.size()).append("\n\n");
 

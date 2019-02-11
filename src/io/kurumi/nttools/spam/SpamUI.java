@@ -212,11 +212,11 @@ public class SpamUI extends FragmentBase {
 
                         if (!spam.subscribers.containsKey(account.accountId)) {
 
-                            newButtonLine("「启用」", POINT_OPEN, spam.id, user, account);
+                            newButtonLine(account.name + " 「启用」", POINT_OPEN, spam.id, user, account);
 
                         } else {
 
-                            newButtonLine("「关闭」", POINT_CLOSE, spam.id, user, account);
+                            newButtonLine(account.name + " 「关闭」", POINT_CLOSE, spam.id, user, account);
 
 
                         }
@@ -230,24 +230,24 @@ public class SpamUI extends FragmentBase {
         saveLastSent(user, msg, "spam_ui", resp);
 
     }
-    
-    private void enable(UserData user,Callback callback) {
-        
+
+    private void enable(UserData user, Callback callback) {
+
         callback.text("开启成功 ~");
-        
+
         SpamList list = callback.fragment.main.getSpamList(callback.data.getIndex());
-        
+
         TwiAccount account = callback.data.getUser(user);
 
-        list.subscribers.put(account.accountId,user.id);
-        
+        list.subscribers.put(account.accountId, user.id);
+
         list.save();
-        
-        showList(user,callback,true,list.id);
-        
+
+        showList(user, callback, true, list.id);
+
     }
-    
-    private void disable(UserData user,Callback callback) {
+
+    private void disable(UserData user, Callback callback) {
 
         callback.text("关闭成功 ~");
 
@@ -259,7 +259,7 @@ public class SpamUI extends FragmentBase {
 
         list.save();
 
-        showList(user,callback,true,list.id);
+        showList(user, callback, true, list.id);
 
     }
 
@@ -555,9 +555,9 @@ public class SpamUI extends FragmentBase {
                 case POINT_EDIT_LIST_DESC : editDesc(user, callback);break;
 
                 case POINT_DELETE_LIST : deleteList(user, callback);break;
-                
-                case POINT_OPEN : enable(user,callback);break;
-                case POINT_CLOSE : disable(user,callback);break;
+
+                case POINT_OPEN : enable(user, callback);break;
+                case POINT_CLOSE : disable(user, callback);break;
 
                 case POINT_BACK : sendMain(user, callback, true);callback.confirm();break;
 
