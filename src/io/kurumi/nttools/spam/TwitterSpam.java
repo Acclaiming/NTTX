@@ -144,7 +144,7 @@ public class TwitterSpam {
 
         };
 
-        Msg pubMsg = new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).markdown().disableLinkPreview().send();
+        Msg pubMsg = new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).html().disableLinkPreview().send();
 
         spam.public_message_id = pubMsg.messageId();
 
@@ -169,7 +169,7 @@ public class TwitterSpam {
 
         };
 
-        new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).markdown().disableLinkPreview().exec();
+        new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).html().disableLinkPreview().exec();
 
     }
 
