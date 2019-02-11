@@ -153,6 +153,36 @@ public class TwitterSpam {
         list.save();
 
     }
+    
+    public void adminRejected(UserData user,final SpamVote vote,String cause) {
+
+        String[] passMsg = new String[] {
+
+            "管理员否决了将 [「" + Markdown.encode(vote.twitterDisplyName) + "」](https://twitter.com/" + vote.twitterScreenName + ")","","添加到公共列表 「 " + fragment.main.getSpamList(vote.listId).name + " 」 的决定",
+            "",
+            "原因 : " + cause,
+            "",
+            "操作人 : " + user.twitterAccounts.getFirst().getFormatedNameMarkdown()
+
+        };
+
+        final Msg pubMsg = new Send(fragment, "@" + PUBLIC_CHANNEL, passMsg)
+            .buttons(new ButtonMarkup() {{
+
+                    newUrlButtonLine("投票地址", "https://t.me/" + VOTE_CHANNEL + "/" + vote.vote_message_id);
+
+                }}).markdown().disableLinkPreview().send();
+
+        fragment.bot.execute(new EditMessageReplyMarkup("@" + VOTE_CHANNEL, vote.vote_message_id)
+                             .replyMarkup(new ButtonMarkup() {{
+
+                                                  newUrlButtonLine("结果 : 管理员否决", "https://t.me/" + PUBLIC_CHANNEL + "/" + pubMsg.messageId());
+
+                                              }}.markup()));
+
+        fragment.main.deleteSpamVote(vote.id);
+
+    }
 
     public void voteRejected(final SpamVote vote) {
 

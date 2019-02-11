@@ -454,15 +454,13 @@ public class SpamUI extends FragmentBase {
 
             }
 
-            if (!exists) {
+            if (!exists || !user.point.getBool("direct")) {
 
                 msg.send("该用户不在公共分类 「 " + list.name + " 」 中！", "", "请重新输入 或使用 /cancel 取消").exec();
 
                 return;
 
             }
-
-
 
         }
 
@@ -504,6 +502,18 @@ public class SpamUI extends FragmentBase {
 
         String displayName = user.point.getStr("displayName");
 
+        SpamVote vote = null;
+
+        for (SpamVote v : msg.fragment.main.getSpamVotes()) {
+
+            if (screenName.equals(v.twitterScreenName)) {
+
+                vote = v;
+
+            }
+
+        }
+        
         if (user.isAdmin && user.point.getBool("remove")) {
 
             for (UserSpam spam : list.spamUsers) {
@@ -518,46 +528,40 @@ public class SpamUI extends FragmentBase {
 
             }
 
-        } else if (user.isAdmin && user.point.getBool("direct")) {
-
-            SpamVote vote = null;
-
-            for (SpamVote v : msg.fragment.main.getSpamVotes()) {
-
-                if (screenName.equals(v.twitterScreenName)) {
-
-                    vote = v;
-
-                }
-
-            }
-            
             if (vote != null) {
                 
-                msg.fragment.main.spam.adminPassed(vote,msg.text());
+                msg.fragment.main.spam.adminRejected(user,vote,msg.text());
                 
+            }
+
+        } else if (user.isAdmin && user.point.getBool("direct")) {
+
+            if (vote != null) {
+
+                msg.fragment.main.spam.adminPassed(user, vote, msg.text());
+
             } else {
 
-            UserSpam spam = new UserSpam(list);
+                UserSpam spam = new UserSpam(list);
 
-            spam.origin = user.id;
+                spam.origin = user.id;
 
-            spam.twitterAccountId = accountId;
+                spam.twitterAccountId = accountId;
 
-            spam.twitterScreenName = screenName;
+                spam.twitterScreenName = screenName;
 
-            spam.twitterDisplyName = displayName;
+                spam.twitterDisplyName = displayName;
 
-            spam.spamCause = msg.text();
+                spam.spamCause = msg.text();
 
-            msg.fragment.main.spam.newSpam(list, spam);
+                msg.fragment.main.spam.newSpam(list, spam);
 
-            msg.send("添加成功 ~").exec();
-            
+                msg.send("添加成功 ~").exec();
+
             }
 
         } else {
-
+            
             SpamVote spam = msg.fragment.main.newSpamVote(list, user.id, accountId, screenName, displayName, msg.text());
 
             VoteUI.INSTANCE.startVote(msg.fragment, spam);
