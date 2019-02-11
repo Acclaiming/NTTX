@@ -27,7 +27,7 @@ public class TwitterSpam {
 
         StringBuilder str = new StringBuilder();
 
-        if (!vote.disagree.isEmpty()) {
+        if (!vote.agree.isEmpty()) {
 
             str.append("同意 : \n\n");
 
@@ -137,7 +137,7 @@ public class TwitterSpam {
 
         String[] newSpamMsg = new String[] {
 
-            "Twitter \\#用户" + spam.twitterAccountId,
+            "Twitter #用户" + spam.twitterAccountId,
             "",
             "[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ")",
             "",
@@ -169,7 +169,7 @@ public class TwitterSpam {
 
         String[] newSpamMsg = new String[] {
 
-            "Twitter \\#用户" + spam.twitterAccountId,
+            "Twitter #用户" + spam.twitterAccountId,
             "",
             "[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ")",
             "",
