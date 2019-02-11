@@ -222,10 +222,10 @@ public class TwitterSpam {
             "",
             "#" + spam.twitterScreenName ,
             "",
-            "已被添加到 公共分类 「 " + spam.belongTo.name + " 」","",
-            "原因 : " + Markdown.encode(spam.spamCause),
-            "",
-            "操作人 : [" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")"
+        //    "已被添加到 公共分类 「 " + spam.belongTo.name + " 」","",
+       //     "原因 : " + Markdown.encode(spam.spamCause),
+        //    "",
+       //     "操作人 : [" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")"
 
         };
         
