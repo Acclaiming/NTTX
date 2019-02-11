@@ -170,8 +170,6 @@ public class VoteUI extends FragmentBase implements TimerTask {
                 }}).markdown().exec();
     }
 
-    public void startSpamTask() {}
-
     @Override
     public void run(MainFragment fragment) {
 
