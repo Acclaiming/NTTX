@@ -105,8 +105,8 @@ public class TwitterSpam {
         list.save();
 
     }
-    
-    public void adminPassed(UserData user,final SpamVote vote,String cause) {
+
+    public void adminPassed(UserData user, final SpamVote vote, String cause) {
 
         SpamList list = fragment.main.getSpamList(vote.listId);
 
@@ -153,8 +153,8 @@ public class TwitterSpam {
         list.save();
 
     }
-    
-    public void adminRejected(UserData user,final SpamVote vote,String cause) {
+
+    public void adminRejected(UserData user, final SpamVote vote, String cause) {
 
         String[] passMsg = new String[] {
 
@@ -216,21 +216,19 @@ public class TwitterSpam {
 
         String[] newSpamMsg = new String[] {
 
-         //   "Twitter #用户" + spam.twitterAccountId,
+            "Twitter #用户" + spam.twitterAccountId,
             "",
-        //    "[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + Markdown.encode(spam.twitterScreenName) + ")",
+            "[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + Markdown.encode(spam.twitterScreenName) + ") (" + spam.twitterScreenName + ")",
             "",
-           "#" + spam.twitterScreenName ,
+            "已被添加到 公共分类 「 " + spam.belongTo.name + " 」","",
+            "原因 : " + Markdown.encode(spam.spamCause),
             "",
-        //    "已被添加到 公共分类 「 " + spam.belongTo.name + " 」","",
-       //     "原因 : " + Markdown.encode(spam.spamCause),
-        //    "",
-       //     "操作人 : [" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")"
+            "操作人 : [" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")"
 
         };
-        
-        System.out.println(ArrayUtil.join(newSpamMsg,"\n"));
-        
+
+        System.out.println(ArrayUtil.join(newSpamMsg, "\n"));
+
         Msg pubMsg = new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).markdown().disableLinkPreview().send();
 
         spam.public_message_id = pubMsg.messageId();
@@ -259,8 +257,8 @@ public class TwitterSpam {
             "操作人 : [" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")"
 
         };
-        
-        
+
+
         new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).markdown().disableLinkPreview().exec();
 
     }
