@@ -29,7 +29,6 @@ public class SpamUI extends FragmentBase {
     private static final String POINT_REM_SPAM = "s|r";
     
     private static final String POINT_CLEAR = "s|cn";
-    private static final String POINT_CONFIRM_CLEAR = "s|cc";
     
     private static final String POINT_MANAGE_VOTE = "s|m";
 
@@ -60,7 +59,7 @@ public class SpamUI extends FragmentBase {
                     case POINT_INPUT_SCREEN_NAME : onInputScreenName(user, msg);break;
                     case POINT_INPUT_CAUSE : onInputCause(user, msg);break;
 
-                    case POINT_CONFIRM_CLEAR : onConfirmClearList(user,msg);break;
+                    case POINT_CLEAR : onConfirmClearList(user,msg);break;
                     
 
                     default : return false;
