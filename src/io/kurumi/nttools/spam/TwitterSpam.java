@@ -136,15 +136,21 @@ public class TwitterSpam {
 
         String[] newSpamMsg = new String[] {
 
-            "Twitter #用户" + spam.twitterAccountId + Markdown.toHtml("\n\n[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ")"),
+            "Twitter #用户" + spam.twitterAccountId,
             "",
-            "#" + spam.twitterScreenName + "\n\n已被添加到 公共分类 「 " + spam.belongTo.name + " 」","",
-            "原因 : " + spam.spamCause,"",
-            "操作人 : " + Markdown.toHtml("[" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")")
+            "[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ")",
+            "",
+            "#" + spam.twitterScreenName,
+            "",
+            "已被添加到 公共分类 「 " + spam.belongTo.name + " 」",
+            "",
+            "原因 : " + spam.spamCause,
+            "",
+            "操作人 : " + "[" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")"
 
         };
 
-        Msg pubMsg = new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).html().disableLinkPreview().send();
+        Msg pubMsg = new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).markdown().disableLinkPreview().send();
 
         spam.public_message_id = pubMsg.messageId();
 
