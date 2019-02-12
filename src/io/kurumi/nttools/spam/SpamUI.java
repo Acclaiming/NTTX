@@ -27,9 +27,9 @@ public class SpamUI extends FragmentBase {
     private static final String POINT_NEW_SPAM = "s|ns";
     private static final String POINT_ADD_SPAM = "s|a";
     private static final String POINT_REM_SPAM = "s|r";
-    
+
     private static final String POINT_CLEAR = "s|cn";
-    
+
     private static final String POINT_MANAGE_VOTE = "s|m";
 
     private static final String POINT_EDIT_LIST_NAME = "s|e";
@@ -59,8 +59,8 @@ public class SpamUI extends FragmentBase {
                     case POINT_INPUT_SCREEN_NAME : onInputScreenName(user, msg);break;
                     case POINT_INPUT_CAUSE : onInputCause(user, msg);break;
 
-                    case POINT_CLEAR : onConfirmClearList(user,msg);break;
-                    
+                    case POINT_CLEAR : onConfirmClearList(user, msg);break;
+
 
                     default : return false;
 
@@ -98,13 +98,19 @@ public class SpamUI extends FragmentBase {
 
             "「 Twitter 联合封禁 目录 」 :",
 
+
         };
 
         BaseResponse resp = sendOrEdit(msg, edit, spamMsg)
 
             .buttons(new ButtonMarkup() {{
 
-                    newButtonLine("「公共分类列表」", POINT_PUBLIC_LISTS);
+                    newButtonLine("「 公共分类列表 」", POINT_PUBLIC_LISTS);
+                    newButtonLine()
+                        .newUrlButton("「 投票频道 」", "https://t.me/" + TwitterSpam.VOTE_CHANNEL)
+                        .newUrlButton("「 操作公开 」", "https://t.me/" + TwitterSpam.PUBLIC_CHANNEL)
+
+                    newUrlButtonLine("「 加入公式群 」", "https://t.me/joinchat/H5gBQ1N2Mx5gf3Jm1e6RgQ");
 
                 }}).exec();
 
@@ -209,7 +215,7 @@ public class SpamUI extends FragmentBase {
                         newButtonLine()
                             .newButton("「 添加 」", POINT_ADD_SPAM, spam.id)
                             .newButton("「 解除 」", POINT_REM_SPAM, spam.id)
-                            .newButton("「 清空 」", POINT_CLEAR,spam.id);
+                            .newButton("「 清空 」", POINT_CLEAR, spam.id);
 
                     }
 
@@ -327,7 +333,7 @@ public class SpamUI extends FragmentBase {
         showList(user, msg, false, spam.id);
 
     }
-    
+
     private void clearList(UserData user, Callback callback) {
 
         if (!user.isAdmin) { callback.alert("Error"); return; } else callback.confirm();
@@ -352,21 +358,21 @@ public class SpamUI extends FragmentBase {
 
             spam.spamUsers.clear();
             spam.save();
-            
+
             msg.send("联合封禁列表 : 「 " + spam.name + " 」 已清空 ~").exec();
 
             user.point = null;
 
             user.save();
 
-            showList(user, msg,false, spam.id);
+            showList(user, msg, false, spam.id);
 
 
         }
 
 
     }
-    
+
 
     private void deleteList(UserData user, Callback callback) {
 
@@ -558,7 +564,7 @@ public class SpamUI extends FragmentBase {
             }
 
         }
-        
+
         if (user.isAdmin && user.point.getBool("remove")) {
 
             for (UserSpam spam : list.spamUsers) {
@@ -574,9 +580,9 @@ public class SpamUI extends FragmentBase {
             }
 
             if (vote != null) {
-                
-                msg.fragment.main.spam.adminRejected(user,vote,msg.text());
-                
+
+                msg.fragment.main.spam.adminRejected(user, vote, msg.text());
+
             }
 
         } else if (user.isAdmin && user.point.getBool("direct")) {
@@ -606,7 +612,7 @@ public class SpamUI extends FragmentBase {
             }
 
         } else {
-            
+
             SpamVote spam = msg.fragment.main.newSpamVote(list, user.id, accountId, screenName, displayName, msg.text());
 
             VoteUI.INSTANCE.startVote(msg.fragment, spam);
@@ -637,8 +643,8 @@ public class SpamUI extends FragmentBase {
                 case POINT_ADD_SPAM : newSpamRequest(user, callback, true, false);break;
                 case POINT_REM_SPAM : newSpamRequest(user, callback, false, true);break;
 
-                case POINT_CLEAR : clearList(user,callback);break;
-                
+                case POINT_CLEAR : clearList(user, callback);break;
+
                 case POINT_EDIT_LIST_NAME : editName(user, callback);break;
                 case POINT_EDIT_LIST_DESC : editDesc(user, callback);break;
 
