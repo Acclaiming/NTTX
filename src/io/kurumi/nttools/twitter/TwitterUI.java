@@ -332,7 +332,7 @@ public class TwitterUI extends FragmentBase {
 
         final TwiAccount account = callback.data.getUser(user);
 
-        callback.edit("清理Twitter账号 [ 慎用 ！ ]", "注意 : 不可停止 、 不可撤销")
+        callback.edit("清理Twitter账号 不要手贱哦 ( ￣▽￣)σ", "注意 : 不可以取消哦 ←_←")
             .buttons(new ButtonMarkup() {{
 
                     newButtonLine("删推文", POINT_CLEAN_STATUS, user, account);
