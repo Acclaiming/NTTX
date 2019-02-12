@@ -157,10 +157,6 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         }
         
-        System.out.println(vote.listId);
-
-        System.out.println(fragment.main.getSpamList(vote.listId));
-
         msg.append("\n\n提议将 #账号").append(vote.twitterAccountId);
 
         msg.append("\n\n[").append(Markdown.encode(vote.twitterDisplyName)).append("](https://twitter.com/").append(vote.twitterScreenName).append(") ");

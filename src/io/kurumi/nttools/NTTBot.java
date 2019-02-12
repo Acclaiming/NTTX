@@ -14,6 +14,9 @@ import io.kurumi.nttools.twitter.TwitterFunc;
 
 public class NTTBot extends MainFragment {
 
+    public boolean debug = false;
+    public String debugMsg = "bot 正在紧急维护 请过 18:30 再来 （￣～￣）";
+    
     public NTTBot(File dataDir) {
 
         super(dataDir);
@@ -32,9 +35,9 @@ public class NTTBot extends MainFragment {
     @Override
     public boolean processPrivateMessage(UserData user, Msg msg) {
 
-        if (!user.isAdmin && true) {
+        if (!user.isAdmin && debug) {
             
-            msg.send("bot正在紧急维护 请过 18:30 再试试 （￣～￣）").exec();
+            msg.send(debugMsg).exec();
             return true;
             
         }
@@ -78,9 +81,9 @@ public class NTTBot extends MainFragment {
     @Override
     public boolean processCallbackQuery(UserData user, Callback callback) {
 
-        if (!user.isAdmin && true) {
+        if (!user.isAdmin && debug) {
 
-            callback.alert("bot 正在紧急维护 请过 18:30 再来 （￣～￣）");
+            callback.alert(debugMsg);
 
             return true;
 
