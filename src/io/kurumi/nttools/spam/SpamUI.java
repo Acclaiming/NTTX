@@ -700,6 +700,7 @@ public class SpamUI extends FragmentBase {
         }
 
         try {
+            
             Twitter api = user.twitterAccounts.getFirst().createApi();
 
             File csv = msg.file();
@@ -727,7 +728,7 @@ public class SpamUI extends FragmentBase {
                 ResponseList<User> spams = api.lookupUsers(cache.toArray(new String[cache.size()]));
 
                 for (User u : spams) {
-
+                    
                     UserSpam spam = new UserSpam(list);
 
                     spam.twitterAccountId = u.getId();
@@ -735,6 +736,8 @@ public class SpamUI extends FragmentBase {
                     spam.twitterScreenName = u.getScreenName();
 
                     all.add(spam);
+                    
+                    System.out.println(u.getName());
 
                 }
 

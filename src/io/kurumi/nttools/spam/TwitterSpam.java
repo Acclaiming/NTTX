@@ -233,6 +233,8 @@ public class TwitterSpam {
         
         for (UserSpam spam : all) {
             
+            if (list.spamUsers.contains(spam)) continue;
+            
             spam.origin = user.id;
             spam.belongTo = list;
             spam.public_message_id = pubMsg.messageId();
