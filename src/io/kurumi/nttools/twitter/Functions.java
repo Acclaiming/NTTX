@@ -49,7 +49,7 @@ public class Functions extends FragmentBase {
             
         } catch (NumberFormatException e) {
             
-            chat = msg.fragment.bot.execute(new GetChat(msg)).chat();
+            chat = msg.fragment.bot.execute(new GetChat(msg.text())).chat();
             
         }
         
