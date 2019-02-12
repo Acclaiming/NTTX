@@ -130,6 +130,8 @@ public class VoteUI extends FragmentBase implements TimerTask {
             }
 
         }
+        
+        vote.save();
 
         updateVote(callback.fragment, vote);
         
