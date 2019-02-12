@@ -11,10 +11,11 @@ import io.kurumi.nttools.spam.SpamUI;
 import io.kurumi.nttools.model.request.Send;
 import io.kurumi.nttools.spam.VoteUI;
 import io.kurumi.nttools.twitter.TwitterFunc;
+import com.pengrad.telegrambot.request.ForwardMessage;
 
 public class NTTBot extends MainFragment {
 
-    public boolean debug = false;
+    public boolean debug = true;
     public String debugMsg = "bot 正在紧急维护 请明天再来 （￣～￣）";
     
     public NTTBot(File dataDir) {
@@ -29,6 +30,7 @@ public class NTTBot extends MainFragment {
         timer.tasks.add(VoteUI.INSTANCE);
 
         fragments.add(TwitterFunc.INSTANCE);
+        
 
     }
 
@@ -59,7 +61,6 @@ public class NTTBot extends MainFragment {
 
                     help(user, msg);
 
-
                     return true;
 
 
@@ -68,6 +69,10 @@ public class NTTBot extends MainFragment {
                     admin(user, msg);
 
                     return true;
+                    
+                    case "fd" :
+                    
+                   fd(user,msg);
 
 
             }
@@ -89,6 +94,21 @@ public class NTTBot extends MainFragment {
 
         } else return false;
 
+    }
+    
+    public void fd(UserData user,Msg msg) {
+        
+        if (msg.message().forwardFromMessageId() != null && user.isAdmin) {
+            
+            for (UserData u : msg.fragment.main.getUsers()) {
+                
+                msg.fragment.bot.execute(new ForwardMessage(u.id,msg.message().forwardFromChat().id(),msg.message().forwardFromMessageId()));
+                
+            }
+            
+            
+        }
+        
     }
 
     public void admin(UserData user, Msg msg) {
