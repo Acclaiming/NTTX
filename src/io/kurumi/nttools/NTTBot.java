@@ -15,7 +15,7 @@ import com.pengrad.telegrambot.request.ForwardMessage;
 
 public class NTTBot extends MainFragment {
 
-    public boolean debug = true;
+    public boolean debug = false;
     public String debugMsg = "bot 正在紧急维护 请明天再来 （￣～￣）";
     
     public NTTBot(File dataDir) {
