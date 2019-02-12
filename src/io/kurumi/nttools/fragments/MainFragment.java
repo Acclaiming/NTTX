@@ -197,6 +197,8 @@ public abstract class MainFragment extends Fragment {
 
                 if (spamListCahche.containsKey(listId)) continue;
 
+                System.out.println(listId);
+                
                 spamListCahche.put(listId, new SpamList(main, listId));
 
             }
