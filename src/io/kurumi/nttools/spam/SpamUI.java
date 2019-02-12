@@ -108,7 +108,7 @@ public class SpamUI extends FragmentBase {
                     newButtonLine("「 公共分类列表 」", POINT_PUBLIC_LISTS);
                     newButtonLine()
                         .newUrlButton("「 投票频道 」", "https://t.me/" + TwitterSpam.VOTE_CHANNEL)
-                        .newUrlButton("「 操作公开 」", "https://t.me/" + TwitterSpam.PUBLIC_CHANNEL)
+                        .newUrlButton("「 操作公开 」", "https://t.me/" + TwitterSpam.PUBLIC_CHANNEL);
 
                     newUrlButtonLine("「 加入公式群 」", "https://t.me/joinchat/H5gBQ1N2Mx5gf3Jm1e6RgQ");
 
