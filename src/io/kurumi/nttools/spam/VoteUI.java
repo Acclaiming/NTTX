@@ -43,10 +43,6 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         msg.append("\n\n[").append(Markdown.encode(spam.twitterDisplyName)).append("](https://twitter.com/").append(spam.twitterScreenName).append(") ");
 
-        System.out.println(spam.listId);
-        
-        System.out.println(fragment.main.getSpamList(spam.listId));
-        
         msg.append("\n\n添加到公共分类 「").append(fragment.main.getSpamList(spam.listId).name).append(" 」");
 
         msg.append("\n\n原因是 : ").append(spam.spamCause).append("\n\n");
@@ -158,6 +154,11 @@ public class VoteUI extends FragmentBase implements TimerTask {
             msg.append("匿名用户");
 
         }
+        
+        System.out.println(vote.listId);
+
+        System.out.println(fragment.main.getSpamList(vote.listId));
+        
 
         msg.append("\n\n提议将 #账号").append(vote.twitterAccountId);
 
