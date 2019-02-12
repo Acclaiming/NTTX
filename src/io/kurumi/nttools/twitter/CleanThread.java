@@ -68,7 +68,7 @@ public class CleanThread extends Thread {
 
                     } else {
 
-                        callback.send(cache.toArray(new String[cache.size()])).markdown().exec();
+                        callback.send(cache.toArray(new String[cache.size()])).markdown().disableLinkPreview().exec();
                         
                         cache.clear();
 
@@ -78,7 +78,7 @@ public class CleanThread extends Thread {
 
                 if (cache.size() > 0) {
 
-                    callback.send(cache.toArray(new String[cache.size()])).markdown().exec();
+                    callback.send(cache.toArray(new String[cache.size()])).markdown().disableLinkPreview().exec();
 
                 }
 
@@ -102,7 +102,8 @@ public class CleanThread extends Thread {
 
                     } else {
 
-                        callback.send(cache.toArray(new String[cache.size()])).markdown().exec();
+                        callback.send(cache.toArray(new String[cache.size()])).markdown().disableLinkPreview().exec();
+                        cache.clear();
 
                     }
 
@@ -110,7 +111,7 @@ public class CleanThread extends Thread {
 
                 if (cache.size() > 0) {
 
-                    callback.send(cache.toArray(new String[cache.size()])).markdown().exec();
+                    callback.send(cache.toArray(new String[cache.size()])).markdown().disableLinkPreview().exec();
 
                 }
 
