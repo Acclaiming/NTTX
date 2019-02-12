@@ -121,7 +121,7 @@ public class SpamVote extends JSONObject {
         
         JSONArray disagreeArray = new JSONArray();
 
-        for (Long id : agree) {
+        for (Long id : disagree) {
 
             disagreeArray.add(id);
 

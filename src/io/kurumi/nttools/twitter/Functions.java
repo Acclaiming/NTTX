@@ -7,10 +7,12 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
+import com.pengrad.telegrambot.request.GetChat;
+import com.pengrad.telegrambot.model.Chat;
 
-public class TwitterFunc extends FragmentBase {
+public class Functions extends FragmentBase {
 
-    public static TwitterFunc INSTANCE = new TwitterFunc();
+    public static Functions INSTANCE = new Functions();
 
     @Override
     public boolean processPrivateMessage(UserData user, Msg msg) {
@@ -24,6 +26,8 @@ public class TwitterFunc extends FragmentBase {
                 case "guf" : guf(user,msg);break;
                 
                 case "gts" : gts(user, msg);break;
+                
+                case "tgu" : tgu(user,msg);break;
 
                 default : return false;
 
@@ -31,6 +35,33 @@ public class TwitterFunc extends FragmentBase {
 
         return true;
 
+    }
+    
+    private void tgu(UserData user,Msg msg) {
+        
+        Chat chat;
+        
+        try {
+            
+            long id = Long.parseLong(msg.text());
+            
+            chat = msg.fragment.bot.execute(new GetChat(id)).chat();
+            
+        } catch (NumberFormatException e) {
+            
+            chat = msg.fragment.bot.execute(new GetChat(msg)).chat();
+            
+        }
+        
+        if (chat == null) {
+           
+            msg.send("无法取得").exec();
+            return;
+            
+        }
+
+        msg.send(chat.toString()).exec();
+        
     }
 
     private String[] noAccount = new String[] {
@@ -46,6 +77,7 @@ public class TwitterFunc extends FragmentBase {
         return userData.twitterAccounts.size() == 0;
 
     }
+    
     
     
     private void guf(UserData user,Msg msg) {

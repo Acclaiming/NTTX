@@ -10,7 +10,7 @@ import java.io.File;
 import io.kurumi.nttools.spam.SpamUI;
 import io.kurumi.nttools.model.request.Send;
 import io.kurumi.nttools.spam.VoteUI;
-import io.kurumi.nttools.twitter.TwitterFunc;
+import io.kurumi.nttools.twitter.Functions;
 import com.pengrad.telegrambot.request.ForwardMessage;
 
 public class NTTBot extends MainFragment {
@@ -29,7 +29,7 @@ public class NTTBot extends MainFragment {
 
         timer.tasks.add(VoteUI.INSTANCE);
 
-        fragments.add(TwitterFunc.INSTANCE);
+        fragments.add(Functions.INSTANCE);
         
 
     }
