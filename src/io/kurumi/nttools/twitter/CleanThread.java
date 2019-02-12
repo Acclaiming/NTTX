@@ -64,11 +64,11 @@ public class CleanThread extends Thread {
 
                     if (cache.size() < 20) {
 
-                        cache.add(TApi.formatUserNameHtml(id));
+                        cache.add(TApi.formatUserNameMarkdown(id));
 
                     } else {
 
-                        callback.send(cache.toArray(new String[cache.size()])).html().exec();
+                        callback.send(cache.toArray(new String[cache.size()])).markdown().exec();
                         
                         cache.clear();
 
@@ -78,7 +78,7 @@ public class CleanThread extends Thread {
 
                 if (cache.size() > 0) {
 
-                    callback.send(cache.toArray(new String[cache.size()])).html().exec();
+                    callback.send(cache.toArray(new String[cache.size()])).markdown().exec();
 
                 }
 
@@ -98,11 +98,11 @@ public class CleanThread extends Thread {
 
                     if (cache.size() < 20) {
 
-                        cache.add(TApi.formatUserNameHtml(id));
+                        cache.add(TApi.formatUserNameMarkdown(id));
 
                     } else {
 
-                        callback.send(cache.toArray(new String[cache.size()])).html().exec();
+                        callback.send(cache.toArray(new String[cache.size()])).markdown().exec();
 
                     }
 
@@ -110,7 +110,7 @@ public class CleanThread extends Thread {
 
                 if (cache.size() > 0) {
 
-                    callback.send(cache.toArray(new String[cache.size()])).html().exec();
+                    callback.send(cache.toArray(new String[cache.size()])).markdown().exec();
 
                 }
 
