@@ -616,8 +616,15 @@ public class SpamUI extends FragmentBase {
             SpamVote spam = msg.fragment.main.newSpamVote(list, user.id, accountId, screenName, displayName, msg.text());
 
             VoteUI.INSTANCE.startVote(msg.fragment, spam);
+            
+            final SpamVote v = vote;
 
-            msg.send("发起投票成功 ~").exec();
+            msg.send("发起投票成功 ~")
+            .buttons(new ButtonMarkup() {{
+                
+                newUrlButtonLine("「 投票地址 」","https://t.me/" + TwitterSpam.VOTE_CHANNEL + "/" + v.vote_message_id);
+                
+            }}).exec();
 
         }
 
