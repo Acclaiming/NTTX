@@ -73,6 +73,8 @@ public class NTTBot extends MainFragment {
                     case "fd" :
                     
                    fd(user,msg);
+                   
+                   return true;
 
 
             }
