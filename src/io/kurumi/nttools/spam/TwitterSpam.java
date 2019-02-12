@@ -252,7 +252,7 @@ public class TwitterSpam {
 
     public String newSpam(SpamList list, UserSpam spam) {
 
-        TwiAccount origin = fragment.main.getUserData(spam.origin).twitterAccounts.getFirst();
+        UserData origin = fragment.main.getUserData(spam.origin);
 
         String[] newSpamMsg = new String[] {
 
@@ -261,11 +261,10 @@ public class TwitterSpam {
             "已被添加到 公共分类 「 " + spam.belongTo.name + " 」","",
             "原因 : " + Markdown.encode(spam.spamCause),
             "",
-            "操作人 : [" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")"
+            "操作人 : [" + Markdown.encode(origin.name) + "](https://t.me/" + origin.userName + ")"
 
         };
 
-        System.out.println(ArrayUtil.join(newSpamMsg, "\n"));
 
         Msg pubMsg = new Send(fragment, "@" + PUBLIC_CHANNEL, newSpamMsg).markdown().disableLinkPreview().send();
 

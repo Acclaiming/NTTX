@@ -30,7 +30,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
             UserData origin = fragment.main.getUserData(spam.origin);
 
-            msg.append("[").append(Markdown.encode(origin.twitterAccounts.getFirst().name)).append("](https://twitter.com/").append(origin.twitterAccounts.getFirst().screenName).append(")");
+            msg.append("[").append(Markdown.encode(origin.name)).append("](https://t.me/").append(origin.userName).append(")");
 
         } else {
 
@@ -148,7 +148,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
             UserData origin = fragment.main.getUserData(vote.origin);
 
-            msg.append("[").append(Markdown.encode(origin.twitterAccounts.getFirst().name)).append("](https://twitter.com/").append(origin.twitterAccounts.getFirst().screenName).append(")");
+            msg.append("[").append(Markdown.encode(origin.name)).append("](https://t.me/").append(origin.twitterAccounts.getFirst().screenName).append(")");
 
         } else {
 
