@@ -282,7 +282,7 @@ public class TwitterSpam {
 
     public void remSpam(UserData user,UserSpam spam) {
 
-        TwiAccount origin = fragment.main.getUserData(spam.origin).twitterAccounts.getFirst();
+        TwiAccount origin = user.twitterAccounts.getFirst();
 
         String[] newSpamMsg = new String[] {
 
