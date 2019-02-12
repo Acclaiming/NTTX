@@ -18,6 +18,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import cn.hutool.core.io.IORuntimeException;
 import twitter4j.ResponseList;
+import java.util.Iterator;
 
 public class SpamUI extends FragmentBase {
 
@@ -581,13 +582,17 @@ public class SpamUI extends FragmentBase {
 
         if (user.isAdmin && user.point.getBool("remove")) {
 
-            for (UserSpam spam : list.spamUsers) {
+            Iterator<UserSpam> i = list.spamUsers.iterator();
+
+            while(i.hasNext()) {
+                
+                UserSpam spam = i.next();
 
                 if (accountId.equals(spam.twitterAccountId)) {
 
-                    list.spamUsers.remove(spam);
+                    i.remove();
 
-                    msg.fragment.main.spam.remSpam(user,spam);
+                    msg.fragment.main.spam.remSpam(user,spam,msg.text());
 
                 }
 
