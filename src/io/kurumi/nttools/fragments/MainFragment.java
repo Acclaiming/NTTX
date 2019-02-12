@@ -74,7 +74,15 @@ public abstract class MainFragment extends Fragment {
 
     public SpamList getSpamList(String id) {
 
-        return spamListCahche.get(id);
+       for (String s : spamListCahche.keySet()) {
+           
+           System.out.println(s);
+           
+           
+           
+       }
+        
+       return spamListCahche.get(id);
 
     }
 
