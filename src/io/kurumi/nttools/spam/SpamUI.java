@@ -587,7 +587,7 @@ public class SpamUI extends FragmentBase {
 
                     list.spamUsers.remove(spam);
 
-                    msg.fragment.main.spam.remSpam(spam);
+                    msg.fragment.main.spam.remSpam(user,spam);
 
                 }
 

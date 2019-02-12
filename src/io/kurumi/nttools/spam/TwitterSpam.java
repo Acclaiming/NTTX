@@ -280,7 +280,7 @@ public class TwitterSpam {
         
     }
 
-    public void remSpam(UserSpam spam) {
+    public void remSpam(UserData user,UserSpam spam) {
 
         TwiAccount origin = fragment.main.getUserData(spam.origin).twitterAccounts.getFirst();
 

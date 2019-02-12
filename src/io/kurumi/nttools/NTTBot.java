@@ -15,7 +15,7 @@ import io.kurumi.nttools.twitter.TwitterFunc;
 public class NTTBot extends MainFragment {
 
     public boolean debug = true;
-    public String debugMsg = "bot 正在紧急维护 请过 18:30 再来 （￣～￣）";
+    public String debugMsg = "bot 正在紧急维护 请明天再来 （￣～￣）";
     
     public NTTBot(File dataDir) {
 

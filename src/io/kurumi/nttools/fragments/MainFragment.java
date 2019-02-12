@@ -74,13 +74,9 @@ public abstract class MainFragment extends Fragment {
 
     public SpamList getSpamList(String id) {
 
-        if (spamListCahche.containsKey(id)) return spamListCahche.get(id);
+      return spamListCahche.get(id);
         
-        SpamList list = new SpamList(this, id);
         
-        spamListCahche.put(id,list);
-        
-        return list;
 
     }
 
@@ -197,8 +193,6 @@ public abstract class MainFragment extends Fragment {
 
                 if (spamListCahche.containsKey(listId)) continue;
 
-                System.out.println(listId);
-                
                 spamListCahche.put(listId, new SpamList(main, listId));
 
             }
