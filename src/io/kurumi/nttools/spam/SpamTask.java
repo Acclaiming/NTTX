@@ -48,6 +48,8 @@ public class SpamTask implements Runnable {
                     
                     api.createBlock(spamUser.twitterAccountId);
                     
+                    api.reportSpam(spamUser.twitterAccountId);
+                    
                 }
                 
             }
