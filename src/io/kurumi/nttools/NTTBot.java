@@ -34,7 +34,7 @@ public class NTTBot extends MainFragment {
     @Override
     public boolean processPrivateMessage(UserData user, Msg msg) {
 
-        if (true && user.isAdmin) {
+        if (!user.isAdmin) {
         msg.send("bot正在维护 请过 13:00 再试试 （￣～￣）").exec();
         return true;
         }
