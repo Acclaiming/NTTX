@@ -32,9 +32,9 @@ public class NTTBot extends MainFragment {
     @Override
     public boolean processPrivateMessage(UserData user, Msg msg) {
 
-        if (!user.isAdmin && false) {
+        if (!user.isAdmin && true) {
             
-            msg.send("bot正在维护 请过 13:00 再试试 （￣～￣）").exec();
+            msg.send("bot正在紧急维护 请过 18:30 再试试 （￣～￣）").exec();
             return true;
             
         }
@@ -78,9 +78,9 @@ public class NTTBot extends MainFragment {
     @Override
     public boolean processCallbackQuery(UserData user, Callback callback) {
 
-        if (!user.isAdmin && false) {
+        if (!user.isAdmin && true) {
 
-            callback.alert("bot 正在维护 请过 13:00 再来 （￣～￣）");
+            callback.alert("bot 正在紧急维护 请过 18:30 再来 （￣～￣）");
 
             return true;
 
