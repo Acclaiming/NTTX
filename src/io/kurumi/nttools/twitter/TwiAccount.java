@@ -74,7 +74,7 @@ public class TwiAccount extends JSONObject {
 
     public String getFormatedNameMarkdown() {
 
-        return "「" + Markdown.encode(name) + "」 [(@" + screenName + ")](" + getUrl() + ")";
+        return "[" + Markdown.encode(name) + "](" + getUrl() + ")";
 
     }
 
