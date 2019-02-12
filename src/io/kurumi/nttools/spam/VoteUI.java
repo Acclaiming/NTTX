@@ -198,12 +198,13 @@ public class VoteUI extends FragmentBase implements TimerTask {
             }
 
         }
+        
 
         for (SpamList list : fragment.getSpamLists()) {
 
             long lastTime = list.getLong("last_spam_time", -1L);
 
-            if (System.currentTimeMillis() - lastTime > 10 * 60 * 1000) {
+            if (System.currentTimeMillis() - lastTime > 30 * 60 * 1000) {
 
                 for (Map.Entry<Long,Long> sub : list.subscribers.entrySet()) {
 
