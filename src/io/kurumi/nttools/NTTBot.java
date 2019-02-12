@@ -85,7 +85,7 @@ public class NTTBot extends MainFragment {
         return true;
         
         }
-         else return false,
+         else return false;
 
     }
 
