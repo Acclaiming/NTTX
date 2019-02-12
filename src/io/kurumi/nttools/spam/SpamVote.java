@@ -99,7 +99,7 @@ public class SpamVote extends JSONObject {
 
         put("origin", origin);
         
-        put("list_id",id);
+        put("list_id",listId);
         
         put("twitter_account_id", twitterAccountId);
         put("twitter_screen_name", twitterScreenName);
