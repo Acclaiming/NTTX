@@ -207,7 +207,23 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
                     UserData user = fragment.getUserData(sub.getValue());
 
+                    if (user == null) {
+                        
+                        list.subscribers.remove(sub.getKey());
+                        list.save();
+                        continue;
+                        
+                    }
+                    
                     TwiAccount account = user.findUser(sub.getKey());
+                    
+                    if (account == null) {
+                        
+                        list.subscribers.remove(sub.getKey());
+                        list.save();
+                        continue;
+                        
+                    }
 
                     new SpamTask(list, account).start();
 
