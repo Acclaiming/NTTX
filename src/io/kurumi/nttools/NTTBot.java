@@ -100,13 +100,11 @@ public class NTTBot extends MainFragment {
     
     public void fd(UserData user,Msg msg) {
         
-        System.out.println(msg.message().forwardFromMessageId());
-        
-        if (msg.message().forwardFromMessageId() != null && user.isAdmin) {
+        if (msg.message().replyToMessage() != null && user.isAdmin) {
             
             for (UserData u : msg.fragment.main.getUsers()) {
                 
-                msg.fragment.bot.execute(new ForwardMessage(u.id,msg.message().forwardFromChat().id(),msg.message().forwardFromMessageId()));
+                msg.fragment.bot.execute(new ForwardMessage(u.id,msg.message().replyToMessage().chat().id(),msg.message().replyToMessage().messageId()));
                 
             }
             
