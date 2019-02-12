@@ -54,9 +54,14 @@ public class SpamTask implements Runnable {
                 
             }
             
-        } catch (Exception e) {
+        } catch (TwitterException e) {
             
-            e.printStackTrace();
+            if (e.getErrorCode() == 89) {
+                
+                list.subscribers.remove(account.accountId);
+                list.save();
+                
+            }
             
         }
 

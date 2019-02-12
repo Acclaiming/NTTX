@@ -142,8 +142,6 @@ public abstract class MainFragment extends Fragment {
         
         vote.listId = list.id;
         
-        System.out.println(list.id);
-        
         vote.twitterAccountId = accountId;
         
         vote.twitterScreenName = screenName;

@@ -14,7 +14,7 @@ public class RefreshTwitterAccountTask implements TimerTask {
         
         long lastTime = fragment.data.getLong("last_twitter_accounts_refresh_time",-1L);
         
-        if (System.currentTimeMillis() - lastTime > 1 * 60 * 60 * 1000) {
+        if (System.currentTimeMillis() - lastTime > 1 * 60 * 1000) {
            
             for (UserData user : fragment.getUsers()) {
                 
@@ -24,13 +24,13 @@ public class RefreshTwitterAccountTask implements TimerTask {
                         
                         user.twitterAccounts.remove(account);
                         
-                        new Send(fragment,user.id,"您Twitter账号","",account.getFormatedNameMarkdown(),"","的认证已经失效 (。•́︿•̀。)").markdown().exec();
+                        new Send(fragment,user.id,"您Twitter账号","",account.getFormatedNameMarkdown(),"","的认证已经失效 (。•́︿•̀。)").markdown().disableLinkPreview().exec();
                         
-                    }
-                    
-                    user.save();
+                    }  
                     
                 }
+                
+                user.save();
                 
             }
             
