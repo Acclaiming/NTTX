@@ -1,6 +1,6 @@
 package io.kurumi.nttools.spam;
 
-import com.pengrad.telegrambot.request.EditMessageText;
+import io.kurumi.nttools.NTTBot;
 import io.kurumi.nttools.fragments.Fragment;
 import io.kurumi.nttools.fragments.FragmentBase;
 import io.kurumi.nttools.fragments.MainFragment;
@@ -13,7 +13,6 @@ import io.kurumi.nttools.timer.TimerTask;
 import io.kurumi.nttools.twitter.TwiAccount;
 import io.kurumi.nttools.utils.Markdown;
 import io.kurumi.nttools.utils.UserData;
-import com.pengrad.telegrambot.request.EditMessageReplyMarkup;
 import java.util.Map;
 
 public class VoteUI extends FragmentBase implements TimerTask {
@@ -199,7 +198,6 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         }
         
-
         for (SpamList list : fragment.getSpamLists()) {
 
             long lastTime = list.getLong("last_spam_time", -1L);
