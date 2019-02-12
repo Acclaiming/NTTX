@@ -223,11 +223,11 @@ public class SpamUI extends FragmentBase {
 
                         if (!spam.subscribers.containsKey(account.accountId)) {
 
-                            newButtonLine(account.name + " 「启用」", POINT_OPEN, spam.id, user, account);
+                            newButtonLine(account.name + " 「启用该列表」", POINT_OPEN, spam.id, user, account);
 
                         } else {
 
-                            newButtonLine(account.name + " 「关闭」", POINT_CLOSE, spam.id, user, account);
+                            newButtonLine(account.name + " 「禁用该列表」", POINT_CLOSE, spam.id, user, account);
 
 
                         }
