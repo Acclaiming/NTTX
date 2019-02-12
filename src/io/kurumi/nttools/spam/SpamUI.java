@@ -4,12 +4,20 @@ import com.pengrad.telegrambot.response.BaseResponse;
 import io.kurumi.nttools.fragments.FragmentBase;
 import io.kurumi.nttools.model.Callback;
 import io.kurumi.nttools.model.Msg;
+import io.kurumi.nttools.model.request.ButtonLine;
 import io.kurumi.nttools.model.request.ButtonMarkup;
+import io.kurumi.nttools.twitter.TwiAccount;
 import io.kurumi.nttools.utils.Markdown;
 import io.kurumi.nttools.utils.UserData;
+import java.io.File;
 import twitter4j.User;
-import io.kurumi.nttools.model.request.ButtonLine;
-import io.kurumi.nttools.twitter.TwiAccount;
+import cn.hutool.core.io.FileUtil;
+import java.util.List;
+import java.util.LinkedList;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import cn.hutool.core.io.IORuntimeException;
+import twitter4j.ResponseList;
 
 public class SpamUI extends FragmentBase {
 
@@ -28,6 +36,7 @@ public class SpamUI extends FragmentBase {
     private static final String POINT_ADD_SPAM = "s|a";
     private static final String POINT_REM_SPAM = "s|r";
 
+    private static final String POINT_ADD_LIST = "s|al";
     private static final String POINT_CLEAR = "s|cn";
 
     private static final String POINT_MANAGE_VOTE = "s|m";
@@ -40,6 +49,7 @@ public class SpamUI extends FragmentBase {
     private static final String POINT_INPUT_LIST_NAME = "s|il";
     private static final String POINT_INPUT_SCREEN_NAME= "s|is";
     private static final String POINT_INPUT_CAUSE = "s|ic";
+    private static final String POINT_INPUT_LIST_CAUSE = "s|ilc";
 
     private static final String POINT_OPEN = "s|o";
     private static final String POINT_CLOSE = "s|c";
@@ -61,6 +71,8 @@ public class SpamUI extends FragmentBase {
 
                     case POINT_CLEAR : onConfirmClearList(user, msg);break;
 
+                    case POINT_INPUT_LIST_CAUSE : onInputListCause(user,msg);break;
+                    case POINT_ADD_LIST : onInputCsv(user,msg);break;
 
                     default : return false;
 
@@ -214,7 +226,9 @@ public class SpamUI extends FragmentBase {
 
                         newButtonLine()
                             .newButton("「 添加 」", POINT_ADD_SPAM, spam.id)
-                            .newButton("「 解除 」", POINT_REM_SPAM, spam.id)
+                            .newButton("「 解除 」", POINT_REM_SPAM, spam.id);
+                        newButtonLine()
+                            .newButton("「 批量添加 」", POINT_ADD_LIST, spam.id)
                             .newButton("「 清空 」", POINT_CLEAR, spam.id);
 
                     }
@@ -605,9 +619,13 @@ public class SpamUI extends FragmentBase {
 
                 spam.spamCause = msg.text();
 
-                msg.fragment.main.spam.newSpam(list, spam);
+                final String url = msg.fragment.main.spam.newSpam(list, spam);
 
-                msg.send("添加成功 ~").exec();
+                msg.send("添加成功 ~").buttons(new ButtonMarkup() {{
+
+                            newUrlButtonLine("公开地址",url);
+
+                        }}).exec();
 
             }
 
@@ -616,15 +634,15 @@ public class SpamUI extends FragmentBase {
             SpamVote spam = msg.fragment.main.newSpamVote(list, user.id, accountId, screenName, displayName, msg.text());
 
             VoteUI.INSTANCE.startVote(msg.fragment, spam);
-            
+
             final SpamVote v = vote;
 
             msg.send("发起投票成功 ~")
-            .buttons(new ButtonMarkup() {{
-                
-                newUrlButtonLine("「 投票地址 」","https://t.me/" + TwitterSpam.VOTE_CHANNEL + "/" + v.vote_message_id);
-                
-            }}).exec();
+                .buttons(new ButtonMarkup() {{
+
+                        newUrlButtonLine("「 投票地址 」", "https://t.me/" + TwitterSpam.VOTE_CHANNEL + "/" + v.vote_message_id);
+
+                    }}).exec();
 
         }
 
@@ -632,6 +650,114 @@ public class SpamUI extends FragmentBase {
         user.save();
 
         showList(user, msg, false, list.id);
+
+    }
+
+    public void addList(UserData user, Callback callback) {
+
+        if (!user.isAdmin) {
+
+            callback.alert("ERROR");
+
+            return;
+
+        }
+
+        user.point = callback.data;
+        user.point.setPoint(POINT_INPUT_LIST_CAUSE);
+        user.save();
+
+        callback.send("好，现在输入原因").exec();
+
+    }
+
+    public void onInputListCause(UserData user, Msg msg) {
+
+        user.point.put("cause", msg.text());
+        user.point.setPoint(POINT_ADD_LIST);
+        user.save();
+
+        msg.send("好，现在发送导出的 .csv文件").exec();
+
+    }
+
+    public void onInputCsv(UserData user, Msg msg) {
+
+        if (msg.doc() == null) {
+
+            msg.send("好像没有发送文件过来... >_<", "", "使用 /cancel 取消导入").exec();
+
+            return;
+
+        }
+
+        if (!msg.doc().fileName().endsWith(".csv")) {
+
+            msg.send("好像没有发送 **csv** 文件过来 （￣～￣）", "", "使用 /cancel 取消导入").exec();
+
+            return;
+
+        }
+
+        try {
+            Twitter api = user.twitterAccounts.getFirst().createApi();
+
+            File csv = msg.file();
+
+            List<String> lines = FileUtil.readUtf8Lines(csv);
+
+            LinkedList<UserSpam> all = new LinkedList<>();
+
+            SpamList list = msg.fragment.main.getSpamList(user.point.getIndex());
+
+            String cause = user.point.getStr("cause");
+
+            for (int index = 0;index < lines.size();index = index + 100) {
+
+                int target = index + 100;
+
+                if (lines.size() < target) {
+
+                    target = lines.size() - 1;
+
+                }
+
+                List<String> cache = lines.subList(index, target);
+
+                ResponseList<User> spams = api.lookupUsers(cache.toArray(new String[cache.size()]));
+
+                for (User u : spams) {
+
+                    UserSpam spam = new UserSpam(list);
+
+                    spam.twitterAccountId = u.getId();
+                    spam.twitterDisplyName = u.getName();
+                    spam.twitterScreenName = u.getScreenName();
+
+                    all.add(spam);
+
+                }
+
+            }
+            
+            final String url = msg.fragment.main.spam.addSpam(user, list, cause, all);
+            
+            user.point = null;
+            user.save();
+            
+            msg.send("导入成功 ！").buttons(new ButtonMarkup() {{
+                
+                newUrlButtonLine("公开地址",url);
+                
+            }}).exec();
+            
+            showList(user, msg, false, list.id);
+
+        } catch (TwitterException e) {
+            
+            throw new RuntimeException(e);
+            
+        }
 
     }
 
@@ -651,6 +777,7 @@ public class SpamUI extends FragmentBase {
                 case POINT_REM_SPAM : newSpamRequest(user, callback, false, true);break;
 
                 case POINT_CLEAR : clearList(user, callback);break;
+                case POINT_ADD_LIST : addList(user, callback);break;
 
                 case POINT_EDIT_LIST_NAME : editName(user, callback);break;
                 case POINT_EDIT_LIST_DESC : editDesc(user, callback);break;

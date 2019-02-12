@@ -33,6 +33,12 @@ public class Msg extends Context {
         return message.text() != null;
 
     }
+   
+    public Document doc() {
+        
+        return message.document();
+        
+    }
 
     public String text() {
 
@@ -64,7 +70,7 @@ public class Msg extends Context {
         
     }
     
-    public File getFile() {
+    public File file() {
         
         Document doc = message.document();
         

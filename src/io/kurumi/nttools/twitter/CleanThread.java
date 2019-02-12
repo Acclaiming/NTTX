@@ -64,7 +64,7 @@ public class CleanThread extends Thread {
 
                     if (cache.size() < 20) {
 
-                        cache.add(TApi.formatUserNameHtml((id)));
+                        cache.add(TApi.formatUserNameHtml(id));
 
                     } else {
 

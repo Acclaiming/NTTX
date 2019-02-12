@@ -55,7 +55,7 @@ public class TwitterDataParser extends FragmentBase {
         TwiAccount account = user.twitterAccounts.getFirst();
         Twitter api = account.createApi();
 
-        File doc = msg.getFile();
+        File doc = msg.file();
 
         File result = new File(msg.fragment.main.dataDir, "/cache/twittr_data_parse/tweets/" + msg.message().document().fileId() + ".html");
 
@@ -174,7 +174,7 @@ public class TwitterDataParser extends FragmentBase {
 
         Twitter api = user.twitterAccounts.getFirst().createApi();
 
-        File doc = msg.getFile();
+        File doc = msg.file();
 
         File result = new File(msg.fragment.main.dataDir, "/cache/twittr_data_parse/follow_friends/" + msg.message().document().fileId() + ".html");
 

@@ -9,6 +9,7 @@ import io.kurumi.nttools.model.request.Send;
 import io.kurumi.nttools.twitter.TwiAccount;
 import io.kurumi.nttools.utils.Markdown;
 import io.kurumi.nttools.utils.UserData;
+import java.util.LinkedList;
 
 public class TwitterSpam {
 
@@ -209,16 +210,51 @@ public class TwitterSpam {
         fragment.main.deleteSpamVote(vote.id);
 
     }
+    
+    public String addSpam(UserData user,SpamList list,String cause, LinkedList<UserSpam> all) {
 
-    public void newSpam(SpamList list, UserSpam spam) {
+        StringBuilder spamMsg = new StringBuilder();
+        
+        spamMsg.append("Twitter 用户 :\n");
+        
+        for (UserSpam spam : all) {
+            
+            spamMsg.append("\n").append("[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ")");
+            
+        }
+        
+        spamMsg.append("\n\n已被管理员导入到 公共分类 「 " + list.name + " 」");
+        
+        spamMsg.append("\n\n原因是 :").append(cause);
+        
+        spamMsg.append("\n\n操作人 :").append(user.twitterAccounts.getFirst().getFormatedNameMarkdown());
+        
+        Msg pubMsg = new Send(fragment, "@" + PUBLIC_CHANNEL, spamMsg.toString()).markdown().disableLinkPreview().send();
+        
+        for (UserSpam spam : all) {
+            
+            spam.origin = user.id;
+            spam.belongTo = list;
+            spam.public_message_id = pubMsg.messageId();
+            spam.spamCause = cause;
+            
+            list.spamUsers.add(spam);
+            
+        }
+        
+        list.save();
+        
+        return "https://t.me/" + PUBLIC_CHANNEL + "/" + pubMsg.messageId();
+
+    }
+
+    public String newSpam(SpamList list, UserSpam spam) {
 
         TwiAccount origin = fragment.main.getUserData(spam.origin).twitterAccounts.getFirst();
 
         String[] newSpamMsg = new String[] {
 
-            "Twitter #用户" + spam.twitterAccountId,
-            "",
-            "[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ")",
+            "Twitter 用户 [" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ")",
             "",
             "已被添加到 公共分类 「 " + spam.belongTo.name + " 」","",
             "原因 : " + Markdown.encode(spam.spamCause),
@@ -237,7 +273,9 @@ public class TwitterSpam {
 
         list.save();
 
-
+        return "https://t.me/" + PUBLIC_CHANNEL + "/" + pubMsg.messageId();
+        
+        
     }
 
     public void remSpam(UserSpam spam) {
