@@ -204,6 +204,9 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
             if (System.currentTimeMillis() - lastTime > 30 * 60 * 1000) {
 
+                fragment.data.put("last_spam_time", System.currentTimeMillis());
+                
+                
                 for (Map.Entry<Long,Long> sub : list.subscribers.entrySet()) {
 
                     UserData user = fragment.getUserData(sub.getValue());
@@ -231,8 +234,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
                 }
 
 
-                fragment.data.put("last_spam_time", System.currentTimeMillis());
-
+                
             }
 
 
