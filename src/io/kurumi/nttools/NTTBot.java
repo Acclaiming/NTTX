@@ -13,12 +13,10 @@ import io.kurumi.nttools.spam.VoteUI;
 import io.kurumi.nttools.twitter.TwitterFunc;
 
 public class NTTBot extends MainFragment {
-    
+
     public NTTBot(File dataDir) {
 
         super(dataDir);
-        
-        
 
         fragments.add(TwitterUI.INSTANCE);
         fragments.add(SpamUI.INSTANCE);
@@ -28,18 +26,20 @@ public class NTTBot extends MainFragment {
         timer.tasks.add(VoteUI.INSTANCE);
 
         fragments.add(TwitterFunc.INSTANCE);
-        
+
     }
 
     @Override
     public boolean processPrivateMessage(UserData user, Msg msg) {
 
-        if (!user.isAdmin) {
-        msg.send("bot正在维护 请过 13:00 再试试 （￣～￣）").exec();
-        return true;
+        if (!user.isAdmin && false) {
+            
+            msg.send("bot正在维护 请过 13:00 再试试 （￣～￣）").exec();
+            return true;
+            
         }
-        
-    
+
+
         if (msg.isCommand()) {
 
             switch (msg.commandName()) {
@@ -78,14 +78,13 @@ public class NTTBot extends MainFragment {
     @Override
     public boolean processCallbackQuery(UserData user, Callback callback) {
 
-        if (!user.isAdmin) {
-        
-        callback.alert("bot 正在维护 请过 13:00 再来 （￣～￣）");
-        
-        return true;
-        
-        }
-         else return false;
+        if (!user.isAdmin && false) {
+
+            callback.alert("bot 正在维护 请过 13:00 再来 （￣～￣）");
+
+            return true;
+
+        } else return false;
 
     }
 
