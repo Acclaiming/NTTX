@@ -23,10 +23,10 @@ public class SpamList extends JSONObject {
     public String name;
 
     public String description;
-
+    
     public LinkedList<UserSpam> spamUsers = new LinkedList<>();
 
-    public HashMap<Long,Long> subscribers = new HashMap<>();
+    public HashMap<Long,Long> disables = new HashMap<>();
     
     public SpamList(Fragment fragment, String id) {
 
@@ -67,15 +67,15 @@ public class SpamList extends JSONObject {
 
         }
         
-        JSONObject subscriberMap = getJSONObject("subscribers");
+        JSONObject subscriberMap = getJSONObject("disables");
 
-        subscribers.clear();
+        disables.clear();
 
         if (subscriberMap != null) {
             
             for (String key : subscriberMap.keySet()) {
 
-                subscribers.put(Long.parseLong(key),subscriberMap.getLong(key));
+                disables.put(Long.parseLong(key),subscriberMap.getLong(key));
 
             }
 
@@ -99,7 +99,7 @@ public class SpamList extends JSONObject {
         
         put("spam_users",spamUserArray);
        
-        put("subscribers",subscribers);
+        put("disable",disables);
         
         FileUtil.writeUtf8String(toStringPretty(),spamFile);
         

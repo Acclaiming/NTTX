@@ -14,6 +14,7 @@ import io.kurumi.nttools.twitter.TwiAccount;
 import io.kurumi.nttools.utils.Markdown;
 import io.kurumi.nttools.utils.UserData;
 import java.util.Map;
+import java.util.LinkedList;
 
 public class VoteUI extends FragmentBase implements TimerTask {
 
@@ -206,14 +207,28 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
                 fragment.data.put("last_spam_time", System.currentTimeMillis());
                 
+                 for (UserData user : fragment.getUsers()) {
+                    
+                    for (TwiAccount account : user.twitterAccounts) {
+                        
+                        if (!list.disables.containsKey(account)) {
+                            
+                             new SpamTask(list, account).start();
+                             
+                            
+                        }
+                        
+                    }
+                    
+                }
                 
-                for (Map.Entry<Long,Long> sub : list.subscribers.entrySet()) {
+                for (Map.Entry<Long,Long> sub : list.disables.entrySet()) {
 
                     UserData user = fragment.getUserData(sub.getValue());
 
                     if (user == null) {
                         
-                        list.subscribers.remove(sub.getKey());
+                        list.disables.remove(sub.getKey());
                         list.save();
                         continue;
                         
@@ -223,14 +238,13 @@ public class VoteUI extends FragmentBase implements TimerTask {
                     
                     if (account == null) {
                         
-                        list.subscribers.remove(sub.getKey());
+                        list.disables.remove(sub.getKey());
                         list.save();
                         continue;
                         
                     }
 
-                    new SpamTask(list, account).start();
-
+                    
                 }
 
 

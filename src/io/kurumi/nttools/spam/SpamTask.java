@@ -58,7 +58,7 @@ public class SpamTask implements Runnable {
             
             if (e.getErrorCode() == 89) {
                 
-                list.subscribers.remove(account.accountId);
+                list.disables.remove(account.accountId);
                 list.save();
                 
             }

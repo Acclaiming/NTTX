@@ -246,7 +246,7 @@ public class SpamUI extends FragmentBase {
 
                     for (TwiAccount account : user.twitterAccounts) {
 
-                        if (!spam.subscribers.containsKey(account.accountId)) {
+                        if (spam.disables.containsKey(account.accountId)) {
 
                             newButtonLine(account.name + " 「启用该列表」", POINT_OPEN, spam.id, user, account);
 
@@ -275,7 +275,7 @@ public class SpamUI extends FragmentBase {
 
         TwiAccount account = callback.data.getUser(user);
 
-        list.subscribers.put(account.accountId, user.id);
+        list.disables.remove(account.accountId);
 
         list.save();
 
@@ -291,7 +291,7 @@ public class SpamUI extends FragmentBase {
 
         TwiAccount account = callback.data.getUser(user);
 
-        list.subscribers.remove(account.accountId);
+        list.disables.put(account.accountId,user.id);
 
         list.save();
 
