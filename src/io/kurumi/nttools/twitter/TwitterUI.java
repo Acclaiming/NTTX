@@ -223,7 +223,7 @@ public class TwitterUI extends FragmentBase {
 
                             user.save();
 
-                            status.edit("认证成功 (｡>∀<｡) 乃的账号", account.getFormatedName()).markdown().exec();
+                            status.edit("认证成功 (｡>∀<｡) " + account.getFormatedNameMarkdown()).markdown().exec();
 
                             if (BotServer.INSTANCE == null) {
 
