@@ -772,7 +772,7 @@ public class SpamUI extends FragmentBase {
 
                     if (cache.size() < 20) {
 
-                        cache.add(TApi.formatUserNameMarkdown(u) + "  [导入](https://t.me/NTToolsBot?start=" + Base64.encode(spam.save().toString()));
+                        cache.add(TApi.formatUserNameMarkdown(u) + "  [导入](https://t.me/NTToolsBot?start=" + Base64.encode(spam.save().toString()) + ")");
 
                     } else {
 
@@ -792,7 +792,7 @@ public class SpamUI extends FragmentBase {
 
             if (cache.size() > 0) {
 
-                msg.send(ArrayUtil.join(cache.toArray(new String[cache.size()]),"\n")).markdown().disableLinkPreview().exec();
+                msg.send(cache.toArray(new String[cache.size()])).markdown().disableLinkPreview().exec();
 
             }
             
