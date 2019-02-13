@@ -658,6 +658,20 @@ public class SpamUI extends FragmentBase {
         showList(user, msg, false, list.id);
 
     }
+    
+    public long[] parseIDs(List<String> list) {
+        
+        long[] ids = new long[list.size()];
+        
+        for (int index = 0;index < list.size();index ++) {
+            
+            ids[index] = Long.parseLong(list.get(index));
+            
+        }
+        
+        return ids;
+        
+    }
 
     public void addList(UserData user, Callback callback) {
 
@@ -729,7 +743,7 @@ public class SpamUI extends FragmentBase {
                     
                 }
                 
-                ResponseList<User> users = api.lookupUsers(lines.subList(0, target).toArray(new String[target + 1]));
+                ResponseList<User> users = api.lookupUsers(parseIDs(lines.subList(0, target)));
 
                 for (User u : users) {
                     
