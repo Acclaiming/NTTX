@@ -15,7 +15,7 @@ public class RefreshTwitterAccountTask implements TimerTask {
 
         long lastTime = fragment.data.getLong("last_twitter_accounts_refresh_time", -1L);
 
-        if (System.currentTimeMillis() - lastTime > 1 * 60 * 1000) {
+        if (System.currentTimeMillis() - lastTime > 30 * 60 * 1000) {
 
             for (UserData user : fragment.getUsers()) {
 
