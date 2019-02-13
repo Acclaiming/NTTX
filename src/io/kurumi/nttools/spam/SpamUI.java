@@ -646,9 +646,9 @@ public class SpamUI extends FragmentBase {
 
         } else {
 
-            SpamVote spam = msg.fragment.main.newSpamVote(list, user.id, accountId, screenName, displayName, msg.text());
+            vote = msg.fragment.main.newSpamVote(list, user.id, accountId, screenName, displayName, msg.text());
 
-            VoteUI.INSTANCE.startVote(msg.fragment, spam);
+            VoteUI.INSTANCE.startVote(msg.fragment, vote);
 
             final SpamVote v = vote;
 
