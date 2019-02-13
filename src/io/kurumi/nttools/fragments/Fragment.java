@@ -121,7 +121,7 @@ public abstract class Fragment extends FragmentBase {
 
                             for (FragmentBase fragment : fragments) {
 
-                                if (fragment.processPrivateMessage(user, new Msg(this, update.message()))) return;
+                                if (fragment.processPrivateMessage(user, new Msg(this, update.message()),user.point != null)) return;
 
                             }
 
@@ -133,7 +133,7 @@ public abstract class Fragment extends FragmentBase {
 
                             for (FragmentBase fragment : fragments) {
 
-                                if (fragment.processGroupMessage(user, new Msg(this, update.message()))) return;
+                                if (fragment.processGroupMessage(user, new Msg(this, update.message()),user.point != null)) return;
 
                             }
 
@@ -145,7 +145,7 @@ public abstract class Fragment extends FragmentBase {
 
                             for (FragmentBase fragment : fragments) {
 
-                                if (fragment.processGroupMessage(user, new Msg(this, update.message()))) return;
+                                if (fragment.processGroupMessage(user, new Msg(this, update.message()),user.point != null)) return;
 
                             }
 
@@ -181,7 +181,7 @@ public abstract class Fragment extends FragmentBase {
                 
                 for (FragmentBase fragment : fragments) {
 
-                    if (fragment. processChannelPost(user, new Msg(this, update.channelPost()))) return;
+                    if (fragment. processChannelPost(user, new Msg(this, update.channelPost()),user.point != null)) return;
 
                 }
 
@@ -199,7 +199,7 @@ public abstract class Fragment extends FragmentBase {
                 
                 for (FragmentBase fragment : fragments) {
 
-                    if (fragment.processCallbackQuery(user, new Callback(this, update.callbackQuery()))) return;
+                    if (fragment.processCallbackQuery(user, new Callback(this, update.callbackQuery()),user.point != null)) return;
 
                 }
 
@@ -209,7 +209,7 @@ public abstract class Fragment extends FragmentBase {
 
                 for (FragmentBase fragment : fragments) {
 
-                    if (fragment.processInlineQuery(user, update.inlineQuery())) return;
+                    if (fragment.processInlineQuery(user, update.inlineQuery(),user.point != null)) return;
 
                 }
 
@@ -219,7 +219,7 @@ public abstract class Fragment extends FragmentBase {
 
                 for (FragmentBase fragment : fragments) {
 
-                    if (fragment.processChosenInlineQueryResult(user, update.inlineQuery())) return;
+                    if (fragment.processChosenInlineQueryResult(user, update.inlineQuery(),user.point != null)) return;
 
                 }
 

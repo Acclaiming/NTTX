@@ -23,7 +23,9 @@ public class TwitterDataParser extends FragmentBase {
     public static String help = "Twitter数据解析 : 发送 tweet.js / follow.js / follower.js 到Bot即可自动解析";
     
     @Override
-    public boolean processPrivateMessage(UserData user, Msg msg) {
+    public boolean processPrivateMessage(UserData user, Msg msg,boolean point) {
+        
+        if (point) return false;
         
         Document doc = msg.message().document();
 

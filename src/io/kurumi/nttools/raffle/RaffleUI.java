@@ -24,9 +24,9 @@ public class RaffleUI extends FragmentBase implements TimerTask  {
     private static final String POINT_INPUT_STATUS = "r|i|s";
 
     @Override
-    public boolean processPrivateMessage(UserData user, Msg msg) {
+    public boolean processPrivateMessage(UserData user, Msg msg,boolean point) {
 
-        if (user.point != null) {
+        if (point) {
 
             switch (user.point.getPoint()) {
 
@@ -114,8 +114,10 @@ public class RaffleUI extends FragmentBase implements TimerTask  {
     }
 
     @Override
-    public boolean processCallbackQuery(UserData user, Callback callback) {
+    public boolean processCallbackQuery(UserData user, Callback callback,boolean point) {
 
+        if (point) return false;
+        
         switch (callback.data.getPoint()) {
 
                 case POINT_ADD : add(user, callback);break;

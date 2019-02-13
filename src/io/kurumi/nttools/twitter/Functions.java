@@ -15,8 +15,10 @@ public class Functions extends FragmentBase {
     public static Functions INSTANCE = new Functions();
 
     @Override
-    public boolean processPrivateMessage(UserData user, Msg msg) {
+    public boolean processPrivateMessage(UserData user, Msg msg,boolean point) {
 
+        if (point) return false;
+        
         if (!msg.isCommand()) return false;
 
         switch (msg.commandName()) {

@@ -59,7 +59,7 @@ public class SpamUI extends FragmentBase {
     private static final String POINT_CLOSE = "s|c";
 
     @Override
-    public boolean processPrivateMessage(UserData user, Msg msg) {
+    public boolean processPrivateMessage(UserData user, Msg msg,boolean point) {
 
         if (user.point != null) {
 
@@ -840,8 +840,10 @@ public class SpamUI extends FragmentBase {
 
 
     @Override
-    public boolean processCallbackQuery(UserData user, Callback callback) {
+    public boolean processCallbackQuery(UserData user, Callback callback,boolean point) {
 
+        if (point) return false;
+        
         switch (callback.data.getPoint()) {
 
                 case POINT_PUBLIC_LISTS : publicLists(user, callback, true);callback.confirm();break;

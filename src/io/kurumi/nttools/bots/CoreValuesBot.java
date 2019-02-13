@@ -31,7 +31,7 @@ public class CoreValuesBot extends Fragment {
     static Encoder encoder = new Encoder(Encoder.coreValus);
 
     @Override
-    public boolean processInlineQuery(UserData user, InlineQuery inlineQuery) {
+    public boolean processInlineQuery(UserData user, InlineQuery inlineQuery,boolean point) {
 
         if (!StrUtil.isBlank(inlineQuery.query())) {
 
@@ -48,7 +48,7 @@ public class CoreValuesBot extends Fragment {
     }
     
     @Override
-    public boolean processPrivateMessage(UserData user, Msg msg) {
+    public boolean processPrivateMessage(UserData user, Msg msg,boolean point) {
         
         String text = encoder.decode(msg.text());
 

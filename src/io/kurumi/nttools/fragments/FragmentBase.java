@@ -13,12 +13,12 @@ import com.pengrad.telegrambot.response.SendResponse;
 
 public abstract class FragmentBase {
 
-    public boolean processPrivateMessage(UserData user, Msg msg) { return false; }
-    public boolean processGroupMessage(UserData user, Msg msg) { return false; }
-    public boolean processChannelPost(UserData user, Msg msg) { return false; }
-    public boolean processCallbackQuery(UserData user, Callback callback) { return false; }
-    public boolean processInlineQuery(UserData user, InlineQuery inlineQuery) { return false; }
-    public boolean processChosenInlineQueryResult(UserData user, InlineQuery inlineQuery) { return false; }
+    public boolean processPrivateMessage(UserData user, Msg msg ,boolean point) { return false; }
+    public boolean processGroupMessage(UserData user, Msg msg, boolean point) { return false; }
+    public boolean processChannelPost(UserData user, Msg msg, boolean point) { return false; }
+    public boolean processCallbackQuery(UserData user, Callback callback,boolean point) { return false; }
+    public boolean processInlineQuery(UserData user, InlineQuery inlineQuery,boolean point) { return false; }
+    public boolean processChosenInlineQueryResult(UserData user, InlineQuery inlineQuery,boolean point) { return false; }
 
     public CData cdata(String point) {
 

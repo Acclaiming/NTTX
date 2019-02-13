@@ -9,7 +9,9 @@ import io.kurumi.nttools.twitter.TwitterUI;
 public class JSPTrack extends FragmentBase {
 
     @Override
-    public boolean processPrivateMessage(UserData user, Msg msg) {
+    public boolean processPrivateMessage(UserData user, Msg msg,boolean point) {
+        
+        if (point) return false;
         
         if ("jsp".equals(msg.commandName())) {
             

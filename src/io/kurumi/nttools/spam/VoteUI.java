@@ -62,8 +62,10 @@ public class VoteUI extends FragmentBase implements TimerTask {
     }
 
     @Override
-    public boolean processCallbackQuery(UserData user, Callback callback) {
+    public boolean processCallbackQuery(UserData user, Callback callback,boolean point) {
 
+        if (point) return false;
+        
         switch (callback.data.getPoint()) {
 
                 case POINT_VOTE_AGREE: break;

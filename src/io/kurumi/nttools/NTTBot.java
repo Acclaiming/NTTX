@@ -37,15 +37,17 @@ public class NTTBot extends MainFragment {
     }
 
     @Override
-    public boolean processPrivateMessage(UserData user, Msg msg) {
+    public boolean processPrivateMessage(UserData user, Msg msg, boolean point) {
 
+        if (point) return false;
+        
         if (!user.isAdmin && debug) {
 
             msg.send(debugMsg).exec();
             return true;
 
         }
-        
+
 
         if (msg.isCommand()) {
 
@@ -76,18 +78,18 @@ public class NTTBot extends MainFragment {
                     fd(user, msg);
 
                     break;
-                    
+
                     case "fdx" :
 
                     fdx(user, msg);
-                    
+
                     break;
-                    
+
                     case "debug" :
-                        
-                     debug(user,msg);
-                     
-                     break;
+
+                    debug(user, msg);
+
+                    break;
 
                     default : return false;
 
@@ -99,19 +101,19 @@ public class NTTBot extends MainFragment {
         return true;
 
     }
-    
-    public void debug(UserData user,Msg msg) {
-        
+
+    public void debug(UserData user, Msg msg) {
+
         if (!user.isAdmin) return;
-        
+
         user.save();
-        
+
         msg.send(user.toStringPretty()).exec();
-        
+
     }
 
     @Override
-    public boolean processCallbackQuery(UserData user, Callback callback) {
+    public boolean processCallbackQuery(UserData user, Callback callback,boolean point) {
 
         if (!user.isAdmin && debug) {
 
