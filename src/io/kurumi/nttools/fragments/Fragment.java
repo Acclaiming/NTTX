@@ -51,7 +51,7 @@ public abstract class Fragment extends FragmentBase {
 
                     for (Update update : updates) {
 
-                        processUpdate(update);
+                        processUpdateAsync(update);
 
                     }
 
@@ -80,6 +80,20 @@ public abstract class Fragment extends FragmentBase {
     public void printUpdate(Update update) {
         
         StaticLog.debug(update.toString());
+        
+    }
+    
+    public void processUpdateAsync(final Update update) {
+        
+        main.threadPool.execute(new Runnable() {
+
+                @Override
+                public void run() {
+                    
+                    processUpdate(update);
+                    
+                }
+            });
         
     }
 

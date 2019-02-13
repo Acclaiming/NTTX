@@ -14,9 +14,18 @@ import java.util.LinkedList;
 import java.util.Map;
 import io.kurumi.nttools.spam.TwitterSpam;
 import cn.hutool.core.util.ArrayUtil;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public abstract class MainFragment extends Fragment {
 
+    public ExecutorService threadPool; {
+        
+        threadPool = Executors.newFixedThreadPool(9);
+        
+    }
+    
+    
     public int serverPort = -1;
     public String serverDomain;
     public File dataDir;
