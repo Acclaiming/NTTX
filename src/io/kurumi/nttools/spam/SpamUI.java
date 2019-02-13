@@ -19,6 +19,7 @@ import twitter4j.TwitterException;
 import cn.hutool.core.io.IORuntimeException;
 import twitter4j.ResponseList;
 import java.util.Iterator;
+import io.kurumi.nttools.twitter.TApi;
 
 public class SpamUI extends FragmentBase {
 
@@ -710,7 +711,7 @@ public class SpamUI extends FragmentBase {
 
             File csv = msg.file();
 
-            List<String> lines = FileUtil.readUtf8Lines(csv);
+            List<String> lines = new LinkedList<String>(FileUtil.readUtf8Lines(csv));
 
             LinkedList<UserSpam> all = new LinkedList<>();
 
@@ -718,21 +719,19 @@ public class SpamUI extends FragmentBase {
 
             String cause = user.point.getStr("cause");
 
-            for (int index = 0;index < lines.size();index = index + 100) {
-
-                int target = index + 100;
-
-                if (lines.size() < target) {
-
-                    target = lines.size() - 1;
-
+            while(!lines.isEmpty()) {
+                
+                int target = 99;
+                
+                if (lines.size() < 100) {
+                    
+                    target = lines.size() -1;
+                    
                 }
+                
+                ResponseList<User> users = api.lookupUsers(lines.subList(0, target).toArray(new String[target + 1]));
 
-                List<String> cache = lines.subList(index, target);
-
-                ResponseList<User> spams = api.lookupUsers(cache.toArray(new String[cache.size()]));
-
-                for (User u : spams) {
+                for (User u : users) {
                     
                     UserSpam spam = new UserSpam(list);
 
@@ -742,11 +741,15 @@ public class SpamUI extends FragmentBase {
 
                     all.add(spam);
                     
-                    System.out.println(u.getName());
+                    msg.send(TApi.formatUserNameMarkdown(u)).markdown().disableLinkPreview().exec();
 
                 }
-
+                
+                lines = lines.subList(target, lines.size() - 1);
+                
             }
+            
+            
             
             final String url = msg.fragment.main.spam.addSpam(user, list, cause, all);
             
