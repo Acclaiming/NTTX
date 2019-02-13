@@ -87,10 +87,10 @@ public class SpamUI extends FragmentBase {
             if (!msg.isCommand()) return false;
 
             switch (msg.commandName()) {
-                    
-                case "start" : parsePayload(user,msg);break;
+
+                    case "start" : parsePayload(user, msg);break;
                     case "spam" : sendMain(user, msg, false);break;
-                    
+
                     default : return false;
 
             }
@@ -763,12 +763,12 @@ public class SpamUI extends FragmentBase {
                     spam.twitterScreenName = u.getScreenName();
                     spam.origin = user.id;
                     spam.spamCause = cause;
-                    
-                    spam.put("list_id",list.id);
-                    
+
+                    spam.put("list_id", list.id);
+
                     all.add(spam);
 
-                    msg.send(TApi.formatUserNameMarkdown(u) + "  [导入](https://t.me/NTToolsBot?start=" +Base64.encode(spam.toString())).markdown().disableLinkPreview().exec();
+                    msg.send(TApi.formatUserNameMarkdown(u) + "  [导入](https://t.me/NTToolsBot?start=" + Base64.encode(spam.toString())).markdown().disableLinkPreview().exec();
 
                 }
 
@@ -788,32 +788,36 @@ public class SpamUI extends FragmentBase {
         }
 
     }
-    
-    public void parsePayload(UserData user,Msg msg) {
-        
+
+    public void parsePayload(UserData user, Msg msg) {
+
         if (user.isAdmin) {
-        
-        JSONObject spamObj = new JSONObject(Base64.decode(msg.text()));
-        
-        SpamList list = msg.fragment.main.getSpamList(spamObj.getStr("list_id"));
-        
-        spamObj.remove("list_id");
-        
-        UserSpam spam = new UserSpam(list,spamObj);
-        
-        final String url = msg.fragment.main.spam.newSpam(list, spam);
+            
+            try {
+            
+            JSONObject spamObj = new JSONObject(Base64.decode(msg.commandParms()[0]));
 
-        msg.send("添加成功 ~").buttons(new ButtonMarkup() {{
+            SpamList list = msg.fragment.main.getSpamList(spamObj.getStr("list_id"));
 
-                    newUrlButtonLine("公开地址", url);
+            spamObj.remove("list_id");
 
-                }}).exec();
-                
-         }
-        
-        
+            UserSpam spam = new UserSpam(list, spamObj);
+
+            final String url = msg.fragment.main.spam.newSpam(list, spam);
+
+            msg.send("添加成功 ~").buttons(new ButtonMarkup() {{
+
+                        newUrlButtonLine("公开地址", url);
+
+                    }}).exec();
+                    
+                    } catch(Exception exc) {}
+
+        }
+
+
     }
-    
+
 
     @Override
     public boolean processCallbackQuery(UserData user, Callback callback) {
