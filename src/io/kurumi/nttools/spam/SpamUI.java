@@ -768,7 +768,7 @@ public class SpamUI extends FragmentBase {
 
                     all.add(spam);
 
-                    msg.send(TApi.formatUserNameMarkdown(u) + "  [导入](https://t.me/NTToolsBot?start=" + Base64.encode(spam.toString())).markdown().disableLinkPreview().exec();
+                    msg.send(TApi.formatUserNameMarkdown(u) + "  [导入](https://t.me/NTToolsBot?start=" + Base64.encode(spam.save().toString())).markdown().disableLinkPreview().exec();
 
                 }
 
