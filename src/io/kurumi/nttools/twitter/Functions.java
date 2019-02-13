@@ -125,7 +125,7 @@ public class Functions extends FragmentBase {
 
                     Status s = api.showStatus(id);
 
-                    msg.send(printStatus(s));
+                    msg.send(printStatus(s)).exec();
 
                     return;
 

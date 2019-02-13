@@ -106,7 +106,7 @@ public class NTTBot extends MainFragment {
         
         user.save();
         
-        msg.send(user.toStringPretty());
+        msg.send(user.toStringPretty()).exec();
         
     }
 

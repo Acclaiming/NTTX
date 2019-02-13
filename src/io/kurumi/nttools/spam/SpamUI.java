@@ -323,7 +323,7 @@ public class SpamUI extends FragmentBase {
 
         user.save();
 
-        msg.send("修改成功 ~");
+        msg.send("修改成功 ~").exec();
 
         showList(user, msg, false, spam.id);
 
@@ -353,7 +353,7 @@ public class SpamUI extends FragmentBase {
 
         user.save();
 
-        msg.send("修改成功 ~");
+        msg.send("修改成功 ~").exec();
 
         showList(user, msg, false, spam.id);
 
