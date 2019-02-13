@@ -40,7 +40,7 @@ public class NTTBot extends MainFragment {
     public boolean processPrivateMessage(UserData user, Msg msg, boolean point) {
 
         if (point) return false;
-        
+
         if (!user.isAdmin && debug) {
 
             msg.send(debugMsg).exec();
@@ -79,12 +79,6 @@ public class NTTBot extends MainFragment {
 
                     break;
 
-                    case "fdx" :
-
-                    fdx(user, msg);
-
-                    break;
-
                     case "debug" :
 
                     debug(user, msg);
@@ -113,7 +107,7 @@ public class NTTBot extends MainFragment {
     }
 
     @Override
-    public boolean processCallbackQuery(UserData user, Callback callback,boolean point) {
+    public boolean processCallbackQuery(UserData user, Callback callback, boolean point) {
 
         if (!user.isAdmin && debug) {
 
@@ -129,30 +123,52 @@ public class NTTBot extends MainFragment {
 
         if (msg.message().replyToMessage() != null && user.isAdmin) {
 
-            for (UserData u : msg.fragment.main.getUsers()) {
+            if ("q".equals(msg.commandParms()[0])) {
 
-                msg.fragment.bot.execute(new ForwardMessage(u.id, msg.message().replyToMessage().chat().id(), msg.message().replyToMessage().messageId()));
+                for (UserData u : msg.fragment.main.getUsers()) {
 
-            }
-
-
-        }
-
-    }
-
-    public void fdx(UserData user, Msg msg) {
-
-        if (msg.message().replyToMessage() != null && user.isAdmin) {
-
-            for (UserData u : msg.fragment.main.getUsers()) {
-
-                if (!u.twitterAccounts.isEmpty()) {
-
-                    msg.fragment.bot.execute(new ForwardMessage(u.id, msg.message().replyToMessage().chat().id(), msg.message().replyToMessage().messageId()));
+                    msg.fragment.bot.execute(new ForwardMessage(u.id, msg.message().replyToMessage().chat().id(), msg.message().replyToMessage().messageId()).disableNotification(true));
 
                 }
 
+            } else if ("qx".equals(msg.commandParms()[0])) {
+
+                for (UserData u : msg.fragment.main.getUsers()) {
+
+                    if (!u.twitterAccounts.isEmpty()) {
+
+                        msg.fragment.bot.execute(new ForwardMessage(u.id, msg.message().replyToMessage().chat().id(), msg.message().replyToMessage().messageId()).disableNotification(true));
+
+                    }
+
+                }
+
+            } else if ("x".equals(msg.commandParms()[0])) {
+
+                for (UserData u : msg.fragment.main.getUsers()) {
+
+                    if (!u.twitterAccounts.isEmpty()) {
+
+                        msg.fragment.bot.execute(new ForwardMessage(u.id, msg.message().replyToMessage().chat().id(), msg.message().replyToMessage().messageId()));
+
+                    }
+
+                }
+
+            } else {
+
+
+                for (UserData u : msg.fragment.main.getUsers()) {
+                    
+                    msg.fragment.bot.execute(new ForwardMessage(u.id, msg.message().replyToMessage().chat().id(), msg.message().replyToMessage().messageId()));
+
+
+                }
+
+
+
             }
+
 
 
         }
