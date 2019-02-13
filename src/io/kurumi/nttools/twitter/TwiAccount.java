@@ -80,8 +80,6 @@ public class TwiAccount extends JSONObject {
 
     public boolean refresh() {
 
-        System.out.println("refresh");
-        
         try {
 
             Twitter api = createApi();
@@ -90,8 +88,6 @@ public class TwiAccount extends JSONObject {
             screenName = thisAcc.getScreenName();
             name = thisAcc.getName();
             email = thisAcc.getEmail();
-            
-            System.out.println(email);
             
             return true;
 
