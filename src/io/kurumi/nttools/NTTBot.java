@@ -16,7 +16,7 @@ import io.kurumi.nttools.timer.RefreshTwitterAccountTask;
 
 public class NTTBot extends MainFragment {
 
-    public boolean debug = true;
+    public boolean debug = false;
     public String debugMsg = "bot 正在紧急维护 （￣～￣）";
 
     public NTTBot(File dataDir) {
