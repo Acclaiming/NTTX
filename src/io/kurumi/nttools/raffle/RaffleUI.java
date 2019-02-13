@@ -71,7 +71,7 @@ public class RaffleUI extends FragmentBase implements TimerTask  {
                     newButtonLine("「 删除抽奖 」", POINT_DEL);
                     newButtonLine("「 立即开奖 」", POINT_OPEN);
 
-                }}).exec();
+                }}).sync();
 
         saveLastSent(user, msg, "raffle_ui", resp);
 

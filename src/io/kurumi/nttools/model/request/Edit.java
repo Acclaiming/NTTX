@@ -10,12 +10,13 @@ import com.pengrad.telegrambot.response.BaseResponse;
 import cn.hutool.log.StaticLog;
 
 public class Edit extends AbstractSend<Edit> {
-    
-    private Fragment fragment;
+  
     private EditMessageText request;
 
     public Edit(Fragment fragment, Object chatId,int messageId, String... msg) {
 
+        super(fragment);
+        
         request = new EditMessageText(chatId,messageId,ArrayUtil.join(msg, "\n"));
 
         this.fragment = fragment;
@@ -60,7 +61,7 @@ public class Edit extends AbstractSend<Edit> {
    }
 
     @Override
-    public BaseResponse exec() {
+    public BaseResponse sync() {
 
       //  System.out.println(request.toWebhookResponse());
         

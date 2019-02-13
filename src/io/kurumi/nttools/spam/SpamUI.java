@@ -135,7 +135,7 @@ public class SpamUI extends FragmentBase {
 
                     newUrlButtonLine("「 加入公式群 」", "https://t.me/joinchat/H5gBQ1N2Mx5gf3Jm1e6RgQ");
 
-                }}).exec();
+                }}).sync();
 
         saveLastSent(user, msg, "spam_ui", resp);
 
@@ -166,7 +166,7 @@ public class SpamUI extends FragmentBase {
 
                     newButtonLine("「 返回目录 」 ", POINT_BACK);
 
-                }}).exec();
+                }}).sync();
 
         saveLastSent(user, msg, "spam_ui", resp);
 
@@ -261,7 +261,7 @@ public class SpamUI extends FragmentBase {
 
                     newButtonLine("「 返回分类列表 」", POINT_PUBLIC_LISTS);
 
-                }}).exec();
+                }}).sync();
 
         saveLastSent(user, msg, "spam_ui", resp);
 

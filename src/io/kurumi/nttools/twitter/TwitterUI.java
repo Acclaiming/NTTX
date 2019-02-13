@@ -164,7 +164,7 @@ public class TwitterUI extends FragmentBase {
 
                     }
 
-                }}).exec();
+                }}).sync();
 
         saveLastSent(user, msg, "twitter_ui", resp);
 

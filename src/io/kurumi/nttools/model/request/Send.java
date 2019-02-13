@@ -11,11 +11,12 @@ import io.kurumi.nttools.model.Msg;
 
 public class Send extends AbstractSend<Send> {
 
-    private Fragment fragment;
     private SendMessage request;
 
     public Send(Fragment fragment, Object chatId, String... msg) {
 
+        super(fragment);
+        
         request = new SendMessage(chatId, ArrayUtil.join(msg, "\n"));
 
         this.fragment = fragment;
@@ -111,12 +112,12 @@ public class Send extends AbstractSend<Send> {
 
     public Msg send() {
 
-        return new Msg(fragment, exec().message());
+        return new Msg(fragment, sync().message());
 
     }
 
     @Override
-    public SendResponse exec() {
+    public SendResponse sync() {
         
    //     System.out.println(request.toWebhookResponse());
         
