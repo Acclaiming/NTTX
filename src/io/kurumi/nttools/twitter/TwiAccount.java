@@ -80,6 +80,8 @@ public class TwiAccount extends JSONObject {
 
     public boolean refresh() {
 
+        System.out.println("refresh");
+        
         try {
 
             Twitter api = createApi();
@@ -93,7 +95,11 @@ public class TwiAccount extends JSONObject {
             
             return true;
 
-        } catch (TwitterException e) {}
+        } catch (TwitterException e) {
+            
+            
+            
+        }
 
         return false;
 
