@@ -10,6 +10,7 @@ import io.kurumi.nttools.twitter.TwiAccount;
 import io.kurumi.nttools.utils.Markdown;
 import io.kurumi.nttools.utils.UserData;
 import java.util.LinkedList;
+import java.util.Iterator;
 
 public class TwitterSpam {
 
@@ -33,10 +34,24 @@ public class TwitterSpam {
 
             str.append("同意 : \n\n");
 
-            for (Long u : vote.agree) {
+            Iterator<Long> i = vote.agree.iterator();
 
-                str.append(fragment.main.getUserData(u).twitterAccounts.getFirst().getFormatedNameMarkdown());
+            while(i.hasNext()) {
+               
+                UserData user = fragment.main.getUserData(i.next());
+
+                if (!user.twitterAccounts.isEmpty()) {
+                
+                str.append(user.twitterAccounts.getFirst().getFormatedNameMarkdown());
                 str.append("\n");
+                
+                } else {
+                    
+                    i.remove();
+                    
+                    vote.save();
+                    
+                }
 
             }
 
@@ -46,14 +61,30 @@ public class TwitterSpam {
 
         if (!vote.disagree.isEmpty()) {
 
-            str.append("反对 : ");
+            str.append("反对 : \n\n");
 
-            for (Long u : vote.disagree) {
+            Iterator<Long> i = vote.disagree.iterator();
 
-                str.append(fragment.main.getUserData(u).twitterAccounts.getFirst().getFormatedNameMarkdown());
-                str.append("\n");
+            while(i.hasNext()) {
+
+                UserData user = fragment.main.getUserData(i.next());
+
+                if (!user.twitterAccounts.isEmpty()) {
+
+                    str.append(user.twitterAccounts.getFirst().getFormatedNameMarkdown());
+                    str.append("\n");
+
+                } else {
+
+                    i.remove();
+
+                    vote.save();
+
+                }
 
             }
+
+            str.append("\n");
 
         }
 
