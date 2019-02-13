@@ -28,7 +28,7 @@ public abstract class AbstractSend<T extends AbstractSend> {
                 @Override
                 public void run() {
                     
-                    exec();
+                    sync();
                     
                 }
                 
