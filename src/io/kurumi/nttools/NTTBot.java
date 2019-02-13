@@ -17,7 +17,7 @@ public class NTTBot extends MainFragment {
 
     public boolean debug = false;
     public String debugMsg = "bot 正在紧急维护 至最晚八点 （￣～￣）";
-    
+
     public NTTBot(File dataDir) {
 
         super(dataDir);
@@ -30,7 +30,7 @@ public class NTTBot extends MainFragment {
         timer.tasks.add(VoteUI.INSTANCE);
 
         fragments.add(Functions.INSTANCE);
-        
+
 
     }
 
@@ -38,10 +38,10 @@ public class NTTBot extends MainFragment {
     public boolean processPrivateMessage(UserData user, Msg msg) {
 
         if (!user.isAdmin && debug) {
-            
+
             msg.send(debugMsg).exec();
             return true;
-            
+
         }
 
 
@@ -61,27 +61,34 @@ public class NTTBot extends MainFragment {
 
                     help(user, msg);
 
-                    return true;
-
+                    break;
 
                     case "admin" :
 
                     admin(user, msg);
 
-                    return true;
-                    
+                    break;
+
                     case "fd" :
+
+                    fd(user, msg);
+
+                    break;
                     
-                   fd(user,msg);
-                   
-                   return true;
+                    case "fdx" :
+
+                    fdx(user, msg);
+                    
+                    break;
+
+                    default : return false;
 
 
             }
 
         }
 
-        return false;
+        return true;
 
     }
 
@@ -97,21 +104,41 @@ public class NTTBot extends MainFragment {
         } else return false;
 
     }
-    
-    public void fd(UserData user,Msg msg) {
-        
+
+    public void fd(UserData user, Msg msg) {
+
         if (msg.message().replyToMessage() != null && user.isAdmin) {
-            
+
             for (UserData u : msg.fragment.main.getUsers()) {
-                
-                msg.fragment.bot.execute(new ForwardMessage(u.id,msg.message().replyToMessage().chat().id(),msg.message().replyToMessage().messageId()));
-                
+
+                msg.fragment.bot.execute(new ForwardMessage(u.id, msg.message().replyToMessage().chat().id(), msg.message().replyToMessage().messageId()));
+
             }
-            
-            
+
+
         }
-        
+
     }
+
+    public void fdx(UserData user, Msg msg) {
+
+        if (msg.message().replyToMessage() != null && user.isAdmin) {
+
+            for (UserData u : msg.fragment.main.getUsers()) {
+
+                if (!u.twitterAccounts.isEmpty()) {
+
+                    msg.fragment.bot.execute(new ForwardMessage(u.id, msg.message().replyToMessage().chat().id(), msg.message().replyToMessage().messageId()));
+
+                }
+
+            }
+
+
+        }
+
+    }
+
 
     public void admin(UserData user, Msg msg) {
 
