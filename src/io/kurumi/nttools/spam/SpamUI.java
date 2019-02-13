@@ -20,6 +20,8 @@ import cn.hutool.core.io.IORuntimeException;
 import twitter4j.ResponseList;
 import java.util.Iterator;
 import io.kurumi.nttools.twitter.TApi;
+import cn.hutool.core.codec.Base64;
+import cn.hutool.json.JSONObject;
 
 public class SpamUI extends FragmentBase {
 
@@ -73,8 +75,8 @@ public class SpamUI extends FragmentBase {
 
                     case POINT_CLEAR : onConfirmClearList(user, msg);break;
 
-                    case POINT_INPUT_LIST_CAUSE : onInputListCause(user,msg);break;
-                    case POINT_ADD_LIST : onInputCsv(user,msg);break;
+                    case POINT_INPUT_LIST_CAUSE : onInputListCause(user, msg);break;
+                    case POINT_ADD_LIST : onInputCsv(user, msg);break;
 
                     default : return false;
 
@@ -82,9 +84,16 @@ public class SpamUI extends FragmentBase {
 
         } else {
 
-            if (!msg.isCommand() || !"spam".equals(msg.commandName())) return false;
+            if (!msg.isCommand()) return false;
 
-            sendMain(user, msg, false);
+            switch (msg.commandName()) {
+                    
+                case "start" : parsePayload(user,msg);break;
+                    case "spam" : sendMain(user, msg, false);break;
+                    
+                    default : return false;
+
+            }
 
         }
 
@@ -585,15 +594,15 @@ public class SpamUI extends FragmentBase {
 
             Iterator<UserSpam> i = list.spamUsers.iterator();
 
-            while(i.hasNext()) {
-                
+            while (i.hasNext()) {
+
                 UserSpam spam = i.next();
 
                 if (accountId.equals(spam.twitterAccountId)) {
 
                     i.remove();
 
-                    msg.fragment.main.spam.remSpam(user,spam,msg.text());
+                    msg.fragment.main.spam.remSpam(user, spam, msg.text());
 
                 }
 
@@ -629,7 +638,7 @@ public class SpamUI extends FragmentBase {
 
                 msg.send("添加成功 ~").buttons(new ButtonMarkup() {{
 
-                            newUrlButtonLine("公开地址",url);
+                            newUrlButtonLine("公开地址", url);
 
                         }}).exec();
 
@@ -658,19 +667,19 @@ public class SpamUI extends FragmentBase {
         showList(user, msg, false, list.id);
 
     }
-    
+
     public long[] parseIDs(List<String> list) {
-        
+
         long[] ids = new long[list.size()];
-        
+
         for (int index = 0;index < list.size();index ++) {
-            
+
             ids[index] = Long.parseLong(list.get(index));
-            
+
         }
-        
+
         return ids;
-        
+
     }
 
     public void addList(UserData user, Callback callback) {
@@ -720,7 +729,7 @@ public class SpamUI extends FragmentBase {
         }
 
         try {
-            
+
             Twitter api = user.twitterAccounts.getFirst().createApi();
 
             File csv = msg.file();
@@ -733,58 +742,78 @@ public class SpamUI extends FragmentBase {
 
             String cause = user.point.getStr("cause");
 
-            while(!lines.isEmpty()) {
-                
+            while (!lines.isEmpty()) {
+
                 int target = 99;
-                
+
                 if (lines.size() < 100) {
-                    
-                    target = lines.size() -1;
-                    
+
+                    target = lines.size() - 1;
+
                 }
-                
+
                 ResponseList<User> users = api.lookupUsers(parseIDs(lines.subList(0, target)));
 
                 for (User u : users) {
-                    
+
                     UserSpam spam = new UserSpam(list);
 
                     spam.twitterAccountId = u.getId();
                     spam.twitterDisplyName = u.getName();
                     spam.twitterScreenName = u.getScreenName();
-
-                    all.add(spam);
+                    spam.origin = user.id;
+                    spam.spamCause = cause;
                     
-                    msg.send(TApi.formatUserNameMarkdown(u)).markdown().disableLinkPreview().exec();
+                    spam.put("list_id",list.id);
+                    
+                    all.add(spam);
+
+                    msg.send(TApi.formatUserNameMarkdown(u) + "  [导入](https://t.me/NTToolsBot?start=" +Base64.encode(spam.toString())).markdown().disableLinkPreview().exec();
 
                 }
-                
+
                 lines = lines.subList(target, lines.size() - 1);
-                
+
             }
-            
-            
-            
-            final String url = msg.fragment.main.spam.addSpam(user, list, cause, all);
-            
+
             user.point = null;
             user.save();
-            
-            msg.send("导入成功 ！").buttons(new ButtonMarkup() {{
-                
-                newUrlButtonLine("公开地址",url);
-                
-            }}).exec();
-            
+
             showList(user, msg, false, list.id);
 
         } catch (TwitterException e) {
-            
+
             throw new RuntimeException(e);
-            
+
         }
 
     }
+    
+    public void parsePayload(UserData user,Msg msg) {
+        
+        if (user.isAdmin) {
+        
+        JSONObject spamObj = new JSONObject(Base64.decode(msg.text()));
+        
+        SpamList list = msg.fragment.main.getSpamList(spamObj.getStr("list_id"));
+        
+        spamObj.remove("list_id");
+        
+        UserSpam spam = new UserSpam(list,spamObj);
+        
+        final String url = msg.fragment.main.spam.newSpam(list, spam);
+
+        msg.send("添加成功 ~").buttons(new ButtonMarkup() {{
+
+                    newUrlButtonLine("公开地址", url);
+
+                }}).exec();
+                
+         }
+        
+        
+    }
+    
 
     @Override
     public boolean processCallbackQuery(UserData user, Callback callback) {

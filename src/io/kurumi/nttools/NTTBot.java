@@ -53,7 +53,7 @@ public class NTTBot extends MainFragment {
 
                     if (msg.commandParms().length != 0) {
 
-                        return SpamUI.INSTANCE.processPrivateMessage(user, msg);
+                        return false;
 
                     } else help(user, msg); break;
 

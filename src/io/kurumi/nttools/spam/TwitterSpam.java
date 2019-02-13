@@ -211,44 +211,6 @@ public class TwitterSpam {
 
     }
     
-    public String addSpam(UserData user,SpamList list,String cause, LinkedList<UserSpam> all) {
-
-        StringBuilder spamMsg = new StringBuilder();
-        
-        spamMsg.append("Twitter 用户 :\n");
-        
-        for (UserSpam spam : all) {
-            
-            spamMsg.append("\n").append("[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ")");
-            
-        }
-        
-        spamMsg.append("\n\n已被管理员导入到 公共分类 「 " + list.name + " 」");
-        
-        spamMsg.append("\n\n原因是 :").append(cause);
-        
-        spamMsg.append("\n\n操作人 :").append(user.twitterAccounts.getFirst().getFormatedNameMarkdown());
-        
-        Msg pubMsg = new Send(fragment, "@" + PUBLIC_CHANNEL, spamMsg.toString()).markdown().disableLinkPreview().send();
-        
-        for (UserSpam spam : all) {
-            
-            if (list.spamUsers.contains(spam)) continue;
-            
-            spam.origin = user.id;
-            spam.belongTo = list;
-            spam.public_message_id = pubMsg.messageId();
-            spam.spamCause = cause;
-            
-            list.spamUsers.add(spam);
-            
-        }
-        
-        list.save();
-        
-        return "https://t.me/" + PUBLIC_CHANNEL + "/" + pubMsg.messageId();
-
-    }
 
     public String newSpam(SpamList list, UserSpam spam) {
 
