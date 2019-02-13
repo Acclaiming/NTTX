@@ -742,6 +742,8 @@ public class SpamUI extends FragmentBase {
 
             String cause = user.point.getStr("cause");
 
+            LinkedList<String> cache = new LinkedList<>();
+
             while (!lines.isEmpty()) {
 
                 int target = 99;
@@ -768,11 +770,29 @@ public class SpamUI extends FragmentBase {
 
                     all.add(spam);
 
-                    msg.send(TApi.formatUserNameMarkdown(u) + "  [导入](https://t.me/NTToolsBot?start=" + Base64.encode(spam.save().toString())).markdown().disableLinkPreview().exec();
+                    if (cache.size() < 20) {
+
+                        cache.add(TApi.formatUserNameMarkdown(u) + "  [导入](https://t.me/NTToolsBot?start=" + Base64.encode(spam.save().toString()));
+
+                    } else {
+
+                        msg.send(cache.toArray(new String[cache.size()])).markdown().disableLinkPreview().exec();
+
+                        cache.clear();
+
+                    }
+
+
 
                 }
 
                 lines = lines.subList(target, lines.size() - 1);
+
+            }
+
+            if (cache.size() > 0) {
+
+                msg.send(cache.toArray(new String[cache.size()])).markdown().disableLinkPreview().exec();
 
             }
 
@@ -792,26 +812,26 @@ public class SpamUI extends FragmentBase {
     public void parsePayload(UserData user, Msg msg) {
 
         if (user.isAdmin) {
-            
+
             try {
-            
-            JSONObject spamObj = new JSONObject(Base64.decode(msg.commandParms()[0]));
 
-            SpamList list = msg.fragment.main.getSpamList(spamObj.getStr("list_id"));
+                JSONObject spamObj = new JSONObject(Base64.decode(msg.commandParms()[0]));
 
-            spamObj.remove("list_id");
+                SpamList list = msg.fragment.main.getSpamList(spamObj.getStr("list_id"));
 
-            UserSpam spam = new UserSpam(list, spamObj);
+                spamObj.remove("list_id");
 
-            final String url = msg.fragment.main.spam.newSpam(list, spam);
+                UserSpam spam = new UserSpam(list, spamObj);
 
-            msg.send("添加成功 ~").buttons(new ButtonMarkup() {{
+                final String url = msg.fragment.main.spam.newSpam(list, spam);
 
-                        newUrlButtonLine("公开地址", url);
+                msg.send("添加成功 ~").buttons(new ButtonMarkup() {{
 
-                    }}).exec();
-                    
-                    } catch(Exception exc) {}
+                            newUrlButtonLine("公开地址", url);
+
+                        }}).exec();
+
+            } catch (Exception exc) {}
 
         }
 
