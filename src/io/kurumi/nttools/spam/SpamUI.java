@@ -1,27 +1,27 @@
 package io.kurumi.nttools.spam;
 
+import cn.hutool.core.codec.Base64;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.json.JSONObject;
 import com.pengrad.telegrambot.response.BaseResponse;
 import io.kurumi.nttools.fragments.FragmentBase;
 import io.kurumi.nttools.model.Callback;
 import io.kurumi.nttools.model.Msg;
 import io.kurumi.nttools.model.request.ButtonLine;
 import io.kurumi.nttools.model.request.ButtonMarkup;
+import io.kurumi.nttools.twitter.TApi;
 import io.kurumi.nttools.twitter.TwiAccount;
 import io.kurumi.nttools.utils.Markdown;
 import io.kurumi.nttools.utils.UserData;
 import java.io.File;
-import twitter4j.User;
-import cn.hutool.core.io.FileUtil;
-import java.util.List;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import cn.hutool.core.io.IORuntimeException;
-import twitter4j.ResponseList;
-import java.util.Iterator;
-import io.kurumi.nttools.twitter.TApi;
-import cn.hutool.core.codec.Base64;
-import cn.hutool.json.JSONObject;
+import twitter4j.User;
 
 public class SpamUI extends FragmentBase {
 
@@ -792,10 +792,10 @@ public class SpamUI extends FragmentBase {
 
             if (cache.size() > 0) {
 
-                msg.send(cache.toArray(new String[cache.size()])).markdown().disableLinkPreview().exec();
+                msg.send(ArrayUtil.join(cache.toArray(new String[cache.size()]),"\n")).markdown().disableLinkPreview().exec();
 
             }
-
+            
             user.point = null;
             user.save();
 
