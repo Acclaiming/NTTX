@@ -82,6 +82,12 @@ public class NTTBot extends MainFragment {
                     fdx(user, msg);
                     
                     break;
+                    
+                    case "debug" :
+                        
+                     debug(user,msg);
+                     
+                     break;
 
                     default : return false;
 
@@ -92,6 +98,16 @@ public class NTTBot extends MainFragment {
 
         return true;
 
+    }
+    
+    public void debug(UserData user,Msg msg) {
+        
+        if (!user.isAdmin) return;
+        
+        user.save();
+        
+        msg.send(user.toStringPretty());
+        
     }
 
     @Override
