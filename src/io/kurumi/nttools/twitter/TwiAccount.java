@@ -88,6 +88,9 @@ public class TwiAccount extends JSONObject {
             screenName = thisAcc.getScreenName();
             name = thisAcc.getName();
             email = thisAcc.getEmail();
+            
+            System.out.println(email);
+            
             return true;
 
         } catch (TwitterException e) {}
