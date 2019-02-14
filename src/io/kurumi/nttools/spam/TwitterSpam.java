@@ -164,7 +164,7 @@ public class TwitterSpam {
             "",
             "(" + cause + ")",
             "",
-            "操作人 : " + user.twitterAccounts.getFirst().getFormatedNameMarkdown()
+            "操作人 : " + user.markdownName()
 
         };
 
@@ -198,7 +198,7 @@ public class TwitterSpam {
             "",
             "(" + cause + ")",
             "",
-            "操作人 : " + user.twitterAccounts.getFirst().getFormatedNameMarkdown()
+            "操作人 : " + user.markdownName()
 
         };
 

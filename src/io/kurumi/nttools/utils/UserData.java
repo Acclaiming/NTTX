@@ -30,6 +30,11 @@ public class UserData extends JSONObject {
         refresh();
 
     }
+
+    public String markdownName() {
+       
+        return "[" + name + "](https://t.me/" + userName + ")";
+    }
     
     public void update(User user) {
 
