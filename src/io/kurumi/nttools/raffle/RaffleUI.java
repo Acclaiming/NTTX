@@ -138,8 +138,8 @@ public class RaffleUI extends FragmentBase  {
 
     }
 
-    @Override
-    public void run(MainFragment fragment) {
-    }
+ //   @Override
+ //   public void run(MainFragment fragment) {
+   // }
 
 }

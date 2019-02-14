@@ -251,7 +251,7 @@ public class NTTBot extends MainFragment {
                 
                 msg.send("对方也是滥权管理员 请送 @HiedaNaKan 处理").exec();
                 
-                new Send(this,user.markdownName() + " 请求设置封禁 " + target.markdownName() + " "
+            //    new Send(this,user.markdownName() + " 请求设置封禁 " + target.markdownName() + " ")
                 
                 return;
                 
