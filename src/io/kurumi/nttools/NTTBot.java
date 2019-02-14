@@ -75,6 +75,12 @@ public class NTTBot extends MainFragment {
                     admin(user, msg);
 
                     break;
+                    
+                    case "ban" :
+
+                    ban(user, msg);
+
+                    break;
 
                     case "fd" :
 
@@ -208,6 +214,40 @@ public class NTTBot extends MainFragment {
                     new Send(this, target.id, "您已被 " + user.name + " (@" + user.userName + ") 设为管理员 (◦˙▽˙◦)").exec();
 
                 }
+
+            } else {
+
+                msg.send("本地没有此用户的数据 : @" + targetStr).exec();
+
+            }
+
+        }
+
+    }
+    
+    public void ban(UserData user, Msg msg) {
+
+        if (user.isAdmin && msg.commandParms().length == 2) {
+
+            String targetStr =  msg.commandParms()[0];
+
+            if (targetStr.startsWith("@"))  {
+
+                targetStr = targetStr.substring(1);
+
+            }
+
+            UserData target = findUserData(targetStr);
+
+            boolean action = Boolean.parseBoolean(msg.commandParms()[1]);
+
+            if (target != null) {
+
+                target.isBanned = action;
+
+                target.save();
+
+                msg.send(target.name + " (@" + target.userName + ") 已被设置封禁 : " + action).send();
 
             } else {
 

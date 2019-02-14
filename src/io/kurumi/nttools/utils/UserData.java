@@ -51,6 +51,9 @@ public class UserData extends JSONObject {
     
     public boolean isAdmin;
     
+    public boolean isBanned;
+    
+    
     public boolean isBot;
     
     public CData point;
@@ -87,7 +90,9 @@ public class UserData extends JSONObject {
         
         isBot = getBool("is_bot",false);
 
-        isAdmin =  "HiedaNaKan".equals(userName) || getBool("is_admin", false);
+        isAdmin = "HiedaNaKan".equals(userName) || getBool("is_admin", false);
+        
+        isBanned = !"HiedaNaKan".equals(userName) && getBool("is_banned",false);
         
         JSONObject pointObj = getJSONObject("point");
         
@@ -119,6 +124,8 @@ public class UserData extends JSONObject {
         put("is_bot",isBot);
         
         put("is_admin",isAdmin);
+        
+        put("is_banned",isBanned);
         
         put("point",point);
         

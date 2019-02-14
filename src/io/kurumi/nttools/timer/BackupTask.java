@@ -23,7 +23,6 @@ public class BackupTask implements TimerTask {
 
         if (System.currentTimeMillis() - lastTime > 1 * 60 * 60 * 1000) {
 
-
             FileUtil.del(new File(fragment.dataDir, "cache"));
 
             final File file = new File(fragment.dataDir.getParentFile(), "DATA " + new Date().toLocaleString() + ".zip");
