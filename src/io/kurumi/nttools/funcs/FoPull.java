@@ -61,7 +61,7 @@ public class FoPull extends FragmentBase {
                 
             }
             
-            File cache = new File(msg.fragment.main.dataDir,"cache/fopull/" + api.verifyCredentials().getScreenName() + ".txt");
+            File cache = new File(msg.fragment.main.dataDir,"cache/fopull/" + target + ".txt");
            
             FileUtil.writeUtf8String(resp.toString(),cache);
             
