@@ -15,6 +15,7 @@ import io.kurumi.nttools.utils.Markdown;
 import io.kurumi.nttools.utils.UserData;
 import java.util.Map;
 import java.util.LinkedList;
+import java.util.Date;
 
 public class VoteUI extends FragmentBase implements TimerTask {
 
@@ -256,7 +257,13 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
             long lastTime = list.getLong("last_spam_time", -1L);
 
-            if (System.currentTimeMillis() - lastTime > 30 * 60 * 1000) {
+            Date date = new Date();
+            
+            date.setHours(0);
+            date.setMinutes(0);
+            date.setSeconds(0);
+            
+            if (date.getTime() > lastTime) {
 
                 fragment.data.put("last_spam_time", System.currentTimeMillis());
 
