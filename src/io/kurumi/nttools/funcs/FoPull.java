@@ -36,10 +36,19 @@ public class FoPull extends FragmentBase {
         msg.send("正在处理 (｡>∀<｡)").exec();
         
         Twitter api = user.twitterAccounts.getFirst().createApi();
+       
         
         try {
             
-            LinkedList<User> fos = TApi.getAllFo(api, api.getId());
+            String target = api.verifyCredentials().getScreenName();
+            
+            if (msg.commandParms().length == 1) {
+                
+                target = msg.commandParms()[0];
+                
+            }
+            
+            LinkedList<User> fos = TApi.getAllFo(api, target);
             
             StringBuilder resp = new StringBuilder();
             
@@ -52,7 +61,7 @@ public class FoPull extends FragmentBase {
                 
             }
             
-            File cache = new File(msg.fragment.main.dataDir,URLUtil.encode( "cache/fopull/" + api.verifyCredentials().getName() + " - " + new Date().toLocaleString() + ".txt"));
+            File cache = new File(msg.fragment.main.dataDir,"cache/fopull/" + api.verifyCredentials().getScreenName() + ".txt");
            
             FileUtil.writeUtf8String(resp.toString(),cache);
             

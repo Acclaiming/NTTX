@@ -170,6 +170,27 @@ public class TApi {
 
     }
     
+    public static LinkedList<User> getAllFo(Twitter api,String target) throws TwitterException {
+
+        LinkedList<User> all = new LinkedList<>();
+
+        PagableResponseList<User> users = api.getFollowersList(target, -1);
+
+        all.addAll(users);
+
+        while (users.hasNext()) {
+
+            users = api.getFollowersList(target,users.getNextCursor());
+
+            all.addAll(users);
+
+        }
+
+        return all;
+
+    }
+    
+    
     public static LinkedList<User> getAllFo(Twitter api,Long target) throws TwitterException {
 
         LinkedList<User> all = new LinkedList<>();
