@@ -39,7 +39,7 @@ public abstract class Fragment extends FragmentBase {
         return this;
 
     }
-
+    
     public void startGetUpdates() {
 
        // deleteWebHook();
@@ -90,7 +90,11 @@ public abstract class Fragment extends FragmentBase {
                 @Override
                 public void run() {
                     
+                //    try {
+                    
                     processUpdate(update);
+                    
+             //       } catch(Exception ex) {}
                     
                 }
             });

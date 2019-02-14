@@ -16,4 +16,5 @@
 <classpathentry kind="lib" path="libs/java-telegram-bot-api-full-4.1.1.jar"/>
 <classpathentry kind="lib" path="libs/taip-4.3.2.jar"/>
 <classpathentry kind="lib" path="android-libs/nio-classpath.jar"/>
+<classpathentry kind="lib" path="libs/zip4j_1.3.2.jar"/>
 </classpath>
