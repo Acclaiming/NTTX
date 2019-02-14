@@ -112,7 +112,9 @@ public abstract class Fragment extends FragmentBase {
             if (update.message() != null) {
 
                 user = main.getUserData(update.message().from());
-
+                
+                if (user.isBanned) return;
+                
                 if ("/cancel".equals(update.message().text())) {
 
                     if (user.point != null) {
@@ -177,6 +179,8 @@ public abstract class Fragment extends FragmentBase {
 
                 user = main.getUserData(update.channelPost().from());
 
+                if (user.isBanned) return;
+                
                 if ("/cancel".equals(update.message().text())) {
 
                     if (user.point != null) {
@@ -207,6 +211,8 @@ public abstract class Fragment extends FragmentBase {
 
                 user = main.getUserData(update.callbackQuery().from());
 
+                if (user.isBanned) return;
+                
                 if (user.point != null) {
                     
                     new AnswerCallback(this,update.callbackQuery().id()).alert("乃好像需要输入什么东西 (ﾟ⊿ﾟ)ﾂ \n\n取消输入使用 /cancel 哦！").exec();
@@ -224,6 +230,8 @@ public abstract class Fragment extends FragmentBase {
             } else if (update.inlineQuery() != null) {
 
                 user = main.getUserData(update.inlineQuery().from());
+                
+                if (user.isBanned) return;
 
                 for (FragmentBase fragment : fragments) {
 
@@ -235,6 +243,8 @@ public abstract class Fragment extends FragmentBase {
 
                 user = main.getUserData(update.chosenInlineResult().from());
 
+                if (user.isBanned) return;
+                
                 for (FragmentBase fragment : fragments) {
 
                     if (fragment.processChosenInlineQueryResult(user, update.inlineQuery(),user.point != null)) return;
