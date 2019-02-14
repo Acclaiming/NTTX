@@ -15,53 +15,64 @@ import com.pengrad.telegrambot.request.SendDocument;
 public class BackupTask implements TimerTask {
 
     public static final BackupTask INSTANCE = new BackupTask();
-    
+
     @Override
     public void run(final MainFragment fragment) {
 
-        FileUtil.del(new File(fragment.dataDir, "cache"));
+        long lastTime = fragment.data.getLong("last_backup_time", -1L);
 
-        final File file = new File(fragment.dataDir.getParentFile(), "DATA " + new Date().toLocaleString() + ".zip");
+        if (System.currentTimeMillis() - lastTime > 1 * 60 * 60 * 1000) {
 
-        try {
 
-            ZipFile zip = new ZipFile(file);
+            FileUtil.del(new File(fragment.dataDir, "cache"));
 
-            ZipParameters params = new ZipParameters();
+            final File file = new File(fragment.dataDir.getParentFile(), "DATA " + new Date().toLocaleString() + ".zip");
 
-            params.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_ULTRA);
+            try {
 
-            /*
+                ZipFile zip = new ZipFile(file);
 
-             params.setEncryptFiles(true);
+                ZipParameters params = new ZipParameters();
 
-             params.setEncryptionMethod(Zip4jConstants.ENC_METHOD_AES);
+                params.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_ULTRA);
 
-             params.setAesKeyStrength(Zip4jConstants.AES_STRENGTH_256);
+                /*
 
-             params.setPassword("");
+                 params.setEncryptFiles(true);
 
-             */
+                 params.setEncryptionMethod(Zip4jConstants.ENC_METHOD_AES);
 
-            zip.addFolder(fragment.dataDir,params);
-            
-            final Long id = fragment.findUserData("HiedaNaKan").id;
+                 params.setAesKeyStrength(Zip4jConstants.AES_STRENGTH_256);
 
-            fragment.main.threadPool.execute(new Runnable() {
-                
-                    @Override
-                    public void run() {
-                        
-                        fragment.main.bot.execute(new SendDocument(id,file));
-                        
-                        FileUtil.del(file);
-                        
-                    }
-                    
-                });
-            
-        } catch (ZipException e) {}
-        
+                 params.setPassword("");
+
+                 */
+
+                zip.addFolder(fragment.dataDir, params);
+
+                final Long id = fragment.findUserData("HiedaNaKan").id;
+
+                fragment.main.threadPool.execute(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            fragment.main.bot.execute(new SendDocument(id, file));
+
+                            FileUtil.del(file);
+
+                        }
+
+                    });
+
+            } catch (ZipException e) {}
+
+            fragment.data.put("last_backup_time", System.currentTimeMillis());
+
+            fragment.save();
+
+        }
+
     }
 
 }

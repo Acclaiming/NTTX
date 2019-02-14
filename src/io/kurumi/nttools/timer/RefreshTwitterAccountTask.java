@@ -43,6 +43,8 @@ public class RefreshTwitterAccountTask implements TimerTask {
 
             fragment.data.put("last_twitter_accounts_refresh_time", System.currentTimeMillis());
 
+            fragment.save();
+            
         }
 
     }
