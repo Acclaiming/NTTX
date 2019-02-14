@@ -49,6 +49,8 @@ public class SpamVote extends JSONObject {
             putAll(spam);
 
         } catch (Exception e) {}
+        
+        origin = getLong("origin");
 
         listId = getStr("list_id");
         
