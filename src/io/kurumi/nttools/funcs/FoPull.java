@@ -1,17 +1,18 @@
 package io.kurumi.nttools.funcs;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.URLUtil;
+import com.pengrad.telegrambot.request.SendDocument;
 import io.kurumi.nttools.fragments.FragmentBase;
 import io.kurumi.nttools.model.Msg;
-import io.kurumi.nttools.utils.UserData;
-import twitter4j.Twitter;
 import io.kurumi.nttools.twitter.TApi;
-import twitter4j.TwitterException;
-import java.util.LinkedList;
-import twitter4j.User;
-import com.pengrad.telegrambot.request.SendDocument;
-import cn.hutool.core.io.FileUtil;
+import io.kurumi.nttools.utils.UserData;
 import java.io.File;
 import java.util.Date;
+import java.util.LinkedList;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.User;
 
 public class FoPull extends FragmentBase {
 
@@ -32,6 +33,8 @@ public class FoPull extends FragmentBase {
             
         }
         
+        msg.send("正在处理 (｡>∀<｡)").exec();
+        
         Twitter api = user.twitterAccounts.getFirst().createApi();
         
         try {
@@ -49,7 +52,7 @@ public class FoPull extends FragmentBase {
                 
             }
             
-            File cache = new File(msg.fragment.main.dataDir,"cache/fopull/" + api.verifyCredentials().getName() + " - " + new Date().toLocaleString() + ".txt");
+            File cache = new File(msg.fragment.main.dataDir,URLUtil.encode( "cache/fopull/" + api.verifyCredentials().getName() + " - " + new Date().toLocaleString() + ".txt"));
            
             FileUtil.writeUtf8String(resp.toString(),cache);
             
