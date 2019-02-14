@@ -14,6 +14,8 @@ import io.kurumi.nttools.twitter.Functions;
 import com.pengrad.telegrambot.request.ForwardMessage;
 import io.kurumi.nttools.timer.RefreshTwitterAccountTask;
 import io.kurumi.nttools.timer.BackupTask;
+import io.kurumi.nttools.fragments.Fragment;
+import io.kurumi.nttools.fragments.FragmentBase;
 
 public class NTTBot extends MainFragment {
 
@@ -36,7 +38,7 @@ public class NTTBot extends MainFragment {
 
         fragments.add(Functions.INSTANCE);
 
-
+        
     }
 
     @Override
@@ -71,7 +73,7 @@ public class NTTBot extends MainFragment {
                     break;
 
                     case "admin" :
-
+                        
                     admin(user, msg);
 
                     break;

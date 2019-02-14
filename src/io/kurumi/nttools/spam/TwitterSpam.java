@@ -11,6 +11,7 @@ import io.kurumi.nttools.utils.Markdown;
 import io.kurumi.nttools.utils.UserData;
 import java.util.LinkedList;
 import java.util.Iterator;
+import com.pengrad.telegrambot.response.BaseResponse;
 
 public class TwitterSpam {
 
@@ -178,7 +179,7 @@ public class TwitterSpam {
         spam.public_message_id = pubMsg.messageId();
 
         fragment.bot.execute(new EditMessageReplyMarkup("@" + VOTE_CHANNEL, vote.vote_message_id)
-                             .replyMarkup(new ButtonMarkup() {{
+                                                 .replyMarkup(new ButtonMarkup() {{
 
                                                   newUrlButtonLine("结果 : 管理员通过", "https://t.me/" + PUBLIC_CHANNEL + "/" + pubMsg.messageId());
 

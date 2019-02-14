@@ -30,7 +30,7 @@ public abstract class MainFragment extends Fragment {
     public String serverDomain;
     public File dataDir;
     
-    public TimerThread timer = new TimerThread(this,1 * 60 * 1000) {{ start(); }};
+    public TimerThread timer = new TimerThread(this,5 * 60 * 1000) {{ start(); }};
     
     public TwitterSpam spam = new TwitterSpam(this);
     

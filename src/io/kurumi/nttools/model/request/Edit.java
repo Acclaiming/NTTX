@@ -67,6 +67,8 @@ public class Edit extends AbstractSend<Edit> {
         
         BaseResponse resp = fragment.bot.execute(request);
         
+    //    if (resp.errorCode() == 
+        
         if (!resp.isOk()) {
             
             StaticLog.error(new RuntimeException(),"request : " + request.toWebhookResponse() + "\n\nEditMseeage Error " + resp.errorCode() + " : " + resp.description());
