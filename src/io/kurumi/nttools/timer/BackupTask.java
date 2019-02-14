@@ -21,7 +21,7 @@ public class BackupTask implements TimerTask {
 
         FileUtil.del(new File(fragment.dataDir, "cache"));
 
-        final File file = new File(fragment.dataDir.getParentFile(), "数据备份 " + new Date().toLocaleString() + ".zip");
+        final File file = new File(fragment.dataDir.getParentFile(), "DATA " + new Date().toLocaleString() + ".zip");
 
         try {
 
