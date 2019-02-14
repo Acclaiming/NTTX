@@ -155,7 +155,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         } else {
 
-            msg.append("匿名用户");
+            msg.append("有人");
 
         }
         
