@@ -27,6 +27,8 @@ public class UserSpam extends JSONObject {
         this(list);
 
         putAll(data);
+        
+        origin = getLong("origin");
 
         twitterAccountId = getLong("twitter_account_id");
 
