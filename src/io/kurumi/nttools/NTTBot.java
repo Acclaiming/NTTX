@@ -17,6 +17,7 @@ import io.kurumi.nttools.timer.BackupTask;
 import io.kurumi.nttools.fragments.Fragment;
 import io.kurumi.nttools.fragments.FragmentBase;
 import io.kurumi.nttools.raffle.SimpleRaffle;
+import io.kurumi.nttools.funcs.FoPull;
 
 public class NTTBot extends MainFragment {
 
@@ -40,6 +41,8 @@ public class NTTBot extends MainFragment {
         fragments.add(Functions.INSTANCE);
         
         fragments.add(SimpleRaffle.INSTANCE);
+        
+        fragments.add(FoPull.INSTANCE);
 
         
     }
