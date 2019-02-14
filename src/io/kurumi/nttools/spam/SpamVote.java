@@ -141,28 +141,15 @@ public class SpamVote extends JSONObject {
 
     public static final String nextId(Fragment fragment) {
 
-        File countFile = new File(fragment.main.dataDir, "twitter_spam_vote.count");
+        Long id = fragment.main.data.getByPath("count.twitter_spam_list",Long.class);
 
-        try {
+        if (id == null) id = 50L;
 
-            Long count = Long.parseLong(FileUtil.readUtf8String(countFile));
+        id ++;
 
-            count ++;
+        fragment.main.data.putByPath("count.twitter_spam_list",id);
 
-            FileUtil.writeUtf8String(count.toString(), countFile);
-
-            return count.toString();
-
-        } catch (Exception e) {
-
-            FileUtil.writeUtf8String("0", countFile);
-
-            return "0";
-
-        }
-
-
-
+        return id.toString();
     }
 
 

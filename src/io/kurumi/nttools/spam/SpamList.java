@@ -121,28 +121,14 @@ public class SpamList extends JSONObject {
     public static final String nextId(Fragment fragment) {
 
         Long id = fragment.main.data.getByPath("count.twitter_spam_list",Long.class);
+       
+        if (id == null) id = 9L;
         
-        File countFile = new File(fragment.main.dataDir, ".count");
-
-        try {
-
-            Long count = Long.parseLong(FileUtil.readUtf8String(countFile));
-
-            count ++;
-
-            FileUtil.writeUtf8String(count.toString(), countFile);
-
-            return count.toString();
-
-        } catch (Exception e) {
-
-            FileUtil.writeUtf8String("0", countFile);
-
-            return "0";
-
-        }
-
-
+        id ++;
+        
+        fragment.main.data.putByPath("count.twitter_spam_list",id);
+        
+        return id.toString();
 
     }
 

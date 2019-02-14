@@ -76,7 +76,7 @@ public class Msg extends Context {
         
         if (doc == null) return null;
 
-        File local = new File(fragment.main.dataDir,"/files/" + doc.fileId());
+        File local = new File(fragment.main.dataDir,"cache/files/" + doc.fileId());
 
         if (local.isFile()) return local;
 
