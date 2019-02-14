@@ -22,7 +22,9 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
     private static final String POINT_VOTE_AGREE = "p|a";
     private static final String POINT_VOTE_DISAGREE = "p|d";
-
+    private static final String POINT_VOTE_PASS = "p|p";
+    private static final String POINT_VOTE_REJ = "p|r";
+    
     public void startVote(Fragment fragment, final SpamVote spam) {
 
         StringBuilder msg = new StringBuilder();
@@ -135,7 +137,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
         
         vote.save();
 
-        updateVote(callback.fragment, vote);
+        updateVote(callback.fragment, vote,user.isAdmin);
         
         callback.text(msg);
 
@@ -143,7 +145,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
     }
 
-    public void updateVote(Fragment fragment, final SpamVote vote) {
+    public void updateVote(Fragment fragment, final SpamVote vote,final boolean admin) {
 
         StringBuilder msg = new StringBuilder();
 
@@ -175,7 +177,44 @@ public class VoteUI extends FragmentBase implements TimerTask {
                     newButtonLine("同意 : " + vote.agree.size(), POINT_VOTE_AGREE, vote.id);
                     newButtonLine("反对 : " + vote.disagree.size(), POINT_VOTE_DISAGREE, vote.id);
 
+                    if (admin) {
+                    
+                    newButtonLine()
+                    .newButton("通过",POINT_VOTE_PASS)
+                    .newButton("否决",POINT_VOTE_REJ);
+                    
+                    }
+                    
                 }}).markdown().disableLinkPreview().exec();
+    }
+    
+    public void adminManage(UserData user,Callback callback,boolean target) {
+        
+        if (!user.isAdmin) {
+            
+            callback.alert("您 「不能」 滥权！");
+            
+            return;
+            
+        } 
+        
+        SpamVote vote = callback.fragment.main.getSpamVote(callback.data.getIndex());
+            
+        if (target) {
+            
+            callback.text("已通过");
+            
+            callback.fragment.main.spam.adminPassed(user,vote,"通过");
+            
+        } else {
+            
+            callback.text("已否决");
+            
+            callback.fragment.main.spam.adminRejected(user,vote,"否决");
+            
+            
+        }
+        
     }
 
     @Override
@@ -183,7 +222,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         for (SpamVote vote : fragment.getSpamVotes()) {
 
-            updateVote(fragment, vote);
+            updateVote(fragment, vote,false);
 
             if (System.currentTimeMillis() - vote.startTime >  4 * 60 * 60 * 1000) {
 

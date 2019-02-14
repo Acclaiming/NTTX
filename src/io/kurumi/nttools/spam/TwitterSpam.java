@@ -112,7 +112,9 @@ public class TwitterSpam {
 
         String[] passMsg = new String[] {
 
-            "投票通过了将 [「" + Markdown.encode(spam.twitterDisplyName) + "」](https://twitter.com/" + spam.twitterScreenName + ")","","添加到公共列表 「 " + spam.belongTo.name + " 」 的决定"
+            "投票通过了将 [「" + Markdown.encode(spam.twitterDisplyName) + "」](https://twitter.com/" + spam.twitterScreenName + ")",
+            "",
+            "添加到公共列表 「 " + spam.belongTo.name + " 」 的决定"
 
         };
 
@@ -156,9 +158,11 @@ public class TwitterSpam {
 
         String[] passMsg = new String[] {
 
-            "管理员通过了将 [「" + Markdown.encode(spam.twitterDisplyName) + "」](https://twitter.com/" + spam.twitterScreenName + ")","","添加到公共列表 「 " + spam.belongTo.name + " 」 的决定",
+            "管理员通过了将 [「" + Markdown.encode(spam.twitterDisplyName) + "」](https://twitter.com/" + spam.twitterScreenName + ")",
             "",
-            "原因是 : " + cause,
+            "添加到公共列表 「 " + spam.belongTo.name + " 」 的决定",
+            "",
+            "(" + cause + ")",
             "",
             "操作人 : " + user.twitterAccounts.getFirst().getFormatedNameMarkdown()
 
@@ -192,7 +196,7 @@ public class TwitterSpam {
 
             "管理员否决了将 [「" + Markdown.encode(vote.twitterDisplyName) + "」](https://twitter.com/" + vote.twitterScreenName + ")","","添加到公共列表 「 " + fragment.main.getSpamList(vote.listId).name + " 」 的决定",
             "",
-            "原因 : " + cause,
+            "(" + cause + ")",
             "",
             "操作人 : " + user.twitterAccounts.getFirst().getFormatedNameMarkdown()
 
