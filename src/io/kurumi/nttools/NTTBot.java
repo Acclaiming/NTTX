@@ -13,6 +13,7 @@ import io.kurumi.nttools.spam.VoteUI;
 import io.kurumi.nttools.twitter.Functions;
 import com.pengrad.telegrambot.request.ForwardMessage;
 import io.kurumi.nttools.timer.RefreshTwitterAccountTask;
+import io.kurumi.nttools.timer.BackupTask;
 
 public class NTTBot extends MainFragment {
 
@@ -28,6 +29,8 @@ public class NTTBot extends MainFragment {
         fragments.add(VoteUI.INSTANCE);
         fragments.add(TwitterDataParser.INSTANCE);
 
+        timer.tasks.add(BackupTask.INSTANCE);
+        
         timer.tasks.add(VoteUI.INSTANCE);
         timer.tasks.add(RefreshTwitterAccountTask.INSTANCE);
 

@@ -14,6 +14,8 @@ import com.pengrad.telegrambot.request.SendDocument;
 
 public class BackupTask implements TimerTask {
 
+    public static final BackupTask INSTANCE = new BackupTask();
+    
     @Override
     public void run(final MainFragment fragment) {
 
