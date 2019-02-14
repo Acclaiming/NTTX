@@ -24,7 +24,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
     private static final String POINT_VOTE_DISAGREE = "p|d";
     private static final String POINT_VOTE_PASS = "p|p";
     private static final String POINT_VOTE_REJ = "p|r";
-    
+
     public void startVote(Fragment fragment, final SpamVote spam) {
 
         StringBuilder msg = new StringBuilder();
@@ -64,14 +64,26 @@ public class VoteUI extends FragmentBase implements TimerTask {
     }
 
     @Override
-    public boolean processCallbackQuery(UserData user, Callback callback,boolean point) {
+    public boolean processCallbackQuery(UserData user, Callback callback, boolean point) {
 
         if (point) return false;
-        
+
         switch (callback.data.getPoint()) {
 
                 case POINT_VOTE_AGREE: break;
                 case POINT_VOTE_DISAGREE :break;
+                case POINT_VOTE_PASS:
+
+                adminManage(user, callback, true);
+
+                return true;
+
+                case POINT_VOTE_REJ:
+
+                adminManage(user, callback, false);
+
+                return true;
+
                 default : return false;
 
         }
@@ -92,7 +104,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
         SpamVote vote = callback.fragment.main.getSpamVote(id);
 
         String msg;
-        
+
         if (target) {
 
             if (vote.agree.contains(user.id))  {
@@ -134,18 +146,18 @@ public class VoteUI extends FragmentBase implements TimerTask {
             }
 
         }
-        
+
         vote.save();
 
-        updateVote(callback.fragment, vote,user.isAdmin);
-        
+        updateVote(callback.fragment, vote, user.isAdmin);
+
         callback.text(msg);
 
         return true;
 
     }
 
-    public void updateVote(Fragment fragment, final SpamVote vote,final boolean admin) {
+    public void updateVote(Fragment fragment, final SpamVote vote, final boolean admin) {
 
         StringBuilder msg = new StringBuilder();
 
@@ -160,7 +172,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
             msg.append("有人");
 
         }
-        
+
         msg.append("\n\n提议将 #账号").append(vote.twitterAccountId);
 
         msg.append("\n\n[").append(Markdown.encode(vote.twitterDisplyName)).append("](https://twitter.com/").append(vote.twitterScreenName).append(") ");
@@ -178,43 +190,43 @@ public class VoteUI extends FragmentBase implements TimerTask {
                     newButtonLine("反对 : " + vote.disagree.size(), POINT_VOTE_DISAGREE, vote.id);
 
                     if (admin) {
-                    
-                    newButtonLine()
-                    .newButton("通过",POINT_VOTE_PASS)
-                    .newButton("否决",POINT_VOTE_REJ);
-                    
+
+                        newButtonLine()
+                            .newButton("通过", POINT_VOTE_PASS, vote.id)
+                            .newButton("否决", POINT_VOTE_REJ, vote.id);
+
                     }
-                    
+
                 }}).markdown().disableLinkPreview().exec();
     }
-    
-    public void adminManage(UserData user,Callback callback,boolean target) {
-        
+
+    public void adminManage(UserData user, Callback callback, boolean target) {
+
         if (!user.isAdmin) {
-            
+
             callback.alert("您 「不能」 滥权！");
-            
+
             return;
-            
+
         } 
-        
+
         SpamVote vote = callback.fragment.main.getSpamVote(callback.data.getIndex());
-            
+
         if (target) {
-            
+
             callback.text("已通过");
-            
-            callback.fragment.main.spam.adminPassed(user,vote,"通过");
-            
+
+            callback.fragment.main.spam.adminPassed(user, vote, "通过");
+
         } else {
-            
+
             callback.text("已否决");
-            
-            callback.fragment.main.spam.adminRejected(user,vote,"否决");
-            
-            
+
+            callback.fragment.main.spam.adminRejected(user, vote, "否决");
+
+
         }
-        
+
     }
 
     @Override
@@ -222,7 +234,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
         for (SpamVote vote : fragment.getSpamVotes()) {
 
-            updateVote(fragment, vote,false);
+            updateVote(fragment, vote, false);
 
             if (System.currentTimeMillis() - vote.startTime >  4 * 60 * 60 * 1000) {
 
@@ -239,7 +251,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
             }
 
         }
-        
+
         for (SpamList list : fragment.getSpamLists()) {
 
             long lastTime = list.getLong("last_spam_time", -1L);
@@ -247,49 +259,49 @@ public class VoteUI extends FragmentBase implements TimerTask {
             if (System.currentTimeMillis() - lastTime > 30 * 60 * 1000) {
 
                 fragment.data.put("last_spam_time", System.currentTimeMillis());
-                
-                 for (UserData user : fragment.getUsers()) {
-                    
+
+                for (UserData user : fragment.getUsers()) {
+
                     for (TwiAccount account : user.twitterAccounts) {
-                        
+
                         if (!list.disables.containsKey(account)) {
-                            
-                             new SpamTask(list, account).start();
-                             
-                            
+
+                            new SpamTask(list, account).start();
+
+
                         }
-                        
+
                     }
-                    
+
                 }
-                
+
                 for (Map.Entry<Long,Long> sub : list.disables.entrySet()) {
 
                     UserData user = fragment.getUserData(sub.getValue());
 
                     if (user == null) {
-                        
+
                         list.disables.remove(sub.getKey());
                         list.save();
                         continue;
-                        
-                    }
-                    
-                    TwiAccount account = user.findUser(sub.getKey());
-                    
-                    if (account == null) {
-                        
-                        list.disables.remove(sub.getKey());
-                        list.save();
-                        continue;
-                        
+
                     }
 
-                    
+                    TwiAccount account = user.findUser(sub.getKey());
+
+                    if (account == null) {
+
+                        list.disables.remove(sub.getKey());
+                        list.save();
+                        continue;
+
+                    }
+
+
                 }
 
 
-                
+
             }
 
 
