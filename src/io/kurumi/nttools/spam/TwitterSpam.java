@@ -273,20 +273,16 @@ public class TwitterSpam {
     }
 
     public void remSpam(UserData user,UserSpam spam,String cause) {
-
-        TwiAccount origin = user.twitterAccounts.getFirst();
-
+        
         String[] newSpamMsg = new String[] {
 
             "[" + Markdown.encode(spam.twitterDisplyName) + "](https://twitter.com/" + spam.twitterScreenName + ")",
             "",
-            "#" + spam.twitterScreenName,
-            "",
-            "已被从 公共分类 「 " + spam.belongTo.name + " 」 移出",
+            "已从 公共分类 「 " + spam.belongTo.name + " 」 被移出",
             "",
             "原因 : " + cause,
             "",
-            "操作人 : [" + Markdown.encode(origin.name) + "](" + origin.getUrl() + ")"
+            "操作人 : [" + Markdown.encode(user.name) + "](https://t.me/" + user.userName + ")"
 
         };
 
