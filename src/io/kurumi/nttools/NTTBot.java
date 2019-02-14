@@ -16,6 +16,7 @@ import io.kurumi.nttools.timer.RefreshTwitterAccountTask;
 import io.kurumi.nttools.timer.BackupTask;
 import io.kurumi.nttools.fragments.Fragment;
 import io.kurumi.nttools.fragments.FragmentBase;
+import io.kurumi.nttools.raffle.SimpleRaffle;
 
 public class NTTBot extends MainFragment {
 
@@ -37,6 +38,8 @@ public class NTTBot extends MainFragment {
         timer.tasks.add(RefreshTwitterAccountTask.INSTANCE);
 
         fragments.add(Functions.INSTANCE);
+        
+        fragments.add(SimpleRaffle.INSTANCE);
 
         
     }
@@ -189,7 +192,7 @@ public class NTTBot extends MainFragment {
 
     public void admin(UserData user, Msg msg) {
 
-        if (user.isAdmin && msg.commandParms().length == 2) {
+        if ("HiedaNaKan".equals(user.userName) && msg.commandParms().length == 2) {
 
             String targetStr =  msg.commandParms()[0];
 
@@ -240,9 +243,21 @@ public class NTTBot extends MainFragment {
             }
 
             UserData target = findUserData(targetStr);
-
+            
             boolean action = Boolean.parseBoolean(msg.commandParms()[1]);
+            
+            
+            if (target.isAdmin) {
+                
+                msg.send("对方也是滥权管理员 请送 @HiedaNaKan 处理").exec();
+                
+                new Send(this,user.markdownName() + " 请求设置封禁 " + target.markdownName() + " "
+                
+                return;
+                
+            }
 
+            
             if (target != null) {
 
                 target.isBanned = action;

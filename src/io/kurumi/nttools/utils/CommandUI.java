@@ -7,8 +7,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import io.kurumi.nttools.fragments.FragmentBase;
 
-public abstract class CommandUI {
+public abstract class CommandUI extends FragmentBase {
 
     protected abstract  String cmdLineSyntax();
 

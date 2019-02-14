@@ -11,7 +11,7 @@ import io.kurumi.nttools.model.Callback;
 import cn.hutool.core.util.ArrayUtil;
 import io.kurumi.nttools.twitter.TwitterUI;
 
-public class RaffleUI extends FragmentBase implements TimerTask  {
+public class RaffleUI extends FragmentBase  {
 
     public static final RaffleUI INSTANCE = new RaffleUI();
 
@@ -46,6 +46,12 @@ public class RaffleUI extends FragmentBase implements TimerTask  {
 
         return true;
 
+    }
+    
+    public void simple(UserData user,Msg msg) {
+        
+        
+        
     }
 
     private void sendMain(UserData user, Msg msg, boolean edit) {
