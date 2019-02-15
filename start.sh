@@ -16,4 +16,4 @@ for jar in ./libs/jedis/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
 done
 
-java -classpath $CLASSPATH io.kurumi.nttools.Launcher
+java -classpath $CLASSPATH io.kurumi.ntt.BotMain
