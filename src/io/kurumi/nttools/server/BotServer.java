@@ -26,20 +26,6 @@ public class BotServer extends NanoHTTPD {
     
     public static HashMap<String,Fragment> bots = new HashMap<>();
     
-    public String readBodyString(IHTTPSession session) {
-
-        int contentLength = Integer.parseInt(session.getHeaders().get("content-length"));
-        byte[] buf = new byte[contentLength];
-        try {
-            session.getInputStream().read(buf, 0, contentLength);
-            return StrUtil.str(buf,CharsetUtil.CHARSET_UTF_8);
-        } catch (IOException ex) {
-        }
-
-        return null;
-
-    }
-    
     @Override
     public Response handle(IHTTPSession session) {
         

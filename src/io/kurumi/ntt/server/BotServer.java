@@ -13,14 +13,14 @@ public class BotServer extends NanoHTTPD {
     
     public static final BotServer INSTACNCE = new BotServer();
     
-    public LinkedList<BotFragment> fragments = new LinkedList<>();
+    public LinkedList<ServerFragment> fragments = new LinkedList<>();
     
     @Override
     public Response handle(IHTTPSession session) {
         
         Response C404 = Response.newFixedLengthResponse(Status.NOT_FOUND, MIME_PLAINTEXT, "");
         
-        for(BotFragment fragment : fragments) {
+        for(ServerFragment fragment : fragments) {
             
             Response resp = fragment.handle(session);
             
@@ -56,35 +56,7 @@ public class BotServer extends NanoHTTPD {
             
         }
         
-        if (session.getMethod() != Method.POST) return C404;
-
-        String path = URLUtil.url(session.getUri()).getPath();
-
-        path = StrUtil.subAfter(path, "/", true);
-
-        Update update = BotUtils.parseUpdate(readBodyString(session));
-
-        Fragment fragment = bots.get(path);
-        
-        if (fragment == null) {
-            
-            new TelegramBot(path).execute(new DeleteWebhook());
-            
-            return C404;
-            
-        }
-        
-        try {
-        
-        fragment.processUpdate(update);
-
-        } catch (Exception exc) {
-            
-           exc.printStackTrace();
-            
-        }
-        
-        return Response.newFixedLengthResponse("");
+                return Response.newFixedLengthResponse("");
         
         */
         

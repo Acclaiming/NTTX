@@ -33,6 +33,11 @@ package org.nanohttpd.protocols.http;
  * #L%
  */
 
+import java.util.*;
+import javax.net.ssl.*;
+
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.StrUtil;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,23 +47,9 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.security.KeyStore;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLServerSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
-
 import org.nanohttpd.protocols.http.response.Response;
 import org.nanohttpd.protocols.http.response.Status;
 import org.nanohttpd.protocols.http.sockets.DefaultServerSocketFactory;
@@ -123,6 +114,21 @@ import org.nanohttpd.util.IHandler;
  * licence)
  */
 public abstract class NanoHTTPD {
+    
+    public static String readBodyString(IHTTPSession session) {
+
+        int contentLength = Integer.parseInt(session.getHeaders().get("content-length"));
+        byte[] buf = new byte[contentLength];
+        try {
+            session.getInputStream().read(buf, 0, contentLength);
+            return StrUtil.str(buf,CharsetUtil.CHARSET_UTF_8);
+        } catch (IOException ex) {
+        }
+
+        return null;
+
+    }
+    
 
     public static final String CONTENT_DISPOSITION_REGEX = "([ |\t]*Content-Disposition[ |\t]*:)(.*)";
 
