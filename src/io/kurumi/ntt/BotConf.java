@@ -14,8 +14,14 @@ public class BotConf {
     Bot的Token 填入即可
     
     */
-    public static final String BOT_TOEKN = "";
+    public static final String BOT_TOEKN = "729889711:AAEbpHqfuubWgMLep0hKU1ys92NotjXmKA0";
     
+    /**
+    
+    创始人ID
+    
+    */
+    public static final String FOUNDER = "HiedaNaKan";
     
     /**
     
@@ -28,14 +34,14 @@ public class BotConf {
     注意 : 不应该带有 "http(s)://" 前缀 和 "/" 后缀
     
     */
-    public static final String SERVER_DOMAIN = "";
+    public static final String SERVER_DOMAIN = "ntt.kurumi.io";
     
     /**
     
     本地服务器端口 请将上方的域名反向代理到此端口
     
     */
-    public static final int LOCAL_PORT = 19132;
+    public static final int LOCAL_PORT = 18964;
     
     /**
     
@@ -57,10 +63,10 @@ public class BotConf {
     
     /**
     
-    Bot 日志频道 不带@ (必须是公开频道)
+    Bot 日志频道 不带@ (必须是公开频道 且Bot可访问)
     
     */
-    public static final String LOG_CHANNEL = "";
+    public static final String LOG_CHANNEL = "NTTSpamPublic";
     
     public static final String LOG_CHANNEL_ID = "@" + LOG_CHANNEL;
     
