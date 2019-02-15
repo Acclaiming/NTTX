@@ -271,7 +271,7 @@ public class VoteUI extends FragmentBase implements TimerTask {
 
                     for (TwiAccount account : user.twitterAccounts) {
 
-                        if (!list.disables.containsKey(account)) {
+                        if (!list.disables.containsKey(account.accountId)) {
 
                             new SpamTask(list, account).start();
 

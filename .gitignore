@@ -13,3 +13,5 @@ gradle.properties
 .externalNativeBuild
 bin
 data
+
+src/io/kurumi/ntt/BotConf.java
