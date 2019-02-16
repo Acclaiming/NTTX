@@ -11,48 +11,40 @@ import org.nanohttpd.protocols.http.IHTTPSession;
 import org.nanohttpd.protocols.http.request.Method;
 import org.nanohttpd.protocols.http.response.Response;
 import org.nanohttpd.protocols.http.NanoHTTPD;
+import java.util.HashMap;
 
-public class BotServer implements ServerFragment {
+public class BotCallBackF implements ServerFragment {
+
+    public static BotCallBackF INSTANCE = new BotCallBackF();
+
+    public static HashMap<String,BotFragment> bots = new HashMap<>();
 
     @Override
     public Response handle(IHTTPSession session) {
-        
+
         if (session.getMethod() != Method.POST) return null;
 
         String path = URLUtil.url(session.getUri()).getPath();
 
         path = StrUtil.subAfter(path, "/", true);
 
-        /*
-        
         Update update = BotUtils.parseUpdate(NanoHTTPD.readBodyString(session));
 
-       Fragment fragment = bots.get(path);
+        BotFragment fragment = bots.get(path);
 
         if (fragment == null) {
 
             new TelegramBot(path).execute(new DeleteWebhook());
 
             // TODO : 需要吗？
-            
+
             return null;
 
         }
-
-        try {
-
-           // fragment.processUpdate(update);
-
-        } catch (Exception exc) {
-
-            exc.printStackTrace();
-
-        }
         
-        */
+        fragment.processAsync(update);
 
-        
-        return null;
+        return Response.newFixedLengthResponse("");
     }
-    
+
 }

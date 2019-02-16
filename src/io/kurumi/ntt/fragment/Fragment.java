@@ -1,20 +1,19 @@
 package io.kurumi.ntt.fragment;
 
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.model.InlineQuery;
-import com.pengrad.telegrambot.request.BaseRequest;
-import com.pengrad.telegrambot.response.BaseResponse;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.utils.CData;
-import io.kurumi.ntt.utils.ThreadPool;
 import io.kurumi.ntt.model.Query;
+import io.kurumi.ntt.utils.CData;
+import twitter4j.Twitter;
+import twitter4j.StatusUpdate;
 
 public class Fragment {
 
     public TelegramBot bot;
-
+    public BotFragment origin;
+    
     public boolean onMsg(UserData user, Msg msg) { return false; }
 
     public boolean onPoiMsg(UserData user, Msg msg , CData point) { return false; }
@@ -35,4 +34,24 @@ public class Fragment {
 
     public boolean onQuery(UserData user, Query inlineQuery) { return false; }
 
+    public CData cdata(String point) {
+
+        CData data = new CData();
+
+        data.setPoint(point);
+
+        return data;
+
+    }
+
+    public CData cdata(String point, String index) {
+
+        CData data = cdata(point);
+
+        data.setindex(index);
+
+        return data;
+
+    }
+    
 }

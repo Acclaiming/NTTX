@@ -18,9 +18,17 @@ import io.kurumi.ntt.model.Query;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
-    public LinkedList<Fragment> fragments = new LinkedList<>(); {
+    private LinkedList<Fragment> fragments = new LinkedList<>(); {
         
         fragments.add(this);
+        
+    }
+    
+    public void addFragment(Fragment fragment) {
+        
+        fragment.origin = this;
+        fragment.bot = bot;
+        fragments.add(fragment);
         
     }
 
@@ -33,19 +41,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         for (Update update : updates) {
 
-            processAsync(update);
-
-            
+            processAsync(update);   
             
         }
 
         return CONFIRMED_UPDATES_ALL;
-
-    }
-
-    public void process(String update) {
-
-        processAsync(BotUtils.parseUpdate(update));
 
     }
 
