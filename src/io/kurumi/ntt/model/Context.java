@@ -7,6 +7,8 @@ import com.pengrad.telegrambot.request.SendDocument;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.request.Send;
 import java.io.File;
+import io.kurumi.ntt.db.StickerPoint;
+import com.pengrad.telegrambot.request.SendSticker;
 
 public class Context {
     
@@ -36,6 +38,12 @@ public class Context {
 
         return new Send(fragment,chatId(),msg);
 
+    }
+    
+    public Msg sendSticker(StickerPoint sticker) {
+        
+        return new Msg(fragment,fragment.bot.execute(new SendSticker(chatId(),sticker.fileId)).message());
+        
     }
     
     public Msg sendFile(String file) {

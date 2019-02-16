@@ -35,6 +35,4 @@ public class Fragment {
 
     public boolean onQuery(UserData user, Query inlineQuery) { return false; }
 
-
-
 }
