@@ -2,13 +2,11 @@ package io.kurumi.ntt.utils;
 
 import org.apache.commons.cli.*;
 
-import io.kurumi.nttools.model.Msg;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Msg;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 
 public abstract class CommandUI extends Fragment {
 

@@ -1,5 +1,6 @@
 package twitter4j;
-import io.kurumi.nttools.twitter.TwiAccount;
+
+import io.kurumi.ntt.twitter.TwiAccount;
 
 public class ObjectUtil {
     

@@ -25,8 +25,10 @@ public class Encoder {
 
             } else {
                 
-                LinkedList<String> kl = list.getOrDefault(index,new LinkedList<String>());
+                LinkedList<String> kl = list.get(index);
 
+                if (kl == null) kl = new LinkedList<>();
+                
                 kl.add(kw);
 
                 list.put(index,kl);

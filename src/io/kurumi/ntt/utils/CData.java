@@ -1,7 +1,6 @@
 package io.kurumi.ntt.utils;
 
 import cn.hutool.json.JSONObject;
-import io.kurumi.nttools.twitter.TwiAccount;
 import java.io.Serializable;
 
 public class CData extends JSONObject {

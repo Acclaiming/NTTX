@@ -1,0 +1,79 @@
+package io.kurumi.ntt.model.request;
+
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.log.StaticLog;
+import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.request.EditMessageText;
+import com.pengrad.telegrambot.response.BaseResponse;
+import io.kurumi.ntt.fragment.Fragment;
+
+public class Edit extends AbstractSend<Edit> {
+  
+    private EditMessageText request;
+
+    public Edit(Fragment fragment, Object chatId,int messageId, String... msg) {
+
+        super(fragment);
+        
+        request = new EditMessageText(chatId,messageId,ArrayUtil.join(msg, "\n"));
+
+        this.fragment = fragment;
+
+
+    }
+
+    @Override
+    public Edit disableLinkPreview() {
+        
+        request.disableWebPagePreview(true);
+        
+        return this;
+        
+   }
+
+    @Override
+    public Edit markdown() {
+
+        request.parseMode(ParseMode.Markdown);
+
+        return this;
+
+    }
+
+    @Override
+    public Edit html() {
+
+        request.parseMode(ParseMode.HTML);
+
+        return this;
+
+    }
+
+    @Override
+    public Edit buttons(ButtonMarkup markup) {
+        
+        request.replyMarkup(markup.markup());
+        
+        return this;
+        
+   }
+
+    @Override
+    public BaseResponse sync() {
+
+      //  System.out.println(request.toWebhookResponse());
+        
+        BaseResponse resp = fragment.bot.execute(request);
+        
+    //    if (resp.errorCode() == 
+        
+        if (!resp.isOk()) {
+            
+            StaticLog.error(new RuntimeException(),"request : " + request.toWebhookResponse() + "\n\nEditMseeage Error " + resp.errorCode() + " : " + resp.description());
+            
+        }
+        
+        return resp;
+
+    }
+}

@@ -6,9 +6,9 @@ public class Permission {
     
     public static final String KEY = "permission";
     
-    public int getPermission(UserData user) {
+    public static int getPermission(Integer user) {
         
-        String permission = BotDB.jedis.hget(KEY,user.id.toString());
+        String permission = BotDB.jedis.hget(KEY,user.toString());
        
         if (permission == null) return 0;
         
@@ -16,27 +16,27 @@ public class Permission {
         
     }
     
-    public void setPermission(UserData user,Integer permission) {
+    public static void setPermission(Integer user,Integer permission) {
         
-        BotDB.jedis.hset(KEY,user.id.toString(),permission.toString());
-        
-    }
-    
-    public void removePermission(UserData user) {
-        
-        BotDB.jedis.hdel(KEY,user.id.toString());
+        BotDB.jedis.hset(KEY,user.toString(),permission.toString());
         
     }
     
-    public boolean isAdmin(UserData user) {
+    public static void removePermission(Integer user) {
         
-        return getPermission(user) == 1 || BotConf.FOUNDER.equals(user.userName);
+        BotDB.jedis.hdel(KEY,user.toString());
         
     }
     
-    public boolean isBureaucrats(UserData user) {
+    public static boolean isAdmin(Integer user) {
         
-        return getPermission(user) == 2 || BotConf.FOUNDER.equals(user.userName);
+        return getPermission(user) == 1;
+        
+    }
+    
+    public static boolean isBureaucrats(Integer user) {
+        
+        return getPermission(user) == 2;
         
     }
     

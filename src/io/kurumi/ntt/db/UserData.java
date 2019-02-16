@@ -2,26 +2,37 @@ package io.kurumi.ntt.db;
 
 import cn.hutool.json.JSONObject;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.LinkedList;
+import io.kurumi.ntt.fragment.Fragment;
+import com.pengrad.telegrambot.request.GetChat;
+import com.pengrad.telegrambot.response.GetChatResponse;
+import com.pengrad.telegrambot.model.Chat;
+import cn.xsshome.taip.nlp.NLPConsts;
+import io.kurumi.ntt.BotConf;
+import io.kurumi.ntt.utils.CData;
 
 public class UserData extends JSONObject {
 
     public static final String KEY = "NTT_USERS";
 
-    public Long id;
+    public Integer id;
 
-    public String name;
+    public String firstName;
 
+    public String lastName;
+    
     public String userName;
 
     public boolean isBot;
 
-    private UserData(Long id) {
+    private UserData(int id) {
 
         this.id = id; 
 
     }
     
-    private UserData(Long id,String json) {
+    private UserData(int id,String json) {
 
         super(json);
         
@@ -29,9 +40,79 @@ public class UserData extends JSONObject {
         
         this.userName = getStr("u");
         
-        this.name = getStr("n");
+        this.firstName = getStr("f");
+        
+        this.lastName = getStr("l");
         
         this.isBot = getBool("i",false);
+
+    }
+    
+    public boolean refresh(Fragment fragment) {
+        
+        GetChatResponse chat = fragment.bot.execute(new GetChat(id));
+        
+        if (!chat.isOk()) return false;
+        
+        refresh(chat.chat());
+        
+        return true;
+
+    }
+
+    public void refresh(Chat chat) {
+        
+        userName = chat.username();
+        
+        firstName = chat.firstName();
+        
+        lastName = chat.lastName();
+        
+    }
+    
+    public String name() {
+        
+        String name = firstName;
+
+        if (lastName != null) {
+            
+            name =  lastName + " " + name;
+            
+        }
+        
+        return name;
+        
+    }
+    
+    public boolean isAdmin() {
+        
+        return BotConf.FOUNDER.equals(userName) || Permission.isAdmin(id);
+        
+    }
+    
+    public boolean isBureaucrats() {
+
+        return BotConf.FOUNDER.equals(userName) || Permission.isBureaucrats(id);
+
+    }
+    
+    public boolean hasPoint() {
+        
+        return UserPoint.exists(this);
+        
+    }
+    
+    public CData point() {
+
+        return UserPoint.get(this);
+
+    }
+    
+    public void point(CData data) {
+
+        if (data == null) UserPoint.remove(this);
+        
+        else UserPoint.set(this,data);
 
     }
 
@@ -39,25 +120,36 @@ public class UserData extends JSONObject {
 
         put("u", userName);
 
-        put("n", name);
+        put("f",firstName);
         
-        put("i",isBot);
+        put("l",lastName);
 
+        put("i",isBot);
+        
         BotDB.jedis.hset(KEY, id.toString(), toString());
 
     }
 
-    private static HashMap<Long,UserData> cache = new HashMap<>();
+    private static HashMap<Integer,UserData> cache = new HashMap<>();
+    
+    static {
+        
+        Map<String, String> all = BotDB.jedis.hgetAll(KEY);
+        
+        for (Map.Entry<String,String> user : all.entrySet()) {
+            
+            int id = Integer.parseInt(user.getKey());
+            
+            UserData u = new UserData(id,user.getValue());
 
-    public static UserData getByUserName(String userName) {
-        
-        for (UserData user : cache.values()) {}
-        
-        return null;
-        
+            cache.put(id,u);
+            
+        }
+
     }
     
-    public static UserData get(Long id) {
+    
+    public static UserData get(Integer id) {
 
         if (cache.containsKey(id)) return cache.get(id);
         
@@ -69,8 +161,6 @@ public class UserData extends JSONObject {
             
             cache.put(id,user);
             
-            user.save();
-            
             return user;
 
         }
@@ -80,6 +170,12 @@ public class UserData extends JSONObject {
         cache.put(id,user);
         
         return user;
+        
+    }
+    
+    public static LinkedList<UserData> getAll() {
+        
+        return new LinkedList<UserData>(cache.values());
         
     }
 

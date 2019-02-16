@@ -1,12 +1,13 @@
 package io.kurumi.ntt;
 
-import io.kurumi.ntt.db.BotDB;
-import java.util.Scanner;
+import cn.hutool.log.StaticLog;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.GetMe;
-import com.pengrad.telegrambot.response.GetMeResponse;
-import cn.hutool.log.StaticLog;
-import io.kurumi.ntt.db.BotLog;
+import io.kurumi.ntt.db.BotDB;
+import io.kurumi.ntt.utils.BotLog;
+import java.io.File;
+import java.util.Scanner;
+import cn.hutool.core.io.FileUtil;
 
 public class BotConf {
 
@@ -145,6 +146,20 @@ public class BotConf {
     
     public static final String FOUNDER = "HiedaNaKan";
 
+    /**
+    
+    缓存文件存放地址
+    
+    */
+    
+    public static final File CACHE_DIR = new File("./cache");
+    
+    public static void cleanCache() {
+        
+        FileUtil.del(CACHE_DIR);
+        
+    }
+    
     /**
 
      Bot服务器的域名 注意 Bot不会绑定此域名
