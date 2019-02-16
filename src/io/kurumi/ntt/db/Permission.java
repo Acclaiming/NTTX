@@ -28,15 +28,21 @@ public class Permission {
         
     }
     
+    public static boolean isUser(Integer user) {
+
+        return getPermission(user) == 1;
+
+    }
+    
     public static boolean isAdmin(Integer user) {
         
-        return getPermission(user) == 1;
+        return getPermission(user) == 2;
         
     }
     
     public static boolean isBureaucrats(Integer user) {
         
-        return getPermission(user) == 2;
+        return getPermission(user) == 3;
         
     }
     

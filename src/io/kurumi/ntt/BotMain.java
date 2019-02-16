@@ -5,11 +5,18 @@ import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.server.BotServer;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.stickers.DVANG;
 
 public class BotMain extends BotFragment implements Thread.UncaughtExceptionHandler {
 
     public static final BotMain INSTANCE = new BotMain();
 
+    public BotMain() {
+        
+        
+        
+    }
+    
     public static void main(String[] args) {
         
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
@@ -35,9 +42,7 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
     @Override
     public boolean onMsg(UserData user, Msg msg) {
         
-        msg.sendTyping();
-        
-        msg.send(msg.text()).exec();
+        msg.sendSticker(DVANG.发情);
         
         return true;
         
