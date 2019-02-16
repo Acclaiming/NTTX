@@ -75,6 +75,8 @@ public class StickerSet extends JSONObject {
 
     }
     
+    public StickerPoint get(int point) {}
+    
     public void load() {
         
         title = getStr("t");
@@ -111,9 +113,9 @@ public class StickerSet extends JSONObject {
 
         for (int index = 0;index < set.stickers().length;index ++) {
 
-            com.pengrad.telegrambot.model.Sticker sticker = set.stickers()[index];
+            com.pengrad.telegrambot.model.Sticker sticker = set.stickers()[set.stickers().length -1 - index ];
 
-            stickers.add(new StickerPoint(this, index + 1, sticker));
+            stickers.add(new StickerPoint(this, set.stickers().length - index, sticker));
 
         }
 
