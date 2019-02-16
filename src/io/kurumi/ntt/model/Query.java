@@ -1,23 +1,18 @@
 package io.kurumi.ntt.model;
 
+import cn.hutool.core.util.StrUtil;
 import com.pengrad.telegrambot.model.InlineQuery;
 import com.pengrad.telegrambot.model.request.InlineQueryResult;
 import com.pengrad.telegrambot.model.request.InlineQueryResultArticle;
-import com.pengrad.telegrambot.request.AnswerInlineQuery;
-import io.kurumi.ntt.fragment.Fragment;
-import java.util.LinkedList;
-import com.pengrad.telegrambot.model.request.InputMessageContent;
-import com.pengrad.telegrambot.model.request.InlineQueryResultCachedSticker;
 import com.pengrad.telegrambot.model.request.InlineQueryResultDocument;
-import io.kurumi.ntt.server.BotServer;
-import cn.hutool.core.io.FileUtil;
-import java.util.Map;
-import javax.print.MimeType;
-import cn.hutool.core.util.StrUtil;
+import com.pengrad.telegrambot.request.AnswerInlineQuery;
 import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.response.GetFileResponse;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.server.BotServer;
 import io.kurumi.ntt.utils.BotLog;
-import com.pengrad.telegrambot.request.UploadStickerFile;
+import java.util.LinkedList;
+import java.util.Map;
 
 public class Query {
 
