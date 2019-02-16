@@ -75,7 +75,11 @@ public class StickerSet extends JSONObject {
 
     }
     
-    public StickerPoint get(int point) {}
+    public StickerPoint get(int point) {
+        
+        return stickers.get(point - 1);
+        
+    }
     
     public void load() {
         
