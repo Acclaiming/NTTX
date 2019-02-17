@@ -99,7 +99,7 @@ public class StickerSet extends JSONObject {
 
     public boolean refresh() {
         
-        GetStickerSetResponse resp = BotMain.INSTANCE.bot.execute(new GetStickerSet(name));
+        GetStickerSetResponse resp = BotMain.INSTANCE.bot().execute(new GetStickerSet(name));
 
         if (!resp.isOk()) {
 

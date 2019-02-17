@@ -11,7 +11,7 @@ import twitter4j.StatusUpdate;
 
 public class Fragment {
 
-    public TelegramBot bot;
+    public TelegramBot bot() { return origin.bot(); }
     public BotFragment origin;
     
     public boolean onMsg(UserData user, Msg msg) { return false; }

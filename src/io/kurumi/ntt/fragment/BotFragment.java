@@ -18,6 +18,13 @@ import io.kurumi.ntt.model.Query;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
+    public BotFragment() { origin = this; }
+    
+    private TelegramBot bot;
+
+    @Override
+    public TelegramBot bot() { return bot; }
+    
     private LinkedList<Fragment> fragments = new LinkedList<>(); {
         
         fragments.add(this);
@@ -27,7 +34,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
     public void addFragment(Fragment fragment) {
         
         fragment.origin = this;
-        fragment.bot = bot;
         fragments.add(fragment);
         
     }

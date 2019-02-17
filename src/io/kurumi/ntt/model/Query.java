@@ -38,7 +38,7 @@ public class Query {
     
     public Query fileId(String fileName,String fileId) {
         
-        GetFileResponse resp = fragment.bot.execute(new GetFile(fileId));
+        GetFileResponse resp = fragment.bot().execute(new GetFile(fileId));
 
         if (!resp.isOk()) {
             
@@ -48,7 +48,7 @@ public class Query {
             
         }
         
-        return fileUrl(fileName,fragment.bot.getFullFilePath(resp.file()));
+        return fileUrl(fileName,fragment.bot().getFullFilePath(resp.file()));
         
     }
 
@@ -80,7 +80,7 @@ public class Query {
 
     public void reply() {
 
-        fragment.bot.execute(new AnswerInlineQuery(query.id(), results.toArray(new InlineQueryResult[results.size()])));
+        fragment.bot().execute(new AnswerInlineQuery(query.id(), results.toArray(new InlineQueryResult[results.size()])));
 
     }
 

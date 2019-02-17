@@ -67,7 +67,7 @@ public class Msg extends Context {
     
     public void delete() {
         
-        fragment.bot.execute(new DeleteMessage(chatId(),messageId()));
+        fragment.bot().execute(new DeleteMessage(chatId(),messageId()));
         
     }
     
@@ -81,7 +81,7 @@ public class Msg extends Context {
 
         if (local.isFile()) return local;
 
-        String path = fragment.bot.getFullFilePath(fragment.bot.execute(new GetFile(doc.fileId())).file());
+        String path = fragment.bot().getFullFilePath(fragment.bot().execute(new GetFile(doc.fileId())).file());
 
         HttpUtil.downloadFile(path,local);
 

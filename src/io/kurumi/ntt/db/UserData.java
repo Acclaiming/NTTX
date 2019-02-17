@@ -51,7 +51,7 @@ public class UserData extends JSONObject {
     
     public boolean refresh(Fragment fragment) {
         
-        GetChatResponse chat = fragment.bot.execute(new GetChat(id));
+        GetChatResponse chat = fragment.bot().execute(new GetChat(id));
         
         if (!chat.isOk()) return false;
         

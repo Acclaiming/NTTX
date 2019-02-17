@@ -51,7 +51,7 @@ public class AnswerCallback {
     
     public void exec() {
         
-        fragment.bot.execute(answer);
+        fragment.bot().execute(answer);
         
     }
     

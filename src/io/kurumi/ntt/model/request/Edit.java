@@ -63,7 +63,7 @@ public class Edit extends AbstractSend<Edit> {
 
       //  System.out.println(request.toWebhookResponse());
         
-        BaseResponse resp = fragment.bot.execute(request);
+        BaseResponse resp = fragment.bot().execute(request);
         
     //    if (resp.errorCode() == 
         
@@ -76,4 +76,5 @@ public class Edit extends AbstractSend<Edit> {
         return resp;
 
     }
+    
 }
