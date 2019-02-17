@@ -12,6 +12,7 @@ import cn.xsshome.taip.nlp.NLPConsts;
 import io.kurumi.ntt.BotConf;
 import io.kurumi.ntt.utils.CData;
 import io.kurumi.ntt.twitter.TwiAccount;
+import com.pengrad.telegrambot.model.User;
 
 public class UserData extends JSONObject {
 
@@ -55,19 +56,23 @@ public class UserData extends JSONObject {
         
         if (!chat.isOk()) return false;
         
-        refresh(chat.chat());
+        userName = chat.chat().username();
+
+        firstName = chat.chat().firstName();
+
+        lastName = chat.chat().lastName();
         
         return true;
 
     }
 
-    public void refresh(Chat chat) {
+    public void refresh(User u) {
         
-        userName = chat.username();
+        userName = u.username();
         
-        firstName = chat.firstName();
+        firstName = u.firstName();
         
-        lastName = chat.lastName();
+        lastName = u.lastName();
         
     }
     
@@ -161,6 +166,15 @@ public class UserData extends JSONObject {
 
     }
     
+    public static UserData get(User u) {
+        
+        UserData user = get(u.id());
+
+        user.refresh(u);
+        
+        return user;
+        
+    }
     
     public static UserData get(Integer id) {
 

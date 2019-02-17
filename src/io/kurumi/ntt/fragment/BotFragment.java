@@ -74,7 +74,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         if (update.message() != null) {
 
-            UserData user = UserData.get(update.message().from().id());
+            UserData user = UserData.get(update.message().from());
             
             boolean point = user.hasPoint();
 
@@ -211,7 +211,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         } else if (update.channelPost() != null) {
 
-            UserData user = UserData.get(update.channelPost().from().id());
+            UserData user = UserData.get(update.channelPost().from());
 
             for (Fragment fragmnet : fragments) {
 
@@ -225,7 +225,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         } else if (update.callbackQuery() != null) {
 
-            UserData user = UserData.get(update.channelPost().from().id());
+            UserData user = UserData.get(update.channelPost().from());
            
             boolean point = user.hasPoint();
 
@@ -259,7 +259,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         } else if(update.inlineQuery() != null) {
             
-            UserData user = UserData.get(update.channelPost().from().id());
+            UserData user = UserData.get(update.channelPost().from());
             
             for (Fragment fragmnet : fragments) {
 
