@@ -3,12 +3,12 @@ package io.kurumi.ntt.twitter;
 import cn.hutool.core.util.URLUtil;
 import io.kurumi.ntt.BotConf;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.server.ServerFragment;
 import io.kurumi.ntt.utils.Markdown;
 import java.util.HashMap;
 import org.nanohttpd.protocols.http.IHTTPSession;
 import org.nanohttpd.protocols.http.response.Response;
+import org.nanohttpd.protocols.http.response.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -16,7 +16,6 @@ import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
-import org.nanohttpd.protocols.http.response.Status;
 
 public class TwiAuthF implements ServerFragment {
 
@@ -49,9 +48,7 @@ public class TwiAuthF implements ServerFragment {
                     final String userId = session.getParms().get("userId");
 
                     if (userId == null) return null;
-
-                    if (userId == null) {
-
+                    
                         Configuration conf = new ConfigurationBuilder()
                             .setOAuthConsumerKey(BotConf.TWITTER_CONSUMER_KEY)
                             .setOAuthConsumerSecret(BotConf.TWITTER_CONSUMER_KEY_SEC)
@@ -69,13 +66,16 @@ public class TwiAuthF implements ServerFragment {
 
                             return resp;
 
-                        } catch (Exception e) {}
+                        } catch (Exception e) {
+                            
+                            return Response.newFixedLengthResponse("认证出错，请稍后再来 （￣～￣） \n\n" + e.getMessage());
+                            
+                        }
 
-                    }
+                        
 
-
-                } break;
-
+                }
+                
                 case "/callback" : {
 
                     String requestToken = session.getParms().get("oauth_token");
