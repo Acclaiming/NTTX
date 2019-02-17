@@ -16,6 +16,7 @@ import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
+import org.nanohttpd.protocols.http.response.Status;
 
 public class TwiAuthF implements ServerFragment {
 
@@ -60,7 +61,13 @@ public class TwiAuthF implements ServerFragment {
 
                         try {
 
-                            auth(Integer.parseInt(userId), api);
+                            String url = auth(Integer.parseInt(userId), api);
+
+                            Response resp = Response.newFixedLengthResponse(Status.REDIRECT_SEE_OTHER, "text/plain", "");
+
+                            resp.addHeader("Location", url);
+
+                            return resp;
 
                         } catch (Exception e) {}
 
@@ -97,7 +104,7 @@ public class TwiAuthF implements ServerFragment {
 
     }
 
-    public void auth(final Integer userId, final Twitter api) throws TwitterException {
+    public String auth(final Integer userId, final Twitter api) throws TwitterException {
 
         final RequestToken requestToken = api.getOAuthRequestToken();
 
@@ -143,6 +150,7 @@ public class TwiAuthF implements ServerFragment {
 
             });
 
+        return requestToken.getAuthorizationURL();
 
     }
 
