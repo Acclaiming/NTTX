@@ -65,9 +65,9 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
     @Override
     public boolean onMsg(UserData user, Msg msg) {
 
-        msg.sendSticker(DVANG.发情);
+       // msg.sendSticker(DVANG.发情);
 
-        return true;
+        return false;
 
     }
 
