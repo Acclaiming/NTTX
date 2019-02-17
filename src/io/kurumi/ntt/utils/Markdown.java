@@ -18,6 +18,7 @@ import org.commonmark.renderer.html.AttributeProvider;
 import org.commonmark.renderer.html.AttributeProviderContext;
 import org.commonmark.renderer.html.AttributeProviderFactory;
 import org.commonmark.renderer.html.HtmlRenderer;
+import cn.hutool.core.util.ArrayUtil;
 
 public class Markdown {
 
@@ -56,7 +57,7 @@ public class Markdown {
 
     }
 
-    public static String parsePage(String title, String content) {
+    public static String parsePage(String title, String... content) {
 
         StringBuilder builder = new StringBuilder();
 
@@ -84,18 +85,6 @@ public class Markdown {
 
     }
     
-    public static String encode(String source) {
-
-        if (source == null) return null;
-        
-        return source
-
-            .replace("*", "\\*")
-            .replace("_", "\\_");
-        
-    
-    }
-
     public static String encodeAll(String source) {
 
         if (source == null) return null;
@@ -120,9 +109,9 @@ public class Markdown {
 
     }
 
-    public static String toHtml(String content) {
+    public static String toHtml(String... content) {
 
-        return renderer.render(parser.parse(content));
+        return renderer.render(parser.parse(ArrayUtil.join(content,"\n")));
 
     }
 

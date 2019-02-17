@@ -97,9 +97,13 @@ public class Msg extends Context {
         return text().startsWith("/");
 
     }
+    
+    private String name;
 
     public String commandName() {
 
+        if (name != null) return name;
+        
         if (text() == null) return null;
 
         if (!text().contains("/")) return null;
@@ -112,30 +116,36 @@ public class Msg extends Context {
 
             if (cmdAndUser.contains("@")) {
 
-                return StrUtil.subBefore(cmdAndUser, "@", false);
+                name = StrUtil.subBefore(cmdAndUser, "@", false);
 
             } else {
 
-                return cmdAndUser;
+                name = cmdAndUser;
 
             }
 
         } else if (body.contains("@")) {
 
-            return StrUtil.subBefore(body, "@", false);
+            name = StrUtil.subBefore(body, "@", false);
 
         } else {
 
-            return body;
+            name = body;
 
         }
+        
+        return name;
 
     }
     
     public static String[] NO_PARAMS = new String[0];
 
+    private String[] params;
+    
     public String[] commandParms() {
 
+        if (params != null) return params;
+        
         if (text() == null) return NO_PARAMS;
         
         if (!text().contains("/")) return NO_PARAMS;
@@ -144,13 +154,15 @@ public class Msg extends Context {
 
         if (body.contains(" ")) {
 
-            return StrUtil.subAfter(body, " ", false).split(" ");
+            params = StrUtil.subAfter(body, " ", false).split(" ");
 
         } else {
 
-            return NO_PARAMS;
+            params = NO_PARAMS;
 
         }
+        
+        return params;
 
     }
     

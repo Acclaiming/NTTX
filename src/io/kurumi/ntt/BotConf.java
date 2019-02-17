@@ -188,14 +188,14 @@ public class BotConf {
 
      */
 
-    public static final String TWITTER_CUSTOM_KEY = "pLkoUI2q5ZncKKIm7dQNqtpXT";
+    public static final String TWITTER_CONSUMER_KEY = "pLkoUI2q5ZncKKIm7dQNqtpXT";
 
     /**
 
      Twutter Key Sec
 
      */
-    public static final String TWITTER_CUSTOM_KEY_SEC = "Yp59pXMXoHKD8dj2g1m6RUc7VNIJybBHH1NtM70MhOB0OKl00S";
+    public static final String TWITTER_CONSUMER_KEY_SEC = "Yp59pXMXoHKD8dj2g1m6RUc7VNIJybBHH1NtM70MhOB0OKl00S";
 
 
     /**

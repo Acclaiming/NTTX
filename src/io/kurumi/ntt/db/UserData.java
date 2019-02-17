@@ -11,6 +11,7 @@ import com.pengrad.telegrambot.model.Chat;
 import cn.xsshome.taip.nlp.NLPConsts;
 import io.kurumi.ntt.BotConf;
 import io.kurumi.ntt.utils.CData;
+import io.kurumi.ntt.twitter.TwiAccount;
 
 public class UserData extends JSONObject {
 
@@ -84,6 +85,12 @@ public class UserData extends JSONObject {
         
     }
     
+    public String userName() {
+        
+        return userName != null ? "@" + userName : name();
+        
+    }
+    
     public boolean isAdmin() {
         
         return BotConf.FOUNDER.equals(userName) || Permission.isAdmin(id);
@@ -114,6 +121,12 @@ public class UserData extends JSONObject {
         
         else UserPoint.set(this,data);
 
+    }
+    
+    public TwiAccount current() {
+        
+        return TwiAccount.getCurrent(id);
+        
     }
 
     public void save() {

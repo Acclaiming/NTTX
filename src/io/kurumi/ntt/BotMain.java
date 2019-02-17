@@ -12,6 +12,8 @@ import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.db.BotDB;
 import cn.hutool.system.SystemUtil;
 import cn.hutool.system.OsInfo;
+import io.kurumi.ntt.twitter.TwitterUI;
+import io.kurumi.ntt.twitter.TwiAuthF;
 
 public class BotMain extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -19,7 +21,7 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
 
     public BotMain() {
 
-
+        addFragment(TwitterUI.INSTANCE);
 
     }
 
@@ -27,6 +29,7 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
 
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
         
+        BotServer.INSTACNCE.fragments.add(TwiAuthF.INSTANCE);
         BotServer.INSTACNCE.fragments.add(BotCallBackF.INSTANCE);
 
         try {
@@ -75,10 +78,10 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
         StaticLog.info("正在停止Bot");
 
         INSTANCE.stop();
+        
+        BotServer.INSTACNCE.stop();
 
         System.exit(1);
-        
-        // BotServer.INSTACNCE.stop();
 
     }
 

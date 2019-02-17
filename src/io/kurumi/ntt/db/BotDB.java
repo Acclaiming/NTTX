@@ -3,8 +3,9 @@ package io.kurumi.ntt.db;
 import io.kurumi.ntt.BotConf;
 import java.io.File;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPubSub;
 
-public class BotDB {
+public class BotDB extends JedisPubSub {
 
     public static final Jedis jedis;
 
@@ -42,6 +43,19 @@ public class BotDB {
 
         return new File(new File(jedis.configGet("dir").get(0)), "dump.rdb");
 
+    }
+
+    @Override
+    public void onMessage(String channel, String message) {
+        
+        // TODO : 多BOT数据同步
+        
+        if ("users".equals(message)) {
+            
+            
+            
+        }
+        
     }
 
 }

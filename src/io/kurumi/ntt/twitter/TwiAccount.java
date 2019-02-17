@@ -13,21 +13,23 @@ import io.kurumi.ntt.db.IDFactory;
 import io.kurumi.ntt.db.UserData;
 import java.util.LinkedList;
 import io.kurumi.ntt.utils.BotLog;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.HashMap;
 
 public class TwiAccount extends JSONObject {
 
     public static final String KEY = "NTT_AUTH";
-
-    public static final String BELOG_KEY = "NTT_AUTH_BELONG";
-
+    public static final String CURR = "NTT_AUTH_CURR";
+    
     public Long id;
 
     public Integer belong;
 
-    private String apiToken;
-    private String apiSec;
-    private String accToken;
-    private String accSec;
+    public String apiToken;
+    public String apiSec;
+    public String accToken;
+    public String accSec;
 
     public Long accountId;
     public String screenName;
@@ -35,7 +37,7 @@ public class TwiAccount extends JSONObject {
     public String name;
     public String email;
 
-    public Boolean invaild;
+    public boolean invaild = true;
 
     public TwiAccount() {
 
@@ -43,19 +45,11 @@ public class TwiAccount extends JSONObject {
 
     }
 
-    public TwiAccount(Long id, JSONObject json) {
+    public TwiAccount(Long id, String json) {
 
         super(json);
 
         this.id = id;
-
-        invaild = getBool("invaild", false);
-
-        if (invaild) {
-
-            return;
-
-        }
 
         belong = getInt("belog");
 
@@ -69,6 +63,8 @@ public class TwiAccount extends JSONObject {
         screenName = getStr("screenName");
         name = getStr("name");
         email = getStr("email");
+
+        invaild = false;
 
     }
 
@@ -115,7 +111,7 @@ public class TwiAccount extends JSONObject {
             name = thisAcc.getName();
             email = thisAcc.getEmail();
 
-            save();
+            invaild = false;
 
             return true;
 
@@ -125,7 +121,6 @@ public class TwiAccount extends JSONObject {
             invaild = true;
 
             return false;
-
         }
 
     }
@@ -149,31 +144,34 @@ public class TwiAccount extends JSONObject {
 
     public void save() {
 
-        put("invaild", invaild);
+        put("belong", belong);
+        put("api_token", apiToken);
+        put("api_sec", apiSec);
+        put("acc_token", accToken);
+        put("acc_sec", accSec);
+        put("account_id", accountId);
+        put("screen_name", screenName);
+        put("name", name);
+        put("email", email);
+
+        if (id == -1L) {
+
+            id = IDFactory.nextId(KEY);
+
+        }
+
 
         if (!invaild) {
 
-            put("belong", belong);
-            put("api_token", apiToken);
-            put("api_sec", apiSec);
-            put("acc_token", accToken);
-            put("acc_sec", accSec);
-            put("account_id", accountId);
-            put("screen_name", screenName);
-            put("name", name);
-            put("email", email);
-
-            if (id == -1L) {
-
-                id = IDFactory.nextId(KEY);
-
+            BotDB.jedis.hset(KEY, screenName, toString());
+            
+            cache.put(id,this);
+            
+            if (!curr.containsKey(belong)) {
+                
+                switchAccount(belong,this);
+                
             }
-
-        } 
-
-        if (id != -1) {
-
-            BotDB.jedis.lpush(KEY, toString());
 
         } else {
 
@@ -197,8 +195,107 @@ public class TwiAccount extends JSONObject {
 
     }
 
-    public static LinkedList<TwiAccount> cache = new LinkedList<>();
+    private static LinkedHashMap<Long,TwiAccount> cache = new LinkedHashMap<>(); static {
+        
+        Map<String, String> all = BotDB.jedis.hgetAll(KEY);
 
+        for(Map.Entry<String,String> acc : all.entrySet()) {
+            
+            long id = Long.parseLong(acc.getKey());
+            
+            cache.put(id,new TwiAccount(id,acc.getValue()));
+            
+        }
+        
+    }
+   
+    private static HashMap<Integer,TwiAccount> curr = new HashMap<>(); static {
+        
+        Map<String, String> all = BotDB.jedis.hgetAll(KEY);
+
+        for(Map.Entry<String,String> acc : all.entrySet()) {
+
+            int user = Integer.parseInt(acc.getKey());
+            long account = Long.parseLong(acc.getValue());
+            
+            curr.put(user,cache.get(account));
+
+        }
+        
+    }
     
+    public static TwiAccount getByScreenName(String screenName) {
+
+        for (TwiAccount account : cache.values()) {
+
+            if (screenName.equals(account.screenName)) return account;
+
+        }
+
+        return null;
+
+    }
     
+    public static TwiAccount getByaAccountId(Long id) {
+
+        for (TwiAccount account : cache.values()) {
+
+            if (id.equals(account.accountId)) return account;
+
+        }
+
+        return null;
+
+    }
+    
+    public static TwiAccount getById(Long id) {
+        
+        if (!cache.containsKey(id)) return null;
+        
+        return cache.get(id);
+        
+    }
+    
+    public static LinkedList<TwiAccount> findByName(String name) {
+
+        LinkedList<TwiAccount> accs = new LinkedList<>();
+
+        for (TwiAccount account : cache.values()) {
+
+            if (account.name.contains(name)) accs.add(account);
+
+        }
+
+        return accs;
+
+    }
+
+    public static LinkedList<TwiAccount> getTwitterAccounts(Integer id) {
+        
+        LinkedList<TwiAccount> accs = new LinkedList<>();
+        
+        for (TwiAccount account : cache.values()) {
+            
+            if (id.equals(account.belong)) accs.add(account);
+            
+        }
+        
+        return accs;
+        
+    }
+    
+    public static TwiAccount getCurrent(Integer userId) {
+        
+        return curr.containsKey(userId) ? curr.get(userId) : null;
+        
+    }
+    
+    public static void switchAccount(Integer userId,TwiAccount account) {
+        
+        curr.put(userId,account);
+        
+        BotDB.jedis.hset(CURR,userId.toString(),account.id.toString());
+        
+    }
+
 }
