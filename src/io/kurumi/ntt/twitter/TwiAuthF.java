@@ -106,7 +106,7 @@ public class TwiAuthF implements ServerFragment {
 
     public String auth(final Integer userId, final Twitter api) throws TwitterException {
 
-        final RequestToken requestToken = api.getOAuthRequestToken();
+        final RequestToken requestToken = api.getOAuthRequestToken("https://" + BotConf.SERVER_DOMAIN + "/callback");
 
         final Listener preL = pre.remove(userId);
 
