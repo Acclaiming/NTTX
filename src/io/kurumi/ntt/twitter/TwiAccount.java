@@ -163,7 +163,7 @@ public class TwiAccount extends JSONObject {
 
         if (!invaild) {
 
-            BotDB.jedis.hset(KEY, screenName, toString());
+            BotDB.jedis.hset(KEY, id.toString(), toString());
             
             cache.put(id,this);
             
