@@ -21,7 +21,7 @@ public class TwiAuthF implements ServerFragment {
 
     public static final TwiAuthF INSTANCE = new TwiAuthF();
 
-    public static HashMap<String,Listener> pre = new HashMap<>();
+    public static HashMap<Integer,Listener> pre = new HashMap<>();
     public static HashMap<String,Listener> auth = new HashMap<>();
 
     public interface Listener {
@@ -34,7 +34,7 @@ public class TwiAuthF implements ServerFragment {
 
     public static void pre(UserData user, Listener listener) {
 
-        pre.put(user.id.toString(), listener);
+        pre.put(user.id, listener);
 
     }
 
@@ -48,34 +48,34 @@ public class TwiAuthF implements ServerFragment {
                     final String userId = session.getParms().get("userId");
 
                     if (userId == null) return null;
-                    
-                        Configuration conf = new ConfigurationBuilder()
-                            .setOAuthConsumerKey(BotConf.TWITTER_CONSUMER_KEY)
-                            .setOAuthConsumerSecret(BotConf.TWITTER_CONSUMER_KEY_SEC)
-                            .build();
 
-                        final Twitter api = new TwitterFactory(conf).getInstance();
+                    Configuration conf = new ConfigurationBuilder()
+                        .setOAuthConsumerKey(BotConf.TWITTER_CONSUMER_KEY)
+                        .setOAuthConsumerSecret(BotConf.TWITTER_CONSUMER_KEY_SEC)
+                        .build();
 
-                        try {
+                    final Twitter api = new TwitterFactory(conf).getInstance();
 
-                            String url = auth(Integer.parseInt(userId), api);
+                    try {
 
-                            Response resp = Response.newFixedLengthResponse(Status.REDIRECT_SEE_OTHER, "text/plain", "");
+                        String url = auth(Integer.parseInt(userId), api);
 
-                            resp.addHeader("Location", url);
+                        Response resp = Response.newFixedLengthResponse(Status.REDIRECT_SEE_OTHER, "text/plain", "");
 
-                            return resp;
+                        resp.addHeader("Location", url);
 
-                        } catch (Exception e) {
-                            
-                            return Response.newFixedLengthResponse("认证出错，请稍后再来 （￣～￣） \n\n" + e.getMessage());
-                            
-                        }
+                        return resp;
 
-                        
+                    } catch (Exception e) {
+
+                        return Response.newFixedLengthResponse("认证出错，请稍后再来 （￣～￣） \n\n" + e.getMessage());
+
+                    }
+
+
 
                 }
-                
+
                 case "/callback" : {
 
                     String requestToken = session.getParms().get("oauth_token");
@@ -91,7 +91,7 @@ public class TwiAuthF implements ServerFragment {
                     } else {
 
                         return Response.newFixedLengthResponse(Markdown.parsePage("请返回Bot", "#NTTBot", "账号认证 ~\n这个认证链接过期了啦 ~\n是不是刷新了界面/登录了两次 ？ (´▽`ʃƪ)", "\n"));
-
+                        
 
                     }
 
@@ -134,7 +134,11 @@ public class TwiAuthF implements ServerFragment {
 
                             account.save();
 
-                            preL.onAuth(account);
+                            if (preL != null) {
+
+                                preL.onAuth(account);
+
+                            }
 
                         }
 
