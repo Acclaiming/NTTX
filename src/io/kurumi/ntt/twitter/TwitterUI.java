@@ -6,6 +6,7 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.BotConf;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.db.WrongUse;
+import java.util.LinkedList;
 
 public class TwitterUI extends Fragment {
 
@@ -108,8 +109,35 @@ public class TwitterUI extends Fragment {
 
         }
         
-        user.current().logout();
+        TwiAccount current = user.current();
 
+        if (current.belong.equals(user.id)) {
+            
+            current.logout();
+            
+            msg.send("移除 " + current.formatedNameMarkdown() + " 完成 （￣～￣）").markdown().disableLinkPreview().exec();
+            
+        } else {
+            
+            LinkedList<TwiAccount> accounts = TwiAccount.getAccounts(user.id);
+            
+            if (accounts.isEmpty()) {
+                
+                TwiAccount.cleanCurr(user.id);
+                
+                msg.send("切出 " + current.formatedNameMarkdown() + " 完成","","当然没有登录的账号 >_<").markdown().disableLinkPreview().exec();
+                
+            } else {
+                
+                TwiAccount.switchAccount(user.id,accounts.getFirst());
+                
+                msg.send("切回 " + accounts.getFirst().formatedNameMarkdown() + " 完成 （￣～￣）").markdown().disableLinkPreview().exec();
+                
+            }
+
+        }
+        
+        
     }
 
 }

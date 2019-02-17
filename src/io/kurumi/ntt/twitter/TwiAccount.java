@@ -199,8 +199,6 @@ public class TwiAccount extends JSONObject {
         
         if (curr.containsValue(this)) {
             
-            curr.remove(belong);
-            
             LinkedList<TwiAccount> accounts = getAccounts(belong);
 
             accounts.remove(this);
@@ -211,7 +209,7 @@ public class TwiAccount extends JSONObject {
                 
             } else {
                 
-                BotDB.jedis.hdel(CURR,belong.toString());
+                cleanCurr(id);
                 
             }
             
@@ -220,6 +218,14 @@ public class TwiAccount extends JSONObject {
         cache.remove(id);
         
         BotDB.jedis.hdel(KEY,id.toString());
+        
+    }
+    
+    public static void cleanCurr(Integer id) {
+        
+        curr.remove(id);
+        
+        BotDB.jedis.hdel(CURR,id.toString());
         
     }
 
