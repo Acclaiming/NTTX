@@ -11,7 +11,7 @@ public class WrongUse {
 
         BotLog.debug(user.name() + " 又用错了一次！");
 
-        return "你已经用错 " + incr(user) + "次了！ （￣～￣)";
+        return "你已经用错 " + incr(user) + " 次了！ （￣～￣)";
 
     }
     

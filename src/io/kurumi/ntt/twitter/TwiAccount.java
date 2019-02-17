@@ -194,6 +194,34 @@ public class TwiAccount extends JSONObject {
         return screenName + "「" + name + "」";
 
     }
+    
+    public void logout() {
+        
+        if (curr.containsValue(this)) {
+            
+            curr.remove(belong);
+            
+            LinkedList<TwiAccount> accounts = getAccounts(belong);
+
+            accounts.remove(this);
+            
+            if (!accounts.isEmpty()) {
+                
+                switchAccount(belong,accounts.getFirst());
+                
+            } else {
+                
+                BotDB.jedis.hdel(CURR,belong.toString());
+                
+            }
+            
+        }
+        
+        cache.remove(id);
+        
+        BotDB.jedis.hdel(KEY,id.toString());
+        
+    }
 
     private static LinkedHashMap<Long,TwiAccount> cache = new LinkedHashMap<>(); static {
         
@@ -236,7 +264,7 @@ public class TwiAccount extends JSONObject {
 
     }
     
-    public static TwiAccount getByaAccountId(Long id) {
+    public static TwiAccount getByAccountId(Long id) {
 
         for (TwiAccount account : cache.values()) {
 
@@ -270,7 +298,7 @@ public class TwiAccount extends JSONObject {
 
     }
 
-    public static LinkedList<TwiAccount> getTwitterAccounts(Integer id) {
+    public static LinkedList<TwiAccount> getAccounts(Integer id) {
         
         LinkedList<TwiAccount> accs = new LinkedList<>();
         

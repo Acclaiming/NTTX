@@ -70,7 +70,7 @@ public class TwitterUI extends Fragment {
 
     public void su(final UserData user, Msg msg) {
 
-        if (!msg.isPrivate() && msg.commandParms().length != 1) {
+        if (msg.commandParms().length != 1) {
 
             msg.send(user.userName() + " " + WrongUse.incrWithMsg(user), "请使用 /su 用户名 切换账号").exec();
 
@@ -78,8 +78,7 @@ public class TwitterUI extends Fragment {
 
         }
 
-        if (msg.commandParms().length == 1) {
-
+       
             TwiAccount acc = TwiAccount.getByScreenName(msg.commandParms()[0]);
 
             if (acc == null && user.isBureaucrats()) {
@@ -97,9 +96,6 @@ public class TwitterUI extends Fragment {
             }
 
             TwiAccount.switchAccount(user.id, acc);
-
-        }
-
     }
 
     public void logout(UserData user, Msg msg) {
@@ -107,8 +103,12 @@ public class TwitterUI extends Fragment {
         if (user.current() == null) {
 
             msg.send("你还没有登录账号！", "", WrongUse.incrWithMsg(user)).exec();
+            
+            return;
 
         }
+        
+        user.current().logout();
 
     }
 
