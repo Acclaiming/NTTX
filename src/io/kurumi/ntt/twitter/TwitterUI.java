@@ -7,11 +7,18 @@ import io.kurumi.ntt.BotConf;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.db.WrongUse;
 import java.util.LinkedList;
+import io.kurumi.ntt.stickers.StickerX;
 
 public class TwitterUI extends Fragment {
 
     public static TwitterUI INSTANCE = new TwitterUI();
-    
+
+    public static void noAuth(UserData user, Msg msg) { 
+
+        msg.send("你还没有认证账号！", "", WrongUse.incrWithMsg(user)).exec();
+        
+    }
+
     @Override
     public boolean onMsg(UserData user, Msg msg) {
 
@@ -31,7 +38,7 @@ public class TwitterUI extends Fragment {
 
     }
 
-    public void login(final UserData user, final Msg msg) {
+    public String pre(final UserData user, final Msg msg) {
 
         TwiAuthF.pre(user, new TwiAuthF.Listener() {
 
@@ -52,6 +59,14 @@ public class TwitterUI extends Fragment {
 
             });
 
+        return "https://" + BotConf.SERVER_DOMAIN + "/auth?userId=" + user.id;
+
+    }
+
+    void login(final UserData user, final Msg msg) {
+
+
+
         String text = "点击专属链接认证 ⊙∀⊙";
 
         if (!msg.isPrivate()) {
@@ -62,14 +77,14 @@ public class TwitterUI extends Fragment {
 
         msg.send(text).buttons(new ButtonMarkup() {{
 
-                    newUrlButtonLine("认证", "https://" + BotConf.SERVER_DOMAIN + "/auth?userId=" + user.id);
+                    newUrlButtonLine("认证", pre(user, msg));
 
                 }}).exec();
 
     }
 
 
-    public void su(final UserData user, Msg msg) {
+    void su(final UserData user, Msg msg) {
 
         if (msg.commandParms().length != 1) {
 
@@ -79,65 +94,65 @@ public class TwitterUI extends Fragment {
 
         }
 
-       
-            TwiAccount acc = TwiAccount.getByScreenName(msg.commandParms()[0]);
 
-            if (acc == null && user.isBureaucrats()) {
+        TwiAccount acc = TwiAccount.getByScreenName(msg.commandParms()[0]);
 
-                msg.send("这个账号没有被认证过 （￣～￣）").exec();
+        if (acc == null && user.isBureaucrats()) {
 
-                return;
+            msg.send("这个账号没有被认证过 （￣～￣）").exec();
 
-            } else if (!user.id.equals(acc.id) && !user.isBureaucrats()) {
+            return;
 
-                msg.send("你认证这个账号了吗？ ", "", WrongUse.incrWithMsg(user)).exec();
+        } else if (!user.id.equals(acc.id) && !user.isBureaucrats()) {
 
-                return;
+            msg.send("你认证这个账号了吗？ ", "", WrongUse.incrWithMsg(user)).exec();
 
-            }
-
-            TwiAccount.switchAccount(user.id, acc);
-    }
-
-    public void logout(UserData user, Msg msg) {
-
-        if (user.current() == null) {
-
-            msg.send("你还没有登录账号！", "", WrongUse.incrWithMsg(user)).exec();
-            
             return;
 
         }
-        
-        TwiAccount current = user.current();
+
+        TwiAccount.switchAccount(user.id, acc);
+    }
+
+    void logout(UserData user, Msg msg) {
+
+        if (user.cTU() == null) {
+
+            noAuth(user, msg);
+
+            return;
+
+        }
+
+        TwiAccount current = user.cTU();
 
         if (current.belong.equals(user.id)) {
-            
+
             current.logout();
-            
-            msg.send("移除 " + current.formatedNameMarkdown() + " 完成 （￣～￣）").markdown().disableLinkPreview().exec();
-            
+
+            msg.send("移除 " + current.formatedNameMarkdown() + " 完成 （￣～￣）").markdown().exec();
+
         } else {
-            
+
             LinkedList<TwiAccount> accounts = TwiAccount.getAccounts(user.id);
-            
+
             if (accounts.isEmpty()) {
-                
+
                 TwiAccount.cleanCurr(user.id);
-                
-                msg.send("切出 " + current.formatedNameMarkdown() + " 完成","","当然没有登录的账号 >_<").markdown().disableLinkPreview().exec();
-                
+
+                msg.send("切出 " + current.formatedNameMarkdown() + " 完成", "", "当然没有登录的账号 >_<").markdown().exec();
+
             } else {
-                
-                TwiAccount.switchAccount(user.id,accounts.getFirst());
-                
-                msg.send("切回 " + accounts.getFirst().formatedNameMarkdown() + " 完成 （￣～￣）").markdown().disableLinkPreview().exec();
-                
+
+                TwiAccount.switchAccount(user.id, accounts.getFirst());
+
+                msg.send("切回 " + accounts.getFirst().formatedNameMarkdown() + " 完成 （￣～￣）").markdown().exec();
+
             }
 
         }
-        
-        
+
+
     }
 
 }

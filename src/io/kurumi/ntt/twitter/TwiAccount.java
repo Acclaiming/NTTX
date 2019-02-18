@@ -209,7 +209,7 @@ public class TwiAccount extends JSONObject {
                 
             } else {
                 
-                cleanCurr(id);
+                cleanCurr(belong);
                 
             }
             

@@ -13,9 +13,9 @@ import org.nanohttpd.protocols.http.response.Response;
 import org.nanohttpd.protocols.http.NanoHTTPD;
 import java.util.HashMap;
 
-public class BotCallBackF implements ServerFragment {
+public class TGWebHookF implements ServerFragment {
 
-    public static BotCallBackF INSTANCE = new BotCallBackF();
+    public static TGWebHookF INSTANCE = new TGWebHookF();
 
     public static HashMap<String,BotFragment> bots = new HashMap<>();
 

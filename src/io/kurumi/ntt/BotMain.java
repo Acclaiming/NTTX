@@ -6,7 +6,7 @@ import io.kurumi.ntt.server.BotServer;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.stickers.DVANG;
-import io.kurumi.ntt.fragment.BotCallBackF;
+import io.kurumi.ntt.fragment.TGWebHookF;
 import java.io.IOException;
 import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.db.BotDB;
@@ -30,7 +30,7 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
         
         BotServer.INSTACNCE.fragments.add(TwiAuthF.INSTANCE);
-        BotServer.INSTACNCE.fragments.add(BotCallBackF.INSTANCE);
+        BotServer.INSTACNCE.fragments.add(TGWebHookF.INSTANCE);
 
         try {
 

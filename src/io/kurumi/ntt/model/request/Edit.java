@@ -18,14 +18,16 @@ public class Edit extends AbstractSend<Edit> {
         request = new EditMessageText(chatId,messageId,ArrayUtil.join(msg, "\n"));
 
         this.fragment = fragment;
+        
+        request.disableWebPagePreview(true);
 
 
     }
 
     @Override
-    public Edit disableLinkPreview() {
+    public Edit enableLinkPreview() {
         
-        request.disableWebPagePreview(true);
+        request.disableWebPagePreview(false);
         
         return this;
         

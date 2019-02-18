@@ -14,7 +14,7 @@ public abstract class AbstractSend<T extends AbstractSend> {
     
     public abstract T buttons(ButtonMarkup markup);
     
-    public abstract T disableLinkPreview();
+    public abstract T enableLinkPreview();
     
     public abstract T markdown();
     

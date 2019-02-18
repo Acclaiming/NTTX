@@ -21,12 +21,14 @@ public class Send extends AbstractSend<Send> {
 
         this.fragment = fragment;
 
+        request.disableWebPagePreview(true);
+        
     }
 
     @Override
-    public Send disableLinkPreview() {
+    public Send enableLinkPreview() {
 
-        request.disableWebPagePreview(true);
+        request.disableWebPagePreview(false);
 
         return this;
 

@@ -15,27 +15,28 @@ import java.util.LinkedList;
 import java.util.List;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Query;
+import com.pengrad.telegrambot.request.SetWebhook;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
     public BotFragment() { origin = this; }
-    
+
     private TelegramBot bot;
 
     @Override
     public TelegramBot bot() { return bot; }
-    
+
     private LinkedList<Fragment> fragments = new LinkedList<>(); {
-        
+
         fragments.add(this);
-        
+
     }
-    
+
     public void addFragment(Fragment fragment) {
-        
+
         fragment.origin = this;
         fragments.add(fragment);
-        
+
     }
 
     public abstract String botName();
@@ -48,7 +49,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
         for (Update update : updates) {
 
             processAsync(update);   
-            
+
         }
 
         return CONFIRMED_UPDATES_ALL;
@@ -75,7 +76,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
         if (update.message() != null) {
 
             UserData user = UserData.get(update.message().from());
-            
+
             boolean point = user.hasPoint();
 
             if (point) {
@@ -226,7 +227,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
         } else if (update.callbackQuery() != null) {
 
             UserData user = UserData.get(update.channelPost().from());
-           
+
             boolean point = user.hasPoint();
 
             if (point) {
@@ -242,9 +243,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
                     }
 
                 }
-                
+
             } else {
-                
+
                 for (Fragment fragmnet : fragments) {
 
                     if (fragmnet.onCallback(user, new Callback(fragmnet, update.callbackQuery()))) {
@@ -254,30 +255,32 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
                     }
 
                 }
-                
+
             }
 
-        } else if(update.inlineQuery() != null) {
-            
+        } else if (update.inlineQuery() != null) {
+
             UserData user = UserData.get(update.channelPost().from());
-            
+
             for (Fragment fragmnet : fragments) {
 
-                if (fragmnet.onQuery(user, new Query(fragmnet,update.inlineQuery()))) {
+                if (fragmnet.onQuery(user, new Query(fragmnet, update.inlineQuery()))) {
 
                     return;
 
                 }
 
             }
-            
+
         }
 
     }
 
+    private String token;
+
     public void start() {
 
-        String token = BotConf.getBotToken(botName());
+        token = BotConf.getBotToken(botName());
 
         if (token == null || !BotConf.verifyToken(token)) {
 
@@ -293,8 +296,10 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         } else {
 
+            bot.execute(new SetWebhook().url("https://" + BotConf.SERVER_DOMAIN + "/" + token));
             
-
+            TGWebHookF.bots.put(token, this);
+            
         }
 
     }
@@ -307,7 +312,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         } else {
 
-            bot.execute(new DeleteWebhook());
+            if (token != null) {
+
+                TGWebHookF.bots.remove(token);
+
+                bot.execute(new DeleteWebhook());
+
+            }
 
         }
 
