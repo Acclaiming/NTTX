@@ -1,9 +1,8 @@
 package com.ernieyu.feedparser.impl;
 
-import org.xml.sax.Attributes;
-
 import com.ernieyu.feedparser.FeedUtils;
 import com.ernieyu.feedparser.Item;
+import org.xml.sax.Attributes;
 
 /**
  * Base class for feed items.
@@ -11,16 +10,16 @@ import com.ernieyu.feedparser.Item;
 abstract class BaseItem extends BaseElement implements Item {
 
     /**
-     * Constructs a BaseItem with the specified namespace uri, name and 
+     * Constructs a BaseItem with the specified namespace uri, name and
      * attributes.
      */
     public BaseItem(String uri, String name, Attributes attributes) {
         super(uri, name, attributes);
     }
-    
+
     /**
      * Returns the unique identifier for item equality.  This is usually based
-     * on the Guid value.  This method uses alternate values when the Guid 
+     * on the Guid value.  This method uses alternate values when the Guid
      * value is missing.
      */
     private String getUniqueId() {
@@ -35,7 +34,7 @@ abstract class BaseItem extends BaseElement implements Item {
     public String toString() {
         return getTitle();
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         // Compare ids for equality.
@@ -44,10 +43,10 @@ abstract class BaseItem extends BaseElement implements Item {
             String id2 = ((BaseItem) obj).getUniqueId();
             return FeedUtils.equalsOrNull(id1, id2);
         }
-        
+
         return false;
     }
-    
+
     @Override
     public int hashCode() {
         // Use same fields as equals method. 

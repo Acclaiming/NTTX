@@ -12,7 +12,7 @@ public interface Item extends Element {
      * Returns the feed type.
      */
     public FeedType getType();
-    
+
     /**
      * Convenience method to retrieve the title.
      */
@@ -47,13 +47,13 @@ public interface Item extends Element {
      * Convenience method to retrieve a list of categories.
      */
     public List<String> getCategories();
-    
+
     /**
      * Indicates whether the specified object is equal to this Item based on
      * its unique identifier.
      */
     public boolean equals(Object obj);
-    
+
     /**
      * Returns a hash code based on the unique identifier referenced in the
      * equals() method.

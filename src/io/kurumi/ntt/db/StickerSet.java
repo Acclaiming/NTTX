@@ -1,21 +1,40 @@
 package io.kurumi.ntt.db;
 
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
-import io.kurumi.ntt.BotMain;
 import com.pengrad.telegrambot.request.GetStickerSet;
 import com.pengrad.telegrambot.response.GetStickerSetResponse;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import cn.hutool.json.JSONArray;
-import java.util.HashMap;
-import java.util.Map;
+import io.kurumi.ntt.BotMain;
 import io.kurumi.ntt.utils.BotLog;
+
+import java.util.HashMap;
+import java.util.LinkedList;
 
 public class StickerSet extends JSONObject {
 
     public static final String KEY = "NTT_STICKER_SETS";
 
-    public static HashMap<String,StickerSet> cache = new HashMap<>();
+    public static HashMap<String, StickerSet> cache = new HashMap<>();
+    public String name;
+    public String title;
+    public Boolean containsMasks;
+    public LinkedList<StickerPoint> stickers = new LinkedList<>();
+
+    public StickerSet(String name) {
+
+        this.name = name;
+
+    }
+
+    public StickerSet(String name, String json) {
+
+        super(json);
+
+        this.name = name;
+
+        load();
+
+    }
 
     public static StickerSet get(String name) {
 
@@ -30,13 +49,13 @@ public class StickerSet extends JSONObject {
             if (!set.refresh()) {
 
                 BotLog.debug("尝试获取不存在的贴纸集 : " + name);
-                
+
                 return null;
 
             }
-            
-            cache.put(name,set);
-            
+
+            cache.put(name, set);
+
             return set;
 
         } else {
@@ -51,54 +70,30 @@ public class StickerSet extends JSONObject {
 
     }
 
-
-    public String name;
-    public String title;
-
-    public Boolean containsMasks;
-
-    public LinkedList<StickerPoint> stickers = new LinkedList<>();
-
-    public StickerSet(String name) {
-
-        this.name = name;
-        
-    }
-
-    public StickerSet(String name, String json) {
-
-        super(json);
-
-        this.name = name;
-
-        load();
-
-    }
-    
     public StickerPoint get(int point) {
-        
+
         return stickers.get(point - 1);
-        
+
     }
-    
+
     public void load() {
-        
+
         title = getStr("t");
 
         containsMasks = getBool("c");
 
         JSONArray stickerArray = getJSONArray("s");
 
-        for (int index = 0;index < stickerArray.size();index ++) {
+        for (int index = 0; index < stickerArray.size(); index++) {
 
             stickers.add(new StickerPoint(this, index + 1, stickerArray.getJSONObject(index)));
 
         }
-        
+
     }
 
     public boolean refresh() {
-        
+
         GetStickerSetResponse resp = BotMain.INSTANCE.bot().execute(new GetStickerSet(name));
 
         if (!resp.isOk()) {
@@ -115,9 +110,9 @@ public class StickerSet extends JSONObject {
 
         stickers.clear();
 
-        for (int index = 0;index < set.stickers().length;index ++) {
+        for (int index = 0; index < set.stickers().length; index++) {
 
-            com.pengrad.telegrambot.model.Sticker sticker = set.stickers()[set.stickers().length -1 - index ];
+            com.pengrad.telegrambot.model.Sticker sticker = set.stickers()[set.stickers().length - 1 - index];
 
             stickers.add(new StickerPoint(this, set.stickers().length - index, sticker));
 
@@ -140,13 +135,13 @@ public class StickerSet extends JSONObject {
         BotDB.jedis.hset(KEY, name, toString());
 
     }
-   
+
     public void override() {
-        
+
         putAll(StickerSet.get(name));
 
-        cache.put(name,this);
-        
+        cache.put(name, this);
+
     }
 
 }

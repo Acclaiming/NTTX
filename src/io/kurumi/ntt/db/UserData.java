@@ -8,6 +8,7 @@ import io.kurumi.ntt.BotConf;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.twitter.TwiAccount;
 import io.kurumi.ntt.utils.CData;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -15,20 +16,33 @@ import java.util.Map;
 public class UserData extends JSONObject {
 
     public static final String KEY = "NTT_USERS";
+    private static HashMap<Integer, UserData> cache = new HashMap<>();
+
+    static {
+
+        Map<String, String> all = BotDB.jedis.hgetAll(KEY);
+
+        for (Map.Entry<String, String> user : all.entrySet()) {
+
+            int id = Integer.parseInt(user.getKey());
+
+            UserData u = new UserData(id, user.getValue());
+
+            cache.put(id, u);
+
+        }
+
+    }
 
     public Integer id;
-
     public String firstName;
-
     public String lastName;
-
     public String userName;
-
     public boolean isBot;
 
     private UserData(int id) {
 
-        this.id = id; 
+        this.id = id;
 
     }
 
@@ -45,6 +59,46 @@ public class UserData extends JSONObject {
         this.lastName = getStr("l");
 
         this.isBot = getBool("i", false);
+
+    }
+
+    public static UserData get(User u) {
+
+        UserData user = get(u.id());
+
+        user.refresh(u);
+
+        return user;
+
+    }
+
+    public static UserData get(Integer id) {
+
+        if (cache.containsKey(id)) return cache.get(id);
+
+        String data = BotDB.jedis.hget(KEY, id.toString());
+
+        if (data == null) {
+
+            UserData user = new UserData(id);
+
+            cache.put(id, user);
+
+            return user;
+
+        }
+
+        UserData user = new UserData(id, data);
+
+        cache.put(id, user);
+
+        return user;
+
+    }
+
+    public static LinkedList<UserData> getAll() {
+
+        return new LinkedList<UserData>(cache.values());
 
     }
 
@@ -84,7 +138,7 @@ public class UserData extends JSONObject {
 
         if (lastName != null) {
 
-            name =  lastName + " " + name;
+            name = lastName + " " + name;
 
         }
 
@@ -147,64 +201,6 @@ public class UserData extends JSONObject {
         put("i", isBot);
 
         BotDB.jedis.hset(KEY, id.toString(), toString());
-
-    }
-
-    private static HashMap<Integer,UserData> cache = new HashMap<>();
-
-    static {
-
-        Map<String, String> all = BotDB.jedis.hgetAll(KEY);
-
-        for (Map.Entry<String,String> user : all.entrySet()) {
-
-            int id = Integer.parseInt(user.getKey());
-
-            UserData u = new UserData(id, user.getValue());
-
-            cache.put(id, u);
-
-        }
-
-    }
-
-    public static UserData get(User u) {
-
-        UserData user = get(u.id());
-
-        user.refresh(u);
-
-        return user;
-
-    }
-
-    public static UserData get(Integer id) {
-
-        if (cache.containsKey(id)) return cache.get(id);
-
-        String data = BotDB.jedis.hget(KEY, id.toString());
-
-        if (data == null) {
-
-            UserData user = new UserData(id);
-
-            cache.put(id, user);
-
-            return user;
-
-        }
-
-        UserData user = new UserData(id, data);
-
-        cache.put(id, user);
-
-        return user;
-
-    }
-
-    public static LinkedList<UserData> getAll() {
-
-        return new LinkedList<UserData>(cache.values());
 
     }
 

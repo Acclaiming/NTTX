@@ -1,17 +1,12 @@
 package com.ernieyu.feedparser.impl;
 
+import com.ernieyu.feedparser.*;
+import org.xml.sax.Attributes;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
-import org.xml.sax.Attributes;
-
-import com.ernieyu.feedparser.Element;
-import com.ernieyu.feedparser.Feed;
-import com.ernieyu.feedparser.FeedType;
-import com.ernieyu.feedparser.FeedUtils;
-import com.ernieyu.feedparser.Item;
 
 /**
  * Feed implementation for RSS 1.0.
@@ -26,40 +21,40 @@ class Rss1Feed extends BaseElement implements Feed {
     private static final String RIGHTS = "rights";
     private static final String DATE = "pubDate";
     private static final String ITEM = "item";
-	
-	/**
-	 * Constructs an Rss1Feed with the specified namespace uri, name and
-	 * attributes.
-	 */
-	public Rss1Feed(String uri, String name, Attributes attributes) {
-	    super(uri, name, attributes);
-	}
-	
+
+    /**
+     * Constructs an Rss1Feed with the specified namespace uri, name and
+     * attributes.
+     */
+    public Rss1Feed(String uri, String name, Attributes attributes) {
+        super(uri, name, attributes);
+    }
+
     @Override
-	public FeedType getType() {
-		return FeedType.RSS_1_0;
-	}
-	
+    public FeedType getType() {
+        return FeedType.RSS_1_0;
+    }
+
     @Override
-	public String getTitle() {
+    public String getTitle() {
         Element channel = getElement(CHANNEL);
-	    Element title = channel.getElement(TITLE);
-	    return (title != null) ? title.getContent() : null;
-	}
-	
+        Element title = channel.getElement(TITLE);
+        return (title != null) ? title.getContent() : null;
+    }
+
     @Override
-	public String getLink() {
+    public String getLink() {
         Element channel = getElement(CHANNEL);
         Element link = channel.getElement(LINK);
         return (link != null) ? link.getContent() : null;
-	}
-	
+    }
+
     @Override
-	public String getDescription() {
+    public String getDescription() {
         Element channel = getElement(CHANNEL);
         Element descr = channel.getElement(DESCRIPTION);
         return (descr != null) ? descr.getContent() : null;
-	}
+    }
 
     @Override
     public String getLanguage() {
@@ -68,7 +63,7 @@ class Rss1Feed extends BaseElement implements Feed {
         Element language = channel.getElement(LANGUAGE);
         return (language != null) ? language.getContent() : null;
     }
-    
+
     @Override
     public String getCopyright() {
         // Use Dublin Core element.
@@ -76,7 +71,7 @@ class Rss1Feed extends BaseElement implements Feed {
         Element rights = channel.getElement(RIGHTS);
         return (rights != null) ? rights.getContent() : null;
     }
-    
+
     @Override
     public Date getPubDate() {
         // Use Dublin Core element.
@@ -89,11 +84,11 @@ class Rss1Feed extends BaseElement implements Feed {
     public List<String> getCategories() {
         return Collections.<String>emptyList();
     }
-	
-	@Override
-	public List<Item> getItemList() {
+
+    @Override
+    public List<Item> getItemList() {
         // Get element list for items.
-	    List<Element> elementList = getElementList(ITEM);
+        List<Element> elementList = getElementList(ITEM);
         List<Item> itemList = new ArrayList<Item>();
 
         // Build item list.
@@ -102,10 +97,10 @@ class Rss1Feed extends BaseElement implements Feed {
                 itemList.add((Item) element);
             }
         }
-	    
-	    return itemList;
-	}
-    
+
+        return itemList;
+    }
+
     @Override
     public String toString() {
         return getTitle();

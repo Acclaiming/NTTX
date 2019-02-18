@@ -1,14 +1,13 @@
 package com.ernieyu.feedparser.impl;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import org.xml.sax.Attributes;
-
 import com.ernieyu.feedparser.Element;
 import com.ernieyu.feedparser.FeedType;
 import com.ernieyu.feedparser.FeedUtils;
+import org.xml.sax.Attributes;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Item implementation for RSS 1.0 feeds.
@@ -21,7 +20,7 @@ class Rss1Item extends BaseItem {
     private static final String DATE = "pubDate";
     private static final String CREATOR = "creator";
     private static final String IDENTIFIER = "identifier";
-    
+
     /**
      * Constructs an Rss1Item with the specified namespace uri, name and
      * attributes.
@@ -29,12 +28,12 @@ class Rss1Item extends BaseItem {
     public Rss1Item(String uri, String name, Attributes attributes) {
         super(uri, name, attributes);
     }
-    
+
     @Override
     public FeedType getType() {
         return FeedType.RSS_1_0;
     }
-    
+
     @Override
     public String getTitle() {
         Element title = getElement(TITLE);

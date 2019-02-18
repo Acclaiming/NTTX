@@ -1,14 +1,13 @@
 package com.ernieyu.feedparser.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.xml.sax.Attributes;
-
 import com.ernieyu.feedparser.Element;
 import com.ernieyu.feedparser.FeedType;
 import com.ernieyu.feedparser.FeedUtils;
+import org.xml.sax.Attributes;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Item implementation for RSS 2.0 feeds.
@@ -22,7 +21,7 @@ class Rss2Item extends BaseItem {
     private static final String AUTHOR = "author";
     private static final String GUID = "guid";
     private static final String CATEGORY = "category";
-    
+
     /**
      * Constructs an Rss2Item with the specified namespace uri, name and
      * attributes.
@@ -30,12 +29,12 @@ class Rss2Item extends BaseItem {
     public Rss2Item(String uri, String name, Attributes attributes) {
         super(uri, name, attributes);
     }
-    
+
     @Override
     public FeedType getType() {
         return FeedType.RSS_2_0;
     }
-    
+
     @Override
     public String getTitle() {
         Element title = getElement(TITLE);
@@ -75,13 +74,13 @@ class Rss2Item extends BaseItem {
     @Override
     public List<String> getCategories() {
         List<Element> elementList = getElementList(CATEGORY);
-        
+
         // Create list of category terms.
         List<String> categories = new ArrayList<String>();
         for (Element element : elementList) {
             categories.add(element.getContent());
         }
-        
+
         return categories;
     }
 }

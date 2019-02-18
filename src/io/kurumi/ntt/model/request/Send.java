@@ -16,13 +16,13 @@ public class Send extends AbstractSend<Send> {
     public Send(Fragment fragment, Object chatId, String... msg) {
 
         super(fragment);
-        
+
         request = new SendMessage(chatId, ArrayUtil.join(msg, "\n"));
 
         this.fragment = fragment;
 
         request.disableWebPagePreview(true);
-        
+
     }
 
     @Override
@@ -94,13 +94,13 @@ public class Send extends AbstractSend<Send> {
         return this;
 
     }
-    
+
     public Send keyboard(Keyboard keyboard) {
-        
+
         request.replyMarkup(keyboard.markup());
-        
+
         return this;
-        
+
     }
 
     @Override
@@ -120,14 +120,14 @@ public class Send extends AbstractSend<Send> {
 
     @Override
     public SendResponse sync() {
-        
-   //     System.out.println(request.toWebhookResponse());
-        
+
+        //     System.out.println(request.toWebhookResponse());
+
         SendResponse resp = fragment.bot().execute(request);
 
         if (!resp.isOk()) {
 
-            StaticLog.error(new RuntimeException(),"SendMseeage Error " + resp.errorCode() + " : " + resp.description());
+            StaticLog.error(new RuntimeException(), "SendMseeage Error " + resp.errorCode() + " : " + resp.description());
 
         }
 

@@ -7,11 +7,11 @@ import java.io.InputStream;
  */
 public interface FeedParser {
 
-	/**
-	 * Parses the feed from the specified URL string. 
-	 * 
-	 * @param inStream InputStream for the web feed
-	 * @return Feed object containing parsed data
-	 */
-	Feed parse(InputStream inStream) throws FeedException;
+    /**
+     * Parses the feed from the specified URL string.
+     *
+     * @param inStream InputStream for the web feed
+     * @return Feed object containing parsed data
+     */
+    Feed parse(InputStream inStream) throws FeedException;
 }

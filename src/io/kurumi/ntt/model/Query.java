@@ -11,6 +11,7 @@ import com.pengrad.telegrambot.response.GetFileResponse;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.server.BotServer;
 import io.kurumi.ntt.utils.BotLog;
+
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -18,13 +19,12 @@ public class Query {
 
     public Fragment fragment;
     public InlineQuery query;
+    public LinkedList<InlineQueryResult> results = new LinkedList<>();
 
     public Query(Fragment fragment, InlineQuery query) {
         this.fragment = fragment;
         this.query = query;
     }
-
-    public LinkedList<InlineQueryResult> results = new LinkedList<>();
 
     public Query article(String title, String content) {
 
@@ -35,21 +35,21 @@ public class Query {
         return this;
 
     }
-    
-    public Query fileId(String fileName,String fileId) {
-        
+
+    public Query fileId(String fileName, String fileId) {
+
         GetFileResponse resp = fragment.bot().execute(new GetFile(fileId));
 
         if (!resp.isOk()) {
-            
+
             BotLog.warnWithStack("没有那样的fileId对应的文件 : " + fileId);
-            
+
             return this;
-            
+
         }
-        
-        return fileUrl(fileName,fragment.bot().getFullFilePath(resp.file()));
-        
+
+        return fileUrl(fileName, fragment.bot().getFullFilePath(resp.file()));
+
     }
 
     public Query fileUrl(String fileName, String url) {

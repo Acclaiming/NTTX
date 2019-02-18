@@ -1,19 +1,16 @@
 package io.kurumi.ntt;
 
 import cn.hutool.log.StaticLog;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.server.BotServer;
-import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.stickers.DVANG;
+import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.TGWebHookF;
-import java.io.IOException;
-import io.kurumi.ntt.utils.BotLog;
-import io.kurumi.ntt.db.BotDB;
-import cn.hutool.system.SystemUtil;
-import cn.hutool.system.OsInfo;
-import io.kurumi.ntt.twitter.TwitterUI;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.server.BotServer;
 import io.kurumi.ntt.twitter.TwiAuthF;
+import io.kurumi.ntt.twitter.TwitterUI;
+import io.kurumi.ntt.utils.BotLog;
+
+import java.io.IOException;
 
 public class BotMain extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -28,7 +25,7 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
     public static void main(String[] args) {
 
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
-        
+
         BotServer.INSTACNCE.fragments.add(TwiAuthF.INSTANCE);
         BotServer.INSTACNCE.fragments.add(TGWebHookF.INSTANCE);
 
@@ -45,7 +42,7 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
         }
 
         INSTANCE.start();
-        
+
     }
 
     @Override
@@ -65,7 +62,7 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
     @Override
     public boolean onMsg(UserData user, Msg msg) {
 
-       // msg.sendSticker(DVANG.发情);
+        // msg.sendSticker(DVANG.发情);
 
         return false;
 
@@ -78,7 +75,7 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
         StaticLog.info("正在停止Bot");
 
         INSTANCE.stop();
-        
+
         BotServer.INSTACNCE.stop();
 
         System.exit(1);

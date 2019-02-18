@@ -8,17 +8,17 @@ import com.pengrad.telegrambot.response.BaseResponse;
 import io.kurumi.ntt.fragment.Fragment;
 
 public class Edit extends AbstractSend<Edit> {
-  
+
     private EditMessageText request;
 
-    public Edit(Fragment fragment, Object chatId,int messageId, String... msg) {
+    public Edit(Fragment fragment, Object chatId, int messageId, String... msg) {
 
         super(fragment);
-        
-        request = new EditMessageText(chatId,messageId,ArrayUtil.join(msg, "\n"));
+
+        request = new EditMessageText(chatId, messageId, ArrayUtil.join(msg, "\n"));
 
         this.fragment = fragment;
-        
+
         request.disableWebPagePreview(true);
 
 
@@ -26,12 +26,12 @@ public class Edit extends AbstractSend<Edit> {
 
     @Override
     public Edit enableLinkPreview() {
-        
+
         request.disableWebPagePreview(false);
-        
+
         return this;
-        
-   }
+
+    }
 
     @Override
     public Edit markdown() {
@@ -53,30 +53,30 @@ public class Edit extends AbstractSend<Edit> {
 
     @Override
     public Edit buttons(ButtonMarkup markup) {
-        
+
         request.replyMarkup(markup.markup());
-        
+
         return this;
-        
-   }
+
+    }
 
     @Override
     public BaseResponse sync() {
 
-      //  System.out.println(request.toWebhookResponse());
-        
+        //  System.out.println(request.toWebhookResponse());
+
         BaseResponse resp = fragment.bot().execute(request);
-        
-    //    if (resp.errorCode() == 
-        
+
+        //    if (resp.errorCode() ==
+
         if (!resp.isOk()) {
-            
-            StaticLog.error(new RuntimeException(),"request : " + request.toWebhookResponse() + "\n\nEditMseeage Error " + resp.errorCode() + " : " + resp.description());
-            
+
+            StaticLog.error(new RuntimeException(), "request : " + request.toWebhookResponse() + "\n\nEditMseeage Error " + resp.errorCode() + " : " + resp.description());
+
         }
-        
+
         return resp;
 
     }
-    
+
 }

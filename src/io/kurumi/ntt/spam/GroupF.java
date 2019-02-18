@@ -4,23 +4,27 @@ import com.pengrad.telegrambot.model.User;
 import io.kurumi.ntt.db.BotDB;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.stickers.DVANG;
+import io.kurumi.ntt.twitter.TwitterUI;
+
 import java.util.HashMap;
 import java.util.Map;
-import io.kurumi.ntt.model.request.ButtonMarkup;
-import io.kurumi.ntt.twitter.TwitterUI;
-import io.kurumi.ntt.model.Callback;
 
 public class GroupF extends Fragment {
 
     public static final String KEY = "NTT_GR";
+    private static final String POINT_PASS = "g|p";
+    private static final String POINT_REJ = "g|r";
+    public static HashMap<Long, Boolean> cache = new HashMap<>();
 
-    public static HashMap<Long,Boolean> cache = new HashMap<>(); static {
+    static {
 
         Map<String, String> all = BotDB.jedis.hgetAll(KEY);
 
-        for (Map.Entry<String,String> tag : all.entrySet()) {
+        for (Map.Entry<String, String> tag : all.entrySet()) {
 
             cache.put(Long.parseLong(tag.getKey()), Boolean.parseBoolean(tag.getValue()));
 
@@ -66,9 +70,6 @@ public class GroupF extends Fragment {
 
     }
 
-    private static final String POINT_PASS = "g|p";
-    private static final String POINT_REJ = "g|r";
-
     private void onNewNember(final UserData user, final Msg msg) {
 
         msg.sendSticker(DVANG.发情);
@@ -87,13 +88,13 @@ public class GroupF extends Fragment {
 
         msg.send(notice.toString()).buttons(new ButtonMarkup() {{
 
-                    newUrlButtonLine("认证账号", TwitterUI.INSTANCE.pre(user, msg));
+            newUrlButtonLine("认证账号", TwitterUI.INSTANCE.pre(user, msg));
 
-                    newButtonLine()
-                        .newButton("放行", POINT_PASS, user.id.toString())
-                        .newButton("滥权", POINT_REJ, user.id.toString());
+            newButtonLine()
+                    .newButton("放行", POINT_PASS, user.id.toString())
+                    .newButton("滥权", POINT_REJ, user.id.toString());
 
-                }}).exec();
+        }}).exec();
 
     }
 
@@ -102,10 +103,10 @@ public class GroupF extends Fragment {
 
         switch (callback.data.getPoint()) {
 
-           //     case POINT_PASS : passUser();
+            //     case POINT_PASS : passUser();
 
         }
-        
+
         return true;
 
     }

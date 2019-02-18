@@ -6,39 +6,47 @@ import com.pengrad.telegrambot.model.Document;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.GetFile;
+import io.kurumi.ntt.BotConf;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.request.Edit;
 import io.kurumi.ntt.model.request.Send;
+
 import java.io.File;
-import io.kurumi.ntt.BotConf;
 
 public class Msg extends Context {
 
+    public static String[] NO_PARAMS = new String[0];
     private Message message;
+    private String name;
+    private String[] params;
 
     public Msg(Fragment fragment, Message message) {
-        
-        super(fragment,message.chat());
-        
+
+        super(fragment, message.chat());
+
         this.fragment = fragment;
         this.message = message;
-        
-    }
-    
-    public Message message() { return message; }
 
-    public int messageId() { return message.messageId(); }
+    }
+
+    public Message message() {
+        return message;
+    }
+
+    public int messageId() {
+        return message.messageId();
+    }
 
     public boolean hasText() {
 
         return message.text() != null;
 
     }
-   
+
     public Document doc() {
-        
+
         return message.document();
-        
+
     }
 
     public String text() {
@@ -46,50 +54,49 @@ public class Msg extends Context {
         return message.text();
 
     }
-    
-    public Send reply(String... msg)  {
+
+    public Send reply(String... msg) {
 
         return send(msg).replyTo(this);
 
     }
-    
-    public Edit edit()  {
 
-        return new Edit(fragment,chatId(),messageId(),text());
+    public Edit edit() {
 
-    }
-    
-    public Edit edit(String... msg)  {
-        
-        return new Edit(fragment,chatId(),messageId(),msg);
+        return new Edit(fragment, chatId(), messageId(), text());
 
     }
-    
+
+    public Edit edit(String... msg) {
+
+        return new Edit(fragment, chatId(), messageId(), msg);
+
+    }
+
     public void delete() {
-        
-        fragment.bot().execute(new DeleteMessage(chatId(),messageId()));
-        
+
+        fragment.bot().execute(new DeleteMessage(chatId(), messageId()));
+
     }
-    
+
     public File file() {
-        
+
         Document doc = message.document();
-        
+
         if (doc == null) return null;
 
-        File local = new File(BotConf.CACHE_DIR,"files/" + doc.fileId());
+        File local = new File(BotConf.CACHE_DIR, "files/" + doc.fileId());
 
         if (local.isFile()) return local;
 
         String path = fragment.bot().getFullFilePath(fragment.bot().execute(new GetFile(doc.fileId())).file());
 
-        HttpUtil.downloadFile(path,local);
+        HttpUtil.downloadFile(path, local);
 
         return local;
 
     }
-    
-    
+
     public boolean isCommand() {
 
         if (text() == null) return false;
@@ -97,13 +104,11 @@ public class Msg extends Context {
         return text().startsWith("/");
 
     }
-    
-    private String name;
 
     public String commandName() {
 
         if (name != null) return name;
-        
+
         if (text() == null) return null;
 
         if (!text().contains("/")) return null;
@@ -112,7 +117,7 @@ public class Msg extends Context {
 
         if (body.contains(" ")) {
 
-            String cmdAndUser =  StrUtil.subBefore(body, " ", false);
+            String cmdAndUser = StrUtil.subBefore(body, " ", false);
 
             if (cmdAndUser.contains("@")) {
 
@@ -133,21 +138,17 @@ public class Msg extends Context {
             name = body;
 
         }
-        
+
         return name;
 
     }
-    
-    public static String[] NO_PARAMS = new String[0];
 
-    private String[] params;
-    
     public String[] commandParms() {
 
         if (params != null) return params;
-        
+
         if (text() == null) return NO_PARAMS;
-        
+
         if (!text().contains("/")) return NO_PARAMS;
 
         String body = StrUtil.subAfter(text(), "/", false);
@@ -161,10 +162,10 @@ public class Msg extends Context {
             params = NO_PARAMS;
 
         }
-        
+
         return params;
 
     }
-    
+
 
 }

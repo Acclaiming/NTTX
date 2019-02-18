@@ -1,9 +1,10 @@
 package io.kurumi.ntt.db;
 
 import io.kurumi.ntt.BotConf;
-import java.io.File;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
+
+import java.io.File;
 
 public class BotDB extends JedisPubSub {
 
@@ -26,7 +27,7 @@ public class BotDB extends JedisPubSub {
             jedis.auth(BotConf.REDIS_PSWD);
 
         }
-        
+
         jedis.select(BotConf.REDIS_DB);
 
         if (!"pong".equals(jedis.ping().trim().toLowerCase())) {
@@ -36,7 +37,7 @@ public class BotDB extends JedisPubSub {
         }
 
     }
-    
+
     public static File backUp() {
 
         jedis.save();
@@ -47,15 +48,14 @@ public class BotDB extends JedisPubSub {
 
     @Override
     public void onMessage(String channel, String message) {
-        
+
         // TODO : 多BOT数据同步
-        
+
         if ("users".equals(message)) {
-            
-            
-            
+
+
         }
-        
+
     }
 
 }

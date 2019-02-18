@@ -1,8 +1,9 @@
 package io.kurumi.ntt.utils;
 
 import cn.hutool.json.JSONObject;
-import java.io.Serializable;
 import io.kurumi.ntt.twitter.TwiAccount;
+
+import java.io.Serializable;
 
 public class CData extends JSONObject {
 
@@ -13,15 +14,9 @@ public class CData extends JSONObject {
     public CData(String json) {
         super(json);
     }
-    
+
     public CData(JSONObject json) {
         super(json);
-    }
-
-    public void setPoint(String point) {
-
-        put("p",point);
-
     }
 
     public String getPoint() {
@@ -30,9 +25,15 @@ public class CData extends JSONObject {
 
     }
 
+    public void setPoint(String point) {
+
+        put("p", point);
+
+    }
+
     public void setindex(String point) {
 
-        put("i",point);
+        put("i", point);
 
     }
 
@@ -43,14 +44,14 @@ public class CData extends JSONObject {
     }
 
     public CData getData(String key) {
-        
+
         return new CData(getJSONObject(key));
-        
+
     }
 
-    public void putSerializable(String key,Serializable obj) {
+    public void putSerializable(String key, Serializable obj) {
 
-        put(key,SerUtil.toString(obj));
+        put(key, SerUtil.toString(obj));
 
     }
 
@@ -59,11 +60,10 @@ public class CData extends JSONObject {
         return SerUtil.toObject(getStr(key));
 
     }
-    
+
     public void setAccount(TwiAccount account) {
-        
-        
-        
+
+
     }
 
 }

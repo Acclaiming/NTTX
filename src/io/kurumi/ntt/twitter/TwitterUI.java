@@ -1,22 +1,22 @@
 package io.kurumi.ntt.twitter;
 
+import io.kurumi.ntt.BotConf;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.db.WrongUse;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.BotConf;
 import io.kurumi.ntt.model.request.ButtonMarkup;
-import io.kurumi.ntt.db.WrongUse;
+
 import java.util.LinkedList;
-import io.kurumi.ntt.stickers.StickerX;
 
 public class TwitterUI extends Fragment {
 
     public static TwitterUI INSTANCE = new TwitterUI();
 
-    public static void noAuth(UserData user, Msg msg) { 
+    public static void noAuth(UserData user, Msg msg) {
 
         msg.send("你还没有认证账号！", "", WrongUse.incrWithMsg(user)).exec();
-        
+
     }
 
     @Override
@@ -26,11 +26,18 @@ public class TwitterUI extends Fragment {
 
         switch (msg.commandName()) {
 
-                case "login" : login(user, msg); break;
-                case "su" : su(user, msg); break;
-                case "logout" : logout(user, msg); break;
+            case "login":
+                login(user, msg);
+                break;
+            case "su":
+                su(user, msg);
+                break;
+            case "logout":
+                logout(user, msg);
+                break;
 
-                default : return false;
+            default:
+                return false;
 
         }
 
@@ -42,22 +49,22 @@ public class TwitterUI extends Fragment {
 
         TwiAuthF.pre(user, new TwiAuthF.Listener() {
 
-                @Override
-                public void onAuth(String oauthVerifier) {
-                }
+            @Override
+            public void onAuth(String oauthVerifier) {
+            }
 
-                @Override
-                public void onAuth(TwiAccount account) {
+            @Override
+            public void onAuth(TwiAccount account) {
 
-                    String n = account.formatedNameMarkdown() + " 认证成功 ⊙∀⊙";
+                String n = account.formatedNameMarkdown() + " 认证成功 ⊙∀⊙";
 
-                    if (!msg.isPrivate()) n = user.userName() + " " + n;
+                if (!msg.isPrivate()) n = user.userName() + " " + n;
 
-                    msg.send(n).exec();
+                msg.send(n).exec();
 
-                }
+            }
 
-            });
+        });
 
         return "https://" + BotConf.SERVER_DOMAIN + "/auth?userId=" + user.id;
 
@@ -66,20 +73,19 @@ public class TwitterUI extends Fragment {
     void login(final UserData user, final Msg msg) {
 
 
-
         String text = "点击专属链接认证 ⊙∀⊙";
 
         if (!msg.isPrivate()) {
 
-            text =  user.userName() + " " + text;
+            text = user.userName() + " " + text;
 
         }
 
         msg.send(text).buttons(new ButtonMarkup() {{
 
-                    newUrlButtonLine("认证", pre(user, msg));
+            newUrlButtonLine("认证", pre(user, msg));
 
-                }}).exec();
+        }}).exec();
 
     }
 

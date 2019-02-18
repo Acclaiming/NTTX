@@ -5,7 +5,6 @@ import io.kurumi.ntt.BotConf;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.server.ServerFragment;
 import io.kurumi.ntt.utils.Markdown;
-import java.util.HashMap;
 import org.nanohttpd.protocols.http.IHTTPSession;
 import org.nanohttpd.protocols.http.response.Response;
 import org.nanohttpd.protocols.http.response.Status;
@@ -17,20 +16,14 @@ import twitter4j.auth.RequestToken;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
+import java.util.HashMap;
+
 public class TwiAuthF implements ServerFragment {
 
     public static final TwiAuthF INSTANCE = new TwiAuthF();
 
-    public static HashMap<Integer,Listener> pre = new HashMap<>();
-    public static HashMap<String,Listener> auth = new HashMap<>();
-
-    public interface Listener {
-
-        public void onAuth(String oauthVerifier);
-
-        public void onAuth(TwiAccount account);
-
-    }
+    public static HashMap<Integer, Listener> pre = new HashMap<>();
+    public static HashMap<String, Listener> auth = new HashMap<>();
 
     public static void pre(UserData user, Listener listener) {
 
@@ -43,60 +36,59 @@ public class TwiAuthF implements ServerFragment {
 
         switch (URLUtil.url(session.getUri()).getPath()) {
 
-                case "/auth" : {
+            case "/auth": {
 
-                    final String userId = session.getParms().get("userId");
+                final String userId = session.getParms().get("userId");
 
-                    if (userId == null) return null;
+                if (userId == null) return null;
 
-                    Configuration conf = new ConfigurationBuilder()
+                Configuration conf = new ConfigurationBuilder()
                         .setOAuthConsumerKey(BotConf.TWITTER_CONSUMER_KEY)
                         .setOAuthConsumerSecret(BotConf.TWITTER_CONSUMER_KEY_SEC)
                         .build();
 
-                    final Twitter api = new TwitterFactory(conf).getInstance();
+                final Twitter api = new TwitterFactory(conf).getInstance();
 
-                    try {
+                try {
 
-                        String url = auth(Integer.parseInt(userId), api);
+                    String url = auth(Integer.parseInt(userId), api);
 
-                        Response resp = Response.newFixedLengthResponse(Status.REDIRECT_SEE_OTHER, "text/plain", "");
+                    Response resp = Response.newFixedLengthResponse(Status.REDIRECT_SEE_OTHER, "text/plain", "");
 
-                        resp.addHeader("Location", url);
+                    resp.addHeader("Location", url);
 
-                        return resp;
+                    return resp;
 
-                    } catch (Exception e) {
+                } catch (Exception e) {
 
-                        return Response.newFixedLengthResponse("认证出错，请稍后再来 （￣～￣） \n\n" + e.getMessage());
+                    return Response.newFixedLengthResponse("认证出错，请稍后再来 （￣～￣） \n\n" + e.getMessage());
 
-                    }
+                }
 
+
+            }
+
+            case "/callback": {
+
+                String requestToken = session.getParms().get("oauth_token");
+                String oauthVerifier = session.getParms().get("oauth_verifier");
+
+                if (requestToken != null && oauthVerifier != null && auth.containsKey(requestToken)) {
+
+                    auth.remove(requestToken).onAuth(oauthVerifier);
+
+                    return Response.newFixedLengthResponse(Markdown.parsePage("请返回Bot", "#NTTBot", "账号认证 ~\n请返回Bot (´▽`ʃƪ)"));
+
+
+                } else {
+
+                    return Response.newFixedLengthResponse(Markdown.parsePage("请返回Bot", "#NTTBot", "账号认证 ~\n这个认证链接过期了啦 ~\n是不是刷新了界面/登录了两次 ？ (´▽`ʃƪ)", "\n"));
 
 
                 }
 
-                case "/callback" : {
 
-                    String requestToken = session.getParms().get("oauth_token");
-                    String oauthVerifier = session.getParms().get("oauth_verifier");
-
-                    if (requestToken != null && oauthVerifier != null && auth.containsKey(requestToken)) {
-
-                        auth.remove(requestToken).onAuth(oauthVerifier);
-
-                        return Response.newFixedLengthResponse(Markdown.parsePage("请返回Bot", "#NTTBot", "账号认证 ~\n请返回Bot (´▽`ʃƪ)"));
-
-
-                    } else {
-
-                        return Response.newFixedLengthResponse(Markdown.parsePage("请返回Bot", "#NTTBot", "账号认证 ~\n这个认证链接过期了啦 ~\n是不是刷新了界面/登录了两次 ？ (´▽`ʃƪ)", "\n"));
-                        
-
-                    }
-
-
-                }
+            }
 
         }
 
@@ -112,49 +104,57 @@ public class TwiAuthF implements ServerFragment {
 
         auth.put(requestToken.getToken(), new Listener() {
 
-                @Override
-                public void onAuth(String oauthVerifier) {
+            @Override
+            public void onAuth(String oauthVerifier) {
 
-                    if (preL != null) preL.onAuth(oauthVerifier);
+                if (preL != null) preL.onAuth(oauthVerifier);
 
-                    try {
+                try {
 
-                        AccessToken token = api.getOAuthAccessToken(oauthVerifier);
+                    AccessToken token = api.getOAuthAccessToken(oauthVerifier);
 
-                        TwiAccount account = new TwiAccount();
+                    TwiAccount account = new TwiAccount();
 
-                        account.apiToken = BotConf.TWITTER_CONSUMER_KEY;
-                        account.apiSec = BotConf.TWITTER_CONSUMER_KEY_SEC;
-                        account.accToken = token.getToken();
-                        account.accSec = token.getTokenSecret();
+                    account.apiToken = BotConf.TWITTER_CONSUMER_KEY;
+                    account.apiSec = BotConf.TWITTER_CONSUMER_KEY_SEC;
+                    account.accToken = token.getToken();
+                    account.accSec = token.getTokenSecret();
 
-                        account.belong = userId;
+                    account.belong = userId;
 
-                        if (account.refresh()) {
+                    if (account.refresh()) {
 
-                            account.save();
+                        account.save();
 
-                            if (preL != null) {
+                        if (preL != null) {
 
-                                preL.onAuth(account);
-
-                            }
+                            preL.onAuth(account);
 
                         }
 
-                    } catch (TwitterException e) {}
+                    }
 
+                } catch (TwitterException e) {
                 }
 
-                @Override
-                public void onAuth(TwiAccount account) {
-                }
+            }
+
+            @Override
+            public void onAuth(TwiAccount account) {
+            }
 
 
-
-            });
+        });
 
         return requestToken.getAuthorizationURL();
+
+    }
+
+    public interface Listener {
+
+        public void onAuth(String oauthVerifier);
+
+        public void onAuth(TwiAccount account);
 
     }
 

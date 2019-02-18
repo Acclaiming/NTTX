@@ -4,7 +4,7 @@ import com.ernieyu.feedparser.impl.DefaultFeedParser;
 
 /**
  * A factory for retrieving web feed parsers.
- * 
+ *
  * <p>To parse a web feed, use the factory to get a FeedParser and call its
  * parse() method.<br/>
  * <pre>
@@ -15,13 +15,13 @@ import com.ernieyu.feedparser.impl.DefaultFeedParser;
  */
 public class FeedParserFactory {
 
-	/**
-	 * Creates a new instance of FeedParser.
-	 * 
-	 * @return new instance of FeedParser
-	 */
-	public static FeedParser newParser() {
-	    // TODO add options for "minimal" parser, max item count
-		return new DefaultFeedParser();
-	}
+    /**
+     * Creates a new instance of FeedParser.
+     *
+     * @return new instance of FeedParser
+     */
+    public static FeedParser newParser() {
+        // TODO add options for "minimal" parser, max item count
+        return new DefaultFeedParser();
+    }
 }

@@ -8,18 +8,18 @@ package org.nanohttpd.protocols.http.response;
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * 3. Neither the name of the nanohttpd nor the names of its contributors
  *    may be used to endorse or promote products derived from this software without
  *    specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -33,32 +33,18 @@ package org.nanohttpd.protocols.http.response;
  * #L%
  */
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.zip.GZIPOutputStream;
-
 import org.nanohttpd.protocols.http.NanoHTTPD;
 import org.nanohttpd.protocols.http.content.ContentType;
 import org.nanohttpd.protocols.http.request.Method;
+
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * HTTP response. Return one of these from serve().
@@ -66,22 +52,9 @@ import org.nanohttpd.protocols.http.request.Method;
 public class Response implements Closeable {
 
     /**
-     * HTTP status code after processing, e.g. "200 OK", Status.OK
+     * copy of the header map with all the keys lowercase for faster searching.
      */
-    private IStatus status;
-
-    /**
-     * MIME type of content, e.g. "text/html"
-     */
-    private String mimeType;
-
-    /**
-     * Data of the response, may be null.
-     */
-    private InputStream data;
-
-    private long contentLength;
-
+    private final Map<String, String> lowerCaseHeader = new HashMap<String, String>();
     /**
      * Headers for the HTTP response. Use addHeader() to add lines. the
      * lowercase map is automatically kept up to date.
@@ -92,14 +65,23 @@ public class Response implements Closeable {
         public String put(String key, String value) {
             lowerCaseHeader.put(key == null ? key : key.toLowerCase(), value);
             return super.put(key, value);
-        };
+        }
+
+        ;
     };
-
     /**
-     * copy of the header map with all the keys lowercase for faster searching.
+     * HTTP status code after processing, e.g. "200 OK", Status.OK
      */
-    private final Map<String, String> lowerCaseHeader = new HashMap<String, String>();
-
+    private IStatus status;
+    /**
+     * MIME type of content, e.g. "text/html"
+     */
+    private String mimeType;
+    /**
+     * Data of the response, may be null.
+     */
+    private InputStream data;
+    private long contentLength;
     /**
      * The request method that spawned this response.
      */
@@ -116,18 +98,12 @@ public class Response implements Closeable {
 
     private GzipUsage gzipUsage = GzipUsage.DEFAULT;
 
-    private static enum GzipUsage {
-        DEFAULT,
-        ALWAYS,
-        NEVER;
-    }
-
     /**
      * Creates a fixed length response if totalBytes>=0, otherwise chunked.
      */
     @SuppressWarnings({
-        "rawtypes",
-        "unchecked"
+            "rawtypes",
+            "unchecked"
     })
     protected Response(IStatus status, String mimeType, InputStream data, long totalBytes) {
         this.status = status;
@@ -142,6 +118,54 @@ public class Response implements Closeable {
         this.chunkedTransfer = this.contentLength < 0;
         this.keepAlive = true;
         this.cookieHeaders = new ArrayList(10);
+    }
+
+    /**
+     * Create a response with unknown length (using HTTP 1.1 chunking).
+     */
+    public static Response newChunkedResponse(IStatus status, String mimeType, InputStream data) {
+        return new Response(status, mimeType, data, -1);
+    }
+
+    public static Response newFixedLengthResponse(IStatus status, String mimeType, byte[] data) {
+        return newFixedLengthResponse(status, mimeType, new ByteArrayInputStream(data), data.length);
+    }
+
+    /**
+     * Create a response with known length.
+     */
+    public static Response newFixedLengthResponse(IStatus status, String mimeType, InputStream data, long totalBytes) {
+        return new Response(status, mimeType, data, totalBytes);
+    }
+
+    /**
+     * Create a text response with known length.
+     */
+    public static Response newFixedLengthResponse(IStatus status, String mimeType, String txt) {
+        ContentType contentType = new ContentType(mimeType);
+        if (txt == null) {
+            return newFixedLengthResponse(status, mimeType, new ByteArrayInputStream(new byte[0]), 0);
+        } else {
+            byte[] bytes;
+            try {
+                CharsetEncoder newEncoder = Charset.forName(contentType.getEncoding()).newEncoder();
+                if (!newEncoder.canEncode(txt)) {
+                    contentType = contentType.tryUTF8();
+                }
+                bytes = txt.getBytes(contentType.getEncoding());
+            } catch (UnsupportedEncodingException e) {
+                NanoHTTPD.LOG.log(Level.SEVERE, "encoding problem, responding nothing", e);
+                bytes = new byte[0];
+            }
+            return newFixedLengthResponse(status, contentType.getContentTypeHeader(), new ByteArrayInputStream(bytes), bytes.length);
+        }
+    }
+
+    /**
+     * Create a text response with known length.
+     */
+    public static Response newFixedLengthResponse(String msg) {
+        return newFixedLengthResponse(Status.OK, NanoHTTPD.MIME_HTML, msg);
     }
 
     @Override
@@ -162,7 +186,7 @@ public class Response implements Closeable {
     /**
      * Should not be called manually. This is an internally utility for JUnit
      * test purposes.
-     * 
+     *
      * @return All unloaded cookie headers.
      */
     public List<String> getCookieHeaders() {
@@ -178,10 +202,9 @@ public class Response implements Closeable {
 
     /**
      * Indicate to close the connection after the Response has been sent.
-     * 
-     * @param close
-     *            {@code true} to hint connection closing, {@code false} to let
-     *            connection be closed by client.
+     *
+     * @param close {@code true} to hint connection closing, {@code false} to let
+     *              connection be closed by client.
      */
     public void closeConnection(boolean close) {
         if (close)
@@ -192,7 +215,7 @@ public class Response implements Closeable {
 
     /**
      * @return {@code true} if connection is to be closed after this Response
-     *         has been sent.
+     * has been sent.
      */
     public boolean isCloseConnection() {
         return "close".equals(getHeader("connection"));
@@ -200,6 +223,10 @@ public class Response implements Closeable {
 
     public InputStream getData() {
         return this.data;
+    }
+
+    public void setData(InputStream data) {
+        this.data = data;
     }
 
     public String getHeader(String name) {
@@ -210,12 +237,24 @@ public class Response implements Closeable {
         return this.mimeType;
     }
 
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
     public Method getRequestMethod() {
         return this.requestMethod;
     }
 
+    public void setRequestMethod(Method requestMethod) {
+        this.requestMethod = requestMethod;
+    }
+
     public IStatus getStatus() {
         return this.status;
+    }
+
+    public void setStatus(IStatus status) {
+        this.status = status;
     }
 
     public void setKeepAlive(boolean useKeepAlive) {
@@ -287,8 +326,8 @@ public class Response implements Closeable {
             } catch (NumberFormatException ex) {
                 NanoHTTPD.LOG.severe("content-length was no number " + contentLengthString);
             }
-        }else{
-        	pw.print("Content-Length: " + size + "\r\n");
+        } else {
+            pw.print("Content-Length: " + size + "\r\n");
         }
         return size;
     }
@@ -300,7 +339,7 @@ public class Response implements Closeable {
             try {
                 chunkedOutputStream.finish();
             } catch (Exception e) {
-                if(this.data != null) {
+                if (this.data != null) {
                     this.data.close();
                 }
             }
@@ -315,7 +354,7 @@ public class Response implements Closeable {
             try {
                 gzipOutputStream = new GZIPOutputStream(outputStream);
             } catch (Exception e) {
-                if(this.data != null) {
+                if (this.data != null) {
                     this.data.close();
                 }
             }
@@ -332,14 +371,11 @@ public class Response implements Closeable {
      * Sends the body to the specified OutputStream. The pending parameter
      * limits the maximum amounts of bytes sent unless it is -1, in which case
      * everything is sent.
-     * 
-     * @param outputStream
-     *            the OutputStream to send data to
-     * @param pending
-     *            -1 to send everything, otherwise sets a max limit to the
-     *            number of bytes sent
-     * @throws IOException
-     *             if something goes wrong while sending the data.
+     *
+     * @param outputStream the OutputStream to send data to
+     * @param pending      -1 to send everything, otherwise sets a max limit to the
+     *                     number of bytes sent
+     * @throws IOException if something goes wrong while sending the data.
      */
     private void sendBody(OutputStream outputStream, long pending) throws IOException {
         long BUFFER_SIZE = 16 * 1024;
@@ -354,7 +390,7 @@ public class Response implements Closeable {
             try {
                 outputStream.write(buff, 0, read);
             } catch (Exception e) {
-                if(this.data != null) {
+                if (this.data != null) {
                     this.data.close();
                 }
             }
@@ -366,70 +402,6 @@ public class Response implements Closeable {
 
     public void setChunkedTransfer(boolean chunkedTransfer) {
         this.chunkedTransfer = chunkedTransfer;
-    }
-
-    public void setData(InputStream data) {
-        this.data = data;
-    }
-
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
-    }
-
-    public void setRequestMethod(Method requestMethod) {
-        this.requestMethod = requestMethod;
-    }
-
-    public void setStatus(IStatus status) {
-        this.status = status;
-    }
-
-    /**
-     * Create a response with unknown length (using HTTP 1.1 chunking).
-     */
-    public static Response newChunkedResponse(IStatus status, String mimeType, InputStream data) {
-        return new Response(status, mimeType, data, -1);
-    }
-
-    public static Response newFixedLengthResponse(IStatus status, String mimeType, byte[] data) {
-        return newFixedLengthResponse(status, mimeType, new ByteArrayInputStream(data), data.length);
-    }
-
-    /**
-     * Create a response with known length.
-     */
-    public static Response newFixedLengthResponse(IStatus status, String mimeType, InputStream data, long totalBytes) {
-        return new Response(status, mimeType, data, totalBytes);
-    }
-
-    /**
-     * Create a text response with known length.
-     */
-    public static Response newFixedLengthResponse(IStatus status, String mimeType, String txt) {
-        ContentType contentType = new ContentType(mimeType);
-        if (txt == null) {
-            return newFixedLengthResponse(status, mimeType, new ByteArrayInputStream(new byte[0]), 0);
-        } else {
-            byte[] bytes;
-            try {
-                CharsetEncoder newEncoder = Charset.forName(contentType.getEncoding()).newEncoder();
-                if (!newEncoder.canEncode(txt)) {
-                    contentType = contentType.tryUTF8();
-                }
-                bytes = txt.getBytes(contentType.getEncoding());
-            } catch (UnsupportedEncodingException e) {
-                NanoHTTPD.LOG.log(Level.SEVERE, "encoding problem, responding nothing", e);
-                bytes = new byte[0];
-            }
-            return newFixedLengthResponse(status, contentType.getContentTypeHeader(), new ByteArrayInputStream(bytes), bytes.length);
-        }
-    }
-
-    /**
-     * Create a text response with known length.
-     */
-    public static Response newFixedLengthResponse(String msg) {
-        return newFixedLengthResponse(Status.OK, NanoHTTPD.MIME_HTML, msg);
     }
 
     public Response setUseGzip(boolean useGzip) {
@@ -444,5 +416,11 @@ public class Response implements Closeable {
             return getMimeType() != null && (getMimeType().toLowerCase().contains("text/") || getMimeType().toLowerCase().contains("/json"));
         else
             return gzipUsage == GzipUsage.ALWAYS;
+    }
+
+    private static enum GzipUsage {
+        DEFAULT,
+        ALWAYS,
+        NEVER;
     }
 }

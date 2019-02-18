@@ -1,14 +1,13 @@
 package com.ernieyu.feedparser.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.xml.sax.Attributes;
-
 import com.ernieyu.feedparser.Element;
 import com.ernieyu.feedparser.FeedType;
 import com.ernieyu.feedparser.FeedUtils;
+import org.xml.sax.Attributes;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Item implementation for Atom feeds.
@@ -24,20 +23,20 @@ class AtomItem extends BaseItem {
     private static final String AUTHOR = "author";
     private static final String NAME = "name";
     private static final String CATEGORY = "category";
-    
+
     /**
-     * Constructs an AtomItem with the specified namespace uri, name and 
+     * Constructs an AtomItem with the specified namespace uri, name and
      * attributes.
      */
     public AtomItem(String uri, String name, Attributes attributes) {
         super(uri, name, attributes);
     }
-    
+
     @Override
     public FeedType getType() {
         return FeedType.ATOM_1_0;
     }
-    
+
     @Override
     public String getTitle() {
         Element title = getElement(TITLE);
@@ -82,13 +81,13 @@ class AtomItem extends BaseItem {
     @Override
     public List<String> getCategories() {
         List<Element> elementList = getElementList(CATEGORY);
-        
+
         // Create list of category terms.
         List<String> categories = new ArrayList<String>();
         for (Element element : elementList) {
             categories.add(element.getAttributes().getValue("term"));
         }
-        
+
         return categories;
     }
 }

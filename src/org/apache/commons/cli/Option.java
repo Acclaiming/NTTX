@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,8 +39,7 @@ import java.util.List;
  *
  * @version $Id: Option.java 1756753 2016-08-18 10:18:43Z britter $
  */
-public class Option implements Cloneable, Serializable
-{
+public class Option implements Cloneable, Serializable {
     /** constant that specifies the number of argument values has not been specified */
     public static final int UNINITIALIZED = -1;
 
@@ -82,11 +81,10 @@ public class Option implements Cloneable, Serializable
 
     /**
      * Private constructor used by the nested Builder class.
-     * 
+     *
      * @param builder builder used to create this option
      */
-    private Option(final Builder builder)
-    {
+    private Option(final Builder builder) {
         this.argName = builder.argName;
         this.description = builder.description;
         this.longOpt = builder.longOpt;
@@ -97,7 +95,7 @@ public class Option implements Cloneable, Serializable
         this.type = builder.type;
         this.valuesep = builder.valuesep;
     }
-    
+
     /**
      * Creates an Option using the specified parameters.
      * The option does not take an argument.
@@ -108,8 +106,7 @@ public class Option implements Cloneable, Serializable
      * @throws IllegalArgumentException if there are any non valid
      * Option characters in <code>opt</code>.
      */
-    public Option(String opt, String description) throws IllegalArgumentException
-    {
+    public Option(String opt, String description) throws IllegalArgumentException {
         this(opt, null, false, description);
     }
 
@@ -123,8 +120,7 @@ public class Option implements Cloneable, Serializable
      * @throws IllegalArgumentException if there are any non valid
      * Option characters in <code>opt</code>.
      */
-    public Option(String opt, boolean hasArg, String description) throws IllegalArgumentException
-    {
+    public Option(String opt, boolean hasArg, String description) throws IllegalArgumentException {
         this(opt, null, hasArg, description);
     }
 
@@ -140,8 +136,7 @@ public class Option implements Cloneable, Serializable
      * Option characters in <code>opt</code>.
      */
     public Option(String opt, String longOpt, boolean hasArg, String description)
-           throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         // ensure that the option is valid
         OptionValidator.validateOption(opt);
 
@@ -149,12 +144,35 @@ public class Option implements Cloneable, Serializable
         this.longOpt = longOpt;
 
         // if hasArg is set then the number of arguments is 1
-        if (hasArg)
-        {
+        if (hasArg) {
             this.numberOfArgs = 1;
         }
 
         this.description = description;
+    }
+
+    /**
+     * Returns a {@link Builder} to create an {@link Option} using descriptive
+     * methods.
+     *
+     * @return a new {@link Builder} instance
+     * @since 1.3
+     */
+    public static Builder builder() {
+        return builder(null);
+    }
+
+    /**
+     * Returns a {@link Builder} to create an {@link Option} using descriptive
+     * methods.
+     *
+     * @param opt short representation of the option
+     * @return a new {@link Builder} instance
+     * @throws IllegalArgumentException if there are any non valid Option characters in {@code opt}
+     * @since 1.3
+     */
+    public static Builder builder(final String opt) {
+        return new Builder(opt);
     }
 
     /**
@@ -164,23 +182,21 @@ public class Option implements Cloneable, Serializable
      *
      * @return the id of this Option
      */
-    public int getId()
-    {
+    public int getId() {
         return getKey().charAt(0);
     }
 
     /**
      * Returns the 'unique' Option identifier.
-     * 
+     *
      * @return the 'unique' Option identifier
      */
-    String getKey()
-    {
+    String getKey() {
         // if 'opt' is null, then it is a 'long' option
         return (opt == null) ? longOpt : opt;
     }
 
-    /** 
+    /**
      * Retrieve the name of this Option.
      *
      * It is this String which can be used with
@@ -190,18 +206,16 @@ public class Option implements Cloneable, Serializable
      *
      * @return The name of this option
      */
-    public String getOpt()
-    {
+    public String getOpt() {
         return opt;
     }
 
     /**
      * Retrieve the type of this Option.
-     * 
+     *
      * @return The type of this option
      */
-    public Object getType()
-    {
+    public Object getType() {
         return type;
     }
 
@@ -209,14 +223,13 @@ public class Option implements Cloneable, Serializable
      * Sets the type of this Option.
      * <p>
      * <b>Note:</b> this method is kept for binary compatibility and the
-     * input type is supposed to be a {@link Class} object. 
+     * input type is supposed to be a {@link Class} object.
      *
      * @param type the type of this Option
      * @deprecated since 1.3, use {@link #setType(Class)} instead
      */
     @Deprecated
-    public void setType(Object type)
-    {
+    public void setType(Object type) {
         setType((Class<?>) type);
     }
 
@@ -226,18 +239,16 @@ public class Option implements Cloneable, Serializable
      * @param type the type of this Option
      * @since 1.3
      */
-    public void setType(Class<?> type)
-    {
+    public void setType(Class<?> type) {
         this.type = type;
     }
 
-    /** 
+    /**
      * Retrieve the long name of this Option.
      *
      * @return Long name of this option, or null, if there is no long name
      */
-    public String getLongOpt()
-    {
+    public String getLongOpt() {
         return longOpt;
     }
 
@@ -246,8 +257,7 @@ public class Option implements Cloneable, Serializable
      *
      * @param longOpt the long name of this Option
      */
-    public void setLongOpt(String longOpt)
-    {
+    public void setLongOpt(String longOpt) {
         this.longOpt = longOpt;
     }
 
@@ -257,46 +267,41 @@ public class Option implements Cloneable, Serializable
      * @param optionalArg specifies whether the Option can have
      * an optional argument.
      */
-    public void setOptionalArg(boolean optionalArg)
-    {
+    public void setOptionalArg(boolean optionalArg) {
         this.optionalArg = optionalArg;
     }
 
     /**
      * @return whether this Option can have an optional argument
      */
-    public boolean hasOptionalArg()
-    {
+    public boolean hasOptionalArg() {
         return optionalArg;
     }
 
-    /** 
+    /**
      * Query to see if this Option has a long name
      *
      * @return boolean flag indicating existence of a long name
      */
-    public boolean hasLongOpt()
-    {
+    public boolean hasLongOpt() {
         return longOpt != null;
     }
 
-    /** 
+    /**
      * Query to see if this Option requires an argument
      *
      * @return boolean flag indicating if an argument is required
      */
-    public boolean hasArg()
-    {
+    public boolean hasArg() {
         return numberOfArgs > 0 || numberOfArgs == UNLIMITED_VALUES;
     }
 
-    /** 
+    /**
      * Retrieve the self-documenting description of this Option
      *
      * @return The string description of this option
      */
-    public String getDescription()
-    {
+    public String getDescription() {
         return description;
     }
 
@@ -306,18 +311,16 @@ public class Option implements Cloneable, Serializable
      * @param description The description of this option
      * @since 1.1
      */
-    public void setDescription(String description)
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    /** 
+    /**
      * Query to see if this Option is mandatory
      *
      * @return boolean flag indicating whether this Option is mandatory
      */
-    public boolean isRequired()
-    {
+    public boolean isRequired() {
         return required;
     }
 
@@ -326,19 +329,8 @@ public class Option implements Cloneable, Serializable
      *
      * @param required specifies whether this Option is mandatory
      */
-    public void setRequired(boolean required)
-    {
+    public void setRequired(boolean required) {
         this.required = required;
-    }
-
-    /**
-     * Sets the display name for the argument value.
-     *
-     * @param argName the display name for the argument value.
-     */
-    public void setArgName(String argName)
-    {
-        this.argName = argName;
     }
 
     /**
@@ -346,9 +338,17 @@ public class Option implements Cloneable, Serializable
      *
      * @return the display name for the argument value.
      */
-    public String getArgName()
-    {
+    public String getArgName() {
         return argName;
+    }
+
+    /**
+     * Sets the display name for the argument value.
+     *
+     * @param argName the display name for the argument value.
+     */
+    public void setArgName(String argName) {
+        this.argName = argName;
     }
 
     /**
@@ -356,29 +356,26 @@ public class Option implements Cloneable, Serializable
      *
      * @return if the display name for the argument value has been set.
      */
-    public boolean hasArgName()
-    {
+    public boolean hasArgName() {
         return argName != null && argName.length() > 0;
     }
 
-    /** 
+    /**
      * Query to see if this Option can take many values.
      *
      * @return boolean flag indicating if multiple values are allowed
      */
-    public boolean hasArgs()
-    {
+    public boolean hasArgs() {
         return numberOfArgs > 1 || numberOfArgs == UNLIMITED_VALUES;
     }
 
-    /** 
-     * Sets the number of argument values this Option can take.
+    /**
+     * Returns the value separator character.
      *
-     * @param num the number of argument values
+     * @return the value separator character.
      */
-    public void setArgs(int num)
-    {
-        this.numberOfArgs = num;
+    public char getValueSeparator() {
+        return valuesep;
     }
 
     /**
@@ -387,35 +384,23 @@ public class Option implements Cloneable, Serializable
      *
      * @param sep The value separator.
      */
-    public void setValueSeparator(char sep)
-    {
+    public void setValueSeparator(char sep) {
         this.valuesep = sep;
     }
 
     /**
-     * Returns the value separator character.
-     *
-     * @return the value separator character.
-     */
-    public char getValueSeparator()
-    {
-        return valuesep;
-    }
-
-    /**
      * Return whether this Option has specified a value separator.
-     * 
+     *
      * @return whether this Option has specified a value separator.
      * @since 1.1
      */
-    public boolean hasValueSeparator()
-    {
+    public boolean hasValueSeparator() {
         return valuesep > 0;
     }
 
-    /** 
+    /**
      * Returns the number of argument values this Option can take.
-     * 
+     *
      * <p>
      * A value equal to the constant {@link #UNINITIALIZED} (= -1) indicates
      * the number of arguments has not been specified.
@@ -427,20 +412,26 @@ public class Option implements Cloneable, Serializable
      * @see #UNINITIALIZED
      * @see #UNLIMITED_VALUES
      */
-    public int getArgs()
-    {
+    public int getArgs() {
         return numberOfArgs;
     }
 
     /**
+     * Sets the number of argument values this Option can take.
+     *
+     * @param num the number of argument values
+     */
+    public void setArgs(int num) {
+        this.numberOfArgs = num;
+    }
+
+    /**
      * Adds the specified value to this Option.
-     * 
+     *
      * @param value is a/the value of this Option
      */
-    void addValueForProcessing(String value)
-    {
-        if (numberOfArgs == UNINITIALIZED)
-        {
+    void addValueForProcessing(String value) {
+        if (numberOfArgs == UNINITIALIZED) {
             throw new RuntimeException("NO_ARGS_ALLOWED");
         }
         processValue(value);
@@ -457,11 +448,9 @@ public class Option implements Cloneable, Serializable
      *
      * @since 1.0.1
      */
-    private void processValue(String value)
-    {
+    private void processValue(String value) {
         // this Option has a separator character
-        if (hasValueSeparator())
-        {
+        if (hasValueSeparator()) {
             // get the separator character
             char sep = getValueSeparator();
 
@@ -469,11 +458,9 @@ public class Option implements Cloneable, Serializable
             int index = value.indexOf(sep);
 
             // while there are more value separators
-            while (index != -1)
-            {
-                // next value to be added 
-                if (values.size() == numberOfArgs - 1)
-                {
+            while (index != -1) {
+                // next value to be added
+                if (values.size() == numberOfArgs - 1) {
                     break;
                 }
 
@@ -501,10 +488,8 @@ public class Option implements Cloneable, Serializable
      *
      * @since 1.0.1
      */
-    private void add(String value)
-    {
-        if (!acceptsArg())
-        {
+    private void add(String value) {
+        if (!acceptsArg()) {
             throw new RuntimeException("Cannot add value, list full.");
         }
 
@@ -513,60 +498,56 @@ public class Option implements Cloneable, Serializable
     }
 
     /**
-     * Returns the specified value of this Option or 
+     * Returns the specified value of this Option or
      * <code>null</code> if there is no value.
      *
-     * @return the value/first value of this Option or 
+     * @return the value/first value of this Option or
      * <code>null</code> if there is no value.
      */
-    public String getValue()
-    {
+    public String getValue() {
         return hasNoValues() ? null : values.get(0);
     }
 
     /**
-     * Returns the specified value of this Option or 
+     * Returns the specified value of this Option or
      * <code>null</code> if there is no value.
      *
      * @param index The index of the value to be returned.
      *
-     * @return the specified value of this Option or 
+     * @return the specified value of this Option or
      * <code>null</code> if there is no value.
      *
      * @throws IndexOutOfBoundsException if index is less than 1
      * or greater than the number of the values for this Option.
      */
-    public String getValue(int index) throws IndexOutOfBoundsException
-    {
+    public String getValue(int index) throws IndexOutOfBoundsException {
         return hasNoValues() ? null : values.get(index);
     }
 
     /**
-     * Returns the value/first value of this Option or the 
+     * Returns the value/first value of this Option or the
      * <code>defaultValue</code> if there is no value.
      *
      * @param defaultValue The value to be returned if there
      * is no value.
      *
-     * @return the value/first value of this Option or the 
+     * @return the value/first value of this Option or the
      * <code>defaultValue</code> if there are no values.
      */
-    public String getValue(String defaultValue)
-    {
+    public String getValue(String defaultValue) {
         String value = getValue();
 
         return (value != null) ? value : defaultValue;
     }
 
     /**
-     * Return the values of this Option as a String array 
+     * Return the values of this Option as a String array
      * or null if there are no values
      *
-     * @return the values of this Option as a String array 
+     * @return the values of this Option as a String array
      * or null if there are no values
      */
-    public String[] getValues()
-    {
+    public String[] getValues() {
         return hasNoValues() ? null : values.toArray(new String[values.size()]);
     }
 
@@ -574,43 +555,36 @@ public class Option implements Cloneable, Serializable
      * @return the values of this Option as a List
      * or null if there are no values
      */
-    public List<String> getValuesList()
-    {
+    public List<String> getValuesList() {
         return values;
     }
 
-    /** 
+    /**
      * Dump state, suitable for debugging.
      *
      * @return Stringified form of this object
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder buf = new StringBuilder().append("[ option: ");
 
         buf.append(opt);
 
-        if (longOpt != null)
-        {
+        if (longOpt != null) {
             buf.append(" ").append(longOpt);
         }
 
         buf.append(" ");
 
-        if (hasArgs())
-        {
+        if (hasArgs()) {
             buf.append("[ARG...]");
-        }
-        else if (hasArg())
-        {
+        } else if (hasArg()) {
             buf.append(" [ARG]");
         }
 
         buf.append(" :: ").append(description);
 
-        if (type != null)
-        {
+        if (type != null) {
             buf.append(" :: ").append(type);
         }
 
@@ -624,32 +598,26 @@ public class Option implements Cloneable, Serializable
      *
      * @return whether this Option has any values.
      */
-    private boolean hasNoValues()
-    {
+    private boolean hasNoValues() {
         return values.isEmpty();
     }
 
     @Override
-    public boolean equals(Object o)
-    {
-        if (this == o)
-        {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass())
-        {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         Option option = (Option) o;
 
 
-        if (opt != null ? !opt.equals(option.opt) : option.opt != null)
-        {
+        if (opt != null ? !opt.equals(option.opt) : option.opt != null) {
             return false;
         }
-        if (longOpt != null ? !longOpt.equals(option.longOpt) : option.longOpt != null)
-        {
+        if (longOpt != null ? !longOpt.equals(option.longOpt) : option.longOpt != null) {
             return false;
         }
 
@@ -657,8 +625,7 @@ public class Option implements Cloneable, Serializable
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int result;
         result = opt != null ? opt.hashCode() : 0;
         result = 31 * result + (longOpt != null ? longOpt.hashCode() : 0);
@@ -666,28 +633,24 @@ public class Option implements Cloneable, Serializable
     }
 
     /**
-     * A rather odd clone method - due to incorrect code in 1.0 it is public 
-     * and in 1.1 rather than throwing a CloneNotSupportedException it throws 
-     * a RuntimeException so as to maintain backwards compat at the API level. 
+     * A rather odd clone method - due to incorrect code in 1.0 it is public
+     * and in 1.1 rather than throwing a CloneNotSupportedException it throws
+     * a RuntimeException so as to maintain backwards compat at the API level.
      *
-     * After calling this method, it is very likely you will want to call 
-     * clearValues(). 
+     * After calling this method, it is very likely you will want to call
+     * clearValues().
      *
      * @return a clone of this Option instance
      * @throws RuntimeException if a {@link CloneNotSupportedException} has been thrown
      * by {@code super.clone()}
      */
     @Override
-    public Object clone()
-    {
-        try
-        {
+    public Object clone() {
+        try {
             Option option = (Option) super.clone();
             option.values = new ArrayList<String>(values);
             return option;
-        }
-        catch (CloneNotSupportedException cnse)
-        {
+        } catch (CloneNotSupportedException cnse) {
             throw new RuntimeException("A CloneNotSupportedException was thrown: " + cnse.getMessage());
         }
     }
@@ -698,13 +661,12 @@ public class Option implements Cloneable, Serializable
      *
      * See: <a href="https://issues.apache.org/jira/browse/CLI-71">CLI-71</a>
      */
-    void clearValues()
-    {
+    void clearValues() {
         values.clear();
     }
 
     /**
-     * This method is not intended to be used. It was a piece of internal 
+     * This method is not intended to be used. It was a piece of internal
      * API that was made public in 1.0. It currently throws an UnsupportedOperationException.
      *
      * @param value the value to add
@@ -713,68 +675,37 @@ public class Option implements Cloneable, Serializable
      * @deprecated
      */
     @Deprecated
-    public boolean addValue(String value)
-    {
+    public boolean addValue(String value) {
         throw new UnsupportedOperationException("The addValue method is not intended for client use. "
                 + "Subclasses should use the addValueForProcessing method instead. ");
     }
 
     /**
      * Tells if the option can accept more arguments.
-     * 
+     *
      * @return false if the maximum number of arguments is reached
      * @since 1.3
      */
-    boolean acceptsArg()
-    {
+    boolean acceptsArg() {
         return (hasArg() || hasArgs() || hasOptionalArg()) && (numberOfArgs <= 0 || values.size() < numberOfArgs);
     }
 
     /**
      * Tells if the option requires more arguments to be valid.
-     * 
+     *
      * @return false if the option doesn't require more arguments
      * @since 1.3
      */
-    boolean requiresArg()
-    {
-        if (optionalArg)
-        {
+    boolean requiresArg() {
+        if (optionalArg) {
             return false;
         }
-        if (numberOfArgs == UNLIMITED_VALUES)
-        {
+        if (numberOfArgs == UNLIMITED_VALUES) {
             return values.isEmpty();
         }
         return acceptsArg();
     }
-    
-    /**
-     * Returns a {@link Builder} to create an {@link Option} using descriptive
-     * methods.  
-     * 
-     * @return a new {@link Builder} instance
-     * @since 1.3
-     */
-    public static Builder builder()
-    {
-        return builder(null);
-    }
-    
-    /**
-     * Returns a {@link Builder} to create an {@link Option} using descriptive
-     * methods.  
-     *
-     * @param opt short representation of the option
-     * @return a new {@link Builder} instance
-     * @throws IllegalArgumentException if there are any non valid Option characters in {@code opt}
-     * @since 1.3
-     */
-    public static Builder builder(final String opt)
-    {
-        return new Builder(opt);
-    }
-    
+
     /**
      * A nested builder class to create <code>Option</code> instances
      * using descriptive methods.
@@ -786,11 +717,10 @@ public class Option implements Cloneable, Serializable
      *     .longOpt("arg-name")
      *     .build();
      * </pre>
-     * 
+     *
      * @since 1.3
      */
-    public static final class Builder 
-    {
+    public static final class Builder {
         /** the name of the option */
         private final String opt;
 
@@ -821,24 +751,22 @@ public class Option implements Cloneable, Serializable
         /**
          * Constructs a new <code>Builder</code> with the minimum
          * required parameters for an <code>Option</code> instance.
-         * 
+         *
          * @param opt short representation of the option
          * @throws IllegalArgumentException if there are any non valid Option characters in {@code opt}
          */
-        private Builder(final String opt) throws IllegalArgumentException
-        {
+        private Builder(final String opt) throws IllegalArgumentException {
             OptionValidator.validateOption(opt);
             this.opt = opt;
         }
-        
+
         /**
          * Sets the display name for the argument value.
          *
          * @param argName the display name for the argument value.
          * @return this builder, to allow method chaining
          */
-        public Builder argName(final String argName)
-        {
+        public Builder argName(final String argName) {
             this.argName = argName;
             return this;
         }
@@ -849,8 +777,7 @@ public class Option implements Cloneable, Serializable
          * @param description the description of the option.
          * @return this builder, to allow method chaining
          */
-        public Builder desc(final String description)
-        {
+        public Builder desc(final String description) {
             this.description = description;
             return this;
         }
@@ -860,25 +787,23 @@ public class Option implements Cloneable, Serializable
          *
          * @param longOpt the long name of the Option
          * @return this builder, to allow method chaining
-         */        
-        public Builder longOpt(final String longOpt)
-        {
+         */
+        public Builder longOpt(final String longOpt) {
             this.longOpt = longOpt;
             return this;
         }
-        
-        /** 
+
+        /**
          * Sets the number of argument values the Option can take.
          *
          * @param numberOfArgs the number of argument values
          * @return this builder, to allow method chaining
-         */        
-        public Builder numberOfArgs(final int numberOfArgs)
-        {
+         */
+        public Builder numberOfArgs(final int numberOfArgs) {
             this.numberOfArgs = numberOfArgs;
             return this;
         }
-        
+
         /**
          * Sets whether the Option can have an optional argument.
          *
@@ -886,19 +811,17 @@ public class Option implements Cloneable, Serializable
          * an optional argument.
          * @return this builder, to allow method chaining
          */
-        public Builder optionalArg(final boolean isOptional)
-        {
+        public Builder optionalArg(final boolean isOptional) {
             this.optionalArg = isOptional;
             return this;
         }
-        
+
         /**
          * Marks this Option as required.
          *
          * @return this builder, to allow method chaining
          */
-        public Builder required()
-        {
+        public Builder required() {
             return required(true);
         }
 
@@ -908,20 +831,18 @@ public class Option implements Cloneable, Serializable
          * @param required specifies whether the Option is mandatory
          * @return this builder, to allow method chaining
          */
-        public Builder required(final boolean required)
-        {
+        public Builder required(final boolean required) {
             this.required = required;
             return this;
         }
-        
+
         /**
          * Sets the type of the Option.
          *
          * @param type the type of the Option
          * @return this builder, to allow method chaining
          */
-        public Builder type(final Class<?> type)
-        {
+        public Builder type(final Class<?> type) {
             this.type = type;
             return this;
         }
@@ -931,8 +852,7 @@ public class Option implements Cloneable, Serializable
          *
          * @return this builder, to allow method chaining
          */
-        public Builder valueSeparator()
-        {
+        public Builder valueSeparator() {
             return valueSeparator('=');
         }
 
@@ -957,30 +877,27 @@ public class Option implements Cloneable, Serializable
          * @param sep The value separator.
          * @return this builder, to allow method chaining
          */
-        public Builder valueSeparator(final char sep)
-        {
+        public Builder valueSeparator(final char sep) {
             valuesep = sep;
             return this;
         }
-        
+
         /**
          * Indicates that the Option will require an argument.
-         * 
+         *
          * @return this builder, to allow method chaining
          */
-        public Builder hasArg()
-        {
+        public Builder hasArg() {
             return hasArg(true);
         }
 
         /**
          * Indicates if the Option has an argument or not.
-         * 
+         *
          * @param hasArg specifies whether the Option takes an argument or not
          * @return this builder, to allow method chaining
          */
-        public Builder hasArg(final boolean hasArg)
-        {
+        public Builder hasArg(final boolean hasArg) {
             // set to UNINITIALIZED when no arg is specified to be compatible with OptionBuilder
             numberOfArgs = hasArg ? 1 : Option.UNINITIALIZED;
             return this;
@@ -988,25 +905,22 @@ public class Option implements Cloneable, Serializable
 
         /**
          * Indicates that the Option can have unlimited argument values.
-         * 
+         *
          * @return this builder, to allow method chaining
          */
-        public Builder hasArgs()
-        {
+        public Builder hasArgs() {
             numberOfArgs = Option.UNLIMITED_VALUES;
             return this;
         }
 
         /**
          * Constructs an Option with the values declared by this {@link Builder}.
-         * 
+         *
          * @return the new {@link Option}
          * @throws IllegalArgumentException if neither {@code opt} or {@code longOpt} has been set
          */
-        public Option build()
-        {
-            if (opt == null && longOpt == null)
-            {
+        public Option build() {
+            if (opt == null && longOpt == null) {
                 throw new IllegalArgumentException("Either opt or longOpt must be specified");
             }
             return new Option(this);

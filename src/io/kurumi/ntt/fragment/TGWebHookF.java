@@ -8,16 +8,17 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.DeleteWebhook;
 import io.kurumi.ntt.server.ServerFragment;
 import org.nanohttpd.protocols.http.IHTTPSession;
+import org.nanohttpd.protocols.http.NanoHTTPD;
 import org.nanohttpd.protocols.http.request.Method;
 import org.nanohttpd.protocols.http.response.Response;
-import org.nanohttpd.protocols.http.NanoHTTPD;
+
 import java.util.HashMap;
 
 public class TGWebHookF implements ServerFragment {
 
     public static TGWebHookF INSTANCE = new TGWebHookF();
 
-    public static HashMap<String,BotFragment> bots = new HashMap<>();
+    public static HashMap<String, BotFragment> bots = new HashMap<>();
 
     @Override
     public Response handle(IHTTPSession session) {
@@ -41,7 +42,7 @@ public class TGWebHookF implements ServerFragment {
             return null;
 
         }
-        
+
         fragment.processAsync(update);
 
         return Response.newFixedLengthResponse("");

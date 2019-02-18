@@ -2,13 +2,12 @@ package io.kurumi.ntt.model.request;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.twitter.TwiAccount;
 import io.kurumi.ntt.utils.CData;
+
 import java.util.LinkedList;
 
 public class ButtonMarkup extends LinkedList<ButtonLine> {
-    
+
     public ButtonLine newButtonLine() {
 
         ButtonLine ButtonLine = new ButtonLine();
@@ -18,39 +17,39 @@ public class ButtonMarkup extends LinkedList<ButtonLine> {
         return ButtonLine;
 
     }
-    
-    public void newButtonLine(String text,String point,String index) {
+
+    public void newButtonLine(String text, String point, String index) {
 
         CData data = new CData();
 
         data.setPoint(point);
-        
+
         data.setindex(index);
 
-        newButtonLine().newButton(text,data);
+        newButtonLine().newButton(text, data);
 
     }
-    
-    public void newButtonLine(String text,String point) {
+
+    public void newButtonLine(String text, String point) {
 
         CData data = new CData();
-        
+
         data.setPoint(point);
-        
-        newButtonLine().newButton(text,data);
 
-    }
-    
-    
-    public void newButtonLine(String text,CData data) {
-
-        newButtonLine().newButton(text,data);
+        newButtonLine().newButton(text, data);
 
     }
 
-    public void newUrlButtonLine(String text,String url) {
 
-        newButtonLine().newUrlButton(text,url);
+    public void newButtonLine(String text, CData data) {
+
+        newButtonLine().newButton(text, data);
+
+    }
+
+    public void newUrlButtonLine(String text, String url) {
+
+        newButtonLine().newUrlButton(text, url);
 
     }
 
@@ -58,7 +57,7 @@ public class ButtonMarkup extends LinkedList<ButtonLine> {
 
         LinkedList<InlineKeyboardButton[]> buttons = new LinkedList<>();
 
-        for(ButtonLine ButtonLine : this)  {
+        for (ButtonLine ButtonLine : this) {
 
             buttons.add(ButtonLine.toArray());
 
@@ -67,5 +66,5 @@ public class ButtonMarkup extends LinkedList<ButtonLine> {
         return new InlineKeyboardMarkup(buttons.toArray(new InlineKeyboardButton[size()][]));
 
     }
-    
+
 }

@@ -1,15 +1,16 @@
 package io.kurumi.ntt.spam;
 
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.model.Msg;
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.db.WrongUse;
-import cn.hutool.core.util.StrUtil;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.twitter.TwitterUI;
-import cn.hutool.core.util.NumberUtil;
 import twitter4j.Twitter;
-import twitter4j.User;
 import twitter4j.TwitterException;
+import twitter4j.User;
+
 import java.util.Map;
 
 public class SpamUI extends Fragment {
@@ -23,9 +24,13 @@ public class SpamUI extends Fragment {
 
         switch (msg.commandName()) {
 
-                case "show" : show(user, msg);break;
+            case "show":
+                show(user, msg);
+                break;
 
-               case "tag" : tag(user, msg); break;
+            case "tag":
+                tag(user, msg);
+                break;
 
         }
 
@@ -44,11 +49,10 @@ public class SpamUI extends Fragment {
             usage.append("/tag new [创建]\n\n");
 
             usage.append("/tag del <名称> [删除]\n\n");
-            
+
             usage.append("/tag desc <名称> [修改]\n\n");
 
-            usahe.
-            
+
             usage.append(WrongUse.incrWithMsg(user));
 
             msg.reply(usage.toString()).exec();
@@ -62,15 +66,15 @@ public class SpamUI extends Fragment {
         if ("new".equals(tagName)) {
 
             if (msg.commandParms().length < 2) {
-                
-                msg.reply("用法 :\n","/tag new <名称>\n",WrongUse.incrWithMsg(user)).exec();
-                
+
+                msg.reply("用法 :\n", "/tag new <名称>\n", WrongUse.incrWithMsg(user)).exec();
+
                 return;
-                
+
             }
-            
+
             tagName = msg.commandParms()[1];
-            
+
             new SpamTag();
 
         }
@@ -79,7 +83,6 @@ public class SpamUI extends Fragment {
 
         if (tag == null) {
 
-            msg.reply(
 
         }
 
@@ -199,7 +202,7 @@ public class SpamUI extends Fragment {
 
             spam.append(" 在分类 :");
 
-            for (Map.Entry<SpamTag,String> tag : rec.tags.entrySet()) {
+            for (Map.Entry<SpamTag, String> tag : rec.tags.entrySet()) {
 
                 spam.append("\n\n").append(tag.getKey().name).append(" : ").append(tag.getValue());
 
