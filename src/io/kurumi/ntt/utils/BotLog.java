@@ -124,17 +124,17 @@ public class BotLog {
         
         if (msg.audio() != null) log.append("「语音消息」");
         
-        if (msg.channelChatCreated()) log.append("「被邀请到频道」");
+        if (equals(true,msg.channelChatCreated())) log.append("「被邀请到频道」");
         
         if (msg.connectedWebsite() != null) log.append("「连接到网页 : ").append(msg.connectedWebsite()).append("」");
         
         if (msg.contact() != null) log.append("「名片」");
         
-        if (msg.deleteChatPhoto()) log.append("「照片删除」");
+        if (equals(true,msg.deleteChatPhoto())) log.append("「照片删除」");
         
         if (msg.document() != null) log.append("「文件").append(msg.document().fileName()).append("」");
         
-        if (msg.groupChatCreated()) log.append("「被邀请到群组」");
+        if (equals(true,msg.groupChatCreated())( log.append("「被邀请到群组」");
         
         if (msg.game() != null) log.append("「游戏 : ").append(msg.game().title()).append("」");
         
@@ -156,7 +156,7 @@ public class BotLog {
         
         if (msg.sticker() != null) log.append("「贴纸 : ").append(msg.sticker().emoji()).append(" 从 ").append(msg.sticker().setName()).append("」");
         
-        if (msg.supergroupChatCreated()) log.append("「被邀请到超级群组」");
+        if (equals(true,msg.supergroupChatCreated())) log.append("「被邀请到超级群组」");
         
         if (msg.video() != null) log.append("「视频」");
         
@@ -167,6 +167,12 @@ public class BotLog {
         if (msg.text() != null) log.append(" : ").append(msg.text());
         
         return log.toString();
+        
+    }
+    
+    private static boolean equals(Object origin,Object target) {
+        
+        return origin.equals(target);
         
     }
     
