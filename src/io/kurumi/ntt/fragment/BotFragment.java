@@ -233,7 +233,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         } else if (update.callbackQuery() != null) {
 
-            UserData user = UserData.get(update.channelPost().from());
+            UserData user = UserData.get(update.callbackQuery().from());
 
             boolean point = user.hasPoint();
 

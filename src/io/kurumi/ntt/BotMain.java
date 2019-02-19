@@ -61,6 +61,14 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
         return true;
 
     }
+    
+    public boolean debug() {
+        
+        String debug = BotConf.get("DEBUG");
+
+        return "true".equals(debug);
+        
+    }
 
     @Override
     public boolean onMsg(UserData user, Msg msg) {
