@@ -16,6 +16,7 @@ import io.kurumi.ntt.utils.ThreadPool;
 
 import java.util.LinkedList;
 import java.util.List;
+import io.kurumi.ntt.utils.BotLog;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
@@ -68,14 +69,14 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         ThreadPool.exec(new Runnable() {
 
-            @Override
-            public void run() {
+                @Override
+                public void run() {
 
-                process(update);
+                    process(update);
 
-            }
+                }
 
-        });
+            });
 
     }
 
@@ -86,6 +87,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
             UserData user = UserData.get(update.message().from());
 
             boolean point = user.hasPoint();
+
+            BotLog.process(user, update, point);
 
             if (point) {
 
@@ -103,51 +106,51 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                 switch (update.message().chat().type()) {
 
-                    case Private: {
+                        case Private: {
 
-                        for (Fragment fragmnet : fragments) {
+                            for (Fragment fragmnet : fragments) {
 
-                            if (fragmnet.onPoiPrivMsg(user, new Msg(fragmnet, update.message()), data)) {
+                                if (fragmnet.onPoiPrivMsg(user, new Msg(fragmnet, update.message()), data)) {
 
-                                return;
+                                    return;
+
+                                }
+
+                            }
+
+                            break;
+
+                        }
+
+                        case group: {
+
+                            for (Fragment fragmnet : fragments) {
+
+                                if (fragmnet.onPoiGroupMsg(user, new Msg(fragmnet, update.message()), data, false)) {
+
+                                    return;
+
+                                }
+
+                            }
+
+                            break;
+
+                        }
+
+                        default: {
+
+                            for (Fragment fragmnet : fragments) {
+
+                                if (fragmnet.onPoiGroupMsg(user, new Msg(fragmnet, update.message()), data, true)) {
+
+                                    return;
+
+                                }
 
                             }
 
                         }
-
-                        break;
-
-                    }
-
-                    case group: {
-
-                        for (Fragment fragmnet : fragments) {
-
-                            if (fragmnet.onPoiGroupMsg(user, new Msg(fragmnet, update.message()), data, false)) {
-
-                                return;
-
-                            }
-
-                        }
-
-                        break;
-
-                    }
-
-                    default: {
-
-                        for (Fragment fragmnet : fragments) {
-
-                            if (fragmnet.onPoiGroupMsg(user, new Msg(fragmnet, update.message()), data, true)) {
-
-                                return;
-
-                            }
-
-                        }
-
-                    }
 
 
                 }
@@ -166,51 +169,51 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                 switch (update.message().chat().type()) {
 
-                    case Private: {
+                        case Private: {
 
-                        for (Fragment fragmnet : fragments) {
+                            for (Fragment fragmnet : fragments) {
 
-                            if (fragmnet.onPrivMsg(user, new Msg(fragmnet, update.message()))) {
+                                if (fragmnet.onPrivMsg(user, new Msg(fragmnet, update.message()))) {
 
-                                return;
+                                    return;
+
+                                }
+
+                            }
+
+                            break;
+
+                        }
+
+                        case group: {
+
+                            for (Fragment fragmnet : fragments) {
+
+                                if (fragmnet.onGroupMsg(user, new Msg(fragmnet, update.message()), false)) {
+
+                                    return;
+
+                                }
+
+                            }
+
+                            break;
+
+                        }
+
+                        default: {
+
+                            for (Fragment fragmnet : fragments) {
+
+                                if (fragmnet.onGroupMsg(user, new Msg(fragmnet, update.message()), true)) {
+
+                                    return;
+
+                                }
 
                             }
 
                         }
-
-                        break;
-
-                    }
-
-                    case group: {
-
-                        for (Fragment fragmnet : fragments) {
-
-                            if (fragmnet.onGroupMsg(user, new Msg(fragmnet, update.message()), false)) {
-
-                                return;
-
-                            }
-
-                        }
-
-                        break;
-
-                    }
-
-                    default: {
-
-                        for (Fragment fragmnet : fragments) {
-
-                            if (fragmnet.onGroupMsg(user, new Msg(fragmnet, update.message()), true)) {
-
-                                return;
-
-                            }
-
-                        }
-
-                    }
 
 
                 }
@@ -280,6 +283,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
             }
 
         }
+        
+        BotLog.debug("更新未被处理");
 
     }
 
