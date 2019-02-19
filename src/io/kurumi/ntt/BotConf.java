@@ -74,7 +74,7 @@ public class BotConf {
      * 设置
      */
 
-    public static String PROP_KEY = "NTT_PROP";
+    public static String PROP_KEY = "NTT_CONF";
 
     public static String getBotToken(String key) {
 
