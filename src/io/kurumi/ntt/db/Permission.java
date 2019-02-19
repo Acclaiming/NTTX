@@ -1,6 +1,7 @@
 package io.kurumi.ntt.db;
 
 import java.util.HashMap;
+import io.kurumi.ntt.BotConf;
 
 public class Permission {
 

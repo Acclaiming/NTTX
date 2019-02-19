@@ -151,6 +151,12 @@ public class UserData extends JSONObject {
         return userName != null ? "@" + userName : name();
 
     }
+    
+    public boolean isUser() {
+
+        return BotConf.FOUNDER.equals(userName) || Permission.isUser(id);
+
+    }
 
     public boolean isAdmin() {
 
