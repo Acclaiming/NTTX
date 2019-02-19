@@ -57,26 +57,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         for (Update update : updates) {
 
-            processAsync(update);
+            process(update);
 
         }
 
         return CONFIRMED_UPDATES_ALL;
-
-    }
-
-    public void processAsync(final Update update) {
-
-        ThreadPool.exec(new Runnable() {
-
-                @Override
-                public void run() {
-
-                    process(update);
-
-                }
-
-            });
 
     }
 
