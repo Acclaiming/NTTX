@@ -11,7 +11,7 @@ public class BotLog {
 
     public static void debug(String message) {
 
-        log.warn(message);
+        log.debug(message);
 
     }
 
@@ -35,7 +35,7 @@ public class BotLog {
 
     public static void warn(String message) {
 
-        log.info(message);
+        log.warn(message);
 
     }
 
@@ -89,11 +89,11 @@ public class BotLog {
 
             }
 
-            log.append("消息 : ").append(update.message().text());
+            log.append("消息 : ").append(update.message().caption());
 
         } else if (update.channelPost() != null) {
             
-            log.append("频道文章 : ").append(update.message().text());
+            log.append("频道文章 : ").append(update.message().caption());
             
         } else if(update.callbackQuery() != null) {
             
