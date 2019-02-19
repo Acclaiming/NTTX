@@ -47,7 +47,7 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
 
         INSTANCE.start();
         
-        BotLog.info("启动 成功 （￣～￣） 调试模式 : " + INSTANCE.debug());
+        BotLog.info("启动 成功 （￣～￣)");
 
     }
 
@@ -83,14 +83,7 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
 
             return true;
 
-        } else {
-            
-            BotLog.debug("user :" + user.isAdmin());
-            
-            return false;
-            
-            
-            }
+        }
 
     }
 
