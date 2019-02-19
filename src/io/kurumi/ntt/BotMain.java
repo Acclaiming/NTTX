@@ -14,6 +14,7 @@ import io.kurumi.ntt.twitter.TwitterUI;
 import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.CData;
 import java.io.IOException;
+import io.kurumi.ntt.funcs.GroupRepeat;
 
 public class BotMain extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -23,6 +24,8 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
     public BotMain() {
 
         addFragment(TwitterUI.INSTANCE);
+        
+        addFragment(GroupRepeat.INSTANCE);
 
     }
 
