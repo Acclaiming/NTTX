@@ -131,6 +131,12 @@ public class UserData extends JSONObject {
         save();
 
     }
+    
+    public String formattedName() {
+        
+        return name() + " (" + userName() + ") ";
+        
+    }
 
     public String name() {
 

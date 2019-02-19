@@ -2,8 +2,9 @@ package io.kurumi.ntt.utils;
 
 import cn.hutool.log.Log;
 import cn.hutool.log.StaticLog;
-import io.kurumi.ntt.db.UserData;
+import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
+import io.kurumi.ntt.db.UserData;
 
 public class BotLog {
 
@@ -74,26 +75,22 @@ public class BotLog {
         StringBuilder log = new StringBuilder("收到来自 ").append(user.name()).append(" (").append(user.userName()).append(") ").append(" 的");
 
         if (update.message() != null) {
-
+            
             switch (update.message().chat().type()) {
-                
-                case Private : log.append("私聊");break;
-                case group : log.append("群组");break;
-                case supergroup : log.append("超级群组");break;
+
+                    case Private : log.append("私聊");break;
+
+                    case group : log.append("群组 「").append(update.message().chat().title()).append("」 ");break;
+                    case supergroup : log.append("超级群组 「").append(update.message().chat().title()).append("」 ");break;
+
                 
             }
             
-            if (point) {
-
-                log.append("指针 (").append(user.point().getPoint()).append(") ");
-
-            }
-
-            log.append("消息 : ").append(update.message().caption());
+            log.append(processMessage(user,update.message(),point));
 
         } else if (update.channelPost() != null) {
             
-            log.append("频道文章 : ").append(update.message().caption());
+            log.append("频道文章 : ").append(processMessage(user,update.channelPost(),point);
             
         } else if(update.callbackQuery() != null) {
             
@@ -107,6 +104,70 @@ public class BotLog {
         
         BotLog.debug(log.toString());
 
+    }
+    
+    private static String processMessage(UserData user,Message msg,boolean point) {
+        
+        StringBuilder log = new StringBuilder();
+        
+        if (point) {
+
+            log.append("指针 (").append(user.point().getPoint()).append(") ");
+
+        }
+        
+        if (msg.forwardFromMessageId() != null) {
+            
+            log.append("转发从 " + UserData.get(msg.forwardFrom()).formattedName()).append(" ");
+            
+        }
+        
+        if (msg.audio() != null) log.append("「语音消息」");
+        
+        if (msg.channelChatCreated()) log.append("「被邀请到频道」");
+        
+        if (msg.connectedWebsite() != null) log.append("「连接到网页 : ").append(msg.connectedWebsite()).append("」");
+        
+        if (msg.contact() != null) log.append("「名片」");
+        
+        if (msg.deleteChatPhoto()) log.append("「照片删除」");
+        
+        if (msg.document() != null) log.append("「文件").append(msg.document().fileName()).append("」");
+        
+        if (msg.groupChatCreated()) log.append("「被邀请到群组」");
+        
+        if (msg.game() != null) log.append("「游戏 : ").append(msg.game().title()).append("」");
+        
+        if (msg.leftChatMember() != null) log.append("「群成员退出 : ").append(UserData.get(msg.leftChatMember()).formattedName()).append("」");
+        
+        if (msg.location() != null) log.append("「位置信息 : ").append(msg.location().toString()).append("」");
+        
+        if (msg.newChatMembers() != null) log.append("「新成员 : ").append(UserData.get(msg.newChatMember()).formattedName()).append("」");
+        
+        if (msg.newChatTitle() != null) log.append("「新标题 : ").append(msg.newChatTitle()).append("」");
+        
+        if (msg.newChatPhoto() != null) log.append("「新图标」");
+        
+        if (msg.photo() != null) log.append("「照片」");
+        
+        if (msg.pinnedMessage() != null) log.append("「置顶消息 :").append(processMessage(user,msg.pinnedMessage(),false));
+        
+        if (msg.replyToMessage() != null) log.append("「回复给 : ").append(UserData.get(msg.replyToMessage().from())).append(" : ").append(processMessage(UserData.get(msg.replyToMessage().from()),msg.replyToMessage(),false)).append("」");
+        
+        if (msg.sticker() != null) log.append("「贴纸 : ").append(msg.sticker().emoji()).append(" 从 ").append(msg.sticker().setName()).append("」");
+        
+        if (msg.supergroupChatCreated()) log.append("「被邀请到超级群组」");
+        
+        if (msg.video() != null) log.append("「视频」");
+        
+        if (msg.videoNote() != null) log.append("「小视频」");
+        
+        if (msg.voice() != null) log.append("「语音消息」");
+        
+        if (msg.text() != null) log.append(" : ").append(msg.text());
+        
+        return log.toString();
+        
     }
     
     public static void pointSeted(UserData user,String point) {
