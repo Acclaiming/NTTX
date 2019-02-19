@@ -14,6 +14,7 @@ import java.io.IOException;
 import io.kurumi.ntt.stickers.DVANG;
 import io.kurumi.ntt.utils.CData;
 import io.kurumi.ntt.model.Callback;
+import io.kurumi.ntt.db.BotDB;
 
 public class BotMain extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -114,6 +115,8 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
         StaticLog.error(throwable, "无法处理的错误");
         StaticLog.info("正在停止Bot");
 
+        BotDB.jedis.disconnect();
+        
         INSTANCE.stop();
 
         BotServer.INSTACNCE.stop();
