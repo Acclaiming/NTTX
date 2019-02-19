@@ -37,6 +37,7 @@ public class Msg extends Context {
         return message.messageId();
     }
 
+    
     public boolean hasText() {
 
         return message.text() != null;

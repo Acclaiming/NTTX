@@ -11,6 +11,9 @@ import io.kurumi.ntt.twitter.TwitterUI;
 import io.kurumi.ntt.utils.BotLog;
 
 import java.io.IOException;
+import io.kurumi.ntt.stickers.DVANG;
+import io.kurumi.ntt.utils.CData;
+import io.kurumi.ntt.model.Callback;
 
 public class BotMain extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -62,12 +65,41 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
     @Override
     public boolean onMsg(UserData user, Msg msg) {
 
-        // msg.sendSticker(DVANG.发情);
+        msg.send("Bot 正在 重写").exec();
+        msg.sendSticker(DVANG.难受);
 
-        return false;
+        return true;
 
     }
 
+    @Override
+    public boolean onPoiMsg(UserData user, Msg msg, CData point) {
+        
+        msg.send("Bot 正在 重写").exec();
+        msg.sendSticker(DVANG.难受);
+
+        return true;
+        
+    }
+
+    @Override
+    public boolean onCallback(UserData user, Callback callback) {
+        
+        callback.alert("BOT 正在 重写 >_<");
+        
+        return true;
+        
+    }
+
+    @Override
+    public boolean onPoiCallback(UserData user, Callback callback, CData point) {
+        
+        callback.alert("BOT 正在 重写 >_<");
+
+        return true;
+
+    }
+     
     @Override
     public void uncaughtException(Thread thread, Throwable throwable) {
 
