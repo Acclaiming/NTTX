@@ -83,7 +83,7 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
 
             return true;
 
-        }
+        } else return false;
 
     }
 
