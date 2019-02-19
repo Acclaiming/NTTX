@@ -58,6 +58,9 @@ public class GroupRepeat extends Fragment {
 
             }
             
+            last.put(msg.chatId(),msg);
+            count.put(msg.chatId(),repeatCount);
+            
             
         }
         
