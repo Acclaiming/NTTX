@@ -43,9 +43,10 @@ public class TGWebHookF implements ServerFragment {
 
         }
 
-        fragment.processAsync(update);
+        fragment.process(update);
 
         return Response.newFixedLengthResponse("");
+        
     }
 
 }
