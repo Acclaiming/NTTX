@@ -25,7 +25,7 @@ public class GroupRepeat extends Fragment {
             
             if (repeatCount == null) repeatCount = 0;
             
-            if (lastMsg != null && msg.text() != null && msg.text().equals(lastMsg.text())) {
+            if (msg != null && msg.text() != null && msg.text().equals(lastMsg.text())) {
                 
                 repeatCount ++;
                 
@@ -41,7 +41,7 @@ public class GroupRepeat extends Fragment {
                 
             }
             
-            if (lastMsg != null && msg.message().sticker() != null && msg.message().sticker().equals(lastMsg.message().sticker())) {
+            if (msg != null && msg.message().sticker() != null && msg.message().sticker().equals(lastMsg.message().sticker())) {
 
                 repeatCount ++;
 
