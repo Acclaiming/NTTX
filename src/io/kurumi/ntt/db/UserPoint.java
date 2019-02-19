@@ -9,6 +9,8 @@ public class UserPoint {
 
     public static boolean exists(UserData user) {
 
+        if (user.isBot) return false;
+        
         return BotDB.jedis.hexists(KEY, user.id.toString());
 
     }

@@ -284,8 +284,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         }
         
-        BotLog.debug("更新未被处理");
-
     }
 
     public void start() {

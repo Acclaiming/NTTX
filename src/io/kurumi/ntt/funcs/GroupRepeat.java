@@ -37,6 +37,10 @@ public class GroupRepeat extends Fragment {
                     
                     BotLog.debug("已处理群 " + msg.message().chat().title() + " 复读 : " + msg.text());
                     
+                } else {
+                
+                BotLog.debug("已记录群 " + msg.message().chat().title() + " 复读 : " + msg.text());
+                
                 }
                 
             }
@@ -52,7 +56,10 @@ public class GroupRepeat extends Fragment {
                     repeatCount = 0;
                     
                     BotLog.debug("已处理群 " + msg.message().chat().title() + " 表情包 : 「" + msg.message().sticker().emoji() + " 从 " + msg.message().sticker().setName() + "」");
-                    
+
+                } else {
+
+                    BotLog.debug("已记录群 " + msg.message().chat().title() + " 复读 : " + msg.text());
 
                 }
 
