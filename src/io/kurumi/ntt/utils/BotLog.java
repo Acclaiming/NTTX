@@ -90,7 +90,7 @@ public class BotLog {
 
         } else if (update.channelPost() != null) {
             
-            log.append("频道文章 : ").append(processMessage(user,update.channelPost(),point);
+            log.append("频道文章 : ").append(processMessage(user,update.channelPost(),point));
             
         } else if(update.callbackQuery() != null) {
             
