@@ -46,6 +46,8 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
         }
 
         INSTANCE.start();
+        
+        BotLog.info("NTTBot 已经启动 （￣～￣） 调试模式 : " + INSTANCE.debug());
 
     }
 
