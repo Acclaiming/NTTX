@@ -5,13 +5,15 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 
 import java.io.File;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 
-public class BotDB extends JedisPubSub {
+public class BotDB {
 
     public static final Jedis jedis;
-
+    
     static {
-
+        
         if (BotConf.REDIS_PORT == 6379) {
 
             jedis = new Jedis(BotConf.REDIS_HOST);
@@ -46,16 +48,5 @@ public class BotDB extends JedisPubSub {
 
     }
 
-    @Override
-    public void onMessage(String channel, String message) {
-
-        // TODO : 多BOT数据同步
-
-        if ("users".equals(message)) {
-
-
-        }
-
-    }
 
 }
