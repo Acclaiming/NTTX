@@ -39,8 +39,8 @@ public class GroupRepeat extends Fragment {
                     
                 } else {
                 
-                BotLog.debug("已记录群 " + msg.message().chat().title() + " 复读 : " + msg.text());
-                
+             //   BotLog.debug("已记录群 " + msg.message().chat().title() + " 复读 : " + msg.text());
+              
                 }
                 
             }
@@ -59,7 +59,7 @@ public class GroupRepeat extends Fragment {
 
                 } else {
 
-                    BotLog.debug("已记录群 " + msg.message().chat().title() + " 复读 : " + msg.text());
+               //     BotLog.debug("已记录群 " + msg.message().chat().title() + " 复读 : " + msg.text());
 
                 }
 
