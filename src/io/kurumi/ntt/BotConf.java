@@ -1,92 +1,62 @@
 package io.kurumi.ntt;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.log.StaticLog;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.GetMe;
 import io.kurumi.ntt.db.BotDB;
 import io.kurumi.ntt.utils.BotLog;
-
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class BotConf {
 
-    public static final String TOKEN_KEY = "NTT_TOKEN";
     /**
-     * 创始人ID
+     * 创始人ID (Disc/Telegram/Twitter)
      */
 
     public static final String FOUNDER = "HiedaNaKan";
+
+
     /**
      * 缓存文件存放地址
      */
 
     public static final File CACHE_DIR = new File("./cache");
+
     /**
-     * Bot服务器的域名 注意 Bot不会绑定此域名
-     * <p>
-     * 而且是应该用Nginx等反向代理服务器代理该域名
-     * <p>
-     * 下面设置的本地端口
-     * <p>
-     * 注意 : 不应该带有 "http(s)://" 前缀 和 "/" 后缀
-     */
-    public static final String SERVER_DOMAIN = "ntt.kurumi.io";
-    /**
-     * 本地服务器端口 请将上方的域名反向代理到此端口
-     */
-    public static final int LOCAL_PORT = 18964;
-    /**
-     * Twitter API Key
-     * <p>
-     * 注意 : 应用回调地址必须为 https://[上方填写的域名]/callback
+     * 数据文件存放地址
      */
 
-    public static final String TWITTER_CONSUMER_KEY = "pLkoUI2q5ZncKKIm7dQNqtpXT";
-    /**
-     * Twutter Key Sec
-     */
-    public static final String TWITTER_CONSUMER_KEY_SEC = "Yp59pXMXoHKD8dj2g1m6RUc7VNIJybBHH1NtM70MhOB0OKl00S";
-    /**
-     * Bot 日志频道 不带@ (必须是公开频道 且Bot可访问)
-     */
-    public static final String LOG_CHANNEL = "NTTSpamPublic";
-    public static final String LOG_CHANNEL_ID = "@" + LOG_CHANNEL;
-    public static final String LOG_CHANNEL_URL = "https://" + LOG_CHANNEL + "/";
+    public static final File DATA_DIR = new File("./data");
+
     /**
      * Redis 数据库主机
      */
     public static final String REDIS_HOST = "localhost";
+
     /**
      * Redis 数据库端口
      */
     public static final int REDIS_PORT = 6379;
+
     /**
      * Redis 数据库密码
      */
     public static final String REDIS_PSWD = null;
+
     /**
      * Redis NTTBot 数据库 默认 0
      */
     public static final int REDIS_DB = 0;
+
     /**
-     * 设置
+     * Discourse API调用地址 见 项目/disc/api.php
      */
-
-    public static String PROP_KEY = "NTT_CONF";
-
-    public static String getBotToken(String key) {
-
-        return BotDB.jedis.hget(TOKEN_KEY, key);
-
-    }
-
-    public static void saveBotToken(String key, String token) {
-
-        BotDB.jedis.hset(TOKEN_KEY, key, token);
-
-    }
+    public static final String DISC_WAPPER = "http://127.0.0.1:11212/api.php";
 
     /**
      * 命令行输入 Token 并保存到数据库
@@ -109,7 +79,7 @@ public class BotConf {
 
         }
 
-        saveBotToken(name, token);
+        set("Token_" + name, token);
 
         return token;
 
@@ -124,6 +94,16 @@ public class BotConf {
 
     }
 
+    private static JSONObject conf = new JSONObject(); static {
+
+        try {
+
+            conf = new JSONObject(FileUtil.readUtf8String(new File(DATA_DIR, "settings.conf")));
+
+        } catch (Exception e) {}
+
+    }
+
     public static String get(String key) {
 
         if (key == null) {
@@ -134,7 +114,7 @@ public class BotConf {
 
         }
 
-        return BotDB.jedis.hget(PROP_KEY, key);
+        return conf.getByPath(key, String.class);
 
     }
 
@@ -163,31 +143,12 @@ public class BotConf {
 
     public static void set(String key, Object value) {
 
-        if (value != null) {
+        conf.putByPath(key, value);
 
-            BotDB.jedis.hset(PROP_KEY, key, value.toString());
-
-            return;
-
-        }
-
-        BotLog.warnWithStack("对数据库设置空值而不使用 HDEL 已忽略 : " + key);
+        FileUtil.writeUtf8String(conf.toStringPretty(),new File(DATA_DIR, "setting.conf"));
 
     }
 
-    public static void remove(String key) {
-
-        if (key == null) {
-
-            StaticLog.warn(new RuntimeException(), "移除设置值但键值为空");
-
-            return;
-
-        }
-
-        BotDB.jedis.hdel(PROP_KEY, key);
-
-    }
 
     public static void cleanCache() {
 

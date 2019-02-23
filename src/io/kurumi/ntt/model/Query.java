@@ -9,7 +9,7 @@ import com.pengrad.telegrambot.request.AnswerInlineQuery;
 import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.response.GetFileResponse;
 import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.server.BotServer;
+// import io.kurumi.ntt.server.BotServer;
 import io.kurumi.ntt.utils.BotLog;
 
 import java.util.LinkedList;
@@ -54,22 +54,10 @@ public class Query {
 
     public Query fileUrl(String fileName, String url) {
 
-        Map<String, String> types = BotServer.INSTACNCE.mimeTypes();
-
         String mimeType = "application/octet-stream";
 
-        if (fileName.contains(".")) {
-
-            String suffix = StrUtil.subAfter(fileName, ".", true);
-
-            if (types.containsKey(suffix)) {
-
-                mimeType = types.get(suffix);
-
-            }
-
-        }
-
+        // TODO
+        
         InlineQueryResultDocument result = new InlineQueryResultDocument(query.id(), url, fileName, mimeType);
 
         results.add(result);

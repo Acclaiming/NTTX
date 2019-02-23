@@ -5,16 +5,14 @@ import io.kurumi.ntt.db.BotDB;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.TGWebHookF;
+import io.kurumi.ntt.funcs.GroupRepeat;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.server.BotServer;
+// import io.kurumi.ntt.server.BotServer;
 import io.kurumi.ntt.stickers.DVANG;
-import io.kurumi.ntt.twitter.TwiAuthF;
-import io.kurumi.ntt.twitter.TwitterUI;
 import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.CData;
 import java.io.IOException;
-import io.kurumi.ntt.funcs.GroupRepeat;
 
 public class BotMain extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -23,8 +21,6 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
 
     public BotMain() {
 
-        addFragment(TwitterUI.INSTANCE);
-        
         addFragment(GroupRepeat.INSTANCE);
 
     }
@@ -33,7 +29,8 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
 
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
 
-        BotServer.INSTACNCE.fragments.add(TwiAuthF.INSTANCE);
+        /*
+        
         BotServer.INSTACNCE.fragments.add(TGWebHookF.INSTANCE);
 
         try {
@@ -47,7 +44,9 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
             return;
 
         }
-
+        
+        */
+       
         INSTANCE.start();
         
         BotLog.info("启动 成功 （￣～￣)");
@@ -58,13 +57,6 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
     public String botName() {
 
         return "NTTBot";
-
-    }
-
-    @Override
-    public boolean isLongPulling() {
-
-        return true;
 
     }
 
@@ -141,7 +133,7 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
 
         INSTANCE.stop();
 
-        BotServer.INSTACNCE.stop();
+      //  BotServer.INSTACNCE.stop();
 
         System.exit(1);
 

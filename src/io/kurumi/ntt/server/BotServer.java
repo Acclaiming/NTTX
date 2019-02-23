@@ -8,11 +8,13 @@ import org.nanohttpd.protocols.http.response.Status;
 
 import java.util.LinkedList;
 
+/*
+
 public class BotServer extends NanoHTTPD {
 
     public static final BotServer INSTACNCE = new BotServer();
     public LinkedList<ServerFragment> fragments = new LinkedList<>();
-
+    
     public BotServer() {
         super(BotConf.LOCAL_PORT);
     }
@@ -35,3 +37,5 @@ public class BotServer extends NanoHTTPD {
     }
 
 }
+
+*/

@@ -1,10 +1,10 @@
 package twitter4j;
 
-import io.kurumi.ntt.twitter.TwiAccount;
+import io.kurumi.ntt.disc.TAuth;
 
 public class ObjectUtil {
 
-    public static Status parseStatus(String obj, TwiAccount account) {
+    public static Status parseStatus(String obj, TAuth account) {
 
         try {
 

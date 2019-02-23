@@ -6,33 +6,14 @@ import com.pengrad.telegrambot.request.GetChat;
 import com.pengrad.telegrambot.response.GetChatResponse;
 import io.kurumi.ntt.BotConf;
 import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.twitter.TwiAccount;
 import io.kurumi.ntt.utils.CData;
-
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 public class UserData extends JSONObject {
 
     public static final String KEY = "NTT_USERS";
-    private static HashMap<Integer, UserData> cache = new HashMap<>();
-
-    static {
-
-        Map<String, String> all = BotDB.jedis.hgetAll(KEY);
-
-        for (Map.Entry<String, String> user : all.entrySet()) {
-
-            int id = Integer.parseInt(user.getKey());
-
-            UserData u = new UserData(id, user.getValue());
-
-            cache.put(id, u);
-
-        }
-
-    }
+    public static HashMap<Integer, UserData> fastCache = new HashMap<>();
 
     public Integer id;
     public String firstName;
@@ -74,7 +55,7 @@ public class UserData extends JSONObject {
 
     public static UserData get(Integer id) {
 
-        if (cache.containsKey(id)) return cache.get(id);
+        if (fastCache.containsKey(id)) return fastCache.get(id);
 
         String data = BotDB.jedis.hget(KEY, id.toString());
 
@@ -82,7 +63,7 @@ public class UserData extends JSONObject {
 
             UserData user = new UserData(id);
 
-            cache.put(id, user);
+            fastCache.put(id, user);
 
             return user;
 
@@ -90,7 +71,7 @@ public class UserData extends JSONObject {
 
         UserData user = new UserData(id, data);
 
-        cache.put(id, user);
+        fastCache.put(id, user);
 
         return user;
 
@@ -98,7 +79,7 @@ public class UserData extends JSONObject {
 
     public static LinkedList<UserData> getAll() {
 
-        return new LinkedList<UserData>(cache.values());
+        return new LinkedList<UserData>(fastCache.values());
 
     }
 
@@ -158,21 +139,9 @@ public class UserData extends JSONObject {
 
     }
     
-    public boolean isUser() {
-
-        return BotConf.FOUNDER.equals(userName) || Permission.isUser(id);
-
-    }
-
     public boolean isAdmin() {
 
-        return BotConf.FOUNDER.equals(userName) || Permission.isAdmin(id);
-
-    }
-
-    public boolean isBureaucrats() {
-
-        return BotConf.FOUNDER.equals(userName) || Permission.isBureaucrats(id);
+        return BotConf.FOUNDER.equals(userName);
 
     }
 
@@ -193,12 +162,6 @@ public class UserData extends JSONObject {
         if (data == null) UserPoint.remove(this);
 
         else UserPoint.set(this, data);
-
-    }
-
-    public TwiAccount cTU() {
-
-        return TwiAccount.getCurrent(id);
 
     }
 

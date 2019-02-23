@@ -11,7 +11,6 @@ import java.util.Map;
 
 public class SpamTag extends JSONObject {
 
-    public static final String KEY = "NTT_TAG";
     public static HashMap<Long, SpamTag> cache = new HashMap<>();
 
     static {

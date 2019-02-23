@@ -1,8 +1,6 @@
 package io.kurumi.ntt.utils;
 
 import cn.hutool.json.JSONObject;
-import io.kurumi.ntt.twitter.TwiAccount;
-
 import java.io.Serializable;
 
 public class CData extends JSONObject {
@@ -58,11 +56,6 @@ public class CData extends JSONObject {
     public <T> T getSerilizable(String key) {
 
         return SerUtil.toObject(getStr(key));
-
-    }
-
-    public void setAccount(TwiAccount account) {
-
 
     }
 

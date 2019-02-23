@@ -17,6 +17,7 @@ import io.kurumi.ntt.utils.ThreadPool;
 import java.util.LinkedList;
 import java.util.List;
 import io.kurumi.ntt.utils.BotLog;
+import twitter4j.Twitter;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
@@ -44,13 +45,20 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
         fragment.origin = this;
         fragments.add(fragment);
 
+
     }
 
     public abstract String botName();
 
-    public boolean isLongPulling() {
-        return false;
-    }
+    /*
+
+     public boolean isLongPulling() {
+
+     return false;
+
+     }
+
+     */
 
     @Override
     public int process(List<Update> updates) {
@@ -268,12 +276,12 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
             }
 
         }
-        
+
     }
 
     public void start() {
 
-        token = BotConf.getBotToken(botName());
+        token = BotConf.get("Token_" + botName());
 
         if (token == null || !BotConf.verifyToken(token)) {
 
@@ -283,37 +291,53 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         bot = new TelegramBot.Builder(token).build();
 
-        if (isLongPulling()) {
+        /*
 
-            bot.setUpdatesListener(this, new GetUpdates());
+         if (isLongPulling()) {
 
-        } else {
+         */
 
-            bot.execute(new SetWebhook().url("https://" + BotConf.SERVER_DOMAIN + "/" + token));
+        bot.setUpdatesListener(this, new GetUpdates());
 
-            TGWebHookF.bots.put(token, this);
+        /*
 
-        }
+         } else {
+
+         bot.execute(new SetWebhook().url("https://" + BotConf.SERVER_DOMAIN + "/" + token));
+
+         TGWebHookF.bots.put(token, this);
+
+         }
+
+         */
 
     }
 
     public void stop() {
 
-        if (isLongPulling()) {
+        /*
 
-            bot.removeGetUpdatesListener();
+         if (isLongPulling()) {
 
-        } else {
+         */
 
-            if (token != null) {
+        bot.removeGetUpdatesListener();
 
-                TGWebHookF.bots.remove(token);
+        /*
 
-                bot.execute(new DeleteWebhook());
+         } else {
 
-            }
+         if (token != null) {
 
-        }
+         TGWebHookF.bots.remove(token);
+
+         bot.execute(new DeleteWebhook());
+
+         }
+
+         }
+
+         */
 
     }
 
