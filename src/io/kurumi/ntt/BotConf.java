@@ -135,14 +135,22 @@ public class BotConf {
 
             BotLog.warnWithStack("取设置值或默认值但默认值为空 而不直接取值 : " + key);
 
-        }
+        } else if (value == null) {
 
-        return value == null ? defaultValue : value;
+            set(key,defaultValue);
+            
+            value = defaultValue;
+            
+        }
+            
+        return value;
 
     }
 
     public static void set(String key, Object value) {
 
+        if (value != null) value = value.toString();
+        
         conf.putByPath(key, value);
 
         FileUtil.writeUtf8String(conf.toStringPretty(),new File(DATA_DIR, "setting.conf"));

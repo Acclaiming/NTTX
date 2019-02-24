@@ -8,104 +8,61 @@ import io.kurumi.ntt.db.IDFactory;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import io.kurumi.ntt.model.data.IdDataModel;
+import io.kurumi.ntt.model.data.AIIdDataModel;
 
-public class SpamTag extends JSONObject {
+public class SpamTag extends AIIdDataModel {
 
-    public static HashMap<Long, SpamTag> cache = new HashMap<>();
-
-    static {
-
-        Map<String, String> all = BotDB.jedis.hgetAll(KEY);
-
-        for (Map.Entry<String, String> tag : all.entrySet()) {
-
-            Long id = Long.parseLong(tag.getKey());
-
-            cache.put(id, new SpamTag(id, tag.getValue()));
-
-        }
-
-    }
-
+    public static Factory<SpamTag> INSTANCE = new Factory<SpamTag>(SpamTag.class,"spam/tags");
+    
+    public SpamTag(Factory factory,String dirName) { super(factory,dirName); }
+    public SpamTag(String dirName,Long id) { super(dirName,id); }
+    
     public Long id;
     public String name;
-    public String desc = "无";
-    public Boolean defaultOpen = false;
-    public LinkedList<Integer> disable = new LinkedList<>();
+    public String desc;
+    public LinkedList<Long> enable;
+   
+    public Long tid;
 
-    public SpamTag() {
-
-        id = -1L;
-
+    @Override
+    protected void init() {
+        
+        desc = "暂无";
+        
+        enable = new LinkedList<>();
+        
     }
 
-    public SpamTag(Long id, String json) {
+    @Override
+    protected void load(JSONObject obj) {
+        
+        name = obj.getStr("name");
 
-        super(json);
+        desc = obj.getStr("desc",desc);
+        
+        tid = obj.getLong("tid");
+        
+        JSONArray enableArray = obj.getJSONArray("enable");
 
-        this.id = id;
+        for (int index = 0; index < enableArray.size(); index++) {
 
-        name = getStr("name");
-
-        desc = getStr("desc");
-
-        defaultOpen = getBool("default_open");
-
-        JSONArray disableArray = getJSONArray("disable");
-
-        for (int index = 0; index < disableArray.size(); index++) {
-
-            disable.add(disableArray.getInt(index));
+            enableArray.add(enableArray.getInt(index));
 
         }
-
+       
     }
 
-    public static LinkedList<SpamTag> getAll() {
-
-        return new LinkedList<SpamTag>(cache.values());
-
+    @Override
+    protected void save(JSONObject obj) {
+        
+        obj.put("name",name);
+        obj.put("desc",desc);
+        obj.put("tid",tid);
+        obj.put("enable",enable);
+        
     }
 
-    public static SpamTag get(String id) {
-
-        for (SpamTag tag : cache.values()) {
-
-            if (id.equals(tag.name)) {
-
-                return tag;
-
-            }
-
-        }
-
-        return null;
-
-    }
-
-    public static SpamTag get(Long id) {
-
-        return cache.containsKey(id) ? cache.get(id) : null;
-
-    }
-
-    public void save() {
-
-        put("name", name);
-        put("desc", desc);
-
-        put("default_open", defaultOpen);
-
-        put("disable", disable);
-
-        if (id == -1L) {
-
-            id = IDFactory.nextId(KEY);
-
-        }
-
-        BotDB.jedis.hset(KEY, id.toString(), toString());
-
-    }
+    
 
 }
