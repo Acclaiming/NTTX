@@ -9,6 +9,7 @@ public class TwiREC extends IdDataModel {
 
     public TwiREC(String dirName, Long id) { super(dirName, id); }
     
+    public Long accountId;
     public String screenName;
     public String displayName;
 
@@ -19,6 +20,7 @@ public class TwiREC extends IdDataModel {
     @Override
     protected void load(JSONObject obj) {
 
+        accountId = id;
       //  accountId = obj.getLong("account_id");
         screenName = obj.getStr("screen_name");
         displayName = obj.getStr("display_name");

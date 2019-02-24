@@ -94,6 +94,14 @@ public abstract class IdDataModel {
             
         }
         
+        public T get(Long id) {
+
+            if (idIndex.containsKey(id)) return idIndex.get(id);
+            
+            return null;
+        
+        }
+        
         public T getOrNew(Long id) {
             
             if (idIndex.containsKey(id)) return idIndex.get(id);
