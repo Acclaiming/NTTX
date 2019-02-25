@@ -63,9 +63,17 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
     @Override
     public int process(List<Update> updates) {
 
-        for (Update update : updates) {
+        try {
 
-            process(update);
+            for (Update update : updates) {
+
+                process(update);
+
+            }
+
+        } catch (Exception e) {
+
+            BotLog.error("更新出错",e);
 
         }
 
