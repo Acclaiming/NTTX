@@ -56,7 +56,7 @@ public class BotConf {
     /**
      * Discourse API调用地址 见 项目/disc/api.php
      */
-    public static final String DISC_WAPPER = "http://127.0.0.1:11212/api.php";
+    public static final String DISC_WAPPER = "http://127.0.0.1:11213/api.php";
 
     /**
      * 命令行输入 Token 并保存到数据库
