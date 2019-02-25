@@ -18,7 +18,6 @@ public class SpamTag extends AIIdDataModel {
     public SpamTag(Factory factory,String dirName) { super(factory,dirName); }
     public SpamTag(String dirName,Long id) { super(dirName,id); }
     
-    public Long id;
     public String name;
     public String desc;
     public LinkedList<Long> enable;
