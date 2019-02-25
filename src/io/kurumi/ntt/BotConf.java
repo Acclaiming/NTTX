@@ -79,7 +79,7 @@ public class BotConf {
 
         }
 
-        set("Token_" + name, token);
+        set("token." + name, token);
 
         return token;
 
@@ -114,7 +114,15 @@ public class BotConf {
 
         }
 
-        return conf.getByPath(key, String.class);
+        if (key.contains(".")) {
+
+            return conf.getByPath(key, String.class);
+
+        } else {
+
+            return conf.getStr(key);
+
+        }
 
     }
 
@@ -137,12 +145,12 @@ public class BotConf {
 
         } else if (value == null) {
 
-            set(key,defaultValue);
-            
+            set(key, defaultValue);
+
             value = defaultValue;
-            
+
         }
-            
+
         return value;
 
     }
@@ -150,10 +158,18 @@ public class BotConf {
     public static void set(String key, Object value) {
 
         if (value != null) value = value.toString();
-        
-        conf.putByPath(key, value);
 
-        FileUtil.writeUtf8String(conf.toStringPretty(),new File(DATA_DIR, "setting.conf"));
+        if (key.contains(".")) {
+
+            conf.putByPath(key, value);
+
+        } else {
+
+            conf.put(key, value);
+
+        }
+
+        FileUtil.writeUtf8String(conf.toStringPretty(), new File(DATA_DIR, "setting.conf"));
 
     }
 

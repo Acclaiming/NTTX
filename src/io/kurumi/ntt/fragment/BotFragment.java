@@ -281,7 +281,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
     public void start() {
 
-        token = BotConf.get("Token_" + botName());
+        token = BotConf.get("token." + botName());
 
         if (token == null || !BotConf.verifyToken(token)) {
 
