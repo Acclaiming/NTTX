@@ -56,7 +56,7 @@ public class DExApi {
         
         conf.put("sql",sql);
         
-        HttpResponse resp = HttpUtil.createGet(BotConf.get(BotConf.DISC_WAPPER)).form(conf).execute();
+        HttpResponse resp = HttpUtil.createGet(BotConf.DISC_WAPPER).form(conf).execute();
 
         if (!resp.isOk()) {
             
