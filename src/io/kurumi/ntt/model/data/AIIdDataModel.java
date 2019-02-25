@@ -45,7 +45,7 @@ public abstract class AIIdDataModel extends IdDataModel {
             
             try {
 
-                T obj = clazz.getDeclaredConstructor(new Class[] {Factory.class,String.class}).newInstance(dirName);
+                T obj = clazz.getDeclaredConstructor(new Class[] {Factory.class,String.class}).newInstance(this,dirName);
 
                 return obj;
 
