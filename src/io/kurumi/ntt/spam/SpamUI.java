@@ -9,6 +9,7 @@ import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.utils.CData;
 import io.kurumi.ntt.disc.TAuth;
+import cn.hutool.core.util.StrUtil;
 
 public class SpamUI extends Fragment {
 
@@ -23,8 +24,9 @@ public class SpamUI extends Fragment {
 
     final String POINT_TAG = "s|t";
     final String POINT_DEL = "s|d";
-    final String POINT_SET_NAME = "s|s";
-
+    final String POINT_SET_NAME = "s|sn";
+    final String POINT_SET_DESC = "s|sd";
+    
     @Override
     public boolean onPrivMsg(UserData user, Msg msg) {
 
@@ -48,7 +50,9 @@ public class SpamUI extends Fragment {
         switch (point.getPoint()) {
 
                 case POINT_NEW : onTagName(user, msg);break;
-
+                case POINT_SET_NAME : onSetTagName(user,msg);break;
+                case POINT_SET_DESC : onSetTagDesc(user,msg);break;
+                
                 default : return false;
 
         }
@@ -65,7 +69,7 @@ public class SpamUI extends Fragment {
 
             msg.delete();
 
-            msg.send("还没有绑定临风社账号 ~", "请在设置 - 个人信息中设置当前TelegramId >_<").exec();
+            msg.send("还没有绑定临风社账号 /", "请在设置 - 个人信息中设置当前TelegramId >_<").buttons(new ButtonMarkup() {{ newUrlButtonLine("论坛地址","https://disc.kurumi.io"); }}).exec();
 
             return null;
 
@@ -106,7 +110,9 @@ public class SpamUI extends Fragment {
                 case POINT_PUBLIC_TAGS : publicTags(user, callback, true);break;
                 case POINT_NEW : newTag(user, callback);break;
                 case POINT_TAG : showTag(user, callback, Long.parseLong(callback.data.getIndex()), true);break;
-
+                case POINT_SET_NAME : setTagName(user,callback);break;
+                case POINT_SET_DESC : setTagDesc(user,callback);break;
+                
                 default : return false;
 
         }
@@ -172,6 +178,18 @@ public class SpamUI extends Fragment {
 
     void onTagName(UserData user, Msg msg) {
 
+        if (StrUtil.isBlank(msg.text())) {
+
+            msg.send("请发送 「文本」").exec();
+
+            return;
+
+        } else {
+
+            user.point(null);
+
+        }
+
         DUser du = context(user, msg);
 
         if (du == null) return;
@@ -180,13 +198,9 @@ public class SpamUI extends Fragment {
 
             msg.send("Failed...");
 
-            user.point(null);
-
             return;
 
         }
-        
-        user.point(null);
 
         String tagName = msg.text();
 
@@ -224,40 +238,147 @@ public class SpamUI extends Fragment {
 
                     if (du.moderator || du.admin) {
 
-                        newButtonLine().
-                        newButton("删除分类", POINT_DEL, tag.id.toString())
-                        .newButton("修改名称",POINT_SET_NAME,tag.id.toString());
+                        newButtonLine()
+                            .newButton("删除分类", POINT_DEL, tag.id.toString())
+                            .newButton("修改名称", POINT_SET_NAME, tag.id.toString())
+                            .newButton("修改简介",POINT_SET_DESC,tag.id.toString());
 
                     }
 
                 }}).exec();
 
     }
-    
-    void setTagName(UserData user,Callback callback) {
-        
+
+    void setTagName(UserData user, Callback callback) {
+
         DUser du = context(user, callback);
 
         if (du == null) return;
 
         Long tagId = Long.parseLong(callback.data.getIndex());
-        
+
         if (!du.moderator && !du.admin) {
 
             callback.alert("Failed...");
 
-            showTag(user, callback,tagId, true);
+            showTag(user, callback, tagId, true);
+
+            return;
+
+        }
+
+        callback.delete();
+
+        callback.send("好。现在发送新的标签名称 :").exec();
+
+        user.point(cdata(POINT_SET_NAME, callback.data.getIndex()));
+
+    }
+
+    void onSetTagName(UserData user, Msg msg) {
+
+        if (StrUtil.isBlank(msg.text())) {
+
+            msg.send("请发送 「文本」").exec();
+
+            return;
+
+        } else {
+
+            user.point(null);
+
+        }
+
+        DUser du = context(user, msg);
+
+        if (du == null) return;
+
+        if (!du.moderator && !du.admin) {
+
+            msg.send("Failed...");
 
             return;
 
         }
         
-        callback.text("好");
+        Long tagId = Long.parseLong(user.point().getIndex());
+
+        SpamTag tag = SpamTag.INSTANCE.get(tagId);
+
+        tag.name = msg.text();
+
+        tag.save();
         
-        callback.send("现在发送新的标签名 :").exec();
+        msg.send("好。名称修改已保存。").exec();
         
-        user.point(cdata(POINT_SET_NAME,callback.data.getIndex()));
-        
+        showTag(user,msg,tagId,false);
+
+    }
+    
+    void setTagDesc(UserData user, Callback callback) {
+
+        DUser du = context(user, callback);
+
+        if (du == null) return;
+
+        Long tagId = Long.parseLong(callback.data.getIndex());
+
+        if (!du.moderator && !du.admin) {
+
+            callback.alert("Failed...");
+
+            showTag(user, callback, tagId, true);
+
+            return;
+
+        }
+
+        callback.delete();
+
+        callback.send("好。现在发送新的标签说明 :").exec();
+
+        user.point(cdata(POINT_SET_DESC, callback.data.getIndex()));
+
+    }
+
+    void onSetTagDesc(UserData user, Msg msg) {
+
+        if (StrUtil.isBlank(msg.text())) {
+
+            msg.send("请发送 「文本」").exec();
+
+            return;
+
+        } else {
+
+            user.point(null);
+
+        }
+
+        DUser du = context(user, msg);
+
+        if (du == null) return;
+
+        if (!du.moderator && !du.admin) {
+
+            msg.send("Failed...");
+
+            return;
+
+        }
+
+        Long tagId = Long.parseLong(user.point().getIndex());
+
+        SpamTag tag = SpamTag.INSTANCE.get(tagId);
+
+        tag.desc = msg.text();
+
+        tag.save();
+
+        msg.send("好。说明已保存。").exec();
+
+        showTag(user,msg,tagId,false);
+
     }
 
 }
