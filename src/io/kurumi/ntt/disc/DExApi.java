@@ -64,11 +64,9 @@ public class DExApi {
             
         }
         
-        
         String body = resp.body();
         
         BotLog.debug("desc api reply : " + body);
-        
         
         if ("failed".equals(body)) {
             
