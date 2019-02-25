@@ -47,7 +47,7 @@ public class SpamTag extends AIIdDataModel {
 
         for (int index = 0; index < enableArray.size(); index++) {
 
-            enableArray.add(enableArray.getInt(index));
+            enableArray.add(enableArray.getLong(index));
 
         }
        
