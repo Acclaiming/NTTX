@@ -215,7 +215,7 @@ public class SpamUI extends Fragment {
 
         tagContent.append("「 分类 | ").append(tag.name).append(" | 已").append(auth != null && tag.enable.contains(auth.accountId) ? "启用" : "禁用").append(" 」");
 
-        tagContent.append("\n").append(split);
+        tagContent.append("\n").append(split).append("\n");
         
         tagContent.append(tag.desc);
         
