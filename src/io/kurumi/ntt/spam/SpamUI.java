@@ -37,7 +37,7 @@ public class SpamUI extends Fragment {
 
         switch (msg.commandName()) {
 
-                case "/spam" : spamUI(user, msg, false);break;
+                case "spam" : spamUI(user, msg, false);break;
 
                 default : return false;
 
