@@ -86,6 +86,8 @@ public class SpamUI extends Fragment {
 
     void spamUI(UserData user, Msg msg, boolean edit) {
 
+        BotLog.debug("spamui");
+        
         if (context(user, msg) == null) return;
 
         (edit ? msg.edit(split) : msg.send(split))
