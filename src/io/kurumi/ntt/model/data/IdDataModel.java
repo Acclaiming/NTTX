@@ -66,7 +66,7 @@ public abstract class IdDataModel {
 
         public HashMap<Long,T> idIndex = new HashMap<>();
 
-        public Factory(Class<T> clazz, String dirName) { this.clazz = clazz;this.dirName = dirName; } {
+        public Factory(Class<T> clazz, String dirName) { this.clazz = clazz;this.dirName = dirName;
 
             File[] files = new File(BotConf.DATA_DIR, dirName).listFiles();
 
