@@ -19,7 +19,7 @@ public class DExApi {
 
         if (tFastIndex.containsKey(userId)) return tFastIndex.get(userId);
         
-        JSONArray resp = doQuery("SELECT * FROM user_custom_fields WHERE name = 'user_field_1' AND user_id = " + userId);
+        JSONArray resp = doQuery("SELECT * FROM user_custom_fields WHERE name = 'user_field_1' AND user_id = '" + userId + "'");
 
         if (resp.isEmpty()) return null;
 
@@ -36,7 +36,7 @@ public class DExApi {
         
         if (uFastIndex.containsKey(telegramId)) return uFastIndex.get(telegramId);
         
-        JSONArray resp = doQuery("SELECT * FROM user_custom_fields WHERE name = 'user_field_1' AND value = " + telegramId);
+        JSONArray resp = doQuery("SELECT * FROM user_custom_fields WHERE name = 'user_field_1' AND value = '" + telegramId + "'");
 
         if (resp.isEmpty()) return null;
         
