@@ -56,29 +56,21 @@ public class DExApi {
         
         conf.put("sql",sql);
         
-        HttpResponse resp = HttpUtil.createGet(BotConf.DISC_WAPPER).form(conf).execute();
+        String resp = HttpUtil.get(BotConf.DISC_WAPPER, conf);
 
-        if (!resp.isOk()) {
-            
-            BotLog.error("desc api error : " + resp.getStatus());
-            
-        }
+        BotLog.debug("desc api reply : " + resp);
         
-        String body = resp.body();
-        
-        BotLog.debug("desc api reply : " + body);
-        
-        if ("failed".equals(body)) {
+        if ("failed".equals(resp)) {
             
             throw new RuntimeException("API错误 可能是秘钥错误");
             
-        } else if("false".equals(body)) {
+        } else if("false".equals(resp)) {
             
             return new JSONArray();
             
         } else {
             
-            return new JSONArray(body);
+            return new JSONArray(resp);
             
         }
         
