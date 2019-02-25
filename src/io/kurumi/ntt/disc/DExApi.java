@@ -8,6 +8,7 @@ import java.util.HashMap;
 import io.kurumi.ntt.utils.BotLog;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
+import cn.hutool.json.JSONException;
 
 public class DExApi {
     
@@ -70,7 +71,17 @@ public class DExApi {
             
         } else {
             
+            try {
+            
             return new JSONArray(resp);
+            
+            } catch (JSONException jsonerr) {
+                
+                BotLog.error("json : " + resp);
+                
+                throw jsonerr;
+                
+            }
             
         }
         
