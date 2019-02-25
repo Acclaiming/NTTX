@@ -13,6 +13,8 @@ import cn.hutool.core.util.StrUtil;
 
 public class SpamUI extends Fragment {
 
+    public static SpamUI INSTANCE = new SpamUI();
+    
     final String split = "----------------------------------";
 
     final String POINT_BACK = "s|b";
@@ -239,9 +241,9 @@ public class SpamUI extends Fragment {
                     if (du.moderator || du.admin) {
 
                         newButtonLine()
-                            .newButton("删除分类", POINT_DEL, tag.id.toString())
+                            .newButton("「 删除分类", POINT_DEL, tag.id.toString())
                             .newButton("修改名称", POINT_SET_NAME, tag.id.toString())
-                            .newButton("修改简介",POINT_SET_DESC,tag.id.toString());
+                            .newButton("修改说明 」",POINT_SET_DESC,tag.id.toString());
 
                     }
 

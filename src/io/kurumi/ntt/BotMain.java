@@ -13,6 +13,7 @@ import io.kurumi.ntt.stickers.DVANG;
 import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.CData;
 import java.io.IOException;
+import io.kurumi.ntt.spam.SpamUI;
 
 public class BotMain extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -22,6 +23,7 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
     public BotMain() {
 
         addFragment(GroupRepeat.INSTANCE);
+        addFragment(SpamUI.INSTANCE);
 
     }
 
@@ -59,70 +61,7 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
         return "NTTBot";
 
     }
-
-    public boolean debug() {
-
-        String debug = BotConf.get("DEBUG");
-
-        return "true".equals(debug);
-
-    }
-
-    @Override
-    public boolean onPrivMsg(UserData user, Msg msg) {
-
-        if (debug() && !user.isAdmin()) {
-
-            msg.send("Bot 正在 重写").exec();
-            msg.sendSticker(DVANG.难受);
-
-            return true;
-
-        } else return false;
-
-    }
-
-    @Override
-    public boolean onPoiPrivMsg(UserData user, Msg msg, CData point) {
-
-        if (debug() && !user.isAdmin()) {
-
-
-            msg.send("Bot 正在 重写").exec();
-            msg.sendSticker(DVANG.难受);
-
-        }
-
-        return true;
-
-    }
-
-    @Override
-    public boolean onCallback(UserData user, Callback callback) {
-
-        if (debug() && !user.isAdmin()) {
-
-            callback.alert("BOT 正在 重写 >_<");
-
-        }
-
-        return true;
-
-    }
-
-    @Override
-    public boolean onPoiCallback(UserData user, Callback callback, CData point) {
-
-        if (debug() && !user.isAdmin()) {
-
-            callback.alert("BOT 正在 重写 >_<");
-
-        }
-
-        return true;
-
-    }
-
+    
     @Override
     public void uncaughtException(Thread thread, Throwable throwable) {
 
