@@ -58,7 +58,7 @@ public class TAuth {
         
         TAuth account = new TAuth();
         
-        account.origin = DUser.get(accObj.getStr("user_id"));
+        account.origin = DUser.get(accObj.getInt("user_id"));
 
         account.accountId = accObj.getLong("provider_uid");
 
