@@ -282,7 +282,7 @@ public class SpamUI extends Fragment {
         
         callback.delete();
         
-        callback.send("现在发送 确认删除 (简体字) 以删除分类").exec();
+        callback.send("现在发送 确认删除 (简体字) 以删除分类","","或发送其他任意与 /cancel 取消").exec();
         
         user.point(cdata(POINT_DEL,callback.data.getIndex()));
         

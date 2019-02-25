@@ -81,6 +81,31 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
     }
 
+    @Override
+    public boolean onMsg(UserData user, Msg msg) {
+        
+        if ("cancel".equals(msg.commandName())) {
+            
+            if (user.hasPoint()) {
+                
+                user.point(null);
+                
+                msg.send("取消成功 ~").exec();
+                
+            } else {
+                
+                msg.send("你要取消什么？ >_<").exec();
+                
+            }
+            
+            return true;
+            
+        }
+        
+        return false;
+        
+    }
+
     public void process(final Update update) {
 
         if (update.message() != null) {
@@ -90,7 +115,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
             boolean point = user.hasPoint();
 
             BotLog.process(user, update, point);
-
+            
             if (point) {
 
                 CData data = user.point();
