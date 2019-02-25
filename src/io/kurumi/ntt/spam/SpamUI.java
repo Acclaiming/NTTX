@@ -147,8 +147,6 @@ public class SpamUI extends Fragment {
 
                     for (SpamTag tag : SpamTag.INSTANCE.all()) {
 
-                        System.out.println(tag.id);
-                        
                         newButtonLine("「 " + tag.name + " 」", POINT_TAG, tag.id.toString());
 
                     }

@@ -29,11 +29,12 @@ public abstract class AIIdDataModel extends IdDataModel {
 
             BotConf.set("id." + dirName.replace("/","."),id);
 
+            factory.saveObj(this);
+            
+            
         }
        
         super.save();
-        
-        factory.saveObj(this);
         
     }
     

@@ -11,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import io.kurumi.ntt.spam.SpamTag;
 import java.util.HashMap;
+import io.kurumi.ntt.utils.BotLog;
 
 public abstract class IdDataModel {
 
@@ -49,6 +50,8 @@ public abstract class IdDataModel {
 
     public void save() {
 
+        BotLog.debug("save " + id);
+        
         FileUtil.writeUtf8String(new JSONObject() {{ save(this); }}.toStringPretty(), new File(BotConf.DATA_DIR, dirName + "/" + id + ".json"));
 
     }
@@ -80,7 +83,11 @@ public abstract class IdDataModel {
 
                         saveObj(obj);
 
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                        
+                        BotLog.error("创建",e);
+                        
+                    }
 
                 }
 
