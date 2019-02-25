@@ -128,8 +128,18 @@ public abstract class IdDataModel {
 
         public void saveObj(T obj) {
 
+            obj.save();
+            
             idIndex.put(obj.id, obj);
 
+        }
+        
+        public void delObj(T obj) {
+            
+            obj.delete();
+            
+            idIndex.remove(obj.id);
+            
         }
 
     }

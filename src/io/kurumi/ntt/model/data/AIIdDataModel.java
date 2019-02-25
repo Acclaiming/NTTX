@@ -3,14 +3,10 @@ package io.kurumi.ntt.model.data;
 import io.kurumi.ntt.BotConf;
 
 public abstract class AIIdDataModel extends IdDataModel {
-
-    protected Factory factory;
     
-    public AIIdDataModel(Factory factory,String dirName) {
+    public AIIdDataModel(String dirName) {
 
         super(dirName);
-        
-        this.factory = factory;
         
         id = -1L;
 
@@ -29,9 +25,6 @@ public abstract class AIIdDataModel extends IdDataModel {
 
             BotConf.set("id." + dirName.replace("/","."),id);
 
-            factory.saveObj(this);
-            
-            
         }
        
         super.save();
@@ -46,7 +39,7 @@ public abstract class AIIdDataModel extends IdDataModel {
             
             try {
 
-                T obj = clazz.getDeclaredConstructor(new Class[] {Factory.class,String.class}).newInstance(this,dirName);
+                T obj = clazz.getDeclaredConstructor(new Class[] {String.class}).newInstance(dirName);
 
                 return obj;
 

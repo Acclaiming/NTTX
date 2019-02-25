@@ -15,7 +15,7 @@ public class SpamTag extends AIIdDataModel {
 
     public static Factory<SpamTag> INSTANCE = new Factory<SpamTag>(SpamTag.class,"spam/tags");
     
-    public SpamTag(Factory factory,String dirName) { super(factory,dirName); }
+    public SpamTag(String dirName) { super(dirName); }
     public SpamTag(String dirName,Long id) { super(dirName,id); }
     
     public String name;

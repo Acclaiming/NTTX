@@ -16,7 +16,7 @@ public class SpamUI extends Fragment {
 
     public static SpamUI INSTANCE = new SpamUI();
 
-    final String split = "----------------------------------";
+    final String split = "------------------------------------------------------------";
 
     final String POINT_BACK = "s|b";
 
@@ -53,6 +53,7 @@ public class SpamUI extends Fragment {
         switch (point.getPoint()) {
 
                 case POINT_NEW : onTagName(user, msg);break;
+                case POINT_DEL : onDelTag(user,msg);break;
                 case POINT_SET_NAME : onSetTagName(user, msg);break;
                 case POINT_SET_DESC : onSetTagDesc(user, msg);break;
 
@@ -117,6 +118,7 @@ public class SpamUI extends Fragment {
                 case POINT_PUBLIC_TAGS : publicTags(user, callback, true);break;
                 case POINT_NEW : newTag(user, callback);break;
                 case POINT_TAG : showTag(user, callback, Long.parseLong(callback.data.getIndex()), true);break;
+                case POINT_DEL : delTag(user,callback);break;
                 case POINT_SET_NAME : setTagName(user, callback);break;
                 case POINT_SET_DESC : setTagDesc(user, callback);break;
 
@@ -215,7 +217,7 @@ public class SpamUI extends Fragment {
 
         newTag.name = tagName;
 
-        newTag.save();
+        SpamTag.INSTANCE.saveObj(newTag);
 
         msg.send("创建成功 现在返回分类 ~").exec();
 
@@ -231,13 +233,17 @@ public class SpamUI extends Fragment {
 
         final TAuth auth = TAuth.get(du);
 
-        StringBuilder tagContent = new StringBuilder(split);
+        StringBuilder tagContent = new StringBuilder(split).append("\n");
 
         final SpamTag tag = SpamTag.INSTANCE.get(id);
 
         tagContent.append("「 分类 | ").append(tag.name).append(" | 已").append(auth != null && tag.enable.contains(auth.accountId) ? "启用" : "禁用").append(" 」");
 
-        tagContent.append("\n\n").append(tag.desc);
+        tagContent.append("\n").append(split);
+        
+        tagContent.append(tag.desc);
+        
+        tagContent.append("\n").append(split);
 
         (edit ? msg.edit(tagContent.toString()) : msg.send(tagContent.toString()))
 
@@ -254,6 +260,48 @@ public class SpamUI extends Fragment {
 
                 }}).exec();
 
+    }
+    
+    void delTag(UserData user,Callback callback) {
+        
+        DUser du = context(user, callback);
+
+        if (du == null) return;
+
+        Long tagId = Long.parseLong(callback.data.getIndex());
+
+        if (!du.moderator && !du.admin) {
+
+            callback.alert("Failed...");
+
+            showTag(user, callback, tagId, true);
+
+            return;
+
+        }
+        
+        callback.delete();
+        
+        callback.send("现在发送 确认删除 (简体字) 以删除分类").exec();
+        
+        user.point(cdata(POINT_DEL,callback.data.getIndex()));
+        
+    }
+    
+    void onDelTag(UserData user,Msg msg) {
+        
+        Long tagId = Long.parseLong(user.point().getIndex());
+
+        SpamTag tag = SpamTag.INSTANCE.get(tagId);
+
+        SpamTag.INSTANCE.delObj(tag);
+        
+        msg.send("好。分类已删除。").exec();
+
+        user.point(null);
+
+        publicTags(user, msg, false);
+        
     }
 
     void setTagName(UserData user, Callback callback) {
@@ -290,12 +338,8 @@ public class SpamUI extends Fragment {
 
             return;
 
-        } else {
-
-            user.point(null);
-
         }
-
+            
         DUser du = context(user, msg);
 
         if (du == null) return;
@@ -314,9 +358,11 @@ public class SpamUI extends Fragment {
 
         tag.name = msg.text();
 
-        tag.save();
+        SpamTag.INSTANCE.saveObj(tag);
 
         msg.send("好。名称修改已保存。").exec();
+        
+        user.point(null);
 
         showTag(user, msg, tagId, false);
 
@@ -356,12 +402,8 @@ public class SpamUI extends Fragment {
 
             return;
 
-        } else {
-
-            user.point(null);
-
         }
-
+        
         DUser du = context(user, msg);
 
         if (du == null) return;
@@ -380,9 +422,11 @@ public class SpamUI extends Fragment {
 
         tag.desc = msg.text();
 
-        tag.save();
+        SpamTag.INSTANCE.saveObj(tag);
 
         msg.send("好。说明已保存。").exec();
+        
+        user.point(null);
 
         showTag(user, msg, tagId, false);
 
