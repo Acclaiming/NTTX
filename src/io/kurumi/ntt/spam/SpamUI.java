@@ -67,6 +67,8 @@ public class SpamUI extends Fragment {
 
     DUser context(UserData user, Msg msg) {
 
+        msg.sendTyping();
+        
         Integer userId = DExApi.getUserIdByTelegram(user.userName);
 
         if (userId != null) {
@@ -161,25 +163,11 @@ public class SpamUI extends Fragment {
 
     void newTag(UserData user, Callback callback) {
 
-        DUser du = context(user, callback);
-
-        if (du == null) return;
-
-        if (!du.moderator && !du.admin) {
-
-            callback.alert("Failed...");
-
-            publicTags(user, callback, true);
-
-            return;
-
-        }
-
         callback.delete();
 
         callback.text("好");
 
-        callback.send("现在发送新分类的名称 :").exec();
+        callback.send("现在发送新分类的名称 :","","或使用 /cancel 取消创建 ~").exec();
 
         user.point(cdata(POINT_NEW));
 
@@ -196,18 +184,6 @@ public class SpamUI extends Fragment {
         } else {
 
             user.point(null);
-
-        }
-
-        DUser du = context(user, msg);
-
-        if (du == null) return;
-
-        if (!du.moderator && !du.admin) {
-
-            msg.send("Failed...");
-
-            return;
 
         }
 
@@ -264,25 +240,9 @@ public class SpamUI extends Fragment {
     
     void delTag(UserData user,Callback callback) {
         
-        DUser du = context(user, callback);
-
-        if (du == null) return;
-
-        Long tagId = Long.parseLong(callback.data.getIndex());
-
-        if (!du.moderator && !du.admin) {
-
-            callback.alert("Failed...");
-
-            showTag(user, callback, tagId, true);
-
-            return;
-
-        }
-        
         callback.delete();
         
-        callback.send("现在发送 确认删除 (简体字) 以删除分类","","或发送其他任意与 /cancel 取消").exec();
+        callback.send("现在发送 任意内容 以删除分类","","或使用 /cancel 取消").exec();
         
         user.point(cdata(POINT_DEL,callback.data.getIndex()));
         
@@ -306,22 +266,6 @@ public class SpamUI extends Fragment {
 
     void setTagName(UserData user, Callback callback) {
 
-        DUser du = context(user, callback);
-
-        if (du == null) return;
-
-        Long tagId = Long.parseLong(callback.data.getIndex());
-
-        if (!du.moderator && !du.admin) {
-
-            callback.alert("Failed...");
-
-            showTag(user, callback, tagId, true);
-
-            return;
-
-        }
-
         callback.delete();
 
         callback.send("好。现在发送新的标签名称 :").exec();
@@ -340,18 +284,6 @@ public class SpamUI extends Fragment {
 
         }
             
-        DUser du = context(user, msg);
-
-        if (du == null) return;
-
-        if (!du.moderator && !du.admin) {
-
-            msg.send("Failed...");
-
-            return;
-
-        }
-
         Long tagId = Long.parseLong(user.point().getIndex());
 
         SpamTag tag = SpamTag.INSTANCE.get(tagId);
@@ -369,22 +301,6 @@ public class SpamUI extends Fragment {
     }
 
     void setTagDesc(UserData user, Callback callback) {
-
-        DUser du = context(user, callback);
-
-        if (du == null) return;
-
-        Long tagId = Long.parseLong(callback.data.getIndex());
-
-        if (!du.moderator && !du.admin) {
-
-            callback.alert("Failed...");
-
-            showTag(user, callback, tagId, true);
-
-            return;
-
-        }
 
         callback.delete();
 
@@ -404,18 +320,6 @@ public class SpamUI extends Fragment {
 
         }
         
-        DUser du = context(user, msg);
-
-        if (du == null) return;
-
-        if (!du.moderator && !du.admin) {
-
-            msg.send("Failed...");
-
-            return;
-
-        }
-
         Long tagId = Long.parseLong(user.point().getIndex());
 
         SpamTag tag = SpamTag.INSTANCE.get(tagId);
