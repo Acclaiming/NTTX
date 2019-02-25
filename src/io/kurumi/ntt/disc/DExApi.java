@@ -5,6 +5,9 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import io.kurumi.ntt.BotConf;
 import java.util.HashMap;
+import io.kurumi.ntt.utils.BotLog;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 
 public class DExApi {
     
@@ -47,23 +50,37 @@ public class DExApi {
     
     public static JSONArray doQuery(String sql) {
         
+        BotLog.debug("desc api query : " + sql);
+        
         JSONObject conf = new JSONObject();
         
         conf.put("sql",sql);
         
-        String resp = HttpUtil.get(BotConf.get(BotConf.DISC_WAPPER), conf);
+        HttpResponse resp = HttpUtil.createGet(BotConf.get(BotConf.DISC_WAPPER)).form(conf).execute();
 
-        if ("failed".equals(resp)) {
+        if (!resp.isOk()) {
+            
+            BotLog.error("desc api error : " + resp.getStatus());
+            
+        }
+        
+        
+        String body = resp.body();
+        
+        BotLog.debug("desc api reply : " + body);
+        
+        
+        if ("failed".equals(body)) {
             
             throw new RuntimeException("API错误 可能是秘钥错误");
             
-        } else if("false".equals(resp)) {
+        } else if("false".equals(body)) {
             
             return new JSONArray();
             
         } else {
             
-            return new JSONArray(resp);
+            return new JSONArray(body);
             
         }
         

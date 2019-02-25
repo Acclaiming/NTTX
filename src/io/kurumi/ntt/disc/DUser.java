@@ -15,7 +15,7 @@ public class DUser {
         
         JSONArray resp = DExApi.doQuery("SELECT * FROM users WHERE id = '" + id + "'");
 
-        if (resp.isEmpty()) return null;
+        if (resp.isEmpty()) { return null; }
         
         return addCache(resp.getJSONObject(0));
         
