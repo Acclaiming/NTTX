@@ -111,7 +111,7 @@ public class SpamUI extends Fragment {
     @Override
     public boolean onCallback(UserData user, Callback callback) {
 
-        switch (callback.data.getIndex()) {
+        switch (callback.data.getPoint()) {
 
                 case POINT_BACK : spamUI(user, callback, true);break;
                 case POINT_PUBLIC_TAGS : publicTags(user, callback, true);break;
