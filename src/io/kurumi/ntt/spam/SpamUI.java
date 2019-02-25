@@ -10,6 +10,7 @@ import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.utils.CData;
 import io.kurumi.ntt.disc.TAuth;
 import cn.hutool.core.util.StrUtil;
+import io.kurumi.ntt.utils.BotLog;
 
 public class SpamUI extends Fragment {
 
@@ -34,6 +35,8 @@ public class SpamUI extends Fragment {
 
         if (!msg.isCommand()) return false;
 
+        msg.send("onCommand").exec();  // TEST
+        
         switch (msg.commandName()) {
 
                 case "/spam" : spamUI(user, msg, false);break;
@@ -69,6 +72,8 @@ public class SpamUI extends Fragment {
 
         if (userId == null) {
 
+            msg.send("Context Null").exec();  // TEST
+            
             msg.delete();
 
             msg.send("还没有绑定临风社账号 /", "请在设置 - 个人信息中设置当前TelegramId >_<").buttons(new ButtonMarkup() {{ newUrlButtonLine("论坛地址","https://disc.kurumi.io"); }}).exec();
@@ -85,6 +90,8 @@ public class SpamUI extends Fragment {
 
         if (context(user, msg) == null) return;
 
+        msg.send("sned ui").exec();  // TEST
+        
         (edit ? msg.edit(split) : msg.send(split))
 
             .buttons(new ButtonMarkup() {{
