@@ -98,7 +98,7 @@ public class BotConf {
 
         try {
 
-            conf = new JSONObject(FileUtil.readUtf8String(new File(DATA_DIR, "settings.conf")));
+            conf = new JSONObject(FileUtil.readUtf8String(new File(DATA_DIR, "settings.json")));
 
         } catch (Exception e) {}
 
@@ -169,7 +169,7 @@ public class BotConf {
 
         }
 
-        FileUtil.writeUtf8String(conf.toStringPretty(), new File(DATA_DIR, "setting.conf"));
+        FileUtil.writeUtf8String(conf.toStringPretty(), new File(DATA_DIR, "settings.json"));
 
     }
 
