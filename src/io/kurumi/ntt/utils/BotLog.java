@@ -72,7 +72,7 @@ public class BotLog {
 
     public static void process(UserData user, Update update, boolean point) {
 
-        StringBuilder log = new StringBuilder("收到来自 ").append(user.name()).append(" (").append(user.userName()).append(") ").append(" 的");
+        StringBuilder log = new StringBuilder("收到来自 ").append(user.name()).append(" (").append(user.userName()).append(") ").append(" 从");
 
         if (update.message() != null) {
             
@@ -152,7 +152,7 @@ public class BotLog {
         
         if (msg.pinnedMessage() != null) log.append("「置顶消息 :").append(processMessage(user,msg.pinnedMessage(),false));
         
-        if (msg.replyToMessage() != null) log.append("「回复给 : ").append(UserData.get(msg.replyToMessage().from())).append(" : ").append(processMessage(UserData.get(msg.replyToMessage().from()),msg.replyToMessage(),false)).append("」");
+        if (msg.replyToMessage() != null) log.append("「回复给 : ").append(UserData.get(msg.replyToMessage().from()).formattedName()).append(" : ").append(processMessage(UserData.get(msg.replyToMessage().from()),msg.replyToMessage(),false)).append("」");
         
         if (msg.sticker() != null) log.append("「贴纸 : ").append(msg.sticker().emoji()).append(" 从 ").append(msg.sticker().setName()).append("」");
         

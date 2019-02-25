@@ -51,16 +51,12 @@ public class DExApi {
     
     public static JSONArray doQuery(String sql) {
         
-        BotLog.debug("desc api query : " + sql);
-        
         JSONObject conf = new JSONObject();
         
         conf.put("sql",sql);
         
         String resp = HttpUtil.get(BotConf.DISC_WAPPER, conf);
 
-        BotLog.debug("desc api reply : " + resp);
-        
         if ("failed".equals(resp)) {
             
             throw new RuntimeException("API错误 可能是秘钥错误");

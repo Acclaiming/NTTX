@@ -32,27 +32,7 @@ public class BotConf {
      */
 
     public static final File DATA_DIR = new File("./data");
-
-    /**
-     * Redis 数据库主机
-     */
-    public static final String REDIS_HOST = "localhost";
-
-    /**
-     * Redis 数据库端口
-     */
-    public static final int REDIS_PORT = 6379;
-
-    /**
-     * Redis 数据库密码
-     */
-    public static final String REDIS_PSWD = null;
-
-    /**
-     * Redis NTTBot 数据库 默认 0
-     */
-    public static final int REDIS_DB = 0;
-
+    
     /**
      * Discourse API调用地址 见 项目/disc/api.php
      */

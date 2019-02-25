@@ -13,6 +13,14 @@ git
 
 yum install git
 
+discourse一个 需要配置好一个用户参数 "Telegram" 与 Twitter登录
+
+...
+
+nginx将 项目/disc/api.php 运行在 127.0.0.1:11213/api.pgp
+
+...
+
 ### 下载并编译
 
 git clone https://github.com/HiedaNaKan/NTTools
