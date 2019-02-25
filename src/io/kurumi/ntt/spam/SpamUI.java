@@ -22,6 +22,8 @@ public class SpamUI extends Fragment {
     final String POINT_INPUT_TAG_NAME = "s|it";
 
     final String POINT_TAG = "s|t";
+    final String POINT_DEL = "s|d";
+    final String POINT_SET_NAME = "s|s";
 
     @Override
     public boolean onPrivMsg(UserData user, Msg msg) {
@@ -55,27 +57,27 @@ public class SpamUI extends Fragment {
 
     }
 
-    DUser context(UserData user,Msg msg) {
-        
+    DUser context(UserData user, Msg msg) {
+
         Integer userId = DExApi.getUserIdByTelegram(user.userName);
 
         if (userId == null) {
 
             msg.delete();
-            
+
             msg.send("还没有绑定临风社账号 ~", "请在设置 - 个人信息中设置当前TelegramId >_<").exec();
-            
+
             return null;
 
         }
-        
+
         return DUser.get(userId);
-        
+
     }
 
     void spamUI(UserData user, Msg msg, boolean edit) {
 
-        if (context(user,msg) == null) return;
+        if (context(user, msg) == null) return;
 
         (edit ? msg.edit(split) : msg.send(split))
 
@@ -103,7 +105,7 @@ public class SpamUI extends Fragment {
                 case POINT_BACK : spamUI(user, callback, true);break;
                 case POINT_PUBLIC_TAGS : publicTags(user, callback, true);break;
                 case POINT_NEW : newTag(user, callback);break;
-                case POINT_TAG : showTag(user,callback,Long.parseLong(callback.data.getIndex()),true);break;
+                case POINT_TAG : showTag(user, callback, Long.parseLong(callback.data.getIndex()), true);break;
 
                 default : return false;
 
@@ -115,8 +117,8 @@ public class SpamUI extends Fragment {
 
     void publicTags(UserData user, Msg msg, boolean edit) {
 
-        final DUser du = context(user,msg);
-        
+        final DUser du = context(user, msg);
+
         if (du == null) return;
 
         (edit ? msg.edit(split) : msg.send(split))
@@ -133,31 +135,31 @@ public class SpamUI extends Fragment {
                     for (SpamTag tag : SpamTag.INSTANCE.all()) {
 
                         newButtonLine("「 " + tag.name + " 」", POINT_TAG, tag.id.toString());
-                        
+
                     }
 
                 }}).exec();
-                
-                
+
+
 
     }
 
     void newTag(UserData user, Callback callback) {
 
-        DUser du = context(user,callback);
-        
+        DUser du = context(user, callback);
+
         if (du == null) return;
-        
+
         if (!du.moderator && !du.admin) {
-            
+
             callback.alert("Failed...");
-            
-            publicTags(user,callback,true);
-            
+
+            publicTags(user, callback, true);
+
             return;
-            
+
         }
-        
+
         callback.delete();
 
         callback.text("好");
@@ -170,9 +172,19 @@ public class SpamUI extends Fragment {
 
     void onTagName(UserData user, Msg msg) {
 
-        DUser du = context(user,msg);
+        DUser du = context(user, msg);
 
         if (du == null) return;
+
+        if (!du.moderator && !du.admin) {
+
+            msg.send("Failed...");
+
+            user.point(null);
+
+            return;
+
+        }
         
         user.point(null);
 
@@ -192,43 +204,60 @@ public class SpamUI extends Fragment {
 
     void showTag(UserData user, Msg msg, Long id, boolean edit) {
 
-        Integer userId = DExApi.getUserIdByTelegram(user.userName);
+        final DUser du = context(user, msg);
 
-        if (userId == null) {
-
-            msg.delete();
-            msg.send("还没有绑定临风社账号 ~", "请在设置 - 个人信息中设置当前TelegramId >_<").exec();
-
-        }
-
-        final DUser du = DUser.get(userId);
+        if (du == null) return;
 
         final TAuth auth = TAuth.get(du);
 
-        if (auth == null) {
-
-            msg.delete();
-            msg.send("还没有认证Twitter账号 ~", "请在设置中认证Twitter账号 >_<").exec();
-
-        }
-        
         StringBuilder tagContent = new StringBuilder(split);
 
-        SpamTag tag = SpamTag.INSTANCE.get(id);
-        
-        tagContent.append("「 分类 | ").append(tag.name).append(" | 已").append(tag.enable.contains(auth.accountId) ? "启用" : "禁用").append(" 」");
+        final SpamTag tag = SpamTag.INSTANCE.get(id);
+
+        tagContent.append("「 分类 | ").append(tag.name).append(" | 已").append(auth != null && tag.enable.contains(auth.accountId) ? "启用" : "禁用").append(" 」");
 
         tagContent.append("\n\n").append(tag.desc);
-        
+
         (edit ? msg.edit(tagContent.toString()) : msg.send(tagContent.toString()))
 
             .buttons(new ButtonMarkup() {{
 
-                newButtonLine()
-                .newButton("
+                    if (du.moderator || du.admin) {
+
+                        newButtonLine().
+                        newButton("删除分类", POINT_DEL, tag.id.toString())
+                        .newButton("修改名称",POINT_SET_NAME,tag.id.toString());
+
+                    }
 
                 }}).exec();
 
+    }
+    
+    void setTagName(UserData user,Callback callback) {
+        
+        DUser du = context(user, callback);
+
+        if (du == null) return;
+
+        Long tagId = Long.parseLong(callback.data.getIndex());
+        
+        if (!du.moderator && !du.admin) {
+
+            callback.alert("Failed...");
+
+            showTag(user, callback,tagId, true);
+
+            return;
+
+        }
+        
+        callback.text("好");
+        
+        callback.send("现在发送新的标签名 :").exec();
+        
+        user.point(cdata(POINT_SET_NAME,callback.data.getIndex()));
+        
     }
 
 }
