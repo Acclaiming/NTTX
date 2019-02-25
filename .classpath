@@ -16,7 +16,4 @@
 <classpathentry kind="lib" path="libs/java-telegram-bot-api-full-4.1.1.jar"/>
 <classpathentry kind="lib" path="libs/taip-4.3.2.jar"/>
 <classpathentry kind="lib" path="libs/zip4j_1.3.2.jar"/>
-<classpathentry kind="lib" path="libs/jedis/jedis-3.0.1.jar"/>
-<classpathentry kind="lib" path="libs/jedis/commons-pool2-2.4.3.jar"/>
-<classpathentry kind="lib" path="libs/discourse-api-client-0.0.3.jar"/>
 </classpath>
