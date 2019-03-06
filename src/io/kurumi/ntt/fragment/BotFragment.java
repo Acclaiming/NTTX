@@ -334,6 +334,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         bot = new TelegramBot.Builder(token).build();
 
+		bot.execute(new DeleteWebhook());
+		
         /*
 
          if (isLongPulling()) {
