@@ -21,10 +21,8 @@ public class WrongUse {
 
         BotLog.debug(user.name() + " 又用错了一次！");
 
-        user.increment("w");
-		
-		user.save();
-		
+        String wc = BotDB.get(KEY,user.idStr);
+
 		return user.getLong("w",1L);
 
     }

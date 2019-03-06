@@ -23,6 +23,8 @@ public abstract class AIIdDataModel extends IdDataModel {
 
             id = Long.parseLong(BotConf.getOrDefault("id." + dirName.replace("/","."),"0")) + 1L;
 
+			idStr = id.toString();
+			
             BotConf.set("id." + dirName.replace("/","."),id);
 
         }

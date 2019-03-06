@@ -33,30 +33,62 @@ public class BotDB {
 		
 	}
 	
+	public static LinkedList<String> getAll(String path) {
+		
+		// TODO
+		
+		return null;
+		
+	}
+	
+	public static String gNC(String path,String key) {
+		
+		try {
+		
+			String value = FileUtil.readUtf8String(cacheFile(path, key));
+			
+			return value;
+
+		} catch (IORuntimeException e) {
+
+			return null;
+
+		}
+		
+		}
+	
 	public static String get(String path,String key) {
 		
 		String cacheKey = cacheKey(path,key);
 		
 		if (cache.containsKey(cacheKey)) return cache.get(cacheKey);
 		
-		try {
-			
-			String value = FileUtil.readUtf8String(cacheFile(path, key));
+			String value = gNC(path, key);
 			
 			cache.put(cacheKey,value);
 			
 			return value;
-			
-		} catch (IORuntimeException e) {
-			
-			return null;
-			
-		}
 
 		
 	}
 	
+	public static void sNC(String path,String key,String value) {
+		
+		if (value == null) {
+			
+			FileUtil.del(cacheFile(path,key));
+
+		} else {
+
+			FileUtil.writeUtf8String(value,cacheFile(path,key));
+
+		}
+		
+	}
+	
     public static void set(String path,String key,String value) {
+
+		sNC(path,key,value);
 		
 		String cacheKey = cacheKey(path,key);
 		
@@ -64,13 +96,9 @@ public class BotDB {
 			
 			cache.remove(cacheKey);
 			
-			FileUtil.del(cacheFile(path,key));
-			
 		} else {
 			
 			cache.put(cacheKey,value);
-			
-			FileUtil.writeUtf8String(value,cacheFile(path,key));
 			
 		}
 		

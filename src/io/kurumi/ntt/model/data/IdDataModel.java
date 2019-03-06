@@ -21,6 +21,8 @@ public abstract class IdDataModel {
     protected String dirName;
 
     public Long id;
+	
+	public transient String idStr;
 
     protected IdDataModel(String dirName) {
 
@@ -33,6 +35,8 @@ public abstract class IdDataModel {
         this(dirName);
 
         this.id = id;
+		
+		idStr = this.id.toString();
 
         init();
 

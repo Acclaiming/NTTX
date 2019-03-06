@@ -9,45 +9,46 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.utils.CData;
 import java.util.HashMap;
 import java.util.LinkedList;
+import io.kurumi.ntt.model.data.*;
 
-public class UserData extends JSONObject {
+public class UserData extends IdDataModel {
 
-    public static final String KEY = "NTT_USERS";
+	public static final String KEY = "NTT_USERS";
     public static HashMap<Integer, UserData> fastCache = new HashMap<>();
 
     public Integer id;
-	
-	public transient String idStr;
-	
+
     public String firstName;
     public String lastName;
     public String userName;
     public boolean isBot;
 
-    private UserData(int id) {
+   		
+	
+	@Override
+	protected void init() {
+	}
 
-        this.id = id;
-
-    }
-
-    private UserData(int id, String json) {
-
-        super(json);
-
-        this.id = id;
+	@Override
+	protected void load(JSONObject obj) {
 		
-		idStr = this.id.toString();
+        this.userName = obj.getStr("user_name");
 
-        this.userName = getStr("u");
+        this.firstName = obj.getStr("first_name");
 
-        this.firstName = getStr("f");
+        this.lastName = obj.getStr("last_name");
 
-        this.lastName = getStr("l");
-
-        this.isBot = getBool("i", false);
+        this.isBot = obj.getBool("is_bot", false);
 
     }
 
+	@Override
+	protected void save(JSONObject obj) {
+		// TODO: Imple
+	}
+	
+
+    
     public static UserData get(User u) {
 
         UserData user = get(u.id());
@@ -62,7 +63,7 @@ public class UserData extends JSONObject {
 
         if (fastCache.containsKey(id)) return fastCache.get(id);
 
-        String data = BotDB.get(KEY, id.toString());
+        String data = BotDB.gNC(KEY, id.toString());
 
         if (data == null) {
 
