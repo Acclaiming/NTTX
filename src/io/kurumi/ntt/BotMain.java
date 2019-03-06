@@ -85,8 +85,6 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
         StaticLog.error(throwable, "无法处理的错误");
         StaticLog.info("正在停止Bot");
 
-        BotDB.jedis.disconnect();
-
         INSTANCE.stop();
 
       //  BotServer.INSTACNCE.stop();

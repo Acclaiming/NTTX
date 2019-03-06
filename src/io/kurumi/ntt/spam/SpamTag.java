@@ -1,15 +1,8 @@
 package io.kurumi.ntt.spam;
 
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
-import io.kurumi.ntt.db.BotDB;
-import io.kurumi.ntt.db.IDFactory;
-
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import io.kurumi.ntt.model.data.IdDataModel;
-import io.kurumi.ntt.model.data.AIIdDataModel;
+import cn.hutool.json.*;
+import io.kurumi.ntt.model.data.*;
+import java.util.*;
 
 public class SpamTag extends AIIdDataModel {
 

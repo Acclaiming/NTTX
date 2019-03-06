@@ -16,6 +16,9 @@ public class UserData extends JSONObject {
     public static HashMap<Integer, UserData> fastCache = new HashMap<>();
 
     public Integer id;
+	
+	public transient String idStr;
+	
     public String firstName;
     public String lastName;
     public String userName;
@@ -32,6 +35,8 @@ public class UserData extends JSONObject {
         super(json);
 
         this.id = id;
+		
+		idStr = this.id.toString();
 
         this.userName = getStr("u");
 
@@ -57,7 +62,7 @@ public class UserData extends JSONObject {
 
         if (fastCache.containsKey(id)) return fastCache.get(id);
 
-        String data = BotDB.jedis.hget(KEY, id.toString());
+        String data = BotDB.get(KEY, id.toString());
 
         if (data == null) {
 
@@ -175,7 +180,7 @@ public class UserData extends JSONObject {
 
         put("i", isBot);
 
-        BotDB.jedis.hset(KEY, id.toString(), toString());
+        BotDB.set(KEY, idStr, toString());
 
     }
 

@@ -1,11 +1,14 @@
 package io.kurumi.ntt.db;
 
 import io.kurumi.ntt.utils.BotLog;
+import java.util.concurrent.atomic.*;
 
 public class WrongUse {
 
     public static final String KEY = "NTT_WU";
 
+	public static AtomicLong wu;
+	
     public static String incrWithMsg(UserData user) {
 
         BotLog.debug(user.name() + " 又用错了一次！");
@@ -18,13 +21,17 @@ public class WrongUse {
 
         BotLog.debug(user.name() + " 又用错了一次！");
 
-        return BotDB.jedis.hincrBy(KEY, user.id.toString(), 1);
+        user.increment("w");
+		
+		user.save();
+		
+		return user.getLong("w",1L);
 
     }
 
     public static Long get(UserData user) {
 
-        return Long.parseLong(BotDB.jedis.hget(KEY, user.id.toString()));
+        return user.getLong("w",0L);
 
     }
 

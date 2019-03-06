@@ -11,19 +11,19 @@ public class UserPoint {
 
         if (user.isBot) return false;
         
-        return BotDB.jedis.hexists(KEY, user.id.toString());
+        return BotDB.exists(KEY,user.id.toString());
 
     }
 
     public static void set(UserData user, CData data) {
 
-        BotDB.jedis.hset(KEY, user.id.toString(), data.toString());
+        BotDB.set(KEY, user.idStr, data.toString());
 
     }
 
     public static CData get(UserData user) {
 
-        String data = BotDB.jedis.hget(KEY, user.id.toString());
+        String data = BotDB.get(KEY, user.idStr);
 
         if (data == null) {
 
@@ -39,7 +39,7 @@ public class UserPoint {
 
     public static void remove(UserData user) {
 
-        BotDB.jedis.hdel(KEY, user.id.toString());
+        BotDB.set(KEY, user.idStr,null);
 
     }
 

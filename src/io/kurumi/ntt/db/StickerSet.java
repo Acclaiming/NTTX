@@ -40,7 +40,7 @@ public class StickerSet extends JSONObject {
 
         if (cache.containsKey(name)) return cache.get(name);
 
-        String data = BotDB.jedis.hget(KEY, name);
+        String data = BotDB.get(KEY, name);
 
         if (data == null) {
 
@@ -132,7 +132,7 @@ public class StickerSet extends JSONObject {
 
         put("s", stickers);
 
-        BotDB.jedis.hset(KEY, name, toString());
+        BotDB.set(KEY, name, toString());
 
     }
 
