@@ -15,8 +15,6 @@ public class UserData extends IdDataModel {
 
 	public static Factory<UserData> INSTANCE = new Factory<UserData>(UserData.class,"users");
 
-    public Integer id;
-
     public String firstName;
     public String lastName;
     public String userName;

@@ -11,7 +11,7 @@ public class UserPoint {
 
         if (user.isBot) return false;
         
-        return BotDB.exists(KEY,user.id.toString());
+        return BotDB.exists(KEY,user.idStr);
 
     }
 
