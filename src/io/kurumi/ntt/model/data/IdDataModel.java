@@ -116,7 +116,7 @@ public abstract class IdDataModel {
             
             try {
                 
-                T obj = clazz.getDeclaredConstructor(new Class[] {String.class,Long.class}).newInstance(dirName, id);
+                T obj = clazz.getDeclaredConstructor(new Class[] {String.class,long.class}).newInstance(dirName, id);
 
                 saveObj(obj);
                 
