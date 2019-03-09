@@ -14,7 +14,7 @@ public abstract class AIIdDataModel extends IdDataModel {
 
     }
     
-    public AIIdDataModel(String dirName,Long id) { super(dirName,id); }
+    public AIIdDataModel(String dirName,long id) { super(dirName,id); }
     
     @Override
     public void save() {

@@ -80,7 +80,7 @@ public abstract class IdDataModel {
 
                     try {
 
-                        T obj = clazz.getDeclaredConstructor(new Class[] {String.class,Long.class}).newInstance(dirName,Long.parseLong(StrUtil.subBefore(dataFile.getName(), ".json", true)));
+                        T obj = clazz.getDeclaredConstructor(new Class[] {String.class,long.class}).newInstance(dirName,Long.parseLong(StrUtil.subBefore(dataFile.getName(), ".json", true)));
 
                         saveObj(obj);
 

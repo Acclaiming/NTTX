@@ -34,7 +34,7 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
         
         if ("woyaonvzhaung".equals(msg.commandName())) {
             
-            msg.reply("窝就知道你要 现在能用简体中文说一遍 我要女装 吗？").exec();
+            msg.reply("是吗？").exec();
             
             return true;
             
