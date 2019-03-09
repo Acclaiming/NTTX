@@ -121,7 +121,7 @@ public class UserData extends IdDataModel {
     
     public static UserData get(User u) {
 
-        UserData user = INSTANCE.get((long)u.id());
+        UserData user = INSTANCE.getOrNew((long)u.id());
 
         user.refresh(u);
 
