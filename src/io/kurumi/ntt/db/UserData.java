@@ -13,8 +13,7 @@ import io.kurumi.ntt.model.data.*;
 
 public class UserData extends IdDataModel {
 
-	public static final String KEY = "NTT_USERS";
-    public static HashMap<Integer, UserData> fastCache = new HashMap<>();
+	public static Factory<UserData> INSTANCE = new Factory<UserData>(UserData.class,"users");
 
     public Integer id;
 
@@ -23,15 +22,22 @@ public class UserData extends IdDataModel {
     public String userName;
     public boolean isBot;
 
-   		
-	
+	public JSONObject ext;
+
+	public UserData(String dirName, long id) { super(dirName,id); }
+
 	@Override
 	protected void init() {
+
+		ext = new JSONObject();
+
+		isBot = false;
+
 	}
 
 	@Override
 	protected void load(JSONObject obj) {
-		
+
         this.userName = obj.getStr("user_name");
 
         this.firstName = obj.getStr("first_name");
@@ -40,18 +46,82 @@ public class UserData extends IdDataModel {
 
         this.isBot = obj.getBool("is_bot", false);
 
+		final JSONObject ext;
+
+		this.ext = ((ext = obj.getJSONObject("ext_data")) == null) ? ext : this.ext;
+
     }
 
 	@Override
 	protected void save(JSONObject obj) {
-		// TODO: Imple
-	}
-	
 
+		obj.put("user_name", userName);
+
+        obj.put("first_name", firstName);
+
+        obj.put("last_name", lastName);
+
+        obj.put("is_bot", isBot);
+
+		obj.put("ext_data",ext);
+
+	}
+
+    public String formattedName() {
+
+        return name() + " (@" + userName() + ") ";
+
+    }
+
+    public String name() {
+
+        String name = firstName;
+
+        if (lastName != null) {
+
+            name = lastName + " " + name;
+
+        }
+
+        return name;
+
+    }
+
+    public String userName() {
+
+        return userName != null ? "@" + userName : name();
+
+    }
+
+    public boolean isAdmin() {
+
+        return BotConf.FOUNDER.equals(userName);
+
+    }
+
+    public boolean hasPoint() {
+
+        return UserPoint.exists(this);
+
+    }
+
+    public CData point() {
+
+        return UserPoint.get(this);
+
+    }
+
+    public void point(CData data) {
+
+        if (data == null) UserPoint.remove(this);
+
+        else UserPoint.set(this, data);
+
+    }
     
     public static UserData get(User u) {
 
-        UserData user = get(u.id());
+        UserData user = INSTANCE.get((long)u.id());
 
         user.refresh(u);
 
@@ -59,35 +129,6 @@ public class UserData extends IdDataModel {
 
     }
 
-    public static UserData get(Integer id) {
-
-        if (fastCache.containsKey(id)) return fastCache.get(id);
-
-        String data = BotDB.gNC(KEY, id.toString());
-
-        if (data == null) {
-
-            UserData user = new UserData(id);
-
-            fastCache.put(id, user);
-
-            return user;
-
-        }
-
-        UserData user = new UserData(id, data);
-
-        fastCache.put(id, user);
-
-        return user;
-
-    }
-
-    public static LinkedList<UserData> getAll() {
-
-        return new LinkedList<UserData>(fastCache.values());
-
-    }
 
     public boolean refresh(Fragment fragment) {
 
@@ -119,70 +160,5 @@ public class UserData extends IdDataModel {
 
     }
     
-    public String formattedName() {
-        
-        return name() + " (" + userName() + ") ";
-        
-    }
-
-    public String name() {
-
-        String name = firstName;
-
-        if (lastName != null) {
-
-            name = lastName + " " + name;
-
-        }
-
-        return name;
-
-    }
-
-    public String userName() {
-
-        return userName != null ? "@" + userName : name();
-
-    }
-    
-    public boolean isAdmin() {
-
-        return BotConf.FOUNDER.equals(userName);
-
-    }
-
-    public boolean hasPoint() {
-
-        return UserPoint.exists(this);
-
-    }
-
-    public CData point() {
-
-        return UserPoint.get(this);
-
-    }
-
-    public void point(CData data) {
-
-        if (data == null) UserPoint.remove(this);
-
-        else UserPoint.set(this, data);
-
-    }
-
-    public void save() {
-
-        put("u", userName);
-
-        put("f", firstName);
-
-        put("l", lastName);
-
-        put("i", isBot);
-
-        BotDB.set(KEY, idStr, toString());
-
-    }
 
 }
