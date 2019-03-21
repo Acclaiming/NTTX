@@ -2,11 +2,11 @@ package io.kurumi.ntt.luaj;
 
 import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.fragment.*;
-import io.kurumi.ntt.model.*;
+import io.kurumi.ntt.model.request.*;
 import java.util.*;
 import org.luaj.vm2.*;
 import org.luaj.vm2.compiler.*;
-import io.kurumi.ntt.model.request.*;
+import org.luaj.vm2.lib.*;
 
 public class LuaDaemon {
 
@@ -35,25 +35,12 @@ public class LuaDaemon {
 
 	}
 	
-	public class PrintFunc extends LuaFunction {
+	public class PrintFunc extends OneArgFunction {
 
 		@Override
-		public String name() {
+		public LuaValue call(LuaValue msg) {
 			
-			return "print";
-			
-		}
-
-		@Override
-		public LuaValue metatag(LuaValue p1) {
-			// TODO: Implement this met
-			return super.metatag(p1);
-		}
-		
-		@Override
-		public LuaValue call() {
-			
-			new Send(fragment,"print").exec();
+			new Send(fragment,msg.toString()).exec();
 			
 			return NIL;
 			
