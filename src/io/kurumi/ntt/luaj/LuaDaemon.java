@@ -57,7 +57,7 @@ public class LuaDaemon {
 			
 			for (int index = 0;index < args.narg();index ++) {
 				
-				msg.append(args.arg(index));
+				msg.append(args.arg(index + 1));
 				
 			}
 			
