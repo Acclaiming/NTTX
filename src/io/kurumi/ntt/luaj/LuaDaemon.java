@@ -5,9 +5,9 @@ import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.model.request.*;
 import java.util.*;
 import org.luaj.vm2.*;
+import org.luaj.vm2.compiler.*;
 import org.luaj.vm2.lib.*;
 import org.luaj.vm2.lib.jse.*;
-import org.luaj.vm2.luajc.*;
 
 public class LuaDaemon {
 
@@ -24,7 +24,7 @@ public class LuaDaemon {
 		
 		luaj = JsePlatform.standardGlobals();
 
-		LuaJC.install(luaj);
+		LuaC.install(luaj);
 		
 	}
 
