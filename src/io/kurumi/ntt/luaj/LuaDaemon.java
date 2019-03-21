@@ -25,7 +25,7 @@ public class LuaDaemon {
 
 		LuaC.install(luaj);
 		
-		luaj.set("print",new PrintFunc());
+		luaj.get("_G").set("print",new PrintFunc());
 		
 	}
 
@@ -35,7 +35,7 @@ public class LuaDaemon {
 
 	}
 	
-	public class PrintFunc extends OneArgFunction {
+	public class PrintFunc extends VarArgFunction {
 
 		@Override
 		public LuaValue call(LuaValue msg) {
