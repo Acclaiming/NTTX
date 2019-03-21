@@ -78,7 +78,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
             BotLog.error("更新出错", e);
 			
-			BotMain.INSTANCE.uncaughtException(Thread.currentThread(),e);
+			Launcher.INSTANCE.uncaughtException(Thread.currentThread(),e);
 			
 			return CONFIRMED_UPDATES_NONE;
 			

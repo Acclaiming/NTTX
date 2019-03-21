@@ -8,11 +8,11 @@ import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.utils.*;
 import io.kurumi.ntt.luaj.*;
 
-public class BotMain extends BotFragment implements Thread.UncaughtExceptionHandler {
+public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
-    public static final BotMain INSTANCE = new BotMain();
+    public static final Launcher INSTANCE = new Launcher();
 
-    public BotMain() {
+    public Launcher() {
 
         addFragment(GroupRepeat.INSTANCE);
 

@@ -4,7 +4,7 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import com.pengrad.telegrambot.request.GetStickerSet;
 import com.pengrad.telegrambot.response.GetStickerSetResponse;
-import io.kurumi.ntt.BotMain;
+import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.utils.BotLog;
 
 import java.util.HashMap;
@@ -94,7 +94,7 @@ public class StickerSet extends JSONObject {
 
     public boolean refresh() {
 
-        GetStickerSetResponse resp = BotMain.INSTANCE.bot().execute(new GetStickerSet(name));
+        GetStickerSetResponse resp = Launcher.INSTANCE.bot().execute(new GetStickerSet(name));
 
         if (!resp.isOk()) {
 
