@@ -1,4 +1,4 @@
-export CLASSPATH=./classes
+git pull
 
 for jar in ./libs/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
@@ -16,4 +16,16 @@ for jar in ./libs/jedis/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
 done
 
-java -classpath $CLASSPATH io.kurumi.ntt.BotMain
+find src -name "*.java" > sources.txt
+
+rm -rf ./classes
+
+mkdir ./classes
+
+javac -d $(dirname $(readlink -f $0))/classes -classpath $CLASSPATH @sources.txt -nowarn
+
+rm -rf ./sources.txt
+
+export CLASSPATH=./classes:$CLASSPATH
+
+java -classpath $CLASSPATH io.kurumi.ntt.Launcher

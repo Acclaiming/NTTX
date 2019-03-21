@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import io.kurumi.ntt.utils.BotLog;
 import twitter4j.Twitter;
+import io.kurumi.ntt.*;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
@@ -70,14 +71,18 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
                 process(update);
 
             }
+			
+			return CONFIRMED_UPDATES_ALL;
 
         } catch (Exception e) {
 
             BotLog.error("更新出错", e);
-
+			
+			BotMain.INSTANCE.uncaughtException(Thread.currentThread(),e);
+			
+			return CONFIRMED_UPDATES_NONE;
+			
         }
-
-        return CONFIRMED_UPDATES_ALL;
 
     }
 
@@ -86,10 +91,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         if ("cancel".equals(msg.commandName())) {
 
-
             msg.send("你要取消什么？ >_<").exec();
-
-
 
             return true;
 
