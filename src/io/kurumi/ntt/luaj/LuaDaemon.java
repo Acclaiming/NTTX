@@ -25,7 +25,7 @@ public class LuaDaemon {
 
 		LuaC.install(luaj);
 		
-		luaj.load(new PrintFunc());
+		luaj.set("print",new PrintFunc());
 		
 	}
 
@@ -42,6 +42,12 @@ public class LuaDaemon {
 			
 			return "print";
 			
+		}
+
+		@Override
+		public LuaValue metatag(LuaValue p1) {
+			// TODO: Implement this met
+			return super.metatag(p1);
 		}
 		
 		@Override
