@@ -1,16 +1,11 @@
 package io.kurumi.ntt.model.data;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IORuntimeException;
-import cn.hutool.json.JSONObject;
-import io.kurumi.ntt.BotConf;
-import java.io.File;
-import java.util.LinkedList;
-import cn.hutool.core.util.StrUtil;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import io.kurumi.ntt.spam.SpamTag;
-import java.util.HashMap;
+import cn.hutool.core.io.*;
+import cn.hutool.core.util.*;
+import cn.hutool.json.*;
+import io.kurumi.ntt.*;
+import java.io.*;
+import java.util.*;
 
 public abstract class IdDataModel {
 
