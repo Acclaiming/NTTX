@@ -14,9 +14,9 @@ public class LuaDaemon {
 		
 	}
 	
-	public LuaValue exec(String lua) {
+	public void exec(String lua) {
 		
-		return luaj.call(lua);
+	 luaj.load(lua).invoke();
 
 	}
 	
