@@ -40,7 +40,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 	@Override
 	public boolean onPrivMsg(UserData user,Msg msg) {
 
-		LuaDaemon lua = LuaDaemon.get(user);
+		LuaDaemon lua = LuaDaemon.get(this,user);
 
 		try {
 
