@@ -23,6 +23,8 @@ public class LuaDaemon {
 		this.user = user;
 		
 		luaj = JsePlatform.standardGlobals();
+		
+		luaj.get("_G").set("print",new print());
 
 	}
 
@@ -44,6 +46,27 @@ public class LuaDaemon {
 
 		return daemon;
 
+	}
+	
+	public class print extends VarArgFunction {
+
+		@Override
+		public Varargs invoke(Varargs args) {
+			
+			StringBuilder msg = new StringBuilder();
+			
+			for (int index = 0;index < args.narg();index ++) {
+				
+				msg.append(args.arg(index));
+				
+			}
+			
+			new Send(fragment,user.id,msg.toString()).exec();
+			
+			return NIL;
+			
+		}
+		
 	}
 
 }

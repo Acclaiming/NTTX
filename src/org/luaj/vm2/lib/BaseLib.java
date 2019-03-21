@@ -99,7 +99,7 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 		env.set("load", new load());
 		env.set("loadfile", new loadfile());
 		env.set("pcall", new pcall());
-		env.set("print", new print(this));
+	 // env.set("print", new print(this));
 		env.set("rawequal", new rawequal());
 		env.set("rawget", new rawget());
 		env.set("rawlen", new rawlen());

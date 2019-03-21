@@ -41,12 +41,18 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 	public boolean onPrivMsg(UserData user,Msg msg) {
 
 		if (msg.text() == null) return false;
-		
+
 		LuaDaemon lua = LuaDaemon.get(this,user);
 
 		try {
 
-			msg.send(lua.exec(msg.text()).toString()).exec();
+			LuaValue result = lua.exec(msg.text());
+
+			if (!result.isnil()) {
+
+				msg.send(result.toString()).exec();
+
+			}
 
 		} catch (LuaError err) {
 
