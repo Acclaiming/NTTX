@@ -25,7 +25,7 @@ public class LuaDaemon {
 
 		LuaC.install(luaj);
 		
-		luaj.add(new PrintFunc());
+		luaj.load(new PrintFunc());
 		
 	}
 
