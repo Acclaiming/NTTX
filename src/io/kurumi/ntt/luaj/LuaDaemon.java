@@ -24,33 +24,12 @@ public class LuaDaemon {
 		
 		luaj = JsePlatform.standardGlobals();
 
-		LuaC.install(luaj);
-		
 	}
 
 	public LuaValue exec(String lua) {
 		
 		return luaj.load(lua).call();
 
-	}
-	
-	public class PrintFunc extends VarArgFunction {
-
-		@Override
-		public Varargs invoke(Varargs p1) {
-			// TODO: Id
-			return super.invoke(p1);
-		}
-		
-		@Override
-		public LuaValue call(LuaValue msg) {
-			
-			new Send(fragment,msg.toString()).exec();
-			
-			return NIL;
-			
-		}
-		
 	}
 
 	private static HashMap<UserData,LuaDaemon> cache = new HashMap<>();
