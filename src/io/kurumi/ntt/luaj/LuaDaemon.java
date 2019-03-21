@@ -5,8 +5,9 @@ import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.model.request.*;
 import java.util.*;
 import org.luaj.vm2.*;
-import org.luaj.vm2.compiler.*;
 import org.luaj.vm2.lib.*;
+import org.luaj.vm2.lib.jse.*;
+import org.luaj.vm2.luajc.*;
 
 public class LuaDaemon {
 
@@ -21,11 +22,9 @@ public class LuaDaemon {
 		
 		this.user = user;
 		
-		luaj = new Globals();
+		luaj = JsePlatform.standardGlobals();
 
-		LuaC.install(luaj);
-		
-		luaj.get("_G").set("print",new PrintFunc());
+		LuaJC.install(luaj);
 		
 	}
 
@@ -37,6 +36,12 @@ public class LuaDaemon {
 	
 	public class PrintFunc extends VarArgFunction {
 
+		@Override
+		public Varargs invoke(Varargs p1) {
+			// TODO: Id
+			return super.invoke(p1);
+		}
+		
 		@Override
 		public LuaValue call(LuaValue msg) {
 			
