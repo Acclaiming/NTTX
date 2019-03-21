@@ -31,29 +31,29 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
             return true;
 
         }
-		
-		
+
+
         return false;
 
 	}
 
 	@Override
 	public boolean onPrivMsg(UserData user,Msg msg) {
-		
+
 		LuaDaemon lua = LuaDaemon.get(user);
 
 		try {
-		
-		msg.send(lua.exec(msg.text()).toString());
-		
+
+			msg.send(lua.exec(msg.text()).toString()).exec();
+
 		} catch (LuaError err) {
-			
+
 			msg.send(err.toString()).exec();	
-			
+
 		}
-		
+
 		return true;
-		
+
 	}
 
     public static void main(String[] args) {
