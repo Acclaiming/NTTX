@@ -44,7 +44,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		try {
 		
-		msg.send(lua.exec(msg.text()).toString()).exec();
+		msg.send(lua.exec(msg.text()).toString());
 		
 		} catch (LuaError err) {
 			
