@@ -6,6 +6,7 @@ import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.funcs.*;
 import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.utils.*;
+import io.kurumi.ntt.luaj.*;
 
 public class BotMain extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -29,8 +30,12 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
             return true;
 
         }
+		
+		LuaDaemon lua = LuaDaemon.get(user);
+		
+		msg.send(lua.exec(msg.text()).toString()).exec();
 
-        return false;
+        return true;
 
 	}
 
