@@ -4,7 +4,6 @@
 <classpathentry kind="output" path="bin"/>
 <classpathentry kind="lib" path="libs/hutool-all-4.4.3.jar"/>
 <classpathentry kind="lib" path="libs/java-telegram-bot-api-full-4.1.1.jar"/>
-<classpathentry kind="lib" path="libs/luaj-jse-3.0.2.jar"/>
 <classpathentry kind="lib" path="libs/markdown/autolink-0.10.0.jar"/>
 <classpathentry kind="lib" path="libs/markdown/commonmark-0.12.1.jar"/>
 <classpathentry kind="lib" path="libs/markdown/commonmark-ext-autolink-0.12.1.jar"/>
