@@ -31,12 +31,20 @@ public class BotMain extends BotFragment implements Thread.UncaughtExceptionHand
 
         }
 		
-		LuaDaemon lua = LuaDaemon.get(user);
 		
+        return false;
+
+	}
+
+	@Override
+	public boolean onPrivMsg(UserData user,Msg msg) {
+		
+		LuaDaemon lua = LuaDaemon.get(user);
+
 		msg.send(lua.exec(msg.text()).toString()).exec();
-
-        return true;
-
+		
+		return true;
+		
 	}
 
     public static void main(String[] args) {
