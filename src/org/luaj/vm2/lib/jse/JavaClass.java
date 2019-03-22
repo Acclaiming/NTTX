@@ -161,6 +161,11 @@ public class JavaClass extends JavaInstance implements CoerceJavaToLua.Coercion 
 	public LuaValue getConstructor() {
 		return getMethod(NEW);
 	}
+
+	@Override
+	public boolean isfunction() {
+		return true;
+	}
 	
 	public LuaFunction checkfunction()  {
 		return getConstructor().checkfunction();
@@ -169,11 +174,12 @@ public class JavaClass extends JavaInstance implements CoerceJavaToLua.Coercion 
 	public LuaFunction optfunction(LuaFunction defval) {
 		return getConstructor().checkfunction(); 
 	}
-	
 
 	@Override
 	public Varargs invoke(Varargs args) {
+		
 		return getConstructor().invoke(args);
+		
 	}
 
 

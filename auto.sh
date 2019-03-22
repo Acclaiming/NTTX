@@ -1,2 +1,0 @@
-./update.sh
-./start.sh
