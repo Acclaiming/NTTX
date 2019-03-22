@@ -9,19 +9,19 @@ import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 import io.kurumi.ntt.db.*;
 
-public class TwiAccount extends JSONObject {
+public class TAuth extends JSONObject {
 
-	public boolean contains(UserData user) {
+	public static boolean contains(UserData user) {
 		
 		return user.ext.containsKey("twitter_auth");
 		
 	}
 	
-	public TwiAccount get(UserData user) {
+	public static TAuth get(UserData user) {
 		
 		if (contains(user)) {
 			
-			return new TwiAccount(user.ext.getJSONObject("twitter_auth"));
+			return new TAuth(user.ext.getJSONObject("twitter_auth"));
 			
 		}
 		
@@ -40,9 +40,7 @@ public class TwiAccount extends JSONObject {
     public String name;
     public String email;
 
-    public JSONObject userData;
-
-    public TwiAccount(JSONObject json) {
+    public TAuth(JSONObject json) {
 
         this(json.getStr("apiToken"),
              json.getStr("apiSecToken"),
@@ -54,18 +52,11 @@ public class TwiAccount extends JSONObject {
         accountId = json.getLong("accountId", -1L);
         screenName = json.getStr("screenName");
         name = json.getStr("name");
-        userData = json.getJSONObject("userData");
-
-        if (userData == null) {
-
-            userData = new JSONObject();
-
-        }
 
         email = json.getStr("email");
     }
 
-    public TwiAccount(String apiToken, String apiSecToken, String accToken, String accSecToken) {
+    public TAuth(String apiToken, String apiSecToken, String accToken, String accSecToken) {
         this.apiToken = apiToken;
         this.apiSecToken = apiSecToken;
         this.accToken = accToken;
@@ -142,7 +133,6 @@ public class TwiAccount extends JSONObject {
             put("screenName", screenName);
             put("name", name);
             put("email", email);
-            put("userData", userData);
 
             return this;
             
@@ -151,7 +141,7 @@ public class TwiAccount extends JSONObject {
     @Override
     public boolean equals(Object obj) {
 
-        return super.equals(obj) || (obj instanceof TwiAccount && accountId.equals(((TwiAccount)obj).accountId));
+        return super.equals(obj) || (obj instanceof TAuth && accountId.equals(((TAuth)obj).accountId));
 
     }
 
