@@ -145,7 +145,7 @@ public class LuaEnv extends Fragment {
 
 					ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-					err.printStackTrace(new PrintWriter(out));
+					err.printStackTrace(new PrintWriter(out,true));
 					
 					msg.send(err.toString(),StrUtil.str(out.toByteArray(),CharsetUtil.CHARSET_UTF_8)).exec();	
 
