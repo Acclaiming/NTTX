@@ -17,6 +17,8 @@ public class LuaEnv extends Fragment {
 
 	public LuaTable env;
 	public LuaTable functions;
+	
+	File funcDir = new File("./lua");
 
 	public Globals lua; { reset();
 
@@ -143,8 +145,7 @@ public class LuaEnv extends Fragment {
 
 	}
 
-	File funcDir = new File("./lua");
-
+	
 	final String POINT_INPUT_FUNC = "s|i";
 
 	void addFunc(UserData user,Msg msg) {
