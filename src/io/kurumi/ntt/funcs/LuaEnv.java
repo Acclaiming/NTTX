@@ -15,7 +15,9 @@ public class LuaEnv extends Fragment {
 	public LuaTable env;
 	public LuaTable functions = new LuaTable();
 
-	public Globals lua; {
+	public Globals lua; { reset(); }
+
+	public void reset() {
 
 		lua = JsePlatform.standardGlobals();
 
@@ -28,48 +30,62 @@ public class LuaEnv extends Fragment {
 	@Override
 	public boolean onMsg(UserData user,Msg msg) {
 
-		if (!msg.isCommand()) return false;
+		if (msg.isCommand()) return false;
 
-			LuaValue func = functions.get(msg.commandName());
+		LuaValue func = functions.get(msg.commandName());
 
-			if (func.isfunction()) {
+		if (func.isfunction()) {
 
-				try {
+			try {
 
-					Varargs result = func.invoke(LuaValue.varargsOf(new JavaInstance(user),new JavaInstance(msg)));
+				Varargs result = func.invoke(LuaValue.varargsOf(new JavaInstance(user),new JavaInstance(msg)));
 
-					StringBuilder reply = new StringBuilder();
+				StringBuilder reply = new StringBuilder();
 
-					for (int index = 0;index < result.narg();index ++) {
+				for (int index = 0;index < result.narg();index ++) {
 
-						reply.append(result.arg(index + 1));
-
-					}
-
-					msg.send(reply.toString()).exec();
-
-					
-				} catch (LuaError err) {
-
-					msg.send(err.toString()).exec();	
+					reply.append(result.arg(index + 1));
 
 				}
 
+				msg.send(reply.toString()).exec();
 
-				return true;
+
+			} catch (LuaError err) {
+
+				msg.send(err.toString()).exec();	
 
 			}
 
-			return false;
+
+			return true;
+
+		}
+
+		return false;
 
 	}
 
 	@Override
 	public boolean onPrivMsg(UserData user,Msg msg) {
-		
-		if (!msg.isCommand()) {
 
-			if (Env.FOUNDER.equals(user.userName) && msg.text() != null) {
+		if (Env.FOUNDER.equals(user.userName)) return false;
+
+		if (msg.isCommand()) {
+
+			switch (msg.commandName()) {
+				
+				case "reset" : reset(); break;
+				
+				default : return false;
+				
+			}
+			
+			return true;
+			
+		} else {
+
+			if (msg.text() != null) {
 
 				try {
 
@@ -92,12 +108,12 @@ public class LuaEnv extends Fragment {
 			return true;
 
 		}
-		
+
 		return false;
-		
+
 	}
-		
-		
-		
-		
+
+
+
+
 }
