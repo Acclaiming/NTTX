@@ -1,14 +1,9 @@
 package io.kurumi.ntt;
 
 import cn.hutool.log.*;
-import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.funcs.*;
-import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.utils.*;
-import io.kurumi.ntt.luaj.*;
-import org.luaj.vm2.*;
-import org.luaj.vm2.lib.jse.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
