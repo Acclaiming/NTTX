@@ -11,6 +11,8 @@ import java.io.*;
 import cn.hutool.core.io.*;
 import cn.hutool.core.util.*;
 import io.kurumi.ntt.utils.*;
+import org.luaj.vm2.lib.*;
+import java.util.*;
 
 public class LuaEnv extends Fragment {
 
@@ -18,9 +20,9 @@ public class LuaEnv extends Fragment {
 
 	public LuaTable env;
 	public LuaTable functions;
-	
+
 	public LuaFunction require;
-	
+
 	File funcDir = new File("./lua");
 
 	public Globals lua; { reset();
@@ -151,20 +153,20 @@ public class LuaEnv extends Fragment {
 
 	@Override
 	public boolean onPoiPrivMsg(UserData user,Msg msg,CData point) {
-		
+
 		switch (point.getPoint()) {
-			
+
 			case POINT_INPUT_FUNC : onInputFunc(user,msg,point);break;
-			
+
 			default : return false;
-			
+
 		}
-		
+
 		return true;
-		
+
 	}
 
-	
+
 	final String POINT_INPUT_FUNC = "s|i";
 
 	void addFunc(UserData user,Msg msg) {
@@ -174,7 +176,7 @@ public class LuaEnv extends Fragment {
 			msg.send("/addfunc <fileName>").exec();
 
 			return;
-			
+
 		}
 
 		user.point = (cdata(POINT_INPUT_FUNC));
@@ -182,11 +184,11 @@ public class LuaEnv extends Fragment {
 		user.point.setIndex(msg.commandParms()[0]);
 
 		user.savePoint();
-		
+
 		msg.send("现在发送程式体 :").exec();
-		
+
 	}
-	
+
 	void remFunc(UserData user,Msg msg) {
 
 		if (msg.commandParms().length != 1) {
@@ -196,25 +198,25 @@ public class LuaEnv extends Fragment {
 			return;
 
 		}
-		
+
 		String fileName = msg.commandParms()[0] + ".lua";
 
 		File func = new File(funcDir,fileName);
-		
+
 		if (func.exists()) {
-			
+
 			String content = FileUtil.readUtf8String(func);
-			
+
 			FileUtil.del(func);
-			
+
 			msg.send(fileName + " deleted").exec();
-			
+
 			msg.send(content).exec();
-			
+
 		}
 
 	}
-	
+
 
 	void onInputFunc(UserData user,Msg msg,CData point) {
 
@@ -237,11 +239,11 @@ public class LuaEnv extends Fragment {
 		FileUtil.writeUtf8String(content,name + ".lua");
 
 		user.point = null;
-		
+
 		user.savePoint();
 
 		msg.send(name + ".lua saved").exec();
-		
+
 		reload(user,msg);
 
 	}
@@ -251,17 +253,17 @@ public class LuaEnv extends Fragment {
 		File[] funcs = funcDir.listFiles();
 
 		StringBuilder funcList = new StringBuilder();
-	
+
 		for (File func : funcs) {
 
 			if (func.getName().endsWith(".lua")) {
 
 				funcList.append(func.getName()).append("\n");
-				
+
 			}
 
 		}
-		
+
 		msg.send(funcList.toString(),funcs.length + "funcs").exec();
 
 	}
@@ -275,15 +277,15 @@ public class LuaEnv extends Fragment {
 		File[] funcs = funcDir.listFiles();
 
 		StringBuilder loaded = new StringBuilder();
-		
+
 		for (File func : funcs) {
 
 			if (func.getName().endsWith(".lua")) {
 
 				try {
-					
+
 					lua.loadfile(func.getPath()).call();
-					
+
 					loaded.append("loaded ").append(func.getName()).append("\n");
 
 				} catch (LuaError err) {
@@ -291,14 +293,69 @@ public class LuaEnv extends Fragment {
 					msg.send(err.toString()).exec();
 
 				}
-				
+
 			}
 
 		}
 
 		long end = System.currentTimeMillis();
-		
+
 		msg.send(loaded.toString(),"time : " + (end - start) + "ms").exec();
+
+	}
+
+	class bind extends ZeroArgFunction {
+
+		LinkedHashSet<String> packages = new LinkedHashSet<>();
+		HashMap<String,Class<?>> loaded = new HashMap<>();
+		
+		@Override
+		public LuaValue call() {
+
+			LuaTable env = lua.get("_G").checktable();
+
+			LuaTable mt = env.getmetatable().checktable();
+
+			mt.set("__index",new __index());
+
+			return NIL;
+
+		}
+		
+		JavaClass matchClass(String simpleName) {
+			
+			for (String imported : packages) {
+				
+				try {
+					
+					Class.forName(imported + "." + simpleName);
+					
+				} catch (ClassNotFoundException e) {}
+
+			}
+			
+		}
+
+		class __index extends TwoArgFunction {
+
+			@Override
+			public LuaValue call(LuaValue T,LuaValue simpleName) {
+
+				if (loaded.containsKey(simpleName)) {
+					
+					JavaClass clazz = JavaClass.forClass(loaded.get(simpleName));
+
+					T.set(simpleName,clazz);
+					
+					return clazz;
+					
+				}
+				
+				return NIL;
+
+			}
+			
+		}
 
 	}
 
