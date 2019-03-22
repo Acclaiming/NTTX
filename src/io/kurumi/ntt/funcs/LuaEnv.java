@@ -25,7 +25,18 @@ public class LuaEnv extends Fragment {
 
 	File funcDir = new File("./lua");
 
-	public Globals lua; { reset();
+	public Globals lua; { reset(); }
+
+
+	void reset() {
+
+		lua = JsePlatform.standardGlobals();
+
+		env = lua.get("_G").checktable();
+
+		functions = new LuaTable();
+
+		env.set("functions",functions);
 
 		File[] funcs = funcDir.listFiles();
 
@@ -47,20 +58,7 @@ public class LuaEnv extends Fragment {
 			}
 
 		}
-
-	}
-
-
-	void reset() {
-
-		lua = JsePlatform.standardGlobals();
-
-		env = lua.get("_G").checktable();
-
-		functions = new LuaTable();
-
-		env.set("functions",functions);
-
+		
 		new BindLib().install();
 
 	}
