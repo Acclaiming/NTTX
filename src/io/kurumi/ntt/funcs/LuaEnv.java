@@ -13,7 +13,7 @@ public class LuaEnv extends Fragment {
 	public static LuaEnv INSTANCE = new LuaEnv();
 
 	public LuaTable env;
-	public LuaTable functions = new LuaTable();
+	public LuaTable functions;
 
 	public Globals lua; { reset(); }
 
@@ -23,6 +23,8 @@ public class LuaEnv extends Fragment {
 
 		env = lua.get("_G").checktable();
 
+		functions = new LuaTable();
+		
 		env.set("functions",functions);
 
 	}
