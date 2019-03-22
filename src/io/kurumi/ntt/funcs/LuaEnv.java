@@ -109,8 +109,6 @@ public class LuaEnv extends Fragment {
 
 		}
 
-		return false;
-
 	}
 
 
