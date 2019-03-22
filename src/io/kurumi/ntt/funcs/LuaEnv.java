@@ -274,35 +274,11 @@ public class LuaEnv extends Fragment {
 
 		long start = System.currentTimeMillis();
 
-		functions = new LuaTable();
-
-		File[] funcs = funcDir.listFiles();
-
-		StringBuilder loaded = new StringBuilder();
-
-		for (File func : funcs) {
-
-			if (func.getName().endsWith(".lua")) {
-
-				try {
-
-					lua.loadfile(func.getPath()).call();
-
-					loaded.append("loaded ").append(func.getName()).append("\n");
-
-				} catch (LuaError err) {
-
-					msg.send(err.toString()).exec();
-
-				}
-
-			}
-
-		}
+		reset();
 
 		long end = System.currentTimeMillis();
 
-		msg.send(loaded.toString(),"time : " + (end - start) + "ms").exec();
+		msg.send("reloaded seccessful","time : " + (end - start) + "ms").exec();
 
 	}
 
