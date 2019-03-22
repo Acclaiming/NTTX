@@ -26,6 +26,7 @@ import java.lang.reflect.Field;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaUserdata;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.*;
 
 /**
  * LuaValue that represents a Java instance.
@@ -43,7 +44,7 @@ public class JavaInstance extends LuaUserdata {
 	JavaClass jclass;
 	
 	public JavaInstance(Object instance) {
-		super(instance);
+		super(instance,LuaFunction.s_metatable);
 	}
 
 	public LuaValue get(LuaValue key) {
@@ -77,6 +78,25 @@ public class JavaInstance extends LuaUserdata {
 				throw new LuaError(e);
 			}
 		super.set(key, value);
-	} 	
+	}
+
+	@Override
+	public Varargs invoke(Varargs args) {
+		
+		if (m_instance instanceof Runnable) {
+			
+			((Runnable)m_instance).run();
+			
+			return NIL;
+			
+		} else {
+			
+			throw new LuaError("无法将Java对象 (" + m_instance.getClass().getSimpleName() + ") 作为函数执行");
+			
+		}
+		
+		
+		
+	}
 	
 }

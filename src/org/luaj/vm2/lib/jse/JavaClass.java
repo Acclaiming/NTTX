@@ -157,6 +157,20 @@ public class JavaClass extends JavaInstance implements CoerceJavaToLua.Coercion 
 	public LuaValue getConstructor() {
 		return getMethod(NEW);
 	}
+	
+	public boolean isfunction() {
+		return true;
+	}
+
+	public LuaFunction checkfunction()  {
+		return getConstructor().checkfunction();
+	}
+
+	public LuaFunction optfunction(LuaFunction defval) {
+		return getConstructor().checkfunction(); 
+	}
+	
+	
 
 	@Override
 	public Varargs invoke(Varargs args) {
