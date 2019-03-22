@@ -112,7 +112,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         if ("cancel".equals(msg.commandName())) {
 
-            user.point(null);
+            user.point = null;
+			
+			user.savePoint();
 
             msg.send("取消成功 ~").exec();
 
@@ -130,13 +132,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
             UserData user = UserData.get(update.message().from());
 
-            boolean point = user.hasPoint();
+            boolean point = user.point != null;
 
             BotLog.process(user, update, point);
 
             if (point) {
 
-                CData data = user.point();
+                CData data = user.point;
 
                 for (Fragment fragmnet : fragments) {
 
@@ -282,11 +284,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
             UserData user = UserData.get(update.callbackQuery().from());
 
-            boolean point = user.hasPoint();
+            boolean point = user.point != null;
 
             if (point) {
 
-                CData data = user.point();
+                CData data = user.point;
 
                 for (Fragment fragmnet : fragments) {
 

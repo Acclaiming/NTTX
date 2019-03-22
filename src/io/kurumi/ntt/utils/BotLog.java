@@ -112,7 +112,7 @@ public class BotLog {
         
         if (point) {
 
-            log.append("指针 (").append(user.point().getPoint()).append(") ");
+            log.append("指针 (").append(user.point.getPoint()).append(") ");
 
         }
         

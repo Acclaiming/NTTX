@@ -97,12 +97,6 @@ public class UserData extends IdDataModel {
 
     }
 
-    public boolean hasPoint() {
-
-        return UserPoint.exists(this);
-
-    }
-
 	public CData point = UserPoint.get(this);;
 
     public void savePoint() {
