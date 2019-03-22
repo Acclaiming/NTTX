@@ -202,7 +202,9 @@ public class LuaEnv extends Fragment {
 
 		user.point(null);
 
-		msg.send(name + ".lua 已保存！ 请 /reload");
+		msg.send(name + ".lua saved").exec();
+		
+		reload(user,msg);
 
 	}
 
