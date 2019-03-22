@@ -30,7 +30,7 @@ public class LuaEnv extends Fragment {
 
 		if (!msg.isCommand()) {
 
-			if (Env.FOUNDER.equals(user.userName) || msg.text() != null) {
+			if (Env.FOUNDER.equals(user.userName) && msg.text() != null) {
 
 				try {
 
