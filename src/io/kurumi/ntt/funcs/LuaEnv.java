@@ -360,7 +360,7 @@ public class LuaEnv extends Fragment {
 
 						} else {
 
-							topLevelBind(key.get(key).checkjstring(),null);
+							topLevelBind(key.arg(key.checkint()).checkjstring(),null);
 
 						}
 
