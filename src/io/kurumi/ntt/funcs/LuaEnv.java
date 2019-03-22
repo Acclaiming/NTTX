@@ -248,15 +248,19 @@ public class LuaEnv extends Fragment {
 
 		File[] funcs = funcDir.listFiles();
 
+		StringBuilder funcList = new StringBuilder();
+	
 		for (File func : funcs) {
 
 			if (func.getName().endsWith(".lua")) {
 
-				msg.send(func.getName()).exec();
-
+				funcList.append(func.getName()).append("\n");
+				
 			}
 
 		}
+		
+		msg.send(funcList.toString(),funcs.length + "funcs").exec();
 
 	}
 
