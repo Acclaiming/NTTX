@@ -68,7 +68,7 @@ public class TwitterUI extends Fragment {
 
 		try {
 
-			RequestToken request = ApiToken.defaultToken.createApi().getOAuthRequestToken("https://127.0.0.1/calback");
+			RequestToken request = ApiToken.defaultToken.createApi().getOAuthRequestToken("https://127.0.0.1/");
 
 			cache.put(request.getToken(),request);
 
