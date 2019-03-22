@@ -62,12 +62,6 @@ public class Msg extends Context {
 
     }
 
-    public Edit edit() {
-
-        return new Edit(fragment, chatId(), messageId(), text());
-
-    }
-
     public Edit edit(String... msg) {
 
         return new Edit(fragment, chatId(), messageId(), msg);
