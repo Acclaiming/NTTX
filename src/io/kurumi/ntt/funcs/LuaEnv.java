@@ -19,6 +19,8 @@ public class LuaEnv extends Fragment {
 	public LuaTable env;
 	public LuaTable functions;
 	
+	public LuaFunction require;
+	
 	File funcDir = new File("./lua");
 
 	public Globals lua; { reset();
