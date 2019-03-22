@@ -39,7 +39,7 @@ public class Msg extends Context {
 
     
     public boolean hasText() {
-
+		
         return message.text() != null;
 
     }
@@ -55,6 +55,19 @@ public class Msg extends Context {
         return message.text();
 
     }
+	
+	public boolean isReply() {
+
+		return message.replyToMessage() != null;
+
+	}
+	
+	
+	public Msg replyTo() {
+		
+		return new Msg(fragment,message.replyToMessage());
+		
+	}
 
     public Send reply(String... msg) {
 

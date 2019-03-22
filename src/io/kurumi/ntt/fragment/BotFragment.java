@@ -121,6 +121,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
             return true;
 
         }
+	
 
         return false;
 
