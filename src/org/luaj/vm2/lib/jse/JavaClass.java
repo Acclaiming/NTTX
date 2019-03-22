@@ -153,15 +153,15 @@ public class JavaClass extends JavaInstance implements CoerceJavaToLua.Coercion 
 		}
 		return (Class) innerclasses.get(key);
 	}
+	
+	public LuaValue getmetatable() { 
+		return LuaFunction.s_metatable; 
+	}
 
 	public LuaValue getConstructor() {
 		return getMethod(NEW);
 	}
 	
-	public boolean isfunction() {
-		return true;
-	}
-
 	public LuaFunction checkfunction()  {
 		return getConstructor().checkfunction();
 	}
@@ -169,7 +169,6 @@ public class JavaClass extends JavaInstance implements CoerceJavaToLua.Coercion 
 	public LuaFunction optfunction(LuaFunction defval) {
 		return getConstructor().checkfunction(); 
 	}
-	
 	
 
 	@Override
