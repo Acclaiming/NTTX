@@ -107,8 +107,9 @@ public class LuaEnv extends Fragment {
 
 			switch (msg.commandName()) {
 
-				case "reset" : reset(); break;
-				case "addfunc" : addFunc(user,msg); break;
+				case "reset" : reset();break;
+				case "addfunc" : addFunc(user,msg);break;
+				case "remfunc": remFunc(user,msg);break;
 				case "listfuncs" : listFuncs(user,msg);break;
 				case "reload" : reload(user,msg);break;
 
@@ -174,11 +175,44 @@ public class LuaEnv extends Fragment {
 			
 		}
 
-		user.point(cdata(POINT_INPUT_FUNC));
+		user.point = (cdata(POINT_INPUT_FUNC));
 
-		user.point().setIndex(msg.commandParms()[0]);
+		user.point.setIndex(msg.commandParms()[0]);
+
+		user.savePoint();
+		
+		msg.send("现在发送程式体 :").exec();
+		
+	}
+	
+	void remFunc(UserData user,Msg msg) {
+
+		if (msg.commandParms().length != 1) {
+
+			msg.send("/remfunc <fileName>").exec();
+
+			return;
+
+		}
+		
+		String fileName = msg.commandParms()[0] + ".lua";
+
+		File func = new File(funcDir,fileName);
+		
+		if (func.exists()) {
+			
+			String content = FileUtil.readUtf8String(func);
+			
+			FileUtil.del(func);
+			
+			msg.send(fileName + " deleted").exec();
+			
+			msg.send(content).exec();
+			
+		}
 
 	}
+	
 
 	void onInputFunc(UserData user,Msg msg,CData point) {
 
@@ -200,7 +234,9 @@ public class LuaEnv extends Fragment {
 
 		FileUtil.writeUtf8String(content,name + ".lua");
 
-		user.point(null);
+		user.point = null;
+		
+		user.savePoint();
 
 		msg.send(name + ".lua saved").exec();
 		

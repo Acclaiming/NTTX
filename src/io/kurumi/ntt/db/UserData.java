@@ -103,17 +103,13 @@ public class UserData extends IdDataModel {
 
     }
 
-    public CData point() {
+	public CData point = UserPoint.get(this);;
 
-        return UserPoint.get(this);
+    public void savePoint() {
 
-    }
+        if (point == null) UserPoint.remove(this);
 
-    public void point(CData data) {
-
-        if (data == null) UserPoint.remove(this);
-
-        else UserPoint.set(this, data);
+        else UserPoint.set(this, point);
 
     }
     
