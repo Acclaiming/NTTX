@@ -21,16 +21,10 @@
 ******************************************************************************/
 package org.luaj.vm2.lib.jse;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.luaj.vm2.LuaError;
-import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.Varargs;
-import org.luaj.vm2.lib.VarArgFunction;
+import java.lang.reflect.*;
+import java.util.*;
+import org.luaj.vm2.*;
+import org.luaj.vm2.lib.*;
 
 /**
  * LuaValue that represents a particular public Java constructor.
@@ -67,6 +61,35 @@ class JavaConstructor extends JavaMember {
 	}
 	
 	public Varargs invoke(Varargs args) {
+		
+		Parameter[] params = constructor.getParameters();
+
+		if (params.length != 0 && params[params.length - 1].isVarArgs()) {
+
+			if (!args.arg(args.narg()).istable()) {
+
+				// pack args into vararg
+
+				Varargs unpacked = args.subargs(params.length);
+
+				LinkedList<LuaValue> newArgs =  new LinkedList<>();
+
+				for (int index = 1;index < args.narg();index ++) {
+
+					newArgs.add(args.arg(index));
+
+				}
+
+				newArgs.add(new LuaTable(null,null,unpacked));
+
+				args = varargsOf(newArgs.toArray(new LuaValue[newArgs.size()]));
+
+			}
+
+			// java 变参处理
+
+		}
+		
 		Object[] a = convertArgs(args);
 		try {
 			return CoerceJavaToLua.coerce( constructor.newInstance(a) );
