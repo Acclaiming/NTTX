@@ -72,7 +72,7 @@ public class TwitterUI extends Fragment {
 
 			cache.put(request.getToken(),request);
 
-			msg.send("请求成功 :) 点 [这里](" + request.getAuthorizationURL() + ") 认证 ~");
+			msg.send("请求成功 :) 点 [这里](" + request.getAuthorizationURL() + ") 认证 ~").exec();
 
 			msg.send("因为咱是一个简单的程序 所以不能自动收到认证！ T_T ","","请记住 : 认证账号之后会跳转到一个不可访问的界面 : 在浏览器显示的地址是 127.0.0.1 , 这时候不要关闭浏览器！复制这个链接并发送给咱就可以了 ~","","如果不小心关闭了浏览器 请使用 /cancel 取消认证并重新请求认证 ^_^").exec();
 
