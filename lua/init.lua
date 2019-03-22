@@ -15,6 +15,6 @@ end
 
 function print(msg)
 
-send(530055491,msg(:exec()
+send(530055491,msg):exec()
 
 end
