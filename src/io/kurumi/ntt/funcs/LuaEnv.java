@@ -348,12 +348,12 @@ public class LuaEnv extends Fragment {
 
 						if (key.isnumber()) {
 							
-							topLevelBind(key.arg(key.checkint()).checkjstring(),null);
+							topLevelBind(arg.get(key.checkint()).checkjstring(),null);
 
 						} else {
 
-							String className = key.get(key).checkjstring();
-
+							String className = arg.get(key.checkint()).checkjstring();
+							
 							if (className.endsWith(".*")) {
 
 								throw new LuaError("\n\n导入Java包时指定别名是无意义的 (");
