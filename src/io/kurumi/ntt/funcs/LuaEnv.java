@@ -9,6 +9,7 @@ import org.luaj.vm2.*;
 import org.luaj.vm2.lib.jse.*;
 import java.io.*;
 import cn.hutool.core.io.*;
+import cn.hutool.core.util.*;
 
 public class LuaEnv extends Fragment {
 
@@ -17,7 +18,31 @@ public class LuaEnv extends Fragment {
 	public LuaTable env;
 	public LuaTable functions;
 
-	public Globals lua; { reset(); }
+	public Globals lua; { reset();
+
+		File[] funcs = funcDir.listFiles();
+
+		for (File func : funcs) {
+
+			if (func.getName().endsWith(".lua")) {
+
+				try {
+
+					lua.loadfile("lua/" + StrUtil.subBefore(func.getName(),".lua",true)).call();
+
+				} catch (LuaError err) {
+
+					err.printStackTrace();
+
+				}
+
+
+			}
+
+		}
+
+	}
+
 
 	void reset() {
 
@@ -81,6 +106,8 @@ public class LuaEnv extends Fragment {
 
 				case "reset" : reset(); break;
 				case "addfunc" : addFunc(user,msg); break;
+				case "listfuncs" : listFuncs(user,msg);break;
+				case "reload" : reload(user,msg);break;
 
 				default : return false;
 
@@ -115,7 +142,7 @@ public class LuaEnv extends Fragment {
 		}
 
 	}
-	
+
 	File funcDir = new File("./lua");
 
 	final String POINT_INPUT_FUNC = "s|i";
@@ -123,13 +150,13 @@ public class LuaEnv extends Fragment {
 	void addFunc(UserData user,Msg msg) {
 
 		if (msg.commandParms().length != 1) {
-			
+
 			msg.send("/addfunc <fileName>").exec();
-			
+
 		}
-		
+
 		user.point(cdata(POINT_INPUT_FUNC));
-		
+
 		user.point().setindex(msg.commandParms()[0]);
 
 	}
@@ -153,21 +180,61 @@ public class LuaEnv extends Fragment {
 		}
 
 		FileUtil.writeUtf8String(content,name + ".lua");
-		
+
 		user.point(null);
-		
+
 		msg.send(name + ".lua 已保存！ 请 /reload");
 
 	}
-	
-	void listFuncs() {}
-	
-	void reload() {
-		
+
+	void listFuncs(UserData user,Msg msg) {
+
+		File[] funcs = funcDir.listFiles();
+
+		for (File func : funcs) {
+
+			if (func.getName().endsWith(".lua")) {
+
+				msg.send(func.getName()).exec();
+
+			}
+
+		}
+
+	}
+
+	void reload(UserData user,Msg msg) {
+
+		long start = System.currentTimeMillis();
+
 		functions = new LuaTable();
-		
-		funcDir.listFiles();
-		
+
+		File[] funcs = funcDir.listFiles();
+
+		for (File func : funcs) {
+
+			if (func.getName().endsWith(".lua")) {
+
+				try {
+
+					lua.loadfile("lua/" + StrUtil.subBefore(func.getName(),".lua",true)).call();
+
+				} catch (LuaError err) {
+
+					msg.send(err.toString()).exec();
+
+				}
+
+				msg.send(func.getName() + " loaded").exec();
+
+			}
+
+		}
+
+		long end = System.currentTimeMillis();
+
+		msg.send("reload successful","time : " + (end - start) + "ms").exec();
+
 	}
 
 }
