@@ -29,7 +29,7 @@ public class CData extends JSONObject {
 
     }
 
-    public void setindex(String point) {
+    public void setIndex(String point) {
 
         put("i", point);
 

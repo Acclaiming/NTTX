@@ -24,7 +24,7 @@ public class ButtonMarkup extends LinkedList<ButtonLine> {
 
         data.setPoint(point);
 
-        data.setindex(index);
+        data.setIndex(index);
 
         newButtonLine().newButton(text, data);
 

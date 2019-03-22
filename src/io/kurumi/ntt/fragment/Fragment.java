@@ -69,7 +69,7 @@ public class Fragment {
 
         CData data = cdata(point);
 
-        data.setindex(index);
+        data.setIndex(index);
 
         return data;
 

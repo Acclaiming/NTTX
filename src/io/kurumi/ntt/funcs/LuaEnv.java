@@ -170,11 +170,13 @@ public class LuaEnv extends Fragment {
 
 			msg.send("/addfunc <fileName>").exec();
 
+			return;
+			
 		}
 
 		user.point(cdata(POINT_INPUT_FUNC));
 
-		user.point().setindex(msg.commandParms()[0]);
+		user.point().setIndex(msg.commandParms()[0]);
 
 	}
 
