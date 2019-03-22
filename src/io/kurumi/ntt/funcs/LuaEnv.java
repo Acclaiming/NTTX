@@ -28,31 +28,7 @@ public class LuaEnv extends Fragment {
 	@Override
 	public boolean onMsg(UserData user,Msg msg) {
 
-		if (!msg.isCommand()) {
-
-			if (Env.FOUNDER.equals(user.userName) && msg.text() != null) {
-
-				try {
-
-					LuaValue result = lua.load(msg.text()).call();
-
-					if (!result.isnil()) {
-
-						msg.send(result.toString()).exec();
-
-					}
-
-				} catch (LuaError err) {
-
-					msg.send(err.toString()).exec();	
-
-				}
-
-			}
-
-			return true;
-
-		} else {
+		if (!msg.isCommand()) return false;
 
 			LuaValue func = functions.get(msg.commandName());
 
@@ -86,8 +62,42 @@ public class LuaEnv extends Fragment {
 
 			return false;
 
-		}
-
 	}
 
+	@Override
+	public boolean onPrivMsg(UserData user,Msg msg) {
+		
+		if (!msg.isCommand()) {
+
+			if (Env.FOUNDER.equals(user.userName) && msg.text() != null) {
+
+				try {
+
+					LuaValue result = lua.load(msg.text()).call();
+
+					if (!result.isnil()) {
+
+						msg.send(result.toString()).exec();
+
+					}
+
+				} catch (LuaError err) {
+
+					msg.send(err.toString()).exec();	
+
+				}
+
+			}
+
+			return true;
+
+		}
+		
+		return false;
+		
+	}
+		
+		
+		
+		
 }
