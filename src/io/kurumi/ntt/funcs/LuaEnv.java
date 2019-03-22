@@ -236,7 +236,7 @@ public class LuaEnv extends Fragment {
 
 		}
 
-		FileUtil.writeUtf8String(content,name + ".lua");
+		FileUtil.writeUtf8String(content,new File(funcDir,name + ".lua"));
 
 		user.point = null;
 
