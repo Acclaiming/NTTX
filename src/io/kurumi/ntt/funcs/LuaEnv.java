@@ -30,7 +30,7 @@ public class LuaEnv extends Fragment {
 
 				try {
 
-					lua.loadfile("lua/" + StrUtil.subBefore(func.getName(),".lua",true)).call();
+					lua.loadfile(func.getPath()).call();
 
 				} catch (LuaError err) {
 
@@ -217,8 +217,8 @@ public class LuaEnv extends Fragment {
 			if (func.getName().endsWith(".lua")) {
 
 				try {
-
-					lua.loadfile("lua/" + StrUtil.subBefore(func.getName(),".lua",true)).call();
+					
+					lua.loadfile(func.getPath()).call();
 
 				} catch (LuaError err) {
 
