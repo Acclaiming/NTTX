@@ -10,6 +10,7 @@ import org.luaj.vm2.lib.jse.*;
 import java.io.*;
 import cn.hutool.core.io.*;
 import cn.hutool.core.util.*;
+import io.kurumi.ntt.utils.*;
 
 public class LuaEnv extends Fragment {
 
@@ -145,6 +146,21 @@ public class LuaEnv extends Fragment {
 
 	}
 
+	@Override
+	public boolean onPoiPrivMsg(UserData user,Msg msg,CData point) {
+		
+		switch (point.getPoint()) {
+			
+			case POINT_INPUT_FUNC : onInputFunc(user,msg,point);break;
+			
+			default : return false;
+			
+		}
+		
+		return true;
+		
+	}
+
 	
 	final String POINT_INPUT_FUNC = "s|i";
 
@@ -162,9 +178,9 @@ public class LuaEnv extends Fragment {
 
 	}
 
-	void onInputFunc(UserData user,Msg msg) {
+	void onInputFunc(UserData user,Msg msg,CData point) {
 
-		String name = user.point().getIndex();
+		String name = point.getIndex();
 
 		String content = msg.text();
 
