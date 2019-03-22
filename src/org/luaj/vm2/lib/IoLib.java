@@ -288,7 +288,7 @@ public class IoLib extends TwoArgFunction {
 				case IO_INPUT:		return iolib._io_input(args.arg1());
 				case IO_OUTPUT:		return iolib._io_output(args.arg1());
 				case IO_TYPE:		return iolib._io_type(args.arg1());
-			//  case IO_POPEN:		return iolib._io_popen(args.checkjstring(1),args.optjstring(2,"r"));
+				case IO_POPEN:		return iolib._io_popen(args.checkjstring(1),args.optjstring(2,"r"));
 				case IO_OPEN:		return iolib._io_open(args.checkjstring(1), args.optjstring(2,"r"));
 				case IO_LINES:		return iolib._io_lines(args.isvalue(1)? args.checkjstring(1): null);
 				case IO_READ:		return iolib._io_read(args);
