@@ -19,9 +19,13 @@ import java.util.List;
 import io.kurumi.ntt.utils.BotLog;
 import twitter4j.Twitter;
 import io.kurumi.ntt.*;
+import com.pengrad.telegrambot.model.*;
+import com.pengrad.telegrambot.request.*;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
+	public User me;
+	
     private TelegramBot bot;
     private LinkedList<Fragment> fragments = new LinkedList<>();
     private String token;
@@ -38,7 +42,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
     @Override
     public TelegramBot bot() {
+		
         return bot;
+		
     }
 
     public void addFragment(Fragment fragment) {
@@ -336,6 +342,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         bot = new TelegramBot.Builder(token).build();
 
+		me = bot.execute(new GetMe()).user();
+		
 		bot.execute(new DeleteWebhook());
 		
         /*

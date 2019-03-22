@@ -120,8 +120,8 @@ public class Msg extends Context {
 
             String cmdAndUser = StrUtil.subBefore(body, " ", false);
 
-            if (cmdAndUser.contains("@")) {
-
+            if (cmdAndUser.contains("@" + fragment.origin.me.username())) {
+				
                 name = StrUtil.subBefore(cmdAndUser, "@", false);
 
             } else {
@@ -130,7 +130,7 @@ public class Msg extends Context {
 
             }
 
-        } else if (body.contains("@")) {
+        } else if (body.contains("@" + fragment.origin.me.username())) {
 
             name = StrUtil.subBefore(body, "@", false);
 
