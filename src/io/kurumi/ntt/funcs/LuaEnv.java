@@ -70,6 +70,8 @@ public class LuaEnv extends Fragment {
 
 		LuaValue func = functions.get(msg.commandName());
 
+		System.out.println(func);
+		
 		if (func.isfunction()) {
 
 			try {
@@ -264,7 +266,7 @@ public class LuaEnv extends Fragment {
 
 		}
 
-		msg.send(funcList.toString(),funcs.length + "funcs").exec();
+		msg.send(funcList.toString(),funcs.length + " funcs").exec();
 
 	}
 
