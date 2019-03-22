@@ -97,7 +97,7 @@ public class UserData extends IdDataModel {
 
     }
 
-	public CData point = UserPoint.get(this);;
+	public CData point = UserPoint.get(this);
 
     public void savePoint() {
 

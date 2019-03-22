@@ -7,27 +7,17 @@ public class UserPoint {
 
     public static final String KEY = "NTT_USER_POINT";
 
-    public static boolean exists(UserData user) {
-
-        if (user.isBot) return false;
-        
-        return BotDB.exists(KEY,user.idStr);
-
-    }
-
     public static void set(UserData user, CData data) {
 
-        BotDB.set(KEY, user.idStr, data.toString());
+        BotDB.sNC(KEY, user.idStr, data.toString());
 
     }
 
     public static CData get(UserData user) {
 
-        String data = BotDB.get(KEY, user.idStr);
+        String data = BotDB.gNC(KEY, user.idStr);
 
         if (data == null) {
-
-            BotLog.warnWithStack("未检查的取用户指针 : 内容为空");
 
             return null;
 
