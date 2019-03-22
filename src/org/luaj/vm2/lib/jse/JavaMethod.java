@@ -31,6 +31,9 @@ import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
+import java.lang.reflect.*;
+import java.util.*;
+import org.luaj.vm2.*;
 
 /**
  * LuaValue that represents a Java method.
@@ -90,8 +93,40 @@ class JavaMethod extends JavaMember {
 		return invokeMethod(args.checkuserdata(1), args.subargs(2));
 	}
 	
+	
+	
 	LuaValue invokeMethod(Object instance, Varargs args) {
+		
+		Parameter[] params = method.getParameters();
+
+		if (params.length != 0 && params[params.length - 1].isVarArgs()) {
+			
+			if (!args.arg(args.narg()).istable()) {
+				
+				// pack args into vararg
+				
+				Varargs unpacked = args.subargs(params.length);
+
+				LinkedList<LuaValue> newArgs =  new LinkedList<>();
+				
+				for (int index = 1;index < args.narg();index ++) {
+					
+					newArgs.add(args.arg(index));
+					
+				}
+				
+				newArgs.add(new LuaTable(null,null,unpacked));
+				
+				args = varargsOf(newArgs.toArray(new LuaValue[newArgs.size()]));
+				
+			}
+			
+			// java 变参处理
+			
+		}
+		
 		Object[] a = convertArgs(args);
+		
 		try {
 			return CoerceJavaToLua.coerce( method.invoke(instance, a) );
 		} catch (InvocationTargetException e) {

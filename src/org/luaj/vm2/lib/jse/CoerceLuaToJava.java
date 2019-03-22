@@ -324,6 +324,7 @@ public class CoerceLuaToJava {
 	}
 
 	static {
+		
 		Coercion boolCoercion   = new BoolCoercion();
 		Coercion byteCoercion   = new NumericCoercion(NumericCoercion.TARGET_TYPE_BYTE);
 		Coercion charCoercion   = new NumericCoercion(NumericCoercion.TARGET_TYPE_CHAR);
@@ -353,6 +354,7 @@ public class CoerceLuaToJava {
 		COERCIONS.put( Double.class, doubleCoercion );
 		COERCIONS.put( String.class, stringCoercion );
 		COERCIONS.put( byte[].class, bytesCoercion );
+		
 	}
 	
 	static Coercion getCoercion(Class c) {
