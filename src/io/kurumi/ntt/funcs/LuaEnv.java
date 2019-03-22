@@ -212,6 +212,8 @@ public class LuaEnv extends Fragment {
 
 		File[] funcs = funcDir.listFiles();
 
+		StringBuilder loaded = new StringBuilder();
+		
 		for (File func : funcs) {
 
 			if (func.getName().endsWith(".lua")) {
@@ -219,22 +221,22 @@ public class LuaEnv extends Fragment {
 				try {
 					
 					lua.loadfile(func.getPath()).call();
+					
+					loaded.append("loaded ").append(func.getName()).append("\n");
 
 				} catch (LuaError err) {
 
 					msg.send(err.toString()).exec();
 
 				}
-
-				msg.send(func.getName() + " loaded").exec();
-
+				
 			}
 
 		}
 
 		long end = System.currentTimeMillis();
-
-		msg.send("reload successful","time : " + (end - start) + "ms").exec();
+		
+		msg.send(loaded.toString(),"time : " + (end - start) + "ms").exec();
 
 	}
 
