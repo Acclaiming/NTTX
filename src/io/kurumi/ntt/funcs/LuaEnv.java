@@ -36,11 +36,11 @@ public class LuaEnv extends Fragment {
 		functions = new LuaTable();
 
 		env.set("this",new JavaInstance(Launcher.INSTANCE));
-		
+
 		env.set("functions",functions);
 
 		new BindLib().install();
-		
+
 		File[] funcs = funcDir.listFiles();
 
 		for (File func : funcs) {
@@ -61,8 +61,8 @@ public class LuaEnv extends Fragment {
 			}
 
 		}
-		
-		
+
+
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class LuaEnv extends Fragment {
 		LuaValue func = functions.get(msg.commandName());
 
 		System.out.println(func);
-		
+
 		if (func.isfunction()) {
 
 			try {
@@ -287,13 +287,13 @@ public class LuaEnv extends Fragment {
 	class BindLib {
 
 		void install() {
-			
+
 			env.set("bind",new bind());
 
 			LuaTable mt = new LuaTable();
 
 			mt.set("__index",new __index());
-			
+
 			env.setmetatable(mt);
 
 		}
@@ -346,7 +346,11 @@ public class LuaEnv extends Fragment {
 
 					for (LuaValue key : keys) {
 
-						if (key.isstring()) {
+						if (key.isnumber()) {
+							
+							topLevelBind(key.arg(key.checkint()).checkjstring(),null);
+
+						} else {
 
 							String className = key.get(key).checkjstring();
 
@@ -357,10 +361,6 @@ public class LuaEnv extends Fragment {
 							}
 
 							topLevelBind(className,key.checkjstring());
-
-						} else {
-
-							topLevelBind(key.arg(key.checkint()).checkjstring(),null);
 
 						}
 
