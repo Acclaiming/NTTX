@@ -5,8 +5,16 @@ bind {
 "io.kurumi.ntt.twitter.*",
 }
 
+this = Launcher.INSTANCE
+
+function send(chat_id,msg)
+
+return Send.new(this,530055491,msg)
+
+end
+
 function print(msg)
 
-Send.new(530055491,msg):exec()
+send(530055491,msg(:exec()
 
 end
