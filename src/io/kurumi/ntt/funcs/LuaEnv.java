@@ -61,6 +61,8 @@ public class LuaEnv extends Fragment {
 
 		env.set("functions",functions);
 
+		new BindLib().install();
+
 	}
 
 	@Override
@@ -304,36 +306,114 @@ public class LuaEnv extends Fragment {
 
 	}
 
-	class bind extends ZeroArgFunction {
+	class BindLib {
 
-		LinkedHashSet<String> packages = new LinkedHashSet<>();
-		HashMap<String,Class<?>> loaded = new HashMap<>();
-		
-		@Override
-		public LuaValue call() {
-
-			LuaTable env = lua.get("_G").checktable();
+		void install() {
+			
+			env.set("bind",new bind());
 
 			LuaTable mt = env.getmetatable().checktable();
 
 			mt.set("__index",new __index());
 
-			return NIL;
+		}
+
+		LinkedHashSet<String> packages = new LinkedHashSet<>();
+		HashMap<String,Class<?>> loaded = new HashMap<>();
+
+
+		void topLevelBind(String className,String bindAs) {
+
+			if (className.endsWith(".*")) {
+
+				packages.add(StrUtil.subBefore(className,".*",true));
+
+				return;
+
+			}
+
+			try {
+
+				JavaClass binded = JavaClass.forClass(Class.forName(className));
+
+				if (bindAs == null) {
+
+					bindAs = ((Class<?>)binded.m_instance).getSimpleName();
+
+				}
+
+				env.set(bindAs,binded);
+
+			} catch (ClassNotFoundException e) {
+
+				throw new LuaError("没有那样的Java类 : " + className);
+
+			}
 
 		}
-		
+
+		class bind extends OneArgFunction {
+
+			@Override
+			public LuaValue call(LuaValue arg) {
+
+				if (arg.isstring()) {
+
+					topLevelBind(arg.checkjstring(),null);
+
+				} else if (arg.istable()) {
+
+					LuaValue[] keys = arg.checktable().keys();
+
+					for (LuaValue key : keys) {
+
+						if (key.isstring()) {
+
+							String className = key.get(key).checkjstring();
+
+							if (className.endsWith(".*")) {
+
+								throw new LuaError("导入Java包时指定别名是无意义的 (");
+
+							}
+
+							topLevelBind(className,key.checkjstring());
+
+						} else {
+
+							topLevelBind(key.get(key).checkjstring(),null);
+
+						}
+
+					}
+
+				} else {
+
+					throw new LuaError("无效的导入内容 : 需要字符串或表 , 而不是" + arg.typename() + " , 你会用 bind 吗？");
+
+				}
+
+				return NIL;
+
+			}
+
+
+		}
+
 		JavaClass matchClass(String simpleName) {
-			
+
 			for (String imported : packages) {
-				
+
 				try {
-					
-					Class.forName(imported + "." + simpleName);
-					
+
+					return JavaClass.forClass(Class.forName(imported + "." + simpleName));
+
 				} catch (ClassNotFoundException e) {}
 
 			}
-			
+
+			return null;
+
 		}
 
 		class __index extends TwoArgFunction {
@@ -342,19 +422,29 @@ public class LuaEnv extends Fragment {
 			public LuaValue call(LuaValue T,LuaValue simpleName) {
 
 				if (loaded.containsKey(simpleName)) {
-					
+
 					JavaClass clazz = JavaClass.forClass(loaded.get(simpleName));
 
 					T.set(simpleName,clazz);
-					
+
 					return clazz;
-					
+
 				}
-				
+
+				JavaClass matched = matchClass(simpleName.checkjstring());
+
+				if (matched != null) {
+
+					T.set(simpleName,matched);
+
+					return matched;
+
+				}
+
 				return NIL;
 
 			}
-			
+
 		}
 
 	}
