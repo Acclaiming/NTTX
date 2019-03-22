@@ -4,7 +4,7 @@ import cn.hutool.json.JSONObject;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.GetChat;
 import com.pengrad.telegrambot.response.GetChatResponse;
-import io.kurumi.ntt.BotConf;
+import io.kurumi.ntt.Env;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.utils.CData;
 import java.util.HashMap;
@@ -93,7 +93,7 @@ public class UserData extends IdDataModel {
 
     public boolean isAdmin() {
 
-        return BotConf.FOUNDER.equals(userName);
+        return Env.FOUNDER.equals(userName);
 
     }
 

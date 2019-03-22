@@ -12,10 +12,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class BotConf {
+public class Env {
 
     /**
-     * 创始人ID (Disc/Telegram/Twitter)
+     * 创始人ID
      */
 
     public static final String FOUNDER = "HiedaNaKan";
@@ -33,11 +33,6 @@ public class BotConf {
 
     public static final File DATA_DIR = new File("./data");
     
-    /**
-     * Discourse API调用地址 见 项目/disc/api.php
-     */
-    public static final String DISC_WAPPER = "http://127.0.0.1:11213/api.php";
-
     /**
      * 命令行输入 Token 并保存到数据库
      */

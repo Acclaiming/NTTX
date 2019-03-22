@@ -1,6 +1,6 @@
 package io.kurumi.ntt.model.data;
 
-import io.kurumi.ntt.BotConf;
+import io.kurumi.ntt.Env;
 
 public abstract class AIIdDataModel extends IdDataModel {
     
@@ -21,11 +21,11 @@ public abstract class AIIdDataModel extends IdDataModel {
         
         if (id == -1) {
 
-            id = Long.parseLong(BotConf.getOrDefault("id." + dirName.replace("/","."),"0")) + 1L;
+            id = Long.parseLong(Env.getOrDefault("id." + dirName.replace("/","."),"0")) + 1L;
 
 			idStr = id.toString();
 			
-            BotConf.set("id." + dirName.replace("/","."),id);
+            Env.set("id." + dirName.replace("/","."),id);
 
         }
        

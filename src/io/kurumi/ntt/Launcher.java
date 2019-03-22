@@ -8,6 +8,7 @@ import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.utils.*;
 import io.kurumi.ntt.luaj.*;
 import org.luaj.vm2.*;
+import org.luaj.vm2.lib.jse.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -16,53 +17,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     public Launcher() {
 
         addFragment(GroupRepeat.INSTANCE);
+		
+		addFragment(LuaEnv.INSTANCE);
 
     }
-
-    @Override
-    public boolean onMsg(UserData user,Msg msg) {
-
-        if (super.onMsg(user,msg)) return true;
-
-        if ("woyaonvzhaung".equals(msg.commandName())) {
-
-            msg.reply("是吗？").exec();
-
-            return true;
-
-        }
-
-
-        return false;
-
-	}
-
-	@Override
-	public boolean onPrivMsg(UserData user,Msg msg) {
-
-		if (msg.text() == null) return false;
-
-		LuaDaemon lua = LuaDaemon.get(this,user);
-
-		try {
-
-			LuaValue result = lua.exec(msg.text());
-
-			if (!result.isnil()) {
-
-				msg.send(result.toString()).exec();
-
-			}
-
-		} catch (LuaError err) {
-
-			msg.send(err.toString()).exec();	
-
-		}
-
-		return true;
-
-	}
 
     public static void main(String[] args) {
 

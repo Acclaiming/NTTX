@@ -6,7 +6,7 @@ import com.pengrad.telegrambot.model.Document;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.GetFile;
-import io.kurumi.ntt.BotConf;
+import io.kurumi.ntt.Env;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.request.Edit;
 import io.kurumi.ntt.model.request.Send;
@@ -86,7 +86,7 @@ public class Msg extends Context {
 
         if (doc == null) return null;
 
-        File local = new File(BotConf.CACHE_DIR, "files/" + doc.fileId());
+        File local = new File(Env.CACHE_DIR, "files/" + doc.fileId());
 
         if (local.isFile()) return local;
 

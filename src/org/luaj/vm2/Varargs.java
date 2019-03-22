@@ -639,7 +639,7 @@ public abstract class Varargs {
 	 * @see LuaValue#varargsOf(LuaValue[], int, int)
 	 * @see LuaValue#varargsOf(LuaValue[], int, int, Varargs)
 	 */
-	static final class ArrayPartVarargs extends Varargs {
+	public static final class ArrayPartVarargs extends Varargs {
 		private final int offset;
 		private final LuaValue[] v;
 		private final int length;

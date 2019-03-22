@@ -1,6 +1,6 @@
 package io.kurumi.ntt.server;
 
-import io.kurumi.ntt.BotConf;
+import io.kurumi.ntt.Env;
 import org.nanohttpd.protocols.http.IHTTPSession;
 import org.nanohttpd.protocols.http.NanoHTTPD;
 import org.nanohttpd.protocols.http.response.Response;

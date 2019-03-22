@@ -1,6 +1,6 @@
 package io.kurumi.ntt.db;
 
-import io.kurumi.ntt.BotConf;
+import io.kurumi.ntt.Env;
 import java.io.File;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
@@ -23,7 +23,7 @@ public class BotDB {
 	
 	private static File cacheFile(String path,String key) {
 		
-		return new File(new File(BotConf.DATA_DIR,path),key);
+		return new File(new File(Env.DATA_DIR,path),key);
 		
 	}
 	

@@ -47,17 +47,5 @@ public class CData extends JSONObject {
 
     }
 
-    public void putSerializable(String key, Serializable obj) {
-
-        put(key, SerUtil.toString(obj));
-
-    }
-
-    public <T> T getSerilizable(String key) {
-
-        return SerUtil.toObject(getStr(key));
-
-    }
-
 }
 

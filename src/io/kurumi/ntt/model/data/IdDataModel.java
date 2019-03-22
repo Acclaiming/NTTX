@@ -37,7 +37,7 @@ public abstract class IdDataModel {
 
         try {
 
-            JSONObject data = new JSONObject(FileUtil.readUtf8String(new File(BotConf.DATA_DIR, dirName + "/" + id + ".json")));
+            JSONObject data = new JSONObject(FileUtil.readUtf8String(new File(Env.DATA_DIR, dirName + "/" + id + ".json")));
 
             load(data);
 
@@ -48,13 +48,13 @@ public abstract class IdDataModel {
 
     public void save() {
 
-        FileUtil.writeUtf8String(new JSONObject() {{ save(this); }}.toStringPretty(), new File(BotConf.DATA_DIR, dirName + "/" + id + ".json"));
+        FileUtil.writeUtf8String(new JSONObject() {{ save(this); }}.toStringPretty(), new File(Env.DATA_DIR, dirName + "/" + id + ".json"));
 
     }
 
     public void delete() {
 
-        FileUtil.del(new File(BotConf.DATA_DIR, dirName + "/" + id + ".json"));
+        FileUtil.del(new File(Env.DATA_DIR, dirName + "/" + id + ".json"));
 
     }
 
@@ -67,7 +67,7 @@ public abstract class IdDataModel {
 
         public Factory(Class<T> clazz, String dirName) { this.clazz = clazz;this.dirName = dirName;
 
-            File[] files = new File(BotConf.DATA_DIR, dirName).listFiles();
+            File[] files = new File(Env.DATA_DIR, dirName).listFiles();
 
             if (files != null) {
 

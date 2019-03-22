@@ -6,7 +6,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.DeleteWebhook;
 import com.pengrad.telegrambot.request.GetUpdates;
 import com.pengrad.telegrambot.request.SetWebhook;
-import io.kurumi.ntt.BotConf;
+import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
@@ -326,11 +326,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
     public void start() {
 
-        token = BotConf.get("token." + botName());
+        token = Env.get("token." + botName());
 
-        if (token == null || !BotConf.verifyToken(token)) {
+        if (token == null || !Env.verifyToken(token)) {
 
-            token = BotConf.inputToken(botName());
+            token = Env.inputToken(botName());
 
         }
 
