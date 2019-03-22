@@ -27,7 +27,6 @@ public class LuaEnv extends Fragment {
 
 	public Globals lua; { reset(); }
 
-
 	void reset() {
 
 		lua = JsePlatform.standardGlobals();
@@ -36,6 +35,8 @@ public class LuaEnv extends Fragment {
 
 		functions = new LuaTable();
 
+		env.set("this",new JavaInstance(Launcher.INSTANCE));
+		
 		env.set("functions",functions);
 
 		new BindLib().install();
