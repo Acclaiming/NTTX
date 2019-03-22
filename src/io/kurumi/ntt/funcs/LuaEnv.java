@@ -71,7 +71,7 @@ public class LuaEnv extends Fragment {
 	@Override
 	public boolean onPrivMsg(UserData user,Msg msg) {
 
-		if (Env.FOUNDER.equals(user.userName)) return false;
+		if (!Env.FOUNDER.equals(user.userName)) return false;
 
 		if (msg.isCommand()) {
 
