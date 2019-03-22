@@ -371,32 +371,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
     }
 
-    public void stop() {
-
-        /*
-
-         if (isLongPulling()) {
-
-         */
-
-        bot.removeGetUpdatesListener();
-
-        /*
-
-         } else {
-
-         if (token != null) {
-
-         TGWebHookF.bots.remove(token);
-
-         bot.execute(new DeleteWebhook());
-
-         }
-
-         }
-
-         */
-
-    }
+    
 
 }
