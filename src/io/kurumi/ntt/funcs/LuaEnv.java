@@ -143,7 +143,11 @@ public class LuaEnv extends Fragment {
 
 				} catch (LuaError err) {
 
-					msg.send(err.toString()).exec();	
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+					err.printStackTrace(new PrintWriter(out));
+					
+					msg.send(err.toString(),StrUtil.str(out.toByteArray(),CharsetUtil.CHARSET_UTF_8)).exec();	
 
 				}
 
