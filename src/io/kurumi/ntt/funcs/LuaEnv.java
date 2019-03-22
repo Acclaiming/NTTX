@@ -323,7 +323,6 @@ public class LuaEnv extends Fragment {
 		LinkedHashSet<String> packages = new LinkedHashSet<>();
 		HashMap<String,Class<?>> loaded = new HashMap<>();
 
-
 		void topLevelBind(String className,String bindAs) {
 
 			if (className.endsWith(".*")) {
@@ -348,7 +347,7 @@ public class LuaEnv extends Fragment {
 
 			} catch (ClassNotFoundException e) {
 
-				throw new LuaError("没有那样的Java类 : " + className);
+				throw new LuaError("\n\n没有那样的Java类 : " + className);
 
 			}
 
@@ -375,7 +374,7 @@ public class LuaEnv extends Fragment {
 
 							if (className.endsWith(".*")) {
 
-								throw new LuaError("导入Java包时指定别名是无意义的 (");
+								throw new LuaError("\n\n导入Java包时指定别名是无意义的 (");
 
 							}
 
@@ -391,7 +390,7 @@ public class LuaEnv extends Fragment {
 
 				} else {
 
-					throw new LuaError("无效的导入内容 : 需要字符串或表 , 而不是" + arg.typename() + " , 你会用 bind 吗？");
+					throw new LuaError("\n\n无效的导入内容 : 需要字符串或表 , 而不是" + arg.typename() + " , 你会用 bind 吗？");
 
 				}
 

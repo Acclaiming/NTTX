@@ -116,7 +116,7 @@ public class BotLog {
 
         }
         
-        if (msg.forwardFromMessageId() != null) {
+        if (msg.forwardFrom() != null) {
             
             log.append("转发从 " + UserData.get(msg.forwardFrom()).formattedName()).append(" ");
             
