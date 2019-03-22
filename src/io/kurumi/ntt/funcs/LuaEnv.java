@@ -38,6 +38,8 @@ public class LuaEnv extends Fragment {
 
 		env.set("functions",functions);
 
+		new BindLib().install();
+		
 		File[] funcs = funcDir.listFiles();
 
 		for (File func : funcs) {
@@ -59,8 +61,7 @@ public class LuaEnv extends Fragment {
 
 		}
 		
-		new BindLib().install();
-
+		
 	}
 
 	@Override
