@@ -30,8 +30,8 @@ public class LuaEnv extends Fragment {
 	@Override
 	public boolean onMsg(UserData user,Msg msg) {
 
-		if (msg.isCommand()) return false;
-
+		if (!msg.isCommand()) return false;
+		
 		LuaValue func = functions.get(msg.commandName());
 
 		if (func.isfunction()) {
