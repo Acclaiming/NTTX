@@ -312,9 +312,11 @@ public class LuaEnv extends Fragment {
 			
 			env.set("bind",new bind());
 
-			LuaTable mt = env.getmetatable().checktable();
+			LuaTable mt = new LuaTable();
 
 			mt.set("__index",new __index());
+			
+			env.setmetatable(mt);
 
 		}
 
