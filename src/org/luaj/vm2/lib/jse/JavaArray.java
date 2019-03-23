@@ -39,7 +39,7 @@ import org.luaj.vm2.lib.OneArgFunction;
  * @see CoerceJavaToLua
  * @see CoerceLuaToJava
  */
-class JavaArray extends LuaUserdata {
+public class JavaArray extends LuaUserdata {
 
 	private static final class LenFunction extends OneArgFunction {
 		public LuaValue call(LuaValue u) {
@@ -55,7 +55,7 @@ class JavaArray extends LuaUserdata {
 		array_metatable.rawset(LuaValue.LEN, new LenFunction());
 	}
 	
-	JavaArray(Object instance) {
+	public JavaArray(Object instance) {
 		super(instance);
 		setmetatable(array_metatable);
 	}

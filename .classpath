@@ -17,4 +17,5 @@
 <classpathentry kind="lib" path="libs/twitter4j/twitter4j-core-4.0.7.jar"/>
 <classpathentry kind="lib" path="libs/twitter4j/twitter4j-stream-4.0.7.jar"/>
 <classpathentry kind="lib" path="libs/zip4j_1.3.2.jar"/>
+<classpathentry kind="lib" path="libs/zxing-core-3.3.3.jar"/>
 </classpath>

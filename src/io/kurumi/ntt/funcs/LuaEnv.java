@@ -13,6 +13,7 @@ import cn.hutool.core.util.*;
 import io.kurumi.ntt.utils.*;
 import org.luaj.vm2.lib.*;
 import java.util.*;
+import cn.hutool.extra.qrcode.*;
 
 public class LuaEnv extends Fragment {
 
@@ -20,10 +21,6 @@ public class LuaEnv extends Fragment {
 
 	public LuaTable env;
 	public LuaTable functions;
-
-	public LuaFunction require;
-
-	File funcDir = new File("./funcs");
 
 	public Globals lua; { reset(); }
 
@@ -123,7 +120,7 @@ public class LuaEnv extends Fragment {
 					ByteArrayOutputStream out = new ByteArrayOutputStream();
 
 					err.printStackTrace(new PrintWriter(out,true));
-					
+
 					msg.send(err.toString(),StrUtil.str(out.toByteArray(),CharsetUtil.CHARSET_UTF_8)).exec();	
 
 				}
@@ -162,11 +159,32 @@ public class LuaEnv extends Fragment {
 
 		}
 
-		LinkedHashSet<String> packages = new LinkedHashSet<>();
+		LinkedHashSet<String> packages = new LinkedHashSet<>(); {
+			
+			packages.add("java.lang");
+			packages.add("java.io");
+			packages.add("java.util");
+			
+			packages.add("io.kurumi.ntt");
+			packages.add("io.kurumi.ntt.db");
+			packages.add("io.kurumi.ntt.twitter");
+			packages.add("io.kurumi.ntt.utils");
+			packages.add("io.kurumi.ntt.model");
+			packages.add("io.kurumi.ntt.model.request");
+			
+			packages.add("cn.hutool.core.io");
+			packages.add("cn.hutool.core.codec");
+			packages.add("cn.hutool.core.util");
+			packages.add("cn.hutool.extra.qrcode");
+			packages.add("cn.hutool.http");
+			packages.add("cn.hutool.json");
+			
+		}
+		
 		HashMap<String,Class<?>> loaded = new HashMap<>();
 
 		void topLevelBind(String className,String bindAs) {
-
+			
 			if (className.endsWith(".*")) {
 
 				packages.add(StrUtil.subBefore(className,".*",true));
@@ -211,13 +229,13 @@ public class LuaEnv extends Fragment {
 					for (LuaValue key : keys) {
 
 						if (key.isnumber()) {
-							
+
 							topLevelBind(arg.get(key.checkint()).checkjstring(),null);
 
 						} else {
 
 							String className = arg.get(key.checkint()).checkjstring();
-							
+
 							if (className.endsWith(".*")) {
 
 								throw new LuaError("\n\n导入Java包时指定别名是无意义的 (");
@@ -289,6 +307,78 @@ public class LuaEnv extends Fragment {
 			}
 
 		}
+
+	}
+
+	class LuaFragment extends Fragment {
+		
+		LuaTable fragment;
+
+		boolean call(String function,Object... args) {
+
+			if (fragment.get(function).isfunction()) {
+
+				Varargs result = fragment.get(function).checkfunction().invoke(new JavaArray(args));
+
+				if (result.arg1().isboolean()) {
+
+					return result.arg1().checkboolean();
+
+				}
+
+			}
+			
+			return false;
+
+		}
+
+		LuaFragment(LuaTable fragment) {
+
+			this.fragment = fragment;
+
+		}
+
+		public boolean onMsg(UserData user,Msg msg) {
+			return call("onMsg",user,msg);
+		}
+
+		public boolean onPoiMsg(UserData user,Msg msg,CData point) {
+			return call("onPoiMsg",user,msg,point);
+		}
+
+		public boolean onPrivMsg(UserData user,Msg msg) {
+			return call("onPoiMsg",user,msg);
+		}
+
+		public boolean onPoiPrivMsg(UserData user,Msg msg,CData point) {
+			return call("onPoiPrivMsg",user,msg,point);
+		}
+
+		public boolean onGroupMsg(UserData user,Msg msg,boolean superGroup) {
+			return call("onGroupMsg",user,msg,superGroup);
+		}
+
+		public boolean onPoiGroupMsg(UserData user,Msg msg,CData point,boolean superGroup) {
+			return call("onPoiGroupMsg",user,msg,superGroup);
+		}
+
+		public boolean onChanPost(UserData user,Msg msg) {
+			return call("onChanPost",user,msg);
+		}
+		
+		public boolean onCallback(UserData user,Callback callback) {
+			return call("onCallback",user,callback);
+		}
+
+		public boolean onPoiCallback(UserData user,Callback callback,CData point) {
+			return call("onPoiCallback",user,callback,point);
+		}
+
+		public boolean onQuery(UserData user,Query inlineQuery) {
+			return call("onQuery",user,inlineQuery);
+			
+		}
+
 
 	}
 
