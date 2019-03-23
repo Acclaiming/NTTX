@@ -3361,8 +3361,9 @@ public class LuaValue extends Varargs {
      */
 	protected LuaValue checkmetatag(LuaValue tag, String reason) {
 		LuaValue h = this.metatag(tag);
-		if ( h.isnil() )
-			throw new LuaError(reason+typename());
+		if ( h.isnil() ) {
+			throw new LuaError(reason + typename() + " : " + tojstring());
+			}
 		return h;
 	}
 
