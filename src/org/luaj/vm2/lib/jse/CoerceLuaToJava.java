@@ -477,8 +477,9 @@ public class CoerceLuaToJava {
 					
 					map.put(coer.coerce(name),obj.istable() ? coerce(obj) : coer.coerce(table.get(name)));
 					
-					
 				}
+				
+				return map;
 				
 			} else if (value.checkuserdata(Map.class) != null) {
 				
