@@ -101,7 +101,7 @@ public class Msg extends Context {
 		
 	}
 	
-	public File phpto(int index) {
+	public File photo(int index) {
 
         if (photoSize() <= index) return null;
 
