@@ -184,7 +184,7 @@ public class Msg extends Context {
 
     }
 
-    public String[] commandParms() {
+    public String[] commandParams() {
 
         if (params != null) return params;
 
