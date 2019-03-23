@@ -12,7 +12,7 @@ import java.util.LinkedList;
 
 public class StickerSet extends JSONObject {
 
-    public static final String KEY = "NTT_STICKER_SETS";
+    public static final String KEY = "cache/stickers";
 
     public static HashMap<String, StickerSet> cache = new HashMap<>();
     public String name;
@@ -26,7 +26,7 @@ public class StickerSet extends JSONObject {
 
     }
 
-    public StickerSet(String name, String json) {
+    public StickerSet(String name, JSONObject json) {
 
         super(json);
 
@@ -40,7 +40,7 @@ public class StickerSet extends JSONObject {
 
         if (cache.containsKey(name)) return cache.get(name);
 
-        String data = BotDB.get(KEY, name);
+        JSONObject data = BotDB.get(KEY, name);
 
         if (data == null) {
 
@@ -132,7 +132,7 @@ public class StickerSet extends JSONObject {
 
         put("s", stickers);
 
-        BotDB.set(KEY, name, toString());
+        BotDB.set(KEY, name, this);
 
     }
 

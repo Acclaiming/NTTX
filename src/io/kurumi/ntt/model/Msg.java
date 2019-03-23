@@ -13,6 +13,7 @@ import io.kurumi.ntt.model.request.Send;
 
 import java.io.File;
 import cn.hutool.extra.qrcode.*;
+import io.kurumi.ntt.db.*;
 
 public class Msg extends Context {
 
@@ -29,6 +30,16 @@ public class Msg extends Context {
         this.message = message;
 
     }
+	
+	public UserData from() {
+		
+		UserData user = UserData.INSTANCE.getOrNew((long)message.from().id());
+
+		user.refresh(message.from());
+		
+		return user;
+		
+	}
 
     public Message message() {
         return message;

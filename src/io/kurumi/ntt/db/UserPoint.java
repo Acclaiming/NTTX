@@ -2,20 +2,21 @@ package io.kurumi.ntt.db;
 
 import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.CData;
+import cn.hutool.json.*;
 
 public class UserPoint {
 
-    public static final String KEY = "NTT_USER_POINT";
+    public static final String KEY = "data/users/points";
 
     public static void set(UserData user, CData data) {
 
-        BotDB.sNC(KEY, user.idStr, data.toString());
+        BotDB.sNC(KEY, user.idStr, data);
 
     }
 
     public static CData get(UserData user) {
 
-        String data = BotDB.gNC(KEY, user.idStr);
+        JSONObject data = BotDB.gNC(KEY, user.idStr);
 
         if (data == null) {
 

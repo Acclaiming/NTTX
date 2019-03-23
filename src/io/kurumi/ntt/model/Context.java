@@ -29,7 +29,7 @@ public class Context {
         return chat;
     }
 
-    public long chatId() {
+    public Long chatId() {
         return chat.id();
     }
 

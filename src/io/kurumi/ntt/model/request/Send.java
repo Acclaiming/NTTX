@@ -8,6 +8,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
+import com.pengrad.telegrambot.request.*;
 
 public class Send extends AbstractSend<Send> {
 
@@ -16,7 +17,7 @@ public class Send extends AbstractSend<Send> {
     public Send(Fragment fragment, Object chatId, String... msg) {
 
         super(fragment);
-
+		
         request = new SendMessage(chatId, ArrayUtil.join(msg, "\n"));
 
         this.fragment = fragment;
