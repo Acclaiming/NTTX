@@ -122,7 +122,7 @@ public class LuaEnv extends Fragment {
 
 					err.printStackTrace(new PrintWriter(out,true));
 
-					msg.send(err.toString(),StrUtil.str(out.toByteArray(),CharsetUtil.CHARSET_UTF_8)).exec();	
+					msg.send(StrUtil.str(out.toByteArray(),CharsetUtil.CHARSET_UTF_8)).exec();	
 
 				}
 
