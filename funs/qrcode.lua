@@ -4,6 +4,14 @@ msg:sendUpdatingPhoto()
 
 local content = ""
 
+if #msg:commandParams() == 0 then
+
+msg:send("用法 : /qr 内容"):exec()
+
+return
+
+end
+
 for i,v in ipairs(msg:commandParams()) do
 
 content = content .. tostring(v)
