@@ -131,6 +131,8 @@ public class TwitterUI extends Fragment {
 
 				user.ext.put("twitter_auth",auth);
 
+				user.save();
+				
 				auth.refresh();
 
 				msg.send("好！现在认证成功 , " + auth.getFormatedNameMarkdown()).markdown().exec();
