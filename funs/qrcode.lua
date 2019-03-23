@@ -54,7 +54,7 @@ end)
 
 if status then
 
-msg:reply("解析成功 *٩(๑´∀`๑)ง*  : " .. tostring(content)):exec()
+msg:reply("解析成功 *٩(๑´∀`๑)ง*  : \n" , tostring(content)):exec()
 
 else
 
