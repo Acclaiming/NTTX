@@ -42,13 +42,11 @@ public class JavaArray {
 
 		LuaTable table = new LuaTable();
 
-		for (Map.Entry<Object,Object> entry : ((java.util.Map)map).entrySet()) {
+		for (Object obj : map.entrySet()) {
 
-			Object key = entry.getKey();
-
-			Object value = entry.getValue();
-
-			table.set(CoerceJavaToLua.coerce(key),CoerceJavaToLua.coerce(value));
+			Map.Entry entry = (Map.Entry)obj;
+			
+			table.set(CoerceJavaToLua.coerce(entry.getKey()),CoerceJavaToLua.coerce(entry.getValue()));
 
 		}
 
