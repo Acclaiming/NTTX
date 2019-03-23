@@ -5,6 +5,7 @@ import io.kurumi.ntt.*;
 import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.model.*;
+import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.utils.*;
 import java.io.*;
 import java.util.*;
@@ -30,7 +31,7 @@ public class LuaEnv extends Fragment {
 		functions = new LuaTable();
 
 		env.set("this",new JavaInstance(Launcher.INSTANCE));
-
+		
 		env.set("functions",functions);
 
 		env.set("Fragment",new create_fragment());
@@ -338,11 +339,23 @@ public class LuaEnv extends Fragment {
 
 			if (fragment.get(function).isfunction()) {
 
+				try {
+				
 				Varargs result = fragment.get(function).checkfunction().invoke(JavaArray.parseArray(args));
 
 				if (result.arg1().isboolean()) {
 
 					return result.arg1().checkboolean();
+
+				}
+				
+				} catch (Throwable err) {
+					
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+					err.printStackTrace(new PrintWriter(out,true));
+					
+					new Send(origin,530055491,StrUtil.str(out.toByteArray(),CharsetUtil.CHARSET_UTF_8)).exec();
 
 				}
 
