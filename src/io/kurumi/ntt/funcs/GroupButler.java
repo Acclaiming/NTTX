@@ -75,7 +75,7 @@ public class GroupButler extends Fragment {
 
 						ChatMember perm = bot().execute(new GetChatMember(msg.chatId(),origin.me.id())).chatMember();
 
-						if (perm.canDeleteMessages() && perm.canRestrictMembers()) {
+						if (perm != null && perm.canDeleteMessages() && perm.canRestrictMembers()) {
 							
 							enable.put(msg.chatId().toString(),true);
 							
