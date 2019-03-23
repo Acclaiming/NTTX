@@ -10,4 +10,6 @@ msg:send(msg:chatId()):exec()
 
 end
 
+end
+
 functions["id"] = _get_id
