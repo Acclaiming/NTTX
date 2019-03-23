@@ -86,8 +86,6 @@ public class LuaEnv extends Fragment {
 
 	@Override
 	public boolean onPrivMsg(UserData user,Msg msg) {
-
-		msg.message().photo()[0].fileId();
 		
 		if (!Env.FOUNDER.equals(user.userName)) return false;
 
