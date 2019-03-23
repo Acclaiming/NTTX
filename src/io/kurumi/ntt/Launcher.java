@@ -16,6 +16,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(TwitterUI.INSTANCE);
 		
 		addFragment(LuaEnv.INSTANCE);
+		addFragment(LuaEnv.INSTANCE.LuaFragmentOriginInstance);
 		
 		addFragment(PingFunc.INSTANCE);
 

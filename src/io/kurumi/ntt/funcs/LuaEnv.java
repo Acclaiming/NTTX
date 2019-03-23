@@ -16,7 +16,8 @@ import org.luaj.vm2.lib.jse.*;
 public class LuaEnv extends Fragment {
 
 	public static LuaEnv INSTANCE = new LuaEnv();
-
+	public Fragment LuaFragmentOriginInstance = new LuaFragmentOrigin();
+	
 	public LuaTable env;
 	public LuaTable functions;
 	public LinkedList<LuaFragment> fragments;
@@ -43,8 +44,6 @@ public class LuaEnv extends Fragment {
 
 		lua.loadfile("init.lua").call();
 		
-		origin.addFragment(new LuaFragmentOrigin());
-
 	}
 
 	@Override
