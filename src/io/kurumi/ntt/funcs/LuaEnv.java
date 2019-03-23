@@ -14,6 +14,7 @@ import io.kurumi.ntt.utils.*;
 import org.luaj.vm2.lib.*;
 import java.util.*;
 import cn.hutool.extra.qrcode.*;
+import com.pengrad.telegrambot.request.*;
 
 public class LuaEnv extends Fragment {
 
@@ -86,6 +87,8 @@ public class LuaEnv extends Fragment {
 	@Override
 	public boolean onPrivMsg(UserData user,Msg msg) {
 
+		msg.message().photo()[0].fileId();
+		
 		if (!Env.FOUNDER.equals(user.userName)) return false;
 
 		if (msg.isCommand()) {
@@ -164,6 +167,8 @@ public class LuaEnv extends Fragment {
 			packages.add("java.lang");
 			packages.add("java.io");
 			packages.add("java.util");
+			
+			packages.add("com.pengrad.telegrambot.request");
 			
 			packages.add("io.kurumi.ntt");
 			packages.add("io.kurumi.ntt.db");

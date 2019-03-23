@@ -20,6 +20,8 @@ public class Context {
 
         this.fragment = fragment;
         this.chat = chat;
+		
+		
 
     }
 

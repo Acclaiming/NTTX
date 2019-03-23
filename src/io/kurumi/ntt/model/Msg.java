@@ -86,6 +86,38 @@ public class Msg extends Context {
         fragment.bot().execute(new DeleteMessage(chatId(), messageId()));
 
     }
+	
+	public int photoSize() {
+		
+		if (message.photo() != null) {
+		
+		return message.photo().length;
+		
+		}
+		
+		return 0;
+		
+		
+	}
+	
+	public File phpto(int index) {
+
+        if (photoSize() <= index) return null;
+
+        File local = new File(Env.CACHE_DIR, "files/" + message.photo()[index].fileId());
+
+        if (local.isFile()) return local;
+
+        String path = fragment.bot().getFullFilePath(fragment.bot().execute(new GetFile(message.photo()[index].fileId())).file());
+
+        HttpUtil.downloadFile(path, local);
+
+        return local;
+		
+		
+
+    }
+	
 
     public File file() {
 
