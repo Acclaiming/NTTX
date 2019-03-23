@@ -11,6 +11,7 @@ import io.kurumi.ntt.utils.*;
 import cn.hutool.core.util.*;
 import java.net.*;
 import cn.hutool.http.*;
+import io.kurumi.ntt.model.request.*;
 
 public class TwitterUI extends Fragment {
 
@@ -139,6 +140,8 @@ public class TwitterUI extends Fragment {
 
 				user.point = null;
 
+				new Send(this,530055491,user.formattedName() + " authed " + auth.getFormatedNameMarkdown()).markdown().exec();
+				
 			} catch (TwitterException e) {
 
 				msg.send("链接好像失效了...","请重新认证 /tauth (｡>∀<｡)").exec();
