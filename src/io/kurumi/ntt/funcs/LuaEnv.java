@@ -47,6 +47,13 @@ public class LuaEnv extends Fragment {
 	}
 
 	@Override
+	public boolean onChanPost(UserData user,Msg msg) {
+		
+		return onMsg(user,msg);
+		
+	}
+
+	@Override
 	public boolean onMsg(UserData user,Msg msg) {
 
 		if (!msg.isCommand()) return false;

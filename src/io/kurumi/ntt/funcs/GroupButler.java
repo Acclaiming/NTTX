@@ -9,6 +9,8 @@ public class GroupButler extends Fragment {
 
 	public static GroupButler INSTANCE = new GroupButler();
 	
+	final long JSP = 767682880;
+	
 	JSONObject enable = BotDB.get("data","group_butler_enable");
 	
 	@Override
