@@ -344,7 +344,7 @@ public class CoerceLuaToJava {
 						value.checkuserdata() instanceof Iterable ? 1 :
 						value.checkuserdata().getClass().isArray() ? 1 : SCORE_UNCOERCIBLE;
 
-				case LuaValue.TTABLE : return 0;
+				case LuaValue.TTABLE : return 1;
 				case LuaValue.TNIL : return SCORE_NULL_VALUE;
 
 				default : return SCORE_WRONG_TYPE;
@@ -446,9 +446,9 @@ public class CoerceLuaToJava {
 			
 			switch (value.type()) {
 				
-				case LuaValue.TUSERDATA : return value.checkuserdata().getClass().isAssignableFrom(Map.class) ? 0 : SCORE_UNCOERCIBLE;
+				case LuaValue.TUSERDATA : return value.checkuserdata().getClass().isAssignableFrom(Map.class) ? 1 : SCORE_UNCOERCIBLE;
 				
-				case LuaValue.TTABLE : return 0;
+				case LuaValue.TTABLE : return  1;
 				
 				case LuaValue.TNIL : return SCORE_NULL_VALUE;
 				
