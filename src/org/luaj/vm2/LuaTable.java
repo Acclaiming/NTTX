@@ -21,8 +21,10 @@
  ******************************************************************************/
 package org.luaj.vm2;
 
-import java.lang.ref.WeakReference;
-import java.util.Vector;
+import cn.hutool.json.*;
+import java.lang.ref.*;
+import java.util.*;
+import org.luaj.vm2.lib.jse.*;
 
 /**
  * Subclass of {@link LuaValue} for representing lua tables. 
@@ -91,6 +93,8 @@ public class LuaTable extends LuaValue implements Metatable {
 		array = NOVALS;
 		hash = NOBUCKETS;
 	}
+	
+	
 	
 	/** 
 	 * Construct table with preset capacity.
@@ -163,7 +167,16 @@ public class LuaTable extends LuaValue implements Metatable {
 	public LuaTable opttable(LuaTable defval)  {
 		return this;
 	}
-	
+
+	@Override
+	public String tojstring() {
+		
+		// 奇怪的实现...
+		
+		return new JSONObject(CoerceLuaToJava.coerce(this,Map.class)).toStringPretty();
+		
+	}
+
 	public void presize( int narray ) {
 		if ( narray > array.length )
 			array = resize( array, 1 << log2(narray) );
