@@ -478,7 +478,7 @@ public class LuaEnv extends Fragment {
 				
 				try {
 				
-				Varargs result = fragment.checkfunction().invoke(values);
+				Varargs result = fragment.get(function).checkfunction().invoke(values);
 				
 				if (result.arg1().isboolean()) {
 
