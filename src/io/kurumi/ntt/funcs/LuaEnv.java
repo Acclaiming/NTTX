@@ -339,10 +339,18 @@ public class LuaEnv extends Fragment {
 
 			if (fragment.get(function).isfunction()) {
 
+				LuaValue[] values = new LuaValue[args.length];
+				
+				for (int index = 0;index < args.length;index ++) {
+					
+					values[index] = CoerceJavaToLua.coerce(args[index]);
+					
+				}
+				
 				try {
 				
-				Varargs result = fragment.get(function).checkfunction().invoke(JavaArray.parseArray(args));
-
+				Varargs result = fragment.get(function).checkfunction().invoke(LuaValue.varargsOf(values));
+				
 				if (result.arg1().isboolean()) {
 
 					return result.arg1().checkboolean();
