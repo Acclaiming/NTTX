@@ -19,4 +19,4 @@ send("530055491",msg):exec()
 
 end
 
-require "lua/funs/chatid"
+require "funs/chatid"
