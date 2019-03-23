@@ -33,6 +33,8 @@ public class LuaEnv extends Fragment {
 
 		env.set("functions",functions);
 
+		env.set("Fragment",new create_fragment());
+		
 		new BindLib().install();
 
 		lua.loadfile("init.lua").call();
@@ -314,8 +316,21 @@ public class LuaEnv extends Fragment {
 		}
 
 	}
+	
+	class create_fragment extends OneArgFunction {
 
-	class LuaFragment extends Fragment {
+		@Override
+		public LuaValue call(LuaValue arg) {
+			
+			if (!arg.istable()) throw new LuaError("必须以Table创建Fragment");
+			
+			return new JavaInstance(new LuaFragment(arg.checktable()));
+			
+		}
+		
+	}
+
+	public class LuaFragment extends Fragment {
 		
 		LuaTable fragment;
 
@@ -383,6 +398,19 @@ public class LuaEnv extends Fragment {
 			return call("onQuery",user,inlineQuery);
 			
 		}
+		
+		public void install() {
+			
+			Launcher.INSTANCE.addFragment(this);
+			
+		}
+		
+		public void uninstall() {
+
+			Launcher.INSTANCE.remFragment(this);
+
+		}
+		
 
 
 	}

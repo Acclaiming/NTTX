@@ -55,6 +55,14 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
     }
 
+	public void remFragment(Fragment fragment) {
+
+        fragments.remove(fragment);
+
+
+    }
+	
+	
     public abstract String botName();
 
     /*

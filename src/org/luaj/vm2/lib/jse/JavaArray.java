@@ -72,19 +72,10 @@ public class JavaArray {
 
 		}
 		
-		
 		int length = Array.getLength(object);
-
-		System.out.println("length : " + length);
 		
-		System.out.println(object);
-		
-		System.out.println(ArrayUtil.join(object,"\n"));
-
 		for (int index = 0;index < length;index ++) {
 
-			System.out.println(index);
-			
 			Object value = ArrayUtil.get(object,index);
 
 			table.set(table.len().checkint() + 1,CoerceJavaToLua.coerce(value));
