@@ -85,7 +85,7 @@ public class JavaArray {
 
 			System.out.println(index);
 			
-			System.out.println(ArrayUtil.get(object,index));
+			System.out.println(((Object)ArrayUtil.get(object,index)));
 			
 			table.add(CoerceJavaToLua.coerce(Array.get(object,length)));
 
