@@ -89,7 +89,7 @@ public class Msg extends Context {
     }
 	
 	public int photoSize() {
-		
+
 		if (message.photo() != null) {
 		
 		return message.photo().length;
