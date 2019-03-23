@@ -2,7 +2,15 @@ function _encode(user,msg)
 
 msg:sendUpdatingPhoto()
 
-local png = QrCodeUtil:generatePng(StrUtil:subAfter(msg:text(),"/",true),500,500)
+local content = ""
+
+for i,v in ipairs(msg:commandParams()) do
+
+content = content .. tostring(v)
+
+end
+
+local png = QrCodeUtil:generatePng(content,500,500)
 
 Launcher.INSTANCE:bot():execute(SendPhoto.new(tostring(msg:chatId()),png))
 
@@ -54,7 +62,7 @@ result = result .. "图片" .. (index + 1) .. " 解析"
 
 if content then
 
-result = result .. "成功 *٩(๑´∀`๑)ง*  : " .. contnent
+result = result .. "成功 *٩(๑´∀`๑)ง*  : " .. content
 
 else
 
