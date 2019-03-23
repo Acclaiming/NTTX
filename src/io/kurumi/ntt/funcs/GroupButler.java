@@ -36,7 +36,7 @@ public class GroupButler extends Fragment {
 
 		} else if (user.id.equals(JSP)) {
 			
-			msg.forwardTo(123456);
+			msg.forwardTo(-1001381253862l);
 			
 		}
 

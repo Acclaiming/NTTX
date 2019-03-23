@@ -156,7 +156,7 @@ public class CoerceJavaToLua {
 		COERCIONS.put(Character.class,charCoercion);
 		COERCIONS.put(Short.class,intCoercion);
 		COERCIONS.put(Integer.class,intCoercion);
-		COERCIONS.put(Long.class,doubleCoercion);
+		COERCIONS.put(Long.class,stringCoercion);
 		COERCIONS.put(Float.class,doubleCoercion);
 		COERCIONS.put(Double.class,doubleCoercion);
 		COERCIONS.put(String.class,stringCoercion);

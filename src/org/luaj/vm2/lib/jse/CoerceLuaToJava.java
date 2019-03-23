@@ -119,6 +119,7 @@ public class CoerceLuaToJava {
 		}
 		public int score(LuaValue value) {
 			int fromStringPenalty = 0;
+		
 			if (value.type() == LuaValue.TSTRING) {
 				value = value.tonumber();
 				if (value.isnil()) {
@@ -182,7 +183,9 @@ public class CoerceLuaToJava {
 				case TARGET_TYPE_CHAR: return new Character((char) value.toint());
 				case TARGET_TYPE_SHORT: return new Short((short) value.toint());
 				case TARGET_TYPE_INT: return new Integer((int) value.toint());
-				case TARGET_TYPE_LONG: return new Long((long) value.todouble());
+				
+				case TARGET_TYPE_LONG: return Long.parseLong(value.checkjstring());
+				
 				case TARGET_TYPE_FLOAT: return new Float((float) value.todouble());
 				case TARGET_TYPE_DOUBLE: return new Double((double) value.todouble());
 				default: return null;
