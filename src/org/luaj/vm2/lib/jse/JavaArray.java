@@ -87,7 +87,7 @@ public class JavaArray {
 			
 			Object value = ArrayUtil.get(object,index);
 
-			table.add(CoerceJavaToLua.coerce(value));
+			table.set(table.len().checkint() + 1,CoerceJavaToLua.coerce(value));
 
 		}
 
