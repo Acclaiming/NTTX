@@ -5,11 +5,9 @@ bind {
 "io.kurumi.ntt.twitter.*",
 }
 
-this = Launcher.INSTANCE
-
 function send(chat_id,msg)
 
-return Send.new(this,chat_id,msg)
+return Send.new(Launcher.INSTANCE,chat_id,msg)
 
 end
 
