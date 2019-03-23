@@ -91,7 +91,7 @@ public class LuaEnv extends Fragment {
 				msg.send(reply.toString()).exec();
 
 
-			} catch (LuaError err) {
+			} catch (Error err) {
 
 				msg.send(err.toString()).exec();	
 
@@ -141,7 +141,7 @@ public class LuaEnv extends Fragment {
 
 					}
 
-				} catch (LuaError err) {
+				} catch (Throwable err) {
 
 					ByteArrayOutputStream out = new ByteArrayOutputStream();
 
