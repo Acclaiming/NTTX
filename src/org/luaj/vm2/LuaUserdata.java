@@ -22,6 +22,8 @@
 package org.luaj.vm2;
 
 
+import org.luaj.vm2.lib.jse.*;
+
 public class LuaUserdata extends LuaValue {
 	
 	public Object m_instance;
@@ -29,6 +31,13 @@ public class LuaUserdata extends LuaValue {
 	
 	public LuaUserdata(Object obj) {
 		m_instance = obj;
+		
+		if (m_instance instanceof JavaClass) {
+			
+			throw new LuaError("！！！");
+			
+		}
+		
 	}
 	
 	public LuaUserdata(Object obj, LuaValue metatable) {
