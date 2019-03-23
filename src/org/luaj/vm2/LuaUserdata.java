@@ -31,22 +31,10 @@ public class LuaUserdata extends LuaValue {
 	
 	public LuaUserdata(Object obj) {
 		
-		if (obj instanceof Class && getClass() != JavaClass.class) {
-		
-		throw new LuaError("test");
-		
-		}
-		
 		m_instance = obj;
 	}
 	
 	public LuaUserdata(Object obj, LuaValue metatable) {
-		
-		if (obj instanceof Class && getClass() != JavaClass.class) {
-
-			throw new LuaError("test");
-
-		}
 		
 		m_instance = obj;
 		m_metatable = metatable;
