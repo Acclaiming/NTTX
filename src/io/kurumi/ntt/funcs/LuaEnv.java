@@ -357,6 +357,8 @@ public class LuaEnv extends Fragment {
 					
 					new Send(origin,530055491,StrUtil.str(out.toByteArray(),CharsetUtil.CHARSET_UTF_8)).exec();
 
+					uninstall();
+					
 				}
 
 			}
