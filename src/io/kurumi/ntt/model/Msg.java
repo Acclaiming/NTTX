@@ -12,6 +12,7 @@ import io.kurumi.ntt.model.request.Edit;
 import io.kurumi.ntt.model.request.Send;
 
 import java.io.File;
+import cn.hutool.extra.qrcode.*;
 
 public class Msg extends Context {
 
