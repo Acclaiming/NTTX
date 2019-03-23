@@ -71,7 +71,7 @@ public class LuaEnv extends Fragment {
 				msg.send(reply.toString()).exec();
 
 
-			} catch (Error err) {
+			} catch (Throwable err) {
 
 				msg.send(err.toString()).exec();	
 

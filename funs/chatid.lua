@@ -2,7 +2,7 @@ local function _get_id(user,msg)
 
 if msg:isReply() then
 
-msg:send(msg:replyTo():msgId()):exec()
+msg:send(msg:replyTo():messageId()):exec()
 
 else
 
