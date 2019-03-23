@@ -42,7 +42,7 @@ public class JavaArray {
 
 		LuaTable table = new LuaTable();
 
-		for (Map.Entry entry : map.entrySet()) {
+		for (Map.Entry<Object,Object> entry : ((java.util.Map)map).entrySet()) {
 
 			Object key = entry.getKey();
 
