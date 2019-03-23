@@ -52,7 +52,5 @@ end
 
 end
 
-end
-
 functions["qr"] = _encode
 functions["qrdec"] = _decode
