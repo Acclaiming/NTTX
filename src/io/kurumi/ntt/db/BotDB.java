@@ -39,7 +39,7 @@ public class BotDB {
 		} catch (IORuntimeException e) {
 		}
 		
-		return new JSONObject();
+		return null;
 
 	}
 
@@ -51,6 +51,8 @@ public class BotDB {
 
 		JSONObject value = gNC(path,key);
 
+		if (value == null) value = new JSONObject();
+		
 		cache.put(cacheKey,value);
 
 		return value;
