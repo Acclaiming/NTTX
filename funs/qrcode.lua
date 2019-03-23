@@ -18,6 +18,8 @@ end
 
 function _decode(user,msg)
 
+msg:sendTyping()
+
 if not msg:isReply() then
 
 msg:send("用法  : 对单张图片回复 /qrdec"):exec()
@@ -36,9 +38,13 @@ return
 
 else
 
-local content = QrCodeUtil:decode(msg:replyTo():photo(0))
+local status,content = pcall(function ()
 
-if content then
+return QrCodeUtil:decode(msg:replyTo():photo(0))
+
+end)
+
+if status then
 
 msg:reply("解析成功 *٩(๑´∀`๑)ง*  : " .. tostring(content)):exec()
 
