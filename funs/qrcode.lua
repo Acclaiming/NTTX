@@ -18,7 +18,7 @@ return
 
 end
 
-local size = msg:photoSize()
+local size = msg:replyTo():photoSize()
 
 if size == 0 then
 
@@ -28,7 +28,7 @@ return
 
 else if size == 1 then
 
-local content = QrCodeUtil:decode(msg:photo(0))
+local content = QrCodeUtil:decode(msg:replyTo():photo(0))
 
 if content then
 
@@ -48,7 +48,7 @@ local result = ""
 
 for index=0,size,1 do
 
-local content = QrCodeUtil:decode(msg:photo(index))
+local content = QrCodeUtil:decode(msg:replyTo():photo(index))
 
 result = result .. "图片" .. (index + 1) .. " 解析"
 
