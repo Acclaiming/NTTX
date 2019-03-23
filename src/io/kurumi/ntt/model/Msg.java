@@ -14,6 +14,7 @@ import io.kurumi.ntt.model.request.Send;
 import java.io.File;
 import cn.hutool.extra.qrcode.*;
 import io.kurumi.ntt.db.*;
+import com.pengrad.telegrambot.request.*;
 
 public class Msg extends Context {
 
@@ -93,11 +94,41 @@ public class Msg extends Context {
 
     }
 
-    public void delete() {
+    public boolean delete() {
 
-        fragment.bot().execute(new DeleteMessage(chatId(),messageId()));
+        return fragment.bot().execute(new DeleteMessage(chatId(),messageId())).isOk();
 
     }
+	
+	public boolean unrestrict() {
+		
+		return restrict(true,true,true,true);
+		
+	}
+	
+	public boolean restrict() {
+		
+		 return restrict(false,false,false,false);
+		
+	}
+	
+	public boolean restrict(boolean canSendMessage,boolean canSendMediaMessages,boolean canSendOtherMessages,boolean canAddWebViewPagePreviews) {
+
+		return fragment.bot().execute(new RestrictChatMember(chatId(),from().id.intValue()).canSendMessages(canSendMessage).canSendMediaMessages(canSendMediaMessages).canSendOtherMessages(canSendOtherMessages).canAddWebPagePreviews(canAddWebViewPagePreviews)).isOk();
+
+	}
+	
+	public void kick() {
+		
+		fragment.bot().execute(new KickChatMember(chatId(),from().id.intValue()));
+		
+	}
+	
+	public Msg forwardTo(Object chatId) {
+		
+		return new Msg(fragment,fragment.bot().execute(new ForwardMessage(chatId,chatId(),messageId())).message());
+		
+	}
 
 	public int photoSize() {
 		
