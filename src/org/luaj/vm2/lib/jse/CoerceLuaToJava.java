@@ -486,7 +486,7 @@ public class CoerceLuaToJava {
 				
 				else if (targetType == HashMap.class) return new HashMap((Map)value.checkuserdata(Map.class));
 					
-				else return new LinkedHashMap(value.checkuserdata(Map.class));
+				else return new LinkedHashMap((Map)value.checkuserdata(Map.class));
 				
 			}
 			
