@@ -23,7 +23,7 @@ public class LuaEnv extends Fragment {
 
 	public LuaFunction require;
 
-	File funcDir = new File("./lua");
+	File funcDir = new File("./funcs");
 
 	public Globals lua; { reset(); }
 
@@ -41,27 +41,7 @@ public class LuaEnv extends Fragment {
 
 		new BindLib().install();
 
-		File[] funcs = funcDir.listFiles();
-
-		for (File func : funcs) {
-
-			if (func.getName().endsWith(".lua")) {
-
-				try {
-
-					lua.loadfile(func.getPath()).call();
-
-				} catch (LuaError err) {
-
-					err.printStackTrace();
-
-				}
-
-
-			}
-
-		}
-
+		lua.loadfile("init.lua").call();
 
 	}
 
@@ -116,9 +96,6 @@ public class LuaEnv extends Fragment {
 			switch (msg.commandName()) {
 
 				case "reset" : reset();break;
-				case "addfunc" : addFunc(user,msg);break;
-				case "remfunc": remFunc(user,msg);break;
-				case "listfuncs" : listFuncs(user,msg);break;
 				case "reload" : reload(user,msg);break;
 
 				default : return false;
@@ -156,123 +133,6 @@ public class LuaEnv extends Fragment {
 			return true;
 
 		}
-
-	}
-
-	@Override
-	public boolean onPoiPrivMsg(UserData user,Msg msg,CData point) {
-
-		switch (point.getPoint()) {
-
-			case POINT_INPUT_FUNC : onInputFunc(user,msg,point);break;
-
-			default : return false;
-
-		}
-
-		return true;
-
-	}
-
-
-	final String POINT_INPUT_FUNC = "s|i";
-
-	void addFunc(UserData user,Msg msg) {
-
-		if (msg.commandParms().length != 1) {
-
-			msg.send("/addfunc <fileName>").exec();
-
-			return;
-
-		}
-
-		user.point = (cdata(POINT_INPUT_FUNC));
-
-		user.point.setIndex(msg.commandParms()[0]);
-
-		user.savePoint();
-
-		msg.send("现在发送程式体 :").exec();
-
-	}
-
-	void remFunc(UserData user,Msg msg) {
-
-		if (msg.commandParms().length != 1) {
-
-			msg.send("/remfunc <fileName>").exec();
-
-			return;
-
-		}
-
-		String fileName = msg.commandParms()[0] + ".lua";
-
-		File func = new File(funcDir,fileName);
-
-		if (func.exists()) {
-
-			String content = FileUtil.readUtf8String(func);
-
-			FileUtil.del(func);
-
-			msg.send(fileName + " deleted").exec();
-
-			msg.send(content).exec();
-
-		}
-
-	}
-
-
-	void onInputFunc(UserData user,Msg msg,CData point) {
-
-		String name = point.getIndex();
-
-		String content = msg.text();
-
-		try {
-
-			lua.load(content);
-
-		} catch (LuaError err) {
-
-			msg.send(err.toString()).exec();
-
-			return;
-
-		}
-
-		FileUtil.writeUtf8String(content,new File(funcDir,name + ".lua"));
-
-		user.point = null;
-
-		user.savePoint();
-
-		msg.send(name + ".lua saved").exec();
-
-		reload(user,msg);
-
-	}
-
-	void listFuncs(UserData user,Msg msg) {
-
-		File[] funcs = funcDir.listFiles();
-
-		StringBuilder funcList = new StringBuilder();
-
-		for (File func : funcs) {
-
-			if (func.getName().endsWith(".lua")) {
-
-				funcList.append(func.getName()).append("\n");
-
-			}
-
-		}
-
-		msg.send(funcList.toString(),funcs.length + " funcs").exec();
 
 	}
 

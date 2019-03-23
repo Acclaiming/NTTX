@@ -9,12 +9,14 @@ this = Launcher.INSTANCE
 
 function send(chat_id,msg)
 
-return Send.new(this,530055491,msg)
+return Send.new(this,chat_id,msg)
 
 end
 
 function print(msg)
 
-send(530055491,msg):exec()
+send("530055491",msg):exec()
 
 end
+
+require "lua/funs/chatid"
