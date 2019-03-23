@@ -1,24 +1,24 @@
 /*******************************************************************************
-* Copyright (c) 2009-2011 Luaj.org. All rights reserved.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-* THE SOFTWARE.
-******************************************************************************/
+ * Copyright (c) 2009-2011 Luaj.org. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ ******************************************************************************/
 package org.luaj.vm2.lib.jse;
 
 import java.util.Collections;
@@ -30,6 +30,7 @@ import org.luaj.vm2.LuaInteger;
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaUserdata;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.*;
 
 /**
  * Helper class to coerce values from Java to lua within the luajava library. 
@@ -65,51 +66,51 @@ import org.luaj.vm2.LuaValue;
 public class CoerceJavaToLua {
 
 	static interface Coercion { 
-		public LuaValue coerce( Object javaValue );
+		public LuaValue coerce(Object javaValue);
 	};
-	
+
 	private static final class BoolCoercion implements Coercion {
-		public LuaValue coerce( Object javaValue ) {
+		public LuaValue coerce(Object javaValue) {
 			Boolean b = (Boolean) javaValue;
-			return b.booleanValue()? LuaValue.TRUE: LuaValue.FALSE;
+			return b.booleanValue() ? LuaValue.TRUE: LuaValue.FALSE;
 		}
 	}
-	
+
 	private static final class IntCoercion implements Coercion {
-		public LuaValue coerce( Object javaValue ) {
+		public LuaValue coerce(Object javaValue) {
 			Number n = (Number) javaValue;
-			return LuaInteger.valueOf( n.intValue() );
+			return LuaInteger.valueOf(n.intValue());
 		}
 	}
 
 	private static final class CharCoercion implements Coercion {
-		public LuaValue coerce( Object javaValue ) {
+		public LuaValue coerce(Object javaValue) {
 			Character c = (Character) javaValue;
-			return LuaInteger.valueOf( c.charValue() );
+			return LuaInteger.valueOf(c.charValue());
 		}
 	}
 
 	private static final class DoubleCoercion implements Coercion {
-		public LuaValue coerce( Object javaValue ) {
+		public LuaValue coerce(Object javaValue) {
 			Number n = (Number) javaValue;
-			return LuaDouble.valueOf( n.doubleValue() );
+			return LuaDouble.valueOf(n.doubleValue());
 		}
 	}
 
 	private static final class StringCoercion implements Coercion {
-		public LuaValue coerce( Object javaValue ) {
-			return LuaString.valueOf( javaValue.toString() );
+		public LuaValue coerce(Object javaValue) {
+			return LuaString.valueOf(javaValue.toString());
 		}
 	}
 
 	private static final class BytesCoercion implements Coercion {
-		public LuaValue coerce( Object javaValue ) {
+		public LuaValue coerce(Object javaValue) {
 			return LuaValue.valueOf((byte[]) javaValue);
 		}
 	}
 
 	private static final class ClassCoercion implements Coercion {
-		public LuaValue coerce( Object javaValue ) {
+		public LuaValue coerce(Object javaValue) {
 			return JavaClass.forClass((Class) javaValue);
 		}
 	}
@@ -122,21 +123,27 @@ public class CoerceJavaToLua {
 
 	private static final class ArrayCoercion implements Coercion {
 		public LuaValue coerce(Object javaValue) {
-			// should be userdata? 
-			return new JavaArray(javaValue);
+			return JavaArray.parseArray(javaValue);
+		}
+	}
+
+	private static final class MapCoercion implements Coercion {
+		public LuaValue coerce(Object javaValue) {
+			return JavaArray.parseMap((Map)javaValue);
 		}
 	}
 
 	private static final class LuaCoercion implements Coercion {
-		public LuaValue coerce( Object javaValue ) {
+		public LuaValue coerce(Object javaValue) {
 			return (LuaValue) javaValue;
 		}
 	}
 
 
 	static final Map COERCIONS = Collections.synchronizedMap(new HashMap());
-	
+
 	static {
+
 		Coercion boolCoercion = new BoolCoercion() ;
 		Coercion intCoercion = new IntCoercion() ;
 		Coercion charCoercion = new CharCoercion() ;
@@ -144,17 +151,17 @@ public class CoerceJavaToLua {
 		Coercion stringCoercion = new StringCoercion() ;
 		Coercion bytesCoercion = new BytesCoercion() ;
 		Coercion classCoercion = new ClassCoercion() ;
-		COERCIONS.put( Boolean.class, boolCoercion );
-		COERCIONS.put( Byte.class, intCoercion );
-		COERCIONS.put( Character.class, charCoercion );
-		COERCIONS.put( Short.class, intCoercion );
-		COERCIONS.put( Integer.class, intCoercion );
-		COERCIONS.put( Long.class, doubleCoercion );
-		COERCIONS.put( Float.class, doubleCoercion );
-		COERCIONS.put( Double.class, doubleCoercion );
-		COERCIONS.put( String.class, stringCoercion );
-		COERCIONS.put( byte[].class, bytesCoercion );
-		COERCIONS.put( Class.class, classCoercion );
+		COERCIONS.put(Boolean.class,boolCoercion);
+		COERCIONS.put(Byte.class,intCoercion);
+		COERCIONS.put(Character.class,charCoercion);
+		COERCIONS.put(Short.class,intCoercion);
+		COERCIONS.put(Integer.class,intCoercion);
+		COERCIONS.put(Long.class,doubleCoercion);
+		COERCIONS.put(Float.class,doubleCoercion);
+		COERCIONS.put(Double.class,doubleCoercion);
+		COERCIONS.put(String.class,stringCoercion);
+		COERCIONS.put(byte[].class,bytesCoercion);
+		COERCIONS.put(Class.class,classCoercion);
 	}
 
 	/**
@@ -175,21 +182,24 @@ public class CoerceJavaToLua {
 	 * @see LuaUserdata
 	 */
 	public static LuaValue coerce(Object o) {
-		if ( o == null )
+		if (o == null)
 			return LuaValue.NIL;
 		Class clazz = o.getClass();
-		Coercion c = (Coercion) COERCIONS.get( clazz );
-		if ( c == null ) {
-			c = clazz.isArray()? arrayCoercion:
+		Coercion c = (Coercion) COERCIONS.get(clazz);
+		if (c == null) {
+			c = clazz.isArray() || o instanceof Iterable ? arrayCoercion:
+				o instanceof Map ? mapCoercion :
 				o instanceof LuaValue ? luaCoercion:
-					instanceCoercion;
-			COERCIONS.put( clazz, c );
+				instanceCoercion;
+			COERCIONS.put(clazz,c);
 		}
 		return c.coerce(o);
 	}
 
+	static final Coercion mapCoercion = new MapCoercion();
+
 	static final Coercion instanceCoercion = new InstanceCoercion();
-	
+
 	static final Coercion arrayCoercion = new ArrayCoercion();	
 
 	static final Coercion luaCoercion = new LuaCoercion() ;

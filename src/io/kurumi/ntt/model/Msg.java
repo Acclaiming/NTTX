@@ -21,9 +21,9 @@ public class Msg extends Context {
     private String name;
     private String[] params;
 
-    public Msg(Fragment fragment, Message message) {
+    public Msg(Fragment fragment,Message message) {
 
-        super(fragment, message.chat());
+        super(fragment,message.chat());
 
         this.fragment = fragment;
         this.message = message;
@@ -38,9 +38,9 @@ public class Msg extends Context {
         return message.messageId();
     }
 
-    
+
     public boolean hasText() {
-		
+
         return message.text() != null;
 
     }
@@ -56,18 +56,18 @@ public class Msg extends Context {
         return message.text();
 
     }
-	
+
 	public boolean isReply() {
 
 		return message.replyToMessage() != null;
 
 	}
-	
-	
+
+
 	public Msg replyTo() {
-		
+
 		return new Msg(fragment,message.replyToMessage());
-		
+
 	}
 
     public Send reply(String... msg) {
@@ -78,47 +78,47 @@ public class Msg extends Context {
 
     public Edit edit(String... msg) {
 
-        return new Edit(fragment, chatId(), messageId(), msg);
+        return new Edit(fragment,chatId(),messageId(),msg);
 
     }
 
     public void delete() {
 
-        fragment.bot().execute(new DeleteMessage(chatId(), messageId()));
+        fragment.bot().execute(new DeleteMessage(chatId(),messageId()));
 
     }
-	
-	public int photoSize() {
 
+	public int photoSize() {
+		
 		if (message.photo() != null) {
-		
-		return message.photo().length;
-		
+
+			return message.photo().length;
+
 		}
-		
+
 		return 0;
-		
-		
+
+
 	}
-	
+
 	public File photo(int index) {
 
         if (photoSize() <= index) return null;
 
-        File local = new File(Env.CACHE_DIR, "files/" + message.photo()[index].fileId());
+        File local = new File(Env.CACHE_DIR,"files/" + message.photo()[index].fileId());
 
         if (local.isFile()) return local;
 
         String path = fragment.bot().getFullFilePath(fragment.bot().execute(new GetFile(message.photo()[index].fileId())).file());
 
-        HttpUtil.downloadFile(path, local);
+        HttpUtil.downloadFile(path,local);
 
         return local;
-		
-		
+
+
 
     }
-	
+
 
     public File file() {
 
@@ -126,13 +126,13 @@ public class Msg extends Context {
 
         if (doc == null) return null;
 
-        File local = new File(Env.CACHE_DIR, "files/" + doc.fileId());
+        File local = new File(Env.CACHE_DIR,"files/" + doc.fileId());
 
         if (local.isFile()) return local;
 
         String path = fragment.bot().getFullFilePath(fragment.bot().execute(new GetFile(doc.fileId())).file());
 
-        HttpUtil.downloadFile(path, local);
+        HttpUtil.downloadFile(path,local);
 
         return local;
 
@@ -154,15 +154,15 @@ public class Msg extends Context {
 
         if (!text().contains("/")) return null;
 
-        String body = StrUtil.subAfter(text(), "/", false);
+        String body = StrUtil.subAfter(text(),"/",false);
 
         if (body.contains(" ")) {
 
-            String cmdAndUser = StrUtil.subBefore(body, " ", false);
+            String cmdAndUser = StrUtil.subBefore(body," ",false);
 
             if (cmdAndUser.contains("@" + fragment.origin.me.username())) {
-				
-                name = StrUtil.subBefore(cmdAndUser, "@", false);
+
+                name = StrUtil.subBefore(cmdAndUser,"@",false);
 
             } else {
 
@@ -172,7 +172,7 @@ public class Msg extends Context {
 
         } else if (body.contains("@" + fragment.origin.me.username())) {
 
-            name = StrUtil.subBefore(body, "@", false);
+            name = StrUtil.subBefore(body,"@",false);
 
         } else {
 
@@ -192,11 +192,11 @@ public class Msg extends Context {
 
         if (!text().contains("/")) return NO_PARAMS;
 
-        String body = StrUtil.subAfter(text(), "/", false);
+        String body = StrUtil.subAfter(text(),"/",false);
 
         if (body.contains(" ")) {
 
-            params = StrUtil.subAfter(body, " ", false).split(" ");
+            params = StrUtil.subAfter(body," ",false).split(" ");
 
         } else {
 

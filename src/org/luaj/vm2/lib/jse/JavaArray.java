@@ -1,33 +1,29 @@
 /*******************************************************************************
-* Copyright (c) 2011 Luaj.org. All rights reserved.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-* THE SOFTWARE.
-******************************************************************************/
+ * Copyright (c) 2011 Luaj.org. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ ******************************************************************************/
 package org.luaj.vm2.lib.jse;
 
-import java.lang.reflect.Array;
-
-import org.luaj.vm2.LuaTable;
-import org.luaj.vm2.LuaUserdata;
-import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.lib.OneArgFunction;
-import org.luaj.vm2.lib.*;
+import cn.hutool.core.util.*;
+import java.util.*;
+import org.luaj.vm2.*;
 
 /**
  * LuaValue that represents a Java instance of array type.
@@ -40,62 +36,52 @@ import org.luaj.vm2.lib.*;
  * @see CoerceJavaToLua
  * @see CoerceLuaToJava
  */
-public class JavaArray extends LuaUserdata {
+public class JavaArray {
 
-	private static final class LenFunction extends OneArgFunction {
-		public LuaValue call(LuaValue u) {
-			return LuaValue.valueOf(Array.getLength(((LuaUserdata)u).m_instance));
-		}
-	}
+	public static LuaTable parseMap(Map map) {
 
-	static final LuaValue LENGTH = valueOf("length");
-	
-	static final LuaTable array_metatable;
-	static {
-		array_metatable = new LuaTable();
-		array_metatable.rawset(LuaValue.LEN, new LenFunction());
-		array_metatable.rawset(LuaValue.INDEX,new OneArgFunction() {
-				@Override
-				public LuaValue call(LuaValue key) {
-					return get(key);
-				}
-				
-			});
-		array_metatable.rawset(LuaValue.NEWINDEX,new TwoArgFunction() {
-				@Override
-				public LuaValue call(LuaValue key,LuaValue value) {
-				 set(key,value);
-				 return NIL;
-				}
-			});
-	}
-	
-	public JavaArray(Object instance) {
-		super(instance);
-		setmetatable(array_metatable);
-	}
-	
-	public LuaValue get(LuaValue key) {
-		if ( key.equals(LENGTH) )
-			return valueOf(Array.getLength(m_instance));
-		if ( key.isint() ) {
-			int i = key.toint() - 1;
-			return i>=0 && i<Array.getLength(m_instance)?
-				CoerceJavaToLua.coerce(Array.get(m_instance,key.toint()-1)):
-				NIL;
+		LuaTable table = new LuaTable();
+
+		for (Map.Entry entry : map.entrySet()) {
+
+			Object key = entry.getKey();
+
+			Object value = entry.getValue();
+
+			table.set(CoerceJavaToLua.coerce(key),CoerceJavaToLua.coerce(value));
+
 		}
-		return super.get(key);
+
+		return table;
+
 	}
 
-	public void set(LuaValue key, LuaValue value) {
-		if ( key.isint() ) {
-			int i = key.toint() - 1;
-			if ( i>=0 && i<Array.getLength(m_instance) )
-				Array.set(m_instance,i,CoerceLuaToJava.coerce(value, m_instance.getClass().getComponentType()));
-			else if ( m_metatable==null || ! settable(this,key,value) )
-					error("array index out of bounds");
+	public static LuaTable parseArray(Object object) {
+
+		LuaTable table = new LuaTable();
+
+		if (object instanceof Iterable) {
+			
+			for (Object obj :  ((Iterable)object)) {
+
+				table.add(CoerceJavaToLua.coerce(obj));
+
+			}
+			
+			return table;
+
 		}
-		else
-			super.set(key, value);
-	} 	
+
+		int length = ArrayUtil.length(object);
+
+		for (int index = 0;index < length;index ++) {
+
+			table.add(CoerceJavaToLua.coerce(ArrayUtil.get(object,length)));
+
+		}
+
+		return table;
+
+	}
+
 }
