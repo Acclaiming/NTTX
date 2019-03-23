@@ -101,7 +101,7 @@ class JavaMethod extends JavaMember {
 
 				LinkedList<LuaValue> newArgs =  new LinkedList<>();
 				
-				for (int index = 1;index < args.narg();index ++) {
+				for (int index = 1;index < params.length;index ++) {
 					
 					newArgs.add(args.arg(index));
 					
