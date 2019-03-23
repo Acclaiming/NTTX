@@ -30,6 +30,13 @@ public class LuaUserdata extends LuaValue {
 	public LuaValue m_metatable;
 	
 	public LuaUserdata(Object obj) {
+		
+		if (obj instanceof Class && getClass() != JavaClass.class) {
+		
+		throw new LuaError("test");
+		
+		}
+		
 		m_instance = obj;
 	}
 	
