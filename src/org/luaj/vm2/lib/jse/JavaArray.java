@@ -80,10 +80,12 @@ public class JavaArray {
 		System.out.println(object);
 		
 		System.out.println(ArrayUtil.join(object,"\n"));
-		
-		
+
 		for (int index = 0;index < length;index ++) {
 
+			System.out.println(index);
+			
+			System.out.println(ArrayUtil.get(object,index));
 			
 			table.add(CoerceJavaToLua.coerce(Array.get(object,length)));
 
