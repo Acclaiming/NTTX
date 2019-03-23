@@ -21,16 +21,8 @@
 ******************************************************************************/
 package org.luaj.vm2.lib.jse;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.luaj.vm2.LuaError;
-import org.luaj.vm2.LuaFunction;
-import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.Varargs;
+import cn.hutool.core.util.*;
+import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
 import org.luaj.vm2.*;
@@ -131,8 +123,14 @@ class JavaMethod extends JavaMember {
 			return CoerceJavaToLua.coerce( method.invoke(instance, a) );
 		} catch (InvocationTargetException e) {
 			throw new LuaError(e.getTargetException());
-		} catch (Exception e) {
-			return LuaValue.error("coercion error "+e);
+		} catch (Exception err) {
+			
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+			err.printStackTrace(new PrintWriter(out,true));
+
+			return LuaValue.error(StrUtil.str(out.toByteArray(),CharsetUtil.CHARSET_UTF_8));
+			
 		}
 	}
 	
