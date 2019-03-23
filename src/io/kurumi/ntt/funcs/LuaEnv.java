@@ -1,20 +1,16 @@
 package io.kurumi.ntt.funcs;
 
+import cn.hutool.core.util.*;
 import io.kurumi.ntt.*;
 import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.model.*;
-import io.kurumi.ntt.model.request.*;
-import org.luaj.vm2.*;
-import org.luaj.vm2.lib.jse.*;
-import java.io.*;
-import cn.hutool.core.io.*;
-import cn.hutool.core.util.*;
 import io.kurumi.ntt.utils.*;
-import org.luaj.vm2.lib.*;
+import java.io.*;
 import java.util.*;
-import cn.hutool.extra.qrcode.*;
-import com.pengrad.telegrambot.request.*;
+import org.luaj.vm2.*;
+import org.luaj.vm2.lib.*;
+import org.luaj.vm2.lib.jse.*;
 
 public class LuaEnv extends Fragment {
 
@@ -71,7 +67,13 @@ public class LuaEnv extends Fragment {
 
 			} catch (Throwable err) {
 
-				msg.send(err.toString()).exec();	
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+				err.printStackTrace(new PrintWriter(out,true));
+
+				msg.send(StrUtil.str(out.toByteArray(),CharsetUtil.CHARSET_UTF_8)).exec();	
+
+				
 
 			}
 
