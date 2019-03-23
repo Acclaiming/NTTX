@@ -25,6 +25,7 @@ import cn.hutool.core.util.*;
 import java.util.*;
 import org.luaj.vm2.*;
 import java.lang.reflect.*;
+import io.kurumi.ntt.utils.*;
 
 /**
  * LuaValue that represents a Java instance of array type.
@@ -70,11 +71,20 @@ public class JavaArray {
 			return table;
 
 		}
-
+		
+		
 		int length = Array.getLength(object);
 
+		System.out.println("length : " + length);
+		
+		System.out.println(object);
+		
+		System.out.println(ArrayUtil.join(object,"\n"));
+		
+		
 		for (int index = 0;index < length;index ++) {
 
+			
 			table.add(CoerceJavaToLua.coerce(Array.get(object,length)));
 
 		}
