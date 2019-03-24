@@ -1,9 +1,9 @@
 [Unit]
-Description=sell
+Description=NTTBot
 After=syslog.target network.target
 
 [Service]
-Type=forking
+Type=simple
 
 WorkingDirectory=/bot
 ExecStart=/bin/bash /bot/start.sh
