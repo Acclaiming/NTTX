@@ -6,7 +6,7 @@ After=syslog.target network.target
 Type=simple
 
 WorkingDirectory=/bot
-ExecStart=./start.sh
+ExecStart=/bot/start.sh
 ExecStop=/bin/kill -15 $MAINPID
 
 User=root
