@@ -20,6 +20,8 @@ public class TwitterLikeSearch extends Fragment {
 			api.getFavorites();
 
 		} catch (TwitterException e) {}
+		
+		return false;
 
 	}
 	
