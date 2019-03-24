@@ -4,41 +4,24 @@
 
 ### 环境
 
-jdk >= 7
+jdk >= 7 、 git
 
-yum install java // java 安装  
-yum install java-devel // jdk安装
-
-git
-
-yum install git
-
-discourse一个 需要配置好一个用户参数 "Telegram" 与 Twitter登录
-
-...
-
-nginx将 项目/disc/api.php 运行在 127.0.0.1:11213/api.pgp
-
-...
-
-### 下载并编译
-
-git clone https://github.com/HiedaNaKan/NTTools
-
-cd ./NTTools
-
-chmod 777 *.sh
-
-./build.sh
+yum install java java-devel git
 
 ### 运行
 
-./start.sh
+git clone https://github.com/HiedaNaKan/NTTools
 
-### 更新并重新编译
+chmod 777 start.sh && ./start.sh
 
-./update.sh
+注 :  每次都会自动更新编译启动
 
-### 注意
+### 系统服务
 
-因为不会powershell win的脚本暂不可用
+cp ntt.service /etc/systemd/system/ntt.service # 创建服务
+systemctl daemon-reload # 重载服务
+systemctl start ntt # 启动服务
+systemctl enable ntt # 开机启动
+syatemctl status ntt -l # 查看日志
+
+注 : 必须手动启动 ./start.sh 并输入BotToken之后才可以使用service启动
