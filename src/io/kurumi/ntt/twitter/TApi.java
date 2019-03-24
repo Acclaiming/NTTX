@@ -162,6 +162,26 @@ public class TApi {
         return all;
 
     }
+	
+	public static LinkedList<User> getAllFo(Twitter api,String target) throws TwitterException {
+
+        LinkedList<User> all = new LinkedList<>();
+
+        PagableResponseList<User> users = api.getFollowersList(target, -1);
+
+        all.addAll(users);
+
+        while (users.hasNext()) {
+
+            users = api.getFollowersList(target,users.getNextCursor());
+
+            all.addAll(users);
+
+			}
+
+        return all;
+
+		}
 
     public static LinkedList<User> getAllFo(Twitter api,Long target) throws TwitterException {
 
@@ -216,6 +236,41 @@ public class TApi {
         return all;
 
     }
+	
+	public static long[] getAllFoIDs(Twitter api,String target) throws TwitterException {
+
+        long[] all = new long[api.showUser(target).getFollowersCount()];
+
+        int index = 0;
+
+        IDs ids = api.getFollowersIDs(target,-1);
+
+        for (long id : ids.getIDs()) {
+
+            all[index] = id;
+
+            index ++;
+
+        }
+
+        while (ids.hasNext()) {
+
+            ids = api.getFollowersIDs(target,ids.getNextCursor());
+
+            for (long id : ids.getIDs()) {
+
+                all[index] = id;
+
+                index ++;
+
+            }
+
+        }
+
+        return all;
+
+    }
+	
 
     public static LinkedHashSet<Status> getContextStatusWhenSearchRated(Twitter api, Status status, long[] target) throws TwitterException {
 
