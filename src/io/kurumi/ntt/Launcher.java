@@ -23,8 +23,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		addFragment(GroupButler.INSTANCE);
 
-		addFragment(PingFunc.INSTANCE);
-
     }
 
     public static void main(String[] args) {
