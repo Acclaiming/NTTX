@@ -80,27 +80,19 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 		for (final Update update : updates) {
 
-			ThreadPool.exec(new Runnable() {
+			try {
 
-					@Override
-					public void run() {
+				process(update);
 
-						try {
+			} catch (Exception e) {
 
-							process(update);
+				BotLog.error("更新出错",e);
 
-						} catch (Exception e) {
+				Launcher.INSTANCE.uncaughtException(Thread.currentThread(),e);
 
-							BotLog.error("更新出错",e);
+			}
 
-							Launcher.INSTANCE.uncaughtException(Thread.currentThread(),e);
-
-						}
-
-
-					}
-				});
-
+			
 		}
 
 		return CONFIRMED_UPDATES_ALL;
