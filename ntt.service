@@ -1,0 +1,17 @@
+[Unit]
+Description=sell
+After=syslog.target network.target
+
+[Service]
+Type=simple
+
+WorkingDirectory=/bot
+ExecStart=./start.sh
+ExecStop=/bin/kill -15 $MAINPID
+
+User=root
+Group=root
+
+[Install]
+
+WantedBy=multi-user.target
