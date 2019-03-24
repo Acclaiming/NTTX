@@ -25,7 +25,7 @@ import com.pengrad.telegrambot.request.*;
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 	public User me;
-	
+
     private TelegramBot bot;
     private LinkedList<Fragment> fragments = new LinkedList<>();
     private String token;
@@ -42,9 +42,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
     @Override
     public TelegramBot bot() {
-		
+
         return bot;
-		
+
     }
 
     public void addFragment(Fragment fragment) {
@@ -61,8 +61,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 
     }
-	
-	
+
+
     public abstract String botName();
 
     /*
@@ -78,30 +78,37 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
     @Override
     public int process(List<Update> updates) {
 
-        try {
+		for (final Update update : updates) {
 
-            for (Update update : updates) {
+			ThreadPool.exec(new Runnable() {
 
-                process(update);
+					@Override
+					public void run() {
 
-            }
-			
-			return CONFIRMED_UPDATES_ALL;
+						try {
 
-        } catch (Exception e) {
+							process(update);
 
-            BotLog.error("更新出错", e);
-			
-			Launcher.INSTANCE.uncaughtException(Thread.currentThread(),e);
-			
-			return CONFIRMED_UPDATES_NONE;
-			
-        }
+						} catch (Exception e) {
+
+							BotLog.error("更新出错",e);
+
+							Launcher.INSTANCE.uncaughtException(Thread.currentThread(),e);
+
+						}
+
+
+					}
+				});
+
+		}
+
+		return CONFIRMED_UPDATES_ALL;
 
     }
 
     @Override
-    public boolean onMsg(UserData user, Msg msg) {
+    public boolean onMsg(UserData user,Msg msg) {
 
         if ("cancel".equals(msg.commandName())) {
 
@@ -116,12 +123,12 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
     }
 
     @Override
-    public boolean onPoiMsg(UserData user, Msg msg, CData point) {
+    public boolean onPoiMsg(UserData user,Msg msg,CData point) {
 
         if ("cancel".equals(msg.commandName())) {
 
             user.point = null;
-			
+
 			user.savePoint();
 
             msg.send("取消成功 ~").exec();
@@ -129,7 +136,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
             return true;
 
         }
-	
+
 
         return false;
 
@@ -143,7 +150,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
             boolean point = user.point != null;
 
-            BotLog.process(user, update, point);
+            BotLog.process(user,update,point);
 
             if (point) {
 
@@ -151,7 +158,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                 for (Fragment fragmnet : fragments) {
 
-                    if (fragmnet.onPoiMsg(user, new Msg(fragmnet, update.message()), data)) {
+                    if (fragmnet.onPoiMsg(user,new Msg(fragmnet,update.message()),data)) {
 
                         return;
 
@@ -161,11 +168,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                 switch (update.message().chat().type()) {
 
-                        case Private: {
+					case Private: {
 
                             for (Fragment fragmnet : fragments) {
 
-                                if (fragmnet.onPoiPrivMsg(user, new Msg(fragmnet, update.message()), data)) {
+                                if (fragmnet.onPoiPrivMsg(user,new Msg(fragmnet,update.message()),data)) {
 
                                     return;
 
@@ -177,11 +184,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                         }
 
-                        case group: {
+					case group: {
 
                             for (Fragment fragmnet : fragments) {
 
-                                if (fragmnet.onPoiGroupMsg(user, new Msg(fragmnet, update.message()), data, false)) {
+                                if (fragmnet.onPoiGroupMsg(user,new Msg(fragmnet,update.message()),data,false)) {
 
                                     return;
 
@@ -193,11 +200,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                         }
 
-                        default: {
+					default: {
 
                             for (Fragment fragmnet : fragments) {
 
-                                if (fragmnet.onPoiGroupMsg(user, new Msg(fragmnet, update.message()), data, true)) {
+                                if (fragmnet.onPoiGroupMsg(user,new Msg(fragmnet,update.message()),data,true)) {
 
                                     return;
 
@@ -214,7 +221,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                 for (Fragment fragmnet : fragments) {
 
-                    if (fragmnet.onMsg(user, new Msg(fragmnet, update.message()))) {
+                    if (fragmnet.onMsg(user,new Msg(fragmnet,update.message()))) {
 
                         return;
 
@@ -224,11 +231,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                 switch (update.message().chat().type()) {
 
-                        case Private: {
+					case Private: {
 
                             for (Fragment fragmnet : fragments) {
 
-                                if (fragmnet.onPrivMsg(user, new Msg(fragmnet, update.message()))) {
+                                if (fragmnet.onPrivMsg(user,new Msg(fragmnet,update.message()))) {
 
                                     return;
 
@@ -240,11 +247,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                         }
 
-                        case group: {
+					case group: {
 
                             for (Fragment fragmnet : fragments) {
 
-                                if (fragmnet.onGroupMsg(user, new Msg(fragmnet, update.message()), false)) {
+                                if (fragmnet.onGroupMsg(user,new Msg(fragmnet,update.message()),false)) {
 
                                     return;
 
@@ -256,11 +263,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                         }
 
-                        default: {
+					default: {
 
                             for (Fragment fragmnet : fragments) {
 
-                                if (fragmnet.onGroupMsg(user, new Msg(fragmnet, update.message()), true)) {
+                                if (fragmnet.onGroupMsg(user,new Msg(fragmnet,update.message()),true)) {
 
                                     return;
 
@@ -276,12 +283,12 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
             }
 
         } else if (update.channelPost() != null) {
-			
+
             UserData user = update.channelPost().from() != null ? UserData.get(update.channelPost().from()) : null;
 
             for (Fragment fragmnet : fragments) {
 
-                if (fragmnet.onChanPost(user, new Msg(fragmnet, update.channelPost()))) {
+                if (fragmnet.onChanPost(user,new Msg(fragmnet,update.channelPost()))) {
 
                     return;
 
@@ -301,7 +308,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                 for (Fragment fragmnet : fragments) {
 
-                    if (fragmnet.onPoiCallback(user, new Callback(fragmnet, update.callbackQuery()), data)) {
+                    if (fragmnet.onPoiCallback(user,new Callback(fragmnet,update.callbackQuery()),data)) {
 
                         return;
 
@@ -313,7 +320,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                 for (Fragment fragmnet : fragments) {
 
-                    if (fragmnet.onCallback(user, new Callback(fragmnet, update.callbackQuery()))) {
+                    if (fragmnet.onCallback(user,new Callback(fragmnet,update.callbackQuery()))) {
 
                         return;
 
@@ -329,7 +336,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
             for (Fragment fragmnet : fragments) {
 
-                if (fragmnet.onQuery(user, new Query(fragmnet, update.inlineQuery()))) {
+                if (fragmnet.onQuery(user,new Query(fragmnet,update.inlineQuery()))) {
 
                     return;
 
@@ -354,16 +361,16 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
         bot = new TelegramBot.Builder(token).build();
 
 		me = bot.execute(new GetMe()).user();
-		
+
 		bot.execute(new DeleteWebhook());
-		
+
         /*
 
          if (isLongPulling()) {
 
          */
 
-        bot.setUpdatesListener(this, new GetUpdates());
+        bot.setUpdatesListener(this,new GetUpdates());
 
         /*
 
@@ -379,6 +386,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
     }
 
-    
+
 
 }

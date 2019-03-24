@@ -25,7 +25,7 @@ public class GroupButler extends Fragment {
 	
 	@Override
 	public boolean onGroupMsg(UserData user,Msg msg,boolean superGroup) {
-
+		
 		if (msg.message().newChatMembers() != null) {
 			
 			if (enable.getBool(msg.chatId().toString(),false)) {

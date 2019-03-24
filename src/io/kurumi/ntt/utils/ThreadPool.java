@@ -9,7 +9,7 @@ public class ThreadPool {
 
     static {
 		
-        pool = Executors.newFixedThreadPool(9);
+        pool = Executors.newCachedThreadPool();
 
     }
 
