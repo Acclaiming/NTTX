@@ -1,6 +1,6 @@
 function _encode(user,msg)
 
-msg:sendUpdatingPhoto()
+msg:sendTyping()
 
 local content = ""
 
@@ -17,6 +17,8 @@ for i,v in ipairs(msg:commandParams()) do
 content = content .. tostring(v)
 
 end
+
+msg:sendUpdatingPhoto()
 
 local png = QrCodeUtil:generatePng(content,500,500)
 

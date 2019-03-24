@@ -1,5 +1,7 @@
 function _ping(user,msg)
 
+msg:sendTyping()
+
 local start = System:currentTimeMillis()
 
 local sended = msg:send("pong！"):send()

@@ -1,5 +1,7 @@
 local function _get_id(user,msg)
 
+msg:sendTyping()
+
 if msg:isReply() then
 
 if msg:commandName() == "msgid" then
