@@ -15,14 +15,14 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     public Launcher() {
 
         addFragment(GroupRepeat.INSTANCE);
-		
+
 		addFragment(TwitterUI.INSTANCE);
-		
+
 		addFragment(LuaEnv.INSTANCE);
 		addFragment(LuaEnv.INSTANCE.LuaFragmentOriginInstance);
-		
+
 		addFragment(GroupButler.INSTANCE);
-		
+
 		addFragment(PingFunc.INSTANCE);
 
     }
@@ -75,17 +75,17 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         System.exit(1);
 
     }
-	
+
 	public void stop() {
-		
+
 		try {
-			
+
 			Runtime.getRuntime().exec("service ntt stop");
-			
+
 		} catch (IOException e) {}
 
 	}
-	
+
 	public void restart() {
 
 		try {
@@ -98,9 +98,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 	@Override
 	public boolean onGroupMsg(UserData user,Msg msg,boolean superGroup) {
-		
-	return false;
-		
+
+		return false;
+
 	}
 
 }
