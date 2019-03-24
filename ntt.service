@@ -6,7 +6,7 @@ After=syslog.target network.target
 Type=forking
 
 WorkingDirectory=/bot
-ExecStart=/bin/base /bot/start.sh
+ExecStart=/bin/bash /bot/start.sh
 
 User=root
 Group=root
