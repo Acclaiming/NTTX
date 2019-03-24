@@ -65,9 +65,7 @@ public class LuaEnv extends Fragment {
 		if (!msg.isCommand()) return false;
 
 		LuaValue func = functions.get(msg.commandName());
-
-		System.out.println(func);
-
+		
 		if (func.isfunction()) {
 
 			try {
