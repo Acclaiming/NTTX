@@ -22,7 +22,7 @@ public class LuaEnv extends Fragment {
 	public LuaTable functions;
 	public LinkedList<LuaFragment> fragments;
 	
-	public Globals lua; { reset(); }
+	public Globals lua; { reload(); }
 
 	void reset() {
 
