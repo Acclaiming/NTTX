@@ -46,7 +46,7 @@ public class UserData extends IdDataModel {
 
 		final JSONObject ext;
 
-		this.ext = ((ext = obj.getJSONObject("ext_data")) == null) ? ext : this.ext;
+		this.ext = ((ext = obj.getJSONObject("ext_data")) != null) ? ext : this.ext;
 
     }
 
