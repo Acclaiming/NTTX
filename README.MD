@@ -19,9 +19,13 @@ chmod 777 start.sh && ./start.sh
 ### 系统服务
 
 cp ntt.service /etc/systemd/system/ntt.service # 创建服务
+
 systemctl daemon-reload # 重载服务
+
 systemctl start ntt # 启动服务
+
 systemctl enable ntt # 开机启动
+
 syatemctl status ntt -l # 查看日志
 
 注 : 必须手动启动 ./start.sh 并输入BotToken之后才可以使用service启动
