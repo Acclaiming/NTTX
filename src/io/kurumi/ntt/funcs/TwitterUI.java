@@ -129,8 +129,8 @@ public class TwitterUI extends Fragment {
 				AccessToken access = ApiToken.defaultToken.createApi().getOAuthAccessToken(request,oauthVerifier);
 
 				TAuth auth = new TAuth(ApiToken.defaultToken.apiToken,ApiToken.defaultToken.apiSecToken,access.getToken(),access.getTokenSecret());
-
-				user.ext.put("twitter_auth",auth);
+				
+				user.ext.put("twitter_auth",auth.save());
 
 				user.save();
 				

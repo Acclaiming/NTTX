@@ -5,6 +5,8 @@ import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.twitter.*;
 import twitter4j.*;
+import java.math.*;
+import cn.hutool.core.util.*;
 
 public class TwitterLikeSearch extends Fragment {
 
