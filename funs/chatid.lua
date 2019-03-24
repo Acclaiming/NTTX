@@ -2,7 +2,15 @@ local function _get_id(user,msg)
 
 if msg:isReply() then
 
+if msg:commandName() == "msgid" then
+
 msg:send(msg:replyTo():messageId()):exec()
+
+else 
+
+msg:send(msg:replyTo():from().id):exec()
+
+end
 
 else
 
@@ -13,3 +21,4 @@ end
 end
 
 functions["id"] = _get_id
+functions["msgid"] = _get_id

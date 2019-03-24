@@ -4,6 +4,9 @@ import cn.hutool.log.*;
 import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.funcs.*;
 import io.kurumi.ntt.utils.*;
+import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.model.*;
+import java.io.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -72,5 +75,32 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         System.exit(1);
 
     }
+	
+	public void stop() {
+		
+		try {
+			
+			Runtime.getRuntime().exec("service ntt stop");
+			
+		} catch (IOException e) {}
+
+	}
+	
+	public void restart() {
+
+		try {
+
+			Runtime.getRuntime().exec("service ntt restart");
+
+		} catch (IOException e) {}
+
+	}
+
+	@Override
+	public boolean onGroupMsg(UserData user,Msg msg,boolean superGroup) {
+		
+	return false;
+		
+	}
 
 }
