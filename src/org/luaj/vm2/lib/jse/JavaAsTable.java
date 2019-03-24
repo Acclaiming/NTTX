@@ -14,13 +14,9 @@ public class JavaAsTable extends OneArgFunction {
 			
 			Object obj = arg.checkuserdata();
 
-			if (obj instanceof Iterable || obj.getClass().isArray()) {
-				
-				return JavaArray.parseArray(obj);
-				
-			} else if (obj instanceof Map) {
-				
-				return JavaArray.parseMap((Map)obj);
+			if (obj instanceof Iterable || obj.getClass().isArray() || obj instanceof Map) {
+			
+				return CoerceJavaToLua.coerceX(obj);
 				
 			}
 			
