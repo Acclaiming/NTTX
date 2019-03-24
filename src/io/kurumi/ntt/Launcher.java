@@ -93,11 +93,34 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		} catch (IOException e) {}
 
 	}
+	
+	public void reboot() {
 
+		try {
+
+			Runtime.getRuntime().exec("reboot");
+
+		} catch (IOException e) {}
+
+	}
+	
+	
 	@Override
-	public boolean onGroupMsg(UserData user,Msg msg,boolean superGroup) {
+	public boolean onMsg(UserData user,Msg msg) {
 
-		return false;
+		if (!(Env.FOUNDER.equals(user.userName) && msg.isCommand())) return false;
+		
+		switch (msg.commandName()) {
+			
+			case "stop" : stop();break;
+			case "restart" : restart();break;
+			case "reboot" : reboot();break;
+			
+			default : return false;
+			
+		}
+		
+		return true;
 
 	}
 
