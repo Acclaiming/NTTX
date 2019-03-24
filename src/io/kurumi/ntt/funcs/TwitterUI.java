@@ -160,7 +160,7 @@ public class TwitterUI extends Fragment {
 
 	void trem(UserData user,Msg msg) {
 
-		if (TAuth.contains(user)) {
+		if (!TAuth.contains(user)) {
 
 			msg.send("对不起，但是乃并没有认证账号呢。 使用 /tauth 认证 ~").exec();
 

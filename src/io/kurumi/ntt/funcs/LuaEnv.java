@@ -187,6 +187,7 @@ public class LuaEnv extends Fragment {
 			packages.add("java.lang");
 			packages.add("java.io");
 			packages.add("java.util");
+			packages.add("java.math");
 			
 			packages.add("com.pengrad.telegrambot.request");
 			
@@ -200,7 +201,6 @@ public class LuaEnv extends Fragment {
 			packages.add("cn.hutool.core.io");
 			packages.add("cn.hutool.core.codec");
 			packages.add("cn.hutool.core.util");
-			packages.add("cn.hutool.extra.qrcode");
 			packages.add("cn.hutool.http");
 			packages.add("cn.hutool.json");
 			

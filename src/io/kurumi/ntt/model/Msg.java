@@ -1,20 +1,16 @@
 package io.kurumi.ntt.model;
 
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpUtil;
-import com.pengrad.telegrambot.model.Document;
-import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.request.DeleteMessage;
-import com.pengrad.telegrambot.request.GetFile;
-import io.kurumi.ntt.Env;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.model.request.Edit;
-import io.kurumi.ntt.model.request.Send;
+import cn.hutool.core.util.*;
+import cn.hutool.http.*;
+import com.pengrad.telegrambot.model.*;
+import com.pengrad.telegrambot.request.*;
+import io.kurumi.ntt.*;
+import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.fragment.*;
+import io.kurumi.ntt.model.request.*;
+import java.io.*;
 
 import java.io.File;
-import cn.hutool.extra.qrcode.*;
-import io.kurumi.ntt.db.*;
-import com.pengrad.telegrambot.request.*;
 
 public class Msg extends Context {
 
