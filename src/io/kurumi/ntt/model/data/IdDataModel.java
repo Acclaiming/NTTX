@@ -39,8 +39,6 @@ public abstract class IdDataModel {
 			
 			String json = FileUtil.readUtf8String(new File(Env.DATA_DIR, dirName + "/" + id + ".json"));
 			
-			System.out.println(json);
-
             JSONObject data = new JSONObject(json);
 
             load(data);

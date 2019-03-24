@@ -379,7 +379,7 @@ public class LuaEnv extends Fragment {
 				if (f.onPrivMsg(user,msg)) return true;
 
 			}
-
+			
 			return false;
 			
 		}
