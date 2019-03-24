@@ -41,7 +41,13 @@ public class LuaEnv extends Fragment {
 		env.set("Fragment",new create_fragment());
 		
 		new BindLib().install();
-
+		
+	}
+	
+	void reload() {
+		
+		reset();
+		
 		lua.loadfile("init.lua").call();
 		
 	}
@@ -154,7 +160,7 @@ public class LuaEnv extends Fragment {
 
 		long start = System.currentTimeMillis();
 
-		reset();
+		reload();
 
 		long end = System.currentTimeMillis();
 
