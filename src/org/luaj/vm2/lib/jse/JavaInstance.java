@@ -79,6 +79,24 @@ public class JavaInstance extends LuaUserdata {
 			}
 		super.set(key, value);
 	}
+	
+	public LuaValue call() {
+		return invoke(NONE).arg1();
+	}
+
+	public LuaValue call(LuaValue arg) {
+		return invoke(arg).arg1();
+	}
+
+	public LuaValue call(LuaValue arg1, LuaValue arg2) {
+		return invoke(varargsOf(arg1,arg2)).arg1();
+	}
+
+	public LuaValue call(LuaValue arg1, LuaValue arg2, LuaValue arg3) {
+		return invoke(varargsOf(arg1,arg2,arg3)).arg1();
+	}
+
+	
 
 	@Override
 	public Varargs invoke(Varargs args) {

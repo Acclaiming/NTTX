@@ -141,7 +141,7 @@ public class CoerceJavaToLua {
 
 
 	static final Map COERCIONS = Collections.synchronizedMap(new HashMap());
-
+	
 	static {
 
 		Coercion boolCoercion = new BoolCoercion() ;
@@ -187,14 +187,29 @@ public class CoerceJavaToLua {
 		Class clazz = o.getClass();
 		Coercion c = (Coercion) COERCIONS.get(clazz);
 		if (c == null) {
-			c = clazz.isArray() || o instanceof Iterable ? arrayCoercion:
-				o instanceof Map ? mapCoercion :
+			c = clazz.isArray() ? arrayCoercion:
 				o instanceof LuaValue ? luaCoercion:
 				instanceCoercion;
 			COERCIONS.put(clazz,c);
 		}
 		return c.coerce(o);
 	}
+	
+	public static LuaValue coerceX(Object o) {
+		if (o == null)
+			return LuaValue.NIL;
+		Class clazz = o.getClass();
+		Coercion c = (Coercion) COERCIONS.get(clazz);
+		if (c == null) {
+			c = clazz.isArray() || o instanceof Iterable ? arrayCoercion:
+			o instanceof Map ? mapCoercion :
+				o instanceof LuaValue ? luaCoercion:
+				instanceCoercion;
+			COERCIONS.put(clazz,c);
+		}
+		return c.coerce(o);
+	}
+	
 
 	static final Coercion mapCoercion = new MapCoercion();
 

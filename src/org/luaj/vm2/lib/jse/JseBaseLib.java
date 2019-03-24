@@ -84,6 +84,9 @@ public class JseBaseLib extends org.luaj.vm2.lib.BaseLib {
 	public LuaValue call(LuaValue modname, LuaValue env) {
 		super.call(modname, env);
 		env.checkglobals().STDIN = System.in;
+		
+		env.set("astable",new JavaAsTable());
+		
 		return env;
 	}
 
