@@ -3,11 +3,10 @@ Description=sell
 After=syslog.target network.target
 
 [Service]
-Type=simple
+Type=forking
 
 WorkingDirectory=/bot
 ExecStart=/bot/start.sh
-ExecStop=/bin/kill -15 $MAINPID
 
 User=root
 Group=root
