@@ -1,16 +1,12 @@
 package io.kurumi.ntt;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.json.JSONObject;
-import cn.hutool.log.StaticLog;
-import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.request.GetMe;
-import io.kurumi.ntt.db.BotDB;
-import io.kurumi.ntt.utils.BotLog;
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import cn.hutool.core.io.*;
+import cn.hutool.json.*;
+import com.pengrad.telegrambot.*;
+import com.pengrad.telegrambot.request.*;
+import io.kurumi.ntt.utils.*;
+import java.io.*;
+import java.util.*;
 
 public class Env {
 
@@ -41,7 +37,7 @@ public class Env {
         Scanner session = new Scanner(System.in);
 
         System.out.print("输入" + name + " BotToken : ");
-
+		
         String token = session.next();
 
         while (!verifyToken(token)) {

@@ -8,7 +8,7 @@ import java.util.*;
 
 public class BotDB {
 
-	private static HashMap<String,JSONObject> cache = new HashMap<>();
+	private static HashMap<String,String> cache = new HashMap<>();
 
 	private static String cacheKey(String path,String key) {
 
@@ -28,38 +28,36 @@ public class BotDB {
 
 	}
 	
-	public static JSONObject gNC(String path,String key) {
+	public static String gNC(String path,String key) {
 
 		try {
 
-			String value = FileUtil.readUtf8String(cacheFile(path,key));
-
-			if (value != null) return new JSONObject(value);
+			return FileUtil.readUtf8String(cacheFile(path,key));
 
 		} catch (IORuntimeException e) {
 		}
-		
+
 		return null;
 
 	}
 
-	public static JSONObject get(String path,String key) {
+	public static String get(String path,String key) {
 
 		String cacheKey = cacheKey(path,key);
 
 		if (cache.containsKey(cacheKey)) return cache.get(cacheKey);
 
-		JSONObject value = gNC(path,key);
+		String value = gNC(path,key);
 
-		if (value == null) value = new JSONObject();
+		if (value == null) return null;
 		
 		cache.put(cacheKey,value);
 
 		return value;
 
 	}
-
-	public static void sNC(String path,String key,JSONObject value) {
+	
+	public static void sNC(String path,String key,String value) {
 
 		if (value == null) {
 
@@ -67,13 +65,13 @@ public class BotDB {
 
 		} else {
 
-			FileUtil.writeUtf8String(value.toStringPretty(),cacheFile(path,key));
+			FileUtil.writeUtf8String(value,cacheFile(path,key));
 
 		}
 
 	}
 
-    public static void set(String path,String key,JSONObject value) {
+    public static void set(String path,String key,String value) {
 
 		sNC(path,key,value);
 
@@ -89,6 +87,40 @@ public class BotDB {
 
 		}
 
+	}
+	
+	private static HashMap<String,JSONObject> json = new HashMap<>();
+	
+	public static JSONObject getJSON(String path,String key,boolean fix) {
+
+		String cacheKey = cacheKey(path,key);
+
+		if (json.containsKey(cacheKey)) return json.get(cacheKey);
+
+		String value = gNC(path,key);
+		
+		if (value == null) return fix ? new JSONObject() : null;
+		
+		return new JSONObject(value);
+		
+	}
+	
+	public static void setJSON(String path,String key,JSONObject value) {
+		
+		sNC(path,key,value != null ? value.toStringPretty() : null);
+
+		String cacheKey = cacheKey(path,key);
+
+		if (value == null) {
+
+			json.remove(cacheKey);
+
+		} else {
+
+			json.put(cacheKey,value);
+
+		}
+		
 	}
 
 }

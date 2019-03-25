@@ -15,11 +15,11 @@ public class GroupButler extends Fragment {
 
 	final int JSP = 767682880;
 
-	JSONObject enable = BotDB.get("data","group_butler_enable");
+	JSONObject enable = BotDB.getJSON("data","group_butler_enable",true);
 
 	public void save() {
 		
-		BotDB.set("data","group_butler_enable",enable);
+		BotDB.setJSON("data","group_butler_enable",enable);
 		
 	}
 	

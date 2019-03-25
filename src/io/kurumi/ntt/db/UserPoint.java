@@ -10,13 +10,13 @@ public class UserPoint {
 
     public static void set(UserData user, CData data) {
 
-        BotDB.sNC(KEY, user.idStr, data);
+        BotDB.setJSON(KEY, user.idStr, data);
 
     }
 
     public static CData get(UserData user) {
 
-        JSONObject data = BotDB.gNC(KEY, user.idStr);
+        JSONObject data = BotDB.getJSON(KEY, user.idStr,false);
 
         if (data == null) {
 
@@ -28,10 +28,5 @@ public class UserPoint {
 
     }
 
-    public static void remove(UserData user) {
-
-        BotDB.set(KEY, user.idStr,null);
-
-    }
 
 }

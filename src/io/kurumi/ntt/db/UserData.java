@@ -101,9 +101,7 @@ public class UserData extends IdDataModel {
 
     public void savePoint() {
 
-        if (point == null) UserPoint.remove(this);
-
-        else UserPoint.set(this, point);
+        UserPoint.set(this, point);
 
     }
     
