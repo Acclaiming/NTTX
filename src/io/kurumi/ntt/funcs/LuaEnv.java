@@ -192,6 +192,7 @@ public class LuaEnv extends Fragment {
 			packages.add("io.kurumi.ntt");
 			packages.add("io.kurumi.ntt.db");
 			packages.add("io.kurumi.ntt.twitter");
+            packages.add("io.kurumi.ntt.twitter.archive");
 			packages.add("io.kurumi.ntt.utils");
 			packages.add("io.kurumi.ntt.model");
 			packages.add("io.kurumi.ntt.model.request");

@@ -12,49 +12,35 @@ import cn.hutool.core.util.StrUtil;
 public class UserArchive extends IdDataModel {
 
     public static Factory<UserArchive> INSTANCE = new Factory<UserArchive>(UserArchive.class,"twitter_archives/users");
-    
-    public UserArchive(String dirName, long id) { super(dirName,id); }
-    
-    public long createdAt;
-    
-    public LinkedHashSet<String> name;
-    public LinkedHashSet<String> screenName;
-    public LinkedHashSet<String> bio;
-    public LinkedHashSet<String> photoUrl;
 
-    public boolean isProtected;
+    public UserArchive(String dirName,long id) { super(dirName,id); }
 
-    public boolean isDisappeared;
+    public Long createdAt;
+
+    public String name;
+    public String screenName;
+    public String bio;
+    public String photoUrl;
+
+    public Boolean isProtected;
+
+    public Boolean isDisappeared;
 
     @Override
     protected void init() {
-
-        name = new LinkedHashSet<>();
-        screenName = new LinkedHashSet<>();
-        bio = new LinkedHashSet<>();
-        photoUrl = new LinkedHashSet<>();
-
     }
 
     public void read(User user) {
 
         createdAt = user.getCreatedAt().getTime();
-        
-        name.add(user.getName());
 
-        screenName.add(user.getScreenName());
+        name = user.getName();
 
-        if (!StrUtil.isBlank(user.getDescription())) {
+        screenName = user.getScreenName();
 
-            bio.add(user.getDescription());
+        bio = user.getDescription();
 
-        }
-        
-        if (!user.isDefaultProfileImage()) {
-            
-            photoUrl.add(user.getBiggerProfileImageURL());
-            
-        }
+        photoUrl = user.getBiggerProfileImageURL();
 
         isProtected = user.isProtected();
 
@@ -66,13 +52,25 @@ public class UserArchive extends IdDataModel {
     protected void load(JSONObject obj) {
 
         createdAt = obj.getLong("created_at");
-        name = new LinkedHashSet<>(obj.getJSONArray("name"));
-        screenName = new LinkedHashSet<>(obj.getJSONArray("screen_name"));
-        bio = new LinkedHashSet<>(obj.getJSONArray("bio"));
-        photoUrl = new LinkedHashSet<>(obj.getJSONArray("photo_url"));
+        name = obj.getStr("name");
+        screenName = obj.getStr("screen_name");
+        bio = obj.getStr("bio");
+        photoUrl = obj.getStr("photo_url");
         
         isProtected = obj.getBool("is_protected");
         isDisappeared = obj.getBool("is_disappeared");
+
+    }
+
+    public String getMarkdownURL() {
+
+        return "[" + name + "](" + getURL() + ")";
+        
+    }
+
+    public String getURL() {
+
+        return "https://twitter.com/" + screenName;
 
     }
 
@@ -87,7 +85,7 @@ public class UserArchive extends IdDataModel {
 
         obj.put("is_protected",isProtected);
         obj.put("is_disappeared",isDisappeared);
-        
+
     }
 
 }
