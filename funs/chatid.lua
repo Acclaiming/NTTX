@@ -4,7 +4,7 @@ msg:sendTyping()
 
 if msg:isReply() then
 
-if msg:commandName() == "msgid" then
+if msg:command() == "msgid" then
 
 msg:send(msg:replyTo():messageId()):exec()
 

@@ -11,11 +11,15 @@ import java.util.Date;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.convert.Converter;
 import cn.hutool.core.convert.NumberChineseFormater;
+import io.kurumi.ntt.twitter.TAuth;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
 
 public class StatusArchive extends IdDataModel {
 
-    public Factory<StatusArchive> INSTANCE = new Factory<StatusArchive>(StatusArchive.class,"twitter_archives/statuses");
+    public static Factory<StatusArchive> INSTANCE = new Factory<StatusArchive>(StatusArchive.class,"twitter_archives/statuses");
 
+    
     public StatusArchive(String dirName,long id) { super(dirName,id); }
 
 	public Long createdAt;

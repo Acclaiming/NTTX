@@ -22,7 +22,7 @@ public class TwitterUI extends Fragment {
 
 		if (!msg.isCommand()) return false;
 
-		switch (msg.commandName()) {
+		switch (msg.command()) {
 
 			case "tauth" : tauth(user,msg);break;
 
@@ -57,7 +57,7 @@ public class TwitterUI extends Fragment {
 
 	void tauth(UserData user,Msg msg) {
 
-		if (TAuth.contains(user)) {
+		if (TAuth.exists(user)) {
 
 			msg.send("对不起，但是乃已经认证账号了 >_< ","在重新认证之前乃需要使用 /trem 解除认证 ~").exec();
 
@@ -160,7 +160,7 @@ public class TwitterUI extends Fragment {
 
 	void trem(UserData user,Msg msg) {
 		
-		if (!TAuth.contains(user)) {
+		if (!TAuth.exists(user)) {
 
 			msg.send("对不起，但是乃并没有认证账号呢。 使用 /tauth 认证 ~").exec();
 

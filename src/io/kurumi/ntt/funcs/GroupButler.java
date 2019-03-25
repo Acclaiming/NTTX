@@ -40,7 +40,11 @@ public class GroupButler extends Fragment {
 					msg.kick();
 					msg.delete();
 
-				}
+				} else {
+                    
+                    
+                    
+                }
 
 			}
 			
@@ -69,7 +73,7 @@ public class GroupButler extends Fragment {
 
 		} else if (Env.FOUNDER.equals(user.userName) && msg.isCommand()) {
 
-			switch (msg.commandName()) {
+			switch (msg.command()) {
 
 				case "ginit" : {
 
@@ -110,5 +114,37 @@ public class GroupButler extends Fragment {
 		return false;
 
 	}
+    
+    /*
+    
+    void startCaptcha(UserData user,Msg msg,UserData newUser) {
+        
+        if (!newUser.isBot) {
+            
+            if (!msg.restrict(newUser.id.intValue())) {
+                
+                noPerm(user,msg);
+                
+            } else {
+                
+                msg.reply("新dalao欢迎来你群 ！现在需要几分钟的时间来确认乃是不是机器人 Σ( ﾟωﾟ","","").buttons();
+                
+            }
+            
+        }
+        
+    }
+    
+    void noPerm(UserData user,Msg msg) {
+        
+        msg.send("嘛 本群开启了进群验证 但是机器人的权限被取消了 已关闭加群验证 ~").exec();
+        
+        enable.put(msg.chatId().toString(),false);
+        
+        save();
+        
+    }
+    
+    */
 
 }

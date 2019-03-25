@@ -64,7 +64,7 @@ public class LuaEnv extends Fragment {
 
 		if (!msg.isCommand()) return false;
 
-		LuaValue func = functions.get(msg.commandName());
+		LuaValue func = functions.get(msg.command());
 		
 		if (func.isfunction()) {
 
@@ -111,7 +111,7 @@ public class LuaEnv extends Fragment {
 
 		if (msg.isCommand()) {
 
-			switch (msg.commandName()) {
+			switch (msg.command()) {
 
 				case "reset" : reset();break;
 				case "reload" : reload(user,msg);break;

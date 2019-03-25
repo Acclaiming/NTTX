@@ -102,7 +102,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
     @Override
     public boolean onMsg(UserData user,Msg msg) {
 
-        if ("cancel".equals(msg.commandName())) {
+        if ("cancel".equals(msg.command())) {
 
             msg.send("你要取消什么？ >_<").exec();
 
@@ -117,7 +117,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
     @Override
     public boolean onPoiMsg(UserData user,Msg msg,CData point) {
 
-        if ("cancel".equals(msg.commandName())) {
+        if ("cancel".equals(msg.command())) {
 
             user.point = null;
 

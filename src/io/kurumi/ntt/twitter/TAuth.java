@@ -11,7 +11,7 @@ import io.kurumi.ntt.db.*;
 
 public class TAuth extends JSONObject {
 
-	public static boolean contains(UserData user) {
+	public static boolean exists(UserData user) {
 		
 		return user.ext.containsKey("twitter_auth");
 		
@@ -19,7 +19,7 @@ public class TAuth extends JSONObject {
 	
 	public static TAuth get(UserData user) {
 		
-		if (contains(user)) {
+		if (exists(user)) {
 			
 			return new TAuth(user.ext.getJSONObject("twitter_auth"));
 			

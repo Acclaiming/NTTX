@@ -22,6 +22,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(LuaEnv.INSTANCE.LuaFragmentOriginInstance);
 
 		addFragment(GroupButler.INSTANCE);
+        
+        addFragment(TwitterArchive.INSTANCE);
 
     }
 
@@ -110,7 +112,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		if (!(Env.FOUNDER.equals(user.userName) && msg.isCommand())) return false;
 		
-		switch (msg.commandName()) {
+		switch (msg.command()) {
 			
 			case "stop" : stop();break;
 			case "restart" : restart();break;

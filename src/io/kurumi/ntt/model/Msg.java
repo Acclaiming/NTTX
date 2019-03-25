@@ -95,22 +95,41 @@ public class Msg extends Context {
         return fragment.bot().execute(new DeleteMessage(chatId(),messageId())).isOk();
 
     }
-	
-	public boolean unrestrict() {
-		
-		return restrict(true,true,true,true);
-		
-	}
-	
-	public boolean restrict() {
-		
-		 return restrict(false,false,false,false);
-		
-	}
-	
-	public boolean restrict(boolean canSendMessage,boolean canSendMediaMessages,boolean canSendOtherMessages,boolean canAddWebViewPagePreviews) {
+    
+    public boolean unrestrict() {
 
-		return fragment.bot().execute(new RestrictChatMember(chatId(),from().id.intValue()).canSendMessages(canSendMessage).canSendMediaMessages(canSendMediaMessages).canSendOtherMessages(canSendOtherMessages).canAddWebPagePreviews(canAddWebViewPagePreviews)).isOk();
+        return restrict(true,true,true,true);
+
+    }
+
+    public boolean restrict() {
+
+        return restrict(false,false,false,false);
+
+    }
+
+    public boolean restrict(boolean canSendMessage,boolean canSendMediaMessages,boolean canSendOtherMessages,boolean canAddWebViewPagePreviews) {
+
+        return restrict(from().id.intValue(),canSendMessage,canSendMediaMessages,canSendOtherMessages,canAddWebViewPagePreviews);
+
+    }
+    
+	
+	public boolean unrestrict(int id) {
+		
+		return restrict(id,true,true,true,true);
+		
+	}
+	
+	public boolean restrict(int id) {
+		
+		 return restrict(id,false,false,false,false);
+		
+	}
+	
+	public boolean restrict(int id,boolean canSendMessage,boolean canSendMediaMessages,boolean canSendOtherMessages,boolean canAddWebViewPagePreviews) {
+
+		return fragment.bot().execute(new RestrictChatMember(chatId(),id).canSendMessages(canSendMessage).canSendMediaMessages(canSendMediaMessages).canSendOtherMessages(canSendOtherMessages).canAddWebPagePreviews(canAddWebViewPagePreviews)).isOk();
 
 	}
 	
@@ -175,17 +194,21 @@ public class Msg extends Context {
         return local;
 
     }
+    
+    int isCommand = 0;
 
     public boolean isCommand() {
 
-        if (text() == null) return false;
-
-        return text().startsWith("/");
+        isCommand = isCommand == 0 ? (text() != null && text().startsWith("/") && text().length() > 1) ? 1 : 2 : isCommand;
+        
+        return isCommand == 1;
 
     }
 
-    public String commandName() {
+    public String command() {
 
+        if (!isCommand()) return null;
+        
         if (name != null) return name;
 
         if (text() == null) return null;
@@ -221,14 +244,26 @@ public class Msg extends Context {
         return name;
 
     }
+    
+    boolean noParams = false;
 
-    public String[] commandParams() {
+    public String[] params() {
 
         if (params != null) return params;
 
-        if (text() == null) return NO_PARAMS;
-
-        if (!text().contains("/")) return NO_PARAMS;
+        if (noParams) {
+          
+            return NO_PARAMS;
+            
+        }
+        
+        if (!isCommand()) {
+            
+            noParams = true;
+            
+            return NO_PARAMS;
+            
+        }
 
         String body = StrUtil.subAfter(text(),"/",false);
 
@@ -238,6 +273,8 @@ public class Msg extends Context {
 
         } else {
 
+            noParams = true;
+           
             params = NO_PARAMS;
 
         }
