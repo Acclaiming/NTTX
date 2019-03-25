@@ -113,7 +113,7 @@ public class StatusArchive extends IdDataModel {
         inReplyToUserId = obj.getLong("in_reply_to_user_id");
         inReplyToScreenName = obj.getStr("in_reply_to_screen_name");
         quotedStatusId = obj.getLong("quoted_status_id");
-        mediaUrls = new LinkedList<String>((List<String>)obj.getJSONArray("media_urls"));
+        mediaUrls = new LinkedList<String>((List<String>)((Object)obj.getJSONArray("media_urls")));
         isRetweet = obj.getBool("is_retweet");
         retweetedStatusId = obj.getLong("retweeted_status_id");
 
