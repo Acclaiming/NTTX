@@ -215,7 +215,7 @@ public class Msg extends Context {
 
         if (!text().contains("/")) return null;
 
-        String body = StrUtil.subAfter(text(),"/",false);
+        String body = text().substring(1);
 
         if (body.contains(" ")) {
 
