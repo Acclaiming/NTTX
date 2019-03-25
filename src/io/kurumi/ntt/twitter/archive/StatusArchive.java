@@ -1,19 +1,14 @@
 package io.kurumi.ntt.twitter.archive;
 
+import cn.hutool.core.convert.NumberChineseFormater;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import io.kurumi.ntt.model.data.IdDataModel;
-import java.util.LinkedList;
-import twitter4j.Status;
-import twitter4j.MediaEntity;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.date.DateUtil;
 import java.util.Date;
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.convert.Converter;
-import cn.hutool.core.convert.NumberChineseFormater;
-import io.kurumi.ntt.twitter.TAuth;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
+import java.util.LinkedList;
+import java.util.List;
+import twitter4j.MediaEntity;
+import twitter4j.Status;
 
 public class StatusArchive extends IdDataModel {
 
@@ -118,7 +113,7 @@ public class StatusArchive extends IdDataModel {
         inReplyToUserId = obj.getLong("in_reply_to_user_id");
         inReplyToScreenName = obj.getStr("in_reply_to_screen_name");
         quotedStatusId = obj.getLong("quoted_status_id");
-        mediaUrls = new LinkedList<>(obj.getJSONArray("media_urls"));
+        mediaUrls = new LinkedList<String>((List<String>)obj.getJSONArray("media_urls"));
         isRetweet = obj.getBool("is_retweet");
         retweetedStatusId = obj.getLong("retweeted_status_id");
 
