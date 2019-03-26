@@ -1,4 +1,4 @@
-function _ping(user,msg)
+functions["ping"] =function (user,msg)
 
 msg:sendTyping()
 
@@ -11,5 +11,3 @@ local stop = System:currentTimeMillis()
 sended:edit("pong！","time : " .. (stop - start) .. "ms"):exec()
 
 end
-
-functions["ping"] = _ping
