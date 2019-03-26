@@ -14,7 +14,7 @@ public class StatusArchive extends IdDataModel {
 
     public static Factory<StatusArchive> INSTANCE = new Factory<StatusArchive>(StatusArchive.class,"twitter_archives/statuses");
 
-    
+
     public StatusArchive(String dirName,long id) { super(dirName,id); }
 
 	public Long createdAt;
@@ -113,7 +113,13 @@ public class StatusArchive extends IdDataModel {
         inReplyToUserId = obj.getLong("in_reply_to_user_id");
         inReplyToScreenName = obj.getStr("in_reply_to_screen_name");
         quotedStatusId = obj.getLong("quoted_status_id");
-        mediaUrls = new LinkedList<String>((List<String>)((Object)obj.getJSONArray("media_urls")));
+
+        if (!obj.isNull("media_urls")) {
+
+            mediaUrls = new LinkedList<String>((List<String>)((Object)obj.getJSONArray("media_urls")));
+
+        }
+        
         isRetweet = obj.getBool("is_retweet");
         retweetedStatusId = obj.getLong("retweeted_status_id");
 
@@ -177,20 +183,20 @@ public class StatusArchive extends IdDataModel {
                 archive.append(" 回复给 [@" + inReplyToScreenName + "](https://twitter.com/" + inReplyToScreenName + ")");
 
             }
-            
+
             archive.append(" 的 [推文](https://twitter.com/").append(inReplyToScreenName).append("/status/").append(inReplyToStatusId).append(")");
 
         } 
-        
-        
+
+
         Date date = new Date(createdAt);
 
         archive.append(" 在 ").append(NumberChineseFormater.format(date.getYear() - 2000,false)).append("年").append(NumberChineseFormater.format(date.getMonth(),false)).append("月").append(NumberChineseFormater.format(date.getDate(),false)).append("日");
 
         archive.append(" ").append(date.getHours() > 12 ? "下午" : "上午");
         archive.append(date.getHours()).append(":").append(date.getMinutes());
-        
-       if (quotedStatusId != null) {
+
+        if (quotedStatusId != null) {
 
             StatusArchive quotedStatus = INSTANCE.get(quotedStatusId);
 
@@ -199,19 +205,19 @@ public class StatusArchive extends IdDataModel {
         }
 
         archive.append(text);
-        
+
         if (!mediaUrls.isEmpty()) {
-            
+
             archive.append("\n\n媒体文件 : ");
-            
+
             for (String url : mediaUrls) {
-                
+
                 archive.append("[媒体文件](").append(url).append(")");
-                
+
             }
-            
+
         }
-        
+
         return archive.toString();
 
     }
