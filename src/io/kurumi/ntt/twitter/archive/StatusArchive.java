@@ -200,7 +200,7 @@ public class StatusArchive extends IdDataModel {
 		
 		cal.setTimeInMillis(createdAt);
 		
-        archive.append(" 在 ").append(cal.getTime().toLocaleString());
+        archive.append(" 在 ").append(cal.toString());
         
         if (quotedStatusId != -1) {
 
