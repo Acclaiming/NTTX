@@ -192,7 +192,7 @@ public class StatusArchive extends IdDataModel {
 
         Date date = new Date(createdAt);
 
-        archive.append(" 在 ").append(NumberChineseFormater.format(date.getYear() - 2000,false)).append("年").append(NumberChineseFormater.format(date.getMonth(),false)).append("月").append(NumberChineseFormater.format(date.getDate(),false)).append("日");
+        archive.append(" 在 ").append(NumberChineseFormater.format(date.getYear(),false)).append("年").append(NumberChineseFormater.format(date.getMonth(),false)).append("月").append(NumberChineseFormater.format(date.getDate(),false)).append("日");
 
         archive.append(" ").append(date.getHours() > 12 ? "下午" : "上午");
         archive.append(date.getHours()).append(":").append(date.getMinutes());
