@@ -52,7 +52,7 @@ public class StatusArchive extends IdDataModel {
         text = status.getText();
 
         from = status.getUser().getId();
-        
+
         UserArchive user = UserArchive.INSTANCE.getOrNew(from);
         user.read(status.getUser());
         user.save();
@@ -104,7 +104,7 @@ public class StatusArchive extends IdDataModel {
             retweetedStatusId = -1L;
 
         }
-        
+
         save();
 
     }
@@ -125,7 +125,7 @@ public class StatusArchive extends IdDataModel {
             mediaUrls = new LinkedList<String>((List<String>)((Object)obj.getJSONArray("media_urls")));
 
         }
-        
+
         isRetweet = obj.getBool("is_retweet");
         retweetedStatusId = obj.getLong("retweeted_status_id");
 
@@ -165,41 +165,42 @@ public class StatusArchive extends IdDataModel {
 
     }
 
+    public String split = "\n\n---------------------\n\n";
 
     public String toHtml() {
-        
-        StringBuilder archive = new StringBuilder(getUser().getHtmlURL());
 
-        if (isRetweet) {
+        StringBuilder archive = new StringBuilder();
 
-            StatusArchive retweetedStatus = INSTANCE.get(retweetedStatusId);
-
-            archive.append(" 转推从 " + retweetedStatus.getUser().getHtmlURL());
-
-        }
-		
-		if (quotedStatusId == -1) {
-        
-        archive.append(" 的 ").append(Html.a("推文",getURL()));
-      		
-		}
-		
-        archive.append(" 在 ").append(new Date(createdAt).toLocaleString());
-        
         if (quotedStatusId != -1) {
 
             StatusArchive quotedStatus = INSTANCE.get(quotedStatusId);
 
-            archive.append(" 对推文 : \n\n").append(quotedStatus.toHtml()).append("\n\n的 ").append(Html.a("回复",getURL())).append(" :\n\n");
+            archive.append(quotedStatus.toHtml()).append(split).append(getUser().getHtmlURL()).append(" 的 ").append(Html.a("回复",getURL()));
 
         } else if (inReplyToStatusId != -1) {
-            
+
             StatusArchive inReplyTo = INSTANCE.get(inReplyToStatusId);
 
-            archive.append(" 对推文 : \n\n").append(inReplyTo.toHtml()).append("\n\n的 ").append(Html.a("回复",getURL())).append(" :\n\n");
-            
-            
-        }
+            archive.append(inReplyTo.toHtml()).append(split).append(getUser().getHtmlURL()).append(" 的 ").append(Html.a("回复",getURL()));
+
+
+        } else if (isRetweet) {
+
+            StatusArchive retweetedStatus = INSTANCE.get(retweetedStatusId);
+
+            archive.append(getUser().getHtmlURL()).append(" 转推从 " + retweetedStatus.getUser().getHtmlURL()).append(" : ");
+
+            archive.append(retweetedStatus.toHtml());
+
+            return archive.toString();
+
+        } else {
+
+            archive.append(getUser().getHtmlURL()).append(" 的 ").append(Html.a("推文",getURL()));
+
+		}
+
+        archive.append(" 在 ").append(new Date(createdAt).toLocaleString());
 
         archive.append("\n\n").append(text);
 
