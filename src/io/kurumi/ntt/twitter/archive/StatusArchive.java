@@ -11,6 +11,8 @@ import twitter4j.MediaEntity;
 import twitter4j.Status;
 import cn.hutool.core.convert.impl.CalendarConverter;
 import java.util.Calendar;
+import java.util.*;
+import java.time.*;
 
 public class StatusArchive extends IdDataModel {
 
@@ -193,12 +195,12 @@ public class StatusArchive extends IdDataModel {
         } 
         
         archive.append(" 的 [推文](").append(getURL()).append(")");
-        
-  
-        
-        Date date = new Date(createdAt);
-
-        archive.append(" 在 ").append(createdAt.toString());
+       
+		Calendar cal = Calendar.getInstance(Locale.CHINA);
+		
+		cal.setTimeInMillis(createdAt);
+		
+        archive.append(" 在 ").append(cal.getTime().toLocaleString());
         
         if (quotedStatusId != -1) {
 
@@ -208,7 +210,7 @@ public class StatusArchive extends IdDataModel {
 
         }
 
-        archive.append(text);
+        archive.append("\n\n").append(text);
 
         if (!mediaUrls.isEmpty()) {
 
