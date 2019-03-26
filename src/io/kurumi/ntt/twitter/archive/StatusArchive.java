@@ -194,12 +194,8 @@ public class StatusArchive extends IdDataModel {
         } 
         
         archive.append(" 的 [推文](").append(getURL()).append(")");
-       
-		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Shanghai"));
-		
-		cal.setTimeInMillis(createdAt);
-		
-        archive.append(" 在 ").append(cal.getTime().toString());
+      		
+        archive.append(" 在 ").append(new Date(createdAt).toLocaleString());
         
         if (quotedStatusId != -1) {
 

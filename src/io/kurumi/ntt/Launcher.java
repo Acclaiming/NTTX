@@ -7,6 +7,7 @@ import io.kurumi.ntt.utils.*;
 import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.model.*;
 import java.io.*;
+import java.util.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -31,6 +32,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
 
+		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
+		
         /*
 
 		 BotServer.INSTACNCE.fragments.add(TGWebHookF.INSTANCE);
