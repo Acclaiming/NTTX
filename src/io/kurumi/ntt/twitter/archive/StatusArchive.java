@@ -197,7 +197,7 @@ public class StatusArchive extends IdDataModel {
         archive.append(" ").append(date.getHours() > 12 ? "下午" : "上午");
         archive.append(date.getHours()).append(":").append(date.getMinutes());
 
-        if (quotedStatusId != null) {
+        if (quotedStatusId != -1) {
 
             StatusArchive quotedStatus = INSTANCE.get(quotedStatusId);
 
