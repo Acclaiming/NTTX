@@ -205,7 +205,7 @@ public class StatusArchive extends IdDataModel {
 
             StatusArchive quotedStatus = INSTANCE.get(quotedStatusId);
 
-            archive.append(" 对推文 : \n\n\n 「 -----------\n").append(quotedStatus.toMarkdown()).append("\n\n ----------」的 [回复](").append(getMarkdownURL()).append(") :\n\n");
+            archive.append(" 对推文 : \n\n").append(quotedStatus.toMarkdown()).append("\n\n的 [回复](").append(getMarkdownURL()).append(") :\n\n");
 
         }
 
