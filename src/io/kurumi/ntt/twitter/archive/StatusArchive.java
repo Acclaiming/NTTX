@@ -9,6 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 import twitter4j.MediaEntity;
 import twitter4j.Status;
+import cn.hutool.core.convert.impl.CalendarConverter;
+import java.util.Calendar;
 
 public class StatusArchive extends IdDataModel {
 
@@ -184,14 +186,19 @@ public class StatusArchive extends IdDataModel {
                 archive.append(" 回复给 [@" + inReplyToScreenName + "](https://twitter.com/" + inReplyToScreenName + ")");
 
             }
+            
+            archive.append(" 的 [推文](https://twitter.com/").append(inReplyToScreenName).append("/status/").append(inReplyToStatusId).append(")");
+            
 
         } 
         
-        archive.append(" 的 [推文](https://twitter.com/").append(inReplyToScreenName).append("/status/").append(inReplyToStatusId).append(")");
-
+        archive.append(" 的 [推文](").append(getURL()).append(")");
+        
+  
+        
         Date date = new Date(createdAt);
 
-        archive.append(" 在 ").append(date.toLocaleString());
+        archive.append(" 在 ").append(createdAt.toString());
         
         if (quotedStatusId != -1) {
 
