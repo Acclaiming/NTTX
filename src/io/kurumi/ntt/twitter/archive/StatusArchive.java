@@ -185,18 +185,14 @@ public class StatusArchive extends IdDataModel {
 
             }
 
-            archive.append(" 的 [推文](https://twitter.com/").append(inReplyToScreenName).append("/status/").append(inReplyToStatusId).append(")");
-
         } 
-
+        
+        archive.append(" 的 [推文](https://twitter.com/").append(inReplyToScreenName).append("/status/").append(inReplyToStatusId).append(")");
 
         Date date = new Date(createdAt);
 
-        archive.append(" 在 ").append(NumberChineseFormater.format(date.getYear(),false)).append("年").append(NumberChineseFormater.format(date.getMonth(),false)).append("月").append(NumberChineseFormater.format(date.getDate(),false)).append("日");
-
-        archive.append(" ").append(date.getHours() > 12 ? "下午" : "上午");
-        archive.append(date.getHours()).append(":").append(date.getMinutes());
-
+        archive.append(" 在 ").append(date.toLocaleString());
+        
         if (quotedStatusId != -1) {
 
             StatusArchive quotedStatus = INSTANCE.get(quotedStatusId);
