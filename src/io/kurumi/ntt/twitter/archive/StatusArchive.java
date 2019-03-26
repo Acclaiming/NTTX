@@ -49,6 +49,8 @@ public class StatusArchive extends IdDataModel {
         UserArchive user = UserArchive.INSTANCE.getOrNew(status.getUser().getId());
 
         user.read(status.getUser());
+        
+        user.save();
 
         from = user.id;
 
