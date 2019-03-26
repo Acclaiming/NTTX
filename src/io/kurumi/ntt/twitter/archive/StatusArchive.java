@@ -152,7 +152,7 @@ public class StatusArchive extends IdDataModel {
 
     public String getURL() {
 
-        return "https://twitter.com/" + getUser().screenName + " /status/" + idStr;
+        return "https://twitter.com/" + getUser().screenName + "/status/" + idStr;
 
     }
 

@@ -10,7 +10,9 @@ yum install java java-devel git
 
 ### 运行
 
-git clone https://github.com/HiedaNaKan/NTTools
+git clone https://github.com/HiedaNaKan/NTTools /bot
+
+cd /bot
 
 chmod 777 start.sh && ./start.sh
 
