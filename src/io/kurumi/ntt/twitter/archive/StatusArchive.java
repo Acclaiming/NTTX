@@ -176,22 +176,6 @@ public class StatusArchive extends IdDataModel {
 
             archive.append(" 转推从 " + retweetedStatus.getUser().getHtmlURL());
 
-        } else if (inReplyToStatusId != -1) {
-
-            if (UserArchive.INSTANCE.exists(inReplyToUserId)) {
-
-                UserArchive replyToUser = UserArchive.INSTANCE.get(inReplyToUserId);
-
-                archive.append(" 回复给 " + replyToUser.getHtmlURL());
-
-            } else {
-
-                archive.append(" 回复给 " + Html.a("@" + inReplyToScreenName,"https://twitter.com/" + inReplyToScreenName));
-
-            }
-            
-            archive.append(" 的 ").append(Html.a("推文","https://twitter.com/" + inReplyToScreenName + "/status/" + inReplyToStatusId));
-
         }
 		
 		if (quotedStatusId == -1) {
@@ -208,6 +192,13 @@ public class StatusArchive extends IdDataModel {
 
             archive.append(" 对推文 : \n\n").append(quotedStatus.toHtml()).append("\n\n的 ").append(Html.a("回复",getURL())).append(" :\n\n");
 
+        } else if (inReplyToStatusId != -1) {
+            
+            StatusArchive inReplyTo = INSTANCE.get(inReplyToStatusId);
+
+            archive.append(" 对推文 : \n\n").append(inReplyTo.toHtml()).append("\n\n的 ").append(Html.a("回复",getURL())).append(" :\n\n");
+            
+            
         }
 
         archive.append("\n\n").append(text);
