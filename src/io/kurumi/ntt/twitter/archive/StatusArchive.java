@@ -13,6 +13,7 @@ import cn.hutool.core.convert.impl.CalendarConverter;
 import java.util.Calendar;
 import java.util.*;
 import java.time.*;
+import io.kurumi.ntt.utils.*;
 
 public class StatusArchive extends IdDataModel {
 
@@ -158,22 +159,22 @@ public class StatusArchive extends IdDataModel {
 
     }
 
-    public String getMarkdownURL() {
+    public String getHtmlURL() {
 
-        return "[" + StrUtil.padAfter(text,5,"...") + "](" + getURL() + ")";
+        return Html.a(StrUtil.padAfter(text,5,"..."),getURL());
 
     }
 
 
-    public String toMarkdown() {
+    public String toHtml() {
         
-        StringBuilder archive = new StringBuilder(getUser().getMarkdownURL());
+        StringBuilder archive = new StringBuilder(getUser().getHtmlURL());
 
         if (isRetweet) {
 
             StatusArchive retweetedStatus = INSTANCE.get(retweetedStatusId);
 
-            archive.append(" 转推从 " + retweetedStatus.getUser().getMarkdownURL());
+            archive.append(" 转推从 " + retweetedStatus.getUser().getHtmlURL());
 
         } else if (inReplyToStatusId != -1) {
 
@@ -181,21 +182,21 @@ public class StatusArchive extends IdDataModel {
 
                 UserArchive replyToUser = UserArchive.INSTANCE.get(inReplyToUserId);
 
-                archive.append(" 回复给 " + replyToUser.getMarkdownURL());
+                archive.append(" 回复给 " + replyToUser.getHtmlURL());
 
             } else {
 
-                archive.append(" 回复给 [@" + inReplyToScreenName + "](https://twitter.com/" + inReplyToScreenName + ")");
+                archive.append(" 回复给 " + Html.a("@" + inReplyToScreenName,"https://twitter.com/" + inReplyToScreenName));
 
             }
             
-            archive.append(" 的 [推文](https://twitter.com/").append(inReplyToScreenName).append("/status/").append(inReplyToStatusId).append(")");
+            archive.append(" 的 ").append(Html.a("推文","https://twitter.com/" + inReplyToScreenName + "/status/" + inReplyToStatusId));
 
         }
 		
 		if (quotedStatusId == -1) {
         
-        archive.append(" 的 [推文](").append(getURL()).append(")");
+        archive.append(" 的 ").append(Html.a("推文",getURL()));
       		
 		}
 		
@@ -205,7 +206,7 @@ public class StatusArchive extends IdDataModel {
 
             StatusArchive quotedStatus = INSTANCE.get(quotedStatusId);
 
-            archive.append(" 对推文 : \n\n").append(quotedStatus.toMarkdown()).append("\n\n的 [回复](").append(getMarkdownURL()).append(") :\n\n");
+            archive.append(" 对推文 : \n\n").append(quotedStatus.toHtml()).append("\n\n的 ").append(Html.a("回复",getURL())).append(" :\n\n");
 
         }
 
@@ -217,7 +218,7 @@ public class StatusArchive extends IdDataModel {
 
             for (String url : mediaUrls) {
 
-                archive.append("[媒体文件](").append(url).append(")");
+                archive.append(Html.a("媒体文件",url));
 
             }
 

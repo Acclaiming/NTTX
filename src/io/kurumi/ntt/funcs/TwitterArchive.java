@@ -80,7 +80,7 @@ public class TwitterArchive extends Fragment {
             
             msg.send("存档存在 :)").exec();
             
-            msg.send(StatusArchive.INSTANCE.get(statusId).toMarkdown()).markdown().exec();
+            msg.send(StatusArchive.INSTANCE.get(statusId).toHtml()).markdown().exec();
             
         } else if (TAuth.exists(user)) {
             
@@ -98,7 +98,7 @@ public class TwitterArchive extends Fragment {
                 
                 msg.send("已存档 :)").exec();
                 
-                msg.send(newStatus.toMarkdown()).markdown().exec();
+                msg.send(newStatus.toHtml()).html().exec();
               
             } catch (TwitterException e) {
                 

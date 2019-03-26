@@ -8,6 +8,8 @@ import java.util.LinkedHashSet;
 import cn.hutool.json.JSONArray;
 import java.sql.Struct;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.*;
+import io.kurumi.ntt.utils.*;
 
 public class UserArchive extends IdDataModel {
 
@@ -62,9 +64,9 @@ public class UserArchive extends IdDataModel {
 
     }
 
-    public String getMarkdownURL() {
-
-        return "[" + name + "](" + getURL() + ")";
+    public String getHtmlURL() {
+		
+        return Html.a(name,getURL());
         
     }
 
