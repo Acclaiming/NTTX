@@ -190,7 +190,6 @@ public class StatusArchive extends IdDataModel {
             }
             
             archive.append(" 的 [推文](https://twitter.com/").append(inReplyToScreenName).append("/status/").append(inReplyToStatusId).append(")");
-            
 
         } 
         
@@ -200,7 +199,7 @@ public class StatusArchive extends IdDataModel {
 		
 		cal.setTimeInMillis(createdAt);
 		
-        archive.append(" 在 ").append(cal.toString());
+        archive.append(" 在 ").append(cal.getTime().toString());
         
         if (quotedStatusId != -1) {
 
