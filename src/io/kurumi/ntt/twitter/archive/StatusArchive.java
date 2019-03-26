@@ -191,17 +191,21 @@ public class StatusArchive extends IdDataModel {
             
             archive.append(" 的 [推文](https://twitter.com/").append(inReplyToScreenName).append("/status/").append(inReplyToStatusId).append(")");
 
-        } 
+        }
+		
+		if (quotedStatusId == -1) {
         
         archive.append(" 的 [推文](").append(getURL()).append(")");
       		
+		}
+		
         archive.append(" 在 ").append(new Date(createdAt).toLocaleString());
         
         if (quotedStatusId != -1) {
 
             StatusArchive quotedStatus = INSTANCE.get(quotedStatusId);
 
-            archive.append(" 对推文 : \n\n\n 「 -----------\n").append(quotedStatus.toMarkdown()).append("\n\n ----------」的回复 :\n\n");
+            archive.append(" 对推文 : \n\n\n 「 -----------\n").append(quotedStatus.toMarkdown()).append("\n\n ----------」的 [回复](").append(getMarkdownURL()).append(") :\n\n");
 
         }
 
