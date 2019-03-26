@@ -196,7 +196,7 @@ public class StatusArchive extends IdDataModel {
         
         archive.append(" 的 [推文](").append(getURL()).append(")");
        
-		Calendar cal = Calendar.getInstance(Locale.CHINA);
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Shanghai"));
 		
 		cal.setTimeInMillis(createdAt);
 		
