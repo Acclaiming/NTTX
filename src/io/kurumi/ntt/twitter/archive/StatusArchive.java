@@ -47,9 +47,7 @@ public class StatusArchive extends IdDataModel {
         text = status.getText();
 
         UserArchive user = UserArchive.INSTANCE.getOrNew(status.getUser().getId());
-
         user.read(status.getUser());
-        
         user.save();
 
         from = user.id;
@@ -164,6 +162,14 @@ public class StatusArchive extends IdDataModel {
 
     public String toMarkdown() {
 
+        long user = from;
+        
+        System.out.println("from : " + user);
+        
+        System.out.println("exists : " + UserArchive.INSTANCE.exists(user));
+        
+        System.out.println("getuser : " + getUser());
+        
         StringBuilder archive = new StringBuilder(getUser().getMarkdownURL());
 
         if (isRetweet) {
