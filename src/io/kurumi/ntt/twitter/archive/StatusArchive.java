@@ -70,7 +70,7 @@ public class StatusArchive extends IdDataModel {
 
         }
 
-        mediaUrls.clear();
+        mediaUrls = new LinkedList<>();
 
         for (MediaEntity media : status.getMediaEntities()) {
 
@@ -99,7 +99,8 @@ public class StatusArchive extends IdDataModel {
             retweetedStatusId = -1L;
 
         }
-
+        
+        save();
 
     }
 

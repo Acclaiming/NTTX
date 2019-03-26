@@ -96,8 +96,6 @@ public class TwitterArchive extends Fragment {
 
                 newStatus.read(status);
                 
-                newStatus.save();
-                
                 msg.send("已存档 :)").exec();
                 
                 msg.send(newStatus.toMarkdown()).markdown().exec();
