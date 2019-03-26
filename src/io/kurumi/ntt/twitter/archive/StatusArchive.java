@@ -206,11 +206,11 @@ public class StatusArchive extends IdDataModel {
 
         if (!mediaUrls.isEmpty()) {
 
-            archive.append("\n\n媒体文件 : ");
+            archive.append("\n\n媒体文件 :");
 
             for (String url : mediaUrls) {
 
-                archive.append(Html.a("媒体文件",url));
+                archive.append(Html.a(" 媒体文件",url));
 
             }
 
