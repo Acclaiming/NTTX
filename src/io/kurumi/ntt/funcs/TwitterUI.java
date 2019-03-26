@@ -18,7 +18,7 @@ public class TwitterUI extends Fragment {
 	public static TwitterUI INSTANCE = new TwitterUI();
 	
 	@Override
-	public boolean onPrivMsg(UserData user,Msg msg) {
+	public boolean onMsg(UserData user,Msg msg) {
 
 		if (!msg.isCommand()) return false;
 
@@ -37,7 +37,7 @@ public class TwitterUI extends Fragment {
 	}
 
 	@Override
-	public boolean onPoiPrivMsg(UserData user,Msg msg,CData point) {
+	public boolean onPoiMsg(UserData user,Msg msg,CData point) {
 
 		switch (point.getPoint()) {
 
