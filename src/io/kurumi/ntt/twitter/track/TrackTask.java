@@ -18,6 +18,7 @@ import twitter4j.Friendship;
 import twitter4j.Relationship;
 import io.kurumi.ntt.twitter.archive.UserArchive;
 import cn.hutool.core.util.ArrayUtil;
+import java.util.Date;
 
 public class TrackTask extends TimerTask {
 
@@ -27,7 +28,7 @@ public class TrackTask extends TimerTask {
 
     public void start() {
 
-        timer.scheduleAtFixedRate(this,5 * 60 * 1000,1000 * 30);
+        timer.scheduleAtFixedRate(this,new Date(),5 * 60 * 1000);
 
     }
 
