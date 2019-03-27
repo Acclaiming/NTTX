@@ -13,9 +13,9 @@ public class TApi {
 
     }
 
-    public static String formatUserNameMarkdown(User u) {
+    public static String formatUserNameHtml(User u) {
 
-        return "[" + u.getName() + "](https://twitter.com/" + u.getScreenName() + ")";
+        return Html.a(u.getName(),"https://twitter.com/" + u.getScreenName());
 
     }
 	
@@ -112,13 +112,13 @@ public class TApi {
 
         LinkedList<User> all = new LinkedList<>();
 
-        PagableResponseList<User> users = api.getFriendsList(target, -1);
+        PagableResponseList<User> users = api.getFriendsList(target, -1 , 200);
 
         all.addAll(users);
 
         while (users.hasNext()) {
 
-            users = api.getFriendsList(target,users.getNextCursor());
+            users = api.getFriendsList(target,users.getNextCursor(),200);
 
             all.addAll(users);
 
@@ -135,7 +135,7 @@ public class TApi {
 
         int index = 0;
 
-        IDs ids = api.getFriendsIDs(target,-1);
+        IDs ids = api.getFriendsIDs(target,-1, 5000);
 
         for (long id : ids.getIDs()) {
 
@@ -147,7 +147,7 @@ public class TApi {
 
         while (ids.hasNext()) {
 
-            ids = api.getFriendsIDs(target,ids.getNextCursor());
+            ids = api.getFriendsIDs(target,ids.getNextCursor(),5000);
 
             for (long id : ids.getIDs()) {
 
@@ -167,13 +167,13 @@ public class TApi {
 
         LinkedList<User> all = new LinkedList<>();
 
-        PagableResponseList<User> users = api.getFollowersList(target, -1);
+        PagableResponseList<User> users = api.getFollowersList(target, -1 , 200);
 
         all.addAll(users);
 
         while (users.hasNext()) {
 
-            users = api.getFollowersList(target,users.getNextCursor());
+            users = api.getFollowersList(target,users.getNextCursor(),200);
 
             all.addAll(users);
 
@@ -187,13 +187,13 @@ public class TApi {
 
         LinkedList<User> all = new LinkedList<>();
 
-        PagableResponseList<User> users = api.getFollowersList(target, -1);
+        PagableResponseList<User> users = api.getFollowersList(target, -1 , 200);
 
         all.addAll(users);
 
         while (users.hasNext()) {
 
-            users = api.getFollowersList(target,users.getNextCursor());
+            users = api.getFollowersList(target,users.getNextCursor(),200);
 
             all.addAll(users);
 
@@ -209,7 +209,7 @@ public class TApi {
 
         int index = 0;
 
-        IDs ids = api.getFollowersIDs(target,-1);
+        IDs ids = api.getFollowersIDs(target,-1 , 5000);
 
         for (long id : ids.getIDs()) {
 
@@ -221,7 +221,7 @@ public class TApi {
 
         while (ids.hasNext()) {
 
-            ids = api.getFollowersIDs(target,ids.getNextCursor());
+            ids = api.getFollowersIDs(target,ids.getNextCursor(),5000);
 
             for (long id : ids.getIDs()) {
 
@@ -243,7 +243,7 @@ public class TApi {
 
         int index = 0;
 
-        IDs ids = api.getFollowersIDs(target,-1);
+        IDs ids = api.getFollowersIDs(target,-1,5000);
 
         for (long id : ids.getIDs()) {
 
@@ -255,7 +255,7 @@ public class TApi {
 
         while (ids.hasNext()) {
 
-            ids = api.getFollowersIDs(target,ids.getNextCursor());
+            ids = api.getFollowersIDs(target,ids.getNextCursor(),5000);
 
             for (long id : ids.getIDs()) {
 

@@ -14,7 +14,6 @@ import twitter4j.TwitterException;
 public class TwitterArchive extends Fragment {
 
     public static TwitterArchive INSTANCE = new TwitterArchive();
-
     @Override
     public boolean onMsg(UserData user,Msg msg) {
 
@@ -106,7 +105,7 @@ public class TwitterArchive extends Fragment {
 
             } catch (TwitterException e) {
 
-                msg.send("存档失败 :( 推文还在吗？是锁推推文吗？").exec();
+                msg.send("存档失败 :(","推文还在吗？是锁推推文吗？").exec();
 
             }
 

@@ -122,5 +122,40 @@ public class BotDB {
 		}
 		
 	}
+    
+    private static HashMap<String,JSONArray> jsonArray = new HashMap<>();
+
+    public static JSONArray getJSONArray(String path,String key,boolean fix) {
+
+        String cacheKey = cacheKey(path,key);
+
+        if (jsonArray.containsKey(cacheKey)) return jsonArray.get(cacheKey);
+
+        String value = gNC(path,key);
+
+        if (value == null) return fix ? new JSONArray() : null;
+
+        return new JSONArray(value);
+
+    }
+
+    public static void setJSONArray(String path,String key,JSONArray value) {
+
+        sNC(path,key,value != null ? value.toStringPretty() : null);
+
+        String cacheKey = cacheKey(path,key);
+
+        if (value == null) {
+
+            jsonArray.remove(cacheKey);
+
+        } else {
+
+            jsonArray.put(cacheKey,value);
+
+        }
+
+    }
+    
 
 }

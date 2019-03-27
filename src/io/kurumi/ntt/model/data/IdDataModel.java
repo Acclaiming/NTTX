@@ -6,6 +6,7 @@ import cn.hutool.json.*;
 import io.kurumi.ntt.*;
 import java.io.*;
 import java.util.*;
+import java.lang.reflect.InvocationTargetException;
 
 public abstract class IdDataModel {
 
@@ -65,8 +66,9 @@ public abstract class IdDataModel {
         protected Class<T> clazz;
         protected String dirName;
 
+        public LinkedList<Long> idList = new LinkedList<>();
         public HashMap<Long,T> idIndex = new HashMap<>();
-
+        
         public Factory(Class<T> clazz, String dirName) { this.clazz = clazz;this.dirName = dirName;
 
             File[] files = new File(Env.DATA_DIR, dirName).listFiles();
@@ -75,17 +77,7 @@ public abstract class IdDataModel {
 
                 for (File dataFile : files) {
 
-                    try {
-
-                        T obj = clazz.getDeclaredConstructor(new Class[] {String.class,long.class}).newInstance(dirName,Long.parseLong(StrUtil.subBefore(dataFile.getName(), ".json", true)));
-
-                        saveObj(obj);
-
-                    } catch (Exception e) {
-                        
-                        throw new RuntimeException(e);
-                        
-                    }
+                    idList.add(Long.parseLong(StrUtil.subBefore(dataFile.getName(), ".json", true)));
 
                 }
 
@@ -93,11 +85,7 @@ public abstract class IdDataModel {
 
         }
         
-        public LinkedList<T> all() {
-            
-            return new LinkedList<T>() {{ addAll(idIndex.values()); }};
-            
-        }
+        
         
         public Boolean exists(long id) {
             
@@ -108,6 +96,19 @@ public abstract class IdDataModel {
         public T get(Long id) {
 
             if (idIndex.containsKey(id)) return idIndex.get(id);
+            else if(idList.contains(id)) {
+                
+                try {
+                    
+                    T obj = clazz.getDeclaredConstructor(new Class[] {String.class,long.class}).newInstance(dirName,id);
+                    idIndex.put(id,obj);
+                    
+                    return obj;
+                    
+                    
+                } catch (InstantiationException e) {} catch (InvocationTargetException e) {} catch (SecurityException e) {} catch (NoSuchMethodException e) {} catch (IllegalAccessException e) {} catch (IllegalArgumentException e) {}
+
+            }
             
             return null;
         
@@ -137,6 +138,8 @@ public abstract class IdDataModel {
 
             obj.save();
             
+            if (!idList.contains(obj)) idList.add(obj.id);
+            
             idIndex.put(obj.id, obj);
 
         }
@@ -144,6 +147,8 @@ public abstract class IdDataModel {
         public void delObj(T obj) {
             
             obj.delete();
+            
+            idList.remove(obj.id);
             
             idIndex.remove(obj.id);
             

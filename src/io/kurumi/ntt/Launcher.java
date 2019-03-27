@@ -8,6 +8,7 @@ import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.model.*;
 import java.io.*;
 import java.util.*;
+import io.kurumi.ntt.twitter.track.TrackTask;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -25,6 +26,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(GroupButler.INSTANCE);
         
         addFragment(TwitterArchive.INSTANCE);
+        
+        addFragment(TwitterTrack.INSTANCE);
+        
+        TrackTask.INSTANCE.start();
 
     }
 
