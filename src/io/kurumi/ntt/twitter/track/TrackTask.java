@@ -77,7 +77,7 @@ public class TrackTask extends TimerTask {
             
             try {
                 
-                LinkedList<Long> last = cache.containsKey(api.getId()) ? cache.get(api.getId()) : new LinkedList<>();
+                LinkedList<Long> last = cache.containsKey(api.getId()) ? cache.get(api.getId()) : null;
 
                 LinkedList<Long> latest = TApi.getAllFoIDs(api,api.getId());
 
