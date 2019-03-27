@@ -79,7 +79,6 @@ public class TrackTask extends TimerTask {
 
                 long[] ids = TApi.getAllFoIDs(api,api.getId());
 
-
                 for (long id : ids) {
                     
                     latest.add(id);
