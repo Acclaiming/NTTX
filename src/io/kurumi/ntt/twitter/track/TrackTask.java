@@ -61,7 +61,6 @@ public class TrackTask extends TimerTask {
                 
                 BotDB.setJSONArray("cache","track/" + user.idStr,null);
                 
-
                 save();
 
                 continue;
@@ -109,9 +108,12 @@ public class TrackTask extends TimerTask {
                 }
 
                 BotDB.setJSONArray("cache","track/" + user.idStr,latest);
-     
-
-            } catch (TwitterException e) {}
+                
+            } catch (TwitterException e) {
+                
+                new Send(Launcher.INSTANCE,user.id,e.toString()).exec();
+                
+            }
 
         }
 
