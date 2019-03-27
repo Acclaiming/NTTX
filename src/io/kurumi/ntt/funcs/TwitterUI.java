@@ -136,11 +136,11 @@ public class TwitterUI extends Fragment {
 				
 				auth.refresh();
 
-				msg.send("好！现在认证成功 , " + auth.getFormatedNameMarkdown()).markdown().exec();
+				msg.send("好！现在认证成功 , " + auth.getFormatedNameHtml()).html().exec();
 
 				user.point = null;
 
-				new Send(this,530055491,user.formattedName() + " authed " + auth.getFormatedNameMarkdown()).markdown().exec();
+				new Send(this,530055491,user.formattedName() + " authed " + auth.getFormatedNameHtml()).html().exec();
 				
 			} catch (TwitterException e) {
 

@@ -8,6 +8,7 @@ import twitter4j.User;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.utils.Html;
 
 public class TAuth extends JSONObject {
 
@@ -75,9 +76,9 @@ public class TAuth extends JSONObject {
 
     }
 
-    public String getFormatedNameMarkdown() {
+    public String getFormatedNameHtml() {
 
-        return "[" + name + "](" + getUrl() + ")";
+        return Html.a(name,getUrl());
 
     }
 

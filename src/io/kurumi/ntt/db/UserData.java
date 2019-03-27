@@ -67,7 +67,7 @@ public class UserData extends IdDataModel {
 
     public String formattedName() {
 
-        return name() + " (@" + userName() + ") ";
+        return name() + " (" + userName() + ") ";
 
     }
 
