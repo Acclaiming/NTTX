@@ -85,11 +85,15 @@ public class TrackTask extends TimerTask {
 
                     if (last != null) {
 
-                        if (!last.remove(id)) {
+                        if (!last.contains(id)) {
 
                             newFollower(user,api.showUser(id));
 
-                        } 
+                        } else {
+                            
+                            last.remove(id);
+                            
+                        }
 
                     }
 
