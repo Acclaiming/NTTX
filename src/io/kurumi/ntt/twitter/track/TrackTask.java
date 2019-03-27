@@ -69,8 +69,7 @@ public class TrackTask extends TimerTask {
 
             }
 
-            TAuth auth = TAuth.get(user);
-            Twitter api = auth.createApi();
+            Twitter api = TAuth.get(user).createApi();
 
             JSONArray last = BotDB.getJSONArray("cache","track/" + user.idStr,false);
             
@@ -78,7 +77,7 @@ public class TrackTask extends TimerTask {
             
             try {
 
-                long[] ids = TApi.getAllFoIDs(api,auth.accountId);
+                long[] ids = TApi.getAllFoIDs(api,api.getId());
 
 
                 for (long id : ids) {
