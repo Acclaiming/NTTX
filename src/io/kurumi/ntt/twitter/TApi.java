@@ -203,9 +203,9 @@ public class TApi {
 
     }
 
-    public static long[] getAllFoIDs(Twitter api,Long target) throws TwitterException {
+    public static LinkedList<Long> getAllFoIDs(Twitter api,Long target) throws TwitterException {
 
-        LinkedHashSet<Long> all = new LinkedHashSet<>();
+        LinkedList<Long> all = new LinkedList<>();
         
         IDs ids = api.getFollowersIDs(target,-1 , 5000);
 
@@ -226,13 +226,13 @@ public class TApi {
 
         }
 
-        return ArrayUtil.unWrap(all.toArray(new Long[all.size()]));
+        return all;
 
     }
 	
-	public static long[] getAllFoIDs(Twitter api,String target) throws TwitterException {
+	public static LinkedList<Long>getAllFoIDs(Twitter api,String target) throws TwitterException {
 
-        LinkedHashSet<Long> all = new LinkedHashSet<>();
+        LinkedList<Long> all = new LinkedList<>();
 
         IDs ids = api.getFollowersIDs(target,-1 , 5000);
 
@@ -253,10 +253,8 @@ public class TApi {
 
         }
 
-        return ArrayUtil.unWrap(all.toArray(new Long[all.size()]));
-
+        return all;
         
-
     }
 	
 

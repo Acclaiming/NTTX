@@ -21,6 +21,8 @@ import twitter4j.Relationship;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 public class TrackTask extends TimerTask {
 
@@ -28,9 +30,11 @@ public class TrackTask extends TimerTask {
     Timer timer = new Timer("NTT Twitter Track Task");
     public JSONObject enable = BotDB.getJSON("data","track",true);
 
+    HashMap<Long,LinkedList<Long>> cache = new HashMap<>();
+    
     public void start() {
 
-        timer.scheduleAtFixedRate(this,new Date(),5 * 60 * 1000);
+        timer.schedule(this,new Date(),5 * 60 * 1000);
 
     }
 
@@ -70,30 +74,24 @@ public class TrackTask extends TimerTask {
             }
 
             Twitter api = TAuth.get(user).createApi();
-
-            JSONArray last = BotDB.getJSONArray("cache","track/" + user.idStr,false);
-            
-            JSONArray latest = new JSONArray();
             
             try {
+                
+                LinkedList<Long> last = cache.containsKey(api.getId()) ? cache.get(api.getId()) : new LinkedList<>();
 
-                long[] ids = TApi.getAllFoIDs(api,api.getId());
+                LinkedList<Long> latest = TApi.getAllFoIDs(api,api.getId());
 
-                for (long id : ids) {
+                cache.put(api.getId(),latest);
+                
+                for (long id : latest) {
                     
-                    latest.add(id);
-
                     if (last != null) {
 
-                        if (!last.contains(id)) {
+                        if (!last.remove(id)) {
 
                             newFollower(user,api.showUser(id));
 
-                        } else {
-                            
-                            last.remove(id);
-                            
-                        }
+                        } 
 
                     }
 
@@ -103,7 +101,7 @@ public class TrackTask extends TimerTask {
 
                     for (int index = 0;index < last.size();index ++) {
 
-                        long id = last.getLong(index);
+                        long id = last.get(index);
 
                         lostFollower(user,api,id);
 
@@ -111,7 +109,6 @@ public class TrackTask extends TimerTask {
 
                 }
 
-                BotDB.setJSONArray("cache","track/" + user.idStr,latest);
                 
             } catch (TwitterException e) {
                 
