@@ -1,24 +1,26 @@
 package io.kurumi.ntt.twitter.track;
 
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
+import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.db.BotDB;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.twitter.TApi;
 import io.kurumi.ntt.twitter.TAuth;
+import io.kurumi.ntt.twitter.archive.UserArchive;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
+import java.util.Date;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import twitter4j.Relationship;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
-import io.kurumi.ntt.Launcher;
-import twitter4j.Friendship;
-import twitter4j.Relationship;
-import io.kurumi.ntt.twitter.archive.UserArchive;
-import cn.hutool.core.util.ArrayUtil;
-import java.util.Date;
 
 public class TrackTask extends TimerTask {
 
@@ -111,7 +113,11 @@ public class TrackTask extends TimerTask {
                 
             } catch (TwitterException e) {
                 
-                new Send(Launcher.INSTANCE,user.id,e.toString()).exec();
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+                e.printStackTrace(new PrintWriter(out,true));
+                
+                new Send(Launcher.INSTANCE,user.id,StrUtil.str(out.toByteArray(),CharsetUtil.CHARSET_UTF_8)).exec();
                 
             }
 
