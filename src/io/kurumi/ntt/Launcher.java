@@ -77,6 +77,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         StaticLog.info("正在停止Bot");
 
         INSTANCE.bot().removeGetUpdatesListener();
+        
+        TrackTask.INSTANCE.stop();
 
 		//  BotServer.INSTACNCE.stop();
 
