@@ -97,7 +97,7 @@ public class BotDB {
 
 		if (json.containsKey(cacheKey)) return json.get(cacheKey);
 
-		String value = gNC(path,key);
+		String value = gNC(path,key + ".json");
 		
 		if (value == null) return fix ? new JSONObject() : null;
 		
@@ -107,7 +107,7 @@ public class BotDB {
 	
 	public static void setJSON(String path,String key,JSONObject value) {
 		
-		sNC(path,key,value != null ? value.toStringPretty() : null);
+		sNC(path,key + ".json",value != null ? value.toStringPretty() : null);
 
 		String cacheKey = cacheKey(path,key);
 
@@ -131,7 +131,7 @@ public class BotDB {
 
         if (jsonArray.containsKey(cacheKey)) return jsonArray.get(cacheKey);
 
-        String value = gNC(path,key);
+        String value = gNC(path,key + ".json");
 
         if (value == null) return fix ? new JSONArray() : null;
 
@@ -141,7 +141,7 @@ public class BotDB {
 
     public static void setJSONArray(String path,String key,JSONArray value) {
 
-        sNC(path,key,value != null ? value.toStringPretty() : null);
+        sNC(path,key + ".json",value != null ? value.toStringPretty() : null);
 
         String cacheKey = cacheKey(path,key);
 
