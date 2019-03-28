@@ -23,8 +23,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(LuaEnv.INSTANCE);
 		addFragment(LuaEnv.INSTANCE.LuaFragmentOriginInstance);
 
-		addFragment(GroupButler.INSTANCE);
-        
         addFragment(TwitterArchive.INSTANCE);
         
         addFragment(TwitterTrack.INSTANCE);
