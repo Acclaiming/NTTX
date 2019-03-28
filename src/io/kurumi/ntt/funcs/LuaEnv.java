@@ -16,11 +16,11 @@ import org.luaj.vm2.lib.jse.*;
 public class LuaEnv extends Fragment {
 
 	public static LuaEnv INSTANCE = new LuaEnv();
-	public Fragment LuaFragmentOriginInstance = new LuaFragmentOrigin();
+	//ublic Fragment LuaFragmentOriginInstance = new LuaFragmentOrigin();
 	
 	public LuaTable env;
 	public LuaTable functions;
-	public LinkedList<LuaFragment> fragments;
+	//public LinkedList<LuaFragment> fragments;
 	
 	public Globals lua; { reload(); }
 
@@ -32,13 +32,13 @@ public class LuaEnv extends Fragment {
 
 		functions = new LuaTable();
 		
-		fragments = new LinkedList<>();
+		//fragments = new LinkedList<>();
 
 		env.set("this",new JavaInstance(Launcher.INSTANCE));
 		
 		env.set("functions",functions);
 
-		env.set("Fragment",new create_fragment());
+		// env.set("Fragment",new create_fragment());
 		
 		new BindLib().install();
 		
@@ -333,6 +333,8 @@ public class LuaEnv extends Fragment {
 		}
 
 	}
+    
+    /*
 	
 	class create_fragment extends OneArgFunction {
 
@@ -346,7 +348,8 @@ public class LuaEnv extends Fragment {
 		}
 		
 	}
-	
+   
+   
 	class LuaFragmentOrigin extends Fragment {
 		
 		public boolean onMsg(UserData user,Msg msg) {
@@ -597,5 +600,8 @@ public class LuaEnv extends Fragment {
 
 
 	}
+    
+    */
+
 
 }
