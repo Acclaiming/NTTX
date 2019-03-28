@@ -32,4 +32,4 @@ systemctl start ntt # 启动服务
 
 systemctl enable ntt # 开机启动
 
-syatemctl status ntt -l # 查看日志
+systemctl status ntt -l # 查看日志

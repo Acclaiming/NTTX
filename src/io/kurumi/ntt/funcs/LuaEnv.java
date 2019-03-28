@@ -363,7 +363,9 @@ public class LuaEnv extends Fragment {
 
 		public boolean onPoiMsg(UserData user,Msg msg,CData point) {
 			
-			for (LuaFragment f : fragments) {
+            LinkedList ff = new LinkedList<>(fragments);
+
+			for (LuaFragment f : ff) {
 
 				if (f.onPoiMsg(user,msg,point)) return true;
 
@@ -375,7 +377,9 @@ public class LuaEnv extends Fragment {
 
 		public boolean onPrivMsg(UserData user,Msg msg) {
 			
-			for (LuaFragment f : fragments) {
+            LinkedList ff = new LinkedList<>(fragments);
+            
+			for (LuaFragment f : ff) {
 
 				if (f.onPrivMsg(user,msg)) return true;
 
@@ -387,7 +391,9 @@ public class LuaEnv extends Fragment {
 
 		public boolean onPoiPrivMsg(UserData user,Msg msg,CData point) {
 		
-			for (LuaFragment f : fragments) {
+            LinkedList ff = new LinkedList<>(fragments);
+            
+			for (LuaFragment f : ff) {
 
 				if (f.onPoiPrivMsg(user,msg,point)) return true;
 
@@ -399,7 +405,9 @@ public class LuaEnv extends Fragment {
 
 		public boolean onGroupMsg(UserData user,Msg msg,boolean superGroup) {
 			
-			for (LuaFragment f : fragments) {
+            LinkedList ff = new LinkedList<>(fragments);
+            
+			for (LuaFragment f : ff) {
 
 				if (f.onGroupMsg(user,msg,superGroup)) return true;
 
@@ -411,7 +419,9 @@ public class LuaEnv extends Fragment {
 
 		public boolean onPoiGroupMsg(UserData user,Msg msg,CData point,boolean superGroup) {
 			
-			for (LuaFragment f : fragments) {
+            LinkedList ff = new LinkedList<>(fragments);
+            
+			for (LuaFragment f : ff) {
 
 				if (f.onPoiGroupMsg(user,msg,point,superGroup)) return true;
 
@@ -423,7 +433,9 @@ public class LuaEnv extends Fragment {
 
 		public boolean onChanPost(UserData user,Msg msg) {
 			
-			for (LuaFragment f : fragments) {
+            LinkedList ff = new LinkedList<>(fragments);
+            
+			for (LuaFragment f : ff) {
 
 				if (f.onChanPost(user,msg)) return true;
 
@@ -435,7 +447,9 @@ public class LuaEnv extends Fragment {
 
 		public boolean onCallback(UserData user,Callback callback) {
 			
-			for (LuaFragment f : fragments) {
+            LinkedList ff = new LinkedList<>(fragments);
+            
+			for (LuaFragment f : ff) {
 
 				if (f.onCallback(user,callback)) return true;
 
@@ -447,7 +461,9 @@ public class LuaEnv extends Fragment {
 
 		public boolean onPoiCallback(UserData user,Callback callback,CData point) {
 			
-			for (LuaFragment f : fragments) {
+            LinkedList ff = new LinkedList<>(fragments);
+            
+			for (LuaFragment f : ff) {
 
 				if (f.onPoiCallback(user,callback,point)) return true;
 
@@ -459,7 +475,9 @@ public class LuaEnv extends Fragment {
 
 		public boolean onQuery(UserData user,Query inlineQuery) {
 			
-			for (LuaFragment f : fragments) {
+            LinkedList ff = new LinkedList<>(fragments);
+            
+			for (LuaFragment f : ff) {
 
 				if (f.onQuery(user,inlineQuery)) return true;
 
@@ -477,7 +495,7 @@ public class LuaEnv extends Fragment {
 		LuaTable fragment;
 
 		boolean call(String function,Object... args) {
-
+            
 			if (fragment.get(function).isfunction()) {
 
 				LuaValue[] values = new LuaValue[args.length];
