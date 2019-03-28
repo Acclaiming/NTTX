@@ -16,6 +16,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     public Launcher() {
 
+        addFragment(Backup.INSTANCE);
+        
         addFragment(GroupRepeat.INSTANCE);
 
 		addFragment(TwitterUI.INSTANCE);
