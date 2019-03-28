@@ -363,7 +363,7 @@ public class LuaEnv extends Fragment {
 
 		public boolean onPoiMsg(UserData user,Msg msg,CData point) {
 			
-            LinkedList ff = new LinkedList<>(fragments);
+            LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
 
 			for (LuaFragment f : ff) {
 
@@ -377,7 +377,7 @@ public class LuaEnv extends Fragment {
 
 		public boolean onPrivMsg(UserData user,Msg msg) {
 			
-            LinkedList ff = new LinkedList<>(fragments);
+            LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
             
 			for (LuaFragment f : ff) {
 
@@ -391,7 +391,7 @@ public class LuaEnv extends Fragment {
 
 		public boolean onPoiPrivMsg(UserData user,Msg msg,CData point) {
 		
-            LinkedList ff = new LinkedList<>(fragments);
+            LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
             
 			for (LuaFragment f : ff) {
 
@@ -405,7 +405,7 @@ public class LuaEnv extends Fragment {
 
 		public boolean onGroupMsg(UserData user,Msg msg,boolean superGroup) {
 			
-            LinkedList ff = new LinkedList<>(fragments);
+            LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
             
 			for (LuaFragment f : ff) {
 
@@ -419,7 +419,7 @@ public class LuaEnv extends Fragment {
 
 		public boolean onPoiGroupMsg(UserData user,Msg msg,CData point,boolean superGroup) {
 			
-            LinkedList ff = new LinkedList<>(fragments);
+            LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
             
 			for (LuaFragment f : ff) {
 
@@ -433,7 +433,7 @@ public class LuaEnv extends Fragment {
 
 		public boolean onChanPost(UserData user,Msg msg) {
 			
-            LinkedList ff = new LinkedList<>(fragments);
+            LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
             
 			for (LuaFragment f : ff) {
 
@@ -447,7 +447,7 @@ public class LuaEnv extends Fragment {
 
 		public boolean onCallback(UserData user,Callback callback) {
 			
-            LinkedList ff = new LinkedList<>(fragments);
+            LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
             
 			for (LuaFragment f : ff) {
 
@@ -461,7 +461,7 @@ public class LuaEnv extends Fragment {
 
 		public boolean onPoiCallback(UserData user,Callback callback,CData point) {
 			
-            LinkedList ff = new LinkedList<>(fragments);
+            LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
             
 			for (LuaFragment f : ff) {
 
@@ -475,7 +475,7 @@ public class LuaEnv extends Fragment {
 
 		public boolean onQuery(UserData user,Query inlineQuery) {
 			
-            LinkedList ff = new LinkedList<>(fragments);
+            LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
             
 			for (LuaFragment f : ff) {
 
