@@ -57,6 +57,14 @@ public class TwitterUI extends Fragment {
 
 	void tauth(UserData user,Msg msg) {
 
+        if (msg.isPrivate()) {
+            
+            msg.send("请使用私聊 :)").exec();
+            
+            return;
+            
+        }
+        
 		if (TAuth.exists(user)) {
 
 			msg.send("对不起，但是乃已经认证账号了 >_< ","在重新认证之前乃需要使用 /trem 解除认证 ~").exec();
@@ -93,6 +101,14 @@ public class TwitterUI extends Fragment {
 
 	void onInputCallback(UserData user,Msg msg) {
 
+        if (msg.isPrivate()) {
+
+            msg.reply("乃好像需要输入什么东西 ~ 使用 /cancel 取消 :)").exec();
+
+            return;
+
+        }
+        
 		if (!msg.hasText()) {
 
 			msg.send("乃好像忘了之前使用了 /tauth ！","","取消认证使用 /cancel (╥_╥)").exec();
@@ -160,6 +176,14 @@ public class TwitterUI extends Fragment {
 
 	void trem(UserData user,Msg msg) {
 		
+        if (msg.isPrivate()) {
+
+            msg.send("请使用私聊 :)").exec();
+
+            return;
+
+        }
+        
 		if (!TAuth.exists(user)) {
 
 			msg.send("对不起，但是乃并没有认证账号呢。 使用 /tauth 认证 ~").exec();
