@@ -22,7 +22,7 @@ public class InitTask extends Thread {
 
             long id = iter.next();
 
-         //   UserData user = UserData.INSTANCE.getNoCache(id);
+           UserData user = new UserData(UserData.INSTANCE.dirName,id);
 
             /*
             
