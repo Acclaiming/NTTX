@@ -20,7 +20,7 @@ public class InitTask extends Thread {
 
             UserData user = new UserData(UserData.INSTANCE.dirName,id);
 
-            SendResponse resp = new Send(user.id,"testIsBlockedBot").sync();
+            SendResponse resp = new Send(user.id,"testIsBlockedBot").disableNotification().sync();
 
             if (!resp.isOk()) {
 
