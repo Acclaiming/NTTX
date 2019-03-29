@@ -24,6 +24,8 @@ public class InitTask extends Thread {
 
             UserData user = UserData.INSTANCE.getNoCache(id);
 
+            /*
+            
             SendResponse resp = new Send(user.id,"testIsBlockedBot").sync();
 
             if (!resp.isOk()) {
@@ -56,10 +58,17 @@ public class InitTask extends Thread {
 
 
             }
+           
+            
+            */
 
         }
+        
+       
 
         TAuth.saveAll();
+        
+       
 
         BotLog.info("初始化 完成 :)");
 
