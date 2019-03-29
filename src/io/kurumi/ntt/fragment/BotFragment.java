@@ -104,19 +104,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         if ("cancel".equals(msg.command())) {
 
-            if (user.point == null) {
-
-                msg.send("你要取消什么？ >_<").exec();
-
-            } else {
-
-                user.point = null;
-
-                user.savePoint();
-
-                msg.send("取消成功 ~").exec();
-
-            }
+            msg.send("你要取消什么？ >_<").exec();
 
             return true;
 
@@ -125,6 +113,27 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
         return false;
 
     }
+
+    @Override
+    public boolean onPPM(UserData user,Msg msg) {
+
+        if ("cancel".equals(msg.command())) {
+
+            user.point = null;
+
+            user.savePoint();
+
+            msg.send("取消成功 ~").exec();
+
+            return true;
+            
+        }
+
+        return false;
+        
+    }
+
+
 
     public void process(final Update update) {
 
@@ -136,13 +145,19 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
             BotLog.process(user,update,point);
 
-            for (Fragment fragmnet : fragments) {
+            if (update.message().chat().type() == Chat.Type.Private && user.point != null) {
 
-                if (fragmnet.onMsg(user,new Msg(fragmnet,update.message()))) {
+                for (Fragment fragmnet : fragments) {
 
-                    return;
+                    if (fragmnet.onPPM(user,new Msg(fragmnet,update.message()))) {
+
+                        return;
+
+                    }
 
                 }
+
+                return;
 
             }
 
@@ -152,35 +167,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                         for (Fragment fragmnet : fragments) {
 
-                            if (fragmnet.onPrivMsg(user,new Msg(fragmnet,update.message()))) {
+                            if (fragmnet.onNPM(user,new Msg(fragmnet,update.message()))) {
 
                                 return;
-
-                            }
-
-                        }
-
-                        if (user.point == null) {
-
-                            for (Fragment fragmnet : fragments) {
-
-                                if (fragmnet.onNPM(user,new Msg(fragmnet,update.message()))) {
-
-                                    return;
-
-                                }
-
-                            }
-
-                        } else {
-
-                            for (Fragment fragmnet : fragments) {
-
-                                if (fragmnet.onPPM(user,new Msg(fragmnet,update.message()))) {
-
-                                    return;
-
-                                }
 
                             }
 
