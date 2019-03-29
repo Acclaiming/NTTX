@@ -101,7 +101,7 @@ public class TwitterUI extends Fragment {
 
 	void onInputCallback(UserData user,Msg msg) {
 
-        if (msg.isPrivate()) {
+        if (!msg.isPrivate()) {
 
             msg.reply("乃好像需要输入什么东西 ~ 使用 /cancel 取消 :)").exec();
 
