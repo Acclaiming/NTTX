@@ -17,6 +17,7 @@ import io.kurumi.ntt.model.Query;
 import io.kurumi.ntt.utils.BotLog;
 import java.util.LinkedList;
 import java.util.List;
+import io.kurumi.ntt.model.request.Send;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
@@ -137,9 +138,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
             UserData user = UserData.get(update.message().from());
 
-            boolean point = user.point != null;
-
-            BotLog.process(user,update,point);
+            BotLog.process(user,update,user.point != null);
 
             if (update.message().chat().type() == Chat.Type.Private && user.point != null) {
 
@@ -173,10 +172,14 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                         for (Fragment fragmnet : fragments) {
 
+                            
+                            
                             if (fragmnet.onNPM(user,new Msg(fragmnet,update.message()))) {
 
+                                new Send(user.id,"" + user.point).exec();
+                                
                                 return;
-
+ 
                             }
 
                         }
