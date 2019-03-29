@@ -28,11 +28,11 @@ public class InitTask extends Thread {
 
             if (!resp.isOk()) {
 
-                iter.remove();
+            //    iter.remove();
 
-                UserData.INSTANCE.delObj(user);
+           //     UserData.INSTANCE.delObj(user);
 
-                BotLog.info("用户 " + user.userName() + " 已停用BOT , 已删除数据");
+                BotLog.info("用户 " + user.userName() + " 已停用BOT");
                 
                 continue;
 
