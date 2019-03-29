@@ -20,6 +20,8 @@ public class InitTask extends Thread {
 
             UserData user = new UserData(UserData.INSTANCE.dirName,id);
 
+            /*
+            
             SendResponse resp = new Send(user.id,"testIsBlockedBot").disableNotification().sync();
 
             if (!resp.isOk()) {
@@ -35,6 +37,8 @@ public class InitTask extends Thread {
                 Launcher.INSTANCE.bot().execute(new DeleteMessage(user.id,resp.message().messageId()));
 
             }
+            
+            */
 
             if (!TAuth.exists(user)) continue;
 
