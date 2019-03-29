@@ -2,25 +2,21 @@ package io.kurumi.ntt.fragment;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
+import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.DeleteWebhook;
+import com.pengrad.telegrambot.request.GetMe;
 import com.pengrad.telegrambot.request.GetUpdates;
-import com.pengrad.telegrambot.request.SetWebhook;
 import io.kurumi.ntt.Env;
+import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.Query;
-import io.kurumi.ntt.utils.CData;
-import io.kurumi.ntt.utils.ThreadPool;
-
+import io.kurumi.ntt.utils.BotLog;
 import java.util.LinkedList;
 import java.util.List;
-import io.kurumi.ntt.utils.BotLog;
-import twitter4j.Twitter;
-import io.kurumi.ntt.*;
-import com.pengrad.telegrambot.model.*;
-import com.pengrad.telegrambot.request.*;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
