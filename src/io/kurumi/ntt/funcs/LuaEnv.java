@@ -82,16 +82,13 @@ public class LuaEnv extends Fragment {
 
 				msg.send(reply.toString()).exec();
 
-
 			} catch (Throwable err) {
 
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
 
 				err.printStackTrace(new PrintWriter(out,true));
 
-				msg.send(StrUtil.str(out.toByteArray(),CharsetUtil.CHARSET_UTF_8)).exec();	
-
-				
+				msg.send(StrUtil.str(out.toByteArray(),CharsetUtil.CHARSET_UTF_8)).exec();
 
 			}
 
@@ -105,7 +102,7 @@ public class LuaEnv extends Fragment {
 	}
 
 	@Override
-	public boolean onPrivMsg(UserData user,Msg msg) {
+	public boolean onNPM(UserData user,Msg msg) {
 		
 		if (!Env.FOUNDER.equals(user.userName)) return false;
 

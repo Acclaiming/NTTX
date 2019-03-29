@@ -18,7 +18,7 @@ public class TwitterUI extends Fragment {
 	public static TwitterUI INSTANCE = new TwitterUI();
 
 	@Override
-	public boolean onMsg(UserData user,Msg msg) {
+	public boolean onNPM(UserData user,Msg msg) {
 
 		if (!msg.isCommand()) return false;
 
