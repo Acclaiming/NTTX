@@ -7,6 +7,7 @@ import io.kurumi.ntt.*;
 import java.io.*;
 import java.util.*;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Constructor;
 
 public abstract class IdDataModel {
 
@@ -63,13 +64,23 @@ public abstract class IdDataModel {
 
     public static class Factory<T extends IdDataModel> {
 
-        protected Class<T> clazz;
         public String dirName;
+        public Constructor<T> constructor;
 
         public LinkedList<Long> idList = new LinkedList<>();
         public HashMap<Long,T> idIndex = new HashMap<>();
 
-        public Factory(Class<T> clazz,String dirName) { this.clazz = clazz;this.dirName = dirName;
+        public Factory(Class<T> clazz,String dirName) { this.dirName = dirName;
+
+            try {
+                
+                constructor = clazz.getDeclaredConstructor(new Class[] {String.class,long.class});
+                
+            } catch (Exception e) {
+                
+                throw new RuntimeException(e);
+                
+            }
 
             File[] files = new File(Env.DATA_DIR,dirName).listFiles();
 
@@ -97,13 +108,16 @@ public abstract class IdDataModel {
 
             try {
 
-                T obj = clazz.getDeclaredConstructor(new Class[] {String.class,long.class}).newInstance(dirName,id);
+                T obj = constructor.newInstance(dirName,id);
 
                 return obj;
 
-            } catch (InstantiationException e) {} catch (InvocationTargetException e) {} catch (SecurityException e) {} catch (NoSuchMethodException e) {} catch (IllegalAccessException e) {} catch (IllegalArgumentException e) {}
+            } catch (Exception e) {
 
-            return null;
+                throw new RuntimeException(e);
+
+            }
+          
 
         }
 
@@ -115,14 +129,19 @@ public abstract class IdDataModel {
 
                 try {
 
-                    T obj = clazz.getDeclaredConstructor(new Class[] {String.class,long.class}).newInstance(dirName,id);
-                    idIndex.put(id,obj);
+                    T obj = constructor.newInstance(dirName,id);
 
+                    idIndex.put(obj.id,obj);
+                    
                     return obj;
 
+                } catch (Exception e) {
 
-                } catch (InstantiationException e) {} catch (InvocationTargetException e) {} catch (SecurityException e) {} catch (NoSuchMethodException e) {} catch (IllegalAccessException e) {} catch (IllegalArgumentException e) {}
+                    throw new RuntimeException(e);
 
+                }
+                
+                
             }
 
             return null;
@@ -135,14 +154,13 @@ public abstract class IdDataModel {
 
             try {
 
-                T obj = clazz.getDeclaredConstructor(new Class[] {String.class,long.class}).newInstance(dirName,id);
+                T obj = constructor.newInstance(dirName,id);
 
                 saveObj(obj);
-
                 return obj;
 
             } catch (Exception e) {
-
+                
                 throw new RuntimeException(e);
 
             }

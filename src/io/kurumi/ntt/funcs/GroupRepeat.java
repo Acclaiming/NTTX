@@ -13,7 +13,7 @@ public class GroupRepeat extends Fragment {
 
     public HashMap<Long,Msg> last = new HashMap<>();
     public HashMap<Long,Integer> count = new HashMap<>();
-
+    
     @Override
     public boolean onGroupMsg(UserData user, Msg msg, boolean superGroup) {
 
@@ -29,16 +29,16 @@ public class GroupRepeat extends Fragment {
 
                 repeatCount ++;
 
-                if (repeatCount == 1) {
+                if (repeatCount == 1 && !avoid) {
 
                     msg.send(msg.text()).exec();
 
-                    repeatCount = 0;
+                    // repeatCount = 0;
 
                     BotLog.debug("已处理群 " + msg.message().chat().title() + " 复读 : " + msg.text());
 
-                    last.remove(msg.chatId());
-
+                   // last.remove(msg.chatId());
+                  
                 } else {
 
                     last.put(msg.chatId(), msg);
@@ -55,11 +55,11 @@ public class GroupRepeat extends Fragment {
 
                     bot().execute(new SendSticker(msg.chatId(), msg.message().sticker().fileId()));
 
-                    repeatCount = 0;
+                    // repeatCount = 0;
 
                     BotLog.debug("已处理群 " + msg.message().chat().title() + " 表情包 : 「" + msg.message().sticker().emoji() + " 从 " + msg.message().sticker().setName() + "」");
 
-                    last.remove(msg.chatId());
+                   // last.remove(msg.chatId());
 
                 } else {
 

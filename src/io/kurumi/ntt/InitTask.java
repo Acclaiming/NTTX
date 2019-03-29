@@ -47,8 +47,8 @@ public class InitTask extends Thread {
 
             if (!auth.refresh()) {
 
-                new Send(user.id,"对不起！但是乃的账号 " + auth.getFormatedNameHtml() + " 无法访问 已移除！ Σ( ﾟω / ").html().exec();
-
+                new Send(user.id,"对不起！但是乃的认证 " + auth.getFormatedNameHtml() + " 已无法访问 移除了！ Σ( ﾟω / ").html().exec();
+                
                 TAuth.auth.remove(user.idStr);
 
                 BotLog.info("用户 " + user.userName() + " 的Twitter认证 " + auth.getFormatedName() + " 失效.");
