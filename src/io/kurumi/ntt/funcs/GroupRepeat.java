@@ -29,7 +29,7 @@ public class GroupRepeat extends Fragment {
 
                 repeatCount ++;
 
-                if (repeatCount == 1 && !avoid) {
+                if (repeatCount == 1) {
 
                     msg.send(msg.text()).exec();
 
