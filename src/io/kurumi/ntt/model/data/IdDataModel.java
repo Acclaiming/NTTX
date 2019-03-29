@@ -163,6 +163,8 @@ public abstract class IdDataModel {
 
             obj.delete();
 
+            idList.remove(obj.id);
+            
             idIndex.remove(obj.id);
 
         }

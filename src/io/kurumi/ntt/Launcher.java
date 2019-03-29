@@ -15,8 +15,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     public static final Launcher INSTANCE = new Launcher();
 
-    public static AtomicBoolean initIng = new AtomicBoolean(false);
-
     public Launcher() {
 
         addFragment(Backup.INSTANCE);
@@ -126,19 +124,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 	}
 
-    String initMsg = "BOT正在初始化... 这可能需要几分钟的时间.";
-
 	@Override
 	public boolean onMsg(UserData user,Msg msg) {
-
-        if (initIng.get() && msg.isCommand()) {
-
-            msg.send(initMsg).exec();
-
-            return true;
-
-        }
-
+        
         if (super.onMsg(user,msg)) return true;
 
 		if (!(Env.FOUNDER.equals(user.userName) && msg.isCommand())) return false;
@@ -156,50 +144,5 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		return true;
 
 	}
-
-    @Override
-    public boolean onPPM(UserData user,Msg msg) {
-
-        if (initIng.get()) {
-
-            msg.send(initMsg).exec();
-
-            return true;
-
-        }
-
-        return super.onPPM(user,msg);
-
-    }
-
-    @Override
-    public boolean onCallback(UserData user,Callback callback) {
-
-        if (initIng.get()) {
-
-            callback.alert(initMsg);
-
-            return true;
-
-        }
-
-        return super.onCallback(user,callback);
-
-    }
-
-    @Override
-    public boolean onQuery(UserData user,Query inlineQuery) {
-
-        if (initIng.get()) {
-
-            inlineQuery.article("请稍后再使用...",initMsg).reply();
-
-            return true;
-
-        }
-
-        return super.onQuery(user,inlineQuery);
-
-    }
 
 }

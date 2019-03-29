@@ -12,25 +12,17 @@ public class InitTask extends Thread {
 
     public void run() {
 
-        Launcher.initIng.set(true);
-
         BotLog.info("开始初始化BOT...");
 
-        Iterator<Long> iter = UserData.INSTANCE.idList.iterator();
+        Long[] ids = UserData.INSTANCE.idList.toArray(new Long[UserData.INSTANCE.idList.size()]);
 
-        while (iter.hasNext()) {
+        for (long id : ids) {
 
-            long id = iter.next();
+            UserData user = new UserData(UserData.INSTANCE.dirName,id);
 
-           UserData user = new UserData(UserData.INSTANCE.dirName,id);
-
-            /*
-            
             SendResponse resp = new Send(user.id,"testIsBlockedBot").sync();
 
             if (!resp.isOk()) {
-
-                iter.remove();
 
                 UserData.INSTANCE.delObj(user);
 
@@ -56,25 +48,15 @@ public class InitTask extends Thread {
 
                 BotLog.info("用户 " + user.userName() + " 的Twitter认证 " + auth.getFormatedName() + " 失效.");
 
-
             }
-           
-            
-            */
 
         }
         
-       
-
         TAuth.saveAll();
-        
-       
 
         BotLog.info("初始化 完成 :)");
 
         BotLog.info("BOT 已正常运行 :)");
-
-        Launcher.initIng.set(false);
 
     }
 
