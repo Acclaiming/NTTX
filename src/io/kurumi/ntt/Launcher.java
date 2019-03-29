@@ -88,8 +88,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
       
         super.start();
         
-        FollowerTrackTask.start();
-
         new InitTask().start();
         
     }

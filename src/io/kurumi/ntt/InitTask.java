@@ -7,6 +7,7 @@ import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.twitter.TAuth;
 import java.util.Iterator;
 import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.twitter.track.FollowerTrackTask;
 
 public class InitTask extends Thread {
 
@@ -59,6 +60,8 @@ public class InitTask extends Thread {
         TAuth.saveAll();
 
         BotLog.info("初始化 完成 :)");
+        
+        FollowerTrackTask.start();
 
         BotLog.info("BOT 已正常运行 :)");
 
