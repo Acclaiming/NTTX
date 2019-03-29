@@ -24,27 +24,26 @@ import twitter4j.User;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public class TrackTask extends TimerTask {
+public class FollowerTrackTask extends TimerTask {
 
-    public static TrackTask INSTANCE = new TrackTask();
-    Timer timer = new Timer("NTT Twitter Track Task");
-    public JSONObject enable = BotDB.getJSON("data","track",true);
-
-    HashMap<Long,LinkedList<Long>> cache = new HashMap<>();
+    static FollowerTrackTask INSTANCE = new FollowerTrackTask();
+    static Timer timer = new Timer("NTT Twitter Follower Track Task");
+    public static JSONObject enable = BotDB.getJSON("data","track",true);
+    static HashMap<Long,LinkedList<Long>> cache = new HashMap<>();
     
-    public void start() {
+    public static void start() {
 
-        timer.schedule(this,new Date(),5 * 60 * 1000);
+        timer.schedule(INSTANCE,new Date(),5 * 60 * 1000);
 
     }
 
-    public void stop() {
+    public static void stop() {
 
         timer.cancel();
 
     }
 
-   public void save() {
+   public static void save() {
 
         BotDB.setJSON("data","track",enable);
 
@@ -126,7 +125,7 @@ public class TrackTask extends TimerTask {
 
     void newFollower(UserData user,User follower) {
 
-        new Send(Launcher.INSTANCE,user.id,TApi.formatUserNameHtml(follower) + " 关注了你").enableLinkPreview().html().exec();
+        new Send(user.id,TApi.formatUserNameHtml(follower) + " 关注了你").enableLinkPreview().html().exec();
 
     }
 
@@ -139,15 +138,15 @@ public class TrackTask extends TimerTask {
 
             if (ship.isSourceBlockingTarget()) {
 
-                new Send(Launcher.INSTANCE,TApi.formatUserNameHtml(follower) + " 取关并屏蔽了你 :(").enableLinkPreview().html().exec();
-
+                new Send(user.id,TApi.formatUserNameHtml(follower) + " 取关并屏蔽了你 :(").enableLinkPreview().html().exec();
+                
             } else if (follower.getFriendsCount() == 0) {
 
-                new Send(Launcher.INSTANCE,TApi.formatUserNameHtml(follower) + " 取关了你，但对方关注人数为空，可能是账号异常 :(").enableLinkPreview().html().exec();
+                new Send(user.id,TApi.formatUserNameHtml(follower) + " 取关了你，但对方关注人数为空，可能是账号异常 :(").enableLinkPreview().html().exec();
 
             } else {
 
-                new Send(Launcher.INSTANCE,TApi.formatUserNameHtml(follower) + " 取关了你 :(").enableLinkPreview().html().exec();
+                new Send(user.id,TApi.formatUserNameHtml(follower) + " 取关了你 :(").enableLinkPreview().html().exec();
 
             }
 
@@ -155,11 +154,11 @@ public class TrackTask extends TimerTask {
 
             if (UserArchive.INSTANCE.exists(id)) {
 
-                new Send(Launcher.INSTANCE,UserArchive.INSTANCE.get(id).getHtmlURL() + " 取关了你 , 因为该账号已经不存在了 :(").enableLinkPreview().html().exec();
+                new Send(user.id,UserArchive.INSTANCE.get(id).getHtmlURL() + " 取关了你 , 因为该账号已经不存在了 :(").enableLinkPreview().html().exec();
 
             } else {
 
-                new Send(Launcher.INSTANCE,"用户 (" + id + ") 取关了你 , 因为该账号已经不存在了 :(").enableLinkPreview().html().exec();
+                new Send(user.id,"用户 (" + id + ") 取关了你 , 因为该账号已经不存在了 :(").enableLinkPreview().html().exec();
 
 
             }

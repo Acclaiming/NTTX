@@ -4,7 +4,7 @@ import io.kurumi.ntt.db.BotDB;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.twitter.track.TrackTask;
+import io.kurumi.ntt.twitter.track.FollowerTrackTask;
 import io.kurumi.ntt.twitter.TAuth;
 
 public class TwitterTrack extends Fragment {
@@ -45,7 +45,7 @@ public class TwitterTrack extends Fragment {
             
         }
         
-        if (TrackTask.INSTANCE.enable.containsKey(user.idStr)) {
+        if (FollowerTrackTask.enable.containsKey(user.idStr)) {
             
             if (start) {
                 
@@ -53,8 +53,8 @@ public class TwitterTrack extends Fragment {
                 
             } else {
                 
-                TrackTask.INSTANCE.enable.remove(user.idStr);
-                TrackTask.INSTANCE.save();
+                FollowerTrackTask.enable.remove(user.idStr);
+                FollowerTrackTask.save();
                 BotDB.setJSONArray("cache","track/" + user.idStr,null);
                 
                 msg.send("已关闭 :)").exec();
@@ -65,8 +65,8 @@ public class TwitterTrack extends Fragment {
         
         if (start) {
         
-        TrackTask.INSTANCE.enable.put(user.idStr,true);
-        TrackTask.INSTANCE.save();
+        FollowerTrackTask.enable.put(user.idStr,true);
+        FollowerTrackTask.save();
         
             msg.send("已开启 :)").exec();
             

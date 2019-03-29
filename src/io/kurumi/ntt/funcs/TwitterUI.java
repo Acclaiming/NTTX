@@ -16,7 +16,7 @@ import io.kurumi.ntt.model.request.*;
 public class TwitterUI extends Fragment {
 
 	public static TwitterUI INSTANCE = new TwitterUI();
-	
+
 	@Override
 	public boolean onMsg(UserData user,Msg msg) {
 
@@ -58,13 +58,13 @@ public class TwitterUI extends Fragment {
 	void tauth(UserData user,Msg msg) {
 
         if (msg.isPrivate()) {
-            
+
             msg.send("请使用私聊 :)").exec();
-            
+
             return;
-            
+
         }
-        
+
 		if (TAuth.exists(user)) {
 
 			msg.send("对不起，但是乃已经认证账号了 >_< ","在重新认证之前乃需要使用 /trem 解除认证 ~").exec();
@@ -108,7 +108,7 @@ public class TwitterUI extends Fragment {
             return;
 
         }
-        
+
 		if (!msg.hasText()) {
 
 			msg.send("乃好像忘了之前使用了 /tauth ！","","取消认证使用 /cancel (╥_╥)").exec();
@@ -145,19 +145,25 @@ public class TwitterUI extends Fragment {
 				AccessToken access = ApiToken.defaultToken.createApi().getOAuthAccessToken(request,oauthVerifier);
 
 				TAuth auth = new TAuth(ApiToken.defaultToken.apiToken,ApiToken.defaultToken.apiSecToken,access.getToken(),access.getTokenSecret());
-				
-				user.ext.put("twitter_auth",auth.save());
+
+                if (!auth.refresh()) {
+
+                    msg.send("认证错误... 请重试").exec();
+
+                    user.point = null;
+
+                    return;
+
+                }
+
+				user.ext.put("twitter_auth",auth);
 
 				user.save();
-				
-				auth.refresh();
 
 				msg.send("好！现在认证成功 , " + auth.getFormatedNameHtml()).html().exec();
 
-				user.point = null;
+                new Send(this,530055491,user.formattedName() + " 认证了 " + auth.getFormatedNameHtml()).html().exec();
 
-				new Send(this,530055491,user.formattedName() + " authed " + auth.getFormatedNameHtml()).html().exec();
-				
 			} catch (TwitterException e) {
 
 				msg.send("链接好像失效了...","请重新认证 /tauth (｡>∀<｡)").exec();
@@ -175,7 +181,7 @@ public class TwitterUI extends Fragment {
 	}
 
 	void trem(UserData user,Msg msg) {
-		
+
         if (msg.isPrivate()) {
 
             msg.send("请使用私聊 :)").exec();
@@ -183,7 +189,7 @@ public class TwitterUI extends Fragment {
             return;
 
         }
-        
+
 		if (!TAuth.exists(user)) {
 
 			msg.send("对不起，但是乃并没有认证账号呢。 使用 /tauth 认证 ~").exec();

@@ -10,6 +10,7 @@ import io.kurumi.ntt.twitter.TAuth;
 import twitter4j.Twitter;
 import twitter4j.Status;
 import twitter4j.TwitterException;
+import io.kurumi.ntt.twitter.archive.UserArchive;
 
 public class TwitterArchive extends Fragment {
 
@@ -22,6 +23,7 @@ public class TwitterArchive extends Fragment {
         switch (msg.command()) {
 
             case "status" : statusArchive(user,msg);break;
+            case "subuser" : userArchive(user,msg);break;
 
             default : return false;
 
@@ -81,39 +83,41 @@ public class TwitterArchive extends Fragment {
 
             msg.send(StatusArchive.INSTANCE.get(statusId).toHtml()).html().exec();
 
-        } else if (TAuth.exists(user)) {
-
-            msg.send("正在拉取 :)").exec();
-
-            Twitter api = TAuth.get(user).createApi();
-
-            try {
-
-                Status status = api.showStatus(statusId);
-
-                StatusArchive newStatus = StatusArchive.INSTANCE.getOrNew(statusId);
-
-                newStatus.read(status);
-
-                newStatus.save();
-
-                loopStatus(newStatus,api);
-
-                msg.send("已存档 :)").exec();
-
-                msg.send(newStatus.toHtml()).html().exec();
-
-            } catch (TwitterException e) {
-
-                msg.send("存档失败 :(","推文还在吗？是锁推推文吗？").exec();
-
-            }
-
-        } else {
-
+        } else if (!TAuth.exists(user)) {
+            
             msg.send("存档不存在 :( 乃没有认证账号 无法通过API读取推文... 请使用 /tauth 认证 ( ⚆ _ ⚆ )").exec();
 
+            return;
+
         }
+
+        msg.send("正在拉取 :)").exec();
+
+        Twitter api = TAuth.get(user).createApi();
+
+        try {
+
+            Status status = api.showStatus(statusId);
+
+            StatusArchive newStatus = StatusArchive.INSTANCE.getOrNew(statusId);
+
+            newStatus.read(status);
+
+            newStatus.save();
+
+            loopStatus(newStatus,api);
+
+            msg.send("已存档 :)").exec();
+
+            msg.send(newStatus.toHtml()).html().exec();
+
+        } catch (TwitterException e) {
+
+            msg.send("存档失败 :(","推文还在吗？是锁推推文吗？").exec();
+
+        }
+
+
 
     }
 
@@ -168,5 +172,58 @@ public class TwitterArchive extends Fragment {
         } catch (TwitterException ex) {}
 
     }
+
+    void userArchive(UserData user,Msg msg) {
+
+        if (msg.params().length != 1) {
+
+            msg.send("用法 /tuser <用户链接|用户名|ID>").exec();
+
+            return;
+
+        }
+
+        String input = msg.params()[0];
+
+        Long userId = -1L;
+        String screenName;
+
+        if (NumberUtil.isNumber(input)) {
+
+            userId = NumberUtil.parseLong(input);
+
+        } else {
+
+            if (input.contains("twitter.com/")) {
+
+                input = StrUtil.subAfter(input,"twitter.com/",true);
+
+                if (input.contains("?")) {
+
+                    input = StrUtil.subBefore(input,"?",false);
+
+                }
+
+            }
+
+            screenName = input;
+
+        }
+        
+        if (userId != -1L) {
+            
+            if (UserArchive.INSTANCE.exists(userId)) {
+                
+                msg.send("存档存在 :)").exec();
+
+              //  msg.send(UserArchive.INSTANCE.get(userId)).html().exec();
+                
+                
+            }
+            
+        }
+
+    }
+
 
 }

@@ -93,6 +93,8 @@ public class TAuth extends JSONObject {
             name = thisAcc.getName();
             email = thisAcc.getEmail();
             
+            save();
+            
             return true;
 
         } catch (TwitterException e) {

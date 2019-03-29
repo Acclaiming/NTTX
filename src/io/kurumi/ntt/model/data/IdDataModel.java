@@ -85,13 +85,28 @@ public abstract class IdDataModel {
 
         }
         
-        
-        
         public Boolean exists(long id) {
             
             return new File(Env.DATA_DIR, dirName + "/" + id + ".json").isFile();
             
         }
+        
+        public T getNoCache(Long id) {
+
+            if (idIndex.containsKey(id)) return idIndex.get(id);
+            
+                try {
+
+                    T obj = clazz.getDeclaredConstructor(new Class[] {String.class,long.class}).newInstance(dirName,id);
+
+                    return obj;
+
+                } catch (InstantiationException e) {} catch (InvocationTargetException e) {} catch (SecurityException e) {} catch (NoSuchMethodException e) {} catch (IllegalAccessException e) {} catch (IllegalArgumentException e) {}
+
+            return null;
+
+        }
+        
         
         public T get(Long id) {
 
@@ -147,8 +162,6 @@ public abstract class IdDataModel {
         public void delObj(T obj) {
             
             obj.delete();
-            
-            idList.remove(obj.id);
             
             idIndex.remove(obj.id);
             

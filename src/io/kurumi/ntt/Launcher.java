@@ -8,7 +8,7 @@ import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.model.*;
 import java.io.*;
 import java.util.*;
-import io.kurumi.ntt.twitter.track.TrackTask;
+import io.kurumi.ntt.twitter.track.FollowerTrackTask;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -29,7 +29,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         
         addFragment(TwitterTrack.INSTANCE);
         
-        TrackTask.INSTANCE.start();
+        FollowerTrackTask.start();
 
     }
 
@@ -78,7 +78,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         INSTANCE.bot().removeGetUpdatesListener();
         
-        TrackTask.INSTANCE.stop();
+        FollowerTrackTask.stop();
 
 		//  BotServer.INSTACNCE.stop();
 

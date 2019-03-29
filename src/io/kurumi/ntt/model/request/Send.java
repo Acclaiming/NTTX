@@ -9,16 +9,42 @@ import com.pengrad.telegrambot.response.SendResponse;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import com.pengrad.telegrambot.request.*;
+import io.kurumi.ntt.Launcher;
 
 public class Send extends AbstractSend<Send> {
 
     private SendMessage request;
 
-    public Send(Fragment fragment, Object chatId, String... msg) {
+    public Send(Fragment fragment,String chatId,String... msg) {
+
+        this(null,fragment,chatId,msg);
+
+    }
+    
+    public Send(Fragment fragment,long chatId,String... msg) {
+
+        this(null,fragment,chatId,msg);
+
+    }
+    
+    public Send(String chatId,String... msg) {
+
+        this(null,Launcher.INSTANCE,chatId,msg);
+
+    }
+
+    public Send(long chatId,String... msg) {
+
+        this(null,Launcher.INSTANCE,chatId,msg);
+
+    }
+    
+
+    private Send(Void v,Fragment fragment,Object chatId,String... msg) {
 
         super(fragment);
-		
-        request = new SendMessage(chatId, ArrayUtil.join(msg, "\n"));
+
+        request = new SendMessage(chatId,ArrayUtil.join(msg,"\n"));
 
         this.fragment = fragment;
 
@@ -115,7 +141,7 @@ public class Send extends AbstractSend<Send> {
 
     public Msg send() {
 
-        return new Msg(fragment, sync().message());
+        return new Msg(fragment,sync().message());
 
     }
 
@@ -128,7 +154,7 @@ public class Send extends AbstractSend<Send> {
 
         if (!resp.isOk()) {
 
-            StaticLog.error(new RuntimeException(), "SendMseeage Error " + resp.errorCode() + " : " + resp.description());
+            StaticLog.error(new RuntimeException(),"SendMseeage Error " + resp.errorCode() + " : " + resp.description());
 
         }
 
