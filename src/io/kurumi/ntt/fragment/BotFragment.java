@@ -160,6 +160,16 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
                 return;
 
             }
+            
+            for (Fragment fragmnet : fragments) {
+
+                if (fragmnet.onMsg(user,new Msg(fragmnet,update.message()))) {
+
+                    return;
+
+                }
+
+            }
 
             switch (update.message().chat().type()) {
 

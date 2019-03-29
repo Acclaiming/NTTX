@@ -141,16 +141,17 @@ public class TwitterUI extends Fragment {
             RequestToken request = cache.get(requestToken);
 
 			try {
+                
 
 				AccessToken access = ApiToken.defaultToken.createApi().getOAuthAccessToken(request,oauthVerifier);
 
 				TAuth auth = new TAuth(ApiToken.defaultToken.apiToken,ApiToken.defaultToken.apiSecToken,access.getToken(),access.getTokenSecret());
 
+                user.point = null;
+                
                 if (!auth.refresh()) {
 
                     msg.send("认证错误... 请重试").exec();
-
-                    user.point = null;
 
                     return;
 
