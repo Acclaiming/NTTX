@@ -1,6 +1,7 @@
 package io.kurumi.ntt.model.data;
 
 import io.kurumi.ntt.Env;
+import java.lang.reflect.Constructor;
 
 public abstract class AIIdDataModel extends IdDataModel {
     
@@ -35,13 +36,21 @@ public abstract class AIIdDataModel extends IdDataModel {
     
     public static class Factory<T extends AIIdDataModel> extends IdDataModel.Factory<T> {
         
-        public Factory(Class<T> clazz, String dirName) { super(clazz,dirName); }
+        public Factory(Class<T> clazz, String dirName) { super(clazz,dirName);
+        
+            try {
+                aiidc = clazz.getDeclaredConstructor(new Class[] {String.class});
+            } catch (NoSuchMethodException e) {} catch (SecurityException e) {}
+
+        }
+        
+        public Constructor<T> aiidc;
         
         public T newObj() {
             
             try {
 
-                T obj = clazz.getDeclaredConstructor(new Class[] {String.class}).newInstance(dirName);
+                T obj = aiidc.newInstance(dirName);
 
                 return obj;
 
