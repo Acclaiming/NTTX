@@ -107,10 +107,14 @@ public class UserData extends IdDataModel {
     
     public static UserData get(User u) {
 
+        if (INSTANCE.idIndex.containsKey(u.id())) return INSTANCE.idIndex.get(u.id());
+        
         UserData user = new UserData(INSTANCE.dirName,u.id());
 
         user.refresh(u);
 
+        INSTANCE.idIndex.put(u.id().longValue(),user);
+        
         return user;
 
     }
