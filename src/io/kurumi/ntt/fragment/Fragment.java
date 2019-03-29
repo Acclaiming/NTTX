@@ -12,43 +12,51 @@ public class Fragment {
     public BotFragment origin;
 
     public TelegramBot bot() {
+        
         return origin.bot();
+        
     }
 
     public boolean onMsg(UserData user, Msg msg) {
+        
         return false;
+        
     }
-
-    public boolean onPoiMsg(UserData user, Msg msg, CData point) {
-        return false;
-    }
-
+    
     public boolean onPrivMsg(UserData user, Msg msg) {
+
         return false;
+
+    }
+    
+    public boolean onNPM(UserData user, Msg msg) {
+        
+        return false;
+        
     }
 
-    public boolean onPoiPrivMsg(UserData user, Msg msg, CData point) {
+    public boolean onPPM(UserData user, Msg msg) {
+        
         return false;
+        
     }
 
     public boolean onGroupMsg(UserData user, Msg msg, boolean superGroup) {
+        
         return false;
-    }
-
-    public boolean onPoiGroupMsg(UserData user, Msg msg, CData point, boolean superGroup) {
-        return false;
+        
     }
 
     public boolean onChanPost(UserData user, Msg msg) {
+        
         return false;
+        
     }
 
     public boolean onCallback(UserData user, Callback callback) {
+        
         return false;
-    }
-
-    public boolean onPoiCallback(UserData user, Callback callback, CData point) {
-        return false;
+        
     }
 
     public boolean onQuery(UserData user, Query inlineQuery) {

@@ -92,7 +92,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 			}
 
-			
+
 		}
 
 		return CONFIRMED_UPDATES_ALL;
@@ -104,31 +104,23 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         if ("cancel".equals(msg.command())) {
 
-            msg.send("你要取消什么？ >_<").exec();
+            if (user.point == null) {
+
+                msg.send("你要取消什么？ >_<").exec();
+
+            } else {
+
+                user.point = null;
+
+                user.savePoint();
+
+                msg.send("取消成功 ~").exec();
+
+            }
 
             return true;
 
         }
-
-        return false;
-
-    }
-
-    @Override
-    public boolean onPoiMsg(UserData user,Msg msg,CData point) {
-
-        if ("cancel".equals(msg.command())) {
-
-            user.point = null;
-
-			user.savePoint();
-
-            msg.send("取消成功 ~").exec();
-
-            return true;
-
-        }
-
 
         return false;
 
@@ -144,133 +136,90 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
             BotLog.process(user,update,point);
 
-            if (point) {
+            for (Fragment fragmnet : fragments) {
 
-                CData data = user.point;
+                if (fragmnet.onMsg(user,new Msg(fragmnet,update.message()))) {
 
-                for (Fragment fragmnet : fragments) {
+                    return;
 
-                    if (fragmnet.onPoiMsg(user,new Msg(fragmnet,update.message()),data)) {
+                }
 
-                        return;
+            }
+
+            switch (update.message().chat().type()) {
+
+                case Private: {
+
+                        for (Fragment fragmnet : fragments) {
+
+                            if (fragmnet.onPrivMsg(user,new Msg(fragmnet,update.message()))) {
+
+                                return;
+
+                            }
+
+                        }
+
+                        if (user.point == null) {
+
+                            for (Fragment fragmnet : fragments) {
+
+                                if (fragmnet.onNPM(user,new Msg(fragmnet,update.message()))) {
+
+                                    return;
+
+                                }
+
+                            }
+
+                        } else {
+
+                            for (Fragment fragmnet : fragments) {
+
+                                if (fragmnet.onPPM(user,new Msg(fragmnet,update.message()))) {
+
+                                    return;
+
+                                }
+
+                            }
+
+                        }
+
+
+                        break;
 
                     }
 
-                }
+                case group: {
 
-                switch (update.message().chat().type()) {
+                        for (Fragment fragmnet : fragments) {
 
-					case Private: {
+                            if (fragmnet.onGroupMsg(user,new Msg(fragmnet,update.message()),false)) {
 
-                            for (Fragment fragmnet : fragments) {
-
-                                if (fragmnet.onPoiPrivMsg(user,new Msg(fragmnet,update.message()),data)) {
-
-                                    return;
-
-                                }
-
-                            }
-
-                            break;
-
-                        }
-
-					case group: {
-
-                            for (Fragment fragmnet : fragments) {
-
-                                if (fragmnet.onPoiGroupMsg(user,new Msg(fragmnet,update.message()),data,false)) {
-
-                                    return;
-
-                                }
-
-                            }
-
-                            break;
-
-                        }
-
-					default: {
-
-                            for (Fragment fragmnet : fragments) {
-
-                                if (fragmnet.onPoiGroupMsg(user,new Msg(fragmnet,update.message()),data,true)) {
-
-                                    return;
-
-                                }
+                                return;
 
                             }
 
                         }
 
-
-                }
-
-            } else {
-
-                for (Fragment fragmnet : fragments) {
-
-                    if (fragmnet.onMsg(user,new Msg(fragmnet,update.message()))) {
-
-                        return;
+                        break;
 
                     }
 
-                }
+                default: {
 
-                switch (update.message().chat().type()) {
+                        for (Fragment fragmnet : fragments) {
 
-					case Private: {
+                            if (fragmnet.onGroupMsg(user,new Msg(fragmnet,update.message()),true)) {
 
-                            for (Fragment fragmnet : fragments) {
-
-                                if (fragmnet.onPrivMsg(user,new Msg(fragmnet,update.message()))) {
-
-                                    return;
-
-                                }
-
-                            }
-
-                            break;
-
-                        }
-
-					case group: {
-
-                            for (Fragment fragmnet : fragments) {
-
-                                if (fragmnet.onGroupMsg(user,new Msg(fragmnet,update.message()),false)) {
-
-                                    return;
-
-                                }
-
-                            }
-
-                            break;
-
-                        }
-
-					default: {
-
-                            for (Fragment fragmnet : fragments) {
-
-                                if (fragmnet.onGroupMsg(user,new Msg(fragmnet,update.message()),true)) {
-
-                                    return;
-
-                                }
+                                return;
 
                             }
 
                         }
 
-
-                }
+                    }
 
             }
 
@@ -292,31 +241,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
             UserData user = UserData.get(update.callbackQuery().from());
 
-            boolean point = user.point != null;
+            for (Fragment fragmnet : fragments) {
 
-            if (point) {
+                if (fragmnet.onCallback(user,new Callback(fragmnet,update.callbackQuery()))) {
 
-                CData data = user.point;
-
-                for (Fragment fragmnet : fragments) {
-
-                    if (fragmnet.onPoiCallback(user,new Callback(fragmnet,update.callbackQuery()),data)) {
-
-                        return;
-
-                    }
-
-                }
-
-            } else {
-
-                for (Fragment fragmnet : fragments) {
-
-                    if (fragmnet.onCallback(user,new Callback(fragmnet,update.callbackQuery()))) {
-
-                        return;
-
-                    }
+                    return;
 
                 }
 

@@ -44,8 +44,8 @@ public class AuthCheckTask extends TimerTask {
             
             if (!auth.refresh()) {
                
-                
-                
+                new Send(user.id,"对不起！但是乃的账号 " + auth.getFormatedNameHtml() + " 无法访问 已移除！ Σ( ﾟω / ").html().exec();
+               
             }
 
         }

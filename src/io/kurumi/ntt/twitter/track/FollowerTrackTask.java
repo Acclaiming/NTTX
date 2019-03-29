@@ -115,7 +115,7 @@ public class FollowerTrackTask extends TimerTask {
 
                 e.printStackTrace(new PrintWriter(out,true));
                 
-                new Send(Launcher.INSTANCE,user.id,StrUtil.str(out.toByteArray(),CharsetUtil.CHARSET_UTF_8)).exec();
+                new Send(user.id,StrUtil.str(out.toByteArray(),CharsetUtil.CHARSET_UTF_8)).exec();
                 
             }
 

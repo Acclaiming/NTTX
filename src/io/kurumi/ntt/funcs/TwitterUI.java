@@ -37,9 +37,9 @@ public class TwitterUI extends Fragment {
 	}
 
 	@Override
-	public boolean onPoiMsg(UserData user,Msg msg,CData point) {
+	public boolean onPPM(UserData user,Msg msg) {
 
-		switch (point.getPoint()) {
+		switch (user.point.getPoint()) {
 
 			case POINT_INPUT_CALLBACK : onInputCallback(user,msg);break;
 
@@ -57,7 +57,7 @@ public class TwitterUI extends Fragment {
 
 	void tauth(UserData user,Msg msg) {
 
-        if (msg.isPrivate()) {
+        if (!msg.isPrivate()) {
 
             msg.send("请使用私聊 :)").exec();
 
@@ -156,9 +156,9 @@ public class TwitterUI extends Fragment {
 
                 }
 
-				user.ext.put("twitter_auth",auth);
+                TAuth.auth.put(user.idStr,auth);
 
-				user.save();
+                TAuth.saveAll();
 
 				msg.send("好！现在认证成功 , " + auth.getFormatedNameHtml()).html().exec();
 
@@ -182,7 +182,7 @@ public class TwitterUI extends Fragment {
 
 	void trem(UserData user,Msg msg) {
 
-        if (msg.isPrivate()) {
+        if (!msg.isPrivate()) {
 
             msg.send("请使用私聊 :)").exec();
 

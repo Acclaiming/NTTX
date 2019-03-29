@@ -12,9 +12,11 @@ import io.kurumi.ntt.utils.Html;
 
 public class TAuth extends JSONObject {
 
+    public static JSONObject auth = BotDB.getJSON("data","auth",true);
+    
 	public static boolean exists(UserData user) {
-		
-		return user.ext.containsKey("twitter_auth");
+        
+		return auth.containsKey(user.idStr);
 		
 	}
 	
@@ -22,13 +24,19 @@ public class TAuth extends JSONObject {
 		
 		if (exists(user)) {
 			
-			return new TAuth(user.ext.getJSONObject("twitter_auth"));
+			return new TAuth(auth.getJSONObject(user.idStr));
 			
 		}
 		
 		return null;
 		
 	}
+    
+    public static void saveAll() {
+        
+        BotDB.setJSON("data","auth",auth);
+        
+    }
 	
     private String apiToken;
     private String apiSecToken;
