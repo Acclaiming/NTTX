@@ -32,10 +32,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(TwitterTrack.INSTANCE);
 
-        FollowerTrackTask.start();
-
-        new InitTask().start();
-
     }
 
     public static void main(String[] args) {
@@ -89,13 +85,24 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
+    @Override
+    public void start() {
+      
+        super.start();
+        
+        FollowerTrackTask.start();
+
+        new InitTask().start();
+        
+    }
+
 	public void stop() {
 
-		try {
+        try {
 
-			Runtime.getRuntime().exec("service ntt stop");
+            Runtime.getRuntime().exec("service ntt stop");
 
-		} catch (IOException e) {}
+        } catch (IOException e) {}
 
 	}
 
