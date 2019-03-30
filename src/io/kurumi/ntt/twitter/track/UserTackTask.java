@@ -50,7 +50,7 @@ public class UserTackTask extends TimerTask {
         HashMap<Long,List<Long>> subIndex = new HashMap<>();
         HashMap<UserArchive,String> changes = new HashMap<>();
 
-        Collection<JSONArray> values = (Collection<JSONArray>)subs.values();
+        Collection<JSONArray> values = (Collection<JSONArray>)(Object)subs.values();
 
         List<Long> globals = new LinkedList<>();
 
