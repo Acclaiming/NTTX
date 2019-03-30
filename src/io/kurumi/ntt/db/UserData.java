@@ -23,6 +23,8 @@ public class UserData extends IdDataModel {
     
     public static UserData get(User u) {
 
+        if (u == null) return null;
+        
         if (INSTANCE.idIndex.containsKey(u.id().longValue())) return INSTANCE.idIndex.get(u.id());
 
         UserData user = new UserData(INSTANCE.dirName,u.id());

@@ -85,12 +85,25 @@ public class BotLog {
 
     }
 
-    public static void process(UserData user,Update update,boolean point) {
+    public static void process(UserData user,Update update) {
 
-        StringBuilder log = new StringBuilder("收到来自 ").append(user.name()).append(" (").append(user.userName()).append(") ").append(" 从");
-
+        StringBuilder log = new StringBuilder();
+        
         if (update.message() != null) {
-
+            
+            log.append("收到来自 ");
+            
+            if (user != null) {
+                
+                log.append(user.name()).append(" (").append(user.userName()).append(") ").append(" 的");
+            
+            } else {
+                
+                log.append("匿名用户 的");
+                
+            }
+            
+            
             switch (update.message().chat().type()) {
 
                 case Private : log.append("私聊");break;
@@ -100,12 +113,14 @@ public class BotLog {
 
 
             }
+            
+            log.append("消息 :");
 
-            log.append(processMessage(user,update.message(),point));
+            log.append(processMessage(user,update.message()));
 
         } else if (update.channelPost() != null) {
 
-            log.append("频道文章 : ").append(processMessage(user,update.channelPost(),point));
+            log.append("频道消息 : ").append(processMessage(user,update.channelPost()));
 
         } else if (update.callbackQuery() != null) {
 
@@ -121,19 +136,15 @@ public class BotLog {
 
     }
 
-    private static String processMessage(UserData user,Message msg,boolean point) {
+    private static String processMessage(UserData user,Message msg) {
 
         StringBuilder log = new StringBuilder();
 
-        if (point) {
+        if (msg.forwardFromChat() != null) {
 
-            log.append("指针 (").append(user.point.getPoint()).append(") ");
+            UserData ff = UserData.get(msg.forwardFrom());
 
-        }
-
-        if (msg.forwardFrom() != null) {
-
-            log.append("转发从 " + UserData.get(msg.forwardFrom()).formattedName()).append(" ");
+            log.append(ff != null ? ff.formattedName() : "匿名用户").append(" ");
 
         }
 
@@ -165,9 +176,9 @@ public class BotLog {
 
         if (msg.photo() != null) log.append("「照片」");
 
-        if (msg.pinnedMessage() != null) log.append("「置顶消息 :").append(processMessage(user,msg.pinnedMessage(),false));
+        if (msg.pinnedMessage() != null) log.append("「置顶消息 :").append(processMessage(user,msg.pinnedMessage()));
 
-        if (msg.replyToMessage() != null) log.append("「回复给 : ").append(UserData.get(msg.replyToMessage().from()).formattedName()).append(" : ").append(processMessage(UserData.get(msg.replyToMessage().from()),msg.replyToMessage(),false)).append("」");
+        if (msg.replyToMessage() != null) log.append("「回复给 : ").append(UserData.get(msg.replyToMessage().from()).formattedName()).append(" : ").append(processMessage(UserData.get(msg.replyToMessage().from()),msg.replyToMessage())).append("」");
 
         if (msg.sticker() != null) log.append("「贴纸 : ").append(msg.sticker().emoji()).append(" 从 ").append(msg.sticker().setName()).append("」");
 
