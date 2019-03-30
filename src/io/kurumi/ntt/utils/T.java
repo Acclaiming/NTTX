@@ -27,7 +27,7 @@ public class T {
         
         String notContactableMsg = "咱无法给乃发送信息呢，请私聊点击 'start' 启用咱 ~";
         
-        if (!isUserContactable(user.id)) {
+        if (!msg.isPrivate() && !isUserContactable(user.id)) {
             
             if (msg instanceof Callback) {
                 

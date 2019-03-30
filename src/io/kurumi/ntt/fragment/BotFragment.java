@@ -172,11 +172,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                         for (Fragment fragmnet : fragments) {
 
-                            
-                            
                             if (fragmnet.onNPM(user,new Msg(fragmnet,update.message()))) {
-
-                                new Send(user.id,"" + user.point).exec();
                                 
                                 return;
  
