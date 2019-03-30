@@ -186,7 +186,7 @@ public class UserTackTask extends TimerTask {
 
         boolean result = list.add(id);
 
-        subs.put(user.idStr,id);
+        subs.put(user.idStr,list);
         
         return result;
 
@@ -198,7 +198,7 @@ public class UserTackTask extends TimerTask {
 
         boolean result = list.remove(id);
 
-        subs.put(user.idStr,id);
+        subs.put(user.idStr,list);
         
         return result;
 
