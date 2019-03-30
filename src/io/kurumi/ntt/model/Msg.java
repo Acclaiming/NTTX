@@ -104,12 +104,6 @@ public class Msg extends Context {
 
     public Edit edit(String... msg) {
         
-        if (msg.length > 0 && !isPrivate() && message.from() != null) {
-
-            ArrayUtil.setOrAppend(msg,0,from().userName() + " " + ArrayUtil.get(msg,0));
-
-        }
-        
         return new Edit(fragment,chatId(),messageId(),msg);
 
     }
