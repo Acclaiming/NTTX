@@ -25,7 +25,7 @@ public class UserTrack extends Fragment {
 
             case "sub" : subUser(user,msg);break;
             case "unsub" : unSubUser(user,msg);break;
-            case "ubsuball" : unSubAll(user,msg);break;
+            case "unsuball" : unSubAll(user,msg);break;
 
             default : return false;
 
