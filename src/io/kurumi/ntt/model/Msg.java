@@ -78,8 +78,7 @@ public class Msg extends Context {
 
 	}
 
-    @Override
-    public Send send(String... msg) {
+    public Send sendWithAtIfGroup(String... msg) {
         
         if (msg.length > 0 && !isPrivate() && message.from() != null) {
         
