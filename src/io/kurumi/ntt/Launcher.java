@@ -77,7 +77,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         if ("start".equals(msg.command()) && msg.params().length == 0) {
             
             msg.send("欢迎dalao使用咱BOT！ ヾ(･ω･｀＝´･ω･)ﾉ♪ ").exec();
-            msg.send("不加个裙玩吗 ヽ(○´3`)ﾉ  " + Html.a("------> 戳这里！！！ <------","https://t.me/joinchat/H5gBQ1N2Mx5gf3Jm1e6RgQ")).html().exec();
+            msg.send("不加个裙玩吗 ~ " + Html.a("------ 戳这里！！！ ------","https://t.me/joinchat/H5gBQ1N2Mx5gf3Jm1e6RgQ")).html().exec();
             
             return true;
             
