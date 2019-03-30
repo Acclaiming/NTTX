@@ -105,7 +105,7 @@ public class UserTackTask extends TimerTask {
 
                     }
 
-                    ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[900])));
+                    ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
 
                     for (User tuser : result) {
 
