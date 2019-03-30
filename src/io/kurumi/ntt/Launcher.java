@@ -93,56 +93,5 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         new InitTask().start();
         
     }
-
-	public void stop() {
-
-        try {
-
-            Runtime.getRuntime().exec("service ntt stop");
-
-        } catch (IOException e) {}
-
-	}
-
-	public void restart() {
-
-		try {
-
-			Runtime.getRuntime().exec("service ntt restart");
-
-		} catch (IOException e) {}
-
-	}
-
-	public void reboot() {
-
-		try {
-
-			Runtime.getRuntime().exec("reboot");
-
-		} catch (IOException e) {}
-
-	}
-
-	@Override
-	public boolean onMsg(UserData user,Msg msg) {
-        
-        if (super.onMsg(user,msg)) return true;
-
-		if (!(Env.DEVELOPER.equals(user.userName) && msg.isCommand())) return false;
-
-		switch (msg.command()) {
-
-			case "stop" : stop();break;
-			case "restart" : restart();break;
-			case "reboot" : reboot();break;
-
-			default : return false;
-
-		}
-
-		return true;
-
-	}
-
+    
 }
