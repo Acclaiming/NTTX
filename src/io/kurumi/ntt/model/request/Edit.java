@@ -78,6 +78,25 @@ public class Edit extends AbstractSend<Edit> {
         return resp;
 
     }
+
+    @Override
+    public BaseResponse sync(Exception track) {
+        
+        BaseResponse resp = fragment.bot().execute(request);
+
+        //    if (resp.errorCode() ==
+
+        if (!resp.isOk()) {
+
+            BotLog.info("消息发送失败 " + resp.errorCode() + " : " + resp.description(),track);
+
+        }
+
+        return resp;
+    }
+
+    
+    
     
     
     
