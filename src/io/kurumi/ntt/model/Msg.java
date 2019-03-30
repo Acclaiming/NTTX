@@ -80,6 +80,8 @@ public class Msg extends Context {
     @Override
     public Send send(String... msg) {
         
+        System.out.println("send调用 : " + ArrayUtil.join(msg,"\n"));
+        
         if (msg.length > 0 && !isPrivate() && message.from() != null) {
         
             ArrayUtil.setOrAppend(msg,0,from().userName() + " " + ArrayUtil.get(msg,0));
@@ -103,6 +105,8 @@ public class Msg extends Context {
     }
 
     public Edit edit(String... msg) {
+        
+        System.out.println("edit调用 : " + ArrayUtil.join(msg,"\n"));
         
         return new Edit(fragment,chatId(),messageId(),msg);
 
