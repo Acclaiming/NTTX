@@ -61,6 +61,8 @@ public class UserTrack extends Fragment {
 
             msg.send("用法 : /sub <推油链接/用户名/ID>").exec();
 
+            return;
+            
         }
 
         if (NumberUtil.isNumber(msg.params()[0])) {
