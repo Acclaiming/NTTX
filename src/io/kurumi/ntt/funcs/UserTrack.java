@@ -87,7 +87,7 @@ public class UserTrack extends Fragment {
                 
                 UserTackTask.save();
 
-                msg.send("已订阅 : " + archive.getHtmlURL() + ":)","ID : " + archive.idStr).html().exec();
+                msg.send("已订阅 : " + archive.getHtmlURL() + " :)","ID : " + archive.idStr).html().exec();
 
             } catch (TwitterException e) {
 
@@ -125,7 +125,7 @@ public class UserTrack extends Fragment {
             
             UserTackTask.save();
 
-            msg.send("已订阅 : " + archive.getHtmlURL() + ":)","ID : " + archive.idStr).html().exec();
+            msg.send("已订阅 : " + archive.getHtmlURL() + " :)","ID : " + archive.idStr).html().exec();
 
         } catch (TwitterException e) {
 
