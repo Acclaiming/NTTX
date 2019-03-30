@@ -107,7 +107,7 @@ public class UserArchive extends IdDataModel {
 
         if (!(name = user.getName()).equals(nameL)) {
 
-            str.append(split).append("名称更改 : ").append(name).append(" ------> ").append(name);
+            str.append(split).append("名称更改 : ").append(nameL).append(" ------> ").append(name);
 
             change = true;
 
