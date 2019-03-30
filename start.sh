@@ -6,13 +6,15 @@ done
 
 find src -name "*.java" > sources.txt
 
-rm -rf ./classes
+mkdir ./cache
 
-mkdir ./classes
-
-javac -d $(dirname $(readlink -f $0))/classes -classpath $CLASSPATH @sources.txt -nowarn
+javac -d $(dirname $(readlink -f $0))/cache -classpath $CLASSPATH @sources.txt -nowarn
 
 rm -rf ./sources.txt
+
+rm -rf ./classes
+
+mv cache classes
 
 export CLASSPATH=./classes:$CLASSPATH
 
