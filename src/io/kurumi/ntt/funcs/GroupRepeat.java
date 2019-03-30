@@ -6,6 +6,7 @@ import io.kurumi.ntt.db.UserData;
 import java.util.HashMap;
 import com.pengrad.telegrambot.request.SendSticker;
 import io.kurumi.ntt.utils.BotLog;
+import cn.hutool.core.util.RandomUtil;
 
 public class GroupRepeat extends Fragment {
 
@@ -40,6 +41,12 @@ public class GroupRepeat extends Fragment {
                    // last.remove(msg.chatId());
                   
                 } else {
+                    
+                    if (RandomUtil.randomInt(0,10) == 9) {
+                        
+                        msg.send(msg.text()).exec();
+                        
+                    }
 
                     last.put(msg.chatId(), msg);
 
@@ -62,6 +69,13 @@ public class GroupRepeat extends Fragment {
                    // last.remove(msg.chatId());
 
                 } else {
+                    
+                    if (RandomUtil.randomInt(0,10) == 9) {
+                        
+                        bot().execute(new SendSticker(msg.chatId(), msg.message().sticker().fileId()));
+                        
+                        
+                        }
 
                     last.put(msg.chatId(), msg);
 
