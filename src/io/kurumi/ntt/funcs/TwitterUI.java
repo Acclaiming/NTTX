@@ -132,7 +132,7 @@ public class TwitterUI extends Fragment {
         String requestToken = params.get("oauth_token");
         String oauthVerifier = params.get("oauth_verifier");
 
-		if (requestToken == null) {
+		if (requestToken == null || oauthVerifier == null) {
 
 			msg.send("乃好像忘了之前使用了 /tauth ！现在请发送跳转到的地址 ( ˶‾᷄࿀‾᷅˵ ) 如果不小心关掉了浏览器那就取消认证并再来一次吧 ( ⚆ _ ⚆ ) ","","取消使用 /cancel ").exec();
 
