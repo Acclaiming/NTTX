@@ -12,6 +12,7 @@ import java.io.*;
 
 import java.io.File;
 import io.kurumi.ntt.utils.BotLog;
+import cn.hutool.core.math.MathUtil;
 
 public class Msg extends Context {
 
@@ -118,41 +119,24 @@ public class Msg extends Context {
     
     public boolean unrestrict() {
 
-        return restrict(true,true,true,true);
+        return unrestrict(from().id);
 
     }
 
     public boolean restrict() {
 
-        return restrict(false,false,false,false);
-
-    }
-
-    public boolean restrict(boolean canSendMessage,boolean canSendMediaMessages,boolean canSendOtherMessages,boolean canAddWebViewPagePreviews) {
-
-        return restrict(from().id.intValue(),canSendMessage,canSendMediaMessages,canSendOtherMessages,canAddWebViewPagePreviews);
+        return restrict(from().id);
 
     }
     
-	
-	public boolean unrestrict(int id) {
-		
-		return restrict(id,true,true,true,true);
-		
-	}
-	
-	public boolean restrict(int id) {
-		
-		 return restrict(id,false,false,false,false);
-		
-	}
-	
-	public boolean restrict(int id,boolean canSendMessage,boolean canSendMediaMessages,boolean canSendOtherMessages,boolean canAddWebViewPagePreviews) {
+    public boolean restrictUntil(long until) {
 
-		return fragment.bot().execute(new RestrictChatMember(chatId(),id).canSendMessages(canSendMessage).canSendMediaMessages(canSendMediaMessages).canSendOtherMessages(canSendOtherMessages).canAddWebPagePreviews(canAddWebViewPagePreviews)).isOk();
+        
+        
+        return restrict(from().id,until);
 
-	}
-	
+    }
+    
 	public void kick() {
 		
 		fragment.bot().execute(new KickChatMember(chatId(),from().id.intValue()));
