@@ -34,6 +34,23 @@ public class UserTrack extends Fragment {
         return true;
 
     }
+    
+    String notFondMsg(TwitterException ex) {
+        
+        if (ex.getErrorMessage().contains("suspended")) {
+            
+            return "用户被停用 (" + ex.getErrorCode() + " " + ex.getErrorMessage() + ")";
+            
+        } else if (ex.getErrorMessage().contains("not found")) {
+            
+            return "用户不存在 (" + ex.getErrorCode() + " " + ex.getErrorMessage() + ")";
+            
+        }
+        
+        return ex.getErrorCode() + " " + ex.getErrorMessage();
+        
+        
+    }
 
     void subUser(UserData user,Msg msg) {
 
@@ -74,7 +91,7 @@ public class UserTrack extends Fragment {
 
             } catch (TwitterException e) {
 
-                msg.send("找不到这个用户 (" + msg.params()[0] + ") :( ","----------------",e.getErrorMessage()).exec();
+                msg.send("ID :" + msg.params()[0] + " 无法取得 :( ","----------------",notFondMsg(e)).exec();
 
             }
 
@@ -112,7 +129,7 @@ public class UserTrack extends Fragment {
 
         } catch (TwitterException e) {
 
-            msg.send("找不到这个用户 (@" + screenName + ") :( ","----------------",e.getErrorMessage()).exec();
+            msg.send("@" + msg.params()[0] + "无法取得 :(","----------------",notFondMsg(e)).exec();
 
         }
 
