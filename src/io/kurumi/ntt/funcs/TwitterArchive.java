@@ -11,6 +11,7 @@ import twitter4j.Twitter;
 import twitter4j.Status;
 import twitter4j.TwitterException;
 import io.kurumi.ntt.twitter.archive.UserArchive;
+import io.kurumi.ntt.utils.T;
 
 public class TwitterArchive extends Fragment {
 
@@ -23,7 +24,7 @@ public class TwitterArchive extends Fragment {
         switch (msg.command()) {
 
             case "status" : statusArchive(user,msg);break;
-            case "subuser" : userArchive(user,msg);break;
+          //   case "tuser" : userArchive(user,msg);break;
 
             default : return false;
 
@@ -43,32 +44,8 @@ public class TwitterArchive extends Fragment {
 
         }
 
-        String input = msg.params()[0];
-
-        Long statusId = -1L;
-
-        if (NumberUtil.isNumber(input)) {
-
-            statusId = NumberUtil.parseLong(input);
-
-        } else if (input.contains("twitter.com/")) {
-
-            input = StrUtil.subAfter(input,"status/",true);
-
-            if (input.contains("?")) {
-
-                input = StrUtil.subBefore(input,"?",false);
-
-            }
-
-            if (NumberUtil.isNumber(input))  {
-
-                statusId = NumberUtil.parseLong(input);
-
-            }
-
-        }
-
+        Long statusId = T.parseStatusId(msg.params()[0]);
+        
         if (statusId == -1L) {
 
             msg.send("用法 /status <推文链接|ID>").exec();
@@ -103,7 +80,7 @@ public class TwitterArchive extends Fragment {
 
             newStatus.read(status);
 
-            newStatus.save();
+            StatusArchive.INSTANCE.saveObj(newStatus);
 
             loopStatus(newStatus,api);
 
@@ -139,7 +116,7 @@ public class TwitterArchive extends Fragment {
 
                     inReplyTo.read(status);
 
-                    inReplyTo.save();
+                    StatusArchive.INSTANCE.saveObj(inReplyTo);
 
                     loopStatus(inReplyTo,api);
 
@@ -161,7 +138,7 @@ public class TwitterArchive extends Fragment {
 
                     qupted.read(status);
 
-                    qupted.save();
+                    StatusArchive.INSTANCE.saveObj(qupted);
 
                     loopStatus(qupted,api);
 
@@ -172,58 +149,5 @@ public class TwitterArchive extends Fragment {
         } catch (TwitterException ex) {}
 
     }
-
-    void userArchive(UserData user,Msg msg) {
-
-        if (msg.params().length != 1) {
-
-            msg.send("用法 /tuser <用户链接|用户名|ID>").exec();
-
-            return;
-
-        }
-
-        String input = msg.params()[0];
-
-        Long userId = -1L;
-        String screenName;
-
-        if (NumberUtil.isNumber(input)) {
-
-            userId = NumberUtil.parseLong(input);
-
-        } else {
-
-            if (input.contains("twitter.com/")) {
-
-                input = StrUtil.subAfter(input,"twitter.com/",true);
-
-                if (input.contains("?")) {
-
-                    input = StrUtil.subBefore(input,"?",false);
-
-                }
-
-            }
-
-            screenName = input;
-
-        }
-        
-        if (userId != -1L) {
-            
-            if (UserArchive.INSTANCE.exists(userId)) {
-                
-                msg.send("存档存在 :)").exec();
-
-              //  msg.send(UserArchive.INSTANCE.get(userId)).html().exec();
-                
-                
-            }
-            
-        }
-
-    }
-
 
 }

@@ -7,9 +7,9 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.twitter.track.FollowerTrackTask;
 import io.kurumi.ntt.twitter.TAuth;
 
-public class TwitterTrack extends Fragment {
+public class StatusTrack extends Fragment {
 
-    public static TwitterTrack INSTANCE = new TwitterTrack();
+    public static StatusTrack INSTANCE = new StatusTrack();
     
     @Override
     public boolean onMsg(UserData user,Msg msg) {

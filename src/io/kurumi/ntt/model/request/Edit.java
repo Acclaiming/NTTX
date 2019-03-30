@@ -1,11 +1,11 @@
 package io.kurumi.ntt.model.request;
 
 import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.log.StaticLog;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.response.BaseResponse;
 import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.utils.BotLog;
 
 public class Edit extends AbstractSend<Edit> {
 
@@ -69,11 +69,8 @@ public class Edit extends AbstractSend<Edit> {
 
         //    if (resp.errorCode() ==
 
-        if (!resp.isOk()) {
-
-            StaticLog.error(new RuntimeException(), "request : " + request.toWebhookResponse() + "\n\nEditMseeage Error " + resp.errorCode() + " : " + resp.description());
-
-        }
+        BotLog.debug("信息发送失败 : " + resp.description());
+        
 
         return resp;
 

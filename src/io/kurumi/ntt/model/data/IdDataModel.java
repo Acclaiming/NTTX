@@ -50,13 +50,13 @@ public abstract class IdDataModel {
 
     }
 
-    public void save() {
+    void save() {
 
         FileUtil.writeUtf8String(new JSONObject() {{ save(this); }}.toStringPretty(),new File(Env.DATA_DIR,dirName + "/" + id + ".json"));
 
     }
 
-    public void delete() {
+    void delete() {
 
         FileUtil.del(new File(Env.DATA_DIR,dirName + "/" + id + ".json"));
 
@@ -156,7 +156,6 @@ public abstract class IdDataModel {
 
                 T obj = constructor.newInstance(dirName,id);
 
-                saveObj(obj);
                 return obj;
 
             } catch (Exception e) {

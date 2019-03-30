@@ -19,6 +19,12 @@ public class Msg extends Context {
     private String name;
     private String[] params;
 
+    public Msg(Message message) {
+        
+        this(Launcher.INSTANCE,message);
+        
+    }
+    
     public Msg(Fragment fragment,Message message) {
 
         super(fragment,message.chat());
@@ -70,6 +76,18 @@ public class Msg extends Context {
 		return message.replyToMessage() != null;
 
 	}
+
+    @Override
+    public Send send(String... msg) {
+        
+        if (msg.length > 0 && !isPrivate() && message.from() != null) {
+        
+            ArrayUtil.setOrAppend(msg,0,from().userName() + " " + ArrayUtil.get(msg,0));
+            
+        }
+            
+        return super.send(msg);
+    }
 
 
 	public Msg replyTo() {

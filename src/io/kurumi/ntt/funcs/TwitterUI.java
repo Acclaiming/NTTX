@@ -199,9 +199,9 @@ public class TwitterUI extends Fragment {
 
 		}
 
-		user.ext.remove("twitter_auth");
-
-		user.save();
+	    TAuth.auth.remove(user.idStr);
+        
+        TAuth.saveAll();
 
 		msg.send("好！现在认证已经移除 ~ 程序不会继续保存。 [关于Twitter认证部分的代码](https://github.com/HiedaNaKan/NTTools/tree/master/src/io/kurumi/ntt/funcs/TwitterUI.java)。").markdown().exec();
 

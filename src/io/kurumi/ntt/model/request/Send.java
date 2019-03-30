@@ -10,6 +10,7 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.utils.BotLog;
 
 public class Send extends AbstractSend<Send> {
 
@@ -152,12 +153,8 @@ public class Send extends AbstractSend<Send> {
 
         SendResponse resp = fragment.bot().execute(request);
 
-        if (!resp.isOk()) {
-
-            StaticLog.error(new RuntimeException(),"SendMseeage Error " + resp.errorCode() + " : " + resp.description());
-
-        }
-
+        BotLog.infoWithStack("信息发送失败 : " + resp.description());
+        
         return resp;
 
     }

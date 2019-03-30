@@ -5,12 +5,18 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.request.AnswerCallback;
 import io.kurumi.ntt.utils.CData;
+import io.kurumi.ntt.Launcher;
 
 public class Callback extends Msg {
 
     public CData data;
     private CallbackQuery query;
 
+    public Callback(CallbackQuery query) {
+
+        this(Launcher.INSTANCE, query);
+
+    }
     public Callback(Fragment fragment, CallbackQuery query) {
 
         super(fragment, query.message());

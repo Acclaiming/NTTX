@@ -13,7 +13,75 @@ import io.kurumi.ntt.model.data.*;
 
 public class UserData extends IdDataModel {
 
-	public static Factory<UserData> INSTANCE = new Factory<UserData>(UserData.class,"users");
+    public static HashMap<String,UserData> userNameIndex = new HashMap<>();
+    
+    public static UserData getByUserName(String userName) {
+        
+        return userNameIndex.containsKey(userName) ? userNameIndex.get(userName) : null;
+        
+    }
+    
+    public static UserData get(User u) {
+
+        if (INSTANCE.idIndex.containsKey(u.id())) return INSTANCE.idIndex.get(u.id());
+
+        UserData user = new UserData(INSTANCE.dirName,u.id());
+
+        user.refresh(u);
+
+        INSTANCE.idIndex.put(u.id().longValue(),user);
+
+        return user;
+
+    }
+    
+	public static Factory<UserData> INSTANCE = new Factory<UserData>(UserData.class,"users") {
+
+        public HashMap<String,UserData> userNameIndex = new HashMap<String,UserData>() {{
+            
+            UserData.userNameIndex = this;
+            
+        }};
+        
+        @Override
+        public UserData get(Long id) {
+         
+            UserData user = super.get(id);
+            
+            if (user != null && user.userName != null) userNameIndex.put(user.userName,user);
+            
+            return user;
+            
+        }
+
+        @Override
+        public void saveObj(UserData obj) {
+            
+            super.saveObj(obj);
+            
+            if (obj.userName != null) {
+                
+                userNameIndex.put(obj.userName,obj);
+                
+            }
+            
+        }
+
+        @Override
+        public void delObj(UserData obj) {
+            
+            super.delObj(obj);
+            
+            if (obj.userName != null) {
+                
+                userNameIndex.remove(obj.userName);
+                
+            }
+            
+        }
+       
+        
+    };
 
     public String firstName;
     public String lastName;
@@ -91,9 +159,9 @@ public class UserData extends IdDataModel {
 
     }
 
-    public boolean isAdmin() {
+    public boolean isDeveloper() {
 
-        return Env.FOUNDER.equals(userName);
+        return Env.DEVELOPER_ID == id;
 
     }
 
@@ -105,21 +173,6 @@ public class UserData extends IdDataModel {
 
     }
     
-    public static UserData get(User u) {
-
-        if (INSTANCE.idIndex.containsKey(u.id())) return INSTANCE.idIndex.get(u.id());
-        
-        UserData user = new UserData(INSTANCE.dirName,u.id());
-
-        user.refresh(u);
-
-        INSTANCE.idIndex.put(u.id().longValue(),user);
-        
-        return user;
-
-    }
-
-
     public boolean refresh(Fragment fragment) {
 
         GetChatResponse chat = fragment.bot().execute(new GetChat(id));
@@ -132,7 +185,7 @@ public class UserData extends IdDataModel {
 
         lastName = chat.chat().lastName();
 
-        save();
+        INSTANCE.saveObj(this);
 
         return true;
 
@@ -146,7 +199,7 @@ public class UserData extends IdDataModel {
 
         lastName = u.lastName();
 
-        save();
+        INSTANCE.saveObj(this);
 
     }
     

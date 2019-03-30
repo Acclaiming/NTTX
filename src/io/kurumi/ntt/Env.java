@@ -14,8 +14,11 @@ public class Env {
      * 创始人ID
      */
 
-    public static final String FOUNDER = "HiedaNaKan";
-
+    public static final String DEVELOPER = "HiedaNaKan";
+    public static final long DEVELOPER_ID = 530055491;
+    public static final String DEVELOPER_URL = "https://t.me/" + DEVELOPER;
+    
+    
 
     /**
      * 缓存文件存放地址

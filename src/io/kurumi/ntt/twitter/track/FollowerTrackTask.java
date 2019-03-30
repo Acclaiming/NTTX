@@ -23,6 +23,7 @@ import twitter4j.TwitterException;
 import twitter4j.User;
 import java.util.HashMap;
 import java.util.LinkedList;
+import io.kurumi.ntt.utils.BotLog;
 
 public class FollowerTrackTask extends TimerTask {
 
@@ -111,11 +112,7 @@ public class FollowerTrackTask extends TimerTask {
                 
             } catch (TwitterException e) {
                 
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-                e.printStackTrace(new PrintWriter(out,true));
-                
-                new Send(user.id,StrUtil.str(out.toByteArray(),CharsetUtil.CHARSET_UTF_8)).exec();
+                BotLog.sendToUser(e,user.id);
                 
             }
 

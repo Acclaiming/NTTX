@@ -18,7 +18,7 @@ public class Backup extends Fragment {
         
         if (!"backup".equals(msg.command())) return false;
         
-        if (!Env.FOUNDER.equals(user.userName)) {
+        if (!user.isDeveloper()) {
             
             msg.send("无权限").exec();
             

@@ -55,7 +55,7 @@ public class StatusArchive extends IdDataModel {
 
         UserArchive user = UserArchive.INSTANCE.getOrNew(from);
         user.read(status.getUser());
-        user.save();
+        UserArchive.INSTANCE.saveObj(user);
 
         inReplyToStatusId = status.getInReplyToStatusId();
 
@@ -71,7 +71,7 @@ public class StatusArchive extends IdDataModel {
 
             quotedStatus.read(status.getQuotedStatus());
 
-            quotedStatus.save();
+            INSTANCE.saveObj(quotedStatus);
 
         }
 
@@ -95,7 +95,7 @@ public class StatusArchive extends IdDataModel {
 
                 retweetedStatus.read(status.getRetweetedStatus());
 
-                retweetedStatus.save();
+                INSTANCE.saveObj(retweetedStatus);
 
             }
 
@@ -105,7 +105,7 @@ public class StatusArchive extends IdDataModel {
 
         }
 
-        save();
+        INSTANCE.saveObj(this);
 
     }
 

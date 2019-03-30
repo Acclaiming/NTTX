@@ -28,7 +28,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(TwitterArchive.INSTANCE);
 
-        addFragment(TwitterTrack.INSTANCE);
+        addFragment(StatusTrack.INSTANCE);
+        
+        addFragment(UserTrack.INSTANCE);
 
     }
 
@@ -127,7 +129,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         
         if (super.onMsg(user,msg)) return true;
 
-		if (!(Env.FOUNDER.equals(user.userName) && msg.isCommand())) return false;
+		if (!(Env.DEVELOPER.equals(user.userName) && msg.isCommand())) return false;
 
 		switch (msg.command()) {
 
