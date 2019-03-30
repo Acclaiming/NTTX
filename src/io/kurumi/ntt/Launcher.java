@@ -70,6 +70,26 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     }
 
     @Override
+    public boolean onMsg(UserData user,Msg msg) {
+     
+        if (super.onMsg(user,msg)) return true;
+        
+        if ("start".equals(msg.command()) && msg.params().length == 0) {
+            
+            msg.send("欢迎dalao使用咱BOT！ ヾ(･ω･｀＝´･ω･)ﾉ♪ ").exec();
+            msg.send("不加个裙玩吗 ヽ(○´3`)ﾉ  " + Html.a("------> 戳这里！！！ <------","https://t.me/joinchat/H5gBQ1N2Mx5gf3Jm1e6RgQ")).html().exec();
+            
+            return true;
+            
+        }
+        
+        return false;
+        
+    }
+    
+    
+
+    @Override
     public void uncaughtException(Thread thread,Throwable throwable) {
 
         StaticLog.error(throwable,"无法处理的错误");
