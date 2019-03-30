@@ -62,7 +62,7 @@ public class BotLog {
 
         log.warn(new Exception(),message);
         
-       // sendToDeveloper(new Exception(message,new Exception()));
+       sendToDeveloper(new Exception(message,new Exception()));
        
     }
 
@@ -70,19 +70,24 @@ public class BotLog {
 
         log.error(message);
         
-       
+        new Send(Env.DEVELOPER_ID,"ERROR : " + message).exec();
       
     }
 
     public static void error(String message,Throwable err) {
 
         log.error(err,message);
+        
+        sendToDeveloper(new Exception(message,err));
+        
 
     }
 
     public static void errorWithStack(String message) {
 
         log.error(new RuntimeException(),message);
+        
+        sendToDeveloper(new Exception(message));
 
     }
 

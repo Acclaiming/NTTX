@@ -92,9 +92,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public void uncaughtException(Thread thread,Throwable throwable) {
 
-        StaticLog.error(throwable,"无法处理的错误");
-        StaticLog.info("正在停止Bot");
-
+        BotLog.error("无法处理的错误,正在停止BOT",throwable);
+        
         INSTANCE.bot().removeGetUpdatesListener();
 
         FollowerTrackTask.stop();
