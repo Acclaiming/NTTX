@@ -129,7 +129,7 @@ public class UserTrack extends Fragment {
 
         } catch (TwitterException e) {
 
-            msg.send("@" + msg.params()[0] + "无法取得 :(","----------------",notFondMsg(e)).exec();
+            msg.send("@" + msg.params()[0] + " 无法取得 :(","----------------",notFondMsg(e)).exec();
 
         }
 
