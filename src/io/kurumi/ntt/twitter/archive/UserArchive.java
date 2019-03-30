@@ -143,7 +143,7 @@ public class UserArchive extends IdDataModel {
 
         }
 
-        boolean protectL = isProtected;
+        Boolean protectL = isProtected;
 
         if (protectL != (isProtected = user.isProtected())) {
 
