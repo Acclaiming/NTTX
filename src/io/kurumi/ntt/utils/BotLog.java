@@ -12,6 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.model.request.ButtonMarkup;
+import com.pengrad.telegrambot.model.User;
 
 public class BotLog {
 
@@ -91,18 +92,7 @@ public class BotLog {
         
         if (update.message() != null) {
             
-            log.append("收到来自 ");
-            
-            if (user != null) {
-                
-                log.append(user.name()).append(" (").append(user.userName()).append(") ").append(" 的");
-            
-            } else {
-                
-                log.append("匿名用户 的");
-                
-            }
-            
+            log.append("收到来自 ").append(formatName(update.message().from()));
             
             switch (update.message().chat().type()) {
 
@@ -178,8 +168,12 @@ public class BotLog {
 
         if (msg.pinnedMessage() != null) log.append("「置顶消息 :").append(processMessage(user,msg.pinnedMessage()));
 
-        if (msg.replyToMessage() != null) log.append("「回复给 : ").append(UserData.get(msg.replyToMessage().from()).formattedName()).append(" : ").append(processMessage(UserData.get(msg.replyToMessage().from()),msg.replyToMessage())).append("」");
+        if (msg.replyToMessage() != null) {
+            
+            log.append("「回复给 : ").append(formatName(msg.replyToMessage().from())).append(" : ").append(processMessage(UserData.get(msg.replyToMessage().from()),msg.replyToMessage())).append("」");
 
+        }
+            
         if (msg.sticker() != null) log.append("「贴纸 : ").append(msg.sticker().emoji()).append(" 从 ").append(msg.sticker().setName()).append("」");
 
         if (msg.supergroupChatCreated() != null) log.append("「被邀请到超级群组」");
@@ -194,6 +188,14 @@ public class BotLog {
 
         return log.toString();
 
+    }
+    
+    public static String formatName(User u) {
+        
+        if (u == null) return "匿名用户";
+        
+        return UserData.get(u).formattedName();
+        
     }
 
     public static void pointSeted(UserData user,String point) {
