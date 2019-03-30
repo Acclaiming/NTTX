@@ -46,7 +46,7 @@ public class BotLog {
 
         log.warn(message);
         
-        new Send(Env.DEVELOPER_ID,"WARN : " + message).exec();
+     //   new Send(Env.DEVELOPER_ID,"WARN : " + message).exec();
 
     }
 
@@ -54,7 +54,7 @@ public class BotLog {
 
         log.warn(err,message);
         
-        sendToDeveloper(new Exception(message,err));
+     //   sendToDeveloper(new Exception(message,err));
 
     }
 
@@ -62,7 +62,7 @@ public class BotLog {
 
         log.warn(new Exception(),message);
         
-        sendToDeveloper(new Exception(message,new Exception()));
+       // sendToDeveloper(new Exception(message,new Exception()));
        
     }
 

@@ -11,6 +11,7 @@ import io.kurumi.ntt.model.request.*;
 import java.io.*;
 
 import java.io.File;
+import io.kurumi.ntt.utils.BotLog;
 
 public class Msg extends Context {
 
@@ -82,11 +83,17 @@ public class Msg extends Context {
         
         System.out.println("send调用 : " + ArrayUtil.join(msg,"\n"));
         
+        BotLog.warnWithStack("send调用");
+        
+        /*
+        
         if (msg.length > 0 && !isPrivate() && message.from() != null) {
         
             ArrayUtil.setOrAppend(msg,0,from().userName() + " " + ArrayUtil.get(msg,0));
             
         }
+        
+        */
             
         return super.send(msg);
     }
