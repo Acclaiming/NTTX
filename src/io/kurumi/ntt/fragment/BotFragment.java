@@ -140,7 +140,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
             BotLog.process(user,update);
 
-            if (update.message().chat().type() == Chat.Type.Private && user.point != null) {
+            if (update.message().chat().type() == Chat.Type.Private && user != null && user.point != null) {
 
                 for (Fragment fragmnet : fragments) {
 
