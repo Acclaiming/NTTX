@@ -37,17 +37,17 @@ public class UserTrack extends Fragment {
     
     String notFondMsg(TwitterException ex) {
         
-        if (ex.getErrorMessage().contains("suspended")) {
+        if (ex.getErrorCode() == 50) {
             
-            return "用户被停用 (" + ex.getErrorCode() + " " + ex.getErrorMessage() + ")";
+            return "用户被停用 (" + ex.getErrorMessage() + ")";
             
-        } else if (ex.getErrorMessage().contains("not found")) {
+        } else if (ex.getErrorCode() == 63) {
             
-            return "用户不存在 (" + ex.getErrorCode() + " " + ex.getErrorMessage() + ")";
+            return "用户不存在 (" + ex.getErrorMessage() + ")";
             
         }
         
-        return ex.getErrorCode() + " " + ex.getErrorMessage();
+        return ex.getErrorCode() + " : " + ex.getErrorMessage();
         
         
     }
