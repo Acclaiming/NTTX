@@ -100,7 +100,7 @@ public class UserArchive extends IdDataModel {
     public void read(User user) {
 
         boolean change = false;
-        StringBuilder str = new StringBuilder<>();
+        StringBuilder str = new StringBuilder();
         String split = "\n----------------";
         
         String nameL = name;
