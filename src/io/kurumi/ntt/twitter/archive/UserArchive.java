@@ -100,13 +100,14 @@ public class UserArchive extends IdDataModel {
     public void read(User user) {
 
         boolean change = false;
-        String changeStr = null;
-
+        StringBuilder str = new StringBuilder<>();
+        String split = "\n----------------";
+        
         String nameL = name;
 
         if (!(name = user.getName()).equals(nameL)) {
 
-            changeStr = "名称更改 : " + nameL + " ------> " + name;
+            str.append(split).append("名称更改 : ").append(name).append(" ------> ").append(name);
 
             change = true;
 
@@ -116,7 +117,7 @@ public class UserArchive extends IdDataModel {
 
         if (!(screenName = user.getScreenName()).equals(screenNameL)) {
 
-            changeStr = ("".equals(changeStr) ? "" : changeStr + "\n") + "用户名更改 @" + screenNameL + " ------> @" + screenName;
+        str.append(split).append("用户名更改 @").append(screenNameL).append(" ------> @").append(screenName);
 
             change = true;
 
@@ -126,7 +127,7 @@ public class UserArchive extends IdDataModel {
 
         if (!ObjectUtil.equal(bio = user.getDescription(),bioL)) {
 
-            changeStr = ("".equals(changeStr) ? "" : changeStr + "\n") + "简介更改 : " + bioL + " \n\n ------> \n\n" + bio;
+            str.append(split).append("简介更改 : \n").append(bioL).append(" \n\n ------> \n\n").append(bio);
 
             change = true;
 
@@ -136,7 +137,7 @@ public class UserArchive extends IdDataModel {
 
         if (!ObjectUtil.equal(photoUrl = user.getBiggerProfileImageURL(),photoL)) {
 
-            changeStr = ("".equals(changeStr) ? "" : changeStr + "\n") + "头晕更改 : " + Html.a("媒体文件",photoL) + " ------> " + Html.a("媒体文件",photoUrl);
+            str.append(split).append("头像更改 : " + Html.a("媒体文件",photoL) + " ------> " + Html.a("媒体文件",photoUrl));
 
             change = true;
 
@@ -146,7 +147,7 @@ public class UserArchive extends IdDataModel {
 
         if (protectL != (isProtected = user.isProtected())) {
 
-            changeStr = ("".equals(changeStr) ? "" : changeStr + "\n") + "保护状态更改 : " + (isProtected ? "开启了锁推" : "关闭了锁推");
+            str.append("保护状态更改 : ").append(isProtected ? "开启了锁推" : "关闭了锁推");
 
             change = true;
 
@@ -164,7 +165,7 @@ public class UserArchive extends IdDataModel {
 
         if (change) {
 
-            UserTackTask.onUserChange(this,changeStr);
+            UserTackTask.onUserChange(this,str.toString());
 
         }
 
