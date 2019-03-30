@@ -69,11 +69,18 @@ public class Edit extends AbstractSend<Edit> {
 
         //    if (resp.errorCode() ==
 
-        BotLog.debug("信息发送失败 : " + resp.description());
-        
+        if (!resp.isOk()) {
+
+            BotLog.infoWithStack("消息发送失败 " + resp.errorCode() + " : " + resp.description());
+
+        }
 
         return resp;
 
     }
+    
+    
+    
+    
 
 }

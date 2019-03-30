@@ -11,6 +11,7 @@ import io.kurumi.ntt.model.Msg;
 import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.utils.BotLog;
+import com.pengrad.telegrambot.response.BaseResponse;
 
 public class Send extends AbstractSend<Send> {
 
@@ -145,6 +146,24 @@ public class Send extends AbstractSend<Send> {
         return new Msg(fragment,sync().message());
 
     }
+
+    @Override
+    public BaseResponse sync(Exception track) {
+        
+        SendResponse resp = fragment.bot().execute(request);
+
+        if (!resp.isOk()) {
+        
+        BotLog.info("消息发送失败 " + resp.errorCode() + " : " + resp.description(),track);
+
+        }
+        
+        return resp;
+        
+    }
+
+    
+    
 
     @Override
     public SendResponse sync() {
