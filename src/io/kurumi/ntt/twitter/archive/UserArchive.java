@@ -101,7 +101,7 @@ public class UserArchive extends IdDataModel {
 
         boolean change = false;
         StringBuilder str = new StringBuilder();
-        String split = "\n----------------";
+        String split = "\n--------------------------------\n";
         
         String nameL = name;
 
@@ -127,7 +127,7 @@ public class UserArchive extends IdDataModel {
 
         if (!ObjectUtil.equal(bio = user.getDescription(),bioL)) {
 
-            str.append(split).append("简介更改 : \n").append(bioL).append(" \n\n ------> \n\n").append(bio);
+            str.append(split).append("简介更改 : \n\n").append(bioL).append(" \n\n ------> \n\n").append(bio);
 
             change = true;
 
