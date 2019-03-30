@@ -81,19 +81,11 @@ public class Msg extends Context {
     @Override
     public Send send(String... msg) {
         
-        System.out.println("send调用 : " + ArrayUtil.join(msg,"\n"));
-        
-        BotLog.warnWithStack("send调用");
-        
-        /*
-        
         if (msg.length > 0 && !isPrivate() && message.from() != null) {
         
             ArrayUtil.setOrAppend(msg,0,from().userName() + " " + ArrayUtil.get(msg,0));
             
         }
-        
-        */
             
         return super.send(msg);
     }

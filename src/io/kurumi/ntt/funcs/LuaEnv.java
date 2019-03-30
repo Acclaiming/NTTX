@@ -17,11 +17,11 @@ public class LuaEnv extends Fragment {
 
 	public static LuaEnv INSTANCE = new LuaEnv();
 	//ublic Fragment LuaFragmentOriginInstance = new LuaFragmentOrigin();
-	
+
 	public LuaTable env;
 	public LuaTable functions;
 	//public LinkedList<LuaFragment> fragments;
-	
+
 	public Globals lua; { reload(); }
 
 	void reset() {
@@ -31,32 +31,32 @@ public class LuaEnv extends Fragment {
 		env = lua.get("_G").checktable();
 
 		functions = new LuaTable();
-		
+
 		//fragments = new LinkedList<>();
 
 		env.set("this",new JavaInstance(Launcher.INSTANCE));
-		
+
 		env.set("functions",functions);
 
 		// env.set("Fragment",new create_fragment());
-		
+
 		new BindLib().install();
-		
+
 	}
-	
+
 	void reload() {
-		
+
 		reset();
-		
+
 		lua.loadfile("init.lua").call();
-		
+
 	}
 
 	@Override
 	public boolean onChanPost(UserData user,Msg msg) {
-		
+
 		return onMsg(user,msg);
-		
+
 	}
 
 	@Override
@@ -65,22 +65,12 @@ public class LuaEnv extends Fragment {
 		if (!msg.isCommand()) return false;
 
 		LuaValue func = functions.get(msg.command());
-		
+
 		if (func.isfunction()) {
 
 			try {
 
-				Varargs result = func.invoke(LuaValue.varargsOf(new JavaInstance(user),new JavaInstance(msg)));
-
-				StringBuilder reply = new StringBuilder();
-
-				for (int index = 0;index < result.narg();index ++) {
-
-					reply.append(result.arg(index + 1));
-
-				}
-
-				msg.send(reply.toString()).exec();
+				func.invoke(LuaValue.varargsOf(new JavaInstance(user),new JavaInstance(msg)));
 
 			} catch (Throwable err) {
 
@@ -98,7 +88,7 @@ public class LuaEnv extends Fragment {
 
 	@Override
 	public boolean onNPM(UserData user,Msg msg) {
-		
+
 		if (!user.isDeveloper()) return false;
 
 		if (msg.isCommand()) {
@@ -131,7 +121,7 @@ public class LuaEnv extends Fragment {
 				} catch (Throwable err) {
 
                     BotLog.sendToUser(err,user.id);
-					
+
 				}
 
 			}
@@ -169,14 +159,14 @@ public class LuaEnv extends Fragment {
 		}
 
 		LinkedHashSet<String> packages = new LinkedHashSet<>(); {
-			
+
 			packages.add("java.lang");
 			packages.add("java.io");
 			packages.add("java.util");
 			packages.add("java.math");
-			
+
 			packages.add("com.pengrad.telegrambot.request");
-			
+
 			packages.add("io.kurumi.ntt");
 			packages.add("io.kurumi.ntt.db");
 			packages.add("io.kurumi.ntt.twitter");
@@ -184,19 +174,19 @@ public class LuaEnv extends Fragment {
 			packages.add("io.kurumi.ntt.utils");
 			packages.add("io.kurumi.ntt.model");
 			packages.add("io.kurumi.ntt.model.request");
-			
+
 			packages.add("cn.hutool.core.io");
 			packages.add("cn.hutool.core.codec");
 			packages.add("cn.hutool.core.util");
 			packages.add("cn.hutool.http");
 			packages.add("cn.hutool.json");
-			
+
 		}
-		
+
 		HashMap<String,Class<?>> loaded = new HashMap<>();
 
 		void topLevelBind(String className,String bindAs) {
-			
+
 			if (className.endsWith(".*")) {
 
 				packages.add(StrUtil.subBefore(className,".*",true));
@@ -321,275 +311,275 @@ public class LuaEnv extends Fragment {
 		}
 
 	}
-    
+
     /*
-	
-	class create_fragment extends OneArgFunction {
 
-		@Override
-		public LuaValue call(LuaValue arg) {
-			
-			if (!arg.istable()) throw new LuaError("必须以Table创建Fragment");
-			
-			return new JavaInstance(new LuaFragment(arg.checktable()));
-			
-		}
-		
-	}
-   
-   
-	class LuaFragmentOrigin extends Fragment {
-		
-		public boolean onMsg(UserData user,Msg msg) {
-			
-			for (LuaFragment f : fragments) {
-				
-				if (f.onMsg(user,msg)) return true;
-				
-			}
-			
-			return false;
-			
-		}
+     class create_fragment extends OneArgFunction {
 
-		public boolean onPoiMsg(UserData user,Msg msg,CData point) {
-			
-            LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
+     @Override
+     public LuaValue call(LuaValue arg) {
 
-			for (LuaFragment f : ff) {
+     if (!arg.istable()) throw new LuaError("必须以Table创建Fragment");
 
-				if (f.onPoiMsg(user,msg,point)) return true;
+     return new JavaInstance(new LuaFragment(arg.checktable()));
 
-			}
+     }
 
-			return false;
-			
-		}
-
-		public boolean onPrivMsg(UserData user,Msg msg) {
-			
-            LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
-            
-			for (LuaFragment f : ff) {
-
-				if (f.onPrivMsg(user,msg)) return true;
-
-			}
-			
-			return false;
-			
-		}
-
-		public boolean onPoiPrivMsg(UserData user,Msg msg,CData point) {
-		
-            LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
-            
-			for (LuaFragment f : ff) {
-
-				if (f.onPoiPrivMsg(user,msg,point)) return true;
-
-			}
-
-			return false;
-			
-		}
-
-		public boolean onGroupMsg(UserData user,Msg msg,boolean superGroup) {
-			
-            LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
-            
-			for (LuaFragment f : ff) {
-
-				if (f.onGroupMsg(user,msg,superGroup)) return true;
-
-			}
-
-			return false;
-			
-		}
-
-		public boolean onPoiGroupMsg(UserData user,Msg msg,CData point,boolean superGroup) {
-			
-            LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
-            
-			for (LuaFragment f : ff) {
-
-				if (f.onPoiGroupMsg(user,msg,point,superGroup)) return true;
-
-			}
-
-			return false;
-			
-		}
-
-		public boolean onChanPost(UserData user,Msg msg) {
-			
-            LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
-            
-			for (LuaFragment f : ff) {
-
-				if (f.onChanPost(user,msg)) return true;
-
-			}
-
-			return false;
-		}
-		
-
-		public boolean onCallback(UserData user,Callback callback) {
-			
-            LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
-            
-			for (LuaFragment f : ff) {
-
-				if (f.onCallback(user,callback)) return true;
-
-			}
-
-			return false;
-			
-		}
-
-		public boolean onPoiCallback(UserData user,Callback callback,CData point) {
-			
-            LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
-            
-			for (LuaFragment f : ff) {
-
-				if (f.onPoiCallback(user,callback,point)) return true;
-
-			}
-
-			return false;
-			
-		}
-
-		public boolean onQuery(UserData user,Query inlineQuery) {
-			
-            LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
-            
-			for (LuaFragment f : ff) {
-
-				if (f.onQuery(user,inlineQuery)) return true;
-
-			}
-
-			return false;
-
-		}
-		
-		
-	}
-
-	class LuaFragment extends Fragment {
-		
-		LuaTable fragment;
-
-		boolean call(String function,Object... args) {
-            
-			if (fragment.get(function).isfunction()) {
-
-				LuaValue[] values = new LuaValue[args.length];
-				
-				for (int index = 0;index < args.length;index ++) {
-					
-					values[index] = CoerceJavaToLua.coerce(args[index]);
-					
-				}
-				
-				try {
-				
-				Varargs result = fragment.get(function).checkfunction().invoke(values);
-				
-				if (result.arg1().isboolean()) {
-
-					return result.arg1().checkboolean();
-
-				}
-				
-				} catch (Throwable err) {
-					
-					ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-					err.printStackTrace(new PrintWriter(out,true));
-					
-					new Send(origin,530055491,StrUtil.str(out.toByteArray(),CharsetUtil.CHARSET_UTF_8)).exec();
-
-					uninstall();
-					
-				}
-
-			}
-			
-			return false;
-
-		}
-
-		LuaFragment(LuaTable fragment) {
-
-			this.fragment = fragment;
-
-		}
-
-		public boolean onMsg(UserData user,Msg msg) {
-			return call("onMsg",user,msg);
-		}
-
-		public boolean onPoiMsg(UserData user,Msg msg,CData point) {
-			return call("onPoiMsg",user,msg,point);
-		}
-
-		public boolean onPrivMsg(UserData user,Msg msg) {
-			return call("onPoiMsg",user,msg);
-		}
-
-		public boolean onPoiPrivMsg(UserData user,Msg msg,CData point) {
-			return call("onPoiPrivMsg",user,msg,point);
-		}
-
-		public boolean onGroupMsg(UserData user,Msg msg,boolean superGroup) {
-			return call("onGroupMsg",user,msg,superGroup);
-		}
-
-		public boolean onPoiGroupMsg(UserData user,Msg msg,CData point,boolean superGroup) {
-			return call("onPoiGroupMsg",user,msg,superGroup);
-		}
-
-		public boolean onChanPost(UserData user,Msg msg) {
-			return call("onChanPost",user,msg);
-		}
-		
-		public boolean onCallback(UserData user,Callback callback) {
-			return call("onCallback",user,callback);
-		}
-
-		public boolean onPoiCallback(UserData user,Callback callback,CData point) {
-			return call("onPoiCallback",user,callback,point);
-		}
-
-		public boolean onQuery(UserData user,Query inlineQuery) {
-			return call("onQuery",user,inlineQuery);
-			
-		}
-		
-		public void install() {
-			
-			origin = LuaEnv.this.origin;
-			fragments.add(this);
-			
-		}
-		
-		public void uninstall() {
-
-			fragments.add(this);
-
-		}
-		
+     }
 
 
-	}
-    
-    */
+     class LuaFragmentOrigin extends Fragment {
+
+     public boolean onMsg(UserData user,Msg msg) {
+
+     for (LuaFragment f : fragments) {
+
+     if (f.onMsg(user,msg)) return true;
+
+     }
+
+     return false;
+
+     }
+
+     public boolean onPoiMsg(UserData user,Msg msg,CData point) {
+
+     LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
+
+     for (LuaFragment f : ff) {
+
+     if (f.onPoiMsg(user,msg,point)) return true;
+
+     }
+
+     return false;
+
+     }
+
+     public boolean onPrivMsg(UserData user,Msg msg) {
+
+     LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
+
+     for (LuaFragment f : ff) {
+
+     if (f.onPrivMsg(user,msg)) return true;
+
+     }
+
+     return false;
+
+     }
+
+     public boolean onPoiPrivMsg(UserData user,Msg msg,CData point) {
+
+     LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
+
+     for (LuaFragment f : ff) {
+
+     if (f.onPoiPrivMsg(user,msg,point)) return true;
+
+     }
+
+     return false;
+
+     }
+
+     public boolean onGroupMsg(UserData user,Msg msg,boolean superGroup) {
+
+     LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
+
+     for (LuaFragment f : ff) {
+
+     if (f.onGroupMsg(user,msg,superGroup)) return true;
+
+     }
+
+     return false;
+
+     }
+
+     public boolean onPoiGroupMsg(UserData user,Msg msg,CData point,boolean superGroup) {
+
+     LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
+
+     for (LuaFragment f : ff) {
+
+     if (f.onPoiGroupMsg(user,msg,point,superGroup)) return true;
+
+     }
+
+     return false;
+
+     }
+
+     public boolean onChanPost(UserData user,Msg msg) {
+
+     LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
+
+     for (LuaFragment f : ff) {
+
+     if (f.onChanPost(user,msg)) return true;
+
+     }
+
+     return false;
+     }
+
+
+     public boolean onCallback(UserData user,Callback callback) {
+
+     LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
+
+     for (LuaFragment f : ff) {
+
+     if (f.onCallback(user,callback)) return true;
+
+     }
+
+     return false;
+
+     }
+
+     public boolean onPoiCallback(UserData user,Callback callback,CData point) {
+
+     LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
+
+     for (LuaFragment f : ff) {
+
+     if (f.onPoiCallback(user,callback,point)) return true;
+
+     }
+
+     return false;
+
+     }
+
+     public boolean onQuery(UserData user,Query inlineQuery) {
+
+     LinkedList<LuaFragment> ff = new LinkedList<>(fragments);
+
+     for (LuaFragment f : ff) {
+
+     if (f.onQuery(user,inlineQuery)) return true;
+
+     }
+
+     return false;
+
+     }
+
+
+     }
+
+     class LuaFragment extends Fragment {
+
+     LuaTable fragment;
+
+     boolean call(String function,Object... args) {
+
+     if (fragment.get(function).isfunction()) {
+
+     LuaValue[] values = new LuaValue[args.length];
+
+     for (int index = 0;index < args.length;index ++) {
+
+     values[index] = CoerceJavaToLua.coerce(args[index]);
+
+     }
+
+     try {
+
+     Varargs result = fragment.get(function).checkfunction().invoke(values);
+
+     if (result.arg1().isboolean()) {
+
+     return result.arg1().checkboolean();
+
+     }
+
+     } catch (Throwable err) {
+
+     ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+     err.printStackTrace(new PrintWriter(out,true));
+
+     new Send(origin,530055491,StrUtil.str(out.toByteArray(),CharsetUtil.CHARSET_UTF_8)).exec();
+
+     uninstall();
+
+     }
+
+     }
+
+     return false;
+
+     }
+
+     LuaFragment(LuaTable fragment) {
+
+     this.fragment = fragment;
+
+     }
+
+     public boolean onMsg(UserData user,Msg msg) {
+     return call("onMsg",user,msg);
+     }
+
+     public boolean onPoiMsg(UserData user,Msg msg,CData point) {
+     return call("onPoiMsg",user,msg,point);
+     }
+
+     public boolean onPrivMsg(UserData user,Msg msg) {
+     return call("onPoiMsg",user,msg);
+     }
+
+     public boolean onPoiPrivMsg(UserData user,Msg msg,CData point) {
+     return call("onPoiPrivMsg",user,msg,point);
+     }
+
+     public boolean onGroupMsg(UserData user,Msg msg,boolean superGroup) {
+     return call("onGroupMsg",user,msg,superGroup);
+     }
+
+     public boolean onPoiGroupMsg(UserData user,Msg msg,CData point,boolean superGroup) {
+     return call("onPoiGroupMsg",user,msg,superGroup);
+     }
+
+     public boolean onChanPost(UserData user,Msg msg) {
+     return call("onChanPost",user,msg);
+     }
+
+     public boolean onCallback(UserData user,Callback callback) {
+     return call("onCallback",user,callback);
+     }
+
+     public boolean onPoiCallback(UserData user,Callback callback,CData point) {
+     return call("onPoiCallback",user,callback,point);
+     }
+
+     public boolean onQuery(UserData user,Query inlineQuery) {
+     return call("onQuery",user,inlineQuery);
+
+     }
+
+     public void install() {
+
+     origin = LuaEnv.this.origin;
+     fragments.add(this);
+
+     }
+
+     public void uninstall() {
+
+     fragments.add(this);
+
+     }
+
+
+
+     }
+
+     */
 
 
 }
