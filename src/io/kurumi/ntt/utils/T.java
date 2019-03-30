@@ -59,7 +59,7 @@ public class T {
 
             } else {
 
-                msg.send(user.userName(),nonAuthMsg).exec();
+                msg.send(nonAuthMsg).exec();
 
             }
             
