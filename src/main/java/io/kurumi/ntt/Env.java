@@ -22,21 +22,21 @@ public class Env {
     public static final String DEVELOPER_URL = "https://t.me/" + DEVELOPER;
 
 
-    public static final File ROOT;
+    public static File ROOT;
     
     /**
      * 缓存文件存放地址
      */
 
-    public static final File CACHE_DIR;
+    public static File CACHE_DIR;
 
     /**
      * 数据文件存放地址
      */
 
-    public static final File DATA_DIR;
+    public static File DATA_DIR;
     
-    public static final Boolean isAndroid;
+    public static Boolean isAndroid;
 
     static {
 
