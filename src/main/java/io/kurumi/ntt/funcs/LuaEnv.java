@@ -12,6 +12,7 @@ import java.util.*;
 import org.luaj.vm2.*;
 import org.luaj.vm2.lib.*;
 import org.luaj.vm2.lib.jse.*;
+import cn.hutool.core.io.resource.ResourceUtil;
 
 public class LuaEnv extends Fragment {
 
@@ -47,7 +48,7 @@ public class LuaEnv extends Fragment {
 	void reload() {
 
 		reset();
-
+        
 		lua.loadfile("init.lua").call();
 
 	}
@@ -73,9 +74,10 @@ public class LuaEnv extends Fragment {
 				func.invoke(LuaValue.varargsOf(new JavaInstance(user),new JavaInstance(msg)));
 
 			} catch (Throwable err) {
-
-				BotLog.sendToUser(err,user.id);
-			}
+                
+                BotLog.error("Lua出错",err);
+                
+            }
 
 
 			return true;
@@ -119,8 +121,8 @@ public class LuaEnv extends Fragment {
 					}
 
 				} catch (Throwable err) {
-
-                    BotLog.sendToUser(err,user.id);
+                    
+                    BotLog.error("Lua出错",err);
 
 				}
 

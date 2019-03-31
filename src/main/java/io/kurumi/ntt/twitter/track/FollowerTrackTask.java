@@ -28,12 +28,13 @@ import io.kurumi.ntt.utils.BotLog;
 public class FollowerTrackTask extends TimerTask {
 
     static FollowerTrackTask INSTANCE = new FollowerTrackTask();
-    static Timer timer = new Timer("NTT Twitter Follower Track Task");
+    static Timer timer;
     public static JSONObject enable = BotDB.getJSON("data","track",true);
     static HashMap<Long,LinkedList<Long>> cache = new HashMap<>();
     
     public static void start() {
 
+        timer = new Timer("NTT Twitter Follower Track Task");
         timer.schedule(INSTANCE,new Date(),5 * 60 * 1000);
 
     }
@@ -112,7 +113,7 @@ public class FollowerTrackTask extends TimerTask {
                 
             } catch (TwitterException e) {
                 
-                BotLog.sendToUser(e,user.id);
+                BotLog.info("UserArchive ERROR",e);
                 
             }
 

@@ -1,22 +1,67 @@
 package io.kurumi.ntt.utils;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Console;
+import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
-import cn.hutool.log.StaticLog;
+import cn.hutool.log.dialect.console.ConsoleLog;
+import cn.hutool.log.level.Level;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.User;
+import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Send;
 import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
-import io.kurumi.ntt.Env;
-import io.kurumi.ntt.model.request.ButtonMarkup;
-import com.pengrad.telegrambot.model.User;
+import cn.hutool.log.StaticLog;
 
-public class BotLog {
+public class BotLog extends ConsoleLog {
 
-    public static Log log = StaticLog.get("NTTBot");
+    public static Log log = new BotLog();
+    public static PrintStream out = System.out;
+
+    private static String logFormat = "[{date}] [{level}] {name}: {msg}";
+
+    public BotLog() {
+        super("NTTBot");
+    }
+    
+    @Override
+    public void log(Level level,Throwable t,String format,Object[] arguments) {
+
+        if (false == isEnabled(level)) {
+            return;
+        }
+
+        final Dict dict = Dict.create()
+            .set("date",DateUtil.now())
+            .set("level",level.toString())
+            .set("name",getName())
+            .set("msg",StrUtil.format(format,arguments));
+
+        final String logMsg = StrUtil.format(logFormat,dict);
+
+        this.log(t,logMsg);
+
+    }
+
+
+    public static void log(Throwable t,String template,Object... values) {
+        
+        out.println(StrUtil.format(template,values));
+        
+        if (null != t) {
+            t.printStackTrace(out);
+            out.flush();
+        }
+        
+    }
+
 
     public static void debug(String message) {
 
@@ -45,60 +90,53 @@ public class BotLog {
     public static void warn(String message) {
 
         log.warn(message);
-        
-     //   new Send(Env.DEVELOPER_ID,"WARN : " + message).exec();
+
+        //   new Send(Env.DEVELOPER_ID,"WARN : " + message).exec();
 
     }
 
     public static void warn(String message,Throwable err) {
 
         log.warn(err,message);
-        
-     //   sendToDeveloper(new Exception(message,err));
+
+        //   sendToDeveloper(new Exception(message,err));
 
     }
 
     public static void warnWithStack(String message) {
 
         log.warn(new Exception(),message);
-        
-       sendToDeveloper(new Exception(message,new Exception()));
-       
+
     }
 
     public static void error(String message) {
 
         log.error(message);
-        
+
         new Send(Env.DEVELOPER_ID,"ERROR : " + message).exec();
-      
+
     }
 
     public static void error(String message,Throwable err) {
 
         log.error(err,message);
-        
-        sendToDeveloper(new Exception(message,err));
-        
 
     }
 
     public static void errorWithStack(String message) {
 
         log.error(new RuntimeException(),message);
-        
-        sendToDeveloper(new Exception(message));
 
     }
 
     public static void process(UserData user,Update update) {
 
         StringBuilder log = new StringBuilder();
-        
+
         if (update.message() != null) {
-            
+
             log.append("收到来自 ").append(formatName(update.message().from()));
-            
+
             switch (update.message().chat().type()) {
 
                 case Private : log.append("私聊");break;
@@ -108,7 +146,7 @@ public class BotLog {
 
 
             }
-            
+
             log.append("消息 :");
 
             log.append(processMessage(user,update.message()));
@@ -174,11 +212,11 @@ public class BotLog {
         if (msg.pinnedMessage() != null) log.append("「置顶消息 :").append(processMessage(user,msg.pinnedMessage()));
 
         if (msg.replyToMessage() != null) {
-            
+
             log.append("「回复给 : ").append(formatName(msg.replyToMessage().from())).append(" : ").append(processMessage(UserData.get(msg.replyToMessage().from()),msg.replyToMessage())).append("」");
 
         }
-            
+
         if (msg.sticker() != null) log.append("「贴纸 : ").append(msg.sticker().emoji()).append(" 从 ").append(msg.sticker().setName()).append("」");
 
         if (msg.supergroupChatCreated() != null) log.append("「被邀请到超级群组」");
@@ -194,47 +232,18 @@ public class BotLog {
         return log.toString();
 
     }
-    
+
     public static String formatName(User u) {
-        
+
         if (u == null) return "匿名用户";
-        
+
         return UserData.get(u).formattedName();
-        
+
     }
 
     public static void pointSeted(UserData user,String point) {
 
         BotLog.debug("已设置对用户" + user.name() + " (" + user.userName() + ") 的输入指针 : " + point);
-
-    }
-
-    public static void sendToDeveloper(Throwable error) {
-
-        sendToUser(error,Env.DEVELOPER_ID);
-
-    }
-
-    public static void sendToUser(Throwable error,long userId) {
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        error.printStackTrace(new PrintWriter(out,true));
-
-        Send send = new Send(userId,StrUtil.str(out.toByteArray(),CharsetUtil.CHARSET_UTF_8));
-
-        if (Env.DEVELOPER_ID != userId) {
-
-            send.buttons(new ButtonMarkup() {{
-
-                        newUrlButtonLine("发送给开发者 (建议)",Env.DEVELOPER_URL);
-
-                    }});
-
-        }
-
-        send.exec();
-
 
     }
 

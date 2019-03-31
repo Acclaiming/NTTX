@@ -10,6 +10,7 @@ import java.io.*;
 import java.util.*;
 import io.kurumi.ntt.twitter.track.FollowerTrackTask;
 import java.util.concurrent.atomic.AtomicBoolean;
+import io.kurumi.ntt.twitter.track.UserTackTask;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -29,7 +30,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(TwitterArchive.INSTANCE);
 
         addFragment(StatusTrack.INSTANCE);
-        
+
         addFragment(UserTrack.INSTANCE);
 
     }
@@ -71,32 +72,33 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     @Override
     public boolean onMsg(UserData user,Msg msg) {
-     
+
         if (super.onMsg(user,msg)) return true;
-        
+
         if ("start".equals(msg.command()) && msg.params().length == 0) {
-            
+
             msg.send("欢迎dalao使用咱BOT！ ヾ(･ω･｀＝´･ω･)ﾉ♪ ").exec();
             msg.send("不加个裙玩吗 ~ " + Html.a("------ 戳这里！！！ ------","https://t.me/joinchat/H5gBQ1N2Mx5gf3Jm1e6RgQ")).html().exec();
-            
+
             return true;
-            
+
         }
-        
+
         return false;
-        
+
     }
-    
-    
+
+
 
     @Override
     public void uncaughtException(Thread thread,Throwable throwable) {
 
         BotLog.error("无法处理的错误,正在停止BOT",throwable);
-        
+
         INSTANCE.bot().removeGetUpdatesListener();
 
         FollowerTrackTask.stop();
+        UserTackTask.stop();
 
 		//  BotServer.INSTACNCE.stop();
 
@@ -105,12 +107,39 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     }
 
     @Override
+    public boolean silentStart() {
+
+        boolean result =  super.silentStart();
+
+        if (result) {
+
+            new InitTask().start();
+
+        }
+
+        return result;
+
+    }
+
+    @Override
     public void start() {
-      
+
         super.start();
-        
+
         new InitTask().start();
+
+    }
+
+    @Override
+    public void stop() {
+       
+        FollowerTrackTask.stop();
+        UserTackTask.stop();
+        
+        super.stop();
         
     }
     
+   
+
 }

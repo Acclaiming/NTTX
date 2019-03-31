@@ -18,7 +18,7 @@ public class BotDB {
 
 	private static File cacheFile(String path,String key) {
 
-		return new File(new File(path),key);
+		return new File(new File(Env.ROOT,path),key);
 
 	}
 

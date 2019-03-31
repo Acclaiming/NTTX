@@ -26,10 +26,11 @@ import twitter4j.User;
 public class UserTackTask extends TimerTask {
 
     static UserTackTask INSTANCE = new UserTackTask();
-    static Timer timer = new Timer("NTT Twitter User Track Task");
+    static Timer timer;
 
     public static void start() {
 
+        timer = new Timer("NTT Twitter User Track Task");
         timer.schedule(INSTANCE,new Date(),15 * 60 * 1000);
 
     }
@@ -139,7 +140,7 @@ public class UserTackTask extends TimerTask {
 
         } catch (TwitterException ex) {
 
-            BotLog.sendToDeveloper(ex);
+            BotLog.error("UserArchive Failed...",ex);
 
         }
 

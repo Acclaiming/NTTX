@@ -18,6 +18,8 @@ import io.kurumi.ntt.utils.BotLog;
 import java.util.LinkedList;
 import java.util.List;
 import io.kurumi.ntt.model.request.Send;
+import com.pengrad.telegrambot.response.GetMeResponse;
+import okhttp3.OkHttpClient;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
@@ -262,9 +264,41 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
         }
 
     }
+    
+    public boolean silentStart() {
 
+        token = Env.get("token." + botName());
+
+        if (token == null || !Env.verifyToken(token)) {
+
+            return false;
+
+        }
+
+        bot = new TelegramBot.Builder(token).build();
+
+        GetMeResponse resp = bot.execute(new GetMe());
+
+        if (resp == null || !resp.isOk()) return false;
+
+        me = resp.user();
+
+        bot.execute(new DeleteWebhook());
+
+        /*
+
+         if (isLongPulling()) {
+
+         */
+
+        bot.setUpdatesListener(this,new GetUpdates());
+        
+        return true;
+        
+    }
+ 
     public void start() {
-
+        
         token = Env.get("token." + botName());
 
         if (token == null || !Env.verifyToken(token)) {
@@ -272,8 +306,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
             token = Env.inputToken(botName());
 
         }
+        
+        OkHttpClient.Builder okhttpClient = new OkHttpClient.Builder();
 
-        bot = new TelegramBot.Builder(token).build();
+        okhttpClient.networkInterceptors().clear();
+        
+        bot = new TelegramBot.Builder(token)
+        .okHttpClient(okhttpClient.build()).build();
 
 		me = bot.execute(new GetMe()).user();
 
@@ -301,6 +340,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
     }
 
+    public void stop() {
+        
+        bot().removeGetUpdatesListener();
+
+        BotLog.info("BOT已停止 :)");
+        
+    }
 
 
 }

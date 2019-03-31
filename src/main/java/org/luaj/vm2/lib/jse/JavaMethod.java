@@ -26,6 +26,7 @@ import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
 import org.luaj.vm2.*;
+import io.kurumi.ntt.Env;
 
 /**
  * LuaValue that represents a Java method.
@@ -89,6 +90,8 @@ class JavaMethod extends JavaMember {
 	
 	LuaValue invokeMethod(Object instance, Varargs args) {
 		
+        if (!Env.isAndroid) {
+        
 		Parameter[] params = method.getParameters();
 
 		if (params.length != 0 && params[params.length - 1].isVarArgs()) {
@@ -116,6 +119,38 @@ class JavaMethod extends JavaMember {
 			// java 变参处理
 			
 		}
+        
+        } else {
+            
+            Type[] params = method.getGenericParameterTypes();
+
+            if (params.length != 0 && ((Class)params[params.length - 1]).isArray()) {
+                
+                if (!args.arg(args.narg()).istable()) {
+
+                    // pack args into vararg
+
+                    Varargs unpacked = args.subargs(params.length);
+
+                    LinkedList<LuaValue> newArgs =  new LinkedList<>();
+
+                    for (int index = 1;index < params.length;index ++) {
+
+                        newArgs.add(args.arg(index));
+
+                    }
+
+                    newArgs.add(new LuaTable(null,null,unpacked));
+
+                    args = varargsOf(newArgs.toArray(new LuaValue[newArgs.size()]));
+
+                }
+
+                // android 没有 getParameters
+                
+                }
+            
+        }
 		
 		Object[] a = convertArgs(args);
 		

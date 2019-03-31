@@ -1,12 +1,15 @@
 package io.kurumi.ntt;
 
-import cn.hutool.core.io.*;
-import cn.hutool.json.*;
-import com.pengrad.telegrambot.*;
-import com.pengrad.telegrambot.request.*;
-import io.kurumi.ntt.utils.*;
-import java.io.*;
-import java.util.*;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.caller.CallerUtil;
+import cn.hutool.core.lang.caller.StackTraceCaller;
+import cn.hutool.json.JSONObject;
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.request.GetMe;
+import io.kurumi.ntt.utils.BotLog;
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.Scanner;
 
 public class Env {
 
@@ -17,21 +20,47 @@ public class Env {
     public static final String DEVELOPER = "HiedaNaKan";
     public static final long DEVELOPER_ID = 530055491;
     public static final String DEVELOPER_URL = "https://t.me/" + DEVELOPER;
-    
-    
 
+
+    public static final File ROOT;
+    
     /**
      * 缓存文件存放地址
      */
 
-    public static final File CACHE_DIR = new File("./cache");
+    public static final File CACHE_DIR;
 
     /**
      * 数据文件存放地址
      */
 
-    public static final File DATA_DIR = new File("./data");
+    public static final File DATA_DIR;
     
+    public static final Boolean isAndroid;
+
+    static {
+
+        try {
+
+            Class.forName("android.app.Activity");
+            
+            isAndroid = true;
+
+            ROOT = new File("/data/data/io.kurumi.ntt.android");
+            
+        } catch (ClassNotFoundException ex) {
+            
+            isAndroid = false;
+
+            ROOT = new File("./");
+        }
+        
+        DATA_DIR = new File(ROOT,"data");
+        CACHE_DIR = new File(ROOT,"cache");
+        
+
+    }
+
     /**
      * 命令行输入 Token 并保存到数据库
      */
@@ -40,7 +69,7 @@ public class Env {
         Scanner session = new Scanner(System.in);
 
         System.out.print("输入" + name + " BotToken : ");
-		
+
         String token = session.next();
 
         while (!verifyToken(token)) {
@@ -53,7 +82,7 @@ public class Env {
 
         }
 
-        set("token." + name, token);
+        set("token." + name,token);
 
         return token;
 
@@ -72,7 +101,7 @@ public class Env {
 
         try {
 
-            conf = new JSONObject(FileUtil.readUtf8String(new File(DATA_DIR, "settings.json")));
+            conf = new JSONObject(FileUtil.readUtf8String(new File(DATA_DIR,"settings.json")));
 
         } catch (Exception e) {}
 
@@ -90,7 +119,7 @@ public class Env {
 
         if (key.contains(".")) {
 
-            return conf.getByPath(key, String.class);
+            return conf.getByPath(key,String.class);
 
         } else {
 
@@ -100,7 +129,7 @@ public class Env {
 
     }
 
-    public static String getOrDefault(String key, String defaultValue) {
+    public static String getOrDefault(String key,String defaultValue) {
 
         if (key == null) {
 
@@ -119,7 +148,7 @@ public class Env {
 
         } else if (value == null) {
 
-            set(key, defaultValue);
+            set(key,defaultValue);
 
             value = defaultValue;
 
@@ -129,21 +158,21 @@ public class Env {
 
     }
 
-    public static void set(String key, Object value) {
+    public static void set(String key,Object value) {
 
         if (value != null) value = value.toString();
 
         if (key.contains(".")) {
 
-            conf.putByPath(key, value);
+            conf.putByPath(key,value);
 
         } else {
 
-            conf.put(key, value);
+            conf.put(key,value);
 
         }
 
-        FileUtil.writeUtf8String(conf.toStringPretty(), new File(DATA_DIR, "settings.json"));
+        FileUtil.writeUtf8String(conf.toStringPretty(),new File(DATA_DIR,"settings.json"));
 
     }
 

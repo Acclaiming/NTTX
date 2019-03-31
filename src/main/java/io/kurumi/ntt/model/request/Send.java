@@ -172,7 +172,11 @@ public class Send extends AbstractSend<Send> {
 
         SendResponse resp = fragment.bot().execute(request);
 
-        BotLog.infoWithStack("信息发送失败 : " + resp.description());
+        if (!resp.isOk()) {
+
+            BotLog.infoWithStack("消息发送失败 " + resp.errorCode() + " : " + resp.description());
+
+        }
         
         return resp;
 
