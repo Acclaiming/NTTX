@@ -34,6 +34,8 @@ public class FollowerTrackTask extends TimerTask {
     
     public static void start() {
 
+        stop();
+        
         timer = new Timer("NTT Twitter Follower Track Task");
         timer.schedule(INSTANCE,new Date(),5 * 60 * 1000);
 
@@ -41,7 +43,8 @@ public class FollowerTrackTask extends TimerTask {
 
     public static void stop() {
 
-        timer.cancel();
+        if (timer != null) timer.cancel();
+        
 
     }
 
