@@ -53,7 +53,7 @@ public class GroupRepeat extends Fragment {
                 
                 } else {
                     
-                    if (RandomUtil.randomInt(0,10) < 2) {
+                    if (RandomUtil.randomInt(0,10) == 0) {
 
                         msg.send(msg.text()).exec();
 
@@ -88,7 +88,7 @@ public class GroupRepeat extends Fragment {
                 
                 } else {
                     
-                    if (RandomUtil.randomInt(0,10) < 2) {
+                    if (RandomUtil.randomInt(0,10) == 0) {
 
                         bot().execute(new SendSticker(msg.chatId(), msg.message().sticker().fileId()));
 
