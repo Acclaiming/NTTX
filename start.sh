@@ -16,6 +16,6 @@ rm -rf ./classes
 
 mv cache classes
 
-export CLASSPATH=$CLASSPATH:./classes
+export CLASSPATH=$CLASSPATH:./classes:./src/main/java
 
 java -classpath $CLASSPATH io.kurumi.ntt.Launcher
