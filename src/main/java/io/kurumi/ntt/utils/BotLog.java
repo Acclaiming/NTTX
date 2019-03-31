@@ -57,8 +57,10 @@ public class BotLog extends ConsoleLog {
         
         if (null != t) {
             t.printStackTrace(out);
-            out.flush();
+            
         }
+        
+        out.flush();
         
     }
 

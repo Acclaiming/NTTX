@@ -26,8 +26,10 @@ public class GroupRepeat extends Fragment {
 
             if (repeatCount == null) repeatCount = 0;
 
-            if (lastMsg != null && msg.text() != null && msg.text().equals(lastMsg.text()) && !msg.from().id.equals(lastMsg.from().id)) {
+            if (lastMsg != null && msg.text() != null) {
 
+                if (msg.text().equals(lastMsg.text()) && !msg.from().id.equals(lastMsg.from().id) {
+                    
                 repeatCount ++;
 
                 if (repeatCount == 1) {
@@ -42,20 +44,27 @@ public class GroupRepeat extends Fragment {
                   
                 } else {
                     
-                    if (RandomUtil.randomInt(0,10) < 3) {
-                        
-                        msg.send(msg.text()).exec();
-                        
-                    }
-
+                    
                     last.put(msg.chatId(), msg);
 
                     //   BotLog.debug("已记录群 " + msg.message().chat().title() + " 复读 : " + msg.text());
 
                 }
+                
+                } else {
+                    
+                    if (RandomUtil.randomInt(0,10) < 2) {
 
-            } else if (lastMsg != null && msg.message().sticker() != null && msg.message().sticker().equals(lastMsg.message().sticker())) {
+                        msg.send(msg.text()).exec();
 
+                    }
+                    
+                }
+
+            } else if (lastMsg != null && msg.message().sticker() != null) {
+
+                if (msg.message().sticker().equals(lastMsg.message().sticker())) {
+                
                 repeatCount ++;
 
                 if (repeatCount == 1) {
@@ -70,17 +79,22 @@ public class GroupRepeat extends Fragment {
 
                 } else {
                     
-                    if (RandomUtil.randomInt(0,10) < 3) {
-                        
-                        bot().execute(new SendSticker(msg.chatId(), msg.message().sticker().fileId()));
-                        
-                        
-                        }
-
+                    
                     last.put(msg.chatId(), msg);
 
                     //     BotLog.debug("已记录群 " + msg.message().chat().title() + " 复读 : " + msg.text());
 
+                }
+                
+                } else {
+                    
+                    if (RandomUtil.randomInt(0,10) < 2) {
+
+                        bot().execute(new SendSticker(msg.chatId(), msg.message().sticker().fileId()));
+
+
+                    }
+                    
                 }
 
             } else {
