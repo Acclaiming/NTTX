@@ -6,7 +6,7 @@ for jar in ./libs/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
 done
 
-find src/main/java -name "*.java" > sources.txt
+find src -name "*.java" > sources.txt
 
 rm -rf ./cache
 mkdir ./cache
