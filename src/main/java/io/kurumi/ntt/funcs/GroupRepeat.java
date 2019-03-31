@@ -28,7 +28,7 @@ public class GroupRepeat extends Fragment {
 
             if (lastMsg != null && msg.text() != null) {
 
-                if (msg.text().equals(lastMsg.text()) && !msg.from().id.equals(lastMsg.from().id) {
+                if (msg.text().equals(lastMsg.text()) && !msg.from().id.equals(lastMsg.from().id)) {
                     
                 repeatCount ++;
 
