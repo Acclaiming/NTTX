@@ -53,7 +53,7 @@ public class GroupRepeat extends Fragment {
                 
                 } else {
                     
-                    if (RandomUtil.randomInt(0,20) == 0 && !user.isDeveloper()) {
+                    if (RandomUtil.randomInt(0,30) == 9 && !user.isDeveloper()) {
 
                         msg.send(msg.text()).exec();
 
@@ -88,7 +88,7 @@ public class GroupRepeat extends Fragment {
                 
                 } else {
                     
-                    if (RandomUtil.randomInt(0,20) == 0 && !user.isDeveloper()) {
+                    if (RandomUtil.randomInt(0,30) == 9 && !user.isDeveloper()) {
 
                         bot().execute(new SendSticker(msg.chatId(), msg.message().sticker().fileId()));
 
