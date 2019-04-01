@@ -132,7 +132,8 @@ public class MusicSearch extends Fragment {
 		
 		if (!cache.isFile()) {
 
-			HttpUtil.downloadFile(url,cache);
+			HttpUtil.createGet(url)
+			.header("X-Real-IP","211.161.244.70").execute().writeBody(cache);
 
 		}
 		
