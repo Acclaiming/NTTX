@@ -29,6 +29,7 @@ public class MusicSearch extends Fragment {
                 
                 JSONArray songs = data.getByPath("result.songs",JSONArray.class);
                 
+                for (int index = 0;index < songs.size();index ++) {}
                 
             }
             
