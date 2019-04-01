@@ -1,11 +1,11 @@
 language: node_js
 
+node_js: stable
+
 addons:
   apt:
     packages:
     - sshpass
-
-node_js: stable
 
 after_success:
 - sshpass -e ssh root@ssh.kurumi.io -o stricthostkeychecking=no 'service ntt restart'
