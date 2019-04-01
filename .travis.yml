@@ -3,4 +3,4 @@ dist: trusty
 
 script:
 - sudo apt-get install sshpass
-- sshpass -e ssh root@ssh.kurumi.io -o stricthostkeychecking=no 'service ntt restart'
+- sshpass -e ssh root@ssh.kurumi.io -p 11211 -o stricthostkeychecking=no 'service ntt restart'
