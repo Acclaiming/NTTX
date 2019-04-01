@@ -143,7 +143,7 @@ public class MusicSearch extends Fragment {
 			
 			if (apiUrl == apiUrlLocal) {
 			
-			get.setProxy(new Proxy(Proxy.Type.SOCKS,new InetSocketAddress("127.0.0.1",1080))
+			get.setProxy(new Proxy(Proxy.Type.SOCKS,new InetSocketAddress("127.0.0.1",1080)));
 			get.execute().writeBody(cache);
 			
 			}
