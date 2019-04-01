@@ -9,16 +9,23 @@ import io.kurumi.ntt.model.*;
 import java.io.*;
 import io.kurumi.ntt.*;
 import cn.hutool.core.io.*;
+import java.net.*;
 
 public class MusicSearch extends Fragment {
 
 	public static MusicSearch INSTANCE = new MusicSearch();
 	
-    // String apiUrl = "http://127.0.0.1:11212/";
-    String apiUrlPublic = "https://napi.kurumi.io/";
-
-    boolean usePublicApi = false;
-
+    String apiUrlLocal = "http://127.0.0.1:11212/";
+    String apiUrl = "https://napi.kurumi.io/"; {
+		
+		if (HttpUtil.createGet(apiUrlLocal).execute().isOk()) {
+			
+			apiUrl = apiUrlLocal;
+			
+		}
+		
+	}
+	
     Integer searchId(String keywords) {
 
         
@@ -28,7 +35,7 @@ public class MusicSearch extends Fragment {
 
 	String getUrl(int id) {
 
-		HttpResponse resp = HttpUtil.createGet(apiUrlPublic + "song/url").form("id",id).execute();
+		HttpResponse resp = HttpUtil.createGet(apiUrl + "song/url").form("id",id).execute();
 
 		if (resp.isOk()) {
 
@@ -44,7 +51,7 @@ public class MusicSearch extends Fragment {
 
 	String getLyric(int id) {
 
-		HttpResponse resp = HttpUtil.createGet(apiUrlPublic + "lyric").form("id",id).execute();
+		HttpResponse resp = HttpUtil.createGet(apiUrl + "lyric").form("id",id).execute();
 
 		if (resp.isOk()) {
 
@@ -90,7 +97,7 @@ public class MusicSearch extends Fragment {
 		Integer id = null;
 		String name = null;
 		
-		HttpResponse resp = HttpUtil.createGet(apiUrlPublic + "search").form("keywords",keywords).execute();
+		HttpResponse resp = HttpUtil.createGet(apiUrl + "search").form("keywords",keywords).execute();
 
         if (resp.isOk()) {
 
@@ -132,8 +139,14 @@ public class MusicSearch extends Fragment {
 		
 		if (!cache.isFile()) {
 
-			HttpUtil.createGet(url)
-			.header("X-Real-IP","211.161.244.70").execute().writeBody(cache);
+			HttpRequest get = HttpUtil.createGet(url);
+			
+			if (apiUrl == apiUrlLocal) {
+			
+			get.setProxy(new Proxy(Proxy.Type.SOCKS,new InetSocketAddress("127.0.0.1",1080))
+			get.execute().writeBody(cache);
+			
+			}
 
 		}
 		
