@@ -158,7 +158,7 @@ public class MusicSearch extends Fragment {
 			
 		}
 
-		msg.fragment.bot().execute(new SendAudio(msg.chatId(),cache).caption(name + " : \n\n" + lrc));
+		msg.fragment.bot().execute(new SendAudio(msg.chatId(),cache).fileName(name + ".mp3").caption(name + " : \n\n" + lrc));
 
 }
 
