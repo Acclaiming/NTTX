@@ -33,7 +33,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(UserTrack.INSTANCE);
 		
-		addFragment(MusicSearch.INSTANCE);
+		// addFragment(MusicSearch.INSTANCE);
 
     }
 
