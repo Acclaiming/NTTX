@@ -139,8 +139,12 @@ public class MusicSearch extends Fragment {
 		
 		if (!cache.isFile()) {
 
-			HttpUtil.downloadFile(url,cache);
-			
+			HttpRequest get = HttpUtil.createGet(url);
+            
+            get.setProxy(new Proxy(Proxy.Type.HTTP,new InetSocketAddress("117.191.11.74",80)));
+            
+            get.execute().writeBody(cache);
+
 
 		}
 		
