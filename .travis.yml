@@ -1,9 +1,6 @@
-language: node_js
-addons:
-  apt:
-    packages:
-    - sshpass
-node_js:
-- node
-after_success:
+sudo: required
+dist: trusty
+
+script:
+- sudo apt-get install sshpass
 - sshpass -e ssh root@ssh.kurumi.io -o stricthostkeychecking=no 'service ntt restart'
