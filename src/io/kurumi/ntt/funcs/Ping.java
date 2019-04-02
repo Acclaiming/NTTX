@@ -15,6 +15,8 @@ public class Ping extends Fragment {
 
         if ("ping".equals(msg.command())) {
             
+            msg.sendTyping();
+            
             long start = System.currentTimeMillis();
 
             final Msg sended = msg.reply("pong！").send();
