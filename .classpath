@@ -4,4 +4,5 @@
 <classpathentry kind="output" path="bin"/>
 <classpathentry kind="lib" path="libs/hutool-base-4.4.3.jar"/>
 <classpathentry kind="lib" path="libs/java-telegram-bot-api-full-4.1.1.jar"/>
+<classpathentry kind="lib" path="libs/bot-library.jar"/>
 </classpath>
