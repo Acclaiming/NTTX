@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import cn.hutool.log.StaticLog;
+import cn.hutool.core.io.IoUtil;
 
 public class BotLog extends ConsoleLog {
 
@@ -85,7 +86,7 @@ public class BotLog extends ConsoleLog {
 
     public static void infoWithStack(String message) {
 
-        log.info(new Exception(),message);
+        log.info(new RuntimeException(),message);
 
     }
 
@@ -107,7 +108,7 @@ public class BotLog extends ConsoleLog {
 
     public static void warnWithStack(String message) {
 
-        log.warn(new Exception(),message);
+        log.warn(new RuntimeException(),message);
 
     }
 
@@ -115,13 +116,14 @@ public class BotLog extends ConsoleLog {
 
         log.error(message);
 
-        new Send(Env.DEVELOPER_ID,"ERROR : " + message).exec();
-
     }
 
     public static void error(String message,Throwable err) {
 
         log.error(err,message);
+        
+        new Send(Env.DEVELOPER_ID,"ERROR : " + message,parseError(err)).exec();
+        
 
     }
 
@@ -129,7 +131,21 @@ public class BotLog extends ConsoleLog {
 
         log.error(new RuntimeException(),message);
 
+        new Send(Env.DEVELOPER_ID,"ERROR : " + message,parseError(new RuntimeException())).exec();
+        
+        
     }
+    
+   static String parseError(Throwable error) {
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        
+        error.printStackTrace(new PrintWriter(out,true));
+        
+        return StrUtil.utf8Str(out);
+        
+    }
+    
 
     public static void process(UserData user,Update update) {
 
