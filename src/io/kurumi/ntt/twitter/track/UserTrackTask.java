@@ -135,9 +135,9 @@ public class UserTrackTask extends TimerTask {
 
                     if (globals.size() > 100) {
 
-                        target = globals.subList(0,99);
+                        target = globals.subList(0,100);
 
-                        globals = globals.subList(99,globals.size());
+                        globals = globals.subList(100,globals.size());
 
 
                     } else {
