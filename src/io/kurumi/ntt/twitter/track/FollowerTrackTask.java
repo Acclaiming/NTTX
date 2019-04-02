@@ -1,29 +1,15 @@
 package io.kurumi.ntt.twitter.track;
 
-import cn.hutool.core.util.CharsetUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONArray;
+import cn.hutool.json.*;
+import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.model.request.*;
+import io.kurumi.ntt.twitter.*;
+import io.kurumi.ntt.twitter.archive.*;
+import io.kurumi.ntt.utils.*;
+import java.util.*;
+import twitter4j.*;
+
 import cn.hutool.json.JSONObject;
-import io.kurumi.ntt.Launcher;
-import io.kurumi.ntt.db.BotDB;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.twitter.TApi;
-import io.kurumi.ntt.twitter.TAuth;
-import io.kurumi.ntt.twitter.archive.UserArchive;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
-import java.util.Date;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import twitter4j.Relationship;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.User;
-import java.util.HashMap;
-import java.util.LinkedList;
-import io.kurumi.ntt.utils.BotLog;
 
 public class FollowerTrackTask extends TimerTask {
 
@@ -126,6 +112,12 @@ public class FollowerTrackTask extends TimerTask {
 
     void newFollower(UserData user,User follower) {
 
+		UserArchive fa = UserArchive.INSTANCE.getOrNew(follower.getId());
+
+		fa.read(follower);
+
+		UserArchive.INSTANCE.saveObj(fa);
+		
         new Send(user.id,TApi.formatUserNameHtml(follower) + " 关注了你").enableLinkPreview().html().exec();
 
     }
@@ -135,6 +127,13 @@ public class FollowerTrackTask extends TimerTask {
         try {
 
             User follower = api.showUser(id);
+			
+			UserArchive fa = UserArchive.INSTANCE.getOrNew(id);
+
+			fa.read(follower);
+			
+			UserArchive.INSTANCE.saveObj(fa);
+			
             Relationship ship = api.showFriendship(api.getId(),id);
 
             if (ship.isSourceBlockingTarget()) {
@@ -161,10 +160,7 @@ public class FollowerTrackTask extends TimerTask {
 
                 new Send(user.id,"用户 (" + id + ") 取关了你 , 因为该账号已经不存在了 :(").enableLinkPreview().html().exec();
 
-
             }
-
-
 
         }
 
