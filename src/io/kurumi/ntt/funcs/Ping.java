@@ -9,14 +9,14 @@ import cn.hutool.core.thread.ThreadUtil;
 public class Ping extends Fragment {
 
     public static Ping INSTANCE = new Ping();
-    
+
     @Override
     public boolean onMsg(UserData user,final Msg msg) {
 
         if ("ping".equals(msg.command())) {
-            
+
             msg.sendTyping();
-            
+
             long start = System.currentTimeMillis();
 
             final Msg sended = msg.reply("pong！").send();
@@ -29,20 +29,28 @@ public class Ping extends Fragment {
 
             }
 
-            ThreadPool.exec(new Runnable() {
+			if (!msg.isPrivate()) {
 
-                    @Override
-                    public void run() {
-                        
-                        ThreadUtil.sleep(1000 * 5);
-                     
-                        sended.delete();
-                        
-                        msg.delete();
-                        
-                    }
-                    
-                });
+				ThreadPool.exec(new Runnable() {
+
+						@Override
+						public void run() {
+
+							ThreadUtil.sleep(1000 * 5);
+
+							if (msg.delete()) {
+
+								sended.delete();
+
+							}
+
+
+
+						}
+
+					});
+
+			}
 
             return true;
 
