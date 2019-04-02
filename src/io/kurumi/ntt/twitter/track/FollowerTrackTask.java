@@ -64,7 +64,7 @@ public class FollowerTrackTask extends TimerTask {
 
     @Override
     public void run() {
-        
+
         for (Map.Entry<String,Object> entry : enable.entrySet()) {
 
             long userId = Long.parseLong(entry.getKey());
@@ -105,7 +105,7 @@ public class FollowerTrackTask extends TimerTask {
                 enable.remove(user.idStr);
 
                 BotDB.setJSONArray("cache","track/" + user.idStr,null);
-                
+
                 save();
 
                 return;
@@ -117,15 +117,15 @@ public class FollowerTrackTask extends TimerTask {
             User me = api.verifyCredentials();
 
             UserArchive.saveCache(me);
-            
+
             LinkedList<Long> last = cache.containsKey(api.getId()) ? cache.get(api.getId()) : null;
 
             LinkedList<Long> latest = TApi.getAllFoIDs(api,api.getId());
 
             cache.put(api.getId(),latest);
-            
-            List<Long> pedding = new LinkedList<>();
-            
+
+            //    List<Long> pedding = new LinkedList<>();
+
             for (long id : latest) {
 
                 if (last != null) {
@@ -135,13 +135,13 @@ public class FollowerTrackTask extends TimerTask {
                         newFollower(user,api,id);
 
                     } else {
-                        
+
                         if (!UserArchive.INSTANCE.exists(id)) {
-                            
-                            pedding.add(id);
-                            
+
+                            //    pedding.add(id);
+
                         }
-                        
+
                     }
 
                 }
@@ -159,36 +159,40 @@ public class FollowerTrackTask extends TimerTask {
                 }
 
             }
-            
-            if (pedding.size() > 10000) {
-                
-                pedding = pedding.subList(0,10000);
-                
-            }
-            
-            while (pedding.size() > 0) {
-                
-                List<Long> target;
-                
-                if (pedding.size() > 100) {
-                    
-                    target = pedding.subList(0,100);
-                    
-                    pedding = pedding.subList(99,pedding.size());
-                    
-                } else {
-                    
-                    target = pedding;
-                    
-                    pedding.clear();
-                    
-                }
-                
-                ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
 
-                for (User tuser : result) UserArchive.saveCache(tuser);
-                
-            }
+            /*
+
+             if (pedding.size() > 10000) {
+
+             pedding = pedding.subList(0,10000);
+
+             }
+
+             while (pedding.size() > 0) {
+
+             List<Long> target;
+
+             if (pedding.size() > 100) {
+
+             target = pedding.subList(0,100);
+
+             pedding = pedding.subList(99,pedding.size());
+
+             } else {
+
+             target = pedding;
+
+             pedding.clear();
+
+             }
+
+             ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
+
+             for (User tuser : result) UserArchive.saveCache(tuser);
+
+             }
+
+             */
 
         } catch (TwitterException e) {
 
@@ -277,7 +281,7 @@ public class FollowerTrackTask extends TimerTask {
 
             User follower = api.showUser(id);
             UserArchive.saveCache(follower);
-            
+
             Relationship ship = api.showFriendship(api.getId(),id);
 
             if (ship.isSourceBlockingTarget()) {
