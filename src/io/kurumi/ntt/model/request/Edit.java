@@ -1,11 +1,12 @@
 package io.kurumi.ntt.model.request;
 
-import cn.hutool.core.util.ArrayUtil;
-import com.pengrad.telegrambot.model.request.ParseMode;
-import com.pengrad.telegrambot.request.EditMessageText;
-import com.pengrad.telegrambot.response.BaseResponse;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.utils.BotLog;
+import cn.hutool.core.util.*;
+import com.pengrad.telegrambot.model.request.*;
+import com.pengrad.telegrambot.request.*;
+import com.pengrad.telegrambot.response.*;
+import io.kurumi.ntt.fragment.*;
+import io.kurumi.ntt.model.*;
+import io.kurumi.ntt.utils.*;
 
 public class Edit extends AbstractSend<Edit> {
 
@@ -59,7 +60,7 @@ public class Edit extends AbstractSend<Edit> {
         return this;
 
     }
-
+	
     @Override
     public BaseResponse sync() {
 

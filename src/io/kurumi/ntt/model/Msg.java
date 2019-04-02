@@ -90,6 +90,19 @@ public class Msg extends Context {
         return super.send(msg);
     }
 
+	@Override
+	public Send send(String... msg) {
+
+		Send send = super.send(msg);
+		
+		send.origin = this;
+		
+		return send;
+		
+	}
+
+	
+
 
 	public Msg replyTo() {
 
@@ -107,8 +120,12 @@ public class Msg extends Context {
         
         System.out.println("edit调用 : " + ArrayUtil.join(msg,"\n"));
         
-        return new Edit(fragment,chatId(),messageId(),msg);
+        Edit edit = new Edit(fragment,chatId(),messageId(),msg);
 
+		edit.origin = this;
+		
+		return edit;
+		
     }
 
     public boolean delete() {
