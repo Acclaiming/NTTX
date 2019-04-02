@@ -265,16 +265,6 @@ public class FollowerTrackTask extends TimerTask {
 
         }
 
-        
-		UserArchive fa = UserArchive.INSTANCE.getOrNew(follower.getId());
-
-		fa.read(follower);
-
-		UserArchive.INSTANCE.saveObj(fa);
-		
-        new Send(user.id,TApi.formatUserNameHtml(follower) + " 关注了你").enableLinkPreview().html().exec();
-
-
     }
 
     void lostFollower(UserData user,Twitter api,long id) {
@@ -282,19 +272,14 @@ public class FollowerTrackTask extends TimerTask {
         try {
 
             User follower = api.showUser(id);
-<<<<<<< HEAD
-
             UserArchive.saveCache(follower);
 
-=======
-			
 			UserArchive fa = UserArchive.INSTANCE.getOrNew(id);
 
 			fa.read(follower);
 			
 			UserArchive.INSTANCE.saveObj(fa);
 			
->>>>>>> branch 'master' of https://github.com/HiedaNaKan/NTTools
             Relationship ship = api.showFriendship(api.getId(),id);
 
             if (ship.isSourceBlockingTarget()) {
