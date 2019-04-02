@@ -59,20 +59,19 @@ public class TwitterUI extends Fragment {
 
         if (TAuth.exists(user)) {
 
-            msg.send("乃已经认证账号了 :)").publicFailedWith(msg);
+            msg.send("乃已经认证账号了 :)").publicFailed();
 
             return;
 
 		}
+        
         if (!msg.isPrivate()) {
 
-            msg.send("请使用私聊 :)").publicFailedWith(msg);
+            msg.send("请使用私聊 :)").publicFailed();
 			
             return;
 
-        }
-
-		
+       }
 
 		msg.send("好的。现在咱正在向Twitter请求认证连接 :D").exec();
 
@@ -186,7 +185,7 @@ public class TwitterUI extends Fragment {
 
 		if (!TAuth.exists(user))  {
 
-			msg.send("乃并没有认证账号呢。 使用 /tauth 认证 ~").publicFailedWith(msg);
+			msg.send("乃并没有认证账号呢。 使用 /tauth 认证 ~").publicFailed();
 
 			return;
 

@@ -138,6 +138,46 @@ public class Send extends AbstractSend<Send> {
 
     }
 
+    public void publicFailed() {
+
+        if (origin.isPrivate()) {
+
+            exec();
+
+        } else {
+
+            failed(5000);
+
+        }
+
+    }
+
+    public void failed(final long delay) {
+
+        if (origin == null) return;
+
+        final Exception track = new Exception();
+
+        ThreadPool.exec(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    SendResponse resp = sync(track);
+
+                    if (resp.isOk()) {
+
+                        T.tryDelete(delay,origin,new Msg(fragment,resp.message()));
+
+                    }
+
+
+                }
+
+            });
+
+    }
+    
 	
     public Msg send() {
 
@@ -150,7 +190,7 @@ public class Send extends AbstractSend<Send> {
     }
 
     @Override
-    public BaseResponse sync(Exception track) {
+    public SendResponse sync(Exception track) {
 
         SendResponse resp = fragment.bot().execute(request);
 

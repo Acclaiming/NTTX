@@ -27,46 +27,7 @@ public abstract class AbstractSend<T extends AbstractSend> {
 
     public abstract BaseResponse sync(Exception track);
 
-	public void publicFailedWith(final Msg message) {
-
-		if (message.isPrivate()) {
-
-            exec();
-
-        } else {
-
-            failedWith(5000,message);
-
-        }
-
-	}
-
-	public void failedWith(final long delay,final Msg message) {
-
-		if (origin == null) return;
-
-        final Exception track = new Exception();
-
-		ThreadPool.exec(new Runnable() {
-
-				@Override
-				public void run() {
-
-					BaseResponse resp = sync(track);
-
-					if (resp.isOk()) {
-
-						io.kurumi.ntt.utils.T.tryDelete(delay,message,origin);
-
-					}
-
-
-				}
-
-			});
-
-	}
-
+	
     public void failed() {
         
         failed(5000);

@@ -38,7 +38,7 @@ public class TwitterArchive extends Fragment {
 
         if (msg.params().length != 1) {
 
-            msg.send("用法 /status <推文链接|ID>").publicFailedWith(msg);
+            msg.send("用法 /status <推文链接|ID>").publicFailed();
 
             return;
 
@@ -48,7 +48,7 @@ public class TwitterArchive extends Fragment {
         
         if (statusId == -1L) {
 
-            msg.send("用法 /status <推文链接|ID>").publicFailedWith(msg);
+            msg.send("用法 /status <推文链接|ID>").publicFailed();
 
             return;
 
@@ -62,7 +62,7 @@ public class TwitterArchive extends Fragment {
 
         } else if (!TAuth.exists(user)) {
             
-            msg.send("存档不存在 :( 乃没有认证账号 无法通过API读取推文... 请使用 /tauth 认证 ( ⚆ _ ⚆ )").publicFailedWith(msg);
+            msg.send("存档不存在 :( 乃没有认证账号 无法通过API读取推文... 请使用 /tauth 认证 ( ⚆ _ ⚆ )").publicFailed();
 
             return;
 

@@ -39,7 +39,7 @@ public class StatusTrack extends Fragment {
 
         if (!TAuth.exists(user)) {
 
-            msg.send("你没有认证Twitter账号 :)").publicFailedWith(msg);
+            msg.send("你没有认证Twitter账号 :)").publicFailed();
 
             return;
 
@@ -49,7 +49,7 @@ public class StatusTrack extends Fragment {
 
             if (start) {
 
-                msg.send("无需重复开启 :)").publicFailedWith(msg);
+                msg.send("无需重复开启 :)").publicFailed();
 
             } else {
 
@@ -73,7 +73,7 @@ public class StatusTrack extends Fragment {
 
             } else {
 
-                msg.send("你没有开启 :)").publicFailedWith(msg);
+                msg.send("你没有开启 :)").publicFailed();
 
             }
 
