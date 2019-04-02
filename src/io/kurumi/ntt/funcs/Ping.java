@@ -25,32 +25,9 @@ public class Ping extends Fragment {
 
             if (sended != null) {
 
-                sended.edit("pong！","time : " + (end - start) + "ms").exec();
-
+                sended.edit("pong！","time : " + (end - start) + "ms").publicFailedWith(msg);
+				
             }
-
-			if (!msg.isPrivate()) {
-
-				ThreadPool.exec(new Runnable() {
-
-						@Override
-						public void run() {
-
-							ThreadUtil.sleep(1000 * 5);
-
-							if (msg.delete()) {
-
-								sended.delete();
-
-							}
-
-
-
-						}
-
-					});
-
-			}
 
             return true;
 

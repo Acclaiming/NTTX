@@ -1,17 +1,14 @@
 package io.kurumi.ntt.model.request;
 
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.log.StaticLog;
-import com.pengrad.telegrambot.model.request.ParseMode;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardHide;
-import com.pengrad.telegrambot.request.SendMessage;
-import com.pengrad.telegrambot.response.SendResponse;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.model.Msg;
+import cn.hutool.core.util.*;
+import com.pengrad.telegrambot.model.request.*;
 import com.pengrad.telegrambot.request.*;
-import io.kurumi.ntt.Launcher;
-import io.kurumi.ntt.utils.BotLog;
-import com.pengrad.telegrambot.response.BaseResponse;
+import com.pengrad.telegrambot.response.*;
+import io.kurumi.ntt.*;
+import io.kurumi.ntt.fragment.*;
+import io.kurumi.ntt.model.*;
+import io.kurumi.ntt.model.request.*;
+import io.kurumi.ntt.utils.*;
 
 public class Send extends AbstractSend<Send> {
 
@@ -22,13 +19,13 @@ public class Send extends AbstractSend<Send> {
         this(null,fragment,chatId,msg);
 
     }
-    
+
     public Send(Fragment fragment,long chatId,String... msg) {
 
         this(null,fragment,chatId,msg);
 
     }
-    
+
     public Send(String chatId,String... msg) {
 
         this(null,Launcher.INSTANCE,chatId,msg);
@@ -40,7 +37,7 @@ public class Send extends AbstractSend<Send> {
         this(null,Launcher.INSTANCE,chatId,msg);
 
     }
-    
+
 
     private Send(Void v,Fragment fragment,Object chatId,String... msg) {
 
@@ -141,33 +138,34 @@ public class Send extends AbstractSend<Send> {
 
     }
 
+	
     public Msg send() {
 
         SendResponse resp = sync();
 
         if (!resp.isOk()) return null;
-        
+
         return new Msg(fragment,resp.message());
 
     }
 
     @Override
     public BaseResponse sync(Exception track) {
-        
+
         SendResponse resp = fragment.bot().execute(request);
 
         if (!resp.isOk()) {
-        
-        BotLog.info("消息发送失败 " + resp.errorCode() + " : " + resp.description(),track);
+
+			BotLog.info("消息发送失败 " + resp.errorCode() + " : " + resp.description(),track);
 
         }
-        
+
         return resp;
-        
+
     }
 
-    
-    
+
+
 
     @Override
     public SendResponse sync() {
@@ -181,7 +179,7 @@ public class Send extends AbstractSend<Send> {
             BotLog.infoWithStack("消息发送失败 " + resp.errorCode() + " : " + resp.description());
 
         }
-        
+
         return resp;
 
     }

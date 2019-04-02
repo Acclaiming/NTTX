@@ -8,6 +8,7 @@ import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.twitter.TAuth;
+import cn.hutool.core.thread.*;
 
 public class T {
 
@@ -118,5 +119,28 @@ public class T {
         return statusId;
         
     }
+	
+	public static void tryDelete(final long delay,final Msg... messages) {
+		
+		ThreadPool.exec(new Runnable() {
+
+				@Override
+				public void run() {
+		
+					ThreadUtil.sleep(delay);
+					
+					for (Msg message : messages) {
+						
+						if (message == null) continue;
+						
+						if (!message.delete()) return;
+						
+					}
+					
+				}
+				
+			});
+		
+	}
 
 }

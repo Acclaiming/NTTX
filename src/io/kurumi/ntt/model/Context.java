@@ -10,6 +10,7 @@ import io.kurumi.ntt.db.StickerPoint;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.request.Send;
 import java.io.File;
+import io.kurumi.ntt.utils.*;
 
 public class Context {
 
@@ -85,7 +86,7 @@ public class Context {
 
     }
 	
-
+	
     public Send send(String... msg) {
 
         return new Send(fragment, chatId(), msg);
@@ -121,7 +122,6 @@ public class Context {
         fragment.bot().execute(new SendChatAction(chatId(), ChatAction.typing));
 
     }
-
 
     public void sendUpdatingFile() {
 
