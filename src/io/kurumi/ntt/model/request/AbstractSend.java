@@ -38,13 +38,15 @@ public abstract class AbstractSend<T extends AbstractSend> {
 	public void failedWith(final long delay,final Msg message) {
 
 		if (origin == null) return;
+        
+        final Exception track = new Exception();
 		
 		ThreadPool.exec(new Runnable() {
 
 				@Override
 				public void run() {
 
-					BaseResponse resp = sync();
+					BaseResponse resp = sync(track);
 
 					if (resp.isOk()) {
 						
