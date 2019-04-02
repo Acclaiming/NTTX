@@ -172,7 +172,6 @@ public class FollowerTrackTask extends TimerTask {
                 
                 if (pedding.size() > 100) {
                     
-                    
                     target = ArrayUtil.unWrap(pedding.subList(0,99).toArray(new Long[100]));
                     
                     pedding = pedding.subList(99,pedding.size() -1);
@@ -193,7 +192,7 @@ public class FollowerTrackTask extends TimerTask {
 
         } catch (TwitterException e) {
 
-            BotLog.info("UserArchive ERROR",e);
+            BotLog.error("UserArchive ERROR",e);
 
         }
 
@@ -278,13 +277,7 @@ public class FollowerTrackTask extends TimerTask {
 
             User follower = api.showUser(id);
             UserArchive.saveCache(follower);
-
-			UserArchive fa = UserArchive.INSTANCE.getOrNew(id);
-
-			fa.read(follower);
-			
-			UserArchive.INSTANCE.saveObj(fa);
-			
+            
             Relationship ship = api.showFriendship(api.getId(),id);
 
             if (ship.isSourceBlockingTarget()) {
