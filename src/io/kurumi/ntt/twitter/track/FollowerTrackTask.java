@@ -1,6 +1,14 @@
 package io.kurumi.ntt.twitter.track;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.json.*;
+import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.model.request.*;
+import io.kurumi.ntt.twitter.*;
+import io.kurumi.ntt.twitter.archive.*;
+import io.kurumi.ntt.utils.*;
+import java.util.*;
+import twitter4j.*;
 import cn.hutool.json.JSONObject;
 import io.kurumi.ntt.db.BotDB;
 import io.kurumi.ntt.db.UserData;
@@ -257,6 +265,15 @@ public class FollowerTrackTask extends TimerTask {
 
         }
 
+        
+		UserArchive fa = UserArchive.INSTANCE.getOrNew(follower.getId());
+
+		fa.read(follower);
+
+		UserArchive.INSTANCE.saveObj(fa);
+		
+        new Send(user.id,TApi.formatUserNameHtml(follower) + " 关注了你").enableLinkPreview().html().exec();
+
 
     }
 
@@ -265,9 +282,19 @@ public class FollowerTrackTask extends TimerTask {
         try {
 
             User follower = api.showUser(id);
+<<<<<<< HEAD
 
             UserArchive.saveCache(follower);
 
+=======
+			
+			UserArchive fa = UserArchive.INSTANCE.getOrNew(id);
+
+			fa.read(follower);
+			
+			UserArchive.INSTANCE.saveObj(fa);
+			
+>>>>>>> branch 'master' of https://github.com/HiedaNaKan/NTTools
             Relationship ship = api.showFriendship(api.getId(),id);
 
             if (ship.isSourceBlockingTarget()) {
@@ -293,7 +320,6 @@ public class FollowerTrackTask extends TimerTask {
             } else {
 
                 new Send(user.id,"用户 (" + id + ") 取关了你 , 因为该账号已经不存在了 :(").enableLinkPreview().html().exec();
-
 
             }
 
