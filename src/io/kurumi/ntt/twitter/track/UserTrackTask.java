@@ -31,17 +31,20 @@ public class UserTrackTask extends TimerTask {
     public static void start() {
 
         stop();
-        
+
         timer = new Timer("NTT Twitter User Track Task");
-        timer.schedule(INSTANCE,new Date(),5 * 60 * 1000);
+        timer.schedule(INSTANCE,new Date(),1 * 60 * 1000);
 
     }
-    
+
     public static void stop() {
-        
+
         if (timer != null) timer.cancel();
-        
+
     }
+
+    int indexG = 0;
+    HashMap<String,Integer> useH = new HashMap<>();
 
     @Override
     public void run() {
@@ -49,6 +52,16 @@ public class UserTrackTask extends TimerTask {
         if (subs.isEmpty()) return;
 
         if (TAuth.auth.isEmpty()) return;
+
+        if (indexG == 15) {
+
+            indexG = 0;
+
+            useH.clear();
+
+        }
+
+        indexG ++;
 
         HashMap<Long,List<Long>> subIndex = new HashMap<>();
         HashMap<UserArchive,String> changes = new HashMap<>();
@@ -68,20 +81,47 @@ public class UserTrackTask extends TimerTask {
         if (globals.size() > TAuth.auth.size() * 900 * 100) {
 
             // TOTO : 不可能的 ~ (flag)
-            
+
             BotLog.errorWithStack("监听中的总用户数大于API限制");
-            
+
             return;
 
         }
-     
+
         boolean finished = false;
 
         try {
 
+            int index = 0;
+
             while (!finished) {
+                
+                if (index > 850) {
+                    
+                    // 十五分钟上限900次 到850可以退出等API可用;
+                    
+                    return;
+                    
+                }
 
                 for (String id : subs.keySet()) {
+
+                    if (useH.containsKey(id)) {
+
+                        if (useH.get(id) > index) {
+
+                            continue;
+
+                        }
+
+                        useH.put(id,useH.get(id));
+
+                    } else {
+
+                        useH.put(id,1);
+
+                    }
+                    
 
                     UserData user = UserData.INSTANCE.get(Long.parseLong(id));
 
@@ -103,7 +143,7 @@ public class UserTrackTask extends TimerTask {
                     } else {
 
                         target = globals;
-                        
+
                         finished = true;
 
                     }
@@ -111,24 +151,24 @@ public class UserTrackTask extends TimerTask {
                     ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
 
                     for (User tuser : result) UserArchive.saveCache(tuser);
-                    
+
                 }
             }
 
             if (changes.isEmpty()) return;
-            
+
             for (Map.Entry<UserArchive,String> change : changes.entrySet()) {
-                
+
                 UserArchive archive = change.getKey();
 
                 if (!subIndex.containsKey(archive.id)) continue;
-                
+
                 List<Long> subscribers = subIndex.get(archive.id);
-                
+
                 for (Long id : subscribers) {
-                    
+
                     new Send(id,archive.getHtmlURL(),change.getValue()).html().exec();
-                    
+
                 }
 
             }
@@ -140,21 +180,21 @@ public class UserTrackTask extends TimerTask {
         }
 
     }
-    
+
     public static void onUserChange(UserArchive user,String change) {
 
         for (Map.Entry<String,JSONArray> sub : ((Map<String,JSONArray>)(Object)subs).entrySet()) {
-            
-           if (sub.getValue().contains(user.id)) {
-               
-               new Send(Long.parseLong(sub.getKey()),user.getHtmlURL() + " :",change).html().exec();
-               
-           }
-            
+
+            if (sub.getValue().contains(user.id)) {
+
+                new Send(Long.parseLong(sub.getKey()),user.getHtmlURL() + " :",change).html().exec();
+
+            }
+
         }
-        
+
     }
-    
+
 
     public static JSONObject subs = BotDB.getJSON("data","subscriptions",true);
 
@@ -183,7 +223,7 @@ public class UserTrackTask extends TimerTask {
         boolean result = list.add(id);
 
         subs.put(user.idStr,list);
-        
+
         return result;
 
     }
@@ -195,7 +235,7 @@ public class UserTrackTask extends TimerTask {
         boolean result = list.remove(id);
 
         subs.put(user.idStr,list);
-        
+
         return result;
 
     }
