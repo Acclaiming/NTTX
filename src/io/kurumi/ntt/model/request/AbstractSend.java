@@ -8,7 +8,7 @@ import io.kurumi.ntt.utils.*;
 public abstract class AbstractSend<T extends AbstractSend> {
 
 	public Msg origin;
-	
+
     public Fragment fragment;
 
     public AbstractSend(Fragment fragment) {
@@ -26,21 +26,27 @@ public abstract class AbstractSend<T extends AbstractSend> {
     public abstract BaseResponse sync();
 
     public abstract BaseResponse sync(Exception track);
-    
+
 	public void publicFailedWith(final Msg message) {
 
-		if (message.isPrivate()) return;
+		if (message.isPrivate()) {
 
-		failedWith(5000,message);
+            exec();
+
+        } else {
+
+            failedWith(5000,message);
+
+        }
 
 	}
 
 	public void failedWith(final long delay,final Msg message) {
 
 		if (origin == null) return;
-        
+
         final Exception track = new Exception();
-		
+
 		ThreadPool.exec(new Runnable() {
 
 				@Override
@@ -49,7 +55,7 @@ public abstract class AbstractSend<T extends AbstractSend> {
 					BaseResponse resp = sync(track);
 
 					if (resp.isOk()) {
-						
+
 						io.kurumi.ntt.utils.T.tryDelete(delay,message,origin);
 
 					}
@@ -61,27 +67,27 @@ public abstract class AbstractSend<T extends AbstractSend> {
 
 	}
 
-	
-	
+
+
     public void exec() {
 
         final Exception track = new Exception();
-        
+
         ThreadPool.exec(new Runnable() {
 
-            @Override
-            public void run() {
+                @Override
+                public void run() {
 
-                sync(track);
+                    sync(track);
 
-            }
+                }
 
-        });
+            });
 
     }
-	
-	
-	
-	
+
+
+
+
 
 }
