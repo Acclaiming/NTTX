@@ -98,7 +98,7 @@ public abstract class IdDataModel {
 
         public Boolean exists(long id) {
 
-            return new File(Env.DATA_DIR,dirName + "/" + id + ".json").isFile();
+            return idIndex.containsKey(id);
 
         }
 

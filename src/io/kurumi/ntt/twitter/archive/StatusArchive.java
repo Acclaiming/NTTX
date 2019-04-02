@@ -53,10 +53,8 @@ public class StatusArchive extends IdDataModel {
 
         from = status.getUser().getId();
 
-        UserArchive user = UserArchive.INSTANCE.getOrNew(from);
-        user.read(status.getUser());
-        UserArchive.INSTANCE.saveObj(user);
-
+        UserArchive.saveCache(status.getUser());
+        
         inReplyToStatusId = status.getInReplyToStatusId();
 
         inReplyToScreenName = status.getInReplyToScreenName();

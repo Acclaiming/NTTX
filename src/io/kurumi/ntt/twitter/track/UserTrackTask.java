@@ -23,9 +23,9 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
 
-public class UserTackTask extends TimerTask {
+public class UserTrackTask extends TimerTask {
 
-    static UserTackTask INSTANCE = new UserTackTask();
+    static UserTrackTask INSTANCE = new UserTrackTask();
     static Timer timer;
 
     public static void start() {
@@ -110,15 +110,8 @@ public class UserTackTask extends TimerTask {
 
                     ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
 
-                    for (User tuser : result) {
-
-                        UserArchive archive = UserArchive.INSTANCE.getOrNew(tuser.getId());
-
-                        archive.read(tuser);
-                        
-                        UserArchive.INSTANCE.saveObj(archive);
-
-                    }
+                    for (User tuser : result) UserArchive.saveCache(tuser);
+                    
                 }
             }
 

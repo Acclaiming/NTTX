@@ -10,7 +10,7 @@ import java.io.*;
 import java.util.*;
 import io.kurumi.ntt.twitter.track.FollowerTrackTask;
 import java.util.concurrent.atomic.AtomicBoolean;
-import io.kurumi.ntt.twitter.track.UserTackTask;
+import io.kurumi.ntt.twitter.track.UserTrackTask;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -104,7 +104,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         INSTANCE.bot().removeGetUpdatesListener();
 
         FollowerTrackTask.stop();
-        UserTackTask.stop();
+        UserTrackTask.stop();
 
 		//  BotServer.INSTACNCE.stop();
 
@@ -140,7 +140,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     public void stop() {
        
         FollowerTrackTask.stop();
-        UserTackTask.stop();
+        UserTrackTask.stop();
         
         super.stop();
         

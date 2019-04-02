@@ -11,7 +11,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.*;
 import io.kurumi.ntt.utils.*;
 import cn.hutool.core.util.ObjectUtil;
-import io.kurumi.ntt.twitter.track.UserTackTask;
+import io.kurumi.ntt.twitter.track.UserTrackTask;
 import java.util.HashMap;
 
 public class UserArchive extends IdDataModel {
@@ -36,6 +36,18 @@ public class UserArchive extends IdDataModel {
         
         return null;
         
+    }
+    
+    public static User saveCache(User user) {
+        
+        UserArchive archive = INSTANCE.getOrNew(user.getId());
+        
+        archive.read(user);
+        
+        INSTANCE.saveObj(archive);
+        
+        return user;
+
     }
     
     public static Factory<UserArchive> INSTANCE = new Factory<UserArchive>(UserArchive.class,"twitter_archives/users") {
@@ -165,7 +177,7 @@ public class UserArchive extends IdDataModel {
 
         if (change) {
 
-            UserTackTask.onUserChange(this,str.toString());
+            UserTrackTask.onUserChange(this,str.toString());
 
         }
 
