@@ -178,6 +178,8 @@ public class FollowerTrackTask extends TimerTask {
                     
                     target = ArrayUtil.unWrap(pedding.toArray(new Long[pedding.size()]));
                     
+                    pedding.clear();
+                    
                 }
                 
                 ResponseList<User> result = api.lookupUsers(target);
