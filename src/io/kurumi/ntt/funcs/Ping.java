@@ -25,7 +25,7 @@ public class Ping extends Fragment {
 
             if (sended != null) {
 
-                sended.edit("pong！","time : " + (end - start)).exec();
+                sended.edit("pong！","time : " + (end - start) + "ms").exec();
 
             }
 
