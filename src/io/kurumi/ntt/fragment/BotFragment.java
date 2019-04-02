@@ -36,7 +36,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
     }
 
     public BotFragment() {
+        
         origin = this;
+        
     }
 
     @Override
@@ -141,7 +143,17 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
             UserData user = UserData.get(update.message().from());
 
             BotLog.process(user,update);
+            
+            for (Fragment fragmnet : fragments) {
 
+                if (fragmnet.onUpdate(user,update)) {
+
+                    return;
+
+                }
+
+            }
+            
             if (update.message().chat().type() == Chat.Type.Private && user != null && user.point != null) {
 
                 for (Fragment fragmnet : fragments) {
@@ -223,6 +235,19 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
             UserData user = update.channelPost().from() != null ? UserData.get(update.channelPost().from()) : null;
 
+            BotLog.process(user,update);
+            
+            for (Fragment fragmnet : fragments) {
+
+                if (fragmnet.onUpdate(user,update)) {
+
+                    return;
+
+                }
+
+            }
+            
+
             for (Fragment fragmnet : fragments) {
 
                 if (fragmnet.onChanPost(user,new Msg(fragmnet,update.channelPost()))) {
@@ -237,6 +262,19 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
             UserData user = UserData.get(update.callbackQuery().from());
 
+            BotLog.process(user,update);
+
+            for (Fragment fragmnet : fragments) {
+
+                if (fragmnet.onUpdate(user,update)) {
+
+                    return;
+
+                }
+
+            }
+            
+            
             for (Fragment fragmnet : fragments) {
 
                 if (fragmnet.onCallback(user,new Callback(fragmnet,update.callbackQuery()))) {
@@ -251,6 +289,19 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
             UserData user = UserData.get(update.channelPost().from());
 
+            BotLog.process(user,update);
+
+            for (Fragment fragmnet : fragments) {
+
+                if (fragmnet.onUpdate(user,update)) {
+
+                    return;
+
+                }
+
+            }
+            
+            
             for (Fragment fragmnet : fragments) {
 
                 if (fragmnet.onQuery(user,new Query(fragmnet,update.inlineQuery()))) {

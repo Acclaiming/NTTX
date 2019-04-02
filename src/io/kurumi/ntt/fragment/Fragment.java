@@ -17,6 +17,12 @@ public class Fragment {
         return origin.bot();
         
     }
+    
+    public boolean onUpdate(UserData user,Update update) {
+        
+        return false;
+        
+    }
 
     public boolean onMsg(UserData user, Msg msg) {
         
