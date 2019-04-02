@@ -162,29 +162,29 @@ public class FollowerTrackTask extends TimerTask {
             
             if (pedding.size() > 10000) {
                 
-                pedding = pedding.subList(0,9999);
+                pedding = pedding.subList(0,10000);
                 
             }
             
             while (pedding.size() > 0) {
                 
-                long[] target;
+                List<Long> target;
                 
                 if (pedding.size() > 100) {
                     
-                    target = ArrayUtil.unWrap(pedding.subList(0,100).toArray(new Long[100]));
+                    target = pedding.subList(0,100);
                     
-                    pedding = pedding.subList(100,pedding.size());
+                    pedding = pedding.subList(99,pedding.size());
                     
                 } else {
                     
-                    target = ArrayUtil.unWrap(pedding.toArray(new Long[pedding.size()]));
+                    target = pedding;
                     
                     pedding.clear();
                     
                 }
                 
-                ResponseList<User> result = api.lookupUsers(target);
+                ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
 
                 for (User tuser : result) UserArchive.saveCache(tuser);
                 
