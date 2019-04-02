@@ -18,6 +18,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     public Launcher() {
 
+        addFragment(Ping.INSTANCE);
+        
         addFragment(Backup.INSTANCE);
 
         addFragment(GroupRepeat.INSTANCE);
@@ -34,6 +36,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(UserTrack.INSTANCE);
 		
 	// addFragment(MusicSearch.INSTANCE);
+    
+   // addFragment(AntiTooManyMsg.INSTANCE);
 
     }
 

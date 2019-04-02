@@ -23,7 +23,7 @@ public class FollowerTrackTask extends TimerTask {
         stop();
         
         timer = new Timer("NTT Twitter Follower Track Task");
-        timer.schedule(INSTANCE,new Date(),5 * 60 * 1000);
+        timer.schedule(INSTANCE,new Date(),3 * 60 * 1000);
 
     }
 
@@ -42,7 +42,7 @@ public class FollowerTrackTask extends TimerTask {
 
     @Override
     public void run() {
-
+        
         for (Map.Entry<String,Object> entry : enable.entrySet()) {
 
             long userId = Long.parseLong(entry.getKey());

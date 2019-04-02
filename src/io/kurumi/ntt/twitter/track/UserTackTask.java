@@ -33,7 +33,7 @@ public class UserTackTask extends TimerTask {
         stop();
         
         timer = new Timer("NTT Twitter User Track Task");
-        timer.schedule(INSTANCE,new Date(),15 * 60 * 1000);
+        timer.schedule(INSTANCE,new Date(),5 * 60 * 1000);
 
     }
     

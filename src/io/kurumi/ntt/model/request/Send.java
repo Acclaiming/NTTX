@@ -143,7 +143,11 @@ public class Send extends AbstractSend<Send> {
 
     public Msg send() {
 
-        return new Msg(fragment,sync().message());
+        SendResponse resp = sync();
+
+        if (!resp.isOk()) return null;
+        
+        return new Msg(fragment,resp.message());
 
     }
 
