@@ -57,6 +57,13 @@ public class TwitterUI extends Fragment {
 
 	void tauth(UserData user,Msg msg) {
 
+        if (TAuth.exists(user)) {
+
+            msg.send("乃已经认证账号了 :)").publicFailedWith(msg);
+
+            return;
+
+		}
         if (!msg.isPrivate()) {
 
             msg.send("请使用私聊 :)").publicFailedWith(msg);
@@ -65,13 +72,7 @@ public class TwitterUI extends Fragment {
 
         }
 
-		if (TAuth.exists(user)) {
-
-			msg.send("对不起，但是乃已经认证账号了 >_< ","在重新认证之前乃需要使用 /trem 解除认证 ~").publicFailedWith(msg);
-			
-			return;
-
-		}
+		
 
 		msg.send("好的。现在咱正在向Twitter请求认证连接 :D").exec();
 
@@ -93,7 +94,7 @@ public class TwitterUI extends Fragment {
 
 			msg.send(e.toString()).exec();
 
-			msg.send("请求认证链接失败 :( ","这可能是因为同时请求的人太多，或者有人不停重复请求... 也有可能是咱Twitter账号被停用了。 ","","那么，请再来一次吧 ~").publicFailedWith(msg);
+			msg.send("请求认证链接失败 :( ","这可能是因为同时请求的人太多，或者有人不停重复请求... 也有可能是咱Twitter账号被停用了。 ","","那么，请再来一次吧 ~").exec();
 
 		}
 
@@ -183,17 +184,9 @@ public class TwitterUI extends Fragment {
 
 	void trem(UserData user,Msg msg) {
 
-        if (!msg.isPrivate()) {
-
-            msg.send("请使用私聊 :)").publicFailedWith(msg);
-
-            return;
-
-        }
-
 		if (!TAuth.exists(user))  {
 
-			msg.send("对不起，但是乃并没有认证账号呢。 使用 /tauth 认证 ~").publicFailedWith(msg);
+			msg.send("乃并没有认证账号呢。 使用 /tauth 认证 ~").publicFailedWith(msg);
 
 			return;
 
