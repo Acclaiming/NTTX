@@ -26,7 +26,7 @@ public class StickerManage extends Fragment {
 
             return true;
 
-        } else if (msg.message().sticker() != null) {
+        } else if (msg.isPrivate() && msg.message().sticker() != null) {
             
             bot().execute(new SendPhoto(msg.chatId(),msg.message().sticker().fileId()).replyToMessageId(msg.messageId()));
             
