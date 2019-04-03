@@ -8,6 +8,8 @@ import com.pengrad.telegrambot.model.ResponseParameters;
  */
 public class BaseResponse {
 
+    public transient String source;
+    
     private boolean ok;
     private int error_code;
     private String description;

@@ -35,7 +35,10 @@ public class TelegramBotClient {
             @Override
             public void onResponse(Call call, Response response) {
                 try {
-                    R result = gson.fromJson(response.body().string(), request.getResponseType());
+                    
+                    String str = response.body().string();
+                    R result = gson.fromJson(str, request.getResponseType());
+                    result.source = str;
                     callback.onResponse(request, result);
                 } catch (Exception e) {
                     IOException ioEx = e instanceof IOException ? (IOException) e : new IOException(e);
@@ -54,7 +57,11 @@ public class TelegramBotClient {
         try {
             OkHttpClient client = getOkHttpClient(request);
             Response response = client.newCall(createRequest(request)).execute();
-            return gson.fromJson(response.body().string(), request.getResponseType());
+            String str = response.body().string();
+            R result = gson.fromJson(str, request.getResponseType());
+            result.source = str;
+            
+            return result;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

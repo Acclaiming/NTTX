@@ -36,10 +36,11 @@ import twitter4j.User;
 public class FollowerTrackTask extends TimerTask {
 
     static FollowerTrackTask INSTANCE = new FollowerTrackTask();
-    static Timer timer;
+    
     public static JSONObject enable = BotDB.getJSON("data","track",true);
     static HashMap<Long,LinkedList<Long>> cache = new HashMap<>();
 
+    static Timer timer;
     public static void start() {
 
         stop();

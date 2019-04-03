@@ -68,6 +68,7 @@ public class UpdatesHandler {
                     }
 
                     List<Update> updates = response.updates();
+                    
                     int lastConfirmedUpdate = listener.process(updates);
 
                     if (lastConfirmedUpdate != CONFIRMED_UPDATES_NONE) {

@@ -13,6 +13,7 @@ import java.io.*;
 import java.io.File;
 import io.kurumi.ntt.utils.BotLog;
 import cn.hutool.core.math.MathUtil;
+import com.pengrad.telegrambot.response.SendResponse;
 
 public class Msg extends Context {
 
@@ -34,6 +35,14 @@ public class Msg extends Context {
         this.fragment = fragment;
         this.message = message;
 
+    }
+    
+    public static Msg from(Fragment fragment,SendResponse resp) {
+        
+        if (resp.isOk()) return new Msg(fragment,resp.message());
+        
+        return null;
+        
     }
 	
 	public UserData from() {
@@ -101,7 +110,88 @@ public class Msg extends Context {
 		
 	}
 
-	
+	public Msg sendSticker(StickerPoint sticker) {
+
+        return fragment.sendSticker(chatId(),sticker);
+        
+        
+    }
+
+    public Msg sendFile(long chatId,String file) {
+
+        return fragment.sendFile(chatId,file);
+
+    }
+
+    public Msg sendFile(File file) {
+
+        return fragment.sendFile(chatId(),file);
+    }
+
+    public Msg sendFile(byte[] file) {
+
+        return fragment.sendFile(chatId(),file);
+        
+    }
+
+    public void sendTyping() {
+
+        fragment.sendTyping(chatId());
+        
+    }
+
+    public void sendUpdatingFile() {
+
+        fragment.sendUpdatingFile(chatId());
+    }
+
+    public void sendUpdatingPhoto() {
+
+        fragment.sendUpdatingPhoto(chatId());
+        
+    }
+
+    public void sendUpdatingAudio() {
+
+        fragment.sendUpdatingAudio(chatId());
+        
+    }
+
+    public void sendUpdatingVideo() {
+
+        fragment.sendUpdatingAudio(chatId());
+    }
+
+    public void sendUpdatingVideoNote() {
+
+        fragment.sendUpdatingVideoNote(chatId());
+    }
+
+    public void sendFindingLocation() {
+
+        fragment.sendFindingLocation(chatId());
+    }
+
+    public void sendRecordingAudio(long chatId) {
+
+        fragment.sendRecordingAudio(chatId());
+        
+    }
+
+
+    public void sendRecordingViedo(long chatId) {
+
+        fragment.sendRecordingViedo(chatId());
+        
+    }
+
+    public void sendRecordingVideoNote() {
+
+        fragment.sendRecordingVideoNote(chatId());
+        
+    }
+
+    
 
 
 	public Msg replyTo() {

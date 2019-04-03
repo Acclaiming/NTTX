@@ -9,6 +9,8 @@ import java.io.Serializable;
 public class Update implements Serializable {
     private final static long serialVersionUID = 0L;
 
+    public transient String from;
+    
     private Integer update_id;
     private Message message;
     private Message edited_message;
