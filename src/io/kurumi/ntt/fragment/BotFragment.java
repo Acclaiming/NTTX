@@ -158,6 +158,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
             user = UserData.get(update.inlineQuery().from());
 
         } else user = null;
+        
+        BotLog.process(user,update);
 
         ThreadPool.exec(new Runnable() {
 
@@ -256,8 +258,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
                     } else if (update.channelPost() != null) {
 
 
-                        BotLog.process(user,update);
-
+                        
                         for (Fragment fragmnet : fragments) {
 
                             if (fragmnet.onUpdate(user,update)) {
@@ -280,10 +281,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
                         }
 
                     } else if (update.callbackQuery() != null) {
-
-
-                        BotLog.process(user,update);
-
+                    
                         for (Fragment fragmnet : fragments) {
 
                             if (fragmnet.onUpdate(user,update)) {
@@ -307,8 +305,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                     } else if (update.inlineQuery() != null) {
 
-
-                        BotLog.process(user,update);
 
                         for (Fragment fragmnet : fragments) {
 

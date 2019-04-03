@@ -8,6 +8,8 @@ import com.pengrad.telegrambot.request.CreateNewStickerSet;
 import com.pengrad.telegrambot.request.SendPhoto;
 
 public class StickerManage extends Fragment {
+    
+    public static StickerManage INSTANCE = new StickerManage();
 
     @Override
     public boolean onMsg(UserData user,Msg msg) {
