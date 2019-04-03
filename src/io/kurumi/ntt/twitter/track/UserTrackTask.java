@@ -147,23 +147,41 @@ public class UserTrackTask extends TimerTask {
                         finished = true;
 
                     }
+                    
+                    try {
 
                     ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
 
-                    for (User tuser : result) {
+                        for (User tuser : result) {
 
-                        target.remove(tuser.getId());
+                            target.remove(tuser.getId());
+
+                            UserArchive.saveCache(tuser);
+
+                        }
+
+                        for (Long da : target) {
+
+                            UserArchive.saveDisappeared(da);
+
+                        }
                         
-                        UserArchive.saveCache(tuser);
+                    } catch (TwitterException e) {
+                        
+                        if (e.getErrorCode() == 17) {
+                        
+                        for (Long da : target) {
 
+                            UserArchive.saveDisappeared(da);
+
+                        }
+                        
+                        } else throw e;
+                        
+                        
                     }
                     
-                    for (Long da : target) {
-                        
-                        UserArchive.saveDisappeared(da);
-                        
-                    }
-
+                    
                 }
             }
 
