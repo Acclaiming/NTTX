@@ -36,7 +36,7 @@ import twitter4j.User;
 public class FollowerTrackTask extends TimerTask {
 
     static FollowerTrackTask INSTANCE = new FollowerTrackTask();
-    
+
     public static JSONObject enable = BotDB.getJSON("data","track",true);
     static HashMap<Long,LinkedList<Long>> cache = new HashMap<>();
 
@@ -116,6 +116,8 @@ public class FollowerTrackTask extends TimerTask {
             Twitter api = TAuth.get(user).createApi();
 
             User me = api.verifyCredentials();
+
+            if (me == null) return;
 
             UserArchive.saveCache(me);
 
@@ -197,7 +199,11 @@ public class FollowerTrackTask extends TimerTask {
 
         } catch (TwitterException e) {
 
-            BotLog.error("UserArchive ERROR",e);
+            if (e.getErrorCode() != 130) {
+
+                BotLog.error("UserArchive ERROR",e);
+
+            }
 
         }
 

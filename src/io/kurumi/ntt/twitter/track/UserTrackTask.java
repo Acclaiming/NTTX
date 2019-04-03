@@ -205,8 +205,12 @@ public class UserTrackTask extends TimerTask {
 
         } catch (TwitterException ex) {
 
+            if (ex.getErrorCode() != 130) {
+                
             BotLog.error("UserArchive Failed...",ex);
 
+            }
+            
         }
 
     }
