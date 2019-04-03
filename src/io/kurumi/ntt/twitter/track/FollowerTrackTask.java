@@ -216,10 +216,10 @@ public class FollowerTrackTask extends TimerTask {
         StringBuilder status = new StringBuilder();
 
         if (user.isProtected()) status.append("这是一个是锁推用户 :)\n");
-        if (user.isFollowRequestSent()) status.append("乃发送了关注请求 :)");
-        if (user.getStatusesCount() == 0) status.append("这个用户没有发过推 :)");
-        if (user.getFavouritesCount() == 0) status.append("这个用户没有喜欢过推文 :)");
-        if (user.getFollowersCount() < 20) status.append("这个用户关注者低 (").append(user.getFollowersCount()).append(")  :)");
+       // if (user.isFollowRequestSent()) status.append("乃发送了关注请求 :)\n");
+        if (user.getStatusesCount() == 0) status.append("这个用户没有发过推 :)\n");
+        if (user.getFavouritesCount() == 0) status.append("这个用户没有喜欢过推文 :)\n");
+        if (user.getFollowersCount() < 20) status.append("这个用户关注者低 (\n").append(user.getFollowersCount()).append(")  :)");
 
         try {
 
