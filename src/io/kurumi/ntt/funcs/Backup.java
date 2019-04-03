@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import io.kurumi.ntt.Launcher;
+import cn.hutool.core.date.DateUtil;
 
 public class Backup extends Fragment {
 
@@ -51,8 +52,14 @@ public class Backup extends Fragment {
 
             stop();
 
+            Date nextHour = new Date();
+            
+            nextHour.setHours(nextHour.getHours() + 1);
+            nextHour.setMinutes(0);
+            nextHour.setSeconds(0);
+
             timer = new Timer("NTT Data Backup Task");
-            timer.scheduleAtFixedRate(this,new Date(),60 * 60 * 1000);
+            timer.scheduleAtFixedRate(this,nextHour,60 * 60 * 1000);
 
         }
 
