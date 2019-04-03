@@ -85,7 +85,7 @@ public class InitTask extends Thread {
                String msg = "NTT已更新 :)";
 
               // new Send(Env.DEVELOPER_ID,msg).html().exec();
-               new Send(Env.GROUP,msg,showVersion()).html().exec();
+               new Send(Env.GROUP,msg,showVersion()).exec();
                
             }
             
