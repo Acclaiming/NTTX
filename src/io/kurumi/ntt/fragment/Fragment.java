@@ -101,6 +101,12 @@ public class Fragment {
         return Msg.from(this, bot().execute(new SendSticker(chatId, sticker.fileId)));
 
     }
+    public Msg sendSticker(long chatId,String sticker) {
+
+        return Msg.from(this, bot().execute(new SendSticker(chatId, sticker)));
+
+    }
+    
 
     public Msg sendFile(long chatId,String file) {
 

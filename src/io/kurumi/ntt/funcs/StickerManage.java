@@ -5,6 +5,7 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import com.pengrad.telegrambot.request.CreateNewStickerSet;
+import com.pengrad.telegrambot.request.SendPhoto;
 
 public class StickerManage extends Fragment {
 
@@ -25,6 +26,10 @@ public class StickerManage extends Fragment {
 
             return true;
 
+        } else if (msg.message().sticker() != null) {
+            
+            bot().execute(new SendPhoto(msg.chatId(),msg.message().sticker().fileId()).replyToMessageId(msg.messageId()));
+            
         }
 
         return false;

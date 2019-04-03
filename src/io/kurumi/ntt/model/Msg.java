@@ -122,6 +122,13 @@ public class Msg extends Context {
         
         
     }
+    
+    public Msg sendSticker(String sticker) {
+
+        return fragment.sendSticker(chatId(),sticker);
+
+
+    }
 
     public Msg sendFile(long chatId,String file) {
 
