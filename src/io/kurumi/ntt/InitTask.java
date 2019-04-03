@@ -103,7 +103,7 @@ public class InitTask extends Thread {
     
     public String showVersion(String commit) {
         
-        return RuntimeUtil.execForStr("git show",commit);
+        return RuntimeUtil.execForStr("git show " + commit);
         
     }
 
