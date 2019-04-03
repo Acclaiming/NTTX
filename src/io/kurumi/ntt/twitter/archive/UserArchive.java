@@ -119,6 +119,9 @@ public class UserArchive extends IdDataModel {
 
     @Override
     protected void init() {
+        
+        isDisappeared = false;
+        
     }
 
     public void read(User user) {
