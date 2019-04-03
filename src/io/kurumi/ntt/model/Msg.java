@@ -98,6 +98,12 @@ public class Msg extends Context {
             
         return super.send(msg);
     }
+    
+    public AbstractSend sendOrEdit(boolean edit,String... msg) {
+        
+        if (edit) return edit(msg); else return send(msg);
+        
+    }
 
 	@Override
 	public Send send(String... msg) {

@@ -36,16 +36,23 @@ public abstract class IdDataModel {
 		idStr = this.id.toString();
 
         init();
+        
+        File file = new File(Env.DATA_DIR,dirName + "/" + id + ".json");
+
 
         try {
 
-			String json = FileUtil.readUtf8String(new File(Env.DATA_DIR,dirName + "/" + id + ".json"));
-
+			String json = FileUtil.readUtf8String(file);
+            
             JSONObject data = new JSONObject(json);
 
             load(data);
 
         } catch (IORuntimeException e) {
+        } catch (JSONException e) {
+            
+            FileUtil.del(file);
+            
         }
 
     }
@@ -73,13 +80,13 @@ public abstract class IdDataModel {
         public Factory(Class<T> clazz,String dirName) { this.dirName = dirName;
 
             try {
-                
+
                 constructor = clazz.getDeclaredConstructor(new Class[] {String.class,long.class});
-                
+
             } catch (Exception e) {
-                
+
                 throw new RuntimeException(e);
-                
+
             }
 
             File[] files = new File(Env.DATA_DIR,dirName).listFiles();
@@ -104,35 +111,14 @@ public abstract class IdDataModel {
 
         public T getNoCache(Long id) {
 
-            if (idIndex.containsKey(id)) return idIndex.get(id);
+            synchronized (idIndex) {
 
-            try {
-
-                T obj = constructor.newInstance(dirName,id);
-
-                return obj;
-
-            } catch (Exception e) {
-
-                throw new RuntimeException(e);
-
-            }
-          
-
-        }
-
-
-        public T get(Long id) {
-
-            if (idIndex.containsKey(id)) return idIndex.get(id);
-            else if (idList.contains(id)) {
+                if (idIndex.containsKey(id)) return idIndex.get(id);
 
                 try {
 
                     T obj = constructor.newInstance(dirName,id);
 
-                    idIndex.put(obj.id,obj);
-                    
                     return obj;
 
                 } catch (Exception e) {
@@ -140,8 +126,36 @@ public abstract class IdDataModel {
                     throw new RuntimeException(e);
 
                 }
-                
-                
+
+            }
+
+        }
+
+
+        public T get(Long id) {
+
+            synchronized (idIndex) {
+
+                if (idIndex.containsKey(id)) return idIndex.get(id);
+                else if (idList.contains(id)) {
+
+                    try {
+
+                        T obj = constructor.newInstance(dirName,id);
+
+                        idIndex.put(obj.id,obj);
+
+                        return obj;
+
+                    } catch (Exception e) {
+
+                        throw new RuntimeException(e);
+
+                    }
+
+
+                }
+
             }
 
             return null;
@@ -152,15 +166,21 @@ public abstract class IdDataModel {
 
             if (idIndex.containsKey(id)) return idIndex.get(id);
 
-            try {
+            synchronized (idIndex) {
 
-                T obj = constructor.newInstance(dirName,id);
+                if (idIndex.containsKey(id)) return idIndex.get(id);
 
-                return obj;
+                try {
 
-            } catch (Exception e) {
-                
-                throw new RuntimeException(e);
+                    T obj = constructor.newInstance(dirName,id);
+
+                    return obj;
+
+                } catch (Exception e) {
+
+                    throw new RuntimeException(e);
+
+                }
 
             }
 
@@ -181,7 +201,7 @@ public abstract class IdDataModel {
             obj.delete();
 
             idList.remove(obj.id);
-            
+
             idIndex.remove(obj.id);
 
         }
