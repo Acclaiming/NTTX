@@ -70,41 +70,6 @@ public class InitTask extends Thread {
         UserTrackTask.start();
         Backup.AutoBackupTask.INSTANCE.start();
 
-        String current = getVersion();
-
-        if (current == null) {
-
-            BotLog.error("无法取得版本 :(");
-
-        } else {
-
-            String version = Env.getOrDefault("version",current);
-
-            if (!current.equals(version)) {
-
-               String msg = "NTT已更新 :)";
-
-              // new Send(Env.DEVELOPER_ID,msg).html().exec();
-               new Send(Env.GROUP,msg,showVersion()).exec();
-               
-            }
-            
         }
-
-        BotLog.info("BOT 已正常运行 :)");
-
-    }
-
-    public String getVersion() {
-
-        return RuntimeUtil.execForStr("git rev-parse HEAD");
-
-    }
-    
-    public String showVersion() {
-        
-        return RuntimeUtil.execForStr("git log -1");
-        
-    }
 
 }
