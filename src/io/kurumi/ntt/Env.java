@@ -21,6 +21,7 @@ public class Env {
     public static final long DEVELOPER_ID = 530055491;
     public static final String DEVELOPER_URL = "https://t.me/" + DEVELOPER;
 
+    public static final Long GROUP = -1001400255262L;
 
     public static File ROOT;
     
