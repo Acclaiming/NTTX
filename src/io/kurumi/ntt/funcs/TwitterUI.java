@@ -53,7 +53,7 @@ public class TwitterUI extends Fragment {
 
 	final String POINT_INPUT_CALLBACK = "t|i";
 
-	HashMap<String,RequestToken> cache = new HashMap<>();
+	HashMap<UserData,RequestToken> cache = new HashMap<>();
 
 	void tauth(UserData user,Msg msg) {
 
@@ -64,26 +64,28 @@ public class TwitterUI extends Fragment {
             return;
 
 		}
-        
+
         if (!msg.isPrivate()) {
 
             msg.send("请使用私聊 :)").publicFailed();
-			
+
             return;
 
-       }
+        }
 
 		msg.send("好的。现在咱正在向Twitter请求认证连接 :D").exec();
 
 		try {
 
-			RequestToken request = ApiToken.defaultToken.createApi().getOAuthRequestToken("https://127.0.0.1");
+			RequestToken request = ApiToken.defaultToken.createApi().getOAuthRequestToken("oob");
 
-			cache.put(request.getToken(),request);
+			cache.put(user,request);
 
 			msg.send("请求成功 :) 点 [这里](" + request.getAuthorizationURL() + ") 认证 ~").markdown().exec();
 
-			msg.send("因为咱是一个简单的程序 所以不能自动收到认证！ T_T ","","请记住 : 认证账号之后会跳转到一个不可访问的界面 : 在浏览器显示的地址是 127.0.0.1 , 这时候不要关闭浏览器！复制这个链接并发送给咱就可以了 ~","","如果不小心关闭了浏览器 请使用 /cancel 取消认证并重新请求认证 ^_^").exec();
+			// msg.send("因为咱是一个简单的程序 所以不能自动收到认证！ T_T ","","请记住 : 认证账号之后会跳转到一个不可访问的界面 : 在浏览器显示的地址是 127.0.0.1 , 这时候不要关闭浏览器！复制这个链接并发送给咱就可以了 ~","","如果不小心关闭了浏览器 请使用 /cancel 取消认证并重新请求认证 ^_^").exec();
+
+            msg.send("请输入认证后的 7位 PIN码即可 (灬ºωº灬)").exec();
 
 			user.point = cdata(POINT_INPUT_CALLBACK);
 
@@ -101,54 +103,48 @@ public class TwitterUI extends Fragment {
 
 	void onInputCallback(UserData user,Msg msg) {
 
-        if (!msg.isPrivate()) {
+		if (!msg.hasText() || msg.text().length() != 7 || !NumberUtil.isNumber(msg.text())) {
 
-            msg.reply("乃好像需要输入回调URL ~ 使用 /cancel 取消 :)").exec();
-
-            return;
-
-        }
-
-		if (!msg.hasText()) {
-
-			msg.send("乃好像忘了之前使用了 /tauth ！","","取消认证使用 /cancel (╥_╥)").exec();
+			msg.reply("乃好像需要输入认证的 7位 PIN码 ~ 使用 /cancel 取消 :)").exec();
 
 			return;
 
 		}
 
-		URL url = URLUtil.url(msg.text());
+        /*
 
-		if (url == null) {
+         URL url = URLUtil.url(msg.text());
 
-			msg.send("乃好像忘了之前使用了 /tauth ！现在请发送跳转到的地址 ( ˶‾᷄࿀‾᷅˵ ) 如果不小心关掉了浏览器那就取消认证并再来一次吧 ( ⚆ _ ⚆ ) ","","取消使用 /cancel ").exec();
+         if (url == null) {
 
-			return;
+         msg.send("乃好像忘了之前使用了 /tauth ！现在请发送跳转到的地址 ( ˶‾᷄࿀‾᷅˵ ) 如果不小心关掉了浏览器那就取消认证并再来一次吧 ( ⚆ _ ⚆ ) ","","取消使用 /cancel ").exec();
 
-		}
+         return;
 
-		HashMap<String, String> params = HttpUtil.decodeParamMap(msg.text(),CharsetUtil.UTF_8);
+         }
 
-        String requestToken = params.get("oauth_token");
-        String oauthVerifier = params.get("oauth_verifier");
+         HashMap<String, String> params = HttpUtil.decodeParamMap(msg.text(),CharsetUtil.UTF_8);
 
-		if (requestToken == null || oauthVerifier == null) {
+         */
 
-			msg.send("乃好像忘了之前使用了 /tauth ！现在请发送跳转到的地址 ( ˶‾᷄࿀‾᷅˵ ) 如果不小心关掉了浏览器那就取消认证并再来一次吧 ( ⚆ _ ⚆ ) ","","取消使用 /cancel ").exec();
 
-		} else if (cache.containsKey(requestToken)) {
+        RequestToken requestToken = cache.get(user);
 
-            RequestToken request = cache.get(requestToken);
+		if (requestToken == null) {
+
+			msg.send("缓存丢失 请使用 /cancel 并重新认证 :(").exec();
+
+		} else {
 
 			try {
-                
 
-				AccessToken access = ApiToken.defaultToken.createApi().getOAuthAccessToken(request,oauthVerifier);
+
+				AccessToken access = ApiToken.defaultToken.createApi().getOAuthAccessToken(requestToken,msg.text());
 
 				TAuth auth = new TAuth(ApiToken.defaultToken.apiToken,ApiToken.defaultToken.apiSecToken,access.getToken(),access.getTokenSecret());
 
                 user.point = null;
-                
+
                 if (!auth.refresh()) {
 
                     msg.send("认证错误... 请重试").exec();
@@ -171,12 +167,6 @@ public class TwitterUI extends Fragment {
 
 			}
 
-        } else {
-
-            msg.send("链接好像失效了...","请重新认证 /tauth (｡>∀<｡)").exec();
-
-            user.point = null;
-
         }
 
 	}
@@ -192,7 +182,7 @@ public class TwitterUI extends Fragment {
 		}
 
 	    TAuth.auth.remove(user.idStr);
-        
+
         TAuth.saveAll();
 
 		msg.send("好！现在认证已经移除 ~ 程序不会继续保存。 [关于Twitter认证部分的代码](https://github.com/HiedaNaKan/NTTools/tree/master/src/io/kurumi/ntt/funcs/TwitterUI.java)。").markdown().exec();
