@@ -133,7 +133,9 @@ public abstract class IdDataModel {
 
 
         public T get(Long id) {
-
+            
+            if (idIndex.containsKey(id)) return idIndex.get(id);
+            
             synchronized (idIndex) {
 
                 if (idIndex.containsKey(id)) return idIndex.get(id);
