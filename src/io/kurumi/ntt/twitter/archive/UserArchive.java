@@ -18,38 +18,50 @@ public class UserArchive extends IdDataModel {
 
     public static HashMap<String,UserArchive> screenNameIndex = new HashMap<>();
 
-    public static UserArchive findByScreenName(String screenName) {
-        
-        if (screenNameIndex.containsKey(screenName)) return screenNameIndex.get(screenName);
-        
-        for (Long id : INSTANCE.idList) {
-            
-            if (INSTANCE.idIndex.containsKey(id)) continue;
-            
-            if (screenName.equals(INSTANCE.get(id).screenName)) {
-                
-                return screenNameIndex.get(screenName);
-                
-            }
-            
+    public static void saveDisappeared(Long da) {
+
+        if (INSTANCE.exists(da)) {
+
+            UserArchive archive = INSTANCE.get(da);
+            archive.read(null);
+            INSTANCE.saveObj(archive);
+
         }
-        
-        return null;
-        
+
     }
-    
+
+    public static UserArchive findByScreenName(String screenName) {
+
+        if (screenNameIndex.containsKey(screenName)) return screenNameIndex.get(screenName);
+
+        for (Long id : INSTANCE.idList) {
+
+            if (INSTANCE.idIndex.containsKey(id)) continue;
+
+            if (screenName.equals(INSTANCE.get(id).screenName)) {
+
+                return screenNameIndex.get(screenName);
+
+            }
+
+        }
+
+        return null;
+
+    }
+
     public static User saveCache(User user) {
-        
+
         UserArchive archive = INSTANCE.getOrNew(user.getId());
-        
+
         archive.read(user);
-        
+
         INSTANCE.saveObj(archive);
-        
+
         return user;
 
     }
-    
+
     public static Factory<UserArchive> INSTANCE = new Factory<UserArchive>(UserArchive.class,"twitter_archives/users") {
 
         public HashMap<String,UserArchive> screenNameIndex = new HashMap<String,UserArchive>() {{
@@ -111,11 +123,31 @@ public class UserArchive extends IdDataModel {
 
     public void read(User user) {
 
+        if (user == null) {
+
+            isDisappeared = true;
+
+            UserTrackTask.onUserChange(this,"用户被冻结或已停用 :)");
+
+            return;
+
+        }
+
         boolean change = false;
         StringBuilder str = new StringBuilder();
         String split = "\n--------------------------------\n";
-        
+
         String nameL = name;
+
+        if (isDisappeared)  {
+
+            isDisappeared = false;
+
+            str.append(split).append("用户被取消了冻结/重新启用 :)");
+
+            change = true;
+
+        }
 
         if (!(name = user.getName()).equals(nameL)) {
 
@@ -129,7 +161,7 @@ public class UserArchive extends IdDataModel {
 
         if (!(screenName = user.getScreenName()).equals(screenNameL)) {
 
-        str.append(split).append("用户名更改 @").append(screenNameL).append(" ------> @").append(screenName);
+            str.append(split).append("用户名更改 @").append(screenNameL).append(" ------> @").append(screenName);
 
             change = true;
 

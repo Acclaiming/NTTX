@@ -95,13 +95,13 @@ public class UserTrackTask extends TimerTask {
             int index = 0;
 
             while (!finished) {
-                
+
                 if (index > 850) {
-                    
+
                     // 十五分钟上限900次 到850可以退出等API可用;
-                    
+
                     return;
-                    
+
                 }
 
                 for (String id : subs.keySet()) {
@@ -121,7 +121,7 @@ public class UserTrackTask extends TimerTask {
                         useH.put(id,1);
 
                     }
-                    
+
 
                     UserData user = UserData.INSTANCE.get(Long.parseLong(id));
 
@@ -150,7 +150,19 @@ public class UserTrackTask extends TimerTask {
 
                     ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
 
-                    for (User tuser : result) UserArchive.saveCache(tuser);
+                    for (User tuser : result) {
+
+                        target.remove(tuser.getId());
+                        
+                        UserArchive.saveCache(tuser);
+
+                    }
+                    
+                    for (Long da : target) {
+                        
+                        UserArchive.saveDisappeared(da);
+                        
+                    }
 
                 }
             }
