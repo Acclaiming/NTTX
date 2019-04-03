@@ -219,7 +219,7 @@ public class FollowerTrackTask extends TimerTask {
        // if (user.isFollowRequestSent()) status.append("乃发送了关注请求 :)\n");
         if (user.getStatusesCount() == 0) status.append("这个用户没有发过推 :)\n");
         if (user.getFavouritesCount() == 0) status.append("这个用户没有喜欢过推文 :)\n");
-        if (user.getFollowersCount() < 20) status.append("这个用户关注者低 (\n").append(user.getFollowersCount()).append(")  :)");
+        if (user.getFollowersCount() < 20) status.append("这个用户关注者低 (").append(user.getFollowersCount()).append(")  :)\n");
 
         try {
 
@@ -235,7 +235,7 @@ public class FollowerTrackTask extends TimerTask {
 
             } else if (ship.isSourceFollowedByTarget()) {
 
-                status.append("这个用户被 ").append(link).append(" 关注 是萌萌的二次元").append(" :)\n");
+                status.append("这个用户被 ").append(link).append(" 关注 是萌萌的二次元 :)\n");
 
             }
 
