@@ -300,22 +300,13 @@ public class Msg extends Context {
 
     }
 
-
     public File file() {
 
         Document doc = message.document();
 
         if (doc == null) return null;
 
-        File local = new File(Env.CACHE_DIR,"files/" + doc.fileId());
-
-        if (local.isFile()) return local;
-
-        String path = fragment.bot().getFullFilePath(fragment.bot().execute(new GetFile(doc.fileId())).file());
-
-        HttpUtil.downloadFile(path,local);
-
-        return local;
+        return fragment.getFile(doc.fileId());
 
     }
     

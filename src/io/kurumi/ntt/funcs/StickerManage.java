@@ -6,6 +6,8 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import com.pengrad.telegrambot.request.CreateNewStickerSet;
 import com.pengrad.telegrambot.request.SendPhoto;
+import com.pengrad.telegrambot.response.SendResponse;
+import io.kurumi.ntt.utils.BotLog;
 
 public class StickerManage extends Fragment {
     
@@ -29,9 +31,12 @@ public class StickerManage extends Fragment {
             return true;
 
         } else if (msg.isPrivate() && msg.message().sticker() != null) {
+
+            msg.sendUpdatingPhoto();
             
-            bot().execute(new SendPhoto(msg.chatId(),msg.message().sticker().fileId()).replyToMessageId(msg.messageId()));
-            
+            bot().execute(new SendPhoto(msg.chatId(),getFile(msg.message().sticker().fileId())).replyToMessageId(msg.messageId()));
+
+          
             return true;
             
         }

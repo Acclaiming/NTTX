@@ -1,11 +1,14 @@
 package io.kurumi.ntt.fragment;
 
+import cn.hutool.http.HttpUtil;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ChatAction;
+import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendChatAction;
 import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendSticker;
+import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.StickerPoint;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.Callback;
@@ -93,6 +96,20 @@ public class Fragment {
         data.setIndex(index);
 
         return data;
+
+    }
+    
+    public File getFile(String fileId) {
+
+        File local = new File(Env.CACHE_DIR,"files/" + fileId);
+
+        if (local.isFile()) return local;
+
+        String path = bot().getFullFilePath(bot().execute(new GetFile(fileId)).file());
+
+        HttpUtil.downloadFile(path,local);
+
+        return local;
 
     }
     
