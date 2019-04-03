@@ -6,7 +6,7 @@ import io.kurumi.ntt.twitter.ApiToken;
 import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.auth.BasicAuthorization;
 
-public class TimeLine extends TimerTask {
+public class StreamTask extends TimerTask {
     
     @Override
     public void run() {
