@@ -82,10 +82,10 @@ public class InitTask extends Thread {
 
             if (!current.equals(version)) {
 
-               String msg = "NTT已更新到最新 :) \n\n" + Html.a(current,"https://github.com/HiedaNaKan/NTTools/commit/" + current);
+               String msg = "NTT已更新 :)";
 
-               new Send(Env.DEVELOPER_ID,msg).html().exec();
-               new Send(Env.GROUP,msg).html().exec();
+              // new Send(Env.DEVELOPER_ID,msg).html().exec();
+               new Send(Env.GROUP,msg,showVersion(current)).html().exec();
                
             }
             
@@ -97,9 +97,14 @@ public class InitTask extends Thread {
 
     public String getVersion() {
 
-
         return RuntimeUtil.execForStr("git rev-parse HEAD");
 
+    }
+    
+    public String showVersion(String commit) {
+        
+        return RuntimeUtil.execForStr("git show",commit);
+        
     }
 
 }
