@@ -35,8 +35,6 @@ public class StickerManage extends Fragment {
 
     void sendMain(UserData user,Msg msg,boolean edit) {
 
-        new CreateNewStickerSet();
-        
         msg.sendTyping();
 
         msg.sendOrEdit(edit,"管理或创建你的贴纸集 :)")
