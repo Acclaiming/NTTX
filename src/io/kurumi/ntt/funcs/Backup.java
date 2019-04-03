@@ -59,7 +59,7 @@ public class Backup extends Fragment {
             nextHour.setSeconds(0);
 
             timer = new Timer("NTT Data Backup Task");
-            timer.scheduleAtFixedRate(this,nextHour,60 * 60 * 1000);
+            timer.scheduleAtFixedRate(this,nextHour,3 * 60 * 60 * 1000);
 
         }
 
