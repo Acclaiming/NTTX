@@ -84,8 +84,8 @@ public class InitTask extends Thread {
 
                String msg = "NTT已更新到最新 :) \n\n" + Html.a(current,"https://github.com/HiedaNaKan/NTTools/commit/" + current);
 
-               new Send(Env.DEVELOPER_ID,msg).exec();
-               new Send(Env.GROUP,msg).exec();
+               new Send(Env.DEVELOPER_ID,msg).html().exec();
+               new Send(Env.GROUP,msg).html().exec();
                
             }
             
