@@ -157,7 +157,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
             user = UserData.get(update.inlineQuery().from());
 
-        }
+        } else user = null;
 
         ThreadPool.exec(new Runnable() {
 
