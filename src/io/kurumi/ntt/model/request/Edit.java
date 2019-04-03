@@ -12,11 +12,11 @@ public class Edit extends AbstractSend<Edit> {
 
     private EditMessageText request;
 
-    public Edit(Fragment fragment, Object chatId, int messageId, String... msg) {
+    public Edit(Fragment fragment,Object chatId,int messageId,String... msg) {
 
         super(fragment);
 
-        request = new EditMessageText(chatId, messageId, ArrayUtil.join(msg, "\n"));
+        request = new EditMessageText(chatId,messageId,ArrayUtil.join(msg,"\n"));
 
         this.fragment = fragment;
 
@@ -60,7 +60,7 @@ public class Edit extends AbstractSend<Edit> {
         return this;
 
     }
-    
+
     public void publicFailedWith(final Msg message) {
 
         if (message.isPrivate()) {
@@ -100,48 +100,68 @@ public class Edit extends AbstractSend<Edit> {
             });
 
     }
-    
-	
+
+
     @Override
     public BaseResponse sync() {
 
         //  System.out.println(request.toWebhookResponse());   
 
-        BaseResponse resp = fragment.bot().execute(request);
+        try {
 
-        //    if (resp.errorCode() ==
+            BaseResponse resp = fragment.bot().execute(request);
 
-        if (!resp.isOk()) {
+            //    if (resp.errorCode() ==
 
-            BotLog.infoWithStack("消息发送失败 " + resp.errorCode() + " : " + resp.description());
+            if (!resp.isOk()) {
+
+                BotLog.infoWithStack("消息发送失败 " + resp.errorCode() + " : " + resp.description());
+
+            }
+
+            return resp;
+
+        } catch (Exception ex) {
+
+            return null;
 
         }
 
-        return resp;
+
 
     }
 
     @Override
     public BaseResponse sync(Exception track) {
-        
-        BaseResponse resp = fragment.bot().execute(request);
 
-        //    if (resp.errorCode() ==
+        try {
 
-        if (!resp.isOk()) {
+            BaseResponse resp = fragment.bot().execute(request);
 
-            BotLog.info("消息发送失败 " + resp.errorCode() + " : " + resp.description(),track);
+            //    if (resp.errorCode() ==
+
+            if (!resp.isOk()) {
+
+                BotLog.info("消息发送失败 " + resp.errorCode() + " : " + resp.description(),track);
+
+            }
+
+            return resp;
+
+
+        } catch (Exception ex) {
+
+            return null;
 
         }
-
-        return resp;
+        
     }
 
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
 
 }

@@ -183,7 +183,7 @@ public class Send extends AbstractSend<Send> {
 
         SendResponse resp = sync();
 
-        if (!resp.isOk()) return null;
+        if (resp == null || !resp.isOk()) return null;
 
         return new Msg(fragment,resp.message());
 
@@ -192,6 +192,8 @@ public class Send extends AbstractSend<Send> {
     @Override
     public SendResponse sync(Exception track) {
 
+        try {
+        
         SendResponse resp = fragment.bot().execute(request);
 
         if (!resp.isOk()) {
@@ -201,6 +203,14 @@ public class Send extends AbstractSend<Send> {
         }
 
         return resp;
+        
+
+        } catch (Exception ex) {
+
+            return null;
+
+        }
+        
 
     }
 
@@ -212,6 +222,8 @@ public class Send extends AbstractSend<Send> {
 
         //     System.out.println(request.toWebhookResponse());
 
+        try {
+        
         SendResponse resp = fragment.bot().execute(request);
 
         if (!resp.isOk()) {
@@ -221,6 +233,14 @@ public class Send extends AbstractSend<Send> {
         }
 
         return resp;
+        
+
+        } catch (Exception ex) {
+
+            return null;
+
+        }
+        
 
     }
 
