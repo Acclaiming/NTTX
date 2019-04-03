@@ -225,7 +225,7 @@ public class UserArchive extends IdDataModel {
         photoUrl = obj.getStr("photo_url");
 
         isProtected = obj.getBool("is_protected");
-        isDisappeared = obj.getBool("is_disappeared");
+        isDisappeared = obj.getBool("is_disappeared",false);
 
     }
 

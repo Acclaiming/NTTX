@@ -10,6 +10,8 @@ public class History extends Fragment {
     @Override
     public boolean onUpdate(UserData user,Update update) {
         
+        
+        
         if (update.message() != null) {
             
             if (update.message().chat().type() == Chat.Type.Private) {
