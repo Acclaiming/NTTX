@@ -85,7 +85,7 @@ public class InitTask extends Thread {
                String msg = "NTT已更新 :)";
 
               // new Send(Env.DEVELOPER_ID,msg).html().exec();
-               new Send(Env.GROUP,msg,showVersion(current)).html().exec();
+               new Send(Env.GROUP,msg,showVersion()).html().exec();
                
             }
             
@@ -101,9 +101,9 @@ public class InitTask extends Thread {
 
     }
     
-    public String showVersion(String commit) {
+    public String showVersion() {
         
-        return RuntimeUtil.execForStr("git show " + commit);
+        return RuntimeUtil.execForStr("git log -1");
         
     }
 
