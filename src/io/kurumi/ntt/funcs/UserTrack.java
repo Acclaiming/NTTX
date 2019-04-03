@@ -39,11 +39,11 @@ public class UserTrack extends Fragment {
         
         if (ex.getErrorCode() == 50) {
             
-            return "用户被停用 (" + ex.getErrorMessage() + ")";
+            return "用户不存在 (" + ex.getErrorMessage() + ")";
             
         } else if (ex.getErrorCode() == 63) {
             
-            return "用户不存在 (" + ex.getErrorMessage() + ")";
+            return "用户被冻结/停用 (" + ex.getErrorMessage() + ")";
             
         }
         
