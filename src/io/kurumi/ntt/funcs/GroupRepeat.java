@@ -18,6 +18,8 @@ public class GroupRepeat extends Fragment {
     @Override
     public boolean onGroupMsg(UserData user, Msg msg, boolean superGroup) {
 
+        if (System.currentTimeMillis() - msg.message().date() > 10 * 1000) return false;
+        
         if (!msg.isCommand() && !user.isBot) {
 
             Msg lastMsg = last.get(msg.chatId());
