@@ -69,7 +69,7 @@ public class FollowerTrackTask extends TimerTask {
         for (Map.Entry<String,Object> entry : enable.entrySet()) {
 
             long userId = Long.parseLong(entry.getKey());
-
+            
             if (!(boolean)entry.getValue()) continue;
 
             startUserStackAsync(userId);
@@ -101,7 +101,7 @@ public class FollowerTrackTask extends TimerTask {
 
             UserData user = UserData.INSTANCE.get(userId);
 
-            if (!TAuth.exists(user)) {
+            if (!TAuth.avilable(user)) {
 
                 enable.remove(user.idStr);
 

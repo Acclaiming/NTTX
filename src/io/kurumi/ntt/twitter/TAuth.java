@@ -19,13 +19,19 @@ public class TAuth extends JSONObject {
 		return auth.containsKey(user.idStr);
 		
 	}
+    
+    public static boolean avilable(UserData user) {
+        
+       return exists(user) && get(user).refresh();
+        
+    }
 	
 	public static TAuth get(UserData user) {
 		
 		if (exists(user)) {
 			
 			return new TAuth(auth.getJSONObject(user.idStr));
-			
+			 
 		}
 		
 		return null;

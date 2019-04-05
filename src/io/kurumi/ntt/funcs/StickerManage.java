@@ -15,7 +15,7 @@ public class StickerManage extends Fragment {
 
     @Override
     public boolean onMsg(UserData user,Msg msg) {
-
+        
         if ("sticker".equals(msg.command())) {
 
             if (!msg.isPrivate()) {
