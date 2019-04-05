@@ -19,6 +19,16 @@ public class StatusArchive extends IdDataModel {
 
     public static Factory<StatusArchive> INSTANCE = new Factory<StatusArchive>(StatusArchive.class,"twitter_archives/statuses");
 
+    public static void saveCache(Status status) {
+        
+        StatusArchive archive = INSTANCE.getOrNew(status.getId());
+
+        archive.read(status);
+        
+        INSTANCE.saveObj(archive);
+        
+    }
+    
     public StatusArchive(String dirName,long id) { super(dirName,id); }
 
 	public Long createdAt;

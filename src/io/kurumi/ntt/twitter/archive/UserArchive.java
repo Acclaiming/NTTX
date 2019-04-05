@@ -13,6 +13,7 @@ import io.kurumi.ntt.utils.*;
 import cn.hutool.core.util.ObjectUtil;
 import io.kurumi.ntt.twitter.track.UTTask;
 import java.util.HashMap;
+import twitter4j.Status;
 
 public class UserArchive extends IdDataModel {
 
@@ -208,6 +209,14 @@ public class UserArchive extends IdDataModel {
 
             change = false;
 
+        }
+        
+        Status status = user.getStatus();
+        
+        if (status != null) {
+            
+           StatusArchive.saveCache(status);
+            
         }
 
         if (change) {
