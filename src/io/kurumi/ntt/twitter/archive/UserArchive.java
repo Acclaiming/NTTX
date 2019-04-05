@@ -164,7 +164,7 @@ public class UserArchive extends IdDataModel {
 
         if (!(screenName = user.getScreenName()).equals(screenNameL)) {
 
-            str.append(split).append("用户名更改 @").append(screenNameL).append(" ------> @").append(screenName);
+            str.append(split).append("用户名更改 : @").append(screenNameL).append(" ------> @").append(screenName);
 
             change = true;
 
