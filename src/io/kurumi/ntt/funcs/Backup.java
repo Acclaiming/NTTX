@@ -52,14 +52,24 @@ public class Backup extends Fragment {
 
             stop();
 
-            Date nextHour = new Date();
+            Date next = new Date();
             
-            nextHour.setHours(nextHour.getHours() + 1);
-            nextHour.setMinutes(0);
-            nextHour.setSeconds(0);
+			if (next.getHours() < 12) {
+				
+				next.setHours(12);
+				
+			} else {
+				
+				next.setDate(next.getDate() + 1);
+				next.setHours(0);
+				
+			}
+            
+            next.setMinutes(0);
+            next.setSeconds(0);
 
             timer = new Timer("NTT Data Backup Task");
-            timer.scheduleAtFixedRate(this,nextHour,3 * 60 * 60 * 1000);
+            timer.scheduleAtFixedRate(this,next,12 * 60 * 60 * 1000);
 
         }
 

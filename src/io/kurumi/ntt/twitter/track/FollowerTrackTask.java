@@ -127,7 +127,7 @@ public class FollowerTrackTask extends TimerTask {
 
             cache.put(api.getId(),latest);
 
-            //    List<Long> pedding = new LinkedList<>();
+            List<Long> pedding = new LinkedList<>();
 
             for (long id : latest) {
 
@@ -141,7 +141,7 @@ public class FollowerTrackTask extends TimerTask {
 
                         if (!UserArchive.INSTANCE.exists(id)) {
 
-                            //    pedding.add(id);
+                            pedding.add(id);
 
                         }
 
@@ -162,12 +162,18 @@ public class FollowerTrackTask extends TimerTask {
                 }
 
             }
-
-            /*
+			
+			synchronized (UserTrackTask.pedding) {
+				
+				UserTrackTask.pedding.addAll(pedding);
+				
+			}
+			
+			/* 
 
              if (pedding.size() > 10000) {
-
-             pedding = pedding.subList(0,10000);
+				 
+				 pedding = pedding.subList(0,10000);
 
              }
 
@@ -194,8 +200,8 @@ public class FollowerTrackTask extends TimerTask {
              for (User tuser : result) UserArchive.saveCache(tuser);
 
              }
-
-             */
+			 
+			 */
 
         } catch (TwitterException e) {
 

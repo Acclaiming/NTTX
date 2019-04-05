@@ -28,12 +28,14 @@ public class UserTrackTask extends TimerTask {
     static UserTrackTask INSTANCE = new UserTrackTask();
     static Timer timer;
 
+	static LinkedHashSet<Long> pedding = new LinkedHashSet<>();
+
     public static void start() {
 
         stop();
 
         timer = new Timer("NTT Twitter User Track Task");
-        timer.schedule(INSTANCE,new Date(),1 * 60 * 1000);
+        timer.scheduleAtFixedRate(INSTANCE,new Date(),1 * 60 * 1000);
 
     }
 
@@ -66,27 +68,18 @@ public class UserTrackTask extends TimerTask {
         HashMap<Long,List<Long>> subIndex = new HashMap<>();
         HashMap<UserArchive,String> changes = new HashMap<>();
 
-        Collection<JSONArray> values = (Collection<JSONArray>)(Object)subs.values();
+		synchronized (pedding) {
 
-        List<Long> globals = new LinkedList<>();
+			Collection<JSONArray> values = (Collection<JSONArray>)(Object)subs.values();
 
-        for (JSONArray arr : values) {
 
-            globals.addAll(arr.toList(Long.class));
+			for (JSONArray arr : values) {
 
-        }
+				pedding.addAll(arr.toList(Long.class));
 
-        globals = new LinkedList<Long>(new LinkedHashSet<Long>(globals));
+			}
 
-        if (globals.size() > TAuth.auth.size() * 900 * 100) {
-
-            // TOTO : 不可能的 ~ (flag)
-
-            BotLog.errorWithStack("监听中的总用户数大于API限制");
-
-            return;
-
-        }
+		}
 
         boolean finished = false;
 
@@ -131,9 +124,16 @@ public class UserTrackTask extends TimerTask {
 
                     Twitter api = TAuth.get(user).createApi();
 
+					List<Long> globals;
                     List<Long> target;
 
-                    if (globals.size() > 100) {
+					synchronized (pedding) {
+
+						globals = new LinkedList<Long>(pedding);
+
+					}
+
+					if (globals.size() > 100) {
 
                         target = globals.subList(0,100);
 
@@ -147,10 +147,10 @@ public class UserTrackTask extends TimerTask {
                         finished = true;
 
                     }
-                    
+
                     try {
 
-                    ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
+						ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
 
                         for (User tuser : result) {
 
@@ -165,24 +165,22 @@ public class UserTrackTask extends TimerTask {
                             UserArchive.saveDisappeared(da);
 
                         }
-                        
+
                     } catch (TwitterException e) {
-                        
+
                         if (e.getErrorCode() == 17) {
-                        
-                        for (Long da : target) {
 
-                            UserArchive.saveDisappeared(da);
+							for (Long da : target) {
 
-                        }
-                        
+								UserArchive.saveDisappeared(da);
+
+							}
+
                         } else throw e;
-                        
-                        
-                    }
-                    
-                    
-                }
+
+					}
+
+				}
             }
 
             if (changes.isEmpty()) return;
@@ -206,12 +204,14 @@ public class UserTrackTask extends TimerTask {
         } catch (TwitterException ex) {
 
             if (ex.getErrorCode() != 130) {
-                
-            BotLog.error("UserArchive Failed...",ex);
+
+				BotLog.error("UserArchive Failed...",ex);
 
             }
-            
+
         }
+
+
 
     }
 
