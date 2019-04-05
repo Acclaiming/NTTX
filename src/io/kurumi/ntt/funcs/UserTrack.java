@@ -71,14 +71,10 @@ public class UserTrack extends Fragment {
 
                 User target = TAuth.get(user).createApi().showUser(Long.parseLong(msg.params()[0]));
 
-                UserArchive archive = UserArchive.INSTANCE.getOrNew(target.getId());
+                UserArchive archive = UserArchive.saveCache(target);
 
-                boolean result = UTTask.add(user,archive.id);
-
-                archive.read(target);
-
-                UserArchive.INSTANCE.saveObj(archive);
-
+                boolean result = UTTask.add(user,target.getId());
+                
                 if (!result) {
 
                     msg.send("你已经订阅了这个推油 :)").exec();
@@ -107,13 +103,9 @@ public class UserTrack extends Fragment {
 
             User target = TAuth.get(user).createApi().showUser(screenName);
 
-            UserArchive archive = UserArchive.INSTANCE.getOrNew(target.getId());
-
-            boolean result = UTTask.add(user,archive.id);
-
-            archive.read(target);
-
-            UserArchive.INSTANCE.saveObj(archive);
+            boolean result = UTTask.add(user,target.getId());
+            
+            UserArchive archive = UserArchive.saveCache(target);
 
             UTTask.save();
 

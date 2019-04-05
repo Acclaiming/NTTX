@@ -204,6 +204,16 @@ import static twitter4j.ParseUtil.getDate;
         }
     }
 
+    @Override
+    public void setUser(User user) {
+     
+        this.user = user;
+        
+    }
+
+    
+    
+
     private void collectEntities(JSONObject json) throws JSONException, TwitterException {
         if (!json.isNull("entities")) {
             JSONObject entities = json.getJSONObject("entities");

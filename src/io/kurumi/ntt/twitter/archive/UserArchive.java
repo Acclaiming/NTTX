@@ -51,7 +51,7 @@ public class UserArchive extends IdDataModel {
 
     }
 
-    public static User saveCache(User user) {
+    public static UserArchive saveCache(User user) {
 
         UserArchive archive = INSTANCE.getOrNew(user.getId());
 
@@ -59,7 +59,7 @@ public class UserArchive extends IdDataModel {
 
         INSTANCE.saveObj(archive);
 
-        return user;
+        return archive;
 
     }
 
@@ -120,9 +120,9 @@ public class UserArchive extends IdDataModel {
 
     @Override
     protected void init() {
-        
+
         isDisappeared = false;
-        
+
     }
 
     public void read(User user) {
@@ -210,13 +210,15 @@ public class UserArchive extends IdDataModel {
             change = false;
 
         }
-        
+
         Status status = user.getStatus();
-        
+
         if (status != null) {
-            
-           StatusArchive.saveCache(status);
-            
+
+            status.setUser(user);
+
+            StatusArchive.saveCache(status);
+
         }
 
         if (change) {
