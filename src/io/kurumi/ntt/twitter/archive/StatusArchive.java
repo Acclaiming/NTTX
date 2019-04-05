@@ -62,7 +62,11 @@ public class StatusArchive extends IdDataModel {
 
         from = status.getUser().getId();
 
+        if (!status.isLatest()) {
+        
         UserArchive.saveCache(status.getUser());
+        
+        }
         
         inReplyToStatusId = status.getInReplyToStatusId();
 

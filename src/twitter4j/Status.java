@@ -141,6 +141,8 @@ public interface Status extends Comparable<Status>, TwitterResponse,
      */
     User getUser();
     
+    boolean isLatest();
+    
     void setUser(User user);
 
     /**
