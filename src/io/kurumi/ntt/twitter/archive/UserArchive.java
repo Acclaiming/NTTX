@@ -194,7 +194,7 @@ public class UserArchive extends IdDataModel {
 
         if (protectL != (isProtected = user.isProtected())) {
 
-            str.append("保护状态更改 : ").append(isProtected ? "开启了锁推" : "关闭了锁推");
+            str.append(split).append("保护状态更改 : ").append(isProtected ? "开启了锁推" : "关闭了锁推");
 
             change = true;
 
