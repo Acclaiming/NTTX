@@ -179,7 +179,7 @@ public class UTTask extends TimerTask {
                         } else throw e;
 
 					}
-
+                    
 				}
             }
 
@@ -218,57 +218,57 @@ public class UTTask extends TimerTask {
     public static void onUserChange(UserArchive user,String change) {
 
 		LinkedHashSet<Long> subA = new LinkedHashSet<>();
-		
+
 		LinkedList<Long> subD = new LinkedList<>();
-		
+
 		LinkedList<Long> subL;
 		LinkedList<Long> subR;
-		
+
 		synchronized (FTTask.INSTANCE) {
-			
+
 			subL = FTTask.flSubIndex.get(user.id);
 			subR = FTTask.frSubIndex.get(user.id);
 
 		}
-		
+
 		if (subL != null) subA.addAll(subL);
 		if (subR != null) subA.addAll(subR);
-		
+
         for (Map.Entry<String,JSONArray> sub : ((Map<String,JSONArray>)(Object)subs).entrySet()) {
 
             if (sub.getValue().contains(user.id)) {
-				
+
 				long id = Long.parseLong(sub.getKey());
-				
+
 				subA.add(id);
 				subD.add(id);
-                
+
             }
 
         }
-		
+
 		for (Long sub : subA) {
-			
+
 			if (subL != null && subR != null && subL.contains(sub) && subR.contains(sub)) {
-				
+
 				new Send(sub,"与乃相互关注的 " + user.getHtmlURL() + " :",change).html().exec();
-				
+
 			} else if (subD.contains(sub)) {
-				
+
 				new Send(sub,"乃订阅的 " + user.getHtmlURL() + " :",change).html().exec();
-			
+
 			}  else if (subL != null & subL.contains(sub)) {
-				
+
 				new Send(sub,"关注乃的 " + user.getHtmlURL() + " :",change).html().exec();
-				
+
 			} else if (subR != null & subR.contains(sub)) {
-				
+
 				new Send(sub,"乃关注的 " + user.getHtmlURL() + " :",change).html().exec();
-				
+
 			}
-			
+
  		}
-		
+
 
     }
 
