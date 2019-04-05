@@ -19,7 +19,6 @@ public class StatusArchive extends IdDataModel {
 
     public static Factory<StatusArchive> INSTANCE = new Factory<StatusArchive>(StatusArchive.class,"twitter_archives/statuses");
 
-
     public StatusArchive(String dirName,long id) { super(dirName,id); }
 
 	public Long createdAt;
