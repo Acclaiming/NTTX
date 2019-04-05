@@ -249,7 +249,7 @@ public class UTTask extends TimerTask {
 		
 		for (Long sub : subA) {
 			
-			if (subL.contains(sub) && subR.contains(sub)) {
+			if (subL != null && subR != null && subL.contains(sub) && subR.contains(sub)) {
 				
 				new Send(sub,"与乃相互关注的 " + user.getHtmlURL() + " :",change).html().exec();
 				
@@ -257,11 +257,11 @@ public class UTTask extends TimerTask {
 				
 				new Send(sub,"乃订阅的 " + user.getHtmlURL() + " :",change).html().exec();
 			
-			}  else if (subL.contains(sub)) {
+			}  else if (subL != null & subL.contains(sub)) {
 				
 				new Send(sub,"关注乃的 " + user.getHtmlURL() + " :",change).html().exec();
 				
-			} else if (subR.contains(sub)) {
+			} else if (subR != null & subR.contains(sub)) {
 				
 				new Send(sub,"乃关注的 " + user.getHtmlURL() + " :",change).html().exec();
 				
