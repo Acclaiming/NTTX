@@ -203,27 +203,6 @@ import static twitter4j.ParseUtil.getDate;
             throw new TwitterException(jsone);
         }
     }
-    
-    boolean isLatest = false;
-    
-    @Override
-    public boolean isLatest() {
-        
-        return isLatest;
-        
-    }
-
-    @Override
-    public void setUser(User user) {
-     
-        isLatest = true;
-        
-        this.user = user;
-        
-    }
-
-    
-    
 
     private void collectEntities(JSONObject json) throws JSONException, TwitterException {
         if (!json.isNull("entities")) {

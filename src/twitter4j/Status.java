@@ -140,10 +140,6 @@ public interface Status extends Comparable<Status>, TwitterResponse,
      * @return the user
      */
     User getUser();
-    
-    boolean isLatest();
-    
-    void setUser(User user);
 
     /**
      * @since Twitter4J 2.0.10

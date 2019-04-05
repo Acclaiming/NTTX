@@ -211,16 +211,6 @@ public class UserArchive extends IdDataModel {
 
         }
 
-        Status status = user.getStatus();
-
-        if (status != null) {
-
-            status.setUser(user);
-
-            StatusArchive.saveCache(status);
-
-        }
-
         if (change) {
 
             UTTask.onUserChange(this,str.toString());
