@@ -38,15 +38,17 @@ public class FTTask extends TimerTask {
     static FTTask INSTANCE = new FTTask();
 
     public static JSONObject enable = BotDB.getJSON("data","track",true);
-	
+
 	static HashMap<Long,LinkedList<Long>> frIndex = new HashMap<>();
     static HashMap<Long,LinkedList<Long>> flIndex = new HashMap<>();
 
 	static HashMap<Long,LinkedList<Long>> frSubIndex = new HashMap<>();
     static HashMap<Long,LinkedList<Long>> flSubIndex = new HashMap<>();
-	
+    static HashMap<Long,LinkedList<Long>> frSubIndexC = new HashMap<>();
+    static HashMap<Long,LinkedList<Long>> flSubIndexC  = new HashMap<>();
+
     static Timer timer;
-	
+
     public static void start() {
 
         stop();
@@ -70,18 +72,28 @@ public class FTTask extends TimerTask {
 
     @Override
     public void run() {
-		
+
 		synchronized (INSTANCE) {
-		
-		flSubIndex.clear();
-		frSubIndex.clear();
-		
+
+            frSubIndex = frSubIndexC;
+            frSubIndexC = new HashMap<>();
+            
+            flSubIndex = flSubIndexC;
+            flSubIndexC = new HashMap<>();
+            
+            synchronized (UTTask.pedding) {
+
+                UTTask.pedding.addAll(pedding);
+                pedding.clear();
+
+			}
+
 		}
-		
+
         for (Map.Entry<String,Object> entry : enable.entrySet()) {
 
             long userId = Long.parseLong(entry.getKey());
-            
+
             if (!(boolean)entry.getValue()) continue;
 
             startUserStackAsync(userId);
@@ -89,6 +101,8 @@ public class FTTask extends TimerTask {
         }
 
     }
+
+    LinkedHashSet<Long> pedding = new LinkedHashSet<>();
 
     ExecutorService userTrackPool = Executors.newFixedThreadPool(3);
 
@@ -105,10 +119,13 @@ public class FTTask extends TimerTask {
 
             });
 
+
+
     }
 
+
     void startUserStack(long userId) {
-		
+
         try {
 
             UserData user = UserData.INSTANCE.get(userId);
@@ -140,33 +157,33 @@ public class FTTask extends TimerTask {
             flIndex.put(api.getId(),flLatest);
 
 			synchronized (INSTANCE) {
-			
-            for (long id : flLatest) {
-				
-				LinkedList<Long> subIndex = flSubIndex.get(id);
 
-				if (subIndex == null) {
-					
-					subIndex = new LinkedList<>();
-					
-				}
-				
-				subIndex.add(userId);
-				
-				flSubIndex.put(id,subIndex);
-				
-                if (flLast != null) {
+                for (long id : flLatest) {
 
-                    if (!flLast.remove(id)) {
+                    LinkedList<Long> subIndex = flSubIndexC.get(id);
 
-                        newFollower(user,api,id);
+                    if (subIndex == null) {
+
+                        subIndex = new LinkedList<>();
+
+                    }
+
+                    subIndex.add(userId);
+
+                    flSubIndexC.put(id,subIndex);
+
+                    if (flLast != null) {
+
+                        if (!flLast.remove(id)) {
+
+                            newFollower(user,api,id);
+
+                        }
 
                     }
 
                 }
 
-            }
-			
 			}
 
             if (flLast != null && flLast.size() > 0) {
@@ -180,24 +197,35 @@ public class FTTask extends TimerTask {
                 }
 
             }
-			
+
 			LinkedList<Long> allFr = TApi.getAllFrIDs(api,api.getId());
 
 			frIndex.put(api.getId(),allFr);
-			
-			synchronized (UTTask.pedding) {
-				
-				UTTask.pedding.addAll(allFr);
-				UTTask.pedding.addAll(flLatest);
-				
-				
-			}
-			
+
+            for (long id : allFr) {
+
+                LinkedList<Long> subIndex = frSubIndexC.get(id);
+
+                if (subIndex == null) {
+
+                    subIndex = new LinkedList<>();
+
+                }
+
+                subIndex.add(userId);
+
+                frSubIndexC.put(id,subIndex);
+                
+            }
+
+            pedding.addAll(allFr);
+            pedding.addAll(flLatest);
+
 			/* 
 
              if (pedding.size() > 10000) {
-				 
-				 pedding = pedding.subList(0,10000);
+
+             pedding = pedding.subList(0,10000);
 
              }
 
@@ -224,7 +252,7 @@ public class FTTask extends TimerTask {
              for (User tuser : result) UserArchive.saveCache(tuser);
 
              }
-			 
+
 			 */
 
         } catch (TwitterException e) {
@@ -246,7 +274,7 @@ public class FTTask extends TimerTask {
         StringBuilder status = new StringBuilder();
 
         if (user.isProtected()) status.append("这是一个是锁推用户 :)\n");
-       // if (user.isFollowRequestSent()) status.append("乃发送了关注请求 :)\n");
+        // if (user.isFollowRequestSent()) status.append("乃发送了关注请求 :)\n");
         if (user.getStatusesCount() == 0) status.append("这个用户没有发过推 :)\n");
         if (user.getFavouritesCount() == 0) status.append("这个用户没有喜欢过推文 :)\n");
         if (user.getFollowersCount() < 20) status.append("这个用户关注者低 (").append(user.getFollowersCount()).append(")  :)\n");
