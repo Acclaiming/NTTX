@@ -33,19 +33,25 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
 
-public class FollowerTrackTask extends TimerTask {
+public class FTTask extends TimerTask {
 
-    static FollowerTrackTask INSTANCE = new FollowerTrackTask();
+    static FTTask INSTANCE = new FTTask();
 
     public static JSONObject enable = BotDB.getJSON("data","track",true);
-    static HashMap<Long,LinkedList<Long>> cache = new HashMap<>();
+	
+	static HashMap<Long,LinkedList<Long>> frIndex = new HashMap<>();
+    static HashMap<Long,LinkedList<Long>> flIndex = new HashMap<>();
 
+	static HashMap<Long,LinkedList<Long>> frSubIndex = new HashMap<>();
+    static HashMap<Long,LinkedList<Long>> flSubIndex = new HashMap<>();
+	
     static Timer timer;
+	
     public static void start() {
 
         stop();
 
-        timer = new Timer("NTT Twitter Follower Track Task");
+        timer = new Timer("NTT Twitter Track Task");
         timer.schedule(INSTANCE,new Date(),15 * 60 * 1000);
 
     }
@@ -53,7 +59,6 @@ public class FollowerTrackTask extends TimerTask {
     public static void stop() {
 
         if (timer != null) timer.cancel();
-
 
     }
 
@@ -65,7 +70,14 @@ public class FollowerTrackTask extends TimerTask {
 
     @Override
     public void run() {
-
+		
+		synchronized (INSTANCE) {
+		
+		flSubIndex.clear();
+		frSubIndex.clear();
+		
+		}
+		
         for (Map.Entry<String,Object> entry : enable.entrySet()) {
 
             long userId = Long.parseLong(entry.getKey());
@@ -96,7 +108,7 @@ public class FollowerTrackTask extends TimerTask {
     }
 
     void startUserStack(long userId) {
-
+		
         try {
 
             UserData user = UserData.INSTANCE.get(userId);
@@ -121,41 +133,47 @@ public class FollowerTrackTask extends TimerTask {
 
             UserArchive.saveCache(me);
 
-            LinkedList<Long> last = cache.containsKey(api.getId()) ? cache.get(api.getId()) : null;
+            LinkedList<Long> flLast = flIndex.containsKey(api.getId()) ? flIndex.get(api.getId()) : null;
 
-            LinkedList<Long> latest = TApi.getAllFoIDs(api,api.getId());
+            LinkedList<Long> flLatest = TApi.getAllFoIDs(api,api.getId());
 
-            cache.put(api.getId(),latest);
+            flIndex.put(api.getId(),flLatest);
 
-            List<Long> pedding = new LinkedList<>();
+			synchronized (INSTANCE) {
+			
+            for (long id : flLatest) {
+				
+				LinkedList<Long> subIndex = flSubIndex.get(id);
 
-            for (long id : latest) {
+				if (subIndex == null) {
+					
+					subIndex = new LinkedList<>();
+					
+				}
+				
+				subIndex.add(userId);
+				
+				flSubIndex.put(id,subIndex);
+				
+                if (flLast != null) {
 
-                if (last != null) {
-
-                    if (!last.remove(id)) {
+                    if (!flLast.remove(id)) {
 
                         newFollower(user,api,id);
-
-                    } else {
-
-                        if (!UserArchive.INSTANCE.exists(id)) {
-
-                            pedding.add(id);
-
-                        }
 
                     }
 
                 }
 
             }
+			
+			}
 
-            if (last != null && last.size() > 0) {
+            if (flLast != null && flLast.size() > 0) {
 
-                for (int index = 0;index < last.size();index ++) {
+                for (int index = 0;index < flLast.size();index ++) {
 
-                    long id = last.get(index);
+                    long id = flLast.get(index);
 
                     lostFollower(user,api,id);
 
@@ -163,9 +181,15 @@ public class FollowerTrackTask extends TimerTask {
 
             }
 			
-			synchronized (UserTrackTask.pedding) {
+			LinkedList<Long> allFr = TApi.getAllFrIDs(api,api.getId());
+
+			frIndex.put(api.getId(),allFr);
+			
+			synchronized (UTTask.pedding) {
 				
-				UserTrackTask.pedding.addAll(pedding);
+				UTTask.pedding.addAll(allFr);
+				UTTask.pedding.addAll(flLatest);
+				
 				
 			}
 			

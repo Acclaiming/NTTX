@@ -18,8 +18,8 @@ public class TApi {
         return Html.a(u.getName(),"https://twitter.com/" + u.getScreenName());
 
     }
-	
-    public static LinkedList<User> getListUsers(Twitter api, long id) throws TwitterException {
+
+    public static LinkedList<User> getListUsers(Twitter api,long id) throws TwitterException {
 
 
         LinkedList<User> list = new LinkedList<>();
@@ -28,7 +28,7 @@ public class TApi {
 
         do {
 
-            ppl = api.getUserListMembers(id, cursor);
+            ppl = api.getUserListMembers(id,cursor);
             cursor = ppl.getNextCursor();
 
             list.addAll(ppl);
@@ -39,7 +39,7 @@ public class TApi {
 
     }
 
-    public static long[] longMarge(long[] a, long[] b) {
+    public static long[] longMarge(long[] a,long[] b) {
 
         LinkedHashSet<Long> set = new LinkedHashSet<>();
 
@@ -112,14 +112,14 @@ public class TApi {
 
         LinkedList<User> all = new LinkedList<>();
 
-        PagableResponseList<User> users = api.getFriendsList(target, -1 , 200);
+        PagableResponseList<User> users = api.getFriendsList(target,-1 ,200);
 
         all.addAll(users);
 
         while (users.hasNext()) {
 
             users = api.getFriendsList(target,users.getNextCursor(),200);
-
+			
             all.addAll(users);
 
         }
@@ -127,21 +127,16 @@ public class TApi {
         return all;
 
     }
+	
+	public static LinkedList<Long> getAllFrIDs(Twitter api,String target) throws TwitterException {
 
+        LinkedList<Long> all = new LinkedList<>();
 
-    public static long[] getAllFrIDs(Twitter api,Long target) throws TwitterException {
-
-        long[] all = new long[api.showUser(target).getFriendsCount()];
-
-        int index = 0;
-
-        IDs ids = api.getFriendsIDs(target,-1, 5000);
+        IDs ids = api.getFriendsIDs(target,-1,5000);
 
         for (long id : ids.getIDs()) {
 
-            all[index] = id;
-
-            index ++;
+			all.add(id);
 
         }
 
@@ -151,9 +146,7 @@ public class TApi {
 
             for (long id : ids.getIDs()) {
 
-                all[index] = id;
-
-                index ++;
+                all.add(id);
 
             }
 
@@ -162,12 +155,41 @@ public class TApi {
         return all;
 
     }
-	
+
+
+    public static LinkedList<Long> getAllFrIDs(Twitter api,Long target) throws TwitterException {
+
+        LinkedList<Long> all = new LinkedList<>();
+
+        IDs ids = api.getFriendsIDs(target,-1,5000);
+
+        for (long id : ids.getIDs()) {
+
+			all.add(id);
+
+        }
+
+        while (ids.hasNext()) {
+
+            ids = api.getFriendsIDs(target,ids.getNextCursor(),5000);
+
+            for (long id : ids.getIDs()) {
+
+                all.add(id);
+
+            }
+
+        }
+
+        return all;
+
+    }
+
 	public static LinkedList<User> getAllFo(Twitter api,String target) throws TwitterException {
 
         LinkedList<User> all = new LinkedList<>();
 
-        PagableResponseList<User> users = api.getFollowersList(target, -1 , 200);
+        PagableResponseList<User> users = api.getFollowersList(target,-1 ,200);
 
         all.addAll(users);
 
@@ -177,17 +199,17 @@ public class TApi {
 
             all.addAll(users);
 
-			}
+		}
 
         return all;
 
-		}
+	}
 
     public static LinkedList<User> getAllFo(Twitter api,Long target) throws TwitterException {
 
         LinkedList<User> all = new LinkedList<>();
 
-        PagableResponseList<User> users = api.getFollowersList(target, -1 , 200);
+        PagableResponseList<User> users = api.getFollowersList(target,-1 ,200);
 
         all.addAll(users);
 
@@ -206,8 +228,8 @@ public class TApi {
     public static LinkedList<Long> getAllFoIDs(Twitter api,Long target) throws TwitterException {
 
         LinkedList<Long> all = new LinkedList<>();
-        
-        IDs ids = api.getFollowersIDs(target,-1 , 5000);
+
+        IDs ids = api.getFollowersIDs(target,-1 ,5000);
 
         for (long id : ids.getIDs()) {
 
@@ -229,12 +251,12 @@ public class TApi {
         return all;
 
     }
-	
+
 	public static LinkedList<Long>getAllFoIDs(Twitter api,String target) throws TwitterException {
 
         LinkedList<Long> all = new LinkedList<>();
 
-        IDs ids = api.getFollowersIDs(target,-1 , 5000);
+        IDs ids = api.getFollowersIDs(target,-1 ,5000);
 
         for (long id : ids.getIDs()) {
 
@@ -254,11 +276,11 @@ public class TApi {
         }
 
         return all;
-        
-    }
-	
 
-    public static LinkedHashSet<Status> getContextStatusWhenSearchRated(Twitter api, Status status, long[] target) throws TwitterException {
+    }
+
+
+    public static LinkedHashSet<Status> getContextStatusWhenSearchRated(Twitter api,Status status,long[] target) throws TwitterException {
 
         Status top = status;
 
@@ -278,7 +300,7 @@ public class TApi {
 
 
 
-                    if (target == null || ArrayUtil.contains(target, superStatus.getUser().getId())) {
+                    if (target == null || ArrayUtil.contains(target,superStatus.getUser().getId())) {
 
                         top = superStatus;
 
@@ -291,7 +313,7 @@ public class TApi {
 
                     Status superStatus = top.getQuotedStatus();
 
-                    if (target == null || ArrayUtil.contains(target, superStatus.getUser().getId())) {
+                    if (target == null || ArrayUtil.contains(target,superStatus.getUser().getId())) {
 
                         top = superStatus;
 
@@ -312,7 +334,7 @@ public class TApi {
         return all;
 
     }
-    public static LinkedHashSet<Status> getContextStatus(Twitter api, Status status, long[] target) throws TwitterException {
+    public static LinkedHashSet<Status> getContextStatus(Twitter api,Status status,long[] target) throws TwitterException {
 
         Status top = status;
 
@@ -332,7 +354,7 @@ public class TApi {
 
 
 
-                    if (target == null || ArrayUtil.contains(target, superStatus.getUser().getId())) {
+                    if (target == null || ArrayUtil.contains(target,superStatus.getUser().getId())) {
 
                         top = superStatus;
 
@@ -345,7 +367,7 @@ public class TApi {
 
                     Status superStatus = top.getQuotedStatus();
 
-                    if (target == null || ArrayUtil.contains(target, superStatus.getUser().getId())) {
+                    if (target == null || ArrayUtil.contains(target,superStatus.getUser().getId())) {
 
                         top = superStatus;
 
@@ -363,24 +385,24 @@ public class TApi {
 
         }
 
-        all.addAll(loopReplies(api, top, target));
+        all.addAll(loopReplies(api,top,target));
 
         return all;
 
 
     }
 
-    public static LinkedList<Status> loopReplies(Twitter api, Status s, long[] target) throws TwitterException {
+    public static LinkedList<Status> loopReplies(Twitter api,Status s,long[] target) throws TwitterException {
 
         LinkedList<Status> list = new LinkedList<>();
 
-        for (Status ss : getReplies(api, s)) {
+        for (Status ss : getReplies(api,s)) {
 
             list.add(ss);
 
-            if (target == null || ArrayUtil.contains(target, ss.getUser().getId())) {
+            if (target == null || ArrayUtil.contains(target,ss.getUser().getId())) {
 
-                list.addAll(loopReplies(api, ss, target));
+                list.addAll(loopReplies(api,ss,target));
 
             }
 
@@ -390,7 +412,7 @@ public class TApi {
 
     }
 
-    public static LinkedList<Status> getReplies(Twitter api, Status status) throws TwitterException {
+    public static LinkedList<Status> getReplies(Twitter api,Status status) throws TwitterException {
 
         LinkedList<Status> list = new LinkedList<>();
 
@@ -430,7 +452,7 @@ public class TApi {
 
     public static LinkedList<UserList> getLists(Twitter api) throws IllegalStateException, TwitterException {
 
-        return new LinkedList<UserList>(api.getUserLists(api.getId(), true));
+        return new LinkedList<UserList>(api.getUserLists(api.getId(),true));
 
     }
 
@@ -439,12 +461,12 @@ public class TApi {
 
         LinkedList<UserList> list = new LinkedList<>();
 
-        PagableResponseList<UserList> sublist = api.getUserListSubscriptions(api.getId(), -1);
+        PagableResponseList<UserList> sublist = api.getUserListSubscriptions(api.getId(),-1);
         list.addAll(sublist);
 
         if (sublist.hasNext()) {
 
-            sublist  = api.getUserListSubscriptions(api.getId(), sublist.getNextCursor());
+            sublist  = api.getUserListSubscriptions(api.getId(),sublist.getNextCursor());
             list.addAll(sublist);
 
         }
@@ -461,12 +483,12 @@ public class TApi {
         ResponseList<UserList> ownlists = api.getUserLists(api.getId());
         list.addAll(ownlists);
 
-        PagableResponseList<UserList> sublist = api.getUserListSubscriptions(api.getId(), -1);
+        PagableResponseList<UserList> sublist = api.getUserListSubscriptions(api.getId(),-1);
         list.addAll(sublist);
 
         if (sublist.hasNext()) {
 
-            sublist  = api.getUserListSubscriptions(api.getId(), sublist.getNextCursor());
+            sublist  = api.getUserListSubscriptions(api.getId(),sublist.getNextCursor());
             list.addAll(sublist);
 
         }
@@ -477,7 +499,7 @@ public class TApi {
 
 
 
-    public static Status reply(Twitter api, Status status, String contnent) throws TwitterException {
+    public static Status reply(Twitter api,Status status,String contnent) throws TwitterException {
 
         if (status.getQuotedStatusId() == -1 && status.getInReplyToStatusId() == -1) {
 

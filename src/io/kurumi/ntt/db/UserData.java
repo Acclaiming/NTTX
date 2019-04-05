@@ -13,6 +13,8 @@ import io.kurumi.ntt.model.data.*;
 
 public class UserData extends IdDataModel {
 
+	public static JSONObject users = BotDB.getJSON("data","users",true);
+	
     public static HashMap<String,UserData> userNameIndex = new HashMap<>();
     
     public static UserData getByUserName(String userName) {
@@ -25,7 +27,7 @@ public class UserData extends IdDataModel {
 
         if (u == null) return null;
         
-        if (INSTANCE.idIndex.containsKey(u.id().longValue())) return INSTANCE.idIndex.get(u.id().longValue());
+        if (users.containsKey(u.id().longValue())) return INSTANCE.idIndex.get(u.id().longValue());
 
         UserData user = new UserData(INSTANCE.dirName,u.id());
 

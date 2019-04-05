@@ -23,9 +23,9 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
 
-public class UserTrackTask extends TimerTask {
+public class UTTask extends TimerTask {
 
-    static UserTrackTask INSTANCE = new UserTrackTask();
+    static UTTask INSTANCE = new UTTask();
     static Timer timer;
 
 	static LinkedHashSet<Long> pedding = new LinkedHashSet<>();
@@ -217,15 +217,58 @@ public class UserTrackTask extends TimerTask {
 
     public static void onUserChange(UserArchive user,String change) {
 
+		LinkedHashSet<Long> subA = new LinkedHashSet<>();
+		
+		LinkedList<Long> subD = new LinkedList<>();
+		
+		LinkedList<Long> subL;
+		LinkedList<Long> subR;
+		
+		synchronized (FTTask.INSTANCE) {
+			
+			subL = FTTask.flSubIndex.get(user.id);
+			subR = FTTask.frSubIndex.get(user.id);
+
+		}
+		
+		if (subL != null) subA.addAll(subL);
+		if (subR != null) subA.addAll(subR);
+		
         for (Map.Entry<String,JSONArray> sub : ((Map<String,JSONArray>)(Object)subs).entrySet()) {
 
             if (sub.getValue().contains(user.id)) {
-
-                new Send(Long.parseLong(sub.getKey()),user.getHtmlURL() + " :",change).html().exec();
-
+				
+				long id = Long.parseLong(sub.getKey());
+				
+				subA.add(id);
+				subD.add(id);
+                
             }
 
         }
+		
+		for (Long sub : subA) {
+			
+			if (subL.contains(sub) && subR.contains(sub)) {
+				
+				new Send(sub,"与乃相互关注的 " + user.getHtmlURL() + " :",change).html().exec();
+				
+			} else if (subD.contains(sub)) {
+				
+				new Send(sub,"乃订阅的 " + user.getHtmlURL() + " :",change).html().exec();
+			
+			}  else if (subL.contains(sub)) {
+				
+				new Send(sub,"关注乃的 " + user.getHtmlURL() + " :",change).html().exec();
+				
+			} else if (subR.contains(sub)) {
+				
+				new Send(sub,"乃关注的 " + user.getHtmlURL() + " :",change).html().exec();
+				
+			}
+			
+ 		}
+		
 
     }
 

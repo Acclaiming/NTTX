@@ -11,7 +11,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.*;
 import io.kurumi.ntt.utils.*;
 import cn.hutool.core.util.ObjectUtil;
-import io.kurumi.ntt.twitter.track.UserTrackTask;
+import io.kurumi.ntt.twitter.track.UTTask;
 import java.util.HashMap;
 
 public class UserArchive extends IdDataModel {
@@ -130,7 +130,7 @@ public class UserArchive extends IdDataModel {
 
             isDisappeared = true;
 
-            UserTrackTask.onUserChange(this,"用户被冻结或已停用 :)");
+            UTTask.onUserChange(this,"用户被冻结或已停用 :)");
 
             return;
 
@@ -212,7 +212,7 @@ public class UserArchive extends IdDataModel {
 
         if (change) {
 
-            UserTrackTask.onUserChange(this,str.toString());
+            UTTask.onUserChange(this,str.toString());
 
         }
 

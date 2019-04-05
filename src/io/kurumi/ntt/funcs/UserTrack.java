@@ -4,7 +4,7 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.T;
-import io.kurumi.ntt.twitter.track.UserTrackTask;
+import io.kurumi.ntt.twitter.track.UTTask;
 import cn.hutool.core.util.NumberUtil;
 import io.kurumi.ntt.twitter.TAuth;
 import twitter4j.TwitterException;
@@ -73,7 +73,7 @@ public class UserTrack extends Fragment {
 
                 UserArchive archive = UserArchive.INSTANCE.getOrNew(target.getId());
 
-                boolean result = UserTrackTask.add(user,archive.id);
+                boolean result = UTTask.add(user,archive.id);
 
                 archive.read(target);
 
@@ -87,7 +87,7 @@ public class UserTrack extends Fragment {
 
                 }
                 
-                UserTrackTask.save();
+                UTTask.save();
 
                 msg.send("已订阅 : " + archive.getHtmlURL() + " :)","ID : " + archive.idStr).html().exec();
 
@@ -109,13 +109,13 @@ public class UserTrack extends Fragment {
 
             UserArchive archive = UserArchive.INSTANCE.getOrNew(target.getId());
 
-            boolean result = UserTrackTask.add(user,archive.id);
+            boolean result = UTTask.add(user,archive.id);
 
             archive.read(target);
 
             UserArchive.INSTANCE.saveObj(archive);
 
-            UserTrackTask.save();
+            UTTask.save();
 
             if (!result) {
 
@@ -125,7 +125,7 @@ public class UserTrack extends Fragment {
 
             }
             
-            UserTrackTask.save();
+            UTTask.save();
 
             msg.send("已订阅 : " + archive.getHtmlURL() + " :)","ID : " + archive.idStr).html().exec();
 
@@ -148,9 +148,9 @@ public class UserTrack extends Fragment {
 
         if (NumberUtil.isNumber(msg.params()[0])) {
 
-            if (UserTrackTask.rem(user,Long.parseLong(msg.params()[0]))) {
+            if (UTTask.rem(user,Long.parseLong(msg.params()[0]))) {
                 
-                UserTrackTask.save();
+                UTTask.save();
                 
                 msg.send("取消订阅成功 :)").exec();
                 
@@ -166,14 +166,14 @@ public class UserTrack extends Fragment {
         
         UserArchive target = UserArchive.findByScreenName(T.parseScreenName(msg.params()[0]));
 
-        if (target == null || !UserTrackTask.rem(user,target.id)) {
+        if (target == null || !UTTask.rem(user,target.id)) {
             
             msg.send("乃没有订阅这个推油 :)").exec();
             
             
         } else {
             
-            UserTrackTask.save();
+            UTTask.save();
             
             msg.send("已取消订阅 " + target.getHtmlURL() + " :)").html().exec();
             
@@ -183,9 +183,9 @@ public class UserTrack extends Fragment {
     
     void unSubAll(UserData user,Msg msg) {
         
-        if (UserTrackTask.subs.containsKey(user.idStr)) {
+        if (UTTask.subs.containsKey(user.idStr)) {
             
-            JSONArray list = (JSONArray)UserTrackTask.subs.remove(user.idStr);
+            JSONArray list = (JSONArray)UTTask.subs.remove(user.idStr);
 
             StringBuilder rec = new StringBuilder();
 

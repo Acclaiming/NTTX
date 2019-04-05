@@ -8,9 +8,9 @@ import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.model.*;
 import java.io.*;
 import java.util.*;
-import io.kurumi.ntt.twitter.track.FollowerTrackTask;
+import io.kurumi.ntt.twitter.track.FTTask;
 import java.util.concurrent.atomic.AtomicBoolean;
-import io.kurumi.ntt.twitter.track.UserTrackTask;
+import io.kurumi.ntt.twitter.track.UTTask;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -105,8 +105,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         INSTANCE.bot().removeGetUpdatesListener();
 
-        FollowerTrackTask.stop();
-        UserTrackTask.stop();
+        FTTask.stop();
+        UTTask.stop();
         Backup.AutoBackupTask.INSTANCE.start();
 
 		//  BotServer.INSTACNCE.stop();
@@ -142,8 +142,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public void stop() {
        
-        FollowerTrackTask.stop();
-        UserTrackTask.stop();
+        FTTask.stop();
+        UTTask.stop();
         
         super.stop();
         

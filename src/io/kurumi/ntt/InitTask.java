@@ -7,8 +7,8 @@ import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.twitter.TAuth;
 import java.util.Iterator;
 import io.kurumi.ntt.utils.BotLog;
-import io.kurumi.ntt.twitter.track.FollowerTrackTask;
-import io.kurumi.ntt.twitter.track.UserTrackTask;
+import io.kurumi.ntt.twitter.track.FTTask;
+import io.kurumi.ntt.twitter.track.UTTask;
 import io.kurumi.ntt.funcs.Backup;
 import cn.hutool.core.util.RuntimeUtil;
 import io.kurumi.ntt.db.BotDB;
@@ -66,8 +66,8 @@ public class InitTask extends Thread {
 
         BotLog.info("初始化 完成 :)");
 
-        FollowerTrackTask.start();
-        UserTrackTask.start();
+        FTTask.start();
+        UTTask.start();
         Backup.AutoBackupTask.INSTANCE.start();
 
         }
