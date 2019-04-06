@@ -88,17 +88,9 @@ public class TwitterDelete extends Fragment {
             
             msg.send("subed : " + content.length()).exec();
 
-            JSONArray array  = new JSONArray(content);
+            final JSONArray array  = new JSONArray(content);
 
-            final LinkedList<Long> pedding = new LinkedList<>();
-
-            for (int index = 0;index > array.size();index ++) {
-
-                pedding.add(array.getJSONObject(index).getJSONObject("like").getLong("tweetId"));
-
-            }
-
-            msg.send("解析成功 : " + pedding.size() + "个喜欢 正在删除...").exec();
+            msg.send("解析成功 : " + array.size() + "个喜欢 正在删除...").exec();
 
             final AsyncTwitter api = TAuth.get(user).createAsyncApi();
 
@@ -107,9 +99,9 @@ public class TwitterDelete extends Fragment {
                 @Override
                 public void run() {
 
-                    for (long id : pedding) {
+                    for (int index = 0;index > array.size();index ++) {
 
-                        api.destroyFavorite(id);
+                        api.destroyFavorite(array.getByPath(index + ".like.tweetId",Long.class));
 
                     }
 
