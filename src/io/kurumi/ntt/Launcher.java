@@ -19,6 +19,11 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     public Launcher() {
 
         addFragment(Ping.INSTANCE);
+        
+        addFragment(StickerManage.INSTANCE);
+
+        addFragment(TwitterDelete.INSTANCE);
+    
 
         addFragment(Backup.INSTANCE);
 
@@ -39,11 +44,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         // addFragment(AntiTooManyMsg.INSTANCE);
 
-        addFragment(StickerManage.INSTANCE);
-
-        addFragment(TwitterDelete.INSTANCE);
-
-    }
+       }
 
     public static void main(String[] args) {
 

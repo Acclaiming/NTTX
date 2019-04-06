@@ -16,6 +16,7 @@ import io.kurumi.ntt.utils.T;
 public class TwitterArchive extends Fragment {
 
     public static TwitterArchive INSTANCE = new TwitterArchive();
+    
     @Override
     public boolean onMsg(UserData user,Msg msg) {
 
