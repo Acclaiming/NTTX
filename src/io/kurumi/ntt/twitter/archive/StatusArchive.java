@@ -230,7 +230,14 @@ public class StatusArchive extends IdDataModel {
 		}
 
         String content = text;
+        
+        if (!mediaUrls.isEmpty()) {
 
+            content = StrUtil.subBefore(content,"https://t.co",true);
+            
+        }
+        
+        
         if (content.startsWith("@")) {
 
             LinkedList<String> inReplyTo = new LinkedList<>();
@@ -247,11 +254,15 @@ public class StatusArchive extends IdDataModel {
 
             archive.append(" 给");
 
+            boolean l = false;
+            
             for (String replyTo : inReplyTo) {
 
                 UserArchive user = UserArchive.findByScreenName(replyTo);
 
                 archive.append(" ");
+                
+                if (l) archive.append("、");
 
                 if (user != null) {
 
@@ -262,6 +273,8 @@ public class StatusArchive extends IdDataModel {
                     archive.append(Html.a("@" + replyTo,"https://twitter.com/" + replyTo));
 
                 } 
+                
+                l = true;
 
             }
 
@@ -283,12 +296,12 @@ public class StatusArchive extends IdDataModel {
 
         archive.append("\n\n在 ");
         
-        Date date = new Date(createdAt);
+        Date date = new Date(createdAt / 1000);
         
-        archive.append(date.getYear() - 100).append("年").append(date.getMonth()).append("月").append(date.getDay()).append("日");
+        archive.append(date.getYear()).append("年").append(date.getMonth()).append("月").append(date.getDay()).append("日");
         
         archive.append(", ").append(date.getHours() > 12 ? ("上午" + date.getHours()) : ("下午 " + date.getHours())).append(":").append(date.getSeconds());
-
+        
 
         return archive.toString();
 

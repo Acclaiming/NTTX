@@ -95,7 +95,7 @@ public class TwitterArchive extends Fragment {
             loopStatus(newStatus,api);
 
             msg.send("已存档 :)").exec();
-
+            
             msg.send(newStatus.toHtml()).html().exec();
 
         } catch (TwitterException e) {
