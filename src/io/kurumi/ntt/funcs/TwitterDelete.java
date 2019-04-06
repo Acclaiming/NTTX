@@ -90,45 +90,37 @@ public class TwitterDelete extends Fragment {
             final JSONArray array  = new JSONArray(content);
 
             msg.send("解析成功 : " + array.length() + "个喜欢 正在删除...").exec();
-
-            final Twitter api = TAuth.get(user).createApi();
-
-            new Thread("NTT Twitter Likes Delete Thread") {
-
-                @Override
-                public void run() {
-                    
-                    for (int index = 0;index > array.length();index ++) {
-
-                        try {
-
-                            long id = (Long.parseLong(array.getJSONObject(index).getJSONObject("like").getString("tweetId")));
-
-                           
-                            api.destroyFavorite(id);
-
-                        } catch (TwitterException e) {
-
-                            e.printStackTrace();
-
-                        } catch (JSONException e) {
-
-                            e.printStackTrace();
-
-                        }
-
-                    }
-
-                    msg.send("喜欢删除完成 ~").exec();
-
-                }
-
-            }.start();
-
+            
             user.point = null;
 
             user.savePoint();
+            
+            final Twitter api = TAuth.get(user).createApi();
 
+            for (int index = 0;index > array.length();index ++) {
+
+                try {
+
+                    long id = (Long.parseLong(array.getJSONObject(index).getJSONObject("like").getString("tweetId")));
+
+
+                    api.destroyFavorite(id);
+
+                } catch (TwitterException e) {
+
+                    e.printStackTrace();
+
+                } catch (JSONException e) {
+
+                    e.printStackTrace();
+
+                }
+
+            }
+
+            msg.send("喜欢删除完成 ~").exec();
+            
+            
         } catch (Exception err) {
 
             msg.send("解析失败..." + err).exec();
