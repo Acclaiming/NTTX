@@ -24,6 +24,7 @@ public class TwitterArchive extends Fragment {
         switch (msg.command()) {
 
             case "status" : statusArchive(user,msg);break;
+            case "pull" : pullUser(user,msg);break;
           //   case "tuser" : userArchive(user,msg);break;
 
             default : return false;
@@ -32,6 +33,12 @@ public class TwitterArchive extends Fragment {
 
         return true;
 
+    }
+    
+    void pullUser(UserData user,Msg msg) {
+        
+        Twitter api = TAuth.get(user).createApi();
+        
     }
 
     void statusArchive(UserData user,Msg msg) {

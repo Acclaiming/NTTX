@@ -1,14 +1,17 @@
 package io.kurumi.ntt.twitter;
 
 import cn.hutool.json.JSONObject;
+import io.kurumi.ntt.db.BotDB;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.utils.Html;
+import twitter4j.AsyncTwitter;
+import twitter4j.AsyncTwitterFactory;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.User;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.utils.Html;
 
 public class TAuth extends JSONObject {
 
@@ -124,6 +127,12 @@ public class TAuth extends JSONObject {
     public Twitter createApi() {
 
         return new TwitterFactory(createConfig()).getInstance();
+
+    }
+    
+    public AsyncTwitter createAsyncApi() {
+
+        return new AsyncTwitterFactory(createConfig()).getInstance();
 
     }
 

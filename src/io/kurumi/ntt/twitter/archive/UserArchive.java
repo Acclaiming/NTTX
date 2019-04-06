@@ -1,19 +1,12 @@
 package io.kurumi.ntt.twitter.archive;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONObject;
 import io.kurumi.ntt.model.data.IdDataModel;
-import java.util.LinkedList;
-import twitter4j.User;
-import java.util.LinkedHashSet;
-import cn.hutool.json.JSONArray;
-import java.sql.Struct;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.*;
-import io.kurumi.ntt.utils.*;
-import cn.hutool.core.util.ObjectUtil;
 import io.kurumi.ntt.twitter.track.UTTask;
+import io.kurumi.ntt.utils.Html;
 import java.util.HashMap;
-import twitter4j.Status;
+import twitter4j.User;
 
 public class UserArchive extends IdDataModel {
 

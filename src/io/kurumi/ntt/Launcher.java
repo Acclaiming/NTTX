@@ -41,6 +41,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
    
    addFragment(StickerManage.INSTANCE);
 
+   addFragment(TwitterDelete.INSTANCE);
+   
     }
 
     public static void main(String[] args) {

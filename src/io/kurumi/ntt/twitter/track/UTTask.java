@@ -91,7 +91,7 @@ public class UTTask extends TimerTask {
 
                 if (index > 850) {
 
-                    // 十五分钟上限900次 到850可以退出等API可用;
+                    // 十五分钟user上限900次
 
                     return;
 
