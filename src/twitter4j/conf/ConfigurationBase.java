@@ -64,7 +64,7 @@ class ConfigurationBase implements Configuration, java.io.Serializable {
     private String uploadBaseURL = "https://upload.twitter.com/1.1/";
 
     private String dispatcherImpl = "twitter4j.DispatcherImpl";
-    private int asyncNumThreads = 1;
+    private int asyncNumThreads = 9;
 
     private String loggerFactory = null;
 
