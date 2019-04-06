@@ -110,32 +110,27 @@ public class TwitterArchive extends Fragment {
 
     void loopStatus(StatusArchive archive,Twitter api) {
 
-        
-            String content = archive.text;
+        String content = archive.text;
 
-            if (content.startsWith("@")) {
+        if (content.startsWith("@")) {
 
-                while (content.startsWith("@")) {
+            while (content.startsWith("@")) {
 
-                    String screenName = StrUtil.subBefore(content.substring(1)," ",false);
-                    
-                    if (UserArchive.findByScreenName(screenName) == null) {
-                        
-                        try {
-                            
-                            UserArchive.saveCache(api.showUser(screenName));
-                            
-                        } catch (TwitterException ex) {} 
-                        
-                    }
+                String screenName = StrUtil.subBefore(content.substring(1)," ",false);
+
+                if (UserArchive.findByScreenName(screenName) == null) {
+
+                    try {
+
+                        UserArchive.saveCache(api.showUser(screenName));
+
+                    } catch (TwitterException ex) {} 
 
                 }
 
-
-
             }
 
-
+        }
 
 
         try {
@@ -161,11 +156,6 @@ public class TwitterArchive extends Fragment {
                 }
 
             }
-
-        } catch (TwitterException ex) {}
-
-
-        try {
 
             if (archive.quotedStatusId != -1) {
 

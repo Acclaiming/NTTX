@@ -89,6 +89,8 @@ public class TwitterUI extends Fragment {
 
 			user.point = cdata(POINT_INPUT_CALLBACK);
 
+            user.savePoint();
+            
 			// 不需要保存Point 因为request token的cache也不会保存。
 
 		} catch (TwitterException e) {
