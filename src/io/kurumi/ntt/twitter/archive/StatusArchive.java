@@ -227,31 +227,37 @@ public class StatusArchive extends IdDataModel {
             archive.append(getUser().getHtmlURL()).append(" 的 ").append(Html.a("推文",getURL()));
 
 		}
+        
+        String content = text;
 
-        archive.append(" 在 ").append(new Date(createdAt).toLocaleString());
+        if (content.startsWith("@")) {
 
-        LinkedList<String> inReplyTo = new LinkedList<>();
+            LinkedList<String> inReplyTo = new LinkedList<>();
 
-        while (text.startsWith("@")) {
+            while (content.startsWith("@")) {
 
-            inReplyTo.add(StrUtil.subBefore(text.substring(1)," ",false));
+                inReplyTo.add(StrUtil.subBefore(content.substring(1)," ",false));
 
-            text = StrUtil.subAfter(text," " ,false);
+                content = StrUtil.subAfter(content," " ,false);
+
+            }
+
+            Collections.reverse(inReplyTo);
+
+            archive.append(" 给");
+
+            for (String replyTo : inReplyTo) {
+
+                archive.append(" ").append(Html.a("@" + replyTo,"https://twitter.com/" + replyTo));
+
+            }
 
         }
-        
-        Collections.reverse(inReplyTo);
-        
-        for (String replyTo : inReplyTo) {
-            
-            text = Html.a("@" + replyTo,"https://" + replyTo) + " " + text;
-            
-        }
 
-        archive.append("\n\n").append(text);
+        archive.append("\n\n").append(content);
 
         if (!mediaUrls.isEmpty()) {
-
+            
             archive.append("\n\n媒体文件 :");
 
             for (String url : mediaUrls) {
@@ -261,6 +267,9 @@ public class StatusArchive extends IdDataModel {
             }
 
         }
+
+        archive.append("\n\n 在 ").append(new Date(createdAt).toLocaleString());
+
 
         return archive.toString();
 
