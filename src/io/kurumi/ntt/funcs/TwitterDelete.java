@@ -1,18 +1,17 @@
 package io.kurumi.ntt.funcs;
 
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.model.Msg;
-import com.pengrad.telegrambot.model.Document;
-import java.io.File;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.io.FileUtil;
-import io.kurumi.ntt.utils.T;
-import java.util.LinkedList;
-import java.util.HashMap;
+import cn.hutool.core.util.StrUtil;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.twitter.TAuth;
-import twitter4j.AsyncTwitter;
+import io.kurumi.ntt.utils.T;
+import java.io.File;
 import twitter4j.JSONArray;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.JSONException;
 
 public class TwitterDelete extends Fragment {
 
@@ -92,7 +91,7 @@ public class TwitterDelete extends Fragment {
 
             msg.send("解析成功 : " + array.length() + "个喜欢 正在删除...").exec();
 
-            final AsyncTwitter api = TAuth.get(user).createAsyncApi();
+            final Twitter api = TAuth.get(user).createApi();
 
             new Thread("NTT Twitter Likes Delete Thread") {
 
@@ -101,7 +100,15 @@ public class TwitterDelete extends Fragment {
 
                     for (int index = 0;index > array.length();index ++) {
 
-                        api.destroyFavorite(array.getJSONObject(index).getJSONObject("like").getLong("tweetId"));
+                        try {
+                            
+                            api.destroyFavorite(array.getJSONObject(index).getJSONObject("like").getLong("tweetId"));
+                            
+                        } catch (TwitterException e) {
+                            
+                    e.printStackTrace();
+                            
+                        } catch (JSONException e) {}
 
                     }
 
