@@ -268,7 +268,7 @@ public class StatusArchive extends IdDataModel {
 
         }
 
-        archive.append("\n\n 在 ").append(new Date(createdAt).toLocaleString());
+        archive.append("\n\n在 ").append(new Date(createdAt).toLocaleString());
 
 
         return archive.toString();
