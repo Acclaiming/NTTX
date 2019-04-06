@@ -44,7 +44,7 @@ public class TwitterDelete extends Fragment {
 
             case POINT_DELETE_LIKES : comfirmDeleteLikes(user,msg);break;
 
-            default : return true;
+            default : return false;
 
         }
 
