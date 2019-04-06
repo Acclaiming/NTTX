@@ -15,6 +15,7 @@ import java.util.*;
 import java.time.*;
 import io.kurumi.ntt.utils.*;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
 
 public class StatusArchive extends IdDataModel {
 
@@ -282,9 +283,9 @@ public class StatusArchive extends IdDataModel {
 
         archive.append("\n\n在 ");
         
-        Date date = new Date(createdAt);
+        Date date = new Date(createdAt + 8 * 60 * 60 * 1000);
         
-        archive.append(date.getYear()).append("年").append(date.getMonth()).append("月").append(date.getDay()).append("日");
+        archive.append(date.getYear() - 100).append("年").append(date.getMonth()).append("月").append(date.getDay()).append("日");
         
         archive.append(", ").append(date.getHours() > 12 ? ("上午" + date.getHours()) : ("下午 " + date.getHours())).append(":").append(date.getSeconds());
 
