@@ -34,7 +34,7 @@ public class StickerManage extends Fragment {
 
             msg.sendUpdatingPhoto();
             
-            bot().execute(new SendPhoto(msg.chatId(),msg.message().sticker().fileId()).replyToMessageId(msg.messageId()));
+            bot().execute(new SendPhoto(msg.chatId(),getFile(msg.message().sticker().fileId())).replyToMessageId(msg.messageId()));
 
             return true;
             
