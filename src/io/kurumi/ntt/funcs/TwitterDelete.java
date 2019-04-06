@@ -22,12 +22,8 @@ public class TwitterDelete extends Fragment {
     @Override
     public boolean onNPM(UserData user,Msg msg) {
 
-        msg.send((msg.doc() == null) + "").exec();
-
         if (msg.doc() == null) return false;
-
-        msg.send(msg.doc().fileName()).exec();
-
+        
         switch (msg.doc().fileName()) {
 
             case "like.js" : deleteLikes(user,msg);break;
@@ -56,8 +52,6 @@ public class TwitterDelete extends Fragment {
     }
 
     void deleteLikes(UserData user,Msg msg) {
-
-        msg.send("check").exec();
 
         if (T.checkUserNonAuth(user,msg)) return;
 
@@ -98,7 +92,7 @@ public class TwitterDelete extends Fragment {
                 @Override
                 public void run() {
                     
-                    for (int index = 0;index > array.length();index ++) {
+                    for (int index = 0;index < array.length();index ++) {
 
                         try {
 
