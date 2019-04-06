@@ -82,6 +82,8 @@ public class TwitterDelete extends Fragment {
 
             String content = FileUtil.readUtf8String(likejs);
 
+            msg.send("content length = " + content.length());
+            
             content = StrUtil.subAfter(content,"=",false);
 
             JSONArray array  = new JSONArray(content);
