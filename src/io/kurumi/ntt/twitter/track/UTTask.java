@@ -97,7 +97,15 @@ public class UTTask extends TimerTask {
 
                 }
 
-                for (String id : new LinkedList<String> (subs.keySet())) {
+                LinkedList<String> names;
+
+                synchronized (subs) {
+
+                    names = new LinkedList<String>(subs.keySet());
+
+                }
+
+                for (String id : names) {
 
                     if (useH.containsKey(id)) {
 
@@ -179,7 +187,7 @@ public class UTTask extends TimerTask {
                         } else throw e;
 
 					}
-                    
+
 				}
             }
 
@@ -283,9 +291,13 @@ public class UTTask extends TimerTask {
 
     public static List<Long> get(UserData user) {
 
-        if (subs.containsKey(user.idStr)) {
+        synchronized (subs) {
 
-            return subs.getJSONArray(user.idStr).toList(Long.class);
+            if (subs.containsKey(user.idStr)) {
+
+                return subs.getJSONArray(user.idStr).toList(Long.class);
+
+            }
 
         }
 
@@ -295,31 +307,43 @@ public class UTTask extends TimerTask {
 
     public static boolean add(UserData user,Long id) {
 
-        LinkedHashSet<Long> list = subs.containsKey(user.idStr) ? new LinkedHashSet<Long>(subs.getJSONArray(user.idStr).toList(Long.class)) : new LinkedHashSet<>();
+        synchronized (subs) {
 
-        boolean result = list.add(id);
+            LinkedHashSet<Long> list = subs.containsKey(user.idStr) ? new LinkedHashSet<Long>(subs.getJSONArray(user.idStr).toList(Long.class)) : new LinkedHashSet<>();
 
-        subs.put(user.idStr,list);
+            boolean result = list.add(id);
 
-        return result;
+            subs.put(user.idStr,list);
+
+            return result;
+
+        }
 
     }
 
     public static boolean rem(UserData user,Long id) {
 
-        LinkedHashSet<Long> list = subs.containsKey(user.idStr) ? new LinkedHashSet<Long>(subs.getJSONArray(user.idStr).toList(Long.class)) : new LinkedHashSet<>();
+        synchronized (subs) {
 
-        boolean result = list.remove(id);
+            LinkedHashSet<Long> list = subs.containsKey(user.idStr) ? new LinkedHashSet<Long>(subs.getJSONArray(user.idStr).toList(Long.class)) : new LinkedHashSet<>();
 
-        subs.put(user.idStr,list);
+            boolean result = list.remove(id);
 
-        return result;
+            subs.put(user.idStr,list);
+
+            return result;
+
+        }
 
     }
 
     public static void clear(UserData user) {
 
-        subs.remove(user.idStr);
+        synchronized (subs) {
+
+            subs.remove(user.idStr);
+
+        }
 
     }
 

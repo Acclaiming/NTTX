@@ -283,7 +283,7 @@ public class StatusArchive extends IdDataModel {
 
         archive.append("\n\n在 ");
         
-        Date date = new Date(createdAt + 8 * 60 * 60 * 1000);
+        Date date = new Date(createdAt);
         
         archive.append(date.getYear() - 100).append("年").append(date.getMonth()).append("月").append(date.getDay()).append("日");
         
