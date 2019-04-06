@@ -227,7 +227,7 @@ public class StatusArchive extends IdDataModel {
             archive.append(getUser().getHtmlURL()).append(" 的 ").append(Html.a("推文",getURL()));
 
 		}
-        
+
         String content = text;
 
         if (content.startsWith("@")) {
@@ -248,7 +248,19 @@ public class StatusArchive extends IdDataModel {
 
             for (String replyTo : inReplyTo) {
 
-                archive.append(" ").append(Html.a("@" + replyTo,"https://twitter.com/" + replyTo));
+                UserArchive user = UserArchive.findByScreenName(replyTo);
+
+                archive.append(" ");
+
+                if (user != null) {
+
+                    archive.append(user.getHtmlURL());
+
+                } else {
+
+                    archive.append(Html.a("@" + replyTo,"https://twitter.com/" + replyTo));
+
+                } 
 
             }
 
@@ -257,7 +269,7 @@ public class StatusArchive extends IdDataModel {
         archive.append("\n\n").append(content);
 
         if (!mediaUrls.isEmpty()) {
-            
+
             archive.append("\n\n媒体文件 :");
 
             for (String url : mediaUrls) {
