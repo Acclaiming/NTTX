@@ -8,10 +8,10 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.twitter.TAuth;
 import io.kurumi.ntt.utils.T;
 import java.io.File;
+import twitter4j.AsyncTwitter;
 import twitter4j.JSONArray;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import twitter4j.JSONException;
+import twitter4j.TwitterException;
 
 public class TwitterDelete extends Fragment {
 
@@ -23,7 +23,7 @@ public class TwitterDelete extends Fragment {
     public boolean onNPM(UserData user,Msg msg) {
 
         if (msg.doc() == null) return false;
-        
+
         switch (msg.doc().fileName()) {
 
             case "like.js" : deleteLikes(user,msg);break;
@@ -81,40 +81,17 @@ public class TwitterDelete extends Fragment {
 
             msg.send("解析成功 : " + array.length() + "个喜欢 正在删除...").exec();
 
-            final Twitter api = TAuth.get(user).createApi();
+            final AsyncTwitter api = TAuth.get(user).createAsyncApi();
 
-            new Thread("NTT Twitter Likes Delete Thread") {
+            for (int index = 0;index < array.length();index ++) {
+                
+                api.destroyFavorite(array.getJSONObject(index).getJSONObject("like").getLong("tweetId"));
 
-                @Override
-                public void run() {
-                    
-                    for (int index = 0;index < array.length();index ++) {
+            }
 
-                        try {
+            msg.send("喜欢删除完成 ~").exec();
 
-                            long id = (Long.parseLong(array.getJSONObject(index).getJSONObject("like").getString("tweetId")));
 
-                            System.out.println(id);
-                           
-                            api.destroyFavorite(id);
-
-                        } catch (TwitterException e) {
-
-                            e.printStackTrace();
-
-                        } catch (JSONException e) {
-
-                            e.printStackTrace();
-
-                        }
-
-                    }
-
-                    msg.send("喜欢删除完成 ~").exec();
-
-                }
-
-            }.start();
 
             user.point = null;
 
