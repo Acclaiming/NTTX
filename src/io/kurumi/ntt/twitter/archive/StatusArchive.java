@@ -81,7 +81,7 @@ public class StatusArchive extends IdDataModel {
             INSTANCE.saveObj(quotedStatus);
 
         }
-
+       
         mediaUrls = new LinkedList<>();
 
         for (MediaEntity media : status.getMediaEntities()) {
@@ -188,8 +188,8 @@ public class StatusArchive extends IdDataModel {
 
             } else {
 
-                archive.append(notAvilableStatus(inReplyToUserId,inReplyToScreenName));
-
+                archive.append("不可用的推文");
+                
             }
 
             archive.append(" 的 ").append(Html.a("回复",getURL()));
@@ -203,8 +203,8 @@ public class StatusArchive extends IdDataModel {
                 archive.append(inReplyTo.toHtml());
 
             } else {
-
-                archive.append("不可用的推文");
+                
+                archive.append(notAvilableStatus(inReplyToUserId,inReplyToScreenName));
 
             }
 
