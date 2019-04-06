@@ -24,7 +24,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(TwitterDelete.INSTANCE);
     
-
         addFragment(Backup.INSTANCE);
 
         addFragment(GroupRepeat.INSTANCE);

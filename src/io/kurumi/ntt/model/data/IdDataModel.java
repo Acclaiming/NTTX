@@ -94,6 +94,8 @@ public abstract class IdDataModel {
             if (files != null) {
 
                 for (File dataFile : files) {
+                    
+                    if (!dataFile.isFile()) continue;
 
                     idList.add(Long.parseLong(StrUtil.subBefore(dataFile.getName(),".json",true)));
 

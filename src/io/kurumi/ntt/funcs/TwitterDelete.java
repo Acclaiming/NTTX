@@ -90,7 +90,7 @@ public class TwitterDelete extends Fragment {
 
             for (int index = 0;index > array.size();index ++) {
 
-                pedding.add(array.getByPath(index + ".like.tweetId",Long.class));
+                pedding.add(array.getJSONObject(index).getJSONObject("like").getLong("tweetId"));
 
             }
 
