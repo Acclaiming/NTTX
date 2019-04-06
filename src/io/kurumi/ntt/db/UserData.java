@@ -27,13 +27,9 @@ public class UserData extends IdDataModel {
 
         if (u == null) return null;
         
-        if (users.containsKey(u.id().longValue())) return INSTANCE.idIndex.get(u.id().longValue());
-
-        UserData user = new UserData(INSTANCE.dirName,u.id());
-
+        UserData user = INSTANCE.getOrNew(u.id().longValue());
+        
         user.refresh(u);
-
-        INSTANCE.idIndex.put(u.id().longValue(),user);
 
         return user;
 
