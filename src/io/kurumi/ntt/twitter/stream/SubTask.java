@@ -5,14 +5,9 @@ import twitter4j.TwitterStreamFactory;
 import io.kurumi.ntt.twitter.ApiToken;
 import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.auth.BasicAuthorization;
+import twitter4j.StatusAdapter;
 
-public class StreamTask extends TimerTask {
+public class SubTask extends StatusAdapter {
     
-    @Override
-    public void run() {
-        
-        
-        
-    }
 
 }
