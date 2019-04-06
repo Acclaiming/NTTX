@@ -91,8 +91,6 @@ public class TwitterDelete extends Fragment {
 
             msg.send("已添加到队列 ~").exec();
 
-
-
             user.point = null;
 
             user.savePoint();

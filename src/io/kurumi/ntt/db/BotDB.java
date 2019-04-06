@@ -27,7 +27,7 @@ public class BotDB {
 		return cache.containsKey(cacheKey(path,key)) || cacheFile(path,key).exists();
 
 	}
-	
+
 	public static String gNC(String path,String key) {
 
 		try {
@@ -50,13 +50,13 @@ public class BotDB {
 		String value = gNC(path,key);
 
 		if (value == null) return null;
-		
+
 		cache.put(cacheKey,value);
 
 		return value;
 
 	}
-	
+
 	public static void sNC(String path,String key,String value) {
 
 		if (value == null) {
@@ -88,9 +88,9 @@ public class BotDB {
 		}
 
 	}
-	
+
 	private static HashMap<String,JSONObject> json = new HashMap<>();
-	
+
 	public static JSONObject getJSON(String path,String key,boolean fix) {
 
 		String cacheKey = cacheKey(path,key);
@@ -98,24 +98,24 @@ public class BotDB {
 		if (json.containsKey(cacheKey)) return json.get(cacheKey);
 
 		String value = gNC(path,key + ".json");
-		
+
 		if (value == null) return fix ? new JSONObject() : null;
-		
+
         try {
-        
-		return new JSONObject(value);
-        
+
+            return new JSONObject(value);
+
         } catch (JSONException err) {
-            
+
             return fix ? new JSONObject() : null;
             
-            
+
         }
-		
+
 	}
-	
+
 	public static void setJSON(String path,String key,JSONObject value) {
-		
+
 		sNC(path,key + ".json",value != null ? value.toStringPretty() : null);
 
 		String cacheKey = cacheKey(path,key);
@@ -129,9 +129,9 @@ public class BotDB {
 			json.put(cacheKey,value);
 
 		}
-		
+
 	}
-    
+
     private static HashMap<String,JSONArray> jsonArray = new HashMap<>();
 
     public static JSONArray getJSONArray(String path,String key,boolean fix) {
@@ -165,6 +165,6 @@ public class BotDB {
         }
 
     }
-    
+
 
 }
