@@ -108,7 +108,11 @@ public class TwitterDelete extends Fragment {
                             
                     e.printStackTrace();
                             
-                        } catch (JSONException e) {}
+                        } catch (JSONException e) {
+                            
+                            e.printStackTrace();
+                            
+                        }
 
                     }
 
