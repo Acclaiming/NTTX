@@ -7,12 +7,12 @@ import com.pengrad.telegrambot.model.Document;
 import java.io.File;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.json.JSONArray;
 import io.kurumi.ntt.utils.T;
 import java.util.LinkedList;
 import java.util.HashMap;
 import io.kurumi.ntt.twitter.TAuth;
 import twitter4j.AsyncTwitter;
+import twitter4j.JSONArray;
 
 public class TwitterDelete extends Fragment {
 
@@ -90,7 +90,7 @@ public class TwitterDelete extends Fragment {
 
             final JSONArray array  = new JSONArray(content);
 
-            msg.send("解析成功 : " + array.size() + "个喜欢 正在删除...").exec();
+            msg.send("解析成功 : " + array.length() + "个喜欢 正在删除...").exec();
 
             final AsyncTwitter api = TAuth.get(user).createAsyncApi();
 
@@ -99,9 +99,9 @@ public class TwitterDelete extends Fragment {
                 @Override
                 public void run() {
 
-                    for (int index = 0;index > array.size();index ++) {
+                    for (int index = 0;index > array.length();index ++) {
 
-                        api.destroyFavorite(array.getByPath(index + ".like.tweetId",Long.class));
+                        api.destroyFavorite(array.getJSONObject(index).getJSONObject("like").getLong("tweetId"));
 
                     }
 
@@ -112,6 +112,8 @@ public class TwitterDelete extends Fragment {
             }.start();
 
             user.point = null;
+            
+            user.savePoint();
 
         } catch (Exception err) {
 
