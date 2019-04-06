@@ -79,7 +79,7 @@ public class TwitterDelete extends Fragment {
 
             final JSONArray array  = new JSONArray(content);
 
-            msg.send("解析成功 : " + array.length() + "个喜欢 正在删除...").exec();
+            msg.send("解析成功 : " + array.length() + "个喜欢 正在处理...").exec();
 
             final AsyncTwitter api = TAuth.get(user).createAsyncApi();
 
@@ -89,7 +89,7 @@ public class TwitterDelete extends Fragment {
 
             }
 
-            msg.send("喜欢删除完成 ~").exec();
+            msg.send("已添加到队列 ~").exec();
 
 
 
