@@ -20,15 +20,15 @@ public class StatusArchive extends IdDataModel {
     public static Factory<StatusArchive> INSTANCE = new Factory<StatusArchive>(StatusArchive.class,"twitter_archives/statuses");
 
     public static void saveCache(Status status) {
-        
+
         StatusArchive archive = INSTANCE.getOrNew(status.getId());
 
         archive.read(status);
-        
+
         INSTANCE.saveObj(archive);
-        
+
     }
-    
+
     public StatusArchive(String dirName,long id) { super(dirName,id); }
 
 	public Long createdAt;
@@ -63,7 +63,7 @@ public class StatusArchive extends IdDataModel {
         from = status.getUser().getId();
 
         UserArchive.saveCache(status.getUser());
-        
+
         inReplyToStatusId = status.getInReplyToStatusId();
 
         inReplyToScreenName = status.getInReplyToScreenName();
@@ -182,13 +182,33 @@ public class StatusArchive extends IdDataModel {
 
             StatusArchive quotedStatus = INSTANCE.get(quotedStatusId);
 
-            archive.append(quotedStatus.toHtml()).append(split).append(getUser().getHtmlURL()).append(" 的 ").append(Html.a("回复",getURL()));
+            if (quotedStatus == null) {
+
+                archive.append(quotedStatus.toHtml()).append(split).append(getUser().getHtmlURL());
+
+            } else {
+
+                archive.append(notAvilableStatus(inReplyToUserId,inReplyToScreenName));
+
+            }
+
+            archive.append(" 的 ").append(Html.a("回复",getURL()));
 
         } else if (inReplyToStatusId != -1) {
 
             StatusArchive inReplyTo = INSTANCE.get(inReplyToStatusId);
 
-            archive.append(inReplyTo.toHtml()).append(split).append(getUser().getHtmlURL()).append(" 的 ").append(Html.a("回复",getURL()));
+            if (inReplyTo != null) {
+
+                archive.append(inReplyTo.toHtml());
+
+            } else {
+
+                archive.append("不可用的推文");
+
+            }
+
+            archive.append(split).append(getUser().getHtmlURL()).append(" 的 ").append(Html.a("回复",getURL()));
 
 
         } else if (isRetweet) {
@@ -224,6 +244,20 @@ public class StatusArchive extends IdDataModel {
         }
 
         return archive.toString();
+
+    }
+
+    String notAvilableStatus(Long id,String screenName) {
+
+        if (UserArchive.INSTANCE.exists(id)) {
+
+            return UserArchive.INSTANCE.get(id).getHtmlURL() + " 的 不可用的推文";
+
+        } else {
+
+            return Html.a("@" + screenName,"https://twitter.com/" + screenName) + "的 不可用的推文";
+
+        }
 
     }
 
