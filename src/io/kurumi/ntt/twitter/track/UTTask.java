@@ -97,7 +97,7 @@ public class UTTask extends TimerTask {
 
                 }
 
-                for (String id : subs.keySet()) {
+                for (String id : new LinkedList<String> (subs.keySet())) {
 
                     if (useH.containsKey(id)) {
 
