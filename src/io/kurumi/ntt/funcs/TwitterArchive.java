@@ -115,9 +115,11 @@ public class TwitterArchive extends Fragment {
         if (content.startsWith("@")) {
 
             while (content.startsWith("@")) {
-
+                
                 String screenName = StrUtil.subBefore(content.substring(1)," ",false);
 
+                content = StrUtil.subAfter(content, " ",false);
+                
                 if (UserArchive.findByScreenName(screenName) == null) {
 
                     try {
