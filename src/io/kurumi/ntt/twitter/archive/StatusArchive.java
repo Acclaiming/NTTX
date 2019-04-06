@@ -284,7 +284,7 @@ public class StatusArchive extends IdDataModel {
         
         Date date = new Date(createdAt);
         
-        archive.append(date.getYear() - 2000).append("年").append(date.getMonth()).append("月").append(date.getDay()).append("日");
+        archive.append(date.getYear()).append("年").append(date.getMonth()).append("月").append(date.getDay()).append("日");
         
         archive.append(", ").append(date.getHours() > 12 ? ("上午" + date.getHours()) : ("下午 " + date.getHours())).append(":").append(date.getSeconds());
 
