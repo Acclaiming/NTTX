@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.*;
 import java.time.*;
 import io.kurumi.ntt.utils.*;
+import cn.hutool.core.collection.CollectionUtil;
 
 public class StatusArchive extends IdDataModel {
 
@@ -81,7 +82,7 @@ public class StatusArchive extends IdDataModel {
             INSTANCE.saveObj(quotedStatus);
 
         }
-       
+
         mediaUrls = new LinkedList<>();
 
         for (MediaEntity media : status.getMediaEntities()) {
@@ -184,15 +185,15 @@ public class StatusArchive extends IdDataModel {
 
             if (quotedStatus == null) {
 
-                archive.append(quotedStatus.toHtml()).append(split).append(getUser().getHtmlURL());
+                archive.append(quotedStatus.toHtml());
 
             } else {
 
                 archive.append("不可用的推文");
-                
+
             }
 
-            archive.append(" 的 ").append(Html.a("回复",getURL()));
+            archive.append(split).append(getUser().getHtmlURL()).append(" 的 ").append(Html.a("回复",getURL()));
 
         } else if (inReplyToStatusId != -1) {
 
@@ -203,7 +204,7 @@ public class StatusArchive extends IdDataModel {
                 archive.append(inReplyTo.toHtml());
 
             } else {
-                
+
                 archive.append(notAvilableStatus(inReplyToUserId,inReplyToScreenName));
 
             }
@@ -228,6 +229,24 @@ public class StatusArchive extends IdDataModel {
 		}
 
         archive.append(" 在 ").append(new Date(createdAt).toLocaleString());
+
+        LinkedList<String> inReplyTo = new LinkedList<>();
+
+        while (text.startsWith("@")) {
+
+            inReplyTo.add(StrUtil.subBefore(text.substring(1)," ",false));
+
+            text = StrUtil.subAfter(text," " ,false);
+
+        }
+        
+        Collections.reverse(inReplyTo);
+        
+        for (String replyTo : inReplyTo) {
+            
+            text = Html.a("@" + replyTo,"https://" + replyTo) + " " + text;
+            
+        }
 
         archive.append("\n\n").append(text);
 
@@ -255,7 +274,7 @@ public class StatusArchive extends IdDataModel {
 
         } else {
 
-            return Html.a("@" + screenName,"https://twitter.com/" + screenName) + "的 不可用的推文";
+            return Html.a("@" + screenName,"https://twitter.com/" + screenName) + " 的 不可用的推文";
 
         }
 
