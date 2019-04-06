@@ -8,23 +8,31 @@ public class UserPoint {
 
     public static final String KEY = "data/users/points";
 
-    public static void set(UserData user, CData data) {
+    public static void set(UserData user,CData data) {
 
-        BotDB.setJSON(KEY, user.idStr, data);
+        synchronized (user) {
+
+            BotDB.setJSON(KEY,user.idStr,data);
+
+        }
 
     }
 
     public static CData get(UserData user) {
 
-        JSONObject data = BotDB.getJSON(KEY, user.idStr,false);
+        synchronized (user) {
 
-        if (data == null) {
+            JSONObject data = BotDB.getJSON(KEY,user.idStr,false);
 
-            return null;
+            if (data == null) {
+
+                return null;
+
+            }
+
+            return new CData(data);
 
         }
-
-        return new CData(data);
 
     }
 

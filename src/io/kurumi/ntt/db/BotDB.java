@@ -101,7 +101,16 @@ public class BotDB {
 		
 		if (value == null) return fix ? new JSONObject() : null;
 		
+        try {
+        
 		return new JSONObject(value);
+        
+        } catch (JSONException err) {
+            
+            return fix ? new JSONObject() : null;
+            
+            
+        }
 		
 	}
 	
