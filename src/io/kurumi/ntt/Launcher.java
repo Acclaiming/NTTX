@@ -19,7 +19,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     public Launcher() {
 
         addFragment(Ping.INSTANCE);
-        
+
         addFragment(Backup.INSTANCE);
 
         addFragment(GroupRepeat.INSTANCE);
@@ -34,15 +34,15 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(StatusTrack.INSTANCE);
 
         addFragment(UserTrack.INSTANCE);
-		
-	// addFragment(MusicSearch.INSTANCE);
-    
-   // addFragment(AntiTooManyMsg.INSTANCE);
-   
-   addFragment(StickerManage.INSTANCE);
 
-   addFragment(TwitterDelete.INSTANCE);
-   
+        // addFragment(MusicSearch.INSTANCE);
+
+        // addFragment(AntiTooManyMsg.INSTANCE);
+
+        addFragment(StickerManage.INSTANCE);
+
+        addFragment(TwitterDelete.INSTANCE);
+
     }
 
     public static void main(String[] args) {
@@ -143,14 +143,14 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     @Override
     public void stop() {
-       
+
         FTTask.stop();
         UTTask.stop();
-        
+
         super.stop();
-        
+
     }
-    
-   
+
+
 
 }

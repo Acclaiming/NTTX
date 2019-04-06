@@ -56,7 +56,7 @@ public class TwitterDelete extends Fragment {
 
         if (T.checkUserNonAuth(user,msg)) return;
 
-        msg.send("输入 确定 来删除所有的推文喜欢 注意 : 这不可取消").exec();
+        msg.send("输入 任意内容 来删除所有的推文喜欢 ","使用 /cancel 取消 注意 : 开始后不可撤销").exec();
 
         user.point = cdata(POINT_DELETE_LIKES);
 
