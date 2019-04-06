@@ -67,6 +67,8 @@ public class TwitterArchive extends Fragment {
             msg.send("存档存在 :)").exec();
 
             msg.send(StatusArchive.INSTANCE.get(statusId).toHtml()).html().exec();
+            
+            return;
 
         } else if (!TAuth.exists(user)) {
             
