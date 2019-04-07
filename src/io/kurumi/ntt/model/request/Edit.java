@@ -88,7 +88,7 @@ public class Edit extends AbstractSend<Edit> {
 
                     BaseResponse resp = sync(track);
 
-                    if (resp.isOk()) {
+                    if (resp != null && resp.isOk()) {
 
                         io.kurumi.ntt.utils.T.tryDelete(delay,message,origin);
 
@@ -113,7 +113,7 @@ public class Edit extends AbstractSend<Edit> {
 
             //    if (resp.errorCode() ==
 
-            if (!resp.isOk()) {
+            if (resp != null && !resp.isOk()) {
 
                 BotLog.infoWithStack("消息发送失败 " + resp.errorCode() + " : " + resp.description());
 
@@ -140,7 +140,7 @@ public class Edit extends AbstractSend<Edit> {
 
             //    if (resp.errorCode() ==
 
-            if (!resp.isOk()) {
+            if (resp != null && !resp.isOk()) {
 
                 BotLog.info("消息发送失败 " + resp.errorCode() + " : " + resp.description(),track);
 
