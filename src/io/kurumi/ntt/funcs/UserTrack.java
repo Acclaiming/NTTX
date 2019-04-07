@@ -189,6 +189,8 @@ public class UserTrack extends Fragment {
             
             msg.send("好,对这些推油的订阅已取消 :)",rec.toString()).html().exec();
 
+            UTTask.save();
+            
             
         } else {
             
