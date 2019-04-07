@@ -1,6 +1,4 @@
-chmod 644 start.sh
-git pull
-chmod 777 start.sh
+git fetch --depth=1 origin master && git reset --hard origin/master && git clean -fdx
 
 for jar in ./libs/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
