@@ -15,71 +15,71 @@ public class GroupRepeat extends Fragment {
     public HashMap<Long,Integer> count = new HashMap<>();
 
     @Override
-    public boolean onGroupMsg(UserData user, Msg msg, boolean superGroup) {
+    public boolean onGroupMsg(UserData user,Msg msg,boolean superGroup) {
 
-        if (!msg.isCommand() && !user.isBot) {
+        if (!msg.isCommand()) return false;
 
-            Msg lastMsg = last.get(msg.chatId());
+        Msg lastMsg = last.get(msg.chatId());
 
-            Integer repeatCount = count.get(msg.chatId());
+        Integer repeatCount = count.get(msg.chatId());
 
-            if (repeatCount == null) repeatCount = 0;
+        if (repeatCount == null) repeatCount = 0;
 
-            if (lastMsg != null && msg.text() != null && msg.text().equals(lastMsg.text()) && !msg.from().id.equals(lastMsg.from().id)) {
+        if (lastMsg != null && msg.text() != null && msg.text().equals(lastMsg.text())) {
 
-                repeatCount ++;
+            repeatCount ++;
 
-                if (repeatCount == 1) {
+            if (repeatCount == 1) {
 
-                    msg.send(msg.text()).exec();
+                msg.send(msg.text()).exec();
 
-                    // repeatCount = 0;
+                // repeatCount = 0;
 
-                    BotLog.debug("已处理群 " + msg.message().chat().title() + " 复读 : " + msg.text());
+                BotLog.debug("已处理群 " + msg.message().chat().title() + " 复读 : " + msg.text());
 
-                    // last.remove(msg.chatId());
-
-                } else {
-
-                    last.put(msg.chatId(), msg);
-
-                    //   BotLog.debug("已记录群 " + msg.message().chat().title() + " 复读 : " + msg.text());
-
-                }
-
-            } else if (lastMsg != null && msg.message().sticker() != null && msg.message().sticker().equals(lastMsg.message().sticker())) {
-
-                repeatCount ++;
-
-                if (repeatCount == 1) {
-
-                    bot().execute(new SendSticker(msg.chatId(), msg.message().sticker().fileId()));
-
-                    // repeatCount = 0;
-
-                    BotLog.debug("已处理群 " + msg.message().chat().title() + " 表情包 : 「" + msg.message().sticker().emoji() + " 从 " + msg.message().sticker().setName() + "」");
-
-                    // last.remove(msg.chatId());
-
-                } else {
-
-                    last.put(msg.chatId(), msg);
-
-                    //     BotLog.debug("已记录群 " + msg.message().chat().title() + " 复读 : " + msg.text());
-
-                }
+                // last.remove(msg.chatId());
 
             } else {
 
-                last.put(msg.chatId(), msg);
+                last.put(msg.chatId(),msg);
+
+                //   BotLog.debug("已记录群 " + msg.message().chat().title() + " 复读 : " + msg.text());
 
             }
 
+        } else if (lastMsg != null && msg.message().sticker() != null && msg.message().sticker().equals(lastMsg.message().sticker())) {
 
-            count.put(msg.chatId(), repeatCount);
+            repeatCount ++;
 
+            if (repeatCount == 1) {
+
+                bot().execute(new SendSticker(msg.chatId(),msg.message().sticker().fileId()));
+
+                // repeatCount = 0;
+
+                BotLog.debug("已处理群 " + msg.message().chat().title() + " 表情包 : 「" + msg.message().sticker().emoji() + " 从 " + msg.message().sticker().setName() + "」");
+
+                // last.remove(msg.chatId());
+
+            } else {
+
+                last.put(msg.chatId(),msg);
+
+                //     BotLog.debug("已记录群 " + msg.message().chat().title() + " 复读 : " + msg.text());
+
+            }
+
+        } else {
+
+            last.put(msg.chatId(),msg);
 
         }
+
+
+        count.put(msg.chatId(),repeatCount);
+
+
+        
 
         return false;
 
