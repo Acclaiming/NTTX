@@ -54,6 +54,10 @@ public class AnalysisJsp extends Fragment {
 
             LinkedList<Long> hg = new LinkedList<Long>(fj);
             hg.retainAll(jf);
+            
+            fj.removeAll(hg);
+            
+            jf.removeAll(hg);
 
             StringBuilder result = new StringBuilder();
 

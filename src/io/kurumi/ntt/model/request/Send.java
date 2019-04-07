@@ -214,7 +214,7 @@ public class Send extends AbstractSend<Send> {
 
                     fork(String.valueOf(send)).exec();
                     
-                    char[] subed = new char[arr.length - index];
+                    char[] subed = new char[arr.length - index - 1];
                    
                     ArrayUtil.copy(chars,index,subed,0,subed.length);
 
