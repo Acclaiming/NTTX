@@ -38,7 +38,7 @@ public class T {
                 
             } else {
                 
-                msg.send(user.userName(),notContactableMsg).exec();
+                msg.send(user.userName(),notContactableMsg).publicFailed();
                 
             }
             
@@ -62,7 +62,7 @@ public class T {
 
             } else {
 
-                msg.send(nonAuthMsg).exec();
+                msg.send(nonAuthMsg).publicFailed();
 
             }
             
