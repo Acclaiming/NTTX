@@ -10,7 +10,7 @@ yum install java java-devel git
 
 ### 运行
 
-git clone https://github.com/HiedaNaKan/NTTools /bot
+git clone https://github.com/HiedaNaKan/NTTools /usr/local/ntt/bin
 
 cd /bot
 
@@ -20,7 +20,7 @@ chmod 777 start.sh && ./start.sh
 
 ### 系统服务
 
-注 :  使用service 必须将项目clone在 /bot 或者请手动修改ntt.service
+注 :  使用service 必须将项目clone在 /usr/local/ntt/bin 或者请手动修改ntt.service
 
 另 :  必须手动启动 ./start.sh 并输入BotToken之后才可以使用service启动
 

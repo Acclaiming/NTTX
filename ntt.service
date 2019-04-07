@@ -5,8 +5,8 @@ After=syslog.target network.target
 [Service]
 Type=simple
 
-WorkingDirectory=/bot
-ExecStart=/bin/bash /bot/start.sh
+WorkingDirectory=/usr/local/ntt/bin
+ExecStart=/bin/bash /usr/local/ntt/bin/start.sh
 
 User=root
 Group=root
