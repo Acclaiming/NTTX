@@ -9,6 +9,8 @@ import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.utils.*;
+import cn.hutool.core.convert.impl.CharacterConverter;
+import twitter4j.util.CharacterUtil;
 
 public class Send extends AbstractSend<Send> {
 
@@ -187,6 +189,61 @@ public class Send extends AbstractSend<Send> {
 
         return new Msg(fragment,resp.message());
 
+    }
+
+    @Override
+    public void exec() {
+        
+        char[] arr = request.getText().toCharArray();
+
+        while (arr.length > 4096) {
+            
+            Character[] chars = (Character[])ArrayUtil.sub(ArrayUtil.wrap((Object)arr),0,4096);
+            
+            int index = chars.length;
+            
+            for (Character c : ArrayUtil.reverse(chars)) {
+                
+                index --;
+                
+                if (c == '\n') {
+                    
+                    char[] send = new char[request.getText().toCharArray().length - index];
+                    
+                    ArrayUtil.copy(request.getText().toCharArray(),index,send,0,send.length);
+
+                    new Send(fragment,request.getChatId(),String.valueOf(send)).exec();
+                    
+                    char[] subed = new char[index];
+                   
+                    ArrayUtil.copy(chars,subed,index);
+
+                    request.setText(String.valueOf(subed));
+                    
+                    continue;
+                    
+                }
+                
+            }
+            
+            // 没有换行的情况
+            
+            char[] send = new char[4096];
+
+            ArrayUtil.copy(arr,arr.length - 4096 - 1,send,0,4096);
+
+            new Send(fragment,request.getChatId(),String.valueOf(send)).exec();
+
+            char[] subed = new char[arr.length - 4096 - 1];
+
+            ArrayUtil.copy(chars,subed,arr.length - 4096);
+
+            request.setText(String.valueOf(subed));
+
+
+        }
+        
+        super.exec();
     }
 
     @Override

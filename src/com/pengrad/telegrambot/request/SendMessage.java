@@ -8,9 +8,25 @@ import com.pengrad.telegrambot.model.request.ParseMode;
  */
 public class SendMessage extends AbstractSendRequest<SendMessage> {
 
+    String text;
+    
     public SendMessage(Object chatId, String text) {
         super(chatId);
         add("text", text);
+        this.text = text;
+    }
+    
+    public String getText() {
+        
+        return text;
+        
+    }
+    
+    public void setText(String text) {
+        
+        add("text", text);
+        this.text = text;
+        
     }
 
     public SendMessage parseMode(ParseMode parseMode) {
