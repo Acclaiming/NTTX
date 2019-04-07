@@ -40,6 +40,8 @@ public class GroupRepeat extends Fragment {
                 // last.remove(msg.chatId());
 
             } else {
+                
+                repeatCount = 0;
 
                 last.put(msg.chatId(),msg);
 
@@ -70,6 +72,8 @@ public class GroupRepeat extends Fragment {
             }
 
         } else {
+            
+            repeatCount = 0;
 
             last.put(msg.chatId(),msg);
 
