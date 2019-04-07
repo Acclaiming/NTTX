@@ -67,7 +67,7 @@ public class AnalysisJsp extends Fragment {
 
                 }
                 
-                result.append("\n").append(UserArchive.INSTANCE.get(user.id).getHtmlURL());
+                result.append("\n").append(UserArchive.INSTANCE.get(id).getHtmlURL());
 
             }
 
@@ -81,7 +81,7 @@ public class AnalysisJsp extends Fragment {
 
                 }
 
-                result.append("\n").append(UserArchive.INSTANCE.get(user.id).getHtmlURL());
+                result.append("\n").append(UserArchive.INSTANCE.get(id).getHtmlURL());
 
             }
             
@@ -95,7 +95,7 @@ public class AnalysisJsp extends Fragment {
 
                 }
 
-                result.append("\n").append(UserArchive.INSTANCE.get(user.id).getHtmlURL());
+                result.append("\n").append(UserArchive.INSTANCE.get(id).getHtmlURL());
 
             }
             
