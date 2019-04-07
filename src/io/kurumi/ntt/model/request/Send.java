@@ -212,7 +212,7 @@ public class Send extends AbstractSend<Send> {
                     
                     ArrayUtil.copy(request.getText().toCharArray(),index,send,0,send.length);
 
-                    new Send(fragment,request.getChatId(),String.valueOf(send)).exec();
+                    new Send(null,fragment,request.getChatId(),String.valueOf(send)).exec();
                     
                     char[] subed = new char[index];
                    
@@ -232,7 +232,7 @@ public class Send extends AbstractSend<Send> {
 
             ArrayUtil.copy(arr,arr.length - 4096 - 1,send,0,4096);
 
-            new Send(fragment,request.getChatId(),String.valueOf(send)).exec();
+            new Send(null,fragment,request.getChatId(),String.valueOf(send)).exec();
 
             char[] subed = new char[arr.length - 4096 - 1];
 
