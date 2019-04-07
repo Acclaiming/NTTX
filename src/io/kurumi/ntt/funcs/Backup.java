@@ -83,7 +83,7 @@ public class Backup extends Fragment {
         @Override
         public void run() {
             
-            File zip = ZipUtil.zip("./data","./cache/data.zip");
+            File zip = ZipUtil.zip(Env.DATA_DIR.getPath(),Env.CACHE_DIR.getPath() + "/data.zip");
 
             Launcher.INSTANCE.sendFile(Env.DEVELOPER_ID,zip);
 
