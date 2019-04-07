@@ -72,7 +72,7 @@ class JavaConstructor extends JavaMember {
 
 	public Varargs invoke(Varargs args) {
 
-		if (!Env.isAndroid) {
+		// if (!Env.isAndroid) {
 
             Parameter[] params = constructor.getParameters();
 
@@ -102,7 +102,7 @@ class JavaConstructor extends JavaMember {
 
             }
 
-        } else {
+      /*  } else {
 
             Type[] params = constructor.getGenericParameterTypes();
 
@@ -134,6 +134,8 @@ class JavaConstructor extends JavaMember {
 
         }
 
+        
+        */
 
 		Object[] a = convertArgs(args);
 		try {

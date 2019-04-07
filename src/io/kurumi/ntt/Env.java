@@ -37,28 +37,11 @@ public class Env {
 
     public static File DATA_DIR;
     
-    public static Boolean isAndroid;
-
     static {
 
-        try {
-
-            Class.forName("android.app.Activity");
-            
-            isAndroid = true;
-
-            ROOT = new File("/data/data/io.kurumi.ntt.android");
-            
-        } catch (ClassNotFoundException ex) {
-            
-            isAndroid = false;
-
-            ROOT = new File("./");
-        }
-        
+        ROOT = new File("/usr/local/ntt");
         DATA_DIR = new File(ROOT,"data");
         CACHE_DIR = new File(ROOT,"cache");
-        
 
     }
 

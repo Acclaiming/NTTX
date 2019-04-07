@@ -90,7 +90,10 @@ class JavaMethod extends JavaMember {
 	
 	LuaValue invokeMethod(Object instance, Varargs args) {
 		
+        /*
         if (!Env.isAndroid) {
+            
+            */
         
 		Parameter[] params = method.getParameters();
 
@@ -119,6 +122,8 @@ class JavaMethod extends JavaMember {
 			// java 变参处理
 			
 		}
+        
+        /*
         
         } else {
             
@@ -151,6 +156,8 @@ class JavaMethod extends JavaMember {
                 }
             
         }
+        
+        */
 		
 		Object[] a = convertArgs(args);
 		
