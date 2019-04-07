@@ -10,7 +10,9 @@ for jar in ./libs/*.jar;do
  
 done
 
-find src -name "*.java" > sources.txt && mkdir ./classes
+find src -name "*.java" > sources.txt
+
+mkdir ./classes
 
 javac -d $(dirname $(readlink -f $0))/classes -classpath $CLASSPATH @sources.txt
 
