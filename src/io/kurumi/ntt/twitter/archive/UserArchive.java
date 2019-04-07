@@ -126,8 +126,12 @@ public class UserArchive extends IdDataModel {
 
             UTTask.onUserChange(this,"用户被冻结或已停用 :)");
 
+        }
+        
+        if (user == null && isDisappeared) {
+            
             return;
-
+            
         }
 
         boolean change = false;
