@@ -1,8 +1,4 @@
-git fetch -f --depth=1 origin master:refs/heads/origin/master
-
-git update-ref --no-deref HEAD refs/heads/origin/master
-
-git checkout-index -fua && git clean -fdx
+git fetch --depth=1 origin master && git checkout -f FETCH_HEAD && git clean -fdx
 
 for jar in ./libs/*.jar;do
 
