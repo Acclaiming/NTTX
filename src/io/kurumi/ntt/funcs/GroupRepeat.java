@@ -19,6 +19,8 @@ public class GroupRepeat extends Fragment {
 
         if (!msg.isCommand()) return false;
 
+        System.out.println("-------- 1");
+        
         Msg lastMsg = last.get(msg.chatId());
 
         Integer repeatCount = count.get(msg.chatId());
