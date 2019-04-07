@@ -17,10 +17,8 @@ public class GroupRepeat extends Fragment {
     @Override
     public boolean onGroupMsg(UserData user,Msg msg,boolean superGroup) {
 
-        if (!msg.isCommand()) return false;
+        if (msg.isCommand()) return false;
 
-        System.out.println("-------- 1");
-        
         Msg lastMsg = last.get(msg.chatId());
 
         Integer repeatCount = count.get(msg.chatId());
