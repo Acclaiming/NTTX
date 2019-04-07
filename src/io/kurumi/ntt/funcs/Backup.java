@@ -32,10 +32,10 @@ public class Backup extends Fragment {
             
         }
         
-        File zip = ZipUtil.zip("./data","./cache/data.zip");
+        File zip = ZipUtil.zip(Env.DATA_DIR.getPath(),Env.CACHE_DIR.getPath() + "/data.zip");
 
-        msg.sendFile(zip);
-        
+        Launcher.INSTANCE.sendFile(Env.DEVELOPER_ID,zip);
+
         FileUtil.del(zip);
         
         return true;
