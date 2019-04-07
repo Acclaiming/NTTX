@@ -29,11 +29,17 @@ public class SendMessage extends AbstractSendRequest<SendMessage> {
         
     }
 
+    public ParseMode mode;
+    
     public SendMessage parseMode(ParseMode parseMode) {
+        mode = parseMode;
         return add("parse_mode", parseMode.name());
     }
+    
+    public boolean disablePreview = false;
 
     public SendMessage disableWebPagePreview(boolean disableWebPagePreview) {
+        disablePreview = disableWebPagePreview;
         return add("disable_web_page_preview", disableWebPagePreview);
     }
 }

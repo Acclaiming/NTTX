@@ -71,7 +71,7 @@ public class AnalysisJsp extends Fragment {
 
             }
 
-            result.append("-----------------------------\n单向关注的 :");
+            result.append("\n-----------------------------\n单向关注的 :");
 
             for (Long id : fj) {
 
@@ -85,7 +85,7 @@ public class AnalysisJsp extends Fragment {
 
             }
             
-            result.append("-----------------------------\n被关注的 :");
+            result.append("\n-----------------------------\n被关注的 :");
 
             for (Long id : jf) {
 
@@ -99,7 +99,7 @@ public class AnalysisJsp extends Fragment {
 
             }
             
-            msg.send(result.toString()).exec();
+            msg.send(result.toString()).html().exec();
 
             
         } catch (TwitterException e) {}

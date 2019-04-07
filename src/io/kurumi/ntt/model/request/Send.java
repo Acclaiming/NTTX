@@ -208,15 +208,15 @@ public class Send extends AbstractSend<Send> {
                 
                 if (c == '\n') {
                     
-                    char[] send = new char[request.getText().toCharArray().length - index];
+                    char[] send = new char[index];
                     
-                    ArrayUtil.copy(request.getText().toCharArray(),index,send,0,send.length);
+                    ArrayUtil.copy(arr,send,index);
 
-                    new Send(null,fragment,request.getChatId(),String.valueOf(send)).exec();
+                    fork(String.valueOf(send)).exec();
                     
-                    char[] subed = new char[index];
+                    char[] subed = new char[arr.length - index];
                    
-                    ArrayUtil.copy(chars,subed,index);
+                    ArrayUtil.copy(chars,index,subed,0,subed.length);
 
                     request.setText(String.valueOf(subed));
                     
@@ -230,13 +230,13 @@ public class Send extends AbstractSend<Send> {
             
             char[] send = new char[4096];
 
-            ArrayUtil.copy(arr,arr.length - 4096 - 1,send,0,4096);
+            ArrayUtil.copy(arr,send,4096);
 
-            new Send(null,fragment,request.getChatId(),String.valueOf(send)).exec();
+            fork(String.valueOf(send)).exec();
 
-            char[] subed = new char[arr.length - 4096 - 1];
+            char[] subed = new char[arr.length - 4096];
 
-            ArrayUtil.copy(chars,subed,arr.length - 4096);
+            ArrayUtil.copy(chars,4095,subed,0,arr.length - 4096);
 
             request.setText(String.valueOf(subed));
 
@@ -272,7 +272,21 @@ public class Send extends AbstractSend<Send> {
     }
 
 
+    public Send fork(String... msg) {
+        
+        Send send = new Send(null,fragment,request.getChatId(),msg);
 
+        if (request.mode != null) {
+            
+            send.request.parseMode(request.mode);
+            
+        }
+        
+        send.request.disableWebPagePreview(request.disablePreview);
+        
+        return send;
+
+    }
 
     @Override
     public SendResponse sync() {
