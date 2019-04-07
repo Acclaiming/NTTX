@@ -120,7 +120,7 @@ public class UserArchive extends IdDataModel {
 
     public void read(User user) {
 
-        if (user == null) {
+        if (user == null && !isDisappeared) {
 
             isDisappeared = true;
 
