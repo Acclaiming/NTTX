@@ -6,7 +6,7 @@ for jar in ./libs/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
 done
 
-find src -name "*.java" > sources.txt
+find src -name "*.java" > sources.txt && mkdir ./classes
 
 javac -d $(dirname $(readlink -f $0))/classes -classpath $CLASSPATH @sources.txt
 
