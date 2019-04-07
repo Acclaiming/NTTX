@@ -1,4 +1,6 @@
-git fetch --depth=1 origin master && git reset --hard origin/master && git clean -fdx
+git fetch --depth=1 origin master:refs/heads/origin/master
+git update-ref --no-deref HEAD refs/heads/origin/master
+git checkout-index -fua && git clean -fdx
 
 for jar in ./libs/*.jar;do
  export CLASSPATH=$CLASSPATH:$jar
