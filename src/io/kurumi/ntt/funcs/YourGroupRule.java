@@ -21,7 +21,6 @@ public class YourGroupRule extends Fragment {
 
                 if (u.id() == 767682880) {
 
-
                     bot().execute(new KickChatMember(msg.chatId(),u.id()));
 
                     msg.delete();
