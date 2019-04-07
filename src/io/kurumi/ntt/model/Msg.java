@@ -250,8 +250,6 @@ public class Msg extends Context {
     }
     
     public boolean restrictUntil(long until) {
-
-        
         
         return restrict(from().id,until);
 
