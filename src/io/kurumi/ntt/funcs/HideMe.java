@@ -41,7 +41,7 @@ public class HideMe extends Fragment {
 
         if (hideList.contains(id)) {
             
-            msg.send("无需重复开启 :)").exec();
+            msg.send("无需重复开启 :)").publicFailed();
             
         } else {
             
@@ -63,7 +63,7 @@ public class HideMe extends Fragment {
 
         if (!hideList.contains(id)) {
 
-            msg.send("你没有开启 :)").exec();
+            msg.send("你没有开启 :)").publicFailed();
 
         } else {
 
