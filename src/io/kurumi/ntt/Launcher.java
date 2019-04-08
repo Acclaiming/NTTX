@@ -41,7 +41,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(YourGroupRule.INSTANCE);
         
-        addFragment(AnalysisJsp.INSTANCE);
+       // addFragment(AnalysisJsp.INSTANCE);
+        
+        addFragment(HideMe.INSTANCE);
         
         // addFragment(MusicSearch.INSTANCE);
 

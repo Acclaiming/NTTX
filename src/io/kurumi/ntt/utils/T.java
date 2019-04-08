@@ -66,6 +66,20 @@ public class T {
 
             }
             
+            
+            
+            return true;
+            
+        }
+        
+        if (!TAuth.avilable(user)) {
+
+            TAuth.auth.remove(user.idStr);
+
+            TAuth.saveAll();
+
+            msg.send("乃的认证可能已经被取消... 请使用 /tauth 重新认证 :(").exec();
+
             return true;
             
         }

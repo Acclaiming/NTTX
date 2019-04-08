@@ -22,6 +22,7 @@ import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
+import io.kurumi.ntt.funcs.HideMe;
 
 public class UTTask extends TimerTask {
 
@@ -257,6 +258,8 @@ public class UTTask extends TimerTask {
 
 		for (Long sub : subA) {
 
+            if (HideMe.hideList.contains(sub)) continue;
+            
 			if (subL != null && subR != null && subL.contains(sub) && subR.contains(sub)) {
 
 				new Send(sub,"与乃相互关注的 " + user.getHtmlURL() + " :",change).html().exec();
