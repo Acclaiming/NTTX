@@ -258,7 +258,7 @@ public class UTTask extends TimerTask {
 
 		for (Long sub : subA) {
 
-            if (HideMe.hideList.contains(sub)) continue;
+            if (HideMe.hideList.contains(user.id)) continue;
             
 			if (subL != null && subR != null && subL.contains(sub) && subR.contains(sub)) {
 
