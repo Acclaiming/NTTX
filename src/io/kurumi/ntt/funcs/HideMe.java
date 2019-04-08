@@ -18,6 +18,8 @@ public class HideMe extends Fragment {
     @Override
     public boolean onMsg(UserData user,Msg msg) {
         
+        if (!msg.isCommand()) return false;
+        
         switch (msg.command()) {
             
             case "hide" : hide(user,msg);break;
