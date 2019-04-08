@@ -21,13 +21,15 @@ public class StatusArchive extends IdDataModel {
 
     public static Factory<StatusArchive> INSTANCE = new Factory<StatusArchive>(StatusArchive.class,"twitter_archives/statuses");
 
-    public static void saveCache(Status status) {
+    public static StatusArchive saveCache(Status status) {
 
         StatusArchive archive = INSTANCE.getOrNew(status.getId());
 
         archive.read(status);
 
         INSTANCE.saveObj(archive);
+        
+        return archive;
 
     }
 
@@ -113,8 +115,6 @@ public class StatusArchive extends IdDataModel {
             retweetedStatusId = -1L;
 
         }
-
-        INSTANCE.saveObj(this);
 
     }
 
@@ -230,14 +230,14 @@ public class StatusArchive extends IdDataModel {
 		}
 
         String content = text;
-        
+
         if (!mediaUrls.isEmpty()) {
 
             content = StrUtil.subBefore(content,"https://t.co",true);
-            
+
         }
-        
-        
+
+
         if (content.startsWith("@")) {
 
             LinkedList<String> inReplyTo = new LinkedList<>();
@@ -255,13 +255,13 @@ public class StatusArchive extends IdDataModel {
             archive.append(" 给");
 
             boolean l = false;
-            
+
             for (String replyTo : inReplyTo) {
 
                 UserArchive user = UserArchive.findByScreenName(replyTo);
 
                 archive.append(" ");
-                
+
                 if (l) archive.append("、");
 
                 if (user != null) {
@@ -273,7 +273,7 @@ public class StatusArchive extends IdDataModel {
                     archive.append(Html.a("@" + replyTo,"https://twitter.com/" + replyTo));
 
                 } 
-                
+
                 l = true;
 
             }
@@ -295,13 +295,13 @@ public class StatusArchive extends IdDataModel {
         }
 
         archive.append("\n\n在 ");
-        
+
         Calendar date = Calendar.getInstance();
 
         date.setTimeInMillis(createdAt);
-        
+
         archive.append(date.get(Calendar.YEAR) - 2000).append("年").append(date.get(Calendar.MONTH)).append("月").append(date.get(Calendar.DAY_OF_MONTH)).append("日");
-        
+
         archive.append(", ").append(date.get(Calendar.AM_PM) == 0 ? "上午" : "下午").append(" ").append(date.get(Calendar.HOUR)).append(":").append(date.get(Calendar.MINUTE));
 
         return archive.toString();

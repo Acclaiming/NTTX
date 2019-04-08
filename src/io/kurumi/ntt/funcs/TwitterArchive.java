@@ -84,13 +84,7 @@ public class TwitterArchive extends Fragment {
 
         try {
 
-            Status status = api.showStatus(statusId);
-
-            StatusArchive newStatus = StatusArchive.INSTANCE.getOrNew(statusId);
-
-            newStatus.read(status);
-
-            StatusArchive.INSTANCE.saveObj(newStatus);
+            StatusArchive newStatus = StatusArchive.saveCache(api.showStatus(statusId));
 
             loopStatus(newStatus,api);
 

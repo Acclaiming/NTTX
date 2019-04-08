@@ -8,6 +8,7 @@ import java.io.*;
 import java.util.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Constructor;
+import io.kurumi.ntt.utils.BotLog;
 
 public abstract class IdDataModel {
 
@@ -50,6 +51,8 @@ public abstract class IdDataModel {
 
         } catch (IORuntimeException e) {
         } catch (JSONException e) {
+            
+            BotLog.error("deleted " + file.toString(),e);
             
             FileUtil.del(file);
             
