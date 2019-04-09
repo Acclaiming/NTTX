@@ -72,19 +72,15 @@ public class Maven extends Fragment {
 
             File root = new File("~/.m2/repository");
 
-            List<File> allFiles = FileUtil.loopFiles(root);
+            List<File> allFiles = loopJars(root);
 
-            msg.send("正在合并jar...").exec();
+            msg.send("正在合并... (" + allFiles.size() + ")").exec();
 
             File cacheDir = new File(Env.CACHE_DIR,"maven");
 
             for (File jar : allFiles) {
 
-                if (jar.getName().endsWith(".jar")) {
-
-                    ZipUtil.unzip(jar,cacheDir);
-
-                }
+                ZipUtil.unzip(jar,cacheDir);
 
             }
 
@@ -114,23 +110,23 @@ public class Maven extends Fragment {
     }
 
     List<File> loopJars(File root) {
-        
+
         LinkedList<File> result = new LinkedList<>();
-        
+
         File[] files = root.listFiles();
-        
+
         if (files != null) {
-        
-        for (File file : files) {
-            
-            if (file.isDirectory()) result.addAll(loopJars(file));
-            else if (file.getName().endsWith(".jar")) result.add(file);
-            
+
+            for (File file : files) {
+
+                if (file.isDirectory()) result.addAll(loopJars(file));
+                else if (file.getName().endsWith(".jar")) result.add(file);
+
+            }
+
         }
-        
-        }
-        
-       return  result;
+
+        return  result;
 
     }
 
