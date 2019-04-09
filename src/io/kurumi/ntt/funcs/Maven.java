@@ -43,64 +43,56 @@ public class Maven extends Fragment {
             "-DrepoUrl=http://central.maven.org/maven2/ " +
             "-Dartifact=" + msg.params()[0] +  ":jar";
 
-        try {
+        msg.send("执行Maven下载...").exec();
 
-            msg.send("执行Maven下载...").exec();
+        String result = RuntimeUtil.execForStr(cmd);
 
-            String result = RuntimeUtil.execForStr(cmd);
+        File root = new File(".m2/repository");
 
-            File root = new File(".m2/repository");
+        List<File> allFiles = FileUtil.loopFiles(root,new FileFilter() {
 
-            msg.send("读取所有Jar...").exec();
+                @Override
+                public boolean accept(File file) {
 
-            List<File> allFiles = FileUtil.loopFiles(root,new FileFilter() {
+                    return file.getName().endsWith(".jar");
 
-                    @Override
-                    public boolean accept(File file) {
-
-                        return file.getName().endsWith(".jar");
-
-                    }
-                });
-
-            if (allFiles.size() == 0) {
+                }
                 
-                msg.send("下载失败...").exec();
-                msg.send(result).exec();
-                
-                return;
-                
-            }
-                
-            msg.send("正在合并 " + allFiles.size() + " 个jar...").exec();
+            });
 
-            File cacheDir = new File(Env.CACHE_DIR,"maven/" + UUID.randomUUID().toString());
+        if (allFiles.size() == 0) {
 
-            for (File jar : allFiles) {
+            msg.send("下载失败...").exec();
+            msg.send(result).exec();
 
-                ZipUtil.unzip(jar,cacheDir);
-
-            }
-
-            msg.send("正在打包...").exec();
-
-
-            File outJar =  ZipUtil.zip(cacheDir);
-
-
-            msg.send("正在发送... 这可能需要几分钟的时间...").exec();
-
-            msg.sendFile(outJar);
-
-            FileUtil.del(new File(Env.CACHE_DIR,".m2"));
-            FileUtil.del(cacheDir);
-            FileUtil.del(outJar);
-
-        } catch (InterruptedException e) {
-
-            BotLog.error("maven error",e);
+            return;
 
         }
+
+        msg.send("正在合并 " + allFiles.size() + " 个jar...").exec();
+
+        File cacheDir = new File(Env.CACHE_DIR,"maven/" + UUID.randomUUID().toString());
+
+        for (File jar : allFiles) {
+
+            ZipUtil.unzip(jar,cacheDir);
+
+        }
+
+        msg.send("正在打包...").exec();
+
+
+        File outJar =  ZipUtil.zip(cacheDir);
+
+
+        msg.send("正在发送... 这可能需要几分钟的时间...").exec();
+
+        msg.sendFile(outJar);
+
+        FileUtil.del(new File(Env.CACHE_DIR,".m2"));
+        FileUtil.del(cacheDir);
+        FileUtil.del(outJar);
+
 
     }
 
