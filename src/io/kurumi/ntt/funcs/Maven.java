@@ -86,12 +86,14 @@ public class Maven extends Fragment {
 
             if (cacheDir.exists())  {
 
-                msg.send("正在打包...").exec();
-
                 File outJar = ZipUtil.zip(cacheDir);
+                
+                outJar.renameTo(new File(outJar.getParentFile(),msg.params()[0].replace(":",".") + ".jar"));
 
                 msg.send("正在发送... 这可能需要几分钟的时间...").exec();
 
+                msg.sendUpdatingFile();
+                
                 msg.sendFile(outJar);
 
                 RuntimeUtil.exec("rm -rf ~/.m2");
