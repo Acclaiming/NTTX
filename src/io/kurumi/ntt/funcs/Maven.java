@@ -42,10 +42,20 @@ public class Maven extends Fragment {
     void mvn(UserData user,Msg msg) {
 
         try {
+            
+            if (msg.params().length == 0) {
+                
+                msg.send("/mvn [o:a:v] <maven url>").exec();
+                
+                return;
+                
+            }
+            
+            String url = msg.params().length > 1 ? msg.params()[1] : "http://central.maven.org/maven2/";
+            
             String cmd = "mvn org.apache.maven.plugins:maven-dependency-plugin:2.1:get " + 
-                "-DrepoUrl=http://central.maven.org/maven2/ " +
-                "-Dartifact=" + msg.params()[0] +  ":jar " +
-                "-DoutputDirectory=.";
+                "-DrepoUrl= " + url + " " +
+                "-Dartifact=" + msg.params()[0] +  ":jar ";
 
             msg.send("执行Maven下载...").exec();
 
@@ -59,13 +69,15 @@ public class Maven extends Fragment {
                 
             }
 
-            File root = new File(Env.CACHE_DIR,".m2/repository");
-
+            File root = new File(Env.CACHE_DIR,"~/.m2/repository");
+            
             List<File> allFiles = FileUtil.loopFiles(root,new FileFilter() {
 
                     @Override
                     public boolean accept(File file) {
 
+                        System.out.println(file.toString());
+                        
                         return file.getName().endsWith(".jar");
 
                     }
@@ -90,7 +102,7 @@ public class Maven extends Fragment {
 
             msg.sendFile(outJar);
 
-            FileUtil.del(new File(Env.CACHE_DIR,".m2"));
+           RuntimeUtil.exec("rm -rf ~/.m2");
             FileUtil.del(cacheDir);
             FileUtil.del(outJar);
             
