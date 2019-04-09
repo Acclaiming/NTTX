@@ -60,7 +60,7 @@ public class Maven extends Fragment {
 
             msg.send("执行Maven下载...").exec();
 
-            Process process = RuntimeUtil.exec(null,Env.CACHE_DIR,cmd);
+            Process process = RuntimeUtil.exec(cmd);
 
             if (process.waitFor() != 0) {
                 
@@ -70,7 +70,7 @@ public class Maven extends Fragment {
                 
             }
 
-            File root = new File(Env.CACHE_DIR,"~/.m2/repository");
+            File root = new File("~/.m2/repository");
             
             List<File> allFiles = FileUtil.loopFiles(root,new FileFilter() {
 
@@ -97,7 +97,7 @@ public class Maven extends Fragment {
 
             msg.send("正在打包...").exec();
 
-            File outJar =  ZipUtil.zip(cacheDir);
+            File outJar = ZipUtil.zip(cacheDir);
 
             msg.send("正在发送... 这可能需要几分钟的时间...").exec();
 
