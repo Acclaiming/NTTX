@@ -60,6 +60,8 @@ public class Maven extends Fragment {
 
             msg.send("执行Maven下载...").exec();
 
+            msg.sendTyping();
+            
             Process process = RuntimeUtil.exec(cmd);
 
             if (process.waitFor() != 0) {
@@ -86,10 +88,8 @@ public class Maven extends Fragment {
 
             if (cacheDir.exists())  {
 
-                File outJar = ZipUtil.zip(cacheDir);
+                File outJar = ZipUtil.zip(cacheDir.getPath(),new File(Env.CACHE_DIR,msg.params()[0].replace(":",".") + ".jar").getPath(),false);
                 
-                outJar.renameTo(new File(outJar.getParentFile(),msg.params()[0].replace(":",".") + ".jar"));
-
                 msg.send("正在发送... 这可能需要几分钟的时间...").exec();
 
                 msg.sendUpdatingFile();
