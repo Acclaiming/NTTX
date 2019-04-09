@@ -23,7 +23,6 @@ public class Maven extends Fragment {
     @Override
     public boolean onPrivMsg(UserData user,Msg msg) {
         
-        if (!user.isDeveloper()) return false;
         if (!msg.isCommand()) return false;
         
         switch (msg.command()) {
