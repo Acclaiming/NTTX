@@ -70,7 +70,7 @@ public class Maven extends Fragment {
 
             }
 
-            File root = new File("~/.m2/repository");
+            File root = new File("/root/.m2/repository");
 
             List<File> allFiles = loopJars(root);
 
