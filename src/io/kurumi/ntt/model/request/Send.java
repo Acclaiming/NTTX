@@ -214,9 +214,9 @@ public class Send extends AbstractSend<Send> {
 
                     fork(String.valueOf(send)).exec();
                     
-                    char[] subed = new char[arr.length - index - 2];
+                    char[] subed = new char[arr.length - 4096];
                    
-                    ArrayUtil.copy(chars,index,subed,0,subed.length);
+                    ArrayUtil.copy(chars,4095,subed,0,subed.length);
 
                     request.setText(String.valueOf(subed));
                     
@@ -236,7 +236,7 @@ public class Send extends AbstractSend<Send> {
 
             char[] subed = new char[arr.length - 4096];
 
-            ArrayUtil.copy(chars,4095,subed,0,arr.length - 4096);
+            ArrayUtil.copy(chars,4095,subed,0,subed.length);
 
             request.setText(String.valueOf(subed));
 
