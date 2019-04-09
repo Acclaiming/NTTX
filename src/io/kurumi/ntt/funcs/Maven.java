@@ -42,17 +42,17 @@ public class Maven extends Fragment {
     void mvn(UserData user,Msg msg) {
 
         try {
-            
+
             if (msg.params().length == 0) {
-                
+
                 msg.send("/mvn [o:a:v] <maven url>").exec();
-                
+
                 return;
-                
+
             }
-            
+
             String url = msg.params().length > 1 ? msg.params()[1] : "http://central.maven.org/maven2/";
-            
+
             String cmd = "mvn org.apache.maven.plugins:maven-dependency-plugin:2.1:get " + 
                 "-DrepoUrl=" + url + " " +
                 "-Dartifact=" + msg.params()[0] +  ":jar " + 
@@ -63,50 +63,51 @@ public class Maven extends Fragment {
             Process process = RuntimeUtil.exec(cmd);
 
             if (process.waitFor() != 0) {
-                
+
                 msg.send(RuntimeUtil.getResult(process)).exec();
-                
+
                 return;
-                
+
             }
 
             File root = new File("~/.m2/repository");
-            
-            List<File> allFiles = FileUtil.loopFiles(root,new FileFilter() {
 
-                    @Override
-                    public boolean accept(File file) {
+            List<File> allFiles = FileUtil.loopFiles(root);
 
-                        System.out.println(file.toString());
-                        
-                        return file.getName().endsWith(".jar");
-
-                    }
-
-                });
-
-            msg.send("正在合并 " + allFiles.size() + " 个jar...").exec();
+            msg.send("正在合并jar...").exec();
 
             File cacheDir = new File(Env.CACHE_DIR,"maven");
 
             for (File jar : allFiles) {
 
-                ZipUtil.unzip(jar,cacheDir);
+                if (jar.getName().endsWith(".jar")) {
+
+                    ZipUtil.unzip(jar,cacheDir);
+
+                }
 
             }
 
-            msg.send("正在打包...").exec();
+            if (cacheDir.exists())  {
 
-            File outJar = ZipUtil.zip(cacheDir);
+                msg.send("正在打包...").exec();
 
-            msg.send("正在发送... 这可能需要几分钟的时间...").exec();
+                File outJar = ZipUtil.zip(cacheDir);
 
-            msg.sendFile(outJar);
+                msg.send("正在发送... 这可能需要几分钟的时间...").exec();
 
-           RuntimeUtil.exec("rm -rf ~/.m2");
-            FileUtil.del(cacheDir);
-            FileUtil.del(outJar);
-            
+                msg.sendFile(outJar);
+
+                RuntimeUtil.exec("rm -rf ~/.m2");
+                FileUtil.del(cacheDir);
+                FileUtil.del(outJar);
+
+            } else {
+
+                msg.send("没有...").exec();
+
+            }
+
         } catch (InterruptedException e) {}
 
 
