@@ -171,7 +171,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
                         for (Fragment fragmnet : fragments) {
 
                             if (fragmnet.onUpdate(user,update)) {
-
+                                
                                 return;
 
                             }
@@ -184,6 +184,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                                 if (fragmnet.onPPM(user,new Msg(fragmnet,update.message()))) {
 
+                                    if (user.isDeveloper()) new Send(Env.DEVELOPER_ID,"processed by " + fragmnet.toString());
+                                    
+                                    
                                     return;
 
                                 }
@@ -212,6 +215,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                                         if (fragmnet.onNPM(user,new Msg(fragmnet,update.message()))) {
 
+                                            if (user.isDeveloper()) new Send(Env.DEVELOPER_ID,"processed by " + fragmnet.toString());
+                                            
                                             return;
 
                                         }
@@ -229,6 +234,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                                         if (fragmnet.onGroupMsg(user,new Msg(fragmnet,update.message()),false)) {
 
+                                            
                                             return;
 
                                         }

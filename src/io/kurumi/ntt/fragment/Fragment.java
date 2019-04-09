@@ -39,12 +39,6 @@ public class Fragment {
         
     }
     
-    public boolean onPrivMsg(UserData user, Msg msg) {
-
-        return false;
-
-    }
-    
     public boolean onNPM(UserData user, Msg msg) {
         
         return false;

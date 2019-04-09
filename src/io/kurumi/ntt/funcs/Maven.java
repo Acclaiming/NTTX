@@ -21,7 +21,7 @@ public class Maven extends Fragment {
     public static Maven INSTANCE = new Maven();
     
     @Override
-    public boolean onPrivMsg(UserData user,Msg msg) {
+    public boolean onNPM(UserData user,Msg msg) {
         
         if (!msg.isCommand()) return false;
         
