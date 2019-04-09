@@ -113,6 +113,25 @@ public class Maven extends Fragment {
 
     }
 
+    List<File> loopJars(File root) {
+        
+        LinkedList<File> result = new LinkedList<>();
+        
+        File[] files = root.listFiles();
+        
+        if (files != null) {
+        
+        for (File file : files) {
+            
+            if (file.isDirectory()) result.addAll(loopJars(file));
+            else if (file.getName().endsWith(".jar")) result.add(file);
+            
+        }
+        
+        }
+        
+       return  result;
 
+    }
 
 }
