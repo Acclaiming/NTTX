@@ -41,7 +41,8 @@ public class Maven extends Fragment {
 
         String cmd = "mvn org.apache.maven.plugins:maven-dependency-plugin:2.1:get " + 
             "-DrepoUrl=http://central.maven.org/maven2/ " +
-            "-Dartifact=" + msg.params()[0] +  ":jar";
+            "-Dartifact=" + msg.params()[0] +  ":jar " +
+            "-DoutputDirectory=.";
 
         msg.send("执行Maven下载...").exec();
 
