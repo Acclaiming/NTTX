@@ -54,7 +54,7 @@ public class Maven extends Fragment {
             String url = msg.params().length > 1 ? msg.params()[1] : "http://central.maven.org/maven2/";
             
             String cmd = "mvn org.apache.maven.plugins:maven-dependency-plugin:2.1:get " + 
-                "-DrepoUrl= " + url + " " +
+                "-DrepoUrl=" + url + " " +
                 "-Dartifact=" + msg.params()[0] +  ":jar ";
 
             msg.send("执行Maven下载...").exec();
@@ -63,7 +63,7 @@ public class Maven extends Fragment {
 
             if (process.waitFor() != 0) {
                 
-                msg.send(RuntimeUtil.getErrorResult(process)).exec();
+                msg.send(RuntimeUtil.getResult(process)).exec();
                 
                 return;
                 
