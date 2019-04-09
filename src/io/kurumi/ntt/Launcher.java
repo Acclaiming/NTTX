@@ -49,6 +49,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         // addFragment(AntiTooManyMsg.INSTANCE);
 
+        addFragment(Maven.INSTANCE);
+        
        }
 
     public static void main(String[] args) {

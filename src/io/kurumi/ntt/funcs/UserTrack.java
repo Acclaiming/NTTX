@@ -25,6 +25,7 @@ public class UserTrack extends Fragment {
 
             case "sub" : subUser(user,msg);break;
             case "unsub" : unSubUser(user,msg);break;
+            case "sublist" : subList(user,msg);break;
             case "unsuball" : unSubAll(user,msg);break;
 
             default : return false;
@@ -170,6 +171,34 @@ public class UserTrack extends Fragment {
             msg.send("已取消订阅 " + target.getHtmlURL() + " :)").html().exec();
             
         }
+        
+    }
+    
+    void subList(UserData user,Msg msg) {
+        
+        if (UTTask.subs.containsKey(user.idStr)) {
+
+            JSONArray list = UTTask.subs.getJSONArray(user.idStr);
+
+            StringBuilder rec = new StringBuilder();
+
+            for (int index = 0;index < list.size();index ++) {
+
+                rec.append("\n").append(UserArchive.INSTANCE.get(list.getLong(index)).getHtmlURL());
+
+            }
+
+            msg.send("已订阅 : ",rec.toString()).html().exec();
+
+            UTTask.save();
+
+
+        } else {
+
+            msg.send("没有订阅 :)").exec();
+
+        }
+        
         
     }
     
