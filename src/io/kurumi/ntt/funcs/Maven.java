@@ -51,7 +51,13 @@ public class Maven extends Fragment {
 
             Process process = RuntimeUtil.exec(null,Env.CACHE_DIR,cmd);
 
-            if (process.waitFor() != 0) {}
+            if (process.waitFor() != 0) {
+                
+                msg.send(RuntimeUtil.getErrorResult(process)).exec();
+                
+                return;
+                
+            }
 
             File root = new File(Env.CACHE_DIR,".m2/repository");
 
