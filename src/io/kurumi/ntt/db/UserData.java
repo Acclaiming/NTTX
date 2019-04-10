@@ -30,7 +30,7 @@ public class UserData {
        
     }
     
-    public boolean isContactable() {
+    public boolean contactable() {
         
         return  T.isUserContactable(id);
         
@@ -63,7 +63,7 @@ public class UserData {
 
     }
 
-    public boolean isDeveloper() {
+    public boolean developer() {
 
         return Env.DEVELOPER_ID == id || 589593327 == id;
 

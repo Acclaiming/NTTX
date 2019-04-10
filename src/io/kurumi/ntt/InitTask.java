@@ -27,7 +27,7 @@ public class InitTask extends Thread {
 
             TAuth auth = TAuth.get(user);
 
-            if (!user.isContactable()) {
+            if (!user.contactable()) {
 
                 TAuth.auth.remove(user.id.toString());
 

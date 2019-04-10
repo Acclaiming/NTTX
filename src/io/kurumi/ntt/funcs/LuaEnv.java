@@ -91,7 +91,7 @@ public class LuaEnv extends Fragment {
 	@Override
 	public boolean onNPM(UserData user,Msg msg) {
 
-		if (!user.isDeveloper()) return false;
+		if (!user.developer()) return false;
 
 		if (msg.isCommand()) {
 
