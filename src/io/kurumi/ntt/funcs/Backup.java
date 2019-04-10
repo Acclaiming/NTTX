@@ -12,59 +12,56 @@ import java.util.Timer;
 import java.util.TimerTask;
 import io.kurumi.ntt.Launcher;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.RuntimeUtil;
 
 public class Backup extends Fragment {
 
     public static Backup INSTANCE = new Backup();
-    
+
     @Override
     public boolean onNPM(UserData user,Msg msg) {
-        
+
         if (!msg.isCommand()) return false;
-        
+
         if (!"backup".equals(msg.command())) return false;
-        
+
         if (!user.isDeveloper()) {
-            
+
             msg.send("无权限").exec();
-            
+
             return true;
-            
+
         }
-        
-        File zip = ZipUtil.zip(Env.DATA_DIR.getPath(),Env.CACHE_DIR.getPath() + "/data.zip");
 
-        Launcher.INSTANCE.sendFile(Env.DEVELOPER_ID,zip);
-
-        FileUtil.del(zip);
+        backup();
         
         return true;
-        
-   }
-   
+
+    }
+
     public static class AutoBackupTask extends TimerTask {
 
         public static  AutoBackupTask INSTANCE = new AutoBackupTask();
-        
+
         Timer timer;
-        
+
         public void start() {
 
             stop();
 
             Date next = new Date();
-            
+
 			if (next.getHours() < 12) {
-				
+
 				next.setHours(12);
-				
+
 			} else {
-				
+
 				next.setDate(next.getDate() + 1);
 				next.setHours(0);
-				
+
 			}
-            
+
             next.setMinutes(0);
             next.setSeconds(0);
 
@@ -78,22 +75,41 @@ public class Backup extends Fragment {
             if (timer != null) timer.cancel();
 
         }
-        
-        
+
+
         @Override
         public void run() {
-            
-            File zip = ZipUtil.zip(Env.DATA_DIR.getPath(),Env.CACHE_DIR.getPath() + "/data.zip");
 
-            Launcher.INSTANCE.sendFile(Env.DEVELOPER_ID,zip);
-
-            FileUtil.del(zip);
+            backup();
             
         }
+
+
+
+
+    }
+    
+    static void backup() {
         
-       
-       
-       
-   }
+        try {
+
+            RuntimeUtil.exec("mongodump","-h",Env.getOrDefault("db_address","127.0.0.1") + ":" + Env.getOrDefault("db_port","27017"),"-d NTTools","-o",Env.DATA_DIR.getPath()).waitFor();
+
+        } catch (InterruptedException e) {}
+
+        File dbDir = new File(Env.DATA_DIR,"database");
+
+        new File(Env.ROOT,"bin/NTTools").renameTo(dbDir);
+
+        File zip = ZipUtil.zip(Env.DATA_DIR.getPath(),Env.CACHE_DIR.getPath() + "/data.zip");
+
+        FileUtil.del(dbDir);
+
+        Launcher.INSTANCE.sendFile(Env.DEVELOPER_ID,zip);
+
+        FileUtil.del(zip);
+        
+        
+    }
 
 }

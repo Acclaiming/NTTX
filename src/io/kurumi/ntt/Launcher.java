@@ -91,20 +91,21 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		 */
 
-        boolean success = false;
-
         String dbAddr = Env.getOrDefault("db_address","127.0.0.1");
         Integer dbPort = Integer.parseInt(Env.getOrDefault("db_port","27017"));
 
         while (!initDB(dbAddr,dbPort)) {
+            
+            System.out.print("输入MongoDb地址 : ");
+            dbAddr = Console.scanner().nextLine();
 
             try {
 
-                System.out.print("输入MongoDb地址 : ");
-                dbAddr = Console.scanner().nextLine();
-
                 System.out.print("输入MongoDb端口 : ");
                 dbPort = Console.scanner().nextInt();
+
+                Env.set("db_address",dbAddr);
+                Env.set("db_port",dbPort);
 
             } catch (Exception e) {}
 
