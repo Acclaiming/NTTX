@@ -39,9 +39,9 @@ public class BotDB {
 
         db = client.getDatabase("NTTools").withCodecRegistry(registry);
 
-        statusArchiveCollection = db.getCollection("STATUS",StatusArchive.class);
+        statusArchiveCollection = db.getCollection("StatusArchive",StatusArchive.class);
        
-        userArchiveCollection = db.getCollection("USER",UserArchive.class);
+        userArchiveCollection = db.getCollection("UserArchive",UserArchive.class);
         
         //  statusArchiveCollection.createIndex(Indexes.compoundIndex();
 

@@ -165,13 +165,7 @@ public class UserData extends IdDataModel {
 
     }
 
-	public CData point = UserPoint.get(this);
-
-    public void savePoint() {
-
-        UserPoint.set(this, point);
-
-    }
+	public CData point;
     
     public boolean refresh(Fragment fragment) {
 

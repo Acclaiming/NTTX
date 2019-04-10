@@ -61,8 +61,6 @@ public class TwitterDelete extends Fragment {
 
         user.point.setIndex(msg.doc().fileId());
 
-        user.savePoint();
-
     }
 
     void comfirmDeleteLikes(final UserData user,final Msg msg) {
@@ -92,8 +90,6 @@ public class TwitterDelete extends Fragment {
             msg.send("已添加到队列 ~").exec();
 
             user.point = null;
-
-            user.savePoint();
 
         } catch (Exception err) {
 

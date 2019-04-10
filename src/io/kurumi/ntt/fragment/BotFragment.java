@@ -122,9 +122,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
         if ("cancel".equals(msg.command())) {
 
             user.point = null;
-
-            user.savePoint();
-
+            
             msg.send("取消成功 ~").exec();
 
             return true;
