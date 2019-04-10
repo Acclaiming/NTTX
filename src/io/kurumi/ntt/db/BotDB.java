@@ -126,6 +126,8 @@ public class BotDB {
         } else {
 
             archive = new UserArchive();
+            
+            archive.isDisappeared = false;
 
             archive.id = user.getId();
 
