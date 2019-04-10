@@ -126,19 +126,13 @@ public class UTTask extends TimerTask {
 
                     Long userId = Long.parseLong(id);
 
-                    if (userId == null) {
-                        
-                        subs.remove(id.toString());
-                        
-                        save();
-                        
-                       continue;
+					for (Map.Entry<String,Object> subl : subs.entrySet()) {
                     
-                    }
-                        
-                    subIndex.put(userId,subs.getJSONArray(id).toList(Long.class));
+                    subIndex.put(Long.parseLong(subl.getKey()),((JSONArray)subl.getValue()).toList(Long.class));
+					
+					}
 
-                    if (!TAuth.exists(userId)) continue;
+             
 
                     Twitter api = TAuth.get(userId).createApi();
 
