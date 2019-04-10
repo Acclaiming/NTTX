@@ -23,6 +23,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
 import io.kurumi.ntt.funcs.HideMe;
+import io.kurumi.ntt.db.BotDB;
 
 public class UTTask extends TimerTask {
 
@@ -165,14 +166,14 @@ public class UTTask extends TimerTask {
 
                             target.remove(tuser.getId());
 
-                            UserArchive.saveCache(tuser);
+                            BotDB.saveUser(tuser);
 
                         }
 
                         for (Long da : target) {
 
-                            UserArchive.saveDisappeared(da);
-
+                            BotDB.saveUserDisappeared(da);
+                            
                         }
 
                     } catch (TwitterException e) {
@@ -181,7 +182,7 @@ public class UTTask extends TimerTask {
 
 							for (Long da : target) {
 
-								UserArchive.saveDisappeared(da);
+							 BotDB.saveUserDisappeared(da);
 
 							}
 
@@ -204,7 +205,7 @@ public class UTTask extends TimerTask {
 
                 for (Long id : subscribers) {
 
-                    new Send(id,archive.getHtmlURL(),change.getValue()).html().exec();
+                    new Send(id,archive.urlHtml(),change.getValue()).html().exec();
 
                 }
 
@@ -262,19 +263,19 @@ public class UTTask extends TimerTask {
             
 			if (subL != null && subR != null && subL.contains(sub) && subR.contains(sub)) {
 
-				new Send(sub,"与乃相互关注的 " + user.getHtmlURL() + " :",change).html().exec();
+				new Send(sub,"与乃相互关注的 " + user.urlHtml() + " :",change).html().exec();
 
 			} else if (subD.contains(sub)) {
 
-				new Send(sub,"乃订阅的 " + user.getHtmlURL() + " :",change).html().exec();
+				new Send(sub,"乃订阅的 " + user.urlHtml() + " :",change).html().exec();
 
 			}  else if (subL != null & subL.contains(sub)) {
 
-				new Send(sub,"关注乃的 " + user.getHtmlURL() + " :",change).html().exec();
+				new Send(sub,"关注乃的 " + user.urlHtml() + " :",change).html().exec();
 
 			} else if (subR != null & subR.contains(sub)) {
 
-				new Send(sub,"乃关注的 " + user.getHtmlURL() + " :",change).html().exec();
+				new Send(sub,"乃关注的 " + user.urlHtml() + " :",change).html().exec();
 
 			}
 

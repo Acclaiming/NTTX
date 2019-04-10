@@ -7,99 +7,11 @@ import io.kurumi.ntt.twitter.track.UTTask;
 import io.kurumi.ntt.utils.Html;
 import java.util.HashMap;
 import twitter4j.User;
+import io.kurumi.ntt.db.BotDB;
 
-public class UserArchive extends IdDataModel {
-
-    public static HashMap<String,UserArchive> screenNameIndex = new HashMap<>();
-
-    public static void saveDisappeared(Long da) {
-
-        if (INSTANCE.exists(da)) {
-
-            UserArchive archive = INSTANCE.get(da);
-            archive.read(null);
-            INSTANCE.saveObj(archive);
-
-        }
-
-    }
-
-    public static UserArchive findByScreenName(String screenName) {
-
-        if (screenNameIndex.containsKey(screenName)) return screenNameIndex.get(screenName);
-
-        for (Long id : INSTANCE.idList) {
-
-            if (INSTANCE.idIndex.containsKey(id)) continue;
-
-            if (screenName.equals(INSTANCE.get(id).screenName)) {
-
-                return screenNameIndex.get(screenName);
-
-            }
-
-        }
-
-        return null;
-
-    }
-
-    public static UserArchive saveCache(User user) {
-
-        UserArchive archive = INSTANCE.getOrNew(user.getId());
-
-        archive.read(user);
-
-        INSTANCE.saveObj(archive);
-
-        return archive;
-
-    }
-
-    public static Factory<UserArchive> INSTANCE = new Factory<UserArchive>(UserArchive.class,"twitter_archives/users") {
-
-        public HashMap<String,UserArchive> screenNameIndex = new HashMap<String,UserArchive>() {{
-
-                UserArchive.screenNameIndex = this;
-
-            }};
-
-        @Override
-        public UserArchive get(Long id) {
-
-            UserArchive user = super.get(id);
-
-            if (user != null) screenNameIndex.put(user.screenName,user);
-
-            return user;
-
-        }
-
-        @Override
-        public void saveObj(UserArchive obj) {
-
-            super.saveObj(obj);
-
-
-            screenNameIndex.put(obj.screenName,obj);
-
-
-
-        }
-
-        @Override
-        public void delObj(UserArchive obj) {
-
-            super.delObj(obj);
-
-            screenNameIndex.remove(obj.screenName);
-
-        }
-
-    };
-
-    public UserArchive(String dirName,long id) { super(dirName,id); }
-
+public class UserArchive {
+    
+    public Long id;
     public Long createdAt;
 
     public String name;
@@ -110,15 +22,8 @@ public class UserArchive extends IdDataModel {
     public Boolean isProtected;
 
     public Boolean isDisappeared;
-
-    @Override
-    protected void init() {
-
-        isDisappeared = false;
-
-    }
-
-    public void read(User user) {
+    
+    public boolean read(User user) {
 
         if (user == null && !isDisappeared) {
 
@@ -130,7 +35,7 @@ public class UserArchive extends IdDataModel {
         
         if (user == null && isDisappeared) {
             
-            return;
+            return false;
             
         }
 
@@ -213,47 +118,22 @@ public class UserArchive extends IdDataModel {
             UTTask.onUserChange(this,str.toString());
 
         }
+        
+        return change;
 
     }
 
-    @Override
-    protected void load(JSONObject obj) {
+    public String urlHtml() {
 
-        createdAt = obj.getLong("created_at");
-        name = obj.getStr("name");
-        screenName = obj.getStr("screen_name");
-        bio = obj.getStr("bio");
-        photoUrl = obj.getStr("photo_url");
-
-        isProtected = obj.getBool("is_protected");
-        isDisappeared = obj.getBool("is_disappeared",false);
+        return Html.a(name,url());
 
     }
 
-    public String getHtmlURL() {
-
-        return Html.a(name,getURL());
-
-    }
-
-    public String getURL() {
+    public String url() {
 
         return "https://twitter.com/" + screenName;
 
     }
 
-    @Override
-    protected void save(JSONObject obj) {
-
-        obj.put("created_at",createdAt);
-        obj.put("name",name);
-        obj.put("screen_name",screenName);
-        obj.put("bio",bio);
-        obj.put("photo_url",photoUrl);
-
-        obj.put("is_protected",isProtected);
-        obj.put("is_disappeared",isDisappeared);
-
-    }
 
 }

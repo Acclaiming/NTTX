@@ -23,6 +23,8 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import java.util.LinkedList;
 import com.mongodb.client.model.FindOptions;
+import io.kurumi.ntt.twitter.archive.UserArchive;
+import twitter4j.User;
 
 public class BotDB {
 
@@ -34,12 +36,12 @@ public class BotDB {
         client = new MongoClient(address,port);
 
         CodecRegistry registry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),fromProviders(PojoCodecProvider.builder().automatic(true).build()));
-        
+
         db = client.getDatabase("NTTools").withCodecRegistry(registry);
 
         statusArchiveCollection = db.getCollection("STATUS",StatusArchive.class);
 
-      //  statusArchiveCollection.createIndex(Indexes.compoundIndex();
+        //  statusArchiveCollection.createIndex(Indexes.compoundIndex();
 
     }
 
@@ -70,8 +72,82 @@ public class BotDB {
         archive.read(status);
 
         statusArchiveCollection.insertOne(archive);
-        
+
         return archive;
+
+    }
+
+    public static MongoCollection<UserArchive> userArchiveCollection;
+
+    public static boolean userExists(long id) {
+
+        return userArchiveCollection.countDocuments(eq("_id",id)) > 0;
+
+    }
+    
+    public static boolean userExists(String screenName) {
+
+        return userArchiveCollection.countDocuments(eq("screenName",screenName)) > 0;
+
+    }
+
+    public static UserArchive getUser(long id) {
+
+        if (!userExists(id)) return null;
+
+        return userArchiveCollection.find(eq("_id",id)).first();
+
+    }
+    
+    public static UserArchive getUser(String screenName) {
+
+        if (!userExists(screenName)) return null;
+
+        return userArchiveCollection.find(eq("screenName",screenName)).first();
+
+    }
+
+    public static UserArchive saveUser(User user) {
+
+        UserArchive archive;
+
+        if (userExists(user.getId())) {
+
+            archive = getUser(user.getId());
+
+            if (archive.read(user)) {
+
+                userArchiveCollection.replaceOne(eq("_id",user.getId()),archive);
+
+            }
+
+        } else {
+
+            archive = new UserArchive();
+
+            archive.id = user.getId();
+
+            archive.read(user);
+
+            userArchiveCollection.insertOne(archive);
+
+        }
+
+        return archive;
+
+    }
+
+    public static void saveUserDisappeared(Long da) {
+
+        UserArchive user = getUser(da);
+
+        if (user != null) {
+
+            user.isDisappeared = true;
+
+            userArchiveCollection.replaceOne(eq("_id",da),user);
+
+        }
 
     }
 

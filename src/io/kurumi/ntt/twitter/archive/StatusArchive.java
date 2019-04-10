@@ -50,7 +50,7 @@ public class StatusArchive {
 
         from = status.getUser().getId();
 
-        UserArchive.saveCache(status.getUser());
+        BotDB.saveUser(status.getUser());
 
         inReplyToStatusId = status.getInReplyToStatusId();
 
@@ -96,7 +96,7 @@ public class StatusArchive {
 
     public UserArchive user() {
 
-        return UserArchive.INSTANCE.get(from);
+        return BotDB.getUser(from);
 
     }
 
@@ -132,7 +132,7 @@ public class StatusArchive {
 
             }
 
-            archive.append(split).append(user().getHtmlURL()).append(" 的 ").append(Html.a("回复",url()));
+            archive.append(split).append(user().urlHtml()).append(" 的 ").append(Html.a("回复",url()));
 
         } else if (inReplyToStatusId != -1) {
 
@@ -148,14 +148,14 @@ public class StatusArchive {
 
             }
 
-            archive.append(split).append(user().getHtmlURL()).append(" 的 ").append(Html.a("回复",url()));
+            archive.append(split).append(user().urlHtml()).append(" 的 ").append(Html.a("回复",url()));
 
 
         } else if (isRetweet) {
 
             StatusArchive retweeted = BotDB.getStatus(retweetedStatus);
 
-            archive.append(user().getHtmlURL()).append(" 转推从 " + retweeted.user().getHtmlURL()).append(" : ");
+            archive.append(user().urlHtml()).append(" 转推从 " + retweeted.user().urlHtml()).append(" : ");
 
             archive.append(retweeted.toHtml());
 
@@ -163,7 +163,7 @@ public class StatusArchive {
 
         } else {
 
-            archive.append(user().getHtmlURL()).append(" 的 ").append(Html.a("推文",url()));
+            archive.append(user().urlHtml()).append(" 的 ").append(Html.a("推文",url()));
 
 		}
 
@@ -196,7 +196,7 @@ public class StatusArchive {
 
             for (String replyTo : inReplyTo) {
 
-                UserArchive user = UserArchive.findByScreenName(replyTo);
+                UserArchive user = BotDB.getUser(replyTo);
 
                 archive.append(" ");
 
@@ -204,7 +204,7 @@ public class StatusArchive {
 
                 if (user != null) {
 
-                    archive.append(user.getHtmlURL());
+                    archive.append(user.urlHtml());
 
                 } else {
 
@@ -248,9 +248,9 @@ public class StatusArchive {
 
     String notAvilableStatus(Long id,String screenName) {
 
-        if (UserArchive.INSTANCE.exists(id)) {
+        if (BotDB.userExists(id)) {
 
-            return UserArchive.INSTANCE.get(id).getHtmlURL() + " 的 不可用的推文";
+            return BotDB.getUser(id).urlHtml() + " 的 不可用的推文";
 
         } else {
 

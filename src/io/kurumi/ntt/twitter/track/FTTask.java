@@ -148,7 +148,7 @@ public class FTTask extends TimerTask {
 
             if (me == null) return;
 
-            UserArchive.saveCache(me);
+            BotDB.saveUser(me);
 
             LinkedList<Long> flLast = flIndex.containsKey(api.getId()) ? flIndex.get(api.getId()) : null;
 
@@ -325,7 +325,7 @@ public class FTTask extends TimerTask {
 
             User follower = api.showUser(id);
 
-            UserArchive.saveCache(follower);
+            BotDB.saveUser(follower);
 
             Relationship ship = api.showFriendship(api.getId(),id);
 
@@ -333,9 +333,9 @@ public class FTTask extends TimerTask {
 
         } catch (TwitterException e) {
 
-            if (UserArchive.INSTANCE.exists(id)) {
+            if (BotDB.userExists(id)) {
 
-                new Send(user.id,UserArchive.INSTANCE.get(id).getHtmlURL() + " 关注你 , 但是该账号已经不存在了 :(").enableLinkPreview().html().exec();
+                new Send(user.id,BotDB.getUser(id).urlHtml() + " 关注你 , 但是该账号已经不存在了 :(").enableLinkPreview().html().exec();
 
             } else {
 
@@ -353,7 +353,7 @@ public class FTTask extends TimerTask {
         try {
 
             User follower = api.showUser(id);
-            UserArchive.saveCache(follower);
+           BotDB.saveUser(follower);
 
             Relationship ship = api.showFriendship(api.getId(),id);
 
@@ -373,9 +373,9 @@ public class FTTask extends TimerTask {
 
         } catch (TwitterException e) {
 
-            if (UserArchive.INSTANCE.exists(id)) {
+            if (BotDB.userExists(id)) {
 
-                new Send(user.id,UserArchive.INSTANCE.get(id).getHtmlURL() + " 取关了你 , 因为该账号已经不存在了 :(").enableLinkPreview().html().exec();
+                new Send(user.id,BotDB.getUser(id).urlHtml() + " 取关了你 , 因为该账号已经不存在了 :(").enableLinkPreview().html().exec();
 
             } else {
 

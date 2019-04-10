@@ -11,6 +11,7 @@ import twitter4j.TwitterException;
 import twitter4j.User;
 import io.kurumi.ntt.twitter.archive.UserArchive;
 import cn.hutool.json.JSONArray;
+import io.kurumi.ntt.db.BotDB;
 
 public class UserTrack extends Fragment {
 
@@ -72,7 +73,7 @@ public class UserTrack extends Fragment {
 
                 User target = TAuth.get(user).createApi().showUser(Long.parseLong(msg.params()[0]));
 
-                UserArchive archive = UserArchive.saveCache(target);
+                UserArchive archive = BotDB.saveUser(target);
 
                 boolean result = UTTask.add(user,target.getId());
                 
@@ -86,7 +87,7 @@ public class UserTrack extends Fragment {
                 
                 UTTask.save();
 
-                msg.send("已订阅 : " + archive.getHtmlURL() + " :)","ID : " + archive.idStr).html().exec();
+                msg.send("已订阅 : " + archive.urlHtml() + " :)","ID : " + archive.id).html().exec();
 
             } catch (TwitterException e) {
 
@@ -106,7 +107,7 @@ public class UserTrack extends Fragment {
 
             boolean result = UTTask.add(user,target.getId());
             
-            UserArchive archive = UserArchive.saveCache(target);
+            UserArchive archive = BotDB.saveUser(target);
 
             UTTask.save();
 
@@ -120,7 +121,7 @@ public class UserTrack extends Fragment {
             
             UTTask.save();
 
-            msg.send("已订阅 : " + archive.getHtmlURL() + " :)","ID : " + archive.idStr).html().exec();
+            msg.send("已订阅 : " + archive.urlHtml() + " :)","ID : " + archive.id).html().exec();
 
         } catch (TwitterException e) {
 
@@ -157,7 +158,7 @@ public class UserTrack extends Fragment {
 
         }
         
-        UserArchive target = UserArchive.findByScreenName(T.parseScreenName(msg.params()[0]));
+        UserArchive target = BotDB.getUser(T.parseScreenName(msg.params()[0]));
 
         if (target == null || !UTTask.rem(user,target.id)) {
             
@@ -168,7 +169,7 @@ public class UserTrack extends Fragment {
             
             UTTask.save();
             
-            msg.send("已取消订阅 " + target.getHtmlURL() + " :)").html().exec();
+            msg.send("已取消订阅 " + target.urlHtml() + " :)").html().exec();
             
         }
         
@@ -184,7 +185,7 @@ public class UserTrack extends Fragment {
 
             for (int index = 0;index < list.size();index ++) {
 
-                rec.append("\n").append(UserArchive.INSTANCE.get(list.getLong(index)).getHtmlURL());
+                rec.append("\n").append(BotDB.getUser((list.getLong(index))).urlHtml());
 
             }
 
@@ -204,6 +205,7 @@ public class UserTrack extends Fragment {
     
     void unSubAll(UserData user,Msg msg) {
         
+        
         if (UTTask.subs.containsKey(user.idStr)) {
             
             JSONArray list = (JSONArray)UTTask.subs.remove(user.idStr);
@@ -212,7 +214,7 @@ public class UserTrack extends Fragment {
 
             for (int index = 0;index < list.size();index ++) {
                 
-                rec.append("\n").append(UserArchive.INSTANCE.get(list.getLong(index)).getHtmlURL());
+                rec.append("\n").append(BotDB.getUser(list.getLong(index)).urlHtml());
                 
             }
             

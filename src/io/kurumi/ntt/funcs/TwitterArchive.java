@@ -115,11 +115,11 @@ public class TwitterArchive extends Fragment {
 
                 content = StrUtil.subAfter(content, " ",false);
                 
-                if (UserArchive.findByScreenName(screenName) == null) {
+                if (!BotDB.userExists(screenName)) {
 
                     try {
 
-                        UserArchive.saveCache(api.showUser(screenName));
+                        BotDB.saveUser(api.showUser(screenName));
 
                     } catch (TwitterException ex) {} 
 

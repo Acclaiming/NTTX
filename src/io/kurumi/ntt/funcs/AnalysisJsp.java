@@ -10,6 +10,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import java.util.LinkedList;
 import io.kurumi.ntt.twitter.archive.UserArchive;
+import io.kurumi.ntt.db.BotDB;
 
 public class AnalysisJsp extends Fragment {
 
@@ -65,13 +66,13 @@ public class AnalysisJsp extends Fragment {
 
             for (Long id : hg) {
 
-                if (!UserArchive.INSTANCE.exists(id)) {
+                if (!BotDB.userExists(id)) {
 
-                    UserArchive.saveCache(api.showUser(id));
+                    BotDB.saveUser(api.showUser(id));
 
                 }
                 
-                result.append("\n").append(UserArchive.INSTANCE.get(id).getHtmlURL());
+                result.append("\n").append(BotDB.getUser(id).urlHtml());
 
             }
 
@@ -79,13 +80,13 @@ public class AnalysisJsp extends Fragment {
 
             for (Long id : fj) {
 
-                if (!UserArchive.INSTANCE.exists(id)) {
+                if (!BotDB.userExists(id)) {
 
-                    UserArchive.saveCache(api.showUser(id));
+                    BotDB.saveUser(api.showUser(id));
 
                 }
 
-                result.append("\n").append(UserArchive.INSTANCE.get(id).getHtmlURL());
+                result.append("\n").append(BotDB.getUser(id).urlHtml());
 
             }
             
@@ -93,13 +94,13 @@ public class AnalysisJsp extends Fragment {
 
             for (Long id : jf) {
 
-                if (!UserArchive.INSTANCE.exists(id)) {
+                if (!BotDB.userExists(id)) {
 
-                    UserArchive.saveCache(api.showUser(id));
+                    BotDB.saveUser(api.showUser(id));
 
                 }
 
-                result.append("\n").append(UserArchive.INSTANCE.get(id).getHtmlURL());
+                result.append("\n").append(BotDB.getUser(id).urlHtml());
 
             }
             
