@@ -32,6 +32,7 @@ import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
+import io.kurumi.ntt.Env;
 
 public class FTTask extends TimerTask {
 
@@ -54,7 +55,7 @@ public class FTTask extends TimerTask {
         stop();
 
         timer = new Timer("NTT Twitter Track Task");
-        timer.schedule(INSTANCE,new Date(),15 * 60 * 1000);
+        timer.schedule(INSTANCE,new Date(),9 * 60 * 1000);
 
     }
 
@@ -83,6 +84,8 @@ public class FTTask extends TimerTask {
 
             synchronized (UTTask.pedding) {
 
+               new Send(Env.DEVELOPER_ID,"pedding : " + pedding.size()).exec();
+                
                 UTTask.pedding.addAll(pedding);
                 pedding.clear();
 
