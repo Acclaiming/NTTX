@@ -112,7 +112,7 @@ public class StatusArchive {
 
     }
 
-    public String split = "\n\n---------------------\n\n";
+    public transient String split = "\n\n---------------------\n\n";
 
     public String toHtml() {
 
