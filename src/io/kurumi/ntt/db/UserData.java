@@ -18,10 +18,7 @@ public class UserData {
     public String firstName;
     public String lastName;
     public String userName;
-    public boolean isBot;
-  
-    public boolean isAdmin;
-    
+
     public void read(User user) {
 
         userName = user.username();

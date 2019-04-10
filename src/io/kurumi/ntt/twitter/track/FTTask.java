@@ -128,8 +128,8 @@ public class FTTask extends TimerTask {
 
         try {
 
-            UserData user = BotDB.getUserData(userId);
-
+            UserData user = BotDB.getUserData(userId,true);
+            
             if (!TAuth.avilable(user)) {
 
                 enable.remove(user.id.toString());

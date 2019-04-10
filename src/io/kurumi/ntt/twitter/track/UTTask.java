@@ -126,7 +126,7 @@ public class UTTask extends TimerTask {
                     }
 
 
-                    UserData user = BotDB.getUserData(Long.parseLong(id));
+                    UserData user = BotDB.getUserData(Long.parseLong(id),true);
 
                     subIndex.put(user.id,subs.getJSONArray(user.id.toString()).toList(Long.class));
 

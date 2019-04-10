@@ -28,6 +28,9 @@ import twitter4j.User;
 import java.util.HashMap;
 import com.mongodb.client.MongoIterable;
 import com.mongodb.client.FindIterable;
+import io.kurumi.ntt.Launcher;
+import com.pengrad.telegrambot.request.GetChat;
+import com.pengrad.telegrambot.response.GetChatResponse;
 
 public class BotDB {
 
@@ -62,7 +65,7 @@ public class BotDB {
 
     }
 
-    public static UserData getUserData(long userId) {
+    public static UserData getUserData(long userId,boolean fix) {
 
         if (userDataIndex.containsKey(userId)) return userDataIndex.get(userId);
 
@@ -76,8 +79,28 @@ public class BotDB {
 
                 userDataIndex.put(userId,user);
 
-            }
+            } else if (fix) {
+                
+                GetChatResponse resp = Launcher.INSTANCE.bot().execute(new GetChat(userId));
 
+                if (resp.isOk()) {
+                    
+                    UserData user = new UserData();
+                    
+                    user.id = userId;
+                    
+                    user.firstName = resp.chat().firstName();
+                    user.lastName = resp.chat().lastName();
+                    user.userName = resp.chat().username();
+                    
+                    userDataCollection.insertOne(user);
+                    
+                    return user;
+                    
+                }
+                
+            }
+            
         }
 
         return null;
@@ -88,7 +111,7 @@ public class BotDB {
 
         if (user == null) return null;
 
-        UserData userData = getUserData(user.id().longValue());
+        UserData userData = getUserData(user.id().longValue(),false);
 
         if (userData == null) {
 
@@ -99,6 +122,8 @@ public class BotDB {
                 userData.read(user);
 
                 userDataIndex.put(user.id().longValue(),userData);
+                
+                userDataCollection.insertOne(userData);
 
             }
 
