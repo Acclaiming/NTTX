@@ -33,6 +33,8 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
 import io.kurumi.ntt.Env;
+import java.util.concurrent.atomic.*;
+import cn.hutool.core.thread.*;
 
 public class FTTask extends TimerTask {
 
@@ -73,6 +75,12 @@ public class FTTask extends TimerTask {
 
     @Override
     public void run() {
+		
+		if (running.get() > 0) {
+			
+			return;
+			
+		}
 
 		synchronized (INSTANCE) {
 
@@ -100,14 +108,24 @@ public class FTTask extends TimerTask {
                 @Override
                 public void run() {
 
+					running.incrementAndGet();
+					
+					while (running.get() != 1) {
+						
+						ThreadUtil.sleep(1000);
+						
+					}
+					
                     synchronized (UTTask.pedding) {
-
+						
                         new Send(Env.DEVELOPER_ID,"pedding : " + pedding.size()).exec();
 
                         UTTask.pedding.addAll(pedding);
                         pedding.clear();
 
                     }
+					
+					running.decrementAndGet();
                     
 
                 }
@@ -120,15 +138,21 @@ public class FTTask extends TimerTask {
 
     ExecutorService userTrackPool = Executors.newFixedThreadPool(3);
 
+	AtomicInteger running = new AtomicInteger();
+	
     private void startUserStackAsync(final long userId) {
 
         userTrackPool.execute(new Runnable() {
 
                 @Override
                 public void run() {
+					
+					running.incrementAndGet();
 
                     startUserStack(userId);
 
+					running.decrementAndGet();
+					
                 }
 
             });

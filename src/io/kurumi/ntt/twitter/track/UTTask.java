@@ -72,7 +72,6 @@ public class UTTask extends TimerTask {
 
 			Collection<JSONArray> values = (Collection<JSONArray>)(Object)subs.values();
 
-
 			for (JSONArray arr : values) {
 
 				pedding.addAll(arr.toList(Long.class));
