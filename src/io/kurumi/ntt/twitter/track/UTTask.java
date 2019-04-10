@@ -53,8 +53,6 @@ public class UTTask extends TimerTask {
     @Override
     public void run() {
 
-        if (subs.isEmpty()) return;
-
         if (TAuth.auth.isEmpty()) return;
 
         if (indexG == 15) {
@@ -107,7 +105,7 @@ public class UTTask extends TimerTask {
 
                 }
 
-                for (String id : names) {
+                for (String id : TAuth.auth.keySet()) {
 
                     if (useH.containsKey(id)) {
 
