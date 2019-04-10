@@ -132,7 +132,7 @@ public class FTTask extends TimerTask {
             
             if (user == null || !TAuth.avilable(user)) {
 
-                enable.remove(user.id.toString());
+                enable.remove(userId);
 
                 save();
 
