@@ -124,9 +124,9 @@ public class UTTask extends TimerTask {
                     }
 
 
-                    UserData user = BotDB.getUserData(Long.parseLong(id),true);
+                    Long userId = Long.parseLong(id);
 
-                    if (user == null) {
+                    if (userId == null) {
                         
                         subs.remove(id.toString());
                         
@@ -136,11 +136,11 @@ public class UTTask extends TimerTask {
                     
                     }
                         
-                    subIndex.put(user.id,subs.getJSONArray(user.id.toString()).toList(Long.class));
+                    subIndex.put(userId,subs.getJSONArray(id).toList(Long.class));
 
-                    if (!TAuth.exists(user)) continue;
+                    if (!TAuth.exists(userId)) continue;
 
-                    Twitter api = TAuth.get(user).createApi();
+                    Twitter api = TAuth.get(userId).createApi();
 
 					List<Long> globals;
                     List<Long> target;

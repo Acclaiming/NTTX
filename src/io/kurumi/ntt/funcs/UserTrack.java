@@ -71,7 +71,7 @@ public class UserTrack extends Fragment {
 
             try {
 
-                User target = TAuth.get(user).createApi().showUser(Long.parseLong(msg.params()[0]));
+                User target = TAuth.get(user.id).createApi().showUser(Long.parseLong(msg.params()[0]));
 
                 UserArchive archive = BotDB.saveUser(target);
 
@@ -103,7 +103,7 @@ public class UserTrack extends Fragment {
 
         try {
 
-            User target = TAuth.get(user).createApi().showUser(screenName);
+            User target = TAuth.get(user.id).createApi().showUser(screenName);
 
             boolean result = UTTask.add(user,target.getId());
             

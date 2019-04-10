@@ -17,23 +17,23 @@ public class TAuth extends JSONObject {
 
     public static JSONObject auth = SData.getJSON("data","auth",true);
     
-	public static boolean exists(UserData user) {
+	public static boolean exists(Long id) {
         
-		return auth.containsKey(user.id.toString());
+		return auth.containsKey(id.toString());
 		
 	}
     
-    public static boolean avilable(UserData user) {
+    public static boolean avilable(Long id) {
         
-       return exists(user) && get(user).refresh();
+       return exists(id) && get(id).refresh();
         
     }
 	
-	public static TAuth get(UserData user) {
+	public static TAuth get(Long id) {
 		
-		if (exists(user)) {
+		if (exists(id)) {
 			
-			return new TAuth(auth.getJSONObject(user.id.toString()));
+			return new TAuth(auth.getJSONObject(id.toString()));
 			 
 		}
 		

@@ -128,9 +128,7 @@ public class FTTask extends TimerTask {
 
         try {
 
-            UserData user = BotDB.getUserData(userId,true);
-            
-            if (user == null || !TAuth.avilable(user)) {
+            if (!TAuth.avilable(userId)) {
 
                 enable.remove(userId.toString());
 
@@ -140,7 +138,7 @@ public class FTTask extends TimerTask {
 
             }
 
-            Twitter api = TAuth.get(user).createApi();
+            Twitter api = TAuth.get(userId).createApi();
 
             User me = api.verifyCredentials();
 
@@ -174,7 +172,7 @@ public class FTTask extends TimerTask {
 
                         if (!flLast.remove(id)) {
 
-                            newFollower(user,api,id);
+                            newFollower(userId,api,id);
 
                         }
 
@@ -190,7 +188,7 @@ public class FTTask extends TimerTask {
 
                     long id = flLast.get(index);
 
-                    lostFollower(user,api,id);
+                    lostFollower(userId,api,id);
 
                 }
 
@@ -326,7 +324,7 @@ public class FTTask extends TimerTask {
 
     }
 
-    void newFollower(UserData user,Twitter api,long id) {
+    void newFollower(Long userId,Twitter api,long id) {
 
         try {
 
@@ -336,17 +334,17 @@ public class FTTask extends TimerTask {
 
             Relationship ship = api.showFriendship(api.getId(),id);
 
-            new Send(user.id,(ship.isSourceFollowingTarget() ? "乃关注的 " : "") + TApi.formatUserNameHtml(follower) + " 关注了你 :)",parseStatus(api,follower)).enableLinkPreview().html().exec();
+            new Send(userId,(ship.isSourceFollowingTarget() ? "乃关注的 " : "") + TApi.formatUserNameHtml(follower) + " 关注了你 :)",parseStatus(api,follower)).enableLinkPreview().html().exec();
 
         } catch (TwitterException e) {
 
             if (BotDB.userExists(id)) {
 
-                new Send(user.id,BotDB.getUser(id).urlHtml() + " 关注你 , 但是该账号已经不存在了 :(").enableLinkPreview().html().exec();
+                new Send(userId,BotDB.getUser(id).urlHtml() + " 关注你 , 但是该账号已经不存在了 :(").enableLinkPreview().html().exec();
 
             } else {
 
-                new Send(user.id,"用户 (" + id + ") 关注了你 , 但是该账号已经不存在了 :(").enableLinkPreview().html().exec();
+                new Send(userId,"用户 (" + id + ") 关注了你 , 但是该账号已经不存在了 :(").enableLinkPreview().html().exec();
 
 
             }
@@ -355,7 +353,7 @@ public class FTTask extends TimerTask {
 
     }
 
-    void lostFollower(UserData user,Twitter api,long id) {
+    void lostFollower(Long userId,Twitter api,long id) {
 
         try {
 
@@ -366,15 +364,15 @@ public class FTTask extends TimerTask {
 
             if (ship.isSourceBlockingTarget()) {
 
-                new Send(user.id,TApi.formatUserNameHtml(follower) + " 取关并屏蔽了你 :)").enableLinkPreview().html().exec();
+                new Send(userId,TApi.formatUserNameHtml(follower) + " 取关并屏蔽了你 :)").enableLinkPreview().html().exec();
 
             } else if (follower.getFriendsCount() == 0) {
 
-                new Send(user.id,TApi.formatUserNameHtml(follower) + " 取关了你，但对方关注人数为空，可能是账号异常 :)").enableLinkPreview().html().exec();
+                new Send(userId,TApi.formatUserNameHtml(follower) + " 取关了你，但对方关注人数为空，可能是账号异常 :)").enableLinkPreview().html().exec();
 
             } else {
 
-                new Send(user.id,TApi.formatUserNameHtml(follower) + " 取关了你 :)").enableLinkPreview().html().exec();
+                new Send(userId,TApi.formatUserNameHtml(follower) + " 取关了你 :)").enableLinkPreview().html().exec();
 
             }
 
@@ -382,11 +380,11 @@ public class FTTask extends TimerTask {
 
             if (BotDB.userExists(id)) {
 
-                new Send(user.id,BotDB.getUser(id).urlHtml() + " 取关了你 , 因为该账号已经不存在了 :(").enableLinkPreview().html().exec();
+                new Send(userId,BotDB.getUser(id).urlHtml() + " 取关了你 , 因为该账号已经不存在了 :(").enableLinkPreview().html().exec();
 
             } else {
 
-                new Send(user.id,"用户 (" + id + ") 取关了你 , 因为该账号已经不存在了 :(").enableLinkPreview().html().exec();
+                new Send(userId,"用户 (" + id + ") 取关了你 , 因为该账号已经不存在了 :(").enableLinkPreview().html().exec();
 
             }
 

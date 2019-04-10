@@ -23,11 +23,11 @@ public class InitTask extends Thread {
 
         for (UserData user : BotDB.userDataIterable()) {
 
-            if (!TAuth.exists(user)) continue;
+            if (!TAuth.exists(user.id)) continue;
             
             System.out.println("init task : " +user.userName());
 
-            TAuth auth = TAuth.get(user);
+            TAuth auth = TAuth.get(user.id);
 
             if (!user.contactable()) {
 

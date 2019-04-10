@@ -38,7 +38,7 @@ public class AnalysisJsp extends Fragment {
 
         if (T.checkUserNonAuth(user,msg)) return;
 
-        Twitter api = TAuth.get(user).createApi();
+        Twitter api = TAuth.get(user.id).createApi();
 
         try {
 

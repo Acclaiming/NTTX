@@ -79,7 +79,7 @@ public class TwitterDelete extends Fragment {
 
             msg.send("解析成功 : " + array.length() + "个喜欢 正在处理...").exec();
 
-            final AsyncTwitter api = TAuth.get(user).createAsyncApi();
+            final AsyncTwitter api = TAuth.get(user.id).createAsyncApi();
 
             for (int index = 0;index < array.length();index ++) {
                 

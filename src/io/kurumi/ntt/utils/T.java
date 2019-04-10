@@ -54,7 +54,7 @@ public class T {
         
         String nonAuthMsg = msg.isPrivate() ? "乃还没有认证Twitter账号 (ﾟ〇ﾟ ; 使用 /tauth ~" : "乃还没有认证Twitter账号 (ﾟ〇ﾟ ; 私聊BOT使用 /tauth ~";
         
-        if (!TAuth.exists(user)) {
+        if (!TAuth.exists(user.id)) {
             
             if (msg instanceof Callback) {
 
@@ -72,7 +72,7 @@ public class T {
             
         }
         
-        if (!TAuth.avilable(user)) {
+        if (!TAuth.avilable(user.id)) {
 
             TAuth.auth.remove(user.id.toString());
 

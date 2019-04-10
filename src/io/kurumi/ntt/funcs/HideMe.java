@@ -37,7 +37,7 @@ public class HideMe extends Fragment {
      
         if (T.checkUserNonAuth(user,msg)) return;
         
-        Long id = TAuth.get(user).accountId;
+        Long id = TAuth.get(user.id).accountId;
 
         if (hideList.contains(id)) {
             
@@ -45,7 +45,7 @@ public class HideMe extends Fragment {
             
         } else {
             
-            msg.send("乃的账号 " + TAuth.get(user).getFormatedNameHtml() + " 已经开启隐藏","其他用户将不会收到乃的账号更改 :)").html().exec();
+            msg.send("乃的账号 " + TAuth.get(user.id).getFormatedNameHtml() + " 已经开启隐藏","其他用户将不会收到乃的账号更改 :)").html().exec();
             
             hideList.add(id);
             
@@ -59,7 +59,7 @@ public class HideMe extends Fragment {
 
         if (T.checkUserNonAuth(user,msg)) return;
 
-        Long id = TAuth.get(user).accountId;
+        Long id = TAuth.get(user.id).accountId;
 
         if (!hideList.contains(id)) {
 
@@ -67,7 +67,7 @@ public class HideMe extends Fragment {
 
         } else {
 
-            msg.send("乃的账号 " + TAuth.get(user).getFormatedNameHtml()," 已经移除隐藏 :)").html().exec();
+            msg.send("乃的账号 " + TAuth.get(user.id).getFormatedNameHtml()," 已经移除隐藏 :)").html().exec();
 
             hideList.remove(id);
 

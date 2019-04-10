@@ -57,7 +57,7 @@ public class TwitterUI extends Fragment {
 
 	void tauth(UserData user,Msg msg) {
 
-        if (TAuth.exists(user)) {
+        if (TAuth.exists(user.id)) {
 
             msg.send("乃已经认证账号了 :)").publicFailed();
 
@@ -173,7 +173,7 @@ public class TwitterUI extends Fragment {
 
 	void trem(UserData user,Msg msg) {
 
-		if (!TAuth.exists(user))  {
+		if (!TAuth.exists(user.id))  {
 
 			msg.send("乃并没有认证账号呢。 使用 /tauth 认证 ~").publicFailed();
 

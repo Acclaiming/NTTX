@@ -37,7 +37,7 @@ public class StatusTrack extends Fragment {
 
         }
 
-        if (!TAuth.exists(user)) {
+        if (!TAuth.exists(user.id)) {
 
             msg.send("你没有认证Twitter账号 :)").publicFailed();
 

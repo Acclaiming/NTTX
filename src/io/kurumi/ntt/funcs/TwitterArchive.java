@@ -39,7 +39,7 @@ public class TwitterArchive extends Fragment {
 
     void pullUser(UserData user,Msg msg) {
 
-        Twitter api = TAuth.get(user).createApi();
+        Twitter api = TAuth.get(user.id).createApi();
 
     }
 
@@ -71,7 +71,7 @@ public class TwitterArchive extends Fragment {
 
             return;
 
-        } else if (!TAuth.exists(user)) {
+        } else if (!TAuth.exists(user.id)) {
 
             msg.send("存档不存在 :( 乃没有认证账号 无法通过API读取推文... 请使用 /tauth 认证 ( ⚆ _ ⚆ )").publicFailed();
 
@@ -81,7 +81,7 @@ public class TwitterArchive extends Fragment {
 
         msg.send("正在拉取 :)").exec();
 
-        Twitter api = TAuth.get(user).createApi();
+        Twitter api = TAuth.get(user.id).createApi();
 
         try {
 
