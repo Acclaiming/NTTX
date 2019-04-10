@@ -97,15 +97,7 @@ public class UTTask extends TimerTask {
 
                 }
 
-                LinkedList<String> names;
-
-                synchronized (subs) {
-
-                    names = new LinkedList<String>(subs.keySet());
-
-                }
-
-                for (String id : TAuth.auth.keySet()) {
+                for (String id : new LinkedList<String>(TAuth.auth.keySet())) {
 
                     if (useH.containsKey(id)) {
 
