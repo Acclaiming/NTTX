@@ -93,7 +93,7 @@ public class Backup extends Fragment {
         
         try {
 
-            RuntimeUtil.exec("mongodump","-h",Env.getOrDefault("db_address","127.0.0.1") + ":" + Env.getOrDefault("db_port","27017"),"-d NTTools","-o",Env.DATA_DIR.getPath()).waitFor();
+            RuntimeUtil.exec("mongodump","-h",Env.getOrDefault("db_address","127.0.0.1") + ":" + Env.getOrDefault("db_port","27017"),"-d NTTools").waitFor();
 
         } catch (InterruptedException e) {}
 
