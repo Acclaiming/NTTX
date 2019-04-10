@@ -47,7 +47,7 @@ public class BotDB {
 
     public static boolean statusExists(long id) {
 
-        return statusArchiveCollection.countDocuments(eq("id",id)) > 0;
+        return statusArchiveCollection.countDocuments(eq("_id",id)) == 1;
 
     }
 

@@ -94,21 +94,21 @@ public class StatusArchive {
 
 	}
 
-    public UserArchive getUser() {
+    public UserArchive user() {
 
         return UserArchive.INSTANCE.get(from);
 
     }
 
-    public String getURL() {
+    public String url() {
 
-        return "https://twitter.com/" + getUser().screenName + "/status/" + id;
+        return "https://twitter.com/" + user().screenName + "/status/" + id;
 
     }
 
-    public String getHtmlURL() {
+    public String htmlURL() {
 
-        return Html.a(StrUtil.padAfter(text,5,"..."),getURL());
+        return Html.a(StrUtil.padAfter(text,5,"..."),url());
 
     }
 
@@ -132,7 +132,7 @@ public class StatusArchive {
 
             }
 
-            archive.append(split).append(getUser().getHtmlURL()).append(" 的 ").append(Html.a("回复",getURL()));
+            archive.append(split).append(user().getHtmlURL()).append(" 的 ").append(Html.a("回复",url()));
 
         } else if (inReplyToStatusId != -1) {
 
@@ -148,14 +148,14 @@ public class StatusArchive {
 
             }
 
-            archive.append(split).append(getUser().getHtmlURL()).append(" 的 ").append(Html.a("回复",getURL()));
+            archive.append(split).append(user().getHtmlURL()).append(" 的 ").append(Html.a("回复",url()));
 
 
         } else if (isRetweet) {
 
             StatusArchive retweeted = BotDB.getStatus(retweetedStatus);
 
-            archive.append(getUser().getHtmlURL()).append(" 转推从 " + retweeted.getUser().getHtmlURL()).append(" : ");
+            archive.append(user().getHtmlURL()).append(" 转推从 " + retweeted.user().getHtmlURL()).append(" : ");
 
             archive.append(retweeted.toHtml());
 
@@ -163,7 +163,7 @@ public class StatusArchive {
 
         } else {
 
-            archive.append(getUser().getHtmlURL()).append(" 的 ").append(Html.a("推文",getURL()));
+            archive.append(user().getHtmlURL()).append(" 的 ").append(Html.a("推文",url()));
 
 		}
 
