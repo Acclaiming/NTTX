@@ -130,11 +130,9 @@ public class FTTask extends TimerTask {
 
             UserData user = BotDB.getUserData(userId,true);
             
-            if (!TAuth.avilable(user)) {
+            if (user == null || !TAuth.avilable(user)) {
 
                 enable.remove(user.id.toString());
-
-                SData.setJSONArray("cache","track/" + user.id,null);
 
                 save();
 

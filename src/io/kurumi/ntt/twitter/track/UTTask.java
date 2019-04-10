@@ -128,6 +128,16 @@ public class UTTask extends TimerTask {
 
                     UserData user = BotDB.getUserData(Long.parseLong(id),true);
 
+                    if (user == null) {
+                        
+                        subs.remove(id.toString());
+                        
+                        save();
+                        
+                       continue;
+                    
+                    }
+                        
                     subIndex.put(user.id,subs.getJSONArray(user.id.toString()).toList(Long.class));
 
                     if (!TAuth.exists(user)) continue;
