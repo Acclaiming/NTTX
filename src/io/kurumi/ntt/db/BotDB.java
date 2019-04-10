@@ -55,7 +55,7 @@ public class BotDB {
 
         if (!statusExists(id)) return null;
 
-        return statusArchiveCollection.find(eq("id",id)).first();
+        return statusArchiveCollection.find(eq("_id",id)).first();
 
     }
 
