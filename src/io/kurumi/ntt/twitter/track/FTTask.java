@@ -82,15 +82,7 @@ public class FTTask extends TimerTask {
             flSubIndex = flSubIndexC;
             flSubIndexC = new HashMap<>();
 
-            synchronized (UTTask.pedding) {
-
-               new Send(Env.DEVELOPER_ID,"pedding : " + pedding.size()).exec();
-                
-                UTTask.pedding.addAll(pedding);
-                pedding.clear();
-
-			}
-
+            
 		}
 
         for (Map.Entry<String,Object> entry : enable.entrySet()) {
@@ -102,6 +94,25 @@ public class FTTask extends TimerTask {
             startUserStackAsync(userId);
 
         }
+        
+        userTrackPool.execute(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    synchronized (UTTask.pedding) {
+
+                        new Send(Env.DEVELOPER_ID,"pedding : " + pedding.size()).exec();
+
+                        UTTask.pedding.addAll(pedding);
+                        pedding.clear();
+
+                    }
+                    
+
+                }
+
+            });
 
     }
 
