@@ -127,12 +127,12 @@ public class UTTask extends TimerTask {
                     Long userId = Long.parseLong(id);
 
 					for (Map.Entry<String,Object> subl : subs.entrySet()) {
-                    
-                    subIndex.put(Long.parseLong(subl.getKey()),((JSONArray)subl.getValue()).toList(Long.class));
-					
+
+						subIndex.put(Long.parseLong(subl.getKey()),((JSONArray)subl.getValue()).toList(Long.class));
+
 					}
 
-             
+
 
                     Twitter api = TAuth.get(userId).createApi();
 
@@ -149,7 +149,7 @@ public class UTTask extends TimerTask {
 
                         target = globals.subList(0,100);
 
-                        globals = globals.subList(100,globals.size());
+                        globals = globals.subList(99,globals.size());
 
 
                     } else {
@@ -159,13 +159,18 @@ public class UTTask extends TimerTask {
                         finished = true;
 
                     }
+					
+					synchronized (pedding) {
+						
+						pedding.clear();
+						pedding.addAll(globals);
+						
+					}
 
                     try {
 
 						ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
-                        
-                        BotLog.debug("回复 : " + result.size());
-                        
+
                         for (User tuser : result) {
 
                             target.remove(tuser.getId());
@@ -177,7 +182,7 @@ public class UTTask extends TimerTask {
                         for (Long da : target) {
 
                             BotDB.saveUserDisappeared(da);
-                            
+
                         }
 
                     } catch (TwitterException e) {
@@ -186,11 +191,25 @@ public class UTTask extends TimerTask {
 
 							for (Long da : target) {
 
-							 BotDB.saveUserDisappeared(da);
+								BotDB.saveUserDisappeared(da);
 
 							}
 
-                        } else throw e;
+                        } else if (e.getErrorCode() == 89) {
+
+							synchronized (pedding) {
+
+								pedding.addAll(target);
+
+							}
+
+							if (finished) finished = false;
+
+							new Send(userId,"对不起！但是乃的认证 " + TAuth.get(userId).getFormatedNameHtml() + " 已无法访问 移除了！ Σ( ﾟω / ").html().exec();
+
+							TAuth.auth.remove(id);
+
+						} else throw e;
 
 					}
 
@@ -264,7 +283,7 @@ public class UTTask extends TimerTask {
 		for (Long sub : subA) {
 
             if (HideMe.hideList.contains(user.id)) continue;
-            
+
 			if (subL != null && subR != null && subL.contains(sub) && subR.contains(sub)) {
 
 				new Send(sub,"与乃相互关注的 " + user.urlHtml() + " :",change).html().exec();

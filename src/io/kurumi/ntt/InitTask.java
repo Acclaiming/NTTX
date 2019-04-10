@@ -33,14 +33,14 @@ public class InitTask extends Thread {
 
                 TAuth.auth.remove(user.id.toString());
 
-            } else if (!auth.refresh()) {
+            } else if (!TAuth.avilable(user.id)) {
 
                 new Send(user.id,"对不起！但是乃的认证 " + auth.getFormatedNameHtml() + " 已无法访问 移除了！ Σ( ﾟω / ").html().exec();
 
                 TAuth.auth.remove(user.id.toString());
 
                 BotLog.info("用户 " + user.userName() + " 的Twitter认证 " + auth.getFormatedName() + " 失效.");
-
+				
             } 
 
         }
