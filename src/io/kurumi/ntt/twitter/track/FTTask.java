@@ -118,8 +118,6 @@ public class FTTask extends TimerTask {
 					
                     synchronized (UTTask.pedding) {
 						
-                        new Send(Env.DEVELOPER_ID,"pedding : " + pedding.size()).exec();
-
                         UTTask.pedding.addAll(pedding);
                         pedding.clear();
 
