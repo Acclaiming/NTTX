@@ -34,7 +34,7 @@ public class Backup extends Fragment {
         }
 
         backup();
-        
+
         return true;
 
     }
@@ -81,35 +81,36 @@ public class Backup extends Fragment {
         public void run() {
 
             backup();
-            
+
         }
 
 
 
 
     }
-    
+
     static void backup() {
-        
+
         try {
 
-            RuntimeUtil.exec("mongodump","-h",Env.getOrDefault("db_address","127.0.0.1") + ":" + Env.getOrDefault("db_port","27017"),"-d NTTools").waitFor();
+            RuntimeUtil.exec(
+                "mongodump",
+                "-h",Env.getOrDefault("db_address","127.0.0.1") + ":" + Env.getOrDefault("db_port","27017"),
+                "-d","NTTools",
+                "-o",Env.DATA_DIR.getPath() + "/db"
+            ).waitFor();
 
         } catch (InterruptedException e) {}
 
-        File dbDir = new File(Env.DATA_DIR,"database");
-
-        new File(Env.ROOT,"bin/NTTools").renameTo(dbDir);
-
         File zip = ZipUtil.zip(Env.DATA_DIR.getPath(),Env.CACHE_DIR.getPath() + "/data.zip");
 
-        FileUtil.del(dbDir);
+        FileUtil.del(Env.DATA_DIR + "/db");
 
         Launcher.INSTANCE.sendFile(Env.DEVELOPER_ID,zip);
 
         FileUtil.del(zip);
-        
-        
+
+
     }
 
 }

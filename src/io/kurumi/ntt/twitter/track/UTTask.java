@@ -171,7 +171,9 @@ public class UTTask extends TimerTask {
                     try {
 
 						ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
-
+                        
+                        BotLog.debug("回复 : " + result.size());
+                        
                         for (User tuser : result) {
 
                             target.remove(tuser.getId());

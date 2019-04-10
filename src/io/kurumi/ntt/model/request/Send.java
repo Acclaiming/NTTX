@@ -148,10 +148,16 @@ public class Send extends AbstractSend<Send> {
 
         } else {
 
-            failed(5000);
+            failed();
 
         }
 
+    }
+    
+    public void failed() {
+        
+        failed(5000);
+        
     }
 
     public void failed(final long delay) {
@@ -179,6 +185,39 @@ public class Send extends AbstractSend<Send> {
             });
 
     }
+    
+    public void cancel() {
+
+        cancel(5000);
+
+    }
+
+    public void cancel(final long delay) {
+
+        if (origin == null) return;
+
+        final Exception track = new Exception();
+
+        ThreadPool.exec(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    SendResponse resp = sync(track);
+
+                    if (resp.isOk()) {
+
+                        T.tryDelete(delay,new Msg(fragment,resp.message()));
+
+                    }
+
+
+                }
+
+            });
+
+    }
+    
     
 	
     public Msg send() {

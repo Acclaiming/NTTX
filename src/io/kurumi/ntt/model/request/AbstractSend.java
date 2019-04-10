@@ -26,42 +26,7 @@ public abstract class AbstractSend<T extends AbstractSend> {
     public abstract BaseResponse sync();
 
     public abstract BaseResponse sync(Exception track);
-
-	
-    public void failed() {
-        
-        failed(5000);
-        
-    }
     
-    public void failed(final long delay) {
-
-        if (origin == null) return;
-
-        final Exception track = new Exception();
-
-        ThreadPool.exec(new Runnable() {
-
-                @Override
-                public void run() {
-
-                    BaseResponse resp = sync(track);
-
-                    if (resp.isOk()) {
-
-                        io.kurumi.ntt.utils.T.tryDelete(delay,origin);
-
-                    }
-
-
-                }
-
-            });
-            
-            
-      }
-    
-
     public void exec() {
 
         final Exception track = new Exception();
