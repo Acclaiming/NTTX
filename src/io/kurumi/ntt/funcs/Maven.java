@@ -17,6 +17,7 @@ import cn.hutool.core.util.CharsetUtil;
 import io.kurumi.ntt.utils.BotLog;
 import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.exceptions.UtilException;
+import com.mongodb.MongoClient;
 
 public class Maven extends Fragment {
 

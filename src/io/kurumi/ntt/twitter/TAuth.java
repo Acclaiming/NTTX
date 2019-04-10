@@ -1,7 +1,7 @@
 package io.kurumi.ntt.twitter;
 
 import cn.hutool.json.JSONObject;
-import io.kurumi.ntt.db.BotDB;
+import io.kurumi.ntt.db.SData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.utils.Html;
 import twitter4j.AsyncTwitter;
@@ -15,7 +15,7 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class TAuth extends JSONObject {
 
-    public static JSONObject auth = BotDB.getJSON("data","auth",true);
+    public static JSONObject auth = SData.getJSON("data","auth",true);
     
 	public static boolean exists(UserData user) {
         
@@ -43,7 +43,7 @@ public class TAuth extends JSONObject {
     
     public static void saveAll() {
         
-        BotDB.setJSON("data","auth",auth);
+        SData.setJSON("data","auth",auth);
         
     }
 	

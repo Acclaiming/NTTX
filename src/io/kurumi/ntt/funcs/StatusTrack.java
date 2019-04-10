@@ -1,6 +1,6 @@
 package io.kurumi.ntt.funcs;
 
-import io.kurumi.ntt.db.BotDB;
+import io.kurumi.ntt.db.SData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
@@ -55,7 +55,7 @@ public class StatusTrack extends Fragment {
 
                 FTTask.enable.remove(user.idStr);
                 FTTask.save();
-                BotDB.setJSONArray("cache","track/" + user.idStr,null);
+                SData.setJSONArray("cache","track/" + user.idStr,null);
 
                 msg.send("已关闭 :)").exec();
 

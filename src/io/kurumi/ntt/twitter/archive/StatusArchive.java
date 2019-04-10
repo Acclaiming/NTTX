@@ -17,25 +17,12 @@ import java.time.*;
 import io.kurumi.ntt.utils.*;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
+import io.kurumi.ntt.db.BotDB;
 
-public class StatusArchive extends IdDataModel {
+public class StatusArchive {
 
-    public static Factory<StatusArchive> INSTANCE = new Factory<StatusArchive>(StatusArchive.class,"twitter_archives/statuses");
-
-    public static StatusArchive saveCache(Status status) {
-
-        StatusArchive archive = INSTANCE.getOrNew(status.getId());
-
-        archive.read(status);
-
-        INSTANCE.saveObj(archive);
-        
-        return archive;
-
-    }
-
-    public StatusArchive(String dirName,long id) { super(dirName,id); }
-
+    public Long id;
+    
 	public Long createdAt;
 
 	public String text;
@@ -54,11 +41,7 @@ public class StatusArchive extends IdDataModel {
 
     public Boolean isRetweet;
 
-    public Long retweetedStatusId;
-
-	@Override
-	protected void init() {
-	}
+    public Long retweetedStatus;
 
     public void read(Status status) {
 
@@ -77,13 +60,9 @@ public class StatusArchive extends IdDataModel {
 
         quotedStatusId = status.getQuotedStatusId();
 
-        if (quotedStatusId != -1 && !INSTANCE.exists(quotedStatusId)) {
-
-            StatusArchive quotedStatus = INSTANCE.getOrNew(quotedStatusId);
-
-            quotedStatus.read(status.getQuotedStatus());
-
-            INSTANCE.saveObj(quotedStatus);
+        if (quotedStatusId != -1 && !BotDB.statusExists(quotedStatusId)) {
+            
+            BotDB.saveStatus(status.getQuotedStatus());
 
         }
 
@@ -99,61 +78,19 @@ public class StatusArchive extends IdDataModel {
 
         if (isRetweet) {
 
-            retweetedStatusId = status.getRetweetedStatus().getId();
+            retweetedStatus = status.getRetweetedStatus().getId();
 
-            if (!INSTANCE.exists(retweetedStatusId)) {
+            if (!BotDB.statusExists(retweetedStatus)) {
 
-                StatusArchive retweetedStatus = INSTANCE.getOrNew(retweetedStatusId);
-
-                retweetedStatus.read(status.getRetweetedStatus());
-
-                INSTANCE.saveObj(retweetedStatus);
+                BotDB.saveStatus(status.getRetweetedStatus());
 
             }
 
         } else {
 
-            retweetedStatusId = -1L;
+            retweetedStatus = -1L;
 
         }
-
-    }
-
-	@Override
-	protected void load(JSONObject obj) {
-
-        createdAt = obj.getLong("created_at");
-        text = obj.getStr("text");
-        from = obj.getLong("from");
-        inReplyToStatusId = obj.getLong("in_reply_to_status_id");
-        inReplyToUserId = obj.getLong("in_reply_to_user_id");
-        inReplyToScreenName = obj.getStr("in_reply_to_screen_name");
-        quotedStatusId = obj.getLong("quoted_status_id");
-
-        if (!obj.isNull("media_urls")) {
-
-            mediaUrls = new LinkedList<String>((List<String>)((Object)obj.getJSONArray("media_urls")));
-
-        }
-
-        isRetweet = obj.getBool("is_retweet");
-        retweetedStatusId = obj.getLong("retweeted_status_id");
-
-	}
-
-	@Override
-	protected void save(JSONObject obj) {
-
-        obj.put("created_at",createdAt);
-        obj.put("text",text);
-        obj.put("from",from);
-        obj.put("in_reply_to_status_id",inReplyToStatusId);
-        obj.put("in_reply_to_user_id",inReplyToUserId);
-        obj.put("in_reply_to_screen_name",inReplyToScreenName);
-        obj.put("quoted_status_id",quotedStatusId);
-        obj.put("media_urls",mediaUrls);
-        obj.put("is_retweet",isRetweet);
-        obj.put("retweeted_status_id",retweetedStatusId);
 
 	}
 
@@ -165,7 +102,7 @@ public class StatusArchive extends IdDataModel {
 
     public String getURL() {
 
-        return "https://twitter.com/" + getUser().screenName + "/status/" + idStr;
+        return "https://twitter.com/" + getUser().screenName + "/status/" + id;
 
     }
 
@@ -183,7 +120,7 @@ public class StatusArchive extends IdDataModel {
 
         if (quotedStatusId != -1) {
 
-            StatusArchive quotedStatus = INSTANCE.get(quotedStatusId);
+            StatusArchive quotedStatus = BotDB.getStatus(quotedStatusId);
 
             if (quotedStatus == null) {
 
@@ -199,7 +136,7 @@ public class StatusArchive extends IdDataModel {
 
         } else if (inReplyToStatusId != -1) {
 
-            StatusArchive inReplyTo = INSTANCE.get(inReplyToStatusId);
+            StatusArchive inReplyTo = BotDB.getStatus(inReplyToStatusId);
 
             if (inReplyTo != null) {
 
@@ -216,11 +153,11 @@ public class StatusArchive extends IdDataModel {
 
         } else if (isRetweet) {
 
-            StatusArchive retweetedStatus = INSTANCE.get(retweetedStatusId);
+            StatusArchive retweeted = BotDB.getStatus(retweetedStatus);
 
-            archive.append(getUser().getHtmlURL()).append(" 转推从 " + retweetedStatus.getUser().getHtmlURL()).append(" : ");
+            archive.append(getUser().getHtmlURL()).append(" 转推从 " + retweeted.getUser().getHtmlURL()).append(" : ");
 
-            archive.append(retweetedStatus.toHtml());
+            archive.append(retweeted.toHtml());
 
             return archive.toString();
 

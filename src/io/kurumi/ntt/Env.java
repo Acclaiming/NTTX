@@ -39,7 +39,7 @@ public class Env {
     
     static {
 
-        ROOT = new File("/usr/local/ntt");
+        ROOT = new File("../");
         DATA_DIR = new File(ROOT,"data");
         CACHE_DIR = new File(ROOT,"cache");
 

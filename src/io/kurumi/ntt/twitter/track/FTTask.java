@@ -10,7 +10,7 @@ import io.kurumi.ntt.utils.*;
 import java.util.*;
 import twitter4j.*;
 import cn.hutool.json.JSONObject;
-import io.kurumi.ntt.db.BotDB;
+import io.kurumi.ntt.db.SData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.twitter.TApi;
@@ -37,7 +37,7 @@ public class FTTask extends TimerTask {
 
     static FTTask INSTANCE = new FTTask();
 
-    public static JSONObject enable = BotDB.getJSON("data","track",true);
+    public static JSONObject enable = SData.getJSON("data","track",true);
 
 	static HashMap<Long,LinkedList<Long>> frIndex = new HashMap<>();
     static HashMap<Long,LinkedList<Long>> flIndex = new HashMap<>();
@@ -66,7 +66,7 @@ public class FTTask extends TimerTask {
 
     public static void save() {
 
-        BotDB.setJSON("data","track",enable);
+        SData.setJSON("data","track",enable);
 
     }
 
@@ -134,7 +134,7 @@ public class FTTask extends TimerTask {
 
                 enable.remove(user.idStr);
 
-                BotDB.setJSONArray("cache","track/" + user.idStr,null);
+                SData.setJSONArray("cache","track/" + user.idStr,null);
 
                 save();
 
@@ -269,6 +269,10 @@ public class FTTask extends TimerTask {
 
     String link = Html.a("姬生平","https://esu.wiki/姬生平");
 
+    HashMap<Long,LinkedList<Long>> userBlock;
+    HashMap<Long,LinkedList<Long>> userMute;
+    
+    
     String parseStatus(Twitter api,User user) {
 
         StringBuilder status = new StringBuilder();
@@ -278,7 +282,9 @@ public class FTTask extends TimerTask {
         if (user.getStatusesCount() == 0) status.append("这个用户没有发过推 :)\n");
         if (user.getFavouritesCount() == 0) status.append("这个用户没有喜欢过推文 :)\n");
         if (user.getFollowersCount() < 20) status.append("这个用户关注者低 (").append(user.getFollowersCount()).append(")  :)\n");
-
+        
+        /*
+        
         try {
 
             Relationship ship = api.showFriendship(user.getId(),917716145121009664L);
@@ -298,6 +304,8 @@ public class FTTask extends TimerTask {
             }
 
         } catch (TwitterException e) {}
+        
+        */
 
         String statusR = status.toString();
 

@@ -11,7 +11,7 @@ import io.kurumi.ntt.twitter.track.FTTask;
 import io.kurumi.ntt.twitter.track.UTTask;
 import io.kurumi.ntt.funcs.Backup;
 import cn.hutool.core.util.RuntimeUtil;
-import io.kurumi.ntt.db.BotDB;
+import io.kurumi.ntt.db.SData;
 import io.kurumi.ntt.utils.Html;
 
 public class InitTask extends Thread {

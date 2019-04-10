@@ -1,170 +1,79 @@
 package io.kurumi.ntt.db;
 
-import cn.hutool.core.io.*;
-import cn.hutool.json.*;
-import io.kurumi.ntt.*;
-import java.io.*;
-import java.util.*;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoException;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Indexes;
+import io.kurumi.ntt.twitter.archive.StatusArchive;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
+import twitter4j.Status;
+
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Updates.*;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.gt;
+import static com.mongodb.client.model.Filters.not;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
+import static java.util.Arrays.asList;
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+import java.util.LinkedList;
+import com.mongodb.client.model.FindOptions;
 
 public class BotDB {
 
-	private static HashMap<String,String> cache = new HashMap<>();
+    public static MongoClient client;
+    public static MongoDatabase db;
 
-	private static String cacheKey(String path,String key) {
+    public static void init(String address,int port) throws MongoException {
 
-		return path + "_" + key;
+        client = new MongoClient(address,port);
 
-	}
+        CodecRegistry registry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+        
+        db = client.getDatabase("NTTools").withCodecRegistry(registry);
 
-	private static File cacheFile(String path,String key) {
+        statusArchiveCollection = db.getCollection("STATUS",StatusArchive.class);
 
-		return new File(new File(Env.ROOT,path),key);
-
-	}
-
-	public static boolean exists(String path,String key) {
-
-		return cache.containsKey(cacheKey(path,key)) || cacheFile(path,key).exists();
-
-	}
-
-	public static String gNC(String path,String key) {
-
-		try {
-
-			return FileUtil.readUtf8String(cacheFile(path,key));
-
-		} catch (IORuntimeException e) {
-		}
-
-		return null;
-
-	}
-
-	public static String get(String path,String key) {
-
-		String cacheKey = cacheKey(path,key);
-
-		if (cache.containsKey(cacheKey)) return cache.get(cacheKey);
-
-		String value = gNC(path,key);
-
-		if (value == null) return null;
-
-		cache.put(cacheKey,value);
-
-		return value;
-
-	}
-
-	public static void sNC(String path,String key,String value) {
-
-		if (value == null) {
-
-			FileUtil.del(cacheFile(path,key));
-
-		} else {
-
-			FileUtil.writeUtf8String(value,cacheFile(path,key));
-
-		}
-
-	}
-
-    public static void set(String path,String key,String value) {
-
-		sNC(path,key,value);
-
-		String cacheKey = cacheKey(path,key);
-
-		if (value == null) {
-
-			cache.remove(cacheKey);
-
-		} else {
-
-			cache.put(cacheKey,value);
-
-		}
-
-	}
-
-	private static HashMap<String,JSONObject> json = new HashMap<>();
-
-	public static JSONObject getJSON(String path,String key,boolean fix) {
-
-		String cacheKey = cacheKey(path,key);
-
-		if (json.containsKey(cacheKey)) return json.get(cacheKey);
-
-		String value = gNC(path,key + ".json");
-
-		if (value == null) return fix ? new JSONObject() : null;
-
-        try {
-
-            return new JSONObject(value);
-
-        } catch (JSONException err) {
-
-            return fix ? new JSONObject() : null;
-            
-
-        }
-
-	}
-
-	public static void setJSON(String path,String key,JSONObject value) {
-
-		sNC(path,key + ".json",value != null ? value.toStringPretty() : null);
-
-		String cacheKey = cacheKey(path,key);
-
-		if (value == null) {
-
-			json.remove(cacheKey);
-
-		} else {
-
-			json.put(cacheKey,value);
-
-		}
-
-	}
-
-    private static HashMap<String,JSONArray> jsonArray = new HashMap<>();
-
-    public static JSONArray getJSONArray(String path,String key,boolean fix) {
-
-        String cacheKey = cacheKey(path,key);
-
-        if (jsonArray.containsKey(cacheKey)) return jsonArray.get(cacheKey);
-
-        String value = gNC(path,key + ".json");
-
-        if (value == null) return fix ? new JSONArray() : null;
-
-        return new JSONArray(value);
+      //  statusArchiveCollection.createIndex(Indexes.compoundIndex();
 
     }
 
-    public static void setJSONArray(String path,String key,JSONArray value) {
+    public static MongoCollection<StatusArchive> statusArchiveCollection;
 
-        sNC(path,key + ".json",value != null ? value.toStringPretty() : null);
+    public static boolean statusExists(long id) {
 
-        String cacheKey = cacheKey(path,key);
-
-        if (value == null) {
-
-            jsonArray.remove(cacheKey);
-
-        } else {
-
-            jsonArray.put(cacheKey,value);
-
-        }
+        return statusArchiveCollection.countDocuments(eq("id",id)) > 0;
 
     }
 
+    public static StatusArchive getStatus(long id) {
+
+        if (!statusExists(id)) return null;
+
+        return statusArchiveCollection.find(eq("id",id)).first();
+
+    }
+
+    public static StatusArchive saveStatus(Status status) {
+
+        if (statusExists(status.getId())) return getStatus(status.getId());
+
+        StatusArchive archive = new StatusArchive();
+
+        archive.id = status.getId();
+
+        archive.read(status);
+
+        statusArchiveCollection.insertOne(archive);
+        
+        return archive;
+
+    }
 
 }
+

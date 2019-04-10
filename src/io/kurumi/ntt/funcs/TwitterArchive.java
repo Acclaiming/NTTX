@@ -12,6 +12,7 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import io.kurumi.ntt.twitter.archive.UserArchive;
+import io.kurumi.ntt.db.BotDB;
 
 public class TwitterArchive extends Fragment {
 
@@ -62,11 +63,11 @@ public class TwitterArchive extends Fragment {
 
         }
 
-        if (StatusArchive.INSTANCE.exists(statusId)) {
+        if (BotDB.statusExists(statusId)) {
 
             msg.send("存档存在 :)").exec();
 
-            msg.send(StatusArchive.INSTANCE.get(statusId).toHtml()).html().exec();
+            msg.send(BotDB.getStatus(statusId).toHtml()).html().exec();
 
             return;
 
@@ -84,7 +85,7 @@ public class TwitterArchive extends Fragment {
 
         try {
 
-            StatusArchive newStatus = StatusArchive.saveCache(api.showStatus(statusId));
+            StatusArchive newStatus = BotDB.saveStatus(api.showStatus(statusId));
 
             loopStatus(newStatus,api);
 
@@ -133,19 +134,15 @@ public class TwitterArchive extends Fragment {
 
             if (archive.inReplyToStatusId != -1) {
 
-                if (StatusArchive.INSTANCE.exists(archive.inReplyToStatusId)) {
+                if (BotDB.statusExists(archive.inReplyToStatusId)) {
 
-                    loopStatus(StatusArchive.INSTANCE.get(archive.inReplyToStatusId),api);
+                    loopStatus(BotDB.getStatus(archive.inReplyToStatusId),api);
 
                 } else {
 
                     Status status = api.showStatus(archive.inReplyToStatusId);
 
-                    StatusArchive inReplyTo = StatusArchive.INSTANCE.getOrNew(archive.inReplyToStatusId);
-
-                    inReplyTo.read(status);
-
-                    StatusArchive.INSTANCE.saveObj(inReplyTo);
+                    StatusArchive inReplyTo = BotDB.saveStatus(status);
 
                     loopStatus(inReplyTo,api);
 
@@ -155,21 +152,17 @@ public class TwitterArchive extends Fragment {
 
             if (archive.quotedStatusId != -1) {
 
-                if (StatusArchive.INSTANCE.exists(archive.quotedStatusId)) {
+                if (BotDB.statusExists(archive.quotedStatusId)) {
 
-                    loopStatus(StatusArchive.INSTANCE.get(archive.quotedStatusId),api);
+                    loopStatus(BotDB.getStatus(archive.quotedStatusId),api);
 
                 } else {
 
                     Status status = api.showStatus(archive.quotedStatusId);
 
-                    StatusArchive qupted = StatusArchive.INSTANCE.getOrNew(archive.quotedStatusId);
+                    StatusArchive quoted = BotDB.saveStatus(status);
 
-                    qupted.read(status);
-
-                    StatusArchive.INSTANCE.saveObj(qupted);
-
-                    loopStatus(qupted,api);
+                    loopStatus(quoted,api);
 
                 }
 

@@ -1,16 +1,30 @@
 package io.kurumi.ntt;
 
-import cn.hutool.log.*;
-import io.kurumi.ntt.fragment.*;
-import io.kurumi.ntt.funcs.*;
-import io.kurumi.ntt.utils.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.model.*;
-import java.io.*;
-import java.util.*;
+import cn.hutool.core.lang.Console;
+import com.mongodb.MongoClient;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.funcs.Backup;
+import io.kurumi.ntt.funcs.GroupRepeat;
+import io.kurumi.ntt.funcs.HideMe;
+import io.kurumi.ntt.funcs.LuaEnv;
+import io.kurumi.ntt.funcs.Maven;
+import io.kurumi.ntt.funcs.Ping;
+import io.kurumi.ntt.funcs.StatusTrack;
+import io.kurumi.ntt.funcs.StickerManage;
+import io.kurumi.ntt.funcs.TwitterArchive;
+import io.kurumi.ntt.funcs.TwitterDelete;
+import io.kurumi.ntt.funcs.TwitterUI;
+import io.kurumi.ntt.funcs.UserTrack;
+import io.kurumi.ntt.funcs.YourGroupRule;
+import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.twitter.track.FTTask;
-import java.util.concurrent.atomic.AtomicBoolean;
 import io.kurumi.ntt.twitter.track.UTTask;
+import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.utils.Html;
+import java.util.TimeZone;
+import io.kurumi.ntt.db.BotDB;
+import com.mongodb.MongoException;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -19,11 +33,11 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     public Launcher() {
 
         addFragment(Ping.INSTANCE);
-        
+
         addFragment(StickerManage.INSTANCE);
 
         addFragment(TwitterDelete.INSTANCE);
-    
+
         addFragment(Backup.INSTANCE);
 
         addFragment(GroupRepeat.INSTANCE);
@@ -40,18 +54,18 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(UserTrack.INSTANCE);
 
         addFragment(YourGroupRule.INSTANCE);
-        
-       // addFragment(AnalysisJsp.INSTANCE);
-        
+
+        // addFragment(AnalysisJsp.INSTANCE);
+
         addFragment(HideMe.INSTANCE);
-        
+
         // addFragment(MusicSearch.INSTANCE);
 
         // addFragment(AntiTooManyMsg.INSTANCE);
 
         addFragment(Maven.INSTANCE);
-        
-       }
+
+    }
 
     public static void main(String[] args) {
 
@@ -77,7 +91,43 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		 */
 
+        boolean success = false;
+
+        String dbAddr = Env.getOrDefault("db_address","127.0.0.1");
+        Integer dbPort = Integer.parseInt(Env.getOrDefault("db_port","27017"));
+
+        while (!initDB(dbAddr,dbPort)) {
+
+            try {
+
+                System.out.print("输入MongoDb地址 : ");
+                dbAddr = Console.scanner().nextLine();
+
+                System.out.print("输入MongoDb端口 : ");
+                dbPort = Console.scanner().nextInt();
+
+            } catch (Exception e) {}
+
+        }
+
         INSTANCE.start();
+
+
+    }
+
+    static boolean initDB(String dbAddr,Integer dbPort) {
+
+        try {
+
+            BotDB.init(dbAddr,dbPort);
+
+            return true;
+
+        } catch (MongoException e) {
+
+            return false;
+
+        }
 
     }
 

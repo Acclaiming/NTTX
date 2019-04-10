@@ -3,7 +3,7 @@ package io.kurumi.ntt.twitter.track;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
-import io.kurumi.ntt.db.BotDB;
+import io.kurumi.ntt.db.SData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.twitter.TAuth;
@@ -284,7 +284,7 @@ public class UTTask extends TimerTask {
     }
 
 
-    public static JSONObject subs = BotDB.getJSON("data","subscriptions",true);
+    public static JSONObject subs = SData.getJSON("data","subscriptions",true);
 
     public static boolean exists(UserData user) {
 
@@ -352,7 +352,7 @@ public class UTTask extends TimerTask {
 
     public static void save() {
 
-        BotDB.setJSON("data","subscriptions",subs);
+        SData.setJSON("data","subscriptions",subs);
 
     }
 

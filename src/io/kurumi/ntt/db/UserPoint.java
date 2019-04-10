@@ -12,7 +12,7 @@ public class UserPoint {
 
         synchronized (user) {
 
-            BotDB.setJSON(KEY,user.idStr,data);
+            SData.setJSON(KEY,user.idStr,data);
 
         }
 
@@ -22,7 +22,7 @@ public class UserPoint {
 
         synchronized (user) {
 
-            JSONObject data = BotDB.getJSON(KEY,user.idStr,false);
+            JSONObject data = SData.getJSON(KEY,user.idStr,false);
 
             if (data == null) {
 
