@@ -124,7 +124,7 @@ public class FTTask extends TimerTask {
     }
 
 
-    void startUserStack(long userId) {
+    void startUserStack(Long userId) {
 
         try {
 
@@ -132,7 +132,7 @@ public class FTTask extends TimerTask {
             
             if (user == null || !TAuth.avilable(user)) {
 
-                enable.remove(userId);
+                enable.remove(userId.toString());
 
                 save();
 
