@@ -116,6 +116,8 @@ public class BotDB {
         if (userData == null) {
 
             synchronized (userDataIndex) {
+                
+                if (userDataIndex.containsKey(user.id().longValue())) return userDataIndex.get(user.id().longValue());
 
                 userData = new UserData();
                 userData.id = user.id().longValue();
