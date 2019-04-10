@@ -8,19 +8,20 @@ import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.DeleteWebhook;
 import com.pengrad.telegrambot.request.GetMe;
 import com.pengrad.telegrambot.request.GetUpdates;
+import com.pengrad.telegrambot.response.GetMeResponse;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.db.BotDB;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.Query;
+import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.utils.ThreadPool;
 import java.util.LinkedList;
 import java.util.List;
-import io.kurumi.ntt.model.request.Send;
-import com.pengrad.telegrambot.response.GetMeResponse;
 import okhttp3.OkHttpClient;
-import io.kurumi.ntt.utils.ThreadPool;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
@@ -141,19 +142,19 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         if (update.message() != null) {
 
-            user = UserData.get(update.message().from());
+            user = BotDB.getUserData(update.message().from());
 
         } else if (update.channelPost() != null) {
 
-            user = update.channelPost().from() != null ? UserData.get(update.channelPost().from()) : null;
+            user = update.channelPost().from() != null ? BotDB.getUserData(update.channelPost().from()) : null;
 
         } else if (update.callbackQuery() != null) {
 
-            user = UserData.get(update.callbackQuery().from());
+            user = BotDB.getUserData(update.callbackQuery().from());
 
         } else if (update.inlineQuery() != null) {
 
-            user = UserData.get(update.inlineQuery().from());
+            user = BotDB.getUserData(update.inlineQuery().from());
 
         } else user = null;
         

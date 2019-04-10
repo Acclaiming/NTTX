@@ -74,7 +74,7 @@ public class T {
         
         if (!TAuth.avilable(user)) {
 
-            TAuth.auth.remove(user.idStr);
+            TAuth.auth.remove(user.id.toString());
 
             TAuth.saveAll();
 

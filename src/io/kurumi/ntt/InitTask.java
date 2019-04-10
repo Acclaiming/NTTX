@@ -13,6 +13,7 @@ import io.kurumi.ntt.funcs.Backup;
 import cn.hutool.core.util.RuntimeUtil;
 import io.kurumi.ntt.db.SData;
 import io.kurumi.ntt.utils.Html;
+import io.kurumi.ntt.db.BotDB;
 
 public class InitTask extends Thread {
 
@@ -20,45 +21,25 @@ public class InitTask extends Thread {
 
         BotLog.info("开始初始化BOT...");
 
-        Long[] ids = UserData.INSTANCE.idList.toArray(new Long[UserData.INSTANCE.idList.size()]);
-
-        for (long id : ids) {
-
-            UserData user = new UserData(UserData.INSTANCE.dirName,id);
-
-            /*
-
-             SendResponse resp = new Send(user.id,"testIsBlockedBot").disableNotification().sync();
-
-             if (!resp.isOk()) {
-
-             UserData.INSTANCE.delObj(user);
-
-             BotLog.info("用户 " + user.userName() + " 已停用BOT");
-
-             continue;
-
-             } else {
-
-             Launcher.INSTANCE.bot().execute(new DeleteMessage(user.id,resp.message().messageId()));
-
-             }
-
-             */
+        for (UserData user : BotDB.userDataIterable()) {
 
             if (!TAuth.exists(user)) continue;
 
             TAuth auth = TAuth.get(user);
 
-            if (!auth.refresh()) {
+            if (!user.isContactable()) {
+
+                TAuth.auth.remove(user.id.toString());
+
+            } else if (!auth.refresh()) {
 
                 new Send(user.id,"对不起！但是乃的认证 " + auth.getFormatedNameHtml() + " 已无法访问 移除了！ Σ( ﾟω / ").html().exec();
 
-                TAuth.auth.remove(user.idStr);
+                TAuth.auth.remove(user.id.toString());
 
                 BotLog.info("用户 " + user.userName() + " 的Twitter认证 " + auth.getFormatedName() + " 失效.");
 
-            }
+            } 
 
         }
 
@@ -70,6 +51,6 @@ public class InitTask extends Thread {
         UTTask.start();
         Backup.AutoBackupTask.INSTANCE.start();
 
-        }
+    }
 
 }

@@ -25,6 +25,9 @@ import java.util.LinkedList;
 import com.mongodb.client.model.FindOptions;
 import io.kurumi.ntt.twitter.archive.UserArchive;
 import twitter4j.User;
+import java.util.HashMap;
+import com.mongodb.client.MongoIterable;
+import com.mongodb.client.FindIterable;
 
 public class BotDB {
 
@@ -39,11 +42,73 @@ public class BotDB {
 
         db = client.getDatabase("NTTools").withCodecRegistry(registry);
 
+        userDataCollection = db.getCollection("UserData",UserData.class);
+
         statusArchiveCollection = db.getCollection("StatusArchive",StatusArchive.class);
-       
+
         userArchiveCollection = db.getCollection("UserArchive",UserArchive.class);
-        
+
         //  statusArchiveCollection.createIndex(Indexes.compoundIndex();
+
+    }
+
+    public static MongoCollection<UserData> userDataCollection;
+
+    public static HashMap<Long,UserData> userDataIndex = new HashMap<>();
+
+    public static FindIterable<UserData> userDataIterable() {
+
+        return userDataCollection.find();
+
+    }
+
+    public static UserData getUserData(long userId) {
+
+        if (userDataIndex.containsKey(userId)) return userDataIndex.get(userId);
+
+        synchronized (userDataIndex) {
+
+            if (userDataIndex.containsKey(userId)) return userDataIndex.get(userId);
+
+            if (userDataCollection.countDocuments(eq("_id",userId)) > 0) {
+
+                UserData user =  userDataCollection.find(eq("_id",userId)).first();
+
+                userDataIndex.put(userId,user);
+
+            }
+
+        }
+
+        return null;
+
+    }
+
+    public static UserData getUserData(com.pengrad.telegrambot.model.User user) {
+
+        if (user == null) return null;
+
+        UserData userData = getUserData(user.id().longValue());
+
+        if (userData == null) {
+
+            synchronized (userDataIndex) {
+
+                userData = new UserData();
+                userData.id = user.id().longValue();
+                userData.read(user);
+
+                userDataIndex.put(user.id().longValue(),userData);
+
+            }
+
+        } else {
+
+            userData.read(user);
+
+        }
+        
+        return userData;
 
     }
 
@@ -86,7 +151,7 @@ public class BotDB {
         return userArchiveCollection.countDocuments(eq("_id",id)) > 0;
 
     }
-    
+
     public static boolean userExists(String screenName) {
 
         return userArchiveCollection.countDocuments(eq("screenName",screenName)) > 0;
@@ -100,7 +165,7 @@ public class BotDB {
         return userArchiveCollection.find(eq("_id",id)).first();
 
     }
-    
+
     public static UserArchive getUser(String screenName) {
 
         if (!userExists(screenName)) return null;
@@ -126,7 +191,7 @@ public class BotDB {
         } else {
 
             archive = new UserArchive();
-            
+
             archive.isDisappeared = false;
 
             archive.id = user.getId();

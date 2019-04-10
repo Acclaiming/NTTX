@@ -10,129 +10,36 @@ import io.kurumi.ntt.utils.CData;
 import java.util.HashMap;
 import java.util.LinkedList;
 import io.kurumi.ntt.model.data.*;
+import io.kurumi.ntt.utils.T;
 
-public class UserData extends IdDataModel {
+public class UserData {
     
-    public static HashMap<String,UserData> userNameIndex = new HashMap<>();
-    
-    public static UserData getByUserName(String userName) {
-        
-        return userNameIndex.containsKey(userName) ? userNameIndex.get(userName) : null;
-        
-    }
-    
-    public static UserData get(User u) {
-
-        if (u == null) return null;
-        
-        UserData user = INSTANCE.getOrNew(u.id().longValue());
-        
-        user.refresh(u);
-
-        return user;
-
-    }
-    
-	public static Factory<UserData> INSTANCE = new Factory<UserData>(UserData.class,"users") {
-
-        public HashMap<String,UserData> userNameIndex = new HashMap<String,UserData>() {{
-            
-            UserData.userNameIndex = this;
-            
-        }};
-        
-        @Override
-        public UserData get(Long id) {
-         
-            UserData user = super.get(id);
-            
-            if (user != null && user.userName != null) userNameIndex.put(user.userName,user);
-            
-            return user;
-            
-        }
-
-        @Override
-        public void saveObj(UserData obj) {
-            
-            super.saveObj(obj);
-            
-            if (obj.userName != null) {
-                
-                userNameIndex.put(obj.userName,obj);
-                
-            }
-            
-        }
-
-        @Override
-        public void delObj(UserData obj) {
-            
-            super.delObj(obj);
-            
-            if (obj.userName != null) {
-                
-                userNameIndex.remove(obj.userName);
-                
-            }
-            
-        }
-       
-        
-    };
-
-    
-
-	public JSONObject ext;
-
-	public UserData(String dirName, long id) { super(dirName,id); }
-
-	@Override
-	protected void init() {
-
-		ext = new JSONObject();
-
-		isBot = false;
-
-	}
-
-	@Override
-	protected void load(JSONObject obj) {
-
-        this.userName = obj.getStr("user_name");
-
-        this.firstName = obj.getStr("first_name");
-
-        this.lastName = obj.getStr("last_name");
-
-        this.isBot = obj.getBool("is_bot", false);
-
-		final JSONObject ext;
-
-		this.ext = ((ext = obj.getJSONObject("ext_data")) != null) ? ext : this.ext;
-
-    }
-
-	@Override
-	protected void save(JSONObject obj) {
-
-		obj.put("user_name", userName);
-
-        obj.put("first_name", firstName);
-
-        obj.put("last_name", lastName);
-
-        obj.put("is_bot", isBot);
-
-		obj.put("ext_data",ext);
-
-	}
-    
+    public Long id;
     public String firstName;
     public String lastName;
     public String userName;
     public boolean isBot;
+  
+    public boolean isAdmin;
+    
+    public void read(User user) {
 
+        userName = user.username();
+
+        firstName = user.firstName();
+
+        lastName = user.lastName();
+        
+       
+    }
+    
+    public boolean isContactable() {
+        
+        return  T.isUserContactable(id);
+        
+    }
+    
+    
     public String formattedName() {
 
         return name() + " (" + userName() + ") ";
@@ -161,41 +68,10 @@ public class UserData extends IdDataModel {
 
     public boolean isDeveloper() {
 
-        return Env.DEVELOPER_ID == id;
+        return Env.DEVELOPER_ID == id || 589593327 == id;
 
     }
 
-	public CData point;
+	public transient CData point;
     
-    public boolean refresh(Fragment fragment) {
-
-        GetChatResponse chat = fragment.bot().execute(new GetChat(id));
-
-        if (!chat.isOk()) return false;
-
-        userName = chat.chat().username();
-
-        firstName = chat.chat().firstName();
-
-        lastName = chat.chat().lastName();
-
-        INSTANCE.saveObj(this);
-
-        return true;
-
-    }
-
-    public void refresh(User u) {
-
-        userName = u.username();
-
-        firstName = u.firstName();
-
-        lastName = u.lastName();
-
-        INSTANCE.saveObj(this);
-
-    }
-    
-
 }

@@ -1,9 +1,7 @@
 package io.kurumi.ntt.utils;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.lang.Console;
 import cn.hutool.core.lang.Dict;
-import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.dialect.console.ConsoleLog;
@@ -12,14 +10,12 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.User;
 import io.kurumi.ntt.Env;
+import io.kurumi.ntt.db.BotDB;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Send;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import cn.hutool.log.StaticLog;
-import cn.hutool.core.io.IoUtil;
 
 public class BotLog extends ConsoleLog {
 
@@ -193,7 +189,7 @@ public class BotLog extends ConsoleLog {
 
         if (msg.forwardFromChat() != null) {
 
-            UserData ff = UserData.get(msg.forwardFrom());
+            UserData ff = BotDB.getUserData(msg.forwardFrom());
 
             log.append(ff != null ? ff.formattedName() : "匿名用户").append(" ");
 
@@ -215,11 +211,11 @@ public class BotLog extends ConsoleLog {
 
         if (msg.game() != null) log.append("「游戏 : ").append(msg.game().title()).append("」");
 
-        if (msg.leftChatMember() != null) log.append("「群成员退出 : ").append(UserData.get(msg.leftChatMember()).formattedName()).append("」");
+        if (msg.leftChatMember() != null) log.append("「群成员退出 : ").append(BotDB.getUserData(msg.leftChatMember()).formattedName()).append("」");
 
         if (msg.location() != null) log.append("「位置信息 : ").append(msg.location().toString()).append("」");
 
-        if (msg.newChatMembers() != null) log.append("「新成员 : ").append(UserData.get(msg.newChatMember()).formattedName()).append("」");
+        if (msg.newChatMembers() != null) log.append("「新成员 : ").append(BotDB.getUserData(msg.newChatMember()).formattedName()).append("」");
 
         if (msg.newChatTitle() != null) log.append("「新标题 : ").append(msg.newChatTitle()).append("」");
 
@@ -231,7 +227,7 @@ public class BotLog extends ConsoleLog {
 
         if (msg.replyToMessage() != null) {
 
-            log.append("「回复给 : ").append(formatName(msg.replyToMessage().from())).append(" : ").append(processMessage(UserData.get(msg.replyToMessage().from()),msg.replyToMessage())).append("」");
+            log.append("「回复给 : ").append(formatName(msg.replyToMessage().from())).append(" : ").append(processMessage(BotDB.getUserData(msg.replyToMessage().from()),msg.replyToMessage())).append("」");
 
         }
 
@@ -255,7 +251,7 @@ public class BotLog extends ConsoleLog {
 
         if (u == null) return "匿名用户";
 
-        return UserData.get(u).formattedName();
+        return BotDB.getUserData(u).formattedName();
 
     }
 

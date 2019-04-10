@@ -47,11 +47,7 @@ public class Msg extends Context {
 	
 	public UserData from() {
 		
-		UserData user = UserData.INSTANCE.getOrNew((long)message.from().id());
-
-		user.refresh(message.from());
-		
-		return user;
+		return BotDB.getUserData(message.from());
 		
 	}
 

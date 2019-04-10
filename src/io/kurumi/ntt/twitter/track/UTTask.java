@@ -126,9 +126,9 @@ public class UTTask extends TimerTask {
                     }
 
 
-                    UserData user = UserData.INSTANCE.get(Long.parseLong(id));
+                    UserData user = BotDB.getUserData(Long.parseLong(id));
 
-                    subIndex.put(user.id,subs.getJSONArray(user.idStr).toList(Long.class));
+                    subIndex.put(user.id,subs.getJSONArray(user.id.toString()).toList(Long.class));
 
                     if (!TAuth.exists(user)) continue;
 
@@ -289,7 +289,7 @@ public class UTTask extends TimerTask {
 
     public static boolean exists(UserData user) {
 
-        return subs.containsKey(user.idStr);
+        return subs.containsKey(user.id.toString());
 
     }
 
@@ -297,9 +297,9 @@ public class UTTask extends TimerTask {
 
         synchronized (subs) {
 
-            if (subs.containsKey(user.idStr)) {
+            if (subs.containsKey(user.id.toString())) {
 
-                return subs.getJSONArray(user.idStr).toList(Long.class);
+                return subs.getJSONArray(user.id.toString()).toList(Long.class);
 
             }
 
@@ -313,11 +313,11 @@ public class UTTask extends TimerTask {
 
         synchronized (subs) {
 
-            LinkedHashSet<Long> list = subs.containsKey(user.idStr) ? new LinkedHashSet<Long>(subs.getJSONArray(user.idStr).toList(Long.class)) : new LinkedHashSet<>();
+            LinkedHashSet<Long> list = subs.containsKey(user.id.toString()) ? new LinkedHashSet<Long>(subs.getJSONArray(user.id.toString()).toList(Long.class)) : new LinkedHashSet<>();
 
             boolean result = list.add(id);
 
-            subs.put(user.idStr,list);
+            subs.put(user.id.toString(),list);
 
             return result;
 
@@ -329,11 +329,11 @@ public class UTTask extends TimerTask {
 
         synchronized (subs) {
 
-            LinkedHashSet<Long> list = subs.containsKey(user.idStr) ? new LinkedHashSet<Long>(subs.getJSONArray(user.idStr).toList(Long.class)) : new LinkedHashSet<>();
+            LinkedHashSet<Long> list = subs.containsKey(user.id.toString()) ? new LinkedHashSet<Long>(subs.getJSONArray(user.id.toString()).toList(Long.class)) : new LinkedHashSet<>();
 
             boolean result = list.remove(id);
 
-            subs.put(user.idStr,list);
+            subs.put(user.id.toString(),list);
 
             return result;
 
@@ -345,7 +345,7 @@ public class UTTask extends TimerTask {
 
         synchronized (subs) {
 
-            subs.remove(user.idStr);
+            subs.remove(user.id.toString());
 
         }
 

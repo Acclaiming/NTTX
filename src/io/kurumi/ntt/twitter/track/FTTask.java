@@ -77,10 +77,10 @@ public class FTTask extends TimerTask {
 
             frSubIndex = frSubIndexC;
             frSubIndexC = new HashMap<>();
-            
+
             flSubIndex = flSubIndexC;
             flSubIndexC = new HashMap<>();
-            
+
             synchronized (UTTask.pedding) {
 
                 UTTask.pedding.addAll(pedding);
@@ -128,13 +128,13 @@ public class FTTask extends TimerTask {
 
         try {
 
-            UserData user = UserData.INSTANCE.get(userId);
+            UserData user = BotDB.getUserData(userId);
 
             if (!TAuth.avilable(user)) {
 
-                enable.remove(user.idStr);
+                enable.remove(user.id.toString());
 
-                SData.setJSONArray("cache","track/" + user.idStr,null);
+                SData.setJSONArray("cache","track/" + user.id,null);
 
                 save();
 
@@ -215,7 +215,7 @@ public class FTTask extends TimerTask {
                 subIndex.add(userId);
 
                 frSubIndexC.put(id,subIndex);
-                
+
             }
 
             pedding.addAll(allFr);
@@ -271,41 +271,50 @@ public class FTTask extends TimerTask {
 
     HashMap<Long,LinkedList<Long>> userBlock;
     HashMap<Long,LinkedList<Long>> userMute;
-    
-    
+
+
     String parseStatus(Twitter api,User user) {
 
         StringBuilder status = new StringBuilder();
 
-        if (user.isProtected()) status.append("这是一个是锁推用户 :)\n");
-        // if (user.isFollowRequestSent()) status.append("乃发送了关注请求 :)\n");
-        if (user.getStatusesCount() == 0) status.append("这个用户没有发过推 :)\n");
-        if (user.getFavouritesCount() == 0) status.append("这个用户没有喜欢过推文 :)\n");
-        if (user.getFollowersCount() < 20) status.append("这个用户关注者低 (").append(user.getFollowersCount()).append(")  :)\n");
-        
-        /*
-        
         try {
 
-            Relationship ship = api.showFriendship(user.getId(),917716145121009664L);
+            if (!api.showFriendship(api.getId(),user.getId()).isSourceFollowingTarget() && !user.isFollowRequestSent()) {
 
-            if (ship.isTargetFollowingSource() && ship.isTargetFollowedBySource()) {
-
-                status.append("这个用户与 ").append(link).append(" 互相关注 是萌萌的二次元 :)\n");
-
-            } else if (ship.isSourceFollowingTarget()) {
-
-                status.append("这个用户关注了 ").append(link).append(" :)\n");
-
-            } else if (ship.isSourceFollowedByTarget()) {
-
-                status.append("这个用户被 ").append(link).append(" 关注 是萌萌的二次元 :)\n");
+                if (user.isProtected()) status.append("这是一个是锁推用户 :)\n");
 
             }
 
         } catch (TwitterException e) {}
-        
-        */
+
+        // if (user.isFollowRequestSent()) status.append("乃发送了关注请求 :)\n");
+        if (user.getStatusesCount() == 0) status.append("这个用户没有发过推 :)\n");
+        if (user.getFavouritesCount() == 0) status.append("这个用户没有喜欢过推文 :)\n");
+        if (user.getFollowersCount() < 20) status.append("这个用户关注者低 (").append(user.getFollowersCount()).append(")  :)\n");
+
+        /*
+
+         try {
+
+         Relationship ship = api.showFriendship(user.getId(),917716145121009664L);
+
+         if (ship.isTargetFollowingSource() && ship.isTargetFollowedBySource()) {
+
+         status.append("这个用户与 ").append(link).append(" 互相关注 是萌萌的二次元 :)\n");
+
+         } else if (ship.isSourceFollowingTarget()) {
+
+         status.append("这个用户关注了 ").append(link).append(" :)\n");
+
+         } else if (ship.isSourceFollowedByTarget()) {
+
+         status.append("这个用户被 ").append(link).append(" 关注 是萌萌的二次元 :)\n");
+
+         }
+
+         } catch (TwitterException e) {}
+
+         */
 
         String statusR = status.toString();
 
@@ -353,7 +362,7 @@ public class FTTask extends TimerTask {
         try {
 
             User follower = api.showUser(id);
-           BotDB.saveUser(follower);
+            BotDB.saveUser(follower);
 
             Relationship ship = api.showFriendship(api.getId(),id);
 

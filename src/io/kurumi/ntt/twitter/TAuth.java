@@ -19,7 +19,7 @@ public class TAuth extends JSONObject {
     
 	public static boolean exists(UserData user) {
         
-		return auth.containsKey(user.idStr);
+		return auth.containsKey(user.id.toString());
 		
 	}
     
@@ -33,7 +33,7 @@ public class TAuth extends JSONObject {
 		
 		if (exists(user)) {
 			
-			return new TAuth(auth.getJSONObject(user.idStr));
+			return new TAuth(auth.getJSONObject(user.id.toString()));
 			 
 		}
 		

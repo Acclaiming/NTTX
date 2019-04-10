@@ -45,7 +45,7 @@ public class StatusTrack extends Fragment {
 
         }
 
-        if (FTTask.enable.containsKey(user.idStr)) {
+        if (FTTask.enable.containsKey(user.id.toString())) {
 
             if (start) {
 
@@ -53,9 +53,9 @@ public class StatusTrack extends Fragment {
 
             } else {
 
-                FTTask.enable.remove(user.idStr);
+                FTTask.enable.remove(user.id.toString());
                 FTTask.save();
-                SData.setJSONArray("cache","track/" + user.idStr,null);
+                SData.setJSONArray("cache","track/" + user.id,null);
 
                 msg.send("已关闭 :)").exec();
 
@@ -65,7 +65,7 @@ public class StatusTrack extends Fragment {
 
             if (start) {
 
-                FTTask.enable.put(user.idStr,true);
+                FTTask.enable.put(user.id.toString(),true);
                 FTTask.save();
 
                 msg.send("已开启 :)").exec();

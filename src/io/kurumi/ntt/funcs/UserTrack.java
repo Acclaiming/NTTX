@@ -177,9 +177,9 @@ public class UserTrack extends Fragment {
     
     void subList(UserData user,Msg msg) {
         
-        if (UTTask.subs.containsKey(user.idStr)) {
+        if (UTTask.subs.containsKey(user.id.toString())) {
 
-            JSONArray list = UTTask.subs.getJSONArray(user.idStr);
+            JSONArray list = UTTask.subs.getJSONArray(user.id.toString());
 
             StringBuilder rec = new StringBuilder();
 
@@ -206,9 +206,9 @@ public class UserTrack extends Fragment {
     void unSubAll(UserData user,Msg msg) {
         
         
-        if (UTTask.subs.containsKey(user.idStr)) {
+        if (UTTask.subs.containsKey(user.id.toString())) {
             
-            JSONArray list = (JSONArray)UTTask.subs.remove(user.idStr);
+            JSONArray list = (JSONArray)UTTask.subs.remove(user.id.toString());
 
             StringBuilder rec = new StringBuilder();
 
