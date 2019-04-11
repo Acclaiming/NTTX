@@ -187,7 +187,7 @@ public class UTTask extends TimerTask {
 
 							}
 
-                        } else if (e.getErrorCode() == 89) {
+                        } else if (e.getErrorCode() == 89 || e.getErrorCode() == 326) {
 
 							synchronized (pedding) {
 
