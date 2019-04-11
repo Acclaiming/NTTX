@@ -26,6 +26,7 @@ import java.util.TimeZone;
 import io.kurumi.ntt.db.BotDB;
 import com.mongodb.MongoException;
 import io.kurumi.ntt.twitter.stream.SubTask;
+import io.kurumi.ntt.funcs.StatusUI;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -53,6 +54,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(StatusTrack.INSTANCE);
 
         addFragment(UserTrack.INSTANCE);
+        
+        addFragment(StatusUI.INSTANCE);
 
         addFragment(YourGroupRule.INSTANCE);
 
