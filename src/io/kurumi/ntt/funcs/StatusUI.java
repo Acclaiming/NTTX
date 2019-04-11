@@ -60,7 +60,7 @@ public class StatusUI extends Fragment {
         
         callback.text("好 ~");
         
-        callback.edit(archive.toHtml()).exec();
+        callback.edit(archive.toHtml()).html().exec();
         
     }
 
