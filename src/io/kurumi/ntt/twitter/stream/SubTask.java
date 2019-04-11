@@ -64,7 +64,7 @@ public class SubTask extends StatusAdapter {
         stop();
         
         timer = new Timer("NTT TwitterStream Task");
-        timer.schedule(resetTask,new Date(),1 * 60 * 1000);
+        timer.schedule(resetTask,new Date(),5 * 60 * 1000);
         
     }
     
