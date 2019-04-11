@@ -117,17 +117,14 @@ public class StatusArchive {
 
         StringBuilder archive = new StringBuilder();
 
-        if (quotedStatusId != -1) {
+        if (depth == 0) {} else if (quotedStatusId != -1) {
 
             StatusArchive quotedStatus = BotDB.getStatus(quotedStatusId);
 
             if (quotedStatus == null) {
 
-                if (depth > 0 || depth == -1) {
+                archive.append(quotedStatus.toHtml(depth - 1));
 
-                    archive.append(quotedStatus.toHtml(depth - 1));
-
-                }
 
             } else {
 
@@ -143,11 +140,7 @@ public class StatusArchive {
 
             if (inReplyTo != null) {
 
-                if (depth > 0 || depth == -1) {
-
-                    archive.append(inReplyTo.toHtml(depth - 1));
-
-                }
+                archive.append(inReplyTo.toHtml(depth - 1));
 
             } else {
 
@@ -164,11 +157,7 @@ public class StatusArchive {
 
             archive.append(user().urlHtml()).append(" 转推从 " + retweeted.user().urlHtml()).append(" : ");
 
-            if (depth > 0 || depth == -1) {
-
-                archive.append(retweeted.toHtml(depth - 1));
-
-            }
+            archive.append(retweeted.toHtml(depth - 1));
 
             return archive.toString();
 

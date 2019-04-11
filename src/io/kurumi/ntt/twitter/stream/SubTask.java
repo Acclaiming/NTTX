@@ -85,14 +85,9 @@ public class SubTask extends StatusAdapter {
 
     static void resetStream() {
 
-        TwitterStreamImpl.shutdownAll();
-
-        userStream.clear();
-
         HashMap<Long,List<Long>> newSubs = new HashMap<>();
 
         synchronized (UTTask.subs) {
-
 
             for (Map.Entry<String,Object> sub : UTTask.subs.entrySet()) {
 
@@ -123,7 +118,8 @@ public class SubTask extends StatusAdapter {
 
                 stream.addListener(new SubTask(userId,TAuth.get(userId).createApi()));
 
-                userStream.put(userId,stream);
+                TwitterStream removed = userStream.put(userId,stream);
+                if (removed != null) removed.cleanUp();
 
                 stream.filter(new FilterQuery().follow(ArrayUtil.unWrap(sub.getValue().toArray(new Long[sub.getValue().size()]))));
 
