@@ -25,6 +25,8 @@ import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 import twitter4j.TwitterStreamImpl;
 import java.util.Date;
+import org.apache.http.impl.cookie.DateUtils;
+import cn.hutool.core.date.DateUtil;
 
 public class SubTask extends StatusAdapter {
 
@@ -64,7 +66,13 @@ public class SubTask extends StatusAdapter {
         stop();
         
         timer = new Timer("NTT TwitterStream Task");
-        timer.schedule(resetTask,new Date(),5 * 60 * 1000);
+        
+        Date start = new Date();
+        
+        start.setMinutes(start.getMinutes() + 5);
+        
+        
+        timer.schedule(resetTask,start,5 * 60 * 1000);
         
     }
     
