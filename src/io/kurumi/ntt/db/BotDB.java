@@ -144,7 +144,7 @@ public class BotDB {
     public static boolean statusExists(long id) {
 
         return statusArchiveCollection.countDocuments(eq("_id",id)) == 1;
-
+        
     }
 
     public static StatusArchive getStatus(long id) {
@@ -155,7 +155,7 @@ public class BotDB {
 
     }
 
-    public static StatusArchive saveStatus(Status status) {
+    public static synchronized StatusArchive saveStatus(Status status) {
 
         if (statusExists(status.getId())) return getStatus(status.getId());
 
@@ -201,7 +201,7 @@ public class BotDB {
 
     }
 
-    public static UserArchive saveUser(User user) {
+    public static synchronized UserArchive saveUser(User user) {
 
         UserArchive archive;
 
