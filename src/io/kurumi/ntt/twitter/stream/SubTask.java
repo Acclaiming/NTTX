@@ -8,6 +8,7 @@ import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.twitter.TAuth;
 import io.kurumi.ntt.twitter.archive.StatusArchive;
 import io.kurumi.ntt.twitter.track.UTTask;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,19 +24,17 @@ import twitter4j.StatusDeletionNotice;
 import twitter4j.Twitter;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
-import twitter4j.TwitterStreamImpl;
-import java.util.Date;
-import org.apache.http.impl.cookie.DateUtils;
-import cn.hutool.core.date.DateUtil;
 
 public class SubTask extends StatusAdapter {
 
     long userId;
+    long tid;
     Twitter api;
 
-    public SubTask(long userId,Twitter api) {
+    public SubTask(long userId,long tid,Twitter api) {
 
         this.userId = userId;
+        this.tid = tid;
         this.api = api;
 
     }
@@ -124,7 +123,7 @@ public class SubTask extends StatusAdapter {
 
                 TwitterStream stream = new TwitterStreamFactory(TAuth.get(userId).createConfig()).getInstance();
 
-                stream.addListener(new SubTask(userId,TAuth.get(userId).createApi()));
+                stream.addListener(new SubTask(userId,TAuth.get(userId).accountId,TAuth.get(userId).createApi()));
 
                 TwitterStream removed = userStream.put(userId,stream);
                 if (removed != null) removed.cleanUp();
@@ -148,7 +147,7 @@ public class SubTask extends StatusAdapter {
                 @Override
                 public void run() {
 
-                    processStatus(status,userId,api);
+                    processStatus(status,userId,tid,api);
 
                 }
 
@@ -163,7 +162,7 @@ public class SubTask extends StatusAdapter {
         
     }
 
-    static void processStatus(Status status,Long userId,Twitter api) {
+    static void processStatus(Status status,Long userId,Long tid,Twitter api) {
 
         List<Long> userSub = currentSubs.get(userId);
 
@@ -174,6 +173,10 @@ public class SubTask extends StatusAdapter {
             return;
             
         }
+        
+        long from = status.getUser().getId();
+        
+     //   if (from == tid) return; // 去掉来自自己的推文？
         
         StatusArchive archive = BotDB.saveStatus(status).loop(api);
 
