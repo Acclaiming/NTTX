@@ -22,6 +22,9 @@ import io.kurumi.ntt.utils.ThreadPool;
 import java.util.LinkedList;
 import java.util.List;
 import okhttp3.OkHttpClient;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
@@ -133,8 +136,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
         return false;
 
     }
-
-
+    
+    ExecutorService processUpdatePool = Executors.newFixedThreadPool(3);
 
     public void processAsync(final Update update) {
 
@@ -160,7 +163,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
         
         BotLog.process(user,update);
 
-        ThreadPool.exec(new Runnable() {
+        processUpdatePool.execute(new Runnable() {
 
                 @Override
                 public void run() {

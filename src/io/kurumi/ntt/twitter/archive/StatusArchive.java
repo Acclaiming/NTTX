@@ -1,28 +1,21 @@
 
 package io.kurumi.ntt.twitter.archive;
 
-import cn.hutool.core.convert.NumberChineseFormater;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONObject;
-import io.kurumi.ntt.model.data.IdDataModel;
-import java.util.Date;
+import io.kurumi.ntt.db.BotDB;
+import io.kurumi.ntt.utils.Html;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
 import twitter4j.MediaEntity;
 import twitter4j.Status;
-import cn.hutool.core.convert.impl.CalendarConverter;
-import java.util.Calendar;
-import java.util.*;
-import java.time.*;
-import io.kurumi.ntt.utils.*;
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.date.DateUtil;
-import io.kurumi.ntt.db.BotDB;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
 
 public class StatusArchive {
 
     public Long id;
-    
+
 	public Long createdAt;
 
 	public String text;
@@ -61,7 +54,7 @@ public class StatusArchive {
         quotedStatusId = status.getQuotedStatusId();
 
         if (quotedStatusId != -1 && !BotDB.statusExists(quotedStatusId)) {
-            
+
             BotDB.saveStatus(status.getQuotedStatus());
 
         }
@@ -116,6 +109,12 @@ public class StatusArchive {
 
     public String toHtml() {
 
+        return toHtml(-1);
+
+    }
+
+    public String toHtml(int depth) {
+
         StringBuilder archive = new StringBuilder();
 
         if (quotedStatusId != -1) {
@@ -124,7 +123,11 @@ public class StatusArchive {
 
             if (quotedStatus == null) {
 
-                archive.append(quotedStatus.toHtml());
+                if (depth > 0 || depth == -1) {
+
+                    archive.append(quotedStatus.toHtml(depth - 1));
+
+                }
 
             } else {
 
@@ -140,7 +143,11 @@ public class StatusArchive {
 
             if (inReplyTo != null) {
 
-                archive.append(inReplyTo.toHtml());
+                if (depth > 0 || depth == -1) {
+
+                    archive.append(inReplyTo.toHtml(depth - 1));
+
+                }
 
             } else {
 
@@ -157,7 +164,11 @@ public class StatusArchive {
 
             archive.append(user().urlHtml()).append(" 转推从 " + retweeted.user().urlHtml()).append(" : ");
 
-            archive.append(retweeted.toHtml());
+            if (depth > 0 || depth == -1) {
+
+                archive.append(retweeted.toHtml(depth - 1));
+
+            }
 
             return archive.toString();
 
@@ -257,6 +268,77 @@ public class StatusArchive {
             return Html.a("@" + screenName,"https://twitter.com/" + screenName) + " 的 不可用的推文";
 
         }
+
+    }
+
+    public StatusArchive loop(Twitter api) {
+
+        String content = text;
+
+        if (content.startsWith("@")) {
+
+            while (content.startsWith("@")) {
+
+                String screenName = StrUtil.subBefore(content.substring(1)," ",false);
+
+                content = StrUtil.subAfter(content," ",false);
+
+                if (!BotDB.userExists(screenName)) {
+
+                    try {
+
+                        BotDB.saveUser(api.showUser(screenName));
+
+                    } catch (TwitterException ex) {} 
+
+                }
+
+            }
+
+        }
+
+
+        try {
+
+            if (inReplyToStatusId != -1) {
+
+                if (BotDB.statusExists(inReplyToStatusId)) {
+
+                    BotDB.getStatus(inReplyToStatusId).loop(api);
+
+                } else {
+
+                    Status status = api.showStatus(inReplyToStatusId);
+
+                    StatusArchive inReplyTo = BotDB.saveStatus(status);
+
+                    inReplyTo.loop(api);
+
+                }
+
+            }
+
+            if (quotedStatusId != -1) {
+
+                if (BotDB.statusExists(quotedStatusId)) {
+
+                    BotDB.getStatus(quotedStatusId).loop(api);
+
+                } else {
+
+                    Status status = api.showStatus(quotedStatusId);
+
+                    StatusArchive quoted = BotDB.saveStatus(status);
+
+                    quoted.loop(api);
+
+                }
+
+            }
+
+        } catch (TwitterException ex) {}
+
+        return this;
 
     }
 

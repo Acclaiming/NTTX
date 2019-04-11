@@ -35,7 +35,7 @@ import static twitter4j.HttpResponseCode.NOT_ACCEPTABLE;
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @since Twitter4J 2.0.4
  */
-class TwitterStreamImpl extends TwitterBaseImpl implements TwitterStream {
+public class TwitterStreamImpl extends TwitterBaseImpl implements TwitterStream {
     private static final long serialVersionUID = 5621090317737561048L;
     private final HttpClient http;
     private static final Logger logger = Logger.getLogger(TwitterStreamImpl.class);
@@ -396,6 +396,19 @@ class TwitterStreamImpl extends TwitterBaseImpl implements TwitterStream {
             numberOfHandlers--;
         }
         return this;
+    }
+    
+    public static synchronized void shutdownAll() {
+        
+        synchronized (TwitterStreamImpl.class) {
+            if (0 == numberOfHandlers) {
+                if (dispatcher != null) {
+                    dispatcher.shutdown();
+                    dispatcher = null;
+                }
+            }
+        }
+        
     }
 
     @Override

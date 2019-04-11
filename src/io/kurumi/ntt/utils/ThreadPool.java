@@ -9,7 +9,7 @@ public class ThreadPool {
 
     static {
 		
-        pool = Executors.newCachedThreadPool();
+        pool = Executors.newFixedThreadPool(3);
 
     }
 
@@ -17,6 +17,14 @@ public class ThreadPool {
 
         pool.execute(runnable);
 
+    }
+    
+    public static void cancel() {
+        
+        pool.shutdown();
+        
+        pool = Executors.newFixedThreadPool(3);
+        
     }
 
 }

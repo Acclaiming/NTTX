@@ -24,6 +24,7 @@ import twitter4j.TwitterException;
 import twitter4j.User;
 import io.kurumi.ntt.funcs.HideMe;
 import io.kurumi.ntt.db.BotDB;
+import io.kurumi.ntt.twitter.stream.SubTask;
 
 public class UTTask extends TimerTask {
 
@@ -150,12 +151,12 @@ public class UTTask extends TimerTask {
                         finished = true;
 
                     }
-					
+
 					synchronized (pedding) {
-						
+
 						pedding.clear();
 						pedding.addAll(globals);
-						
+
 					}
 
                     try {
@@ -309,13 +310,9 @@ public class UTTask extends TimerTask {
 
     public static List<Long> get(UserData user) {
 
-        synchronized (subs) {
+        if (subs.containsKey(user.id.toString())) {
 
-            if (subs.containsKey(user.id.toString())) {
-
-                return subs.getJSONArray(user.id.toString()).toList(Long.class);
-
-            }
+            return subs.getJSONArray(user.id.toString()).toList(Long.class);
 
         }
 
@@ -333,6 +330,8 @@ public class UTTask extends TimerTask {
 
             subs.put(user.id.toString(),list);
 
+            SubTask.needReset.set(true);
+
             return result;
 
         }
@@ -349,9 +348,13 @@ public class UTTask extends TimerTask {
 
             subs.put(user.id.toString(),list);
 
+            SubTask.needReset.set(true);
+
             return result;
 
         }
+
+
 
     }
 
@@ -362,6 +365,9 @@ public class UTTask extends TimerTask {
             subs.remove(user.id.toString());
 
         }
+
+        SubTask.needReset.set(true);
+
 
     }
 

@@ -25,6 +25,7 @@ import io.kurumi.ntt.utils.Html;
 import java.util.TimeZone;
 import io.kurumi.ntt.db.BotDB;
 import com.mongodb.MongoException;
+import io.kurumi.ntt.twitter.stream.SubTask;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -168,7 +169,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         FTTask.stop();
         UTTask.stop();
-        Backup.AutoBackupTask.INSTANCE.start();
+        SubTask.stop();
+        Backup.AutoBackupTask.INSTANCE.stop();
 
 		//  BotServer.INSTACNCE.stop();
 

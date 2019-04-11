@@ -87,7 +87,7 @@ public class TwitterArchive extends Fragment {
 
             StatusArchive newStatus = BotDB.saveStatus(api.showStatus(statusId));
 
-            loopStatus(newStatus,api);
+            newStatus.loop(api);
 
             msg.send("已存档 :)").exec();
             
@@ -103,74 +103,6 @@ public class TwitterArchive extends Fragment {
 
     }
 
-    void loopStatus(StatusArchive archive,Twitter api) {
-
-        String content = archive.text;
-
-        if (content.startsWith("@")) {
-
-            while (content.startsWith("@")) {
-                
-                String screenName = StrUtil.subBefore(content.substring(1)," ",false);
-
-                content = StrUtil.subAfter(content, " ",false);
-                
-                if (!BotDB.userExists(screenName)) {
-
-                    try {
-
-                        BotDB.saveUser(api.showUser(screenName));
-
-                    } catch (TwitterException ex) {} 
-
-                }
-
-            }
-
-        }
-
-
-        try {
-
-            if (archive.inReplyToStatusId != -1) {
-
-                if (BotDB.statusExists(archive.inReplyToStatusId)) {
-
-                    loopStatus(BotDB.getStatus(archive.inReplyToStatusId),api);
-
-                } else {
-
-                    Status status = api.showStatus(archive.inReplyToStatusId);
-
-                    StatusArchive inReplyTo = BotDB.saveStatus(status);
-
-                    loopStatus(inReplyTo,api);
-
-                }
-
-            }
-
-            if (archive.quotedStatusId != -1) {
-
-                if (BotDB.statusExists(archive.quotedStatusId)) {
-
-                    loopStatus(BotDB.getStatus(archive.quotedStatusId),api);
-
-                } else {
-
-                    Status status = api.showStatus(archive.quotedStatusId);
-
-                    StatusArchive quoted = BotDB.saveStatus(status);
-
-                    loopStatus(quoted,api);
-
-                }
-
-            }
-
-        } catch (TwitterException ex) {}
-
-
-    }
+    
 
 }
