@@ -117,14 +117,15 @@ public class StatusArchive {
 
         StringBuilder archive = new StringBuilder();
 
-        if (depth == 0) {} else if (quotedStatusId != -1) {
+        if (quotedStatusId != -1) {
 
+            if (depth != 0) {
+            
             StatusArchive quotedStatus = BotDB.getStatus(quotedStatusId);
 
             if (quotedStatus == null) {
 
-                archive.append(quotedStatus.toHtml(depth - 1));
-
+                archive.append(quotedStatus.toHtml(depth > 0 ? depth - 1 : depth));
 
             } else {
 
@@ -132,15 +133,21 @@ public class StatusArchive {
 
             }
 
-            archive.append(split).append(user().urlHtml()).append(" 的 ").append(Html.a("回复",url()));
+            archive.append(split);
+            
+            }
+            
+            archive.append(user().urlHtml()).append(" 的 ").append(Html.a("回复",url()));
 
         } else if (inReplyToStatusId != -1) {
 
+            if (depth != 0) {
+                
             StatusArchive inReplyTo = BotDB.getStatus(inReplyToStatusId);
 
             if (inReplyTo != null) {
 
-                archive.append(inReplyTo.toHtml(depth - 1));
+                archive.append(inReplyTo.toHtml(depth > 0 ? depth - 1 : depth));
 
             } else {
 
@@ -148,7 +155,11 @@ public class StatusArchive {
 
             }
 
-            archive.append(split).append(user().urlHtml()).append(" 的 ").append(Html.a("回复",url()));
+            archive.append(split);
+            
+            }
+            
+            archive.append(user().urlHtml()).append(" 的 ").append(Html.a("回复",url()));
 
 
         } else if (isRetweet) {
@@ -157,7 +168,7 @@ public class StatusArchive {
 
             archive.append(user().urlHtml()).append(" 转推从 " + retweeted.user().urlHtml()).append(" : ");
 
-            archive.append(retweeted.toHtml(depth - 1));
+            archive.append(retweeted.toHtml(depth > 0 ? depth - 1 : depth));
 
             return archive.toString();
 
