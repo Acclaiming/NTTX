@@ -199,7 +199,7 @@ public class GroupProtecter extends Fragment {
                             Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
                             Launcher.INSTANCE.bot().execute(new KickChatMember(chatId,userId));
 
-                            new Send(chatId,BotDB.getUserData(userId).userName() + " 没有在 180s 内选择是否公开Twitter账号，已移除。").exec();
+                            new Send(chatId,BotDB.getUserData(userId).userName() + " 没有在 180s 内选择是否公开Twitter账号，已移除。").html().exec();
 
                         } else if (System.currentTimeMillis() - enterAt > 5 * 60 * 1000) {
 
@@ -207,7 +207,7 @@ public class GroupProtecter extends Fragment {
                             Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
                             Launcher.INSTANCE.bot().execute(new KickChatMember(chatId,userId));
 
-                            new Send(chatId,BotDB.getUserData(userId).userName() + " 没有在 300s 内认证Twitter账号，已移除。").exec();
+                            new Send(chatId,BotDB.getUserData(userId).userName() + " 没有在 300s 内认证Twitter账号，已移除。").html().exec();
 
                         } else {
 
@@ -362,7 +362,7 @@ public class GroupProtecter extends Fragment {
                     Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
                     Launcher.INSTANCE.bot().execute(new KickChatMember(chatId,userId.intValue()));
 
-                    new Send(chatId,user.userName() + " 选择了退出。").exec();
+                    new Send(chatId,user.userName() + " 选择了退出。").html().exec();
 
                 }
                 
