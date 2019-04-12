@@ -92,7 +92,7 @@ public class GroupProtecter extends Fragment {
             JSONObject chat = new JSONObject();
 
             chat.put("authed_before",TAuth.exists(newUser.id));
-            chat.getLong("enter_at",System.currentTimeMillis());
+            chat.put("enter_at",System.currentTimeMillis());
 
 
             final CData allow = cdata(POINT_ALLOW_SHOW);
