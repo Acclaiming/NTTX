@@ -118,7 +118,7 @@ public class BotLog extends ConsoleLog {
 
         log.error(err,message);
         
-        new Send(Env.DEVELOPER_ID,"ERROR : " + message,parseError(err)).exec();
+        new Send(Env.DEVELOPER_ID,"ERROR : " + message,parseError(err)).sync();
         
 
     }
