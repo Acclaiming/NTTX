@@ -24,11 +24,12 @@ import com.pengrad.telegrambot.request.KickChatMember;
 import io.kurumi.ntt.model.Callback;
 import java.util.Timer;
 import java.util.Date;
+import com.pengrad.telegrambot.response.SendResponse;
 
 public class GroupProtecter extends Fragment {
 
     public static GroupProtecter INSTANCE = new GroupProtecter();
-    
+
     public static JSONObject conf = SData.getJSON("data","group_protect",true);
 
     public static JSONArray enable;
@@ -83,70 +84,96 @@ public class GroupProtecter extends Fragment {
 
     void newUser(UserData user,Msg msg,UserData newUser) {
 
-        final CData allow = cdata(POINT_ALLOW_SHOW);
-        allow.put("o",newUser.id);
+        synchronized (pedding) {
 
-        final CData leave = cdata(POINT_LEAVE);
-        leave.put("o",newUser.id);
+            JSONArray chats = pedding.getJSONArray(newUser.id.toString());
+            if (chats == null) chats = new JSONArray();
 
-        final CData pass = cdata(POINT_ADMIN_PASS);
-        pass.put("o",newUser.id);
+            JSONObject chat = new JSONObject();
 
-        final CData kick = cdata(POINT_ADMIN_KICK);
-        kick.put("o",newUser.id);
-
-        if (TAuth.exists(newUser.id)) {
-
-            msg.send(newUser.userName() + " 你好 ~","本群开启了验证 所以需要显示乃的Twitter认证 请在 180s 之内选择 :)")
-                .buttons(new ButtonMarkup() {{
+            chat.put("authed_before",TAuth.exists(newUser.id));
+            chat.put("chat_id",msg.chatId());
+            chat.getLong("enter_at",System.currentTimeMillis());
 
 
-                        newButtonLine()
-                            .newButton("「 同意显示账号 」",allow)
-                            .newButton("「 退出本群 」",leave);
 
-                        newButtonLine()
-                            .newButton("「 通过 (绒布球) 」",pass)
-                            .newButton("「 移出 (绒布球) 」",kick);
+            final CData allow = cdata(POINT_ALLOW_SHOW);
+            allow.put("o",newUser.id);
 
-                    }}).html().exec();
+            final CData leave = cdata(POINT_LEAVE);
+            leave.put("o",newUser.id);
 
-        } else {
+            final CData pass = cdata(POINT_ADMIN_PASS);
+            pass.put("o",newUser.id);
 
-            msg.send(newUser.userName() + " 你好 ~","本群开启了认证 请在 300s 内私聊Bot使用 /tauth 验证账号 :)")
-                .buttons(new ButtonMarkup() {{
+            final CData kick = cdata(POINT_ADMIN_KICK);
+            kick.put("o",newUser.id);
 
-                        newButtonLine()
-                            .newButton("「 退出本群 」",leave);
+            SendResponse resp;
 
-                        newButtonLine()
-                            .newButton("「 通过 (绒布球) 」",pass)
-                            .newButton("「 移出 (绒布球) 」",kick);
+            if (TAuth.exists(newUser.id)) {
 
-                    }}).html().exec();
+                resp = msg.send(newUser.userName() + " 你好 ~","本群开启了验证 所以需要显示乃的Twitter认证 请在 180s 之内选择 :)")
+                    .buttons(new ButtonMarkup() {{
+
+
+                            newButtonLine()
+                                .newButton("「 同意显示 」",allow)
+                                .newButton("「 退出本群 」",leave);
+
+                            newButtonLine()
+                                .newButton("「 人工通过 」",pass)
+                                .newButton("「 人工移出 」",kick);
+
+                        }}).html().sync();
+
+            } else {
+
+                resp = msg.send(newUser.userName() + " 你好 ~","本群开启了认证 请在 300s 内 私聊Bot使用 /tauth 验证账号 :)")
+                    .buttons(new ButtonMarkup() {{
+
+                            newButtonLine()
+                                .newButton("「 退出本群 」",leave);
+
+                            newButtonLine()
+                                .newButton("「 人工通过 」",pass)
+                                .newButton("「 人工移出 」",kick);
+
+                        }}).html().sync();
+
+
+            }
+
+            chat.put("msg_id",resp.message().messageId());
+            chats.add(chat);
+
+            pedding.put(newUser.id.toString(),chats);
+
+            save();
+
 
         }
 
     }
 
     static Timer timer;
-    
+
     public static void start() {
-        
+
         stop();
-        
+
         timer = new Timer();
-        timer.schedule(checkTask,new Date(),30 * 1000);
-        
+        timer.schedule(checkTask,new Date(),10 * 1000);
+
     }
-    
+
     public static void stop() {
-        
+
         if (timer != null) timer.cancel();
         timer = null;
-        
+
     }
-    
+
     static TimerTask checkTask = new TimerTask() {
 
         @Override
@@ -171,7 +198,7 @@ public class GroupProtecter extends Fragment {
                         int msgId = chat.getInt("msg_id");
 
                         if ((authedBefore || System.currentTimeMillis() - enterAt > 3 * 60 * 1000)) {
-                            
+
                             Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
                             Launcher.INSTANCE.bot().execute(new KickChatMember(chatId,userId));
 
@@ -179,24 +206,24 @@ public class GroupProtecter extends Fragment {
 
                         } else if (System.currentTimeMillis() - enterAt > 5 * 60 * 1000) {
 
-                            
+
                             Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
                             Launcher.INSTANCE.bot().execute(new KickChatMember(chatId,userId));
 
                             new Send(chatId,BotDB.getUserData(userId).userName() + " 没有在 300s 内认证Twitter账号，已移除。").exec();
 
                         } else {
-                            
+
                             continue;
-                            
+
                         }
-                        
+
                         chatsObj.remove(chat);
-                        
+
                         pedding.put(userIdStr,chatsObj);
 
                         save();
-                        
+
 
                     }
 
@@ -217,7 +244,7 @@ public class GroupProtecter extends Fragment {
             case POINT_LEAVE : leave(user,callback);break;
             case POINT_ADMIN_PASS : pass(user,callback);break;
             case POINT_ADMIN_KICK : kick(user,callback);break;
-            
+
             default : return false;
 
         }
@@ -251,7 +278,7 @@ public class GroupProtecter extends Fragment {
             if (!pedding.containsKey(user.id.toString())) {
 
                 callback.alert("这个认证已经过期。");
-                
+
                 return;
 
             }
@@ -285,7 +312,7 @@ public class GroupProtecter extends Fragment {
         }
 
     }
-    
+
     void leave(UserData user,Callback callback) {
 
         long origin = callback.data.getLong("o");
@@ -329,14 +356,14 @@ public class GroupProtecter extends Fragment {
                 if (chatId == callback.chatId()) {
 
                     chatsObj.remove(chat);
-                    
+
                     callback.alert("好的。");
-                    
+
                     Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
                     Launcher.INSTANCE.bot().execute(new KickChatMember(chatId,user.id.intValue()));
 
                     new Send(chatId,user.userName() + " 选择了退出。").exec();
-                    
+
                 }
 
             }
@@ -391,7 +418,7 @@ public class GroupProtecter extends Fragment {
                     callback.alert("好。");
 
                     Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
-                    
+
                     new Send(chatId,BotDB.getUserData(origin).userName() + " 已被绒布球 " + user.userName() + " 放行。").html().exec();
 
                 }
