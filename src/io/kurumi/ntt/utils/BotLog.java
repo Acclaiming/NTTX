@@ -215,7 +215,7 @@ public class BotLog extends ConsoleLog {
 
         if (msg.location() != null) log.append("「位置信息 : ").append(msg.location().toString()).append("」");
 
-        if (msg.newChatMembers() != null) log.append("「新成员 : ").append(BotDB.getUserData(msg.newChatMember()).formattedName()).append("」");
+        if (msg.newChatMember() != null) log.append("「新成员 : ").append(BotDB.getUserData(msg.newChatMember()).formattedName()).append("」");
 
         if (msg.newChatTitle() != null) log.append("「新标题 : ").append(msg.newChatTitle()).append("」");
 

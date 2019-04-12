@@ -59,7 +59,7 @@ public class GroupProtecter extends Fragment {
 
             return true;
 
-        } else if (msg.message().newChatMembers() != null) {
+        } else if (msg.message().newChatMembers() != null && enable.contains(msg.chatId())) {
 
             for (User newer : msg.message().newChatMembers()) {
 
