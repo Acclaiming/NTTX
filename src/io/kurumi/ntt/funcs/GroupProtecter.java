@@ -184,7 +184,7 @@ public class GroupProtecter extends Fragment {
                     Integer userId = Integer.parseInt(userIdStr);
 
                     JSONObject chats = pedding.getJSONObject(userIdStr);
-                    
+
                     for (String chatIdStr : chats.keySet()) {
 
                         JSONObject chat = chats.getJSONObject(chatIdStr);
@@ -280,30 +280,33 @@ public class GroupProtecter extends Fragment {
 
             }
 
-            JSONArray chatsObj = pedding.getJSONArray(user.id.toString());
-            List<JSONObject> chats = new LinkedList<JSONObject>(chatsObj.toList(JSONObject.class));
+            for (String userIdStr : new LinkedList<String>(pedding.keySet())) {
 
-            for (int index = 0;index < chats.size();index ++) {
+				JSONObject chats = pedding.getJSONObject(userIdStr);
 
-                JSONObject chat = chats.get(index);
+				for (String chatIdStr : chats.keySet()) {
 
-                long chatId = chat.getLong("chat_id");
-                int msgId = chat.getInt("msg_id");
+					JSONObject chat = chats.getJSONObject(chatIdStr);
 
-                if (chatId == callback.chatId()) {
+					long chatId = Long.parseLong(chatIdStr);
+					int msgId = chat.getInt("msg_id");
 
-                    chatsObj.remove(chat);
+					if (chatId == callback.chatId()) {
 
-                    Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
-                    new Send(chatId,user.userName() + " 的 Twitter 账号 : " + TAuth.get(user.id).getFormatedNameHtml(),"欢迎加入本群 :)").html().exec();
+						chats.remove(chat);
 
-                }
+						Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
+						new Send(chatId,user.userName() + " 的 Twitter 账号 : " + TAuth.get(user.id).getFormatedNameHtml(),"欢迎加入本群 :)").html().exec();
 
-            }
+					}
 
-            pedding.put(user.id.toString(),chatsObj);
+				}
 
-            save();
+				pedding.put(user.id.toString(),chats);
+
+				save();
+
+			}
 
 
         }
@@ -342,36 +345,36 @@ public class GroupProtecter extends Fragment {
 
             for (String userIdStr : new LinkedList<String>(pedding.keySet())) {
 
-                Integer userId = Integer.parseInt(userIdStr);
+				Integer userId = Integer.parseInt(userIdStr);
 
-                JSONObject chats = pedding.getJSONObject(userIdStr);
+				JSONObject chats = pedding.getJSONObject(userIdStr);
 
-                for (String chatIdStr : chats.keySet()) {
+				for (String chatIdStr : chats.keySet()) {
 
-                    JSONObject chat = chats.getJSONObject(chatIdStr);
+					JSONObject chat = chats.getJSONObject(chatIdStr);
 
-                                        long chatId = Long.parseLong(chatIdStr);
+					long chatId = Long.parseLong(chatIdStr);
                     int msgId = chat.getInt("msg_id");
 
-                if (chatId == callback.chatId()) {
+					if (chatId == callback.chatId()) {
 
-                    chats.remove(chat);
+						chats.remove(chat);
 
-                    callback.alert("好的。");
+						callback.alert("好的。");
 
-                    Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
-                    Launcher.INSTANCE.bot().execute(new KickChatMember(chatId,userId.intValue()));
+						Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
+						Launcher.INSTANCE.bot().execute(new KickChatMember(chatId,userId.intValue()));
 
-                    new Send(chatId,user.userName() + " 选择了退出。").html().exec();
+						new Send(chatId,user.userName() + " 选择了退出。").html().exec();
 
-                }
-                
-                
+					}
 
-            }
 
-            pedding.put(user.id.toString(),chats);
-            
+
+				}
+
+				pedding.put(user.id.toString(),chats);
+
             }
 
             save();
@@ -405,34 +408,39 @@ public class GroupProtecter extends Fragment {
 
             }
 
-            JSONArray chatsObj = pedding.getJSONArray(origin.toString());
-            List<JSONObject> chats = new LinkedList<JSONObject>(chatsObj.toList(JSONObject.class));
+            for (String userIdStr : new LinkedList<String>(pedding.keySet())) {
 
-            for (int index = 0;index < chats.size();index ++) {
 
-                JSONObject chat = chats.get(index);
+				JSONObject chats = pedding.getJSONObject(userIdStr);
 
-                long chatId = chat.getLong("chat_id");
-                int msgId = chat.getInt("msg_id");
+				for (String chatIdStr : chats.keySet()) {
 
-                if (chatId == callback.chatId()) {
+					JSONObject chat = chats.getJSONObject(chatIdStr);
 
-                    chatsObj.remove(chat);
+					long chatId = Long.parseLong(chatIdStr);
+					int msgId = chat.getInt("msg_id");
 
-                    callback.alert("好。");
+					if (chatId == callback.chatId()) {
 
-                    Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
+						chats.remove(chat);
 
-                    new Send(chatId,BotDB.getUserData(origin).userName() + " 已被绒布球 " + user.userName() + " 放行。").html().exec();
+						callback.alert("好。");
 
-                }
+						Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
 
-            }
+						new Send(chatId,BotDB.getUserData(origin).userName() + " 已被绒布球 " + user.userName() + " 放行。").html().exec();
 
-            pedding.put(user.id.toString(),chatsObj);
 
-            save();
 
+					}
+
+				}
+
+				pedding.put(user.id.toString(),chats);
+
+				save();
+
+			}
 
         }
 
@@ -462,35 +470,38 @@ public class GroupProtecter extends Fragment {
 
             }
 
-            JSONArray chatsObj = pedding.getJSONArray(origin.toString());
-            List<JSONObject> chats = new LinkedList<JSONObject>(chatsObj.toList(JSONObject.class));
+            for (String userIdStr : new LinkedList<String>(pedding.keySet())) {
 
-            for (int index = 0;index < chats.size();index ++) {
 
-                JSONObject chat = chats.get(index);
+				JSONObject chats = pedding.getJSONObject(userIdStr);
 
-                long chatId = chat.getLong("chat_id");
-                int msgId = chat.getInt("msg_id");
+				for (String chatIdStr : chats.keySet()) {
 
-                if (chatId == callback.chatId()) {
+					JSONObject chat = chats.getJSONObject(chatIdStr);
 
-                    chatsObj.remove(chat);
+					long chatId = Long.parseLong(chatIdStr);
+					int msgId = chat.getInt("msg_id");
 
-                    callback.alert("好。");
+					if (chatId == callback.chatId()) {
 
-                    Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
-                    Launcher.INSTANCE.bot().execute(new KickChatMember(chatId,origin.intValue()));
+						chats.remove(chat);
 
-                    new Send(chatId,BotDB.getUserData(origin).userName() + " 已被绒布球 " + user.userName() + " 移除。").html().exec();
+						callback.alert("好。");
 
-                }
+						Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
+						Launcher.INSTANCE.bot().execute(new KickChatMember(chatId,origin.intValue()));
 
-            }
+						new Send(chatId,BotDB.getUserData(origin).userName() + " 已被绒布球 " + user.userName() + " 移除。").html().exec();
 
-            pedding.put(user.id.toString(),chatsObj);
+					}
 
-            save();
+				}
 
+				pedding.put(user.id.toString(),chats);
+
+				save();
+
+			}
 
         }
 
@@ -502,33 +513,36 @@ public class GroupProtecter extends Fragment {
 
             if (pedding.containsKey(userId.toString())) {
 
-                JSONArray chatsObj = pedding.getJSONArray(userId.toString());
-                List<JSONObject> chats = new LinkedList<JSONObject>(chatsObj.toList(JSONObject.class));
+                for (String userIdStr : new LinkedList<String>(pedding.keySet())) {
 
-                for (int index = 0;index < chats.size();index ++) {
+                    JSONObject chats = pedding.getJSONObject(userIdStr);
 
-                    JSONObject chat = chats.get(index);
+                    for (String chatIdStr : chats.keySet()) {
 
-                    boolean authedBefore = chat.getBool("authed_before");
-                    long chatId = chat.getLong("chat_id");
-                    int msgId = chat.getInt("msg_id");
+                        JSONObject chat = chats.getJSONObject(chatIdStr);
 
-                    if (!authedBefore) {
+                        boolean authedBefore = chat.getBool("authed_before");
+                        long chatId = Long.parseLong(chatIdStr);
+						int msgId = chat.getInt("msg_id");
 
-                        chatsObj.remove(chat);
+						if (!authedBefore) {
 
-                        Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
-                        new Send(chatId,BotDB.getUserData(userId).userName() + " 的 Twitter 账号 : " + TAuth.get(userId).getFormatedNameHtml(),"欢迎加入本群 :)").html().exec();
+							chats.remove(chat);
 
-                    }
+							Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
+							new Send(chatId,BotDB.getUserData(userId).userName() + " 的 Twitter 账号 : " + TAuth.get(userId).getFormatedNameHtml(),"欢迎加入本群 :)").html().exec();
 
-                }
+						}
 
-                pedding.put(userId.toString(),chatsObj);
+					}
 
-                save();
+					pedding.put(userId.toString(),chats);
 
-            }
+					save();
+
+				}
+
+			}
 
         }
 
@@ -603,7 +617,7 @@ public class GroupProtecter extends Fragment {
         enable.remove(msg.chatId());
 
         save();
-
+		
         msg.reply("关闭成功 :)").exec();
 
 
