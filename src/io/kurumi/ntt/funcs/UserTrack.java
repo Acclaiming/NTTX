@@ -27,6 +27,7 @@ public class UserTrack extends Fragment {
             case "sub" : subUser(user,msg);break;
             case "unsub" : unSubUser(user,msg);break;
             case "sublist" : subList(user,msg);break;
+			case "subconf" : subConf(user,msg);break;
             case "unsuball" : unSubAll(user,msg);break;
 
             default : return false;
@@ -53,6 +54,8 @@ public class UserTrack extends Fragment {
         
         
     }
+	
+	void subConf(UserData user,Msg msg) {}
 
     void subUser(UserData user,Msg msg) {
 

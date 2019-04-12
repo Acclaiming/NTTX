@@ -194,7 +194,7 @@ public class GroupProtecter extends Fragment {
                         long enterAt = chat.getLong("enter_at");
                         int msgId = chat.getInt("msg_id");
 
-                        if ((authedBefore || System.currentTimeMillis() - enterAt > 3 * 60 * 1000)) {
+                        if ((authedBefore && System.currentTimeMillis() - enterAt > 3 * 60 * 1000)) {
 
                             Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
                             Launcher.INSTANCE.bot().execute(new KickChatMember(chatId,userId));
