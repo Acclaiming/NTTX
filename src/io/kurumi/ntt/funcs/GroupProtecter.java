@@ -525,7 +525,7 @@ public class GroupProtecter extends Fragment {
 
         ChatMember me = bot().execute(new GetChatMember(msg.chatId(),origin.me.id())).chatMember();
 
-        if (!me.canRestrictMembers()) {
+        if (me.canRestrictMembers() != null || me.canRestrictMembers()) {
 
             msg.reply("失败 BOT无法移除群员。").publicFailed();
 
