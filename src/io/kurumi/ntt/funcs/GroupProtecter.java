@@ -389,7 +389,7 @@ public class GroupProtecter extends Fragment {
 
 			callback.alert("好。");
 
-			callback.send(BotDB.getUserData(origin).userName() + " 已被绒布球 " + user.userName() + " 放行。").html().exec();
+			callback.send(BotDB.getUserData(origin).userName() + " 已被绒布球 " + user.userName() + " 通过 欢迎加入 :)").html().exec();
 
 			pedding.put(origin.toString(),chats);
 
