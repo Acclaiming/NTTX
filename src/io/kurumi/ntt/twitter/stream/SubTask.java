@@ -111,11 +111,13 @@ public class SubTask extends StatusAdapter {
 
         for (Map.Entry<Long,List<Long>> sub : newSubs.entrySet()) {
 
-            long userId = sub.getKey();
+            Long userId = sub.getKey();
+			
+			if (!enable.getBool(userId.toString(),false)) continue;
 
             if (currentSubs.containsKey(userId)) {
 
-                if (currentSubs.get(userId).equals(sub.getValue()) || !enable.containsKey(userId)) {
+                if (currentSubs.get(userId).equals(sub.getValue())) {
 
                     continue;
 
