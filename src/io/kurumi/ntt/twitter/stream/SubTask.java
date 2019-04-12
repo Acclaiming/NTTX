@@ -24,9 +24,19 @@ import twitter4j.StatusDeletionNotice;
 import twitter4j.Twitter;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
+import cn.hutool.json.*;
+import io.kurumi.ntt.db.*;
 
 public class SubTask extends StatusAdapter {
 
+	public static JSONObject enable = SData.getJSON("data","stream",true);
+	
+	public static void save() {
+		
+		SData.setJSON("data","stream",enable);
+		
+	}
+	
     long userId;
     long tid;
     Twitter api;
@@ -50,7 +60,7 @@ public class SubTask extends StatusAdapter {
 
             if (needReset.getAndSet(false)) {
 
-           //     resetStream();
+                resetStream();
 
             }
 
@@ -69,7 +79,6 @@ public class SubTask extends StatusAdapter {
         Date start = new Date();
         
         start.setMinutes(start.getMinutes() + 5);
-        
         
         timer.schedule(resetTask,start,5 * 60 * 1000);
         
@@ -104,7 +113,7 @@ public class SubTask extends StatusAdapter {
 
             long userId = sub.getKey();
 
-            if (currentSubs.containsKey(userId)) {
+            if (currentSubs.containsKey(userId) || !enable.containsKey(userId)) {
 
                 if (currentSubs.get(userId).equals(sub.getValue())) {
 
@@ -113,7 +122,6 @@ public class SubTask extends StatusAdapter {
                 }
 
             }
-
 
             if (TAuth.exists(userId)) {
 

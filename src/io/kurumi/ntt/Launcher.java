@@ -10,7 +10,7 @@ import io.kurumi.ntt.funcs.HideMe;
 import io.kurumi.ntt.funcs.LuaEnv;
 import io.kurumi.ntt.funcs.Maven;
 import io.kurumi.ntt.funcs.Ping;
-import io.kurumi.ntt.funcs.StatusTrack;
+import io.kurumi.ntt.funcs.FollowersTrack;
 import io.kurumi.ntt.funcs.StickerManage;
 import io.kurumi.ntt.funcs.TwitterArchive;
 import io.kurumi.ntt.funcs.TwitterDelete;
@@ -52,7 +52,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(TwitterArchive.INSTANCE);
 
-        addFragment(StatusTrack.INSTANCE);
+        addFragment(FollowersTrack.INSTANCE);
 
         addFragment(UserTrack.INSTANCE);
         
