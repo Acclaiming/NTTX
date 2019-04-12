@@ -185,7 +185,7 @@ public class GroupProtecter extends Fragment {
 
                     JSONObject chats = pedding.getJSONObject(userIdStr);
 
-                    for (String chatIdStr : chats.keySet()) {
+                    for (String chatIdStr : new LinkedList<String>(chats.keySet())) {
 
                         JSONObject chat = chats.getJSONObject(chatIdStr);
 
@@ -284,7 +284,7 @@ public class GroupProtecter extends Fragment {
 
 				JSONObject chats = pedding.getJSONObject(userIdStr);
 
-				for (String chatIdStr : chats.keySet()) {
+				for (String chatIdStr : new LinkedList<String>(chats.keySet())) {
 
 					JSONObject chat = chats.getJSONObject(chatIdStr);
 
@@ -349,7 +349,7 @@ public class GroupProtecter extends Fragment {
 
 				JSONObject chats = pedding.getJSONObject(userIdStr);
 
-				for (String chatIdStr : chats.keySet()) {
+				for (String chatIdStr : new LinkedList<String>(chats.keySet())) {
 
 					JSONObject chat = chats.getJSONObject(chatIdStr);
 
@@ -413,7 +413,7 @@ public class GroupProtecter extends Fragment {
 
 				JSONObject chats = pedding.getJSONObject(userIdStr);
 
-				for (String chatIdStr : chats.keySet()) {
+				for (String chatIdStr : new LinkedList<String>(chats.keySet())) {
 
 					JSONObject chat = chats.getJSONObject(chatIdStr);
 
@@ -475,7 +475,7 @@ public class GroupProtecter extends Fragment {
 
 				JSONObject chats = pedding.getJSONObject(userIdStr);
 
-				for (String chatIdStr : chats.keySet()) {
+				for (String chatIdStr : new LinkedList<String>(chats.keySet())) {
 
 					JSONObject chat = chats.getJSONObject(chatIdStr);
 
@@ -517,7 +517,7 @@ public class GroupProtecter extends Fragment {
 
                     JSONObject chats = pedding.getJSONObject(userIdStr);
 
-                    for (String chatIdStr : chats.keySet()) {
+                    for (String chatIdStr : new LinkedList<String>(chats.keySet())) {
 
                         JSONObject chat = chats.getJSONObject(chatIdStr);
 
