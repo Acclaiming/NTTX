@@ -29,7 +29,7 @@ public class GroupRepeat extends Fragment {
 
             repeatCount ++;
 
-            if (repeatCount == 1) {
+            if (repeatCount == 2) {
 
                 msg.send(msg.text()).exec();
 
@@ -53,7 +53,7 @@ public class GroupRepeat extends Fragment {
 
             repeatCount ++;
 
-            if (repeatCount == 1) {
+            if (repeatCount == 2) {
 
                 bot().execute(new SendSticker(msg.chatId(),msg.message().sticker().fileId()));
 

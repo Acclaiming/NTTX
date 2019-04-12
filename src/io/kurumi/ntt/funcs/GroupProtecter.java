@@ -199,7 +199,8 @@ public class GroupProtecter extends Fragment {
 
                             Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
                             Launcher.INSTANCE.bot().execute(new KickChatMember(chatId,userId));
-
+							Launcher.INSTANCE.bot().execute(new UnbanChatMember(chatId,userId));
+							
                             new Send(chatId,BotDB.getUserData(userId).userName() + " 没有在 180s 内选择是否公开Twitter账号，已移除。").html().exec();
 
                         } else if (System.currentTimeMillis() - enterAt > 5 * 60 * 1000) {
