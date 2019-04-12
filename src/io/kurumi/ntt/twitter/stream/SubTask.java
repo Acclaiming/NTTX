@@ -164,7 +164,8 @@ public class SubTask extends StatusAdapter {
     @Override
     public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
         
-        
+        statusDeletionNotice.getStatusId();
+		statusDeletionNotice.getUserId();
         
     }
 

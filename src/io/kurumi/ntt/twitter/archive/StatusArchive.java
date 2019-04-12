@@ -213,15 +213,15 @@ public class StatusArchive {
 
                 if (l) archive.append("、");
 
-                if (user != null) {
+             //   if (user != null) {
 
-                    archive.append(user.urlHtml());
+                //    archive.append(user.urlHtml());
 
-                } else {
+             //   } else {
 
                     archive.append(Html.a("@" + replyTo,"https://twitter.com/" + replyTo));
 
-                } 
+             //   } 
 
                 l = true;
 
