@@ -50,7 +50,7 @@ public class SubTask extends StatusAdapter {
 
             if (needReset.getAndSet(false)) {
 
-                resetStream();
+           //     resetStream();
 
             }
 
