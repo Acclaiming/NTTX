@@ -289,8 +289,8 @@ public class GroupProtecter extends Fragment {
 			chats.remove(callback.chatId().toString());
 
 			Launcher.INSTANCE.bot().execute(new DeleteMessage(callback.chatId(),msgId));
-			new Send(callback.chatId(),user.userName() + " 的 Twitter 账号 : " + TAuth.get(user.id).getFormatedNameHtml(),"欢迎加入本群 :)").html().exec();
-
+			callback.send(user.userName() + " ( " + TAuth.get(user.id).getFormatedNameHtml() + " )","欢迎加入本群 :)").html().exec();
+			
 			pedding.put(user.id.toString(),chats);
 
 			save();
@@ -471,7 +471,7 @@ public class GroupProtecter extends Fragment {
 						chats.remove(chatIdStr);
 
 						Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
-						new Send(chatId,BotDB.getUserData(userId).userName() + " 的 Twitter 账号 : " + TAuth.get(userId).getFormatedNameHtml(),"欢迎加入本群 :)").html().exec();
+						new Send(chatId,BotDB.getUserData(userId).userName() + " ( " + TAuth.get(userId).getFormatedNameHtml() + " )","欢迎加入本群 :)").html().exec();
 
 					}
 
