@@ -27,6 +27,7 @@ import io.kurumi.ntt.db.BotDB;
 import com.mongodb.MongoException;
 import io.kurumi.ntt.twitter.stream.SubTask;
 import io.kurumi.ntt.funcs.StatusUI;
+import io.kurumi.ntt.funcs.GroupProtecter;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -57,6 +58,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         
         addFragment(StatusUI.INSTANCE);
 
+        addFragment(GroupProtecter.INSTANCE);
+        
         addFragment(YourGroupRule.INSTANCE);
 
         // addFragment(AnalysisJsp.INSTANCE);
@@ -173,6 +176,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         FTTask.stop();
         UTTask.stop();
         SubTask.stop();
+        GroupProtecter.stop();
         Backup.AutoBackupTask.INSTANCE.stop();
 
 		//  BotServer.INSTACNCE.stop();

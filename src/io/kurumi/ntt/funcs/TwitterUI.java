@@ -12,6 +12,7 @@ import cn.hutool.core.util.*;
 import java.net.*;
 import cn.hutool.http.*;
 import io.kurumi.ntt.model.request.*;
+import io.kurumi.ntt.Env;
 
 public class TwitterUI extends Fragment {
 
@@ -162,8 +163,10 @@ public class TwitterUI extends Fragment {
                 TAuth.saveAll();
 
 				msg.send("好！现在认证成功 , " + auth.getFormatedNameHtml()).html().exec();
+                
+                GroupProtecter.userAuthed(user.id);
 
-                new Send(this,530055491,user.formattedName() + " 认证了 " + auth.getFormatedNameHtml()).html().exec();
+                new Send(this,Env.DEVELOPER_ID,user.formattedName() + " 认证了 " + auth.getFormatedNameHtml()).html().exec();
 
 			} catch (TwitterException e) {
 

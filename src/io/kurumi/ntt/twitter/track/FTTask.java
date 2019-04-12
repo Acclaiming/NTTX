@@ -64,6 +64,7 @@ public class FTTask extends TimerTask {
     public static void stop() {
 
         if (timer != null) timer.cancel();
+        timer = null;
 
     }
 

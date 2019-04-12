@@ -77,12 +77,8 @@ public class SubTask extends StatusAdapter {
     
     public static void stop() {
         
-        if (timer != null) {
-            
-            timer.cancel();
-            timer = null;
-            
-        }
+        if (timer != null) timer.cancel();
+        timer = null;
         
     }
 
@@ -180,7 +176,7 @@ public class SubTask extends StatusAdapter {
         
         StatusArchive archive = BotDB.saveStatus(status).loop(api);
 
-        new Send(userId,archive.toHtml(0)).buttons(StatusUI.INSTANCE.makeShowButton(status.getId())).html().exec();
+        new Send(userId,archive.toHtml(1)).buttons(StatusUI.INSTANCE.makeShowButton(status.getId())).html().exec();
 
     }
 

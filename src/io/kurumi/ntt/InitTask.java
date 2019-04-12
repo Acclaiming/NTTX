@@ -15,6 +15,7 @@ import io.kurumi.ntt.db.SData;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.db.BotDB;
 import io.kurumi.ntt.twitter.stream.SubTask;
+import io.kurumi.ntt.funcs.GroupProtecter;
 
 public class InitTask extends Thread {
 
@@ -25,6 +26,7 @@ public class InitTask extends Thread {
         FTTask.start();
         UTTask.start();
         SubTask.start();
+        GroupProtecter.start();
         Backup.AutoBackupTask.INSTANCE.start();
 
     }

@@ -65,7 +65,7 @@ public class BotDB {
 
     }
 
-    public static UserData getUserData(long userId,boolean fix) {
+    public static UserData getUserData(long userId) {
 
         if (userDataIndex.containsKey(userId)) return userDataIndex.get(userId);
 
@@ -79,29 +79,9 @@ public class BotDB {
 
                 userDataIndex.put(userId,user);
 
-            } else if (fix) {
-                
-                GetChatResponse resp = Launcher.INSTANCE.bot().execute(new GetChat(userId));
-
-                if (resp.isOk()) {
-                    
-                    UserData user = new UserData();
-                    
-                    user.id = userId;
-                    
-                    user.firstName = resp.chat().firstName();
-                    user.lastName = resp.chat().lastName();
-                    user.userName = resp.chat().username();
-                    
-                    userDataCollection.insertOne(user);
-                    
-                    return user;
-                    
-                }
-                
             }
             
-        }
+            }
 
         return null;
 
@@ -111,7 +91,7 @@ public class BotDB {
 
         if (user == null) return null;
 
-        UserData userData = getUserData(user.id().longValue(),false);
+        UserData userData = getUserData(user.id().longValue());
 
         if (userData == null) {
 
