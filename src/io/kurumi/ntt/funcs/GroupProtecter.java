@@ -365,12 +365,14 @@ public class GroupProtecter extends Fragment {
                     new Send(chatId,user.userName() + " 选择了退出。").exec();
 
                 }
-                }
+                
                 
 
             }
 
             pedding.put(user.id.toString(),chats);
+            
+            }
 
             save();
 
