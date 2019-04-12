@@ -254,7 +254,7 @@ public class GroupProtecter extends Fragment {
 
         Long origin = callback.data.getLong("o");
 
-        if (user.id != origin) {
+        if (!user.id.equals(origin)) {
 
             callback.alert("这个验证不针对乃 :)");
 
@@ -304,7 +304,8 @@ public class GroupProtecter extends Fragment {
 
         Long origin = callback.data.getLong("o");
 
-        if (user.id != origin) {
+        if (!user.id.equals(origin)) {
+			
 
             callback.alert("这个验证不针对乃 :)");
 
