@@ -86,15 +86,13 @@ public class GroupProtecter extends Fragment {
 
         synchronized (pedding) {
 
-            JSONArray chats = pedding.getJSONArray(newUser.id.toString());
-            if (chats == null) chats = new JSONArray();
+            JSONObject chats = pedding.getJSONObject(newUser.id.toString());
+            if (chats == null) chats = new JSONObject();
 
             JSONObject chat = new JSONObject();
 
             chat.put("authed_before",TAuth.exists(newUser.id));
-            chat.put("chat_id",msg.chatId());
             chat.getLong("enter_at",System.currentTimeMillis());
-
 
 
             final CData allow = cdata(POINT_ALLOW_SHOW);
@@ -145,7 +143,7 @@ public class GroupProtecter extends Fragment {
             }
 
             chat.put("msg_id",resp.message().messageId());
-            chats.add(chat);
+            chats.put(msg.chatId().toString(),chat);
 
             pedding.put(newUser.id.toString(),chats);
 
@@ -185,15 +183,14 @@ public class GroupProtecter extends Fragment {
 
                     Integer userId = Integer.parseInt(userIdStr);
 
-                    JSONArray chatsObj = pedding.getJSONArray(userIdStr);
-                    List<JSONObject> chats = new LinkedList<JSONObject>(chatsObj.toList(JSONObject.class));
+                    JSONObject chats = pedding.getJSONObject(userIdStr);
+                    
+                    for (String chatIdStr : chats.keySet()) {
 
-                    for (int index = 0;index < chats.size();index ++) {
-
-                        JSONObject chat = chatsObj.getJSONObject(index);
+                        JSONObject chat = chats.getJSONObject(chatIdStr);
 
                         boolean authedBefore = chat.getBool("authed_before");
-                        long chatId = chat.getLong("chat_id");
+                        long chatId = Long.parseLong(chatIdStr);
                         long enterAt = chat.getLong("enter_at");
                         int msgId = chat.getInt("msg_id");
 
@@ -218,9 +215,9 @@ public class GroupProtecter extends Fragment {
 
                         }
 
-                        chatsObj.remove(chat);
+                        chats.remove(chatIdStr);
 
-                        pedding.put(userIdStr,chatsObj);
+                        pedding.put(userIdStr,chats);
 
                         save();
 
@@ -343,32 +340,37 @@ public class GroupProtecter extends Fragment {
 
             }
 
-            JSONArray chatsObj = pedding.getJSONArray(user.id.toString());
-            List<JSONObject> chats = new LinkedList<JSONObject>(chatsObj.toList(JSONObject.class));
+            for (String userIdStr : new LinkedList<String>(pedding.keySet())) {
 
-            for (int index = 0;index < chats.size();index ++) {
+                Integer userId = Integer.parseInt(userIdStr);
 
-                JSONObject chat = chats.get(index);
+                JSONObject chats = pedding.getJSONObject(userIdStr);
 
-                long chatId = chat.getLong("chat_id");
-                int msgId = chat.getInt("msg_id");
+                for (String chatIdStr : chats.keySet()) {
+
+                    JSONObject chat = chats.getJSONObject(chatIdStr);
+
+                                        long chatId = Long.parseLong(chatIdStr);
+                    int msgId = chat.getInt("msg_id");
 
                 if (chatId == callback.chatId()) {
 
-                    chatsObj.remove(chat);
+                    chats.remove(chat);
 
                     callback.alert("好的。");
 
                     Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
-                    Launcher.INSTANCE.bot().execute(new KickChatMember(chatId,user.id.intValue()));
+                    Launcher.INSTANCE.bot().execute(new KickChatMember(chatId,userId.intValue()));
 
                     new Send(chatId,user.userName() + " 选择了退出。").exec();
 
                 }
+                }
+                
 
             }
 
-            pedding.put(user.id.toString(),chatsObj);
+            pedding.put(user.id.toString(),chats);
 
             save();
 
