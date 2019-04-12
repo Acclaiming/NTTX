@@ -203,7 +203,6 @@ public class GroupProtecter extends Fragment {
 
                         } else if (System.currentTimeMillis() - enterAt > 5 * 60 * 1000) {
 
-
                             Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
                             Launcher.INSTANCE.bot().execute(new KickChatMember(chatId,userId));
 
@@ -293,7 +292,7 @@ public class GroupProtecter extends Fragment {
 
 					if (chatId == callback.chatId()) {
 
-						chats.remove(chat);
+						chats.remove(chatIdStr);
 
 						Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
 						new Send(chatId,user.userName() + " 的 Twitter 账号 : " + TAuth.get(user.id).getFormatedNameHtml(),"欢迎加入本群 :)").html().exec();
@@ -358,7 +357,7 @@ public class GroupProtecter extends Fragment {
 
 					if (chatId == callback.chatId()) {
 
-						chats.remove(chat);
+						chats.remove(chatIdStr);
 
 						callback.alert("好的。");
 
@@ -422,7 +421,7 @@ public class GroupProtecter extends Fragment {
 
 					if (chatId == callback.chatId()) {
 
-						chats.remove(chat);
+						chats.remove(chatIdStr);
 
 						callback.alert("好。");
 
@@ -484,7 +483,7 @@ public class GroupProtecter extends Fragment {
 
 					if (chatId == callback.chatId()) {
 
-						chats.remove(chat);
+						chats.remove(chatIdStr);
 
 						callback.alert("好。");
 
@@ -527,7 +526,7 @@ public class GroupProtecter extends Fragment {
 
 						if (!authedBefore) {
 
-							chats.remove(chat);
+							chats.remove(chatIdStr);
 
 							Launcher.INSTANCE.bot().execute(new DeleteMessage(chatId,msgId));
 							new Send(chatId,BotDB.getUserData(userId).userName() + " 的 Twitter 账号 : " + TAuth.get(userId).getFormatedNameHtml(),"欢迎加入本群 :)").html().exec();
