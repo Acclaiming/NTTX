@@ -358,7 +358,7 @@ public class GroupProtecter extends Fragment {
 
         Long origin = callback.data.getLong("o");
 
-        GetChatMemberResponse resp = bot().execute(new GetChatMember(callback.chatId(),origin.intValue()));
+        GetChatMemberResponse resp = bot().execute(new GetChatMember(callback.chatId(),user.id.intValue()));
 
         if (!resp.isOk() || ((resp.chatMember().status() != (ChatMember.Status.administrator) && resp.chatMember().status() != ChatMember.Status.creator))) {
 
@@ -408,7 +408,7 @@ public class GroupProtecter extends Fragment {
 
         Long origin = callback.data.getLong("o");
 
-        GetChatMemberResponse resp = bot().execute(new GetChatMember(callback.chatId(),origin.intValue()));
+        GetChatMemberResponse resp = bot().execute(new GetChatMember(callback.chatId(),user.id.intValue()));
 
         if (!resp.isOk() || ((resp.chatMember().status() != (ChatMember.Status.administrator) && resp.chatMember().status() != ChatMember.Status.creator))) {
 
