@@ -255,7 +255,7 @@ public class GroupProtecter extends Fragment {
 
         Long origin = callback.data.getLong("o");
 
-        if (!user.id.equals(origin)) {
+        if (!origin.equals(origin)) {
 
             callback.alert("这个验证不针对乃 :)");
 
@@ -263,7 +263,7 @@ public class GroupProtecter extends Fragment {
 
         }
 
-        if (!TAuth.exists(user.id)) {
+        if (!TAuth.exists(origin)) {
 
             callback.alert("乃的认证已移除 请重新认证 :)");
 
@@ -273,7 +273,7 @@ public class GroupProtecter extends Fragment {
 
         synchronized (pedding) {
 
-            if (!pedding.containsKey(user.id.toString())) {
+            if (!pedding.containsKey(origin.toString())) {
 
                 callback.alert("这个认证已经过期。");
 
@@ -290,9 +290,9 @@ public class GroupProtecter extends Fragment {
 			chats.remove(callback.chatId().toString());
 
 			Launcher.INSTANCE.bot().execute(new DeleteMessage(callback.chatId(),msgId));
-			callback.send(user.userName() + " ( " + TAuth.get(user.id).getFormatedNameHtml() + " )","欢迎加入本群 :)").html().exec();
+			callback.send(user.userName() + " ( " + TAuth.get(origin).getFormatedNameHtml() + " )","欢迎加入本群 :)").html().exec();
 			
-			pedding.put(user.id.toString(),chats);
+			pedding.put(origin.toString(),chats);
 
 			save();
 
@@ -305,7 +305,7 @@ public class GroupProtecter extends Fragment {
 
         Long origin = callback.data.getLong("o");
 
-        if (!user.id.equals(origin)) {
+        if (!origin.equals(origin)) {
 			
 
             callback.alert("这个验证不针对乃 :)");
@@ -314,7 +314,7 @@ public class GroupProtecter extends Fragment {
 
         }
 
-        if (!TAuth.exists(user.id)) {
+        if (!TAuth.exists(origin)) {
 
             callback.alert("乃的认证已移除 请重新认证 :)");
 
@@ -324,7 +324,7 @@ public class GroupProtecter extends Fragment {
 
         synchronized (pedding) {
 
-            if (!pedding.containsKey(user.id.toString())) {
+            if (!pedding.containsKey(origin.toString())) {
 
                 callback.alert("这个认证已经过期。");
 
@@ -346,7 +346,7 @@ public class GroupProtecter extends Fragment {
 
 			new Send(callback.chatId(),user.userName() + " 选择了退出。").html().exec();
 
-			pedding.put(user.id.toString(),chats);
+			pedding.put(origin.toString(),chats);
 
 			save();
 
@@ -358,7 +358,7 @@ public class GroupProtecter extends Fragment {
 
         Long origin = callback.data.getLong("o");
 
-        GetChatMemberResponse resp = bot().execute(new GetChatMember(callback.chatId(),user.id.intValue()));
+        GetChatMemberResponse resp = bot().execute(new GetChatMember(callback.chatId(),origin.intValue()));
 
         if (!resp.isOk() || ((resp.chatMember().status() != (ChatMember.Status.administrator) && resp.chatMember().status() != ChatMember.Status.creator))) {
 
@@ -370,7 +370,7 @@ public class GroupProtecter extends Fragment {
 
         synchronized (pedding) {
 
-            if (!pedding.containsKey(user.id.toString())) {
+            if (!pedding.containsKey(origin.toString())) {
 
                 callback.alert("这个认证已经过期。");
 
@@ -391,7 +391,7 @@ public class GroupProtecter extends Fragment {
 
 			callback.send(BotDB.getUserData(origin).userName() + " 已被绒布球 " + user.userName() + " 放行。").html().exec();
 
-			pedding.put(user.id.toString(),chats);
+			pedding.put(origin.toString(),chats);
 
 			save();
 
@@ -408,7 +408,7 @@ public class GroupProtecter extends Fragment {
 
         Long origin = callback.data.getLong("o");
 
-        GetChatMemberResponse resp = bot().execute(new GetChatMember(callback.chatId(),user.id.intValue()));
+        GetChatMemberResponse resp = bot().execute(new GetChatMember(callback.chatId(),origin.intValue()));
 
         if (!resp.isOk() || ((resp.chatMember().status() != (ChatMember.Status.administrator) && resp.chatMember().status() != ChatMember.Status.creator))) {
 
@@ -420,7 +420,7 @@ public class GroupProtecter extends Fragment {
 
         synchronized (pedding) {
 
-            if (!pedding.containsKey(user.id.toString())) {
+            if (!pedding.containsKey(origin.toString())) {
 
                 callback.alert("这个认证已经过期。");
 
@@ -444,7 +444,7 @@ public class GroupProtecter extends Fragment {
 
 			callback.send(BotDB.getUserData(origin).userName() + " 已被绒布球 " + user.userName() + " 移除。").html().exec();
 
-			pedding.put(user.id.toString(),chats);
+			pedding.put(origin.toString(),chats);
 
 			save();
 
