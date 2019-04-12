@@ -293,11 +293,11 @@ public class UTTask extends TimerTask {
 
 				new Send(sub,"乃订阅的 " + user.urlHtml() + " :",change).html().exec();
 
-			}  else if (subL != null & subL.contains(sub)) {
+			}  else if (subL != null && subL.contains(sub)) {
 
 				new Send(sub,"关注乃的 " + user.urlHtml() + " :",change).html().exec();
 
-			} else if (subR != null & subR.contains(sub)) {
+			} else if (subR != null && subR.contains(sub)) {
 
 				new Send(sub,"乃关注的 " + user.urlHtml() + " :",change).html().exec();
 
