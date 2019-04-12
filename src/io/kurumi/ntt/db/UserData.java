@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import io.kurumi.ntt.model.data.*;
 import io.kurumi.ntt.utils.T;
+import io.kurumi.ntt.utils.Html;
 
 public class UserData {
     
@@ -39,7 +40,7 @@ public class UserData {
     
     public String formattedName() {
 
-        return name() + " (" + userName() + ") ";
+        return name() + " (" + userName != null ? userName : id + ") ";
 
     }
 
@@ -59,7 +60,7 @@ public class UserData {
 
     public String userName() {
 
-        return userName != null ? "@" + userName : name();
+        return Html.a(name(),"tg://user?id" + id);
 
     }
 

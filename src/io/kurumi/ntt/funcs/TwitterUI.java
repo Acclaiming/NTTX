@@ -153,7 +153,11 @@ public class TwitterUI extends Fragment {
 
                 }
 
-                TAuth.auth.put(user.id.toString(),auth);
+                synchronized (TAuth.auth) {
+
+                    TAuth.auth.put(user.id.toString(),auth);
+
+                }
 
                 TAuth.saveAll();
 
@@ -181,7 +185,11 @@ public class TwitterUI extends Fragment {
 
 		}
 
-	    TAuth.auth.remove(user.id.toString());
+        synchronized (TAuth.auth) {
+
+            TAuth.auth.remove(user.id.toString());
+
+        }
 
         TAuth.saveAll();
 

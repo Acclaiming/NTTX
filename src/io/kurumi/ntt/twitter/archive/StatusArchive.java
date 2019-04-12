@@ -120,45 +120,45 @@ public class StatusArchive {
         if (quotedStatusId != -1) {
 
             if (depth != 0) {
-            
-            StatusArchive quotedStatus = BotDB.getStatus(quotedStatusId);
 
-            if (quotedStatus == null) {
+                StatusArchive quotedStatus = BotDB.getStatus(quotedStatusId);
 
-                archive.append(quotedStatus.toHtml(depth > 0 ? depth - 1 : depth));
+                if (quotedStatus == null) {
 
-            } else {
+                    archive.append(quotedStatus.toHtml(depth > 0 ? depth - 1 : depth));
 
-                archive.append("不可用的推文");
+                } else {
+
+                    archive.append("不可用的推文");
+
+                }
+
+                archive.append(split);
 
             }
 
-            archive.append(split);
-            
-            }
-            
             archive.append(user().urlHtml()).append(" 的 ").append(Html.a("回复",url()));
 
         } else if (inReplyToStatusId != -1) {
 
             if (depth != 0) {
-                
-            StatusArchive inReplyTo = BotDB.getStatus(inReplyToStatusId);
 
-            if (inReplyTo != null) {
+                StatusArchive inReplyTo = BotDB.getStatus(inReplyToStatusId);
 
-                archive.append(inReplyTo.toHtml(depth > 0 ? depth - 1 : depth));
+                if (inReplyTo != null) {
 
-            } else {
+                    archive.append(inReplyTo.toHtml(depth > 0 ? depth - 1 : depth));
 
-                archive.append(notAvilableStatus(inReplyToUserId,inReplyToScreenName));
+                } else {
+
+                    archive.append(notAvilableStatus(inReplyToUserId,inReplyToScreenName));
+
+                }
+
+                archive.append(split);
 
             }
 
-            archive.append(split);
-            
-            }
-            
             archive.append(user().urlHtml()).append(" 的 ").append(Html.a("回复",url()));
 
 
@@ -175,7 +175,7 @@ public class StatusArchive {
         } else {
 
             archive.append(user().urlHtml()).append(" 的 ").append(Html.a("推文",url()));
-
+            
 		}
 
         String content = text;

@@ -25,37 +25,37 @@ public class T {
         return true;
 
     }
-    
+
     public static boolean checkNonContactable(UserData user,Msg msg) {
-        
+
         String notContactableMsg = "咱无法给乃发送信息呢，请私聊点击 'start' 启用咱 ~";
-        
+
         if (!msg.isPrivate() && !isUserContactable(user.id)) {
-            
+
             if (msg instanceof Callback) {
-                
+
                 ((Callback)msg).alert(notContactableMsg);
-                
+
             } else {
-                
+
                 msg.send(user.userName(),notContactableMsg).publicFailed();
-                
+
             }
-            
+
             return true;
-            
+
         }
-        
+
         return false;
-        
+
     }
-    
+
     public static boolean checkUserNonAuth(UserData user,Msg msg) {
-        
+
         String nonAuthMsg = msg.isPrivate() ? "乃还没有认证Twitter账号 (ﾟ〇ﾟ ; 使用 /tauth ~" : "乃还没有认证Twitter账号 (ﾟ〇ﾟ ; 私聊BOT使用 /tauth ~";
-        
+
         if (!TAuth.exists(user.id)) {
-            
+
             if (msg instanceof Callback) {
 
                 ((Callback)msg).alert(nonAuthMsg);
@@ -65,31 +65,35 @@ public class T {
                 msg.send(nonAuthMsg).publicFailed();
 
             }
-            
-            
-            
+
+
+
             return true;
-            
+
         }
-        
+
         if (!TAuth.avilable(user.id)) {
 
-            TAuth.auth.remove(user.id.toString());
+            synchronized (TAuth.auth) {
+
+                TAuth.auth.remove(user.id.toString());
+
+            }
 
             TAuth.saveAll();
-
+            
             msg.send("乃的认证可能已经被取消... 请使用 /tauth 重新认证 :(").exec();
 
             return true;
-            
+
         }
-        
+
         return false;
-        
+
     }
-    
+
     public static String parseScreenName(String input) {
-        
+
         if (input.contains("twitter.com/")) {
 
             input = StrUtil.subAfter(input,"twitter.com/",true);
@@ -101,13 +105,13 @@ public class T {
             }
 
         }
-        
+
         return input;
-        
+
     }
-    
+
     public static long parseStatusId(String input) {
-        
+
         Long statusId = -1L;
 
         if (NumberUtil.isNumber(input)) {
@@ -131,32 +135,32 @@ public class T {
             }
 
         }
-        
+
         return statusId;
-        
+
     }
-	
+
 	public static void tryDelete(final long delay,final Msg... messages) {
-		
+
 		ThreadPool.exec(new Runnable() {
 
 				@Override
 				public void run() {
-		
+
 					ThreadUtil.sleep(delay);
-					
+
 					for (Msg message : messages) {
-						
+
 						if (message == null) continue;
-						
+
 						if (!message.delete()) return;
-						
+
 					}
-					
+
 				}
-				
+
 			});
-		
+
 	}
-    
+
 }
