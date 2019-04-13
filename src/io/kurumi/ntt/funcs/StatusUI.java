@@ -48,6 +48,14 @@ public class StatusUI extends Fragment {
         
         Long statusId = callback.data.getLong("s");
         
+		if (statusId == null) {
+			
+			callback.alert("又双炸了 (≧σ≦)...");
+			
+			return;
+			
+		}
+		
         StatusArchive archive = BotDB.getStatus(statusId);
 
         if (archive == null) {
