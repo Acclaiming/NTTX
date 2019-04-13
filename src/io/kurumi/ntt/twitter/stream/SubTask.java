@@ -175,7 +175,9 @@ public class SubTask extends StatusAdapter {
                 TwitterStream removed = userStream.put(userId,stream);
                 if (removed != null) removed.cleanUp();
 
-                stream.filter(new FilterQuery().follow(ArrayUtil.unWrap(sub.getValue().toArray(new Long[sub.getValue().size()]))));
+				stream.filter(new FilterQuery().follow(new long[] { TAuth.get(userId).accountId }));
+				
+               // stream.filter(new FilterQuery().follow(ArrayUtil.unWrap(sub.getValue().toArray(new Long[sub.getValue().size()]))));
 				
 			}
 			
@@ -211,11 +213,11 @@ public class SubTask extends StatusAdapter {
 
         // List<Long> userSub = currentSubs.get(userId);
 
-        if (status.getRetweetedStatus() != null && !userSub.contains(status.getRetweetedStatus().getUser().getId())) {
+        if (status.getRetweetedStatus() != null) {
             
             // 忽略 无关转推 (可能是大量的)
             
-            return;
+          // return;
             
         }
         
