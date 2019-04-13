@@ -24,7 +24,7 @@ public class FollowersTrack extends Fragment {
 
 			case "sstart" : stream(user,msg,true);break;
 			case "sstop" : stream(user,msg,false);break;
-				
+
             default : return false;
 
         }
@@ -59,7 +59,7 @@ public class FollowersTrack extends Fragment {
 
                 FTTask.enable.remove(user.id.toString());
                 FTTask.save();
-                
+
                 msg.send("已关闭 :)").exec();
 
             }
@@ -84,7 +84,7 @@ public class FollowersTrack extends Fragment {
 
 
     }
-	
+
 	void stream(UserData user,Msg msg,boolean start) {
 
         if (!msg.isPrivate()) {
@@ -109,12 +109,16 @@ public class FollowersTrack extends Fragment {
 
             } else {
 
-                SubTask.enable.remove(user.id.toString());
-                SubTask.save();
-				
-				SubTask.stop(user);
-                
-                msg.send("已关闭 :)").exec();
+				synchronized (SubTask.enable) {
+
+					SubTask.enable.remove(user.id);
+					SubTask.save();
+
+					SubTask.stop(user);
+
+					msg.send("已关闭 :)").exec();
+
+				}
 
             }
 
@@ -122,10 +126,14 @@ public class FollowersTrack extends Fragment {
 
             if (start) {
 
-                SubTask.enable.put(user.id.toString());
-                SubTask.save();
+				synchronized (SubTask.enable) {
 
-                msg.send("已开启 :)").exec();
+					SubTask.enable.put(user.id);
+					SubTask.save();
+
+					msg.send("已开启 :)").exec();
+
+				}
 
 
             } else {
@@ -138,6 +146,6 @@ public class FollowersTrack extends Fragment {
 
 
     }
-	
+
 
 }

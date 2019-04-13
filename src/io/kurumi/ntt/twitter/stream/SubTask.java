@@ -30,13 +30,13 @@ import io.kurumi.ntt.db.*;
 public class SubTask extends StatusAdapter {
 
 	public static JSONArray enable = SData.getJSONArray("data","stream",true);
-	
+
 	public static void save() {
-		
+
 		SData.setJSONArray("data","stream",enable);
-		
+
 	}
-	
+
     long userId;
     long tid;
     Twitter api;
@@ -52,7 +52,7 @@ public class SubTask extends StatusAdapter {
     public static AtomicBoolean needReset = new AtomicBoolean(true);
 
     static ExecutorService statusProcessPool = Executors.newFixedThreadPool(3);
-	
+
     static TimerTask resetTask = new TimerTask() {
 
         @Override
@@ -67,107 +67,107 @@ public class SubTask extends StatusAdapter {
         }
 
     };
-	
 
-    
+
+
     static Timer timer;
-    
+
     public static void start() {
-        
+
         stop();
-        
+
         timer = new Timer("NTT TwitterStream Task");
-        
+
         Date start = new Date();
-        
+
         start.setMinutes(start.getMinutes() + 5);
-        
+
         timer.schedule(resetTask,start,5 * 60 * 1000);
-        
+
     }
-    
+
     public static void stop() {
-        
+
         if (timer != null) timer.cancel();
         timer = null;
-        
+
     }
 
-	
+
 	public static void stop(UserData user) {
 
 		TwitterStream stream = userStream.remove(user.id);
-		
+
 		if (stream != null) stream.cleanUp();
 
 	}
-	
+
     static HashMap<Long,TwitterStream> userStream = new HashMap<>();
 
 	/*
-	
-    static HashMap<Long,List<Long>> currentSubs = new HashMap<>();
 
-    static void resetStream() {
-		
-        HashMap<Long,List<Long>> newSubs = new HashMap<>();
+	 static HashMap<Long,List<Long>> currentSubs = new HashMap<>();
 
-        synchronized (UTTask.subs) {
+	 static void resetStream() {
 
-            for (Map.Entry<String,Object> sub : UTTask.subs.entrySet()) {
+	 HashMap<Long,List<Long>> newSubs = new HashMap<>();
 
-                newSubs.put(Long.parseLong(sub.getKey()),((JSONArray)sub.getValue()).toList(Long.class));
+	 synchronized (UTTask.subs) {
 
-            }
+	 for (Map.Entry<String,Object> sub : UTTask.subs.entrySet()) {
 
-        }
+	 newSubs.put(Long.parseLong(sub.getKey()),((JSONArray)sub.getValue()).toList(Long.class));
 
-        for (Map.Entry<Long,List<Long>> sub : newSubs.entrySet()) {
+	 }
 
-            Long userId = sub.getKey();
-			
-			if (!enable.getBool(userId.toString(),false)) continue;
+	 }
 
-            if (currentSubs.containsKey(userId)) {
+	 for (Map.Entry<Long,List<Long>> sub : newSubs.entrySet()) {
 
-                if (currentSubs.get(userId).equals(sub.getValue())) {
+	 Long userId = sub.getKey();
 
-                    continue;
+	 if (!enable.getBool(userId.toString(),false)) continue;
 
-                }
+	 if (currentSubs.containsKey(userId)) {
 
-            }
+	 if (currentSubs.get(userId).equals(sub.getValue())) {
 
-            if (TAuth.exists(userId)) {
+	 continue;
 
-                TwitterStream stream = new TwitterStreamFactory(TAuth.get(userId).createConfig()).getInstance();
+	 }
 
-                stream.addListener(new SubTask(userId,TAuth.get(userId).accountId,TAuth.get(userId).createApi()));
+	 }
 
-                TwitterStream removed = userStream.put(userId,stream);
-                if (removed != null) removed.cleanUp();
+	 if (TAuth.exists(userId)) {
 
-                stream.filter(new FilterQuery().follow(ArrayUtil.unWrap(sub.getValue().toArray(new Long[sub.getValue().size()]))));
+	 TwitterStream stream = new TwitterStreamFactory(TAuth.get(userId).createConfig()).getInstance();
 
-            }
+	 stream.addListener(new SubTask(userId,TAuth.get(userId).accountId,TAuth.get(userId).createApi()));
 
-        }
+	 TwitterStream removed = userStream.put(userId,stream);
+	 if (removed != null) removed.cleanUp();
 
-        currentSubs.clear();
-        currentSubs.putAll(newSubs);
+	 stream.filter(new FilterQuery().follow(ArrayUtil.unWrap(sub.getValue().toArray(new Long[sub.getValue().size()]))));
 
-	}
-    
-	*/
-	
+	 }
+
+	 }
+
+	 currentSubs.clear();
+	 currentSubs.putAll(newSubs);
+
+	 }
+
+	 */
+
 	static void resetStream() {
-		
+
 		synchronized (enable) {
-			
+
 			for (Long userId : enable.toList(Long.class)) {
-				
+
 				if (userStream.containsKey(userId)) continue;
-				
+
 				TwitterStream stream = new TwitterStreamFactory(TAuth.get(userId).createConfig()).getInstance();
 
                 stream.addListener(new SubTask(userId,TAuth.get(userId).accountId,TAuth.get(userId).createApi()));
@@ -176,13 +176,13 @@ public class SubTask extends StatusAdapter {
                 if (removed != null) removed.cleanUp();
 
 				stream.filter(new FilterQuery().follow(new long[] { TAuth.get(userId).accountId }));
-				
-               // stream.filter(new FilterQuery().follow(ArrayUtil.unWrap(sub.getValue().toArray(new Long[sub.getValue().size()]))));
-				
+
+				// stream.filter(new FilterQuery().follow(ArrayUtil.unWrap(sub.getValue().toArray(new Long[sub.getValue().size()]))));
+
 			}
-			
+
 		}
-		
+
 	}
 
     @Override
@@ -203,10 +203,10 @@ public class SubTask extends StatusAdapter {
 
     @Override
     public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
-        
+
         statusDeletionNotice.getStatusId();
 		statusDeletionNotice.getUserId();
-        
+
     }
 
     static void processStatus(Status status,Long userId,Long tid,Twitter api) {
@@ -214,20 +214,28 @@ public class SubTask extends StatusAdapter {
         // List<Long> userSub = currentSubs.get(userId);
 
         if (status.getRetweetedStatus() != null) {
-            
+
             // 忽略 无关转推 (可能是大量的)
-            
-          // return;
-            
+
+			// return;
+
         }
-        
+
         long from = status.getUser().getId();
-        
-     //   if (from == tid) return; // 去掉来自自己的推文？
-        
+
+		//   if (from == tid) return; // 去掉来自自己的推文？
+
         StatusArchive archive = BotDB.saveStatus(status).loop(api);
 
-        new Send(userId,archive.toHtml(1)).buttons(StatusUI.INSTANCE.makeShowButton(status.getId())).html().exec();
+        Send send = new Send(userId,archive.toHtml(0)).html();
+
+		if (archive.inReplyToStatusId != -1 || archive.quotedStatusId != -1) {
+
+			send.buttons(StatusUI.INSTANCE.makeShowButton(status.getId()));
+
+		}
+		
+		send.exec();
 
     }
 
