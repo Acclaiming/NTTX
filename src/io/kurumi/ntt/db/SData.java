@@ -144,7 +144,17 @@ public class SData {
 
         if (value == null) return fix ? new JSONArray() : null;
 
+		try {
+		
         return new JSONArray(value);
+		
+		} catch (JSONException ex) 	{
+			
+			sNC(path,key,null);
+			
+			return new JSONArray();
+			
+		}
 
     }
 
