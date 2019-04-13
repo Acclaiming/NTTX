@@ -101,7 +101,7 @@ public class FollowersTrack extends Fragment {
 
         }
 
-        if (SubTask.enable.containsKey(user.id.toString())) {
+        if (SubTask.enable.contains(user)) {
 
             if (start) {
 
@@ -111,6 +111,8 @@ public class FollowersTrack extends Fragment {
 
                 SubTask.enable.remove(user.id.toString());
                 SubTask.save();
+				
+				SubTask.stop(user);
                 
                 msg.send("已关闭 :)").exec();
 
@@ -120,7 +122,7 @@ public class FollowersTrack extends Fragment {
 
             if (start) {
 
-                SubTask.enable.put(user.id.toString(),true);
+                SubTask.enable.put(user.id.toString());
                 SubTask.save();
 
                 msg.send("已开启 :)").exec();

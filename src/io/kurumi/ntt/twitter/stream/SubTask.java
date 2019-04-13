@@ -29,11 +29,11 @@ import io.kurumi.ntt.db.*;
 
 public class SubTask extends StatusAdapter {
 
-	public static JSONObject enable = SData.getJSON("data","stream",true);
+	public static JSONArray enable = SData.getJSONArray("data","stream",true);
 	
 	public static void save() {
 		
-		SData.setJSON("data","stream",enable);
+		SData.setJSONArray("data","stream",enable);
 		
 	}
 	
@@ -52,7 +52,7 @@ public class SubTask extends StatusAdapter {
     public static AtomicBoolean needReset = new AtomicBoolean(true);
 
     static ExecutorService statusProcessPool = Executors.newFixedThreadPool(3);
-
+	
     static TimerTask resetTask = new TimerTask() {
 
         @Override
@@ -67,6 +67,8 @@ public class SubTask extends StatusAdapter {
         }
 
     };
+	
+
     
     static Timer timer;
     
@@ -91,12 +93,23 @@ public class SubTask extends StatusAdapter {
         
     }
 
+	
+	public static void stop(UserData user) {
+
+		TwitterStream stream = userStream.remove(user.id);
+		
+		if (stream != null) stream.cleanUp();
+
+	}
+	
     static HashMap<Long,TwitterStream> userStream = new HashMap<>();
 
+	/*
+	
     static HashMap<Long,List<Long>> currentSubs = new HashMap<>();
 
     static void resetStream() {
-
+		
         HashMap<Long,List<Long>> newSubs = new HashMap<>();
 
         synchronized (UTTask.subs) {
@@ -143,7 +156,32 @@ public class SubTask extends StatusAdapter {
         currentSubs.clear();
         currentSubs.putAll(newSubs);
 
-    }
+	}
+    
+	*/
+	
+	static void resetStream() {
+		
+		synchronized (enable) {
+			
+			for (Long userId : enable.toList(Long.class)) {
+				
+				if (userStream.containsKey(userId)) continue;
+				
+				TwitterStream stream = new TwitterStreamFactory(TAuth.get(userId).createConfig()).getInstance();
+
+                stream.addListener(new SubTask(userId,TAuth.get(userId).accountId,TAuth.get(userId).createApi()));
+
+                TwitterStream removed = userStream.put(userId,stream);
+                if (removed != null) removed.cleanUp();
+
+                stream.filter(new FilterQuery().follow(ArrayUtil.unWrap(sub.getValue().toArray(new Long[sub.getValue().size()]))));
+				
+			}
+			
+		}
+		
+	}
 
     @Override
     public void onStatus(final Status status) {
@@ -171,7 +209,7 @@ public class SubTask extends StatusAdapter {
 
     static void processStatus(Status status,Long userId,Long tid,Twitter api) {
 
-        List<Long> userSub = currentSubs.get(userId);
+        // List<Long> userSub = currentSubs.get(userId);
 
         if (status.getRetweetedStatus() != null && !userSub.contains(status.getRetweetedStatus().getUser().getId())) {
             

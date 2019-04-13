@@ -309,7 +309,7 @@ public class UTTask extends TimerTask {
     }
 
 
-    public static JSONObject subs = SData.getJSON("data","subscriptions",true);
+    static JSONObject subs = SData.getJSON("data","subscriptions",true);
 
     public static boolean exists(UserData user) {
 
@@ -339,7 +339,7 @@ public class UTTask extends TimerTask {
 
             subs.put(user.id.toString(),list);
 
-            SubTask.needReset.set(true);
+           // SubTask.needReset.set(true);
 
             return result;
 
@@ -357,9 +357,23 @@ public class UTTask extends TimerTask {
 
             subs.put(user.id.toString(),list);
 
-            SubTask.needReset.set(true);
+       //     SubTask.needReset.set(true);
 
             return result;
+
+        }
+
+
+
+    }
+	
+	public static JSONArray remAll(UserData user) {
+
+        synchronized (subs) {
+
+			//     SubTask.needReset.set(true);
+
+           return (JSONArray)subs.remove(user.id.toString());
 
         }
 
@@ -371,7 +385,7 @@ public class UTTask extends TimerTask {
 
         synchronized (subs) {
 
-            subs.remove(user.id.toString());
+         //   subs.remove(user.id.toString());
 
         }
 

@@ -1,17 +1,18 @@
 package io.kurumi.ntt.funcs;
 
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.utils.T;
-import io.kurumi.ntt.twitter.track.UTTask;
-import cn.hutool.core.util.NumberUtil;
-import io.kurumi.ntt.twitter.TAuth;
-import twitter4j.TwitterException;
-import twitter4j.User;
-import io.kurumi.ntt.twitter.archive.UserArchive;
+import cn.hutool.core.util.*;
+import cn.hutool.json.*;
+import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.fragment.*;
+import io.kurumi.ntt.model.*;
+import io.kurumi.ntt.twitter.*;
+import io.kurumi.ntt.twitter.archive.*;
+import io.kurumi.ntt.twitter.track.*;
+import io.kurumi.ntt.utils.*;
+import java.util.*;
+import twitter4j.*;
+
 import cn.hutool.json.JSONArray;
-import io.kurumi.ntt.db.BotDB;
 
 public class UserTrack extends Fragment {
 
@@ -177,15 +178,15 @@ public class UserTrack extends Fragment {
     
     void subList(UserData user,Msg msg) {
         
-        if (UTTask.subs.containsKey(user.id.toString())) {
+        if (UTTask.exists(user)) {
 
-            JSONArray list = UTTask.subs.getJSONArray(user.id.toString());
+            List<Long> list = UTTask.get(user);
 
             StringBuilder rec = new StringBuilder();
 
             for (int index = 0;index < list.size();index ++) {
 
-                rec.append("\n").append(BotDB.getUser((list.getLong(index))).urlHtml());
+                rec.append("\n").append(BotDB.getUser((list.get(index))).urlHtml());
 
             }
 
@@ -206,9 +207,9 @@ public class UserTrack extends Fragment {
     void unSubAll(UserData user,Msg msg) {
         
         
-        if (UTTask.subs.containsKey(user.id.toString())) {
+        if (UTTask.exists(user)) {
             
-            JSONArray list = (JSONArray)UTTask.subs.remove(user.id.toString());
+            JSONArray list = UTTask.remAll(user);
 
             StringBuilder rec = new StringBuilder();
 
