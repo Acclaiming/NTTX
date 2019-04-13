@@ -101,7 +101,7 @@ public class FollowersTrack extends Fragment {
 
         }
 
-        if (SubTask.enable.contains(user)) {
+        if (SubTask.enable.contains(user.id)) {
 
             if (start) {
 
