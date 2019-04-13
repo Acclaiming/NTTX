@@ -14,7 +14,7 @@ public class StatusUI extends Fragment {
 
     public static StatusUI INSTANCE = new StatusUI();
     
-    final String POINT_SHOW = "s|s";
+    final String POINT_SHOW = "su|s";
     
     @Override
     public boolean onCallback(UserData user,Callback callback) {
