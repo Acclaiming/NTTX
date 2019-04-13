@@ -175,7 +175,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         FTTask.stop();
         UTTask.stop();
-        SubTask.stop();
+        SubTask.stopAll();
         GroupProtecter.stop();
         Backup.AutoBackupTask.INSTANCE.stop();
 

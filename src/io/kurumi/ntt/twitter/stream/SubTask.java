@@ -26,6 +26,7 @@ import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 import cn.hutool.json.*;
 import io.kurumi.ntt.db.*;
+import twitter4j.*;
 
 public class SubTask extends StatusAdapter {
 
@@ -49,10 +50,12 @@ public class SubTask extends StatusAdapter {
 
     }
 
-    public static AtomicBoolean needReset = new AtomicBoolean(true);
+   // public static AtomicBoolean needReset = new AtomicBoolean(true);
 
     static ExecutorService statusProcessPool = Executors.newFixedThreadPool(3);
 
+	/*
+	
     static TimerTask resetTask = new TimerTask() {
 
         @Override
@@ -76,15 +79,26 @@ public class SubTask extends StatusAdapter {
 
         stop();
 
-        timer = new Timer("NTT TwitterStream Task");
+       
+	   timer = new Timer("NTT TwitterStream Task");
 
         Date start = new Date();
 
         start.setMinutes(start.getMinutes() + 5);
 
-        timer.schedule(resetTask,start,5 * 60 * 1000);
+		resetTask.run();
+		
+		
+		
+		resetStream();
+		
+       // timer.schedule(resetTask,start,5 * 60 * 1000);
 
     }
+	
+	
+
+
 
     public static void stop() {
 
@@ -92,14 +106,41 @@ public class SubTask extends StatusAdapter {
         timer = null;
 
     }
+	
+	*/
+	
+	public static void start() {
+		
+		resetStream();
+		
+	}
 
+	public static void start(long userId) {
 
-	public static void stop(UserData user) {
+		stop(userId);
 
-		TwitterStream stream = userStream.remove(user.id);
+		TwitterStream stream = new TwitterStreamFactory(TAuth.get(userId).createConfig()).getInstance();
+
+		stream.addListener(new SubTask(userId,TAuth.get(userId).accountId,TAuth.get(userId).createApi()));
+		
+		userStream.put(userId,stream);
+		
+		stream.filter(new FilterQuery().follow(new long[] { TAuth.get(userId).accountId }));
+
+	}
+
+	public static void stop(Long userId) {
+
+		TwitterStream stream = userStream.remove(userId);
 
 		if (stream != null) stream.cleanUp();
 
+	}
+	
+	public static void stopAll() {
+		
+		TwitterStreamImpl.shutdownAll();
+		
 	}
 
     static HashMap<Long,TwitterStream> userStream = new HashMap<>();
@@ -168,16 +209,8 @@ public class SubTask extends StatusAdapter {
 
 				if (userStream.containsKey(userId)) continue;
 
-				TwitterStream stream = new TwitterStreamFactory(TAuth.get(userId).createConfig()).getInstance();
-
-                stream.addListener(new SubTask(userId,TAuth.get(userId).accountId,TAuth.get(userId).createApi()));
-
-                TwitterStream removed = userStream.put(userId,stream);
-                if (removed != null) removed.cleanUp();
-
-				stream.filter(new FilterQuery().follow(new long[] { TAuth.get(userId).accountId }));
-
-				// stream.filter(new FilterQuery().follow(ArrayUtil.unWrap(sub.getValue().toArray(new Long[sub.getValue().size()]))));
+				start(userId);
+								// stream.filter(new FilterQuery().follow(ArrayUtil.unWrap(sub.getValue().toArray(new Long[sub.getValue().size()]))));
 
 			}
 

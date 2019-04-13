@@ -381,19 +381,6 @@ public class UTTask extends TimerTask {
 
     }
 
-    public static void clear(UserData user) {
-
-        synchronized (subs) {
-
-         //   subs.remove(user.id.toString());
-
-        }
-
-        SubTask.needReset.set(true);
-
-
-    }
-
     public static void save() {
 
         SData.setJSON("data","subscriptions",subs);

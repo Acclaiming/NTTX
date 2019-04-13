@@ -114,7 +114,7 @@ public class FollowersTrack extends Fragment {
 					SubTask.enable.remove(user.id);
 					SubTask.save();
 
-					SubTask.stop(user);
+					SubTask.stop(user.id);
 
 					msg.send("已关闭 :)").exec();
 
@@ -130,6 +130,8 @@ public class FollowersTrack extends Fragment {
 
 					SubTask.enable.put(user.id);
 					SubTask.save();
+					
+					SubTask.start(user.id);
 
 					msg.send("已开启 :)").exec();
 
