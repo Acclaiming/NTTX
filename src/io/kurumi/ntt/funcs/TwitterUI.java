@@ -39,7 +39,7 @@ public class TwitterUI extends Fragment {
 
 	@Override
 	public boolean onPPM(UserData user,Msg msg) {
-
+		
 		switch (user.point.getPoint()) {
 
 			case POINT_INPUT_CALLBACK : onInputCallback(user,msg);break;
