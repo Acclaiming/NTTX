@@ -28,6 +28,7 @@ import com.mongodb.MongoException;
 import io.kurumi.ntt.twitter.stream.SubTask;
 import io.kurumi.ntt.funcs.StatusUI;
 import io.kurumi.ntt.funcs.GroupProtecter;
+import io.kurumi.ntt.funcs.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -57,6 +58,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(UserTrack.INSTANCE);
         
         addFragment(StatusUI.INSTANCE);
+		
+		addFragment(ChineseAction.INSTANCE);
 
         addFragment(GroupProtecter.INSTANCE);
         

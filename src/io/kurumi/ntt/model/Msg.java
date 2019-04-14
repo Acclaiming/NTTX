@@ -34,6 +34,13 @@ public class Msg extends Context {
 
         this.fragment = fragment;
         this.message = message;
+		
+		if (message.replyToMessage() != null) {
+			
+			replyTo =  new Msg(fragment,message.replyToMessage());
+
+		
+		}
 
     }
     
@@ -200,12 +207,11 @@ public class Msg extends Context {
         
     }
 
-    
-
+    Msg replyTo;
 
 	public Msg replyTo() {
-
-		return new Msg(fragment,message.replyToMessage());
+		
+		return replyTo;
 
 	}
 
