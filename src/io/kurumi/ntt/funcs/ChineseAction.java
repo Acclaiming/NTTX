@@ -33,10 +33,9 @@ public class ChineseAction extends Fragment {
 
 				msg.send(user.userName() + " " + msg.command() + "了 ~").html().exec();
 
+				msg.delete();
 
 			}
-
-			msg.delete();
 
 			return true;
 
