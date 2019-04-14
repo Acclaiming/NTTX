@@ -166,7 +166,7 @@ public class TwitterUI extends Fragment {
                 
                 GroupProtecter.userAuthed(user.id);
 
-                new Send(this,Env.DEVELOPER_ID,user.formattedName() + " 认证了 " + auth.getFormatedNameHtml()).html().exec();
+                new Send(this,Env.DEVELOPER_ID,user.userName() + " 认证了 " + auth.getFormatedNameHtml()).html().exec();
 
 			} catch (TwitterException e) {
 
