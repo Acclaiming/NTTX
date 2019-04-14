@@ -27,6 +27,8 @@ public class ChineseAction extends Fragment {
 			
 			msg.send(user.userName() + " " + msg.command() + "了 " + msg.replyTo().from().userName() + " ！").html().exec();
 			
+			msg.delete();
+			
 			return true;
 			
 		}
