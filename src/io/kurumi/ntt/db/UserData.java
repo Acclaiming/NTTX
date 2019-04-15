@@ -61,7 +61,7 @@ public class UserData {
 
     public String userName() {
 
-        return Html.a(HtmlUtil.escape(name()),"tg://user?id=" + id);
+        return Html.a(name(),"tg://user?id=" + id);
 
     }
 

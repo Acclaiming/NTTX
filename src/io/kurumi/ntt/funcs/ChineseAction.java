@@ -5,6 +5,7 @@ import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.model.*;
 import cn.hutool.core.util.*;
 import cn.hutool.core.text.*;
+import cn.hutool.http.*;
 
 public class ChineseAction extends Fragment {
 
@@ -31,11 +32,11 @@ public class ChineseAction extends Fragment {
 
 			if (msg.replyTo() != null) {
 
-				msg.send(user.userName() + " " + msg.command() + "了 " + msg.replyTo().from().userName() + " ~").html().exec();
+				msg.send(user.userName() + " " + HtmlUtil.escape(msg.command()) + "了 " + msg.replyTo().from().userName() + " ~").html().exec();
 
 			} else {
 
-				msg.send(user.userName() + " " + msg.command() + "了 ~").html().exec();
+				msg.send(user.userName() + " " + HtmlUtil.escape(msg.command()) + "了 ~").html().exec();
 
 				msg.delete();
 
