@@ -14,9 +14,13 @@ public class ChineseAction extends Fragment {
 
 		if (msg == null) return false;
 
+		if (msg.length() == 0) return false;
+		
 		char first = msg.charAt(0);
 
-		return first >= 0x4E00 &&  first <= 0x9FA5;
+		return !CharUtil.isAscii(first);
+		
+		// return first >= 0x4E00 &&  first <= 0x9FA5;
 
 	}
 
