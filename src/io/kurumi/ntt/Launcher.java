@@ -153,8 +153,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 			msg.send(
 			"/login 认证Twitter账号以使用功能 ~",
 			"/logout 登出Twitter账号 bot将不保留认证信息",
-			"/tstart 账号跟踪 提示当新关注者、失去关注者、被关注者屏蔽、关注中和关注者的账号更改 (内容见/sub)",
-			"注意 : 被屏蔽再解除的关注者会显示未失去关注者、以及账号跟踪每十五分钟一次 (因为Twitter开放接口调用限制。所以当被回关的新关注者可能显示为 (乃关注的)",
+			"/tstart 账号跟踪 提示当新关注者、失去关注者 、 被关注者屏蔽、关注中和关注者的账号更改 (内容见/sub)",
+			"注意 : 被屏蔽再解除的关注者 (删关注) 会显示 失去关注者",
+			"以及账号跟踪每十五分钟一次 (因为Twitter开放接口调用限制。所以当被回关的新关注者可能显示为 (乃关注的)",
 			"/tstop 取消跟踪 以上",
 			"/sub <推油链接|用户名|用户ID> 跟踪用户账号更改 (ID,名称,头像等 以及停用、冻结和回档",
 			"/unsub 取消跟踪 以上",
