@@ -74,7 +74,7 @@ public class GroupRepeat extends Fragment {
 					msg.send(msg.text()).replyTo(msg.replyTo()).exec();
 
 
-			} else {
+			} else if (msg.message().sticker() != null) {
 
 				msg.sendSticker(msg.message().sticker().fileId());
 				
