@@ -82,6 +82,8 @@ public class Send extends AbstractSend<Send> {
 
     public Send replyTo(Msg msg) {
 
+		if (msg == null) return this;
+		
         replyToMessageId(msg.messageId());
 
         return this;
