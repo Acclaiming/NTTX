@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import io.kurumi.ntt.model.data.*;
 import io.kurumi.ntt.utils.T;
 import io.kurumi.ntt.utils.Html;
+import cn.hutool.http.*;
 
 public class UserData {
     
@@ -60,7 +61,7 @@ public class UserData {
 
     public String userName() {
 
-        return Html.a(name(),"tg://user?id=" + id);
+        return Html.a(HtmlUtil.escape(name()),"tg://user?id=" + id);
 
     }
 
