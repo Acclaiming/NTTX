@@ -138,7 +138,7 @@ public class SubTask extends StatusAdapter {
 				TwitterStream removed = userStream.put(userId,stream);
 				if (removed != null) removed.cleanUp();
 
-				stream.filter(new FilterQuery().follow(ArrayUtil.unWrap(sub.getValue().toArray(new Long[sub.getValue().size()]))));
+				stream.filter(new FilterQuery().count(100).follow(ArrayUtil.unWrap(sub.getValue().toArray(new Long[sub.getValue().size()]))));
 
 			}
 
