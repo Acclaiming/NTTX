@@ -135,8 +135,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         if ("start".equals(msg.command()) && msg.params().length == 0) {
 
-			if (url == null) bot().execute(new GetChat(Env.GROUP)).chat().inviteLink();
-			
             msg.send(" ヾ(･ω･｀＝´･ω･)ﾉ♪ ").exec();
             msg.send("不加个裙玩吗 ~ " + Html.a("-- 戳这里！！！ --","https://t.me/joinchat/H5gBQ1N2Mx4RuhIkq-EajQ")).html().exec();
 			msg.send("输入 / 就有命令补全啦 ~ 使用 /help 查看帮助 ~").exec();
