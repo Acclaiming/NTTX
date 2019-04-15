@@ -127,9 +127,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         return "NTTBot";
 
     }
-	
-	String url;
-	
+
     @Override
     public boolean onMsg(UserData user,Msg msg) {
 
@@ -140,7 +138,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 			if (url == null) bot().execute(new GetChat(Env.GROUP)).chat().inviteLink();
 			
             msg.send(" ヾ(･ω･｀＝´･ω･)ﾉ♪ ").exec();
-            msg.send("不加个裙玩吗 ~ " + Html.a("-- 戳这里！！！ --",url)).html().exec();
+            msg.send("不加个裙玩吗 ~ " + Html.a("-- 戳这里！！！ --","https://t.me/joinchat/H5gBQ1N2Mx4RuhIkq-EajQ")).html().exec();
 			msg.send("输入 / 就有命令补全啦 ~ 使用 /help 查看帮助 ~").exec();
 			msg.send("开源地址在 " + Html.a("NTTools","https://github.com/HiedaNaKan/NTTools") + " 欢迎打心 (๑´ڡ`๑)").html().exec();
 			
