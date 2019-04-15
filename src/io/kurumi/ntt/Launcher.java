@@ -1,34 +1,16 @@
 package io.kurumi.ntt;
 
-import cn.hutool.core.lang.Console;
-import com.mongodb.MongoClient;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.funcs.Backup;
-import io.kurumi.ntt.funcs.GroupRepeat;
-import io.kurumi.ntt.funcs.HideMe;
-import io.kurumi.ntt.funcs.LuaEnv;
-import io.kurumi.ntt.funcs.Maven;
-import io.kurumi.ntt.funcs.Ping;
-import io.kurumi.ntt.funcs.FollowersTrack;
-import io.kurumi.ntt.funcs.StickerManage;
-import io.kurumi.ntt.funcs.TwitterArchive;
-import io.kurumi.ntt.funcs.TwitterDelete;
-import io.kurumi.ntt.funcs.TwitterUI;
-import io.kurumi.ntt.funcs.UserTrack;
-import io.kurumi.ntt.funcs.YourGroupRule;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.twitter.track.FTTask;
-import io.kurumi.ntt.twitter.track.UTTask;
-import io.kurumi.ntt.utils.BotLog;
-import io.kurumi.ntt.utils.Html;
-import java.util.TimeZone;
-import io.kurumi.ntt.db.BotDB;
-import com.mongodb.MongoException;
-import io.kurumi.ntt.twitter.stream.SubTask;
-import io.kurumi.ntt.funcs.StatusUI;
-import io.kurumi.ntt.funcs.GroupProtecter;
+import cn.hutool.core.lang.*;
+import com.mongodb.*;
+import com.pengrad.telegrambot.request.*;
+import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.funcs.*;
+import io.kurumi.ntt.model.*;
+import io.kurumi.ntt.twitter.stream.*;
+import io.kurumi.ntt.twitter.track.*;
+import io.kurumi.ntt.utils.*;
+import java.util.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -47,9 +29,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(GroupRepeat.INSTANCE);
 
 		addFragment(TwitterUI.INSTANCE);
-
-		addFragment(LuaEnv.INSTANCE);
-		//addFragment(LuaEnv.INSTANCE.LuaFragmentOriginInstance);
 
         addFragment(TwitterArchive.INSTANCE);
 
@@ -148,7 +127,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         return "NTTBot";
 
     }
-
+	
+	String url;
+	
     @Override
     public boolean onMsg(UserData user,Msg msg) {
 
@@ -156,12 +137,42 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         if ("start".equals(msg.command()) && msg.params().length == 0) {
 
+			if (url == null) bot().execute(new GetChat(Env.GROUP)).chat().inviteLink();
+			
             msg.send(" ヾ(･ω･｀＝´･ω･)ﾉ♪ ").exec();
-            msg.send("不加个裙玩吗 ~ " + Html.a("------ 戳这里！！！ ------","https://t.me/joinchat/H5gBQ1N2Mx4RuhIkq-EajQ")).html().exec();
-
+            msg.send("不加个裙玩吗 ~ " + Html.a("-- 戳这里！！！ --",url)).html().exec();
+			msg.send("输入 / 就有命令补全啦 ~ 使用 /help 查看帮助 ~").exec();
+			msg.send("开源地址在 " + Html.a("NTTools","https://github.com/HiedaNaKan/NTTools") + " 欢迎打心 (๑´ڡ`๑)").html().exec();
+			
+			msg.send(
+			"现在功能已经稳定 并正在重构 (≧σ≦) 可以",Html.a("联系咱",Env.DEVELOPER_URL) + " 提建议哦 ~ ",
+			"欢迎新功能和想法 ヽ(○´3`)"
+			).exec();
+			
             return true;
 
-        }
+        } else if ("help".equals(msg.command())) {
+			
+			msg.send("这是一个不知道干什么用的bot (≧σ≦)").exec();
+			msg.send(
+			"/login 认证Twitter账号以使用功能 ~",
+			"/logout 登出Twitter账号 bot将不保留认证信息",
+			"/tstart 账号跟踪 提示当新关注者、失去关注者、被关注者屏蔽、关注中和关注者的账号更改 (内容见/sub)",
+			"注意 : 被屏蔽再解除的关注者会显示未失去关注者、以及账号跟踪每十五分钟一次 (因为Twitter开放接口调用限制。所以当被回关的新关注者可能显示为 (乃关注的)",
+			"/tstop 取消跟踪 以上",
+			"/sub <推油链接|用户名|用户ID> 跟踪用户账号更改 (ID,名称,头像等 以及停用、冻结和回档",
+			"/unsub 取消跟踪 以上",
+			"/sublist 查看跟踪中列表 以上",
+			"/unsuball 取消所有跟踪 以上",
+			"/sstart 接收以上跟踪中的推文并自动存档 (开启有五分钟以内的延时)",
+			"/sstop 取消接收推文流 立即生效",
+			"/hide 对BOT其他用户隐藏账号更改 (内容见上/sub)",
+			"/unhide 取消隐藏 以上",
+			"/status <推文链接|ID> 推文存档/查看"
+			).exec();
+			
+			
+		}
 
         return false;
 

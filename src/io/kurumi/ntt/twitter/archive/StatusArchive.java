@@ -1,4 +1,3 @@
-
 package io.kurumi.ntt.twitter.archive;
 
 import cn.hutool.core.util.StrUtil;
@@ -11,6 +10,7 @@ import twitter4j.MediaEntity;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import twitter4j.*;
 
 public class StatusArchive {
 
@@ -58,7 +58,7 @@ public class StatusArchive {
             BotDB.saveStatus(status.getQuotedStatus());
 
         }
-
+		
         mediaUrls = new LinkedList<>();
 
         for (MediaEntity media : status.getMediaEntities()) {

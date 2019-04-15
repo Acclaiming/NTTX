@@ -128,7 +128,7 @@ public class GroupProtecter extends Fragment {
 
             } else {
 
-                resp = msg.send(newUser.userName() + " 你好 ~","本群开启了认证 请在 300s 内 私聊Bot使用 /tauth 验证账号 :)")
+                resp = msg.send(newUser.userName() + " 你好 ~","本群开启了认证 请在 300s 内 私聊Bot使用 /login 验证账号 :)")
                     .buttons(new ButtonMarkup() {{
 
                             newButtonLine()

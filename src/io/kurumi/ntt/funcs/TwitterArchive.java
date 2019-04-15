@@ -73,7 +73,7 @@ public class TwitterArchive extends Fragment {
 
         } else if (!TAuth.exists(user.id)) {
 
-            msg.send("存档不存在 :( 乃没有认证账号 无法通过API读取推文... 请使用 /tauth 认证 ( ⚆ _ ⚆ )").publicFailed();
+            msg.send("存档不存在 :( 乃没有认证账号 无法通过API读取推文... 请使用 /login 认证 ( ⚆ _ ⚆ )").publicFailed();
 
             return;
 

@@ -130,8 +130,6 @@ public class FollowersTrack extends Fragment {
 
 					SubTask.enable.put(user.id);
 					SubTask.save();
-					
-					SubTask.start(user.id);
 
 					msg.send("已开启 :)").exec();
 

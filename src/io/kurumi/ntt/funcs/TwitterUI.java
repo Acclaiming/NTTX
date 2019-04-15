@@ -25,9 +25,9 @@ public class TwitterUI extends Fragment {
 
 		switch (msg.command()) {
 
-			case "tauth" : tauth(user,msg);break;
+			case "login" : tauth(user,msg);break;
 
-			case "trem" : trem(user,msg);break;
+			case "logout" : trem(user,msg);break;
 
 			default : return false;
 
@@ -118,7 +118,7 @@ public class TwitterUI extends Fragment {
 
          if (url == null) {
 
-         msg.send("乃好像忘了之前使用了 /tauth ！现在请发送跳转到的地址 ( ˶‾᷄࿀‾᷅˵ ) 如果不小心关掉了浏览器那就取消认证并再来一次吧 ( ⚆ _ ⚆ ) ","","取消使用 /cancel ").exec();
+         msg.send("乃好像忘了之前使用了 /login ！现在请发送跳转到的地址 ( ˶‾᷄࿀‾᷅˵ ) 如果不小心关掉了浏览器那就取消认证并再来一次吧 ( ⚆ _ ⚆ ) ","","取消使用 /cancel ").exec();
 
          return;
 
@@ -170,7 +170,7 @@ public class TwitterUI extends Fragment {
 
 			} catch (TwitterException e) {
 
-				msg.send("链接好像失效了...","请重新认证 /tauth (｡>∀<｡)").exec();
+				msg.send("链接好像失效了...","请重新认证 /login (｡>∀<｡)").exec();
 
 			}
 
@@ -182,7 +182,7 @@ public class TwitterUI extends Fragment {
 
 		if (!TAuth.exists(user.id))  {
 
-			msg.send("乃并没有认证账号呢。 使用 /tauth 认证 ~").publicFailed();
+			msg.send("乃并没有认证账号呢。 使用 /login 认证 ~").publicFailed();
 
 			return;
 

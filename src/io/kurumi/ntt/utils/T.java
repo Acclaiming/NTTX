@@ -52,7 +52,7 @@ public class T {
 
     public static boolean checkUserNonAuth(UserData user,Msg msg) {
 
-        String nonAuthMsg = msg.isPrivate() ? "乃还没有认证Twitter账号 (ﾟ〇ﾟ ; 使用 /tauth ~" : "乃还没有认证Twitter账号 (ﾟ〇ﾟ ; 私聊BOT使用 /tauth ~";
+        String nonAuthMsg = msg.isPrivate() ? "乃还没有认证Twitter账号 (ﾟ〇ﾟ ; 使用 /login ~" : "乃还没有认证Twitter账号 (ﾟ〇ﾟ ; 私聊BOT使用 /login ~";
 
         if (!TAuth.exists(user.id)) {
 
@@ -82,7 +82,7 @@ public class T {
 
             TAuth.saveAll();
             
-            msg.send("乃的认证可能已经被取消... 请使用 /tauth 重新认证 :(").exec();
+            msg.send("乃的认证可能已经被取消... 请使用 /login 重新认证 :(").exec();
 
             return true;
 

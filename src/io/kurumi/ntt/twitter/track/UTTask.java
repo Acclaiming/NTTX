@@ -309,7 +309,7 @@ public class UTTask extends TimerTask {
     }
 
 
-    static JSONObject subs = SData.getJSON("data","subscriptions",true);
+    public static JSONObject subs = SData.getJSON("data","subscriptions",true);
 
     public static boolean exists(UserData user) {
 
