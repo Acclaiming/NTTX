@@ -175,6 +175,38 @@ public class Send extends AbstractSend<Send> {
 
                     if (resp.isOk()) {
 
+                        T.tryDelete(delay,new Msg(fragment,resp.message()));
+
+                    }
+
+
+                }
+
+            });
+
+    }
+	
+	public void failedWith() {
+
+        failedWith(5000);
+
+    }
+
+    public void failedWith(final long delay) {
+
+        if (origin == null) return;
+
+        final Exception track = new Exception();
+
+        ThreadPool.exec(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    SendResponse resp = sync(track);
+
+                    if (resp.isOk()) {
+
                         T.tryDelete(delay,origin,new Msg(fragment,resp.message()));
 
                     }
