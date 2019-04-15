@@ -20,6 +20,7 @@ public class GroupRepeat extends Fragment {
 
 			msgs.remove(msg.chatId());
 
+
 		} else {
 
 			LinkedList<Msg> history = msgs.get(msg.chatId());
@@ -29,6 +30,9 @@ public class GroupRepeat extends Fragment {
 				history = new LinkedList<>();
 
 				history.add(msg);
+
+				msgs.put(msg.chatId(),history);
+
 
 			} else {
 
@@ -52,21 +56,27 @@ public class GroupRepeat extends Fragment {
 
 				if (parseUsers(history) == 3) {
 
-					if (last.text() != null) 
+					if (last.text() != null) {
 
 						msg.send(last.text()).replyTo(last.replyTo()).exec();
 
 
-				} else {
+					} else {
 
-					msg.sendSticker(last.message().sticker().fileId());
+						msg.sendSticker(last.message().sticker().fileId());
+
+					}
 
 				}
+
+				msgs.put(msg.chatId(),history);
 
 				return false;
 
 			}
-
+			
+			msgs.put(msg.chatId(),history);
+			
 			if (RandomUtil.randomInt(0,40) == 9) {
 
 				if (msg.text() != null) {
@@ -82,7 +92,6 @@ public class GroupRepeat extends Fragment {
 			}
 
 		}
-
 
         return false;
 
