@@ -73,13 +73,12 @@ public class GroupRepeat extends Fragment {
 
 					msg.send(msg.text()).replyTo(msg.replyTo()).exec();
 
+				} else if (msg.message().sticker() != null) {
 
-			} else if (msg.message().sticker() != null) {
+					msg.sendSticker(msg.message().sticker().fileId());
 
-				msg.sendSticker(msg.message().sticker().fileId());
-				
-			}
-			
+				}
+
 			}
 
 		}
