@@ -147,7 +147,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 			msg.send(
 			"现在功能已经稳定 并正在重构 (≧σ≦) 可以",Html.a("联系咱",Env.DEVELOPER_URL) + " 提建议哦 ~ ",
 			"欢迎新功能和想法 ヽ(○´3`)"
-			).exec();
+			).html().exec();
 			
             return true;
 
