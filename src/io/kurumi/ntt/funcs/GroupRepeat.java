@@ -69,7 +69,7 @@ public class GroupRepeat extends Fragment {
 
 			if (RandomUtil.randomInt(0,40) == 9) {
 
-				if (msg.text() != null) 
+				if (msg.text() != null) {
 
 					msg.send(msg.text()).replyTo(msg.replyTo()).exec();
 
@@ -78,6 +78,8 @@ public class GroupRepeat extends Fragment {
 
 				msg.sendSticker(msg.message().sticker().fileId());
 				
+			}
+			
 			}
 
 		}
