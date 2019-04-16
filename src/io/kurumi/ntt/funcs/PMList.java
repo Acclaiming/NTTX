@@ -84,8 +84,7 @@ public class PMList extends Fragment {
 
             }
 
-            if (TAuth.exists(target.id)) {
-
+            if (!TAuth.exists(target.id)) {
 
                 msg.send("user not authed").exec();
 
