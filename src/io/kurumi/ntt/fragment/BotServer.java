@@ -1,14 +1,12 @@
 package io.kurumi.ntt.fragment;
 
-import fi.iki.elonen.*;
-import java.util.*;
-import fi.iki.elonen.NanoHTTPD.*;
-import org.apache.http.client.utils.*;
 import cn.hutool.core.util.*;
-import java.net.*;
 import com.pengrad.telegrambot.*;
-import java.io.*;
 import com.pengrad.telegrambot.request.*;
+import fi.iki.elonen.*;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 public class BotServer extends NanoHTTPD {
     
