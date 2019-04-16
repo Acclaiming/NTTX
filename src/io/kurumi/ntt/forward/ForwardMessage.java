@@ -10,6 +10,8 @@ import java.util.*;
 
 public class ForwardMessage extends Fragment {
 
+    public static ForwardMessage INSTANCE = new ForwardMessage();
+    
     public static JSONObject bots = SData.getJSON("data","chat_bot",true);
 
     public static void start() {
