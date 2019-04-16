@@ -112,7 +112,7 @@ public class ForwardMessage extends Fragment {
 
         client.silentStart();
 
-        msg.send("乃的Bot : " + BotDB.getUserData(client.me) + " 已经启动 ~").html().exec();
+        msg.send("乃的Bot : " + BotDB.getUserData(client.me).userName() + " 已经启动 ~").html().exec();
         msg.send("别忘记发送一条信息给Bot哦 ~ Bot不能主动给乃发送信息 ~o(〃'▽'〃)o").exec();
 
 

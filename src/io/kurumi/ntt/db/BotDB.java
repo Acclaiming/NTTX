@@ -65,6 +65,18 @@ public class BotDB {
 
     }
 
+    public static UserData getUserData(String userName) {
+
+        if (userDataCollection.countDocuments(eq("userName",userName)) > 0) {
+
+            return userDataCollection.find(eq("userName",userName)).first();
+
+        }
+
+        return null;
+
+    }
+
     public static UserData getUserData(long userId) {
 
         if (userDataIndex.containsKey(userId)) return userDataIndex.get(userId);
