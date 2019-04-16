@@ -119,7 +119,8 @@ public class ForwardMessage extends Fragment {
         msg.send("乃的Bot : @" + client.me.username() + " 已经启动 ~").html().exec();
         msg.send("别忘记发送一条信息给Bot哦 ~ Bot不能主动给乃发送信息 ~o(〃'▽'〃)o").exec();
 
-
+        user.point = null;
+        
     }
 
     void removeChatBot(UserData user,Msg msg) {
