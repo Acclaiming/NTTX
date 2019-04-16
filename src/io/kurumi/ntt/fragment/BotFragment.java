@@ -363,12 +363,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         token = getToken();
 
-        if (token == null || !Env.verifyToken(token)) {
-
-            return false;
-
-        }
-
         bot = new TelegramBot.Builder(token).build();
 
         GetMeResponse resp = bot.execute(new GetMe());

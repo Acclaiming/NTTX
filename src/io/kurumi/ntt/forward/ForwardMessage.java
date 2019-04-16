@@ -20,7 +20,11 @@ public class ForwardMessage extends Fragment {
             
             String token = (String)bot.getValue();
             
-            BotServer.fragments.put(token,new ForwardClient(Long.parseLong(bot.getKey()),token));
+            ForwardClient client = new ForwardClient(Long.parseLong(bot.getKey()),token);
+
+            client.silentStart();
+            
+            BotServer.fragments.put(token,client);
             
         }
         

@@ -7,6 +7,7 @@ import fi.iki.elonen.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import io.kurumi.ntt.utils.*;
 
 public class BotServer extends NanoHTTPD {
     
@@ -27,6 +28,8 @@ public class BotServer extends NanoHTTPD {
         
         URL url = URLUtil.url(session.getUri());
 
+        BotLog.debug(url.getPath());
+        
         String botToken = url.getPath().substring(1);
 
         if (fragments.containsKey(botToken)) {
