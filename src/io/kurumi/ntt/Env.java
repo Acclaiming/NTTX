@@ -62,12 +62,10 @@ public class Env {
             System.out.println("BotToken 无效 ！ ");
             System.out.print("重新输入" + name + "的 BotToken : ");
 
-            token = session.next();
+            token = session.nextLine();
 
         }
-
-        set("token." + name,token);
-
+        
         return token;
 
     }

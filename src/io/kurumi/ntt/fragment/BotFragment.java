@@ -25,6 +25,7 @@ import okhttp3.OkHttpClient;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import com.pengrad.telegrambot.request.*;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
@@ -126,7 +127,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
         if ("cancel".equals(msg.command())) {
 
             user.point = null;
-            
+
             msg.send("取消成功 ~").exec();
 
             return true;
@@ -136,7 +137,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
         return false;
 
     }
-    
+
     ExecutorService processUpdatePool = Executors.newFixedThreadPool(3);
 
     public void processAsync(final Update update) {
@@ -160,7 +161,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
             user = BotDB.getUserData(update.inlineQuery().from());
 
         } else user = null;
-        
+
         BotLog.process(user,update);
 
         processUpdatePool.execute(new Runnable() {
@@ -173,7 +174,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
                         for (Fragment fragmnet : fragments) {
 
                             if (fragmnet.onUpdate(user,update)) {
-                                
+
                                 return;
 
                             }
@@ -186,8 +187,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                                 if (fragmnet.onPPM(user,new Msg(fragmnet,update.message()))) {
 
-                                    
-                                    
+
+
                                     return;
 
                                 }
@@ -209,13 +210,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                         switch (update.message().chat().type()) {
 
-                            case Private: {
+                                case Private: {
 
                                     for (Fragment fragmnet : fragments) {
 
                                         if (fragmnet.onNPM(user,new Msg(fragmnet,update.message()))) {
 
-                                          
+
                                             return;
 
                                         }
@@ -227,13 +228,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                                 }
 
-                            case group: {
+                                case group: {
 
                                     for (Fragment fragmnet : fragments) {
 
                                         if (fragmnet.onGroupMsg(user,new Msg(fragmnet,update.message()),false)) {
 
-                                            
+
                                             return;
 
                                         }
@@ -244,7 +245,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                                 }
 
-                            default: {
+                                default: {
 
                                     for (Fragment fragmnet : fragments) {
 
@@ -263,7 +264,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
                     } else if (update.channelPost() != null) {
 
 
-                        
+
                         for (Fragment fragmnet : fragments) {
 
                             if (fragmnet.onUpdate(user,update)) {
@@ -286,7 +287,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
                         }
 
                     } else if (update.callbackQuery() != null) {
-                    
+
                         for (Fragment fragmnet : fragments) {
 
                             if (fragmnet.onUpdate(user,update)) {
@@ -340,9 +341,27 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
     }
 
+    public boolean isLongPulling() {
+
+        return false;
+
+    }
+    
+    public String getToken() {
+        
+        return Env.get("token." + botName());
+        
+    }
+    
+    public void setToken(String botToken) {
+        
+        Env.set("token." + botName(),token);
+         
+    }
+
     public boolean silentStart() {
 
-        token = Env.get("token." + botName());
+        token = getToken();
 
         if (token == null || !Env.verifyToken(token)) {
 
@@ -358,29 +377,23 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         me = resp.user();
 
-        bot.execute(new DeleteWebhook());
-
-        /*
-
-         if (isLongPulling()) {
-
-         */
-
-        bot.setUpdatesListener(this,new GetUpdates());
-
+        realStart();
+        
         return true;
 
     }
 
     public void start() {
 
-        token = Env.get("token." + botName());
+        token = getToken();
 
         if (token == null || !Env.verifyToken(token)) {
 
             token = Env.inputToken(botName());
 
         }
+        
+        setToken(token);
 
         OkHttpClient.Builder okhttpClient = new OkHttpClient.Builder();
 
@@ -390,34 +403,37 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
             .okHttpClient(okhttpClient.build()).build();
 
 		me = bot.execute(new GetMe()).user();
+        
+        realStart();
 
-		bot.execute(new DeleteWebhook());
+    }
+    
+    public void realStart() {
+        
+        if (isLongPulling()) {
 
-        /*
+            bot.execute(new DeleteWebhook());
+            bot.setUpdatesListener(this,new GetUpdates());
 
-         if (isLongPulling()) {
+        } else {
 
-         */
+            bot.execute(new SetWebhook().url("https://" + BotServer.INSTANCE.domain + "/" + token));
 
-        bot.setUpdatesListener(this,new GetUpdates());
-
-        /*
-
-         } else {
-
-         bot.execute(new SetWebhook().url("https://" + BotConf.SERVER_DOMAIN + "/" + token));
-
-         TGWebHookF.bots.put(token, this);
-
-         }
-
-         */
-
+        }
+        
     }
 
     public void stop() {
 
-        bot().removeGetUpdatesListener();
+        if (isLongPulling())  {
+
+            bot.execute(new DeleteWebhook());
+
+        } else {
+
+            bot().removeGetUpdatesListener();
+
+        }
 
         BotLog.info("BOT已停止 :)");
 

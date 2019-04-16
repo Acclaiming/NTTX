@@ -2,7 +2,6 @@ package io.kurumi.ntt;
 
 import cn.hutool.core.lang.*;
 import com.mongodb.*;
-import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.funcs.*;
@@ -10,7 +9,11 @@ import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.twitter.stream.*;
 import io.kurumi.ntt.twitter.track.*;
 import io.kurumi.ntt.utils.*;
+import java.io.*;
 import java.util.*;
+
+import cn.hutool.core.lang.Console;
+import io.kurumi.ntt.forward.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -63,24 +66,47 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
 
 		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
+ 
+        int serverPort = Integer.parseInt(Env.getOrDefault("server_port","-1"));
+        String serverDomain = Env.get("server_domain");
+        
+        while (serverPort == -1) {
+            
+            System.out.print("输入本地Http服务器端口 : ");
+            
+            try {
+            
+            serverPort = Integer.parseInt(Console.input());
+            
+            Env.set("server_port",serverPort);
+            
+           } catch (Exception e) {}
+            
+        }
+        
+        if (serverDomain == null) {
+            
+            System.out.print("输入BotWebHook域名 : ");
+            
+            serverDomain = Console.input();
+            
+            Env.set("server_domain",serverDomain);
+            
+        }
+        
+        BotServer.INSTANCE = new BotServer(serverPort,serverDomain);
+        
+        try {
 
-        /*
+            BotServer.INSTANCE.start();
 
-		 BotServer.INSTACNCE.fragments.add(TGWebHookF.INSTANCE);
+        } catch (IOException e) {
 
-		 try {
+            BotLog.error("端口被占用 请检查其他BOT进程。");
 
-		 BotServer.INSTACNCE.start();
+            return;
 
-		 } catch (IOException e) {
-
-		 BotLog.error("端口被占用无法启动", e);
-
-		 return;
-
-		 }
-
-		 */
+        }
 
         String dbAddr = Env.getOrDefault("db_address","127.0.0.1");
         Integer dbPort = Integer.parseInt(Env.getOrDefault("db_port","27017"));
@@ -130,6 +156,15 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
+    @Override
+    public boolean isLongPulling() {
+        
+        return true;
+        
+        // 否则 NanoHttpd 会 无端 停止。
+        
+    }
+    
     @Override
     public boolean onMsg(UserData user,Msg msg) {
 
@@ -192,14 +227,19 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
-
-
     @Override
     public void uncaughtException(Thread thread,Throwable throwable) {
 
         BotLog.error("无法处理的错误,正在停止BOT",throwable);
 
-        INSTANCE.bot().removeGetUpdatesListener();
+        INSTANCE.stop();
+        
+        for (BotFragment bot : BotServer.fragments.values()) {
+            
+            bot.stop();
+        }
+        
+        BotServer.INSTANCE.stop();
 
         FTTask.stop();
         UTTask.stop();
@@ -214,27 +254,21 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     }
 
     @Override
-    public boolean silentStart() {
+    public void realStart() {
+     
+        ForwardMessage.start();
+        
+        FTTask.start();
+        UTTask.start();
+        SubTask.start();
+        GroupProtecter.start();
+        Backup.AutoBackupTask.INSTANCE.start();
 
-        boolean result =  super.silentStart();
+        super.realStart();
+        
+        BotLog.info("初始化 完成 :)");
 
-        if (result) {
-
-            new InitTask().start();
-
-        }
-
-        return result;
-
-    }
-
-    @Override
-    public void start() {
-
-        super.start();
-
-        new InitTask().start();
-
+        
     }
 
     @Override

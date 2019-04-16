@@ -80,8 +80,8 @@ public class BotDB {
                 userDataIndex.put(userId,user);
 
             }
-            
-            }
+
+        }
 
         return null;
 
@@ -96,7 +96,7 @@ public class BotDB {
         if (userData == null) {
 
             synchronized (userDataIndex) {
-                
+
                 if (userDataIndex.containsKey(user.id().longValue())) return userDataIndex.get(user.id().longValue());
 
                 userData = new UserData();
@@ -104,7 +104,7 @@ public class BotDB {
                 userData.read(user);
 
                 userDataIndex.put(user.id().longValue(),userData);
-                
+
                 userDataCollection.insertOne(userData);
 
             }
@@ -114,7 +114,7 @@ public class BotDB {
             userData.read(user);
 
         }
-        
+
         return userData;
 
     }
@@ -124,7 +124,7 @@ public class BotDB {
     public static boolean statusExists(long id) {
 
         return statusArchiveCollection.countDocuments(eq("_id",id)) == 1;
-        
+
     }
 
     public static StatusArchive getStatus(long id) {
