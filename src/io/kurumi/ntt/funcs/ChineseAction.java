@@ -16,11 +16,11 @@ public class ChineseAction extends Fragment {
 		if (msg == null) return false;
 
 		if (msg.length() == 0) return false;
-		
+
 		char first = msg.charAt(0);
 
 		return !CharUtil.isAscii(first);
-		
+
 		// return first >= 0x4E00 &&  first <= 0x9FA5;
 
 	}
@@ -32,7 +32,24 @@ public class ChineseAction extends Fragment {
 
 			if (msg.replyTo() != null) {
 
-				msg.send(user.userName() + " " + HtmlUtil.escape(msg.command()) + "了 " + msg.replyTo().from().userName() + " ~").html().exec();
+                if (msg.params().length == 1) {
+
+                    String command = msg.command();
+
+                    if (!msg.params()[0].contains("了")) {
+
+                        command = command + "了";
+
+                    }
+
+
+                    msg.send(user.userName() + " " + HtmlUtil.escape(command) + " " + msg.replyTo().from().userName() + " " + msg.params()[0] + " ~").html().exec();
+
+                } else {
+
+                    msg.send(user.userName() + " " + HtmlUtil.escape(msg.command()) + "了 " + msg.replyTo().from().userName() + " ~").html().exec();
+
+                }
 
 			} else {
 

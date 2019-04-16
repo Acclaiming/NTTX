@@ -26,6 +26,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import com.pengrad.telegrambot.request.*;
+import com.pengrad.telegrambot.response.*;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
@@ -411,7 +412,17 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         } else {
 
-            bot.execute(new SetWebhook().url("https://" + BotServer.INSTANCE.domain + "/" + token));
+            String url = "https://" + BotServer.INSTANCE.domain + "/" + token;
+            
+            BaseResponse resp = bot.execute(new SetWebhook().url(url));
+
+            BotLog.debug("SET WebHook for " + botName() + " : " + url);
+            
+            if (!resp.isOk()) {
+                
+                BotLog.debug("Failed... : " + resp.description());
+                
+            }
 
         }
         
