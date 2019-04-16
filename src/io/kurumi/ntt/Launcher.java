@@ -216,7 +216,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 					"/sstop 取消接收推文流 立即生效",
 					"/hide 对BOT其他用户隐藏账号更改 (内容见上/sub)",
 					"/unhide 取消隐藏 以上",
-					"/status <推文链接|ID> 推文存档/查看"
+					"/status <推文链接|ID> 推文存档/查看",
+                    "/chatbot 新建一个转发私聊的BOT",
+                    "/rmchatbot 移除转发BOT"
 				).exec();
 
 			} else {
