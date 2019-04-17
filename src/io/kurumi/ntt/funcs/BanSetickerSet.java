@@ -76,10 +76,12 @@ public class BanSetickerSet extends Fragment {
         }
 
         rules.add(setName);
-
+        
+        bans.put(msg.chatId().toString(),rules);
+        
         save();
 
-        msg.send("屏蔽成功 ~").exec();
+        msg.send("屏蔽成功 ~").publicFailed();
 
     }
 
@@ -110,6 +112,8 @@ public class BanSetickerSet extends Fragment {
         }
 
         rules.remove(setName);
+        
+        bans.put(msg.chatId().toString(),rules);
 
         save();
 
