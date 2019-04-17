@@ -4,6 +4,7 @@ import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.model.request.*;
+import java.util.*;
 
 public class ForwardClient extends BotFragment {
 
@@ -37,23 +38,14 @@ public class ForwardClient extends BotFragment {
     @Override
     public boolean onNPM(UserData user,Msg msg) {
 
-        if (user.id.equals(userId) && msg.replyTo() != null) {
-            
-            msg.forwardTo(msg.replyTo().message().forwardFrom().id());
+        if ("start".equals(msg.command())) {
 
-            msg.reply("回复成功 ~").exec();
-
-        } else if (!msg.isCommand()) {
-
-            msg.forwardTo(userId);
+            msg.send("这里是 " + user.name() + " 的私聊BOT ✧٩(ˊωˋ*)و✧ 发送信息给咱就可以了 ~").html().exec();
 
         } else {
-
-            if ("start".equals(msg.command())) {
-
-                msg.send("这里是 " + user.name() + " 的私聊BOT ✧٩(ˊωˋ*)و✧ 发送信息给咱就可以了 ~").html().exec();
-
-            }
+            
+            msg.send("来自 " + user.userName() + " : ",new Date(msg.message().forwardDate()).toLocaleString()).exec();
+            msg.forwardTo(userId);
 
         }
 
