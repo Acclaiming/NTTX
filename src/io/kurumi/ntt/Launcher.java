@@ -279,16 +279,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         
     }
 
-    @Override
-    public void stop() {
-
-        FTTask.stop();
-        UTTask.stop();
-
-        super.stop();
-
-    }
-
 
 
 }
