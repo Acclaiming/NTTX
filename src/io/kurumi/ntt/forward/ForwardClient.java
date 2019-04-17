@@ -37,7 +37,7 @@ public class ForwardClient extends BotFragment {
     @Override
     public boolean onNPM(UserData user,Msg msg) {
 
-        if (user.id == userId && msg.replyTo() != null) {
+        if (user.id.equals(userId) && msg.replyTo() != null) {
             
             Msg replyTo = msg.replyTo();
             
