@@ -43,6 +43,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		addFragment(ChineseAction.INSTANCE);
 
+        addFragment(BanSetickerSet.INSTANCE);
+        
         addFragment(GroupProtecter.INSTANCE);
 
         addFragment(YourGroupRule.INSTANCE);

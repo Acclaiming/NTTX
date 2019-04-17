@@ -1,16 +1,15 @@
 package io.kurumi.ntt.utils;
 
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.StrUtil;
-import com.pengrad.telegrambot.response.SendResponse;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.model.Callback;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.twitter.TAuth;
 import cn.hutool.core.thread.*;
-import io.kurumi.ntt.Launcher;
-import com.pengrad.telegrambot.response.GetGameHighScoresResponse;
+import cn.hutool.core.util.*;
+import com.pengrad.telegrambot.request.*;
+import com.pengrad.telegrambot.response.*;
+import io.kurumi.ntt.*;
+import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.model.*;
+import io.kurumi.ntt.model.request.*;
+import io.kurumi.ntt.twitter.*;
+import com.pengrad.telegrambot.model.*;
 
 public class T {
 
@@ -81,7 +80,7 @@ public class T {
             }
 
             TAuth.saveAll();
-            
+
             msg.send("乃的认证可能已经被取消... 请使用 /login 重新认证 :(").exec();
 
             return true;
@@ -162,5 +161,41 @@ public class T {
 			});
 
 	}
+
+    public static boolean isGroupAdmin(Long chatId,Long userId) {
+
+        GetChatMemberResponse resp = Launcher.INSTANCE.bot().execute(new GetChatMember(chatId,userId.intValue()));
+
+        if (resp.isOk() && ((resp.chatMember().status() == ChatMember.Status.administrator) || resp.chatMember().status() == ChatMember.Status.creator)) {
+
+            return true;
+
+        }
+
+        return false;
+
+    }
+    
+    public static boolean checkGroupAdmin(Msg msg) {
+        
+        if (!isGroupAdmin(msg.chatId(),msg.from().id)) {
+            
+            if (msg instanceof Callback) {
+                
+                ((Callback)msg).alert("你不是绒布球 Σ( ﾟωﾟ");
+                
+            } else {
+                
+                msg.send("你不是绒布球 Σ( ﾟω。").publicFailed();
+                
+            }
+            
+            return true;
+            
+        }
+        
+        return false;
+        
+    }
 
 }
