@@ -91,6 +91,8 @@ public class BotDB {
 
                 userDataIndex.put(userId,user);
 
+                return user;
+                
             }
 
         }
