@@ -43,15 +43,13 @@ public class ForwardClient extends BotFragment {
             
             if (replyTo.message().forwardFromChat() != null) {
                 
-                new Send(this,replyTo.message().forwardFromChat().id(),msg.text()).replyToMessageId(replyTo.message().forwardFromMessageId()).exec();
+                msg.forwardTo(replyTo.message().forwardFromChat().id());
                 
                 msg.reply("回复成功 ~").exec();
                 
             }
 
-        }
-        
-        if (!msg.isCommand()) {
+        } else if (!msg.isCommand()) {
 
             msg.forwardTo(userId);
 
