@@ -33,19 +33,16 @@ public class ForwardClient extends BotFragment {
     public boolean onPPM(UserData user,Msg msg) {
         return onNPM(user,msg);
     }
-    
+
     @Override
     public boolean onNPM(UserData user,Msg msg) {
 
         if (user.id.equals(userId) && msg.replyTo() != null) {
             
-            Msg replyTo = msg.replyTo();
-            
-            
-                msg.forwardTo(replyTo.message().forwardFromChat().id());
-                
-                msg.reply("回复成功 ~").exec();
-               
+            msg.forwardTo(msg.replyTo().message().forwardFrom().id());
+
+            msg.reply("回复成功 ~").exec();
+
         } else if (!msg.isCommand()) {
 
             msg.forwardTo(userId);
