@@ -69,7 +69,7 @@ public class BanSetickerSet extends Fragment {
 
         if (rules.contains(setName)) {
 
-            msg.send("这个贴纸包已经被屏蔽了 :)").exec();
+            msg.send("这个贴纸包已经被屏蔽了 :)").publicFailed();
 
             return;
 
@@ -81,7 +81,7 @@ public class BanSetickerSet extends Fragment {
         
         save();
 
-        msg.send("屏蔽成功 ~").publicFailed();
+        msg.send("屏蔽成功 ~").exec();
 
     }
 
@@ -105,7 +105,7 @@ public class BanSetickerSet extends Fragment {
 
         if (!rules.contains(setName)) {
 
-            msg.send("这个贴纸包没有被屏蔽了 :)").exec();
+            msg.send("这个贴纸包没有被屏蔽了 :)").publicFailed();
 
             return;
 
