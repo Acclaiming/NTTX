@@ -59,7 +59,7 @@ public class ForwardClient extends BotFragment {
 
             if ("start".equals(msg.command())) {
 
-                msg.send("这里是 " + user.userName() + " 的私聊BOT ✧٩(ˊωˋ*)و✧ 发送信息给咱就可以了 ~").exec();
+                msg.send("这里是 " + user.userName() + " 的私聊BOT ✧٩(ˊωˋ*)و✧ 发送信息给咱就可以了 ~").html().exec();
 
             }
 
