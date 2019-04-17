@@ -165,7 +165,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public boolean isLongPulling() {
         
-        return false;
+        return true;
         
         // 否则 NanoHttpd 会 无端 停止。
         
