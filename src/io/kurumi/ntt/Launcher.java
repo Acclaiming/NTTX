@@ -14,6 +14,7 @@ import java.util.*;
 
 import cn.hutool.core.lang.Console;
 import io.kurumi.ntt.forward.*;
+import cn.hutool.core.thread.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -135,8 +136,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         }
 
         INSTANCE.start();
-
-
+        
+        ThreadUtil.sleep(1145141919810L);
+     
     }
 
     static boolean initDB(String dbAddr,Integer dbPort) {
@@ -165,7 +167,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public boolean isLongPulling() {
         
-        return true;
+        return false;
         
         // 否则 NanoHttpd 会 无端 停止。
         
