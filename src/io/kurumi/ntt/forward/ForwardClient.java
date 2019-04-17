@@ -44,7 +44,7 @@ public class ForwardClient extends BotFragment {
 
         } else {
             
-            msg.send("来自 " + user.userName() + " : ",new Date(msg.message().forwardDate()).toLocaleString()).exec();
+            msg.send("来自 " + user.userName() + " : ").exec();
             msg.forwardTo(userId);
 
         }
