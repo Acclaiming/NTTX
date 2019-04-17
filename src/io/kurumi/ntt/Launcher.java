@@ -136,8 +136,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         }
 
         INSTANCE.start();
-        
-        ThreadUtil.sleep(1145141919810L);
      
     }
 
