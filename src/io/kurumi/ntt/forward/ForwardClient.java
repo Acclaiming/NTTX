@@ -37,13 +37,13 @@ public class ForwardClient extends BotFragment {
     @Override
     public boolean onNPM(UserData user,Msg msg) {
 
-        if (user.id == userId && msg.replyTo() != null && msg.replyTo().from().id.equals(me.id())) {
+        if (user.id == userId && msg.replyTo() != null) {
             
             Msg replyTo = msg.replyTo();
             
             if (replyTo.message().forwardFromChat() != null) {
                 
-                new Send(this,replyTo.from().id,msg.text()).replyToMessageId(replyTo.message().forwardFromMessageId()).exec();
+                new Send(this,replyTo.message().forwardFromChat().id(),msg.text()).replyToMessageId(replyTo.message().forwardFromMessageId()).exec();
                 
                 msg.reply("回复成功 ~").exec();
                 
