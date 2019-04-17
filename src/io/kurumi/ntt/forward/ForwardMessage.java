@@ -64,11 +64,19 @@ public class ForwardMessage extends Fragment {
             return;
 
         }
+        
+        if (msg.isPrivate())  {
 
         msg.send("这个功能可以创建一个转发所有私聊到乃的BOT ~o(〃'▽'〃)o").exec();
         msg.send("现在输入 BotToken 这需要在 @BotFather 申请 ~ 或者使用 /cancel 取消设置。").exec();
 
         user.point = cdata(POINT_INPUT_TOKEN);
+        
+        } else {
+            
+            msg.send("请使用私聊 :)").publicFailed();
+            
+        }
 
     }
 
