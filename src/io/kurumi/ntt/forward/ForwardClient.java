@@ -13,11 +13,11 @@ public class ForwardClient extends BotFragment {
 
     public UserData user;
 
-    public ForwardClient(Long userId,String botToken)  {
-        this.userId = userId;
+    public ForwardClient(UserData user,String botToken)  {
+        this.userId = user.id;
         this.botToken = botToken;
 
-        this.user = BotDB.getUserData(userId);
+        this.user = user;
     }
 
     @Override
@@ -40,11 +40,11 @@ public class ForwardClient extends BotFragment {
 
         if ("start".equals(msg.command())) {
 
-            msg.send("这里是 " + user.name() + " 的私聊BOT ✧٩(ˊωˋ*)و✧ 发送信息给咱就可以了 ~").html().exec();
+            msg.send("这里是 " + this.user.name() + " 的私聊BOT ✧٩(ˊωˋ*)و✧ 发送信息给咱就可以了 ~").html().exec();
 
         } else {
             
-            new Send(this,userId,"来自 " + this.user.userName() + " : ",new Date(msg.message().forwardDate() == null ? msg.message().date() : msg.message().forwardDate()).toLocaleString()).html().sync();
+            new Send(this,userId,"来自 " + user.userName() + " : ",new Date(msg.message().forwardDate() == null ? msg.message().date() : msg.message().forwardDate()).toLocaleString()).html().sync();
             msg.forwardTo(userId);
 
         }
