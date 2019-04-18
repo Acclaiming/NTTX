@@ -87,7 +87,7 @@ public class AntiHalal extends Fragment {
         switch (msg.command()) {
 
             case "enableantihalal" : enable(user,msg);break;
-            case "disableantiahalal" : disable(user,msg);break;
+            case "disableantihalal" : disable(user,msg);break;
 
             default : return false;
 
