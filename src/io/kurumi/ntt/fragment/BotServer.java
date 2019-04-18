@@ -27,40 +27,50 @@ public class BotServer extends NanoHTTPD {
 
         int contentLength = Integer.parseInt(session.getHeaders().get("content-length"));
         byte[] buf = new byte[contentLength];
-        
+
         try {
             session.getInputStream().read(buf,0,contentLength);
-            
+
             return StrUtil.utf8Str(buf);
-            
+
         } catch ( IOException e2 ) { }
-        
+
         return null;
-        
+
     }
-    
-    
+
+
 
     @Override
     public Response serve(IHTTPSession session) {
 
         URL url = URLUtil.url(session.getUri());
 
+        BotLog.debug(url.getPath());
+
         String botToken = url.getPath().substring(1);
 
         if (fragments.containsKey(botToken)) {
-            
+
             fragments.get(botToken).processAsync(BotUtils.parseUpdate(readBody(session)));
 
             return newFixedLengthResponse("");
-            
+
         } else {
 
-            return newFixedLengthResponse(new DeleteWebhook().toWebhookResponse());
-            
+            try {
+
+                return newFixedLengthResponse(Response.Status.INTERNAL_ERROR,MIME_PLAINTEXT,"ERROR");
+
+            } finally {
+
+                new TelegramBot(botToken).execute(new DeleteWebhook());
+                
+            }
+
         }
 
-        
+
     }
 
 }
