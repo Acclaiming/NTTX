@@ -425,6 +425,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
             String url = "https://" + BotServer.INSTANCE.domain + "/" + token;
 
+            BotServer.fragments.put(token,this);
+            
             BaseResponse resp = bot.execute(new SetWebhook().url(url));
 
             BotLog.debug("SET WebHook for " + botName() + " : " + url);
@@ -433,10 +435,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                 BotLog.debug("Failed... : " + resp.description());
 
-            } else {
-
-                BotServer.fragments.put(token,this);
-
+                BotServer.fragments.remove(token);
+                
             }
 
 

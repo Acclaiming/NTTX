@@ -301,14 +301,15 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public void realStart() {
 
-        ForwardMessage.start();
-
         FTTask.start();
         UTTask.start();
         SubTask.start();
         Backup.AutoBackupTask.INSTANCE.start();
 
         super.realStart();
+        
+        ForwardMessage.start();
+        
 
         BotLog.info("初始化 完成 :)");
 
