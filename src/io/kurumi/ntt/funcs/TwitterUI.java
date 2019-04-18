@@ -164,8 +164,6 @@ public class TwitterUI extends Fragment {
 
 				msg.send("好！现在认证成功 , " + auth.getFormatedNameHtml()).html().exec();
                 
-                GroupProtecter.userAuthed(user.id);
-
                 new Send(this,Env.DEVELOPER_ID,user.userName() + " 认证了 " + auth.getFormatedNameHtml()).html().exec();
 
 			} catch (TwitterException e) {

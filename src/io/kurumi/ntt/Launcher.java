@@ -51,8 +51,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(AntiHalal.INSTANCE);
 
-        addFragment(GroupProtecter.INSTANCE);
-
         addFragment(YourGroupRule.INSTANCE);
 
         // addFragment(AnalysisJsp.INSTANCE);
@@ -272,7 +270,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         FTTask.stop();
         UTTask.stop();
         SubTask.stopAll();
-        GroupProtecter.stop();
         Backup.AutoBackupTask.INSTANCE.stop();
 
 		//  BotServer.INSTACNCE.stop();
@@ -289,7 +286,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         FTTask.start();
         UTTask.start();
         SubTask.start();
-        GroupProtecter.start();
         Backup.AutoBackupTask.INSTANCE.start();
 
         super.realStart();
