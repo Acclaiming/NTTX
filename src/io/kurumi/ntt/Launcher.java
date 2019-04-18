@@ -16,6 +16,7 @@ import cn.hutool.core.lang.Console;
 import io.kurumi.ntt.forward.*;
 import cn.hutool.core.thread.*;
 import com.pengrad.telegrambot.model.*;
+import cn.hutool.core.util.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -137,6 +138,17 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
             } catch (Exception e) {}
 
         }
+        
+        RuntimeUtil.addShutdownHook(new Runnable() {
+
+                @Override
+                public void run() {
+                    
+                    INSTANCE.stop();
+                   
+                }
+                
+            });
 
         INSTANCE.start();
 
@@ -260,6 +272,15 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         INSTANCE.stop();
 
+        System.exit(1);
+
+    }
+
+    @Override
+    public void stop() {
+        
+        super.stop();
+        
         for (BotFragment bot : BotServer.fragments.values()) {
 
             bot.stop();
@@ -273,9 +294,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         Backup.AutoBackupTask.INSTANCE.stop();
 
 		//  BotServer.INSTACNCE.stop();
-
-        System.exit(1);
-
+        
     }
 
     @Override
