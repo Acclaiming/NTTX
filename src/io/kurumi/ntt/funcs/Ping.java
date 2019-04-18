@@ -18,11 +18,9 @@ public class Ping extends Fragment {
             msg.sendTyping();
 
             long start = System.currentTimeMillis();
+            
+            String pong = "接收延迟 : <= " + ((start / 1000) - (msg.message().date())) + "s";
 
-            long receive = start - (((long)msg.message().date()) * 1000);
-            
-            String pong = "接收延迟 : " + receive + "ms";
-            
             final Msg sended = msg.reply(pong).send();
 
             long end = System.currentTimeMillis();
@@ -30,7 +28,7 @@ public class Ping extends Fragment {
             if (sended != null) {
 
                 sended.edit(pong,"回复延迟 : " + (end - start) + "ms").publicFailedWith(msg);
-				
+
             }
 
             return true;
