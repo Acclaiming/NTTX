@@ -107,7 +107,7 @@ public class BanSetickerSet extends Fragment {
 
         if (!rules.contains(setName)) {
 
-            msg.send("这个贴纸包没有被屏蔽了 :)").publicFailed();
+            msg.send("这个贴纸包没有被屏蔽 :)").publicFailed();
 
             return;
 
