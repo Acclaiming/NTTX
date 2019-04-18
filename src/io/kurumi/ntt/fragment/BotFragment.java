@@ -457,7 +457,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         }
 
-        BotLog.info("BOT已停止 :)");
+        BotLog.info(botName() + " 已停止 :)");
 
     }
 

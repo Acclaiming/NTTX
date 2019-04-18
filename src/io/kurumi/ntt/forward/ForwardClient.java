@@ -22,7 +22,7 @@ public class ForwardClient extends BotFragment {
 
     @Override
     public String botName() {
-        return "ForwardBotClient";
+        return "ForwardBotClient For " + user.name();
     }
 
     @Override
