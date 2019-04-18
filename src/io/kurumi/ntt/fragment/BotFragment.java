@@ -422,7 +422,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
                 
                 BotLog.debug("Failed... : " + resp.description());
                 
+            } else {
+                
+                BotServer.fragments.put(token,this);
+                
             }
+            
+            
 
         }
         

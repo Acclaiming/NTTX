@@ -24,8 +24,6 @@ public class ForwardMessage extends Fragment {
 
             client.silentStart();
             
-            BotServer.fragments.put(token,client);
-            
         }
         
     }
@@ -119,8 +117,6 @@ public class ForwardMessage extends Fragment {
         save();
 
         ForwardClient client = new ForwardClient(user,token);
-
-        BotServer.fragments.put(token,client);
 
         client.silentStart();
 

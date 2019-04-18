@@ -54,13 +54,15 @@ public class BotServer extends NanoHTTPD {
             
             fragments.get(botToken).processAsync(BotUtils.parseUpdate(readBody(session)));
 
+            return newFixedLengthResponse("");
+            
         } else {
 
-            new TelegramBot(botToken).execute(new DeleteWebhook());
-
+            return newFixedLengthResponse(new DeleteWebhook().toWebhookResponse());
+            
         }
 
-        return newFixedLengthResponse("");
+        
     }
 
 }
