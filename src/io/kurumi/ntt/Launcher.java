@@ -45,9 +45,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(ChineseAction.INSTANCE);
 
         addFragment(BanSetickerSet.INSTANCE);
-        
+
         addFragment(AntiHalal.INSTANCE);
-        
+
         addFragment(GroupProtecter.INSTANCE);
 
         addFragment(YourGroupRule.INSTANCE);
@@ -55,9 +55,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         // addFragment(AnalysisJsp.INSTANCE);
 
         addFragment(HideMe.INSTANCE);
-        
+
         addFragment(PMList.INSTANCE);
-        
+
         addFragment(ForwardMessage.INSTANCE);
 
         // addFragment(MusicSearch.INSTANCE);
@@ -75,36 +75,36 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
 
 		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
- 
+
         int serverPort = Integer.parseInt(Env.getOrDefault("server_port","-1"));
         String serverDomain = Env.get("server_domain");
-        
+
         while (serverPort == -1) {
-            
+
             System.out.print("输入本地Http服务器端口 : ");
-            
+
             try {
-            
-            serverPort = Integer.parseInt(Console.input());
-            
-            Env.set("server_port",serverPort);
-            
-           } catch (Exception e) {}
-            
+
+                serverPort = Integer.parseInt(Console.input());
+
+                Env.set("server_port",serverPort);
+
+            } catch (Exception e) {}
+
         }
-        
+
         if (serverDomain == null) {
-            
+
             System.out.print("输入BotWebHook域名 : ");
-            
+
             serverDomain = Console.input();
-            
+
             Env.set("server_domain",serverDomain);
-            
+
         }
-        
+
         BotServer.INSTANCE = new BotServer(serverPort,serverDomain);
-        
+
         try {
 
             BotServer.INSTANCE.start();
@@ -138,7 +138,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         }
 
         INSTANCE.start();
-     
+
     }
 
     static boolean initDB(String dbAddr,Integer dbPort) {
@@ -166,13 +166,13 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     @Override
     public boolean isLongPulling() {
-        
+
         return true;
-        
+
         // 否则 NanoHttpd 会 无端 停止。
-        
+
     }
-    
+
     @Override
     public boolean onMsg(UserData user,Msg msg) {
 
@@ -221,8 +221,12 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 					"/hide 对BOT其他用户隐藏账号更改 (内容见上/sub)",
 					"/unhide 取消隐藏 以上",
 					"/status <推文链接|ID> 推文存档/查看",
-                    "/chatbot 新建一个转发私聊的BOT",
-                    "/rmchatbot 移除转发BOT"
+                    "/chatbot 新建一个转发私聊的BOT (BotToken 需要在 @BotFather 申请。)",
+                    "/rmchatbot 移除转发BOT",
+                    "/banstickerset 群组屏蔽贴纸集 (对单个贴纸回复)",
+                    "/unbanstickerset 取消屏蔽 以上",
+                    "/enableantihalal 阻止清真加群",
+                    "/disableantihalal 解除阻止"
 				).exec();
 
 			} else {
@@ -243,12 +247,12 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         BotLog.error("无法处理的错误,正在停止BOT",throwable);
 
         INSTANCE.stop();
-        
+
         for (BotFragment bot : BotServer.fragments.values()) {
-            
+
             bot.stop();
         }
-        
+
         BotServer.INSTANCE.stop();
 
         FTTask.stop();
@@ -265,9 +269,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     @Override
     public void realStart() {
-     
+
         ForwardMessage.start();
-        
+
         FTTask.start();
         UTTask.start();
         SubTask.start();
@@ -275,10 +279,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         Backup.AutoBackupTask.INSTANCE.start();
 
         super.realStart();
-        
+
         BotLog.info("初始化 完成 :)");
 
-        
+
     }
 
 
