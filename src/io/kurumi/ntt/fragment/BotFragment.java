@@ -209,7 +209,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                         switch (update.message().chat().type()) {
 
-                                case Private: {
+                            case Private: {
 
                                     for (Fragment fragmnet : fragments) {
 
@@ -227,7 +227,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                                 }
 
-                                case group: {
+                            case group: {
 
                                     for (Fragment fragmnet : fragments) {
 
@@ -244,7 +244,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                                 }
 
-                                default: {
+                            default: {
 
                                     for (Fragment fragmnet : fragments) {
 
@@ -345,17 +345,17 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
         return false;
 
     }
-    
+
     public String getToken() {
-        
+
         return Env.get("token." + botName());
-        
+
     }
-    
+
     public void setToken(String botToken) {
-        
+
         Env.set("token." + botName(),token);
-         
+
     }
 
     public boolean silentStart() {
@@ -371,7 +371,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
         me = resp.user();
 
         realStart();
-        
+
         return true;
 
     }
@@ -385,7 +385,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
             token = Env.inputToken(botName());
 
         }
-        
+
         setToken(token);
 
         OkHttpClient.Builder okhttpClient = new OkHttpClient.Builder();
@@ -396,40 +396,49 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
             .okHttpClient(okhttpClient.build()).build();
 
 		me = bot.execute(new GetMe()).user();
-        
+
         realStart();
 
     }
-    
+
     public void realStart() {
-        
+
+        bot.execute(new DeleteWebhook());
+
         if (isLongPulling()) {
 
-            bot.execute(new DeleteWebhook());
             bot.setUpdatesListener(this,new GetUpdates());
 
         } else {
 
+            GetUpdatesResponse update = bot.execute(new GetUpdates());
+
+            if (update.isOk()) {
+
+                process(update.updates());
+
+            }
+
             String url = "https://" + BotServer.INSTANCE.domain + "/" + token;
-            
+
             BaseResponse resp = bot.execute(new SetWebhook().url(url));
 
             BotLog.debug("SET WebHook for " + botName() + " : " + url);
-            
+
             if (!resp.isOk()) {
-                
+
                 BotLog.debug("Failed... : " + resp.description());
-                
+
             } else {
-                
+
                 BotServer.fragments.put(token,this);
-                
+
             }
-            
-            
+
+
 
         }
-        
+
     }
 
     public void stop() {
