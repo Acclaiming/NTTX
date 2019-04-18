@@ -19,7 +19,7 @@ public class Ping extends Fragment {
 
             long start = System.currentTimeMillis();
 
-            String pong = "接收延迟 : " + (start - msg.message().date()) + "ms";
+            String pong = "接收延迟 : " + (start - (msg.message().date() * 1000)) + "ms";
             
             final Msg sended = msg.reply(pong).send();
 
