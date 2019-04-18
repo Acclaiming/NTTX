@@ -283,7 +283,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         
         for (BotFragment bot : BotServer.fragments.values()) {
 
-            bot.stop();
+            if (bot != this) bot.stop();
+            
         }
 
         BotServer.INSTANCE.stop();

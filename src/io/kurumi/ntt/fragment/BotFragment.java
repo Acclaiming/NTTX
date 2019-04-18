@@ -410,6 +410,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
             bot.setUpdatesListener(this,new GetUpdates());
 
         } else {
+            
+            /*
 
             GetUpdatesResponse update = bot.execute(new GetUpdates());
 
@@ -418,6 +420,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
                 process(update.updates());
 
             }
+            
+            */
 
             String url = "https://" + BotServer.INSTANCE.domain + "/" + token;
 
