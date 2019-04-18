@@ -18,7 +18,7 @@ public class BanSetickerSet extends Fragment {
     }
 
     @Override
-    public boolean onGroupMsg(UserData user,Msg msg,boolean superGroup) {
+    public boolean onMsg(UserData user,Msg msg) {
 
         if (msg.isCommand()) {
 
@@ -33,7 +33,7 @@ public class BanSetickerSet extends Fragment {
 
             return true;
 
-        } else if (msg.message().sticker() != null && bans.containsKey(msg.chatId().toString())) {
+        } else if (msg.isGroup() && msg.message().sticker() != null && bans.containsKey(msg.chatId().toString())) {
 
             if (bans.getJSONArray(msg.chatId().toString()).contains(msg.message().sticker().setName())) {
                 
@@ -51,6 +51,7 @@ public class BanSetickerSet extends Fragment {
 
     void banStickerSet(UserData user,Msg msg) {
 
+        if (T.checkGroup(msg)) return;
         if (T.checkGroupAdmin(msg)) return;
 
         if (msg.replyTo() == null || msg.replyTo().message().sticker() == null) {
@@ -87,6 +88,7 @@ public class BanSetickerSet extends Fragment {
 
     void unBanStickerSet(UserData user,Msg msg) {
 
+        if (T.checkGroup(msg)) return;
         if (T.checkGroupAdmin(msg)) return;
 
         if (msg.replyTo() == null || msg.replyTo().message().sticker() == null) {
