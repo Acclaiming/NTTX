@@ -23,6 +23,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     public Launcher() {
 
         addFragment(Ping.INSTANCE);
+        
+        addFragment(Utils.INSTANCE);
 
         addFragment(StickerManage.INSTANCE);
 
