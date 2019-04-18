@@ -163,8 +163,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         } else user = null;
 
-        BotLog.process(user,update);
-
         processUpdatePool.execute(new Runnable() {
 
                 @Override

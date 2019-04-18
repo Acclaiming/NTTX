@@ -15,6 +15,7 @@ import java.util.*;
 import cn.hutool.core.lang.Console;
 import io.kurumi.ntt.forward.*;
 import cn.hutool.core.thread.*;
+import com.pengrad.telegrambot.model.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -174,6 +175,17 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         // 否则 NanoHttpd 会 无端 停止。
 
     }
+
+    @Override
+    public boolean onUpdate(UserData user,Update update) {
+        
+        BotLog.process(user,update);
+        
+        return false;
+        
+    }
+    
+    
 
     @Override
     public boolean onMsg(UserData user,Msg msg) {
