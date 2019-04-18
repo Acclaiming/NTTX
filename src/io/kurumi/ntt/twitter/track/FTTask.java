@@ -76,11 +76,11 @@ public class FTTask extends TimerTask {
 
     @Override
     public void run() {
-		
+
 		if (running.get() > 0) {
-			
+
 			return;
-			
+
 		}
 
 		synchronized (INSTANCE) {
@@ -91,7 +91,7 @@ public class FTTask extends TimerTask {
             flSubIndex = flSubIndexC;
             flSubIndexC = new HashMap<>();
 
-            
+
 		}
 
         for (Map.Entry<String,Object> entry : enable.entrySet()) {
@@ -103,29 +103,29 @@ public class FTTask extends TimerTask {
             startUserStackAsync(userId);
 
         }
-        
+
         userTrackPool.execute(new Runnable() {
 
                 @Override
                 public void run() {
 
 					running.incrementAndGet();
-					
+
 					while (running.get() != 1) {
-						
+
 						ThreadUtil.sleep(1000);
-						
+
 					}
-					
+
                     synchronized (UTTask.pedding) {
-						
+
                         UTTask.pedding.addAll(pedding);
                         pedding.clear();
 
                     }
-					
+
 					running.decrementAndGet();
-                    
+
 
                 }
 
@@ -138,20 +138,20 @@ public class FTTask extends TimerTask {
     ExecutorService userTrackPool = Executors.newFixedThreadPool(3);
 
 	AtomicInteger running = new AtomicInteger();
-	
+
     private void startUserStackAsync(final long userId) {
 
         userTrackPool.execute(new Runnable() {
 
                 @Override
                 public void run() {
-					
+
 					running.incrementAndGet();
 
                     startUserStack(userId);
 
 					running.decrementAndGet();
-					
+
                 }
 
             });
@@ -163,19 +163,21 @@ public class FTTask extends TimerTask {
 
     void startUserStack(Long userId) {
 
+
+        if (!TAuth.avilable(userId)) {
+
+            enable.remove(userId.toString());
+
+            save();
+
+            return;
+
+        }
+
+        Twitter api = TAuth.get(userId).createApi();
+
         try {
 
-            if (!TAuth.avilable(userId)) {
-
-                enable.remove(userId.toString());
-
-                save();
-
-                return;
-
-            }
-
-            Twitter api = TAuth.get(userId).createApi();
 
             User me = api.verifyCredentials();
 
@@ -290,7 +292,14 @@ public class FTTask extends TimerTask {
 
         } catch (TwitterException e) {
 
-            if (e.getErrorCode() != 130) {
+            if (e.getErrorCode() == 326) {
+
+                enable.remove(userId.toString());
+                save();
+
+                new Send(userId,"对不起，但是因乃的账号已被Twitter限制，已经自动关闭关注者历史监听 (需要登录 twitter.com 以解除限制并使用 /tstart 重新开启 (⁎˃ᆺ˂)").exec();
+
+            } else if (e.getErrorCode() != 130) {
 
                 BotLog.error("UserArchive ERROR",e);
 
