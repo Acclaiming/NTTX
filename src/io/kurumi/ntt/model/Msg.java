@@ -257,9 +257,11 @@ public class Msg extends Context {
 
     }
     
+    
+    
 	public void kick() {
 		
-		fragment.bot().execute(new KickChatMember(chatId(),from().id.intValue()));
+		kick(from().id);
 		
 	}
 	

@@ -46,6 +46,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(BanSetickerSet.INSTANCE);
         
+        addFragment(AntiHalal.INSTANCE);
+        
         addFragment(GroupProtecter.INSTANCE);
 
         addFragment(YourGroupRule.INSTANCE);

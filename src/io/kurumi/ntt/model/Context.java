@@ -1,13 +1,9 @@
 package io.kurumi.ntt.model;
 
-import cn.hutool.http.HttpUtil;
-import com.pengrad.telegrambot.model.Chat;
-import com.pengrad.telegrambot.request.GetFile;
-import com.pengrad.telegrambot.request.RestrictChatMember;
-import io.kurumi.ntt.Env;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.model.request.Send;
-import java.io.File;
+import com.pengrad.telegrambot.model.*;
+import com.pengrad.telegrambot.request.*;
+import io.kurumi.ntt.fragment.*;
+import io.kurumi.ntt.model.request.*;
 
 public class Context {
 
@@ -47,7 +43,11 @@ public class Context {
         return chat.type() == Chat.Type.channel;
     }
     
-    
+    public void kick(Long userId) {
+
+        fragment.bot().execute(new KickChatMember(chatId(),userId.intValue()));
+
+	}
     
     public boolean unrestrict(long id) {
 

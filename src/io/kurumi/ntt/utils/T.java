@@ -176,6 +176,34 @@ public class T {
 
     }
     
+    public static boolean checkPrivate(Msg msg) {
+
+        if (!msg.isPrivate()) {
+            
+            msg.send("请使用私聊 ( ˶‾᷄࿀‾᷅˵ )").publicFailed();
+            
+            return true;
+            
+        }
+        
+        return false;
+
+    }
+    
+    public static boolean checkGroup(Msg msg) {
+
+        if (!msg.isGroup()) {
+
+            msg.send("请在群组使用 ( ˶‾᷄࿀‾᷅˵ )").exec();
+
+            return true;
+
+        }
+
+        return false;
+        
+    }
+    
     public static boolean checkGroupAdmin(Msg msg) {
         
         if (!isGroupAdmin(msg.chatId(),msg.from().id)) {
