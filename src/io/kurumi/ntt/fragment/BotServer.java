@@ -46,8 +46,6 @@ public class BotServer extends NanoHTTPD {
 
         URL url = URLUtil.url(session.getUri());
 
-        BotLog.debug(url.getPath());
-
         String botToken = url.getPath().substring(1);
 
         if (fragments.containsKey(botToken)) {
