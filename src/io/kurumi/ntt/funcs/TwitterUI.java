@@ -38,9 +38,9 @@ public class TwitterUI extends Fragment {
 	}
 
 	@Override
-	public boolean onPPM(UserData user,Msg msg) {
+	public boolean onPointedPrivate(UserData user,Msg msg) {
 		
-		switch (user.point.getPoint()) {
+		switch (getPoint(user).point) {
 
 			case POINT_INPUT_CALLBACK : onInputCallback(user,msg);break;
 
@@ -88,7 +88,7 @@ public class TwitterUI extends Fragment {
 
             msg.send("输入PIN码即可 (灬ºωº灬)").exec();
 
-			user.point = cdata(POINT_INPUT_CALLBACK);
+		    setPoint(user,POINT_INPUT_CALLBACK);
 
 			// 不需要保存Point 因为request token的cache也不会保存。
 
@@ -144,7 +144,7 @@ public class TwitterUI extends Fragment {
 
 				TAuth auth = new TAuth(ApiToken.defaultToken.apiToken,ApiToken.defaultToken.apiSecToken,access.getToken(),access.getTokenSecret());
 
-                user.point = null;
+                clearPoint(user);
 
                 if (!auth.refresh()) {
 

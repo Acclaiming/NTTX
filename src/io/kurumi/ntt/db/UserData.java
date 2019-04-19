@@ -13,6 +13,7 @@ import io.kurumi.ntt.model.data.*;
 import io.kurumi.ntt.utils.T;
 import io.kurumi.ntt.utils.Html;
 import cn.hutool.http.*;
+import io.kurumi.ntt.fragment.*;
 
 public class UserData {
     
@@ -70,7 +71,21 @@ public class UserData {
         return Env.DEVELOPER_ID == id || 589593327 == id;
 
     }
-
-	public transient CData point;
+    
+    public static class PointInstance {
+        
+        public enum Type {
+            
+            Global,Pirvate,Group,Channel
+            
+        }
+        
+        public PointInstance(UserData user) {
+            
+            
+            
+        }
+        
+    }
     
 }

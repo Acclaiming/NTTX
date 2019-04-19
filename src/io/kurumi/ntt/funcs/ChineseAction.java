@@ -26,7 +26,7 @@ public class ChineseAction extends Fragment {
 	}
 
 	@Override
-	public boolean onGroupMsg(UserData user,Msg msg,boolean superGroup) {
+	public boolean onGroup(UserData user,Msg msg) {
 
 		if (startWithChinese(msg.command())) {
 
@@ -41,7 +41,6 @@ public class ChineseAction extends Fragment {
                         command = command + "了";
 
                     }
-
 
                     msg.send(user.userName() + " " + HtmlUtil.escape(command) + " " + msg.replyTo().from().userName() + " " + msg.params()[0] + " ~").html().exec();
 

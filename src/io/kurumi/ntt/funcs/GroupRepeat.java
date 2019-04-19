@@ -14,7 +14,7 @@ public class GroupRepeat extends Fragment {
     public HashMap<Long,LinkedList<Msg>> msgs = new HashMap<>();
 
     @Override
-    public boolean onGroupMsg(UserData user,Msg msg,boolean superGroup) {
+    public boolean onGroup(UserData user,Msg msg) {
 
         if (msg.isCommand()) {
 

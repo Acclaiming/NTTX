@@ -19,7 +19,7 @@ public class Backup extends Fragment {
     public static Backup INSTANCE = new Backup();
 
     @Override
-    public boolean onNPM(UserData user,Msg msg) {
+    public boolean onPrivate(UserData user,Msg msg) {
 
         if (!msg.isCommand()) return false;
 

@@ -52,23 +52,11 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(AntiHalal.INSTANCE);
 
-        addFragment(YourGroupRule.INSTANCE);
-
-        // addFragment(AnalysisJsp.INSTANCE);
-
         addFragment(HideMe.INSTANCE);
-
-        addFragment(PMList.INSTANCE);
-
+        
         addFragment(ForwardMessage.INSTANCE);
-
-        // addFragment(MusicSearch.INSTANCE);
-
-        // addFragment(AntiTooManyMsg.INSTANCE);
-
-        addFragment(Maven.INSTANCE);
-
-		addFragment(Quit.INSTANCE);
+        
+        addFragment(BioSearch.INSTANCE);
 
     }
 

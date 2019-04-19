@@ -12,6 +12,7 @@ import twitter4j.AsyncTwitter;
 import twitter4j.JSONArray;
 import twitter4j.JSONException;
 import twitter4j.TwitterException;
+import io.kurumi.ntt.db.*;
 
 public class TwitterDelete extends Fragment {
 
@@ -20,7 +21,7 @@ public class TwitterDelete extends Fragment {
     final String POINT_DELETE_LIKES = "d|l";
 
     @Override
-    public boolean onNPM(UserData user,Msg msg) {
+    public boolean onPrivate(UserData user,Msg msg) {
 
         if (msg.doc() == null) return false;
 
@@ -37,9 +38,9 @@ public class TwitterDelete extends Fragment {
     }
 
     @Override
-    public boolean onPPM(UserData user,Msg msg) {
+    public boolean onPointedPrivate(UserData user,Msg msg) {
 
-        switch (user.point.getPoint()) {
+        switch (getPoint(user).point) {
 
             case POINT_DELETE_LIKES : comfirmDeleteLikes(user,msg);break;
 
@@ -57,9 +58,7 @@ public class TwitterDelete extends Fragment {
 
         msg.send("输入 任意内容 来删除所有的推文喜欢 ","使用 /cancel 取消 注意 : 开始后不可撤销").exec();
 
-        user.point = cdata(POINT_DELETE_LIKES);
-
-        user.point.setIndex(msg.doc().fileId());
+        setPoint(user,POINT_DELETE_LIKES,msg.doc().fileId());
 
     }
 
@@ -68,8 +67,10 @@ public class TwitterDelete extends Fragment {
         try {
 
             msg.sendTyping();
+            
+            PointStore.Point<String> point = getPoint(user);
 
-            File likejs = getFile(user.point.getIndex());
+            File likejs = getFile(point.data);
 
             String content = FileUtil.readUtf8String(likejs);
 
@@ -89,7 +90,7 @@ public class TwitterDelete extends Fragment {
 
             msg.send("已添加到队列 ~").exec();
 
-            user.point = null;
+            clearPoint(user);
 
         } catch (Exception err) {
 

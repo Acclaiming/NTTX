@@ -46,7 +46,7 @@ public class AntiHalal extends Fragment {
     }
 
     @Override
-    public boolean onGroupMsg(UserData user,Msg msg,boolean superGroup) {
+    public boolean onGroup(UserData user,Msg msg) {
 
         Message message = msg.message();
 

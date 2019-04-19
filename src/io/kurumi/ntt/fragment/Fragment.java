@@ -16,6 +16,7 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.Query;
 import io.kurumi.ntt.utils.CData;
 import java.io.File;
+import io.kurumi.ntt.db.*;
 
 public class Fragment {
 
@@ -24,6 +25,42 @@ public class Fragment {
     public TelegramBot bot() {
         
         return origin.bot();
+        
+    }
+    
+    public PointStore point() {
+        
+        return origin.point();
+        
+    }
+    
+    public <T> void setPoint(UserData user,String pointTo,PointStore.Type context,T content) {
+        
+        point().set(user,context,pointTo,content);
+        
+    }
+   
+    public <T> void setPoint(UserData user,String pointTo,T content) {
+
+        point().set(user,pointTo,content);
+
+    }
+    
+    public void setPoint(UserData user,String pointTo) {
+
+        point().set(user,pointTo,null);
+
+    }
+    
+    public <T> PointStore.Point<T> clearPoint(UserData user) {
+        
+        return point().clear(user);
+        
+    }
+    
+    public <T> PointStore.Point<T> getPoint(UserData user) {
+        
+        return point().get(user);
         
     }
     
@@ -39,22 +76,34 @@ public class Fragment {
         
     }
     
-    public boolean onNPM(UserData user, Msg msg) {
+    public boolean onPointedMsg(UserData user,Msg msg) {
+        
+        return false;
+    
+    }
+    
+    public boolean onPrivate(UserData user, Msg msg) {
         
         return false;
         
     }
 
-    public boolean onPPM(UserData user, Msg msg) {
+    public boolean onPointedPrivate(UserData user, Msg msg) {
         
         return false;
         
     }
 
-    public boolean onGroupMsg(UserData user, Msg msg, boolean superGroup) {
+    public boolean onGroup(UserData user, Msg msg) {
         
         return false;
         
+    }
+    
+    public boolean onPointedGroup(UserData user, Msg msg) {
+
+        return false;
+
     }
 
     public boolean onChanPost(UserData user, Msg msg) {

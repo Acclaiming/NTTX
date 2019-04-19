@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import com.pengrad.telegrambot.request.*;
 import com.pengrad.telegrambot.response.*;
+import io.kurumi.ntt.db.*;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
@@ -107,6 +108,25 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
     }
 
+    private PointStore point;
+
+    @Override
+    public PointStore point() {
+
+        if (point != null) return point;
+
+        synchronized (this) {
+
+            if (point != null) return point;
+
+            point = PointStore.getInstance(this);
+
+            return point;
+
+        }
+
+    }
+
     @Override
     public boolean onMsg(UserData user,Msg msg) {
 
@@ -123,11 +143,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
     }
 
     @Override
-    public boolean onPPM(UserData user,Msg msg) {
+    public boolean onPointedMsg(UserData user,Msg msg) {
 
         if ("cancel".equals(msg.command())) {
 
-            user.point = null;
+            clearPoint(user);
 
             msg.send("取消成功 ~").exec();
 
@@ -163,12 +183,16 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         } else user = null;
 
+        final boolean point = user != null && point().contains(user);
+
         processUpdatePool.execute(new Runnable() {
 
                 @Override
                 public void run() {
 
                     if (update.message() != null) {
+
+                        Msg msg = new Msg(BotFragment.this,update.message());
 
                         for (Fragment fragmnet : fragments) {
 
@@ -180,28 +204,23 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                         }
 
-                        if (update.message().chat().type() == Chat.Type.Private && user != null && user.point != null) {
+                        for (Fragment fragmnet : fragments) {
 
-                            for (Fragment fragmnet : fragments) {
+                            if (!point) {
 
-                                if (fragmnet.onPPM(user,new Msg(fragmnet,update.message()))) {
-
-
+                                if (fragmnet.onMsg(user,msg)) {
 
                                     return;
 
                                 }
 
-                            }
+                            } else {
 
-                            return;
+                                if (fragmnet.onPointedMsg(user,msg)) {
 
-                        }
+                                    return;
 
-                        for (Fragment fragmnet : fragments) {
-
-                            if (fragmnet.onMsg(user,new Msg(fragmnet,update.message()))) {
-                                return;
+                                }
 
                             }
 
@@ -213,28 +232,22 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                                     for (Fragment fragmnet : fragments) {
 
-                                        if (fragmnet.onNPM(user,new Msg(fragmnet,update.message()))) {
+                                        if (!point) {
+
+                                            if (fragmnet.onPrivate(user,msg)) {
+
+                                                return;
+
+                                            }
+
+                                        } else {
 
 
-                                            return;
+                                            if (fragmnet.onPointedPrivate(user,msg)) {
 
-                                        }
+                                                return;
 
-                                    }
-
-
-                                    break;
-
-                                }
-
-                            case group: {
-
-                                    for (Fragment fragmnet : fragments) {
-
-                                        if (fragmnet.onGroupMsg(user,new Msg(fragmnet,update.message()),false)) {
-
-
-                                            return;
+                                            }
 
                                         }
 
@@ -244,17 +257,31 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                                 }
 
-                            default: {
+                            case group : case supergroup : {
 
                                     for (Fragment fragmnet : fragments) {
 
-                                        if (fragmnet.onGroupMsg(user,new Msg(fragmnet,update.message()),true)) {
+                                        if (!point) {
+                                        
+                                        if (fragmnet.onGroup(user,msg)) {
 
                                             return;
 
                                         }
+                                        
+                                        } else {
+                                            
+                                            if (fragmnet.onPointedGroup(user,msg)) {
+                                                
+                                                return;
+
+                                            }
+                                            
+                                        }
 
                                     }
+
+                                    break;
 
                                 }
 
@@ -410,23 +437,23 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
             bot.setUpdatesListener(this,new GetUpdates());
 
         } else {
-            
+
             /*
 
-            GetUpdatesResponse update = bot.execute(new GetUpdates());
+             GetUpdatesResponse update = bot.execute(new GetUpdates());
 
-            if (update.isOk()) {
+             if (update.isOk()) {
 
-                process(update.updates());
+             process(update.updates());
 
-            }
-            
-            */
+             }
+
+             */
 
             String url = "https://" + BotServer.INSTANCE.domain + "/" + token;
 
             BotServer.fragments.put(token,this);
-            
+
             BaseResponse resp = bot.execute(new SetWebhook().url(url));
 
             BotLog.debug("SET WebHook for " + botName() + " : " + url);
@@ -436,7 +463,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
                 BotLog.debug("Failed... : " + resp.description());
 
                 BotServer.fragments.remove(token);
-                
+
             }
 
 

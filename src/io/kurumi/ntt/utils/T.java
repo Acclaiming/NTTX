@@ -225,5 +225,17 @@ public class T {
         return false;
         
     }
+    
+    public static String checkCommand(Msg msg) {
+        
+        if (msg.isCommand()) {
+            
+            return msg.command();
+            
+        }
+        
+        return "-1";
+        
+    }
 
 }

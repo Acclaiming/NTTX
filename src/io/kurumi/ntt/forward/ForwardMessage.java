@@ -68,7 +68,7 @@ public class ForwardMessage extends Fragment {
         msg.send("这个功能可以创建一个转发所有私聊到乃的BOT ~o(〃'▽'〃)o").exec();
         msg.send("现在输入 BotToken 这需要在 @BotFather 申请 ~ 或者使用 /cancel 取消设置。").exec();
 
-        user.point = cdata(POINT_INPUT_TOKEN);
+        setPoint(user,POINT_INPUT_TOKEN);
         
         } else {
             
@@ -79,9 +79,9 @@ public class ForwardMessage extends Fragment {
     }
 
     @Override
-    public boolean onPPM(UserData user,Msg msg) {
+    public boolean onPointedPrivate(UserData user,Msg msg) {
 
-        switch (user.point.getPoint()) {
+        switch (getPoint(user).point) {
 
                 case POINT_INPUT_TOKEN : onInputToken(user,msg);break;
                 default : return false;
@@ -123,7 +123,7 @@ public class ForwardMessage extends Fragment {
         msg.send("乃的Bot : @" + client.me.username() + " 已经启动 ~").html().exec();
         msg.send("别忘记发送一条信息给Bot哦 ~ Bot不能主动给乃发送信息 ~o(〃'▽'〃)o").exec();
 
-        user.point = null;
+        clearPoint(user);
         
     }
 
