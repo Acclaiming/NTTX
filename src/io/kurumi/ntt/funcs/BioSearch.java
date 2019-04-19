@@ -128,7 +128,7 @@ public class BioSearch extends Fragment {
 
                 if (cursor != -1) {
 
-                    int end = archive.bio.length() - cursor;
+                    int end = archive.bio.length();
 
                     if (cursor > 10) {
 
