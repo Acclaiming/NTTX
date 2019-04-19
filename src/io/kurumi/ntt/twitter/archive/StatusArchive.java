@@ -166,7 +166,7 @@ public class StatusArchive {
 
             StatusArchive retweeted = BotDB.getStatus(retweetedStatus);
 
-            archive.append(user().urlHtml()).append(" 转推从 " + retweeted.user().urlHtml()).append(" : ");
+            archive.append(user().urlHtml()).append(" 转推从 " + retweeted.user().urlHtml()).append(" 的 ").append(Html.a("推文",url())).append(" : ");
 
             archive.append(retweeted.toHtml(depth > 0 ? depth - 1 : depth));
 
