@@ -5,6 +5,7 @@ import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.model.request.*;
 import java.util.*;
+import cn.hutool.core.date.*;
 
 public class ForwardClient extends BotFragment {
 
@@ -44,7 +45,7 @@ public class ForwardClient extends BotFragment {
 
         } else {
             
-            new Send(this,userId,"来自 " + user.userName() + " : ",new Date(msg.message().forwardDate() == null ? msg.message().date() : msg.message().forwardDate()).toLocaleString()).html().sync();
+            new Send(this,userId,"来自 " + user.userName() + " : ", DateUtil.formatChineseDate(new Date(((long)(msg.message().forwardDate() == null ? msg.message().date() : msg.message().forwardDate())) * 1000),false)).html().sync();
             msg.forwardTo(userId);
 
         }
