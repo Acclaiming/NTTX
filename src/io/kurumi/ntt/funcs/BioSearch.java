@@ -25,7 +25,7 @@ import io.kurumi.ntt.model.request.*;
 public class BioSearch extends Fragment {
 
     public static BioSearch INSTANCE = new BioSearch();
-    
+
     @Override
     public boolean onMsg(UserData user,Msg msg) {
 
@@ -33,7 +33,7 @@ public class BioSearch extends Fragment {
 
             case "bio" : searchBio(user,msg,false);break;
             case "bioregex" : searchBio(user,msg,true);break;
-                
+
             default : return false;
 
         }
@@ -42,46 +42,46 @@ public class BioSearch extends Fragment {
 
     }
 
-   // final String POINT_NEXT_PAGE = "b|n";
+    // final String POINT_NEXT_PAGE = "b|n";
 
     void searchBio(UserData user,Msg msg,boolean useRegex) {
 
         String query = ArrayUtil.join(msg.params(),"\n");
 
         FindIterable<UserArchive> result = null;
-        
+
         long count;
 
         if (!useRegex) {
 
             count = BotDB.userArchiveCollection.count(elemMatch("bio",text(query)));
-            
+
             if (count > 0) {
-            
-            result = BotDB.userArchiveCollection.find(elemMatch("bio",text(query)));
+
+                result = BotDB.userArchiveCollection.find(elemMatch("bio",text(query)));
 
             }
-            
+
         } else {
 
             count = BotDB.userArchiveCollection.count(regex("bio",query));
 
             if (count > 0) {
-            
-            result = BotDB.userArchiveCollection.find(regex("bio",query));
+
+                result = BotDB.userArchiveCollection.find(regex("bio",query));
 
             }
-            
+
         }
 
         if (count == 0) {
-            
+
             msg.send("没有结果 (´◉.◉)").exec();
-            
+
             return;
-            
+
         }
-        
+
         msg.send("结果数量 : " + (count > 39L ? count + " (仅显示39条)" : ""),format(result.limit(39),query,useRegex)).exec();
     }
 
@@ -126,21 +126,25 @@ public class BioSearch extends Fragment {
 
                 int cursor = archive.bio.indexOf(query);
 
-                int end = archive.bio.length() - cursor;
+                if (cursor != -1) {
 
-                if (cursor > 10) {
+                    int end = archive.bio.length() - cursor;
 
-                    cursor = 10;
+                    if (cursor > 10) {
+
+                        cursor = 10;
+
+                    }
+
+                    if (end - query.length() - cursor > 11) {
+
+                        end = cursor + query.length() + 11;
+
+                    }
+
+                    page.append(HtmlUtil.escape(archive.bio.substring(cursor,end)));
 
                 }
-
-                if (end - query.length() - cursor > 11) {
-
-                    end = cursor + query.length() + 11;
-
-                }
-
-                page.append(HtmlUtil.escape(archive.bio.substring(cursor,end)));
 
 
             }
