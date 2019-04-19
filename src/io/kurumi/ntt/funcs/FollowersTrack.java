@@ -114,10 +114,11 @@ public class FollowersTrack extends Fragment {
 					SubTask.enable.remove(user.id.longValue());
 					SubTask.save();
                     SubTask.needReset.set(true);
-					SubTask.stop(user.id);
-
+					
 					msg.send("已关闭 :)").exec();
 
+                    SubTask.stop(user.id);
+                    
 				}
 
             }
@@ -133,7 +134,7 @@ public class FollowersTrack extends Fragment {
 
                     SubTask.needReset.set(true);
                     
-					msg.send("已开启 :)").exec();
+					msg.send("已开启 由于API限制 这可能有几分钟的延时 :)").exec();
 
 				}
 

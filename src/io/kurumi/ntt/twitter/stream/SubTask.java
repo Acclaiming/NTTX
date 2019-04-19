@@ -120,7 +120,7 @@ public class SubTask extends StatusAdapter {
 
 			long userId = sub.getKey();
 
-			if (enable.contains(userId)) continue;
+			if (!enable.contains(userId)) continue;
             
 			if (currentSubs.containsKey(userId)) {
 
