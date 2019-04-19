@@ -68,7 +68,7 @@ public class SubTask extends StatusAdapter {
 
         Date start = new Date();
 
-        start.setMinutes(start.getMinutes() + 5);
+        start.setMinutes(start.getMinutes() + 0);
 
 		timer.schedule(resetTask,start,5 * 60 * 1000);
 
@@ -113,6 +113,7 @@ public class SubTask extends StatusAdapter {
 
 		}
 
+
 		for (Map.Entry<Long,List<Long>> sub : newSubs.entrySet()) {
 
 			Long userId = sub.getKey();
@@ -138,7 +139,7 @@ public class SubTask extends StatusAdapter {
 				TwitterStream removed = userStream.put(userId,stream);
 				if (removed != null) removed.cleanUp();
 
-				stream.filter(new FilterQuery().count(100).follow(ArrayUtil.unWrap(sub.getValue().toArray(new Long[sub.getValue().size()]))));
+				stream.filter(new FilterQuery().follow(ArrayUtil.unWrap(sub.getValue().toArray(new Long[sub.getValue().size()]))));
 
 			}
 

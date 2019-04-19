@@ -383,6 +383,8 @@ public class UTTask extends TimerTask {
 
     public static void save() {
 
+        SubTask.needReset.set(true);
+        
         SData.setJSON("data","subscriptions",subs);
 
     }
