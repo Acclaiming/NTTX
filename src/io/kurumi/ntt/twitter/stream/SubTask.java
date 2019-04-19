@@ -72,7 +72,7 @@ public class SubTask extends StatusAdapter {
 
         start.setMinutes(start.getMinutes() + 0);
 
-		timer.schedule(resetTask,start,5 * 60 * 1000);
+		timer.schedule(resetTask,start,10 * 60 * 1000);
 
     }
 
