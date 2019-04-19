@@ -1,47 +1,31 @@
 package io.kurumi.ntt.twitter.track;
 
-import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.thread.*;
 import cn.hutool.json.*;
 import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.twitter.*;
-import io.kurumi.ntt.twitter.archive.*;
 import io.kurumi.ntt.utils.*;
 import java.util.*;
-import twitter4j.*;
-import cn.hutool.json.JSONObject;
-import io.kurumi.ntt.db.SData;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.twitter.TApi;
-import io.kurumi.ntt.twitter.TAuth;
-import io.kurumi.ntt.twitter.archive.UserArchive;
-import io.kurumi.ntt.utils.BotLog;
-import io.kurumi.ntt.utils.Html;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import twitter4j.Relationship;
-import twitter4j.ResponseList;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.User;
-import io.kurumi.ntt.Env;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
-import cn.hutool.core.thread.*;
+import twitter4j.*;
+
+import cn.hutool.json.JSONArray;
 
 public class FTTask extends TimerTask {
 
     static FTTask INSTANCE = new FTTask();
 
-    public static JSONObject enable = SData.getJSON("data","track",true);
+    public static JSONArray enable = SData.getJSONArray("data","track",true);
 
+    static {
+        
+        enable = new JSONArray(new LinkedHashSet<Long>(enable.toList(Long.class)));
+        save();
+        
+    }
+    
 	static HashMap<Long,LinkedList<Long>> frIndex = new HashMap<>();
     static HashMap<Long,LinkedList<Long>> flIndex = new HashMap<>();
 
@@ -70,7 +54,7 @@ public class FTTask extends TimerTask {
 
     public static void save() {
 
-        SData.setJSON("data","track",enable);
+        SData.setJSONArray("data","track",enable);
 
     }
 
@@ -94,11 +78,7 @@ public class FTTask extends TimerTask {
 
 		}
 
-        for (Map.Entry<String,Object> entry : enable.entrySet()) {
-
-            long userId = Long.parseLong(entry.getKey());
-
-            if (!(boolean)entry.getValue()) continue;
+        for (long userId : enable.toList(Long.class)) {
 
             startUserStackAsync(userId);
 

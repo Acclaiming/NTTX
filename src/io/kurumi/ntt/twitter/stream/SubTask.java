@@ -7,6 +7,7 @@ import io.kurumi.ntt.funcs.*;
 import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.twitter.archive.*;
+import io.kurumi.ntt.twitter.stream.*;
 import io.kurumi.ntt.twitter.track.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -14,6 +15,7 @@ import java.util.concurrent.atomic.*;
 import twitter4j.*;
 
 import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 
 public class SubTask extends StatusAdapter {
 
@@ -116,10 +118,10 @@ public class SubTask extends StatusAdapter {
 
 		for (Map.Entry<Long,List<Long>> sub : newSubs.entrySet()) {
 
-			Long userId = sub.getKey();
+			long userId = sub.getKey();
 
-			if (!enable.contains(userId)) continue;
-
+			if (enable.contains(userId)) continue;
+            
 			if (currentSubs.containsKey(userId)) {
 
 				if (currentSubs.get(userId).equals(sub.getValue())) {

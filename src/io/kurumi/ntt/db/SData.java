@@ -108,7 +108,7 @@ public class SData {
         } catch (JSONException err) {
 
             return fix ? new JSONObject() : null;
-            
+
 
         }
 
@@ -145,15 +145,25 @@ public class SData {
         if (value == null) return fix ? new JSONArray() : null;
 
 		try {
-		
-        return new JSONArray(value);
-		
+
+            return new JSONArray(value);
+
 		} catch (JSONException ex) 	{
-			
+
+            try {
+
+                JSONArray arr =  new JSONArray(new JSONArray(new JSONObject(value).keySet()).toList(Long.class));
+
+                setJSONArray(path,key,arr);
+                
+                return arr;
+                
+            } catch (JSONException exc) {}
+
 			sNC(path,key,null);
-			
+
 			return new JSONArray();
-			
+
 		}
 
     }

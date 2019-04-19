@@ -49,7 +49,7 @@ public class FollowersTrack extends Fragment {
 
         }
 
-        if (FTTask.enable.containsKey(user.id.toString())) {
+        if (FTTask.enable.contains(user.id)) {
 
             if (start) {
 
@@ -68,7 +68,7 @@ public class FollowersTrack extends Fragment {
 
             if (start) {
 
-                FTTask.enable.put(user.id.toString(),true);
+                FTTask.enable.add(user.id);
                 FTTask.save();
 
                 msg.send("已开启 :)").exec();
@@ -101,7 +101,7 @@ public class FollowersTrack extends Fragment {
 
         }
 
-        if (SubTask.enable.contains(user.id)) {
+        if (SubTask.enable.contains(user.id.longValue())) {
 
             if (start) {
 
@@ -111,7 +111,7 @@ public class FollowersTrack extends Fragment {
 
 				synchronized (SubTask.enable) {
 
-					SubTask.enable.remove(user.id);
+					SubTask.enable.remove(user.id.longValue());
 					SubTask.save();
                     SubTask.needReset.set(true);
 					SubTask.stop(user.id);
@@ -128,7 +128,7 @@ public class FollowersTrack extends Fragment {
 
 				synchronized (SubTask.enable) {
 
-					SubTask.enable.put(user.id);
+					SubTask.enable.put(user.id.longValue());
 					SubTask.save();
 
                     SubTask.needReset.set(true);
