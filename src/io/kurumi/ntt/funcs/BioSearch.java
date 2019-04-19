@@ -54,11 +54,11 @@ public class BioSearch extends Fragment {
 
         if (!useRegex) {
 
-            count = BotDB.userArchiveCollection.count(elemMatch("bio",text(query)));
+            count = BotDB.userArchiveCollection.count(regex("bio","/" + query + "/"));
 
             if (count > 0) {
 
-                result = BotDB.userArchiveCollection.find(elemMatch("bio",text(query)));
+                result = BotDB.userArchiveCollection.find(regex("bio","/" + query + "/"));
 
             }
 
