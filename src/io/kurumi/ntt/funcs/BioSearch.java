@@ -31,7 +31,7 @@ public class BioSearch extends Fragment {
 
         switch (T.checkCommand(msg)) {
 
-            case "biofind" : searchBio(user,msg,false);break;
+            case "bio" : searchBio(user,msg,false);break;
             case "bioregex" : searchBio(user,msg,true);break;
                 
             default : return false;

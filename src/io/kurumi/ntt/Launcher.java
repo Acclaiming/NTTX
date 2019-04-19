@@ -233,7 +233,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 					"/hide 对BOT其他用户隐藏账号更改 (内容见上/sub)",
 					"/unhide 取消隐藏 以上",
 					"/status <推文链接|ID> 推文存档/查看",
-                    "/biosearch <文本> BIO搜索 (仅已存档的用户 显示39条记录)",
+                    "/bio <文本> BIO搜索 (仅已存档的用户 显示39条记录)",
                     "/bioregex <表达式> BIO正则搜索 以上",
                     "/chatbot 新建一个转发私聊的BOT (BotToken 需要在 @BotFather 申请。)",
                     "/rmchatbot 移除转发BOT",
