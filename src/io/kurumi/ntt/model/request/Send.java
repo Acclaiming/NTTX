@@ -289,7 +289,7 @@ public class Send extends AbstractSend<Send> {
                     
                     char[] subed = new char[arr.length - index];
                    
-                    ArrayUtil.copy(chars,index,subed,0,subed.length);
+                    System.arraycopy(chars,index,subed,0,subed.length);
 
                     request.setText(String.valueOf(subed));
                     
