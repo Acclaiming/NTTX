@@ -276,7 +276,7 @@ public class Send extends AbstractSend<Send> {
             int index = chars.length;
 
             boolean sdd = false;
-            
+           
             for (Character c : ArrayUtil.reverse(chars)) {
 
                 index --;
@@ -299,8 +299,6 @@ public class Send extends AbstractSend<Send> {
 
                 }
 
-                break;
-
             }
 
             if (!sdd) {
@@ -315,7 +313,7 @@ public class Send extends AbstractSend<Send> {
 
                 char[] subed = new char[arr.length - 4096];
 
-                ArrayUtil.copy(chars,4096,subed,0,subed.length);
+                ArrayUtil.copy(chars,4095,subed,0,subed.length);
 
                 request.setText(String.valueOf(subed));
 
