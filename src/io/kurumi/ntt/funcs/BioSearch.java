@@ -57,8 +57,6 @@ public class BioSearch extends Fragment {
 
         }
 
-
-
         if (count == 0) {
 
             msg.send("没有结果 (´◉.◉)").exec();
@@ -90,10 +88,12 @@ public class BioSearch extends Fragment {
             page.append(" :").append("\n\n");
 
             page.append(HtmlUtil.escape(archive.bio));
+            
+            page.append("\n\n---------------------------------------\n\n");
+            
 
         }
 
-        page.append("\n\n---------------------------------------\n\n");
         
         return page.toString();
 
