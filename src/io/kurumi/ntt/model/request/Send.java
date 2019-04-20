@@ -269,7 +269,7 @@ public class Send extends AbstractSend<Send> {
         
         char[] arr = request.getText().toCharArray();
 
-        while (arr.length > 4096) {
+        w:while (arr.length > 4096) {
             
             Character[] chars = (Character[])ArrayUtil.sub(ArrayUtil.wrap((Object)arr),0,4096);
             
@@ -293,7 +293,7 @@ public class Send extends AbstractSend<Send> {
 
                     request.setText(String.valueOf(subed));
                     
-                    continue;
+                    continue w;
                     
                 }
                 
