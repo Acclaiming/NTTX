@@ -31,8 +31,7 @@ public class BioSearch extends Fragment {
 
         switch (T.checkCommand(msg)) {
 
-            case "bio" : searchBio(user,msg,false);break;
-            case "bioregex" : searchBio(user,msg,true);break;
+            case "bio" : searchBio(user,msg);break;
 
             default : return false;
 
@@ -44,35 +43,21 @@ public class BioSearch extends Fragment {
 
     // final String POINT_NEXT_PAGE = "b|n";
 
-    void searchBio(UserData user,Msg msg,boolean useRegex) {
+    void searchBio(UserData user,Msg msg) {
 
         String query = ArrayUtil.join(msg.params(),"\n");
 
         FindIterable<UserArchive> result = null;
 
-        long count;
+        long count = BotDB.userArchiveCollection.count(regex("bio",query));
 
-        if (!useRegex) {
+        if (count > 0) {
 
-            count = BotDB.userArchiveCollection.count(regex("bio","/" + query + "/"));
-
-            if (count > 0) {
-
-                result = BotDB.userArchiveCollection.find(regex("bio","/" + query + "/"));
-
-            }
-
-        } else {
-
-            count = BotDB.userArchiveCollection.count(regex("bio",query));
-
-            if (count > 0) {
-
-                result = BotDB.userArchiveCollection.find(regex("bio",query));
-
-            }
+            result = BotDB.userArchiveCollection.find(regex("bio",query));
 
         }
+
+
 
         if (count == 0) {
 
@@ -82,10 +67,10 @@ public class BioSearch extends Fragment {
 
         }
 
-        msg.send("结果数量 : " + (count > 39L ? count + " (仅显示39条)" : ""),format(result.limit(39),query,useRegex)).exec();
+        msg.send("结果数量 : " + (count > 39L ? count + " (仅显示39条)" : count),format(result.limit(39),query)).html().exec();
     }
 
-    String format(FindIterable<UserArchive> result,String query,boolean useRegex)  {
+    String format(FindIterable<UserArchive> result,String query)  {
 
         StringBuilder page = new StringBuilder();
 
@@ -93,11 +78,20 @@ public class BioSearch extends Fragment {
 
             page.append(archive.urlHtml()).append(" :").append("\n\n");
 
-            if (!useRegex) {
 
-                int cursor = archive.bio.indexOf(query);
+            List<String> match  = ReUtil.findAllGroup0(query,archive.bio);
 
-                int end = archive.bio.length() - cursor;
+            if (match.size() > 0) {
+
+                query = match.get(0);
+
+            }
+
+            int cursor = archive.bio.indexOf(query);
+
+            if (cursor != -1) {
+
+                int end = archive.bio.length();
 
                 if (cursor > 10) {
 
@@ -113,45 +107,14 @@ public class BioSearch extends Fragment {
 
                 page.append(HtmlUtil.escape(archive.bio.substring(cursor,end)));
 
-
-            } else {
-
-                List<String> match  = ReUtil.findAllGroup0(query,archive.bio);
-
-                if (match.size() > 0) {
-
-                    query = match.get(0);
-
-                }
-
-                int cursor = archive.bio.indexOf(query);
-
-                if (cursor != -1) {
-
-                    int end = archive.bio.length();
-
-                    if (cursor > 10) {
-
-                        cursor = 10;
-
-                    }
-
-                    if (end - query.length() - cursor > 11) {
-
-                        end = cursor + query.length() + 11;
-
-                    }
-
-                    page.append(HtmlUtil.escape(archive.bio.substring(cursor,end)));
-
-                }
-
-
             }
 
-            page.append("---------------------------------------\n");
 
         }
+
+        page.append("\n\n---------------------------------------\n\n");
+
+        
 
         return page.toString();
 
