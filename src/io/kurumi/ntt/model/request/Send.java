@@ -83,7 +83,7 @@ public class Send extends AbstractSend<Send> {
     public Send replyTo(Msg msg) {
 
 		if (msg == null) return this;
-		
+
         replyToMessageId(msg.messageId());
 
         return this;
@@ -155,11 +155,11 @@ public class Send extends AbstractSend<Send> {
         }
 
     }
-    
+
     public void failed() {
-        
+
         failed(5000);
-        
+
     }
 
     public void failed(final long delay) {
@@ -187,7 +187,7 @@ public class Send extends AbstractSend<Send> {
             });
 
     }
-	
+
 	public void failedWith() {
 
         failedWith(5000);
@@ -219,7 +219,7 @@ public class Send extends AbstractSend<Send> {
             });
 
     }
-    
+
     public void cancel() {
 
         cancel(5000);
@@ -251,9 +251,9 @@ public class Send extends AbstractSend<Send> {
             });
 
     }
-    
-    
-	
+
+
+
     public Msg send() {
 
         SendResponse resp = sync();
@@ -266,56 +266,63 @@ public class Send extends AbstractSend<Send> {
 
     @Override
     public void exec() {
-        
+
         char[] arr = request.getText().toCharArray();
 
-        w:while (arr.length > 4096) {
-            
+        while (arr.length > 4096) {
+
             Character[] chars = (Character[])ArrayUtil.sub(ArrayUtil.wrap((Object)arr),0,4096);
-            
+
             int index = chars.length;
+
+            boolean sdd = false;
             
             for (Character c : ArrayUtil.reverse(chars)) {
-                
+
                 index --;
-                
+
                 if (c == '\n') {
-                    
+
                     char[] send = new char[index];
-                    
+
                     ArrayUtil.copy(arr,send,index);
 
                     fork(String.valueOf(send)).exec();
-                    
-                    char[] subed = new char[arr.length - index - 1];
-                   
+
+                    char[] subed = new char[arr.length - index - 1]; 
+
                     ArrayUtil.copy(arr,index,subed,0,subed.length);
 
                     request.setText(String.valueOf(subed));
-                    
-                    continue w;
-                    
+
+                    sdd = true;
+
                 }
-                
+
+                break;
+
             }
-            
-            // 没有换行的情况
-            
-            char[] send = new char[4096];
 
-            ArrayUtil.copy(arr,send,4096);
+            if (!sdd) {
 
-            fork(String.valueOf(send)).exec();
+                // 没有换行的情况
 
-            char[] subed = new char[arr.length - 4096];
+                char[] send = new char[4096];
 
-            ArrayUtil.copy(chars,4095,subed,0,subed.length);
+                ArrayUtil.copy(arr,send,4096);
 
-            request.setText(String.valueOf(subed));
+                fork(String.valueOf(send)).exec();
 
+                char[] subed = new char[arr.length - 4096];
+
+                ArrayUtil.copy(chars,4096,subed,0,subed.length);
+
+                request.setText(String.valueOf(subed));
+
+            }
 
         }
-        
+
         super.exec();
     }
 
@@ -323,40 +330,40 @@ public class Send extends AbstractSend<Send> {
     public SendResponse sync(Exception track) {
 
         try {
-        
-        SendResponse resp = fragment.bot().execute(request);
 
-        if (!resp.isOk()) {
+            SendResponse resp = fragment.bot().execute(request);
 
-			BotLog.info("消息发送失败 " + resp.errorCode() + " : " + resp.description(),track);
+            if (!resp.isOk()) {
 
-        }
+                BotLog.info("消息发送失败 " + resp.errorCode() + " : " + resp.description(),track);
 
-        return resp;
-        
+            }
+
+            return resp;
+
 
         } catch (Exception ex) {
 
             return null;
 
         }
-        
+
 
     }
 
 
     public Send fork(String... msg) {
-        
+
         Send send = new Send(null,fragment,request.getChatId(),msg);
 
         if (request.mode != null) {
-            
+
             send.request.parseMode(request.mode);
-            
+
         }
-        
+
         send.request.disableWebPagePreview(request.disablePreview);
-        
+
         return send;
 
     }
@@ -367,24 +374,24 @@ public class Send extends AbstractSend<Send> {
         //     System.out.println(request.toWebhookResponse());
 
         try {
-        
-        SendResponse resp = fragment.bot().execute(request);
 
-        if (!resp.isOk()) {
+            SendResponse resp = fragment.bot().execute(request);
 
-            BotLog.infoWithStack("消息发送失败 " + resp.errorCode() + " : " + resp.description());
+            if (!resp.isOk()) {
 
-        }
+                BotLog.infoWithStack("消息发送失败 " + resp.errorCode() + " : " + resp.description());
 
-        return resp;
-        
+            }
+
+            return resp;
+
 
         } catch (Exception ex) {
 
             return null;
 
         }
-        
+
 
     }
 
