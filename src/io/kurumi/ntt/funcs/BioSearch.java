@@ -67,7 +67,8 @@ public class BioSearch extends Fragment {
 
         }
 
-        msg.send("结果数量 : " + (count > 10L ? count + "条 (仅显示100条)" : count + " 条),format(result.limit(100),query)).html().exec();
+        msg.send("结果数量 : " + (count > 10L ? count + "条 (仅显示100条)" : count + " 条"),format(result.limit(100),query)).html().exec();
+        
     }
 
     String format(FindIterable<UserArchive> result,String query)  {
