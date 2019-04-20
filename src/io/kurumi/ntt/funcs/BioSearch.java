@@ -67,7 +67,7 @@ public class BioSearch extends Fragment {
 
         }
 
-        msg.send("结果数量 : " + (count > 39L ? count + " (仅显示39条)" : count),format(result.limit(39),query)).html().exec();
+        msg.send("结果数量 : " + (count > 10L ? count + "条 (仅显示100条)" : count + " 条),format(result.limit(100),query)).html().exec();
     }
 
     String format(FindIterable<UserArchive> result,String query)  {
@@ -86,39 +86,14 @@ public class BioSearch extends Fragment {
 
             }
 
-            int cursor = archive.bio.indexOf(query);
+            page.append(" :").append("\n\n");
 
-            if (cursor != -1) {
-                
-                page.append(" :").append("\n\n");
-                
-                int end = archive.bio.length();
-
-                if (cursor > 10) {
-
-                    cursor = 10;
-
-                }
-
-                if (end - query.length() - cursor > 11) {
-
-                    end = cursor + query.length() + 11;
-
-                }
-
-                page.append(HtmlUtil.escape(archive.bio.substring(cursor,end)));
-
-            }
-            
-            page.append("\n\n---------------------------------------\n\n");
-            
-
+            page.append(HtmlUtil.escape(archive.bio));
 
         }
 
+        page.append("\n\n---------------------------------------\n\n");
         
-        
-
         return page.toString();
 
     }
