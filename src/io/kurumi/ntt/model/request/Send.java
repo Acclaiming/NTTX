@@ -296,6 +296,8 @@ public class Send extends AbstractSend<Send> {
                     request.setText(String.valueOf(subed));
 
                     sdd = true;
+                    
+                    break;
 
                 }
 
