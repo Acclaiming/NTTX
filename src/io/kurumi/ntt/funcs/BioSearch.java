@@ -76,8 +76,7 @@ public class BioSearch extends Fragment {
 
         for (UserArchive archive : result) {
 
-            page.append(archive.urlHtml()).append(" :").append("\n\n");
-
+            page.append(archive.urlHtml());
 
             List<String> match  = ReUtil.findAllGroup0(query,archive.bio);
 
@@ -90,7 +89,9 @@ public class BioSearch extends Fragment {
             int cursor = archive.bio.indexOf(query);
 
             if (cursor != -1) {
-
+                
+                page.append(" :").append("\n\n");
+                
                 int end = archive.bio.length();
 
                 if (cursor > 10) {
@@ -108,12 +109,14 @@ public class BioSearch extends Fragment {
                 page.append(HtmlUtil.escape(archive.bio.substring(cursor,end)));
 
             }
+            
+            page.append("\n\n---------------------------------------\n\n");
+            
 
 
         }
 
-        page.append("\n\n---------------------------------------\n\n");
-
+        
         
 
         return page.toString();
