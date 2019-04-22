@@ -60,7 +60,7 @@ public class BotDB {
 
     public static UserData getUserData(String userName) {
 
-        return userDataCollection.find(eq("userName",userName)).iterator().tryNext();
+        return userDataCollection.find(eq("userName",userName)).first();
 
     }
 
@@ -72,7 +72,7 @@ public class BotDB {
 
             if (userDataIndex.containsKey(userId)) return userDataIndex.get(userId);
 
-            UserData user =  userDataCollection.find(eq("_id",userId)).iterator().tryNext();
+            UserData user =  userDataCollection.find(eq("_id",userId)).first();
 
             if (user != null) return null;
 
@@ -100,7 +100,7 @@ public class BotDB {
             
         }
         
-       UserData userData =  userDataCollection.find(eq("_id",user.id().longValue())).iterator().tryNext();
+       UserData userData =  userDataCollection.find(eq("_id",user.id().longValue())).first();
 
        if (user != null) {
            
@@ -136,7 +136,7 @@ public class BotDB {
 
     public static StatusArchive getStatus(long id) {
 
-        return statusArchiveCollection.find(eq("_id",id)).iterator().tryNext();
+        return statusArchiveCollection.find(eq("_id",id)).first();
 
     }
 
@@ -172,13 +172,13 @@ public class BotDB {
 
     public static UserArchive getUser(long id) {
 
-        return userArchiveCollection.find(eq("_id",id)).iterator().tryNext();
+        return userArchiveCollection.find(eq("_id",id)).first();
 
     }
 
     public static UserArchive getUser(String screenName) {
 
-        return userArchiveCollection.find(eq("screenName",screenName)).iterator().tryNext();
+        return userArchiveCollection.find(eq("screenName",screenName)).first();
 
     }
 
@@ -272,7 +272,7 @@ public class BotDB {
 
     public static List<Long> getFollowers(long accountId) {
 
-        IdsList index = followersCollection.find(eq("_id",accountId)).iterator().tryNext();
+        IdsList index = followersCollection.find(eq("_id",accountId)).first();
 
         if (index == null) return null;
         
@@ -318,7 +318,7 @@ public class BotDB {
     
     public static List<Long> getFriends(long accountId) {
 
-        IdsList index = friendsCollection.find(eq("_id",accountId)).iterator().tryNext();
+        IdsList index = friendsCollection.find(eq("_id",accountId)).first();
 
         if (index == null) return null;
 
