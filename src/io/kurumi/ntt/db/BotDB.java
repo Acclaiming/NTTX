@@ -84,33 +84,43 @@ public class BotDB {
         
     }
 
-    public static UserData getUserData(com.pengrad.telegrambot.model.User user) {
+    public synchronized static UserData getUserData(com.pengrad.telegrambot.model.User user) {
 
         if (user == null) return null;
 
-        UserData userData = getUserData(user.id().longValue());
-
-        if (userData == null) {
-
-            synchronized (userDataIndex) {
-
-                if (userDataIndex.containsKey(user.id().longValue())) return userDataIndex.get(user.id().longValue());
-
-                userData = new UserData();
-                userData.id = user.id().longValue();
-                userData.read(user);
-
-                userDataIndex.put(user.id().longValue(),userData);
-
-                userDataCollection.insertOne(userData);
-
-            }
-
-        } else {
-
+        if (userDataIndex.containsKey(user.id().longValue())) {
+            
+            UserData userData = userDataIndex.get(user.id().longValue());
+            
             userData.read(user);
-
+            
+            userDataIndex.put(userData.id,userData);
+            
+            return userData;
+            
         }
+        
+       UserData userData =  userDataCollection.find(eq("_id",user.id().longValue())).iterator().tryNext();
+
+       if (user != null) {
+           
+           userData = new UserData();
+           
+           userData.id = user.id().longValue();
+           userData.read(user);
+
+           userDataIndex.put(user.id().longValue(),userData);
+
+           userDataCollection.insertOne(userData);
+           
+           
+       } else {
+           
+           userData.read(user);
+           
+           userDataCollection.replaceOne(eq("_id",userData.id),userData);
+           
+       }
 
         return userData;
 
