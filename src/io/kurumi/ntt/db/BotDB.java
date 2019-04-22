@@ -102,7 +102,7 @@ public class BotDB {
         
        UserData userData =  userDataCollection.find(eq("_id",user.id().longValue())).first();
 
-       if (user == null) {
+       if (userData == null) {
            
            userData = new UserData();
            
