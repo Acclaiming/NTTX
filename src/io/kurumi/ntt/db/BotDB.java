@@ -41,6 +41,9 @@ public class BotDB {
 
         userArchiveCollection = db.getCollection("UserArchive",UserArchive.class);
 
+        followersCollection = db.getCollection("Followers",IdsList.class);
+        friendsCollection = db.getCollection("Friends",IdsList.class);
+        
         // statusArchiveCollection.createIndex(Indexes.compoundIndex();
 
     }
