@@ -16,37 +16,37 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TAuth extends JSONObject {
 
     public static JSONObject auth = SData.getJSON("data","auth",true);
-    
+
 	public static boolean exists(Long id) {
-        
+
 		return auth.containsKey(id.toString());
-		
+
 	}
-    
+
     public static boolean avilable(Long id) {
-        
-       return exists(id) && get(id).refresh();
-        
+
+        return exists(id) && get(id).refresh();
+
     }
-	
+
 	public static TAuth get(Long id) {
-		
+
 		if (exists(id)) {
-			
+
 			return new TAuth(auth.getJSONObject(id.toString()));
-			 
+
 		}
-		
+
 		return null;
-		
+
 	}
-    
+
     public static void saveAll() {
-        
+
         SData.setJSON("data","auth",auth);
-        
+
     }
-	
+
     private String apiToken;
     private String apiSecToken;
     private String accToken;
@@ -67,14 +67,14 @@ public class TAuth extends JSONObject {
 
         putAll(json);
 
-        accountId = json.getLong("accountId", -1L);
+        accountId = json.getLong("accountId",-1L);
         screenName = json.getStr("screenName");
         name = json.getStr("name");
 
         email = json.getStr("email");
     }
 
-    public TAuth(String apiToken, String apiSecToken, String accToken, String accSecToken) {
+    public TAuth(String apiToken,String apiSecToken,String accToken,String accSecToken) {
         this.apiToken = apiToken;
         this.apiSecToken = apiSecToken;
         this.accToken = accToken;
@@ -109,15 +109,15 @@ public class TAuth extends JSONObject {
             screenName = thisAcc.getScreenName();
             name = thisAcc.getName();
             email = thisAcc.getEmail();
-            
+
             save();
-            
+
             return true;
 
         } catch (TwitterException e) {
-            
-            
-            
+
+
+
         }
 
         return false;
@@ -129,7 +129,7 @@ public class TAuth extends JSONObject {
         return new TwitterFactory(createConfig()).getInstance();
 
     }
-    
+
     public AsyncTwitter createAsyncApi() {
 
         return new AsyncTwitterFactory(createConfig()).getInstance();
@@ -150,18 +150,17 @@ public class TAuth extends JSONObject {
 
     public JSONObject save() {
 
-      
-            put("apiToken", apiToken);
-            put("apiSecToken", apiSecToken);
-            put("accToken", accToken);
-            put("accSecToken", accSecToken);
-            put("accountId", accountId);
-            put("screenName", screenName);
-            put("name", name);
-            put("email", email);
+        put("apiToken",apiToken);
+        put("apiSecToken",apiSecToken);
+        put("accToken",accToken);
+        put("accSecToken",accSecToken);
+        put("accountId",accountId);
+        put("screenName",screenName);
+        put("name",name);
+        put("email",email);
 
-            return this;
-            
+        return this;
+
     }
 
     @Override

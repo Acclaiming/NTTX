@@ -20,19 +20,11 @@ public class FTTask extends TimerTask {
     public static JSONArray enable = SData.getJSONArray("data","track",true);
 
     static {
-        
+
         enable = new JSONArray(new LinkedHashSet<Long>(enable.toList(Long.class)));
         save();
-        
-    }
-    
-	static HashMap<Long,LinkedList<Long>> frIndex = new HashMap<>();
-    static HashMap<Long,LinkedList<Long>> flIndex = new HashMap<>();
 
-	static HashMap<Long,LinkedList<Long>> frSubIndex = new HashMap<>();
-    static HashMap<Long,LinkedList<Long>> flSubIndex = new HashMap<>();
-    static HashMap<Long,LinkedList<Long>> frSubIndexC = new HashMap<>();
-    static HashMap<Long,LinkedList<Long>> flSubIndexC  = new HashMap<>();
+    }
 
     static Timer timer;
 
@@ -67,49 +59,11 @@ public class FTTask extends TimerTask {
 
 		}
 
-		synchronized (INSTANCE) {
-
-            frSubIndex = frSubIndexC;
-            frSubIndexC = new HashMap<>();
-
-            flSubIndex = flSubIndexC;
-            flSubIndexC = new HashMap<>();
-
-
-		}
-
         for (long userId : enable.toList(Long.class)) {
 
             startUserStackAsync(userId);
 
         }
-
-        userTrackPool.execute(new Runnable() {
-
-                @Override
-                public void run() {
-
-					running.incrementAndGet();
-
-					while (running.get() != 1) {
-
-						ThreadUtil.sleep(1000);
-
-					}
-
-                    synchronized (UTTask.pedding) {
-
-                        UTTask.pedding.addAll(pedding);
-                        pedding.clear();
-
-                    }
-
-					running.decrementAndGet();
-
-
-                }
-
-            });
 
     }
 
@@ -143,7 +97,6 @@ public class FTTask extends TimerTask {
 
     void startUserStack(Long userId) {
 
-
         if (!TAuth.avilable(userId)) {
 
             enable.remove(userId.toString());
@@ -158,48 +111,33 @@ public class FTTask extends TimerTask {
 
         try {
 
-
             User me = api.verifyCredentials();
 
             if (me == null) return;
 
+            long accountId = api.getId();
+
             BotDB.saveUser(me);
 
-            LinkedList<Long> flLast = flIndex.containsKey(api.getId()) ? flIndex.get(api.getId()) : null;
+            List<Long> flLast = BotDB.getFollowers(accountId);
 
-            LinkedList<Long> flLatest = TApi.getAllFoIDs(api,api.getId());
+            List<Long> flLatest = TApi.getAllFoIDs(api,accountId);
 
-            flIndex.put(api.getId(),flLatest);
+            BotDB.saveFollowers(accountId,flLatest);
 
-			synchronized (INSTANCE) {
+            for (long id : flLatest) {
 
-                for (long id : flLatest) {
+                if (flLast != null) {
 
-                    LinkedList<Long> subIndex = flSubIndexC.get(id);
+                    if (!flLast.remove(id)) {
 
-                    if (subIndex == null) {
-
-                        subIndex = new LinkedList<>();
-
-                    }
-
-                    subIndex.add(userId);
-
-                    flSubIndexC.put(id,subIndex);
-
-                    if (flLast != null) {
-
-                        if (!flLast.remove(id)) {
-
-                            newFollower(userId,api,id);
-
-                        }
+                        newFollower(userId,api,id);
 
                     }
 
                 }
 
-			}
+            }
 
             if (flLast != null && flLast.size() > 0) {
 
@@ -213,63 +151,10 @@ public class FTTask extends TimerTask {
 
             }
 
-			LinkedList<Long> allFr = TApi.getAllFrIDs(api,api.getId());
+			LinkedList<Long> allFr = TApi.getAllFrIDs(api,accountId);
 
-			frIndex.put(api.getId(),allFr);
-
-            for (long id : allFr) {
-
-                LinkedList<Long> subIndex = frSubIndexC.get(id);
-
-                if (subIndex == null) {
-
-                    subIndex = new LinkedList<>();
-
-                }
-
-                subIndex.add(userId);
-
-                frSubIndexC.put(id,subIndex);
-
-            }
-
-            pedding.addAll(allFr);
-            pedding.addAll(flLatest);
-
-			/* 
-
-             if (pedding.size() > 10000) {
-
-             pedding = pedding.subList(0,10000);
-
-             }
-
-             while (pedding.size() > 0) {
-
-             List<Long> target;
-
-             if (pedding.size() > 100) {
-
-             target = pedding.subList(0,100);
-
-             pedding = pedding.subList(99,pedding.size());
-
-             } else {
-
-             target = pedding;
-
-             pedding.clear();
-
-             }
-
-             ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
-
-             for (User tuser : result) UserArchive.saveCache(tuser);
-
-             }
-
-			 */
-
+            BotDB.saveFriends(accountId,allFr);
+            
         } catch (TwitterException e) {
 
             if (e.getErrorCode() == 326) {
@@ -390,11 +275,11 @@ public class FTTask extends TimerTask {
 
             if (ship.isSourceBlockingTarget()) {
 
-                new Send(userId,TApi.formatUserNameHtml(follower) + " 取关并屏蔽了你 :)").enableLinkPreview().html().exec();
+                new Send(userId,"关注乃的 " + TApi.formatUserNameHtml(follower) + " 屏蔽了你 :)").enableLinkPreview().html().exec();
 
             } else if (follower.getFriendsCount() == 0) {
 
-                new Send(userId,TApi.formatUserNameHtml(follower) + " 取关了你，但对方关注人数为空，可能是账号异常 :)").enableLinkPreview().html().exec();
+                new Send(userId,TApi.formatUserNameHtml(follower) + " 取关了你，且关注人数为空 :)").enableLinkPreview().html().exec();
 
             } else {
 
@@ -406,11 +291,11 @@ public class FTTask extends TimerTask {
 
             if (BotDB.userExists(id)) {
 
-                new Send(userId,BotDB.getUser(id).urlHtml() + " 取关了你 , 因为该账号已经不存在了 :(").enableLinkPreview().html().exec();
+                new Send(userId,"关注乃的 " + BotDB.getUser(id).urlHtml() + " 的账号已经不存在了 :(").enableLinkPreview().html().exec();
 
             } else {
 
-                new Send(userId,"用户 (" + id + ") 取关了你 , 因为该账号已经不存在了 :(").enableLinkPreview().html().exec();
+                new Send(userId,"关注你的未记录用户 (" + id + ") 的账号已经不存在了 :(").enableLinkPreview().html().exec();
 
             }
 

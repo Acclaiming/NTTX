@@ -25,20 +25,21 @@ import twitter4j.User;
 import io.kurumi.ntt.funcs.HideMe;
 import io.kurumi.ntt.db.BotDB;
 import io.kurumi.ntt.twitter.stream.SubTask;
+import io.kurumi.ntt.funcs.*;
 
 public class UTTask extends TimerTask {
 
     static UTTask INSTANCE = new UTTask();
     static Timer timer;
 
-	static LinkedHashSet<Long> pedding = new LinkedHashSet<>();
+	private static LinkedHashSet<Long> pedding = new LinkedHashSet<>();
 
     public static void start() {
 
         stop();
 
         timer = new Timer("NTT Twitter User Track Task");
-        timer.scheduleAtFixedRate(INSTANCE,new Date(),1 * 60 * 1000);
+        timer.schedule(INSTANCE,new Date(),5 * 60 * 1000);
 
     }
 
@@ -59,6 +60,16 @@ public class UTTask extends TimerTask {
 
         if (indexG == 15) {
 
+            for (long id : FTTask.enable.toList(Long.class)) {
+
+                List<Long> followers = BotDB.getFollowers(id);
+                List<Long> friends = BotDB.getFriends(id);
+
+                if (followers != null) pedding.addAll(followers);
+                if (friends != null) pedding.addAll(friends);
+
+            }
+            
             indexG = 0;
 
             useH.clear();
@@ -81,6 +92,8 @@ public class UTTask extends TimerTask {
 			}
 
 		}
+        
+ 
 
         boolean finished = false;
 
@@ -255,15 +268,8 @@ public class UTTask extends TimerTask {
 
 		LinkedList<Long> subD = new LinkedList<>();
 
-		LinkedList<Long> subL;
-		LinkedList<Long> subR;
-
-		synchronized (FTTask.INSTANCE) {
-
-			subL = FTTask.flSubIndex.get(user.id);
-			subR = FTTask.frSubIndex.get(user.id);
-
-		}
+		List<Long> subL = BotDB.getOriginFollowers(user.id);
+		List<Long> subR = BotDB.getOriginFriends(user.id);
 
 		if (subL != null) subA.addAll(subL);
 		if (subR != null) subA.addAll(subR);
