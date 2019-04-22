@@ -40,7 +40,7 @@ public class BlockList extends Fragment {
 
             msg.sendUpdatingFile();
             
-            bot().execute(new SendDocument(msg.chatId(),ArrayUtil.join(ids,"\n")).fileName(TAuth.get(user.id).accountId  + "-" + System.currentTimeMillis() + ".csv"));
+            bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids,"\n"))).fileName(TAuth.get(user.id).accountId  + "-" + System.currentTimeMillis() + ".csv"));
             
         } catch (TwitterException e) {
             
