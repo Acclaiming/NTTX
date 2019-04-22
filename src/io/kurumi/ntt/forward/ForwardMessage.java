@@ -11,21 +11,27 @@ import java.util.*;
 public class ForwardMessage extends Fragment {
 
     public static ForwardMessage INSTANCE = new ForwardMessage();
-    
+
     public static JSONObject bots = SData.getJSON("data","chat_bot",true);
 
     public static void start() {
-        
-        for (Map.Entry<String,Object> bot : bots.entrySet()) {
-            
-            String token = (String)bot.getValue();
-            
-            ForwardClient client = new ForwardClient(BotDB.getUserData(Long.parseLong(bot.getKey())),token);
 
-            client.silentStart();
-            
+        for (Map.Entry<String,Object> bot : bots.entrySet()) {
+
+            String token = (String)bot.getValue();
+
+            UserData user = BotDB.getUserData(Long.parseLong(bot.getKey()));
+
+            if (user != null) {
+
+                ForwardClient client = new ForwardClient(user,token);
+                
+                client.silentStart();
+
+            }
+
         }
-        
+
     }
 
     public static void save() {
@@ -62,18 +68,18 @@ public class ForwardMessage extends Fragment {
             return;
 
         }
-        
+
         if (msg.isPrivate())  {
 
-        msg.send("这个功能可以创建一个转发所有私聊到乃的BOT ~o(〃'▽'〃)o").exec();
-        msg.send("现在输入 BotToken 这需要在 @BotFather 申请 ~ 或者使用 /cancel 取消设置。").exec();
+            msg.send("这个功能可以创建一个转发所有私聊到乃的BOT ~o(〃'▽'〃)o").exec();
+            msg.send("现在输入 BotToken 这需要在 @BotFather 申请 ~ 或者使用 /cancel 取消设置。").exec();
 
-        setPoint(user,POINT_INPUT_TOKEN);
-        
+            setPoint(user,POINT_INPUT_TOKEN);
+
         } else {
-            
+
             msg.send("请使用私聊 :)").publicFailed();
-            
+
         }
 
     }
@@ -124,7 +130,7 @@ public class ForwardMessage extends Fragment {
         msg.send("别忘记发送一条信息给Bot哦 ~ Bot不能主动给乃发送信息 ~o(〃'▽'〃)o").exec();
 
         clearPoint(user);
-        
+
     }
 
     void removeChatBot(UserData user,Msg msg) {
