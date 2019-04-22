@@ -56,6 +56,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         
         addFragment(ForwardMessage.INSTANCE);
         
+        addFragment(BlockList.INSTANCE);
+        
       //  addFragment(BioSearch.INSTANCE);
 
     }

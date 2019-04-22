@@ -73,7 +73,7 @@ public class FTTask extends TimerTask {
 
 	AtomicInteger running = new AtomicInteger();
 
-    private void startUserStackAsync(final long userId) {
+    void startUserStackAsync(final long userId) {
 
         userTrackPool.execute(new Runnable() {
 
