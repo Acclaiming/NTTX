@@ -1,15 +1,17 @@
 package com.pengrad.telegrambot.impl;
 
-import com.google.gson.Gson;
-import com.pengrad.telegrambot.Callback;
-import com.pengrad.telegrambot.request.BaseRequest;
-import com.pengrad.telegrambot.response.BaseResponse;
+import cn.hutool.core.net.*;
+import com.google.gson.*;
+import com.pengrad.telegrambot.*;
+import com.pengrad.telegrambot.request.*;
+import com.pengrad.telegrambot.response.*;
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.*;
 import okhttp3.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import com.pengrad.telegrambot.Callback;
+import cn.hutool.core.util.*;
 
 /**
  * stas
@@ -22,35 +24,35 @@ public class TelegramBotClient {
     private final Gson gson;
     private final String baseUrl;
 
-    public TelegramBotClient(OkHttpClient client, Gson gson, String baseUrl) {
+    public TelegramBotClient(OkHttpClient client,Gson gson,String baseUrl) {
         this.client = client;
         this.gson = gson;
         this.baseUrl = baseUrl;
         this.clientWithTimeout = client;
     }
 
-    public <T extends BaseRequest, R extends BaseResponse> void send(final T request, final Callback<T, R> callback) {
+    public <T extends BaseRequest, R extends BaseResponse> void send(final T request,final Callback<T, R> callback) {
         OkHttpClient client = getOkHttpClient(request);
         client.newCall(createRequest(request)).enqueue(new okhttp3.Callback() {
-            @Override
-            public void onResponse(Call call, Response response) {
-                try {
-                    
-                    String str = response.body().string();
-                    R result = gson.fromJson(str, request.getResponseType());
-                    result.source = str;
-                    callback.onResponse(request, result);
-                } catch (Exception e) {
-                    IOException ioEx = e instanceof IOException ? (IOException) e : new IOException(e);
-                    callback.onFailure(request, ioEx);
-                }
-            }
+                @Override
+                public void onResponse(Call call,Response response) {
+                    try {
 
-            @Override
-            public void onFailure(Call call, IOException e) {
-                callback.onFailure(request, e);
-            }
-        });
+                        String str = response.body().string();
+                        R result = gson.fromJson(str,request.getResponseType());
+                        result.source = str;
+                        callback.onResponse(request,result);
+                    } catch (Exception e) {
+                        IOException ioEx = e instanceof IOException ? (IOException) e : new IOException(e);
+                        callback.onFailure(request,ioEx);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call call,IOException e) {
+                    callback.onFailure(request,e);
+                }
+            });
     }
 
     public <T extends BaseRequest, R extends BaseResponse> R send(final BaseRequest<T, R> request) {
@@ -58,9 +60,9 @@ public class TelegramBotClient {
             OkHttpClient client = getOkHttpClient(request);
             Response response = client.newCall(createRequest(request)).execute();
             String str = response.body().string();
-            R result = gson.fromJson(str, request.getResponseType());
+            R result = gson.fromJson(str,request.getResponseType());
             result.source = str;
-            
+
             return result;
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -73,15 +75,15 @@ public class TelegramBotClient {
         if (client.readTimeoutMillis() == 0 || client.readTimeoutMillis() > timeoutMillis) return client;
         if (clientWithTimeout.readTimeoutMillis() > timeoutMillis) return clientWithTimeout;
 
-        clientWithTimeout = client.newBuilder().readTimeout(timeoutMillis + 1000, TimeUnit.MILLISECONDS).build();
+        clientWithTimeout = client.newBuilder().readTimeout(timeoutMillis + 1000,TimeUnit.MILLISECONDS).build();
         return clientWithTimeout;
     }
 
     private Request createRequest(BaseRequest request) {
         return new Request.Builder()
-                .url(baseUrl + request.getMethod())
-                .post(createRequestBody(request))
-                .build();
+            .url(baseUrl + request.getMethod())
+            .post(createRequestBody(request))
+            .build();
     }
 
     private RequestBody createRequestBody(BaseRequest<?, ?> request) {
@@ -94,11 +96,11 @@ public class TelegramBotClient {
                 String name = parameter.getKey();
                 Object value = parameter.getValue();
                 if (value instanceof byte[]) {
-                    builder.addFormDataPart(name, request.getFileName(), RequestBody.create(contentType, (byte[]) value));
+                    builder.addFormDataPart(name,getValueEncoded(request.getFileName()),RequestBody.create(contentType,(byte[]) value));
                 } else if (value instanceof File) {
-                    builder.addFormDataPart(name, request.getFileName(), RequestBody.create(contentType, (File) value));
+                    builder.addFormDataPart(name,getValueEncoded(request.getFileName()),RequestBody.create(contentType,(File) value));
                 } else {
-                    builder.addFormDataPart(name, String.valueOf(value));
+                    builder.addFormDataPart(name,String.valueOf(value));
                 }
             }
 
@@ -106,9 +108,16 @@ public class TelegramBotClient {
         } else {
             FormBody.Builder builder = new FormBody.Builder();
             for (Map.Entry<String, Object> parameter : request.getParameters().entrySet()) {
-                builder.add(parameter.getKey(), String.valueOf(parameter.getValue()));
+                builder.add(parameter.getKey(),String.valueOf(parameter.getValue()));
             }
             return builder.build();
         }
     }
+
+    private static String getValueEncoded(String value) {
+
+        return URLEncoder.QUERY.encode(value,CharsetUtil.CHARSET_UTF_8);
+
+    }
+
 }
