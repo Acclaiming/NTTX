@@ -40,13 +40,17 @@ public class ChineseAction extends Fragment {
 
                 } else {
 
-                    msg.send(user.userName() + " " + HtmlUtil.escape(msg.command()) + "了 " + msg.replyTo().from().userName() + " ~").html().exec();
+                    msg.send(user.userName() + " " + HtmlUtil.escape(msg.command()) + " 了 "+ msg.replyTo().from().userName() + " ~").html().exec();
 
                 }
 
 			} else {
+                
+                
+                
+                String command = msg.params().length > 0 ? msg.command() + " " + ArrayUtil.join(msg.params()," ") : msg.command() + " 了";
 
-				msg.send(user.userName() + " " + HtmlUtil.escape(msg.command()) + "了 ~").html().exec();
+				msg.send(user.userName() + " " + HtmlUtil.escape(command) + " ~").html().exec();
 
 				msg.delete();
 

@@ -72,20 +72,4 @@ public class UserData {
 
     }
     
-    public static class PointInstance {
-        
-        public enum Type {
-            
-            Global,Pirvate,Group,Channel
-            
-        }
-        
-        public PointInstance(UserData user) {
-            
-            
-            
-        }
-        
-    }
-    
 }
