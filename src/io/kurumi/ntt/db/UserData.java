@@ -23,9 +23,25 @@ public class UserData {
 
     public static UserData get(Long userId) {
 
-        if (!userDataIndex.containsKey(userId)) return null;
+        if (userDataIndex.containsKey(userId)) return userDataIndex.get(userId);
 
-        return userDataIndex.get(userId);
+        synchronized (userDataIndex) {
+
+            if (userDataIndex.containsKey(userId)) {
+
+                return userDataIndex.get(userId);
+            }
+            
+            UserData userData = data.getById(userId);
+            
+            if (userData != null) {
+                
+                userDataIndex.put(userId,userData);
+            }
+           
+            return userData;
+
+        }
 
     }
 
