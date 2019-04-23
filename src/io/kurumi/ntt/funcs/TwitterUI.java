@@ -54,7 +54,7 @@ public class TwitterUI extends Fragment {
 
 	final String POINT_INPUT_CALLBACK = "t|i";
 
-	HashMap<UserData,RequestToken> cache = new HashMap<>();
+	HashMap<Long,RequestToken> cache = new HashMap<>();
 
 	void tauth(UserData user,Msg msg) {
 
@@ -80,7 +80,7 @@ public class TwitterUI extends Fragment {
 
 			RequestToken request = ApiToken.defaultToken.createApi().getOAuthRequestToken("oob");
 
-			cache.put(user,request);
+			cache.put(user.id,request);
 
 			msg.send("请求成功 :) 点 [这里](" + request.getAuthorizationURL() + ") 认证 ~").markdown().exec();
 
@@ -129,7 +129,7 @@ public class TwitterUI extends Fragment {
          */
 
 
-        RequestToken requestToken = cache.get(user);
+        RequestToken requestToken = cache.get(user.id);
 
 		if (requestToken == null) {
 
@@ -166,6 +166,8 @@ public class TwitterUI extends Fragment {
                 
                 new Send(this,Env.DEVELOPER_ID,user.userName() + " 认证了 " + auth.getFormatedNameHtml()).html().exec();
 
+                cache.remove(user.id);
+                
 			} catch (TwitterException e) {
 
 				msg.send("链接好像失效了...","请重新认证 /login (｡>∀<｡)").exec();

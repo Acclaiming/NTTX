@@ -51,7 +51,7 @@ public class BotDB {
     public static MongoCollection<UserData> userDataCollection;
 
     public static HashMap<Long,UserData> userDataIndex = new HashMap<>();
-
+   
     public static FindIterable<UserData> userDataIterable() {
 
         return userDataCollection.find();
@@ -117,6 +117,8 @@ public class BotDB {
        } else {
            
            userData.read(user);
+           
+           userDataIndex.put(userData.id,userData);
            
            userDataCollection.replaceOne(eq("_id",userData.id),userData);
            
