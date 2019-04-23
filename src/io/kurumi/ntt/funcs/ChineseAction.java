@@ -32,17 +32,11 @@ public class ChineseAction extends Fragment {
 
 			if (msg.replyTo() != null) {
 
-                if (msg.params().length == 1) {
+                if (msg.params().length > 0) {
 
-                    String command = msg.command();
-
-                    if (!msg.params()[0].contains("了")) {
-
-                        command = command + "了";
-
-                    }
-
-                    msg.send(user.userName() + " " + HtmlUtil.escape(command) + " " + msg.replyTo().from().userName() + " " + msg.params()[0] + " ~").html().exec();
+                    String params = ArrayUtil.join(msg.params()," ");
+                    
+                    msg.send(user.userName() + " " + HtmlUtil.escape(msg.command()) + " " + msg.replyTo().from().userName() + " " + params + " ~").html().exec();
 
                 } else {
 
