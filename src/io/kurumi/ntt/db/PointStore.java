@@ -22,7 +22,7 @@ public class PointStore {
     }
 
     public final BotFragment bot;
-    public final HashMap<UserData,Point> points = new HashMap<>();
+    public final HashMap<Long,Point> points = new HashMap<>();
 
     private static HashMap<BotFragment,PointStore> point = new HashMap<>();
 
@@ -44,7 +44,7 @@ public class PointStore {
 
     public boolean contains(UserData user) {
 
-        return points.containsKey(user);
+        return points.containsKey(user.id);
 
     }
 
@@ -52,7 +52,7 @@ public class PointStore {
 
         if (contains(user)) {
 
-            return (Point<T>)points.get(user);
+            return (Point<T>)points.get(user.id);
 
         }
 
@@ -62,7 +62,7 @@ public class PointStore {
 
     public <T> void set(UserData user,final Type context,final String pointTo,final T content) {
 
-        points.put(user,new Point<T>() {{
+        points.put(user.id,new Point<T>() {{
 
                     type = context;
                     point = pointTo;
@@ -74,7 +74,7 @@ public class PointStore {
 
     public <T> void set(UserData user,final String pointTo,final T content) {
 
-        points.put(user,new Point<T>() {{
+        points.put(user.id,new Point<T>() {{
 
                     point = pointTo;
                     data = content;
@@ -85,7 +85,7 @@ public class PointStore {
     
     public <T> Point<T> clear(UserData user) {
         
-        return (Point<T>)points.remove(user);
+        return (Point<T>)points.remove(user.id);
         
     }
 
