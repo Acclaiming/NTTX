@@ -1,11 +1,11 @@
-package io.kurumi.ntt.funcs;
+package io.kurumi.ntt.funcs.twitter;
 
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.Msg;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONArray;
-import io.kurumi.ntt.db.SData;
+import io.kurumi.ntt.db.LocalData;
 import io.kurumi.ntt.utils.T;
 import io.kurumi.ntt.twitter.TAuth;
 
@@ -13,7 +13,7 @@ public class HideMe extends Fragment {
 
     public static HideMe INSTANCE = new HideMe();
     
-    public static JSONArray hideList = SData.getJSONArray("data","hides",true);
+    public static JSONArray hideList = LocalData.getJSONArray("data","hides",true);
     
     @Override
     public boolean onMsg(UserData user,Msg msg) {
@@ -79,7 +79,7 @@ public class HideMe extends Fragment {
     
     public void save() {
         
-        SData.setJSONArray("data","hides",hideList);
+        LocalData.setJSONArray("data","hides",hideList);
         
     }
     

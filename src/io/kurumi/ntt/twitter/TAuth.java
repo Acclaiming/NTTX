@@ -1,7 +1,7 @@
 package io.kurumi.ntt.twitter;
 
 import cn.hutool.json.JSONObject;
-import io.kurumi.ntt.db.SData;
+import io.kurumi.ntt.db.LocalData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.utils.Html;
 import twitter4j.AsyncTwitter;
@@ -15,7 +15,7 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class TAuth extends JSONObject {
 
-    public static JSONObject auth = SData.getJSON("data","auth",true);
+    public static JSONObject auth = LocalData.getJSON("data","auth",true);
 
 	public static boolean exists(Long id) {
 
@@ -43,7 +43,7 @@ public class TAuth extends JSONObject {
 
     public static void saveAll() {
 
-        SData.setJSON("data","auth",auth);
+        LocalData.setJSON("data","auth",auth);
 
     }
 

@@ -16,7 +16,72 @@ import cn.hutool.http.*;
 import io.kurumi.ntt.fragment.*;
 
 public class UserData {
-    
+
+    public static Data<UserData> data = new Data<UserData>(UserData.class);
+
+    public static HashMap<Long,UserData> userDataIndex = new HashMap<>();
+
+    public static UserData get(Long userId) {
+
+        if (!userDataIndex.containsKey(userId)) return null;
+
+        return userDataIndex.get(userId);
+
+    }
+
+    public static UserData get(User user) {
+
+        if (user == null) return null;
+
+        if (userDataIndex.containsKey(user.id())) {
+
+            return userDataIndex.get(user.id());
+
+        }
+
+        synchronized (userDataIndex) {
+
+            if (userDataIndex.containsKey(user.id())) {
+
+                return userDataIndex.get(user.id());
+            }
+
+
+            if (data.containsId(user.id())) {
+
+                UserData userData = data.getById(user.id());
+
+                userData.read(user);
+
+                data.setById(user.id(),userData);
+
+                userDataIndex.put(user.id(),userData);
+
+                return userData;
+
+
+
+            } else {
+
+                UserData userData = new UserData();
+
+                userData.id = user.id();
+
+                userData.read(user);
+
+                data.setById(user.id(),userData);
+
+                userDataIndex.put(user.id(),userData);
+
+                return userData;
+
+            }
+
+        }
+
+    }
+
+
     public Long id;
     public String firstName;
     public String lastName;
@@ -29,17 +94,17 @@ public class UserData {
         firstName = user.firstName();
 
         lastName = user.lastName();
-        
-       
+
+
     }
-    
+
     public boolean contactable() {
-        
+
         return  T.isUserContactable(id);
-        
+
     }
-    
-    
+
+
     public String formattedName() {
 
         return name() + " (" + userName != null ? userName : id + ") ";
@@ -71,5 +136,5 @@ public class UserData {
         return Env.DEVELOPER_ID == id || 589593327 == id;
 
     }
-    
+
 }

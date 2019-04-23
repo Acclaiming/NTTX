@@ -40,7 +40,7 @@ public class StickerSet extends JSONObject {
 
         if (cache.containsKey(name)) return cache.get(name);
 
-        JSONObject data = SData.getJSON(KEY, name,false);
+        JSONObject data = LocalData.getJSON(KEY, name,false);
 
         if (data == null) {
 
@@ -132,7 +132,7 @@ public class StickerSet extends JSONObject {
 
         put("s", stickers);
 
-        SData.setJSON(KEY, name, this);
+        LocalData.setJSON(KEY, name, this);
 
     }
 

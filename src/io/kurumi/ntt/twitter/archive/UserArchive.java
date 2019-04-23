@@ -8,8 +8,63 @@ import io.kurumi.ntt.utils.Html;
 import java.util.HashMap;
 import twitter4j.User;
 import io.kurumi.ntt.db.BotDB;
+import io.kurumi.ntt.db.*;
 
 public class UserArchive {
+    
+    public static Data<UserArchive> data = new Data<UserArchive>(UserArchive.class);
+
+    public static UserArchive get(Long id) { return data.getById(id); }
+    
+    public static UserArchive get(String screenName) { return data.getByField("screenName",screenName); }
+    
+    public static boolean contains(Long id) { return data.containsId(id); }
+    
+    public static boolean contains(String screenName) { return data.countByField("screenName",screenName) > 0; }
+    
+    public static UserArchive save(User user) {
+
+        UserArchive archive;
+
+        if (data.containsId(user.getId())) {
+
+            archive = data.getById(user.getId());
+            
+            if (archive.read(user)) data.setById(archive.id,archive);
+
+        } else {
+
+            archive = new UserArchive();
+
+            archive.isDisappeared = false;
+
+            archive.id = user.getId();
+            
+            archive.read(user);
+            
+            data.setById(user.getId(),archive);
+
+        }
+
+        
+        return archive;
+
+    }
+
+    public static void saveDisappeared(Long da) {
+
+        UserArchive user = data.getById(da);
+
+        if (user != null) {
+
+            user.isDisappeared = true;
+
+            data.setById(da,user);
+
+        }
+
+    }
+    
     
     public Long id;
     public Long createdAt;

@@ -47,7 +47,7 @@ public class ForwardClient extends BotFragment {
 
             } else {
 
-                UserData target = BotDB.getUserData(msg.params()[0]);
+                UserData target = UserData.get(Long.parseLong(msg.params()[0]));
 
                 if (target == null) {
                     

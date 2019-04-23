@@ -189,7 +189,7 @@ public class BotLog extends ConsoleLog {
 
         if (msg.forwardFromChat() != null) {
 
-            UserData ff = BotDB.getUserData(msg.forwardFrom());
+            UserData ff = UserData.get(msg.forwardFrom());
 
             log.append(ff != null ? ff.formattedName() : "匿名用户").append(" ");
 
@@ -211,11 +211,11 @@ public class BotLog extends ConsoleLog {
 
         if (msg.game() != null) log.append("「游戏 : ").append(msg.game().title()).append("」");
 
-        if (msg.leftChatMember() != null) log.append("「群成员退出 : ").append(BotDB.getUserData(msg.leftChatMember()).formattedName()).append("」");
+        if (msg.leftChatMember() != null) log.append("「群成员退出 : ").append(UserData.get(msg.leftChatMember()).formattedName()).append("」");
 
         if (msg.location() != null) log.append("「位置信息 : ").append(msg.location().toString()).append("」");
         
-        if (msg.newChatMembers() != null) log.append("「新成员 : ").append(BotDB.getUserData(msg.newChatMembers()[0]).formattedName()).append("」");
+        if (msg.newChatMembers() != null) log.append("「新成员 : ").append(UserData.get(msg.newChatMembers()[0]).formattedName()).append("」");
 
         if (msg.newChatTitle() != null) log.append("「新标题 : ").append(msg.newChatTitle()).append("」");
 
@@ -227,7 +227,7 @@ public class BotLog extends ConsoleLog {
 
         if (msg.replyToMessage() != null) {
 
-            log.append("「回复给 : ").append(formatName(msg.replyToMessage().from())).append(" : ").append(processMessage(BotDB.getUserData(msg.replyToMessage().from()),msg.replyToMessage())).append("」");
+            log.append("「回复给 : ").append(formatName(msg.replyToMessage().from())).append(" : ").append(processMessage(UserData.get(msg.replyToMessage().from()),msg.replyToMessage())).append("」");
 
         }
 
@@ -251,7 +251,7 @@ public class BotLog extends ConsoleLog {
 
         if (u == null) return "匿名用户";
 
-        return BotDB.getUserData(u).formattedName();
+        return UserData.get(u).formattedName();
 
     }
 

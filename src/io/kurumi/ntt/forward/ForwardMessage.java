@@ -12,7 +12,7 @@ public class ForwardMessage extends Fragment {
 
     public static ForwardMessage INSTANCE = new ForwardMessage();
 
-    public static JSONObject bots = SData.getJSON("data","chat_bot",true);
+    public static JSONObject bots = LocalData.getJSON("data","chat_bot",true);
 
     public static void start() {
 
@@ -20,7 +20,7 @@ public class ForwardMessage extends Fragment {
 
             String token = (String)bot.getValue();
 
-            UserData user = BotDB.getUserData(Long.parseLong(bot.getKey()));
+            UserData user = UserData.get(Long.parseLong(bot.getKey()));
 
             if (user != null) {
 
@@ -36,7 +36,7 @@ public class ForwardMessage extends Fragment {
 
     public static void save() {
 
-        SData.setJSON("data","chat_bot",bots);
+        LocalData.setJSON("data","chat_bot",bots);
 
     }  
 

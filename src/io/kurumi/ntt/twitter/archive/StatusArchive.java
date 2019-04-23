@@ -1,19 +1,37 @@
 package io.kurumi.ntt.twitter.archive;
 
-import cn.hutool.core.util.StrUtil;
-import io.kurumi.ntt.db.BotDB;
-import io.kurumi.ntt.utils.Html;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.LinkedList;
-import twitter4j.MediaEntity;
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
+import cn.hutool.core.util.*;
+import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.utils.*;
+import java.util.*;
 import twitter4j.*;
 
 public class StatusArchive {
 
+    public static Data<StatusArchive> data = new Data<StatusArchive>(StatusArchive.class);
+
+    public static StatusArchive get(Long id) { return data.getById(id); }
+    public static boolean contains(Long id) { return data.containsId(id); }
+    
+    public static StatusArchive save(Status status) {
+
+        StatusArchive archive = data.getById(status.getId());
+
+        if (archive == null) {
+
+            archive = new StatusArchive();
+
+            archive.id = status.getId();
+
+            archive.read(status);
+
+            data.setById(archive.id,archive);
+
+        }
+
+        return archive;
+
+    }
     public Long id;
 
 	public Long createdAt;
@@ -43,7 +61,7 @@ public class StatusArchive {
 
         from = status.getUser().getId();
 
-        BotDB.saveUser(status.getUser());
+        UserArchive.save(status.getUser());
 
         inReplyToStatusId = status.getInReplyToStatusId();
 
@@ -53,9 +71,9 @@ public class StatusArchive {
 
         quotedStatusId = status.getQuotedStatusId();
 
-        if (quotedStatusId != -1 && !BotDB.statusExists(quotedStatusId)) {
+        if (quotedStatusId != -1 && !StatusArchive.contains(quotedStatusId)) {
 
-            BotDB.saveStatus(status.getQuotedStatus());
+            StatusArchive.save(status.getQuotedStatus());
 
         }
 		
@@ -73,9 +91,9 @@ public class StatusArchive {
 
             retweetedStatus = status.getRetweetedStatus().getId();
 
-            if (!BotDB.statusExists(retweetedStatus)) {
+            if (!StatusArchive.contains(retweetedStatus)) {
 
-                BotDB.saveStatus(status.getRetweetedStatus());
+                StatusArchive.save(status.getRetweetedStatus());
 
             }
 
@@ -89,7 +107,7 @@ public class StatusArchive {
 
     public UserArchive user() {
 
-        return BotDB.getUser(from);
+        return UserArchive.get(from);
 
     }
 
@@ -121,7 +139,7 @@ public class StatusArchive {
 
             if (depth != 0) {
 
-                StatusArchive quotedStatus = BotDB.getStatus(quotedStatusId);
+                StatusArchive quotedStatus = StatusArchive.get(quotedStatusId);
 
                 if (quotedStatus == null) {
 
@@ -143,7 +161,7 @@ public class StatusArchive {
 
             if (depth != 0) {
 
-                StatusArchive inReplyTo = BotDB.getStatus(inReplyToStatusId);
+                StatusArchive inReplyTo = StatusArchive.get(inReplyToStatusId);
 
                 if (inReplyTo != null) {
 
@@ -164,7 +182,7 @@ public class StatusArchive {
 
         } else if (isRetweet) {
 
-            StatusArchive retweeted = BotDB.getStatus(retweetedStatus);
+            StatusArchive retweeted = StatusArchive.get(retweetedStatus);
 
             archive.append(user().urlHtml()).append(" 转推从 " + retweeted.user().urlHtml()).append(" 的 ").append(Html.a("推文",url())).append(" : ");
 
@@ -207,7 +225,7 @@ public class StatusArchive {
 
             for (String replyTo : inReplyTo) {
 
-                UserArchive user = BotDB.getUser(replyTo);
+                UserArchive user = UserArchive.get(replyTo);
 
                 archive.append(" ");
 
@@ -259,9 +277,9 @@ public class StatusArchive {
 
     String notAvilableStatus(Long id,String screenName) {
 
-        if (BotDB.userExists(id)) {
+        if (UserArchive.contains(id)) {
 
-            return BotDB.getUser(id).urlHtml() + " 的 不可用的推文";
+            return UserArchive.get(id).urlHtml() + " 的 不可用的推文";
 
         } else {
 
@@ -283,11 +301,11 @@ public class StatusArchive {
 
                 content = StrUtil.subAfter(content," ",false);
 
-                if (!BotDB.userExists(screenName)) {
+                if (!UserArchive.contains(screenName)) {
 
                     try {
 
-                        BotDB.saveUser(api.showUser(screenName));
+                        UserArchive.save(api.showUser(screenName));
 
                     } catch (TwitterException ex) {} 
 
@@ -302,15 +320,15 @@ public class StatusArchive {
 
             if (inReplyToStatusId != -1) {
 
-                if (BotDB.statusExists(inReplyToStatusId)) {
+                if (StatusArchive.contains(inReplyToStatusId)) {
 
-                    BotDB.getStatus(inReplyToStatusId).loop(api);
+                    StatusArchive.get(inReplyToStatusId).loop(api);
 
                 } else {
 
                     Status status = api.showStatus(inReplyToStatusId);
 
-                    StatusArchive inReplyTo = BotDB.saveStatus(status);
+                    StatusArchive inReplyTo = StatusArchive.save(status);
 
                     inReplyTo.loop(api);
 
@@ -320,15 +338,15 @@ public class StatusArchive {
 
             if (quotedStatusId != -1) {
 
-                if (BotDB.statusExists(quotedStatusId)) {
+                if (StatusArchive.contains(quotedStatusId)) {
 
-                    BotDB.getStatus(quotedStatusId).loop(api);
+                    StatusArchive.get(quotedStatusId).loop(api);
 
                 } else {
 
                     Status status = api.showStatus(quotedStatusId);
 
-                    StatusArchive quoted = BotDB.saveStatus(status);
+                    StatusArchive quoted = StatusArchive.save(status);
 
                     quoted.loop(api);
 

@@ -1,4 +1,4 @@
-package io.kurumi.ntt.funcs;
+package io.kurumi.ntt.funcs.twitter;
 
 import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.db.UserData;
@@ -40,7 +40,7 @@ public class TwitterArchive extends Fragment {
     void pullUser(UserData user,Msg msg) {
 
         Twitter api = TAuth.get(user.id).createApi();
-
+        
     }
 
     void statusArchive(UserData user,Msg msg) {
@@ -63,11 +63,11 @@ public class TwitterArchive extends Fragment {
 
         }
 
-        if (BotDB.statusExists(statusId)) {
+        if (StatusArchive.contains(statusId)) {
 
             msg.send("存档存在 :)").exec();
 
-            msg.send(BotDB.getStatus(statusId).toHtml()).html().exec();
+            msg.send(StatusArchive.get(statusId).toHtml()).html().exec();
 
             return;
 
@@ -85,7 +85,7 @@ public class TwitterArchive extends Fragment {
 
         try {
 
-            StatusArchive newStatus = BotDB.saveStatus(api.showStatus(statusId));
+            StatusArchive newStatus = StatusArchive.save(api.showStatus(statusId));
 
             newStatus.loop(api);
 

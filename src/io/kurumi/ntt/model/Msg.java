@@ -54,7 +54,7 @@ public class Msg extends Context {
 	
 	public UserData from() {
 		
-		return BotDB.getUserData(message.from());
+		return UserData.get(message.from());
 		
 	}
 

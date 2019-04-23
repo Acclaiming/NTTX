@@ -1,31 +1,19 @@
 package io.kurumi.ntt.twitter.track;
 
-import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.*;
+import cn.hutool.json.*;
+import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.funcs.twitter.*;
+import io.kurumi.ntt.model.request.*;
+import io.kurumi.ntt.twitter.*;
+import io.kurumi.ntt.twitter.archive.*;
+import io.kurumi.ntt.twitter.stream.*;
+import io.kurumi.ntt.utils.*;
+import java.util.*;
+import twitter4j.*;
+
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
-import io.kurumi.ntt.db.SData;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.twitter.TAuth;
-import io.kurumi.ntt.twitter.archive.UserArchive;
-import io.kurumi.ntt.utils.BotLog;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import twitter4j.ResponseList;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.User;
-import io.kurumi.ntt.funcs.HideMe;
-import io.kurumi.ntt.db.BotDB;
-import io.kurumi.ntt.twitter.stream.SubTask;
-import io.kurumi.ntt.funcs.*;
 
 public class UTTask extends TimerTask {
 
@@ -189,13 +177,13 @@ public class UTTask extends TimerTask {
 
                             target.remove(tuser.getId());
 
-                            BotDB.saveUser(tuser);
+                            UserArchive.save(tuser);
 
                         }
 
                         for (Long da : target) {
 
-                            BotDB.saveUserDisappeared(da);
+                            UserArchive.saveDisappeared(da);
 
                         }
 
@@ -205,7 +193,7 @@ public class UTTask extends TimerTask {
 
 							for (Long da : target) {
 
-								BotDB.saveUserDisappeared(da);
+								UserArchive.saveDisappeared(da);
 
 							}
 
@@ -315,7 +303,7 @@ public class UTTask extends TimerTask {
     }
 
 
-    public static JSONObject subs = SData.getJSON("data","subscriptions",true);
+    public static JSONObject subs = LocalData.getJSON("data","subscriptions",true);
 
     public static boolean exists(UserData user) {
 
@@ -391,7 +379,7 @@ public class UTTask extends TimerTask {
 
         SubTask.needReset.set(true);
         
-        SData.setJSON("data","subscriptions",subs);
+        LocalData.setJSON("data","subscriptions",subs);
 
     }
 

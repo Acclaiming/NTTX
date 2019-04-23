@@ -1,4 +1,4 @@
-package io.kurumi.ntt.funcs;
+package io.kurumi.ntt.funcs.twitter;
 
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.db.UserData;
@@ -56,7 +56,7 @@ public class StatusUI extends Fragment {
 			
 		}
 		
-        StatusArchive archive = BotDB.getStatus(statusId);
+        StatusArchive archive = StatusArchive.get(statusId);
 
         if (archive == null) {
             

@@ -1,4 +1,4 @@
-package io.kurumi.ntt.funcs;
+package io.kurumi.ntt.funcs.twitter;
 
 import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.fragment.*;
@@ -49,11 +49,11 @@ public class BioSearch extends Fragment {
 
         FindIterable<UserArchive> result = null;
 
-        long count = BotDB.userArchiveCollection.count(regex("bio",query));
+        long count = UserArchive.data.collection.countDocuments(regex("bio",query));
 
         if (count > 0) {
 
-            result = BotDB.userArchiveCollection.find(regex("bio",query));
+            result = UserArchive.data.collection.find(regex("bio",query));
 
         }
 

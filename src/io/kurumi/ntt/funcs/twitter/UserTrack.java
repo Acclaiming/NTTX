@@ -1,4 +1,4 @@
-package io.kurumi.ntt.funcs;
+package io.kurumi.ntt.funcs.twitter;
 
 import cn.hutool.core.util.*;
 import cn.hutool.json.*;
@@ -74,7 +74,7 @@ public class UserTrack extends Fragment {
 
                 User target = TAuth.get(user.id).createApi().showUser(Long.parseLong(msg.params()[0]));
 
-                UserArchive archive = BotDB.saveUser(target);
+                UserArchive archive = UserArchive.save(target);
 
                 boolean result = UTTask.add(user,target.getId());
                 
@@ -108,7 +108,7 @@ public class UserTrack extends Fragment {
 
             boolean result = UTTask.add(user,target.getId());
             
-            UserArchive archive = BotDB.saveUser(target);
+            UserArchive archive = UserArchive.save(target);
 
             UTTask.save();
 
@@ -159,7 +159,7 @@ public class UserTrack extends Fragment {
 
         }
         
-        UserArchive target = BotDB.getUser(T.parseScreenName(msg.params()[0]));
+        UserArchive target = UserArchive.get(T.parseScreenName(msg.params()[0]));
 
         if (target == null || !UTTask.rem(user,target.id)) {
             
@@ -186,7 +186,7 @@ public class UserTrack extends Fragment {
 
             for (int index = 0;index < list.size();index ++) {
 
-                rec.append("\n").append(BotDB.getUser((list.get(index))).urlHtml());
+                rec.append("\n").append(UserArchive.get((list.get(index))).urlHtml());
 
             }
 
@@ -215,7 +215,7 @@ public class UserTrack extends Fragment {
 
             for (int index = 0;index < list.size();index ++) {
                 
-                rec.append("\n").append(BotDB.getUser(list.getLong(index)).urlHtml());
+                rec.append("\n").append(UserArchive.get(list.getLong(index)).urlHtml());
                 
             }
             

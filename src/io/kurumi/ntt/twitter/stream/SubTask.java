@@ -3,11 +3,10 @@ package io.kurumi.ntt.twitter.stream;
 import cn.hutool.core.util.*;
 import cn.hutool.json.*;
 import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.funcs.*;
+import io.kurumi.ntt.funcs.twitter.*;
 import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.twitter.archive.*;
-import io.kurumi.ntt.twitter.stream.*;
 import io.kurumi.ntt.twitter.track.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -15,15 +14,14 @@ import java.util.concurrent.atomic.*;
 import twitter4j.*;
 
 import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
 
 public class SubTask extends StatusAdapter {
 
-	public static JSONArray enable = SData.getJSONArray("data","stream",true);
+	public static JSONArray enable = LocalData.getJSONArray("data","stream",true);
 
 	public static void save() {
 
-		SData.setJSONArray("data","stream",enable);
+		LocalData.setJSONArray("data","stream",enable);
 
 	}
 
@@ -190,7 +188,7 @@ public class SubTask extends StatusAdapter {
 
 		//   if (from == tid) return; // 去掉来自自己的推文？
 
-        StatusArchive archive = BotDB.saveStatus(status).loop(api);
+        StatusArchive archive = StatusArchive.save(status).loop(api);
 
         Send send = new Send(userId,archive.toHtml(0)).html();
 

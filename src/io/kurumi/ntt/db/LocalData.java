@@ -6,7 +6,7 @@ import io.kurumi.ntt.*;
 import java.io.*;
 import java.util.*;
 
-public class SData {
+public class LocalData {
 
 	private static HashMap<String,String> cache = new HashMap<>();
 

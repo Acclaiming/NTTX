@@ -12,11 +12,11 @@ public class AntiHalal extends Fragment {
 
     public static AntiHalal INSTANCE = new AntiHalal();
     
-    public static JSONArray enable = SData.getJSONArray("data","anti_halal",true);
+    public static JSONArray enable = LocalData.getJSONArray("data","anti_halal",true);
 
     public static void save() {
 
-        SData.setJSONArray("data","anti_halal",enable);
+        LocalData.setJSONArray("data","anti_halal",enable);
 
     }
 
@@ -56,7 +56,7 @@ public class AntiHalal extends Fragment {
 
         for (User newUser : message.newChatMembers()) {
 
-            UserData newMember = BotDB.getUserData(newUser);
+            UserData newMember = UserData.get(newUser);
 
             if (isHalal(newMember.name())) {
 

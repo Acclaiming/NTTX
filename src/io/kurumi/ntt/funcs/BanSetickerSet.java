@@ -9,11 +9,11 @@ import io.kurumi.ntt.utils.*;
 public class BanSetickerSet extends Fragment {
 
     public static BanSetickerSet INSTANCE = new BanSetickerSet();
-    public static JSONObject bans = SData.getJSON("data","ban_sticker_set",true);
+    public static JSONObject bans = LocalData.getJSON("data","ban_sticker_set",true);
 
     public static void save() {
 
-        SData.setJSON("data","ban_sticker_set",bans);
+        LocalData.setJSON("data","ban_sticker_set",bans);
 
     }
 

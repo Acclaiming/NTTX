@@ -12,12 +12,13 @@ import java.util.concurrent.atomic.*;
 import twitter4j.*;
 
 import cn.hutool.json.JSONArray;
+import io.kurumi.ntt.twitter.archive.*;
 
 public class FTTask extends TimerTask {
 
     static FTTask INSTANCE = new FTTask();
 
-    public static JSONArray enable = SData.getJSONArray("data","track",true);
+    public static JSONArray enable = LocalData.getJSONArray("data","track",true);
 
     static {
 
@@ -46,7 +47,7 @@ public class FTTask extends TimerTask {
 
     public static void save() {
 
-        SData.setJSONArray("data","track",enable);
+        LocalData.setJSONArray("data","track",enable);
 
     }
 
@@ -117,7 +118,7 @@ public class FTTask extends TimerTask {
 
             long accountId = api.getId();
 
-            BotDB.saveUser(me);
+            UserArchive.save(me);
 
             List<Long> flLast = BotDB.getFollowers(accountId);
 
@@ -241,7 +242,7 @@ public class FTTask extends TimerTask {
 
             User follower = api.showUser(id);
 
-            BotDB.saveUser(follower);
+            UserArchive.save(follower);
 
             Relationship ship = api.showFriendship(api.getId(),id);
 
@@ -249,9 +250,9 @@ public class FTTask extends TimerTask {
 
         } catch (TwitterException e) {
 
-            if (BotDB.userExists(id)) {
+            if (UserArchive.contains(id)) {
 
-                new Send(userId,BotDB.getUser(id).urlHtml() + " 关注你 , 但是该账号已经不存在了 :(").enableLinkPreview().html().exec();
+                new Send(userId,UserArchive.get(id).urlHtml() + " 关注你 , 但是该账号已经不存在了 :(").enableLinkPreview().html().exec();
 
             } else {
 
@@ -269,7 +270,7 @@ public class FTTask extends TimerTask {
         try {
 
             User follower = api.showUser(id);
-            BotDB.saveUser(follower);
+            UserArchive.save(follower);
 
             Relationship ship = api.showFriendship(api.getId(),id);
 
@@ -289,9 +290,9 @@ public class FTTask extends TimerTask {
 
         } catch (TwitterException e) {
 
-            if (BotDB.userExists(id)) {
+            if (UserArchive.contains(id)) {
 
-                new Send(userId,"关注乃的 " + BotDB.getUser(id).urlHtml() + " 的账号已经不存在了 :(").enableLinkPreview().html().exec();
+                new Send(userId,"关注乃的 " + UserArchive.get(id).urlHtml() + " 的账号已经不存在了 :(").enableLinkPreview().html().exec();
 
             } else {
 
