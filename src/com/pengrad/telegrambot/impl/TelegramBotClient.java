@@ -90,15 +90,17 @@ public class TelegramBotClient {
         if (request.isMultipart()) {
             MediaType contentType = MediaType.parse(request.getContentType());
 
+            MultipartBody.FORM.charset(CharsetUtil.CHARSET_UTF_8);
+            
             MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
 
             for (Map.Entry<String, Object> parameter : request.getParameters().entrySet()) {
                 String name = parameter.getKey();
                 Object value = parameter.getValue();
                 if (value instanceof byte[]) {
-                    builder.addFormDataPart(name, getValueEncoded(request.getFileName()), RequestBody.create(contentType, (byte[]) value));
+                    builder.addFormDataPart(name, request.getFileName(), RequestBody.create(contentType, (byte[]) value));
                 } else if (value instanceof File) {
-                    builder.addFormDataPart(name, getValueEncoded(request.getFileName()), RequestBody.create(contentType, (File) value));
+                    builder.addFormDataPart(name, request.getFileName(), RequestBody.create(contentType, (File) value));
                 } else {
                     builder.addFormDataPart(name, String.valueOf(value));
                 }
@@ -113,17 +115,6 @@ public class TelegramBotClient {
             return builder.build();
         }
     }
-    
-    private static String getValueEncoded(String value) {
-        if (value == null) return "null";
-        String newValue = value.replace("\n", "");
-        for (int i = 0, length = newValue.length(); i < length; i++) {
-            char c = newValue.charAt(i);
-            if (c <= '\u001f' || c >= '\u007f') {
-                return URLEncoder.DEFAULT.encode(newValue,CharsetUtil.CHARSET_UTF_8);
-            }
-        }
-        return newValue;
-    }
+
     
 }

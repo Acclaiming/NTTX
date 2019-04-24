@@ -38,13 +38,13 @@ public class BlockList extends Fragment {
             
             Twitter api = TAuth.get(user.id).createApi();
 
-            String name = api.verifyCredentials().getName();
+            String name = "@" + api.verifyCredentials().getScreenName();
             
             long[] ids = TApi.getAllBlockIDs(api);
 
             msg.sendUpdatingFile();
             
-            bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids,"\n"))).fileName(name + "-" + (System.currentTimeMillis() / 1000) + ".csv"));
+            bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids,"\n"))).fileName(name + " - " + (System.currentTimeMillis() / 1000) + ".csv"));
             
         } catch (TwitterException e) {
             
