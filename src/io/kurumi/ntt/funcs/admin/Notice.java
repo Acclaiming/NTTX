@@ -52,6 +52,8 @@ public class Notice extends Function {
     @Override
     public void onPoint(UserData user,Msg msg,PointStore.Point point) {
         
+        clearPoint(user);
+        
         long count = UserData.data.collection.countDocuments();
 
         long success = 0;

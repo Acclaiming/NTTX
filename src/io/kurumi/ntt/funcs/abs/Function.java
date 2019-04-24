@@ -101,6 +101,14 @@ public abstract class Function extends Fragment {
     public boolean onPointedMsg(UserData user,Msg msg) {
 
         PointStore.Point point = point().get(user);
+        
+        switch (target()) {
+
+                case Group : if (msg.isPrivate()) return false;break;
+                case Private : if (msg.isGroup()) return false;break;
+
+        }
+        
 
         for (String used : points()) {
 
