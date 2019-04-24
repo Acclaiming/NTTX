@@ -40,7 +40,7 @@ public class ChineseAction extends Fragment {
 
                 } else {
 
-                    msg.send(user.userName() + " " + HtmlUtil.escape(msg.command()) + " 了 "+ msg.replyTo().from().userName() + " ~").html().exec();
+                    msg.send(user.userName() + " " + HtmlUtil.escape(msg.command()) + "了 "+ msg.replyTo().from().userName() + " ~").html().exec();
 
                 }
 
