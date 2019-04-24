@@ -10,7 +10,7 @@ import io.kurumi.ntt.utils.CData;
 import java.util.HashMap;
 import java.util.LinkedList;
 import io.kurumi.ntt.model.data.*;
-import io.kurumi.ntt.utils.T;
+import io.kurumi.ntt.utils.NTT;
 import io.kurumi.ntt.utils.Html;
 import cn.hutool.http.*;
 import io.kurumi.ntt.fragment.*;
@@ -116,7 +116,7 @@ public class UserData {
 
     public boolean contactable() {
 
-        return  T.isUserContactable(id);
+        return  NTT.isUserContactable(id);
 
     }
 

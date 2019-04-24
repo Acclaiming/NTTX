@@ -6,7 +6,7 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.twitter.TAuth;
 import io.kurumi.ntt.twitter.archive.StatusArchive;
-import io.kurumi.ntt.utils.T;
+import io.kurumi.ntt.utils.NTT;
 import java.util.LinkedList;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -53,7 +53,7 @@ public class TwitterArchive extends Fragment {
 
         }
 
-        Long statusId = T.parseStatusId(msg.params()[0]);
+        Long statusId = NTT.parseStatusId(msg.params()[0]);
 
         if (statusId == -1L) {
 

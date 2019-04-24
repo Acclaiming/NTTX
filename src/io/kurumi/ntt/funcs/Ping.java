@@ -5,38 +5,36 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.ThreadPool;
 import cn.hutool.core.thread.ThreadUtil;
+import io.kurumi.ntt.funcs.abs.*;
 
-public class Ping extends Fragment {
+public class Ping extends Function {
 
     public static Ping INSTANCE = new Ping();
-
+    
     @Override
-    public boolean onMsg(UserData user,final Msg msg) {
+    public String name() {
 
-        if ("ping".equals(msg.command())) {
-
-            msg.sendTyping();
-
-            long start = System.currentTimeMillis();
-            
-            String pong = "接收延迟 : " + ((start / 1000) - (msg.message().date())) + " ±1s";
-
-            final Msg sended = msg.reply(pong).send();
-
-            long end = System.currentTimeMillis();
-
-            if (sended != null) {
-
-                sended.edit(pong,"回复延迟 : " + (end - start) + "ms").publicFailedWith(msg);
-
-            }
-
-            return true;
-
-        }
-
-        return false;
-
+        return "ping";
+        
     }
 
+    @Override
+    public void onFunction(UserData user,Msg msg,String[] params) {
+        
+        long start = System.currentTimeMillis();
+
+        String pong = "接收延迟 : " + ((start / 1000) - (msg.message().date())) + " ±1s";
+
+        final Msg sended = msg.reply(pong).send();
+
+        long end = System.currentTimeMillis();
+
+        if (sended != null) {
+
+            sended.edit(pong,"回复延迟 : " + (end - start) + "ms").publicFailedWith(msg);
+
+        }
+        
+    }
+    
 }

@@ -51,8 +51,8 @@ public class BanSetickerSet extends Fragment {
 
     void banStickerSet(UserData user,Msg msg) {
 
-        if (T.checkGroup(msg)) return;
-        if (T.checkGroupAdmin(msg)) return;
+        if (NTT.checkGroup(msg)) return;
+        if (NTT.checkGroupAdmin(msg)) return;
 
         if (msg.replyTo() == null || msg.replyTo().message().sticker() == null) {
 
@@ -88,8 +88,8 @@ public class BanSetickerSet extends Fragment {
 
     void unBanStickerSet(UserData user,Msg msg) {
 
-        if (T.checkGroup(msg)) return;
-        if (T.checkGroupAdmin(msg)) return;
+        if (NTT.checkGroup(msg)) return;
+        if (NTT.checkGroupAdmin(msg)) return;
 
         if (msg.replyTo() == null || msg.replyTo().message().sticker() == null) {
 

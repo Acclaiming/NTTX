@@ -57,8 +57,8 @@ public class UserTrack extends Fragment {
 
     void subUser(UserData user,Msg msg) {
 
-        if (T.checkNonContactable(user,msg)) return;
-        if (T.checkUserNonAuth(user,msg)) return;
+        if (NTT.checkNonContactable(user,msg)) return;
+        if (NTT.checkUserNonAuth(user,msg)) return;
 
         if (msg.params().length != 1) {
 
@@ -100,7 +100,7 @@ public class UserTrack extends Fragment {
 
         }
 
-        String screenName = T.parseScreenName(msg.params()[0]);
+        String screenName = NTT.parseScreenName(msg.params()[0]);
 
         try {
 
@@ -159,7 +159,7 @@ public class UserTrack extends Fragment {
 
         }
         
-        UserArchive target = UserArchive.get(T.parseScreenName(msg.params()[0]));
+        UserArchive target = UserArchive.get(NTT.parseScreenName(msg.params()[0]));
 
         if (target == null || !UTTask.rem(user,target.id)) {
             

@@ -6,7 +6,7 @@ import io.kurumi.ntt.model.Msg;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONArray;
 import io.kurumi.ntt.db.LocalData;
-import io.kurumi.ntt.utils.T;
+import io.kurumi.ntt.utils.NTT;
 import io.kurumi.ntt.twitter.TAuth;
 
 public class HideMe extends Fragment {
@@ -35,7 +35,7 @@ public class HideMe extends Fragment {
 
     void hide(UserData user,Msg msg) {
      
-        if (T.checkUserNonAuth(user,msg)) return;
+        if (NTT.checkUserNonAuth(user,msg)) return;
         
         Long id = TAuth.get(user.id).accountId;
 
@@ -57,7 +57,7 @@ public class HideMe extends Fragment {
     
     void unhide(UserData user,Msg msg) {
 
-        if (T.checkUserNonAuth(user,msg)) return;
+        if (NTT.checkUserNonAuth(user,msg)) return;
 
         Long id = TAuth.get(user.id).accountId;
 

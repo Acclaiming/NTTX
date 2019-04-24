@@ -11,7 +11,7 @@ import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.twitter.*;
 import com.pengrad.telegrambot.model.*;
 
-public class T {
+public class NTT {
 
     public static boolean isUserContactable(long id) {
 

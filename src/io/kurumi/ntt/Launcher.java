@@ -17,6 +17,7 @@ import java.io.*;
 import java.util.*;
 
 import cn.hutool.core.lang.Console;
+import io.kurumi.ntt.funcs.admin.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -59,6 +60,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(BlockList.INSTANCE);
         
         addFragment(BioSearch.INSTANCE);
+        
+        addFragment(Notice.INSTANCE);
 
     }
 

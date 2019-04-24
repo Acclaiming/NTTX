@@ -173,7 +173,7 @@ public class Send extends AbstractSend<Send> {
 
                     if (resp.isOk()) {
 
-                        T.tryDelete(delay,new Msg(fragment,resp.message()));
+                        NTT.tryDelete(delay,new Msg(fragment,resp.message()));
 
                     }
 
@@ -205,7 +205,7 @@ public class Send extends AbstractSend<Send> {
 
                     if (resp.isOk()) {
 
-                        T.tryDelete(delay,origin,new Msg(fragment,resp.message()));
+                        NTT.tryDelete(delay,origin,new Msg(fragment,resp.message()));
 
                     }
 
@@ -237,7 +237,7 @@ public class Send extends AbstractSend<Send> {
 
                     if (resp.isOk()) {
 
-                        T.tryDelete(delay,new Msg(fragment,resp.message()));
+                        NTT.tryDelete(delay,new Msg(fragment,resp.message()));
 
                     }
 

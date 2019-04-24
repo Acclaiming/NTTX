@@ -29,7 +29,7 @@ public class BioSearch extends Fragment {
     @Override
     public boolean onMsg(UserData user,Msg msg) {
 
-        switch (T.checkCommand(msg)) {
+        switch (NTT.checkCommand(msg)) {
 
             case "bio" : searchBio(user,msg);break;
 

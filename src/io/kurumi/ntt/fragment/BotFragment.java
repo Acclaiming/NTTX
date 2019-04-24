@@ -55,6 +55,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
         return bot;
 
     }
+    
 
     public void addFragment(Fragment fragment) {
 

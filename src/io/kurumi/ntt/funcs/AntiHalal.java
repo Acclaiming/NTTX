@@ -99,8 +99,8 @@ public class AntiHalal extends Fragment {
 
     void enable(UserData user,Msg msg) {
 
-        if (T.checkGroup(msg)) return;
-        if (T.checkGroupAdmin(msg)) return;
+        if (NTT.checkGroup(msg)) return;
+        if (NTT.checkGroupAdmin(msg)) return;
 
         if (enable.contains(msg.chatId())) {
 
@@ -120,8 +120,8 @@ public class AntiHalal extends Fragment {
 
     void disable(UserData user,Msg msg) {
 
-        if (T.checkGroup(msg)) return;
-        if (T.checkGroupAdmin(msg)) return;
+        if (NTT.checkGroup(msg)) return;
+        if (NTT.checkGroupAdmin(msg)) return;
 
         if (!enable.contains(msg.chatId())) {
 

@@ -6,7 +6,7 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.twitter.TAuth;
-import io.kurumi.ntt.utils.T;
+import io.kurumi.ntt.utils.NTT;
 import java.io.File;
 import twitter4j.AsyncTwitter;
 import twitter4j.JSONArray;
@@ -54,7 +54,7 @@ public class TwitterDelete extends Fragment {
 
     void deleteLikes(UserData user,Msg msg) {
 
-        if (T.checkUserNonAuth(user,msg)) return;
+        if (NTT.checkUserNonAuth(user,msg)) return;
 
         msg.send("输入 任意内容 来删除所有的推文喜欢 ","使用 /cancel 取消 注意 : 开始后不可撤销").exec();
 
@@ -81,7 +81,7 @@ public class TwitterDelete extends Fragment {
             msg.send("解析成功 : " + array.length() + "个喜欢 正在处理...").exec();
 
             final AsyncTwitter api = TAuth.get(user.id).createAsyncApi();
-
+            
             for (int index = 0;index < array.length();index ++) {
                 
                 api.destroyFavorite(array.getJSONObject(index).getJSONObject("like").getLong("tweetId"));

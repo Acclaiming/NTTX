@@ -16,7 +16,7 @@ public class BlockList extends Fragment {
     @Override
     public boolean onMsg(UserData user,Msg msg) {
         
-        switch (T.checkCommand(msg)) {
+        switch (NTT.checkCommand(msg)) {
             
             case "bl" : pullBlockList(user,msg);break;
             
@@ -30,7 +30,7 @@ public class BlockList extends Fragment {
 
     void pullBlockList(UserData user,Msg msg) {
       
-        if (T.checkUserNonAuth(user,msg)) return;
+        if (NTT.checkUserNonAuth(user,msg)) return;
         
         if (msg.params().length == 0) {
             
@@ -54,7 +54,10 @@ public class BlockList extends Fragment {
             
             bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids,"\n"))).fileName(name + " - " + (System.currentTimeMillis() / 1000) + ".csv"));
             
-        } catch (TwitterException e) {
+            ResponseList<Friendship> fs = api.lookupFriendships(new long[]{});
+
+        }
+ catch (TwitterException e) {
             
             msg.send("拉取失败 (" + e.getErrorCode() + ")... 你的认证可能失效或者到达了API调用上限。").exec();
             

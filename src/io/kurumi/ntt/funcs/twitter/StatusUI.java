@@ -4,7 +4,7 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.Callback;
-import io.kurumi.ntt.utils.T;
+import io.kurumi.ntt.utils.NTT;
 import io.kurumi.ntt.db.BotDB;
 import io.kurumi.ntt.twitter.archive.StatusArchive;
 import io.kurumi.ntt.model.request.ButtonMarkup;

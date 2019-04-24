@@ -90,7 +90,7 @@ public class Edit extends AbstractSend<Edit> {
 
                     if (resp != null && resp.isOk()) {
 
-                        io.kurumi.ntt.utils.T.tryDelete(delay,message,origin);
+                        io.kurumi.ntt.utils.NTT.tryDelete(delay,message,origin);
 
                     }
 
