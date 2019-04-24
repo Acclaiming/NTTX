@@ -104,7 +104,7 @@ public abstract class Function extends Fragment {
 
         for (String used : points()) {
 
-            if (used.equals(point)) {
+            if (used.equals(point.point)) {
 
                 onPoint(user,msg,point);
 
