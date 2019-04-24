@@ -32,6 +32,14 @@ public class BlockList extends Fragment {
       
         if (T.checkUserNonAuth(user,msg)) return;
         
+        if (msg.params().length == 0) {
+            
+            msg.send("/bio <文本/正则表达式>").exec();
+            
+            return;
+            
+        }
+        
         msg.sendTyping();
         
         try {
