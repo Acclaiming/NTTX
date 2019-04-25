@@ -51,7 +51,7 @@ public abstract class Function extends Fragment {
 
         if (target() == Private && !msg.isPrivate())  {
 
-            msg.send("请使用私聊 (˚☐˚! )/").exec();
+            msg.send("请使用私聊 (˚☐˚! )/").publicFailed();
 
             return true;
 
