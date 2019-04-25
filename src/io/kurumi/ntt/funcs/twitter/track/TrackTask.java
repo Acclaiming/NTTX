@@ -187,7 +187,7 @@ public class TrackTask extends TimerTask {
             
         }
         
-        for (Long lostFolower : newFollowers) {
+        for (Long lostFolower : lostFolowers) {
 
             lostFollower(account.user,api,lostFolower);
 

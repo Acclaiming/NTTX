@@ -36,6 +36,8 @@ public class ChineseAction extends Fragment {
 
                     String params = ArrayUtil.join(msg.params()," ");
                     
+                    
+                    
                     msg.send(user.userName() + " " + HtmlUtil.escape(msg.command()) + " " + msg.replyTo().from().userName() + " " + params + " ~").html().exec();
 
                 } else {
