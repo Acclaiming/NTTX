@@ -60,8 +60,8 @@ public class TrackUI extends TwitterFunction {
         return new ButtonMarkup() {{
 
                 newButtonLine((setting.followers ? "「 关闭" : "「 开启") + " 关注者监听 」",POINT_SETTING_FOLLOWERS,accountId);
-                newButtonLine((setting.followers ? "「 关闭" : "「 开启") + " 账号更改监听 (关注中) 」",POINT_SETTING_FOLLOWINGS_INFO,accountId);
-                newButtonLine((setting.followers ? "「 关闭" : "「 开启") + " 账号更改监听 (关注者) 」",POINT_SETTING_FOLLOWERS_INFO,accountId);
+                newButtonLine((setting.followingInfo ? "「 关闭" : "「 开启") + " 账号更改监听 (关注中) 」",POINT_SETTING_FOLLOWINGS_INFO,accountId);
+                newButtonLine((setting.followersInfo ? "「 关闭" : "「 开启") + " 账号更改监听 (关注者) 」",POINT_SETTING_FOLLOWERS_INFO,accountId);
 
             }};
 
