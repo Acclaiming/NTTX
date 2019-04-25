@@ -46,9 +46,9 @@ public class ChineseAction extends Fragment {
 
 			} else {
                 
+                String command = msg.params().length > 0 ? msg.command() + " " + ArrayUtil.join(msg.params()," ") : msg.command();
                 
-                
-                String command = msg.params().length > 0 ? msg.command() + " " + ArrayUtil.join(msg.params()," ") : msg.command() + " 了";
+                if (!command.contains("了")) command = command + "了";
 
 				msg.send(user.userName() + " " + HtmlUtil.escape(command) + " ~").html().exec();
 
