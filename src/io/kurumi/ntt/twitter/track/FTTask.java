@@ -14,6 +14,8 @@ import twitter4j.*;
 import cn.hutool.json.JSONArray;
 import io.kurumi.ntt.twitter.archive.*;
 
+/*
+
 public class FTTask extends TimerTask {
 
     static FTTask INSTANCE = new FTTask();
@@ -222,8 +224,7 @@ public class FTTask extends TimerTask {
 
          } catch (TwitterException e) {}
 
-         */
-
+        
         String statusR = status.toString();
 
         if (statusR.endsWith("\n")) {
@@ -305,5 +306,9 @@ public class FTTask extends TimerTask {
 
 
     }
+    
+    
 
 }
+
+*/

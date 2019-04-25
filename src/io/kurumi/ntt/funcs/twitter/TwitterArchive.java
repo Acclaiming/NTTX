@@ -16,6 +16,8 @@ import io.kurumi.ntt.db.BotDB;
 
 public class TwitterArchive extends Fragment {
 
+    /*
+    
     public static TwitterArchive INSTANCE = new TwitterArchive();
 
     @Override
@@ -103,6 +105,7 @@ public class TwitterArchive extends Fragment {
 
     }
 
+    */
     
 
 }

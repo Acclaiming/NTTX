@@ -15,8 +15,12 @@ import twitter4j.*;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 
+/*
+
 public class UTTask extends TimerTask {
 
+    
+    
     static UTTask INSTANCE = new UTTask();
     static Timer timer;
 
@@ -386,3 +390,5 @@ public class UTTask extends TimerTask {
 
 
 }
+
+*/

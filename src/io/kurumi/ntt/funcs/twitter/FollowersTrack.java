@@ -1,5 +1,7 @@
 package io.kurumi.ntt.funcs.twitter;
 
+/*
+
 import io.kurumi.ntt.db.LocalData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.Fragment;
@@ -152,3 +154,5 @@ public class FollowersTrack extends Fragment {
 
 
 }
+
+*/

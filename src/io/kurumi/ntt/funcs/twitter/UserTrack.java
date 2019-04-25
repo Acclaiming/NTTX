@@ -18,6 +18,8 @@ public class UserTrack extends Fragment {
 
     public static UserTrack INSTANCE = new UserTrack();
     
+    /*
+    
     @Override
     public boolean onMsg(UserData user,Msg msg) {
 
@@ -70,6 +72,8 @@ public class UserTrack extends Fragment {
 
         if (NumberUtil.isNumber(msg.params()[0])) {
 
+           
+            
             try {
 
                 User target = TAuth.get(user.id).createApi().showUser(Long.parseLong(msg.params()[0]));
@@ -97,11 +101,15 @@ public class UserTrack extends Fragment {
             }
 
             return;
+            
+            
 
         }
 
         String screenName = NTT.parseScreenName(msg.params()[0]);
 
+       
+        
         try {
 
             User target = TAuth.get(user.id).createApi().showUser(screenName);
@@ -231,5 +239,8 @@ public class UserTrack extends Fragment {
         }
         
     }
+    
+    */
 
 }
+

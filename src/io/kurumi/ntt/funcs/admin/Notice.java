@@ -8,36 +8,37 @@ import io.kurumi.ntt.funcs.abs.*;
 
 import static java.util.Arrays.asList;
 import io.kurumi.ntt.db.PointStore.*;
+import java.util.*;
 
 public class Notice extends Function {
 
     public static final Notice INSTANCE = new Notice();
     
     @Override
-    public String name() {
-
-        return "notice";
-
+    public void functions(LinkedList<String> names) {
+       
+        names.add("notice");
+        
     }
-
+    
     final String POINT_FPRWARD = "n|f";
 
     @Override
-    public String[] points() {
-
-        return new String[] { POINT_FPRWARD };
-
+    public void points(LinkedList<String> points) {
+   
+        points.add(POINT_FPRWARD);
+ 
     }
 
     @Override
     public int target() {
-        
+
         return Private;
-        
+
     }
 
     @Override
-    public void onFunction(UserData user,Msg msg,String[] params) {
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
         if (user.developer()) {
 

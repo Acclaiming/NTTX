@@ -15,6 +15,8 @@ import twitter4j.*;
 
 import cn.hutool.json.JSONArray;
 
+/*
+
 public class SubTask extends StatusAdapter {
 
 	public static JSONArray enable = LocalData.getJSONArray("data","stream",true);
@@ -203,3 +205,5 @@ public class SubTask extends StatusAdapter {
     }
 
 }
+
+*/

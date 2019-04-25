@@ -50,10 +50,16 @@ public class Data<T> {
         return collection.countDocuments(eq(field,value));
         
     }
+    
+    public FindIterable<T> findByField(String field,Object value) {
+
+        return collection.find(eq(field,value));
+
+    }
 
     public T getByField(String field,Object value) {
 
-        return collection.find(eq(field,value)).first();
+        return findByField(field,value).first();
 
     }
 
@@ -71,6 +77,12 @@ public class Data<T> {
 
         return object;
 
+    }
+    
+    public boolean deleteById(Long id) {
+        
+        return collection.deleteOne(eq("_id",id)).getDeletedCount() > 0;
+        
     }
 
 }

@@ -1,129 +1,92 @@
 package io.kurumi.ntt.twitter;
 
+import cn.hutool.json.*;
+import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.twitter.*;
+import io.kurumi.ntt.utils.*;
+import twitter4j.*;
+import twitter4j.conf.*;
+
 import cn.hutool.json.JSONObject;
-import io.kurumi.ntt.db.LocalData;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.utils.Html;
-import twitter4j.AsyncTwitter;
-import twitter4j.AsyncTwitterFactory;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.User;
-import twitter4j.conf.Configuration;
-import twitter4j.conf.ConfigurationBuilder;
+import java.util.*;
+import com.mongodb.client.model.*;
+import com.mongodb.client.*;
+import io.kurumi.ntt.twitter.archive.*;
 
-public class TAuth extends JSONObject {
+public class TAuth {
 
-    public static JSONObject auth = LocalData.getJSON("data","auth",true);
+    public static Data<TAuth> data = new Data<TAuth>(TAuth.class); static {
 
-	public static boolean exists(Long id) {
+        JSONObject old = LocalData.getJSON("data","auth",false);
 
-		return auth.containsKey(id.toString());
+        if (old != null) {
 
-	}
+            for (String userIdStr : old.keySet()) {
 
-    public static boolean avilable(Long id) {
+                TAuth auth = new TAuth();
 
-        return exists(id) && get(id).refresh();
+                JSONObject oldAuth = old.getJSONObject(userIdStr);
 
-    }
+                auth.id = oldAuth.getLong("accountId");
+                
+                auth.user = Long.parseLong(userIdStr);
+                
+                auth.apiKey = oldAuth.getStr("apiToken");
+                auth.apiKeySec = oldAuth.getStr("apiSecToken");
+                auth.accToken = oldAuth.getStr("accToken");
+                auth.accTokenSec = oldAuth.getStr("accSecToken");
+                
+                data.setById(auth.id,auth);
 
-	public static TAuth get(Long id) {
-
-		if (exists(id)) {
-
-			return new TAuth(auth.getJSONObject(id.toString()));
-
-		}
-
-		return null;
-
-	}
-
-    public static void saveAll() {
-
-        LocalData.setJSON("data","auth",auth);
-
-    }
-
-    private String apiToken;
-    private String apiSecToken;
-    private String accToken;
-    private String accSecToken;
-
-    public Long accountId;
-    public String screenName;
-
-    public String name;
-    public String email;
-
-    public TAuth(JSONObject json) {
-
-        this(json.getStr("apiToken"),
-             json.getStr("apiSecToken"),
-             json.getStr("accToken"),
-             json.getStr("accSecToken"));
-
-        putAll(json);
-
-        accountId = json.getLong("accountId",-1L);
-        screenName = json.getStr("screenName");
-        name = json.getStr("name");
-
-        email = json.getStr("email");
-    }
-
-    public TAuth(String apiToken,String apiSecToken,String accToken,String accSecToken) {
-        this.apiToken = apiToken;
-        this.apiSecToken = apiSecToken;
-        this.accToken = accToken;
-        this.accSecToken = accSecToken;
-    }
-
-    public String getUrl() {
-
-        return "https://twitter.com/" + screenName;
-
-    }
-
-    public String getFormatedName() {
-
-        return "「" + name + "」" + " (@" + screenName + ")";
-
-    }
-
-    public String getFormatedNameHtml() {
-
-        return Html.a(name,getUrl());
-
-    }
-
-    public boolean refresh() {
-
-        try {
-
-            Twitter api = createApi();
-            User thisAcc = api.verifyCredentials();
-            accountId = thisAcc.getId();
-            screenName = thisAcc.getScreenName();
-            name = thisAcc.getName();
-            email = thisAcc.getEmail();
-
-            save();
-
-            return true;
-
-        } catch (TwitterException e) {
-
+            }
+            
+            LocalData.set("data","auth",null);
 
 
         }
 
-        return false;
+    }
+    
+    public static TAuth getById(Long accountid) {
+        
+        return data.getById(accountid);
+        
+    }
+    
+    public static FindIterable<TAuth> getByUser(Long userId) {
+
+        return data.findByField("user",userId);
 
     }
+    
+    public static boolean contains(Long userId) {
+        
+        return data.countByField("user",userId) > 0;
+        
+    }
 
+    public Long id;
+    public Long user;
+    public String apiKey;
+    public String apiKeySec;
+    public String accToken;
+    public String accTokenSec;
+
+    public UserArchive archive() {
+        
+        UserArchive archive = UserArchive.get(id);
+
+        try {
+            
+            if (archive == null)  archive = UserArchive.save(createApi().verifyCredentials());
+            
+            
+        } catch (TwitterException e) {}
+
+        return archive;
+        
+    }
+    
     public Twitter createApi() {
 
         return new TwitterFactory(createConfig()).getInstance();
@@ -139,42 +102,13 @@ public class TAuth extends JSONObject {
     public Configuration createConfig() {
 
         return new ConfigurationBuilder()
-            .setOAuthConsumerKey(apiToken)
-            .setOAuthConsumerSecret(apiSecToken)
+            .setOAuthConsumerKey(apiKey)
+            .setOAuthConsumerSecret(apiKeySec)
             .setOAuthAccessToken(accToken)
-            .setOAuthAccessTokenSecret(accSecToken)
+            .setOAuthAccessTokenSecret(accTokenSec)
             //    .setUserStreamBaseURL( "https://userstream.twitter.com/2/" )
             .build();
 
     }
-
-    public JSONObject save() {
-
-        put("apiToken",apiToken);
-        put("apiSecToken",apiSecToken);
-        put("accToken",accToken);
-        put("accSecToken",accSecToken);
-        put("accountId",accountId);
-        put("screenName",screenName);
-        put("name",name);
-        put("email",email);
-
-        return this;
-
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-
-        return super.equals(obj) || (obj instanceof TAuth && accountId.equals(((TAuth)obj).accountId));
-
-    }
-
-    @Override
-    public String toString() {
-
-        return screenName + "「" + name + "」";
-
-    }
-
+    
 }

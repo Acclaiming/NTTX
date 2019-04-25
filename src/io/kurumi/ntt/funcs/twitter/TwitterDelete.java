@@ -1,25 +1,53 @@
 package io.kurumi.ntt.funcs.twitter;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.StrUtil;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.twitter.TAuth;
-import io.kurumi.ntt.utils.NTT;
-import java.io.File;
-import twitter4j.AsyncTwitter;
-import twitter4j.JSONArray;
-import twitter4j.JSONException;
-import twitter4j.TwitterException;
+import cn.hutool.core.io.*;
+import cn.hutool.core.util.*;
 import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.funcs.abs.*;
+import io.kurumi.ntt.model.*;
+import io.kurumi.ntt.twitter.*;
+import io.kurumi.ntt.utils.*;
+import java.io.*;
+import twitter4j.*;
+import java.util.*;
 
-public class TwitterDelete extends Fragment {
+/*
+
+public class TwitterDelete extends TwitterFunction {
 
     public static TwitterDelete INSTANCE = new TwitterDelete();
-
+    
+    
+    
+    @Override
+    public void functions(LinkedList<String> names) {
+        
+        names.add("del");
+        
+    }
+    
     final String POINT_DELETE_LIKES = "d|l";
 
+    @Override
+    public void points(LinkedList<String> points) {
+       
+        super.points(points);
+        
+        points.add(POINT_DELETE_LIKES);
+        
+    }
+
+
+    @Override
+    public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+        
+        setPoint(user,POINT_DELETE_LIKES);
+        
+        
+        
+    }
+    
+    
     @Override
     public boolean onPrivate(UserData user,Msg msg) {
 
@@ -100,5 +128,8 @@ public class TwitterDelete extends Fragment {
 
 
     }
-
+    
+    
 }
+
+*/

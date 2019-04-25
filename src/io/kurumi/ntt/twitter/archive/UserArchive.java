@@ -1,14 +1,12 @@
 package io.kurumi.ntt.twitter.archive;
 
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.json.JSONObject;
-import io.kurumi.ntt.model.data.IdDataModel;
-import io.kurumi.ntt.twitter.track.UTTask;
-import io.kurumi.ntt.utils.Html;
-import java.util.HashMap;
-import twitter4j.User;
-import io.kurumi.ntt.db.BotDB;
+
+import cn.hutool.core.util.*;
 import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.utils.*;
+import twitter4j.*;
+
+import cn.hutool.core.util.ObjectUtil;
 
 public class UserArchive {
     
@@ -24,6 +22,8 @@ public class UserArchive {
     
     public static UserArchive save(User user) {
 
+        if (user == null) return null;
+        
         UserArchive archive;
 
         if (data.containsId(user.getId())) {
@@ -84,7 +84,7 @@ public class UserArchive {
 
             isDisappeared = true;
 
-            UTTask.onUserChange(this,"用户被冻结或已停用 :)");
+          //  UTTask.onUserChange(this,"用户被冻结或已停用 :)");
 
         }
         
@@ -170,7 +170,7 @@ public class UserArchive {
 
         if (change) {
 
-            UTTask.onUserChange(this,str.toString());
+          //  UTTask.onUserChange(this,str.toString());
 
         }
         

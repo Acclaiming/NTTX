@@ -6,20 +6,21 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.ThreadPool;
 import cn.hutool.core.thread.ThreadUtil;
 import io.kurumi.ntt.funcs.abs.*;
+import java.util.*;
 
 public class Ping extends Function {
 
     public static Ping INSTANCE = new Ping();
     
     @Override
-    public String name() {
-
-        return "ping";
+    public void functions(LinkedList<String> names) {
+        
+        names.add("ping");
         
     }
 
     @Override
-    public void onFunction(UserData user,Msg msg,String[] params) {
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
         
         long start = System.currentTimeMillis();
 

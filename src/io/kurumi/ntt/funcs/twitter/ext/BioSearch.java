@@ -1,10 +1,9 @@
-package io.kurumi.ntt.funcs.twitter;
+package io.kurumi.ntt.funcs.twitter.ext;
 
 import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.utils.*;
-
 
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
@@ -20,33 +19,40 @@ import io.kurumi.ntt.twitter.archive.*;
 import java.util.*;
 import cn.hutool.http.*;
 import io.kurumi.ntt.model.request.*;
+import io.kurumi.ntt.funcs.abs.*;
 
-
-public class BioSearch extends Fragment {
+public class BioSearch extends Function {
 
     public static BioSearch INSTANCE = new BioSearch();
-
+    
     @Override
-    public boolean onMsg(UserData user,Msg msg) {
-
-        switch (NTT.checkCommand(msg)) {
-
-            case "bio" : searchBio(user,msg);break;
-
-            default : return false;
-
-        }
-
-        return true;
-
+    public void functions(LinkedList<String> names) {
+        
+        names.add("bio");
+        
     }
 
-    // final String POINT_NEXT_PAGE = "b|n";
+    @Override
+    public int target() {
+        
+        return Private;
+        
+    }
+ 
 
-    void searchBio(UserData user,Msg msg) {
+    @Override
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
         String query = ArrayUtil.join(msg.params(),"\n");
 
+        if (query.isEmpty()) {
+            
+            msg.send("请输入查询内容 (").exec();
+            
+            return;
+            
+        }
+        
         FindIterable<UserArchive> result = null;
 
         long count = UserArchive.data.collection.countDocuments(regex("bio",query));
@@ -54,7 +60,7 @@ public class BioSearch extends Fragment {
         if (count > 0) {
 
             result = UserArchive.data.collection.find(regex("bio",query));
-
+ 
         }
 
         if (count == 0) {

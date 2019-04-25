@@ -8,7 +8,8 @@ import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.forward.*;
 import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.funcs.*;
-import io.kurumi.ntt.funcs.twitter.*;
+import io.kurumi.ntt.funcs.admin.*;
+import io.kurumi.ntt.funcs.twitter.ext.*;
 import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.twitter.stream.*;
 import io.kurumi.ntt.twitter.track.*;
@@ -17,7 +18,6 @@ import java.io.*;
 import java.util.*;
 
 import cn.hutool.core.lang.Console;
-import io.kurumi.ntt.funcs.admin.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -26,26 +26,24 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     public Launcher() {
 
         addFragment(Ping.INSTANCE);
-        
+
         addFragment(Utils.INSTANCE);
 
         addFragment(StickerManage.INSTANCE);
 
-        addFragment(TwitterDelete.INSTANCE);
+        // addFragment(TwitterDelete.INSTANCE);
 
         addFragment(Backup.INSTANCE);
 
         addFragment(GroupRepeat.INSTANCE);
 
-		addFragment(TwitterUI.INSTANCE);
+        // addFragment(TwitterArchive.INSTANCE);
 
-        addFragment(TwitterArchive.INSTANCE);
+        //  addFragment(FollowersTrack.INSTANCE);
 
-        addFragment(FollowersTrack.INSTANCE);
+        //  addFragment(UserTrack.INSTANCE);
 
-        addFragment(UserTrack.INSTANCE);
-
-        addFragment(StatusUI.INSTANCE);
+        //  addFragment(StatusUI.INSTANCE);
 
 		addFragment(ChineseAction.INSTANCE);
 
@@ -53,14 +51,14 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(AntiHalal.INSTANCE);
 
-        addFragment(HideMe.INSTANCE);
-        
+        // addFragment(HideMe.INSTANCE);
+
         addFragment(ForwardMessage.INSTANCE);
-        
-        addFragment(BlockList.INSTANCE);
-        
+
+        // addFragment(BlockList.INSTANCE);
+
         addFragment(BioSearch.INSTANCE);
-        
+
         addFragment(Notice.INSTANCE);
 
     }
@@ -131,16 +129,16 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
             } catch (Exception e) {}
 
         }
-        
+
         RuntimeUtil.addShutdownHook(new Runnable() {
 
                 @Override
                 public void run() {
-                    
+
                     INSTANCE.stop();
-                   
+
                 }
-                
+
             });
 
         INSTANCE.start();
@@ -181,14 +179,14 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     @Override
     public boolean onUpdate(UserData user,Update update) {
-        
+
         BotLog.process(user,update);
-        
+
         return false;
-        
+
     }
-    
-    
+
+
 
     @Override
     public boolean onMsg(UserData user,Msg msg) {
@@ -273,38 +271,50 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     @Override
     public void stop() {
-       
+
         for (BotFragment bot : BotServer.fragments.values()) {
 
             if (bot != this) bot.stop();
-            
+
         }
-        
+
         super.stop();
 
         BotServer.INSTANCE.stop();
 
+        /*
+        
         FTTask.stop();
         UTTask.stop();
         SubTask.stopAll();
+        
+        */
+        
         Backup.AutoBackupTask.INSTANCE.stop();
 
 		//  BotServer.INSTACNCE.stop();
-        
+
     }
 
     @Override
     public void realStart() {
 
+        /*
+        
         FTTask.start();
         UTTask.start();
         SubTask.start();
+        
+        */
+        
         Backup.AutoBackupTask.INSTANCE.start();
+        
+        
 
         super.realStart();
-        
+
         ForwardMessage.start();
-        
+
 
         BotLog.info("初始化 完成 :)");
 

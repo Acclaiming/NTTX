@@ -48,6 +48,8 @@ public class NTT {
         return false;
 
     }
+    
+    /*
 
     public static boolean checkUserNonAuth(UserData user,Msg msg) {
 
@@ -90,6 +92,8 @@ public class NTT {
         return false;
 
     }
+    
+    */
 
     public static String parseScreenName(String input) {
 

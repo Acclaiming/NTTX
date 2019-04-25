@@ -13,6 +13,8 @@ public class HideMe extends Fragment {
 
     public static HideMe INSTANCE = new HideMe();
     
+    /*
+    
     public static JSONArray hideList = LocalData.getJSONArray("data","hides",true);
     
     @Override
@@ -82,5 +84,7 @@ public class HideMe extends Fragment {
         LocalData.setJSONArray("data","hides",hideList);
         
     }
+    
+    */
     
 }
