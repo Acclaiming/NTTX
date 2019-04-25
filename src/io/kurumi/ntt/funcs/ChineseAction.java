@@ -6,8 +6,63 @@ import io.kurumi.ntt.model.*;
 import cn.hutool.core.util.*;
 import cn.hutool.core.text.*;
 import cn.hutool.http.*;
+import io.kurumi.ntt.funcs.abs.*;
+import java.util.*;
+import cn.hutool.json.*;
+import io.kurumi.ntt.utils.*;
 
-public class ChineseAction extends Fragment {
+public class ChineseAction extends Function {
+
+    public JSONArray disable = LocalData.getJSONArray("data","disable_action",true);
+    
+    @Override
+    public void functions(LinkedList<String> names) {
+        
+        names.add("action");
+        
+    }
+
+    @Override
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
+        
+        if (NTT.checkGroupAdmin(msg)) return;
+        
+        if (params.length == 1 && "off".equals(params[0])) {
+            
+            if (disable.contains(msg.chatId().longValue())) {
+                
+                msg.send("无需重复关闭 ~").exec();
+                
+            } else {
+                
+                disable.add(msg.chatId());
+                
+                LocalData.setJSONArray("daat","disable_action",disable);
+                
+                msg.send("关闭成功 ~").exec();
+                
+            }
+            
+        } else {
+            
+            if (!disable.contains(msg.chatId().longValue())) {
+
+                msg.send("没有关闭 ~").exec();
+
+            } else {
+
+                disable.remove(msg.chatId());
+
+                LocalData.setJSONArray("daat","disable_action",disable);
+                
+                msg.send("已开启 ~").exec();
+                
+            }
+            
+        }
+        
+        
+    }
 
 	public static ChineseAction INSTANCE = new ChineseAction();
 
@@ -28,6 +83,8 @@ public class ChineseAction extends Fragment {
 	@Override
 	public boolean onGroup(UserData user,Msg msg) {
 
+        if (disable.contains(msg.chatId().longValue())) return false;
+        
 		if (startWithChinese(msg.command())) {
 
 			if (msg.replyTo() != null) {
@@ -35,8 +92,6 @@ public class ChineseAction extends Fragment {
                 if (msg.params().length > 0) {
 
                     String params = ArrayUtil.join(msg.params()," ");
-                    
-                    
                     
                     msg.send(user.userName() + " " + HtmlUtil.escape(msg.command()) + " " + msg.replyTo().from().userName() + " " + params + " ~").html().exec();
 
