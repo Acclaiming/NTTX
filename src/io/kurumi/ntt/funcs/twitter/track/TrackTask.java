@@ -111,7 +111,7 @@ public class TrackTask extends TimerTask {
 
                 target = retains.subList(0,100);
 
-                retains = retains.subList(99,retains.size());
+                retains = new LinkedList<Long>(retains.subList(99,retains.size()));
 
 
             } else {
