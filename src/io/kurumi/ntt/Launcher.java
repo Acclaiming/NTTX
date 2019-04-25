@@ -19,6 +19,7 @@ import java.util.*;
 
 import cn.hutool.core.lang.Console;
 import io.kurumi.ntt.funcs.twitter.*;
+import io.kurumi.ntt.funcs.twitter.track.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -206,8 +207,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 				msg.send("开源地址在 " + Html.a("NTTools","https://github.com/HiedaNaKan/NTTools") + " 欢迎打心 (๑´ڡ`๑)").html().exec();
 
 				msg.send(
-					"现在功能已经稳定 并正在重构 (≧σ≦) 可以",Html.a("联系咱",Env.DEVELOPER_URL) + " 提建议哦 ~ ",
-					"欢迎新功能和想法 ヽ(○´3`)"
+					"现在BOT 正在重构 (≧σ≦) 可以",Html.a("联系咱",Env.DEVELOPER_URL) + " 提建议哦 ~ ",
+					"Twitter功能暂不可用 (˚☐˚! )/"
 				).html().exec();
 
 			} else {
@@ -226,19 +227,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 				msg.send(
 					"/login 认证Twitter账号以使用功能 ~",
 					"/logout 登出Twitter账号 bot将不保留认证信息",
-					"/tstart 账号跟踪 提示当新关注者、失去关注者 、 被关注者屏蔽、关注中和关注者的账号更改 (内容见/sub)",
-					"注意 : 被屏蔽再解除的关注者 (删关注) 会显示 失去关注者",
-					"以及账号跟踪每十五分钟一次 (因为Twitter开放接口调用限制。所以当被回关的新关注者可能显示为 (乃关注的)",
-					"/tstop 取消跟踪 以上",
-					"/sub <推油链接|用户名|用户ID> 跟踪用户账号更改 (ID,名称,头像等 以及停用、冻结和回档",
-					"/unsub 取消跟踪 以上",
-					"/sublist 查看跟踪中列表 以上",
-					"/unsuball 取消所有跟踪 以上",
-					"/sstart 接收以上跟踪中的推文并自动存档 (开启有五分钟以内的延时)",
-					"/sstop 取消接收推文流 立即生效",
-					"/hide 对BOT其他用户隐藏账号更改 (内容见上/sub)",
-					"/unhide 取消隐藏 以上",
-					"/status <推文链接|ID> 推文存档/查看",
+                    "/track Twitter 账号监听 设置",
                     "/bl 导出屏蔽列表 (csv)",
                     "/bio <文本/表达式> 简介正则搜索 (仅已存档的用户 显示100条记录)",
                     "/chatbot 新建一个转发私聊的BOT (BotToken 需要在 @BotFather 申请。)",
@@ -293,6 +282,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         
         */
         
+        TrackTask.stop();
+        
         Backup.AutoBackupTask.INSTANCE.stop();
 
 		//  BotServer.INSTACNCE.stop();
@@ -309,6 +300,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         SubTask.start();
         
         */
+        
+        TrackTask.start();
         
         Backup.AutoBackupTask.INSTANCE.start();
         

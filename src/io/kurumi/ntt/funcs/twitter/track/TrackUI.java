@@ -11,7 +11,7 @@ import java.util.*;
 public class TrackUI extends TwitterFunction {
 
     public static TrackUI INSTANCE = new TrackUI();
-    
+
     public static Data<TrackSetting> data = new Data<TrackSetting>(TrackSetting.class);
 
     public static class TrackSetting {
@@ -71,7 +71,7 @@ public class TrackUI extends TwitterFunction {
     public void onCallback(UserData user,Callback callback,String point,CData data) {
 
         long accountId = data.getIndexLong();
-        
+
         final TrackSetting setting = this.data.containsId(accountId) ? this.data.getById(accountId) : new TrackSetting();
 
         switch (point) {
@@ -82,7 +82,15 @@ public class TrackUI extends TwitterFunction {
 
         }
 
-        this.data.setById(accountId,setting);
+        if (setting.followers || setting.followingInfo || setting.followersInfo) {
+
+            this.data.setById(accountId,setting);
+
+        } else {
+
+            this.data.deleteById(accountId);
+
+        }
 
         callback.text("好 ~");
 

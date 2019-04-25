@@ -21,7 +21,21 @@ public class ButtonLine extends LinkedList<InlineKeyboardButton> {
 
         data.setPoint(point);
 
-        data.setIndex(index);
+        data.put("i",index);
+
+        newButton(text, data);
+
+        return this;
+
+    }
+    
+    public ButtonLine newButton(String text, String point, Long index) {
+
+        CData data = new CData();
+
+        data.setPoint(point);
+
+        data.put("i",index);
 
         newButton(text, data);
 
