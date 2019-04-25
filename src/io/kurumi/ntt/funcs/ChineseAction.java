@@ -23,6 +23,15 @@ public class ChineseAction extends Function {
     }
 
     @Override
+    public int target() {
+        
+        return Group;
+        
+    }
+    
+    
+
+    @Override
     public void onFunction(UserData user,Msg msg,String function,String[] params) {
         
         if (NTT.checkGroupAdmin(msg)) return;
