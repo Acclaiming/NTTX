@@ -73,6 +73,8 @@ public class TrackUI extends TwitterFunction {
         long accountId = data.getIndexLong();
 
         final TrackSetting setting = this.data.containsId(accountId) ? this.data.getById(accountId) : new TrackSetting();
+        
+        setting.id = accountId;
 
         switch (point) {
 
