@@ -20,6 +20,9 @@ public class TwitterLogout extends TwitterFunction {
     @Override
     public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
         
+        TAuth.data.deleteById(account.id);
+        
+        msg.send("乃的授权 " + account.archive().urlHtml() + "已移除 ~").html().exec();
         
     }
 
