@@ -9,6 +9,19 @@ import io.kurumi.ntt.utils.*;
 import java.util.*;
 import twitter4j.*;
 
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Updates.*;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.gt;
+import static com.mongodb.client.model.Filters.not;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
+import static java.util.Arrays.asList;
+import com.mongodb.client.*;
+import io.kurumi.ntt.funcs.twitter.track.TrackUI.*;
+import io.kurumi.ntt.funcs.twitter.track.TrackTask.*;
+
+
 public class TrackTask extends TimerTask {
 
     public static TrackTask INSTANCE = new TrackTask();
@@ -69,6 +82,79 @@ public class TrackTask extends TimerTask {
         }
         
     }
+    
+    public static void onUserChange(UserArchive archive,String change) {
+        
+        FindIterable<IdsList> subFr = friends.collection.find(eq("ids",archive.id));
+        FindIterable<IdsList> subFo = followers.collection.find(eq("ids",archive.id));
+        
+        HashMap<Long,String> sendList = new HashMap<>();
+        LinkedList<Long> following = new LinkedList<>();
+        LinkedList<Long> followers = new LinkedList<>();
+        
+        for (IdsList sub : subFr) {
+            
+            TAuth account = TAuth.getById(sub.id);
+            
+            if (account == null) {
+                
+                friends.deleteById(sub.id);
+                
+                continue;
+                
+            }
+            
+            if (TrackUI.data.collection.countDocuments(and(eq("_id",sub.id),eq("followingInfo",true))) > 0) {
+                
+                sendList.put(account.user,change);
+                
+                following.add(account.user);
+                
+            }
+            
+        }
+        
+        for (IdsList sub : subFo) {
+
+            TAuth account = TAuth.getById(sub.id);
+
+            if (account == null) {
+
+                friends.deleteById(sub.id);
+
+                continue;
+
+            }
+
+            if (TrackUI.data.collection.countDocuments(and(eq("_id",sub.id),eq("followersInfo",true))) > 0) {
+
+                sendList.put(account.user,change);
+
+                followers.add(account.user);
+                
+            }
+
+        }
+        
+        for (Map.Entry<Long,String> send : sendList.entrySet()) {
+            
+            if (following.contains(send.getKey()) && followers.contains(send.getKey())) {
+                
+                new Send(send.getKey(),"与乃互关的 " + archive.urlHtml() + " ( ＃" + archive.id + " ) : ",send.getValue()).html().exec();
+                
+            } else if (following.contains(send.getKey())) {
+                
+                new Send(send.getKey(),"乃关注的 " + archive.urlHtml() + " ( ＃" + archive.id + " ) : ",send.getValue()).html().exec();
+                
+            } else {
+                
+                new Send(send.getKey(),"关注乃的 " + archive.urlHtml() + " ( ＃" + archive.id + " ) : ",send.getValue()).html().exec();
+                
+            }
+            
+        }
+
+    }
 
     void doTracking(TAuth account,TrackUI.TrackSetting setting,Twitter api,UserData user) throws TwitterException {
        
@@ -89,7 +175,7 @@ public class TrackTask extends TimerTask {
        
         List<Long> retains = new LinkedList<>();
         
-        retains.addAll(lostFolowers);
+        retains.addAll(lostFolowers)
         retains.retainAll(newFollowers);
         
         lostFolowers.removeAll(retains);

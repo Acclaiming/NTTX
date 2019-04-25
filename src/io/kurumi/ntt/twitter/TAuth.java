@@ -16,6 +16,8 @@ import io.kurumi.ntt.twitter.archive.*;
 public class TAuth {
 
     public static Data<TAuth> data = new Data<TAuth>(TAuth.class); static {
+        
+        /*
 
         JSONObject old = LocalData.getJSON("data","auth",false);
 
@@ -44,6 +46,8 @@ public class TAuth {
 
 
         }
+        
+        */
 
     }
     

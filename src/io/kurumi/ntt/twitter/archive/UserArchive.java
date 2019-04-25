@@ -7,6 +7,7 @@ import io.kurumi.ntt.utils.*;
 import twitter4j.*;
 
 import cn.hutool.core.util.ObjectUtil;
+import io.kurumi.ntt.funcs.twitter.track.*;
 
 public class UserArchive {
     
@@ -170,6 +171,8 @@ public class UserArchive {
 
         if (change) {
 
+            TrackTask.onUserChange(this,str.toString());
+            
           //  UTTask.onUserChange(this,str.toString());
 
         }
