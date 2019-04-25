@@ -81,6 +81,10 @@ public class TrackTask extends TimerTask {
             
             return;
             
+        } else {
+            
+            followers.setById(account.id,new IdsList(account.id,newFollowers));
+            
         }
        
         List<Long> retains = new LinkedList<>();
