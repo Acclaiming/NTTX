@@ -200,7 +200,12 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 			}
 
-		}
+		} else if ("discuss".equals(msg.command())) {
+            
+            msg.send(Html.a("戳这里  ~","https://t.me/joinchat/H5gBQ1N2Mx4RuhIkq-EajQ")).html().exec();
+			
+            
+        }
 
         return false;
 

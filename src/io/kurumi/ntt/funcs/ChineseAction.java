@@ -29,8 +29,6 @@ public class ChineseAction extends Function {
         
     }
     
-    
-
     @Override
     public void onFunction(UserData user,Msg msg,String function,String[] params) {
         
