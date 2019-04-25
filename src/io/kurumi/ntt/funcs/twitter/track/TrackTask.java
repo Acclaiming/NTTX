@@ -175,7 +175,7 @@ public class TrackTask extends TimerTask {
        
         List<Long> retains = new LinkedList<>();
         
-        retains.addAll(lostFolowers)
+        retains.addAll(lostFolowers);
         retains.retainAll(newFollowers);
         
         lostFolowers.removeAll(retains);

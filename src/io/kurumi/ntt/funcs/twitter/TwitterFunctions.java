@@ -16,6 +16,7 @@ public class TwitterFunctions {
         
         fragment.addFragment(BioSearch.INSTANCE);
         fragment.addFragment(BlockList.INSTANCE);
+        fragment.addFragment(StatusGetter.INSTANCE);
         
     }
     
