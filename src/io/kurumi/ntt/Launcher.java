@@ -23,48 +23,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     public static final Launcher INSTANCE = new Launcher();
 
-    public Launcher() {
-
-        addFragment(Ping.INSTANCE);
-
-        addFragment(Utils.INSTANCE);
-
-        addFragment(StickerManage.INSTANCE);
-
-        // addFragment(TwitterDelete.INSTANCE);
-
-        addFragment(Backup.INSTANCE);
-
-        addFragment(GroupRepeat.INSTANCE);
-
-        // addFragment(TwitterArchive.INSTANCE);
-
-        //  addFragment(FollowersTrack.INSTANCE);
-
-        //  addFragment(UserTrack.INSTANCE);
-
-        //  addFragment(StatusUI.INSTANCE);
-
-		addFragment(ChineseAction.INSTANCE);
-
-        addFragment(BanSetickerSet.INSTANCE);
-
-        addFragment(AntiHalal.INSTANCE);
-
-        // addFragment(HideMe.INSTANCE);
-
-        addFragment(ForwardMessage.INSTANCE);
-
-        // addFragment(BlockList.INSTANCE);
-
-        addFragment(BioSearch.INSTANCE);
-
-        addFragment(Notice.INSTANCE);
-        
-        TwitterFunctions.init(this);
-
-    }
-
     public static void main(String[] args) {
 
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
@@ -298,6 +256,44 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         SubTask.start();
         
         */
+        
+        addFragment(Ping.INSTANCE);
+
+        addFragment(Utils.INSTANCE);
+
+        addFragment(StickerManage.INSTANCE);
+
+        // addFragment(TwitterDelete.INSTANCE);
+
+        addFragment(Backup.INSTANCE);
+
+        addFragment(GroupRepeat.INSTANCE);
+
+        // addFragment(TwitterArchive.INSTANCE);
+
+        //  addFragment(FollowersTrack.INSTANCE);
+
+        //  addFragment(UserTrack.INSTANCE);
+
+        //  addFragment(StatusUI.INSTANCE);
+
+        addFragment(ChineseAction.INSTANCE);
+
+        addFragment(BanSetickerSet.INSTANCE);
+
+        addFragment(AntiHalal.INSTANCE);
+
+        // addFragment(HideMe.INSTANCE);
+
+        addFragment(ForwardMessage.INSTANCE);
+
+        // addFragment(BlockList.INSTANCE);
+
+        addFragment(BioSearch.INSTANCE);
+
+        addFragment(Notice.INSTANCE);
+
+        TwitterFunctions.init(this);
         
         TrackTask.start();
         
