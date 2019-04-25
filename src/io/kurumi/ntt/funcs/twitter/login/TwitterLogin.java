@@ -41,6 +41,16 @@ public class TwitterLogin extends Function {
         
     }
 
+    @Override
+    public int target() {
+       
+        return Private;
+        
+        
+    }
+    
+    
+
     public HashMap<Long,RequestToken> cache = new HashMap<>();
 
     @Override
