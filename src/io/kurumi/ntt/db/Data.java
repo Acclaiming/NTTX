@@ -35,7 +35,7 @@ public class Data<T> {
 
     public boolean containsId(Long id) {
 
-        return collection.count(eq(FIELD_ID,id)) > 0;
+        return collection.countDocuments(eq(FIELD_ID,id)) > 0;
 
     }
 
