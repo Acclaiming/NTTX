@@ -10,51 +10,85 @@ import java.util.*;
 
 public class TrackUI extends TwitterFunction {
 
-    public static Data<TrackSetting> data = new Data<TrackSetting>(TrackSetting.class);
+    public static TrackUI INSTANCE = new TrackUI();
     
+    public static Data<TrackSetting> data = new Data<TrackSetting>(TrackSetting.class);
+
     public static class TrackSetting {
-        
+
         public long id;
-        
+
         public boolean followers = false;
         public boolean followingInfo = false;
         public boolean followersInfo = false;
-        
+
     }
-    
+
     @Override
     public void functions(LinkedList<String> names) {
-       
+
         names.add("track");
-        
+
     }
-    
-    final String POINT_SWITCH_FOLLOWERS = "tr|f";
+
+    final String POINT_SETTING_FOLLOWERS = "tr|f";
+    final String POINT_SETTING_FOLLOWERS_INFO = "tr|fo";
+    final String POINT_SETTING_FOLLOWINGS_INFO = "tr|fr";
+
+    @Override
+    public void points(LinkedList<String> points) {
+
+        super.points(points);
+
+        points.add(POINT_SETTING_FOLLOWERS);
+        points.add(POINT_SETTING_FOLLOWINGS_INFO);
+        points.add(POINT_SETTING_FOLLOWERS_INFO);
+
+    }
 
     @Override
     public void onFunction(UserData user,Msg msg,String function,String[] params,final TAuth account) {
-       
-        msg.send("一个监听的设置... (做成按钮UI了 (❁´▽`❁)").buttons(makeSettings(user.id,account)).exec();
-        
+
+        final TrackSetting setting = this.data.containsId(account.id) ? this.data.getById(account.id) : new TrackSetting();
+
+        msg.send("一个监听的设置... (做成按钮UI了 (❁´▽`❁)").buttons(makeSettings(setting,account.id)).exec();
+
     }
-    
-    ButtonMarkup makeSettings(long userId,final TAuth account) {
-        
-        final TrackSetting setting = data.containsId(userId) ? data.getById(userId) : new TrackSetting();
-        
+
+    ButtonMarkup makeSettings(final TrackSetting setting,final long accountId) {
+
         return new ButtonMarkup() {{
 
-
-                newButtonLine((setting.followers ? "「 关闭" : "「 开启") + " 关注者监听 」",cdata(POINT_SWITCH_FOLLOWERS,account.id.toString()));
-                newButtonLine((setting.followers ? "「 关闭" : "「 开启") + " 关注者监听 」",cdata(POINT_SWITCH_FOLLOWERS,account.id.toString()));
-
+                newButtonLine((setting.followers ? "「 关闭" : "「 开启") + " 关注者监听 」",POINT_SETTING_FOLLOWERS,accountId);
+                newButtonLine((setting.followers ? "「 关闭" : "「 开启") + " 账号更改监听 (关注中) 」",POINT_SETTING_FOLLOWINGS_INFO,accountId);
+                newButtonLine((setting.followers ? "「 关闭" : "「 开启") + " 账号更改监听 (关注者) 」",POINT_SETTING_FOLLOWERS_INFO,accountId);
 
             }};
-        
+
     }
 
     @Override
     public void onCallback(UserData user,Callback callback,String point,CData data) {
+
+        long accountId = data.getIndexLong();
+        
+        final TrackSetting setting = this.data.containsId(accountId) ? this.data.getById(accountId) : new TrackSetting();
+
+        switch (point) {
+
+                case POINT_SETTING_FOLLOWERS : setting.followers = !setting.followers;break;
+                case POINT_SETTING_FOLLOWINGS_INFO : setting.followingInfo = !setting.followingInfo;break;
+                case POINT_SETTING_FOLLOWERS_INFO : setting.followersInfo = !setting.followersInfo;break;
+
+        }
+
+        this.data.setById(accountId,setting);
+
+        callback.text("好 ~");
+
+        callback.editMarkup(makeSettings(setting,accountId));
+
+
     }
-    
+
 }

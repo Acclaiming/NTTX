@@ -29,15 +29,16 @@ public class CData extends JSONObject {
 
     }
 
-    public void setIndex(String point) {
-
-        put("i", point);
-
-    }
 
     public String getIndex() {
 
         return getStr("i");
+
+    }
+    
+    public Long getIndexLong() {
+
+        return getLong("i");
 
     }
 

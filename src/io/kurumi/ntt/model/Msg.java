@@ -234,6 +234,12 @@ public class Msg extends Context {
 		return edit;
 		
     }
+    
+    public void editMarkup(ButtonMarkup markup) {
+        
+        fragment.bot().execute(new EditMessageReplyMarkup(chatId(),messageId()).replyMarkup(markup.markup()));
+        
+    }
 
     public boolean delete() {
 
@@ -258,7 +264,6 @@ public class Msg extends Context {
         return restrict(from().id,until);
 
     }
-    
     
     
 	public void kick() {

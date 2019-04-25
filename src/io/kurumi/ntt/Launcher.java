@@ -18,6 +18,7 @@ import java.io.*;
 import java.util.*;
 
 import cn.hutool.core.lang.Console;
+import io.kurumi.ntt.funcs.twitter.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -60,6 +61,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(BioSearch.INSTANCE);
 
         addFragment(Notice.INSTANCE);
+        
+        TwitterFunctions.init(this);
 
     }
 

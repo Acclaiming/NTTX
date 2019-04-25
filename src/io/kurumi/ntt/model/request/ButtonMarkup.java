@@ -23,8 +23,20 @@ public class ButtonMarkup extends LinkedList<ButtonLine> {
         CData data = new CData();
 
         data.setPoint(point);
+        
+        data.put("i",index);
+        
+        newButtonLine().newButton(text, data);
 
-        data.setIndex(index);
+    }
+    
+    public void newButtonLine(String text, String point, Long index) {
+
+        CData data = new CData();
+
+        data.setPoint(point);
+
+        data.put("i",index);
 
         newButtonLine().newButton(text, data);
 

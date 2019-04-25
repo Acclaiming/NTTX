@@ -136,7 +136,17 @@ public class Fragment {
 
         CData data = cdata(point);
 
-        data.setIndex(index);
+        data.put("i",index);
+
+        return data;
+
+    }
+    
+    public CData cdata(String point, Long index) {
+
+        CData data = cdata(point);
+
+        data.put("i",index);
 
         return data;
 
