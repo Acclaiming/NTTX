@@ -297,6 +297,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(BioSearch.INSTANCE);
 
         addFragment(Notice.INSTANCE);
+        
+        addFragment(TwitterActions.INSTANCE);
 
         TwitterFunctions.init(this);
         

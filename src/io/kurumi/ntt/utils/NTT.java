@@ -117,7 +117,7 @@ public class NTT {
 
         Long statusId = -1L;
 
-        if (NumberUtil.isNumber(input)) {
+        if (NumberUtil.isLong(input)) {
 
             statusId = NumberUtil.parseLong(input);
 
