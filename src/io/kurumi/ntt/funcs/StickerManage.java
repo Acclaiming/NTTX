@@ -16,21 +16,7 @@ public class StickerManage extends Fragment {
     @Override
     public boolean onMsg(UserData user,Msg msg) {
         
-        if ("sticker".equals(msg.command())) {
-
-            if (!msg.isPrivate()) {
-
-                msg.send("请使用私聊 :)").publicFailed();
-
-            } else {
-
-                sendMain(user,msg,false);
-
-            }
-
-            return true;
-
-        } else if (msg.isPrivate() && msg.message().sticker() != null) {
+        if (msg.isPrivate() && msg.message().sticker() != null) {
 
             msg.sendUpdatingPhoto();
             
@@ -41,20 +27,6 @@ public class StickerManage extends Fragment {
         }
 
         return false;
-
-    }
-    
-    
-
-    void sendMain(UserData user,Msg msg,boolean edit) {
-
-        msg.sendTyping();
-
-        msg.sendOrEdit(edit,"管理或创建你的贴纸集 :)")
-        .buttons(new ButtonMarkup() {{
-            
-            
-        }}).exec();
 
     }
 
