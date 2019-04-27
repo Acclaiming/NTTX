@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import io.kurumi.ntt.utils.BotLog;
 
 public class TwitterDelete extends TwitterFunction {
 
@@ -67,7 +68,7 @@ public class TwitterDelete extends TwitterFunction {
             msg.send("已取消...").exec();
 
 
-        } else  if (threads.containsKey(user.id)) {
+        } else if (threads.containsKey(user.id)) {
 
             msg.send("你有正在处理中的删除... 这需要大量时间处理... 取消使用 /canceldelete .").exec();
 
@@ -237,6 +238,8 @@ public class TwitterDelete extends TwitterFunction {
 
                 try {
 
+                   
+                    
                     if (tweet) {
 
                         api.destroyStatus(id);
@@ -248,7 +251,11 @@ public class TwitterDelete extends TwitterFunction {
                     }
 
 
-                } catch (TwitterException e) {}
+                } catch (TwitterException e) {
+                    
+                    BotLog.info("删除，错误",e);
+                    
+                }
 
                 if (stoped.get()) {
 
