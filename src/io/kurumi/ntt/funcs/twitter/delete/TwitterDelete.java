@@ -21,7 +21,7 @@ import io.kurumi.ntt.utils.BotLog;
 public class TwitterDelete extends TwitterFunction {
 
     public static TwitterDelete INSTANCE = new TwitterDelete();
-    
+
     @Override
     public void functions(LinkedList<String> names) {
 
@@ -34,20 +34,20 @@ public class TwitterDelete extends TwitterFunction {
 
     @Override
     public void points(LinkedList<String> points) {
-       
+
         super.points(points);
-        
+
         points.add(POINT_DELETE);
-        
+
     }
 
     @Override
     public int target() {
-        
+
         return Private;
-        
+
     }
-    
+
     HashMap<Long,DeleteThread> threads = new HashMap<>();
 
     @Override
@@ -73,11 +73,16 @@ public class TwitterDelete extends TwitterFunction {
             msg.send("你有正在处理中的删除... 这需要大量时间处理... 取消使用 /canceldelete .").exec();
 
             return;
+
+        } else {
+
+            setPoint(user,POINT_DELETE,account);
+
+            msg.send("这个功能需要从 Twitter应用/网页 - 设置 - 账号 - 你的Twitter数据 输入密码下载数据zip，并找到tweet.js/like.js的说").exec();
+            
+            msg.send("现在发送 tweet.js / like.js 来删除所有推文/打心...").exec();
+
         }
-
-        setPoint(user,POINT_DELETE,account);
-
-        msg.send("现在发送 tweet.js / like.js 来删除所有推文/打心...").exec();
 
     }
 
@@ -93,7 +98,7 @@ public class TwitterDelete extends TwitterFunction {
         } if (msg.doc().fileName().equals("tweet.js")) {
 
             msg.send("读取推文ing...").exec();
-            
+
             clearPoint(user);
 
             BufferedReader reader =  IoUtil.getReader(IoUtil.toStream(msg.file()),CharsetUtil.CHARSET_UTF_8);
@@ -113,13 +118,13 @@ public class TwitterDelete extends TwitterFunction {
                         ids.add(Long.parseLong(StrUtil.subBetween(line,"\" : \"","\"")));
 
                         isRC = false;
-                        
+
                     } else if (line.contains("retweet_count")) {
 
                         isRC = true;
 
                     }
-                    
+
                     line = reader.readLine();
 
                 }
@@ -153,7 +158,7 @@ public class TwitterDelete extends TwitterFunction {
             thread.start();
 
         } else if (msg.doc().fileName().equals("like.js")) {
-            
+
             msg.send("读取打心ing...").exec();
 
             clearPoint(user);
@@ -165,7 +170,7 @@ public class TwitterDelete extends TwitterFunction {
             try {
 
                 String line = reader.readLine();
-                
+
                 while (line != null) {
 
                     if (line.contains("tweetId")) {
@@ -205,8 +210,8 @@ public class TwitterDelete extends TwitterFunction {
             threads.put(user.id,thread);
 
             thread.start();
-            
-            
+
+
         }
 
     }
@@ -238,8 +243,8 @@ public class TwitterDelete extends TwitterFunction {
 
                 try {
 
-                   
-                    
+
+
                     if (tweet) {
 
                         api.destroyStatus(id);
@@ -252,9 +257,9 @@ public class TwitterDelete extends TwitterFunction {
 
 
                 } catch (TwitterException e) {
-                    
+
                     BotLog.info("删除，错误",e);
-                    
+
                 }
 
                 if (stoped.get()) {
@@ -268,7 +273,7 @@ public class TwitterDelete extends TwitterFunction {
                 current ++;
 
                 progress = Math.round(progress * 100);
-                
+
                 if ((progress = current / count) != last) {
 
                     status.edit("删除中 : " + progress + "%","取消删除使用 /canceldelete ...").exec();
