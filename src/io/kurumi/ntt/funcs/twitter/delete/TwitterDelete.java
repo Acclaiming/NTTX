@@ -74,7 +74,7 @@ public class TwitterDelete extends TwitterFunction {
     }
 
     @Override
-    public void onPoint(UserData user,Msg msg,PointStore.Point<TAuth> point) {
+    public void onPoint(UserData user,Msg msg,PointStore.Point point) {
 
         if (msg.doc() == null) {
 
@@ -126,7 +126,7 @@ public class TwitterDelete extends TwitterFunction {
 
             thread.userId = user.id;
 
-            thread.account = point.data;
+            thread.account = (TAuth)point.data;
 
             thread.api = thread.account.createApi();
 
