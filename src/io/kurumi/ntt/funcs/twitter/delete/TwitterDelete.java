@@ -228,7 +228,7 @@ public class TwitterDelete extends TwitterFunction {
             float count = ids.size();
             float current = 0;
 
-            float progress = current / count;
+            float progress = 0;
 
             for (Long id : ids) {
 
@@ -260,9 +260,11 @@ public class TwitterDelete extends TwitterFunction {
 
                 current ++;
 
+                progress = Math.round(progress * 100);
+                
                 if ((progress = current / count) != last) {
 
-                    status.edit("删除中 : " + Math.round(progress * 100) + "%","取消删除使用 /canceldelete ...").sync();
+                    status.edit("删除中 : " + progress + "%","取消删除使用 /canceldelete ...").sync();
 
                 }
 
