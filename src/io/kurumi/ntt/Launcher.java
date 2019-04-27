@@ -23,6 +23,105 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     public static final Launcher INSTANCE = new Launcher();
 
+    @Override
+    public void realStart() {
+
+        /*
+
+         FTTask.start();
+         UTTask.start();
+         SubTask.start();
+
+         */
+
+        addFragment(Ping.INSTANCE);
+
+        addFragment(Utils.INSTANCE);
+
+        addFragment(StickerManage.INSTANCE);
+
+        // addFragment(TwitterDelete.INSTANCE);
+
+        addFragment(Backup.INSTANCE);
+
+        addFragment(GroupRepeat.INSTANCE);
+
+        // addFragment(TwitterArchive.INSTANCE);
+
+        //  addFragment(FollowersTrack.INSTANCE);
+
+        //  addFragment(UserTrack.INSTANCE);
+
+        //  addFragment(StatusUI.INSTANCE);
+
+        addFragment(ChineseAction.INSTANCE);
+
+        addFragment(BanSetickerSet.INSTANCE);
+
+        addFragment(AntiHalal.INSTANCE);
+
+        // addFragment(HideMe.INSTANCE);
+
+        addFragment(ForwardMessage.INSTANCE);
+
+        // addFragment(BlockList.INSTANCE);
+
+        addFragment(BioSearch.INSTANCE);
+
+        addFragment(Notice.INSTANCE);
+
+        addFragment(TwitterActions.INSTANCE);
+        
+        addFragment(RiceCakeMeme.INSTANCE);
+
+        TwitterFunctions.init(this);
+
+        TrackTask.start();
+
+        Backup.AutoBackupTask.INSTANCE.start();
+
+
+        super.realStart();
+
+        ForwardMessage.start();
+
+
+        BotLog.info("初始化 完成 :)");
+
+
+    }
+    
+    @Override
+    public void stop() {
+
+        for (BotFragment bot : BotServer.fragments.values()) {
+
+            if (bot != this) bot.stop();
+
+        }
+
+        super.stop();
+
+        BotServer.INSTANCE.stop();
+
+        /*
+
+         FTTask.stop();
+         UTTask.stop();
+         SubTask.stopAll();
+
+         */
+
+        TrackTask.stop();
+
+        Backup.AutoBackupTask.INSTANCE.stop();
+
+        //  BotServer.INSTACNCE.stop();
+
+    }
+    
+    
+    
     public static void main(String[] args) {
 
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
@@ -222,101 +321,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
-    @Override
-    public void stop() {
-
-        for (BotFragment bot : BotServer.fragments.values()) {
-
-            if (bot != this) bot.stop();
-
-        }
-
-        super.stop();
-
-        BotServer.INSTANCE.stop();
-
-        /*
-        
-        FTTask.stop();
-        UTTask.stop();
-        SubTask.stopAll();
-        
-        */
-        
-        TrackTask.stop();
-        
-        Backup.AutoBackupTask.INSTANCE.stop();
-
-		//  BotServer.INSTACNCE.stop();
-
-    }
-
-    @Override
-    public void realStart() {
-
-        /*
-        
-        FTTask.start();
-        UTTask.start();
-        SubTask.start();
-        
-        */
-        
-        addFragment(Ping.INSTANCE);
-
-        addFragment(Utils.INSTANCE);
-
-        addFragment(StickerManage.INSTANCE);
-
-        // addFragment(TwitterDelete.INSTANCE);
-
-        addFragment(Backup.INSTANCE);
-
-        addFragment(GroupRepeat.INSTANCE);
-
-        // addFragment(TwitterArchive.INSTANCE);
-
-        //  addFragment(FollowersTrack.INSTANCE);
-
-        //  addFragment(UserTrack.INSTANCE);
-
-        //  addFragment(StatusUI.INSTANCE);
-
-        addFragment(ChineseAction.INSTANCE);
-
-        addFragment(BanSetickerSet.INSTANCE);
-
-        addFragment(AntiHalal.INSTANCE);
-
-        // addFragment(HideMe.INSTANCE);
-
-        addFragment(ForwardMessage.INSTANCE);
-
-        // addFragment(BlockList.INSTANCE);
-
-        addFragment(BioSearch.INSTANCE);
-
-        addFragment(Notice.INSTANCE);
-        
-        addFragment(TwitterActions.INSTANCE);
-
-        TwitterFunctions.init(this);
-        
-        TrackTask.start();
-        
-        Backup.AutoBackupTask.INSTANCE.start();
-        
-        
-
-        super.realStart();
-
-        ForwardMessage.start();
-
-
-        BotLog.info("初始化 完成 :)");
-
-
-    }
 
 
 

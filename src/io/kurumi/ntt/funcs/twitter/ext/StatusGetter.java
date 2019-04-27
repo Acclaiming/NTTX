@@ -21,6 +21,13 @@ public class StatusGetter extends TwitterFunction {
     }
 
     @Override
+    public int target() {
+        
+        return Private;
+        
+    }
+
+    @Override
     public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
         if (params.length != 1) {
