@@ -104,6 +104,8 @@ public class TwitterDelete extends TwitterFunction {
 
                         ids.add(Long.parseLong(StrUtil.subBetween(line,"id\" : \"","\"")));
 
+                        isRC = false;
+                        
                     } else if (line.contains("retweet_count")) {
 
                         isRC = true;
