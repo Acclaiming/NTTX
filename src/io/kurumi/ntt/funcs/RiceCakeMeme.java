@@ -24,7 +24,7 @@ public class RiceCakeMeme extends Fragment {
                 
                 if (name.contains("的")) name = StrUtil.subAfter(name,"的",true);
                 
-                msg.reply("以后把" + msg.replyTo().from().name() + "做成锅包肉吃...").html().exec();
+                msg.reply("以后把" + name + "做成锅包肉吃...").html().exec();
 
             } else {
                 
@@ -41,3 +41,4 @@ public class RiceCakeMeme extends Fragment {
     }
 
 }
+
