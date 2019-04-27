@@ -39,6 +39,15 @@ public class TwitterDelete extends TwitterFunction {
         points.add(POINT_DELETE);
         
     }
+
+    @Override
+    public int target() {
+        
+        return Private;
+        
+    }
+    
+    
     
     HashMap<Long,DeleteThread> threads = new HashMap<>();
 
