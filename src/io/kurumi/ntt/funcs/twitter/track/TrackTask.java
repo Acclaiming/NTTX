@@ -85,6 +85,12 @@ public class TrackTask extends TimerTask {
     
     public static void onUserChange(UserArchive archive,String change) {
         
+        if (TrackUI.data.collection.countDocuments(and(eq("_id",archive.id),eq("hideChange",true))) > 0) {
+            
+            return;
+            
+        }
+        
         FindIterable<IdsList> subFr = friends.collection.find(eq("ids",archive.id));
         FindIterable<IdsList> subFo = followers.collection.find(eq("ids",archive.id));
         

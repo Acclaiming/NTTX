@@ -22,6 +22,8 @@ public class TrackUI extends TwitterFunction {
         public boolean followingInfo = false;
         public boolean followersInfo = false;
 
+        public boolean hideChange = false;
+        
     }
 
     @Override
@@ -41,9 +43,10 @@ public class TrackUI extends TwitterFunction {
     
 
     final String POINT_SETTING_FOLLOWERS = "tr|f";
-    final String POINT_SETTING_FOLLOWERS_INFO = "tr|fo";
-    final String POINT_SETTING_FOLLOWINGS_INFO = "tr|fr";
-
+    final String POINT_SETTING_FOLLOWERS_INFO = "tr|o";
+    final String POINT_SETTING_FOLLOWINGS_INFO = "tr|r";
+    final String POINT_SETTING_HIDE_ME = "tr|h";
+    
     @Override
     public void points(LinkedList<String> points) {
 
@@ -71,7 +74,9 @@ public class TrackUI extends TwitterFunction {
                 newButtonLine((setting.followers ? "「 关闭" : "「 开启") + " 关注者监听 」",POINT_SETTING_FOLLOWERS,accountId);
                 newButtonLine((setting.followingInfo ? "「 关闭" : "「 开启") + " 账号更改监听 (关注中) 」",POINT_SETTING_FOLLOWINGS_INFO,accountId);
                 newButtonLine((setting.followersInfo ? "「 关闭" : "「 开启") + " 账号更改监听 (关注者) 」",POINT_SETTING_FOLLOWERS_INFO,accountId);
-
+                newButtonLine((setting.hideChange ? "「 隐藏" : "「 显示") + " 账号更改 (对其他用户) 」",POINT_SETTING_HIDE_ME,accountId);
+                
+                
             }};
 
     }
@@ -90,7 +95,8 @@ public class TrackUI extends TwitterFunction {
                 case POINT_SETTING_FOLLOWERS : setting.followers = !setting.followers;break;
                 case POINT_SETTING_FOLLOWINGS_INFO : setting.followingInfo = !setting.followingInfo;break;
                 case POINT_SETTING_FOLLOWERS_INFO : setting.followersInfo = !setting.followersInfo;break;
-
+                case POINT_SETTING_HIDE_ME : setting.hideChange = !setting.hideChange;break;
+                
         }
 
         if (setting.followers || setting.followingInfo || setting.followersInfo) {
@@ -103,7 +109,7 @@ public class TrackUI extends TwitterFunction {
 
         }
 
-        callback.text("好 ~");
+        callback.text("更改成功 ~");
 
         callback.editMarkup(makeSettings(setting,accountId));
 
