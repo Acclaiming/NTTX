@@ -140,15 +140,15 @@ public class TrackTask extends TimerTask {
             
             if (following.contains(send.getKey()) && followers.contains(send.getKey())) {
                 
-                new Send(send.getKey(),"与乃互关的 " + archive.urlHtml() + " ( #" + archive.screenName + " ) : ",send.getValue()).html().exec();
+                new Send(send.getKey(),"与乃互关的 " + archive.urlHtml() + " ( #" + archive.oldScreenName() + " ) : ",send.getValue()).html().exec();
                 
             } else if (following.contains(send.getKey())) {
                 
-                new Send(send.getKey(),"乃关注的 " + archive.urlHtml() + " ( #" + archive.screenName + " ) : ",send.getValue()).html().exec();
+                new Send(send.getKey(),"乃关注的 " + archive.urlHtml() + " ( #" + archive.oldScreenName() + " ) : ",send.getValue()).html().exec();
                 
             } else {
                 
-                new Send(send.getKey(),"关注乃的 " + archive.urlHtml() + " ( #" + archive.screenName + " ) : ",send.getValue()).html().exec();
+                new Send(send.getKey(),"关注乃的 " + archive.urlHtml() + " ( #" + archive.oldScreenName() + " ) : ",send.getValue()).html().exec();
                 
             }
             

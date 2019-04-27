@@ -79,6 +79,14 @@ public class UserArchive {
 
     public Boolean isDisappeared;
     
+    private transient String oldScreename;
+    
+    public String oldScreenName() {
+        
+        return oldScreename == null ? screenName : oldScreename;
+        
+    }
+    
     public boolean read(User user) {
 
         if (user == null && !isDisappeared) {
@@ -125,6 +133,8 @@ public class UserArchive {
 
             str.append(split).append("用户名更改 : @").append(screenNameL).append(" ------> @").append(screenName);
 
+            oldScreename = screenName;
+            
             change = true;
 
         }
@@ -180,7 +190,7 @@ public class UserArchive {
         return change;
 
     }
-
+    
     public String urlHtml() {
 
         return Html.a(name,url());
