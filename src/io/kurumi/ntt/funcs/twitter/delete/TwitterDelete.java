@@ -240,10 +240,7 @@ public class TwitterDelete extends TwitterFunction {
 
                 float last = progress;
 
-
                 try {
-
-
 
                     if (tweet) {
 
@@ -274,7 +271,7 @@ public class TwitterDelete extends TwitterFunction {
 
                 progress = Math.round(progress * 100);
 
-                if ((progress = current / count) != last) {
+                if (progress != last) {
 
                     status.edit("删除中 : " + progress + "%","取消删除使用 /canceldelete ...").exec();
 
