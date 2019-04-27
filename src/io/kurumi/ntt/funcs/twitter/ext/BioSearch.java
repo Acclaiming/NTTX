@@ -20,6 +20,8 @@ import java.util.*;
 import cn.hutool.http.*;
 import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.funcs.abs.*;
+import com.mongodb.client.model.CountOptions;
+import java.util.concurrent.TimeUnit;
 
 public class BioSearch extends Function {
 
@@ -55,7 +57,7 @@ public class BioSearch extends Function {
         
         FindIterable<UserArchive> result = null;
 
-        long count = UserArchive.data.collection.countDocuments(regex("bio",query));
+        long count = UserArchive.data.collection.countDocuments(regex("bio",query),new CountOptions().maxTime(500,TimeUnit.MILLISECONDS));
 
         if (count > 0) {
 
@@ -82,14 +84,6 @@ public class BioSearch extends Function {
         for (UserArchive archive : result) {
 
             page.append(archive.urlHtml());
-
-            List<String> match  = ReUtil.findAllGroup0(query,archive.bio);
-
-            if (match.size() > 0) {
-
-                query = match.get(0);
-
-            }
 
             page.append(" :").append("\n\n");
 
