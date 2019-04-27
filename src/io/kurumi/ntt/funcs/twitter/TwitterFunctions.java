@@ -4,6 +4,7 @@ import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.funcs.twitter.login.*;
 import io.kurumi.ntt.funcs.twitter.track.*;
 import io.kurumi.ntt.funcs.twitter.ext.*;
+import io.kurumi.ntt.funcs.twitter.delete.TwitterDelete;
 
 public class TwitterFunctions {
     
@@ -17,6 +18,8 @@ public class TwitterFunctions {
         fragment.addFragment(BioSearch.INSTANCE);
         fragment.addFragment(BlockList.INSTANCE);
         fragment.addFragment(StatusGetter.INSTANCE);
+        
+        fragment.addFragment(TwitterDelete.INSTANCE);
         
     }
     

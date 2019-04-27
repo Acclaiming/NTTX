@@ -20,7 +20,7 @@ public class RiceCakeMeme extends Fragment {
 
             if (msg.isReply()) {
 
-                String name = msg.replyTo().from().name();
+                String name = msg.replyTo().from().firstName;
                 
                 if (name.contains("的")) name = StrUtil.subAfter(name,"的",true);
                 
