@@ -20,6 +20,7 @@ public class Message implements Serializable {
     private Chat forward_from_chat;
     private Integer forward_from_message_id;
     private String forward_signature;
+    private String forward_sender_name;
     private Integer forward_date;
     private Message reply_to_message;
     private Integer edit_date;
@@ -41,6 +42,7 @@ public class Message implements Serializable {
     private Contact contact;
     private Location location;
     private Venue venue;
+    private Poll poll;
     private User new_chat_member;
     private User[] new_chat_members;
     private User left_chat_member;
@@ -88,6 +90,10 @@ public class Message implements Serializable {
 
     public String forwardSignature() {
         return forward_signature;
+    }
+
+    public String forwardSenderName() {
+        return forward_sender_name;
     }
 
     public Integer forwardDate() {
@@ -172,6 +178,10 @@ public class Message implements Serializable {
 
     public Venue venue() {
         return venue;
+    }
+
+    public Poll poll() {
+        return poll;
     }
 
     /**
@@ -260,6 +270,8 @@ public class Message implements Serializable {
             return false;
         if (forward_signature != null ? !forward_signature.equals(message.forward_signature) : message.forward_signature != null)
             return false;
+        if (forward_sender_name != null ? !forward_sender_name.equals(message.forward_sender_name) : message.forward_sender_name != null)
+            return false;
         if (forward_date != null ? !forward_date.equals(message.forward_date) : message.forward_date != null) return false;
         if (reply_to_message != null ? !reply_to_message.equals(message.reply_to_message) : message.reply_to_message != null)
             return false;
@@ -287,6 +299,7 @@ public class Message implements Serializable {
         if (contact != null ? !contact.equals(message.contact) : message.contact != null) return false;
         if (location != null ? !location.equals(message.location) : message.location != null) return false;
         if (venue != null ? !venue.equals(message.venue) : message.venue != null) return false;
+        if (poll != null ? !poll.equals(message.poll) : message.poll != null) return false;
         if (new_chat_member != null ? !new_chat_member.equals(message.new_chat_member) : message.new_chat_member != null)
             return false;
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
@@ -335,6 +348,7 @@ public class Message implements Serializable {
                 ", forward_from_chat=" + forward_from_chat +
                 ", forward_from_message_id=" + forward_from_message_id +
                 ", forward_signature='" + forward_signature + '\'' +
+                ", forward_sender_name='" + forward_sender_name + '\'' +
                 ", forward_date=" + forward_date +
                 ", reply_to_message=" + reply_to_message +
                 ", edit_date=" + edit_date +
@@ -356,6 +370,7 @@ public class Message implements Serializable {
                 ", contact=" + contact +
                 ", location=" + location +
                 ", venue=" + venue +
+                ", poll=" + poll +
                 ", new_chat_member=" + new_chat_member +
                 ", new_chat_members=" + Arrays.toString(new_chat_members) +
                 ", left_chat_member=" + left_chat_member +

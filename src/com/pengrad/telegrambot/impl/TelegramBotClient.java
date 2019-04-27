@@ -1,17 +1,15 @@
 package com.pengrad.telegrambot.impl;
 
-import cn.hutool.core.net.*;
-import com.google.gson.*;
-import com.pengrad.telegrambot.*;
-import com.pengrad.telegrambot.request.*;
-import com.pengrad.telegrambot.response.*;
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.*;
+import com.google.gson.Gson;
+import com.pengrad.telegrambot.Callback;
+import com.pengrad.telegrambot.request.BaseRequest;
+import com.pengrad.telegrambot.response.BaseResponse;
 import okhttp3.*;
 
-import com.pengrad.telegrambot.Callback;
-import cn.hutool.core.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * stas
@@ -37,10 +35,7 @@ public class TelegramBotClient {
             @Override
             public void onResponse(Call call, Response response) {
                 try {
-                    
-                    String str = response.body().string();
-                    R result = gson.fromJson(str, request.getResponseType());
-                    result.source = str;
+                    R result = gson.fromJson(response.body().string(), request.getResponseType());
                     callback.onResponse(request, result);
                 } catch (Exception e) {
                     IOException ioEx = e instanceof IOException ? (IOException) e : new IOException(e);
@@ -59,11 +54,7 @@ public class TelegramBotClient {
         try {
             OkHttpClient client = getOkHttpClient(request);
             Response response = client.newCall(createRequest(request)).execute();
-            String str = response.body().string();
-            R result = gson.fromJson(str, request.getResponseType());
-            result.source = str;
-            
-            return result;
+            return gson.fromJson(response.body().string(), request.getResponseType());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -90,8 +81,6 @@ public class TelegramBotClient {
         if (request.isMultipart()) {
             MediaType contentType = MediaType.parse(request.getContentType());
 
-            MultipartBody.FORM.charset(CharsetUtil.CHARSET_UTF_8);
-            
             MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
 
             for (Map.Entry<String, Object> parameter : request.getParameters().entrySet()) {
@@ -115,6 +104,4 @@ public class TelegramBotClient {
             return builder.build();
         }
     }
-
-    
 }

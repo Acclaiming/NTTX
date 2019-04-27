@@ -20,13 +20,17 @@ public class RiceCakeMeme extends Fragment {
 
             if (msg.isReply()) {
 
-                msg.reply("以后把" + msg.replyTo().from().userName() + "做成锅包肉吃...").html().exec();
+                String name = msg.replyTo().from().name();
+                
+                if (name.contains("的")) name = StrUtil.subAfter(name,"的",true);
+                
+                msg.reply("以后把" + msg.replyTo().from().name() + "做成锅包肉吃...").html().exec();
 
             } else {
                 
                 String content = StrUtil.subBetween(msg.text(),"羡慕","...");
                 
-                msg.reply("以后把" + (content == null || content.isEmpty() ? user.userName() : content) + "做成锅包肉吃...").html().exec();
+                msg.reply("以后把" + (content == null || content.isEmpty() ? user.name() : content) + "做成锅包肉吃...").html().exec();
 
             }
 

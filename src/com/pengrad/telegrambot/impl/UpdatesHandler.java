@@ -28,7 +28,7 @@ public class UpdatesHandler {
         this.sleepTimeout = sleepTimeout;
     }
 
-    public void start(TelegramBot bot,UpdatesListener listener,GetUpdates request) {
+    public void start(TelegramBot bot, UpdatesListener listener, GetUpdates request) {
         this.bot = bot;
         this.listener = listener;
         getUpdates(request);
@@ -39,53 +39,38 @@ public class UpdatesHandler {
         listener = null;
     }
 
-    public void stopAndUpdateCursor() {
-
-        stop();
-
-        if (offset != -1) {
-            
-            bot.execute(new GetUpdates().offset(offset));
-
-        }
-
-    }
-
-    Integer offset = -1;
-
     private void getUpdates(GetUpdates request) {
         if (bot == null || listener == null) return;
 
-        bot.execute(request,new Callback<GetUpdates, GetUpdatesResponse>() {
-                @Override
-                public void onResponse(GetUpdates request,GetUpdatesResponse response) {
-                    if (listener == null) return;
+        bot.execute(request, new Callback<GetUpdates, GetUpdatesResponse>() {
+            @Override
+            public void onResponse(GetUpdates request, GetUpdatesResponse response) {
+                if (listener == null) return;
 
-                    if (!response.isOk() || response.updates() == null || response.updates().size() <= 0) {
-                        sleep();
-                        getUpdates(request);
-                        return;
-                    }
-
-                    List<Update> updates = response.updates();
-                    
-                    int lastConfirmedUpdate = listener.process(updates);
-
-                    if (lastConfirmedUpdate != CONFIRMED_UPDATES_NONE) {
-                        offset = lastConfirmedUpdate == CONFIRMED_UPDATES_ALL
-                            ? lastUpdateId(updates) + 1
-                            : lastConfirmedUpdate + 1;
-                        request = request.offset(offset);
-                    }
-                    getUpdates(request);
-                }
-
-                @Override
-                public void onFailure(GetUpdates request,IOException e) {
+                if (!response.isOk() || response.updates() == null || response.updates().size() <= 0) {
                     sleep();
                     getUpdates(request);
+                    return;
                 }
-            });
+
+                List<Update> updates = response.updates();
+                int lastConfirmedUpdate = listener.process(updates);
+
+                if (lastConfirmedUpdate != CONFIRMED_UPDATES_NONE) {
+                    int offset = lastConfirmedUpdate == CONFIRMED_UPDATES_ALL
+                            ? lastUpdateId(updates) + 1
+                            : lastConfirmedUpdate + 1;
+                    request = request.offset(offset);
+                }
+                getUpdates(request);
+            }
+
+            @Override
+            public void onFailure(GetUpdates request, IOException e) {
+                sleep();
+                getUpdates(request);
+            }
+        });
     }
 
     private int lastUpdateId(List<Update> updates) {

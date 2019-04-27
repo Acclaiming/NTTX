@@ -69,12 +69,6 @@ public class TelegramBot {
     public void removeGetUpdatesListener() {
         updatesHandler.stop();
     }
-    
-    public void stopAndUpdateCursor() {
-        
-        updatesHandler.stopAndUpdateCursor();
-        
-    }
 
     public static final class Builder {
 
