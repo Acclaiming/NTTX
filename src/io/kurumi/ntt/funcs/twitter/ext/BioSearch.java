@@ -22,25 +22,26 @@ import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.funcs.abs.*;
 import com.mongodb.client.model.CountOptions;
 import java.util.concurrent.TimeUnit;
+import com.mongodb.MongoExecutionTimeoutException;
 
 public class BioSearch extends Function {
 
     public static BioSearch INSTANCE = new BioSearch();
-    
+
     @Override
     public void functions(LinkedList<String> names) {
-        
+
         names.add("bio");
-        
+
     }
 
     @Override
     public int target() {
-        
+
         return Private;
-        
+
     }
- 
+
 
     @Override
     public void onFunction(UserData user,Msg msg,String function,String[] params) {
@@ -48,33 +49,40 @@ public class BioSearch extends Function {
         String query = ArrayUtil.join(msg.params(),"\n");
 
         if (query.isEmpty()) {
-            
+
             msg.send("请输入查询内容 (").exec();
-            
+
             return;
-            
+
         }
-        
+
         FindIterable<UserArchive> result = null;
 
-        long count = UserArchive.data.collection.countDocuments(regex("bio",query),new CountOptions().maxTime(500,TimeUnit.MILLISECONDS));
+        String count;
 
-        if (count > 0) {
+        try {
 
-            result = UserArchive.data.collection.find(regex("bio",query));
- 
+            count = ((Long)UserArchive.data.collection.countDocuments(regex("bio",query),new CountOptions().maxTime(500,TimeUnit.MILLISECONDS))).toString();
+
+        } catch (MongoExecutionTimeoutException ex) {
+
+            count = "*";
+
         }
 
-        if (count == 0) {
+
+        if ("0".equals(count)) {
 
             msg.send("没有结果 (´◉.◉)").exec();
 
-            return;
+        } else {
+
+            result = UserArchive.data.collection.find(regex("bio",query));
 
         }
 
-        msg.send("结果数量 : " + (count > 100L ? count + "条 (仅显示100条)" : count + " 条"),"",format(result.limit(100),query)).html().exec();
-        
+        msg.send("结果数量 : " + count + " 条","",format(result.limit(100),query)).html().exec();
+
     }
 
     String format(FindIterable<UserArchive> result,String query)  {
@@ -88,13 +96,13 @@ public class BioSearch extends Function {
             page.append(" :").append("\n\n");
 
             page.append(HtmlUtil.escape(archive.bio));
-            
+
             page.append("\n\n---------------------------------------\n\n");
-            
+
 
         }
 
-        
+
         return page.toString();
 
     }
