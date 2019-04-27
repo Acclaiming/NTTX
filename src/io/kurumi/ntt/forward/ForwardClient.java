@@ -65,7 +65,7 @@ public class ForwardClient extends BotFragment {
 
         } else {
 
-            new Send(this,userId,"来自 " + user.userName() + " : ",DateUtil.formatChineseDate(new Date(((long)(msg.message().forwardDate() == null ? msg.message().date() : msg.message().forwardDate())) * 1000),false)).html().sync();
+            new Send(this,userId,"来自 " + user.userName() + " : ",DateUtil.formatChineseDate(new Date(((long)(msg.message().forwardDate() == null ? msg.message().date() : msg.message().forwardDate())) * 1000),false)).html().exec();
             msg.forwardTo(userId);
 
         }

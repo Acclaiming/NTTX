@@ -23,29 +23,6 @@ public abstract class AbstractSend<T extends AbstractSend> {
 
     public abstract T html();
 
-    public abstract BaseResponse sync();
-
-    public abstract BaseResponse sync(Exception track);
-    
-    public void exec() {
-
-        final Exception track = new Exception();
-
-        ThreadPool.exec(new Runnable() {
-
-                @Override
-                public void run() {
-
-                    sync(track);
-
-                }
-
-            });
-
-    }
-
-
-
-
+    public abstract BaseResponse exec();
 
 }

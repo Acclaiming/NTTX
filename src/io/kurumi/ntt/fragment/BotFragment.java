@@ -2,32 +2,27 @@ package io.kurumi.ntt.fragment;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
-import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.DeleteWebhook;
 import com.pengrad.telegrambot.request.GetMe;
 import com.pengrad.telegrambot.request.GetUpdates;
+import com.pengrad.telegrambot.request.SetWebhook;
+import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetMeResponse;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.Launcher;
-import io.kurumi.ntt.db.BotDB;
+import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.Query;
-import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.BotLog;
-import io.kurumi.ntt.utils.ThreadPool;
 import java.util.LinkedList;
 import java.util.List;
-import okhttp3.OkHttpClient;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import com.pengrad.telegrambot.request.*;
-import com.pengrad.telegrambot.response.*;
-import io.kurumi.ntt.db.*;
+import okhttp3.OkHttpClient;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
@@ -160,7 +155,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
     }
 
-    ExecutorService processUpdatePool = Executors.newFixedThreadPool(3);
+    static ExecutorService processUpdatePool = Executors.newFixedThreadPool(5);
 
     public void processAsync(final Update update) {
 

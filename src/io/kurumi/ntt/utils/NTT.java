@@ -10,12 +10,16 @@ import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.twitter.*;
 import com.pengrad.telegrambot.model.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class NTT {
 
     public static boolean isUserContactable(long id) {
 
-        SendResponse resp = new Send(id,"testContactable").disableNotification().sync();
+        SendResponse resp = new Send(id,"testContactable").disableNotification().exec();
 
         if (!resp.isOk()) return false;
 
@@ -142,16 +146,16 @@ public class NTT {
         return statusId;
 
     }
+    
+    static Timer deleteTimer = new Timer();
 
 	public static void tryDelete(final long delay,final Msg... messages) {
 
-		ThreadPool.exec(new Runnable() {
+        deleteTimer.schedule(new TimerTask() {
 
 				@Override
 				public void run() {
-
-					ThreadUtil.sleep(delay);
-
+                    
 					for (Msg message : messages) {
 
 						if (message == null) continue;
@@ -162,7 +166,7 @@ public class NTT {
 
 				}
 
-			});
+			},delay);
 
 	}
 

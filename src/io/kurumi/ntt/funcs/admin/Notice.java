@@ -68,7 +68,7 @@ public class Notice extends Function {
 
             if (msg.forwardTo(userData.id) != null) success ++; else failed ++;
 
-            status.edit("正在群发 : " + success + " / " + (success + failed) + " / " + count).sync();
+            status.edit("正在群发 : " + success + " / " + (success + failed) + " / " + count).exec();
 
         }
 

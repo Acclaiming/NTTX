@@ -91,7 +91,7 @@ public class TwitterActions extends Function {
                 
             }
             
-            progress.edit("发送中 : " + success + " / " + already + " / " + (success + already + failed) + " / " + count).sync();
+            progress.edit("发送中 : " + success + " / " + already + " / " + (success + already + failed) + " / " + count).exec();
 
         }
 

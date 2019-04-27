@@ -143,8 +143,7 @@ public class Send extends AbstractSend<Send> {
 
             exec();
 
-        }
-		else {
+        } else {
 
             failedWith();
 
@@ -162,25 +161,13 @@ public class Send extends AbstractSend<Send> {
 
         if (origin == null) return;
 
-        final Exception track = new Exception();
+        SendResponse resp = exec();
 
-        ThreadPool.exec(new Runnable() {
+        if (resp.isOk()) {
 
-                @Override
-                public void run() {
+            NTT.tryDelete(delay,new Msg(fragment,resp.message()));
 
-                    SendResponse resp = sync(track);
-
-                    if (resp.isOk()) {
-
-                        NTT.tryDelete(delay,new Msg(fragment,resp.message()));
-
-                    }
-
-
-                }
-
-            });
+        }
 
     }
 
@@ -194,25 +181,16 @@ public class Send extends AbstractSend<Send> {
 
         if (origin == null) return;
 
-        final Exception track = new Exception();
+        SendResponse resp = exec();
 
-        ThreadPool.exec(new Runnable() {
+        if (resp.isOk()) {
 
-                @Override
-                public void run() {
+            NTT.tryDelete(delay,origin,new Msg(fragment,resp.message()));
 
-                    SendResponse resp = sync(track);
-
-                    if (resp.isOk()) {
-
-                        NTT.tryDelete(delay,origin,new Msg(fragment,resp.message()));
-
-                    }
+        }
 
 
-                }
 
-            });
 
     }
 
@@ -226,33 +204,19 @@ public class Send extends AbstractSend<Send> {
 
         if (origin == null) return;
 
-        final Exception track = new Exception();
+        SendResponse resp = exec();
 
-        ThreadPool.exec(new Runnable() {
+        if (resp.isOk()) {
 
-                @Override
-                public void run() {
+            NTT.tryDelete(delay,new Msg(fragment,resp.message()));
 
-                    SendResponse resp = sync(track);
-
-                    if (resp.isOk()) {
-
-                        NTT.tryDelete(delay,new Msg(fragment,resp.message()));
-
-                    }
-
-
-                }
-
-            });
+        }
 
     }
-
-
-
+    
     public Msg send() {
 
-        SendResponse resp = sync();
+        SendResponse resp = exec();
 
         if (resp == null || !resp.isOk()) return null;
 
@@ -261,7 +225,7 @@ public class Send extends AbstractSend<Send> {
     }
 
     @Override
-    public void exec() {
+    public SendResponse exec() {
 
         char[] arr = request.getText().toCharArray();
 
@@ -283,7 +247,7 @@ public class Send extends AbstractSend<Send> {
 
                     ArrayUtil.copy(arr,send,index);
 
-                    fork(String.valueOf(send)).sync();
+                    fork(String.valueOf(send)).exec();
 
                     char[] subed = new char[arr.length - index - 1]; 
 
@@ -316,61 +280,10 @@ public class Send extends AbstractSend<Send> {
                 request.setText(String.valueOf(subed));
 
             }
-            
+
             arr = request.getText().toCharArray();
 
         }
-
-        super.exec();
-    }
-
-    @Override
-    public SendResponse sync(Exception track) {
-
-        try {
-
-            SendResponse resp = fragment.bot().execute(request);
-
-            if (!resp.isOk()) {
-
-                BotLog.info("消息发送失败 " + resp.errorCode() + " : " + resp.description(),track);
-
-            }
-
-            return resp;
-
-
-        }
-		catch (Exception ex) {
-
-            return null;
-
-        }
-
-
-    }
-
-
-    public Send fork(String... msg) {
-
-        Send send = new Send(null,fragment,request.getChatId(),msg);
-
-        if (request.mode != null) {
-
-            send.request.parseMode(request.mode);
-
-        }
-
-        send.request.disableWebPagePreview(request.disablePreview);
-
-        return send;
-
-    }
-
-    @Override
-    public SendResponse sync() {
-
-        //     System.out.println(request.toWebhookResponse());
 
         try {
 
@@ -385,13 +298,27 @@ public class Send extends AbstractSend<Send> {
             return resp;
 
 
-        }
-		catch (Exception ex) {
+        } catch (Exception ex) {
 
             return null;
 
         }
 
+
+    }
+
+    public Send fork(String... msg) {
+
+        Send send = new Send(null,fragment,request.getChatId(),msg);
+
+        if (request.mode != null) {
+
+            send.request.parseMode(request.mode);
+        }
+
+        send.request.disableWebPagePreview(request.disablePreview);
+
+        return send;
 
     }
 

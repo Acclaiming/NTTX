@@ -79,31 +79,19 @@ public class Edit extends AbstractSend<Edit> {
 
         if (origin == null) return;
 
-        final Exception track = new Exception();
+        BaseResponse resp = exec();
 
-        ThreadPool.exec(new Runnable() {
+        if (resp != null && resp.isOk()) {
 
-                @Override
-                public void run() {
+            io.kurumi.ntt.utils.NTT.tryDelete(delay,message,origin);
 
-                    BaseResponse resp = sync(track);
-
-                    if (resp != null && resp.isOk()) {
-
-                        io.kurumi.ntt.utils.NTT.tryDelete(delay,message,origin);
-
-                    }
-
-
-                }
-
-            });
+        }
 
     }
 
 
     @Override
-    public BaseResponse sync() {
+    public BaseResponse exec() {
 
         //  System.out.println(request.toWebhookResponse());   
 
@@ -130,38 +118,5 @@ public class Edit extends AbstractSend<Edit> {
 
 
     }
-
-    @Override
-    public BaseResponse sync(Exception track) {
-
-        try {
-
-            BaseResponse resp = fragment.bot().execute(request);
-
-            //    if (resp.errorCode() ==
-
-            if (resp != null && !resp.isOk()) {
-
-                BotLog.info("消息发送失败 " + resp.errorCode() + " : " + resp.description(),track);
-
-            }
-
-            return resp;
-
-
-        } catch (Exception ex) {
-
-            return null;
-
-        }
-        
-    }
-
-
-
-
-
-
-
 
 }

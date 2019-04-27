@@ -1,12 +1,9 @@
 package io.kurumi.ntt.funcs;
 
-import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.funcs.abs.Function;
 import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.utils.ThreadPool;
-import cn.hutool.core.thread.ThreadUtil;
-import io.kurumi.ntt.funcs.abs.*;
-import java.util.*;
+import java.util.LinkedList;
 
 public class Ping extends Function {
 

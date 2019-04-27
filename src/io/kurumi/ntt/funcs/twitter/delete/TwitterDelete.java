@@ -133,7 +133,7 @@ public class TwitterDelete extends TwitterFunction {
 
             }
 
-            msg.send("已解析 " + ids.size() + " 条推文... 正在启动删除线程...").sync();
+            msg.send("已解析 " + ids.size() + " 条推文... 正在启动删除线程...").exec();
 
             DeleteThread thread = new DeleteThread();
 
@@ -187,7 +187,7 @@ public class TwitterDelete extends TwitterFunction {
 
             }
 
-            msg.send("已解析 " + ids.size() + " 条打心... 正在启动删除线程...").sync();
+            msg.send("已解析 " + ids.size() + " 条打心... 正在启动删除线程...").exec();
 
             DeleteThread thread = new DeleteThread();
 
@@ -264,7 +264,7 @@ public class TwitterDelete extends TwitterFunction {
                 
                 if ((progress = current / count) != last) {
 
-                    status.edit("删除中 : " + progress + "%","取消删除使用 /canceldelete ...").sync();
+                    status.edit("删除中 : " + progress + "%","取消删除使用 /canceldelete ...").exec();
 
                 }
 
