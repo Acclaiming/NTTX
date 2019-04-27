@@ -40,7 +40,7 @@ public class TwitterDelete extends TwitterFunction {
         
     }
     
-    HashMap<Long,DeleteThread> threads;
+    HashMap<Long,DeleteThread> threads = new HashMap<>();
 
     @Override
     public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
