@@ -109,6 +109,8 @@ public class TwitterDelete extends TwitterFunction {
                         isRC = true;
 
                     }
+                    
+                    line = reader.readLine();
 
                 }
 
