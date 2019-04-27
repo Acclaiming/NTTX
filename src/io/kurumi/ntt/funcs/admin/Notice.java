@@ -9,6 +9,8 @@ import io.kurumi.ntt.funcs.abs.*;
 import static java.util.Arrays.asList;
 import io.kurumi.ntt.db.PointStore.*;
 import java.util.*;
+import cn.hutool.core.util.ArrayUtil;
+import com.pengrad.telegrambot.request.ForwardMessage;
 
 public class Notice extends Function {
 
@@ -44,7 +46,7 @@ public class Notice extends Function {
 
             msg.send("现在发送群发内容 :").exec();
 
-            setPoint(user,POINT_FPRWARD);
+            setPoint(user,POINT_FPRWARD,ArrayUtil.join(params," "));
 
         } else msg.send("Permission denied").exec();
 
@@ -52,6 +54,8 @@ public class Notice extends Function {
 
     @Override
     public void onPoint(UserData user,Msg msg,PointStore.Point point) {
+        
+        boolean mute = point.data.toString().contains("mute");
         
         clearPoint(user);
         
@@ -64,9 +68,13 @@ public class Notice extends Function {
 
         for (UserData userData : UserData.data.collection.find()) {
 
-            // if (userData.contactable()) {
+            // if (userData.contactable()) 
+            
+            ForwardMessage forward = new ForwardMessage(userData.id,user.id,msg.messageId());
 
-            if (msg.forwardTo(userData.id) != null) success ++; else failed ++;
+           if (mute) forward.disableNotification(true);
+
+            if (bot().execute(forward).isOk()) success ++; else failed ++;
 
             status.edit("正在群发 : " + success + " / " + (success + failed) + " / " + count).exec();
 
