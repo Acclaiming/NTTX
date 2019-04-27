@@ -31,16 +31,15 @@ public class TwitterDelete extends TwitterFunction {
 
     final String POINT_DELETE = "td";
 
-    class DeleteCache {
-
-        public TAuth account;
-
-        public DeleteCache(TAuth account) {
-            this.account = account;
-        }
-
+    @Override
+    public void points(LinkedList<String> points) {
+       
+        super.points(points);
+        
+        points.add(POINT_DELETE);
+        
     }
-
+    
     HashMap<Long,DeleteThread> threads;
 
     @Override
