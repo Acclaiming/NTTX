@@ -82,8 +82,10 @@ public class TwitterDelete extends TwitterFunction {
 
             return;
 
-        }  if (msg.doc().fileName().equals("tweet.js")) {
+        } if (msg.doc().fileName().equals("tweet.js")) {
 
+            msg.send("读取推文ing...").exec();
+            
             clearPoint(user);
 
             BufferedReader reader =  IoUtil.getReader(IoUtil.toStream(msg.file()),CharsetUtil.CHARSET_UTF_8);
