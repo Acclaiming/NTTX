@@ -47,8 +47,6 @@ public class TwitterDelete extends TwitterFunction {
         
     }
     
-    
-    
     HashMap<Long,DeleteThread> threads = new HashMap<>();
 
     @Override
@@ -111,7 +109,7 @@ public class TwitterDelete extends TwitterFunction {
 
                     if (isRC) {
 
-                        ids.add(Long.parseLong(StrUtil.subBetween(line,"id\" : \"","\"")));
+                        ids.add(Long.parseLong(StrUtil.subBetween(line,"\" : \"","\"")));
 
                         isRC = false;
                         
@@ -153,6 +151,61 @@ public class TwitterDelete extends TwitterFunction {
 
             thread.start();
 
+        } else if (msg.doc().fileName().equals("like.js")) {
+            
+            msg.send("读取打心ing...").exec();
+
+            clearPoint(user);
+
+            BufferedReader reader =  IoUtil.getReader(IoUtil.toStream(msg.file()),CharsetUtil.CHARSET_UTF_8);
+
+            LinkedList<Long> ids = new LinkedList<>();
+
+            try {
+
+                String line = reader.readLine();
+                
+                while (line != null) {
+
+                    if (line.contains("tweetId")) {
+
+                        ids.add(Long.parseLong(StrUtil.subBetween(line,"\" : \"","\"")));
+
+                    }
+
+                    line = reader.readLine();
+
+                }
+
+                reader.close();
+
+            } catch (IOException e) {
+
+                msg.send("读取文件错误...",e.toString()).exec();
+
+                return;
+
+            }
+
+            msg.send("已解析 " + ids.size() + " 条打心... 正在启动删除线程...").sync();
+
+            DeleteThread thread = new DeleteThread();
+
+            thread.userId = user.id;
+
+            thread.account = (TAuth)point.data;
+
+            thread.api = thread.account.createApi();
+
+            thread.ids = ids;
+
+            thread.tweet = false;
+
+            threads.put(user.id,thread);
+
+            thread.start();
+            
+            
         }
 
     }
