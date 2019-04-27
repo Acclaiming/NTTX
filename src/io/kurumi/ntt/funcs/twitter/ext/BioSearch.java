@@ -58,30 +58,37 @@ public class BioSearch extends Function {
 
         FindIterable<UserArchive> result = null;
 
-        String count;
+
+
+        long count;
 
         try {
 
-            count = ((Long)UserArchive.data.collection.countDocuments(regex("bio",query),new CountOptions().maxTime(500,TimeUnit.MILLISECONDS))).toString();
+            count = UserArchive.data.collection.countDocuments(regex("bio",query),new CountOptions().maxTime(500,TimeUnit.MILLISECONDS));
 
         } catch (MongoExecutionTimeoutException ex) {
 
-            count = "*";
+            msg.send("bad request.jpg").exec();
+
+            return;
 
         }
 
-
-        if ("0".equals(count)) {
-
-            msg.send("没有结果 (´◉.◉)").exec();
-
-        } else {
+        if (count > 0) {
 
             result = UserArchive.data.collection.find(regex("bio",query));
 
         }
 
-        msg.send("结果数量 : " + count + " 条","",format(result.limit(100),query)).html().exec();
+        if (count == 0) {
+
+            msg.send("没有结果 (´◉.◉)").exec();
+
+            return;
+
+        }
+
+        msg.send("结果数量 : " + (count > 100L ? count + "条 (仅显示100条)" : count + " 条"),"",format(result.limit(100),query)).html().exec();
 
     }
 
