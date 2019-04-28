@@ -284,6 +284,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 					"/logout 登出Twitter账号 bot将不保留认证信息",
                     "/track Twitter 账号监听 设置",
                     "/bl 导出屏蔽列表 (csv)",
+                    "/delete 使用个人数据删除所有推文/打心",
+                    "/canceldelete 取消正在进行的删除",
                     "/bio <文本/表达式> 简介正则搜索 (仅已存档的用户 显示100条记录)",
                     "/chatbot 新建一个转发私聊的BOT (BotToken 需要在 @BotFather 申请。)",
                     "/rmchatbot 移除转发BOT",
