@@ -67,8 +67,8 @@ public class TwitterDelete extends TwitterFunction {
 
             }
 
-            threads.get(account.id).stoped.set(true);
-
+            threads.remove(account.id).stoped.set(true);
+            
             msg.send("已取消...").exec();
 
 
@@ -120,6 +120,8 @@ public class TwitterDelete extends TwitterFunction {
                 msg.send("可能真的太大...？ zip都超过20m...").exec();
 
             }
+            
+            return;
 
 
         }
@@ -160,7 +162,7 @@ public class TwitterDelete extends TwitterFunction {
         msg.send("解析" + (like ? "打心" : "推文") + "ing... Σ( ﾟωﾟ").exec();
 
         clearPoint(user);
-
+        
         BufferedReader reader =  IoUtil.getReader(IoUtil.toStream(file),CharsetUtil.CHARSET_UTF_8);
 
         LinkedList<Long> ids = new LinkedList<>();
