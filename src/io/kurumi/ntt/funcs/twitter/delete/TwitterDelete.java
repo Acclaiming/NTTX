@@ -80,7 +80,7 @@ public class TwitterDelete extends TwitterFunction {
 
             msg.send("这个功能需要从 Twitter应用/网页 - 设置 - 账号 - 你的Twitter数据 输入密码下载数据zip，并找到tweet.js/like.js的说").exec();
 
-            msg.send("现在发送 tweet.js / like.js 来删除所有推文/打心...").exec();
+            msg.send("现在发送 tweet.js / like.js 来删除所有推文/打心...","使用 /cancel 取消 ~").exec();
 
         }
 
