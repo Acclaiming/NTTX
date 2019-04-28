@@ -391,7 +391,7 @@ public class TrackTask extends TimerTask {
         stop();
 
         timer = new Timer("NTT Twitter Track Task");
-        timer.schedule(INSTANCE,new Date(),15 * 60 * 1000);
+        timer.schedule(INSTANCE,new Date(),3 * 60 * 1000);
 
     }
 
