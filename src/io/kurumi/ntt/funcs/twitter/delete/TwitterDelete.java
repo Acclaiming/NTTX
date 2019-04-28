@@ -207,7 +207,7 @@ public class TwitterDelete extends TwitterFunction {
 
         }
 
-        msg.send("已解析 " + ids.size() + " 条" + (like ? "打心" : "推文") +"... 正在启动删除线程...").exec();
+        msg.send("已解析 " + ids.size() + " 条" + (like ? "打心" : "推文") + "... 正在启动删除线程...").exec();
 
         DeleteThread thread = new DeleteThread();
 
@@ -229,83 +229,82 @@ public class TwitterDelete extends TwitterFunction {
     } 
 
 
-}
+    class DeleteThread extends Thread {
 
-class DeleteThread extends Thread {
+        long userId;
+        TAuth account;
+        Twitter api;
+        LinkedList<Long> ids;
+        boolean tweet;
 
-    long userId;
-    TAuth account;
-    Twitter api;
-    LinkedList<Long> ids;
-    boolean tweet;
+        AtomicBoolean stoped = new AtomicBoolean(false);
 
-    AtomicBoolean stoped = new AtomicBoolean(false);
+        @Override
+        public void run() {
 
-    @Override
-    public void run() {
+            Msg status =  new Send(userId,"正在开始删除... ").send();
 
-        Msg status =  new Send(userId,"正在开始删除... ").send();
+            float count = ids.size();
+            float current = 0;
 
-        float count = ids.size();
-        float current = 0;
+            float progress = 0;
 
-        float progress = 0;
+            for (Long id : ids) {
 
-        for (Long id : ids) {
+                float last = progress;
 
-            float last = progress;
+                try {
 
-            try {
+                    if (tweet) {
 
-                if (tweet) {
+                        api.destroyStatus(id);
 
-                    api.destroyStatus(id);
+                    } else {
 
-                } else {
+                        api.destroyFavorite(id);
 
-                    api.destroyFavorite(id);
+                    }
+
+
+                } catch (TwitterException e) {
+
+                    BotLog.info("删除，错误",e);
 
                 }
 
+                if (stoped.get()) {
 
-            } catch (TwitterException e) {
+                    status.edit("已手动取消...").exec();
 
-                BotLog.info("删除，错误",e);
+                    break;
 
-            }
+                }
 
-            if (stoped.get()) {
+                current ++;
 
-                status.edit("已手动取消...").exec();
+                progress = Math.round(progress * 100);
 
-                break;
+                if (progress != last) {
 
-            }
+                    status.edit("删除中 : " + progress + "%","取消删除使用 /canceldelete ...").exec();
 
-            current ++;
+                }
 
-            progress = Math.round(progress * 100);
+                if (progress == 1) {
 
-            if (progress != last) {
+                    status.edit("删除完成...").exec();
 
-                status.edit("删除中 : " + progress + "%","取消删除使用 /canceldelete ...").exec();
-
-            }
-
-            if (progress == 1) {
-
-                status.edit("删除完成...").exec();
+                }
 
             }
+
+            threads.remove(userId);
+
 
         }
 
-        threads.remove(userId);
 
     }
 
-
-
-    }
 
 }
