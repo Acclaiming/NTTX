@@ -8,6 +8,7 @@ import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.twitter.archive.*;
 import java.util.LinkedList;
+import com.pengrad.telegrambot.response.SendResponse;
 
 public abstract class TwitterFunction extends Function {
 
@@ -17,11 +18,13 @@ public abstract class TwitterFunction extends Function {
 
         public TwitterFunction function;
         public Msg msg;
+        public Msg send;
 
-        public TwitterPoint(TwitterFunction function,Msg msg) {
+        public TwitterPoint(TwitterFunction function,Msg msg,Msg send) {
 
             this.function = function;
             this.msg = msg;
+            this.send = send;
 
         }
 
@@ -50,9 +53,8 @@ public abstract class TwitterFunction extends Function {
             
             final FindIterable<TAuth> accounts = TAuth.getByUser(user.id);
 
-            setPoint(user,POINT_CHOOSE_ACCPUNT,new TwitterPoint(this,msg));
-
-            msg.send("请选择目标账号 Σ( ﾟωﾟ (使用 /cancel 取消) ~").keyboard(new Keyboard() {{
+            
+            Msg send = msg.send("请选择目标账号 Σ( ﾟωﾟ (使用 /cancel 取消) ~").keyboard(new Keyboard() {{
 
                         for (TAuth account : accounts) {
 
@@ -62,7 +64,11 @@ public abstract class TwitterFunction extends Function {
 
                         newButtonLine("/cancel");
 
-                    }}).exec();
+                    }}).send();
+                    
+                    
+            setPoint(user,POINT_CHOOSE_ACCPUNT,new TwitterPoint(this,send,msg));
+            
 
         }
 
@@ -108,6 +114,8 @@ public abstract class TwitterFunction extends Function {
                 return;
 
             }
+            
+            data.send.delete();
             
             msg.send("选择了 : " + account.archive().urlHtml() + " (❁´▽`❁)").removeKeyboard().html().failedWith();
            
