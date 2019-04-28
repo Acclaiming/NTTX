@@ -67,7 +67,7 @@ public abstract class TwitterFunction extends Function {
                     }}).send();
                     
                     
-            setPoint(user,POINT_CHOOSE_ACCPUNT,new TwitterPoint(this,send,msg));
+            setPoint(user,POINT_CHOOSE_ACCPUNT,new TwitterPoint(this,msg,send));
             
 
         }
