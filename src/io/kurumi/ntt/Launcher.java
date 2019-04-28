@@ -245,8 +245,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
-
-
     @Override
     public boolean onMsg(UserData user,Msg msg) {
 
@@ -260,11 +258,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 				msg.send("不加个裙玩吗 ~ " + Html.a("-- 戳这里！！！ --","https://t.me/joinchat/H5gBQ1N2Mx4RuhIkq-EajQ")).html().exec();
 				msg.send("输入 / 就有命令补全啦 ~ 使用 /help 查看帮助 ~").exec();
 				msg.send("开源地址在 " + Html.a("NTTools","https://github.com/HiedaNaKan/NTTools") + " 欢迎打心 (๑´ڡ`๑)").html().exec();
-
-				msg.send(
-					"现在BOT 正在重构 (≧σ≦) 可以",Html.a("联系咱",Env.DEVELOPER_URL) + " 提建议哦 ~ ",
-					"Twitter功能暂不可用 (˚☐˚! )/"
-				).html().exec();
 
 			} else {
 
