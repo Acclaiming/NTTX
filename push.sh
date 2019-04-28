@@ -1,6 +1,6 @@
-git config user.name "HiedaNaKan"
-git config user.email "HiedaNaKan@kurumi.io"
-git config credential.helper store
+git config –global user.name "HiedaNaKan"
+git config –global user.email "HiedaNaKan@kurumi.io"
+git config –global credential.helper store
 
 git add .
 
