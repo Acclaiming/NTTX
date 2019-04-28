@@ -282,7 +282,7 @@ public class TwitterDelete extends TwitterFunction {
 
                 current ++;
 
-                progress = Math.round(progress * 100);
+                progress = Math.round((current /count) * 100);
 
                 if (progress != last) {
 
