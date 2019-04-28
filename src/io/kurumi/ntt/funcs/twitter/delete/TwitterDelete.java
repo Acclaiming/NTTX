@@ -290,7 +290,7 @@ public class TwitterDelete extends TwitterFunction {
 
                 }
 
-                if (progress == 1) {
+                if (progress == 100) {
 
                     status.edit("删除完成...").exec();
 
