@@ -4,13 +4,13 @@ git config credential.helper store
 
 git add .
 
-if [ ! $0 ]; then
+if [ ! $1 ]; then
 
   git commit -m "一点微小的工作 ~"
   
 else
 
-  git commit -m $0
+  git commit -m $1
   
 fi
 
