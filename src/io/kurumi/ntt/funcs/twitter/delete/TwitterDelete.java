@@ -79,7 +79,7 @@ public class TwitterDelete extends TwitterFunction {
             setPoint(user,POINT_DELETE,account);
 
             msg.send("这个功能需要从 Twitter应用/网页 - 设置 - 账号 - 你的Twitter数据 输入密码下载数据zip，并找到tweet.js/like.js的说").exec();
-            
+
             msg.send("现在发送 tweet.js / like.js 来删除所有推文/打心...").exec();
 
         }
@@ -89,128 +89,133 @@ public class TwitterDelete extends TwitterFunction {
     @Override
     public void onPoint(UserData user,Msg msg,PointStore.Point point) {
 
-        if (msg.doc() == null) {
+        super.onPoint(user,msg,point);
 
-            msg.send("你正在删除twetter数据... 发送tweet.js删除推文 like.js 删除打心...","使用 /cancel 取消...").exec();
+        if (POINT_DELETE.equals(point.point))   {
 
-            return;
+            if (msg.doc() == null) {
 
-        } if (msg.doc().fileName().equals("tweet.js")) {
-
-            msg.send("读取推文ing...").exec();
-
-            clearPoint(user);
-
-            BufferedReader reader =  IoUtil.getReader(IoUtil.toStream(msg.file()),CharsetUtil.CHARSET_UTF_8);
-
-            LinkedList<Long> ids = new LinkedList<>();
-
-            try {
-
-                String line = reader.readLine();
-
-                boolean isRC = false;
-
-                while (line != null) {
-
-                    if (isRC) {
-
-                        ids.add(Long.parseLong(StrUtil.subBetween(line,"\" : \"","\"")));
-
-                        isRC = false;
-
-                    } else if (line.contains("retweet_count")) {
-
-                        isRC = true;
-
-                    }
-
-                    line = reader.readLine();
-
-                }
-
-                reader.close();
-
-            } catch (IOException e) {
-
-                msg.send("读取文件错误...",e.toString()).exec();
+                msg.send("你正在删除twetter数据... 发送tweet.js删除推文 like.js 删除打心...","使用 /cancel 取消...").exec();
 
                 return;
 
-            }
+            } if (msg.doc().fileName().equals("tweet.js")) {
 
-            msg.send("已解析 " + ids.size() + " 条推文... 正在启动删除线程...").exec();
+                msg.send("读取推文ing...").exec();
 
-            DeleteThread thread = new DeleteThread();
+                clearPoint(user);
 
-            thread.userId = user.id;
+                BufferedReader reader =  IoUtil.getReader(IoUtil.toStream(msg.file()),CharsetUtil.CHARSET_UTF_8);
 
-            thread.account = (TAuth)point.data;
+                LinkedList<Long> ids = new LinkedList<>();
 
-            thread.api = thread.account.createApi();
+                try {
 
-            thread.ids = ids;
+                    String line = reader.readLine();
 
-            thread.tweet = true;
+                    boolean isRC = false;
 
-            threads.put(user.id,thread);
+                    while (line != null) {
 
-            thread.start();
+                        if (isRC) {
 
-        } else if (msg.doc().fileName().equals("like.js")) {
+                            ids.add(Long.parseLong(StrUtil.subBetween(line,"\" : \"","\"")));
 
-            msg.send("读取打心ing...").exec();
+                            isRC = false;
 
-            clearPoint(user);
+                        } else if (line.contains("retweet_count")) {
 
-            BufferedReader reader =  IoUtil.getReader(IoUtil.toStream(msg.file()),CharsetUtil.CHARSET_UTF_8);
+                            isRC = true;
 
-            LinkedList<Long> ids = new LinkedList<>();
+                        }
 
-            try {
-
-                String line = reader.readLine();
-
-                while (line != null) {
-
-                    if (line.contains("tweetId")) {
-
-                        ids.add(Long.parseLong(StrUtil.subBetween(line,"\" : \"","\"")));
+                        line = reader.readLine();
 
                     }
 
-                    line = reader.readLine();
+                    reader.close();
+
+                } catch (IOException e) {
+
+                    msg.send("读取文件错误...",e.toString()).exec();
+
+                    return;
 
                 }
 
-                reader.close();
+                msg.send("已解析 " + ids.size() + " 条推文... 正在启动删除线程...").exec();
 
-            } catch (IOException e) {
+                DeleteThread thread = new DeleteThread();
 
-                msg.send("读取文件错误...",e.toString()).exec();
+                thread.userId = user.id;
 
-                return;
+                thread.account = (TAuth)point.data;
+
+                thread.api = thread.account.createApi();
+
+                thread.ids = ids;
+
+                thread.tweet = true;
+
+                threads.put(user.id,thread);
+
+                thread.start();
+
+            } else if (msg.doc().fileName().equals("like.js")) {
+
+                msg.send("读取打心ing...").exec();
+
+                clearPoint(user);
+
+                BufferedReader reader =  IoUtil.getReader(IoUtil.toStream(msg.file()),CharsetUtil.CHARSET_UTF_8);
+
+                LinkedList<Long> ids = new LinkedList<>();
+
+                try {
+
+                    String line = reader.readLine();
+
+                    while (line != null) {
+
+                        if (line.contains("tweetId")) {
+
+                            ids.add(Long.parseLong(StrUtil.subBetween(line,"\" : \"","\"")));
+
+                        }
+
+                        line = reader.readLine();
+
+                    }
+
+                    reader.close();
+
+                } catch (IOException e) {
+
+                    msg.send("读取文件错误...",e.toString()).exec();
+
+                    return;
+
+                }
+
+                msg.send("已解析 " + ids.size() + " 条打心... 正在启动删除线程...").exec();
+
+                DeleteThread thread = new DeleteThread();
+
+                thread.userId = user.id;
+
+                thread.account = (TAuth)point.data;
+
+                thread.api = thread.account.createApi();
+
+                thread.ids = ids;
+
+                thread.tweet = false;
+
+                threads.put(user.id,thread);
+
+                thread.start();
 
             }
-
-            msg.send("已解析 " + ids.size() + " 条打心... 正在启动删除线程...").exec();
-
-            DeleteThread thread = new DeleteThread();
-
-            thread.userId = user.id;
-
-            thread.account = (TAuth)point.data;
-
-            thread.api = thread.account.createApi();
-
-            thread.ids = ids;
-
-            thread.tweet = false;
-
-            threads.put(user.id,thread);
-
-            thread.start();
-
 
         }
 

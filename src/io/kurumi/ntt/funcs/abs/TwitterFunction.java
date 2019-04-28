@@ -46,7 +46,7 @@ public abstract class TwitterFunction extends Function {
                 return;
 
             }
-
+            
             final FindIterable<TAuth> accounts = TAuth.getByUser(user.id);
 
             setPoint(user,POINT_CHOOSE_ACCPUNT,new TwitterPoint(this,msg));
@@ -70,6 +70,8 @@ public abstract class TwitterFunction extends Function {
     @Override
     public void onPoint(UserData user,Msg msg,PointStore.Point point) {
 
+        super.onPoint(user,msg,point);
+        
         if (POINT_CHOOSE_ACCPUNT.equals(point.point)) {
 
             TwitterPoint data = (TwitterPoint)point.data;
