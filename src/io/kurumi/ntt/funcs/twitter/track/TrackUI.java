@@ -33,15 +33,6 @@ public class TrackUI extends TwitterFunction {
 
     }
 
-    @Override
-    public int target() {
-       
-        return Private;
-        
-    }
-    
-    
-
     final String POINT_SETTING_FOLLOWERS = "tr|f";
     final String POINT_SETTING_FOLLOWERS_INFO = "tr|o";
     final String POINT_SETTING_FOLLOWINGS_INFO = "tr|r";
@@ -84,6 +75,8 @@ public class TrackUI extends TwitterFunction {
     @Override
     public void onCallback(UserData user,Callback callback,String point,CData data) {
 
+        clearPoint(user);
+        
         long accountId = data.getIndexLong();
 
         final TrackSetting setting = this.data.containsId(accountId) ? this.data.getById(accountId) : new TrackSetting();
