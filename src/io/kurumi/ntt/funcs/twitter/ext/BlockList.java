@@ -32,8 +32,6 @@ public class BlockList extends TwitterFunction {
     @Override
     public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
-        msg.sendTyping();
-
         try {
 
             Twitter api = account.createApi();

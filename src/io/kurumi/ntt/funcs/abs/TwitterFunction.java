@@ -76,6 +76,13 @@ public abstract class TwitterFunction extends Function {
     }
 
     @Override
+    public int target() {
+       
+        return Private;
+        
+    }
+    
+    @Override
     public void onPoint(UserData user,Msg msg,PointStore.Point point) {
         
         if (POINT_CHOOSE_ACCPUNT.equals(point.point)) {
@@ -102,8 +109,8 @@ public abstract class TwitterFunction extends Function {
 
             }
             
-            msg.send("debug : 0").exec();
-
+            msg.send("选择了 : " + account.archive().urlHtml() + " (❁´▽`❁)").removeKeyboard().html().failed(5000);
+           
             data.function.onFunction(user,data.msg,data.msg.command(),data.msg.params(),account);
             
 
