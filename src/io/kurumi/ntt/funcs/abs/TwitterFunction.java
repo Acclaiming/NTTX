@@ -109,8 +109,10 @@ public abstract class TwitterFunction extends Function {
 
             }
             
-            msg.send("选择了 : " + account.archive().urlHtml() + " (❁´▽`❁)").removeKeyboard().html().failed(5000);
+            msg.send("选择了 : " + account.archive().urlHtml() + " (❁´▽`❁)").removeKeyboard().html().failedWith();
            
+            clearPoint(user);
+            
             data.function.onFunction(user,data.msg,data.msg.command(),data.msg.params(),account);
             
 
