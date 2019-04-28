@@ -14,4 +14,4 @@ else
   
 fi
 
-git push master
+git push
