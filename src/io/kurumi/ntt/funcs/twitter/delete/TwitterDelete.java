@@ -9,14 +9,15 @@ import io.kurumi.ntt.funcs.abs.TwitterFunction;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.twitter.TAuth;
+import io.kurumi.ntt.utils.BotLog;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import java.util.concurrent.atomic.AtomicBoolean;
-import io.kurumi.ntt.utils.BotLog;
 
 public class TwitterDelete extends TwitterFunction {
 
@@ -105,7 +106,17 @@ public class TwitterDelete extends TwitterFunction {
 
                 clearPoint(user);
 
-                BufferedReader reader =  IoUtil.getReader(IoUtil.toStream(msg.file()),CharsetUtil.CHARSET_UTF_8);
+                File file = msg.file();
+                
+                if (file == null) {
+                    
+                    msg.send("读取文件失败... ？").exec();
+                    
+                    return;
+                    
+                }
+                
+                BufferedReader reader =  IoUtil.getReader(IoUtil.toStream(file),CharsetUtil.CHARSET_UTF_8);
 
                 LinkedList<Long> ids = new LinkedList<>();
 
@@ -167,7 +178,17 @@ public class TwitterDelete extends TwitterFunction {
 
                 clearPoint(user);
 
-                BufferedReader reader =  IoUtil.getReader(IoUtil.toStream(msg.file()),CharsetUtil.CHARSET_UTF_8);
+                File file = msg.file();
+
+                if (file == null) {
+
+                    msg.send("读取文件失败... ？").exec();
+
+                    return;
+
+                }
+                
+                BufferedReader reader =  IoUtil.getReader(IoUtil.toStream(file),CharsetUtil.CHARSET_UTF_8);
 
                 LinkedList<Long> ids = new LinkedList<>();
 
