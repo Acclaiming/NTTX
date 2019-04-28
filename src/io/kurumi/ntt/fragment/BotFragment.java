@@ -145,7 +145,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
             clearPoint(user);
 
-            msg.send("取消成功 ~").exec();
+            msg.send("取消成功 ~").removeKeyboard().exec();
 
             return true;
 

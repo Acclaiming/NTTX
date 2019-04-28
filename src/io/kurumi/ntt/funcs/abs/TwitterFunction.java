@@ -70,7 +70,7 @@ public abstract class TwitterFunction extends Function {
     @Override
     public void onPoint(UserData user,Msg msg,PointStore.Point point) {
 
-        if (point.point == POINT_CHOOSE_ACCPUNT) {
+        if (POINT_CHOOSE_ACCPUNT.equals(point.point)) {
 
             TwitterPoint data = (TwitterPoint)point.data;
 
