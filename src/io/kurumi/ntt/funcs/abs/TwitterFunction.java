@@ -93,6 +93,8 @@ public abstract class TwitterFunction extends Function {
                 return;
 
             }
+            
+            msg.send("debug : 0").exec();
 
             data.function.onFunction(user,data.msg,data.msg.command(),data.msg.params(),account);
             
