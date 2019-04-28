@@ -19,6 +19,7 @@ import java.io.File;
 import io.kurumi.ntt.db.*;
 import com.pengrad.telegrambot.model.Document;
 import com.pengrad.telegrambot.response.GetFileResponse;
+import io.kurumi.ntt.utils.BotLog;
 
 public class Fragment {
 
@@ -163,7 +164,13 @@ public class Fragment {
 
         GetFileResponse file = bot().execute(new GetFile(fileId));
 
-        if (!file.isOk()) return null;
+        if (!file.isOk()) {
+            
+            BotLog.debug("取文件失败 : " + file.errorCode() + " " + file.description());
+            
+            return null;
+            
+            }
 
         String path = bot().getFullFilePath(file.file());
 
