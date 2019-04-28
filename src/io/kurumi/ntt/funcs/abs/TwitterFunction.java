@@ -7,6 +7,7 @@ import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.twitter.archive.*;
+import java.util.LinkedList;
 
 public abstract class TwitterFunction extends Function {
 
@@ -68,9 +69,14 @@ public abstract class TwitterFunction extends Function {
     }
 
     @Override
-    public void onPoint(UserData user,Msg msg,PointStore.Point point) {
+    public void points(LinkedList<String> points) {
+        
+        points.add(POINT_CHOOSE_ACCPUNT);
+        
+    }
 
-        super.onPoint(user,msg,point);
+    @Override
+    public void onPoint(UserData user,Msg msg,PointStore.Point point) {
         
         if (POINT_CHOOSE_ACCPUNT.equals(point.point)) {
 
