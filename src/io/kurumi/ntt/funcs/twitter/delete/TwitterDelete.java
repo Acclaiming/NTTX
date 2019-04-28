@@ -59,7 +59,7 @@ public class TwitterDelete extends TwitterFunction {
 
         if (function.startsWith("cancel")) {
 
-            if (!threads.containsKey(user.id)) {
+            if (!threads.containsKey(account.id)) {
 
                 msg.send("你没有正在处理中的删除...").exec();
 
@@ -67,12 +67,12 @@ public class TwitterDelete extends TwitterFunction {
 
             }
 
-            threads.get(user.id).stoped.set(true);
+            threads.get(account.id).stoped.set(true);
 
             msg.send("已取消...").exec();
 
 
-        } else if (threads.containsKey(user.id)) {
+        } else if (threads.containsKey(account.id)) {
 
             msg.send("你有正在处理中的删除... 这需要大量时间处理... 取消使用 /canceldelete .").exec();
 
@@ -221,7 +221,7 @@ public class TwitterDelete extends TwitterFunction {
 
         thread.tweet = !like;
 
-        threads.put(user.id,thread);
+        threads.put(thread.account.id,thread);
 
         thread.start();
 
