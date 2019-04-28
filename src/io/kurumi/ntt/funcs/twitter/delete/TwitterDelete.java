@@ -97,7 +97,7 @@ public class TwitterDelete extends TwitterFunction {
 
         if (!POINT_DELETE.equals(point.point)) return;
 
-        if (msg.doc() == null || msg.doc().fileName().matches("(tweet|like)\\.(js|zip)")) {
+        if (msg.doc() == null || !msg.doc().fileName().matches("(tweet|like)\\.(js|zip)")) {
 
             msg.send("你正在删除twetter数据... 发送tweet.js删除推文 like.js 删除打心...","使用 /cancel 取消...").exec();
 
