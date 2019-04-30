@@ -46,6 +46,7 @@ public class TrackUI extends TwitterFunction {
         points.add(POINT_SETTING_FOLLOWERS);
         points.add(POINT_SETTING_FOLLOWINGS_INFO);
         points.add(POINT_SETTING_FOLLOWERS_INFO);
+        points.add(POINT_SETTING_HIDE_ME);
 
     }
 
