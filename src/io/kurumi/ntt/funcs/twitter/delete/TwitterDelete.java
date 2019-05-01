@@ -21,6 +21,7 @@ import twitter4j.TwitterException;
 import cn.hutool.core.util.ZipUtil;
 import io.kurumi.ntt.Env;
 import cn.hutool.core.exceptions.UtilException;
+import com.pengrad.telegrambot.request.GetChatMember;
 
 public class TwitterDelete extends TwitterFunction {
 
@@ -87,7 +88,7 @@ public class TwitterDelete extends TwitterFunction {
             msg.send("现在发送 tweet.js / like.js 来删除所有推文/打心... (如果文件超过20m 需要打zip包发送哦 (tweet.js打tweet.zip / like.js打like.zip (❁´▽`❁)","使用 /cancel 取消 ~").exec();
 
         }
-
+       
     }
 
     @Override
@@ -284,7 +285,7 @@ public class TwitterDelete extends TwitterFunction {
 
                 current ++;
 
-                progress = Math.round((current /count) * 100);
+                progress = Math.round((current /count) * 1000) / 10;
 
                 if (progress != last) {
 
@@ -300,7 +301,7 @@ public class TwitterDelete extends TwitterFunction {
 
             }
 
-            threads.remove(userId);
+            threads.remove(account);
 
 
         }
