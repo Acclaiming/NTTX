@@ -44,7 +44,7 @@ public class AutoReply extends Function {
             
             String reply = TentcentNlp.nlpTextchat(((Long)(user.id < 0 ? user.id * -1 : user.id)).toString(),text);
             
-            msg.send(reply).exec();
+            msg.reply(reply).exec();
             
         }
         
