@@ -36,7 +36,7 @@ public class AutoReply extends Function {
     @Override
     public boolean onGroup(UserData user,Msg msg) {
         
-        if (!msg.hasText() || !msg.isCommand() || disable.contains(msg.chatId().longValue())) return false;
+        if (!msg.hasText() || msg.isCommand() || disable.contains(msg.chatId().longValue())) return false;
         
         String text = StrUtil.removeAll(msg.text(),"@NTToolsBot");
         
