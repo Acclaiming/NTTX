@@ -40,9 +40,7 @@ public class AutoReply extends Function {
         
         String text = StrUtil.removeAll(msg.text(),"@NTToolsBot");
         
-        float polar = TentcentNlp.nlpTextpolar(text);
-
-        if (msg.text().contains("@NTToolsBot") || (msg.isReply() && msg.replyTo().from().id.equals(origin.me.id())) || (polar == 0 && RandomUtil.randomInt(0, 51) == 9)) {
+        if (msg.text().contains("@NTToolsBot") || (msg.isReply() && msg.replyTo().from().id.equals(origin.me.id())) || (TentcentNlp.nlpTextpolar(text) == 0 && RandomUtil.randomInt(0, 51) == 9)) {
             
             String reply = TentcentNlp.nlpTextchat(msg.chatId(),text);
             

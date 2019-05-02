@@ -61,6 +61,8 @@ public class TentcentNlp {
 
             HttpResponse resp = request.execute();
 
+            BotLog.debug(resp.toString());
+            
             if (!resp.isOk()) return 0;
 
             JSONObject data = new JSONObject(resp.body());
@@ -94,6 +96,8 @@ public class TentcentNlp {
 
             HttpResponse resp = request.execute();
 
+            BotLog.debug(resp.toString());
+            
             if (!resp.isOk()) return null;
 
             JSONObject data = new JSONObject(resp.body());
