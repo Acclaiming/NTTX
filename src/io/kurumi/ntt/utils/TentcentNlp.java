@@ -160,16 +160,16 @@ public class TentcentNlp {
     
     public static String getSignature(Map<String,Object> params,String app_key) {
         // 先将参数以其参数名的字典序升序进行排序
-        Map<String, String> sortedParams = new TreeMap<>(params);
-        Set<Map.Entry<String, String>> entrys = sortedParams.entrySet();
+        Map<String, Object> sortedParams = new TreeMap<>(params);
+        Set<Map.Entry<String, Object>> entrys = sortedParams.entrySet();
         // 遍历排序后的字典，将所有参数按"key=value"格式拼接在一起
         StringBuilder baseString = new StringBuilder();
-        for (Map.Entry<String, String> param : entrys) {
+        for (Map.Entry<String, Object> param : entrys) {
             //sign参数 和 空值参数 不加入算法
             
             
-            if (param.getValue() != null && !"".equals(param.getKey().trim()) && !"sign".equals(param.getKey().trim()) && !"".equals(param.getValue().trim())) {
-                baseString.append(param.getKey().trim()).append("=").append(encoder.encode(param.getValue().trim(),CharsetUtil.CHARSET_UTF_8)).append("&");
+            if (param.getValue() != null && !"".equals(param.getKey().trim()) && !"sign".equals(param.getKey().trim()) && !"".equals(param.getValue().toString().trim())) {
+                baseString.append(param.getKey().trim()).append("=").append(encoder.encode(param.getValue().toString().trim(),CharsetUtil.CHARSET_UTF_8)).append("&");
             }
         }
         if (baseString.length() > 0) {
