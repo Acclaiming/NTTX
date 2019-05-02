@@ -44,11 +44,11 @@ public class TentcentNlp {
 
     }
 
-    public static String nlpTextchat(Long chatId,String text) {
+    public static String nlpTextchat(String id,String text) {
 
         try {
 
-            JSONObject data = new JSONObject(nlp.nlpTextchat(chatId.toString(),text));
+            JSONObject data = new JSONObject(nlp.nlpTextchat(id.toString(),text));
 
             if (data.getInt("ret") != 0) {
 
