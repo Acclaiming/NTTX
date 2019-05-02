@@ -27,7 +27,7 @@ public class BotLog extends ConsoleLog {
     public BotLog() {
         super("NTTBot");
     }
-    
+
     @Override
     public void log(Level level,Throwable t,String format,Object[] arguments) {
 
@@ -49,16 +49,16 @@ public class BotLog extends ConsoleLog {
 
 
     public static void log(Throwable t,String template,Object... values) {
-        
+
         out.println(StrUtil.format(template,values));
-        
+
         if (null != t) {
             t.printStackTrace(out);
-            
+
         }
-        
+
         out.flush();
-        
+
     }
 
 
@@ -117,9 +117,9 @@ public class BotLog extends ConsoleLog {
     public static void error(String message,Throwable err) {
 
         log.error(err,message);
-        
+
         new Send(Env.DEVELOPER_ID,"ERROR : " + message,parseError(err)).exec();
-        
+
 
     }
 
@@ -128,20 +128,20 @@ public class BotLog extends ConsoleLog {
         log.error(new RuntimeException(),message);
 
         new Send(Env.DEVELOPER_ID,"ERROR : " + message,parseError(new RuntimeException())).exec();
-        
-        
+
+
     }
-    
-   static String parseError(Throwable error) {
-        
+
+    public static String parseError(Throwable error) {
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        
+
         error.printStackTrace(new PrintWriter(out,true));
-        
+
         return StrUtil.utf8Str(out);
-        
+
     }
-    
+
 
     public static void process(UserData user,Update update) {
 
@@ -153,10 +153,10 @@ public class BotLog extends ConsoleLog {
 
             switch (update.message().chat().type()) {
 
-                case Private : log.append("私聊");break;
+                    case Private : log.append("私聊");break;
 
-                case group : log.append("群组 「").append(update.message().chat().title()).append("」 ");break;
-                case supergroup : log.append("超级群组 「").append(update.message().chat().title()).append("」 ");break;
+                    case group : log.append("群组 「").append(update.message().chat().title()).append("」 ");break;
+                    case supergroup : log.append("超级群组 「").append(update.message().chat().title()).append("」 ");break;
 
 
             }
@@ -214,7 +214,7 @@ public class BotLog extends ConsoleLog {
         if (msg.leftChatMember() != null) log.append("「群成员退出 : ").append(UserData.get(msg.leftChatMember()).formattedName()).append("」");
 
         if (msg.location() != null) log.append("「位置信息 : ").append(msg.location().toString()).append("」");
-        
+
         if (msg.newChatMembers() != null) log.append("「新成员 : ").append(UserData.get(msg.newChatMembers()[0]).formattedName()).append("」");
 
         if (msg.newChatTitle() != null) log.append("「新标题 : ").append(msg.newChatTitle()).append("」");

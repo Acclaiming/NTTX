@@ -14,6 +14,8 @@ public class RiceCakeMeme extends Fragment {
     @Override
     public boolean onGroup(UserData user,Msg msg) {
 
+        if (ChineseAction.disable.contains(msg.chatId().longValue())) return false;
+        
         if (!msg.hasText() || msg.isCommand()) return false;
 
         if (msg.text().startsWith("羡慕") && msg.text().endsWith("...")) {

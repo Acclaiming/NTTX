@@ -13,7 +13,7 @@ import io.kurumi.ntt.utils.*;
 
 public class ChineseAction extends Function {
 
-    public JSONArray disable = LocalData.getJSONArray("data","disable_action",true);
+    public static JSONArray disable = LocalData.getJSONArray("data","disable_action",true);
     
     @Override
     public void functions(LinkedList<String> names) {
@@ -58,7 +58,7 @@ public class ChineseAction extends Function {
 
             } else {
 
-                disable.remove(msg.chatId());
+                disable.remove(msg.chatId().longValue());
 
                 LocalData.setJSONArray("daat","disable_action",disable);
                 
