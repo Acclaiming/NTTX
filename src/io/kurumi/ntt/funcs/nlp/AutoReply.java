@@ -38,7 +38,7 @@ public class AutoReply extends Function {
         
         if (!msg.hasText() || msg.isCommand() || disable.contains(msg.chatId().longValue())) return false;
         
-        String text = msg.text().contains("@NTToolsBot") ? StrUtil.removeAll(msg.text(),"@NTToolsBot") : msg.text();
+        String text = msg.text();
         
         if (msg.text().contains("@NTToolsBot") || (msg.isReply() && msg.replyTo().from().id.equals(origin.me.id())) || (TentcentNlp.nlpTextpolar(text) == 0 && RandomUtil.randomInt(0, 51) == 9)) {
             
