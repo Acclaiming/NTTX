@@ -170,8 +170,6 @@ public class TentcentNlp {
         StringBuilder baseString = new StringBuilder();
         for (Map.Entry<String, Object> param : entrys) {
             //sign参数 和 空值参数 不加入算法
-            
-            
             if (param.getValue() != null && !"".equals(param.getKey().trim()) && !"sign".equals(param.getKey().trim()) && !"".equals(param.getValue().toString().trim())) {
                 baseString.append(param.getKey().trim()).append("=").append(encoder.encode(param.getValue().toString().trim(),CharsetUtil.CHARSET_UTF_8)).append("&");
             }
@@ -184,7 +182,7 @@ public class TentcentNlp {
             String sign = md5(baseString.toString());
             return sign;
         } catch (Exception ex) {
-            return null;
+            throw new RuntimeException(ex);
         }
     }
 
