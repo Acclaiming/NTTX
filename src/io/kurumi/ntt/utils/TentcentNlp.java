@@ -1,17 +1,6 @@
 package io.kurumi.ntt.utils;
 
-import cn.hutool.core.net.URLEncoder;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
-import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeMap;
-import cn.hutool.core.util.CharsetUtil;
 import cn.xsshome.taip.nlp.TAipNlp;
 
 public class TentcentNlp {

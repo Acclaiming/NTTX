@@ -1,4 +1,4 @@
-package io.kurumi.ntt.forward;
+package io.kurumi.ntt.funcs.chatbot;
 
 import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.db.*;
@@ -7,8 +7,9 @@ import cn.hutool.json.*;
 import io.kurumi.ntt.*;
 import io.kurumi.ntt.model.request.*;
 import java.util.*;
+import io.kurumi.ntt.funcs.abs.Function;
 
-public class ForwardMessage extends Fragment {
+public class ForwardMessage extends Function {
 
     public static ForwardMessage INSTANCE = new ForwardMessage();
 
@@ -25,7 +26,7 @@ public class ForwardMessage extends Fragment {
             if (user != null) {
 
                 ForwardClient client = new ForwardClient(user,token);
-                
+
                 client.silentStart();
 
             }
@@ -38,51 +39,69 @@ public class ForwardMessage extends Fragment {
 
         LocalData.setJSON("data","chat_bot",bots);
 
-    }  
+    }
 
     @Override
-    public boolean onMsg(UserData user,Msg msg) {
+    public void functions(LinkedList<String> names) {
 
-        if (!msg.isCommand()) return false;
-
-        switch (msg.command()) {
-
-                case "chatbot" : setChatBot(user,msg);break;
-                case "rmchatbot" : removeChatBot(user,msg);break;
-
-                default : return false;
-
-        }
-
-        return true;
+        names.add("chatbot");
 
     }
 
-    final String POINT_INPUT_TOKEN = "m|i";
+    @Override
+    public int target() {
+        
+        return Private;
 
-    void setChatBot(UserData user,Msg msg) {
+    }
 
-        if (bots.containsKey(user.id.toString())) {
+    @Override
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-            msg.send("你已经设置了一个Bot ~ 使用 /rmchatbot 移除它 < (ˉ^ˉ)> ").exec();
-            return;
+        if (params.length == 0) {
+            
+            msg.send("/chatbot <set|del> 设置或删除转发BOT").exec();
+            
+        } else if ("set".equals(params[0])) {
+            
+            if (bots.containsKey(user.id.toString())) {
 
-        }
+                msg.send("你已经设置了一个Bot ~ 使用 /chatbot del 移除它 < (ˉ^ˉ)> ").exec();
+                return;
 
-        if (msg.isPrivate())  {
+            }
 
-            msg.send("这个功能可以创建一个转发所有私聊到乃的BOT ~o(〃'▽'〃)o").exec();
-            msg.send("现在输入 BotToken 这需要在 @BotFather 申请 ~ 或者使用 /cancel 取消设置。").exec();
+                msg.send("这个功能可以创建一个转发所有私聊到乃的BOT ~o(〃'▽'〃)o").exec();
+                msg.send("现在输入 BotToken 这需要在 @BotFather 申请 ~ 或者使用 /cancel 取消设置。").exec();
 
-            setPoint(user,POINT_INPUT_TOKEN);
+                setPoint(user,POINT_INPUT_TOKEN);
+            
+        } else if ("del".equals(params[0])) {
+            
+            if (bots.containsKey(user.id.toString())) {
 
+                bots.remove(user.id.toString());
+
+                save();
+
+                msg.send("移除成功 ~").exec();
+
+            } else {
+
+                msg.send("乃没有设置私聊转发Bot (๑• . •๑) ").exec();
+
+            }
+            
         } else {
-
-            msg.send("请使用私聊 :)").publicFailed();
-
+            
+            msg.send("/chatbot <set|del> 设置或删除转发BOT").exec();
+            
+            
         }
 
     }
+    
+    final String POINT_INPUT_TOKEN = "m|i";
 
     @Override
     public boolean onPointedPrivate(UserData user,Msg msg) {
@@ -132,23 +151,5 @@ public class ForwardMessage extends Fragment {
         clearPoint(user);
 
     }
-
-    void removeChatBot(UserData user,Msg msg) {
-
-        if (bots.containsKey(user.id.toString())) {
-
-            bots.remove(user.id.toString());
-
-            save();
-
-            msg.send("移除成功 ~").exec();
-
-        } else {
-
-            msg.send("乃没有设置私聊转发Bot (๑• . •๑) ").exec();
-
-        }
-
-    }
-
+    
 }

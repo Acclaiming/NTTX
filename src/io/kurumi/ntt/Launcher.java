@@ -9,7 +9,6 @@ import com.pengrad.telegrambot.request.GetChatAdministrators;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.BotDB;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.forward.ForwardMessage;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.BotServer;
 import io.kurumi.ntt.funcs.AntiHalal;
@@ -23,6 +22,8 @@ import io.kurumi.ntt.funcs.StickerManage;
 import io.kurumi.ntt.funcs.Utils;
 import io.kurumi.ntt.funcs.admin.Notice;
 import io.kurumi.ntt.funcs.admin.TwitterActions;
+import io.kurumi.ntt.funcs.chatbot.ForwardMessage;
+import io.kurumi.ntt.funcs.nlp.AutoReply;
 import io.kurumi.ntt.funcs.twitter.TwitterFunctions;
 import io.kurumi.ntt.funcs.twitter.ext.BioSearch;
 import io.kurumi.ntt.funcs.twitter.track.TrackTask;
@@ -33,7 +34,6 @@ import io.kurumi.ntt.utils.Html;
 import java.io.IOException;
 import java.util.List;
 import java.util.TimeZone;
-import io.kurumi.ntt.funcs.nlp.AutoReply;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
