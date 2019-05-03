@@ -69,7 +69,7 @@ public class AutoReply extends Function {
 
                 disable.add(msg.chatId().longValue());
 
-                LocalData.setJSONArray("daat","disable_action",disable);
+                LocalData.setJSONArray("data","disable_action",disable);
 
                 msg.send("关闭成功 ~").exec();
 
@@ -85,7 +85,7 @@ public class AutoReply extends Function {
 
                 disable.remove(msg.chatId().longValue());
 
-                LocalData.setJSONArray("daat","disable_action",disable);
+                LocalData.setJSONArray("data","disable_action",disable);
 
                 msg.send("已开启 ~").exec();
 
