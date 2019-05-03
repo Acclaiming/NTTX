@@ -52,6 +52,7 @@ public class TentcentNlp {
             String reply = data.getByPath("data.answer",String.class);
 
             return reply
+                .replace("呵呵，看来心情不错啊","唉嘿 ~")
                 .replace("先让我堵上耳朵，捂上眼睛","噫呜呜噫 ~")
                 .replace("好好说话","好好当个rbq")
                 .replace("不明白你说的什么意思","呜呜呜")
