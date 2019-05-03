@@ -204,7 +204,7 @@ public class ForwardClient extends BotFragment {
             
             if (sended != -1) {
                 
-                msg.reply("发送成功 [ " + Html.a("删除","https://t.me/" + me.username() + "?start=d" + target + "&" + sended) + "]").exec();
+                msg.reply("发送成功 [ " + Html.a("删除","https://t.me/" + me.username() + "?start=d" + target + "&" + sended) + "]").html().exec();
                 
             }
             
