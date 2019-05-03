@@ -102,7 +102,7 @@ public class ForwardClient extends BotFragment {
 
             }
 
-        } else if (getPoint(user) != null) {
+        } else if (getPoint(user) == null) {
 
             if (lastReceivedFrom  == null || !lastReceivedFrom.equals(user.id))  {
 
