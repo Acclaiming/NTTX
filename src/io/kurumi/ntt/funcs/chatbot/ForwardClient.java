@@ -85,8 +85,8 @@ public class ForwardClient extends BotFragment {
                     
                     try {
                     
-                    long target = Long.parseLong(StrUtil.subBetween(msg.params()[0],"d","&"));
-                    int messageId = Integer.parseInt(StrUtil.subAfter(msg.params()[0],"&",false));
+                    long target = Long.parseLong(StrUtil.subBetween(msg.params()[0],"d","-"));
+                    int messageId = Integer.parseInt(StrUtil.subAfter(msg.params()[0],"-",false));
                     
                     BaseResponse resp = bot().execute(new DeleteMessage(target,messageId));
 
@@ -216,7 +216,7 @@ public class ForwardClient extends BotFragment {
             
             if (sended != -1) {
                 
-                msg.reply("发送成功 [ " + Html.a("删除","https://t.me/" + me.username() + "?start=d" + target + "&" + sended) + " ]").html().exec();
+                msg.reply("发送成功 [ " + Html.a("删除","https://t.me/" + me.username() + "?start=d" + target + "-" + sended) + " ]").html().exec();
                 
             }
             
