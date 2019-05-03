@@ -106,7 +106,7 @@ public class ForwardClient extends BotFragment {
 
             if (lastReceivedFrom  == null || !lastReceivedFrom.equals(user.id))  {
 
-                new Send(this,userId,"来自 " + user.userName() + " : [ " + Html.a("回复","https://t.me/NTTools?start=r" + user.id) + " 屏蔽(未完成) ]").html().exec();
+                new Send(this,userId,"来自 " + user.userName() + " : [ " + Html.a("回复","https://t.me/NTToolsBot?start=r" + user.id) + " 屏蔽(未完成) ]").html().exec();
 
                 lastReceivedFrom = user.id;
 
@@ -204,7 +204,7 @@ public class ForwardClient extends BotFragment {
             
             if (sended != -1) {
                 
-                msg.reply("发送成功 [ " + Html.a("删除","https://t.me/NTTools?start=d" + target + "&" + sended) + "]").exec();
+                msg.reply("发送成功 [ " + Html.a("删除","https://t.me/NTToolsBot?start=d" + target + "&" + sended) + "]").exec();
                 
             }
             
