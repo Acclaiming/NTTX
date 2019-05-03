@@ -77,7 +77,7 @@ public class ForwardClient extends BotFragment {
 
                     }
 
-                    msg.send("回复 " + target.userName() + " 直接发送信息即可 (非文本，表情，文件 会直接转发) : ","使用 /cancel 退出").html().exec();
+                    msg.send("回复 " + target.userName() + " : " ,"直接发送信息即可 (非文本，表情，文件 会直接转发) : ","使用 /cancel 退出").html().exec();
 
                     setPoint(user,POINT_REPLY,target.id);
                     
