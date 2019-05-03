@@ -39,8 +39,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     public static final Launcher INSTANCE = new Launcher();
 
-    
-
     @Override
     public boolean onMsg(UserData user,Msg msg) {
 
@@ -69,7 +67,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
                 msg.send("这是一个不知道干什么用的bot (≧σ≦)").exec();
                 msg.send(
-                    "/login 认证Twitter账号以使用功能 ~",
+                    "/login 认证Twitter账号以使用功能 (支持多账号) ~",
                     "/logout 登出Twitter账号 bot将不保留认证信息",
                     "/track Twitter 账号监听 设置",
                     "/bl 导出屏蔽列表 (csv)",
