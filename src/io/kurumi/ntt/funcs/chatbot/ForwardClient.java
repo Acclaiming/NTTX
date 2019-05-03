@@ -27,7 +27,7 @@ public class ForwardClient extends BotFragment {
     public Long lastReceivedFrom;
 
     public UserData user;
-
+    
     public ForwardClient(UserData user,String botToken)  {
 
         this.userId = user.id;
@@ -106,6 +106,7 @@ public class ForwardClient extends BotFragment {
                         
                     }
                     
+                } else if (msg.params()[0].startsWith("b")) {
                 }
                 
             }
@@ -116,7 +117,7 @@ public class ForwardClient extends BotFragment {
 
             if (lastReceivedFrom  == null || !lastReceivedFrom.equals(user.id))  {
 
-                new Send(this,userId,"来自 " + user.userName() + " : [ " + Html.a("回复","https://t.me/" + me.username() +"?start=r" + user.id) + " 屏蔽(未完成) ]").html().exec();
+                new Send(this,userId,"来自 " + user.userName() + " : [ " + Html.a("回复","https://t.me/" + me.username() +"?start=r" + user.id) + " ]").html().exec();
 
                 lastReceivedFrom = user.id;
 

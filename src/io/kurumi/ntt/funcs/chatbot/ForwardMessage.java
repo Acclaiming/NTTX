@@ -50,7 +50,7 @@ public class ForwardMessage extends Function {
 
     @Override
     public int target() {
-        
+
         return Private;
 
     }
@@ -59,11 +59,11 @@ public class ForwardMessage extends Function {
     public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
         if (params.length == 0) {
-            
+
             msg.send("/chatbot <set|del> 设置或删除转发BOT").exec();
-            
+
         } else if ("set".equals(params[0])) {
-            
+
             if (bots.containsKey(user.id.toString())) {
 
                 msg.send("你已经设置了一个Bot ~ 使用 /chatbot del 移除它 < (ˉ^ˉ)> ").exec();
@@ -71,13 +71,13 @@ public class ForwardMessage extends Function {
 
             }
 
-                msg.send("这个功能可以创建一个转发所有私聊到乃的BOT ~o(〃'▽'〃)o").exec();
-                msg.send("现在输入 BotToken 这需要在 @BotFather 申请 ~ 或者使用 /cancel 取消设置。").exec();
+            msg.send("这个功能可以创建一个转发所有私聊到乃的BOT ~o(〃'▽'〃)o").exec();
+            msg.send("现在输入 BotToken 这需要在 @BotFather 申请 ~ 或者使用 /cancel 取消设置。").exec();
 
-                setPoint(user,POINT_INPUT_TOKEN);
-            
+            setPoint(user,POINT_INPUT_TOKEN);
+
         } else if ("del".equals(params[0])) {
-            
+
             if (bots.containsKey(user.id.toString())) {
 
                 bots.remove(user.id.toString());
@@ -91,16 +91,16 @@ public class ForwardMessage extends Function {
                 msg.send("乃没有设置私聊转发Bot (๑• . •๑) ").exec();
 
             }
-            
+
         } else {
-            
+
             msg.send("/chatbot <set|del> 设置或删除转发BOT").exec();
-            
-            
+
+
         }
 
     }
-    
+
     final String POINT_INPUT_TOKEN = "m|i";
 
     @Override
@@ -151,5 +151,5 @@ public class ForwardMessage extends Function {
         clearPoint(user);
 
     }
-    
+
 }

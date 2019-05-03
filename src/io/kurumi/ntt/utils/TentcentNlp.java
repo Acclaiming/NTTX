@@ -36,7 +36,7 @@ public class TentcentNlp {
     public static String nlpTextchat(String id,String text) {
 
         try {
-            
+
             text = text.replace("🐴","妈");
 
             JSONObject data = new JSONObject(nlp.nlpTextchat(id.toString(),text));
@@ -52,6 +52,8 @@ public class TentcentNlp {
             String reply = data.getByPath("data.answer",String.class);
 
             return reply
+                .replace("先让我堵上耳朵，捂上眼睛","噫呜呜噫 ~")
+                .replace("好好说话","好好当个rbq")
                 .replace("不明白你说的什么意思","呜呜呜")
                 .replace("听不大懂耶","「 数据删除 」")
                 .replace("今天的新闻","女装援交")
