@@ -40,10 +40,12 @@ public class AutoReply extends Function {
         
         String text = msg.text();
         
-        if (msg.text().contains("@NTToolsBot") || (msg.isReply() && msg.replyTo().from().id.equals(origin.me.id())) || ((TentcentNlp.nlpTextpolar(text) >= 0) && RandomUtil.randomInt(0, 31) == 9)) {
+        if (msg.text().contains("@NTToolsBot") || (msg.isReply() && msg.replyTo().from().id.equals(origin.me.id())) ||  RandomUtil.randomInt(0, 51) == 9) {
             
             String reply = TentcentNlp.nlpTextchat(((Long)(user.id < 0 ? user.id * -1 : user.id)).toString(),text);
             
+			if (reply == null) return false; //reply = "别欺负咱了 呜呜...";
+			
             msg.reply(reply).exec();
             
         }
@@ -65,7 +67,7 @@ public class AutoReply extends Function {
 
             } else {
 
-                disable.add(msg.chatId());
+                disable.add(msg.chatId().longValue());
 
                 LocalData.setJSONArray("daat","disable_action",disable);
 
@@ -81,7 +83,7 @@ public class AutoReply extends Function {
 
             } else {
 
-                disable.remove(msg.chatId());
+                disable.remove(msg.chatId().longValue());
 
                 LocalData.setJSONArray("daat","disable_action",disable);
 
