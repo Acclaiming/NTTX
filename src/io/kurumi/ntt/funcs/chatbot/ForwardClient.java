@@ -102,7 +102,7 @@ public class ForwardClient extends BotFragment {
 
             }
 
-        } else {
+        } else if (getPoint(user) != null) {
 
             if (lastReceivedFrom  == null || !lastReceivedFrom.equals(user.id))  {
 
@@ -113,15 +113,19 @@ public class ForwardClient extends BotFragment {
             }
 
             msg.forwardTo(userId);
+            
+            return true;
 
         }
 
-        return true;
+        return false;
     }
 
     @Override
     public boolean onPointedPrivate(UserData user,Msg msg) {
 
+        if (onPrivate(user,msg)) return true;
+        
         PointStore.Point<Long> point = getPoint(user);
 
         long target = point.data;
