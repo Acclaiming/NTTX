@@ -60,7 +60,7 @@ public class ForwardClient extends BotFragment {
             if (msg.params().length == 0) {
 
                 msg.send("这里是 " + this.user.name() + " 的私聊BOT ✧٩(ˊωˋ*)و✧ 发送信息给咱就可以了 ~").html().exec();
-
+                
             } else {
                 
                 msg.delete();
@@ -80,7 +80,7 @@ public class ForwardClient extends BotFragment {
                     msg.send("回复 " + target.userName() + " 直接发送信息即可 (非文本，表情，文件 会直接转发) : ","使用 /cancel 退出").html().exec();
 
                     setPoint(user,POINT_REPLY,target.id);
-
+                    
                 } else if (msg.params()[0].startsWith("d")) {
                     
                     try {
@@ -107,8 +107,10 @@ public class ForwardClient extends BotFragment {
                     }
                     
                 }
-
+                
             }
+            
+            return true;
 
         } else if (getPoint(user) == null) {
 
