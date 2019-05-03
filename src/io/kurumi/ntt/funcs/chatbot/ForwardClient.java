@@ -83,6 +83,8 @@ public class ForwardClient extends BotFragment {
 
                 } else if (msg.params()[0].startsWith("d")) {
                     
+                    try {
+                    
                     long target = Long.parseLong(StrUtil.subBetween(msg.params()[0],"d","&"));
                     int messageId = Integer.parseInt(StrUtil.subAfter(msg.params()[0],"&",false));
                     
@@ -95,6 +97,12 @@ public class ForwardClient extends BotFragment {
                     } else {
                         
                         msg.send("删除失败 这条发送的信息还在吗 ？").exec();
+                        
+                    }
+                    
+                    } catch (NumberFormatException e) {
+                        
+                        msg.send("这个删除已经点过了 :) (" + msg.params()[0]).exec();
                         
                     }
                     
