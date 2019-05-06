@@ -78,12 +78,10 @@ public class ChineseAction extends Function {
 		if (msg == null) return false;
 
 		if (msg.length() == 0) return false;
-
-		if (msg.substring(0,1).toCharArray().length > 0) return false;
 		
 		char first = msg.charAt(0);
 
-		return !CharUtil.isAscii(first);
+		return !CharUtil.isLetterOrNumber(first);
 
 		// return first >= 0x4E00 &&  first <= 0x9FA5;
 
