@@ -23,7 +23,8 @@ public class AutoReply extends Function {
     public void functions(LinkedList<String> names) {
 
         names.add("reply");
-
+		
+		
     }
 
     @Override
