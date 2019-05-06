@@ -81,7 +81,7 @@ public class ChineseAction extends Function {
 		
 		char first = msg.charAt(0);
 
-		return !CharUtil.isLetterOrNumber(first);
+		return !CharUtil.isLetterOrNumber(first) && !CharUtil.isEmoji(first);
 
 		// return first >= 0x4E00 &&  first <= 0x9FA5;
 
