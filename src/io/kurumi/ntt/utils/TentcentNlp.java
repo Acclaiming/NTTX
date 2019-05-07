@@ -68,7 +68,11 @@ public class TentcentNlp {
                 .replace("妈","🐴")
 				.replace("我","咱");
 
-        } catch (Exception e) {}
+        } catch (Exception e) {
+			
+			BotLog.info("error",e);
+			
+		}
 
         return null;
 
