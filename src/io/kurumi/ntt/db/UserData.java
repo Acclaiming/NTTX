@@ -14,6 +14,7 @@ import io.kurumi.ntt.utils.NTT;
 import io.kurumi.ntt.utils.Html;
 import cn.hutool.http.*;
 import io.kurumi.ntt.fragment.*;
+import cn.hutool.core.util.*;
 
 public class UserData {
 
@@ -51,15 +52,16 @@ public class UserData {
 
         if (userDataIndex.containsKey(user.id())) {
 
-            return userDataIndex.get(user.id());
-
+            checkUpdate(userDataIndex.get(user.id()),user);
+			
+	
         }
 
         synchronized (userDataIndex) {
 
             if (userDataIndex.containsKey(user.id())) {
 
-                return userDataIndex.get(user.id());
+                return checkUpdate(userDataIndex.get(user.id()),user);
             }
 
 
@@ -67,14 +69,9 @@ public class UserData {
 
                 UserData userData = data.getById(user.id());
 
-                userData.read(user);
-
-                data.setById(user.id(),userData);
-
                 userDataIndex.put(user.id(),userData);
 
-                return userData;
-
+                return checkUpdate(userData,user);
 
 
             } else {
@@ -97,7 +94,21 @@ public class UserData {
 
     }
 
-
+	static UserData checkUpdate(UserData userData,User user) {
+		
+		if (!ObjectUtil.equal(user.firstName(),userData.firstName) ||
+		ObjectUtil.equal(user.lastName(),userData.lastName)) {
+			
+			userData.read(user);
+			
+			data.setById(userData.id,userData);
+			
+		}
+		
+		return userData;
+		
+	}
+	
     public Long id;
     public String firstName;
     public String lastName;
