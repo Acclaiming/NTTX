@@ -39,7 +39,7 @@ public class TentcentNlp {
 
             text = text.replace("🐴","妈");
 			
-			if (text.matches("(?+|？+)")) {
+			if (text.matches("(\\?+|？+)")) {
 				
 				return "唉嘿嘿 ~";
 				
