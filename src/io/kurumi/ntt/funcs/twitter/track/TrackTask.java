@@ -54,7 +54,7 @@ public class TrackTask extends TimerTask {
             
             TAuth account = TAuth.getById(setting.id);
 
-            if (account != null) {
+            if (account != null && setting.followers) {
                 
                 Twitter api =  account.createApi();
                 
@@ -144,15 +144,17 @@ public class TrackTask extends TimerTask {
         
         for (Map.Entry<Long,String> send : sendList.entrySet()) {
             
-            if (following.contains(send.getKey()) && followers.contains(send.getKey())) {
+			TrackUI.TrackSetting setting = TrackUI.data.getById(send.getKey());
+
+            if ((setting.followingInfo || setting.followersInfo) && following.contains(send.getKey()) && followers.contains(send.getKey())) {
                 
                 new Send(send.getKey(),"与乃互关的 " + archive.urlHtml() + " ( #" + archive.oldScreenName() + " ) : ",send.getValue()).html().exec();
                 
-            } else if (following.contains(send.getKey())) {
+            } else if (setting.followingInfo && following.contains(send.getKey())) {
                 
                 new Send(send.getKey(),"乃关注的 " + archive.urlHtml() + " ( #" + archive.oldScreenName() + " ) : ",send.getValue()).html().exec();
                 
-            } else {
+            } else if (setting.followersInfo)  {
                 
                 new Send(send.getKey(),"关注乃的 " + archive.urlHtml() + " ( #" + archive.oldScreenName() + " ) : ",send.getValue()).html().exec();
                 
