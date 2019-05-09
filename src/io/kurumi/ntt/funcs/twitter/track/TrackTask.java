@@ -146,6 +146,8 @@ public class TrackTask extends TimerTask {
             
 			TrackUI.TrackSetting setting = TrackUI.data.getById(send.getKey());
 
+			if (setting == null) return;
+			
             if ((setting.followingInfo || setting.followersInfo) && following.contains(send.getKey()) && followers.contains(send.getKey())) {
                 
                 new Send(send.getKey(),"与乃互关的 " + archive.urlHtml() + " ( #" + archive.oldScreenName() + " ) : ",send.getValue()).html().exec();
