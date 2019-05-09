@@ -42,6 +42,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public boolean onMsg(UserData user,Msg msg) {
 
+		
         if (super.onMsg(user,msg)) return true;
 
         if ("start".equals(msg.command()) && msg.params().length == 0) {

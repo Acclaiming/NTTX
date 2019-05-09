@@ -5,4 +5,5 @@
 <classpathentry kind="lib" path="libs/hutool-base-4.4.3.jar"/>
 <classpathentry kind="lib" path="libs/bot-library.jar"/>
 <classpathentry kind="lib" path="libs/mongo-java-driver.jar"/>
+<classpathentry kind="lib" path="libs/telegramapi-66.0-jar-with-dependencies.jar"/>
 </classpath>

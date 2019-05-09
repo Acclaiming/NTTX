@@ -55,10 +55,15 @@ public class Notice extends Function {
     @Override
     public void onPoint(UserData user,Msg msg,PointStore.Point point) {
         
-        boolean mute = point.data.toString().contains("mute");
-        
+		String params = point.data.toString();
+		
+        boolean mute = params.contains("mute");
+        boolean login = params.contains("login");
+		
         clearPoint(user);
         
+		if (!login) {
+		
         long count = UserData.data.collection.countDocuments();
 
         long success = 0;
@@ -80,6 +85,8 @@ public class Notice extends Function {
 
         }
 
+		}
+		
     }
 
 }
