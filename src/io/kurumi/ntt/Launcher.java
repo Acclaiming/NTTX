@@ -21,7 +21,6 @@ import io.kurumi.ntt.funcs.RiceCakeMeme;
 import io.kurumi.ntt.funcs.StickerManage;
 import io.kurumi.ntt.funcs.Utils;
 import io.kurumi.ntt.funcs.admin.Notice;
-import io.kurumi.ntt.funcs.admin.TwitterActions;
 import io.kurumi.ntt.funcs.chatbot.ForwardMessage;
 import io.kurumi.ntt.funcs.nlp.AutoReply;
 import io.kurumi.ntt.funcs.twitter.TwitterFunctions;
@@ -150,8 +149,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(Notice.INSTANCE);
 
-        addFragment(TwitterActions.INSTANCE);
-        
         addFragment(RiceCakeMeme.INSTANCE);
         
         addFragment(AutoReply.INSTANCE);
