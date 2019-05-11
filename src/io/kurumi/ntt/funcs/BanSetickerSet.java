@@ -32,8 +32,6 @@ public class BanSetickerSet extends Fragment {
 
             }
 
-            return true;
-
         } else if (msg.isGroup() && msg.message().sticker() != null && bans.containsKey(msg.chatId().toString())) {
 
             if (bans.getJSONArray(msg.chatId().toString()).contains(msg.message().sticker().setName())) {
