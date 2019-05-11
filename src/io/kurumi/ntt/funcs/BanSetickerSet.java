@@ -38,8 +38,6 @@ public class BanSetickerSet extends Fragment {
 
             if (bans.getJSONArray(msg.chatId().toString()).contains(msg.message().sticker().setName())) {
 
-				if (NTT.isGroupAdmin(msg.ch
-
 					msg.delete();
 
                 return true;
@@ -104,6 +102,8 @@ public class BanSetickerSet extends Fragment {
         if (NTT.checkGroup(msg)) return;
         if (NTT.checkGroupAdmin(msg)) return;
 
+		String setName = null;
+		
         if (msg.replyTo() == null || msg.replyTo().message().sticker() == null) {
 
 			if (msg.params().length == 0) {
