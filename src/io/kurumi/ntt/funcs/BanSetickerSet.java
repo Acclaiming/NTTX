@@ -15,7 +15,8 @@ public class BanSetickerSet extends Fragment {
 
         LocalData.setJSON("data","ban_sticker_set",bans);
 
-    }
+	}
+
 
     @Override
     public boolean onMsg(UserData user,Msg msg) {
@@ -24,9 +25,9 @@ public class BanSetickerSet extends Fragment {
 
             switch (msg.command()) {
 
-                case "banstickerset" : banStickerSet(user,msg);break;
-                case "unbanstickerset" : unBanStickerSet(user,msg);break;
-                    
+                case "banss" : banStickerSet(user,msg);break;
+                case "unbanss" : unBanStickerSet(user,msg);break;
+
                 default : return false;
 
             }
@@ -36,15 +37,17 @@ public class BanSetickerSet extends Fragment {
         } else if (msg.isGroup() && msg.message().sticker() != null && bans.containsKey(msg.chatId().toString())) {
 
             if (bans.getJSONArray(msg.chatId().toString()).contains(msg.message().sticker().setName())) {
-                
-                msg.delete();
-                
+
+				if (NTT.isGroupAdmin(msg.ch
+
+					msg.delete();
+
                 return true;
-                
+
             }
 
         }
-        
+
         return false;
 
     }
@@ -54,15 +57,25 @@ public class BanSetickerSet extends Fragment {
         if (NTT.checkGroup(msg)) return;
         if (NTT.checkGroupAdmin(msg)) return;
 
+		String setName = null;
+		
         if (msg.replyTo() == null || msg.replyTo().message().sticker() == null) {
 
-            msg.send("请对sticker使用啦...").publicFailed();
+			if (msg.params().length == 0) {
 
-            return;
+				msg.send("/banss <贴纸集名称> 或者对sticker使用啦...").publicFailed();
 
-        }
+				return;
 
-        String setName = msg.replyTo().message().sticker().setName();
+			}
+			
+			setName = msg.params()[0];
+
+        } else {
+			
+         setName = msg.replyTo().message().sticker().setName();
+		
+		}
 
         JSONArray rules = bans.getJSONArray(msg.chatId().toString());
 
@@ -77,9 +90,9 @@ public class BanSetickerSet extends Fragment {
         }
 
         rules.add(setName);
-        
+
         bans.put(msg.chatId().toString(),rules);
-        
+
         save();
 
         msg.send("屏蔽成功 ~").exec();
@@ -93,14 +106,22 @@ public class BanSetickerSet extends Fragment {
 
         if (msg.replyTo() == null || msg.replyTo().message().sticker() == null) {
 
-            msg.send("请对sticker使用啦...").publicFailed();
+			if (msg.params().length == 0) {
 
-            return;
+				msg.send("/banss <贴纸集名称> 或者对sticker使用啦...").publicFailed();
 
-        }
+				return;
 
-        String setName = msg.replyTo().message().sticker().setName();
+			}
 
+			setName = msg.params()[0];
+
+        } else {
+
+			setName = msg.replyTo().message().sticker().setName();
+
+		}
+		
         JSONArray rules = bans.getJSONArray(msg.chatId().toString());
 
         if (rules == null) rules = new JSONArray();
@@ -114,7 +135,7 @@ public class BanSetickerSet extends Fragment {
         }
 
         rules.remove(setName);
-        
+
         bans.put(msg.chatId().toString(),rules);
 
         save();
