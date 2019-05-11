@@ -301,7 +301,7 @@ public class TwitterDelete extends TwitterFunction {
 
             }
 
-            threads.remove(account);
+            threads.remove(account.id);
 
 
         }

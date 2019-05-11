@@ -50,7 +50,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
                 msg.send(" ヾ(･ω･｀＝´･ω･)ﾉ♪ ").exec();
                 msg.send("不加个裙玩吗 ~ " + Html.a("-- 戳这里！！！ --","https://t.me/joinchat/H5gBQ1N2Mx4RuhIkq-EajQ")).html().exec();
-                msg.send("输入 / 就有命令补全啦 ~ 使用 /help 查看帮助 ~").exec();
+                msg.send("输入 / 就有命令补全啦 ~ 在 @NTTPublic 查看帮助 ~").exec();
                 msg.send("开源地址在 " + Html.a("NTTools","https://github.com/HiedaNaKan/NTTools") + " 欢迎打心 (๑´ڡ`๑)").html().exec();
 
             } else {
@@ -63,33 +63,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         } else if ("help".equals(msg.command())) {
 
-            if (msg.isPrivate()) {
-
-                msg.send("这是一个不知道干什么用的bot (≧σ≦)").exec();
-                msg.send(
-                    "/login 认证Twitter账号以使用功能 (支持多账号) ~",
-                    "/logout 登出Twitter账号 bot将不保留认证信息",
-                    "/track Twitter 账号监听 设置",
-                    "/bl 导出屏蔽列表 (csv)",
-                    "/status <推文链接|ID> 推文存档",
-                    "/action <on|off> 开关群组事件",
-                    "/reply <on|off> 开关群组自动回复",
-                    "/delete 使用个人数据删除所有推文/打心",
-                    "/canceldelete 取消正在进行的删除",
-                    "/bio <文本/表达式> 简介正则搜索 (仅已存档的用户 显示100条记录)",
-                    "/chatbot 新建一个转发私聊的BOT (BotToken 需要在 @BotFather 申请。)",
-                    "/rmchatbot 移除转发BOT",
-                    "/banstickerset 群组屏蔽贴纸集 (对单个贴纸回复)",
-                    "/unbanstickerset 取消屏蔽 以上",
-                    "/enableantihalal 阻止清真加群",
-                    "/disableantihalal 解除阻止"
-                ).exec();
-
-            } else {
-
-                msg.send("这么长还是私聊看吧 ~ (。・`ω´・)").publicFailed();
-
-            }
+            msg.send("请关注 @NTTPublic (๑˃̵ᴗ˂̵)و").publicFailed();
 
         } else if ("discuss".equals(msg.command())) {
 
