@@ -32,11 +32,13 @@ public class BanSetickerSet extends Fragment {
 
             }
 
+            return true;
+
         } else if (msg.isGroup() && msg.message().sticker() != null && bans.containsKey(msg.chatId().toString())) {
 
             if (bans.getJSONArray(msg.chatId().toString()).contains(msg.message().sticker().setName())) {
 
-					msg.delete();
+				msg.delete();
 
                 return true;
 
@@ -54,7 +56,7 @@ public class BanSetickerSet extends Fragment {
         if (NTT.checkGroupAdmin(msg)) return;
 
 		String setName = null;
-		
+
         if (msg.replyTo() == null || msg.replyTo().message().sticker() == null) {
 
 			if (msg.params().length == 0) {
@@ -64,13 +66,13 @@ public class BanSetickerSet extends Fragment {
 				return;
 
 			}
-			
+
 			setName = msg.params()[0];
 
         } else {
-			
-         setName = msg.replyTo().message().sticker().setName();
-		
+
+			setName = msg.replyTo().message().sticker().setName();
+
 		}
 
         JSONArray rules = bans.getJSONArray(msg.chatId().toString());
@@ -101,7 +103,7 @@ public class BanSetickerSet extends Fragment {
         if (NTT.checkGroupAdmin(msg)) return;
 
 		String setName = null;
-		
+
         if (msg.replyTo() == null || msg.replyTo().message().sticker() == null) {
 
 			if (msg.params().length == 0) {
@@ -119,7 +121,7 @@ public class BanSetickerSet extends Fragment {
 			setName = msg.replyTo().message().sticker().setName();
 
 		}
-		
+
         JSONArray rules = bans.getJSONArray(msg.chatId().toString());
 
         if (rules == null) rules = new JSONArray();

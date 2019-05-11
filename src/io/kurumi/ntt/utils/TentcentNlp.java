@@ -64,7 +64,7 @@ public class TentcentNlp {
                 .replace("好好说话","好好当个rbq")
                 .replace("不明白你说的什么意思","呜呜呜")
 				.replace("不太懂哦","噫呜呜噫")
-				.replace("咱们还是聊点儿别的吧","咱们还是聊点儿别的吧 ( 指女装援交").exec();
+				.replace("咱们还是聊点儿别的吧","咱们还是聊点儿别的吧 ( 指女装援交")
                 .replace("听不大懂耶","「 数据删除 」")
                 .replace("今天的新闻","女装援交")
                 .replace("妈","🐴")
