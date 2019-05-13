@@ -7,8 +7,10 @@ import com.pengrad.telegrambot.model.*;
 import cn.hutool.json.*;
 import io.kurumi.ntt.utils.*;
 import java.lang.Character.*;
+import io.kurumi.ntt.funcs.abs.*;
+import java.util.*;
 
-public class AntiHalal extends Fragment {
+public class AntiHalal extends Function {
 
     public static AntiHalal INSTANCE = new AntiHalal();
     
@@ -45,6 +47,64 @@ public class AntiHalal extends Fragment {
 
     }
 
+	@Override
+	public void functions(LinkedList<String> names) {
+	
+		names.add("antihalal");
+		
+	}
+
+	@Override
+	public int target() {
+		
+		return Group;
+		
+	}
+
+	
+	
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		
+		if (NTT.checkGroupAdmin(msg)) return;
+
+        if (params.length == 1 && "off".equals(params[0])) {
+
+            if (!enable.contains(msg.chatId().longValue())) {
+
+                msg.send("无需重复关闭 ~").exec();
+
+            } else {
+
+                enable.remove(msg.chatId().longValue());
+
+                save();
+				
+                msg.send("关闭成功 ~").exec();
+
+            }
+
+        } else {
+
+            if (enable.contains(msg.chatId().longValue())) {
+
+                msg.send("没有关闭 ~").exec();
+
+            } else {
+
+                enable.add(msg.chatId().longValue());
+
+                save();
+				
+                msg.send("已开启 ~").exec();
+
+            }
+
+        }
+		
+	}
+	
+
     @Override
     public boolean onGroup(UserData user,Msg msg) {
 
@@ -78,67 +138,4 @@ public class AntiHalal extends Fragment {
 
     }
     
-
-    @Override
-    public boolean onMsg(UserData user,Msg msg) {
-
-        if (!msg.isCommand()) return false;
-
-        switch (msg.command()) {
-
-            case "enableantihalal" : enable(user,msg);break;
-            case "disableantihalal" : disable(user,msg);break;
-
-            default : return false;
-
-        }
-
-        return true;
-
-    }
-
-    void enable(UserData user,Msg msg) {
-
-        if (NTT.checkGroup(msg)) return;
-        if (NTT.checkGroupAdmin(msg)) return;
-
-        if (enable.contains(msg.chatId())) {
-
-            msg.send("无需重复开启 ( ˶‾᷄࿀‾᷅˵ )").publicFailed();
-
-            return;
-
-        }
-
-        enable.add(msg.chatId());
-
-        save();
-
-        msg.send("已开启 ~ 请确认BOT有删除消息和禁止绒布球权限 ❀.(*´▽`*)❀.").exec();
-
-    }
-
-    void disable(UserData user,Msg msg) {
-
-        if (NTT.checkGroup(msg)) return;
-        if (NTT.checkGroupAdmin(msg)) return;
-
-        if (!enable.contains(msg.chatId())) {
-
-            msg.send("没有开启 ( ˶‾᷄࿀‾᷅˵ )").publicFailed();
-
-            return;
-
-        }
-
-        enable.remove(msg.chatId());
-
-        save();
-
-        msg.send("已关闭 ~").exec();
-
-    }
-
-
-
 }

@@ -46,7 +46,9 @@ public class Context {
     public void kick(Long userId) {
 
         fragment.bot().execute(new KickChatMember(chatId(),userId.intValue()));
+		fragment.bot().execute(new UnbanChatMember(chatId(),userId.intValue()));
 
+	
 	}
     
     public boolean unrestrict(long id) {
