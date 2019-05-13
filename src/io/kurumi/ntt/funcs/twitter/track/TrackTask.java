@@ -54,12 +54,16 @@ public class TrackTask extends TimerTask {
             
             TAuth account = TAuth.getById(setting.id);
 
-            if (account != null && setting.followers) {
+            if (account != null) {
                 
                 Twitter api =  account.createApi();
                 
                 try {
-                    
+					
+					api.verifyCredentials();
+                   
+					if (setting.followers)
+					
                     doTracking(account,setting,api,UserData.get(account.user));
                     
                 } catch (TwitterException e) {
@@ -67,8 +71,9 @@ public class TrackTask extends TimerTask {
                     if (e.getErrorCode() == 89 || e.getErrorCode() == 326) {
 
                         TrackUI.data.deleteById(setting.id);
+						TAuth.data.deleteById(setting.id);
                         
-                        new Send(account.user,"对不起，但是因乃的账号已被Twitter限制，已经自动关闭所有监听 (需要登录 twitter.com 以解除限制并重新开启 (⁎˃ᆺ˂)").exec();
+                        new Send(account.user,"对不起，但是因乃的账号已停用 / 冻结 / 被限制 / 取消授权，已移除 (⁎˃ᆺ˂)").exec();
 
                     } else if (e.getErrorCode() != 130) {
 
