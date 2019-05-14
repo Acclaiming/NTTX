@@ -93,8 +93,10 @@ public class UserArchive {
 
             isDisappeared = true;
 
-          //  UTTask.onUserChange(this,"用户被冻结或已停用 :)");
+            TrackTask.onUserChange(this,"用户被冻结或已停用 :)");
 
+			return true;
+			
         }
         
         if (user == null && isDisappeared) {
@@ -168,9 +170,7 @@ public class UserArchive {
             change = true;
 
         }
-
-        isDisappeared = false;
-
+		
         if (createdAt == null) {
 
             createdAt = user.getCreatedAt().getTime();
@@ -183,8 +183,6 @@ public class UserArchive {
 
             TrackTask.onUserChange(this,str.toString());
             
-          //  UTTask.onUserChange(this,str.toString());
-
         }
         
         return change;

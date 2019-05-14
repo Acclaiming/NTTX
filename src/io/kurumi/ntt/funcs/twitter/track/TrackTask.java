@@ -99,10 +99,8 @@ public class TrackTask extends TimerTask {
         FindIterable<IdsList> subFr = friends.collection.find(eq("ids",archive.id));
         FindIterable<IdsList> subFo = followers.collection.find(eq("ids",archive.id));
         
-        HashMap<Long,String> sendList = new HashMap<>();
-        LinkedList<Long> following = new LinkedList<>();
-        LinkedList<Long> followers = new LinkedList<>();
-        
+		LinkedList<Long> processed = new LinkedList<>();
+		
         for (IdsList sub : subFr) {
             
             TAuth account = TAuth.getById(sub.id);
@@ -114,19 +112,22 @@ public class TrackTask extends TimerTask {
                 continue;
                 
             }
-            
+			
             if (TrackUI.data.collection.countDocuments(and(eq("_id",sub.id),eq("followingInfo",true))) > 0) {
                 
-                sendList.put(account.user,change);
-                
-                following.add(account.user);
-                
+                processChangeSend(archive,account,change);
+				
+				processed.add(account.id);
+				processed.add(account.user);
+				
             }
             
         }
         
         for (IdsList sub : subFo) {
 
+			if (processed.contains(sub.id)) continue;
+			
             TAuth account = TAuth.getById(sub.id);
 
             if (account == null) {
@@ -136,40 +137,48 @@ public class TrackTask extends TimerTask {
                 continue;
 
             }
+			
+			if (processed.contains(account.user)) continue;
 
             if (TrackUI.data.collection.countDocuments(and(eq("_id",sub.id),eq("followersInfo",true))) > 0) {
-
-                sendList.put(account.user,change);
-
-                followers.add(account.user);
+				
+                processChangeSend(archive,account,change);
                 
             }
 
-        }
-        
-        for (Map.Entry<Long,String> send : sendList.entrySet()) {
-            
-			TrackUI.TrackSetting setting = TrackUI.data.getById(send.getKey());
-
-			if (setting == null) return;
-			
-            if ((setting.followingInfo || setting.followersInfo) && following.contains(send.getKey()) && followers.contains(send.getKey())) {
-                
-                new Send(send.getKey(),"与乃互关的 " + archive.urlHtml() + " ( #" + archive.oldScreenName() + " ) : ",send.getValue()).html().exec();
-                
-            } else if (setting.followingInfo && following.contains(send.getKey())) {
-                
-                new Send(send.getKey(),"乃关注的 " + archive.urlHtml() + " ( #" + archive.oldScreenName() + " ) : ",send.getValue()).html().exec();
-                
-            } else if (setting.followersInfo)  {
-                
-                new Send(send.getKey(),"关注乃的 " + archive.urlHtml() + " ( #" + archive.oldScreenName() + " ) : ",send.getValue()).html().exec();
-                
-            }
-            
         }
 
     }
+	
+	static void processChangeSend(UserArchive archive,TAuth account,String change) {
+		
+		TrackUI.TrackSetting setting = TrackUI.data.getById(account.user);
+
+		if (setting == null || (!setting.followers && !setting.followersInfo && !setting.followingInfo)) {
+			
+			friends.deleteById(account.id);
+			followers.deleteById(account.id);
+			
+			if (setting != null) TrackUI.data.deleteById(account.id);
+			
+			return;
+			
+		}
+		
+		StringBuilder msg = new StringBuilder(TAuth.data.countByField("user",account.user) > 1 ? account.archive().urlHtml() : " : ");
+		
+		boolean isfo = followers.fieldEquals(account.id,"ids",archive.id);
+		boolean isfr = friends.fieldEquals(account.id,"ids",archive.id);
+		
+		if (isfo && isfr) msg.append("与乃互关");
+			else if (isfo) msg.append("关注乃");
+				else msg.append("乃关注");
+				
+		msg.append("的 ").append(archive.urlHtml()).append(" ( #").append(archive.oldScreenName()).append(" ) :\n").append(change);
+		
+		new Send(account.user,msg.toString()).html().exec();
+
+	}
 
     void doTracking(TAuth account,TrackUI.TrackSetting setting,Twitter api,UserData user) throws TwitterException {
        
