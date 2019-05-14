@@ -33,6 +33,7 @@ import io.kurumi.ntt.utils.Html;
 import java.io.IOException;
 import java.util.List;
 import java.util.TimeZone;
+import io.kurumi.ntt.funcs.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -98,6 +99,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(Backup.INSTANCE);
 
         addFragment(GroupRepeat.INSTANCE);
+		
+		addFragment(AntiEsu.INSTANCE);
 
         // addFragment(TwitterArchive.INSTANCE);
 
