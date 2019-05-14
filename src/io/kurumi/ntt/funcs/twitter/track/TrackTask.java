@@ -338,11 +338,11 @@ public class TrackTask extends TimerTask {
 
             User follower = api.showUser(id);
 
-            UserArchive.save(follower);
+            UserArchive archive = UserArchive.save(follower);
 
             Relationship ship = api.showFriendship(api.getId(),id);
 
-            new Send(userId,(ship.isSourceFollowingTarget() ? "乃关注的 " : "") + TApi.formatUserNameHtml(follower) + " 关注了你 :)",parseStatus(api,follower)).enableLinkPreview().html().exec();
+            new Send(userId,(ship.isSourceFollowingTarget() ? "乃关注的 " : "") + archive.urlHtml() + " 关注了你 :)",parseStatus(api,follower)).buttons(makeOpenButton(archive)).enableLinkPreview().html().exec();
 
         } catch (TwitterException e) {
 
@@ -366,21 +366,17 @@ public class TrackTask extends TimerTask {
         try {
 
             User follower = api.showUser(id);
-            UserArchive.save(follower);
+            UserArchive archive = UserArchive.save(follower);
 
             Relationship ship = api.showFriendship(api.getId(),id);
 
             if (ship.isSourceBlockingTarget()) {
 
-                new Send(userId,"关注乃的 " + TApi.formatUserNameHtml(follower) + " 屏蔽了你 :)").enableLinkPreview().html().exec();
-
-            } else if (follower.getFriendsCount() == 0) {
-
-                new Send(userId,TApi.formatUserNameHtml(follower) + " 取关了你，且关注人数为空 :)").enableLinkPreview().html().exec();
+                new Send(userId,"关注乃的 " + archive.urlHtml() + " 屏蔽了你 :)").buttons(makeOpenButton(archive)).enableLinkPreview().html().exec();
 
             } else {
 
-                new Send(userId,TApi.formatUserNameHtml(follower) + " 取关了你 :)").enableLinkPreview().html().exec();
+                new Send(userId,archive.url() + " 取关了你 :)").buttons(makeOpenButton(archive)).enableLinkPreview().html().exec();
 
             }
 
@@ -402,6 +398,15 @@ public class TrackTask extends TimerTask {
 
     }
     
+	ButtonMarkup makeOpenButton(final UserArchive target) {
+		
+		return new ButtonMarkup() {{
+			
+			newUrlButtonLine(target.name,target.url());
+			
+			}};
+		
+	}
     
 
     static Timer timer;
