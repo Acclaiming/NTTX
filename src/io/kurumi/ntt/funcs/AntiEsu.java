@@ -170,7 +170,7 @@ public class AntiEsu extends Function {
 		if (msg.isCommand()) return false;
 		if (!enable.contains(msg.chatId().longValue())) return false;
 		
-		if (msg.hasText() && msg.text().matches(regex)) {
+		if (msg.hasText() && msg.text().replace(" ","").matches(regex)) {
 			
 			msg.delete();
 			
