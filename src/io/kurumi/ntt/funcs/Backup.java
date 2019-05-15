@@ -51,16 +51,7 @@ public class Backup extends Fragment {
 
             Date next = new Date();
 
-			if (next.getHours() < 12) {
-
-				next.setHours(12);
-
-			} else {
-
-				next.setDate(next.getDate() + 1);
-				next.setHours(0);
-
-			}
+				next.setHours(next.getHours() + 1);
 
             next.setMinutes(0);
             next.setSeconds(0);
