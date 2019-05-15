@@ -4,6 +4,7 @@ import io.kurumi.ntt.funcs.abs.*;
 import java.util.*;
 import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.model.*;
+import com.pengrad.telegrambot.response.*;
 
 public class AcceptUI extends Function {
 
@@ -33,6 +34,7 @@ public class AcceptUI extends Function {
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		
 		
 	}
 
