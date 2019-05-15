@@ -143,7 +143,7 @@ public class AntiEsu extends Function {
 	
 	static {
 		
-		StringBuilder kw = new StringBuilder("(");
+		StringBuilder kw = new StringBuilder(".*(");
 
 		for (int index = 0;index < keys.length;index ++) {
 			
@@ -152,7 +152,7 @@ public class AntiEsu extends Function {
 			
 		}
 		
-		kw.append(")");
+		kw.append(").*");
 		
 		regex = kw.toString();
 		
