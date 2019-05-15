@@ -17,11 +17,8 @@ public class Env {
      * 创始人ID
      */
 
-    public static final String DEVELOPER = "HiedaNaKan";
-    public static final long DEVELOPER_ID = 530055491;
-    public static final String DEVELOPER_URL = "https://t.me/" + DEVELOPER;
-
-    public static final Long GROUP = -1001400255262L;
+    
+    public static final Long BACKUP = 1282930075L;
 
     public static File ROOT;
     

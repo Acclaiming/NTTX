@@ -66,7 +66,7 @@ public class Backup extends Fragment {
             next.setSeconds(0);
 
             timer = new Timer("NTT Data Backup Task");
-            timer.scheduleAtFixedRate(this,next,12 * 60 * 60 * 1000);
+            timer.scheduleAtFixedRate(this,next,1 * 60 * 60 * 1000);
 
         }
 
@@ -106,7 +106,7 @@ public class Backup extends Fragment {
 
         FileUtil.del(Env.DATA_DIR + "/db");
 
-        Launcher.INSTANCE.sendFile(Env.DEVELOPER_ID,zip);
+        Launcher.INSTANCE.sendFile(Env.BACKUP,zip);
 
         FileUtil.del(zip);
 

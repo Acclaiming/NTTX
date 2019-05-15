@@ -306,18 +306,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public void uncaughtException(Thread thread,Throwable throwable) {
         
-        List<ChatMember> admins = bot().execute(new GetChatAdministrators(Env.GROUP)).administrators();
-
-        StringBuilder at = new StringBuilder();
-
-        for (ChatMember admin : admins) {
-
-            at.append(UserData.get(admin.user()).userName()).append(" ");
-
-        }
-
-        new Send(Env.GROUP,"NTT异常退出 : \n\n" + BotLog.parseError(throwable) + "\n\n" + at.toString()).html().exec();
-
         BotLog.error("无法处理的错误,正在停止BOT",throwable);
 
         INSTANCE.stop();

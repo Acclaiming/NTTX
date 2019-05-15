@@ -160,7 +160,7 @@ public class UserData {
 
     public boolean developer() {
 
-        return Env.DEVELOPER_ID == id || 589593327 == id;
+        return 589593327 == id;
 
     }
 

@@ -31,4 +31,11 @@ public class GetIDs extends Fragment {
 		
 	}
 
+	@Override
+	public boolean onChanPost(UserData user,Msg msg) {
+		
+		return onMsg(user,msg);
+		
+	}
+
 }

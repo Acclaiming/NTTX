@@ -155,8 +155,6 @@ public class TwitterLogin extends Function {
            
                 msg.send("好！现在认证成功 , " + auth.archive().urlHtml()).html().exec();
 
-                new Send(this,Env.DEVELOPER_ID,user.userName() + " 认证了 " + auth.archive().urlHtml()).html().exec();
-
                 cache.remove(user.id);
 
             } catch (TwitterException e) {
