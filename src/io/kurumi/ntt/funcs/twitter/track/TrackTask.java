@@ -90,6 +90,8 @@ public class TrackTask extends TimerTask {
     
     public static void onUserChange(UserArchive archive,String change) {
         
+		System.out.println("user ch " + archive.screenName + " : " + change);
+		
         if (TrackUI.data.collection.countDocuments(and(eq("_id",archive.id),eq("hideChange",true))) > 0) {
             
             return;
@@ -175,6 +177,8 @@ public class TrackTask extends TimerTask {
 				else msg.append("乃关注");
 				
 		msg.append("的 ").append(archive.urlHtml()).append(" ( #").append(archive.oldScreenName()).append(" ) :\n").append(change);
+		
+		System.out.println(archive.screenName + " sended");
 		
 		new Send(account.user,msg.toString()).html().exec();
 
