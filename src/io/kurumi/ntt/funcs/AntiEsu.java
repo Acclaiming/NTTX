@@ -169,7 +169,6 @@ public class AntiEsu extends Function {
 	@Override
 	public boolean onGroup(UserData user,Msg msg) {
 		
-		if (msg.isCommand()) return false;
 		if (!enable.contains(msg.chatId().longValue())) return false;
 		
 		if (msg.hasText() && msg.text().replace(" ","").matches(regex)) {

@@ -87,8 +87,12 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
          SubTask.start();
 
          */
-
+		 
+		addFragment(AntiEsu.INSTANCE);
+		
         addFragment(Ping.INSTANCE);
+		
+		addFragment(GetIDs.INSTANCE);
 
         addFragment(Utils.INSTANCE);
 
@@ -98,10 +102,11 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(Backup.INSTANCE);
 
+		
+		
         addFragment(GroupRepeat.INSTANCE);
 		
-		addFragment(AntiEsu.INSTANCE);
-
+		
         // addFragment(TwitterArchive.INSTANCE);
 
         //  addFragment(FollowersTrack.INSTANCE);
@@ -265,7 +270,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
             return true;
 
-        } catch (MongoException e) {
+        } catch (Exception e) {
 
             return false;
 
