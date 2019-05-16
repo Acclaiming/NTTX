@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.TimeZone;
 import io.kurumi.ntt.funcs.*;
 import io.kurumi.ntt.kernel.*;
+import java.lang.reflect.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -144,6 +145,12 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         // super.realStart();
 		
 		mtp = new MtProtoBot(getToken(),this);
+
+		try {
+			
+			mtp.init();
+			
+		} catch (Exception e) {}
 
 		mtp.startBot();
 
