@@ -89,9 +89,7 @@ public class TrackTask extends TimerTask {
     }
     
     public static void onUserChange(UserArchive archive,String change) {
-        
-		System.out.println("user ch " + archive.screenName + " : " + change);
-		
+      
         if (TrackUI.data.collection.countDocuments(and(eq("_id",archive.id),eq("hideChange",true))) > 0) {
             
             return;
@@ -116,8 +114,6 @@ public class TrackTask extends TimerTask {
                 
             }
 			
-			System.out.println("sub : " + account.archive().name);
-			
 			TrackUI.TrackSetting setting = TrackUI.data.getById(account.id);
 
 			if (setting == null || (!setting.followers && !setting.followersInfo && !setting.followingInfo)) {
@@ -131,7 +127,7 @@ public class TrackTask extends TimerTask {
 
 			}
 	
-            if (setting.followersInfo || setting.followingInfo) {
+            if (setting.followingInfo) {
                 
                 processChangeSend(archive,account,change,setting);
 				
@@ -173,7 +169,7 @@ public class TrackTask extends TimerTask {
 			
 			if (processed.contains(account.user)) continue;
 
-            if (setting.followersInfo || setting.followingInfo) {
+            if (setting.followersInfo) {
 
                 processChangeSend(archive,account,change,setting);
 
@@ -199,8 +195,6 @@ public class TrackTask extends TimerTask {
 				else msg.append("乃关注");
 				
 		msg.append("的 ").append(archive.urlHtml()).append(" ( #").append(archive.oldScreenName()).append(" ) :\n").append(change);
-		
-		System.out.println(archive.screenName + " sended");
 		
 		new Send(account.user,msg.toString()).html().exec();
 
