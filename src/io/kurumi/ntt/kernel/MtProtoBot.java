@@ -107,7 +107,6 @@ public class MtProtoBot extends TelegramBot {
 
 		private IKernelComm kernelComm;
 		private IDifferenceParametersService differenceParametersService;
-		private DatabaseManager databaseManager;
 		private BotFragment fragment;
 
 		@Override
@@ -122,7 +121,7 @@ public class MtProtoBot extends TelegramBot {
 
 		@Override
 		public DatabaseManager getDatabaseManager() {
-			return databaseManager;
+			return DBManager.INSTANCE;
 		}
 
 		@Override
@@ -135,7 +134,7 @@ public class MtProtoBot extends TelegramBot {
 				throw new NullPointerException("Can't build the handler without a differenceParamtersService");
 			}
 
-			return new Processer(kernelComm,differenceParametersService,databaseManager,fragment);
+			return new Processer(kernelComm,differenceParametersService,getDatabaseManager(),fragment);
 
 		}
 	}
