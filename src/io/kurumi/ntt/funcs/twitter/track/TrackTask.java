@@ -118,9 +118,22 @@ public class TrackTask extends TimerTask {
 			
 			System.out.println("sub : " + account.archive().name);
 			
-            if (TrackUI.data.collection.countDocuments(and(eq("_id",sub.id),eq("followingInfo",true))) > 0) {
+			TrackUI.TrackSetting setting = TrackUI.data.getById(account.id);
+
+			if (setting == null || (!setting.followers && !setting.followersInfo && !setting.followingInfo)) {
+
+				friends.deleteById(account.id);
+				followers.deleteById(account.id);
+
+				if (setting != null) TrackUI.data.deleteById(account.id);
+
+				return;
+
+			}
+	
+            if (setting.followersInfo || setting.followingInfo) {
                 
-                processChangeSend(archive,account,change);
+                processChangeSend(archive,account,change,setting);
 				
 				processed.add(account.id);
 				processed.add(account.user);
@@ -145,33 +158,36 @@ public class TrackTask extends TimerTask {
 			
 			System.out.println("sub : " + account.archive().name);
 			
+			TrackUI.TrackSetting setting = TrackUI.data.getById(account.id);
+
+			if (setting == null || (!setting.followers && !setting.followersInfo && !setting.followingInfo)) {
+
+				friends.deleteById(account.id);
+				followers.deleteById(account.id);
+
+				if (setting != null) TrackUI.data.deleteById(account.id);
+
+				return;
+
+			}
 			
 			if (processed.contains(account.user)) continue;
 
-            if (TrackUI.data.collection.countDocuments(and(eq("_id",sub.id),eq("followersInfo",true))) > 0) {
-				
-                processChangeSend(archive,account,change);
-                
+            if (setting.followersInfo || setting.followingInfo) {
+
+                processChangeSend(archive,account,change,setting);
+
+				processed.add(account.id);
+				processed.add(account.user);
+
             }
 
         }
 
     }
 	
-	static void processChangeSend(UserArchive archive,TAuth account,String change) {
-		
-		TrackUI.TrackSetting setting = TrackUI.data.getById(account.user);
-
-		if (setting == null || (!setting.followers && !setting.followersInfo && !setting.followingInfo)) {
-			
-			friends.deleteById(account.id);
-			followers.deleteById(account.id);
-			
-			if (setting != null) TrackUI.data.deleteById(account.id);
-			
-			return;
-			
-		}
+	static void processChangeSend(UserArchive archive,TAuth account,String change,TrackUI.TrackSetting setting) {
+	
 		
 		StringBuilder msg = new StringBuilder(TAuth.data.countByField("user",account.user) > 1 ? account.archive().urlHtml() : " : ");
 		
