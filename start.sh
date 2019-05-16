@@ -1,4 +1,4 @@
-git fetch --depth=1 origin master && git checkout -f FETCH_HEAD && git clean -fdx
+git pull
 
 for jar in ./libs/*.jar;do
 
@@ -8,9 +8,12 @@ done
 
 find src -name "*.java" > sources.txt
 
+rm -rf ./classes
 mkdir ./classes
 
 javac -d $(dirname $(readlink -f $0))/classes -classpath $CLASSPATH @sources.txt
+
+rm -rf ./sources.txt
 
 export CLASSPATH=$CLASSPATH:./classes
 
