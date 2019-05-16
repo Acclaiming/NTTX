@@ -32,10 +32,10 @@ public class DBManager implements DatabaseManager {
 		return null;
 	}
 	
-	static class Differences {
+	public static class Differences {
 		
-		int id;
-		int[] diff;
+		public int id;
+		public int[] diff;
 		
 	}
 	
