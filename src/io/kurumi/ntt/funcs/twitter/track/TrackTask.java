@@ -104,6 +104,7 @@ public class TrackTask extends TimerTask {
 		LinkedList<Long> processed = new LinkedList<>();
 		
         for (IdsList sub : subFr) {
+			
             
             TAuth account = TAuth.getById(sub.id);
             
@@ -114,6 +115,8 @@ public class TrackTask extends TimerTask {
                 continue;
                 
             }
+			
+			System.out.println("sub : " + account.archive().name);
 			
             if (TrackUI.data.collection.countDocuments(and(eq("_id",sub.id),eq("followingInfo",true))) > 0) {
                 
@@ -139,6 +142,9 @@ public class TrackTask extends TimerTask {
                 continue;
 
             }
+			
+			System.out.println("sub : " + account.archive().name);
+			
 			
 			if (processed.contains(account.user)) continue;
 
