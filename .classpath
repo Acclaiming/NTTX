@@ -6,4 +6,5 @@
 <classpathentry kind="lib" path="libs/twitter4j.jar"/>
 <classpathentry kind="lib" path="libs/mongo-java-driver.jar"/>
 <classpathentry kind="lib" path="libs/telegram.jar"/>
+<classpathentry kind="lib" path="libs/bot-api.jar"/>
 </classpath>
