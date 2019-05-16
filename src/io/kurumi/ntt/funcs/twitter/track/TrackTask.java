@@ -189,7 +189,7 @@ public class TrackTask extends TimerTask {
 	static void processChangeSend(UserArchive archive,TAuth account,String change,TrackUI.TrackSetting setting) {
 	
 		
-		StringBuilder msg = new StringBuilder(TAuth.data.countByField("user",account.user) > 1 ? account.archive().urlHtml() : " : ");
+		StringBuilder msg = new StringBuilder(TAuth.data.countByField("user",account.user) > 1 ? account.archive().urlHtml() + " : " : "");
 		
 		boolean isfo = followers.fieldEquals(account.id,"ids",archive.id);
 		boolean isfr = friends.fieldEquals(account.id,"ids",archive.id);
