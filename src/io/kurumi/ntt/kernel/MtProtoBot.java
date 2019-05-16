@@ -1,27 +1,27 @@
 package io.kurumi.ntt.kernel;
 
+import com.pengrad.telegrambot.*;
+import io.kurumi.ntt.fragment.*;
 import java.lang.reflect.*;
+import org.telegram.api.update.*;
 import org.telegram.bot.*;
 import org.telegram.bot.handlers.*;
-import org.telegram.bot.handlers.interfaces.*;
 import org.telegram.bot.kernel.*;
 import org.telegram.bot.kernel.database.*;
 import org.telegram.bot.kernel.differenceparameters.*;
 import org.telegram.bot.structure.*;
-import org.apache.http.protocol.*;
-import org.telegram.api.update.*;
-import io.kurumi.ntt.fragment.*;
-import com.pengrad.telegrambot.BotUtils;
+
+import org.telegram.bot.kernel.TelegramBot;
 
 public class MtProtoBot extends TelegramBot {
 
 	static final int APP_ID = 205444;
 	static final String API_HASH = "799f4903cc45b287cc897d30a082a2db";
-	
+
 	public MtProtoBot(String botToken,BotFragment fragment) {
 
 		super(new BotApiConfig(botToken),new ProcesserBuilder(fragment),APP_ID,API_HASH);
-		
+
 	}
 
 	static class BotApiConfig extends BotConfig {
@@ -74,23 +74,23 @@ public class MtProtoBot extends TelegramBot {
 
 	}
 
-static  class Processer extends DefaultUpdatesHandler {
-		
-	 BotFragment fragment;
-	 
-		public Processer(org.telegram.bot.kernel.IKernelComm kernelComm, org.telegram.bot.kernel.differenceparameters.IDifferenceParametersService differenceParametersService, org.telegram.bot.kernel.database.DatabaseManager databaseManager,BotFragment fragment) {
-			
+	static  class Processer extends DefaultUpdatesHandler {
+
+		BotFragment fragment;
+
+		public Processer(org.telegram.bot.kernel.IKernelComm kernelComm,org.telegram.bot.kernel.differenceparameters.IDifferenceParametersService differenceParametersService,org.telegram.bot.kernel.database.DatabaseManager databaseManager,BotFragment fragment) {
+
 			super(kernelComm,differenceParametersService,databaseManager);
-			
+
 			this.fragment = fragment;
-			
+
 		}
 
 		@Override
 		protected void onTLUpdateBotWebhookJSONCustom(TLUpdateBotWebhookJSON update) {
-			
+
 			String json = update.getData().getData();
-			
+
 			fragment.processAsync(BotUtils.parseUpdate(json));
 
 		}
@@ -100,16 +100,16 @@ static  class Processer extends DefaultUpdatesHandler {
 	static class ProcesserBuilder implements ChatUpdatesBuilder {
 
 		public ProcesserBuilder(BotFragment fragment) {
-			
+
 			this.fragment = fragment;
 
-	}
-		
+		}
+
 		private IKernelComm kernelComm;
 		private IDifferenceParametersService differenceParametersService;
 		private DatabaseManager databaseManager;
 		private BotFragment fragment;
-		
+
 		@Override
 		public void setKernelComm(IKernelComm kernelComm) {
 			this.kernelComm = kernelComm;
@@ -135,7 +135,7 @@ static  class Processer extends DefaultUpdatesHandler {
 				throw new NullPointerException("Can't build the handler without a differenceParamtersService");
 			}
 
-			return new Processer(kernelComm,differenceParametersService,databaseManager, fragment);
+			return new Processer(kernelComm,differenceParametersService,databaseManager,fragment);
 
 		}
 	}
