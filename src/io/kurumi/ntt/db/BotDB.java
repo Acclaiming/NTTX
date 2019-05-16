@@ -2,7 +2,6 @@ package io.kurumi.ntt.db;
 
 import com.mongodb.*;
 import com.mongodb.client.*;
-import io.kurumi.ntt.twitter.archive.*;
 import java.util.*;
 import org.bson.codecs.configuration.*;
 import org.bson.codecs.pojo.*;

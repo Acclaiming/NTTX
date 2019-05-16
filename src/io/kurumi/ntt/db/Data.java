@@ -14,7 +14,6 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import io.kurumi.ntt.db.BotDB.*;
 import java.util.*;
-import com.google.gson.*;
 
 public class Data<T> {
 
