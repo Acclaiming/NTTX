@@ -31,7 +31,11 @@ public class GroupRepeat extends Fragment {
 
 				history.add(msg);
 
-				msgs.put(msg.chatId(),history);
+				synchronized (msgs) {
+
+					msgs.put(msg.chatId(),history);
+
+				}
 
 
 			} else {
@@ -69,14 +73,22 @@ public class GroupRepeat extends Fragment {
 
 				}
 
-				msgs.put(msg.chatId(),history);
+				synchronized (msgs) {
+
+					msgs.put(msg.chatId(),history);
+
+				}
 
 				return false;
 
 			}
-			
-			msgs.put(msg.chatId(),history);
-			
+
+			synchronized (msgs) {
+
+				msgs.put(msg.chatId(),history);
+
+			}
+
 			if (RandomUtil.randomInt(0,40) == 9) {
 
 				if (msg.text() != null) {
@@ -99,15 +111,19 @@ public class GroupRepeat extends Fragment {
 
 	int parseUsers(LinkedList<Msg> msgs) {
 
-		LinkedHashSet<UserData> users = new LinkedHashSet<>();
+		synchronized(this.msgs) {
 
-		for (Msg msg : msgs) {
+			LinkedHashSet<UserData> users = new LinkedHashSet<>();
 
-			users.add(msg.from());
+			for (Msg msg : msgs) {
+
+				users.add(msg.from());
+
+			}
+
+			return users.size();
 
 		}
-
-		return users.size();
 
 	}
 
