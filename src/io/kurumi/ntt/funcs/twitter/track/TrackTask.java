@@ -368,17 +368,19 @@ public class TrackTask extends TimerTask {
 
             Relationship ship = api.showFriendship(api.getId(),id);
 
-            new Send(userId,(ship.isSourceFollowingTarget() ? "乃关注的 " : "") + archive.urlHtml() + " 关注了你 :)",parseStatus(api,follower)).buttons(makeOpenButton(archive)).enableLinkPreview().html().exec();
+            new Send(userId,(ship.isSourceFollowingTarget() ? "已关注的 " : "") + archive.urlHtml() + " #" + archive.screenName + " 关注了你 :)",parseStatus(api,follower)).buttons(makeOpenButton(archive)).html().exec();
 
         } catch (TwitterException e) {
 
             if (UserArchive.contains(id)) {
 
-                new Send(userId,UserArchive.get(id).urlHtml() + " 关注你 , 但是该账号已经不存在了 :(").enableLinkPreview().html().exec();
+				UserArchive archive = UserArchive.get(id);
+
+                new Send(userId,archive.urlHtml() + " #" + archive.screenName + " 关注了你 , 但是该账号已经不存在了 :(").html().exec();
 
             } else {
 
-                new Send(userId,"用户 (" + id + ") 关注了你 , 但是该账号已经不存在了 :(").enableLinkPreview().html().exec();
+                new Send(userId,"用户 (" + id + ") 关注了你 , 但是该账号已经不存在了 :(").html().exec();
 
 
             }
@@ -398,11 +400,11 @@ public class TrackTask extends TimerTask {
 
             if (ship.isSourceBlockingTarget()) {
 
-                new Send(userId,"关注乃的 " + archive.urlHtml() + " 屏蔽了你 :)").buttons(makeOpenButton(archive)).enableLinkPreview().html().exec();
+                new Send(userId,archive.urlHtml() + " #" + archive.screenName+ " 取关并屏蔽了你 :)").buttons(makeOpenButton(archive)).html().exec();
 
             } else {
 
-                new Send(userId,archive.urlHtml() + " 取关了你 :)").buttons(makeOpenButton(archive)).enableLinkPreview().html().exec();
+                new Send(userId,archive.urlHtml() + " #" + archive.screenName + " 取关了你 :)").buttons(makeOpenButton(archive)).html().exec();
 
             }
 
@@ -410,11 +412,13 @@ public class TrackTask extends TimerTask {
 
             if (UserArchive.contains(id)) {
 
-                new Send(userId,"关注乃的 " + UserArchive.get(id).urlHtml() + " 的账号已经不存在了 :(").enableLinkPreview().html().exec();
+				UserArchive archive = UserArchive.get(id);
+
+                new Send(userId,"关注者 " + archive.urlHtml() + " #" + archive.screenName + " 的账号已经不存在了 :(").html().exec();
 
             } else {
 
-                new Send(userId,"关注你的未记录用户 (" + id + ") 的账号已经不存在了 :(").enableLinkPreview().html().exec();
+                new Send(userId,"无记录的关注者 (" + id + ") 的账号已经不存在了 :(").html().exec();
 
             }
 
