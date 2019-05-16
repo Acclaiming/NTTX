@@ -12,6 +12,8 @@ import org.telegram.bot.kernel.differenceparameters.*;
 import org.telegram.bot.structure.*;
 
 import org.telegram.bot.kernel.TelegramBot;
+import org.telegram.api.functions.account.*;
+import org.telegram.api.functions.bots.*;
 
 public class MtProtoBot extends TelegramBot {
 
@@ -21,7 +23,7 @@ public class MtProtoBot extends TelegramBot {
 	public MtProtoBot(String botToken,BotFragment fragment) {
 
 		super(new BotApiConfig(botToken),new ProcesserBuilder(fragment),APP_ID,API_HASH);
-
+		
 	}
 
 	static class BotApiConfig extends BotConfig {
@@ -86,6 +88,15 @@ public class MtProtoBot extends TelegramBot {
 
 		}
 
+		@Override
+		protected void onTLUpdateBotWebhookJSONQueryCustom(TLUpdateBotWebhookJSONQuery update) {
+			
+			String json = update.getData().getData();
+
+			fragment.processAsync(BotUtils.parseUpdate(json));
+			
+		}
+		
 		@Override
 		protected void onTLUpdateBotWebhookJSONCustom(TLUpdateBotWebhookJSON update) {
 
