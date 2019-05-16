@@ -20,6 +20,10 @@ import static java.util.Arrays.asList;
 import com.mongodb.client.*;
 import io.kurumi.ntt.funcs.twitter.track.TrackUI.*;
 import io.kurumi.ntt.funcs.twitter.track.TrackTask.*;
+import com.pengrad.telegrambot.request.*;
+import com.pengrad.telegrambot.response.*;
+import io.kurumi.ntt.model.*;
+import com.pengrad.telegrambot.model.request.*;
 
 
 public class TrackTask extends TimerTask {
@@ -61,8 +65,8 @@ public class TrackTask extends TimerTask {
                 try {
 
 					if (api.verifyCredentials().isProtected()) {
-
-
+						
+						// TODO
 
 					}
 
@@ -108,7 +112,6 @@ public class TrackTask extends TimerTask {
 		LinkedList<Long> processed = new LinkedList<>();
 
         for (IdsList sub : subFr) {
-
 
             TAuth account = TAuth.getById(sub.id);
 
@@ -191,8 +194,8 @@ public class TrackTask extends TimerTask {
 	static void processChangeSend(UserArchive archive,TAuth account,String change,TrackUI.TrackSetting setting) {
 
 
-		StringBuilder msg = new StringBuilder(TAuth.data.countByField("user",account.user) > 1 ? account.archive().urlHtml() + " : " : "");
-
+		StringBuilder msg = new StringBuilder();
+		
 		boolean isfo = followers.fieldEquals(account.id,"ids",archive.id);
 		boolean isfr = friends.fieldEquals(account.id,"ids",archive.id);
 
@@ -202,8 +205,21 @@ public class TrackTask extends TimerTask {
 
 		msg.append("的 ").append(archive.urlHtml()).append(" ( #").append(archive.oldScreenName()).append(" ) :\n").append(change);
 
-		new Send(account.user,msg.toString()).html().exec();
+		if (TAuth.data.countByField("user",account.user) > 1) 	{
+			
+		msg.append("\n\n来自 : " + account.archive().urlHtml());
+		
+		}
+		
+		
+		Msg sended = new Send(account.user,msg.toString()).html().send();
 
+		if (sended != null && archive.oldPhotoUrl == null) {
+			
+			new SendMediaGroup(account.user,new InputMediaPhoto(archive.oldPhotoUrl).caption("旧头像 (๑˃̵ᴗ˂̵)و --- > 新头像"),new InputMediaPhoto(archive.photoUrl)).replyToMessageId(sended.messageId());
+			
+		}
+		
 	}
 
     void doTracking(TAuth account,TrackUI.TrackSetting setting,Twitter api,UserData user) throws TwitterException {

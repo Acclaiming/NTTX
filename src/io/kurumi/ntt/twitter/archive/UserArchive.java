@@ -74,12 +74,12 @@ public class UserArchive {
     public String screenName;
     public String bio;
     public String photoUrl;
-
     public Boolean isProtected;
 
     public Boolean isDisappeared;
     
     private transient String oldScreename;
+    public transient String oldPhotoUrl;
     
     public String oldScreenName() {
         
@@ -151,15 +151,15 @@ public class UserArchive {
 
         }
 
-        String photoL = photoUrl;
+    oldPhotoUrl = photoUrl;
+		
+        if ((!ObjectUtil.equal(photoUrl = user.getOriginalProfileImageURLHttps(),oldPhotoUrl) && (oldPhotoUrl == null || !oldPhotoUrl.contains("http://")))) {
 
-        if (!ObjectUtil.equal(photoUrl = user.getBiggerProfileImageURL(),photoL)) {
-
-            str.append(split).append("头像更改 : " + Html.a("媒体文件",photoL) + " ------> " + Html.a("媒体文件",photoUrl));
+            str.append(split).append("头像更改 : " + Html.a("媒体文件",oldPhotoUrl) + " ------> " + Html.a("媒体文件",photoUrl));
 
             change = true;
 
-        }
+        } else oldPhotoUrl = null;
 
         Boolean protectL = isProtected;
 
