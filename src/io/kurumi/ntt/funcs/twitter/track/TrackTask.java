@@ -402,7 +402,7 @@ public class TrackTask extends TimerTask {
 
             } else {
 
-                new Send(userId,archive.url() + " 取关了你 :)").buttons(makeOpenButton(archive)).enableLinkPreview().html().exec();
+                new Send(userId,archive.urlHtml() + " 取关了你 :)").buttons(makeOpenButton(archive)).enableLinkPreview().html().exec();
 
             }
 
