@@ -25,11 +25,11 @@ import io.kurumi.ntt.funcs.twitter.track.TrackTask.*;
 public class TrackTask extends TimerTask {
 
     public static TrackTask INSTANCE = new TrackTask();
-    
+
     public static class IdsList {
 
         public Long user;
-        
+
         public Long id;
         public List<Long> ids;
 
@@ -43,77 +43,83 @@ public class TrackTask extends TimerTask {
         }
 
     }
-    
+
     public static Data<IdsList> followers = new Data<IdsList>("Followers",IdsList.class);
     public static Data<IdsList> friends = new Data<IdsList>("Friends",IdsList.class);
-    
+
     @Override
     public void run() {
-        
+
         for (TrackUI.TrackSetting setting : TrackUI.data.collection.find()) {
-            
+
             TAuth account = TAuth.getById(setting.id);
 
             if (account != null) {
-                
+
                 Twitter api =  account.createApi();
-                
+
                 try {
-					
-					api.verifyCredentials();
-                   
-					if (setting.followers)
-					
-                    doTracking(account,setting,api,UserData.get(account.user));
-                    
+
+					if (api.verifyCredentials().isProtected()) {
+
+
+
+					}
+
+					if (setting.followers || setting.followersInfo || setting.followingInfo) {
+
+						doTracking(account,setting,api,UserData.get(account.user));
+
+					}
+
                 } catch (TwitterException e) {
-                    
+
                     if (e.getErrorCode() == 89 || e.getErrorCode() == 326) {
 
                         TrackUI.data.deleteById(setting.id);
 						TAuth.data.deleteById(setting.id);
-                        
+
                         new Send(account.user,"对不起，但是因乃的账号已停用 / 冻结 / 被限制 / 取消授权，已移除 (⁎˃ᆺ˂)").exec();
 
                     } else if (e.getErrorCode() != 130) {
 
                         BotLog.error("UserArchive ERROR",e);
-                        
-                   }
+
+					}
                 }
 
             }
-            
+
         }
-        
+
     }
-    
+
     public static void onUserChange(UserArchive archive,String change) {
-      
+
         if (TrackUI.data.collection.countDocuments(and(eq("_id",archive.id),eq("hideChange",true))) > 0) {
-            
+
             return;
-            
+
         }
-        
+
         FindIterable<IdsList> subFr = friends.collection.find(eq("ids",archive.id));
         FindIterable<IdsList> subFo = followers.collection.find(eq("ids",archive.id));
-        
+
 		LinkedList<Long> processed = new LinkedList<>();
-		
+
         for (IdsList sub : subFr) {
-			
-            
+
+
             TAuth account = TAuth.getById(sub.id);
-            
+
             if (account == null) {
-                
+
                 friends.deleteById(sub.id);
-                
+
                 continue;
-                
+
             }
-			
+
 			TrackUI.TrackSetting setting = TrackUI.data.getById(account.id);
 
 			if (setting == null || (!setting.followers && !setting.followersInfo && !setting.followingInfo)) {
@@ -126,22 +132,22 @@ public class TrackTask extends TimerTask {
 				return;
 
 			}
-	
+
             if (setting.followingInfo) {
-                
+
                 processChangeSend(archive,account,change,setting);
-				
+
 				processed.add(account.id);
 				processed.add(account.user);
-				
+
             }
-            
+
         }
-        
+
         for (IdsList sub : subFo) {
 
 			if (processed.contains(sub.id)) continue;
-			
+
             TAuth account = TAuth.getById(sub.id);
 
             if (account == null) {
@@ -151,9 +157,9 @@ public class TrackTask extends TimerTask {
                 continue;
 
             }
-			
+
 			System.out.println("sub : " + account.archive().name);
-			
+
 			TrackUI.TrackSetting setting = TrackUI.data.getById(account.id);
 
 			if (setting == null || (!setting.followers && !setting.followersInfo && !setting.followingInfo)) {
@@ -166,7 +172,7 @@ public class TrackTask extends TimerTask {
 				return;
 
 			}
-			
+
 			if (processed.contains(account.user)) continue;
 
             if (setting.followersInfo) {
@@ -181,68 +187,72 @@ public class TrackTask extends TimerTask {
         }
 
     }
-	
+
 	static void processChangeSend(UserArchive archive,TAuth account,String change,TrackUI.TrackSetting setting) {
-	
-		
+
+
 		StringBuilder msg = new StringBuilder(TAuth.data.countByField("user",account.user) > 1 ? account.archive().urlHtml() + " : " : "");
-		
+
 		boolean isfo = followers.fieldEquals(account.id,"ids",archive.id);
 		boolean isfr = friends.fieldEquals(account.id,"ids",archive.id);
-		
+
 		if (isfo && isfr) msg.append("与乃互关");
-			else if (isfo) msg.append("关注乃");
-				else msg.append("乃关注");
-				
+		else if (isfo) msg.append("关注乃");
+		else msg.append("乃关注");
+
 		msg.append("的 ").append(archive.urlHtml()).append(" ( #").append(archive.oldScreenName()).append(" ) :\n").append(change);
-		
+
 		new Send(account.user,msg.toString()).html().exec();
 
 	}
 
     void doTracking(TAuth account,TrackUI.TrackSetting setting,Twitter api,UserData user) throws TwitterException {
-       
+
         List<Long> lostFolowers = followers.containsId(account.id) ? followers.getById(account.id).ids : null;
         List<Long> newFollowers = TApi.getAllFoIDs(api,account.id);
 
         if (lostFolowers == null) {
-            
+
             followers.setById(account.id,new IdsList(account.id,newFollowers));
-            
+
             return;
-            
+
         } else {
-            
+
             followers.setById(account.id,new IdsList(account.id,newFollowers));
-            
-        }
-        
-        if (newFollowers.equals(lostFolowers)) return;
-       
-        List<Long> retains = new LinkedList<>();
-        
-        retains.addAll(lostFolowers);
-        retains.retainAll(newFollowers);
-        
-        lostFolowers.removeAll(retains);
-        newFollowers.removeAll(retains);
-        
-        for (Long newfollower : newFollowers) {
-            
-            newFollower(account.user,api,newfollower);
-            
-        }
-        
-        for (Long lostFolower : lostFolowers) {
-
-            lostFollower(account.user,api,lostFolower);
 
         }
-        
+
+		friends.setById(account.id,new IdsList(account.id,TApi.getAllFrIDs(api,account.id)));
+
+		List<Long> retains = new LinkedList<>();
+
+        if (!newFollowers.equals(lostFolowers) || setting.followers) {
+
+			retains.addAll(lostFolowers);
+			retains.retainAll(newFollowers);
+
+			lostFolowers.removeAll(retains);
+			newFollowers.removeAll(retains);
+
+			for (Long newfollower : newFollowers) {
+
+				newFollower(account.user,api,newfollower);
+
+			}
+
+			for (Long lostFolower : lostFolowers) {
+
+				lostFollower(account.user,api,lostFolower);
+
+			}
+
+		}
+
         while (!retains.isEmpty()) {
-            
+
             List<Long> target;
-            
+
             if (retains.size() > 100) {
 
                 target = retains.subList(0,100);
@@ -258,7 +268,7 @@ public class TrackTask extends TimerTask {
                 retains.clear();
 
             }
-            
+
             try {
 
                 ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
@@ -288,14 +298,14 @@ public class TrackTask extends TimerTask {
                     }
 
                 }
-                
+
             }
-            
-            
+
+
         }
 
     }
-    
+
     String parseStatus(Twitter api,User user) {
 
         StringBuilder status = new StringBuilder();
@@ -338,8 +348,8 @@ public class TrackTask extends TimerTask {
          } catch (TwitterException e) {}
 
          */
-         
-        
+
+
         String statusR = status.toString();
 
         if (statusR.endsWith("\n")) {
@@ -394,7 +404,7 @@ public class TrackTask extends TimerTask {
 
             if (ship.isSourceBlockingTarget()) {
 
-                new Send(userId,archive.urlHtml() + " #" + archive.screenName+ " 取关并屏蔽了你 :)").buttons(makeOpenButton(archive)).html().exec();
+                new Send(userId,archive.urlHtml() + " #" + archive.screenName + " 取关并屏蔽了你 :)").buttons(makeOpenButton(archive)).html().exec();
 
             } else {
 
@@ -421,20 +431,20 @@ public class TrackTask extends TimerTask {
 
 
     }
-    
+
 	ButtonMarkup makeOpenButton(final UserArchive target) {
-		
+
 		return new ButtonMarkup() {{
-			
-			newUrlButtonLine(target.name,target.url());
-			
+
+				newUrlButtonLine(target.name,target.url());
+
 			}};
-		
+
 	}
-    
+
 
     static Timer timer;
-    
+
     public static void start() {
 
         stop();
@@ -451,6 +461,6 @@ public class TrackTask extends TimerTask {
 
     }
 
-    
-    
+
+
 }
