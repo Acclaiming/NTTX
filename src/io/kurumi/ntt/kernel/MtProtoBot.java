@@ -32,6 +32,7 @@ public class MtProtoBot extends TelegramBot {
 		public String token;
 
 		public BotApiConfig(String botToken) {
+			
 			this.token = botToken;
 			
 			setAuthfile(botToken + ".bin");
@@ -40,17 +41,23 @@ public class MtProtoBot extends TelegramBot {
 
 		@Override
 		public String getPhoneNumber() {
+			
 			return null;
+			
 		}
 
 		@Override
 		public String getBotToken() {
+			
 			return token;
+			
 		}
 
 		@Override
 		public boolean isBot() {
+			
 			return true;
+			
 		}
 
 	}
@@ -90,43 +97,7 @@ public class MtProtoBot extends TelegramBot {
 
 			this.fragment = fragment;
 
-		}
-
-		@Override
-		protected void onTLUpdateBotWebhookJSONQueryCustom(TLUpdateBotWebhookJSONQuery update) {
-			
-			String json = update.getData().getData();
-
-			fragment.processAsync(BotUtils.parseUpdate(json));
-			
-		}
-		
-		@Override
-		protected void onTLUpdateBotWebhookJSONCustom(TLUpdateBotWebhookJSON update) {
-
-			String json = update.getData().getData();
-
-			fragment.processAsync(BotUtils.parseUpdate(json));
-
-		}
-
-		@Override
-		protected void onTLUpdateMessageIdCustom(TLUpdateMessageId update) {
-			// TODO: Implement this method
-			super.onTLUpdateMessageIdCustom(update);
-		}
-
-		@Override
-		protected void onTLAbsMessageCustom(TLAbsMessage message) {
-			
-			if (message instanceof TLMessage) {
-				
-				
-				
-			}
-			
-	    }
-		
+		}		
 
 	}
 

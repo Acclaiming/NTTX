@@ -149,6 +149,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
        super.realStart();
 		
+	   /*
+	   
 		mtp = new MtProtoBot(getToken(),this);
 
 		try {
@@ -166,6 +168,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		}
 		
 		
+		*/
+		
         ForwardMessage.start();
 
         BotLog.info("初始化 完成 :)");
@@ -173,12 +177,12 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     }
 	
 	
-	public MtProtoBot mtp;
+	// public MtProtoBot mtp;
     
     @Override
     public void stop() {
 
-		mtp.stopBot();
+		// mtp.stopBot();
 		
         for (BotFragment bot : BotServer.fragments.values()) {
 
