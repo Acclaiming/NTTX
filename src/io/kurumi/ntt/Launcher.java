@@ -39,6 +39,7 @@ import java.lang.reflect.*;
 import org.telegram.bot.structure.*;
 import org.telegram.api.functions.photos.*;
 import org.telegram.api.functions.messages.*;
+import com.pengrad.telegrambot.request.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -47,6 +48,13 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public boolean onMsg(UserData user,Msg msg) {
 
+		if (msg.isGroup()) {
+			
+			bot().execute(new LeaveChat(msg.chatId()));
+			
+			return true;
+			
+		}
 		
         if (super.onMsg(user,msg)) return true;
 
