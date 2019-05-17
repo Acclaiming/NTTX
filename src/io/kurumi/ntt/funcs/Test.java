@@ -11,7 +11,9 @@ public class Test extends Function
 
 	@Override
 	public void functions(LinkedList<String> names) {
-		names.add("users");
+		
+		names.add("test");
+		
 	}
 
 	@Override
