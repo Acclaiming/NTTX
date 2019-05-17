@@ -160,7 +160,9 @@ public class UserData {
 
     public boolean developer() {
 
-        return 530055491 == id || 589593327 == id;
+		// 530055491
+		
+        return 818731424 == id || 589593327 == id;
 
     }
 
