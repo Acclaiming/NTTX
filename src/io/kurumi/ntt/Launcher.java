@@ -36,6 +36,9 @@ import java.util.TimeZone;
 import io.kurumi.ntt.funcs.*;
 import io.kurumi.ntt.kernel.*;
 import java.lang.reflect.*;
+import org.telegram.bot.structure.*;
+import org.telegram.api.functions.photos.*;
+import org.telegram.api.functions.messages.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -138,11 +141,11 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         TwitterFunctions.init(this);
 
-        TrackTask.start();
+       TrackTask.start();
 
         Backup.AutoBackupTask.INSTANCE.start();
 
-        // super.realStart();
+       super.realStart();
 		
 		mtp = new MtProtoBot(getToken(),this);
 
@@ -150,10 +153,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 			
 			mtp.init();
 			
+			mtp.startBot();
+			
 		} catch (Exception e) {}
-
-		mtp.startBot();
-
+		
         ForwardMessage.start();
 
         BotLog.info("初始化 完成 :)");

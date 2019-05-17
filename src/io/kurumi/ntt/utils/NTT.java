@@ -14,9 +14,50 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.Timer;
 import java.util.TimerTask;
+import org.telegram.api.functions.messages.*;
+import java.util.concurrent.*;
+import org.telegram.api.engine.*;
+import org.telegram.api.messages.*;
+import org.telegram.api.user.*;
 
 public class NTT {
 
+	public static long[] getChatMembers(long chat) {
+		
+		TLRequestMessagesGetFullChat getFullChat = new TLRequestMessagesGetFullChat();
+
+		try {
+			
+			TLMessagesChatFull resp = Launcher.INSTANCE.mtp.getKernelComm().doRpcCallSync(getFullChat);
+
+			if (resp != null) {
+				
+				long[] users = new long[resp.getUsers().size()];
+				
+				for (int index = 0;index < resp.getUsers().size();index ++) {
+					
+					users[index] = resp.getUsers().get(index).getId();
+					
+				}
+				
+				return users;
+				
+			}
+			
+		} catch (ExecutionException e) {
+			
+			BotLog.info("getfulchat error",e);
+			
+		} catch (RpcException e) {
+			
+			BotLog.info("getfulchat error",e);
+			
+		}
+		
+		return null;
+
+	}
+	
     public static boolean isUserContactable(long id) {
 
         SendResponse resp = new Send(id,"testContactable").disableNotification().exec();

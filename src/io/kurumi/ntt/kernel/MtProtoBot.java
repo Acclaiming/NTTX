@@ -14,6 +14,7 @@ import org.telegram.bot.structure.*;
 import org.telegram.bot.kernel.TelegramBot;
 import org.telegram.api.functions.account.*;
 import org.telegram.api.functions.bots.*;
+import org.telegram.api.message.*;
 
 public class MtProtoBot extends TelegramBot {
 
@@ -105,6 +106,24 @@ public class MtProtoBot extends TelegramBot {
 			fragment.processAsync(BotUtils.parseUpdate(json));
 
 		}
+
+		@Override
+		protected void onTLUpdateMessageIdCustom(TLUpdateMessageId update) {
+			// TODO: Implement this method
+			super.onTLUpdateMessageIdCustom(update);
+		}
+
+		@Override
+		protected void onTLAbsMessageCustom(TLAbsMessage message) {
+			
+			if (message instanceof TLMessage) {
+				
+				
+				
+			}
+			
+	    }
+		
 
 	}
 
