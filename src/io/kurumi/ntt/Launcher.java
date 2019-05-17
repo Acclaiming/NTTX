@@ -92,6 +92,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
          */
 		 
+		addFragment(new Test());
+		
+		 
 		addFragment(AntiEsu.INSTANCE);
 		
         addFragment(Ping.INSTANCE);
@@ -157,7 +160,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 			
 		} catch (Exception e) {}
 		
-		addFragment(new Test());
 		
         ForwardMessage.start();
 
