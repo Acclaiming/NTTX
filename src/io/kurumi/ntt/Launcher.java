@@ -157,6 +157,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 			
 		} catch (Exception e) {}
 		
+		addFragment(new Test());
+		
         ForwardMessage.start();
 
         BotLog.info("初始化 完成 :)");

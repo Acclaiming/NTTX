@@ -22,10 +22,12 @@ import org.telegram.api.user.*;
 
 public class NTT {
 
-	public static long[] getChatMembers(long chat) {
+	public static long[] getChatMembers(Long chat) {
 		
 		TLRequestMessagesGetFullChat getFullChat = new TLRequestMessagesGetFullChat();
 
+		getFullChat.setChatId(chat.intValue());
+		
 		try {
 			
 			TLMessagesChatFull resp = Launcher.INSTANCE.mtp.getKernelComm().doRpcCallSync(getFullChat);
