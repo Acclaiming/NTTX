@@ -23,6 +23,10 @@ public class Test extends Function
 			
 			msg.send(ArrayUtil.join(ids,"\n")).exec();
 			
+		} else {
+			
+			msg.send("failed").exec();
+			
 		}
 		
 	}
