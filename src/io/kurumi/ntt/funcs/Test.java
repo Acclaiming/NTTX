@@ -22,6 +22,8 @@ public class Test extends Function {
 
 		msg.send("stat").exec();
 		
+		/*
+		
 		long[] ids = NTT.getChatMembers(msg.chatId());
 
 		if (ids != null) {
@@ -33,6 +35,8 @@ public class Test extends Function {
 			msg.send("failed").exec();
 			
 		}
+		
+		*/
 		
 	}
 	
