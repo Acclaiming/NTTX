@@ -35,7 +35,7 @@ public class MtProtoBot extends TelegramBot {
 			this.token = botToken;
 			
 			setAuthfile(botToken + ".bin");
-			setRegistered(true);
+			// setRegistered(true);
 			
 		}
 
