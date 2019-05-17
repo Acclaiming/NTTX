@@ -33,6 +33,10 @@ public class MtProtoBot extends TelegramBot {
 
 		public BotApiConfig(String botToken) {
 			this.token = botToken;
+			
+			setAuthfile(botToken + ".bin");
+			setRegistered(true);
+			
 		}
 
 		@Override
