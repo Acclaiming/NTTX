@@ -153,11 +153,17 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		try {
 			
+			System.out.println("LOGIN :" + mtp.getConfig().getBotToken());
+			
 			System.out.println("LOGIN : " + mtp.init());
 			
 			mtp.startBot();
 			
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			
+			BotLog.info("login error",e);
+			
+		}
 		
 		
         ForwardMessage.start();
