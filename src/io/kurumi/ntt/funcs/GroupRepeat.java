@@ -16,8 +16,10 @@ public class GroupRepeat extends Fragment {
     @Override
     public boolean onGroup(UserData user,Msg msg) {
 
+		synchronized (msgs) {
+		
         if (msg.isCommand()) {
-
+			
 			msgs.remove(msg.chatId());
 
 
@@ -30,12 +32,9 @@ public class GroupRepeat extends Fragment {
 				history = new LinkedList<>();
 
 				history.add(msg);
-				
-			synchronized (msgs) {
-
+			
 				msgs.put(msg.chatId(),history);
 				
-				}
 
 
 			} else {
@@ -73,21 +72,14 @@ public class GroupRepeat extends Fragment {
 
 				}
 				
-				synchronized (msgs) {
-
 				msgs.put(msg.chatId(),history);
 
-				}
 				
 				return false;
 
 			}
 			
-			synchronized (msgs) {
-			
 			msgs.put(msg.chatId(),history);
-			
-			}
 			
 			if (RandomUtil.randomInt(0,40) == 9) {
 
@@ -106,13 +98,13 @@ public class GroupRepeat extends Fragment {
 		}
 
         return false;
+		
+		}
 
     }
 
 	int parseUsers(LinkedList<Msg> msgs) {
 
-		synchronized(this.msgs) {
-		
 		LinkedHashSet<UserData> users = new LinkedHashSet<>();
 
 		for (Msg msg : msgs) {
@@ -122,8 +114,6 @@ public class GroupRepeat extends Fragment {
 		}
 
 		return users.size();
-		
-		}
 
 	}
 
