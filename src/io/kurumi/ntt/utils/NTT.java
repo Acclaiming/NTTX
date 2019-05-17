@@ -30,7 +30,7 @@ public class NTT {
 		
 		try {
 			
-			TLMessagesChatFull resp = Launcher.INSTANCE.mtp.getKernelComm().doRpcCallSync(getFullChat);
+			TLMessagesChatFull resp = Launcher.INSTANCE.mtp.getKernelComm().doRpcCallSyncNoAuth(getFullChat);
 
 			if (resp != null) {
 				
