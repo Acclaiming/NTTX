@@ -22,6 +22,8 @@ import org.telegram.api.user.*;
 
 public class NTT {
 
+	/*
+	
 	public static long[] getChatMembers(Long chat) {
 		
 		TLRequestMessagesGetFullChat getFullChat = new TLRequestMessagesGetFullChat();
@@ -59,6 +61,8 @@ public class NTT {
 		return null;
 
 	}
+	
+	*/
 	
     public static boolean isUserContactable(long id) {
 

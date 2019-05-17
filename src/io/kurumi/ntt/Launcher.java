@@ -91,8 +91,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
          SubTask.start();
 
          */
-		 
-		addFragment(Test.INSTANCE);
 
 		addFragment(AntiEsu.INSTANCE);
 		

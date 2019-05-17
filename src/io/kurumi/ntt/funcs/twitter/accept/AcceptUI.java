@@ -15,15 +15,12 @@ public class AcceptUI extends Function {
         public long id;
 
         public boolean accept = false;
-		public boolean reject = false;
-        public boolean followback = false;
-        public boolean unfollowback = false;
-		public boolean blockback = false;
+		
 		
     }
 	
 	final String POINT_SETTING_ACCEPT = "a|a";
-	final String POINT_SETTING_REJECT = "a|a";
+	final String POINT_SETTING_REJECT = "a|r";
 	
 	@Override
 	public void functions(LinkedList<String> names) {
@@ -34,6 +31,7 @@ public class AcceptUI extends Function {
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		
 		
 		
 	}
