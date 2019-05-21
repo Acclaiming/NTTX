@@ -24,7 +24,11 @@ public class UserData {
 
     public static UserData get(Long userId) {
 
-        if (userDataIndex.containsKey(userId)) return userDataIndex.get(userId);
+        if (userDataIndex.size() > 1000) {
+
+			userDataIndex.clear();
+
+		} else if (userDataIndex.containsKey(userId)) return userDataIndex.get(userId);
 
         synchronized (userDataIndex) {
 
@@ -50,7 +54,11 @@ public class UserData {
 
         if (user == null) return null;
 
-        if (userDataIndex.containsKey(user.id())) {
+		if (userDataIndex.size() > 1000) {
+
+			userDataIndex.clear();
+
+		} else if (userDataIndex.containsKey(user.id())) {
 
             checkUpdate(userDataIndex.get(user.id()),user);
 			
@@ -151,10 +159,12 @@ public class UserData {
         return name;
 
     }
+	
+	
 
     public String userName() {
-
-        return Html.a(name(),"tg://user?id=" + id);
+		
+        return Html.a(StrUtil.isBlank(name()) ? "[已重置]" : name(),"tg://user?id=" + id);
 
     }
 

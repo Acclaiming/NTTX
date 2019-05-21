@@ -7,6 +7,7 @@ import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.utils.*;
 import java.util.*;
 import cn.hutool.core.util.*;
+import cn.hutool.crypto.digest.*;
 
 public class AntiEsu extends Function {
 
@@ -15,7 +16,7 @@ public class AntiEsu extends Function {
     public static JSONArray enable = LocalData.getJSONArray("data","anti_esu",true);
 
     public static void save() {
-
+		
         LocalData.setJSONArray("data","anti_esu",enable);
 
     }
@@ -33,7 +34,6 @@ public class AntiEsu extends Function {
 		return Group;
 
 	}
-
 
 
 	@Override

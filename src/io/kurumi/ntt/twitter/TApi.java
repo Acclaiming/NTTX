@@ -7,18 +7,6 @@ import twitter4j.*;
 
 public class TApi {
 
-    public static String formatUserName(User u) {
-
-        return  u.getName() + " (@" + u.getScreenName() + ")";
-
-    }
-
-    public static String formatUserNameHtml(User u) {
-
-        return Html.a(u.getName(),"https://twitter.com/" + u.getScreenName());
-
-    }
-
     public static LinkedList<User> getListUsers(Twitter api,long id) throws TwitterException {
 
 

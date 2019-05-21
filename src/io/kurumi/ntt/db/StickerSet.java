@@ -1,14 +1,11 @@
 package io.kurumi.ntt.db;
 
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
-import com.pengrad.telegrambot.request.GetStickerSet;
-import com.pengrad.telegrambot.response.GetStickerSetResponse;
-import io.kurumi.ntt.Launcher;
-import io.kurumi.ntt.utils.BotLog;
-
-import java.util.HashMap;
-import java.util.LinkedList;
+import cn.hutool.json.*;
+import com.pengrad.telegrambot.request.*;
+import com.pengrad.telegrambot.response.*;
+import io.kurumi.ntt.*;
+import io.kurumi.ntt.utils.*;
+import java.util.*;
 
 public class StickerSet extends JSONObject {
 
@@ -35,6 +32,18 @@ public class StickerSet extends JSONObject {
         load();
 
     }
+	
+	public String url() {
+		
+		return "https://t.me/addstickers/" + name;
+		
+	}
+	
+	public String urlHtml() {
+		
+		return Html.a(title,name);
+		
+	}
 
     public static StickerSet get(String name) {
 

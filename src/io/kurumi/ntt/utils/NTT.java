@@ -1,24 +1,14 @@
 package io.kurumi.ntt.utils;
 
-import cn.hutool.core.thread.*;
 import cn.hutool.core.util.*;
+import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.request.*;
 import com.pengrad.telegrambot.response.*;
 import io.kurumi.ntt.*;
 import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.model.request.*;
-import io.kurumi.ntt.twitter.*;
-import com.pengrad.telegrambot.model.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.Timer;
-import java.util.TimerTask;
-import org.telegram.api.functions.messages.*;
-import java.util.concurrent.*;
-import org.telegram.api.engine.*;
-import org.telegram.api.messages.*;
-import org.telegram.api.user.*;
+import java.util.*;
 
 public class NTT {
 
