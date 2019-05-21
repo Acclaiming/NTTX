@@ -33,7 +33,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         if (super.onMsg(user,msg)) return true;
 
         if ("start".equals(msg.command()) && msg.params().length == 0) {
-			
+
 			msg.send("start failed successfully ᕙ(`▿´)ᕗ").publicFailed();
 
             return true;
@@ -41,11 +41,11 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         } else if ("help".equals(msg.command())) {
 
             msg.send("没有帮助 ~").publicFailed();
-			
+
 			return true;
 
         }
-		
+
         return false;
 
     }
@@ -54,7 +54,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     public void realStart() {
 
 		addFragment(new PingFunction());
-		
+
 		addFragment(new Final());
 
         BotLog.info("初始化 完成 :)");
@@ -103,77 +103,81 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 
-        int serverPort = Integer.parseInt(Env.getOrDefault("server_port","-1"));
-        String serverDomain = Env.get("server_domain");
+		if (!INSTANCE.isLongPulling()) {
 
-        while (serverPort == -1) {
+			int serverPort = Integer.parseInt(Env.getOrDefault("server_port","-1"));
+			String serverDomain = Env.get("server_domain");
 
-            System.out.print("输入本地Http服务器端口 : ");
+			while (serverPort == -1) {
 
-            try {
+				System.out.print("输入本地Http服务器端口 : ");
 
-                serverPort = Integer.parseInt(Console.input());
+				try {
 
-                Env.set("server_port",serverPort);
+					serverPort = Integer.parseInt(Console.input());
 
-            } catch (Exception e) {}
+					Env.set("server_port",serverPort);
 
-        }
+				} catch (Exception e) {}
 
-        if (serverDomain == null) {
+			}
 
-            System.out.print("输入BotWebHook域名 : ");
+			if (serverDomain == null) {
 
-            serverDomain = Console.input();
+				System.out.print("输入BotWebHook域名 : ");
 
-            Env.set("server_domain",serverDomain);
+				serverDomain = Console.input();
 
-        }
+				Env.set("server_domain",serverDomain);
 
-        BotServer.INSTANCE = new BotServer(serverPort,serverDomain);
+			}
 
-        try {
+			BotServer.INSTANCE = new BotServer(serverPort,serverDomain);
 
-            BotServer.INSTANCE.start();
+			try {
 
-        } catch (IOException e) {
+				BotServer.INSTANCE.start();
 
-            BotLog.error("端口被占用 请检查其他BOT进程。");
+			} catch (IOException e) {
 
-            return;
+				BotLog.error("端口被占用 请检查其他BOT进程。");
 
-        }
+				return;
 
-        String dbAddr = Env.getOrDefault("db_address","127.0.0.1");
-        Integer dbPort = Integer.parseInt(Env.getOrDefault("db_port","27017"));
+			}
 
-        while (!initDB(dbAddr,dbPort)) {
+			String dbAddr = Env.getOrDefault("db_address","127.0.0.1");
+			Integer dbPort = Integer.parseInt(Env.getOrDefault("db_port","27017"));
 
-            System.out.print("输入MongoDb地址 : ");
-            dbAddr = Console.scanner().nextLine();
+			while (!initDB(dbAddr,dbPort)) {
 
-            try {
+				System.out.print("输入MongoDb地址 : ");
+				dbAddr = Console.scanner().nextLine();
 
-                System.out.print("输入MongoDb端口 : ");
-                dbPort = Console.scanner().nextInt();
+				try {
 
-                Env.set("db_address",dbAddr);
-                Env.set("db_port",dbPort);
+					System.out.print("输入MongoDb端口 : ");
+					dbPort = Console.scanner().nextInt();
 
-            } catch (Exception e) {}
+					Env.set("db_address",dbAddr);
+					Env.set("db_port",dbPort);
 
-        }
+				} catch (Exception e) {}
 
-        RuntimeUtil.addShutdownHook(new Runnable() {
+			}
 
-                @Override
-                public void run() {
+			RuntimeUtil.addShutdownHook(new Runnable() {
 
-                    INSTANCE.stop();
+					@Override
+					public void run() {
 
-                }
+						INSTANCE.stop();
 
-            });
+					}
+
+				});
+
+		}
 
         INSTANCE.start();
 
@@ -205,9 +209,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public boolean isLongPulling() {
 
-        return false;
-
-        // 否则 NanoHttpd 会 无端 停止。
+        return true;
 
     }
 
