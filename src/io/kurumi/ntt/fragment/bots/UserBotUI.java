@@ -407,11 +407,11 @@ public class UserBotUI extends Function {
 
 		} else {
 
-			clearPoint(user);
-
 			msg.send("取消成功...").exec();
-
+			
 		}
+		
+		clearPoint(user);
 
 	}
 
