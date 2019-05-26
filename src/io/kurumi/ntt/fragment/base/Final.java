@@ -8,12 +8,13 @@ import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.utils.*;
 
 import io.kurumi.ntt.db.StickerSet;
+import com.pengrad.telegrambot.model.request.*;
 
 
 
 public class Final extends Fragment {
 
-	final String split = "\n------------------------\n";
+	final String split = "------------------------\n";
 	
 	@Override
 	public boolean onPrivate(UserData user,Msg msg) {
@@ -79,7 +80,7 @@ public class Final extends Fragment {
 			
 			msg.sendUpdatingPhoto();
 
-            bot().execute(new SendPhoto(msg.chatId(),getFile(msg.message().sticker().fileId())).caption(str.toString()).replyToMessageId(msg.messageId()));
+            bot().execute(new SendPhoto(msg.chatId(),getFile(msg.message().sticker().fileId())).caption(str.toString()).parseMode(ParseMode.HTML).replyToMessageId(msg.messageId()));
 
 		} else {
 			
