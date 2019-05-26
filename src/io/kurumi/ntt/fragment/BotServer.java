@@ -70,8 +70,8 @@ public class BotServer extends NanoHTTPD {
     public Response serve(IHTTPSession session) {
 
         URL url = URLUtil.url(session.getUri());
-
-		if (url.getPath().equals("/donate")) {
+		
+		if (url.getPath().startsWith("/donate")) {
 			
 			int amont = session.getParms().containsKey("amount") ? Integer.parseInt(session.getParms().get("amount")) :5;
 			
