@@ -73,6 +73,12 @@ public class BotServer extends NanoHTTPD {
 
         URL url = URLUtil.url(session.getUri());
 		
+		if (url.getPath().equals("/favicon.ico")) {
+			
+			return redirectTo("https://kurumi.io/favicon.ico");
+			
+		}
+		
 		if (url.getPath().startsWith("/donate")) {
 			
 			int amont = session.getParms().containsKey("amount") ? Integer.parseInt(session.getParms().get("amount")) :5;
