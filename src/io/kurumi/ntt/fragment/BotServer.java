@@ -43,8 +43,6 @@ public class BotServer extends NanoHTTPD {
 
 	String getDonateUrl(int amount) {
 
-		if (amount < 5) amount = 5;
-
 		try {
 
 			try {
