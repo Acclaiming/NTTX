@@ -11,6 +11,7 @@ public class Donate extends Function {
 	@Override
 	public void functions(LinkedList<String> names) {
 		
+		names.add("donate");
 		names.add("ccinit");
 		
 	}
@@ -18,6 +19,12 @@ public class Donate extends Function {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 	
+		if ("donate".equals(function)) {
+			
+			msg.send("感谢。点击下方Url为服务器账户 (位于CloudCone) 氪金。","由于官方限制 支付宝氪金金额至少为 $5 氪金请谨慎 (","戳这里 : https://" + Env.get("server_domain") + "/donate?amout=5").exec();
+			
+			} else {
+		
 		if (!user.developer()) {
 			
 			msg.send("permission denied").exec();
@@ -38,6 +45,8 @@ public class Donate extends Function {
 		Env.set("donate.cc.password",params[1]);
 		
 		msg.send("successful").exec();
+		
+		}
 		
 	}
 

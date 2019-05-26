@@ -41,9 +41,11 @@ public class BotServer extends NanoHTTPD {
 
     }
 
-	String getDonateUrl() {
+	String getDonateUrl(int amount) {
 		
-		String donateUrl = DonateUtil.ccAlipay(5);
+		if (amount < 5) amount = 5;
+		
+		String donateUrl = DonateUtil.ccAlipay(amount);
 		
 		if (donateUrl == null) {
 			
@@ -53,7 +55,7 @@ public class BotServer extends NanoHTTPD {
 				
 			}
 			
-			donateUrl = DonateUtil.ccAlipay(5);
+			donateUrl = DonateUtil.ccAlipay(amount);
 			
 			if (donateUrl == null) return "about:blank";
 			
@@ -71,7 +73,9 @@ public class BotServer extends NanoHTTPD {
 
 		if (url.getPath().equals("/donate")) {
 			
-			return redirectTo(getDonateUrl());
+			int amont = session.getParms().containsKey("amount") ? Integer.parseInt(session.getParms().get("amount")) :5;
+			
+			return redirectTo(getDonateUrl(amont));
 			
 		}
 		
