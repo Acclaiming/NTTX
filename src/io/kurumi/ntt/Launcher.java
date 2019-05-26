@@ -23,6 +23,7 @@ import cn.hutool.core.lang.Console;
 import io.kurumi.ntt.funcs.chatbot.ForwardMessage;
 import io.kurumi.ntt.fragment.base.*;
 import io.kurumi.ntt.fragment.twitter.login.*;
+import io.kurumi.ntt.fragment.bots.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -63,6 +64,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new TwitterLogin());
 		
 		addFragment(new TwitterLogout());
+		
+		// Bots
+		
+		addFragment(new UserBotUI());
 		
 		// Final Parse
 		

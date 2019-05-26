@@ -52,7 +52,7 @@ public abstract class TwitterFunction extends Function {
             final FindIterable<TAuth> accounts = TAuth.getByUser(user.id);
 
 
-            Msg send = msg.send("请选择目标账号 Σ( ﾟωﾟ (使用 /cancel 取消) ~").keyboard(new Keyboard() {{
+            Msg send = msg.send("请选择目标账号 Σ( ﾟωﾟ ","使用 /cancel 取消 ~").keyboard(new Keyboard() {{
 
                         for (TAuth account : accounts) {
 
