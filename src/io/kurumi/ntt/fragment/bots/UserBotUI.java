@@ -381,7 +381,7 @@ public class UserBotUI extends Function {
 
 		}
 
-		msg.send("发送 沙了她 确认删除，其他内容为取消 ~").exec();
+		msg.send("发送 沙了她 确认删除，其他内容为取消 ~").removeKeyboard().exec();
 
 		setPoint(user,POINT_CONFIRM_DEL,bot.id);
 
