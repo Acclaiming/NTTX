@@ -26,19 +26,19 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class UserBotUI extends Function {
 
-	static class UserBot {
+	public static class UserBot {
 
-		long id;
+		public long id;
 
-		long user;
+		public long user;
 
-		String userName;
+		public String userName;
 
-		String token;
+		public String token;
 
-		String type;
+		public String type;
 
-		String[] params;
+		public String[] params;
 
 	}
 
