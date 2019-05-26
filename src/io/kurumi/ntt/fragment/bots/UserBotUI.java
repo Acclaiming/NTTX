@@ -38,7 +38,7 @@ public class UserBotUI extends Function {
 
 		public String type;
 
-		public String[] params;
+		public List<String> params;
 
 	}
 
@@ -254,7 +254,9 @@ public class UserBotUI extends Function {
 		userBot.id = bot.id();
 		userBot.userName = bot.username();
 		userBot.type = finish.type;
-		userBot.params = finish.params;
+		
+		userBot.params = new LinkedList<String>();
+		userBot.params.add(finish.params[0]);
 
 		userBot.user = user.id;
 
@@ -290,7 +292,7 @@ public class UserBotUI extends Function {
 
 	void setChatBot(UserData user,Msg msg,UserBot bot) {
 
-		msg.send("好，这是一只私聊Bot,当前的欢迎语是 :",bot.params[0],"","现在发送新欢迎语 或使用 /cancel 取消 ~").removeKeyboard().exec();
+		msg.send("好，这是一只私聊Bot,当前的欢迎语是 :",bot.params.get(0),"","现在发送新欢迎语 或使用 /cancel 取消 ~").removeKeyboard().exec();
 
 		setPoint(user,POINT_SET_CHAT_BOT,bot.id);
 
