@@ -179,6 +179,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		}
 
+		BotLog.info("正在启动...");
+		
         INSTANCE.start();
 
     }
