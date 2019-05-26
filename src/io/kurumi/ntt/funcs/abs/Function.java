@@ -23,7 +23,7 @@ public abstract class Function extends Fragment {
 
     public abstract void onFunction(UserData user,Msg msg,String function,String[] params);
     public void onPoint(UserData user,Msg msg,PointStore.Point point) {}
-    public void onCallback(UserData user,Callback callback,String point,CData data) {}
+    public void onCallback(UserData user,Callback callback,String point,String[] params) {}
     
     public static final String[] None = new String[0];
 
@@ -99,9 +99,9 @@ public abstract class Function extends Fragment {
     
         for (String used : points) {
 
-            if (used.equals(callback.data.getPoint())) {
+            if (used.equals(callback.params[0])) {
 
-                onCallback(user,callback,callback.data.getPoint(),callback.data);
+                onCallback(user,callback,callback.params[0],ArrayUtil.remove(callback.params,0));
 
                 return true;
 

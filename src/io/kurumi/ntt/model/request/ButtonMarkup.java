@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import io.kurumi.ntt.utils.CData;
 
 import java.util.LinkedList;
+import cn.hutool.core.util.*;
 
 public class ButtonMarkup extends LinkedList<ButtonLine> {
 
@@ -18,42 +19,17 @@ public class ButtonMarkup extends LinkedList<ButtonLine> {
 
     }
 
-    public void newButtonLine(String text, String point, String index) {
+    public void newButtonLine(String text, String point, Object... data) {
 
-        CData data = new CData();
-
-        data.setPoint(point);
-        
-        data.put("i",index);
-        
-        newButtonLine().newButton(text, data);
+        newButtonLine().newButton(text, ArrayUtil.join(ArrayUtil.insert(data,0,point),","));
 
     }
     
-    public void newButtonLine(String text, String point, Long index) {
-
-        CData data = new CData();
-
-        data.setPoint(point);
-
-        data.put("i",index);
-
-        newButtonLine().newButton(text, data);
-
-    }
-
     public void newButtonLine(String text, String point) {
 
         CData data = new CData();
 
         data.setPoint(point);
-
-        newButtonLine().newButton(text, data);
-
-    }
-
-
-    public void newButtonLine(String text, CData data) {
 
         newButtonLine().newButton(text, data);
 

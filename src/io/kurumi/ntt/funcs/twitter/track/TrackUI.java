@@ -74,9 +74,9 @@ public class TrackUI extends TwitterFunction {
     }
 
     @Override
-    public void onCallback(UserData user,Callback callback,String point,CData data) {
+    public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
-        long accountId = data.getIndexLong();
+        long accountId = Long.parseLong(params[0]);
 
         final TrackSetting setting = this.data.containsId(accountId) ? this.data.getById(accountId) : new TrackSetting();
         

@@ -2,7 +2,7 @@ package io.kurumi.ntt.funcs.abs;
 
 import com.mongodb.client.*;
 import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.funcs.twitter.login.*;
+import io.kurumi.ntt.fragments.twitter.login.*;
 import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.twitter.*;
@@ -50,10 +50,10 @@ public abstract class TwitterFunction extends Function {
                 return;
 
             }
-            
+
             final FindIterable<TAuth> accounts = TAuth.getByUser(user.id);
 
-            
+
             Msg send = msg.send("请选择目标账号 Σ( ﾟωﾟ (使用 /cancel 取消) ~").keyboard(new Keyboard() {{
 
                         for (TAuth account : accounts) {
@@ -65,10 +65,10 @@ public abstract class TwitterFunction extends Function {
                         newButtonLine("/cancel");
 
                     }}).send();
-                    
-                    
+
+
             setPoint(user,POINT_CHOOSE_ACCPUNT,new TwitterPoint(this,msg,send));
-            
+
 
         }
 
@@ -76,21 +76,21 @@ public abstract class TwitterFunction extends Function {
 
     @Override
     public void points(LinkedList<String> points) {
-        
+
         points.add(POINT_CHOOSE_ACCPUNT);
-        
+
     }
 
     @Override
     public int target() {
-       
+
         return Private;
-        
+
     }
-    
+
     @Override
     public void onPoint(UserData user,Msg msg,PointStore.Point point) {
-        
+
         if (POINT_CHOOSE_ACCPUNT.equals(point.point)) {
 
             TwitterPoint data = (TwitterPoint)point.data;
@@ -114,15 +114,15 @@ public abstract class TwitterFunction extends Function {
                 return;
 
             }
-            
+
             data.send.delete();
-            
+
             msg.send("选择了 : " + account.archive().urlHtml() + " (❁´▽`❁)").removeKeyboard().html().failedWith();
-           
+
             clearPoint(user);
-            
+
             data.function.onFunction(user,data.msg,data.msg.command(),data.msg.params(),account);
-            
+
 
         }
 

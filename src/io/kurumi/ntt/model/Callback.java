@@ -9,21 +9,23 @@ import io.kurumi.ntt.Launcher;
 
 public class Callback extends Msg {
 
-    public CData data;
     private CallbackQuery query;
+	
+	public String[] params;
 
     public Callback(CallbackQuery query) {
 
         this(Launcher.INSTANCE, query);
 
     }
+	
     public Callback(Fragment fragment, CallbackQuery query) {
 
         super(fragment, query.message());
 
         this.query = query;
 
-        data = new CData(query.data());
+        this.params = query.data().contains(",") ? query.data().split(",") : new String[] { query.data() };
 
     }
 

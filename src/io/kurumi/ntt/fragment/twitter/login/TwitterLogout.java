@@ -1,4 +1,4 @@
-package io.kurumi.ntt.funcs.twitter.login;
+package io.kurumi.ntt.fragment.twitter.login;
 
 import io.kurumi.ntt.funcs.abs.*;
 import io.kurumi.ntt.db.*;

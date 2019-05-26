@@ -22,6 +22,7 @@ import java.util.*;
 import cn.hutool.core.lang.Console;
 import io.kurumi.ntt.funcs.chatbot.ForwardMessage;
 import io.kurumi.ntt.fragment.base.*;
+import io.kurumi.ntt.fragment.twitter.login.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -53,8 +54,18 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public void realStart() {
 
+		// Base Functions
+		
 		addFragment(new PingFunction());
-
+		
+		// Twitter Auth
+		
+		addFragment(new TwitterLogin());
+		
+		addFragment(new TwitterLogout());
+		
+		// Final Parse
+		
 		addFragment(new Final());
 		
 		super.realStart();

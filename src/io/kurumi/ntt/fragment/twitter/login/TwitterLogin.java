@@ -1,4 +1,4 @@
-package io.kurumi.ntt.funcs.twitter.login;
+package io.kurumi.ntt.fragment.twitter.login;
 
 import cn.hutool.core.util.*;
 import io.kurumi.ntt.*;
