@@ -68,7 +68,7 @@ public class UserBotUI extends Function {
 
 						newButtonLine(ChatForward);
 
-					}});
+					}}).exec();
 
 			setPoint(user,POINT_NEW_BOT);
 
