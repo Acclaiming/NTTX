@@ -2,13 +2,11 @@ package io.kurumi.ntt.funcs.abs;
 
 import com.mongodb.client.*;
 import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.fragments.twitter.login.*;
 import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.twitter.archive.*;
-import java.util.LinkedList;
-import com.pengrad.telegrambot.response.SendResponse;
+import java.util.*;
 
 public abstract class TwitterFunction extends Function {
 
