@@ -70,7 +70,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 					
 				}
 				
-			},10000);
+			},10 * 60 * 1000);
 
     }
 
