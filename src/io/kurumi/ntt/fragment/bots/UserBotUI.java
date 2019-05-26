@@ -293,6 +293,7 @@ public class UserBotUI extends Function {
 		UserBot userBot = new UserBot();
 
 		userBot.id = bot.id();
+		userBot.token = msg.text();
 		userBot.userName = bot.username();
 		userBot.type = finish.type;
 		
@@ -383,7 +384,7 @@ public class UserBotUI extends Function {
 
 		}
 
-		msg.send("发送 沙了她 确认删除，其他内容为取消 ~").removeKeyboard().exec();
+		msg.send("发送 确认 确认删除，其他内容为取消 ~").removeKeyboard().exec();
 
 		setPoint(user,POINT_CONFIRM_DEL,bot.id);
 
@@ -391,7 +392,7 @@ public class UserBotUI extends Function {
 
 	void onDelConfirm(UserData user,Msg msg,Long botId) {
 
-		if ("沙了她".equals(msg.text())) {
+		if ("确认".equals(msg.text())) {
 
 			UserBot bot = botData.getById(botId);
 
