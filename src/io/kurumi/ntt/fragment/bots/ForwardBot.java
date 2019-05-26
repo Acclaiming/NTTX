@@ -1,4 +1,4 @@
-package io.kurumi.ntt.funcs.chatbot;
+package io.kurumi.ntt.fragment.bots;
 
 import cn.hutool.core.date.DateUtil;
 import com.pengrad.telegrambot.model.Message;
@@ -20,27 +20,27 @@ import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.response.BaseResponse;
 import twitter4j.*;
 
-public class ForwardClient extends BotFragment {
+public class ForwardBot extends BotFragment {
 
     public Long userId;
     public String botToken;
 
     public Long lastReceivedFrom;
 
-    public UserData user;
+	public String welcome;
     
-    public ForwardClient(UserData user,String botToken)  {
+    public ForwardBot(Long userId,String botToken,String welcome)  {
 
-        this.userId = user.id;
+        this.userId = userId;
         this.botToken = botToken;
-
-        this.user = user;
+		
+		this.welcome = welcome;
     }
 
     @Override
     public String botName() {
 
-        return "ForwardBotClient For " + user.name();
+        return "Forwarder (UserBot)";
 
     }
 
@@ -60,7 +60,7 @@ public class ForwardClient extends BotFragment {
 
             if (msg.params().length == 0) {
 
-                msg.send("这里是 " + this.user.name() + " 的BOT ✧٩(ˊωˋ*)و✧ 发送信息给咱就可以了 ~").html().exec();
+                msg.send(welcome).html().exec();
                 
             } else {
                 

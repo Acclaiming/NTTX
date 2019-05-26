@@ -22,10 +22,33 @@ import static com.mongodb.client.model.Updates.set;
 import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+import io.kurumi.ntt.fragment.*;
 
 
 public class UserBotUI extends Function {
+	
+	public static void start() {
+		
+		for (UserBot bot : botData.collection.find()) {
+		
+			switch (bot.type) {
+				
+				case ChatForward : {
+					
+						ForwardBot fwd = new ForwardBot(bot.user,bot.token,bot.params.get(0));
 
+						BotServer.fragments.put(bot.token,fwd);
+						
+						fwd.start();
+						
+					}
+				
+			}
+		
+		}
+		
+	}
+	
 	public static class UserBot {
 
 		public long id;
@@ -53,11 +76,11 @@ public class UserBotUI extends Function {
 
 	}
 
-	final String POINT_NEW_BOT = "bot,new";
-	final String POINT_SET_BOT = "bot,set";
-	final String POINT_DEL_BOT = "bot,del";
+	static final String POINT_NEW_BOT = "bot,new";
+	static final String POINT_SET_BOT = "bot,set";
+	static final String POINT_DEL_BOT = "bot,del";
 
-	final String ChatForward = "私聊BOT";
+	static final String ChatForward = "私聊BOT";
 
 	@Override
 	public void onFunction(final UserData user,Msg msg,String function,String[] params) {
@@ -211,9 +234,9 @@ public class UserBotUI extends Function {
 
 	}
 
-	final String POINT_FINISH_BOT = "bot,new,finish";
+	static final String POINT_FINISH_BOT = "bot,new,finish";
 
-	final String POINT_NEW_FORWARD_BOT = "bot,new,forward";
+	static final String POINT_NEW_FORWARD_BOT = "bot,new,forward";
 
 	void newChatForwardBot(UserData user,Msg msg) {
 
@@ -243,6 +266,14 @@ public class UserBotUI extends Function {
 
 		msg.send("正在检查BotToken...").exec();
 
+		if (botData.countByField("token",msg.text()) > 0) {
+			
+			msg.send("这个Token已经被使用了... 请移除原有BOT").exec();
+			
+			return;
+			
+		}
+		
 		User bot = new TelegramBot(msg.text()).execute(new GetMe()).user();
 
 		if (bot == null) {
@@ -265,8 +296,16 @@ public class UserBotUI extends Function {
 		userBot.user = user.id;
 
 		botData.setById(userBot.id,userBot);
+		
+		msg.send("设置完成 正在启动 ~").exec();
+		
+		ForwardBot fwd = new ForwardBot(userBot.user,userBot.token,userBot.params.get(0));
 
-		msg.send("设置完成 ~ 乃的Bot : @" + userBot.userName).exec();
+		BotServer.fragments.put(userBot.token,fwd);
+
+		fwd.start();
+		
+		msg.send("启动完成 ~ 乃的Bot : @" + userBot.userName).exec();
 
 		clearPoint(user);
 
@@ -292,7 +331,7 @@ public class UserBotUI extends Function {
 
 	}
 
-	final String POINT_SET_CHAT_BOT = "bot,set,chat";
+	static final String POINT_SET_CHAT_BOT = "bot,set,chat";
 
 	void setChatBot(UserData user,Msg msg,UserBot bot) {
 
@@ -311,16 +350,24 @@ public class UserBotUI extends Function {
 			return;
 
 		}
+		
+	    UserBot bot = botData.getById(botId);
 
-		botData.collection.updateOne(eq("_id",botId),eq("params",new String[] { msg.text() }));
+		bot.params.set(0,msg.text());
+		
+		botData.setById(botId,bot);
 
+		ForwardBot fwd = new ForwardBot(bot.user,bot.token,bot.params.get(0));
+		
+		BotServer.fragments.put(bot.token,fwd);
+		
 		clearPoint(user);
-
+		
 		msg.send("设置成功 ~").exec();
 
 	}
 
-	final String POINT_CONFIRM_DEL = "bot,del,confirm";
+	static final String POINT_CONFIRM_DEL = "bot,del,confirm";
 
 	void delBot(UserData user,Msg msg) {
 
@@ -344,7 +391,11 @@ public class UserBotUI extends Function {
 
 		if ("沙了她".equals(msg.text())) {
 
+			UserBot bot = botData.getById(botId);
+
 			botData.deleteById(botId);
+			
+			BotServer.fragments.remove(bot.token).stop();
 
 			msg.send("已经删除...").exec();
 

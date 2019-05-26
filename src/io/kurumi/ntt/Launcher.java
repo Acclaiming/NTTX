@@ -3,16 +3,12 @@ package io.kurumi.ntt;
 import cn.hutool.core.lang.*;
 import cn.hutool.core.util.*;
 import com.pengrad.telegrambot.model.*;
-import com.pengrad.telegrambot.request.*;
-import io.kurumi.ntt.*;
 import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.fragment.*;
+import io.kurumi.ntt.fragment.base.*;
+import io.kurumi.ntt.fragment.bots.*;
+import io.kurumi.ntt.fragment.twitter.login.*;
 import io.kurumi.ntt.funcs.*;
-import io.kurumi.ntt.funcs.admin.*;
-import io.kurumi.ntt.funcs.chatbot.*;
-import io.kurumi.ntt.funcs.nlp.*;
-import io.kurumi.ntt.funcs.twitter.*;
-import io.kurumi.ntt.funcs.twitter.ext.*;
 import io.kurumi.ntt.funcs.twitter.track.*;
 import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.utils.*;
@@ -20,10 +16,6 @@ import java.io.*;
 import java.util.*;
 
 import cn.hutool.core.lang.Console;
-import io.kurumi.ntt.funcs.chatbot.ForwardMessage;
-import io.kurumi.ntt.fragment.base.*;
-import io.kurumi.ntt.fragment.twitter.login.*;
-import io.kurumi.ntt.fragment.bots.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
