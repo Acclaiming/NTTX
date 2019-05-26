@@ -19,9 +19,6 @@ public class Env {
 
     
     public static final Long BACKUP = -1001282930075L;
-
-    public static File ROOT;
-    
     /**
      * 缓存文件存放地址
      */
@@ -36,9 +33,9 @@ public class Env {
     
     static {
 
-        ROOT = new File("../");
-        DATA_DIR = new File(ROOT,"data");
-        CACHE_DIR = new File(ROOT,"cache");
+       // ROOT = new File("/etc/ntt");
+        DATA_DIR = new File("/etc/ntt");
+        CACHE_DIR = new File("/var/cache/ntt");
 
     }
 

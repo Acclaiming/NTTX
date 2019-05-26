@@ -9,21 +9,22 @@
 ### 运行
 
 ```
-git clone https://github.com/HiedaNaKan/NTTools /usr/local/ntt/bin
+git clone https://github.com/HiedaNaKan/NTTools /usr/local/ntt
 
-cd /usr/local/ntt/bin
+cd /usr/local/ntt
 
 bash start.sh
+
 ```
 注 :  每次都会自动更新编译启动
 
 ### 系统服务
 
-注 :  使用service 必须将项目clone在 /usr/local/ntt/bin 或者请手动修改ntt.service
+注 :  使用service 必须将项目clone在 /usr/local/ntt 或者请手动修改ntt.service
 
 另 :  必须手动启动 start.sh 并配置之后才可以使用service启动
 ```
-cp /usr/local/ntt/bin/ntt.service /etc/systemd/system/ntt.service # 创建服务
+cp /usr/local/ntt/ntt.service /etc/systemd/system/ntt.service # 创建服务
 
 systemctl daemon-reload # 重载服务
 

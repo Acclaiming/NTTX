@@ -18,7 +18,7 @@ public class LocalData {
 
 	private static File cacheFile(String path,String key) {
 
-		return new File(new File(Env.ROOT,path),key);
+		return new File(new File(Env.DATA_DIR,path),key);
 
 	}
 

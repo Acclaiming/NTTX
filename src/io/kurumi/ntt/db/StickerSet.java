@@ -9,7 +9,7 @@ import java.util.*;
 
 public class StickerSet extends JSONObject {
 
-    public static final String KEY = "cache/stickers";
+    public static final String KEY = "stickers";
 
     public static HashMap<String, StickerSet> cache = new HashMap<>();
     public String name;
