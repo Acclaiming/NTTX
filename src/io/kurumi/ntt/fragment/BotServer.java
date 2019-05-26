@@ -8,6 +8,8 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import io.kurumi.ntt.utils.*;
+import fi.iki.elonen.NanoHTTPD.*;
+import io.kurumi.ntt.*;
 
 public class BotServer extends NanoHTTPD {
 
@@ -39,13 +41,40 @@ public class BotServer extends NanoHTTPD {
 
     }
 
-
+	String getDonateUrl() {
+		
+		String donateUrl = DonateUtil.ccAlipay(5);
+		
+		if (donateUrl == null) {
+			
+			if (!DonateUtil.ccLogin(Env.get("donate.cc.email"),Env.get("donate.cc.password"))) {
+				
+				return "about:blank";
+				
+			}
+			
+			donateUrl = DonateUtil.ccAlipay(5);
+			
+			if (donateUrl == null) return "about:blank";
+			
+		}
+		
+		return donateUrl;
+		
+	}
+	
 
     @Override
     public Response serve(IHTTPSession session) {
 
         URL url = URLUtil.url(session.getUri());
 
+		if (url.getPath().equals("/donate")) {
+			
+			return redirectTo(getDonateUrl());
+			
+		}
+		
         String botToken = url.getPath().substring(1);
 
         if (fragments.containsKey(botToken)) {
@@ -70,5 +99,15 @@ public class BotServer extends NanoHTTPD {
 
 
     }
+	
+	public Response redirectTo(String url) {
+		
+		Response resp = newFixedLengthResponse(Response.Status.REDIRECT_SEE_OTHER,MIME_HTML,"<html><head><titile>Redirecting...</title></head><body></body></html>");
+
+		resp.addHeader("Location",url);
+		
+		return resp;
+		
+	}
 
 }

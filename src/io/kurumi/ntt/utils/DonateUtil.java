@@ -4,9 +4,9 @@ import cn.hutool.core.util.*;
 import cn.hutool.http.*;
 import cn.hutool.json.*;
 
-public class Donate {
+public class DonateUtil {
 	
-	static boolean ccLogin(String email,String password) {
+	public static boolean ccLogin(String email,String password) {
 
 		HttpUtil.get("https://app.cloudcone.com/login");
 
@@ -20,7 +20,7 @@ public class Donate {
 		return new JSONObject(resp.body()).getInt("status") == 1;
 	}
 
-	static String ccAlipay(int amount) {
+	public static String ccAlipay(int amount) {
 
 		String html = HttpUtil.get("https://app.cloudcone.com/billing");
 
@@ -36,7 +36,7 @@ public class Donate {
 
 	}
 
-	static String ccPaypal() {
+	public static String ccPaypal() {
 
 		String html = HttpUtil.get("https://app.cloudcone.com/billing");
 	
