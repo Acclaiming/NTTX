@@ -51,6 +51,8 @@ public class BotServer extends NanoHTTPD {
 			
 			if (!DonateUtil.ccLogin(Env.get("donate.cc.email"),Env.get("donate.cc.password"))) {
 				
+				BotLog.debug("login failed");
+				
 				return "about:blank";
 				
 			}
