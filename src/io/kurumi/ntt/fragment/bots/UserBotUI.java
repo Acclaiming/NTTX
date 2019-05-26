@@ -396,10 +396,13 @@ public class UserBotUI extends Function {
 
 			UserBot bot = botData.getById(botId);
 
+			new TelegramBot(bot.token).execute(new DeleteWebhook());
+			
+			BotServer.fragments.remove(bot.token);
+			
 			botData.deleteById(botId);
 			
-			new ForwardBot(bot.user,bot.token,bot.params.get(0)).stop();
-
+		
 			msg.send("已经删除...").exec();
 
 		} else {
