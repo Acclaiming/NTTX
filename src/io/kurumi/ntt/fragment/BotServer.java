@@ -112,8 +112,11 @@ public class BotServer extends NanoHTTPD {
 
 			int amont = session.getParms().containsKey("amount") ? Integer.parseInt(session.getParms().get("amount")) : 5;
 
-			return redirectTo(getDonateUrl(amont));
+			String donateUrl = getDonateUrl(amont);
 
+			return redirectTo(donateUrl
+			.replaceAll("return_url=.*&","return_url=" + URLEncoder.encode("https://t.me/" + Launcher.INSTANCE.me.username() + "/start=thanks") + "&"));
+			
 		}
 
 		System.out.println(url.getPath());
