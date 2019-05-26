@@ -21,9 +21,11 @@ public class Donate extends Function {
 	
 		if ("donate".equals(function)) {
 			
+			
+			
 			msg.send("感谢。点击下方Url为服务器账户 (位于CloudCone) 氪金。","由于官方限制 支付宝氪金金额至少为 $5 氪金请谨慎 (","戳这里 : https://" + Env.get("server_domain") + "/donate?amout=5").exec();
 			
-			} else {
+		} else {
 		
 		if (!user.developer()) {
 			

@@ -45,6 +45,8 @@ public class BotServer extends NanoHTTPD {
 		
 		if (amount < 5) amount = 5;
 		
+		try {
+		
 		String donateUrl = DonateUtil.ccAlipay(amount);
 		
 		if (donateUrl == null) {
@@ -64,6 +66,12 @@ public class BotServer extends NanoHTTPD {
 		}
 		
 		return donateUrl;
+		
+		} catch (Exception ex) {
+			
+			return "about:blank";
+			
+		}
 		
 	}
 	
