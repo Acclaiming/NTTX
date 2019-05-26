@@ -51,6 +51,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		addFragment(new PingFunction());
 		
+		addFragment(new GetIDs());
+		
 		// Twitter Auth
 		
 		addFragment(new TwitterLogin());

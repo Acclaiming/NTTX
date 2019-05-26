@@ -1,4 +1,4 @@
-package io.kurumi.ntt.funcs;
+package io.kurumi.ntt.fragment.base;
 
 import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.model.*;
