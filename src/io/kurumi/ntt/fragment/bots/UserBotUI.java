@@ -39,7 +39,7 @@ public class UserBotUI extends Function {
 
 						BotServer.fragments.put(bot.token,fwd);
 						
-						fwd.start();
+						fwd.silentStart();
 						
 					}
 				
@@ -299,11 +299,7 @@ public class UserBotUI extends Function {
 		
 		msg.send("设置完成 正在启动 ~").exec();
 		
-		ForwardBot fwd = new ForwardBot(userBot.user,userBot.token,userBot.params.get(0));
-
-		BotServer.fragments.put(userBot.token,fwd);
-
-		fwd.start();
+		new ForwardBot(userBot.user,userBot.token,userBot.params.get(0)).silentStart();
 		
 		msg.send("启动完成 ~ 乃的Bot : @" + userBot.userName).exec();
 
@@ -395,7 +391,7 @@ public class UserBotUI extends Function {
 
 			botData.deleteById(botId);
 			
-			BotServer.fragments.remove(bot.token).stop();
+			new ForwardBot(bot.user,bot.token,bot.params.get(0)).stop();
 
 			msg.send("已经删除...").exec();
 
