@@ -60,6 +60,17 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		super.realStart();
 
         BotLog.info("初始化 完成 :)");
+		
+		new Timer().schedule(new TimerTask() {
+
+				@Override
+				public void run() {
+					
+					// if no task run , process will exit
+					
+				}
+				
+			},10000);
 
     }
 
@@ -167,7 +178,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 				} catch (Exception e) {}
 
 			}
-
+			
 			RuntimeUtil.addShutdownHook(new Runnable() {
 
 					@Override
@@ -178,7 +189,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 					}
 
 				});
-
+		
 		}
 
 		BotLog.info("正在启动...");
