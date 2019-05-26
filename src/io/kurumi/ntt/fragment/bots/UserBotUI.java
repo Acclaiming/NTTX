@@ -91,8 +91,10 @@ public class UserBotUI extends Function {
 							newButtonLine("@" + bot.userName);
 
 						}
+						
+						newButtonLine("/cancel");
 
-					}});
+					}}).exec();
 
 			setPoint(user,POINT_SET_BOT);
 
@@ -115,8 +117,10 @@ public class UserBotUI extends Function {
 							newButtonLine("@" + bot.userName);
 
 						}
+						
+						newButtonLine("/cancel");
 
-					}});
+					}}).exec();
 
 			setPoint(user,POINT_DEL_BOT);
 
