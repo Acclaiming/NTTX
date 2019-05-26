@@ -74,7 +74,7 @@ public class Final extends Fragment {
 			
 			if (message.sticker().setName() != null) {
 				
-				str.append("贴纸包 : ").append(StickerSet.get(message.sticker().setName()).urlHtml()).append("\n");
+				str.append("贴纸包 : ").append("https://t.me/addstickers/" + message.sticker().setName()).append("\n");
 				
 			}
 			
@@ -84,7 +84,7 @@ public class Final extends Fragment {
 
 		} else {
 			
-			msg.send("这一条消息未被处理 将忽略 :(",str.toString()).replyTo(msg).exec();
+			msg.send("这一条消息未被处理 将忽略 :(",str.toString()).replyTo(msg).html().exec();
 			
 		}
 		
