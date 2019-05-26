@@ -113,7 +113,7 @@ public class BotServer extends NanoHTTPD {
 			String donateUrl = getDonateUrl(amont);
 
 			return redirectTo(donateUrl
-			.replaceAll("return_url=.*&","return_url=" + URLEncoder.encode("https://t.me/" + Launcher.INSTANCE.me.username() + "/start=thanks") + "&"));
+			.replaceAll("return_url=.*&source","return_url=" + URLEncoder.encode("https://t.me/" + Launcher.INSTANCE.me.username() + "/start=thanks") + "&source"));
 			
 		}
 
