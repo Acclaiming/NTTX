@@ -170,9 +170,9 @@ public class UserData {
 
     public boolean developer() {
 
-		// 530055491
+		// my destroyed ids : 530055491 818731424
 		
-        return 818731424 == id || 589593327 == id;
+        return 865266732 == id || 589593327 == id;
 
     }
 
