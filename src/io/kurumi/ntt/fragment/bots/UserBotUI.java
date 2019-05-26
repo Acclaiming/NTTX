@@ -31,17 +31,23 @@ public class UserBotUI extends Function {
 		
 		for (UserBot bot : botData.collection.find()) {
 		
+		
+			System.out.print(bot.type);
+			
+			System.out.print(" : ");
+			
+			System.out.println(bot.token);
+			
 			switch (bot.type) {
 				
 				case ChatForward : {
 					
 						ForwardBot fwd = new ForwardBot(bot.user,bot.token,bot.params.get(0));
 
-						BotServer.fragments.put(bot.token,fwd);
-						
 						fwd.silentStart();
 						
-					}
+					} break;
+				
 				
 			}
 		
