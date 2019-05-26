@@ -56,6 +56,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new PingFunction());
 
 		addFragment(new Final());
+		
+		super.realStart();
 
         BotLog.info("初始化 完成 :)");
 
@@ -217,7 +219,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     @Override
     public boolean onUpdate(UserData user,Update update) {
-
+		
         BotLog.process(user,update);
 
         return false;
