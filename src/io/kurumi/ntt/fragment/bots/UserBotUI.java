@@ -243,7 +243,7 @@ public class UserBotUI extends Function {
 
 		if (bot == null) {
 
-			msg.send("BotToken无效... 请重新输入 :","使用 /cancel 取消 ~");
+			msg.send("BotToken无效... 请重新输入 :","使用 /cancel 取消 ~").exec();
 
 			return;
 
@@ -260,7 +260,7 @@ public class UserBotUI extends Function {
 
 		botData.setById(userBot.id,userBot);
 
-		msg.send("设置完成 ~ 乃的Bot : @" + userBot.userName);
+		msg.send("设置完成 ~ 乃的Bot : @" + userBot.userName).exec();
 
 		clearPoint(user);
 
