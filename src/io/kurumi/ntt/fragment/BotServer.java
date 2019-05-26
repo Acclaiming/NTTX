@@ -42,61 +42,82 @@ public class BotServer extends NanoHTTPD {
     }
 
 	String getDonateUrl(int amount) {
-		
+
 		if (amount < 5) amount = 5;
-		
+
 		try {
-		
-		String donateUrl = DonateUtil.ccAlipay(amount);
-		
-		if (donateUrl == null) {
-			
-			if (!DonateUtil.ccLogin(Env.get("donate.cc.email"),Env.get("donate.cc.password"))) {
-				
-				BotLog.debug("login failed");
-				
-				return "about:blank";
-				
+
+			try {
+
+				String donateUrl = DonateUtil.ccAlipay(amount);
+
+				if (donateUrl == null) {
+
+					if (!DonateUtil.ccLogin(Env.get("donate.cc.email"),Env.get("donate.cc.password"))) {
+
+						BotLog.debug("login failed");
+
+						return "about:blank";
+
+					}
+
+					donateUrl = DonateUtil.ccAlipay(amount);
+
+					if (donateUrl == null) return "about:blank";
+
+				}
+
+				return donateUrl;
+
+
+			} catch (Exception ex) {
+
+				if (!DonateUtil.ccLogin(Env.get("donate.cc.email"),Env.get("donate.cc.password"))) {
+
+					BotLog.debug("login failed");
+
+					return "about:blank";
+
+				}
+
+				String donateUrl = DonateUtil.ccAlipay(amount);
+
+				if (donateUrl == null) return "about:blank";
+
+				return donateUrl;
+
 			}
-			
-			donateUrl = DonateUtil.ccAlipay(amount);
-			
-			if (donateUrl == null) return "about:blank";
-			
-		}
-		
-		return donateUrl;
-		
+
 		} catch (Exception ex) {
-			
+
 			return "about:blank";
-			
+
 		}
-		
+
 	}
-	
+
 
     @Override
     public Response serve(IHTTPSession session) {
 
         URL url = URLUtil.url(session.getUri());
-		
+
 		if (url.getPath().equals("/favicon.ico")) {
-			
+
 			return redirectTo("https://kurumi.io/favicon.ico");
-			
+
 		}
-		
+
 		if (url.getPath().startsWith("/donate")) {
-			
-			int amont = session.getParms().containsKey("amount") ? Integer.parseInt(session.getParms().get("amount")) :5;
-			
+
+			int amont = session.getParms().containsKey("amount") ? Integer.parseInt(session.getParms().get("amount")) : 5;
+
 			return redirectTo(getDonateUrl(amont));
-			
+
 		}
-		
+
 		System.out.println(url.getPath());
-		
+
         String botToken = url.getPath().substring(1);
 
         if (fragments.containsKey(botToken)) {
@@ -111,25 +132,26 @@ public class BotServer extends NanoHTTPD {
 
                 return newFixedLengthResponse(Response.Status.INTERNAL_ERROR,MIME_PLAINTEXT,"ERROR");
 
-            } finally {
+            }
+			finally {
 
                 new TelegramBot(botToken).execute(new DeleteWebhook());
-                
+
             }
 
         }
 
 
     }
-	
+
 	public Response redirectTo(String url) {
-		
+
 		Response resp = newFixedLengthResponse(Response.Status.REDIRECT_SEE_OTHER,MIME_HTML,"<html><head><titile>Redirecting...</title></head><body></body></html>");
 
 		resp.addHeader("Location",url);
-		
+
 		return resp;
-		
+
 	}
 
 }
