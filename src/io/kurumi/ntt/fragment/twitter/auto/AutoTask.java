@@ -4,6 +4,7 @@ import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.twitter.*;
 import java.util.*;
 import twitter4j.*;
+import cn.hutool.core.util.*;
 
 public class AutoTask extends TimerTask {
 
@@ -67,12 +68,13 @@ public class AutoTask extends TimerTask {
 		Twitter api = auth.createApi();
 
 		ResponseList<Status> tl = api.getHomeTimeline(new Paging().count(800));
-
-		for (Status status : tl) {
+		
+		int count = 0;
+		
+		for (Status status : ArrayUtil.reverse(tl.toArray(new Status[tl.size()]))) {
 
 			if (status.isFavorited()) continue;
 
-			int count = 0;
 			
 			try {
 
@@ -82,9 +84,10 @@ public class AutoTask extends TimerTask {
 				
 			} catch (TwitterException ex) {}
 			
-			new Send(auth.user,"sended " + count + " to home_timeline").exec();
-
 		}
+		
+		new Send(auth.user,"sended " + count + " to home_timeline").exec();
+		
 
 	}
 
