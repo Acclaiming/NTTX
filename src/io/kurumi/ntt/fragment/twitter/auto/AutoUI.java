@@ -41,7 +41,13 @@ public class AutoUI extends TwitterFunction {
 
 		AutoSetting setting = autoData.getById(account.id);
 
-		if (setting == null) setting = new AutoSetting();
+		if (setting == null) {
+			
+			setting = new AutoSetting();
+			
+			setting.id = account.id;
+			
+		}
 
 		for (String field : params[1].split(" ")) {
 
