@@ -42,7 +42,15 @@ public class AutoTask extends TimerTask {
 
 			TAuth auth = TAuth.getById(auto.id);
 
-			if (auth == null) return;
+			if (auth == null) {
+				
+				AutoUI.autoData.deleteById(auto.id);
+				
+				BotLog.debug("autotask removed for " + auto.id);
+				
+				return;
+				
+			}
 			
 			if (auto.like) {
 
