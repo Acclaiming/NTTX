@@ -248,7 +248,7 @@ public class UserBotUI extends Function {
 
 	void newChatForwardBot(UserData user,Msg msg) {
 
-		msg.send("好的，一只转发私聊的Bot，那么在收到 /start 的时候，应该说啥呢，请输入 :").removeKeyboard().exec();
+		msg.send("请输入将要创建的BOT的欢迎语 :","取消创建使用 /cancel").removeKeyboard().exec();
 
 		msg.send("就像这样 : 这里是" + user.name() + "的私聊BOT，直接发消息给咱就可以了 ~").exec();
 
