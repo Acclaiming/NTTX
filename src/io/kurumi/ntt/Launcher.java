@@ -79,6 +79,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		TrackTask.start();
 		
+		addFragment(new GroupRepeat());
+		
+		addFragment(new AntiEsu());
+		
 		// Bots
 		
 		addFragment(new UserBotUI());
@@ -88,7 +92,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new Donate());
 		
 			super.realStart();
-			
 		
 		UserBotUI.start();
 		
