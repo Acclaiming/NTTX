@@ -42,6 +42,8 @@ public class AutoTask extends TimerTask {
 
 			TAuth auth = TAuth.getById(auto.id);
 
+			if (auth == null) return;
+			
 			if (auto.like) {
 
 				try {
