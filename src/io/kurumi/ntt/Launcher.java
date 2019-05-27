@@ -271,7 +271,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public boolean isLongPulling() {
 
-        return true;
+        return false;
 
     }
 
