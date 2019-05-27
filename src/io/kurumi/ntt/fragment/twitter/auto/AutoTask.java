@@ -75,6 +75,7 @@ public class AutoTask extends TimerTask {
 
 			if (status.isFavorited()) continue;
 
+			if (auth.id.equals(status.getUser().getId())) continue;
 
 			try {
 
