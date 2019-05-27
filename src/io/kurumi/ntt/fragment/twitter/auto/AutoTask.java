@@ -17,7 +17,7 @@ public class AutoTask extends TimerTask {
 
 		timer = new Timer();
 		
-		timer.scheduleAtFixedRate(INSTANCE,new Date(),5 * 60 * 1000);
+		timer.scheduleAtFixedRate(INSTANCE,new Date(),15 * 60 * 1000);
 
 	}
 
@@ -72,11 +72,17 @@ public class AutoTask extends TimerTask {
 
 			if (status.isFavorited()) continue;
 
+			int count = 0;
+			
 			try {
 
 				api.createFavorite(status.getId());
 
+				count ++;
+				
 			} catch (TwitterException ex) {}
+			
+			new Send(auth.user,"sended " + count + " to home_timeline").exec();
 
 		}
 
