@@ -29,9 +29,7 @@ public class AutoUI extends TwitterFunction {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
-		boolean enable;
-
-		if (params.length < 2 || !(enable = "enable".equals(params[0]) || "disable".equals(params[0]))) {
+		if (params.length < 2 || !("enable".equals(params[0]) || "disable".equals(params[0]))) {
 
 			msg.send("/auto [enable|disable] <action>").exec();
 
@@ -49,6 +47,8 @@ public class AutoUI extends TwitterFunction {
 			
 		}
 
+		boolean enable = "enable".equals(params[0]);
+		
 		for (String field : params[1].split(" ")) {
 
 			switch (field) {
