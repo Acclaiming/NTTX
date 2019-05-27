@@ -113,8 +113,8 @@ public class BotServer extends NanoHTTPD {
 			String donateUrl = getDonateUrl(amont);
 
 			return redirectTo(donateUrl
-			.replaceAll("return_url=.*&source","return_url=" + URLEncoder.encode("https://t.me/" + Launcher.INSTANCE.me.username() + "/start=thanks") + "&source"));
-			
+							  .replaceAll("return_url=.*&source","return_url=" + URLEncoder.encode("https://t.me/" + Launcher.INSTANCE.me.username() + "/start=thanks") + "&source"));
+
 		}
 
 		System.out.println(url.getPath());
@@ -123,7 +123,11 @@ public class BotServer extends NanoHTTPD {
 
         if (fragments.containsKey(botToken)) {
 
-            fragments.get(botToken).processAsync(BotUtils.parseUpdate(readBody(session)));
+			try {
+
+				fragments.get(botToken).processAsync(BotUtils.parseUpdate(readBody(session)));
+
+			} catch (Exception ex) {}
 
             return newFixedLengthResponse("");
 

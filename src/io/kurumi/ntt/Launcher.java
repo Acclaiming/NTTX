@@ -16,6 +16,7 @@ import java.io.*;
 import java.util.*;
 
 import cn.hutool.core.lang.Console;
+import io.kurumi.ntt.fragment.twitter.auto.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -53,11 +54,15 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		addFragment(new GetIDs());
 		
-		// Twitter Auth
+		// Twitter
 		
 		addFragment(new TwitterLogin());
 		
 		addFragment(new TwitterLogout());
+		
+		addFragment(new AutoUI());
+		
+		AutoTask.start();
 		
 		// Bots
 		
@@ -77,6 +82,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         BotLog.info("初始化 完成 :)");
 		
+		/*
+		
 		new Timer().schedule(new TimerTask() {
 
 				@Override
@@ -87,6 +94,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 				}
 				
 			},10 * 60 * 1000);
+			
+		*/
 
     }
 
@@ -96,6 +105,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public void stop() {
 
+		AutoTask.stop();
+		
 		// mtp.stopBot();
 
         for (BotFragment bot : BotServer.fragments.values()) {
@@ -249,6 +260,20 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
         BotLog.process(user,update);
 
+		if (update.message() != null) {
+			
+			if (update.message().chat().type() == Chat.Type.Private && (user.contactable == null || !user.contactable)) {
+				
+				user.contactable = true;
+				
+				UserData.userDataIndex.put(user.id,user);
+				
+				UserData.data.setById(user.id,user);
+				
+			}
+			
+		}
+		
         return false;
 
     }

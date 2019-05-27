@@ -1,11 +1,10 @@
 package io.kurumi.ntt.model;
 
-import cn.hutool.core.util.ArrayUtil;
-import com.pengrad.telegrambot.model.CallbackQuery;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.model.request.AnswerCallback;
-import io.kurumi.ntt.utils.CData;
-import io.kurumi.ntt.Launcher;
+import cn.hutool.core.util.*;
+import com.pengrad.telegrambot.model.*;
+import io.kurumi.ntt.*;
+import io.kurumi.ntt.fragment.*;
+import io.kurumi.ntt.model.request.*;
 
 public class Callback extends Msg {
 

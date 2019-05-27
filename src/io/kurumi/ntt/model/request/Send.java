@@ -8,6 +8,7 @@ import io.kurumi.ntt.*;
 import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.utils.*;
+import io.kurumi.ntt.db.*;
 
 public class Send extends AbstractSend<Send> {
 
@@ -290,6 +291,22 @@ public class Send extends AbstractSend<Send> {
             SendResponse resp = fragment.bot().execute(request);
 
             if (!resp.isOk()) {
+				
+				if (resp.errorCode() == 403 && !(request.chatId instanceof String) && ((long)request.chatId > 0)) {
+					
+					UserData user = UserData.get((long)request.chatId);
+
+					if (user != null) {
+						
+						user.contactable = false;
+						
+						UserData.userDataIndex.put(user.id,user);
+						
+						UserData.data.setById(user.id,user);
+						
+					}
+					
+				}
 
                 BotLog.infoWithStack("消息发送失败 " + resp.errorCode() + " : " + resp.description());
 

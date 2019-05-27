@@ -1,0 +1,83 @@
+package io.kurumi.ntt.fragment.twitter.auto;
+
+import io.kurumi.ntt.model.request.*;
+import io.kurumi.ntt.twitter.*;
+import java.util.*;
+import twitter4j.*;
+
+public class AutoTask extends TimerTask {
+
+	public static AutoTask INSTANCE = new AutoTask();
+
+	public static Timer timer = new Timer();
+
+	public static void start() {
+
+		stop();
+
+		timer.scheduleAtFixedRate(INSTANCE,new Date(),5 * 60 * 1000);
+
+	}
+
+	public static void stop() {
+
+		if (timer != null) {
+
+			timer.cancel();
+
+			timer = null;
+
+		}
+
+	}
+
+	@Override
+	public void run() {
+
+		for (AutoUI.AutoSetting auto :  AutoUI.autoData.collection.find()) {
+
+			TAuth auth = TAuth.getById(auto.id);
+
+			if (auto.like) {
+
+				try {
+
+					startLikeService(auth);
+
+				} catch (TwitterException e) {
+
+					auto.like = false;
+
+					AutoUI.autoData.setById(auto.id,auto);
+
+					new Send(auth.user,"auto.like disabled : " + e).exec();
+
+				}
+
+			}
+
+		}
+
+	}
+
+	void startLikeService(TAuth auth) throws TwitterException {
+
+		Twitter api = auth.createApi();
+
+		ResponseList<Status> tl = api.getHomeTimeline(new Paging().count(800));
+
+		for (Status status : tl) {
+
+			if (status.isFavorited()) continue;
+
+			try {
+
+				api.createFavorite(status.getId());
+
+			} catch (TwitterException ex) {}
+
+		}
+
+	}
+
+}

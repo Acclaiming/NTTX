@@ -1,11 +1,8 @@
 package io.kurumi.ntt.model.request;
 
-import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
-import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import io.kurumi.ntt.utils.CData;
-
-import java.util.LinkedList;
 import cn.hutool.core.util.*;
+import com.pengrad.telegrambot.model.request.*;
+import java.util.*;
 
 public class ButtonMarkup extends LinkedList<ButtonLine> {
 
@@ -25,16 +22,6 @@ public class ButtonMarkup extends LinkedList<ButtonLine> {
 
     }
     
-    public void newButtonLine(String text, String point) {
-
-        CData data = new CData();
-
-        data.setPoint(point);
-
-        newButtonLine().newButton(text, data);
-
-    }
-
     public void newUrlButtonLine(String text, String url) {
 
         newButtonLine().newUrlButton(text, url);

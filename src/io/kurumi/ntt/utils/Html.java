@@ -1,4 +1,5 @@
 package io.kurumi.ntt.utils;
+
 import cn.hutool.http.*;
 
 public class Html {

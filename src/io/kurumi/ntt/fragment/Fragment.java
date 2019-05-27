@@ -1,25 +1,19 @@
 package io.kurumi.ntt.fragment;
 
-import cn.hutool.http.HttpUtil;
-import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.request.ChatAction;
-import com.pengrad.telegrambot.request.GetFile;
-import com.pengrad.telegrambot.request.SendChatAction;
-import com.pengrad.telegrambot.request.SendDocument;
-import com.pengrad.telegrambot.request.SendSticker;
-import io.kurumi.ntt.Env;
-import io.kurumi.ntt.db.StickerPoint;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.model.Callback;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.model.Query;
-import io.kurumi.ntt.utils.CData;
-import java.io.File;
+import cn.hutool.http.*;
+import com.pengrad.telegrambot.*;
+import com.pengrad.telegrambot.model.*;
+import com.pengrad.telegrambot.model.request.*;
+import com.pengrad.telegrambot.request.*;
+import com.pengrad.telegrambot.response.*;
+import io.kurumi.ntt.*;
 import io.kurumi.ntt.db.*;
-import com.pengrad.telegrambot.model.Document;
-import com.pengrad.telegrambot.response.GetFileResponse;
-import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.model.*;
+import io.kurumi.ntt.utils.*;
+import java.io.*;
+
+import io.kurumi.ntt.model.Callback;
+import java.io.File;
 
 public class Fragment {
 
@@ -124,37 +118,6 @@ public class Fragment {
     public boolean onQuery(UserData user,Query inlineQuery) {
         return false;
     }
-
-    public CData cdata(String point) {
-
-        CData data = new CData();
-
-        data.setPoint(point);
-
-        return data;
-
-    }
-
-    public CData cdata(String point,String index) {
-
-        CData data = cdata(point);
-
-        data.put("i",index);
-
-        return data;
-
-    }
-
-    public CData cdata(String point,Long index) {
-
-        CData data = cdata(point);
-
-        data.put("i",index);
-
-        return data;
-
-    }
-
 
     public File getFile(String fileId) {
 

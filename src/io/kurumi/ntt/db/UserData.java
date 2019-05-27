@@ -1,20 +1,9 @@
 package io.kurumi.ntt.db;
 
-import cn.hutool.json.JSONObject;
-import com.pengrad.telegrambot.model.User;
-import com.pengrad.telegrambot.request.GetChat;
-import com.pengrad.telegrambot.response.GetChatResponse;
-import io.kurumi.ntt.Env;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.utils.CData;
-import java.util.HashMap;
-import java.util.LinkedList;
-import io.kurumi.ntt.model.data.*;
-import io.kurumi.ntt.utils.NTT;
-import io.kurumi.ntt.utils.Html;
-import cn.hutool.http.*;
-import io.kurumi.ntt.fragment.*;
 import cn.hutool.core.util.*;
+import com.pengrad.telegrambot.model.*;
+import io.kurumi.ntt.utils.*;
+import java.util.*;
 
 public class UserData {
 
@@ -121,7 +110,9 @@ public class UserData {
     public String firstName;
     public String lastName;
     public String userName;
-
+	
+	public Boolean contactable;
+	
     public void read(User user) {
 
         userName = user.username();
@@ -130,7 +121,6 @@ public class UserData {
 
         lastName = user.lastName();
 
-
     }
 
     public boolean contactable() {
@@ -138,7 +128,6 @@ public class UserData {
         return  NTT.isUserContactable(id);
 
     }
-
 
     public String formattedName() {
 
