@@ -92,7 +92,7 @@ public class AutoTask extends TimerTask {
 				
 				if (ex.getStatusCode() == 429) {
 					
-					return;
+					throw ex;
 					
 					// too many requests
 					
