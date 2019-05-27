@@ -85,11 +85,19 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		addFragment(new Final());
 		
-		}
-		
-		super.realStart();
+			super.realStart();
+			
 		
 		UserBotUI.start();
+		
+		} else 	{
+			
+			super.realStart();
+			
+			
+		}
+		
+		
 		
 		
         BotLog.info("初始化 完成 :)");
