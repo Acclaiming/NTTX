@@ -102,8 +102,6 @@ public class AutoTask extends TimerTask {
 				
 			} catch (TwitterException e) {
 				
-				throw e;
-				
 			}
 
 		}
