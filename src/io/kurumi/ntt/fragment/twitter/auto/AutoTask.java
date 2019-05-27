@@ -17,7 +17,7 @@ public class AutoTask extends TimerTask {
 		stop();
 
 		timer = new Timer();
-		
+
 		timer.scheduleAtFixedRate(INSTANCE,new Date(),15 * 60 * 1000);
 
 	}
@@ -68,26 +68,29 @@ public class AutoTask extends TimerTask {
 		Twitter api = auth.createApi();
 
 		ResponseList<Status> tl = api.getHomeTimeline(new Paging().count(800));
-		
+
 		int count = 0;
-		
+
 		for (Status status : ArrayUtil.reverse(tl.toArray(new Status[tl.size()]))) {
 
 			if (status.isFavorited()) continue;
 
-			
+
 			try {
 
 				api.createFavorite(status.getId());
 
 				count ++;
-				
+
 			} catch (TwitterException ex) {}
+
+		}
+
+		if (count > 0) {
+
+			new Send(auth.user,"sended " + count + " to home_timeline").exec();
 			
 		}
-		
-		new Send(auth.user,"sended " + count + " to home_timeline").exec();
-		
 
 	}
 
