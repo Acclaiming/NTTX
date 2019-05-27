@@ -102,6 +102,8 @@ public class AutoTask extends TimerTask {
 				
 			} catch (TwitterException e) {
 				
+				e.printStackTrace();
+				
 			}
 
 		}
