@@ -73,18 +73,8 @@ public class AutoTask extends TimerTask {
 		int count = 0;
 
 		for (Status status : ArrayUtil.reverse(tl.toArray(new Status[tl.size()]))) {
-
-			if (status.isFavorited()) continue;
-
-			if (auth.id.equals(status.getUser().getId())) continue;
-
-			try {
-
-				api.createFavorite(status.getId());
-
-				count ++;
-
-			} catch (TwitterException ex) {}
+		
+			count += loopLike(auth,api,status);
 
 		}
 
@@ -94,6 +84,66 @@ public class AutoTask extends TimerTask {
 			
 		}
 
+	}
+	
+	int loopLike(TAuth auth,Twitter api,Status status) {
+		
+		int like = 0;
+		
+		if (!status.isFavorited() && !auth.id.equals(status.getUser().getId())) {
+			
+			try {
+				
+				api.createFavorite(status.getId());
+				
+				like ++;
+				
+			} catch (TwitterException e) {}
+
+		}
+		
+		if (status.getInReplyToStatusId() != -1) {
+			
+			try {
+				
+				like += loopLike(auth,api,api.showStatus(status.getInReplyToStatusId()));
+				
+			} catch (TwitterException e) {
+				
+				try {
+					
+					api.createFavorite(status.getInReplyToStatusId());
+					
+				} catch (TwitterException ex) {}
+
+			}
+
+		}
+		
+		if (status.getQuotedStatusId() != -1) {
+			
+			try {
+				
+				if (status.getQuotedStatus() != null) {
+
+				like += loopLike(auth,api,status.getQuotedStatus());
+
+				} else {
+					
+					api.createFavorite(status.getQuotedStatusId());
+					
+					like ++;
+					
+				}
+				
+			} catch (TwitterException e) {}
+			
+			
+		}
+		
+		return like;
+		
+		
 	}
 
 }
