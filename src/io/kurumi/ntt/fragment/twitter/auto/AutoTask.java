@@ -5,6 +5,7 @@ import io.kurumi.ntt.twitter.*;
 import java.util.*;
 import twitter4j.*;
 import cn.hutool.core.util.*;
+import io.kurumi.ntt.utils.*;
 
 public class AutoTask extends TimerTask {
 
@@ -89,7 +90,7 @@ public class AutoTask extends TimerTask {
 
 		if (count > 0) {
 
-			new Send(auth.user,"sended " + count + " likes to home_timeline",",account : " + auth.archive().urlHtml() + " (@" + auth.archive().screenName + ")").html().exec();
+			new Send(auth.user,"sended " + count + " likes to home_timeline","account : " + Html.a("@" + auth.archive().screenName,"https://twitter.com/" + auth.archive().screenName)).html().exec();
 			
 		}
 
