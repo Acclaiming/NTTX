@@ -90,7 +90,9 @@ public class AutoTask extends TimerTask {
 		
 		int like = 0;
 		
-		if (!status.isFavorited() && !auth.id.equals(status.getUser().getId())) {
+		if (status.isFavorited()) return 0;
+		
+		if (!auth.id.equals(status.getUser().getId())) {
 			
 			try {
 				
