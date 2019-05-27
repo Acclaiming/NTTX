@@ -73,8 +73,22 @@ public class AutoTask extends TimerTask {
 		int count = 0;
 
 		for (Status status : tl) {
+			
+			try {
 		
 			count += loopLike(auth,api,status);
+			
+			} catch (TwitterException ex) {
+				
+				if (ex.getStatusCode() == 429) {
+					
+					return;
+					
+					// too many requests
+					
+				}
+				
+			}
 
 		}
 
@@ -101,8 +115,8 @@ public class AutoTask extends TimerTask {
 				like ++;
 				
 			} catch (TwitterException e) {
-				
-				e.printStackTrace();
+			
+				throw e;
 				
 			}
 
