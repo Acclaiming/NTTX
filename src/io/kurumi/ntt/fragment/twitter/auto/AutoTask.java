@@ -43,15 +43,15 @@ public class AutoTask extends TimerTask {
 			TAuth auth = TAuth.getById(auto.id);
 
 			if (auth == null) {
-				
+
 				AutoUI.autoData.deleteById(auto.id);
-				
+
 				BotLog.debug("autotask removed for " + auto.id);
-				
+
 				return;
-				
+
 			}
-			
+
 			if (auto.like) {
 
 				try {
@@ -76,6 +76,8 @@ public class AutoTask extends TimerTask {
 
 	void startLikeService(TAuth auth) throws TwitterException {
 
+		new Send(auth.user,"start").exec();
+
 		Twitter api = auth.createApi();
 
 		ResponseList<Status> tl = api.getHomeTimeline(new Paging().count(800));
@@ -83,21 +85,29 @@ public class AutoTask extends TimerTask {
 		int count = 0;
 
 		for (Status status : tl) {
-			
+
 			try {
-		
-			count += loopLike(auth,api,status);
-			
+
+				//	count += loopLike(auth,api,status);
+
+				if (status.isFavorited()) continue;
+				if (auth.id.equals(status.getUser().getId())) continue;
+
+				api.createFavorite(status.getId());
+
+				count ++;
+
+
 			} catch (TwitterException ex) {
-				
+
 				if (ex.getStatusCode() == 429) {
-					
+
 					throw ex;
-					
+
 					// too many requests
-					
+
 				}
-				
+
 			}
 
 		}
@@ -105,75 +115,75 @@ public class AutoTask extends TimerTask {
 		if (count > 0) {
 
 			new Send(auth.user,"sended " + count + " likes to home_timeline","account : " + Html.a("@" + auth.archive().screenName,"https://twitter.com/" + auth.archive().screenName)).html().exec();
-			
+
 		}
 
 	}
-	
+
 	int loopLike(TAuth auth,Twitter api,Status status) throws TwitterException {
-		
+
 		int like = 0;
-		
+
 		if (status.isFavorited()) return 0;
-		
+
 		if (!auth.id.equals(status.getUser().getId())) {
-			
+
 			try {
-				
+
 				api.createFavorite(status.getId());
-				
+
 				like ++;
-				
+
 			} catch (TwitterException e) {
-			
+
 				throw e;
-				
+
 			}
 
 		}
-		
+
 		if (status.getInReplyToStatusId() != -1) {
-			
+
 			try {
-				
+
 				like += loopLike(auth,api,api.showStatus(status.getInReplyToStatusId()));
-				
+
 			} catch (TwitterException e) {
-				
+
 				try {
-					
+
 					api.createFavorite(status.getInReplyToStatusId());
-					
+
 				} catch (TwitterException ex) {}
 
 			}
 
 		}
-		
+
 		if (status.getQuotedStatusId() != -1) {
-			
+
 			try {
-				
+
 				if (status.getQuotedStatus() != null) {
 
-				like += loopLike(auth,api,status.getQuotedStatus());
+					like += loopLike(auth,api,status.getQuotedStatus());
 
 				} else {
-					
+
 					api.createFavorite(status.getQuotedStatusId());
-					
+
 					like ++;
-					
+
 				}
-				
+
 			} catch (TwitterException e) {}
-			
-			
+
+
 		}
-		
+
 		return like;
-		
-		
+
+
 	}
 
 }
