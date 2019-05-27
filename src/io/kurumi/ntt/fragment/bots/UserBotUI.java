@@ -96,6 +96,8 @@ public class UserBotUI extends Function {
 			msg.send("这只Bot需要干点什么呢 ~").keyboard(new Keyboard() {{
 
 						newButtonLine(ChatForward);
+						
+						newButtonLine("/cancel");
 
 					}}).exec();
 
@@ -246,7 +248,7 @@ public class UserBotUI extends Function {
 
 	void newChatForwardBot(UserData user,Msg msg) {
 
-		msg.send("好的，一只转发私聊的Bot，那么 在对她发 /start 的时候，她应该说啥呢，请输入 :").removeKeyboard().exec();
+		msg.send("好的，一只转发私聊的Bot，那么在收到 /start 的时候，应该说啥呢，请输入 :").removeKeyboard().exec();
 
 		msg.send("就像这样 : 这里是" + user.name() + "的私聊BOT，直接发消息给咱就可以了 ~").exec();
 

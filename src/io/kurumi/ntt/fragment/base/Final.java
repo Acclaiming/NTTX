@@ -10,8 +10,6 @@ import io.kurumi.ntt.utils.*;
 import io.kurumi.ntt.db.StickerSet;
 import com.pengrad.telegrambot.model.request.*;
 
-
-
 public class Final extends Fragment {
 
 	final String split = "------------------------\n";

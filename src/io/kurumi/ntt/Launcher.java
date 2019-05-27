@@ -30,7 +30,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         if ("start".equals(msg.command()) && msg.params().length == 0) {
 
-			msg.send("start failed successfully ᕙ(`▿´)ᕗ").publicFailed();
+			msg.send("start failed successfully " + Html.a("来玩 ᕙ(`▿´)ᕗ ！","https://t.me/joinchat/M5LsLFfkGoKE9Maqgi0HiA").publicFailed();
 
             return true;
 
@@ -57,6 +57,12 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		addFragment(new Notice());
 		
+		// Final Parse
+
+		addFragment(new Final());
+
+		
+		
 		if (!isLongPulling()) {
 		
 		// Twitter
@@ -80,10 +86,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		// Donate
 		
 		addFragment(new Donate());
-		
-		// Final Parse
-		
-		addFragment(new Final());
 		
 			super.realStart();
 			
