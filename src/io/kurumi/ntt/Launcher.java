@@ -55,6 +55,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		addFragment(new GetIDs());
 		
+		addFragment(new Notice());
+		
+		if (!isLongPulling()) {
+		
 		// Twitter
 		
 		addFragment(new TwitterLogin());
@@ -69,8 +73,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		TrackTask.start();
 		
-		addFragment(new Notice());
-		
 		// Bots
 		
 		addFragment(new UserBotUI());
@@ -83,10 +85,13 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		addFragment(new Final());
 		
+		}
+		
 		super.realStart();
 		
 		UserBotUI.start();
-
+		
+		
         BotLog.info("初始化 完成 :)");
 		
 		/*
@@ -258,7 +263,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public boolean isLongPulling() {
 
-        return false;
+        return true;
 
     }
 
