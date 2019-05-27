@@ -76,8 +76,6 @@ public class AutoTask extends TimerTask {
 
 	void startLikeService(TAuth auth) throws TwitterException {
 
-		new Send(auth.user,"start").exec();
-
 		Twitter api = auth.createApi();
 
 		ResponseList<Status> tl = api.getHomeTimeline(new Paging().count(800));
