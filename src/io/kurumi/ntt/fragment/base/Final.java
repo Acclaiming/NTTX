@@ -84,7 +84,7 @@ public class Final extends Fragment {
 
 		} else {
 			
-			msg.send("这一条消息未被处理 将忽略 闲聊戳" + Html.a("这里","https://t.me/joinchat/M5LsLFfkGoKE9Maqgi0HiA") + " :)",str.toString()).replyTo(msg).html().exec();
+			msg.send("这一条消息未被处理 将忽略","闲聊戳" + Html.a("这里","https://t.me/joinchat/M5LsLFfkGoKE9Maqgi0HiA") + " :)",str.toString()).replyTo(msg).html().exec();
 			
 		}
 		
