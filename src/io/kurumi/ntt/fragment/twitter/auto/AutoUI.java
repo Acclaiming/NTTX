@@ -61,7 +61,9 @@ public class AutoUI extends TwitterFunction {
 
 		autoData.setById(setting.id,setting);
 		
-		msg.send("完成。").exec();
+		
+		
+		msg.send("set to " + enable).exec();
 
 	}
 
