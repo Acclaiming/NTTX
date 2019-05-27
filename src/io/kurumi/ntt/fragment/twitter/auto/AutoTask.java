@@ -9,12 +9,14 @@ public class AutoTask extends TimerTask {
 
 	public static AutoTask INSTANCE = new AutoTask();
 
-	public static Timer timer = new Timer();
+	public static Timer timer;
 
 	public static void start() {
 
 		stop();
 
+		timer = new Timer();
+		
 		timer.scheduleAtFixedRate(INSTANCE,new Date(),5 * 60 * 1000);
 
 	}
