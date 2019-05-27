@@ -8,7 +8,7 @@ import io.kurumi.ntt.model.*;
 
 public class AutoUI extends TwitterFunction {
 
-	public class AutoSetting {
+	public static class AutoSetting {
 
 		public Long id;
 
