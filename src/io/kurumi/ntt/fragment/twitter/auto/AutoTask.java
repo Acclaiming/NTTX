@@ -19,7 +19,7 @@ public class AutoTask extends TimerTask {
 
 		timer = new Timer();
 
-		timer.scheduleAtFixedRate(INSTANCE,new Date(),3 * 60 * 1000);
+		timer.scheduleAtFixedRate(INSTANCE,new Date(),15 * 60 * 1000);
 
 	}
 
