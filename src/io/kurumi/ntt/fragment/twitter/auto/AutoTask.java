@@ -88,7 +88,7 @@ public class AutoTask extends TimerTask {
 
 		if (count > 0) {
 
-			new Send(auth.user,"sended " + count + " to home_timeline").exec();
+			new Send(auth.user,"sended " + count + " likes to home_timeline (" + auth.archive().urlHtml() + ")").html().exec();
 			
 		}
 
