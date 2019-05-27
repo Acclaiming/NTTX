@@ -15,21 +15,21 @@ import com.pengrad.telegrambot.request.ForwardMessage;
 public class Notice extends Function {
 
     public static final Notice INSTANCE = new Notice();
-    
+
     @Override
     public void functions(LinkedList<String> names) {
-       
+
         names.add("notice");
-        
+
     }
-    
+
     final String POINT_FPRWARD = "n|f";
 
     @Override
     public void points(LinkedList<String> points) {
-   
+
         points.add(POINT_FPRWARD);
- 
+
     }
 
     @Override
@@ -54,39 +54,56 @@ public class Notice extends Function {
 
     @Override
     public void onPoint(UserData user,Msg msg,PointStore.Point point) {
-        
+
 		String params = point.data.toString();
-		
+
         boolean mute = params.contains("mute");
         boolean login = params.contains("login");
-		
+
         clearPoint(user);
-        
+
 		if (!login) {
-		
-        long count = UserData.data.collection.countDocuments();
 
-        long success = 0;
-        long failed = 0;
+			long count = UserData.data.collection.countDocuments();
 
-        Msg status = msg.reply("正在群发 : 0 / 0 / " + count).send();
+			long success = 0;
+			long failed = 0;
 
-        for (UserData userData : UserData.data.collection.find()) {
+			Msg status = msg.reply("正在群发 : 0 / 0 / " + count).send();
 
-            // if (userData.contactable()) 
-            
-            ForwardMessage forward = new ForwardMessage(userData.id,user.id,msg.messageId());
+			for (UserData userData : UserData.data.collection.find()) {
 
-           if (mute) forward.disableNotification(true);
+				if (userData.contactable == null || userData.contactable) {
 
-            if (bot().execute(forward).isOk()) success ++; else failed ++;
+					ForwardMessage forward = new ForwardMessage(userData.id,user.id,msg.messageId());
 
-            status.edit("正在群发 : " + success + " / " + (success + failed) + " / " + count).exec();
+					if (mute) forward.disableNotification(true);
 
-        }
+					if (bot().execute(forward).isOk()) success ++; else {
+
+						failed ++;
+
+						userData.contactable = false;
+
+						UserData.userDataIndex.remove(userData.id);
+
+						userData.data.setById(userData.id,userData);
+
+					}
+
+				} else {
+
+					failed ++;
+
+				}
+
+
+				status.edit("正在群发 : " + success + " / " + (success + failed) + " / " + count).exec();
+
+			}
 
 		}
-		
+
     }
 
 }
