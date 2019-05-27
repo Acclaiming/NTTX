@@ -72,7 +72,7 @@ public class AutoTask extends TimerTask {
 
 		int count = 0;
 
-		for (Status status : ArrayUtil.reverse(tl.toArray(new Status[tl.size()]))) {
+		for (Status status : tl) {
 		
 			count += loopLike(auth,api,status);
 
@@ -86,7 +86,7 @@ public class AutoTask extends TimerTask {
 
 	}
 	
-	int loopLike(TAuth auth,Twitter api,Status status) {
+	int loopLike(TAuth auth,Twitter api,Status status) throws TwitterException {
 		
 		int like = 0;
 		
@@ -100,7 +100,11 @@ public class AutoTask extends TimerTask {
 				
 				like ++;
 				
-			} catch (TwitterException e) {}
+			} catch (TwitterException e) {
+				
+				throw e;
+				
+			}
 
 		}
 		
