@@ -251,6 +251,8 @@ public class NTT {
     
     public static boolean checkGroupAdmin(Msg msg) {
         
+		if (msg.from().developer()) return true;
+		
         if (!isGroupAdmin(msg.chatId(),msg.from().id)) {
             
             if (msg instanceof Callback) {
