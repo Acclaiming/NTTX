@@ -11,6 +11,7 @@ import io.kurumi.ntt.db.PointStore.*;
 import java.util.*;
 import cn.hutool.core.util.ArrayUtil;
 import com.pengrad.telegrambot.request.ForwardMessage;
+import io.kurumi.ntt.twitter.*;
 
 public class Notice extends Function {
 
@@ -33,20 +34,13 @@ public class Notice extends Function {
     }
 
     @Override
-    public int target() {
-
-        return Private;
-
-    }
-
-    @Override
     public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
         if (user.developer()) {
 
             msg.send("现在发送群发内容 :").exec();
 
-            setPoint(user,POINT_FPRWARD,ArrayUtil.join(params," "));
+            setPoint(user,POINT_FPRWARD,PointStore.Type.Global,ArrayUtil.join(params," "));
 
         } else msg.send("Permission denied").exec();
 
@@ -73,12 +67,22 @@ public class Notice extends Function {
 
 			for (UserData userData : UserData.data.collection.find()) {
 
+				
+				
 				if (userData.contactable == null || userData.contactable) {
 
+					if (login && TAuth.data.countByField("user",userData.id) < 0) {
+
+						continue;
+
+					}
+					
 					ForwardMessage forward = new ForwardMessage(userData.id,user.id,msg.messageId());
 
 					if (mute) forward.disableNotification(true);
 
+					
+					
 					if (bot().execute(forward).isOk()) success ++; else {
 
 						failed ++;

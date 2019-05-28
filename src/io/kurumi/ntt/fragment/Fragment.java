@@ -30,6 +30,12 @@ public class Fragment {
         return origin.point();
 
     }
+	
+	public <T> void setPoint(UserData user,String pointTo,PointStore.Type context) {
+
+        point().set(user,context,pointTo,null);
+
+    }
 
     public <T> void setPoint(UserData user,String pointTo,PointStore.Type context,T content) {
 
