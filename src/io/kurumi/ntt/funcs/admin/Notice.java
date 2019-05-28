@@ -98,6 +98,8 @@ public class Notice extends Function {
 				} else {
 
 					failed ++;
+					
+					continue;
 
 				}
 
