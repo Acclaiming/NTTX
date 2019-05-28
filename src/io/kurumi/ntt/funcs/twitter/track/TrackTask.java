@@ -372,7 +372,7 @@ public class TrackTask extends TimerTask {
 
             Relationship ship = api.showFriendship(api.getId(),id);
 
-            new Send(userId,(ship.isSourceFollowingTarget() ? "已关注的 " : "") + archive.urlHtml() + " #" + archive.screenName + " 关注了你 :)",parseStatus(api,follower)).buttons(makeOpenButton(archive)).html().exec();
+            new Send(userId,(ship.isSourceFollowingTarget() ? "已关注的 " : "") + archive.urlHtml() + " #" + archive.screenName + " 关注了你 :)",parseStatus(api,follower)).html().exec();
 
         } catch (TwitterException e) {
 
@@ -404,11 +404,11 @@ public class TrackTask extends TimerTask {
 
             if (ship.isSourceBlockingTarget()) {
 
-                new Send(userId,archive.urlHtml() + " #" + archive.screenName + " 取关并屏蔽了你 :)").buttons(makeOpenButton(archive)).html().exec();
+                new Send(userId,archive.urlHtml() + " #" + archive.screenName + " 取关并屏蔽了你 :)").html().exec();
 
             } else {
 
-                new Send(userId,archive.urlHtml() + " #" + archive.screenName + " 取关了你 :)").buttons(makeOpenButton(archive)).html().exec();
+                new Send(userId,archive.urlHtml() + " #" + archive.screenName + " 取关了你 :)").html().exec();
 
             }
 
@@ -432,17 +432,7 @@ public class TrackTask extends TimerTask {
 
     }
 
-	ButtonMarkup makeOpenButton(final UserArchive target) {
-
-		return new ButtonMarkup() {{
-
-				newUrlButtonLine(target.name,target.url());
-
-			}};
-
-	}
-
-
+	
     static Timer timer;
 
     public static void start() {
