@@ -19,7 +19,7 @@ public class AutoTask extends TimerTask {
 
 		timer = new Timer();
 
-		timer.scheduleAtFixedRate(INSTANCE,new Date(),15 * 60 * 1000);
+		timer.scheduleAtFixedRate(INSTANCE,new Date(),5 * 60 * 1000);
 
 	}
 
@@ -82,7 +82,11 @@ public class AutoTask extends TimerTask {
 
 		int count = 0;
 
+		int max = RandomUtil.randomInt(5,40);
+		
 		for (Status status : tl) {
+			
+			if (count >= max) break;
 
 			try {
 
@@ -90,11 +94,11 @@ public class AutoTask extends TimerTask {
 
 				if (status.isFavorited()) continue;
 				if (auth.id.equals(status.getUser().getId())) continue;
-
+				if (status.isRetweet()) continue;
+				
 				api.createFavorite(status.getId());
 
 				count ++;
-
 
 			} catch (TwitterException ex) {
 

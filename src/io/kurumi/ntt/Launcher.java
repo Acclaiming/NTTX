@@ -19,6 +19,7 @@ import cn.hutool.core.lang.Console;
 import io.kurumi.ntt.fragment.twitter.auto.*;
 import io.kurumi.ntt.funcs.admin.*;
 import io.kurumi.ntt.funcs.nlp.*;
+import com.pengrad.telegrambot.request.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -62,8 +63,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		addFragment(new Final());
 
-		
-		
 		if (!isLongPulling()) {
 		
 		// Twitter
