@@ -18,6 +18,7 @@ import java.util.*;
 import cn.hutool.core.lang.Console;
 import io.kurumi.ntt.fragment.twitter.auto.*;
 import io.kurumi.ntt.funcs.admin.*;
+import io.kurumi.ntt.funcs.nlp.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -86,6 +87,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new AntiEsu());
 		
 		addFragment(new BanSetickerSet());
+		
+		addFragment(new AutoReply());
 		
 		// Bots
 		
