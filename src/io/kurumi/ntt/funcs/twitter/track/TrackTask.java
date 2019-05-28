@@ -20,6 +20,11 @@ import static java.util.Arrays.asList;
 import com.mongodb.client.*;
 import io.kurumi.ntt.funcs.twitter.track.TrackUI.*;
 import io.kurumi.ntt.funcs.twitter.track.TrackTask.*;
+import io.kurumi.ntt.*;
+import com.pengrad.telegrambot.request.*;
+import cn.hutool.http.*;
+import java.io.*;
+import com.pengrad.telegrambot.model.request.*;
 
 
 public class TrackTask extends TimerTask {
@@ -202,7 +207,24 @@ public class TrackTask extends TimerTask {
 
 		msg.append("的 ").append(archive.urlHtml()).append(" ( #").append(archive.oldScreenName()).append(" ) :\n").append(change);
 
-		new Send(account.user,msg.toString()).html().exec();
+
+		if (archive.oldPhotoUrl == null) {
+
+			new Send(account.user,msg.toString()).html().exec();
+
+		} else {
+
+			File dest = new File(Env.CACHE_DIR,StrUtil.subAfter(archive.photoUrl,"https://pbs.twimg.com/profile_images/",true));
+
+			if (!dest.isFile()) {
+
+				HttpUtil.downloadFile(archive.photoUrl,dest);
+
+			}
+
+			Launcher.INSTANCE.bot().execute(new SendPhoto(account.user,dest).caption(msg.toString()).parseMode(ParseMode.HTML));
+
+		}
 
 	}
 
@@ -222,7 +244,7 @@ public class TrackTask extends TimerTask {
             followers.setById(account.id,new IdsList(account.id,newFollowers));
 
         }
-		
+
 		friends.setById(account.id,new IdsList(account.id,TApi.getAllFrIDs(api,account.id)));
 
 		List<Long> retains = new LinkedList<>();
@@ -432,7 +454,7 @@ public class TrackTask extends TimerTask {
 
     }
 
-	
+
     static Timer timer;
 
     public static void start() {
