@@ -135,7 +135,7 @@ public class UserArchive {
 
             str.append(split).append("用户名更改 : @").append(screenNameL).append(" ------> @").append(screenName);
 
-            oldScreename = screenName;
+            oldScreename = screenNameL;
             
             change = true;
 
