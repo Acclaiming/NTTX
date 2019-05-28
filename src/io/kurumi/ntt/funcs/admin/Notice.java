@@ -107,6 +107,9 @@ public class Notice extends Function {
 				status.edit("正在群发 : " + success + " / " + (success + failed) + " / " + count).exec();
 
 			}
+			
+			status.edit("正在群发 : " + success + " / " + (success + failed) + " / " + count).exec();
+			
 
 		}
 
