@@ -102,7 +102,7 @@ public class AutoTask extends TimerTask {
 
 			} catch (TwitterException ex) {
 
-				if (ex.getStatusCode() == 429) {
+				if (ex.getErrorCode() == 429) {
 
 					throw ex;
 
