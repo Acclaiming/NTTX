@@ -34,7 +34,7 @@ public class AutoTask extends TimerTask {
 		}
 
 	}
-	
+
 	@Override
 	public void run() {
 
@@ -83,26 +83,38 @@ public class AutoTask extends TimerTask {
 		int count = 0;
 
 		int max = RandomUtil.randomInt(5,40);
-		
+
 		for (Status status : tl) {
-			
+
 			if (count >= max) break;
 
-				//	count += loopLike(auth,api,status);
+			//	count += loopLike(auth,api,status);
 
-				if (status.isFavorited()) continue;
-				if (auth.id.equals(status.getUser().getId())) continue;
-				if (status.isRetweet()) continue;
-				
+			if (status.isFavorited()) continue;
+			if (auth.id.equals(status.getUser().getId())) continue;
+			if (status.isRetweet()) continue;
+
+			try {
+
 				api.createFavorite(status.getId());
 
 				count ++;
+
+			} catch (TwitterException ex) {
+
+				if (ex.getErrorCode() != 34) {
+
+					throw ex;
+
+				}
+
+			}
 
 		}
 
 		if (count > 0) {
 
-		//	new Send(auth.user,"sended " + count + " likes to home_timeline","account : " + Html.a("@" + auth.archive().screenName,"https://twitter.com/" + auth.archive().screenName)).html().exec();
+			//	new Send(auth.user,"sended " + count + " likes to home_timeline","account : " + Html.a("@" + auth.archive().screenName,"https://twitter.com/" + auth.archive().screenName)).html().exec();
 
 		}
 
