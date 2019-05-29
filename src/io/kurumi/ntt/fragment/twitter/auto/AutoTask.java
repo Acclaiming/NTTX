@@ -88,8 +88,6 @@ public class AutoTask extends TimerTask {
 			
 			if (count >= max) break;
 
-			try {
-
 				//	count += loopLike(auth,api,status);
 
 				if (status.isFavorited()) continue;
@@ -99,18 +97,6 @@ public class AutoTask extends TimerTask {
 				api.createFavorite(status.getId());
 
 				count ++;
-
-			} catch (TwitterException ex) {
-
-				if (ex.getErrorCode() == 429 || ex.getStatusCode() == 429) {
-
-					throw ex;
-
-					// too many requests
-
-				}
-
-			}
 
 		}
 
