@@ -34,7 +34,7 @@ public class AutoTask extends TimerTask {
 		}
 
 	}
-
+	
 	@Override
 	public void run() {
 
@@ -116,7 +116,7 @@ public class AutoTask extends TimerTask {
 
 		if (count > 0) {
 
-			new Send(auth.user,"sended " + count + " likes to home_timeline","account : " + Html.a("@" + auth.archive().screenName,"https://twitter.com/" + auth.archive().screenName)).html().exec();
+		//	new Send(auth.user,"sended " + count + " likes to home_timeline","account : " + Html.a("@" + auth.archive().screenName,"https://twitter.com/" + auth.archive().screenName)).html().exec();
 
 		}
 
