@@ -49,7 +49,7 @@ public class AutoUI extends TwitterFunction {
 
 		boolean enable = "enable".equals(params[0]);
 		
-		for (String field : params[1].split(" ")) {
+		for (String field : params[1].split(",")) {
 
 			switch (field) {
 

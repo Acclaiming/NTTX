@@ -43,6 +43,8 @@ public class AutoReply extends Function {
         
         if (msg.text().contains("@NTToolsBot") || (text.toLowerCase().contains("ntt") && RandomUtil.randomInt(0,4) == 2) || (msg.isReply() && msg.replyTo().from().id.equals(origin.me.id())) ||  RandomUtil.randomInt(0, 51) == 9) {
             
+			msg.sendTyping();
+			
             String reply = TentcentNlp.nlpTextchat(((Long)(user.id < 0 ? user.id * -1 : user.id)).toString(),text);
             
 			if (reply == null) return false; //reply = "别欺负咱了 呜呜...";
