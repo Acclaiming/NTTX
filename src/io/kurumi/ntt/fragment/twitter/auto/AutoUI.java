@@ -79,7 +79,7 @@ public class AutoUI extends TwitterFunction {
                 newButtonLine((setting.like ? "「 关闭" : "「 开启") + " 时间线打心 」",POINT_SETTING_LIKE,accountId);
                 newButtonLine((setting.foback ? "「 关闭" : "「 开启") + " 关注新关注者 」",POINT_SETTING_FOBACK,accountId);
 
-				newButtonLine((setting.foback ? "「 关闭" : "「 开启") + " 取关新取关者 」",POINT,accountId);
+				// newButtonLine((setting.foback ? "「 关闭" : "「 开启") + " 取关新取关者 」",POINT,accountId);
 				
 				
             }};
