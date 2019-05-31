@@ -35,60 +35,60 @@ public class AutoTask extends TimerTask {
 		}
 
 	}
-	
+
 	public static void onNewFollower(TAuth auth,Twitter api,UserArchive archive,Relationship ship) {
-		
+
 		if (!ship.isSourceFollowingTarget() && AutoUI.autoData.fieldEquals(auth.id,"foback",true)) {
-			
+
 			try {
-				
+
 				api.createFriendship(archive.id);
-				
+
 				new Send(auth.user,archive.isProtected ? "已发送关注请求 :" : "已回Fo : " + archive.urlHtml(),"账号 : " + auth.archive().urlHtml()).html().exec();
-				
+
 			} catch (TwitterException e) {
-				
+
 				new Send(auth.user,"回Fo失败 : " + archive.urlHtml(),"账号 : " + auth.archive().urlHtml()).html().exec();
-				
-				
+
+
 			}
 
 		}
-		
+
 	}
 
 	@Override
 	public void run() {
 
-		for (AutoUI.AutoSetting auto :  AutoUI.autoData.collection.find()) {
+		for (TAuth auth :  TAuth.data.collection.find()) {
 
-			TAuth auth = TAuth.getById(auto.id);
+			AutoUI.AutoSetting auto = AutoUI.autoData.getById(auth.id);
 
-			if (auth == null) {
+			/*
 
-				AutoUI.autoData.deleteById(auto.id);
+			 if (auth == null) {
 
-				BotLog.debug("autotask removed for " + auto.id);
+			 AutoUI.autoData.deleteById(auto.id);
 
-				return;
+			 BotLog.debug("autotask removed for " + auto.id);
 
-			}
+			 return;
 
-			if (auto.like) {
+			 }
 
-				try {
+			 */
 
-					startLikeService(auth);
+			try {
 
-				} catch (TwitterException e) {
+				startLikeService(auth,auto);
 
-					auto.like = false;
+			} catch (TwitterException e) {
 
-					AutoUI.autoData.setById(auto.id,auto);
+				auto.like = false;
 
-					new Send(auth.user,"auto.like disabled : " + e).exec();
+				AutoUI.autoData.setById(auto.id,auto);
 
-				}
+				new Send(auth.user,"auto.like disabled : " + e).exec();
 
 			}
 
@@ -96,7 +96,9 @@ public class AutoTask extends TimerTask {
 
 	}
 
-	void startLikeService(TAuth auth) throws TwitterException {
+	static LinkedHashSet<Long> saved = new LinkedHashSet<>();
+
+	void startLikeService(TAuth auth,AutoUI.AutoSetting auto) throws TwitterException {
 
 		Twitter api = auth.createApi();
 
@@ -108,25 +110,41 @@ public class AutoTask extends TimerTask {
 
 		for (Status status : tl) {
 
-			if (count >= max) break;
+			if (!saved.contains(status.getId())) {
 
-			//	count += loopLike(auth,api,status);
+				StatusArchive.save(status,api);
 
-			if (status.isFavorited()) continue;
-			if (auth.id.equals(status.getUser().getId())) continue;
-			if (status.isRetweet()) continue;
+				saved.add(status.getId());
 
-			try {
+			}
 
-				api.createFavorite(status.getId());
+			if (saved.size() > 10000) {
 
-				count ++;
+				saved.clear();
 
-			} catch (TwitterException ex) {
+			}
 
-				if (ex.getErrorCode() != 34 && ex.getErrorCode() != 134) {
+			if (count < max && auto.like) {
 
-					throw ex;
+				//	count += loopLike(auth,api,status);
+
+				if (status.isFavorited()) continue;
+				if (auth.id.equals(status.getUser().getId())) continue;
+				if (status.isRetweet()) continue;
+
+				try {
+
+					api.createFavorite(status.getId());
+
+					count ++;
+
+				} catch (TwitterException ex) {
+
+					if (ex.getErrorCode() != 34 && ex.getErrorCode() != 134) {
+
+						throw ex;
+
+					}
 
 				}
 

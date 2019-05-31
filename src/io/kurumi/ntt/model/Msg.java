@@ -78,6 +78,12 @@ public class Msg extends Context {
         return message.document();
 
     }
+	
+	public boolean idStartPayload() {
+		
+		return "start".equals(command()) && params().length > 0;
+		
+	}
 
     public String text() {
 

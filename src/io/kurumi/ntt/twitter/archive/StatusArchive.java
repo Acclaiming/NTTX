@@ -32,6 +32,29 @@ public class StatusArchive {
         return archive;
 
     }
+	
+	public static StatusArchive save(Status status,Twitter api) {
+
+        StatusArchive archive = data.getById(status.getId());
+
+        if (archive == null) {
+
+            archive = new StatusArchive();
+
+            archive.id = status.getId();
+
+            archive.read(status);
+			
+			archive.loop(api);
+
+            data.setById(archive.id,archive);
+
+        }
+
+        return archive;
+
+    }
+	
     public Long id;
 
 	public Long createdAt;
