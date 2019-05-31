@@ -87,10 +87,11 @@ public class Context {
 
     }
 	
+	public long targetChatId = -1;
 	
     public Send send(String... msg) {
 
-        return new Send(fragment, chatId(), msg);
+        return new Send(fragment,targetChatId == -1 ? chatId() : targetChatId, msg);
 
     }
 

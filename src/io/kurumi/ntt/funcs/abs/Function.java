@@ -13,26 +13,27 @@ public abstract class Function extends Fragment {
     public abstract void functions(LinkedList<String> names);
 
     public int target() {
-        
+
         return All;
-        
+
     }
 
     public void points(LinkedList<String> points) {
     }
 
     public abstract void onFunction(UserData user,Msg msg,String function,String[] params);
+
     public void onPoint(UserData user,Msg msg,PointStore.Point point) {}
     public void onCallback(UserData user,Callback callback,String point,String[] params) {}
-    
+
     public static final String[] None = new String[0];
 
     public static final int All = 1;
     public static final int Private = 2;
     public static final int Group = 3;
 
-    private LinkedList<String> functions = new LinkedList<String> () {{ functions(this); }};
-    private LinkedList<String> points = new LinkedList<String> () {{ points(this); }};
+    private LinkedList<String> functions = new LinkedList<String>() {{ functions(this); }};
+    private LinkedList<String> points = new LinkedList<String>() {{ points(this); }};
 
     @Override
     public boolean onMsg(UserData user,Msg msg) {
@@ -51,33 +52,43 @@ public abstract class Function extends Fragment {
 
         if (target() == Private && !msg.isPrivate())  {
 
-            msg.send("请使用私聊 (˚☐˚! )/").publicFailed();
+			if (!user.contactable()) {
 
-            return true;
+				msg.send("请使用私聊 (˚☐˚! )/").publicFailed();
+
+				return true;
+
+			} else {
+
+				msg.send("这是一个仅私聊可用的命令，咱已经在私聊回复了你。","如果BOT有删除信息权限,命令和此回复将被自动删除。:)").exec();
+
+				msg.targetChatId = user.id;
+
+			}
 
         }
 
         msg.sendTyping();
-        
+
         onFunction(user,msg,msg.command(),msg.params());
 
         return true;
 
     }
-    
-    
+
+
     @Override
     public boolean onPointedMsg(UserData user,Msg msg) {
 
         PointStore.Point point = point().get(user);
-        
+
         switch (target()) {
 
-                case Group : if (msg.isPrivate()) return false;break;
-                case Private : if (msg.isGroup()) return false;break;
+			case Group : if (msg.isPrivate()) return false;break;
+			case Private : if (msg.isGroup()) return false;break;
 
         }
-        
+
         for (String used : points) {
 
             if (used.equals(point.point)) {
@@ -96,7 +107,7 @@ public abstract class Function extends Fragment {
 
     @Override
     public boolean onCallback(UserData user,Callback callback) {
-    
+
         for (String used : points) {
 
             if (used.equals(callback.params[0])) {
