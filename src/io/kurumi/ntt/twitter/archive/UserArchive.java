@@ -76,7 +76,6 @@ public class UserArchive {
     public String photoUrl;
 	
 	public String bannerUrl;
-	public String location;
 	public String url;
 	
     public Boolean isProtected;
@@ -187,15 +186,6 @@ public class UserArchive {
 			
 		} else oldBannerUrl = null;
 		
-		String locationL = location;
-		
-		if (!ObjectUtil.equal(location = user.getLocation(),locationL)) {
-			
-			str.append(split).append("位置更改 : \n\n").append(locationL).append(" \n\n ------> \n\n").append(location);
-
-            change = true;
-
-        }
 		
 		String urlL = url;
 		
