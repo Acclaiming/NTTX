@@ -125,8 +125,16 @@ public class UserData {
 
     public boolean contactable() {
 
-        return  NTT.isUserContactable(id);
-
+		if (NTT.isUserContactable(id) != contactable) {
+	
+			contactable = !contactable;
+			
+			data.setById(id,this);
+			
+		}
+		
+		return contactable;
+		
     }
 
     public String formattedName() {
