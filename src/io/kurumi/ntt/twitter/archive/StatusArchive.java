@@ -15,6 +15,8 @@ public class StatusArchive {
     
     public static StatusArchive save(Status status) {
 
+		if (status == null) return null;
+		
         StatusArchive archive = data.getById(status.getId());
 
         if (archive == null) {
@@ -87,7 +89,7 @@ public class StatusArchive {
         UserArchive.save(status.getUser());
 
         inReplyToStatusId = status.getInReplyToStatusId();
-
+		
         inReplyToScreenName = status.getInReplyToScreenName();
 
         inReplyToUserId = status.getInReplyToUserId();

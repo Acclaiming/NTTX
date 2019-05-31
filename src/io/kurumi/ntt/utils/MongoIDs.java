@@ -1,6 +1,6 @@
-package io.kurumi.ntt.db;
+package io.kurumi.ntt.utils;
 
-import com.mongodb.client.*;
+import io.kurumi.ntt.db.*;
 
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
@@ -14,19 +14,26 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import io.kurumi.ntt.db.BotDB.*;
 import java.util.*;
+import com.mongodb.operation.*;
+import com.mongodb.client.model.*;
+import com.mongodb.*;
+import org.bson.*;
 
-public class Data<T> extends AbsData<Long,T> {
-
-    public Data(Class<T> clazz) {
-
-        super(clazz);
-
-    }
-    
-    public Data(String collectionName,Class<T> clazz) {
-        
-		super(collectionName,clazz);
+public class MongoIDs {
+	
+	public static class IdSeq {
 		
-    }
-    
+		public String id;
+		public Long seq;
+		
+	}
+	
+	public static AbsData<String,IdSeq> ids = new AbsData<String,IdSeq>(IdSeq.class);
+	
+	public static long getNextId(String collection) {
+		
+		return ids.collection.findOneAndUpdate(eq("_id",collection),inc("seq",1),new FindOneAndUpdateOptions().upsert(true)).seq;
+		
+	}
+	
 }
