@@ -26,6 +26,7 @@ import cn.hutool.http.*;
 import java.io.*;
 import com.pengrad.telegrambot.model.request.*;
 import io.kurumi.ntt.fragment.twitter.auto.*;
+import cn.hutool.core.io.*;
 
 
 public class TrackTask extends TimerTask {
@@ -209,22 +210,35 @@ public class TrackTask extends TimerTask {
 		msg.append("的 ").append(archive.urlHtml()).append(" ( #").append(archive.oldScreenName()).append(" ) :\n").append(change);
 
 
-		if (archive.oldPhotoUrl == null) {
+		if (archive.oldPhotoUrl == null && archive.oldBannerUrl == null) {
 
 			new Send(account.user,msg.toString()).html().exec();
 
-		} else {
+		} else if (archive.oldPhotoUrl != null) {
+			
+			File photo = new File(Env.CACHE_DIR,"twitter_profile_images/" + FileUtil.getName(archive.photoUrl));
 
-			File dest = new File(Env.CACHE_DIR,StrUtil.subAfter(archive.photoUrl,"https://pbs.twimg.com/profile_images/",true));
+			if (!photo.isFile()) {
 
-			if (!dest.isFile()) {
-
-				HttpUtil.downloadFile(archive.photoUrl,dest);
+				HttpUtil.downloadFile(archive.photoUrl,photo);
 
 			}
 
-			Launcher.INSTANCE.bot().execute(new SendPhoto(account.user,dest).caption(msg.toString()).parseMode(ParseMode.HTML));
+			Launcher.INSTANCE.bot().execute(new SendPhoto(account.user,photo).caption(msg.toString()).parseMode(ParseMode.HTML));
 
+		} else {
+		
+			File photo = new File(Env.CACHE_DIR,"twitter_banner_images/" + FileUtil.getName(archive.bannerUrl));
+
+			if (!photo.isFile()) {
+
+				HttpUtil.downloadFile(archive.bannerUrl,photo);
+
+			}
+
+			Launcher.INSTANCE.bot().execute(new SendPhoto(account.user,photo).caption(msg.toString()).parseMode(ParseMode.HTML));
+			
+			
 		}
 
 	}

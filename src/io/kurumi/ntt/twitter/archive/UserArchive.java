@@ -74,12 +74,18 @@ public class UserArchive {
     public String screenName;
     public String bio;
     public String photoUrl;
+	
+	public String bannerUrl;
+	public String location;
+	public String url;
+	
     public Boolean isProtected;
 
     public Boolean isDisappeared;
     
     private transient String oldScreename;
     public transient String oldPhotoUrl;
+    public transient String oldBannerUrl;
     
     public String oldScreenName() {
         
@@ -153,9 +159,9 @@ public class UserArchive {
 
     oldPhotoUrl = photoUrl;
 		
-        if ((!ObjectUtil.equal(photoUrl = user.getOriginalProfileImageURLHttps(),oldPhotoUrl) && (oldPhotoUrl == null || !oldPhotoUrl.contains("http://")))) {
+        if ((!ObjectUtil.equal(photoUrl = user.getOriginalProfileImageURLHttps(),oldPhotoUrl))) {
 
-            str.append(split).append("头像更改 : " + Html.a("媒体文件",oldPhotoUrl) + " ------> " + Html.a("媒体文件",photoUrl));
+            str.append(split).append("头像更改 : " + Html.a("新头像",photoUrl));
 
             change = true;
 
@@ -171,9 +177,39 @@ public class UserArchive {
 
         }
 		
+		oldBannerUrl = bannerUrl;
+		
+		if (!ObjectUtil.equal(bannerUrl =  user.getProfileBannerURL(),oldBannerUrl)) {
+			
+			str.append(split).append("横幅更改 : " + Html.a("新横幅",photoUrl));
+
+            change = true;
+			
+		} else oldBannerUrl = null;
+		
+		String locationL = location;
+		
+		if (!ObjectUtil.equal(location = user.getLocation(),locationL)) {
+			
+			str.append(split).append("位置更改 : \n\n").append(locationL).append(" \n\n ------> \n\n").append(location);
+
+            change = true;
+
+        }
+		
+		String urlL = url;
+		
+		if (!ObjectUtil.equal(url = user.getURL(),urlL)) {
+			
+			str.append(split).append("链接更改 : \n\n").append(urlL).append(" \n\n ------> \n\n").append(url);
+
+            change = true;
+			
+		}
+		
         if (createdAt == null) {
 
-            createdAt = user.getCreatedAt().getTime();
+           createdAt = user.getCreatedAt().getTime();
 
             change = false;
 
