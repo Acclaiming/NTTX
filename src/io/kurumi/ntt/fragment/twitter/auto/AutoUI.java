@@ -17,12 +17,15 @@ public class AutoUI extends TwitterFunction {
 		public boolean like = false;
 		
 		public boolean foback = false;
+		public boolean unfoback = false;
 
 	}
 
 	final String POINT_SETTING_LIKE = "auto|like";
-	final String POINT_SETTING_FOBACK= "auto|foback";
-
+	final String POINT_SETTING_FOBACK = "auto|foback";
+	final String POINT_SETTING_UNFOBACK = "auto|unfoback";
+	final String POINT_SETTING_UNFOBLACK = "auto|unfoblack";
+	
 	@Override
 	public int target() {
 		
@@ -37,6 +40,9 @@ public class AutoUI extends TwitterFunction {
 		
 		points.add(POINT_SETTING_LIKE);
 		points.add(POINT_SETTING_FOBACK);
+		
+		points.add(POINT_SETTING_UNFOBACK);
+		points.add(POINT_SETTING_UNFOBLACK);
 		
 	}
 	
@@ -71,8 +77,11 @@ public class AutoUI extends TwitterFunction {
         return new ButtonMarkup() {{
 
                 newButtonLine((setting.like ? "「 关闭" : "「 开启") + " 时间线打心 」",POINT_SETTING_LIKE,accountId);
-                newButtonLine((setting.foback ? "「 关闭" : "「 开启") + " 自动回Fo 」",POINT_SETTING_FOBACK,accountId);
+                newButtonLine((setting.foback ? "「 关闭" : "「 开启") + " 关注新关注者 」",POINT_SETTING_FOBACK,accountId);
 
+				newButtonLine((setting.foback ? "「 关闭" : "「 开启") + " 取关新取关者 」",POINT,accountId);
+				
+				
             }};
 
     }

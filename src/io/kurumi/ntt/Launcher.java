@@ -1,7 +1,5 @@
 package io.kurumi.ntt;
 
-
-
 import cn.hutool.core.lang.*;
 import cn.hutool.core.util.*;
 import com.pengrad.telegrambot.model.*;

@@ -243,7 +243,7 @@ public class Msg extends Context {
 
     public boolean delete() {
 
-        return fragment.bot().execute(new DeleteMessage(chatId(),messageId())).isOk();
+        return fragment.bot().execute(new DeleteMessage(chat().id(),messageId())).isOk();
 
     }
     
