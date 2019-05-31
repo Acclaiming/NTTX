@@ -6,6 +6,7 @@ import java.util.*;
 import twitter4j.*;
 import cn.hutool.core.util.*;
 import io.kurumi.ntt.utils.*;
+import io.kurumi.ntt.twitter.archive.*;
 
 public class AutoTask extends TimerTask {
 
@@ -33,6 +34,27 @@ public class AutoTask extends TimerTask {
 
 		}
 
+	}
+	
+	public static void onNewFollower(TAuth auth,Twitter api,UserArchive archive,Relationship ship) {
+		
+		if (!ship.isSourceFollowingTarget() && AutoUI.autoData.fieldEquals(auth.id,"foback",true)) {
+			
+			try {
+				
+				api.createFriendship(archive.id);
+				
+				new Send(auth.user,archive.isProtected ? "已发送关注请求 :" : "已回Fo : " + archive.url(),"账号 : " + auth.archive().urlHtml()).html().exec();
+				
+			} catch (TwitterException e) {
+				
+				new Send(auth.user,"回Fo失败 : " + archive.url(),"账号 : " + auth.archive().urlHtml()).html().exec();
+				
+				
+			}
+
+		}
+		
 	}
 
 	@Override

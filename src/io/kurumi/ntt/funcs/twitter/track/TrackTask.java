@@ -25,6 +25,7 @@ import com.pengrad.telegrambot.request.*;
 import cn.hutool.http.*;
 import java.io.*;
 import com.pengrad.telegrambot.model.request.*;
+import io.kurumi.ntt.fragment.twitter.auto.*;
 
 
 public class TrackTask extends TimerTask {
@@ -71,11 +72,11 @@ public class TrackTask extends TimerTask {
 
 					}
 
-					if (setting.followers || setting.followersInfo || setting.followingInfo) {
+					//if (setting.followers || setting.followersInfo || setting.followingInfo) {
 
-						doTracking(account,setting,api,UserData.get(account.user));
+					doTracking(account,setting,api,UserData.get(account.user));
 
-					}
+					//}
 
                 } catch (TwitterException e) {
 
@@ -249,7 +250,7 @@ public class TrackTask extends TimerTask {
 
 		List<Long> retains = new LinkedList<>();
 
-        if (!newFollowers.equals(lostFolowers) || setting.followers) {
+        if (!newFollowers.equals(lostFolowers)) {
 
 			retains.addAll(lostFolowers);
 			retains.retainAll(newFollowers);
@@ -259,13 +260,13 @@ public class TrackTask extends TimerTask {
 
 			for (Long newfollower : newFollowers) {
 
-				newFollower(account.user,api,newfollower);
+				newFollower(account,api,newfollower,setting.followers);
 
 			}
 
 			for (Long lostFolower : lostFolowers) {
 
-				lostFollower(account.user,api,lostFolower);
+				lostFollower(account,api,lostFolower,setting.followers);
 
 			}
 
@@ -384,7 +385,7 @@ public class TrackTask extends TimerTask {
 
     }
 
-    void newFollower(Long userId,Twitter api,long id) {
+    void newFollower(TAuth auth,Twitter api,long id,boolean notice) {
 
         try {
 
@@ -392,22 +393,29 @@ public class TrackTask extends TimerTask {
 
             UserArchive archive = UserArchive.save(follower);
 
-            Relationship ship = api.showFriendship(api.getId(),id);
+            Relationship ship = api.showFriendship(auth.id,id);
 
-            new Send(userId,(ship.isSourceFollowingTarget() ? "已关注的 " : "") + archive.urlHtml() + " #" + archive.screenName + " 关注了你 :)",parseStatus(api,follower)).html().exec();
+			if (notice) {
+
+				new Send(auth.user,(ship.isSourceFollowingTarget() ? "已关注的 " : "") + archive.urlHtml() + " #" + archive.screenName + " 关注了你 :)",parseStatus(api,follower)).html().exec();
+
+			}
+
+			AutoTask.onNewFollower(auth,api,archive,ship);
 
         } catch (TwitterException e) {
+
+			if (!notice) return;
 
             if (UserArchive.contains(id)) {
 
 				UserArchive archive = UserArchive.get(id);
 
-                new Send(userId,archive.urlHtml() + " #" + archive.screenName + " 关注了你 , 但是该账号已经不存在了 :(").html().exec();
+                new Send(auth.user,archive.urlHtml() + " #" + archive.screenName + " 关注了你 , 但是该账号已经不存在了 :(").html().exec();
 
             } else {
 
-                new Send(userId,"用户 (" + id + ") 关注了你 , 但是该账号已经不存在了 :(").html().exec();
-
+                new Send(auth.user,"用户 (" + id + ") 关注了你 , 但是该账号已经不存在了 :(").html().exec();
 
             }
 
@@ -415,7 +423,7 @@ public class TrackTask extends TimerTask {
 
     }
 
-    void lostFollower(Long userId,Twitter api,long id) {
+    void lostFollower(TAuth auth,Twitter api,long id,boolean notice) {
 
         try {
 
@@ -424,28 +432,34 @@ public class TrackTask extends TimerTask {
 
             Relationship ship = api.showFriendship(api.getId(),id);
 
-            if (ship.isSourceBlockingTarget()) {
+			if (notice) {
 
-                new Send(userId,archive.urlHtml() + " #" + archive.screenName + " 取关并屏蔽了你 :)").html().exec();
+				if (ship.isSourceBlockingTarget()) {
 
-            } else {
+					new Send(auth.user,archive.urlHtml() + " #" + archive.screenName + " 取关并屏蔽了你 :)").html().exec();
 
-                new Send(userId,archive.urlHtml() + " #" + archive.screenName + " 取关了你 :)").html().exec();
+				} else {
 
-            }
+					new Send(auth.user,archive.urlHtml() + " #" + archive.screenName + " 取关了你 :)").html().exec();
+
+				}
+
+			}
 
         } catch (TwitterException e) {
+
+			if (!notice) return;
 
             if (UserArchive.contains(id)) {
 
 				UserArchive archive = UserArchive.get(id);
 
-                new Send(userId,"关注者 " + archive.urlHtml() + " #" + archive.screenName + " 的账号已经不存在了 :(").html().exec();
+                new Send(auth.user,"关注者 " + archive.urlHtml() + " #" + archive.screenName + " 的账号已经不存在了 :(").html().exec();
 
             } else {
 
-                new Send(userId,"无记录的关注者 (" + id + ") 的账号已经不存在了 :(").html().exec();
-
+                new Send(auth.user,"无记录的关注者 (" + id + ") 的账号已经不存在了 :(").html().exec();
+				
             }
 
         }
