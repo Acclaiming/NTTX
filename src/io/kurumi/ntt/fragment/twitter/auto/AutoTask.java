@@ -44,11 +44,11 @@ public class AutoTask extends TimerTask {
 				
 				api.createFriendship(archive.id);
 				
-				new Send(auth.user,archive.isProtected ? "已发送关注请求 :" : "已回Fo : " + archive.url(),"账号 : " + auth.archive().urlHtml()).html().exec();
+				new Send(auth.user,archive.isProtected ? "已发送关注请求 :" : "已回Fo : " + archive.urlHtml(),"账号 : " + auth.archive().urlHtml()).html().exec();
 				
 			} catch (TwitterException e) {
 				
-				new Send(auth.user,"回Fo失败 : " + archive.url(),"账号 : " + auth.archive().urlHtml()).html().exec();
+				new Send(auth.user,"回Fo失败 : " + archive.urlHtml(),"账号 : " + auth.archive().urlHtml()).html().exec();
 				
 				
 			}
