@@ -24,7 +24,9 @@ public class Context {
     }
 
     public Long chatId() {
-        return chat.id();
+		
+        return targetChatId == -1 ? chat.id() : targetChatId;
+		
     }
 
     public boolean isPrivate() {
@@ -91,7 +93,7 @@ public class Context {
 	
     public Send send(String... msg) {
 
-        return new Send(fragment,targetChatId == -1 ? chatId() : targetChatId, msg);
+        return new Send(fragment,chatId(), msg);
 
     }
 

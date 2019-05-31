@@ -42,6 +42,8 @@ public abstract class Function extends Fragment {
 
         if (!functions.contains(msg.command())) return false;
 
+		sendTyping(msg.chatId());
+		
         if (target() == Group && !msg.isGroup())  {
 
             msg.send("请在群组使用 (˚☐˚! )/").exec();
@@ -60,7 +62,7 @@ public abstract class Function extends Fragment {
 
 			} else {
 
-				msg.send("这是一个仅私聊可用的命令，咱已经在私聊回复了你。","如果BOT有删除信息权限,命令和此回复将被自动删除。:)").exec();
+				msg.send("咱已经在私聊回复了你。","如果BOT有删除信息权限,命令和此回复将被自动删除。:)").failedWith();
 
 				msg.targetChatId = user.id;
 
@@ -69,7 +71,7 @@ public abstract class Function extends Fragment {
         }
 
         msg.sendTyping();
-
+		
         onFunction(user,msg,msg.command(),msg.params());
 
         return true;
