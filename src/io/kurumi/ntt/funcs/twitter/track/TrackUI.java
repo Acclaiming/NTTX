@@ -82,12 +82,14 @@ public class TrackUI extends TwitterFunction {
         
         setting.id = accountId;
 
+		boolean target = true;
+		
         switch (point) {
 
-                case POINT_SETTING_FOLLOWERS : setting.followers = !setting.followers;break;
-                case POINT_SETTING_FOLLOWINGS_INFO : setting.followingInfo = !setting.followingInfo;break;
-                case POINT_SETTING_FOLLOWERS_INFO : setting.followersInfo = !setting.followersInfo;break;
-                case POINT_SETTING_HIDE_ME : setting.hideChange = !setting.hideChange;break;
+                case POINT_SETTING_FOLLOWERS : target = setting.followers = !setting.followers;break;
+                case POINT_SETTING_FOLLOWINGS_INFO : target = setting.followingInfo = !setting.followingInfo;break;
+                case POINT_SETTING_FOLLOWERS_INFO : target = setting.followersInfo = !setting.followersInfo;break;
+                case POINT_SETTING_HIDE_ME : target = setting.hideChange = !setting.hideChange;break;
                 
         }
 
@@ -101,8 +103,7 @@ public class TrackUI extends TwitterFunction {
 
         }
 
-        callback.text("更改成功 ~");
-
+        callback.text("已" + (target ? "开启" : "关闭") + " ~");
         callback.editMarkup(makeSettings(setting,accountId));
 
 

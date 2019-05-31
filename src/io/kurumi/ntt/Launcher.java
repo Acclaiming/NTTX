@@ -1,5 +1,7 @@
 package io.kurumi.ntt;
 
+
+
 import cn.hutool.core.lang.*;
 import cn.hutool.core.util.*;
 import com.pengrad.telegrambot.model.*;
@@ -7,8 +9,13 @@ import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.fragment.base.*;
 import io.kurumi.ntt.fragment.bots.*;
+import io.kurumi.ntt.fragment.twitter.auto.*;
 import io.kurumi.ntt.fragment.twitter.login.*;
 import io.kurumi.ntt.funcs.*;
+import io.kurumi.ntt.funcs.admin.*;
+import io.kurumi.ntt.funcs.nlp.*;
+import io.kurumi.ntt.funcs.twitter.delete.*;
+import io.kurumi.ntt.funcs.twitter.ext.*;
 import io.kurumi.ntt.funcs.twitter.track.*;
 import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.utils.*;
@@ -16,10 +23,7 @@ import java.io.*;
 import java.util.*;
 
 import cn.hutool.core.lang.Console;
-import io.kurumi.ntt.fragment.twitter.auto.*;
-import io.kurumi.ntt.funcs.admin.*;
-import io.kurumi.ntt.funcs.nlp.*;
-import com.pengrad.telegrambot.request.*;
+import io.kurumi.ntt.twitter.archive.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -88,6 +92,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new BanSetickerSet());
 		
 		addFragment(new AutoReply());
+		
+		addFragment(new TwitterDelete());
 		
 		// Bots
 		
