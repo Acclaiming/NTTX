@@ -86,12 +86,16 @@ public class AutoTask extends TimerTask {
 
 			} catch (TwitterException e) {
 
+				if (auto.like) {
+				
 				auto.like = false;
 
 				AutoUI.autoData.setById(auto.id,auto);
-
+				
 				new Send(auth.user,"auto.like disabled : " + e).exec();
 
+				}
+				
 			}
 
 		}

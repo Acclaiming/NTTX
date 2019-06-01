@@ -57,12 +57,10 @@ public class TrackTask extends TimerTask {
     @Override
     public void run() {
 
-        for (TrackUI.TrackSetting setting : TrackUI.data.collection.find()) {
+        for (TAuth account : TAuth.data.collection.find()) {
 
-            TAuth account = TAuth.getById(setting.id);
-
-            if (account != null) {
-
+          TrackUI.TrackSetting setting = TrackUI.data.getById(account.id);
+			
                 Twitter api =  account.createApi();
 
                 try {
@@ -96,8 +94,6 @@ public class TrackTask extends TimerTask {
                 }
 
             }
-
-        }
 
     }
 
