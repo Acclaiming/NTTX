@@ -118,7 +118,7 @@ public class StatusSearch extends Function {
 
 				media = ("media=true".equals(param)) ? 1 : 2;
 
-			} else if (param.startsWith("regex")) {
+			} else if (param.equals("regex")) {
 
 				regex = true;
 
@@ -154,7 +154,7 @@ public class StatusSearch extends Function {
 
 				}
 
-			} else if (param.startsWith("end")) {
+			} else if (param.startsWith("end=")) {
 
 				String endS = StrUtil.subAfter(param,"=",false);
 

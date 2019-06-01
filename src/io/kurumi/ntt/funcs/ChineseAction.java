@@ -44,7 +44,7 @@ public class ChineseAction extends Function {
                 
                 disable.add(msg.chatId());
                 
-                LocalData.setJSONArray("daat","disable_action",disable);
+                LocalData.setJSONArray("data","disable_action",disable);
                 
                 msg.send("关闭成功 ~").exec();
                 
