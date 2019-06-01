@@ -30,9 +30,19 @@ public class MongoIDs {
 	
 	public static AbsData<String,IdSeq> ids = new AbsData<String,IdSeq>(IdSeq.class);
 	
-	public static long getNextId(String collection) {
+	public static long getNextId(final String collection) {
 		
-		return ids.collection.findOneAndUpdate(eq("_id",collection),inc("seq",1),new FindOneAndUpdateOptions().upsert(true)).seq;
+		if (ids.containsId(collection)) {
+		
+		return ids.collection.findOneAndUpdate(eq("_id",collection),inc("seq",1L),new FindOneAndUpdateOptions().upsert(true)).seq;
+		
+		} else {
+			
+			ids.setById(collection,new IdSeq() {{ id = collection; seq = 1L; }});
+			
+			return 1L;
+			
+		}
 		
 	}
 	
