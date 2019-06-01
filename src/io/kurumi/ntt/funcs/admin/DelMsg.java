@@ -27,6 +27,13 @@ public class DelMsg extends Fragment {
 			
 			long chatId = Long.parseLong(msg.params()[0]);
 			
+			if (msg.params().length == 2) {
+				
+				bot().execute(new DeleteMessage(chatId,Integer.parseInt(msg.params()[1])));
+				
+			}
+				
+			
 			Msg send = new Send(this,chatId,"Test").send();
 
 			if (send != null) {
@@ -37,7 +44,7 @@ public class DelMsg extends Fragment {
 
 				for (int index = 1;index < send.messageId();index ++) {
 					
-					msg.fragment.bot().execute(new DeleteMessage(chatId,send.messageId() - index));
+					bot().execute(new DeleteMessage(chatId,send.messageId() - index));
 					
 					status.edit("正在删除 剩余 : " + (send.messageId() - index - 1)).exec();
 					
