@@ -81,8 +81,6 @@ public class StatusFetch extends TwitterFunction {
 			
 				}
 				
-				System.out.println(s);
-				
 				StatusArchive.save(s);
 				
 				count ++;
@@ -102,8 +100,6 @@ public class StatusFetch extends TwitterFunction {
 					}
 
 					StatusArchive.save(s);
-					
-					System.out.println(s);
 
 					count ++;
 
