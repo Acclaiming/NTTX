@@ -237,7 +237,7 @@ public class TrackTask extends TimerTask {
 
 		} else {
 
-			File photo = new File(Env.CACHE_DIR,"twitter_banner_images/" + FileUtil.getName(archive.bannerUrl));
+			File photo = new File(Env.CACHE_DIR,"twitter_banner_images/" + archive.id + "/" + System.currentTimeMillis() + ".jpg");
 
 			if (!photo.isFile()) {
 
