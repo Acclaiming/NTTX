@@ -117,6 +117,9 @@ public class StatusFetch extends TwitterFunction {
 
 				}
 				
+				
+				if (tl.isEmpty()) break;
+				
 				status.edit("正在拉取中...",count + "条推文已拉取").exec();
 				
 			}
