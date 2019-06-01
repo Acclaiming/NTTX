@@ -220,7 +220,7 @@ public class StatusSearch extends Function {
 			
 		}
 		
-		msg.send(exportContent(search,1)).buttons(makeButtons(search.id,count,1)).exec();
+		msg.send(exportContent(search,1)).buttons(makeButtons(search.id,count,1)).html().exec();
 		
 	}
 
@@ -255,7 +255,7 @@ public class StatusSearch extends Function {
 
 		long count = search.count();
 
-		callback.edit(exportContent(search,cursor)).buttons(makeButtons(searchId,count,cursor)).exec();
+		callback.edit(exportContent(search,cursor)).buttons(makeButtons(searchId,count,cursor)).html().exec();
 
 	}
 
