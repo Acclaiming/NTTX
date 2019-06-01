@@ -1,30 +1,19 @@
 package io.kurumi.ntt.funcs.admin;
 
-import io.kurumi.ntt.funcs.abs.*;
-import java.util.*;
 import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.model.*;
+import java.security.acl.*;
+import java.util.*;
 
-public class DelMsg extends Function {
-
-	@Override
-	public void functions(LinkedList<String> names) {
-		
-		names.add("del");
-		
-	}
+public class DelMsg extends Fragment {
 
 	@Override
-	public int target() {
+	public boolean onGroup(UserData user,Msg msg) {
 		
-		return Group;
+		if (!"del".equals(msg.command())) return false;
 		
-	}
-
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-	
-		if (!user.developer()) return;
+		if (!user.developer()) return false;
 		
 		msg.delete();
 		
@@ -33,6 +22,8 @@ public class DelMsg extends Function {
 			msg.replyTo().delete();
 			
 		}
+		
+		return true;
 		
 	}
 	
