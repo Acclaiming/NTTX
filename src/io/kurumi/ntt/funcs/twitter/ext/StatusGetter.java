@@ -21,13 +21,6 @@ public class StatusGetter extends TwitterFunction {
     }
 
     @Override
-    public int target() {
-        
-        return Private;
-        
-    }
-
-    @Override
     public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
         if (params.length != 1) {
@@ -50,14 +43,14 @@ public class StatusGetter extends TwitterFunction {
 
         Twitter api = account.createApi();
 
+		msg.sendTyping();
+		
         try {
 
             StatusArchive newStatus = StatusArchive.save(api.showStatus(statusId));
 
             newStatus.loop(api);
-
-            msg.send("已存档 :)").exec();
-
+			
             msg.send(newStatus.toHtml()).html().exec();
 
         } catch (TwitterException e) {
