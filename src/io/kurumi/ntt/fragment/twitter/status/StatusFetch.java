@@ -92,6 +92,8 @@ public class StatusFetch extends TwitterFunction {
 				tl = api.getUserTimeline(target.getId(),new Paging(800).maxId(sinceId));
 				
 			}
+			
+			msg.send(count + "条推文已拉取").exec();
 
 		} catch (TwitterException e) {
 			
