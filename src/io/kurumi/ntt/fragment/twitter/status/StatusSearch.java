@@ -40,7 +40,7 @@ public class StatusSearch extends Function {
 		long end = -1;
 
 		for (;index < params.length;index ++) {
-
+			
 			String param = params[index];
 
 			if (param.startsWith("from=")) {
@@ -160,7 +160,7 @@ public class StatusSearch extends Function {
 
 		}
 
-		if (index > params.length || params.length == 0) {
+		if (index + 1> params.length) {
 
 			msg.send("请输入查询内容 ？").exec();
 
