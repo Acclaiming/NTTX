@@ -273,7 +273,7 @@ public class StatusSearch extends Function {
 
 			}
 
-			format.append("\n").append(Html.a(archive.user().name + " : " + text,"https://t.me/" + origin.me.username() + "?start=" + PAYLOAD_SHOW_STATUS + "," + archive.id));
+			format.append("\n").append(Html.a(archive.user().name + " : " + text,"https://t.me/" + origin.me.username() + "?start=" + PAYLOAD_SHOW_STATUS + "|" + archive.id));
 
 		}
 		
@@ -288,9 +288,9 @@ public class StatusSearch extends Function {
 
 		if (super.onMsg(user,msg)) return true;
 		
-		if (!msg.isStartPayload() || !PAYLOAD_SHOW_STATUS.equals(msg.params()[0])) return false;
+		if (!msg.isStartPayload() || !PAYLOAD_SHOW_STATUS.equals(msg.payload()[0])) return false;
 
-		Long statusId = NumberUtil.parseLong(msg.params()[1]);
+		Long statusId = NumberUtil.parseLong(msg.payload()[1]);
 
 		StatusArchive archive = StatusArchive.get(statusId);
 

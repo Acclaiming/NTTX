@@ -374,6 +374,30 @@ public class Msg extends Context {
         return name;
 
     }
+	
+	boolean noPayload = false;
+	
+	String payload[];
+	
+	public String[] payload() {
+		
+		if (noPayload) return NO_PARAMS;
+		
+		if (payload != null) return payload;
+		
+		if (!isStartPayload()) {
+			
+			noPayload = true;
+			
+			return NO_PARAMS;
+			
+		}
+		
+		payload = params()[0].split("|");
+		
+		return payload;
+		
+	}
     
     boolean noParams = false;
 
