@@ -110,7 +110,7 @@ public class AutoUI extends TwitterFunction {
 			
 		}
 		
-		if (setting.like || setting.foback) {
+		if (setting.like || setting.foback || setting.archive) {
 			
 			autoData.setById(accountId,setting);
 			
