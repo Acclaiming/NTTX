@@ -160,7 +160,7 @@ public class StatusSearch extends Function {
 
 		}
 
-		if (index > params.length) {
+		if (index > params.length || params.length == 0) {
 
 			msg.send("请输入查询内容 ？").exec();
 
