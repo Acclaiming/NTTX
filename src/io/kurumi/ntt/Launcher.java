@@ -56,6 +56,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		super.start();
 		
+		AutoTask.start();
+		
+		TrackTask.start();
+		
 		UserBotUI.start();
 		
 	}
@@ -64,6 +68,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 	public boolean silentStart() {
 		
 		if (super.silentStart()) {
+			
+			AutoTask.start();
+			
+			TrackTask.start();
 			
 			UserBotUI.start();
 			
@@ -103,11 +111,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		addFragment(new AutoUI());
 		
-		AutoTask.start();
-		
 		addFragment(new TrackUI());
-		
-		TrackTask.start();
 		
 		addFragment(new GroupRepeat());
 		
