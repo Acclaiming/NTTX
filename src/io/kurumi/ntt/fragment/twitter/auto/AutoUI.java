@@ -104,7 +104,7 @@ public class AutoUI extends TwitterFunction {
 		
 		switch (point) {
 			
-			case POINT_SETTING_AECHIVE : target = !setting.archive;break;
+			case POINT_SETTING_AECHIVE : target = setting.archive = !setting.archive;break;
 			case POINT_SETTING_LIKE : target = setting.like = !setting.like;break;
 			case POINT_SETTING_FOBACK : target = setting.foback = !setting.foback;break;
 			
