@@ -70,6 +70,12 @@ public class SavedSearch {
 
 		}
 		
+		if (reply != -1) {
+			
+			filters.add(or(eq("inReplyToUserId",reply),eq("quotedStatusId",reply)));
+			
+		}
+		
 		return and(filters);
 		
 	}
@@ -102,6 +108,8 @@ public class SavedSearch {
 
 	public long end = -1;
 
+	public long reply = -1;
+	
 	public String content;
 
 	public int media = 0;

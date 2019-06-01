@@ -40,7 +40,7 @@ public class StatusSearch extends Function {
 		long start = -1;
 
 		long end = -1;
-
+		
 		for (;index < params.length;index ++) {
 
 			String param = params[index];
@@ -118,9 +118,9 @@ public class StatusSearch extends Function {
 
 				media = ("media=true".equals(param)) ? 1 : 2;
 
-			} else if (param.startsWith("regex=")) {
+			} else if (param.startsWith("regex")) {
 
-				regex = ("regex=true".equals(param));
+				regex = true;
 
 			} else if (param.startsWith("utc=")) {
 
@@ -182,12 +182,15 @@ public class StatusSearch extends Function {
 		if (params.length == 0) {
 
 			msg.send("推文查询 /search [参数...] 内容",
-					 "from=<发送用户ID|用户名>",
-					 "to=<回复用户ID|用户名>",
-					 "start=<时间上限> (格式 yyyy-MM-dd HH:mm)",
-					 "end=<时间下限> (格式 yyyy-MM-dd HH:mm)",
-					 "media=<true|false> (筛选是否有媒体)",
-					 "regex=<true|false> (开关正则表达式)").publicFailed();
+			
+					 "from=<发送用户ID|用户名>","",
+					 "to=<回复用户ID|用户名>","",
+					 "reply=<回复推文ID>","",
+					 "start=<时间上限>","",
+					 "end=<时间下限>","",
+					 "(格式 yyyy-MM-dd HH:mm)","",
+					 "media=<true|false> (筛选是否有媒体)","",
+					 "regex (使用正则表达式匹配)").publicFailed();
 
 			return;
 
@@ -208,6 +211,8 @@ public class StatusSearch extends Function {
 		search.user = user.id;
 
 		search.media = media;
+		
+		search.reply = reply;
 
 		search.content = content;
 
