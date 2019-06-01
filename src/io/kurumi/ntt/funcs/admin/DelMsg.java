@@ -37,9 +37,9 @@ public class DelMsg extends Fragment {
 
 				for (int index = 1;index < send.messageId();index ++) {
 					
-					bot().execute(new DeleteMessage(chatId,send.messageId() - index));
+					msg.fragment.bot().execute(new DeleteMessage(chatId,send.messageId() - index));
 					
-					status.edit("正在删除 剩余 : " + (send.messageId() - index)).exec();
+					status.edit("正在删除 剩余 : " + (send.messageId() - index - 1)).exec();
 					
 				}
 				
