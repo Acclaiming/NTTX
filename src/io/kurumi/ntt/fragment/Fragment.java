@@ -18,7 +18,7 @@ import java.net.*;
 
 public class Fragment {
 
-	public String PAYLOAD_SPLIT = URLEncoder.encode("|");
+	public String PAYLOAD_SPLIT = "_";
 	
     public BotFragment origin;
 

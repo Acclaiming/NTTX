@@ -394,7 +394,7 @@ public class Msg extends Context {
 			
 		}
 		
-		payload = URLDecoder.decode(params()[0]).split("|");
+		payload = params()[0].split("_");
 		
 		return payload;
 		
