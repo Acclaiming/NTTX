@@ -69,7 +69,7 @@ public class StatusFetch extends TwitterFunction {
 		
 		try {
 			
-			ResponseList<Status> tl = api.getUserTimeline(target.getId(),new Paging(800));
+			ResponseList<Status> tl = api.getUserTimeline(target.getScreenName(),new Paging(800));
 
 			long sinceId = -1;
 			
@@ -91,7 +91,7 @@ public class StatusFetch extends TwitterFunction {
 			
 			while (!tl.isEmpty()) {
 				
-				tl = api.getUserTimeline(target.getId(),new Paging(800).maxId(sinceId));
+				tl = api.getUserTimeline(target.getScreenName(),new Paging(800).maxId(sinceId));
 				
 				for (Status s : tl) {
 
