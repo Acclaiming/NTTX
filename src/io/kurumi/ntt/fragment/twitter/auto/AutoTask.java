@@ -112,7 +112,7 @@ public class AutoTask extends TimerTask {
 
 		for (Status status : tl) {
 
-			if (!saved.contains(status.getId())) {
+			if (auto.archive && !saved.contains(status.getId())) {
 
 				StatusArchive.save(status,api);
 

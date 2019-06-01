@@ -14,6 +14,7 @@ public class AutoUI extends TwitterFunction {
 
 		public Long id;
 
+		public boolean archive = false;
 		public boolean like = false;
 		
 		public boolean foback = false;
@@ -21,6 +22,7 @@ public class AutoUI extends TwitterFunction {
 
 	}
 
+	final String POINT_SETTING_AECHIVE = "auto|archive";
 	final String POINT_SETTING_LIKE = "auto|like";
 	final String POINT_SETTING_FOBACK = "auto|foback";
 	final String POINT_SETTING_UNFOBACK = "auto|unfoback";
@@ -37,6 +39,8 @@ public class AutoUI extends TwitterFunction {
 	public void points(LinkedList<String> points) {
 		
 		super.points(points);
+		
+		points.add(POINT_SETTING_AECHIVE);
 		
 		points.add(POINT_SETTING_LIKE);
 		points.add(POINT_SETTING_FOBACK);
@@ -75,7 +79,8 @@ public class AutoUI extends TwitterFunction {
     ButtonMarkup makeSettings(final AutoSetting setting,final long accountId) {
 
         return new ButtonMarkup() {{
-
+			
+			newButtonLine((setting.archive ? "「 关闭" : "「 开启") + " 时间线推文存档 」",POINT_SETTING_AECHIVE,accountId);
                 newButtonLine((setting.like ? "「 关闭" : "「 开启") + " 时间线打心 」",POINT_SETTING_LIKE,accountId);
                 newButtonLine((setting.foback ? "「 关闭" : "「 开启") + " 关注新关注者 」",POINT_SETTING_FOBACK,accountId);
 
@@ -99,6 +104,7 @@ public class AutoUI extends TwitterFunction {
 		
 		switch (point) {
 			
+			case POINT_SETTING_AECHIVE : target = !setting.archive;break;
 			case POINT_SETTING_LIKE : target = setting.like = !setting.like;break;
 			case POINT_SETTING_FOBACK : target = setting.foback = !setting.foback;break;
 			
