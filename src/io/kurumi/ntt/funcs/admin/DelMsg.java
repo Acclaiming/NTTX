@@ -27,7 +27,7 @@ public class DelMsg extends Fragment {
 			
 			long chatId = Long.parseLong(msg.params()[0]);
 			
-			Msg send = new Send(chatId,"Test").send();
+			Msg send = new Send(this,chatId,"Test").send();
 
 			if (send != null) {
 				

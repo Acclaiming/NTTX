@@ -51,6 +51,31 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
+	@Override
+	public void start() {
+		
+		super.start();
+		
+		UserBotUI.start();
+		
+	}
+
+	@Override
+	public boolean silentStart() {
+		
+		if (super.silentStart()) {
+			
+			UserBotUI.start();
+			
+			return true;
+			
+		}
+		
+		return false;
+		
+	}
+		
+
     @Override
     public void realStart() {
 
@@ -63,6 +88,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new Notice());
 		
 		addFragment(new DelMsg());
+		
+		addFragment(new Alias());
 		
 		// Twitter
 		
@@ -106,10 +133,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 			
 			super.realStart();
 			
-			UserBotUI.start();
-
-        BotLog.info("初始化 完成 :)");
-		
 		/*
 		
 		new Timer().schedule(new TimerTask() {
