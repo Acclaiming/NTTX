@@ -40,7 +40,7 @@ public class StatusSearch extends Function {
 		long end = -1;
 
 		for (;index < params.length;index ++) {
-			
+
 			String param = params[index];
 
 			if (param.startsWith("from=")) {
@@ -160,9 +160,15 @@ public class StatusSearch extends Function {
 
 		}
 
-		if (index + 1> params.length) {
+		if (index + 1 > params.length) {
 
-			msg.send("请输入查询内容 ？").exec();
+			msg.send("推文查询 /search [参数...] 内容",
+					 "from=<发送用户ID|用户名>",
+					 "to=<回复用户ID|用户名>",
+					 "start=<时间上限> (格式 yyyy-MM-dd HH:mm)",
+					 "end=<时间下限> (格式 yyyy-MM-dd HH:mm)",
+					 "media=<true|false> (筛选是否有媒体)",
+					 "regex=<true|false> (开关正则表达式)").publicFailed();
 
 			return;
 
@@ -201,7 +207,7 @@ public class StatusSearch extends Function {
 		Msg status = msg.send("正在创建查询...").send();
 
 		msg.sendTyping();
-		
+
 		search.id = MongoIDs.getNextId(SavedSearch.class.getSimpleName());
 
 		SavedSearch.data.setById(search.id,search);
@@ -209,19 +215,19 @@ public class StatusSearch extends Function {
 		status.edit("创建查询√\n正在查询...").exec();
 
 		msg.sendTyping();
-		
+
 		long count = search.count();
-		
+
 		if (count == 0) {
-			
+
 			status.edit("暂无结果...").exec();
-			
+
 			return;
-			
+
 		}
-		
+
 		status.edit(exportContent(search,1)).buttons(makeButtons(search.id,count,1)).html().exec();
-		
+
 	}
 
 	final String POINT_SHOW_PAGE = "ss|show";
@@ -260,7 +266,7 @@ public class StatusSearch extends Function {
 	}
 
 	String exportContent(SavedSearch search,long cursor) {
-		
+
 		StringBuilder format = new StringBuilder("-------- 查询结果 ---------");
 
 		for (StatusArchive archive : search.query((int)(cursor - 1) * 10,(int)cursor * 10)) {
@@ -276,9 +282,9 @@ public class StatusSearch extends Function {
 			format.append("\n").append(Html.a(archive.user().name + " : " + text,"https://t.me/" + origin.me.username() + "?start=" + PAYLOAD_SHOW_STATUS + PAYLOAD_SPLIT + archive.id));
 
 		}
-		
+
 		return format.toString();
-		
+
 	}
 
 	String PAYLOAD_SHOW_STATUS = "status";
@@ -287,7 +293,7 @@ public class StatusSearch extends Function {
 	public boolean onMsg(UserData user,Msg msg) {
 
 		if (super.onMsg(user,msg)) return true;
-		
+
 		if (!msg.isStartPayload() || !PAYLOAD_SHOW_STATUS.equals(msg.payload()[0])) return false;
 
 		Long statusId = NumberUtil.parseLong(msg.payload()[1]);
