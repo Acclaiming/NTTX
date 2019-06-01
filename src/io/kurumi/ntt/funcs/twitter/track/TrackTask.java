@@ -56,11 +56,17 @@ public class TrackTask extends TimerTask {
 
     @Override
     public void run() {
+		
+		MongoCursor<TAuth> iter = TAuth.data.collection.find().iterator();
 
-        for (TAuth account : TAuth.data.collection.find()) {
+        while (iter.hasNext()) {
 
+		TAuth account = iter.next();
+			
           TrackUI.TrackSetting setting = TrackUI.data.getById(account.id);
 			
+		  if (setting == null) setting = new TrackUI.TrackSetting();
+		  
                 Twitter api =  account.createApi();
 
                 try {
@@ -82,7 +88,10 @@ public class TrackTask extends TimerTask {
                     if (e.getErrorCode() == 89 || e.getErrorCode() == 326) {
 
                         TrackUI.data.deleteById(setting.id);
-						TAuth.data.deleteById(setting.id);
+						
+						// TAuth.data.deleteById(setting.id);
+						
+						iter.remove();
 
                         new Send(account.user,"对不起，但是因乃的账号已停用 / 冻结 / 被限制 / 取消授权，已移除 (⁎˃ᆺ˂)").exec();
 
