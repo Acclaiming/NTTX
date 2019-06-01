@@ -23,6 +23,7 @@ import java.util.*;
 import cn.hutool.core.lang.Console;
 import io.kurumi.ntt.twitter.archive.*;
 import io.kurumi.ntt.fragment.twitter.status.*;
+import io.kurumi.ntt.model.request.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -346,6 +347,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         BotLog.error("无法处理的错误,正在停止BOT",throwable);
 
+		new Send(Env.GROUP,"NTT 异常退出",BotLog.parseError(throwable)).exec();
+		
         INSTANCE.stop();
 
         System.exit(1);
