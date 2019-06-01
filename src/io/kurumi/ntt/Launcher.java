@@ -62,12 +62,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		addFragment(new Notice());
 		
-		// Final Parse
-
-		addFragment(new Final());
-
-		if (!isLongPulling()) {
-		
 		// Twitter
 		
 		addFragment(new TwitterLogin());
@@ -104,20 +98,12 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		addFragment(new Donate());
 		
-			super.realStart();
-		
-		UserBotUI.start();
-		
-		} else 	{
+			addFragment(new Final());
 			
 			super.realStart();
 			
-			
-		}
-		
-		
-		
-		
+			UserBotUI.start();
+
         BotLog.info("初始化 完成 :)");
 		
 		/*
