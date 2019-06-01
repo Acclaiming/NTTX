@@ -75,11 +75,13 @@ public class StatusFetch extends TwitterFunction {
 			
 			for (Status s : tl) {
 				
-				if (s.getId() < sinceId || sinceId == -1L) {
+				if (s.getId() < sinceId || sinceId == -1) {
 					
 					sinceId = s.getId();
 			
 				}
+				
+				System.out.println(s);
 				
 				StatusArchive.save(s);
 				
@@ -90,6 +92,22 @@ public class StatusFetch extends TwitterFunction {
 			while (!tl.isEmpty()) {
 				
 				tl = api.getUserTimeline(target.getId(),new Paging(800).maxId(sinceId));
+				
+				for (Status s : tl) {
+
+					if (s.getId() < sinceId || sinceId == -1) {
+
+						sinceId = s.getId();
+
+					}
+
+					StatusArchive.save(s);
+					
+					System.out.println(s);
+
+					count ++;
+
+				}
 				
 			}
 			
