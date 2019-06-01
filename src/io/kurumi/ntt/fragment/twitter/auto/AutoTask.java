@@ -77,6 +77,8 @@ public class AutoTask extends TimerTask {
 			 }
 
 			 */
+			 
+			 if (auto == null) auto = new AutoUI.AutoSetting();
 
 			try {
 
