@@ -22,6 +22,12 @@ public class SavedSearch {
 
 	public static Data<SavedSearch> data = new Data<SavedSearch>(SavedSearch.class);
 
+	static {{
+		
+		data.collection.drop();
+		
+	}}
+	
 	public Bson toFilter() {
 		
 		String query = regex ? content : ReUtil.escape(content);

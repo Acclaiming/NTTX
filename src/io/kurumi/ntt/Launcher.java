@@ -316,7 +316,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 	@Override
 	public boolean onCallback(UserData user,Callback callback) {
 		
-		if (callback.params.length == 0) {
+		if (callback.params.length == 0 || (callback.params.length == 1 && "null".equals(callback.params[0]))) {
 			
 			callback.confirm();
 			

@@ -328,7 +328,7 @@ public class StatusSearch extends Function {
 
 				}
 
-				line.newButton(current + " / " + max,"");
+				line.newButton(current + " / " + max,"null");
 
 				if (current < max) {
 
