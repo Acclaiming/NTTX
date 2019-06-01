@@ -14,6 +14,7 @@ import java.io.File;
 import io.kurumi.ntt.utils.BotLog;
 import cn.hutool.core.math.MathUtil;
 import com.pengrad.telegrambot.response.SendResponse;
+import java.net.*;
 
 public class Msg extends Context {
 
@@ -393,7 +394,7 @@ public class Msg extends Context {
 			
 		}
 		
-		payload = params()[0].split("|");
+		payload = URLDecoder.decode(params()[0]).split("|");
 		
 		return payload;
 		

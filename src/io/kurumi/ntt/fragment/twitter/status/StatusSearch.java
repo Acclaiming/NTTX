@@ -273,7 +273,7 @@ public class StatusSearch extends Function {
 
 			}
 
-			format.append("\n").append(Html.a(archive.user().name + " : " + text,"https://t.me/" + origin.me.username() + "?start=" + PAYLOAD_SHOW_STATUS + "|" + archive.id));
+			format.append("\n").append(Html.a(archive.user().name + " : " + text,"https://t.me/" + origin.me.username() + "?start=" + PAYLOAD_SHOW_STATUS + PAYLOAD_SPLIT + archive.id));
 
 		}
 		

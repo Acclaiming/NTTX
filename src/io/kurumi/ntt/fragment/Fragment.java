@@ -14,9 +14,12 @@ import java.io.*;
 
 import io.kurumi.ntt.model.Callback;
 import java.io.File;
+import java.net.*;
 
 public class Fragment {
 
+	public String PAYLOAD_SPLIT = URLEncoder.encode("|");
+	
     public BotFragment origin;
 
     public TelegramBot bot() {
