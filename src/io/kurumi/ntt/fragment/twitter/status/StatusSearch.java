@@ -214,7 +214,7 @@ public class StatusSearch extends Function {
 		
 		if (count == 0) {
 			
-			msg.send("暂无结果").exec();
+			status.edit("暂无结果...").exec();
 			
 			return;
 			
