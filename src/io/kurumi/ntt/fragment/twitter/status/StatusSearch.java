@@ -160,7 +160,7 @@ public class StatusSearch extends Function {
 
 		}
 
-		if (index + 1 > params.length) {
+		if (params.length == 0) {
 
 			msg.send("推文查询 /search [参数...] 内容",
 					 "from=<发送用户ID|用户名>",
