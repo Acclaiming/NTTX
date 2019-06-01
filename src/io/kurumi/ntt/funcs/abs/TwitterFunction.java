@@ -47,7 +47,15 @@ public abstract class TwitterFunction extends Function {
 
                 return;
 
-            }
+            } else if (msg.isGroup()) {
+				
+				msg.send("请使用私聊 :)","如果BOT有删除信息权限,命令和此回复将被自动删除。:)").failedWith();
+
+				return;
+
+			}
+
+      
 
             final FindIterable<TAuth> accounts = TAuth.getByUser(user.id);
 
@@ -76,13 +84,6 @@ public abstract class TwitterFunction extends Function {
     public void points(LinkedList<String> points) {
 
         points.add(POINT_CHOOSE_ACCPUNT);
-
-    }
-
-    @Override
-    public int target() {
-
-        return Private;
 
     }
 
