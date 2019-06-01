@@ -79,7 +79,7 @@ public class Msg extends Context {
 
     }
 	
-	public boolean idStartPayload() {
+	public boolean isStartPayload() {
 		
 		return "start".equals(command()) && params().length > 0;
 		

@@ -22,6 +22,7 @@ import java.util.*;
 
 import cn.hutool.core.lang.Console;
 import io.kurumi.ntt.twitter.archive.*;
+import io.kurumi.ntt.fragment.twitter.status.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -80,6 +81,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new TrackUI());
 		
 		TrackTask.start();
+		
+		addFragment(new StatusSearch());
 		
 		addFragment(new GroupRepeat());
 		
@@ -324,7 +327,19 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
-
-
+	@Override
+	public boolean onCallback(UserData user,Callback callback) {
+		
+		if (callback.params.length == 0) {
+			
+			callback.confirm();
+			
+			return true;
+			
+		}
+		
+		return false;
+		
+	}
 
 }

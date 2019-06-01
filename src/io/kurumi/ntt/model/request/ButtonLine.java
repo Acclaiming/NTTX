@@ -6,7 +6,7 @@ import cn.hutool.core.util.*;
 
 public class ButtonLine extends LinkedList<InlineKeyboardButton> {
 
-    public ButtonLine newButton(String text, String point,String... data) {
+    public ButtonLine newButton(String text, String point,Object... data) {
 
         add(new InlineKeyboardButton(text).callbackData(ArrayUtil.join(ArrayUtil.insert(data,0,point),",")));
 
