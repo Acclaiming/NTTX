@@ -19,7 +19,7 @@ public class Backup extends Fragment {
     public static Backup INSTANCE = new Backup();
 
     @Override
-    public boolean onPrivate(UserData user,Msg msg) {
+    public boolean onMsg(UserData user,Msg msg) {
 
         if (!msg.isCommand()) return false;
 
@@ -33,45 +33,50 @@ public class Backup extends Fragment {
 
         }
 
-        backup();
+        backup(msg.chatId());
 
         return true;
 
     }
 
+	static Timer timer;
+
+	public static void start() {
+
+		stop();
+
+		Date next = new Date();
+
+		next.setHours(next.getHours() + 1);
+
+		next.setMinutes(0);
+		next.setSeconds(0);
+
+		timer = new Timer("NTT Data Backup Task");
+		timer.scheduleAtFixedRate(AutoBackupTask.INSTANCE,next,1 * 60 * 60 * 1000);
+
+	}
+	
+	public static void stop() {
+
+		if (timer != null) {
+
+			timer.cancel();
+
+			timer = null;
+
+		}
+
+	}
+	
     public static class AutoBackupTask extends TimerTask {
 
         public static  AutoBackupTask INSTANCE = new AutoBackupTask();
 
-        Timer timer;
-
-        public void start() {
-
-            stop();
-
-            Date next = new Date();
-
-				next.setHours(next.getHours() + 1);
-
-            next.setMinutes(0);
-            next.setSeconds(0);
-
-            timer = new Timer("NTT Data Backup Task");
-            timer.scheduleAtFixedRate(this,next,1 * 60 * 60 * 1000);
-
-        }
-
-        public void stop() {
-
-            if (timer != null) timer.cancel();
-
-        }
-
-
         @Override
         public void run() {
 
-            backup();
+            backup(Env.GROUP);
 
         }
 
@@ -80,7 +85,7 @@ public class Backup extends Fragment {
 
     }
 
-    static void backup() {
+    static void backup(long chatId) {
 
         try {
 
@@ -97,7 +102,7 @@ public class Backup extends Fragment {
 
         FileUtil.del(Env.DATA_DIR + "/db");
 
-        Launcher.INSTANCE.sendFile(Env.BACKUP,zip);
+        Launcher.INSTANCE.sendFile(chatId,zip);
 
         FileUtil.del(zip);
 

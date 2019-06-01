@@ -62,6 +62,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		UserBotUI.start();
 		
+		Backup.start();
+		
 	}
 
 	@Override
@@ -74,6 +76,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 			TrackTask.start();
 			
 			UserBotUI.start();
+			
+			Backup.start();
 			
 			return true;
 			
@@ -98,6 +102,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new DelMsg());
 		
 		addFragment(new Alias());
+		
+		addFragment(new Backup());
 		
 		// Twitter
 		

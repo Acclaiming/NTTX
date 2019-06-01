@@ -12,13 +12,8 @@ import java.lang.reflect.Field;
 import java.util.Scanner;
 
 public class Env {
-
-    /**
-     * 创始人ID
-     */
-
     
-    public static final Long BACKUP = -1001282930075L;
+    public static final Long GROUP = -1001428880645L;
     /**
      * 缓存文件存放地址
      */
