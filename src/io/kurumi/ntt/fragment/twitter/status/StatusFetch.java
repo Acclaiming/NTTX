@@ -65,12 +65,22 @@ public class StatusFetch extends TwitterFunction {
 			
 		}
 		
+		Msg status = msg.send("正在拉取...").send();
+
 		int count = 0;
 		
 		try {
 			
 			ResponseList<Status> tl = api.getUserTimeline(target.getId(),new Paging().count(200));
 
+			if (tl.isEmpty()) {
+				
+				status.edit("这个用户没有发过推文...").exec();
+				
+				return;
+				
+			}
+			
 			long sinceId = -1;
 			
 			for (Status s : tl) {
@@ -81,17 +91,17 @@ public class StatusFetch extends TwitterFunction {
 			
 				}
 				
-				StatusArchive.save(s);
+				StatusArchive.save(s).loop(api);
 				
 				count ++;
 				
 			}
 			
+			status.edit("正在拉取中... : ",count + "条推文已拉取").exec();
+			
 			while (!tl.isEmpty()) {
 				
 				tl = api.getUserTimeline(target.getId(),new Paging().count(200).maxId(sinceId - 1));
-				
-				msg.send(" : " + tl.size()).exec();
 				
 				for (Status s : tl) {
 
@@ -101,15 +111,17 @@ public class StatusFetch extends TwitterFunction {
 
 					}
 
-					StatusArchive.save(s);
+					StatusArchive.save(s).loop(api);
 
 					count ++;
 
 				}
 				
+				status.edit("正在拉取中...",count + "条推文已拉取").exec();
+				
 			}
 			
-			msg.send(count + "条推文已拉取").exec();
+			status.edit("已拉取完成 :",count + "条推文已拉取").exec();
 
 		} catch (TwitterException e) {
 			
