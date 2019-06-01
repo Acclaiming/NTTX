@@ -193,7 +193,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         TrackTask.stop();
 
-        Backup.AutoBackupTask.INSTANCE.stop();
+        Backup.stop();
 
         //  BotServer.INSTACNCE.stop();
 
