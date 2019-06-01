@@ -286,6 +286,8 @@ public class StatusSearch extends Function {
 	@Override
 	public boolean onMsg(UserData user,Msg msg) {
 
+		if (super.onMsg(user,msg)) return true;
+		
 		if (!msg.isStartPayload() || !PAYLOAD_SHOW_STATUS.equals(msg.params()[0])) return false;
 
 		Long statusId = NumberUtil.parseLong(msg.params()[1]);

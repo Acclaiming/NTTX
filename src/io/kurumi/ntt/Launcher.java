@@ -64,6 +64,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		// Twitter
 		
+		addFragment(new StatusSearch());
+		
 		addFragment(new TwitterLogin());
 		
 		addFragment(new TwitterLogout());
@@ -75,8 +77,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new TrackUI());
 		
 		TrackTask.start();
-		
-		addFragment(new StatusSearch());
 		
 		addFragment(new GroupRepeat());
 		
