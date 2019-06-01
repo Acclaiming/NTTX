@@ -292,7 +292,7 @@ public class StatusArchive {
 
         date.setTimeInMillis(createdAt);
 
-        archive.append(date.get(Calendar.YEAR) - 2000).append("年").append(date.get(Calendar.MONTH)).append("月").append(date.get(Calendar.DAY_OF_MONTH)).append("日");
+        archive.append(date.get(Calendar.YEAR) - 2000).append("年").append(date.get(Calendar.MONTH) + 1).append("月").append(date.get(Calendar.DAY_OF_MONTH)).append("日");
 
         archive.append(", ").append(date.get(Calendar.AM_PM) == 0 ? "上午" : "下午").append(" ").append(date.get(Calendar.HOUR)).append(":").append(date.get(Calendar.MINUTE));
 
