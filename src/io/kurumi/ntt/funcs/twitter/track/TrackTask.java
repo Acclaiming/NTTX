@@ -56,53 +56,57 @@ public class TrackTask extends TimerTask {
 
     @Override
     public void run() {
+
+		LinkedList<TAuth> remove = new LinkedList<>();
 		
-		MongoCursor<TAuth> iter = TAuth.data.collection.find().iterator();
+        for (TAuth account : TAuth.data.collection.find()) {
 
-        while (iter.hasNext()) {
+			TrackUI.TrackSetting setting = TrackUI.data.getById(account.id);
 
-		TAuth account = iter.next();
+			if (setting == null) setting = new TrackUI.TrackSetting();
+
+			Twitter api =  account.createApi();
+
+			try {
+
+				if (api.verifyCredentials().isProtected()) {
+
+
+
+				}
+
+				//if (setting.followers || setting.followersInfo || setting.followingInfo) {
+
+				doTracking(account,setting,api,UserData.get(account.user));
+
+				//}
+
+			} catch (TwitterException e) {
+
+				if (e.getErrorCode() == 89 || e.getErrorCode() == 326) {
+
+					remove.add(account);
+					
+					
+				} else if (e.getErrorCode() != 130) {
+
+					BotLog.error("UserArchive ERROR",e);
+
+				}
+			}
 			
-          TrackUI.TrackSetting setting = TrackUI.data.getById(account.id);
 			
-		  if (setting == null) setting = new TrackUI.TrackSetting();
-		  
-                Twitter api =  account.createApi();
+		}
+		
+		for (TAuth account : remove) {
 
-                try {
+			TrackUI.data.deleteById(account.id);
+			TAuth.data.deleteById(account.id);
 
-					if (api.verifyCredentials().isProtected()) {
-
-
-
-					}
-
-					//if (setting.followers || setting.followersInfo || setting.followingInfo) {
-
-					doTracking(account,setting,api,UserData.get(account.user));
-
-					//}
-
-                } catch (TwitterException e) {
-
-                    if (e.getErrorCode() == 89 || e.getErrorCode() == 326) {
-
-                        TrackUI.data.deleteById(setting.id);
-						
-						// TAuth.data.deleteById(setting.id);
-						
-						iter.remove();
-
-                        new Send(account.user,"对不起，但是因乃的账号已停用 / 冻结 / 被限制 / 取消授权，已移除 (⁎˃ᆺ˂)").exec();
-
-                    } else if (e.getErrorCode() != 130) {
-
-                        BotLog.error("UserArchive ERROR",e);
-
-					}
-                }
-
-            }
+			new Send(account.user,"对不起，但是因乃的账号已停用 / 冻结 / 被限制 / 取消授权，已移除 (⁎˃ᆺ˂)").exec();
+			
+		}
+		
 
     }
 
@@ -220,7 +224,7 @@ public class TrackTask extends TimerTask {
 			new Send(account.user,msg.toString()).html().exec();
 
 		} else if (archive.oldPhotoUrl != null) {
-			
+
 			File photo = new File(Env.CACHE_DIR,"twitter_profile_images/" + FileUtil.getName(archive.photoUrl));
 
 			if (!photo.isFile()) {
@@ -232,7 +236,7 @@ public class TrackTask extends TimerTask {
 			Launcher.INSTANCE.bot().execute(new SendPhoto(account.user,photo).caption(msg.toString()).parseMode(ParseMode.HTML));
 
 		} else {
-		
+
 			File photo = new File(Env.CACHE_DIR,"twitter_banner_images/" + FileUtil.getName(archive.bannerUrl));
 
 			if (!photo.isFile()) {
@@ -242,8 +246,8 @@ public class TrackTask extends TimerTask {
 			}
 
 			Launcher.INSTANCE.bot().execute(new SendPhoto(account.user,photo).caption(msg.toString()).parseMode(ParseMode.HTML));
-			
-			
+
+
 		}
 
 	}
@@ -478,7 +482,7 @@ public class TrackTask extends TimerTask {
             } else {
 
                 new Send(auth.user,"无记录的关注者 (" + id + ") 的账号已经不存在了 :(").html().exec();
-				
+
             }
 
         }
