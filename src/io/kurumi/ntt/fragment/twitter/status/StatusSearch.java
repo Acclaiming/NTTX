@@ -291,19 +291,19 @@ public class StatusSearch extends Function {
 
 	String exportContent(SavedSearch search,long cursor) {
 
-		StringBuilder format = new StringBuilder("-------- 查询结果 ---------");
+		StringBuilder format = new StringBuilder("------------------ 查询结果 -------------------");
 
 		for (StatusArchive archive : search.query((int)(cursor - 1) * 10,10)) {
 			
 			String text = archive.text;
 
-			if (text.length() > 30) {
+			if (text.length() > 100) {
 
 				text = StrUtil.subPre(text,27) + "...";
 
 			}
 
-			format.append("\n").append(Html.a(archive.user().name + " : " + text,"https://t.me/" + origin.me.username() + "?start=" + PAYLOAD_SHOW_STATUS + PAYLOAD_SPLIT + archive.id));
+			format.append("\n\n").append(Html.a(archive.user().name + " : " + text,"https://t.me/" + origin.me.username() + "?start=" + PAYLOAD_SHOW_STATUS + PAYLOAD_SPLIT + archive.id));
 
 		}
 
