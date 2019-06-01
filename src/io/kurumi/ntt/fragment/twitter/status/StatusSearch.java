@@ -220,7 +220,7 @@ public class StatusSearch extends Function {
 			
 		}
 		
-		msg.send(exportContent(search,1)).buttons(makeButtons(search.id,count,1)).html().exec();
+		status.edit(exportContent(search,1)).buttons(makeButtons(search.id,count,1)).html().exec();
 		
 	}
 
