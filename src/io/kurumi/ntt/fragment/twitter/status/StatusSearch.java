@@ -28,6 +28,8 @@ public class StatusSearch extends Function {
 		long from = -1;
 
 		long to = -1;
+		
+		long reply = -1;
 
 		int media = 0;
 
@@ -94,6 +96,23 @@ public class StatusSearch extends Function {
 					from = archive.id;
 
 				}
+				
+			} else if (param.startsWith("reply=")) {
+				
+				String replyC = StrUtil.subAfter(param,"=",false);
+
+				try {
+
+					reply = Long.parseLong(replyC);
+
+				} catch (NumberFormatException ex) {
+
+					msg.send("utc : " + replyC + " 不是一个有效的数字").exec();
+
+					return;
+
+				}
+				
 
 			} else if (param.startsWith("media=")) {
 
