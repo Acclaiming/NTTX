@@ -9,6 +9,10 @@ import java.util.*;
 import twitter4j.*;
 import io.kurumi.ntt.utils.*;
 import io.kurumi.ntt.twitter.archive.*;
+import io.kurumi.ntt.fragment.twitter.auto.*;
+import io.kurumi.ntt.funcs.twitter.track.*;
+import com.mongodb.client.*;
+import io.kurumi.ntt.funcs.twitter.track.TrackTask.*;
 
 public class StatusFetch extends TwitterFunction {
 
@@ -63,6 +67,30 @@ public class StatusFetch extends TwitterFunction {
 			}
 			
 			
+		}
+		
+		try {
+		
+			Relationship ship = api.showFriendship(target.getId(),account.id);
+
+			if (target.isProtected() && !ship.isSourceFollowedByTarget()) {
+
+				TrackTask.IdsList newAcc = TrackTask.friends.getByField("ids",target.getId());
+				
+				if (newAcc == null) {
+					
+					msg.send("这个人锁推了...").exec();
+					
+					return;
+					
+				}
+				
+				api = TAuth.getById(newAcc.id).createApi();
+				
+			}
+			
+		} catch (TwitterException e) {
+		
 		}
 		
 		Msg status = msg.send("正在拉取...").send();
