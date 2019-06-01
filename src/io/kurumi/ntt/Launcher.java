@@ -62,6 +62,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		addFragment(new Notice());
 		
+		addFragment(new DelMsg());
+		
 		// Twitter
 		
 		addFragment(new StatusSearch());
