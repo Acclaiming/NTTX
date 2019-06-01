@@ -89,9 +89,9 @@ public class StatusFetch extends TwitterFunction {
 			
 			while (!tl.isEmpty()) {
 				
-				tl = api.getUserTimeline(target.getId(),new Paging().count(200).maxId(sinceId));
+				tl = api.getUserTimeline(target.getId(),new Paging().count(200).maxId(sinceId - 1));
 				
-				msg.send("剩余 : " + tl.size()).exec();
+				msg.send(" : " + tl.size()).exec();
 				
 				for (Status s : tl) {
 
