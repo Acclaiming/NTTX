@@ -87,6 +87,21 @@ public class StatusFetch extends TwitterFunction {
 				
 				api = TAuth.getById(newAcc.id).createApi();
 				
+			} else if (ship.isSourceBlockingTarget()) {
+				
+				TrackTask.IdsList newAcc = TrackTask.friends.getByField("ids",target.getId());
+
+				if (newAcc == null) {
+
+					msg.send("这个人屏蔽了你...").exec();
+
+					return;
+
+				}
+
+				api = TAuth.getById(newAcc.id).createApi();
+				
+				
 			}
 			
 		} catch (TwitterException e) {
