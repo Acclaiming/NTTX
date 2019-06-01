@@ -167,9 +167,10 @@ public class UserData {
 
     public boolean developer() {
 
-		// my destroyed ids : 530055491 818731424
-		
-        return 865266732 == id || 589593327 == id;
+        return 
+		865266732 == id || // 咱
+		589593327 == id || // Peace of Mind
+		748525422 == id; // 绮 雨
 
     }
 
