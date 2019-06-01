@@ -293,8 +293,8 @@ public class StatusSearch extends Function {
 
 		StringBuilder format = new StringBuilder("-------- 查询结果 ---------");
 
-		for (StatusArchive archive : search.query((int)(cursor - 1) * 10,(int)cursor * 10)) {
-
+		for (StatusArchive archive : search.query((int)(cursor - 1) * 10,10)) {
+			
 			String text = archive.text;
 
 			if (text.length() > 30) {

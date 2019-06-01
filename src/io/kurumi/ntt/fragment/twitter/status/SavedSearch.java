@@ -86,9 +86,9 @@ public class SavedSearch {
 
 	}
 	
-	public FindIterable<StatusArchive> query(int skip,int limit) {
+	public FindIterable<StatusArchive> query(int skip,int size) {
 
-		return StatusArchive.data.collection.find(toFilter()).skip(skip).limit(limit);
+		return StatusArchive.data.collection.find(toFilter()).skip(skip).limit(size);
 
 	}
 
