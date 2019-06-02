@@ -159,13 +159,13 @@ public class StatusFetch extends TwitterFunction {
 
 			status.edit("正在拉取中... : ",count + "条推文已拉取").exec();
 
-			while (!tl.isEmpty()) {
+			w:while (!tl.isEmpty()) {
 
 				tl = api.getUserTimeline(target.getId(),new Paging().count(200).maxId(sinceId - 1));
 
 				if (exists >= 20) {
 
-					break;
+					break w;
 
 				}
 				
@@ -181,7 +181,7 @@ public class StatusFetch extends TwitterFunction {
 
 						if (exists >= 20) {
 
-							break;
+							break w;
 
 						}
 
