@@ -109,7 +109,12 @@ public class TiebaLogin extends Function {
 
 		msg.sendTyping();
 		
-		if (result.get("status").equals("0")) {
+		
+		if (result.get("status") == null) {
+			
+			msg.send("网络问题，请重试....").exec();
+			
+		} else if (result.get("status").equals("0")) {
 
 			clearPoint(user);
 
