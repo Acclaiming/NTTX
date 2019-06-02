@@ -128,7 +128,7 @@ public class TiebaLogin extends Function {
 
 			HttpUtil.downloadFile(status.imgUrl,img);
 
-			bot().execute(new SendPhoto(msg.chatId(),img).caption(result.get("message").toString()));
+			bot().execute(new SendPhoto(msg.chatId(),img).caption(result.get("message").toString() + "\n\n验证码图片URL : " + status.imgUrl));
 
 			status.status = 2;
 
