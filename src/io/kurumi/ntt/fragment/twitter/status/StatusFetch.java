@@ -146,8 +146,17 @@ public class StatusFetch extends TwitterFunction {
 
 					}
 
-					if (StatusArchive.data.containsId(s.getId())) exists ++;
+					if (StatusArchive.data.containsId(s.getId())) {
 
+						exists ++;
+
+						count --;
+
+					} else {
+
+						exists = 0;
+
+					}
 
 				}
 
@@ -180,14 +189,23 @@ public class StatusFetch extends TwitterFunction {
 					if (!all) {
 
 						if (exists >= 20) {
-
+							
 							break w;
 
 						}
 
-						if (StatusArchive.data.containsId(s.getId())) exists ++;
-
-
+						if (StatusArchive.data.containsId(s.getId())) {
+							
+							exists ++;
+							
+							count --;
+							
+						} else {
+							
+							exists = 0;
+							
+						}
+						
 					}
 					
 
