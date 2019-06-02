@@ -24,6 +24,7 @@ import cn.hutool.core.lang.Console;
 import io.kurumi.ntt.twitter.archive.*;
 import io.kurumi.ntt.fragment.twitter.status.*;
 import io.kurumi.ntt.model.request.*;
+import io.kurumi.ntt.fragment.tieba.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -107,6 +108,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new Backup());
 		
 		addFragment(new Users());
+		
+		// 贴吧
+		
+		addFragment(new TiebaLogin());
 		
 		// Twitter
 		

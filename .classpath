@@ -6,4 +6,7 @@
 <classpathentry kind="lib" path="libs/twitter4j.jar"/>
 <classpathentry kind="lib" path="libs/mongo-java-driver.jar"/>
 <classpathentry kind="lib" path="libs/bot-api-lib.jar"/>
+<classpathentry kind="lib" path="libs/tieba-api/slf4j-api-1.7.26.jar"/>
+<classpathentry kind="lib" path="libs/tieba-api/fastjson-1.2.47.jar"/>
+<classpathentry kind="lib" path="libs/tieba-api/jsoup-1.11.2.jar"/>
 </classpath>
