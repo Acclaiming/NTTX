@@ -21,6 +21,13 @@ public class TiebaLogin extends Function {
 
 	final String POINT_TIEBA_LOGIN = "tieba,login";
 
+	@Override
+	public void points(LinkedList<String> points) {
+	
+		points.add(POINT_TIEBA_LOGIN);
+	
+	}
+	
     static class TiebaLoginStatus {
 
 		int status = 0;
