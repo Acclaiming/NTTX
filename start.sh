@@ -6,7 +6,7 @@ for jar in ./libs/*.jar;do
  
 done
 
-for jar in ./tieba-api/*.jar;do
+for jar in ./libs/tieba-api/*.jar;do
 
  export CLASSPATH=$CLASSPATH:$jar
  
