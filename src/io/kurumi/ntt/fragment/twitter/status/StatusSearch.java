@@ -32,7 +32,7 @@ public class StatusSearch extends Function {
 		long from = -1;
 
 		long to = -1;
-		
+
 		long reply = -1;
 
 		int media = 0;
@@ -44,7 +44,7 @@ public class StatusSearch extends Function {
 		long start = -1;
 
 		long end = -1;
-		
+
 		for (;index < params.length;index ++) {
 
 			String param = params[index];
@@ -100,9 +100,9 @@ public class StatusSearch extends Function {
 					to = archive.id;
 
 				}
-				
+
 			} else if (param.startsWith("reply=")) {
-				
+
 				String replyC = StrUtil.subAfter(param,"=",false);
 
 				try {
@@ -116,7 +116,7 @@ public class StatusSearch extends Function {
 					return;
 
 				}
-				
+
 
 			} else if (param.startsWith("media=")) {
 
@@ -186,7 +186,7 @@ public class StatusSearch extends Function {
 		if (params.length == 0) {
 
 			msg.send("推文查询 /search [参数...] 内容",
-			
+
 					 "from=<发送用户ID|用户名>","",
 					 "to=<回复用户ID|用户名>","",
 					 "reply=<回复推文ID>","",
@@ -215,7 +215,7 @@ public class StatusSearch extends Function {
 		search.user = user.id;
 
 		search.media = media;
-		
+
 		search.reply = reply;
 
 		search.content = content;
@@ -285,7 +285,15 @@ public class StatusSearch extends Function {
 
 		}
 
-		callback.confirm();
+		if (search.user != user.id) {
+
+			callback.alert("只有发起搜索的用户可以翻页哦 (");
+
+		} else {
+
+			callback.text("正在加载...");
+
+		}
 
 		long count = search.count();
 
@@ -298,7 +306,7 @@ public class StatusSearch extends Function {
 		StringBuilder format = new StringBuilder("------------------ 查询结果 -------------------");
 
 		for (StatusArchive archive : search.query((int)(cursor - 1) * 10,10)) {
-			
+
 			String text = archive.text;
 
 			if (text.length() > 100) {
@@ -325,25 +333,25 @@ public class StatusSearch extends Function {
 		if (!msg.isStartPayload() || !PAYLOAD_SHOW_STATUS.equals(msg.payload()[0])) return false;
 
 		TAuth auth = TAuth.getById(user.id);
-		
+
 		Long statusId = NumberUtil.parseLong(msg.payload()[1]);
 
 		if (auth == null) {
-		
-		StatusArchive archive = StatusArchive.get(statusId);
 
-		if (archive == null) {
+			StatusArchive archive = StatusArchive.get(statusId);
 
-			msg.send("找不到存档...").exec();
+			if (archive == null) {
+
+				msg.send("找不到存档...").exec();
+
+			} else {
+
+				msg.send(archive.toHtml()).html().exec();
+
+			}
 
 		} else {
 
-			msg.send(archive.toHtml()).html().exec();
-
-		}
-		
-		} else {
-			
 			Twitter api = auth.createApi();
 
 			msg.sendTyping();
@@ -370,8 +378,8 @@ public class StatusSearch extends Function {
 
 
 			}
-			
-			
+
+
 		}
 
 		return true;
@@ -385,6 +393,8 @@ public class StatusSearch extends Function {
 				ButtonLine line = newButtonLine();
 
 				if (current > 1) {
+
+					line.newButton(" □ ",POINT_SHOW_PAGE,searchId,1);
 
 					line.newButton(" << ",POINT_SHOW_PAGE,searchId,current - 1);
 
@@ -403,6 +413,8 @@ public class StatusSearch extends Function {
 				if (current < max) {
 
 					line.newButton(" >> ",POINT_SHOW_PAGE,searchId,current + 1);
+
+					line.newButton(" ■ ",POINT_SHOW_PAGE,searchId,max);
 
 				}
 
