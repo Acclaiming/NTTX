@@ -109,18 +109,17 @@ public class TiebaLogin extends Function {
 
 		msg.sendTyping();
 		
-		
 		if (result.get("status") == null) {
 			
 			msg.send("网络问题，请重试....").exec();
 			
-		} else if (result.get("status").equals("0")) {
+		} else if (result.get("status").toString().equals("0")) {
 
 			clearPoint(user);
 
 			loginSuccess(user,msg,status,result);
 
-		} else if (result.get("status").equals("-1")) {
+		} else if (result.get("status").toString().equals("-1")) {
 
 			status.imgUrl = result.get("imgUrl").toString();
 			status.codestring = result.get("codestring").toString();
