@@ -8,6 +8,7 @@ import twitter4j.*;
 import io.kurumi.ntt.funcs.twitter.track.*;
 import io.kurumi.ntt.funcs.twitter.track.TrackTask.*;
 import io.kurumi.ntt.twitter.*;
+import cn.hutool.http.*;
 
 public class StatusArchive {
 
@@ -274,7 +275,13 @@ public class StatusArchive {
             }
 
         }
+		
+		content = HtmlUtil.escape(content);
 
+		content = (content + " ").replaceAll("(@.+) ","<a href=\"https://twitter.com/$1\">@$1</a> ");
+		
+		content = content.substring(0,content.length() - 1);
+		
         archive.append("\n\n").append(content);
 
         if (!mediaUrls.isEmpty()) {
