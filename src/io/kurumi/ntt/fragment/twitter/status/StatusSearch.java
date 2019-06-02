@@ -1,15 +1,19 @@
 package io.kurumi.ntt.fragment.twitter.status;
 
-import io.kurumi.ntt.funcs.abs.*;
-import java.util.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.model.*;
-import cn.hutool.core.util.*;
-import io.kurumi.ntt.twitter.archive.*;
 import cn.hutool.core.date.*;
-import java.text.*;
-import io.kurumi.ntt.utils.*;
+import cn.hutool.core.util.*;
+import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.funcs.abs.*;
+import io.kurumi.ntt.funcs.twitter.track.*;
+import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.model.request.*;
+import io.kurumi.ntt.twitter.*;
+import io.kurumi.ntt.twitter.archive.*;
+import io.kurumi.ntt.utils.*;
+import java.util.*;
+import twitter4j.*;
+
+import java.util.TimeZone;
 
 public class StatusSearch extends Function {
 
@@ -320,8 +324,12 @@ public class StatusSearch extends Function {
 
 		if (!msg.isStartPayload() || !PAYLOAD_SHOW_STATUS.equals(msg.payload()[0])) return false;
 
+		TAuth auth = TAuth.getById(user.id);
+		
 		Long statusId = NumberUtil.parseLong(msg.payload()[1]);
 
+		if (auth == null) {
+		
 		StatusArchive archive = StatusArchive.get(statusId);
 
 		if (archive == null) {
@@ -332,6 +340,38 @@ public class StatusSearch extends Function {
 
 			msg.send(archive.toHtml()).html().exec();
 
+		}
+		
+		} else {
+			
+			Twitter api = auth.createApi();
+
+			msg.sendTyping();
+
+			try {
+
+				StatusArchive newStatus = StatusArchive.save(api.showStatus(statusId));
+
+				newStatus.loop(api);
+
+				msg.send(newStatus.toHtml()).html().exec();
+
+			} catch (TwitterException e) {
+
+				if (StatusArchive.contains(statusId)) {
+
+					msg.send(StatusArchive.get(statusId).toHtml()).html().exec();
+
+				} else {
+
+					msg.send("推文/存档不存在 :(").publicFailed();
+
+				}
+
+
+			}
+			
+			
 		}
 
 		return true;
