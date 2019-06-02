@@ -285,10 +285,11 @@ public class StatusSearch extends Function {
 
 		}
 
-		if (search.user != user.id) {
+		if (!search.user.equals(user.id)) {
 
 			callback.alert("只有发起搜索的用户可以翻页哦 (");
-
+			return;
+			
 		} else {
 
 			callback.text("正在加载...");
