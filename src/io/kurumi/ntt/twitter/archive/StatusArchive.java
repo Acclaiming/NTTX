@@ -1,14 +1,19 @@
 package io.kurumi.ntt.twitter.archive;
 
+
+
 import cn.hutool.core.util.*;
+import cn.hutool.http.*;
 import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.funcs.twitter.track.*;
+import io.kurumi.ntt.twitter.*;
+import io.kurumi.ntt.twitter.archive.*;
 import io.kurumi.ntt.utils.*;
 import java.util.*;
 import twitter4j.*;
-import io.kurumi.ntt.funcs.twitter.track.*;
+
+import twitter4j.Status;
 import io.kurumi.ntt.funcs.twitter.track.TrackTask.*;
-import io.kurumi.ntt.twitter.*;
-import cn.hutool.http.*;
 
 public class StatusArchive {
 
@@ -363,7 +368,7 @@ public class StatusArchive {
 
 					if ((target.isProtected && !ship.isSourceFollowedByTarget()) || ship.isSourceBlockingTarget()) {
 
-						IdsList any = TrackTask.friends.getByField("ids",target.id);
+						TrackTask.IdsList any = TrackTask.friends.getByField("ids",target.id);
 
 						if (any == null) return this;
 
