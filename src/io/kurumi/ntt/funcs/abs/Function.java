@@ -30,7 +30,8 @@ public abstract class Function extends Fragment {
 
     public static final int All = 1;
     public static final int Private = 2;
-    public static final int Group = 3;
+	public static final int PrivateOnly = 3;
+    public static final int Group = 4;
 
     private LinkedList<String> functions = new LinkedList<String>() {{ functions(this); }};
     private LinkedList<String> points = new LinkedList<String>() {{ points(this); }};
@@ -52,7 +53,7 @@ public abstract class Function extends Fragment {
 
         }
 
-        if (target() == Private && !msg.isPrivate())  {
+        if ((target() == Private) && !msg.isPrivate())  {
 
 			if (!user.contactable()) {
 

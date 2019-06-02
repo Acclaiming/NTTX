@@ -33,6 +33,13 @@ public class TrackUI extends TwitterFunction {
 
     }
 
+	@Override
+	public int target() {
+		
+		return PrivateOnly;
+		
+	}
+
     final String POINT_SETTING_FOLLOWERS = "tr|f";
     final String POINT_SETTING_FOLLOWERS_INFO = "tr|o";
     final String POINT_SETTING_FOLLOWINGS_INFO = "tr|r";

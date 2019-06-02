@@ -31,7 +31,7 @@ public class AutoUI extends TwitterFunction {
 	@Override
 	public int target() {
 		
-		return Private;
+		return PrivateOnly;
 		
 	}
 

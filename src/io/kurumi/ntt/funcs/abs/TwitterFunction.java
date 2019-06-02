@@ -41,22 +41,21 @@ public abstract class TwitterFunction extends Function {
 
         } else {
 
-            if (TAuth.data.countByField("user",user.id) == 1) {
-
-                onFunction(user,msg,function,msg.params(),TAuth.getByUser(user.id).first());
-
-                return;
-
-            } else if (msg.isGroup()) {
+             if (msg.isGroup() || target() == PrivateOnly) {
 				
 				msg.send("请使用私聊 :)","如果BOT有删除信息权限,命令和此回复将被自动删除。:)").failedWith();
 
 				return;
 
-			}
+			 } else if (TAuth.data.countByField("user",user.id) == 1) {
 
-      
+				 onFunction(user,msg,function,msg.params(),TAuth.getByUser(user.id).first());
 
+				 return;
+
+			 }
+
+    
             final FindIterable<TAuth> accounts = TAuth.getByUser(user.id);
 
 
