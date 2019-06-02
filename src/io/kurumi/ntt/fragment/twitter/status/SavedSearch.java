@@ -17,6 +17,7 @@ import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import com.mongodb.client.*;
+import org.bson.*;
 
 public class SavedSearch {
 
@@ -88,7 +89,7 @@ public class SavedSearch {
 	
 	public FindIterable<StatusArchive> query(int skip,int size) {
 
-		return StatusArchive.data.collection.find(toFilter()).skip(skip).limit(size);
+		return StatusArchive.data.collection.find(toFilter()).sort(new Document("_id",-1)).skip(skip).limit(size);
 
 	}
 
