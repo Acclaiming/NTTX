@@ -77,7 +77,7 @@ public class StatusSearch extends Function {
 
 				if (NumberUtil.isNumber(toC)) {
 
-					from = NumberUtil.parseLong(toC);
+					to = NumberUtil.parseLong(toC);
 
 				} else {
 
@@ -93,7 +93,7 @@ public class StatusSearch extends Function {
 
 					}
 
-					from = archive.id;
+					to = archive.id;
 
 				}
 				
