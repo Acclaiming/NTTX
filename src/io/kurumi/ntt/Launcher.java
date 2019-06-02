@@ -37,7 +37,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         if ("start".equals(msg.command()) && msg.params().length == 0) {
 
-			msg.send("start failed successfully ~" ,Html.a("来玩 ᕙ(`▿´)ᕗ ！","https://t.me/joinchat/M5LsLFfkGoKE9Maqgi0HiA")).html().publicFailed();
+			msg.send("start failed successfully ~" ,Html.a("交流群在这 来玩 ᕙ(`▿´)ᕗ ！","https://t.me/joinchat/M5LsLFfkGoKE9Maqgi0HiA")).html().publicFailed();
 
             return true;
 
