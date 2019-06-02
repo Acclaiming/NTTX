@@ -58,9 +58,6 @@ public abstract class TwitterFunction extends Function {
 					 msg.sendTyping();
 					 
 				 }
-				 
-				
-				return;
 
 			 }
 			 
