@@ -2,12 +2,14 @@ package io.kurumi.ntt.funcs.twitter.ext;
 
 import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.funcs.abs.*;
+import io.kurumi.ntt.funcs.twitter.track.*;
 import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.twitter.*;
 import io.kurumi.ntt.twitter.archive.*;
 import io.kurumi.ntt.utils.*;
 import java.util.*;
 import twitter4j.*;
+import io.kurumi.ntt.funcs.twitter.track.TrackTask.*;
 
 public class StatusGetter extends TwitterFunction {
 
@@ -45,6 +47,24 @@ public class StatusGetter extends TwitterFunction {
 
 		msg.sendTyping();
 		
+		try {
+		
+		UserArchive target = UserArchive.save(api.showUser(NTT.parseScreenName(params[0])));
+
+		Relationship ship = api.showFriendship(target.id,api.getId());
+
+		if ((target.isProtected && !ship.isSourceFollowedByTarget()) || ship.isSourceBlockingTarget()) {
+
+			TrackTask.IdsList any = TrackTask.friends.getByField("ids",target.id);
+
+			if (any == null) return;
+
+			api = TAuth.getById(any.id).createApi();
+
+		}
+
+	} catch (TwitterException ex) {} 
+
         try {
 
             StatusArchive newStatus = StatusArchive.save(api.showStatus(statusId));

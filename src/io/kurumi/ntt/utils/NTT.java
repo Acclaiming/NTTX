@@ -147,6 +147,12 @@ public class NTT {
                 input = StrUtil.subBefore(input,"?",false);
 
             }
+			
+			if (input.contains("/")) {
+				
+				input = StrUtil.subBefore(input,"/",false);
+				
+			}
 
         }
 
