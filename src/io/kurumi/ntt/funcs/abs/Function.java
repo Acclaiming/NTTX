@@ -53,7 +53,7 @@ public abstract class Function extends Fragment {
 
         }
 
-        if ((target() == Private) && !msg.isPrivate())  {
+        if (target() == Private && !msg.isPrivate())  {
 
 			if (!user.contactable()) {
 

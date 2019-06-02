@@ -41,13 +41,30 @@ public abstract class TwitterFunction extends Function {
 
         } else {
 
-             if (msg.isGroup() || target() == PrivateOnly) {
+             if (msg.isGroup() && target() == PrivateOnly) {
 				
-				msg.send("请使用私聊 :)","如果BOT有删除信息权限,命令和此回复将被自动删除。:)").failedWith();
+				 if (!user.contactable()) {
 
+					 msg.send("请使用私聊 (˚☐˚! )/").publicFailed();
+
+					 return;
+
+				 } else {
+
+					 msg.send("咱已经在私聊回复了你。","如果BOT有删除信息权限,命令和此回复将被自动删除。:)").failedWith();
+
+					 msg.targetChatId = user.id;
+
+					 msg.sendTyping();
+					 
+				 }
+				 
+				
 				return;
 
-			 } else if (TAuth.data.countByField("user",user.id) == 1) {
+			 }
+			 
+			 if (TAuth.data.countByField("user",user.id) == 1) {
 
 				 onFunction(user,msg,function,msg.params(),TAuth.getByUser(user.id).first());
 
