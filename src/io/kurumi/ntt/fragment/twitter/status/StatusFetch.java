@@ -163,6 +163,12 @@ public class StatusFetch extends TwitterFunction {
 
 				tl = api.getUserTimeline(target.getId(),new Paging().count(200).maxId(sinceId - 1));
 
+				if (exists >= 20) {
+
+					break;
+
+				}
+				
 				for (Status s : tl) {
 
 					if (s.getId() < sinceId || sinceId == -1) {
