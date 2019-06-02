@@ -24,7 +24,7 @@ public class SavedSearch {
 
 	static {{
 		
-		data.collection.drop();
+		// data.collection.drop();
 		
 	}}
 	
