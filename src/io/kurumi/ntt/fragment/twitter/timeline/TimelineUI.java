@@ -111,7 +111,9 @@ public class TimelineUI extends TwitterFunction {
 			
 			long users = data.countByField("mention",true);
 
-			long delay = (users / (100000 / 24 / 60) * 60 * 1000) + 1;
+			long delay = (((users / (100000 / 24 / 60)) + 1) * 60 * 1000);
+			
+			timer = new Timer("NTT Timeline Task");
 			
 			timer.schedule(this,new Date(System.currentTimeMillis() + delay));
 			
