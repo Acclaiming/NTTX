@@ -438,7 +438,13 @@ public class StatusArchive {
 			
 			if (inReplyToUserId != -1 && !avoid) {
 				
-				loop(NTT.loopFindAccessable(inReplyToUserId).createApi(),true);
+				TAuth accessable = NTT.loopFindAccessable(inReplyToUserId);
+
+				if (accessable != null) {
+					
+					loop(accessable.createApi(),true);
+					
+				}
 				
 			}
 			
