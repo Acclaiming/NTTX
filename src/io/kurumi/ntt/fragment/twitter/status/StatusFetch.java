@@ -67,6 +67,8 @@ public class StatusFetch extends TwitterFunction {
 
 		TwitterException exc = null;
 		
+		status.edit("正在检查可用...").exec();
+		
 		try {
 
 			archive = UserArchive.save(targetL == -1 ? api.showUser(target) : api.showUser(targetL));
@@ -76,7 +78,9 @@ public class StatusFetch extends TwitterFunction {
 				Relationship ship = api.showFriendship(archive.id,account.id);
 
 				if (!ship.isSourceBlockingTarget() && !(archive.isProtected && !ship.isSourceFollowedByTarget())) {
-
+					
+					status.edit("检查完成...").exec();
+					
 					accessable = true;
 
 				}
@@ -104,19 +108,21 @@ public class StatusFetch extends TwitterFunction {
 
 		if (!accessable) {
 			
+			status.edit("尝试拉取...").exec();
+			
 			TAuth accessableAuth = NTT.loopFindAccessable(targetL == -1 ? target : targetL);
 			
 			if (accessableAuth == null) {
 				
 				if (exc != null) {
 					
-					status.edit(NTT.parseTwitterException(exc)).exec();
+					status.edit("尝试失败",NTT.parseTwitterException(exc)).exec();
 					
 					return;
 					
 				} else {
 					
-					status.edit("这个人锁推了...").exec();
+					status.edit("尝试失败","这个人锁推了...").exec();
 					
 					return;
 					
@@ -250,7 +256,7 @@ public class StatusFetch extends TwitterFunction {
 
 		} catch (TwitterException e) {
 
-			status.edit(NTT.parseTwitterException(e)).exec();
+			status.edit("拉取失败",NTT.parseTwitterException(e)).exec();
 
 		}
 
