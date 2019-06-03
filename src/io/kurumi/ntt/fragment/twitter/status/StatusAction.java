@@ -47,7 +47,7 @@ public class StatusAction extends TwitterFunction {
 	}
 
 	static final String POINT_RETWEET_STATUS = "s_rt";
-	static final String POINT_DESTROY_RETWEET = "s_del";
+	static final String POINT_DESTROY_RETWEET = "s_unrt";
 	static final String POINT_DESTROY_STATUS = "s_del";
 	static final String POINT_SHOW_FULL = "s_full";
 	static final String POINT_LIKE_STATUS = "s_like";
