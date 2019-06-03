@@ -317,7 +317,7 @@ public class StatusArchive {
 		
 		content = HtmlUtil.escape(content);
 
-		content = (content + " ").replaceAll("(@.+) ","<a href=\"https://twitter.com/$1\">@$1</a> ");
+		content = (content + " ").replaceAll("(@.+) ","<a href=\"https://twitter.com/$1\">$1</a> ");
 		
 		content = content.substring(0,content.length() - 1);
 		
