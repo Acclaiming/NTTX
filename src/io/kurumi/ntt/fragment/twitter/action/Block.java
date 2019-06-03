@@ -60,7 +60,7 @@ public class Block extends TwitterFunction {
 
 		} else if (msg.targetChatId == -1 && msg.isPrivate() && msg.isReply()) {
 
-			MessagePoint point = MessagePoint.get(msg.messageId());
+			MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
 
 			if (point == null) {
 

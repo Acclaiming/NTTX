@@ -60,7 +60,7 @@ public class Mute extends TwitterFunction {
 
 		} else if (msg.targetChatId == -1 && msg.isPrivate() && msg.isReply()) {
 
-			MessagePoint point = MessagePoint.get(msg.messageId());
+			MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
 
 			if (point == null) {
 
@@ -122,7 +122,7 @@ public class Mute extends TwitterFunction {
 
 			}
 
-			api.createBlock(targetId);
+			api.createMute(targetId);
 
 			msg.send("已停用来自 " + archive.urlHtml() + " 的通知 ~").html().point(0,targetId);
 
