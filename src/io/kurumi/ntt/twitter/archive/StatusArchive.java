@@ -363,7 +363,13 @@ public class StatusArchive {
 
     }
 
-    public StatusArchive loop(Twitter api) {
+	public StatusArchive loop(Twitter api) {
+		
+		return loop(api,false);
+
+	}
+	
+    public StatusArchive loop(Twitter api,boolean avoid) {
 
         String content = text;
 
@@ -391,28 +397,6 @@ public class StatusArchive {
 
 
         try {
-
-			if (inReplyToUserId != -1) {
-
-				try {
-
-					UserArchive target = UserArchive.save(api.showUser(inReplyToUserId));
-
-					Relationship ship = api.showFriendship(target.id,api.getId());
-
-					if ((target.isProtected && !ship.isSourceFollowedByTarget()) || ship.isSourceBlockingTarget()) {
-
-						TrackTask.IdsList any = TrackTask.friends.getByField("ids",target.id);
-
-						if (any == null) return this;
-
-						api = TAuth.getById(any.id).createApi();
-
-					}
-
-				} catch (TwitterException ex) {} 
-
-			}
 
             if (inReplyToStatusId != -1) {
 
@@ -450,7 +434,15 @@ public class StatusArchive {
 
             }
 
-        } catch (TwitterException ex) {}
+        } catch (TwitterException ex) {
+			
+			if (inReplyToUserId != -1 && !avoid) {
+				
+				loop(NTT.loopFindAccessable(inReplyToUserId).createApi(),true);
+				
+			}
+			
+		}
 
         return this;
 

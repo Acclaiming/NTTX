@@ -14,7 +14,7 @@ import io.kurumi.ntt.funcs.twitter.track.TrackTask.*;
 public class StatusGetter extends TwitterFunction {
 
     public static StatusGetter INSTANCE = new StatusGetter();
-    
+
     @Override
     public void functions(LinkedList<String> names) {
 
@@ -46,38 +46,32 @@ public class StatusGetter extends TwitterFunction {
         Twitter api = account.createApi();
 
 		msg.sendTyping();
-		
+
 		try {
-		
-		UserArchive target = UserArchive.save(api.showUser(NTT.parseScreenName(params[0])));
 
-		Relationship ship = api.showFriendship(target.id,api.getId());
+			StatusArchive newStatus = StatusArchive.save(api.showStatus(statusId));
 
-		if ((target.isProtected && !ship.isSourceFollowedByTarget()) || ship.isSourceBlockingTarget()) {
+            newStatus.loop(api);
 
-			TrackTask.IdsList any = TrackTask.friends.getByField("ids",target.id);
+            msg.send(newStatus.toHtml()).html().point(1,statusId);
+			
+			return;
 
-			if (any == null) return;
-
-			api = TAuth.getById(any.id).createApi();
-
-		}
-
-	} catch (TwitterException ex) {} 
+		} catch (TwitterException ex) {} 
 
         try {
 
             StatusArchive newStatus = StatusArchive.save(api.showStatus(statusId));
 
             newStatus.loop(api);
-			
-            msg.send(newStatus.toHtml()).html().exec();
+
+            msg.send(newStatus.toHtml()).html().point(1,statusId);
 
         } catch (TwitterException e) {
 
             if (StatusArchive.contains(statusId)) {
 
-                msg.send(StatusArchive.get(statusId).toHtml()).html().exec();
+                msg.send(StatusArchive.get(statusId).toHtml()).html().point(1,statusId);
 
             } else {
 
