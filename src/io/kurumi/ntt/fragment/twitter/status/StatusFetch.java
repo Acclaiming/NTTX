@@ -250,7 +250,7 @@ public class StatusFetch extends TwitterFunction {
 
 		} catch (TwitterException e) {
 
-			msg.send("拉取失败 : ",NTT.parseTwitterException(e)).exec();
+			status.edit(NTT.parseTwitterException(e)).exec();
 
 		}
 

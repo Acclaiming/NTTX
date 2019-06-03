@@ -72,7 +72,7 @@ public class NTT {
 			try {
 
 				UserArchive user = UserArchive.save(targetL == -1 ? api.showUser(targetS) : api.showUser(targetL));
-
+				
 				if (user.isProtected) {
 
 					FindIterable<TrackTask.IdsList> accs = TrackTask.friends.findByField("ids",user.id);
@@ -81,14 +81,18 @@ public class NTT {
 
 						TAuth newAuth = TAuth.getById(acc.id);
 
-						if (newAuth == null) continue;
-
-						return newAuth;
+						if (newAuth != null) return newAuth;
 
 					}
 
 					return null;
 
+				} else {
+					
+					Relationship ship = api.showFriendship(user.id,auth.id);
+
+					if (ship.isSourceBlockingTarget()) continue;
+					
 				}
 
 				return auth;
