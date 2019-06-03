@@ -14,7 +14,7 @@ public class TimelineUI extends TwitterFunction {
 
 	public static Data<TLSetting> data = new Data<TLSetting>(TLSetting.class);
 
-	public class TLSetting {
+	public static class TLSetting {
 
 		public long id;
 
