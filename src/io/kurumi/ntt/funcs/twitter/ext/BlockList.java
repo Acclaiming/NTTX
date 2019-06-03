@@ -46,7 +46,7 @@ public class BlockList extends TwitterFunction {
 
         } catch (TwitterException e) {
 
-            msg.send("拉取失败 (" + e.getErrorCode() + ")... 你的认证可能失效或者到达了API调用上限。").exec();
+            msg.send(NTT.parseTwitterException(e)).exec();
 
         }
 

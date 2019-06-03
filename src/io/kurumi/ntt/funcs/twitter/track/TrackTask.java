@@ -60,7 +60,7 @@ public class TrackTask extends TimerTask {
     public void run() {
 
 		LinkedList<TAuth> remove = new LinkedList<>();
-		
+
         for (TAuth account : TAuth.data.collection.find()) {
 
 			TrackUI.TrackSetting setting = TrackUI.data.getById(account.id);
@@ -71,11 +71,7 @@ public class TrackTask extends TimerTask {
 
 			try {
 
-				if (api.verifyCredentials().isProtected()) {
-
-
-
-				}
+				api.verifyCredentials();
 
 				//if (setting.followers || setting.followersInfo || setting.followingInfo) {
 
@@ -85,30 +81,33 @@ public class TrackTask extends TimerTask {
 
 			} catch (TwitterException e) {
 
-				if (e.getErrorCode() == 89 || e.getErrorCode() == 326) {
+				if (e.getErrorCode() == 89 || e.getErrorCode() == 215 || e.getErrorCode() == 215 || e.getErrorCode() == 326) {
 
 					remove.add(account);
+
+				} else if (e.getErrorCode() == 326) {
 					
-					
+					// 被限制;
+
 				} else if (e.getErrorCode() != 130) {
 
 					BotLog.error("UserArchive ERROR",e);
 
 				}
 			}
-			
-			
+
+
 		}
-		
+
 		for (TAuth account : remove) {
 
 			TrackUI.data.deleteById(account.id);
 			TAuth.data.deleteById(account.id);
 
-			new Send(account.user,"对不起，但是因乃的账号已停用 / 冻结 / 被限制 / 取消授权，已移除 (⁎˃ᆺ˂)").exec();
-			
+			new Send(account.user,"对不起，但是因乃的账号已停用 / 冻结 / NTT被取消授权，已移除 (⁎˃ᆺ˂)").exec();
+
 		}
-		
+
 
     }
 
@@ -238,11 +237,11 @@ public class TrackTask extends TimerTask {
 			SendResponse resp = Launcher.INSTANCE.bot().execute(new SendPhoto(account.user,photo).caption(msg.toString()).parseMode(ParseMode.HTML));
 
 			if (resp.isOk()) {
-				
+
 				MessagePoint.set(resp.message().messageId(),0,archive.id);
-				
+
 			}
-			
+
 		} else {
 
 			File photo = new File(Env.CACHE_DIR,"twitter_banner_images/" + archive.id + "/" + System.currentTimeMillis() + ".jpg");
@@ -260,7 +259,7 @@ public class TrackTask extends TimerTask {
 				MessagePoint.set(resp.message().messageId(),0,archive.id);
 
 			}
-			
+
 		}
 
 	}

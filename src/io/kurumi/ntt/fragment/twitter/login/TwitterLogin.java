@@ -74,9 +74,7 @@ public class TwitterLogin extends Function {
 
         } catch (TwitterException e) {
 
-            msg.send(e.toString()).exec();
-
-            msg.send("请求认证链接失败 :( ","这可能是因为同时请求的人太多，或者有人不停重复请求... 也有可能是咱Twitter账号被停用了。 ","","那么，请再来一次吧 ~").exec();
+            msg.send("请求认证链接失败 :( ",NTT.parseTwitterException(e)).exec();
 
         }
 
@@ -159,7 +157,7 @@ public class TwitterLogin extends Function {
 
             } catch (TwitterException e) {
 
-                msg.send("链接好像失效了...","请重新认证 ( /login ) (｡>∀<｡)").exec();
+                msg.send("链接好像失效了...",NTT.parseTwitterException(e)).exec();
 
             }
             

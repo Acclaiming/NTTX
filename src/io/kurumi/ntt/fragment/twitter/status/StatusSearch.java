@@ -362,7 +362,7 @@ public class StatusSearch extends Function {
 
 				} else {
 
-					msg.send("推文/存档不存在 :(").publicFailed();
+					msg.send(NTT.parseTwitterException(e)).publicFailed();
 
 				}
 

@@ -48,7 +48,7 @@ public class AutoTask extends TimerTask {
 
 			} catch (TwitterException e) {
 
-				new Send(auth.user,"回Fo失败 : " + archive.urlHtml(),"账号 : " + auth.archive().urlHtml()).html().exec();
+				new Send(auth.user,"回Fo失败 : " + archive.urlHtml(),NTT.parseTwitterException(e),"账号 : " + auth.archive().urlHtml()).html().exec();
 
 
 			}
@@ -91,8 +91,8 @@ public class AutoTask extends TimerTask {
 				auto.like = false;
 
 				AutoUI.autoData.setById(auto.id,auto);
-				
-				new Send(auth.user,"auto.like disabled : " + e).exec();
+			
+				new Send(auth.user,"自动打心已关闭 : " + NTT.parseTwitterException(e)).exec();
 
 				}
 				
@@ -146,7 +146,7 @@ public class AutoTask extends TimerTask {
 
 				} catch (TwitterException ex) {
 
-					if (ex.getErrorCode() != 34 && ex.getErrorCode() != 134) {
+					if (ex.getErrorCode() != 34 && ex.getErrorCode() != 139) {
 
 						throw ex;
 

@@ -46,7 +46,7 @@ public class StatusFetch extends TwitterFunction {
 
 			} catch (TwitterException e) {
 
-				msg.send("找不到这个用户").exec();
+				msg.send(NTT.parseTwitterException(e)).exec();
 
 				return;
 
@@ -60,7 +60,7 @@ public class StatusFetch extends TwitterFunction {
 
 			} catch (TwitterException e) {
 
-				msg.send("找不到这个用户").exec();
+				msg.send(NTT.parseTwitterException(e)).exec();
 
 				return;
 
@@ -226,7 +226,7 @@ public class StatusFetch extends TwitterFunction {
 
 		} catch (TwitterException e) {
 
-			msg.send("拉取失败 : " + e).exec();
+			msg.send("拉取失败 : ",NTT.parseTwitterException(e)).exec();
 
 		}
 

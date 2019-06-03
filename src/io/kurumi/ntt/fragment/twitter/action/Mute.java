@@ -25,7 +25,7 @@ public class Mute extends TwitterFunction {
 	public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
 		Twitter api = account.createApi();
-
+		
 		if (params.length > 0) {
 
 			for (String target : params) {
