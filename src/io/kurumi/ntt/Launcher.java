@@ -149,6 +149,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		addFragment(new TrackUI());
 		
+		addFragment(new StatusAction());
 		addFragment(new TimelineUI());
 		
 		addFragment(new BlockList());

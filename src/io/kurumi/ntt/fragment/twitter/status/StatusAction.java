@@ -53,6 +53,18 @@ public class StatusAction extends TwitterFunction {
 	static final String POINT_LIKE_STATUS = "s_like";
 	static final String POINT_UNLIKE_STATUS = "s_ul";
 
+	@Override
+	public void points(LinkedList<String> points) {
+		
+		points.add(POINT_LIKE_STATUS);
+		points.add(POINT_UNLIKE_STATUS);
+		points.add(POINT_RETWEET_STATUS);
+		points.add(POINT_DESTROY_RETWEET);
+		points.add(POINT_DESTROY_STATUS);
+		points.add(POINT_SHOW_FULL);
+		
+	}
+	
 	public static ButtonMarkup createMarkup(final Status status,final boolean del,final boolean full) {
 
 		return new ButtonMarkup() {{
