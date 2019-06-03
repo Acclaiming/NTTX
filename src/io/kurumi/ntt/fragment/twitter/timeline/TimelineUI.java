@@ -40,6 +40,14 @@ public class TimelineUI extends TwitterFunction {
 
 		TLSetting setting = data.getById(user.id);
 
+		if (setting == null) {
+			
+			setting = new TLSetting();
+			
+			setting.id = account.id;
+			
+		}
+		
 		boolean target = !"off".equals(msg.text());
 
 		msg.send((("timeline".equals(function) ? setting.timeline : setting.mention) == target ? (target ? "无须重复开启" : "没有开启") : ("timeline".equals(function) ? (setting.timeline = target) : (setting.mention = target)) ? "已开启" : "已关闭")).exec();
@@ -56,33 +64,33 @@ public class TimelineUI extends TwitterFunction {
 
 	}
 
-	static Timer timer;
-
+	static Timer timer = new Timer("NTT Timeline Task");
+		
 	public static void start() {
+	
+		stop();
 		
-		TLTask task = new TLTask();
-		
-		task.timer = new Timer("NTT Timeline Task");
-		
-		task.timer.schedule(task,new Date());
+		timer.schedule(new TLTask(),new Date());
 		
 	}
 	
 	public static void stop() {
 		
+		if (timer != null) {
+		
 		timer.cancel();
+		
+		timer = null;
+		
+		}
 		
 	}
 
 	public static class TLTask extends TimerTask {
-
-		Timer timer;
 		
 		@Override
 		public void run() {
-
-			TimelineUI.timer = this.timer;
-			
+		
 			LinkedList<Long> toRemove = new LinkedList<>();
 
 			for (TLSetting setting : data.collection.find()) {
@@ -121,9 +129,9 @@ public class TimelineUI extends TwitterFunction {
 
 			long delay = (((users / (100000 / 24 / 60)) + 1) * 60 * 1000);
 			
-			this.timer = new Timer("NTT Timeline Task");
+			timer = new Timer("NTT Timeline Task");
 			
-			this.timer.schedule(this,new Date(System.currentTimeMillis() + delay));
+			timer.schedule(new TLTask(),new Date(System.currentTimeMillis() + delay));
 			
 		}
 
