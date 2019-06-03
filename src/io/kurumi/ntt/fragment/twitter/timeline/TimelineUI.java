@@ -38,7 +38,7 @@ public class TimelineUI extends TwitterFunction {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
-		TLSetting setting = data.getById(user.id);
+		TLSetting setting = data.getById(account.id);
 
 		if (setting == null) {
 			
