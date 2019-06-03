@@ -13,6 +13,7 @@ import io.kurumi.ntt.fragment.twitter.auto.*;
 import io.kurumi.ntt.funcs.twitter.track.*;
 import com.mongodb.client.*;
 import io.kurumi.ntt.funcs.twitter.track.TrackTask.*;
+import cn.hutool.core.lang.*;
 
 public class StatusFetch extends TwitterFunction {
 
@@ -44,13 +45,13 @@ public class StatusFetch extends TwitterFunction {
 		if (NumberUtil.isNumber(params[0])) {
 
 			targetL = NumberUtil.parseLong(params[0]);
-		
+
 		} else {
 
 			target = NTT.parseScreenName(params[0]);
 
 		}
-		
+
 		Msg status = msg.send("正在拉取...").send();
 
 		if (UserArchive.contains(targetL)) {
@@ -66,28 +67,26 @@ public class StatusFetch extends TwitterFunction {
 		boolean accessable = false;
 
 		TwitterException exc = null;
-		
+
 		status.edit("正在检查可用...").exec();
-		
+
+		ResponseList<Status> tl = null;
+
 		try {
 
 			archive = UserArchive.save(targetL == -1 ? api.showUser(target) : api.showUser(targetL));
 
 			try {
 
-				Relationship ship = api.showFriendship(archive.id,account.id);
-				
-				if (!(ship.isSourceBlockingTarget() || (archive.isProtected && !ship.isSourceFollowedByTarget()))) {
-					
-					status.edit("检查完成...").exec();
-					
-					accessable = true;
+				tl = api.getUserTimeline(archive.id,new Paging().count(200));
 
-				}
+				status.edit("检查完成...").exec();
+
+				accessable = true;
 
 
 			} catch (TwitterException e) {
-				
+
 				exc = e;
 
 			}
@@ -103,43 +102,43 @@ public class StatusFetch extends TwitterFunction {
 			}
 
 			exc = ex;
-			
+
 		}
 
 		if (!accessable) {
-			
+
 			status.edit("尝试拉取...").exec();
-			
+
 			TAuth accessableAuth = NTT.loopFindAccessable(targetL == -1 ? target : targetL);
-			
+
 			if (accessableAuth == null) {
-				
+
 				if (exc != null) {
-					
+
 					status.edit("尝试失败",NTT.parseTwitterException(exc)).exec();
-					
+
 					return;
-					
+
 				} else {
-					
+
 					status.edit("尝试失败","这个人锁推了...").exec();
-					
+
 					return;
-					
+
 				}
-				
+
 			}
-			
+
 			api = accessableAuth.createApi();
-			
+
 			if (archive == null) {
-				
+
 				archive = targetL == -1 ? UserArchive.get(target) : UserArchive.get(targetL);
-				
+
 			}
 
 		}
-		
+
 		int count = 0;
 
 		int exists = 0;
@@ -148,8 +147,11 @@ public class StatusFetch extends TwitterFunction {
 
 		try {
 
-			ResponseList<Status> tl = api.getUserTimeline(archive.id,new Paging().count(200));
+			if (tl == null) {
 
+				tl = api.getUserTimeline(archive.id,new Paging().count(200));
+
+			}
 			if (tl.isEmpty()) {
 
 				status.edit("这个用户没有发过推文...").exec();
