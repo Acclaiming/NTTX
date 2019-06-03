@@ -1,15 +1,16 @@
 package io.kurumi.ntt.model.request;
 
 import cn.hutool.core.util.*;
+import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.model.request.*;
 import com.pengrad.telegrambot.request.*;
 import com.pengrad.telegrambot.response.*;
 import io.kurumi.ntt.*;
+import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.fragment.*;
+import io.kurumi.ntt.fragment.twitter.status.*;
 import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.utils.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.fragment.twitter.status.*;
 
 public class Send extends AbstractSend<Send> {
 
@@ -230,7 +231,7 @@ public class Send extends AbstractSend<Send> {
 		
 		SendResponse resp = exec();
 		
-		if (resp.isOk()) {
+		if (resp.isOk() || resp.message().chat().type() == Chat.Type.Private) {
 			
 			MessagePoint.set(resp.message().messageId(),type,targetId);
 			
