@@ -138,7 +138,7 @@ public class TimelineUI extends TwitterFunction {
 			
 			long users = data.countByField("mention",true);
 
-			long delay = (((users / (100000 / 24 / 60)) + 1) * 60 * 1000);
+			long delay = ((users / (100000 / 24 / 60))) * 60 * 1000 + 30 * 1000;
 			
 			timer = new Timer("NTT Timeline Task");
 			
@@ -151,11 +151,16 @@ public class TimelineUI extends TwitterFunction {
 			if (setting.mentionOffset != -1) {
 				
 				ResponseList<Status> mentions = api.getMentionsTimeline(new Paging().count(800).sinceId(setting.mentionOffset + 1));
-
-				new Send(auth.user,"fetched " + mentions.size()).exec();
 				
+				long offset = -1;
 				
 				for (Status mention : mentions) {
+					
+					if (mention.getId() > offset) {
+						
+						offset = mention.getId();
+						
+					}
 					
 					StatusArchive archive = StatusArchive.save(mention,api);
 
@@ -163,9 +168,9 @@ public class TimelineUI extends TwitterFunction {
 					
 				}
 				
-			} else {
+				setting.mentionOffset = offset;
 				
-				new Send(auth.user,"starting fetch").exec();
+			} else {
 				
 				ResponseList<Status> mention = api.getMentionsTimeline(new Paging().count(1));
 
@@ -173,13 +178,8 @@ public class TimelineUI extends TwitterFunction {
 					
 					setting.mentionOffset = 0;
 					
-					new Send(auth.user,"fetched none").exec();
-
-					
 				} else {
-					
-					new Send(auth.user,"fetched offset").exec();
-					
+
 					setting.mentionOffset = mention.get(0).getId();
 					
 				}
