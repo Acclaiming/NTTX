@@ -129,7 +129,7 @@ public class TimelineUI extends TwitterFunction {
 					
 					StatusArchive archive = StatusArchive.save(mention,api);
 
-					new Send(auth.user,archive.toHtml(1)).buttons(StatusAction.createMarkup(mention,auth.id.equals(mention.getUser().getId()),archive.depth() <= 1)).html().exec();
+					new Send(auth.user,archive.toHtml(1)).buttons(StatusAction.createMarkup(mention,auth.id.equals(mention.getUser().getId()),archive.depth() <= 1)).html().point(1,archive.id);
 					
 				}
 				
