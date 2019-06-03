@@ -72,9 +72,13 @@ public class TimelineUI extends TwitterFunction {
 
 	public static class TLTask extends TimerTask {
 
+		Timer timer;
+		
 		@Override
 		public void run() {
 
+			TimelineUI.timer = this.timer;
+			
 			LinkedList<Long> toRemove = new LinkedList<>();
 
 			for (TLSetting setting : data.collection.find()) {
@@ -113,9 +117,9 @@ public class TimelineUI extends TwitterFunction {
 
 			long delay = (((users / (100000 / 24 / 60)) + 1) * 60 * 1000);
 			
-			timer = new Timer("NTT Timeline Task");
+			this.timer = new Timer("NTT Timeline Task");
 			
-			timer.schedule(this,new Date(System.currentTimeMillis() + delay));
+			this.timer.schedule(this,new Date(System.currentTimeMillis() + delay));
 			
 		}
 
