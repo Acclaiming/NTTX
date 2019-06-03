@@ -156,7 +156,7 @@ public class TimelineUI extends TwitterFunction {
 
 				// utc 2019 06 19 Twitter将mention_timeline限制为每天 10w次总共调用。
 
-				delay = 10 * 1000;
+				delay = 20 * 1000;
 
 			}
 
