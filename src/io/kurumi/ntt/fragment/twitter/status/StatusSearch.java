@@ -59,8 +59,8 @@ public class StatusSearch extends Function {
 
 				} else {
 
-					if (fromC.startsWith("@")) fromC = fromC.substring(1);
-
+					fromC = NTT.parseScreenName(fromC);
+				
 					UserArchive archive = UserArchive.get(fromC);
 
 					if (archive == null) {
@@ -84,8 +84,8 @@ public class StatusSearch extends Function {
 					to = NumberUtil.parseLong(toC);
 
 				} else {
-
-					if (toC.startsWith("@")) toC = toC.substring(1);
+					
+					toC = NTT.parseScreenName(toC);
 
 					UserArchive archive = UserArchive.get(toC);
 
@@ -105,18 +105,7 @@ public class StatusSearch extends Function {
 
 				String replyC = StrUtil.subAfter(param,"=",false);
 
-				try {
-
-					reply = Long.parseLong(replyC);
-
-				} catch (NumberFormatException ex) {
-
-					msg.send("utc : " + replyC + " 不是一个有效的数字").exec();
-
-					return;
-
-				}
-
+				reply = NumberUtil.parseLong(replyC);
 
 			} else if (param.startsWith("media=")) {
 

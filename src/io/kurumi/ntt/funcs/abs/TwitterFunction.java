@@ -41,9 +41,9 @@ public abstract class TwitterFunction extends Function {
 
         } else {
 
-             if (msg.isGroup() && target() == PrivateOnly) {
+             if (msg.isGroup() && (target() == Private || target() == PrivateOnly)) {
 				
-				 if (!user.contactable()) {
+				 if (target() == PrivateOnly || !user.contactable()) {
 
 					 msg.send("请使用私聊 (˚☐˚! )/").publicFailed();
 

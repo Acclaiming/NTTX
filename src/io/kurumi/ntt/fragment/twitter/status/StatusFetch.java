@@ -172,7 +172,7 @@ public class StatusFetch extends TwitterFunction {
 
 				tl = api.getUserTimeline(target.getId(),new Paging().count(200).maxId(sinceId - 1));
 
-				if (exists >= 20) {
+				if (exists >= 10) {
 
 					break w;
 
@@ -188,7 +188,7 @@ public class StatusFetch extends TwitterFunction {
 
 					if (!all) {
 
-						if (exists >= 20) {
+						if (exists >= 10) {
 							
 							break w;
 

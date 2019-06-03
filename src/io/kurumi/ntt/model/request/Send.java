@@ -9,6 +9,7 @@ import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.utils.*;
 import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.fragment.twitter.status.*;
 
 public class Send extends AbstractSend<Send> {
 
@@ -224,6 +225,20 @@ public class Send extends AbstractSend<Send> {
         return new Msg(fragment,resp.message());
 
     }
+	
+	public SendResponse point(int type,long targetId) {
+		
+		SendResponse resp = exec();
+		
+		if (resp.isOk()) {
+			
+			MessagePoint.set(resp.message().messageId(),type,targetId);
+			
+		}
+		
+		return resp;
+
+	}
 
     @Override
     public SendResponse exec() {

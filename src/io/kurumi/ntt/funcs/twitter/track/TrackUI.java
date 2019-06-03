@@ -36,7 +36,7 @@ public class TrackUI extends TwitterFunction {
 	@Override
 	public int target() {
 		
-		return PrivateOnly;
+		return Private;
 		
 	}
 

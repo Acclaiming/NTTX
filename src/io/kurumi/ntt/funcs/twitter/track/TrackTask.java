@@ -27,6 +27,8 @@ import java.io.*;
 import com.pengrad.telegrambot.model.request.*;
 import io.kurumi.ntt.fragment.twitter.auto.*;
 import cn.hutool.core.io.*;
+import com.pengrad.telegrambot.response.*;
+import io.kurumi.ntt.fragment.twitter.status.*;
 
 
 public class TrackTask extends TimerTask {
@@ -221,7 +223,7 @@ public class TrackTask extends TimerTask {
 
 		if (archive.oldPhotoUrl == null && (archive.oldBannerUrl == null || archive.bannerUrl == null)) {
 
-			new Send(account.user,msg.toString()).html().exec();
+			new Send(account.user,msg.toString()).html().point(0,archive.id);
 
 		} else if (archive.oldPhotoUrl != null) {
 
@@ -233,8 +235,14 @@ public class TrackTask extends TimerTask {
 
 			}
 
-			Launcher.INSTANCE.bot().execute(new SendPhoto(account.user,photo).caption(msg.toString()).parseMode(ParseMode.HTML));
+			SendResponse resp = Launcher.INSTANCE.bot().execute(new SendPhoto(account.user,photo).caption(msg.toString()).parseMode(ParseMode.HTML));
 
+			if (resp.isOk()) {
+				
+				MessagePoint.set(resp.message().messageId(),0,archive.id);
+				
+			}
+			
 		} else {
 
 			File photo = new File(Env.CACHE_DIR,"twitter_banner_images/" + archive.id + "/" + System.currentTimeMillis() + ".jpg");
@@ -245,9 +253,14 @@ public class TrackTask extends TimerTask {
 
 			}
 
-			Launcher.INSTANCE.bot().execute(new SendPhoto(account.user,photo).caption(msg.toString()).parseMode(ParseMode.HTML));
+			SendResponse resp = Launcher.INSTANCE.bot().execute(new SendPhoto(account.user,photo).caption(msg.toString()).parseMode(ParseMode.HTML));
 
+			if (resp.isOk()) {
 
+				MessagePoint.set(resp.message().messageId(),0,archive.id);
+
+			}
+			
 		}
 
 	}
@@ -420,7 +433,7 @@ public class TrackTask extends TimerTask {
 
 			if (notice) {
 
-				new Send(auth.user,(ship.isSourceFollowingTarget() ? "已关注的 " : "") + archive.urlHtml() + " #" + archive.screenName + " 关注了你 :)",parseStatus(api,follower)).html().exec();
+				new Send(auth.user,(ship.isSourceFollowingTarget() ? "已关注的 " : "") + archive.urlHtml() + " #" + archive.screenName + " 关注了你 :)",parseStatus(api,follower)).html().point(0,archive.id);
 
 			}
 
@@ -434,11 +447,11 @@ public class TrackTask extends TimerTask {
 
 				UserArchive archive = UserArchive.get(id);
 
-                new Send(auth.user,archive.urlHtml() + " #" + archive.screenName + " 关注了你 , 但是该账号已经不存在了 :(").html().exec();
+                new Send(auth.user,archive.urlHtml() + " #" + archive.screenName + " 关注了你 , 但是该账号已经不存在了 :(").html().point(0,archive.id);
 
             } else {
 
-                new Send(auth.user,"用户 (" + id + ") 关注了你 , 但是该账号已经不存在了 :(").html().exec();
+                new Send(auth.user,"用户 (" + id + ") 关注了你 , 但是该账号已经不存在了 :(").html().point(0,id);
 
             }
 
@@ -459,11 +472,11 @@ public class TrackTask extends TimerTask {
 
 				if (ship.isSourceBlockingTarget()) {
 
-					new Send(auth.user,archive.urlHtml() + " #" + archive.screenName + " 取关并屏蔽了你 :)").html().exec();
+					new Send(auth.user,archive.urlHtml() + " #" + archive.screenName + " 取关并屏蔽了你 :)").html().point(0,archive.id);
 
 				} else {
 
-					new Send(auth.user,archive.urlHtml() + " #" + archive.screenName + " 取关了你 :)").html().exec();
+					new Send(auth.user,archive.urlHtml() + " #" + archive.screenName + " 取关了你 :)").html().point(0,archive.id);
 
 				}
 
@@ -477,11 +490,11 @@ public class TrackTask extends TimerTask {
 
 				UserArchive archive = UserArchive.get(id);
 
-                new Send(auth.user,"关注者 " + archive.urlHtml() + " #" + archive.screenName + " 的账号已经不存在了 :(").html().exec();
+                new Send(auth.user,"关注者 " + archive.urlHtml() + " #" + archive.screenName + " 的账号已经不存在了 :(").html().point(0,archive.id);
 
             } else {
 
-                new Send(auth.user,"无记录的关注者 (" + id + ") 的账号已经不存在了 :(").html().exec();
+                new Send(auth.user,"无记录的关注者 (" + id + ") 的账号已经不存在了 :(").html().point(0,id);
 
             }
 

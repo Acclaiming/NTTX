@@ -25,6 +25,7 @@ import io.kurumi.ntt.twitter.archive.*;
 import io.kurumi.ntt.fragment.twitter.status.*;
 import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.fragment.tieba.*;
+import io.kurumi.ntt.fragment.twitter.action.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -111,7 +112,21 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		// 贴吧
 		
-		addFragment(new TiebaLogin());
+		// addFragment(new TiebaLogin());
+		
+		// Twitter Action
+		
+		addFragment(new Follow());
+		
+		addFragment(new UnFollow());
+		
+		addFragment(new Mute());
+		
+		addFragment(new UnMute());
+		
+		addFragment(new Block());
+		
+		addFragment(new UnBlock());
 		
 		// Twitter
 		

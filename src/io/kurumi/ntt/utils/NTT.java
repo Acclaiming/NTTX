@@ -155,6 +155,12 @@ public class NTT {
 			}
 
         }
+		
+		if (input.contains("@")) {
+			
+			input = StrUtil.subAfter(input,"@",false);
+			
+		}
 
         return input;
 
