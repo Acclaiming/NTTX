@@ -113,6 +113,8 @@ public class StatusAction extends TwitterFunction {
 	@Override
 	public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
+		callback.send("start").exec();
+		
 		long statusId = Long.parseLong(params[0]);
 
 		boolean isFull = params.length > 1 && "true".equals(params[1]);
@@ -124,6 +126,7 @@ public class StatusAction extends TwitterFunction {
 			callback.alert("这需要认证Twitter账号才可使用 :) \n请私聊BOT使用 /login");
 
 			return;
+			
 		}
 
 		TAuth auth;
@@ -174,6 +177,8 @@ public class StatusAction extends TwitterFunction {
 
 		}
 
+		callback.send("checked").exec();
+		
 		if (POINT_LIKE_STATUS.equals(point)) {
 
 			try {
@@ -260,6 +265,8 @@ public class StatusAction extends TwitterFunction {
 
 		callback.editMarkup(createMarkup(status,status.getUser().equals(auth.id),isFull));
 
+		callback.send("finish").exec();
+		
 	}
 
 
