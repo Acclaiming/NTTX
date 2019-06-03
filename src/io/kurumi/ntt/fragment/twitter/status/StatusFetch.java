@@ -36,80 +36,104 @@ public class StatusFetch extends TwitterFunction {
 
 		Twitter api = account.createApi();
 
-		User target;
+		String target = null;
+		long targetL = -1;
+
+		UserArchive archive = null;
 
 		if (NumberUtil.isNumber(params[0])) {
 
-			try {
-
-				target = api.showUser(NumberUtil.parseLong(params[0]));
-
-			} catch (TwitterException e) {
-
-				msg.send(NTT.parseTwitterException(e)).exec();
-
-				return;
-
-			}
-
+			targetL = NumberUtil.parseLong(params[0]);
+		
 		} else {
 
+			target = NTT.parseScreenName(params[0]);
+
+		}
+		
+		Msg status = msg.send("正在拉取...").send();
+
+		if (UserArchive.contains(targetL)) {
+
+			archive = UserArchive.get(targetL);
+
+		} else if (UserArchive.contains(target)) {
+
+			archive = UserArchive.get(target);
+
+		}
+
+		boolean accessable = false;
+
+		TwitterException exc = null;
+		
+		try {
+
+			archive = UserArchive.save(targetL == -1 ? api.showUser(target) : api.showUser(targetL));
+
 			try {
 
-				target = api.showUser(NTT.parseScreenName(params[0]));
+				Relationship ship = api.showFriendship(archive.id,account.id);
+
+				if (!ship.isSourceBlockingTarget() && !(archive.isProtected && !ship.isSourceFollowedByTarget())) {
+
+					accessable = true;
+
+				}
+
 
 			} catch (TwitterException e) {
+				
+				exc = e;
 
-				msg.send(NTT.parseTwitterException(e)).exec();
+			}
+
+		} catch (TwitterException ex) {
+
+			if (ex.getErrorCode() != 136) {
+
+				status.edit(NTT.parseTwitterException(ex)).exec();
 
 				return;
 
 			}
 
-
+			exc = ex;
+			
 		}
 
-		try {
-
-			Relationship ship = api.showFriendship(target.getId(),account.id);
-
-			if (target.isProtected() && !ship.isSourceFollowedByTarget()) {
-
-				TrackTask.IdsList newAcc = TrackTask.friends.getByField("ids",target.getId());
-
-				if (newAcc == null) {
-
-					msg.send("这个人锁推了...").exec();
-
+		if (!accessable) {
+			
+			TAuth accessableAuth = NTT.loopFindAccessable(targetL == -1 ? target : targetL);
+			
+			if (accessableAuth == null) {
+				
+				if (exc != null) {
+					
+					status.edit(NTT.parseTwitterException(exc)).exec();
+					
 					return;
-
-				}
-
-				api = TAuth.getById(newAcc.id).createApi();
-
-			} else if (ship.isSourceBlockingTarget()) {
-
-				TrackTask.IdsList newAcc = TrackTask.friends.getByField("ids",target.getId());
-
-				if (newAcc == null) {
-
-					msg.send("这个人屏蔽了你...").exec();
-
+					
+				} else {
+					
+					status.edit("这个人锁推了...").exec();
+					
 					return;
-
+					
 				}
-
-				api = TAuth.getById(newAcc.id).createApi();
-
-
+				
+			}
+			
+			api = accessableAuth.createApi();
+			
+			if (archive == null) {
+				
+				archive = targetL == -1 ? UserArchive.get(target) : UserArchive.get(targetL);
+				
 			}
 
-		} catch (TwitterException e) {
-
 		}
-
-		Msg status = msg.send("正在拉取...").send();
-
+		
 		int count = 0;
 
 		int exists = 0;
@@ -118,7 +142,7 @@ public class StatusFetch extends TwitterFunction {
 
 		try {
 
-			ResponseList<Status> tl = api.getUserTimeline(target.getId(),new Paging().count(200));
+			ResponseList<Status> tl = api.getUserTimeline(archive.id,new Paging().count(200));
 
 			if (tl.isEmpty()) {
 
@@ -170,14 +194,14 @@ public class StatusFetch extends TwitterFunction {
 
 			w:while (!tl.isEmpty()) {
 
-				tl = api.getUserTimeline(target.getId(),new Paging().count(200).maxId(sinceId - 1));
+				tl = api.getUserTimeline(archive.id,new Paging().count(200).maxId(sinceId - 1));
 
 				if (exists >= 10) {
 
 					break w;
 
 				}
-				
+
 				for (Status s : tl) {
 
 					if (s.getId() < sinceId || sinceId == -1) {
@@ -189,25 +213,25 @@ public class StatusFetch extends TwitterFunction {
 					if (!all) {
 
 						if (exists >= 10) {
-							
+
 							break w;
 
 						}
 
 						if (StatusArchive.data.containsId(s.getId())) {
-							
+
 							exists ++;
-							
+
 							count --;
-							
+
 						} else {
-							
+
 							exists = 0;
-							
+
 						}
-						
+
 					}
-					
+
 
 					StatusArchive.save(s).loop(api);
 

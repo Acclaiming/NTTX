@@ -209,7 +209,7 @@ public class StatusAction extends TwitterFunction {
 
 			} catch (TwitterException e) {
 
-				liked = false;
+				liked = true;
 				
 				callback.alert(NTT.parseTwitterException(e));
 

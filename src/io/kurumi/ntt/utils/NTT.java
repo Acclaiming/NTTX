@@ -8,8 +8,13 @@ import io.kurumi.ntt.*;
 import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.model.request.*;
+import io.kurumi.ntt.twitter.*;
 import java.util.*;
 import twitter4j.*;
+import io.kurumi.ntt.funcs.twitter.track.*;
+import com.mongodb.client.*;
+import io.kurumi.ntt.funcs.twitter.track.TrackTask.*;
+import io.kurumi.ntt.twitter.archive.*;
 
 public class NTT {
 
@@ -54,6 +59,63 @@ public class NTT {
 	 }
 
 	 */
+	 
+	public static TAuth loopFindAccessable(Object idOrScreenName) {
+		
+		long targetL = idOrScreenName instanceof Number ? NumberUtil.parseLong(idOrScreenName.toString()) : -1;
+		String targetS = idOrScreenName.toString();
+		
+		for (TAuth auth : TAuth.data.collection.find()) {
+			
+			Twitter api = auth.createApi();
+
+			try {
+				
+				UserArchive user = UserArchive.save(targetL == -1 ? api.showUser(targetS) : api.showUser(targetL));
+
+				if (user.isProtected) {
+					
+					FindIterable<TrackTask.IdsList> accs = TrackTask.friends.findByField("ids",user.id);
+					
+					for (TrackTask.IdsList acc : accs) {
+						
+						TAuth newAuth = TAuth.getById(acc.id);
+						
+						if (newAuth == null) continue;
+					
+						try {
+							
+							if (newAuth.createApi().showFriendship(acc.id,user.id).isSourceFollowingTarget()) {
+
+								return newAuth;
+
+							}
+							
+						} catch (TwitterException e) {}
+
+					}
+					
+					return null;
+					
+				}
+				
+				return auth;
+				
+			} catch (TwitterException e) {
+				
+				if (ArrayUtil.contains(new int[] { 17,34,50 },e.getErrorCode())) {
+					
+					return null;
+					
+				}
+				
+			}
+
+		}
+		
+		return null;
+		
+	}
 
 	public static String parseTwitterException(TwitterException exc) {
 
@@ -90,6 +152,8 @@ public class NTT {
 			case 131 : return "Twitter服务器内部问题 请稍后再试";
 			
 			case 135 : return "服务器时间戳错误，请联系开发者";
+			
+			case 136 : return "操作失败 : 你被对方屏蔽";
 			
 			case 139 : return "你已经喜欢过了这条推文";
 			
