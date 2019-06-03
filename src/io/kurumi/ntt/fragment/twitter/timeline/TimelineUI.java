@@ -56,11 +56,15 @@ public class TimelineUI extends TwitterFunction {
 
 	}
 
-	static Timer timer = new Timer("NTT Timeline Task");
+	static Timer timer;
 
 	public static void start() {
 		
-		timer.schedule(new TLTask(),new Date());
+		TLTask task = new TLTask();
+		
+		task.timer = new Timer("NTT Timeline Task");
+		
+		task.timer.schedule(task,new Date());
 		
 	}
 	
