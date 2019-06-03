@@ -46,7 +46,7 @@ public class Mute extends TwitterFunction {
 
 					} catch (TwitterException e) {
 
-						msg.send("找不到用户 : #" + screenName).exec();
+						msg.send(NTT.parseTwitterException(e)).exec();
 
 						return;
 
@@ -104,7 +104,7 @@ public class Mute extends TwitterFunction {
 
 		} catch (TwitterException e) {
 
-			msg.send("找不到这个用户").exec();
+			msg.send(NTT.parseTwitterException(e)).exec();
 
 			return;
 
@@ -124,11 +124,11 @@ public class Mute extends TwitterFunction {
 
 			api.createMute(targetId);
 
-			msg.send("已停用来自 " + archive.urlHtml() + " 的通知 ~").html().point(0,targetId);
+			msg.send("已静音来自 " + archive.urlHtml() + " 的通知 ~").html().point(0,targetId);
 
 		} catch (TwitterException e) {
 
-			msg.send("停用失败 :",e.toString()).exec();
+			msg.send("静音失败 :",NTT.parseTwitterException(e)).exec();
 
 		}
 

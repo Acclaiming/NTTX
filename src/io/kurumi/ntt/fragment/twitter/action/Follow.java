@@ -46,7 +46,7 @@ public class Follow extends TwitterFunction {
 						
 					} catch (TwitterException e) {
 						
-						msg.send("找不到用户 : #" + screenName).exec();
+					msg.send(NTT.parseTwitterException(e)).exec();
 						
 						return;
 						
@@ -104,7 +104,7 @@ public class Follow extends TwitterFunction {
 
 		} catch (TwitterException e) {
 
-			msg.send("找不到这个用户").exec();
+		msg.send(NTT.parseTwitterException(e)).exec();
 
 			return;
 
@@ -134,7 +134,7 @@ public class Follow extends TwitterFunction {
 
 		} catch (TwitterException e) {
 
-			msg.send("关注失败 :",e.toString()).exec();
+			msg.send("关注失败 :",NTT.parseTwitterException(e)).exec();
 
 		}
 		
