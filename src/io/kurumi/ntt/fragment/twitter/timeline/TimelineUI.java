@@ -150,7 +150,7 @@ public class TimelineUI extends TwitterFunction {
 
 			long users = data.countByField("mention",true);
 
-			long delay = ((users / (100000 / 24 / 60))) * 60 * 1000 + 10 * 1000;
+			long delay = ((users / (100000 / 24 / 60))) * 60 * 1000 + 30 * 1000;
 
 			if (System.currentTimeMillis() < 1560873571200L) {
 
