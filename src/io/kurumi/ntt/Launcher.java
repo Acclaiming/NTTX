@@ -26,6 +26,7 @@ import io.kurumi.ntt.fragment.twitter.status.*;
 import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.fragment.tieba.*;
 import io.kurumi.ntt.fragment.twitter.action.*;
+import io.kurumi.ntt.fragment.twitter.timeline.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -59,7 +60,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		super.start();
 		
-		AutoTask.start();
+		TimelineUI.start();
+		
+		// AutoTask.start();
 		
 		TrackTask.start();
 		
@@ -74,7 +77,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		if (super.silentStart()) {
 			
-			AutoTask.start();
+			// AutoTask.start();
+			
+			TimelineUI.start();
 			
 			TrackTask.start();
 			
@@ -144,6 +149,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		addFragment(new TrackUI());
 		
+		addFragment(new TimelineUI());
+		
 		addFragment(new BlockList());
 		
 		addFragment(new GroupRepeat());
@@ -193,7 +200,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public void stop() {
 
-		AutoTask.stop();
+		// AutoTask.stop();
 		
 		// mtp.stopBot();
 
@@ -214,6 +221,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
          SubTask.stopAll();
 
          */
+		 
+		 TimelineUI.stop();
 
         TrackTask.stop();
 

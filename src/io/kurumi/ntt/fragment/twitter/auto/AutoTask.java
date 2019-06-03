@@ -8,8 +8,10 @@ import cn.hutool.core.util.*;
 import io.kurumi.ntt.utils.*;
 import io.kurumi.ntt.twitter.archive.*;
 
-public class AutoTask extends TimerTask {
+public class AutoTask {
 
+	/*
+	
 	public static AutoTask INSTANCE = new AutoTask();
 
 	public static Timer timer;
@@ -35,6 +37,8 @@ public class AutoTask extends TimerTask {
 		}
 
 	}
+	
+	*/
 
 	public static void onNewFollower(TAuth auth,Twitter api,UserArchive archive,Relationship ship) {
 
@@ -56,6 +60,8 @@ public class AutoTask extends TimerTask {
 		}
 
 	}
+	
+	/*
 
 	@Override
 	public void run() {
@@ -64,7 +70,7 @@ public class AutoTask extends TimerTask {
 
 			AutoUI.AutoSetting auto = AutoUI.autoData.getById(auth.id);
 
-			/*
+			
 
 			 if (auth == null) {
 
@@ -75,8 +81,7 @@ public class AutoTask extends TimerTask {
 			 return;
 
 			 }
-
-			 */
+			 
 			 
 			 if (auto == null) auto = new AutoUI.AutoSetting();
 
@@ -85,17 +90,6 @@ public class AutoTask extends TimerTask {
 				startLikeService(auth,auto);
 
 			} catch (TwitterException e) {
-
-				if (auto.like) {
-				
-				auto.like = false;
-
-				AutoUI.autoData.setById(auto.id,auto);
-			
-				new Send(auth.user,"自动打心已关闭 : " + NTT.parseTwitterException(e)).exec();
-
-				}
-				
 			}
 
 		}
@@ -104,16 +98,14 @@ public class AutoTask extends TimerTask {
 
 	static LinkedHashSet<Long> saved = new LinkedHashSet<>();
 
-	void startLikeService(TAuth auth,AutoUI.AutoSetting auto) throws TwitterException {
+	void startService(TAuth auth,AutoUI.AutoSetting auto) throws TwitterException {
 
 		Twitter api = auth.createApi();
 
 		ResponseList<Status> tl = api.getHomeTimeline(new Paging().count(800));
 
 		int count = 0;
-
-		int max = RandomUtil.randomInt(5,40);
-
+		
 		for (Status status : tl) {
 
 			if (auto.archive && !saved.contains(status.getId())) {
@@ -130,32 +122,7 @@ public class AutoTask extends TimerTask {
 
 			}
 
-			if (count < max && auto.like) {
-
-				//	count += loopLike(auth,api,status);
-
-				if (status.isFavorited()) continue;
-				if (auth.id.equals(status.getUser().getId())) continue;
-				if (status.isRetweet()) continue;
-
-				try {
-
-					api.createFavorite(status.getId());
-
-					count ++;
-
-				} catch (TwitterException ex) {
-
-					if (ex.getErrorCode() != 34 && ex.getErrorCode() != 139) {
-
-						throw ex;
-
-					}
-
-				}
-
-			}
-
+		
 		}
 
 		if (count > 0) {
@@ -231,5 +198,7 @@ public class AutoTask extends TimerTask {
 
 
 	}
+	
+	*/
 
 }

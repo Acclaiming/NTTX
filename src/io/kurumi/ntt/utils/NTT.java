@@ -143,7 +143,7 @@ public class NTT {
 
     public static boolean isUserContactable(long id) {
 
-        SendResponse resp = new Send(id,"testContactable").disableNotification().exec();
+        SendResponse resp = new Send(id,"test_user_ontactable").disableNotification().exec();
 
         if (!resp.isOk()) return false;
 

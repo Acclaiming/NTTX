@@ -164,6 +164,40 @@ public class StatusArchive {
         return toHtml(-1);
 
     }
+	
+	public int depth() {
+		
+		int depth = 0;
+		
+		if (quotedStatusId != -1) {
+			
+			depth ++;
+			
+			StatusArchive quotedStatus = StatusArchive.get(quotedStatusId);
+
+			if (quotedStatus == null) {
+				
+				depth += quotedStatus.depth();
+				
+			}
+			
+		} else if (inReplyToStatusId != -1) {
+			
+			depth ++;
+			
+			StatusArchive inReplyTo = StatusArchive.get(inReplyToStatusId);
+
+			if (inReplyTo != null) {
+				
+				depth += inReplyTo.depth();
+				
+			}
+			
+		}
+		
+		return depth;
+		
+	}
 
     public String toHtml(int depth) {
 
