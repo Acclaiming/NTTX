@@ -112,8 +112,6 @@ public class StatusAction extends TwitterFunction {
 
 	@Override
 	public void onCallback(UserData user,Callback callback,String point,String[] params) {
-
-		callback.send("start").exec();
 		
 		long statusId = Long.parseLong(params[0]);
 
@@ -195,8 +193,6 @@ public class StatusAction extends TwitterFunction {
 			
 		}
 	
-		callback.send("checked").exec();
-		
 		if (POINT_LIKE_STATUS.equals(point)) {
 
 			try {
@@ -219,7 +215,7 @@ public class StatusAction extends TwitterFunction {
 
 			try {
 
-				api.destroyStatus(statusId);
+				api.destroyFavorite(statusId);
 				
 				liked = false;
 
@@ -227,7 +223,7 @@ public class StatusAction extends TwitterFunction {
 
 			} catch (TwitterException e) {
 
-				liked = true;
+				liked = false;
 				
 				callback.alert(NTT.parseTwitterException(e));
 
@@ -300,8 +296,6 @@ public class StatusAction extends TwitterFunction {
 		}
 
 		callback.editMarkup(createMarkup(archive.id,archive.from.equals(auth.id),isFull,retweeted,rtid,liked));
-
-		callback.send("finish").exec();
 		
 	}
 
