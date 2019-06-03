@@ -59,68 +59,60 @@ public class NTT {
 	 }
 
 	 */
-	 
+
 	public static TAuth loopFindAccessable(Object idOrScreenName) {
-		
-		long targetL = idOrScreenName instanceof Number ? NumberUtil.parseLong(idOrScreenName.toString()) : -1;
+
+		long targetL = NumberUtil.isNumber(idOrScreenName.toString()) ? NumberUtil.parseLong(idOrScreenName.toString()) : -1;
 		String targetS = idOrScreenName.toString();
-		
+
 		for (TAuth auth : TAuth.data.collection.find()) {
-			
+
 			Twitter api = auth.createApi();
 
 			try {
-				
+
 				UserArchive user = UserArchive.save(targetL == -1 ? api.showUser(targetS) : api.showUser(targetL));
 
 				if (user.isProtected) {
-					
+
 					FindIterable<TrackTask.IdsList> accs = TrackTask.friends.findByField("ids",user.id);
-					
+
 					for (TrackTask.IdsList acc : accs) {
-						
+
 						TAuth newAuth = TAuth.getById(acc.id);
-						
+
 						if (newAuth == null) continue;
-					
-						try {
-							
-							if (newAuth.createApi().showFriendship(acc.id,user.id).isSourceFollowingTarget()) {
 
-								return newAuth;
-
-							}
-							
-						} catch (TwitterException e) {}
+						return newAuth;
 
 					}
-					
+
 					return null;
-					
+
 				}
-				
+
 				return auth;
-				
+
 			} catch (TwitterException e) {
-				
+
 				if (ArrayUtil.contains(new int[] { 17,34,50 },e.getErrorCode())) {
-					
+
 					return null;
-					
+
 				}
-				
+
 			}
 
 		}
-		
+
 		return null;
-		
+
 	}
 
 	public static String parseTwitterException(TwitterException exc) {
 
 		switch (exc.getStatusCode()) {
-			
+
 			case 410 : return "这个操作已经不存在了";
 
 			case TwitterException.TOO_MANY_REQUESTS : return "请求过多被限制 : 请稍后操作";
@@ -148,59 +140,59 @@ public class NTT {
 			case 93 : return "NTT无权操作私信 如果重新认证账号仍无法操作，请联系开发者";
 
 			case 130 : return "Twitter服务器超载 请稍后再试";
-			
+
 			case 131 : return "Twitter服务器内部问题 请稍后再试";
-			
+
 			case 135 : return "服务器时间戳错误，请联系开发者";
-			
+
 			case 136 : return "操作失败 : 你被对方屏蔽";
-			
+
 			case 139 : return "你已经喜欢过了这条推文";
-			
+
 			case 144 : return "推文找不到 / 被删除";
-			
+
 			case 150 : return "你没有关注对方，无法发送私信";
-			
+
 			case 151 : return "发送私信错误 : " + exc.getMessage();
-			
+
 			case 160 : return "已经发送过关注请求了";
-			
+
 			case 161 : return "超过用户单日关注上限 : 这通常是400人";
-			
+
 			case 179 : return "推文无法取得 : 对方锁推且未被关注";
-			
+
 			case 185 : return "无法发送推文 : 发推数量超过上限";
-			
+
 			case 186 : return "无法发送推文 : 文本太长 限制为 180 字";
-			
+
 			case 187 : return "无法发送推文 : 与上一条重复 你是复读机吗？";
-			
+
 			case 205 : return "操作失败，请稍后再试 : 你被jvbao了";
-			
+
 			case 226 : return "操作失败 : Twitter认为这是程序自动进行的恶意操作";
-			
+
 			case 261 : return "NTT无权进行写操作 : 请联系开发者";
-			
+
 			case 271 : return "你不能对你自己静音";
-			
+
 			case 272 : return "你没有对这个用户静音";
-			
+
 			case 323 : return "同时发送多张图片时 不允许其他媒体 (指视频或Gif)";
-			
+
 			case 326 : return "账号被Twitter限制 : 你必须登录Twitter网站/客户端来解除这个限制 : 这通常需要验证手机";
-			
+
 			case 327 : return "你已经转推过了这条推文";
-			
+
 			case 349 : return "你不被允许发送消息给对方";
-			
+
 			case 354 : return "发送失败 : 私聊消息字数超过限制";
-			
+
 			case 385 : return "你不能回复一条你不可查看或已被删除的推文";
-			
+
 			case 416 : return "NTT接口无效/被停用 : 通常是因为开发者账号被停用/冻结";
-			
+
 			default : return "其他错误 请联系开发者 : " + exc.getErrorCode() + " " + exc.getMessage();
-			
+
 		}
 
 	}
