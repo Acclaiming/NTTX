@@ -65,41 +65,41 @@ public class StatusAction extends TwitterFunction {
 		
 	}
 	
-	public static ButtonMarkup createMarkup(final Status status,final boolean del,final boolean full) {
+	public static ButtonMarkup createMarkup(final long statusId,final boolean del,final boolean full,final boolean retweeted,final long rtid,final boolean liked) {
 
 		return new ButtonMarkup() {{
 
 				ButtonLine line = newButtonLine();
 
-				if (status.isRetweetedByMe()) {
+				if (retweeted) {
 
-					line.newButton("❎️",POINT_DESTROY_RETWEET,status.getCurrentUserRetweetId(),full);
+					line.newButton("❎️",POINT_DESTROY_RETWEET,rtid,full);
 
 				} else {
 
-					line.newButton("🔄",POINT_RETWEET_STATUS,status.getId(),full);
+					line.newButton("🔄",POINT_RETWEET_STATUS,statusId,full);
 
 				}
 
-				if (status.isFavorited()) {
+				if (liked) {
 
-					line.newButton("💔",POINT_UNLIKE_STATUS,status.getId(),full);
+					line.newButton("💔",POINT_UNLIKE_STATUS,statusId,full);
 
 				} else {
 
-					line.newButton("❤",POINT_LIKE_STATUS,status.getId(),full);
+					line.newButton("❤",POINT_LIKE_STATUS,statusId,full);
 
 				}
 
 				if (del) {
 
-					line.newButton("❌️",POINT_DESTROY_STATUS,status.getId());
+					line.newButton("❌️",POINT_DESTROY_STATUS,statusId);
 
 				}
 
 				if (!full) {
 
-					line.newButton("🔎",POINT_SHOW_FULL,status.getId());
+					line.newButton("🔎",POINT_SHOW_FULL,statusId);
 
 				}
 
@@ -163,20 +163,38 @@ public class StatusAction extends TwitterFunction {
 
 		Twitter api = auth.createApi();
 
-		Status status;
+		StatusArchive archive = StatusArchive.get(statusId);
 
-		try {
+		boolean liked = false;
+		boolean retweeted = false;
+		long rtid = -1;
+		
+		if (archive == null) {
+			
+			Status status;
 
-			status = api.showStatus(statusId);
+			try {
 
-		} catch (TwitterException e) {
+				status = api.showStatus(statusId);
+				
+				StatusArchive.save(status,api);
+				
+				liked = status.isFavorited();
+				
+				retweeted = status.isRetweetedByMe();
+				
+				rtid = status.getCurrentUserRetweetId();
 
-			callback.alert(NTT.parseTwitterException(e));
+			} catch (TwitterException e) {
 
-			return;
+				callback.alert(NTT.parseTwitterException(e));
 
+				return;
+
+			}
+			
 		}
-
+	
 		callback.send("checked").exec();
 		
 		if (POINT_LIKE_STATUS.equals(point)) {
@@ -184,11 +202,15 @@ public class StatusAction extends TwitterFunction {
 			try {
 
 				api.createFavorite(statusId);
-
+				
 				callback.text("已打心 ~");
+			
+				liked = true;
 
 			} catch (TwitterException e) {
 
+				liked = false;
+				
 				callback.alert(NTT.parseTwitterException(e));
 
 			}
@@ -198,11 +220,15 @@ public class StatusAction extends TwitterFunction {
 			try {
 
 				api.destroyStatus(statusId);
+				
+				liked = false;
 
 				callback.text("已取消打心 ~");
 
 			} catch (TwitterException e) {
 
+				liked = true;
+				
 				callback.alert(NTT.parseTwitterException(e));
 
 			}
@@ -211,12 +237,18 @@ public class StatusAction extends TwitterFunction {
 
 			try {
 
-				api.retweetStatus(statusId);
+				Status rted = api.retweetStatus(statusId);
 
+				retweeted = true;
+				
+				rtid = rted.getId();
+				
 				callback.text("已转推 ~");
 
 			} catch (TwitterException e) {
 
+				retweeted = false;
+				
 				callback.alert(NTT.parseTwitterException(e));
 
 			}
@@ -245,17 +277,21 @@ public class StatusAction extends TwitterFunction {
 
 				api.destroyStatus(statusId);
 
+				retweeted = false;
+				
 				callback.text("已撤销转推 ~");
 
 			} catch (TwitterException e) {
 
+				retweeted = true;
+				
 				callback.alert(NTT.parseTwitterException(e));
 
 			}
 		
 		} else if (POINT_SHOW_FULL.equals(point)) {
 
-			callback.edit(StatusArchive.save(status,api).toHtml()).buttons(createMarkup(status,status.getUser().equals(auth.id),true)).html().exec();
+			callback.edit(archive.toHtml()).buttons(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,rtid,liked)).html().exec();
 			
 			callback.text("已展开 ~");
 			
@@ -263,7 +299,7 @@ public class StatusAction extends TwitterFunction {
 
 		}
 
-		callback.editMarkup(createMarkup(status,status.getUser().equals(auth.id),isFull));
+		callback.editMarkup(createMarkup(archive.id,archive.from.equals(auth.id),isFull,retweeted,rtid,liked));
 
 		callback.send("finish").exec();
 		
