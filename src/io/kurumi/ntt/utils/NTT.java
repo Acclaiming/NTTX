@@ -89,9 +89,7 @@ public class NTT {
 
 				} else {
 					
-					Relationship ship = api.showFriendship(user.id,auth.id);
-
-					if (ship.isSourceBlockingTarget()) continue;
+					api.getUserTimeline(user.id);
 					
 				}
 
