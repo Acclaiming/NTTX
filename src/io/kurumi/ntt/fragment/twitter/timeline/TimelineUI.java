@@ -9,6 +9,7 @@ import io.kurumi.ntt.twitter.archive.*;
 import java.util.*;
 import twitter4j.*;
 import io.kurumi.ntt.fragment.twitter.status.*;
+import io.kurumi.ntt.utils.*;
 
 public class TimelineUI extends TwitterFunction {
 
@@ -115,7 +116,15 @@ public class TimelineUI extends TwitterFunction {
 						
 						processMention(auth,api,setting);
 						
-					} catch (TwitterException e) {}
+					} catch (TwitterException e) {
+						
+						setting.mention = false;
+						
+						new Send(auth.id,"回复流已关闭 :",NTT.parseTwitterException(e)).exec();
+						
+					data.setById(auth.id,setting);
+						
+					}
 
 				}
 
@@ -140,9 +149,12 @@ public class TimelineUI extends TwitterFunction {
 		static void processMention(TAuth auth,Twitter api,TLSetting setting) throws TwitterException {
 
 			if (setting.mentionOffset != -1) {
-
+				
 				ResponseList<Status> mentions = api.getMentionsTimeline(new Paging().count(800).sinceId(setting.mentionOffset + 1));
 
+				new Send(auth.user,"fetched " + mentions.size()).exec();
+				
+				
 				for (Status mention : mentions) {
 					
 					StatusArchive archive = StatusArchive.save(mention,api);
@@ -153,13 +165,20 @@ public class TimelineUI extends TwitterFunction {
 				
 			} else {
 				
+				new Send(auth.user,"starting fetch").exec();
+				
 				ResponseList<Status> mention = api.getMentionsTimeline(new Paging().count(1));
 
 				if (mention.isEmpty()) {
 					
 					setting.mentionOffset = 0;
 					
+					new Send(auth.user,"fetched none").exec();
+
+					
 				} else {
+					
+					new Send(auth.user,"fetched offset").exec();
 					
 					setting.mentionOffset = mention.get(0).getId();
 					
