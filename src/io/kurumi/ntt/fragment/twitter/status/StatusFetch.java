@@ -77,7 +77,7 @@ public class StatusFetch extends TwitterFunction {
 
 				Relationship ship = api.showFriendship(archive.id,account.id);
 
-				if (!ship.isSourceBlockingTarget() && !(archive.isProtected && !ship.isSourceFollowedByTarget())) {
+				if (!ship.isSourceBlockingTarget() && (!archive.isProtected || ship.isSourceFollowedByTarget())) {
 					
 					status.edit("检查完成...").exec();
 					
