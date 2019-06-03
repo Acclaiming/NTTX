@@ -466,7 +466,7 @@ public class TrackTask extends TimerTask {
             User follower = api.showUser(id);
             UserArchive archive = UserArchive.save(follower);
 
-            Relationship ship = api.showFriendship(api.getId(),id);
+            Relationship ship = api.showFriendship(id,auth.id);
 
 			if (notice) {
 
