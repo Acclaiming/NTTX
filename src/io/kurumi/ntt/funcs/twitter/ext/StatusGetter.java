@@ -57,7 +57,17 @@ public class StatusGetter extends TwitterFunction {
 			
 			return;
 
-		} catch (TwitterException ex) {} 
+		} catch (TwitterException ex) {
+			
+			TAuth auth = NTT.loopFindAccessable(NTT.parseScreenName(params[0]));
+
+			if (auth != null) {
+				
+				api = auth.createApi();
+				
+			}
+			
+		} 
 
         try {
 

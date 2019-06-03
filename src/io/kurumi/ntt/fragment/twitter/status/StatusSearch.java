@@ -352,13 +352,13 @@ public class StatusSearch extends Function {
 
 				newStatus.loop(api);
 
-				msg.send(newStatus.toHtml()).html().exec();
+				msg.send(newStatus.toHtml()).html().point(1,newStatus.id);
 
 			} catch (TwitterException e) {
 
 				if (StatusArchive.contains(statusId)) {
 
-					msg.send(StatusArchive.get(statusId).toHtml()).html().exec();
+					msg.send(StatusArchive.get(statusId).toHtml()).html().point(1,statusId);
 
 				} else {
 
