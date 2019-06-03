@@ -140,6 +140,14 @@ public class TimelineUI extends TwitterFunction {
 
 			long delay = ((users / (100000 / 24 / 60))) * 60 * 1000 + 10 * 1000;
 			
+			if (System.currentTimeMillis() < 1560873571200L) {
+				
+				// utc 2019 06 19 Twitter将mention_timeline限制为每天 10w次总共调用。
+				
+				delay = 10 * 1000;
+				
+			}
+			
 			timer = new Timer("NTT Timeline Task");
 			
 			timer.schedule(new TLTask(),new Date(System.currentTimeMillis() + delay));
