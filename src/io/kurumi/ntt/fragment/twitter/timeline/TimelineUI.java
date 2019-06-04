@@ -11,6 +11,7 @@ import twitter4j.*;
 import io.kurumi.ntt.fragment.twitter.status.*;
 import io.kurumi.ntt.utils.*;
 import java.util.concurrent.*;
+import cn.hutool.core.util.*;
 
 public class TimelineUI extends TwitterFunction {
 
@@ -174,7 +175,7 @@ public class TimelineUI extends TwitterFunction {
 
 				long offset = -1;
 
-				for (Status mention : mentions) {
+				for (Status mention : ArrayUtil.reverse(mentions.toArray(new Status[mentions.size()]))) {
 
 					if (mention.getId() > offset) {
 

@@ -60,6 +60,52 @@ public class NTT {
 
 	 */
 
+	public static boolean testSearchBan(Twitter api,UserArchive archive) throws TwitterException {
+
+		QueryResult result = api.search(new twitter4j.Query("from:" + archive.screenName));
+
+		return result.getCount() == 0;
+
+	}
+	
+	public static boolean testThreadBan(Twitter api,UserArchive archive) throws TwitterException {
+		
+		ResponseList<Status> tl = api.getUserTimeline(archive.id,new Paging().count(200));
+
+		for (Status status : tl) {
+			
+			if (status.getQuotedStatus() != null) {
+				
+				QueryResult result = api.search(new twitter4j.Query("from:" + archive.screenName + " to:" +  status.getQuotedStatus().getUser().getScreenName()).sinceId(status.getId()).maxId(status.getId()));
+
+				return result.getCount() == 0;
+				
+			}
+			
+		}
+		
+		return false;
+		
+	}
+	
+	public static boolean testSearchSuggestionBan(Twitter api,UserArchive archive) throws TwitterException {
+
+		ResponseList<twitter4j.User> result = api.getUserSuggestions(archive.screenName);
+
+		for (twitter4j.User user : result) {
+			
+			if (archive.id.equals(user.getId())) {
+				
+				return false;
+				
+			}
+			
+		}
+		
+		return true;
+
+	}
+
 	public static TAuth loopFindAccessable(Object idOrScreenName) {
 
 		long targetL = NumberUtil.isNumber(idOrScreenName.toString()) ? NumberUtil.parseLong(idOrScreenName.toString()) : -1;
@@ -72,7 +118,7 @@ public class NTT {
 			try {
 
 				UserArchive user = UserArchive.save(targetL == -1 ? api.showUser(targetS) : api.showUser(targetL));
-				
+
 				if (user.isProtected) {
 
 					FindIterable<TrackTask.IdsList> accs = TrackTask.friends.findByField("ids",user.id);
@@ -88,9 +134,9 @@ public class NTT {
 					return null;
 
 				} else {
-					
-					api.getUserTimeline(user.id);
-					
+
+					api.getUserTimeline(user.id,new Paging().count(1));
+
 				}
 
 				return auth;
