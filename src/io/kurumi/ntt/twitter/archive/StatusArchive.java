@@ -103,7 +103,7 @@ public class StatusArchive {
 
 		for (UserMentionEntity mention : status.getUserMentionEntities()) {
 
-			if (text.startsWith("@" + mention.getScreenName()) && !text.equals("@" + mention.getScreenName())) {
+			if (text.startsWith("@" + mention.getScreenName() + " ")) {
 
 				userMentions.add(mention.getId());
 
