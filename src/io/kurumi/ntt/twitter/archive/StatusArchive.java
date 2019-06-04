@@ -132,7 +132,7 @@ public class StatusArchive {
 
 			if (url.getExpandedURL().startsWith("https://twitter.com/") && url.getExpandedURL().endsWith("/status/" + quotedStatusId)) {
 
-				text = StrUtil.subBefore(text,"https://twitter.com/",true);
+				text = StrUtil.subBefore(text,url.getURL(),true);
 
 			} else {
 
