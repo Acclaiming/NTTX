@@ -4,6 +4,8 @@ import cn.hutool.core.util.*;
 import io.kurumi.ntt.utils.*;
 import java.util.*;
 import twitter4j.*;
+import io.kurumi.ntt.twitter.archive.*;
+import java.io.*;
 
 public class TApi {
 
@@ -107,7 +109,7 @@ public class TApi {
         while (users.hasNext()) {
 
             users = api.getFriendsList(target,users.getNextCursor(),200);
-			
+
             all.addAll(users);
 
         }
@@ -115,7 +117,7 @@ public class TApi {
         return all;
 
     }
-	
+
 	public static LinkedList<Long> getAllFrIDs(Twitter api,String target) throws TwitterException {
 
         LinkedList<Long> all = new LinkedList<>();
@@ -487,36 +489,35 @@ public class TApi {
 
 
 
-    public static Status reply(Twitter api,Status status,String contnent) throws TwitterException {
+    public static Status reply(Twitter api,StatusArchive status,String text,List<File> medias) throws TwitterException {
 
-        if (status.getQuotedStatusId() == -1 && status.getInReplyToStatusId() == -1) {
+        String reply = "@" + status.user().screenName + " ";
 
-            return api.updateStatus(new StatusUpdate(contnent).inReplyToStatusId(status.getId()));
+        if (!status.userMentions.isEmpty()) {
 
-        }
+			for (long mention : status.userMentions) {
 
+				reply = reply + "@" + UserArchive.get(mention).screenName + " ";
 
+			}
 
+		}
 
-        String reply = "@" + status.getUser().getScreenName() + " ";
+        reply = reply + text;
 
-        Status superStatus = status;
+		StatusUpdate send = new StatusUpdate(reply).inReplyToStatusId(status.id); 
 
-        while (superStatus.getQuotedStatusId() != -1) {
-
-            superStatus = superStatus.getQuotedStatus();
-
-            if (!reply.contains(superStatus.getUser().getScreenName())) {
-
-                reply = "@" + superStatus.getUser().getScreenName() + "" + reply;
-
-            }
-
-        }
-
-        reply = reply + contnent;
-
-        return api.updateStatus(new StatusUpdate(reply).inReplyToStatusId(status.getId()));
+		if (medias != null) {
+			
+			for (File media : medias) {
+				
+				send.media(media);
+				
+			}
+			
+		}
+		
+        return api.updateStatus(send);
 
     }
 

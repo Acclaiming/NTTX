@@ -193,8 +193,8 @@ public class StatusArchive {
 
     }
 
-	public transient String split_tiny = "---------------";
-    public transient String split = "\n\n" + split_tiny + split_tiny + "\n\n";
+	public static transient String split_tiny = "---------------";
+    public static transient String split = "\n\n" + split_tiny + split_tiny + "\n\n";
 
     public String toHtml() {
 
