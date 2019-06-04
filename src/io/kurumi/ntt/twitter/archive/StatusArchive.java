@@ -305,7 +305,7 @@ public class StatusArchive {
 
 		if (!content.trim().isEmpty()) {
 
-			archive.append("\n\n").append(content).append("\n");
+			archive.append("\n\n").append(content).append("\n\n");
 
 		}
 
@@ -319,7 +319,7 @@ public class StatusArchive {
 
             }
 
-			archive.append("\n");
+			archive.append("\n\n");
 
         }
 
@@ -327,7 +327,7 @@ public class StatusArchive {
 
 			StatusArchive quotedStatus = StatusArchive.get(quotedStatusId);
 
-			archive.append("\n").append(split_tiny).append("\n");
+			archive.append(split_tiny).append("\n");
 
 			if (quotedStatus != null) {
 
@@ -339,13 +339,13 @@ public class StatusArchive {
 
 			}
 
-			archive.append(split_tiny);
+			archive.append(split_tiny).append("\n");
 
         }
 
 		if (!quoted) {
 
-			archive.append("\n在 ");
+			archive.append("在 ");
 
 			Calendar date = Calendar.getInstance();
 
