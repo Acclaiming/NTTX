@@ -206,19 +206,7 @@ public class StatusArchive {
 
 		int depth = 0;
 
-		if (quotedStatusId != -1) {
-
-			depth ++;
-
-			StatusArchive quotedStatus = StatusArchive.get(quotedStatusId);
-
-			if (quotedStatus == null) {
-
-				depth += quotedStatus.depth();
-
-			}
-
-		} else if (inReplyToStatusId != -1) {
+		if (inReplyToStatusId != -1) {
 
 			depth ++;
 
