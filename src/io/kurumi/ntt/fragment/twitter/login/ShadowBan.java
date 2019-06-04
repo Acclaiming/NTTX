@@ -69,7 +69,7 @@ public class ShadowBan extends TwitterFunction {
 			
 		} catch (TwitterException e) {
 			
-			message.append("SearchBan : 测试失败\n");
+			message.append("SearchBan : ").append(NTT.parseTwitterException(e)).append("\n");
 			
 		}
 		
@@ -81,7 +81,7 @@ public class ShadowBan extends TwitterFunction {
 
 		} catch (TwitterException e) {
 
-			message.append("ThreadBan : 测试失败\n");
+			message.append("ThreadBan : ").append(NTT.parseTwitterException(e)).append("\n");
 
 		}
 		
@@ -93,7 +93,7 @@ public class ShadowBan extends TwitterFunction {
 
 		} catch (TwitterException e) {
 
-			message.append("SearchSuggestionBan : 测试失败\n");
+			message.append("SearchSuggestionBan : ").append(NTT.parseTwitterException(e)).append("\n");
 
 		}
 		
