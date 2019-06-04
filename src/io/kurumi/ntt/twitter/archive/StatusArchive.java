@@ -345,7 +345,7 @@ public class StatusArchive {
 
 		if (!quoted) {
 
-			archive.append("在 ");
+			archive.append("\n在 ");
 
 			Calendar date = Calendar.getInstance();
 
