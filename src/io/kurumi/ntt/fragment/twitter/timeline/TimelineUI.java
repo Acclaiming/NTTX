@@ -139,7 +139,7 @@ public class TimelineUI extends TwitterFunction {
 
 									setting.mention = false;
 
-									new Send(auth.id,"回复流已关闭 :",NTT.parseTwitterException(e)).exec();
+									new Send(auth.user,"回复流已关闭 :",NTT.parseTwitterException(e)).exec();
 
 									data.setById(auth.id,setting);
 
@@ -181,9 +181,9 @@ public class TimelineUI extends TwitterFunction {
 
 			if (setting.mentionOffset != -1) {
 
-				ResponseList<Status> mentions = api.getMentionsTimeline(new Paging().count(800).sinceId(setting.mentionOffset + 1));
+				ResponseList<Status> mentions = api.getMentionsTimeline(new Paging().count(200).sinceId(setting.mentionOffset + 1));
 
-				long offset = -1;
+				long offset = setting.mentionOffset;
 
 				for (Status mention : ArrayUtil.reverse(mentions.toArray(new Status[mentions.size()]))) {
 
@@ -193,7 +193,7 @@ public class TimelineUI extends TwitterFunction {
 
 					}
 
-					StatusArchive archive = StatusArchive.save(mention,api);
+					StatusArchive archive = StatusArchive.save(mention).loop(api);
 
 					new Send(auth.user,archive.toHtml(1)).buttons(StatusAction.createMarkup(archive.id,auth.id.equals(mention.getUser().getId()),archive.depth() <= 1,mention.isRetweetedByMe(),mention.getCurrentUserRetweetId(),mention.isFavorited())).html().point(1,archive.id);
 

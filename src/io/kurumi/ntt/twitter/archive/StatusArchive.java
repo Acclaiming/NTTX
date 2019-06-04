@@ -164,39 +164,39 @@ public class StatusArchive {
         return toHtml(-1);
 
     }
-	
+
 	public int depth() {
-		
+
 		int depth = 0;
-		
+
 		if (quotedStatusId != -1) {
-			
+
 			depth ++;
-			
+
 			StatusArchive quotedStatus = StatusArchive.get(quotedStatusId);
 
 			if (quotedStatus == null) {
-				
+
 				depth += quotedStatus.depth();
-				
+
 			}
-			
+
 		} else if (inReplyToStatusId != -1) {
-			
+
 			depth ++;
-			
+
 			StatusArchive inReplyTo = StatusArchive.get(inReplyToStatusId);
 
 			if (inReplyTo != null) {
-				
+
 				depth += inReplyTo.depth();
-				
+
 			}
-			
+
 		}
-		
+
 		return depth;
-		
+
 	}
 
     public String toHtml(int depth) {
@@ -314,13 +314,13 @@ public class StatusArchive {
             }
 
         }
-		
+
 		content = HtmlUtil.escape(content);
 
 		content = (content + " ").replaceAll("(@.+) ","<a href=\"https://twitter.com/$1\">$1</a> ");
-		
+
 		content = content.substring(0,content.length() - 1);
-		
+
         archive.append("\n\n").append(content);
 
         if (!mediaUrls.isEmpty()) {
@@ -364,11 +364,11 @@ public class StatusArchive {
     }
 
 	public StatusArchive loop(Twitter api) {
-		
+
 		return loop(api,false);
 
 	}
-	
+
     public StatusArchive loop(Twitter api,boolean avoid) {
 
         String content = text;
@@ -416,6 +416,24 @@ public class StatusArchive {
 
             }
 
+		} catch (TwitterException ex) {
+
+			if (inReplyToUserId != -1 && !avoid) {
+
+				TAuth accessable = NTT.loopFindAccessable(inReplyToUserId);
+
+				if (accessable != null) {
+
+					loop(accessable.createApi(),true);
+
+				}
+
+			}
+
+		}
+
+		try {
+
             if (quotedStatusId != -1) {
 
                 if (StatusArchive.contains(quotedStatusId)) {
@@ -435,19 +453,19 @@ public class StatusArchive {
             }
 
         } catch (TwitterException ex) {
-			
+
 			if (inReplyToUserId != -1 && !avoid) {
-				
+
 				TAuth accessable = NTT.loopFindAccessable(inReplyToUserId);
 
 				if (accessable != null) {
-					
+
 					loop(accessable.createApi(),true);
-					
+
 				}
-				
+
 			}
-			
+
 		}
 
         return this;
