@@ -14,6 +14,9 @@ import twitter4j.*;
 
 import twitter4j.Status;
 import io.kurumi.ntt.funcs.twitter.track.TrackTask.*;
+import io.kurumi.ntt.*;
+import io.kurumi.ntt.fragment.*;
+import io.kurumi.ntt.funcs.abs.*;
 
 public class StatusArchive {
 
@@ -188,8 +191,8 @@ public class StatusArchive {
 
     }
 
-	public transient String split_tiny = "\n---------------\n";
-    public transient String split = "\n\n------------------------------------------\n\n";
+	public transient String split_tiny = "---------------";
+    public transient String split = "\n\n" + split_tiny + split_tiny + "\n\n";
 
     public String toHtml() {
 
@@ -233,11 +236,11 @@ public class StatusArchive {
 
 	public String toHtml(int depth) {
 
-		return toHtml(depth,false);
+		return toHtml(depth,false,true);
 
 	}
 
-    public String toHtml(int depth,boolean quoted) {
+    public String toHtml(int depth,boolean quoted,boolean current) {
 
         StringBuilder archive = new StringBuilder();
 
@@ -249,7 +252,7 @@ public class StatusArchive {
 
                 if (inReplyTo != null) {
 
-                    archive.append(inReplyTo.toHtml(depth > 0 ? depth - 1 : depth));
+                    archive.append(inReplyTo.toHtml(depth > 0 ? depth - 1 : depth,false,false));
 
                 } else {
 
@@ -261,24 +264,24 @@ public class StatusArchive {
 
             }
 
-            archive.append(user().urlHtml()).append(" 的 ").append(Html.a("回复",url()));
+            archive.append(user().urlHtml()).append(" 的 ").append(Html.a("回复",current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id));
 
 
         } else if (!quoted && isRetweet) {
 
             StatusArchive retweeted = StatusArchive.get(retweetedStatus);
 
-            archive.append(user().urlHtml()).append(" 转推从 " + retweeted.user().urlHtml()).append(" 的 ").append(Html.a("推文",url())).append(" : ");
+            archive.append(user().urlHtml()).append(" 转推从 " + retweeted.user().urlHtml()).append(" 的 ").append(Html.a("推文",current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id)).append(" : ");
 
 			archive.append(split);
 
-            archive.append(retweeted.toHtml(depth > 0 ? depth - 1 : depth));
+            archive.append(retweeted.toHtml(depth > 0 ? depth - 1 : depth,false,false));
 
             return archive.toString();
 
         } else {
 
-            archive.append(user().urlHtml()).append(" 的 ").append(Html.a("推文",url()));
+            archive.append(user().urlHtml()).append(" 的 ").append(Html.a("推文",current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id));
 
 		}
 
@@ -312,13 +315,13 @@ public class StatusArchive {
 
 		if (!content.trim().isEmpty()) {
 
-			archive.append("\n\n").append(content);
+			archive.append("\n\n").append(content).append("\n");
 
 		}
 
         if (!mediaUrls.isEmpty()) {
 
-            archive.append("\n\n媒体文件 :");
+            archive.append("\n媒体文件 :");
 
             for (String url : mediaUrls) {
 
@@ -326,17 +329,19 @@ public class StatusArchive {
 
             }
 
+			archive.append("\n");
+
         }
 
 		if (quotedStatusId != -1 && !quoted) {
 
 			StatusArchive quotedStatus = StatusArchive.get(quotedStatusId);
 
-			archive.append(split_tiny);
+			archive.append(split_tiny).append("\n");
 
 			if (quotedStatus != null) {
 
-				archive.append("引用 " + quotedStatus.toHtml(1,true));
+				archive.append("引用 " + quotedStatus.toHtml(1,true,false));
 
 			} else {
 
@@ -344,13 +349,13 @@ public class StatusArchive {
 
 			}
 
-			archive.append(split_tiny);
+			archive.append("\n").append(split_tiny);
 
         }
 
 		if (!quoted) {
 
-			archive.append("\n\n在 ");
+			archive.append("\n在 ");
 
 			Calendar date = Calendar.getInstance();
 
