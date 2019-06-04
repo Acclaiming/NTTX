@@ -205,6 +205,8 @@ public class StatusArchive {
 
         if (quotedStatusId != -1) {
 
+			boolean inc = text.startsWith("@");
+			
             if (depth != 0) {
 
                 StatusArchive quotedStatus = StatusArchive.get(quotedStatusId);
@@ -293,7 +295,7 @@ public class StatusArchive {
 
             for (String replyTo : inReplyTo) {
 
-                UserArchive user = UserArchive.get(replyTo);
+                // UserArchive user = UserArchive.get(replyTo);
 
                 archive.append(" ");
 
