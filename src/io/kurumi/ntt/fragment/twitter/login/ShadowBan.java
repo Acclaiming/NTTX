@@ -58,7 +58,7 @@ public class ShadowBan extends TwitterFunction {
 			
 		}
 	
-		StringBuilder message = new StringBuilder("测试中... : ").append(archive.urlHtml()).append("\n")
+		StringBuilder message = new StringBuilder("测试中... : ").append(archive.urlHtml()).append("\n");
 		
 
 		try {
