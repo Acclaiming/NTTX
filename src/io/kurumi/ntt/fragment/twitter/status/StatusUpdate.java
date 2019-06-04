@@ -267,7 +267,7 @@ public class StatusUpdate extends TwitterFunction {
 
 				}
 
-				update.text = reply + update.text;
+				update.text = reply + update.text == null ? "" : update.text;
 
 			}
 
