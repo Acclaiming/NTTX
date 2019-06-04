@@ -45,8 +45,6 @@ public class StatusUpdate extends TwitterFunction {
 
 		names.add("update");
 
-		names.add("submit");
-
 	}
 
 	@Override
@@ -235,7 +233,7 @@ public class StatusUpdate extends TwitterFunction {
 
 		UpdatePoint update = (StatusUpdate.UpdatePoint) point.data;
 
-		if ("/submit".equals(msg.command())) {
+		if ("submit".equals(msg.command())) {
 
 			if (update.text == null && update.image.isEmpty() && update.video == null) {
 
