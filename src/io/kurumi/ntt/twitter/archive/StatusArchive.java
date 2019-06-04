@@ -312,7 +312,7 @@ public class StatusArchive {
 
 		if (!content.trim().isEmpty()) {
 
-			archive.append("\n\n").append(content);
+			archive.append("\n\ n").append(content);
 
 		}
 
@@ -336,7 +336,7 @@ public class StatusArchive {
 
 			if (quotedStatus != null) {
 
-				archive.append(quotedStatus.toHtml(1));
+				archive.append(quotedStatus.toHtml(1,true));
 
 			} else {
 
