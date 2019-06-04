@@ -89,27 +89,25 @@ public class StatusArchive {
     public Long retweetedStatus;
 
 	public LinkedList<Long> userMentions;
-	
+
     public void read(Status status) {
 
         createdAt = status.getCreatedAt().getTime();
-		
+
         text = status.getText();
-		
+
 		userMentions = new LinkedList<>();
-		
+
 		for (UserMentionEntity mention : status.getUserMentionEntities()) {
-			
-			userMentions.add(mention.getId());
-			
-			text = StrUtil.subAfter(text,"@" + mention.getScreenName(),false);
-			
-		}
-		
-		for (URLEntity url : status.getURLEntities()) {
-			
-			text.replace(url.getURL(),url.getExpandedURL());
-			
+
+			if (text.startsWith("@" + mention.getScreenName()) && !text.equals("@" + mention.getScreenName())) {
+
+				userMentions.add(mention.getId());
+
+				text = StrUtil.subAfter(text,"@" + mention.getScreenName() + " ",false);
+
+			}
+
 		}
 
         from = status.getUser().getId();
@@ -129,6 +127,20 @@ public class StatusArchive {
             StatusArchive.save(status.getQuotedStatus());
 
         }
+
+		for (URLEntity url : status.getURLEntities()) {
+
+			if (url.getExpandedURL().startsWith("https://twitter.com/") && url.getExpandedURL().endsWith("/status/" + quotedStatusId)) {
+
+				text = StrUtil.subBefore(text,"https://twitter.com/",true);
+
+			} else {
+
+				text.replace(url.getURL(),url.getExpandedURL());
+
+			}
+
+		}
 
         mediaUrls = new LinkedList<>();
 
@@ -176,7 +188,7 @@ public class StatusArchive {
 
     }
 
-	public transient String split_tiny = "\n\n---------------------\n\n";
+	public transient String split_tiny = "\n---------------\n";
     public transient String split = "\n\n------------------------------------------\n\n";
 
     public String toHtml() {
@@ -219,11 +231,17 @@ public class StatusArchive {
 
 	}
 
-    public String toHtml(int depth) {
+	public String toHtml(int depth) {
+
+		return toHtml(depth,false);
+
+	}
+
+    public String toHtml(int depth,boolean quoted) {
 
         StringBuilder archive = new StringBuilder();
 
-		if (inReplyToStatusId != -1) {
+		if (!quoted && inReplyToStatusId != -1) {
 
             if (depth != 0) {
 
@@ -246,14 +264,14 @@ public class StatusArchive {
             archive.append(user().urlHtml()).append(" 的 ").append(Html.a("回复",url()));
 
 
-        } else if (isRetweet) {
+        } else if (!quoted && isRetweet) {
 
             StatusArchive retweeted = StatusArchive.get(retweetedStatus);
 
             archive.append(user().urlHtml()).append(" 转推从 " + retweeted.user().urlHtml()).append(" 的 ").append(Html.a("推文",url())).append(" : ");
 
 			archive.append(split);
-			
+
             archive.append(retweeted.toHtml(depth > 0 ? depth - 1 : depth));
 
             return archive.toString();
@@ -271,19 +289,19 @@ public class StatusArchive {
             content = StrUtil.subBefore(content,"https://t.co",true);
 
         }
-		
-		if (!userMentions.isEmpty()) {
-			
+
+		if (!userMentions.isEmpty() && !quoted) {
+
 			archive.append(" 给 ");
 
 			archive.append(UserArchive.get(userMentions.get(0)).urlHtml());
-			
+
 			if (userMentions.size() > 1) {
-				
+
 				archive.append(" 和另外" + (userMentions.size() - 1) + "人");
-				
+
 			}
-			
+
 		}
 
 		content = HtmlUtil.escape(content);
@@ -292,7 +310,11 @@ public class StatusArchive {
 
 		content = content.substring(0,content.length() - 1);
 
-        archive.append("\n\n").append(content);
+		if (!content.trim().isEmpty()) {
+
+			archive.append("\n\n").append(content);
+
+		}
 
         if (!mediaUrls.isEmpty()) {
 
@@ -305,36 +327,40 @@ public class StatusArchive {
             }
 
         }
-		
-		if (quotedStatusId != -1) {
-			
-                StatusArchive quotedStatus = StatusArchive.get(quotedStatusId);
 
-				archive.append(split);
-				
-                if (quotedStatus != null) {
+		if (quotedStatusId != -1 && quoted) {
 
-                    archive.append(quotedStatus.toHtml(1));
+			StatusArchive quotedStatus = StatusArchive.get(quotedStatusId);
 
-                } else {
+			archive.append(split_tiny);
 
-                    archive.append("引用的推文已不可用");
+			if (quotedStatus != null) {
 
-                }
+				archive.append(quotedStatus.toHtml(1));
 
-                archive.append(split);
+			} else {
+
+				archive.append("引用的推文已不可用");
+
+			}
+
+			archive.append(split_tiny);
 
         }
 
-        archive.append("\n\n在 ");
+		if (!quoted) {
 
-        Calendar date = Calendar.getInstance();
+			archive.append("\n\n在 ");
 
-        date.setTimeInMillis(createdAt);
+			Calendar date = Calendar.getInstance();
 
-        archive.append(date.get(Calendar.YEAR) - 2000).append("年").append(date.get(Calendar.MONTH) + 1).append("月").append(date.get(Calendar.DAY_OF_MONTH)).append("日");
+			date.setTimeInMillis(createdAt);
 
-        archive.append(", ").append(date.get(Calendar.AM_PM) == 0 ? "上午" : "下午").append(" ").append(date.get(Calendar.HOUR)).append(":").append(date.get(Calendar.MINUTE));
+			archive.append(date.get(Calendar.YEAR) - 2000).append("年").append(date.get(Calendar.MONTH) + 1).append("月").append(date.get(Calendar.DAY_OF_MONTH)).append("日");
+
+			archive.append(", ").append(date.get(Calendar.AM_PM) == 0 ? "上午" : "下午").append(" ").append(date.get(Calendar.HOUR)).append(":").append(date.get(Calendar.MINUTE));
+
+		}
 
         return archive.toString();
 
