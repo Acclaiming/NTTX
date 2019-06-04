@@ -175,7 +175,9 @@ public class StatusArchive {
 
     public UserArchive user() {
 
-        return UserArchive.get(from);
+        UserArchive user = UserArchive.get(from);
+
+		return user;
 
     }
 
@@ -394,7 +396,32 @@ public class StatusArchive {
     public StatusArchive loop(Twitter api,boolean avoid) {
 
         String content = text;
-		
+
+		if (!UserArchive.contains(from)) {
+
+			try {
+
+				UserArchive.save(api.showUser(from));
+
+			} catch (TwitterException e) {
+
+				if (!avoid) {
+
+					TAuth accessable = NTT.loopFindAccessable(inReplyToUserId);
+
+					if (accessable != null) {
+
+						loop(accessable.createApi(),true);
+
+					}
+
+				}
+
+
+			}
+
+		}
+
         if (content.startsWith("@")) {
 
             while (content.startsWith("@")) {
@@ -410,9 +437,9 @@ public class StatusArchive {
                         UserArchive.save(api.showUser(screenName));
 
                     } catch (TwitterException ex) {
-						
+
 						if (!avoid) {
-							
+
 							TAuth accessable = NTT.loopFindAccessable(inReplyToUserId);
 
 							if (accessable != null) {
@@ -420,9 +447,9 @@ public class StatusArchive {
 								loop(accessable.createApi(),true);
 
 							}
-							
+
 						}
-						
+
 					} 
 
                 }
