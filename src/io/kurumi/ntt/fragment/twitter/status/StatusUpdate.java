@@ -301,7 +301,7 @@ public class StatusUpdate extends TwitterFunction {
 
 				StatusArchive archive = StatusArchive.save(status);
 
-				msg.reply("发送成功 :",StatusArchive.split_tiny,archive.toHtml()).buttons(StatusAction.createMarkup(archive.id,true,true,false,-1,false)).html().point(1,archive.id);
+				msg.reply("发送成功 :",StatusArchive.split_tiny,archive.toHtml(2)).buttons(StatusAction.createMarkup(archive.id,archive.depth() <= 1,true,false,-1,false)).html().point(1,archive.id);
 
 
 
