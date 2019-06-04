@@ -305,7 +305,7 @@ public class StatusArchive {
 
 		if (!content.trim().isEmpty()) {
 
-			archive.append("\n\n").append(content).append("\n\n");
+			archive.append("\n\n").append(content).append("\n");
 
 		}
 
@@ -319,7 +319,7 @@ public class StatusArchive {
 
             }
 
-			archive.append("\n\n");
+			archive.append("\n");
 
         }
 
@@ -327,7 +327,7 @@ public class StatusArchive {
 
 			StatusArchive quotedStatus = StatusArchive.get(quotedStatusId);
 
-			archive.append(split_tiny).append("\n");
+			archive.append("\n").append(split_tiny).append("\n");
 
 			if (quotedStatus != null) {
 
