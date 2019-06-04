@@ -133,7 +133,7 @@ public class StatusArchive {
 
 		for (URLEntity url : status.getURLEntities()) {
 
-			if (url.getExpandedURL().startsWith("https://twitter.com/") && url.getExpandedURL().endsWith("/status/" + quotedStatusId)) {
+			if (text.endsWith(url.getURL()) && quotedStatusId != -1) {
 
 				text = StrUtil.subBefore(text,url.getURL(),true);
 
@@ -337,7 +337,7 @@ public class StatusArchive {
 
 			StatusArchive quotedStatus = StatusArchive.get(quotedStatusId);
 
-			archive.append(split_tiny).append("\n");
+			archive.append("\n").append(split_tiny).append("\n");
 
 			if (quotedStatus != null) {
 
@@ -349,7 +349,7 @@ public class StatusArchive {
 
 			}
 
-			archive.append("\n").append(split_tiny);
+			archive.append(split_tiny);
 
         }
 
@@ -394,7 +394,7 @@ public class StatusArchive {
     public StatusArchive loop(Twitter api,boolean avoid) {
 
         String content = text;
-
+		
         if (content.startsWith("@")) {
 
             while (content.startsWith("@")) {
@@ -409,7 +409,21 @@ public class StatusArchive {
 
                         UserArchive.save(api.showUser(screenName));
 
-                    } catch (TwitterException ex) {} 
+                    } catch (TwitterException ex) {
+						
+						if (!avoid) {
+							
+							TAuth accessable = NTT.loopFindAccessable(inReplyToUserId);
+
+							if (accessable != null) {
+
+								loop(accessable.createApi(),true);
+
+							}
+							
+						}
+						
+					} 
 
                 }
 
