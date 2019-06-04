@@ -88,10 +88,29 @@ public class StatusArchive {
 
     public Long retweetedStatus;
 
+	public LinkedList<Long> userMentions;
+	
     public void read(Status status) {
 
         createdAt = status.getCreatedAt().getTime();
+		
         text = status.getText();
+		
+		userMentions = new LinkedList<>();
+		
+		for (UserMentionEntity mention : status.getUserMentionEntities()) {
+			
+			userMentions.add(mention.getId());
+			
+			text = StrUtil.subAfter(text,"@" + mention.getScreenName(),false);
+			
+		}
+		
+		for (URLEntity url : status.getURLEntities()) {
+			
+			text.replace(url.getURL(),url.getExpandedURL());
+			
+		}
 
         from = status.getUser().getId();
 
@@ -157,7 +176,8 @@ public class StatusArchive {
 
     }
 
-    public transient String split = "\n\n---------------------\n\n";
+	public transient String split_tiny = "\n\n---------------------\n\n";
+    public transient String split = "\n\n------------------------------------------\n\n";
 
     public String toHtml() {
 
@@ -219,7 +239,7 @@ public class StatusArchive {
 
                 }
 
-                archive.append(split).append(split);
+                archive.append(split);
 
             }
 
@@ -232,6 +252,8 @@ public class StatusArchive {
 
             archive.append(user().urlHtml()).append(" 转推从 " + retweeted.user().urlHtml()).append(" 的 ").append(Html.a("推文",url())).append(" : ");
 
+			archive.append(split);
+			
             archive.append(retweeted.toHtml(depth > 0 ? depth - 1 : depth));
 
             return archive.toString();
@@ -249,48 +271,20 @@ public class StatusArchive {
             content = StrUtil.subBefore(content,"https://t.co",true);
 
         }
+		
+		if (!userMentions.isEmpty()) {
+			
+			archive.append(" 给 ");
 
-        if (content.startsWith("@")) {
-
-            LinkedList<String> inReplyTo = new LinkedList<>();
-
-            while (content.startsWith("@")) {
-
-                inReplyTo.add(StrUtil.subBefore(content.substring(1)," ",false));
-
-                content = StrUtil.subAfter(content," " ,false);
-
-            }
-
-            Collections.reverse(inReplyTo);
-
-            archive.append(" 给");
-
-            boolean l = false;
-
-            for (String replyTo : inReplyTo) {
-
-                // UserArchive user = UserArchive.get(replyTo);
-
-                archive.append(" ");
-
-                if (l) archive.append("、");
-
-				//   if (user != null) {
-
-                //    archive.append(user.urlHtml());
-
-				//   } else {
-
-				archive.append(Html.a("@" + replyTo,"https://twitter.com/" + replyTo));
-
-				//   } 
-
-                l = true;
-
-            }
-
-        }
+			archive.append(UserArchive.get(userMentions.get(0)).urlHtml());
+			
+			if (userMentions.size() > 1) {
+				
+				archive.append(" 和另外" + (userMentions.size() - 1) + "人");
+				
+			}
+			
+		}
 
 		content = HtmlUtil.escape(content);
 
