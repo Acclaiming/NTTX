@@ -73,7 +73,7 @@ public class StatusAction extends TwitterFunction {
 
 				if (retweeted) {
 
-					line.newButton("❎️",POINT_DESTROY_RETWEET,rtid,full);
+					line.newButton("❎️",POINT_DESTROY_RETWEET,statusId,full,rtid);
 
 				} else {
 
@@ -116,7 +116,8 @@ public class StatusAction extends TwitterFunction {
 		long statusId = Long.parseLong(params[0]);
 
 		boolean isFull = params.length > 1 && "true".equals(params[1]);
-
+		long rtid = params.length > 2 ? Long.parseLong(params[2]) : -1;
+		
 		long count = TAuth.data.countByField("user",user.id);
 
 		if (count == 0) {
@@ -165,7 +166,6 @@ public class StatusAction extends TwitterFunction {
 
 		boolean liked = false;
 		boolean retweeted = false;
-		long rtid = -1;
 		
 		if (archive == null) {
 			
@@ -271,7 +271,7 @@ public class StatusAction extends TwitterFunction {
 
 			try {
 
-				api.destroyStatus(statusId);
+				api.destroyStatus(rtid);
 
 				retweeted = false;
 				
