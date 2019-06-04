@@ -73,6 +73,8 @@ public class ShadowBan extends TwitterFunction {
 			
 		}
 		
+		status.edit(message.toString()).html().exec();
+		
 		try {
 
 			boolean ban = NTT.testThreadBan(api,archive);
@@ -84,6 +86,8 @@ public class ShadowBan extends TwitterFunction {
 			message.append("ThreadBan : ").append(NTT.parseTwitterException(e)).append("\n");
 
 		}
+		
+		status.edit(message.toString()).html().exec();
 		
 		try {
 
@@ -98,7 +102,7 @@ public class ShadowBan extends TwitterFunction {
 		}
 		
 		
-		status.edit(message.toString()).exec();
+		status.edit(message.toString()).html().exec();
 
 	}
 
