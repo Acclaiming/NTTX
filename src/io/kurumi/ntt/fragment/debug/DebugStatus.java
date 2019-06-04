@@ -24,7 +24,7 @@ public class DebugStatus extends TwitterFunction {
 		
 		try {
 			
-			Status status = account.createApi().showStatus(NumberUtil.parseLong(params[0]));
+			Status status = account.createApi().showStatus(NTT.parseStatusId(params[0]));
 
 			msg.send(status.toString()).exec();
 			
