@@ -336,7 +336,7 @@ public class StatusArchive {
 
 			if (quotedStatus != null) {
 
-				archive.append(quotedStatus.toHtml(1,true));
+				archive.append("引用 " + quotedStatus.toHtml(1,true));
 
 			} else {
 
