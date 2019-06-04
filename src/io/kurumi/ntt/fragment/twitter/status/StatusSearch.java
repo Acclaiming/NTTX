@@ -60,7 +60,7 @@ public class StatusSearch extends Function {
 				} else {
 
 					fromC = NTT.parseScreenName(fromC);
-				
+
 					UserArchive archive = UserArchive.get(fromC);
 
 					if (archive == null) {
@@ -84,7 +84,7 @@ public class StatusSearch extends Function {
 					to = NumberUtil.parseLong(toC);
 
 				} else {
-					
+
 					toC = NTT.parseScreenName(toC);
 
 					UserArchive archive = UserArchive.get(toC);
@@ -278,7 +278,7 @@ public class StatusSearch extends Function {
 
 			callback.alert("只有发起搜索的用户可以翻页哦 (");
 			return;
-			
+
 		} else {
 
 			callback.text("正在加载...");
@@ -322,7 +322,7 @@ public class StatusSearch extends Function {
 
 		if (!msg.isStartPayload() || !PAYLOAD_SHOW_STATUS.equals(msg.payload()[0])) return false;
 
-		TAuth auth = TAuth.getById(user.id);
+		TAuth auth = TAuth.getByUser(user.id).first();
 
 		Long statusId = NumberUtil.parseLong(msg.payload()[1]);
 
