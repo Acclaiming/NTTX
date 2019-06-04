@@ -38,6 +38,8 @@ public class StatusUpdate extends TwitterFunction {
 
 		TAuth auth;
 
+		StatusArchive toReply;
+
 	}
 
 	@Override
@@ -136,6 +138,8 @@ public class StatusUpdate extends TwitterFunction {
 		UpdatePoint update = new UpdatePoint();
 
 		update.auth = auth;
+
+		update.toReply = StatusArchive.get(point.targetId);
 
 		if (message.sticker() != null) {
 
@@ -245,7 +249,7 @@ public class StatusUpdate extends TwitterFunction {
 
 			clearPoint(user);
 
-			twitter4j.StatusUpdate send = new twitter4j.StatusUpdate(msg.text() == null ? "" : msg.text());
+			twitter4j.StatusUpdate send = new twitter4j.StatusUpdate(update.text == null ? "" : update.text);
 
 			if (!update.image.isEmpty()) {
 
@@ -267,11 +271,24 @@ public class StatusUpdate extends TwitterFunction {
 
 			try {
 
-				Status status = update.auth.createApi().updateStatus(send);
+				if (update.toReply == null) {
 
-				StatusArchive archive = StatusArchive.save(status);
+					Status status = update.auth.createApi().updateStatus(send);
 
-				msg.reply("发送成功 :",StatusArchive.split_tiny,archive.toHtml()).buttons(StatusAction.createMarkup(archive.id,true,true,false,-1,false)).html().point(1,archive.id);
+					StatusArchive archive = StatusArchive.save(status);
+
+					msg.reply("发送成功 :",StatusArchive.split_tiny,archive.toHtml()).buttons(StatusAction.createMarkup(archive.id,true,true,false,-1,false)).html().point(1,archive.id);
+
+				} else {
+
+					Status status = TApi.reply(update.auth.createApi(),update.toReply,update.text == null ? "" : update.text,update.video == null ? (List<File>)Arrays.asList(update.video) : update.image);
+
+					StatusArchive archive = StatusArchive.save(status);
+
+					msg.reply("发送成功 :",StatusArchive.split_tiny,archive.toHtml(2)).buttons(StatusAction.createMarkup(archive.id,archive.depth() <= 1,true,false,-1,false)).html().point(1,archive.id);
+
+
+				}
 
 			} catch (TwitterException e) {
 
