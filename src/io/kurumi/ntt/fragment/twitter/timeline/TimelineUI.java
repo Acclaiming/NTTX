@@ -54,7 +54,17 @@ public class TimelineUI extends TwitterFunction {
 		boolean target = params.length > 0 && !"off".equals(params[0]);
 
 		msg.send((("timeline".equals(function) ? setting.timeline : setting.mention) == target ? (target ? "无须重复开启" : "没有开启") : ("timeline".equals(function) ? (setting.timeline = target) : (setting.mention = target)) ? "已开启" : "已关闭")).exec();
-
+		
+		if ("timeline".equals(function)) {
+			
+			setting.timelineOffset = -1;
+			
+		} else {
+			
+			setting.mentionOffset = -1;
+			
+		}
+		
 		if (setting.timeline || setting.mention) {
 
 			data.setById(account.id,setting);

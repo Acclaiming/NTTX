@@ -22,6 +22,8 @@ public class ShadowBan extends TwitterFunction {
 			
 		}
 		
+		Msg status = msg.send("正在测试...").send();
+		
 		Twitter api = account.createApi();
 
 		UserArchive archive;
@@ -34,14 +36,70 @@ public class ShadowBan extends TwitterFunction {
 				
 			} catch (TwitterException e) {
 				
-				msg.send(NTT.parseTwitterException(e)).exec();
+			status.edit(NTT.parseTwitterException(e)).exec();
 				
 				return;
 				
 			}
 
+		} else {
+			
+			try {
+
+				archive = UserArchive.save(api.showUser(NTT.parseScreenName(params[0])));
+
+			} catch (TwitterException e) {
+
+				status.edit(NTT.parseTwitterException(e)).exec();
+
+				return;
+
+			}
+			
+		}
+	
+		StringBuilder message = new StringBuilder("测试中... : ").append(archive.urlHtml()).append("\n")
+		
+
+		try {
+			
+			boolean searchBan = NTT.testSearchBan(api,archive);
+
+			message.append("SearchBan : ").append(searchBan ? "有" : "无").append("\n");
+			
+		} catch (TwitterException e) {
+			
+			message.append("SearchBan : 测试失败\n");
+			
 		}
 		
+		try {
+
+			boolean ban = NTT.testThreadBan(api,archive);
+
+			message.append("ThreadBan : ").append(ban ? "有" : "无").append("\n");
+
+		} catch (TwitterException e) {
+
+			message.append("ThreadBan : 测试失败\n");
+
+		}
+		
+		try {
+
+			boolean ban = NTT.testSearchSuggestionBan(api,archive);
+
+			message.append("SearchSuggestionBan : ").append(ban ? "有" : "无").append("\n");
+
+		} catch (TwitterException e) {
+
+			message.append("SearchSuggestionBan : 测试失败\n");
+
+		}
+		
+		
+		status.edit(message.toString()).exec();
+
 	}
 
 	@Override
