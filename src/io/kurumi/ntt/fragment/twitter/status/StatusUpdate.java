@@ -257,7 +257,11 @@ public class StatusUpdate extends TwitterFunction {
 
 					for (long mention : update.toReply.userMentions) {
 
-						reply = reply + "@" + UserArchive.get(mention).screenName + " ";
+						if (!update.auth.id.equals(mention)) {
+
+							reply = reply + "@" + UserArchive.get(mention).screenName + " ";
+
+						}
 
 					}
 
@@ -269,6 +273,8 @@ public class StatusUpdate extends TwitterFunction {
 
 
 			twitter4j.StatusUpdate send = new twitter4j.StatusUpdate(update.text == null ? "" : update.text);
+
+			if (update.toReply != null) send.inReplyToStatusId(update.toReply.id);
 
 			if (!update.image.isEmpty()) {
 
