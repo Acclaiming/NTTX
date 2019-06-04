@@ -203,31 +203,7 @@ public class StatusArchive {
 
         StringBuilder archive = new StringBuilder();
 
-        if (quotedStatusId != -1) {
-
-			boolean inc = text.startsWith("@");
-			
-            if (depth != 0) {
-
-                StatusArchive quotedStatus = StatusArchive.get(quotedStatusId);
-
-                if (quotedStatus == null) {
-
-                    archive.append(quotedStatus.toHtml(depth > 0 ? depth - 1 : depth));
-
-                } else {
-
-                    archive.append("不可用的推文");
-
-                }
-
-                archive.append(split);
-
-            }
-
-            archive.append(user().urlHtml()).append(" 的 ").append(Html.a("回复",url()));
-
-        } else if (inReplyToStatusId != -1) {
+		if (inReplyToStatusId != -1) {
 
             if (depth != 0) {
 
@@ -243,7 +219,7 @@ public class StatusArchive {
 
                 }
 
-                archive.append(split);
+                archive.append(split).append(split);
 
             }
 
@@ -273,7 +249,6 @@ public class StatusArchive {
             content = StrUtil.subBefore(content,"https://t.co",true);
 
         }
-
 
         if (content.startsWith("@")) {
 
@@ -334,6 +309,26 @@ public class StatusArchive {
                 archive.append(Html.a(" 媒体文件",url));
 
             }
+
+        }
+		
+		if (quotedStatusId != -1) {
+			
+                StatusArchive quotedStatus = StatusArchive.get(quotedStatusId);
+
+				archive.append(split);
+				
+                if (quotedStatus != null) {
+
+                    archive.append(quotedStatus.toHtml(1));
+
+                } else {
+
+                    archive.append("引用的推文已不可用");
+
+                }
+
+                archive.append(split);
 
         }
 
