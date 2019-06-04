@@ -279,6 +279,8 @@ public class StatusUpdate extends TwitterFunction {
 
 			}
 
+			return;
+
 		}
 
 		if (msg.hasText()) {
