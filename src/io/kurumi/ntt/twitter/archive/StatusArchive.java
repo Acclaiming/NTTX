@@ -328,7 +328,7 @@ public class StatusArchive {
 
         }
 
-		if (quotedStatusId != -1 && quoted) {
+		if (quotedStatusId != -1 && !quoted) {
 
 			StatusArchive quotedStatus = StatusArchive.get(quotedStatusId);
 
