@@ -312,7 +312,7 @@ public class StatusArchive {
 
 		if (!content.trim().isEmpty()) {
 
-			archive.append("\n\ n").append(content);
+			archive.append("\n\n").append(content);
 
 		}
 
