@@ -41,7 +41,7 @@ public class NTT {
 
 		file.id = fileId;
 
-		file.mediaId = api.uploadMedia(fileName,IoUtil.toStream(Launcher.INSTANCE.getFile(fileId))).getMediaId();
+		file.mediaId = api.uploadMediaChunked(fileName,IoUtil.toStream(Launcher.INSTANCE.getFile(fileId))).getMediaId();
 
 		media.setById(file.id,file);
 
