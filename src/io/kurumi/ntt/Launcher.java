@@ -116,6 +116,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		addFragment(new Users());
 		
+		
+		addFragment(new DebugMsg());
+		
 		// 贴吧
 		
 		// addFragment(new TiebaLogin());
