@@ -126,11 +126,11 @@ public class Block extends TwitterFunction {
 
 			api.createBlock(targetId);
 
-			TrackTask.IdsList fr = TrackTask.friends.getById(account.id);
+			TrackTask.IdsList fo = TrackTask.followers.getById(account.id);
 
-			fr.ids.remove(targetId);
+			fo.ids.remove(targetId);
 			
-			
+			TrackTask.followers.setById(account.id,fo);
 			
 			msg.send("已屏蔽 " + archive.urlHtml() + " ~").html().point(0,targetId);
 
