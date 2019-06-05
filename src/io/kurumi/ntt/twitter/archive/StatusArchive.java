@@ -17,6 +17,7 @@ import io.kurumi.ntt.funcs.twitter.track.TrackTask.*;
 import io.kurumi.ntt.*;
 import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.funcs.abs.*;
+import com.neovisionaries.i18n.*;
 
 public class StatusArchive {
 
@@ -57,13 +58,13 @@ public class StatusArchive {
 
             archive.id = status.getId();
 
-            archive.read(status);
-
-			archive.loop(api);
-
-            data.setById(archive.id,archive);
-
         }
+		
+		archive.read(status);
+
+		archive.loop(api);
+		
+		data.setById(archive.id,archive);
 
         return archive;
 
@@ -93,7 +94,21 @@ public class StatusArchive {
 
 	public LinkedList<Long> userMentions;
 
+	public LinkedList<String> withHeldIn;
+
     public void read(Status status) {
+
+		withHeldIn = new LinkedList<>();
+		
+		if (status.getWithheldInCountries() != null) {
+
+			for (String code : status.getWithheldInCountries()) {
+
+				withHeldIn.add(code);
+
+			}
+
+		}
 
         createdAt = status.getCreatedAt().getTime();
 
@@ -304,7 +319,7 @@ public class StatusArchive {
 		content = content.substring(0,content.length() - 1);
 
 		archive.append("\n");
-		
+
 		if (!content.trim().isEmpty()) {
 
 			archive.append("\n").append(content).append("\n");
@@ -357,6 +372,20 @@ public class StatusArchive {
 
 			archive.append(", ").append(date.get(Calendar.AM_PM) == 0 ? "上午" : "下午").append(" ").append(date.get(Calendar.HOUR)).append(":").append(date.get(Calendar.MINUTE));
 
+		}
+		
+		if (!withHeldIn.isEmpty()) {
+			
+			archive.append("\n此推文违反了 ");
+			
+			for (String countryCode : withHeldIn) {
+				
+				archive.append(CountryCode.getByAlpha2Code(countryCode).toLocale().toString()).append(" ");
+				
+			}
+			
+			archive.append("的当地法律");
+			
 		}
 
         return archive.toString();

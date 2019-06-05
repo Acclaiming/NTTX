@@ -29,6 +29,9 @@ import io.kurumi.ntt.fragment.twitter.auto.*;
 import cn.hutool.core.io.*;
 import com.pengrad.telegrambot.response.*;
 import io.kurumi.ntt.fragment.twitter.status.*;
+import java.time.chrono.*;
+import com.google.gson.internal.bind.util.*;
+import com.neovisionaries.i18n.*;
 
 
 public class TrackTask extends TimerTask {
@@ -383,6 +386,22 @@ public class TrackTask extends TimerTask {
         if (user.getFavouritesCount() == 0) status.append("这个用户没有喜欢过推文 :)\n");
         if (user.getFollowersCount() < 20) status.append("这个用户关注者低 (").append(user.getFollowersCount()).append(")  :)\n");
 
+		if (user.getWithheldInCountries() != null) {
+			
+			status.append("警告 : 此账号违反了");
+			
+			for (String countryCode : user.getWithheldInCountries()) {
+				
+				CountryCode country = CountryCode.getByAlpha2Code(countryCode);
+
+				status.append(country.toLocale().toString()).append(" ");
+				
+			}
+			
+			status.append(" 的当地法律 被Twitter标识");
+			
+		}
+		
         /*
 
          try {
