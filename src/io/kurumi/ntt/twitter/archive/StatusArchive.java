@@ -303,9 +303,11 @@ public class StatusArchive {
 
 		content = content.substring(0,content.length() - 1);
 
+		archive.append("\n");
+		
 		if (!content.trim().isEmpty()) {
 
-			archive.append("\n\n").append(content).append("\n");
+			archive.append("\n").append(content).append("\n");
 
 		}
 
