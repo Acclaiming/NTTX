@@ -9,17 +9,39 @@ import twitter4j.*;
 import cn.hutool.core.util.ObjectUtil;
 import io.kurumi.ntt.funcs.twitter.track.*;
 
+
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Updates.*;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.gt;
+import static com.mongodb.client.model.Filters.not;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
+import static java.util.Arrays.asList;
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+import io.kurumi.ntt.db.BotDB.*;
+import java.util.*;
+
 public class UserArchive {
     
     public static Data<UserArchive> data = new Data<UserArchive>(UserArchive.class);
 
     public static UserArchive get(Long id) { return data.getById(id); }
     
-    public static UserArchive get(String screenName) { return data.getByField("screenName",screenName); }
+    public static UserArchive get(String screenName) {
+		
+		return data.collection.find(regex("screenName",ReUtil.escape(screenName),"i")).first();
+		
+	}
     
     public static boolean contains(Long id) { return data.containsId(id); }
     
-    public static boolean contains(String screenName) { return data.countByField("screenName",screenName) > 0; }
+    public static boolean contains(String screenName) {
+		
+		return data.collection.count(regex("user",ReUtil.escape(screenName),"i")) > 0;
+		
+	}
     
     public static UserArchive save(User user) {
 
