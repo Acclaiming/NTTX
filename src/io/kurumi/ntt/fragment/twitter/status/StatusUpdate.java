@@ -76,7 +76,7 @@ public class StatusUpdate extends TwitterFunction {
 
 		if (count == 0) {
 
-			msg.send("你没有认证账号，无法直接回复 ~").exec();
+			msg.send("你没有认证账号，使用 /login 登录 ~").exec();
 
 			return true;
 
@@ -150,7 +150,7 @@ public class StatusUpdate extends TwitterFunction {
 				
 				update.images.add(NTT.telegramToTwitter(auth.createApi(),message.sticker().fileId(),"sticker.png"));
 				
-				msg.send("图片添加成功 已设置 1 / 4 张图片 使用 /submit 发送").exec();
+				msg.send("图片添加成功 已设置 1 / 4 张图片","使用 /submit 发送","使用 /cancel 取消").exec();
 				
 			} catch (TwitterException e) {
 				
@@ -186,7 +186,7 @@ public class StatusUpdate extends TwitterFunction {
 				
 				update.images.add(NTT.telegramToTwitter(auth.createApi(),max.fileId(),"image.png"));
 				
-				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 使用 /submit 发送").exec();
+				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ","使用 /submit 发送","使用 /cancel 取消").exec();
 				
 			} catch (TwitterException e) {
 				
@@ -210,7 +210,7 @@ public class StatusUpdate extends TwitterFunction {
 				
 				update.video = NTT.telegramToTwitter(auth.createApi(),message.animation().fileId(),message.animation().fileName());
 
-				msg.send("视频添加成功 使用 /submit 发送").exec();
+				msg.send("视频添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
 				
 			} catch (TwitterException e) {
 				
@@ -235,7 +235,7 @@ public class StatusUpdate extends TwitterFunction {
 				
 				update.video = NTT.telegramToTwitter(auth.createApi(),message.video().fileId(),"video.mp4");
 
-				msg.send("视频添加成功 使用 /submit 发送").exec();
+				msg.send("视频添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
 				
 			} catch (TwitterException e) {
 				
@@ -260,7 +260,7 @@ public class StatusUpdate extends TwitterFunction {
 				
 				update.video = NTT.telegramToTwitter(auth.createApi(),message.videoNote().fileId(),"video.mp4");
 
-				msg.send("视频添加成功 使用 /submit 发送").exec();
+				msg.send("视频添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
 				
 			} catch (TwitterException e) {
 				
@@ -401,7 +401,7 @@ public class StatusUpdate extends TwitterFunction {
 				
 				update.images.add(NTT.telegramToTwitter(update.auth.createApi(),message.sticker().fileId(),"sticker.png"));
 
-				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 使用 /submit 发送").exec();
+				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ","使用 /submit 发送","使用 /cancel 取消").exec();
 				
 			} catch (TwitterException e) {
 				
@@ -453,7 +453,7 @@ public class StatusUpdate extends TwitterFunction {
 				
 				update.images.add(NTT.telegramToTwitter(update.auth.createApi(),max.fileId(),"image.png"));
 
-				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 使用 /submit 发送").exec();
+				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ","使用 /submit 发送","使用 /cancel 取消").exec();
 				
 			} catch (TwitterException e) {
 				
@@ -494,7 +494,7 @@ public class StatusUpdate extends TwitterFunction {
 				
 				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.animation().fileId(),message.animation().fileName());
 
-				msg.send("动图添加成功 使用 /submit 发送").exec();
+				msg.send("动图添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
 				
 			} catch (TwitterException e) {
 				
@@ -532,7 +532,7 @@ public class StatusUpdate extends TwitterFunction {
 				
 				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.video().fileId(),"video.mp4");
 
-				msg.send("视频添加成功 使用 /submit 发送").exec();
+				msg.send("视频添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
 				
 			} catch (TwitterException e) {
 				
@@ -571,7 +571,7 @@ public class StatusUpdate extends TwitterFunction {
 				
 				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.videoNote().fileId(),"video.mp4");
 
-				msg.send("视频添加成功 使用 /submit 发送").exec();
+				msg.send("视频添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
 				
 			} catch (TwitterException e) {
 				
