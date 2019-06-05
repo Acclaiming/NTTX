@@ -151,23 +151,31 @@ public class StatusUpdate extends TwitterFunction {
 
 		} else if (message.photo() != null) {
 
+			PhotoSize max = null;
+
 			for (PhotoSize photo : message.photo()) {
 
-				msg.sendUpdatingFile();
+				if ((max == null || photo.fileSize() > max.fileSize()) && photo.fileSize() < 1024 * 1024 * 20) {
 
-				if (photo.fileSize() > 1024 * 1024 * 20) {
-
-					msg.send("图片超过 20m ，根据Telegram官方限制,无法下载").exec();
-
-					return true;
+					max = photo;
 
 				}
 
-				update.image.add(getFile(photo.fileId()));
+			}
 
-				msg.send("图片添加成功 已设置 " + update.image.size() + " / 4 张图片 使用 /submit 发送").exec();
+			msg.sendUpdatingFile();
+
+			if (max == null) {
+
+				msg.send("图片超过 20m ，根据Telegram官方限制,无法下载").exec();
+
+				return true;
 
 			}
+
+			update.image.add(getFile(max.fileId()));
+
+			msg.send("图片添加成功 已设置 " + update.image.size() + " / 4 张图片 使用 /submit 发送").exec();
 
 		} else if (message.animation() != null) {
 
@@ -357,37 +365,49 @@ public class StatusUpdate extends TwitterFunction {
 
 		if (message.photo() != null) {
 
-			for (PhotoSize photo : message.photo()) {
+			if (update.image.size() == 4) {
 
-				if (update.image.size() == 4) {
+				msg.send("已经到了四张图片上限 ~").exec();
 
-					msg.send("已经到了四张图片上限 ~").exec();
+				return;
 
-					return;
+			} else if (update.video != null) {
 
-				} else if (update.video != null) {
+				msg.send("已经有添加视频了 ~").exec();
 
-					msg.send("已经有包含视频了 ~").exec();
-
-					return;
-
-				}
-
-				msg.sendUpdatingFile();
-
-				if (photo.fileSize() > 1024 * 1024 * 20) {
-
-					msg.send("图片超过 20m ，根据Telegram官方限制,无法下载").exec();
-
-					return;
-
-				}
-
-				update.image.add(getFile(photo.fileId()));
-
-				msg.send("图片添加成功 已设置 " + update.image.size() + " / 4 张图片 使用 /submit 发送").exec();
+				return;
 
 			}
+
+			PhotoSize max = null;
+
+			for (PhotoSize photo : message.photo()) {
+
+				if ((max == null || photo.fileSize() > max.fileSize()) && photo.fileSize() < 1024 * 1024 * 20) {
+
+					max = photo;
+
+				}
+
+			}
+
+			if (max == null) {
+
+				msg.send("图片超过 20m ，根据Telegram官方限制,无法下载").exec();
+
+				return;
+
+			}
+
+			update.image.add(getFile(max.fileId()));
+
+
+			msg.sendUpdatingFile();
+
+
+			msg.send("图片添加成功 已设置 " + update.image.size() + " / 4 张图片 使用 /submit 发送").exec();
+
+
 
 		} else if (message.animation() != null) {
 

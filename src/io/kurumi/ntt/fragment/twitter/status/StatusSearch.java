@@ -347,12 +347,14 @@ public class StatusSearch extends Function {
 			msg.sendTyping();
 
 			try {
+				
+				Status newStatus = api.showStatus(statusId);
 
-				StatusArchive newStatus = StatusArchive.save(api.showStatus(statusId));
+				StatusArchive archive = StatusArchive.save(api.showStatus(statusId));
 
-				newStatus.loop(api);
+				archive.loop(api);
 
-				msg.send(newStatus.toHtml()).html().point(1,newStatus.id);
+				msg.send(archive.toHtml()).buttons(StatusAction.createMarkup(archive.id,archive.from.equals(auth.id),true,newStatus.isRetweetedByMe(),newStatus.getCurrentUserRetweetId(),newStatus.isFavorited())).html().point(1,archive.id);
 
 			} catch (TwitterException e) {
 
