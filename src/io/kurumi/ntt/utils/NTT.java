@@ -16,6 +16,7 @@ import com.mongodb.client.*;
 import io.kurumi.ntt.funcs.twitter.track.TrackTask.*;
 import io.kurumi.ntt.twitter.archive.*;
 import java.io.*;
+import cn.hutool.core.io.*;
 
 public class NTT {
 
@@ -28,7 +29,7 @@ public class NTT {
 	 
  }
 	
-	public static long telegramToTwitter(Twitter api,String fileId) throws TwitterException {
+	public static long telegramToTwitter(Twitter api,String fileId,String fileName) throws TwitterException {
 		
 		if (media.containsId(fileId)) {
 			
@@ -40,7 +41,7 @@ public class NTT {
 		
 		file.id = fileId;
 		
-		file.mediaId = api.uploadMedia(Launcher.INSTANCE.getFile(fileId)).getMediaId();
+		file.mediaId = api.uploadMedia(fileName,IoUtil.toStream(Launcher.INSTANCE.getFile(fileId))).getMediaId();
 		
 		media.setById(file.id,file);
 		

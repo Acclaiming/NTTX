@@ -148,7 +148,7 @@ public class StatusUpdate extends TwitterFunction {
 
 			try {
 				
-				update.images.add(NTT.telegramToTwitter(auth.createApi(),message.sticker().fileId()));
+				update.images.add(NTT.telegramToTwitter(auth.createApi(),message.sticker().fileId(),"sticker.png"));
 				
 				msg.send("图片添加成功 已设置 1 / 4 张图片 使用 /submit 发送").exec();
 				
@@ -184,7 +184,7 @@ public class StatusUpdate extends TwitterFunction {
 
 			try {
 				
-				update.images.add(NTT.telegramToTwitter(auth.createApi(),max.fileId()));
+				update.images.add(NTT.telegramToTwitter(auth.createApi(),max.fileId(),"image.png"));
 				
 				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 使用 /submit 发送").exec();
 				
@@ -208,7 +208,7 @@ public class StatusUpdate extends TwitterFunction {
 
 			try {
 				
-				update.video = NTT.telegramToTwitter(auth.createApi(),message.animation().fileId());
+				update.video = NTT.telegramToTwitter(auth.createApi(),message.animation().fileId(),message.animation().fileName());
 
 				msg.send("视频添加成功 使用 /submit 发送").exec();
 				
@@ -233,7 +233,7 @@ public class StatusUpdate extends TwitterFunction {
 
 			try {
 				
-				update.video = NTT.telegramToTwitter(auth.createApi(),message.video().fileId());
+				update.video = NTT.telegramToTwitter(auth.createApi(),message.video().fileId(),"video.mp4");
 
 				msg.send("视频添加成功 使用 /submit 发送").exec();
 				
@@ -258,7 +258,7 @@ public class StatusUpdate extends TwitterFunction {
 
 			try {
 				
-				update.video = NTT.telegramToTwitter(auth.createApi(),message.videoNote().fileId());
+				update.video = NTT.telegramToTwitter(auth.createApi(),message.videoNote().fileId(),"video.mp4");
 
 				msg.send("视频添加成功 使用 /submit 发送").exec();
 				
@@ -399,7 +399,7 @@ public class StatusUpdate extends TwitterFunction {
 
 			try {
 				
-				update.images.add(NTT.telegramToTwitter(update.auth.createApi(),message.sticker().fileId()));
+				update.images.add(NTT.telegramToTwitter(update.auth.createApi(),message.sticker().fileId(),"sticker.png"));
 
 				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 使用 /submit 发送").exec();
 				
@@ -451,7 +451,7 @@ public class StatusUpdate extends TwitterFunction {
 			
 			try {
 				
-				update.images.add(NTT.telegramToTwitter(update.auth.createApi(),max.fileId()));
+				update.images.add(NTT.telegramToTwitter(update.auth.createApi(),max.fileId(),"image.png"));
 
 				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 使用 /submit 发送").exec();
 				
@@ -492,7 +492,7 @@ public class StatusUpdate extends TwitterFunction {
 
 			try {
 				
-				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.animation().fileId());
+				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.animation().fileId(),message.animation().fileName());
 
 				msg.send("动图添加成功 使用 /submit 发送").exec();
 				
@@ -530,7 +530,7 @@ public class StatusUpdate extends TwitterFunction {
 
 			try {
 				
-				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.video().fileId());
+				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.video().fileId(),"video.mp4");
 
 				msg.send("视频添加成功 使用 /submit 发送").exec();
 				
@@ -569,7 +569,7 @@ public class StatusUpdate extends TwitterFunction {
 
 			try {
 				
-				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.videoNote().fileId());
+				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.videoNote().fileId(),"video.mp4");
 
 				msg.send("视频添加成功 使用 /submit 发送").exec();
 				
