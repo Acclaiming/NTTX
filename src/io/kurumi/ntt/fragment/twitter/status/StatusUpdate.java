@@ -14,6 +14,7 @@ import twitter4j.*;
 
 import java.io.File;
 import io.kurumi.ntt.fragment.twitter.status.StatusAction.*;
+import cn.hutool.core.util.*;
 
 public class StatusUpdate extends TwitterFunction {
 
@@ -32,10 +33,10 @@ public class StatusUpdate extends TwitterFunction {
 
 		String text;
 
-		LinkedList<File> image = new LinkedList<>();
-
-		File video;
-
+		LinkedList<Long> images = new LinkedList<>();
+		
+		long video = -1;
+		
 		TAuth auth;
 
 		StatusArchive toReply;
@@ -145,9 +146,17 @@ public class StatusUpdate extends TwitterFunction {
 
 			msg.sendUpdatingFile();
 
-			update.image.add(getFile(message.sticker().fileId()));
-
-			msg.send("图片添加成功 已设置 1 / 4 张图片 使用 /submit 发送").exec();
+			try {
+				
+				update.images.add(NTT.telegramToTwitter(auth.createApi(),message.sticker().fileId()));
+				
+				msg.send("图片添加成功 已设置 1 / 4 张图片 使用 /submit 发送").exec();
+				
+			} catch (TwitterException e) {
+				
+				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+				
+			}
 
 		} else if (message.photo() != null) {
 
@@ -155,7 +164,7 @@ public class StatusUpdate extends TwitterFunction {
 
 			for (PhotoSize photo : message.photo()) {
 
-				if ((max == null || photo.fileSize() > max.fileSize()) && photo.fileSize() < 1024 * 1024 * 20) {
+				if ((max == null || photo.fileSize() > max.fileSize()) && photo.fileSize() < 1024 * 1024 * 5) {
 
 					max = photo;
 
@@ -167,21 +176,29 @@ public class StatusUpdate extends TwitterFunction {
 
 			if (max == null) {
 
-				msg.send("图片超过 20m ，根据Telegram官方限制,无法下载").exec();
+				msg.send("图片超过 5m ，根据Twitter官方限制,无法发送").exec();
 
 				return true;
 
 			}
 
-			update.image.add(getFile(max.fileId()));
-
-			msg.send("图片添加成功 已设置 " + update.image.size() + " / 4 张图片 使用 /submit 发送").exec();
+			try {
+				
+				update.images.add(NTT.telegramToTwitter(auth.createApi(),max.fileId()));
+				
+				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 使用 /submit 发送").exec();
+				
+			} catch (TwitterException e) {
+				
+				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+				
+			}
 
 		} else if (message.animation() != null) {
 
-			if (message.animation().fileSize() > 1024 * 1024 * 20) {
+			if (message.animation().fileSize() > 1024 * 1024 * 15) {
 
-				msg.send("视频超过 20m ，根据Telegram官方限制,无法下载").exec();
+				msg.send("动图超过 15m ，根据Twitter官方限制,无法发送").exec();
 
 				return true;
 
@@ -189,16 +206,24 @@ public class StatusUpdate extends TwitterFunction {
 
 			msg.sendUpdatingFile();
 
-			update.video = getFile(message.animation().fileId());
+			try {
+				
+				update.video = NTT.telegramToTwitter(auth.createApi(),message.animation().fileId());
 
-			msg.send("视频添加成功 使用 /submit 发送").exec();
+				msg.send("视频添加成功 使用 /submit 发送").exec();
+				
+			} catch (TwitterException e) {
+				
+				msg.send("视频上传失败",NTT.parseTwitterException(e)).exec();
+
+			}
 
 
 		} else if (message.video() != null) {
 
-			if (message.video().fileSize() > 1024 * 1024 * 20) {
+			if (message.video().fileSize() > 1024 * 1024 * 15) {
 
-				msg.send("视频超过 20m ，根据Telegram官方限制,无法下载").exec();
+				msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
 
 				return true;
 
@@ -206,16 +231,24 @@ public class StatusUpdate extends TwitterFunction {
 
 			msg.sendUpdatingFile();
 
-			update.video = getFile(message.video().fileId());
+			try {
+				
+				update.video = NTT.telegramToTwitter(auth.createApi(),message.video().fileId());
 
-			msg.send("视频添加成功 使用 /submit 发送").exec();
+				msg.send("视频添加成功 使用 /submit 发送").exec();
+				
+			} catch (TwitterException e) {
+				
+				msg.send("视频上传失败",NTT.parseTwitterException(e)).exec();
+				
+			}
 
 
 		} else if (message.videoNote() != null) {
 
-			if (message.videoNote().fileSize() > 1024 * 1024 * 20) {
+			if (message.videoNote().fileSize() > 1024 * 1024 * 15) {
 
-				msg.send("视频超过 20m ，根据Telegram官方限制,无法下载").exec();
+				msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
 
 				return true;
 
@@ -223,9 +256,18 @@ public class StatusUpdate extends TwitterFunction {
 
 			msg.sendUpdatingFile();
 
-			update.video = getFile(message.videoNote().fileId());
+			try {
+				
+				update.video = NTT.telegramToTwitter(auth.createApi(),message.videoNote().fileId());
 
-			msg.send("视频添加成功 使用 /submit 发送").exec();
+				msg.send("视频添加成功 使用 /submit 发送").exec();
+				
+			} catch (TwitterException e) {
+				
+				msg.send("视频上传失败",NTT.parseTwitterException(e)).exec();
+				
+			}
+			
 
 
 		} else {
@@ -247,7 +289,7 @@ public class StatusUpdate extends TwitterFunction {
 
 		if ("submit".equals(msg.command())) {
 
-			if (update.text == null && update.image.isEmpty() && update.video == null) {
+			if (update.text == null && update.images.isEmpty() && update.video == -1) {
 
 				msg.send("好像什么内容都没有。？ 请输入文本 / 贴纸 / 图片 / 视频").exec();
 
@@ -284,19 +326,17 @@ public class StatusUpdate extends TwitterFunction {
 
 			if (update.toReply != null) send.inReplyToStatusId(update.toReply.id);
 
-			if (!update.image.isEmpty()) {
+			if (!update.images.isEmpty()) {
 
-				for (File image : update.image) {
-
-					send.media(image);
-
-				}
-
+				send.setMediaIds(ArrayUtil.unWrap(update.images.toArray(new Long[update.images.size()])));
+					
 				msg.sendUpdatingPhoto();
 
-			} else if (update.video != null) {
+			} else if (update.video != -1) {
 
-				send.media(update.video);
+				//update.auth.createApi().uploadMedia();
+				
+				send.setMediaIds(update.video);
 
 				msg.sendUpdatingVideo();
 
@@ -341,13 +381,13 @@ public class StatusUpdate extends TwitterFunction {
 
 		if (message.sticker() != null) {
 
-			if (update.image.size() == 4) {
+			if (update.images.size() == 4) {
 
 				msg.send("已经到了四张图片上限 ~").exec();
 
 				return;
 
-			} else if (update.video != null) {
+			} else if (update.video != -1) {
 
 				msg.send("已经有包含视频了 ~").exec();
 
@@ -357,21 +397,29 @@ public class StatusUpdate extends TwitterFunction {
 
 			msg.sendUpdatingFile();
 
-			update.image.add(getFile(message.sticker().fileId()));
+			try {
+				
+				update.images.add(NTT.telegramToTwitter(update.auth.createApi(),message.sticker().fileId()));
 
-			msg.send("图片添加成功 已设置 " + update.image.size() + " / 4 张图片 使用 /submit 发送").exec();
+				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 使用 /submit 发送").exec();
+				
+			} catch (TwitterException e) {
+				
+				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+				
+			}
 
 		}
 
 		if (message.photo() != null) {
 
-			if (update.image.size() == 4) {
+			if (update.images.size() == 4) {
 
 				msg.send("已经到了四张图片上限 ~").exec();
 
 				return;
 
-			} else if (update.video != null) {
+			} else if (update.video != -1) {
 
 				msg.send("已经有添加视频了 ~").exec();
 
@@ -383,7 +431,7 @@ public class StatusUpdate extends TwitterFunction {
 
 			for (PhotoSize photo : message.photo()) {
 
-				if ((max == null || photo.fileSize() > max.fileSize()) && photo.fileSize() < 1024 * 1024 * 20) {
+				if ((max == null || photo.fileSize() > max.fileSize()) && photo.fileSize() < 1024 * 1024 * 5) {
 
 					max = photo;
 
@@ -393,31 +441,37 @@ public class StatusUpdate extends TwitterFunction {
 
 			if (max == null) {
 
-				msg.send("图片超过 20m ，根据Telegram官方限制,无法下载").exec();
+				msg.send("图片超过 5m ，根据Twitter官方限制,无法发送").exec();
 
 				return;
 
 			}
 
-			update.image.add(getFile(max.fileId()));
-
-
 			msg.sendUpdatingFile();
+			
+			try {
+				
+				update.images.add(NTT.telegramToTwitter(update.auth.createApi(),max.fileId()));
 
-
-			msg.send("图片添加成功 已设置 " + update.image.size() + " / 4 张图片 使用 /submit 发送").exec();
+				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 使用 /submit 发送").exec();
+				
+			} catch (TwitterException e) {
+				
+				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+				
+			}
 
 
 
 		} else if (message.animation() != null) {
 
-			if (!update.image.isEmpty()) {
+			if (!update.images.isEmpty()) {
 
 				msg.send("已经有添加图片了 无法添加视频 ~").exec();
 
 				return;
 
-			} else if (update.video != null) {
+			} else if (update.video != -1) {
 
 				msg.send("已经有设置视频了 ~").exec();
 
@@ -425,9 +479,9 @@ public class StatusUpdate extends TwitterFunction {
 
 			}
 
-			if (message.animation().fileSize() > 1024 * 1024 * 20) {
+			if (message.animation().fileSize() > 1024 * 1024 * 15) {
 
-				msg.send("视频超过 20m ，根据Telegram官方限制,无法下载").exec();
+				msg.send("动图超过 15m ，根据Twitter官方限制,无法发送").exec();
 
 				return;
 
@@ -436,21 +490,27 @@ public class StatusUpdate extends TwitterFunction {
 
 			msg.sendUpdatingFile();
 
-			update.video = getFile(message.animation().fileId());
+			try {
+				
+				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.animation().fileId());
 
-			msg.send("视频添加成功 使用 /submit 发送").exec();
-
-
+				msg.send("动图添加成功 使用 /submit 发送").exec();
+				
+			} catch (TwitterException e) {
+				
+				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+				
+			}
+			
 		} else if (message.video() != null) {
 
-
-			if (!update.image.isEmpty()) {
+			if (!update.images.isEmpty()) {
 
 				msg.send("已经有添加图片了 无法添加视频 ~").exec();
 
 				return;
 
-			} else if (update.video != null) {
+			} else if (update.video != -1) {
 
 				msg.send("已经有设置视频了 ~").exec();
 
@@ -458,9 +518,9 @@ public class StatusUpdate extends TwitterFunction {
 
 			}
 
-			if (message.video().fileSize() > 1024 * 1024 * 20) {
+			if (message.video().fileSize() > 1024 * 1024 * 15) {
 
-				msg.send("视频超过 20m ，根据Telegram官方限制,无法下载").exec();
+				msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
 
 				return;
 
@@ -468,20 +528,28 @@ public class StatusUpdate extends TwitterFunction {
 
 			msg.sendUpdatingFile();
 
-			update.video = getFile(message.video().fileId());
+			try {
+				
+				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.video().fileId());
 
-			msg.send("视频添加成功 使用 /submit 发送").exec();
+				msg.send("视频添加成功 使用 /submit 发送").exec();
+				
+			} catch (TwitterException e) {
+				
+				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+				
+			}
 
 
 		} else if (message.videoNote() != null) {
 
-			if (!update.image.isEmpty()) {
+			if (!update.images.isEmpty()) {
 
 				msg.send("已经有添加图片了 无法添加视频 ~").exec();
 
 				return;
 
-			} else if (update.video != null) {
+			} else if (update.video != -1) {
 
 				msg.send("已经有设置视频了 ~").exec();
 
@@ -489,9 +557,9 @@ public class StatusUpdate extends TwitterFunction {
 
 			}
 
-			if (message.videoNote().fileSize() > 1024 * 1024 * 20) {
+			if (message.videoNote().fileSize() > 1024 * 1024 * 15) {
 
-				msg.send("视频超过 20m ，根据Telegram官方限制,无法下载").exec();
+				msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
 
 				return;
 
@@ -499,9 +567,17 @@ public class StatusUpdate extends TwitterFunction {
 
 			msg.sendUpdatingFile();
 
-			update.video = getFile(message.videoNote().fileId());
+			try {
+				
+				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.videoNote().fileId());
 
-			msg.send("视频添加成功 使用 /submit 发送").exec();
+				msg.send("视频添加成功 使用 /submit 发送").exec();
+				
+			} catch (TwitterException e) {
+				
+				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+				
+			}
 
 
 		}

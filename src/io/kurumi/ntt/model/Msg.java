@@ -184,7 +184,7 @@ public class Msg extends Context {
 
     public void sendUpdatingVideo() {
 
-        fragment.sendUpdatingAudio(chatId());
+        fragment.sendUpdatingVideo(chatId());
     }
 
     public void sendUpdatingVideoNote() {

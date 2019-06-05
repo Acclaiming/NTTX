@@ -15,9 +15,39 @@ import io.kurumi.ntt.funcs.twitter.track.*;
 import com.mongodb.client.*;
 import io.kurumi.ntt.funcs.twitter.track.TrackTask.*;
 import io.kurumi.ntt.twitter.archive.*;
+import java.io.*;
 
 public class NTT {
 
+ static AbsData<String,TgMedia> media = new AbsData<String,TgMedia>(TgMedia.class);
+	
+ static class TgMedia {
+	 
+	 public String id;
+	 public long mediaId;
+	 
+ }
+	
+	public static long telegramToTwitter(Twitter api,String fileId) throws TwitterException {
+		
+		if (media.containsId(fileId)) {
+			
+			return media.getById(fileId).mediaId;
+			
+		}
+		
+		TgMedia file = new TgMedia();
+		
+		file.id = fileId;
+		
+		file.mediaId = api.uploadMedia(Launcher.INSTANCE.getFile(fileId)).getMediaId();
+		
+		media.setById(file.id,file);
+		
+		return file.mediaId;
+		
+	}
+	
 	/*
 
 	 public static long[] getChatMembers(Long chat) {
