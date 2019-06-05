@@ -29,7 +29,7 @@ public class NTT {
 
 	}
 
-	public static long telegramToTwitter(Twitter api,String fileId,String fileName) throws TwitterException {
+	public static long telegramToTwitter(Twitter api,String fileId,String fileName,boolean image) throws TwitterException {
 
 		if (media.containsId(fileId)) {
 
@@ -41,8 +41,17 @@ public class NTT {
 
 		file.id = fileId;
 
+		if (image) {
+		
+			file.mediaId = api.uploadMedia(fileName,IoUtil.toStream(Launcher.INSTANCE.getFile(fileId))).getMediaId();
+			
+			
+		} else {
+			
 		file.mediaId = api.uploadMediaChunked(fileName,IoUtil.toStream(Launcher.INSTANCE.getFile(fileId))).getMediaId();
 
+		}
+		
 		media.setById(file.id,file);
 
 		return file.mediaId;
