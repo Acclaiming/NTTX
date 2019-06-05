@@ -26,29 +26,8 @@ public class StatusArchive {
     public static StatusArchive get(Long id) { return data.getById(id); }
     public static boolean contains(Long id) { return data.containsId(id); }
 
-    public static StatusArchive save(Status status) {
 
-		if (status == null) return null;
-
-        StatusArchive archive = data.getById(status.getId());
-
-        if (archive == null) {
-
-            archive = new StatusArchive();
-
-            archive.id = status.getId();
-
-            archive.read(status);
-
-            data.setById(archive.id,archive);
-
-        }
-
-        return archive;
-
-    }
-
-	public static StatusArchive save(Status status,Twitter api) {
+	public static StatusArchive save(Status status) {
 
         StatusArchive archive = data.getById(status.getId());
 
@@ -59,10 +38,8 @@ public class StatusArchive {
             archive.id = status.getId();
 
         }
-		
+
 		archive.read(status);
-
-		archive.loop(api);
 		
 		data.setById(archive.id,archive);
 
@@ -86,6 +63,10 @@ public class StatusArchive {
 
 	public Long quotedStatusId;
 
+	public String quotedScreenName;
+
+	public Long quotedUserId;
+	
 	public LinkedList<String> mediaUrls;
 
     public Boolean isRetweet;
@@ -94,21 +75,7 @@ public class StatusArchive {
 
 	public LinkedList<Long> userMentions;
 
-	public LinkedList<String> withHeldIn;
-
     public void read(Status status) {
-
-		withHeldIn = new LinkedList<>();
-		
-		if (status.getWithheldInCountries() != null) {
-
-			for (String code : status.getWithheldInCountries()) {
-
-				withHeldIn.add(code);
-
-			}
-
-		}
 
         createdAt = status.getCreatedAt().getTime();
 
@@ -117,7 +84,7 @@ public class StatusArchive {
 		userMentions = new LinkedList<>();
 
 		for (UserMentionEntity mention : status.getUserMentionEntities()) {
-
+			
 			if (text.startsWith("@" + mention.getScreenName() + " ")) {
 
 				userMentions.add(mention.getId());
@@ -128,9 +95,7 @@ public class StatusArchive {
 
 		}
 
-        from = status.getUser().getId();
-
-        UserArchive.save(status.getUser());
+        from = UserArchive.save(status.getUser()).id;
 
         inReplyToStatusId = status.getInReplyToStatusId();
 
@@ -140,17 +105,15 @@ public class StatusArchive {
 
         quotedStatusId = status.getQuotedStatusId();
 
-        if (quotedStatusId != -1 && !StatusArchive.contains(quotedStatusId)) {
-
-            StatusArchive.save(status.getQuotedStatus());
-
-        }
-
 		for (URLEntity url : status.getURLEntities()) {
 
 			if (text.endsWith(url.getURL()) && quotedStatusId != -1) {
 
+				// 引用推文
+
 				text = StrUtil.subBefore(text,url.getURL(),true);
+				
+				quotedScreenName = NTT.parseScreenName(url.getExpandedURL());
 
 			} else {
 
@@ -191,7 +154,7 @@ public class StatusArchive {
     public UserArchive user() {
 
         UserArchive user = UserArchive.get(from);
-
+		
 		return user;
 
     }
@@ -328,7 +291,7 @@ public class StatusArchive {
 
         if (!mediaUrls.isEmpty()) {
 
-            archive.append("\n媒体文件 :");
+            archive.append("\n");
 
             for (String url : mediaUrls) {
 
@@ -352,7 +315,9 @@ public class StatusArchive {
 
 			} else {
 
-				archive.append("引用的推文已不可用");
+				if (quotedScreenName != null) {}
+
+				archive.append();
 
 			}
 
@@ -372,20 +337,6 @@ public class StatusArchive {
 
 			archive.append(", ").append(date.get(Calendar.AM_PM) == 0 ? "上午" : "下午").append(" ").append(date.get(Calendar.HOUR)).append(":").append(date.get(Calendar.MINUTE));
 
-		}
-		
-		if (!withHeldIn.isEmpty()) {
-			
-			archive.append("\n此推文违反了 ");
-			
-			for (String countryCode : withHeldIn) {
-				
-				archive.append(CountryCode.getByAlpha2Code(countryCode).toLocale().toString()).append(" ");
-				
-			}
-			
-			archive.append("的当地法律");
-			
 		}
 
         return archive.toString();
@@ -413,70 +364,6 @@ public class StatusArchive {
 	}
 
     public StatusArchive loop(Twitter api,boolean avoid) {
-
-        String content = text;
-
-		if (!UserArchive.contains(from)) {
-
-			try {
-
-				UserArchive.save(api.showUser(from));
-
-			} catch (TwitterException e) {
-
-				if (!avoid) {
-
-					TAuth accessable = NTT.loopFindAccessable(inReplyToUserId);
-
-					if (accessable != null) {
-
-						loop(accessable.createApi(),true);
-
-					}
-
-				}
-
-
-			}
-
-		}
-
-        if (content.startsWith("@")) {
-
-            while (content.startsWith("@")) {
-
-                String screenName = StrUtil.subBefore(content.substring(1)," ",false);
-
-                content = StrUtil.subAfter(content," ",false);
-
-                if (!UserArchive.contains(screenName)) {
-
-                    try {
-
-                        UserArchive.save(api.showUser(screenName));
-
-                    } catch (TwitterException ex) {
-
-						if (!avoid) {
-
-							TAuth accessable = NTT.loopFindAccessable(inReplyToUserId);
-
-							if (accessable != null) {
-
-								loop(accessable.createApi(),true);
-
-							}
-
-						}
-
-					} 
-
-                }
-
-            }
-
-        }
-
 
         try {
 
@@ -536,9 +423,9 @@ public class StatusArchive {
 
         } catch (TwitterException ex) {
 
-			if (inReplyToUserId != -1 && !avoid) {
+			if (quotedScreenName != null && !avoid) {
 
-				TAuth accessable = NTT.loopFindAccessable(inReplyToUserId);
+				TAuth accessable = NTT.loopFindAccessable(quotedScreenName);
 
 				if (accessable != null) {
 

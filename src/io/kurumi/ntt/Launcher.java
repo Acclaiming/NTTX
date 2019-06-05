@@ -28,6 +28,7 @@ import io.kurumi.ntt.fragment.tieba.*;
 import io.kurumi.ntt.fragment.twitter.action.*;
 import io.kurumi.ntt.fragment.twitter.timeline.*;
 import io.kurumi.ntt.fragment.debug.*;
+import io.kurumi.ntt.fragment.channel.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -116,6 +117,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		addFragment(new Users());
 		
+		addFragment(new Channel());
 		
 		addFragment(new DebugMsg());
 		
