@@ -11,6 +11,8 @@ import twitter4j.*;
 import io.kurumi.ntt.twitter.archive.*;
 import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntt.fragment.twitter.status.*;
+import io.kurumi.ntt.funcs.twitter.track.*;
+import io.kurumi.ntt.funcs.twitter.track.TrackTask.*;
 
 public class Block extends TwitterFunction {
 
@@ -124,6 +126,12 @@ public class Block extends TwitterFunction {
 
 			api.createBlock(targetId);
 
+			TrackTask.IdsList fr = TrackTask.friends.getById(account.id);
+
+			fr.ids.remove(targetId);
+			
+			
+			
 			msg.send("已屏蔽 " + archive.urlHtml() + " ~").html().point(0,targetId);
 
 		} catch (TwitterException e) {

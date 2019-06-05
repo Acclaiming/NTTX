@@ -22,17 +22,14 @@ public class TimelineUI extends TwitterFunction {
 		public long id;
 
 		public boolean mention = false;
-		public boolean timeline = false;
 
 		public long mentionOffset = -1;
-		public long timelineOffset = -1;
+		public long retweetsOffset = -1;
 
 	}
 
 	@Override
 	public void functions(LinkedList<String> names) {
-
-		names.add("timeline");
 
 		names.add("mention");
 
@@ -53,19 +50,12 @@ public class TimelineUI extends TwitterFunction {
 
 		boolean target = params.length > 0 && !"off".equals(params[0]);
 
-		msg.send((("timeline".equals(function) ? setting.timeline : setting.mention) == target ? (target ? "无须重复开启" : "没有开启") : ("timeline".equals(function) ? (setting.timeline = target) : (setting.mention = target)) ? "已开启" : "已关闭")).exec();
+		msg.send(setting.mention == target ? (target ? "无须重复开启" : "没有开启") : ((setting.mention = target) ? "已开启" : "已关闭")).exec();
 
-		if ("timeline".equals(function)) {
+		setting.retweetsOffset = -1;
+		setting.mentionOffset = -1;
 
-			setting.timelineOffset = -1;
-
-		} else {
-
-			setting.mentionOffset = -1;
-
-		}
-
-		if (setting.timeline || setting.mention) {
+		if (setting.mention) {
 
 			data.setById(account.id,setting);
 
@@ -216,6 +206,44 @@ public class TimelineUI extends TwitterFunction {
 				} else {
 
 					setting.mentionOffset = mention.get(0).getId();
+
+				}
+
+			}
+			
+			if (setting.retweetsOffset != -1) {
+
+				ResponseList<Status> retweets = api.getRetweetsOfMe((new Paging().count(200).sinceId(setting.retweetsOffset + 1)));
+
+				long offset = setting.retweetsOffset;
+
+				for (Status retweet : ArrayUtil.reverse(retweets.toArray(new Status[retweets.size()]))) {
+
+					if (retweet.getId() > offset) {
+
+						offset = retweet.getId();
+
+					}
+
+					StatusArchive archive = StatusArchive.save(retweet).loop(api);
+
+					if (!archive.from.equals(auth.id)) {
+
+						new Send(auth.user,archive.toHtml(1)).buttons(StatusAction.createMarkup(archive.id,auth.id.equals(retweet.getUser().getId()),archive.depth() <= 1,retweet.isRetweetedByMe(),retweet.getCurrentUserRetweetId(),retweet.isFavorited())).html().point(1,archive.id);
+
+					}
+
+				}
+
+				setting.retweetsOffset = offset;
+
+			} else {
+
+				ResponseList<Status> mention = api.getRetweetsOfMe(new Paging().count(1));
+
+				if (!mention.isEmpty()) {
+
+					setting.retweetsOffset = mention.get(0).getId();
 
 				}
 
