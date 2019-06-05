@@ -24,7 +24,7 @@ public class Jvbao extends Function {
 
 		if (params.length == 0) {
 
-			msg.send("/fetch <用户ID|用户名|链接>").exec();
+			msg.send("/jvbao <用户ID|用户名|链接>").exec();
 
 			return;
 
