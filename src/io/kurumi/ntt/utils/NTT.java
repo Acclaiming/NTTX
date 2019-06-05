@@ -20,35 +20,35 @@ import cn.hutool.core.io.*;
 
 public class NTT {
 
- static AbsData<String,TgMedia> media = new AbsData<String,TgMedia>(TgMedia.class);
-	
- static class TgMedia {
-	 
-	 public String id;
-	 public long mediaId;
-	 
- }
-	
-	public static long telegramToTwitter(Twitter api,String fileId,String fileName) throws TwitterException {
-		
-		if (media.containsId(fileId)) {
-			
-			return media.getById(fileId).mediaId;
-			
-		}
-		
-		TgMedia file = new TgMedia();
-		
-		file.id = fileId;
-		
-		file.mediaId = api.uploadMedia(fileName,IoUtil.toStream(Launcher.INSTANCE.getFile(fileId))).getMediaId();
-		
-		media.setById(file.id,file);
-		
-		return file.mediaId;
-		
+	static AbsData<String,TgMedia> media = new AbsData<String,TgMedia>(TgMedia.class);
+
+	public static class TgMedia {
+
+		public String id;
+		public long mediaId;
+
 	}
-	
+
+	public static long telegramToTwitter(Twitter api,String fileId,String fileName) throws TwitterException {
+
+		if (media.containsId(fileId)) {
+
+			return media.getById(fileId).mediaId;
+
+		}
+
+		TgMedia file = new TgMedia();
+
+		file.id = fileId;
+
+		file.mediaId = api.uploadMedia(fileName,IoUtil.toStream(Launcher.INSTANCE.getFile(fileId))).getMediaId();
+
+		media.setById(file.id,file);
+
+		return file.mediaId;
+
+	}
+
 	/*
 
 	 public static long[] getChatMembers(Long chat) {
@@ -98,41 +98,41 @@ public class NTT {
 		return result.getCount() == 0;
 
 	}
-	
+
 	public static boolean testThreadBan(Twitter api,UserArchive archive) throws TwitterException {
-		
+
 		ResponseList<Status> tl = api.getUserTimeline(archive.id,new Paging().count(200));
 
 		for (Status status : tl) {
-			
+
 			if (status.getQuotedStatus() != null) {
-				
+
 				QueryResult result = api.search(new twitter4j.Query("from:" + archive.screenName + " to:" +  status.getQuotedStatus().getUser().getScreenName()).sinceId(status.getId()).maxId(status.getId()));
 
 				return result.getCount() == 0;
-				
+
 			}
-			
+
 		}
-		
+
 		return false;
-		
+
 	}
-	
+
 	public static boolean testSearchSuggestionBan(Twitter api,UserArchive archive) throws TwitterException {
 
 		ResponseList<twitter4j.User> result = api.getUserSuggestions(archive.screenName);
 
 		for (twitter4j.User user : result) {
-			
+
 			if (archive.id.equals(user.getId())) {
-				
+
 				return false;
-				
+
 			}
-			
+
 		}
-		
+
 		return true;
 
 	}
