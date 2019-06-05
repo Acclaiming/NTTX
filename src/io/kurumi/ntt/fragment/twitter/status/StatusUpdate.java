@@ -121,7 +121,7 @@ public class StatusUpdate extends TwitterFunction {
 
 				StatusArchive archive = StatusArchive.save(status);
 
-				msg.reply("回复成功 :",StatusArchive.split_tiny,archive.toHtml(1)).buttons(StatusAction.createMarkup(archive.id,archive.depth() <= 1,true,false,-1,false)).html().point(1,archive.id);
+				msg.reply("回复成功 :",StatusArchive.split_tiny,archive.toHtml(1)).buttons(StatusAction.createMarkup(archive.id,true,archive.depth() <= 1,false,-1,false)).html().point(1,archive.id);
 
 			} catch (TwitterException e) {
 
@@ -301,9 +301,7 @@ public class StatusUpdate extends TwitterFunction {
 
 				StatusArchive archive = StatusArchive.save(status);
 
-				msg.reply("发送成功 :",StatusArchive.split_tiny,archive.toHtml(1)).buttons(StatusAction.createMarkup(archive.id,archive.depth() <= 1,true,false,-1,false)).html().point(1,archive.id);
-
-
+				msg.reply("发送成功 :",StatusArchive.split_tiny,archive.toHtml(1)).buttons(StatusAction.createMarkup(archive.id,true,archive.depth() <= 1,false,-1,false)).html().point(1,archive.id);
 
 			} catch (TwitterException e) {
 
