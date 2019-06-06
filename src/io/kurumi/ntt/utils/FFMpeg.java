@@ -23,7 +23,7 @@ public class FFMpeg {
 		
 		try {
 			
-			RuntimeUtil.exec("ffmpeg -i " + media.getPath() + " -b 4096k -r 20 -vf fps=20,scale=320:-1:flags=lanczos,palettegen -y " + cacheFile.getPath()).waitFor();
+			RuntimeUtil.exec("ffmpeg -i " + media.getPath() + " -b 2048k -r 20 -vf fps=20,scale=320:-1:flags=lanczos,palettegen -y " + cacheFile.getPath()).waitFor();
 			
 		} catch (InterruptedException e) {}
 		
@@ -38,7 +38,7 @@ public class FFMpeg {
 		
 		try {
 			
-			return RuntimeUtil.exec("ffmpeg -i " + in.getPath() + " -i " + globalPalettePicPath.getPath() + " -b 4096k " + out.getPath()).waitFor() == 0;
+			return RuntimeUtil.exec("ffmpeg -i " + in.getPath() + " -i " + globalPalettePicPath.getPath() + " -b 2048k " + out.getPath()).waitFor() == 0;
 			
 		} catch (InterruptedException e) {
 			
