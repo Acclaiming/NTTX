@@ -1,0 +1,69 @@
+package io.kurumi.ntt.funcs.admin;
+
+import cn.hutool.core.util.*;
+import io.kurumi.ntt.*;
+import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.funcs.abs.*;
+import io.kurumi.ntt.model.*;
+import io.kurumi.ntt.model.request.*;
+import java.util.*;
+
+public class Control extends Function {
+
+	@Override
+	public void functions(LinkedList<String> names) {
+		
+		names.add("stop");
+		names.add("restart");
+		names.add("poweroff");
+		names.add("reboot");
+		names.add("rdate");
+		
+	}
+
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		
+		if (!user.developer()) {
+			
+			msg.send("Permission Denied").exec();
+			
+			return;
+			
+		}
+		
+		if ("stop".equals(function)) {
+			
+			new Send(Env.GROUP,"Bot Stop Executed : By " + user.userName()).html().exec();
+			
+			RuntimeUtil.exec("service ntt stop");
+			
+		} else if ("restart".equals(function)) {
+			
+			new Send(Env.GROUP,"Bot Restart Executed : By " + user.userName()).html().exec();
+			
+			RuntimeUtil.exec("service ntt restart");
+			
+		} else if ("poweroff".equals(function)) {
+			
+			new Send(Env.GROUP,"Server Stop Executed : By " + user.userName()).html().exec();
+			
+			RuntimeUtil.exec("poweroff");
+			
+		} else if ("reboot".equals(function)) {
+			
+			new Send(Env.GROUP,"Bot Restart Executed : By " + user.userName()).html().exec();
+			
+			RuntimeUtil.exec("reboot");
+			
+		} else if ("rdate".equals(function)) {
+			
+			new Send(Env.GROUP,"Time Sync Executed : By " + user.userName()).html().exec();
+			
+			RuntimeUtil.execForStr("rdate -s time.nist.gov");
+			
+		}
+		
+	}
+	
+}
