@@ -38,7 +38,7 @@ public class FFMpeg {
 		
 		try {
 			
-			return RuntimeUtil.exec("ffmpeg -i " + in.getPath() + " -i " + globalPalettePicPath.getPath() + " -b 2048k " + out.getPath()).waitFor() == 0;
+			return RuntimeUtil.exec("ffmpeg -i " + in.getPath() + " -i " + globalPalettePicPath.getPath() + " -b 2048k -r 15 -lavfi fps=15,scale=270:-1:flags=lanczos[x];[x][1:v]paletteuse -y " + out.getPath()).waitFor() == 0;
 			
 		} catch (InterruptedException e) {
 			
