@@ -15,13 +15,28 @@ public class FFMpeg {
 		
 	}
 	
-	public static boolean toGif(File in,File out) {
+	public static File getGifPalettePic(File media) {
+		
+		File cacheFile = new File(Env.CACHE_DIR,"palette_pic/" + media.getName() + ".png");
+		
+		try {
+			
+			RuntimeUtil.exec("ffmpeg -i " + media.getPath() + " -b 4096k -r 20 -vf fps=20,scale=320:-1:flags=lanczos,palettegen -y " + cacheFile.getPath()).waitFor();
+			
+		} catch (InterruptedException e) {}
+		
+		return cacheFile;
+
+		
+	}
+	
+	public static boolean toGif(File globalPalettePicPath,File in,File out) {
 		
 		out.getParentFile().mkdirs();
 		
 		try {
 			
-			return RuntimeUtil.exec("ffmpeg -i " + in.getPath() + " -b 3700000 " + out.getPath()).waitFor() == 0;
+			return RuntimeUtil.exec("ffmpeg -i " + in.getPath() + " -i " + globalPalettePicPath.getPath() + " -b 4096k " + out.getPath()).waitFor() == 0;
 			
 		} catch (InterruptedException e) {
 			

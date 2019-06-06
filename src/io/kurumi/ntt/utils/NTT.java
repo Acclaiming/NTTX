@@ -42,7 +42,11 @@ public class NTT {
 
 			if (!converted.isFile()) {
 
-				FFMpeg.toGif(file,converted);
+				File globalPalettePic = FFMpeg.getGifPalettePic(file);
+				
+				FFMpeg.toGif(globalPalettePic,file,converted);
+				
+				FileUtil.del(globalPalettePic);
 
 			}
 
