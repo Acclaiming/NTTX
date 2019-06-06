@@ -116,25 +116,25 @@ public class StatusUpdate extends TwitterFunction {
 
 			StatusArchive toReply = StatusArchive.get(point.targetId);
 
-				String reply = "@" + toReply.user().screenName + " ";
+			String reply = "@" + toReply.user().screenName + " ";
 
-				if (!toReply.userMentions.isEmpty()) {
+			if (!toReply.userMentions.isEmpty()) {
 
-					for (long mention : toReply.userMentions) {
+				for (long mention : toReply.userMentions) {
 
-						if (!auth.id.equals(mention)) {
+					if (!auth.id.equals(mention)) {
 
-							reply = reply + "@" + UserArchive.get(mention).screenName + " ";
-
-						}
+						reply = reply + "@" + UserArchive.get(mention).screenName + " ";
 
 					}
 
 				}
 
+			}
+
 
 			String text = text = reply + msg.text();
-			
+
 			twitter4j.StatusUpdate send = new twitter4j.StatusUpdate(text);
 
 			send.inReplyToStatusId(toReply.id);
@@ -370,11 +370,11 @@ public class StatusUpdate extends TwitterFunction {
 
 				StatusArchive archive = StatusArchive.save(status);
 
-				msg.reply("发送成功 :",StatusArchive.split_tiny,archive.toHtml(0)).buttons(StatusAction.createMarkup(archive.id,true,archive.depth() == 0,false,-1,false)).html().point(1,archive.id);
-
+				msg.reply(update.toReply == null ? "发送成功 :" : "回复成功 :",StatusArchive.split_tiny,archive.toHtml(0)).buttons(StatusAction.createMarkup(archive.id,true,archive.depth() == 0,false,-1,false)).html().point(1,archive.id);
+				
 			} catch (TwitterException e) {
-		
-					msg.send("发送失败 :(",NTT.parseTwitterException(e)).exec();
+
+				msg.send(update.toReply == null ? "发送失败 :(" : "回复失败 :(",NTT.parseTwitterException(e)).exec();
 
 			}
 
