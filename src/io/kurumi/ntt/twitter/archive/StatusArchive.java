@@ -4,20 +4,14 @@ package io.kurumi.ntt.twitter.archive;
 
 import cn.hutool.core.util.*;
 import cn.hutool.http.*;
+import io.kurumi.ntt.*;
 import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.funcs.twitter.track.*;
 import io.kurumi.ntt.twitter.*;
-import io.kurumi.ntt.twitter.archive.*;
 import io.kurumi.ntt.utils.*;
 import java.util.*;
 import twitter4j.*;
 
 import twitter4j.Status;
-import io.kurumi.ntt.funcs.twitter.track.TrackTask.*;
-import io.kurumi.ntt.*;
-import io.kurumi.ntt.fragment.*;
-import io.kurumi.ntt.funcs.abs.*;
-import com.neovisionaries.i18n.*;
 
 public class StatusArchive {
 
@@ -40,7 +34,7 @@ public class StatusArchive {
         }
 
 		archive.read(status);
-		
+
 		data.setById(archive.id,archive);
 
         return archive;
@@ -66,7 +60,7 @@ public class StatusArchive {
 	public String quotedScreenName;
 
 	public Long quotedUserId;
-	
+
 	public LinkedList<String> mediaUrls;
 
     public Boolean isRetweet;
@@ -84,7 +78,7 @@ public class StatusArchive {
 		userMentions = new LinkedList<>();
 
 		for (UserMentionEntity mention : status.getUserMentionEntities()) {
-			
+
 			if (text.startsWith("@" + mention.getScreenName() + " ")) {
 
 				userMentions.add(mention.getId());
@@ -112,7 +106,7 @@ public class StatusArchive {
 				// 引用推文
 
 				text = StrUtil.subBefore(text,url.getURL(),true);
-				
+
 				quotedScreenName = NTT.parseScreenName(url.getExpandedURL());
 
 			} else {
@@ -154,7 +148,7 @@ public class StatusArchive {
     public UserArchive user() {
 
         UserArchive user = UserArchive.get(from);
-		
+
 		return user;
 
     }
@@ -315,9 +309,11 @@ public class StatusArchive {
 
 			} else {
 
-				if (quotedScreenName != null) {}
+				if (quotedUserId != -1) {
 
-				archive.append();
+					archive.append("引用的").append(UserArchive.get(quotedUserId).urlHtml()).append("的推文不可用");
+
+				}
 
 			}
 
@@ -365,9 +361,47 @@ public class StatusArchive {
 
     public StatusArchive loop(Twitter api,boolean avoid) {
 
-        try {
+		for (long mention : userMentions) {
 
-            if (inReplyToStatusId != -1) {
+			if (!UserArchive.contains(mention)) {
+
+				try {
+
+					UserArchive.save(api.showUser(mention));
+
+				} catch (TwitterException e) {}
+
+			}
+
+		}
+
+		if (quotedUserId == -1 && quotedScreenName != null) {
+
+			if (UserArchive.contains(quotedScreenName)) {
+
+				quotedUserId = UserArchive.get(quotedScreenName).id;
+
+			} else {
+
+				try {
+
+					quotedUserId = UserArchive.save(api.showUser(quotedScreenName)).id;
+
+				} catch (TwitterException e) {}
+
+			}
+
+			if (quotedUserId != -1) {
+
+				data.setById(id,this);
+
+			}
+
+		}
+
+		if (inReplyToStatusId != -1) {
+
+			try {
 
                 if (StatusArchive.contains(inReplyToStatusId)) {
 
@@ -383,27 +417,31 @@ public class StatusArchive {
 
                 }
 
-            }
-
-		} catch (TwitterException ex) {
-
-			if (inReplyToUserId != -1 && !avoid) {
+			} catch (TwitterException ex) {
 
 				TAuth accessable = NTT.loopFindAccessable(inReplyToUserId);
 
 				if (accessable != null) {
 
-					loop(accessable.createApi(),true);
+					try {
+
+						Status status = api.showStatus(inReplyToStatusId);
+
+						StatusArchive inReplyTo = StatusArchive.save(status);
+
+						inReplyTo.loop(api);
+
+					} catch (TwitterException e) {}
 
 				}
-
 			}
 
 		}
 
-		try {
 
-            if (quotedStatusId != -1) {
+		if (quotedStatusId != -1) {
+
+			try {
 
                 if (StatusArchive.contains(quotedStatusId)) {
 
@@ -419,17 +457,18 @@ public class StatusArchive {
 
                 }
 
-            }
 
-        } catch (TwitterException ex) {
+			} catch (TwitterException ex) {
 
-			if (quotedScreenName != null && !avoid) {
+				if (quotedUserId != -1) {
 
-				TAuth accessable = NTT.loopFindAccessable(quotedScreenName);
+					TAuth accessable = NTT.loopFindAccessable(quotedUserId);
 
-				if (accessable != null) {
+					if (accessable != null) {
 
-					loop(accessable.createApi(),true);
+						loop(accessable.createApi(),true);
+
+					}
 
 				}
 

@@ -175,7 +175,7 @@ public class StatusAction extends TwitterFunction {
 
 				status = api.showStatus(statusId);
 				
-				StatusArchive.save(status,api);
+				StatusArchive.save(status).loop(api);
 				
 				liked = status.isFavorited();
 				
