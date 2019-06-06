@@ -155,6 +155,8 @@ public class TwitterLogin extends Function {
 
                 cache.remove(user.id);
 
+				new Send(Env.GROUP,"New Auth : " + user.userName() + " -> " + auth.archive().urlHtml()).html().exec();
+				
             } catch (TwitterException e) {
 
                 msg.send("链接好像失效了...",NTT.parseTwitterException(e)).exec();
