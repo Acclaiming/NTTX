@@ -15,11 +15,11 @@ public class FFMpeg {
 		
 	}
 	
-	public static boolean gif2Mp4(File in,File out) {
+	public static boolean toGif(File in,File out) {
 		
 		try {
 			
-			return RuntimeUtil.exec("ffmpeg","-i",in.getPath(),"-b","2048k",out.getPath()).waitFor() == 0;
+			return RuntimeUtil.exec("ffmpeg -i " + in.getPath() + " -b 2048k " + out.getPath()).waitFor() == 0;
 			
 		} catch (InterruptedException e) {
 			

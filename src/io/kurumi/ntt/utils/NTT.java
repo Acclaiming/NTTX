@@ -42,7 +42,7 @@ public class NTT {
 
 			if (!converted.isFile()) {
 
-				FFMpeg.gif2Mp4(file,converted);
+				FFMpeg.toGif(file,converted);
 
 			}
 
