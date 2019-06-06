@@ -220,7 +220,7 @@ public class NTT {
 
 			case 410 : return "这个操作已经不存在了";
 
-			case 413 : return "这你妈是个官方文档都没写的错误，还只返回一个 413 别来找咱qwq";
+			case 413 : return "这你妈是个官方文档都没写的错误，查了一下是不允许重复上传文件，奇妙深刻";
 			
 			case TwitterException.TOO_MANY_REQUESTS : return "请求过多被限制 : 请稍后操作";
 
