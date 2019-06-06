@@ -303,7 +303,7 @@ public class StatusArchive {
 
             for (String url : mediaUrls) {
 
-                archive.append(Html.a(" 媒体文件",url));
+                archive.append(Html.a("媒体文件",url)).append(" ");
 
             }
 
