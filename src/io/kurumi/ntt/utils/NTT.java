@@ -38,6 +38,10 @@ public class NTT {
 
 		if (type == 2) {
 
+			File cache = new File(Env.CACHE_DIR,"tg_gif/" + fileName);
+			
+			FileUtil.copyFile(file,cache);
+			
 			File converted = new File(Env.CACHE_DIR,"tg_gif/" + fileId + ".gif");
 
 			if (!converted.isFile()) {
