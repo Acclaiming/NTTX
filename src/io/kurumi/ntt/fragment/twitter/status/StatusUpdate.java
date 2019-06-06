@@ -208,13 +208,13 @@ public class StatusUpdate extends TwitterFunction {
 
 			try {
 
-				update.video = NTT.telegramToTwitter(auth.createApi(),message.animation().fileId(),message.animation().fileName(),false);
+				update.video = NTT.telegramToTwitter(auth.createApi(),message.animation().fileId(),"animation.gif",false);
 
-				msg.send("视频添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
+				msg.send("动图添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
 
 			} catch (TwitterException e) {
 
-				msg.send("视频上传失败",NTT.parseTwitterException(e)).exec();
+				msg.send("动图上传失败",NTT.parseTwitterException(e)).exec();
 
 			}
 
@@ -539,13 +539,13 @@ public class StatusUpdate extends TwitterFunction {
 
 			try {
 
-				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.animation().fileId(),message.animation().fileName(),false);
+				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.animation().fileId(),"animation.gif",false);
 
 				msg.send("动图添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
 
 			} catch (TwitterException e) {
 
-				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+				msg.send("动图上传失败",NTT.parseTwitterException(e)).exec();
 
 			}
 
