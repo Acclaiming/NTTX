@@ -51,12 +51,14 @@ public class NTT {
 			}
 			
 			if (converted.length() < 15 * 1024 * 1024) {
-
+				
 				file = converted;
 
 				fileName = file.getName();
-
+				
 			}
+
+			
 
 		}
 
@@ -294,6 +296,8 @@ public class NTT {
 
 			case 385 : return "你不能回复一条你不可查看或已被删除的推文";
 
+			case 413 : return "视频/GIF 大小超过 15m";
+			
 			case 416 : return "NTT接口无效/被停用 : 通常是因为开发者账号被停用/冻结";
 
 			default : return "其他错误 请联系开发者 : " + exc.getErrorCode() + " " + exc.getMessage();

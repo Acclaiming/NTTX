@@ -34,6 +34,15 @@ public class TwitterException extends Exception implements TwitterResponse, Http
     private HttpResponse response;
     private String errorMessage = null;
 
+	public TwitterException(int statusCode,int errorCode,String message) {
+		
+		super(message);
+		
+		this.statusCode = statusCode;
+		this.errorCode = errorCode;
+		
+	}
+
     public TwitterException(String message, Throwable cause) {
         super(message, cause);
         decode(message);
@@ -42,7 +51,6 @@ public class TwitterException extends Exception implements TwitterResponse, Http
     public TwitterException(String message) {
         this(message, (Throwable) null);
     }
-
 
     public TwitterException(Exception cause) {
         this(cause.getMessage(), cause);
