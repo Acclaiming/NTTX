@@ -15,8 +15,6 @@ public class FFMpeg {
 		
 	}
 	
-	static String filters = "fps=15,scale=320:-1:flags=lanczos";
-	
 	public static File getGifPalettePic(File media) {
 		
 		File cacheFile = new File(Env.CACHE_DIR,"palette_pic/" + media.getName() + ".png");
@@ -25,7 +23,7 @@ public class FFMpeg {
 		
 		try {
 			
-			RuntimeUtil.exec("ffmpeg -i " + media.getPath() + " -b 4096k -vf \"" + filters + ",palettegen\" -y " + cacheFile.getPath()).waitFor();
+			RuntimeUtil.exec("ffmpeg -i " + media.getPath() + " -b 568k -r 20 -vf fps=20,scale=320:-1:flags=lanczos,palettegen -y " + cacheFile.getPath()).waitFor();
 			
 		} catch (InterruptedException e) {}
 		
@@ -40,7 +38,7 @@ public class FFMpeg {
 		
 		try {
 			
-			return RuntimeUtil.exec("ffmpeg -i " + in.getPath() + " -i " + globalPalettePicPath.getPath() + " -b 4096k -lavfi \"" + filters + " [x]; [x][1:v] paletteuse\" -y " + out.getPath()).waitFor() == 0;
+			return RuntimeUtil.exec("ffmpeg -i " + in.getPath() + " -i " + globalPalettePicPath.getPath() + " -r 20 -lavfi fps=20,scale=320:-1:flags=lanczos[x];[x][1:v]paletteuse -y " + out.getPath()).waitFor() == 0;
 			
 		} catch (InterruptedException e) {
 			
