@@ -13,6 +13,7 @@ git clone https://github.com/HiedaNaKan/NTTools /usr/local/ntt
 
 cd /usr/local/ntt
 
+bash rebuild.sh
 bash start.sh
 
 ```
@@ -24,7 +25,7 @@ bash start.sh
 
 另 :  必须手动启动 start.sh 并配置之后才可以使用service启动
 ```
-cp /usr/local/ntt/ntt.service /etc/systemd/system/ntt.service # 创建服务
+/bin/cp -rf /usr/local/ntt/ntt.service /etc/systemd/system/ntt.service # 创建服务
 
 systemctl daemon-reload # 重载服务
 
@@ -32,9 +33,8 @@ systemctl start ntt # 启动服务
 
 systemctl enable ntt # 开机启动
 
-journalctl -u ntt # 查看日志
-
 journalctl -u ntt -f # 实时日志
 
-# service ntt restart && journalctl -u ntt -f # 更新并立即滚动日志
+service ntt restart && journalctl -u ntt -f # 更新并立即滚动日志
+
 ```
