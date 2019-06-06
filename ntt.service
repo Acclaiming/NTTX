@@ -1,12 +1,12 @@
 [Unit]
-Description=NTTBot
+Description=NTToolsBot
 After=syslog.target network.target
 
 [Service]
 Type=simple
 
 WorkingDirectory=/usr/local/ntt
-ExecStart=/bin/bash /usr/local/ntt/start.sh
+ExecStart=/bin/bash /usr/local/ntt/service.sh
 
 User=root
 Group=root
