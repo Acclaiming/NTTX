@@ -108,17 +108,40 @@ public class StatusUpdate extends TwitterFunction {
 
 			}
 
-
-
 		}
 
 		if (msg.hasText()) {
 
 			msg.sendTyping();
 
+			StatusArchive toReply = StatusArchive.get(point.targetId);
+
+				String reply = "@" + toReply.user().screenName + " ";
+
+				if (!toReply.userMentions.isEmpty()) {
+
+					for (long mention : toReply.userMentions) {
+
+						if (!auth.id.equals(mention)) {
+
+							reply = reply + "@" + UserArchive.get(mention).screenName + " ";
+
+						}
+
+					}
+
+				}
+
+
+			String text = text = reply + msg.text();
+			
+			twitter4j.StatusUpdate send = new twitter4j.StatusUpdate(text);
+
+			send.inReplyToStatusId(toReply.id);
+
 			try {
 
-				Status status = TApi.reply(auth.createApi(),StatusArchive.get(point.targetId),msg.text(),null);
+				Status status = auth.createApi().updateStatus(send);
 
 				StatusArchive archive = StatusArchive.save(status);
 
@@ -129,7 +152,6 @@ public class StatusUpdate extends TwitterFunction {
 				msg.send("回复失败 :(",NTT.parseTwitterException(e)).exec();
 
 			}
-
 			return true;
 
 		} 

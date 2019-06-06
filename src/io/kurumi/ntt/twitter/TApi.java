@@ -489,38 +489,6 @@ public class TApi {
 
 
 
-    public static Status reply(Twitter api,StatusArchive status,String text,List<File> medias) throws TwitterException {
-
-        String reply = "@" + status.user().screenName + " ";
-
-        if (!status.userMentions.isEmpty()) {
-
-			for (long mention : status.userMentions) {
-
-				reply = reply + "@" + UserArchive.get(mention).screenName + " ";
-
-			}
-
-		}
-
-        reply = reply + text;
-
-		StatusUpdate send = new StatusUpdate(reply).inReplyToStatusId(status.id); 
-
-		if (medias != null) {
-			
-			for (File media : medias) {
-				
-				send.media(media);
-				
-			}
-			
-		}
-		
-        return api.updateStatus(send);
-
-    }
-
     public static String getContext(Status status) {
 
         if (status.getInReplyToStatusId() != -1) {

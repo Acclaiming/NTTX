@@ -271,17 +271,17 @@ public class StatusArchive {
 
 		if (!userMentions.isEmpty() && !quoted) {
 
-			archive.append(" 给 ");
+			archive.append(" 给");
 
-			archive.append(UserArchive.get(userMentions.get(0)).urlHtml());
-
-			if (userMentions.size() > 1) {
-
-				archive.append(" 和另外" + (userMentions.size() - 1) + "人");
-
+			for (long mention : userMentions) {
+			
+				archive.append(" ").append(UserArchive.get(mention));
+				
 			}
 
 		}
+		
+		archive.append(" :");
 
 		content = HtmlUtil.escape(content);
 
