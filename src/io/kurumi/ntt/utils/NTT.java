@@ -32,11 +32,11 @@ import io.kurumi.ntt.Env;
 
 public class NTT {
 
-	public static long telegramToTwitter(Twitter api,String fileId,String fileName,boolean image) throws TwitterException {
+	public static long telegramToTwitter(Twitter api,String fileId,String fileName,int type) throws TwitterException {
 
 		File file = Launcher.INSTANCE.getFile(fileId);
 
-		if (fileName.endsWith(".gif.mp4")) {
+		if (type == 2) {
 
 			File converted = new File(Env.CACHE_DIR,"tg_gif/" + fileId + ".gif");
 
@@ -48,11 +48,11 @@ public class NTT {
 
 			file = converted;
 			
-			fileName = StrUtil.subBefore(fileName,".mp4",true);
+			fileName = file.getName();
 
 		}
 
-		if (image) {
+		if (type == 0) {
 
 			return api.uploadMedia(fileName,IoUtil.toStream(file)).getMediaId();
 
