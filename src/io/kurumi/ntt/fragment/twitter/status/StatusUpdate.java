@@ -358,7 +358,7 @@ public class StatusUpdate extends TwitterFunction {
 
 					for (Long mediaId : update.images) {
 
-						String fileId = NTT.media.getByField("meidaId",mediaId).id;
+						String fileId = NTT.media.getByField("mediaId",mediaId).id;
 
 						NTT.media.deleteById(fileId);
 
