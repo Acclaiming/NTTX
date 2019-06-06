@@ -11,7 +11,7 @@ public class FFMpeg {
 
 	public static long getDuration(File media) {
 		
-		return Long.parseLong(RuntimeUtil.execForStr(CharsetUtil.CHARSET_UTF_8,"ffmpeg -i",media.getPath(),"2>&1 | grep 'Duration' | cut -d ' ' -f 4 | sed s/,//"));
+		return Long.parseLong(RuntimeUtil.execForStr(CharsetUtil.CHARSET_UTF_8,"ffmpeg -i " + media.getPath() + " 2>&1 | grep 'Duration' | cut -d ' ' -f 4 | sed s/,//"));
 		
 	}
 	
@@ -19,7 +19,7 @@ public class FFMpeg {
 		
 		try {
 			
-			return RuntimeUtil.exec("ffmpeg -i",in.getPath(),"-b 2048k",out.getPath()).waitFor() == 0;
+			return RuntimeUtil.exec("ffmpeg","-i",in.getPath(),"-b","2048k",out.getPath()).waitFor() == 0;
 			
 		} catch (InterruptedException e) {
 			
@@ -39,7 +39,7 @@ public class FFMpeg {
 
 			try {
 
-				int exit = RuntimeUtil.exec("ffmpeg -i",mp4.getPath(),"-c copy -bsf:v h264_mp4toannexb -f mpegts ",output.getPath()).waitFor();
+				int exit = RuntimeUtil.exec("ffmpeg -i " + mp4.getPath() + "-c copy -bsf:v h264_mp4toannexb -f mpegts ",output.getPath()).waitFor();
 
 				if (exit != 0) {
 
@@ -57,7 +57,7 @@ public class FFMpeg {
 
 			try {
 
-				return RuntimeUtil.exec("ffmpeg -i","\"" + ArrayUtil.join(convertedMedias.toArray(),"|") + "\"","-c copy -bsf:a aac_adtstoasc",out.getPath()).waitFor() == 0;
+				return RuntimeUtil.exec("ffmpeg -i " + "\"" + ArrayUtil.join(convertedMedias.toArray(),"|") + "\" -c copy -bsf:a aac_adtstoasc " + out.getPath()).waitFor() == 0;
 
 			}
 			finally {
