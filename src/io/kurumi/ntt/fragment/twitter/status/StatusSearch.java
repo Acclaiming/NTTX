@@ -347,21 +347,21 @@ public class StatusSearch extends Function {
 			msg.sendTyping();
 
 			try {
-				
+
 				Status newStatus = api.showStatus(statusId);
 
 				StatusArchive archive = StatusArchive.save(api.showStatus(statusId));
 
 				archive.loop(api);
 
-				msg.send(archive.toHtml()).buttons(StatusAction.createMarkup(archive.id,archive.from.equals(auth.id),true,newStatus.isRetweetedByMe(),newStatus.getCurrentUserRetweetId(),newStatus.isFavorited())).html().point(1,archive.id);
+				archive.sendTo(msg.chatId(),-1,auth,msg.isPrivate() ? newStatus : null);
 
 			} catch (TwitterException e) {
 
 				if (StatusArchive.contains(statusId)) {
 
-					msg.send(StatusArchive.get(statusId).toHtml()).html().point(1,statusId);
-
+					StatusArchive.get(statusId).sendTo(msg.chatId(),-1,null,null);
+					
 				} else {
 
 					msg.send(NTT.parseTwitterException(e)).publicFailed();

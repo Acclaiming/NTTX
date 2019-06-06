@@ -12,16 +12,99 @@ import java.util.*;
 import twitter4j.*;
 
 import twitter4j.Status;
+import io.kurumi.ntt.model.request.Send;
+import io.kurumi.ntt.fragment.twitter.status.StatusAction;
+import com.pengrad.telegrambot.request.SendMediaGroup;
+import com.pengrad.telegrambot.model.request.InputMediaPhoto;
+import java.io.File;
+import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.request.SendPhoto;
+import com.pengrad.telegrambot.response.SendResponse;
+import com.pengrad.telegrambot.model.Chat;
+import io.kurumi.ntt.fragment.twitter.status.MessagePoint;
 
 public class StatusArchive {
+
+	public void sendTo(long chatId,int depth,TAuth auth,Status status) {
+
+		LinkedList<File> photo = new LinkedList<>();
+
+		for (String url : mediaUrls) {
+
+			String suffix = StrUtil.subAfter(url,".com/",false);
+
+			File cache = new File(Env.CACHE_DIR,suffix);
+
+			if (!cache.isFile()) {
+
+				try {
+
+					HttpUtil.downloadFile(url,cache);
+
+				} catch (Exception ex) {}
+
+
+			}
+
+			photo.add(cache);
+
+		}
+
+		if (photo.size() == 1)  {
+
+			SendPhoto send = new SendPhoto(chatId,photo.get(0)).caption(toHtml(depth)).parseMode(ParseMode.HTML);
+
+			if (status != null) {
+
+				send.replyMarkup(StatusAction.createMarkup(id,from.equals(auth.id),depth() <= depth,status.isRetweetedByMe(),status.getCurrentUserRetweetId(),status.isFavorited()).markup());
+
+			}
+
+			SendResponse resp = Launcher.INSTANCE.bot().execute(send);
+
+			if (resp.isOk() && resp.message().chat().type() == Chat.Type.Private) {
+
+				MessagePoint.set(resp.message().messageId(),1,id);
+
+			}
+
+		} else {
+
+			Send send = new Send(chatId,toHtml(depth)).html();
+
+			if (status != null) {
+
+				send.buttons(StatusAction.createMarkup(id,from.equals(auth.id),depth() <= depth,status.isRetweetedByMe(),status.getCurrentUserRetweetId(),status.isFavorited()));
+
+			}
+
+			SendResponse msg = send.point(1,id);
+
+			if (photo.size() > 1 && msg.isOk()) {
+
+				InputMediaPhoto[] input = new InputMediaPhoto[photo.size()];
+
+				for (int index = 0;index < photo.size();index ++) {
+
+					input[index] = new InputMediaPhoto(photo.get(index));
+
+				}
+
+				new SendMediaGroup(chatId,input).replyToMessageId(msg.message().messageId());
+
+			}
+
+		}
+
+	}
 
     public static Data<StatusArchive> data = new Data<StatusArchive>(StatusArchive.class);
 
     public static StatusArchive get(Long id) { return data.getById(id); }
     public static boolean contains(Long id) { return data.containsId(id); }
 
-
 	public static StatusArchive save(Status status) {
+
 
         StatusArchive archive = data.getById(status.getId());
 

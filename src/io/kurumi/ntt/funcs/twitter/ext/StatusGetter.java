@@ -48,15 +48,21 @@ public class StatusGetter extends TwitterFunction {
 
 		msg.sendTyping();
 
+		if (StatusArchive.contains(statusId) && !msg.isPrivate()) {
+			
+StatusArchive.get(statusId).sendTo(msg.chatId(),-1,null,null);
+		
+			return;
+			
+		}
+		
 		try {
 		
 			Status newStatus = api.showStatus(statusId);
 
-			StatusArchive archive = StatusArchive.save(newStatus);
-
-            archive.loop(api);
-
-            msg.send(archive.toHtml()).buttons(StatusAction.createMarkup(statusId,account.id.equals(archive.from),true,newStatus.isRetweetedByMe(),newStatus.getCurrentUserRetweetId(),newStatus.isFavorited())).html().point(1,statusId);
+			StatusArchive archive = StatusArchive.save(newStatus).loop(api);
+			
+            archive.sendTo(msg.chatId(),-1,account,msg.isPrivate() ? newStatus : null);
 			
 			return;
 
@@ -72,13 +78,21 @@ public class StatusGetter extends TwitterFunction {
 			
 		} 
 
+		if (StatusArchive.contains(statusId)) {
+			
+			StatusArchive.get(statusId).sendTo(msg.chatId(),-1,null,null);
+			
+		}
+		
         try {
 
-            StatusArchive newStatus = StatusArchive.save(api.showStatus(statusId));
+            Status newStatus = api.showStatus(statusId);
 
-            newStatus.loop(api);
+			StatusArchive archive = StatusArchive.save(newStatus);
 
-            msg.send(newStatus.toHtml()).html().point(1,statusId);
+            archive.loop(api);
+			
+            archive.sendTo(msg.chatId(),-1,account,null);
 
         } catch (TwitterException e) {
 

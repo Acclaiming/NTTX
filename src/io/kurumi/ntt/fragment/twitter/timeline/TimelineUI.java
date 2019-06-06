@@ -187,8 +187,8 @@ public class TimelineUI extends TwitterFunction {
 
 					if (!archive.from.equals(auth.id)) {
 
-						new Send(auth.user,archive.toHtml(1)).buttons(StatusAction.createMarkup(archive.id,auth.id.equals(mention.getUser().getId()),archive.depth() <= 1,mention.isRetweetedByMe(),mention.getCurrentUserRetweetId(),mention.isFavorited())).html().point(1,archive.id);
-
+						archive.sendTo(auth.user,1,auth,mention);
+						
 					}
 
 				}
@@ -229,7 +229,7 @@ public class TimelineUI extends TwitterFunction {
 
 					if (!archive.from.equals(auth.id)) {
 
-						new Send(auth.user,archive.toHtml(1)).buttons(StatusAction.createMarkup(archive.id,auth.id.equals(retweet.getUser().getId()),archive.depth() <= 1,retweet.isRetweetedByMe(),retweet.getCurrentUserRetweetId(),retweet.isFavorited())).html().point(1,archive.id);
+						archive.sendTo(auth.user,1,auth,retweet);
 
 					}
 
