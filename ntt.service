@@ -7,6 +7,7 @@ Type=simple
 
 WorkingDirectory=/usr/local/ntt
 ExecStart=/bin/bash /usr/local/ntt/service.sh
+Restart=on-failure
 
 User=root
 Group=root
