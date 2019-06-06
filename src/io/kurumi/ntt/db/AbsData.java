@@ -14,7 +14,7 @@ import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 public class AbsData<ID,T> {
-	
+
 	public MongoCollection<T> collection;
 
     static final String FIELD_ID = "_id";
@@ -33,7 +33,11 @@ public class AbsData<ID,T> {
 
     public boolean containsId(ID id) {
 
-        return collection.countDocuments(eq(FIELD_ID,id)) > 0;
+		synchronized (this) {
+
+			return collection.countDocuments(eq(FIELD_ID,id)) > 0;
+
+		}
 
     }
 
@@ -75,7 +79,11 @@ public class AbsData<ID,T> {
 
         } else {
 
-            collection.insertOne(object);
+			synchronized (this) {
+
+				collection.insertOne(object);
+
+			}
 
         }
 
@@ -85,15 +93,23 @@ public class AbsData<ID,T> {
 
     public boolean deleteById(ID id) {
 
-        return collection.deleteOne(eq("_id",id)).getDeletedCount() > 0;
+		synchronized (this) {
+
+			return collection.deleteOne(eq("_id",id)).getDeletedCount() > 0;
+
+		}
 
     }
-	
+
 	public boolean deleteByField(String field,Object value) {
 
-        return collection.deleteOne(eq(field,value)).getDeletedCount() > 1;
+		synchronized (this) {
+
+			return collection.deleteOne(eq(field,value)).getDeletedCount() > 1;
+
+		}
 
     }
-	
-	
+
+
 }
