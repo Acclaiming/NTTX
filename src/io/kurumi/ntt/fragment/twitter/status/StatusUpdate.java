@@ -208,7 +208,7 @@ public class StatusUpdate extends TwitterFunction {
 
 			try {
 
-				update.video = NTT.telegramToTwitter(auth.createApi(),message.animation().fileId(),"animation.gif",false);
+				update.video = NTT.telegramToTwitter(auth.createApi(),message.animation().fileId(),message.animation().fileName(),false);
 
 				msg.send("动图添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
 
@@ -539,7 +539,7 @@ public class StatusUpdate extends TwitterFunction {
 
 			try {
 
-				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.animation().fileId(),"animation.gif",false);
+				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.animation().fileId(),message.animation().fileName(),false);
 
 				msg.send("动图添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
 

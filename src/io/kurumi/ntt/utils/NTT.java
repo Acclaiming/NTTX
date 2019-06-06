@@ -1,22 +1,34 @@
 package io.kurumi.ntt.utils;
 
-import cn.hutool.core.util.*;
-import com.pengrad.telegrambot.model.*;
-import com.pengrad.telegrambot.request.*;
-import com.pengrad.telegrambot.response.*;
-import io.kurumi.ntt.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.model.*;
-import io.kurumi.ntt.model.request.*;
-import io.kurumi.ntt.twitter.*;
-import java.util.*;
-import twitter4j.*;
-import io.kurumi.ntt.funcs.twitter.track.*;
-import com.mongodb.client.*;
-import io.kurumi.ntt.funcs.twitter.track.TrackTask.*;
-import io.kurumi.ntt.twitter.archive.*;
-import java.io.*;
-import cn.hutool.core.io.*;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
+import com.mongodb.client.FindIterable;
+import com.pengrad.telegrambot.model.ChatMember;
+import com.pengrad.telegrambot.request.GetChatMember;
+import com.pengrad.telegrambot.response.GetChatMemberResponse;
+import com.pengrad.telegrambot.response.SendResponse;
+import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.db.AbsData;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.funcs.twitter.track.TrackTask;
+import io.kurumi.ntt.model.Callback;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.Send;
+import io.kurumi.ntt.twitter.TAuth;
+import io.kurumi.ntt.twitter.archive.UserArchive;
+import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
+import twitter4j.Paging;
+import twitter4j.QueryResult;
+import twitter4j.ResponseList;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import cn.hutool.core.io.FileUtil;
+import io.kurumi.ntt.Env;
 
 public class NTT {
 
@@ -31,30 +43,34 @@ public class NTT {
 
 	public static long telegramToTwitter(Twitter api,String fileId,String fileName,boolean image) throws TwitterException {
 
-		if (media.containsId(fileId)) {
+		File file = Launcher.INSTANCE.getFile(fileId);
 
-			return media.getById(fileId).mediaId;
+		if (fileName.endsWith(".gif.mp4")) {
+
+			File converted = new File(Env.CACHE_DIR,"tg_gif/" + fileId + ".gif");
+
+			if (!converted.isFile()) {
+
+				FFMpeg.gif2Mp4(file,converted);
+
+			}
+
+			file = converted;
+			
+			fileName = StrUtil.subBefore(fileName,".mp4",true);
 
 		}
 
-		TgMedia file = new TgMedia();
-
-		file.id = fileId;
-
 		if (image) {
 
-			file.mediaId = api.uploadMedia(fileName,IoUtil.toStream(Launcher.INSTANCE.getFile(fileId))).getMediaId();
+			return api.uploadMedia(fileName,IoUtil.toStream(file)).getMediaId();
 
 
 		} else {
 
-			file.mediaId = api.uploadMediaChunked(fileName,IoUtil.toStream(Launcher.INSTANCE.getFile(fileId))).getMediaId();
-			
+			return api.uploadMediaChunked(fileName,IoUtil.toStream(file)).getMediaId();
+
 		}
-
-		media.setById(file.id,file);
-
-		return file.mediaId;
 
 	}
 

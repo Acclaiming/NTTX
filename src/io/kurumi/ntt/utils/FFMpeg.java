@@ -5,9 +5,30 @@ import java.util.*;
 import cn.hutool.core.util.*;
 import io.kurumi.ntt.*;
 import cn.hutool.core.lang.UUID;
+import cn.hutool.core.io.*;
 
 public class FFMpeg {
 
+	public static long getDuration(File media) {
+		
+		return Long.parseLong(RuntimeUtil.execForStr(CharsetUtil.CHARSET_UTF_8,"ffmpeg -i",media.getPath(),"2>&1 | grep 'Duration' | cut -d ' ' -f 4 | sed s/,//"));
+		
+	}
+	
+	public static boolean gif2Mp4(File in,File out) {
+		
+		try {
+			
+			return RuntimeUtil.exec("ffmpeg -i",in.getPath(),"-b 2048k",out.getPath()).waitFor() == 0;
+			
+		} catch (InterruptedException e) {
+			
+			return false;
+			
+		}
+
+	}
+	
 	public static boolean appendMp4(File out,File... medias) {
 
 		LinkedList<String> convertedMedias = new LinkedList<>();
@@ -25,7 +46,7 @@ public class FFMpeg {
 					return false;
 
 				}
-				
+
 				convertedMedias.add(output.getPath());
 
 			} catch (InterruptedException e) {}
@@ -34,7 +55,16 @@ public class FFMpeg {
 
 		try {
 
-			return RuntimeUtil.exec("ffmpeg -i","\"" + ArrayUtil.join(convertedMedias.toArray(),"|") + "\"","-c copy -bsf:a aac_adtstoasc",out.getPath()).waitFor() == 0;
+			try {
+
+				return RuntimeUtil.exec("ffmpeg -i","\"" + ArrayUtil.join(convertedMedias.toArray(),"|") + "\"","-c copy -bsf:a aac_adtstoasc",out.getPath()).waitFor() == 0;
+
+			}
+			finally {
+
+				for (String cache  : convertedMedias) FileUtil.del(cache);
+
+			}
 
 		} catch (InterruptedException e) {
 
