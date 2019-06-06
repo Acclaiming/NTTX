@@ -133,7 +133,7 @@ public class StatusArchive {
 		
         mediaUrls = new LinkedList<>();
 
-        for (MediaEntity media : status.getMediaEntities()) {
+        for (MediaEntity media : status.getExtendedMediaEntities()) {
 
             mediaUrls.add(media.getMediaURL());
 
@@ -439,7 +439,7 @@ public class StatusArchive {
 
 					try {
 
-						Status status = api.showStatus(inReplyToStatusId);
+						Status status = accessable.createApi().showStatus(inReplyToStatusId);
 
 						StatusArchive inReplyTo = StatusArchive.save(status);
 
@@ -480,7 +480,16 @@ public class StatusArchive {
 
 					if (accessable != null) {
 
-						loop(accessable.createApi(),true);
+						try {
+							
+							Status status = accessable.createApi().showStatus(quotedStatusId);
+
+							StatusArchive quoted = StatusArchive.save(status);
+
+							quoted.loop(api);
+							
+						} catch (TwitterException e) {}
+
 
 					}
 
