@@ -89,4 +89,11 @@ public class AbsData<ID,T> {
 
     }
 	
+	public boolean deleteByField(String field,Object value) {
+
+        return collection.deleteOne(eq(field,value)).getDeletedCount() > 1;
+
+    }
+	
+	
 }
