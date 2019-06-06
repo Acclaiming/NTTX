@@ -47,12 +47,16 @@ public class NTT {
 				FFMpeg.toGif(globalPalettePic,file,converted);
 				
 				FileUtil.del(globalPalettePic);
+				
+			}
+			
+			if (converted.length() < 15 * 1024 * 1024) {
+
+				file = converted;
+
+				fileName = file.getName();
 
 			}
-
-			file = converted;
-			
-			fileName = file.getName();
 
 		}
 
