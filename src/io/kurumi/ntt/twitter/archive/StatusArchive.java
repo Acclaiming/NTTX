@@ -98,7 +98,7 @@ public class StatusArchive {
         inReplyToUserId = status.getInReplyToUserId();
 
         quotedStatusId = status.getQuotedStatusId();
-
+		
 		for (URLEntity url : status.getURLEntities()) {
 
 			if (text.endsWith(url.getURL()) && quotedStatusId != -1) {
@@ -117,6 +117,20 @@ public class StatusArchive {
 
 		}
 
+		if (status.getQuotedStatus() != null) {
+			
+			quotedUserId = status.getQuotedStatus().getUser().getId();
+			
+		} else if (quotedScreenName != null && UserArchive.contains(quotedScreenName)) {
+			
+			quotedUserId = UserArchive.get(quotedScreenName).id;
+			
+		} else {
+			
+			quotedUserId = -1L;
+			
+		}
+		
         mediaUrls = new LinkedList<>();
 
         for (MediaEntity media : status.getMediaEntities()) {
