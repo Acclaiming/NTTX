@@ -375,7 +375,7 @@ public class StatusArchive {
 
 		}
 
-		if (quotedUserId == -1 && quotedScreenName != null) {
+		if (quotedUserId != -1 && quotedScreenName != null) {
 
 			if (UserArchive.contains(quotedScreenName)) {
 
