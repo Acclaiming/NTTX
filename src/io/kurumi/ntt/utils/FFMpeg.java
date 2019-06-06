@@ -15,7 +15,7 @@ public class FFMpeg {
 		
 	}
 	
-	static String filters = "scale=320:-1:flags=lanczos";
+	static String filters = "fps=114,scale=320:-1:flags=lanczos";
 	
 	public static File getGifPalettePic(File media) {
 		
