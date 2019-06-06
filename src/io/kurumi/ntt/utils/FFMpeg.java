@@ -17,6 +17,8 @@ public class FFMpeg {
 	
 	public static boolean toGif(File in,File out) {
 		
+		out.getParentFile().mkdirs();
+		
 		try {
 			
 			return RuntimeUtil.exec("ffmpeg -i " + in.getPath() + " -b 2048k " + out.getPath()).waitFor() == 0;
