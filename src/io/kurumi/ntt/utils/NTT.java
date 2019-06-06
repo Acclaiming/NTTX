@@ -220,6 +220,8 @@ public class NTT {
 
 			case 410 : return "这个操作已经不存在了";
 
+			case 413 : return "这你妈是个官方文档都没写的错误，还只返回一个 413 别来找咱qwq";
+			
 			case TwitterException.TOO_MANY_REQUESTS : return "请求过多被限制 : 请稍后操作";
 
 			case TwitterException.ENHANCE_YOUR_CLAIM : return "NTT被限制 : 请联系开发者";
@@ -295,8 +297,6 @@ public class NTT {
 			case 354 : return "发送失败 : 私聊消息字数超过限制";
 
 			case 385 : return "你不能回复一条你不可查看或已被删除的推文";
-
-			case 413 : return "视频/GIF 大小超过 15m";
 			
 			case 416 : return "NTT接口无效/被停用 : 通常是因为开发者账号被停用/冻结";
 
