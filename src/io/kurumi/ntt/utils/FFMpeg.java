@@ -21,7 +21,7 @@ public class FFMpeg {
 		
 		try {
 			
-			return RuntimeUtil.exec("ffmpeg -i " + in.getPath() + " -b 2048k " + out.getPath()).waitFor() == 0;
+			return RuntimeUtil.exec("ffmpeg -i " + in.getPath() + " -b " + out.getPath()).waitFor() == 0;
 			
 		} catch (InterruptedException e) {
 			
