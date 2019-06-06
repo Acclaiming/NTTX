@@ -133,7 +133,7 @@ public class StatusArchive {
 		
         mediaUrls = new LinkedList<>();
 
-        for (MediaEntity media : status.getExtendedMediaEntities()) {
+        for (MediaEntity media : status.getMediaEntities()) {
 
             mediaUrls.add(media.getMediaURL());
 
