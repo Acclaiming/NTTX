@@ -32,15 +32,6 @@ import io.kurumi.ntt.Env;
 
 public class NTT {
 
-	public static AbsData<String,TgMedia> media = new AbsData<String,TgMedia>(TgMedia.class);
-
-	public static class TgMedia {
-
-		public String id;
-		public long mediaId;
-
-	}
-
 	public static long telegramToTwitter(Twitter api,String fileId,String fileName,boolean image) throws TwitterException {
 
 		File file = Launcher.INSTANCE.getFile(fileId);
@@ -283,7 +274,7 @@ public class NTT {
 
 			case 323 : return "同时发送多张图片时 不允许其他媒体 (指视频或Gif)";
 
-			case 324 : return "视频太短或媒体文件缓存过期 : " + exc.getErrorMessage();
+			case 324 : return "视频太短或媒体文件过期 : " + exc.getErrorMessage();
 
 			case 326 : return "账号被Twitter限制 : 你必须登录Twitter网站/客户端来解除这个限制 : 这通常需要验证手机";
 

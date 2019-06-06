@@ -351,56 +351,8 @@ public class StatusUpdate extends TwitterFunction {
 				msg.reply("发送成功 :",StatusArchive.split_tiny,archive.toHtml(0)).buttons(StatusAction.createMarkup(archive.id,true,archive.depth() == 0,false,-1,false)).html().point(1,archive.id);
 
 			} catch (TwitterException e) {
-
-				if (e.getErrorCode() == 324 && !update.images.isEmpty()) {
-
-					LinkedList<Long> newImages = new LinkedList<>();
-
-					for (Long mediaId : update.images) {
-
-						String fileId = NTT.media.getByField("mediaId",mediaId).id;
-
-						NTT.media.deleteById(fileId);
-
-						try {
-
-							newImages.add(NTT.telegramToTwitter(update.auth.createApi(),fileId,"photo.png",true));
-
-						} catch (TwitterException ex) {
-
-							msg.send("发送失败 :(",NTT.parseTwitterException(ex)).exec();
-
-							return;
-
-
-						}
-
-					}
-
-					update.images = newImages;
-
-					try {
-
-						Status status = update.auth.createApi().updateStatus(send);
-
-						StatusArchive archive = StatusArchive.save(status);
-
-						msg.reply("发送成功 :",StatusArchive.split_tiny,archive.toHtml(0)).buttons(StatusAction.createMarkup(archive.id,true,archive.depth() == 0,false,-1,false)).html().point(1,archive.id);
-
-					} catch (TwitterException ex) {
-
-						msg.send("发送失败 :(",NTT.parseTwitterException(ex)).exec();
-
-					}
-
-
-				} else {
-
+		
 					msg.send("发送失败 :(",NTT.parseTwitterException(e)).exec();
-
-				}
-
-
 
 			}
 
