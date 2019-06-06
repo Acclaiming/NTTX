@@ -352,7 +352,7 @@ public class StatusUpdate extends TwitterFunction {
 
 			} catch (TwitterException e) {
 
-				if (e.getErrorCode() != 324 && !update.images.isEmpty()) {
+				if (e.getErrorCode() == 324 && !update.images.isEmpty()) {
 
 					LinkedList<Long> newImages = new LinkedList<>();
 
