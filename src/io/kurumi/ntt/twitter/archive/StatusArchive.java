@@ -90,7 +90,7 @@ public class StatusArchive {
 
 				}
 
-				new SendMediaGroup(chatId,input).replyToMessageId(msg.message().messageId());
+				Launcher.INSTANCE.bot().execute(new SendMediaGroup(chatId,input).replyToMessageId(msg.message().messageId()));
 
 			}
 
