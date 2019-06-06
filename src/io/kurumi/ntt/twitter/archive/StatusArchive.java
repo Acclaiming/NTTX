@@ -271,13 +271,17 @@ public class StatusArchive {
 
 		if (!userMentions.isEmpty() && !quoted) {
 
-			archive.append(" 给 ").append(UserArchive.get(userMentions.getFirst()).urlHtml());
+			UserArchive first = UserArchive.get(userMentions.getFirst());
+
+			archive.append(" 给 ").append(Html.a("@" + first.screenName,first.url()));
 
 			if (userMentions.size() > 1) {
 
 				for (long mention : userMentions.subList(1,userMentions.size())) {
 
-					archive.append("、").append(UserArchive.get(mention).screenName);
+					UserArchive mentionUser = UserArchive.get(mention);
+
+					archive.append("、").append(Html.a("@" + mentionUser.screenName,mentionUser.url()));
 
 				}
 
