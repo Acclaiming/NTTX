@@ -10,6 +10,7 @@ import io.kurumi.ntt.utils.*;
 import java.util.*;
 import twitter4j.*;
 import io.kurumi.ntt.funcs.twitter.track.TrackTask.*;
+import io.kurumi.ntt.fragment.twitter.status.StatusAction;
 
 public class StatusGetter extends TwitterFunction {
 
@@ -48,12 +49,14 @@ public class StatusGetter extends TwitterFunction {
 		msg.sendTyping();
 
 		try {
+		
+			Status newStatus = api.showStatus(statusId);
 
-			StatusArchive newStatus = StatusArchive.save(api.showStatus(statusId));
+			StatusArchive archive = StatusArchive.save(newStatus);
 
-            newStatus.loop(api);
+            archive.loop(api);
 
-            msg.send(newStatus.toHtml()).html().point(1,statusId);
+            msg.send(archive.toHtml()).buttons(StatusAction.createMarkup(statusId,account.id.equals(archive.from),true,newStatus.isRetweetedByMe(),newStatus.getCurrentUserRetweetId(),newStatus.isFavorited())).html().point(1,statusId);
 			
 			return;
 

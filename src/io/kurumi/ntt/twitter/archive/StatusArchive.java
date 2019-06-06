@@ -98,7 +98,7 @@ public class StatusArchive {
         inReplyToUserId = status.getInReplyToUserId();
 
         quotedStatusId = status.getQuotedStatusId();
-		
+
 		for (URLEntity url : status.getURLEntities()) {
 
 			if (text.endsWith(url.getURL()) && quotedStatusId != -1) {
@@ -118,19 +118,19 @@ public class StatusArchive {
 		}
 
 		if (status.getQuotedStatus() != null) {
-			
+
 			quotedUserId = status.getQuotedStatus().getUser().getId();
-			
+
 		} else if (quotedScreenName != null && UserArchive.contains(quotedScreenName)) {
-			
+
 			quotedUserId = UserArchive.get(quotedScreenName).id;
-			
+
 		} else {
-			
+
 			quotedUserId = -1L;
-			
+
 		}
-		
+
         mediaUrls = new LinkedList<>();
 
         for (MediaEntity media : status.getMediaEntities()) {
@@ -271,16 +271,20 @@ public class StatusArchive {
 
 		if (!userMentions.isEmpty() && !quoted) {
 
-			archive.append(" 给");
+			archive.append(" 给 ").append(UserArchive.get(userMentions.getFirst()).urlHtml());
 
-			for (long mention : userMentions) {
-			
-				archive.append(" ").append(UserArchive.get(mention));
-				
+			if (userMentions.size() > 1) {
+
+				for (long mention : userMentions.subList(1,userMentions.size())) {
+
+					archive.append("、").append(UserArchive.get(mention).screenName);
+
+				}
+
 			}
 
 		}
-		
+
 		archive.append(" :");
 
 		content = HtmlUtil.escape(content);
@@ -481,13 +485,13 @@ public class StatusArchive {
 					if (accessable != null) {
 
 						try {
-							
+
 							Status status = accessable.createApi().showStatus(quotedStatusId);
 
 							StatusArchive quoted = StatusArchive.save(status);
 
 							quoted.loop(api);
-							
+
 						} catch (TwitterException e) {}
 
 
