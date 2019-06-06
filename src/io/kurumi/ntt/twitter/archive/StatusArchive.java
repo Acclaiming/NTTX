@@ -111,7 +111,7 @@ public class StatusArchive {
 
 			} else {
 
-				text.replace(url.getURL(),url.getExpandedURL());
+				text = text.replace(url.getURL(),url.getExpandedURL());
 
 			}
 
