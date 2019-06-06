@@ -52,7 +52,7 @@ public class NTT {
 
 		}
 
-		if (type == 0) {
+		if (type == 0 || type == 2) {
 
 			return api.uploadMedia(fileName,IoUtil.toStream(file)).getMediaId();
 
