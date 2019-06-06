@@ -19,6 +19,8 @@ public class FFMpeg {
 		
 		File cacheFile = new File(Env.CACHE_DIR,"palette_pic/" + media.getName() + ".png");
 		
+		cacheFile.getParentFile().mkdirs();
+		
 		try {
 			
 			RuntimeUtil.exec("ffmpeg -i " + media.getPath() + " -b 4096k -r 20 -vf fps=20,scale=320:-1:flags=lanczos,palettegen -y " + cacheFile.getPath()).waitFor();
