@@ -9,7 +9,7 @@ import com.pengrad.telegrambot.model.Update;
 import io.kurumi.ntt.Env;
 import cn.hutool.core.util.NumberUtil;
 
-public class Block extends Function {
+public class Firewall extends Function {
 
 	public static class Id {
 		
