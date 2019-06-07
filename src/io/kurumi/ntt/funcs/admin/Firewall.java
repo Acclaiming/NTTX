@@ -15,6 +15,7 @@ public class Firewall extends Function {
 		
 		public long id;
 		
+		public Id() {}
 		public Id(long id) { this.id = id; }
 		
 	}
