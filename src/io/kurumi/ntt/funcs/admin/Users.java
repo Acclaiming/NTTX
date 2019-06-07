@@ -47,7 +47,7 @@ public class Users extends Fragment {
 		
 		for (UserData userData : UserData.data.collection.find()) {
 			
-			export.append("\n").append(userData.userName()).append(Html.startPayload("Block","drop",userData.id));
+			export.append("\n").append(userData.userName()).append(" ").append(Html.startPayload("Block","drop",userData.id));
 			
 			count ++;
 			
@@ -77,7 +77,7 @@ public class Users extends Fragment {
 			
 			UserData userData = UserData.get(id.id);
 			
-			export.append("\n").append(userData.userName()).append(Html.startPayload("Accept","accept",userData.id));
+			export.append("\n").append(userData.userName()).append(" ").append(Html.startPayload("Accept","accept",userData.id));
 
 			count ++;
 
