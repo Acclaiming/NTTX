@@ -44,6 +44,12 @@ public class ForwardBot extends BotFragment {
 
 		blockList = (List<Long>)bot.params.get("block");
 
+		if (blockList == null) {
+			
+			blockList = new LinkedList<>();
+			
+		}
+		
 		UserData user = UserData.get(userId);
 
 		if (user == null) {
@@ -151,6 +157,12 @@ public class ForwardBot extends BotFragment {
                         return true;
 
                     }
+					
+					if (target.id.equals(userId)) {
+						
+						msg.send("你不能屏蔽你自己...").exec();
+						
+					}
 
 					if (blockList.contains(target.id.longValue())) {
 
