@@ -50,11 +50,11 @@ public class Firewall extends Function {
 			
 		}
 		
-		UserData target = null;
+		long target = -1;
 		
 		if (NumberUtil.isNumber(params[0])) {
 			
-			target = UserData.get(NumberUtil.parseLong(params[0]));
+			target = NumberUtil.parseLong(params[0]);
 			
 		} else {
 			
@@ -62,7 +62,7 @@ public class Firewall extends Function {
 			
 		}
 		
-		if (target == null || target.developer()) {
+		if (target == -1) {
 			
 			msg.send("无记录").exec();
 			
@@ -70,13 +70,13 @@ public class Firewall extends Function {
 			
 		}
 		
-		boolean exists = block.containsId(target.id);
+		boolean exists = block.containsId(target);
 		
 		if ("accept".equals(function)) {
 			
 			if (exists) {
 				
-				block.deleteById(target.id);
+				block.deleteById(target);
 				
 				msg.send("removed block").exec();
 				
@@ -94,7 +94,7 @@ public class Firewall extends Function {
 				
 			} else {
 				
-				block.setById(target.id,new Id(target.id));
+				block.setById(target,new Id(target));
 
 				msg.send("blocked").exec();
 				
@@ -106,6 +106,8 @@ public class Firewall extends Function {
 
 	@Override
 	public boolean onMsg(UserData user,Msg msg) {
+		
+		if (super.onMsg(user,msg)) return true;
 		
 		if (user.developer() && msg.isStartPayload()) {
 			

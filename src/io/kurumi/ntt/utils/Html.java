@@ -12,6 +12,18 @@ public class Html {
 		
 	}
 	
+	public static String user(String text,long id) {
+		
+		if (text.isEmpty()) {
+			
+			text = " ";
+			
+		}
+		
+		return a(text,"tg://user?id=" + id);
+		
+	}
+	
 	public static String startPayload(String text,Object... payload) {
 
 		return a(text,"https://t.me/" + Launcher.INSTANCE.me.username() + "?start=" + ArrayUtil.join(payload,"_"));
