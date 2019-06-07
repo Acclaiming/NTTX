@@ -320,7 +320,7 @@ public class ForwardBot extends BotFragment {
 
             if (sended != -1) {
 
-                msg.reply("发送成功 [ " + Html.a("删除","https://t.me/" + me.username() + "?start=d" + target + "-" + sended) + " ]","退出回复使用 /cancel ").html().exec();
+                msg.reply("发送成功 [ " + Html.a("删除","https://t.me/" + me.username() + "?start=del" + PAYLOAD_SPLIT +  target + PAYLOAD_SPLIT + sended) + " ]","退出回复使用 /cancel ").html().exec();
 
             }
 
