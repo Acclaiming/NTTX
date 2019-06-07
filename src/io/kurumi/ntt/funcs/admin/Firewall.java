@@ -103,6 +103,75 @@ public class Firewall extends Function {
 	}
 
 	@Override
+	public boolean onMsg(UserData user,Msg msg) {
+		
+		if (user.developer() && msg.isStartPayload()) {
+			
+			String[] payload = msg.payload();
+
+			if ("accept".equals(payload[0]) || "drop".equals(payload[0])) {
+				
+				if (payload.length < 2) {
+
+					msg.send("invlid params").exec();
+
+					return true;
+
+				}
+
+				UserData target  = UserData.get(NumberUtil.parseLong(payload[1]));
+
+				if (target.developer()) {
+
+					msg.send("不可以").exec();
+
+					return true;
+
+				}
+
+				boolean exists = block.containsId(target.id);
+
+				if ("accept".equals(payload[0])) {
+
+					if (exists) {
+
+						block.deleteById(target.id);
+
+						msg.send("removed block").exec();
+
+					} else {
+
+						msg.send("not blocked").exec();
+
+					}
+
+				} else {
+
+					if (exists) {
+
+						msg.send("already blocked").exec();
+
+					} else {
+
+						block.setById(target.id,new Id(target.id));
+
+						msg.send("blocked").exec();
+
+					}
+
+				}
+				
+				return true;
+				
+			}
+			
+		}
+			
+			return false;
+		
+	}
+
+	@Override
 	public boolean onUpdate(UserData user,Update update) {
 		
 		if (!user.developer() && block.containsId(user.id)) {
