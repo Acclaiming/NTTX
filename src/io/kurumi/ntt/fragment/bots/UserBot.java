@@ -88,7 +88,7 @@ public class UserBot {
 		
 		switch (type) {
 			
-			case 0 : return "转发私聊BOT";
+			case 0 : return "私聊BOT";
 			
 			default : return null;
 			
