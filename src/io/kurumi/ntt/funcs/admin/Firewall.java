@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import com.pengrad.telegrambot.model.Update;
 import io.kurumi.ntt.Env;
 import cn.hutool.core.util.NumberUtil;
+import com.pengrad.telegrambot.request.KickChatMember;
 
 public class Firewall extends Function {
 
@@ -178,6 +179,12 @@ public class Firewall extends Function {
 		if (!user.developer() && block.containsId(user.id)) {
 			
 			if (update.message() != null) {
+				
+				if (update.message().newChatMembers() != null) {
+					
+					bot().execute(new KickChatMember(update.message().chat().id(),update.message().newChatMember().id().intValue()));
+					
+				}
 				
 				//new Msg(this,update.message()).forwardTo(Env.GROUP);
 				
