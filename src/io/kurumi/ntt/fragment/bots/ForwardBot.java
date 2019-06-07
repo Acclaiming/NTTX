@@ -68,7 +68,7 @@ public class ForwardBot extends BotFragment {
 
 		UserBot bot = UserBot.data.getById(botId);
 
-		blockList = (List<Long>)bot.params.get("block");
+		bot.params.put("block",blockList);
 
 		UserBot.data.setById(botId,bot);
 
@@ -161,6 +161,8 @@ public class ForwardBot extends BotFragment {
 					if (target.id.equals(userId)) {
 						
 						msg.send("你不能屏蔽你自己...").exec();
+						
+						return true;
 						
 					}
 
