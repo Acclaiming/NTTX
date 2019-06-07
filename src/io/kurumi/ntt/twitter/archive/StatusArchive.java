@@ -363,6 +363,8 @@ public class StatusArchive {
             content = StrUtil.subBefore(content,"https://t.co",true);
 
         }
+		
+		/*
 
 		if (!userMentions.isEmpty() && !quoted) {
 
@@ -383,6 +385,8 @@ public class StatusArchive {
 			}
 
 		}
+		
+		*/
 
 		archive.append(" :");
 
