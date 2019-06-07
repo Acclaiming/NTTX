@@ -171,7 +171,7 @@ public class MyBots extends Function {
 						.newButton("删除BOT",POINT_DELETE_BOT,bot.id)
 						.newButton("返回列表",POINT_BACK_TO_LIST);
 
-				}});
+				}}).exec();
 
 	}
 
