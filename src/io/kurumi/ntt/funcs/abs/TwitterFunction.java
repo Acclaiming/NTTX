@@ -107,7 +107,7 @@ public abstract class TwitterFunction extends Function {
 
             TwitterPoint data = (TwitterPoint)point.data;
 
-            if (!msg.text().startsWith("@")) {
+            if (!msg.hasText() || !msg.text().startsWith("@")) {
 
                 msg.send("请选择 Twitter 账号 (˚☐˚! )/").exec();
 
