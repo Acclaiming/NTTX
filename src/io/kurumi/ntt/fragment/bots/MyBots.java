@@ -274,6 +274,8 @@ public class MyBots extends Function {
 
 		}
 
+		clearPoint(user);
+		
 		data.bot.params.put("msg",msg.text());
 
 		UserBot.data.setById(data.bot.id,data.bot);
