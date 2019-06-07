@@ -111,6 +111,8 @@ public class NewBot extends Function {
 					
 					clearPoint(user);
 					
+					msg.send("已经取消 ~").removeKeyboard().exec();
+					
 				} else if ("转发私聊".equals(msg.text())) {
 					
 					data.bot.type = 0;
