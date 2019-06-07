@@ -198,7 +198,7 @@ public class MyBots extends Function {
 					newButtonLine("不删了",POINT_CHOOSE_BOT,bot.id);
 					newButtonLine("手滑了",POINT_CHOOSE_BOT,bot.id);
 					newButtonLine("点着玩",POINT_CHOOSE_BOT,bot.id);
-					newButtonLine("删掉罢",POINT_DELETE_BOT,bot.id);
+					newButtonLine("删掉罢",POINT_CONFIRM_DEL,bot.id);
 
 				}}).exec();
 
