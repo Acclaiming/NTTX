@@ -176,7 +176,7 @@ public class Firewall extends Function {
 	@Override
 	public boolean onUpdate(UserData user,Update update) {
 		
-		if (!user.developer() && block.containsId(user.id)) {
+		if (user != null && !user.developer() && block.containsId(user.id)) {
 			
 			if (update.message() != null) {
 				
