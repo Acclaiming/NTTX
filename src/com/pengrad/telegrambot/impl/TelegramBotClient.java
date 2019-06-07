@@ -50,13 +50,15 @@ public class TelegramBotClient {
         });
     }
 
-    public <T extends BaseRequest, R extends BaseResponse> R send(final BaseRequest<T, R> request) {
+    public <T extends BaseRequest, R extends BaseResponse> R send(final BaseRequest<T, R> request) throws IOException {
         try {
             OkHttpClient client = getOkHttpClient(request);
             Response response = client.newCall(createRequest(request)).execute();
             return gson.fromJson(response.body().string(), request.getResponseType());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+      } catch (IOException e) {
+			
+		
+            throw e;
         }
     }
 

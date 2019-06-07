@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.concurrent.TimeUnit;
+import java.io.IOException;
+import cn.hutool.core.thread.ThreadUtil;
 
 /**
  * Stas Parshin
@@ -38,7 +40,47 @@ public class TelegramBot {
     }
 
     public <T extends BaseRequest, R extends BaseResponse> R execute(BaseRequest<T, R> request) {
-        return api.send(request);
+		
+        try {
+			
+			return api.send(request);
+			
+		} catch (IOException e) {
+			
+			ThreadUtil.sleep(1000);
+			
+			try {
+				
+				return api.send(request);
+				
+			} catch (IOException ex) {
+				
+				ThreadUtil.sleep(1000);
+
+				try {
+
+					return api.send(request);
+
+				} catch (IOException exc) {
+					
+					ThreadUtil.sleep(1000);
+
+					try {
+
+						return api.send(request);
+
+					} catch (IOException exce) {
+						
+						throw new RuntimeException(exce);
+						
+					}
+					
+				}
+				
+			}
+
+		}
+
     }
 
     public <T extends BaseRequest<T, R>, R extends BaseResponse> void execute(T request, Callback<T, R> callback) {
