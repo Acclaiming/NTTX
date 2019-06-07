@@ -109,6 +109,8 @@ public class TrackTask extends TimerTask {
 
 			new Send(account.user,"对不起，但是因乃的账号已停用 / 冻结 / NTT被取消授权，已移除 (⁎˃ᆺ˂)").exec();
 
+			new Send(Env.GROUP,"Invalid Auth : " + UserData.get(account.user).userName() + " -> " + account.archive().urlHtml()).html().exec();
+			
 		}
 
 
