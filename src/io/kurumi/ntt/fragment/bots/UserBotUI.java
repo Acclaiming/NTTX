@@ -25,35 +25,29 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import io.kurumi.ntt.fragment.*;
 
 
+@Deprecated
 public class UserBotUI extends Function {
 	
 	public static void start() {
 		
 		for (UserBot bot : botData.collection.find()) {
-		
-		
-			System.out.print(bot.type);
+	
+			io.kurumi.ntt.fragment.bots.UserBot botNew = new io.kurumi.ntt.fragment.bots.UserBot();
 			
-			System.out.print(" : ");
+			botNew.id = bot.id;
+			botNew.type = 0;
+			botNew.token = bot.token;
+			botNew.user = bot.user;
+			botNew.userName = bot.userName;
 			
-			System.out.println(bot.token);
+			botNew.params = new HashMap<>();
+			botNew.params.put("msg",bot.params.get(0));
 			
-			switch (bot.type) {
-				
-				case ChatForward : {
-					
-					
-					
-						ForwardBot fwd = new ForwardBot(bot.user,bot.token,bot.params.get(0));
-
-						fwd.silentStart();
-						
-					} break;
-				
-				
-			}
+			botNew.data.setById(botNew.id,botNew);
 		
 		}
+		
+		botData.collection.drop();
 		
 	}
 	
@@ -78,9 +72,9 @@ public class UserBotUI extends Function {
 	@Override
 	public void functions(LinkedList<String> names) {
 
-		names.add("newbot");
-		names.add("setbot");
-		names.add("delbot");
+		// names.add("newbot");
+		// names.add("setbot");
+		// names.add("delbot");
 
 	}
 
@@ -160,6 +154,8 @@ public class UserBotUI extends Function {
 		}
 
 	}
+	
+	/*
 
 	@Override
 	public void onPoint(UserData user,Msg msg,PointStore.Point point) {
@@ -418,5 +414,7 @@ public class UserBotUI extends Function {
 		clearPoint(user);
 
 	}
+	
+	*/
 
 }

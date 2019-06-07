@@ -199,8 +199,10 @@ public class MyBots extends Function {
 
 		}
 
+		bot.stopBot();
+		
 		UserBot.data.deleteById(bot.id);
-
+		
 		showBotList(user,callback,true);
 
 		callback.alert("已删除 @" + bot.userName);
@@ -256,6 +258,8 @@ public class MyBots extends Function {
 		data.bot.params.put("msg",msg.text());
 
 		UserBot.data.setById(data.bot.id,data.bot);
+		
+		data.bot.reloadBot();
 		
 		data.message.delete();
 

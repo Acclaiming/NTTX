@@ -3,10 +3,61 @@ package io.kurumi.ntt.fragment.bots;
 import io.kurumi.ntt.db.Data;
 import io.kurumi.ntt.fragment.bots.UserBot;
 import java.util.Map;
+import java.util.HashMap;
+import io.kurumi.ntt.fragment.BotServer;
 
 public class UserBot {
 	
 	public static Data<UserBot> data = new Data<UserBot>("UserCustomBot",UserBot.class);
+	
+	public static void startAll() {
+		
+		for (UserBot bot : data.collection.find()) {
+			
+			bot.startBot();
+			
+		}
+		
+	}
+	
+	public void startBot() {
+		
+		if (!BotServer.fragments.containsKey(token)) {
+			
+			if (type == 0) {
+			
+				ForwardBot client = new ForwardBot();
+				
+				client.botId = id;
+				client.reload();
+				
+				client.silentStart();
+
+			}
+			
+		}
+
+	}
+	
+	public void stopBot() {
+		
+		if (BotServer.fragments.containsKey(token)) {
+			
+			BotServer.fragments.remove(token).stop();
+			
+		}
+		
+	}
+	
+	public void reloadBot() {
+		
+		if (!BotServer.fragments.containsKey(token)) {
+			
+			BotServer.fragments.get(token).reload();
+			
+		}
+		
+	}
 	
 	public Long id;
 	public String userName;
@@ -15,7 +66,7 @@ public class UserBot {
 	public String token;
 	
 	public int type;
-	public Map<String,String> params;
+	public Map<String,Object> params;
 	
 	public String information() {
 		
@@ -23,7 +74,7 @@ public class UserBot {
 
 		if (type == 0) {
 			
-			String welcomeMsg = params.get("msg");
+			String welcomeMsg = (String)params.get("msg");
 
 			information.append("欢迎语 : > ").append(welcomeMsg).append(" <");
 			
