@@ -66,6 +66,18 @@ public class StatusArchive {
 
 				MessagePoint.set(resp.message().messageId(),1,id);
 
+			} else if (!resp.isOk()) {
+				
+				Send sendN = new Send(chatId,toHtml(depth)).html();
+
+				if (status != null) {
+
+					sendN.buttons(StatusAction.createMarkup(id,from.equals(auth.id),depth() <= depth,status.isRetweetedByMe(),status.getCurrentUserRetweetId(),status.isFavorited()));
+
+				}
+
+				sendN.point(1,id);
+				
 			}
 
 		} else {
