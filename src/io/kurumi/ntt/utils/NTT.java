@@ -288,7 +288,7 @@ public class NTT {
 
 			case 324 : return "视频太短或媒体文件过期 : " + exc.getErrorMessage();
 
-			case 326 : return "账号被Twitter限制 : 你必须登录Twitter网站/客户端来解除这个限制 : 这通常需要验证手机";
+			case 326 : return "账号被Twitter限制 : 你必须登录Twitter网站/客户端来解除这个限制 : 这通常需要验证手机 \n\n如果Twitter确认你违反了规定，你可能需要等待至少十二个小时的时间来恢复除了给关注者私信以外的功能。";
 
 			case 327 : return "你已经转推过了这条推文";
 
