@@ -5,6 +5,7 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.twitter.TAuth;
 import io.kurumi.ntt.utils.Html;
+import cn.hutool.http.HtmlUtil;
 
 public class Users extends Fragment {
 
@@ -43,7 +44,7 @@ public class Users extends Fragment {
 		
 		count = 0;
 		
-		export = new StringBuilder(" >> All Users << \n");
+		export = new StringBuilder(HtmlUtil.escape(" >> All Users << \n"));
 		
 		for (UserData userData : UserData.data.collection.find()) {
 			
@@ -71,7 +72,7 @@ public class Users extends Fragment {
 		
 		count = 0;
 		
-		export = new StringBuilder(" >> Blocked Users << \n");
+		export = new StringBuilder(HtmlUtil.escape(" >> Blocked Users << \n"));
 
 		for (Firewall.Id id : Firewall.block.collection.find()) {
 			
