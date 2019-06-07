@@ -214,7 +214,7 @@ public class ForwardBot extends BotFragment {
 
             return true;
 
-        } else if (!blockList.contains(user.id.longValue())) {
+        } else if (getPoint(user) == null && !blockList.contains(user.id.longValue())) {
 
             if (lastReceivedFrom  == null || !lastReceivedFrom.equals(user.id))  {
 
