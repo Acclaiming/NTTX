@@ -35,6 +35,20 @@ public class NewBot extends Function {
 	final String POINT_CREATE_BOT = "bot.create";
 
 	@Override
+	public void points(LinkedList<String> points) {
+		
+		points.add(POINT_CREATE_BOT);
+		
+	}
+
+	@Override
+	public int target() {
+		
+		return Private;
+		
+	}
+	
+	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
 		msg.send("现在请输入BotToken :","","BotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。").exec();

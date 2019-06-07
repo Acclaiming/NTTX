@@ -25,6 +25,25 @@ public class MyBots extends Function {
 	final String POINT_BACK_TO_LIST = "bot.b";
 	final String POINT_DELETE_BOT = "bot.d";
 
+
+	@Override
+	public void points(LinkedList<String> points) {
+
+		points.add(POINT_CHOOSE_BOT);
+		points.add(POINT_BACK_TO_LIST);
+		points.add(POINT_DELETE_BOT);
+		points.add(POINT_CONFIRM_DEL);
+		points.add(POINT_CHAT_BOT_EDIT_MESSAGE);
+
+	}
+
+	@Override
+	public int target() {
+
+		return Private;
+
+	}
+	
 	@Override
 	public void onFunction(final UserData user,Msg msg,String function,String[] params) {
 
