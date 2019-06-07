@@ -9,6 +9,10 @@ import com.pengrad.telegrambot.model.Update;
 import io.kurumi.ntt.Env;
 import cn.hutool.core.util.NumberUtil;
 import com.pengrad.telegrambot.request.KickChatMember;
+import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.Chat;
+import com.pengrad.telegrambot.request.UnbanChatMember;
+import com.pengrad.telegrambot.request.DeleteMessage;
 
 public class Firewall extends Function {
 
@@ -182,9 +186,15 @@ public class Firewall extends Function {
 			
 			if (update.message() != null) {
 				
-				if (update.message().newChatMembers() != null) {
+				Message msg = update.message();
+				
+				bot().execute(new DeleteMessage(msg.chat().id(),user.id.intValue()));
+
+				if (msg.chat().type() != Chat.Type.Private) {
 					
-					bot().execute(new KickChatMember(update.message().chat().id(),update.message().newChatMember().id().intValue()));
+					bot().execute(new KickChatMember(msg.chat().id(),msg.newChatMember().id().intValue()));
+					// bot().execute(new UnbanChatMember(msg.chat().id(),msg.newChatMember().id().intValue()));
+					
 					
 				}
 				
