@@ -142,6 +142,7 @@ public class NewBot extends Function {
 				
 				msg.send("创建成功... 正在启动").exec();
 				
+				data.bot.params = new HashMap<>();
 				data.bot.params.put("msg",msg.text());
 				
 				UserBot.data.setById(data.bot.id,data.bot);
