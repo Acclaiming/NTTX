@@ -1826,17 +1826,23 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
     }
 
     /* Spam Reporting Resources */
-
-    @Override
-    public User reportSpam(long userId) throws TwitterException {
-        return factory.createUser(post(conf.getRestBaseURL() + "users/report_spam.json?user_id=" + userId));
+	
+	@Override
+    public User reportSpam(long userId,boolean performBlock) throws TwitterException {
+        return factory.createUser(post(conf.getRestBaseURL() + "users/report_spam.json",
+									   new HttpParameter[]{
+										   new HttpParameter("user_id", userId),
+										   new HttpParameter("perform_block", performBlock)
+									   }
+									   ));
     }
 
     @Override
-    public User reportSpam(String screenName) throws TwitterException {
+    public User reportSpam(String screenName,boolean performBlock) throws TwitterException {
         return factory.createUser(post(conf.getRestBaseURL() + "users/report_spam.json",
                 new HttpParameter[]{
-                        new HttpParameter("screen_name", screenName)
+                        new HttpParameter("screen_name", screenName),
+						new HttpParameter("perform_block", performBlock)
                 }
         ));
     }

@@ -42,6 +42,8 @@ public class UserBotUI extends Function {
 				
 				case ChatForward : {
 					
+					
+					
 						ForwardBot fwd = new ForwardBot(bot.user,bot.token,bot.params.get(0));
 
 						fwd.silentStart();

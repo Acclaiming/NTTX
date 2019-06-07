@@ -2436,11 +2436,11 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
     /* Spam Reporting Resources */
 
     @Override
-    public void reportSpam(final long userId) {
+    public void reportSpam(final long userId,final boolean performBlock) {
         getDispatcher().invokeLater(new AsyncTask(REPORT_SPAM, listeners) {
             @Override
             public void invoke(List<TwitterListener> listeners) throws TwitterException {
-                User user = twitter.reportSpam(userId);
+                User user = twitter.reportSpam(userId,performBlock);
                 for (TwitterListener listener : listeners) {
                     try {
                         listener.reportedSpam(user);
@@ -2453,11 +2453,11 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
     }
 
     @Override
-    public void reportSpam(final String screenName) {
+    public void reportSpam(final String screenName,final boolean performBlock) {
         getDispatcher().invokeLater(new AsyncTask(REPORT_SPAM, listeners) {
             @Override
             public void invoke(List<TwitterListener> listeners) throws TwitterException {
-                User user = twitter.reportSpam(screenName);
+                User user = twitter.reportSpam(screenName,performBlock);
                 for (TwitterListener listener : listeners) {
                     try {
                         listener.reportedSpam(user);

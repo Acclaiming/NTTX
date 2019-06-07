@@ -55,11 +55,11 @@ public class Jvbao extends Function {
 
 				if (targetL == -1) {
 
-					auth.createApi().reportSpam(target);
+					auth.createApi().reportSpam(target,false);
 
 				} else {
 
-					auth.createApi().reportSpam(targetL);
+					auth.createApi().reportSpam(targetL,false);
 
 				}
 				
