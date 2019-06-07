@@ -84,7 +84,7 @@ public class TrackTask extends TimerTask {
 
 			} catch (TwitterException e) {
 
-				if (e.getErrorCode() == 89 || e.getErrorCode() == 215 || e.getErrorCode() == 215 || e.getErrorCode() == 326) {
+				if (e.getErrorCode() == 89 || e.getErrorCode() == 215 || e.getErrorCode() == 215) {
 
 					remove.add(account);
 
