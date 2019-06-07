@@ -28,7 +28,7 @@ public class NewBot extends Function {
 
 		UserBot bot;
 
-		int type = 0;
+		int type = -1;
 
 	}
 
@@ -60,7 +60,7 @@ public class NewBot extends Function {
 	@Override
 	public void onPoint(UserData user,Msg msg,PointStore.Point point) {
 
-		if (POINT_CREATE_BOT.equals(point)) {
+		if (POINT_CREATE_BOT.equals(point.point)) {
 
 			CreateBot data = (CreateBot) point.data;
 
