@@ -119,7 +119,7 @@ public class NewBot extends Function {
 					
 					data.progress = 10;
 					
-					msg.send("好，请发送私聊BOT的欢迎语，这将在 /start 时发送").exec();
+					msg.send("好，请发送私聊BOT的欢迎语，这将在 /start 时发送").removeKeyboard().exec();
 					msg.send("就像这样 : 直接喵喵就行了 ~").exec();
 					
 				} else {
