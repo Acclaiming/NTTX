@@ -67,8 +67,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		// AutoTask.start();
 		
 		TrackTask.start();
-		
-		UserBotUI.start();
+	
+		UserBot.startAll();
 		
 		Backup.start();
 		
@@ -85,7 +85,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 			
 			TrackTask.start();
 			
-			UserBotUI.start();
+			UserBot.startAll();
 			
 			Backup.start();
 			
