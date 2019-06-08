@@ -143,7 +143,7 @@ public class ForumManage extends Function {
 
 		if (point.data == null) {
 
-			if ("同意".equals(msg.text())) {
+			if (!"同意".equals(msg.text())) {
 
 				msg.send("这足够公平,如果你考虑好了就再来。").removeKeyboard().exec();
 
