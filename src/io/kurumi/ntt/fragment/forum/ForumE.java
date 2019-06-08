@@ -22,11 +22,13 @@ public class ForumE {
 	public int titleId = -1;
 	public Map<Long,Integer> tagIds = new HashMap<>();
 	
+	public String error;
+	
 	// 信息
 	
 	public String name;
 	
-	public String description = "又一个电报论坛";
+	public String description = "一个电报论坛";
 	
 	// 设置
 	
