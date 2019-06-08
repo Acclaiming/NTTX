@@ -311,7 +311,7 @@ public class ForumManage extends Function {
 
 			"\n绑定频道 : " + forum.channel,
 			"BotToken : " + forum.token.substring(0,11) + "...",
-			"状态 : " + forum.error == null ? "正常运行" : forum.error,
+			"状态 : " + (forum.error == null ? "正常运行" : forum.error),
 
 			"\n帖子数量 : " + ForumPost.data.countByField("forumId",forum.id),
 
@@ -332,9 +332,12 @@ public class ForumManage extends Function {
 					.newButton("管理员设置",POINT_EDIT_ADMIN,forum.id);
 
 				newButtonLine("重置频道消息",POINT_RESET,forum.id);
-				newButtonLine("删除论坛",POINT_DEL_FORUM,forum.id);
+				newButtonLine("删库跑路",POINT_DEL_FORUM,forum.id);
 
+				// TODO : 转移论坛
+				
 			}};
+			
 
 		msg.sendOrEdit(edit,info).buttons(buttons).exec();
 
@@ -347,6 +350,7 @@ public class ForumManage extends Function {
 
 		switch (point) {
 
+			case POINT_FORUM_MANAGE : forumMain(true,user,callback);break;
 			case POINT_EDIT_NAME : editForumName(user,callback,forumId);break;
 			case POINT_EDIT_DESC : editForumDesc(user,callback,forumId);break;
 			case POINT_EDIT_CHAN : editForumChan(user,callback,forumId);break;
