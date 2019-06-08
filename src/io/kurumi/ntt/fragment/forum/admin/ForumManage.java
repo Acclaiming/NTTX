@@ -366,6 +366,7 @@ public class ForumManage extends Function {
 
 		callback.confirm();
 
+		edit.msg.add(callback);
 		edit.msg.add(callback.send("好。现在发送新的论坛名称 : 十个字以内 ","\n如果超过、你可以手动设置频道和BOT的名称 (如果字数允许) ,这里的名称仅作为一个简称",cancel).send());
 
 	}
@@ -374,6 +375,8 @@ public class ForumManage extends Function {
 
 		ForumEdit edit = (ForumEdit)point.data;
 
+		edit.msg.add(msg);
+		
 		long forumId = edit.forumId;
 
 		if (!msg.hasText()) {
@@ -420,6 +423,7 @@ public class ForumManage extends Function {
 
 		callback.confirm();
 
+		edit.msg.add(callback);
 		edit.msg.add(callback.send("好。现在发送新的论坛简介 : 160字以内 , 你可以开一个置顶帖详细介绍论坛或是规定。",cancel).send());
 
 	}
@@ -428,6 +432,8 @@ public class ForumManage extends Function {
 
 		ForumEdit edit = (ForumEdit)point.data;
 
+		edit.msg.add(msg);
+		
 		long forumId = edit.forumId;
 
 		if (!msg.hasText()) {
@@ -485,6 +491,7 @@ public class ForumManage extends Function {
 
 		};
 		
+		edit.msg.add(callback);
 		edit.msg.add(callback.send(channel).send());
 	
 	}
@@ -493,6 +500,8 @@ public class ForumManage extends Function {
 
 		ForumEdit edit = (ForumEdit)point.data;
 
+		edit.msg.add(msg);
+		
 		long forumId = edit.forumId;
 		
 		Message message = msg.message();
@@ -548,7 +557,8 @@ public class ForumManage extends Function {
 		setPoint(user,POINT_EDIT_DESC,edit);
 
 		callback.confirm();
-
+		
+		edit.msg.add(callback);
 		edit.msg.add(callback.send("好，现在输入用于论坛的BotToken :","\nBotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。",cancel).send());
 		
 	}
@@ -556,7 +566,8 @@ public class ForumManage extends Function {
 	void forumTokenEdit(UserData user,Msg msg,PointStore.Point point) {
 
 		ForumEdit edit = (ForumEdit)point.data;
-
+		edit.msg.add(msg);
+		
 		long forumId = edit.forumId;
 		
 		if (!msg.hasText() ||  !msg.text().contains(":")) {
