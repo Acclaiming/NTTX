@@ -13,6 +13,7 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.request.UnbanChatMember;
 import com.pengrad.telegrambot.request.DeleteMessage;
+import com.pengrad.telegrambot.request.ForwardMessage;
 
 public class Firewall extends Function {
 
@@ -195,6 +196,7 @@ public class Firewall extends Function {
 					bot().execute(new KickChatMember(msg.chat().id(),user.id.intValue()));
 					// bot().execute(new UnbanChatMember(msg.chat().id(),msg.newChatMember().id().intValue()));
 					
+					bot().execute(new ForwardMessage(Env.GROUP,msg.chat().id(),msg.messageId()));
 					
 				}
 				
