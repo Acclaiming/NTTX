@@ -20,7 +20,6 @@ public class ForumE {
 	public long channel;
 	
 	public int titleId = -1;
-	public Map<String,Long> tags = new HashMap<>();
 	
 	public String error;
 	

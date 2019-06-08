@@ -310,7 +310,10 @@ public class ForumManage extends Function {
 					.newButton("修改Token",POINT_EDIT_TOKEN,forum.id);
 
 				newButtonLine()
+				.newButton("分类管理",POINT_EDIT_TAGS,forum.id)
 					.newButton("管理员设置",POINT_EDIT_ADMIN,forum.id);
+					
+				newButtonLine("删除论坛",POINT_DEL_FORUM,forum.id);
 
 				// TODO : 删除
 
