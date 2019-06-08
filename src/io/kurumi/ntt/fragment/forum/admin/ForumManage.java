@@ -22,6 +22,9 @@ import io.kurumi.ntt.utils.MongoIDs;
 import java.util.LinkedList;
 import java.util.List;
 import com.pengrad.telegrambot.request.DeleteMessage;
+import io.kurumi.ntt.fragment.forum.ForumTag;
+import com.mongodb.client.FindIterable;
+import io.kurumi.ntt.model.request.ButtonLine;
 
 public class ForumManage extends Function {
 
@@ -48,7 +51,7 @@ public class ForumManage extends Function {
 
 	final String POINT_EDIT_ADMIN = "forum.admin";
 	final String POINT_EDIT_TAGS = "forum.tags";
-	
+
 	final String POINT_RESET = "forum.reset";
 	final String POINT_DEL_FORUM = "forum.del";
 
@@ -95,7 +98,7 @@ public class ForumManage extends Function {
 		int progress = 0;
 
 		List<Msg> msg = new LinkedList<>();
-		
+
 		// ---------------
 
 		String token;
@@ -237,7 +240,7 @@ public class ForumManage extends Function {
 				return;
 
 			}
-			
+
 			create.bot.execute(new DeleteMessage(chat.id(),resp.message().messageId()));
 
 			create.channelId = chat.id();
@@ -263,7 +266,7 @@ public class ForumManage extends Function {
 				return;
 
 			}
-			
+
 			clearPoint(user);
 
 			ForumE forum = new ForumE();
@@ -278,9 +281,9 @@ public class ForumManage extends Function {
 			ForumE.data.setById(forum.id,forum);
 
 			msg.send("好，现在创建成功。不要忘记设置好简介、分类这些信息。完成之后 '重置频道信息' 来立即更新缓存。").exec();
-			
+
 			forumMain(false,user,msg);
-			
+
 		}
 
 	}
@@ -335,9 +338,9 @@ public class ForumManage extends Function {
 				newButtonLine("删库跑路",POINT_DEL_FORUM,forum.id);
 
 				// TODO : 转移论坛
-				
+
 			}};
-			
+
 
 		msg.sendOrEdit(edit,info).buttons(buttons).exec();
 
@@ -355,7 +358,7 @@ public class ForumManage extends Function {
 			case POINT_EDIT_DESC : editForumDesc(user,callback,forumId);break;
 			case POINT_EDIT_CHAN : editForumChan(user,callback,forumId);break;
 			case POINT_EDIT_TOKEN : editForumToken(user,callback,forumId);break;
-			
+
 		}
 
 	}
@@ -380,12 +383,11 @@ public class ForumManage extends Function {
 		ForumEdit edit = (ForumEdit)point.data;
 
 		edit.msg.add(msg);
-		
+
 		long forumId = edit.forumId;
 
 		if (!msg.hasText()) {
 
-			edit.msg.add(msg);
 			edit.msg.add(msg.send("忘记了吗？你正在修改论坛名称。现在发送新名称 :",cancel).send());
 
 			return;
@@ -394,7 +396,6 @@ public class ForumManage extends Function {
 
 		if (msg.text().length() > 10) {
 
-			edit.msg.add(msg);
 			edit.msg.add(msg.send("好吧，再说一遍。名称限制十个字 : 你可以手动设置频道和BOT的名称 (如果字数允许) ,这里的名称仅作为一个简称",cancel).send());
 
 			return;
@@ -437,12 +438,11 @@ public class ForumManage extends Function {
 		ForumEdit edit = (ForumEdit)point.data;
 
 		edit.msg.add(msg);
-		
+
 		long forumId = edit.forumId;
 
 		if (!msg.hasText()) {
 
-			edit.msg.add(msg);
 			edit.msg.add(msg.send("忘记了吗？你正在修改论坛简介。现在发送新简介 :",cancel).send());
 
 			return;
@@ -451,7 +451,6 @@ public class ForumManage extends Function {
 
 		if (msg.text().length() > 160) {
 
-			edit.msg.add(msg);
 			edit.msg.add(msg.send("好吧，再说一遍。简介限制160字 : 你可以开一个置顶帖详细介绍论坛或是规定 。",cancel).send());
 
 			return;
@@ -473,7 +472,7 @@ public class ForumManage extends Function {
 		forumMain(false,user,msg);
 
 	}
-	
+
 	void editForumChan(UserData user,Callback callback,long forumId) {
 
 		ForumEdit edit = new ForumEdit();
@@ -483,7 +482,7 @@ public class ForumManage extends Function {
 		setPoint(user,POINT_EDIT_CHAN,edit);
 
 		callback.confirm();
-		
+
 		String[] channel = new String[] {
 
 			"现在发送作为论坛版面的频道 (Channel) :\n",
@@ -494,20 +493,20 @@ public class ForumManage extends Function {
 			cancel
 
 		};
-		
+
 		edit.msg.add(callback);
 		edit.msg.add(callback.send(channel).send());
-	
+
 	}
-	
+
 	void forumChanEdit(UserData user,Msg msg,PointStore.Point point) {
 
 		ForumEdit edit = (ForumEdit)point.data;
 
 		edit.msg.add(msg);
-		
+
 		long forumId = edit.forumId;
-		
+
 		Message message = msg.message();
 
 		Chat chat = message.forwardFromChat();
@@ -519,9 +518,9 @@ public class ForumManage extends Function {
 			return;
 
 		}
-		
+
 		ForumE forum = ForumE.data.getById(forumId);
-		
+
 		TelegramBot bot = new TelegramBot(forum.token);
 
 		SendResponse resp = bot.execute(new SendMessage(chat.id(),"Test").disableNotification(true));
@@ -535,13 +534,13 @@ public class ForumManage extends Function {
 		}
 
 		clearPoint(user);
-		
+
 		bot.execute(new DeleteMessage(chat.id(),resp.message().messageId()));
 
 		forum.deleteCache();
-		
+
 		forum.channel = chat.id();
-		
+
 		ForumE.data.setById(forumId,forum);
 
 		for (Msg it : edit.msg) it.delete();
@@ -549,9 +548,9 @@ public class ForumManage extends Function {
 		msg.send("修改成功 : 请使用 '重置频道信息' 来立即更新缓存").exec();
 
 		forumMain(false,user,msg);
-		
+
 	}
-	
+
 	void editForumToken(UserData user,Callback callback,long forumId) {
 
 		ForumEdit edit = new ForumEdit();
@@ -561,19 +560,19 @@ public class ForumManage extends Function {
 		setPoint(user,POINT_EDIT_TOKEN,edit);
 
 		callback.confirm();
-		
+
 		edit.msg.add(callback);
 		edit.msg.add(callback.send("好，现在输入用于论坛的BotToken :","\nBotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。",cancel).send());
-		
+
 	}
-	
+
 	void forumTokenEdit(UserData user,Msg msg,PointStore.Point point) {
 
 		ForumEdit edit = (ForumEdit)point.data;
 		edit.msg.add(msg);
-		
+
 		long forumId = edit.forumId;
-		
+
 		if (!msg.hasText() ||  !msg.text().contains(":")) {
 
 			msg.send("无效的Token.请重试. ","Token 看起来像这样: '12345678:ABCDEfgHIDUROVjkLmNOPQRSTUvw-cdEfgHI'",cancel).exec();
@@ -599,7 +598,7 @@ public class ForumManage extends Function {
 		ForumE forum = ForumE.data.getById(forumId);
 
 		forum.deleteCache();
-		
+
 		forum.token = msg.text();
 
 		ForumE.data.setById(forumId,forum);
@@ -609,8 +608,172 @@ public class ForumManage extends Function {
 		msg.send("修改成功 : 请使用 '重置频道信息' 来立即更新缓存").exec();
 
 		forumMain(false,user,msg);
+
+	}
+
+	final String POINT_CREATE_TAG = "forum.tag.new";
+	final String POINT_SHOW_TAG = "forum.tag.show";
+
+	void showForumTags(boolean edit,UserData user,Msg msg,final long forumId) {
+
+		final FindIterable<ForumTag> tags = ForumTag.data.findByField("forumId",forumId);
+
+		String[] info = new String[] {
+
+			"修改分类 : 论坛主要由分类组成，每个分类会在频道创建版面。",
+
+		};
+
+		ButtonMarkup buttons = new ButtonMarkup() {{
+
+				newButtonLine()
+					.newButton("新建分类",POINT_CREATE_TAG,forumId)
+					.newButton("返回设置",POINT_FORUM_MANAGE);
+
+				ButtonLine line = null;
+
+				for (ForumTag tag : tags) {
+
+					if (line == null) {
+
+						line = newButtonLine();
+						line.newButton(tag.name,POINT_SHOW_TAG,tag.id);
+
+					} else {
+
+						line.newButton(tag.name,POINT_SHOW_TAG,tag.id);
+						line = null;
+
+					}
+
+				}
+
+			}};
+
+		msg.sendOrEdit(edit,info).buttons(buttons).exec();
+
+	}
+
+	void forumCreateTag(UserData user,Callback callback,final long forumId) {
+
+		if (!ForumE.data.containsId(forumId)) {
+
+			callback.alert("不存在的论坛");
+			callback.delete();
+
+			return;
+
+		}
+
+		ForumEdit edit = new ForumEdit();
+
+		edit.forumId = forumId;
+
+		setPoint(user,POINT_CREATE_TAG,edit);
+
+		callback.confirm();
+
+		edit.msg.add(callback);
+		edit.msg.add(callback.send("好，现在输入分类名称，不要与已有名称重复，十个字符以内 (中文记两个字符)。",cancel).send());
+
+	}
+
+	void forumCreateTag(UserData user,Msg msg,PointStore.Point point) {
+
+		ForumEdit edit = (ForumEdit)point.data;
+		edit.msg.add(msg);
+
+		long forumId = edit.forumId;
+
+		if (!msg.hasText()) {
+
+			edit.msg.add(msg.send("忘记了吗？你正在新建论坛分类。现在发送新分类名称 :",cancel).send());
+
+			return;
+
+		}
+
+		if (msg.text().toCharArray().length > 10) {
+
+			edit.msg.add(msg.send("好吧，再说一遍。分类限制十个字符 (一个中文字占两个字符) : 分类通常应该为 2 -3 字。",cancel).send());
+
+			return;
+
+		}
+
+		if (ForumTag.tagExists(forumId,msg.text().trim())) {
+
+			edit.msg.add(msg.send("好吧，再说一遍。分类名称不能与已有的分类重复 : 有什么重复的必要呢。？").send());
+
+			return;
+
+		}
+
+		ForumTag tag = new ForumTag();
+
+		tag.forumId = forumId;
+		tag.name = msg.text();
+
+		tag.id = MongoIDs.getNextId(ForumTag.class.getSimpleName());
+
+		ForumTag.data.setById(tag.id,tag);
+
+		for (Msg it : edit.msg) it.delete();
+
+		msg.send("修改成功 : 返回设置主页使用 '重置频道信息' 来立即更新缓存").exec();
+
+		showForumTags(false,user,msg,forumId);
+
+	}
+
+	final String POINT_EDIT_TAG_NAME = "forum.tag.name";
+	final String POINT_EDIT_TAG_DESC = "forum.tag.desc";
+	final String POINT_DEL_TAG = "forum.tag.del";
+	
+	void showTag(boolean edit,UserData user,Msg msg,final long tagId) {
+
+		ForumTag tag = ForumTag.data.getById(tagId);
+
+		if (tag == null) {
+
+			if (msg instanceof Callback) {
+
+				((Callback)msg).alert("不存在的分类");
+
+			} else {
+
+				msg.send("分类不存在").exec();
+
+			}
+
+			return;
+
+		}
 		
+		String[] info = new String[] {
+
+			"分类 : " + tag.name,
+			
+			"\n简介 : " + tag.description == null ? "无" : tag.description,
+			
+			"\n帖子数量 : " + ForumPost.data.countByField("tagId",tagId)
+
+		};
+		
+		ButtonMarkup buttons = new ButtonMarkup() {{
+			
+			newButtonLine()
+			.newButton("修改名称",POINT_EDIT_TAG_NAME,tagId)
+			.newButton("修改简介",POINT_EDIT_TAG_DESC,tagId);
+			
+			newButtonLine("删除分类",POINT_DEL_TAG,tagId);
+			
+		}};
+		
+		msg.sendOrEdit(edit,info).buttons(buttons).exec();
+
 	}
 	
+	void editTagName() {}
 
 }
