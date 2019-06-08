@@ -196,7 +196,7 @@ public class ForumManage extends Function {
 				"你使用的 @" + me.user().username() + " 必须可以在频道发言",
 				"现在转发一条频道的消息来,以设置频道\n",
 
-				"不用担心，频道这可以在创建造成后更改 :)",
+				"不用担心，频道这可以在创建完成后更改 :)",
 
 				cancel
 
