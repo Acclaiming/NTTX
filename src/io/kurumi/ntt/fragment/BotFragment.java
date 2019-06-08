@@ -470,8 +470,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
     }
 
     public void stop() {
-
-		
 		
         if (!isLongPulling())  {
 
