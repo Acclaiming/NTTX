@@ -192,7 +192,7 @@ public class Firewall extends Function {
 
 				if (msg.chat().type() != Chat.Type.Private) {
 					
-					bot().execute(new KickChatMember(msg.chat().id(),msg.newChatMember().id().intValue()));
+					bot().execute(new KickChatMember(msg.chat().id(),user.id.intValue()));
 					// bot().execute(new UnbanChatMember(msg.chat().id(),msg.newChatMember().id().intValue()));
 					
 					
