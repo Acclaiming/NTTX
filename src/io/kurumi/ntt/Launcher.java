@@ -28,7 +28,6 @@ import io.kurumi.ntt.fragment.tieba.*;
 import io.kurumi.ntt.fragment.twitter.action.*;
 import io.kurumi.ntt.fragment.twitter.timeline.*;
 import io.kurumi.ntt.fragment.debug.*;
-import io.kurumi.ntt.fragment.channel.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -59,160 +58,158 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 	@Override
 	public void start() {
-		
+
 		super.start();
-		
+
 		TimelineUI.start();
-		
+
 		// AutoTask.start();
-		
+
 		TrackTask.start();
-	
+
 		UserBot.startAll();
-		
+
 		Backup.start();
-		
+
 	}
 
 	@Override
 	public boolean silentStart() {
-		
+
 		if (super.silentStart()) {
-			
+
 			// AutoTask.start();
-			
+
 			TimelineUI.start();
-			
+
 			TrackTask.start();
-			
+
 			UserBot.startAll();
-			
+
 			Backup.start();
-			
+
 			return true;
-			
+
 		}
-		
+
 		return false;
-		
+
 	}
-		
+
 
     @Override
     public void realStart() {
 
 		// Base Functions
-		
+
 		addFragment(new Firewall());
-		
+
 		addFragment(new PingFunction());
-		
+
 		addFragment(new GetIDs());
-		
+
 		addFragment(new Notice());
-		
+
 		addFragment(new DelMsg());
-		
+
 		addFragment(new Alias());
-		
+
 		addFragment(new Backup());
-		
+
 		addFragment(new Users());
-		
-		addFragment(new Channel());
-		
+
 		addFragment(new DebugMsg());
-		
+
 		addFragment(new Control());
-		
+
 		// 贴吧
-		
+
 		// addFragment(new TiebaLogin());
-		
+
 		// Twitter Action
-		
+
 		addFragment(new Follow());
-		
+
 		addFragment(new UnFollow());
-		
+
 		addFragment(new Mute());
-		
+
 		addFragment(new UnMute());
-		
+
 		addFragment(new Block());
-		
+
 		addFragment(new UnBlock());
-		
+
 		// Twitter
-		
+
 		addFragment(new Jvbao());
-		
+
 		addFragment(new DebugUser());
-		
+
 		addFragment(new DebugStatus());
-		
+
 		addFragment(new StatusUpdate());
-		
+
 		addFragment(new ShadowBan());
-		
+
 		addFragment(new StatusSearch());
-		
+
 		addFragment(new StatusGetter());
-		
+
 		addFragment(new StatusFetch());
-		
+
 		addFragment(new TwitterLogin());
-		
+
 		addFragment(new TwitterLogout());
-		
+
 		addFragment(new AutoUI());
-		
+
 		addFragment(new TrackUI());
-		
+
 		addFragment(new StatusAction());
 		addFragment(new TimelineUI());
-		
+
 		addFragment(new BlockList());
-		
+
 		addFragment(new GroupRepeat());
-		
+
 		addFragment(new ChineseAction());
-		
+
 		addFragment(new AntiEsu());
-		
+
 		addFragment(new BanSetickerSet());
-		
+
 		addFragment(new AutoReply());
-		
+
 		addFragment(new TwitterDelete());
-		
+
 		// Bots
-		
+
 		addFragment(new NewBot());
 		addFragment(new MyBots());
-		
-		// Donate
-		
-		addFragment(new Donate());
-		
-			addFragment(new Final());
-			
-			super.realStart();
-			
-		/*
-		
-		new Timer().schedule(new TimerTask() {
 
-				@Override
-				public void run() {
-					
-					// if no task run , process will exit
-					
-				}
-				
-			},10 * 60 * 1000);
-			
-		*/
+		// Donate
+
+		addFragment(new Donate());
+
+		addFragment(new Final());
+
+		super.realStart();
+
+		/*
+
+		 new Timer().schedule(new TimerTask() {
+
+		 @Override
+		 public void run() {
+
+		 // if no task run , process will exit
+
+		 }
+
+		 },10 * 60 * 1000);
+
+		 */
 
     }
 
@@ -223,7 +220,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     public void stop() {
 
 		// AutoTask.stop();
-		
+
 		// mtp.stopBot();
 
         for (BotFragment bot : BotServer.fragments.values()) {
@@ -243,8 +240,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
          SubTask.stopAll();
 
          */
-		 
-		 TimelineUI.stop();
+
+		TimelineUI.stop();
 
         TrackTask.stop();
 
@@ -304,42 +301,42 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 				return;
 
 			}
-			
+
 		}
 
-			String dbAddr = Env.getOrDefault("db_address","127.0.0.1");
-			Integer dbPort = Integer.parseInt(Env.getOrDefault("db_port","27017"));
+		String dbAddr = Env.getOrDefault("db_address","127.0.0.1");
+		Integer dbPort = Integer.parseInt(Env.getOrDefault("db_port","27017"));
 
-			while (!initDB(dbAddr,dbPort)) {
+		while (!initDB(dbAddr,dbPort)) {
 
-				System.out.print("输入MongoDb地址 : ");
-				dbAddr = Console.scanner().nextLine();
+			System.out.print("输入MongoDb地址 : ");
+			dbAddr = Console.scanner().nextLine();
 
-				try {
+			try {
 
-					System.out.print("输入MongoDb端口 : ");
-					dbPort = Console.scanner().nextInt();
+				System.out.print("输入MongoDb端口 : ");
+				dbPort = Console.scanner().nextInt();
 
-					Env.set("db_address",dbAddr);
-					Env.set("db_port",dbPort);
+				Env.set("db_address",dbAddr);
+				Env.set("db_port",dbPort);
 
-				} catch (Exception e) {}
+			} catch (Exception e) {}
 
-			}
-			
-			RuntimeUtil.addShutdownHook(new Runnable() {
+		}
 
-					@Override
-					public void run() {
+		RuntimeUtil.addShutdownHook(new Runnable() {
 
-						INSTANCE.stop();
+				@Override
+				public void run() {
 
-					}
+					INSTANCE.stop();
 
-				});
+				}
+
+			});
 
 		BotLog.info("正在启动...");
-		
+
         INSTANCE.start();
 
     }
@@ -376,23 +373,23 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     @Override
     public boolean onUpdate(UserData user,Update update) {
-		
+
         BotLog.process(user,update);
 
 		if (update.message() != null) {
-			
+
 			if (update.message().chat().type() == Chat.Type.Private && (user.contactable == null || !user.contactable)) {
-				
+
 				user.contactable = true;
-				
+
 				UserData.userDataIndex.put(user.id,user);
-				
+
 				UserData.data.setById(user.id,user);
-				
+
 			}
-			
+
 		}
-		
+
         return false;
 
     }
@@ -403,7 +400,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         BotLog.error("无法处理的错误,正在停止BOT",throwable);
 
 		new Send(Env.GROUP,"NTT 异常退出",BotLog.parseError(throwable)).exec();
-		
+
         INSTANCE.stop();
 
         System.exit(1);
@@ -412,17 +409,17 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 	@Override
 	public boolean onCallback(UserData user,Callback callback) {
-		
+
 		if (callback.params.length == 0 || (callback.params.length == 1 && "null".equals(callback.params[0]))) {
-			
+
 			callback.confirm();
-			
+
 			return true;
-			
+
 		}
-		
+
 		return false;
-		
+
 	}
 
 }

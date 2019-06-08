@@ -2,8 +2,10 @@ package io.kurumi.ntt.fragment.forum;
 
 import io.kurumi.ntt.db.Data;
 import io.kurumi.ntt.fragment.forum.ForumE;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.LinkedList;
 
 public class ForumE {
 	
@@ -14,10 +16,11 @@ public class ForumE {
 	
 	// 记录
 	
+	public String token;
 	public long channel;
 	
-	public int titleId;
-	public Map<Long,Integer> tagIds;
+	public int titleId = -1;
+	public Map<Long,Integer> tagIds = new HashMap<>();
 	
 	// 信息
 	
@@ -30,7 +33,7 @@ public class ForumE {
 	public long postLevel = 0;
 	public long replyLevel = 0;
 	
-	public List<Long> admins;
+	public List<Long> admins = new LinkedList<>();
 	public boolean antiEsu = false;
 	
 }
