@@ -554,7 +554,7 @@ public class ForumManage extends Function {
 
 		edit.forumId = forumId;
 
-		setPoint(user,POINT_EDIT_DESC,edit);
+		setPoint(user,POINT_EDIT_TOKEN,edit);
 
 		callback.confirm();
 		
