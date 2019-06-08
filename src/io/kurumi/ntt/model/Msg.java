@@ -114,8 +114,6 @@ public class Msg extends Context {
         if (edit) return edit(msg); else return send(msg);
         
     }
-    
-    
 
 	@Override
 	public Send send(String... msg) {

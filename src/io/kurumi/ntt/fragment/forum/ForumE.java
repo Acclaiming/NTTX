@@ -37,4 +37,8 @@ public class ForumE {
 	public List<Long> admins = new LinkedList<>();
 	public boolean antiEsu = false;
 	
-}
+
+
+	public void deleteCache() {
+		// TODO: Implement this method
+	}}

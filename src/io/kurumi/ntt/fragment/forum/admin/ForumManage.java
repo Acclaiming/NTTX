@@ -21,6 +21,7 @@ import io.kurumi.ntt.model.request.Keyboard;
 import io.kurumi.ntt.utils.MongoIDs;
 import java.util.LinkedList;
 import java.util.List;
+import com.pengrad.telegrambot.request.DeleteMessage;
 
 public class ForumManage extends Function {
 
@@ -46,13 +47,18 @@ public class ForumManage extends Function {
 	final String POINT_EDIT_CHAN = "forum.chan";
 
 	final String POINT_EDIT_ADMIN = "forum.admin";
+	final String POINT_EDIT_TAGS = "forum.tags";
+	
+	final String POINT_RESET = "forum.reset";
+	final String POINT_DEL_FORUM = "forum.del";
+
 
 	@Override
 	public void points(LinkedList<String> points) {
 
 		points.add(POINT_CREATE_FORUM);
 		points.add(POINT_FORUM_MANAGE);
-		
+
 		points.add(POINT_EDIT_NAME);
 		points.add(POINT_EDIT_DESC);
 		points.add(POINT_EDIT_CHAN);
@@ -88,6 +94,8 @@ public class ForumManage extends Function {
 
 		int progress = 0;
 
+		List<Msg> msg = new LinkedList<>();
+		
 		// ---------------
 
 		String token;
@@ -124,7 +132,7 @@ public class ForumManage extends Function {
 
 	}
 
-	String cancel = "\n使用 /cancel 取消创建 :)";
+	String cancel = "\n使用 /cancel 取消 :)";
 
 	@Override
 	public void onPoint(UserData user,Msg msg,PointStore.Point point) {
@@ -134,6 +142,8 @@ public class ForumManage extends Function {
 			case POINT_CREATE_FORUM : createForum(user,msg,point);break;
 			case POINT_EDIT_NAME : forumNameEdit(user,msg,point);break;
 			case POINT_EDIT_DESC : forumDiscEdit(user,msg,point);break;
+			case POINT_EDIT_CHAN : forumChanEdit(user,msg,point);break;
+			case POINT_EDIT_TOKEN : forumTokenEdit(user,msg,point);break;
 
 		}
 
@@ -218,7 +228,7 @@ public class ForumManage extends Function {
 
 			}
 
-			SendResponse resp = create.bot.execute(new SendMessage(chat.id(),"TestSendable").disableNotification(true));
+			SendResponse resp = create.bot.execute(new SendMessage(chat.id(),"Test").disableNotification(true));
 
 			if (!resp.isOk()) {
 
@@ -227,6 +237,8 @@ public class ForumManage extends Function {
 				return;
 
 			}
+			
+			create.bot.execute(new DeleteMessage(chat.id(),resp.message().messageId()));
 
 			create.channelId = chat.id();
 
@@ -251,6 +263,8 @@ public class ForumManage extends Function {
 				return;
 
 			}
+			
+			clearPoint(user);
 
 			ForumE forum = new ForumE();
 
@@ -263,6 +277,10 @@ public class ForumManage extends Function {
 
 			ForumE.data.setById(forum.id,forum);
 
+			msg.send("好，现在创建成功。不要忘记设置好简介、分类这些信息。完成之后 '重置频道信息' 来立即更新缓存。").exec();
+			
+			forumMain(false,user,msg);
+			
 		}
 
 	}
@@ -310,12 +328,11 @@ public class ForumManage extends Function {
 					.newButton("修改Token",POINT_EDIT_TOKEN,forum.id);
 
 				newButtonLine()
-				.newButton("分类管理",POINT_EDIT_TAGS,forum.id)
+					.newButton("分类管理",POINT_EDIT_TAGS,forum.id)
 					.newButton("管理员设置",POINT_EDIT_ADMIN,forum.id);
-					
-				newButtonLine("删除论坛",POINT_DEL_FORUM,forum.id);
 
-				// TODO : 删除
+				newButtonLine("重置频道消息",POINT_RESET,forum.id);
+				newButtonLine("删除论坛",POINT_DEL_FORUM,forum.id);
 
 			}};
 
@@ -331,8 +348,10 @@ public class ForumManage extends Function {
 		switch (point) {
 
 			case POINT_EDIT_NAME : editForumName(user,callback,forumId);break;
-			case POINT_EDIT_DESC :editForumDesc(user,callback,forumId);break;
-
+			case POINT_EDIT_DESC : editForumDesc(user,callback,forumId);break;
+			case POINT_EDIT_CHAN : editForumChan(user,callback,forumId);break;
+			case POINT_EDIT_TOKEN : editForumToken(user,callback,forumId);break;
+			
 		}
 
 	}
@@ -360,7 +379,7 @@ public class ForumManage extends Function {
 		if (!msg.hasText()) {
 
 			edit.msg.add(msg);
-			edit.msg.add(msg.send("忘记了吗？你正在修改论坛名称。现在发送新名称 :").send());
+			edit.msg.add(msg.send("忘记了吗？你正在修改论坛名称。现在发送新名称 :",cancel).send());
 
 			return;
 
@@ -414,7 +433,7 @@ public class ForumManage extends Function {
 		if (!msg.hasText()) {
 
 			edit.msg.add(msg);
-			edit.msg.add(msg.send("忘记了吗？你正在修改论坛简介。现在发送新简介 :").send());
+			edit.msg.add(msg.send("忘记了吗？你正在修改论坛简介。现在发送新简介 :",cancel).send());
 
 			return;
 
@@ -444,5 +463,139 @@ public class ForumManage extends Function {
 		forumMain(false,user,msg);
 
 	}
+	
+	void editForumChan(UserData user,Callback callback,long forumId) {
+
+		ForumEdit edit = new ForumEdit();
+
+		edit.forumId = forumId;
+
+		setPoint(user,POINT_EDIT_CHAN,edit);
+
+		callback.confirm();
+		
+		String[] channel = new String[] {
+
+			"现在发送作为论坛版面的频道 (Channel) :\n",
+
+			"BOT必须可以在频道发言",
+			"现在转发一条频道的消息来,以设置频道\n",
+
+			cancel
+
+		};
+		
+		edit.msg.add(callback.send(channel).send());
+	
+	}
+	
+	void forumChanEdit(UserData user,Msg msg,PointStore.Point point) {
+
+		ForumEdit edit = (ForumEdit)point.data;
+
+		long forumId = edit.forumId;
+		
+		Message message = msg.message();
+
+		Chat chat = message.forwardFromChat();
+
+		if (chat == null || chat.type() != Chat.Type.channel) {
+
+			msg.send("请直接转发一条频道消息 : 如果没有消息，那就自己发一条",cancel).exec();
+
+			return;
+
+		}
+		
+		ForumE forum = ForumE.data.getById(forumId);
+		
+		TelegramBot bot = new TelegramBot(forum.token);
+
+		SendResponse resp = bot.execute(new SendMessage(chat.id(),"Test").disableNotification(true));
+
+		if (!resp.isOk()) {
+
+			msg.send("设置的BOT无法在该频道 (" + chat.title() + ") 发言... 请重试",cancel).exec();
+
+			return;
+
+		}
+
+		clearPoint(user);
+		
+		bot.execute(new DeleteMessage(chat.id(),resp.message().messageId()));
+
+		forum.deleteCache();
+		
+		forum.channel = chat.id();
+		
+		ForumE.data.setById(forumId,forum);
+
+		for (Msg it : edit.msg) it.delete();
+
+		msg.send("修改成功 : 请使用 '重置频道信息' 来立即更新缓存").exec();
+
+		forumMain(false,user,msg);
+		
+	}
+	
+	void editForumToken(UserData user,Callback callback,long forumId) {
+
+		ForumEdit edit = new ForumEdit();
+
+		edit.forumId = forumId;
+
+		setPoint(user,POINT_EDIT_DESC,edit);
+
+		callback.confirm();
+
+		edit.msg.add(callback.send("好，现在输入用于论坛的BotToken :","\nBotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。",cancel).send());
+		
+	}
+	
+	void forumTokenEdit(UserData user,Msg msg,PointStore.Point point) {
+
+		ForumEdit edit = (ForumEdit)point.data;
+
+		long forumId = edit.forumId;
+		
+		if (!msg.hasText() ||  !msg.text().contains(":")) {
+
+			msg.send("无效的Token.请重试. ","Token 看起来像这样: '12345678:ABCDEfgHIDUROVjkLmNOPQRSTUvw-cdEfgHI'",cancel).exec();
+
+			return;
+
+		}
+
+		msg.send("正在检查BOT信息...").exec();
+
+		GetMeResponse me = (new TelegramBot(msg.text())).execute(new GetMe());
+
+		if (!me.isOk()) {
+
+			msg.send("Token无效... 请重新输入",cancel).exec();
+
+			return;
+
+		}
+
+		clearPoint(user);
+
+		ForumE forum = ForumE.data.getById(forumId);
+
+		forum.deleteCache();
+		
+		forum.token = msg.text();
+
+		ForumE.data.setById(forumId,forum);
+
+		for (Msg it : edit.msg) it.delete();
+
+		msg.send("修改成功 : 请使用 '重置频道信息' 来立即更新缓存").exec();
+
+		forumMain(false,user,msg);
+		
+	}
+	
 
 }
