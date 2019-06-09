@@ -185,6 +185,10 @@ public class Firewall extends Function {
 		
 		if (user != null && !user.developer() && block.containsId(user.id)) {
 			
+			return true;
+			
+			/*
+			
 			if (update.message() != null) {
 				
 				Message msg = update.message();
@@ -205,6 +209,8 @@ public class Firewall extends Function {
 			}
 			
 			return true;
+			
+			*/
 			
 		}
 		

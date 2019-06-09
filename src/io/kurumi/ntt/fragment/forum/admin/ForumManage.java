@@ -290,7 +290,7 @@ public class ForumManage extends Function {
 
 	class ForumEdit {
 
-		long forumId;
+		long id;
 		List<Msg> msg = new LinkedList<>();
 
 	}
@@ -367,7 +367,7 @@ public class ForumManage extends Function {
 
 		ForumEdit edit = new ForumEdit();
 
-		edit.forumId = forumId;
+		edit.id = forumId;
 
 		setPoint(user,POINT_EDIT_NAME,edit);
 
@@ -384,7 +384,7 @@ public class ForumManage extends Function {
 
 		edit.msg.add(msg);
 
-		long forumId = edit.forumId;
+		long forumId = edit.id;
 
 		if (!msg.hasText()) {
 
@@ -422,7 +422,7 @@ public class ForumManage extends Function {
 
 		ForumEdit edit = new ForumEdit();
 
-		edit.forumId = forumId;
+		edit.id = forumId;
 
 		setPoint(user,POINT_EDIT_DESC,edit);
 
@@ -439,7 +439,7 @@ public class ForumManage extends Function {
 
 		edit.msg.add(msg);
 
-		long forumId = edit.forumId;
+		long forumId = edit.id;
 
 		if (!msg.hasText()) {
 
@@ -477,7 +477,7 @@ public class ForumManage extends Function {
 
 		ForumEdit edit = new ForumEdit();
 
-		edit.forumId = forumId;
+		edit.id = forumId;
 
 		setPoint(user,POINT_EDIT_CHAN,edit);
 
@@ -505,7 +505,7 @@ public class ForumManage extends Function {
 
 		edit.msg.add(msg);
 
-		long forumId = edit.forumId;
+		long forumId = edit.id;
 
 		Message message = msg.message();
 
@@ -555,7 +555,7 @@ public class ForumManage extends Function {
 
 		ForumEdit edit = new ForumEdit();
 
-		edit.forumId = forumId;
+		edit.id = forumId;
 
 		setPoint(user,POINT_EDIT_TOKEN,edit);
 
@@ -571,7 +571,7 @@ public class ForumManage extends Function {
 		ForumEdit edit = (ForumEdit)point.data;
 		edit.msg.add(msg);
 
-		long forumId = edit.forumId;
+		long forumId = edit.id;
 
 		if (!msg.hasText() ||  !msg.text().contains(":")) {
 
@@ -667,7 +667,7 @@ public class ForumManage extends Function {
 
 		ForumEdit edit = new ForumEdit();
 
-		edit.forumId = forumId;
+		edit.id = forumId;
 
 		setPoint(user,POINT_CREATE_TAG,edit);
 
@@ -683,7 +683,7 @@ public class ForumManage extends Function {
 		ForumEdit edit = (ForumEdit)point.data;
 		edit.msg.add(msg);
 
-		long forumId = edit.forumId;
+		long forumId = edit.id;
 
 		if (!msg.hasText()) {
 
@@ -774,6 +774,19 @@ public class ForumManage extends Function {
 
 	}
 	
-	void editTagName() {}
+	void editTagName(UserData user,Callback callback,long tagId) {
+
+		ForumEdit edit = new ForumEdit();
+
+		edit.id = tagId;
+
+		setPoint(user,POINT_EDIT_TOKEN,edit);
+
+		callback.confirm();
+
+		edit.msg.add(callback);
+		edit.msg.add(callback.send("好，现在输入用于论坛的BotToken :","\nBotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。",cancel).send());
+
+	}
 
 }
