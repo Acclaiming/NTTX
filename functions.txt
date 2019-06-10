@@ -11,6 +11,7 @@ current - 设置默认用户
 track - 监听设置
 auto - 自动处理设置
 mention - <on|off> 启用推文通知
+timeline - <on|off> 时间流推送
 update - 发推
 banstat - <ID/用户名/链接> 检查ShadowBan
 status - <ID/链接> 推文存档

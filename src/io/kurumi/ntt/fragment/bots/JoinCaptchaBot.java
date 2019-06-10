@@ -218,14 +218,8 @@ public class JoinCaptchaBot extends BotFragment {
 
 				callback.send(user.userName() + " 瞎按按钮 , 真可惜喵...").html().exec();
 
-			} else {
-
-				callback.send("机器人权限不足... 已退出").exec();
-
-				callback.exit();
-
 			}
-
+			
 		}
 
 		return true;
@@ -264,13 +258,6 @@ public class JoinCaptchaBot extends BotFragment {
 		} else if (msg.kick()) {
 
 			msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().exec();
-
-		} else {
-
-			msg.send("机器人权限不足... 已退出").exec();
-
-			msg.exit();
-
 
 		}
 
