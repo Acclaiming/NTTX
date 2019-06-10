@@ -372,7 +372,7 @@ public class MyBots extends Function {
 
 		bot.reloadBot();
 
-		showBot(false,user,callback,bot.id);
+		showBot(true,user,callback,bot.id);
 		
 	}
 	
