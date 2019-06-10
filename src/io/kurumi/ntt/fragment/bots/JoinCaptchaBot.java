@@ -78,7 +78,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			}
 
-		} else if (msg.message().newChatMembers() != null) {
+		} else if (msg.message().newChatMember() != null) {
 
 			LinkedList<Long> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new LinkedList<Long>();
 
