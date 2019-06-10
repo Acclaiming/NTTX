@@ -152,6 +152,7 @@ public class ForumManage extends Function {
 			case POINT_EDIT_CHAN : forumChanEdit(user,msg,point);break;
 			case POINT_EDIT_TOKEN : forumTokenEdit(user,msg,point);break;
 
+			case POINT_CREATE_TAG : forumTagCreate(user,msg,point);break;
 			case POINT_EDIT_TAG_NAME : tagNameEdit(user,msg,point);break;
 			case POINT_EDIT_TAG_DESC : tagDescEdit(user,msg,point);break;
 			
@@ -365,7 +366,7 @@ public class ForumManage extends Function {
 			case POINT_EDIT_TOKEN : editForumToken(user,callback,id);break;
 			
 			
-			
+			case POINT_CREATE_TAG : createForumTag(user,callback,id);break;
 			case POINT_EDIT_TAGS : showForumTags(true,user,callback,id);break;
 			case POINT_SHOW_TAG  : showTag(true,user,callback,id);break;
 			case POINT_EDIT_TAG_NAME : editTagName(user,callback,id);break;
@@ -664,7 +665,7 @@ public class ForumManage extends Function {
 
 	}
 
-	void forumCreateTag(UserData user,Callback callback,final long forumId) {
+	void createForumTag(UserData user,Callback callback,final long forumId) {
 
 		if (!ForumE.data.containsId(forumId)) {
 
@@ -688,7 +689,7 @@ public class ForumManage extends Function {
 
 	}
 
-	void forumCreateTag(UserData user,Msg msg,PointStore.Point point) {
+	void forumTagCreate(UserData user,Msg msg,PointStore.Point point) {
 
 		ForumEdit edit = (ForumEdit)point.data;
 		edit.msg.add(msg);
