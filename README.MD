@@ -6,6 +6,11 @@
 
 `JDK` >= 7 、 `Git` 、`MongoDB` 、`FFMpeg`
 
+反向代理自己的域名到本地端口，然后在启动时输入。
+
+Nginx 模板 : ntt.conf
+Bot 函数表 : functions.txt
+
 ### 运行
 
 ```
