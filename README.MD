@@ -4,7 +4,7 @@
 
 ### 环境
 
-`JDK` >= 7 、 `Git` 、`MongoDB`
+`JDK` >= 7 、 `Git` 、`MongoDB` 、`FFMpeg`
 
 ### 运行
 
@@ -13,8 +13,7 @@ git clone https://github.com/HiedaNaKan/NTTools /usr/local/ntt
 
 cd /usr/local/ntt
 
-bash rebuild.sh
-bash start.sh
+bash rebuild.sh && bash start.sh
 
 ```
 注 :  每次都会自动更新编译启动
