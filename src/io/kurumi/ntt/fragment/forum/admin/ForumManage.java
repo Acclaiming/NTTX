@@ -67,6 +67,10 @@ public class ForumManage extends Function {
 		points.add(POINT_EDIT_CHAN);
 		points.add(POINT_EDIT_TOKEN);
 		points.add(POINT_EDIT_ADMIN);
+		
+		points.add(POINT_EDIT_TAGS);
+		points.add(POINT_EDIT_TAG_NAME);
+		points.add(POINT_EDIT_TAG_DESC);
 
 	}
 
@@ -146,6 +150,9 @@ public class ForumManage extends Function {
 			case POINT_EDIT_CHAN : forumChanEdit(user,msg,point);break;
 			case POINT_EDIT_TOKEN : forumTokenEdit(user,msg,point);break;
 
+			case POINT_EDIT_TAG_NAME : tagNameEdit(user,msg,point);break;
+			case POINT_EDIT_TAG_DESC : tagDescEdit(user,msg,point);break;
+			
 		}
 
 	}
@@ -345,16 +352,21 @@ public class ForumManage extends Function {
 	@Override
 	public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
-		long forumId = NumberUtil.parseLong(params[0]);
+		long id = NumberUtil.parseLong(params[0]);
 
 		switch (point) {
 
 			case POINT_FORUM_MANAGE : forumMain(true,user,callback);break;
-			case POINT_EDIT_NAME : editForumName(user,callback,forumId);break;
-			case POINT_EDIT_DESC : editForumDesc(user,callback,forumId);break;
-			case POINT_EDIT_CHAN : editForumChan(user,callback,forumId);break;
-			case POINT_EDIT_TOKEN : editForumToken(user,callback,forumId);break;
-
+			case POINT_EDIT_NAME : editForumName(user,callback,id);break;
+			case POINT_EDIT_DESC : editForumDesc(user,callback,id);break;
+			case POINT_EDIT_CHAN : editForumChan(user,callback,id);break;
+			case POINT_EDIT_TOKEN : editForumToken(user,callback,id);break;
+			
+			case POINT_EDIT_TAGS : showForumTags(true,user,callback,id);break;
+			case POINT_SHOW_TAG  : showTag(true,user,callback,id);break;
+			case POINT_EDIT_TAG_NAME : editTagName(user,callback,id);break;
+			case POINT_EDIT_TAG_DESC : editTagDesc(user,callback,id);break;
+			
 		}
 
 	}
@@ -798,6 +810,8 @@ public class ForumManage extends Function {
 			
 			msg.send("分类不存在 (").exec();
 			
+			return;
+			
 		} else if (!msg.hasText()) {
 
 			edit.msg.add(msg.send("忘记了吗？你正在新建论坛分类。现在发送新分类名称 :").withCancel().send());
@@ -818,8 +832,83 @@ public class ForumManage extends Function {
 
 		}
 		
+		clearPoint(user);
+		
 		tag.name = msg.text();
 		
+		ForumTag.data.setById(tag.id,tag);
+
+		for (Msg it : edit.msg) it.delete();
+
+		msg.send("修改成功 : 返回设置主页使用 '重置频道信息' 来立即更新缓存").exec();
+		
+		showTag(false,user,msg,tagId);
+		
 	}
+	
+	void editTagDesc(UserData user,Callback callback,long tagId) {
+
+		ForumEdit edit = new ForumEdit();
+
+		edit.id = tagId;
+
+		setPoint(user,POINT_EDIT_TAG_DESC,edit);
+
+		callback.confirm();
+
+		edit.msg.add(callback);
+		edit.msg.add(callback.send("好。现在发送新的分类简介 : 160字以内 , 你可以开一个置顶帖详细介绍分类或是规定。").withCancel().send());
+
+	}
+
+	void tagDescEdit(UserData user,Msg msg,PointStore.Point point) {
+
+		ForumEdit edit = (ForumEdit)point.data;
+		edit.msg.add(msg);
+
+		long tagId = edit.id;
+
+		ForumTag tag = ForumTag.data.getById(tagId);
+
+		if (tag == null) {
+
+			clearPoint(user);
+
+			msg.send("分类不存在 (").exec();
+
+			return;
+			
+		} else if (!msg.hasText()) {
+
+			edit.msg.add(msg.send("忘记了吗？你正在修改分类简介。现在发送新简介 :").withCancel().send());
+
+			return;
+
+		}
+
+		if (msg.text().length() > 160) {
+
+			edit.msg.add(msg.send("好吧，再说一遍。简介限制160字 : 你可以开一个置顶帖详细介绍分类或是规定 。").withCancel().send());
+
+			return;
+
+		}
+
+		clearPoint(user);
+
+		tag.description = msg.text();
+
+		ForumTag.data.setById(tag.id,tag);
+
+		for (Msg it : edit.msg) it.delete();
+
+		msg.send("修改成功 : 返回设置主页使用 '重置频道信息' 来立即更新缓存").exec();
+
+		showTag(false,user,msg,tagId);
+		
+
+	}
+	
+	
 
 }
