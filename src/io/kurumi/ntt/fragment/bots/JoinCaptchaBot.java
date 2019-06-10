@@ -84,7 +84,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			final User newMember = msg.message().newChatMembers()[0];
 
-			if (!newMember.isBot()) return false;
+			if (newMember.isBot()) return false;
 
 			group.add(newMember.id());
 

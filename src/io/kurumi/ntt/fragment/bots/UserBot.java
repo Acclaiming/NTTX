@@ -99,6 +99,8 @@ public class UserBot {
 			
 			case 0 : return "私聊BOT";
 			
+			case 1 : return "加群验证BOT";
+			
 			default : return null;
 			
 		}
