@@ -63,7 +63,7 @@ public class StatusArchive {
 
 			if (status != null) {
 
-				send.replyMarkup(StatusAction.createMarkup(id,from.equals(auth.id),depth() <= depth,status.isRetweetedByMe(),status.getCurrentUserRetweetId(),status.isFavorited()).markup());
+				send.replyMarkup(StatusAction.createMarkup(id,from.equals(auth.id),depth() <= depth,status.isRetweetedByMe(),status.isFavorited()).markup());
 
 			}
 
@@ -79,7 +79,7 @@ public class StatusArchive {
 
 				if (status != null) {
 
-					sendN.buttons(StatusAction.createMarkup(id,from.equals(auth.id),depth() <= depth,status.isRetweetedByMe(),status.getCurrentUserRetweetId(),status.isFavorited()));
+					sendN.buttons(StatusAction.createMarkup(id,from.equals(auth.id),depth() <= depth,status.isRetweetedByMe(),status.isFavorited()));
 
 				}
 
@@ -93,7 +93,7 @@ public class StatusArchive {
 
 			if (status != null) {
 
-				send.buttons(StatusAction.createMarkup(id,from.equals(auth.id),depth() <= depth,status.isRetweetedByMe(),status.getCurrentUserRetweetId(),status.isFavorited()));
+				send.buttons(StatusAction.createMarkup(id,from.equals(auth.id),depth() <= depth,status.isRetweetedByMe(),status.isFavorited()));
 
 			}
 
