@@ -70,7 +70,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         if ("start".equals(msg.command()) && msg.params().length == 0) {
 
-			msg.send("start failed successfully ~" ,"交流群在这 来玩 ᕙ(`▿´)ᕗ ！","","NTT是一只开源TelegramBot、可以作为Twitter客户端使用、也可以导出贴纸、创建私聊BOT、以及在群内沙雕发言与复读。","","BOT帮助文档请戳 : @NTT_X","交流群组在这里 : @NTTDiscuss").html().publicFailed();
+			msg.send("start failed successfully ~" ,"","NTT是一只开源TelegramBot、可以作为Twitter客户端使用、也可以导出贴纸、创建私聊BOT、以及在群内沙雕发言与复读。","","BOT帮助文档请戳 : @NTT_X","交流群组在这里 : @NTTDiscuss").html().publicFailed();
 
             return true;
 

@@ -49,7 +49,7 @@ public class NewBot extends Function {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-		msg.send("现在请输入BotToken :","","BotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。").exec();
+		msg.send("现在请输入BotToken :","","BotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。").withCancel().exec();
 
 		setPoint(user,POINT_CREATE_BOT,new CreateBot());
 
@@ -66,7 +66,7 @@ public class NewBot extends Function {
 
 				if (!msg.hasText() ||  !msg.text().contains(":")) {
 
-					msg.send("无效的Token.请重试. ","Token 看起来像这样: '12345678:ABCDEfgHIDUROVjkLmNOPQRSTUvw-cdEfgHI'","或使用 /cancel 取消创建BOT").exec();
+					msg.send("无效的Token.请重试. ","Token 看起来像这样: '12345678:ABCDEfgHIDUROVjkLmNOPQRSTUvw-cdEfgHI'").withCancel().exec();
 
 					return;
 
@@ -78,7 +78,7 @@ public class NewBot extends Function {
 
 				if (!me.isOk()) {
 					
-					msg.send("Token无效...").exec();
+					msg.send("Token无效...").withCancel().exec();
 					
 					return;
 					
@@ -118,11 +118,11 @@ public class NewBot extends Function {
 					data.progress = 10;
 					
 					msg.send("好，请发送私聊BOT的欢迎语，这将在 /start 时发送").removeKeyboard().exec();
-					msg.send("就像这样 : 直接喵喵就行了 ~").exec();
+					msg.send("就像这样 : 直接喵喵就行了 ~").withCancel().exec();
 					
 				} else {
 					
-					msg.send("你正在创建BOT，请在下方键盘选择","或使用 /cancel 取消").exec();
+					msg.send("你正在创建BOT，请在下方键盘选择").withCancel().exec();
 					
 				}
 				
@@ -130,7 +130,7 @@ public class NewBot extends Function {
 				
 				if (!msg.hasText()) {
 					
-					msg.send("你正在创建私聊BOT，请发送欢迎语","或使用 /cancel 取消").exec();
+					msg.send("你正在创建私聊BOT，请发送欢迎语").withCancel().exec();
 					
 					return;
 					

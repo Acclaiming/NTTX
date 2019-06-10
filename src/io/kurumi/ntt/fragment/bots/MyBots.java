@@ -251,7 +251,7 @@ public class MyBots extends Function {
 
 		callback.confirm();
 
-		callback.edit("好,现在发送新的欢迎语 :","或使用 /cancel 取消").exec();
+		callback.edit("好,现在发送新的欢迎语 :").withCancel().exec();
 
 		ChatBotEditMessage point = new ChatBotEditMessage();
 
@@ -266,7 +266,7 @@ public class MyBots extends Function {
 
 		if (!msg.hasText()) {
 
-			msg.send("你正在设置 @" + data.bot.userName + " 的欢迎语 ，请输入 : ","或使用 /cancel 取消").exec();
+			msg.send("你正在设置 @" + data.bot.userName + " 的欢迎语 ，请输入 : ").withCancel().exec();
 
 			return;
 

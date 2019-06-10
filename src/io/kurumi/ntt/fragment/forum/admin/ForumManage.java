@@ -134,9 +134,7 @@ public class ForumManage extends Function {
 				}}).exec();
 
 	}
-
-	String cancel = "\n使用 /cancel 取消 :)";
-
+	
 	@Override
 	public void onPoint(UserData user,Msg msg,PointStore.Point point) {
 
@@ -168,7 +166,7 @@ public class ForumManage extends Function {
 
 			point.data = new ForumCreate();
 
-			msg.send("好，现在输入用于论坛的BotToken :","\nBotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。",cancel).removeKeyboard().exec();
+			msg.send("好，现在输入用于论坛的BotToken :","\nBotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。").withCancel().removeKeyboard().exec();
 
 			return;
 
@@ -180,7 +178,7 @@ public class ForumManage extends Function {
 
 			if (!msg.hasText() ||  !msg.text().contains(":")) {
 
-				msg.send("无效的Token.请重试. ","Token 看起来像这样: '12345678:ABCDEfgHIDUROVjkLmNOPQRSTUvw-cdEfgHI'",cancel).exec();
+				msg.send("无效的Token.请重试. ","Token 看起来像这样: '12345678:ABCDEfgHIDUROVjkLmNOPQRSTUvw-cdEfgHI'").withCancel().exec();
 
 				return;
 
@@ -192,7 +190,7 @@ public class ForumManage extends Function {
 
 			if (!me.isOk()) {
 
-				msg.send("Token无效... 请重新输入",cancel).exec();
+				msg.send("Token无效... 请重新输入").withCancel().exec();
 
 				return;
 
@@ -209,13 +207,11 @@ public class ForumManage extends Function {
 				"你使用的 @" + me.user().username() + " 必须可以在频道发言",
 				"现在转发一条频道的消息来,以设置频道\n",
 
-				"不用担心，频道这可以在创建完成后更改 :)",
-
-				cancel
+				"不用担心，频道可以在创建完成后更改 :)",
 
 			};
 
-			msg.send(channel).exec();
+			msg.send(channel).withCancel().exec();
 
 		} else if (create.progress == 1) {
 
@@ -225,7 +221,7 @@ public class ForumManage extends Function {
 
 			if (chat == null || chat.type() != Chat.Type.channel) {
 
-				msg.send("请直接转发一条频道消息 : 如果没有消息，那就自己发一条",cancel).exec();
+				msg.send("请直接转发一条频道消息 : 如果没有消息，那就自己发一条").withCancel().exec();
 
 				return;
 
@@ -235,7 +231,7 @@ public class ForumManage extends Function {
 
 			if (!resp.isOk()) {
 
-				msg.send("设置的BOT @" + create.botMe.username() + " 无法在该频道 (" + chat.title() + ") 发言... 请重试",cancel).exec();
+				msg.send("设置的BOT @" + create.botMe.username() + " 无法在该频道 (" + chat.title() + ") 发言... 请重试").withCancel().exec();
 
 				return;
 
@@ -247,13 +243,13 @@ public class ForumManage extends Function {
 
 			create.progress = 2;
 
-			msg.send("十分顺利。现在发送论坛的名称 : 十个字以内 ","\n如果超过、你可以手动设置频道和BOT的名称 (如果字数允许) ,这里的名称仅作为一个简称",cancel).exec();
+			msg.send("十分顺利。现在发送论坛的名称 : 十个字以内 ","\n如果超过、你可以手动设置频道和BOT的名称 (如果字数允许) ,这里的名称仅作为一个简称").withCancel().exec();
 
 		} else if (create.progress == 2) {
 
 			if (!msg.hasText()) {
 
-				msg.send("忘记了吗？你正在创建一个论坛。现在发送名称 :").exec();
+				msg.send("忘记了吗？你正在创建一个论坛。现在发送名称 :").withCancel().exec();
 
 				return;
 
@@ -787,6 +783,42 @@ public class ForumManage extends Function {
 		edit.msg.add(callback);
 		edit.msg.add(callback.send("好，现在输入新分类名称，不要与已有名称重复，十个字符以内 (中文记两个字符)。",cancel).send());
 
+	}
+	
+	void tagNameEdit(UserData user,Msg msg,PointStore.Point point) {
+
+		ForumEdit edit = (ForumEdit)point.data;
+		edit.msg.add(msg);
+
+		long tagId = edit.id;
+		
+		ForumTag tag = ForumTag.data.getById(tagId);
+		
+		
+		if (!msg.hasText()) {
+
+			edit.msg.add(msg.send("忘记了吗？你正在新建论坛分类。现在发送新分类名称 :",cancel).send());
+
+			return;
+
+		}
+
+		if (msg.text().toCharArray().length > 10) {
+
+			edit.msg.add(msg.send("好吧，再说一遍。分类限制十个字符 (一个中文字占两个字符) : 分类通常应该为 2 -3 字。",cancel).send());
+
+			return;
+
+		}
+
+		if (ForumTag.tagExists(forumId,msg.text().trim())) {
+
+			edit.msg.add(msg.send("好吧，再说一遍。分类名称不能与已有的分类重复 : 有什么重复的必要呢。？").send());
+
+			return;
+
+		}
+		
 	}
 
 }

@@ -89,6 +89,13 @@ public class Edit extends AbstractSend<Edit> {
 
     }
 
+	public Edit withCancel() {
+
+		request.setText(request.getText() + "\n\n" + "使用 /cancel 取消 ~");
+
+		return this;
+
+	}
 
     @Override
     public BaseResponse exec() {
