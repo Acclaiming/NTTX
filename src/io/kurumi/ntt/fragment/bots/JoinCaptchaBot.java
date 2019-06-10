@@ -57,7 +57,7 @@ public class JoinCaptchaBot extends BotFragment {
 		
 	}
 
-	HashMap<Long,LinkedList<Long>> cache = new HashMap<>();
+	HashMap<Long,HashMap<Long,Msg>> cache = new HashMap<>();
 
 	static Timer timer = new Timer();
 
@@ -70,28 +70,29 @@ public class JoinCaptchaBot extends BotFragment {
 
 			if (cache.containsKey(msg.chatId().longValue())) {
 
-				LinkedList<Long> group = cache.get(msg.chatId().longValue());
+				HashMap<Long, Msg> group = cache.get(msg.chatId().longValue());
 
-				group.remove(user.id.longValue());
+				if (group.containsKey(user.id.longValue())) {
+				
+				group.remove(user.id.longValue()).delete();
 
 				if (group.isEmpty()) cache.remove(msg.chatId().longValue());
+				
+				}
 
 			}
 
 		} else if (msg.message().newChatMember() != null || msg.message().newChatMembers() != null) {
 
-			LinkedList<Long> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new LinkedList<Long>();
+			final HashMap<Long, Msg> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new HashMap<Long,Msg>();
 
-		 User newMember = msg.message().newChatMember();
+			User newMember = msg.message().newChatMember();
 
 			if (newMember == null) newMember = msg.message().newChatMembers()[0];
 			
 			if (newMember.isBot()) return false;
 
-			group.add(newMember.id());
-
-			cache.put(msg.chatId().longValue(),group);
-
+			
 			final UserData newData = UserData.get(newMember);
 
 			String[] info = new String[] {
@@ -111,26 +112,28 @@ public class JoinCaptchaBot extends BotFragment {
 					newButtonLine("喵喵喵",POINT_AUTH,newData.id);
 					newButtonLine("喵喵喵",POINT_AUTH,newData.id);
 					newButtonLine("喵喵喵",POINT_AUTH,newData.id);
-					newButtonLine("喵喵喵",POINT_AUTH,newData.id);
+					// newButtonLine("喵喵喵",POINT_AUTH,newData.id);
 
 				}};
 
 			setPoint(newData,POINT_AUTH);
 
-			msg.send(info).buttons(buttons).html().exec();
-			
+			group.put(newMember.id(),msg.send(info).buttons(buttons).html().send());
+
+			cache.put(msg.chatId().longValue(),group);
+	
 			timer.schedule(new TimerTask() {
 
 					@Override
 					public void run() {
 
-						LinkedList<Long> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new LinkedList<Long>();
+						final HashMap<Long, Msg> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new HashMap<Long,Msg>();
 
-						if (group.contains(newData.id.longValue())) {
+						if (group.containsKey(newData.id.longValue())) {
 
 							clearPoint(newData);
 
-							group.remove(newData.id);
+							group.remove(newData.id).delete();
 
 							if (group.isEmpty()) {
 
@@ -171,11 +174,11 @@ public class JoinCaptchaBot extends BotFragment {
 
 		} else {
 
-			LinkedList<Long> group = cache.containsKey(callback.chatId().longValue()) ? cache.get(callback.chatId()) : new LinkedList<Long>();
+			HashMap<Long, Msg> group = cache.containsKey(callback.chatId().longValue()) ? cache.get(callback.chatId()) : new HashMap<Long,Msg>();
 
-			if (group.contains(callback.chatId())) {
+			if (group.containsKey(callback.chatId())) {
 
-				group.remove(user.id);
+				group.remove(user.id).delete();
 
 				if (group.isEmpty()) {
 
@@ -212,11 +215,13 @@ public class JoinCaptchaBot extends BotFragment {
 	@Override
 	public boolean onPointedGroup(UserData user,Msg msg) {
 		
-		LinkedList<Long> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new LinkedList<Long>();
+		HashMap<Long, Msg> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new HashMap<Long,Msg>();
 
-		if (group.contains(msg.chatId())) {
+		if (group.containsKey(msg.chatId())) {
 
-			group.remove(user.id);
+			msg.delete();
+			
+			group.remove(user.id).delete();
 
 			if (group.isEmpty()) {
 
