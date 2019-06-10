@@ -26,7 +26,7 @@ public class JoinCaptchaBot extends BotFragment {
 		UserBot bot = UserBot.data.getById(botId);
 
 		if (bot == null) return;
-		
+
 		botToken = bot.token;
 
 		userId = bot.user;
@@ -54,9 +54,9 @@ public class JoinCaptchaBot extends BotFragment {
 
 	@Override
 	public String getToken() {
-		
+
 		return botToken;
-		
+
 	}
 
 	HashMap<Long,HashMap<Long,Msg>> cache = new HashMap<>();
@@ -66,12 +66,12 @@ public class JoinCaptchaBot extends BotFragment {
 	final String POINT_AUTH = "auth";
 
 	@Override
-	public boolean onGroup(UserData user,final Msg msg) {
-
+	public boolean onMsg(UserData user,final Msg msg) {
+		
 		if (msg.message().groupChatCreated() != null || msg.message().supergroupChatCreated() != null) {
-			
+
 			msg.send("欢迎使用由 @NTT_X 驱动的加群验证BOT","给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
-			
+
 		} else if (msg.message().leftChatMember() != null) {
 
 			if (cache.containsKey(msg.chatId().longValue())) {
@@ -79,26 +79,26 @@ public class JoinCaptchaBot extends BotFragment {
 				HashMap<Long, Msg> group = cache.get(msg.chatId().longValue());
 
 				if (group.containsKey(user.id.longValue())) {
-				
-				group.remove(user.id.longValue()).delete();
 
-				if (group.isEmpty()) cache.remove(msg.chatId().longValue());
-				
+					group.remove(user.id.longValue()).delete();
+
+					if (group.isEmpty()) cache.remove(msg.chatId().longValue());
+
 				}
 
 			}
 
 		} else if (msg.message().newChatMember() != null || msg.message().newChatMembers() != null) {
-
+			
 			final HashMap<Long, Msg> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new HashMap<Long,Msg>();
 
 			User newMember = msg.message().newChatMember();
 
 			if (newMember == null) newMember = msg.message().newChatMembers()[0];
-			
+
 			if (newMember.isBot()) return false;
 
-			
+
 			final UserData newData = UserData.get(newMember);
 
 			String[] info = new String[] {
@@ -108,7 +108,7 @@ public class JoinCaptchaBot extends BotFragment {
 				"现在需要确认一下乃是不是机器人绒布球了 ~\n",
 
 				"发送 喵 就可以通过验证了 ~ 3分钟以内呀 (๑˃̵ᴗ˂̵)و \n",
-				
+
 				"注意不要点按钮 喵 ~"
 
 			};
@@ -117,10 +117,10 @@ public class JoinCaptchaBot extends BotFragment {
 			ButtonMarkup buttons = new ButtonMarkup() {{
 
 					newButtonLine()
-					.newButton("不要",POINT_AUTH,newData.id)
-					.newButton("点",POINT_AUTH,newData.id)
-					.newButton("按钮",POINT_AUTH,newData.id)
-					.newButton("喵",POINT_AUTH,newData.id);
+						.newButton("不要",POINT_AUTH,newData.id)
+						.newButton("点",POINT_AUTH,newData.id)
+						.newButton("按钮",POINT_AUTH,newData.id)
+						.newButton("喵",POINT_AUTH,newData.id);
 					// newButtonLine("喵喵喵",POINT_AUTH,newData.id);
 
 				}};
@@ -130,7 +130,7 @@ public class JoinCaptchaBot extends BotFragment {
 			group.put(newMember.id(),msg.send(info).buttons(buttons).html().send());
 
 			cache.put(msg.chatId().longValue(),group);
-	
+
 			timer.schedule(new TimerTask() {
 
 					@Override
@@ -166,6 +166,10 @@ public class JoinCaptchaBot extends BotFragment {
 
 				},new Date(System.currentTimeMillis() + 180 * 60 * 1000));
 
+		} else if (msg.isPrivate()) {
+			
+			msg.send("喵....？").exec();
+			
 		}
 
 		return false;
@@ -223,13 +227,13 @@ public class JoinCaptchaBot extends BotFragment {
 
 	@Override
 	public boolean onPointedGroup(UserData user,Msg msg) {
-		
+
 		HashMap<Long, Msg> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new HashMap<Long,Msg>();
 
 		if (group.containsKey(user.id)) {
 
 			msg.delete();
-			
+
 			group.remove(user.id).delete();
 
 			if (group.isEmpty()) {
