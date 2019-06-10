@@ -214,7 +214,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			clearPoint(user);
 
-			if (callback.kick()) {
+			if (callback.kick(user.id)) {
 
 				callback.send(user.userName() + " 瞎按按钮 , 真可惜喵...").html().exec();
 
