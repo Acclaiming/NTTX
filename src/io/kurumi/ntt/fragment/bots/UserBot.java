@@ -14,8 +14,6 @@ public class UserBot {
 		
 		for (UserBot bot : data.collection.find()) {
 			
-			
-			
 			bot.startBot();
 			
 		}
@@ -88,6 +86,18 @@ public class UserBot {
 			String welcomeMsg = (String)params.get("msg");
 
 			information.append("欢迎语 : > ").append(welcomeMsg).append(" <");
+			
+		} else if (type == 1) {
+			
+			Boolean delJoin = (Boolean)params.get("delJoin");
+
+			if (delJoin == null) delJoin = false;
+			
+			information.append("删除加群退群消息 : > ").append(delJoin ? "开启" : "关闭");
+			
+			Long logChannel = (Long)params.get("logChannel");
+			
+			information.append("\n日志频道 : " + logChannel == null ? "未设置" : logChannel);
 			
 		}
 		

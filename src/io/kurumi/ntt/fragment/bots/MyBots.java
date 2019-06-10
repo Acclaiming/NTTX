@@ -1,5 +1,10 @@
 package io.kurumi.ntt.fragment.bots;
 
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.Chat;
+import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.response.SendResponse;
 import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.abs.Callback;
@@ -8,6 +13,7 @@ import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.abs.request.AbstractSend;
 import io.kurumi.ntt.fragment.abs.request.ButtonLine;
 import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
+import io.kurumi.ntt.fragment.forum.ForumE;
 import java.util.LinkedList;
 
 public class MyBots extends Function {
@@ -31,8 +37,13 @@ public class MyBots extends Function {
 		points.add(POINT_BACK_TO_LIST);
 		points.add(POINT_DELETE_BOT);
 		points.add(POINT_CONFIRM_DEL);
+		
 		points.add(POINT_CHAT_BOT_EDIT_MESSAGE);
 
+		points.add(POINT_JOIN_SET_LOGCHANNEL);
+		points.add(POINT_JOIN_SWITCH_DELJOIN);
+		points.add(POINT_JOIN_DEL_LOGCHANNEL);
+		
 	}
 
 	@Override
@@ -82,6 +93,24 @@ public class MyBots extends Function {
 
 			chatBotEditMessage(user,callback,botId);
 
+		} else if (POINT_JOIN_SWITCH_DELJOIN.equals(point)) {
+			
+			long botId = Long.parseLong(params[0]);
+
+			joinBotSwitchDelJoin(user,callback,botId);
+			
+		} else if (POINT_JOIN_SET_LOGCHANNEL.equals(point)) {
+			
+			long botId = Long.parseLong(params[0]);
+
+			editJoinBotLogChannel(user,callback,botId);
+		
+		} else if (POINT_JOIN_DEL_LOGCHANNEL.equals(point)) {
+			
+			long botId = Long.parseLong(params[0]);
+
+			joinBotSwitchDelJoin(user,callback,botId);
+			
 		}
 
 	}
@@ -91,8 +120,12 @@ public class MyBots extends Function {
 
 		if (point.point.equals(POINT_CHAT_BOT_EDIT_MESSAGE)) {
 
-			editChatBotMessage(user,msg,(ChatBotEditMessage)point.data);
+			editChatBotMessage(user,msg,(BotEdit)point.data);
 
+		} else if (point.point.equals(POINT_JOIN_SET_LOGCHANNEL)) {
+			
+			joinBotLogChannelEdit(user,msg,(BotEdit)point.data);
+			
 		}
 
 	}
@@ -163,6 +196,24 @@ public class MyBots extends Function {
 
 						newButtonLine("更改欢迎语",POINT_CHAT_BOT_EDIT_MESSAGE,bot.id);
 
+					} else if (bot.type == 1) {
+						
+						Boolean delJoin = (Boolean) bot.params.get("delJoin");
+						
+						if (delJoin == null) delJoin = false;
+						
+						newButtonLine((delJoin ? "关闭" : "开启") + " 自动删除加群退群消息",POINT_JOIN_SWITCH_DELJOIN,bot.id);
+						
+						Long logChannel = (Long) bot.params.get("logChannel");
+						
+						newButtonLine((logChannel == null) ? "设置日志频道" : "修改日志频道",POINT_JOIN_SET_LOGCHANNEL,bot.id)
+						
+						if (logChannel != null) {
+							
+							newButtonLine("删除日志频道",POINT_JOIN_DEL_LOGCHANNEL,bot.id);
+							
+						}
+						
 					}
 
 					newButtonLine()
@@ -227,10 +278,15 @@ public class MyBots extends Function {
 	}
 
 	final String POINT_CHAT_BOT_EDIT_MESSAGE = "bot.c.e";
+	
+	final String POINT_JOIN_SWITCH_DELJOIN = "bot.j.j";
+	final String POINT_JOIN_SET_LOGCHANNEL = "bot.j.s";
+	final String POINT_JOIN_DEL_LOGCHANNEL = "bot.j.d";
+	
+	static class BotEdit {
 
-	static class ChatBotEditMessage {
-
-		Msg message;
+		LinkedList<Msg> msg = new LinkedList<>();
+		
 		UserBot bot;
 
 	}
@@ -253,20 +309,22 @@ public class MyBots extends Function {
 
 		callback.edit("好,现在发送新的欢迎语 :").withCancel().exec();
 
-		ChatBotEditMessage point = new ChatBotEditMessage();
+		BotEdit point = new BotEdit();
 
 		point.bot = bot;
-		point.message = callback;
+		point.msg.add(callback);
 
 		setPoint(user,POINT_CHAT_BOT_EDIT_MESSAGE,point);
 
 	}
 
-	void editChatBotMessage(UserData user,Msg msg,ChatBotEditMessage data) {
-
+	void editChatBotMessage(UserData user,Msg msg,BotEdit data) {
+		
+		data.msg.add(msg);
+		
 		if (!msg.hasText()) {
 
-			msg.send("你正在设置 @" + data.bot.userName + " 的欢迎语 ，请输入 : ").withCancel().exec();
+			data.msg.add(msg.send("你正在设置 @" + data.bot.userName + " 的欢迎语 ，请输入 : ").withCancel().send());
 
 			return;
 
@@ -280,14 +338,138 @@ public class MyBots extends Function {
 		
 		data.bot.reloadBot();
 		
-		data.message.delete();
+		for (Msg it : data.msg) it.delete();
+		
+		msg.send("修改成功！").exec();
 
-		msg.delete();
+		showBot(false,user,msg,data.bot.id);
+
+	}
+	
+	void joinBotSwitchDelJoin(UserData user,Callback callback,long botId) {
+
+		final UserBot bot = UserBot.data.getById(botId);
+
+		if (bot == null || !bot.user.equals(user.id)) {
+
+			callback.alert("这个BOT无效");
+
+			showBotList(user,callback,true);
+
+			return;
+
+		}
+
+		Boolean delJoin = (Boolean) bot.params.get("delJoin");
+		
+		if (delJoin = null) delJoin = true; else delJoin = !delJoin;
+		
+		bot.params.put("delJoin",delJoin);
+		
+		callback.text((delJoin ? "开启" : "关闭") + "成功 ~");
+		
+		UserBot.data.setById(bot.id,bot);
+
+		bot.reloadBot();
+
+		showBot(false,user,callback,bot.id);
+		
+	}
+	
+	void editJoinBotLogChannel(UserData user,Callback callback,long botId) {
+
+		final UserBot bot = UserBot.data.getById(botId);
+
+		if (bot == null || !bot.user.equals(user.id)) {
+
+			callback.alert("这个BOT无效");
+
+			showBotList(user,callback,true);
+
+			return;
+
+		}
+
+		callback.confirm();
+
+		callback.edit("好,现在直接转发一条这个频道的消息 (如果没有，就发送一条) :").withCancel().exec();
+
+		BotEdit point = new BotEdit();
+
+		point.bot = bot;
+		point.msg.add(callback);
+
+		setPoint(user,POINT_CHAT_BOT_EDIT_MESSAGE,point);
+
+	}
+
+	void joinBotLogChannelEdit(UserData user,Msg msg,BotEdit data) {
+
+		Message message = msg.message();
+
+		Chat chat = message.forwardFromChat();
+
+		if (chat == null || chat.type() != Chat.Type.channel) {
+
+			msg.send("请直接转发一条频道消息 : 如果没有消息，那就自己发一条").withCancel().exec();
+
+			return;
+
+		}
+
+		TelegramBot bot = new TelegramBot(data.bot.token);
+
+		SendResponse resp = bot.execute(new SendMessage(chat.id(),"Test").disableNotification(true));
+
+		if (!resp.isOk()) {
+
+			msg.send("设置的BOT无法在该频道 (" + chat.title() + ") 发言... 请重试").withCancel().exec();
+
+			return;
+
+		}
+
+		clearPoint(user);
+		
+		data.bot.params.put("logChannel",chat.id());
+
+		UserBot.data.setById(data.bot.id,data.bot);
+
+		data.bot.reloadBot();
+		
+		for (Msg it : data.msg) it.delete();
 
 		msg.send("修改成功！").exec();
 
 		showBot(false,user,msg,data.bot.id);
 
 	}
+	
+	void joinBotDelLogChannel(UserData user,Callback callback,long botId) {
+
+		final UserBot bot = UserBot.data.getById(botId);
+
+		if (bot == null || !bot.user.equals(user.id)) {
+
+			callback.alert("这个BOT无效");
+
+			showBotList(user,callback,true);
+
+			return;
+
+		}
+
+		bot.params.remove("logChannel");
+
+		callback.text("已移除");
+
+		UserBot.data.setById(bot.id,bot);
+
+		bot.reloadBot();
+
+		showBot(false,user,callback,bot.id);
+
+	}
+	
 
 }
