@@ -22,6 +22,8 @@ public class Mute extends TwitterFunction {
 		names.add("mute");
 
 	}
+	
+	
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {

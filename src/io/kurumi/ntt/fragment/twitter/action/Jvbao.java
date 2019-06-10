@@ -20,6 +20,7 @@ public class Jvbao extends Function {
 			return;
 
 		}
+		
 
 		if (params.length == 0) {
 

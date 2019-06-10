@@ -697,7 +697,7 @@ public class ForumManage extends Function {
 
 		if (ForumTag.tagExists(forumId,msg.text().trim())) {
 
-			edit.msg.add(msg.send("好吧，再说一遍。分类名称不能与已有的分类重复 : 有什么重复的必要呢。？").send());
+			edit.msg.add(msg.send("好吧，再说一遍。分类名称不能与已有的分类重复 : 有什么重复的必要呢。？").withCancel().send());
 
 			return;
 
@@ -792,30 +792,33 @@ public class ForumManage extends Function {
 		
 		ForumTag tag = ForumTag.data.getById(tagId);
 		
-		
-		if (!msg.hasText()) {
+		if (tag == null) {
+			
+			clearPoint(user);
+			
+			msg.send("分类不存在 (").exec();
+			
+		} else if (!msg.hasText()) {
 
 			edit.msg.add(msg.send("忘记了吗？你正在新建论坛分类。现在发送新分类名称 :").withCancel().send());
 
 			return;
 
-		}
-
-		if (msg.text().toCharArray().length > 10) {
+		} else if (msg.text().toCharArray().length > 10) {
 
 			edit.msg.add(msg.send("好吧，再说一遍。分类限制十个字符 (一个中文字占两个字符) : 分类通常应该为 2 -3 字。").withCancel().send());
 
 			return;
 
-		}
+		} else if (ForumTag.tagExists(tag.forumId,msg.text().trim())) {
 
-		if (ForumTag.tagExists(tag.id,msg.text().trim())) {
-
-			edit.msg.add(msg.send("好吧，再说一遍。分类名称不能与已有的分类重复 : 有什么重复的必要呢。？").send());
+			edit.msg.add(msg.send("好吧，再说一遍。分类名称不能与已有的分类重复 : 有什么重复的必要呢。？").withCancel().send());
 
 			return;
 
 		}
+		
+		tag.name = msg.text();
 		
 	}
 

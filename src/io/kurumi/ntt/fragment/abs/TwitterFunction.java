@@ -7,12 +7,13 @@ import io.kurumi.ntt.fragment.abs.request.Keyboard;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import java.util.LinkedList;
+import io.kurumi.ntt.fragment.twitter.status.StatusAction;
 
 public abstract class TwitterFunction extends Function {
 
     public static final String POINT_CHOOSE_ACCPUNT = "t|s";
 
-    public static class TwitterPoint {
+	class TwitterPoint {
 
         public TwitterFunction function;
         public Msg msg;
@@ -27,6 +28,12 @@ public abstract class TwitterFunction extends Function {
         }
 
     }
+	
+	public boolean useCurrent() {
+		
+		return false;
+		
+	}
 
     public abstract void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account);
 
@@ -69,6 +76,17 @@ public abstract class TwitterFunction extends Function {
 
 			 }
 
+			 if (useCurrent() && StatusAction.current.containsId(user.id)) {
+				 
+				 TAuth current = TAuth.getById(StatusAction.current.getById(user.id).accountId);
+
+				 if (current != null) {
+					 
+					 
+					 
+				 }
+				 
+			 }
     
             final FindIterable<TAuth> accounts = TAuth.getByUser(user.id);
 

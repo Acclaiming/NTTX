@@ -28,6 +28,13 @@ public class StatusUpdate extends TwitterFunction {
 
 	}
 
+	@Override
+	public boolean useCurrent() {
+
+		return true;
+
+	}
+	
 	class UpdatePoint {
 
 		String text;
