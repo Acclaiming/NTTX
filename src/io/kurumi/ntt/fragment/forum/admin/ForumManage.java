@@ -257,7 +257,7 @@ public class ForumManage extends Function {
 
 			if (msg.text().length() > 10) {
 
-				msg.send("好吧，再说一遍。名称限制十个字 : 你可以手动设置频道和BOT的名称 (如果字数允许) ,这里的名称仅作为一个简称",cancel).exec();
+				msg.send("好吧，再说一遍。名称限制十个字 : 你可以手动设置频道和BOT的名称 (如果字数允许) ,这里的名称仅作为一个简称").withCancel().exec();
 
 				return;
 
@@ -370,7 +370,7 @@ public class ForumManage extends Function {
 		callback.confirm();
 
 		edit.msg.add(callback);
-		edit.msg.add(callback.send("好。现在发送新的论坛名称 : 十个字以内 ","\n如果超过、你可以手动设置频道和BOT的名称 (如果字数允许) ,这里的名称仅作为一个简称",cancel).send());
+		edit.msg.add(callback.send("好。现在发送新的论坛名称 : 十个字以内 ","\n如果超过、你可以手动设置频道和BOT的名称 (如果字数允许) ,这里的名称仅作为一个简称").withCancel().send());
 
 	}
 
@@ -384,7 +384,7 @@ public class ForumManage extends Function {
 
 		if (!msg.hasText()) {
 
-			edit.msg.add(msg.send("忘记了吗？你正在修改论坛名称。现在发送新名称 :",cancel).send());
+			edit.msg.add(msg.send("忘记了吗？你正在修改论坛名称。现在发送新名称 :").withCancel().send());
 
 			return;
 
@@ -392,7 +392,7 @@ public class ForumManage extends Function {
 
 		if (msg.text().length() > 10) {
 
-			edit.msg.add(msg.send("好吧，再说一遍。名称限制十个字 : 你可以手动设置频道和BOT的名称 (如果字数允许) ,这里的名称仅作为一个简称",cancel).send());
+			edit.msg.add(msg.send("好吧，再说一遍。名称限制十个字 : 你可以手动设置频道和BOT的名称 (如果字数允许) ,这里的名称仅作为一个简称").withCancel().send());
 
 			return;
 
@@ -425,7 +425,7 @@ public class ForumManage extends Function {
 		callback.confirm();
 
 		edit.msg.add(callback);
-		edit.msg.add(callback.send("好。现在发送新的论坛简介 : 160字以内 , 你可以开一个置顶帖详细介绍论坛或是规定。",cancel).send());
+		edit.msg.add(callback.send("好。现在发送新的论坛简介 : 160字以内 , 你可以开一个置顶帖详细介绍论坛或是规定。").withCancel().send());
 
 	}
 
@@ -439,7 +439,7 @@ public class ForumManage extends Function {
 
 		if (!msg.hasText()) {
 
-			edit.msg.add(msg.send("忘记了吗？你正在修改论坛简介。现在发送新简介 :",cancel).send());
+			edit.msg.add(msg.send("忘记了吗？你正在修改论坛简介。现在发送新简介 :").withCancel().send());
 
 			return;
 
@@ -447,7 +447,7 @@ public class ForumManage extends Function {
 
 		if (msg.text().length() > 160) {
 
-			edit.msg.add(msg.send("好吧，再说一遍。简介限制160字 : 你可以开一个置顶帖详细介绍论坛或是规定 。",cancel).send());
+			edit.msg.add(msg.send("好吧，再说一遍。简介限制160字 : 你可以开一个置顶帖详细介绍论坛或是规定 。").withCancel().send());
 
 			return;
 
@@ -484,14 +484,12 @@ public class ForumManage extends Function {
 			"现在发送作为论坛版面的频道 (Channel) :\n",
 
 			"BOT必须可以在频道发言",
-			"现在转发一条频道的消息来,以设置频道\n",
-
-			cancel
+			"现在转发一条频道的消息来,以设置频道",
 
 		};
 
 		edit.msg.add(callback);
-		edit.msg.add(callback.send(channel).send());
+		edit.msg.add(callback.send(channel).withCancel().send());
 
 	}
 
@@ -509,7 +507,7 @@ public class ForumManage extends Function {
 
 		if (chat == null || chat.type() != Chat.Type.channel) {
 
-			msg.send("请直接转发一条频道消息 : 如果没有消息，那就自己发一条",cancel).exec();
+			msg.send("请直接转发一条频道消息 : 如果没有消息，那就自己发一条").withCancel().exec();
 
 			return;
 
@@ -523,7 +521,7 @@ public class ForumManage extends Function {
 
 		if (!resp.isOk()) {
 
-			msg.send("设置的BOT无法在该频道 (" + chat.title() + ") 发言... 请重试",cancel).exec();
+			msg.send("设置的BOT无法在该频道 (" + chat.title() + ") 发言... 请重试").withCancel().exec();
 
 			return;
 
@@ -558,7 +556,7 @@ public class ForumManage extends Function {
 		callback.confirm();
 
 		edit.msg.add(callback);
-		edit.msg.add(callback.send("好，现在输入用于论坛的BotToken :","\nBotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。",cancel).send());
+		edit.msg.add(callback.send("好，现在输入用于论坛的BotToken :","\nBotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。").withCancel().send());
 
 	}
 
@@ -571,7 +569,7 @@ public class ForumManage extends Function {
 
 		if (!msg.hasText() ||  !msg.text().contains(":")) {
 
-			msg.send("无效的Token.请重试. ","Token 看起来像这样: '12345678:ABCDEfgHIDUROVjkLmNOPQRSTUvw-cdEfgHI'",cancel).exec();
+			msg.send("无效的Token.请重试. ","Token 看起来像这样: '12345678:ABCDEfgHIDUROVjkLmNOPQRSTUvw-cdEfgHI'").withCancel().exec();
 
 			return;
 
@@ -583,7 +581,7 @@ public class ForumManage extends Function {
 
 		if (!me.isOk()) {
 
-			msg.send("Token无效... 请重新输入",cancel).exec();
+			msg.send("Token无效... 请重新输入").withCancel().exec();
 
 			return;
 
@@ -670,7 +668,7 @@ public class ForumManage extends Function {
 		callback.confirm();
 
 		edit.msg.add(callback);
-		edit.msg.add(callback.send("好，现在输入分类名称，不要与已有名称重复，十个字符以内 (中文记两个字符)。",cancel).send());
+		edit.msg.add(callback.send("好，现在输入分类名称，不要与已有名称重复，十个字符以内 (中文记两个字符)。").withCancel().send());
 
 	}
 
@@ -683,7 +681,7 @@ public class ForumManage extends Function {
 
 		if (!msg.hasText()) {
 
-			edit.msg.add(msg.send("忘记了吗？你正在新建论坛分类。现在发送新分类名称 :",cancel).send());
+			edit.msg.add(msg.send("忘记了吗？你正在新建论坛分类。现在发送新分类名称 :").withCancel().send());
 
 			return;
 
@@ -691,7 +689,7 @@ public class ForumManage extends Function {
 
 		if (msg.text().toCharArray().length > 10) {
 
-			edit.msg.add(msg.send("好吧，再说一遍。分类限制十个字符 (一个中文字占两个字符) : 分类通常应该为 2 -3 字。",cancel).send());
+			edit.msg.add(msg.send("好吧，再说一遍。分类限制十个字符 (一个中文字占两个字符) : 分类通常应该为 2 -3 字。").withCancel().send());
 
 			return;
 
@@ -781,7 +779,7 @@ public class ForumManage extends Function {
 		callback.confirm();
 
 		edit.msg.add(callback);
-		edit.msg.add(callback.send("好，现在输入新分类名称，不要与已有名称重复，十个字符以内 (中文记两个字符)。",cancel).send());
+		edit.msg.add(callback.send("好，现在输入新分类名称，不要与已有名称重复，十个字符以内 (中文记两个字符)。").withCancel().send());
 
 	}
 	
@@ -797,7 +795,7 @@ public class ForumManage extends Function {
 		
 		if (!msg.hasText()) {
 
-			edit.msg.add(msg.send("忘记了吗？你正在新建论坛分类。现在发送新分类名称 :",cancel).send());
+			edit.msg.add(msg.send("忘记了吗？你正在新建论坛分类。现在发送新分类名称 :").withCancel().send());
 
 			return;
 
@@ -805,13 +803,13 @@ public class ForumManage extends Function {
 
 		if (msg.text().toCharArray().length > 10) {
 
-			edit.msg.add(msg.send("好吧，再说一遍。分类限制十个字符 (一个中文字占两个字符) : 分类通常应该为 2 -3 字。",cancel).send());
+			edit.msg.add(msg.send("好吧，再说一遍。分类限制十个字符 (一个中文字占两个字符) : 分类通常应该为 2 -3 字。").withCancel().send());
 
 			return;
 
 		}
 
-		if (ForumTag.tagExists(forumId,msg.text().trim())) {
+		if (ForumTag.tagExists(tag.id,msg.text().trim())) {
 
 			edit.msg.add(msg.send("好吧，再说一遍。分类名称不能与已有的分类重复 : 有什么重复的必要呢。？").send());
 
