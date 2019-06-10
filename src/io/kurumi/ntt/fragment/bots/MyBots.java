@@ -206,7 +206,7 @@ public class MyBots extends Function {
 						
 						Long logChannel = (Long) bot.params.get("logChannel");
 						
-						newButtonLine((logChannel == null) ? "设置日志频道" : "修改日志频道",POINT_JOIN_SET_LOGCHANNEL,bot.id)
+						newButtonLine((logChannel == null) ? "设置日志频道" : "修改日志频道",POINT_JOIN_SET_LOGCHANNEL,bot.id);
 						
 						if (logChannel != null) {
 							
