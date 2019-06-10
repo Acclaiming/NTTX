@@ -68,7 +68,11 @@ public class JoinCaptchaBot extends BotFragment {
 	@Override
 	public boolean onGroup(UserData user,final Msg msg) {
 
-		if (msg.message().leftChatMember() != null) {
+		if (msg.message().groupChatCreated() || msg.message().supergroupChatCreated()) {
+			
+			msg.send("欢迎使用由 @NTT_X 驱动的加群验证BOT 给与 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
+			
+		} else if (msg.message().leftChatMember() != null) {
 
 			if (cache.containsKey(msg.chatId().longValue())) {
 
