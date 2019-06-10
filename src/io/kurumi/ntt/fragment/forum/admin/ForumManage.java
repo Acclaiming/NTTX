@@ -354,7 +354,7 @@ public class ForumManage extends Function {
 	@Override
 	public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
-		long id = params.length < 0 ? -1 : NumberUtil.parseLong(params[0]);
+		long id = params.length == 0 ? -1 : NumberUtil.parseLong(params[0]);
 
 		switch (point) {
 
