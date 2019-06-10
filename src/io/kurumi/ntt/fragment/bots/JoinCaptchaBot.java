@@ -108,10 +108,11 @@ public class JoinCaptchaBot extends BotFragment {
 
 			ButtonMarkup buttons = new ButtonMarkup() {{
 
-					newButtonLine("喵喵喵",POINT_AUTH,newData.id);
-					newButtonLine("喵喵喵",POINT_AUTH,newData.id);
-					newButtonLine("喵喵喵",POINT_AUTH,newData.id);
-					newButtonLine("喵喵喵",POINT_AUTH,newData.id);
+					newButtonLine()
+					.newButton("不要",POINT_AUTH,newData.id)
+					.newButton("点",POINT_AUTH,newData.id)
+					.newButton("按钮",POINT_AUTH,newData.id)
+					.newButton("喵",POINT_AUTH,newData.id);
 					// newButtonLine("喵喵喵",POINT_AUTH,newData.id);
 
 				}};
@@ -147,7 +148,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 							if (msg.kick(newData.id)) {
 
-								msg.send(newData.userName() + " 不理解喵喵的语言 , 真可惜喵...").exec();
+								msg.send(newData.userName() + " 不理解喵喵的语言 , 真可惜喵...").html().exec();
 
 							}
 
@@ -176,7 +177,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			HashMap<Long, Msg> group = cache.containsKey(callback.chatId().longValue()) ? cache.get(callback.chatId()) : new HashMap<Long,Msg>();
 
-			if (group.containsKey(callback.chatId())) {
+			if (group.containsKey(user.id)) {
 
 				group.remove(user.id).delete();
 
@@ -196,7 +197,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			if (callback.kick()) {
 
-				callback.send(user.userName() + " 瞎按按钮 , 真可惜喵...").exec();
+				callback.send(user.userName() + " 瞎按按钮 , 真可惜喵...").html().exec();
 
 			} else {
 
@@ -217,7 +218,7 @@ public class JoinCaptchaBot extends BotFragment {
 		
 		HashMap<Long, Msg> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new HashMap<Long,Msg>();
 
-		if (group.containsKey(msg.chatId())) {
+		if (group.containsKey(user.id)) {
 
 			msg.delete();
 			
@@ -239,11 +240,11 @@ public class JoinCaptchaBot extends BotFragment {
 
 		if (msg.hasText() && msg.text().contains("喵")) {
 
-			msg.send(user.userName() + " 通过了图灵(划掉)验证 ~").exec();
+			msg.send(user.userName() + " 通过了图灵(划掉)验证 ~").html().exec();
 
 		} else if (msg.kick()) {
 
-			msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").exec();
+			msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().exec();
 
 		} else {
 
