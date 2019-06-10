@@ -6,8 +6,8 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.abs.Callback;
-import io.kurumi.ntt.fragment.abs.Function;
 import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.abs.TwitterFunction;
 import io.kurumi.ntt.fragment.abs.request.ButtonLine;
 import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
 import io.kurumi.ntt.fragment.twitter.TAuth;
@@ -22,7 +22,7 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-public class StatusSearch extends Function {
+public class StatusSearch extends TwitterFunction {
 
 	@Override
 	public void functions(LinkedList<String> names) {
@@ -32,7 +32,14 @@ public class StatusSearch extends Function {
 	}
 
 	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+	public boolean useCurrent() {
+
+		return true;
+
+	}
+
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth auth) {
 
 		int index = 0;
 
@@ -244,7 +251,7 @@ public class StatusSearch extends Function {
 
 		if (count == 0) {
 
-			status.edit("暂无结果...").exec();
+			status.edit("暂无存档... 如果指定了用户，有使用 /fetch 拉取过该用户的推文吗。？").exec();
 
 			return;
 
@@ -280,17 +287,8 @@ public class StatusSearch extends Function {
 			return;
 
 		}
-
-		if (!search.user.equals(user.id)) {
-
-			callback.alert("只有发起搜索的用户可以翻页哦 (");
-			return;
-
-		} else {
-
-			callback.text("正在加载...");
-
-		}
+		
+		callback.text("正在加载...");
 
 		long count = search.count();
 
@@ -368,7 +366,7 @@ public class StatusSearch extends Function {
 				if (StatusArchive.contains(statusId)) {
 
 					StatusArchive.get(statusId).sendTo(msg.chatId(),-1,null,null);
-					
+
 				} else {
 
 					msg.send(NTT.parseTwitterException(e)).publicFailed();

@@ -23,6 +23,13 @@ public class StatusFetch extends TwitterFunction {
 		names.add("fetch");
 
 	}
+	
+	@Override
+	public boolean useCurrent() {
+
+		return true;
+
+	}
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
