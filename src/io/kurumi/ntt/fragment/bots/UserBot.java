@@ -51,7 +51,7 @@ public class UserBot {
 	
 	public void reloadBot() {
 		
-		if (!BotServer.fragments.containsKey(token)) {
+		if (BotServer.fragments.containsKey(token)) {
 			
 			BotServer.fragments.get(token).reload();
 			
