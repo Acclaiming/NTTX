@@ -1,12 +1,12 @@
 package io.kurumi.ntt.fragment.twitter.login;
 
-import io.kurumi.ntt.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.funcs.abs.*;
-import io.kurumi.ntt.model.*;
-import io.kurumi.ntt.model.request.*;
-import io.kurumi.ntt.twitter.*;
-import java.util.*;
+import io.kurumi.ntt.Env;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.abs.TwitterFunction;
+import io.kurumi.ntt.fragment.abs.request.Send;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import java.util.LinkedList;
 
 public class TwitterLogout extends TwitterFunction {
 

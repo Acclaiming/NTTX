@@ -1,14 +1,16 @@
 package io.kurumi.ntt.fragment.tieba;
 
-import com.github.libsgh.tieba.api.*;
-import io.kurumi.ntt.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.funcs.abs.*;
-import io.kurumi.ntt.model.*;
-import java.io.*;
-import java.util.*;
-import cn.hutool.http.*;
-import com.pengrad.telegrambot.request.*;
+import cn.hutool.http.HttpUtil;
+import com.github.libsgh.tieba.api.TieBaApi;
+import com.pengrad.telegrambot.request.SendPhoto;
+import io.kurumi.ntt.Env;
+import io.kurumi.ntt.db.PointStore;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.abs.Function;
+import io.kurumi.ntt.fragment.abs.Msg;
+import java.io.File;
+import java.util.LinkedList;
+import java.util.Map;
 
 public class TiebaLogin extends Function {
 

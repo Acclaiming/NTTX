@@ -2,15 +2,13 @@ package io.kurumi.ntt.fragment.bots;
 
 import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.funcs.abs.Function;
-import io.kurumi.ntt.model.Callback;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.model.request.ButtonLine;
-import io.kurumi.ntt.model.request.ButtonMarkup;
-import io.kurumi.ntt.model.request.Edit;
+import io.kurumi.ntt.fragment.abs.Callback;
+import io.kurumi.ntt.fragment.abs.Function;
+import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.abs.request.AbstractSend;
+import io.kurumi.ntt.fragment.abs.request.ButtonLine;
+import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
 import java.util.LinkedList;
-import io.kurumi.ntt.fragment.bots.MyBots.ChatBotEditMessage;
-import io.kurumi.ntt.model.request.AbstractSend;
 
 public class MyBots extends Function {
 

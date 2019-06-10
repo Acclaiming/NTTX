@@ -1,8 +1,8 @@
 package io.kurumi.ntt.fragment.base;
 
-import io.kurumi.ntt.fragment.*;
-import io.kurumi.ntt.model.*;
-import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.fragment.abs.Msg;
 
 public class GetIDs extends Fragment {
 

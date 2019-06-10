@@ -1,17 +1,15 @@
 package io.kurumi.ntt.fragment.bots;
 
-import io.kurumi.ntt.db.PointStore;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.funcs.abs.Function;
-import io.kurumi.ntt.model.Msg;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import io.kurumi.ntt.Env;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.GetMe;
 import com.pengrad.telegrambot.response.GetMeResponse;
-import io.kurumi.ntt.model.request.Keyboard;
+import io.kurumi.ntt.db.PointStore;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.abs.Function;
+import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.abs.request.Keyboard;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 public class NewBot extends Function {
 

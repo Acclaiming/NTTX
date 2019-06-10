@@ -1,13 +1,13 @@
 package io.kurumi.ntt.fragment.debug;
 
-import io.kurumi.ntt.funcs.abs.*;
-import io.kurumi.ntt.model.*;
-import java.util.*;
-import io.kurumi.ntt.twitter.*;
-import io.kurumi.ntt.db.*;
-import twitter4j.*;
-import cn.hutool.core.util.*;
-import io.kurumi.ntt.utils.*;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.abs.TwitterFunction;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.utils.NTT;
+import java.util.LinkedList;
+import twitter4j.Status;
+import twitter4j.TwitterException;
 
 public class DebugStatus extends TwitterFunction {
 

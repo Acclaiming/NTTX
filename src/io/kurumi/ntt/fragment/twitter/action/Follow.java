@@ -1,16 +1,18 @@
 package io.kurumi.ntt.fragment.twitter.action;
 
-import cn.hutool.core.util.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.funcs.abs.*;
-import io.kurumi.ntt.model.*;
-import io.kurumi.ntt.twitter.*;
-import io.kurumi.ntt.utils.*;
-import java.util.*;
-import twitter4j.*;
-import io.kurumi.ntt.twitter.archive.*;
-import com.pengrad.telegrambot.request.*;
-import io.kurumi.ntt.fragment.twitter.status.*;
+import cn.hutool.core.util.NumberUtil;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.abs.TwitterFunction;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
+import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import io.kurumi.ntt.fragment.twitter.status.MessagePoint;
+import io.kurumi.ntt.utils.NTT;
+import java.util.LinkedList;
+import twitter4j.Relationship;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
 
 public class Follow extends TwitterFunction {
 

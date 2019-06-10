@@ -1,13 +1,14 @@
 package io.kurumi.ntt.fragment.twitter.login;
-import io.kurumi.ntt.funcs.abs.*;
-import io.kurumi.ntt.model.*;
-import java.util.*;
-import io.kurumi.ntt.twitter.*;
-import io.kurumi.ntt.db.*;
-import cn.hutool.core.util.*;
-import io.kurumi.ntt.twitter.archive.*;
-import twitter4j.*;
-import io.kurumi.ntt.utils.*;
+import cn.hutool.core.util.NumberUtil;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.abs.TwitterFunction;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import io.kurumi.ntt.utils.NTT;
+import java.util.LinkedList;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
 
 public class ShadowBan extends TwitterFunction {
 

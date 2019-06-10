@@ -1,13 +1,12 @@
 package io.kurumi.ntt.fragment.twitter.action;
-import cn.hutool.core.util.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.funcs.abs.*;
-import io.kurumi.ntt.model.*;
-import io.kurumi.ntt.twitter.archive.*;
-import io.kurumi.ntt.utils.*;
-import java.util.*;
-import io.kurumi.ntt.twitter.*;
-import twitter4j.*;
+import cn.hutool.core.util.NumberUtil;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.abs.Function;
+import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.utils.NTT;
+import java.util.LinkedList;
+import twitter4j.TwitterException;
 
 public class Jvbao extends Function {
 

@@ -1,12 +1,12 @@
 package io.kurumi.ntt.fragment.twitter.auto;
 
-import io.kurumi.ntt.model.request.*;
-import io.kurumi.ntt.twitter.*;
-import java.util.*;
-import twitter4j.*;
-import cn.hutool.core.util.*;
-import io.kurumi.ntt.utils.*;
-import io.kurumi.ntt.twitter.archive.*;
+import io.kurumi.ntt.fragment.abs.request.Send;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import io.kurumi.ntt.utils.NTT;
+import twitter4j.Relationship;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
 
 public class AutoTask {
 

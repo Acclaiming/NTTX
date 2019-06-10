@@ -1,14 +1,13 @@
 package io.kurumi.ntt.fragment.base;
 
-import com.pengrad.telegrambot.model.*;
-import com.pengrad.telegrambot.request.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.fragment.*;
-import io.kurumi.ntt.model.*;
-import io.kurumi.ntt.utils.*;
-
-import io.kurumi.ntt.db.StickerSet;
-import com.pengrad.telegrambot.model.request.*;
+import com.pengrad.telegrambot.model.Chat;
+import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.request.SendPhoto;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.utils.Html;
 
 public class Final extends Fragment {
 

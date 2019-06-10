@@ -41,4 +41,6 @@ public class ForumE {
 
 	public void deleteCache() {
 		// TODO: Implement this method
-	}}
+	}
+	
+}

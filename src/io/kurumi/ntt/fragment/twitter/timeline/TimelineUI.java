@@ -1,17 +1,25 @@
 package io.kurumi.ntt.fragment.twitter.timeline;
 
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.funcs.abs.*;
-import io.kurumi.ntt.model.*;
-import io.kurumi.ntt.model.request.*;
-import io.kurumi.ntt.twitter.*;
-import io.kurumi.ntt.twitter.archive.*;
-import java.util.*;
-import twitter4j.*;
-import io.kurumi.ntt.fragment.twitter.status.*;
-import io.kurumi.ntt.utils.*;
-import java.util.concurrent.*;
-import cn.hutool.core.util.*;
+import cn.hutool.core.util.ArrayUtil;
+import io.kurumi.ntt.db.Data;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.abs.TwitterFunction;
+import io.kurumi.ntt.fragment.abs.request.Send;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
+import io.kurumi.ntt.utils.NTT;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import twitter4j.Paging;
+import twitter4j.ResponseList;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
 
 public class TimelineUI extends TwitterFunction {
 

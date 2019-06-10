@@ -1,9 +1,9 @@
 package io.kurumi.ntt.fragment.debug;
 
-import io.kurumi.ntt.funcs.abs.*;
-import io.kurumi.ntt.model.*;
-import java.util.*;
-import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.abs.Function;
+import io.kurumi.ntt.fragment.abs.Msg;
+import java.util.LinkedList;
 
 public class DebugMsg extends Function {
 

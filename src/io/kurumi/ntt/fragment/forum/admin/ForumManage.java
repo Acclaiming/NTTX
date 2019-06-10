@@ -1,30 +1,30 @@
 package io.kurumi.ntt.fragment.forum.admin;
 
 import cn.hutool.core.util.NumberUtil;
+import com.mongodb.client.FindIterable;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.User;
+import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.GetMe;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.GetMeResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.abs.Callback;
+import io.kurumi.ntt.fragment.abs.Function;
+import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.abs.request.ButtonLine;
+import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
+import io.kurumi.ntt.fragment.abs.request.Keyboard;
 import io.kurumi.ntt.fragment.forum.ForumE;
 import io.kurumi.ntt.fragment.forum.ForumPost;
-import io.kurumi.ntt.funcs.abs.Function;
-import io.kurumi.ntt.model.Callback;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.model.request.ButtonMarkup;
-import io.kurumi.ntt.model.request.Keyboard;
+import io.kurumi.ntt.fragment.forum.ForumTag;
 import io.kurumi.ntt.utils.MongoIDs;
 import java.util.LinkedList;
 import java.util.List;
-import com.pengrad.telegrambot.request.DeleteMessage;
-import io.kurumi.ntt.fragment.forum.ForumTag;
-import com.mongodb.client.FindIterable;
-import io.kurumi.ntt.model.request.ButtonLine;
 
 public class ForumManage extends Function {
 
@@ -780,12 +780,12 @@ public class ForumManage extends Function {
 
 		edit.id = tagId;
 
-		setPoint(user,POINT_EDIT_TOKEN,edit);
+		setPoint(user,POINT_EDIT_TAG_NAME,edit);
 
 		callback.confirm();
 
 		edit.msg.add(callback);
-		edit.msg.add(callback.send("好，现在输入用于论坛的BotToken :","\nBotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。",cancel).send());
+		edit.msg.add(callback.send("好，现在输入新分类名称，不要与已有名称重复，十个字符以内 (中文记两个字符)。",cancel).send());
 
 	}
 

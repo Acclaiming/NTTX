@@ -1,20 +1,19 @@
 package io.kurumi.ntt.fragment.twitter.status;
 
-import com.pengrad.telegrambot.model.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.funcs.abs.*;
-import io.kurumi.ntt.model.*;
-import io.kurumi.ntt.model.request.*;
-import io.kurumi.ntt.twitter.*;
-import io.kurumi.ntt.twitter.archive.*;
-import io.kurumi.ntt.utils.*;
-import java.io.*;
-import java.util.*;
-import twitter4j.*;
-
-import java.io.File;
-import io.kurumi.ntt.fragment.twitter.status.StatusAction.*;
-import cn.hutool.core.util.*;
+import cn.hutool.core.util.ArrayUtil;
+import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.PhotoSize;
+import io.kurumi.ntt.db.PointStore;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.abs.TwitterFunction;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
+import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import io.kurumi.ntt.utils.NTT;
+import java.util.LinkedList;
+import twitter4j.Status;
+import twitter4j.TwitterException;
 
 public class StatusUpdate extends TwitterFunction {
 

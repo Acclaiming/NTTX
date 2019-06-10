@@ -1,20 +1,23 @@
 package io.kurumi.ntt.fragment;
 
-import cn.hutool.http.*;
-import com.pengrad.telegrambot.*;
-import com.pengrad.telegrambot.model.*;
-import com.pengrad.telegrambot.model.request.*;
-import com.pengrad.telegrambot.request.*;
-import com.pengrad.telegrambot.response.*;
-import io.kurumi.ntt.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.model.*;
-import io.kurumi.ntt.utils.*;
-import java.io.*;
-
-import io.kurumi.ntt.model.Callback;
+import cn.hutool.http.HttpUtil;
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.request.ChatAction;
+import com.pengrad.telegrambot.request.GetFile;
+import com.pengrad.telegrambot.request.SendChatAction;
+import com.pengrad.telegrambot.request.SendDocument;
+import com.pengrad.telegrambot.request.SendSticker;
+import com.pengrad.telegrambot.response.GetFileResponse;
+import io.kurumi.ntt.Env;
+import io.kurumi.ntt.db.PointStore;
+import io.kurumi.ntt.db.StickerPoint;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.abs.Callback;
+import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.abs.Query;
+import io.kurumi.ntt.utils.BotLog;
 import java.io.File;
-import java.net.*;
 
 public class Fragment {
 

@@ -1,5 +1,6 @@
 package io.kurumi.ntt.utils;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
@@ -9,15 +10,15 @@ import com.pengrad.telegrambot.model.ChatMember;
 import com.pengrad.telegrambot.request.GetChatMember;
 import com.pengrad.telegrambot.response.GetChatMemberResponse;
 import com.pengrad.telegrambot.response.SendResponse;
+import io.kurumi.ntt.Env;
 import io.kurumi.ntt.Launcher;
-import io.kurumi.ntt.db.AbsData;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.funcs.twitter.track.TrackTask;
-import io.kurumi.ntt.model.Callback;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.twitter.TAuth;
-import io.kurumi.ntt.twitter.archive.UserArchive;
+import io.kurumi.ntt.fragment.abs.Callback;
+import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.abs.request.Send;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import io.kurumi.ntt.fragment.twitter.track.TrackTask;
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,8 +28,6 @@ import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import cn.hutool.core.io.FileUtil;
-import io.kurumi.ntt.Env;
 
 public class NTT {
 

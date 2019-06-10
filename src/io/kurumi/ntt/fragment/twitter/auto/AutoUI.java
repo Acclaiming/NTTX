@@ -1,12 +1,13 @@
 package io.kurumi.ntt.fragment.twitter.auto;
 
-import io.kurumi.ntt.funcs.abs.*;
-import java.util.*;
-import io.kurumi.ntt.twitter.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.model.*;
-import cn.hutool.core.util.*;
-import io.kurumi.ntt.model.request.*;
+import io.kurumi.ntt.db.Data;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.abs.Callback;
+import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.abs.TwitterFunction;
+import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import java.util.LinkedList;
 
 public class AutoUI extends TwitterFunction {
 
