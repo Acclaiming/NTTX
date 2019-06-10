@@ -14,6 +14,8 @@ public class UserBot {
 		
 		for (UserBot bot : data.collection.find()) {
 			
+			
+			
 			bot.startBot();
 			
 		}
