@@ -68,7 +68,9 @@ public class ForumManage extends Function {
 		points.add(POINT_EDIT_TOKEN);
 		points.add(POINT_EDIT_ADMIN);
 		
+		points.add(POINT_CREATE_TAG);
 		points.add(POINT_EDIT_TAGS);
+		points.add(POINT_SHOW_TAG);
 		points.add(POINT_EDIT_TAG_NAME);
 		points.add(POINT_EDIT_TAG_DESC);
 
@@ -352,7 +354,7 @@ public class ForumManage extends Function {
 	@Override
 	public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
-		long id = NumberUtil.parseLong(params[0]);
+		long id = params.length < 0 ? -1 : NumberUtil.parseLong(params[0]);
 
 		switch (point) {
 
@@ -361,6 +363,8 @@ public class ForumManage extends Function {
 			case POINT_EDIT_DESC : editForumDesc(user,callback,id);break;
 			case POINT_EDIT_CHAN : editForumChan(user,callback,id);break;
 			case POINT_EDIT_TOKEN : editForumToken(user,callback,id);break;
+			
+			
 			
 			case POINT_EDIT_TAGS : showForumTags(true,user,callback,id);break;
 			case POINT_SHOW_TAG  : showTag(true,user,callback,id);break;
