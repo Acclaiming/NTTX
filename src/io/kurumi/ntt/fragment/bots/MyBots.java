@@ -362,7 +362,7 @@ public class MyBots extends Function {
 
 		Boolean delJoin = (Boolean) bot.params.get("delJoin");
 		
-		if (delJoin = null) delJoin = true; else delJoin = !delJoin;
+		if (delJoin == null) delJoin = true; else delJoin = !delJoin;
 		
 		bot.params.put("delJoin",delJoin);
 		
