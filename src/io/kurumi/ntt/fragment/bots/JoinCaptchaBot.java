@@ -25,8 +25,6 @@ public class JoinCaptchaBot extends BotFragment {
 
 		UserBot bot = UserBot.data.getById(botId);
 
-		if (bot == null) return;
-
 		botToken = bot.token;
 
 		userId = bot.user;
