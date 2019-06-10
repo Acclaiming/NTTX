@@ -66,6 +66,8 @@ public class JoinCaptchaBot extends BotFragment {
 	@Override
 	public boolean onGroup(UserData user,final Msg msg) {
 
+		msg.send("0").exec();
+		
 		if (msg.message().leftChatMember() != null) {
 
 			if (cache.containsKey(msg.chatId().longValue())) {
@@ -78,8 +80,10 @@ public class JoinCaptchaBot extends BotFragment {
 
 			}
 
-		} else if (msg.message().newChatMember() != null) {
+		} else if (msg.message().newChatMembers() != null) {
 
+			msg.send("1").exec();
+			
 			LinkedList<Long> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new LinkedList<Long>();
 
 			final User newMember = msg.message().newChatMembers()[0];
@@ -116,7 +120,7 @@ public class JoinCaptchaBot extends BotFragment {
 			setPoint(newData,POINT_AUTH);
 
 			msg.send(info).buttons(buttons).html().exec();
-
+			
 			timer.schedule(new TimerTask() {
 
 					@Override

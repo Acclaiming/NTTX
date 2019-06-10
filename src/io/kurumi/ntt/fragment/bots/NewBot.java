@@ -128,7 +128,7 @@ public class NewBot extends Function {
 
 					clearPoint(user);
 
-					msg.send("创建成功... 正在启动").exec();
+					msg.send("创建成功... 正在启动").removeKeyboard().exec();
 
 					data.bot.params = new HashMap<>();
 
@@ -166,7 +166,7 @@ public class NewBot extends Function {
 
 				data.bot.startBot();
 
-				msg.send("你的BOT : @" + data.bot.userName,"\n不要忘记给BOT发一条信息 这样BOT才能转发信息给你 ~","\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").removeKeyboard().exec();
+				msg.send("你的BOT : @" + data.bot.userName,"\n不要忘记给BOT发一条信息 这样BOT才能转发信息给你 ~","\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
 
 			}
 
