@@ -33,6 +33,15 @@ public class UserBot {
 				
 				client.silentStart();
 
+			} else if (type == 1) {
+				
+				JoinCaptchaBot client = new JoinCaptchaBot();
+				
+				client.botId = id;
+				client.reload();
+				
+				client.silentStart();
+				
 			}
 			
 		}

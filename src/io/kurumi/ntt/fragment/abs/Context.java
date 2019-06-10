@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.request.RestrictChatMember;
 import com.pengrad.telegrambot.request.UnbanChatMember;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.request.Send;
+import com.pengrad.telegrambot.response.BaseResponse;
 
 public class Context {
 
@@ -47,11 +48,12 @@ public class Context {
         return chat.type() == Chat.Type.channel;
     }
     
-    public void kick(Long userId) {
+    public boolean kick(Long userId) {
 
-        fragment.bot().execute(new KickChatMember(chatId(),userId.intValue()));
+        BaseResponse resp = fragment.bot().execute(new KickChatMember(chatId(),userId.intValue()));
 		fragment.bot().execute(new UnbanChatMember(chatId(),userId.intValue()));
 
+		return resp.isOk();
 	
 	}
     

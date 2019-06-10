@@ -20,6 +20,7 @@ import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
 import io.kurumi.ntt.fragment.abs.request.Edit;
 import io.kurumi.ntt.fragment.abs.request.Send;
 import java.io.File;
+import com.pengrad.telegrambot.request.LeaveChat;
 
 public class Msg extends Context {
 
@@ -161,6 +162,12 @@ public class Msg extends Context {
         return fragment.sendFile(chatId(),file);
         
     }
+	
+	public boolean exit() {
+		
+		return fragment.bot().execute(new LeaveChat(chatId())).isOk();
+		
+	}
 
     public void sendTyping() {
 
@@ -276,9 +283,9 @@ public class Msg extends Context {
     }
     
     
-	public void kick() {
+	public boolean kick() {
 		
-		kick(from().id);
+		return kick(from().id);
 		
 	}
 	

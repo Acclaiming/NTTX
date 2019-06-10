@@ -34,18 +34,18 @@ public class NewBot extends Function {
 
 	@Override
 	public void points(LinkedList<String> points) {
-		
+
 		points.add(POINT_CREATE_BOT);
-		
+
 	}
 
 	@Override
 	public int target() {
-		
+
 		return Private;
-		
+
 	}
-	
+
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
@@ -77,78 +77,97 @@ public class NewBot extends Function {
 				GetMeResponse me = new TelegramBot(msg.text()).execute(new GetMe());
 
 				if (!me.isOk()) {
-					
+
 					msg.send("Token无效...").withCancel().exec();
-					
+
 					return;
-					
+
 				}
-				
+
 				UserBot bot = new UserBot();
-				
+
 				bot.id = me.user().id();
 				bot.user = user.id;
 				bot.userName = me.user().username();
 				bot.token = msg.text();
-				
+
 				data.bot = bot;
-				
+
 				data.progress = 1;
-				
+
 				msg.send("现在选择BOT类型 :").keyboard(new Keyboard() {{
-					
-					newButtonLine("转发私聊");
-					
-					newButtonLine("取消创建");
-					
-				}}).exec();
-				
+
+							newButtonLine("转发私聊");
+
+							newButtonLine("加群验证");
+
+							newButtonLine("取消创建");
+
+						}}).exec();
+
 			} else if (data.progress == 1) {
-				
+
 				if ("取消创建".equals(msg.text())) {
-					
+
 					clearPoint(user);
-					
+
 					msg.send("已经取消 ~").removeKeyboard().exec();
-					
+
 				} else if ("转发私聊".equals(msg.text())) {
-					
+
 					data.bot.type = 0;
-					
+
 					data.progress = 10;
-					
+
 					msg.send("好，请发送私聊BOT的欢迎语，这将在 /start 时发送").removeKeyboard().exec();
 					msg.send("就像这样 : 直接喵喵就行了 ~").withCancel().exec();
+
+				} else if ("加群验证".equals(msg.text())) {
+
+					data.bot.type = 1;
+
+					clearPoint(user);
+
+					msg.send("创建成功... 正在启动").exec();
+
+					data.bot.params = new HashMap<>();
+
+					UserBot.data.setById(data.bot.id,data.bot);
+
+					data.bot.startBot();
+
+					msg.send("你的BOT : @" + data.bot.userName,"\n将BOT加入群组并设为管理员即可 ~","\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
+
 					
 				} else {
-					
+
 					msg.send("你正在创建BOT，请在下方键盘选择").withCancel().exec();
-					
+
 				}
-				
+
 			} else if (data.progress == 10) {
-				
+
 				if (!msg.hasText()) {
-					
+
 					msg.send("你正在创建私聊BOT，请发送欢迎语").withCancel().exec();
-					
+
 					return;
-					
+
 				}
-				
+
 				clearPoint(user);
-				
+
 				msg.send("创建成功... 正在启动").exec();
-				
+
 				data.bot.params = new HashMap<>();
 				data.bot.params.put("msg",msg.text());
-				
+
 				UserBot.data.setById(data.bot.id,data.bot);
-				
+
 				data.bot.startBot();
-				
+
 				msg.send("你的BOT : @" + data.bot.userName,"\n不要忘记给BOT发一条信息 这样BOT才能转发信息给你 ~","\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
-				
+
 			}
 
 		}

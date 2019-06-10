@@ -68,7 +68,7 @@ public class StatusAction extends TwitterFunction {
 		
 	}
 	
-	public static ButtonMarkup createMarkup(final long statusId,final boolean del,final boolean full,final boolean retweeted,final long rtid,final boolean liked) {
+	public static ButtonMarkup createMarkup(final long statusId,final boolean del,final boolean full,final boolean retweeted,final boolean liked) {
 
 		return new ButtonMarkup() {{
 
@@ -76,21 +76,21 @@ public class StatusAction extends TwitterFunction {
 
 				if (retweeted) {
 
-					line.newButton("❎️",POINT_DESTROY_RETWEET,statusId,full,rtid);
+					line.newButton("❎️",POINT_DESTROY_RETWEET,statusId,full,retweeted,liked);
 
 				} else {
 
-					line.newButton("🔄",POINT_RETWEET_STATUS,statusId,full);
+					line.newButton("🔄",POINT_RETWEET_STATUS,statusId,full,retweeted,liked);
 
 				}
 
 				if (liked) {
 
-					line.newButton("💔",POINT_UNLIKE_STATUS,statusId,full);
+					line.newButton("💔",POINT_UNLIKE_STATUS,statusId,full,retweeted,liked);
 
 				} else {
 
-					line.newButton("❤",POINT_LIKE_STATUS,statusId,full);
+					line.newButton("❤",POINT_LIKE_STATUS,statusId,full,retweeted,liked);
 
 				}
 
@@ -102,7 +102,7 @@ public class StatusAction extends TwitterFunction {
 
 				if (!full) {
 
-					line.newButton("🔎",POINT_SHOW_FULL,statusId);
+					line.newButton("🔎",POINT_SHOW_FULL,statusId,true,retweeted,liked);
 
 				}
 
@@ -119,7 +119,8 @@ public class StatusAction extends TwitterFunction {
 		long statusId = Long.parseLong(params[0]);
 
 		boolean isFull = params.length > 1 && "true".equals(params[1]);
-		long rtid = params.length > 2 ? Long.parseLong(params[2]) : -1;
+		boolean retweeted = params.length > 1 && "true".equals(params[2]);
+		boolean liked = params.length > 1 && "true".equals(params[3]);
 		
 		long count = TAuth.data.countByField("user",user.id);
 
@@ -166,9 +167,6 @@ public class StatusAction extends TwitterFunction {
 		Twitter api = auth.createApi();
 
 		StatusArchive archive = StatusArchive.get(statusId);
-
-		boolean liked = false;
-		boolean retweeted = false;
 		
 		if (archive == null) {
 			
@@ -184,8 +182,6 @@ public class StatusAction extends TwitterFunction {
 				
 				retweeted = status.isRetweetedByMe();
 				
-				rtid = status.getCurrentUserRetweetId();
-
 			} catch (TwitterException e) {
 
 				callback.alert(NTT.parseTwitterException(e));
@@ -236,17 +232,15 @@ public class StatusAction extends TwitterFunction {
 
 			try {
 
-				Status rted = api.retweetStatus(statusId);
+				api.retweetStatus(statusId);
 
 				retweeted = true;
-				
-				rtid = rted.getId();
-				
+	
 				callback.text("已转推 ~");
 
 			} catch (TwitterException e) {
 
-				retweeted = false;
+				retweeted = true;
 				
 				callback.alert(NTT.parseTwitterException(e));
 
@@ -274,7 +268,7 @@ public class StatusAction extends TwitterFunction {
 
 			try {
 
-				api.destroyStatus(rtid);
+				api.unRetweetStatus(statusId);
 
 				retweeted = false;
 				
@@ -282,15 +276,13 @@ public class StatusAction extends TwitterFunction {
 
 			} catch (TwitterException e) {
 
-				retweeted = true;
-				
 				callback.alert(NTT.parseTwitterException(e));
 
 			}
 		
 		} else if (POINT_SHOW_FULL.equals(point)) {
 
-			callback.edit(archive.toHtml()).buttons(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,rtid,liked)).html().exec();
+			callback.edit(archive.toHtml()).buttons(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,liked)).html().exec();
 			
 			callback.text("已展开 ~");
 			
@@ -298,7 +290,7 @@ public class StatusAction extends TwitterFunction {
 
 		}
 
-		callback.editMarkup(createMarkup(archive.id,archive.from.equals(auth.id),isFull,retweeted,rtid,liked));
+		callback.editMarkup(createMarkup(archive.id,archive.from.equals(auth.id),isFull,retweeted,liked));
 		
 	}
 
