@@ -78,12 +78,14 @@ public class JoinCaptchaBot extends BotFragment {
 
 			}
 
-		} else if (msg.message().newChatMember() != null) {
+		} else if (msg.message().newChatMember() != null || msg.message().newChatMembers() != null) {
 
 			LinkedList<Long> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new LinkedList<Long>();
 
-			final User newMember = msg.message().newChatMember();
+		 User newMember = msg.message().newChatMember();
 
+			if (newMember == null) newMember = msg.message().newChatMembers()[0];
+			
 			if (newMember.isBot()) return false;
 
 			group.add(newMember.id());
@@ -105,11 +107,11 @@ public class JoinCaptchaBot extends BotFragment {
 
 			ButtonMarkup buttons = new ButtonMarkup() {{
 
-					newButtonLine("喵喵喵",POINT_AUTH,newMember.id());
-					newButtonLine("喵喵喵",POINT_AUTH,newMember.id());
-					newButtonLine("喵喵喵",POINT_AUTH,newMember.id());
-					newButtonLine("喵喵喵",POINT_AUTH,newMember.id());
-					newButtonLine("喵喵喵",POINT_AUTH,newMember.id());
+					newButtonLine("喵喵喵",POINT_AUTH,newData.id);
+					newButtonLine("喵喵喵",POINT_AUTH,newData.id);
+					newButtonLine("喵喵喵",POINT_AUTH,newData.id);
+					newButtonLine("喵喵喵",POINT_AUTH,newData.id);
+					newButtonLine("喵喵喵",POINT_AUTH,newData.id);
 
 				}};
 
