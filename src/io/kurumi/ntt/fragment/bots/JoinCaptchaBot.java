@@ -102,17 +102,17 @@ public class JoinCaptchaBot extends BotFragment {
 			if (delJoin) msg.delete();
 
 			if (user.id.equals(me.id())) {
-				
+
 				msg.delete();
-				
+
 				return true;
-				
+
 			} else if (!user.id.equals(msg.message().leftChatMember().id())) {
-				
+
 				return true;
-				
+
 			}
-			
+
 			UserData left = UserData.get(msg.message().leftChatMember());
 
 			if (logChannel != null) {
@@ -126,14 +126,14 @@ public class JoinCaptchaBot extends BotFragment {
 			GetChatMemberResponse resp = bot().execute(new GetChatMember(msg.chatId(),me.id().intValue()));
 
 			if (!resp.chatMember().canDeleteMessages()) {
-				
+
 				msg.send("机器人没有 删除消息 权限，已退出 :(").exec();
 				msg.exit();
-				
+
 				return true;
-				
+
 			}
-			
+
 			if (!resp.chatMember().canRestrictMembers()) {
 
 				msg.send("机器人没有 封禁用户 权限，已退出 :(").exec();
@@ -142,7 +142,7 @@ public class JoinCaptchaBot extends BotFragment {
 				return true;
 
 			}
-			
+
 			if (delJoin) msg.delete();
 
 			final HashMap<Long, Msg> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new HashMap<Long,Msg>();
@@ -156,7 +156,7 @@ public class JoinCaptchaBot extends BotFragment {
 				if (newMember.id().equals(botId)) {
 
 					msg.send("欢迎使用由 @NTT_X 驱动的开源加群验证BOT","给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
-
+					
 				}
 
 				return false;
@@ -220,11 +220,11 @@ public class JoinCaptchaBot extends BotFragment {
 
 							if (msg.kick(newData.id)) {
 
-								msg.send(newData.userName() + " 不理解喵喵的语言 , 真可惜喵...").html().exec();
+								msg.send(newData.userName() + " 不理解喵喵的语言 , 真可惜喵...").html().failed(60 * 1000);
 
 								if (logChannel != null) {
 
-								new Send(origin,logChannel,"事件 : #未通过 #超时","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + newData.userName(),"#id" + newData.id).exec();
+									new Send(origin,logChannel,"事件 : #未通过 #超时","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + newData.userName(),"#id" + newData.id).exec();
 
 								}
 
@@ -279,7 +279,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			if (callback.kick(user.id)) {
 
-				callback.send(user.userName() + " 瞎按按钮 , 真可惜喵...").html().exec();
+				callback.send(user.userName() + " 瞎按按钮 , 未通过验证 , 真可惜喵...").html().failed(60 * 1000);
 
 				if (logChannel != null) {
 
@@ -322,7 +322,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 		if (msg.hasText() && msg.text().contains("喵")) {
 
-			msg.send(user.userName() + " 通过了图灵(划掉)验证 ~").html().failed(15 * 1000);
+			msg.send(user.userName() + " 通过了图灵(划掉) 验证 ~").html().failed(15 * 1000);
 
 			if (logChannel != null) {
 
@@ -332,7 +332,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 		} else if (msg.kick()) {
 
-			msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().failed(15 * 1000);
+			msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().failed(60 * 1000);
 
 			if (logChannel != null) {
 
