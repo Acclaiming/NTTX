@@ -100,7 +100,7 @@ public class JoinCaptchaBot extends BotFragment {
 			
 			if (user.id.equals(msg.message().leftChatMember().id())) return true;
 			
-			if (logChannel != -1) {
+			if (logChannel != null) {
 				
 				new Send(logChannel,"事件 : #成员退出","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
 				
