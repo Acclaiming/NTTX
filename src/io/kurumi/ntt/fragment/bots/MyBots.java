@@ -109,7 +109,7 @@ public class MyBots extends Function {
 			
 			long botId = Long.parseLong(params[0]);
 
-			joinBotSwitchDelJoin(user,callback,botId);
+			joinBotDelLogChannel(user,callback,botId);
 			
 		}
 
