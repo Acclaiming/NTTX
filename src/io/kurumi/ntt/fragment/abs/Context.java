@@ -47,13 +47,24 @@ public class Context {
     public boolean isChannel() {
         return chat.type() == Chat.Type.channel;
     }
+	
+	public boolean kick(Long userId) {
+		
+		return kick(userId,false);
+		
+		
+	}
     
-    public boolean kick(Long userId) {
+    public boolean kick(Long userId,boolean ban) {
 
         BaseResponse resp = fragment.bot().execute(new KickChatMember(chatId(),userId.intValue()));
 		
+		if (!ban) {
+		
 		fragment.bot().execute(new UnbanChatMember(chatId(),userId.intValue()));
 
+		}
+		
 		return resp.isOk();
 	
 	}

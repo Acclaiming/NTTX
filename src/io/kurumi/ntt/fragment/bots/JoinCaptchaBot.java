@@ -286,7 +286,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			}
 
-			clearPoint(target);
+			clearPoint(user);
 
 			if (callback.kick(user.id)) {
 
@@ -319,18 +319,18 @@ public class JoinCaptchaBot extends BotFragment {
 				}
 
 			}
+			
+			UserData t = UserData.get(target);
 
-			clearPoint(user);
-
-			if (callback.kick(target)) {
-
-				UserData t = UserData.get(target);
+			clearPoint(t);
+			
+			if (callback.kick(target,true)) {
 
 				callback.send(t.userName() + " 被绒布球滥权了 , 真可惜喵...").html().failed(15 * 1000);
 
 				if (logChannel != null) {
 
-					new Send(this,logChannel,"事件 : #未通过 #人工拒绝","群组 : " + callback.chat().title(),"[" + Html.code(callback.chatId().toString()) + "]","用户 : " + t.userName(),"#id" + t.id).html().exec();
+					new Send(this,logChannel,"事件 : #未通过 #管理员封禁","群组 : " + callback.chat().title(),"[" + Html.code(callback.chatId().toString()) + "]","用户 : " + t.userName(),"#id" + t.id).html().exec();
 
 				}
 
