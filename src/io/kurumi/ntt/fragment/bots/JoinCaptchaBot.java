@@ -44,6 +44,9 @@ public class JoinCaptchaBot extends BotFragment {
 			userName = user.name();
 
 		}
+		
+		
+		
 
 	}
 

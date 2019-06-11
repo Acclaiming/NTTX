@@ -399,7 +399,7 @@ public class MyBots extends Function {
 		point.bot = bot;
 		point.msg.add(callback);
 
-		setPoint(user,POINT_CHAT_BOT_EDIT_MESSAGE,point);
+		setPoint(user,POINT_JOIN_SET_LOGCHANNEL,point);
 
 	}
 
