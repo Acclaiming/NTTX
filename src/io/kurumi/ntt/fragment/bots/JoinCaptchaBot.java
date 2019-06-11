@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import io.kurumi.ntt.utils.NTT;
 
 public class JoinCaptchaBot extends BotFragment {
 
@@ -75,6 +76,7 @@ public class JoinCaptchaBot extends BotFragment {
 	static Timer timer = new Timer();
 
 	final String POINT_AUTH = "auth";
+	final String POINT_REMOVE = "rem";
 
 	@Override
 	public boolean onMsg(UserData user,final Msg msg) {
@@ -185,7 +187,20 @@ public class JoinCaptchaBot extends BotFragment {
 						.newButton("点",POINT_AUTH,newData.id)
 						.newButton("按钮",POINT_AUTH,newData.id)
 						.newButton("喵",POINT_AUTH,newData.id);
-					// newButtonLine("喵喵喵",POINT_AUTH,newData.id);
+						
+					newButtonLine()
+						.newButton("绒布",POINT_AUTH,newData.id)
+						.newButton("球",POINT_AUTH,newData.id)
+						.newButton("点",POINT_AUTH,newData.id)
+						.newButton("按钮",POINT_AUTH,newData.id);
+						
+					newButtonLine()
+						.newButton("可以",POINT_AUTH,newData.id)
+						.newButton("直接",POINT_AUTH,newData.id)
+						.newButton("滥权",POINT_AUTH,newData.id)
+						.newButton("喵",POINT_AUTH,newData.id);
+					
+					
 
 				}};
 
@@ -251,11 +266,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 		long target = Long.parseLong(callback.params[1]);
 
-		if (!user.id.equals(target)) {
-
-			callback.alert("这个验证不针对乃 ~");
-
-		} else {
+		if (user.id.equals(target)) {
 
 			HashMap<Long, Msg> group = cache.containsKey(callback.chatId().longValue()) ? cache.get(callback.chatId()) : new HashMap<Long,Msg>();
 
@@ -275,7 +286,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			}
 
-			clearPoint(user);
+			clearPoint(target);
 
 			if (callback.kick(user.id)) {
 
@@ -289,6 +300,47 @@ public class JoinCaptchaBot extends BotFragment {
 
 			}
 
+		} else if (NTT.isGroupAdmin(callback.chatId(),user.id)) {
+			
+			HashMap<Long, Msg> group = cache.containsKey(callback.chatId().longValue()) ? cache.get(callback.chatId()) : new HashMap<Long,Msg>();
+
+			if (group.containsKey(target)) {
+
+				group.remove(target).delete();
+
+				if (group.isEmpty()) {
+
+					cache.remove(callback.chatId().longValue());
+
+				} else {
+
+					cache.put(callback.chatId().longValue(),group);
+
+				}
+
+			}
+
+			clearPoint(user);
+
+			if (callback.kick(target)) {
+
+				UserData t = UserData.get(target);
+
+				callback.send(t.userName() + " 被绒布球滥权了 , 真可惜喵...").html().failed(15 * 1000);
+
+				if (logChannel != null) {
+
+					new Send(this,logChannel,"事件 : #未通过 #人工拒绝","群组 : " + callback.chat().title(),"[" + Html.code(callback.chatId().toString()) + "]","用户 : " + t.userName(),"#id" + t.id).html().exec();
+
+				}
+
+			}
+			
+			
+		} else {
+			
+			callback.alert("不要乱点按钮喵 ~");
+			
 		}
 
 		return true;
