@@ -98,6 +98,8 @@ public class JoinCaptchaBot extends BotFragment {
 			
 			if (delJoin) msg.delete();
 			
+			if (user.id.equals(msg.message().leftChatMember().id())) return true;
+			
 			if (logChannel != -1) {
 				
 				new Send(logChannel,"事件 : #成员退出","群组 : " + msg.chat().title(),"#group" + (- msg.chatId()),"用户 : " + user.userName(),"用户ID : #user" + user.id).html().exec();
