@@ -105,7 +105,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			if (logChannel != null) {
 
-				new Send(logChannel,"事件 : #成员退出","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
+				new Send(this,logChannel,"事件 : #成员退出","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
 
 			}
 
@@ -213,7 +213,7 @@ public class JoinCaptchaBot extends BotFragment {
 								if (logChannel != null) {
 
 
-									new Send(logChannel,"事件 : #未通过 #超时","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + newData.userName(),"#id" + newData.id).exec();
+									new Send(this,logChannel,"事件 : #未通过 #超时","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + newData.userName(),"#id" + newData.id).exec();
 
 								}
 
@@ -272,7 +272,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 				if (logChannel != null) {
 
-					new Send(logChannel,"事件 : #未通过 #点击按钮","群组 : " + callback.chat().title(),"#group" + (- callback.chatId()),"用户 : " + user.userName(),"#id" + user.id).html().exec();
+					new Send(this,logChannel,"事件 : #未通过 #点击按钮","群组 : " + callback.chat().title(),"#group" + (- callback.chatId()),"用户 : " + user.userName(),"#id" + user.id).html().exec();
 
 				}
 
@@ -315,7 +315,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			if (logChannel != null) {
 
-				new Send(logChannel,"事件 : #通过验证","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
+				new Send(this,logChannel,"事件 : #通过验证","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
 
 			}
 
@@ -325,7 +325,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			if (logChannel != null) {
 
-				new Send(logChannel,"事件 : #未通过 #发送其他内容","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
+				new Send(this,logChannel,"事件 : #未通过 #发送其他内容","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
 
 			}
 
