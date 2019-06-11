@@ -21,8 +21,8 @@ public class JoinCaptchaBot extends BotFragment {
 	public String botToken;
 	public String userName;
 
-	public long logChannel;
-	public boolean delJoin;
+	public Long logChannel;
+	public Boolean delJoin;
 	
 	@Override
 	public void reload() {
@@ -45,8 +45,11 @@ public class JoinCaptchaBot extends BotFragment {
 
 		}
 		
+		delJoin = (Boolean) bot.params.get("delJoin");
 		
+		if (delJoin == null) delJoin = false;
 		
+		logChannel = (Long) bot.params.get("logChannel");
 
 	}
 
