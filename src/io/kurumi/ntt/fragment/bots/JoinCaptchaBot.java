@@ -101,11 +101,23 @@ public class JoinCaptchaBot extends BotFragment {
 
 			if (delJoin) msg.delete();
 
-			if (user.id.equals(msg.message().leftChatMember().id())) return true;
+			if (user.id.equals(me.id())) {
+				
+				msg.delete();
+				
+				return true;
+				
+			} else if (!user.id.equals(msg.message().leftChatMember().id())) {
+				
+				return true;
+				
+			}
+			
+			UserData left = UserData.get(msg.message().leftChatMember());
 
 			if (logChannel != null) {
 
-				new Send(this,logChannel,"事件 : #成员退出","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
+				new Send(this,logChannel,"事件 : #成员退出","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + left.userName(),"#id" + left.id).html().exec();
 
 			}
 
