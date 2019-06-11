@@ -377,7 +377,7 @@ public class StatusUpdate extends TwitterFunction {
 
 				if (quoted != null) {
 
-					update.text = update.text +  " " + quoted.url();
+					//update.text = update.text +  " " + quoted.url();
 					
 					attach = quoted.url();
 					
@@ -385,7 +385,7 @@ public class StatusUpdate extends TwitterFunction {
 					
 					attach = "https://twitter.com/user/" + update.quoted;
 					
-					update.text = update.text + " " + attach;
+					//update.text = update.text + " " + attach;
 					
 				}
 
