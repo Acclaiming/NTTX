@@ -14,6 +14,7 @@ import io.kurumi.ntt.utils.NTT;
 import java.util.LinkedList;
 import twitter4j.Status;
 import twitter4j.TwitterException;
+import io.kurumi.ntt.fragment.twitter.status.StatusUpdate.UpdatePoint;
 
 public class StatusUpdate extends TwitterFunction {
 
@@ -46,6 +47,8 @@ public class StatusUpdate extends TwitterFunction {
 		TAuth auth;
 
 		StatusArchive toReply;
+		
+		Long quoted;
 
 	}
 
@@ -59,9 +62,23 @@ public class StatusUpdate extends TwitterFunction {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params,final TAuth account) {
 
-		setPoint(user,POINT_UPDATE_STATUS,new UpdatePoint() {{ auth = account; }});
+		StatusUpdate.UpdatePoint update = new UpdatePoint();
+		
+		if (msg.isReply()) {
+			
+			MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
 
-		msg.send("现在发送推文内容 : [文本/图片/贴纸/视频]").exec();
+			if (point != null && point.type == 1) {
+				
+				update.quoted = point.targetId;
+				
+			}
+			
+		}
+
+		setPoint(user,POINT_UPDATE_STATUS,update);
+		
+		msg.send("现在发送推文内容 : ").withCancel().exec();
 
 	}
 
@@ -349,11 +366,36 @@ public class StatusUpdate extends TwitterFunction {
 
 			}
 
+			
+			String attach = null;
+			
+			if (update.quoted != null) {
+
+				StatusArchive quoted = StatusArchive.get(update.quoted);
+
+				if (quoted != null) {
+
+					update.text = update.text +  " " + quoted.url();
+					
+					attach = quoted.url();
+					
+				} else {
+					
+					attach = "https://twitter.com/user/" + update.quoted;
+					
+					update.text = update.text + " " + attach;
+					
+				}
+
+			}
+			
 
 			twitter4j.StatusUpdate send = new twitter4j.StatusUpdate(update.text == null ? "" : update.text);
 
 			if (update.toReply != null) send.inReplyToStatusId(update.toReply.id);
 
+			if (attach != null) send.attachmentUrl(attach);
+			
 			if (!update.images.isEmpty()) {
 
 				send.setMediaIds(ArrayUtil.unWrap(update.images.toArray(new Long[update.images.size()])));
