@@ -30,5 +30,11 @@ public class Html {
 		
 		}
 	
+		
+	public static String code(String code) {
+		
+		return "<code>" + HtmlUtil.escape(code) + "</code>";
+		
+	}
 	
 }

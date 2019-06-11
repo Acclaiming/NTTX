@@ -1,17 +1,17 @@
 package io.kurumi.ntt.fragment.bots;
 
+import com.pengrad.telegrambot.model.User;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.fragment.abs.Msg;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Timer;
-import com.pengrad.telegrambot.model.User;
-import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
-import java.util.TimerTask;
-import java.util.Date;
 import io.kurumi.ntt.fragment.abs.Callback;
+import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
 import io.kurumi.ntt.fragment.abs.request.Send;
+import io.kurumi.ntt.utils.Html;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class JoinCaptchaBot extends BotFragment {
 
@@ -102,7 +102,7 @@ public class JoinCaptchaBot extends BotFragment {
 			
 			if (logChannel != -1) {
 				
-				new Send(logChannel,"事件 : #成员退出","群组 : " + msg.chat().title(),"#group" + (- msg.chatId()),"用户 : " + user.userName(),"用户ID : #user" + user.id).html().exec();
+				new Send(logChannel,"事件 : #成员退出","群组 : " + msg.chat().title(),Html.code("[" + msg.chatId() + "]"),"用户 : " + user.userName(),"#user" + user.id).html().exec();
 				
 			}
 
@@ -187,7 +187,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 								msg.send(newData.userName() + " 不理解喵喵的语言 , 真可惜喵...").html().exec();
 
-								new Send(logChannel,"事件 : #未通过 #超时","群组 : " + msg.chat().title(),"#group" + (- msg.chatId()),"用户 : " + newData.userName(),"用户ID : #user" + newData.id).exec();
+								new Send(logChannel,"事件 : #未通过 #超时","群组 : " + msg.chat().title(),Html.code("[" + msg.chatId() + "]"),"用户 : " + newData.userName(),"用户ID : #user" + newData.id).exec();
 								
 							}
 
@@ -282,13 +282,13 @@ public class JoinCaptchaBot extends BotFragment {
 
 			msg.send(user.userName() + " 通过了图灵(划掉)验证 ~").html().failed(15 * 1000);
 			
-			new Send(logChannel,"事件 : #通过验证","群组 : " + msg.chat().title(),"#group" + (- msg.chatId()),"用户 : " + user.userName(),"用户ID : #user" + user.id).html().exec();
+			new Send(logChannel,"事件 : #通过验证","群组 : " + msg.chat().title(),Html.code("[" + msg.chatId() + "]"),"用户 : " + user.userName(),"用户ID : #user" + user.id).html().exec();
 
 		} else if (msg.kick()) {
 
 			msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().failed(15 * 1000);
 
-			new Send(logChannel,"事件 : #未通过 #发送其他内容","群组 : " + msg.chat().title(),"#group" + (- msg.chatId()),"用户 : " + user.userName(),"用户ID : #user" + user.id).html().exec();
+			new Send(logChannel,"事件 : #未通过 #发送其他内容","群组 : " + msg.chat().title(),Html.code("[" + msg.chatId() + "]"),"用户 : " + user.userName(),"用户ID : #user" + user.id).html().exec();
 			
 		}
 
