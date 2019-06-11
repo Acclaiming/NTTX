@@ -302,8 +302,6 @@ public class JoinCaptchaBot extends BotFragment {
 
 		if (group.containsKey(user.id)) {
 
-			msg.delete();
-
 			group.remove(user.id).delete();
 
 			if (group.isEmpty()) {
@@ -332,6 +330,8 @@ public class JoinCaptchaBot extends BotFragment {
 
 		} else if (msg.kick()) {
 
+			msg.delete();
+			
 			msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().failed(60 * 1000);
 
 			if (logChannel != null) {
