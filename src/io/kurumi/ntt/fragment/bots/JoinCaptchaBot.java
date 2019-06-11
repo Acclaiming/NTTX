@@ -249,7 +249,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 					}
 
-				},new Date(System.currentTimeMillis() + 180 * 60 * 1000));
+				},new Date(System.currentTimeMillis() + 3 * 60 * 1000));
 
 		} else if (msg.isPrivate()) {
 
