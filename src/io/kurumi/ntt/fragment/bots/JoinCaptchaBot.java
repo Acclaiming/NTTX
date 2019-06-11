@@ -1,6 +1,9 @@
 package io.kurumi.ntt.fragment.bots;
 
+import com.pengrad.telegrambot.model.ChatMember;
 import com.pengrad.telegrambot.model.User;
+import com.pengrad.telegrambot.request.GetChatMember;
+import com.pengrad.telegrambot.response.GetChatMemberResponse;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.abs.Callback;
@@ -108,6 +111,26 @@ public class JoinCaptchaBot extends BotFragment {
 
 		} else if (msg.message().newChatMember() != null || msg.message().newChatMembers() != null) {
 
+			GetChatMemberResponse resp = bot().execute(new GetChatMember(msg.chatId(),me.id().intValue()));
+
+			if (!resp.chatMember().canDeleteMessages()) {
+				
+				msg.send("机器人没有 删除消息 权限，已退出 :(").exec();
+				msg.exit();
+				
+				return true;
+				
+			}
+			
+			if (!resp.chatMember().canRestrictMembers()) {
+
+				msg.send("机器人没有 封禁用户 权限，已退出 :(").exec();
+				msg.exit();
+
+				return true;
+
+			}
+			
 			if (delJoin) msg.delete();
 
 			final HashMap<Long, Msg> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new HashMap<Long,Msg>();
