@@ -100,7 +100,7 @@ public class JoinCaptchaBot extends BotFragment {
 			
 			if (logChannel != -1) {
 				
-				new Send(logChannel,"事件 : #成员退出","群组 : " + msg.chat().title(),"#group" + (- msg.chatId()),"用户 : " + user.userName(),"用户ID : #user" + user.id).exec();
+				new Send(logChannel,"事件 : #成员退出","群组 : " + msg.chat().title(),"#group" + (- msg.chatId()),"用户 : " + user.userName(),"用户ID : #user" + user.id).html().exec();
 				
 			}
 
@@ -240,7 +240,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 				callback.send(user.userName() + " 瞎按按钮 , 真可惜喵...").html().exec();
 				
-				new Send(logChannel,"事件 : #未通过 #点击按钮","群组 : " + callback.chat().title(),"#group" + (- callback.chatId()),"用户 : " + user.userName(),"用户ID : #user" + user.id).exec();
+				new Send(logChannel,"事件 : #未通过 #点击按钮","群组 : " + callback.chat().title(),"#group" + (- callback.chatId()),"用户 : " + user.userName(),"用户ID : #user" + user.id).html().exec();
 				
 
 			}
@@ -280,13 +280,13 @@ public class JoinCaptchaBot extends BotFragment {
 
 			msg.send(user.userName() + " 通过了图灵(划掉)验证 ~").html().failed(15 * 1000);
 			
-			new Send(logChannel,"事件 : #通过验证","群组 : " + msg.chat().title(),"#group" + (- msg.chatId()),"用户 : " + user.userName(),"用户ID : #user" + user.id).exec();
+			new Send(logChannel,"事件 : #通过验证","群组 : " + msg.chat().title(),"#group" + (- msg.chatId()),"用户 : " + user.userName(),"用户ID : #user" + user.id).html().exec();
 
 		} else if (msg.kick()) {
 
 			msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().failed(15 * 1000);
 
-			new Send(logChannel,"事件 : #未通过 #发送其他内容","群组 : " + msg.chat().title(),"#group" + (- msg.chatId()),"用户 : " + user.userName(),"用户ID : #user" + user.id).exec();
+			new Send(logChannel,"事件 : #未通过 #发送其他内容","群组 : " + msg.chat().title(),"#group" + (- msg.chatId()),"用户 : " + user.userName(),"用户ID : #user" + user.id).html().exec();
 			
 		}
 
