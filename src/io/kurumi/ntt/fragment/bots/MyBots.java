@@ -429,7 +429,7 @@ public class MyBots extends Function {
 
 		}
 
-		bot.execute(new DeleteMessage(chat.id(),resp.message().messageId());
+		bot.execute(new DeleteMessage(chat.id(),resp.message().messageId()));
 		
 		clearPoint(user);
 		
