@@ -212,8 +212,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 								if (logChannel != null) {
 
-
-									new Send(this,logChannel,"事件 : #未通过 #超时","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + newData.userName(),"#id" + newData.id).exec();
+								new Send(origin,logChannel,"事件 : #未通过 #超时","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + newData.userName(),"#id" + newData.id).exec();
 
 								}
 
