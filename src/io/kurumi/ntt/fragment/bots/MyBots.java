@@ -3,6 +3,7 @@ package io.kurumi.ntt.fragment.bots;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import io.kurumi.ntt.db.PointStore;
@@ -13,7 +14,6 @@ import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.abs.request.AbstractSend;
 import io.kurumi.ntt.fragment.abs.request.ButtonLine;
 import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
-import io.kurumi.ntt.fragment.forum.ForumE;
 import java.util.LinkedList;
 
 public class MyBots extends Function {
@@ -429,6 +429,8 @@ public class MyBots extends Function {
 
 		}
 
+		bot.execute(new DeleteMessage(chat.id(),resp.message().messageId());
+		
 		clearPoint(user);
 		
 		data.bot.params.put("logChannel",chat.id());
