@@ -64,6 +64,8 @@ public class StatusUpdate extends TwitterFunction {
 
 		StatusUpdate.UpdatePoint update = new UpdatePoint();
 		
+		update.auth = account;
+		
 		if (msg.isReply()) {
 			
 			MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
