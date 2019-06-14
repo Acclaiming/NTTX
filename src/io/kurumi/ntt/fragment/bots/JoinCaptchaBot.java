@@ -122,7 +122,7 @@ public class JoinCaptchaBot extends BotFragment {
 
             GetChatMemberResponse resp = bot().execute(new GetChatMember(msg.chatId(), me.id().intValue()));
 
-            if (!resp.isOk()) return true;
+            if (resp == null && !resp.isOk()) return true;
 
             if (!resp.chatMember().canDeleteMessages()) {
 
