@@ -6,7 +6,6 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.mongodb.client.FindIterable;
-import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.ChatMember;
 import com.pengrad.telegrambot.request.GetChatMember;
 import com.pengrad.telegrambot.response.GetChatMemberResponse;
@@ -14,23 +13,18 @@ import com.pengrad.telegrambot.response.SendResponse;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Callback;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.abs.request.Send;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.fragment.twitter.track.TrackTask;
+import twitter4j.*;
 
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import twitter4j.Paging;
-import twitter4j.QueryResult;
-import twitter4j.ResponseList;
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
 
 public class NTT {
 
@@ -517,13 +511,13 @@ public class NTT {
 
     public static boolean isGroupAdmin( Long chatId, Long userId) {
 
-        return  isGroupAdmin(Launcher.INSTANCE.bot(),chatId,userId);
+        return isGroupAdmin(Launcher.INSTANCE, chatId, userId);
 
     }
 
-    public static boolean isGroupAdmin(TelegramBot bot, Long chatId, Long userId) {
+    public static boolean isGroupAdmin(Fragment fragment, Long chatId, Long userId) {
 
-        GetChatMemberResponse resp = bot.execute(new GetChatMember(chatId, userId.intValue()));
+        GetChatMemberResponse resp = fragment.bot().execute(new GetChatMember(chatId, userId.intValue()));
 
         if (resp.isOk() && ((resp.chatMember().status() == ChatMember.Status.administrator) || resp.chatMember().status() == ChatMember.Status.creator)) {
 

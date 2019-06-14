@@ -1,6 +1,5 @@
 package io.kurumi.ntt.fragment.bots;
 
-import com.pengrad.telegrambot.model.ChatMember;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.GetChatMember;
 import com.pengrad.telegrambot.response.GetChatMemberResponse;
@@ -11,13 +10,12 @@ import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
 import io.kurumi.ntt.fragment.abs.request.Send;
 import io.kurumi.ntt.utils.Html;
+import io.kurumi.ntt.utils.NTT;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import io.kurumi.ntt.utils.NTT;
 
 public class JoinCaptchaBot extends BotFragment {
 
@@ -296,7 +294,7 @@ public class JoinCaptchaBot extends BotFragment {
 
             }
 
-        } else if (NTT.isGroupAdmin(callback.chatId(), user.id)) {
+        } else if (NTT.isGroupAdmin(this, callback.chatId(), user.id)) {
 
             HashMap<Long, Msg> group = cache.containsKey(callback.chatId().longValue()) ? cache.get(callback.chatId()) : new HashMap<Long, Msg>();
 
