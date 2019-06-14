@@ -122,6 +122,8 @@ public class JoinCaptchaBot extends BotFragment {
 
             GetChatMemberResponse resp = bot().execute(new GetChatMember(msg.chatId(), me.id().intValue()));
 
+            if (!resp.isOk()) return true;
+
             if (!resp.chatMember().canDeleteMessages()) {
 
                 msg.send("机器人没有 删除消息 权限，已退出 :(").exec();
