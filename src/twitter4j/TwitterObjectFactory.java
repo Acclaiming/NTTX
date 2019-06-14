@@ -8,16 +8,17 @@ import java.util.Map;
  * @since Twitter4J 4.0.0
  */
 public final class TwitterObjectFactory {
-    private TwitterObjectFactory() {
-        throw new AssertionError("not intended to be instantiated.");
-    }
-
     private static final ThreadLocal<Map> rawJsonMap = new ThreadLocal<Map>() {
         @Override
         protected Map initialValue() {
             return new HashMap();
         }
     };
+    private static boolean registeredAtleastOnce = false;
+
+    private TwitterObjectFactory() {
+        throw new AssertionError("not intended to be instantiated.");
+    }
 
     /**
      * Returns a raw JSON form of the provided object.<br>
@@ -329,8 +330,6 @@ public final class TwitterObjectFactory {
     static void clearThreadLocalMap() {
         rawJsonMap.get().clear();
     }
-
-    private static boolean registeredAtleastOnce = false;
 
     /**
      * associate a raw JSON form to the current thread<br>

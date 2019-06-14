@@ -22,160 +22,6 @@ import java.util.Map;
 
 final class HTMLEntity {
 
-    static String escape(String original) {
-        StringBuilder buf = new StringBuilder(original);
-        escape(buf);
-        return buf.toString();
-    }
-
-    static void escape(StringBuilder original) {
-        int index = 0;
-        String escaped;
-        while (index < original.length()) {
-            escaped = entityEscapeMap.get(original.substring(index, index + 1));
-            if (escaped != null) {
-                original.replace(index, index + 1, escaped);
-                index += escaped.length();
-            } else {
-                index++;
-            }
-        }
-    }
-
-    static String unescape(String original) {
-        String returnValue = null;
-        if (original != null) {
-            StringBuilder buf = new StringBuilder(original);
-            unescape(buf);
-            returnValue = buf.toString();
-        }
-        return returnValue;
-    }
-
-    static void unescape(StringBuilder original) {
-        int index = 0;
-        int semicolonIndex;
-        String escaped;
-        String entity;
-        while (index < original.length()) {
-            index = original.indexOf("&", index);
-            if (-1 == index) {
-                break;
-            }
-            semicolonIndex = original.indexOf(";", index);
-            if (-1 != semicolonIndex) {
-                escaped = original.substring(index, semicolonIndex + 1);
-                entity = escapeEntityMap.get(escaped);
-                if (entity != null) {
-                    original.replace(index, semicolonIndex + 1, entity);
-                }
-                index++;
-            } else {
-                break;
-            }
-        }
-    }
-
-    /**
-	 * @author Yusuke Yamamoto - yusuke at mac.com
-	 * @author Philip Hachey - philip dot hachey at gmail dot com
-	 */	
-    static String unescapeAndSlideEntityIncdices(String text, UserMentionEntity[] userMentionEntities,
-                                                 URLEntity[] urlEntities, HashtagEntity[] hashtagEntities,
-                                                 MediaEntity[] mediaEntities) {
-        
-        int entityIndexesLength = 0;
-        entityIndexesLength += userMentionEntities == null ? 0 : userMentionEntities.length;
-        entityIndexesLength += urlEntities == null ? 0 : urlEntities.length;
-        entityIndexesLength += hashtagEntities == null ? 0 : hashtagEntities.length;
-        entityIndexesLength += mediaEntities == null ? 0 : mediaEntities.length;
-
-        EntityIndex[] entityIndexes = new EntityIndex[entityIndexesLength];
-        int copyStartIndex = 0;
-        if (userMentionEntities != null) {
-            System.arraycopy(userMentionEntities, 0, entityIndexes, copyStartIndex, userMentionEntities.length);
-            copyStartIndex += userMentionEntities.length;
-        }
-        
-        if (urlEntities != null) {
-            System.arraycopy(urlEntities, 0, entityIndexes, copyStartIndex, urlEntities.length);
-            copyStartIndex += urlEntities.length;
-        }
-        
-        if (hashtagEntities != null) {
-            System.arraycopy(hashtagEntities, 0, entityIndexes, copyStartIndex, hashtagEntities.length);
-            copyStartIndex += hashtagEntities.length;
-        }
-        
-        if (mediaEntities != null) {
-            System.arraycopy(mediaEntities, 0, entityIndexes, copyStartIndex, mediaEntities.length);
-        }
-
-        Arrays.sort(entityIndexes);
-        boolean handlingStart = true;
-        int entityIndex = 0;
-
-        int delta = 0;
-        int semicolonIndex;
-        String escaped;
-        String entity;
-        StringBuilder unescaped = new StringBuilder(text.length());
-        
-		/*
-		 * Slide indices of twitter entities not only when replacing character
-		 * entity references but also adjust the twitter code point based
-		 * indexes with Java standard character indexes. See: HTMLEntityTest.
-		 * testUnescapeAndSlideEntityIncdicesWithSurrogateCodePoints
-		 */
-		int textCodePointLength = text.codePointCount(0, text.length());
-		int codePoint;
-		for (int index = 0, twitterIndex = 0; index < text.length(); index +=
-				Character.charCount(codePoint), twitterIndex++) {
-			codePoint = text.codePointAt(index);
-			if (codePoint == '&') {
-				semicolonIndex = text.indexOf(";", index);
-				if (-1 != semicolonIndex) {
-					escaped = text.substring(index, semicolonIndex + 1);
-					entity = escapeEntityMap.get(escaped);
-					if (entity != null) {
-						unescaped.append(entity);
-						index = semicolonIndex;
-						twitterIndex = text.codePointCount(0, semicolonIndex);
-						delta = 1 - escaped.length();
-					} else {
-						unescaped.appendCodePoint(codePoint);
-					}
-				} else {
-					unescaped.appendCodePoint(codePoint);
-				}
-			} else {
-				unescaped.appendCodePoint(codePoint);
-			}
-			if (entityIndex < entityIndexes.length) {
-				if (handlingStart) {
-					if (entityIndexes[entityIndex].getStart() == (delta + twitterIndex)) {
-						entityIndexes[entityIndex]
-								.setStart(unescaped.length() - Character.charCount(text.codePointAt(index)));
-						handlingStart = false;
-					}
-				} else if (entityIndexes[entityIndex].getEnd() == (delta + twitterIndex)) {
-					entityIndexes[entityIndex]
-							.setEnd(unescaped.length() - Character.charCount(text.codePointAt(index)));
-					entityIndex++;
-					handlingStart = true;
-				}
-			}
-			delta = 0;
-		}
-		if (entityIndex < entityIndexes.length) {
-			if (entityIndexes[entityIndex].getEnd() == textCodePointLength) {
-				entityIndexes[entityIndex].setEnd(unescaped.length());
-			}
-		}
-
-        return unescaped.toString();
-    }
-
     private static final Map<String, String> entityEscapeMap = new HashMap<String, String>();
     private static final Map<String, String> escapeEntityMap = new HashMap<String, String>();
 
@@ -465,5 +311,159 @@ final class HTMLEntity {
             escapeEntityMap.put(entity[0], entity[2]);
             escapeEntityMap.put(entity[1], entity[2]);
         }
+    }
+
+    static String escape(String original) {
+        StringBuilder buf = new StringBuilder(original);
+        escape(buf);
+        return buf.toString();
+    }
+
+    static void escape(StringBuilder original) {
+        int index = 0;
+        String escaped;
+        while (index < original.length()) {
+            escaped = entityEscapeMap.get(original.substring(index, index + 1));
+            if (escaped != null) {
+                original.replace(index, index + 1, escaped);
+                index += escaped.length();
+            } else {
+                index++;
+            }
+        }
+    }
+
+    static String unescape(String original) {
+        String returnValue = null;
+        if (original != null) {
+            StringBuilder buf = new StringBuilder(original);
+            unescape(buf);
+            returnValue = buf.toString();
+        }
+        return returnValue;
+    }
+
+    static void unescape(StringBuilder original) {
+        int index = 0;
+        int semicolonIndex;
+        String escaped;
+        String entity;
+        while (index < original.length()) {
+            index = original.indexOf("&", index);
+            if (-1 == index) {
+                break;
+            }
+            semicolonIndex = original.indexOf(";", index);
+            if (-1 != semicolonIndex) {
+                escaped = original.substring(index, semicolonIndex + 1);
+                entity = escapeEntityMap.get(escaped);
+                if (entity != null) {
+                    original.replace(index, semicolonIndex + 1, entity);
+                }
+                index++;
+            } else {
+                break;
+            }
+        }
+    }
+
+    /**
+     * @author Yusuke Yamamoto - yusuke at mac.com
+     * @author Philip Hachey - philip dot hachey at gmail dot com
+     */
+    static String unescapeAndSlideEntityIncdices(String text, UserMentionEntity[] userMentionEntities,
+                                                 URLEntity[] urlEntities, HashtagEntity[] hashtagEntities,
+                                                 MediaEntity[] mediaEntities) {
+
+        int entityIndexesLength = 0;
+        entityIndexesLength += userMentionEntities == null ? 0 : userMentionEntities.length;
+        entityIndexesLength += urlEntities == null ? 0 : urlEntities.length;
+        entityIndexesLength += hashtagEntities == null ? 0 : hashtagEntities.length;
+        entityIndexesLength += mediaEntities == null ? 0 : mediaEntities.length;
+
+        EntityIndex[] entityIndexes = new EntityIndex[entityIndexesLength];
+        int copyStartIndex = 0;
+        if (userMentionEntities != null) {
+            System.arraycopy(userMentionEntities, 0, entityIndexes, copyStartIndex, userMentionEntities.length);
+            copyStartIndex += userMentionEntities.length;
+        }
+
+        if (urlEntities != null) {
+            System.arraycopy(urlEntities, 0, entityIndexes, copyStartIndex, urlEntities.length);
+            copyStartIndex += urlEntities.length;
+        }
+
+        if (hashtagEntities != null) {
+            System.arraycopy(hashtagEntities, 0, entityIndexes, copyStartIndex, hashtagEntities.length);
+            copyStartIndex += hashtagEntities.length;
+        }
+
+        if (mediaEntities != null) {
+            System.arraycopy(mediaEntities, 0, entityIndexes, copyStartIndex, mediaEntities.length);
+        }
+
+        Arrays.sort(entityIndexes);
+        boolean handlingStart = true;
+        int entityIndex = 0;
+
+        int delta = 0;
+        int semicolonIndex;
+        String escaped;
+        String entity;
+        StringBuilder unescaped = new StringBuilder(text.length());
+
+        /*
+         * Slide indices of twitter entities not only when replacing character
+         * entity references but also adjust the twitter code point based
+         * indexes with Java standard character indexes. See: HTMLEntityTest.
+         * testUnescapeAndSlideEntityIncdicesWithSurrogateCodePoints
+         */
+        int textCodePointLength = text.codePointCount(0, text.length());
+        int codePoint;
+        for (int index = 0, twitterIndex = 0; index < text.length(); index +=
+                Character.charCount(codePoint), twitterIndex++) {
+            codePoint = text.codePointAt(index);
+            if (codePoint == '&') {
+                semicolonIndex = text.indexOf(";", index);
+                if (-1 != semicolonIndex) {
+                    escaped = text.substring(index, semicolonIndex + 1);
+                    entity = escapeEntityMap.get(escaped);
+                    if (entity != null) {
+                        unescaped.append(entity);
+                        index = semicolonIndex;
+                        twitterIndex = text.codePointCount(0, semicolonIndex);
+                        delta = 1 - escaped.length();
+                    } else {
+                        unescaped.appendCodePoint(codePoint);
+                    }
+                } else {
+                    unescaped.appendCodePoint(codePoint);
+                }
+            } else {
+                unescaped.appendCodePoint(codePoint);
+            }
+            if (entityIndex < entityIndexes.length) {
+                if (handlingStart) {
+                    if (entityIndexes[entityIndex].getStart() == (delta + twitterIndex)) {
+                        entityIndexes[entityIndex]
+                                .setStart(unescaped.length() - Character.charCount(text.codePointAt(index)));
+                        handlingStart = false;
+                    }
+                } else if (entityIndexes[entityIndex].getEnd() == (delta + twitterIndex)) {
+                    entityIndexes[entityIndex]
+                            .setEnd(unescaped.length() - Character.charCount(text.codePointAt(index)));
+                    entityIndex++;
+                    handlingStart = true;
+                }
+            }
+            delta = 0;
+        }
+        if (entityIndex < entityIndexes.length) {
+            if (entityIndexes[entityIndex].getEnd() == textCodePointLength) {
+                entityIndexes[entityIndex].setEnd(unescaped.length());
+            }
+        }
+
+        return unescaped.toString();
     }
 }

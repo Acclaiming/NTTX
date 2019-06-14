@@ -105,6 +105,14 @@ public interface OAuthSupport {
     AccessToken getOAuthAccessToken() throws TwitterException;
 
     /**
+     * Sets the access token
+     *
+     * @param accessToken accessToken
+     * @since Twitter4J 2.0.0
+     */
+    void setOAuthAccessToken(AccessToken accessToken);
+
+    /**
      * Retrieves an access token.
      *
      * @param oauthVerifier OAuth verifier. AKA pin.
@@ -158,12 +166,4 @@ public interface OAuthSupport {
      * @since Twitter 2.1.1
      */
     AccessToken getOAuthAccessToken(String screenName, String password) throws TwitterException;
-
-    /**
-     * Sets the access token
-     *
-     * @param accessToken accessToken
-     * @since Twitter4J 2.0.0
-     */
-    void setOAuthAccessToken(AccessToken accessToken);
 }

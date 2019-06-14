@@ -49,11 +49,9 @@ public class AlternativeHttpClientImpl extends HttpClientBase implements HttpRes
     private static final MediaType TEXT = MediaType.parse("text/plain; charset=utf-8");
     private static final MediaType FORM_URL_ENCODED = MediaType.parse("application/x-www-form-urlencoded");
     private static final MediaType APPLICATION_JSON = MediaType.parse("application/json");
-
-    private OkHttpClient okHttpClient;
-
     //for test
     public static boolean sPreferHttp2 = true;
+    private OkHttpClient okHttpClient;
     private Protocol lastRequestProtocol = null;
 
     public AlternativeHttpClientImpl() {
@@ -64,6 +62,34 @@ public class AlternativeHttpClientImpl extends HttpClientBase implements HttpRes
         super(conf);
     }
 
+    public static RequestBody createInputStreamRequestBody(final MediaType mediaType, final InputStream inputStream) {
+        return new RequestBody() {
+            @Override
+            public MediaType contentType() {
+                return mediaType;
+            }
+
+            @Override
+            public long contentLength() {
+                try {
+                    return inputStream.available();
+                } catch (IOException e) {
+                    return 0;
+                }
+            }
+
+            @Override
+            public void writeTo(BufferedSink sink) throws IOException {
+                Source source = null;
+                try {
+                    source = Okio.source(inputStream);
+                    sink.writeAll(source);
+                } finally {
+                    Util.closeQuietly(source);
+                }
+            }
+        };
+    }
 
     @Override
     HttpResponse handleRequest(HttpRequest req) throws TwitterException {
@@ -204,35 +230,6 @@ public class AlternativeHttpClientImpl extends HttpClientBase implements HttpRes
             }
         }
         return builder.build();
-    }
-
-    public static RequestBody createInputStreamRequestBody(final MediaType mediaType, final InputStream inputStream) {
-        return new RequestBody() {
-            @Override
-            public MediaType contentType() {
-                return mediaType;
-            }
-
-            @Override
-            public long contentLength() {
-                try {
-                    return inputStream.available();
-                } catch (IOException e) {
-                    return 0;
-                }
-            }
-
-            @Override
-            public void writeTo(BufferedSink sink) throws IOException {
-                Source source = null;
-                try {
-                    source = Okio.source(inputStream);
-                    sink.writeAll(source);
-                } finally {
-                    Util.closeQuietly(source);
-                }
-            }
-        };
     }
 
     private void prepareOkHttpClient() {

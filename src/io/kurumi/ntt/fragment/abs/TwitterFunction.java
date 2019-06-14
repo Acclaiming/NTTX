@@ -6,105 +6,90 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.abs.request.Keyboard;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+
 import java.util.LinkedList;
+
 import io.kurumi.ntt.fragment.twitter.status.StatusAction;
 
 public abstract class TwitterFunction extends Function {
 
     public static final String POINT_CHOOSE_ACCPUNT = "t|s";
 
-	class TwitterPoint {
+    public boolean useCurrent() {
 
-        public TwitterFunction function;
-        public Msg msg;
-        public Msg send;
-
-        public TwitterPoint(TwitterFunction function,Msg msg,Msg send) {
-
-            this.function = function;
-            this.msg = msg;
-            this.send = send;
-
-        }
+        return false;
 
     }
-	
-	public boolean useCurrent() {
-		
-		return false;
-		
-	}
 
-    public abstract void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account);
+    public abstract void onFunction(UserData user, Msg msg, String function, String[] params, TAuth account);
 
     @Override
-    public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
         if (!TAuth.contains(user.id)) {
 
-            msg.send("这个功能需要授权 Twitter账号 才能使用 (❁´▽`❁)","使用 /login 认证账号 ~").exec();
+            msg.send("这个功能需要授权 Twitter账号 才能使用 (❁´▽`❁)", "使用 /login 认证账号 ~").exec();
 
             return;
 
         } else {
 
-             if (msg.isGroup() && (target() == Private || target() == PrivateOnly)) {
-				
-				 if (target() == PrivateOnly || !user.contactable()) {
+            if (msg.isGroup() && (target() == Private || target() == PrivateOnly)) {
 
-					 msg.send("请使用私聊 (˚☐˚! )/").publicFailed();
+                if (target() == PrivateOnly || !user.contactable()) {
 
-					 return;
+                    msg.send("请使用私聊 (˚☐˚! )/").publicFailed();
 
-				 } else {
+                    return;
 
-					 msg.send("咱已经在私聊回复了你。","如果BOT有删除信息权限,命令和此回复将被自动删除。:)").failedWith();
+                } else {
 
-					 msg.targetChatId = user.id;
+                    msg.send("咱已经在私聊回复了你。", "如果BOT有删除信息权限,命令和此回复将被自动删除。:)").failedWith();
 
-					 msg.sendTyping();
-					 
-				 }
+                    msg.targetChatId = user.id;
 
-			 }
-			 
-			 if (TAuth.data.countByField("user",user.id) == 1) {
+                    msg.sendTyping();
 
-				 onFunction(user,msg,function,msg.params(),TAuth.getByUser(user.id).first());
+                }
 
-				 return;
+            }
 
-			 }
+            if (TAuth.data.countByField("user", user.id) == 1) {
 
-			 if (useCurrent() && StatusAction.current.containsId(user.id)) {
-				 
-				 TAuth current = TAuth.getById(StatusAction.current.getById(user.id).accountId);
+                onFunction(user, msg, function, msg.params(), TAuth.getByUser(user.id).first());
 
-				 if (current != null) {
-					 
-					 
-					 
-				 }
-				 
-			 }
-    
+                return;
+
+            }
+
+            if (useCurrent() && StatusAction.current.containsId(user.id)) {
+
+                TAuth current = TAuth.getById(StatusAction.current.getById(user.id).accountId);
+
+                if (current != null) {
+
+
+                }
+
+            }
+
             final FindIterable<TAuth> accounts = TAuth.getByUser(user.id);
 
 
-            Msg send = msg.send("请选择目标账号 Σ( ﾟωﾟ ","使用 /cancel 取消 ~").keyboard(new Keyboard() {{
+            Msg send = msg.send("请选择目标账号 Σ( ﾟωﾟ ", "使用 /cancel 取消 ~").keyboard(new Keyboard() {{
 
-                        for (TAuth account : accounts) {
+                for (TAuth account : accounts) {
 
-                            newButtonLine("@" + account.archive().screenName);
+                    newButtonLine("@" + account.archive().screenName);
 
-                        }
+                }
 
-                        newButtonLine("/cancel");
+                newButtonLine("/cancel");
 
-                    }}).send();
+            }}).send();
 
 
-            setPoint(user,POINT_CHOOSE_ACCPUNT,new TwitterPoint(this,msg,send));
+            setPoint(user, POINT_CHOOSE_ACCPUNT, new TwitterPoint(this, msg, send));
 
 
         }
@@ -119,11 +104,11 @@ public abstract class TwitterFunction extends Function {
     }
 
     @Override
-    public void onPoint(UserData user,Msg msg,PointStore.Point point) {
+    public void onPoint(UserData user, Msg msg, PointStore.Point point) {
 
         if (POINT_CHOOSE_ACCPUNT.equals(point.point)) {
 
-            TwitterPoint data = (TwitterPoint)point.data;
+            TwitterPoint data = (TwitterPoint) point.data;
 
             if (!msg.hasText() || !msg.text().startsWith("@")) {
 
@@ -151,13 +136,28 @@ public abstract class TwitterFunction extends Function {
 
             clearPoint(user);
 
-            data.function.onFunction(user,data.msg,data.msg.command(),data.msg.params(),account);
+            data.function.onFunction(user, data.msg, data.msg.command(), data.msg.params(), account);
 
 
         }
 
     }
 
+    class TwitterPoint {
+
+        public TwitterFunction function;
+        public Msg msg;
+        public Msg send;
+
+        public TwitterPoint(TwitterFunction function, Msg msg, Msg send) {
+
+            this.function = function;
+            this.msg = msg;
+            this.send = send;
+
+        }
+
+    }
 
 
 }

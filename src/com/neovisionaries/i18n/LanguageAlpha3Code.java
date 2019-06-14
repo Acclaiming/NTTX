@@ -164,11 +164,10 @@ import java.util.regex.Pattern;
  * because {@code new} is a special word for Java programming language.
  * </p>
  *
- * @since 1.1
  * @author Takahiko Kawasaki
+ * @since 1.1
  */
-public enum LanguageAlpha3Code
-{
+public enum LanguageAlpha3Code {
     /**
      * Undefined.
      *
@@ -176,15 +175,13 @@ public enum LanguageAlpha3Code
      * This is not an official ISO 639-2 code.
      * </p>
      *
-     * @since 1.14
      * @see #und und: Undetermined
      * @see #zxx zxx: No linguistic content
+     * @since 1.14
      */
-    undefined("Undefined")
-    {
+    undefined("Undefined") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.undefined;
         }
     },
@@ -193,11 +190,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Afar_language">Afar</a>
      * ({@link LanguageCode#aa aa}).
      */
-    aar("Afar")
-    {
+    aar("Afar") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.aa;
         }
     },
@@ -213,11 +208,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Abkhaz_language">Abkhaz</a>
      * ({@link LanguageCode#ab ab}).
      */
-    abk("Abkhaz")
-    {
+    abk("Abkhaz") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ab;
         }
     },
@@ -268,11 +261,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Afrikaans_language">Afrikaans</a>
      * ({@link LanguageCode#af af}).
      */
-    afr("Afrikaans")
-    {
+    afr("Afrikaans") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.af;
         }
     },
@@ -288,11 +279,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Akan_language">Akan</a>
      * ({@link LanguageCode#ak ak}).
      */
-    aka("Akan")
-    {
+    aka("Akan") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ak;
         }
     },
@@ -310,25 +299,21 @@ public enum LanguageAlpha3Code
      *
      * @see #sqi
      */
-    alb("Albanian")
-    {
+    alb("Albanian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.sq;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return sqi;
         }
     },
@@ -365,11 +350,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Amharic_language">Amharic</a>
      * ({@link LanguageCode#am am}).
      */
-    amh("Amharic")
-    {
+    amh("Amharic") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.am;
         }
     },
@@ -413,11 +396,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Arabic_language">Arabic</a>
      * ({@link LanguageCode#ar ar}).
      */
-    ara("Arabic")
-    {
+    ara("Arabic") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ar;
         }
     },
@@ -433,11 +414,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Aragonese_language">Aragonese</a>
      * ({@link LanguageCode#an an}).
      */
-    arg("Aragonese")
-    {
+    arg("Aragonese") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.an;
         }
     },
@@ -448,25 +427,21 @@ public enum LanguageAlpha3Code
      *
      * @see #hye
      */
-    arm("Armenian")
-    {
+    arm("Armenian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.hy;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return hye;
         }
     },
@@ -503,11 +478,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Assamese_language">Assamese</a>
      * ({@link LanguageCode#as as}).
      */
-    asm("Assamese")
-    {
+    asm("Assamese") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.as;
         }
     },
@@ -544,11 +517,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Avar_language">Avaric</a>
      * ({@link LanguageCode#av av}).
      */
-    ava("Avaric")
-    {
+    ava("Avaric") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.av;
         }
     },
@@ -557,11 +528,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Avestan_language">Avestan</a>
      * ({@link LanguageCode#ae ae}).
      */
-    ave("Avestan")
-    {
+    ave("Avestan") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ae;
         }
     },
@@ -584,11 +553,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Aymara_language">Aymara</a>
      * ({@link LanguageCode#ay ay}).
      */
-    aym("Aymara")
-    {
+    aym("Aymara") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ay;
         }
     },
@@ -605,11 +572,9 @@ public enum LanguageAlpha3Code
      * href="http://en.wikipedia.org/wiki/Azerbaijani_language">Azerbaijani</a>
      * ({@link LanguageCode#az az}).
      */
-    aze("Azerbaijani")
-    {
+    aze("Azerbaijani") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.az;
         }
     },
@@ -632,11 +597,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Bashkir_language">Bashkir</a>
      * ({@link LanguageCode#ba ba}).
      */
-    bak("Bashkir")
-    {
+    bak("Bashkir") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ba;
         }
     },
@@ -650,11 +613,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Bambara_language">Bambara</a>
      * ({@link LanguageCode#bm bm}).
      */
-    bam("Bambara")
-    {
+    bam("Bambara") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.bm;
         }
     },
@@ -672,25 +633,21 @@ public enum LanguageAlpha3Code
      *
      * @see #eus
      */
-    baq("Basque")
-    {
+    baq("Basque") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.eu;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return eus;
         }
     },
@@ -720,11 +677,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Belarusian_language">Belarusian</a>
      * ({@link LanguageCode#be be}).
      */
-    bel("Belarusian")
-    {
+    bel("Belarusian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.be;
         }
     },
@@ -740,11 +695,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Bengali_language">Bengali</a>
      * ({@link LanguageCode#bn bn}).
      */
-    ben("Bengali")
-    {
+    ben("Bengali") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.bn;
         }
     },
@@ -767,11 +720,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Bihari_languages">Bihari</a>
      * ({@link LanguageCode#bh bh}).
      */
-    bih("Bihari languages")
-    {
+    bih("Bihari languages") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.bh;
         }
     },
@@ -794,11 +745,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Bislama_language">Bislama</a>
      * ({@link LanguageCode#bi bi}).
      */
-    bis("Bislama")
-    {
+    bis("Bislama") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.bi;
         }
     },
@@ -823,25 +772,21 @@ public enum LanguageAlpha3Code
      *
      * @see #tib
      */
-    bod("Tibetan")
-    {
+    bod("Tibetan") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.bo;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return tib;
         }
     },
@@ -850,11 +795,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Bosnian_language">Bosnian</a>
      * ({@link LanguageCode#bs bs}).
      */
-    bos("Bosnian")
-    {
+    bos("Bosnian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.bs;
         }
     },
@@ -870,11 +813,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Breton_language">Breton</a>
      * ({@link LanguageCode#br br}).
      */
-    bre("Breton")
-    {
+    bre("Breton") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.br;
         }
     },
@@ -904,11 +845,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Bulgarian_language">Bulgarian</a>
      * ({@link LanguageCode#bg bg}).
      */
-    bul("Bulgarian")
-    {
+    bul("Bulgarian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.bg;
         }
     },
@@ -919,25 +858,21 @@ public enum LanguageAlpha3Code
      *
      * @see #mya
      */
-    bur("Burmese")
-    {
+    bur("Burmese") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.my;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return mya;
         }
     },
@@ -974,11 +909,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Catalan_language">Catalan</a>
      * ({@link LanguageCode#ca ca}).
      */
-    cat("Catalan")
-    {
+    cat("Catalan") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ca;
         }
     },
@@ -1045,25 +978,21 @@ public enum LanguageAlpha3Code
      *
      * @see #cze
      */
-    ces("Czech")
-    {
+    ces("Czech") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.cs;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return cze;
         }
     },
@@ -1072,11 +1001,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Chamorro_language">Chamorro</a>
      * ({@link LanguageCode#ch ch}).
      */
-    cha("Chamorro")
-    {
+    cha("Chamorro") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ch;
         }
     },
@@ -1092,11 +1019,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Chechen_language">Chechen</a>
      * ({@link LanguageCode#ce ce}).
      */
-    che("Chechen")
-    {
+    che("Chechen") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ce;
         }
     },
@@ -1114,25 +1039,21 @@ public enum LanguageAlpha3Code
      *
      * @see #zho
      */
-    chi("Chinese")
-    {
+    chi("Chinese") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.zh;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return zho;
         }
     },
@@ -1184,11 +1105,9 @@ public enum LanguageAlpha3Code
      * Slavonic</a>
      * ({@link LanguageCode#cu cu}).
      */
-    chu("Church Slavic")
-    {
+    chu("Church Slavic") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.cu;
         }
     },
@@ -1197,11 +1116,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Chuvash_language">Chuvash</a>
      * ({@link LanguageCode#cv cv}).
      */
-    chv("Chuvash")
-    {
+    chv("Chuvash") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.cv;
         }
     },
@@ -1231,11 +1148,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Cornish_language">Cornish</a>
      * ({@link LanguageCode#kw kw}).
      */
-    cor("Comish")
-    {
+    cor("Comish") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.kw;
         }
     },
@@ -1244,11 +1159,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Corsican_language">Corsican</a>
      * ({@link LanguageCode#co co}).
      */
-    cos("Corsican")
-    {
+    cos("Corsican") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.co;
         }
     },
@@ -1287,11 +1200,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Cree_language">Cree</a>
      * ({@link LanguageCode#cr cr}).
      */
-    cre("Cree")
-    {
+    cre("Cree") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.cr;
         }
     },
@@ -1340,25 +1251,21 @@ public enum LanguageAlpha3Code
      *
      * @see #wel
      */
-    cym("Welsh")
-    {
+    cym("Welsh") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.cy;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return wel;
         }
     },
@@ -1369,25 +1276,21 @@ public enum LanguageAlpha3Code
      *
      * @see #ces
      */
-    cze("Czech")
-    {
+    cze("Czech") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.cs;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return ces;
         }
     },
@@ -1403,11 +1306,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Danish_language">Danish</a>
      * {@link LanguageCode#da da}).
      */
-    dan("Danish")
-    {
+    dan("Danish") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.da;
         }
     },
@@ -1446,25 +1347,21 @@ public enum LanguageAlpha3Code
      *
      * @see #ger
      */
-    deu("German")
-    {
+    deu("German") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.de;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return ger;
         }
     },
@@ -1487,11 +1384,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Dhivehi_language">Dhivehi</a>
      * ({@link LanguageCode#dv dv}).
      */
-    div("Dhivehi")
-    {
+    div("Dhivehi") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.dv;
         }
     },
@@ -1544,25 +1439,21 @@ public enum LanguageAlpha3Code
      *
      * @see #nld
      */
-    dut("Dutch")
-    {
+    dut("Dutch") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.nl;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return nld;
         }
     },
@@ -1578,11 +1469,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Dzongkha_language">Dzongkha</a>
      * ({@link LanguageCode#dz dz}).
      */
-    dzo("Dzongkha")
-    {
+    dzo("Dzongkha") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.dz;
         }
     },
@@ -1623,25 +1512,21 @@ public enum LanguageAlpha3Code
      * @see #gre Modern Greek (gre)
      * @see #grc Acient Greek (grc)
      */
-    ell("Modern Greek")
-    {
+    ell("Modern Greek") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.el;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return gre;
         }
     },
@@ -1657,11 +1542,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/English_language">English</a>
      * ({@link LanguageCode#en en}).
      */
-    eng("English")
-    {
+    eng("English") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.en;
         }
     },
@@ -1675,11 +1558,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Esperanto">Esperanto</a>
      * ({@link LanguageCode#eo eo}).
      */
-    epo("Esperanto")
-    {
+    epo("Esperanto") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.eo;
         }
     },
@@ -1688,11 +1569,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Estonian_language">Estonian</a>
      * ({@link LanguageCode#et et}).
      */
-    est("Estonian")
-    {
+    est("Estonian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.et;
         }
     },
@@ -1717,25 +1596,21 @@ public enum LanguageAlpha3Code
      *
      * @see #baq
      */
-    eus("Basque (family)")
-    {
+    eus("Basque (family)") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.eu;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return baq;
         }
     },
@@ -1744,11 +1619,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Ewe_language">Ewe</a>
      * ({@link LanguageCode#ee ee}).
      */
-    ewe("Ewe")
-    {
+    ewe("Ewe") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ee;
         }
     },
@@ -1771,11 +1644,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Faroese_language">Faroese</a>
      * ({@link LanguageCode#fo fo}).
      */
-    fao("Faroese")
-    {
+    fao("Faroese") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.fo;
         }
     },
@@ -1786,25 +1657,21 @@ public enum LanguageAlpha3Code
      *
      * @see #per
      */
-    fas("Persian")
-    {
+    fas("Persian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.fa;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return per;
         }
     },
@@ -1820,11 +1687,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Fijian_language">Fijian</a>
      * ({@link LanguageCode#fj fj}).
      */
-    fij("Fijian")
-    {
+    fij("Fijian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.fj;
         }
     },
@@ -1840,11 +1705,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Finnish_language">Finnish</a>
      * ({@link LanguageCode#fi fi}).
      */
-    fin("Finnish")
-    {
+    fin("Finnish") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.fi;
         }
     },
@@ -1876,25 +1739,21 @@ public enum LanguageAlpha3Code
      *
      * @see #fre
      */
-    fra("French")
-    {
+    fra("French") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.fr;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return fre;
         }
     },
@@ -1905,25 +1764,21 @@ public enum LanguageAlpha3Code
      *
      * @see #fra
      */
-    fre("French")
-    {
+    fre("French") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.fr;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return fra;
         }
     },
@@ -1961,11 +1816,9 @@ public enum LanguageAlpha3Code
      * Frisian</a>
      * ({@link LanguageCode#fy fy}).
      */
-    fry("West Frisian")
-    {
+    fry("West Frisian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.fy;
         }
     },
@@ -1974,11 +1827,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Fula_language">Fula</a>
      * ({@link LanguageCode#ff ff}).
      */
-    ful("Fula")
-    {
+    ful("Fula") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ff;
         }
     },
@@ -2024,25 +1875,21 @@ public enum LanguageAlpha3Code
      *
      * @see #kat
      */
-    geo("Georgian")
-    {
+    geo("Georgian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ka;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return kat;
         }
     },
@@ -2053,25 +1900,21 @@ public enum LanguageAlpha3Code
      *
      * @see #deu
      */
-    ger("German")
-    {
+    ger("German") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.de;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return deu;
         }
     },
@@ -2095,11 +1938,9 @@ public enum LanguageAlpha3Code
      * Gaelic</a>
      * ({@link LanguageCode#gd gd}).
      */
-    gla("Scottish Gaelic")
-    {
+    gla("Scottish Gaelic") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.gd;
         }
     },
@@ -2108,11 +1949,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Irish_language">Irish</a>
      * ({@link LanguageCode#ga ga}).
      */
-    gle("Irish")
-    {
+    gle("Irish") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ga;
         }
     },
@@ -2121,11 +1960,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Galician_language">Galician</a>
      * ({@link LanguageCode#gl gl}).
      */
-    glg("Galician")
-    {
+    glg("Galician") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.gl;
         }
     },
@@ -2134,11 +1971,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Manx_language">Manx</a>
      * ({@link LanguageCode#gv gv}).
      */
-    glv("Manx")
-    {
+    glv("Manx") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.gv;
         }
     },
@@ -2227,25 +2062,21 @@ public enum LanguageAlpha3Code
      * @see #ell Modern Greek (ell)
      * @see #grc Acient Greek (grc)
      */
-    gre("Modern Greek")
-    {
+    gre("Modern Greek") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.el;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return ell;
         }
     },
@@ -2263,11 +2094,9 @@ public enum LanguageAlpha3Code
      * ;</a>
      * ({@link LanguageCode#gn gn}).
      */
-    grn("Guaran\u00ED")
-    {
+    grn("Guaran\u00ED") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.gn;
         }
     },
@@ -2283,11 +2112,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Gujarati_language">Gujarati</a>
      * ({@link LanguageCode#gu gu}).
      */
-    guj("Gujarati")
-    {
+    guj("Gujarati") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.gu;
         }
     },
@@ -2311,11 +2138,9 @@ public enum LanguageAlpha3Code
      * href="http://en.wikipedia.org/wiki/Haitian_Creole_language">Haitian</a>
      * ({@link LanguageCode#ht ht}).
      */
-    hat("Haitian")
-    {
+    hat("Haitian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ht;
         }
     },
@@ -2324,11 +2149,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Hausa_language">Hausa</a>
      * ({@link LanguageCode#ha ha}).
      */
-    hau("Hausa")
-    {
+    hau("Hausa") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ha;
         }
     },
@@ -2344,11 +2167,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Hebrew_language">Hebrew</a>
      * ({@link LanguageCode#he he}).
      */
-    heb("Hebrew")
-    {
+    heb("Hebrew") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.he;
         }
     },
@@ -2357,11 +2178,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Herero_language">Herero</a>
      * ({@link LanguageCode#hz hz}).
      */
-    her("Herero")
-    {
+    her("Herero") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.hz;
         }
     },
@@ -2384,11 +2203,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Hindi">Hindi</a>
      * ({@link LanguageCode#hi hi}).
      */
-    hin("Hindi")
-    {
+    hin("Hindi") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.hi;
         }
     },
@@ -2411,11 +2228,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Hiri_Motu_language">Hiri Motu</a>
      * ({@link LanguageCode#ho ho}).
      */
-    hmo("Hiri Motu")
-    {
+    hmo("Hiri Motu") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ho;
         }
     },
@@ -2438,11 +2253,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Croatian_language">Croatian</a>
      * ({@link LanguageCode#hr hr}).
      */
-    hrv("Croatian")
-    {
+    hrv("Croatian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.hr;
         }
     },
@@ -2458,11 +2271,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Hungarian_language">Hungarian</a>
      * ({@link LanguageCode#hu hu}).
      */
-    hun("Hungarian")
-    {
+    hun("Hungarian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.hu;
         }
     },
@@ -2480,25 +2291,21 @@ public enum LanguageAlpha3Code
      *
      * @see #arm
      */
-    hye("Armenian")
-    {
+    hye("Armenian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.hy;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return arm;
         }
     },
@@ -2521,11 +2328,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Igbo_language">Igbo</a>
      * ({@link LanguageCode#ig ig}).
      */
-    ibo("Igbo")
-    {
+    ibo("Igbo") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ig;
         }
     },
@@ -2536,25 +2341,21 @@ public enum LanguageAlpha3Code
      *
      * @see #isl
      */
-    ice("Icelandic")
-    {
+    ice("Icelandic") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.is;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return isl;
         }
     },
@@ -2563,11 +2364,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Ido">Ido</a>
      * ({@link LanguageCode#io io}).
      */
-    ido("Ido")
-    {
+    ido("Ido") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.io;
         }
     },
@@ -2576,11 +2375,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Nuosu_language">Nuosu</a>
      * ({@link LanguageCode#ii ii}).
      */
-    iii("Nuosu")
-    {
+    iii("Nuosu") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ii;
         }
     },
@@ -2603,11 +2400,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Inuktitut">Inuktitut</a>
      * ({@link LanguageCode#iu iu}).
      */
-    iku("Inuktitut")
-    {
+    iku("Inuktitut") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.iu;
         }
     },
@@ -2617,11 +2412,9 @@ public enum LanguageAlpha3Code
      * href="http://en.wikipedia.org/wiki/Interlingue_language">Interlingue</a>
      * ({@link LanguageCode#ie ie}).
      */
-    ile("Interlingue")
-    {
+    ile("Interlingue") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ie;
         }
     },
@@ -2637,11 +2430,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Interlingua">Interlingua</a>
      * {@link LanguageCode#ia ia}).
      */
-    ina("Interlingua")
-    {
+    ina("Interlingua") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ia;
         }
     },
@@ -2658,11 +2449,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Indonesian_language">Indonesian</a>
      * ({@link LanguageCode#id id}).
      */
-    ind("Indonesian")
-    {
+    ind("Indonesian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.id;
         }
     },
@@ -2685,11 +2474,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Inupiaq_language">Inupiaq</a>
      * ({@link LanguageCode#ik ik}).
      */
-    ipk("Inupiaq")
-    {
+    ipk("Inupiaq") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ik;
         }
     },
@@ -2714,25 +2501,21 @@ public enum LanguageAlpha3Code
      *
      * @see #ice
      */
-    isl("Icelandic")
-    {
+    isl("Icelandic") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.is;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return ice;
         }
     },
@@ -2741,11 +2524,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Italian_language">Italian</a>
      * ({@link LanguageCode#it it}).
      */
-    ita("Italian")
-    {
+    ita("Italian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.it;
         }
     },
@@ -2761,11 +2542,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Javanese_language">Javanese</a>
      * ({@link LanguageCode#jv jv}).
      */
-    jav("Javanese")
-    {
+    jav("Javanese") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.jv;
         }
     },
@@ -2781,11 +2560,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Japanese_language">Japanese</a>
      * ({@link LanguageCode#ja ja}).
      */
-    jpn("Japanese")
-    {
+    jpn("Japanese") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ja;
         }
     },
@@ -2837,11 +2614,9 @@ public enum LanguageAlpha3Code
      * href="http://en.wikipedia.org/wiki/Kalaallisut_language">Kalaallisut</a>
      * ({@link LanguageCode#kl kl}).
      */
-    kal("Kalaallisut")
-    {
+    kal("Kalaallisut") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.kl;
         }
     },
@@ -2857,11 +2632,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Kannada_language">Kannada</a>
      * ({@link LanguageCode#kn kn}).
      */
-    kan("Kannada")
-    {
+    kan("Kannada") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.kn;
         }
     },
@@ -2877,11 +2650,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Kashmiri_language">Kashmiri</a>
      * ({@link LanguageCode#ks ks}).
      */
-    kas("Kashmiri")
-    {
+    kas("Kashmiri") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ks;
         }
     },
@@ -2892,25 +2663,21 @@ public enum LanguageAlpha3Code
      *
      * @see #geo
      */
-    kat("Georgian")
-    {
+    kat("Georgian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ka;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return geo;
         }
     },
@@ -2919,11 +2686,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Kanuri_language">Kanuri</a>
      * ({@link LanguageCode#kr kr}).
      */
-    kau("Kanuri")
-    {
+    kau("Kanuri") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.kr;
         }
     },
@@ -2939,11 +2704,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Kazakh_language">Kazakh</a>
      * ({@link LanguageCode#kk kk}).
      */
-    kaz("Kazakh")
-    {
+    kaz("Kazakh") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.kk;
         }
     },
@@ -2980,11 +2743,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Khmer_language">Khmer</a>
      * ({@link LanguageCode#km km}).
      */
-    khm("Central Khmer")
-    {
+    khm("Central Khmer") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.km;
         }
     },
@@ -3000,11 +2761,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Gikuyu_language">Kikuyu</a>
      * ({@link LanguageCode#ki ki}).
      */
-    kik("Kikuyu")
-    {
+    kik("Kikuyu") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ki;
         }
     },
@@ -3013,11 +2772,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Kinyarwanda">Kinyarwanda</a>
      * ({@link LanguageCode#rw rw}).
      */
-    kin("Kinyarwanda")
-    {
+    kin("Kinyarwanda") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.rw;
         }
     },
@@ -3026,11 +2783,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Kyrgyz_language">Kyrgyz</a>
      * ({@link LanguageCode#ky ky}).
      */
-    kir("Kirghiz")
-    {
+    kir("Kirghiz") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ky;
         }
     },
@@ -3053,11 +2808,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Komi_language">Komi</a>
      * ({@link LanguageCode#kv kv}).
      */
-    kom("Komi")
-    {
+    kom("Komi") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.kv;
         }
     },
@@ -3066,11 +2819,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Kongo_language">Kongo</a>
      * ({@link LanguageCode#kg kg}).
      */
-    kon("Kongo")
-    {
+    kon("Kongo") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.kg;
         }
     },
@@ -3079,11 +2830,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Korean_language">Korean</a>
      * ({@link LanguageCode#ko ko}).
      */
-    kor("Korean")
-    {
+    kor("Korean") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ko;
         }
     },
@@ -3134,11 +2883,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Kwanyama">Kwanyama</a>
      * ({@link LanguageCode#kj kj}).
      */
-    kua("Kuanyama")
-    {
+    kua("Kuanyama") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.kj;
         }
     },
@@ -3154,11 +2901,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Kurdish_language">Kurdish</a>
      * ({@link LanguageCode#ku ku}).
      */
-    kur("Kurdish")
-    {
+    kur("Kurdish") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ku;
         }
     },
@@ -3195,11 +2940,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Lao_language">Lao</a>
      * ({@link LanguageCode#lo lo}).
      */
-    lao("Lao")
-    {
+    lao("Lao") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.lo;
         }
     },
@@ -3208,11 +2951,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Latin">Latin</a>
      * ({@link LanguageCode#la la}).
      */
-    lat("Latin")
-    {
+    lat("Latin") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.la;
         }
     },
@@ -3221,11 +2962,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Latvian_language">Latvian</a>
      * ({@link LanguageCode#lv lv}).
      */
-    lav("Latvian")
-    {
+    lav("Latvian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.lv;
         }
     },
@@ -3241,11 +2980,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Limburgish_language">Limburgish</a>
      * ({@link LanguageCode#li li}).
      */
-    lim("Limburgan")
-    {
+    lim("Limburgan") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.li;
         }
     },
@@ -3254,11 +2991,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Lingala_language">Lingala</a>
      * ({@link LanguageCode#ln ln}).
      */
-    lin("Lingala")
-    {
+    lin("Lingala") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ln;
         }
     },
@@ -3267,11 +3002,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Lithuanian_language">Lithuanian</a>
      * ({@link LanguageCode#lt lt}).
      */
-    lit("Lithuanian")
-    {
+    lit("Lithuanian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.lt;
         }
     },
@@ -3295,11 +3028,9 @@ public enum LanguageAlpha3Code
      * Luxembourgish</a>
      * ({@link LanguageCode#lb lb}).
      */
-    ltz("Luxembourgish")
-    {
+    ltz("Luxembourgish") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.lb;
         }
     },
@@ -3315,11 +3046,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Tshiluba_language">Luba-Katanga</a>
      * ({@link LanguageCode#lu lu}).
      */
-    lub("Luba-Katanga")
-    {
+    lub("Luba-Katanga") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.lu;
         }
     },
@@ -3328,11 +3057,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Luganda">Ganda</a>
      * ({@link LanguageCode#lg lg}).
      */
-    lug("Ganda")
-    {
+    lug("Ganda") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.lg;
         }
     },
@@ -3371,25 +3098,21 @@ public enum LanguageAlpha3Code
      *
      * @see #mkd
      */
-    mac("Macedonian")
-    {
+    mac("Macedonian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.mk;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return mkd;
         }
     },
@@ -3413,11 +3136,9 @@ public enum LanguageAlpha3Code
      * href="http://en.wikipedia.org/wiki/Marshallese_language">Marshallese</a>
      * ({@link LanguageCode#mh mh}).
      */
-    mah("Marshallese")
-    {
+    mah("Marshallese") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.mh;
         }
     },
@@ -3440,11 +3161,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Malayalam_language">Malayalam</a>
      * ({@link LanguageCode#ml ml}).
      */
-    mal("Malayalam")
-    {
+    mal("Malayalam") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ml;
         }
     },
@@ -3462,25 +3181,21 @@ public enum LanguageAlpha3Code
      *
      * @see #mri
      */
-    mao("M\u0101ori")
-    {
+    mao("M\u0101ori") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.mi;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return mri;
         }
     },
@@ -3496,11 +3211,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Marathi_language">Marathi</a>
      * ({@link LanguageCode#mr mr}).
      */
-    mar("Marathi")
-    {
+    mar("Marathi") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.mr;
         }
     },
@@ -3518,25 +3231,21 @@ public enum LanguageAlpha3Code
      *
      * @see #msa
      */
-    may("Malay")
-    {
+    may("Malay") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ms;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return msa;
         }
     },
@@ -3597,25 +3306,21 @@ public enum LanguageAlpha3Code
      *
      * @see #mac
      */
-    mkd("Macedonian")
-    {
+    mkd("Macedonian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.mk;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return mac;
         }
     },
@@ -3631,11 +3336,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Malagasy_language">Malagasy</a>
      * ({@link LanguageCode#mg mg}).
      */
-    mlg("Malagasy")
-    {
+    mlg("Malagasy") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.mg;
         }
     },
@@ -3644,11 +3347,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Maltese_language">Maltese</a>
      * ({@link LanguageCode#mt mt}).
      */
-    mlt("Maltese")
-    {
+    mlt("Maltese") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.mt;
         }
     },
@@ -3685,11 +3386,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Mongolian_language">Mongolian</a>
      * ({@link LanguageCode#mn mn}).
      */
-    mon("Mongolian")
-    {
+    mon("Mongolian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.mn;
         }
     },
@@ -3707,25 +3406,21 @@ public enum LanguageAlpha3Code
      *
      * @see #mao
      */
-    mri("M\u0101ori")
-    {
+    mri("M\u0101ori") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.mi;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return mao;
         }
     },
@@ -3736,25 +3431,21 @@ public enum LanguageAlpha3Code
      *
      * @see #may
      */
-    msa("Malay")
-    {
+    msa("Malay") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ms;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return may;
         }
     },
@@ -3800,25 +3491,21 @@ public enum LanguageAlpha3Code
      *
      * @see #bur
      */
-    mya("Burmese")
-    {
+    mya("Burmese") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.my;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return bur;
         }
     },
@@ -3863,11 +3550,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Nauruan_language">Nauru</a>
      * ({@link LanguageCode#na na}).
      */
-    nau("Nauru")
-    {
+    nau("Nauru") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.na;
         }
     },
@@ -3876,11 +3561,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Navajo_language">Navajo</a>
      * ({@link LanguageCode#nv nv}).
      */
-    nav("Navajo")
-    {
+    nav("Navajo") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.nv;
         }
     },
@@ -3890,11 +3573,9 @@ public enum LanguageAlpha3Code
      * Ndebele</a>
      * ({@link LanguageCode#nr nr}).
      */
-    nbl("South Ndebele")
-    {
+    nbl("South Ndebele") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.nr;
         }
     },
@@ -3904,11 +3585,9 @@ public enum LanguageAlpha3Code
      * Ndebele</a>
      * ({@link LanguageCode#nd nd}).
      */
-    nde("North Ndebele")
-    {
+    nde("North Ndebele") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.nd;
         }
     },
@@ -3917,11 +3596,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Ndonga">Ndonga</a>
      * ({@link LanguageCode#ng ng}).
      */
-    ndo("Ndonga")
-    {
+    ndo("Ndonga") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ng;
         }
     },
@@ -3937,11 +3614,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Nepali_language">Nepali</a> (macrolanguage)
      * ({@link LanguageCode#ne ne}).
      */
-    nep("Nepali")
-    {
+    nep("Nepali") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ne;
         }
     },
@@ -3962,11 +3637,9 @@ public enum LanguageAlpha3Code
      *
      * @since 1.10
      */
-    New("Newari")
-    {
+    New("Newari") {
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "new";
         }
     },
@@ -4006,25 +3679,21 @@ public enum LanguageAlpha3Code
      *
      * @see #dut
      */
-    nld("Dutch")
-    {
+    nld("Dutch") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.nl;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return dut;
         }
     },
@@ -4033,11 +3702,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Nynorsk">Norwegian Nynorsk</a>
      * ({@link LanguageCode#nn nn}).
      */
-    nno("Norwegian Nynorsk")
-    {
+    nno("Norwegian Nynorsk") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.nn;
         }
     },
@@ -4047,11 +3714,9 @@ public enum LanguageAlpha3Code
      * Bokm&aring;l</a>
      * ({@link LanguageCode#nb nb}).
      */
-    nob("Norwegian Bokm\u00E5l")
-    {
+    nob("Norwegian Bokm\u00E5l") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.nb;
         }
     },
@@ -4074,11 +3739,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Norwegian_language">Norwegian</a>
      * ({@link LanguageCode#no no}).
      */
-    nor("Norwegian")
-    {
+    nor("Norwegian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.no;
         }
     },
@@ -4115,11 +3778,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Chichewa_language">Chichewa</a>
      * ({@link LanguageCode#ny ny}).
      */
-    nya("Nyanja")
-    {
+    nya("Nyanja") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ny;
         }
     },
@@ -4157,11 +3818,9 @@ public enum LanguageAlpha3Code
      * >Occitan</a> (post 1500)
      * ({@link LanguageCode#oc oc}).
      */
-    oci("Occitan")
-    {
+    oci("Occitan") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.oc;
         }
     },
@@ -4170,11 +3829,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Ojibwe_language">Ojibwe</a>
      * ({@link LanguageCode#oj oj}).
      */
-    oji("Ojibwa")
-    {
+    oji("Ojibwa") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.oj;
         }
     },
@@ -4198,11 +3855,9 @@ public enum LanguageAlpha3Code
      * >Oriya</a> (macrolanguage)
      * ({@link LanguageCode#or or}).
      */
-    ori("Oriya")
-    {
+    ori("Oriya") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.or;
         }
     },
@@ -4211,11 +3866,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Oromo_language">Oromo</a>
      * ({@link LanguageCode#om om}).
      */
-    orm("Oromo")
-    {
+    orm("Oromo") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.om;
         }
     },
@@ -4231,11 +3884,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Ossetic_language">Ossetian</a>
      * ({@link LanguageCode#os os}).
      */
-    oss("Ossetian")
-    {
+    oss("Ossetian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.os;
         }
     },
@@ -4287,11 +3938,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Punjabi_language">Punjabi</a>
      * ({@link LanguageCode#pa pa}).
      */
-    pan("Panjabi")
-    {
+    pan("Panjabi") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.pa;
         }
     },
@@ -4322,25 +3971,21 @@ public enum LanguageAlpha3Code
      *
      * @see #fas
      */
-    per("Persian")
-    {
+    per("Persian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.fa;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return fas;
         }
     },
@@ -4370,11 +4015,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/P%C4%81li_language">P&#257;li</a>
      * ({@link LanguageCode#pi pi}).
      */
-    pli("P\u0101li")
-    {
+    pli("P\u0101li") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.pi;
         }
     },
@@ -4383,11 +4026,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Polish_language">Polish</a>
      * ({@link LanguageCode#pl pl}).
      */
-    pol("Polish")
-    {
+    pol("Polish") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.pl;
         }
     },
@@ -4403,11 +4044,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Portuguese_language">Portuguese</a>
      * ({@link LanguageCode#pt pt}).
      */
-    por("Portuguese")
-    {
+    por("Portuguese") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.pt;
         }
     },
@@ -4451,11 +4090,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Pashto_language">Pashto</a>
      * ({@link LanguageCode#ps ps}).
      */
-    pus("Pushto")
-    {
+    pus("Pushto") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ps;
         }
     },
@@ -4464,11 +4101,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Quechua_language">Quechua</a>
      * ({@link LanguageCode#qu qu}).
      */
-    que("Quechua")
-    {
+    que("Quechua") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.qu;
         }
     },
@@ -4512,11 +4147,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Romansh_language">Romansh</a>
      * ({@link LanguageCode#rm rm})
      */
-    roh("Romansh")
-    {
+    roh("Romansh") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.rm;
         }
     },
@@ -4534,25 +4167,21 @@ public enum LanguageAlpha3Code
      *
      * @see #rum
      */
-    ron("Romanian")
-    {
+    ron("Romanian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ro;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return rum;
         }
     },
@@ -4563,25 +4192,21 @@ public enum LanguageAlpha3Code
      *
      * @see #ron
      */
-    rum("Romansh")
-    {
+    rum("Romansh") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ro;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return ron;
         }
     },
@@ -4590,11 +4215,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Kirundi">Kirundi</a>
      * ({@link LanguageCode#rn rn}).
      */
-    run("Kirundi")
-    {
+    run("Kirundi") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.rn;
         }
     },
@@ -4610,11 +4233,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Russian_language">Russian</a>
      * ({@link LanguageCode#ru ru}).
      */
-    rus("Russian")
-    {
+    rus("Russian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ru;
         }
     },
@@ -4630,11 +4251,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Sango_language">Sango</a>
      * ({@link LanguageCode#sg sg}).
      */
-    sag("Sango")
-    {
+    sag("Sango") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.sg;
         }
     },
@@ -4671,11 +4290,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Sanskrit">Sanskrit</a>
      * ({@link LanguageCode#sa sa}).
      */
-    san("Sanskrit")
-    {
+    san("Sanskrit") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.sa;
         }
     },
@@ -4762,11 +4379,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Sinhala_language">Sinhala</a>
      * ({@link LanguageCode#si si}).
      */
-    sin("Sinhala")
-    {
+    sin("Sinhala") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.si;
         }
     },
@@ -4798,25 +4413,21 @@ public enum LanguageAlpha3Code
      *
      * @see #slo
      */
-    slk("Slovak")
-    {
+    slk("Slovak") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.sk;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return slo;
         }
     },
@@ -4827,25 +4438,21 @@ public enum LanguageAlpha3Code
      *
      * @see #slk
      */
-    slo("Slovak")
-    {
+    slo("Slovak") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.sk;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return slk;
         }
     },
@@ -4854,11 +4461,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Slovene_language">Slovene</a>
      * ({@link LanguageCode#sl sl}).
      */
-    slv("Slovene")
-    {
+    slv("Slovene") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.sl;
         }
     },
@@ -4874,11 +4479,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Northern_Sami">Northern Sami</a>
      * ({@link LanguageCode#se se}).
      */
-    sme("Northern Sami")
-    {
+    sme("Northern Sami") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.se;
         }
     },
@@ -4908,11 +4511,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Samoan_language">Samoan</a>
      * ({@link LanguageCode#sm sm}).
      */
-    smo("Samoan")
-    {
+    smo("Samoan") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.sm;
         }
     },
@@ -4928,11 +4529,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Shona_language">Shona</a>
      * ({@link LanguageCode#sn sn}).
      */
-    sna("Shona")
-    {
+    sna("Shona") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.sn;
         }
     },
@@ -4941,11 +4540,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Sindhi_language">Sindhi</a>
      * ({@link LanguageCode#sd sd}).
      */
-    snd("Sindhi")
-    {
+    snd("Sindhi") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.sd;
         }
     },
@@ -4968,11 +4565,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Somali_language">Somali</a>
      * ({@link LanguageCode#so so}).
      */
-    som("Somali")
-    {
+    som("Somali") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.so;
         }
     },
@@ -4988,11 +4583,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Sotho_language">Southern Sotho</a>
      * ({@link LanguageCode#st st}).
      */
-    sot("Southern Sotho")
-    {
+    sot("Southern Sotho") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.st;
         }
     },
@@ -5001,11 +4594,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Spanish_language">Spanish</a>
      * ({@link LanguageCode#es es}).
      */
-    spa("Spanish")
-    {
+    spa("Spanish") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.es;
         }
     },
@@ -5016,25 +4607,21 @@ public enum LanguageAlpha3Code
      *
      * @see #alb
      */
-    sqi("Albanian")
-    {
+    sqi("Albanian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.sq;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return alb;
         }
     },
@@ -5050,11 +4637,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Sardinian_language">Sardinian</a>
      * ({@link LanguageCode#sc sc}).
      */
-    srd("Sardinian")
-    {
+    srd("Sardinian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.sc;
         }
     },
@@ -5070,11 +4655,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Serbian_language">Serbian</a>
      * ({@link LanguageCode#sr sr}).
      */
-    srp("Serbian")
-    {
+    srp("Serbian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.sr;
         }
     },
@@ -5097,11 +4680,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Swati_language">Swati</a>
      * ({@link LanguageCode#ss ss}).
      */
-    ssw("Swati")
-    {
+    ssw("Swati") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ss;
         }
     },
@@ -5117,11 +4698,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Sundanese_language">Sundanese</a>
      * ({@link LanguageCode#su su}).
      */
-    sun("Sundanese")
-    {
+    sun("Sundanese") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.su;
         }
     },
@@ -5145,11 +4724,9 @@ public enum LanguageAlpha3Code
      * >Swahili</a> (macrolanguage)
      * ({@link LanguageCode#sw sw}).
      */
-    swa("Swahili")
-    {
+    swa("Swahili") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.sw;
         }
     },
@@ -5158,11 +4735,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Swedish_language">Swedish</a>
      * ({@link LanguageCode#sv sv}).
      */
-    swe("Swedish")
-    {
+    swe("Swedish") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.sv;
         }
     },
@@ -5192,11 +4767,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Tahitian_language">Tahitian</a>
      * ({@link LanguageCode#ty ty}).
      */
-    tah("Tahitian")
-    {
+    tah("Tahitian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ty;
         }
     },
@@ -5212,11 +4785,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Tamil_language">Tamil</a>
      * ({@link LanguageCode#ta ta}).
      */
-    tam("Tamil")
-    {
+    tam("Tamil") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ta;
         }
     },
@@ -5225,11 +4796,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Tatar_language">Tatar</a>
      * ({@link LanguageCode#tt tt}).
      */
-    tat("Tatar")
-    {
+    tat("Tatar") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.tt;
         }
     },
@@ -5245,11 +4814,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Telugu_language">Telugu</a>
      * ({@link LanguageCode#te te}).
      */
-    tel("Telugu")
-    {
+    tel("Telugu") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.te;
         }
     },
@@ -5279,11 +4846,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Tajik_language">Tajik</a>
      * ({@link LanguageCode#tg tg}).
      */
-    tgk("Tajik")
-    {
+    tgk("Tajik") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.tg;
         }
     },
@@ -5292,11 +4857,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Tagalog_language">Tagalog</a>
      * ({@link LanguageCode#tl tl}).
      */
-    tgl("Tagalog")
-    {
+    tgl("Tagalog") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.tl;
         }
     },
@@ -5305,11 +4868,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Thai_language">Thai</a>
      * ({@link LanguageCode#th th}).
      */
-    tha("Thai")
-    {
+    tha("Thai") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.th;
         }
     },
@@ -5320,25 +4881,21 @@ public enum LanguageAlpha3Code
      *
      * @see #bod
      */
-    tib("Tibetan")
-    {
+    tib("Tibetan") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.bo;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return bod;
         }
     },
@@ -5354,11 +4911,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Tigrinya_language">Tigrinya</a>
      * ({@link LanguageCode#ti ti}).
      */
-    tir("Tigrinya")
-    {
+    tir("Tigrinya") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ti;
         }
     },
@@ -5409,11 +4964,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Tonga_language_(Tonga_Islands)">Tonga (Tonga Islands)</a>
      * ({@link LanguageCode#to to}).
      */
-    ton("Tonga (Tonga Islands)")
-    {
+    ton("Tonga (Tonga Islands)") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.to;
         }
     },
@@ -5443,11 +4996,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Tswana_language">Tswana</a>
      * ({@link LanguageCode#tn tn}).
      */
-    tsn("Tswana")
-    {
+    tsn("Tswana") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.tn;
         }
     },
@@ -5456,11 +5007,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Tsonga_language">Tsonga</a>
      * ({@link LanguageCode#ts ts}).
      */
-    tso("Tsonga")
-    {
+    tso("Tsonga") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ts;
         }
     },
@@ -5469,11 +5018,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Turkmen_language">Turkmen</a>
      * ({@link LanguageCode#tk tk}).
      */
-    tuk("Turkmen")
-    {
+    tuk("Turkmen") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.tk;
         }
     },
@@ -5496,11 +5043,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Turkish_language">Turkish</a>
      * ({@link LanguageCode#tr tr}).
      */
-    tur("Turkish")
-    {
+    tur("Turkish") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.tr;
         }
     },
@@ -5530,11 +5075,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Twi">Twi</a>
      * ({@link LanguageCode#tw tw}).
      */
-    twi("Twi")
-    {
+    twi("Twi") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.tw;
         }
     },
@@ -5564,11 +5107,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Uyghur_language">Uighur</a>
      * ({@link LanguageCode#ug ug}).
      */
-    uig("Uighur")
-    {
+    uig("Uighur") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ug;
         }
     },
@@ -5577,11 +5118,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Ukrainian_language">Ukrainian</a>
      * ({@link LanguageCode#uk uk}).
      */
-    ukr("Ukrainian")
-    {
+    ukr("Ukrainian") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.uk;
         }
     },
@@ -5604,11 +5143,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Urdu">Urdu</a>
      * ({@link LanguageCode#ur ur}).
      */
-    urd("Urdu")
-    {
+    urd("Urdu") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ur;
         }
     },
@@ -5624,11 +5161,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Uzbek_language">Uzbek</a>
      * ({@link LanguageCode#uz uz}).
      */
-    uzb("Uzbek")
-    {
+    uzb("Uzbek") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.uz;
         }
     },
@@ -5644,11 +5179,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Venda_language">Venda</a>
      * ({@link LanguageCode#ve ve}).
      */
-    ven("Venda")
-    {
+    ven("Venda") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.ve;
         }
     },
@@ -5657,11 +5190,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Vietnamese_language">Vietnamese</a>
      * ({@link LanguageCode#vi vi}).
      */
-    vie("Vietnamese")
-    {
+    vie("Vietnamese") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.vi;
         }
     },
@@ -5670,11 +5201,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Volap%C3%BCk">Volap&uuml;k</a>
      * ({@link LanguageCode#vo vo}).
      */
-    vol("Volap\u00FCk")
-    {
+    vol("Volap\u00FCk") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.vo;
         }
     },
@@ -5720,25 +5249,21 @@ public enum LanguageAlpha3Code
      *
      * @see #cym
      */
-    wel("Welsh")
-    {
+    wel("Welsh") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.cy;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.BIBLIOGRAPHY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return cym;
         }
     },
@@ -5754,11 +5279,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Walloon_language">Walloon</a>
      * ({@link LanguageCode#wa wa}).
      */
-    wln("Walloon")
-    {
+    wln("Walloon") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.wa;
         }
     },
@@ -5767,11 +5290,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Wolof_language">Wolof</a>
      * ({@link LanguageCode#wo wo}).
      */
-    wol("Wolof")
-    {
+    wol("Wolof") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.wo;
         }
     },
@@ -5794,11 +5315,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Xhosa_language">Xhosa</a>
      * ({@link LanguageCode#xh xh}).
      */
-    xho("Xhosa")
-    {
+    xho("Xhosa") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.xh;
         }
     },
@@ -5828,11 +5347,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Yiddish_language">Yiddish</a>
      * ({@link LanguageCode#yi yi}).
      */
-    yid("Yiddish")
-    {
+    yid("Yiddish") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.yi;
         }
     },
@@ -5841,11 +5358,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Yoruba_language">Yoruba</a>
      * ({@link LanguageCode#yo yo}).
      */
-    yor("Yoruba")
-    {
+    yor("Yoruba") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.yo;
         }
     },
@@ -5882,11 +5397,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Zhuang_languages">Zhuang</a>
      * ({@link LanguageCode#za za}).
      */
-    zha("Zhuang")
-    {
+    zha("Zhuang") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.za;
         }
     },
@@ -5897,25 +5410,21 @@ public enum LanguageAlpha3Code
      *
      * @see #chi
      */
-    zho("Chinese")
-    {
+    zho("Chinese") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.zh;
         }
 
 
         @Override
-        public Usage getUsage()
-        {
+        public Usage getUsage() {
             return Usage.TERMINOLOGY;
         }
 
 
         @Override
-        public LanguageAlpha3Code getSynonym()
-        {
+        public LanguageAlpha3Code getSynonym() {
             return chi;
         }
     },
@@ -5959,11 +5468,9 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/Zulu_language">Zulu</a>
      * ({@link LanguageCode#zu zu}).
      */
-    zul("Zulu")
-    {
+    zul("Zulu") {
         @Override
-        public LanguageCode getAlpha2()
-        {
+        public LanguageCode getAlpha2() {
             return LanguageCode.zu;
         }
     },
@@ -5987,33 +5494,7 @@ public enum LanguageAlpha3Code
      *
      * @since 1.10
      */
-    zza("Zaza")
-    ;
-
-
-    /**
-     * The usage of this language code.
-     *
-     * @since 1.1
-     */
-    public enum Usage
-    {
-        /**
-         * Code for terminology applications (ISO 639-2/T).
-         */
-        TERMINOLOGY,
-
-        /**
-         * Code for bibliographic applications (ISO 639-2/B).
-         */
-        BIBLIOGRAPHY,
-
-        /**
-         * For all applications including both terminology and
-         * bibliographic applications.
-         */
-        COMMON
-    };
+    zza("Zaza");
 
 
     /**
@@ -6021,133 +5502,12 @@ public enum LanguageAlpha3Code
      */
     private final String name;
 
+    ;
 
-    private LanguageAlpha3Code(String name)
-    {
+
+    private LanguageAlpha3Code(String name) {
         this.name = name;
     }
-
-
-    /**
-     * Get the language name.
-     *
-     * @return
-     *         The language name.
-     */
-    public String getName()
-    {
-        return name;
-    }
-
-
-    /**
-     * Get <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
-     * language code.
-     *
-     * @return
-     *         <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
-     *         language code. This method may return {@code null}.
-     */
-    public LanguageCode getAlpha2()
-    {
-        return null;
-    }
-
-
-    /**
-     * Get the usage of this language code.
-     *
-     * <p>
-     * Most language codes return {@link Usage#COMMON Usage.COMMON}.
-     * </p>
-     *
-     * @return
-     *         The usage of this language code.
-     */
-    public Usage getUsage()
-    {
-        return Usage.COMMON;
-    }
-
-
-    /**
-     * Get the synonym of this code.
-     *
-     * <p>
-     * In most cases, this method simply returns <code>this</code> object. On
-     * the other hand, language codes that have two alpha-3 codes, namely, ISO
-     * 639-2/T code ("terminological" code) and ISO 639-2/B code
-     * ("bibliographic" code), return their counterparts. For example,
-     * {@link #deu LanguageAlpha3Code.deu}{@code .getSynonym()} returns
-     * {@link #ger LanguageAlpha3Code.ger}.
-     * </p>
-     *
-     * @return
-     *         <a href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a>
-     *         language code.
-     */
-    public LanguageAlpha3Code getSynonym()
-    {
-        return this;
-    }
-
-
-    /**
-     * Get the bibliographic code of this language.
-     *
-     * <p>
-     * Most languages have just one <a
-     * href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a> code and they
-     * simply return <code>this</code> object. Only ISO 639-2/T codes
-     * ("terminological" codes) return counterpart objects. For example,
-     * {@link LanguageAlpha3Code#fra LanguageAlpha3Code.fra}{@code .getAlpha3B()}
-     * returns {@link LanguageAlpha3Code#fre LanguageAlpha3Code.fre}.
-     * </p>
-     *
-     * @return
-     *         The bibliographic code of this language.
-     */
-    public LanguageAlpha3Code getAlpha3B()
-    {
-        if (getUsage() == Usage.BIBLIOGRAPHY)
-        {
-            return this;
-        }
-        else
-        {
-            return getSynonym();
-        }
-    }
-
-
-    /**
-     * Get the terminological code of this language.
-     *
-     * <p>
-     * Most languages have just one <a
-     * href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a> code and they
-     * simply return <code>this</code> object. Only ISO 639-2/B codes
-     * ("bibliographic" codes) return counterpart objects. For example,
-     * {@link LanguageAlpha3Code#fre LanguageAlpha3Code.fre}{@code .getAlpha3T()}
-     * returns {@link LanguageAlpha3Code#fra LanguageAlpha3Code.fra}.
-     *
-     * </p>
-     *
-     * @return
-     *         The terminological code of this language.
-     */
-    public LanguageAlpha3Code getAlpha3T()
-    {
-        if (getUsage() == Usage.TERMINOLOGY)
-        {
-            return this;
-        }
-        else
-        {
-            return getSynonym();
-        }
-    }
-
 
     /**
      * Get a {@code LanguageAlpha3Code} that corresponds to a given
@@ -6162,28 +5522,23 @@ public enum LanguageAlpha3Code
      * this method was an alias of {@code getByCode(code, false)}.
      * </p>
      *
-     * @param code
-     *        An <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
-     *        code (2-letter lowercase code) or an
-     *        <a href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a>
-     *        code (3-letter lowercase code). Or "undefined".
-     *        Note that if the given code is one of legacy language codes
-     *        ("iw", "ji" and "in"), it is treated as its official counterpart
-     *        ("he", "yi" and "id"), respectively. For example, if "in" is
-     *        given, this method returns {@link #ind LanguageAlpha3Code.ind}.
-     *
-     * @return
-     *         A {@code LanguageAlpha3Code} instance, or {@code null} if not found.
-     *         If <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
-     *         code (2-letter code) is given and the language has two
-     *         <a href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a>
-     *         codes, ISO 639/T code ("terminological" code) is returned.
+     * @param code An <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
+     *             code (2-letter lowercase code) or an
+     *             <a href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a>
+     *             code (3-letter lowercase code). Or "undefined".
+     *             Note that if the given code is one of legacy language codes
+     *             ("iw", "ji" and "in"), it is treated as its official counterpart
+     *             ("he", "yi" and "id"), respectively. For example, if "in" is
+     *             given, this method returns {@link #ind LanguageAlpha3Code.ind}.
+     * @return A {@code LanguageAlpha3Code} instance, or {@code null} if not found.
+     * If <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
+     * code (2-letter code) is given and the language has two
+     * <a href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a>
+     * codes, ISO 639/T code ("terminological" code) is returned.
      */
-    public static LanguageAlpha3Code getByCode(String code)
-    {
+    public static LanguageAlpha3Code getByCode(String code) {
         return getByCode(code, true);
     }
-
 
     /**
      * Get a {@code LanguageAlpha3Code} that corresponds to a given
@@ -6196,30 +5551,24 @@ public enum LanguageAlpha3Code
      * This method calls {@link #getByCode(String, boolean) getByCode}{@code (code, false)}.
      * </p>
      *
-     * @param code
-     *        An <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
-     *        code (2-letter lowercase code) or an
-     *        <a href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a>
-     *        code (3-letter lowercase code). Or "undefined" (case insensitive).
-     *        Note that if the given code is one of legacy language codes
-     *        ("iw", "ji" and "in"), it is treated as its official counterpart
-     *        ("he", "yi" and "id"), respectively. For example, if "in" is
-     *        given, this method returns {@link #ind LanguageAlpha3Code.ind}.
-     *
-     * @return
-     *         A {@code LanguageAlpha3Code} instance, or {@code null} if not found.
-     *         If <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
-     *         code (2-letter code) is given and the language has two
-     *         <a href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a>
-     *         codes, ISO 639/T code ("terminological" code) is returned.
-     *
+     * @param code An <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
+     *             code (2-letter lowercase code) or an
+     *             <a href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a>
+     *             code (3-letter lowercase code). Or "undefined" (case insensitive).
+     *             Note that if the given code is one of legacy language codes
+     *             ("iw", "ji" and "in"), it is treated as its official counterpart
+     *             ("he", "yi" and "id"), respectively. For example, if "in" is
+     *             given, this method returns {@link #ind LanguageAlpha3Code.ind}.
+     * @return A {@code LanguageAlpha3Code} instance, or {@code null} if not found.
+     * If <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
+     * code (2-letter code) is given and the language has two
+     * <a href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a>
+     * codes, ISO 639/T code ("terminological" code) is returned.
      * @since 1.13
      */
-    public static LanguageAlpha3Code getByCodeIgnoreCase(String code)
-    {
+    public static LanguageAlpha3Code getByCodeIgnoreCase(String code) {
         return getByCode(code, false);
     }
-
 
     /**
      * Get a {@code LanguageAlpha3Code} that corresponds to a given
@@ -6228,46 +5577,38 @@ public enum LanguageAlpha3Code
      * <a href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a> code
      * (3-letter lowercase code).
      *
-     * @param code
-     *         An <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
-     *         code (2-letter lowercase code) or an
-     *         <a href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a>
-     *         code (3-letter lowercase code). Or "undefined" (its case
-     *         sensitivity depends on the value of {@code caseSensitive}).
-     *         Note that if the given code is one of legacy language codes
-     *         ("iw", "ji" and "in"), it is treated as its official counterpart
-     *         ("he", "yi" and "id"), respectively. For example, if "in" is
-     *         given, this method returns {@link #ind LanguageAlpha3Code.ind}.
-     *
-     * @param caseSensitive
-     *         If {@code true}, the given code should consist of lowercase letters only.
-     *         If {@code false}, this method internally canonicalizes the given code by
-     *         {@link String#toLowerCase()} and then performs search. For
-     *         example, {@code getByCode("JPN", true)} returns {@code null}, but on the
-     *         other hand, {@code getByCode("JPN", false)} returns {@link #jpn
-     *         LanguageAlpha3Code.jpn}.
-     *
-     *         As an exceptional case, both {@code getByCode("New", true)} and
-     *         {@code getByCode("new", true)} return {@link #New} (Newari).
-     *
-     * @return
-     *         A {@code LanguageAlpha3Code} instance, or {@code null} if not found.
-     *         If <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
-     *         code (2-letter code) is given and the language has two
-     *         <a href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a>
-     *         codes, ISO 639/T code ("terminological" code) is returned.
+     * @param code          An <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
+     *                      code (2-letter lowercase code) or an
+     *                      <a href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a>
+     *                      code (3-letter lowercase code). Or "undefined" (its case
+     *                      sensitivity depends on the value of {@code caseSensitive}).
+     *                      Note that if the given code is one of legacy language codes
+     *                      ("iw", "ji" and "in"), it is treated as its official counterpart
+     *                      ("he", "yi" and "id"), respectively. For example, if "in" is
+     *                      given, this method returns {@link #ind LanguageAlpha3Code.ind}.
+     * @param caseSensitive If {@code true}, the given code should consist of lowercase letters only.
+     *                      If {@code false}, this method internally canonicalizes the given code by
+     *                      {@link String#toLowerCase()} and then performs search. For
+     *                      example, {@code getByCode("JPN", true)} returns {@code null}, but on the
+     *                      other hand, {@code getByCode("JPN", false)} returns {@link #jpn
+     *                      LanguageAlpha3Code.jpn}.
+     *                      <p>
+     *                      As an exceptional case, both {@code getByCode("New", true)} and
+     *                      {@code getByCode("new", true)} return {@link #New} (Newari).
+     * @return A {@code LanguageAlpha3Code} instance, or {@code null} if not found.
+     * If <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
+     * code (2-letter code) is given and the language has two
+     * <a href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a>
+     * codes, ISO 639/T code ("terminological" code) is returned.
      */
-    public static LanguageAlpha3Code getByCode(String code, boolean caseSensitive)
-    {
+    public static LanguageAlpha3Code getByCode(String code, boolean caseSensitive) {
         code = canonicalize(code, caseSensitive);
 
-        if (code == null)
-        {
+        if (code == null) {
             return null;
         }
 
-        switch (code.length())
-        {
+        switch (code.length()) {
             case 2:
                 break;
 
@@ -6282,37 +5623,27 @@ public enum LanguageAlpha3Code
         code = LanguageCode.canonicalize(code, caseSensitive);
         LanguageCode alpha2 = LanguageCode.getByEnumName(code);
 
-        if (alpha2 == null)
-        {
+        if (alpha2 == null) {
             return null;
         }
 
         return alpha2.getAlpha3();
     }
 
-
-    static LanguageAlpha3Code getByEnumName(String name)
-    {
-        try
-        {
+    static LanguageAlpha3Code getByEnumName(String name) {
+        try {
             return Enum.valueOf(LanguageAlpha3Code.class, name);
-        }
-        catch (IllegalArgumentException e)
-        {
+        } catch (IllegalArgumentException e) {
             return null;
         }
     }
 
-
-    private static String canonicalize(String code, boolean caseSensitive)
-    {
-        if (code == null || code.length() == 0)
-        {
+    private static String canonicalize(String code, boolean caseSensitive) {
+        if (code == null || code.length() == 0) {
             return null;
         }
 
-        if (caseSensitive == false)
-        {
+        if (caseSensitive == false) {
             code = code.toLowerCase();
         }
 
@@ -6324,7 +5655,6 @@ public enum LanguageAlpha3Code
         return code;
     }
 
-
     /**
      * Get a list of {@code LanguageAlpha3Code} by a name regular expression.
      *
@@ -6333,25 +5663,15 @@ public enum LanguageAlpha3Code
      * findByName}{@code (Pattern.compile(regex))}.
      * </p>
      *
-     * @param regex
-     *         Regular expression for names.
-     *
-     * @return
-     *         List of {@code LanguageAlpha3Code}. If nothing has matched,
-     *         an empty list is returned.
-     *
-     * @throws IllegalArgumentException
-     *         {@code regex} is {@code null}.
-     *
-     * @throws java.util.regex.PatternSyntaxException
-     *         {@code regex} failed to be compiled.
-     *
+     * @param regex Regular expression for names.
+     * @return List of {@code LanguageAlpha3Code}. If nothing has matched,
+     * an empty list is returned.
+     * @throws IllegalArgumentException               {@code regex} is {@code null}.
+     * @throws java.util.regex.PatternSyntaxException {@code regex} failed to be compiled.
      * @since 1.11
      */
-    public static List<LanguageAlpha3Code> findByName(String regex)
-    {
-        if (regex == null)
-        {
+    public static List<LanguageAlpha3Code> findByName(String regex) {
+        if (regex == null) {
             throw new IllegalArgumentException("regex is null.");
         }
 
@@ -6361,7 +5681,6 @@ public enum LanguageAlpha3Code
 
         return findByName(pattern);
     }
-
 
     /**
      * Get a list of {@code LanguageAlpha3Code} by a name pattern.
@@ -6388,36 +5707,147 @@ public enum LanguageAlpha3Code
      * <li>{@link #sga} : Old Irish
      * </ol>
      *
-     * @param pattern
-     *         Pattern to match names.
-     *
-     * @return
-     *         List of {@code LanguageAlpha3Code}. If nothing has matched,
-     *         an empty list is returned.
-     *
-     * @throws IllegalArgumentException
-     *         {@code pattern} is {@code null}.
-     *
+     * @param pattern Pattern to match names.
+     * @return List of {@code LanguageAlpha3Code}. If nothing has matched,
+     * an empty list is returned.
+     * @throws IllegalArgumentException {@code pattern} is {@code null}.
      * @since 1.11
      */
-    public static List<LanguageAlpha3Code> findByName(Pattern pattern)
-    {
-        if (pattern == null)
-        {
+    public static List<LanguageAlpha3Code> findByName(Pattern pattern) {
+        if (pattern == null) {
             throw new IllegalArgumentException("pattern is null.");
         }
 
         List<LanguageAlpha3Code> list = new ArrayList<LanguageAlpha3Code>();
 
-        for (LanguageAlpha3Code entry : values())
-        {
+        for (LanguageAlpha3Code entry : values()) {
             // If the name matches the given pattern.
-            if (pattern.matcher(entry.getName()).matches())
-            {
+            if (pattern.matcher(entry.getName()).matches()) {
                 list.add(entry);
             }
         }
 
         return list;
+    }
+
+    /**
+     * Get the language name.
+     *
+     * @return The language name.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Get <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
+     * language code.
+     *
+     * @return <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
+     * language code. This method may return {@code null}.
+     */
+    public LanguageCode getAlpha2() {
+        return null;
+    }
+
+    /**
+     * Get the usage of this language code.
+     *
+     * <p>
+     * Most language codes return {@link Usage#COMMON Usage.COMMON}.
+     * </p>
+     *
+     * @return The usage of this language code.
+     */
+    public Usage getUsage() {
+        return Usage.COMMON;
+    }
+
+    /**
+     * Get the synonym of this code.
+     *
+     * <p>
+     * In most cases, this method simply returns <code>this</code> object. On
+     * the other hand, language codes that have two alpha-3 codes, namely, ISO
+     * 639-2/T code ("terminological" code) and ISO 639-2/B code
+     * ("bibliographic" code), return their counterparts. For example,
+     * {@link #deu LanguageAlpha3Code.deu}{@code .getSynonym()} returns
+     * {@link #ger LanguageAlpha3Code.ger}.
+     * </p>
+     *
+     * @return <a href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a>
+     * language code.
+     */
+    public LanguageAlpha3Code getSynonym() {
+        return this;
+    }
+
+    /**
+     * Get the bibliographic code of this language.
+     *
+     * <p>
+     * Most languages have just one <a
+     * href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a> code and they
+     * simply return <code>this</code> object. Only ISO 639-2/T codes
+     * ("terminological" codes) return counterpart objects. For example,
+     * {@link LanguageAlpha3Code#fra LanguageAlpha3Code.fra}{@code .getAlpha3B()}
+     * returns {@link LanguageAlpha3Code#fre LanguageAlpha3Code.fre}.
+     * </p>
+     *
+     * @return The bibliographic code of this language.
+     */
+    public LanguageAlpha3Code getAlpha3B() {
+        if (getUsage() == Usage.BIBLIOGRAPHY) {
+            return this;
+        } else {
+            return getSynonym();
+        }
+    }
+
+    /**
+     * Get the terminological code of this language.
+     *
+     * <p>
+     * Most languages have just one <a
+     * href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a> code and they
+     * simply return <code>this</code> object. Only ISO 639-2/B codes
+     * ("bibliographic" codes) return counterpart objects. For example,
+     * {@link LanguageAlpha3Code#fre LanguageAlpha3Code.fre}{@code .getAlpha3T()}
+     * returns {@link LanguageAlpha3Code#fra LanguageAlpha3Code.fra}.
+     *
+     * </p>
+     *
+     * @return The terminological code of this language.
+     */
+    public LanguageAlpha3Code getAlpha3T() {
+        if (getUsage() == Usage.TERMINOLOGY) {
+            return this;
+        } else {
+            return getSynonym();
+        }
+    }
+
+
+    /**
+     * The usage of this language code.
+     *
+     * @since 1.1
+     */
+    public enum Usage {
+        /**
+         * Code for terminology applications (ISO 639-2/T).
+         */
+        TERMINOLOGY,
+
+        /**
+         * Code for bibliographic applications (ISO 639-2/B).
+         */
+        BIBLIOGRAPHY,
+
+        /**
+         * For all applications including both terminology and
+         * bibliographic applications.
+         */
+        COMMON
     }
 }

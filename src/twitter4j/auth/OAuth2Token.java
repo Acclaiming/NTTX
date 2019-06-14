@@ -47,6 +47,18 @@ public class OAuth2Token implements java.io.Serializable {
         this.accessToken = accessToken;
     }
 
+    private static String getRawString(String name, JSONObject json) {
+        try {
+            if (json.isNull(name)) {
+                return null;
+            } else {
+                return json.getString(name);
+            }
+        } catch (JSONException jsone) {
+            return null;
+        }
+    }
+
     public String getTokenType() {
         return tokenType;
     }
@@ -94,17 +106,5 @@ public class OAuth2Token implements java.io.Serializable {
                 "tokenType='" + tokenType + '\'' +
                 ", accessToken='" + accessToken + '\'' +
                 '}';
-    }
-
-    private static String getRawString(String name, JSONObject json) {
-        try {
-            if (json.isNull(name)) {
-                return null;
-            } else {
-                return json.getString(name);
-            }
-        } catch (JSONException jsone) {
-            return null;
-        }
     }
 }

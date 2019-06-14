@@ -30,21 +30,21 @@ import java.io.InputStream;
 class StatusStreamImpl extends StatusStreamBase {
     /*package*/
 
+    static final RawStreamListener[] EMPTY = new RawStreamListener[0];
+    /*package*/
+    String line;
+
     StatusStreamImpl(Dispatcher dispatcher, InputStream stream, Configuration conf) throws IOException {
         super(dispatcher, stream, conf);
     }
-    /*package*/
 
     StatusStreamImpl(Dispatcher dispatcher, HttpResponse response, Configuration conf) throws IOException {
         super(dispatcher, response, conf);
     }
 
-    String line;
-
-    static final RawStreamListener[] EMPTY = new RawStreamListener[0];
-
     @Override
-    protected void onClose(){}
+    protected void onClose() {
+    }
 
     @Override
     public void next(StatusListener listener) throws TwitterException {

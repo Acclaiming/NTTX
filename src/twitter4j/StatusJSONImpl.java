@@ -67,6 +67,7 @@ import static twitter4j.ParseUtil.getDate;
     private Status quotedStatus;
     private long quotedStatusId = -1L;
     private URLEntity quotedStatusPermalink;
+    private String json;
 
     /*package*/StatusJSONImpl(HttpResponse res, Configuration conf) throws TwitterException {
         super(res);
@@ -95,14 +96,38 @@ import static twitter4j.ParseUtil.getDate;
     /*package*/ StatusJSONImpl() {
 
     }
-	
-	private String json;
+
+    /*package*/
+    static ResponseList<Status> createStatusList(HttpResponse res, Configuration conf) throws TwitterException {
+        try {
+            if (conf.isJSONStoreEnabled()) {
+                TwitterObjectFactory.clearThreadLocalMap();
+            }
+            JSONArray list = res.asJSONArray();
+            int size = list.length();
+            ResponseList<Status> statuses = new ResponseListImpl<Status>(size, res);
+            for (int i = 0; i < size; i++) {
+                JSONObject json = list.getJSONObject(i);
+                Status status = new StatusJSONImpl(json);
+                if (conf.isJSONStoreEnabled()) {
+                    TwitterObjectFactory.registerJSONObject(status, json);
+                }
+                statuses.add(status);
+            }
+            if (conf.isJSONStoreEnabled()) {
+                TwitterObjectFactory.registerJSONObject(statuses, list);
+            }
+            return statuses;
+        } catch (JSONException jsone) {
+            throw new TwitterException(jsone);
+        }
+    }
 
     private void init(JSONObject json) throws TwitterException {
-        
-		this.json = json.toString();
-		
-		id = ParseUtil.getLong("id", json);
+
+        this.json = json.toString();
+
+        id = ParseUtil.getLong("id", json);
         source = ParseUtil.getUnescapedString("source", json);
         createdAt = getDate("created_at", json);
         isTruncated = ParseUtil.getBoolean("truncated", json);
@@ -187,11 +212,11 @@ import static twitter4j.ParseUtil.getDate;
                     scopes = new ScopesImpl(placeIds);
                 }
             }
-            if (!json.isNull("withheld_in_countries")){
+            if (!json.isNull("withheld_in_countries")) {
                 JSONArray withheld_in_countries = json.getJSONArray("withheld_in_countries");
                 int length = withheld_in_countries.length();
                 withheldInCountries = new String[length];
-                for (int i = 0 ; i < length; i ++) {
+                for (int i = 0; i < length; i++) {
                     withheldInCountries[i] = withheld_in_countries.getString(i);
                 }
             }
@@ -294,7 +319,6 @@ import static twitter4j.ParseUtil.getDate;
     public String getSource() {
         return this.source;
     }
-
 
     @Override
     public boolean isTruncated() {
@@ -437,32 +461,6 @@ import static twitter4j.ParseUtil.getDate;
         return lang;
     }
 
-    /*package*/
-    static ResponseList<Status> createStatusList(HttpResponse res, Configuration conf) throws TwitterException {
-        try {
-            if (conf.isJSONStoreEnabled()) {
-                TwitterObjectFactory.clearThreadLocalMap();
-            }
-            JSONArray list = res.asJSONArray();
-            int size = list.length();
-            ResponseList<Status> statuses = new ResponseListImpl<Status>(size, res);
-            for (int i = 0; i < size; i++) {
-                JSONObject json = list.getJSONObject(i);
-                Status status = new StatusJSONImpl(json);
-                if (conf.isJSONStoreEnabled()) {
-                    TwitterObjectFactory.registerJSONObject(status, json);
-                }
-                statuses.add(status);
-            }
-            if (conf.isJSONStoreEnabled()) {
-                TwitterObjectFactory.registerJSONObject(statuses, list);
-            }
-            return statuses;
-        } catch (JSONException jsone) {
-            throw new TwitterException(jsone);
-        }
-    }
-
     @Override
     public int hashCode() {
         return (int) id;
@@ -507,7 +505,7 @@ import static twitter4j.ParseUtil.getDate;
                 ", symbolEntities=" + Arrays.toString(symbolEntities) +
                 ", currentUserRetweetId=" + currentUserRetweetId +
                 ", user=" + user +
-                ", withHeldInCountries=" + Arrays.toString(withheldInCountries)+
+                ", withHeldInCountries=" + Arrays.toString(withheldInCountries) +
                 ", quotedStatusId=" + quotedStatusId +
                 ", quotedStatus=" + quotedStatus +
                 '}' : json;

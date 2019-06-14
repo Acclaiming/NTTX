@@ -29,13 +29,12 @@ import java.io.InputStreamReader;
  */
 abstract class StatusStreamBase implements StatusStream {
     static final Logger logger = Logger.getLogger(StatusStreamImpl.class);
-
+    final Configuration CONF;
+    private final Dispatcher dispatcher;
     private boolean streamAlive = true;
     private BufferedReader br;
     private InputStream is;
     private HttpResponse response;
-    private final Dispatcher dispatcher;
-    final Configuration CONF;
     private ObjectFactory factory;
 
     /*package*/
@@ -56,14 +55,6 @@ abstract class StatusStreamBase implements StatusStream {
 
     String parseLine(String line) {
         return line;
-    }
-
-    abstract class StreamEvent implements Runnable {
-        String line;
-
-        StreamEvent(String line) {
-            this.line = line;
-        }
     }
 
     void handleNextElement(final StreamListener[] listeners,
@@ -314,14 +305,15 @@ abstract class StatusStreamBase implements StatusStream {
         logger.warn("Unhandled event: onUnblock");
     }
 
-    void onRetweetedRetweet(JSONObject source, JSONObject target, JSONObject targetObject,StreamListener[] listeners) throws TwitterException {
+    void onRetweetedRetweet(JSONObject source, JSONObject target, JSONObject targetObject, StreamListener[] listeners) throws TwitterException {
         logger.warn("Unhandled event: onRetweetedRetweet");
     }
-    void onFavoritedRetweet(JSONObject source, JSONObject target, JSONObject targetObject,StreamListener[] listeners) throws TwitterException {
+
+    void onFavoritedRetweet(JSONObject source, JSONObject target, JSONObject targetObject, StreamListener[] listeners) throws TwitterException {
         logger.warn("Unhandled event: onFavoritedRetweet");
     }
 
-    void onQuotedTweet(JSONObject source, JSONObject target, JSONObject targetObject,StreamListener[] listeners) throws TwitterException {
+    void onQuotedTweet(JSONObject source, JSONObject target, JSONObject targetObject, StreamListener[] listeners) throws TwitterException {
         logger.warn("Unhandled event: onQuotedTweet");
     }
 
@@ -417,6 +409,14 @@ abstract class StatusStreamBase implements StatusStream {
         }
         for (RawStreamListener listener : rawStreamListeners) {
             listener.onException(e);
+        }
+    }
+
+    abstract class StreamEvent implements Runnable {
+        String line;
+
+        StreamEvent(String line) {
+            this.line = line;
         }
     }
 }

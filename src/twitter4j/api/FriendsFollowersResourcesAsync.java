@@ -262,7 +262,7 @@ public interface FriendsFollowersResourcesAsync {
      * <br>This method calls https://api.twitter.com/1.1/friends/list.json
      *
      * @param screenName The screen name of the user for whom to return results for.
-     * @param cursor Causes the results to be broken into pages of no more than 20 records at a time.
+     * @param cursor     Causes the results to be broken into pages of no more than 20 records at a time.
      * @see <a href="https://dev.twitter.com/docs/api/1.1/get/friends/list">GET friends/list | Twitter Developers</a>
      * @since Twitter4J 3.0.2
      */
@@ -286,7 +286,7 @@ public interface FriendsFollowersResourcesAsync {
      * <br>This method calls https://api.twitter.com/1.1/followers/list.json
      *
      * @param screenName The screen name of the user for whom to return results for.
-     * @param cursor Causes the results to be broken into pages of no more than 20 records at a time.
+     * @param cursor     Causes the results to be broken into pages of no more than 20 records at a time.
      * @see <a href="https://dev.twitter.com/docs/api/1.1/get/followers/list">GET followers/list | Twitter Developers</a>
      * @since Twitter4J 3.0.2
      */

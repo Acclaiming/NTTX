@@ -12,21 +12,23 @@ import static com.mongodb.client.model.Updates.set;
 import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+
 import io.kurumi.ntt.db.BotDB.*;
+
 import java.util.*;
 
-public class Data<T> extends AbsData<Long,T> {
+public class Data<T> extends AbsData<Long, T> {
 
     public Data(Class<T> clazz) {
 
         super(clazz);
 
     }
-    
-    public Data(String collectionName,Class<T> clazz) {
-        
-		super(collectionName,clazz);
-		
+
+    public Data(String collectionName, Class<T> clazz) {
+
+        super(collectionName, clazz);
+
     }
-    
+
 }

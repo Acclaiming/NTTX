@@ -33,12 +33,6 @@ final class CategoryJSONImpl implements Category, java.io.Serializable {
         init(json);
     }
 
-    void init(JSONObject json) throws JSONException {
-        this.name = json.getString("name");
-        this.slug = json.getString("slug");
-        this.size = ParseUtil.getInt("size", json);
-    }
-
     static ResponseList<Category> createCategoriesList(HttpResponse res, Configuration conf) throws TwitterException {
         return createCategoriesList(res.asJSONArray(), res, conf);
     }
@@ -65,6 +59,12 @@ final class CategoryJSONImpl implements Category, java.io.Serializable {
         } catch (JSONException jsone) {
             throw new TwitterException(jsone);
         }
+    }
+
+    void init(JSONObject json) throws JSONException {
+        this.name = json.getString("name");
+        this.slug = json.getString("slug");
+        this.size = ParseUtil.getInt("size", json);
     }
 
     @Override

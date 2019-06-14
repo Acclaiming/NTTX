@@ -8,14 +8,8 @@ import java.io.Serializable;
  */
 public class ChatMember implements Serializable {
     private final static long serialVersionUID = 0L;
-
-    public enum Status {
-        creator, administrator, member, restricted, left, kicked;
-    }
-
     private User user;
     private Status status;
-
     private Integer until_date;
     private Boolean can_be_edited;
     private Boolean can_change_info;
@@ -110,7 +104,8 @@ public class ChatMember implements Serializable {
         if (user != null ? !user.equals(that.user) : that.user != null) return false;
         if (status != that.status) return false;
         if (until_date != null ? !until_date.equals(that.until_date) : that.until_date != null) return false;
-        if (can_be_edited != null ? !can_be_edited.equals(that.can_be_edited) : that.can_be_edited != null) return false;
+        if (can_be_edited != null ? !can_be_edited.equals(that.can_be_edited) : that.can_be_edited != null)
+            return false;
         if (can_change_info != null ? !can_change_info.equals(that.can_change_info) : that.can_change_info != null)
             return false;
         if (can_post_messages != null ? !can_post_messages.equals(that.can_post_messages) : that.can_post_messages != null)
@@ -180,5 +175,9 @@ public class ChatMember implements Serializable {
                 ", can_send_other_messages=" + can_send_other_messages +
                 ", can_add_web_page_previews=" + can_add_web_page_previews +
                 '}';
+    }
+
+    public enum Status {
+        creator, administrator, member, restricted, left, kicked;
     }
 }

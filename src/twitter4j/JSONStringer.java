@@ -64,57 +64,11 @@ public class JSONStringer {
      * The output data, containing at most one top-level array or object.
      */
     final StringBuilder out = new StringBuilder();
-
-    /**
-     * Lexical scoping elements within this stringer, necessary to insert the
-     * appropriate separator characters (ie. commas and colons) and to detect
-     * nesting errors.
-     */
-    enum Scope {
-
-        /**
-         * An array with no elements requires no separators or newlines before
-         * it is closed.
-         */
-        EMPTY_ARRAY,
-
-        /**
-         * A array with at least one value requires a comma and newline before
-         * the next element.
-         */
-        NONEMPTY_ARRAY,
-
-        /**
-         * An object with no keys or values requires no separators or newlines
-         * before it is closed.
-         */
-        EMPTY_OBJECT,
-
-        /**
-         * An object whose most recent element is a key. The next element must
-         * be a value.
-         */
-        DANGLING_KEY,
-
-        /**
-         * An object with at least one name/value pair requires a comma and
-         * newline before the next element.
-         */
-        NONEMPTY_OBJECT,
-
-        /**
-         * A special bracketless array needed by JSONStringer.join() and
-         * JSONObject.quote() only. Not used for JSON encoding.
-         */
-        NULL,
-    }
-
     /**
      * Unlike the original implementation, this stack isn't limited to 20
      * levels of nesting.
      */
     private final List<Scope> stack = new ArrayList<Scope>();
-
     /**
      * A string containing a full set of spaces for a single level of
      * indentation, or null for no pretty printing.
@@ -442,5 +396,49 @@ public class JSONStringer {
     @Override
     public String toString() {
         return out.length() == 0 ? null : out.toString();
+    }
+
+    /**
+     * Lexical scoping elements within this stringer, necessary to insert the
+     * appropriate separator characters (ie. commas and colons) and to detect
+     * nesting errors.
+     */
+    enum Scope {
+
+        /**
+         * An array with no elements requires no separators or newlines before
+         * it is closed.
+         */
+        EMPTY_ARRAY,
+
+        /**
+         * A array with at least one value requires a comma and newline before
+         * the next element.
+         */
+        NONEMPTY_ARRAY,
+
+        /**
+         * An object with no keys or values requires no separators or newlines
+         * before it is closed.
+         */
+        EMPTY_OBJECT,
+
+        /**
+         * An object whose most recent element is a key. The next element must
+         * be a value.
+         */
+        DANGLING_KEY,
+
+        /**
+         * An object with at least one name/value pair requires a comma and
+         * newline before the next element.
+         */
+        NONEMPTY_OBJECT,
+
+        /**
+         * A special bracketless array needed by JSONStringer.join() and
+         * JSONObject.quote() only. Not used for JSON encoding.
+         */
+        NULL,
     }
 }

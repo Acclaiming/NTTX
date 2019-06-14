@@ -1,4 +1,5 @@
 package cn.xsshome.taip.http;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -74,8 +75,13 @@ public class TAipRequest {
         return params;
     }
 
+    public void setParams(HashMap<String, String> params) {
+        this.params = params;
+    }
+
     /**
      * get body content depending on bodyFormat
+     *
      * @return body content as String
      */
     public String getBodyStr() {
@@ -90,13 +96,15 @@ public class TAipRequest {
                 }
             }
             return Util.mkString(arr.iterator(), '&');
-        }  else if (bodyFormat.equals(TAipEBodyFormat.RAW_JSON_ARRAY)) {
+        } else if (bodyFormat.equals(TAipEBodyFormat.RAW_JSON_ARRAY)) {
             return (String) body.get("body");
         }
         return "";
     }
+
     /**
      * get body content depending on bodyFormat
+     *
      * @return body content as String
      */
     public String getBodyStrForNLP() {
@@ -106,21 +114,22 @@ public class TAipRequest {
                 if (entry.getValue() == null || entry.getValue().equals("")) {
                     arr.add(Util.uriEncode(entry.getKey(), true));
                 } else {
-                	if(entry.getKey().equals("text")){
+                    if (entry.getKey().equals("text")) {
                         arr.add(String.format("%s=%s", Util.uriEncodeGBK(entry.getKey(), false),
                                 Util.uriEncodeGBK(entry.getValue().toString(), false)));
-                	}else{
+                    } else {
                         arr.add(String.format("%s=%s", Util.uriEncode(entry.getKey(), true),
                                 Util.uriEncode(entry.getValue().toString(), true)));
-                	}
+                    }
                 }
             }
             return Util.mkString(arr.iterator(), '&');
-        }  else if (bodyFormat.equals(TAipEBodyFormat.RAW_JSON_ARRAY)) {
+        } else if (bodyFormat.equals(TAipEBodyFormat.RAW_JSON_ARRAY)) {
             return (String) body.get("body");
         }
         return "";
     }
+
     public String getParamStr() {
         StringBuffer buffer = new StringBuffer();
         for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -138,10 +147,6 @@ public class TAipRequest {
 
     public void setBody(HashMap<String, String> body) {
         this.body = body;
-    }
-
-    public void setParams(HashMap<String, String> params) {
-        this.params = params;
     }
 
     public HashMap<String, String> getHeaders() {

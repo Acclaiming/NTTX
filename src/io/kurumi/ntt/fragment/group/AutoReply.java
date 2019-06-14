@@ -8,21 +8,22 @@ import io.kurumi.ntt.fragment.abs.Function;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.utils.NTT;
 import io.kurumi.ntt.utils.TentcentNlp;
+
 import java.security.acl.Group;
 import java.util.LinkedList;
 
 public class AutoReply extends Function {
 
     public static AutoReply INSTANCE = new AutoReply();
-    
-    public static JSONArray disable = LocalData.getJSONArray("data","disable_action",true);
+
+    public static JSONArray disable = LocalData.getJSONArray("data", "disable_action", true);
 
     @Override
     public void functions(LinkedList<String> names) {
 
         names.add("reply");
-		
-		
+
+
     }
 
     @Override
@@ -33,30 +34,30 @@ public class AutoReply extends Function {
     }
 
     @Override
-    public boolean onGroup(UserData user,Msg msg) {
-        
+    public boolean onGroup(UserData user, Msg msg) {
+
         if (!msg.hasText() || msg.isCommand() || disable.contains(msg.chatId().longValue())) return false;
-        
+
         String text = msg.text();
-        
-        if (msg.text().contains("@NTToolsBot") || (text.toLowerCase().contains("ntt") && RandomUtil.randomInt(0,4) == 2) || (msg.isReply() && msg.replyTo().from().id.equals(origin.me.id())) ||  RandomUtil.randomInt(0, 51) == 9) {
-            
-			msg.sendTyping();
-			
-            String reply = TentcentNlp.nlpTextchat(((Long)(user.id < 0 ? user.id * -1 : user.id)).toString(),text);
-            
-			if (reply == null) return false; //reply = "别欺负咱了 呜呜...";
-			
+
+        if (msg.text().contains("@NTToolsBot") || (text.toLowerCase().contains("ntt") && RandomUtil.randomInt(0, 4) == 2) || (msg.isReply() && msg.replyTo().from().id.equals(origin.me.id())) || RandomUtil.randomInt(0, 51) == 9) {
+
+            msg.sendTyping();
+
+            String reply = TentcentNlp.nlpTextchat(((Long) (user.id < 0 ? user.id * -1 : user.id)).toString(), text);
+
+            if (reply == null) return false; //reply = "别欺负咱了 呜呜...";
+
             msg.reply(reply).exec();
-            
+
         }
-        
+
         return false;
-        
+
     }
 
     @Override
-    public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
         if (NTT.checkGroupAdmin(msg)) return;
 
@@ -70,7 +71,7 @@ public class AutoReply extends Function {
 
                 disable.add(msg.chatId().longValue());
 
-                LocalData.setJSONArray("data","disable_action",disable);
+                LocalData.setJSONArray("data", "disable_action", disable);
 
                 msg.send("关闭成功 ~").exec();
 
@@ -86,7 +87,7 @@ public class AutoReply extends Function {
 
                 disable.remove(msg.chatId().longValue());
 
-                LocalData.setJSONArray("data","disable_action",disable);
+                LocalData.setJSONArray("data", "disable_action", disable);
 
                 msg.send("已开启 ~").exec();
 
@@ -96,6 +97,6 @@ public class AutoReply extends Function {
 
 
     }
-    
-    
+
+
 }

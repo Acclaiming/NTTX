@@ -19,51 +19,59 @@ import io.kurumi.ntt.fragment.abs.request.AbstractSend;
 import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
 import io.kurumi.ntt.fragment.abs.request.Edit;
 import io.kurumi.ntt.fragment.abs.request.Send;
+
 import java.io.File;
+
 import com.pengrad.telegrambot.request.LeaveChat;
 
 public class Msg extends Context {
 
     public static String[] NO_PARAMS = new String[0];
+    Msg replyTo;
+    int isCommand = 0;
+    boolean noPayload = false;
+    String payload[];
+    boolean noParams = false;
     private Message message;
     private String name;
     private String[] params;
 
     public Msg(Message message) {
-        
-        this(Launcher.INSTANCE,message);
-        
-    }
-    
-    public Msg(Fragment fragment,Message message) {
 
-        super(fragment,message.chat());
+        this(Launcher.INSTANCE, message);
+
+    }
+
+
+    public Msg(Fragment fragment, Message message) {
+
+        super(fragment, message.chat());
 
         this.fragment = fragment;
         this.message = message;
-		
-		if (message.replyToMessage() != null) {
-			
-			replyTo =  new Msg(fragment,message.replyToMessage());
 
-		
-		}
+        if (message.replyToMessage() != null) {
+
+            replyTo = new Msg(fragment, message.replyToMessage());
+
+
+        }
 
     }
-    
-    public static Msg from(Fragment fragment,SendResponse resp) {
-        
-        if (resp.isOk()) return new Msg(fragment,resp.message());
-        
+
+    public static Msg from(Fragment fragment, SendResponse resp) {
+
+        if (resp.isOk()) return new Msg(fragment, resp.message());
+
         return null;
-        
+
     }
-	
-	public UserData from() {
-		
-		return UserData.get(message.from());
-		
-	}
+
+    public UserData from() {
+
+        return UserData.get(message.from());
+
+    }
 
     public Message message() {
         return message;
@@ -72,7 +80,6 @@ public class Msg extends Context {
     public int messageId() {
         return message.messageId();
     }
-
 
     public boolean hasText() {
 
@@ -85,12 +92,12 @@ public class Msg extends Context {
         return message.document();
 
     }
-	
-	public boolean isStartPayload() {
-		
-		return "start".equals(command()) && params().length > 0;
-		
-	}
+
+    public boolean isStartPayload() {
+
+        return "start".equals(command()) && params().length > 0;
+
+    }
 
     public String text() {
 
@@ -98,81 +105,82 @@ public class Msg extends Context {
 
     }
 
-	public boolean isReply() {
+    public boolean isReply() {
 
-		return message.replyToMessage() != null;
+        return message.replyToMessage() != null;
 
-	}
+    }
 
     public Send sendWithAtIfGroup(String... msg) {
-        
+
         if (msg.length > 0 && !isPrivate() && message.from() != null) {
-        
-            ArrayUtil.setOrAppend(msg,0,from().userName() + " " + ArrayUtil.get(msg,0));
-            
+
+            ArrayUtil.setOrAppend(msg, 0, from().userName() + " " + ArrayUtil.get(msg, 0));
+
         }
-            
+
         return super.send(msg);
     }
-    
-    public AbstractSend sendOrEdit(boolean edit,String... msg) {
-        
-        if (edit) return edit(msg); else return send(msg);
-        
+
+    public AbstractSend sendOrEdit(boolean edit, String... msg) {
+
+        if (edit) return edit(msg);
+        else return send(msg);
+
     }
 
-	@Override
-	public Send send(String... msg) {
+    @Override
+    public Send send(String... msg) {
 
-		Send send = super.send(msg);
-		
-		send.origin = this;
-		
-		return send;
-		
-	}
+        Send send = super.send(msg);
 
-	public Msg sendSticker(StickerPoint sticker) {
+        send.origin = this;
 
-        return fragment.sendSticker(chatId(),sticker);
-        
-        
+        return send;
+
     }
-    
+
+    public Msg sendSticker(StickerPoint sticker) {
+
+        return fragment.sendSticker(chatId(), sticker);
+
+
+    }
+
     public Msg sendSticker(String sticker) {
 
-        return fragment.sendSticker(chatId(),sticker);
+        return fragment.sendSticker(chatId(), sticker);
 
 
     }
 
-    public Msg sendFile(long chatId,String file) {
+    public Msg sendFile(long chatId, String file) {
 
-        return fragment.sendFile(chatId,file);
+        return fragment.sendFile(chatId, file);
 
     }
 
     public Msg sendFile(File file) {
 
-        return fragment.sendFile(chatId(),file);
+        return fragment.sendFile(chatId(), file);
     }
 
     public Msg sendFile(byte[] file) {
 
-        return fragment.sendFile(chatId(),file);
-        
+        return fragment.sendFile(chatId(), file);
+
     }
-	
-	public boolean exit() {
-		
-		return fragment.bot().execute(new LeaveChat(chatId())).isOk();
-		
-	}
+
+    public boolean exit() {
+
+        return fragment.bot().execute(new LeaveChat(chatId())).isOk();
+
+    }
 
     public void sendTyping() {
 
         fragment.sendTyping(chatId());
-        
+
     }
 
     public void sendUpdatingFile() {
@@ -183,13 +191,13 @@ public class Msg extends Context {
     public void sendUpdatingPhoto() {
 
         fragment.sendUpdatingPhoto(chatId());
-        
+
     }
 
     public void sendUpdatingAudio() {
 
         fragment.sendUpdatingAudio(chatId());
-        
+
     }
 
     public void sendUpdatingVideo() {
@@ -210,29 +218,26 @@ public class Msg extends Context {
     public void sendRecordingAudio(long chatId) {
 
         fragment.sendRecordingAudio(chatId());
-        
-    }
 
+    }
 
     public void sendRecordingViedo(long chatId) {
 
         fragment.sendRecordingViedo(chatId());
-        
+
     }
 
     public void sendRecordingVideoNote() {
 
         fragment.sendRecordingVideoNote(chatId());
-        
+
     }
 
-    Msg replyTo;
+    public Msg replyTo() {
 
-	public Msg replyTo() {
-		
-		return replyTo;
+        return replyTo;
 
-	}
+    }
 
     public Send reply(String... msg) {
 
@@ -241,29 +246,29 @@ public class Msg extends Context {
     }
 
     public Edit edit(String... msg) {
-        
-        System.out.println("edit调用 : " + ArrayUtil.join(msg,"\n"));
-        
-        Edit edit = new Edit(fragment,chatId(),messageId(),msg);
 
-		edit.origin = this;
-		
-		return edit;
-		
+        System.out.println("edit调用 : " + ArrayUtil.join(msg, "\n"));
+
+        Edit edit = new Edit(fragment, chatId(), messageId(), msg);
+
+        edit.origin = this;
+
+        return edit;
+
     }
-    
+
     public void editMarkup(ButtonMarkup markup) {
-        
-        fragment.bot().execute(new EditMessageReplyMarkup(chatId(),messageId()).replyMarkup(markup.markup()));
-        
+
+        fragment.bot().execute(new EditMessageReplyMarkup(chatId(), messageId()).replyMarkup(markup.markup()));
+
     }
 
     public boolean delete() {
 
-        return fragment.bot().execute(new DeleteMessage(chat().id(),messageId())).isOk();
+        return fragment.bot().execute(new DeleteMessage(chat().id(), messageId())).isOk();
 
     }
-    
+
     public boolean unrestrict() {
 
         return unrestrict(from().id);
@@ -275,53 +280,51 @@ public class Msg extends Context {
         return restrict(from().id);
 
     }
-    
+
     public boolean restrictUntil(long until) {
-        
-        return restrict(from().id,until);
+
+        return restrict(from().id, until);
 
     }
-    
-    
-	public boolean kick() {
-		
-		return kick(from().id);
-		
-	}
-	
-	public Msg forwardTo(Object chatId) {
-		
-		return Msg.from(fragment,fragment.bot().execute(new ForwardMessage(chatId,chatId(),messageId())));
-		
-	}
 
-	public int photoSize() {
-		
-		if (message.photo() != null) {
+    public boolean kick() {
 
-			return message.photo().length;
+        return kick(from().id);
 
-		}
+    }
 
-		return 0;
+    public Msg forwardTo(Object chatId) {
+
+        return Msg.from(fragment, fragment.bot().execute(new ForwardMessage(chatId, chatId(), messageId())));
+
+    }
+
+    public int photoSize() {
+
+        if (message.photo() != null) {
+
+            return message.photo().length;
+
+        }
+
+        return 0;
 
 
-	}
+    }
 
-	public File photo(int index) {
+    public File photo(int index) {
 
         if (photoSize() <= index) return null;
 
-        File local = new File(Env.CACHE_DIR,"files/" + message.photo()[index].fileId());
+        File local = new File(Env.CACHE_DIR, "files/" + message.photo()[index].fileId());
 
         if (local.isFile()) return local;
 
         String path = fragment.bot().getFullFilePath(fragment.bot().execute(new GetFile(message.photo()[index].fileId())).file());
 
-        HttpUtil.downloadFile(path,local);
+        HttpUtil.downloadFile(path, local);
 
         return local;
-
 
 
     }
@@ -335,13 +338,11 @@ public class Msg extends Context {
         return fragment.getFile(doc.fileId());
 
     }
-    
-    int isCommand = 0;
 
     public boolean isCommand() {
 
         isCommand = isCommand == 0 ? (text() != null && text().startsWith("/") && text().length() > 1) ? 1 : 2 : isCommand;
-        
+
         return isCommand == 1;
 
     }
@@ -349,7 +350,7 @@ public class Msg extends Context {
     public String command() {
 
         if (!isCommand()) return null;
-        
+
         if (name != null) return name;
 
         if (text() == null) return null;
@@ -360,11 +361,11 @@ public class Msg extends Context {
 
         if (body.contains(" ")) {
 
-            String cmdAndUser = StrUtil.subBefore(body," ",false);
+            String cmdAndUser = StrUtil.subBefore(body, " ", false);
 
             if (cmdAndUser.contains("@" + fragment.origin.me.username())) {
 
-                name = StrUtil.subBefore(cmdAndUser,"@",false);
+                name = StrUtil.subBefore(cmdAndUser, "@", false);
 
             } else {
 
@@ -374,7 +375,7 @@ public class Msg extends Context {
 
         } else if (body.contains("@" + fragment.origin.me.username())) {
 
-            name = StrUtil.subBefore(body,"@",false);
+            name = StrUtil.subBefore(body, "@", false);
 
         } else {
 
@@ -385,61 +386,55 @@ public class Msg extends Context {
         return name;
 
     }
-	
-	boolean noPayload = false;
-	
-	String payload[];
-	
-	public String[] payload() {
-		
-		if (noPayload) return NO_PARAMS;
-		
-		if (payload != null) return payload;
-		
-		if (!isStartPayload()) {
-			
-			noPayload = true;
-			
-			return NO_PARAMS;
-			
-		}
-		
-		payload = params()[0].split("_");
-		
-		return payload;
-		
-	}
-    
-    boolean noParams = false;
+
+    public String[] payload() {
+
+        if (noPayload) return NO_PARAMS;
+
+        if (payload != null) return payload;
+
+        if (!isStartPayload()) {
+
+            noPayload = true;
+
+            return NO_PARAMS;
+
+        }
+
+        payload = params()[0].split("_");
+
+        return payload;
+
+    }
 
     public String[] params() {
 
         if (params != null) return params;
 
         if (noParams) {
-          
+
             return NO_PARAMS;
-            
-        }
-        
-        if (!isCommand()) {
-            
-            noParams = true;
-            
-            return NO_PARAMS;
-            
+
         }
 
-        String body = StrUtil.subAfter(text(),"/",false);
+        if (!isCommand()) {
+
+            noParams = true;
+
+            return NO_PARAMS;
+
+        }
+
+        String body = StrUtil.subAfter(text(), "/", false);
 
         if (body.contains(" ")) {
 
-            params = StrUtil.subAfter(body," ",false).split(" ");
+            params = StrUtil.subAfter(body, " ", false).split(" ");
 
         } else {
 
             noParams = true;
-           
+
             params = NO_PARAMS;
 
         }

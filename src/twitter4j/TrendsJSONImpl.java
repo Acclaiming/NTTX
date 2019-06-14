@@ -36,11 +36,6 @@ import java.util.Iterator;
     private Trend[] trends;
     private Location location;
 
-    @Override
-    public int compareTo(Trends that) {
-        return this.trendAt.compareTo(that.getTrendAt());
-    }
-
     TrendsJSONImpl(HttpResponse res, Configuration conf) throws TwitterException {
         super(res);
         init(res.asString(), conf.isJSONStoreEnabled());
@@ -57,30 +52,6 @@ import java.util.Iterator;
     TrendsJSONImpl(String jsonStr, boolean storeJSON) throws TwitterException {
         init(jsonStr, storeJSON);
     }
-
-    void init(String jsonStr, boolean storeJSON) throws TwitterException {
-        try {
-            JSONObject json;
-            if (jsonStr.startsWith("[")) {
-                JSONArray array = new JSONArray(jsonStr);
-                if (array.length() > 0) {
-                    json = array.getJSONObject(0);
-                } else {
-                    throw new TwitterException("No trends found on the specified woeid");
-                }
-            } else {
-                json = new JSONObject(jsonStr);
-            }
-            this.asOf = ParseUtil.parseTrendsDate(json.getString("as_of"));
-            this.location = extractLocation(json, storeJSON);
-            JSONArray array = json.getJSONArray("trends");
-            this.trendAt = asOf;
-            this.trends = jsonArrayToTrendArray(array, storeJSON);
-        } catch (JSONException jsone) {
-            throw new TwitterException(jsone.getMessage(), jsone);
-        }
-    }
-
 
     /*package*/ TrendsJSONImpl(Date asOf, Location location, Date trendAt, Trend[] trends) {
         this.asOf = asOf;
@@ -151,6 +122,34 @@ import java.util.Iterator;
             trends[i] = new TrendJSONImpl(trend, storeJSON);
         }
         return trends;
+    }
+
+    @Override
+    public int compareTo(Trends that) {
+        return this.trendAt.compareTo(that.getTrendAt());
+    }
+
+    void init(String jsonStr, boolean storeJSON) throws TwitterException {
+        try {
+            JSONObject json;
+            if (jsonStr.startsWith("[")) {
+                JSONArray array = new JSONArray(jsonStr);
+                if (array.length() > 0) {
+                    json = array.getJSONObject(0);
+                } else {
+                    throw new TwitterException("No trends found on the specified woeid");
+                }
+            } else {
+                json = new JSONObject(jsonStr);
+            }
+            this.asOf = ParseUtil.parseTrendsDate(json.getString("as_of"));
+            this.location = extractLocation(json, storeJSON);
+            JSONArray array = json.getJSONArray("trends");
+            this.trendAt = asOf;
+            this.trends = jsonArrayToTrendArray(array, storeJSON);
+        } catch (JSONException jsone) {
+            throw new TwitterException(jsone.getMessage(), jsone);
+        }
     }
 
     @Override

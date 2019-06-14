@@ -56,6 +56,7 @@ import io.kurumi.ntt.fragment.twitter.timeline.TimelineUI;
 import io.kurumi.ntt.fragment.twitter.track.TrackTask;
 import io.kurumi.ntt.fragment.twitter.track.TrackUI;
 import io.kurumi.ntt.utils.BotLog;
+
 import java.io.IOException;
 import java.util.TimeZone;
 
@@ -63,14 +64,120 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     public static final Launcher INSTANCE = new Launcher();
 
-    @Override
-    public boolean onMsg(UserData user,Msg msg) {
+    public static void main(String[] args) {
 
-        if (super.onMsg(user,msg)) return true;
+        Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
+
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
+
+        if (!INSTANCE.isLongPulling()) {
+
+            int serverPort = Integer.parseInt(Env.getOrDefault("server_port", "-1"));
+            String serverDomain = Env.get("server_domain");
+
+            while (serverPort == -1) {
+
+                System.out.print("输入本地Http服务器端口 : ");
+
+                try {
+
+                    serverPort = Integer.parseInt(Console.input());
+
+                    Env.set("server_port", serverPort);
+
+                } catch (Exception e) {
+                }
+
+            }
+
+            if (serverDomain == null) {
+
+                System.out.print("输入BotWebHook域名 : ");
+
+                serverDomain = Console.input();
+
+                Env.set("server_domain", serverDomain);
+
+            }
+
+            BotServer.INSTANCE = new BotServer(serverPort, serverDomain);
+
+            try {
+
+                BotServer.INSTANCE.start();
+
+            } catch (IOException e) {
+
+                BotLog.error("端口被占用 请检查其他BOT进程。");
+
+                return;
+
+            }
+
+        }
+
+        String dbAddr = Env.getOrDefault("db_address", "127.0.0.1");
+        Integer dbPort = Integer.parseInt(Env.getOrDefault("db_port", "27017"));
+
+        while (!initDB(dbAddr, dbPort)) {
+
+            System.out.print("输入MongoDb地址 : ");
+            dbAddr = Console.scanner().nextLine();
+
+            try {
+
+                System.out.print("输入MongoDb端口 : ");
+                dbPort = Console.scanner().nextInt();
+
+                Env.set("db_address", dbAddr);
+                Env.set("db_port", dbPort);
+
+            } catch (Exception e) {
+            }
+
+        }
+
+        RuntimeUtil.addShutdownHook(new Runnable() {
+
+            @Override
+            public void run() {
+
+                INSTANCE.stop();
+
+            }
+
+        });
+
+        BotLog.info("正在启动...");
+
+        INSTANCE.start();
+
+    }
+
+    static boolean initDB(String dbAddr, Integer dbPort) {
+
+        try {
+
+            BotDB.init(dbAddr, dbPort);
+
+            return true;
+
+        } catch (Exception e) {
+
+            return false;
+
+        }
+
+    }
+
+    @Override
+    public boolean onMsg(UserData user, Msg msg) {
+
+        if (super.onMsg(user, msg)) return true;
 
         if ("start".equals(msg.command()) && msg.params().length == 0) {
 
-			msg.send("start failed successfully ~" ,"","NTT是一只开源TelegramBot、可以作为Twitter客户端使用、也可以导出贴纸、创建私聊BOT、以及在群内沙雕发言与复读。","","BOT帮助文档请戳 : @NTT_X","交流群组在这里 : @NTTDiscuss").html().publicFailed();
+            msg.send("start failed successfully ~", "", "NTT是一只开源TelegramBot、可以作为Twitter客户端使用、也可以导出贴纸、创建私聊BOT、以及在群内沙雕发言与复读。", "", "BOT帮助文档请戳 : @NTT_X", "交流群组在这里 : @NTTDiscuss").html().publicFailed();
 
             return true;
 
@@ -78,7 +185,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
             msg.send("文档在 @NTT_X ~").publicFailed();
 
-			return true;
+            return true;
 
         }
 
@@ -86,149 +193,151 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
-	@Override
-	public void start() {
+    @Override
+    public void start() {
 
-		super.start();
+        super.start();
 
-		TimelineUI.start();
+        TimelineUI.start();
 
-		// AutoTask.start();
+        // AutoTask.start();
 
-		TrackTask.start();
+        TrackTask.start();
 
-		UserBot.startAll();
+        UserBot.startAll();
 
-		Backup.start();
+        Backup.start();
 
-	}
+    }
 
-	@Override
-	public boolean silentStart() {
 
-		if (super.silentStart()) {
+    // public MtProtoBot mtp;
 
-			// AutoTask.start();
+    @Override
+    public boolean silentStart() {
 
-			TimelineUI.start();
+        if (super.silentStart()) {
 
-			TrackTask.start();
+            // AutoTask.start();
 
-			UserBot.startAll();
+            TimelineUI.start();
 
-			Backup.start();
+            TrackTask.start();
 
-			return true;
+            UserBot.startAll();
 
-		}
+            Backup.start();
 
-		return false;
+            return true;
 
-	}
+        }
 
+        return false;
+
+    }
 
     @Override
     public void realStart() {
 
-		// Base Functions
+        // Base Functions
 
-		addFragment(new Firewall());
+        addFragment(new Firewall());
 
-		addFragment(new PingFunction());
+        addFragment(new PingFunction());
 
-		addFragment(new GetIDs());
+        addFragment(new GetIDs());
 
-		addFragment(new Notice());
+        addFragment(new Notice());
 
-		addFragment(new DelMsg());
+        addFragment(new DelMsg());
 
-		addFragment(new Alias());
+        addFragment(new Alias());
 
-		addFragment(new Backup());
+        addFragment(new Backup());
 
-		addFragment(new Users());
+        addFragment(new Users());
 
-		addFragment(new DebugMsg());
+        addFragment(new DebugMsg());
 
-		addFragment(new Control());
+        addFragment(new Control());
 
-		// 贴吧
+        // 贴吧
 
-		// addFragment(new TiebaLogin());
+        // addFragment(new TiebaLogin());
 
-		// Twitter Action
+        // Twitter Action
 
-		addFragment(new Follow());
+        addFragment(new Follow());
 
-		addFragment(new UnFollow());
+        addFragment(new UnFollow());
 
-		addFragment(new Mute());
+        addFragment(new Mute());
 
-		addFragment(new UnMute());
+        addFragment(new UnMute());
 
-		addFragment(new Block());
+        addFragment(new Block());
 
-		addFragment(new UnBlock());
+        addFragment(new UnBlock());
 
-		// Twitter
+        // Twitter
 
-		addFragment(new Jvbao());
+        addFragment(new Jvbao());
 
-		addFragment(new DebugUser());
+        addFragment(new DebugUser());
 
-		addFragment(new DebugStatus());
+        addFragment(new DebugStatus());
 
-		addFragment(new StatusUpdate());
+        addFragment(new StatusUpdate());
 
-		addFragment(new ShadowBan());
+        addFragment(new ShadowBan());
 
-		addFragment(new StatusSearch());
+        addFragment(new StatusSearch());
 
-		addFragment(new StatusGetter());
+        addFragment(new StatusGetter());
 
-		addFragment(new StatusFetch());
+        addFragment(new StatusFetch());
 
-		addFragment(new TwitterLogin());
+        addFragment(new TwitterLogin());
 
-		addFragment(new TwitterLogout());
+        addFragment(new TwitterLogout());
 
-		addFragment(new AutoUI());
+        addFragment(new AutoUI());
 
-		addFragment(new TrackUI());
+        addFragment(new TrackUI());
 
-		addFragment(new StatusAction());
-		addFragment(new TimelineUI());
+        addFragment(new StatusAction());
+        addFragment(new TimelineUI());
 
-		addFragment(new BlockList());
+        addFragment(new BlockList());
 
-		addFragment(new GroupRepeat());
+        addFragment(new GroupRepeat());
 
-		addFragment(new ChineseAction());
+        addFragment(new ChineseAction());
 
-		addFragment(new AntiEsu());
+        addFragment(new AntiEsu());
 
-		addFragment(new BanSetickerSet());
+        addFragment(new BanSetickerSet());
 
-		addFragment(new AutoReply());
+        addFragment(new AutoReply());
 
-		addFragment(new TwitterDelete());
+        addFragment(new TwitterDelete());
 
-		// Forum
-		
-		addFragment(new ForumManage());
-		
-		// Bots
+        // Forum
 
-		addFragment(new NewBot());
-		addFragment(new MyBots());
+        addFragment(new ForumManage());
 
-		// Donate
+        // Bots
 
-		addFragment(new Donate());
+        addFragment(new NewBot());
+        addFragment(new MyBots());
 
-		addFragment(new Final());
+        // Donate
 
-		super.realStart();
+        addFragment(new Donate());
+
+        addFragment(new Final());
+
+        super.realStart();
 
 		/*
 
@@ -247,15 +356,12 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
-
-	// public MtProtoBot mtp;
-
     @Override
     public void stop() {
 
-		// AutoTask.stop();
+        // AutoTask.stop();
 
-		// mtp.stopBot();
+        // mtp.stopBot();
 
         for (BotFragment bot : BotServer.fragments.values()) {
 
@@ -275,119 +381,13 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
          */
 
-		TimelineUI.stop();
+        TimelineUI.stop();
 
         TrackTask.stop();
 
         Backup.stop();
 
         //  BotServer.INSTACNCE.stop();
-
-    }
-
-
-
-    public static void main(String[] args) {
-
-        Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
-
-		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
-
-		if (!INSTANCE.isLongPulling()) {
-
-			int serverPort = Integer.parseInt(Env.getOrDefault("server_port","-1"));
-			String serverDomain = Env.get("server_domain");
-
-			while (serverPort == -1) {
-
-				System.out.print("输入本地Http服务器端口 : ");
-
-				try {
-
-					serverPort = Integer.parseInt(Console.input());
-
-					Env.set("server_port",serverPort);
-
-				} catch (Exception e) {}
-
-			}
-
-			if (serverDomain == null) {
-
-				System.out.print("输入BotWebHook域名 : ");
-
-				serverDomain = Console.input();
-
-				Env.set("server_domain",serverDomain);
-
-			}
-
-			BotServer.INSTANCE = new BotServer(serverPort,serverDomain);
-
-			try {
-
-				BotServer.INSTANCE.start();
-
-			} catch (IOException e) {
-
-				BotLog.error("端口被占用 请检查其他BOT进程。");
-
-				return;
-
-			}
-
-		}
-
-		String dbAddr = Env.getOrDefault("db_address","127.0.0.1");
-		Integer dbPort = Integer.parseInt(Env.getOrDefault("db_port","27017"));
-
-		while (!initDB(dbAddr,dbPort)) {
-
-			System.out.print("输入MongoDb地址 : ");
-			dbAddr = Console.scanner().nextLine();
-
-			try {
-
-				System.out.print("输入MongoDb端口 : ");
-				dbPort = Console.scanner().nextInt();
-
-				Env.set("db_address",dbAddr);
-				Env.set("db_port",dbPort);
-
-			} catch (Exception e) {}
-
-		}
-
-		RuntimeUtil.addShutdownHook(new Runnable() {
-
-				@Override
-				public void run() {
-
-					INSTANCE.stop();
-
-				}
-
-			});
-
-		BotLog.info("正在启动...");
-
-        INSTANCE.start();
-
-    }
-
-    static boolean initDB(String dbAddr,Integer dbPort) {
-
-        try {
-
-            BotDB.init(dbAddr,dbPort);
-
-            return true;
-
-        } catch (Exception e) {
-
-            return false;
-
-        }
 
     }
 
@@ -406,34 +406,34 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     }
 
     @Override
-    public boolean onUpdate(UserData user,Update update) {
+    public boolean onUpdate(UserData user, Update update) {
 
-        BotLog.process(user,update);
+        BotLog.process(user, update);
 
-		if (update.message() != null) {
+        if (update.message() != null) {
 
-			if (update.message().chat().type() == Chat.Type.Private && (user.contactable == null || !user.contactable)) {
+            if (update.message().chat().type() == Chat.Type.Private && (user.contactable == null || !user.contactable)) {
 
-				user.contactable = true;
+                user.contactable = true;
 
-				UserData.userDataIndex.put(user.id,user);
+                UserData.userDataIndex.put(user.id, user);
 
-				UserData.data.setById(user.id,user);
+                UserData.data.setById(user.id, user);
 
-			}
+            }
 
-		}
+        }
 
         return false;
 
     }
 
     @Override
-    public void uncaughtException(Thread thread,Throwable throwable) {
+    public void uncaughtException(Thread thread, Throwable throwable) {
 
-        BotLog.error("无法处理的错误,正在停止BOT",throwable);
+        BotLog.error("无法处理的错误,正在停止BOT", throwable);
 
-		new Send(Env.GROUP,"NTT 异常退出",BotLog.parseError(throwable)).exec();
+        new Send(Env.GROUP, "NTT 异常退出", BotLog.parseError(throwable)).exec();
 
         INSTANCE.stop();
 
@@ -441,19 +441,19 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
-	@Override
-	public boolean onCallback(UserData user,Callback callback) {
+    @Override
+    public boolean onCallback(UserData user, Callback callback) {
 
-		if (callback.params.length == 0 || (callback.params.length == 1 && "null".equals(callback.params[0]))) {
+        if (callback.params.length == 0 || (callback.params.length == 1 && "null".equals(callback.params[0]))) {
 
-			callback.confirm();
+            callback.confirm();
 
-			return true;
+            return true;
 
-		}
+        }
 
-		return false;
+        return false;
 
-	}
+    }
 
 }

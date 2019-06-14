@@ -2,75 +2,76 @@ package com.github.libsgh.tieba.model;
 
 /**
  * 客户端类型（贴吧回帖）
+ *
  * @author libs
  * 2015-12-22 11:44
  */
 public enum ClientType implements BaseEnum<Integer> {
-	iphone(1, "iPhone" ),//苹果客户端
-	android(2, "Android"),//安卓客户端
-	wp(3, "WindowsPhone"),//wp客户端
-	w8(4, "Windows 8");//win8/10客户端
+    iphone(1, "iPhone"),//苹果客户端
+    android(2, "Android"),//安卓客户端
+    wp(3, "WindowsPhone"),//wp客户端
+    w8(4, "Windows 8");//win8/10客户端
 
-	private int code;
+    private int code;
 
-	private String description;
+    private String description;
 
-	private ClientType(int _code, String description) {
-		this.code = _code;
-		this.description = description;
-	}
+    private ClientType(int _code, String description) {
+        this.code = _code;
+        this.description = description;
+    }
 
-	public Integer getCode() {
-		return this.code;
-	}
+    // 通过属性获取对象
+    public static ClientType getErrorCode(int code) {
 
-	public String getDescription() {
-		return description;
-	}
+        for (ClientType obj : ClientType.values()) {
+            if (code == obj.getCode()) {
 
-	@Override
-	public String toString() {
+                return obj;
+            }
+        }
 
-		return String.valueOf(this.code);
+        return null;
 
-	}
+    }
 
-	// 通过属性获取对象
-	public static ClientType getErrorCode(int code) {
+    public static String getName(int code) {
 
-		for (ClientType obj : ClientType.values()) {
-			if (code == obj.getCode()) {
+        for (ClientType obj : ClientType.values()) {
+            if (code == obj.getCode()) {
 
-				return obj;
-			}
-		}
+                return obj.name();
+            }
+        }
 
-		return null;
+        return null;
 
-	}
+    }
 
-	public static String getName(int code) {
+    public static String getDescription(int code) {
 
-		for (ClientType obj : ClientType.values()) {
-			if (code == obj.getCode()) {
+        for (ClientType obj : ClientType.values()) {
+            if (code == obj.getCode()) {
 
-				return obj.name();
-			}
-		}
+                return obj.getDescription();
+            }
+        }
+        return null;
 
-		return null;
+    }
 
-	}
+    public Integer getCode() {
+        return this.code;
+    }
 
-	public static String getDescription(int code) {
+    public String getDescription() {
+        return description;
+    }
 
-		for (ClientType obj : ClientType.values()) {
-			if (code == obj.getCode()) {
+    @Override
+    public String toString() {
 
-				return obj.getDescription();
-			}
-		}
-		return null;
+        return String.valueOf(this.code);
 
-	}
+    }
 }

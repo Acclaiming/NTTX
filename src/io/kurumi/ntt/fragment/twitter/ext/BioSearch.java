@@ -9,6 +9,7 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.abs.Function;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
@@ -41,9 +42,9 @@ public class BioSearch extends Function {
 
 
     @Override
-    public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        String query = ArrayUtil.join(msg.params(),"\n");
+        String query = ArrayUtil.join(msg.params(), "\n");
 
         if (query.isEmpty()) {
 
@@ -56,12 +57,11 @@ public class BioSearch extends Function {
         FindIterable<UserArchive> result = null;
 
 
-
         long count;
 
         try {
 
-            count = UserArchive.data.collection.countDocuments(regex("bio",query),new CountOptions().maxTime(500,TimeUnit.MILLISECONDS));
+            count = UserArchive.data.collection.countDocuments(regex("bio", query), new CountOptions().maxTime(500, TimeUnit.MILLISECONDS));
 
         } catch (MongoExecutionTimeoutException ex) {
 
@@ -73,7 +73,7 @@ public class BioSearch extends Function {
 
         if (count > 0) {
 
-            result = UserArchive.data.collection.find(regex("bio",query));
+            result = UserArchive.data.collection.find(regex("bio", query));
 
         }
 
@@ -85,11 +85,11 @@ public class BioSearch extends Function {
 
         }
 
-        msg.send("结果数量 : " + (count > 100L ? count + "条 (仅显示100条)" : count + " 条"),"",format(result.limit(100),query)).html().exec();
+        msg.send("结果数量 : " + (count > 100L ? count + "条 (仅显示100条)" : count + " 条"), "", format(result.limit(100), query)).html().exec();
 
     }
 
-    String format(FindIterable<UserArchive> result,String query)  {
+    String format(FindIterable<UserArchive> result, String query) {
 
         StringBuilder page = new StringBuilder();
 

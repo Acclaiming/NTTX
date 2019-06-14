@@ -17,12 +17,13 @@ import io.kurumi.ntt.fragment.abs.Callback;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.abs.Query;
 import io.kurumi.ntt.utils.BotLog;
+
 import java.io.File;
 
 public class Fragment {
 
-	public String PAYLOAD_SPLIT = "_";
-	
+    public String PAYLOAD_SPLIT = "_";
+
     public BotFragment origin;
 
     public TelegramBot bot() {
@@ -36,28 +37,28 @@ public class Fragment {
         return origin.point();
 
     }
-	
-	public <T> void setPoint(UserData user,String pointTo,PointStore.Type context) {
 
-        point().set(user,context,pointTo,null);
+    public <T> void setPoint(UserData user, String pointTo, PointStore.Type context) {
 
-    }
-
-    public <T> void setPoint(UserData user,String pointTo,PointStore.Type context,T content) {
-
-        point().set(user,context,pointTo,content);
+        point().set(user, context, pointTo, null);
 
     }
 
-    public <T> void setPoint(UserData user,String pointTo,T content) {
+    public <T> void setPoint(UserData user, String pointTo, PointStore.Type context, T content) {
 
-        point().set(user,pointTo,content);
+        point().set(user, context, pointTo, content);
 
     }
 
-    public void setPoint(UserData user,String pointTo) {
+    public <T> void setPoint(UserData user, String pointTo, T content) {
 
-        point().set(user,pointTo,null);
+        point().set(user, pointTo, content);
+
+    }
+
+    public void setPoint(UserData user, String pointTo) {
+
+        point().set(user, pointTo, null);
 
     }
 
@@ -73,176 +74,177 @@ public class Fragment {
 
     }
 
-    public boolean onUpdate(UserData user,Update update) {
+    public boolean onUpdate(UserData user, Update update) {
 
         return false;
 
     }
 
-    public boolean onMsg(UserData user,Msg msg) {
+    public boolean onMsg(UserData user, Msg msg) {
 
         return false;
 
     }
 
-    public boolean onPointedMsg(UserData user,Msg msg) {
+    public boolean onPointedMsg(UserData user, Msg msg) {
 
         return false;
 
     }
 
-    public boolean onPrivate(UserData user,Msg msg) {
+    public boolean onPrivate(UserData user, Msg msg) {
 
         return false;
 
     }
 
-    public boolean onPointedPrivate(UserData user,Msg msg) {
+    public boolean onPointedPrivate(UserData user, Msg msg) {
 
         return false;
 
     }
 
-    public boolean onGroup(UserData user,Msg msg) {
+    public boolean onGroup(UserData user, Msg msg) {
 
         return false;
 
     }
 
-    public boolean onPointedGroup(UserData user,Msg msg) {
+    public boolean onPointedGroup(UserData user, Msg msg) {
 
         return false;
 
     }
 
-    public boolean onChanPost(UserData user,Msg msg) {
+    public boolean onChanPost(UserData user, Msg msg) {
 
         return false;
 
     }
 
-    public boolean onCallback(UserData user,Callback callback) {
+    public boolean onCallback(UserData user, Callback callback) {
 
         return false;
 
     }
 
-    public boolean onQuery(UserData user,Query inlineQuery) {
+    public boolean onQuery(UserData user, Query inlineQuery) {
         return false;
     }
 
     public File getFile(String fileId) {
 
-        File local = new File(Env.CACHE_DIR,"files/" + fileId);
+        File local = new File(Env.CACHE_DIR, "files/" + fileId);
 
         if (local.isFile()) return local;
 
         GetFileResponse file = bot().execute(new GetFile(fileId));
 
         if (!file.isOk()) {
-            
+
             BotLog.debug("取文件失败 : " + file.errorCode() + " " + file.description());
-            
+
             return null;
-            
-            }
+
+        }
 
         String path = bot().getFullFilePath(file.file());
 
-        HttpUtil.downloadFile(path,local);
+        HttpUtil.downloadFile(path, local);
 
         return local;
 
     }
 
-    public Msg sendSticker(long chatId,StickerPoint sticker) {
+    public Msg sendSticker(long chatId, StickerPoint sticker) {
 
-        return Msg.from(this,bot().execute(new SendSticker(chatId,sticker.fileId)));
-
-    }
-    public Msg sendSticker(long chatId,String sticker) {
-
-        return Msg.from(this,bot().execute(new SendSticker(chatId,sticker)));
+        return Msg.from(this, bot().execute(new SendSticker(chatId, sticker.fileId)));
 
     }
 
+    public Msg sendSticker(long chatId, String sticker) {
 
-    public Msg sendFile(long chatId,String file) {
-
-        return Msg.from(this,this.bot().execute(new SendDocument(chatId,file)));
-
-    }
-
-    public Msg sendFile(long chatId,File file) {
-
-        return Msg.from(this,bot().execute(new SendDocument(chatId,file)));
+        return Msg.from(this, bot().execute(new SendSticker(chatId, sticker)));
 
     }
 
-    public Msg sendFile(long chatId,byte[] file) {
 
-        return Msg.from(this,bot().execute(new SendDocument(chatId,file)));
+    public Msg sendFile(long chatId, String file) {
+
+        return Msg.from(this, this.bot().execute(new SendDocument(chatId, file)));
+
+    }
+
+    public Msg sendFile(long chatId, File file) {
+
+        return Msg.from(this, bot().execute(new SendDocument(chatId, file)));
+
+    }
+
+    public Msg sendFile(long chatId, byte[] file) {
+
+        return Msg.from(this, bot().execute(new SendDocument(chatId, file)));
 
     }
 
     public void sendTyping(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.typing));
+        bot().execute(new SendChatAction(chatId, ChatAction.typing));
 
     }
 
     public void sendUpdatingFile(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.upload_document));
+        bot().execute(new SendChatAction(chatId, ChatAction.upload_document));
 
     }
 
     public void sendUpdatingPhoto(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.upload_photo));
+        bot().execute(new SendChatAction(chatId, ChatAction.upload_photo));
 
     }
 
     public void sendUpdatingAudio(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.upload_audio));
+        bot().execute(new SendChatAction(chatId, ChatAction.upload_audio));
 
     }
 
     public void sendUpdatingVideo(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.upload_video));
+        bot().execute(new SendChatAction(chatId, ChatAction.upload_video));
 
     }
 
     public void sendUpdatingVideoNote(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.upload_video_note));
+        bot().execute(new SendChatAction(chatId, ChatAction.upload_video_note));
 
     }
 
     public void sendFindingLocation(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.find_location));
+        bot().execute(new SendChatAction(chatId, ChatAction.find_location));
 
     }
 
     public void sendRecordingAudio(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.record_audio));
+        bot().execute(new SendChatAction(chatId, ChatAction.record_audio));
 
     }
 
 
     public void sendRecordingViedo(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.record_video));
+        bot().execute(new SendChatAction(chatId, ChatAction.record_video));
 
     }
 
     public void sendRecordingVideoNote(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.record_video_note));
+        bot().execute(new SendChatAction(chatId, ChatAction.record_video_note));
 
     }
 

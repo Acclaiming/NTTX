@@ -8,12 +8,6 @@ import java.io.Serializable;
  */
 public class MessageEntity implements Serializable {
     private final static long serialVersionUID = 0L;
-
-    public enum Type {
-        mention, hashtag, cashtag, bot_command, url, email, phone_number, bold, italic, code, pre, text_link,
-        text_mention
-    }
-
     private Type type;
     private Integer offset;
     private Integer length;
@@ -74,5 +68,10 @@ public class MessageEntity implements Serializable {
                 ", url='" + url + '\'' +
                 ", user=" + user +
                 '}';
+    }
+
+    public enum Type {
+        mention, hashtag, cashtag, bot_command, url, email, phone_number, bold, italic, code, pre, text_link,
+        text_mention
     }
 }

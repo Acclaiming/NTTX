@@ -242,7 +242,7 @@ public final class FilterQuery implements java.io.Serializable {
         if (!Arrays.equals(track, that.track)) return false;
         if (!Arrays.equals(language, that.language)) return false;
         if (!(filterLevel == null ? that.filterLevel == null :
-            filterLevel.equals(that.filterLevel))) return false;
+                filterLevel.equals(that.filterLevel))) return false;
 
         return true;
     }
@@ -260,12 +260,12 @@ public final class FilterQuery implements java.io.Serializable {
     @Override
     public String toString() {
         return "FilterQuery{" +
-            "count=" + count +
-            ", follow=" + Arrays.toString(follow) +
-            ", track=" + (track == null ? null : Arrays.asList(track)) +
-            ", locations=" + (locations == null ? null : Arrays.asList(locations)) +
-            ", language=" + (language == null ? null : Arrays.asList(language)) +
-            ", filter_level=" + filterLevel +
-            '}';
+                "count=" + count +
+                ", follow=" + Arrays.toString(follow) +
+                ", track=" + (track == null ? null : Arrays.asList(track)) +
+                ", locations=" + (locations == null ? null : Arrays.asList(locations)) +
+                ", language=" + (language == null ? null : Arrays.asList(language)) +
+                ", filter_level=" + filterLevel +
+                '}';
     }
 }

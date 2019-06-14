@@ -12,8 +12,11 @@ import static com.mongodb.client.model.Updates.set;
 import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+
 import io.kurumi.ntt.db.BotDB.*;
+
 import java.util.*;
+
 import com.mongodb.operation.*;
 import com.mongodb.client.model.*;
 import com.mongodb.*;
@@ -21,29 +24,32 @@ import org.bson.*;
 
 public class MongoIDs {
 
-	public static class IdSeq {
+    public static AbsData<String, IdSeq> ids = new AbsData<String, IdSeq>(IdSeq.class);
 
-		public String id;
-		public Long seq;
+    public static long getNextId(final String collection) {
 
-	}
+        if (ids.containsId(collection)) {
 
-	public static AbsData<String,IdSeq> ids = new AbsData<String,IdSeq>(IdSeq.class);
+            return ids.collection.findOneAndUpdate(eq("_id", collection), inc("seq", 1L), new FindOneAndUpdateOptions().upsert(true)).seq;
 
-	public static long getNextId(final String collection) {
+        } else {
 
-		if (ids.containsId(collection)) {
+            ids.setById(collection, new IdSeq() {{
+                id = collection;
+                seq = 1L;
+            }});
 
-			return ids.collection.findOneAndUpdate(eq("_id",collection),inc("seq",1L),new FindOneAndUpdateOptions().upsert(true)).seq;
+            return 1L;
 
-		} else {
+        }
 
-			ids.setById(collection,new IdSeq() {{ id = collection; seq = 1L; }});
+    }
 
-			return 1L;
+    public static class IdSeq {
 
-		}
+        public String id;
+        public Long seq;
 
-	}
+    }
 
 }

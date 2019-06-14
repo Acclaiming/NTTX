@@ -57,7 +57,7 @@ public class Query {
         String mimeType = "application/octet-stream";
 
         // TODO
-        
+
         InlineQueryResultDocument result = new InlineQueryResultDocument(query.id(), url, fileName, mimeType);
 
         results.add(result);

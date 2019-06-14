@@ -14,64 +14,63 @@ import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.abs.request.Send;
 import io.kurumi.ntt.utils.Html;
+
 import java.util.LinkedList;
 import java.util.List;
 
 public class ForwardBot extends BotFragment {
 
-	public Long botId;
+    final String POINT_REPLY = "r";
+    public Long botId;
     public Long userId;
-
-	public String botToken;
+    public String botToken;
     public Long lastReceivedFrom;
-	public String welcomeMessage;
+    public String welcomeMessage;
+    public String userName;
+    public List<Long> blockList;
 
-	public String userName;
+    @Override
+    public void reload() {
 
-	public List<Long> blockList;
+        UserBot bot = UserBot.data.getById(botId);
 
-	@Override
-	public void reload() {
+        botToken = bot.token;
 
-		UserBot bot = UserBot.data.getById(botId);
+        userId = bot.user;
 
-		botToken = bot.token;
+        welcomeMessage = (String) bot.params.get("msg");
 
-		userId = bot.user;
+        blockList = (List<Long>) bot.params.get("block");
 
-		welcomeMessage = (String)bot.params.get("msg");
+        if (blockList == null) {
 
-		blockList = (List<Long>)bot.params.get("block");
+            blockList = new LinkedList<>();
 
-		if (blockList == null) {
-			
-			blockList = new LinkedList<>();
-			
-		}
-		
-		UserData user = UserData.get(userId);
+        }
 
-		if (user == null) {
+        UserData user = UserData.get(userId);
 
-			userName = "(" + userId + ")";
+        if (user == null) {
 
-		} else {
+            userName = "(" + userId + ")";
 
-			userName = user.name();
+        } else {
 
-		}
+            userName = user.name();
 
-	}
+        }
 
-	public void save() {
+    }
 
-		UserBot bot = UserBot.data.getById(botId);
+    public void save() {
 
-		bot.params.put("block",blockList);
+        UserBot bot = UserBot.data.getById(botId);
 
-		UserBot.data.setById(botId,bot);
+        bot.params.put("block", blockList);
 
-	}
+        UserBot.data.setById(botId, bot);
+
+    }
 
     @Override
     public String botName() {
@@ -87,10 +86,8 @@ public class ForwardBot extends BotFragment {
 
     }
 
-    final String POINT_REPLY = "r";
-
     @Override
-    public boolean onPrivate(UserData user,Msg msg) {
+    public boolean onPrivate(UserData user, Msg msg) {
 
         if ("start".equals(msg.command())) {
 
@@ -102,7 +99,7 @@ public class ForwardBot extends BotFragment {
 
                 msg.delete();
 
-				String[] payload = msg.payload();
+                String[] payload = msg.payload();
 
                 if ("reply".equals(payload[0])) {
 
@@ -116,28 +113,28 @@ public class ForwardBot extends BotFragment {
 
                     }
 
-                    msg.send("回复 " + target.userName() + " : " ,"直接发送信息即可 (非文本，表情，文件 会直接转发) : ","使用 /cancel 退出").html().exec();
+                    msg.send("回复 " + target.userName() + " : ", "直接发送信息即可 (非文本，表情，文件 会直接转发) : ", "使用 /cancel 退出").html().exec();
 
-                    setPoint(user,POINT_REPLY,target.id);
+                    setPoint(user, POINT_REPLY, target.id);
 
                 } else if ("del".equals(payload[0])) {
 
                     try {
 
-						long target = Long.parseLong(payload[1]);
-						int messageId = Integer.parseInt(payload[2]);
+                        long target = Long.parseLong(payload[1]);
+                        int messageId = Integer.parseInt(payload[2]);
 
-						BaseResponse resp = bot().execute(new DeleteMessage(target,messageId));
+                        BaseResponse resp = bot().execute(new DeleteMessage(target, messageId));
 
-						if (resp.isOk()) {
+                        if (resp.isOk()) {
 
-							msg.send("已删除").exec();
+                            msg.send("已删除").exec();
 
-						} else {
+                        } else {
 
-							msg.send("删除失败 这条发送的信息还在吗 ？").exec();
+                            msg.send("删除失败 这条发送的信息还在吗 ？").exec();
 
-						}
+                        }
 
                     } catch (NumberFormatException e) {
 
@@ -147,7 +144,7 @@ public class ForwardBot extends BotFragment {
 
                 } else if ("block".equals(payload[0])) {
 
-					UserData target = UserData.get(Long.parseLong(payload[1]));
+                    UserData target = UserData.get(Long.parseLong(payload[1]));
 
                     if (target == null) {
 
@@ -156,57 +153,56 @@ public class ForwardBot extends BotFragment {
                         return true;
 
                     }
-					
-					if (target.id.equals(userId)) {
-						
-						msg.send("你不能屏蔽你自己...").exec();
-						
-						return true;
-						
-					}
 
-					if (blockList.contains(target.id.longValue())) {
+                    if (target.id.equals(userId)) {
 
-						msg.send("已经屏蔽过了 " + target.userName() + " ~ [ " + Html.a("解除屏蔽","https://t.me/" + me.username() + "?start=unblok" + PAYLOAD_SPLIT + target.id) + " ] ~");
+                        msg.send("你不能屏蔽你自己...").exec();
 
-					} else {
+                        return true;
 
-						blockList.add(user.id);
-						save();
-						msg.send("已屏蔽了 " + target.userName() + " ~ [ " + Html.a("解除屏蔽","https://t.me/" + me.username() + "?start=unblock" + PAYLOAD_SPLIT + target.id) + " ] ~");
-						
+                    }
 
-					}
+                    if (blockList.contains(target.id.longValue())) {
+
+                        msg.send("已经屏蔽过了 " + target.userName() + " ~ [ " + Html.a("解除屏蔽", "https://t.me/" + me.username() + "?start=unblok" + PAYLOAD_SPLIT + target.id) + " ] ~");
+
+                    } else {
+
+                        blockList.add(user.id);
+                        save();
+                        msg.send("已屏蔽了 " + target.userName() + " ~ [ " + Html.a("解除屏蔽", "https://t.me/" + me.username() + "?start=unblock" + PAYLOAD_SPLIT + target.id) + " ] ~");
+
+
+                    }
 
                 } else if ("unblock".equals(payload[0])) {
 
-					UserData target = UserData.get(Long.parseLong(payload[1]));
+                    UserData target = UserData.get(Long.parseLong(payload[1]));
 
-					if (target == null) {
+                    if (target == null) {
 
-						msg.send("找不到目标...").exec();
+                        msg.send("找不到目标...").exec();
 
-						return true;
+                        return true;
 
-					}
+                    }
 
-					if (blockList.contains(target.id.longValue())) {
+                    if (blockList.contains(target.id.longValue())) {
 
-						blockList.remove(target.id.longValue());
-						
-						save();
-						
-						msg.send("已解除屏蔽 " + target.userName() + " ~ [ " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + target.id) + " " + Html.a("发送消息","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " ]");
-						
-					} else {
-						
-						msg.send("没有屏蔽 " + target.userName() + " ~ [ " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + target.id) + " " + Html.a("发送消息","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " ]");
-						
-						
-					}
+                        blockList.remove(target.id.longValue());
 
-				}
+                        save();
 
+                        msg.send("已解除屏蔽 " + target.userName() + " ~ [ " + Html.a("屏蔽", "https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + target.id) + " " + Html.a("发送消息", "https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " ]");
+
+                    } else {
+
+                        msg.send("没有屏蔽 " + target.userName() + " ~ [ " + Html.a("屏蔽", "https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + target.id) + " " + Html.a("发送消息", "https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " ]");
+
+
+                    }
+
+                }
 
 
             }
@@ -215,9 +211,9 @@ public class ForwardBot extends BotFragment {
 
         } else if (getPoint(user) == null && !blockList.contains(user.id.longValue())) {
 
-            if (lastReceivedFrom  == null || !lastReceivedFrom.equals(user.id))  {
+            if (lastReceivedFrom == null || !lastReceivedFrom.equals(user.id)) {
 
-                new Send(this,userId,"来自 " + user.userName() + " : [ " + Html.a("回复","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + user.id) +  " ]").html().exec();
+                new Send(this, userId, "来自 " + user.userName() + " : [ " + Html.a("回复", "https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " " + Html.a("屏蔽", "https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + user.id) + " ]").html().exec();
 
                 lastReceivedFrom = user.id;
 
@@ -233,9 +229,9 @@ public class ForwardBot extends BotFragment {
     }
 
     @Override
-    public boolean onPointedPrivate(UserData user,Msg msg) {
+    public boolean onPointedPrivate(UserData user, Msg msg) {
 
-        if (onPrivate(user,msg)) return true;
+        if (onPrivate(user, msg)) return true;
 
         PointStore.Point<Long> point = getPoint(user);
 
@@ -249,7 +245,7 @@ public class ForwardBot extends BotFragment {
 
             if (message.document() != null) {
 
-                SendDocument send = new SendDocument(target,message.document().fileId());
+                SendDocument send = new SendDocument(target, message.document().fileId());
 
                 send.fileName(message.document().fileName());
 
@@ -259,7 +255,7 @@ public class ForwardBot extends BotFragment {
 
                 if (!resp.isOk()) {
 
-                    msg.send("发送失败 (˚☐˚! )/","-----------------------",resp.description()).exec();
+                    msg.send("发送失败 (˚☐˚! )/", "-----------------------", resp.description()).exec();
 
                 } else {
 
@@ -269,29 +265,29 @@ public class ForwardBot extends BotFragment {
 
             } else if (message.sticker() != null) {
 
-                SendSticker send = new SendSticker(target,message.sticker().fileId());
+                SendSticker send = new SendSticker(target, message.sticker().fileId());
 
                 SendResponse resp = bot().execute(send);
 
                 if (!resp.isOk()) {
 
-                    msg.send("发送失败 (˚☐˚! )/","-----------------------",resp.description()).exec();
+                    msg.send("发送失败 (˚☐˚! )/", "-----------------------", resp.description()).exec();
 
                 } else {
 
                     sended = resp.message().messageId();
 
-				}
+                }
 
             } else if (msg.hasText()) {
 
-                SendMessage send = new SendMessage(target,msg.text());
+                SendMessage send = new SendMessage(target, msg.text());
 
                 SendResponse resp = bot().execute(send);
 
                 if (!resp.isOk()) {
 
-                    msg.send("发送失败 (˚☐˚! )/","-----------------------",resp.description()).exec();
+                    msg.send("发送失败 (˚☐˚! )/", "-----------------------", resp.description()).exec();
 
                 } else {
 
@@ -301,13 +297,13 @@ public class ForwardBot extends BotFragment {
 
             } else {
 
-                ForwardMessage forward = new ForwardMessage(target,msg.chatId(),msg.messageId());
+                ForwardMessage forward = new ForwardMessage(target, msg.chatId(), msg.messageId());
 
                 SendResponse resp = bot().execute(forward);
 
                 if (!resp.isOk()) {
 
-                    msg.send("发送失败 (˚☐˚! )/","-----------------------",resp.description()).exec();
+                    msg.send("发送失败 (˚☐˚! )/", "-----------------------", resp.description()).exec();
 
                 } else {
 
@@ -319,7 +315,7 @@ public class ForwardBot extends BotFragment {
 
             if (sended != -1) {
 
-                msg.reply("发送成功 [ " + Html.a("删除","https://t.me/" + me.username() + "?start=del" + PAYLOAD_SPLIT +  target + PAYLOAD_SPLIT + sended) + " ]","退出回复使用 /cancel ").html().exec();
+                msg.reply("发送成功 [ " + Html.a("删除", "https://t.me/" + me.username() + "?start=del" + PAYLOAD_SPLIT + target + PAYLOAD_SPLIT + sended) + " ]", "退出回复使用 /cancel ").html().exec();
 
             }
 

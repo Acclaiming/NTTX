@@ -30,10 +30,11 @@ import static twitter4j.ParseUtil.*;
  * @since Twitter4J 2.2.6
  */
 public class StreamController {
-    private String controlURI = null;
+    private static final Logger logger = Logger.getLogger(StreamController.class);
     private final HttpClient http;
     private final Authorization AUTH;
-    private static final Logger logger = Logger.getLogger(StreamController.class);
+    private final Object lock = new Object();
+    private String controlURI = null;
 
     /*package*/ StreamController(HttpClient http, Authorization auth) {
         this.http = http;
@@ -45,29 +46,27 @@ public class StreamController {
         AUTH = AuthorizationFactory.getInstance(conf);
     }
 
+    String getControlURI() {
+        return controlURI;
+    }
+
     void setControlURI(String controlURI) {
-        this.controlURI = (controlURI!=null) ?controlURI.replace("/1.1//1.1/", "/1.1/") : null;
+        this.controlURI = (controlURI != null) ? controlURI.replace("/1.1//1.1/", "/1.1/") : null;
         synchronized (lock) {
             lock.notifyAll();
         }
     }
 
-    private final Object lock = new Object();
-
-    String getControlURI() {
-        return controlURI;
-    }
-
     void ensureControlURISet() throws TwitterException {
         synchronized (lock) {
             try {
-		int waits = 0;
+                int waits = 0;
                 while (controlURI == null) {
                     lock.wait(1000);
                     waits++;
-                    
+
                     if (waits > 29) throw new TwitterException("timed out for control uri to be ready");
-                }           
+                }
             } catch (InterruptedException e) {
             }
         }
@@ -105,6 +104,10 @@ public class StreamController {
                         new HttpParameter("cursor", cursor)}, AUTH, null
         );
         return new FriendsIDs(res);
+    }
+
+    /*package*/ User createUser(JSONObject json) {
+        return new User(json);
     }
 
     public final class FriendsIDs implements CursorSupport, Serializable {
@@ -199,10 +202,6 @@ public class StreamController {
                     ", user=" + user +
                     '}';
         }
-    }
-
-    /*package*/ User createUser(JSONObject json) {
-        return new User(json);
     }
 
     public final class User implements Serializable {

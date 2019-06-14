@@ -17,6 +17,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.concurrent.TimeUnit;
 import java.io.IOException;
+
 import cn.hutool.core.thread.ThreadUtil;
 
 /**
@@ -40,46 +41,46 @@ public class TelegramBot {
     }
 
     public <T extends BaseRequest, R extends BaseResponse> R execute(BaseRequest<T, R> request) {
-		
+
         try {
-			
-			return api.send(request);
-			
-		} catch (IOException e) {
-			
-			ThreadUtil.sleep(1000);
-			
-			try {
-				
-				return api.send(request);
-				
-			} catch (IOException ex) {
-				
-				ThreadUtil.sleep(1000);
 
-				try {
+            return api.send(request);
 
-					return api.send(request);
+        } catch (IOException e) {
 
-				} catch (IOException exc) {
-					
-					ThreadUtil.sleep(1000);
+            ThreadUtil.sleep(1000);
 
-					try {
+            try {
 
-						return api.send(request);
+                return api.send(request);
 
-					} catch (IOException exce) {
-						
-						throw new RuntimeException(exce);
-						
-					}
-					
-				}
-				
-			}
+            } catch (IOException ex) {
 
-		}
+                ThreadUtil.sleep(1000);
+
+                try {
+
+                    return api.send(request);
+
+                } catch (IOException exc) {
+
+                    ThreadUtil.sleep(1000);
+
+                    try {
+
+                        return api.send(request);
+
+                    } catch (IOException exce) {
+
+                        throw new RuntimeException(exce);
+
+                    }
+
+                }
+
+            }
+
+        }
 
     }
 
@@ -132,6 +133,26 @@ public class TelegramBot {
             updatesHandler = new UpdatesHandler(100);
         }
 
+        private static OkHttpClient client(Interceptor interceptor) {
+            OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                    .connectTimeout(75, TimeUnit.SECONDS)
+                    .readTimeout(75, TimeUnit.SECONDS);
+            if (interceptor != null) builder.addInterceptor(interceptor);
+            return builder.build();
+        }
+
+        private static Interceptor httpLoggingInterceptor() {
+            return new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
+        }
+
+        private static Gson gson() {
+            return new Gson();
+        }
+
+        private static String apiUrl(String apiUrl, String botToken) {
+            return apiUrl + botToken + "/";
+        }
+
         public Builder debug() {
             okHttpClient = client(httpLoggingInterceptor());
             return this;
@@ -167,26 +188,6 @@ public class TelegramBot {
                 fileApi = new FileApi(fileApiUrl, botToken);
             }
             return new TelegramBot(this);
-        }
-
-        private static OkHttpClient client(Interceptor interceptor) {
-            OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                    .connectTimeout(75, TimeUnit.SECONDS)
-                    .readTimeout(75, TimeUnit.SECONDS);
-            if (interceptor != null) builder.addInterceptor(interceptor);
-            return builder.build();
-        }
-
-        private static Interceptor httpLoggingInterceptor() {
-            return new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
-        }
-
-        private static Gson gson() {
-            return new Gson();
-        }
-
-        private static String apiUrl(String apiUrl, String botToken) {
-            return apiUrl + botToken + "/";
         }
     }
 }

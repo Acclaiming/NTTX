@@ -18,19 +18,22 @@ import io.kurumi.ntt.fragment.abs.Callback;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.abs.Query;
 import io.kurumi.ntt.utils.BotLog;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import okhttp3.OkHttpClient;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
-	public User me;
-
+    static ExecutorService processUpdatePool = Executors.newFixedThreadPool(5);
+    public User me;
     private TelegramBot bot;
     private LinkedList<Fragment> fragments = new LinkedList<>();
     private String token;
+    private PointStore point;
 
     {
 
@@ -50,9 +53,10 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
         return bot;
 
     }
-   
-	public void reload() {}
-	
+
+    public void reload() {
+    }
+
     public void addFragment(Fragment fragment) {
 
         fragment.origin = this;
@@ -60,16 +64,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 
     }
-
-	public void remFragment(Fragment fragment) {
-
-        fragments.remove(fragment);
-
-
-    }
-
-
-    public abstract String botName();
 
     /*
 
@@ -81,31 +75,38 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
      */
 
-    @Override
-    public int process(List<Update> updates) {
+    public void remFragment(Fragment fragment) {
 
-		for (final Update update : updates) {
+        fragments.remove(fragment);
 
-			try {
-
-				processAsync(update);
-
-			} catch (Exception e) {
-
-				BotLog.error("更新出错",e);
-
-				Launcher.INSTANCE.uncaughtException(Thread.currentThread(),e);
-
-			}
-
-
-		}
-
-		return CONFIRMED_UPDATES_ALL;
 
     }
 
-    private PointStore point;
+    public abstract String botName();
+
+    @Override
+    public int process(List<Update> updates) {
+
+        for (final Update update : updates) {
+
+            try {
+
+                processAsync(update);
+
+            } catch (Exception e) {
+
+                BotLog.error("更新出错", e);
+
+                Launcher.INSTANCE.uncaughtException(Thread.currentThread(), e);
+
+            }
+
+
+        }
+
+        return CONFIRMED_UPDATES_ALL;
+
+    }
 
     @Override
     public PointStore point() {
@@ -125,7 +126,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
     }
 
     @Override
-    public boolean onMsg(UserData user,Msg msg) {
+    public boolean onMsg(UserData user, Msg msg) {
 
         if ("cancel".equals(msg.command())) {
 
@@ -140,7 +141,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
     }
 
     @Override
-    public boolean onPointedMsg(UserData user,Msg msg) {
+    public boolean onPointedMsg(UserData user, Msg msg) {
 
         if ("cancel".equals(msg.command())) {
 
@@ -155,8 +156,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
         return false;
 
     }
-
-    static ExecutorService processUpdatePool = Executors.newFixedThreadPool(5);
 
     public void processAsync(final Update update) {
 
@@ -184,171 +183,36 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         processUpdatePool.execute(new Runnable() {
 
-                @Override
-                public void run() {
+            @Override
+            public void run() {
 
-                    if (update.message() != null) {
+                if (update.message() != null) {
 
-                        Msg msg = new Msg(BotFragment.this,update.message());
+                    Msg msg = new Msg(BotFragment.this, update.message());
 
-                        for (Fragment fragmnet : fragments) {
+                    for (Fragment fragmnet : fragments) {
 
-                            if (fragmnet.onUpdate(user,update)) {
+                        if (fragmnet.onUpdate(user, update)) {
+
+                            return;
+
+                        }
+
+                    }
+
+                    for (Fragment fragmnet : fragments) {
+
+                        if (!point) {
+
+                            if (fragmnet.onMsg(user, msg)) {
 
                                 return;
 
                             }
 
-                        }
+                        } else {
 
-                        for (Fragment fragmnet : fragments) {
-
-                            if (!point) {
-
-                                if (fragmnet.onMsg(user,msg)) {
-
-                                    return;
-
-                                }
-
-                            } else {
-
-                                if (fragmnet.onPointedMsg(user,msg)) {
-
-                                    return;
-
-                                }
-
-                            }
-
-                        }
-
-                        switch (update.message().chat().type()) {
-
-                            case Private: {
-
-                                    for (Fragment fragmnet : fragments) {
-
-                                        if (!point) {
-
-                                            if (fragmnet.onPrivate(user,msg)) {
-
-                                                return;
-
-                                            }
-
-                                        } else {
-
-
-                                            if (fragmnet.onPointedPrivate(user,msg)) {
-
-                                                return;
-
-                                            }
-
-                                        }
-
-                                    }
-
-                                    break;
-
-                                }
-
-                            case group : case supergroup : {
-
-                                    for (Fragment fragmnet : fragments) {
-
-                                        if (!point) {
-                                        
-                                        if (fragmnet.onGroup(user,msg)) {
-
-                                            return;
-
-                                        }
-                                        
-                                        } else {
-                                            
-                                            if (fragmnet.onPointedGroup(user,msg)) {
-                                                
-                                                return;
-
-                                            }
-                                            
-                                        }
-
-                                    }
-
-                                    break;
-
-                                }
-
-                        }
-
-                    } else if (update.channelPost() != null) {
-
-
-
-                        for (Fragment fragmnet : fragments) {
-
-                            if (fragmnet.onUpdate(user,update)) {
-
-                                return;
-
-                            }
-
-                        }
-
-
-                        for (Fragment fragmnet : fragments) {
-
-                            if (fragmnet.onChanPost(user,new Msg(fragmnet,update.channelPost()))) {
-
-                                return;
-
-                            }
-
-                        }
-
-                    } else if (update.callbackQuery() != null) {
-
-                        for (Fragment fragmnet : fragments) {
-
-                            if (fragmnet.onUpdate(user,update)) {
-
-                                return;
-
-                            }
-
-                        }
-
-
-                        for (Fragment fragmnet : fragments) {
-
-                            if (fragmnet.onCallback(user,new Callback(fragmnet,update.callbackQuery()))) {
-
-                                return;
-
-                            }
-
-                        }
-
-                    } else if (update.inlineQuery() != null) {
-
-
-                        for (Fragment fragmnet : fragments) {
-
-                            if (fragmnet.onUpdate(user,update)) {
-
-                                return;
-
-                            }
-
-                        }
-
-
-                        for (Fragment fragmnet : fragments) {
-
-                            if (fragmnet.onQuery(user,new Query(fragmnet,update.inlineQuery()))) {
+                            if (fragmnet.onPointedMsg(user, msg)) {
 
                                 return;
 
@@ -358,9 +222,144 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
                     }
 
+                    switch (update.message().chat().type()) {
+
+                        case Private: {
+
+                            for (Fragment fragmnet : fragments) {
+
+                                if (!point) {
+
+                                    if (fragmnet.onPrivate(user, msg)) {
+
+                                        return;
+
+                                    }
+
+                                } else {
+
+
+                                    if (fragmnet.onPointedPrivate(user, msg)) {
+
+                                        return;
+
+                                    }
+
+                                }
+
+                            }
+
+                            break;
+
+                        }
+
+                        case group:
+                        case supergroup: {
+
+                            for (Fragment fragmnet : fragments) {
+
+                                if (!point) {
+
+                                    if (fragmnet.onGroup(user, msg)) {
+
+                                        return;
+
+                                    }
+
+                                } else {
+
+                                    if (fragmnet.onPointedGroup(user, msg)) {
+
+                                        return;
+
+                                    }
+
+                                }
+
+                            }
+
+                            break;
+
+                        }
+
+                    }
+
+                } else if (update.channelPost() != null) {
+
+
+                    for (Fragment fragmnet : fragments) {
+
+                        if (fragmnet.onUpdate(user, update)) {
+
+                            return;
+
+                        }
+
+                    }
+
+
+                    for (Fragment fragmnet : fragments) {
+
+                        if (fragmnet.onChanPost(user, new Msg(fragmnet, update.channelPost()))) {
+
+                            return;
+
+                        }
+
+                    }
+
+                } else if (update.callbackQuery() != null) {
+
+                    for (Fragment fragmnet : fragments) {
+
+                        if (fragmnet.onUpdate(user, update)) {
+
+                            return;
+
+                        }
+
+                    }
+
+
+                    for (Fragment fragmnet : fragments) {
+
+                        if (fragmnet.onCallback(user, new Callback(fragmnet, update.callbackQuery()))) {
+
+                            return;
+
+                        }
+
+                    }
+
+                } else if (update.inlineQuery() != null) {
+
+
+                    for (Fragment fragmnet : fragments) {
+
+                        if (fragmnet.onUpdate(user, update)) {
+
+                            return;
+
+                        }
+
+                    }
+
+
+                    for (Fragment fragmnet : fragments) {
+
+                        if (fragmnet.onQuery(user, new Query(fragmnet, update.inlineQuery()))) {
+
+                            return;
+
+                        }
+
+                    }
 
                 }
-            });
+
+
+            }
+        });
 
     }
 
@@ -378,7 +377,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
     public void setToken(String botToken) {
 
-        Env.set("token." + botName(),token);
+        Env.set("token." + botName(), token);
 
     }
 
@@ -417,9 +416,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
         okhttpClient.networkInterceptors().clear();
 
         bot = new TelegramBot.Builder(token)
-            .okHttpClient(okhttpClient.build()).build();
+                .okHttpClient(okhttpClient.build()).build();
 
-		me = bot.execute(new GetMe()).user();
+        me = bot.execute(new GetMe()).user();
 
         realStart();
 
@@ -431,7 +430,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         if (isLongPulling()) {
 
-            bot.setUpdatesListener(this,new GetUpdates());
+            bot.setUpdatesListener(this, new GetUpdates());
 
         } else {
 
@@ -449,7 +448,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
             String url = "https://" + BotServer.INSTANCE.domain + "/" + token;
 
-            BotServer.fragments.put(token,this);
+            BotServer.fragments.put(token, this);
 
             BaseResponse resp = bot.execute(new SetWebhook().url(url));
 
@@ -464,14 +463,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
             }
 
 
-
         }
 
     }
 
     public void stop() {
-		
-        if (!isLongPulling())  {
+
+        if (!isLongPulling()) {
 
             bot.execute(new DeleteWebhook());
 

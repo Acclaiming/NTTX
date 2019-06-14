@@ -9,12 +9,14 @@ import io.kurumi.ntt.fragment.abs.request.Send;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 import io.kurumi.ntt.utils.NTT;
+
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Status;
@@ -23,375 +25,373 @@ import twitter4j.TwitterException;
 
 public class TimelineUI extends TwitterFunction {
 
-	public static Data<TLSetting> data = new Data<TLSetting>(TLSetting.class);
+    public static Data<TLSetting> data = new Data<TLSetting>(TLSetting.class);
+    static Timer timer;
+    static long lastTimeline = System.currentTimeMillis();
 
-	public static class TLSetting {
+    public static void start() {
 
-		public long id;
+        stop();
 
-		public boolean timeline;
-		public long timelineOffset = -1;
+        timer = new Timer("NTT Timeline Task");
 
-		public boolean mention = false;
+        timer.schedule(new Mention(), new Date());
 
-		public long mentionOffset = -1;
-		public long retweetsOffset = -1;
+        timer.scheduleAtFixedRate(new Timeline(), new Date(), 2 * 60 * 1000);
 
-	}
+    }
 
-	@Override
-	public void functions(LinkedList<String> names) {
+    public static void stop() {
 
-		names.add("timeline");
-		names.add("mention");
+        if (timer != null) {
 
-	}
+            timer.cancel();
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+            timer = null;
 
-		TLSetting setting = data.getById(account.id);
+        }
 
-		if (setting == null) {
+    }
 
-			setting = new TLSetting();
+    static void processTimeline(TAuth auth, Twitter api, TLSetting setting) throws TwitterException {
 
-			setting.id = account.id;
+        if (setting.timelineOffset != -1) {
 
-		}
+            ResponseList<Status> timeline = api.getHomeTimeline(new Paging().count(200).sinceId(setting.timelineOffset + 1));
 
-		boolean target = params.length > 0 && !"off".equals(params[0]);
+            long offset = setting.timelineOffset;
 
-		msg.send("timeline".equals(function) ?  setting.timeline == target ? (target ? "无须重复开启" : "没有开启") : ((setting.timeline = target) ? "已开启" : "已关闭") : setting.mention == target ? (target ? "无须重复开启" : "没有开启") : ((setting.mention = target) ? "已开启" : "已关闭")).exec();
+            for (Status status : ArrayUtil.reverse(timeline.toArray(new Status[timeline.size()]))) {
 
-		if ("timeline".equals(function)) {
+                if (status.getId() > offset) {
 
-			setting.timelineOffset = -1;
+                    offset = status.getId();
 
-		} else {
+                }
 
-			setting.retweetsOffset = -1;
-			setting.mentionOffset = -1;
+                StatusArchive archive = StatusArchive.save(status).loop(api);
 
-		}
+                if (!archive.from.equals(auth.id)) {
 
-		if (setting.mention || setting.timeline) {
+                    archive.sendTo(auth.user, 1, auth, status);
 
-			data.setById(account.id,setting);
+                }
 
-		} else {
+            }
 
-			data.deleteById(account.id);
+            setting.timelineOffset = offset;
 
-		}
+        } else {
 
-	}
+            ResponseList<Status> timeline = api.getHomeTimeline(new Paging().count(1));
 
-	static Timer timer;
+            if (!timeline.isEmpty()) {
 
-	public static void start() {
+                setting.timelineOffset = timeline.get(0).getId();
 
-		stop();
+            } else {
 
-		timer = new Timer("NTT Timeline Task");
+                setting.timelineOffset = 0;
 
-		timer.schedule(new Mention(),new Date());
+            }
 
-		timer.scheduleAtFixedRate(new Timeline(),new Date(),2 * 60 * 1000);
-		
-	}
+        }
 
-	public static void stop() {
+        data.setById(auth.id, setting);
 
-		if (timer != null) {
+    }
 
-			timer.cancel();
+    static void processMention(TAuth auth, Twitter api, TLSetting setting) throws TwitterException {
 
-			timer = null;
+        if (setting.mentionOffset != -1) {
 
-		}
+            ResponseList<Status> mentions = api.getMentionsTimeline(new Paging().count(200).sinceId(setting.mentionOffset + 1));
 
-	}
+            long offset = setting.mentionOffset;
 
-	static long lastTimeline = System.currentTimeMillis();
+            for (Status mention : ArrayUtil.reverse(mentions.toArray(new Status[mentions.size()]))) {
 
-	public static class Timeline extends TimerTask {
+                if (mention.getId() > offset) {
 
-		public static ExecutorService processPool = Executors.newFixedThreadPool(3);
+                    offset = mention.getId();
 
-		@Override
-		public void run() {
+                }
 
-			LinkedList<Long> toRemove = new LinkedList<>();
+                StatusArchive archive = StatusArchive.save(mention).loop(api);
 
-			for (final TLSetting setting : data.collection.find()) {
+                if (!archive.from.equals(auth.id)) {
 
-				final TAuth auth = TAuth.getById(setting.id);
+                    archive.sendTo(auth.user, 1, auth, mention);
 
-				if (auth == null) {
+                }
 
-					toRemove.add(setting.id);
+            }
 
-					continue;
+            setting.mentionOffset = offset;
 
-				}
+        } else {
 
-				final Twitter api = auth.createApi();
+            ResponseList<Status> mention = api.getMentionsTimeline(new Paging().count(1));
 
-				if (setting.timeline) {
+            if (mention.isEmpty()) {
 
-					processPool.execute(new Runnable() {
+                setting.mentionOffset = 0;
 
-							@Override
-							public void run() {
+            } else {
 
-								try {
+                setting.mentionOffset = mention.get(0).getId();
 
-									processTimeline(auth,api,setting);
+            }
 
-								} catch (TwitterException e) {
+        }
 
-									setting.timeline = false;
+        if (setting.retweetsOffset != -1) {
 
-									new Send(auth.user,"时间流已关闭 :",NTT.parseTwitterException(e)).exec();
+            ResponseList<Status> retweets = api.getRetweetsOfMe(new Paging().count(200).sinceId(setting.retweetsOffset + 1));
 
-									data.setById(auth.id,setting);
+            long offset = setting.retweetsOffset;
 
-								}
+            for (Status retweet : ArrayUtil.reverse(retweets.toArray(new Status[retweets.size()]))) {
 
-							}
+                if (retweet.getId() > offset) {
 
-						});
+                    offset = retweet.getId();
 
-				}
+                }
 
-			}
+                StatusArchive archive = StatusArchive.save(retweet).loop(api);
 
-			for (long remove : toRemove) {
+                if (!archive.from.equals(auth.id)) {
 
-				data.deleteById(remove);
+                    archive.sendTo(auth.user, 1, auth, retweet);
 
-			}
+                }
 
-		}
+            }
 
+            setting.retweetsOffset = offset;
 
-	}
+        } else {
 
-	public static class Mention extends TimerTask {
+            ResponseList<Status> mention = api.getRetweetsOfMe(new Paging().count(1));
 
-		public static ExecutorService processPool = Executors.newFixedThreadPool(3);
+            if (!mention.isEmpty()) {
 
-		@Override
-		public void run() {
+                setting.retweetsOffset = mention.get(0).getId();
 
-			LinkedList<Long> toRemove = new LinkedList<>();
+            } else {
 
-			for (final TLSetting setting : data.collection.find()) {
+                setting.retweetsOffset = 0;
 
-				final TAuth auth = TAuth.getById(setting.id);
+            }
 
-				if (auth == null) {
+        }
 
-					toRemove.add(setting.id);
+        data.setById(auth.id, setting);
 
-					continue;
+    }
 
-				}
+    @Override
+    public void functions(LinkedList<String> names) {
 
-				final Twitter api = auth.createApi();
+        names.add("timeline");
+        names.add("mention");
 
-				if (setting.mention) {
+    }
 
-					processPool.execute(new Runnable() {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
-							@Override
-							public void run() {
+        TLSetting setting = data.getById(account.id);
 
-								try {
+        if (setting == null) {
 
-									processMention(auth,api,setting);
+            setting = new TLSetting();
 
-								} catch (TwitterException e) {
+            setting.id = account.id;
 
-									setting.mention = false;
+        }
 
-									new Send(auth.user,"回复流已关闭 :",NTT.parseTwitterException(e)).exec();
+        boolean target = params.length > 0 && !"off".equals(params[0]);
 
-									data.setById(auth.id,setting);
+        msg.send("timeline".equals(function) ? setting.timeline == target ? (target ? "无须重复开启" : "没有开启") : ((setting.timeline = target) ? "已开启" : "已关闭") : setting.mention == target ? (target ? "无须重复开启" : "没有开启") : ((setting.mention = target) ? "已开启" : "已关闭")).exec();
 
-								}
+        if ("timeline".equals(function)) {
 
-							}
+            setting.timelineOffset = -1;
 
-						});
+        } else {
 
-				}
+            setting.retweetsOffset = -1;
+            setting.mentionOffset = -1;
 
-			}
+        }
 
-			for (long remove : toRemove) {
+        if (setting.mention || setting.timeline) {
 
-				data.deleteById(remove);
+            data.setById(account.id, setting);
 
-			}
+        } else {
 
-			long users = data.countByField("mention",true);
+            data.deleteById(account.id);
 
-			long delay = ((users / (100000 / 24 / 60))) * 60 * 1000 + 30 * 1000;
+        }
 
-			if (System.currentTimeMillis() < 1560873571200L) {
+    }
 
-				// utc 2019 06 19 Twitter将mention_timeline限制为每天 10w次总共调用。
+    public static class TLSetting {
 
-				delay = 20 * 1000;
+        public long id;
 
-			}
+        public boolean timeline;
+        public long timelineOffset = -1;
 
-			timer = new Timer("NTT Timeline Task");
+        public boolean mention = false;
 
-			timer.schedule(new Mention(),new Date(System.currentTimeMillis() + delay));
+        public long mentionOffset = -1;
+        public long retweetsOffset = -1;
 
-		}
-		
-		}
+    }
 
-		static void processTimeline(TAuth auth,Twitter api,TLSetting setting) throws TwitterException {
+    public static class Timeline extends TimerTask {
 
-			if (setting.timelineOffset != -1) {
+        public static ExecutorService processPool = Executors.newFixedThreadPool(3);
 
-				ResponseList<Status> timeline = api.getHomeTimeline(new Paging().count(200).sinceId(setting.timelineOffset + 1));
+        @Override
+        public void run() {
 
-				long offset = setting.timelineOffset;
+            LinkedList<Long> toRemove = new LinkedList<>();
 
-				for (Status status : ArrayUtil.reverse(timeline.toArray(new Status[timeline.size()]))) {
+            for (final TLSetting setting : data.collection.find()) {
 
-					if (status.getId() > offset) {
+                final TAuth auth = TAuth.getById(setting.id);
 
-						offset = status.getId();
+                if (auth == null) {
 
-					}
+                    toRemove.add(setting.id);
 
-					StatusArchive archive = StatusArchive.save(status).loop(api);
+                    continue;
 
-					if (!archive.from.equals(auth.id)) {
+                }
 
-						archive.sendTo(auth.user,1,auth,status);
+                final Twitter api = auth.createApi();
 
-					}
+                if (setting.timeline) {
 
-				}
+                    processPool.execute(new Runnable() {
 
-				setting.timelineOffset = offset;
+                        @Override
+                        public void run() {
 
-			} else {
+                            try {
 
-				ResponseList<Status> timeline = api.getHomeTimeline(new Paging().count(1));
+                                processTimeline(auth, api, setting);
 
-				if (!timeline.isEmpty()) {
+                            } catch (TwitterException e) {
 
-					setting.timelineOffset = timeline.get(0).getId();
+                                setting.timeline = false;
 
-				} else {
+                                new Send(auth.user, "时间流已关闭 :", NTT.parseTwitterException(e)).exec();
 
-					setting.timelineOffset = 0;
+                                data.setById(auth.id, setting);
 
-				}
+                            }
 
-			}
+                        }
 
-			data.setById(auth.id,setting);
+                    });
 
-		}
+                }
 
-		static void processMention(TAuth auth,Twitter api,TLSetting setting) throws TwitterException {
+            }
 
-			if (setting.mentionOffset != -1) {
+            for (long remove : toRemove) {
 
-				ResponseList<Status> mentions = api.getMentionsTimeline(new Paging().count(200).sinceId(setting.mentionOffset + 1));
+                data.deleteById(remove);
 
-				long offset = setting.mentionOffset;
+            }
 
-				for (Status mention : ArrayUtil.reverse(mentions.toArray(new Status[mentions.size()]))) {
+        }
 
-					if (mention.getId() > offset) {
 
-						offset = mention.getId();
+    }
 
-					}
+    public static class Mention extends TimerTask {
 
-					StatusArchive archive = StatusArchive.save(mention).loop(api);
+        public static ExecutorService processPool = Executors.newFixedThreadPool(3);
 
-					if (!archive.from.equals(auth.id)) {
+        @Override
+        public void run() {
 
-						archive.sendTo(auth.user,1,auth,mention);
+            LinkedList<Long> toRemove = new LinkedList<>();
 
-					}
+            for (final TLSetting setting : data.collection.find()) {
 
-				}
+                final TAuth auth = TAuth.getById(setting.id);
 
-				setting.mentionOffset = offset;
+                if (auth == null) {
 
-			} else {
+                    toRemove.add(setting.id);
 
-				ResponseList<Status> mention = api.getMentionsTimeline(new Paging().count(1));
+                    continue;
 
-				if (mention.isEmpty()) {
+                }
 
-					setting.mentionOffset = 0;
+                final Twitter api = auth.createApi();
 
-				} else {
+                if (setting.mention) {
 
-					setting.mentionOffset = mention.get(0).getId();
+                    processPool.execute(new Runnable() {
 
-				}
+                        @Override
+                        public void run() {
 
-			}
+                            try {
 
-			if (setting.retweetsOffset != -1) {
+                                processMention(auth, api, setting);
 
-				ResponseList<Status> retweets = api.getRetweetsOfMe(new Paging().count(200).sinceId(setting.retweetsOffset + 1));
+                            } catch (TwitterException e) {
 
-				long offset = setting.retweetsOffset;
+                                setting.mention = false;
 
-				for (Status retweet : ArrayUtil.reverse(retweets.toArray(new Status[retweets.size()]))) {
+                                new Send(auth.user, "回复流已关闭 :", NTT.parseTwitterException(e)).exec();
 
-					if (retweet.getId() > offset) {
+                                data.setById(auth.id, setting);
 
-						offset = retweet.getId();
+                            }
 
-					}
+                        }
 
-					StatusArchive archive = StatusArchive.save(retweet).loop(api);
+                    });
 
-					if (!archive.from.equals(auth.id)) {
+                }
 
-						archive.sendTo(auth.user,1,auth,retweet);
+            }
 
-					}
+            for (long remove : toRemove) {
 
-				}
+                data.deleteById(remove);
 
-				setting.retweetsOffset = offset;
+            }
 
-			} else {
+            long users = data.countByField("mention", true);
 
-				ResponseList<Status> mention = api.getRetweetsOfMe(new Paging().count(1));
+            long delay = ((users / (100000 / 24 / 60))) * 60 * 1000 + 30 * 1000;
 
-				if (!mention.isEmpty()) {
+            if (System.currentTimeMillis() < 1560873571200L) {
 
-					setting.retweetsOffset = mention.get(0).getId();
+                // utc 2019 06 19 Twitter将mention_timeline限制为每天 10w次总共调用。
 
-				} else {
+                delay = 20 * 1000;
 
-					setting.retweetsOffset = 0;
+            }
 
-				}
+            timer = new Timer("NTT Timeline Task");
 
-			}
+            timer.schedule(new Mention(), new Date(System.currentTimeMillis() + delay));
 
-			data.setById(auth.id,setting);
+        }
 
-		}
+    }
 
 }

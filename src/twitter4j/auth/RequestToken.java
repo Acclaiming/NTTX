@@ -23,7 +23,7 @@ import twitter4j.conf.ConfigurationContext;
 
 /**
  * @author Yusuke Yamamoto - yusuke at mac.com
- *         representing unauthorized Request Token which is passed to the service provider when acquiring the authorized Access Token
+ * representing unauthorized Request Token which is passed to the service provider when acquiring the authorized Access Token
  */
 public final class RequestToken extends OAuthToken implements java.io.Serializable {
     private static final long serialVersionUID = -8806439091674811734L;

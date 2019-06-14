@@ -19,7 +19,7 @@ import java.util.Arrays;
  * <p>
  * Clone of java.util.Base64 in Java 8 SE.
  * </p>
- *
+ * <p>
  * This class consists exclusively of static methods for obtaining encoders and
  * decoders for the Base64 encoding scheme. The implementation of this class
  * supports the following types of Base64 as specified in <a
@@ -106,15 +106,13 @@ public class Base64 {
      * type base64 encoding scheme with specified line length and line
      * separators.
      *
-     * @param lineLength the length of each output line (rounded down to nearest
-     * multiple of 4). If {@code lineLength <= 0} the output will not be
-     * separated in lines
+     * @param lineLength    the length of each output line (rounded down to nearest
+     *                      multiple of 4). If {@code lineLength <= 0} the output will not be
+     *                      separated in lines
      * @param lineSeparator the line separator for each output line
-     *
      * @return A Base64 encoder.
-     *
      * @throws IllegalArgumentException if {@code lineSeparator} includes any
-     * character of "The Base64 Alphabet" as specified in Table 1 of RFC 2045.
+     *                                  character of "The Base64 Alphabet" as specified in Table 1 of RFC 2045.
      */
     public static Encoder getMimeEncoder(int lineLength, byte[] lineSeparator) {
         if (lineSeparator == null) {
@@ -180,38 +178,33 @@ public class Base64 {
      */
     public static class Encoder {
 
-        private final byte[] newline;
-        private final int linemax;
-        private final boolean isURL;
-        private final boolean doPadding;
-
-        private Encoder(boolean isURL, byte[] newline, int linemax, boolean doPadding) {
-            this.isURL = isURL;
-            this.newline = newline;
-            this.linemax = linemax;
-            this.doPadding = doPadding;
-        }
-
+        static final Encoder RFC4648 = new Encoder(false, null, -1, true);
+        static final Encoder RFC4648_URLSAFE = new Encoder(true, null, -1, true);
         /**
          * This array is a lookup table that translates 6-bit positive integer
          * index values into their "Base64 Alphabet" equivalents as specified in
          * "Table 1: The Base64 Alphabet" of RFC 2045 (and RFC 4648).
          */
         private static final char[] toBase64 = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
-
         /**
          * It's the lookup table for "URL and Filename safe Base64" as specified
          * in Table 2 of the RFC 4648, with the '+' and '/' changed to '-' and
          * '_'. This table is used when BASE64_URL is specified.
          */
         private static final char[] toBase64URL = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_'};
-
         private static final int MIMELINEMAX = 76;
         private static final byte[] CRLF = new byte[]{'\r', '\n'};
-
-        static final Encoder RFC4648 = new Encoder(false, null, -1, true);
-        static final Encoder RFC4648_URLSAFE = new Encoder(true, null, -1, true);
         static final Encoder RFC2045 = new Encoder(false, CRLF, MIMELINEMAX, true);
+        private final byte[] newline;
+        private final int linemax;
+        private final boolean isURL;
+        private final boolean doPadding;
+        private Encoder(boolean isURL, byte[] newline, int linemax, boolean doPadding) {
+            this.isURL = isURL;
+            this.newline = newline;
+            this.linemax = linemax;
+            this.doPadding = doPadding;
+        }
 
         private final int outLength(int srclen) {
             int len = 0;
@@ -261,9 +254,8 @@ public class Base64 {
          * @param src the byte array to encode
          * @param dst the output byte array
          * @return The number of bytes written to the output byte array
-         *
          * @throws IllegalArgumentException if {@code dst} does not have enough
-         * space for encoding all input bytes.
+         *                                  space for encoding all input bytes.
          */
         public int encode(byte[] src, byte[] dst) {
             int len = outLength(src.length); // dst array size
@@ -300,7 +292,7 @@ public class Base64 {
         /**
          * Encodes all remaining bytes from the specified byte buffer into a
          * newly-allocated ByteBuffer using the {@link Base64} encoding scheme.
-         *
+         * <p>
          * Upon return, the source buffer's position will be updated to its
          * limit; its limit will not have been changed. The returned output
          * buffer's position will be zero and its limit will be the number of
@@ -379,7 +371,7 @@ public class Base64 {
             int dp = 0;
             while (sp < sl) {
                 int sl0 = Math.min(sp + slen, sl);
-                for (int sp0 = sp, dp0 = dp; sp0 < sl0;) {
+                for (int sp0 = sp, dp0 = dp; sp0 < sl0; ) {
                     int bits = (src[sp0++] & 0xff) << 16 | (src[sp0++] & 0xff) << 8 | (src[sp0++] & 0xff);
                     dst[dp0++] = (byte) base64[(bits >>> 18) & 0x3f];
                     dst[dp0++] = (byte) base64[(bits >>> 12) & 0x3f];
@@ -446,22 +438,21 @@ public class Base64 {
      */
     public static class Decoder {
 
-        private final boolean isURL;
-        private final boolean isMIME;
-
-        private Decoder(boolean isURL, boolean isMIME) {
-            this.isURL = isURL;
-            this.isMIME = isMIME;
-        }
-
+        static final Decoder RFC4648 = new Decoder(false, false);
+        static final Decoder RFC4648_URLSAFE = new Decoder(true, false);
+        static final Decoder RFC2045 = new Decoder(false, true);
         /**
          * Lookup table for decoding unicode characters drawn from the "Base64
          * Alphabet" (as specified in Table 1 of RFC 2045) into their 6-bit
          * positive integer equivalents. Characters that are not in the Base64
          * alphabet but fall within the bounds of the array are encoded to -1.
-         *
          */
         private static final int[] fromBase64 = new int[256];
+        /**
+         * Lookup table for decoding "URL and Filename safe Base64 Alphabet" as
+         * specified in Table2 of the RFC 4648.
+         */
+        private static final int[] fromBase64URL = new int[256];
 
         static {
             Arrays.fill(fromBase64, -1);
@@ -471,12 +462,6 @@ public class Base64 {
             fromBase64['='] = -2;
         }
 
-        /**
-         * Lookup table for decoding "URL and Filename safe Base64 Alphabet" as
-         * specified in Table2 of the RFC 4648.
-         */
-        private static final int[] fromBase64URL = new int[256];
-
         static {
             Arrays.fill(fromBase64URL, -1);
             for (int i = 0; i < Encoder.toBase64URL.length; i++) {
@@ -485,9 +470,12 @@ public class Base64 {
             fromBase64URL['='] = -2;
         }
 
-        static final Decoder RFC4648 = new Decoder(false, false);
-        static final Decoder RFC4648_URLSAFE = new Decoder(true, false);
-        static final Decoder RFC2045 = new Decoder(false, true);
+        private final boolean isURL;
+        private final boolean isMIME;
+        private Decoder(boolean isURL, boolean isMIME) {
+            this.isURL = isURL;
+            this.isMIME = isMIME;
+        }
 
         /**
          * Decodes all bytes from the input byte array using the {@link Base64}
@@ -496,11 +484,9 @@ public class Base64 {
          * bytes.
          *
          * @param src the byte array to decode
-         *
          * @return A newly-allocated byte array containing the decoded bytes.
-         *
          * @throws IllegalArgumentException if {@code src} is not in valid
-         * Base64 scheme
+         *                                  Base64 scheme
          */
         public byte[] decode(byte[] src) {
             byte[] dst = new byte[outLength(src, 0, src.length)];
@@ -520,11 +506,9 @@ public class Base64 {
          * {@code decode(src.getBytes(StandardCharsets.ISO_8859_1))}
          *
          * @param src the string to decode
-         *
          * @return A newly-allocated byte array containing the decoded bytes.
-         *
          * @throws IllegalArgumentException if {@code src} is not in valid
-         * Base64 scheme
+         *                                  Base64 scheme
          */
         public byte[] decode(String src) {
             return decode(src.getBytes(Charset.forName("ISO-8859-1")));
@@ -548,12 +532,10 @@ public class Base64 {
          *
          * @param src the byte array to decode
          * @param dst the output byte array
-         *
          * @return The number of bytes written to the output byte array
-         *
          * @throws IllegalArgumentException if {@code src} is not in valid
-         * Base64 scheme, or {@code dst} does not have enough space for decoding
-         * all input bytes.
+         *                                  Base64 scheme, or {@code dst} does not have enough space for decoding
+         *                                  all input bytes.
          */
         public int decode(byte[] src, byte[] dst) {
             int len = outLength(src, 0, src.length);
@@ -580,11 +562,9 @@ public class Base64 {
          * will not be advanced in this case.
          *
          * @param buffer the ByteBuffer to decode
-         *
          * @return A newly-allocated byte buffer containing the decoded bytes
-         *
          * @throws IllegalArgumentException if {@code src} is not in valid
-         * Base64 scheme.
+         *                                  Base64 scheme.
          */
         public ByteBuffer decode(ByteBuffer buffer) {
             int pos0 = buffer.position();
@@ -623,7 +603,6 @@ public class Base64 {
          * stream.
          *
          * @param is the input stream
-         *
          * @return the input stream for decoding the specified Base64 encoded
          * byte stream
          */
@@ -737,14 +716,13 @@ public class Base64 {
      */
     private static class EncOutputStream extends FilterOutputStream {
 
-        private int leftover = 0;
-        private int b0, b1, b2;
-        private boolean closed = false;
-
         private final char[] base64; // byte->base64 mapping
         private final byte[] newline; // line separator, if needed
         private final int linemax;
         private final boolean doPadding;// whether or not to pad
+        private int leftover = 0;
+        private int b0, b1, b2;
+        private boolean closed = false;
         private int linepos = 0;
 
         EncOutputStream(OutputStream os, char[] base64, byte[] newline, int linemax, boolean doPadding) {
@@ -859,14 +837,13 @@ public class Base64 {
         // -> 8, 0, -8 (no byte for output)
         private boolean eof = false;
         private boolean closed = false;
+        private byte[] sbBuf = new byte[1];
 
         DecInputStream(InputStream is, int[] base64, boolean isMIME) {
             this.is = is;
             this.base64 = base64;
             this.isMIME = isMIME;
         }
-
-        private byte[] sbBuf = new byte[1];
 
         @Override
         public int read() throws IOException {

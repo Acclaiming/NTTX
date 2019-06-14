@@ -115,7 +115,7 @@ import twitter4j.conf.Configuration;
     public boolean isSourceBlockingTarget() {
         return sourceBlockingTarget;
     }
-    
+
     @Override
     public String getSourceUserScreenName() {
         return sourceUserScreenName;

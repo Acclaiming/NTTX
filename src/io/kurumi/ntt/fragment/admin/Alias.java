@@ -7,31 +7,33 @@ import io.kurumi.ntt.fragment.abs.Msg;
 
 public class Alias extends Fragment {
 
-	@Override
-	public boolean onPrivate(UserData user,final Msg msg) {
+    @Override
+    public boolean onPrivate(UserData user, final Msg msg) {
 
-		if (!"alias".equals(msg.command())) return false;
+        if (!"alias".equals(msg.command())) return false;
 
-		if (msg.params().length != 1) {
+        if (msg.params().length != 1) {
 
-			msg.send("/alias <botToken>").exec();
+            msg.send("/alias <botToken>").exec();
 
-			return true;
+            return true;
 
-		}
+        }
 
-		new Launcher() {
+        new Launcher() {
 
-			@Override
-			public String getToken() { return msg.params()[0]; }
+            @Override
+            public String getToken() {
+                return msg.params()[0];
+            }
 
-		}.silentStart();
+        }.silentStart();
 
 
-		msg.send("started").exec();
+        msg.send("started").exec();
 
-		return true;
+        return true;
 
-	}
+    }
 
 }

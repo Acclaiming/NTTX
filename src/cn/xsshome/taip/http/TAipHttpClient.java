@@ -26,10 +26,10 @@ public class TAipHttpClient {
         String charset = request.getContentEncoding();
         String content = "";
         // 部分nlp接口编码格式处理
-        if(request.getUri().toString().equals((NLPConsts.NLP_WORDSEG))||request.getUri().toString().equals(NLPConsts.NLP_WORDPOS)||request.getUri().toString().equals(NLPConsts.NLP_WORDNER)||request.getUri().toString().equals(NLPConsts.NLP_WORDSYN)){
-        	content = request.getBodyStrForNLP();
-        }else{
-        	content = request.getBodyStr();
+        if (request.getUri().toString().equals((NLPConsts.NLP_WORDSEG)) || request.getUri().toString().equals(NLPConsts.NLP_WORDPOS) || request.getUri().toString().equals(NLPConsts.NLP_WORDNER) || request.getUri().toString().equals(NLPConsts.NLP_WORDSYN)) {
+            content = request.getBodyStrForNLP();
+        } else {
+            content = request.getBodyStr();
         }
         HashMap<String, String> header = request.getHeaders();
         TAipResponse response = new TAipResponse();
@@ -39,8 +39,7 @@ public class TAipHttpClient {
         try {
             if (request.getParams().isEmpty()) {
                 url = request.getUri().toString();
-            }
-            else {
+            } else {
                 url = String.format("%s?%s", request.getUri().toString(), request.getParamStr());
             }
 
@@ -61,19 +60,19 @@ public class TAipHttpClient {
 
             conn.connect();
             out = new DataOutputStream(conn.getOutputStream());
-	    	out.write(content.getBytes(charset));
-	        out.flush();
-	        int statusCode = conn.getResponseCode();
-	        // 部分nlp接口返回编码格式处理
-            if(request.getUri().toString().equals((NLPConsts.NLP_WORDSEG))||request.getUri().toString().equals(NLPConsts.NLP_WORDPOS)||request.getUri().toString().equals(NLPConsts.NLP_WORDNER)||request.getUri().toString().equals(NLPConsts.NLP_WORDSYN)){
-                 response.setHeader(conn.getHeaderFields());
-                 response.setStatus(statusCode);
-                 response.setCharset(TAipHttpCharacterEncoding.ENCODE_GBK);
-             }else{
-            	response.setHeader(conn.getHeaderFields());
-     	        response.setStatus(statusCode);
-     	        response.setCharset(charset);
-             }
+            out.write(content.getBytes(charset));
+            out.flush();
+            int statusCode = conn.getResponseCode();
+            // 部分nlp接口返回编码格式处理
+            if (request.getUri().toString().equals((NLPConsts.NLP_WORDSEG)) || request.getUri().toString().equals(NLPConsts.NLP_WORDPOS) || request.getUri().toString().equals(NLPConsts.NLP_WORDNER) || request.getUri().toString().equals(NLPConsts.NLP_WORDSYN)) {
+                response.setHeader(conn.getHeaderFields());
+                response.setStatus(statusCode);
+                response.setCharset(TAipHttpCharacterEncoding.ENCODE_GBK);
+            } else {
+                response.setHeader(conn.getHeaderFields());
+                response.setStatus(statusCode);
+                response.setCharset(charset);
+            }
             if (statusCode != 200) {
                 return response;
             }

@@ -7,12 +7,13 @@ import cn.hutool.json.JSONObject;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.GetMe;
 import io.kurumi.ntt.utils.BotLog;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Scanner;
 
 public class Env {
-    
+
     public static final Long GROUP = -1001428880645L;
     /**
      * 缓存文件存放地址
@@ -25,12 +26,24 @@ public class Env {
      */
 
     public static File DATA_DIR;
-    
+    private static JSONObject conf = new JSONObject();
+
     static {
 
-       // ROOT = new File("/etc/ntt");
+        // ROOT = new File("/etc/ntt");
         DATA_DIR = new File("/etc/ntt");
         CACHE_DIR = new File("/var/cache/ntt");
+
+    }
+
+    static {
+
+        try {
+
+            conf = new JSONObject(FileUtil.readUtf8String(new File(DATA_DIR, "settings.json")));
+
+        } catch (Exception e) {
+        }
 
     }
 
@@ -54,7 +67,7 @@ public class Env {
             token = session.nextLine();
 
         }
-        
+
         return token;
 
     }
@@ -65,16 +78,6 @@ public class Env {
     public static boolean verifyToken(String token) {
 
         return new TelegramBot(token).execute(new GetMe()).isOk();
-
-    }
-
-    private static JSONObject conf = new JSONObject(); static {
-
-        try {
-
-            conf = new JSONObject(FileUtil.readUtf8String(new File(DATA_DIR,"settings.json")));
-
-        } catch (Exception e) {}
 
     }
 
@@ -90,7 +93,7 @@ public class Env {
 
         if (key.contains(".")) {
 
-            return conf.getByPath(key,String.class);
+            return conf.getByPath(key, String.class);
 
         } else {
 
@@ -100,7 +103,7 @@ public class Env {
 
     }
 
-    public static String getOrDefault(String key,String defaultValue) {
+    public static String getOrDefault(String key, String defaultValue) {
 
         if (key == null) {
 
@@ -119,7 +122,7 @@ public class Env {
 
         } else if (value == null) {
 
-            set(key,defaultValue);
+            set(key, defaultValue);
 
             value = defaultValue;
 
@@ -129,21 +132,21 @@ public class Env {
 
     }
 
-    public static void set(String key,Object value) {
+    public static void set(String key, Object value) {
 
         if (value != null) value = value.toString();
 
         if (key.contains(".")) {
 
-            conf.putByPath(key,value);
+            conf.putByPath(key, value);
 
         } else {
 
-            conf.put(key,value);
+            conf.put(key, value);
 
         }
 
-        FileUtil.writeUtf8String(conf.toStringPretty(),new File(DATA_DIR,"settings.json"));
+        FileUtil.writeUtf8String(conf.toStringPretty(), new File(DATA_DIR, "settings.json"));
 
     }
 

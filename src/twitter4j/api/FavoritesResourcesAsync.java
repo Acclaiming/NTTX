@@ -77,7 +77,7 @@ public interface FavoritesResourcesAsync {
      * <br>This method calls https://api.twitter.com/1.1/favorites/[id].json
      *
      * @param screenName the screen name of the user for whom to request a list of favorite statuses
-     * @param paging controls pagination. Supports sinceId and page parameters.
+     * @param paging     controls pagination. Supports sinceId and page parameters.
      * @see <a href="https://dev.twitter.com/docs/api/1.1/get/favorites">GET favorites | Twitter Developers</a>
      * @since Twitter4J 2.2.5
      */

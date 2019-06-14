@@ -8,18 +8,19 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.abs.Function;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.utils.NTT;
+
 import java.security.acl.Group;
 import java.util.LinkedList;
 
 public class AntiHalal extends Function {
 
     public static AntiHalal INSTANCE = new AntiHalal();
-    
-    public static JSONArray enable = LocalData.getJSONArray("data","anti_halal",true);
+
+    public static JSONArray enable = LocalData.getJSONArray("data", "anti_halal", true);
 
     public static void save() {
 
-        LocalData.setJSONArray("data","anti_halal",enable);
+        LocalData.setJSONArray("data", "anti_halal", enable);
 
     }
 
@@ -36,7 +37,7 @@ public class AntiHalal extends Function {
 
                 halel = true;
 
-            } else if (chatAt >= 0x4E00 &&  chatAt <= 0x9FA5) {
+            } else if (chatAt >= 0x4E00 && chatAt <= 0x9FA5) {
 
                 chinese = true;
 
@@ -48,26 +49,25 @@ public class AntiHalal extends Function {
 
     }
 
-	@Override
-	public void functions(LinkedList<String> names) {
-	
-		names.add("antihalal");
-		
-	}
+    @Override
+    public void functions(LinkedList<String> names) {
 
-	@Override
-	public int target() {
-		
-		return Group;
-		
-	}
+        names.add("antihalal");
 
-	
-	
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-		
-		if (NTT.checkGroupAdmin(msg)) return;
+    }
+
+    @Override
+    public int target() {
+
+        return Group;
+
+    }
+
+
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+
+        if (NTT.checkGroupAdmin(msg)) return;
 
         if (params.length == 1 && "off".equals(params[0])) {
 
@@ -80,7 +80,7 @@ public class AntiHalal extends Function {
                 enable.remove(msg.chatId().longValue());
 
                 save();
-				
+
                 msg.send("关闭成功 ~").exec();
 
             }
@@ -96,18 +96,18 @@ public class AntiHalal extends Function {
                 enable.add(msg.chatId().longValue());
 
                 save();
-				
+
                 msg.send("已开启 ~").exec();
 
             }
 
         }
-		
-	}
-	
+
+    }
+
 
     @Override
-    public boolean onGroup(UserData user,Msg msg) {
+    public boolean onGroup(UserData user, Msg msg) {
 
         Message message = msg.message();
 
@@ -133,10 +133,9 @@ public class AntiHalal extends Function {
 
         }
 
-        
 
         return false;
 
     }
-    
+
 }

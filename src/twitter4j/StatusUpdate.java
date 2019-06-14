@@ -139,8 +139,8 @@ public final class StatusUpdate implements java.io.Serializable {
     }
 
     /**
-     * @since Twitter4J 4.0.7
      * @return attachment url
+     * @since Twitter4J 4.0.7
      */
     public String getAttachmentUrl() {
         return attachmentUrl;
@@ -181,14 +181,6 @@ public final class StatusUpdate implements java.io.Serializable {
 
     /**
      * @param possiblySensitive possibly sensitive
-     * @since Twitter4J 2.2.5
-     */
-    public void setPossiblySensitive(boolean possiblySensitive) {
-        this.possiblySensitive = possiblySensitive;
-    }
-
-    /**
-     * @param possiblySensitive possibly sensitive
      * @return this instance
      * @since Twitter4J 2.2.5
      */
@@ -206,7 +198,14 @@ public final class StatusUpdate implements java.io.Serializable {
     }
 
     /**
-     *
+     * @param possiblySensitive possibly sensitive
+     * @since Twitter4J 2.2.5
+     */
+    public void setPossiblySensitive(boolean possiblySensitive) {
+        this.possiblySensitive = possiblySensitive;
+    }
+
+    /**
      * @return autoPopulateReplyMetadata
      * @since Twitter4J 4.0.7
      */
@@ -215,7 +214,6 @@ public final class StatusUpdate implements java.io.Serializable {
     }
 
     /**
-     *
      * @param autoPopulateReplyMetadata auto reply meta data
      * @since Twitter4J 4.0.7
      */
@@ -224,7 +222,6 @@ public final class StatusUpdate implements java.io.Serializable {
     }
 
     /**
-     *
      * @param autoPopulateReplyMetadata auto reply meta data
      * @return this instance
      * @since Twitter4J 4.0.7
@@ -258,7 +255,7 @@ public final class StatusUpdate implements java.io.Serializable {
         } else if (mediaIds != null && mediaIds.length >= 1) {
             params.add(new HttpParameter("media_ids", StringUtil.join(mediaIds)));
         }
-        if(autoPopulateReplyMetadata){
+        if (autoPopulateReplyMetadata) {
             appendParameter("auto_populate_reply_metadata", "true", params);
         }
         appendParameter("attachment_url", attachmentUrl, params);

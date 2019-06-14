@@ -2,16 +2,16 @@ package com.github.libsgh.tieba.model;
 
 import java.io.Serializable;
 
-public class QuoteUser implements Serializable{
-    
+public class QuoteUser implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     private String id;
-    
+
     private String name;
-    
+
     private String name_show;
-    
+
 
     public String getId() {
         return id;
@@ -28,7 +28,7 @@ public class QuoteUser implements Serializable{
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public String getName_show() {
         return name_show;
     }

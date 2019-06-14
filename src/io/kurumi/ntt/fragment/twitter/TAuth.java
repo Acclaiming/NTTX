@@ -13,7 +13,9 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class TAuth {
 
-    public static Data<TAuth> data = new Data<TAuth>(TAuth.class); static {
+    public static Data<TAuth> data = new Data<TAuth>(TAuth.class);
+
+    static {
         
         /*
 
@@ -48,24 +50,6 @@ public class TAuth {
         */
 
     }
-    
-    public static TAuth getById(Long accountid) {
-        
-        return data.getById(accountid);
-        
-    }
-    
-    public static FindIterable<TAuth> getByUser(Long userId) {
-
-        return data.findByField("user",userId);
-
-    }
-    
-    public static boolean contains(Long userId) {
-        
-        return data.countByField("user",userId) > 0;
-        
-    }
 
     public Long id;
     public Long user;
@@ -74,21 +58,40 @@ public class TAuth {
     public String accToken;
     public String accTokenSec;
 
+    public static TAuth getById(Long accountid) {
+
+        return data.getById(accountid);
+
+    }
+
+    public static FindIterable<TAuth> getByUser(Long userId) {
+
+        return data.findByField("user", userId);
+
+    }
+
+    public static boolean contains(Long userId) {
+
+        return data.countByField("user", userId) > 0;
+
+    }
+
     public UserArchive archive() {
-        
+
         UserArchive archive = UserArchive.get(id);
 
         try {
-            
-            if (archive == null)  archive = UserArchive.save(createApi().verifyCredentials());
-            
-            
-        } catch (TwitterException e) {}
+
+            if (archive == null) archive = UserArchive.save(createApi().verifyCredentials());
+
+
+        } catch (TwitterException e) {
+        }
 
         return archive;
-        
+
     }
-    
+
     public Twitter createApi() {
 
         return new TwitterFactory(createConfig()).getInstance();
@@ -104,13 +107,13 @@ public class TAuth {
     public Configuration createConfig() {
 
         return new ConfigurationBuilder()
-            .setOAuthConsumerKey(apiKey)
-            .setOAuthConsumerSecret(apiKeySec)
-            .setOAuthAccessToken(accToken)
-            .setOAuthAccessTokenSecret(accTokenSec)
-            //    .setUserStreamBaseURL( "https://userstream.twitter.com/2/" )
-            .build();
+                .setOAuthConsumerKey(apiKey)
+                .setOAuthConsumerSecret(apiKeySec)
+                .setOAuthAccessToken(accToken)
+                .setOAuthAccessTokenSecret(accTokenSec)
+                //    .setUserStreamBaseURL( "https://userstream.twitter.com/2/" )
+                .build();
 
     }
-    
+
 }

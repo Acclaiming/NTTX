@@ -2,18 +2,18 @@ package com.github.libsgh.tieba.model;
 
 import java.io.Serializable;
 
-public class Replyer implements Serializable{
-    
+public class Replyer implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     private String id;
-    
+
     private String name;
-    
+
     private String portrait;
-    
+
     private String is_friend;
-    
+
     private String name_show;
 
     public String getId() {

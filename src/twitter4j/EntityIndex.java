@@ -35,19 +35,19 @@ abstract class EntityIndex implements Comparable<EntityIndex>, java.io.Serializa
         return (int) delta;
     }
 
-    void setStart(int start) {
-        this.start = start;
-    }
-
-    void setEnd(int end) {
-        this.end = end;
-    }
-
     int getStart() {
         return start;
     }
 
+    void setStart(int start) {
+        this.start = start;
+    }
+
     int getEnd() {
         return end;
+    }
+
+    void setEnd(int end) {
+        this.end = end;
     }
 }

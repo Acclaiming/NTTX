@@ -30,7 +30,7 @@ public interface TwitterAPIConfiguration extends TwitterResponse, Serializable {
     int getShortURLLengthHttps();
 
     int getCharactersReservedPerMedia();
-    
+
     int getDmTextCharacterLimit();
 
     Map<Integer, MediaEntity.Size> getPhotoSizes();

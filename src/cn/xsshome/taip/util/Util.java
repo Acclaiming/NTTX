@@ -66,7 +66,7 @@ public class Util {
     /**
      * All letters used in the percent-encoding are in uppercase.
      *
-     * @param value the string to normalize.
+     * @param value       the string to normalize.
      * @param encodeSlash if encode '/'
      * @return the normalized string.
      */
@@ -89,10 +89,11 @@ public class Util {
             throw new RuntimeException(e);
         }
     }
+
     /**
      * All letters used in the percent-encoding are in uppercase.
      *
-     * @param value the string to normalize.
+     * @param value       the string to normalize.
      * @param encodeSlash if encode '/'
      * @return the normalized string.
      */
@@ -126,7 +127,6 @@ public class Util {
     }
 
     /**
-     *
      * @param filePath 文件路径
      * @return file bytes
      * @throws IOException 读取文件错误

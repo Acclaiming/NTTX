@@ -1,7 +1,6 @@
 package io.kurumi.ntt.fragment.twitter.archive;
 
 
-
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HtmlUtil;
 import cn.hutool.http.HttpUtil;
@@ -20,9 +19,11 @@ import io.kurumi.ntt.fragment.twitter.status.MessagePoint;
 import io.kurumi.ntt.fragment.twitter.status.StatusAction;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
+
 import java.io.File;
 import java.util.Calendar;
 import java.util.LinkedList;
+
 import twitter4j.MediaEntity;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -32,97 +33,33 @@ import twitter4j.UserMentionEntity;
 
 public class StatusArchive {
 
-	public void sendTo(long chatId,int depth,TAuth auth,Status status) {
-
-		LinkedList<File> photo = new LinkedList<>();
-
-		for (String url : mediaUrls) {
-
-			String suffix = StrUtil.subAfter(url,".com/",false);
-
-			File cache = new File(Env.CACHE_DIR,suffix);
-
-			if (!cache.isFile()) {
-
-				try {
-
-					HttpUtil.downloadFile(url,cache);
-
-				} catch (Exception ex) {}
-
-
-			}
-
-			photo.add(cache);
-
-		}
-
-		if (photo.size() == 1)  {
-
-			SendPhoto send = new SendPhoto(chatId,photo.get(0)).caption(toHtml(depth)).parseMode(ParseMode.HTML);
-
-			if (status != null) {
-
-				send.replyMarkup(StatusAction.createMarkup(id,from.equals(auth.id),depth() <= depth,status.isRetweetedByMe(),status.isFavorited()).markup());
-
-			}
-
-			SendResponse resp = Launcher.INSTANCE.bot().execute(send);
-
-			if (resp.isOk() && resp.message().chat().type() == Chat.Type.Private) {
-
-				MessagePoint.set(resp.message().messageId(),1,id);
-
-			} else if (!resp.isOk()) {
-				
-				Send sendN = new Send(chatId,toHtml(depth)).html();
-
-				if (status != null) {
-
-					sendN.buttons(StatusAction.createMarkup(id,from.equals(auth.id),depth() <= depth,status.isRetweetedByMe(),status.isFavorited()));
-
-				}
-
-				sendN.point(1,id);
-				
-			}
-
-		} else {
-
-			Send send = new Send(chatId,toHtml(depth)).html();
-
-			if (status != null) {
-
-				send.buttons(StatusAction.createMarkup(id,from.equals(auth.id),depth() <= depth,status.isRetweetedByMe(),status.isFavorited()));
-
-			}
-
-			SendResponse msg = send.point(1,id);
-
-			if (photo.size() > 1 && msg.isOk()) {
-
-				InputMediaPhoto[] input = new InputMediaPhoto[photo.size()];
-
-				for (int index = 0;index < photo.size();index ++) {
-
-					input[index] = new InputMediaPhoto(photo.get(index));
-
-				}
-
-				Launcher.INSTANCE.bot().execute(new SendMediaGroup(chatId,input).replyToMessageId(msg.message().messageId()));
-
-			}
-
-		}
-
-	}
-
     public static Data<StatusArchive> data = new Data<StatusArchive>(StatusArchive.class);
+    public static transient String split_tiny = "---------------";
+    public static transient String split = "\n\n" + split_tiny + split_tiny + "\n\n";
+    public Long id;
+    public Long createdAt;
+    public String text;
+    public Long from;
+    public Long inReplyToStatusId;
+    public String inReplyToScreenName;
+    public Long inReplyToUserId;
+    public Long quotedStatusId;
+    public String quotedScreenName;
+    public Long quotedUserId;
+    public LinkedList<String> mediaUrls;
+    public Boolean isRetweet;
+    public Long retweetedStatus;
+    public LinkedList<Long> userMentions;
 
-    public static StatusArchive get(Long id) { return data.getById(id); }
-    public static boolean contains(Long id) { return data.containsId(id); }
+    public static StatusArchive get(Long id) {
+        return data.getById(id);
+    }
 
-	public static StatusArchive save(Status status) {
+    public static boolean contains(Long id) {
+        return data.containsId(id);
+    }
+
+    public static StatusArchive save(Status status) {
 
 
         StatusArchive archive = data.getById(status.getId());
@@ -135,41 +72,99 @@ public class StatusArchive {
 
         }
 
-		archive.read(status);
+        archive.read(status);
 
-		data.setById(archive.id,archive);
+        data.setById(archive.id, archive);
 
         return archive;
 
     }
 
-    public Long id;
+    public void sendTo(long chatId, int depth, TAuth auth, Status status) {
 
-	public Long createdAt;
+        LinkedList<File> photo = new LinkedList<>();
 
-	public String text;
+        for (String url : mediaUrls) {
 
-	public Long from;
+            String suffix = StrUtil.subAfter(url, ".com/", false);
 
-	public Long inReplyToStatusId;
+            File cache = new File(Env.CACHE_DIR, suffix);
 
-	public String inReplyToScreenName;
+            if (!cache.isFile()) {
 
-    public Long inReplyToUserId;
+                try {
 
-	public Long quotedStatusId;
+                    HttpUtil.downloadFile(url, cache);
 
-	public String quotedScreenName;
+                } catch (Exception ex) {
+                }
 
-	public Long quotedUserId;
 
-	public LinkedList<String> mediaUrls;
+            }
 
-    public Boolean isRetweet;
+            photo.add(cache);
 
-    public Long retweetedStatus;
+        }
 
-	public LinkedList<Long> userMentions;
+        if (photo.size() == 1) {
+
+            SendPhoto send = new SendPhoto(chatId, photo.get(0)).caption(toHtml(depth)).parseMode(ParseMode.HTML);
+
+            if (status != null) {
+
+                send.replyMarkup(StatusAction.createMarkup(id, from.equals(auth.id), depth() <= depth, status.isRetweetedByMe(), status.isFavorited()).markup());
+
+            }
+
+            SendResponse resp = Launcher.INSTANCE.bot().execute(send);
+
+            if (resp.isOk() && resp.message().chat().type() == Chat.Type.Private) {
+
+                MessagePoint.set(resp.message().messageId(), 1, id);
+
+            } else if (!resp.isOk()) {
+
+                Send sendN = new Send(chatId, toHtml(depth)).html();
+
+                if (status != null) {
+
+                    sendN.buttons(StatusAction.createMarkup(id, from.equals(auth.id), depth() <= depth, status.isRetweetedByMe(), status.isFavorited()));
+
+                }
+
+                sendN.point(1, id);
+
+            }
+
+        } else {
+
+            Send send = new Send(chatId, toHtml(depth)).html();
+
+            if (status != null) {
+
+                send.buttons(StatusAction.createMarkup(id, from.equals(auth.id), depth() <= depth, status.isRetweetedByMe(), status.isFavorited()));
+
+            }
+
+            SendResponse msg = send.point(1, id);
+
+            if (photo.size() > 1 && msg.isOk()) {
+
+                InputMediaPhoto[] input = new InputMediaPhoto[photo.size()];
+
+                for (int index = 0; index < photo.size(); index++) {
+
+                    input[index] = new InputMediaPhoto(photo.get(index));
+
+                }
+
+                Launcher.INSTANCE.bot().execute(new SendMediaGroup(chatId, input).replyToMessageId(msg.message().messageId()));
+
+            }
+
+        }
+
+    }
 
     public void read(Status status) {
 
@@ -177,19 +172,19 @@ public class StatusArchive {
 
         text = status.getText();
 
-		userMentions = new LinkedList<>();
+        userMentions = new LinkedList<>();
 
-		for (UserMentionEntity mention : status.getUserMentionEntities()) {
+        for (UserMentionEntity mention : status.getUserMentionEntities()) {
 
-			if (text.startsWith("@" + mention.getScreenName() + " ")) {
+            if (text.startsWith("@" + mention.getScreenName() + " ")) {
 
-				userMentions.add(mention.getId());
+                userMentions.add(mention.getId());
 
-				text = StrUtil.subAfter(text,"@" + mention.getScreenName() + " ",false);
+                text = StrUtil.subAfter(text, "@" + mention.getScreenName() + " ", false);
 
-			}
+            }
 
-		}
+        }
 
         from = UserArchive.save(status.getUser()).id;
 
@@ -201,37 +196,37 @@ public class StatusArchive {
 
         quotedStatusId = status.getQuotedStatusId();
 
-		for (URLEntity url : status.getURLEntities()) {
+        for (URLEntity url : status.getURLEntities()) {
 
-			if (text.endsWith(url.getURL()) && quotedStatusId != -1) {
+            if (text.endsWith(url.getURL()) && quotedStatusId != -1) {
 
-				// 引用推文
+                // 引用推文
 
-				text = StrUtil.subBefore(text,url.getURL(),true);
+                text = StrUtil.subBefore(text, url.getURL(), true);
 
-				quotedScreenName = NTT.parseScreenName(url.getExpandedURL());
+                quotedScreenName = NTT.parseScreenName(url.getExpandedURL());
 
-			} else {
+            } else {
 
-				text = text.replace(url.getURL(),url.getExpandedURL());
+                text = text.replace(url.getURL(), url.getExpandedURL());
 
-			}
+            }
 
-		}
+        }
 
-		if (status.getQuotedStatus() != null) {
+        if (status.getQuotedStatus() != null) {
 
-			quotedUserId = status.getQuotedStatus().getUser().getId();
+            quotedUserId = status.getQuotedStatus().getUser().getId();
 
-		} else if (quotedScreenName != null && UserArchive.contains(quotedScreenName)) {
+        } else if (quotedScreenName != null && UserArchive.contains(quotedScreenName)) {
 
-			quotedUserId = UserArchive.get(quotedScreenName).id;
+            quotedUserId = UserArchive.get(quotedScreenName).id;
 
-		} else {
+        } else {
 
-			quotedUserId = -1L;
+            quotedUserId = -1L;
 
-		}
+        }
 
         mediaUrls = new LinkedList<>();
 
@@ -259,13 +254,13 @@ public class StatusArchive {
 
         }
 
-	}
+    }
 
     public UserArchive user() {
 
         UserArchive user = UserArchive.get(from);
 
-		return user;
+        return user;
 
     }
 
@@ -277,12 +272,9 @@ public class StatusArchive {
 
     public String htmlURL() {
 
-        return Html.a(StrUtil.padAfter(text,5,"..."),url());
+        return Html.a(StrUtil.padAfter(text, 5, "..."), url());
 
     }
-
-	public static transient String split_tiny = "---------------";
-    public static transient String split = "\n\n" + split_tiny + split_tiny + "\n\n";
 
     public String toHtml() {
 
@@ -290,39 +282,39 @@ public class StatusArchive {
 
     }
 
-	public int depth() {
+    public int depth() {
 
-		int depth = 0;
+        int depth = 0;
 
-		if (inReplyToStatusId != -1) {
+        if (inReplyToStatusId != -1) {
 
-			depth ++;
+            depth++;
 
-			StatusArchive inReplyTo = StatusArchive.get(inReplyToStatusId);
+            StatusArchive inReplyTo = StatusArchive.get(inReplyToStatusId);
 
-			if (inReplyTo != null) {
+            if (inReplyTo != null) {
 
-				depth += inReplyTo.depth();
+                depth += inReplyTo.depth();
 
-			}
+            }
 
-		}
+        }
 
-		return depth;
+        return depth;
 
-	}
+    }
 
-	public String toHtml(int depth) {
+    public String toHtml(int depth) {
 
-		return toHtml(depth,false,true);
+        return toHtml(depth, false, true);
 
-	}
+    }
 
-    public String toHtml(int depth,boolean quoted,boolean current) {
+    public String toHtml(int depth, boolean quoted, boolean current) {
 
         StringBuilder archive = new StringBuilder();
 
-		if (!quoted && inReplyToStatusId != -1) {
+        if (!quoted && inReplyToStatusId != -1) {
 
             if (depth != 0) {
 
@@ -330,11 +322,11 @@ public class StatusArchive {
 
                 if (inReplyTo != null) {
 
-                    archive.append(inReplyTo.toHtml(depth > 0 ? depth - 1 : depth,false,false));
+                    archive.append(inReplyTo.toHtml(depth > 0 ? depth - 1 : depth, false, false));
 
                 } else {
 
-                    archive.append(notAvilableStatus(inReplyToUserId,inReplyToScreenName));
+                    archive.append(notAvilableStatus(inReplyToUserId, inReplyToScreenName));
 
                 }
 
@@ -342,32 +334,32 @@ public class StatusArchive {
 
             }
 
-            archive.append(user().urlHtml()).append(" 的 ").append(Html.a("回复",current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id));
+            archive.append(user().urlHtml()).append(" 的 ").append(Html.a("回复", current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id));
 
 
         } else if (!quoted && isRetweet) {
 
             StatusArchive retweeted = StatusArchive.get(retweetedStatus);
 
-            archive.append(user().urlHtml()).append(" 转推从 " + retweeted.user().urlHtml()).append(" 的 ").append(Html.a("推文",current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id)).append(" : ");
+            archive.append(user().urlHtml()).append(" 转推从 " + retweeted.user().urlHtml()).append(" 的 ").append(Html.a("推文", current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id)).append(" : ");
 
-			archive.append(split);
+            archive.append(split);
 
-            archive.append(retweeted.toHtml(depth > 0 ? depth - 1 : depth,false,false));
+            archive.append(retweeted.toHtml(depth > 0 ? depth - 1 : depth, false, false));
 
             return archive.toString();
 
         } else {
 
-            archive.append(user().urlHtml()).append(" 的 ").append(Html.a("推文",current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id));
+            archive.append(user().urlHtml()).append(" 的 ").append(Html.a("推文", current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id));
 
-		}
+        }
 
         String content = text;
 
         if (!mediaUrls.isEmpty()) {
 
-            content = StrUtil.subBefore(content,"https://t.co",true);
+            content = StrUtil.subBefore(content, "https://t.co", true);
 
         }
 		
@@ -395,21 +387,21 @@ public class StatusArchive {
 		
 		*/
 
-		archive.append(" :");
+        archive.append(" :");
 
-		content = HtmlUtil.escape(content);
+        content = HtmlUtil.escape(content);
 
-		content = (content + " ").replaceAll("(@.+) ","<a href=\"https://twitter.com/$1\">$1</a> ");
+        content = (content + " ").replaceAll("(@.+) ", "<a href=\"https://twitter.com/$1\">$1</a> ");
 
-		content = content.substring(0,content.length() - 1);
+        content = content.substring(0, content.length() - 1);
 
-		archive.append("\n");
+        archive.append("\n");
 
-		if (!content.trim().isEmpty()) {
+        if (!content.trim().isEmpty()) {
 
-			archive.append("\n").append(content).append("\n");
+            archive.append("\n").append(content).append("\n");
 
-		}
+        }
 
         if (!mediaUrls.isEmpty()) {
 
@@ -417,57 +409,57 @@ public class StatusArchive {
 
             for (String url : mediaUrls) {
 
-                archive.append(Html.a("媒体文件",url)).append(" ");
+                archive.append(Html.a("媒体文件", url)).append(" ");
 
             }
 
-			archive.append("\n");
+            archive.append("\n");
 
         }
 
-		if (quotedStatusId != -1 && !quoted) {
+        if (quotedStatusId != -1 && !quoted) {
 
-			StatusArchive quotedStatus = StatusArchive.get(quotedStatusId);
+            StatusArchive quotedStatus = StatusArchive.get(quotedStatusId);
 
-			archive.append("\n").append(split_tiny).append("\n");
+            archive.append("\n").append(split_tiny).append("\n");
 
-			if (quotedStatus != null) {
+            if (quotedStatus != null) {
 
-				archive.append("引用 " + quotedStatus.toHtml(1,true,false));
+                archive.append("引用 " + quotedStatus.toHtml(1, true, false));
 
-			} else {
+            } else {
 
-				if (quotedUserId != -1) {
+                if (quotedUserId != -1) {
 
-					archive.append("引用的").append(UserArchive.get(quotedUserId).urlHtml()).append("的推文不可用");
+                    archive.append("引用的").append(UserArchive.get(quotedUserId).urlHtml()).append("的推文不可用");
 
-				}
+                }
 
-			}
+            }
 
-			archive.append(split_tiny).append("\n");
+            archive.append(split_tiny).append("\n");
 
         }
 
-		if (!quoted) {
+        if (!quoted) {
 
-			archive.append("\n在 ");
+            archive.append("\n在 ");
 
-			Calendar date = Calendar.getInstance();
+            Calendar date = Calendar.getInstance();
 
-			date.setTimeInMillis(createdAt);
+            date.setTimeInMillis(createdAt);
 
-			archive.append(date.get(Calendar.YEAR) - 2000).append("年").append(date.get(Calendar.MONTH) + 1).append("月").append(date.get(Calendar.DAY_OF_MONTH)).append("日");
+            archive.append(date.get(Calendar.YEAR) - 2000).append("年").append(date.get(Calendar.MONTH) + 1).append("月").append(date.get(Calendar.DAY_OF_MONTH)).append("日");
 
-			archive.append(", ").append(date.get(Calendar.AM_PM) == 0 ? "上午" : "下午").append(" ").append(date.get(Calendar.HOUR)).append(":").append(date.get(Calendar.MINUTE));
+            archive.append(", ").append(date.get(Calendar.AM_PM) == 0 ? "上午" : "下午").append(" ").append(date.get(Calendar.HOUR)).append(":").append(date.get(Calendar.MINUTE));
 
-		}
+        }
 
         return archive.toString();
 
     }
 
-    String notAvilableStatus(Long id,String screenName) {
+    String notAvilableStatus(Long id, String screenName) {
 
         if (UserArchive.contains(id)) {
 
@@ -475,61 +467,63 @@ public class StatusArchive {
 
         } else {
 
-            return Html.a("@" + screenName,"https://twitter.com/" + screenName) + " 的 不可用的推文";
+            return Html.a("@" + screenName, "https://twitter.com/" + screenName) + " 的 不可用的推文";
 
         }
 
     }
 
-	public StatusArchive loop(Twitter api) {
+    public StatusArchive loop(Twitter api) {
 
-		return loop(api,false);
+        return loop(api, false);
 
-	}
+    }
 
-    public StatusArchive loop(Twitter api,boolean avoid) {
+    public StatusArchive loop(Twitter api, boolean avoid) {
 
-		for (long mention : userMentions) {
+        for (long mention : userMentions) {
 
-			if (!UserArchive.contains(mention)) {
+            if (!UserArchive.contains(mention)) {
 
-				try {
+                try {
 
-					UserArchive.save(api.showUser(mention));
+                    UserArchive.save(api.showUser(mention));
 
-				} catch (TwitterException e) {}
+                } catch (TwitterException e) {
+                }
 
-			}
+            }
 
-		}
+        }
 
-		if (quotedUserId != -1 && quotedScreenName != null) {
+        if (quotedUserId != -1 && quotedScreenName != null) {
 
-			if (UserArchive.contains(quotedScreenName)) {
+            if (UserArchive.contains(quotedScreenName)) {
 
-				quotedUserId = UserArchive.get(quotedScreenName).id;
+                quotedUserId = UserArchive.get(quotedScreenName).id;
 
-			} else {
+            } else {
 
-				try {
+                try {
 
-					quotedUserId = UserArchive.save(api.showUser(quotedScreenName)).id;
+                    quotedUserId = UserArchive.save(api.showUser(quotedScreenName)).id;
 
-				} catch (TwitterException e) {}
+                } catch (TwitterException e) {
+                }
 
-			}
+            }
 
-			if (quotedUserId != -1) {
+            if (quotedUserId != -1) {
 
-				data.setById(id,this);
+                data.setById(id, this);
 
-			}
+            }
 
-		}
+        }
 
-		if (inReplyToStatusId != -1) {
+        if (inReplyToStatusId != -1) {
 
-			try {
+            try {
 
                 if (StatusArchive.contains(inReplyToStatusId)) {
 
@@ -545,31 +539,32 @@ public class StatusArchive {
 
                 }
 
-			} catch (TwitterException ex) {
+            } catch (TwitterException ex) {
 
-				TAuth accessable = NTT.loopFindAccessable(inReplyToUserId);
+                TAuth accessable = NTT.loopFindAccessable(inReplyToUserId);
 
-				if (accessable != null) {
+                if (accessable != null) {
 
-					try {
+                    try {
 
-						Status status = accessable.createApi().showStatus(inReplyToStatusId);
+                        Status status = accessable.createApi().showStatus(inReplyToStatusId);
 
-						StatusArchive inReplyTo = StatusArchive.save(status);
+                        StatusArchive inReplyTo = StatusArchive.save(status);
 
-						inReplyTo.loop(api);
+                        inReplyTo.loop(api);
 
-					} catch (TwitterException e) {}
+                    } catch (TwitterException e) {
+                    }
 
-				}
-			}
+                }
+            }
 
-		}
+        }
 
 
-		if (quotedStatusId != -1) {
+        if (quotedStatusId != -1) {
 
-			try {
+            try {
 
                 if (StatusArchive.contains(quotedStatusId)) {
 
@@ -586,32 +581,33 @@ public class StatusArchive {
                 }
 
 
-			} catch (TwitterException ex) {
+            } catch (TwitterException ex) {
 
-				if (quotedUserId != -1) {
+                if (quotedUserId != -1) {
 
-					TAuth accessable = NTT.loopFindAccessable(quotedUserId);
+                    TAuth accessable = NTT.loopFindAccessable(quotedUserId);
 
-					if (accessable != null) {
+                    if (accessable != null) {
 
-						try {
+                        try {
 
-							Status status = accessable.createApi().showStatus(quotedStatusId);
+                            Status status = accessable.createApi().showStatus(quotedStatusId);
 
-							StatusArchive quoted = StatusArchive.save(status);
+                            StatusArchive quoted = StatusArchive.save(status);
 
-							quoted.loop(api);
+                            quoted.loop(api);
 
-						} catch (TwitterException e) {}
+                        } catch (TwitterException e) {
+                        }
 
 
-					}
+                    }
 
-				}
+                }
 
-			}
+            }
 
-		}
+        }
 
         return this;
 

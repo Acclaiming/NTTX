@@ -76,10 +76,12 @@ public class Update implements Serializable {
         if (message != null ? !message.equals(update.message) : update.message != null) return false;
         if (edited_message != null ? !edited_message.equals(update.edited_message) : update.edited_message != null)
             return false;
-        if (channel_post != null ? !channel_post.equals(update.channel_post) : update.channel_post != null) return false;
+        if (channel_post != null ? !channel_post.equals(update.channel_post) : update.channel_post != null)
+            return false;
         if (edited_channel_post != null ? !edited_channel_post.equals(update.edited_channel_post) : update.edited_channel_post != null)
             return false;
-        if (inline_query != null ? !inline_query.equals(update.inline_query) : update.inline_query != null) return false;
+        if (inline_query != null ? !inline_query.equals(update.inline_query) : update.inline_query != null)
+            return false;
         if (chosen_inline_result != null ? !chosen_inline_result.equals(update.chosen_inline_result) : update.chosen_inline_result != null)
             return false;
         if (callback_query != null ? !callback_query.equals(update.callback_query) : update.callback_query != null)

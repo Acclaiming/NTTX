@@ -43,7 +43,7 @@ public class TAipResponse {
 
     public void setHeader(Map<String, List<String>> header) {
         this.header = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
-        for (Map.Entry<String, List<String>> entry: header.entrySet()) {
+        for (Map.Entry<String, List<String>> entry : header.entrySet()) {
             if (entry.getKey() != null) {
                 this.header.put(entry.getKey(), entry.getValue());
             }

@@ -31,6 +31,10 @@ import java.util.List;
  */
 public final class HttpParameter implements Comparable<HttpParameter>, java.io.Serializable {
     private static final long serialVersionUID = 4046908449190454692L;
+    private static final String JPEG = "image/jpeg";
+    private static final String GIF = "image/gif";
+    private static final String PNG = "image/png";
+    private static final String OCTET = "application/octet-stream";
     private String name = null;
     private String value = null;
     private JSONObject jsonObject = null;
@@ -75,96 +79,6 @@ public final class HttpParameter implements Comparable<HttpParameter>, java.io.S
     public HttpParameter(String name, boolean value) {
         this.name = name;
         this.value = String.valueOf(value);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public JSONObject getJsonObject() {
-        return jsonObject;
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public InputStream getFileBody() {
-        return fileBody;
-    }
-
-    public boolean isFile() {
-        return file != null;
-    }
-
-    public boolean isJson() {
-        return jsonObject != null;
-    }
-
-    public boolean hasFileBody() {
-        return fileBody != null;
-    }
-
-    private static final String JPEG = "image/jpeg";
-    private static final String GIF = "image/gif";
-    private static final String PNG = "image/png";
-    private static final String OCTET = "application/octet-stream";
-
-    /**
-     * @return content-type
-     */
-    public String getContentType() {
-        if (!isFile()) {
-            throw new IllegalStateException("not a file");
-        }
-        String contentType;
-        String extensions = file.getName();
-        int index = extensions.lastIndexOf(".");
-        if (-1 == index) {
-            // no extension
-            contentType = OCTET;
-        } else {
-            extensions = extensions.substring(extensions.lastIndexOf(".") + 1).toLowerCase();
-            if (extensions.length() == 3) {
-                if ("gif".equals(extensions)) {
-                    contentType = GIF;
-                } else if ("png".equals(extensions)) {
-                    contentType = PNG;
-                } else if ("jpg".equals(extensions)) {
-                    contentType = JPEG;
-                } else {
-                    contentType = OCTET;
-                }
-            } else if (extensions.length() == 4) {
-                if ("jpeg".equals(extensions)) {
-                    contentType = JPEG;
-                } else {
-                    contentType = OCTET;
-                }
-            } else {
-                contentType = OCTET;
-            }
-        }
-        return contentType;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        HttpParameter that = (HttpParameter) o;
-
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (value != null ? !value.equals(that.value) : that.value != null) return false;
-        if (jsonObject != null ? !jsonObject.equals(that.jsonObject) : that.jsonObject != null) return false;
-        if (file != null ? !file.equals(that.file) : that.file != null) return false;
-        return fileBody != null ? fileBody.equals(that.fileBody) : that.fileBody == null;
-
     }
 
     public static boolean containsJson(HttpParameter[] params) {
@@ -214,41 +128,6 @@ public final class HttpParameter implements Comparable<HttpParameter>, java.io.S
     public static HttpParameter[] getParameterArray(String name1, int value1
             , String name2, int value2) {
         return getParameterArray(name1, String.valueOf(value1), name2, String.valueOf(value2));
-    }
-
-    @Override
-    public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (value != null ? value.hashCode() : 0);
-        result = 31 * result + (jsonObject != null ? jsonObject.hashCode() : 0);
-        result = 31 * result + (file != null ? file.hashCode() : 0);
-        result = 31 * result + (fileBody != null ? fileBody.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "HttpParameter{" +
-                "name='" + name + '\'' +
-                ", value='" + value + '\'' +
-                ", jsonObject=" + jsonObject +
-                ", file=" + file +
-                ", fileBody=" + fileBody +
-                '}';
-    }
-
-    @Override
-    public int compareTo(HttpParameter o) {
-        int compared = 0;
-        if (name != null) {
-            compared = name.compareTo(o.name);
-        }
-        if (0 == compared) {
-            if (value != null) {
-                compared = value.compareTo(o.value);
-            }
-        }
-        return compared;
     }
 
     public static String encodeParameters(HttpParameter[] httpParams) {
@@ -312,14 +191,13 @@ public final class HttpParameter implements Comparable<HttpParameter>, java.io.S
         value = value.replace("%2A", "*");
         value = value.replace("%2a", "*");
         value = value.replace("%20", " ");
-        
-        String decoded=null;
+
+        String decoded = null;
         try {
             decoded = URLDecoder.decode(value, "UTF-8");
+        } catch (UnsupportedEncodingException ignore) {
         }
-        catch(UnsupportedEncodingException ignore) {
-        }
-        
+
         return decoded;
     }
 
@@ -330,16 +208,136 @@ public final class HttpParameter implements Comparable<HttpParameter>, java.io.S
      * @return decoded parameters
      */
     public static List<HttpParameter> decodeParameters(String queryParameters) {
-        List<HttpParameter> result=new ArrayList<HttpParameter>();
+        List<HttpParameter> result = new ArrayList<HttpParameter>();
         for (String pair : queryParameters.split("&")) {
-            String[] parts=pair.split("=", 2);
-            if(parts.length == 2) {
-                String name=decode(parts[0]);
-                String value=decode(parts[1]);
-                if(!name.equals("") && !value.equals(""))
+            String[] parts = pair.split("=", 2);
+            if (parts.length == 2) {
+                String name = decode(parts[0]);
+                String value = decode(parts[1]);
+                if (!name.equals("") && !value.equals(""))
                     result.add(new HttpParameter(name, value));
             }
         }
         return result;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public JSONObject getJsonObject() {
+        return jsonObject;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public InputStream getFileBody() {
+        return fileBody;
+    }
+
+    public boolean isFile() {
+        return file != null;
+    }
+
+    public boolean isJson() {
+        return jsonObject != null;
+    }
+
+    public boolean hasFileBody() {
+        return fileBody != null;
+    }
+
+    /**
+     * @return content-type
+     */
+    public String getContentType() {
+        if (!isFile()) {
+            throw new IllegalStateException("not a file");
+        }
+        String contentType;
+        String extensions = file.getName();
+        int index = extensions.lastIndexOf(".");
+        if (-1 == index) {
+            // no extension
+            contentType = OCTET;
+        } else {
+            extensions = extensions.substring(extensions.lastIndexOf(".") + 1).toLowerCase();
+            if (extensions.length() == 3) {
+                if ("gif".equals(extensions)) {
+                    contentType = GIF;
+                } else if ("png".equals(extensions)) {
+                    contentType = PNG;
+                } else if ("jpg".equals(extensions)) {
+                    contentType = JPEG;
+                } else {
+                    contentType = OCTET;
+                }
+            } else if (extensions.length() == 4) {
+                if ("jpeg".equals(extensions)) {
+                    contentType = JPEG;
+                } else {
+                    contentType = OCTET;
+                }
+            } else {
+                contentType = OCTET;
+            }
+        }
+        return contentType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        HttpParameter that = (HttpParameter) o;
+
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (value != null ? !value.equals(that.value) : that.value != null) return false;
+        if (jsonObject != null ? !jsonObject.equals(that.jsonObject) : that.jsonObject != null) return false;
+        if (file != null ? !file.equals(that.file) : that.file != null) return false;
+        return fileBody != null ? fileBody.equals(that.fileBody) : that.fileBody == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (value != null ? value.hashCode() : 0);
+        result = 31 * result + (jsonObject != null ? jsonObject.hashCode() : 0);
+        result = 31 * result + (file != null ? file.hashCode() : 0);
+        result = 31 * result + (fileBody != null ? fileBody.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "HttpParameter{" +
+                "name='" + name + '\'' +
+                ", value='" + value + '\'' +
+                ", jsonObject=" + jsonObject +
+                ", file=" + file +
+                ", fileBody=" + fileBody +
+                '}';
+    }
+
+    @Override
+    public int compareTo(HttpParameter o) {
+        int compared = 0;
+        if (name != null) {
+            compared = name.compareTo(o.name);
+        }
+        if (0 == compared) {
+            if (value != null) {
+                compared = value.compareTo(o.value);
+            }
+        }
+        return compared;
     }
 }

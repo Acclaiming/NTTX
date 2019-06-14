@@ -30,7 +30,8 @@ import java.util.Map;
  */
 class HttpClientImpl extends HttpClientBase implements HttpResponseCode, java.io.Serializable {
     private static final Logger logger = Logger.getLogger(HttpClientImpl.class);
-
+    private static final long serialVersionUID = -403500272719330534L;
+    private static final Map<HttpClientConfiguration, HttpClient> instanceMap = new HashMap<HttpClientConfiguration, HttpClient>(1);
 
     static {
         // disable keepAlive (Android 2.1 or earlier)
@@ -45,8 +46,6 @@ class HttpClientImpl extends HttpClientBase implements HttpResponseCode, java.io
         }
     }
 
-    private static final long serialVersionUID = -403500272719330534L;
-
     public HttpClientImpl() {
         super(ConfigurationContext.getInstance().getHttpClientConfiguration());
     }
@@ -54,8 +53,6 @@ class HttpClientImpl extends HttpClientBase implements HttpResponseCode, java.io
     public HttpClientImpl(HttpClientConfiguration conf) {
         super(conf);
     }
-
-    private static final Map<HttpClientConfiguration, HttpClient> instanceMap = new HashMap<HttpClientConfiguration, HttpClient>(1);
 
     public static HttpClient getInstance(HttpClientConfiguration conf) {
         HttpClient client = instanceMap.get(conf);

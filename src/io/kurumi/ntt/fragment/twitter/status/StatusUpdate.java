@@ -11,648 +11,648 @@ import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.utils.NTT;
+
 import java.util.LinkedList;
+
 import twitter4j.Status;
 import twitter4j.TwitterException;
 import io.kurumi.ntt.fragment.twitter.status.StatusUpdate.UpdatePoint;
 
 public class StatusUpdate extends TwitterFunction {
 
-	final String POINT_UPDATE_STATUS = "status,update";
+    final String POINT_UPDATE_STATUS = "status,update";
 
-	@Override
-	public void points(LinkedList<String> points) {
+    @Override
+    public void points(LinkedList<String> points) {
 
-		super.points(points);
+        super.points(points);
 
-		points.add(POINT_UPDATE_STATUS);
+        points.add(POINT_UPDATE_STATUS);
 
-	}
+    }
 
-	@Override
-	public boolean useCurrent() {
+    @Override
+    public boolean useCurrent() {
 
-		return true;
+        return true;
 
-	}
-	
-	class UpdatePoint {
+    }
 
-		String text;
+    @Override
+    public void functions(LinkedList<String> names) {
 
-		LinkedList<Long> images = new LinkedList<>();
+        names.add("update");
 
-		long video = -1;
+    }
 
-		TAuth auth;
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params, final TAuth account) {
 
-		StatusArchive toReply;
-		
-		Long quoted;
+        StatusUpdate.UpdatePoint update = new UpdatePoint();
 
-	}
+        update.auth = account;
 
-	@Override
-	public void functions(LinkedList<String> names) {
+        if (msg.isReply()) {
 
-		names.add("update");
+            MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
 
-	}
+            if (point != null && point.type == 1) {
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params,final TAuth account) {
+                update.quoted = point.targetId;
 
-		StatusUpdate.UpdatePoint update = new UpdatePoint();
-		
-		update.auth = account;
-		
-		if (msg.isReply()) {
-			
-			MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
+            }
 
-			if (point != null && point.type == 1) {
-				
-				update.quoted = point.targetId;
-				
-			}
-			
-		}
+        }
 
-		setPoint(user,POINT_UPDATE_STATUS,update);
-		
-		msg.send("现在发送推文内容 : ").withCancel().exec();
+        setPoint(user, POINT_UPDATE_STATUS, update);
 
-	}
+        msg.send("现在发送推文内容 : ").withCancel().exec();
 
-	@Override
-	public boolean onPrivate(UserData user,Msg msg) {
+    }
 
-		if (!msg.isReply()) return false;
+    @Override
+    public boolean onPrivate(UserData user, Msg msg) {
 
-		MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
+        if (!msg.isReply()) return false;
 
-		if (point == null) return false;
+        MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
 
-		if (point.type == 0) return false;
+        if (point == null) return false;
 
-		long count = TAuth.data.countByField("user",user.id);
+        if (point.type == 0) return false;
 
-		TAuth auth;
+        long count = TAuth.data.countByField("user", user.id);
 
-		if (count == 0) {
+        TAuth auth;
 
-			msg.send("你没有认证账号，使用 /login 登录 ~").exec();
+        if (count == 0) {
 
-			return true;
+            msg.send("你没有认证账号，使用 /login 登录 ~").exec();
 
-		} else if (count == 1) {
+            return true;
 
-			auth = TAuth.getByUser(user.id).first();
+        } else if (count == 1) {
 
-		} else {
+            auth = TAuth.getByUser(user.id).first();
 
-			StatusAction.CurrentAccount current = StatusAction.current.getById(user.id);
+        } else {
 
-			if (current != null) {
+            StatusAction.CurrentAccount current = StatusAction.current.getById(user.id);
 
-				auth = TAuth.getById(current.accountId);
+            if (current != null) {
 
-				if (auth == null || !auth.user.equals(user.id)) {
+                auth = TAuth.getById(current.accountId);
 
-					msg.send("乃认证了多个账号 请使用 /current 选择默认账号再操作 ~").exec();
+                if (auth == null || !auth.user.equals(user.id)) {
 
-					return true;
+                    msg.send("乃认证了多个账号 请使用 /current 选择默认账号再操作 ~").exec();
 
-				}
+                    return true;
 
-			} else {
+                }
 
-				msg.send("乃认证了多个账号 请使用 /current 选择默认账号再操作 ~").exec();
+            } else {
 
-				return true;
+                msg.send("乃认证了多个账号 请使用 /current 选择默认账号再操作 ~").exec();
 
-			}
+                return true;
 
-		}
+            }
 
-		if (msg.hasText()) {
+        }
 
-			msg.sendTyping();
+        if (msg.hasText()) {
 
-			StatusArchive toReply = StatusArchive.get(point.targetId);
+            msg.sendTyping();
 
-			String reply = "@" + toReply.user().screenName + " ";
+            StatusArchive toReply = StatusArchive.get(point.targetId);
 
-			if (!toReply.userMentions.isEmpty()) {
+            String reply = "@" + toReply.user().screenName + " ";
 
-				for (long mention : toReply.userMentions) {
+            if (!toReply.userMentions.isEmpty()) {
 
-					if (!auth.id.equals(mention)) {
+                for (long mention : toReply.userMentions) {
 
-						reply = reply + "@" + UserArchive.get(mention).screenName + " ";
+                    if (!auth.id.equals(mention)) {
 
-					}
+                        reply = reply + "@" + UserArchive.get(mention).screenName + " ";
 
-				}
+                    }
 
-			}
+                }
 
+            }
 
-			String text = text = reply + msg.text();
 
-			twitter4j.StatusUpdate send = new twitter4j.StatusUpdate(text);
+            String text = text = reply + msg.text();
 
-			send.inReplyToStatusId(toReply.id);
+            twitter4j.StatusUpdate send = new twitter4j.StatusUpdate(text);
 
-			try {
+            send.inReplyToStatusId(toReply.id);
 
-				Status status = auth.createApi().updateStatus(send);
+            try {
 
-				StatusArchive archive = StatusArchive.save(status);
+                Status status = auth.createApi().updateStatus(send);
 
-				msg.reply("回复成功 :",StatusArchive.split_tiny,archive.toHtml(0)).buttons(StatusAction.createMarkup(archive.id,true,archive.depth() == 0,false,false)).html().point(1,archive.id);
+                StatusArchive archive = StatusArchive.save(status);
 
-			} catch (TwitterException e) {
+                msg.reply("回复成功 :", StatusArchive.split_tiny, archive.toHtml(0)).buttons(StatusAction.createMarkup(archive.id, true, archive.depth() == 0, false, false)).html().point(1, archive.id);
 
-				msg.send("回复失败 :(",NTT.parseTwitterException(e)).exec();
+            } catch (TwitterException e) {
 
-			}
-			return true;
+                msg.send("回复失败 :(", NTT.parseTwitterException(e)).exec();
 
-		} 
+            }
+            return true;
 
-		Message message = msg.message();
+        }
 
-		UpdatePoint update = new UpdatePoint();
+        Message message = msg.message();
 
-		update.auth = auth;
+        UpdatePoint update = new UpdatePoint();
 
-		update.toReply = StatusArchive.get(point.targetId);
+        update.auth = auth;
 
-		if (message.sticker() != null) {
+        update.toReply = StatusArchive.get(point.targetId);
 
-			msg.sendUpdatingFile();
+        if (message.sticker() != null) {
 
-			try {
+            msg.sendUpdatingFile();
 
-				update.images.add(NTT.telegramToTwitter(auth.createApi(),message.sticker().fileId(),"sticker.png",0));
+            try {
 
-				msg.send("图片添加成功 已设置 1 / 4 张图片","使用 /submit 发送","使用 /cancel 取消").exec();
+                update.images.add(NTT.telegramToTwitter(auth.createApi(), message.sticker().fileId(), "sticker.png", 0));
 
-			} catch (TwitterException e) {
+                msg.send("图片添加成功 已设置 1 / 4 张图片", "使用 /submit 发送", "使用 /cancel 取消").exec();
 
-				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+            } catch (TwitterException e) {
 
-			}
+                msg.send("图片上传失败", NTT.parseTwitterException(e)).exec();
 
-		} else if (message.photo() != null) {
+            }
 
-			PhotoSize max = null;
+        } else if (message.photo() != null) {
 
-			for (PhotoSize photo : message.photo()) {
+            PhotoSize max = null;
 
-				if ((max == null || photo.fileSize() > max.fileSize()) && photo.fileSize() < 1024 * 1024 * 5) {
+            for (PhotoSize photo : message.photo()) {
 
-					max = photo;
+                if ((max == null || photo.fileSize() > max.fileSize()) && photo.fileSize() < 1024 * 1024 * 5) {
 
-				}
+                    max = photo;
 
-			}
+                }
 
-			msg.sendUpdatingFile();
+            }
 
-			if (max == null) {
+            msg.sendUpdatingFile();
 
-				msg.send("图片超过 5m ，根据Twitter官方限制,无法发送").exec();
+            if (max == null) {
 
-				return true;
+                msg.send("图片超过 5m ，根据Twitter官方限制,无法发送").exec();
 
-			}
+                return true;
 
-			try {
+            }
 
-				update.images.add(NTT.telegramToTwitter(auth.createApi(),max.fileId(),"image.png",0));
+            try {
 
-				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ","使用 /submit 发送","使用 /cancel 取消").exec();
+                update.images.add(NTT.telegramToTwitter(auth.createApi(), max.fileId(), "image.png", 0));
 
-			} catch (TwitterException e) {
+                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ", "使用 /submit 发送", "使用 /cancel 取消").exec();
 
-				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+            } catch (TwitterException e) {
 
-			}
+                msg.send("图片上传失败", NTT.parseTwitterException(e)).exec();
 
-		} else if (message.animation() != null) {
+            }
 
-			if (message.animation().fileSize() > 1024 * 1024 * 15) {
+        } else if (message.animation() != null) {
 
-				msg.send("动图超过 15m ，根据Twitter官方限制,无法发送").exec();
+            if (message.animation().fileSize() > 1024 * 1024 * 15) {
 
-				return true;
+                msg.send("动图超过 15m ，根据Twitter官方限制,无法发送").exec();
 
-			}
+                return true;
 
-			msg.sendUpdatingFile();
+            }
 
-			try {
+            msg.sendUpdatingFile();
 
-				update.video = NTT.telegramToTwitter(auth.createApi(),message.animation().fileId(),message.animation().fileName(),2);
+            try {
 
-				msg.send("动图添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
+                update.video = NTT.telegramToTwitter(auth.createApi(), message.animation().fileId(), message.animation().fileName(), 2);
 
-			} catch (TwitterException e) {
+                msg.send("动图添加成功", "使用 /submit 发送", "使用 /cancel 取消").exec();
 
-				msg.send("动图上传失败",NTT.parseTwitterException(e)).exec();
+            } catch (TwitterException e) {
 
-			}
+                msg.send("动图上传失败", NTT.parseTwitterException(e)).exec();
 
+            }
 
-		} else if (message.video() != null) {
 
-			if (message.video().fileSize() > 1024 * 1024 * 15) {
+        } else if (message.video() != null) {
 
-				msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
+            if (message.video().fileSize() > 1024 * 1024 * 15) {
 
-				return true;
+                msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
 
-			}
+                return true;
 
-			msg.sendUpdatingFile();
+            }
 
-			try {
+            msg.sendUpdatingFile();
 
-				update.video = NTT.telegramToTwitter(auth.createApi(),message.video().fileId(),"video.mp4",1);
+            try {
 
-				msg.send("视频添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
+                update.video = NTT.telegramToTwitter(auth.createApi(), message.video().fileId(), "video.mp4", 1);
 
-			} catch (TwitterException e) {
+                msg.send("视频添加成功", "使用 /submit 发送", "使用 /cancel 取消").exec();
 
-				msg.send("视频上传失败",NTT.parseTwitterException(e)).exec();
+            } catch (TwitterException e) {
 
-			}
+                msg.send("视频上传失败", NTT.parseTwitterException(e)).exec();
 
+            }
 
-		} else if (message.videoNote() != null) {
 
-			if (message.videoNote().fileSize() > 1024 * 1024 * 15) {
+        } else if (message.videoNote() != null) {
 
-				msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
+            if (message.videoNote().fileSize() > 1024 * 1024 * 15) {
 
-				return true;
+                msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
 
-			}
+                return true;
 
-			msg.sendUpdatingFile();
+            }
 
-			try {
+            msg.sendUpdatingFile();
 
-				update.video = NTT.telegramToTwitter(auth.createApi(),message.videoNote().fileId(),"video.mp4",1);
+            try {
 
-				msg.send("视频添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
+                update.video = NTT.telegramToTwitter(auth.createApi(), message.videoNote().fileId(), "video.mp4", 1);
 
-			} catch (TwitterException e) {
+                msg.send("视频添加成功", "使用 /submit 发送", "使用 /cancel 取消").exec();
 
-				msg.send("视频上传失败",NTT.parseTwitterException(e)).exec();
+            } catch (TwitterException e) {
 
-			}
+                msg.send("视频上传失败", NTT.parseTwitterException(e)).exec();
 
+            }
 
 
-		} else {
+        } else {
 
-			return false;
+            return false;
 
-		}
+        }
 
-		setPoint(user,POINT_UPDATE_STATUS,update);
+        setPoint(user, POINT_UPDATE_STATUS, update);
 
-		return true;
+        return true;
 
-	}
+    }
 
-	@Override
-	public void onPoint(UserData user,Msg msg,PointStore.Point point) {
+    @Override
+    public void onPoint(UserData user, Msg msg, PointStore.Point point) {
 
-		UpdatePoint update = (StatusUpdate.UpdatePoint) point.data;
+        UpdatePoint update = (StatusUpdate.UpdatePoint) point.data;
 
-		if ("submit".equals(msg.command())) {
+        if ("submit".equals(msg.command())) {
 
-			if (update.text == null && update.images.isEmpty() && update.video == -1) {
+            if (update.text == null && update.images.isEmpty() && update.video == -1) {
 
-				msg.send("好像什么内容都没有。？ 请输入文本 / 贴纸 / 图片 / 视频").exec();
+                msg.send("好像什么内容都没有。？ 请输入文本 / 贴纸 / 图片 / 视频").exec();
 
-				return;
+                return;
 
-			}
+            }
 
-			clearPoint(user);
+            clearPoint(user);
 
-			if (update.toReply != null) {
+            if (update.toReply != null) {
 
-				String reply = "@" + update.toReply.user().screenName + " ";
+                String reply = "@" + update.toReply.user().screenName + " ";
 
-				if (!update.toReply.userMentions.isEmpty()) {
+                if (!update.toReply.userMentions.isEmpty()) {
 
-					for (long mention : update.toReply.userMentions) {
+                    for (long mention : update.toReply.userMentions) {
 
-						if (!update.auth.id.equals(mention)) {
+                        if (!update.auth.id.equals(mention)) {
 
-							reply = reply + "@" + UserArchive.get(mention).screenName + " ";
+                            reply = reply + "@" + UserArchive.get(mention).screenName + " ";
 
-						}
+                        }
 
-					}
+                    }
 
-				}
+                }
 
-				update.text = reply + (update.text == null ? "" : update.text);
+                update.text = reply + (update.text == null ? "" : update.text);
 
-			}
+            }
 
-			
-			String attach = null;
-			
-			if (update.quoted != null) {
 
-				StatusArchive quoted = StatusArchive.get(update.quoted);
+            String attach = null;
 
-				if (quoted != null) {
+            if (update.quoted != null) {
 
-					//update.text = update.text +  " " + quoted.url();
-					
-					attach = quoted.url();
-					
-				} else {
-					
-					attach = "https://twitter.com/user/" + update.quoted;
-					
-					//update.text = update.text + " " + attach;
-					
-				}
+                StatusArchive quoted = StatusArchive.get(update.quoted);
 
-			}
-			
+                if (quoted != null) {
 
-			twitter4j.StatusUpdate send = new twitter4j.StatusUpdate(update.text == null ? "" : update.text);
+                    //update.text = update.text +  " " + quoted.url();
 
-			if (update.toReply != null) send.inReplyToStatusId(update.toReply.id);
+                    attach = quoted.url();
 
-			if (attach != null) send.attachmentUrl(attach);
-			
-			if (!update.images.isEmpty()) {
+                } else {
 
-				send.setMediaIds(ArrayUtil.unWrap(update.images.toArray(new Long[update.images.size()])));
+                    attach = "https://twitter.com/user/" + update.quoted;
 
-				msg.sendUpdatingPhoto();
+                    //update.text = update.text + " " + attach;
 
-			} else if (update.video != -1) {
+                }
 
-				//update.auth.createApi().uploadMedia();
+            }
 
-				send.setMediaIds(update.video);
 
-				msg.sendUpdatingVideo();
+            twitter4j.StatusUpdate send = new twitter4j.StatusUpdate(update.text == null ? "" : update.text);
 
-			}
+            if (update.toReply != null) send.inReplyToStatusId(update.toReply.id);
 
-			try {
+            if (attach != null) send.attachmentUrl(attach);
 
-				Status status = update.auth.createApi().updateStatus(send);
+            if (!update.images.isEmpty()) {
 
-				StatusArchive archive = StatusArchive.save(status);
+                send.setMediaIds(ArrayUtil.unWrap(update.images.toArray(new Long[update.images.size()])));
 
-				msg.reply(update.toReply == null ? "发送成功 :" : "回复成功 :",StatusArchive.split_tiny,archive.toHtml(0)).buttons(StatusAction.createMarkup(archive.id,true,archive.depth() == 0,false,false)).html().point(1,archive.id);
-				
-			} catch (TwitterException e) {
+                msg.sendUpdatingPhoto();
 
-				msg.send(update.toReply == null ? "发送失败 :(" : "回复失败 :(",NTT.parseTwitterException(e)).exec();
+            } else if (update.video != -1) {
 
-			}
+                //update.auth.createApi().uploadMedia();
 
-			return;
+                send.setMediaIds(update.video);
 
-		}
+                msg.sendUpdatingVideo();
 
-		if (msg.hasText()) {
+            }
 
-			if (msg.text().toCharArray().length > 280) {
+            try {
 
-				msg.send("大小超过 Twitter 280 字符限制 , 注意 : 一个中文字占两个字符。").exec();
+                Status status = update.auth.createApi().updateStatus(send);
 
-				return;
+                StatusArchive archive = StatusArchive.save(status);
 
-			}
+                msg.reply(update.toReply == null ? "发送成功 :" : "回复成功 :", StatusArchive.split_tiny, archive.toHtml(0)).buttons(StatusAction.createMarkup(archive.id, true, archive.depth() == 0, false, false)).html().point(1, archive.id);
 
-			update.text = msg.text();
+            } catch (TwitterException e) {
 
-			msg.send("文本已设定 使用 /submit 发送 ~").exec();
+                msg.send(update.toReply == null ? "发送失败 :(" : "回复失败 :(", NTT.parseTwitterException(e)).exec();
 
-		}
+            }
 
-		Message message = msg.message();
+            return;
 
-		if (message.sticker() != null) {
+        }
 
-			if (update.images.size() == 4) {
+        if (msg.hasText()) {
 
-				msg.send("已经到了四张图片上限 ~").exec();
+            if (msg.text().toCharArray().length > 280) {
 
-				return;
+                msg.send("大小超过 Twitter 280 字符限制 , 注意 : 一个中文字占两个字符。").exec();
 
-			} else if (update.video != -1) {
+                return;
 
-				msg.send("已经有包含视频了 ~").exec();
+            }
 
-				return;
+            update.text = msg.text();
 
-			}
+            msg.send("文本已设定 使用 /submit 发送 ~").exec();
 
-			msg.sendUpdatingFile();
+        }
 
-			try {
+        Message message = msg.message();
 
-				update.images.add(NTT.telegramToTwitter(update.auth.createApi(),message.sticker().fileId(),"sticker.png",0));
+        if (message.sticker() != null) {
 
-				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ","使用 /submit 发送","使用 /cancel 取消").exec();
+            if (update.images.size() == 4) {
 
-			} catch (TwitterException e) {
+                msg.send("已经到了四张图片上限 ~").exec();
 
-				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+                return;
 
-			}
+            } else if (update.video != -1) {
 
-		}
+                msg.send("已经有包含视频了 ~").exec();
 
-		if (message.photo() != null) {
+                return;
 
-			if (update.images.size() == 4) {
+            }
 
-				msg.send("已经到了四张图片上限 ~").exec();
+            msg.sendUpdatingFile();
 
-				return;
+            try {
 
-			} else if (update.video != -1) {
+                update.images.add(NTT.telegramToTwitter(update.auth.createApi(), message.sticker().fileId(), "sticker.png", 0));
 
-				msg.send("已经有添加视频了 ~").exec();
+                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ", "使用 /submit 发送", "使用 /cancel 取消").exec();
 
-				return;
+            } catch (TwitterException e) {
 
-			}
+                msg.send("图片上传失败", NTT.parseTwitterException(e)).exec();
 
-			PhotoSize max = null;
+            }
 
-			for (PhotoSize photo : message.photo()) {
+        }
 
-				if ((max == null || photo.fileSize() > max.fileSize()) && photo.fileSize() < 1024 * 1024 * 5) {
+        if (message.photo() != null) {
 
-					max = photo;
+            if (update.images.size() == 4) {
 
-				}
+                msg.send("已经到了四张图片上限 ~").exec();
 
-			}
+                return;
 
-			if (max == null) {
+            } else if (update.video != -1) {
 
-				msg.send("图片超过 5m ，根据Twitter官方限制,无法发送").exec();
+                msg.send("已经有添加视频了 ~").exec();
 
-				return;
+                return;
 
-			}
+            }
 
-			msg.sendUpdatingFile();
+            PhotoSize max = null;
 
-			try {
+            for (PhotoSize photo : message.photo()) {
 
-				update.images.add(NTT.telegramToTwitter(update.auth.createApi(),max.fileId(),"image.png",0));
+                if ((max == null || photo.fileSize() > max.fileSize()) && photo.fileSize() < 1024 * 1024 * 5) {
 
-				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ","使用 /submit 发送","使用 /cancel 取消").exec();
+                    max = photo;
 
-			} catch (TwitterException e) {
+                }
 
-				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+            }
 
-			}
+            if (max == null) {
 
+                msg.send("图片超过 5m ，根据Twitter官方限制,无法发送").exec();
 
+                return;
 
-		} else if (message.animation() != null) {
+            }
 
-			if (!update.images.isEmpty()) {
+            msg.sendUpdatingFile();
 
-				msg.send("已经有添加图片了 无法添加视频 ~").exec();
+            try {
 
-				return;
+                update.images.add(NTT.telegramToTwitter(update.auth.createApi(), max.fileId(), "image.png", 0));
 
-			} else if (update.video != -1) {
+                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ", "使用 /submit 发送", "使用 /cancel 取消").exec();
 
-				msg.send("已经有设置视频了 ~").exec();
+            } catch (TwitterException e) {
 
-				return;
+                msg.send("图片上传失败", NTT.parseTwitterException(e)).exec();
 
-			}
+            }
 
-			if (message.animation().fileSize() > 1024 * 1024 * 15) {
 
-				msg.send("动图超过 15m ，根据Twitter官方限制,无法发送").exec();
+        } else if (message.animation() != null) {
 
-				return;
+            if (!update.images.isEmpty()) {
 
-			}
+                msg.send("已经有添加图片了 无法添加视频 ~").exec();
 
+                return;
 
-			msg.sendUpdatingFile();
+            } else if (update.video != -1) {
 
-			try {
+                msg.send("已经有设置视频了 ~").exec();
 
-				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.animation().fileId(),message.animation().fileName(),2);
+                return;
 
-				msg.send("动图添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
+            }
 
-			} catch (TwitterException e) {
+            if (message.animation().fileSize() > 1024 * 1024 * 15) {
 
-				msg.send("动图上传失败",NTT.parseTwitterException(e)).exec();
+                msg.send("动图超过 15m ，根据Twitter官方限制,无法发送").exec();
 
-			}
+                return;
 
-		} else if (message.video() != null) {
+            }
 
-			if (!update.images.isEmpty()) {
 
-				msg.send("已经有添加图片了 无法添加视频 ~").exec();
+            msg.sendUpdatingFile();
 
-				return;
+            try {
 
-			} else if (update.video != -1) {
+                update.video = NTT.telegramToTwitter(update.auth.createApi(), message.animation().fileId(), message.animation().fileName(), 2);
 
-				msg.send("已经有设置视频了 ~").exec();
+                msg.send("动图添加成功", "使用 /submit 发送", "使用 /cancel 取消").exec();
 
-				return;
+            } catch (TwitterException e) {
 
-			}
+                msg.send("动图上传失败", NTT.parseTwitterException(e)).exec();
 
-			if (message.video().fileSize() > 1024 * 1024 * 15) {
+            }
 
-				msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
+        } else if (message.video() != null) {
 
-				return;
+            if (!update.images.isEmpty()) {
 
-			}
+                msg.send("已经有添加图片了 无法添加视频 ~").exec();
 
-			msg.sendUpdatingFile();
+                return;
 
-			try {
+            } else if (update.video != -1) {
 
-				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.video().fileId(),"video.mp4",1);
+                msg.send("已经有设置视频了 ~").exec();
 
-				msg.send("视频添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
+                return;
 
-			} catch (TwitterException e) {
+            }
 
-				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+            if (message.video().fileSize() > 1024 * 1024 * 15) {
 
-			}
+                msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
 
+                return;
 
-		} else if (message.videoNote() != null) {
+            }
 
-			if (!update.images.isEmpty()) {
+            msg.sendUpdatingFile();
 
-				msg.send("已经有添加图片了 无法添加视频 ~").exec();
+            try {
 
-				return;
+                update.video = NTT.telegramToTwitter(update.auth.createApi(), message.video().fileId(), "video.mp4", 1);
 
-			} else if (update.video != -1) {
+                msg.send("视频添加成功", "使用 /submit 发送", "使用 /cancel 取消").exec();
 
-				msg.send("已经有设置视频了 ~").exec();
+            } catch (TwitterException e) {
 
-				return;
+                msg.send("图片上传失败", NTT.parseTwitterException(e)).exec();
 
-			}
+            }
 
-			if (message.videoNote().fileSize() > 1024 * 1024 * 15) {
 
-				msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
+        } else if (message.videoNote() != null) {
 
-				return;
+            if (!update.images.isEmpty()) {
 
-			}
+                msg.send("已经有添加图片了 无法添加视频 ~").exec();
 
-			msg.sendUpdatingFile();
+                return;
 
-			try {
+            } else if (update.video != -1) {
 
-				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.videoNote().fileId(),"video.mp4",1);
+                msg.send("已经有设置视频了 ~").exec();
 
-				msg.send("视频添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
+                return;
 
-			} catch (TwitterException e) {
+            }
 
-				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+            if (message.videoNote().fileSize() > 1024 * 1024 * 15) {
 
-			}
+                msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
 
+                return;
 
-		}
+            }
 
-	}
+            msg.sendUpdatingFile();
+
+            try {
+
+                update.video = NTT.telegramToTwitter(update.auth.createApi(), message.videoNote().fileId(), "video.mp4", 1);
+
+                msg.send("视频添加成功", "使用 /submit 发送", "使用 /cancel 取消").exec();
+
+            } catch (TwitterException e) {
+
+                msg.send("图片上传失败", NTT.parseTwitterException(e)).exec();
+
+            }
+
+
+        }
+
+    }
+
+    class UpdatePoint {
+
+        String text;
+
+        LinkedList<Long> images = new LinkedList<>();
+
+        long video = -1;
+
+        TAuth auth;
+
+        StatusArchive toReply;
+
+        Long quoted;
+
+    }
 
 }

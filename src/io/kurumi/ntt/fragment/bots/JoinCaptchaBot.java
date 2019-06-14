@@ -11,51 +11,55 @@ import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
 import io.kurumi.ntt.fragment.abs.request.Send;
 import io.kurumi.ntt.utils.Html;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import io.kurumi.ntt.utils.NTT;
 
 public class JoinCaptchaBot extends BotFragment {
 
-	public Long botId;
+    static Timer timer = new Timer();
+    final String POINT_AUTH = "auth";
+    final String POINT_REMOVE = "rem";
+    public Long botId;
     public Long userId;
+    public String botToken;
+    public String userName;
+    public Long logChannel;
+    public Boolean delJoin;
+    HashMap<Long, HashMap<Long, Msg>> cache = new HashMap<>();
 
-	public String botToken;
-	public String userName;
+    @Override
+    public void reload() {
 
-	public Long logChannel;
-	public Boolean delJoin;
+        UserBot bot = UserBot.data.getById(botId);
 
-	@Override
-	public void reload() {
+        botToken = bot.token;
 
-		UserBot bot = UserBot.data.getById(botId);
+        userId = bot.user;
 
-		botToken = bot.token;
+        UserData user = UserData.get(userId);
 
-		userId = bot.user;
+        if (user == null) {
 
-		UserData user = UserData.get(userId);
+            userName = "(" + userId + ")";
 
-		if (user == null) {
+        } else {
 
-			userName = "(" + userId + ")";
+            userName = user.name();
 
-		} else {
+        }
 
-			userName = user.name();
+        delJoin = (Boolean) bot.params.get("delJoin");
 
-		}
+        if (delJoin == null) delJoin = false;
 
-		delJoin = (Boolean) bot.params.get("delJoin");
+        logChannel = (Long) bot.params.get("logChannel");
 
-		if (delJoin == null) delJoin = false;
-
-		logChannel = (Long) bot.params.get("logChannel");
-
-	}
+    }
 
     @Override
     public String botName() {
@@ -64,338 +68,330 @@ public class JoinCaptchaBot extends BotFragment {
 
     }
 
-	@Override
-	public String getToken() {
+    @Override
+    public String getToken() {
 
-		return botToken;
+        return botToken;
 
-	}
+    }
 
-	HashMap<Long,HashMap<Long,Msg>> cache = new HashMap<>();
+    @Override
+    public boolean onMsg(UserData user, final Msg msg) {
 
-	static Timer timer = new Timer();
+        if (msg.message().groupChatCreated() != null || msg.message().supergroupChatCreated() != null) {
 
-	final String POINT_AUTH = "auth";
-	final String POINT_REMOVE = "rem";
+            msg.send("欢迎使用由 @NTT_X 驱动的开源加群验证BOT", "给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
 
-	@Override
-	public boolean onMsg(UserData user,final Msg msg) {
+        } else if (msg.message().leftChatMember() != null) {
 
-		if (msg.message().groupChatCreated() != null || msg.message().supergroupChatCreated() != null) {
+            if (cache.containsKey(msg.chatId().longValue())) {
 
-			msg.send("欢迎使用由 @NTT_X 驱动的开源加群验证BOT","给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
+                HashMap<Long, Msg> group = cache.get(msg.chatId().longValue());
 
-		} else if (msg.message().leftChatMember() != null) {
+                if (group.containsKey(user.id.longValue())) {
 
-			if (cache.containsKey(msg.chatId().longValue())) {
+                    group.remove(user.id.longValue()).delete();
 
-				HashMap<Long, Msg> group = cache.get(msg.chatId().longValue());
+                    if (group.isEmpty()) cache.remove(msg.chatId().longValue());
 
-				if (group.containsKey(user.id.longValue())) {
+                }
 
-					group.remove(user.id.longValue()).delete();
+            }
 
-					if (group.isEmpty()) cache.remove(msg.chatId().longValue());
+            if (delJoin) msg.delete();
 
-				}
+            if (user.id.equals(me.id())) {
 
-			}
+                msg.delete();
 
-			if (delJoin) msg.delete();
+                return true;
 
-			if (user.id.equals(me.id())) {
+            } else if (!user.id.equals(msg.message().leftChatMember().id())) {
 
-				msg.delete();
+                return true;
 
-				return true;
+            }
 
-			} else if (!user.id.equals(msg.message().leftChatMember().id())) {
+            UserData left = UserData.get(msg.message().leftChatMember());
 
-				return true;
+            if (logChannel != null) {
 
-			}
+                new Send(this, logChannel, "事件 : #成员退出", "群组 : " + msg.chat().title(), "[" + Html.code(msg.chatId().toString()) + "]", "用户 : " + left.userName(), "#id" + left.id).html().exec();
 
-			UserData left = UserData.get(msg.message().leftChatMember());
+            }
 
-			if (logChannel != null) {
+        } else if (msg.message().newChatMember() != null || msg.message().newChatMembers() != null) {
 
-				new Send(this,logChannel,"事件 : #成员退出","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + left.userName(),"#id" + left.id).html().exec();
+            GetChatMemberResponse resp = bot().execute(new GetChatMember(msg.chatId(), me.id().intValue()));
 
-			}
+            if (!resp.chatMember().canDeleteMessages()) {
 
-		} else if (msg.message().newChatMember() != null || msg.message().newChatMembers() != null) {
+                msg.send("机器人没有 删除消息 权限，已退出 :(").exec();
+                msg.exit();
 
-			GetChatMemberResponse resp = bot().execute(new GetChatMember(msg.chatId(),me.id().intValue()));
+                return true;
 
-			if (!resp.chatMember().canDeleteMessages()) {
+            }
 
-				msg.send("机器人没有 删除消息 权限，已退出 :(").exec();
-				msg.exit();
+            if (!resp.chatMember().canRestrictMembers()) {
 
-				return true;
+                msg.send("机器人没有 封禁用户 权限，已退出 :(").exec();
+                msg.exit();
 
-			}
+                return true;
 
-			if (!resp.chatMember().canRestrictMembers()) {
+            }
 
-				msg.send("机器人没有 封禁用户 权限，已退出 :(").exec();
-				msg.exit();
+            if (delJoin) msg.delete();
 
-				return true;
+            final HashMap<Long, Msg> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
 
-			}
+            User newMember = msg.message().newChatMember();
 
-			if (delJoin) msg.delete();
+            if (newMember == null) newMember = msg.message().newChatMembers()[0];
 
-			final HashMap<Long, Msg> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new HashMap<Long,Msg>();
+            if (newMember.isBot()) {
 
-			User newMember = msg.message().newChatMember();
+                if (newMember.id().equals(botId)) {
 
-			if (newMember == null) newMember = msg.message().newChatMembers()[0];
+                    msg.send("欢迎使用由 @NTT_X 驱动的开源加群验证BOT", "给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
 
-			if (newMember.isBot()) {
+                }
 
-				if (newMember.id().equals(botId)) {
+                return false;
 
-					msg.send("欢迎使用由 @NTT_X 驱动的开源加群验证BOT","给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
-					
-				}
+            }
 
-				return false;
+            final UserData newData = UserData.get(newMember);
 
-			}
+            String[] info = new String[]{
 
-			final UserData newData = UserData.get(newMember);
+                    "你好呀，新加裙的绒布球 " + newData.userName() + " ~\n",
 
-			String[] info = new String[] {
+                    "现在需要确认一下乃是不是机器人绒布球了 ~\n",
 
-				"你好呀，新加裙的绒布球 " + newData.userName() + " ~\n",
+                    "发送 喵 就可以通过验证了 ~ 3分钟以内呀 (๑˃̵ᴗ˂̵)و \n",
 
-				"现在需要确认一下乃是不是机器人绒布球了 ~\n",
+                    "注意不要点按钮 喵 ~"
 
-				"发送 喵 就可以通过验证了 ~ 3分钟以内呀 (๑˃̵ᴗ˂̵)و \n",
+            };
 
-				"注意不要点按钮 喵 ~"
 
-			};
+            ButtonMarkup buttons = new ButtonMarkup() {{
 
+                newButtonLine()
+                        .newButton("不要", POINT_AUTH, newData.id)
+                        .newButton("点", POINT_AUTH, newData.id)
+                        .newButton("按钮", POINT_AUTH, newData.id)
+                        .newButton("喵", POINT_AUTH, newData.id);
 
-			ButtonMarkup buttons = new ButtonMarkup() {{
+                newButtonLine()
+                        .newButton("绒布", POINT_AUTH, newData.id)
+                        .newButton("球", POINT_AUTH, newData.id)
+                        .newButton("点", POINT_AUTH, newData.id)
+                        .newButton("按钮", POINT_AUTH, newData.id);
 
-					newButtonLine()
-						.newButton("不要",POINT_AUTH,newData.id)
-						.newButton("点",POINT_AUTH,newData.id)
-						.newButton("按钮",POINT_AUTH,newData.id)
-						.newButton("喵",POINT_AUTH,newData.id);
-						
-					newButtonLine()
-						.newButton("绒布",POINT_AUTH,newData.id)
-						.newButton("球",POINT_AUTH,newData.id)
-						.newButton("点",POINT_AUTH,newData.id)
-						.newButton("按钮",POINT_AUTH,newData.id);
-						
-					newButtonLine()
-						.newButton("可以",POINT_AUTH,newData.id)
-						.newButton("直接",POINT_AUTH,newData.id)
-						.newButton("滥权",POINT_AUTH,newData.id)
-						.newButton("喵",POINT_AUTH,newData.id);
-					
-					
+                newButtonLine()
+                        .newButton("可以", POINT_AUTH, newData.id)
+                        .newButton("直接", POINT_AUTH, newData.id)
+                        .newButton("滥权", POINT_AUTH, newData.id)
+                        .newButton("喵", POINT_AUTH, newData.id);
 
-				}};
 
-			setPoint(newData,POINT_AUTH);
+            }};
 
-			group.put(newMember.id(),msg.send(info).buttons(buttons).html().send());
+            setPoint(newData, POINT_AUTH);
 
-			cache.put(msg.chatId().longValue(),group);
+            group.put(newMember.id(), msg.send(info).buttons(buttons).html().send());
 
-			timer.schedule(new TimerTask() {
+            cache.put(msg.chatId().longValue(), group);
 
-					@Override
-					public void run() {
+            timer.schedule(new TimerTask() {
 
-						final HashMap<Long, Msg> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new HashMap<Long,Msg>();
+                @Override
+                public void run() {
 
-						if (group.containsKey(newData.id.longValue())) {
+                    final HashMap<Long, Msg> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
 
-							clearPoint(newData);
+                    if (group.containsKey(newData.id.longValue())) {
 
-							group.remove(newData.id).delete();
+                        clearPoint(newData);
 
-							if (group.isEmpty()) {
+                        group.remove(newData.id).delete();
 
-								cache.remove(msg.chatId().longValue());
+                        if (group.isEmpty()) {
 
-							} else {
+                            cache.remove(msg.chatId().longValue());
 
-								cache.put(msg.chatId().longValue(),group);
+                        } else {
 
-							}
+                            cache.put(msg.chatId().longValue(), group);
 
-							if (msg.kick(newData.id)) {
+                        }
 
-								msg.send(newData.userName() + " 不理解喵喵的语言 , 真可惜喵...").html().failed(60 * 1000);
+                        if (msg.kick(newData.id)) {
 
-								if (logChannel != null) {
+                            msg.send(newData.userName() + " 不理解喵喵的语言 , 真可惜喵...").html().failed(60 * 1000);
 
-									new Send(origin,logChannel,"事件 : #未通过 #超时","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + newData.userName(),"#id" + newData.id).html().exec();
+                            if (logChannel != null) {
 
-								}
+                                new Send(origin, logChannel, "事件 : #未通过 #超时", "群组 : " + msg.chat().title(), "[" + Html.code(msg.chatId().toString()) + "]", "用户 : " + newData.userName(), "#id" + newData.id).html().exec();
 
-							}
+                            }
 
-						}
+                        }
 
-					}
+                    }
 
-				},new Date(System.currentTimeMillis() + 3 * 60 * 1000));
+                }
 
-		} else if (msg.isPrivate()) {
+            }, new Date(System.currentTimeMillis() + 3 * 60 * 1000));
 
-			msg.send("喵....？").exec();
+        } else if (msg.isPrivate()) {
 
-		}
+            msg.send("喵....？").exec();
 
-		return false;
+        }
 
-	}
+        return false;
 
-	@Override
-	public boolean onCallback(UserData user,Callback callback) {
+    }
 
-		long target = Long.parseLong(callback.params[1]);
+    @Override
+    public boolean onCallback(UserData user, Callback callback) {
 
-		if (user.id.equals(target)) {
+        long target = Long.parseLong(callback.params[1]);
 
-			HashMap<Long, Msg> group = cache.containsKey(callback.chatId().longValue()) ? cache.get(callback.chatId()) : new HashMap<Long,Msg>();
+        if (user.id.equals(target)) {
 
-			if (group.containsKey(user.id)) {
+            HashMap<Long, Msg> group = cache.containsKey(callback.chatId().longValue()) ? cache.get(callback.chatId()) : new HashMap<Long, Msg>();
 
-				group.remove(user.id).delete();
+            if (group.containsKey(user.id)) {
 
-				if (group.isEmpty()) {
+                group.remove(user.id).delete();
 
-					cache.remove(callback.chatId().longValue());
+                if (group.isEmpty()) {
 
-				} else {
+                    cache.remove(callback.chatId().longValue());
 
-					cache.put(callback.chatId().longValue(),group);
+                } else {
 
-				}
+                    cache.put(callback.chatId().longValue(), group);
 
-			}
+                }
 
-			clearPoint(user);
+            }
 
-			if (callback.kick(user.id)) {
+            clearPoint(user);
 
-				callback.send(user.userName() + " 瞎按按钮 , 未通过验证 , 真可惜喵...").html().failed(60 * 1000);
+            if (callback.kick(user.id)) {
 
-				if (logChannel != null) {
+                callback.send(user.userName() + " 瞎按按钮 , 未通过验证 , 真可惜喵...").html().failed(60 * 1000);
 
-					new Send(this,logChannel,"事件 : #未通过 #点击按钮","群组 : " + callback.chat().title(),"[" + Html.code(callback.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
+                if (logChannel != null) {
 
-				}
+                    new Send(this, logChannel, "事件 : #未通过 #点击按钮", "群组 : " + callback.chat().title(), "[" + Html.code(callback.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();
 
-			}
+                }
 
-		} else if (NTT.isGroupAdmin(callback.chatId(),user.id)) {
-			
-			HashMap<Long, Msg> group = cache.containsKey(callback.chatId().longValue()) ? cache.get(callback.chatId()) : new HashMap<Long,Msg>();
+            }
 
-			if (group.containsKey(target)) {
+        } else if (NTT.isGroupAdmin(callback.chatId(), user.id)) {
 
-				group.remove(target).delete();
+            HashMap<Long, Msg> group = cache.containsKey(callback.chatId().longValue()) ? cache.get(callback.chatId()) : new HashMap<Long, Msg>();
 
-				if (group.isEmpty()) {
+            if (group.containsKey(target)) {
 
-					cache.remove(callback.chatId().longValue());
+                group.remove(target).delete();
 
-				} else {
+                if (group.isEmpty()) {
 
-					cache.put(callback.chatId().longValue(),group);
+                    cache.remove(callback.chatId().longValue());
 
-				}
+                } else {
 
-			}
-			
-			UserData t = UserData.get(target);
+                    cache.put(callback.chatId().longValue(), group);
 
-			clearPoint(t);
-			
-			if (callback.kick(target,true)) {
+                }
 
-				callback.send(t.userName() + " 被绒布球滥权了 , 真可惜喵...").html().failed(15 * 1000);
+            }
 
-				if (logChannel != null) {
+            UserData t = UserData.get(target);
 
-					new Send(this,logChannel,"事件 : #未通过 #管理员封禁","群组 : " + callback.chat().title(),"[" + Html.code(callback.chatId().toString()) + "]","用户 : " + t.userName(),"#id" + t.id).html().exec();
+            clearPoint(t);
 
-				}
+            if (callback.kick(target, true)) {
 
-			}
-			
-			
-		} else {
-			
-			callback.alert("不要乱点按钮喵 ~");
-			
-		}
+                callback.send(t.userName() + " 被绒布球滥权了 , 真可惜喵...").html().failed(15 * 1000);
 
-		return true;
+                if (logChannel != null) {
 
-	}
+                    new Send(this, logChannel, "事件 : #未通过 #管理员封禁", "群组 : " + callback.chat().title(), "[" + Html.code(callback.chatId().toString()) + "]", "用户 : " + t.userName(), "#id" + t.id).html().exec();
 
-	@Override
-	public boolean onPointedGroup(UserData user,Msg msg) {
+                }
 
-		HashMap<Long, Msg> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new HashMap<Long,Msg>();
+            }
 
-		if (group.containsKey(user.id)) {
 
-			group.remove(user.id).delete();
+        } else {
 
-			if (group.isEmpty()) {
+            callback.alert("不要乱点按钮喵 ~");
 
-				cache.remove(msg.chatId().longValue());
+        }
 
-			} else {
+        return true;
 
-				cache.put(msg.chatId().longValue(),group);
+    }
 
-			}
+    @Override
+    public boolean onPointedGroup(UserData user, Msg msg) {
 
-		}
+        HashMap<Long, Msg> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
 
-		clearPoint(user);
+        if (group.containsKey(user.id)) {
 
-		if (msg.hasText() && msg.text().contains("喵")) {
+            group.remove(user.id).delete();
 
-			msg.send(user.userName() + " 通过了图灵(划掉) 验证 ~").html().failed(15 * 1000);
+            if (group.isEmpty()) {
 
-			if (logChannel != null) {
+                cache.remove(msg.chatId().longValue());
 
-				new Send(this,logChannel,"事件 : #通过验证","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
+            } else {
 
-			}
+                cache.put(msg.chatId().longValue(), group);
 
-		} else if (msg.kick()) {
+            }
 
-			msg.delete();
-			
-			msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().failed(60 * 1000);
+        }
 
-			if (logChannel != null) {
+        clearPoint(user);
 
-				new Send(this,logChannel,"事件 : #未通过 #发送其他内容","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
+        if (msg.hasText() && msg.text().contains("喵")) {
 
-			}
+            msg.send(user.userName() + " 通过了图灵(划掉) 验证 ~").html().failed(15 * 1000);
 
-		}
+            if (logChannel != null) {
 
-		return true;
+                new Send(this, logChannel, "事件 : #通过验证", "群组 : " + msg.chat().title(), "[" + Html.code(msg.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();
 
-	}
+            }
+
+        } else if (msg.kick()) {
+
+            msg.delete();
+
+            msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().failed(60 * 1000);
+
+            if (logChannel != null) {
+
+                new Send(this, logChannel, "事件 : #未通过 #发送其他内容", "群组 : " + msg.chat().title(), "[" + Html.code(msg.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();
+
+            }
+
+        }
+
+        return true;
+
+    }
 
 }

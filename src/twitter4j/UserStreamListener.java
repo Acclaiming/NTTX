@@ -156,20 +156,20 @@ public interface UserStreamListener extends StatusListener {
      * @param retweetedStatus status retweeted retweet
      * @since Twitter4J 4.0.4
      */
-    void onRetweetedRetweet(User source,User target, Status retweetedStatus);
+    void onRetweetedRetweet(User source, User target, Status retweetedStatus);
 
     /**
-     * @param source          source user of the event
-     * @param target          target user of the event
+     * @param source            source user of the event
+     * @param target            target user of the event
      * @param favoritedRetweeet status favorited retweet
      * @since Twitter4J 4.0.4
      */
-    void onFavoritedRetweet(User source,User target, Status favoritedRetweeet);
+    void onFavoritedRetweet(User source, User target, Status favoritedRetweeet);
 
     /**
-     * @param source          source user of the event
-     * @param target          target user of the event
-     * @param quotingTweet    status quoting the tweet
+     * @param source       source user of the event
+     * @param target       target user of the event
+     * @param quotingTweet status quoting the tweet
      * @since Twitter4J 4.0.4
      */
     void onQuotedTweet(User source, User target, Status quotingTweet);

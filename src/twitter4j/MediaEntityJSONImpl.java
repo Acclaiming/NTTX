@@ -26,12 +26,12 @@ public class MediaEntityJSONImpl extends EntityIndex implements MediaEntity {
     private static final long serialVersionUID = 1571961225214439778L;
     protected long id;
     protected String url;
+    protected String type;
     private String mediaURL;
     private String mediaURLHttps;
     private String expandedURL;
     private String displayURL;
     private Map<Integer, MediaEntity.Size> sizes;
-    protected String type;
     private int videoAspectRatioWidth;
     private int videoAspectRatioHeight;
     private long videoDurationMillis;
@@ -76,7 +76,7 @@ public class MediaEntityJSONImpl extends EntityIndex implements MediaEntity {
 
                 JSONArray variants = videoInfo.getJSONArray("variants");
                 this.videoVariants = new Variant[variants.length()];
-                for (int i=0; i<variants.length(); i++) {
+                for (int i = 0; i < variants.length(); i++) {
                     this.videoVariants[i] = new Variant(variants.getJSONObject(i));
                 }
             } else {
@@ -92,15 +92,15 @@ public class MediaEntityJSONImpl extends EntityIndex implements MediaEntity {
         }
     }
 
+    /* For serialization purposes only. */
+    /* package */ MediaEntityJSONImpl() {
+
+    }
+
     private void addMediaEntitySizeIfNotNull(Map<Integer, MediaEntity.Size> sizes, JSONObject sizesJSON, Integer size, String key) throws JSONException {
         if (!sizesJSON.isNull(key)) {
             sizes.put(size, new Size(sizesJSON.getJSONObject(key)));
         }
-    }
-
-    /* For serialization purposes only. */
-    /* package */ MediaEntityJSONImpl() {
-
     }
 
     @Override
@@ -158,16 +158,77 @@ public class MediaEntityJSONImpl extends EntityIndex implements MediaEntity {
         return super.getEnd();
     }
 
+    @Override
+    public int getVideoAspectRatioWidth() {
+        return videoAspectRatioWidth;
+    }
+
+    @Override
+    public int getVideoAspectRatioHeight() {
+        return videoAspectRatioHeight;
+    }
+
+    @Override
+    public long getVideoDurationMillis() {
+        return videoDurationMillis;
+    }
+
+    @Override
+    public String getExtAltText() {
+        return extAltText;
+    }
+
+    @Override
+    public MediaEntity.Variant[] getVideoVariants() {
+        return videoVariants;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MediaEntityJSONImpl)) return false;
+
+        MediaEntityJSONImpl that = (MediaEntityJSONImpl) o;
+
+        if (id != that.id) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
+    }
+
+    @Override
+    public String toString() {
+        return "MediaEntityJSONImpl{" +
+                "id=" + id +
+                ", url='" + url + '\'' +
+                ", mediaURL='" + mediaURL + '\'' +
+                ", mediaURLHttps='" + mediaURLHttps + '\'' +
+                ", expandedURL='" + expandedURL + '\'' +
+                ", displayURL='" + displayURL + '\'' +
+                ", sizes=" + sizes +
+                ", type='" + type + '\'' +
+                ", videoAspectRatioWidth=" + videoAspectRatioWidth +
+                ", videoAspectRatioHeight=" + videoAspectRatioHeight +
+                ", videoDurationMillis=" + videoDurationMillis +
+                ", videoVariants=" + videoVariants.length +
+                ", extAltText='" + extAltText + '\'' +
+                '}';
+    }
+
     static class Size implements MediaEntity.Size {
         private static final long serialVersionUID = -2515842281909325169L;
         int width;
         int height;
         int resize;
-        
+
         /* For serialization purposes only. */
-		/* package */
-		Size() {
-		}
+        /* package */
+        Size() {
+        }
 
         Size(JSONObject json) throws JSONException {
             width = json.getInt("w");
@@ -222,31 +283,6 @@ public class MediaEntityJSONImpl extends EntityIndex implements MediaEntity {
         }
     }
 
-    @Override
-    public int getVideoAspectRatioWidth() {
-        return videoAspectRatioWidth;
-    }
-
-    @Override
-    public int getVideoAspectRatioHeight() {
-        return videoAspectRatioHeight;
-    }
-
-    @Override
-    public long getVideoDurationMillis() {
-        return videoDurationMillis;
-    }
-
-    @Override
-    public String getExtAltText() {
-        return extAltText;
-    }
-
-    @Override
-    public MediaEntity.Variant[] getVideoVariants() {
-        return videoVariants;
-    }
-
     static class Variant implements MediaEntity.Variant {
         private static final long serialVersionUID = 1027236588556797980L;
         int bitrate;
@@ -256,7 +292,7 @@ public class MediaEntityJSONImpl extends EntityIndex implements MediaEntity {
         Variant(JSONObject json) throws JSONException {
             bitrate = json.has("bitrate") ? json.getInt("bitrate") : 0;
             contentType = json.getString("content_type");
-            url =json.getString("url");
+            url = json.getString("url");
         }
 
         /* For serialization purposes only. */
@@ -308,41 +344,5 @@ public class MediaEntityJSONImpl extends EntityIndex implements MediaEntity {
                     ", url=" + url +
                     '}';
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof MediaEntityJSONImpl)) return false;
-
-        MediaEntityJSONImpl that = (MediaEntityJSONImpl) o;
-
-        if (id != that.id) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
-    }
-
-    @Override
-    public String toString() {
-        return "MediaEntityJSONImpl{" +
-                "id=" + id +
-                ", url='" + url + '\'' +
-                ", mediaURL='" + mediaURL + '\'' +
-                ", mediaURLHttps='" + mediaURLHttps + '\'' +
-                ", expandedURL='" + expandedURL + '\'' +
-                ", displayURL='" + displayURL + '\'' +
-                ", sizes=" + sizes +
-                ", type='" + type + '\'' +
-                ", videoAspectRatioWidth=" + videoAspectRatioWidth +
-                ", videoAspectRatioHeight=" + videoAspectRatioHeight +
-                ", videoDurationMillis=" + videoDurationMillis +
-                ", videoVariants=" + videoVariants.length +
-                ", extAltText='" + extAltText + '\'' +
-                '}';
     }
 }

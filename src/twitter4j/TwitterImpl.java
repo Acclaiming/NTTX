@@ -38,22 +38,18 @@ import static twitter4j.HttpParameter.getParameterArray;
 class TwitterImpl extends TwitterBaseImpl implements Twitter {
     private static final long serialVersionUID = 9170943084096085770L;
     private static final Logger logger = Logger.getLogger(TwitterBaseImpl.class);
-    
+    private static final ConcurrentHashMap<Configuration, HttpParameter[]> implicitParamsMap = new ConcurrentHashMap<Configuration, HttpParameter[]>();
+    private static final ConcurrentHashMap<Configuration, String> implicitParamsStrMap = new ConcurrentHashMap<Configuration, String>();
     private final String IMPLICIT_PARAMS_STR;
     private final HttpParameter[] IMPLICIT_PARAMS;
     private final HttpParameter INCLUDE_MY_RETWEET;
-    
     private final String CHUNKED_INIT = "INIT";
     private final String CHUNKED_APPEND = "APPEND";
     private final String CHUNKED_FINALIZE = "FINALIZE";
     private final String CHUNKED_STATUS = "STATUS";
-    
-	private final int MB = 1024 * 1024; // 1 MByte
-	private final int MAX_VIDEO_SIZE = 512 * MB; // 512MB is a constraint  imposed by Twitter for video files
-	private final int CHUNK_SIZE = 2 * MB; // max chunk size
-
-    private static final ConcurrentHashMap<Configuration, HttpParameter[]> implicitParamsMap = new ConcurrentHashMap<Configuration, HttpParameter[]>();
-    private static final ConcurrentHashMap<Configuration, String> implicitParamsStrMap = new ConcurrentHashMap<Configuration, String>();
+    private final int MB = 1024 * 1024; // 1 MByte
+    private final int MAX_VIDEO_SIZE = 512 * MB; // 512MB is a constraint  imposed by Twitter for video files
+    private final int CHUNK_SIZE = 2 * MB; // max chunk size
 
     /*package*/
     TwitterImpl(Configuration conf, Authorization auth) {
@@ -109,6 +105,63 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
 
     /* Timelines Resources */
 
+    private static JSONObject createMessageCreateJsonObject(long recipientId, String text, long mediaId, String quickReplyResponse, QuickReply... quickReplies) throws JSONException {
+        String type = mediaId == -1 ? null : "media";
+
+        final JSONObject messageDataJSON = new JSONObject();
+
+        final JSONObject target = new JSONObject();
+        target.put("recipient_id", recipientId);
+        messageDataJSON.put("target", target);
+
+        final JSONObject messageData = new JSONObject();
+        messageData.put("text", text);
+        if (type != null && mediaId != -1) {
+            final JSONObject attachment = new JSONObject();
+            attachment.put("type", type);
+            if (type.equals("media")) {
+                final JSONObject media = new JSONObject();
+                media.put("id", mediaId);
+                attachment.put("media", media);
+            }
+            messageData.put("attachment", attachment);
+        }
+        // https://developer.twitter.com/en/docs/direct-messages/quick-replies/api-reference/options
+        if (quickReplies.length > 0) {
+            JSONObject quickReplyJSON = new JSONObject();
+            quickReplyJSON.put("type", "options");
+            JSONArray jsonArray = new JSONArray();
+            for (QuickReply quickReply : quickReplies) {
+                JSONObject option = new JSONObject();
+                option.put("label", quickReply.getLabel());
+                if (quickReply.getDescription() != null) {
+                    option.put("description", quickReply.getDescription());
+                }
+                if (quickReply.getMetadata() != null) {
+                    option.put("metadata", quickReply.getMetadata());
+                }
+                jsonArray.put(option);
+            }
+            quickReplyJSON.put("options", jsonArray);
+            messageData.put("quick_reply", quickReplyJSON);
+        }
+        if (quickReplyResponse != null) {
+            JSONObject quickReplyResponseJSON = new JSONObject();
+            quickReplyResponseJSON.put("type", "options");
+            quickReplyResponseJSON.put("metadata", quickReplyResponse);
+            messageData.put("quick_reply_response", quickReplyResponseJSON);
+        }
+        messageDataJSON.put("message_data", messageData);
+
+        final JSONObject json = new JSONObject();
+        final JSONObject event = new JSONObject();
+        event.put("type", "message_create");
+        event.put("message_create", messageDataJSON);
+        json.put("event", event);
+
+        return json;
+    }
+
     @Override
     public ResponseList<Status> getMentionsTimeline() throws TwitterException {
         return factory.createStatusList(get(conf.getRestBaseURL() + "statuses/mentions_timeline.json"));
@@ -152,7 +205,7 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
         return factory.createStatusList(get(conf.getRestBaseURL()
                         + "statuses/user_timeline.json",
                 mergeParameters(new HttpParameter[]{new HttpParameter("screen_name", screenName)
-                        , INCLUDE_MY_RETWEET}
+                                , INCLUDE_MY_RETWEET}
                         , paging.asPostParameterArray())
         ));
     }
@@ -163,7 +216,7 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
         return factory.createStatusList(get(conf.getRestBaseURL()
                         + "statuses/user_timeline.json",
                 mergeParameters(new HttpParameter[]{new HttpParameter("user_id", userId)
-                        , INCLUDE_MY_RETWEET}
+                                , INCLUDE_MY_RETWEET}
                         , paging.asPostParameterArray())
         ));
     }
@@ -184,6 +237,8 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
         return getUserTimeline(new Paging());
     }
 
+    /* Tweets Resources */
+
     @Override
     public ResponseList<Status> getUserTimeline(Paging paging) throws
             TwitterException {
@@ -193,8 +248,6 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
                         , paging.asPostParameterArray())
         ));
     }
-
-    /* Tweets Resources */
 
     @Override
     public ResponseList<Status> getRetweets(long statusId) throws TwitterException {
@@ -270,135 +323,137 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
                 , new HttpParameter("media", fileName, image)).asJSONObject());
     }
 
-	@Override
-	public UploadedMedia uploadMediaChunked(String fileName, InputStream media) throws TwitterException {
-		//If the InputStream is remote, this is will download it into memory speeding up the chunked upload process 
-		byte[] dataBytes = null;
-		try {
+    // twurl -H upload.twitter.com "/1.1/media/upload.json" -d
+    // "command=INIT&media_type=video/mp4&total_bytes=4430752"
+
+    @Override
+    public UploadedMedia uploadMediaChunked(String fileName, InputStream media) throws TwitterException {
+        //If the InputStream is remote, this is will download it into memory speeding up the chunked upload process
+        byte[] dataBytes = null;
+        try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream(256 * 1024);
             byte[] buffer = new byte[32768];
             int n;
-            while((n = media.read(buffer)) != -1) {
+            while ((n = media.read(buffer)) != -1) {
                 baos.write(buffer, 0, n);
             }
             dataBytes = baos.toByteArray();
             if (dataBytes.length > MAX_VIDEO_SIZE) {
-				throw new TwitterException(String.format(Locale.US,
-						"video file can't be longer than: %d MBytes",
-						MAX_VIDEO_SIZE / MB));
-			}
-		} catch (IOException ioe) {
-			throw new TwitterException("Failed to download the file.", ioe);
-		}
-		
-		try {
+                throw new TwitterException(String.format(Locale.US,
+                        "video file can't be longer than: %d MBytes",
+                        MAX_VIDEO_SIZE / MB));
+            }
+        } catch (IOException ioe) {
+            throw new TwitterException("Failed to download the file.", ioe);
+        }
 
-			UploadedMedia uploadedMedia = uploadMediaChunkedInit(dataBytes.length);
-			//no need to close ByteArrayInputStream
-			ByteArrayInputStream dataInputStream = new ByteArrayInputStream(dataBytes);
-			
-			byte[] segmentData = new byte[CHUNK_SIZE];
-			int segmentIndex = 0;
-			int totalRead = 0;
-			int bytesRead = 0;
-			
-			while ((bytesRead = dataInputStream.read(segmentData)) > 0) {
-				totalRead = totalRead + bytesRead;
-				logger.debug("Chunked appened, segment index:" + segmentIndex + " bytes:" + totalRead + "/" + dataBytes.length );
-				//no need to close ByteArrayInputStream
-				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(segmentData, 0 ,bytesRead);
-				uploadMediaChunkedAppend(fileName, byteArrayInputStream, segmentIndex, uploadedMedia.getMediaId());
-				segmentData = new byte[CHUNK_SIZE];
-				segmentIndex++;
-			}
-			return uploadMediaChunkedFinalize(uploadedMedia.getMediaId());
-		} catch (Exception e) {
-			 throw new TwitterException(e);
-		}
-	}
-    
-	// twurl -H upload.twitter.com "/1.1/media/upload.json" -d
-	// "command=INIT&media_type=video/mp4&total_bytes=4430752"
-    
+        try {
+
+            UploadedMedia uploadedMedia = uploadMediaChunkedInit(dataBytes.length);
+            //no need to close ByteArrayInputStream
+            ByteArrayInputStream dataInputStream = new ByteArrayInputStream(dataBytes);
+
+            byte[] segmentData = new byte[CHUNK_SIZE];
+            int segmentIndex = 0;
+            int totalRead = 0;
+            int bytesRead = 0;
+
+            while ((bytesRead = dataInputStream.read(segmentData)) > 0) {
+                totalRead = totalRead + bytesRead;
+                logger.debug("Chunked appened, segment index:" + segmentIndex + " bytes:" + totalRead + "/" + dataBytes.length);
+                //no need to close ByteArrayInputStream
+                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(segmentData, 0, bytesRead);
+                uploadMediaChunkedAppend(fileName, byteArrayInputStream, segmentIndex, uploadedMedia.getMediaId());
+                segmentData = new byte[CHUNK_SIZE];
+                segmentIndex++;
+            }
+            return uploadMediaChunkedFinalize(uploadedMedia.getMediaId());
+        } catch (Exception e) {
+            throw new TwitterException(e);
+        }
+    }
+
+    // twurl -H upload.twitter.com "/1.1/media/upload.json" -d
+    // "command=APPEND&media_id=601413451156586496&segment_index=0" --file
+    // /path/to/video.mp4 --file-field "media"
+
     private UploadedMedia uploadMediaChunkedInit(long size) throws TwitterException {
-		return new UploadedMedia(post(
-				conf.getUploadBaseURL() + "media/upload.json",
-				new HttpParameter[] { new HttpParameter("command", CHUNKED_INIT),
-						new HttpParameter("media_type", "video/mp4"), 
-						new HttpParameter("media_category", "tweet_video"),
-						new HttpParameter("total_bytes", size) })
-				.asJSONObject());
-	}
+        return new UploadedMedia(post(
+                conf.getUploadBaseURL() + "media/upload.json",
+                new HttpParameter[]{new HttpParameter("command", CHUNKED_INIT),
+                        new HttpParameter("media_type", "video/mp4"),
+                        new HttpParameter("media_category", "tweet_video"),
+                        new HttpParameter("total_bytes", size)})
+                .asJSONObject());
+    }
 
-	// twurl -H upload.twitter.com "/1.1/media/upload.json" -d
-	// "command=APPEND&media_id=601413451156586496&segment_index=0" --file
-	// /path/to/video.mp4 --file-field "media"
+    // twurl -H upload.twitter.com "/1.1/media/upload.json" -d
+    // "command=FINALIZE&media_id=601413451156586496"
 
     private void uploadMediaChunkedAppend(String fileName, InputStream media, int segmentIndex, long mediaId) throws TwitterException {
-		post(conf.getUploadBaseURL() + "media/upload.json", new HttpParameter[] {
-				new HttpParameter("command", CHUNKED_APPEND), new HttpParameter("media_id", mediaId),
-				new HttpParameter("segment_index", segmentIndex), new HttpParameter("media", fileName, media) });
-	}
+        post(conf.getUploadBaseURL() + "media/upload.json", new HttpParameter[]{
+                new HttpParameter("command", CHUNKED_APPEND), new HttpParameter("media_id", mediaId),
+                new HttpParameter("segment_index", segmentIndex), new HttpParameter("media", fileName, media)});
+    }
 
-	// twurl -H upload.twitter.com "/1.1/media/upload.json" -d
-	// "command=FINALIZE&media_id=601413451156586496"
+    private UploadedMedia uploadMediaChunkedFinalize(long mediaId) throws TwitterException {
+        int tries = 0;
+        int maxTries = 20;
+        int lastProgressPercent = 0;
+        int currentProgressPercent = 0;
+        UploadedMedia uploadedMedia = uploadMediaChunkedFinalize0(mediaId);
+        while (tries < maxTries) {
+            if (lastProgressPercent == currentProgressPercent) {
+                tries++;
+            }
+            lastProgressPercent = currentProgressPercent;
+            String state = uploadedMedia.getProcessingState();
+            if (state.equals("failed")) {
+                throw new TwitterException("Failed to finalize the chuncked upload.");
+            }
+            if (state.equals("pending") || state.equals("in_progress")) {
+                currentProgressPercent = uploadedMedia.getProgressPercent();
+                int waitSec = Math.max(uploadedMedia.getProcessingCheckAfterSecs(), 1);
+                logger.debug("Chunked finalize, wait for:" + waitSec + " sec");
+                try {
+                    Thread.sleep(waitSec * 1000);
+                } catch (InterruptedException e) {
+                    throw new TwitterException("Failed to finalize the chuncked upload.", e);
+                }
+            }
+            if (state.equals("succeeded")) {
+                return uploadedMedia;
+            }
+            uploadedMedia = uploadMediaChunkedStatus(mediaId);
+        }
+        throw new TwitterException("Failed to finalize the chuncked upload, progress has stopped, tried " + tries + 1 + " times.");
+    }
 
-	private UploadedMedia uploadMediaChunkedFinalize(long mediaId) throws TwitterException {
-		int tries = 0;
-		int maxTries = 20;
-		int lastProgressPercent = 0;
-		int currentProgressPercent = 0;
-		UploadedMedia uploadedMedia = uploadMediaChunkedFinalize0(mediaId);
-		while (tries < maxTries) {
-			if(lastProgressPercent == currentProgressPercent) {
-				tries++;
-			}
-			lastProgressPercent = currentProgressPercent;
-			String state = uploadedMedia.getProcessingState();
-			if (state.equals("failed")) {
-				throw new TwitterException("Failed to finalize the chuncked upload.");
-			}
-			if (state.equals("pending") || state.equals("in_progress")) {
-				currentProgressPercent = uploadedMedia.getProgressPercent();
-				int waitSec = Math.max(uploadedMedia.getProcessingCheckAfterSecs(), 1);
-				logger.debug("Chunked finalize, wait for:" + waitSec + " sec");
-				try {
-					Thread.sleep(waitSec * 1000);
-				} catch (InterruptedException e) {
-					throw new TwitterException("Failed to finalize the chuncked upload.", e);
-				}
-			}
-			if (state.equals("succeeded")) {
-				return uploadedMedia;
-			}
-			uploadedMedia = uploadMediaChunkedStatus(mediaId);
-		} 
-		throw new TwitterException("Failed to finalize the chuncked upload, progress has stopped, tried " + tries+1 + " times.");
-	}
-	
-	private UploadedMedia uploadMediaChunkedFinalize0(long mediaId) throws TwitterException {
-		JSONObject json = post(
-				conf.getUploadBaseURL() + "media/upload.json",
-				new HttpParameter[] {
-						new HttpParameter("command", CHUNKED_FINALIZE),
-						new HttpParameter("media_id", mediaId) })
-				.asJSONObject();
-		logger.debug("Finalize response:" + json);
-		return new UploadedMedia(json);
-	}
-	
-	private UploadedMedia uploadMediaChunkedStatus(long mediaId) throws TwitterException {
-		JSONObject json = get(
-				conf.getUploadBaseURL() + "media/upload.json",
-				new HttpParameter[] {
-						new HttpParameter("command", CHUNKED_STATUS),
-						new HttpParameter("media_id", mediaId) })
-				.asJSONObject();
-		logger.debug("Status response:" + json);
-		return new UploadedMedia(json);
-	}
-    
+    private UploadedMedia uploadMediaChunkedFinalize0(long mediaId) throws TwitterException {
+        JSONObject json = post(
+                conf.getUploadBaseURL() + "media/upload.json",
+                new HttpParameter[]{
+                        new HttpParameter("command", CHUNKED_FINALIZE),
+                        new HttpParameter("media_id", mediaId)})
+                .asJSONObject();
+        logger.debug("Finalize response:" + json);
+        return new UploadedMedia(json);
+    }
+
     /* Search Resources */
+
+    private UploadedMedia uploadMediaChunkedStatus(long mediaId) throws TwitterException {
+        JSONObject json = get(
+                conf.getUploadBaseURL() + "media/upload.json",
+                new HttpParameter[]{
+                        new HttpParameter("command", CHUNKED_STATUS),
+                        new HttpParameter("media_id", mediaId)})
+                .asJSONObject();
+        logger.debug("Status response:" + json);
+        return new UploadedMedia(json);
+    }
+
+    /* Direct Messages Resources */
 
     @Override
     public QueryResult search(Query query) throws TwitterException {
@@ -411,13 +466,10 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
         }
     }
 
-    /* Direct Messages Resources */
-
-
     @Override
     public DirectMessageList getDirectMessages(int count) throws TwitterException {
         return factory.createDirectMessageList(get(conf.getRestBaseURL() + "direct_messages/events/list.json"
-                , new HttpParameter("count", count) ));
+                , new HttpParameter("count", count)));
     }
 
     @Override
@@ -426,7 +478,6 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
                 , new HttpParameter("count", count)
                 , new HttpParameter("cursor", cursor)));
     }
-
 
     @Override
     public DirectMessage showDirectMessage(long id) throws TwitterException {
@@ -444,77 +495,21 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
             throws TwitterException {
         try {
             return factory.createDirectMessage(post(conf.getRestBaseURL() + "direct_messages/events/new.json",
-                    createMessageCreateJsonObject(recipientId, text, -1L,  null, quickReplies)));
+                    createMessageCreateJsonObject(recipientId, text, -1L, null, quickReplies)));
         } catch (JSONException e) {
             throw new TwitterException(e);
         }
     }
+
     @Override
     public DirectMessage sendDirectMessage(long recipientId, String text, String quickReplyResponse)
             throws TwitterException {
         try {
             return factory.createDirectMessage(post(conf.getRestBaseURL() + "direct_messages/events/new.json",
-                    createMessageCreateJsonObject(recipientId, text, -1L,  quickReplyResponse)));
+                    createMessageCreateJsonObject(recipientId, text, -1L, quickReplyResponse)));
         } catch (JSONException e) {
             throw new TwitterException(e);
         }
-    }
-
-    private static JSONObject createMessageCreateJsonObject(long recipientId, String text, long mediaId, String quickReplyResponse, QuickReply... quickReplies) throws JSONException {
-        String type = mediaId == -1 ? null : "media";
-
-        final JSONObject messageDataJSON = new JSONObject();
-
-        final JSONObject target = new JSONObject();
-        target.put("recipient_id", recipientId);
-        messageDataJSON.put("target", target);
-
-        final JSONObject messageData = new JSONObject();
-        messageData.put("text", text);
-        if (type != null && mediaId != -1) {
-            final JSONObject attachment = new JSONObject();
-            attachment.put("type", type);
-            if (type.equals("media")) {
-                final JSONObject media = new JSONObject();
-                media.put("id", mediaId);
-                attachment.put("media", media);
-            }
-            messageData.put("attachment", attachment);
-        }
-        // https://developer.twitter.com/en/docs/direct-messages/quick-replies/api-reference/options
-        if (quickReplies.length > 0) {
-            JSONObject quickReplyJSON = new JSONObject();
-            quickReplyJSON.put("type", "options");
-            JSONArray jsonArray = new JSONArray();
-            for (QuickReply quickReply : quickReplies) {
-                JSONObject option = new JSONObject();
-                option.put("label", quickReply.getLabel());
-                if (quickReply.getDescription() != null) {
-                    option.put("description", quickReply.getDescription());
-                }
-                if (quickReply.getMetadata() != null) {
-                    option.put("metadata", quickReply.getMetadata());
-                }
-                jsonArray.put(option);
-            }
-            quickReplyJSON.put("options",jsonArray);
-            messageData.put("quick_reply", quickReplyJSON);
-        }
-        if (quickReplyResponse != null) {
-            JSONObject quickReplyResponseJSON = new JSONObject();
-            quickReplyResponseJSON.put("type","options");
-            quickReplyResponseJSON.put("metadata", quickReplyResponse);
-            messageData.put("quick_reply_response", quickReplyResponseJSON);
-        }
-        messageDataJSON.put("message_data", messageData);
-
-        final JSONObject json = new JSONObject();
-        final JSONObject event = new JSONObject();
-        event.put("type", "message_create");
-        event.put("message_create", messageDataJSON);
-        json.put("event", event);
-
-        return json;
     }
 
     @Override
@@ -530,7 +525,7 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
 
     @Override
     public DirectMessage sendDirectMessage(long recipientId, String text)
-        throws TwitterException {
+            throws TwitterException {
         return this.sendDirectMessage(recipientId, text, -1L);
     }
 
@@ -807,7 +802,7 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
         return super.fillInIDAndScreenName(
                 new HttpParameter[]{new HttpParameter("include_email", conf.isIncludeEmailEnabled())});
     }
-    
+
     @Override
     public AccountSettings updateAccountSettings(Integer trend_locationWoeid,
                                                  Boolean sleep_timeEnabled, String start_sleepTime,
@@ -866,14 +861,14 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
     public User updateProfileImage(File image) throws TwitterException {
         checkFileValidity(image);
         return factory.createUser(post(conf.getRestBaseURL()
-                + "account/update_profile_image.json"
+                        + "account/update_profile_image.json"
                 , new HttpParameter[]{new HttpParameter("image", image)}));
     }
 
     @Override
     public User updateProfileImage(InputStream image) throws TwitterException {
         return factory.createUser(post(conf.getRestBaseURL()
-                + "account/update_profile_image.json"
+                        + "account/update_profile_image.json"
                 , new HttpParameter[]{new HttpParameter("image", "image", image)}));
     }
 
@@ -1050,14 +1045,14 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
     public void updateProfileBanner(File image) throws TwitterException {
         checkFileValidity(image);
         post(conf.getRestBaseURL()
-                + "account/update_profile_banner.json"
+                        + "account/update_profile_banner.json"
                 , new HttpParameter("banner", image));
     }
 
     @Override
     public void updateProfileBanner(InputStream image) throws TwitterException {
         post(conf.getRestBaseURL()
-                + "account/update_profile_banner.json"
+                        + "account/update_profile_banner.json"
                 , new HttpParameter("banner", "banner", image));
     }
 
@@ -1169,15 +1164,15 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
     public ResponseList<Status> getUserListStatuses(long listId, Paging paging) throws TwitterException {
         return factory.createStatusList(get(conf.getRestBaseURL() + "lists/statuses.json"
                 , mergeParameters(paging.asPostParameterArray(Paging.SMCP, Paging.COUNT)
-                , new HttpParameter("list_id", listId))));
+                        , new HttpParameter("list_id", listId))));
     }
 
     @Override
     public ResponseList<Status> getUserListStatuses(long ownerId, String slug, Paging paging) throws TwitterException {
         return factory.createStatusList(get(conf.getRestBaseURL() + "lists/statuses.json"
                 , mergeParameters(paging.asPostParameterArray(Paging.SMCP, Paging.COUNT)
-                , new HttpParameter[]{new HttpParameter("owner_id", ownerId)
-                , new HttpParameter("slug", slug)})));
+                        , new HttpParameter[]{new HttpParameter("owner_id", ownerId)
+                                , new HttpParameter("slug", slug)})));
     }
 
     @Override
@@ -1185,8 +1180,8 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
                                                     String slug, Paging paging) throws TwitterException {
         return factory.createStatusList(get(conf.getRestBaseURL() + "lists/statuses.json"
                 , mergeParameters(paging.asPostParameterArray(Paging.SMCP, Paging.COUNT)
-                , new HttpParameter[]{new HttpParameter("owner_screen_name", ownerScreenName)
-                , new HttpParameter("slug", slug)})));
+                        , new HttpParameter[]{new HttpParameter("owner_screen_name", ownerScreenName)
+                                , new HttpParameter("slug", slug)})));
     }
 
     @Override
@@ -1249,8 +1244,8 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
     @Override
     public PagableResponseList<UserList> getUserListMemberships(int count, long cursor) throws TwitterException {
         return factory.createPagableUserListList(get(conf.getRestBaseURL() + "lists/memberships.json",
-          new HttpParameter("cursor", cursor),
-          new HttpParameter("count", count)));
+                new HttpParameter("cursor", cursor),
+                new HttpParameter("count", count)));
     }
 
     @Override
@@ -1271,11 +1266,11 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
     @Override
     public PagableResponseList<UserList> getUserListMemberships(String listMemberScreenName, int count, long cursor, boolean filterToOwnedLists) throws TwitterException {
         return factory.createPagableUserListList(get(conf.getRestBaseURL()
-                + "lists/memberships.json",
-          new HttpParameter("screen_name", listMemberScreenName),
-          new HttpParameter("count", count),
-          new HttpParameter("cursor", cursor),
-          new HttpParameter("filter_to_owned_lists", filterToOwnedLists)));
+                        + "lists/memberships.json",
+                new HttpParameter("screen_name", listMemberScreenName),
+                new HttpParameter("count", count),
+                new HttpParameter("cursor", cursor),
+                new HttpParameter("filter_to_owned_lists", filterToOwnedLists)));
     }
 
     @Override
@@ -1296,7 +1291,7 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
     @Override
     public PagableResponseList<UserList> getUserListMemberships(long listMemberId, int count, long cursor, boolean filterToOwnedLists) throws TwitterException {
         return factory.createPagableUserListList(get(conf.getRestBaseURL()
-                + "lists/memberships.json",
+                        + "lists/memberships.json",
                 new HttpParameter("user_id", listMemberId),
                 new HttpParameter("count", count),
                 new HttpParameter("cursor", cursor),
@@ -1316,10 +1311,10 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
     @Override
     public PagableResponseList<User> getUserListSubscribers(long listId, int count, long cursor, boolean skipStatus) throws TwitterException {
         return factory.createPagableUserList(get(conf.getRestBaseURL() + "lists/subscribers.json",
-          new HttpParameter("list_id", listId),
-          new HttpParameter("count", count),
-          new HttpParameter("cursor", cursor),
-          new HttpParameter("skip_status", skipStatus)));
+                new HttpParameter("list_id", listId),
+                new HttpParameter("count", count),
+                new HttpParameter("cursor", cursor),
+                new HttpParameter("skip_status", skipStatus)));
     }
 
     @Override
@@ -1335,11 +1330,11 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
     @Override
     public PagableResponseList<User> getUserListSubscribers(long ownerId, String slug, int count, long cursor, boolean skipStatus) throws TwitterException {
         return factory.createPagableUserList(get(conf.getRestBaseURL() + "lists/subscribers.json",
-          new HttpParameter("owner_id", ownerId),
-          new HttpParameter("slug", slug),
-          new HttpParameter("count", count),
-          new HttpParameter("cursor", cursor),
-          new HttpParameter("skip_status", skipStatus)));
+                new HttpParameter("owner_id", ownerId),
+                new HttpParameter("slug", slug),
+                new HttpParameter("count", count),
+                new HttpParameter("cursor", cursor),
+                new HttpParameter("skip_status", skipStatus)));
     }
 
     @Override
@@ -1402,7 +1397,7 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
     public User showUserListSubscription(String ownerScreenName, String slug,
                                          long userId) throws TwitterException {
         return factory.createUser(get(conf.getRestBaseURL() +
-                "lists/subscribers/show.json",
+                        "lists/subscribers/show.json",
                 new HttpParameter[]{
                         new HttpParameter("owner_screen_name", ownerScreenName),
                         new HttpParameter("slug", slug),
@@ -1500,7 +1495,7 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
     public User showUserListMembership(String ownerScreenName, String slug,
                                        long userId) throws TwitterException {
         return factory.createUser(get(conf.getRestBaseURL() +
-                "lists/members/show.json",
+                        "lists/members/show.json",
                 new HttpParameter[]{
                         new HttpParameter("owner_screen_name", ownerScreenName),
                         new HttpParameter("slug", slug),
@@ -1523,10 +1518,10 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
     @Override
     public PagableResponseList<User> getUserListMembers(long listId, int count, long cursor, boolean skipStatus) throws TwitterException {
         return factory.createPagableUserList(get(conf.getRestBaseURL() + "lists/members.json",
-          new HttpParameter("list_id", listId),
-          new HttpParameter("count", count),
-          new HttpParameter("cursor", cursor),
-          new HttpParameter("skip_status", skipStatus)));
+                new HttpParameter("list_id", listId),
+                new HttpParameter("count", count),
+                new HttpParameter("cursor", cursor),
+                new HttpParameter("skip_status", skipStatus)));
     }
 
     @Override
@@ -1542,29 +1537,29 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
     @Override
     public PagableResponseList<User> getUserListMembers(long ownerId, String slug, int count, long cursor, boolean skipStatus) throws TwitterException {
         return factory.createPagableUserList(get(conf.getRestBaseURL() +
-                "lists/members.json",
-          new HttpParameter("owner_id", ownerId),
-          new HttpParameter("slug", slug),
-          new HttpParameter("count", count),
-          new HttpParameter("cursor", cursor),
-          new HttpParameter("skip_status", skipStatus)));
+                        "lists/members.json",
+                new HttpParameter("owner_id", ownerId),
+                new HttpParameter("slug", slug),
+                new HttpParameter("count", count),
+                new HttpParameter("cursor", cursor),
+                new HttpParameter("skip_status", skipStatus)));
     }
 
     @Override
     public PagableResponseList<User> getUserListMembers(String ownerScreenName, String slug, long cursor) throws TwitterException {
-      return getUserListMembers(ownerScreenName, slug, 20, cursor, false);
+        return getUserListMembers(ownerScreenName, slug, 20, cursor, false);
     }
 
     @Override
     public PagableResponseList<User> getUserListMembers(String ownerScreenName, String slug, int count, long cursor) throws TwitterException {
-      return getUserListMembers(ownerScreenName, slug, count, cursor, false);
+        return getUserListMembers(ownerScreenName, slug, count, cursor, false);
     }
 
     @Override
     public PagableResponseList<User> getUserListMembers(String ownerScreenName,
                                                         String slug, int count, long cursor, boolean skipStatus) throws TwitterException {
         return factory.createPagableUserList(get(conf.getRestBaseURL() +
-                "lists/members.json",
+                        "lists/members.json",
                 new HttpParameter("owner_screen_name", ownerScreenName),
                 new HttpParameter("slug", slug),
                 new HttpParameter("count", count),
@@ -1691,9 +1686,9 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
     @Override
     public PagableResponseList<UserList> getUserListSubscriptions(String listSubscriberScreenName, int count, long cursor) throws TwitterException {
         return factory.createPagableUserListList(get(conf.getRestBaseURL() + "lists/subscriptions.json",
-                          new HttpParameter("screen_name", listSubscriberScreenName)
-                        , new HttpParameter("count", count)
-                        , new HttpParameter("cursor", cursor)));
+                new HttpParameter("screen_name", listSubscriberScreenName)
+                , new HttpParameter("count", count)
+                , new HttpParameter("cursor", cursor)));
     }
 
     @Override
@@ -1704,13 +1699,13 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
     @Override
     public PagableResponseList<UserList> getUserListSubscriptions(long listSubscriberId, int count, long cursor) throws TwitterException {
         return factory.createPagableUserListList(get(conf.getRestBaseURL() + "lists/subscriptions.json",
-                          new HttpParameter("user_id", listSubscriberId),
-                          new HttpParameter("count", count),
-                          new HttpParameter("cursor", cursor)));
+                new HttpParameter("user_id", listSubscriberId),
+                new HttpParameter("count", count),
+                new HttpParameter("cursor", cursor)));
     }
 
     public PagableResponseList<UserList> getUserListsOwnerships(String listOwnerScreenName, long cursor) throws TwitterException {
-      return getUserListsOwnerships(listOwnerScreenName, 20, cursor);
+        return getUserListsOwnerships(listOwnerScreenName, 20, cursor);
     }
 
     @Override
@@ -1723,7 +1718,7 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
 
     @Override
     public PagableResponseList<UserList> getUserListsOwnerships(long listOwnerId, long cursor) throws TwitterException {
-      return getUserListsOwnerships(listOwnerId, 20, cursor);
+        return getUserListsOwnerships(listOwnerId, 20, cursor);
     }
 
     @Override
@@ -1826,23 +1821,23 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
     }
 
     /* Spam Reporting Resources */
-	
-	@Override
-    public User reportSpam(long userId,boolean performBlock) throws TwitterException {
+
+    @Override
+    public User reportSpam(long userId, boolean performBlock) throws TwitterException {
         return factory.createUser(post(conf.getRestBaseURL() + "users/report_spam.json",
-									   new HttpParameter[]{
-										   new HttpParameter("user_id", userId),
-										   new HttpParameter("perform_block", performBlock)
-									   }
-									   ));
+                new HttpParameter[]{
+                        new HttpParameter("user_id", userId),
+                        new HttpParameter("perform_block", performBlock)
+                }
+        ));
     }
 
     @Override
-    public User reportSpam(String screenName,boolean performBlock) throws TwitterException {
+    public User reportSpam(String screenName, boolean performBlock) throws TwitterException {
         return factory.createUser(post(conf.getRestBaseURL() + "users/report_spam.json",
                 new HttpParameter[]{
                         new HttpParameter("screen_name", screenName),
-						new HttpParameter("perform_block", performBlock)
+                        new HttpParameter("perform_block", performBlock)
                 }
         ));
     }
@@ -1993,8 +1988,8 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
             try {
                 response = http.get(url, mergeImplicitParams(params), auth, this);
             } finally {
-               //  // long elapsedTime = System.currentTimeMillis() - start;
-               // // TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));
+                //  // long elapsedTime = System.currentTimeMillis() - start;
+                // // TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));
             }
             return response;
         }
@@ -2029,7 +2024,7 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
             try {
                 response = http.post(url, mergeImplicitParams(params), auth, this);
             } finally {
-                 // long elapsedTime = System.currentTimeMillis() - start;
+                // long elapsedTime = System.currentTimeMillis() - start;
                 // TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));
             }
             return response;
@@ -2047,7 +2042,7 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
             try {
                 response = http.post(url, new HttpParameter[]{new HttpParameter(json)}, auth, this);
             } finally {
-                 // long elapsedTime = System.currentTimeMillis() - start;
+                // long elapsedTime = System.currentTimeMillis() - start;
                 // TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));
             }
             return response;

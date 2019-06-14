@@ -33,32 +33,6 @@ public class LanguageJSONImpl implements HelpResources.Language {
         init(json);
     }
 
-    private void init(JSONObject json) throws TwitterException {
-        try {
-            name = json.getString("name");
-            code = json.getString("code");
-            status = json.getString(("status"));
-
-        } catch (JSONException jsone) {
-            throw new TwitterException(jsone.getMessage() + ":" + json.toString(), jsone);
-        }
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String getCode() {
-        return code;
-    }
-
-    @Override
-    public String getStatus() {
-        return status;
-    }
-
     static ResponseList<HelpResources.Language> createLanguageList(HttpResponse res, Configuration conf) throws TwitterException {
         return createLanguageList(res.asJSONArray(), res, conf);
     }
@@ -88,5 +62,31 @@ public class LanguageJSONImpl implements HelpResources.Language {
         } catch (JSONException jsone) {
             throw new TwitterException(jsone);
         }
+    }
+
+    private void init(JSONObject json) throws TwitterException {
+        try {
+            name = json.getString("name");
+            code = json.getString("code");
+            status = json.getString(("status"));
+
+        } catch (JSONException jsone) {
+            throw new TwitterException(jsone.getMessage() + ":" + json.toString(), jsone);
+        }
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String getCode() {
+        return code;
+    }
+
+    @Override
+    public String getStatus() {
+        return status;
     }
 }

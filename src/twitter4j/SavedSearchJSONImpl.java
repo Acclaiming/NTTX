@@ -87,7 +87,7 @@ import java.util.Date;
 
     @Override
     public int compareTo(SavedSearch that) {
-        return (int)(this.id - that.getId());
+        return (int) (this.id - that.getId());
     }
 
     @Override
@@ -133,7 +133,7 @@ import java.util.Date;
         result = 31 * result + query.hashCode();
         result = 31 * result + position;
         result = 31 * result + name.hashCode();
-        result = 31 * result + (int)id;
+        result = 31 * result + (int) id;
         return result;
     }
 

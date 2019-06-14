@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.request.*;
 import com.pengrad.telegrambot.response.*;
 import io.kurumi.ntt.*;
 import io.kurumi.ntt.utils.*;
+
 import java.util.*;
 
 public class StickerSet extends JSONObject {
@@ -32,24 +33,12 @@ public class StickerSet extends JSONObject {
         load();
 
     }
-	
-	public String url() {
-		
-		return "https://t.me/addstickers/" + name;
-		
-	}
-	
-	public String urlHtml() {
-		
-		return Html.a(title,name);
-		
-	}
 
     public static StickerSet get(String name) {
 
         if (cache.containsKey(name)) return cache.get(name);
 
-        JSONObject data = LocalData.getJSON(KEY, name,false);
+        JSONObject data = LocalData.getJSON(KEY, name, false);
 
         if (data == null) {
 
@@ -76,6 +65,18 @@ public class StickerSet extends JSONObject {
             return set;
 
         }
+
+    }
+
+    public String url() {
+
+        return "https://t.me/addstickers/" + name;
+
+    }
+
+    public String urlHtml() {
+
+        return Html.a(title, name);
 
     }
 

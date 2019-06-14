@@ -29,18 +29,12 @@ import java.util.Map;
 public final class HttpRequest implements java.io.Serializable {
 
     private static final long serialVersionUID = 3365496352032493020L;
-    private final RequestMethod method;
-
-    private final String url;
-
-    private final HttpParameter[] parameters;
-
-    private final Authorization authorization;
-
-    private final Map<String, String> requestHeaders;
-
-
     private static final HttpParameter[] NULL_PARAMETERS = new HttpParameter[0];
+    private final RequestMethod method;
+    private final String url;
+    private final HttpParameter[] parameters;
+    private final Authorization authorization;
+    private final Map<String, String> requestHeaders;
 
     /**
      * @param method         Specifies the HTTP method

@@ -179,37 +179,6 @@ class Aes256Cbc {
                 (byte) 0x21, (byte) 0x0c, (byte) 0x7d};
 
         /**
-         * Substitutes all {@code byte}s in a word. The word array will be changed.
-         *
-         * @param value array in which the first {@code WORD_SIZE} {@code byte}s will be substituted.
-         *              This array will be modified.
-         * @return returns the modified {@code value}
-         */
-        private byte[] substituteWord(byte[] value) {
-            for (int i = 0; i < WORD_SIZE; ++i) {
-                value[i] = this._sBox[value[i] & 0xff];
-            }
-            return value;
-        }
-
-        /**
-         * Rotate the {@code byte}'s in a word. The {@code byte}'s will be cycled left by one
-         * {@code byte}. The modification will be in place, so the original argument is changed after
-         * the method invocation.
-         *
-         * @param value Array in which the first {@code WORD_SIZE} {@code byte}'s will be changed due to
-         *              the rotation. The contents of this array is changed by this invocation.
-         */
-        private byte[] rotate(byte[] value) {
-            byte tmp = value[0];
-            for (int i = 1; i < WORD_SIZE; ++i) {
-                value[i - 1] = value[i];
-            }
-            value[WORD_SIZE - 1] = tmp;
-            return value;
-        }
-
-        /**
          * Expands the key. The incoming key is {@code KEY_SIZE} {@code byte}s long. It will be expanded
          * to a length of {@code EXPANDED_KEY_SIZE} {@code byte}s. The expanded key will be stored in
          * {@link Aes256#_expandedKey}.
@@ -239,6 +208,37 @@ class Aes256Cbc {
                     this._expandedKey[i + j] = (byte) (this._expandedKey[i - KEY_SIZE + j] ^ this._tmp[j]);
                 }
             }
+        }
+
+        /**
+         * Substitutes all {@code byte}s in a word. The word array will be changed.
+         *
+         * @param value array in which the first {@code WORD_SIZE} {@code byte}s will be substituted.
+         *              This array will be modified.
+         * @return returns the modified {@code value}
+         */
+        private byte[] substituteWord(byte[] value) {
+            for (int i = 0; i < WORD_SIZE; ++i) {
+                value[i] = this._sBox[value[i] & 0xff];
+            }
+            return value;
+        }
+
+        /**
+         * Rotate the {@code byte}'s in a word. The {@code byte}'s will be cycled left by one
+         * {@code byte}. The modification will be in place, so the original argument is changed after
+         * the method invocation.
+         *
+         * @param value Array in which the first {@code WORD_SIZE} {@code byte}'s will be changed due to
+         *              the rotation. The contents of this array is changed by this invocation.
+         */
+        private byte[] rotate(byte[] value) {
+            byte tmp = value[0];
+            for (int i = 1; i < WORD_SIZE; ++i) {
+                value[i - 1] = value[i];
+            }
+            value[WORD_SIZE - 1] = tmp;
+            return value;
         }
 
         /**
@@ -497,44 +497,37 @@ class Aes256Cbc {
          * last calculated block
          */
         private final byte[] _current;
-
-        /**
-         * temporary block. It will only be used for decryption.
-         */
-        private byte[] _buffer = null;
-
         /**
          * temporary block.
          */
         private final byte[] _tmp;
-
-        /**
-         * buffer of the last output block. It will only be used for decryption.
-         */
-        private byte[] _outBuffer = null;
-
-        /**
-         * Is the output buffer filled?
-         */
-        private boolean _outBufferUsed = false;
-
         /**
          * temporary buffer to accumulate whole blocks of data
          */
         private final byte[] _overflow;
-
+        private final OutputStream _output;
+        /**
+         * temporary block. It will only be used for decryption.
+         */
+        private byte[] _buffer = null;
+        /**
+         * buffer of the last output block. It will only be used for decryption.
+         */
+        private byte[] _outBuffer = null;
+        /**
+         * Is the output buffer filled?
+         */
+        private boolean _outBufferUsed = false;
         /**
          * How many {@code byte}s of {@link Cbc#_overflow} are used?
          */
         private int _overflowUsed;
 
-        private final OutputStream _output;
-
         /**
          * Creates the temporary buffers.
          *
-         * @param iv initial value of {@link Cbc#_tmp}
-         * @param key key for {@link Cbc#_cipher}
+         * @param iv     initial value of {@link Cbc#_tmp}
+         * @param key    key for {@link Cbc#_cipher}
          * @param output stream where the encrypted or decrypted data is written
          */
         public Cbc(byte[] iv, byte[] key, OutputStream output) {
@@ -553,7 +546,7 @@ class Aes256Cbc {
         /**
          * Encrypts a block. {@link Cbc#_current} will be modified.
          *
-         * @param inBuffer array containing the input block
+         * @param inBuffer  array containing the input block
          * @param outBuffer storage of the encrypted block
          */
         private void encryptBlock(byte[] inBuffer, byte[] outBuffer) {
@@ -567,7 +560,7 @@ class Aes256Cbc {
         /**
          * Decrypts a block. {@link Cbc#_current} will be modified.
          *
-         * @param inBuffer storage of the encrypted block
+         * @param inBuffer  storage of the encrypted block
          * @param outBuffer storage of the decrypted block
          */
         private void decryptBlock(byte[] inBuffer) {
@@ -608,7 +601,7 @@ class Aes256Cbc {
          * Encrypts a part of the array. Only the first {@code length} {@code byte}s of the array will
          * be encrypted.
          *
-         * @param data {@code byte}s that should be encrypted
+         * @param data   {@code byte}s that should be encrypted
          * @param length number of {@code byte}s that should be encrypted
          * @throws IOException if the writing fails
          */
@@ -631,7 +624,7 @@ class Aes256Cbc {
          * Decrypts a part of the array. Only the first {@code length} {@code byte}s of the array will
          * be decrypted.
          *
-         * @param data {@code byte}s that should be decrypted
+         * @param data   {@code byte}s that should be decrypted
          * @param length number of {@code byte}s that should be decrypted
          * @throws IOException if the writing fails
          */
@@ -673,7 +666,7 @@ class Aes256Cbc {
          * Finishes the decryption process.
          *
          * @throws DecryptException if the last block is no legal conclusion of the stream
-         * @throws IOException if the writing fails
+         * @throws IOException      if the writing fails
          */
         public void finishDecryption() throws DecryptException, IOException {
             if (this._overflowUsed != 0) {
@@ -690,7 +683,7 @@ class Aes256Cbc {
 
 //            int left = BLOCK_SIZE - pad;
 //            if (left > 0) {
-                this._output.write(this._outBuffer, 0, 16);
+            this._output.write(this._outBuffer, 0, 16);
 //            }
             this._output.close();
         }

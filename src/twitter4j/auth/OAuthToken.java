@@ -31,10 +31,10 @@ abstract class OAuthToken implements java.io.Serializable {
     private String[] responseStr = null;
 
     public OAuthToken(String token, String tokenSecret) {
-        if(token == null)
+        if (token == null)
             throw new IllegalArgumentException("Token can't be null");
-        if(tokenSecret == null)
-            throw new IllegalArgumentException("TokenSecret can't be null");            
+        if (tokenSecret == null)
+            throw new IllegalArgumentException("TokenSecret can't be null");
         this.token = token;
         this.tokenSecret = tokenSecret;
     }
@@ -57,12 +57,12 @@ abstract class OAuthToken implements java.io.Serializable {
         return tokenSecret;
     }
 
-    /*package*/ void setSecretKeySpec(SecretKeySpec secretKeySpec) {
-        this.secretKeySpec = secretKeySpec;
-    }
-
     /*package*/ SecretKeySpec getSecretKeySpec() {
         return secretKeySpec;
+    }
+
+    /*package*/ void setSecretKeySpec(SecretKeySpec secretKeySpec) {
+        this.secretKeySpec = secretKeySpec;
     }
 
     public String getParameter(String parameter) {

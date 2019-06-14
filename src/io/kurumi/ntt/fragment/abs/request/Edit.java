@@ -12,11 +12,11 @@ public class Edit extends AbstractSend<Edit> {
 
     private EditMessageText request;
 
-    public Edit(Fragment fragment,Object chatId,int messageId,String... msg) {
+    public Edit(Fragment fragment, Object chatId, int messageId, String... msg) {
 
         super(fragment);
 
-        request = new EditMessageText(chatId,messageId,ArrayUtil.join(msg,"\n"));
+        request = new EditMessageText(chatId, messageId, ArrayUtil.join(msg, "\n"));
 
         this.fragment = fragment;
 
@@ -69,13 +69,13 @@ public class Edit extends AbstractSend<Edit> {
 
         } else {
 
-            failedWith(5000,message);
+            failedWith(5000, message);
 
         }
 
     }
 
-    public void failedWith(final long delay,final Msg message) {
+    public void failedWith(final long delay, final Msg message) {
 
         if (origin == null) return;
 
@@ -83,19 +83,19 @@ public class Edit extends AbstractSend<Edit> {
 
         if (resp != null && resp.isOk()) {
 
-            io.kurumi.ntt.utils.NTT.tryDelete(delay,message,origin);
+            io.kurumi.ntt.utils.NTT.tryDelete(delay, message, origin);
 
         }
 
     }
 
-	public Edit withCancel() {
+    public Edit withCancel() {
 
-		request.setText(request.getText() + "\n\n" + "使用 /cancel 取消 ~");
+        request.setText(request.getText() + "\n\n" + "使用 /cancel 取消 ~");
 
-		return this;
+        return this;
 
-	}
+    }
 
     @Override
     public BaseResponse exec() {
@@ -121,7 +121,6 @@ public class Edit extends AbstractSend<Edit> {
             return null;
 
         }
-
 
 
     }

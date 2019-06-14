@@ -42,7 +42,7 @@ public class SendDocument extends AbstractMultipartRequest<SendDocument> {
     protected String getFileParamName() {
         return "document";
     }
-    
+
     @Override
     public String getDefaultFileName() {
         return ContentTypes.DOC_FILE_NAME;

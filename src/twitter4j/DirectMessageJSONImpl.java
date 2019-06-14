@@ -63,6 +63,45 @@ import java.util.List;
         init(json);
     }
 
+    static DirectMessageList createDirectMessageList(HttpResponse res, Configuration conf) throws TwitterException {
+        try {
+            if (conf.isJSONStoreEnabled()) {
+                TwitterObjectFactory.clearThreadLocalMap();
+            }
+            JSONArray list;
+            DirectMessageList directMessages;
+            try {
+                JSONObject jsonObject = res.asJSONObject();
+                list = jsonObject.getJSONArray("events");
+                directMessages = new DirectMessageListImpl(list.length(), jsonObject, res);
+            } catch (TwitterException te) {
+                if (te.getCause() != null && te.getCause() instanceof JSONException) {
+                    // serialized form from Twitter4J 4.0.6 or before
+                    list = res.asJSONArray();
+                    int size = list.length();
+                    directMessages = new DirectMessageListImpl(size, res);
+
+                } else {
+                    throw te;
+                }
+            }
+            for (int i = 0; i < list.length(); i++) {
+                JSONObject json = list.getJSONObject(i);
+                DirectMessage directMessage = new DirectMessageJSONImpl(json);
+                directMessages.add(directMessage);
+                if (conf.isJSONStoreEnabled()) {
+                    TwitterObjectFactory.registerJSONObject(directMessage, json);
+                }
+            }
+            if (conf.isJSONStoreEnabled()) {
+                TwitterObjectFactory.registerJSONObject(directMessages, list);
+            }
+            return directMessages;
+        } catch (JSONException jsone) {
+            throw new TwitterException(jsone);
+        }
+    }
+
     private void init(JSONObject json) throws TwitterException {
         try {
             id = ParseUtil.getLong("id", json);
@@ -75,9 +114,10 @@ import java.util.List;
                 senderId = ParseUtil.getLong("sender_id", messageCreate);
                 messageData = messageCreate.getJSONObject("message_data");
 
-            }else{
+            } else {
                 // raw JSON data from Twitter4J 4.0.6 or before
-                createdAt = ParseUtil.getDate("created_at", json);;
+                createdAt = ParseUtil.getDate("created_at", json);
+                ;
                 senderId = ParseUtil.getLong("sender_id", json);
                 recipientId = ParseUtil.getLong("recipient_id", json);
                 messageData = json;
@@ -108,12 +148,12 @@ import java.util.List;
                 List<QuickReply> quickReplyList = new ArrayList<QuickReply>();
                 for (int i = 0; i < options.length(); i++) {
                     JSONObject option = options.getJSONObject(i);
-                    String description = option.isNull("description") ? null :option.getString("description");
-                    String metadata = option.isNull("metadata") ? null :option.getString("metadata");
+                    String description = option.isNull("description") ? null : option.getString("description");
+                    String metadata = option.isNull("metadata") ? null : option.getString("metadata");
                     quickReplyList.add(new QuickReply(option.getString("label"), description, metadata));
                 }
                 quickReplies = quickReplyList.toArray(new QuickReply[quickReplyList.size()]);
-            }else{
+            } else {
                 quickReplies = new QuickReply[0];
             }
             if (!messageData.isNull("quick_reply_response") && !messageData.getJSONObject("quick_reply_response").isNull("metadata")) {
@@ -122,45 +162,6 @@ import java.util.List;
             mediaEntities = mediaEntities == null ? new MediaEntity[0] : mediaEntities;
             text = HTMLEntity.unescapeAndSlideEntityIncdices(messageData.getString("text"), userMentionEntities,
                     urlEntities, hashtagEntities, mediaEntities);
-        } catch (JSONException jsone) {
-            throw new TwitterException(jsone);
-        }
-    }
-
-    static DirectMessageList createDirectMessageList(HttpResponse res, Configuration conf) throws TwitterException {
-        try {
-            if (conf.isJSONStoreEnabled()) {
-                TwitterObjectFactory.clearThreadLocalMap();
-            }
-            JSONArray list;
-            DirectMessageList directMessages;
-            try {
-                JSONObject jsonObject = res.asJSONObject();
-                list = jsonObject.getJSONArray("events");
-                directMessages = new DirectMessageListImpl(list.length(), jsonObject, res);
-            }catch(TwitterException te){
-                if (te.getCause() != null && te.getCause() instanceof JSONException) {
-                    // serialized form from Twitter4J 4.0.6 or before
-                    list = res.asJSONArray();
-                    int size = list.length();
-                    directMessages = new DirectMessageListImpl(size, res);
-
-                }else{
-                  throw  te;
-                }
-            }
-            for (int i = 0; i < list.length(); i++) {
-                    JSONObject json = list.getJSONObject(i);
-                    DirectMessage directMessage = new DirectMessageJSONImpl(json);
-                    directMessages.add(directMessage);
-                    if (conf.isJSONStoreEnabled()) {
-                        TwitterObjectFactory.registerJSONObject(directMessage, json);
-                    }
-                }
-                if (conf.isJSONStoreEnabled()) {
-                    TwitterObjectFactory.registerJSONObject(directMessages, list);
-                }
-                return directMessages;
         } catch (JSONException jsone) {
             throw new TwitterException(jsone);
         }

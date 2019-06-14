@@ -16,407 +16,409 @@ import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.MongoIDs;
 import io.kurumi.ntt.utils.NTT;
+
 import java.util.LinkedList;
 import java.util.TimeZone;
+
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 public class StatusSearch extends TwitterFunction {
 
-	@Override
-	public void functions(LinkedList<String> names) {
+    final String POINT_SHOW_PAGE = "ss|show";
+    String PAYLOAD_SHOW_STATUS = "status";
 
-		names.add("search");
+    @Override
+    public void functions(LinkedList<String> names) {
 
-	}
+        names.add("search");
 
-	@Override
-	public boolean useCurrent() {
+    }
 
-		return true;
+    @Override
+    public boolean useCurrent() {
 
-	}
+        return true;
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth auth) {
+    }
 
-		int index = 0;
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth auth) {
 
-		long from = -1;
+        int index = 0;
 
-		long to = -1;
+        long from = -1;
 
-		long reply = -1;
+        long to = -1;
 
-		int media = 0;
+        long reply = -1;
 
-		boolean regex = false;
+        int media = 0;
 
-		int utc = 8;
+        boolean regex = false;
 
-		long start = -1;
+        int utc = 8;
 
-		long end = -1;
+        long start = -1;
 
-		for (;index < params.length;index ++) {
+        long end = -1;
 
-			String param = params[index];
+        for (; index < params.length; index++) {
 
-			if (param.startsWith("from=")) {
+            String param = params[index];
 
-				String fromC = StrUtil.subAfter(param,"=",false);
+            if (param.startsWith("from=")) {
 
-				if (NumberUtil.isNumber(fromC)) {
+                String fromC = StrUtil.subAfter(param, "=", false);
 
-					from = NumberUtil.parseLong(fromC);
+                if (NumberUtil.isNumber(fromC)) {
 
-				} else {
+                    from = NumberUtil.parseLong(fromC);
 
-					fromC = NTT.parseScreenName(fromC);
+                } else {
 
-					UserArchive archive = UserArchive.get(fromC);
+                    fromC = NTT.parseScreenName(fromC);
 
-					if (archive == null) {
+                    UserArchive archive = UserArchive.get(fromC);
 
-						msg.send("没有这个人的记录 : " + fromC).exec();
+                    if (archive == null) {
 
-						return;
+                        msg.send("没有这个人的记录 : " + fromC).exec();
 
-					}
+                        return;
 
-					from = archive.id;
+                    }
 
-				}
+                    from = archive.id;
 
-			} else if (param.startsWith("to=")) {
+                }
 
-				String toC = StrUtil.subAfter(param,"=",false);
+            } else if (param.startsWith("to=")) {
 
-				if (NumberUtil.isNumber(toC)) {
+                String toC = StrUtil.subAfter(param, "=", false);
 
-					to = NumberUtil.parseLong(toC);
+                if (NumberUtil.isNumber(toC)) {
 
-				} else {
+                    to = NumberUtil.parseLong(toC);
 
-					toC = NTT.parseScreenName(toC);
+                } else {
 
-					UserArchive archive = UserArchive.get(toC);
+                    toC = NTT.parseScreenName(toC);
 
-					if (archive == null) {
+                    UserArchive archive = UserArchive.get(toC);
 
-						msg.send("没有这个人的记录 : " + toC).exec();
+                    if (archive == null) {
 
-						return;
+                        msg.send("没有这个人的记录 : " + toC).exec();
 
-					}
+                        return;
 
-					to = archive.id;
+                    }
 
-				}
+                    to = archive.id;
 
-			} else if (param.startsWith("reply=")) {
+                }
 
-				String replyC = StrUtil.subAfter(param,"=",false);
+            } else if (param.startsWith("reply=")) {
 
-				reply = NumberUtil.parseLong(replyC);
+                String replyC = StrUtil.subAfter(param, "=", false);
 
-			} else if (param.startsWith("media=")) {
+                reply = NumberUtil.parseLong(replyC);
 
-				media = ("media=true".equals(param)) ? 1 : 2;
+            } else if (param.startsWith("media=")) {
 
-			} else if (param.equals("regex")) {
+                media = ("media=true".equals(param)) ? 1 : 2;
 
-				regex = true;
+            } else if (param.equals("regex")) {
 
-			} else if (param.startsWith("utc=")) {
+                regex = true;
 
-				String utcS = StrUtil.subAfter(param,"=",false);
+            } else if (param.startsWith("utc=")) {
 
-				try {
+                String utcS = StrUtil.subAfter(param, "=", false);
 
-					utc = Integer.parseInt(utcS);
+                try {
 
-				} catch (NumberFormatException ex) {
+                    utc = Integer.parseInt(utcS);
 
-					msg.send("utc : " + utcS + " 不是一个有效的数字").exec();
+                } catch (NumberFormatException ex) {
 
-					return;
+                    msg.send("utc : " + utcS + " 不是一个有效的数字").exec();
 
-				}
+                    return;
 
-			} else if (param.startsWith("start=")) {
+                }
 
-				String startS = StrUtil.subAfter(param,"=",false);
+            } else if (param.startsWith("start=")) {
 
-				try {
+                String startS = StrUtil.subAfter(param, "=", false);
 
-					start = DateUtil.parse(startS,"yyyy-MM-dd/HH:mm").toCalendar(TimeZone.getTimeZone("UTC")).getTimeInMillis();
+                try {
 
-				} catch (Exception ex) {
+                    start = DateUtil.parse(startS, "yyyy-MM-dd/HH:mm").toCalendar(TimeZone.getTimeZone("UTC")).getTimeInMillis();
 
-					msg.send("时间格式 : yyyy-MM-dd/HH:mm").exec();
+                } catch (Exception ex) {
 
-					return;
+                    msg.send("时间格式 : yyyy-MM-dd/HH:mm").exec();
 
-				}
+                    return;
 
-			} else if (param.startsWith("end=")) {
+                }
 
-				String endS = StrUtil.subAfter(param,"=",false);
+            } else if (param.startsWith("end=")) {
 
-				try {
+                String endS = StrUtil.subAfter(param, "=", false);
 
-					end = DateUtil.parse(endS,"yyyy-MM-dd/HH:mm").toCalendar(TimeZone.getTimeZone("UTC")).getTimeInMillis();
+                try {
 
-				} catch (Exception ex) {
+                    end = DateUtil.parse(endS, "yyyy-MM-dd/HH:mm").toCalendar(TimeZone.getTimeZone("UTC")).getTimeInMillis();
 
-					msg.send("时间格式 : yyyy-MM-dd/HH:mm").exec();
+                } catch (Exception ex) {
 
-					return;
+                    msg.send("时间格式 : yyyy-MM-dd/HH:mm").exec();
 
-				}
+                    return;
 
+                }
 
-			} else {
 
-				break;
+            } else {
 
-			}
+                break;
 
-		}
+            }
 
-		if (params.length == 0) {
+        }
 
-			msg.send("推文查询 /search [参数...] 内容",
+        if (params.length == 0) {
 
-					 "from=<发送用户ID|用户名>","",
-					 "to=<回复用户ID|用户名>","",
-					 "reply=<回复推文ID>","",
-					 "start=<时间上限>","",
-					 "end=<时间下限>","",
-					 "(格式 yyyy-MM-dd HH:mm)","",
-					 "media=<true|false> (筛选是否有媒体)","",
-					 "regex (使用正则表达式匹配)").publicFailed();
+            msg.send("推文查询 /search [参数...] 内容",
 
-			return;
+                    "from=<发送用户ID|用户名>", "",
+                    "to=<回复用户ID|用户名>", "",
+                    "reply=<回复推文ID>", "",
+                    "start=<时间上限>", "",
+                    "end=<时间下限>", "",
+                    "(格式 yyyy-MM-dd HH:mm)", "",
+                    "media=<true|false> (筛选是否有媒体)", "",
+                    "regex (使用正则表达式匹配)").publicFailed();
 
-		}
+            return;
 
-		String content = ArrayUtil.join(ArrayUtil.sub(params,index,params.length)," ");
+        }
 
-		if (content.toCharArray().length > 100) {}
+        String content = ArrayUtil.join(ArrayUtil.sub(params, index, params.length), " ");
 
-		SavedSearch search = new SavedSearch();
+        if (content.toCharArray().length > 100) {
+        }
 
-		search.from = from;
+        SavedSearch search = new SavedSearch();
 
-		search.to = to;
+        search.from = from;
 
-		search.regex = regex;
+        search.to = to;
 
-		search.user = user.id;
+        search.regex = regex;
 
-		search.media = media;
+        search.user = user.id;
 
-		search.reply = reply;
+        search.media = media;
 
-		search.content = content;
+        search.reply = reply;
 
-		if (start != -1) {
+        search.content = content;
 
-			search.start = start + (utc * 60 * 60 * 1000);
+        if (start != -1) {
 
-		}
+            search.start = start + (utc * 60 * 60 * 1000);
 
-		if (end != -1) {
+        }
 
-			search.end = end + (utc * 60 * 60 * 1000);
+        if (end != -1) {
 
-		}
+            search.end = end + (utc * 60 * 60 * 1000);
 
-		Msg status = msg.send("正在创建查询...").send();
+        }
 
-		msg.sendTyping();
+        Msg status = msg.send("正在创建查询...").send();
 
-		search.id = MongoIDs.getNextId(SavedSearch.class.getSimpleName());
+        msg.sendTyping();
 
-		SavedSearch.data.setById(search.id,search);
+        search.id = MongoIDs.getNextId(SavedSearch.class.getSimpleName());
 
-		status.edit("创建查询√\n正在查询...").exec();
+        SavedSearch.data.setById(search.id, search);
 
-		msg.sendTyping();
+        status.edit("创建查询√\n正在查询...").exec();
 
-		long count = search.count();
+        msg.sendTyping();
 
-		if (count == 0) {
+        long count = search.count();
 
-			status.edit("暂无存档... 如果指定了用户，有使用 /fetch 拉取过该用户的推文吗。？").exec();
+        if (count == 0) {
 
-			return;
+            status.edit("暂无存档... 如果指定了用户，有使用 /fetch 拉取过该用户的推文吗。？").exec();
 
-		}
+            return;
 
-		status.edit(exportContent(search,1)).buttons(makeButtons(search.id,count,1)).html().exec();
+        }
 
-	}
+        status.edit(exportContent(search, 1)).buttons(makeButtons(search.id, count, 1)).html().exec();
 
-	final String POINT_SHOW_PAGE = "ss|show";
+    }
 
-	@Override
-	public void points(LinkedList<String> points) {
+    @Override
+    public void points(LinkedList<String> points) {
 
-		points.add(POINT_SHOW_PAGE);
+        points.add(POINT_SHOW_PAGE);
 
-	}
+    }
 
-	@Override
-	public void onCallback(UserData user,Callback callback,String point,String[] params) {
+    @Override
+    public void onCallback(UserData user, Callback callback, String point, String[] params) {
 
-		callback.sendTyping();
+        callback.sendTyping();
 
-		long searchId = Long.parseLong(params[0]);
-		long cursor = Long.parseLong(params[1]);
+        long searchId = Long.parseLong(params[0]);
+        long cursor = Long.parseLong(params[1]);
 
-		SavedSearch search = SavedSearch.data.getById(searchId);
+        SavedSearch search = SavedSearch.data.getById(searchId);
 
-		if (search == null) {
+        if (search == null) {
 
-			callback.alert("此查询已过期 :(");
+            callback.alert("此查询已过期 :(");
 
-			return;
+            return;
 
-		}
-		
-		callback.text("正在加载...");
+        }
 
-		long count = search.count();
+        callback.text("正在加载...");
 
-		callback.edit(exportContent(search,cursor)).buttons(makeButtons(searchId,count,cursor)).html().exec();
+        long count = search.count();
 
-	}
+        callback.edit(exportContent(search, cursor)).buttons(makeButtons(searchId, count, cursor)).html().exec();
 
-	String exportContent(SavedSearch search,long cursor) {
+    }
 
-		StringBuilder format = new StringBuilder("------------------ 查询结果 -------------------");
+    String exportContent(SavedSearch search, long cursor) {
 
-		for (StatusArchive archive : search.query((int)(cursor - 1) * 10,10)) {
+        StringBuilder format = new StringBuilder("------------------ 查询结果 -------------------");
 
-			String text = archive.text;
+        for (StatusArchive archive : search.query((int) (cursor - 1) * 10, 10)) {
 
-			if (text.length() > 100) {
+            String text = archive.text;
 
-				text = StrUtil.subPre(text,27) + "...";
+            if (text.length() > 100) {
 
-			}
+                text = StrUtil.subPre(text, 27) + "...";
 
-			format.append("\n\n").append(Html.a(archive.user().name + " : " + text,"https://t.me/" + origin.me.username() + "?start=" + PAYLOAD_SHOW_STATUS + PAYLOAD_SPLIT + archive.id));
+            }
 
-		}
+            format.append("\n\n").append(Html.a(archive.user().name + " : " + text, "https://t.me/" + origin.me.username() + "?start=" + PAYLOAD_SHOW_STATUS + PAYLOAD_SPLIT + archive.id));
 
-		return format.toString();
+        }
 
-	}
+        return format.toString();
 
-	String PAYLOAD_SHOW_STATUS = "status";
+    }
 
-	@Override
-	public boolean onMsg(UserData user,Msg msg) {
+    @Override
+    public boolean onMsg(UserData user, Msg msg) {
 
-		if (super.onMsg(user,msg)) return true;
+        if (super.onMsg(user, msg)) return true;
 
-		if (!msg.isStartPayload() || !PAYLOAD_SHOW_STATUS.equals(msg.payload()[0])) return false;
+        if (!msg.isStartPayload() || !PAYLOAD_SHOW_STATUS.equals(msg.payload()[0])) return false;
 
-		TAuth auth = TAuth.getByUser(user.id).first();
+        TAuth auth = TAuth.getByUser(user.id).first();
 
-		Long statusId = NumberUtil.parseLong(msg.payload()[1]);
+        Long statusId = NumberUtil.parseLong(msg.payload()[1]);
 
-		if (auth == null) {
+        if (auth == null) {
 
-			StatusArchive archive = StatusArchive.get(statusId);
+            StatusArchive archive = StatusArchive.get(statusId);
 
-			if (archive == null) {
+            if (archive == null) {
 
-				msg.send("找不到存档...").exec();
+                msg.send("找不到存档...").exec();
 
-			} else {
+            } else {
 
-				msg.send(archive.toHtml()).html().exec();
+                msg.send(archive.toHtml()).html().exec();
 
-			}
+            }
 
-		} else {
+        } else {
 
-			Twitter api = auth.createApi();
+            Twitter api = auth.createApi();
 
-			msg.sendTyping();
+            msg.sendTyping();
 
-			try {
+            try {
 
-				Status newStatus = api.showStatus(statusId);
+                Status newStatus = api.showStatus(statusId);
 
-				StatusArchive archive = StatusArchive.save(api.showStatus(statusId));
+                StatusArchive archive = StatusArchive.save(api.showStatus(statusId));
 
-				archive.loop(api);
+                archive.loop(api);
 
-				archive.sendTo(msg.chatId(),-1,auth,msg.isPrivate() ? newStatus : null);
+                archive.sendTo(msg.chatId(), -1, auth, msg.isPrivate() ? newStatus : null);
 
-			} catch (TwitterException e) {
+            } catch (TwitterException e) {
 
-				if (StatusArchive.contains(statusId)) {
+                if (StatusArchive.contains(statusId)) {
 
-					StatusArchive.get(statusId).sendTo(msg.chatId(),-1,null,null);
+                    StatusArchive.get(statusId).sendTo(msg.chatId(), -1, null, null);
 
-				} else {
+                } else {
 
-					msg.send(NTT.parseTwitterException(e)).publicFailed();
+                    msg.send(NTT.parseTwitterException(e)).publicFailed();
 
-				}
+                }
 
 
-			}
+            }
 
 
-		}
+        }
 
-		return true;
+        return true;
 
-	}
+    }
 
-	ButtonMarkup makeButtons(final long searchId,final long count,final long current) {
+    ButtonMarkup makeButtons(final long searchId, final long count, final long current) {
 
-		return new ButtonMarkup() {{
+        return new ButtonMarkup() {{
 
-				ButtonLine line = newButtonLine();
+            ButtonLine line = newButtonLine();
 
-				if (current > 1) {
+            if (current > 1) {
 
-					line.newButton(" □ ",POINT_SHOW_PAGE,searchId,1);
+                line.newButton(" □ ", POINT_SHOW_PAGE, searchId, 1);
 
-					line.newButton(" << ",POINT_SHOW_PAGE,searchId,current - 1);
+                line.newButton(" << ", POINT_SHOW_PAGE, searchId, current - 1);
 
-				}
+            }
 
-				int max = (int)count / 10;
+            int max = (int) count / 10;
 
-				if (count % 10 != 0) {
+            if (count % 10 != 0) {
 
-					max ++;
+                max++;
 
-				}
+            }
 
-				line.newButton(current + " / " + max,"null");
+            line.newButton(current + " / " + max, "null");
 
-				if (current < max) {
+            if (current < max) {
 
-					line.newButton(" >> ",POINT_SHOW_PAGE,searchId,current + 1);
+                line.newButton(" >> ", POINT_SHOW_PAGE, searchId, current + 1);
 
-					line.newButton(" ■ ",POINT_SHOW_PAGE,searchId,max);
+                line.newButton(" ■ ", POINT_SHOW_PAGE, searchId, max);
 
-				}
+            }
 
-			}};
+        }};
 
-	} 
+    }
 
 }

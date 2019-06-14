@@ -33,20 +33,18 @@ import java.util.*;
  */
 public class OAuthAuthorization implements Authorization, java.io.Serializable, OAuthSupport {
     private static final long serialVersionUID = -886869424811858868L;
-    private final Configuration conf;
-    private transient static HttpClient http;
-
     private static final String HMAC_SHA1 = "HmacSHA1";
     private static final HttpParameter OAUTH_SIGNATURE_METHOD = new HttpParameter("oauth_signature_method", "HMAC-SHA1");
     private static final Logger logger = Logger.getLogger(OAuthAuthorization.class);
+    private static final Random RAND = new Random();
+    private transient static HttpClient http;
+    private final Configuration conf;
     private String consumerKey = "";
     private String consumerSecret;
-
     private String realm = null;
 
-    private OAuthToken oauthToken = null;
-
     // constructors
+    private OAuthToken oauthToken = null;
 
     /**
      * @param conf configuration
@@ -59,276 +57,6 @@ public class OAuthAuthorization implements Authorization, java.io.Serializable, 
             setOAuthAccessToken(new AccessToken(conf.getOAuthAccessToken(), conf.getOAuthAccessTokenSecret()));
         }
     }
-
-    // implementations for Authorization
-    @Override
-    public String getAuthorizationHeader(HttpRequest req) {
-        return generateAuthorizationHeader(req.getMethod().name(), req.getURL(), req.getParameters(), oauthToken);
-    }
-
-    private void ensureTokenIsAvailable() {
-        if (null == oauthToken) {
-            throw new IllegalStateException("No Token available.");
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isEnabled() {
-        return oauthToken != null && oauthToken instanceof AccessToken;
-    }
-
-    // implementation for OAuthSupport interface
-
-    @Override
-    public RequestToken getOAuthRequestToken() throws TwitterException {
-        return getOAuthRequestToken(null, null, null);
-    }
-
-    @Override
-    public RequestToken getOAuthRequestToken(String callbackURL) throws TwitterException {
-        return getOAuthRequestToken(callbackURL, null, null);
-    }
-
-    @Override
-    public RequestToken getOAuthRequestToken(String callbackURL, String xAuthAccessType) throws TwitterException {
-        return getOAuthRequestToken(callbackURL, xAuthAccessType, null);
-    }
-
-    @Override
-    public RequestToken getOAuthRequestToken(String callbackURL, String xAuthAccessType, String xAuthMode) throws TwitterException {
-        if (oauthToken instanceof AccessToken) {
-            throw new IllegalStateException("Access token already available.");
-        }
-        List<HttpParameter> params = new ArrayList<HttpParameter>();
-        if (callbackURL != null) {
-            params.add(new HttpParameter("oauth_callback", callbackURL));
-        }
-        if (xAuthAccessType != null) {
-            params.add(new HttpParameter("x_auth_access_type", xAuthAccessType));
-        }
-        if (xAuthMode != null) {
-            params.add(new HttpParameter("x_auth_mode", xAuthMode));
-        }
-        oauthToken = new RequestToken(http.post(conf.getOAuthRequestTokenURL(), params.toArray(new HttpParameter[params.size()]), this, null), this);
-        return (RequestToken) oauthToken;
-    }
-
-    @Override
-    public AccessToken getOAuthAccessToken() throws TwitterException {
-        ensureTokenIsAvailable();
-        if (oauthToken instanceof AccessToken) {
-            return (AccessToken) oauthToken;
-        }
-        oauthToken = new AccessToken(http.post(conf.getOAuthAccessTokenURL(), null, this, null));
-        return (AccessToken) oauthToken;
-    }
-
-    @Override
-    public AccessToken getOAuthAccessToken(String oauthVerifier) throws TwitterException {
-        ensureTokenIsAvailable();
-        oauthToken = new AccessToken(http.post(conf.getOAuthAccessTokenURL()
-                , new HttpParameter[]{new HttpParameter("oauth_verifier", oauthVerifier)}, this, null));
-        return (AccessToken) oauthToken;
-    }
-
-    @Override
-    public AccessToken getOAuthAccessToken(RequestToken requestToken) throws TwitterException {
-        this.oauthToken = requestToken;
-        return getOAuthAccessToken();
-    }
-
-    @Override
-    public AccessToken getOAuthAccessToken(RequestToken requestToken, String oauthVerifier) throws TwitterException {
-        this.oauthToken = requestToken;
-        return getOAuthAccessToken(oauthVerifier);
-    }
-
-    @Override
-    public AccessToken getOAuthAccessToken(String screenName, String password) throws TwitterException {
-        try {
-            String url = conf.getOAuthAccessTokenURL();
-            if (0 == url.indexOf("http://")) {
-                // SSL is required
-                // @see https://dev.twitter.com/docs/oauth/xauth
-                url = "https://" + url.substring(7);
-            }
-            oauthToken = new AccessToken(http.post(url, new HttpParameter[]{
-                    new HttpParameter("x_auth_username", screenName),
-                    new HttpParameter("x_auth_password", password),
-                    new HttpParameter("x_auth_mode", "client_auth")
-            }, this, null));
-            return (AccessToken) oauthToken;
-        } catch (TwitterException te) {
-            throw new TwitterException("The screen name / password combination seems to be invalid.", te, te.getStatusCode());
-        }
-    }
-
-    @Override
-    public void setOAuthAccessToken(AccessToken accessToken) {
-        this.oauthToken = accessToken;
-    }
-
-    /**
-     * Sets the OAuth realm
-     *
-     * @param realm OAuth realm
-     * @since Twitter 2.1.4
-     */
-    public void setOAuthRealm(String realm) {
-        this.realm = realm;
-    }
-
-
-    /*package*/ String generateAuthorizationHeader(String method, String url, HttpParameter[] params, String nonce, String timestamp, OAuthToken otoken) {
-        if (null == params) {
-            params = new HttpParameter[0];
-        }
-        List<HttpParameter> oauthHeaderParams = new ArrayList<HttpParameter>(5);
-        oauthHeaderParams.add(new HttpParameter("oauth_consumer_key", consumerKey));
-        oauthHeaderParams.add(OAUTH_SIGNATURE_METHOD);
-        oauthHeaderParams.add(new HttpParameter("oauth_timestamp", timestamp));
-        oauthHeaderParams.add(new HttpParameter("oauth_nonce", nonce));
-        oauthHeaderParams.add(new HttpParameter("oauth_version", "1.0"));
-        if (otoken != null) {
-            oauthHeaderParams.add(new HttpParameter("oauth_token", otoken.getToken()));
-        }
-        List<HttpParameter> signatureBaseParams = new ArrayList<HttpParameter>(oauthHeaderParams.size() + params.length);
-        signatureBaseParams.addAll(oauthHeaderParams);
-        if (!HttpParameter.containsFile(params)) {
-            signatureBaseParams.addAll(toParamList(params));
-        }
-        parseGetParameters(url, signatureBaseParams);
-        StringBuilder base = new StringBuilder(method).append("&")
-                .append(HttpParameter.encode(constructRequestURL(url))).append("&");
-        base.append(HttpParameter.encode(normalizeRequestParameters(signatureBaseParams)));
-        String oauthBaseString = base.toString();
-        logger.debug("OAuth base string: ", oauthBaseString);
-        String signature = generateSignature(oauthBaseString, otoken);
-        logger.debug("OAuth signature: ", signature);
-
-        oauthHeaderParams.add(new HttpParameter("oauth_signature", signature));
-
-        // http://oauth.net/core/1.0/#rfc.section.9.1.1
-        if (realm != null) {
-            oauthHeaderParams.add(new HttpParameter("realm", realm));
-        }
-        return "OAuth " + encodeParameters(oauthHeaderParams, ",", true);
-    }
-
-    private void parseGetParameters(String url, List<HttpParameter> signatureBaseParams) {
-        int queryStart = url.indexOf("?");
-        if (-1 != queryStart) {
-            String[] queryStrs = url.substring(queryStart + 1).split("&");
-            try {
-                for (String query : queryStrs) {
-                    String[] split = query.split("=");
-                    if (split.length == 2) {
-                        signatureBaseParams.add(
-                                new HttpParameter(URLDecoder.decode(split[0],
-                                        "UTF-8"), URLDecoder.decode(split[1],
-                                        "UTF-8"))
-                        );
-                    } else {
-                        signatureBaseParams.add(
-                                new HttpParameter(URLDecoder.decode(split[0],
-                                        "UTF-8"), "")
-                        );
-                    }
-                }
-            } catch (UnsupportedEncodingException ignore) {
-            }
-
-        }
-
-    }
-
-    private static final Random RAND = new Random();
-
-    /**
-     * @return generated authorization header
-     * @see <a href="http://oauth.net/core/1.0a/#rfc.section.5.4.1">OAuth Core - 5.4.1.  Authorization Header</a>
-     */
-    /*package*/ String generateAuthorizationHeader(String method, String url, HttpParameter[] params, OAuthToken token) {
-        long timestamp = System.currentTimeMillis() / 1000;
-        long nonce = timestamp + RAND.nextInt();
-        return generateAuthorizationHeader(method, url, params, String.valueOf(nonce), String.valueOf(timestamp), token);
-    }
-
-    public List<HttpParameter> generateOAuthSignatureHttpParams(String method, String url) {
-        long timestamp = System.currentTimeMillis() / 1000;
-        long nonce = timestamp + RAND.nextInt();
-
-        List<HttpParameter> oauthHeaderParams = new ArrayList<HttpParameter>(5);
-        oauthHeaderParams.add(new HttpParameter("oauth_consumer_key", consumerKey));
-        oauthHeaderParams.add(OAUTH_SIGNATURE_METHOD);
-        oauthHeaderParams.add(new HttpParameter("oauth_timestamp", timestamp));
-        oauthHeaderParams.add(new HttpParameter("oauth_nonce", nonce));
-        oauthHeaderParams.add(new HttpParameter("oauth_version", "1.0"));
-        if (oauthToken != null) {
-            oauthHeaderParams.add(new HttpParameter("oauth_token", oauthToken.getToken()));
-        }
-
-        List<HttpParameter> signatureBaseParams = new ArrayList<HttpParameter>(oauthHeaderParams.size());
-        signatureBaseParams.addAll(oauthHeaderParams);
-        parseGetParameters(url, signatureBaseParams);
-
-        StringBuilder base = new StringBuilder(method).append("&")
-                .append(HttpParameter.encode(constructRequestURL(url))).append("&");
-        base.append(HttpParameter.encode(normalizeRequestParameters(signatureBaseParams)));
-
-        String oauthBaseString = base.toString();
-        String signature = generateSignature(oauthBaseString, oauthToken);
-
-        oauthHeaderParams.add(new HttpParameter("oauth_signature", signature));
-
-        return oauthHeaderParams;
-    }
-
-    /**
-     * Computes RFC 2104-compliant HMAC signature.
-     *
-     * @param data  the data to be signed
-     * @param token the token
-     * @return signature
-     * @see <a href="http://oauth.net/core/1.0a/#rfc.section.9.2.1">OAuth Core - 9.2.1.  Generating Signature</a>
-     */
-    /*package*/ String generateSignature(String data, OAuthToken token) {
-        byte[] byteHMAC = null;
-        try {
-            Mac mac = Mac.getInstance(HMAC_SHA1);
-            SecretKeySpec spec;
-            if (null == token) {
-                String oauthSignature = HttpParameter.encode(consumerSecret) + "&";
-                spec = new SecretKeySpec(oauthSignature.getBytes(), HMAC_SHA1);
-            } else {
-                spec = token.getSecretKeySpec();
-                if (null == spec) {
-                    String oauthSignature = HttpParameter.encode(consumerSecret) + "&" + HttpParameter.encode(token.getTokenSecret());
-                    spec = new SecretKeySpec(oauthSignature.getBytes(), HMAC_SHA1);
-                    token.setSecretKeySpec(spec);
-                }
-            }
-            mac.init(spec);
-            byteHMAC = mac.doFinal(data.getBytes());
-        } catch (InvalidKeyException ike) {
-            logger.error("Failed initialize \"Message Authentication Code\" (MAC)", ike);
-            throw new AssertionError(ike);
-        } catch (NoSuchAlgorithmException nsae) {
-            logger.error("Failed to get HmacSHA1 \"Message Authentication Code\" (MAC)", nsae);
-            throw new AssertionError(nsae);
-        }
-        return BASE64Encoder.encode(byteHMAC);
-    }
-
-    /*package*/
-
-    String generateSignature(String data) {
-        return generateSignature(data, null);
-    }
-
 
     /**
      * The request parameters are collected, sorted and concatenated into a normalized string:<br>
@@ -357,6 +85,8 @@ public class OAuthAuthorization implements Authorization, java.io.Serializable, 
         Collections.sort(params);
         return encodeParameters(params);
     }
+
+    // implementation for OAuthSupport interface
 
     private static List<HttpParameter> toParamList(HttpParameter[] params) {
         List<HttpParameter> paramList = new ArrayList<HttpParameter>(params.length);
@@ -434,6 +164,270 @@ public class OAuthAuthorization implements Authorization, java.io.Serializable, 
         url = baseURL + url.substring(slashIndex);
 
         return url;
+    }
+
+    // implementations for Authorization
+    @Override
+    public String getAuthorizationHeader(HttpRequest req) {
+        return generateAuthorizationHeader(req.getMethod().name(), req.getURL(), req.getParameters(), oauthToken);
+    }
+
+    private void ensureTokenIsAvailable() {
+        if (null == oauthToken) {
+            throw new IllegalStateException("No Token available.");
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isEnabled() {
+        return oauthToken != null && oauthToken instanceof AccessToken;
+    }
+
+    @Override
+    public RequestToken getOAuthRequestToken() throws TwitterException {
+        return getOAuthRequestToken(null, null, null);
+    }
+
+    @Override
+    public RequestToken getOAuthRequestToken(String callbackURL) throws TwitterException {
+        return getOAuthRequestToken(callbackURL, null, null);
+    }
+
+    @Override
+    public RequestToken getOAuthRequestToken(String callbackURL, String xAuthAccessType) throws TwitterException {
+        return getOAuthRequestToken(callbackURL, xAuthAccessType, null);
+    }
+
+    @Override
+    public RequestToken getOAuthRequestToken(String callbackURL, String xAuthAccessType, String xAuthMode) throws TwitterException {
+        if (oauthToken instanceof AccessToken) {
+            throw new IllegalStateException("Access token already available.");
+        }
+        List<HttpParameter> params = new ArrayList<HttpParameter>();
+        if (callbackURL != null) {
+            params.add(new HttpParameter("oauth_callback", callbackURL));
+        }
+        if (xAuthAccessType != null) {
+            params.add(new HttpParameter("x_auth_access_type", xAuthAccessType));
+        }
+        if (xAuthMode != null) {
+            params.add(new HttpParameter("x_auth_mode", xAuthMode));
+        }
+        oauthToken = new RequestToken(http.post(conf.getOAuthRequestTokenURL(), params.toArray(new HttpParameter[params.size()]), this, null), this);
+        return (RequestToken) oauthToken;
+    }
+
+    @Override
+    public AccessToken getOAuthAccessToken() throws TwitterException {
+        ensureTokenIsAvailable();
+        if (oauthToken instanceof AccessToken) {
+            return (AccessToken) oauthToken;
+        }
+        oauthToken = new AccessToken(http.post(conf.getOAuthAccessTokenURL(), null, this, null));
+        return (AccessToken) oauthToken;
+    }
+
+    @Override
+    public void setOAuthAccessToken(AccessToken accessToken) {
+        this.oauthToken = accessToken;
+    }
+
+    @Override
+    public AccessToken getOAuthAccessToken(String oauthVerifier) throws TwitterException {
+        ensureTokenIsAvailable();
+        oauthToken = new AccessToken(http.post(conf.getOAuthAccessTokenURL()
+                , new HttpParameter[]{new HttpParameter("oauth_verifier", oauthVerifier)}, this, null));
+        return (AccessToken) oauthToken;
+    }
+
+    @Override
+    public AccessToken getOAuthAccessToken(RequestToken requestToken) throws TwitterException {
+        this.oauthToken = requestToken;
+        return getOAuthAccessToken();
+    }
+
+    @Override
+    public AccessToken getOAuthAccessToken(RequestToken requestToken, String oauthVerifier) throws TwitterException {
+        this.oauthToken = requestToken;
+        return getOAuthAccessToken(oauthVerifier);
+    }
+
+    @Override
+    public AccessToken getOAuthAccessToken(String screenName, String password) throws TwitterException {
+        try {
+            String url = conf.getOAuthAccessTokenURL();
+            if (0 == url.indexOf("http://")) {
+                // SSL is required
+                // @see https://dev.twitter.com/docs/oauth/xauth
+                url = "https://" + url.substring(7);
+            }
+            oauthToken = new AccessToken(http.post(url, new HttpParameter[]{
+                    new HttpParameter("x_auth_username", screenName),
+                    new HttpParameter("x_auth_password", password),
+                    new HttpParameter("x_auth_mode", "client_auth")
+            }, this, null));
+            return (AccessToken) oauthToken;
+        } catch (TwitterException te) {
+            throw new TwitterException("The screen name / password combination seems to be invalid.", te, te.getStatusCode());
+        }
+    }
+
+    /*package*/
+
+    /**
+     * Sets the OAuth realm
+     *
+     * @param realm OAuth realm
+     * @since Twitter 2.1.4
+     */
+    public void setOAuthRealm(String realm) {
+        this.realm = realm;
+    }
+
+    /*package*/ String generateAuthorizationHeader(String method, String url, HttpParameter[] params, String nonce, String timestamp, OAuthToken otoken) {
+        if (null == params) {
+            params = new HttpParameter[0];
+        }
+        List<HttpParameter> oauthHeaderParams = new ArrayList<HttpParameter>(5);
+        oauthHeaderParams.add(new HttpParameter("oauth_consumer_key", consumerKey));
+        oauthHeaderParams.add(OAUTH_SIGNATURE_METHOD);
+        oauthHeaderParams.add(new HttpParameter("oauth_timestamp", timestamp));
+        oauthHeaderParams.add(new HttpParameter("oauth_nonce", nonce));
+        oauthHeaderParams.add(new HttpParameter("oauth_version", "1.0"));
+        if (otoken != null) {
+            oauthHeaderParams.add(new HttpParameter("oauth_token", otoken.getToken()));
+        }
+        List<HttpParameter> signatureBaseParams = new ArrayList<HttpParameter>(oauthHeaderParams.size() + params.length);
+        signatureBaseParams.addAll(oauthHeaderParams);
+        if (!HttpParameter.containsFile(params)) {
+            signatureBaseParams.addAll(toParamList(params));
+        }
+        parseGetParameters(url, signatureBaseParams);
+        StringBuilder base = new StringBuilder(method).append("&")
+                .append(HttpParameter.encode(constructRequestURL(url))).append("&");
+        base.append(HttpParameter.encode(normalizeRequestParameters(signatureBaseParams)));
+        String oauthBaseString = base.toString();
+        logger.debug("OAuth base string: ", oauthBaseString);
+        String signature = generateSignature(oauthBaseString, otoken);
+        logger.debug("OAuth signature: ", signature);
+
+        oauthHeaderParams.add(new HttpParameter("oauth_signature", signature));
+
+        // http://oauth.net/core/1.0/#rfc.section.9.1.1
+        if (realm != null) {
+            oauthHeaderParams.add(new HttpParameter("realm", realm));
+        }
+        return "OAuth " + encodeParameters(oauthHeaderParams, ",", true);
+    }
+
+    private void parseGetParameters(String url, List<HttpParameter> signatureBaseParams) {
+        int queryStart = url.indexOf("?");
+        if (-1 != queryStart) {
+            String[] queryStrs = url.substring(queryStart + 1).split("&");
+            try {
+                for (String query : queryStrs) {
+                    String[] split = query.split("=");
+                    if (split.length == 2) {
+                        signatureBaseParams.add(
+                                new HttpParameter(URLDecoder.decode(split[0],
+                                        "UTF-8"), URLDecoder.decode(split[1],
+                                        "UTF-8"))
+                        );
+                    } else {
+                        signatureBaseParams.add(
+                                new HttpParameter(URLDecoder.decode(split[0],
+                                        "UTF-8"), "")
+                        );
+                    }
+                }
+            } catch (UnsupportedEncodingException ignore) {
+            }
+
+        }
+
+    }
+
+    /**
+     * @return generated authorization header
+     * @see <a href="http://oauth.net/core/1.0a/#rfc.section.5.4.1">OAuth Core - 5.4.1.  Authorization Header</a>
+     */
+    /*package*/ String generateAuthorizationHeader(String method, String url, HttpParameter[] params, OAuthToken token) {
+        long timestamp = System.currentTimeMillis() / 1000;
+        long nonce = timestamp + RAND.nextInt();
+        return generateAuthorizationHeader(method, url, params, String.valueOf(nonce), String.valueOf(timestamp), token);
+    }
+
+    public List<HttpParameter> generateOAuthSignatureHttpParams(String method, String url) {
+        long timestamp = System.currentTimeMillis() / 1000;
+        long nonce = timestamp + RAND.nextInt();
+
+        List<HttpParameter> oauthHeaderParams = new ArrayList<HttpParameter>(5);
+        oauthHeaderParams.add(new HttpParameter("oauth_consumer_key", consumerKey));
+        oauthHeaderParams.add(OAUTH_SIGNATURE_METHOD);
+        oauthHeaderParams.add(new HttpParameter("oauth_timestamp", timestamp));
+        oauthHeaderParams.add(new HttpParameter("oauth_nonce", nonce));
+        oauthHeaderParams.add(new HttpParameter("oauth_version", "1.0"));
+        if (oauthToken != null) {
+            oauthHeaderParams.add(new HttpParameter("oauth_token", oauthToken.getToken()));
+        }
+
+        List<HttpParameter> signatureBaseParams = new ArrayList<HttpParameter>(oauthHeaderParams.size());
+        signatureBaseParams.addAll(oauthHeaderParams);
+        parseGetParameters(url, signatureBaseParams);
+
+        StringBuilder base = new StringBuilder(method).append("&")
+                .append(HttpParameter.encode(constructRequestURL(url))).append("&");
+        base.append(HttpParameter.encode(normalizeRequestParameters(signatureBaseParams)));
+
+        String oauthBaseString = base.toString();
+        String signature = generateSignature(oauthBaseString, oauthToken);
+
+        oauthHeaderParams.add(new HttpParameter("oauth_signature", signature));
+
+        return oauthHeaderParams;
+    }
+
+    /**
+     * Computes RFC 2104-compliant HMAC signature.
+     *
+     * @param data  the data to be signed
+     * @param token the token
+     * @return signature
+     * @see <a href="http://oauth.net/core/1.0a/#rfc.section.9.2.1">OAuth Core - 9.2.1.  Generating Signature</a>
+     */
+    /*package*/ String generateSignature(String data, OAuthToken token) {
+        byte[] byteHMAC = null;
+        try {
+            Mac mac = Mac.getInstance(HMAC_SHA1);
+            SecretKeySpec spec;
+            if (null == token) {
+                String oauthSignature = HttpParameter.encode(consumerSecret) + "&";
+                spec = new SecretKeySpec(oauthSignature.getBytes(), HMAC_SHA1);
+            } else {
+                spec = token.getSecretKeySpec();
+                if (null == spec) {
+                    String oauthSignature = HttpParameter.encode(consumerSecret) + "&" + HttpParameter.encode(token.getTokenSecret());
+                    spec = new SecretKeySpec(oauthSignature.getBytes(), HMAC_SHA1);
+                    token.setSecretKeySpec(spec);
+                }
+            }
+            mac.init(spec);
+            byteHMAC = mac.doFinal(data.getBytes());
+        } catch (InvalidKeyException ike) {
+            logger.error("Failed initialize \"Message Authentication Code\" (MAC)", ike);
+            throw new AssertionError(ike);
+        } catch (NoSuchAlgorithmException nsae) {
+            logger.error("Failed to get HmacSHA1 \"Message Authentication Code\" (MAC)", nsae);
+            throw new AssertionError(nsae);
+        }
+        return BASE64Encoder.encode(byteHMAC);
+    }
+
+    String generateSignature(String data) {
+        return generateSignature(data, null);
     }
 
     @Override

@@ -50,6 +50,23 @@ public interface MediaEntity extends URLEntity {
      */
     Map<Integer, Size> getSizes();
 
+    /**
+     * Returns the media type ("photo", "video", "animated_gif").
+     *
+     * @return the media type ("photo", "video", "animated_gif").
+     */
+    String getType();
+
+    int getVideoAspectRatioWidth();
+
+    int getVideoAspectRatioHeight();
+
+    long getVideoDurationMillis();
+
+    Variant[] getVideoVariants();
+
+    String getExtAltText();
+
     interface Size extends java.io.Serializable {
         Integer THUMB = 0;
         Integer SMALL = 1;
@@ -65,19 +82,6 @@ public interface MediaEntity extends URLEntity {
         int getResize();
     }
 
-    /**
-     * Returns the media type ("photo", "video", "animated_gif").
-     *
-     * @return the media type ("photo", "video", "animated_gif").
-     */
-    String getType();
-
-    int getVideoAspectRatioWidth();
-
-    int getVideoAspectRatioHeight();
-
-    long getVideoDurationMillis();
-
     interface Variant extends java.io.Serializable {
 
         int getBitrate();
@@ -86,8 +90,4 @@ public interface MediaEntity extends URLEntity {
 
         String getUrl();
     }
-
-    Variant[] getVideoVariants();
-
-    String getExtAltText();
 }

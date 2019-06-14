@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class HttpClientFactory {
     private static final Constructor<?> HTTP_CLIENT_CONSTRUCTOR;
     private static final String HTTP_CLIENT_IMPLEMENTATION = "twitter4j.http.httpClient";
+    private final static ConcurrentHashMap<HttpClientConfiguration, HttpClient> confClientMap = new ConcurrentHashMap<HttpClientConfiguration, HttpClient>();
 
     static {
         Class<?> clazz = null;
@@ -59,8 +60,6 @@ public final class HttpClientFactory {
             throw new AssertionError(nsme);
         }
     }
-
-    private final static ConcurrentHashMap<HttpClientConfiguration, HttpClient> confClientMap = new ConcurrentHashMap<HttpClientConfiguration, HttpClient>();
 
     public static HttpClient getInstance() {
         return getInstance(ConfigurationContext.getInstance().getHttpClientConfiguration());

@@ -24,23 +24,23 @@ import twitter4j.auth.OAuthSupport;
  * @since Twitter4J 2.2.0
  */
 public interface Twitter extends java.io.Serializable,
-    OAuthSupport,
-    OAuth2Support,
-    TwitterBase,
-    TimelinesResources,
-    TweetsResources,
-    SearchResource,
-    DirectMessagesResources,
-    FriendsFollowersResources,
-    UsersResources,
-    SuggestedUsersResources,
-    FavoritesResources,
-    ListsResources,
-    SavedSearchesResources,
-    PlacesGeoResources,
-    TrendsResources,
-    SpamReportingResource,
-    HelpResources {
+        OAuthSupport,
+        OAuth2Support,
+        TwitterBase,
+        TimelinesResources,
+        TweetsResources,
+        SearchResource,
+        DirectMessagesResources,
+        FriendsFollowersResources,
+        UsersResources,
+        SuggestedUsersResources,
+        FavoritesResources,
+        ListsResources,
+        SavedSearchesResources,
+        PlacesGeoResources,
+        TrendsResources,
+        SpamReportingResource,
+        HelpResources {
 
     /**
      * @return {@link twitter4j.api.TimelinesResources}

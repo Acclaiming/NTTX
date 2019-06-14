@@ -17,14 +17,14 @@ package twitter4j;
 
 /**
  * Represents result of "/1.1/media/upload.json"
- * 
+ *
  * @author Hiroaki TAKEUCHI - takke30 at gmail.com
  * @since Twitter4J 4.0.2
  */
 public final class UploadedMedia implements java.io.Serializable {
 
     private static final long serialVersionUID = 5393092535610604718L;
-    
+
     private int imageWidth;
     private int imageHeight;
     private String imageType;
@@ -57,17 +57,17 @@ public final class UploadedMedia implements java.io.Serializable {
     public long getSize() {
         return size;
     }
-    
+
     public String getProcessingState() {
-    	return processingState;
+        return processingState;
     }
-    
+
     public int getProcessingCheckAfterSecs() {
-    	return processingCheckAfterSecs;
+        return processingCheckAfterSecs;
     }
-  
+
     public int getProgressPercent() {
-    	return progressPercent;
+        return progressPercent;
     }
 
     private void init(JSONObject json) throws TwitterException {
@@ -80,15 +80,15 @@ public final class UploadedMedia implements java.io.Serializable {
                 imageHeight = ParseUtil.getInt("h", image);
                 imageType = ParseUtil.getUnescapedString("image_type", image);
             }
-            
+
             if (!json.isNull("processing_info")) {
-            	JSONObject processingInfo = json.getJSONObject("processing_info");
-            	processingState = ParseUtil.getUnescapedString("state", processingInfo);
-            	processingCheckAfterSecs = ParseUtil.getInt("check_after_secs", processingInfo);
-            	progressPercent = ParseUtil.getInt("progress_percent", processingInfo);
-            	
+                JSONObject processingInfo = json.getJSONObject("processing_info");
+                processingState = ParseUtil.getUnescapedString("state", processingInfo);
+                processingCheckAfterSecs = ParseUtil.getInt("check_after_secs", processingInfo);
+                progressPercent = ParseUtil.getInt("progress_percent", processingInfo);
+
             }
-            
+
         } catch (JSONException jsone) {
             throw new TwitterException(jsone);
         }
@@ -116,7 +116,7 @@ public final class UploadedMedia implements java.io.Serializable {
         result = 31 * result + imageWidth;
         result = 31 * result + imageHeight;
         result = 31 * result + (imageType != null ? imageType.hashCode() : 0);
-        result = 31 * result + (int)(size ^ (size >>> 32));
+        result = 31 * result + (int) (size ^ (size >>> 32));
         return result;
     }
 
@@ -124,7 +124,7 @@ public final class UploadedMedia implements java.io.Serializable {
     public String toString() {
         return "UploadedMedia{" +
                 "mediaId=" + mediaId +
-                ", imageWidth=" + imageWidth + 
+                ", imageWidth=" + imageWidth +
                 ", imageHeight=" + imageHeight +
                 ", imageType='" + imageType + '\'' +
                 ", size=" + size +

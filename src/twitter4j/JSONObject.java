@@ -80,8 +80,6 @@ import java.util.Set;
  */
 public class JSONObject {
 
-    private static final Double NEGATIVE_ZERO = -0d;
-
     /**
      * A sentinel value used to explicitly define a name with no value. Unlike
      * {@code null}, names with this value:
@@ -115,7 +113,7 @@ public class JSONObject {
             return "null";
         }
     };
-
+    private static final Double NEGATIVE_ZERO = -0d;
     private final LinkedHashMap<String, Object> nameValuePairs;
 
     /**
@@ -201,6 +199,111 @@ public class JSONObject {
                 nameValuePairs.put(name, value);
             }
         }
+    }
+
+    /**
+     * Encodes the number as a JSON string.
+     *
+     * @param number a finite value. May not be {@link Double#isNaN() NaNs} or
+     *               {@link Double#isInfinite() infinities}.
+     * @return The encoded number in string form.
+     * @throws JSONException On internal errors. Shouldn't happen.
+     */
+    public static String numberToString(Number number) throws JSONException {
+        if (number == null) {
+            throw new JSONException("Number must be non-null");
+        }
+
+        double doubleValue = number.doubleValue();
+        JSON.checkDouble(doubleValue);
+
+        // the original returns "-0" instead of "-0.0" for negative zero
+        if (number.equals(NEGATIVE_ZERO)) {
+            return "-0";
+        }
+
+        long longValue = number.longValue();
+        if (doubleValue == (double) longValue) {
+            return Long.toString(longValue);
+        }
+
+        return number.toString();
+    }
+
+    /**
+     * Encodes {@code data} as a JSON string. This applies quotes and any
+     * necessary character escaping.
+     *
+     * @param data the string to encode. Null will be interpreted as an empty
+     *             string.
+     * @return the quoted string.
+     */
+    public static String quote(String data) {
+        if (data == null) {
+            return "\"\"";
+        }
+        try {
+            JSONStringer stringer = new JSONStringer();
+            stringer.open(JSONStringer.Scope.NULL, "");
+            stringer.value(data);
+            stringer.close(JSONStringer.Scope.NULL, JSONStringer.Scope.NULL, "");
+            return stringer.toString();
+        } catch (JSONException e) {
+            throw new AssertionError();
+        }
+    }
+
+    /**
+     * Wraps the given object if necessary.
+     *
+     * <p>If the object is null or , returns {@link #NULL}.
+     * If the object is a {@code JSONArray} or {@code JSONObject}, no wrapping is necessary.
+     * If the object is {@code NULL}, no wrapping is necessary.
+     * If the object is an array or {@code Collection}, returns an equivalent {@code JSONArray}.
+     * If the object is a {@code Map}, returns an equivalent {@code JSONObject}.
+     * If the object is a primitive wrapper type or {@code String}, returns the object.
+     * Otherwise if the object is from a {@code java} package, returns the result of {@code toString}.
+     * If wrapping fails, returns null.
+     *
+     * @param o The object to wrap.
+     * @return The wrapped (if necessary) form of the object {$code o}
+     */
+    public static Object wrap(Object o) {
+        if (o == null) {
+            return NULL;
+        }
+        if (o instanceof JSONArray || o instanceof JSONObject) {
+            return o;
+        }
+        if (o.equals(NULL)) {
+            return o;
+        }
+        try {
+            if (o instanceof Collection) {
+                return new JSONArray((Collection) o);
+            } else if (o.getClass().isArray()) {
+                return new JSONArray(o);
+            }
+            if (o instanceof Map) {
+                return new JSONObject((Map) o);
+            }
+            if (o instanceof Boolean ||
+                    o instanceof Byte ||
+                    o instanceof Character ||
+                    o instanceof Double ||
+                    o instanceof Float ||
+                    o instanceof Integer ||
+                    o instanceof Long ||
+                    o instanceof Short ||
+                    o instanceof String) {
+                return o;
+            }
+            if (o.getClass().getPackage().getName().startsWith("java.")) {
+                return o.toString();
+            }
+        } catch (Exception ignored) {
+        }
+        return null;
     }
 
     /**
@@ -318,7 +421,7 @@ public class JSONObject {
      * and new values are inserted in order into a new array which is itself
      * mapped to {@code name}. In aggregate, this allows values to be added to a
      * mapping one at a time.
-     *
+     * <p>
      * Note that {@code append(String, Object)} provides better semantics.
      * In particular, the mapping for {@code name} will <b>always</b> be a
      * {@link JSONArray}. Using {@code accumulate} will result in either a
@@ -583,7 +686,7 @@ public class JSONObject {
      * Returns the value mapped by {@code name} if it exists and is a long or
      * can be coerced to a long, or throws otherwise.
      * Note that JSON represents numbers as doubles,
-     *
+     * <p>
      * so this is <a href="#lossy">lossy</a>; use strings to transfer numbers
      * via JSON without loss.
      *
@@ -774,7 +877,7 @@ public class JSONObject {
      * is a view of the keys in this object. {@link Set#remove(Object)} will remove
      * the corresponding mapping from this object and set iterator behaviour
      * is undefined if this object is modified after it is returned.
-     *
+     * <p>
      * See {@link #keys()}.
      *
      * @return The names in this object.
@@ -839,110 +942,5 @@ public class JSONObject {
             stringer.key(entry.getKey()).value(entry.getValue());
         }
         stringer.endObject();
-    }
-
-    /**
-     * Encodes the number as a JSON string.
-     *
-     * @param number a finite value. May not be {@link Double#isNaN() NaNs} or
-     *               {@link Double#isInfinite() infinities}.
-     * @return The encoded number in string form.
-     * @throws JSONException On internal errors. Shouldn't happen.
-     */
-    public static String numberToString(Number number) throws JSONException {
-        if (number == null) {
-            throw new JSONException("Number must be non-null");
-        }
-
-        double doubleValue = number.doubleValue();
-        JSON.checkDouble(doubleValue);
-
-        // the original returns "-0" instead of "-0.0" for negative zero
-        if (number.equals(NEGATIVE_ZERO)) {
-            return "-0";
-        }
-
-        long longValue = number.longValue();
-        if (doubleValue == (double) longValue) {
-            return Long.toString(longValue);
-        }
-
-        return number.toString();
-    }
-
-    /**
-     * Encodes {@code data} as a JSON string. This applies quotes and any
-     * necessary character escaping.
-     *
-     * @param data the string to encode. Null will be interpreted as an empty
-     *             string.
-     * @return the quoted string.
-     */
-    public static String quote(String data) {
-        if (data == null) {
-            return "\"\"";
-        }
-        try {
-            JSONStringer stringer = new JSONStringer();
-            stringer.open(JSONStringer.Scope.NULL, "");
-            stringer.value(data);
-            stringer.close(JSONStringer.Scope.NULL, JSONStringer.Scope.NULL, "");
-            return stringer.toString();
-        } catch (JSONException e) {
-            throw new AssertionError();
-        }
-    }
-
-    /**
-     * Wraps the given object if necessary.
-     *
-     * <p>If the object is null or , returns {@link #NULL}.
-     * If the object is a {@code JSONArray} or {@code JSONObject}, no wrapping is necessary.
-     * If the object is {@code NULL}, no wrapping is necessary.
-     * If the object is an array or {@code Collection}, returns an equivalent {@code JSONArray}.
-     * If the object is a {@code Map}, returns an equivalent {@code JSONObject}.
-     * If the object is a primitive wrapper type or {@code String}, returns the object.
-     * Otherwise if the object is from a {@code java} package, returns the result of {@code toString}.
-     * If wrapping fails, returns null.
-     *
-     * @param o The object to wrap.
-     * @return The wrapped (if necessary) form of the object {$code o}
-     */
-    public static Object wrap(Object o) {
-        if (o == null) {
-            return NULL;
-        }
-        if (o instanceof JSONArray || o instanceof JSONObject) {
-            return o;
-        }
-        if (o.equals(NULL)) {
-            return o;
-        }
-        try {
-            if (o instanceof Collection) {
-                return new JSONArray((Collection) o);
-            } else if (o.getClass().isArray()) {
-                return new JSONArray(o);
-            }
-            if (o instanceof Map) {
-                return new JSONObject((Map) o);
-            }
-            if (o instanceof Boolean ||
-                    o instanceof Byte ||
-                    o instanceof Character ||
-                    o instanceof Double ||
-                    o instanceof Float ||
-                    o instanceof Integer ||
-                    o instanceof Long ||
-                    o instanceof Short ||
-                    o instanceof String) {
-                return o;
-            }
-            if (o.getClass().getPackage().getName().startsWith("java.")) {
-                return o.toString();
-            }
-        } catch (Exception ignored) {
-        }
-        return null;
     }
 }

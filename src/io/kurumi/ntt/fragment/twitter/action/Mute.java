@@ -9,134 +9,135 @@ import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.fragment.twitter.status.MessagePoint;
 import io.kurumi.ntt.utils.NTT;
+
 import java.util.LinkedList;
+
 import twitter4j.Relationship;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 public class Mute extends TwitterFunction {
 
-	@Override
-	public void functions(LinkedList<String> names) {
+    @Override
+    public void functions(LinkedList<String> names) {
 
-		names.add("mute");
+        names.add("mute");
 
-	}
-	
-	
+    }
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
-		Twitter api = account.createApi();
-		
-		if (params.length > 0) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
-			for (String target : params) {
+        Twitter api = account.createApi();
 
-				long targetId;
+        if (params.length > 0) {
 
-				if (NumberUtil.isNumber(target)) {
+            for (String target : params) {
 
-					targetId = NumberUtil.parseLong(target);
+                long targetId;
 
-				} else {
+                if (NumberUtil.isNumber(target)) {
 
-					String screenName = NTT.parseScreenName(target);
+                    targetId = NumberUtil.parseLong(target);
 
-					try {
+                } else {
 
-						targetId =  api.showUser(screenName).getId();
+                    String screenName = NTT.parseScreenName(target);
 
-					} catch (TwitterException e) {
+                    try {
 
-						msg.send(NTT.parseTwitterException(e)).exec();
+                        targetId = api.showUser(screenName).getId();
 
-						return;
+                    } catch (TwitterException e) {
 
-					}
+                        msg.send(NTT.parseTwitterException(e)).exec();
 
-				}
+                        return;
 
-				mute(user,msg,account,api,targetId);
+                    }
 
-			}
+                }
 
-		} else if (msg.targetChatId == -1 && msg.isPrivate() && msg.isReply()) {
+                mute(user, msg, account, api, targetId);
 
-			MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
+            }
 
-			if (point == null) {
+        } else if (msg.targetChatId == -1 && msg.isPrivate() && msg.isReply()) {
 
-				msg.send("咱不知道目标是谁 (｡í _ ì｡)").exec();
+            MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
 
-				return;
+            if (point == null) {
 
-			}
+                msg.send("咱不知道目标是谁 (｡í _ ì｡)").exec();
 
-			long targetUser;
+                return;
 
-			if (point.type == 1) {
+            }
 
-				targetUser = StatusArchive.get(point.targetId).from;
+            long targetUser;
 
-			} else {
+            if (point.type == 1) {
 
-				targetUser = point.targetId;
+                targetUser = StatusArchive.get(point.targetId).from;
 
-			}
+            } else {
 
-			mute(user,msg,account,api,targetUser);
+                targetUser = point.targetId;
 
-		} else {
+            }
 
-			msg.send("/block <ID|用户名|链接> / 或对私聊消息回复 (如果你觉得这条消息包含一个用户或推文)").exec();
+            mute(user, msg, account, api, targetUser);
 
-			return;
+        } else {
 
-		}
+            msg.send("/block <ID|用户名|链接> / 或对私聊消息回复 (如果你觉得这条消息包含一个用户或推文)").exec();
 
-	}
+            return;
 
-	private void mute(UserData user,Msg msg,TAuth account,Twitter api,long targetId) {
+        }
 
-		UserArchive archive;
+    }
 
-		try {
+    private void mute(UserData user, Msg msg, TAuth account, Twitter api, long targetId) {
 
-			archive = UserArchive.save(api.showUser(targetId));
+        UserArchive archive;
 
-		} catch (TwitterException e) {
+        try {
 
-			msg.send(NTT.parseTwitterException(e)).exec();
+            archive = UserArchive.save(api.showUser(targetId));
 
-			return;
+        } catch (TwitterException e) {
 
-		}
+            msg.send(NTT.parseTwitterException(e)).exec();
 
-		try {
+            return;
 
-			Relationship ship = api.showFriendship(account.id,targetId);
+        }
 
-			if (ship.isSourceMutingTarget()) {
+        try {
 
-				msg.send("你已经停用了对 " + archive.urlHtml() + " 的通知").html().point(0,targetId);
+            Relationship ship = api.showFriendship(account.id, targetId);
 
-				return;
+            if (ship.isSourceMutingTarget()) {
 
-			}
+                msg.send("你已经停用了对 " + archive.urlHtml() + " 的通知").html().point(0, targetId);
 
-			api.createMute(targetId);
+                return;
 
-			msg.send("已静音来自 " + archive.urlHtml() + " 的通知 ~").html().point(0,targetId);
+            }
 
-		} catch (TwitterException e) {
+            api.createMute(targetId);
 
-			msg.send("静音失败 :",NTT.parseTwitterException(e)).exec();
+            msg.send("已静音来自 " + archive.urlHtml() + " 的通知 ~").html().point(0, targetId);
 
-		}
+        } catch (TwitterException e) {
 
-	}
+            msg.send("静音失败 :", NTT.parseTwitterException(e)).exec();
+
+        }
+
+    }
 
 }
 

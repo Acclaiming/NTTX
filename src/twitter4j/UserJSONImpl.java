@@ -95,6 +95,94 @@ import java.util.Date;
 
     }
 
+    /**
+     * Get URL Entities from JSON Object.
+     * returns URLEntity array by entities/[category]/urls/url[]
+     *
+     * @param json     user json object
+     * @param category entities category. e.g. "description" or "url"
+     * @return URLEntity array by entities/[category]/urls/url[]
+     * @throws JSONException
+     * @throws TwitterException
+     */
+    private static URLEntity[] getURLEntitiesFromJSON(JSONObject json, String category) throws JSONException, TwitterException {
+        if (!json.isNull("entities")) {
+            JSONObject entitiesJSON = json.getJSONObject("entities");
+            if (!entitiesJSON.isNull(category)) {
+                JSONObject descriptionEntitiesJSON = entitiesJSON.getJSONObject(category);
+                if (!descriptionEntitiesJSON.isNull("urls")) {
+                    JSONArray urlsArray = descriptionEntitiesJSON.getJSONArray("urls");
+                    int len = urlsArray.length();
+                    URLEntity[] urlEntities = new URLEntity[len];
+                    for (int i = 0; i < len; i++) {
+                        urlEntities[i] = new URLEntityJSONImpl(urlsArray.getJSONObject(i));
+                    }
+                    return urlEntities;
+                }
+            }
+        }
+        return new URLEntity[0];
+    }
+
+    /*package*/
+    static PagableResponseList<User> createPagableUserList(HttpResponse res, Configuration conf) throws TwitterException {
+        try {
+            if (conf.isJSONStoreEnabled()) {
+                TwitterObjectFactory.clearThreadLocalMap();
+            }
+            JSONObject json = res.asJSONObject();
+            JSONArray list = json.getJSONArray("users");
+            int size = list.length();
+            PagableResponseList<User> users =
+                    new PagableResponseListImpl<User>(size, json, res);
+            for (int i = 0; i < size; i++) {
+                JSONObject userJson = list.getJSONObject(i);
+                User user = new UserJSONImpl(userJson);
+                if (conf.isJSONStoreEnabled()) {
+                    TwitterObjectFactory.registerJSONObject(user, userJson);
+                }
+                users.add(user);
+            }
+            if (conf.isJSONStoreEnabled()) {
+                TwitterObjectFactory.registerJSONObject(users, json);
+            }
+            return users;
+        } catch (JSONException jsone) {
+            throw new TwitterException(jsone);
+        }
+    }
+
+    /*package*/
+    static ResponseList<User> createUserList(HttpResponse res, Configuration conf) throws TwitterException {
+        return createUserList(res.asJSONArray(), res, conf);
+    }
+
+    /*package*/
+    static ResponseList<User> createUserList(JSONArray list, HttpResponse res, Configuration conf) throws TwitterException {
+        try {
+            if (conf.isJSONStoreEnabled()) {
+                TwitterObjectFactory.clearThreadLocalMap();
+            }
+            int size = list.length();
+            ResponseList<User> users =
+                    new ResponseListImpl<User>(size, res);
+            for (int i = 0; i < size; i++) {
+                JSONObject json = list.getJSONObject(i);
+                User user = new UserJSONImpl(json);
+                users.add(user);
+                if (conf.isJSONStoreEnabled()) {
+                    TwitterObjectFactory.registerJSONObject(user, json);
+                }
+            }
+            if (conf.isJSONStoreEnabled()) {
+                TwitterObjectFactory.registerJSONObject(users, list);
+            }
+            return users;
+        } catch (JSONException jsone) {
+            throw new TwitterException(jsone);
+        }
+    }
+
     private void init(JSONObject json) throws TwitterException {
         try {
             id = ParseUtil.getLong("id", json);
@@ -158,42 +246,13 @@ import java.util.Date;
                 JSONArray withheld_in_countries = json.getJSONArray("withheld_in_countries");
                 int length = withheld_in_countries.length();
                 withheldInCountries = new String[length];
-                for (int i = 0 ; i < length; i ++) {
+                for (int i = 0; i < length; i++) {
                     withheldInCountries[i] = withheld_in_countries.getString(i);
                 }
             }
         } catch (JSONException jsone) {
             throw new TwitterException(jsone.getMessage() + ":" + json.toString(), jsone);
         }
-    }
-
-    /**
-     * Get URL Entities from JSON Object.
-     * returns URLEntity array by entities/[category]/urls/url[]
-     *
-     * @param json     user json object
-     * @param category entities category. e.g. "description" or "url"
-     * @return URLEntity array by entities/[category]/urls/url[]
-     * @throws JSONException
-     * @throws TwitterException
-     */
-    private static URLEntity[] getURLEntitiesFromJSON(JSONObject json, String category) throws JSONException, TwitterException {
-        if (!json.isNull("entities")) {
-            JSONObject entitiesJSON = json.getJSONObject("entities");
-            if (!entitiesJSON.isNull(category)) {
-                JSONObject descriptionEntitiesJSON = entitiesJSON.getJSONObject(category);
-                if (!descriptionEntitiesJSON.isNull("urls")) {
-                    JSONArray urlsArray = descriptionEntitiesJSON.getJSONArray("urls");
-                    int len = urlsArray.length();
-                    URLEntity[] urlEntities = new URLEntity[len];
-                    for (int i = 0; i < len; i++) {
-                        urlEntities[i] = new URLEntityJSONImpl(urlsArray.getJSONObject(i));
-                    }
-                    return urlEntities;
-                }
-            }
-        }
-        return new URLEntity[0];
     }
 
     @Override
@@ -210,7 +269,7 @@ import java.util.Date;
     public String getName() {
         return name;
     }
-    
+
     @Override
     public String getEmail() {
         return email;
@@ -376,7 +435,6 @@ import java.util.Date;
         return status;
     }
 
-
     @Override
     public Date getCreatedAt() {
         return createdAt;
@@ -509,65 +567,6 @@ import java.util.Date;
     @Override
     public String[] getWithheldInCountries() {
         return withheldInCountries;
-    }
-
-    /*package*/
-    static PagableResponseList<User> createPagableUserList(HttpResponse res, Configuration conf) throws TwitterException {
-        try {
-            if (conf.isJSONStoreEnabled()) {
-                TwitterObjectFactory.clearThreadLocalMap();
-            }
-            JSONObject json = res.asJSONObject();
-            JSONArray list = json.getJSONArray("users");
-            int size = list.length();
-            PagableResponseList<User> users =
-                    new PagableResponseListImpl<User>(size, json, res);
-            for (int i = 0; i < size; i++) {
-                JSONObject userJson = list.getJSONObject(i);
-                User user = new UserJSONImpl(userJson);
-                if (conf.isJSONStoreEnabled()) {
-                    TwitterObjectFactory.registerJSONObject(user, userJson);
-                }
-                users.add(user);
-            }
-            if (conf.isJSONStoreEnabled()) {
-                TwitterObjectFactory.registerJSONObject(users, json);
-            }
-            return users;
-        } catch (JSONException jsone) {
-            throw new TwitterException(jsone);
-        }
-    }
-
-    /*package*/
-    static ResponseList<User> createUserList(HttpResponse res, Configuration conf) throws TwitterException {
-        return createUserList(res.asJSONArray(), res, conf);
-    }
-
-    /*package*/
-    static ResponseList<User> createUserList(JSONArray list, HttpResponse res, Configuration conf) throws TwitterException {
-        try {
-            if (conf.isJSONStoreEnabled()) {
-                TwitterObjectFactory.clearThreadLocalMap();
-            }
-            int size = list.length();
-            ResponseList<User> users =
-                    new ResponseListImpl<User>(size, res);
-            for (int i = 0; i < size; i++) {
-                JSONObject json = list.getJSONObject(i);
-                User user = new UserJSONImpl(json);
-                users.add(user);
-                if (conf.isJSONStoreEnabled()) {
-                    TwitterObjectFactory.registerJSONObject(user, json);
-                }
-            }
-            if (conf.isJSONStoreEnabled()) {
-                TwitterObjectFactory.registerJSONObject(users, list);
-            }
-            return users;
-        } catch (JSONException jsone) {
-            throw new TwitterException(jsone);
-        }
     }
 
     @Override

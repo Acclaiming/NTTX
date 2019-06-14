@@ -25,6 +25,11 @@ package twitter4j;
  * @see twitter4j.User
  */
 public interface TwitterResponse extends java.io.Serializable {
+    int NONE = 0;
+    int READ = 1;
+    int READ_WRITE = 2;
+    int READ_WRITE_DIRECTMESSAGES = 3;
+
     /**
      * Returns the current rate limit status if available.
      *
@@ -39,11 +44,6 @@ public interface TwitterResponse extends java.io.Serializable {
      * @since Twitter4J 2.2.3
      */
     int getAccessLevel();
-
-    int NONE = 0;
-    int READ = 1;
-    int READ_WRITE = 2;
-    int READ_WRITE_DIRECTMESSAGES = 3;
 
 
 }

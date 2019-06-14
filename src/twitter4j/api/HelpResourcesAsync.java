@@ -79,9 +79,9 @@ public interface HelpResourcesAsync {
      * &quot;trends&quot;,&quot;application&quot;,&quot;users&quot;,&quot;saved_searches&quot;,&quot;geo&quot;,&quot;direct_messages&quot;,&quot;blocks&quot;,&quot;favorites&quot;,&quot;statuses&quot;,&quot;followers&quot;,&quot;help&quot;,&quot;friends&quot;,&quot;search&quot;,&quot;friendships&quot;,&quot;account&quot;,&quot;lists&quot;
      * <br>This method calls https://api.twitter.com/1.1/application/rate_limit_status.json
      *
+     * @param resources resources
      * @see <a href="https://dev.twitter.com/docs/api/1.1/get/application/rate_limit_status">GET application/rate_limit_status</a>
      * @since Twitter4J 3.0.0
-     * @param resources resources
      */
     void getRateLimitStatus(String... resources);
 }

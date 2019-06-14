@@ -9,109 +9,109 @@ import io.kurumi.ntt.utils.Html;
 
 public class Users extends Fragment {
 
-	@Override
-	public boolean onMsg(UserData user,Msg msg) {
+    @Override
+    public boolean onMsg(UserData user, Msg msg) {
 
-		if (!user.developer() || !"users".equals(msg.command())) return false;
+        if (!user.developer() || !"users".equals(msg.command())) return false;
 
-		StringBuilder export = new StringBuilder();
+        StringBuilder export = new StringBuilder();
 
-		int count = 0;
+        int count = 0;
 
-		for (TAuth auth : TAuth.data.collection.find()) {
+        for (TAuth auth : TAuth.data.collection.find()) {
 
-			count ++;
+            count++;
 
-			export.append(UserData.get(auth.user).userName()).append(" -> ").append(auth.archive().urlHtml()).append("\n");
+            export.append(UserData.get(auth.user).userName()).append(" -> ").append(auth.archive().urlHtml()).append("\n");
 
-			if (count == 50) {
+            if (count == 50) {
 
-				msg.send(export.toString()).html().exec();
+                msg.send(export.toString()).html().exec();
 
-				export = new StringBuilder();
+                export = new StringBuilder();
 
-				count = 0;
+                count = 0;
 
-			}
+            }
 
-		}
+        }
 
-		if (count > 0) {
+        if (count > 0) {
 
-			msg.send(export.toString()).html().exec();
+            msg.send(export.toString()).html().exec();
 
-		}
+        }
 
-		count = 0;
+        count = 0;
 
-		export = new StringBuilder(HtmlUtil.escape(" >> All Users << \n"));
+        export = new StringBuilder(HtmlUtil.escape(" >> All Users << \n"));
 
-		for (UserData userData : UserData.data.collection.find()) {
+        for (UserData userData : UserData.data.collection.find()) {
 
-			export.append("\n").append(userData.userName()).append(" ").append(Html.startPayload("Block","drop",userData.id));
+            export.append("\n").append(userData.userName()).append(" ").append(Html.startPayload("Block", "drop", userData.id));
 
-			count ++;
+            count++;
 
-			if (count == 50) {
+            if (count == 50) {
 
-				msg.send(export.toString()).html().exec();
+                msg.send(export.toString()).html().exec();
 
-				export = new StringBuilder();
+                export = new StringBuilder();
 
-				count = 0;
+                count = 0;
 
-			}
+            }
 
-		}
+        }
 
-		if (count > 0) {
+        if (count > 0) {
 
-			msg.send(export.toString()).html().exec();
+            msg.send(export.toString()).html().exec();
 
-		}
+        }
 
-		count = 0;
+        count = 0;
 
-		export = new StringBuilder(HtmlUtil.escape(" >> Blocked Users << \n"));
+        export = new StringBuilder(HtmlUtil.escape(" >> Blocked Users << \n"));
 
-		for (Firewall.Id id : Firewall.block.collection.find()) {
+        for (Firewall.Id id : Firewall.block.collection.find()) {
 
-			UserData userData = UserData.get(id.id);
+            UserData userData = UserData.get(id.id);
 
-			if (userData == null) {
+            if (userData == null) {
 
-				export.append("\n").append(Html.user("[ " + id.id + " ]",id.id)).append(" ").append(Html.startPayload("Accept","accept",id.id));
-
-
-			} else {
-
-				export.append("\n").append(userData.userName()).append(" ").append(Html.startPayload("Accept","accept",userData.id));
-
-			}
-
-			count ++;
-
-			if (count == 50) {
-
-				msg.send(export.toString()).html().exec();
-
-				export = new StringBuilder();
-
-				count = 0;
-
-			}
+                export.append("\n").append(Html.user("[ " + id.id + " ]", id.id)).append(" ").append(Html.startPayload("Accept", "accept", id.id));
 
 
-		}
+            } else {
 
-		if (count > 0) {
+                export.append("\n").append(userData.userName()).append(" ").append(Html.startPayload("Accept", "accept", userData.id));
 
-			msg.send(export.toString()).html().exec();
+            }
 
-		}
+            count++;
 
-		return true;
+            if (count == 50) {
 
-	}
+                msg.send(export.toString()).html().exec();
+
+                export = new StringBuilder();
+
+                count = 0;
+
+            }
+
+
+        }
+
+        if (count > 0) {
+
+            msg.send(export.toString()).html().exec();
+
+        }
+
+        return true;
+
+    }
 
 }

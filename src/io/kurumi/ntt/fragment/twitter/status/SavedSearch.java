@@ -4,7 +4,9 @@ import cn.hutool.core.util.ReUtil;
 import com.mongodb.client.FindIterable;
 import io.kurumi.ntt.db.Data;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
+
 import java.util.LinkedList;
+
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -21,98 +23,90 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class SavedSearch {
 
-	public static Data<SavedSearch> data = new Data<SavedSearch>(SavedSearch.class);
+    public static Data<SavedSearch> data = new Data<SavedSearch>(SavedSearch.class);
 
-	static {{
-		
-		data.collection.drop();
-		
-	}}
-	
-	public Bson toFilter() {
-		
-		String query = regex ? content : ReUtil.escape(content);
+    static {
+        {
 
-		LinkedList<Bson> filters = new LinkedList<>();
+            data.collection.drop();
 
-		filters.add(regex("text",query));
+        }
+    }
 
-		if (from != -1) {
+    public Long id;
+    public Long user;
+    public String text;
+    public boolean regex = false;
+    public long from = -1;
+    public long to = -1;
+    public long start = -1;
+    public long end = -1;
+    public long reply = -1;
+    public String content;
+    public int media = 0;
 
-			filters.add(eq("from",from));
+    public Bson toFilter() {
 
-		}
+        String query = regex ? content : ReUtil.escape(content);
 
-		if (to != -1) {
+        LinkedList<Bson> filters = new LinkedList<>();
 
-			filters.add(eq("inReplyToUserId",to));
+        filters.add(regex("text", query));
 
-		}
+        if (from != -1) {
 
-		if (start != -1) {
+            filters.add(eq("from", from));
 
-			filters.add(gte("createdAt",start));
+        }
 
-		}
+        if (to != -1) {
 
-		if (end != -1) {
+            filters.add(eq("inReplyToUserId", to));
 
-			filters.add(lte("createdAt",end));
+        }
 
-		}
+        if (start != -1) {
 
-		if (media == 1) {
+            filters.add(gte("createdAt", start));
 
-			filters.add(where("this.mediaUrls.length > 0"));
+        }
 
-		} else if (media == 2) {
+        if (end != -1) {
 
-			filters.add(where("this.mediaUrls.length == 0"));
+            filters.add(lte("createdAt", end));
 
-		}
-		
-		if (reply != -1) {
-			
-			filters.add(or(eq("inReplyToUserId",reply),eq("quotedStatusId",reply)));
-			
-		}
-		
-		return and(filters);
-		
-	}
-	
-	public long count() {
+        }
 
-		return StatusArchive.data.collection.countDocuments(toFilter());
+        if (media == 1) {
 
-	}
-	
-	public FindIterable<StatusArchive> query(int skip,int size) {
+            filters.add(where("this.mediaUrls.length > 0"));
 
-		return StatusArchive.data.collection.find(toFilter()).sort(new Document("_id",-1)).skip(skip).limit(size);
+        } else if (media == 2) {
 
-	}
+            filters.add(where("this.mediaUrls.length == 0"));
 
-	public Long id;
+        }
 
-	public Long user;
+        if (reply != -1) {
 
-	public String text;
+            filters.add(or(eq("inReplyToUserId", reply), eq("quotedStatusId", reply)));
 
-	public boolean regex = false;
+        }
 
-	public long from = -1;
+        return and(filters);
 
-	public long to = -1;
+    }
 
-	public long start = -1;
+    public long count() {
 
-	public long end = -1;
+        return StatusArchive.data.collection.countDocuments(toFilter());
 
-	public long reply = -1;
-	
-	public String content;
+    }
 
-	public int media = 0;
+    public FindIterable<StatusArchive> query(int skip, int size) {
+
+        return StatusArchive.data.collection.find(toFilter()).sort(new Document("_id", -1)).skip(skip).limit(size);
+
+    }
 
 }

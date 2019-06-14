@@ -6,7 +6,7 @@ import io.kurumi.ntt.fragment.abs.Msg;
 
 public abstract class AbstractSend<T extends AbstractSend> {
 
-	public Msg origin;
+    public Msg origin;
 
     public Fragment fragment;
 

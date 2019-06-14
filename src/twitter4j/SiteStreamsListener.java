@@ -131,7 +131,7 @@ public interface SiteStreamsListener extends StreamListener {
     void onUserProfileUpdate(long forUser, User updatedUser);
 
     /**
-     * @param forUser     the user id to whom sent the event
+     * @param forUser       the user id to whom sent the event
      * @param suspendedUser suspended user id
      * @since Twitter4J 4.0.3
      */
@@ -164,7 +164,7 @@ public interface SiteStreamsListener extends StreamListener {
      * @param retweetedStatus status retweeted retweet
      * @since Twitter4J 4.0.x
      */
-    void onRetweetedRetweet(User source,User target, Status retweetedStatus);
+    void onRetweetedRetweet(User source, User target, Status retweetedStatus);
 
     /**
      * @param source          source user of the event
@@ -172,10 +172,11 @@ public interface SiteStreamsListener extends StreamListener {
      * @param favoritedStatus status favorited retweet
      * @since Twitter4J 4.0.x
      */
-    void onFavoritedRetweet(User source,User target, Status favoritedStatus);
+    void onFavoritedRetweet(User source, User target, Status favoritedStatus);
 
     /**
      * callback method for {@link StreamController#removeUsers(long[])}
+     *
      * @param line notice
      */
     void onDisconnectionNotice(String line);
@@ -185,24 +186,24 @@ public interface SiteStreamsListener extends StreamListener {
 
 
     /**
-     * @param source          source user of the event
-     * @param target          target user of the event
-     * @param quotingTweet    status favorited retweet
+     * @param source       source user of the event
+     * @param target       target user of the event
+     * @param quotingTweet status favorited retweet
      * @since Twitter4J 4.0.x
      */
-   void onQuotedTweet(User source, User target, Status quotingTweet);
+    void onQuotedTweet(User source, User target, Status quotingTweet);
 
     /**
-     * @param source          source user of the event
-     * @param target          target user of the event
+     * @param source source user of the event
+     * @param target target user of the event
      * @since Twitter4J 4.0.x
      */
 
     void onMute(long forUser, User source, User target);
 
     /**
-     * @param source          source user of the event
-     * @param target          target user of the event
+     * @param source source user of the event
+     * @param target target user of the event
      * @since Twitter4J 4.0.x
      */
 

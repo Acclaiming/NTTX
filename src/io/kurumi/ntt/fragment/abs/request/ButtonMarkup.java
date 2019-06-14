@@ -2,6 +2,7 @@ package io.kurumi.ntt.fragment.abs.request;
 
 import cn.hutool.core.util.*;
 import com.pengrad.telegrambot.model.request.*;
+
 import java.util.*;
 
 public class ButtonMarkup extends LinkedList<ButtonLine> {
@@ -18,10 +19,10 @@ public class ButtonMarkup extends LinkedList<ButtonLine> {
 
     public void newButtonLine(String text, String point, Object... data) {
 
-        newButtonLine().newButton(text, ArrayUtil.join(ArrayUtil.insert(data,0,point),","));
+        newButtonLine().newButton(text, ArrayUtil.join(ArrayUtil.insert(data, 0, point), ","));
 
     }
-    
+
     public void newUrlButtonLine(String text, String url) {
 
         newButtonLine().newUrlButton(text, url);

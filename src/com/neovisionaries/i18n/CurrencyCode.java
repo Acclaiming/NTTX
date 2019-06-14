@@ -36,17 +36,13 @@ import java.util.regex.Pattern;
  * January 1, 2014.
  * </p>
  *
- * @since 1.9
- *
- * @see <a href="http://www.currency-iso.org/en/home/tables/table-a1.html"
- *      >The official currency &amp; funds code list</a>
- *
- * @see <a href="http://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a>
- *
  * @author Takahiko Kawasaki
+ * @see <a href="http://www.currency-iso.org/en/home/tables/table-a1.html"
+ * >The official currency &amp; funds code list</a>
+ * @see <a href="http://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a>
+ * @since 1.9
  */
-public enum CurrencyCode
-{
+public enum CurrencyCode {
     /**
      * Undefined.
      *
@@ -54,8 +50,8 @@ public enum CurrencyCode
      * This is not an official ISO 4217 code.
      * </p>
      *
-     * @since 1.14
      * @see #XXX XXX: 999 No currency
+     * @since 1.14
      */
     UNDEFINED("Undefined", -1, -1),
 
@@ -155,8 +151,8 @@ public enum CurrencyCode
      * </ul>
      */
     AUD("Australian Dollar", 36, 2,
-        CountryCode.AU, CountryCode.CC, CountryCode.CX, CountryCode.HM,
-        CountryCode.KI, CountryCode.NF, CountryCode.NR, CountryCode.TV),
+            CountryCode.AU, CountryCode.CC, CountryCode.CX, CountryCode.HM,
+            CountryCode.KI, CountryCode.NF, CountryCode.NR, CountryCode.TV),
 
     /**
      * <a href="http://en.wikipedia.org/wiki/Aruban_florin">Aruban Florin</a>
@@ -289,11 +285,9 @@ public enum CurrencyCode
      * <li>{@link CountryCode#BO BO}: BOLIVIA, PLURINATIONAL STATE OF
      * </ul>
      */
-    BOV("Mvdol", 984, 2, CountryCode.BO)
-    {
+    BOV("Mvdol", 984, 2, CountryCode.BO) {
         @Override
-        public boolean isFund()
-        {
+        public boolean isFund() {
             return true;
         }
     },
@@ -358,10 +352,8 @@ public enum CurrencyCode
      * </p>
      *
      * @see <a href="http://www.currency-iso.org/dam/isocy/downloads/dl_currency_iso_amendment_161.pdf"
-     *      >ISO 4217 AMENDMENT NUMBER 161</a>
-     *
+     * >ISO 4217 AMENDMENT NUMBER 161</a>
      * @see #BYR
-     *
      * @since 1.19
      */
     BYN("Belarusian Ruble", 933, 2, CountryCode.BY),
@@ -376,7 +368,6 @@ public enum CurrencyCode
      * </ul>
      *
      * @see #BYN
-     *
      * @deprecated
      */
     BYR("Belarusian Ruble", 974, 0, CountryCode.BY),
@@ -423,11 +414,9 @@ public enum CurrencyCode
      * <li>{@link CountryCode#CH CH}: SWITZERLAND
      * </ul>
      */
-    CHE("WIR Euro", 947, 2, CountryCode.CH)
-    {
+    CHE("WIR Euro", 947, 2, CountryCode.CH) {
         @Override
-        public boolean isFund()
-        {
+        public boolean isFund() {
             return true;
         }
     },
@@ -453,11 +442,9 @@ public enum CurrencyCode
      * <li>{@link CountryCode#CH CH}: SWITZERLAND
      * </ul>
      */
-    CHW("WIR Franc", 948, 2, CountryCode.CH)
-    {
+    CHW("WIR Franc", 948, 2, CountryCode.CH) {
         @Override
-        public boolean isFund()
-        {
+        public boolean isFund() {
             return true;
         }
     },
@@ -471,11 +458,9 @@ public enum CurrencyCode
      * <li>{@link CountryCode#CL CL}: CHILE
      * </ul>
      */
-    CLF("Unidad de Fomento", 990, 0, CountryCode.CL)
-    {
+    CLF("Unidad de Fomento", 990, 0, CountryCode.CL) {
         @Override
-        public boolean isFund()
-        {
+        public boolean isFund() {
             return true;
         }
     },
@@ -522,11 +507,9 @@ public enum CurrencyCode
      * <li>{@link CountryCode#CO CO}: COLOMBIA
      * </ul>
      */
-    COU("Unidad de Valor Real", 970, 2, CountryCode.CO)
-    {
+    COU("Unidad de Valor Real", 970, 2, CountryCode.CO) {
         @Override
-        public boolean isFund()
-        {
+        public boolean isFund() {
             return true;
         }
     },
@@ -710,15 +693,15 @@ public enum CurrencyCode
      * </ul>
      */
     EUR("Euro", 978, 2,
-        CountryCode.AD, CountryCode.AT, CountryCode.AX, CountryCode.BE,
-        CountryCode.BL, CountryCode.CY, CountryCode.DE, CountryCode.EE,
-        CountryCode.ES, CountryCode.EU, CountryCode.FI, CountryCode.FR,
-        CountryCode.GF, CountryCode.GP, CountryCode.GR, CountryCode.IE,
-        CountryCode.IT, CountryCode.LT, CountryCode.LU, CountryCode.LV,
-        CountryCode.MC, CountryCode.ME, CountryCode.MF, CountryCode.MQ,
-        CountryCode.MT, CountryCode.NL, CountryCode.PM, CountryCode.PT,
-        CountryCode.RE, CountryCode.SI, CountryCode.SK, CountryCode.SM,
-        CountryCode.TF, CountryCode.VA, CountryCode.XK, CountryCode.YT),
+            CountryCode.AD, CountryCode.AT, CountryCode.AX, CountryCode.BE,
+            CountryCode.BL, CountryCode.CY, CountryCode.DE, CountryCode.EE,
+            CountryCode.ES, CountryCode.EU, CountryCode.FI, CountryCode.FR,
+            CountryCode.GF, CountryCode.GP, CountryCode.GR, CountryCode.IE,
+            CountryCode.IT, CountryCode.LT, CountryCode.LU, CountryCode.LV,
+            CountryCode.MC, CountryCode.ME, CountryCode.MF, CountryCode.MQ,
+            CountryCode.MT, CountryCode.NL, CountryCode.PM, CountryCode.PT,
+            CountryCode.RE, CountryCode.SI, CountryCode.SK, CountryCode.SM,
+            CountryCode.TF, CountryCode.VA, CountryCode.XK, CountryCode.YT),
 
     /**
      * <a href="http://en.wikipedia.org/wiki/Fiji_dollar">Fiji Dollar</a>
@@ -755,7 +738,7 @@ public enum CurrencyCode
      * </ul>
      */
     GBP("Pound Sterling", 826, 2,
-        CountryCode.GB, CountryCode.GG, CountryCode.IM, CountryCode.JE),
+            CountryCode.GB, CountryCode.GG, CountryCode.IM, CountryCode.JE),
 
     /**
      * <a href="http://en.wikipedia.org/wiki/Georgian_lari">Lari</a>
@@ -1255,7 +1238,6 @@ public enum CurrencyCode
      * </ul>
      *
      * @see #MRU
-     *
      * @deprecated
      */
     MRO("Ouguiya", 478, 2, CountryCode.MR),
@@ -1287,12 +1269,10 @@ public enum CurrencyCode
      * </i></p>
      * </blockquote>
      *
-     * @since 1.23
-     *
      * @see #MRO
-     *
      * @see <a href="https://www.currency-iso.org/dam/isocy/downloads/dl_currency_iso_amendment_165.pdf"
-     *      >ISO 4217 AMENDMENT NUMBER 165</a>
+     * >ISO 4217 AMENDMENT NUMBER 165</a>
+     * @since 1.23
      */
     MRU("Ouguiya", 929, 2, CountryCode.MR),
 
@@ -1350,11 +1330,9 @@ public enum CurrencyCode
      * <li>{@link CountryCode#MX MX}: MEXICO
      * </ul>
      */
-    MXV("Mexican Unidad de Inversion (UDI)", 979, 2, CountryCode.MX)
-    {
+    MXV("Mexican Unidad de Inversion (UDI)", 979, 2, CountryCode.MX) {
         @Override
-        public boolean isFund()
-        {
+        public boolean isFund() {
             return true;
         }
     },
@@ -1452,8 +1430,8 @@ public enum CurrencyCode
      * </ul>
      */
     NZD("New Zealand Dollar", 554, 2,
-        CountryCode.CK, CountryCode.NU, CountryCode.NZ, CountryCode.PN,
-        CountryCode.TK),
+            CountryCode.CK, CountryCode.NU, CountryCode.NZ, CountryCode.PN,
+            CountryCode.TK),
 
     /**
      * <a href="http://en.wikipedia.org/wiki/Omani_rial">Rial Omani</a>
@@ -1600,9 +1578,7 @@ public enum CurrencyCode
      * </ul>
      *
      * @see #RUB
-     *
      * @since 1.20
-     *
      * @deprecated
      */
     RUR("Russian Ruble", 810, 2, CountryCode.RU),
@@ -1749,7 +1725,6 @@ public enum CurrencyCode
      * </ul>
      *
      * @see #STN
-     *
      * @deprecated
      */
     STD("Dobra", 678, 2, CountryCode.ST),
@@ -1782,12 +1757,10 @@ public enum CurrencyCode
      * </i></p>
      * </blockquote>
      *
-     * @since 1.23
-     *
      * @see #STD
-     *
      * @see <a href="https://www.currency-iso.org/dam/isocy/downloads/dl_currency_iso_amendment_164.pdf"
-     *      >ISO 4217 AMENDMENT NUMBER 164</a>
+     * >ISO 4217 AMENDMENT NUMBER 164</a>
+     * @since 1.23
      */
     STN("Dobra", 930, 2, CountryCode.ST),
 
@@ -1974,11 +1947,11 @@ public enum CurrencyCode
      * </ul>
      */
     USD("US Dollar", 840, 2,
-        CountryCode.AS, CountryCode.BQ, CountryCode.EC, CountryCode.FM,
-        CountryCode.GU, CountryCode.HT, CountryCode.IO, CountryCode.MH,
-        CountryCode.MP, CountryCode.PA, CountryCode.PR, CountryCode.PW,
-        CountryCode.SV, CountryCode.TC, CountryCode.TL, CountryCode.UM,
-        CountryCode.US, CountryCode.VG, CountryCode.VI),
+            CountryCode.AS, CountryCode.BQ, CountryCode.EC, CountryCode.FM,
+            CountryCode.GU, CountryCode.HT, CountryCode.IO, CountryCode.MH,
+            CountryCode.MP, CountryCode.PA, CountryCode.PR, CountryCode.PW,
+            CountryCode.SV, CountryCode.TC, CountryCode.TL, CountryCode.UM,
+            CountryCode.US, CountryCode.VG, CountryCode.VI),
 
     /**
      * US Dollar (Next day)
@@ -1989,11 +1962,9 @@ public enum CurrencyCode
      * <li>{@link CountryCode#US US}: UNITED STATES
      * </ul>
      */
-    USN("US Dollar (Next day)", 997, 2, CountryCode.US)
-    {
+    USN("US Dollar (Next day)", 997, 2, CountryCode.US) {
         @Override
-        public boolean isFund()
-        {
+        public boolean isFund() {
             return true;
         }
     },
@@ -2007,11 +1978,9 @@ public enum CurrencyCode
      * <li>{@link CountryCode#US US}: UNITED STATES
      * </ul>
      */
-    USS("US Dollar (Same day)", 998, 2, CountryCode.US)
-    {
+    USS("US Dollar (Same day)", 998, 2, CountryCode.US) {
         @Override
-        public boolean isFund()
-        {
+        public boolean isFund() {
             return true;
         }
     },
@@ -2025,11 +1994,9 @@ public enum CurrencyCode
      * <li>{@link CountryCode#UY UY}: URUGUAY
      * </ul>
      */
-    UYI("Uruguay Peso en Unidades Indexadas (URUIURUI)", 940, 0, CountryCode.UY)
-    {
+    UYI("Uruguay Peso en Unidades Indexadas (URUIURUI)", 940, 0, CountryCode.UY) {
         @Override
-        public boolean isFund()
-        {
+        public boolean isFund() {
             return true;
         }
     },
@@ -2126,18 +2093,16 @@ public enum CurrencyCode
      * </ul>
      */
     XAF("CFA Franc BEAC", 950, 0,
-        CountryCode.CF, CountryCode.CG, CountryCode.CM, CountryCode.GA,
-        CountryCode.GQ, CountryCode.TD),
+            CountryCode.CF, CountryCode.CG, CountryCode.CM, CountryCode.GA,
+            CountryCode.GQ, CountryCode.TD),
 
     /**
      * <a href="http://en.wikipedia.org/wiki/Silver">Silver</a>
      * [numeric code = 961, minor unit = -1, precious metal]
      */
-    XAG("Silver", 961, -1)
-    {
+    XAG("Silver", 961, -1) {
         @Override
-        public boolean isPreciousMetal()
-        {
+        public boolean isPreciousMetal() {
             return true;
         }
     },
@@ -2146,11 +2111,9 @@ public enum CurrencyCode
      * <a href="http://en.wikipedia.org/wiki/Gold">Gold</a>
      * [numeric code = 959, minor unit = -1, precious metal]
      */
-    XAU("Gold", 959, -1)
-    {
+    XAU("Gold", 959, -1) {
         @Override
-        public boolean isPreciousMetal()
-        {
+        public boolean isPreciousMetal() {
             return true;
         }
     },
@@ -2201,8 +2164,8 @@ public enum CurrencyCode
      * </ul>
      */
     XCD("East Caribbean Dollar", 951, 2,
-        CountryCode.AG, CountryCode.AI, CountryCode.DM, CountryCode.GD,
-        CountryCode.KN, CountryCode.LC, CountryCode.MS, CountryCode.VC),
+            CountryCode.AG, CountryCode.AI, CountryCode.DM, CountryCode.GD,
+            CountryCode.KN, CountryCode.LC, CountryCode.MS, CountryCode.VC),
 
     /**
      * <a href="http://en.wikipedia.org/wiki/Special_drawing_rights"
@@ -2229,18 +2192,16 @@ public enum CurrencyCode
      * </ul>
      */
     XOF("CFA Franc BCEAO", 952, 0,
-        CountryCode.BF, CountryCode.BJ, CountryCode.CI, CountryCode.GW,
-        CountryCode.ML, CountryCode.NE, CountryCode.SN, CountryCode.TG),
+            CountryCode.BF, CountryCode.BJ, CountryCode.CI, CountryCode.GW,
+            CountryCode.ML, CountryCode.NE, CountryCode.SN, CountryCode.TG),
 
     /**
      * <a href="http://en.wikipedia.org/wiki/Palladium">Palladium</a>
      * [numeric code = 964, minor unit = -1, precious metal]
      */
-    XPD("Palladium", 964, -1)
-    {
+    XPD("Palladium", 964, -1) {
         @Override
-        public boolean isPreciousMetal()
-        {
+        public boolean isPreciousMetal() {
             return true;
         }
     },
@@ -2262,11 +2223,9 @@ public enum CurrencyCode
      * <a href="http://en.wikipedia.org/wiki/Platinum">Platinum</a>
      * [numeric code = 962, minor unit = -1, precious metal]
      */
-    XPT("Platinum", 962, -1)
-    {
+    XPT("Platinum", 962, -1) {
         @Override
-        public boolean isPreciousMetal()
-        {
+        public boolean isPreciousMetal() {
             return true;
         }
     },
@@ -2346,10 +2305,8 @@ public enum CurrencyCode
     private static final Map<Integer, CurrencyCode> numericMap = new HashMap<Integer, CurrencyCode>();
 
 
-    static
-    {
-        for (CurrencyCode cc : values())
-        {
+    static {
+        for (CurrencyCode cc : values()) {
             numericMap.put(cc.getNumeric(), cc);
         }
     }
@@ -2361,149 +2318,12 @@ public enum CurrencyCode
     private final List<CountryCode> countryList;
 
 
-    private CurrencyCode(String name, int numeric, int minorUnit, CountryCode... countries)
-    {
-        this.name        = name;
-        this.numeric     = numeric;
-        this.minorUnit   = minorUnit;
+    private CurrencyCode(String name, int numeric, int minorUnit, CountryCode... countries) {
+        this.name = name;
+        this.numeric = numeric;
+        this.minorUnit = minorUnit;
         this.countryList = Collections.unmodifiableList(Arrays.asList(countries));
     }
-
-
-    /**
-     * Get the currency name.
-     *
-     * @return
-     *         The currency name.
-     */
-    public String getName()
-    {
-        return name;
-    }
-
-
-    /**
-     * Get the <a href="http://en.wikipedia.org/wiki/ISO_4217"
-     * >ISO 4217</a> numeric code.
-     *
-     * @return
-     *         The <a href="http://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a>
-     *         numeric code.
-     */
-    public int getNumeric()
-    {
-        return numeric;
-    }
-
-
-    /**
-     * Get the minor unit.
-     *
-     * @return
-     *         The minor unit. {@code -1} means N.A.
-     */
-    public int getMinorUnit()
-    {
-        return minorUnit;
-    }
-
-
-    /**
-     * Get the list of countries using this currency.
-     *
-     * @return
-     *         The list of countries using this currency.
-     */
-    public List<CountryCode> getCountryList()
-    {
-        return countryList;
-    }
-
-
-    /**
-     * Check if this currency code represents a fund.
-     *
-     * <p>
-     * {@code CurrencyCode} instances listed below return {@code true}.
-     * </p>
-     *
-     * <ul>
-     * <li>{@link #BOV} Mvdol
-     * <li>{@link #CHE} WIR EUro
-     * <li>{@link #CHW} WIR Franc
-     * <li>{@link #CLF} Unidad de Fomento
-     * <li>{@link #COU} Unidad de Valor Real
-     * <li>{@link #MXV} Mexican Unidad de Inversion (UDI)
-     * <li>{@link #USN} US Dollar (Next day)
-     * <li>{@link #USS} US Dollar (Same day)
-     * <li>{@link #UYI} Uruguay Peso en Unidades
-     * </ul>
-     *
-     * @return
-     *         True if this currency code represents a fund.
-     */
-    public boolean isFund()
-    {
-        return false;
-    }
-
-
-    /**
-     * Check if this currency code represents a precious metal.
-     *
-     * <p>
-     * {@code CurrencyCode} instances listed below return {@code true}.
-     * </p>
-     *
-     * <ul>
-     * <li>{@link #XAG} Silver
-     * <li>{@link #XAU} Gold
-     * <li>{@link #XPD} Palladium
-     * <li>{@link #XPT} Platinum
-     * </ul>
-     *
-     * @return
-     *         True if this currency code represents a precious metal.
-     */
-    public boolean isPreciousMetal()
-    {
-        return false;
-    }
-
-
-    /**
-     * Get the {@link Currency} instance that corresponds to
-     * this currency code.
-     *
-     * <p>
-     * This method is an alias of {@link Currency}{@code .}{@link
-     * Currency#getInstance(String) getInstance}{@code (this.name())}.
-     * The only difference is that this method returns {@code null}
-     * when {@code Currency.getInstance(String)} throws {@code
-     * IllegalArgumentException}.
-     * </p>
-     *
-     * @return
-     *         A {@link Currency} instance, or {@code null} if this
-     *         ISO 4217 code is not supported by the implementation
-     *         of {@link Currency#getInstance(String)}.
-     *
-     * @see Currency#getInstance(String)
-     */
-    public Currency getCurrency()
-    {
-        try
-        {
-            return Currency.getInstance(this.name());
-        }
-        catch (IllegalArgumentException e)
-        {
-            // Currency.getInstance(String) throws IllegalArgumentException
-            // when the given ISO 4217 code is not supported.
-            return null;
-        }
-    }
-
 
     /**
      * Get a {@code CurrencyCode} that corresponds to the given
@@ -2516,22 +2336,16 @@ public enum CurrencyCode
      * this method was an alias of {@code getByCode(code, false)}.
      * </p>
      *
-     * @param code
-     *         <a href="http://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a>
-     *         alpha-3 code.
-     *         When {@code "UNDEFINED"} is given, {@link #UNDEFINED CurrencyCode.UNDEFINED}
-     *         is returned.
-     *
-     * @return
-     *         A {@code CurrencyCode} instance, or {@code null} if not found.
-     *
+     * @param code <a href="http://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a>
+     *             alpha-3 code.
+     *             When {@code "UNDEFINED"} is given, {@link #UNDEFINED CurrencyCode.UNDEFINED}
+     *             is returned.
+     * @return A {@code CurrencyCode} instance, or {@code null} if not found.
      * @see #getByCode(String, boolean)
      */
-    public static CurrencyCode getByCode(String code)
-    {
+    public static CurrencyCode getByCode(String code) {
         return getByCode(code, true);
     }
-
 
     /**
      * Get a {@code CurrencyCode} that corresponds to the given
@@ -2542,105 +2356,75 @@ public enum CurrencyCode
      * This method calls {@link #getByCode(String, boolean) getByCode}{@code (code, false)}.
      * </p>
      *
-     * @param code
-     *         <a href="http://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a>
-     *         alpha-3 code. Or {@code "UNDEFINED"} (case insensitive).
-     *
-     * @return
-     *         A {@code CurrencyCode} instance, or {@code null} if not found.
-     *
-     * @since 1.13
-     *
+     * @param code <a href="http://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a>
+     *             alpha-3 code. Or {@code "UNDEFINED"} (case insensitive).
+     * @return A {@code CurrencyCode} instance, or {@code null} if not found.
      * @see #getByCode(String, boolean)
+     * @since 1.13
      */
-    public static CurrencyCode getByCodeIgnoreCase(String code)
-    {
+    public static CurrencyCode getByCodeIgnoreCase(String code) {
         return getByCode(code, false);
     }
-
 
     /**
      * Get a {@code CurrencyCode} that corresponds to the given
      * <a href="http://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a>
      * alpha-3 code.
      *
-     * @param code
-     *         <a href="http://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a>
-     *         alpha-3 code.
-     *         Or {@code "UNDEFINED"} (its case sensitivity depends on the value of
-     *         {@code caseSensitive}).
-     *
-     * @param caseSensitive
-     *         If {@code true}, the given code should consist of upper-case letters only.
-     *         If {@code false}, this method internally canonicalizes the given code by
-     *         {@link String#toUpperCase()} and then performs search. For example,
-     *         {@code getByCode("jpy", true)} returns {@code null}, but on the other hand,
-     *         {@code getByCode("jpy", false)} returns {@link #JPY CurrencyCode.JPY}.
-     *
-     * @return
-     *         A {@code CurrencyCode} instance, or {@code null} if not found.
+     * @param code          <a href="http://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a>
+     *                      alpha-3 code.
+     *                      Or {@code "UNDEFINED"} (its case sensitivity depends on the value of
+     *                      {@code caseSensitive}).
+     * @param caseSensitive If {@code true}, the given code should consist of upper-case letters only.
+     *                      If {@code false}, this method internally canonicalizes the given code by
+     *                      {@link String#toUpperCase()} and then performs search. For example,
+     *                      {@code getByCode("jpy", true)} returns {@code null}, but on the other hand,
+     *                      {@code getByCode("jpy", false)} returns {@link #JPY CurrencyCode.JPY}.
+     * @return A {@code CurrencyCode} instance, or {@code null} if not found.
      */
-    public static CurrencyCode getByCode(String code, boolean caseSensitive)
-    {
+    public static CurrencyCode getByCode(String code, boolean caseSensitive) {
         code = canonicalize(code, caseSensitive);
 
-        if (code == null)
-        {
+        if (code == null) {
             return null;
         }
 
-        try
-        {
+        try {
             return Enum.valueOf(CurrencyCode.class, code);
-        }
-        catch (IllegalArgumentException e)
-        {
+        } catch (IllegalArgumentException e) {
             return null;
         }
     }
-
 
     /**
      * Get a {@code CurrencyCode} that corresponds to the given
      * <a href="http://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a>
      * numeric code.
      *
-     * @param code
-     *         <a href="http://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a>
-     *         numeric code.
-     *
-     * @return
-     *         A {@code CurrencyCode} instance, or {@code null} if not found.
-     *         If 0 or a negative value is given, {@code null} is returned.
+     * @param code <a href="http://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a>
+     *             numeric code.
+     * @return A {@code CurrencyCode} instance, or {@code null} if not found.
+     * If 0 or a negative value is given, {@code null} is returned.
      */
-    public static CurrencyCode getByCode(int code)
-    {
-        if (code <= 0)
-        {
+    public static CurrencyCode getByCode(int code) {
+        if (code <= 0) {
             return null;
         }
 
         return numericMap.get(code);
     }
 
-
-    private static String canonicalize(String code, boolean caseSensitive)
-    {
-        if (code == null || code.length() == 0)
-        {
+    private static String canonicalize(String code, boolean caseSensitive) {
+        if (code == null || code.length() == 0) {
             return null;
         }
 
-        if (caseSensitive)
-        {
+        if (caseSensitive) {
             return code;
-        }
-        else
-        {
+        } else {
             return code.toUpperCase();
         }
     }
-
 
     /**
      * Get a list of {@code CurrencyCode} instances whose country
@@ -2654,19 +2438,14 @@ public enum CurrencyCode
      * getByCountry(code, false)}.
      * </p>
      *
-     * @param country
-     *         Country code. ISO 3166-1 alpha-2 or alpha-3.
-     *
-     * @return
-     *         List of {@code CurrencyCode} instances. If there is no
-     *         {@code CurrencyCode} instance whose country list contains
-     *         the specified country, the size of the returned list is zero.
+     * @param country Country code. ISO 3166-1 alpha-2 or alpha-3.
+     * @return List of {@code CurrencyCode} instances. If there is no
+     * {@code CurrencyCode} instance whose country list contains
+     * the specified country, the size of the returned list is zero.
      */
-    public static List<CurrencyCode> getByCountry(String country)
-    {
+    public static List<CurrencyCode> getByCountry(String country) {
         return getByCountry(country, true);
     }
-
 
     /**
      * Get a list of {@code CurrencyCode} instances whose country
@@ -2677,21 +2456,15 @@ public enum CurrencyCode
      * getByCountry}{@code (country, false)}.
      * </p>
      *
-     * @param country
-     *         Country code. ISO 3166-1 alpha-2 or alpha-3.
-     *
-     * @return
-     *         List of {@code CurrencyCode} instances. If there is no
-     *         {@code CurrencyCode} instance whose country list contains
-     *         the specified country, the size of the returned list is zero.
-     *
+     * @param country Country code. ISO 3166-1 alpha-2 or alpha-3.
+     * @return List of {@code CurrencyCode} instances. If there is no
+     * {@code CurrencyCode} instance whose country list contains
+     * the specified country, the size of the returned list is zero.
      * @since 1.13
      */
-    public static List<CurrencyCode> getByCountryIgnoreCase(String country)
-    {
+    public static List<CurrencyCode> getByCountryIgnoreCase(String country) {
         return getByCountry(country, false);
     }
-
 
     /**
      * Get a list of {@code CurrencyCode} instances whose country
@@ -2704,51 +2477,36 @@ public enum CurrencyCode
      * (country, caseSensitive))}.
      * </p>
      *
-     * @param country
-     *         Country code. ISO 3166-1 alpha-2 or alpha-3.
-     *
-     * @param caseSensitive
-     *         If {@code true}, the given code should consist of uppercase
-     *         letters only. If {@code false}, case is ignored.
-     *
-     * @return
-     *         List of {@code CurrencyCode} instances. If there is no
-     *         {@code CurrencyCode} instance whose country list contains
-     *         the specified country, the size of the returned list is zero.
+     * @param country       Country code. ISO 3166-1 alpha-2 or alpha-3.
+     * @param caseSensitive If {@code true}, the given code should consist of uppercase
+     *                      letters only. If {@code false}, case is ignored.
+     * @return List of {@code CurrencyCode} instances. If there is no
+     * {@code CurrencyCode} instance whose country list contains
+     * the specified country, the size of the returned list is zero.
      */
-    public static List<CurrencyCode> getByCountry(String country, boolean caseSensitive)
-    {
+    public static List<CurrencyCode> getByCountry(String country, boolean caseSensitive) {
         return getByCountry(CountryCode.getByCode(country, caseSensitive));
     }
-
 
     /**
      * Get a list of {@code CurrencyCode} instances whose country list
      * contains the specified country.
      *
-     * @param country
-     *         {@code CountryCode} instance that represents a country.
-     *
-     * @return
-     *         List of {@code CurrencyCode} instances. If there is no
-     *         {@code CurrencyCode} instance whose country list contains
-     *         the specified country, the size of the returned list is zero.
+     * @param country {@code CountryCode} instance that represents a country.
+     * @return List of {@code CurrencyCode} instances. If there is no
+     * {@code CurrencyCode} instance whose country list contains
+     * the specified country, the size of the returned list is zero.
      */
-    public static List<CurrencyCode> getByCountry(CountryCode country)
-    {
+    public static List<CurrencyCode> getByCountry(CountryCode country) {
         List<CurrencyCode> list = new ArrayList<CurrencyCode>();
 
-        if (country == null)
-        {
+        if (country == null) {
             return list;
         }
 
-        for (CurrencyCode currency : values())
-        {
-            for (CountryCode cc : currency.countryList)
-            {
-                if (cc == country)
-                {
+        for (CurrencyCode currency : values()) {
+            for (CountryCode cc : currency.countryList) {
+                if (cc == country) {
                     list.add(currency);
                 }
             }
@@ -2756,7 +2514,6 @@ public enum CurrencyCode
 
         return list;
     }
-
 
     /**
      * Get a list of {@code CurrencyCode} by a name regular expression.
@@ -2766,25 +2523,15 @@ public enum CurrencyCode
      * findByName}{@code (Pattern.compile(regex))}.
      * </p>
      *
-     * @param regex
-     *         Regular expression for names.
-     *
-     * @return
-     *         List of {@code CurrencyCode}. If nothing has matched,
-     *         an empty list is returned.
-     *
-     * @throws IllegalArgumentException
-     *         {@code regex} is {@code null}.
-     *
-     * @throws java.util.regex.PatternSyntaxException
-     *         {@code regex} failed to be compiled.
-     *
+     * @param regex Regular expression for names.
+     * @return List of {@code CurrencyCode}. If nothing has matched,
+     * an empty list is returned.
+     * @throws IllegalArgumentException               {@code regex} is {@code null}.
+     * @throws java.util.regex.PatternSyntaxException {@code regex} failed to be compiled.
      * @since 1.11
      */
-    public static List<CurrencyCode> findByName(String regex)
-    {
-        if (regex == null)
-        {
+    public static List<CurrencyCode> findByName(String regex) {
+        if (regex == null) {
             throw new IllegalArgumentException("regex is null.");
         }
 
@@ -2794,7 +2541,6 @@ public enum CurrencyCode
 
         return findByName(pattern);
     }
-
 
     /**
      * Get a list of {@code CurrencyCode} by a name pattern.
@@ -2818,36 +2564,136 @@ public enum CurrencyCode
      * <li>{@link #RUR} : Russian Ruble
      * </ol>
      *
-     * @param pattern
-     *         Pattern to match names.
-     *
-     * @return
-     *         List of {@code CurrencyCde}. If nothing has matched,
-     *         an empty list is returned.
-     *
-     * @throws IllegalArgumentException
-     *         {@code pattern} is {@code null}.
-     *
+     * @param pattern Pattern to match names.
+     * @return List of {@code CurrencyCde}. If nothing has matched,
+     * an empty list is returned.
+     * @throws IllegalArgumentException {@code pattern} is {@code null}.
      * @since 1.11
      */
-    public static List<CurrencyCode> findByName(Pattern pattern)
-    {
-        if (pattern == null)
-        {
+    public static List<CurrencyCode> findByName(Pattern pattern) {
+        if (pattern == null) {
             throw new IllegalArgumentException("pattern is null.");
         }
 
         List<CurrencyCode> list = new ArrayList<CurrencyCode>();
 
-        for (CurrencyCode entry : values())
-        {
+        for (CurrencyCode entry : values()) {
             // If the name matches the given pattern.
-            if (pattern.matcher(entry.getName()).matches())
-            {
+            if (pattern.matcher(entry.getName()).matches()) {
                 list.add(entry);
             }
         }
 
         return list;
+    }
+
+    /**
+     * Get the currency name.
+     *
+     * @return The currency name.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Get the <a href="http://en.wikipedia.org/wiki/ISO_4217"
+     * >ISO 4217</a> numeric code.
+     *
+     * @return The <a href="http://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a>
+     * numeric code.
+     */
+    public int getNumeric() {
+        return numeric;
+    }
+
+    /**
+     * Get the minor unit.
+     *
+     * @return The minor unit. {@code -1} means N.A.
+     */
+    public int getMinorUnit() {
+        return minorUnit;
+    }
+
+    /**
+     * Get the list of countries using this currency.
+     *
+     * @return The list of countries using this currency.
+     */
+    public List<CountryCode> getCountryList() {
+        return countryList;
+    }
+
+    /**
+     * Check if this currency code represents a fund.
+     *
+     * <p>
+     * {@code CurrencyCode} instances listed below return {@code true}.
+     * </p>
+     *
+     * <ul>
+     * <li>{@link #BOV} Mvdol
+     * <li>{@link #CHE} WIR EUro
+     * <li>{@link #CHW} WIR Franc
+     * <li>{@link #CLF} Unidad de Fomento
+     * <li>{@link #COU} Unidad de Valor Real
+     * <li>{@link #MXV} Mexican Unidad de Inversion (UDI)
+     * <li>{@link #USN} US Dollar (Next day)
+     * <li>{@link #USS} US Dollar (Same day)
+     * <li>{@link #UYI} Uruguay Peso en Unidades
+     * </ul>
+     *
+     * @return True if this currency code represents a fund.
+     */
+    public boolean isFund() {
+        return false;
+    }
+
+    /**
+     * Check if this currency code represents a precious metal.
+     *
+     * <p>
+     * {@code CurrencyCode} instances listed below return {@code true}.
+     * </p>
+     *
+     * <ul>
+     * <li>{@link #XAG} Silver
+     * <li>{@link #XAU} Gold
+     * <li>{@link #XPD} Palladium
+     * <li>{@link #XPT} Platinum
+     * </ul>
+     *
+     * @return True if this currency code represents a precious metal.
+     */
+    public boolean isPreciousMetal() {
+        return false;
+    }
+
+    /**
+     * Get the {@link Currency} instance that corresponds to
+     * this currency code.
+     *
+     * <p>
+     * This method is an alias of {@link Currency}{@code .}{@link
+     * Currency#getInstance(String) getInstance}{@code (this.name())}.
+     * The only difference is that this method returns {@code null}
+     * when {@code Currency.getInstance(String)} throws {@code
+     * IllegalArgumentException}.
+     * </p>
+     *
+     * @return A {@link Currency} instance, or {@code null} if this
+     * ISO 4217 code is not supported by the implementation
+     * of {@link Currency#getInstance(String)}.
+     * @see Currency#getInstance(String)
+     */
+    public Currency getCurrency() {
+        try {
+            return Currency.getInstance(this.name());
+        } catch (IllegalArgumentException e) {
+            // Currency.getInstance(String) throws IllegalArgumentException
+            // when the given ISO 4217 code is not supported.
+            return null;
+        }
     }
 }

@@ -23,8 +23,9 @@ public interface SavedSearchesResourcesAsync {
     /**
      * Returns the authenticated user's saved search queries.
      * <br>This method calls https://api.twitter.com/1.1/saved_searches.json
+     * <p>
+     * blocking.
      *
-blocking.
      * @see <a href="https://dev.twitter.com/docs/api/1.1/get/saved_searches">GET saved_searches | Twitter Developers</a>
      * @since Twitter4J 3.0.0
      */

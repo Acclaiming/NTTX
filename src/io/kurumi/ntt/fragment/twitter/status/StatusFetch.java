@@ -8,7 +8,9 @@ import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.utils.NTT;
+
 import java.util.LinkedList;
+
 import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Status;
@@ -17,258 +19,259 @@ import twitter4j.TwitterException;
 
 public class StatusFetch extends TwitterFunction {
 
-	@Override
-	public void functions(LinkedList<String> names) {
+    @Override
+    public void functions(LinkedList<String> names) {
 
-		names.add("fetch");
+        names.add("fetch");
 
-	}
-	
-	@Override
-	public boolean useCurrent() {
+    }
 
-		return true;
+    @Override
+    public boolean useCurrent() {
 
-	}
+        return true;
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+    }
 
-		if (params.length == 0) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
-			msg.send("/fetch <用户ID|用户名|链接>").exec();
+        if (params.length == 0) {
 
-			return;
+            msg.send("/fetch <用户ID|用户名|链接>").exec();
 
-		}
+            return;
 
-		Twitter api = account.createApi();
+        }
 
-		String target = null;
-		long targetL = -1;
+        Twitter api = account.createApi();
 
-		UserArchive archive = null;
+        String target = null;
+        long targetL = -1;
 
-		if (NumberUtil.isNumber(params[0])) {
+        UserArchive archive = null;
 
-			targetL = NumberUtil.parseLong(params[0]);
+        if (NumberUtil.isNumber(params[0])) {
 
-		} else {
+            targetL = NumberUtil.parseLong(params[0]);
 
-			target = NTT.parseScreenName(params[0]);
+        } else {
 
-		}
+            target = NTT.parseScreenName(params[0]);
 
-		Msg status = msg.send("正在拉取...").send();
+        }
 
-		if (UserArchive.contains(targetL)) {
+        Msg status = msg.send("正在拉取...").send();
 
-			archive = UserArchive.get(targetL);
+        if (UserArchive.contains(targetL)) {
 
-		} else if (UserArchive.contains(target)) {
+            archive = UserArchive.get(targetL);
 
-			archive = UserArchive.get(target);
+        } else if (UserArchive.contains(target)) {
 
-		}
+            archive = UserArchive.get(target);
 
-		boolean accessable = false;
+        }
 
-		TwitterException exc = null;
+        boolean accessable = false;
 
-		status.edit("正在检查可用...").exec();
+        TwitterException exc = null;
 
-		ResponseList<Status> tl = null;
+        status.edit("正在检查可用...").exec();
 
-		try {
+        ResponseList<Status> tl = null;
 
-			archive = UserArchive.save(targetL == -1 ? api.showUser(target) : api.showUser(targetL));
+        try {
 
-			try {
+            archive = UserArchive.save(targetL == -1 ? api.showUser(target) : api.showUser(targetL));
 
-				tl = api.getUserTimeline(archive.id,new Paging().count(200));
+            try {
 
-				status.edit("检查完成...").exec();
+                tl = api.getUserTimeline(archive.id, new Paging().count(200));
 
-				accessable = true;
+                status.edit("检查完成...").exec();
 
+                accessable = true;
 
-			} catch (TwitterException e) {
 
-				exc = e;
+            } catch (TwitterException e) {
 
-			}
+                exc = e;
 
-		} catch (TwitterException ex) {
+            }
 
-			if (ex.getErrorCode() != 136) {
+        } catch (TwitterException ex) {
 
-				status.edit(NTT.parseTwitterException(ex)).exec();
+            if (ex.getErrorCode() != 136) {
 
-				return;
+                status.edit(NTT.parseTwitterException(ex)).exec();
 
-			}
+                return;
 
-			exc = ex;
+            }
 
-		}
+            exc = ex;
 
-		if (!accessable) {
+        }
 
-			status.edit("尝试拉取...").exec();
+        if (!accessable) {
 
-			TAuth accessableAuth = NTT.loopFindAccessable(targetL == -1 ? target : targetL);
+            status.edit("尝试拉取...").exec();
 
-			if (accessableAuth == null) {
+            TAuth accessableAuth = NTT.loopFindAccessable(targetL == -1 ? target : targetL);
 
-				if (exc != null) {
+            if (accessableAuth == null) {
 
-					status.edit("尝试失败",NTT.parseTwitterException(exc)).exec();
+                if (exc != null) {
 
-					return;
+                    status.edit("尝试失败", NTT.parseTwitterException(exc)).exec();
 
-				} else {
+                    return;
 
-					status.edit("尝试失败","这个人锁推了...").exec();
+                } else {
 
-					return;
+                    status.edit("尝试失败", "这个人锁推了...").exec();
 
-				}
+                    return;
 
-			}
+                }
 
-			api = accessableAuth.createApi();
+            }
 
-			if (archive == null) {
+            api = accessableAuth.createApi();
 
-				archive = targetL == -1 ? UserArchive.get(target) : UserArchive.get(targetL);
+            if (archive == null) {
 
-			}
+                archive = targetL == -1 ? UserArchive.get(target) : UserArchive.get(targetL);
 
-		}
+            }
 
-		int count = 0;
+        }
 
-		int exists = 0;
+        int count = 0;
 
-		boolean all = params.length > 1 && params[1].equals("--all");
+        int exists = 0;
 
-		try {
+        boolean all = params.length > 1 && params[1].equals("--all");
 
-			if (tl == null) {
+        try {
 
-				tl = api.getUserTimeline(archive.id,new Paging().count(200));
+            if (tl == null) {
 
-			}
-			if (tl.isEmpty()) {
+                tl = api.getUserTimeline(archive.id, new Paging().count(200));
 
-				status.edit("这个用户没有发过推文...").exec();
+            }
+            if (tl.isEmpty()) {
 
-				return;
+                status.edit("这个用户没有发过推文...").exec();
 
-			}
+                return;
 
-			long sinceId = -1;
+            }
 
-			for (Status s : tl) {
+            long sinceId = -1;
 
-				if (s.getId() < sinceId || sinceId == -1) {
+            for (Status s : tl) {
 
-					sinceId = s.getId();
+                if (s.getId() < sinceId || sinceId == -1) {
 
-				}
+                    sinceId = s.getId();
 
-				if (!all) {
+                }
 
-					if (exists >= 20) {
+                if (!all) {
 
-						break;
+                    if (exists >= 20) {
 
-					}
+                        break;
 
-					if (StatusArchive.data.containsId(s.getId())) {
+                    }
 
-						exists ++;
+                    if (StatusArchive.data.containsId(s.getId())) {
 
-						count --;
+                        exists++;
 
-					} else {
+                        count--;
 
-						exists = 0;
+                    } else {
 
-					}
+                        exists = 0;
 
-				}
+                    }
 
-				StatusArchive.save(s).loop(api);
+                }
 
-				count ++;
+                StatusArchive.save(s).loop(api);
 
-			}
+                count++;
 
-			status.edit("正在拉取中... : ",count + "条推文已拉取").exec();
+            }
 
-			w:while (!tl.isEmpty()) {
+            status.edit("正在拉取中... : ", count + "条推文已拉取").exec();
 
-				tl = api.getUserTimeline(archive.id,new Paging().count(200).maxId(sinceId - 1));
+            w:
+            while (!tl.isEmpty()) {
 
-				if (exists >= 10) {
+                tl = api.getUserTimeline(archive.id, new Paging().count(200).maxId(sinceId - 1));
 
-					break w;
+                if (exists >= 10) {
 
-				}
+                    break w;
 
-				for (Status s : tl) {
+                }
 
-					if (s.getId() < sinceId || sinceId == -1) {
+                for (Status s : tl) {
 
-						sinceId = s.getId();
+                    if (s.getId() < sinceId || sinceId == -1) {
 
-					}
+                        sinceId = s.getId();
 
-					if (!all) {
+                    }
 
-						if (exists >= 10) {
+                    if (!all) {
 
-							break w;
+                        if (exists >= 10) {
 
-						}
+                            break w;
 
-						if (StatusArchive.data.containsId(s.getId())) {
+                        }
 
-							exists ++;
+                        if (StatusArchive.data.containsId(s.getId())) {
 
-							count --;
+                            exists++;
 
-						} else {
+                            count--;
 
-							exists = 0;
+                        } else {
 
-						}
+                            exists = 0;
 
-					}
+                        }
 
+                    }
 
-					StatusArchive.save(s).loop(api);
 
-					count ++;
+                    StatusArchive.save(s).loop(api);
 
-				}
+                    count++;
 
+                }
 
-				if (tl.isEmpty()) break;
 
-				status.edit("正在拉取中...",count + "条推文已拉取").exec();
+                if (tl.isEmpty()) break;
 
-			}
+                status.edit("正在拉取中...", count + "条推文已拉取").exec();
 
-			status.edit("已拉取完成 :",count + "条推文已拉取").exec();
+            }
 
-		} catch (TwitterException e) {
+            status.edit("已拉取完成 :", count + "条推文已拉取").exec();
 
-			status.edit("拉取失败",NTT.parseTwitterException(e)).exec();
+        } catch (TwitterException e) {
 
-		}
+            status.edit("拉取失败", NTT.parseTwitterException(e)).exec();
 
-	}
+        }
+
+    }
 
 }

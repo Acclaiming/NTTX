@@ -9,137 +9,139 @@ import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.fragment.twitter.status.MessagePoint;
 import io.kurumi.ntt.utils.NTT;
+
 import java.util.LinkedList;
+
 import twitter4j.Relationship;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 public class UnFollow extends TwitterFunction {
 
-	@Override
-	public void functions(LinkedList<String> names) {
+    @Override
+    public void functions(LinkedList<String> names) {
 
-		names.add("unfo");
+        names.add("unfo");
 
-	}
-	
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
-		
-		Twitter api = account.createApi();
-		
-		if (params.length > 0) {
-			
-			for (String target : params) {
-				
-				long targetId;
-				
-				if (NumberUtil.isNumber(target)) {
-					
-					targetId = NumberUtil.parseLong(target);
-					
-				} else {
-					
-					String screenName = NTT.parseScreenName(target);
-					
-					try {
-						
-						targetId =  api.showUser(screenName).getId();
-						
-					} catch (TwitterException e) {
-						
-						msg.send(NTT.parseTwitterException(e)).exec();
-						
-						return;
-						
-					}
+    }
 
-				}
-				
-				unfollow(user,msg,account,api,targetId);
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
-			}
-			
-		} else if (msg.targetChatId == -1 && msg.isPrivate() && msg.isReply()) {
-			
-			MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
+        Twitter api = account.createApi();
 
-			if (point == null) {
-				
-				msg.send("咱不知道目标是谁 (｡í _ ì｡)").exec();
-				
-				return;
-				
-			}
-			
-			long targetUser;
-			
-			if (point.type == 1) {
-				
-				targetUser = StatusArchive.get(point.targetId).from;
-				
-			} else {
-				
-				targetUser = point.targetId;
-				
-			}
-			
-			unfollow(user,msg,account,api,targetUser);
-			
-		} else {
-			
-			msg.send("/unfo <ID|用户名|链接> / 或对私聊消息回复 (如果你觉得这条消息包含一个用户或推文)").exec();
-			
-			return;
-			
-		}
-		
-	}
+        if (params.length > 0) {
 
-	private void unfollow(UserData user,Msg msg,TAuth account,Twitter api,long targetId) {
-		
-		UserArchive archive;
+            for (String target : params) {
 
-		try {
+                long targetId;
 
-			archive = UserArchive.save(api.showUser(targetId));
+                if (NumberUtil.isNumber(target)) {
 
-		} catch (TwitterException e) {
+                    targetId = NumberUtil.parseLong(target);
 
-			msg.send(NTT.parseTwitterException(e)).exec();
+                } else {
 
-			return;
+                    String screenName = NTT.parseScreenName(target);
 
-		}
+                    try {
 
-		try {
+                        targetId = api.showUser(screenName).getId();
 
-			Relationship ship = api.showFriendship(account.id,targetId);
+                    } catch (TwitterException e) {
 
-			if (ship.isSourceBlockingTarget()) {
+                        msg.send(NTT.parseTwitterException(e)).exec();
 
-				msg.send("你已经把 " + archive.urlHtml() + " 屏蔽了").html().point(0,targetId);
+                        return;
 
-				return;
+                    }
 
-			} else if (!ship.isSourceFollowingTarget()) {
+                }
 
-				msg.send("你没有关注了 " + archive.urlHtml()).html().point(0,targetId);
+                unfollow(user, msg, account, api, targetId);
 
-				return;
+            }
 
-			}
+        } else if (msg.targetChatId == -1 && msg.isPrivate() && msg.isReply()) {
 
-			api.destroyFriendship(targetId);
+            MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
 
-			msg.send("已取关 " + archive.urlHtml() + " ~").html().point(0,targetId);
+            if (point == null) {
 
-		} catch (TwitterException e) {
+                msg.send("咱不知道目标是谁 (｡í _ ì｡)").exec();
 
-			msg.send("取关失败 :",NTT.parseTwitterException(e)).exec();
+                return;
 
-		}
-		
-	}
-	
+            }
+
+            long targetUser;
+
+            if (point.type == 1) {
+
+                targetUser = StatusArchive.get(point.targetId).from;
+
+            } else {
+
+                targetUser = point.targetId;
+
+            }
+
+            unfollow(user, msg, account, api, targetUser);
+
+        } else {
+
+            msg.send("/unfo <ID|用户名|链接> / 或对私聊消息回复 (如果你觉得这条消息包含一个用户或推文)").exec();
+
+            return;
+
+        }
+
+    }
+
+    private void unfollow(UserData user, Msg msg, TAuth account, Twitter api, long targetId) {
+
+        UserArchive archive;
+
+        try {
+
+            archive = UserArchive.save(api.showUser(targetId));
+
+        } catch (TwitterException e) {
+
+            msg.send(NTT.parseTwitterException(e)).exec();
+
+            return;
+
+        }
+
+        try {
+
+            Relationship ship = api.showFriendship(account.id, targetId);
+
+            if (ship.isSourceBlockingTarget()) {
+
+                msg.send("你已经把 " + archive.urlHtml() + " 屏蔽了").html().point(0, targetId);
+
+                return;
+
+            } else if (!ship.isSourceFollowingTarget()) {
+
+                msg.send("你没有关注了 " + archive.urlHtml()).html().point(0, targetId);
+
+                return;
+
+            }
+
+            api.destroyFriendship(targetId);
+
+            msg.send("已取关 " + archive.urlHtml() + " ~").html().point(0, targetId);
+
+        } catch (TwitterException e) {
+
+            msg.send("取关失败 :", NTT.parseTwitterException(e)).exec();
+
+        }
+
+    }
+
 }

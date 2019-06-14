@@ -60,6 +60,61 @@ import java.util.Date;
         init(json);
     }
 
+    /*package*/
+    static PagableResponseList<UserList> createPagableUserListList(HttpResponse res, Configuration conf) throws TwitterException {
+        try {
+            if (conf.isJSONStoreEnabled()) {
+                TwitterObjectFactory.clearThreadLocalMap();
+            }
+            JSONObject json = res.asJSONObject();
+            JSONArray list = json.getJSONArray("lists");
+            int size = list.length();
+            PagableResponseList<UserList> users =
+                    new PagableResponseListImpl<UserList>(size, json, res);
+            for (int i = 0; i < size; i++) {
+                JSONObject userListJson = list.getJSONObject(i);
+                UserList userList = new UserListJSONImpl(userListJson);
+                users.add(userList);
+                if (conf.isJSONStoreEnabled()) {
+                    TwitterObjectFactory.registerJSONObject(userList, userListJson);
+                }
+            }
+            if (conf.isJSONStoreEnabled()) {
+                TwitterObjectFactory.registerJSONObject(users, json);
+            }
+            return users;
+        } catch (JSONException jsone) {
+            throw new TwitterException(jsone);
+        }
+    }
+
+    /*package*/
+    static ResponseList<UserList> createUserListList(HttpResponse res, Configuration conf) throws TwitterException {
+        try {
+            if (conf.isJSONStoreEnabled()) {
+                TwitterObjectFactory.clearThreadLocalMap();
+            }
+            JSONArray list = res.asJSONArray();
+            int size = list.length();
+            ResponseList<UserList> users =
+                    new ResponseListImpl<UserList>(size, res);
+            for (int i = 0; i < size; i++) {
+                JSONObject userListJson = list.getJSONObject(i);
+                UserList userList = new UserListJSONImpl(userListJson);
+                users.add(userList);
+                if (conf.isJSONStoreEnabled()) {
+                    TwitterObjectFactory.registerJSONObject(userList, userListJson);
+                }
+            }
+            if (conf.isJSONStoreEnabled()) {
+                TwitterObjectFactory.registerJSONObject(users, list);
+            }
+            return users;
+        } catch (JSONException jsone) {
+            throw new TwitterException(jsone);
+        }
+    }
+
     private void init(JSONObject json) throws TwitterException {
         id = ParseUtil.getLong("id", json);
         name = ParseUtil.getRawString("name", json);
@@ -155,61 +210,6 @@ import java.util.Date;
     @Override
     public User getUser() {
         return user;
-    }
-
-    /*package*/
-    static PagableResponseList<UserList> createPagableUserListList(HttpResponse res, Configuration conf) throws TwitterException {
-        try {
-            if (conf.isJSONStoreEnabled()) {
-                TwitterObjectFactory.clearThreadLocalMap();
-            }
-            JSONObject json = res.asJSONObject();
-            JSONArray list = json.getJSONArray("lists");
-            int size = list.length();
-            PagableResponseList<UserList> users =
-                    new PagableResponseListImpl<UserList>(size, json, res);
-            for (int i = 0; i < size; i++) {
-                JSONObject userListJson = list.getJSONObject(i);
-                UserList userList = new UserListJSONImpl(userListJson);
-                users.add(userList);
-                if (conf.isJSONStoreEnabled()) {
-                    TwitterObjectFactory.registerJSONObject(userList, userListJson);
-                }
-            }
-            if (conf.isJSONStoreEnabled()) {
-                TwitterObjectFactory.registerJSONObject(users, json);
-            }
-            return users;
-        } catch (JSONException jsone) {
-            throw new TwitterException(jsone);
-        }
-    }
-
-    /*package*/
-    static ResponseList<UserList> createUserListList(HttpResponse res, Configuration conf) throws TwitterException {
-        try {
-            if (conf.isJSONStoreEnabled()) {
-                TwitterObjectFactory.clearThreadLocalMap();
-            }
-            JSONArray list = res.asJSONArray();
-            int size = list.length();
-            ResponseList<UserList> users =
-                    new ResponseListImpl<UserList>(size, res);
-            for (int i = 0; i < size; i++) {
-                JSONObject userListJson = list.getJSONObject(i);
-                UserList userList = new UserListJSONImpl(userListJson);
-                users.add(userList);
-                if (conf.isJSONStoreEnabled()) {
-                    TwitterObjectFactory.registerJSONObject(userList, userListJson);
-                }
-            }
-            if (conf.isJSONStoreEnabled()) {
-                TwitterObjectFactory.registerJSONObject(users, list);
-            }
-            return users;
-        } catch (JSONException jsone) {
-            throw new TwitterException(jsone);
-        }
     }
 
     @Override

@@ -27,6 +27,14 @@ import java.io.InputStream;
  */
 final class SiteStreamsImpl extends StatusStreamBase {
 
+    protected static final RawStreamListener[] EMPTY = new RawStreamListener[0];
+    private static final ThreadLocal<Long> forUser =
+            new ThreadLocal<Long>() {
+                @Override
+                protected Long initialValue() {
+                    return 0L;
+                }
+            };
     private final StreamController cs;
 
     /*package*/ SiteStreamsImpl(Dispatcher dispatcher, InputStream stream, Configuration conf, StreamController cs) throws IOException {
@@ -80,14 +88,6 @@ final class SiteStreamsImpl extends StatusStreamBase {
     protected void onClose() {
         cs.setControlURI(null);
     }
-
-    private static final ThreadLocal<Long> forUser =
-            new ThreadLocal<Long>() {
-                @Override
-                protected Long initialValue() {
-                    return 0L;
-                }
-            };
 
     @Override
     protected void onMessage(String rawString, RawStreamListener[] listeners) throws TwitterException {
@@ -268,22 +268,22 @@ final class SiteStreamsImpl extends StatusStreamBase {
     }
 
     @Override
-    void onQuotedTweet(JSONObject source, JSONObject target, JSONObject targetObject,StreamListener[] listeners) throws TwitterException {
-       for (StreamListener listener : listeners) {
+    void onQuotedTweet(JSONObject source, JSONObject target, JSONObject targetObject, StreamListener[] listeners) throws TwitterException {
+        for (StreamListener listener : listeners) {
             ((SiteStreamsListener) listener).onQuotedTweet(asUser(source), asUser(target), asStatus(targetObject));
-       }
+        }
     }
 
     @Override
     void onMute(JSONObject source, JSONObject target, StreamListener[] listeners) throws TwitterException {
-        for (StreamListener listener: listeners) {
+        for (StreamListener listener : listeners) {
             ((SiteStreamsListener) listener).onMute(forUser.get(), asUser(source), asUser(target));
         }
     }
 
     @Override
     void onUnmute(JSONObject source, JSONObject target, StreamListener[] listeners) throws TwitterException {
-        for (StreamListener listener: listeners) {
+        for (StreamListener listener : listeners) {
             ((SiteStreamsListener) listener).onUnmute(forUser.get(), asUser(source), asUser(target));
         }
     }
@@ -294,8 +294,6 @@ final class SiteStreamsImpl extends StatusStreamBase {
             listener.onException(ex);
         }
     }
-
-    protected static final RawStreamListener[] EMPTY = new RawStreamListener[0];
 
     @Override
     public void next(StatusListener listener) throws TwitterException {

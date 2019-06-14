@@ -18,36 +18,36 @@ public class Send extends AbstractSend<Send> {
 
     private SendMessage request;
 
-    public Send(Fragment fragment,String chatId,String... msg) {
+    public Send(Fragment fragment, String chatId, String... msg) {
 
-        this(null,fragment,chatId,msg);
-
-    }
-
-    public Send(Fragment fragment,long chatId,String... msg) {
-
-        this(null,fragment,chatId,msg);
+        this(null, fragment, chatId, msg);
 
     }
 
-    public Send(String chatId,String... msg) {
+    public Send(Fragment fragment, long chatId, String... msg) {
 
-        this(null,Launcher.INSTANCE,chatId,msg);
-
-    }
-
-    public Send(long chatId,String... msg) {
-
-        this(null,Launcher.INSTANCE,chatId,msg);
+        this(null, fragment, chatId, msg);
 
     }
 
+    public Send(String chatId, String... msg) {
 
-    private Send(Void v,Fragment fragment,Object chatId,String... msg) {
+        this(null, Launcher.INSTANCE, chatId, msg);
+
+    }
+
+    public Send(long chatId, String... msg) {
+
+        this(null, Launcher.INSTANCE, chatId, msg);
+
+    }
+
+
+    private Send(Void v, Fragment fragment, Object chatId, String... msg) {
 
         super(fragment);
 
-        request = new SendMessage(chatId,ArrayUtil.join(msg,"\n"));
+        request = new SendMessage(chatId, ArrayUtil.join(msg, "\n"));
 
         this.fragment = fragment;
 
@@ -83,7 +83,7 @@ public class Send extends AbstractSend<Send> {
 
     public Send replyTo(Msg msg) {
 
-		if (msg == null) return this;
+        if (msg == null) return this;
 
         replyToMessageId(msg.messageId());
 
@@ -170,13 +170,13 @@ public class Send extends AbstractSend<Send> {
 
         if (resp.isOk()) {
 
-            NTT.tryDelete(delay,new Msg(fragment,resp.message()));
+            NTT.tryDelete(delay, new Msg(fragment, resp.message()));
 
         }
 
     }
 
-	public void failedWith() {
+    public void failedWith() {
 
         failedWith(5000);
 
@@ -190,7 +190,7 @@ public class Send extends AbstractSend<Send> {
 
         if (resp.isOk()) {
 
-            NTT.tryDelete(delay,origin,new Msg(fragment,resp.message()));
+            NTT.tryDelete(delay, origin, new Msg(fragment, resp.message()));
 
         }
 
@@ -210,43 +210,43 @@ public class Send extends AbstractSend<Send> {
 
         if (resp.isOk()) {
 
-            NTT.tryDelete(delay,new Msg(fragment,resp.message()));
+            NTT.tryDelete(delay, new Msg(fragment, resp.message()));
 
         }
 
     }
-	
-	public Send withCancel() {
-		
-		request.setText(request.getText() + "\n\n" + "使用 /cancel 取消 ~");
-		
-		return this;
-		
-	}
-    
+
+    public Send withCancel() {
+
+        request.setText(request.getText() + "\n\n" + "使用 /cancel 取消 ~");
+
+        return this;
+
+    }
+
     public Msg send() {
 
         SendResponse resp = exec();
 
         if (resp == null || !resp.isOk()) return null;
 
-        return new Msg(fragment,resp.message());
+        return new Msg(fragment, resp.message());
 
     }
-	
-	public SendResponse point(int type,long targetId) {
-		
-		SendResponse resp = exec();
-		
-		if (resp.isOk() || resp.message().chat().type() == Chat.Type.Private) {
-			
-			MessagePoint.set(resp.message().messageId(),type,targetId);
-			
-		}
-		
-		return resp;
 
-	}
+    public SendResponse point(int type, long targetId) {
+
+        SendResponse resp = exec();
+
+        if (resp.isOk() || resp.message().chat().type() == Chat.Type.Private) {
+
+            MessagePoint.set(resp.message().messageId(), type, targetId);
+
+        }
+
+        return resp;
+
+    }
 
     @Override
     public SendResponse exec() {
@@ -255,7 +255,7 @@ public class Send extends AbstractSend<Send> {
 
         while (arr.length > 4096) {
 
-            Character[] chars = (Character[])ArrayUtil.sub(ArrayUtil.wrap((Object)arr),0,4096);
+            Character[] chars = (Character[]) ArrayUtil.sub(ArrayUtil.wrap((Object) arr), 0, 4096);
 
             int index = chars.length;
 
@@ -263,19 +263,19 @@ public class Send extends AbstractSend<Send> {
 
             for (Character c : ArrayUtil.reverse(chars)) {
 
-                index --;
+                index--;
 
                 if (c == '\n') {
 
                     char[] send = new char[index];
 
-                    ArrayUtil.copy(arr,send,index);
+                    ArrayUtil.copy(arr, send, index);
 
                     fork(String.valueOf(send)).exec();
 
-                    char[] subed = new char[arr.length - index - 1]; 
+                    char[] subed = new char[arr.length - index - 1];
 
-                    ArrayUtil.copy(arr,index,subed,0,subed.length);
+                    ArrayUtil.copy(arr, index, subed, 0, subed.length);
 
                     request.setText(String.valueOf(subed));
 
@@ -293,13 +293,13 @@ public class Send extends AbstractSend<Send> {
 
                 char[] send = new char[4096];
 
-                ArrayUtil.copy(arr,send,4096);
+                ArrayUtil.copy(arr, send, 4096);
 
                 fork(String.valueOf(send)).exec();
 
                 char[] subed = new char[arr.length - 4096];
 
-                ArrayUtil.copy(arr,4095,subed,0,subed.length);
+                ArrayUtil.copy(arr, 4095, subed, 0, subed.length);
 
                 request.setText(String.valueOf(subed));
 
@@ -314,22 +314,22 @@ public class Send extends AbstractSend<Send> {
             SendResponse resp = fragment.bot().execute(request);
 
             if (!resp.isOk()) {
-				
-				if (resp.errorCode() == 403 && !(request.chatId instanceof String) && ((long)request.chatId > 0)) {
-					
-					UserData user = UserData.get((long)request.chatId);
 
-					if (user != null) {
-						
-						user.contactable = false;
-						
-						UserData.userDataIndex.put(user.id,user);
-						
-						UserData.data.setById(user.id,user);
-						
-					}
-					
-				}
+                if (resp.errorCode() == 403 && !(request.chatId instanceof String) && ((long) request.chatId > 0)) {
+
+                    UserData user = UserData.get((long) request.chatId);
+
+                    if (user != null) {
+
+                        user.contactable = false;
+
+                        UserData.userDataIndex.put(user.id, user);
+
+                        UserData.data.setById(user.id, user);
+
+                    }
+
+                }
 
                 BotLog.infoWithStack("消息发送失败 " + resp.errorCode() + " : " + resp.description());
 
@@ -349,7 +349,7 @@ public class Send extends AbstractSend<Send> {
 
     public Send fork(String... msg) {
 
-        Send send = new Send(null,fragment,request.getChatId(),msg);
+        Send send = new Send(null, fragment, request.getChatId(), msg);
 
         if (request.mode != null) {
 

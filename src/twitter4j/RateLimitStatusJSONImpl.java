@@ -37,6 +37,17 @@ import java.util.Map;
     private int resetTimeInSeconds;
     private int secondsUntilReset;
 
+    private RateLimitStatusJSONImpl(int limit, int remaining, int resetTimeInSeconds) {
+        this.limit = limit;
+        this.remaining = remaining;
+        this.resetTimeInSeconds = resetTimeInSeconds;
+        this.secondsUntilReset = (int) ((resetTimeInSeconds * 1000L - System.currentTimeMillis()) / 1000);
+    }
+
+    RateLimitStatusJSONImpl(JSONObject json) throws TwitterException {
+        init(json);
+    }
+
     static Map<String, RateLimitStatus> createRateLimitStatuses(HttpResponse res, Configuration conf) throws TwitterException {
         JSONObject json = res.asJSONObject();
         Map<String, RateLimitStatus> map = createRateLimitStatuses(json);
@@ -68,24 +79,6 @@ import java.util.Map;
         }
     }
 
-    private RateLimitStatusJSONImpl(int limit, int remaining, int resetTimeInSeconds) {
-        this.limit = limit;
-        this.remaining = remaining;
-        this.resetTimeInSeconds = resetTimeInSeconds;
-        this.secondsUntilReset = (int) ((resetTimeInSeconds * 1000L - System.currentTimeMillis()) / 1000);
-    }
-
-    RateLimitStatusJSONImpl(JSONObject json) throws TwitterException {
-        init(json);
-    }
-
-    void init(JSONObject json) throws TwitterException {
-        this.limit = ParseUtil.getInt("limit", json);
-        this.remaining = ParseUtil.getInt("remaining", json);
-        this.resetTimeInSeconds = ParseUtil.getInt("reset", json);
-        this.secondsUntilReset = (int) ((resetTimeInSeconds * 1000L - System.currentTimeMillis()) / 1000);
-    }
-
     static RateLimitStatus createFromResponseHeader(HttpResponse res) {
         if (null == res) {
             return null;
@@ -114,6 +107,13 @@ import java.util.Map;
             return null;
         }
         return new RateLimitStatusJSONImpl(limit, remainingHits, resetTimeInSeconds);
+    }
+
+    void init(JSONObject json) throws TwitterException {
+        this.limit = ParseUtil.getInt("limit", json);
+        this.remaining = ParseUtil.getInt("remaining", json);
+        this.resetTimeInSeconds = ParseUtil.getInt("reset", json);
+        this.secondsUntilReset = (int) ((resetTimeInSeconds * 1000L - System.currentTimeMillis()) / 1000);
     }
 
     @Override

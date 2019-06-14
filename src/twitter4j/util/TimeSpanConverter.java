@@ -32,16 +32,15 @@ public final class TimeSpanConverter implements Serializable {
     private static final int ONE_DAY_IN_SECONDS = 24 * ONE_HOUR_IN_SECONDS;
     private static final int ONE_MONTH_IN_SECONDS = 30 * ONE_DAY_IN_SECONDS;
     private static final long serialVersionUID = 8665013607650804076L;
-    private final MessageFormat[] formats = new MessageFormat[6];
-    private final SimpleDateFormat dateMonth;
-    private final SimpleDateFormat dateMonthYear;
-
     private static final int NOW = 0;
     private static final int N_SECONDS_AGO = 1;
     private static final int A_MINUTE_AGO = 2;
     private static final int N_MINUTES_AGO = 3;
     private static final int AN_HOUR_AGO = 4;
     private static final int N_HOURS_AGO = 5;
+    private final MessageFormat[] formats = new MessageFormat[6];
+    private final SimpleDateFormat dateMonth;
+    private final SimpleDateFormat dateMonthYear;
 
     /**
      * Constructs an instance with default locale

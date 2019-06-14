@@ -28,7 +28,7 @@ public class Keyboard extends LinkedList<KeyboradButtonLine> {
         newButtonLine().newRequestLocationButton(text);
 
     }
-    
+
     public void newRequestContactButtonLine(String text) {
 
         newButtonLine().newRequestContactButton(text);

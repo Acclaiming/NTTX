@@ -15,12 +15,6 @@ import java.util.Arrays;
  */
 public class EncryptedPassportElement implements Serializable {
     private final static long serialVersionUID = 0L;
-
-    public enum Type {
-        personal_details, passport, driver_license, identity_card, internal_passport, address, utility_bill,
-        bank_statement, rental_agreement, passport_registration, temporary_registration, phone_number, email
-    }
-
     private Type type;
     private String data;
     private String phone_number;
@@ -177,5 +171,10 @@ public class EncryptedPassportElement implements Serializable {
                 ", translation=" + Arrays.toString(translation) +
                 ", hash='" + hash + '\'' +
                 '}';
+    }
+
+    public enum Type {
+        personal_details, passport, driver_license, identity_card, internal_passport, address, utility_bill,
+        bank_statement, rental_agreement, passport_registration, temporary_registration, phone_number, email
     }
 }

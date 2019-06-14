@@ -6,6 +6,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.mongodb.client.FindIterable;
+import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.ChatMember;
 import com.pengrad.telegrambot.request.GetChatMember;
 import com.pengrad.telegrambot.response.GetChatMemberResponse;
@@ -19,9 +20,11 @@ import io.kurumi.ntt.fragment.abs.request.Send;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.fragment.twitter.track.TrackTask;
+
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import twitter4j.Paging;
 import twitter4j.QueryResult;
 import twitter4j.ResponseList;
@@ -31,48 +34,7 @@ import twitter4j.TwitterException;
 
 public class NTT {
 
-	public static long telegramToTwitter(Twitter api,String fileId,String fileName,int type) throws TwitterException {
-
-		File file = Launcher.INSTANCE.getFile(fileId);
-
-		if (type == 2) {
-
-			File converted = new File(Env.CACHE_DIR,"tg_gif/" + fileId + ".gif");
-
-			if (!converted.isFile()) {
-
-				File globalPalettePic = FFMpeg.getGifPalettePic(file);
-				
-				FFMpeg.toGif(globalPalettePic,file,converted);
-				
-				FileUtil.del(globalPalettePic);
-				
-			}
-			
-			if (converted.length() < 15 * 1024 * 1024) {
-				
-				file = converted;
-
-				fileName = file.getName();
-				
-			}
-
-			
-
-		}
-
-		if (type == 0 || type == 2) {
-
-			return api.uploadMedia(fileName,IoUtil.toStream(file)).getMediaId();
-
-
-		} else {
-
-			return api.uploadMediaChunked(fileName,IoUtil.toStream(file)).getMediaId();
-
-		}
-
-	}
+    static Timer deleteTimer = new Timer();
 
 	/*
 
@@ -116,228 +78,289 @@ public class NTT {
 
 	 */
 
-	public static boolean testSearchBan(Twitter api,UserArchive archive) throws TwitterException {
+    public static long telegramToTwitter(Twitter api, String fileId, String fileName, int type) throws TwitterException {
 
-		QueryResult result = api.search(new twitter4j.Query("from:" + archive.screenName));
+        File file = Launcher.INSTANCE.getFile(fileId);
 
-		return result.getCount() == 0;
+        if (type == 2) {
 
-	}
+            File converted = new File(Env.CACHE_DIR, "tg_gif/" + fileId + ".gif");
 
-	public static boolean testThreadBan(Twitter api,UserArchive archive) throws TwitterException {
+            if (!converted.isFile()) {
 
-		ResponseList<Status> tl = api.getUserTimeline(archive.id,new Paging().count(200));
+                File globalPalettePic = FFMpeg.getGifPalettePic(file);
 
-		for (Status status : tl) {
+                FFMpeg.toGif(globalPalettePic, file, converted);
 
-			if (status.getQuotedStatus() != null) {
+                FileUtil.del(globalPalettePic);
 
-				QueryResult result = api.search(new twitter4j.Query("from:" + archive.screenName + " to:" +  status.getQuotedStatus().getUser().getScreenName()).sinceId(status.getId()).maxId(status.getId()));
+            }
 
-				return result.getCount() == 0;
+            if (converted.length() < 15 * 1024 * 1024) {
 
-			}
+                file = converted;
 
-		}
+                fileName = file.getName();
 
-		return false;
+            }
 
-	}
 
-	public static boolean testSearchSuggestionBan(Twitter api,UserArchive archive) throws TwitterException {
+        }
 
-		ResponseList<twitter4j.User> result = api.getUserSuggestions(archive.screenName);
+        if (type == 0 || type == 2) {
 
-		for (twitter4j.User user : result) {
+            return api.uploadMedia(fileName, IoUtil.toStream(file)).getMediaId();
 
-			if (archive.id.equals(user.getId())) {
 
-				return false;
+        } else {
 
-			}
+            return api.uploadMediaChunked(fileName, IoUtil.toStream(file)).getMediaId();
 
-		}
+        }
 
-		return true;
+    }
 
-	}
+    public static boolean testSearchBan(Twitter api, UserArchive archive) throws TwitterException {
 
-	public static TAuth loopFindAccessable(Object idOrScreenName) {
+        QueryResult result = api.search(new twitter4j.Query("from:" + archive.screenName));
 
-		long targetL = NumberUtil.isNumber(idOrScreenName.toString()) ? NumberUtil.parseLong(idOrScreenName.toString()) : -1;
-		String targetS = idOrScreenName.toString();
+        return result.getCount() == 0;
 
-		for (TAuth auth : TAuth.data.collection.find()) {
+    }
 
-			Twitter api = auth.createApi();
+    public static boolean testThreadBan(Twitter api, UserArchive archive) throws TwitterException {
 
-			try {
+        ResponseList<Status> tl = api.getUserTimeline(archive.id, new Paging().count(200));
 
-				UserArchive user = UserArchive.save(targetL == -1 ? api.showUser(targetS) : api.showUser(targetL));
+        for (Status status : tl) {
 
-				if (user.isProtected) {
+            if (status.getQuotedStatus() != null) {
 
-					FindIterable<TrackTask.IdsList> accs = TrackTask.friends.findByField("ids",user.id);
+                QueryResult result = api.search(new twitter4j.Query("from:" + archive.screenName + " to:" + status.getQuotedStatus().getUser().getScreenName()).sinceId(status.getId()).maxId(status.getId()));
 
-					for (TrackTask.IdsList acc : accs) {
+                return result.getCount() == 0;
 
-						TAuth newAuth = TAuth.getById(acc.id);
+            }
 
-						if (newAuth != null) return newAuth;
+        }
 
-					}
+        return false;
 
-					return null;
+    }
 
-				} else {
+    public static boolean testSearchSuggestionBan(Twitter api, UserArchive archive) throws TwitterException {
 
-					api.getUserTimeline(user.id,new Paging().count(1));
+        ResponseList<twitter4j.User> result = api.getUserSuggestions(archive.screenName);
 
-				}
+        for (twitter4j.User user : result) {
 
-				return auth;
+            if (archive.id.equals(user.getId())) {
 
-			} catch (TwitterException e) {
+                return false;
 
-				if (ArrayUtil.contains(new int[] { 17,34,50 },e.getErrorCode())) {
+            }
 
-					return null;
+        }
 
-				}
+        return true;
 
-			}
+    }
 
-		}
+    public static TAuth loopFindAccessable(Object idOrScreenName) {
 
-		return null;
+        long targetL = NumberUtil.isNumber(idOrScreenName.toString()) ? NumberUtil.parseLong(idOrScreenName.toString()) : -1;
+        String targetS = idOrScreenName.toString();
 
-	}
+        for (TAuth auth : TAuth.data.collection.find()) {
 
-	public static String parseTwitterException(TwitterException exc) {
+            Twitter api = auth.createApi();
 
-		switch (exc.getStatusCode()) {
+            try {
 
-			case 410 : return "这个操作已经不存在了";
+                UserArchive user = UserArchive.save(targetL == -1 ? api.showUser(targetS) : api.showUser(targetL));
 
-			case 413 : return "这你妈是个官方文档都没写的错误，查了一下是不允许重复上传文件，奇妙深刻";
-			
-			case TwitterException.TOO_MANY_REQUESTS : return "请求过多被限制 : 请稍后操作";
+                if (user.isProtected) {
 
-			case TwitterException.ENHANCE_YOUR_CLAIM : return "NTT被限制 : 请联系开发者";
+                    FindIterable<TrackTask.IdsList> accs = TrackTask.friends.findByField("ids", user.id);
 
-		}
+                    for (TrackTask.IdsList acc : accs) {
 
-		switch (exc.getErrorCode()) {
+                        TAuth newAuth = TAuth.getById(acc.id);
 
-			case 17 : case 50 : return "找不到用户";
+                        if (newAuth != null) return newAuth;
 
-			case 34 : return "请求的内容找不到";
+                    }
 
-			case 63 : return "用户被冻结";
+                    return null;
 
-			case 64 : return "你的账号被限制 : 无法进行此操作";
+                } else {
 
-			case 87 : return "NTT无权限进行此操作 : 请联系开发者";
+                    api.getUserTimeline(user.id, new Paging().count(1));
 
-			case 88 : return "超过接口调用上限 : 通常是十五分钟内的限制，请稍后再试";
+                }
 
-			case 89 : case 99 : case 215: return "NTT被取消了授权 或 你的账号被停用 / 冻结";
+                return auth;
 
-			case 93 : return "NTT无权操作私信 如果重新认证账号仍无法操作，请联系开发者";
+            } catch (TwitterException e) {
 
-			case 130 : return "Twitter服务器超载 请稍后再试";
+                if (ArrayUtil.contains(new int[]{17, 34, 50}, e.getErrorCode())) {
 
-			case 131 : return "Twitter服务器内部问题 请稍后再试";
+                    return null;
 
-			case 135 : return "服务器时间戳错误，请联系开发者";
+                }
 
-			case 136 : return "操作失败 : 你被对方屏蔽";
+            }
 
-			case 139 : return "你已经喜欢过了这条推文";
+        }
 
-			case 144 : return "推文找不到 / 被删除";
+        return null;
 
-			case 150 : return "你没有关注对方，无法发送私信";
+    }
 
-			case 151 : return "发送私信错误 : " + exc.getMessage();
+    public static String parseTwitterException(TwitterException exc) {
 
-			case 160 : return "已经发送过关注请求了";
+        switch (exc.getStatusCode()) {
 
-			case 161 : return "超过用户单日关注上限 : 这通常是400人";
+            case 410:
+                return "这个操作已经不存在了";
 
-			case 179 : return "推文无法取得 : 对方锁推且未被关注";
+            case 413:
+                return "这你妈是个官方文档都没写的错误，查了一下是不允许重复上传文件，奇妙深刻";
 
-			case 185 : return "无法发送推文 : 发推数量超过上限";
+            case TwitterException.TOO_MANY_REQUESTS:
+                return "请求过多被限制 : 请稍后操作";
 
-			case 186 : return "无法发送推文 : 文本太长 限制为 180 字";
+            case TwitterException.ENHANCE_YOUR_CLAIM:
+                return "NTT被限制 : 请联系开发者";
 
-			case 187 : return "无法发送推文 : 与上一条重复 你是复读机吗？";
+        }
 
-			case 205 : return "操作失败，请稍后再试 : 你被jvbao了";
+        switch (exc.getErrorCode()) {
 
-			case 226 : return "操作失败 : Twitter认为这是程序自动进行的恶意操作";
+            case 17:
+            case 50:
+                return "找不到用户";
 
-			case 261 : return "NTT无权进行写操作 : 请联系开发者";
+            case 34:
+                return "请求的内容找不到";
 
-			case 271 : return "你不能对你自己静音";
+            case 63:
+                return "用户被冻结";
 
-			case 272 : return "你没有对这个用户静音";
+            case 64:
+                return "你的账号被限制 : 无法进行此操作";
 
-			case 323 : return "同时发送多张图片时 不允许其他媒体 (指视频或Gif)";
+            case 87:
+                return "NTT无权限进行此操作 : 请联系开发者";
 
-			case 324 : return "视频太短或媒体文件过期 : " + exc.getErrorMessage();
+            case 88:
+                return "超过接口调用上限 : 通常是十五分钟内的限制，请稍后再试";
 
-			case 326 : return "账号被Twitter限制 : 你必须登录Twitter网站/客户端来解除这个限制 : 这通常需要验证手机 \n\n如果Twitter确认你违反了规定，你可能需要等待至少十二个小时的时间来恢复除了给关注者私信以外的功能。";
+            case 89:
+            case 99:
+            case 215:
+                return "NTT被取消了授权 或 你的账号被停用 / 冻结";
 
-			case 327 : return "你已经转推过了这条推文";
+            case 93:
+                return "NTT无权操作私信 如果重新认证账号仍无法操作，请联系开发者";
 
-			case 349 : return "你不被允许发送消息给对方";
+            case 130:
+                return "Twitter服务器超载 请稍后再试";
 
-			case 354 : return "发送失败 : 私聊消息字数超过限制";
+            case 131:
+                return "Twitter服务器内部问题 请稍后再试";
 
-			case 385 : return "你不能回复一条你不可查看或已被删除的推文";
-			
-			case 416 : return "NTT接口无效/被停用 : 通常是因为开发者账号被停用/冻结";
+            case 135:
+                return "服务器时间戳错误，请联系开发者";
 
-			default : return "其他错误 请联系开发者 : " + exc.getErrorCode() + " " + exc.getMessage();
+            case 136:
+                return "操作失败 : 你被对方屏蔽";
 
-		}
+            case 139:
+                return "你已经喜欢过了这条推文";
 
-	}
+            case 144:
+                return "推文找不到 / 被删除";
+
+            case 150:
+                return "你没有关注对方，无法发送私信";
+
+            case 151:
+                return "发送私信错误 : " + exc.getMessage();
+
+            case 160:
+                return "已经发送过关注请求了";
+
+            case 161:
+                return "超过用户单日关注上限 : 这通常是400人";
+
+            case 179:
+                return "推文无法取得 : 对方锁推且未被关注";
+
+            case 185:
+                return "无法发送推文 : 发推数量超过上限";
+
+            case 186:
+                return "无法发送推文 : 文本太长 限制为 180 字";
+
+            case 187:
+                return "无法发送推文 : 与上一条重复 你是复读机吗？";
+
+            case 205:
+                return "操作失败，请稍后再试 : 你被jvbao了";
+
+            case 226:
+                return "操作失败 : Twitter认为这是程序自动进行的恶意操作";
+
+            case 261:
+                return "NTT无权进行写操作 : 请联系开发者";
+
+            case 271:
+                return "你不能对你自己静音";
+
+            case 272:
+                return "你没有对这个用户静音";
+
+            case 323:
+                return "同时发送多张图片时 不允许其他媒体 (指视频或Gif)";
+
+            case 324:
+                return "视频太短或媒体文件过期 : " + exc.getErrorMessage();
+
+            case 326:
+                return "账号被Twitter限制 : 你必须登录Twitter网站/客户端来解除这个限制 : 这通常需要验证手机 \n\n如果Twitter确认你违反了规定，你可能需要等待至少十二个小时的时间来恢复除了给关注者私信以外的功能。";
+
+            case 327:
+                return "你已经转推过了这条推文";
+
+            case 349:
+                return "你不被允许发送消息给对方";
+
+            case 354:
+                return "发送失败 : 私聊消息字数超过限制";
+
+            case 385:
+                return "你不能回复一条你不可查看或已被删除的推文";
+
+            case 416:
+                return "NTT接口无效/被停用 : 通常是因为开发者账号被停用/冻结";
+
+            default:
+                return "其他错误 请联系开发者 : " + exc.getErrorCode() + " " + exc.getMessage();
+
+        }
+
+    }
 
     public static boolean isUserContactable(long id) {
 
-        SendResponse resp = new Send(id,"test_user_ontactable").disableNotification().exec();
+        SendResponse resp = new Send(id, "test_user_ontactable").disableNotification().exec();
 
         if (!resp.isOk()) return false;
 
         new Msg(resp.message()).delete();
 
         return true;
-
-    }
-
-    public static boolean checkNonContactable(UserData user,Msg msg) {
-
-        String notContactableMsg = "咱无法给乃发送信息呢，请私聊点击 'start' 启用咱 ~";
-
-        if (!msg.isPrivate() && !isUserContactable(user.id)) {
-
-            if (msg instanceof Callback) {
-
-                ((Callback)msg).alert(notContactableMsg);
-
-            } else {
-
-                msg.send(user.userName(),notContactableMsg).publicFailed();
-
-            }
-
-            return true;
-
-        }
-
-        return false;
 
     }
 
@@ -387,31 +410,55 @@ public class NTT {
 
 	 */
 
+    public static boolean checkNonContactable(UserData user, Msg msg) {
+
+        String notContactableMsg = "咱无法给乃发送信息呢，请私聊点击 'start' 启用咱 ~";
+
+        if (!msg.isPrivate() && !isUserContactable(user.id)) {
+
+            if (msg instanceof Callback) {
+
+                ((Callback) msg).alert(notContactableMsg);
+
+            } else {
+
+                msg.send(user.userName(), notContactableMsg).publicFailed();
+
+            }
+
+            return true;
+
+        }
+
+        return false;
+
+    }
+
     public static String parseScreenName(String input) {
 
         if (input.contains("twitter.com/")) {
 
-            input = StrUtil.subAfter(input,"twitter.com/",true);
+            input = StrUtil.subAfter(input, "twitter.com/", true);
 
             if (input.contains("?")) {
 
-                input = StrUtil.subBefore(input,"?",false);
+                input = StrUtil.subBefore(input, "?", false);
 
             }
 
-			if (input.contains("/")) {
+            if (input.contains("/")) {
 
-				input = StrUtil.subBefore(input,"/",false);
+                input = StrUtil.subBefore(input, "/", false);
 
-			}
+            }
 
         }
 
-		if (input.contains("@")) {
+        if (input.contains("@")) {
 
-			input = StrUtil.subAfter(input,"@",false);
+            input = StrUtil.subAfter(input, "@", false);
 
-		}
+        }
 
         return input;
 
@@ -427,15 +474,15 @@ public class NTT {
 
         } else if (input.contains("twitter.com/")) {
 
-            input = StrUtil.subAfter(input,"status/",true);
+            input = StrUtil.subAfter(input, "status/", true);
 
             if (input.contains("?")) {
 
-                input = StrUtil.subBefore(input,"?",false);
+                input = StrUtil.subBefore(input, "?", false);
 
             }
 
-            if (NumberUtil.isNumber(input))  {
+            if (NumberUtil.isNumber(input)) {
 
                 statusId = NumberUtil.parseLong(input);
 
@@ -447,32 +494,36 @@ public class NTT {
 
     }
 
-    static Timer deleteTimer = new Timer();
-
-	public static void tryDelete(final long delay,final Msg... messages) {
+    public static void tryDelete(final long delay, final Msg... messages) {
 
         deleteTimer.schedule(new TimerTask() {
 
-				@Override
-				public void run() {
+            @Override
+            public void run() {
 
-					for (Msg message : messages) {
+                for (Msg message : messages) {
 
-						if (message == null) continue;
+                    if (message == null) continue;
 
-						if (!message.delete()) return;
+                    if (!message.delete()) return;
 
-					}
+                }
 
-				}
+            }
 
-			},delay);
+        }, delay);
 
-	}
+    }
 
-    public static boolean isGroupAdmin(Long chatId,Long userId) {
+    public static boolean isGroupAdmin( Long chatId, Long userId) {
 
-        GetChatMemberResponse resp = Launcher.INSTANCE.bot().execute(new GetChatMember(chatId,userId.intValue()));
+        return  isGroupAdmin(Launcher.INSTANCE.bot(),chatId,userId);
+
+    }
+
+    public static boolean isGroupAdmin(TelegramBot bot, Long chatId, Long userId) {
+
+        GetChatMemberResponse resp = bot.execute(new GetChatMember(chatId, userId.intValue()));
 
         if (resp.isOk() && ((resp.chatMember().status() == ChatMember.Status.administrator) || resp.chatMember().status() == ChatMember.Status.creator)) {
 
@@ -514,13 +565,13 @@ public class NTT {
 
     public static boolean checkGroupAdmin(Msg msg) {
 
-		if (msg.from().developer()) return false;
+        if (msg.from().developer()) return false;
 
-        if (!isGroupAdmin(msg.chatId(),msg.from().id)) {
+        if (!isGroupAdmin(msg.chatId(), msg.from().id)) {
 
             if (msg instanceof Callback) {
 
-                ((Callback)msg).alert("你不是绒布球 Σ( ﾟωﾟ");
+                ((Callback) msg).alert("你不是绒布球 Σ( ﾟωﾟ");
 
             } else {
 

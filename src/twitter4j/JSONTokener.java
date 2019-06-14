@@ -114,6 +114,26 @@ public class JSONTokener {
     }
 
     /**
+     * Returns the integer [0..15] value for the given hex character, or -1
+     * for non-hex input.
+     *
+     * @param hex a character in the ranges [0-9], [A-F] or [a-f]. Any other
+     *            character will yield a -1 result.
+     * @return The decoded integer.
+     */
+    public static int dehexchar(char hex) {
+        if (hex >= '0' && hex <= '9') {
+            return hex - '0';
+        } else if (hex >= 'A' && hex <= 'F') {
+            return hex - 'A' + 10;
+        } else if (hex >= 'a' && hex <= 'f') {
+            return hex - 'a' + 10;
+        } else {
+            return -1;
+        }
+    }
+
+    /**
      * Returns the next value from the input.
      *
      * @return a {@link JSONObject}, {@link JSONArray}, String, Boolean,
@@ -486,6 +506,14 @@ public class JSONTokener {
         return new JSONException(message + this);
     }
 
+    /*
+     * Legacy APIs.
+     *
+     * None of the methods below are on the critical path of parsing JSON
+     * documents. They exist only because they were exposed by the original
+     * implementation and may be used by some clients.
+     */
+
     /**
      * Returns the current position and the entire input string.
      */
@@ -494,14 +522,6 @@ public class JSONTokener {
         // consistent with the original implementation
         return " at character " + pos + " of " + in;
     }
-
-    /*
-     * Legacy APIs.
-     *
-     * None of the methods below are on the critical path of parsing JSON
-     * documents. They exist only because they were exposed by the original
-     * implementation and may be used by some clients.
-     */
 
     /**
      * Returns true until the input has been exhausted.
@@ -646,26 +666,6 @@ public class JSONTokener {
     public void back() {
         if (--pos == -1) {
             pos = 0;
-        }
-    }
-
-    /**
-     * Returns the integer [0..15] value for the given hex character, or -1
-     * for non-hex input.
-     *
-     * @param hex a character in the ranges [0-9], [A-F] or [a-f]. Any other
-     *            character will yield a -1 result.
-     * @return The decoded integer.
-     */
-    public static int dehexchar(char hex) {
-        if (hex >= '0' && hex <= '9') {
-            return hex - '0';
-        } else if (hex >= 'A' && hex <= 'F') {
-            return hex - 'A' + 10;
-        } else if (hex >= 'a' && hex <= 'f') {
-            return hex - 'a' + 10;
-        } else {
-            return -1;
         }
     }
 }

@@ -1,7 +1,7 @@
 package cn.xsshome.taip.http;
 
 /**
- * HTTP header 
+ * HTTP header
  */
 public interface TAipHeaders {
 

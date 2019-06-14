@@ -8,23 +8,22 @@ import io.kurumi.ntt.fragment.abs.request.AnswerCallback;
 
 public class Callback extends Msg {
 
+    public String[] params;
     private CallbackQuery query;
-	
-	public String[] params;
 
     public Callback(CallbackQuery query) {
 
         this(Launcher.INSTANCE, query);
 
     }
-	
+
     public Callback(Fragment fragment, CallbackQuery query) {
 
         super(fragment, query.message());
 
         this.query = query;
 
-        this.params = query.data().contains(",") ? query.data().split(",") : new String[] { query.data() };
+        this.params = query.data().contains(",") ? query.data().split(",") : new String[]{query.data()};
 
     }
 

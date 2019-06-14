@@ -18,9 +18,9 @@ import java.util.concurrent.TimeUnit;
 public class TelegramBotClient {
 
     private final OkHttpClient client;
-    private OkHttpClient clientWithTimeout;
     private final Gson gson;
     private final String baseUrl;
+    private OkHttpClient clientWithTimeout;
 
     public TelegramBotClient(OkHttpClient client, Gson gson, String baseUrl) {
         this.client = client;
@@ -55,9 +55,9 @@ public class TelegramBotClient {
             OkHttpClient client = getOkHttpClient(request);
             Response response = client.newCall(createRequest(request)).execute();
             return gson.fromJson(response.body().string(), request.getResponseType());
-      } catch (IOException e) {
-			
-		
+        } catch (IOException e) {
+
+
             throw e;
         }
     }

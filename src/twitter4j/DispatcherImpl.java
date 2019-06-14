@@ -27,9 +27,9 @@ import java.util.concurrent.TimeUnit;
  * @since Twitter4J 2.1.2
  */
 final class DispatcherImpl implements Dispatcher {
-    private final ExecutorService executorService;
     private static final Logger logger = Logger.getLogger(DispatcherImpl.class);
     private static final long SHUTDOWN_TIME = 5000;
+    private final ExecutorService executorService;
 
     public DispatcherImpl(final Configuration conf) {
         executorService = Executors.newFixedThreadPool(conf.getAsyncNumThreads(),
@@ -62,11 +62,11 @@ final class DispatcherImpl implements Dispatcher {
     public synchronized void shutdown() {
         executorService.shutdown();
         try {
-        	if (!executorService.awaitTermination(SHUTDOWN_TIME, TimeUnit.MILLISECONDS)) {
-        		executorService.shutdownNow();
-        	}
+            if (!executorService.awaitTermination(SHUTDOWN_TIME, TimeUnit.MILLISECONDS)) {
+                executorService.shutdownNow();
+            }
         } catch (InterruptedException e) {
-        	logger.warn(e.getMessage());
+            logger.warn(e.getMessage());
         }
     }
 }

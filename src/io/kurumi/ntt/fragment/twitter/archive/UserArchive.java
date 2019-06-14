@@ -20,36 +20,53 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class UserArchive {
-    
-    public static Data<UserArchive> data = new Data<UserArchive>(UserArchive.class);
 
-    public static UserArchive get(Long id) { return data.getById(id); }
-    
+    public static Data<UserArchive> data = new Data<UserArchive>(UserArchive.class);
+    public Long id;
+    public Long createdAt;
+    public String name;
+    public String screenName;
+    public String bio;
+    public String photoUrl;
+    public String bannerUrl;
+    public String url;
+    public Boolean isProtected;
+    public Boolean isDisappeared;
+    public transient String oldPhotoUrl;
+    public transient String oldBannerUrl;
+    private transient String oldScreename;
+
+    public static UserArchive get(Long id) {
+        return data.getById(id);
+    }
+
     public static UserArchive get(String screenName) {
-		
-		return data.collection.find(regex("screenName",ReUtil.escape(screenName),"i")).first();
-		
-	}
-    
-    public static boolean contains(Long id) { return data.containsId(id); }
-    
+
+        return data.collection.find(regex("screenName", ReUtil.escape(screenName), "i")).first();
+
+    }
+
+    public static boolean contains(Long id) {
+        return data.containsId(id);
+    }
+
     public static boolean contains(String screenName) {
-		
-		return data.collection.count(regex("user",ReUtil.escape(screenName),"i")) > 0;
-		
-	}
-    
+
+        return data.collection.count(regex("user", ReUtil.escape(screenName), "i")) > 0;
+
+    }
+
     public static UserArchive save(User user) {
 
         if (user == null) return null;
-        
+
         UserArchive archive;
 
         if (data.containsId(user.getId())) {
 
             archive = data.getById(user.getId());
-            
-            if (archive.read(user)) data.setById(archive.id,archive);
+
+            if (archive.read(user)) data.setById(archive.id, archive);
 
         } else {
 
@@ -58,14 +75,14 @@ public class UserArchive {
             archive.isDisappeared = false;
 
             archive.id = user.getId();
-            
+
             archive.read(user);
-            
-            data.setById(user.getId(),archive);
+
+            data.setById(user.getId(), archive);
 
         }
 
-        
+
         return archive;
 
     }
@@ -78,54 +95,34 @@ public class UserArchive {
 
             user.isDisappeared = true;
 
-            data.setById(da,user);
+            data.setById(da, user);
 
         }
 
     }
-    
-    
-    public Long id;
-    public Long createdAt;
 
-    public String name;
-    public String screenName;
-    public String bio;
-    public String photoUrl;
-	
-	public String bannerUrl;
-	public String url;
-	
-    public Boolean isProtected;
-
-    public Boolean isDisappeared;
-    
-    private transient String oldScreename;
-    public transient String oldPhotoUrl;
-    public transient String oldBannerUrl;
-    
     public String oldScreenName() {
-        
+
         return oldScreename == null ? screenName : oldScreename;
-        
+
     }
-    
+
     public boolean read(User user) {
 
         if (user == null && !isDisappeared) {
 
             isDisappeared = true;
 
-            TrackTask.onUserChange(this,"用户被冻结或已停用 :)");
+            TrackTask.onUserChange(this, "用户被冻结或已停用 :)");
 
-			return true;
-			
+            return true;
+
         }
-        
+
         if (user == null && isDisappeared) {
-            
+
             return false;
-            
+
         }
 
         boolean change = false;
@@ -134,7 +131,7 @@ public class UserArchive {
 
         String nameL = name;
 
-        if (isDisappeared)  {
+        if (isDisappeared) {
 
             isDisappeared = false;
 
@@ -159,14 +156,14 @@ public class UserArchive {
             str.append(split).append("用户名更改 : @").append(screenNameL).append(" ------> @").append(screenName);
 
             oldScreename = screenNameL;
-            
+
             change = true;
 
         }
 
         String bioL = bio;
 
-        if (!ObjectUtil.equal(bio = user.getDescription(),bioL)) {
+        if (!ObjectUtil.equal(bio = user.getDescription(), bioL)) {
 
             str.append(split).append("简介更改 : \n\n").append(bioL).append(" \n\n ------> \n\n").append(bio);
 
@@ -174,11 +171,11 @@ public class UserArchive {
 
         }
 
-    oldPhotoUrl = photoUrl;
-		
-        if ((!ObjectUtil.equal(photoUrl = user.getOriginalProfileImageURLHttps(),oldPhotoUrl))) {
+        oldPhotoUrl = photoUrl;
 
-            str.append(split).append("头像更改 : " + Html.a("新头像",photoUrl));
+        if ((!ObjectUtil.equal(photoUrl = user.getOriginalProfileImageURLHttps(), oldPhotoUrl))) {
+
+            str.append(split).append("头像更改 : " + Html.a("新头像", photoUrl));
 
             change = true;
 
@@ -193,31 +190,31 @@ public class UserArchive {
             change = true;
 
         }
-		
-		oldBannerUrl = bannerUrl;
-		
-		if (!ObjectUtil.equal(bannerUrl =  user.getProfileBannerURL(),oldBannerUrl)) {
-			
-			str.append(split).append("横幅更改 : " + Html.a("新横幅",photoUrl));
+
+        oldBannerUrl = bannerUrl;
+
+        if (!ObjectUtil.equal(bannerUrl = user.getProfileBannerURL(), oldBannerUrl)) {
+
+            str.append(split).append("横幅更改 : " + Html.a("新横幅", photoUrl));
 
             change = true;
-			
-		} else oldBannerUrl = null;
-		
-		
-		String urlL = url;
-		
-		if (!ObjectUtil.equal(url = user.getURL(),urlL)) {
-			
-			str.append(split).append("链接更改 : \n\n").append(urlL).append(" \n\n ------> \n\n").append(url);
+
+        } else oldBannerUrl = null;
+
+
+        String urlL = url;
+
+        if (!ObjectUtil.equal(url = user.getURL(), urlL)) {
+
+            str.append(split).append("链接更改 : \n\n").append(urlL).append(" \n\n ------> \n\n").append(url);
 
             change = true;
-			
-		}
-		
+
+        }
+
         if (createdAt == null) {
 
-           createdAt = user.getCreatedAt().getTime();
+            createdAt = user.getCreatedAt().getTime();
 
             change = false;
 
@@ -225,17 +222,17 @@ public class UserArchive {
 
         if (change) {
 
-            TrackTask.onUserChange(this,str.toString());
-            
+            TrackTask.onUserChange(this, str.toString());
+
         }
-        
+
         return change;
 
     }
-    
+
     public String urlHtml() {
 
-        return Html.a(name,url());
+        return Html.a(name, url());
 
     }
 

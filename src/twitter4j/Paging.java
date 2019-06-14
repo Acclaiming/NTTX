@@ -29,27 +29,57 @@ import java.util.List;
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
 public final class Paging implements java.io.Serializable {
+    // since only
+    static final char[] S = new char[]{'s'};
+    // since, max_id, count, page
+    static final char[] SMCP = new char[]{'s', 'm', 'c', 'p'};
+    static final String COUNT = "count";
+    // somewhat GET list statuses requires "per_page" instead of "count"
+    // @see <a href="https://dev.twitter.com/docs/api/1.1/get/:user/lists/:id/statuses">GET :user/lists/:id/statuses | Twitter Developers</a>
+    static final String PER_PAGE = "per_page";
     private static final long serialVersionUID = -7226113618341047983L;
+    private static final HttpParameter[] NULL_PARAMETER_ARRAY = new HttpParameter[0];
+    private static final List<HttpParameter> NULL_PARAMETER_LIST = new ArrayList<HttpParameter>(0);
     private int page = -1;
     private int count = -1;
     private long sinceId = -1;
     private long maxId = -1;
 
-    // since only
-    static final char[] S = new char[]{'s'};
-    // since, max_id, count, page
-    static final char[] SMCP = new char[]{'s', 'm', 'c', 'p'};
+    public Paging() {
+    }
 
-    static final String COUNT = "count";
-    // somewhat GET list statuses requires "per_page" instead of "count"
-    // @see <a href="https://dev.twitter.com/docs/api/1.1/get/:user/lists/:id/statuses">GET :user/lists/:id/statuses | Twitter Developers</a>
-    static final String PER_PAGE = "per_page";
+    public Paging(int page) {
+        setPage(page);
+    }
+
+
+    public Paging(long sinceId) {
+        setSinceId(sinceId);
+    }
+
+    public Paging(int page, int count) {
+        this(page);
+        setCount(count);
+    }
+
+    public Paging(int page, long sinceId) {
+        this(page);
+        setSinceId(sinceId);
+    }
+
+    public Paging(int page, int count, long sinceId) {
+        this(page, count);
+        setSinceId(sinceId);
+    }
+
+    public Paging(int page, int count, long sinceId, long maxId) {
+        this(page, count, sinceId);
+        setMaxId(maxId);
+    }
 
     /*package*/ List<HttpParameter> asPostParameterList() {
         return asPostParameterList(SMCP, COUNT);
     }
-
-    private static final HttpParameter[] NULL_PARAMETER_ARRAY = new HttpParameter[0];
 
     /*package*/ HttpParameter[] asPostParameterArray() {
         List<HttpParameter> list = asPostParameterList(SMCP, COUNT);
@@ -62,9 +92,6 @@ public final class Paging implements java.io.Serializable {
     /*package*/ List<HttpParameter> asPostParameterList(char[] supportedParams) {
         return asPostParameterList(supportedParams, COUNT);
     }
-
-
-    private static final List<HttpParameter> NULL_PARAMETER_LIST = new ArrayList<HttpParameter>(0);
 
     /**
      * Converts the pagination parameters into a List of PostParameter.<br>
@@ -126,37 +153,6 @@ public final class Paging implements java.io.Serializable {
         if (-1 != paramValue) {
             pagingParams.add(new HttpParameter(paramName, String.valueOf(paramValue)));
         }
-    }
-
-    public Paging() {
-    }
-
-    public Paging(int page) {
-        setPage(page);
-    }
-
-    public Paging(long sinceId) {
-        setSinceId(sinceId);
-    }
-
-    public Paging(int page, int count) {
-        this(page);
-        setCount(count);
-    }
-
-    public Paging(int page, long sinceId) {
-        this(page);
-        setSinceId(sinceId);
-    }
-
-    public Paging(int page, int count, long sinceId) {
-        this(page, count);
-        setSinceId(sinceId);
-    }
-
-    public Paging(int page, int count, long sinceId, long maxId) {
-        this(page, count, sinceId);
-        setMaxId(maxId);
     }
 
     public int getPage() {

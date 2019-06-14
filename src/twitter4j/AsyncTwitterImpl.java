@@ -43,6 +43,7 @@ import static twitter4j.TwitterMethod.*;
 class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
     private static final long serialVersionUID = 6491978434917152443L;
     private static final Logger logger = Logger.getLogger(AsyncTwitterImpl.class);
+    private static transient volatile Dispatcher dispatcher;
     private final Twitter twitter;
     private final List<TwitterListener> listeners = new ArrayList<TwitterListener>();
 
@@ -51,12 +52,12 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
         super(conf, auth);
         twitter = new TwitterFactory(conf).getInstance(auth);
     }
+    /* Timelines Resources */
 
     @Override
     public void addListener(TwitterListener listener) {
         this.listeners.add(listener);
     }
-    /* Timelines Resources */
 
     @Override
     public void getMentions() {
@@ -67,7 +68,7 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
                 for (TwitterListener listener : listeners) {
                     try {
                         listener.gotMentions(statuses);
-                    } catch (Exception e) { 
+                    } catch (Exception e) {
                         logger.warn("Exception at getMentions", e);
                     }
                 }
@@ -225,6 +226,8 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
         });
     }
 
+    /* Tweets Resources */
+
     @Override
     public void getRetweetsOfMe(final Paging paging) {
         getDispatcher().invokeLater(new AsyncTask(RETWEETS_OF_ME, listeners) {
@@ -241,8 +244,6 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
             }
         });
     }
-
-    /* Tweets Resources */
 
     @Override
     public void getRetweets(final long statusId) {
@@ -363,6 +364,8 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
         });
     }
 
+    /* Search Resources */
+
     @Override
     public void lookup(final long... ids) {
         getDispatcher().invokeLater(new AsyncTask(RETWEET_STATUS, listeners) {
@@ -380,7 +383,7 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
         });
     }
 
-    /* Search Resources */
+    /* Direct Messages Resources */
 
     @Override
     public void search(final Query query) {
@@ -398,8 +401,6 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
             }
         });
     }
-
-    /* Direct Messages Resources */
 
     @Override
     public void showDirectMessage(final long id) {
@@ -452,6 +453,8 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
         });
     }
 
+    /* Friends & Followers Resources */
+
     @Override
     public void sendDirectMessage(final String screenName, final String text) {
         getDispatcher().invokeLater(new AsyncTask(SEND_DIRECT_MESSAGE, listeners) {
@@ -468,8 +471,6 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
             }
         });
     }
-
-    /* Friends & Followers Resources */
 
     @Override
     public void getFriendsIDs(final long cursor) {
@@ -574,7 +575,6 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
             }
         });
     }
-
 
     @Override
     public void lookupFriendships(final long... ids) {
@@ -869,6 +869,8 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
         });
     }
 
+    /* Users Resources */
+
     @Override
     public void getFollowersList(final String screenName, final long cursor) {
         getDispatcher().invokeLater(new AsyncTask(FOLLOWERS_LIST, listeners) {
@@ -885,8 +887,6 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
             }
         });
     }
-
-    /* Users Resources */
 
     @Override
     public void getAccountSettings() {
@@ -1420,6 +1420,8 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
         });
     }
 
+    /* Suggested Users Resources */
+
     @Override
     public void updateProfileBanner(final InputStream image) {
         getDispatcher().invokeLater(new AsyncTask(UPDATE_PROFILE_BANNER, listeners) {
@@ -1436,8 +1438,6 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
             }
         });
     }
-
-    /* Suggested Users Resources */
 
     @Override
     public void getUserSuggestions(final String categorySlug) {
@@ -1473,6 +1473,8 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
         });
     }
 
+    /* Favorites Resources */
+
     @Override
     public void getMemberSuggestions(final String categorySlug) {
         getDispatcher().invokeLater(new AsyncTask(MEMBER_SUGGESTIONS, listeners) {
@@ -1489,8 +1491,6 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
             }
         });
     }
-
-    /* Favorites Resources */
 
     @Override
     public void getFavorites() {
@@ -1611,6 +1611,8 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
         });
     }
 
+    /* Lists Resources */
+
     @Override
     public void createFavorite(final long id) {
         getDispatcher().invokeLater(new AsyncTask(CREATE_FAVORITE, listeners) {
@@ -1627,8 +1629,6 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
             }
         });
     }
-
-    /* Lists Resources */
 
     @Override
     public void getUserLists(final long listOwnerUserId) {
@@ -1929,7 +1929,6 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
         });
     }
 
-
     @Override
     public void createUserListMembers(final long listId, final long... userIds) {
         getDispatcher().invokeLater(new AsyncTask(CREATE_LIST_MEMBERS, listeners) {
@@ -2220,6 +2219,9 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
     }
 
 
+
+    /* Saved Searches Resources */
+
     @Override
     public void getUserListSubscriptions(final String listOwnerScreenName, final long cursor) {
         getDispatcher().invokeLater(new AsyncTask(USER_LIST_SUBSCRIPTIONS, listeners) {
@@ -2236,10 +2238,6 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
             }
         });
     }
-
-
-
-    /* Saved Searches Resources */
 
     @Override
     public void getSavedSearches() {
@@ -2292,6 +2290,8 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
         });
     }
 
+    /* Places & Geo Resources */
+
     @Override
     public void destroySavedSearch(final int id) {
         getDispatcher().invokeLater(new AsyncTask(DESTROY_SAVED_SEARCH, listeners) {
@@ -2308,8 +2308,6 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
             }
         });
     }
-
-    /* Places & Geo Resources */
 
     @Override
     public void getGeoDetails(final String id) {
@@ -2362,6 +2360,8 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
         });
     }
 
+    /* Trends Resources */
+
     @Override
     public void getSimilarPlaces(final GeoLocation location, final String name, final String containedWithin
             , final String streetAddress) {
@@ -2379,8 +2379,6 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
             }
         });
     }
-
-    /* Trends Resources */
 
     @Override
     public void getPlaceTrends(final int woeid) {
@@ -2416,6 +2414,8 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
         });
     }
 
+    /* Spam Reporting Resources */
+
     @Override
     public void getClosestTrends(final GeoLocation location) {
         getDispatcher().invokeLater(new AsyncTask(CLOSEST_TRENDS, listeners) {
@@ -2433,31 +2433,12 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
         });
     }
 
-    /* Spam Reporting Resources */
-
     @Override
-    public void reportSpam(final long userId,final boolean performBlock) {
+    public void reportSpam(final long userId, final boolean performBlock) {
         getDispatcher().invokeLater(new AsyncTask(REPORT_SPAM, listeners) {
             @Override
             public void invoke(List<TwitterListener> listeners) throws TwitterException {
-                User user = twitter.reportSpam(userId,performBlock);
-                for (TwitterListener listener : listeners) {
-                    try {
-                        listener.reportedSpam(user);
-                    } catch (Exception e) {
-                        logger.warn("Exception at reportSpam", e);
-                    }
-                }
-            }
-        });
-    }
-
-    @Override
-    public void reportSpam(final String screenName,final boolean performBlock) {
-        getDispatcher().invokeLater(new AsyncTask(REPORT_SPAM, listeners) {
-            @Override
-            public void invoke(List<TwitterListener> listeners) throws TwitterException {
-                User user = twitter.reportSpam(screenName,performBlock);
+                User user = twitter.reportSpam(userId, performBlock);
                 for (TwitterListener listener : listeners) {
                     try {
                         listener.reportedSpam(user);
@@ -2470,6 +2451,23 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
     }
 
     /* Help Resources */
+
+    @Override
+    public void reportSpam(final String screenName, final boolean performBlock) {
+        getDispatcher().invokeLater(new AsyncTask(REPORT_SPAM, listeners) {
+            @Override
+            public void invoke(List<TwitterListener> listeners) throws TwitterException {
+                User user = twitter.reportSpam(screenName, performBlock);
+                for (TwitterListener listener : listeners) {
+                    try {
+                        listener.reportedSpam(user);
+                    } catch (Exception e) {
+                        logger.warn("Exception at reportSpam", e);
+                    }
+                }
+            }
+        });
+    }
 
     @Override
     public void getAPIConfiguration() {
@@ -2556,6 +2554,8 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
         });
     }
 
+    // implementation for AsyncOAuthSupport
+
     @Override
     public void getRateLimitStatus(final String... resources) {
         getDispatcher().invokeLater(new AsyncTask(RATE_LIMIT_STATUS, listeners) {
@@ -2572,8 +2572,6 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
             }
         });
     }
-
-    // implementation for AsyncOAuthSupport
 
     @Override
     public void getOAuthRequestTokenAsync() {
@@ -2728,8 +2726,6 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
         });
     }
 
-    private static transient volatile Dispatcher dispatcher;
-
     @Override
     public void shutdown() {
         synchronized (AsyncTwitterImpl.class) {
@@ -2784,6 +2780,11 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
     }
 
     @Override
+    public void setOAuthAccessToken(AccessToken accessToken) {
+        twitter.setOAuthAccessToken(accessToken);
+    }
+
+    @Override
     public AccessToken getOAuthAccessToken(String oauthVerifier) throws TwitterException {
         return twitter.getOAuthAccessToken(oauthVerifier);
     }
@@ -2796,11 +2797,6 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
     @Override
     public AccessToken getOAuthAccessToken(RequestToken requestToken, String oauthVerifier) throws TwitterException {
         return twitter.getOAuthAccessToken(requestToken, oauthVerifier);
-    }
-
-    @Override
-    public void setOAuthAccessToken(AccessToken accessToken) {
-        twitter.setOAuthAccessToken(accessToken);
     }
 
     @Override
@@ -2839,35 +2835,6 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
         twitter.invalidateOAuth2Token();
     }
 
-
-    abstract class AsyncTask implements Runnable {
-        final List<TwitterListener> listeners;
-        final TwitterMethod method;
-
-        AsyncTask(TwitterMethod method, List<TwitterListener> listeners) {
-            this.method = method;
-            this.listeners = listeners;
-        }
-
-        abstract void invoke(List<TwitterListener> listeners) throws TwitterException;
-
-        @Override
-        public void run() {
-            try {
-                invoke(listeners);
-            } catch (TwitterException te) {
-                if (listeners != null) {
-                    for (TwitterListener listener : listeners) {
-                        try {
-                            listener.onException(te, method);
-                        } catch (Exception e) {
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -2898,5 +2865,33 @@ class AsyncTwitterImpl extends TwitterBaseImpl implements AsyncTwitter {
                 "twitter=" + twitter +
                 ", listeners=" + listeners +
                 '}';
+    }
+
+    abstract class AsyncTask implements Runnable {
+        final List<TwitterListener> listeners;
+        final TwitterMethod method;
+
+        AsyncTask(TwitterMethod method, List<TwitterListener> listeners) {
+            this.method = method;
+            this.listeners = listeners;
+        }
+
+        abstract void invoke(List<TwitterListener> listeners) throws TwitterException;
+
+        @Override
+        public void run() {
+            try {
+                invoke(listeners);
+            } catch (TwitterException te) {
+                if (listeners != null) {
+                    for (TwitterListener listener : listeners) {
+                        try {
+                            listener.onException(te, method);
+                        } catch (Exception e) {
+                        }
+                    }
+                }
+            }
+        }
     }
 }

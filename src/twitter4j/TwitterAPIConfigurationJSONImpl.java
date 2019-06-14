@@ -46,7 +46,7 @@ class TwitterAPIConfigurationJSONImpl extends TwitterResponseImpl implements Twi
             shortURLLength = ParseUtil.getInt("short_url_length", json);
             shortURLLengthHttps = ParseUtil.getInt("short_url_length_https", json);
             charactersReservedPerMedia = ParseUtil.getInt("characters_reserved_per_media", json);
-            dmTextCharacterLimit  = ParseUtil.getInt("dm_text_character_limit", json);
+            dmTextCharacterLimit = ParseUtil.getInt("dm_text_character_limit", json);
 
             JSONObject sizes = json.getJSONObject("photo_sizes");
             photoSizes = new HashMap<Integer, MediaEntity.Size>(4);
@@ -95,7 +95,7 @@ class TwitterAPIConfigurationJSONImpl extends TwitterResponseImpl implements Twi
     public int getCharactersReservedPerMedia() {
         return charactersReservedPerMedia;
     }
-    
+
     @Override
     public int getDmTextCharacterLimit() {
         return dmTextCharacterLimit;

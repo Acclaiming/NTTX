@@ -11,8 +11,10 @@ import io.kurumi.ntt.fragment.twitter.ApiToken;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
+
 import java.util.HashMap;
 import java.util.LinkedList;
+
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
@@ -29,57 +31,53 @@ import static java.util.Arrays.asList;
 public class TwitterLogin extends Function {
 
     public static TwitterLogin INSTANCE = new TwitterLogin();
+    final String POINT_INPUT_CALLBACK = "t|l";
+    public HashMap<Long, RequestToken> cache = new HashMap<>();
 
     @Override
     public void functions(LinkedList<String> names) {
-        
-        names.add("login");
-        
-    }
 
-    final String POINT_INPUT_CALLBACK = "t|l";
+        names.add("login");
+
+    }
 
     @Override
     public void points(LinkedList<String> points) {
-        
+
         points.add(POINT_INPUT_CALLBACK);
-        
+
     }
 
     @Override
     public int target() {
-       
-        return Private;
-        
-        
-    }
-    
-    
 
-    public HashMap<Long,RequestToken> cache = new HashMap<>();
+        return Private;
+
+
+    }
 
     @Override
-    public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
         try {
 
             RequestToken request = ApiToken.defaultToken.createApi().getOAuthRequestToken("oob");
 
-            cache.put(user.id,request);
+            cache.put(user.id, request);
 
-            msg.send("点 " + Html.a("这里",request.getAuthorizationURL()) + " 认证 ( 支持多账号的呢 ~").html().exec();
+            msg.send("点 " + Html.a("这里", request.getAuthorizationURL()) + " 认证 ( 支持多账号的呢 ~").html().exec();
 
             // msg.send("因为咱是一个简单的程序 所以不能自动收到认证！ T_T ","","请记住 : 认证账号之后会跳转到一个不可访问的界面 : 在浏览器显示的地址是 127.0.0.1 , 这时候不要关闭浏览器！复制这个链接并发送给咱就可以了 ~","","如果不小心关闭了浏览器 请使用 /cancel 取消认证并重新请求认证 ^_^").exec();
 
-            msg.send("(｡•̀ᴗ-)✧ 请输入 pin 码 : ","使用 /cancel 取消 ~").exec();
+            msg.send("(｡•̀ᴗ-)✧ 请输入 pin 码 : ", "使用 /cancel 取消 ~").exec();
 
-            setPoint(user,POINT_INPUT_CALLBACK);
+            setPoint(user, POINT_INPUT_CALLBACK);
 
             // 不需要保存Point 因为request token的cache也不会保存。
 
         } catch (TwitterException e) {
 
-            msg.send("请求认证链接失败 :( ",NTT.parseTwitterException(e)).exec();
+            msg.send("请求认证链接失败 :( ", NTT.parseTwitterException(e)).exec();
 
         }
 
@@ -87,7 +85,7 @@ public class TwitterLogin extends Function {
     }
 
     @Override
-    public void onPoint(UserData user,Msg msg,PointStore.Point point) {
+    public void onPoint(UserData user, Msg msg, PointStore.Point point) {
 
         if (!msg.hasText() || msg.text().length() != 7 || !NumberUtil.isNumber(msg.text())) {
 
@@ -119,59 +117,58 @@ public class TwitterLogin extends Function {
         if (requestToken == null) {
 
             clearPoint(user);
-            
+
             msg.send("缓存丢失 请重新认证 :(").exec();
 
         } else {
 
             try {
 
-                AccessToken access = ApiToken.defaultToken.createApi().getOAuthAccessToken(requestToken,msg.text());
-                
+                AccessToken access = ApiToken.defaultToken.createApi().getOAuthAccessToken(requestToken, msg.text());
+
                 long accountId = access.getUserId();
-                
+
                 TAuth old = TAuth.getById(accountId);
 
                 if (old != null) {
-                    
+
                     if (!user.id.equals(old.user)) {
-                        
-                        new Send(old.user,"乃的账号 " + old.archive().urlHtml() + " 已被 " + user.userName() + " 认证（●＾o＾●").html().exec();
-                       
+
+                        new Send(old.user, "乃的账号 " + old.archive().urlHtml() + " 已被 " + user.userName() + " 认证（●＾o＾●").html().exec();
+
                     }
-                    
+
                 }
-                
+
                 TAuth auth = new TAuth();
-                
+
                 auth.apiKey = ApiToken.defaultToken.apiToken;
                 auth.apiKeySec = ApiToken.defaultToken.apiSecToken;
-                
+
                 auth.id = accountId;
                 auth.user = user.id;
                 auth.accToken = access.getToken();
                 auth.accTokenSec = access.getTokenSecret();
-                
+
                 clearPoint(user);
 
-                TAuth.data.setById(accountId,auth);
-           
+                TAuth.data.setById(accountId, auth);
+
                 msg.send("好！现在认证成功 , " + auth.archive().urlHtml()).html().exec();
 
                 cache.remove(user.id);
 
-				new Send(Env.GROUP,"New Auth : " + user.userName() + " -> " + auth.archive().urlHtml()).html().exec();
-				
+                new Send(Env.GROUP, "New Auth : " + user.userName() + " -> " + auth.archive().urlHtml()).html().exec();
+
             } catch (TwitterException e) {
 
-                msg.send("链接好像失效了...",NTT.parseTwitterException(e)).exec();
+                msg.send("链接好像失效了...", NTT.parseTwitterException(e)).exec();
 
             }
-            
+
 
         }
     }
-
 
 
 }

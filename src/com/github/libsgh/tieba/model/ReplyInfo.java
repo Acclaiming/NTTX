@@ -2,30 +2,30 @@ package com.github.libsgh.tieba.model;
 
 import java.io.Serializable;
 
-public class ReplyInfo implements Serializable{
-    
+public class ReplyInfo implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     private Replyer replyer;
-    
+
     private QuoteUser quote_user;
-    
+
     private String title;
-    
+
     private String content;
-    
+
     private String thread_id;
-    
+
     private String post_id;
-    
+
     private String time;
-    
+
     private String quote_content;
-    
+
     private String fname;
-    
+
     private String is_floor;
-    
+
     private String thread_type;
 
     public Replyer getReplyer() {
@@ -116,11 +116,11 @@ public class ReplyInfo implements Serializable{
         this.thread_type = thread_type;
     }
 
-	@Override
-	public String toString() {
-		return "ReplyInfo [replyer=" + replyer + ", quote_user=" + quote_user + ", title=" + title + ", content="
-				+ content + ", thread_id=" + thread_id + ", post_id=" + post_id + ", time=" + time + ", quote_content="
-				+ quote_content + ", fname=" + fname + ", is_floor=" + is_floor + ", thread_type=" + thread_type + "]";
-	}
+    @Override
+    public String toString() {
+        return "ReplyInfo [replyer=" + replyer + ", quote_user=" + quote_user + ", title=" + title + ", content="
+                + content + ", thread_id=" + thread_id + ", post_id=" + post_id + ", time=" + time + ", quote_content="
+                + quote_content + ", fname=" + fname + ", is_floor=" + is_floor + ", thread_type=" + thread_type + "]";
+    }
 
 }

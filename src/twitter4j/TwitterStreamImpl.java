@@ -37,14 +37,29 @@ import static twitter4j.HttpResponseCode.NOT_ACCEPTABLE;
  */
 class TwitterStreamImpl extends TwitterBaseImpl implements TwitterStream {
     private static final long serialVersionUID = 5621090317737561048L;
-    private final HttpClient http;
     private static final Logger logger = Logger.getLogger(TwitterStreamImpl.class);
+    /*
+     https://dev.twitter.com/docs/streaming-api/concepts#connecting
+     When a network error (TCP/IP level) is encountered, back off linearly. Perhaps start at 250 milliseconds, double, and cap at 16 seconds
+     When a HTTP error (> 200) is returned, back off exponentially.
+     Perhaps start with a 10 second wait, double on each subsequent failure, and finally cap the wait at 240 seconds. Consider sending an alert to a human operator after multiple HTTP errors, as there is probably a client configuration issue that is unlikely to be resolved without human intervention. There's not much point in polling any faster in the face of HTTP error codes and your client is may run afoul of a rate limit.
+     */
+    private static final int TCP_ERROR_INITIAL_WAIT = 250;
+    private static final int TCP_ERROR_WAIT_CAP = 16 * 1000;
+    private static final int HTTP_ERROR_INITIAL_WAIT = 10 * 1000;
+    private static final int HTTP_ERROR_WAIT_CAP = 240 * 1000;
+    private static final int NO_WAIT = 0;
+    private static transient volatile Dispatcher dispatcher;
 
+    /* Streaming API */
+    private static int numberOfHandlers = 0;
+    private static int count = 0;
+    private final HttpClient http;
     private final List<ConnectionLifeCycleListener> lifeCycleListeners = new ArrayList<ConnectionLifeCycleListener>(0);
-    private TwitterStreamConsumer handler = null;
-
     private final String stallWarningsGetParam;
     private final HttpParameter stallWarningsParam;
+    private final ArrayList<StreamListener> streamListeners = new ArrayList<StreamListener>(0);
+    private TwitterStreamConsumer handler = null;
 
     /*package*/
     TwitterStreamImpl(Configuration conf, Authorization auth) {
@@ -58,8 +73,6 @@ class TwitterStreamImpl extends TwitterBaseImpl implements TwitterStream {
         stallWarningsGetParam = "stall_warnings=" + (conf.isStallWarningsEnabled() ? "true" : "false");
         stallWarningsParam = new HttpParameter("stall_warnings", conf.isStallWarningsEnabled());
     }
-    
-    /* Streaming API */
 
     @Override
     public TwitterStream firehose(final int count) {
@@ -122,7 +135,7 @@ class TwitterStreamImpl extends TwitterBaseImpl implements TwitterStream {
         try {
             return new StatusStreamImpl(getDispatcher(), http.post(conf.getStreamBaseURL() + relativeUrl
                     , new HttpParameter[]{new HttpParameter("count", String.valueOf(count))
-                    , stallWarningsParam}, auth, null), conf);
+                            , stallWarningsParam}, auth, null), conf);
         } catch (IOException e) {
             throw new TwitterException(e);
         }
@@ -226,7 +239,6 @@ class TwitterStreamImpl extends TwitterBaseImpl implements TwitterStream {
         }
     }
 
-
     private Dispatcher getDispatcher() {
         if (null == TwitterStreamImpl.dispatcher) {
             synchronized (TwitterStreamImpl.class) {
@@ -240,9 +252,6 @@ class TwitterStreamImpl extends TwitterBaseImpl implements TwitterStream {
         }
         return TwitterStreamImpl.dispatcher;
     }
-
-    private static transient volatile Dispatcher dispatcher;
-
 
     @Override
     public TwitterStream filter(final FilterQuery query) {
@@ -278,13 +287,12 @@ class TwitterStreamImpl extends TwitterBaseImpl implements TwitterStream {
         ensureAuthorizationEnabled();
         try {
             return new StatusStreamImpl(getDispatcher(), http.post(conf.getStreamBaseURL()
-                    + "statuses/filter.json"
+                            + "statuses/filter.json"
                     , query.asHttpParameterArray(stallWarningsParam), auth, null), conf);
         } catch (IOException e) {
             throw new TwitterException(e);
         }
     }
-
 
     /**
      * check if any listener is set. Throws IllegalStateException if no listener is set.
@@ -303,8 +311,6 @@ class TwitterStreamImpl extends TwitterBaseImpl implements TwitterStream {
             throw new IllegalStateException("SiteStreamsListener is not set.");
         }
     }
-
-    private static int numberOfHandlers = 0;
 
     private synchronized void startHandler(TwitterStreamConsumer handler) {
         cleanUp();
@@ -341,8 +347,6 @@ class TwitterStreamImpl extends TwitterBaseImpl implements TwitterStream {
         this.lifeCycleListeners.add(listener);
         return this;
     }
-
-    private final ArrayList<StreamListener> streamListeners = new ArrayList<StreamListener>(0);
 
     @Override
     public synchronized TwitterStream addListener(StreamListener listener) {
@@ -433,33 +437,60 @@ class TwitterStreamImpl extends TwitterBaseImpl implements TwitterStream {
         return statusListeners.toArray(new StatusListener[statusListeners.size()]);
     }
 
-    /*
-     https://dev.twitter.com/docs/streaming-api/concepts#connecting
-     When a network error (TCP/IP level) is encountered, back off linearly. Perhaps start at 250 milliseconds, double, and cap at 16 seconds
-     When a HTTP error (> 200) is returned, back off exponentially.
-     Perhaps start with a 10 second wait, double on each subsequent failure, and finally cap the wait at 240 seconds. Consider sending an alert to a human operator after multiple HTTP errors, as there is probably a client configuration issue that is unlikely to be resolved without human intervention. There's not much point in polling any faster in the face of HTTP error codes and your client is may run afoul of a rate limit.
-     */
-    private static final int TCP_ERROR_INITIAL_WAIT = 250;
-    private static final int TCP_ERROR_WAIT_CAP = 16 * 1000;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
-    private static final int HTTP_ERROR_INITIAL_WAIT = 10 * 1000;
-    private static final int HTTP_ERROR_WAIT_CAP = 240 * 1000;
+        TwitterStreamImpl that = (TwitterStreamImpl) o;
 
-    private static final int NO_WAIT = 0;
+        if (handler != null ? !handler.equals(that.handler) : that.handler != null) return false;
+        if (http != null ? !http.equals(that.http) : that.http != null) return false;
+        if (!lifeCycleListeners.equals(that.lifeCycleListeners))
+            return false;
+        if (stallWarningsGetParam != null ? !stallWarningsGetParam.equals(that.stallWarningsGetParam) : that.stallWarningsGetParam != null)
+            return false;
+        if (stallWarningsParam != null ? !stallWarningsParam.equals(that.stallWarningsParam) : that.stallWarningsParam != null)
+            return false;
+        return streamListeners.equals(that.streamListeners);
+    }
 
-    private static int count = 0;
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (http != null ? http.hashCode() : 0);
+        result = 31 * result + lifeCycleListeners.hashCode();
+        result = 31 * result + (handler != null ? handler.hashCode() : 0);
+        result = 31 * result + (stallWarningsGetParam != null ? stallWarningsGetParam.hashCode() : 0);
+        result = 31 * result + (stallWarningsParam != null ? stallWarningsParam.hashCode() : 0);
+        result = 31 * result + streamListeners.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "TwitterStreamImpl{" +
+                "http=" + http +
+                ", lifeCycleListeners=" + lifeCycleListeners +
+                ", handler=" + handler +
+                ", stallWarningsGetParam='" + stallWarningsGetParam + '\'' +
+                ", stallWarningsParam=" + stallWarningsParam +
+                ", streamListeners=" + streamListeners +
+                '}';
+    }
 
     enum Mode {
         user, status, site
     }
 
     abstract class TwitterStreamConsumer extends Thread {
-        private StatusStreamBase stream = null;
         private final String NAME;
+        private final Mode mode;
+        private StatusStreamBase stream = null;
         private volatile boolean closed = false;
         private StreamListener[] streamListeners;
         private RawStreamListener[] rawStreamListeners;
-        private final Mode mode;
 
         TwitterStreamConsumer(Mode mode) {
             super();
@@ -630,49 +661,6 @@ class TwitterStreamImpl extends TwitterBaseImpl implements TwitterStream {
 
         abstract StatusStream getStream() throws TwitterException;
 
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        TwitterStreamImpl that = (TwitterStreamImpl) o;
-
-        if (handler != null ? !handler.equals(that.handler) : that.handler != null) return false;
-        if (http != null ? !http.equals(that.http) : that.http != null) return false;
-        if (!lifeCycleListeners.equals(that.lifeCycleListeners))
-            return false;
-        if (stallWarningsGetParam != null ? !stallWarningsGetParam.equals(that.stallWarningsGetParam) : that.stallWarningsGetParam != null)
-            return false;
-        if (stallWarningsParam != null ? !stallWarningsParam.equals(that.stallWarningsParam) : that.stallWarningsParam != null)
-            return false;
-        return streamListeners.equals(that.streamListeners);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (http != null ? http.hashCode() : 0);
-        result = 31 * result + lifeCycleListeners.hashCode();
-        result = 31 * result + (handler != null ? handler.hashCode() : 0);
-        result = 31 * result + (stallWarningsGetParam != null ? stallWarningsGetParam.hashCode() : 0);
-        result = 31 * result + (stallWarningsParam != null ? stallWarningsParam.hashCode() : 0);
-        result = 31 * result + streamListeners.hashCode();
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "TwitterStreamImpl{" +
-                "http=" + http +
-                ", lifeCycleListeners=" + lifeCycleListeners +
-                ", handler=" + handler +
-                ", stallWarningsGetParam='" + stallWarningsGetParam + '\'' +
-                ", stallWarningsParam=" + stallWarningsParam +
-                ", streamListeners=" + streamListeners +
-                '}';
     }
 }
 

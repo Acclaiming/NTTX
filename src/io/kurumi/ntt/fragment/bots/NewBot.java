@@ -8,170 +8,171 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.abs.Function;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.abs.request.Keyboard;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 
 public class NewBot extends Function {
 
-	@Override
-	public void functions(LinkedList<String> names) {
+    final String POINT_CREATE_BOT = "bot.create";
 
-		names.add("newbot");
+    @Override
+    public void functions(LinkedList<String> names) {
 
-	}
+        names.add("newbot");
 
-	static class CreateBot {
+    }
 
-		int progress = 0;
+    @Override
+    public void points(LinkedList<String> points) {
 
-		UserBot bot;
+        points.add(POINT_CREATE_BOT);
 
-		int type = -1;
+    }
 
-	}
+    @Override
+    public int target() {
 
-	final String POINT_CREATE_BOT = "bot.create";
+        return Private;
 
-	@Override
-	public void points(LinkedList<String> points) {
+    }
 
-		points.add(POINT_CREATE_BOT);
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-	}
+        msg.send("现在请输入BotToken :", "", "BotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。").withCancel().exec();
 
-	@Override
-	public int target() {
+        setPoint(user, POINT_CREATE_BOT, new CreateBot());
 
-		return Private;
+    }
 
-	}
+    @Override
+    public void onPoint(UserData user, Msg msg, PointStore.Point point) {
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+        if (POINT_CREATE_BOT.equals(point.point)) {
 
-		msg.send("现在请输入BotToken :","","BotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。").withCancel().exec();
+            CreateBot data = (CreateBot) point.data;
 
-		setPoint(user,POINT_CREATE_BOT,new CreateBot());
+            if (data.progress == 0) {
 
-	}
+                if (!msg.hasText() || !msg.text().contains(":")) {
 
-	@Override
-	public void onPoint(UserData user,Msg msg,PointStore.Point point) {
+                    msg.send("无效的Token.请重试. ", "Token 看起来像这样: '12345678:ABCDEfgHIDUROVjkLmNOPQRSTUvw-cdEfgHI'").withCancel().exec();
 
-		if (POINT_CREATE_BOT.equals(point.point)) {
+                    return;
 
-			CreateBot data = (CreateBot) point.data;
+                }
 
-			if (data.progress == 0) {
+                msg.send("正在检查BOT信息...").exec();
 
-				if (!msg.hasText() ||  !msg.text().contains(":")) {
+                GetMeResponse me = new TelegramBot(msg.text()).execute(new GetMe());
 
-					msg.send("无效的Token.请重试. ","Token 看起来像这样: '12345678:ABCDEfgHIDUROVjkLmNOPQRSTUvw-cdEfgHI'").withCancel().exec();
+                if (!me.isOk()) {
 
-					return;
+                    msg.send("Token无效...").withCancel().exec();
 
-				}
+                    return;
 
-				msg.send("正在检查BOT信息...").exec();
+                }
 
-				GetMeResponse me = new TelegramBot(msg.text()).execute(new GetMe());
+                UserBot bot = new UserBot();
 
-				if (!me.isOk()) {
+                bot.id = me.user().id();
+                bot.user = user.id;
+                bot.userName = me.user().username();
+                bot.token = msg.text();
 
-					msg.send("Token无效...").withCancel().exec();
+                data.bot = bot;
 
-					return;
+                data.progress = 1;
 
-				}
+                msg.send("现在选择BOT类型 :").keyboard(new Keyboard() {{
 
-				UserBot bot = new UserBot();
+                    newButtonLine("转发私聊");
 
-				bot.id = me.user().id();
-				bot.user = user.id;
-				bot.userName = me.user().username();
-				bot.token = msg.text();
+                    newButtonLine("加群验证");
 
-				data.bot = bot;
+                    newButtonLine("取消创建");
 
-				data.progress = 1;
+                }}).exec();
 
-				msg.send("现在选择BOT类型 :").keyboard(new Keyboard() {{
+            } else if (data.progress == 1) {
 
-							newButtonLine("转发私聊");
+                if ("取消创建".equals(msg.text())) {
 
-							newButtonLine("加群验证");
+                    clearPoint(user);
 
-							newButtonLine("取消创建");
+                    msg.send("已经取消 ~").removeKeyboard().exec();
 
-						}}).exec();
+                } else if ("转发私聊".equals(msg.text())) {
 
-			} else if (data.progress == 1) {
+                    data.bot.type = 0;
 
-				if ("取消创建".equals(msg.text())) {
+                    data.progress = 10;
 
-					clearPoint(user);
+                    msg.send("好，请发送私聊BOT的欢迎语，这将在 /start 时发送").removeKeyboard().exec();
+                    msg.send("就像这样 : 直接喵喵就行了 ~").withCancel().exec();
 
-					msg.send("已经取消 ~").removeKeyboard().exec();
+                } else if ("加群验证".equals(msg.text())) {
 
-				} else if ("转发私聊".equals(msg.text())) {
+                    data.bot.type = 1;
 
-					data.bot.type = 0;
+                    clearPoint(user);
 
-					data.progress = 10;
+                    msg.send("创建成功... 正在启动").removeKeyboard().exec();
 
-					msg.send("好，请发送私聊BOT的欢迎语，这将在 /start 时发送").removeKeyboard().exec();
-					msg.send("就像这样 : 直接喵喵就行了 ~").withCancel().exec();
+                    data.bot.params = new HashMap<>();
 
-				} else if ("加群验证".equals(msg.text())) {
+                    UserBot.data.setById(data.bot.id, data.bot);
 
-					data.bot.type = 1;
+                    data.bot.startBot();
 
-					clearPoint(user);
+                    msg.send("你的BOT : @" + data.bot.userName, "\n将BOT加入群组并设为管理员即可 ~", "\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
 
-					msg.send("创建成功... 正在启动").removeKeyboard().exec();
 
-					data.bot.params = new HashMap<>();
+                } else {
 
-					UserBot.data.setById(data.bot.id,data.bot);
+                    msg.send("你正在创建BOT，请在下方键盘选择").withCancel().exec();
 
-					data.bot.startBot();
+                }
 
-					msg.send("你的BOT : @" + data.bot.userName,"\n将BOT加入群组并设为管理员即可 ~","\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
+            } else if (data.progress == 10) {
 
-					
-				} else {
+                if (!msg.hasText()) {
 
-					msg.send("你正在创建BOT，请在下方键盘选择").withCancel().exec();
+                    msg.send("你正在创建私聊BOT，请发送欢迎语").withCancel().exec();
 
-				}
+                    return;
 
-			} else if (data.progress == 10) {
+                }
 
-				if (!msg.hasText()) {
+                clearPoint(user);
 
-					msg.send("你正在创建私聊BOT，请发送欢迎语").withCancel().exec();
+                msg.send("创建成功... 正在启动").exec();
 
-					return;
+                data.bot.params = new HashMap<>();
+                data.bot.params.put("msg", msg.text());
 
-				}
+                UserBot.data.setById(data.bot.id, data.bot);
 
-				clearPoint(user);
+                data.bot.startBot();
 
-				msg.send("创建成功... 正在启动").exec();
+                msg.send("你的BOT : @" + data.bot.userName, "\n不要忘记给BOT发一条信息 这样BOT才能转发信息给你 ~", "\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
 
-				data.bot.params = new HashMap<>();
-				data.bot.params.put("msg",msg.text());
+            }
 
-				UserBot.data.setById(data.bot.id,data.bot);
+        }
 
-				data.bot.startBot();
+    }
 
-				msg.send("你的BOT : @" + data.bot.userName,"\n不要忘记给BOT发一条信息 这样BOT才能转发信息给你 ~","\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
+    static class CreateBot {
 
-			}
+        int progress = 0;
 
-		}
+        UserBot bot;
 
-	}
+        int type = -1;
+
+    }
 
 }

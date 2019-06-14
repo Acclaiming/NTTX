@@ -11,14 +11,14 @@ import com.pengrad.telegrambot.response.BaseResponse;
 public class Context {
 
     public Fragment fragment;
+    public long targetChatId = -1;
     private Chat chat;
 
     public Context(Fragment fragment, Chat chat) {
 
         this.fragment = fragment;
         this.chat = chat;
-		
-		
+
 
     }
 
@@ -27,9 +27,9 @@ public class Context {
     }
 
     public Long chatId() {
-		
+
         return targetChatId == -1 ? chat.id() : targetChatId;
-		
+
     }
 
     public boolean isPrivate() {
@@ -47,73 +47,68 @@ public class Context {
     public boolean isChannel() {
         return chat.type() == Chat.Type.channel;
     }
-	
-	public boolean kick(Long userId) {
-		
-		return kick(userId,false);
-		
-		
-	}
-    
-    public boolean kick(Long userId,boolean ban) {
 
-        BaseResponse resp = fragment.bot().execute(new KickChatMember(chatId(),userId.intValue()));
-		
-		if (!ban) {
-		
-		fragment.bot().execute(new UnbanChatMember(chatId(),userId.intValue()));
+    public boolean kick(Long userId) {
 
-		}
-		
-		return resp.isOk();
-	
-	}
-    
+        return kick(userId, false);
+
+
+    }
+
+    public boolean kick(Long userId, boolean ban) {
+
+        BaseResponse resp = fragment.bot().execute(new KickChatMember(chatId(), userId.intValue()));
+
+        if (!ban) {
+
+            fragment.bot().execute(new UnbanChatMember(chatId(), userId.intValue()));
+
+        }
+
+        return resp.isOk();
+
+    }
+
     public boolean unrestrict(long id) {
 
-        return fragment.bot().execute(new RestrictChatMember(chatId(),(int)id)
-                                      .canSendMessages(true)
-                                      .canSendMediaMessages(true)
-                                      .canSendOtherMessages(true)
-                                      .canAddWebPagePreviews(true)
-                                      ).isOk();
+        return fragment.bot().execute(new RestrictChatMember(chatId(), (int) id)
+                .canSendMessages(true)
+                .canSendMediaMessages(true)
+                .canSendOtherMessages(true)
+                .canAddWebPagePreviews(true)
+        ).isOk();
 
     }
-    
-    
+
     public boolean restrict(long id) {
 
-        return fragment.bot().execute(new RestrictChatMember(chatId(),(int)id)
-                                      .canSendMessages(false)
-                                      .canSendMediaMessages(false)
-                                      .canSendOtherMessages(false)
-                                      .canAddWebPagePreviews(false)
-                                      ).isOk();
+        return fragment.bot().execute(new RestrictChatMember(chatId(), (int) id)
+                .canSendMessages(false)
+                .canSendMediaMessages(false)
+                .canSendOtherMessages(false)
+                .canAddWebPagePreviews(false)
+        ).isOk();
 
     }
 
+    public boolean restrict(long id, long until) {
 
-
-    public boolean restrict(long id,long until) {
-
-        return fragment.bot().execute(new RestrictChatMember(chatId(),(int)id)
-                                      .canSendMessages(false)
-                                      .canSendMediaMessages(false)
-                                      .canSendOtherMessages(false)
-                                      .canAddWebPagePreviews(false)
-                                      .untilDate((int)until)).isOk();
+        return fragment.bot().execute(new RestrictChatMember(chatId(), (int) id)
+                .canSendMessages(false)
+                .canSendMediaMessages(false)
+                .canSendOtherMessages(false)
+                .canAddWebPagePreviews(false)
+                .untilDate((int) until)).isOk();
 
     }
-	
-	public long targetChatId = -1;
-	
+
     public Send send(String... msg) {
 
-        return new Send(fragment,chatId(), msg);
+        return new Send(fragment, chatId(), msg);
 
     }
 
-    
+
 }
 
 

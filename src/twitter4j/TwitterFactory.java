@@ -34,13 +34,11 @@ import java.lang.reflect.InvocationTargetException;
  * @since Twitter4J 2.1.0
  */
 public class TwitterFactory implements java.io.Serializable {
-    private static final Constructor<Twitter> TWITTER_CONSTRUCTOR;
     /*AsyncTwitterFactory and TWitterStream will access this field*/
     static final Authorization DEFAULT_AUTHORIZATION = AuthorizationFactory.getInstance(ConfigurationContext.getInstance());
+    private static final Constructor<Twitter> TWITTER_CONSTRUCTOR;
     private static final Twitter SINGLETON;
     private static final long serialVersionUID = -563983536986910054L;
-    private final Configuration conf;
-
 
     static {
         // detecting Google App Engine
@@ -87,6 +85,8 @@ public class TwitterFactory implements java.io.Serializable {
         }
     }
 
+    private final Configuration conf;
+
     /**
      * Creates a TwitterFactory with the root configuration.
      */
@@ -114,6 +114,16 @@ public class TwitterFactory implements java.io.Serializable {
      */
     public TwitterFactory(String configTreePath) {
         this(ConfigurationContext.getInstance(configTreePath));
+    }
+
+    /**
+     * Returns default singleton Twitter instance.
+     *
+     * @return default singleton Twitter instance
+     * @since Twitter4J 2.2.4
+     */
+    public static Twitter getSingleton() {
+        return SINGLETON;
     }
 
     /**
@@ -155,15 +165,5 @@ public class TwitterFactory implements java.io.Serializable {
         } catch (InvocationTargetException e) {
             throw new AssertionError(e);
         }
-    }
-
-    /**
-     * Returns default singleton Twitter instance.
-     *
-     * @return default singleton Twitter instance
-     * @since Twitter4J 2.2.4
-     */
-    public static Twitter getSingleton() {
-        return SINGLETON;
     }
 }

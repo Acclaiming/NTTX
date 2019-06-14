@@ -19,10 +19,9 @@ import static com.pengrad.telegrambot.UpdatesListener.CONFIRMED_UPDATES_NONE;
  */
 public class UpdatesHandler {
 
+    private final long sleepTimeout;
     private TelegramBot bot;
     private UpdatesListener listener;
-
-    private final long sleepTimeout;
 
     public UpdatesHandler(long sleepTimeout) {
         this.sleepTimeout = sleepTimeout;

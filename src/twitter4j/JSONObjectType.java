@@ -21,41 +21,6 @@ package twitter4j;
  * @since Twitter4J 2.1.9
  */
 public final class JSONObjectType {
-    public enum Type {
-        SENDER,
-        STATUS,
-        DIRECT_MESSAGE,
-        DELETE,
-        LIMIT,
-        STALL_WARNING,
-        SCRUB_GEO,
-        FRIENDS,
-        FAVORITE,
-        UNFAVORITE,
-        FOLLOW,
-        UNFOLLOW,
-        USER_LIST_MEMBER_ADDED,
-        USER_LIST_MEMBER_DELETED,
-        USER_LIST_SUBSCRIBED,
-        USER_LIST_UNSUBSCRIBED,
-        USER_LIST_CREATED,
-        USER_LIST_UPDATED,
-        USER_LIST_DESTROYED,
-        USER_UPDATE,
-        USER_DELETE,
-        USER_SUSPEND,
-        BLOCK,
-        UNBLOCK,
-        DISCONNECTION,
-        RETWEETED_RETWEET,
-        FAVORITED_RETWEET,
-        QUOTED_TWEET,
-        MUTE,
-        UNMUTE,
-        UNKNOWN
-    }
-
-
     private static final Logger logger = Logger.getLogger(JSONObjectType.class);
 
     /**
@@ -126,15 +91,15 @@ public final class JSONObjectType {
                     return Type.BLOCK;
                 } else if ("unblock".equals(event)) {
                     return Type.UNBLOCK;
-                } else if("retweeted_retweet".equals(event)){
+                } else if ("retweeted_retweet".equals(event)) {
                     return Type.RETWEETED_RETWEET;
-                } else if("favorited_retweet".equals(event)){
+                } else if ("favorited_retweet".equals(event)) {
                     return Type.FAVORITED_RETWEET;
-                } else if("quoted_tweet".equals(event)){
+                } else if ("quoted_tweet".equals(event)) {
                     return Type.QUOTED_TWEET;
-                } else if("mute".equals(event)) {
+                } else if ("mute".equals(event)) {
                     return Type.MUTE;
-                } else if("unmute".equals(event)) {
+                } else if ("unmute".equals(event)) {
                     return Type.UNMUTE;
                 }
 
@@ -148,5 +113,39 @@ public final class JSONObjectType {
             return Type.DISCONNECTION;
         }
         return Type.UNKNOWN;
+    }
+
+    public enum Type {
+        SENDER,
+        STATUS,
+        DIRECT_MESSAGE,
+        DELETE,
+        LIMIT,
+        STALL_WARNING,
+        SCRUB_GEO,
+        FRIENDS,
+        FAVORITE,
+        UNFAVORITE,
+        FOLLOW,
+        UNFOLLOW,
+        USER_LIST_MEMBER_ADDED,
+        USER_LIST_MEMBER_DELETED,
+        USER_LIST_SUBSCRIBED,
+        USER_LIST_UNSUBSCRIBED,
+        USER_LIST_CREATED,
+        USER_LIST_UPDATED,
+        USER_LIST_DESTROYED,
+        USER_UPDATE,
+        USER_DELETE,
+        USER_SUSPEND,
+        BLOCK,
+        UNBLOCK,
+        DISCONNECTION,
+        RETWEETED_RETWEET,
+        FAVORITED_RETWEET,
+        QUOTED_TWEET,
+        MUTE,
+        UNMUTE,
+        UNKNOWN
     }
 }

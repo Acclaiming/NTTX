@@ -33,37 +33,6 @@ class JSONImplFactory implements ObjectFactory {
         this.conf = conf;
     }
 
-    @Override
-    public Status createStatus(JSONObject json) throws TwitterException {
-        return new StatusJSONImpl(json);
-    }
-
-    @Override
-    public User createUser(JSONObject json) throws TwitterException {
-        return new UserJSONImpl(json);
-    }
-
-    @Override
-    public UserList createAUserList(JSONObject json) throws TwitterException {
-        return new UserListJSONImpl(json);
-    }
-
-
-    @Override
-    public Map<String, RateLimitStatus> createRateLimitStatuses(HttpResponse res) throws TwitterException {
-        return RateLimitStatusJSONImpl.createRateLimitStatuses(res, conf);
-    }
-
-    @Override
-    public Status createStatus(HttpResponse res) throws TwitterException {
-        return new StatusJSONImpl(res, conf);
-    }
-
-    @Override
-    public ResponseList<Status> createStatusList(HttpResponse res) throws TwitterException {
-        return StatusJSONImpl.createStatusList(res, conf);
-    }
-
     /**
      * returns a GeoLocation instance if a "geo" element is found.
      *
@@ -108,6 +77,67 @@ class JSONImplFactory implements ObjectFactory {
 
     public static RateLimitStatus createRateLimitStatusFromResponseHeader(HttpResponse res) {
         return RateLimitStatusJSONImpl.createFromResponseHeader(res);
+    }
+
+    /**
+     * static factory method for twitter-text-java
+     *
+     * @return hashtag entity
+     * @since Twitter4J 2.2.6
+     */
+    public static HashtagEntity createHashtagEntity(int start, int end, String text) {
+        return new HashtagEntityJSONImpl(start, end, text);
+    }
+
+    /**
+     * static factory method for twitter-text-java
+     *
+     * @return user mention entity
+     * @since Twitter4J 2.2.6
+     */
+    public static UserMentionEntity createUserMentionEntity(int start, int end, String name, String screenName,
+                                                            long id) {
+        return new UserMentionEntityJSONImpl(start, end, name, screenName, id);
+    }
+
+    /**
+     * static factory method for twitter-text-java
+     *
+     * @return url entity
+     * @since Twitter4J 2.2.6
+     */
+    public static URLEntity createUrlEntity(int start, int end, String url, String expandedURL, String displayURL) {
+        return new URLEntityJSONImpl(start, end, url, expandedURL, displayURL);
+    }
+
+    @Override
+    public Status createStatus(JSONObject json) throws TwitterException {
+        return new StatusJSONImpl(json);
+    }
+
+    @Override
+    public User createUser(JSONObject json) throws TwitterException {
+        return new UserJSONImpl(json);
+    }
+
+    @Override
+    public UserList createAUserList(JSONObject json) throws TwitterException {
+        return new UserListJSONImpl(json);
+    }
+
+    @Override
+    public Map<String, RateLimitStatus> createRateLimitStatuses(HttpResponse res) throws TwitterException {
+        return RateLimitStatusJSONImpl.createRateLimitStatuses(res, conf);
+    }
+
+    @Override
+    public Status createStatus(HttpResponse res) throws TwitterException {
+        return new StatusJSONImpl(res, conf);
+    }
+
+    @Override
+    public ResponseList<Status> createStatusList(HttpResponse res) throws TwitterException {
+        return StatusJSONImpl.createStatusList(res, conf);
     }
 
     @Override
@@ -263,37 +293,6 @@ class JSONImplFactory implements ObjectFactory {
     @Override
     public OEmbed createOEmbed(HttpResponse res) throws TwitterException {
         return new OEmbedJSONImpl(res, conf);
-    }
-
-    /**
-     * static factory method for twitter-text-java
-     *
-     * @return hashtag entity
-     * @since Twitter4J 2.2.6
-     */
-    public static HashtagEntity createHashtagEntity(int start, int end, String text) {
-        return new HashtagEntityJSONImpl(start, end, text);
-    }
-
-    /**
-     * static factory method for twitter-text-java
-     *
-     * @return user mention entity
-     * @since Twitter4J 2.2.6
-     */
-    public static UserMentionEntity createUserMentionEntity(int start, int end, String name, String screenName,
-                                                            long id) {
-        return new UserMentionEntityJSONImpl(start, end, name, screenName, id);
-    }
-
-    /**
-     * static factory method for twitter-text-java
-     *
-     * @return url entity
-     * @since Twitter4J 2.2.6
-     */
-    public static URLEntity createUrlEntity(int start, int end, String url, String expandedURL, String displayURL) {
-        return new URLEntityJSONImpl(start, end, url, expandedURL, displayURL);
     }
 
     @Override

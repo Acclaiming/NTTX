@@ -31,67 +31,66 @@ import java.util.Set;
  */
 public class OkHttpResponse extends HttpResponse {
 
-	private OkHttpClient okHttpClient;
-	private Call call;
-	private Response response;
-	private HashMap<String,List<String>> headerFields;
+    private OkHttpClient okHttpClient;
+    private Call call;
+    private Response response;
+    private HashMap<String, List<String>> headerFields;
 
-	OkHttpResponse() {
-		super();
-	}
+    OkHttpResponse() {
+        super();
+    }
 
-	public OkHttpResponse(HttpClientConfiguration conf) {
-		super(conf);
-	}
+    public OkHttpResponse(HttpClientConfiguration conf) {
+        super(conf);
+    }
 
-	// for test purpose
-	public OkHttpResponse(Call call, OkHttpClient okHttpClient, HttpClientConfiguration conf) throws IOException {
-		super(conf);
-		this.okHttpClient = okHttpClient;
-		this.call = call;
-		this.response = call.execute();
+    // for test purpose
+    public OkHttpResponse(Call call, OkHttpClient okHttpClient, HttpClientConfiguration conf) throws IOException {
+        super(conf);
+        this.okHttpClient = okHttpClient;
+        this.call = call;
+        this.response = call.execute();
 
-		Headers headers = response.headers();
-		Set<String> names = headers.names();
-		HashMap<String,List<String>> headerFields = new HashMap<String,List<String>>();
-		for(String name:names){
-			headerFields.put(name,headers.values(name));
-		}
-		this.headerFields = headerFields;
+        Headers headers = response.headers();
+        Set<String> names = headers.names();
+        HashMap<String, List<String>> headerFields = new HashMap<String, List<String>>();
+        for (String name : names) {
+            headerFields.put(name, headers.values(name));
+        }
+        this.headerFields = headerFields;
 
-		is = response.body().byteStream();
-		if(is!=null && "gzip".equals(response.header("Content-Encoding"))){
-			is = new StreamingGZIPInputStream(is);
-		}
+        is = response.body().byteStream();
+        if (is != null && "gzip".equals(response.header("Content-Encoding"))) {
+            is = new StreamingGZIPInputStream(is);
+        }
 
-		statusCode = response.code();
-	}
+        statusCode = response.code();
+    }
 
-	/*package*/ OkHttpResponse(String content) {
-		super();
-		this.responseAsString = content;
-	}
+    /*package*/ OkHttpResponse(String content) {
+        super();
+        this.responseAsString = content;
+    }
 
-	public Protocol getProtocol(){
-		return response.protocol();
-	}
+    public Protocol getProtocol() {
+        return response.protocol();
+    }
 
-	@Override
-	public String getResponseHeader(String name) {
-		return this.response.header(name);
-	}
+    @Override
+    public String getResponseHeader(String name) {
+        return this.response.header(name);
+    }
 
 
+    @Override
+    public Map<String, List<String>> getResponseHeaderFields() {
+        return headerFields;
+    }
 
-	@Override
-	public Map<String, List<String>> getResponseHeaderFields() {
-		return headerFields;
-	}
-
-	@Override
-	public void disconnect() throws IOException {
-		call.cancel();
-	}
+    @Override
+    public void disconnect() throws IOException {
+        call.cancel();
+    }
 
 
 }

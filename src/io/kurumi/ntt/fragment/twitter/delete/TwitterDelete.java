@@ -12,18 +12,22 @@ import io.kurumi.ntt.fragment.abs.TwitterFunction;
 import io.kurumi.ntt.fragment.abs.request.Send;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.utils.BotLog;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 public class TwitterDelete extends TwitterFunction {
 
     public static TwitterDelete INSTANCE = new TwitterDelete();
+    final String POINT_DELETE = "td";
+    HashMap<Long, DeleteThread> threads = new HashMap<>();
 
     @Override
     public void functions(LinkedList<String> names) {
@@ -32,8 +36,6 @@ public class TwitterDelete extends TwitterFunction {
         names.add("canceldelete");
 
     }
-
-    final String POINT_DELETE = "td";
 
     @Override
     public void points(LinkedList<String> points) {
@@ -51,10 +53,8 @@ public class TwitterDelete extends TwitterFunction {
 
     }
 
-    HashMap<Long,DeleteThread> threads = new HashMap<>();
-
     @Override
-    public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+    public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
         if (function.startsWith("cancel")) {
 
@@ -67,7 +67,7 @@ public class TwitterDelete extends TwitterFunction {
             }
 
             threads.remove(account.id).stoped.set(true);
-            
+
             msg.send("已取消...").exec();
 
 
@@ -79,26 +79,26 @@ public class TwitterDelete extends TwitterFunction {
 
         } else {
 
-            setPoint(user,POINT_DELETE,account);
+            setPoint(user, POINT_DELETE, account);
 
             msg.send("这个功能需要从 Twitter应用/网页 - 设置 - 账号 - 你的Twitter数据 输入密码下载数据zip，并找到tweet.js/like.js的说").exec();
 
-            msg.send("现在发送 tweet.js / like.js 来删除所有推文/打心... (如果文件超过20m 需要打zip包发送哦 (tweet.js打tweet.zip / like.js打like.zip (❁´▽`❁)","使用 /cancel 取消 ~").exec();
+            msg.send("现在发送 tweet.js / like.js 来删除所有推文/打心... (如果文件超过20m 需要打zip包发送哦 (tweet.js打tweet.zip / like.js打like.zip (❁´▽`❁)", "使用 /cancel 取消 ~").exec();
 
         }
-       
+
     }
 
     @Override
-    public void onPoint(UserData user,Msg msg,PointStore.Point point) {
+    public void onPoint(UserData user, Msg msg, PointStore.Point point) {
 
-        super.onPoint(user,msg,point);
+        super.onPoint(user, msg, point);
 
         if (!POINT_DELETE.equals(point.point)) return;
 
         if (msg.doc() == null || !msg.doc().fileName().matches("(tweet|like)\\.(js|zip)")) {
 
-            msg.send("你正在删除twetter数据... 发送tweet.js删除推文 like.js 删除打心...","使用 /cancel 取消...").exec();
+            msg.send("你正在删除twetter数据... 发送tweet.js删除推文 like.js 删除打心...", "使用 /cancel 取消...").exec();
 
             return;
 
@@ -119,13 +119,13 @@ public class TwitterDelete extends TwitterFunction {
                 msg.send("可能真的太大...？ zip都超过20m...").exec();
 
             }
-            
+
             return;
 
 
         }
 
-        File zipOut = new File(Env.CACHE_DIR,"unzip/" + msg.doc().fileId());
+        File zipOut = new File(Env.CACHE_DIR, "unzip/" + msg.doc().fileId());
 
         if (!zipOut.isDirectory() || zipOut.list().length == 0) {
 
@@ -133,9 +133,9 @@ public class TwitterDelete extends TwitterFunction {
 
                 try {
 
-                    ZipUtil.unzip(file,zipOut);
+                    ZipUtil.unzip(file, zipOut);
 
-                    file = new File(zipOut,like ? "like.js" : "tweet.js");
+                    file = new File(zipOut, like ? "like.js" : "tweet.js");
 
                     if (!file.isFile()) {
 
@@ -161,8 +161,8 @@ public class TwitterDelete extends TwitterFunction {
         msg.send("解析" + (like ? "打心" : "推文") + "ing... Σ( ﾟωﾟ").exec();
 
         clearPoint(user);
-        
-        BufferedReader reader =  IoUtil.getReader(IoUtil.toStream(file),CharsetUtil.CHARSET_UTF_8);
+
+        BufferedReader reader = IoUtil.getReader(IoUtil.toStream(file), CharsetUtil.CHARSET_UTF_8);
 
         LinkedList<Long> ids = new LinkedList<>();
 
@@ -178,13 +178,13 @@ public class TwitterDelete extends TwitterFunction {
 
                     if (line.contains("tweetId")) {
 
-                        ids.add(Long.parseLong(StrUtil.subBetween(line,"\" : \"","\"")));
+                        ids.add(Long.parseLong(StrUtil.subBetween(line, "\" : \"", "\"")));
 
                     }
 
                 } else if (isRC) {
 
-                    ids.add(Long.parseLong(StrUtil.subBetween(line,"\" : \"","\"")));
+                    ids.add(Long.parseLong(StrUtil.subBetween(line, "\" : \"", "\"")));
 
                     isRC = false;
 
@@ -202,7 +202,7 @@ public class TwitterDelete extends TwitterFunction {
 
         } catch (IOException e) {
 
-            msg.send("读取文件错误...",e.toString()).exec();
+            msg.send("读取文件错误...", e.toString()).exec();
 
             return;
 
@@ -214,7 +214,7 @@ public class TwitterDelete extends TwitterFunction {
 
         thread.userId = user.id;
 
-        thread.account = (TAuth)point.data;
+        thread.account = (TAuth) point.data;
 
         thread.api = thread.account.createApi();
 
@@ -222,12 +222,12 @@ public class TwitterDelete extends TwitterFunction {
 
         thread.tweet = !like;
 
-        threads.put(thread.account.id,thread);
+        threads.put(thread.account.id, thread);
 
         thread.start();
 
 
-    } 
+    }
 
 
     class DeleteThread extends Thread {
@@ -243,7 +243,7 @@ public class TwitterDelete extends TwitterFunction {
         @Override
         public void run() {
 
-            Msg status =  new Send(userId,"正在开始删除... ").send();
+            Msg status = new Send(userId, "正在开始删除... ").send();
 
             float count = ids.size();
             float current = 0;
@@ -269,7 +269,7 @@ public class TwitterDelete extends TwitterFunction {
 
                 } catch (TwitterException e) {
 
-                    BotLog.info("删除，错误",e);
+                    BotLog.info("删除，错误", e);
 
                 }
 
@@ -281,13 +281,13 @@ public class TwitterDelete extends TwitterFunction {
 
                 }
 
-                current ++;
+                current++;
 
-                progress = Math.round((current /count) * 1000) / 10;
+                progress = Math.round((current / count) * 1000) / 10;
 
                 if (progress != last) {
 
-                    status.edit("删除中 : " + progress + "%","取消删除使用 /canceldelete ...").exec();
+                    status.edit("删除中 : " + progress + "%", "取消删除使用 /canceldelete ...").exec();
 
                 }
 

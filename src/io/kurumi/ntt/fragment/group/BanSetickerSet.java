@@ -11,26 +11,31 @@ import io.kurumi.ntt.utils.NTT;
 public class BanSetickerSet extends Fragment {
 
     public static BanSetickerSet INSTANCE = new BanSetickerSet();
-    public static JSONObject bans = LocalData.getJSON("data","ban_sticker_set",true);
+    public static JSONObject bans = LocalData.getJSON("data", "ban_sticker_set", true);
 
     public static void save() {
 
-        LocalData.setJSON("data","ban_sticker_set",bans);
+        LocalData.setJSON("data", "ban_sticker_set", bans);
 
-	}
+    }
 
 
     @Override
-    public boolean onMsg(UserData user,Msg msg) {
+    public boolean onMsg(UserData user, Msg msg) {
 
         if (msg.isCommand()) {
 
             switch (msg.command()) {
 
-                case "banss" : banStickerSet(user,msg);break;
-                case "unbanss" : unBanStickerSet(user,msg);break;
+                case "banss":
+                    banStickerSet(user, msg);
+                    break;
+                case "unbanss":
+                    unBanStickerSet(user, msg);
+                    break;
 
-                default : return false;
+                default:
+                    return false;
 
             }
 
@@ -40,7 +45,7 @@ public class BanSetickerSet extends Fragment {
 
             if (bans.getJSONArray(msg.chatId().toString()).contains(msg.message().sticker().setName())) {
 
-				msg.delete();
+                msg.delete();
 
                 return true;
 
@@ -52,30 +57,30 @@ public class BanSetickerSet extends Fragment {
 
     }
 
-    void banStickerSet(UserData user,Msg msg) {
+    void banStickerSet(UserData user, Msg msg) {
 
         if (NTT.checkGroup(msg)) return;
         if (NTT.checkGroupAdmin(msg)) return;
 
-		String setName = null;
+        String setName = null;
 
         if (msg.replyTo() == null || msg.replyTo().message().sticker() == null) {
 
-			if (msg.params().length == 0) {
+            if (msg.params().length == 0) {
 
-				msg.send("/banss <贴纸集名称> 或者对sticker使用啦...").publicFailed();
+                msg.send("/banss <贴纸集名称> 或者对sticker使用啦...").publicFailed();
 
-				return;
+                return;
 
-			}
+            }
 
-			setName = msg.params()[0];
+            setName = msg.params()[0];
 
         } else {
 
-			setName = msg.replyTo().message().sticker().setName();
+            setName = msg.replyTo().message().sticker().setName();
 
-		}
+        }
 
         JSONArray rules = bans.getJSONArray(msg.chatId().toString());
 
@@ -91,7 +96,7 @@ public class BanSetickerSet extends Fragment {
 
         rules.add(setName);
 
-        bans.put(msg.chatId().toString(),rules);
+        bans.put(msg.chatId().toString(), rules);
 
         save();
 
@@ -99,30 +104,30 @@ public class BanSetickerSet extends Fragment {
 
     }
 
-    void unBanStickerSet(UserData user,Msg msg) {
+    void unBanStickerSet(UserData user, Msg msg) {
 
         if (NTT.checkGroup(msg)) return;
         if (NTT.checkGroupAdmin(msg)) return;
 
-		String setName = null;
+        String setName = null;
 
         if (msg.replyTo() == null || msg.replyTo().message().sticker() == null) {
 
-			if (msg.params().length == 0) {
+            if (msg.params().length == 0) {
 
-				msg.send("/banss <贴纸集名称> 或者对sticker使用啦...").publicFailed();
+                msg.send("/banss <贴纸集名称> 或者对sticker使用啦...").publicFailed();
 
-				return;
+                return;
 
-			}
+            }
 
-			setName = msg.params()[0];
+            setName = msg.params()[0];
 
         } else {
 
-			setName = msg.replyTo().message().sticker().setName();
+            setName = msg.replyTo().message().sticker().setName();
 
-		}
+        }
 
         JSONArray rules = bans.getJSONArray(msg.chatId().toString());
 
@@ -138,7 +143,7 @@ public class BanSetickerSet extends Fragment {
 
         rules.remove(setName);
 
-        bans.put(msg.chatId().toString(),rules);
+        bans.put(msg.chatId().toString(), rules);
 
         save();
 

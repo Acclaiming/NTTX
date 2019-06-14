@@ -124,19 +124,6 @@ public final class OEmbedRequest implements Serializable {
         return this;
     }
 
-
-    public enum Align {
-        LEFT,
-        CENTER,
-        RIGHT,
-        NONE
-    }
-
-    public enum WidgetType {
-        VIDEO,
-        NONE
-    }
-
     /*package*/ HttpParameter[] asHttpParameterArray() {
         ArrayList<HttpParameter> params = new ArrayList<HttpParameter>(12);
         appendParameter("id", statusId, params);
@@ -150,7 +137,7 @@ public final class OEmbedRequest implements Serializable {
             appendParameter("related", StringUtil.join(related), params);
         }
         appendParameter("lang", lang, params);
-        if(widgetType != WidgetType.NONE) {
+        if (widgetType != WidgetType.NONE) {
             params.add(new HttpParameter("widget_type", widgetType.name().toLowerCase()));
             params.add(new HttpParameter("hide_tweet", hideTweet));
         }
@@ -224,5 +211,17 @@ public final class OEmbedRequest implements Serializable {
                 ", widgetType=" + widgetType +
                 ", hideTweet=" + hideTweet +
                 '}';
+    }
+
+    public enum Align {
+        LEFT,
+        CENTER,
+        RIGHT,
+        NONE
+    }
+
+    public enum WidgetType {
+        VIDEO,
+        NONE
     }
 }

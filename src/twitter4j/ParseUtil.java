@@ -32,6 +32,9 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
 final class ParseUtil {
+    private final static Map<String, LinkedBlockingQueue<SimpleDateFormat>> formatMapQueue = new HashMap<String,
+            LinkedBlockingQueue<SimpleDateFormat>>();
+
     private ParseUtil() {
         // should never be instantiated
         throw new AssertionError();
@@ -81,7 +84,6 @@ final class ParseUtil {
         return parsed;
     }
 
-
     public static Date getDate(String name, JSONObject json) throws TwitterException {
         return getDate(name, json, "EEE MMM d HH:mm:ss z yyyy");
     }
@@ -94,9 +96,6 @@ final class ParseUtil {
             return getDate(dateStr, format);
         }
     }
-
-    private final static Map<String, LinkedBlockingQueue<SimpleDateFormat>> formatMapQueue = new HashMap<String,
-            LinkedBlockingQueue<SimpleDateFormat>>();
 
     public static Date getDate(String dateString, String format) throws TwitterException {
         LinkedBlockingQueue<SimpleDateFormat> simpleDateFormats = formatMapQueue.get(format);

@@ -34,12 +34,12 @@ public class HttpResponseImpl extends HttpResponse {
         try {
             this.statusCode = con.getResponseCode();
         } catch (IOException e) {
-          /*
-           * If the user has revoked the access token in use, then Twitter naughtily returns a 401 with no "WWW-Authenticate" header.
-           *
-           * This causes an IOException in the getResponseCode() method call. See https://dev.twitter.com/issues/1114
-           * This call can, however, me made a second time without exception.
-           */
+            /*
+             * If the user has revoked the access token in use, then Twitter naughtily returns a 401 with no "WWW-Authenticate" header.
+             *
+             * This causes an IOException in the getResponseCode() method call. See https://dev.twitter.com/issues/1114
+             * This call can, however, me made a second time without exception.
+             */
             if ("Received authentication challenge is null".equals(e.getMessage())) {
                 this.statusCode = con.getResponseCode();
             } else {
