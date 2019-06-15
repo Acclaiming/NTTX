@@ -21,7 +21,6 @@ public class JoinCaptchaBot extends BotFragment {
 
     static Timer timer = new Timer();
     final String POINT_AUTH = "auth";
-    final String POINT_REMOVE = "rem";
     public Long botId;
     public Long userId;
     public String botToken;
