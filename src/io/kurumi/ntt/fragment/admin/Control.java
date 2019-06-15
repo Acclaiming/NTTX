@@ -43,7 +43,7 @@ public class Control extends Function {
 
         }  else if ("upgrade".equals(function)) {
 
-			new Send(Env.GROUP, "Bot Restart Executed : By " + user.userName()).html().exec();
+			new Send(Env.GROUP, "Bot Update Executed : By " + user.userName()).html().exec();
 
             try {
 
