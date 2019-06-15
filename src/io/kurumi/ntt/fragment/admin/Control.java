@@ -16,7 +16,7 @@ public class Control extends Function {
     public void functions(LinkedList<String> names) {
 
         names.add("stop");
-		names.add("update");
+		names.add("upgrade");
         names.add("restart");
         names.add("poweroff");
         names.add("reboot");
@@ -41,7 +41,7 @@ public class Control extends Function {
 
             RuntimeUtil.exec("service ntt stop");
 
-        }  else if ("update".equals(function)) {
+        }  else if ("upgrade".equals(function)) {
 
 			new Send(Env.GROUP, "Bot Restart Executed : By " + user.userName()).html().exec();
 
