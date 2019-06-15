@@ -23,7 +23,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 	static LinkedBlockingQueue<UserAndUpdate> queue = new LinkedBlockingQueue<>();
 	static LinkedList<ProcessThread> threads = new LinkedList<>();
-	
+
     public User me;
     private TelegramBot bot;
     private LinkedList<Fragment> fragments = new LinkedList<>();
@@ -31,25 +31,27 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
     private PointStore point;
 
 	public static void startThreads(int count) {
-		
+
 		for (int index = 0;index < count;index ++) {
-			
-			threads.add(new ProcessThread());
-			
+
+			threads.add(new ProcessThread() {{ start(); }});
+
 		}
-		
-	}
-	
-	public static void stopThreads() {
-		
-		ProcessThread thread = threads.remove();
-		
-		thread.stopped.set(true);
-		
-		thread.interrupt();
 
 	}
-	
+
+	public static void stopThreads() {
+
+		for (ProcessThread thread : threads) {
+
+			thread.stopped.set(true);
+
+			thread.interrupt();
+
+		}
+
+	}
+
 	class UserAndUpdate {
 
 		long targetId;
@@ -57,9 +59,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 		UserData user;
 
 		Update update;
-		
+
 		void process() {
-			
+
 			final boolean point = user != null && point().contains(user);
 
 			if (update.message() != null) {
