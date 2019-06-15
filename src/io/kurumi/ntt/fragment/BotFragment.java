@@ -57,10 +57,10 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 		UserData user;
 
 		Update update;
-
-		final boolean point = user != null && point().contains(user);
-
+		
 		void process() {
+			
+			final boolean point = user != null && point().contains(user);
 
 			if (update.message() != null) {
 
@@ -413,7 +413,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 				try {
 
-					uau =   queue.take();
+					uau = queue.take();
 
 				} catch (InterruptedException e) {
 
