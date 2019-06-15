@@ -203,6 +203,15 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
+	@Override
+	public void realStart() {
+		
+		startThreads(5);
+		
+		super.realStart();
+		
+	}
+	
     @Override
     public void reload() {
 		
@@ -305,10 +314,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public void stop() {
 
-        // AutoTask.stop();
+        // AutoTask.stop()
 
-        // mtp.stopBot();
-
+        // mtp.stopBot()
+		
         for (BotFragment bot : BotServer.fragments.values()) {
 
             if (bot != this) bot.stop();
@@ -316,9 +325,11 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         }
 
         super.stop();
-
+		
         BotServer.INSTANCE.stop();
 
+		stopThreads();
+		
         /*
 
          FTTask.stop();

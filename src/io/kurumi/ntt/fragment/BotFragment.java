@@ -15,20 +15,233 @@ import java.util.concurrent.*;
 import okhttp3.*;
 
 import io.kurumi.ntt.fragment.abs.Callback;
+import java.util.concurrent.atomic.*;
+import io.kurumi.ntt.fragment.BotFragment.*;
+import cn.hutool.core.thread.*;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
-    static ExecutorService processUpdatePool = Executors.newFixedThreadPool(5);
+	static LinkedBlockingQueue<UserAndUpdate> queue = new LinkedBlockingQueue<>();
+	static LinkedList<ProcessThread> threads = new LinkedList<>();
+	
     public User me;
     private TelegramBot bot;
     private LinkedList<Fragment> fragments = new LinkedList<>();
     private String token;
     private PointStore point;
 
+	public static void startThreads(int count) {
+		
+		for (int index = 0;index < count;index ++) {
+			
+			threads.add(new ProcessThread());
+			
+		}
+		
+	}
+	
+	public static void stopThreads() {
+		
+		ProcessThread thread = threads.remove();
+		
+		thread.stopped.set(true);
+		
+		thread.interrupt();
+
+	}
+	
+	class UserAndUpdate {
+
+		long targetId;
+
+		UserData user;
+
+		Update update;
+
+		final boolean point = user != null && point().contains(user);
+
+		void process() {
+
+			if (update.message() != null) {
+
+				Msg msg = new Msg(BotFragment.this, update.message());
+
+				for (Fragment fragmnet : fragments) {
+
+					if (fragmnet.onUpdate(user, update)) {
+
+						return;
+
+					}
+
+				}
+
+				for (Fragment fragmnet : fragments) {
+
+					if (!point) {
+
+						if (fragmnet.onMsg(user, msg)) {
+
+							return;
+
+						}
+
+					} else {
+
+						if (fragmnet.onPointedMsg(user, msg)) {
+
+							return;
+
+						}
+
+					}
+
+				}
+
+				switch (update.message().chat().type()) {
+
+					case Private: {
+
+							for (Fragment fragmnet : fragments) {
+
+								if (!point) {
+
+									if (fragmnet.onPrivate(user, msg)) {
+
+										return;
+
+									}
+
+								} else {
+
+
+									if (fragmnet.onPointedPrivate(user, msg)) {
+
+										return;
+
+									}
+
+								}
+
+							}
+
+							break;
+
+						}
+
+					case group:
+					case supergroup: {
+
+							for (Fragment fragmnet : fragments) {
+
+								if (!point) {
+
+									if (fragmnet.onGroup(user, msg)) {
+
+										return;
+
+									}
+
+								} else {
+
+									if (fragmnet.onPointedGroup(user, msg)) {
+
+										return;
+
+									}
+
+								}
+
+							}
+
+							break;
+
+						}
+
+				}
+
+			} else if (update.channelPost() != null) {
+
+
+				for (Fragment fragmnet : fragments) {
+
+					if (fragmnet.onUpdate(user, update)) {
+
+						return;
+
+					}
+
+				}
+
+
+				for (Fragment fragmnet : fragments) {
+
+					if (fragmnet.onChanPost(user, new Msg(fragmnet, update.channelPost()))) {
+
+						return;
+
+					}
+
+				}
+
+			} else if (update.callbackQuery() != null) {
+
+				for (Fragment fragmnet : fragments) {
+
+					if (fragmnet.onUpdate(user, update)) {
+
+						return;
+
+					}
+
+				}
+
+
+				for (Fragment fragmnet : fragments) {
+
+					if (fragmnet.onCallback(user, new Callback(fragmnet, update.callbackQuery()))) {
+
+						return;
+
+					}
+
+				}
+
+			} else if (update.inlineQuery() != null) {
+
+
+				for (Fragment fragmnet : fragments) {
+
+					if (fragmnet.onUpdate(user, update)) {
+
+						return;
+
+					}
+
+				}
+
+
+				for (Fragment fragmnet : fragments) {
+
+					if (fragmnet.onQuery(user, new Query(fragmnet, update.inlineQuery()))) {
+
+						return;
+
+					}
+
+				}
+
+			}
+
+
+		}
+
+	}
+
 	public BotFragment() {
 
         origin = this;
-		
+
 	}
 
 
@@ -36,7 +249,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
     public TelegramBot bot() {
 
         return bot;
-
     }
 
     public void reload() {
@@ -44,7 +256,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 		fragments.clear();
 
 		addFragment(this);
-		
+
     }
 
     public void addFragment(Fragment fragment) {
@@ -169,311 +381,198 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         } else user = null;
 
-        final boolean point = user != null && point().contains(user);
 
-        processUpdatePool.execute(new Runnable() {
+		UserAndUpdate uau = new UserAndUpdate();
 
-				@Override
-				public void run() {
+		uau.targetId = -1;
 
-					if (update.message() != null) {
+		if (user != null) uau.targetId = user.id;
+		else if (update.channelPost() != null) uau.targetId = update.channelPost().chat().id();
+		else if (update.editedChannelPost() != null) uau.targetId = update.editedChannelPost().chat().id();
 
-						Msg msg = new Msg(BotFragment.this, update.message());
+		uau.user = user;
+		uau.update = update;
 
-						for (Fragment fragmnet : fragments) {
+		queue.add(uau);
 
-							if (fragmnet.onUpdate(user, update)) {
 
-								return;
+    }
 
-							}
+	static class ProcessThread extends Thread {
 
-						}
+		static LinkedList<Long> processing = new LinkedList<>();
 
-						for (Fragment fragmnet : fragments) {
+		AtomicBoolean stopped = new AtomicBoolean(false);
 
-							if (!point) {
+		@Override
+		public void run() {
 
-								if (fragmnet.onMsg(user, msg)) {
+			while (!stopped.get()) {
 
-									return;
+				UserAndUpdate uau;
 
-								}
+				try {
 
-							} else {
+					uau =   queue.take();
 
-								if (fragmnet.onPointedMsg(user, msg)) {
+				} catch (InterruptedException e) {
 
-									return;
+					return;
 
-								}
+				}
 
-							}
+				synchronized (processing) {
 
-						}
+					if (processing.contains(uau.targetId)) {
 
-						switch (update.message().chat().type()) {
+						queue.add(uau);
 
-							case Private: {
+						continue;
 
-									for (Fragment fragmnet : fragments) {
+					} else {
 
-										if (!point) {
-
-											if (fragmnet.onPrivate(user, msg)) {
-
-												return;
-
-											}
-
-										} else {
-
-
-											if (fragmnet.onPointedPrivate(user, msg)) {
-
-												return;
-
-											}
-
-										}
-
-									}
-
-									break;
-
-								}
-
-							case group:
-							case supergroup: {
-
-									for (Fragment fragmnet : fragments) {
-
-										if (!point) {
-
-											if (fragmnet.onGroup(user, msg)) {
-
-												return;
-
-											}
-
-										} else {
-
-											if (fragmnet.onPointedGroup(user, msg)) {
-
-												return;
-
-											}
-
-										}
-
-									}
-
-									break;
-
-								}
-
-						}
-
-					} else if (update.channelPost() != null) {
-
-
-						for (Fragment fragmnet : fragments) {
-
-							if (fragmnet.onUpdate(user, update)) {
-
-								return;
-
-							}
-
-						}
-
-
-						for (Fragment fragmnet : fragments) {
-
-							if (fragmnet.onChanPost(user, new Msg(fragmnet, update.channelPost()))) {
-
-								return;
-
-							}
-
-						}
-
-					} else if (update.callbackQuery() != null) {
-
-						for (Fragment fragmnet : fragments) {
-
-							if (fragmnet.onUpdate(user, update)) {
-
-								return;
-
-							}
-
-						}
-
-
-						for (Fragment fragmnet : fragments) {
-
-							if (fragmnet.onCallback(user, new Callback(fragmnet, update.callbackQuery()))) {
-
-								return;
-
-							}
-
-						}
-
-					} else if (update.inlineQuery() != null) {
-
-
-						for (Fragment fragmnet : fragments) {
-
-							if (fragmnet.onUpdate(user, update)) {
-
-								return;
-
-							}
-
-						}
-
-
-						for (Fragment fragmnet : fragments) {
-
-							if (fragmnet.onQuery(user, new Query(fragmnet, update.inlineQuery()))) {
-
-								return;
-
-							}
-
-						}
+						processing.add(uau.targetId);
 
 					}
 
+				}
+
+				uau.process();
+
+				synchronized (processing) {
+
+					processing.remove(uau.targetId);
 
 				}
-			});
 
-    }
 
-    public boolean isLongPulling() {
+			}
 
-        return false;
+		}
 
-    }
+	}
 
-    public String getToken() {
+	public boolean isLongPulling() {
 
-        return Env.get("token." + botName());
+		return false;
 
-    }
+	}
 
-    public void setToken(String botToken) {
+	public String getToken() {
 
-        Env.set("token." + botName(), token);
+		return Env.get("token." + botName());
 
-    }
+	}
 
-    public boolean silentStart() {
+	public void setToken(String botToken) {
 
-        token = getToken();
+		Env.set("token." + botName(), token);
 
-        bot = new TelegramBot.Builder(token).build();
+	}
 
-        GetMeResponse resp = bot.execute(new GetMe());
+	public boolean silentStart() {
 
-        if (resp == null || !resp.isOk()) return false;
+		token = getToken();
 
-        me = resp.user();
+		bot = new TelegramBot.Builder(token).build();
 
-        realStart();
+		GetMeResponse resp = bot.execute(new GetMe());
 
-        return true;
+		if (resp == null || !resp.isOk()) return false;
 
-    }
+		me = resp.user();
 
-    public void start() {
+		realStart();
 
-        token = getToken();
+		return true;
 
-        if (token == null || !Env.verifyToken(token)) {
+	}
 
-            token = Env.inputToken(botName());
+	public void start() {
 
-        }
+		token = getToken();
 
-        setToken(token);
+		if (token == null || !Env.verifyToken(token)) {
 
-        OkHttpClient.Builder okhttpClient = new OkHttpClient.Builder();
+			token = Env.inputToken(botName());
 
-        okhttpClient.networkInterceptors().clear();
+		}
 
-        bot = new TelegramBot.Builder(token)
+		setToken(token);
+
+		OkHttpClient.Builder okhttpClient = new OkHttpClient.Builder();
+
+		okhttpClient.networkInterceptors().clear();
+
+		bot = new TelegramBot.Builder(token)
 			.okHttpClient(okhttpClient.build()).build();
 
-        me = bot.execute(new GetMe()).user();
+		me = bot.execute(new GetMe()).user();
 
-        realStart();
+		realStart();
 
-    }
+	}
 
-    public void realStart() {
+	public void realStart() {
 
 		reload();
-		
-        bot.execute(new DeleteWebhook());
 
-        if (isLongPulling()) {
+		bot.execute(new DeleteWebhook());
 
-            bot.setUpdatesListener(this, new GetUpdates());
+		if (isLongPulling()) {
 
-        } else {
+			bot.setUpdatesListener(this, new GetUpdates());
 
-            /*
+		} else {
 
-             GetUpdatesResponse update = bot.execute(new GetUpdates());
+			/*
 
-             if (update.isOk()) {
+			 GetUpdatesResponse update = bot.execute(new GetUpdates());
 
-             process(update.updates());
+			 if (update.isOk()) {
 
-             }
+			 process(update.updates());
 
-             */
+			 }
 
-            String url = "https://" + BotServer.INSTANCE.domain + "/" + token;
+			 */
 
-            BotServer.fragments.put(token, this);
+			String url = "https://" + BotServer.INSTANCE.domain + "/" + token;
 
-            BaseResponse resp = bot.execute(new SetWebhook().url(url));
+			BotServer.fragments.put(token, this);
 
-            BotLog.debug("SET WebHook for " + botName() + " : " + url);
+			BaseResponse resp = bot.execute(new SetWebhook().url(url));
 
-            if (!resp.isOk()) {
+			BotLog.debug("SET WebHook for " + botName() + " : " + url);
 
-                BotLog.debug("Failed... : " + resp.description());
+			if (!resp.isOk()) {
 
-                BotServer.fragments.remove(token);
+				BotLog.debug("Failed... : " + resp.description());
 
-            }
+				BotServer.fragments.remove(token);
+
+			}
 
 
-        }
+		}
 
-    }
+	}
 
-    public void stop() {
+	public void stop() {
 
-        if (!isLongPulling()) {
+		if (!isLongPulling()) {
 
-            bot.execute(new DeleteWebhook());
+			bot.execute(new DeleteWebhook());
 
-        } else {
+		} else {
 
-            bot.removeGetUpdatesListener();
+			bot.removeGetUpdatesListener();
 
-        }
+		}
 
-        BotLog.info(botName() + " 已停止 :)");
+		BotLog.info(botName() + " 已停止 :)");
 
-    }
+	}
 
 
 }
