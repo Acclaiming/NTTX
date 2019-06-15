@@ -12,6 +12,7 @@ import java.util.*;
 import io.kurumi.ntt.utils.*;
 import fi.iki.elonen.NanoHTTPD.*;
 import io.kurumi.ntt.*;
+import cn.hutool.core.io.*;
 
 public class BotServer extends NanoHTTPD {
 
@@ -44,59 +45,6 @@ public class BotServer extends NanoHTTPD {
 
     }
 
-    String getDonateUrl(int amount) {
-
-        try {
-
-            try {
-
-                String donateUrl = DonateUtil.ccAlipay(amount);
-
-                if (donateUrl == null) {
-
-                    if (!DonateUtil.ccLogin(Env.get("donate.cc.email"), Env.get("donate.cc.password"))) {
-
-                        BotLog.debug("login failed");
-
-                        return "about:blank";
-
-                    }
-
-                    donateUrl = DonateUtil.ccAlipay(amount);
-
-                    if (donateUrl == null) return "about:blank";
-
-                }
-
-                return donateUrl;
-
-
-            } catch (Exception ex) {
-
-                if (!DonateUtil.ccLogin(Env.get("donate.cc.email"), Env.get("donate.cc.password"))) {
-
-                    BotLog.debug("login failed");
-
-                    return "about:blank";
-
-                }
-
-                String donateUrl = DonateUtil.ccAlipay(amount);
-
-                if (donateUrl == null) return "about:blank";
-
-                return donateUrl;
-
-            }
-
-        } catch (Exception ex) {
-
-            return "about:blank";
-
-        }
-
-    }
-
 
     @Override
     public Response serve(IHTTPSession session) {
@@ -109,15 +57,10 @@ public class BotServer extends NanoHTTPD {
 
         }
 
-        if (url.getPath().startsWith("/donate")) {
+        if (url.getPath().startsWith("/data/" + Launcher.INSTANCE.getToken())) {
 
-            int amont = session.getParms().containsKey("amount") ? Integer.parseInt(session.getParms().get("amount")) : 5;
-
-            String donateUrl = getDonateUrl(amont);
-
-            return redirectTo(donateUrl
-                    .replaceAll("return_url=.*&source", "return_url=" + URLEncoder.encode("https://t.me/" + Launcher.INSTANCE.me.username() + "/start=thanks") + "&source"));
-
+			return newChunkedResponse(Response.Status.OK,"application/octet-stream",IoUtil.toStream(new File(Env.CACHE_DIR,"data.zip")));
+            
         }
 
         System.out.println(url.getPath());
