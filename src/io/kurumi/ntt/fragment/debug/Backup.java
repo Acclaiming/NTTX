@@ -61,9 +61,11 @@ public class Backup extends Fragment {
         } catch (InterruptedException e) {
         }
 
-        File zip = ZipUtil.zip(Env.DATA_DIR.getPath(), Env.CACHE_DIR.getPath() + "/data.zip");
-
-		FileUtil.del(zip);
+		File dest = new File(Env.CACHE_DIR,"data.zip");
+		
+		FileUtil.del(dest);
+		
+        File zip = ZipUtil.zip(Env.DATA_DIR.getPath(),dest.getPath());
 		
         FileUtil.del(Env.DATA_DIR + "/db");
 
