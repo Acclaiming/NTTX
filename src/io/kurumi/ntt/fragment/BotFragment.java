@@ -54,7 +54,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 	class UserAndUpdate {
 
-		long targetId;
+		long chatId;
 
 		UserData user;
 
@@ -365,14 +365,40 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         final UserData user;
 
+		long targetId = -1;
+		
         if (update.message() != null) {
 
             user = UserData.get(update.message().from());
 
-        } else if (update.channelPost() != null) {
+			if (update.message().chat().type() != Chat.Type.Private) {
+				
+				targetId = update.message().chat().id();
+				
+			}
+			
+        } else if (update.editedMessage() != null) {
+			
+			user = UserData.get(update.editedMessage().from());
+
+			if (update.editedMessage().chat().type() != Chat.Type.Private) {
+
+				targetId = update.editedMessage().chat().id();
+
+			}
+			
+		} else if (update.channelPost() != null) {
 
             user = update.channelPost().from() != null ? UserData.get(update.channelPost().from()) : null;
 
+			targetId = update.channelPost().chat().id();
+			
+			} else if (update.editedChannelPost () != null) {
+				
+				user = update.editedChannelPost().from() != null ? UserData.get(update.editedChannelPost().from()) : null;
+
+				targetId = update.editedChannelPost().chat().id();
+				
         } else if (update.callbackQuery() != null) {
 
             user = UserData.get(update.callbackQuery().from());
@@ -383,15 +409,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         } else user = null;
 
-
 		UserAndUpdate uau = new UserAndUpdate();
 
-		uau.targetId = -1;
-
-		if (user != null) uau.targetId = user.id;
-		else if (update.channelPost() != null) uau.targetId = update.channelPost().chat().id();
-		else if (update.editedChannelPost() != null) uau.targetId = update.editedChannelPost().chat().id();
-
+		uau.chatId = targetId;
 		uau.user = user;
 		uau.update = update;
 
@@ -422,10 +442,18 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 					return;
 
 				}
+				
+				if (uau.user == null && uau.chatId == -1) {
 
+					uau.process();
+					
+					continue;
+					
+				}
+				
 				synchronized (processing) {
 
-					if (processing.contains(uau.targetId)) {
+					if ((uau.chatId != -1 && processing.contains(uau.chatId)) || (uau.user != null && processing.contains(uau.user.id))) {
 
 						queue.add(uau);
 
@@ -433,7 +461,17 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 					} else {
 
-						processing.add(uau.targetId);
+						if (uau.chatId != -1) {
+						
+						processing.add(uau.chatId);
+						
+						}
+						
+						if (uau.user != null) {
+							
+							processing.add(uau.user.id);
+							
+						}
 
 					}
 
@@ -443,8 +481,17 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 				synchronized (processing) {
 
-					processing.remove(uau.targetId);
+					if (uau.chatId != -1) {
 
+						processing.remove(uau.chatId);
+
+					}
+
+					if (uau.user != null) {
+
+						processing.remove(uau.user.id);
+
+					}
 				}
 
 
