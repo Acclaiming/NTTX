@@ -208,12 +208,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         // Base Functions
 
-        addFragment(new Firewall());
-
-        addFragment(new PingFunction());
-
-        addFragment(new GetIDs());
-
         addFragment(new Notice());
 
         addFragment(new DelMsg());

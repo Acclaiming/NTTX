@@ -1,30 +1,20 @@
 package io.kurumi.ntt.fragment;
 
-import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.UpdatesListener;
-import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.User;
-import com.pengrad.telegrambot.request.DeleteWebhook;
-import com.pengrad.telegrambot.request.GetMe;
-import com.pengrad.telegrambot.request.GetUpdates;
-import com.pengrad.telegrambot.request.SetWebhook;
-import com.pengrad.telegrambot.response.BaseResponse;
-import com.pengrad.telegrambot.response.GetMeResponse;
-import io.kurumi.ntt.Env;
-import io.kurumi.ntt.Launcher;
-import io.kurumi.ntt.db.PointStore;
-import io.kurumi.ntt.db.UserData;
+import com.pengrad.telegrambot.*;
+import com.pengrad.telegrambot.model.*;
+import com.pengrad.telegrambot.request.*;
+import com.pengrad.telegrambot.response.*;
+import io.kurumi.ntt.*;
+import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.fragment.abs.*;
+import io.kurumi.ntt.fragment.admin.*;
+import io.kurumi.ntt.fragment.base.*;
+import io.kurumi.ntt.utils.*;
+import java.util.*;
+import java.util.concurrent.*;
+import okhttp3.*;
+
 import io.kurumi.ntt.fragment.abs.Callback;
-import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.Query;
-import io.kurumi.ntt.utils.BotLog;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import okhttp3.OkHttpClient;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
@@ -38,6 +28,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
     {
 
         fragments.add(this);
+		
+		addFragment(new Firewall());
+
+        addFragment(new PingFunction());
+
+        addFragment(new GetIDs());
+		
 
     }
 
