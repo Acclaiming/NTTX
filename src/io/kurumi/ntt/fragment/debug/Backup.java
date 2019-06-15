@@ -63,11 +63,11 @@ public class Backup extends Fragment {
 
         File zip = ZipUtil.zip(Env.DATA_DIR.getPath(), Env.CACHE_DIR.getPath() + "/data.zip");
 
+		FileUtil.del(zip);
+		
         FileUtil.del(Env.DATA_DIR + "/db");
 
         Launcher.INSTANCE.sendFile(chatId, zip);
-
-        FileUtil.del(zip);
 
 
     }
