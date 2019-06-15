@@ -8,6 +8,7 @@ import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.abs.request.Send;
 
 import java.util.LinkedList;
+import io.kurumi.ntt.utils.*;
 
 public class Control extends Function {
 
@@ -15,6 +16,7 @@ public class Control extends Function {
     public void functions(LinkedList<String> names) {
 
         names.add("stop");
+		names.add("update");
         names.add("restart");
         names.add("poweroff");
         names.add("reboot");
@@ -39,7 +41,26 @@ public class Control extends Function {
 
             RuntimeUtil.exec("service ntt stop");
 
-        } else if ("restart".equals(function)) {
+        }  else if ("update".equals(function)) {
+
+			new Send(Env.GROUP, "Bot Restart Executed : By " + user.userName()).html().exec();
+
+            try {
+
+				String str = RuntimeUtil.execForStr("bash /usr/local/ntt/update.sh");
+
+				new Send(Env.GROUP, "update successful , now restarting...\n",str).exec();
+				
+				RuntimeUtil.exec("service ntt restart");
+				
+			} catch (Exception e) {
+				
+				new Send(Env.GROUP,"update failed",BotLog.parseError(e)).exec();
+				
+			}
+			
+			
+		} else if ("restart".equals(function)) {
 
             new Send(Env.GROUP, "Bot Restart Executed : By " + user.userName()).html().exec();
 

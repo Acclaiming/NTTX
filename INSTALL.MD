@@ -72,9 +72,9 @@ cd /etc/ntt
 
 unzip data.zip
 
-mongodump -d NTTools -o /db/NTTools
+mongorestore -d NTTools ./db/NTTools
 
-rm -rf /db
+rm -rf /db data.zip
 
 ```
 

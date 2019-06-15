@@ -6,7 +6,7 @@ After=syslog.target network.target
 Type=simple
 
 WorkingDirectory=/usr/local/ntt
-ExecStart=/bin/bash /usr/local/ntt/service.sh
+ExecStart=/bin/bash /usr/local/ntt/start.sh
 Restart=on-failure
 
 User=root
