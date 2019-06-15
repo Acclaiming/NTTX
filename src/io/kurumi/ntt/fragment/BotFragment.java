@@ -44,11 +44,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 		fragments.clear();
 
 		addFragment(this);
-
-		addFragment(new Firewall());
-		addFragment(new PingFunction());
-		addFragment(new GetIDs());
-
+		
     }
 
     public void addFragment(Fragment fragment) {

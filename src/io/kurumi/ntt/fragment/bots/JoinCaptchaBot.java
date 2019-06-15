@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import io.kurumi.ntt.fragment.admin.*;
 
 public class JoinCaptchaBot extends BotFragment {
 
@@ -167,13 +168,26 @@ public class JoinCaptchaBot extends BotFragment {
 
             final UserData newData = UserData.get(newMember);
 
+			if (Firewall.block.containsId(newData.id)) {
+				
+				msg.delete();
+				
+				if (msg.kick() && logChannel != null) {
+
+					new Send(this, logChannel, "事件 : #未通过 #SPAM", "群组 : " + msg.chat().title(), "[" + Html.code(msg.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();
+
+				}
+				
+				
+			}
+			
             String[] info = new String[]{
 
                     "你好呀，新加裙的绒布球 " + newData.userName() + " ~\n",
 
                     "现在需要确认一下乃是不是机器人绒布球了 ~\n",
 
-                    "发送 喵 就可以通过验证了 ~ 3分钟以内呀 (๑˃̵ᴗ˂̵)و \n",
+                    "发送 喵 (嘤也可以 就可以通过验证了 ~ 3分钟以内呀 (๑˃̵ᴗ˂̵)و \n",
 
                     "注意不要点按钮 喵 ~"
 
@@ -369,7 +383,7 @@ public class JoinCaptchaBot extends BotFragment {
 
         clearPoint(user);
 
-        if (msg.hasText() && msg.text().contains("喵")) {
+        if (msg.hasText() && msg.text().contains("喵") || msg.text().contains("嘤")) {
 
             msg.send(user.userName() + " 通过了图灵(划掉) 验证 ~").html().failed(15 * 1000);
 
