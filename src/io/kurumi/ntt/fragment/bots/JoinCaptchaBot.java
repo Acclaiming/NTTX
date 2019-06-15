@@ -32,6 +32,8 @@ public class JoinCaptchaBot extends BotFragment {
     @Override
     public void reload() {
 
+		super.reload();
+		
         UserBot bot = UserBot.data.getById(botId);
 
         botToken = bot.token;

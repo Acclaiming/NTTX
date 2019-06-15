@@ -25,24 +25,12 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
     private String token;
     private PointStore point;
 
-    {
-
-        fragments.add(this);
-		
-		addFragment(new Firewall());
-
-        addFragment(new PingFunction());
-
-        addFragment(new GetIDs());
-		
-
-    }
-
-    public BotFragment() {
+	public BotFragment() {
 
         origin = this;
+		
+	}
 
-    }
 
     @Override
     public TelegramBot bot() {
@@ -52,6 +40,15 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
     }
 
     public void reload() {
+
+		fragments.clear();
+
+		addFragment(this);
+
+		addFragment(new Firewall());
+		addFragment(new PingFunction());
+		addFragment(new GetIDs());
+
     }
 
     public void addFragment(Fragment fragment) {
@@ -180,183 +177,183 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
         processUpdatePool.execute(new Runnable() {
 
-            @Override
-            public void run() {
+				@Override
+				public void run() {
 
-                if (update.message() != null) {
+					if (update.message() != null) {
 
-                    Msg msg = new Msg(BotFragment.this, update.message());
+						Msg msg = new Msg(BotFragment.this, update.message());
 
-                    for (Fragment fragmnet : fragments) {
+						for (Fragment fragmnet : fragments) {
 
-                        if (fragmnet.onUpdate(user, update)) {
+							if (fragmnet.onUpdate(user, update)) {
 
-                            return;
+								return;
 
-                        }
+							}
 
-                    }
+						}
 
-                    for (Fragment fragmnet : fragments) {
+						for (Fragment fragmnet : fragments) {
 
-                        if (!point) {
+							if (!point) {
 
-                            if (fragmnet.onMsg(user, msg)) {
+								if (fragmnet.onMsg(user, msg)) {
 
-                                return;
+									return;
 
-                            }
+								}
 
-                        } else {
+							} else {
 
-                            if (fragmnet.onPointedMsg(user, msg)) {
+								if (fragmnet.onPointedMsg(user, msg)) {
 
-                                return;
+									return;
 
-                            }
+								}
 
-                        }
+							}
 
-                    }
+						}
 
-                    switch (update.message().chat().type()) {
+						switch (update.message().chat().type()) {
 
-                        case Private: {
+							case Private: {
 
-                            for (Fragment fragmnet : fragments) {
+									for (Fragment fragmnet : fragments) {
 
-                                if (!point) {
+										if (!point) {
 
-                                    if (fragmnet.onPrivate(user, msg)) {
+											if (fragmnet.onPrivate(user, msg)) {
 
-                                        return;
+												return;
 
-                                    }
+											}
 
-                                } else {
+										} else {
 
 
-                                    if (fragmnet.onPointedPrivate(user, msg)) {
+											if (fragmnet.onPointedPrivate(user, msg)) {
 
-                                        return;
+												return;
 
-                                    }
+											}
 
-                                }
+										}
 
-                            }
+									}
 
-                            break;
+									break;
 
-                        }
+								}
 
-                        case group:
-                        case supergroup: {
+							case group:
+							case supergroup: {
 
-                            for (Fragment fragmnet : fragments) {
+									for (Fragment fragmnet : fragments) {
 
-                                if (!point) {
+										if (!point) {
 
-                                    if (fragmnet.onGroup(user, msg)) {
+											if (fragmnet.onGroup(user, msg)) {
 
-                                        return;
+												return;
 
-                                    }
+											}
 
-                                } else {
+										} else {
 
-                                    if (fragmnet.onPointedGroup(user, msg)) {
+											if (fragmnet.onPointedGroup(user, msg)) {
 
-                                        return;
+												return;
 
-                                    }
+											}
 
-                                }
+										}
 
-                            }
+									}
 
-                            break;
+									break;
 
-                        }
+								}
 
-                    }
+						}
 
-                } else if (update.channelPost() != null) {
+					} else if (update.channelPost() != null) {
 
 
-                    for (Fragment fragmnet : fragments) {
+						for (Fragment fragmnet : fragments) {
 
-                        if (fragmnet.onUpdate(user, update)) {
+							if (fragmnet.onUpdate(user, update)) {
 
-                            return;
+								return;
 
-                        }
+							}
 
-                    }
+						}
 
 
-                    for (Fragment fragmnet : fragments) {
+						for (Fragment fragmnet : fragments) {
 
-                        if (fragmnet.onChanPost(user, new Msg(fragmnet, update.channelPost()))) {
+							if (fragmnet.onChanPost(user, new Msg(fragmnet, update.channelPost()))) {
 
-                            return;
+								return;
 
-                        }
+							}
 
-                    }
+						}
 
-                } else if (update.callbackQuery() != null) {
+					} else if (update.callbackQuery() != null) {
 
-                    for (Fragment fragmnet : fragments) {
+						for (Fragment fragmnet : fragments) {
 
-                        if (fragmnet.onUpdate(user, update)) {
+							if (fragmnet.onUpdate(user, update)) {
 
-                            return;
+								return;
 
-                        }
+							}
 
-                    }
+						}
 
 
-                    for (Fragment fragmnet : fragments) {
+						for (Fragment fragmnet : fragments) {
 
-                        if (fragmnet.onCallback(user, new Callback(fragmnet, update.callbackQuery()))) {
+							if (fragmnet.onCallback(user, new Callback(fragmnet, update.callbackQuery()))) {
 
-                            return;
+								return;
 
-                        }
+							}
 
-                    }
+						}
 
-                } else if (update.inlineQuery() != null) {
+					} else if (update.inlineQuery() != null) {
 
 
-                    for (Fragment fragmnet : fragments) {
+						for (Fragment fragmnet : fragments) {
 
-                        if (fragmnet.onUpdate(user, update)) {
+							if (fragmnet.onUpdate(user, update)) {
 
-                            return;
+								return;
 
-                        }
+							}
 
-                    }
+						}
 
 
-                    for (Fragment fragmnet : fragments) {
+						for (Fragment fragmnet : fragments) {
 
-                        if (fragmnet.onQuery(user, new Query(fragmnet, update.inlineQuery()))) {
+							if (fragmnet.onQuery(user, new Query(fragmnet, update.inlineQuery()))) {
 
-                            return;
+								return;
 
-                        }
+							}
 
-                    }
+						}
 
-                }
+					}
 
 
-            }
-        });
+				}
+			});
 
     }
 
@@ -413,7 +410,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
         okhttpClient.networkInterceptors().clear();
 
         bot = new TelegramBot.Builder(token)
-                .okHttpClient(okhttpClient.build()).build();
+			.okHttpClient(okhttpClient.build()).build();
 
         me = bot.execute(new GetMe()).user();
 
@@ -423,6 +420,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
     public void realStart() {
 
+		reload();
+		
         bot.execute(new DeleteWebhook());
 
         if (isLongPulling()) {

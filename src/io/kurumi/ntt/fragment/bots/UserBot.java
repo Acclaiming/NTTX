@@ -37,8 +37,6 @@ public class UserBot {
                 ForwardBot client = new ForwardBot();
 
                 client.botId = id;
-                client.reload();
-
                 client.silentStart();
 
             } else if (type == 1) {
@@ -46,8 +44,6 @@ public class UserBot {
                 JoinCaptchaBot client = new JoinCaptchaBot();
 
                 client.botId = id;
-                client.reload();
-
                 client.silentStart();
 
             }

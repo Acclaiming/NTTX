@@ -162,7 +162,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     @Override
     public void start() {
-
+		
         super.start();
 
         TimelineUI.start();
@@ -204,7 +204,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     }
 
     @Override
-    public void realStart() {
+    public void reload() {
+		
+		super.reload();
 
         // Base Functions
 
@@ -293,23 +295,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(new MyBots());
 
         addFragment(new Final());
-
-        super.realStart();
-
-		/*
-
-		 new Timer().schedule(new TimerTask() {
-
-		 @Override
-		 public void run() {
-
-		 // if no task run , process will exit
-
-		 }
-
-		 },10 * 60 * 1000);
-
-		 */
 
     }
 
