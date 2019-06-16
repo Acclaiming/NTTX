@@ -21,12 +21,10 @@ public class StatusGetter extends TwitterFunction {
     }
 
 	@Override
-	public boolean onMsg(UserData user, Msg msg) {
-	
-		if (super.onMsg(user, msg)) return true;
-		
-		if (!msg.isStartPayload() || !PAYLOAD_SHOW_STATUS.equals(msg.payload()[0])) return false;
+	public boolean onPrivate(UserData user, Msg msg) {
 
+		if (!msg.isStartPayload() || !PAYLOAD_SHOW_STATUS.equals(msg.payload()[0])) return false;
+		
         TAuth auth = TAuth.getByUser(user.id).first();
 
         Long statusId = NumberUtil.parseLong(msg.payload()[1]);
@@ -74,17 +72,17 @@ public class StatusGetter extends TwitterFunction {
                 }
 
 
-          
+
 			}
-			
-			}
-			
-			return true;
-		
-	
+
+		}
+
+		return true;
+
+
 	}
-	
-	
+
+
 
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
