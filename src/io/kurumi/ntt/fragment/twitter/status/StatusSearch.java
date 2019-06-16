@@ -27,7 +27,6 @@ import twitter4j.TwitterException;
 public class StatusSearch extends TwitterFunction {
 
     final String POINT_SHOW_PAGE = "ss|show";
-    String PAYLOAD_SHOW_STATUS = "status";
 
     @Override
     public void functions(LinkedList<String> names) {
@@ -321,70 +320,7 @@ public class StatusSearch extends TwitterFunction {
         return format.toString();
 
     }
-
-    @Override
-    public boolean onMsg(UserData user, Msg msg) {
-
-        if (super.onMsg(user, msg)) return true;
-
-        if (!msg.isStartPayload() || !PAYLOAD_SHOW_STATUS.equals(msg.payload()[0])) return false;
-
-        TAuth auth = TAuth.getByUser(user.id).first();
-
-        Long statusId = NumberUtil.parseLong(msg.payload()[1]);
-
-        if (auth == null) {
-
-            StatusArchive archive = StatusArchive.get(statusId);
-
-            if (archive == null) {
-
-                msg.send("找不到存档...").exec();
-
-            } else {
-
-                msg.send(archive.toHtml()).html().exec();
-
-            }
-
-        } else {
-
-            Twitter api = auth.createApi();
-
-            msg.sendTyping();
-
-            try {
-
-                Status newStatus = api.showStatus(statusId);
-
-                StatusArchive archive = StatusArchive.save(api.showStatus(statusId));
-
-                archive.loop(api);
-
-                archive.sendTo(msg.chatId(), -1, auth, msg.isPrivate() ? newStatus : null);
-
-            } catch (TwitterException e) {
-
-                if (StatusArchive.contains(statusId)) {
-
-                    StatusArchive.get(statusId).sendTo(msg.chatId(), -1, null, null);
-
-                } else {
-
-                    msg.send(NTT.parseTwitterException(e)).publicFailed();
-
-                }
-
-
-            }
-
-
-        }
-
-        return true;
-
-    }
-
+	
     ButtonMarkup makeButtons(final long searchId, final long count, final long current) {
 
         return new ButtonMarkup() {{
