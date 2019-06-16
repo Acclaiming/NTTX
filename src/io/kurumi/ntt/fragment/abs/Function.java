@@ -65,17 +65,17 @@ public abstract class Function extends Fragment {
 		PointStore.Point point = point().get(user);
 
         switch (target()) {
-
+			
             case Group:
                 if (msg.isPrivate()) return 0;
                 break;
-            case Private:
+            case Private: case PrivateOnly :
                 if (msg.isGroup()) return 0;
                 break;
 
         }
 
-		if (points.contains(point.point)) return 0;
+		if (!points.contains(point.point)) return 0;
 
 		return  async() ? 1 : -1;
 
@@ -188,9 +188,7 @@ public abstract class Function extends Fragment {
 			return true;
 
 		}
-
-
-
+		
         return false;
 
     }
