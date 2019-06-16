@@ -76,9 +76,14 @@ public class StatusGetter extends TwitterFunction {
                 }
 
 
-            }
-
+          
+			}
 			
+			}
+			
+			return true;
+		
+	
 	}
 	
 	

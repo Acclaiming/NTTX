@@ -117,8 +117,6 @@ public abstract class Function extends Fragment {
 
         onFunction(user, msg, msg.command(), msg.params());
 
-        return;
-
 	}
 
     @Override
