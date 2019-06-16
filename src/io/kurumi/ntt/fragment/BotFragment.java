@@ -8,12 +8,13 @@ import io.kurumi.ntt.*;
 import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.fragment.abs.*;
 import io.kurumi.ntt.fragment.abs.request.*;
+import io.kurumi.ntt.fragment.admin.*;
+import io.kurumi.ntt.fragment.base.*;
 import io.kurumi.ntt.utils.*;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 import okhttp3.*;
-import io.kurumi.ntt.fragment.Fragment.*;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
@@ -91,6 +92,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 		fragments.clear();
 
 		addFragment(this);
+		
+		addFragment(new Firewall());
+		addFragment(new PingFunction());
+		addFragment(new GetID());
+		
+		addFragment(new DelMsg());
+		
 
     }
 
