@@ -269,7 +269,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 				} catch (InterruptedException e) {
 
-					return;
+					continue;
 
 				}
 
