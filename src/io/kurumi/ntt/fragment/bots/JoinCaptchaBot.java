@@ -178,7 +178,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			}
 
-			if (((System.currentTimeMillis() / 1000) - msg.message().date()) > 10 * 1000) {
+			if (!newMember.isBot() && ((System.currentTimeMillis() / 1000) - msg.message().date()) > 10 * 1000) {
 
 				msg.send("你好呀，新来的绒布球 " + newData.userName() + " 因为咱处理超时，就算乃通过验证了 )").html().exec();
 
