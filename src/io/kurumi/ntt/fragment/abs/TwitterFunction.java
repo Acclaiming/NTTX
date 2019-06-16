@@ -15,6 +15,13 @@ public abstract class TwitterFunction extends Function {
 
     public static final String POINT_CHOOSE_ACCPUNT = "t|s";
 
+	@Override
+	public boolean async() {
+		
+		return false;
+		
+	}
+	
     public boolean useCurrent() {
 
         return false;
