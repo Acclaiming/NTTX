@@ -386,6 +386,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 	public boolean silentStart() {
 
+		reload();
+		
 		token = getToken();
 
 		bot = new TelegramBot.Builder(token).build();
@@ -404,6 +406,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 	public void start() {
 
+		reload();
+		
 		token = getToken();
 
 		if (token == null || !Env.verifyToken(token)) {
@@ -428,8 +432,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 	}
 
 	public void realStart() {
-
-		reload();
 
 		bot.execute(new DeleteWebhook());
 
