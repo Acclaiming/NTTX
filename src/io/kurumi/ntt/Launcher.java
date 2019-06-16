@@ -26,6 +26,7 @@ import java.io.*;
 import java.util.*;
 
 import cn.hutool.core.lang.Console;
+import io.kurumi.ntt.fragment.picacg.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -231,6 +232,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(new Control());
 
+		addFragment(new SignThread()); 
+		
         // 贴吧
 
         // addFragment(new TiebaLogin());

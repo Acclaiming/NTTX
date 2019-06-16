@@ -1,4 +1,5 @@
 package io.kurumi.ntt.fragment.picacg;
+import cn.hutool.http.*;
 
 public class PicAcgApi {
 	
@@ -9,6 +10,14 @@ public class PicAcgApi {
 	public static final String CHATROOM_GAME = "https://game.picacomic.com";
 	
 	
-	public static void register() {}
+	public static String register(String name,String email,String password,String birthday,String gender) {
+		
+		return HttpUtil.createPost(BASE_URL + "/auth/register")
+		.form("name",name)
+		.form("email",email)
+		.form("password",password)
+		.form("birthday",birthday)
+		.form("gender",gender).execute().toString();
+	}
 	
 }
