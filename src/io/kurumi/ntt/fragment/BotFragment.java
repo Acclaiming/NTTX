@@ -21,6 +21,7 @@ import cn.hutool.core.thread.*;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
+	static ExecutorService asyncPool = Executors.newFixedThreadPool(5);
 	static LinkedBlockingQueue<UserAndUpdate> queue = new LinkedBlockingQueue<>();
 	static LinkedList<ProcessThread> threads = new LinkedList<>();
 
@@ -62,182 +63,35 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 		void process() {
 
-			final boolean point = user != null && point().contains(user);
-
 			if (update.message() != null) {
 
-				Msg msg = new Msg(BotFragment.this, update.message());
+				for (final Fragment fragmnet : fragments) {
 
-				for (Fragment fragmnet : fragments) {
+					if (fragmnet.async()) {
+					
+						asyncPool.execute(new Runnable() {
 
-					if (fragmnet.onUpdate(user, update)) {
-
-						return;
-
-					}
-
-				}
-
-				for (Fragment fragmnet : fragments) {
-
-					if (!point) {
-
-						if (fragmnet.onMsg(user, msg)) {
-
-							return;
-
-						}
-
+								@Override
+								public void run() {
+								
+									fragmnet.onUpdate(user, update);
+									
+								}
+								
+							});
+					
 					} else {
-
-						if (fragmnet.onPointedMsg(user, msg)) {
-
-							return;
-
-						}
-
+						
+						fragmnet.onUpdate(user, update);
+						
 					}
 
 				}
 
-				switch (update.message().chat().type()) {
-
-					case Private: {
-
-							for (Fragment fragmnet : fragments) {
-
-								if (!point) {
-
-									if (fragmnet.onPrivate(user, msg)) {
-
-										return;
-
-									}
-
-								} else {
-
-
-									if (fragmnet.onPointedPrivate(user, msg)) {
-
-										return;
-
-									}
-
-								}
-
-							}
-
-							break;
-
-						}
-
-					case group:
-					case supergroup: {
-
-							for (Fragment fragmnet : fragments) {
-
-								if (!point) {
-
-									if (fragmnet.onGroup(user, msg)) {
-
-										return;
-
-									}
-
-								} else {
-
-									if (fragmnet.onPointedGroup(user, msg)) {
-
-										return;
-
-									}
-
-								}
-
-							}
-
-							break;
-
-						}
-
 				}
-
-			} else if (update.channelPost() != null) {
-
-
-				for (Fragment fragmnet : fragments) {
-
-					if (fragmnet.onUpdate(user, update)) {
-
-						return;
-
-					}
-
+				
 				}
-
-
-				for (Fragment fragmnet : fragments) {
-
-					if (fragmnet.onChanPost(user, new Msg(fragmnet, update.channelPost()))) {
-
-						return;
-
-					}
-
-				}
-
-			} else if (update.callbackQuery() != null) {
-
-				for (Fragment fragmnet : fragments) {
-
-					if (fragmnet.onUpdate(user, update)) {
-
-						return;
-
-					}
-
-				}
-
-
-				for (Fragment fragmnet : fragments) {
-
-					if (fragmnet.onCallback(user, new Callback(fragmnet, update.callbackQuery()))) {
-
-						return;
-
-					}
-
-				}
-
-			} else if (update.inlineQuery() != null) {
-
-
-				for (Fragment fragmnet : fragments) {
-
-					if (fragmnet.onUpdate(user, update)) {
-
-						return;
-
-					}
-
-				}
-
-
-				for (Fragment fragmnet : fragments) {
-
-					if (fragmnet.onQuery(user, new Query(fragmnet, update.inlineQuery()))) {
-
-						return;
-
-					}
-
-				}
-
-			}
-
-
-		}
-
+				
 	}
 
 	public BotFragment() {

@@ -16,7 +16,7 @@ public class Notice extends Function {
 
     public static final Notice INSTANCE = new Notice();
     final String POINT_FPRWARD = "n|f";
-
+	
     @Override
     public void functions(LinkedList<String> names) {
 

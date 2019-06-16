@@ -245,7 +245,7 @@ public class NTT {
                 return "你的账号被限制 : 无法进行此操作";
 
             case 87:
-                return "NTT无权限进行此操作 : 请联系开发者";
+                return "使用的API无权限进行此操作 : 请联系开发者";
 
             case 88:
                 return "超过接口调用上限 : 通常是十五分钟内的限制，请稍后再试";
@@ -253,10 +253,10 @@ public class NTT {
             case 89:
             case 99:
             case 215:
-                return "NTT被取消了授权 或 你的账号被停用 / 冻结";
+                return "使用的API被取消了授权 或 你的账号被停用 / 冻结";
 
             case 93:
-                return "NTT无权操作私信 如果重新认证账号仍无法操作，请联系开发者";
+                return "使用的API无权操作私信 如果重新认证账号仍无法操作，请联系开发者";
 
             case 130:
                 return "Twitter服务器超载 请稍后再试";
@@ -307,7 +307,7 @@ public class NTT {
                 return "操作失败 : Twitter认为这是程序自动进行的恶意操作";
 
             case 261:
-                return "NTT无权进行写操作 : 请联系开发者";
+                return "使用的API无权进行写操作 : 请联系开发者";
 
             case 271:
                 return "你不能对你自己静音";
@@ -337,7 +337,7 @@ public class NTT {
                 return "你不能回复一条你不可查看或已被删除的推文";
 
             case 416:
-                return "NTT接口无效/被停用 : 通常是因为开发者账号被停用/冻结";
+                return "使用的API无效/被停用 : 通常是因为开发者账号被停用/冻结 或开发者人工删除";
 
             default:
                 return "其他错误 请联系开发者 : " + exc.getErrorCode() + " " + exc.getMessage();

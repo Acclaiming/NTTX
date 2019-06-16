@@ -27,12 +27,20 @@ import static com.mongodb.client.model.Filters.not;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
 import static java.util.Arrays.asList;
+import twitter4j.*;
 
 public class TwitterLogin extends Function {
 
     public static TwitterLogin INSTANCE = new TwitterLogin();
     final String POINT_INPUT_CALLBACK = "t|l";
     public HashMap<Long, RequestToken> cache = new HashMap<>();
+
+	@Override
+	public boolean async() {
+
+		return false;
+
+	}
 
     @Override
     public void functions(LinkedList<String> names) {
@@ -58,6 +66,72 @@ public class TwitterLogin extends Function {
 
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
+
+		ApiToken token;
+
+		if (params.length == 2 || params.length == 4) {
+
+			token = new ApiToken(params[0], params[1]);
+
+		} else if (params.length > 0) {
+
+			msg.send("/login", "or /login <apiKey> <apiKeySec>", "or /login <apiKey> <apiKeySec> <accToken> <accTokenSec>").exec();
+
+			return;
+
+		} else {
+
+			token = ApiToken.defaultToken;
+
+		}
+
+		if (params.length == 4) {
+
+			TAuth auth = new TAuth();
+
+			auth.apiKey = params[0];
+			auth.apiKeySec = params[1];
+
+			auth.user = user.id;
+
+			auth.accToken = params[2];
+			auth.accTokenSec = params[3];
+
+			try {
+
+				User account = auth.createApi().verifyCredentials();
+
+				auth.id = account.getId();
+
+				TAuth old = TAuth.getById(auth.id);
+
+                if (old != null) {
+
+                    if (!user.id.equals(old.user)) {
+
+                        new Send(old.user, "乃的账号 " + old.archive().urlHtml() + " 已被 " + user.userName() + " 认证（●＾o＾●").html().exec();
+
+                    }
+
+                }
+
+                TAuth.data.setById(auth.id, auth);
+
+                msg.send("好！现在认证成功 , " + auth.archive().urlHtml()).html().exec();
+
+                cache.remove(user.id);
+
+                new Send(Env.GROUP, "New Auth : " + user.userName() + " -> " + auth.archive().urlHtml()).html().exec();
+
+			} catch (TwitterException e) {
+
+				msg.send("检查认证失败", NTT.parseTwitterException(e)).exec();
+
+				return;
+
+			}
+
+		}
 
         try {
 

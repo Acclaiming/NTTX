@@ -7,11 +7,11 @@ import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.abs.request.Send;
 
 public class DelMsg extends Fragment {
-
+	
     @Override
     public boolean onMsg(UserData user, Msg msg) {
 
-        if (!"del".equals(msg.command())) return false;
+        if (!"d".equals(msg.command())) return false;
 
         if (!user.developer()) return false;
 

@@ -26,6 +26,12 @@ public class Fragment {
 
     public BotFragment origin;
 
+	public boolean async() {
+
+		return true;
+
+	}
+
     public TelegramBot bot() {
 
         return origin.bot();
@@ -76,7 +82,117 @@ public class Fragment {
 
     public boolean onUpdate(UserData user, Update update) {
 
-        return false;
+		if (update.message() != null) {
+
+			Msg msg = new Msg(this, update.message());
+
+			int point;
+
+			point = user == null ? 0 :
+				!point().contains(user) ? 0 :
+				getPoint(user).type == PointStore.Type.Private ? 1 :
+				getPoint(user).type == PointStore.Type.Global ? 3 : 2;
+
+			if (point != 0) {
+
+				if (onMsg(user, msg)) {
+
+					return true;
+
+				}
+
+			} else {
+
+				if (onPointedMsg(user, msg)) {
+
+					return true;
+
+				}
+
+			}
+
+			switch (update.message().chat().type()) {
+
+				case Private: {
+
+						if (point == 1 && point == 3) {
+
+							if (onPointedPrivate(user, msg)) {
+
+								return true;
+
+							}
+
+						} else {
+
+
+							if (onPrivate(user, msg)) {
+
+								return true;
+
+							}
+
+						}
+
+						break;
+
+					}
+
+				case group:
+				case supergroup: {
+
+
+						if (point > 1) {
+
+							if (onPointedGroup(user, msg)) {
+
+								return true;
+
+							}
+
+						} else {
+
+							if (onGroup(user, msg)) {
+
+								return true;
+
+							}
+
+						}
+
+						break;
+
+					}
+
+			}
+
+		} else if (update.channelPost() != null) {
+
+			if (onChanPost(user, new Msg(this, update.channelPost()))) {
+
+				return true;
+
+			}
+
+		} else if (update.callbackQuery() != null) {
+
+			if (onCallback(user, new Callback(this, update.callbackQuery()))) {
+
+				return true;
+
+			}
+
+		} else if (update.inlineQuery() != null) {
+
+			if (onQuery(user, new Query(this, update.inlineQuery()))) {
+
+				return true;
+
+			}
+
+		}
+
+		return false;
 
     }
 
