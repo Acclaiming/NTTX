@@ -567,11 +567,11 @@ public class NTT {
 
             if (msg instanceof Callback) {
 
-                ((Callback) msg).alert("你不是绒布球 Σ( ﾟωﾟ");
+                ((Callback) msg).alert("乃不是绒布球 Σ( ﾟωﾟ");
 
             } else {
 
-                msg.send("你不是绒布球 Σ( ﾟω。").publicFailed();
+                msg.send("乃不是绒布球 Σ( ﾟω。").publicFailed();
 
             }
 

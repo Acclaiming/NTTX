@@ -22,7 +22,12 @@ import io.kurumi.ntt.db.*;
 public class JoinCaptchaBot extends BotFragment {
 
     static Timer timer = new Timer();
+
     final String POINT_AUTH = "auth";
+
+	final String POINT_ACC = "acc";
+	final String POINT_REJ = "rej";
+
     public Long botId;
     public Long userId;
     public String botToken;
@@ -76,8 +81,17 @@ public class JoinCaptchaBot extends BotFragment {
 
     }
 
+	@Override
+	public boolean onPrivate(UserData user, Msg msg) {
+
+		msg.send("喵.... ？").exec();
+
+		return true;
+
+	}
+
     @Override
-    public boolean onMsg(UserData user, final Msg msg) {
+    public boolean onGroup(UserData user, final Msg msg) {
 
 		if (user.developer()) return false;
 
@@ -125,27 +139,6 @@ public class JoinCaptchaBot extends BotFragment {
 
         } else if (msg.message().newChatMember() != null || msg.message().newChatMembers() != null) {
 
-            GetChatMemberResponse resp = bot().execute(new GetChatMember(msg.chatId(), me.id().intValue()));
-
-            if (resp == null && !resp.isOk()) return true;
-
-            if (!resp.chatMember().canDeleteMessages()) {
-
-                msg.send("机器人没有 删除消息 权限，已退出 :(").exec();
-                msg.exit();
-
-                return true;
-
-            }
-
-            if (!resp.chatMember().canRestrictMembers()) {
-
-                msg.send("机器人没有 封禁用户 权限，已退出 :(").exec();
-                msg.exit();
-
-                return true;
-
-            }
 
             if (delJoin) msg.delete();
 
@@ -159,7 +152,8 @@ public class JoinCaptchaBot extends BotFragment {
 
                 if (newMember.id().equals(botId)) {
 
-                    msg.send("欢迎使用由 @NTT_X 驱动的开源加群验证BOT", "给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
+					msg.send("欢迎使用由 @NTT_X 驱动的开源加群验证BOT", "给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
+
 
                 }
 
@@ -181,6 +175,14 @@ public class JoinCaptchaBot extends BotFragment {
 
 				}
 
+
+			}
+
+			if (((System.currentTimeMillis() / 1000) - msg.message().date()) > 10 * 1000) {
+
+				msg.send("你好呀，新来的绒布球 " + newData.userName() + " 因为咱处理超时，就算乃通过验证了 )").html().exec();
+
+				return true;
 
 			}
 
@@ -206,21 +208,12 @@ public class JoinCaptchaBot extends BotFragment {
                         .newButton("喵", POINT_AUTH, newData.id);
 
 					newButtonLine()
-                        .newButton("绒布", POINT_AUTH, newData.id)
-                        .newButton("球", POINT_AUTH, newData.id)
-                        .newButton("点", POINT_AUTH, newData.id)
-                        .newButton("按钮", POINT_AUTH, newData.id);
-
-					newButtonLine()
-                        .newButton("可以", POINT_AUTH, newData.id)
-                        .newButton("直接", POINT_AUTH, newData.id)
-                        .newButton("滥权", POINT_AUTH, newData.id)
-                        .newButton("喵", POINT_AUTH, newData.id);
-
+						.newButton("通过", POINT_ACC, newData.id)
+						.newButton("滥权", POINT_REJ, newData.id);
 
 				}};
 
-            setPoint(newData, POINT_AUTH,PointStore.Type.Group);
+            setPoint(newData, POINT_AUTH, PointStore.Type.Group);
 
             group.put(newMember.id(), msg.send(info).buttons(buttons).html().send());
 
@@ -267,10 +260,6 @@ public class JoinCaptchaBot extends BotFragment {
 
 				}, new Date(System.currentTimeMillis() + 3 * 60 * 1000));
 
-        } else if (msg.isPrivate()) {
-
-            msg.send("喵....？").exec();
-
         }
 
         return true;
@@ -283,17 +272,27 @@ public class JoinCaptchaBot extends BotFragment {
         long target = Long.parseLong(callback.params[1]);
 		HashMap<Long, Msg> group = cache.containsKey(callback.chatId().longValue()) ? cache.get(callback.chatId()) : new HashMap<Long, Msg>();
 
-		if (!group.containsKey(user.id)) {
+		String point = callback.params[0];
 
-			callback.alert("这个验证已失效 (");
-			callback.delete();
+		if (POINT_AUTH.equals(point)) {
 
-			return true;
+			if (!group.containsKey(user.id)) {
 
-		}
+				callback.alert("这个验证已失效 (");
+				callback.delete();
+
+				return true;
+
+			}
 
 
-        if (user.id.equals(target)) {
+			if (!user.id.equals(target)) {
+
+				callback.alert("这个验证不针对乃 /");
+
+				return true;
+
+			}
 
 			group.remove(user.id).delete();
 
@@ -307,64 +306,73 @@ public class JoinCaptchaBot extends BotFragment {
 
 			}
 
-		clearPoint(user);
+			clearPoint(user);
 
-		if (callback.kick(user.id)) {
+			if (callback.kick(user.id)) {
 
-			callback.send(user.userName() + " 瞎按按钮 , 未通过验证 , 真可惜喵...").html().failed(60 * 1000);
+				callback.send(user.userName() + " 瞎按按钮 , 未通过验证 , 真可惜喵...").html().failed(60 * 1000);
+
+				if (logChannel != null) {
+
+					new Send(this, logChannel, "事件 : #未通过 #点击按钮", "群组 : " + callback.chat().title(), "[" + Html.code(callback.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();
+
+				}
+
+
+			}
+
+
+		} else if (POINT_ACC.equals(point)) {
+
+			if (NTT.checkGroupAdmin(callback)) return true;
+
+			if (group.containsKey(user.id)) {
+
+				group.remove(user.id).delete();
+
+			}
+
+			point().points.remove(target);
+
+			callback.send(user.userName() + " py了管理之后通过了验证喵...").html().failed(15 * 1000);
 
 			if (logChannel != null) {
 
-				new Send(this, logChannel, "事件 : #未通过 #点击按钮", "群组 : " + callback.chat().title(), "[" + Html.code(callback.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();
+				new Send(this, logChannel, "事件 : #未通过 #管理员通过", "群组 : " + callback.chat().title(), "[" + Html.code(callback.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();
 
 			}
 
-		}
 
-	} else if (NTT.isGroupAdmin(this, callback.chatId(), user.id)) {
+		} else if (POINT_REJ.equals(point)) {
 
-		if (group.containsKey(target)) {
+			if (NTT.checkGroupAdmin(callback)) return true;
 
-			group.remove(target).delete();
+			if (group.containsKey(user.id)) {
 
-			if (group.isEmpty()) {
-
-				cache.remove(callback.chatId().longValue());
-
-			} else {
-
-				cache.put(callback.chatId().longValue(), group);
+				group.remove(user.id).delete();
 
 			}
 
-		}
+			point().points.remove(target);
 
-		UserData t = UserData.get(target);
+			if (callback.kick(target)) {
 
-		clearPoint(t);
+				callback.send(user.userName() + " 被滥权了喵...").html().failed(15 * 1000);
 
-		if (callback.kick(target, true)) {
+				if (logChannel != null) {
 
-			callback.send(t.userName() + " 被绒布球滥权了 , 真可惜喵...").html().failed(15 * 1000);
+					new Send(this, logChannel, "事件 : #未通过 #管理员移除", "群组 : " + callback.chat().title(), "[" + Html.code(callback.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();
 
-			if (logChannel != null) {
-
-				new Send(this, logChannel, "事件 : #未通过 #管理员封禁", "群组 : " + callback.chat().title(), "[" + Html.code(callback.chatId().toString()) + "]", "用户 : " + t.userName(), "#id" + t.id).html().exec();
+				}
 
 			}
 
+
 		}
 
-
-	} else {
-
-		callback.alert("不要乱点按钮喵 ~");
+		return true;
 
 	}
-
-	return true;
-
-}
 
     @Override
     public boolean onPointedGroup(UserData user, Msg msg) {

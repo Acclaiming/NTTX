@@ -23,6 +23,7 @@ import io.kurumi.ntt.fragment.abs.request.Send;
 import java.io.File;
 
 import com.pengrad.telegrambot.request.LeaveChat;
+import io.kurumi.ntt.utils.*;
 
 public class Msg extends Context {
 
@@ -104,6 +105,12 @@ public class Msg extends Context {
         return message.text();
 
     }
+	
+	public boolean isGroupAdmin() {
+		
+		return NTT.isGroupAdmin(fragment,chatId(),message.from().id());
+		
+	}
 
     public boolean isReply() {
 
