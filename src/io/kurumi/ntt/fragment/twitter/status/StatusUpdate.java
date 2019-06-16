@@ -79,7 +79,9 @@ public class StatusUpdate extends TwitterFunction {
 
     @Override
     public boolean onPrivate(UserData user, Msg msg) {
-
+		
+		if (super.onPrivate(user,msg)) return true;
+		
         if (!msg.isReply()) return false;
 
         MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
@@ -324,6 +326,8 @@ public class StatusUpdate extends TwitterFunction {
     @Override
     public void onPoint(UserData user, Msg msg, PointStore.Point point) {
 
+		super.onPoint(user,msg,point);
+		
         UpdatePoint update = (StatusUpdate.UpdatePoint) point.data;
 
         if ("submit".equals(msg.command())) {
