@@ -44,7 +44,7 @@ public abstract class Function extends Fragment {
 
 	public boolean async() {
 		
-		return false;
+		return true;
 		
 	}
 	

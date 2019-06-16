@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 import okhttp3.*;
+import io.kurumi.ntt.fragment.Fragment.*;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
@@ -58,12 +59,14 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 		BotFragment.Processed process() {
 
-				for (final Fragment fragmnet : fragments) {
+			for (final Fragment fragmnet : fragments) {
 
-					return fragmnet.onAsyncUpdate(user, update);
+				Fragment.Processed processed =  fragmnet.onAsyncUpdate(user, update);
+
+				if (processed != null) return processed;
 
 			}
-			
+
 			return null;
 
 		}
