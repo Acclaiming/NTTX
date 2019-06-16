@@ -93,7 +93,7 @@ public class Fragment {
 				getPoint(user).type == PointStore.Type.Private ? 1 :
 				getPoint(user).type == PointStore.Type.Global ? 3 : 2;
 
-			if (point != 0) {
+			if (point == 0) {
 
 				if (onMsg(user, msg)) {
 
