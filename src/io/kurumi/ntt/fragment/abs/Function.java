@@ -14,14 +14,14 @@ public abstract class Function extends Fragment {
     public static final int Private = 2;
     public static final int PrivateOnly = 3;
     public static final int Group = 4;
-	
+
     private LinkedList<String> functions = new LinkedList<String>() {{
-        functions(this);
-    }};
-	
+			functions(this);
+		}};
+
     private LinkedList<String> points = new LinkedList<String>() {{
-        points(this);
-    }};
+			points(this);
+		}};
 
     public abstract void functions(LinkedList<String> names);
 
@@ -43,25 +43,48 @@ public abstract class Function extends Fragment {
     }
 
 	public boolean async() {
-		
+
 		return true;
-		
+
 	}
-	
+
 	@Override
 	public int checkMsg(UserData user, Msg msg) {
-		
+
 		if (!msg.isCommand()) return 0;
 
         if (!functions.contains(msg.command())) return 0;
-		
+
 		return async() ? 1 : -1;
-		
+
+	}
+
+	@Override
+	public int checkPointedMsg(UserData user, Msg msg) {
+
+		PointStore.Point point = point().get(user);
+
+        switch (target()) {
+
+            case Group:
+                if (msg.isPrivate()) return 0;
+                break;
+            case Private:
+                if (msg.isGroup()) return 0;
+                break;
+
+        }
+
+		if (points.contains(point.point)) return 0;
+
+		return  async() ? 1 : -1;
+
+
 	}
 
 	@Override
 	public void onAsyncMsg(UserData user, Msg msg, int checked) {
-		
+
 		sendTyping(msg.chatId());
 
         if (target() == Group && !msg.isGroup()) {
@@ -95,7 +118,7 @@ public abstract class Function extends Fragment {
         onFunction(user, msg, msg.command(), msg.params());
 
         return;
-		
+
 	}
 
     @Override
@@ -158,21 +181,26 @@ public abstract class Function extends Fragment {
 
         }
 
-        for (String used : points) {
+		if (points.contains(point.point)) {
 
-            if (used.equals(point.point)) {
+			onPoint(user, msg, point);
 
-                onPoint(user, msg, point);
+			return true;
 
-                return true;
+		}
 
-            }
 
-        }
 
         return false;
 
     }
+
+	@Override
+	public void onAsyncPointedMsg(UserData user, Msg msg, int checked) {
+
+		onPoint(user, msg, point().get(user));
+
+	}
 
     @Override
     public boolean onCallback(UserData user, Callback callback) {
