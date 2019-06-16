@@ -71,7 +71,7 @@ public class Fragment {
     }
 
     public boolean onUpdate(UserData user, Update update) {
-		
+
 		return false;
 
     }
@@ -85,13 +85,13 @@ public class Fragment {
 			this.user = user;
 			this.update = update;
 		}
-		
+
 		public abstract void process();
-		
+
 		public void run() {
 
 			try {
-				
+
 				process();
 
 			} catch (Exception e) {
@@ -115,14 +115,14 @@ public class Fragment {
 		@Override
 		public void process() {
 		}
-		
+
 	};
 
 	public Processed onAsyncUpdate(final UserData user, Update update) {
 
-		if (onUpdate(user,update)) return EMPTY;
-		
-		final int checked;
+		if (onUpdate(user, update)) return EMPTY;
+
+		int checked;
 
 		if (update.message() != null) {
 
@@ -139,12 +139,12 @@ public class Fragment {
 
 				if ((checked = checkMsg(user, msg)) > 0) {
 
-					return new Processed(user,update) {
+					final int cd = checked; return new Processed(user, update) {
 
 						@Override
 						public void process() {
 
-							onAsyncMsg(user, msg, checked);
+							onAsyncMsg(user, msg, cd);
 
 						}
 
@@ -160,12 +160,12 @@ public class Fragment {
 
 				if ((checked = checkPointedMsg(user, msg)) > 0) {
 
-					return new Processed(user,update) {
+					final int cd = checked; return new Processed(user, update) {
 
 						@Override
 						public void process() {
 
-							onAsyncPointedMsg(user, msg, checked);
+							onAsyncPointedMsg(user, msg, cd);
 
 						}
 
@@ -187,12 +187,12 @@ public class Fragment {
 
 							if ((checked = checkPointedPrivate(user, msg)) > 0) {
 
-								return new Processed(user,update) {
+								final int cd = checked; return new Processed(user, update) {
 
 									@Override
 									public void process() {
 
-										onAsyncPointedPrivate(user, msg, checked);
+										onAsyncPointedPrivate(user, msg, cd);
 
 									}
 
@@ -208,12 +208,12 @@ public class Fragment {
 
 							if ((checked = checkPrivate(user, msg)) > 0) {
 
-								return new Processed(user,update) {
+								final int cd = checked; return new Processed(user, update) {
 
 									@Override
 									public void process() {
 
-										onAsyncPrivate(user, msg, checked);
+										onAsyncPrivate(user, msg, cd);
 
 									}
 
@@ -238,12 +238,12 @@ public class Fragment {
 
 							if ((checked = checkPointedGroup(user, msg)) > 0) {
 
-								return new Processed(user,update) {
+								final int cd = checked; return new Processed(user, update) {
 
 									@Override
 									public void process() {
 
-										onAsyncPointedGroup(user, msg, checked);
+										onAsyncPointedGroup(user, msg, cd);
 
 									}
 
@@ -259,12 +259,12 @@ public class Fragment {
 
 							if ((checked = checkGroup(user, msg)) > 0) {
 
-								return new Processed(user,update) {
+								final int cd = checked; return new Processed(user, update) {
 
 									@Override
 									public void process() {
 
-										onAsyncGroup(user, msg, checked);
+										onAsyncGroup(user, msg, cd);
 
 									}
 

@@ -58,16 +58,12 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 		BotFragment.Processed process() {
 
-			if (update.message() != null) {
-
-				loop:for (final Fragment fragmnet : fragments) {
+				for (final Fragment fragmnet : fragments) {
 
 					return fragmnet.onAsyncUpdate(user, update);
 
-				}
-
 			}
-
+			
 			return null;
 
 		}
