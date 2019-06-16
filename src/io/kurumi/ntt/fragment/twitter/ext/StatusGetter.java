@@ -13,7 +13,7 @@ public class StatusGetter extends TwitterFunction {
 
     public static StatusGetter INSTANCE = new StatusGetter();
 	
-	String PAYLOAD_SHOW_STATUS = "status";
+	static String PAYLOAD_SHOW_STATUS = "status";
 
     @Override
     public void functions(LinkedList<String> names) {
