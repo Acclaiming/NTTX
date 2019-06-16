@@ -100,7 +100,7 @@ public class UserData {
     static UserData checkUpdate(UserData userData, User user) {
 
         if (!ObjectUtil.equal(user.firstName(), userData.firstName) ||
-                ObjectUtil.equal(user.lastName(), userData.lastName)) {
+			ObjectUtil.equal(user.lastName(), userData.lastName)) {
 
             userData.read(user);
 
@@ -163,13 +163,14 @@ public class UserData {
 
     }
 
-    public boolean developer() {
+	public static long[] admins = new long[] {
+		
+		865266732 ,
+		589593327 ,
+		748525422 
 
-        return
-                865266732 == id || // 咱
-                        589593327 == id || // Peace of Mind
-                        748525422 == id; // 绮 雨
+    };
 
-    }
+	public boolean developer() { return ArrayUtil.contains(admins,id); }
 
 }
