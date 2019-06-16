@@ -21,13 +21,6 @@ import io.kurumi.ntt.fragment.twitter.status.StatusUpdate.UpdatePoint;
 public class StatusUpdate extends TwitterFunction {
 
     final String POINT_UPDATE_STATUS = "status,update";
-
-	@Override
-	public boolean async() {
-		
-		return false;
-		
-	}
 	
     @Override
     public void points(LinkedList<String> points) {
@@ -51,6 +44,13 @@ public class StatusUpdate extends TwitterFunction {
         names.add("update");
 
     }
+
+	@Override
+	public boolean async() {
+		
+		return false;
+		
+	}
 
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params, final TAuth account) {

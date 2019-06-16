@@ -28,7 +28,7 @@ public class ForwardBot extends BotFragment {
     public String welcomeMessage;
     public String userName;
     public List<Long> blockList;
-
+	
     @Override
     public void reload() {
 		

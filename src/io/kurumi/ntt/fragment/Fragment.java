@@ -1,23 +1,19 @@
 package io.kurumi.ntt.fragment;
 
-import cn.hutool.http.HttpUtil;
-import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.request.ChatAction;
-import com.pengrad.telegrambot.request.GetFile;
-import com.pengrad.telegrambot.request.SendChatAction;
-import com.pengrad.telegrambot.request.SendDocument;
-import com.pengrad.telegrambot.request.SendSticker;
-import com.pengrad.telegrambot.response.GetFileResponse;
-import io.kurumi.ntt.Env;
-import io.kurumi.ntt.db.PointStore;
-import io.kurumi.ntt.db.StickerPoint;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.abs.Callback;
-import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.Query;
-import io.kurumi.ntt.utils.BotLog;
+import cn.hutool.http.*;
+import com.pengrad.telegrambot.*;
+import com.pengrad.telegrambot.model.*;
+import com.pengrad.telegrambot.model.request.*;
+import com.pengrad.telegrambot.request.*;
+import com.pengrad.telegrambot.response.*;
+import io.kurumi.ntt.*;
+import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.fragment.abs.*;
+import io.kurumi.ntt.fragment.abs.request.*;
+import io.kurumi.ntt.utils.*;
+import java.io.*;
 
+import io.kurumi.ntt.fragment.abs.Callback;
 import java.io.File;
 
 public class Fragment {
@@ -25,12 +21,6 @@ public class Fragment {
     public String PAYLOAD_SPLIT = "_";
 
     public BotFragment origin;
-
-	public boolean async() {
-
-		return true;
-
-	}
 
     public TelegramBot bot() {
 
@@ -81,10 +71,62 @@ public class Fragment {
     }
 
     public boolean onUpdate(UserData user, Update update) {
+		
+		return false;
+
+    }
+
+	public static abstract class Processed implements Runnable {
+
+		public UserData user;
+		public  Update update;
+
+		public Processed(UserData user, Update update) {
+			this.user = user;
+			this.update = update;
+		}
+		
+		public abstract void process();
+		
+		public void run() {
+
+			try {
+				
+				process();
+
+			} catch (Exception e) {
+
+				new Send(Env.GROUP, "处理中出错 " + update.toString(), BotLog.parseError(e)).exec();
+
+				if (user != null && !user.developer()) {
+
+					new Send(user.id, "处理出错，已提交报告，可以到官方群组 @NTTDiscuss  继续了解").exec();
+
+				}
+
+			}
+
+		}
+
+	}
+
+	public static Processed EMPTY = new Processed(null, null) {
+
+		@Override
+		public void process() {
+		}
+		
+	};
+
+	public Processed onAsyncUpdate(final UserData user, Update update) {
+
+		if (onUpdate(user,update)) return EMPTY;
+		
+		final int checked;
 
 		if (update.message() != null) {
 
-			Msg msg = new Msg(this, update.message());
+			final Msg msg = new Msg(this, update.message());
 
 			int point;
 
@@ -95,17 +137,43 @@ public class Fragment {
 
 			if (point == 0) {
 
-				if (onMsg(user, msg)) {
+				if ((checked = checkMsg(user, msg)) > 0) {
 
-					return true;
+					return new Processed(user,update) {
+
+						@Override
+						public void process() {
+
+							onAsyncMsg(user, msg, checked);
+
+						}
+
+					};
+
+				} else if (checked == -1) {
+
+					if (onMsg(user, msg)) return EMPTY;
 
 				}
 
 			} else {
 
-				if (onPointedMsg(user, msg)) {
+				if ((checked = checkPointedMsg(user, msg)) > 0) {
 
-					return true;
+					return new Processed(user,update) {
+
+						@Override
+						public void process() {
+
+							onAsyncPointedMsg(user, msg, checked);
+
+						}
+
+					};
+
+				} else if (checked == -1) {
+
+					if (onPointedMsg(user, msg)) return EMPTY;
 
 				}
 
@@ -117,21 +185,45 @@ public class Fragment {
 
 						if (point == 1 && point == 3) {
 
-							if (onPointedPrivate(user, msg)) {
+							if ((checked = checkPointedPrivate(user, msg)) > 0) {
 
-								return true;
+								return new Processed(user,update) {
+
+									@Override
+									public void process() {
+
+										onAsyncPointedPrivate(user, msg, checked);
+
+									}
+
+								};
+
+							} else if (checked == -1) {
+
+								if (onPointedPrivate(user, msg)) return EMPTY;
 
 							}
 
 						} else {
 
+							if ((checked = checkPrivate(user, msg)) > 0) {
 
-							if (onPrivate(user, msg)) {
+								return new Processed(user,update) {
 
-								return true;
+									@Override
+									public void process() {
+
+										onAsyncPrivate(user, msg, checked);
+
+									}
+
+								};
+
+							} else if (checked == -1) {
+
+								if (onPrivate(user, msg)) return EMPTY;
 
 							}
-
 						}
 
 						break;
@@ -144,17 +236,43 @@ public class Fragment {
 
 						if (point > 1) {
 
-							if (onPointedGroup(user, msg)) {
+							if ((checked = checkPointedGroup(user, msg)) > 0) {
 
-								return true;
+								return new Processed(user,update) {
+
+									@Override
+									public void process() {
+
+										onAsyncPointedGroup(user, msg, checked);
+
+									}
+
+								};
+
+							} else if (checked == -1) {
+
+								if (onPointedGroup(user, msg)) return EMPTY;
 
 							}
 
 						} else {
 
-							if (onGroup(user, msg)) {
+							if ((checked = checkGroup(user, msg)) > 0) {
 
-								return true;
+								return new Processed(user,update) {
+
+									@Override
+									public void process() {
+
+										onAsyncGroup(user, msg, checked);
+
+									}
+
+								};
+
+							} else if (checked == -1) {
+
+								if (onGroup(user, msg)) return EMPTY;
 
 							}
 
@@ -170,7 +288,7 @@ public class Fragment {
 
 			if (onChanPost(user, new Msg(this, update.channelPost()))) {
 
-				return true;
+				return EMPTY;
 
 			}
 
@@ -178,7 +296,7 @@ public class Fragment {
 
 			if (onCallback(user, new Callback(this, update.callbackQuery()))) {
 
-				return true;
+				return EMPTY;
 
 			}
 
@@ -186,13 +304,21 @@ public class Fragment {
 
 			if (onQuery(user, new Query(this, update.inlineQuery()))) {
 
-				return true;
+				return EMPTY;
+
+			}
+
+		} else if (update.poll() != null) {
+
+			if (onPollUpdate(update.poll())) {
+
+				return EMPTY;
 
 			}
 
 		}
 
-		return false;
+		return null;
 
     }
 
@@ -237,6 +363,75 @@ public class Fragment {
         return false;
 
     }
+
+	public int checkMsg(UserData user, Msg msg) {
+
+        return -1;
+
+    }
+
+    public int checkPointedMsg(UserData user, Msg msg) {
+
+        return -1;
+
+    }
+
+    public int checkPrivate(UserData user, Msg msg) {
+
+        return -1;
+
+    }
+
+    public int checkPointedPrivate(UserData user, Msg msg) {
+
+        return -1;
+
+    }
+
+    public int checkGroup(UserData user, Msg msg) {
+
+        return -1;
+
+    }
+
+    public int checkPointedGroup(UserData user, Msg msg) {
+
+        return -1;
+
+    }
+
+    public int checkChanPost(UserData user, Msg msg) {
+
+        return -1;
+
+    }
+
+	public void onAsyncMsg(UserData user, Msg msg, int checked) {
+    }
+
+    public void onAsyncPointedMsg(UserData user, Msg msg, int checked) {
+    }
+
+    public void onAsyncPrivate(UserData user, Msg msg, int checked) {
+    }
+
+    public void onAsyncPointedPrivate(UserData user, Msg msg, int checked) {
+    }
+
+    public void onAsyncGroup(UserData user, Msg msg, int checked) {
+    }
+
+    public void onAsyncPointedGroup(UserData user, Msg msg, int checked) {
+    }
+
+    public void onAsyncChanPost(UserData user, Msg msg, int checked) {
+    }
+
+	public boolean onPollUpdate(Poll poll) {
+
+		return false;
+
+	}
 
     public boolean onCallback(UserData user, Callback callback) {
 

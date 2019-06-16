@@ -30,6 +30,8 @@ public class JoinCaptchaBot extends BotFragment {
     public Boolean delJoin;
     HashMap<Long, HashMap<Long, Msg>> cache = new HashMap<>();
 
+
+	
     @Override
     public void reload() {
 

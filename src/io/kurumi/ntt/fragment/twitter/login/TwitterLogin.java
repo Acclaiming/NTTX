@@ -35,13 +35,6 @@ public class TwitterLogin extends Function {
     final String POINT_INPUT_CALLBACK = "t|l";
     public HashMap<Long, RequestToken> cache = new HashMap<>();
 
-	@Override
-	public boolean async() {
-
-		return false;
-
-	}
-
     @Override
     public void functions(LinkedList<String> names) {
 
@@ -63,6 +56,13 @@ public class TwitterLogin extends Function {
 
 
     }
+
+	@Override
+	public boolean async() {
+		
+		return false;
+		
+	}
 
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {

@@ -42,6 +42,62 @@ public abstract class Function extends Fragment {
     public void onCallback(UserData user, Callback callback, String point, String[] params) {
     }
 
+	public boolean async() {
+		
+		return true;
+		
+	}
+	
+	@Override
+	public int checkMsg(UserData user, Msg msg) {
+		
+		if (!msg.isCommand()) return 0;
+
+        if (!functions.contains(msg.command())) return 0;
+		
+		return async() ? 1 : -1;
+		
+	}
+
+	@Override
+	public void onAsyncMsg(UserData user, Msg msg, int checked) {
+		
+		sendTyping(msg.chatId());
+
+        if (target() == Group && !msg.isGroup()) {
+
+            msg.send("请在群组使用 (˚☐˚! )/").exec();
+
+            return;
+
+        }
+
+        if ((target() == Private && !msg.isPrivate()) && !(this instanceof TwitterFunction)) {
+
+            if (!user.contactable()) {
+
+                msg.send("请使用私聊 (˚☐˚! )/").publicFailed();
+
+                return;
+
+            } else {
+
+                msg.send("咱已经在私聊回复了你。", "如果BOT有删除信息权限,命令和此回复将被自动删除。:)").failedWith();
+
+                msg.targetChatId = user.id;
+
+            }
+
+        }
+
+        msg.sendTyping();
+
+        onFunction(user, msg, msg.command(), msg.params());
+
+        return;
+		
+	}
+
     @Override
     public boolean onMsg(UserData user, Msg msg) {
 

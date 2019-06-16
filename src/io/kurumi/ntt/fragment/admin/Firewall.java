@@ -12,14 +12,6 @@ import java.util.LinkedList;
 public class Firewall extends Function {
 
     public static Data<Id> block = new Data<Id>("UserBlock", Id.class);
-
-	@Override
-	public boolean async() {
-
-		return false;
-		
-	}
-	
 	
     @Override
     public void functions(LinkedList<String> names) {

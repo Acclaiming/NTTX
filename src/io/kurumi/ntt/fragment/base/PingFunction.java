@@ -7,13 +7,13 @@ import io.kurumi.ntt.fragment.abs.Msg;
 import java.util.LinkedList;
 
 public class PingFunction extends Function {
-	
+
     @Override
     public void functions(LinkedList<String> names) {
 
         names.add("ping");
 
-  }
+	}
 
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {

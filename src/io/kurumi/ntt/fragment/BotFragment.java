@@ -7,20 +7,16 @@ import com.pengrad.telegrambot.response.*;
 import io.kurumi.ntt.*;
 import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.fragment.abs.*;
-import io.kurumi.ntt.fragment.admin.*;
-import io.kurumi.ntt.fragment.base.*;
+import io.kurumi.ntt.fragment.abs.request.*;
 import io.kurumi.ntt.utils.*;
 import java.util.*;
 import java.util.concurrent.*;
-import okhttp3.*;
-
-import io.kurumi.ntt.fragment.abs.Callback;
 import java.util.concurrent.atomic.*;
-import io.kurumi.ntt.fragment.BotFragment.*;
-import cn.hutool.core.thread.*;
+import okhttp3.*;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
+	static ExecutorService asyncPool = Executors.newFixedThreadPool(5);
 	static LinkedBlockingQueue<UserAndUpdate> queue = new LinkedBlockingQueue<>();
 	static LinkedList<ProcessThread> threads = new LinkedList<>();
 
@@ -60,23 +56,19 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 		Update update;
 
-		boolean process() {
+		BotFragment.Processed process() {
 
 			if (update.message() != null) {
 
 				loop:for (final Fragment fragmnet : fragments) {
 
-					if (fragmnet.onUpdate(user, update)) {
-
-						return fragmnet.async();
-
-					}
+					return fragmnet.onAsyncUpdate(user, update);
 
 				}
 
 			}
 
-			return true;
+			return null;
 
 		}
 
@@ -287,7 +279,23 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 				if (uau.user == null && uau.chatId == -1) {
 
-					uau.process();
+					try {
+
+						Fragment.Processed processed = uau.process();
+
+						if (processed != null) asyncPool.execute(processed);
+
+					} catch (Exception e) {
+
+						new Send(Env.GROUP, "处理中出错 " + uau.update.toString(), BotLog.parseError(e)).exec();
+
+						if (uau.user != null && !uau.user.developer()) {
+
+							new Send(uau.user.id, "处理出错，已提交报告，可以到官方群组 @NTTDiscuss  继续了解").exec();
+
+						}
+
+					}
 
 					continue;
 
@@ -319,25 +327,39 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 				}
 
-				if (uau.process()) {
 
-					synchronized (processing) {
+				try {
 
-						if (uau.chatId != -1) {
+					Fragment.Processed processed = uau.process();
 
-							processing.remove(uau.chatId);
+					if (processed != null) asyncPool.execute(processed);
 
-						}
+				} catch (Exception e) {
 
-						if (uau.user != null) {
+					new Send(Env.GROUP, "处理中出错 " + uau.update.toString(), BotLog.parseError(e)).exec();
 
-							processing.remove(uau.user.id);
+					if (uau.user != null && !uau.user.developer()) {
 
-						}
+						new Send(uau.user.id, "处理出错，已提交报告，可以到官方群组 @NTTDiscuss  继续了解").exec();
+
 					}
 
 				}
 
+				synchronized (processing) {
+
+					if (uau.chatId != -1) {
+
+						processing.remove(uau.chatId);
+
+					}
+
+					if (uau.user != null) {
+
+						processing.remove(uau.user.id);
+
+					}
+				}
 
 			}
 

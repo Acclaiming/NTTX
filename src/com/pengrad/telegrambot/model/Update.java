@@ -1,6 +1,7 @@
 package com.pengrad.telegrambot.model;
 
 import java.io.Serializable;
+import io.kurumi.ntt.fragment.*;
 
 /**
  * stas
@@ -20,7 +21,7 @@ public class Update implements Serializable {
     private ShippingQuery shipping_query;
     private PreCheckoutQuery pre_checkout_query;
     private Poll poll;
-
+	
     public Integer updateId() {
         return update_id;
     }
