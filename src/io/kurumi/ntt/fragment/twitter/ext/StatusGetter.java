@@ -11,9 +11,7 @@ import twitter4j.*;
 
 public class StatusGetter extends TwitterFunction {
 
-    public static StatusGetter INSTANCE = new StatusGetter();
-	
-	static String PAYLOAD_SHOW_STATUS = "status";
+	public static String PAYLOAD_SHOW_STATUS = "status";
 
     @Override
     public void functions(LinkedList<String> names) {

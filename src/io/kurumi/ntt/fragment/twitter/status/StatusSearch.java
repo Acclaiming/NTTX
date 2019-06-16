@@ -23,6 +23,7 @@ import java.util.TimeZone;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import io.kurumi.ntt.fragment.twitter.ext.*;
 
 public class StatusSearch extends TwitterFunction {
 
@@ -313,7 +314,7 @@ public class StatusSearch extends TwitterFunction {
 
             }
 
-            format.append("\n\n").append(Html.a(archive.user().name + " : " + text, "https://t.me/" + origin.me.username() + "?start=" + PAYLOAD_SHOW_STATUS + PAYLOAD_SPLIT + archive.id));
+            format.append("\n\n").append(Html.a(archive.user().name + " : " + text, "https://t.me/" + origin.me.username() + "?start=" + StatusGetter.PAYLOAD_SHOW_STATUS + PAYLOAD_SPLIT + archive.id));
 
         }
 
