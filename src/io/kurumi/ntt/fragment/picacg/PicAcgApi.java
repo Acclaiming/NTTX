@@ -13,6 +13,7 @@ public class PicAcgApi {
 	public static String register(String name,String email,String password,String birthday,String gender) {
 		
 		return HttpUtil.createPost(BASE_URL + "/auth/register")
+		.header("Accept","application/json")
 		.form("name",name)
 		.form("email",email)
 		.form("password",password)
