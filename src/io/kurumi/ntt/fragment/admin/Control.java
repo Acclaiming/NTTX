@@ -9,6 +9,7 @@ import io.kurumi.ntt.fragment.abs.request.Send;
 
 import java.util.LinkedList;
 import io.kurumi.ntt.utils.*;
+import io.kurumi.ntt.*;
 
 public class Control extends Function {
 
@@ -45,6 +46,8 @@ public class Control extends Function {
 
 			new Send(Env.GROUP, "Bot Update Executed : By " + user.userName()).html().exec();
 
+			Launcher.INSTANCE.stop();
+			
             try {
 
 				String str = RuntimeUtil.execForStr("bash /usr/local/ntt/update.sh");
