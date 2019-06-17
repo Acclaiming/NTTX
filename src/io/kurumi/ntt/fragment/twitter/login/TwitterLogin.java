@@ -137,7 +137,7 @@ public class TwitterLogin extends Function {
 
         try {
 
-            RequestToken request = ApiToken.defaultToken.createApi().getOAuthRequestToken("oob");
+            RequestToken request = token.createApi().getOAuthRequestToken("oob");
 
             cache.put(user.id, request);
 
