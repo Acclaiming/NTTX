@@ -289,6 +289,8 @@ public class TimelineUI extends TwitterFunction {
 
                             } catch (TwitterException e) {
 
+								if (e.getStatusCode() == 503 || e.getStatusCode() == -1) return;
+								
                                 setting.timeline = false;
 
                                 new Send(auth.user, "时间流已关闭 :", NTT.parseTwitterException(e)).exec();
@@ -352,6 +354,8 @@ public class TimelineUI extends TwitterFunction {
 
                             } catch (TwitterException e) {
 
+								if (e.getStatusCode() == 503 || e.getStatusCode() == -1) return;
+								
                                 setting.mention = false;
 
                                 new Send(auth.user, "回复流已关闭 :", NTT.parseTwitterException(e)).exec();
