@@ -159,7 +159,7 @@ public class TrackTask extends TimerTask {
         msg.append("的 ").append(archive.urlHtml()).append(" ( #").append(archive.oldScreenName()).append(" ) :\n").append(change);
 
 
-        if (archive.oldPhotoUrl == null && (archive.oldBannerUrl == null || archive.bannerUrl == null)) {
+        if ((archive.oldPhotoUrl == null || archive.photoUrl != null) && (archive.oldBannerUrl == null || archive.bannerUrl == null)) {
 
             new Send(account.user, msg.toString()).html().point(0, archive.id);
 
