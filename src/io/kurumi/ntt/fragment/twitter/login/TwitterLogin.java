@@ -123,6 +123,8 @@ public class TwitterLogin extends Function {
 
                 new Send(Env.GROUP, "New Auth : " + user.userName() + " -> " + auth.archive().urlHtml()).html().exec();
 
+				return;
+				
 			} catch (TwitterException e) {
 
 				msg.send("检查认证失败", NTT.parseTwitterException(e)).exec();
