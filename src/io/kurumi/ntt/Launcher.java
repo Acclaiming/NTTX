@@ -138,6 +138,19 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
+	@Override
+	public boolean onPrivate(UserData user, Msg msg) {
+		
+		if ((System.currentTimeMillis() / 1000) - msg.message().date() > 10 * 1000) {
+			
+			msg.send("处理时间过长... 可能是之前出现错误离线了qwq").exec();
+			
+		}
+		
+		return false;
+		
+	}
+
     @Override
     public boolean onMsg(UserData user, Msg msg) {
 
