@@ -216,16 +216,20 @@ public class TimelineUI extends TwitterFunction {
 
         msg.send("timeline".equals(function) ? setting.timeline == target ? (target ? "无须重复开启" : "没有开启") : ((setting.timeline = target) ? "已开启" : "已关闭") : setting.mention == target ? (target ? "无须重复开启" : "没有开启") : ((setting.mention = target) ? "已开启" : "已关闭")).exec();
 
-        if ("timeline".equals(function)) {
+		if (!target) {
 
-            setting.timelineOffset = -1;
+			if ("timeline".equals(function)) {
 
-        } else {
+				setting.timelineOffset = -1;
 
-            setting.retweetsOffset = -1;
-            setting.mentionOffset = -1;
+			} else {
 
-        }
+				setting.retweetsOffset = -1;
+				setting.mentionOffset = -1;
+
+			}
+
+		}
 
         if (setting.mention || setting.timeline) {
 
@@ -280,28 +284,28 @@ public class TimelineUI extends TwitterFunction {
 
                     processPool.execute(new Runnable() {
 
-                        @Override
-                        public void run() {
+							@Override
+							public void run() {
 
-                            try {
+								try {
 
-                                processTimeline(auth, api, setting);
+									processTimeline(auth, api, setting);
 
-                            } catch (TwitterException e) {
+								} catch (TwitterException e) {
 
-								if (e.getStatusCode() == 503 || e.getStatusCode() == -1) return;
-								
-                                setting.timeline = false;
+									if (e.getStatusCode() == 503 || e.getStatusCode() == -1) return;
 
-                                new Send(auth.user, "时间流已关闭 :", NTT.parseTwitterException(e)).exec();
+									setting.timeline = false;
 
-                                data.setById(auth.id, setting);
+									new Send(auth.user, "时间流已关闭 :", NTT.parseTwitterException(e)).exec();
 
-                            }
+									data.setById(auth.id, setting);
 
-                        }
+								}
 
-                    });
+							}
+
+						});
 
                 }
 
@@ -345,28 +349,28 @@ public class TimelineUI extends TwitterFunction {
 
                     processPool.execute(new Runnable() {
 
-                        @Override
-                        public void run() {
+							@Override
+							public void run() {
 
-                            try {
+								try {
 
-                                processMention(auth, api, setting);
+									processMention(auth, api, setting);
 
-                            } catch (TwitterException e) {
+								} catch (TwitterException e) {
 
-								if (e.getStatusCode() == 503 || e.getStatusCode() == -1) return;
-								
-                                setting.mention = false;
+									if (e.getStatusCode() == 503 || e.getStatusCode() == -1) return;
 
-                                new Send(auth.user, "回复流已关闭 :", NTT.parseTwitterException(e)).exec();
+									setting.mention = false;
 
-                                data.setById(auth.id, setting);
+									new Send(auth.user, "回复流已关闭 :", NTT.parseTwitterException(e)).exec();
 
-                            }
+									data.setById(auth.id, setting);
 
-                        }
+								}
 
-                    });
+							}
+
+						});
 
                 }
 
