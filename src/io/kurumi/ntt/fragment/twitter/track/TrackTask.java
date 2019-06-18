@@ -19,28 +19,13 @@ import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.fragment.twitter.auto.AutoTask;
 import io.kurumi.ntt.fragment.twitter.status.MessagePoint;
 import io.kurumi.ntt.utils.BotLog;
+import twitter4j.*;
 
 import java.io.File;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
-import twitter4j.Relationship;
-import twitter4j.ResponseList;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.User;
-
-import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Updates.*;
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.gt;
-import static com.mongodb.client.model.Filters.not;
-import static com.mongodb.client.model.Updates.combine;
-import static com.mongodb.client.model.Updates.set;
-import static java.util.Arrays.asList;
 
 
 public class TrackTask extends TimerTask {
@@ -159,7 +144,7 @@ public class TrackTask extends TimerTask {
         msg.append("的 ").append(archive.urlHtml()).append(" ( #").append(archive.oldScreenName()).append(" ) :\n").append(change);
 
 
-        if ((archive.oldPhotoUrl == null || archive.photoUrl != null) && (archive.oldBannerUrl == null || archive.bannerUrl == null)) {
+        if ((archive.oldPhotoUrl == null || archive.photoUrl == null) && (archive.oldBannerUrl == null || archive.bannerUrl == null)) {
 
             new Send(account.user, msg.toString()).html().point(0, archive.id);
 
