@@ -6,10 +6,9 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.abs.request.Keyboard;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import io.kurumi.ntt.fragment.twitter.status.StatusAction;
 
 import java.util.LinkedList;
-
-import io.kurumi.ntt.fragment.twitter.status.StatusAction;
 
 public abstract class TwitterFunction extends Function {
 
@@ -73,8 +72,11 @@ public abstract class TwitterFunction extends Function {
 
                 TAuth current = TAuth.getById(StatusAction.current.getById(user.id).accountId);
 
-                if (current != null) {
+                if (current != null && current.user.equals(user.id)) {
 
+                    onFunction(user, msg, function, msg.params(), current);
+
+                    return;
 
                 }
 
