@@ -563,7 +563,7 @@ public class NTT {
 
         if (msg.from().developer()) return false;
 
-        if (!isGroupAdmin(msg.chatId(), msg.from().id)) {
+        if (!isGroupAdmin(msg.fragment,msg.chatId(), msg.from().id)) {
 
             if (msg instanceof Callback) {
 
