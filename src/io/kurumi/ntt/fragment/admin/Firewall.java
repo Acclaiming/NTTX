@@ -100,7 +100,13 @@ public class Firewall extends Function {
     @Override
     public boolean onMsg(UserData user, Msg msg) {
 		
-        if (super.onMsg(user, msg)) return true;
+        if (super.onMsg(user, msg)) {
+			
+			msg.send("processed").debug();
+			
+			return true;
+			
+		}
 
 		msg.send("reced","p :" + msg.isStartPayload()).debug();
 		
