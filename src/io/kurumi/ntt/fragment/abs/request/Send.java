@@ -250,7 +250,7 @@ public class Send extends AbstractSend<Send> {
 	
 	public void debug() {
 		
-		if (request.chatId instanceof Long && ArrayUtil.contains(UserData.admins,(long)request.chatId)) {
+		if (!(request.chatId instanceof String) && ArrayUtil.contains(UserData.admins,(long)request.chatId)) {
 			
 			exec();
 			
