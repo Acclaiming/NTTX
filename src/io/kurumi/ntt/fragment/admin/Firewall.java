@@ -8,6 +8,9 @@ import io.kurumi.ntt.fragment.abs.Function;
 import io.kurumi.ntt.fragment.abs.Msg;
 
 import java.util.LinkedList;
+import io.kurumi.ntt.fragment.group.*;
+import io.kurumi.ntt.fragment.abs.request.*;
+import io.kurumi.ntt.*;
 
 public class Firewall extends Function {
 
@@ -96,7 +99,7 @@ public class Firewall extends Function {
 
     @Override
     public boolean onMsg(UserData user, Msg msg) {
-
+		
         if (super.onMsg(user, msg)) return true;
 
         if (user.developer() && msg.isStartPayload()) {
@@ -167,10 +170,10 @@ public class Firewall extends Function {
 
     @Override
     public boolean onUpdate(UserData user, Update update) {
-
+		
         if (user != null && !user.developer() && block.containsId(user.id)) {
 
-            return true;
+           
 
 			/*
 
