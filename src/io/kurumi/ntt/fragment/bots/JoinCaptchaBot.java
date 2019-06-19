@@ -18,6 +18,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import io.kurumi.ntt.fragment.admin.*;
 import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.fragment.group.*;
 
 public class JoinCaptchaBot extends BotFragment {
 
@@ -139,7 +140,6 @@ public class JoinCaptchaBot extends BotFragment {
 
         } else if (msg.message().newChatMember() != null || msg.message().newChatMembers() != null) {
 
-
             if (delJoin) msg.delete();
 
             final HashMap<Long, Msg> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
@@ -165,8 +165,6 @@ public class JoinCaptchaBot extends BotFragment {
 
 			if (Firewall.block.containsId(newData.id)) {
 
-				msg.delete();
-
 				if (msg.kick() && logChannel != null) {
 
 					new Send(this, logChannel, "事件 : #未通过 #SPAM", "群组 : " + msg.chat().title(), "[" + Html.code(msg.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();
@@ -176,6 +174,16 @@ public class JoinCaptchaBot extends BotFragment {
 				}
 
 
+			} else if (AntiEsu.keywordMatch(newData.name())) {
+				
+				if (msg.kick() && logChannel != null) {
+
+					new Send(this, logChannel, "事件 : #未通过 #ESU", "群组 : " + msg.chat().title(), "[" + Html.code(msg.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();
+
+					return true;
+
+				}
+				
 			}
 
 			if (!newMember.isBot() && ((System.currentTimeMillis() / 1000) - msg.message().date()) > 10 * 1000) {
