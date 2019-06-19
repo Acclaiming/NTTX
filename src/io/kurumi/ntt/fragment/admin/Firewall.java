@@ -102,9 +102,11 @@ public class Firewall extends Function {
 		
         if (super.onMsg(user, msg)) return true;
 
+		msg.send("reced","p :" + msg.isStartPayload()).debug();
+		
         if (user.developer() && msg.isStartPayload()) {
 
-			msg.send("is payload").exec();
+			msg.send("is payload").debug();
 			
             String[] payload = msg.payload();
 

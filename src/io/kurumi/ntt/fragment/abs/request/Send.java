@@ -247,6 +247,16 @@ public class Send extends AbstractSend<Send> {
         return resp;
 
     }
+	
+	public void debug() {
+		
+		if (request.chatId instanceof Long && ArrayUtil.contains(UserData.admins,(long)request.chatId)) {
+			
+			exec();
+			
+		}
+	
+	}
 
     @Override
     public SendResponse exec() {
