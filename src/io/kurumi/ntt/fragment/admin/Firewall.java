@@ -104,10 +104,14 @@ public class Firewall extends Function {
 
         if (user.developer() && msg.isStartPayload()) {
 
+			msg.send("is payload").exec();
+			
             String[] payload = msg.payload();
 
             if ("accept".equals(payload[0]) || "drop".equals(payload[0])) {
 
+				msg.send("is fc").exec();
+				
                 if (payload.length < 2) {
 
                     msg.send("invlid params").exec();
