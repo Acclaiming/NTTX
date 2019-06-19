@@ -97,29 +97,24 @@ public class Firewall extends Function {
 
     }
 
+	@Override
+	public boolean async() {
+	
+		return false;
+		
+	}
+
     @Override
     public boolean onMsg(UserData user, Msg msg) {
 		
-        if (super.onMsg(user, msg)) {
-			
-			msg.send("processed").debug();
-			
-			return true;
-			
-		}
-
-		msg.send("reced","p :" + msg.isStartPayload()).debug();
+        if (super.onMsg(user, msg))return true;
 		
         if (user.developer() && msg.isStartPayload()) {
 
-			msg.send("is payload").debug();
-			
             String[] payload = msg.payload();
 
             if ("accept".equals(payload[0]) || "drop".equals(payload[0])) {
 
-				msg.send("is fc").exec();
-				
                 if (payload.length < 2) {
 
                     msg.send("invlid params").exec();
