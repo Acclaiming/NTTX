@@ -25,8 +25,13 @@ public class MyBots extends Function {
     final String POINT_CONFIRM_DEL = "bot.d.c";
     final String POINT_CHAT_BOT_EDIT_MESSAGE = "bot.c.e";
     final String POINT_JOIN_SWITCH_DELJOIN = "bot.j.j";
-    final String POINT_JOIN_SET_LOGCHANNEL = "bot.j.s";
-    final String POINT_JOIN_DEL_LOGCHANNEL = "bot.j.d";
+    final String POINT_JOIN_SET_LOGCHANNEL = "bot.j.ls";
+    final String POINT_JOIN_DEL_LOGCHANNEL = "bot.j.ld";
+
+    final String POINT_JOIN_SET_WELCOME = "bot.j.sw";
+    final String POINT_JOIN_DEL_WELCOME = "bot.j.dw";
+    final String POINT_JOIN_SWITCH_DELLAST = "bot.j.sd";
+
 
     @Override
     public void functions(LinkedList<String> names) {
@@ -48,6 +53,10 @@ public class MyBots extends Function {
         points.add(POINT_JOIN_SET_LOGCHANNEL);
         points.add(POINT_JOIN_SWITCH_DELJOIN);
         points.add(POINT_JOIN_DEL_LOGCHANNEL);
+        
+        points.add(POINT_JOIN_SET_WELCOME);
+        points.add(POINT_JOIN_DEL_WELCOME);
+        points.add(POINT_JOIN_SWITCH_DELLAST);
 
     }
 
@@ -116,8 +125,27 @@ public class MyBots extends Function {
 
             joinBotDelLogChannel(user, callback, botId);
 
-        }
+        } else if (POINT_JOIN_SET_WELCOME.equals(point)) {
 
+            long botId = Long.parseLong(params[0]);
+
+            editJoinBotWelcomeMsg(user, callback, botId);
+
+
+        } else if (POINT_JOIN_SWITCH_DELLAST.equals(point)) {
+
+            long botId = Long.parseLong(params[0]);
+
+            joinBotSwitchDelJoin(user, callback, botId);
+
+
+        } else if (POINT_JOIN_DEL_WELCOME.equals(point)) {
+
+            long botId = Long.parseLong(params[0]);
+
+            editJoinBotWelcomeMsg(user, callback, botId);
+
+        }
     }
 
     @Override
@@ -131,6 +159,10 @@ public class MyBots extends Function {
 
             joinBotLogChannelEdit(user, msg, (BotEdit) point.data);
 
+        } else if (point.point.equals(POINT_JOIN_SET_WELCOME)) {
+            
+            joinBotWelcomeMsgEdit(user,msg,(BotEdit)point.data);
+            
         }
 
     }
@@ -146,7 +178,7 @@ public class MyBots extends Function {
         }
 
         msg.sendOrEdit(edit, "从下方按钮中选择你的BOT :")
-                .buttons(new ButtonMarkup() {{
+            .buttons(new ButtonMarkup() {{
 
                     ButtonLine line = null;
 
@@ -195,35 +227,53 @@ public class MyBots extends Function {
         AbstractSend send = msg.sendOrEdit(edit, "自定义" + bot.typeName() + " : @" + bot.userName, "", bot.information());
         send.buttons(new ButtonMarkup() {{
 
-            if (bot.type == 0) {
+                    if (bot.type == 0) {
 
-                newButtonLine("更改欢迎语", POINT_CHAT_BOT_EDIT_MESSAGE, bot.id);
+                        newButtonLine("更改欢迎语", POINT_CHAT_BOT_EDIT_MESSAGE, bot.id);
 
-            } else if (bot.type == 1) {
+                    } else if (bot.type == 1) {
 
-                Boolean delJoin = (Boolean) bot.params.get("delJoin");
+                        Boolean delJoin = (Boolean) bot.params.get("delJoin");
 
-                if (delJoin == null) delJoin = false;
+                        if (delJoin == null) delJoin = false;
 
-                newButtonLine((delJoin ? "关闭" : "开启") + " 自动删除加群退群消息", POINT_JOIN_SWITCH_DELJOIN, bot.id);
+                        newButtonLine((delJoin ? "关闭" : "开启") + " 自动删除加群退群消息", POINT_JOIN_SWITCH_DELJOIN, bot.id);
 
-                Long logChannel = (Long) bot.params.get("logChannel");
+                        Long logChannel = (Long) bot.params.get("logChannel");
 
-                newButtonLine((logChannel == null) ? "设置日志频道" : "修改日志频道", POINT_JOIN_SET_LOGCHANNEL, bot.id);
+                        newButtonLine((logChannel == null) ? "设置日志频道" : "修改日志频道", POINT_JOIN_SET_LOGCHANNEL, bot.id);
 
-                if (logChannel != null) {
+                        if (logChannel != null) {
 
-                    newButtonLine("删除日志频道", POINT_JOIN_DEL_LOGCHANNEL, bot.id);
+                            newButtonLine("删除日志频道", POINT_JOIN_DEL_LOGCHANNEL, bot.id);
 
-                }
+                        }
 
-            }
 
-            newButtonLine()
-                    .newButton("删除BOT", POINT_DELETE_BOT, bot.id)
-                    .newButton("返回列表", POINT_BACK_TO_LIST);
+                        String welcomeMsg = (String) bot.params.get("welcome");
 
-        }}).exec();
+                        newButtonLine((welcomeMsg == null) ? "设置欢迎信息" : "修改欢迎信息", POINT_JOIN_SET_WELCOME, bot.id);
+
+                        if (welcomeMsg != null) {
+
+                            newButtonLine("删除欢迎信息", POINT_JOIN_DEL_WELCOME, bot.id);
+
+                        }
+
+                        Boolean delLast = (Boolean) bot.params.get("delLast");
+
+                        if (delLast == null) delLast = false;
+
+                        newButtonLine((delLast ? "关闭" : "开启") + " 仅保留最新欢迎信息", POINT_JOIN_SWITCH_DELLAST, bot.id);
+
+
+                    }
+
+                    newButtonLine()
+                        .newButton("删除BOT", POINT_DELETE_BOT, bot.id)
+                        .newButton("返回列表", POINT_BACK_TO_LIST);
+
+                }}).exec();
 
     }
 
@@ -242,8 +292,8 @@ public class MyBots extends Function {
         }
 
         callback
-                .edit("确认要删除 @" + bot.userName + " 吗？你会失去这只BOT，真的很久")
-                .buttons(new ButtonMarkup() {{
+            .edit("确认要删除 @" + bot.userName + " 吗？你会失去这只BOT，真的很久")
+            .buttons(new ButtonMarkup() {{
 
                     newButtonLine("不删了", POINT_CHOOSE_BOT, bot.id);
                     newButtonLine("手滑了", POINT_CHOOSE_BOT, bot.id);
@@ -335,6 +385,7 @@ public class MyBots extends Function {
 
     void joinBotSwitchDelJoin(UserData user, Callback callback, long botId) {
 
+
         final UserBot bot = UserBot.data.getById(botId);
 
         if (bot == null || !bot.user.equals(user.id)) {
@@ -348,6 +399,37 @@ public class MyBots extends Function {
         }
 
         Boolean delJoin = (Boolean) bot.params.get("delJoin");
+
+        if (delJoin == null) delJoin = true;
+        else delJoin = !delJoin;
+
+        bot.params.put("delJoin", delJoin);
+
+        callback.text((delJoin ? "开启" : "关闭") + "成功 ~");
+
+        UserBot.data.setById(bot.id, bot);
+
+        bot.reloadBot();
+
+        showBot(true, user, callback, bot.id);
+
+    }
+
+    void joinBotSwitchDelLast(UserData user, Callback callback, long botId) {
+
+        final UserBot bot = UserBot.data.getById(botId);
+
+        if (bot == null || !bot.user.equals(user.id)) {
+
+            callback.alert("这个BOT无效");
+
+            showBotList(user, callback, true);
+
+            return;
+
+        }
+
+        Boolean delJoin = (Boolean) bot.params.get("delLast");
 
         if (delJoin == null) delJoin = true;
         else delJoin = !delJoin;
@@ -392,6 +474,8 @@ public class MyBots extends Function {
     }
 
     void joinBotLogChannelEdit(UserData user, Msg msg, BotEdit data) {
+
+        data.msg.add(msg);
 
         Message message = msg.message();
 
@@ -450,6 +534,87 @@ public class MyBots extends Function {
         }
 
         bot.params.remove("logChannel");
+
+        callback.text("已移除");
+
+        UserBot.data.setById(bot.id, bot);
+
+        bot.reloadBot();
+
+        showBot(false, user, callback, bot.id);
+
+    }
+
+    void editJoinBotWelcomeMsg(UserData user, Callback callback, long botId) {
+
+        final UserBot bot = UserBot.data.getById(botId);
+
+        if (bot == null || !bot.user.equals(user.id)) {
+
+            callback.alert("这个BOT无效");
+
+            showBotList(user, callback, true);
+
+            return;
+
+        }
+
+        callback.confirm();
+
+        callback.edit("好,现在发送欢迎信息， $新成员 会被自动替换为用户引用。  :").withCancel().exec();
+
+        BotEdit point = new BotEdit();
+
+        point.bot = bot;
+        point.msg.add(callback);
+
+        setPoint(user, POINT_JOIN_SET_WELCOME, point);
+
+    }
+
+    void joinBotWelcomeMsgEdit(UserData user, Msg msg, BotEdit data) {
+
+        data.msg.add(msg);
+
+        if (!msg.hasText()) {
+
+            data.msg.add(msg.send("你正在设置 @" + data.bot.userName + " 的欢迎语 ，请输入 : ").withCancel().send());
+
+            return;
+
+        }
+
+        clearPoint(user);
+
+        data.bot.params.put("welcome", msg.text());
+
+        UserBot.data.setById(data.bot.id, data.bot);
+
+        data.bot.reloadBot();
+
+        for (Msg it : data.msg) it.delete();
+
+        msg.send("修改成功！").exec();
+
+        showBot(false, user, msg, data.bot.id);
+
+    }
+
+    void joinBotDelWelcomeMsg(UserData user, Callback callback, long botId) {
+
+        final UserBot bot = UserBot.data.getById(botId);
+
+        if (bot == null || !bot.user.equals(user.id)) {
+
+            callback.alert("这个BOT无效");
+
+            showBotList(user, callback, true);
+
+            return;
+
+        }
+
+        bot.params.remove("welcome");
 
         callback.text("已移除");
 

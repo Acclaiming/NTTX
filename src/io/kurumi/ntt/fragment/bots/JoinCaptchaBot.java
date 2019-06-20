@@ -19,6 +19,8 @@ import java.util.TimerTask;
 import io.kurumi.ntt.fragment.admin.*;
 import io.kurumi.ntt.db.*;
 import io.kurumi.ntt.fragment.group.*;
+import com.pengrad.telegrambot.request.DeleteMessage;
+import com.pengrad.telegrambot.response.SendResponse;
 
 public class JoinCaptchaBot extends BotFragment {
 
@@ -36,6 +38,13 @@ public class JoinCaptchaBot extends BotFragment {
     public Long logChannel;
     public Boolean delJoin;
     HashMap<Long, HashMap<Long, Msg>> cache = new HashMap<>();
+
+    String welcomeMessage;
+    Integer lastWelcomeMessage;
+    
+    boolean lastChanged = false;
+    
+    Boolean deleteLastWelcome;
 
     @Override
     public void reload() {
@@ -65,6 +74,12 @@ public class JoinCaptchaBot extends BotFragment {
         if (delJoin == null) delJoin = false;
 
         logChannel = (Long) bot.params.get("logChannel");
+
+        welcomeMessage = (String)bot.params.get("welcome");
+
+        lastWelcomeMessage = (Integer)bot.params.get("last");
+
+        deleteLastWelcome = (Boolean)bot.params.get("delLast");
 
     }
 
@@ -154,7 +169,6 @@ public class JoinCaptchaBot extends BotFragment {
 
 					msg.send("欢迎使用由 @NTT_X 驱动的开源加群验证BOT", "给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
 
-
                 }
 
                 return false;
@@ -175,7 +189,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 
 			} else if (AntiEsu.keywordMatch(newData.name())) {
-				
+
 				if (msg.kick() && logChannel != null) {
 
 					new Send(this, logChannel, "事件 : #未通过 #ESU", "群组 : " + msg.chat().title(), "[" + Html.code(msg.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();
@@ -183,7 +197,7 @@ public class JoinCaptchaBot extends BotFragment {
 					return true;
 
 				}
-				
+
 			}
 
 			if (!newMember.isBot() && ((System.currentTimeMillis() / 1000) - msg.message().date()) > 10 * 1000) {
@@ -344,6 +358,8 @@ public class JoinCaptchaBot extends BotFragment {
 
 			callback.send(user.userName() + " py了管理之后通过了验证喵...").html().failed(15 * 1000);
 
+            sendWelcome(user,callback);
+            
 			if (logChannel != null) {
 
 				new Send(this, logChannel, "事件 : #通过验证 #管理员通过", "群组 : " + callback.chat().title(), "[" + Html.code(callback.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();
@@ -381,6 +397,47 @@ public class JoinCaptchaBot extends BotFragment {
 		return true;
 
 	}
+    
+    void sendWelcome(UserData user,Msg msg) {
+        
+        if (welcomeMessage != null) {
+            
+            if (lastWelcomeMessage != null) {
+                
+                bot().execute(new DeleteMessage(msg.chatId(),lastWelcomeMessage));
+
+            }
+            
+            SendResponse resp = msg.send(welcomeMessage.replace("$新成员", user.userName())).html().exec();
+
+            if (resp.isOk()) {
+                
+                lastWelcomeMessage = resp.message().messageId();
+                
+                lastChanged = true;
+                
+            }
+            
+        }
+        
+    }
+
+    @Override
+    public void stop() {
+
+        if (lastChanged) {
+
+            UserBot bot = UserBot.data.getById(botId);
+
+            bot.params.put("last", lastWelcomeMessage);
+
+            UserBot.data.setById(botId, bot);
+
+        }
+
+        super.stop();
+
+    }
 
     @Override
     public boolean onPointedGroup(UserData user, Msg msg) {
@@ -409,6 +466,8 @@ public class JoinCaptchaBot extends BotFragment {
 
             msg.send(user.userName() + " 通过了图灵(划掉) 验证 ~").html().failed(15 * 1000);
 
+            sendWelcome(user,msg);
+            
             if (logChannel != null) {
 
                 new Send(this, logChannel, "事件 : #通过验证", "群组 : " + msg.chat().title(), "[" + Html.code(msg.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();

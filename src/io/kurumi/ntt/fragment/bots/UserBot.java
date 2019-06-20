@@ -93,7 +93,20 @@ public class UserBot {
             Long logChannel = (Long) params.get("logChannel");
 
             information.append("\n日志频道 : " + (logChannel == null ? "未设置" : logChannel));
+            
+            String welcomeMsg = (String) params.get("welcome");
 
+            if (welcomeMsg == null) welcomeMsg = "未设置";
+            
+            information.append("欢迎语 : > ").append(welcomeMsg).append(" <");
+            
+            Boolean delLast = (Boolean) params.get("delLast");
+
+            if (delLast == null) delJoin = false;
+
+            information.append("\n仅保留最新欢迎信息 : ").append(delJoin ? "开启" : "关闭");
+            
+            
         }
 
         return information.toString();
