@@ -49,7 +49,7 @@ public class MediaDownload extends TwitterFunction {
 
                 for (MediaEntity entry : medias) {
                     
-                    msg.send(ArrayUtil.join(entry.getVideoVariants(),"\n"));
+                    msg.send(ArrayUtil.join(entry.getVideoVariants(),"\n")).exec();
                     
                 }
                 
