@@ -58,7 +58,10 @@ import static twitter4j.ParseUtil.getDate;
     private UserMentionEntity[] userMentionEntities;
     private URLEntity[] urlEntities;
     private HashtagEntity[] hashtagEntities;
+    
     private MediaEntity[] mediaEntities;
+    private MediaEntity[] extendedMediaEntities;
+    
     private SymbolEntity[] symbolEntities;
     private long currentUserRetweetId = -1L;
     private Scopes scopes;
@@ -245,13 +248,13 @@ import static twitter4j.ParseUtil.getDate;
         }
     }
 
-    private void mergeExtendedEntities(JSONObject json) throws JSONException, TwitterException {
+    public void mergeExtendedEntities(JSONObject json) throws JSONException, TwitterException {
         if (!json.isNull("extended_entities")) {
             JSONObject extendedEntities = json.getJSONObject("extended_entities");
             if (!extendedEntities.isNull("media")) {
                 JSONArray mediaArray = extendedEntities.getJSONArray("media");
                 final int len = mediaArray.length();
-                mediaEntities = new MediaEntity[len];
+                extendedMediaEntities = new MediaEntity[len];
                 for (int i = 0; i < len; i++) {
                     mediaEntities[i] = new MediaEntityJSONImpl(mediaArray.getJSONObject(i));
                 }
@@ -425,6 +428,11 @@ import static twitter4j.ParseUtil.getDate;
         return mediaEntities;
     }
 
+    @Override
+    public MediaEntity[] getExtendedMediaEntities() {
+        return extendedMediaEntities;
+    }
+    
     @Override
     public SymbolEntity[] getSymbolEntities() {
         return symbolEntities;

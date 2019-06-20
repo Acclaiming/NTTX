@@ -246,5 +246,7 @@ public interface Status extends Comparable<Status>, TwitterResponse,
     URLEntity getQuotedStatusPermalink();
 
     String toString();
+    
+    MediaEntity[] getExtendedMediaEntities();
 
 }
