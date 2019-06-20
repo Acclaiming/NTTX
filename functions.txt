@@ -13,13 +13,14 @@ auto - 自动处理设置
 mention - <on|off> 启用推文通知
 timeline - <on|off> 时间流推送
 update - 发推
-banstat - <ID/用户名/链接> 检查ShadowBan
-status - <ID/链接> 推文存档
-fetch - <ID/用户名/链接> 拉取用户所有推文与上下文
+media - 取得推文媒体
+banstat - 检查ShadowBan
+status - 推文存档
+fetch - 拉取用户所有推文与上下文
 search - 推文搜索
-reply - [on|off] 群组自动回复
-action - [on|off] 群组自定义事件
-antiesu - [on|off] 群组反恶俗
+reply - <on|off>群组自动回复
+action - <on|off> 群组自定义事件
+antiesu - <on|off> 群组反恶俗
 banss - 群组屏蔽贴纸包
 unbanss - 取消屏蔽贴纸包
 newbot - 创建新BOT
