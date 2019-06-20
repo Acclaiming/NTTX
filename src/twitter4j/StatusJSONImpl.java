@@ -256,7 +256,7 @@ import static twitter4j.ParseUtil.getDate;
                 final int len = mediaArray.length();
                 extendedMediaEntities = new MediaEntity[len];
                 for (int i = 0; i < len; i++) {
-                    mediaEntities[i] = new MediaEntityJSONImpl(mediaArray.getJSONObject(i));
+                    extendedMediaEntities[i] = new MediaEntityJSONImpl(mediaArray.getJSONObject(i));
                 }
             }
         }
