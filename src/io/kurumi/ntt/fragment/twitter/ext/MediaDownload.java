@@ -45,9 +45,13 @@ public class MediaDownload extends TwitterFunction {
                 
                 Status status = api.showStatus(statusId);
 
-                MediaEntity[] medias = status.getExtendedMediaEntities();
+                MediaEntity[] medias = status.getMediaEntities();
 
-                msg.send(ArrayUtil.join(medias,"\n|")).exec();
+                for (MediaEntity entry : medias) {
+                    
+                    msg.send(ArrayUtil.join(entry.getVideoVariants(),"\n"));
+                    
+                }
                 
             } catch (TwitterException e) {
                 
