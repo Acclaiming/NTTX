@@ -26,6 +26,7 @@ import java.util.*;
 
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
+import io.kurumi.ntt.utils.NTT;
 
 
 public class TrackTask extends TimerTask {
@@ -131,7 +132,6 @@ public class TrackTask extends TimerTask {
 
     static void processChangeSend(UserArchive archive, TAuth account, String change, TrackUI.TrackSetting setting) {
 
-
         StringBuilder msg = new StringBuilder(TAuth.data.countByField("user", account.user) > 1 ? account.archive().urlHtml() + " : " : "");
 
         boolean isfo = followers.fieldEquals(account.id, "ids", archive.id);
@@ -142,7 +142,6 @@ public class TrackTask extends TimerTask {
         else msg.append("乃关注");
 
         msg.append("的 ").append(archive.urlHtml()).append(" ( #").append(archive.oldScreenName()).append(" ) :\n").append(change);
-
 
         if ((archive.oldPhotoUrl == null || archive.photoUrl == null) && (archive.oldBannerUrl == null || archive.bannerUrl == null)) {
 
@@ -447,7 +446,14 @@ public class TrackTask extends TimerTask {
 
             if (notice) {
 
-                new Send(auth.user, (ship.isSourceFollowingTarget() ? "已关注的 " : "") + archive.urlHtml() + " #" + archive.screenName + " 关注了你 :)", parseStatus(api, follower)).html().point(0, archive.id);
+                StringBuilder msg = new StringBuilder(TAuth.data.countByField("user", auth.user) > 1 ? auth.archive().urlHtml() + " : " : "");
+
+                msg.append(ship.isSourceFollowingTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 关注了你 :)").append(parseStatus(api, follower));
+
+                if (auth.multiUser()) msg.append("\n\n\n账号 : #").append(auth.archive().screenName);
+                
+                
+                new Send(auth.user).html().point(0, archive.id);
 
             }
 
@@ -457,17 +463,12 @@ public class TrackTask extends TimerTask {
 
             if (!notice) return;
 
-            if (UserArchive.contains(id)) {
+            StringBuilder msg = new StringBuilder(UserArchive.contains(id) ? UserArchive.get(id).urlHtml() : "无记录的用户 : (" + id + ")").append("关注了你").append("但是读取出错 : ").append(NTT.parseTwitterException(e)).append(" 请联系开发者 :(");
 
-                UserArchive archive = UserArchive.get(id);
+            if (auth.multiUser()) msg.append("\n\n\n账号 : #").append(auth.archive().screenName);
+            
+            new Send(auth.user, msg.toString()).html().point(0, id);
 
-                new Send(auth.user, archive.urlHtml() + " #" + archive.screenName + " 关注了你 , 但是该账号已经不存在了 :(").html().point(0, archive.id);
-
-            } else {
-
-                new Send(auth.user, "用户 (" + id + ") 关注了你 , 但是该账号已经不存在了 :(").html().point(0, id);
-
-            }
 
         }
 
@@ -484,13 +485,15 @@ public class TrackTask extends TimerTask {
 
             if (notice) {
 
-                if (ship.isSourceBlockingTarget()) {
+                if (notice) {
 
-                    new Send(auth.user, archive.urlHtml() + " #" + archive.screenName + " 取关并屏蔽了你 :)").html().point(0, archive.id);
+                    StringBuilder msg = new StringBuilder();
 
-                } else {
-
-                    new Send(auth.user, archive.urlHtml() + " #" + archive.screenName + " 取关了你 :)").html().point(0, archive.id);
+                    msg.append(ship.isSourceFollowedByTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 取关了你 :)").append(parseStatus(api, follower));
+                 
+                    if (auth.multiUser()) msg.append("\n\n\n账号 : #").append(auth.archive().screenName);
+                    
+                    new Send(auth.user).html().point(0, archive.id);
 
                 }
 
@@ -500,18 +503,12 @@ public class TrackTask extends TimerTask {
 
             if (!notice) return;
 
-            if (UserArchive.contains(id)) {
+            StringBuilder msg = new StringBuilder(UserArchive.contains(id) ? UserArchive.get(id).urlHtml() : "无记录的用户 : (" + id + ")").append("取消关注了你").append("但是读取出错 : ").append(NTT.parseTwitterException(e));
 
-                UserArchive archive = UserArchive.get(id);
+            if (auth.multiUser()) msg.append("\n\n\n账号 : #").append(auth.archive().screenName);
 
-                new Send(auth.user, "关注者 " + archive.urlHtml() + " #" + archive.screenName + " 的账号已经不存在了 :(").html().point(0, archive.id);
-
-            } else {
-
-                new Send(auth.user, "无记录的关注者 (" + id + ") 的账号已经不存在了 :(").html().point(0, id);
-
-            }
-
+            new Send(auth.user, msg.toString()).html().point(0, id);
+            
         }
 
 

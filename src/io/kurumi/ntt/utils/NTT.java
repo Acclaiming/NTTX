@@ -233,10 +233,10 @@ public class NTT {
 
             case 17:
             case 50:
-                return "找不到用户";
+                return "用户不存在";
 
             case 34:
-                return "请求的内容找不到";
+                return "找不到内容";
 
             case 63:
                 return "用户被冻结";
