@@ -233,14 +233,20 @@ public class ForwardBot extends BotFragment {
     @Override
     public boolean onPointedPrivate(UserData user, Msg msg) {
 
+        msg.send("0").debug();
+        
         if (onPrivate(user, msg)) return true;
 
+        msg.send("1").debug();
+        
         PointStore.Point<Long> point = getPoint(user);
 
         long target = point.data;
 
         if (POINT_REPLY.equals(point.point)) {
 
+            msg.send("2").debug();
+            
             Message message = msg.message();
 
             int sended = -1;
