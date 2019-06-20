@@ -183,7 +183,7 @@ public class Fragment {
 
 				case Private: {
 
-						if (point == 1 && point == 3) {
+						if (point == 1 || point == 3) {
 
 							if ((checked = checkPointedPrivate(user, msg)) > 0) {
 
