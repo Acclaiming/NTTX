@@ -462,7 +462,7 @@ public class TrackTask extends TimerTask {
 
             if (!notice) return;
 
-            StringBuilder msg = new StringBuilder(UserArchive.contains(id) ? UserArchive.get(id).urlHtml() : "无记录的用户 : (" + id + ")").append("关注了你").append("但是读取出错 : ").append(NTT.parseTwitterException(e)).append(" 请联系开发者 :(");
+            StringBuilder msg = new StringBuilder(UserArchive.contains(id) ? UserArchive.get(id).urlHtml() : "无记录的用户 : (" + id + ")").append("关注了你").append("\n状态异常: ").append(NTT.parseTwitterException(e));
 
             if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
             
@@ -502,7 +502,7 @@ public class TrackTask extends TimerTask {
 
             if (!notice) return;
 
-            StringBuilder msg = new StringBuilder(UserArchive.contains(id) ? UserArchive.get(id).urlHtml() : "无记录的用户 : (" + id + ")").append("取消关注了你").append("但是读取出错 : ").append(NTT.parseTwitterException(e));
+            StringBuilder msg = new StringBuilder(UserArchive.contains(id) ? UserArchive.get(id).urlHtml() : "无记录的用户 : (" + id + ")").append("取消关注了你").append("\n状态异常 : ").append(NTT.parseTwitterException(e));
 
             if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
