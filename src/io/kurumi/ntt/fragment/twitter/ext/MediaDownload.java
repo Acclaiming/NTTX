@@ -12,55 +12,59 @@ import twitter4j.TwitterException;
 import twitter4j.Status;
 import twitter4j.MediaEntity;
 import cn.hutool.core.util.ArrayUtil;
+import twitter4j.MediaEntity.Variant;
 
 public class MediaDownload extends TwitterFunction {
 
     @Override
     public void functions(LinkedList<String> names) {
-        
+
         names.add("media");
-        
+
     }
 
 
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
-        
         if (params.length == 0) {
-            
+
             msg.send("/media [推文ID|链接]...").exec();
-            
+
             return;
-            
+
         }
-        
+
         Twitter api = account.createApi();
 
-        for (String statusStr : params) {
-            
-            long statusId = NTT.parseStatusId(statusStr);
-            
-            try {
-                
-                Status status = api.showStatus(statusId);
+        try {
 
-                MediaEntity[] medias = status.getMediaEntities();
+            Status status = api.showStatus(NTT.parseStatusId(params[0]));
 
-                for (MediaEntity entry : medias) {
-                    
-                    msg.send(ArrayUtil.join(entry.getVideoVariants(),"\n")).exec();
-                    
+            MediaEntity[] medias = status.getMediaEntities();
+
+            StringBuilder urls = new StringBuilder();
+
+            for (MediaEntity entry : medias) {
+
+                MediaEntity.Variant[] varints = entry.getVideoVariants();
+
+                for (MediaEntity.Variant variant : varints) {
+
+                    urls.append("\n").append(variant.getUrl());
+
                 }
-                
-            } catch (TwitterException e) {
-                
-                msg.send(NTT.parseTwitterException(e)).exec();
-                
+
             }
+            
+            msg.send("视频链接 :",urls.toString()).enableLinkPreview().exec();
+
+        } catch (TwitterException e) {
+
+            msg.send(NTT.parseTwitterException(e)).exec();
 
         }
-        
+
     }
 
 }
