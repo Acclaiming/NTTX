@@ -98,7 +98,7 @@ public class UserBot {
 
             if (welcomeMsg == null) welcomeMsg = "未设置";
             
-            information.append("欢迎语 : > ").append(welcomeMsg).append(" <");
+            information.append("\n欢迎语 : > ").append(welcomeMsg).append(" <");
             
             Boolean delLast = (Boolean) params.get("delLast");
 
