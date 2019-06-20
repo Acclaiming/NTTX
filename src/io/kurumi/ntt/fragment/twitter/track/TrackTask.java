@@ -446,11 +446,11 @@ public class TrackTask extends TimerTask {
 
             if (notice) {
 
-                StringBuilder msg = new StringBuilder(TAuth.data.countByField("user", auth.user) > 1 ? auth.archive().urlHtml() + " : " : "");
+                StringBuilder msg = new StringBuilder();
 
                 msg.append(ship.isSourceFollowingTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 关注了你 :)").append(parseStatus(api, follower));
 
-                if (auth.multiUser()) msg.append("\n\n\n账号 : #").append(auth.archive().screenName);
+                if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
                 
                 new Send(auth.user,msg.toString()).html().point(0, archive.id);
 
@@ -464,7 +464,7 @@ public class TrackTask extends TimerTask {
 
             StringBuilder msg = new StringBuilder(UserArchive.contains(id) ? UserArchive.get(id).urlHtml() : "无记录的用户 : (" + id + ")").append("关注了你").append("但是读取出错 : ").append(NTT.parseTwitterException(e)).append(" 请联系开发者 :(");
 
-            if (auth.multiUser()) msg.append("\n\n\n账号 : #").append(auth.archive().screenName);
+            if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
             
             new Send(auth.user, msg.toString()).html().point(0, id);
 
@@ -490,7 +490,7 @@ public class TrackTask extends TimerTask {
 
                     msg.append(ship.isSourceFollowedByTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 取关了你 :)").append(parseStatus(api, follower));
                  
-                    if (auth.multiUser()) msg.append("\n\n\n账号 : #").append(auth.archive().screenName);
+                    if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
                     
                     new Send(auth.user,msg.toString()).html().point(0, archive.id);
 
@@ -504,7 +504,7 @@ public class TrackTask extends TimerTask {
 
             StringBuilder msg = new StringBuilder(UserArchive.contains(id) ? UserArchive.get(id).urlHtml() : "无记录的用户 : (" + id + ")").append("取消关注了你").append("但是读取出错 : ").append(NTT.parseTwitterException(e));
 
-            if (auth.multiUser()) msg.append("\n\n\n账号 : #").append(auth.archive().screenName);
+            if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
             new Send(auth.user, msg.toString()).html().point(0, id);
             
