@@ -143,7 +143,7 @@ public class MyBots extends Function {
 
             long botId = Long.parseLong(params[0]);
 
-            editJoinBotWelcomeMsg(user, callback, botId);
+            joinBotDelWelcomeMsg(user, callback, botId);
 
         }
     }
