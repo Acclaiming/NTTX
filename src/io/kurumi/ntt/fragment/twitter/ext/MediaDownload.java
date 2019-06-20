@@ -23,7 +23,6 @@ public class MediaDownload extends TwitterFunction {
 
     }
 
-
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
@@ -43,6 +42,14 @@ public class MediaDownload extends TwitterFunction {
 
             MediaEntity[] medias = status.getMediaEntities();
 
+            if (medias.length == 0) {
+                
+                msg.send("这条推文好像没有媒体... (").exec();
+                
+                return;
+                
+            }
+            
             StringBuilder urls = new StringBuilder();
 
             for (MediaEntity entry : medias) {
