@@ -453,7 +453,7 @@ public class TrackTask extends TimerTask {
                 if (auth.multiUser()) msg.append("\n\n\n账号 : #").append(auth.archive().screenName);
                 
                 
-                new Send(auth.user).html().point(0, archive.id);
+                new Send(auth.user,msg.toString()).html().point(0, archive.id);
 
             }
 
@@ -493,7 +493,7 @@ public class TrackTask extends TimerTask {
                  
                     if (auth.multiUser()) msg.append("\n\n\n账号 : #").append(auth.archive().screenName);
                     
-                    new Send(auth.user).html().point(0, archive.id);
+                    new Send(auth.user,msg.toString()).html().point(0, archive.id);
 
                 }
 
