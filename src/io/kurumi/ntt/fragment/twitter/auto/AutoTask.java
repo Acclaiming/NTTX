@@ -48,7 +48,7 @@ public class AutoTask {
 
                 api.createFriendship(archive.id);
 
-                new Send(auth.user, archive.isProtected ? "已发送关注请求 :" : "已回Fo : " + archive.urlHtml(), "账号 : " + auth.archive().urlHtml()).html().point(0, archive.id);
+                new Send(auth.user, (archive.isProtected ? "已发送关注请求 :" : "已回Fo : ") + archive.urlHtml(), "账号 : " + auth.archive().urlHtml()).html().point(0, archive.id);
 
             } catch (TwitterException e) {
 

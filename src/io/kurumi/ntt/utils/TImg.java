@@ -54,7 +54,7 @@ public class TImg extends TwitterFunction {
 
         graphics.setFont(new Font(FONT_CHS, Font.PLAIN, 56));
 
-        drawCenteredString(graphics, 100, "互动 Map By NTT :)");
+        drawCenteredString(graphics, 100, "互动 List :)");
 
         if (myPhoto.isFile()) {
 
@@ -173,7 +173,7 @@ public class TImg extends TwitterFunction {
 
         try {
             
-            Status status = account.createApi().updateStatus(new StatusUpdate("#互动Map https://t.me/NTT_X").media("map.png", new ByteArrayInputStream(out.toByteArray())));
+            Status status = account.createApi().updateStatus(new StatusUpdate("#互动列表").media("map.png", new ByteArrayInputStream(out.toByteArray())));
 
             msg.send("发送成功 :)",StatusArchive.save(status).url()).enableLinkPreview().exec();
             
