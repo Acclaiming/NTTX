@@ -54,7 +54,7 @@ public class TImg extends TwitterFunction {
 
                 graphics.drawImage(
                     Thumbnails.of(myPhoto)
-                    .scale(50, 50)
+                    .size(50, 50)
                     .asBufferedImage(), 475, 475, 50, 50, null);
 
             } catch (IOException e) {}
