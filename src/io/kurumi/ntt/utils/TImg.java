@@ -26,6 +26,7 @@ import twitter4j.Status;
 import java.util.HashMap;
 import io.kurumi.ntt.utils.TImg.Score;
 import java.util.Collections;
+import cn.hutool.core.util.ArrayUtil;
 
 public class TImg extends TwitterFunction {
 
@@ -134,6 +135,8 @@ public class TImg extends TwitterFunction {
 
         } catch (IOException e) {}
 
+        msg.send(ArrayUtil.join( received.toArray(),"\n")).exec();
+        
         bot().execute(new SendPhoto(msg.chatId(), out.toByteArray()));
 
     }
@@ -159,8 +162,15 @@ public class TImg extends TwitterFunction {
             return super.equals(score) || ((Score)score).id == id;
             
         }
+
+        @Override
+        public String toString() {
+            // TODO: Implement this method
+            return name + " : " + score;
+        }
         
        
+        
 
     }
 
