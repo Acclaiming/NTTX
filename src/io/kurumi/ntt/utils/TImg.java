@@ -43,8 +43,10 @@ public class TImg extends TwitterFunction {
         
         if (myPhoto.isFile()) {
 
-            graphics.drawImage(ImageUtil.read(myPhoto), 450, 450, 50, 50, null);
+            graphics.drawImage(ImageUtil.read(myPhoto), 475, 475, 50, 50, null);
 
+            graphics.drawString(account.archive().name,475,500);
+            
         }
 
         msg.sendUpdatingPhoto();
