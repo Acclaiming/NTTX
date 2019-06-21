@@ -30,7 +30,7 @@ public class TImg extends TwitterFunction {
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
-        BufferedImage image = new BufferedImage(1000, 800, BufferedImage.TYPE_INT_RGB);
+        BufferedImage image = new BufferedImage(1000, 800, BufferedImage.TYPE_INT_ARGB);
 
         Graphics2D graphics = image.createGraphics();
 
