@@ -16,6 +16,8 @@ import java.awt.image.ImageObserver;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.LinkedList;
+import java.awt.Paint;
+import java.awt.Color;
 
 public class TImg extends TwitterFunction {
 
@@ -35,6 +37,10 @@ public class TImg extends TwitterFunction {
 
         File myPhoto = photoImage(account.archive().photoUrl);
 
+        graphics.setPaint(Color.WHITE);
+        
+        graphics.drawRect(0,0,1000,800);
+        
         if (myPhoto.isFile()) {
 
             graphics.drawImage(ImageUtil.read(myPhoto), 450, 450, 50, 50, null);
@@ -55,7 +61,7 @@ public class TImg extends TwitterFunction {
 
         File photo = new File(Env.CACHE_DIR, "twitter_profile_images/" + FileUtil.getName(url));
 
-        if (photo.isFile()) HttpUtil.downloadFile(url, photo);
+        if (!photo.isFile()) HttpUtil.downloadFile(url, photo);
 
         return photo;
 
