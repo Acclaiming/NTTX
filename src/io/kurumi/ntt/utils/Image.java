@@ -18,13 +18,7 @@ import com.pengrad.telegrambot.request.SendPhoto;
 import javax.imageio.ImageIO;
 import java.io.ByteArrayOutputStream;
 
-public class Image extends TwitterFunction implements ImageObserver {
-
-    @Override
-    public boolean imageUpdate(Image p1, int p2, int p3, int p4, int p5, int p6) {
-        return false;
-    }
-
+public class Image extends TwitterFunction {
 
     @Override
     public void functions(LinkedList<String> names) {
@@ -44,7 +38,14 @@ public class Image extends TwitterFunction implements ImageObserver {
 
         if (myPhoto.isFile()) {
 
-            graphics.drawImage(ImageUtil.read(myPhoto), 450, 450, 50, 50, this);
+            graphics.drawImage(ImageUtil.read(myPhoto), 450, 450, 50, 50, new ImageObserver() {
+
+                    @Override
+                    public boolean imageUpdate(Image p1, int p2, int p3, int p4, int p5, int p6) {
+                        // TODO: Implement this method
+                        return false;
+                    }
+                });
 
         }
 
