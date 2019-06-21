@@ -117,15 +117,15 @@ public class JoinCaptchaBot extends BotFragment {
 
         } else if (msg.message().leftChatMember() != null) {
 
-            if (cache.containsKey(msg.chatId().longValue())) {
+            if (cache.containsKey(msg.chatId())) {
 
-                HashMap<Long, Msg> group = cache.get(msg.chatId().longValue());
+                HashMap<Long, Msg> group = cache.get(msg.chatId());
 
-                if (group.containsKey(user.id.longValue())) {
+                if (group.containsKey(msg.message().leftChatMember().id())) {
 
-                    group.remove(user.id.longValue()).delete();
+                    group.remove(msg.message().leftChatMember().id()).delete();
 
-                    if (group.isEmpty()) cache.remove(msg.chatId().longValue());
+                    if (group.isEmpty()) cache.remove(msg.chatId());
 
                 }
 
@@ -157,7 +157,7 @@ public class JoinCaptchaBot extends BotFragment {
 
             if (delJoin) msg.delete();
 
-            final HashMap<Long, Msg> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
+            final HashMap<Long, Msg> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
 
             User newMember = msg.message().newChatMember();
 
@@ -246,7 +246,7 @@ public class JoinCaptchaBot extends BotFragment {
 					@Override
 					public void run() {
 
-						final HashMap<Long, Msg> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
+						final HashMap<Long, Msg> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
 
 						if (group.containsKey(newData.id.longValue())) {
 
@@ -256,7 +256,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 							if (group.isEmpty()) {
 
-								cache.remove(msg.chatId().longValue());
+								cache.remove(msg.chatId());
 
 							} else {
 
@@ -292,7 +292,7 @@ public class JoinCaptchaBot extends BotFragment {
     public boolean onCallback(UserData user, Callback callback) {
 
         long target = Long.parseLong(callback.params[1]);
-		HashMap<Long, Msg> group = cache.containsKey(callback.chatId().longValue()) ? cache.get(callback.chatId()) : new HashMap<Long, Msg>();
+		HashMap<Long, Msg> group = cache.containsKey(callback.chatId()) ? cache.get(callback.chatId()) : new HashMap<Long, Msg>();
 
 		String point = callback.params[0];
 
@@ -320,7 +320,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			if (group.isEmpty()) {
 
-				cache.remove(callback.chatId().longValue());
+				cache.remove(callback.chatId());
 
 			} else {
 
@@ -442,7 +442,7 @@ public class JoinCaptchaBot extends BotFragment {
     @Override
     public boolean onPointedGroup(UserData user, Msg msg) {
 
-        HashMap<Long, Msg> group = cache.containsKey(msg.chatId().longValue()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
+        HashMap<Long, Msg> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
 
         if (group.containsKey(user.id)) {
 
@@ -450,7 +450,7 @@ public class JoinCaptchaBot extends BotFragment {
 
             if (group.isEmpty()) {
 
-                cache.remove(msg.chatId().longValue());
+                cache.remove(msg.chatId());
 
             } else {
 
