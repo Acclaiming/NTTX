@@ -43,6 +43,8 @@ public class TImg extends TwitterFunction {
         graphics.setBackground(Color.WHITE);
         graphics.clearRect(0,0,1000,800);
        
+        graphics.setColor(Color.getColor("#000000"));
+        
         graphics.setFont(new Font("Roboto-Thin",Font.PLAIN,56));
         
         graphics.drawString("喵.....", 450, 100);
