@@ -34,6 +34,8 @@ public class TiebaLogin extends Function {
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
+        TieBaApi.getInstance();
+        
         setPoint(user, POINT_TIEBA_LOGIN, new TiebaLoginStatus());
 
         msg.send("输入用户名 :").exec();

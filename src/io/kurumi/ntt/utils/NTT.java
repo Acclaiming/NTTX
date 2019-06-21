@@ -517,7 +517,7 @@ public class NTT {
 
     public static boolean isGroupAdmin(Fragment fragment, Long chatId, Long userId) {
 
-		// if (ArrayUtil.contains(UserData.admins,userId)) return true;
+	 if (ArrayUtil.contains(UserData.admins,userId)) return true;
 		
         GetChatMemberResponse resp = fragment.bot().execute(new GetChatMember(chatId, userId.intValue()));
 
@@ -561,8 +561,12 @@ public class NTT {
 
     public static boolean checkGroupAdmin(Msg msg) {
 
-        if (!isGroupAdmin(msg.fragment,msg.chatId(), msg.from().id)) {
+        if (isGroupAdmin(msg.fragment,msg.chatId(), msg.from().id)) {
 
+            return false;
+            
+       }
+            
             if (msg instanceof Callback) {
 
                 ((Callback) msg).alert("乃不是绒布球 Σ( ﾟωﾟ");
@@ -574,10 +578,6 @@ public class NTT {
             }
 
             return true;
-
-        }
-
-        return false;
 
     }
 
