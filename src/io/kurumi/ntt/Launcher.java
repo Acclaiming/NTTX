@@ -44,7 +44,7 @@ import io.kurumi.ntt.fragment.twitter.timeline.TimelineUI;
 import io.kurumi.ntt.fragment.twitter.track.TrackTask;
 import io.kurumi.ntt.fragment.twitter.track.TrackUI;
 import io.kurumi.ntt.utils.BotLog;
-import io.kurumi.ntt.utils.Image;
+import io.kurumi.ntt.utils.TImg;
 import java.io.IOException;
 import java.util.TimeZone;
 
@@ -287,7 +287,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         // Twitter
         
-        addFragment(new Image());
+        addFragment(new TImg());
 
         addFragment(new Jvbao());
 
