@@ -136,7 +136,7 @@ public class TImg extends TwitterFunction {
                
                 if (sc != null) {
                     
-                    status.append("发出 : ").append(rc.score).append(" / ");
+                    status.append("发出 : ").append(sc.score).append(" / ");
                     
                 }
                 
@@ -212,7 +212,7 @@ public class TImg extends TwitterFunction {
         HashMap<Long,Score> scores = new HashMap<>();
 
         try {
-
+            
             ResponseList<Status> mentions =  api.getMentionsTimeline(new Paging().count(200));
 
             for (Status mention : mentions) {
