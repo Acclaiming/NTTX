@@ -111,7 +111,7 @@ public abstract class TwitterFunction extends Function {
         points.add(POINT_CHOOSE_ACCPUNT);
 
     }
-
+    
     @Override
     public void onPoint(UserData user, Msg msg, PointStore.Point point) {
 
