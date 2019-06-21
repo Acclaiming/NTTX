@@ -50,9 +50,9 @@ public class TImg extends TwitterFunction {
 
             graphics.drawImage(ImageUtil.read(myPhoto), 475, 475, 50, 50, null);
 
-            graphics.setFont(new Font(FONT_CHS, Font.PLAIN, 13));
+            graphics.setFont(new Font(FONT_CHS, Font.PLAIN, 10));
 
-            graphics.drawString(account.archive().name, 475, 530);
+            graphics.drawString(account.archive().name, 475, 545);
 
         }
 
