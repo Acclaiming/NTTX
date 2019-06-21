@@ -27,6 +27,7 @@ import java.util.HashMap;
 import io.kurumi.ntt.utils.TImg.Score;
 import java.util.Collections;
 import cn.hutool.core.util.ArrayUtil;
+import java.util.Collection;
 
 public class TImg extends TwitterFunction {
 
@@ -75,21 +76,23 @@ public class TImg extends TwitterFunction {
 
         }
         
-        LinkedList<Score> received = received(account);
+        HashMap<Long, Score> received = received(account);
+
+        HashMap<Long,  Score> sended = sended(account);
+
+        HashMap<Long,Score> allMap = new HashMap<>();
         
-        LinkedList<Score> sended = sended(account);
+        allMap.putAll(received);
         
-        LinkedList<Score> all = new LinkedList<>();
-        
-        all.addAll(received);
-        
-        for (Score score : sended) {
+        for (Score score : sended.values()) {
             
-            if (all.contains(score)) all.get(all.indexOf(score)).score += score.score;
-            else all.add(score);
+            if (allMap.containsKey(score.id)) allMap.get(score.id).score += score.score;
+            else allMap.put(score.id,score);
             
         }
         
+        LinkedList<Score> all = new LinkedList<>(allMap.values());
+
         Collections.sort(all);
         
         for (int index = 0;index < 10 && index < all.size();index ++) {
@@ -115,8 +118,8 @@ public class TImg extends TwitterFunction {
 
                 graphics.drawString(score.name, x + 75 , y + 25 - 13);
 
-                Score rc = received.get(received.indexOf(score));
-                Score sc = sended.get(sended.indexOf(score));
+                Score rc = received.get(score.id);
+                Score sc = sended.get(score.id);
 
                 StringBuilder status = new StringBuilder();
                
@@ -191,7 +194,7 @@ public class TImg extends TwitterFunction {
 
     }
 
-    LinkedList<Score> received(TAuth account) {
+    HashMap<Long,Score> received(TAuth account) {
 
         Twitter api = account.createApi();
 
@@ -230,15 +233,11 @@ public class TImg extends TwitterFunction {
 
         } catch (TwitterException e) {}
 
-        LinkedList<TImg.Score> result = new LinkedList<Score>(scores.values());
-
-        Collections.sort(result);
-
-        return result;
-
+        return scores;
+        
     }
     
-    LinkedList<Score> sended(TAuth account) {
+    HashMap<Long,Score> sended(TAuth account) {
 
         Twitter api = account.createApi();
 
@@ -277,11 +276,8 @@ public class TImg extends TwitterFunction {
 
         } catch (TwitterException e) {}
 
-        LinkedList<TImg.Score> result = new LinkedList<Score>(scores.values());
 
-        Collections.sort(result);
-
-        return result;
+        return scores;
        
        }
 
