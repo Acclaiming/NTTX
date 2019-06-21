@@ -57,7 +57,7 @@ public class TImg extends TwitterFunction {
 
         graphics.setFont(new Font(FONT_CHS, Font.PLAIN, 56));
 
-        drawCenteredString(graphics, 100, "某个图片测试 :)");
+        drawCenteredString(graphics, 100, "互动 Map By NTT :)");
 
         if (myPhoto.isFile()) {
 
@@ -66,13 +66,13 @@ public class TImg extends TwitterFunction {
                 graphics.drawImage(
                     Thumbnails.of(myPhoto)
                     .size(50, 50)
-                    .asBufferedImage(), 75, 425, 50, 50, null);
+                    .asBufferedImage(), 100, 410, 50, 50, null);
 
             } catch (IOException e) {}
 
             graphics.setFont(new Font(FONT_CHS, Font.PLAIN, 13));
 
-            graphics.drawString(account.archive().name, 75, 500);
+            graphics.drawString(account.archive().name, 100, 475);
 
         }
         
@@ -97,7 +97,7 @@ public class TImg extends TwitterFunction {
         
         for (int index = 0;index < 10 && index < all.size();index ++) {
             
-            int x = index < 5 ? 350 : 650;
+            int x = index < 5 ? 300 : 600;
             
             int y = 50 + ((index < 5 ? index : index - 5) + 1) * 120;
             
@@ -124,8 +124,6 @@ public class TImg extends TwitterFunction {
                         .asBufferedImage(), x,y,50, 50, null);
 
                 } catch (IOException e) {}
-
-             
                 
                 graphics.drawString((index + 1) + ". " + score.name, x + 75 , y + 25 - 13);
 
