@@ -57,7 +57,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
 
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
-
+        
         if (!INSTANCE.isLongPulling()) {
 
             int serverPort = Integer.parseInt(Env.getOrDefault("server_port", "-1"));
