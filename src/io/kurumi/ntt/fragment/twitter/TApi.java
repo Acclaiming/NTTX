@@ -346,11 +346,9 @@ public class TApi {
             while (top.getInReplyToStatusId() != -1 || top.getQuotedStatusId() != -1) {
 
                 if (top.getInReplyToStatusId() != -1) {
-
-
+                    
                     Status superStatus = api.showStatus(top.getInReplyToStatusId());
-
-
+                    
                     if (target == null || ArrayUtil.contains(target, superStatus.getUser().getId())) {
 
                         top = superStatus;
@@ -423,8 +421,7 @@ public class TApi {
 
         for (Status s : resp.getTweets()) {
 
-            if (s.getInReplyToStatusId() == status.getId()
-                    || s.getQuotedStatusId() == status.getId()) list.add(s);
+            if (s.getInReplyToStatusId() == status.getId()) list.add(s);
 
         }
 
@@ -434,8 +431,7 @@ public class TApi {
 
             for (Status s : resp.getTweets()) {
 
-                if (s.getInReplyToStatusId() == status.getId()
-                        || s.getQuotedStatusId() == status.getId()) list.add(s);
+                if (s.getInReplyToStatusId() == status.getId()) list.add(s);
 
             }
 

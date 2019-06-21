@@ -46,7 +46,7 @@ public class Users extends Fragment {
 
         export = new StringBuilder(HtmlUtil.escape(" >> All Users << \n"));
 
-        for (UserData userData : UserData.data.collection.find()) {
+        for (UserData userData : UserData.data.findByField("contactable",true)) {
 
             export.append("\n").append(userData.userName()).append(" ").append(Html.startPayload("Block", "drop", userData.id));
 
