@@ -64,13 +64,13 @@ public class TImg extends TwitterFunction {
                 graphics.drawImage(
                     Thumbnails.of(myPhoto)
                     .size(50, 50)
-                    .asBufferedImage(), 375, 275, 50, 50, null);
+                    .asBufferedImage(), 275, 275, 50, 50, null);
 
             } catch (IOException e) {}
 
             graphics.setFont(new Font(FONT_CHS, Font.PLAIN, 10));
 
-            graphics.drawString(account.archive().name, 375, 325);
+            graphics.drawString(account.archive().name, 275, 325);
 
         }
 
