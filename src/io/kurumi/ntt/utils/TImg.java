@@ -113,9 +113,28 @@ public class TImg extends TwitterFunction {
 
                 } catch (IOException e) {}
 
-                graphics.drawString(score.name, x + 75 , y + 25 - 12);
+                graphics.drawString(score.name, x + 75 , y + 25 - 13);
 
-                graphics.drawString("  > " + score.score,x + 75,y + 25 + 12);
+                Score rc = received.get(received.indexOf(score));
+                Score sc = sended.get(sended.indexOf(score));
+
+                StringBuilder status = new StringBuilder();
+               
+                if (sc != null) {
+                    
+                    status.append("发出 : ").append(rc.score).append(" / ");
+                    
+                }
+                
+                if (rc != null) {
+                
+               status.append("收到 : ").append(rc.score);
+               
+               }
+               
+               
+                
+                graphics.drawString(status.toString(), x + 75, y + 25 + 13);
                 
             }
             
@@ -152,7 +171,7 @@ public class TImg extends TwitterFunction {
         @Override
         public int compareTo(Object score) {
 
-            return this.score - ((Score)score).score;
+            return ((Score)score).score - this.score;
 
         }
 
@@ -168,8 +187,6 @@ public class TImg extends TwitterFunction {
             // TODO: Implement this method
             return name + " : " + score;
         }
-        
-       
         
 
     }
