@@ -70,7 +70,7 @@ public class TImg extends TwitterFunction {
 
             graphics.setFont(new Font(FONT_CHS, Font.PLAIN, 10));
 
-            graphics.drawString(account.archive().name, 275, 610);
+            graphics.drawString(account.archive().name, 275, 625);
 
         }
         
@@ -91,7 +91,36 @@ public class TImg extends TwitterFunction {
         
         Collections.sort(all);
         
-        
+        for (int index = 0;index < 10 && index < all.size();index ++) {
+            
+            int x = index < 5 ? 400 : 700;
+            
+            int y = 275 + ((index < 5 ? index : index - 5) + 1) * 120;
+            
+           Score score = all.get(index);
+           
+           File userPhoto = photoImage(score.photo);
+           
+            if (userPhoto.isFile()) {
+
+                try {
+
+                    graphics.drawImage(
+                        Thumbnails.of(userPhoto)
+                        .size(50, 50)
+                        .asBufferedImage(), x,y,50, 50, null);
+
+                } catch (IOException e) {}
+
+                graphics.setFont(new Font(FONT_CHS, Font.PLAIN, 10));
+
+                graphics.drawString(score.name, x, y + 75);
+
+                graphics.drawString("  > " + score.score,x,y + 100);
+                
+            }
+            
+        }
         
         msg.sendUpdatingPhoto();
 
@@ -116,6 +145,9 @@ public class TImg extends TwitterFunction {
         long id;
         int score;
 
+        String name;
+        String photo;
+        
         @Override
         public int compareTo(Object score) {
 
@@ -158,6 +190,9 @@ public class TImg extends TwitterFunction {
 
                     score.id = id;
                     score.score = 0;
+                    
+                    score.name = mention.getUser().getName();
+                    score.photo = mention.getUser().getProfileImageURLHttps();
 
                     scores.put(id, score);
 
@@ -201,6 +236,9 @@ public class TImg extends TwitterFunction {
 
                     score.id = id;
                     score.score = 0;
+                    
+                    score.name = status.getUser().getName();
+                    score.photo = status.getUser().getProfileImageURLHttps();
 
                     scores.put(id, score);
 

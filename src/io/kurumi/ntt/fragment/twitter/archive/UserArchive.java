@@ -18,6 +18,8 @@ import static com.mongodb.client.model.Updates.set;
 import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import twitter4j.TwitterException;
 
 public class UserArchive {
 
@@ -36,6 +38,22 @@ public class UserArchive {
     public transient String oldBannerUrl;
     private transient String oldScreename;
 
+    public static UserArchive show(TAuth auth,Long id) {
+        
+        try {
+            
+            User user = auth.createApi().showUser(id);
+
+            return save(user);
+            
+        } catch (TwitterException e) {
+            
+            return get(id);
+            
+        }
+
+    }
+    
     public static UserArchive get(Long id) {
         return data.getById(id);
     }
