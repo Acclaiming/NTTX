@@ -154,7 +154,7 @@ public class TImg extends TwitterFunction {
 
         } catch (IOException e) {}
 
-        msg.send(ArrayUtil.join( received.toArray(),"\n")).exec();
+       // msg.send(ArrayUtil.join( received.toArray(),"\n")).exec();
         
         bot().execute(new SendPhoto(msg.chatId(), out.toByteArray()));
 
