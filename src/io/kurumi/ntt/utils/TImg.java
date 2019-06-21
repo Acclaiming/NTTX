@@ -71,7 +71,7 @@ public class TImg extends TwitterFunction {
 
         try {
             
-            Thumbnails.of(image).outputFormat("png").toOutputStream(out);
+            Thumbnails.of(image).outputFormat("png").outputQuality(1f).toOutputStream(out);
             
         } catch (IOException e) {}
 
