@@ -517,7 +517,7 @@ public class NTT {
 
     public static boolean isGroupAdmin(Fragment fragment, Long chatId, Long userId) {
 
-		// if (ArrayUtil.contains(UserData.admins,userId)) return true;
+		if (ArrayUtil.contains(UserData.admins,userId)) return true;
 		
         GetChatMemberResponse resp = fragment.bot().execute(new GetChatMember(chatId, userId.intValue()));
 
@@ -560,8 +560,6 @@ public class NTT {
     }
 
     public static boolean checkGroupAdmin(Msg msg) {
-
-        if (msg.from().developer()) return false;
 
         if (!isGroupAdmin(msg.fragment,msg.chatId(), msg.from().id)) {
 

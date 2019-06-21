@@ -103,6 +103,15 @@ public class TImg extends TwitterFunction {
             
            Score score = all.get(index);
            
+           if (score.photo == null) {
+               
+               UserArchive target = UserArchive.show(account, score.id);
+               
+               score.name = target.name;
+               score.photo = target.photoUrl;
+
+           }
+           
            File userPhoto = photoImage(score.photo);
            
             if (userPhoto.isFile()) {
@@ -116,6 +125,8 @@ public class TImg extends TwitterFunction {
 
                 } catch (IOException e) {}
 
+             
+                
                 graphics.drawString(score.name, x + 75 , y + 25 - 13);
 
                 Score rc = received.get(score.id);
@@ -249,10 +260,10 @@ public class TImg extends TwitterFunction {
 
             for (Status status : statuses) {
 
-                if (account.id.equals(status.getUser().getId())) continue;
+                long id = status.getInReplyToUserId();
 
-                long id = status.getUser().getId();
-
+                if (id == -1) continue;
+                
                 Score score = scores.get(id);
 
                 if (score == null) {
@@ -261,9 +272,6 @@ public class TImg extends TwitterFunction {
 
                     score.id = id;
                     score.score = 0;
-                    
-                    score.name = status.getUser().getName();
-                    score.photo = status.getUser().getProfileImageURLHttps();
 
                 }
 
