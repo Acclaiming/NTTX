@@ -37,9 +37,11 @@ public class TImg extends TwitterFunction {
         graphics.setBackground(Color.getColor("#FFFFFF"));
         graphics.clearRect(0,0,1000,800);
        
-        graphics.setColor(Color.getColor("#000000"));
-        
         graphics.setFont(new Font("Roboto Thin",Font.PLAIN,56));
+        
+        
+        graphics.setColor(Color.BLACK);
+        graphics.setPaint(Color.BLACK);
         
        drawCenteredString(graphics,100,"Test");
        
