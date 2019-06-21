@@ -65,13 +65,13 @@ public class TImg extends TwitterFunction {
                 graphics.drawImage(
                     Thumbnails.of(myPhoto)
                     .size(50, 50)
-                    .asBufferedImage(), 175, 475, 50, 50, null);
+                    .asBufferedImage(), 75, 425, 50, 50, null);
 
             } catch (IOException e) {}
 
             graphics.setFont(new Font(FONT_CHS, Font.PLAIN, 13));
 
-            graphics.drawString(account.archive().name, 175, 550);
+            graphics.drawString(account.archive().name, 75, 500);
 
         }
         
@@ -94,9 +94,9 @@ public class TImg extends TwitterFunction {
         
         for (int index = 0;index < 10 && index < all.size();index ++) {
             
-            int x = index < 5 ? 400 : 700;
+            int x = index < 5 ? 350 : 650;
             
-            int y = 100 + ((index < 5 ? index : index - 5) + 1) * 120;
+            int y = 50 + ((index < 5 ? index : index - 5) + 1) * 120;
             
            Score score = all.get(index);
            
