@@ -17,6 +17,15 @@ import java.io.File;
 import java.util.LinkedList;
 import net.coobird.thumbnailator.Thumbnails;
 import java.io.IOException;
+import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import twitter4j.Twitter;
+import twitter4j.Paging;
+import twitter4j.TwitterException;
+import twitter4j.ResponseList;
+import twitter4j.Status;
+import java.util.HashMap;
+import io.kurumi.ntt.utils.TImg.Score;
+import java.util.Collections;
 
 public class TImg extends TwitterFunction {
 
@@ -55,13 +64,13 @@ public class TImg extends TwitterFunction {
                 graphics.drawImage(
                     Thumbnails.of(myPhoto)
                     .size(50, 50)
-                    .asBufferedImage(), 475, 475, 50, 50, null);
+                    .asBufferedImage(), 300, 275, 50, 50, null);
 
             } catch (IOException e) {}
 
             graphics.setFont(new Font(FONT_CHS, Font.PLAIN, 10));
 
-            graphics.drawString(account.archive().name, 475, 545);
+            graphics.drawString(account.archive().name, 300, 325);
 
         }
 
@@ -82,6 +91,106 @@ public class TImg extends TwitterFunction {
         bot().execute(new SendPhoto(msg.chatId(), out.toByteArray()));
 
     }
+
+    class Score implements Comparable {
+
+        long id;
+        int score;
+
+        @Override
+        public int compareTo(Object score) {
+
+            return this.score - ((Score)score).score;
+
+        }
+
+    }
+
+    LinkedList<Score> received(TAuth account) {
+
+        Twitter api = account.createApi();
+
+        HashMap<Long,Score> scores = new HashMap<>();
+
+        try {
+
+            ResponseList<Status> mentions =  api.getMentionsTimeline(new Paging().count(200));
+
+            for (Status mention : mentions) {
+
+                if (account.id.equals(mention.getUser().getId())) continue;
+
+                long id = mention.getUser().getId();
+
+                Score score = scores.get(id);
+
+                if (score == null) {
+
+                    score = new Score();
+
+                    score.id = id;
+                    score.score = 0;
+
+                    scores.put(id, score);
+
+                }
+
+                score.score ++;
+
+            }
+
+        } catch (TwitterException e) {}
+
+        LinkedList<TImg.Score> result = new LinkedList<Score>(scores.values());
+
+        Collections.sort(result);
+
+        return result;
+
+    }
+    
+    LinkedList<Score> sended(TAuth account) {
+
+        Twitter api = account.createApi();
+
+        HashMap<Long,Score> scores = new HashMap<>();
+
+        try {
+
+            ResponseList<Status> statuses =  api.getUserTimeline(new Paging().count(200));
+
+            for (Status status : statuses) {
+
+                if (account.id.equals(status.getUser().getId())) continue;
+
+                long id = status.getUser().getId();
+
+                Score score = scores.get(id);
+
+                if (score == null) {
+
+                    score = new Score();
+
+                    score.id = id;
+                    score.score = 0;
+
+                    scores.put(id, score);
+
+                }
+
+                score.score ++;
+
+            }
+
+        } catch (TwitterException e) {}
+
+        LinkedList<TImg.Score> result = new LinkedList<Score>(scores.values());
+
+        Collections.sort(result);
+
+        return result;
+       
+       }
 
     File photoImage(String url) {
 
