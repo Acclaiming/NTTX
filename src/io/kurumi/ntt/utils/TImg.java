@@ -127,7 +127,7 @@ public class TImg extends TwitterFunction {
 
              
                 
-                graphics.drawString(score.name, x + 75 , y + 25 - 13);
+                graphics.drawString((index + 1) + ". " + score.name, x + 75 , y + 25 - 13);
 
                 Score rc = received.get(score.id);
                 Score sc = sended.get(score.id);
@@ -136,7 +136,7 @@ public class TImg extends TwitterFunction {
                
                 if (sc != null) {
                     
-                    status.append("发出 : ").append(sc.score).append(" / ");
+                    status.append("发出 : ").append(sc.score).append("   /   ");
                     
                 }
                 
