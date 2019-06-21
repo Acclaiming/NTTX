@@ -64,16 +64,35 @@ public class TImg extends TwitterFunction {
                 graphics.drawImage(
                     Thumbnails.of(myPhoto)
                     .size(50, 50)
-                    .asBufferedImage(), 275, 275, 50, 50, null);
+                    .asBufferedImage(), 275, 575, 50, 50, null);
 
             } catch (IOException e) {}
 
             graphics.setFont(new Font(FONT_CHS, Font.PLAIN, 10));
 
-            graphics.drawString(account.archive().name, 275, 325);
+            graphics.drawString(account.archive().name, 275, 610);
 
         }
-
+        
+        LinkedList<Score> received = received(account);
+        
+        LinkedList<Score> sended = sended(account);
+        
+        LinkedList<Score> all = new LinkedList<>();
+        
+        all.addAll(received);
+        
+        for (Score score : sended) {
+            
+            if (all.contains(score)) all.get(all.indexOf(score)).score += score.score;
+            else all.add(score);
+            
+        }
+        
+        Collections.sort(all);
+        
+        
+        
         msg.sendUpdatingPhoto();
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -103,6 +122,15 @@ public class TImg extends TwitterFunction {
             return this.score - ((Score)score).score;
 
         }
+
+        @Override
+        public boolean equals(Object score) {
+          
+            return super.equals(score) || ((Score)score).id == id;
+            
+        }
+        
+       
 
     }
 
