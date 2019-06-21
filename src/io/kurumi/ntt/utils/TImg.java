@@ -18,6 +18,9 @@ import java.io.File;
 import java.util.LinkedList;
 import java.awt.Paint;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.io.IOException;
 
 public class TImg extends TwitterFunction {
 
@@ -38,8 +41,17 @@ public class TImg extends TwitterFunction {
         File myPhoto = photoImage(account.archive().photoUrl);
 
         graphics.setBackground(Color.WHITE);
+        graphics.clearRect(0,0,1000,800);
        
-        graphics.drawString("喵.....",450,100);
+        try {
+            
+            graphics.setFont(Font.createFont(Font.TRUETYPE_FONT, new File("./fonts/Roboto-Thin.ttf")));
+ 
+            
+        } catch (FontFormatException e) {} 
+        catch (IOException e) {}
+        
+        graphics.drawString("喵.....", 450, 100);
         
         if (myPhoto.isFile()) {
 
