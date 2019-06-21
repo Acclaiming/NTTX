@@ -37,9 +37,9 @@ public class TImg extends TwitterFunction {
 
         File myPhoto = photoImage(account.archive().photoUrl);
 
-        graphics.setPaint(Color.WHITE);
-        
-        graphics.drawRect(0,0,1000,800);
+        graphics.setBackground(Color.WHITE);
+       
+        graphics.drawString("喵.....",450,100);
         
         if (myPhoto.isFile()) {
 
