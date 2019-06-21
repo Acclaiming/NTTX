@@ -69,7 +69,11 @@ public class TImg extends TwitterFunction {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        ImageUtil.writeJpg(image, out);
+        try {
+            
+            Thumbnails.of(image).outputFormat("png").toOutputStream(out);
+            
+        } catch (IOException e) {}
 
         bot().execute(new SendPhoto(msg.chatId(), out.toByteArray()));
 
