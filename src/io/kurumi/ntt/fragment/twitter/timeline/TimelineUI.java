@@ -22,6 +22,8 @@ import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import twitter4j.DirectMessageList;
+import twitter4j.DirectMessage;
 
 public class TimelineUI extends TwitterFunction {
 
@@ -190,12 +192,101 @@ public class TimelineUI extends TwitterFunction {
         data.setById(auth.id, setting);
 
     }
+    
+    static void processDM(TAuth auth, Twitter api, TLSetting setting) throws TwitterException {
+
+        if (setting.directMessageOffset != -1) {
+
+            DirectMessageList dms = api.getDirectMessages(50);
+
+            long offset = setting.mentionOffset;
+
+            for (DirectMessage dm : ArrayUtil.reverse(dms.toArray(new DirectMessage[dms.size()]))) {
+
+                if (dm.getId() > offset) {
+
+                    offset = dm.getId();
+
+                }
+                
+                if (!auth.id.equals(dm.getSenderId())) {
+                    
+                    
+                    
+                }
+
+            }
+
+            setting.directMessageOffset = offset;
+
+        } else {
+
+            ResponseList<Status> mention = api.getMentionsTimeline(new Paging().count(1));
+
+            if (mention.isEmpty()) {
+
+                setting.mentionOffset = 0;
+
+            } else {
+
+                setting.mentionOffset = mention.get(0).getId();
+
+            }
+
+        }
+
+        if (setting.retweetsOffset != -1) {
+
+            ResponseList<Status> retweets = api.getRetweetsOfMe(new Paging().count(200).sinceId(setting.retweetsOffset + 1));
+
+            long offset = setting.retweetsOffset;
+
+            for (Status retweet : ArrayUtil.reverse(retweets.toArray(new Status[retweets.size()]))) {
+
+                if (retweet.getId() > offset) {
+
+                    offset = retweet.getId();
+
+                }
+
+                StatusArchive archive = StatusArchive.save(retweet).loop(api);
+
+                if (!archive.from.equals(auth.id)) {
+
+                    archive.sendTo(auth.user, 1, auth, retweet);
+
+                }
+
+            }
+
+            setting.retweetsOffset = offset;
+
+        } else {
+
+            ResponseList<Status> mention = api.getRetweetsOfMe(new Paging().count(1));
+
+            if (!mention.isEmpty()) {
+
+                setting.retweetsOffset = mention.get(0).getId();
+
+            } else {
+
+                setting.retweetsOffset = 0;
+
+            }
+
+        }
+
+        data.setById(auth.id, setting);
+        
+    }
 
     @Override
     public void functions(LinkedList<String> names) {
 
         names.add("timeline");
         names.add("mention");
+        names.add("dm");
 
     }
 
@@ -214,11 +305,37 @@ public class TimelineUI extends TwitterFunction {
 
         boolean target = params.length > 0 && !"off".equals(params[0]);
 
-        msg.send("timeline".equals(function) ? setting.timeline == target ? (target ? "无须重复开启" : "没有开启") : ((setting.timeline = target) ? "已开启" : "已关闭") : setting.mention == target ? (target ? "无须重复开启" : "没有开启") : ((setting.mention = target) ? "已开启" : "已关闭")).exec();
+        boolean old = target;
+
+        if ("dm".equals(function)) {
+
+            old = setting.directMessages;
+
+            setting.directMessages = target;
+
+        } else if ("timeline".equals(function)) {
+            
+            old = setting.timeline;
+            
+            setting.timeline = target;
+            
+        } else {
+            
+            old = setting.mention;
+            
+            setting.mention =target;
+            
+        }
+        
+        msg.send(old == target ? (target ? "无须重复开启" : "没有开启") : target ? "已开启" : "已关闭").exec();
 
 		if (!target) {
 
-			if ("timeline".equals(function)) {
+            if ("dm".equals(function)) {
+                
+                setting.directMessageOffset = -1;
+                
+			} else if ("timeline".equals(function)) {
 
 				setting.timelineOffset = -1;
 
@@ -231,7 +348,7 @@ public class TimelineUI extends TwitterFunction {
 
 		}
 
-        if (setting.mention || setting.timeline) {
+        if (setting.mention || setting.timeline || setting.directMessages) {
 
             data.setById(account.id, setting);
 
@@ -254,6 +371,9 @@ public class TimelineUI extends TwitterFunction {
 
         public long mentionOffset = -1;
         public long retweetsOffset = -1;
+
+        public boolean directMessages = false;
+        public long directMessageOffset = -1;
 
     }
 

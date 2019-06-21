@@ -12,6 +12,12 @@ for jar in ./libs/tieba-api/*.jar;do
  
 done
 
+for jar in ./libs/google-voice/*.jar;do
+
+ export CLASSPATH=$CLASSPATH:$jar
+ 
+done
+
 find src -name "*.java" > sources.txt
 
 echo ">>> Building Sources <<<"

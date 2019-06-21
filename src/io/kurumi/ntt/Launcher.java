@@ -27,6 +27,7 @@ import java.util.*;
 
 import cn.hutool.core.lang.Console;
 import io.kurumi.ntt.fragment.picacg.*;
+import io.kurumi.ntt.fragment.voice.GoogleVoice;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -231,6 +232,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		super.reload();
 
+        addFragment(new GoogleVoice());
+        
         // Base Functions
 		
         addFragment(new Notice());
