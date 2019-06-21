@@ -8,5 +8,7 @@
 <classpathentry kind="lib" path="libs/tieba-api/slf4j-api-1.7.26.jar"/>
 <classpathentry kind="lib" path="libs/tieba-api/fastjson-1.2.47.jar"/>
 <classpathentry kind="lib" path="libs/tieba-api/jsoup-1.11.2.jar"/>
-<classpathentry kind="lib" path="libs/google-voice/dom4j-1.6.1.jar"/>
+<classpathentry kind="lib" path="libs/thumbnailator-0.4.8.jar"/>
+<classpathentry kind="lib" path="libs/tieba-api/httpclient-4.5.5.jar"/>
+<classpathentry kind="lib" path="libs/tieba-api/httpcore-4.4.9.jar"/>
 </classpath>
