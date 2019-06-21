@@ -40,7 +40,7 @@ public class TImg extends TwitterFunction {
         graphics.setColor(Color.BLACK);
         graphics.setPaint(Color.BLACK);
         
-        graphics.setFont(new Font("NotoSans CJK SC Thin",Font.PLAIN,56));
+        graphics.setFont(new Font("Noto Sans CJK SC Thin",Font.PLAIN,56));
         
        drawCenteredString(graphics,100,"某个图片测试 :)");
        
@@ -48,7 +48,7 @@ public class TImg extends TwitterFunction {
 
             graphics.drawImage(ImageUtil.read(myPhoto), 475, 475, 50, 50, null);
 
-            graphics.setFont(new Font("NotoSans Thin",Font.PLAIN,13));
+            graphics.setFont(new Font("Noto Sans Thin",Font.PLAIN,13));
             
             graphics.drawString(account.archive().screenName,485,550);
             
