@@ -70,9 +70,13 @@ public class TImg extends TwitterFunction {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         try {
-            
-            Thumbnails.of(image).outputFormat("png").outputQuality(1f).toOutputStream(out);
-            
+
+            Thumbnails.of(image)
+                .size(1000, 800)
+                .outputFormat("png")
+                .outputQuality(1f)
+                .toOutputStream(out);
+
         } catch (IOException e) {}
 
         bot().execute(new SendPhoto(msg.chatId(), out.toByteArray()));
