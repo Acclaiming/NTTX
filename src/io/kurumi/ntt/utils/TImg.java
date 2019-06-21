@@ -75,45 +75,51 @@ public class TImg extends TwitterFunction {
             graphics.drawString(account.archive().name, 100, 475);
 
         }
-        
+
         HashMap<Long, Score> received = received(account);
 
         HashMap<Long,  Score> sended = sended(account);
 
         HashMap<Long,Score> allMap = new HashMap<>();
-        
-        allMap.putAll(received);
-        
-        for (Score score : sended.values()) {
-            
-            if (allMap.containsKey(score.id)) allMap.get(score.id).score += score.score;
-            else allMap.put(score.id,score);
-            
+
+        allMap.putAll(sended);
+
+        for (Score score : received.values()) {
+
+            if (allMap.containsKey(score.id)) {
+
+                score.score += allMap.get(score.id).score;
+
+            }
+
+            allMap.put(score.id, score);
+
+
         }
-        
+
         LinkedList<Score> all = new LinkedList<>(allMap.values());
 
         Collections.sort(all);
-        
+
         for (int index = 0;index < 10 && index < all.size();index ++) {
             
             int x = index < 5 ? 300 : 600;
-            
-            int y = 50 + ((index < 5 ? index : index - 5) + 1) * 120;
-            
-           Score score = all.get(index);
-           
-           if (score.photo == null) {
-               
-               UserArchive target = UserArchive.show(account, score.id);
-               
-               score.name = target.name;
-               score.photo = target.photoUrl;
 
-           }
-           
-           File userPhoto = photoImage(score.photo);
-           
+            int y = 50 + ((index < 5 ? index : index - 5) + 1) * 120;
+
+            Score score = all.get(index);
+
+            if (score.photo == null) {
+
+                UserArchive target = UserArchive.show(account, score.id);
+
+                score.name = target.name;
+                score.photo = target.photoUrl;
+
+            }
+
+            File userPhoto = photoImage(score.photo);
+
             if (userPhoto.isFile()) {
 
                 try {
@@ -121,37 +127,37 @@ public class TImg extends TwitterFunction {
                     graphics.drawImage(
                         Thumbnails.of(userPhoto)
                         .size(50, 50)
-                        .asBufferedImage(), x,y,50, 50, null);
+                        .asBufferedImage(), x, y, 50, 50, null);
 
                 } catch (IOException e) {}
-                
+
                 graphics.drawString((index + 1) + ". " + score.name, x + 75 , y + 25 - 13);
 
                 Score rc = received.get(score.id);
                 Score sc = sended.get(score.id);
 
                 StringBuilder status = new StringBuilder();
-               
+
                 if (sc != null) {
-                    
+
                     status.append("发出 : ").append(sc.score).append("   /   ");
-                    
+
                 }
-                
+
                 if (rc != null) {
-                
-               status.append("收到 : ").append(rc.score);
-               
-               }
-               
-               
-                
+
+                    status.append("收到 : ").append(rc.score);
+
+                }
+
+
+
                 graphics.drawString(status.toString(), x + 75, y + 25 + 13);
-                
+
             }
-            
+
         }
-        
+
         msg.sendUpdatingPhoto();
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -166,8 +172,8 @@ public class TImg extends TwitterFunction {
 
         } catch (IOException e) {}
 
-       // msg.send(ArrayUtil.join( received.toArray(),"\n")).exec();
-        
+        // msg.send(ArrayUtil.join( received.toArray(),"\n")).exec();
+
         bot().execute(new SendPhoto(msg.chatId(), out.toByteArray()));
 
     }
@@ -179,7 +185,7 @@ public class TImg extends TwitterFunction {
 
         String name;
         String photo;
-        
+
         @Override
         public int compareTo(Object score) {
 
@@ -189,9 +195,9 @@ public class TImg extends TwitterFunction {
 
         @Override
         public boolean equals(Object score) {
-          
+
             return super.equals(score) || ((Score)score).id == id;
-            
+
         }
 
         @Override
@@ -199,7 +205,7 @@ public class TImg extends TwitterFunction {
             // TODO: Implement this method
             return name + " : " + score;
         }
-        
+
 
     }
 
@@ -210,7 +216,7 @@ public class TImg extends TwitterFunction {
         HashMap<Long,Score> scores = new HashMap<>();
 
         try {
-            
+
             ResponseList<Status> mentions =  api.getMentionsTimeline(new Paging().count(200));
 
             for (Status mention : mentions) {
@@ -227,25 +233,25 @@ public class TImg extends TwitterFunction {
 
                     score.id = id;
                     score.score = 0;
-                    
+
                     score.name = mention.getUser().getName();
                     score.photo = mention.getUser().getProfileImageURLHttps();
 
                 }
 
                 score.score ++;
-                
+
                 scores.put(id, score);
-                
+
 
             }
 
         } catch (TwitterException e) {}
 
         return scores;
-        
+
     }
-    
+
     HashMap<Long,Score> sended(TAuth account) {
 
         Twitter api = account.createApi();
@@ -261,7 +267,7 @@ public class TImg extends TwitterFunction {
                 long id = status.getInReplyToUserId();
 
                 if (id == -1) continue;
-                
+
                 Score score = scores.get(id);
 
                 if (score == null) {
@@ -276,7 +282,7 @@ public class TImg extends TwitterFunction {
                 score.score ++;
 
                 scores.put(id, score);
-                
+
 
             }
 
@@ -284,8 +290,8 @@ public class TImg extends TwitterFunction {
 
 
         return scores;
-       
-       }
+
+    }
 
     File photoImage(String url) {
 
