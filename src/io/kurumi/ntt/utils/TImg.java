@@ -64,13 +64,13 @@ public class TImg extends TwitterFunction {
                 graphics.drawImage(
                     Thumbnails.of(myPhoto)
                     .size(50, 50)
-                    .asBufferedImage(), 275, 575, 50, 50, null);
+                    .asBufferedImage(), 175, 475, 50, 50, null);
 
             } catch (IOException e) {}
 
             graphics.setFont(new Font(FONT_CHS, Font.PLAIN, 10));
 
-            graphics.drawString(account.archive().name, 275, 625);
+            graphics.drawString(account.archive().name, 175, 550);
 
         }
         
@@ -95,7 +95,7 @@ public class TImg extends TwitterFunction {
             
             int x = index < 5 ? 400 : 700;
             
-            int y = 275 + ((index < 5 ? index : index - 5) + 1) * 120;
+            int y = 100 + ((index < 5 ? index : index - 5) + 1) * 120;
             
            Score score = all.get(index);
            
@@ -113,10 +113,10 @@ public class TImg extends TwitterFunction {
                 } catch (IOException e) {}
 
                 graphics.setFont(new Font(FONT_CHS, Font.PLAIN, 10));
+                
+                graphics.drawString(score.name, x + 50 , y + 50 - 12);
 
-                graphics.drawString(score.name, x, y + 75);
-
-                graphics.drawString("  > " + score.score,x,y + 100);
+                graphics.drawString("  > " + score.score,x + 50,y + 50 + 12);
                 
             }
             
@@ -198,7 +198,7 @@ public class TImg extends TwitterFunction {
 
                 }
 
-                score.score ++;
+                score.score = score.score + 1;
 
             }
 
@@ -244,7 +244,7 @@ public class TImg extends TwitterFunction {
 
                 }
 
-                score.score ++;
+                score.score = score.score + 1;
 
             }
 
