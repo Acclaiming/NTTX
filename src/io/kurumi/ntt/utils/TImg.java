@@ -1,9 +1,8 @@
 package io.kurumi.ntt.utils;
 
-import java.awt.*;
+import twitter4j.*;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.ImageUtil;
 import cn.hutool.http.HttpUtil;
 import com.pengrad.telegrambot.request.SendPhoto;
 import io.kurumi.ntt.Env;
@@ -11,23 +10,21 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.abs.TwitterFunction;
 import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import net.coobird.thumbnailator.Thumbnails;
-import java.io.IOException;
-import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
-import twitter4j.Twitter;
-import twitter4j.Paging;
-import twitter4j.TwitterException;
-import twitter4j.ResponseList;
-import twitter4j.Status;
-import java.util.HashMap;
-import io.kurumi.ntt.utils.TImg.Score;
-import java.util.Collections;
-import cn.hutool.core.util.ArrayUtil;
-import java.util.Collection;
+import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 
 public class TImg extends TwitterFunction {
 
@@ -174,8 +171,18 @@ public class TImg extends TwitterFunction {
 
         // msg.send(ArrayUtil.join( received.toArray(),"\n")).exec();
 
-        bot().execute(new SendPhoto(msg.chatId(), out.toByteArray()));
+        try {
+            
+            Status status = account.createApi().updateStatus(new StatusUpdate("#互动Map https://t.me/NTT_X").media("map.png", new ByteArrayInputStream(out.toByteArray())));
 
+            msg.send("发送成功 :)",StatusArchive.save(status).url()).enableLinkPreview().exec();
+            
+        } catch (TwitterException e) {
+            
+           msg.send("发送失败 :( ",NTT.parseTwitterException(e)).exec();
+            
+        }
+        
     }
 
     class Score implements Comparable {
