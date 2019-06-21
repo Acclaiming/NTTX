@@ -1,5 +1,7 @@
 package io.kurumi.ntt.utils;
 
+import java.awt.*;
+
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ImageUtil;
 import cn.hutool.http.HttpUtil;
@@ -9,18 +11,10 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.abs.TwitterFunction;
 import io.kurumi.ntt.fragment.twitter.TAuth;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.LinkedList;
-import java.awt.Paint;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.io.IOException;
 
 public class TImg extends TwitterFunction {
 
@@ -47,8 +41,8 @@ public class TImg extends TwitterFunction {
         
         graphics.setFont(new Font("Roboto Thin",Font.PLAIN,56));
         
-        graphics.drawString("喵.....", 450, 100);
-        
+       drawCenteredString(graphics,"Test",graphics.getClipBounds());
+       
         if (myPhoto.isFile()) {
 
             graphics.drawImage(ImageUtil.read(myPhoto), 475, 475, 50, 50, null);
@@ -77,6 +71,17 @@ public class TImg extends TwitterFunction {
 
         return photo;
 
+    }
+    
+    public void drawCenteredString(Graphics2D g, String text, Rectangle rect) {
+        // Get the FontMetrics
+        FontMetrics metrics = g.getFontMetrics(g.getFont());
+        // Determine the X coordinate for the text
+        int x = rect.x + (rect.width - metrics.stringWidth(text)) / 2;
+        // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top of the screen)
+        int y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
+        // Draw the String
+        g.drawString(text, x, y);
     }
 
 }
