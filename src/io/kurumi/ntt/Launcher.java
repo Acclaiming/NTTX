@@ -1,33 +1,52 @@
 package io.kurumi.ntt;
 
-import cn.hutool.core.lang.*;
-import cn.hutool.core.util.*;
-import com.pengrad.telegrambot.model.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.fragment.*;
-import io.kurumi.ntt.fragment.abs.*;
-import io.kurumi.ntt.fragment.abs.request.*;
-import io.kurumi.ntt.fragment.admin.*;
-import io.kurumi.ntt.fragment.base.*;
-import io.kurumi.ntt.fragment.bots.*;
-import io.kurumi.ntt.fragment.debug.*;
-import io.kurumi.ntt.fragment.forum.admin.*;
 import io.kurumi.ntt.fragment.group.*;
 import io.kurumi.ntt.fragment.twitter.action.*;
-import io.kurumi.ntt.fragment.twitter.auto.*;
-import io.kurumi.ntt.fragment.twitter.delete.*;
-import io.kurumi.ntt.fragment.twitter.ext.*;
-import io.kurumi.ntt.fragment.twitter.login.*;
-import io.kurumi.ntt.fragment.twitter.status.*;
-import io.kurumi.ntt.fragment.twitter.timeline.*;
-import io.kurumi.ntt.fragment.twitter.track.*;
-import io.kurumi.ntt.utils.*;
-import java.io.*;
-import java.util.*;
 
 import cn.hutool.core.lang.Console;
-import io.kurumi.ntt.fragment.picacg.*;
-import io.kurumi.ntt.fragment.voice.GoogleVoice;
+import cn.hutool.core.util.RuntimeUtil;
+import com.pengrad.telegrambot.model.Chat;
+import com.pengrad.telegrambot.model.Update;
+import io.kurumi.ntt.db.BotDB;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.BotServer;
+import io.kurumi.ntt.fragment.abs.Callback;
+import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.abs.request.Send;
+import io.kurumi.ntt.fragment.admin.Alias;
+import io.kurumi.ntt.fragment.admin.Control;
+import io.kurumi.ntt.fragment.admin.Notice;
+import io.kurumi.ntt.fragment.admin.Users;
+import io.kurumi.ntt.fragment.base.Final;
+import io.kurumi.ntt.fragment.bots.MyBots;
+import io.kurumi.ntt.fragment.bots.NewBot;
+import io.kurumi.ntt.fragment.bots.UserBot;
+import io.kurumi.ntt.fragment.debug.Backup;
+import io.kurumi.ntt.fragment.debug.DebugMsg;
+import io.kurumi.ntt.fragment.debug.DebugStatus;
+import io.kurumi.ntt.fragment.debug.DebugUser;
+import io.kurumi.ntt.fragment.forum.admin.ForumManage;
+import io.kurumi.ntt.fragment.picacg.SignThread;
+import io.kurumi.ntt.fragment.twitter.auto.AutoUI;
+import io.kurumi.ntt.fragment.twitter.delete.TwitterDelete;
+import io.kurumi.ntt.fragment.twitter.ext.BlockList;
+import io.kurumi.ntt.fragment.twitter.ext.MediaDownload;
+import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
+import io.kurumi.ntt.fragment.twitter.login.ShadowBan;
+import io.kurumi.ntt.fragment.twitter.login.TwitterLogin;
+import io.kurumi.ntt.fragment.twitter.login.TwitterLogout;
+import io.kurumi.ntt.fragment.twitter.status.StatusAction;
+import io.kurumi.ntt.fragment.twitter.status.StatusFetch;
+import io.kurumi.ntt.fragment.twitter.status.StatusSearch;
+import io.kurumi.ntt.fragment.twitter.status.StatusUpdate;
+import io.kurumi.ntt.fragment.twitter.timeline.TimelineUI;
+import io.kurumi.ntt.fragment.twitter.track.TrackTask;
+import io.kurumi.ntt.fragment.twitter.track.TrackUI;
+import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.utils.Image;
+import java.io.IOException;
+import java.util.TimeZone;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -232,8 +251,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		super.reload();
 
-        addFragment(new GoogleVoice());
-        
         // Base Functions
 		
         addFragment(new Notice());
