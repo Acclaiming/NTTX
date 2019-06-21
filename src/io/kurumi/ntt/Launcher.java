@@ -47,6 +47,7 @@ import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.TImg;
 import java.io.IOException;
 import java.util.TimeZone;
+import io.kurumi.ntt.fragment.admin.TASReply;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -272,6 +273,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         // addFragment(new TiebaLogin());
 
         // Twitter Action
+        
+        addFragment(new TASReply());
 
         addFragment(new Follow());
 
