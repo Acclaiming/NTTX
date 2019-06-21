@@ -37,11 +37,10 @@ public class TImg extends TwitterFunction {
         graphics.setBackground(Color.getColor("#FFFFFF"));
         graphics.clearRect(0,0,1000,800);
        
-        graphics.setFont(new Font("Roboto Thin",Font.PLAIN,56));
-        
-        
         graphics.setColor(Color.BLACK);
         graphics.setPaint(Color.BLACK);
+        
+        graphics.setFont(new Font("Roboto Thin",Font.PLAIN,56));
         
        drawCenteredString(graphics,100,"Test");
        
@@ -79,7 +78,7 @@ public class TImg extends TwitterFunction {
         
         FontMetrics metrics = g.getFontMetrics();
         
-        int x = 1000 - metrics.stringWidth(text) / 2;
+        int x = (1000 - metrics.stringWidth(text)) / 2;
         
         g.drawString(text, x, y);
         
