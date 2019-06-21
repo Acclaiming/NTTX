@@ -42,7 +42,7 @@ public class TImg extends TwitterFunction {
         
         graphics.setFont(new Font("Roboto Thin",Font.PLAIN,56));
         
-       drawCenteredString(graphics,100,"Test");
+       drawCenteredString(graphics,100,"测试");
        
         if (myPhoto.isFile()) {
 
