@@ -68,7 +68,7 @@ public class TImg extends TwitterFunction {
 
             } catch (IOException e) {}
 
-            graphics.setFont(new Font(FONT_CHS, Font.PLAIN, 10));
+            graphics.setFont(new Font(FONT_CHS, Font.PLAIN, 13));
 
             graphics.drawString(account.archive().name, 175, 550);
 
@@ -112,11 +112,9 @@ public class TImg extends TwitterFunction {
 
                 } catch (IOException e) {}
 
-                graphics.setFont(new Font(FONT_CHS, Font.PLAIN, 10));
-                
-                graphics.drawString(score.name, x + 50 , y + 50 - 12);
+                graphics.drawString(score.name, x + 75 , y + 25 - 12);
 
-                graphics.drawString("  > " + score.score,x + 50,y + 50 + 12);
+                graphics.drawString("  > " + score.score,x + 75,y + 25 + 12);
                 
             }
             
@@ -194,11 +192,12 @@ public class TImg extends TwitterFunction {
                     score.name = mention.getUser().getName();
                     score.photo = mention.getUser().getProfileImageURLHttps();
 
-                    scores.put(id, score);
-
                 }
 
-                score.score = score.score + 1;
+                score.score ++;
+                
+                scores.put(id, score);
+                
 
             }
 
@@ -240,11 +239,12 @@ public class TImg extends TwitterFunction {
                     score.name = status.getUser().getName();
                     score.photo = status.getUser().getProfileImageURLHttps();
 
-                    scores.put(id, score);
-
                 }
 
-                score.score = score.score + 1;
+                score.score ++;
+
+                scores.put(id, score);
+                
 
             }
 
