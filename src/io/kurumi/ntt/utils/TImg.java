@@ -40,10 +40,10 @@ public class TImg extends TwitterFunction {
 
         File myPhoto = photoImage(account.archive().photoUrl);
 
-        graphics.setBackground(Color.WHITE);
+        graphics.setBackground(Color.getColor("#FFFFFF"));
         graphics.clearRect(0,0,1000,800);
        
-        graphics.setPaint(Color.getColor("#000000"));
+        graphics.setColor(Color.getColor("#000000"));
         
         graphics.setFont(new Font("Roboto Thin",Font.PLAIN,56));
         
