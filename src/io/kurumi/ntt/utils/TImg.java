@@ -15,6 +15,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.LinkedList;
+import net.coobird.thumbnailator.Thumbnails;
+import java.io.IOException;
 
 public class TImg extends TwitterFunction {
 
@@ -48,7 +50,14 @@ public class TImg extends TwitterFunction {
 
         if (myPhoto.isFile()) {
 
-            graphics.drawImage(ImageUtil.read(myPhoto), 475, 475, 50, 50, null);
+            try {
+
+                graphics.drawImage(
+                    Thumbnails.of(myPhoto)
+                    .scale(50, 50)
+                    .asBufferedImage(), 475, 475, 50, 50, null);
+
+            } catch (IOException e) {}
 
             graphics.setFont(new Font(FONT_CHS, Font.PLAIN, 10));
 
