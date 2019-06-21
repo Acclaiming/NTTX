@@ -50,7 +50,7 @@ public class TImg extends TwitterFunction {
 
             graphics.setFont(new Font("Noto Sans Thin",Font.PLAIN,13));
             
-            graphics.drawString(account.archive().screenName,475,550);
+            graphics.drawString(account.archive().screenName,475,535);
             
         }
 
