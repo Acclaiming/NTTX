@@ -451,8 +451,8 @@ public class TrackTask extends TimerTask {
                 msg.append(ship.isSourceFollowingTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 关注了你 :)").append(parseStatus(api, follower));
 
                 if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
-                
-                new Send(auth.user,msg.toString()).html().point(0, archive.id);
+
+                new Send(auth.user, msg.toString()).html().point(0, archive.id);
 
             }
 
@@ -465,7 +465,7 @@ public class TrackTask extends TimerTask {
             StringBuilder msg = new StringBuilder(UserArchive.contains(id) ? UserArchive.get(id).urlHtml() : "无记录的用户 : (" + id + ")").append("关注了你").append("\n状态异常: ").append(NTT.parseTwitterException(e));
 
             if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
-            
+
             new Send(auth.user, msg.toString()).html().point(0, id);
 
 
@@ -484,18 +484,15 @@ public class TrackTask extends TimerTask {
 
             if (notice) {
 
-                if (notice) {
+                StringBuilder msg = new StringBuilder();
 
-                    StringBuilder msg = new StringBuilder();
+                msg.append(ship.isSourceFollowedByTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(ship.isSourceFollowingTarget() ? " 账号异常了 :(" : " 取关了你 :)").append(parseStatus(api, follower));
 
-                    msg.append(ship.isSourceFollowedByTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 取关了你 :)").append(parseStatus(api, follower));
-                 
-                    if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
-                    
-                    new Send(auth.user,msg.toString()).html().point(0, archive.id);
+                if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
-                }
+                new Send(auth.user, msg.toString()).html().point(0, archive.id);
 
+                
             }
 
         } catch (TwitterException e) {
@@ -507,7 +504,7 @@ public class TrackTask extends TimerTask {
             if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
             new Send(auth.user, msg.toString()).html().point(0, id);
-            
+
         }
 
 
