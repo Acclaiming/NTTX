@@ -41,7 +41,7 @@ public class TImg extends TwitterFunction {
         
         graphics.setFont(new Font("Roboto Thin",Font.PLAIN,56));
         
-       drawCenteredString(graphics,"Test",graphics.getClipBounds());
+       drawCenteredString(graphics,100,"Test");
        
         if (myPhoto.isFile()) {
 
@@ -73,15 +73,14 @@ public class TImg extends TwitterFunction {
 
     }
     
-    public void drawCenteredString(Graphics2D g, String text, Rectangle rect) {
-        // Get the FontMetrics
-        FontMetrics metrics = g.getFontMetrics(g.getFont());
-        // Determine the X coordinate for the text
-        int x = rect.x + (rect.width - metrics.stringWidth(text)) / 2;
-        // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top of the screen)
-        int y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
-        // Draw the String
+    public void drawCenteredString(Graphics2D g,int y, String text) {
+        
+        FontMetrics metrics = g.getFontMetrics();
+        
+        int x = 1000 - metrics.stringWidth(text) / 2;
+        
         g.drawString(text, x, y);
+        
     }
 
 }
