@@ -25,6 +25,8 @@ public class TImg extends TwitterFunction {
 
     }
 
+    final String FONT_CHS = "Noto Sans CJK SC Thin";
+
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
@@ -35,33 +37,33 @@ public class TImg extends TwitterFunction {
         File myPhoto = photoImage(account.archive().photoUrl);
 
         graphics.setBackground(Color.getColor("#FFFFFF"));
-        graphics.clearRect(0,0,1000,800);
-       
+        graphics.clearRect(0, 0, 1000, 800);
+
         graphics.setColor(Color.BLACK);
         graphics.setPaint(Color.BLACK);
-        
-        graphics.setFont(new Font("Noto Sans CJK SC Thin",Font.PLAIN,56));
-        
-       drawCenteredString(graphics,100,"某个图片测试 :)");
-       
+
+        graphics.setFont(new Font(FONT_CHS, Font.PLAIN, 56));
+
+        drawCenteredString(graphics, 100, "某个图片测试 :)");
+
         if (myPhoto.isFile()) {
 
             graphics.drawImage(ImageUtil.read(myPhoto), 475, 475, 50, 50, null);
 
-            graphics.setFont(new Font("Noto Sans Thin",Font.PLAIN,13));
-            
-            graphics.drawString(account.archive().screenName,475,535);
-            
+            graphics.setFont(new Font(FONT_CHS, Font.PLAIN, 13));
+
+            graphics.drawString(account.archive().name, 475, 530);
+
         }
 
         msg.sendUpdatingPhoto();
-        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        ImageUtil.writeJpg(image,out);
-        
-        bot().execute(new SendPhoto(msg.chatId(),out.toByteArray()));
-        
+        ImageUtil.writeJpg(image, out);
+
+        bot().execute(new SendPhoto(msg.chatId(), out.toByteArray()));
+
     }
 
     File photoImage(String url) {
@@ -73,15 +75,15 @@ public class TImg extends TwitterFunction {
         return photo;
 
     }
-    
-    public void drawCenteredString(Graphics2D g,int y, String text) {
-        
+
+    public void drawCenteredString(Graphics2D g, int y, String text) {
+
         FontMetrics metrics = g.getFontMetrics();
-        
+
         int x = (1000 - metrics.stringWidth(text)) / 2;
-        
+
         g.drawString(text, x, y);
-        
+
     }
 
 }
