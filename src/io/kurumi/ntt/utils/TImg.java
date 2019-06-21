@@ -43,9 +43,9 @@ public class TImg extends TwitterFunction {
         graphics.setBackground(Color.WHITE);
         graphics.clearRect(0,0,1000,800);
        
-        graphics.setColor(Color.getColor("#000000"));
+        graphics.setPaint(Color.getColor("#000000"));
         
-        graphics.setFont(new Font("Roboto-Thin",Font.PLAIN,56));
+        graphics.setFont(new Font("Roboto Thin",Font.PLAIN,56));
         
         graphics.drawString("喵.....", 450, 100);
         
@@ -53,9 +53,9 @@ public class TImg extends TwitterFunction {
 
             graphics.drawImage(ImageUtil.read(myPhoto), 475, 475, 50, 50, null);
 
-            graphics.setFont(new Font("Roboto-Thin",Font.PLAIN,13));
+            graphics.setFont(new Font("Roboto Thin",Font.PLAIN,13));
             
-            graphics.drawString(account.archive().name,475,500);
+            graphics.drawString(account.archive().name,485,530);
             
         }
 
