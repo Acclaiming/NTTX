@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.request.AnswerCallback;
+import io.kurumi.ntt.db.UserData;
 
 public class Callback extends Msg {
 
@@ -26,6 +27,15 @@ public class Callback extends Msg {
         this.params = query.data().contains(",") ? query.data().split(",") : new String[]{query.data()};
 
     }
+
+    @Override
+    public UserData from() {
+        
+        return UserData.get(query.from());
+        
+    }
+    
+    
 
     public void confirm() {
 
