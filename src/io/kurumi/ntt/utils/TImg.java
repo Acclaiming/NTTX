@@ -226,6 +226,8 @@ public class TImg extends TwitterFunction {
 
             ResponseList<Status> mentions =  api.getMentionsTimeline(new Paging().count(200));
 
+            mentions.addAll(api.getMentionsTimeline(new Paging().maxId(mentions.get(0).getId() - 1).count(200)));
+            
             for (Status mention : mentions) {
 
                 if (account.id.equals(mention.getUser().getId())) continue;

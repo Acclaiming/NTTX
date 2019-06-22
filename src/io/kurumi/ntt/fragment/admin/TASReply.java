@@ -81,7 +81,7 @@ public class TASReply extends TwitterFunction {
                     
                     count ++;
                     
-                    StatusArchive.save(hide).sendTo(msg.chatId(),1,account,hide);
+                    StatusArchive.save(hide).sendTo(msg.chatId(),0,account,null);
                     
                 }
                 
