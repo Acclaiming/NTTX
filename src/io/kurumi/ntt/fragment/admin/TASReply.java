@@ -73,7 +73,7 @@ public class TASReply extends TwitterFunction {
             
             try {
 
-                LinkedList<Status> ann = TApi.getReplies(api, status);
+                LinkedList<Status> ann = TApi.getReplies(auth.createApi(), status);
 
                 ann.removeAll(replies);
                 
@@ -88,7 +88,10 @@ public class TASReply extends TwitterFunction {
                 replies.addAll(ann);
                 
                 
-            } catch (TwitterException e) {}
+            } catch (TwitterException e) {
+                
+                
+            }
             
         }
         
