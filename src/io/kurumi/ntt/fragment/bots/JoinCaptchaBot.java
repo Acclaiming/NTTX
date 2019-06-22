@@ -462,7 +462,7 @@ public class JoinCaptchaBot extends BotFragment {
 
         clearPoint(user);
 
-        if (msg.hasText() && msg.text().contains("喵") || msg.text().contains("嘤")) {
+        if (msg.hasText() && (msg.text().contains("喵") || msg.text().contains("嘤"))) {
 
             msg.send(user.userName() + " 通过了图灵(划掉) 验证 ~").html().failed(15 * 1000);
 
