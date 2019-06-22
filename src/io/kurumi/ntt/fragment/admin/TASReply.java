@@ -50,14 +50,14 @@ public class TASReply extends TwitterFunction {
         Twitter api = account.createApi();
         
         Status status;
-        LinkedList<Status> replies;
+        LinkedList<Status> replies = new LinkedList<>();
         
         int count = 0;
         
         try {
             
             status = api.showStatus(NTT.parseStatusId(params[0]));
-            replies = TApi.getReplies(api, status);
+           // replies = TApi.getReplies(api, status);
 
         } catch (TwitterException e) {
             
