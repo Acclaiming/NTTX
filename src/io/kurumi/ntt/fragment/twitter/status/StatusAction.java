@@ -16,6 +16,8 @@ import java.util.LinkedList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import javax.security.auth.callback.Callback;
+import com.pengrad.telegrambot.request.EditMessageCaption;
 
 public class StatusAction extends TwitterFunction {
 
@@ -27,48 +29,48 @@ public class StatusAction extends TwitterFunction {
     static final String POINT_UNLIKE_STATUS = "s_ul";
     public static Data<CurrentAccount> current = new Data<CurrentAccount>(CurrentAccount.class);
 
-    public static ButtonMarkup createMarkup(final long statusId, final boolean del, final boolean full, final boolean retweeted, final boolean liked) {
+    public static ButtonMarkup createMarkup(final long statusId,final boolean del,final boolean full,final boolean retweeted,final boolean liked) {
 
         return new ButtonMarkup() {{
 
-            ButtonLine line = newButtonLine();
+				ButtonLine line = newButtonLine();
 
-            if (retweeted) {
+				if (retweeted) {
 
-                line.newButton("❎️", POINT_DESTROY_RETWEET, statusId, full, retweeted, liked);
+					line.newButton("❎️",POINT_DESTROY_RETWEET,statusId,full,retweeted,liked);
 
-            } else {
+				} else {
 
-                line.newButton("🔄", POINT_RETWEET_STATUS, statusId, full, retweeted, liked);
+					line.newButton("🔄",POINT_RETWEET_STATUS,statusId,full,retweeted,liked);
 
-            }
+				}
 
-            if (liked) {
+				if (liked) {
 
-                line.newButton("💔", POINT_UNLIKE_STATUS, statusId, full, retweeted, liked);
+					line.newButton("💔",POINT_UNLIKE_STATUS,statusId,full,retweeted,liked);
 
-            } else {
+				} else {
 
-                line.newButton("❤", POINT_LIKE_STATUS, statusId, full, retweeted, liked);
+					line.newButton("❤",POINT_LIKE_STATUS,statusId,full,retweeted,liked);
 
-            }
+				}
 
-            if (del) {
+				if (del) {
 
-                line.newButton("❌️", POINT_DESTROY_STATUS, statusId);
+					line.newButton("❌️",POINT_DESTROY_STATUS,statusId);
 
-            }
+				}
 
-            if (!full) {
+				if (!full) {
 
-                line.newButton("🔎", POINT_SHOW_FULL, statusId, true, retweeted, liked);
+					line.newButton("🔎",POINT_SHOW_FULL,statusId,true,retweeted,liked);
 
-            }
+				}
 
-            // line.newButton("🔇",POINT_MUTE_USER,status.getUser().getId());
+				// line.newButton("🔇",POINT_MUTE_USER,status.getUser().getId());
 
 
-        }};
+			}};
 
     }
 
@@ -80,17 +82,17 @@ public class StatusAction extends TwitterFunction {
     }
 
     @Override
-    public void onFunction(final UserData user, Msg msg, String function, String[] params, final TAuth account) {
+    public void onFunction(final UserData user,Msg msg,String function,String[] params,final TAuth account) {
 
-        current.setById(user.id, new CurrentAccount() {{
+        current.setById(user.id,new CurrentAccount() {{
 
-            id = user.id;
+					id = user.id;
 
-            accountId = account.id;
+					accountId = account.id;
 
-        }});
+				}});
 
-        msg.send("当前操作账号已设为 : " + account.archive().urlHtml(), "当多用户时，可用此命令设置默认账号。").html().exec();
+        msg.send("当前操作账号已设为 : " + account.archive().urlHtml(),"当多用户时，可用此命令设置默认账号。").html().exec();
 
     }
 
@@ -107,7 +109,7 @@ public class StatusAction extends TwitterFunction {
     }
 
     @Override
-    public void onCallback(UserData user, Callback callback, String point, String[] params) {
+    public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
         long statusId = Long.parseLong(params[0]);
 
@@ -115,7 +117,7 @@ public class StatusAction extends TwitterFunction {
         boolean retweeted = params.length > 1 && "true".equals(params[2]);
         boolean liked = params.length > 1 && "true".equals(params[3]);
 
-        long count = TAuth.data.countByField("user", user.id);
+        long count = TAuth.data.countByField("user",user.id);
 
         if (count == 0) {
 
@@ -276,8 +278,16 @@ public class StatusAction extends TwitterFunction {
         } else if (POINT_SHOW_FULL.equals(point)) {
 
 			archive.loop(api);
-			
-            callback.edit(archive.toHtml()).buttons(createMarkup(archive.id, archive.from.equals(auth.id), true, retweeted, liked)).html().exec();
+
+			if (callback.message().photo() != null) {
+
+				bot().execute(new EditMessageCaption(callback.chatId(),callback.messageId(),archive.toHtml()).replyMarkup(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,liked).markup()));
+
+			} else {
+
+				callback.edit(archive.toHtml()).buttons(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,liked)).html().exec();
+
+			}
 
             callback.text("已展开 ~");
 
@@ -285,7 +295,7 @@ public class StatusAction extends TwitterFunction {
 
         }
 
-        callback.editMarkup(createMarkup(archive.id, archive.from.equals(auth.id), isFull, retweeted, liked));
+        callback.editMarkup(createMarkup(archive.id,archive.from.equals(auth.id),isFull,retweeted,liked));
 
     }
 
