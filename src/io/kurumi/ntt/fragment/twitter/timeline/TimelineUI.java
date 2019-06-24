@@ -123,7 +123,7 @@ public class TimelineUI extends TwitterFunction {
 
                 if (!archive.from.equals(auth.id)) {
 
-                    archive.sendTo(auth.user, 1, auth, mention);
+                    archive.sendTo(auth.user, 0, auth, mention);
 
                 }
 
