@@ -11,102 +11,102 @@ import io.kurumi.ntt.utils.NTT;
 import twitter4j.TwitterException;
 import twitter4j.Status;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
-import io.kurumi.ntt.fragment.twitter.status.MessagePoint;
 
 public class TASReply extends TwitterFunction {
 
     @Override
     public void functions(LinkedList<String> names) {
-        
+
         names.add("tas");
-        
+
     }
 
     @Override
     public boolean async() {
-       
+
         return true;
-        
+
     }
-    
-    
+
+
 
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
-        
+    public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+
         if (!user.developer()) {
-            
+
             return;
-            
+
         }
-		
-		MessagePoint point = msg.isPrivate() ? MessagePoint.get(msg.messageId()) : null;
-        
-		long statusId;
-		
-        if (point != null && point.type == 1) {
-			
-			statusId = point.targetId;
-			
-	} else if (params.length != 0) {
-		
-		statusId = NTT.parseStatusId(params[0]);
-		
-		} else {
-            
+
+        if (params.length == 0) {
+
             msg.send("/tas <推文ID/链接>").exec();
-            
+
             return;
-            
+
         }
-        
+
         Twitter api = account.createApi();
-        
+
         Status status;
         LinkedList<Status> replies = new LinkedList<>();
-        
+
         int count = 0;
-        
+
         try {
-            
-            status = api.showStatus(statusId);
-           // replies = TApi.getReplies(api, status);
+
+            status = api.showStatus(NTT.parseStatusId(params[0]));
+			// replies = TApi.getReplies(api, status);
 
         } catch (TwitterException e) {
-            
-            msg.send(NTT.parseTwitterException(e)).exec();
-            
+
+			try {
+
+				status = NTT.loopFindAccessable(NTT.parseScreenName(params[0])).createApi().showStatus(NTT.parseStatusId(params[0]));
+
+			} catch (TwitterException ex) {
+
+				msg.send(NTT.parseTwitterException(e)).exec();
+
+			}
+
             return;
-            
+
         }
-        
+
         for (TAuth auth : TAuth.data.collection.find()) {
-            
+
+            if (auth.id.equals(account.id)) continue;
+
             try {
 
-                LinkedList<Status> ann = TApi.getReplies(auth.createApi(), status);
+                LinkedList<Status> ann = TApi.getReplies(auth.createApi(),status);
 
                 ann.removeAll(replies);
-                
+
                 for (Status hide : ann) {
-                    
+
                     count ++;
-                    
+
                     StatusArchive.save(hide).sendTo(msg.chatId(),0,account,null);
-                    
+
 					replies.add(hide);
-					
+
                 }
-                
+
+                replies.addAll(ann);
+
+
             } catch (TwitterException e) {
-                
-                
+
+
             }
-            
+
         }
-        
+
         msg.send("完成 发现 " + count + "条 回复").exec();
 
     }
-    
+
 }
