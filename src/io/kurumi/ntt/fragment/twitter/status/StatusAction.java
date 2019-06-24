@@ -17,6 +17,7 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import com.pengrad.telegrambot.request.EditMessageCaption;
+import com.pengrad.telegrambot.model.request.ParseMode;
 
 public class StatusAction extends TwitterFunction {
 
@@ -280,7 +281,7 @@ public class StatusAction extends TwitterFunction {
 
 			if (callback.message().photo() != null) {
 
-				bot().execute(new EditMessageCaption(callback.chatId(),callback.messageId()).caption(archive.toHtml()).replyMarkup(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,liked).markup()));
+				bot().execute(new EditMessageCaption(callback.chatId(),callback.messageId()).caption(archive.toHtml()).parseMode(ParseMode.HTML).replyMarkup(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,liked).markup()));
 
 			} else {
 
