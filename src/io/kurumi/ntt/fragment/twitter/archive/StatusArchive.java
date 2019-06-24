@@ -408,11 +408,11 @@ public class StatusArchive {
 				
 			}
 			
-			content = before + Html.twitterUser("<AT />" + screenName,screenName) + after;
+			content = before + Html.twitterUser("?AT?" + screenName,screenName) + after;
 			
 		}
 		
-		content.replace("<AT />","@");
+		content.replace("?AT?","@");
 		
         archive.append("\n");
 
