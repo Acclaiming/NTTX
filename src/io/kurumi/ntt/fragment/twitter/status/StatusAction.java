@@ -16,7 +16,6 @@ import java.util.LinkedList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import javax.security.auth.callback.Callback;
 import com.pengrad.telegrambot.request.EditMessageCaption;
 
 public class StatusAction extends TwitterFunction {
