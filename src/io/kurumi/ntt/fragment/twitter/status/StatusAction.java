@@ -18,6 +18,8 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import com.pengrad.telegrambot.request.EditMessageCaption;
 import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.response.BaseResponse;
+import io.kurumi.ntt.utils.BotLog;
 
 public class StatusAction extends TwitterFunction {
 
@@ -279,10 +281,16 @@ public class StatusAction extends TwitterFunction {
 
 			archive.loop(api);
 
-			if (callback.message().photo() != null) {
+			if (callback.message().caption() != null) {
 
-				bot().execute(new EditMessageCaption(callback.chatId(),callback.messageId()).caption(archive.toHtml()).parseMode(ParseMode.HTML).replyMarkup(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,liked).markup()));
+				BaseResponse resp = bot().execute(new EditMessageCaption(callback.chatId(),callback.messageId()).caption(archive.toHtml()).parseMode(ParseMode.HTML).replyMarkup(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,liked).markup()));
 
+				if (!resp.isOk()) {
+					
+					BotLog.debug("显示全文失败 :" + resp.errorCode() + " " + resp.description());
+					
+				}
+				
 			} else {
 
 				callback.edit(archive.toHtml()).buttons(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,liked)).html().exec();

@@ -393,7 +393,7 @@ public class StatusArchive {
         archive.append(" :");
 
         content = HtmlUtil.escape(content);
-
+		
 		while (content.contains("@")) {
 		
 			String before = StrUtil.subBefore(content,"@",false);
@@ -408,9 +408,11 @@ public class StatusArchive {
 				
 			}
 			
-			content = before + Html.twitterUser("@" + screenName,screenName) + after;
+			content = before + Html.twitterUser("<AT />" + screenName,screenName) + after;
 			
 		}
+		
+		content.replace("<AT />","@");
 		
         archive.append("\n");
 
