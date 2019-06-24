@@ -127,7 +127,7 @@ public class StatusArchive {
 
                 if (status != null) {
 
-                    sendN.buttons(StatusAction.createMarkup(id, from.equals(auth.id), depth() <= depth, status.isRetweetedByMe(), status.isFavorited()));
+                    sendN.buttons(StatusAction.createMarkup(id, from.equals(auth.id), depth == -1 || depth() <= depth, status.isRetweetedByMe(), status.isFavorited()));
 
                 }
 
@@ -141,7 +141,7 @@ public class StatusArchive {
 
             if (status != null) {
 
-                send.buttons(StatusAction.createMarkup(id, from.equals(auth.id), depth() <= depth, status.isRetweetedByMe(), status.isFavorited()));
+                send.buttons(StatusAction.createMarkup(id, from.equals(auth.id), depth == -1 || depth() <= depth, status.isRetweetedByMe(), status.isFavorited()));
 
             }
 
