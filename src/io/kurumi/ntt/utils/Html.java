@@ -23,6 +23,18 @@ public class Html {
         return a(text, "tg://user?id=" + id);
 
     }
+	
+	public static String twitterUser(String text, String id) {
+
+        if (text.isEmpty()) {
+
+            text = " ";
+
+        }
+
+        return a(text, "https://twitter.com/" + id);
+
+    }
 
     public static String startPayload(String text, Object... payload) {
 

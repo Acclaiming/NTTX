@@ -11,6 +11,7 @@ import io.kurumi.ntt.utils.NTT;
 import twitter4j.TwitterException;
 import twitter4j.Status;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
+import io.kurumi.ntt.fragment.twitter.status.MessagePoint;
 
 public class TASReply extends TwitterFunction {
 
@@ -38,8 +39,20 @@ public class TASReply extends TwitterFunction {
             return;
             
         }
+		
+		MessagePoint point = msg.isPrivate() ? MessagePoint.get(msg.messageId()) : null;
         
-        if (params.length == 0) {
+		long statusId;
+		
+        if (point != null && point.type == 1) {
+			
+			statusId = point.targetId;
+			
+	} else if (params.length != 0) {
+		
+		statusId = NTT.parseStatusId(params[0]);
+		
+		} else {
             
             msg.send("/tas <推文ID/链接>").exec();
             
@@ -56,7 +69,7 @@ public class TASReply extends TwitterFunction {
         
         try {
             
-            status = api.showStatus(NTT.parseStatusId(params[0]));
+            status = api.showStatus(statusId);
            // replies = TApi.getReplies(api, status);
 
         } catch (TwitterException e) {
@@ -68,8 +81,6 @@ public class TASReply extends TwitterFunction {
         }
         
         for (TAuth auth : TAuth.data.collection.find()) {
-            
-            if (auth.id.equals(account.id)) continue;
             
             try {
 
@@ -83,10 +94,9 @@ public class TASReply extends TwitterFunction {
                     
                     StatusArchive.save(hide).sendTo(msg.chatId(),0,account,null);
                     
+					replies.add(hide);
+					
                 }
-                
-                replies.addAll(ann);
-                
                 
             } catch (TwitterException e) {
                 
@@ -95,7 +105,7 @@ public class TASReply extends TwitterFunction {
             
         }
         
-        msg.send("完成 发现 " + count + "条 隐藏推文").exec();
+        msg.send("完成 发现 " + count + "条 回复").exec();
 
     }
     

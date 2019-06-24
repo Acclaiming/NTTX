@@ -174,6 +174,18 @@ public class StatusArchive {
 
         userMentions = new LinkedList<>();
 
+		from = UserArchive.save(status.getUser()).id;
+
+        inReplyToStatusId = status.getInReplyToStatusId();
+
+        inReplyToScreenName = status.getInReplyToScreenName();
+
+        inReplyToUserId = status.getInReplyToUserId();
+
+        quotedStatusId = status.getQuotedStatusId();
+		
+		if (inReplyToStatusId != -1) {
+		
         for (UserMentionEntity mention : status.getUserMentionEntities()) {
 
             if (text.startsWith("@" + mention.getScreenName() + " ")) {
@@ -185,17 +197,9 @@ public class StatusArchive {
             }
 
         }
-
-        from = UserArchive.save(status.getUser()).id;
-
-        inReplyToStatusId = status.getInReplyToStatusId();
-
-        inReplyToScreenName = status.getInReplyToScreenName();
-
-        inReplyToUserId = status.getInReplyToUserId();
-
-        quotedStatusId = status.getQuotedStatusId();
-
+		
+		}
+        
         for (URLEntity url : status.getURLEntities()) {
 
             if (text.endsWith(url.getURL()) && quotedStatusId != -1) {
@@ -391,10 +395,24 @@ public class StatusArchive {
 
         content = HtmlUtil.escape(content);
 
-        content = (content + " ").replaceAll("(@.+) ", "<a href=\"https://twitter.com/$1\">$1</a> ");
-
-        content = content.substring(0, content.length() - 1);
-
+		while (content.contains("@")) {
+		
+			String before = StrUtil.subBefore(content,"@",false);
+			String after = StrUtil.subAfter(content,"@",false);
+			
+			String screenName = after;
+			
+			if (screenName.contains(" ")) {
+				
+				screenName = StrUtil.subBefore(screenName," ",false);
+				after = StrUtil.subAfter(after," ",false);
+				
+			}
+			
+			content = before + Html.twitterUser("@" + screenName,screenName) + after;
+			
+		}
+		
         archive.append("\n");
 
         if (!content.trim().isEmpty()) {

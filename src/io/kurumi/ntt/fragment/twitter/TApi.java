@@ -416,15 +416,15 @@ public class TApi {
                         .getUser()
                         .getScreenName())
                 .sinceId(status.getId())
+				.count(100)
                 .resultType(Query.RECENT));
-
 
         for (Status s : resp.getTweets()) {
 
             if (s.getInReplyToStatusId() == status.getId()) list.add(s);
 
         }
-
+		
         while (resp.hasNext()) {
 
             resp = api.search(resp.nextQuery());
