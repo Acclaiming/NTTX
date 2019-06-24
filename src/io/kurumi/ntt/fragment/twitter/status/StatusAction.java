@@ -275,6 +275,8 @@ public class StatusAction extends TwitterFunction {
 
         } else if (POINT_SHOW_FULL.equals(point)) {
 
+			archive.loop(api);
+			
             callback.edit(archive.toHtml()).buttons(createMarkup(archive.id, archive.from.equals(auth.id), true, retweeted, liked)).html().exec();
 
             callback.text("已展开 ~");
