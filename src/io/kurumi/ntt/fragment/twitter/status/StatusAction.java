@@ -280,7 +280,7 @@ public class StatusAction extends TwitterFunction {
 
 			if (callback.message().photo() != null) {
 
-				bot().execute(new EditMessageCaption(callback.chatId(),callback.messageId(),archive.toHtml()).replyMarkup(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,liked).markup()));
+				bot().execute(new EditMessageCaption(callback.chatId(),callback.messageId()).caption(archive.toHtml()).replyMarkup(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,liked).markup()));
 
 			} else {
 
