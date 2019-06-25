@@ -41,9 +41,9 @@ public class JoinCaptchaBot extends BotFragment {
 
     String welcomeMessage;
     Integer lastWelcomeMessage;
-    
+
     boolean lastChanged = false;
-    
+
     Boolean deleteLastWelcome;
 
     @Override
@@ -98,7 +98,7 @@ public class JoinCaptchaBot extends BotFragment {
     }
 
 	@Override
-	public boolean onPrivate(UserData user, Msg msg) {
+	public boolean onPrivate(UserData user,Msg msg) {
 
 		msg.send("喵.... ？").exec();
 
@@ -107,13 +107,13 @@ public class JoinCaptchaBot extends BotFragment {
 	}
 
     @Override
-    public boolean onGroup(UserData user, final Msg msg) {
+    public boolean onGroup(UserData user,final Msg msg) {
 
 		if (user.developer()) return false;
 
         if (msg.message().groupChatCreated() != null || msg.message().supergroupChatCreated() != null) {
 
-            msg.send("欢迎使用由 @NTT_X 驱动的开源加群验证BOT", "给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
+            msg.send("欢迎使用由 @NTT_X 驱动的开源加群验证BOT","给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
 
         } else if (msg.message().leftChatMember() != null) {
 
@@ -149,7 +149,7 @@ public class JoinCaptchaBot extends BotFragment {
 
             if (logChannel != null) {
 
-                new Send(this, logChannel, "事件 : #成员退出", "群组 : " + msg.chat().title(), "[" + Html.code(msg.chatId().toString()) + "]", "用户 : " + left.userName(), "#id" + left.id).html().exec();
+                new Send(this,logChannel,"事件 : #成员退出","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + left.userName(),"#id" + left.id).html().exec();
 
             }
 
@@ -167,7 +167,7 @@ public class JoinCaptchaBot extends BotFragment {
 
                 if (newMember.id().equals(botId)) {
 
-					msg.send("欢迎使用由 @NTT_X 驱动的开源加群验证BOT", "给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
+					msg.send("欢迎使用由 @NTT_X 驱动的开源加群验证BOT","给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
 
                 }
 
@@ -181,7 +181,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 				if (msg.kick() && logChannel != null) {
 
-					new Send(this, logChannel, "事件 : #未通过 #SPAM", "群组 : " + msg.chat().title(), "[" + Html.code(msg.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();
+					new Send(this,logChannel,"事件 : #未通过 #SPAM","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
 
 					return true;
 
@@ -192,7 +192,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 				if (msg.kick() && logChannel != null) {
 
-					new Send(this, logChannel, "事件 : #未通过 #ESU", "群组 : " + msg.chat().title(), "[" + Html.code(msg.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();
+					new Send(this,logChannel,"事件 : #未通过 #ESU","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
 
 					return true;
 
@@ -224,22 +224,22 @@ public class JoinCaptchaBot extends BotFragment {
             ButtonMarkup buttons = new ButtonMarkup() {{
 
 					newButtonLine()
-                        .newButton("不要", POINT_AUTH, newData.id)
-                        .newButton("点", POINT_AUTH, newData.id)
-                        .newButton("按钮", POINT_AUTH, newData.id)
-                        .newButton("喵", POINT_AUTH, newData.id);
+                        .newButton("不要",POINT_AUTH,newData.id)
+                        .newButton("点",POINT_AUTH,newData.id)
+                        .newButton("按钮",POINT_AUTH,newData.id)
+                        .newButton("喵",POINT_AUTH,newData.id);
 
 					newButtonLine()
-						.newButton(" ※ 通过 ※ ", POINT_ACC, newData.id)
-						.newButton(" ※ 滥权 ※ ", POINT_REJ, newData.id);
+						.newButton(" ※ 通过 ※ ",POINT_ACC,newData.id)
+						.newButton(" ※ 滥权 ※ ",POINT_REJ,newData.id);
 
 				}};
 
-            setPoint(newData, POINT_AUTH, PointStore.Type.Group);
+            setPoint(newData,POINT_AUTH,PointStore.Type.Group);
 
-            group.put(newMember.id(), msg.send(info).buttons(buttons).html().send());
+            group.put(newMember.id(),msg.send(info).buttons(buttons).html().send());
 
-            cache.put(msg.chatId().longValue(), group);
+            cache.put(msg.chatId().longValue(),group);
 
             timer.schedule(new TimerTask() {
 
@@ -260,7 +260,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 							} else {
 
-								cache.put(msg.chatId().longValue(), group);
+								cache.put(msg.chatId().longValue(),group);
 
 							}
 
@@ -270,7 +270,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 								if (logChannel != null) {
 
-									new Send(origin, logChannel, "事件 : #未通过 #超时", "群组 : " + msg.chat().title(), "[" + Html.code(msg.chatId().toString()) + "]", "用户 : " + newData.userName(), "#id" + newData.id).html().exec();
+									new Send(origin,logChannel,"事件 : #未通过 #超时","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + newData.userName(),"#id" + newData.id).html().exec();
 
 								}
 
@@ -280,7 +280,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 					}
 
-				}, new Date(System.currentTimeMillis() + 3 * 60 * 1000));
+				},new Date(System.currentTimeMillis() + 3 * 60 * 1000));
 
         }
 
@@ -289,7 +289,7 @@ public class JoinCaptchaBot extends BotFragment {
     }
 
     @Override
-    public boolean onCallback(UserData user, Callback callback) {
+    public boolean onCallback(UserData user,Callback callback) {
 
         long target = Long.parseLong(callback.params[1]);
 		HashMap<Long, Msg> group = cache.containsKey(callback.chatId()) ? cache.get(callback.chatId()) : new HashMap<Long, Msg>();
@@ -299,13 +299,13 @@ public class JoinCaptchaBot extends BotFragment {
 		if (POINT_AUTH.equals(point)) {
 
 			if (!user.id.equals(target)) {
-				
+
 				callback.alert("这个验证不针对乃 ~");
-				
+
 				return true;
-				
+
 			}
-			
+
 			if (!group.containsKey(user.id)) {
 
 				callback.alert("这个验证已失效 (");
@@ -332,7 +332,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			} else {
 
-				cache.put(callback.chatId().longValue(), group);
+				cache.put(callback.chatId().longValue(),group);
 
 			}
 
@@ -344,7 +344,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 				if (logChannel != null) {
 
-					new Send(this, logChannel, "事件 : #未通过 #点击按钮", "群组 : " + callback.chat().title(), "[" + Html.code(callback.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();
+					new Send(this,logChannel,"事件 : #未通过 #点击按钮","群组 : " + callback.chat().title(),"[" + Html.code(callback.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
 
 				}
 
@@ -369,10 +369,10 @@ public class JoinCaptchaBot extends BotFragment {
 			callback.send(targetUser.userName() + " py了管理之后通过了验证喵...").html().failed(15 * 1000);
 
             sendWelcome(user,callback);
-            
+
 			if (logChannel != null) {
 
-				new Send(this, logChannel, "事件 : #通过验证 #管理员通过", "群组 : " + callback.chat().title(), "[" + Html.code(callback.chatId().toString()) + "]", "用户 : " + targetUser.userName(), "#id" + target).html().exec();
+				new Send(this,logChannel,"事件 : #通过验证 #管理员通过","群组 : " + callback.chat().title(),"[" + Html.code(callback.chatId().toString()) + "]","用户 : " + targetUser.userName(),"#id" + target).html().exec();
 
 			}
 
@@ -390,14 +390,14 @@ public class JoinCaptchaBot extends BotFragment {
 			point().points.remove(target);
 
 			UserData targetUser = UserData.get(target);
-			
+
 			if (callback.kick(target)) {
 
 				callback.send(targetUser.userName() + " 被滥权了喵...").html().failed(15 * 1000);
 
 				if (logChannel != null) {
 
-					new Send(this, logChannel, "事件 : #未通过 #管理员移除", "群组 : " + callback.chat().title(), "[" + Html.code(callback.chatId().toString()) + "]", "用户 : " + targetUser.userName(), "#id" + target).html().exec();
+					new Send(this,logChannel,"事件 : #未通过 #管理员移除","群组 : " + callback.chat().title(),"[" + Html.code(callback.chatId().toString()) + "]","用户 : " + targetUser.userName(),"#id" + target).html().exec();
 
 				}
 
@@ -409,29 +409,29 @@ public class JoinCaptchaBot extends BotFragment {
 		return true;
 
 	}
-    
+
     void sendWelcome(UserData user,Msg msg) {
-        
+
         if (welcomeMessage != null) {
-            
+
             if (lastWelcomeMessage != null) {
-                
+
                 bot().execute(new DeleteMessage(msg.chatId(),lastWelcomeMessage));
 
             }
-            
-            SendResponse resp = msg.send(welcomeMessage.replace("$新成员", user.userName())).html().exec();
+
+            SendResponse resp = msg.send(welcomeMessage.replace("$新成员",user.userName())).html().exec();
 
             if (resp.isOk()) {
-                
+
                 lastWelcomeMessage = resp.message().messageId();
-                
+
                 lastChanged = true;
-                
+
             }
-            
+
         }
-        
+
     }
 
     @Override
@@ -441,9 +441,9 @@ public class JoinCaptchaBot extends BotFragment {
 
             UserBot bot = UserBot.data.getById(botId);
 
-            bot.params.put("last", lastWelcomeMessage);
+            bot.params.put("last",lastWelcomeMessage);
 
-            UserBot.data.setById(botId, bot);
+            UserBot.data.setById(botId,bot);
 
         }
 
@@ -452,56 +452,82 @@ public class JoinCaptchaBot extends BotFragment {
     }
 
     @Override
-    public boolean onPointedGroup(UserData user, Msg msg) {
+    public boolean onPointedGroup(UserData user,Msg msg) {
+
+		clearPoint(user);
 
         HashMap<Long, Msg> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
 
-        if (group.containsKey(user.id)) {
+		if (cache.containsKey(msg.chatId())) {
 
-            group.remove(user.id).delete();
+			if (group.containsKey(msg.message().leftChatMember().id())) {
 
-            if (group.isEmpty()) {
+				group.remove(msg.message().leftChatMember().id()).delete();
 
-                cache.remove(msg.chatId());
+				if (group.isEmpty()) cache.remove(msg.chatId());
 
-            } else {
+			}
 
-                cache.put(msg.chatId().longValue(), group);
+		}
 
-            }
+		if (msg.message().leftChatMember() != null) {
 
-        }
+			if (delJoin) msg.delete();
 
-        clearPoint(user);
+			if (user.id.equals(me.id())) {
 
-        if (msg.hasText() && (msg.text().contains("喵") || msg.text().contains("嘤"))) {
+				msg.delete();
 
-            msg.send(user.userName() + " 通过了图灵(划掉) 验证 ~").html().failed(15 * 1000);
+				return true;
 
-            sendWelcome(user,msg);
-            
-            if (logChannel != null) {
+			} else if (!user.id.equals(msg.message().leftChatMember().id())) {
 
-                new Send(this, logChannel, "事件 : #通过验证", "群组 : " + msg.chat().title(), "[" + Html.code(msg.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();
+				return true;
 
-            }
+			}
 
-        } else if (msg.kick()) {
+			UserData left = UserData.get(msg.message().leftChatMember());
 
-            msg.delete();
+			if (logChannel != null) {
 
-            msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().failed(60 * 1000);
+				new Send(this,logChannel,"事件 : #成员退出","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + left.userName(),"#id" + left.id).html().exec();
 
-            if (logChannel != null) {
+			}
 
-                new Send(this, logChannel, "事件 : #未通过 #发送其他内容", "群组 : " + msg.chat().title(), "[" + Html.code(msg.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();
+		} else {
 
-            }
+			if (msg.hasText() && (msg.text().contains("喵") || msg.text().contains("嘤"))) {
 
-        }
+				msg.send(user.userName() + " 通过了图灵(划掉) 验证 ~").html().failed(15 * 1000);
 
-        return true;
+				sendWelcome(user,msg);
 
-    }
+				if (logChannel != null) {
+
+					new Send(this,logChannel,"事件 : #通过验证","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
+
+				}
+
+			} else if (msg.kick()) {
+
+				msg.delete();
+
+				msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().failed(60 * 1000);
+
+				if (logChannel != null) {
+
+					new Send(this,logChannel,"事件 : #未通过 #发送其他内容","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
+
+				}
+
+			}
+
+
+		}
+		
+		return true;
+
+	}
+
 
 }
