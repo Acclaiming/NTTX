@@ -7,102 +7,141 @@ import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.utils.Html;
 
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Updates.*;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.gt;
+import static com.mongodb.client.model.Filters.not;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
+import static java.util.Arrays.asList;
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+
+
 public class Users extends Fragment {
 
     @Override
-    public boolean onMsg(UserData user, Msg msg) {
+    public boolean onMsg(UserData user,Msg msg) {
 
         if (!user.developer() || !"users".equals(msg.command())) return false;
 
         StringBuilder export = new StringBuilder();
 
-        int count = 0;
+		int count = 0;
 
-        for (TAuth auth : TAuth.data.collection.find()) {
+		if (msg.params().length == 0) {
 
-            count++;
+			for (TAuth auth : TAuth.data.collection.find()) {
 
-            export.append(UserData.get(auth.user).userName()).append(" -> ").append(auth.archive().urlHtml()).append("\n");
+				count++;
 
-            if (count == 50) {
+				export.append(UserData.get(auth.user).userName()).append(" -> ").append(auth.archive().urlHtml()).append("\n");
 
-                msg.send(export.toString()).html().exec();
+				if (count == 50) {
 
-                export = new StringBuilder();
+					msg.send(export.toString()).html().exec();
 
-                count = 0;
+					export = new StringBuilder();
 
-            }
+					count = 0;
 
-        }
+				}
 
-        if (count > 0) {
+			}
 
-            msg.send(export.toString()).html().exec();
+			if (count > 0) {
 
-        }
+				msg.send(export.toString()).html().exec();
 
-        count = 0;
+			}
 
-        export = new StringBuilder(HtmlUtil.escape(" >> All Users << \n"));
+			count = 0;
 
-        for (UserData userData : UserData.data.findByField("contactable",true)) {
+			export = new StringBuilder(HtmlUtil.escape(" >> All Users << \n"));
 
-            export.append("\n").append(userData.userName()).append(" ").append(Html.startPayload("Block", "drop", userData.id));
+			for (UserData userData : UserData.data.findByField("contactable",true)) {
 
-            count++;
+				export.append("\n").append(userData.userName()).append(" ").append(Html.startPayload("Block","drop",userData.id));
 
-            if (count == 50) {
+				count++;
 
-                msg.send(export.toString()).html().exec();
+				if (count == 50) {
 
-                export = new StringBuilder();
+					msg.send(export.toString()).html().exec();
 
-                count = 0;
+					export = new StringBuilder();
 
-            }
+					count = 0;
 
-        }
+				}
 
-        if (count > 0) {
+			}
 
-            msg.send(export.toString()).html().exec();
+			if (count > 0) {
 
-        }
+				msg.send(export.toString()).html().exec();
 
-        count = 0;
+			}
 
-        export = new StringBuilder(HtmlUtil.escape(" >> Blocked Users << \n"));
+			count = 0;
 
-        for (Firewall.Id id : Firewall.block.collection.find()) {
+			export = new StringBuilder(HtmlUtil.escape(" >> Blocked Users << \n"));
 
-            UserData userData = UserData.get(id.id);
+			for (Firewall.Id id : Firewall.block.collection.find()) {
 
-            if (userData == null) {
+				UserData userData = UserData.get(id.id);
 
-                export.append("\n").append(Html.user("[ " + id.id + " ]", id.id)).append(" ").append(Html.startPayload("Accept", "accept", id.id));
+				if (userData == null) {
 
-
-            } else {
-
-                export.append("\n").append(userData.userName()).append(" ").append(Html.startPayload("Accept", "accept", userData.id));
-
-            }
-
-            count++;
-
-            if (count == 50) {
-
-                msg.send(export.toString()).html().exec();
-
-                export = new StringBuilder();
-
-                count = 0;
-
-            }
+					export.append("\n").append(Html.user("[ " + id.id + " ]",id.id)).append(" ").append(Html.startPayload("Accept","accept",id.id));
 
 
-        }
+				} else {
+
+					export.append("\n").append(userData.userName()).append(" ").append(Html.startPayload("Accept","accept",userData.id));
+
+				}
+
+				count++;
+
+				if (count == 50) {
+
+					msg.send(export.toString()).html().exec();
+
+					export = new StringBuilder();
+
+					count = 0;
+
+				}
+
+
+			}
+
+		} else {
+
+			String kw = msg.params()[0];
+
+			for (UserData userData : UserData.data.collection.find(or(regex("firstName",kw),regex("lastName",kw),regex("userName",kw)))) {
+
+				export.append("\n").append(userData.userName()).append(" ").append(Html.startPayload("Block","drop",userData.id));
+
+				count++;
+
+				if (count == 50) {
+
+					msg.send(export.toString()).html().exec();
+
+					export = new StringBuilder();
+
+					count = 0;
+
+				}
+
+			}
+
+
+		}
 
         if (count > 0) {
 
