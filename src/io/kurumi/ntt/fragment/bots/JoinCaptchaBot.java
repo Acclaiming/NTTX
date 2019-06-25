@@ -457,21 +457,21 @@ public class JoinCaptchaBot extends BotFragment {
 		clearPoint(user);
 
         HashMap<Long, Msg> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
-
-		if (cache.containsKey(msg.chatId())) {
-
-			if (group.containsKey(msg.message().leftChatMember().id())) {
-
-				group.remove(msg.message().leftChatMember().id()).delete();
-
-				if (group.isEmpty()) cache.remove(msg.chatId());
-
-			}
-
-		}
-
+		
 		if (msg.message().leftChatMember() != null) {
 
+			if (cache.containsKey(msg.chatId())) {
+
+				if (group.containsKey(msg.message().leftChatMember().id())) {
+
+					group.remove(msg.message().leftChatMember().id()).delete();
+
+					if (group.isEmpty()) cache.remove(msg.chatId());
+
+				}
+
+			}
+			
 			if (delJoin) msg.delete();
 
 			if (user.id.equals(me.id())) {
@@ -496,6 +496,19 @@ public class JoinCaptchaBot extends BotFragment {
 
 		} else {
 
+			if (cache.containsKey(msg.chatId())) {
+
+				if (group.containsKey(user.id)) {
+
+					group.remove(user.id).delete();
+
+					if (group.isEmpty()) cache.remove(msg.chatId());
+
+				}
+
+			}
+			
+			
 			if (msg.hasText() && (msg.text().contains("喵") || msg.text().contains("嘤"))) {
 
 				msg.send(user.userName() + " 通过了图灵(划掉) 验证 ~").html().failed(15 * 1000);
