@@ -298,6 +298,14 @@ public class JoinCaptchaBot extends BotFragment {
 
 		if (POINT_AUTH.equals(point)) {
 
+			if (!user.id.equals(target)) {
+				
+				callback.alert("这个验证不针对乃 ~");
+				
+				return;
+				
+			}
+			
 			if (!group.containsKey(user.id)) {
 
 				callback.alert("这个验证已失效 (");
