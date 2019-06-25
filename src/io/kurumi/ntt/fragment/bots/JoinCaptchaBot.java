@@ -348,21 +348,23 @@ public class JoinCaptchaBot extends BotFragment {
 
 			if (NTT.checkGroupAdmin(callback)) return true;
 
-			if (group.containsKey(user.id)) {
+			if (group.containsKey(target)) {
 
-				group.remove(user.id).delete();
+				group.remove(target).delete();
 
 			}
 
 			point().points.remove(target);
 
-			callback.send(user.userName() + " py了管理之后通过了验证喵...").html().failed(15 * 1000);
+			UserData targetUser = UserData.get(target);
+
+			callback.send(targetUser.userName() + " py了管理之后通过了验证喵...").html().failed(15 * 1000);
 
             sendWelcome(user,callback);
             
 			if (logChannel != null) {
 
-				new Send(this, logChannel, "事件 : #通过验证 #管理员通过", "群组 : " + callback.chat().title(), "[" + Html.code(callback.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();
+				new Send(this, logChannel, "事件 : #通过验证 #管理员通过", "群组 : " + callback.chat().title(), "[" + Html.code(callback.chatId().toString()) + "]", "用户 : " + targetUser.userName(), "#id" + target).html().exec();
 
 			}
 
@@ -371,21 +373,23 @@ public class JoinCaptchaBot extends BotFragment {
 
 			if (NTT.checkGroupAdmin(callback)) return true;
 
-			if (group.containsKey(user.id)) {
+			if (group.containsKey(target)) {
 
-				group.remove(user.id).delete();
+				group.remove(target).delete();
 
 			}
 
 			point().points.remove(target);
 
+			UserData targetUser = UserData.get(target);
+			
 			if (callback.kick(target)) {
 
-				callback.send(user.userName() + " 被滥权了喵...").html().failed(15 * 1000);
+				callback.send(targetUser.userName() + " 被滥权了喵...").html().failed(15 * 1000);
 
 				if (logChannel != null) {
 
-					new Send(this, logChannel, "事件 : #未通过 #管理员移除", "群组 : " + callback.chat().title(), "[" + Html.code(callback.chatId().toString()) + "]", "用户 : " + user.userName(), "#id" + user.id).html().exec();
+					new Send(this, logChannel, "事件 : #未通过 #管理员移除", "群组 : " + callback.chat().title(), "[" + Html.code(callback.chatId().toString()) + "]", "用户 : " + targetUser.userName(), "#id" + target).html().exec();
 
 				}
 
