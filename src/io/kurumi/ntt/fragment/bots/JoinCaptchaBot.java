@@ -302,7 +302,7 @@ public class JoinCaptchaBot extends BotFragment {
 				
 				callback.alert("这个验证不针对乃 ~");
 				
-				return;
+				return true;
 				
 			}
 			
