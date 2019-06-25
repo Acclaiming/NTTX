@@ -26,6 +26,13 @@ public class StatusFetch extends TwitterFunction {
 
     }
 
+	@Override
+	public boolean async() {
+		
+		return true;
+		
+	}
+
     @Override
     public boolean useCurrent() {
 

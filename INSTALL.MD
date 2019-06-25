@@ -35,6 +35,17 @@ yum install -y epel-release
 yum install -y git java java-devel
 ```
 
+### 安装字体
+
+```
+yum install -y unzip mkfontscale fontconfig
+
+cd /usr/share/fonts && mkdir noto && wget https://noto-website-2.storage.googleapis.com/pkgs/Noto-unhinted.zip && unzip Noto-unhinted.zip -d && rm -rf Noto-unhinted.zip
+
+mkfontscale && mkfontdir && fc-cache -fv && source /etc/profile
+
+```
+
 ### 安装 FFMpeg
 
 ```

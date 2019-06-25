@@ -53,6 +53,22 @@ public class UserArchive {
         }
 
     }
+	
+	public static UserArchive show(TAuth auth,String screenName) {
+
+        try {
+
+            User user = auth.createApi().showUser(screenName);
+
+            return save(user);
+
+        } catch (TwitterException e) {
+
+            return get(screenName);
+
+        }
+
+    }
     
     public static UserArchive get(Long id) {
         return data.getById(id);

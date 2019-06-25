@@ -230,8 +230,8 @@ public class JoinCaptchaBot extends BotFragment {
                         .newButton("喵", POINT_AUTH, newData.id);
 
 					newButtonLine()
-						.newButton("通过", POINT_ACC, newData.id)
-						.newButton("滥权", POINT_REJ, newData.id);
+						.newButton(" ※ 通过 ※ ", POINT_ACC, newData.id)
+						.newButton(" ※ 滥权 ※ ", POINT_REJ, newData.id);
 
 				}};
 
