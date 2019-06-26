@@ -362,7 +362,7 @@ public class TrackTask extends TimerTask {
 
     String parseStatus(Twitter api, User user) {
 
-        StringBuilder status = new StringBuilder();
+        StringBuilder status = new StringBuilder("\n");
 
         try {
 
@@ -448,7 +448,7 @@ public class TrackTask extends TimerTask {
 
                 StringBuilder msg = new StringBuilder();
 
-                msg.append(ship.isSourceFollowingTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 关注了你 :)\n").append(parseStatus(api, follower));
+                msg.append(ship.isSourceFollowingTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 关注了你 :)").append(parseStatus(api, follower));
 
                 if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
@@ -486,7 +486,7 @@ public class TrackTask extends TimerTask {
 
                 StringBuilder msg = new StringBuilder();
 
-                msg.append(ship.isSourceFollowedByTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(ship.isSourceFollowingTarget() ? " 账号异常了 :(" : " 取关了你 :)\n").append(parseStatus(api, follower));
+                msg.append(ship.isSourceFollowedByTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(ship.isSourceFollowingTarget() ? " 账号异常了 :(" : " 取关了你 :)").append(parseStatus(api, follower));
 
                 if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
@@ -499,7 +499,7 @@ public class TrackTask extends TimerTask {
 
             if (!notice) return;
 
-            StringBuilder msg = new StringBuilder(UserArchive.contains(id) ? UserArchive.get(id).urlHtml() : "无记录的用户 : (" + id + ")").append("取消关注了你").append("\n状态异常 : ").append(NTT.parseTwitterException(e));
+            StringBuilder msg = new StringBuilder(UserArchive.contains(id) ? UserArchive.get(id).urlHtml() : "无记录的用户 : (" + id + ")").append(" 取关了你\n状态异常 : ").append(NTT.parseTwitterException(e));
 
             if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 

@@ -447,7 +447,7 @@ public class JoinCaptchaBot extends BotFragment {
 		clearPoint(user);
 
         HashMap<Long, Msg> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
-		
+
 		if (msg.message().leftChatMember() != null) {
 
 			if (cache.containsKey(msg.chatId())) {
@@ -461,7 +461,7 @@ public class JoinCaptchaBot extends BotFragment {
 				}
 
 			}
-			
+
 			if (delJoin) msg.delete();
 
 			if (user.id.equals(me.id())) {
@@ -497,8 +497,13 @@ public class JoinCaptchaBot extends BotFragment {
 				}
 
 			}
-			
-			
+
+			if (logChannel != null) {
+
+				msg.forwardTo(logChannel);
+
+			}
+
 			if (msg.hasText() && (msg.text().contains("喵") || msg.text().contains("嘤"))) {
 
 				msg.send(user.userName() + " 通过了图灵(划掉) 验证 ~").html().failed(15 * 1000);
@@ -527,7 +532,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 
 		}
-		
+
 		return true;
 
 	}
