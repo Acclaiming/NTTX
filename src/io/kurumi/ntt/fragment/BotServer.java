@@ -22,7 +22,7 @@ public class BotServer extends NanoHTTPD {
 
     public BotServer(int port, String domain) {
 
-        super(port);
+        super("127.0.0.1",port);
 
         this.domain = domain;
 
