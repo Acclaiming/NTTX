@@ -47,7 +47,9 @@ public class AntiEsu extends Function {
 		"Tetsaiphoto",
 		"YouCountry",
 		"piyixia",
-
+		"QQciya",
+		"QQciya2",
+		
 		"hanaakari"
 
     };
