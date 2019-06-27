@@ -273,13 +273,13 @@ public class TimedStatus extends TwitterFunction {
 
 			}
 
-			if (update.images != null) {
+			if (!update.images.isEmpty()) {
 
 				for (int index = 0;index < update.images.size();index ++) updates.append(" [图片]");
 
 			}
 
-			if (update.video != null) updates.append(" [视频]");
+			if (update.video != -1) updates.append(" [视频]");
 
 			updates.append(" [ ");
 
@@ -293,7 +293,7 @@ public class TimedStatus extends TwitterFunction {
 
 		}
 
-		msg.send(updates.toString()).markdown().exec();
+		msg.send(updates.toString()).html().exec();
 
 	}
 
