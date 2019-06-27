@@ -1,33 +1,35 @@
 package io.kurumi.ntt.fragment.bots;
 
 import com.pengrad.telegrambot.model.User;
-import com.pengrad.telegrambot.request.GetChatMember;
-import com.pengrad.telegrambot.response.GetChatMemberResponse;
+import com.pengrad.telegrambot.request.DeleteMessage;
+import com.pengrad.telegrambot.request.GetUserProfilePhotos;
+import com.pengrad.telegrambot.response.GetUserProfilePhotosResponse;
+import com.pengrad.telegrambot.response.SendResponse;
+import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.abs.Callback;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
 import io.kurumi.ntt.fragment.abs.request.Send;
+import io.kurumi.ntt.fragment.admin.Firewall;
+import io.kurumi.ntt.fragment.twitter.user.Img;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
-
+import java.awt.Color;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
-import io.kurumi.ntt.fragment.admin.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.fragment.group.*;
-import com.pengrad.telegrambot.request.DeleteMessage;
-import com.pengrad.telegrambot.response.SendResponse;
+import com.pengrad.telegrambot.request.SendPhoto;
+import com.pengrad.telegrambot.model.request.ParseMode;
 
 public class JoinCaptchaBot extends BotFragment {
 
     static Timer timer = new Timer();
 
     final String POINT_AUTH = "auth";
-
+	final String POINT_SEC_AUTH = "sec";
 	final String POINT_ACC = "acc";
 	final String POINT_REJ = "rej";
 
@@ -63,11 +65,11 @@ public class JoinCaptchaBot extends BotFragment {
 
             userName = "(" + userId + ")";
 
-        } else {
+		} else {
 
             userName = user.name();
 
-        }
+		}
 
         delJoin = (Boolean) bot.params.get("delJoin");
 
@@ -81,21 +83,21 @@ public class JoinCaptchaBot extends BotFragment {
 
         deleteLastWelcome = (Boolean)bot.params.get("delLast");
 
-    }
+	}
 
     @Override
     public String botName() {
 
         return "Join Captcha Bot For " + userName;
 
-    }
+	}
 
     @Override
     public String getToken() {
 
         return botToken;
 
-    }
+	}
 
 	@Override
 	public boolean onPrivate(UserData user,Msg msg) {
@@ -115,7 +117,7 @@ public class JoinCaptchaBot extends BotFragment {
 
             msg.send("欢迎使用由 @NTT_X 驱动的开源加群验证BOT","给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
 
-        } else if (msg.message().leftChatMember() != null) {
+		} else if (msg.message().leftChatMember() != null) {
 
             if (cache.containsKey(msg.chatId())) {
 
@@ -127,9 +129,9 @@ public class JoinCaptchaBot extends BotFragment {
 
                     if (group.isEmpty()) cache.remove(msg.chatId());
 
-                }
+				}
 
-            }
+			}
 
             if (delJoin) msg.delete();
 
@@ -139,11 +141,11 @@ public class JoinCaptchaBot extends BotFragment {
 
                 return true;
 
-            } else if (!user.id.equals(msg.message().leftChatMember().id())) {
+			} else if (!user.id.equals(msg.message().leftChatMember().id())) {
 
                 return true;
 
-            }
+			}
 
             UserData left = UserData.get(msg.message().leftChatMember());
 
@@ -151,9 +153,9 @@ public class JoinCaptchaBot extends BotFragment {
 
                 new Send(this,logChannel,"事件 : #成员退出","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + left.userName(),"#id" + left.id).html().exec();
 
-            }
+			}
 
-        } else if (msg.message().newChatMember() != null || msg.message().newChatMembers() != null) {
+		} else if (msg.message().newChatMember() != null || msg.message().newChatMembers() != null) {
 
             if (delJoin) msg.delete();
 
@@ -169,11 +171,11 @@ public class JoinCaptchaBot extends BotFragment {
 
 					msg.send("欢迎使用由 @NTT_X 驱动的开源加群验证BOT","给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
 
-                }
+				}
 
                 return false;
 
-            }
+			}
 
             final UserData newData = UserData.get(newMember);
 
@@ -198,19 +200,17 @@ public class JoinCaptchaBot extends BotFragment {
 
 			}
 
-            String[] info = new String[]{
-				
-				newData.userName() + " 请在30秒之内发送 喵 ( 嘤也可以 通过验证 (๑˃̵ᴗ˂̵)و \n",
+			Img info = new Img(1000,800,Color.WHITE);
 
-				"注意不要戳下面的按钮 喵 ~"
-
-            };
-
+			info.font("Noto Sans CJK SC Thin");
+			
+			info.drawTextCenter(100,100,600,600,"请在30秒之内发送 喵 ( 嘤也可以 通过验证 (๑˃̵ᴗ˂̵)و ");
+			info.drawTextCenter(600,600,100,100,"注意不要戳下面的按钮 喵 ~");
 
             ButtonMarkup buttons = new ButtonMarkup() {{
 
 					newButtonLine()
-                        .newButton("不要",POINT_AUTH,newData.id)
+						.newButton("不要",POINT_AUTH,newData.id)
                         .newButton("点",POINT_AUTH,newData.id)
                         .newButton("按钮",POINT_AUTH,newData.id)
                         .newButton("喵",POINT_AUTH,newData.id);
@@ -223,7 +223,7 @@ public class JoinCaptchaBot extends BotFragment {
 
             setPoint(newData,POINT_AUTH,PointStore.Type.Group);
 
-            group.put(newMember.id(),msg.send(info).buttons(buttons).html().send());
+            group.put(newMember.id(),Msg.from(this,bot().execute(new SendPhoto(msg.chatId(),info.getBytes()).caption(newData.userName()).parseMode(ParseMode.HTML).replyMarkup(buttons.markup()))));
 
             cache.put(msg.chatId().longValue(),group);
 
@@ -268,11 +268,11 @@ public class JoinCaptchaBot extends BotFragment {
 
 				},new Date(System.currentTimeMillis() + 30 * 1000));
 
-        }
+		}
 
         return true;
 
-    }
+	}
 
     @Override
     public boolean onCallback(UserData user,Callback callback) {
@@ -404,7 +404,7 @@ public class JoinCaptchaBot extends BotFragment {
 
                 bot().execute(new DeleteMessage(msg.chatId(),lastWelcomeMessage));
 
-            }
+			}
 
             SendResponse resp = msg.send(welcomeMessage.replace("$新成员",user.userName())).html().exec();
 
@@ -414,11 +414,11 @@ public class JoinCaptchaBot extends BotFragment {
 
                 lastChanged = true;
 
-            }
+			}
 
-        }
+		}
 
-    }
+	}
 
     @Override
     public void stop() {
@@ -431,11 +431,11 @@ public class JoinCaptchaBot extends BotFragment {
 
             UserBot.data.setById(botId,bot);
 
-        }
+		}
 
         super.stop();
 
-    }
+	}
 
     @Override
     public boolean onPointedGroup(UserData user,Msg msg) {
@@ -533,5 +533,28 @@ public class JoinCaptchaBot extends BotFragment {
 
 	}
 
+	boolean needSecondaryVerification(UserData user) {
+
+		GetUserProfilePhotosResponse photos = bot().execute(new GetUserProfilePhotos(user.id.intValue()).limit(1));
+
+		if (photos.isOk() && photos.photos().totalCount() == 0) {
+
+			return true;
+
+		}
+		
+		for (Character c : user.name().toCharArray()) {
+		
+			if (Character.UnicodeBlock.of(c) == Character.UnicodeBlock.ARABIC) {
+				
+				return true;
+				
+			}
+		
+		}
+		
+		return false;
+
+	}
 
 }
