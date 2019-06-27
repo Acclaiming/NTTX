@@ -212,7 +212,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			info.font("Noto Sans CJK SC Thin",39);
 
-			String code = RandomUtil.randomInt(2) == 0 ? "喵" : "嘤";
+			String code = RandomUtil.randomBoolean() ? "喵" : "嘤";
 
 			info.drawRandomColorTextCenter(0,0,0,400,"新加裙的绒布球你好呀");
 			info.drawRandomColorTextCenter(0,200,0,200,"请发送 " + code + " 通过验证");
@@ -535,7 +535,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 					GeneratedCode code = new GeneratedCode();
 
-					code.generator = RandomUtil.randomInt(2) == 0 ? new MathGenerator() : new RandomGenerator("苟利国家生死以岂因祸福避趋之",14);
+					code.generator = RandomUtil.randomBoolean() ? new MathGenerator() : new RandomGenerator("苟利国家生死以岂因祸福避趋之",14);
 
 					Img info = new Img(1000,600,Color.WHITE);
 
@@ -741,7 +741,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 		}
 
-		return false;
+		return RandomUtil.randomBoolean();
 
 	}
 
