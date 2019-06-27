@@ -23,6 +23,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.model.request.ParseMode;
+import cn.hutool.core.util.ImageUtil;
 
 public class JoinCaptchaBot extends BotFragment {
 
@@ -203,7 +204,7 @@ public class JoinCaptchaBot extends BotFragment {
 			Img info = new Img(800,600,Color.WHITE);
 
 		    info.drawLineInterfere(50);
-			info.drawShearInterfere(100,Color.WHITE);
+			info.drawShearInterfere(100,ImageUtil.randomColor());
 			
 			info.font("Noto Sans CJK SC Thin",39);
 			
