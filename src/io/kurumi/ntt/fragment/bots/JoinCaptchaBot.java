@@ -504,12 +504,6 @@ public class JoinCaptchaBot extends BotFragment {
 
 		} else {
 
-			if (logChannel != null) {
-
-				msg.forwardTo(logChannel);
-
-			}
-
 			PointStore.Point<Object> point = getPoint(user);
 
 			if (POINT_AUTH.equals(point.point) && msg.message().forwardSignature() == null && msg.hasText() && (msg.text().contains(point.data.toString())) && !(msg.text().contains("喵") && msg.text().contains("嘤"))) {
@@ -618,7 +612,6 @@ public class JoinCaptchaBot extends BotFragment {
 
 				} else {
 
-
 					msg.send(user.userName() + " 通过了验证 ~").html().failed(5 * 1000);
 
 					sendWelcome(user,msg);
@@ -634,9 +627,9 @@ public class JoinCaptchaBot extends BotFragment {
 
 			} else if (POINT_SEC_AUTH.equals(point.point)) {
 
-				if (((GeneratedCode)point.data).generator.verify(((GeneratedCode)point.data).code,msg.text())) {
+				HashMap<Long, Msg> secGroup = secCache.containsKey(msg.chatId()) ? secCache.get(msg.chatId()) : new HashMap<Long, Msg>();
 
-					HashMap<Long, Msg> secGroup = secCache.containsKey(msg.chatId()) ? secCache.get(msg.chatId()) : new HashMap<Long, Msg>();
+				if (((GeneratedCode)point.data).generator.verify(((GeneratedCode)point.data).code,msg.text())) {
 
 					if (secGroup.containsKey(user.id)) {
 
@@ -662,15 +655,11 @@ public class JoinCaptchaBot extends BotFragment {
 
 				} else {
 
-					if (cache.containsKey(msg.chatId())) {
+					if (secGroup.containsKey(user.id)) {
 
-						if (group.containsKey(user.id)) {
+						secGroup.remove(user.id).delete();
 
-							group.remove(user.id).delete();
-
-							if (group.isEmpty()) cache.remove(msg.chatId());
-
-						}
+						if (secGroup.isEmpty()) secCache.remove(msg.chatId());
 
 					}
 
@@ -680,6 +669,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 					if (logChannel != null) {
 
+						msg.forwardTo(logChannel);
 						new Send(this,logChannel,"事件 : #未通过 #二次验证失败","验证码为 : " + ((GeneratedCode)point.data).code,"群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
 
 					}
@@ -702,7 +692,8 @@ public class JoinCaptchaBot extends BotFragment {
 				msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().failed(15 * 1000);
 
 				if (logChannel != null) {
-
+					
+					msg.forwardTo(logChannel);
 					new Send(this,logChannel,"事件 : #未通过 #发送其他内容","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
 
 				}
