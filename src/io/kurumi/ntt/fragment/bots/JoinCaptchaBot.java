@@ -200,19 +200,20 @@ public class JoinCaptchaBot extends BotFragment {
 
 			}
 
-			Img info = new Img(700,400,Color.WHITE);
+			Img info = new Img(800,600,Color.WHITE);
 
 			info.font("Noto Sans CJK SC Thin",39);
 			
-			info.drawTextCenter(50,50,150,100,"请在30秒之内发送 喵 ( 嘤也可以 ) 通过验证 ");
-			info.drawTextCenter(150,100,50,50,"注意不要戳下面的按钮 喵 ~");
+			info.drawTextCenter(0,0,0,400,"新加裙的绒布球你好呀 ~");
+			info.drawTextCenter(0,200,0,200,"请发送 喵 / 嘤 通过验证 ");
+			info.drawTextCenter(0,400,0,400,"不要戳下面的按钮 ~");
 
             ButtonMarkup buttons = new ButtonMarkup() {{
 
 					newButtonLine()
-						.newButton("不要",POINT_AUTH,newData.id)
-                        .newButton("点",POINT_AUTH,newData.id)
-                        .newButton("按钮",POINT_AUTH,newData.id)
+						.newButton("喵",POINT_AUTH,newData.id)
+                        .newButton("喵",POINT_AUTH,newData.id)
+                        .newButton("喵",POINT_AUTH,newData.id)
                         .newButton("喵",POINT_AUTH,newData.id);
 
 					newButtonLine()
