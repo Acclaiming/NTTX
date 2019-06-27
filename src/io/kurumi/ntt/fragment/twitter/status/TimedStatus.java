@@ -248,7 +248,12 @@ public class TimedStatus extends TwitterFunction {
 
 	}
 
-
+	@Override
+	public boolean useCurrent() {
+		
+		return true;
+		
+	}
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
