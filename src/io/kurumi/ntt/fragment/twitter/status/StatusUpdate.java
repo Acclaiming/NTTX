@@ -366,8 +366,14 @@ public class StatusUpdate extends TwitterFunction {
 					try {
 
 						DateTime date = DateUtil.parse(params[0],"HH:mm");
-
-						time = date.getTime();
+						
+						DateTime current = new DateTime();
+						
+						current.setHours(date.hour(true));
+						
+						current.setMinutes(date.minute());
+						
+						time = current.getTime();
 
 					} catch (UtilException ex) {
 
@@ -479,6 +485,10 @@ public class StatusUpdate extends TwitterFunction {
 			TimedStatus.schedule(timed);
 			
 			msg.send("已创建定时推文 : " + timed.id,"使用 /timed 管理定时推文").exec();
+			
+			clearPoint(user);
+			
+			return;
 			
         } else if ("submit".equals(msg.command())) {
 
