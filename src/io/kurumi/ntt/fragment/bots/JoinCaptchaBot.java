@@ -428,10 +428,9 @@ public class JoinCaptchaBot extends BotFragment {
 				} else {
 
 					callback.alert("这个验证不针对乃 ~");
-
-					return true;
-
 				}
+				
+				return true;
 
 			}
 
@@ -499,8 +498,6 @@ public class JoinCaptchaBot extends BotFragment {
 
 					}
 
-					clearPoint(user);
-
 					if (callback.kick(user.id)) {
 
 						callback.send(user.userName() + " 瞎按按钮 , 未通过验证 , 真可惜喵...").html().failed(15 * 1000);
@@ -517,9 +514,9 @@ public class JoinCaptchaBot extends BotFragment {
 
 					callback.alert("这个验证不针对乃 ~");
 
-					return true;
-
 				}
+				
+				return true;
 
 			}
 			
