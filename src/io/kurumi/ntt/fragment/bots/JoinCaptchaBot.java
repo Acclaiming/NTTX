@@ -535,7 +535,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 					GeneratedCode code = new GeneratedCode();
 
-					code.generator = RandomUtil.randomBoolean() ? new MathGenerator() : new RandomGenerator("苟利国家生死以岂因祸福避趋之",14);
+					code.generator = RandomUtil.randomBoolean() ? new MathGenerator(1) : new RandomGenerator("苟利国家生死以岂因祸福避趋之",7);
 
 					Img info = new Img(1000,600,Color.WHITE);
 
