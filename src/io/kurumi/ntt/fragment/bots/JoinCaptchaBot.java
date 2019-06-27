@@ -199,14 +199,10 @@ public class JoinCaptchaBot extends BotFragment {
 			}
 
             String[] info = new String[]{
+				
+				newData.userName() + " 请在30秒之内发送 喵 ( 嘤也可以 通过验证 (๑˃̵ᴗ˂̵)و \n",
 
-				"你好呀，新加裙的绒布球 " + newData.userName() + " ~\n",
-
-				"现在需要确认一下乃是不是机器人绒布球了 ~\n",
-
-				"发送 喵 ( 嘤也可以 就可以通过验证了 ~ 30秒以内呀 (๑˃̵ᴗ˂̵)و \n",
-
-				"注意不要点按钮 喵 ~"
+				"注意不要戳下面的按钮 喵 ~"
 
             };
 
