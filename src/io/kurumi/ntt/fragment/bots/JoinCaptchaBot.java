@@ -500,7 +500,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			}
 
-			if (msg.hasText() && (msg.text().contains("喵") || msg.text().contains("嘤"))) {
+			if (msg.message().forwardSignature() == null && msg.hasText() && (msg.text().contains("喵") || msg.text().contains("嘤"))) {
 
 				msg.send(user.userName() + " 通过了验证 ~").html().failed(5 * 1000);
 
