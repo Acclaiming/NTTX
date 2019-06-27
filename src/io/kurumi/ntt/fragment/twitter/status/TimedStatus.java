@@ -176,6 +176,14 @@ public class TimedStatus extends TwitterFunction {
 
 			TimedUpdate update = data.getById(updateId);
 
+			if (update == null) {
+
+				msg.send("这条定时推文已被取消或发送").exec();
+
+				return true;
+
+			}
+			
 			TAuth auth = TAuth.getById(update.auth);
 
 			if (!auth.user.equals(user.id)) {
@@ -198,6 +206,14 @@ public class TimedStatus extends TwitterFunction {
 
 			TimedUpdate update = data.getById(updateId);
 
+			if (update == null) {
+				
+				msg.send("这条定时推文已被取消或发送").exec();
+				
+				return true;
+				
+			}
+			
 			TAuth auth = TAuth.getById(update.auth);
 
 			if (!auth.user.equals(user.id)) {
