@@ -200,7 +200,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			}
 
-			Img info = new Img(500,400,Color.WHITE);
+			Img info = new Img(700,400,Color.WHITE);
 
 			info.font("Noto Sans CJK SC Thin",39);
 			
