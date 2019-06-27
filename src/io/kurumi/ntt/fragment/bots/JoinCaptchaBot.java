@@ -209,7 +209,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			Img info = new Img(800,600,Color.WHITE);
 
-		    info.drawLineInterfere(150);
+		    info.drawLineInterfere(50);
 
 			info.font("Noto Sans CJK SC Thin",39);
 
@@ -532,7 +532,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 					Img info = new Img(1000,600,Color.WHITE);
 
-					info.drawLineInterfere(150);
+					info.drawLineInterfere(50);
 
 					info.font("Noto Sans CJK SC Thin",39);
 
