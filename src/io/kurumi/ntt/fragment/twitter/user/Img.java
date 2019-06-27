@@ -1,5 +1,7 @@
 package io.kurumi.ntt.fragment.twitter.user;
 
+import cn.hutool.core.util.ImageUtil;
+import cn.hutool.core.util.RandomUtil;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -8,9 +10,10 @@ import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import net.coobird.thumbnailator.Thumbnails;
 import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.ThreadLocalRandom;
+import net.coobird.thumbnailator.Thumbnails;
 
 public class Img {
 
@@ -55,6 +58,16 @@ public class Img {
         graphics.setColor(Color.BLACK);
         graphics.setPaint(Color.BLACK);
 
+	}
+	
+	public Img drawInterfere(int count) {
+		
+		final ThreadLocalRandom random = RandomUtil.getRandom();
+
+		for (int i = 0; i < count; i++) {
+			graphics.setColor(ImageUtil.randomColor(random));
+			graphics.drawOval(random.nextInt(width), random.nextInt(height), random.nextInt(height >> 1), random.nextInt(height >> 1));
+		}
 	}
 
 	public Img fontSize(int size) {

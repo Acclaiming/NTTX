@@ -202,6 +202,8 @@ public class JoinCaptchaBot extends BotFragment {
 
 			Img info = new Img(800,600,Color.WHITE);
 
+		    info.drawInterfere(150);
+			
 			info.font("Noto Sans CJK SC Thin",39);
 			
 			info.drawTextCenter(0,0,0,400,"新加裙的绒布球你好呀 ~");
