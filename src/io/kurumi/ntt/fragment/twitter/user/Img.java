@@ -177,8 +177,8 @@ public class Img {
 
 	public Img drawTextCenter(int xPedding,int yPedding,int xMargin,int yMargin,String text) {
 
-		int realX = xPedding + ((width - xPedding - xMargin) / 2) + stringWidth(text);
-		int realY = yPedding + ((height - yPedding - yMargin) / 2) + stringHeight();
+		int realX = xPedding + ((width - xPedding - xMargin) / 2) - stringWidth(text) / 2;
+		int realY = yPedding + ((height - yPedding - yMargin) / 2) - stringHeight() / 2;
 
 		drawText(realX,realY,text);
 
