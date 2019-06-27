@@ -188,6 +188,8 @@ public class JoinCaptchaBot extends BotFragment {
 
             final UserData newData = UserData.get(newMember);
 
+			if (newData.developer()) return true;
+			
 			if (Firewall.block.containsId(newData.id)) {
 
 				if (msg.kick() && logChannel != null) {
@@ -888,14 +890,14 @@ public class JoinCaptchaBot extends BotFragment {
 
 	boolean needSecondaryVerification(UserData user) {
 
-		GetUserProfilePhotosResponse photos = bot().execute(new GetUserProfilePhotos(user.id.intValue()).limit(1));
-
-		if (photos.isOk() && photos.photos().totalCount() == 0) {
-
+		if (user.contactable != null && user.contactable) return false;
+	
+		if (user.userName == null) {
+			
 			return true;
-
+			
 		}
-
+		
 		for (Character c : user.name().toCharArray()) {
 
 			if (Character.UnicodeBlock.of(c) == Character.UnicodeBlock.ARABIC) {
@@ -903,6 +905,14 @@ public class JoinCaptchaBot extends BotFragment {
 				return true;
 
 			}
+
+		}
+		
+		GetUserProfilePhotosResponse photos = bot().execute(new GetUserProfilePhotos(user.id.intValue()).limit(1));
+
+		if (photos.isOk() && photos.photos().totalCount() == 0) {
+
+			return true;
 
 		}
 
