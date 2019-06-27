@@ -39,6 +39,8 @@ public class JoinCaptchaBot extends BotFragment {
 	final String POINT_ACC = "acc";
 	final String POINT_REJ = "rej";
 
+	final String POINT_DELETE = "del";
+	
     public Long botId;
     public Long userId;
     public String botToken;
@@ -206,6 +208,8 @@ public class JoinCaptchaBot extends BotFragment {
 				return true;
 
 			}
+			
+			setPoint(user,POINT_DELETE,PointStore.Type.Group);
 
 			Img info = new Img(800,600,Color.WHITE);
 
@@ -524,6 +528,8 @@ public class JoinCaptchaBot extends BotFragment {
 
 				if (needSecondaryVerification(user)) {
 
+					setPoint(user,POINT_DELETE,PointStore.Type.Group);
+					
 					HashMap<Long, Msg> secGroup = secCache.containsKey(msg.chatId()) ? secCache.get(msg.chatId()) : new HashMap<Long, Msg>();
 
 					GeneratedCode code = new GeneratedCode();
@@ -677,6 +683,10 @@ public class JoinCaptchaBot extends BotFragment {
 
 				}
 
+			} else if (POINT_DELETE.equals(point.point)) {
+				
+				msg.delete();
+				
 			} else if (msg.kick()) {
 
 				if (group.containsKey(user.id)) {
