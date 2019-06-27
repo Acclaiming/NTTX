@@ -24,6 +24,11 @@ import java.util.TimerTask;
 import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import cn.hutool.core.util.ImageUtil;
+import cn.hutool.captcha.generator.MathGenerator;
+import cn.hutool.captcha.generator.CodeGenerator;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.captcha.generator.RandomGenerator;
+import io.kurumi.ntt.db.PointStore.Point;
 
 public class JoinCaptchaBot extends BotFragment {
 
@@ -204,12 +209,14 @@ public class JoinCaptchaBot extends BotFragment {
 			Img info = new Img(800,600,Color.WHITE);
 
 		    info.drawLineInterfere(150);
-			
+
 			info.font("Noto Sans CJK SC Thin",39);
-			
-			info.drawRandomColorTextCenter(0,0,0,400,"新加裙的绒布球你好呀 ~");
-			info.drawRandomColorTextCenter(0,200,0,200,"请发送 喵 / 嘤 通过验证 ");
-			info.drawRandomColorTextCenter(0,400,0,0,"不要戳下面的按钮 ~");
+
+			String code = RandomUtil.randomInt(2) == 0 ? "喵" : "嘤";
+
+			info.drawRandomColorTextCenter(0,0,0,400,"新加裙的绒布球你好呀");
+			info.drawRandomColorTextCenter(0,200,0,200,"请发送 " + code + " 通过验证");
+			info.drawRandomColorTextCenter(0,400,0,0,"不要戳下面的按钮");
 
             ButtonMarkup buttons = new ButtonMarkup() {{
 
@@ -223,9 +230,16 @@ public class JoinCaptchaBot extends BotFragment {
 						.newButton(" ※ 通过 ※ ",POINT_ACC,newData.id)
 						.newButton(" ※ 滥权 ※ ",POINT_REJ,newData.id);
 
+					newButtonLine()
+						.newButton("喵",POINT_AUTH,newData.id)
+                        .newButton("喵",POINT_AUTH,newData.id)
+                        .newButton("喵",POINT_AUTH,newData.id)
+                        .newButton("喵",POINT_AUTH,newData.id);
+
+
 				}};
 
-            setPoint(newData,POINT_AUTH,PointStore.Type.Group);
+            setPoint(newData,POINT_AUTH,PointStore.Type.Group,code);
 
             group.put(newMember.id(),Msg.from(this,bot().execute(new SendPhoto(msg.chatId(),info.getBytes()).caption(newData.userName()).parseMode(ParseMode.HTML).replyMarkup(buttons.markup()))));
 
@@ -441,10 +455,15 @@ public class JoinCaptchaBot extends BotFragment {
 
 	}
 
-    @Override
-    public boolean onPointedGroup(UserData user,Msg msg) {
+	class GeneratedCode {
 
-		clearPoint(user);
+		CodeGenerator generator;
+		String code;
+
+	}
+
+    @Override
+    public boolean onPointedGroup(final UserData user,final Msg msg) {
 
         HashMap<Long, Msg> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
 
@@ -484,19 +503,9 @@ public class JoinCaptchaBot extends BotFragment {
 
 			}
 
+			clearPoint(user);
+
 		} else {
-
-			if (cache.containsKey(msg.chatId())) {
-
-				if (group.containsKey(user.id)) {
-
-					group.remove(user.id).delete();
-
-					if (group.isEmpty()) cache.remove(msg.chatId());
-
-				}
-
-			}
 
 			if (logChannel != null) {
 
@@ -504,19 +513,194 @@ public class JoinCaptchaBot extends BotFragment {
 
 			}
 
-			if (msg.message().forwardSignature() == null && msg.hasText() && (msg.text().contains("喵") || msg.text().contains("嘤"))) {
+			PointStore.Point<Object> point = getPoint(user);
 
-				msg.send(user.userName() + " 通过了验证 ~").html().failed(5 * 1000);
+			if (POINT_AUTH.equals(point.point) && msg.message().forwardSignature() == null && msg.hasText() && (msg.text().contains(point.data.toString())) && !(msg.text().contains("喵") && msg.text().contains("嘤"))) {
 
-				sendWelcome(user,msg);
+				clearPoint(user);
 
-				if (logChannel != null) {
+				if (cache.containsKey(msg.chatId())) {
 
-					new Send(this,logChannel,"事件 : #通过验证","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
+					if (group.containsKey(user.id)) {
+
+						group.remove(user.id).delete();
+
+						if (group.isEmpty()) cache.remove(msg.chatId());
+
+					}
+
+				}
+
+				if (needSecondaryVerification(user)) {
+
+					GeneratedCode code = new GeneratedCode();
+
+					code.generator = RandomUtil.randomInt(2) == 0 ? new MathGenerator() : new RandomGenerator("苟利国家生死以岂因祸福避趋之",14);
+
+					Img info = new Img(1000,600,Color.WHITE);
+
+					info.drawLineInterfere(150);
+
+					info.font("Noto Sans CJK SC Thin",39);
+
+					code.code = code.generator.generate();
+
+					info.drawRandomColorTextCenter(0,0,0,400,"这是二次验证 ~");
+					info.drawRandomColorTextCenter(0,200,0,200,code.code);
+					info.drawRandomColorTextCenter(0,400,0,0,"请输入验证码 ~");
+
+					ButtonMarkup buttons = new ButtonMarkup() {{
+
+							newButtonLine()
+								.newButton("喵",POINT_AUTH,user.id)
+								.newButton("喵",POINT_AUTH,user.id)
+								.newButton("喵",POINT_AUTH,user.id)
+								.newButton("喵",POINT_AUTH,user.id);
+
+							newButtonLine()
+								.newButton(" ※ 通过 ※ ",POINT_ACC,user.id)
+								.newButton(" ※ 滥权 ※ ",POINT_REJ,user.id);
+
+							newButtonLine()
+								.newButton("喵",POINT_AUTH,user.id)
+								.newButton("喵",POINT_AUTH,user.id)
+								.newButton("喵",POINT_AUTH,user.id)
+								.newButton("喵",POINT_AUTH,user.id);
+
+
+						}};
+
+					setPoint(user,POINT_SEC_AUTH,PointStore.Type.Group,code);
+
+					group.put(user.id,Msg.from(this,bot().execute(new SendPhoto(msg.chatId(),info.getBytes()).caption(user.userName()).parseMode(ParseMode.HTML).replyMarkup(buttons.markup()))));
+
+					cache.put(msg.chatId().longValue(),group);
+
+					timer.schedule(new TimerTask() {
+
+							@Override
+							public void run() {
+
+								final HashMap<Long, Msg> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
+
+								if (group.containsKey(user.id)) {
+
+									clearPoint(user);
+
+									group.remove(user.id).delete();
+
+									if (group.isEmpty()) {
+
+										cache.remove(msg.chatId());
+
+									} else {
+
+										cache.put(msg.chatId().longValue(),group);
+
+									}
+
+									if (msg.kick(user.id)) {
+
+										msg.send(user.userName() + " 是傻猫 , 真可惜喵...").html().failed(15 * 1000);
+
+										if (logChannel != null) {
+
+											new Send(origin,logChannel,"事件 : #未通过 #超时 #二次验证","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
+
+										}
+
+									}
+
+								}
+
+							}
+
+						},new Date(System.currentTimeMillis() + 2 * 60 * 1000));
+
+				} else {
+
+
+					msg.send(user.userName() + " 通过了验证 ~").html().failed(5 * 1000);
+
+					sendWelcome(user,msg);
+
+					if (logChannel != null) {
+
+						new Send(this,logChannel,"事件 : #通过验证","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
+
+					}
+
+
+				}
+
+			} else if (POINT_SEC_AUTH.equals(point.point)) {
+
+				if (((GeneratedCode)point.data).generator.verify(((GeneratedCode)point.data).code,msg.text())) {
+
+					if (cache.containsKey(msg.chatId())) {
+
+						if (group.containsKey(user.id)) {
+
+							group.remove(user.id).delete();
+
+							if (group.isEmpty()) cache.remove(msg.chatId());
+
+						}
+
+					}
+
+					clearPoint(user);
+
+					msg.send(user.userName() + " 通过了验证 ~").html().failed(5 * 1000);
+
+					sendWelcome(user,msg);
+
+					if (logChannel != null) {
+
+						new Send(this,logChannel,"事件 : #通过验证","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
+
+					}
+
+				} else {
+
+					if (cache.containsKey(msg.chatId())) {
+
+						if (group.containsKey(user.id)) {
+
+							group.remove(user.id).delete();
+
+							if (group.isEmpty()) cache.remove(msg.chatId());
+
+						}
+
+					}
+
+					msg.delete();
+
+					msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().failed(15 * 1000);
+
+					if (logChannel != null) {
+
+						new Send(this,logChannel,"事件 : #未通过 #二次验证失败","验证码为 : " + ((GeneratedCode)point.data).code,"群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
+
+					}
+
 
 				}
 
 			} else if (msg.kick()) {
+
+				if (cache.containsKey(msg.chatId())) {
+
+					if (group.containsKey(user.id)) {
+
+						group.remove(user.id).delete();
+
+						if (group.isEmpty()) cache.remove(msg.chatId());
+
+					}
+
+				}
 
 				msg.delete();
 
@@ -546,17 +730,17 @@ public class JoinCaptchaBot extends BotFragment {
 			return true;
 
 		}
-		
+
 		for (Character c : user.name().toCharArray()) {
-		
+
 			if (Character.UnicodeBlock.of(c) == Character.UnicodeBlock.ARABIC) {
-				
+
 				return true;
-				
+
 			}
-		
+
 		}
-		
+
 		return false;
 
 	}
