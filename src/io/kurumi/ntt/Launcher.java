@@ -49,6 +49,7 @@ import java.io.IOException;
 import java.util.TimeZone;
 import io.kurumi.ntt.fragment.admin.TASReply;
 import io.kurumi.ntt.fragment.ytb.YtbDownloader;
+import io.kurumi.ntt.fragment.twitter.status.TimedStatus;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -201,15 +202,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
         super.start();
 
-        TimelineUI.start();
-
-        // AutoTask.start();
-
-        TrackTask.start();
-
-        UserBot.startAll();
-
-        Backup.start();
+        startTasks();
 
     }
 
@@ -221,15 +214,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         if (super.silentStart()) {
 
-            // AutoTask.start();
-
-            TimelineUI.start();
-
-            TrackTask.start();
-
-            UserBot.startAll();
-
-            Backup.start();
+            startTasks();
 
             return true;
 
@@ -245,6 +230,20 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		startThreads(5);
 		
 		super.realStart();
+		
+	}
+	
+	void startTasks() {
+		
+		TimedStatus.start();
+		
+		TimelineUI.start();
+
+		TrackTask.start();
+
+		UserBot.startAll();
+
+		Backup.start();
 		
 	}
 	
@@ -305,6 +304,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(new ShadowBan());
 
+		addFragment(new TimedStatus());
+		
         addFragment(new StatusSearch());
 
         addFragment(new StatusGetter());

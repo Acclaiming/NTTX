@@ -83,6 +83,8 @@ public class StatusUpdate extends TwitterFunction {
         msg.send("现在发送推文内容 : ").withCancel().exec();
 
     }
+	
+	String submitAndCancel = "使用 /submit 发送\n使用 /timed 定时发送\n使用 /cancel 取消";
 
     @Override
     public boolean onPrivate(UserData user,Msg msg) {
@@ -199,7 +201,7 @@ public class StatusUpdate extends TwitterFunction {
 
                 update.images.add(NTT.telegramToTwitter(auth.createApi(),message.sticker().fileId(),"sticker.png",0));
 
-                msg.send("图片添加成功 已设置 1 / 4 张图片","使用 /submit 发送","使用 /cancel 取消").exec();
+                msg.send("图片添加成功 已设置 1 / 4 张图片",submitAndCancel).exec();
 
             } catch (TwitterException e) {
 
@@ -235,7 +237,7 @@ public class StatusUpdate extends TwitterFunction {
 
                 update.images.add(NTT.telegramToTwitter(auth.createApi(),max.fileId(),"image.png",0));
 
-                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ","使用 /submit 发送","使用 /cancel 取消").exec();
+                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ",submitAndCancel).exec();
 
             } catch (TwitterException e) {
 
@@ -259,7 +261,7 @@ public class StatusUpdate extends TwitterFunction {
 
                 update.video = NTT.telegramToTwitter(auth.createApi(),message.animation().fileId(),message.animation().fileName(),2);
 
-                msg.send("动图添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
+                msg.send("动图添加成功",submitAndCancel).exec();
 
             } catch (TwitterException e) {
 
@@ -284,7 +286,7 @@ public class StatusUpdate extends TwitterFunction {
 
                 update.video = NTT.telegramToTwitter(auth.createApi(),message.video().fileId(),"video.mp4",1);
 
-                msg.send("视频添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
+                msg.send("视频添加成功",submitAndCancel).exec();
 
             } catch (TwitterException e) {
 
@@ -309,7 +311,7 @@ public class StatusUpdate extends TwitterFunction {
 
                 update.video = NTT.telegramToTwitter(auth.createApi(),message.videoNote().fileId(),"video.mp4",1);
 
-                msg.send("视频添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
+                msg.send("视频添加成功",submitAndCancel).exec();
 
             } catch (TwitterException e) {
 
@@ -412,6 +414,14 @@ public class StatusUpdate extends TwitterFunction {
 
 			}
 			
+			if (time < (System.currentTimeMillis() + (10 * 1000))) {
+				
+				msg.send("这个时间已经过去了...").exec();
+				
+				return;
+				
+			}
+			
 			TimedStatus.TimedUpdate timed = new TimedStatus.TimedUpdate();
 			
 			if (update.toReply != null) {
@@ -468,7 +478,7 @@ public class StatusUpdate extends TwitterFunction {
 			
 			TimedStatus.schedule(timed);
 			
-			msg.send("已创建定时推文 : " + timed.id,"使用 /timed list 查看所有定时推文","使用 /timed cancel <id> 取消定时推文","使用 /timed submit <id> 直接发送").exec();
+			msg.send("已创建定时推文 : " + timed.id,"使用 /timed 管理定时推文").exec();
 			
         } else if ("submit".equals(msg.command())) {
 
@@ -580,7 +590,7 @@ public class StatusUpdate extends TwitterFunction {
 
             update.text = msg.text();
 
-            msg.send("文本已设定 使用 /submit 发送 ~").exec();
+            msg.send("文本已设定",submitAndCancel).exec();
 
         }
 
@@ -608,7 +618,7 @@ public class StatusUpdate extends TwitterFunction {
 
                 update.images.add(NTT.telegramToTwitter(update.auth.createApi(),message.sticker().fileId(),"sticker.png",0));
 
-                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ","使用 /submit 发送","使用 /cancel 取消").exec();
+                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ",submitAndCancel).exec();
 
             } catch (TwitterException e) {
 
@@ -660,7 +670,7 @@ public class StatusUpdate extends TwitterFunction {
 
                 update.images.add(NTT.telegramToTwitter(update.auth.createApi(),max.fileId(),"image.png",0));
 
-                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ","使用 /submit 发送","使用 /cancel 取消").exec();
+                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ",submitAndCancel).exec();
 
             } catch (TwitterException e) {
 
@@ -700,7 +710,7 @@ public class StatusUpdate extends TwitterFunction {
 
                 update.video = NTT.telegramToTwitter(update.auth.createApi(),message.animation().fileId(),message.animation().fileName(),2);
 
-                msg.send("动图添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
+                msg.send("动图添加成功",submitAndCancel).exec();
 
             } catch (TwitterException e) {
 
@@ -738,7 +748,7 @@ public class StatusUpdate extends TwitterFunction {
 
                 update.video = NTT.telegramToTwitter(update.auth.createApi(),message.video().fileId(),"video.mp4",1);
 
-                msg.send("视频添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
+                msg.send("视频添加成功",submitAndCancel).exec();
 
             } catch (TwitterException e) {
 
@@ -777,7 +787,7 @@ public class StatusUpdate extends TwitterFunction {
 
                 update.video = NTT.telegramToTwitter(update.auth.createApi(),message.videoNote().fileId(),"video.mp4",1);
 
-                msg.send("视频添加成功","使用 /submit 发送","使用 /cancel 取消").exec();
+                msg.send("视频添加成功",submitAndCancel).exec();
 
             } catch (TwitterException e) {
 
