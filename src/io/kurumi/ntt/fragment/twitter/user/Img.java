@@ -317,14 +317,15 @@ public class Img {
 
 			graphics.setPaint(new Color(0,0,0,64));
 
-			graphics.drawString(text.substring(index,index + 1),x + length ,y);
+			String word = text.subSequence(index,index + 1).toString();
+
+			graphics.drawString(word,x + length ,y);
 
 			graphics.setPaint(ImageUtil.randomColor(random));
 
-			graphics.drawString(text.substring(index,index + 1),x + length ,y);
+			graphics.drawString(word,x + length ,y);
 
-
-			length += stringWidth(text);
+			length += stringWidth(word);
 
 		}
 
