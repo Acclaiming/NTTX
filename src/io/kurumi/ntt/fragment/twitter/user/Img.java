@@ -68,6 +68,9 @@ public class Img {
 			graphics.setColor(ImageUtil.randomColor(random));
 			graphics.drawOval(random.nextInt(width), random.nextInt(height), random.nextInt(height >> 1), random.nextInt(height >> 1));
 		}
+		
+		return this;
+		
 	}
 
 	public Img fontSize(int size) {
