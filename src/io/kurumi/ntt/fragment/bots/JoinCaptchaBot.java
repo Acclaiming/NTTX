@@ -203,8 +203,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			Img info = new Img(800,600,Color.WHITE);
 
-		    info.drawLineInterfere(50);
-			info.drawShearInterfere(100,ImageUtil.randomColor());
+		    info.drawLineInterfere(150);
 			
 			info.font("Noto Sans CJK SC Thin",39);
 			
@@ -257,7 +256,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 							if (msg.kick(newData.id)) {
 
-								msg.send(newData.userName() + " 自闭了 , 真可惜喵...").html().failed(15 * 1000);
+								msg.send(newData.userName() + " 是傻猫 , 真可惜喵...").html().failed(15 * 1000);
 
 								if (logChannel != null) {
 
