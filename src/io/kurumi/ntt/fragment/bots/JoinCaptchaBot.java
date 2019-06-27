@@ -605,8 +605,15 @@ public class JoinCaptchaBot extends BotFragment {
     public boolean onPointedGroup(final UserData user,final Msg msg) {
 
         HashMap<Long, Msg> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
-
-		if (msg.message().leftChatMember() != null) {
+		HashMap<Long, Msg> secGroup = secCache.containsKey(msg.chatId()) ? secCache.get(msg.chatId()) : new HashMap<Long, Msg>();
+		
+		if (msg.message().newChatMember() != null && msg.message().newChatMember().id().equals(user.id)) {
+			
+			clearPoint(user);
+			
+			onGroup(user,msg);
+			
+		} else if (msg.message().leftChatMember() != null) {
 
 			if (group.containsKey(msg.message().leftChatMember().id())) {
 
@@ -615,7 +622,15 @@ public class JoinCaptchaBot extends BotFragment {
 				if (group.isEmpty()) cache.remove(msg.chatId());
 
 			}
+			
+			if (secGroup.containsKey(msg.message().leftChatMember().id())) {
 
+				secGroup.remove(msg.message().leftChatMember().id()).delete();
+
+				if (secGroup.isEmpty()) secCache.remove(msg.chatId());
+
+			}
+			
 			if (delJoin) msg.delete();
 
 			if (user.id.equals(me.id())) {
@@ -663,8 +678,6 @@ public class JoinCaptchaBot extends BotFragment {
 				if (needSecondaryVerification(user)) {
 
 					setPoint(user,POINT_DELETE,PointStore.Type.Group);
-
-					HashMap<Long, Msg> secGroup = secCache.containsKey(msg.chatId()) ? secCache.get(msg.chatId()) : new HashMap<Long, Msg>();
 
 					GeneratedCode code = new GeneratedCode();
 
@@ -766,8 +779,6 @@ public class JoinCaptchaBot extends BotFragment {
 				}
 
 			} else if (POINT_SEC_AUTH.equals(point.point)) {
-
-				HashMap<Long, Msg> secGroup = secCache.containsKey(msg.chatId()) ? secCache.get(msg.chatId()) : new HashMap<Long, Msg>();
 
 				if (((GeneratedCode)point.data).generator.verify(((GeneratedCode)point.data).code,msg.text())) {
 
