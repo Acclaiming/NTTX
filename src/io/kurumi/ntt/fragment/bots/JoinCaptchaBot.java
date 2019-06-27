@@ -206,7 +206,7 @@ public class JoinCaptchaBot extends BotFragment {
 			
 			info.drawTextCenter(0,0,0,400,"新加裙的绒布球你好呀 ~");
 			info.drawTextCenter(0,200,0,200,"请发送 喵 / 嘤 通过验证 ");
-			info.drawTextCenter(0,400,0,400,"不要戳下面的按钮 ~");
+			info.drawTextCenter(0,400,0,0,"不要戳下面的按钮 ~");
 
             ButtonMarkup buttons = new ButtonMarkup() {{
 
