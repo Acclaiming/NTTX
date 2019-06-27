@@ -253,45 +253,47 @@ public class TimedStatus extends TwitterFunction {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
-			if (data.countByField("auth",account.id) == 0) {
+		if (data.countByField("auth",account.id) == 0) {
 
-				msg.send("没有待发送的定时推文，使用 /update 创建新推文").exec();
+			msg.send("没有待发送的定时推文，使用 /update 创建新推文").exec();
 
-				return;
+			return;
+
+		}
+
+		StringBuilder updates = new StringBuilder("定时推文列表 :");
+
+		for (TimedUpdate update : data.findByField("auth",account.id)) {
+
+			updates.append("\n").append(update.id).append(" : ");
+
+			if (update.text != null) {
+
+				updates.append(update.text.length() > 5 ? (update.text.substring(0,5) + "...") : update.text);
+
+			}
+
+			if (update.images != null) {
+
+				for (int index = 0;index < update.images.size();index ++) updates.append(" [图片]");
 
 			}
 
-			StringBuilder updates = new StringBuilder("定时推文列表 :");
+			if (update.video != null) updates.append(" [视频]");
 
-			for (TimedUpdate update : data.findByField("auth",account.id)) {
+			updates.append(" [ ");
 
-				updates.append("\n").append(update.id).append(" : ");
+			updates.append(Html.startPayload("取消","tdc",update.id));
 
-				if (update.text != null) {
+			updates.append(" ");
 
-					updates.append(update.text.length() > 5 ? (update.text.substring(0,5) + "...") : update.text);
+			updates.append(Html.startPayload("立即发送","tds",update.id));
 
-				}
+			updates.append(" ]");
 
-				if (update.images != null) {
+		}
 
-					for (int index = 0;index < update.images.size();index ++) updates.append(" [图片]");
-
-				}
-
-				if (update.video != null) updates.append(" [视频]");
-
-				updates.append(" [ ");
-
-				updates.append(Html.startPayload("取消","tdc",update.id));
-
-				updates.append(" ");
-
-				updates.append(Html.startPayload("立即发送","tds",update.id));
-
-				updates.append(" ]");
-
-			}
+		msg.send(updates.toString()).markdown().exec();
 
 	}
 
