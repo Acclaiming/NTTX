@@ -101,7 +101,7 @@ public class Img {
 	public Img drawShearInterfere(int count,Color color) {
 
 		Paint paint = graphics.getPaint();
-		
+
 		int period = RandomUtil.randomInt(2);
 
 		boolean borderGap = true;
@@ -143,59 +143,14 @@ public class Img {
 
 		}
 
-		drawThickLine(0, RandomUtil.randomInt(height) + 1, width, RandomUtil.randomInt(height) + 1, count, ImageUtil.randomColor());
+		drawThickLine(0,RandomUtil.randomInt(height) + 1,width,RandomUtil.randomInt(height) + 1,count,ImageUtil.randomColor());
 
 		graphics.setPaint(paint);
-		
+
 		return this;
 
 	}
-
-
-
-	private void drawThickLine(int x1,int y1,int x2,int y2,int thickness,Color c) {
-
-		// The thick line is in fact a filled polygon
-
-		graphics.setColor(c);
-		int dX = x2 - x1;
-		int dY = y2 - y1;
-		// line length
-
-		double lineLength = Math.sqrt(dX * dX + dY * dY);
-
-		double scale = (double) (thickness) / (2 * lineLength);
-
-		// The x and y increments from an endpoint needed to create a
-
-		// rectangle...
-
-		double ddx = -scale * (double) dY;
-		double ddy = scale * (double) dX;
-		ddx += (ddx > 0) ? 0.5 : -0.5;
-		ddy += (ddy > 0) ? 0.5 : -0.5;
-		int dx = (int) ddx;
-		int dy = (int) ddy;
-
-		// Now we can compute the corner points...
-
-		int xPoints[] = new int[4];
-		int yPoints[] = new int[4];
-
-		xPoints[0] = x1 + dx;
-		yPoints[0] = y1 + dy;
-		xPoints[1] = x1 - dx;
-		yPoints[1] = y1 - dy;
-		xPoints[2] = x2 - dx;
-		yPoints[2] = y2 - dy;
-		xPoints[3] = x2 + dx;
-		yPoints[3] = y2 + dy;
-
-		graphics.fillPolygon(xPoints,yPoints,4);
-
-	}
-
-
+	
 	public Img fontSize(int size) {
 
 		font(graphics.getFont().getFontName(),size);
@@ -324,6 +279,17 @@ public class Img {
 		return this;
 
 	}
+	
+	public Img drawRandomColorTextCenter(int xPedding,int yPedding,int xMargin,int yMargin,String text) {
+
+		int realX = xPedding + ((width - xPedding - xMargin) / 2) - (stringWidth(text) / 2);
+		int realY = yPedding + ((height - yPedding - yMargin) / 2);
+
+		drawRandomColorText(realX,realY,text);
+
+		return this;
+
+	}
 
 	public Img drawText(int x,int y,String text) {
 
@@ -336,6 +302,35 @@ public class Img {
 		graphics.setPaint(paint);
 
 		graphics.drawString(text,x,y);
+
+		return this;
+
+	}
+
+	public Img drawRandomColorText(int x,int y,String text) {
+
+		final ThreadLocalRandom random = RandomUtil.getRandom();
+
+		Paint paint = graphics.getPaint();
+
+		int length = 0;
+
+		for (int index = 0;index < text.length();index ++) {
+
+			graphics.setPaint(new Color(0,0,0,64));
+
+			graphics.drawString(text.substring(index,index + 1),x + length ,y);
+
+			graphics.setPaint(ImageUtil.randomColor(random));
+
+			graphics.drawString(text.substring(index,index + 1),x + length ,y);
+
+
+			length += stringWidth(text);
+
+		}
+
+		graphics.setPaint(paint);
 
 		return this;
 

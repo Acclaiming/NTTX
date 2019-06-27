@@ -203,14 +203,13 @@ public class JoinCaptchaBot extends BotFragment {
 			Img info = new Img(800,600,Color.WHITE);
 
 		    info.drawLineInterfere(50);
-			info.drawCircleInterfere(50);
-			info.drawShearInterfere(50,Color.WHITE);
+			info.drawShearInterfere(100,Color.WHITE);
 			
 			info.font("Noto Sans CJK SC Thin",39);
 			
-			info.drawTextCenter(0,0,0,400,"新加裙的绒布球你好呀 ~");
-			info.drawTextCenter(0,200,0,200,"请发送 喵 / 嘤 通过验证 ");
-			info.drawTextCenter(0,400,0,0,"不要戳下面的按钮 ~");
+			info.drawRandomColorTextCenter(0,0,0,400,"新加裙的绒布球你好呀 ~");
+			info.drawRandomColorTextCenter(0,200,0,200,"请发送 喵 / 嘤 通过验证 ");
+			info.drawRandomColorTextCenter(0,400,0,0,"不要戳下面的按钮 ~");
 
             ButtonMarkup buttons = new ButtonMarkup() {{
 
