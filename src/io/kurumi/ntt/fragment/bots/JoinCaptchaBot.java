@@ -204,7 +204,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 				"现在需要确认一下乃是不是机器人绒布球了 ~\n",
 
-				"发送 喵 (嘤也可以 就可以通过验证了 ~ 3分钟以内呀 (๑˃̵ᴗ˂̵)و \n",
+				"发送 喵 ( 嘤也可以 就可以通过验证了 ~ 30秒以内呀 (๑˃̵ᴗ˂̵)و \n",
 
 				"注意不要点按钮 喵 ~"
 
@@ -256,7 +256,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 							if (msg.kick(newData.id)) {
 
-								msg.send(newData.userName() + " 不理解喵喵的语言 , 真可惜喵...").html().failed(60 * 1000);
+								msg.send(newData.userName() + " 自闭了 , 真可惜喵...").html().failed(15 * 1000);
 
 								if (logChannel != null) {
 
@@ -270,7 +270,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 					}
 
-				},new Date(System.currentTimeMillis() + 3 * 60 * 1000));
+				},new Date(System.currentTimeMillis() + 30 * 1000));
 
         }
 
@@ -330,7 +330,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			if (callback.kick(user.id)) {
 
-				callback.send(user.userName() + " 瞎按按钮 , 未通过验证 , 真可惜喵...").html().failed(60 * 1000);
+				callback.send(user.userName() + " 瞎按按钮 , 未通过验证 , 真可惜喵...").html().failed(15 * 1000);
 
 				if (logChannel != null) {
 
@@ -381,7 +381,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			UserData targetUser = UserData.get(target);
 
-			if (callback.kick(target)) {
+			if (callback.kick(target,true)) {
 
 				callback.send(targetUser.userName() + " 被滥权了喵...").html().failed(15 * 1000);
 
@@ -506,7 +506,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			if (msg.hasText() && (msg.text().contains("喵") || msg.text().contains("嘤"))) {
 
-				msg.send(user.userName() + " 通过了图灵(划掉) 验证 ~").html().failed(15 * 1000);
+				msg.send(user.userName() + " 通过了验证 ~").html().failed(5 * 1000);
 
 				sendWelcome(user,msg);
 
@@ -520,7 +520,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 				msg.delete();
 
-				msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().failed(60 * 1000);
+				msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().failed(15 * 1000);
 
 				if (logChannel != null) {
 
