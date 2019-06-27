@@ -270,7 +270,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 					}
 
-				},new Date(System.currentTimeMillis() + 30 * 1000));
+				},new Date(System.currentTimeMillis() + 60 * 1000));
 
 		}
 
