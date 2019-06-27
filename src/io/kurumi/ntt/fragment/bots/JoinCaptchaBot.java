@@ -202,10 +202,10 @@ public class JoinCaptchaBot extends BotFragment {
 
 			Img info = new Img(500,400,Color.WHITE);
 
-			info.font("Noto Sans Thin",39);
+			info.font("Noto Sans CJK SC Thin",39);
 			
-			info.drawTextCenter(50,50,250,200,"请在30秒之内发送 喵 ( 嘤也可以 ) 通过验证 ");
-			info.drawTextCenter(250,200,50,50,"注意不要戳下面的按钮 喵 ~");
+			info.drawTextCenter(50,50,150,100,"请在30秒之内发送 喵 ( 嘤也可以 ) 通过验证 ");
+			info.drawTextCenter(150,100,50,50,"注意不要戳下面的按钮 喵 ~");
 
             ButtonMarkup buttons = new ButtonMarkup() {{
 
