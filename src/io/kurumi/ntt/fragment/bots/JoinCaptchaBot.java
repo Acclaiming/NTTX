@@ -671,6 +671,8 @@ public class JoinCaptchaBot extends BotFragment {
 
 					msg.delete();
 
+					if (msg.kick()) {
+					
 					msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().failed(15 * 1000);
 
 					if (logChannel != null) {
@@ -678,6 +680,8 @@ public class JoinCaptchaBot extends BotFragment {
 						msg.forwardTo(logChannel);
 						new Send(this,logChannel,"事件 : #未通过 #二次验证失败","验证码为 : " + ((GeneratedCode)point.data).code,"群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
 
+					}
+					
 					}
 
 
