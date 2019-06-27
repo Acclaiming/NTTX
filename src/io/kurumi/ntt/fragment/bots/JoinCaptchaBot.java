@@ -46,7 +46,8 @@ public class JoinCaptchaBot extends BotFragment {
     public Long logChannel;
     public Boolean delJoin;
     HashMap<Long, HashMap<Long, Msg>> cache = new HashMap<>();
-
+	HashMap<Long, HashMap<Long, Msg>> secCache = new HashMap<>();
+	
     String welcomeMessage;
     Integer lastWelcomeMessage;
 
@@ -533,6 +534,8 @@ public class JoinCaptchaBot extends BotFragment {
 
 				if (needSecondaryVerification(user)) {
 
+					HashMap<Long, Msg> secGroup = secCache.containsKey(msg.chatId()) ? secCache.get(msg.chatId()) : new HashMap<Long, Msg>();
+					
 					GeneratedCode code = new GeneratedCode();
 
 					code.generator = RandomUtil.randomBoolean() ? new MathGenerator(1) : new RandomGenerator("苟利国家生死以岂因祸福避趋之",7);
@@ -572,16 +575,16 @@ public class JoinCaptchaBot extends BotFragment {
 
 					setPoint(user,POINT_SEC_AUTH,PointStore.Type.Group,code);
 
-					group.put(user.id,Msg.from(this,bot().execute(new SendPhoto(msg.chatId(),info.getBytes()).caption(user.userName()).parseMode(ParseMode.HTML).replyMarkup(buttons.markup()))));
+					secGroup.put(user.id,Msg.from(this,bot().execute(new SendPhoto(msg.chatId(),info.getBytes()).caption(user.userName()).parseMode(ParseMode.HTML).replyMarkup(buttons.markup()))));
 
-					cache.put(msg.chatId().longValue(),group);
+					secCache.put(msg.chatId().longValue(),secGroup);
 
 					timer.schedule(new TimerTask() {
 
 							@Override
 							public void run() {
 
-								final HashMap<Long, Msg> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
+								final HashMap<Long, Msg> group = secCache.containsKey(msg.chatId()) ? secCache.get(msg.chatId()) : new HashMap<Long, Msg>();
 
 								if (group.containsKey(user.id)) {
 
@@ -591,11 +594,11 @@ public class JoinCaptchaBot extends BotFragment {
 
 									if (group.isEmpty()) {
 
-										cache.remove(msg.chatId());
+										secCache.remove(msg.chatId());
 
 									} else {
 
-										cache.put(msg.chatId().longValue(),group);
+										secCache.put(msg.chatId().longValue(),group);
 
 									}
 
