@@ -803,8 +803,6 @@ public class JoinCaptchaBot extends BotFragment {
 
 					}
 
-					msg.delete();
-
 					if (msg.kick()) {
 
 						msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().failed(15 * 1000);
@@ -812,8 +810,15 @@ public class JoinCaptchaBot extends BotFragment {
 						if (logChannel != null) {
 
 							msg.forwardTo(logChannel);
+							
+							msg.delete();
+							
 							new Send(this,logChannel,"事件 : #未通过 #二次验证失败","验证码为 : " + ((GeneratedCode)point.data).code,"群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
 
+						} else {
+							
+							msg.delete();
+							
 						}
 
 					}
@@ -835,15 +840,20 @@ public class JoinCaptchaBot extends BotFragment {
 
 				}
 
-				msg.delete();
-
 				msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().failed(15 * 1000);
 
 				if (logChannel != null) {
 
 					msg.forwardTo(logChannel);
+					
+					msg.delete();
+					
 					new Send(this,logChannel,"事件 : #未通过 #发送其他内容","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
 
+				} else {
+					
+					msg.delete();
+					
 				}
 
 			}
