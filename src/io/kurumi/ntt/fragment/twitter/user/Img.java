@@ -59,19 +59,142 @@ public class Img {
         graphics.setPaint(Color.BLACK);
 
 	}
-	
-	public Img drawInterfere(int count) {
-		
+
+	public Img drawLineInterfere(int count) {
+
+		Paint paint = graphics.getPaint();
+
+		final ThreadLocalRandom random = RandomUtil.getRandom();
+
+		for (int i = 0; i < count; i++) {
+			int xs = random.nextInt(width);
+			int ys = random.nextInt(height);
+			int xe = xs + random.nextInt(width / 8);
+			int ye = ys + random.nextInt(height / 8);
+			graphics.setColor(ImageUtil.randomColor(random));
+			graphics.drawLine(xs,ys,xe,ye);
+		}
+
+		graphics.setPaint(paint);
+
+		return this;
+
+	}
+
+	public Img drawCircleInterfere(int count) {
+
+		Paint paint = graphics.getPaint();
+
 		final ThreadLocalRandom random = RandomUtil.getRandom();
 
 		for (int i = 0; i < count; i++) {
 			graphics.setColor(ImageUtil.randomColor(random));
-			graphics.drawOval(random.nextInt(width), random.nextInt(height), random.nextInt(height >> 1), random.nextInt(height >> 1));
+			graphics.drawOval(random.nextInt(width),random.nextInt(height),random.nextInt(height >> 1),random.nextInt(height >> 1));
 		}
+
+		graphics.setPaint(paint);
+
+		return this;
+
+	}
+
+	public Img drawShearInterfere(int count,Color color) {
+
+		Paint paint = graphics.getPaint();
+		
+		int period = RandomUtil.randomInt(2);
+
+		boolean borderGap = true;
+		int frames = 1;
+		int phase = RandomUtil.randomInt(2);
+
+		for (int i = 0; i < height; i++) {
+
+			double d = (double) (period >> 1) * Math.sin((double) i / (double) period + (6.2831853071795862D * (double) phase) / (double) frames);
+
+			graphics.copyArea(0,i,width,1,(int) d,0);
+
+			if (borderGap) {
+				graphics.setColor(color);
+				graphics.drawLine((int) d,i,0,i);
+				graphics.drawLine((int) d + width,i,width,i);
+			}
+		}
+
+		period = RandomUtil.randomInt(40) + 10; // 50;
+
+		borderGap = true;
+		frames = 20;
+		phase = 7;
+
+		for (int i = 0; i < width; i++) {
+
+			double d = (double) (period >> 1) * Math.sin((double) i / (double) period + (6.2831853071795862D * (double) phase) / (double) frames);
+
+			graphics.copyArea(i,0,1,height,0,(int) d);
+
+			if (borderGap) {
+
+				graphics.setColor(color);
+				graphics.drawLine(i,(int) d,i,0);
+				graphics.drawLine(i,(int) d + height,i,height);
+
+			}
+
+		}
+
+		drawThickLine(0, RandomUtil.randomInt(height) + 1, width, RandomUtil.randomInt(height) + 1, count, ImageUtil.randomColor());
+
+		graphics.setPaint(paint);
 		
 		return this;
-		
+
 	}
+
+
+
+	private void drawThickLine(int x1,int y1,int x2,int y2,int thickness,Color c) {
+
+		// The thick line is in fact a filled polygon
+
+		graphics.setColor(c);
+		int dX = x2 - x1;
+		int dY = y2 - y1;
+		// line length
+
+		double lineLength = Math.sqrt(dX * dX + dY * dY);
+
+		double scale = (double) (thickness) / (2 * lineLength);
+
+		// The x and y increments from an endpoint needed to create a
+
+		// rectangle...
+
+		double ddx = -scale * (double) dY;
+		double ddy = scale * (double) dX;
+		ddx += (ddx > 0) ? 0.5 : -0.5;
+		ddy += (ddy > 0) ? 0.5 : -0.5;
+		int dx = (int) ddx;
+		int dy = (int) ddy;
+
+		// Now we can compute the corner points...
+
+		int xPoints[] = new int[4];
+		int yPoints[] = new int[4];
+
+		xPoints[0] = x1 + dx;
+		yPoints[0] = y1 + dy;
+		xPoints[1] = x1 - dx;
+		yPoints[1] = y1 - dy;
+		xPoints[2] = x2 - dx;
+		yPoints[2] = y2 - dy;
+		xPoints[3] = x2 + dx;
+		yPoints[3] = y2 + dy;
+
+		graphics.fillPolygon(xPoints,yPoints,4);
+
+	}
+
 
 	public Img fontSize(int size) {
 
@@ -80,13 +203,13 @@ public class Img {
 		return this;
 
 	}
-	
+
 	public Img font(String newFont) {
-		
+
 		font(newFont,graphics.getFont().getSize());
-		
+
 		return this;
-		
+
 	}
 
 	public Img font(String newFont,int size) {
@@ -108,7 +231,7 @@ public class Img {
 		return graphics.getFontMetrics().getHeight();
 
 	}
-	
+
 	public Img drawImageCenter(int xPedding,int yPedding,int xMargin,int yMargin,File newImage,int width,int height) {
 
 		drawImageCenter(xPedding,yPedding,xMargin,yMargin,newImage,width,height,null);
@@ -127,13 +250,13 @@ public class Img {
 		return this;
 
 	}
-	
+
 	public Img drawImageCenter(int xPedding,int yPedding,int xMargin,int yMargin,BufferedImage newImage,int width,int height) {
-		
+
 		drawImageCenter(xPedding,yPedding,xMargin,yMargin,newImage,width,height,null);
-		
+
 		return this;
-		
+
 	}
 
 	public Img drawImageCenter(int xPedding,int yPedding,int xMargin,int yMargin,BufferedImage newImage,int width,int height,Color bgColor) {
@@ -142,17 +265,17 @@ public class Img {
 		int realY = yPedding + ((this.height - yMargin - height) / 2);
 
 		drawImage(realX,realY,newImage,width,height,bgColor);
-		
+
 		return this;
-		
+
 	}
-	
+
 	public Img drawImage(int x,int y,File image,int width,int height) {
-		
+
 		drawImage(x,y,image,width,height,null);
-		
+
 		return this;
-		
+
 	}
 
 	public Img drawImage(int x,int y,File image,int width,int height,Color bgCplor) {
@@ -168,13 +291,13 @@ public class Img {
 	}
 
 	public Img drawImage(int x,int y,BufferedImage newImage,int width,int height) {
-		
+
 		drawImage(x,y,newImage,width,height,null);
-		
+
 		return this;
-		
+
 	}
-	
+
 	public Img drawImage(int x,int y,BufferedImage newImage,int width,int height,Color bgColor) {
 
 		if (bgColor == null) {
