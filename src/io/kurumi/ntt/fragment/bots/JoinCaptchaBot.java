@@ -440,6 +440,12 @@ public class JoinCaptchaBot extends BotFragment {
 
 			}
 
+			if (secGroup.containsKey(target)) {
+
+				secGroup.remove(target).delete();
+
+			}
+			
 			point().points.remove(target);
 
 			UserData targetUser = UserData.get(target);
@@ -526,6 +532,13 @@ public class JoinCaptchaBot extends BotFragment {
 				group.remove(target).delete();
 
 			}
+			
+			if (secGroup.containsKey(target)) {
+
+				secGroup.remove(target).delete();
+
+			}
+			
 
 			point().points.remove(target);
 
