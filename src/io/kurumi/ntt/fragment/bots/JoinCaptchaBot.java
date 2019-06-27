@@ -640,17 +640,19 @@ public class JoinCaptchaBot extends BotFragment {
 
 				if (((GeneratedCode)point.data).generator.verify(((GeneratedCode)point.data).code,msg.text())) {
 
-					if (cache.containsKey(msg.chatId())) {
+					if (secCache.containsKey(msg.chatId())) {
 
 						if (group.containsKey(user.id)) {
 
 							group.remove(user.id).delete();
 
-							if (group.isEmpty()) cache.remove(msg.chatId());
+							if (group.isEmpty()) secCache.remove(msg.chatId());
 
 						}
 
 					}
+					
+					msg.delete();
 
 					clearPoint(user);
 
