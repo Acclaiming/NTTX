@@ -47,7 +47,7 @@ public class JoinCaptchaBot extends BotFragment {
     public Boolean delJoin;
     HashMap<Long, HashMap<Long, Msg>> cache = new HashMap<>();
 	HashMap<Long, HashMap<Long, Msg>> secCache = new HashMap<>();
-	
+
     String welcomeMessage;
     Integer lastWelcomeMessage;
 
@@ -470,15 +470,11 @@ public class JoinCaptchaBot extends BotFragment {
 
 		if (msg.message().leftChatMember() != null) {
 
-			if (cache.containsKey(msg.chatId())) {
+			if (group.containsKey(msg.message().leftChatMember().id())) {
 
-				if (group.containsKey(msg.message().leftChatMember().id())) {
+				group.remove(msg.message().leftChatMember().id()).delete();
 
-					group.remove(msg.message().leftChatMember().id()).delete();
-
-					if (group.isEmpty()) cache.remove(msg.chatId());
-
-				}
+				if (group.isEmpty()) cache.remove(msg.chatId());
 
 			}
 
@@ -535,7 +531,7 @@ public class JoinCaptchaBot extends BotFragment {
 				if (needSecondaryVerification(user)) {
 
 					HashMap<Long, Msg> secGroup = secCache.containsKey(msg.chatId()) ? secCache.get(msg.chatId()) : new HashMap<Long, Msg>();
-					
+
 					GeneratedCode code = new GeneratedCode();
 
 					code.generator = RandomUtil.randomBoolean() ? new MathGenerator(1) : new RandomGenerator("苟利国家生死以岂因祸福避趋之",7);
@@ -640,18 +636,16 @@ public class JoinCaptchaBot extends BotFragment {
 
 				if (((GeneratedCode)point.data).generator.verify(((GeneratedCode)point.data).code,msg.text())) {
 
-					if (secCache.containsKey(msg.chatId())) {
+					HashMap<Long, Msg> secGroup = secCache.containsKey(msg.chatId()) ? secCache.get(msg.chatId()) : new HashMap<Long, Msg>();
 
-						if (group.containsKey(user.id)) {
+					if (secGroup.containsKey(user.id)) {
 
-							group.remove(user.id).delete();
+						secGroup.remove(user.id).delete();
 
-							if (group.isEmpty()) secCache.remove(msg.chatId());
-
-						}
+						if (secGroup.isEmpty()) secCache.remove(msg.chatId());
 
 					}
-					
+
 					msg.delete();
 
 					clearPoint(user);
@@ -695,15 +689,11 @@ public class JoinCaptchaBot extends BotFragment {
 
 			} else if (msg.kick()) {
 
-				if (cache.containsKey(msg.chatId())) {
+				if (group.containsKey(user.id)) {
 
-					if (group.containsKey(user.id)) {
+					group.remove(user.id).delete();
 
-						group.remove(user.id).delete();
-
-						if (group.isEmpty()) cache.remove(msg.chatId());
-
-					}
+					if (group.isEmpty()) cache.remove(msg.chatId());
 
 				}
 
