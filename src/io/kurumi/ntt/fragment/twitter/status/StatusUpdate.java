@@ -412,7 +412,7 @@ public class StatusUpdate extends TwitterFunction {
 
 						}
 
-						time = time + (60 * 60 * 1000 * NumberUtil.parseInt(offset));
+						time = time + (60 * 60 * 1000 * (NumberUtil.parseInt(offset) - 8));
 
 					}
 
