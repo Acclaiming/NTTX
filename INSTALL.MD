@@ -10,6 +10,12 @@ git clone https://github.com/HiedaNaKan/NTTools /usr/local/ntt
 cd /usr/local/ntt
 ```
 
+### 安装 epel 源
+
+```
+yum install -y epel-release
+```
+
 ### 配置Nginx
 
 ```
@@ -23,12 +29,6 @@ service nginx restart
 
 ```
 
-### 安装 epel 源
-
-```
-yum install -y epel-release
-```
-
 ### 安装 Git 与 OpenJDK8
 
 ```
@@ -40,7 +40,7 @@ yum install -y git java java-devel
 ```
 yum install -y unzip mkfontscale fontconfig
 
-cd /usr/share/fonts && mkdir noto && wget https://noto-website-2.storage.googleapis.com/pkgs/Noto-unhinted.zip && unzip Noto-unhinted.zip -d && rm -rf Noto-unhinted.zip
+cd /usr/share/fonts && mkdir noto && wget https://noto-website-2.storage.googleapis.com/pkgs/Noto-unhinted.zip && unzip Noto-unhinted.zip -d noto && rm -rf Noto-unhinted.zip
 
 mkfontscale && mkfontdir && fc-cache -fv && source /etc/profile
 
