@@ -143,8 +143,6 @@ public class Img {
 
 		}
 
-		drawThickLine(0,RandomUtil.randomInt(height) + 1,width,RandomUtil.randomInt(height) + 1,count,ImageUtil.randomColor());
-
 		graphics.setPaint(paint);
 
 		return this;
