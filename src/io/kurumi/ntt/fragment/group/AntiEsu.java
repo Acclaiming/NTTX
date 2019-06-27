@@ -49,6 +49,8 @@ public class AntiEsu extends Function {
 		"piyixia",
 		"QQciya",
 		"QQciya2",
+		"weitu",
+		"CyanoxygenS",
 		
 		"hanaakari"
 
