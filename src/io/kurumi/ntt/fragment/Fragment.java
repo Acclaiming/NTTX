@@ -455,6 +455,9 @@ public class Fragment {
 	}
 
 	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,Object data) {
+		
+		origin.onFinalMsg(user,msg);
+		
 	}
 
 	public int checkCallback(UserData user,Callback callback,String point,String[] params) {

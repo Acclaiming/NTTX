@@ -206,7 +206,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 					request.fragment.onTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
 
 				}
-				
+
 
 			} else {
 
@@ -417,6 +417,23 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 			} else if (msg.isPrivate() && privatePoint != null && points.containsKey(privatePoint.point)) {
 
 				if (msg.isCommand()) {
+
+					if ("cancel".equals(msg.command())) {
+
+						return new Processed(user,update,PROCESS_SYNC) {
+							
+							@Override
+							public void process() {
+
+								onPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint.data);
+
+
+							}
+
+						};
+
+
+					}
 
 					final Fragment function = functions.get(msg.command());
 

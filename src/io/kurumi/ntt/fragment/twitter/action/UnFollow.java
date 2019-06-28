@@ -22,7 +22,7 @@ public class UnFollow extends Fragment {
 
 		super.init(origin);
 		
-		registerFunction("");
+		registerFunction("unfo");
 		
 	}
 
