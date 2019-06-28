@@ -301,6 +301,21 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 	}
 
+	@Override
+	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,Object data) {
+		
+		if ("cancel".equals(function)) {
+
+			clearPrivatePoint(user);
+			
+			msg.send("已经取消当前操作 :) ","帮助文档 : @NTT_X").exec();
+
+			return;
+
+		}
+		
+	}
+
     public void processAsync(final Update update) {
 
         final UserData user;
