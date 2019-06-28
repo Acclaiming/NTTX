@@ -402,6 +402,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 						@Override
 						public void process() {
 
+							msg.sendTyping();
+							
 							function.onPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint.data);
 
 						}
@@ -421,6 +423,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 						@Override
 						public void process() {
 
+							msg.sendTyping();
+							
 							function.onPoint(user,msg,groupPoint.point,groupPoint.data);
 
 						}
@@ -440,6 +444,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 							@Override
 							public void process() {
 
+								msg.sendTyping();
+								
 								onPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint.data);
 
 
@@ -461,6 +467,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 						@Override
 						public void process() {
 
+							msg.sendTyping();
+							
 							function.onPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint.data);
 
 						}
@@ -479,6 +487,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 						@Override
 						public void process() {
+							
+							msg.sendTyping();
 
 							function.onPoint(user,msg,privatePoint.point,privatePoint.data);
 
@@ -511,6 +521,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 								@Override
 								public void process() {
 
+									msg.sendTyping();
+									
 									function.onPayload(user,msg,payload,params);
 
 								}
@@ -530,6 +542,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 								@Override
 								public void process() {
 
+									msg.sendTyping();
+									
 									function.onPayload(user,msg,payload,params);
 
 								}
@@ -543,6 +557,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 								@Override
 								public void process() {
 
+									msg.sendTyping();
+									
 									onFinalMsg(user,msg);
 
 								}
@@ -593,6 +609,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 							@Override
 							public void process() {
 
+								msg.sendTyping();
+								
 								function.onFunction(user,msg,msg.command(),msg.params());
 
 							}
@@ -612,6 +630,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 							@Override
 							public void process() {
 
+								msg.sendTyping();
+								
 								function.onFunction(user,msg,msg.command(),msg.params());
 
 							}
@@ -625,6 +645,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 							@Override
 							public void process() {
 
+								msg.sendTyping();
+								
 								onFinalMsg(user,msg);
 
 							}
