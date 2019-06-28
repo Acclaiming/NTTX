@@ -2,43 +2,32 @@ package io.kurumi.ntt.fragment.admin;
 
 import cn.hutool.core.util.RuntimeUtil;
 import io.kurumi.ntt.Env;
+import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.abs.Function;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.abs.request.Send;
-
+import io.kurumi.ntt.utils.BotLog;
 import java.util.LinkedList;
-import io.kurumi.ntt.utils.*;
-import io.kurumi.ntt.*;
+import io.kurumi.ntt.fragment.BotFragment;
 
-public class Control extends Function {
+public class Control extends Fragment {
 
-    @Override
-    public void functions(LinkedList<String> names) {
-
-        names.add("stop");
-		names.add("upgrade");
-        names.add("restart");
-        names.add("poweroff");
-        names.add("reboot");
-        names.add("rdate");
+	@Override
+	public void init(BotFragment origin) {
+	
+		super.init(origin);
+	
+		registerAdminFunction("stop","upgrade","restart","poweroff","reboot");
 
     }
 
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        if (!user.developer()) {
-
-            msg.send("Permission Denied").exec();
-
-            return;
-
-        }
-
         if ("stop".equals(function)) {
 
-            new Send(Env.GROUP, "Bot Stop Executed : By " + user.userName()).html().exec();
+            msg.send("Executed : By " + user.userName()).html().exec();
 
             RuntimeUtil.exec("service ntt stop");
 
@@ -81,13 +70,7 @@ public class Control extends Function {
 
             RuntimeUtil.exec("reboot");
 
-        } else if ("rdate".equals(function)) {
-
-            new Send(Env.GROUP, "Time Sync Executed : By " + user.userName()).html().exec();
-
-            RuntimeUtil.execForStr("rdate -s time.nist.gov");
-
-        }
+        } 
 
     }
 

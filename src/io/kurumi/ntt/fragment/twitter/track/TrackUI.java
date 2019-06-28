@@ -2,52 +2,48 @@ package io.kurumi.ntt.fragment.twitter.track;
 
 import io.kurumi.ntt.db.Data;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Callback;
 import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.TwitterFunction;
 import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
 import io.kurumi.ntt.fragment.twitter.TAuth;
-
 import java.util.LinkedList;
+import io.kurumi.ntt.fragment.BotFragment;
 
-public class TrackUI extends TwitterFunction {
-
-    public static TrackUI INSTANCE = new TrackUI();
+public class TrackUI extends Fragment {
 
     public static Data<TrackSetting> data = new Data<TrackSetting>(TrackSetting.class);
+	
     final String POINT_SETTING_FOLLOWERS = "tr|f";
     final String POINT_SETTING_FOLLOWERS_INFO = "tr|o";
     final String POINT_SETTING_FOLLOWINGS_INFO = "tr|r";
     final String POINT_SETTING_HIDE_ME = "tr|h";
 
-    @Override
-    public void functions(LinkedList<String> names) {
+	@Override
+	public void init(BotFragment origin) {
+	
+		super.init(origin);
+		
+        registerFunction("track");
 
-        names.add("track");
-
-    }
-
-    @Override
-    public int target() {
-
-        return Private;
-
-    }
-
-    @Override
-    public void points(LinkedList<String> points) {
-
-        super.points(points);
-
-        points.add(POINT_SETTING_FOLLOWERS);
-        points.add(POINT_SETTING_FOLLOWINGS_INFO);
-        points.add(POINT_SETTING_FOLLOWERS_INFO);
-        points.add(POINT_SETTING_HIDE_ME);
+		registerPoint(
+        POINT_SETTING_FOLLOWERS,
+        POINT_SETTING_FOLLOWINGS_INFO,
+        POINT_SETTING_FOLLOWERS_INFO,
+        POINT_SETTING_HIDE_ME);
 
     }
 
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		
+		requestTwitter(user,msg);
+		
+	}
+	
+
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params, final TAuth account) {
+    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, final TAuth account) {
 
         final TrackSetting setting = this.data.containsId(account.id) ? this.data.getById(account.id) : new TrackSetting();
 

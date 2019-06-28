@@ -1,10 +1,11 @@
 package io.kurumi.ntt.fragment.twitter.status;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.NumberUtil;
 import io.kurumi.ntt.db.Data;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.TwitterFunction;
 import io.kurumi.ntt.fragment.abs.request.Send;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
@@ -16,10 +17,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import twitter4j.Status;
 import twitter4j.TwitterException;
-import cn.hutool.core.util.NumberUtil;
-import io.kurumi.ntt.fragment.twitter.status.TimedStatus.TimedUpdate;
+import io.kurumi.ntt.fragment.BotFragment;
 
-public class TimedStatus extends TwitterFunction {
+public class TimedStatus extends Fragment {
 
 	public static Timer timer;
 
@@ -156,23 +156,28 @@ public class TimedStatus extends TwitterFunction {
 	}
 
 	@Override
-	public boolean onPrivate(UserData user,Msg msg) {
+	public void init(BotFragment origin) {
 
-		if (super.onPrivate(user,msg)) return true;
+		super.init(origin);
 
-		if (!msg.isStartPayload()) return false;
+		registerFunction("timed");
+		
+		registerPayload("tdc","tds");
 
-		String[] payload = msg.payload();
+	}
 
-		if (payload.length  != 2 || !NumberUtil.isNumber(payload[1])) {
+	@Override
+	public void onPayload(UserData user,Msg msg,String payload,String[] params) {
 
-			return false;
+		if (params.length  != 1 || !NumberUtil.isNumber(params[0])) {
+
+			return;
 
 		}
 
-		if ("tdc".equals(payload[0])) {
+		if ("tdc".equals(payload)) {
 
-			Long updateId = NumberUtil.parseLong(msg.payload()[1]);
+			Long updateId = NumberUtil.parseLong(params[0]);
 
 			TimedUpdate update = data.getById(updateId);
 
@@ -180,17 +185,17 @@ public class TimedStatus extends TwitterFunction {
 
 				msg.send("这条定时推文已被取消或发送").exec();
 
-				return true;
+				return;
 
 			}
-			
+
 			TAuth auth = TAuth.getById(update.auth);
 
 			if (!auth.user.equals(user.id)) {
 
 				msg.send("很抱歉，不能执行这项操作").exec();
 
-				return true;
+				return;
 
 			}
 
@@ -198,29 +203,27 @@ public class TimedStatus extends TwitterFunction {
 
 			msg.send("定时推文 " + updateId + " 已取消 (").exec();
 
-			return true;
+		} else if ("tds".equals(payload)) {
 
-		} else if ("tds".equals(payload[0])) {
-
-			Long updateId = NumberUtil.parseLong(msg.payload()[1]);
+			Long updateId = NumberUtil.parseLong(params[0]);
 
 			TimedUpdate update = data.getById(updateId);
 
 			if (update == null) {
-				
+
 				msg.send("这条定时推文已被取消或发送").exec();
-				
-				return true;
-				
+
+				return;
+
 			}
-			
+
 			TAuth auth = TAuth.getById(update.auth);
 
 			if (!auth.user.equals(user.id)) {
 
 				msg.send("很抱歉，不能执行这项操作").exec();
 
-				return true;
+				return;
 
 			}
 
@@ -256,23 +259,23 @@ public class TimedStatus extends TwitterFunction {
 
 				msg.reply("发送失败 : ",NTT.parseTwitterException(e)).exec();
 
-            }
+			}
 
-			return true;
-
-		} else return false;
+		}
 
 	}
 
 	@Override
-	public boolean useCurrent() {
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 		
-		return true;
+		super.onFunction(user,msg,function,params);
+		
+		requestTwitter(user,msg);
 		
 	}
 
 	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
 		if (data.countByField("auth",account.id) == 0) {
 
@@ -317,12 +320,7 @@ public class TimedStatus extends TwitterFunction {
 		msg.send(updates.toString()).html().exec();
 
 	}
-
-	@Override
-	public void functions(LinkedList<String> names) {
-
-		names.add("timed");
-
-	}
+	
+	
 
 }

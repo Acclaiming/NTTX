@@ -1,66 +1,50 @@
 package io.kurumi.ntt.fragment.twitter.status;
 
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.exceptions.UtilException;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.NumberUtil;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.PhotoSize;
 import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.TwitterFunction;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import io.kurumi.ntt.utils.MongoIDs;
 import io.kurumi.ntt.utils.NTT;
-
 import java.util.LinkedList;
-
 import twitter4j.Status;
 import twitter4j.TwitterException;
-import io.kurumi.ntt.fragment.twitter.status.StatusUpdate.UpdatePoint;
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.date.DateUnit;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.date.DateTime;
-import cn.hutool.core.exceptions.UtilException;
-import io.kurumi.ntt.utils.MongoIDs;
+import io.kurumi.ntt.fragment.BotFragment;
 
-public class StatusUpdate extends TwitterFunction {
+public class StatusUpdate extends Fragment {
 
-    final String POINT_UPDATE_STATUS = "status,update";
-
-    @Override
-    public void points(LinkedList<String> points) {
-
-        super.points(points);
-
-        points.add(POINT_UPDATE_STATUS);
-
-    }
-
-    @Override
-    public boolean useCurrent() {
-
-        return true;
-
-    }
-
-    @Override
-    public void functions(LinkedList<String> names) {
-
-        names.add("update");
-
-    }
+    final String POINT_UPDATE_STATUS = "status_update";
 
 	@Override
-	public boolean async() {
+	public void init(BotFragment origin) {
+	
+		super.init(origin);
+		
+		registerFunction("update");
+	
+        registerPoint(POINT_UPDATE_STATUS);
 
-		return false;
+}
 
-	}
-
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		
+		requestTwitter(user,msg);
+		
+}
+	
     @Override
-    public void onFunction(UserData user,Msg msg,String function,String[] params,final TAuth account) {
+    public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,final TAuth account) {
 
         StatusUpdate.UpdatePoint update = new UpdatePoint();
 
@@ -78,7 +62,7 @@ public class StatusUpdate extends TwitterFunction {
 
         }
 
-        setPoint(user,POINT_UPDATE_STATUS,update);
+        setPrivatePoint(user,POINT_UPDATE_STATUS,update);
 
         msg.send("现在发送推文内容 : ").withCancel().exec();
 
@@ -87,17 +71,13 @@ public class StatusUpdate extends TwitterFunction {
 	String submitAndCancel = "使用 /submit 发送\n使用 /timed 定时发送\n使用 /cancel 取消";
 
     @Override
-    public boolean onPrivate(UserData user,Msg msg) {
-
-		if (super.onPrivate(user,msg)) return true;
-
-        if (!msg.isReply()) return false;
+    public void onPrivate(UserData user,Msg msg) {
+		
+        if (!msg.isReply()) return;
 
         MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
 
-        if (point == null) return false;
-
-        if (point.type == 0) return false;
+        if (point == null || point.type == 0) return;
 
         long count = TAuth.data.countByField("user",user.id);
 
@@ -107,7 +87,7 @@ public class StatusUpdate extends TwitterFunction {
 
             msg.send("你没有认证账号，使用 /login 登录 ~").exec();
 
-            return true;
+            return;
 
         } else if (count == 1) {
 
@@ -125,7 +105,7 @@ public class StatusUpdate extends TwitterFunction {
 
                     msg.send("乃认证了多个账号 请使用 /current 选择默认账号再操作 ~").exec();
 
-                    return true;
+                    return;
 
                 }
 
@@ -133,55 +113,9 @@ public class StatusUpdate extends TwitterFunction {
 
                 msg.send("乃认证了多个账号 请使用 /current 选择默认账号再操作 ~").exec();
 
-                return true;
+                return;
 
             }
-
-        }
-
-        if (msg.hasText()) {
-
-            msg.sendTyping();
-
-            StatusArchive toReply = StatusArchive.get(point.targetId);
-
-            String reply = "@" + toReply.user().screenName + " ";
-
-            if (!toReply.userMentions.isEmpty()) {
-
-                for (long mention : toReply.userMentions) {
-
-                    if (!auth.id.equals(mention)) {
-
-                        reply = reply + "@" + UserArchive.get(mention).screenName + " ";
-
-                    }
-
-                }
-
-            }
-
-
-            String text = text = reply + msg.text();
-
-            twitter4j.StatusUpdate send = new twitter4j.StatusUpdate(text);
-
-            send.inReplyToStatusId(toReply.id);
-
-            try {
-
-                Status status = auth.createApi().updateStatus(send);
-
-                StatusArchive archive = StatusArchive.save(status);
-
-                msg.reply("回复成功 :",StatusArchive.split_tiny,archive.toHtml(0)).buttons(StatusAction.createMarkup(archive.id,true,archive.depth() == 0,false,false)).html().point(1,archive.id);
-
-            } catch (TwitterException e) {
-
-                msg.send("回复失败 :(",NTT.parseTwitterException(e)).exec();
-
-            }
-            return true;
 
         }
 
@@ -189,6 +123,22 @@ public class StatusUpdate extends TwitterFunction {
 
         UpdatePoint update = new UpdatePoint();
 
+		if (msg.hasText()) {
+
+            if (msg.text().toCharArray().length > 280) {
+
+                msg.send("大小超过 Twitter 280 字符限制 , 注意 : 一个中文字占两个字符。").exec();
+
+                return;
+
+            }
+
+            update.text = msg.text();
+
+            msg.send("文本已设定",submitAndCancel).exec();
+
+        }
+		
         update.auth = auth;
 
         update.toReply = StatusArchive.get(point.targetId);
@@ -229,7 +179,7 @@ public class StatusUpdate extends TwitterFunction {
 
                 msg.send("图片超过 5m ，根据Twitter官方限制,无法发送").exec();
 
-                return true;
+                return;
 
             }
 
@@ -251,7 +201,7 @@ public class StatusUpdate extends TwitterFunction {
 
                 msg.send("动图超过 15m ，根据Twitter官方限制,无法发送").exec();
 
-                return true;
+                return;
 
             }
 
@@ -276,7 +226,7 @@ public class StatusUpdate extends TwitterFunction {
 
                 msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
 
-                return true;
+                return;
 
             }
 
@@ -301,7 +251,7 @@ public class StatusUpdate extends TwitterFunction {
 
                 msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
 
-                return true;
+                return;
 
             }
 
@@ -322,24 +272,22 @@ public class StatusUpdate extends TwitterFunction {
 
         } else {
 
-            return false;
+            return;
 
         }
 
-        setPoint(user,POINT_UPDATE_STATUS,update);
+        setPrivatePoint(user,POINT_UPDATE_STATUS,update);
 
-        return true;
+        return;
 
     }
 
-    @Override
-    public void onPoint(UserData user,Msg msg,PointStore.Point point) {
+	@Override
+	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,Object data) {
+		
+		UpdatePoint update = (UpdatePoint) data;
 
-		super.onPoint(user,msg,point);
-
-        UpdatePoint update = (StatusUpdate.UpdatePoint) point.data;
-
-		if ("timed".equals(msg.command())) {
+		if ("timed".equals(function)) {
 
 			if (update.text == null && update.images.isEmpty() && update.video == -1) {
 
@@ -347,10 +295,8 @@ public class StatusUpdate extends TwitterFunction {
 
                 return;
 
-            }
-
-			String[] params = msg.params();
-
+           }
+		   
 			long time = -1;
 
 			if (params.length == 0 || (params.length > 0 && !params[0].contains(":"))) {
@@ -366,13 +312,13 @@ public class StatusUpdate extends TwitterFunction {
 					try {
 
 						DateTime date = DateUtil.parse(params[0],"HH:mm");
-						
+
 						DateTime current = new DateTime();
-						
+
 						current.setHours(date.hour(true));
-						
+
 						current.setMinutes(date.minute());
-						
+
 						time = current.getTime();
 
 					} catch (UtilException ex) {
@@ -419,17 +365,17 @@ public class StatusUpdate extends TwitterFunction {
 				}
 
 			}
-			
+
 			if (time < (System.currentTimeMillis() + (10 * 1000))) {
-				
+
 				msg.send("这个时间已经过去了...").exec();
-				
+
 				return;
-				
+
 			}
-			
+
 			TimedStatus.TimedUpdate timed = new TimedStatus.TimedUpdate();
-			
+
 			if (update.toReply != null) {
 
                 String reply = "@" + update.toReply.user().screenName + " ";
@@ -477,20 +423,20 @@ public class StatusUpdate extends TwitterFunction {
 			timed.images = update.images;
 			timed.text = update.text;
 			timed.video = update.video;
-			
+
 			timed.id = MongoIDs.getNextId(TimedStatus.TimedUpdate.class.getSimpleName());
 
 			TimedStatus.data.setById(timed.id,timed);
-			
+
 			TimedStatus.schedule(timed);
-			
+
 			msg.send("已创建定时推文 : " + timed.id,"使用 /timed 管理定时推文").exec();
-			
-			clearPoint(user);
-			
+
+			clearPrivatePoint(user);
+
 			return;
 			
-        } else if ("submit".equals(msg.command())) {
+		} else if ("submit".equals(function)) {
 
             if (update.text == null && update.images.isEmpty() && update.video == -1) {
 
@@ -500,7 +446,7 @@ public class StatusUpdate extends TwitterFunction {
 
             }
 
-            clearPoint(user);
+            clearPrivatePoint(user);
 
             if (update.toReply != null) {
 
@@ -587,7 +533,15 @@ public class StatusUpdate extends TwitterFunction {
             return;
 
         }
-
+		
+		
+	}
+	
+	@Override
+	public void onPoint(UserData user,Msg msg,String point,Object data) {
+		
+		UpdatePoint update = (UpdatePoint) data;
+      
         if (msg.hasText()) {
 
             if (msg.text().toCharArray().length > 280) {

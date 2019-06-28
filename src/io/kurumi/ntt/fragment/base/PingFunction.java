@@ -1,22 +1,24 @@
 package io.kurumi.ntt.fragment.base;
 
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.abs.Function;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
-
 import java.util.LinkedList;
+import io.kurumi.ntt.fragment.BotFragment;
 
-public class PingFunction extends Function {
+public class PingFunction extends Fragment {
 
-    @Override
-    public void functions(LinkedList<String> names) {
+	@Override
+	public void init(BotFragment origin) {
 
-        names.add("ping");
+		super.init(origin);
+
+		registerFunction("ping");
 
 	}
 
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
         long start = System.currentTimeMillis();
 
@@ -30,7 +32,7 @@ public class PingFunction extends Function {
 
         if (sended != null) {
 
-            sended.edit(pong, "回复延迟 : " + (end - start) + "ms").publicFailedWith(msg);
+            sended.edit(pong,"回复延迟 : " + (end - start) + "ms").publicFailedWith(msg);
 
         }
 

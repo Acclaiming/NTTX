@@ -6,34 +6,36 @@ import cn.hutool.http.HtmlUtil;
 import cn.hutool.json.JSONArray;
 import io.kurumi.ntt.db.LocalData;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.abs.Function;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.utils.NTT;
-
 import java.security.acl.Group;
 import java.util.LinkedList;
+import io.kurumi.ntt.fragment.BotFragment;
 
-public class ChineseAction extends Function {
+public class ChineseAction extends Fragment {
 
-    public static JSONArray disable = LocalData.getJSONArray("data", "disable_action", true);
+    public static JSONArray disable = LocalData.getJSONArray("data","disable_action",true);
     public static ChineseAction INSTANCE = new ChineseAction();
 
+	@Override
+	public void init(BotFragment origin) {
+
+		super.init(origin);
+
+		registerFunction("action");
+
+	}
+
+	@Override
+	public int checkFunction() {
+
+		return FUNCTION_GROUP;
+
+	}
+
     @Override
-    public void functions(LinkedList<String> names) {
-
-        names.add("action");
-
-    }
-
-    @Override
-    public int target() {
-
-        return Group;
-
-    }
-
-    @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
         if (NTT.checkGroupAdmin(msg)) return;
 
@@ -47,7 +49,7 @@ public class ChineseAction extends Function {
 
                 disable.add(msg.chatId());
 
-                LocalData.setJSONArray("data", "disable_action", disable);
+                LocalData.setJSONArray("data","disable_action",disable);
 
                 msg.send("关闭成功 ~").exec();
 
@@ -63,7 +65,7 @@ public class ChineseAction extends Function {
 
                 disable.remove(msg.chatId().longValue());
 
-                LocalData.setJSONArray("data", "disable_action", disable);
+                LocalData.setJSONArray("data","disable_action",disable);
 
                 msg.send("已开启 ~").exec();
 
@@ -89,9 +91,9 @@ public class ChineseAction extends Function {
     }
 
     @Override
-    public boolean onGroup(UserData user, Msg msg) {
+    public void onGroup(UserData user,Msg msg) {
 
-        if (disable.contains(msg.chatId().longValue())) return false;
+        if (disable.contains(msg.chatId().longValue())) return;
 
         if (startWithChinese(msg.command())) {
 
@@ -99,7 +101,7 @@ public class ChineseAction extends Function {
 
                 if (msg.params().length > 0) {
 
-                    String params = ArrayUtil.join(msg.params(), " ");
+                    String params = ArrayUtil.join(msg.params()," ");
 
                     msg.send(user.userName() + " " + HtmlUtil.escape(msg.command()) + " " + msg.replyTo().from().userName() + " " + params + " ~").html().exec();
 
@@ -111,7 +113,7 @@ public class ChineseAction extends Function {
 
             } else {
 
-                String command = msg.params().length > 0 ? msg.command() + " " + ArrayUtil.join(msg.params(), " ") : msg.command();
+                String command = msg.params().length > 0 ? msg.command() + " " + ArrayUtil.join(msg.params()," ") : msg.command();
 
                 if (!command.contains("了")) command = command + "了";
 
@@ -120,12 +122,8 @@ public class ChineseAction extends Function {
                 msg.delete();
 
             }
-
-            return true;
-
-        }
-
-        return false;
+			
+		}
 
     }
 

@@ -13,6 +13,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+import io.kurumi.ntt.fragment.BotFragment;
 
 public class Backup extends Fragment {
 
@@ -31,7 +32,7 @@ public class Backup extends Fragment {
         next.setSeconds(0);
 
         timer = new Timer("NTT Data Backup Task");
-        timer.scheduleAtFixedRate(AutoBackupTask.INSTANCE, next, 1 * 60 * 60 * 1000);
+        timer.scheduleAtFixedRate(AutoBackupTask.INSTANCE,next,1 * 60 * 60 * 1000);
 
     }
 
@@ -52,46 +53,54 @@ public class Backup extends Fragment {
         try {
 
             RuntimeUtil.exec(
-                    "mongodump",
-                    "-h", Env.getOrDefault("db_address", "127.0.0.1") + ":" + Env.getOrDefault("db_port", "27017"),
-                    "-d", "NTTools",
-                    "-o", Env.DATA_DIR.getPath() + "/db"
+				"mongodump",
+				"-h",Env.getOrDefault("db_address","127.0.0.1") + ":" + Env.getOrDefault("db_port","27017"),
+				"-d","NTTools",
+				"-o",Env.DATA_DIR.getPath() + "/db"
             ).waitFor();
 
         } catch (InterruptedException e) {
         }
 
 		File dest = new File(Env.CACHE_DIR,"data.zip");
-		
+
 		FileUtil.del(dest);
-		
+
         File zip = ZipUtil.zip(Env.DATA_DIR.getPath(),dest.getPath());
-		
+
         FileUtil.del(Env.DATA_DIR + "/db");
 
-        Launcher.INSTANCE.sendFile(chatId, zip);
+        Launcher.INSTANCE.sendFile(chatId,zip);
 
 
     }
 
-    @Override
-    public boolean onMsg(UserData user, Msg msg) {
+	@Override
+	public void init(BotFragment origin) {
+		
+		super.init(origin);
 
-        if (!msg.isCommand()) return false;
+		registerFunction("backup");
 
-        if (!"backup".equals(msg.command())) return false;
+	}
 
-        if (!user.developer()) {
+	@Override
+	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
+		
+		return PROCESS_THREAD;
+		
+	}
 
-            msg.send("无权限").exec();
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-            return true;
+		if (!user.developer()) {
 
-        }
+			msg.send("Permission Denied").exec();
+
+		}
 
         backup(msg.chatId());
-
-        return true;
 
     }
 

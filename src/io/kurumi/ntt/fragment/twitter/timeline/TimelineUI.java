@@ -3,29 +3,28 @@ package io.kurumi.ntt.fragment.twitter.timeline;
 import cn.hutool.core.util.ArrayUtil;
 import io.kurumi.ntt.db.Data;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.TwitterFunction;
 import io.kurumi.ntt.fragment.abs.request.Send;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 import io.kurumi.ntt.utils.NTT;
-
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+import twitter4j.DirectMessage;
+import twitter4j.DirectMessageList;
 import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.DirectMessageList;
-import twitter4j.DirectMessage;
+import io.kurumi.ntt.fragment.BotFragment;
 
-public class TimelineUI extends TwitterFunction {
+public class TimelineUI extends Fragment {
 
     public static Data<TLSetting> data = new Data<TLSetting>(TLSetting.class);
     static Timer timer;
@@ -281,17 +280,17 @@ public class TimelineUI extends TwitterFunction {
         
     }
 
-    @Override
-    public void functions(LinkedList<String> names) {
+	@Override
+	public void init(BotFragment origin) {
+		
+		super.init(origin);
 
-        names.add("timeline");
-        names.add("mention");
-        names.add("dm");
+		registerFunction("timeline","mention","dm");
 
     }
 
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
+    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
         TLSetting setting = data.getById(account.id);
 

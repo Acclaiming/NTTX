@@ -6,46 +6,47 @@ import com.pengrad.telegrambot.request.SendPhoto;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.abs.Function;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
-
 import java.io.File;
 import java.util.LinkedList;
 import java.util.Map;
+import io.kurumi.ntt.fragment.BotFragment;
 
-public class TiebaLogin extends Function {
+public class TiebaLogin extends Fragment {
 
     final String POINT_TIEBA_LOGIN = "tieba,login";
 
-    @Override
-    public void functions(LinkedList<String> names) {
+	@Override
+	public void init(BotFragment origin) {
+		
+		super.init(origin);
+		
+		registerFunction("tblogin");
+		registerPoints(POINT_TIEBA_LOGIN);
+		
+	}
 
-        names.add("tblogin");
-
-    }
-
-    @Override
-    public void points(LinkedList<String> points) {
-
-        points.add(POINT_TIEBA_LOGIN);
-
-    }
+	@Override
+	public int checkFunction() {
+	
+		return FUNCTION_PRIVATE;
+		
+	}
 
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        TieBaApi.getInstance();
-        
-        setPoint(user, POINT_TIEBA_LOGIN, new TiebaLoginStatus());
+        setPrivatePoint(user, POINT_TIEBA_LOGIN, new TiebaLoginStatus());
 
         msg.send("输入用户名 :").exec();
 
     }
 
-    @Override
-    public void onPoint(UserData user, Msg msg, PointStore.Point point) {
+	@Override
+	public void onPoint(UserData user,Msg msg,String point,Object data) {
 
-        TiebaLoginStatus status = (TiebaLoginStatus) point.data;
+        TiebaLoginStatus status = (TiebaLoginStatus) data;
 
         if (status.status == 0) {
 
@@ -101,7 +102,7 @@ public class TiebaLogin extends Function {
 
         } else if (result.get("status").toString().equals("0")) {
 
-            clearPoint(user);
+            clearPrivatePoint(user);
 
             loginSuccess(user, msg, status, result);
 
@@ -128,7 +129,7 @@ public class TiebaLogin extends Function {
 
             if (!result.get("status").equals("-3")) {
 
-                clearPoint(user);
+                clearPrivatePoint(user);
 
             }
 

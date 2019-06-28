@@ -1,44 +1,33 @@
 package io.kurumi.ntt.fragment.admin;
 
-import io.kurumi.ntt.fragment.abs.TwitterFunction;
-import java.util.LinkedList;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
-import twitter4j.Twitter;
 import io.kurumi.ntt.fragment.twitter.TApi;
-import io.kurumi.ntt.utils.NTT;
-import twitter4j.TwitterException;
-import twitter4j.Status;
+import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
+import io.kurumi.ntt.utils.NTT;
+import java.util.LinkedList;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import io.kurumi.ntt.fragment.BotFragment;
 
-public class TASReply extends TwitterFunction {
+public class TASReply extends Fragment {
 
-    @Override
-    public void functions(LinkedList<String> names) {
+	@Override
+	public void init(BotFragment origin) {
+		
+		super.init(origin);
+		
+		registerAdminFunction("tas");
+		
+	}
+	
 
-        names.add("tas");
-
-    }
-
-    @Override
-    public boolean async() {
-
-        return true;
-
-    }
-
-
-
-    @Override
-    public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
-
-        if (!user.developer()) {
-
-            return;
-
-        }
-
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		
         if (params.length == 0) {
 
             msg.send("/tas <推文ID/链接>").exec();
@@ -46,7 +35,21 @@ public class TASReply extends TwitterFunction {
             return;
 
         }
+		
+		requestTwitter(user,msg);
+		
+	}
 
+	@Override
+	public int checkTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+		
+		return PROCESS_THREAD;
+		
+	}
+
+	@Override
+	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+		
         Twitter api = account.createApi();
 
         Status status;

@@ -1,27 +1,26 @@
 package io.kurumi.ntt.fragment.twitter.status;
 
+import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.request.EditMessageCaption;
+import com.pengrad.telegrambot.response.BaseResponse;
 import io.kurumi.ntt.db.Data;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Callback;
 import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.TwitterFunction;
 import io.kurumi.ntt.fragment.abs.request.ButtonLine;
 import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
+import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.NTT;
-
 import java.util.LinkedList;
-
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import com.pengrad.telegrambot.request.EditMessageCaption;
-import com.pengrad.telegrambot.model.request.ParseMode;
-import com.pengrad.telegrambot.response.BaseResponse;
-import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.fragment.BotFragment;
 
-public class StatusAction extends TwitterFunction {
+public class StatusAction extends Fragment {
 
     static final String POINT_RETWEET_STATUS = "s_rt";
     static final String POINT_DESTROY_RETWEET = "s_unrt";
@@ -76,15 +75,33 @@ public class StatusAction extends TwitterFunction {
 
     }
 
+	@Override
+	public void init(BotFragment origin) {
+
+		super.init(origin);
+
+		registerFunction("current");
+
+		registerCallback(
+			POINT_LIKE_STATUS,
+			POINT_UNLIKE_STATUS,
+			POINT_RETWEET_STATUS,
+			POINT_DESTROY_RETWEET,
+			POINT_DESTROY_STATUS,
+			POINT_SHOW_FULL);
+
+
+	}
+
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+
+		requestTwitter(user,msg);
+
+	}
+
     @Override
-    public void functions(LinkedList<String> names) {
-
-        names.add("current");
-
-    }
-
-    @Override
-    public void onFunction(final UserData user,Msg msg,String function,String[] params,final TAuth account) {
+    public void onTwitterFunction(final UserData user,Msg msg,String function,String[] params,final TAuth account) {
 
         current.setById(user.id,new CurrentAccount() {{
 
@@ -95,18 +112,6 @@ public class StatusAction extends TwitterFunction {
 				}});
 
         msg.send("当前操作账号已设为 : " + account.archive().urlHtml(),"当多用户时，可用此命令设置默认账号。").html().exec();
-
-    }
-
-    @Override
-    public void points(LinkedList<String> points) {
-
-        points.add(POINT_LIKE_STATUS);
-        points.add(POINT_UNLIKE_STATUS);
-        points.add(POINT_RETWEET_STATUS);
-        points.add(POINT_DESTROY_RETWEET);
-        points.add(POINT_DESTROY_STATUS);
-        points.add(POINT_SHOW_FULL);
 
     }
 
@@ -286,11 +291,11 @@ public class StatusAction extends TwitterFunction {
 				BaseResponse resp = bot().execute(new EditMessageCaption(callback.chatId(),callback.messageId()).caption(archive.toHtml()).parseMode(ParseMode.HTML).replyMarkup(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,liked).markup()));
 
 				if (!resp.isOk()) {
-					
+
 					BotLog.debug("显示全文失败 :" + resp.errorCode() + " " + resp.description());
-					
+
 				}
-				
+
 			} else {
 
 				callback.edit(archive.toHtml()).buttons(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,liked)).html().exec();

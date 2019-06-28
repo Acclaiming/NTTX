@@ -1,20 +1,30 @@
 package io.kurumi.ntt.fragment;
 
-import cn.hutool.http.*;
-import com.pengrad.telegrambot.*;
-import com.pengrad.telegrambot.model.*;
-import com.pengrad.telegrambot.model.request.*;
-import com.pengrad.telegrambot.request.*;
-import com.pengrad.telegrambot.response.*;
-import io.kurumi.ntt.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.fragment.abs.*;
-import io.kurumi.ntt.fragment.abs.request.*;
-import io.kurumi.ntt.utils.*;
-import java.io.*;
-
+import cn.hutool.http.HttpUtil;
+import com.mongodb.client.FindIterable;
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.Poll;
+import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.request.ChatAction;
+import com.pengrad.telegrambot.request.GetFile;
+import com.pengrad.telegrambot.request.SendChatAction;
+import com.pengrad.telegrambot.request.SendDocument;
+import com.pengrad.telegrambot.request.SendSticker;
+import com.pengrad.telegrambot.response.GetFileResponse;
+import io.kurumi.ntt.Env;
+import io.kurumi.ntt.db.PointStore;
+import io.kurumi.ntt.db.StickerPoint;
+import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.abs.Callback;
+import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.abs.Query;
+import io.kurumi.ntt.fragment.abs.request.Keyboard;
+import io.kurumi.ntt.fragment.abs.request.Send;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.fragment.twitter.status.StatusAction;
+import io.kurumi.ntt.utils.BotLog;
 import java.io.File;
+import java.util.LinkedList;
 
 public class Fragment {
 
@@ -34,43 +44,56 @@ public class Fragment {
 
     }
 
-    public <T> void setPoint(UserData user, String pointTo, PointStore.Type context) {
 
-        point().set(user, context, pointTo, null);
+    public  void setPrivatePoint(UserData user,String pointTo,Object content) {
 
-    }
-
-    public <T> void setPoint(UserData user, String pointTo, PointStore.Type context, T content) {
-
-        point().set(user, context, pointTo, content);
+        point().setPrivate(user,pointTo,content);
 
     }
 
-    public <T> void setPoint(UserData user, String pointTo, T content) {
+    public void setPrivatePoint(UserData user,String pointTo) {
 
-        point().set(user, pointTo, content);
-
-    }
-
-    public void setPoint(UserData user, String pointTo) {
-
-        point().set(user, pointTo, null);
+        point().setPrivate(user,pointTo,null);
 
     }
 
-    public <T> PointStore.Point<T> clearPoint(UserData user) {
+	public  void setGroupPoint(UserData user,String pointTo,Object content) {
 
-        return point().clear(user);
-
-    }
-
-    public <T> PointStore.Point<T> getPoint(UserData user) {
-
-        return point().get(user);
+        point().setGroup(user,pointTo,content);
 
     }
 
-    public boolean onUpdate(UserData user, Update update) {
+    public void setGroupPoint(UserData user,String pointTo) {
+
+        point().setGroup(user,pointTo,null);
+
+    }
+
+    public  PointStore.Point clearPrivatePoint(UserData user) {
+
+        return point().clearPrivate(user);
+
+    }
+
+	public  PointStore.Point clearGroupPoint(UserData user) {
+
+        return point().clearGroup(user);
+
+    }
+
+    public  PointStore.Point getPrivatePoint(UserData user) {
+
+        return point().getPrivate(user);
+
+    }
+
+	public PointStore.Point getGroupPoint(UserData user) {
+
+        return point().getPrivate(user);
+
+    }
+
+    public boolean onUpdate(UserData user,Update update) {
 
 		return false;
 
@@ -78,10 +101,14 @@ public class Fragment {
 
 	public static abstract class Processed implements Runnable {
 
+		public int type;
 		public UserData user;
 		public  Update update;
 
-		public Processed(UserData user, Update update) {
+		public Processed(UserData user,Update update,int type) {
+
+			this.type = type;
+
 			this.user = user;
 			this.update = update;
 		}
@@ -96,11 +123,11 @@ public class Fragment {
 
 			} catch (Exception e) {
 
-				new Send(Env.GROUP, "处理中出错 " + update.toString(), BotLog.parseError(e)).exec();
+				new Send(Env.GROUP,"处理中出错 " + update.toString(),BotLog.parseError(e)).exec();
 
 				if (user != null && !user.developer()) {
 
-					new Send(user.id, "处理出错，已提交报告，可以到官方群组 @NTTDiscuss  继续了解").exec();
+					new Send(user.id,"处理出错，已提交报告，可以到官方群组 @NTTDiscuss  继续了解").exec();
 
 				}
 
@@ -110,7 +137,13 @@ public class Fragment {
 
 	}
 
-	public static Processed EMPTY = new Processed(null, null) {
+	public void init(BotFragment origin) {
+
+		this.origin = origin;
+
+	}
+
+	static Processed EMPTY = new Processed(null,null,-1) {
 
 		@Override
 		public void process() {
@@ -118,203 +151,63 @@ public class Fragment {
 
 	};
 
-	public Processed onAsyncUpdate(final UserData user, Update update) {
+	public Processed onAsyncUpdate(final UserData user,Update update) {
 
-		if (onUpdate(user, update)) return EMPTY;
-
-		int checked;
+		if (onUpdate(user,update)) return null;
 
 		if (update.message() != null) {
 
-			final Msg msg = new Msg(this, update.message());
+			final Msg msg = new Msg(this,update.message());
 
-			int point;
+			int checked = checkMsg(user,msg); 
 
-			point = user == null ? 0 :
-				!point().contains(user) ? 0 :
-				getPoint(user).type == PointStore.Type.Private ? 1 :
-				getPoint(user).type == PointStore.Type.Global ? 3 : 2;
+			if (checked == PROCESS_THREAD) {
 
-			if (point == 0) {
-
-				if ((checked = checkMsg(user, msg)) > 0) {
-
-					final int cd = checked; return new Processed(user, update) {
+				BotFragment.asyncPool.execute(new Processed(user,update,PROCESS_ASYNC) {
 
 						@Override
 						public void process() {
 
-							onAsyncMsg(user, msg, cd);
+							onMsg(user,msg);
 
 						}
 
-					};
-
-				} else if (checked == -1) {
-
-					if (onMsg(user, msg)) return EMPTY;
-
-				}
-
-			} else {
-
-				if ((checked = checkPointedMsg(user, msg)) > 0) {
-
-					final int cd = checked; return new Processed(user, update) {
-
-						@Override
-						public void process() {
-
-							onAsyncPointedMsg(user, msg, cd);
-
-						}
-
-					};
-
-				} else if (checked == -1) {
-
-					if (onPointedMsg(user, msg)) return EMPTY;
-
-				}
+					});
 
 			}
 
-			switch (update.message().chat().type()) {
-
-				case Private: {
-
-						if (point == 1 || point == 3) {
-
-							if ((checked = checkPointedPrivate(user, msg)) > 0) {
-
-								final int cd = checked; return new Processed(user, update) {
-
-									@Override
-									public void process() {
-
-										onAsyncPointedPrivate(user, msg, cd);
-
-									}
-
-								};
-
-							} else if (checked == -1) {
-
-								if (onPointedPrivate(user, msg)) return EMPTY;
-
-							}
-
-						} else {
-
-							if ((checked = checkPrivate(user, msg)) > 0) {
-
-								final int cd = checked; return new Processed(user, update) {
-
-									@Override
-									public void process() {
-
-										onAsyncPrivate(user, msg, cd);
-
-									}
-
-								};
-
-							} else if (checked == -1) {
-
-								if (onPrivate(user, msg)) return EMPTY;
-
-							}
-						}
-
-						break;
-
-					}
-
-				case group:
-				case supergroup: {
-
-
-						if (point > 1) {
-
-							if ((checked = checkPointedGroup(user, msg)) > 0) {
-
-								final int cd = checked; return new Processed(user, update) {
-
-									@Override
-									public void process() {
-
-										onAsyncPointedGroup(user, msg, cd);
-
-									}
-
-								};
-
-							} else if (checked == -1) {
-
-								if (onPointedGroup(user, msg)) return EMPTY;
-
-							}
-
-						} else {
-
-							if ((checked = checkGroup(user, msg)) > 0) {
-
-								final int cd = checked; return new Processed(user, update) {
-
-									@Override
-									public void process() {
-
-										onAsyncGroup(user, msg, cd);
-
-									}
-
-								};
-
-							} else if (checked == -1) {
-
-								if (onGroup(user, msg)) return EMPTY;
-
-							}
-
-						}
-
-						break;
-
-					}
-
-			}
+			if (checked == PROCESS_REJECT) return EMPTY;
 
 		} else if (update.channelPost() != null) {
 
-			if (onChanPost(user, new Msg(this, update.channelPost()))) {
+			final Msg msg = new Msg(this,update.channelPost());
 
-				return EMPTY;
+			int checked = checkChanPost(user,msg); 
+
+			if (checked == PROCESS_THREAD) {
+
+				BotFragment.asyncPool.execute(new Processed(user,update,PROCESS_ASYNC) {
+
+						@Override
+						public void process() {
+
+							onChanPost(user,msg);
+
+						}
+
+					});
 
 			}
 
-		} else if (update.callbackQuery() != null) {
-
-			if (onCallback(user, new Callback(this, update.callbackQuery()))) {
-
-				return EMPTY;
-
-			}
+			if (checked == PROCESS_REJECT) return EMPTY;
 
 		} else if (update.inlineQuery() != null) {
 
-			if (onQuery(user, new Query(this, update.inlineQuery()))) {
-
-				return EMPTY;
-
-			}
+			onQuery(user,new Query(this,update.inlineQuery()));
 
 		} else if (update.poll() != null) {
 
-			if (onPollUpdate(update.poll())) {
-
-				return EMPTY;
-
-			}
+			onPollUpdate(update.poll());
 
 		}
 
@@ -322,130 +215,302 @@ public class Fragment {
 
     }
 
-    public boolean onMsg(UserData user, Msg msg) {
+	// 注册函数
 
-        return false;
+	public void registerFunction(String... functions) {
 
-    }
+		for (String function : functions) {
 
-    public boolean onPointedMsg(UserData user, Msg msg) {
+			origin.functions.put(function,this);
 
-        return false;
-
-    }
-
-    public boolean onPrivate(UserData user, Msg msg) {
-
-        return false;
-
-    }
-
-    public boolean onPointedPrivate(UserData user, Msg msg) {
-
-        return false;
-
-    }
-
-    public boolean onGroup(UserData user, Msg msg) {
-
-        return false;
-
-    }
-
-    public boolean onPointedGroup(UserData user, Msg msg) {
-
-        return false;
-
-    }
-
-    public boolean onChanPost(UserData user, Msg msg) {
-
-        return false;
-
-    }
-
-	public int checkMsg(UserData user, Msg msg) {
-
-        return -1;
-
-    }
-
-    public int checkPointedMsg(UserData user, Msg msg) {
-
-        return -1;
-
-    }
-
-    public int checkPrivate(UserData user, Msg msg) {
-
-        return -1;
-
-    }
-
-    public int checkPointedPrivate(UserData user, Msg msg) {
-
-        return -1;
-
-    }
-
-    public int checkGroup(UserData user, Msg msg) {
-
-        return -1;
-
-    }
-
-    public int checkPointedGroup(UserData user, Msg msg) {
-
-        return -1;
-
-    }
-
-    public int checkChanPost(UserData user, Msg msg) {
-
-        return -1;
-
-    }
-
-	public void onAsyncMsg(UserData user, Msg msg, int checked) {
-    }
-
-    public void onAsyncPointedMsg(UserData user, Msg msg, int checked) {
-    }
-
-    public void onAsyncPrivate(UserData user, Msg msg, int checked) {
-    }
-
-    public void onAsyncPointedPrivate(UserData user, Msg msg, int checked) {
-    }
-
-    public void onAsyncGroup(UserData user, Msg msg, int checked) {
-    }
-
-    public void onAsyncPointedGroup(UserData user, Msg msg, int checked) {
-    }
-
-    public void onAsyncChanPost(UserData user, Msg msg, int checked) {
-    }
-
-	public boolean onPollUpdate(Poll poll) {
-
-		return false;
+		}
 
 	}
 
-    public boolean onCallback(UserData user, Callback callback) {
+	public void registerAdminFunction(String... functions) {
 
-        return false;
+		for (String function : functions) {
+
+			origin.adminFunctions.put(function,this);
+
+		}
+
+	}
+
+	public void registerPayload(String... payloads) {
+
+		for (String payload : payloads) {
+
+			origin.payloads.put(payload,this);
+
+		}
+
+	}
+
+	public void registerAdminPayload(String... payloads) {
+
+		for (String payload : payloads) {
+
+			origin.adminPayloads.put(payload,this);
+
+		}
+
+	}
+
+	public void registerPoint(String... points) {
+
+		for (String point : points) {
+
+			origin.points.put(point,this);
+
+		}
+
+	}
+
+	public void registerPoints(String... points) {
+
+		for (String point : points) {
+
+			origin.callbacks.put(point,this);
+			origin.points.put(point,this);
+
+		}
+
+	}
+
+
+	public void registerCallback(String... points) {
+
+		for (String point : points) {
+
+			origin.callbacks.put(point,this);
+
+		}
+
+	}
+
+	public int checkFunction() {
+
+		return FUNCTION_PUBLIC;
+
+	}
+
+	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
+
+		return PROCESS_ASYNC;
+
+	}
+
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+	}
+
+	protected final String POINT_REQUEST_TWITTER = "request_twitter";
+
+	static class TwitterRequest {
+
+		UserData fromUser;
+		Msg originMsg;
+		Fragment fragment;
+
+		boolean payload;
+		
+		LinkedList<Msg> msgs = new LinkedList<>();
+
+	}
+
+	public void requestTwitter(UserData user,Msg msg) {
+
+		requestTwitter(user,msg,false,false);
+
+	}
+	
+	public void requestTwitter(UserData user,Msg msg,boolean noCurrent) {
+
+		requestTwitter(user,msg,noCurrent,false);
+
+	}
+	
+	public void requestTwitterPayload(UserData user,Msg msg) {
+
+		requestTwitter(user,msg,false,true);
+
+	}
+	
+
+	public void requestTwitterPayload(UserData user,Msg msg,boolean noCurrent) {
+
+		requestTwitter(user,msg,noCurrent,true);
+
+	}
+	
+	public void requestTwitter(final UserData user,final Msg msg,boolean noCurrent,final boolean isPayload) {
+
+		if (!TAuth.contains(user.id)) {
+
+            msg.send("这个功能需要授权 Twitter账号 才能使用 (❁´▽`❁)","使用 /login 认证账号 ~").exec();
+
+            return;
+
+        }
+
+		if (TAuth.data.countByField("user",user.id) == 1) {
+
+			onTwitterFunction(user,msg,msg.command(),msg.params(),TAuth.getByUser(user.id).first());
+
+			return;
+
+		}
+
+		if (!noCurrent && StatusAction.current.containsId(user.id)) {
+
+			TAuth current = TAuth.getById(StatusAction.current.getById(user.id).accountId);
+
+			if (current != null && current.user.equals(user.id)) {
+
+				onTwitterFunction(user,msg,msg.command(),msg.params(),current);
+
+				return;
+
+			}
+
+		}
+
+		if (msg.isGroup()) {
+
+			msg.send("咱已经在私聊回复了你。","如果BOT有删除信息权限,命令和此回复将被自动删除。:)").failedWith();
+
+			msg.targetChatId = user.id;
+
+			msg.sendTyping();
+
+		}
+
+		final FindIterable<TAuth> accounts = TAuth.getByUser(user.id);
+
+		final Msg send = msg.send("请选择目标账号 Σ( ﾟωﾟ ").keyboard(new Keyboard() {{
+
+					for (TAuth account : accounts) {
+
+						newButtonLine("@" + account.archive().screenName);
+
+					}
+
+				}}).withCancel().send();
+
+
+		setPrivatePoint(msg.from(),POINT_REQUEST_TWITTER,new TwitterRequest() {{
+
+					this.fromUser = user;
+					this.originMsg = msg;
+					this.fragment = Fragment.this;
+					this.msgs.add(send);
+					this.payload = isPayload;
+					
+				}});
+
+
+
+	}
+
+	public int checkTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+
+		return PROCESS_ASYNC;
+
+	}
+
+	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+	}
+
+	public int checkPayload(UserData user,Msg msg,String payload,String[] params) {
+
+		return PROCESS_ASYNC;
+
+	}
+
+	public void onPayload(UserData user,Msg msg,String payload,String[] params) {
+	}
+	
+	public int checkTwitterPayload(UserData user,Msg msg,String payload,String[] params,TAuth account) {
+
+		return PROCESS_ASYNC;
+
+	}
+	
+	public void onTwitterPayload(UserData user,Msg msg,String payload,String[] params,TAuth account) {
+	}
+	
+	public int checkPoint(UserData user,Msg msg,String point,Object data) {
+
+		return PROCESS_ASYNC;
+
+	}
+
+	public void onPoint(UserData user,Msg msg,String point,Object data) {
+	}
+
+	public int checkPointedFunction(UserData user,Msg msg,String function,String[] params,String point,Object data) {
+
+		return PROCESS_ASYNC;
+
+	}
+
+	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,Object data) {
+	}
+
+	public int checkCallback(UserData user,Callback callback,String point,String[] params) {
+
+		return PROCESS_ASYNC;
 
     }
 
-    public boolean onQuery(UserData user, Query inlineQuery) {
-        return false;
+	public void onCallback(UserData user,Callback callback,String point,String[] params) {
+    }
+
+	// 基本函数
+
+	public final int PROCESS_REJECT = 0;
+	public final int PROCESS_SYNC = 1;
+	public final int PROCESS_ASYNC = 2;
+	public final int PROCESS_THREAD = 3;
+
+	public final int FUNCTION_PRIVATE = 1;
+	public final int FUNCTION_GROUP = 2;
+	public final int FUNCTION_PUBLIC = 3;
+	
+	public int checkMsg(UserData user,Msg msg) {
+		
+		return PROCESS_ASYNC;
+		
+	}
+	
+	public void onMsg(UserData user,Msg msg) {
+
+		if (msg.isGroup()) onGroup(user,msg);
+		if (msg.isPrivate()) onPrivate(user,msg);
+
+	}
+
+	public void onGroup(UserData user,Msg msg) {}
+	public void onPrivate(UserData user,Msg msg) {}
+
+	public int checkChanPost(UserData user,Msg msg) {
+
+		return PROCESS_REJECT;
+
+	}
+
+    public void onChanPost(UserData user,Msg msg) {
+	}
+
+	public void onPollUpdate(Poll poll) {
+	}
+
+    public void onQuery(UserData user,Query inlineQuery) {
     }
 
     public File getFile(String fileId) {
 
-        File local = new File(Env.CACHE_DIR, "files/" + fileId);
+        File local = new File(Env.CACHE_DIR,"files/" + fileId);
 
         if (local.isFile()) return local;
 
@@ -461,101 +526,100 @@ public class Fragment {
 
         String path = bot().getFullFilePath(file.file());
 
-        HttpUtil.downloadFile(path, local);
+        HttpUtil.downloadFile(path,local);
 
         return local;
 
     }
 
-    public Msg sendSticker(long chatId, StickerPoint sticker) {
+    public Msg sendSticker(long chatId,StickerPoint sticker) {
 
-        return Msg.from(this, bot().execute(new SendSticker(chatId, sticker.fileId)));
-
-    }
-
-    public Msg sendSticker(long chatId, String sticker) {
-
-        return Msg.from(this, bot().execute(new SendSticker(chatId, sticker)));
+        return Msg.from(this,bot().execute(new SendSticker(chatId,sticker.fileId)));
 
     }
 
+    public Msg sendSticker(long chatId,String sticker) {
 
-    public Msg sendFile(long chatId, String file) {
-
-        return Msg.from(this, this.bot().execute(new SendDocument(chatId, file)));
-
-    }
-
-    public Msg sendFile(long chatId, File file) {
-
-        return Msg.from(this, bot().execute(new SendDocument(chatId, file)));
+        return Msg.from(this,bot().execute(new SendSticker(chatId,sticker)));
 
     }
 
-    public Msg sendFile(long chatId, byte[] file) {
+    public Msg sendFile(long chatId,String file) {
 
-        return Msg.from(this, bot().execute(new SendDocument(chatId, file)));
+        return Msg.from(this,this.bot().execute(new SendDocument(chatId,file)));
+
+    }
+
+    public Msg sendFile(long chatId,File file) {
+
+        return Msg.from(this,bot().execute(new SendDocument(chatId,file)));
+
+    }
+
+    public Msg sendFile(long chatId,byte[] file) {
+
+        return Msg.from(this,bot().execute(new SendDocument(chatId,file)));
 
     }
 
     public void sendTyping(long chatId) {
 
-        bot().execute(new SendChatAction(chatId, ChatAction.typing));
+        bot().execute(new SendChatAction(chatId,ChatAction.typing));
 
     }
 
     public void sendUpdatingFile(long chatId) {
 
-        bot().execute(new SendChatAction(chatId, ChatAction.upload_document));
+        bot().execute(new SendChatAction(chatId,ChatAction.upload_document));
 
     }
 
     public void sendUpdatingPhoto(long chatId) {
 
-        bot().execute(new SendChatAction(chatId, ChatAction.upload_photo));
+        bot().execute(new SendChatAction(chatId,ChatAction.upload_photo));
 
     }
 
     public void sendUpdatingAudio(long chatId) {
 
-        bot().execute(new SendChatAction(chatId, ChatAction.upload_audio));
+        bot().execute(new SendChatAction(chatId,ChatAction.upload_audio));
 
     }
 
     public void sendUpdatingVideo(long chatId) {
 
-        bot().execute(new SendChatAction(chatId, ChatAction.upload_video));
+        bot().execute(new SendChatAction(chatId,ChatAction.upload_video));
 
     }
 
     public void sendUpdatingVideoNote(long chatId) {
 
-        bot().execute(new SendChatAction(chatId, ChatAction.upload_video_note));
+        bot().execute(new SendChatAction(chatId,ChatAction.upload_video_note));
 
     }
 
     public void sendFindingLocation(long chatId) {
 
-        bot().execute(new SendChatAction(chatId, ChatAction.find_location));
+        bot().execute(new SendChatAction(chatId,ChatAction.find_location));
 
     }
 
     public void sendRecordingAudio(long chatId) {
 
-        bot().execute(new SendChatAction(chatId, ChatAction.record_audio));
+        bot().execute(new SendChatAction(chatId,ChatAction.record_audio));
 
     }
 
 
     public void sendRecordingViedo(long chatId) {
 
-        bot().execute(new SendChatAction(chatId, ChatAction.record_video));
+        bot().execute(new SendChatAction(chatId,ChatAction.record_video));
 
     }
 
     public void sendRecordingVideoNote(long chatId) {
 
-        bot().execute(new SendChatAction(chatId, ChatAction.record_video_note));
+        bot().execute(new SendChatAction(chatId,ChatAction.record_video_note));
 
     }
 

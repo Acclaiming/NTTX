@@ -1,35 +1,46 @@
 package io.kurumi.ntt.fragment.twitter.ext;
 
-import cn.hutool.core.util.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.fragment.abs.*;
-import io.kurumi.ntt.fragment.twitter.*;
-import io.kurumi.ntt.fragment.twitter.archive.*;
-import io.kurumi.ntt.utils.*;
-import java.util.*;
-import twitter4j.*;
+import cn.hutool.core.util.NumberUtil;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
+import io.kurumi.ntt.utils.NTT;
+import java.util.LinkedList;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import io.kurumi.ntt.fragment.BotFragment;
 
-public class StatusGetter extends TwitterFunction {
+public class StatusGetter extends Fragment {
 
 	public static String PAYLOAD_SHOW_STATUS = "status";
 
-    @Override
-    public void functions(LinkedList<String> names) {
-
-        names.add("status");
-
-    }
+	@Override
+	public void init(BotFragment origin) {
+		
+		super.init(origin);
+		
+		registerFunction("status");
+		
+		registerPayload("status");
+		
+	}
+	@Override
+	public void onPayload(UserData user,Msg msg,String payload,String[] params) {
+		
+		requestTwitterPayload(user,msg);
+		
+		
+	}
 
 	@Override
-	public boolean onPrivate(UserData user, Msg msg) {
-
-		if (!msg.isStartPayload() || !PAYLOAD_SHOW_STATUS.equals(msg.payload()[0])) return false;
+	public void onTwitterPayload(UserData user,Msg msg,String payload,String[] params,TAuth account) {
 		
-        TAuth auth = TAuth.getByUser(user.id).first();
-
         Long statusId = NumberUtil.parseLong(msg.payload()[1]);
 
-        if (auth == null) {
+        if (account == null) {
 
             StatusArchive archive = StatusArchive.get(statusId);
 
@@ -45,7 +56,7 @@ public class StatusGetter extends TwitterFunction {
 
         } else {
 
-            Twitter api = auth.createApi();
+            Twitter api = account.createApi();
 
             msg.sendTyping();
 
@@ -57,7 +68,7 @@ public class StatusGetter extends TwitterFunction {
 
                 archive.loop(api);
 
-                archive.sendTo(msg.chatId(), -1, auth, msg.isPrivate() ? newStatus : null);
+                archive.sendTo(msg.chatId(), -1, account, msg.isPrivate() ? newStatus : null);
 
             } catch (TwitterException e) {
 
@@ -77,15 +88,12 @@ public class StatusGetter extends TwitterFunction {
 
 		}
 
-		return true;
-
-
 	}
 
 
 
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
         if (params.length != 1) {
 
@@ -95,19 +103,26 @@ public class StatusGetter extends TwitterFunction {
 
         }
 
-        Long statusId = NTT.parseStatusId(params[0]);
-
-        if (statusId == -1L) {
+        if (NTT.parseStatusId(params[0]) == -1L) {
 
             msg.send("用法 /status <推文链接|ID>").publicFailed();
 
             return;
 
         }
+		
+		requestTwitter(user,msg);
 
+	}
+
+	@Override
+	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+		
         Twitter api = account.createApi();
 
         msg.sendTyping();
+		
+		Long statusId = NTT.parseStatusId(params[0]);
 
         if (StatusArchive.contains(statusId) && !msg.isPrivate()) {
 

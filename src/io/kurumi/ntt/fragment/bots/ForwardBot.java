@@ -28,10 +28,10 @@ public class ForwardBot extends BotFragment {
     public String welcomeMessage;
     public String userName;
     public List<Long> blockList;
-	
+
     @Override
     public void reload() {
-		
+
 		super.reload();
 
         UserBot bot = UserBot.data.getById(botId);
@@ -68,9 +68,9 @@ public class ForwardBot extends BotFragment {
 
         UserBot bot = UserBot.data.getById(botId);
 
-        bot.params.put("block", blockList);
+        bot.params.put("block",blockList);
 
-        UserBot.data.setById(botId, bot);
+        UserBot.data.setById(botId,bot);
 
     }
 
@@ -88,134 +88,149 @@ public class ForwardBot extends BotFragment {
 
     }
 
-    @Override
-    public boolean onPrivate(UserData user, Msg msg) {
+	@Override
+	public void init(BotFragment origin) {
 
-        if ("start".equals(msg.command())) {
+		super.init(origin);
 
-            if (msg.params().length == 0 || !userId.equals(user.id)) {
+		registerFunction("start");
 
-                msg.send(welcomeMessage).exec();
-
-            } else {
-
-                msg.delete();
-
-                String[] payload = msg.payload();
-
-                if ("reply".equals(payload[0])) {
-
-                    UserData target = UserData.get(Long.parseLong(payload[1]));
-
-                    if (target == null) {
-
-                        msg.send("找不到目标...").exec();
-
-                        return true;
-
-                    }
-
-                    msg.send("回复 " + target.userName() + " : ", "直接发送信息即可 (非文本，表情，文件 会直接转发) : ", "使用 /cancel 退出").html().exec();
-
-                    setPoint(user, POINT_REPLY, target.id);
-
-                } else if ("del".equals(payload[0])) {
-
-                    try {
-
-                        long target = Long.parseLong(payload[1]);
-                        int messageId = Integer.parseInt(payload[2]);
-
-                        BaseResponse resp = bot().execute(new DeleteMessage(target, messageId));
-
-                        if (resp.isOk()) {
-
-                            msg.send("已删除").exec();
-
-                        } else {
-
-                            msg.send("删除失败 这条发送的信息还在吗 ？").exec();
-
-                        }
-
-                    } catch (NumberFormatException e) {
-
-                        msg.send("这个删除已经点过了 :)").exec();
-
-                    }
-
-                } else if ("block".equals(payload[0])) {
-
-                    UserData target = UserData.get(Long.parseLong(payload[1]));
-
-                    if (target == null) {
-
-                        msg.send("找不到目标...").exec();
-
-                        return true;
-
-                    }
-
-                    if (target.id.equals(userId)) {
-
-                        msg.send("你不能屏蔽你自己...").exec();
-
-                        return true;
-
-                    }
-
-                    if (blockList.contains(target.id.longValue())) {
-
-                        msg.send("已经屏蔽过了 " + target.userName() + " ~ [ " + Html.a("解除屏蔽", "https://t.me/" + me.username() + "?start=unblok" + PAYLOAD_SPLIT + target.id) + " ] ~");
-
-                    } else {
-
-                        blockList.add(user.id);
-                        save();
-                        msg.send("已屏蔽了 " + target.userName() + " ~ [ " + Html.a("解除屏蔽", "https://t.me/" + me.username() + "?start=unblock" + PAYLOAD_SPLIT + target.id) + " ] ~");
+	}
 
 
-                    }
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-                } else if ("unblock".equals(payload[0])) {
+		msg.send(welcomeMessage).exec();
 
-                    UserData target = UserData.get(Long.parseLong(payload[1]));
+	}
 
-                    if (target == null) {
+	@Override
+	public void onPayload(UserData user,Msg msg,String payload,String[] params) {
 
-                        msg.send("找不到目标...").exec();
+		msg.delete();
 
-                        return true;
+		if ("reply".equals(payload)) {
 
-                    }
+			UserData target = UserData.get(Long.parseLong(params[0]));
 
-                    if (blockList.contains(target.id.longValue())) {
+			if (target == null) {
 
-                        blockList.remove(target.id.longValue());
+				msg.send("找不到目标...").exec();
 
-                        save();
+				return;
 
-                        msg.send("已解除屏蔽 " + target.userName() + " ~ [ " + Html.a("屏蔽", "https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + target.id) + " " + Html.a("发送消息", "https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " ]");
+			}
 
-                    } else {
+			msg.send("回复 " + target.userName() + " : ","直接发送信息即可 (非文本，表情，文件 会直接转发) : ","使用 /cancel 退出").html().exec();
 
-                        msg.send("没有屏蔽 " + target.userName() + " ~ [ " + Html.a("屏蔽", "https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + target.id) + " " + Html.a("发送消息", "https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " ]");
+			setPrivatePoint(user,POINT_REPLY,target.id);
+
+		} else if ("del".equals(payload)) {
+
+			try {
+
+				long target = Long.parseLong(params[0]);
+				int messageId = Integer.parseInt(params[1]);
+
+				BaseResponse resp = bot().execute(new DeleteMessage(target,messageId));
+
+				if (resp.isOk()) {
+
+					msg.send("已删除").exec();
+
+				} else {
+
+					msg.send("删除失败 这条发送的信息还在吗 ？").exec();
+
+				}
+
+			} catch (NumberFormatException e) {
+
+				msg.send("这个删除已经点过了 :)").exec();
+
+			}
+
+		} else if ("block".equals(payload)) {
+
+			UserData target = UserData.get(Long.parseLong(params[0]));
+
+			if (target == null) {
+
+				msg.send("找不到目标...").exec();
+
+				return;
+
+			}
+
+			if (target.id.equals(userId)) {
+
+				msg.send("你不能屏蔽你自己...").exec();
+
+				return;
+
+			}
+
+			if (blockList.contains(target.id.longValue())) {
+
+				msg.send("已经屏蔽过了 " + target.userName() + " ~ [ " + Html.a("解除屏蔽","https://t.me/" + me.username() + "?start=unblok" + PAYLOAD_SPLIT + target.id) + " ] ~").exec();
+
+			} else {
+
+				blockList.add(user.id);
+				save();
+				msg.send("已屏蔽了 " + target.userName() + " ~ [ " + Html.a("解除屏蔽","https://t.me/" + me.username() + "?start=unblock" + PAYLOAD_SPLIT + target.id) + " ] ~").exec();
 
 
-                    }
+			}
 
-                }
+		} else if ("unblock".equals(payload)) {
+
+			UserData target = UserData.get(Long.parseLong(params[0]));
+
+			if (target == null) {
+
+				msg.send("找不到目标...").exec();
+
+				return;
+
+			}
+
+			if (blockList.contains(target.id.longValue())) {
+
+				blockList.remove(target.id.longValue());
+
+				save();
+
+				msg.send("已解除屏蔽 " + target.userName() + " ~ [ " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + target.id) + " " + Html.a("发送消息","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " ]").exec();
+
+			} else {
+
+				msg.send("没有屏蔽 " + target.userName() + " ~ [ " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + target.id) + " " + Html.a("发送消息","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " ]").exec();
 
 
-            }
+			}
 
-            return true;
+		}
 
-        } else if (getPoint(user) == null && !blockList.contains(user.id.longValue())) {
+
+	}
+
+	@Override
+	public int checkMsg(UserData user,Msg msg) {
+	
+		return PROCESS_SYNC;
+		
+	}
+
+	@Override
+	public void onMsg(UserData user,Msg msg) {
+
+		if (!blockList.contains(user.id.longValue())) {
 
             if (lastReceivedFrom == null || !lastReceivedFrom.equals(user.id)) {
 
-                new Send(this, userId, "来自 " + user.userName() + " : [ " + Html.a("回复", "https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " " + Html.a("屏蔽", "https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + user.id) + " ]").html().exec();
+                new Send(this,userId,"来自 " + user.userName() + " : [ " + Html.a("回复","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + user.id) + " ]").html().exec();
 
                 lastReceivedFrom = user.id;
 
@@ -223,23 +238,16 @@ public class ForwardBot extends BotFragment {
 
             msg.forwardTo(userId);
 
-            return true;
-
         }
 
-        return false;
     }
 
-    @Override
-    public boolean onPointedPrivate(UserData user, Msg msg) {
+	@Override
+	public void onPoint(UserData user,Msg msg,String point,Object data) {
+		
+        long target = (long)data;
 
-        if (onPrivate(user, msg)) return true;
-
-        PointStore.Point<Long> point = getPoint(user);
-
-        long target = point.data;
-
-        if (POINT_REPLY.equals(point.point)) {
+        if (POINT_REPLY.equals(point)) {
 
             Message message = msg.message();
 
@@ -323,9 +331,6 @@ public class ForwardBot extends BotFragment {
 
 
         }
-
-        return true;
-
 
     }
 

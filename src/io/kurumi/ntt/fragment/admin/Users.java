@@ -17,15 +17,22 @@ import static com.mongodb.client.model.Updates.set;
 import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
-
+import io.kurumi.ntt.fragment.BotFragment;
 
 public class Users extends Fragment {
 
-    @Override
-    public boolean onMsg(UserData user,Msg msg) {
+	@Override
+	public void init(BotFragment origin) {
+	
+		super.init(origin);
+		
+		registerFunction("users");
+		
+	}
 
-        if (!user.developer() || !"users".equals(msg.command())) return false;
-
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+	
         StringBuilder export = new StringBuilder();
 
 		int count = 0;
@@ -148,8 +155,6 @@ public class Users extends Fragment {
             msg.send(export.toString()).html().exec();
 
         }
-
-        return true;
 
     }
 

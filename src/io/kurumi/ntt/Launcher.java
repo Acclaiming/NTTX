@@ -1,8 +1,5 @@
 package io.kurumi.ntt;
 
-import io.kurumi.ntt.fragment.group.*;
-import io.kurumi.ntt.fragment.twitter.action.*;
-
 import cn.hutool.core.lang.Console;
 import cn.hutool.core.util.RuntimeUtil;
 import com.pengrad.telegrambot.model.Chat;
@@ -11,12 +8,11 @@ import io.kurumi.ntt.db.BotDB;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.BotServer;
-import io.kurumi.ntt.fragment.abs.Callback;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.abs.request.Send;
-import io.kurumi.ntt.fragment.admin.Alias;
 import io.kurumi.ntt.fragment.admin.Control;
 import io.kurumi.ntt.fragment.admin.Notice;
+import io.kurumi.ntt.fragment.admin.TASReply;
 import io.kurumi.ntt.fragment.admin.Users;
 import io.kurumi.ntt.fragment.base.Final;
 import io.kurumi.ntt.fragment.bots.MyBots;
@@ -27,29 +23,35 @@ import io.kurumi.ntt.fragment.debug.DebugMsg;
 import io.kurumi.ntt.fragment.debug.DebugStatus;
 import io.kurumi.ntt.fragment.debug.DebugUser;
 import io.kurumi.ntt.fragment.forum.admin.ForumManage;
-import io.kurumi.ntt.fragment.picacg.SignThread;
+import io.kurumi.ntt.fragment.group.AntiEsu;
+import io.kurumi.ntt.fragment.group.AutoReply;
+import io.kurumi.ntt.fragment.group.BanSetickerSet;
+import io.kurumi.ntt.fragment.group.ChineseAction;
+import io.kurumi.ntt.fragment.group.GroupRepeat;
+import io.kurumi.ntt.fragment.twitter.action.Block;
+import io.kurumi.ntt.fragment.twitter.action.Follow;
+import io.kurumi.ntt.fragment.twitter.action.Jvbao;
+import io.kurumi.ntt.fragment.twitter.action.Mute;
+import io.kurumi.ntt.fragment.twitter.action.UnBlock;
+import io.kurumi.ntt.fragment.twitter.action.UnFollow;
+import io.kurumi.ntt.fragment.twitter.action.UnMute;
 import io.kurumi.ntt.fragment.twitter.auto.AutoUI;
 import io.kurumi.ntt.fragment.twitter.delete.TwitterDelete;
-import io.kurumi.ntt.fragment.twitter.ext.BlockList;
 import io.kurumi.ntt.fragment.twitter.ext.MediaDownload;
 import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
-import io.kurumi.ntt.fragment.twitter.login.ShadowBan;
 import io.kurumi.ntt.fragment.twitter.login.TwitterLogin;
 import io.kurumi.ntt.fragment.twitter.login.TwitterLogout;
 import io.kurumi.ntt.fragment.twitter.status.StatusAction;
 import io.kurumi.ntt.fragment.twitter.status.StatusFetch;
 import io.kurumi.ntt.fragment.twitter.status.StatusSearch;
 import io.kurumi.ntt.fragment.twitter.status.StatusUpdate;
+import io.kurumi.ntt.fragment.twitter.status.TimedStatus;
 import io.kurumi.ntt.fragment.twitter.timeline.TimelineUI;
 import io.kurumi.ntt.fragment.twitter.track.TrackTask;
 import io.kurumi.ntt.fragment.twitter.track.TrackUI;
 import io.kurumi.ntt.utils.BotLog;
-import io.kurumi.ntt.utils.TImg;
 import java.io.IOException;
 import java.util.TimeZone;
-import io.kurumi.ntt.fragment.admin.TASReply;
-import io.kurumi.ntt.fragment.ytb.YtbDownloader;
-import io.kurumi.ntt.fragment.twitter.status.TimedStatus;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -162,40 +164,29 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     }
 
 	@Override
-	public boolean onPrivate(UserData user, Msg msg) {
+	public void init(BotFragment origin) {
 		
-		if ((System.currentTimeMillis() / 1000) - msg.message().date() > 10 * 1000) {
-			
-			msg.send("处理时间过长... 可能是之前出现错误离线了qwq").exec();
-			
-		}
+		super.init(origin);
 		
-		return false;
+		registerFunction("start","help");
 		
 	}
 
-    @Override
-    public boolean onMsg(UserData user, Msg msg) {
-
-        if (super.onMsg(user, msg)) return true;
-
-        if ("start".equals(msg.command()) && msg.params().length == 0) {
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+	
+        if ("start".equals(function)) {
 
             msg.send("start failed successfully ~", "", "NTT是一只开源TelegramBot、可以作为Twitter客户端使用、也可以导出贴纸、创建私聊BOT、以及在群内沙雕发言与复读。", "", "BOT帮助文档请戳 : @NTT_X", "交流群组在这里 : @NTTDiscuss").html().publicFailed();
-
-            return true;
 
         } else if ("help".equals(msg.command())) {
 
             msg.send("文档在 @NTT_X ~").publicFailed();
 
-            return true;
-
         }
-
-        return false;
-
-    }
+		
+		
+	}
 
     @Override
     public void start() {
@@ -252,12 +243,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		super.reload();
 
-        // Base Functions
-		
         addFragment(new Notice());
-
-        addFragment(new Alias());
-
+		
         addFragment(new Backup());
 
         addFragment(new Users());
@@ -266,16 +253,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(new Control());
 
-		addFragment(new SignThread()); 
-		
-		addFragment(new YtbDownloader());
-		
-        // 贴吧
-
-        // addFragment(new TiebaLogin());
-
-        // Twitter Action
-        
         addFragment(new TASReply());
 
         addFragment(new Follow());
@@ -292,8 +269,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         // Twitter
         
-        addFragment(new TImg());
-
         addFragment(new Jvbao());
 
         addFragment(new DebugUser());
@@ -301,8 +276,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(new DebugStatus());
 
         addFragment(new StatusUpdate());
-
-        addFragment(new ShadowBan());
 
 		addFragment(new TimedStatus());
 		
@@ -324,8 +297,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(new StatusAction());
         addFragment(new TimelineUI());
-
-        addFragment(new BlockList());
 
         addFragment(new GroupRepeat());
 
@@ -438,20 +409,5 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         System.exit(1);
 
     }
-
-    @Override
-    public boolean onCallback(UserData user, Callback callback) {
-
-        if (callback.params.length == 0 || (callback.params.length == 1 && "null".equals(callback.params[0]))) {
-
-            callback.confirm();
-
-            return true;
-
-        }
-
-        return false;
-
-    }
-
+	
 }

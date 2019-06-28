@@ -1,19 +1,19 @@
 package io.kurumi.ntt.fragment.twitter.user;
 
-import io.kurumi.ntt.fragment.abs.TwitterFunction;
+import cn.hutool.core.util.NumberUtil;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
-import java.util.LinkedList;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
-import cn.hutool.core.util.NumberUtil;
 import io.kurumi.ntt.utils.NTT;
 import java.awt.Color;
+import java.util.LinkedList;
 
-public class UserProfile extends TwitterFunction {
+public class UserProfile extends Fragment {
 
 	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 		
 		if (params.length == 0) {
 			
@@ -35,16 +35,7 @@ public class UserProfile extends TwitterFunction {
 		
 		Img img = new Img(1000,600,Color.WHITE);
 		
-		img.font("Noto Thin");
-		
 		// sendFile();
-		
-	}
-
-	@Override
-	public void functions(LinkedList<String> names) {
-		
-		names.add("user");
 		
 	}
 

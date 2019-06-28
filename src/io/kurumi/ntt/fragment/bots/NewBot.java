@@ -5,55 +5,52 @@ import com.pengrad.telegrambot.request.GetMe;
 import com.pengrad.telegrambot.response.GetMeResponse;
 import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.abs.Function;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.abs.request.Keyboard;
-
 import java.util.HashMap;
 import java.util.LinkedList;
+import io.kurumi.ntt.fragment.BotFragment;
 
-public class NewBot extends Function {
+public class NewBot extends Fragment {
 
     final String POINT_CREATE_BOT = "bot.create";
 
-    @Override
-    public void functions(LinkedList<String> names) {
+	@Override
+	public void init(BotFragment origin) {
+	
+		super.init(origin);
+		
+		registerFunction("newbot");
 
-        names.add("newbot");
-
-    }
-
-    @Override
-    public void points(LinkedList<String> points) {
-
-        points.add(POINT_CREATE_BOT);
+		registerPoint(POINT_CREATE_BOT);
 
     }
 
-    @Override
-    public int target() {
-
-        return Private;
-
-    }
+	@Override
+	public int checkFunction() {
+		
+		return FUNCTION_PRIVATE;
+		
+	}
 
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
         msg.send("现在请输入BotToken :", "", "BotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。").withCancel().exec();
 
-        setPoint(user, POINT_CREATE_BOT, new CreateBot());
+        setPrivatePoint(user, POINT_CREATE_BOT, new CreateBot());
 
     }
 
-    @Override
-    public void onPoint(UserData user, Msg msg, PointStore.Point point) {
+	@Override
+	public void onPoint(UserData user,Msg msg,String point,Object data) {
+		
+        if (POINT_CREATE_BOT.equals(point)) {
 
-        if (POINT_CREATE_BOT.equals(point.point)) {
+            CreateBot create = (CreateBot) data;
 
-            CreateBot data = (CreateBot) point.data;
-
-            if (data.progress == 0) {
+            if (create.progress == 0) {
 
                 if (!msg.hasText() || !msg.text().contains(":")) {
 
@@ -82,9 +79,9 @@ public class NewBot extends Function {
                 bot.userName = me.user().username();
                 bot.token = msg.text();
 
-                data.bot = bot;
+                create.bot = bot;
 
-                data.progress = 1;
+                create.progress = 1;
 
                 msg.send("现在选择BOT类型 :").keyboard(new Keyboard() {{
 
@@ -96,38 +93,38 @@ public class NewBot extends Function {
 
                 }}).exec();
 
-            } else if (data.progress == 1) {
+            } else if (create.progress == 1) {
 
                 if ("取消创建".equals(msg.text())) {
 
-                    clearPoint(user);
+                    clearPrivatePoint(user);
 
                     msg.send("已经取消 ~").removeKeyboard().exec();
 
                 } else if ("转发私聊".equals(msg.text())) {
 
-                    data.bot.type = 0;
+                    create.bot.type = 0;
 
-                    data.progress = 10;
+                    create.progress = 10;
 
                     msg.send("好，请发送私聊BOT的欢迎语，这将在 /start 时发送").removeKeyboard().exec();
                     msg.send("就像这样 : 直接喵喵就行了 ~").withCancel().exec();
 
                 } else if ("加群验证".equals(msg.text())) {
 
-                    data.bot.type = 1;
+                    create.bot.type = 1;
 
-                    clearPoint(user);
+                    clearPrivatePoint(user);
 
                     msg.send("创建成功... 正在启动").removeKeyboard().exec();
 
-                    data.bot.params = new HashMap<>();
+                    create.bot.params = new HashMap<>();
 
-                    UserBot.data.setById(data.bot.id, data.bot);
+                    UserBot.data.setById(create.bot.id, create.bot);
 
-                    data.bot.startBot();
+                    create.bot.startBot();
 
-                    msg.send("你的BOT : @" + data.bot.userName, "\n将BOT加入群组并设为管理员即可 ~", "\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
+                    msg.send("你的BOT : @" + create.bot.userName, "\n将BOT加入群组并设为管理员即可 ~", "\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
 
 
                 } else {
@@ -136,7 +133,7 @@ public class NewBot extends Function {
 
                 }
 
-            } else if (data.progress == 10) {
+            } else if (create.progress == 10) {
 
                 if (!msg.hasText()) {
 
@@ -146,18 +143,18 @@ public class NewBot extends Function {
 
                 }
 
-                clearPoint(user);
+                clearPrivatePoint(user);
 
                 msg.send("创建成功... 正在启动").exec();
 
-                data.bot.params = new HashMap<>();
-                data.bot.params.put("msg", msg.text());
+                create.bot.params = new HashMap<>();
+                create.bot.params.put("msg", msg.text());
 
-                UserBot.data.setById(data.bot.id, data.bot);
+                UserBot.data.setById(create.bot.id, create.bot);
 
-                data.bot.startBot();
+                create.bot.startBot();
 
-                msg.send("你的BOT : @" + data.bot.userName, "\n不要忘记给BOT发一条信息 这样BOT才能转发信息给你 ~", "\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
+                msg.send("你的BOT : @" + create.bot.userName, "\n不要忘记给BOT发一条信息 这样BOT才能转发信息给你 ~", "\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
 
             }
 

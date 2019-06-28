@@ -5,46 +5,39 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Callback;
 import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.TwitterFunction;
 import io.kurumi.ntt.fragment.abs.request.ButtonLine;
 import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.MongoIDs;
 import io.kurumi.ntt.utils.NTT;
-
 import java.util.LinkedList;
 import java.util.TimeZone;
+import io.kurumi.ntt.fragment.BotFragment;
 
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import io.kurumi.ntt.fragment.twitter.ext.*;
+public class StatusSearch extends Fragment {
 
-public class StatusSearch extends TwitterFunction {
+    final String POINT_SHOW_PAGE = "search_show_page";
 
-    final String POINT_SHOW_PAGE = "ss|show";
+	@Override
+	public void init(BotFragment origin) {
 
-    @Override
-    public void functions(LinkedList<String> names) {
-
-        names.add("search");
-
-    }
-
-    @Override
-    public boolean useCurrent() {
-
-        return true;
-
-    }
+		super.init(origin);
+		
+		registerFunction("search");
+		
+		registerCallback(POINT_SHOW_PAGE);
+		
+	}
 
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth auth) {
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
         int index = 0;
 
@@ -264,13 +257,6 @@ public class StatusSearch extends TwitterFunction {
         }
 
         status.edit(exportContent(search, 1)).buttons(makeButtons(search.id, count, 1)).html().exec();
-
-    }
-
-    @Override
-    public void points(LinkedList<String> points) {
-
-        points.add(POINT_SHOW_PAGE);
 
     }
 

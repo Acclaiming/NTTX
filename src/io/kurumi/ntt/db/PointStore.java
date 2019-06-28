@@ -7,8 +7,12 @@ import io.kurumi.ntt.fragment.*;
 public class PointStore {
 
     private static HashMap<BotFragment, PointStore> point = new HashMap<>();
+
     public final BotFragment bot;
-    public final HashMap<Long, Point> points = new HashMap<>();
+	
+    public final HashMap<Long, Point> privatePoints = new HashMap<>();
+	public final HashMap<Long, Point> groupPoints = new HashMap<>();
+	
     private PointStore(BotFragment bot) {
         this.bot = bot;
     }
@@ -25,17 +29,23 @@ public class PointStore {
 
     }
 
-    public boolean contains(UserData user) {
+    public boolean containsPrivate(UserData user) {
 
-        return points.containsKey(user.id);
+        return privatePoints.containsKey(user.id);
+
+    }
+	
+	public boolean containsGroup(UserData user) {
+
+        return groupPoints.containsKey(user.id);
 
     }
 
-    public <T> Point<T> get(UserData user) {
+    public Point getPrivate(UserData user) {
 
-        if (contains(user)) {
+        if (containsPrivate(user)) {
 
-            return (Point<T>) points.get(user.id);
+            return  privatePoints.get(user.id);
 
         }
 
@@ -43,48 +53,60 @@ public class PointStore {
 
     }
 
-    public <T> void set(UserData user, final Type context, final String pointTo, final T content) {
+	public Point getGroup(UserData user) {
 
-        points.put(user.id, new Point<T>() {{
+        if (containsGroup(user)) {
 
-            type = context;
+            return  groupPoints.get(user.id);
+
+        }
+
+        return null;
+
+    }
+	
+	
+    public void setPrivate(UserData user, final String pointTo, final Object content) {
+
+        privatePoints.put(user.id, new Point() {{
+
             point = pointTo;
             data = content;
 
         }});
 
     }
+	
+	public void setGroup(UserData user, final String pointTo, final Object content) {
 
-    public <T> void set(UserData user, final String pointTo, final T content) {
+        groupPoints.put(user.id, new Point() {{
 
-        points.put(user.id, new Point<T>() {{
+					point = pointTo;
+					data = content;
 
-            point = pointTo;
-            data = content;
+				}});
 
-        }});
+    }
+	
+
+    public Point clearPrivate(UserData user) {
+
+        return  privatePoints.remove(user.id);
 
     }
 
-    public <T> Point<T> clear(UserData user) {
+	public Point clearGroup(UserData user) {
 
-        return (Point<T>) points.remove(user.id);
-
-    }
-
-    public enum Type {
-
-        Global, Private, Group;
+        return  groupPoints.remove(user.id);
 
     }
-
-    public abstract class Point<T> {
-
-        public Type type = Type.Private;
+	
+	
+    public abstract class Point {
 
         public String point;
 
-        public T data;
+        public Object data;
 
     }
 

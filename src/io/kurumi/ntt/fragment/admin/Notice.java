@@ -4,55 +4,61 @@ import cn.hutool.core.util.ArrayUtil;
 import com.pengrad.telegrambot.request.ForwardMessage;
 import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.abs.Function;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.twitter.TAuth;
-
 import java.util.LinkedList;
 
 import static java.util.Arrays.asList;
+import io.kurumi.ntt.fragment.BotFragment;
 
-public class Notice extends Function {
+public class Notice extends Fragment {
 
-    public static final Notice INSTANCE = new Notice();
-    final String POINT_FPRWARD = "n|f";
-	
-    @Override
-    public void functions(LinkedList<String> names) {
+    final String POINT_FPRWARD = "admin_notice";
 
-        names.add("notice");
+	@Override
+	public void init(BotFragment origin) {
 
-    }
+		super.init(origin);
 
-    @Override
-    public void points(LinkedList<String> points) {
+		registerAdminFunction("notice");
 
-        points.add(POINT_FPRWARD);
+		registerPoint(POINT_FPRWARD);
 
     }
 
+	@Override
+	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
+
+		return PROCESS_SYNC;
+		
+	}
+
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		
+		msg.send("现在发送群发内容 :").exec();
 
-        if (user.developer()) {
-
-            msg.send("现在发送群发内容 :").exec();
-
-            setPoint(user, POINT_FPRWARD, PointStore.Type.Global, ArrayUtil.join(params, " "));
-
-        } else msg.send("Permission denied").exec();
+		setPrivatePoint(user,POINT_FPRWARD,ArrayUtil.join(params," "));
 
     }
 
-    @Override
-    public void onPoint(UserData user, Msg msg, PointStore.Point point) {
+	@Override
+	public int checkPoint(UserData user,Msg msg,String point,Object data) {
 
-        String params = point.data.toString();
+		return PROCESS_THREAD;
+
+	}
+
+	@Override
+	public void onPoint(UserData user,Msg msg,String point,Object data) {
+
+        String params = data.toString();
 
         boolean mute = params.contains("mute");
         boolean login = params.contains("login");
 
-        clearPoint(user);
+        clearPrivatePoint(user);
 
         if (!login) {
 
@@ -68,13 +74,13 @@ public class Notice extends Function {
 
                 if (userData.contactable == null || userData.contactable) {
 
-                    if (login && TAuth.data.countByField("user", userData.id) < 0) {
+                    if (login && TAuth.data.countByField("user",userData.id) < 0) {
 
                         continue;
 
                     }
 
-                    ForwardMessage forward = new ForwardMessage(userData.id, user.id, msg.messageId());
+                    ForwardMessage forward = new ForwardMessage(userData.id,user.id,msg.messageId());
 
                     if (mute) forward.disableNotification(true);
 
@@ -88,7 +94,7 @@ public class Notice extends Function {
 
                         UserData.userDataIndex.remove(userData.id);
 
-                        userData.data.setById(userData.id, userData);
+                        userData.data.setById(userData.id,userData);
 
                     }
 

@@ -1,8 +1,9 @@
 package io.kurumi.ntt.utils;
 
-import cn.hutool.http.*;
-import io.kurumi.ntt.Launcher;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.http.HtmlUtil;
+import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.fragment.Fragment;
 
 public class Html {
 
@@ -38,10 +39,15 @@ public class Html {
 
     public static String startPayload(String text, Object... payload) {
 
-        return a(text, "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=" + ArrayUtil.join(payload, "_"));
+        return startPayload(Launcher.INSTANCE,text,payload);
 
     }
+	
+	public static String startPayload(Fragment fragment,String text, Object... payload) {
 
+        return a(text, "https://t.me/" + fragment.origin.me.username() + "?start=" + ArrayUtil.join(payload, "_"));
+
+    }
 
     public static String code(String code) {
 

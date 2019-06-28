@@ -7,56 +7,56 @@ import cn.hutool.core.util.ZipUtil;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.TwitterFunction;
 import io.kurumi.ntt.fragment.abs.request.Send;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.utils.BotLog;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import io.kurumi.ntt.fragment.BotFragment;
 
-public class TwitterDelete extends TwitterFunction {
+public class TwitterDelete extends Fragment {
 
     public static TwitterDelete INSTANCE = new TwitterDelete();
     final String POINT_DELETE = "td";
     HashMap<Long, DeleteThread> threads = new HashMap<>();
 
-    @Override
-    public void functions(LinkedList<String> names) {
-
-        names.add("delete");
-        names.add("canceldelete");
-
-    }
-
-    @Override
-    public void points(LinkedList<String> points) {
-
-        super.points(points);
-
-        points.add(POINT_DELETE);
+	@Override
+	public void init(BotFragment origin) {
+	
+		super.init(origin);
+		
+		registerFunction("delete","delete_cancel");
+	
+		registerPoint(POINT_DELETE);
 
     }
 
+	@Override
+	public int checkFunction() {
+		
+		return FUNCTION_PRIVATE;
+		
+	}
+
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+
+		requestTwitter(user,msg);
+		
+	}
+	
     @Override
-    public int target() {
+    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
-        return Private;
-
-    }
-
-    @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
-
-        if (function.startsWith("cancel")) {
+        if (function.endsWith("cancel")) {
 
             if (!threads.containsKey(account.id)) {
 
@@ -79,7 +79,7 @@ public class TwitterDelete extends TwitterFunction {
 
         } else {
 
-            setPoint(user, POINT_DELETE, account);
+            setPrivatePoint(user, POINT_DELETE, account);
 
             msg.send("这个功能需要从 Twitter应用/网页 - 设置 - 账号 - 你的Twitter数据 输入密码下载数据zip，并找到tweet.js/like.js的说").exec();
 
@@ -89,16 +89,12 @@ public class TwitterDelete extends TwitterFunction {
 
     }
 
-    @Override
-    public void onPoint(UserData user, Msg msg, PointStore.Point point) {
-
-        super.onPoint(user, msg, point);
-
-        if (!POINT_DELETE.equals(point.point)) return;
+	@Override
+	public void onPoint(UserData user,Msg msg,String point,Object data) {
 
         if (msg.doc() == null || !msg.doc().fileName().matches("(tweet|like)\\.(js|zip)")) {
 
-            msg.send("你正在删除twetter数据... 发送tweet.js删除推文 like.js 删除打心...", "使用 /cancel 取消...").exec();
+            msg.send("你正在删除twetter数据... 发送 tweet.js 删除推文 like.js 删除打心...").withCancel().exec();
 
             return;
 
@@ -160,7 +156,7 @@ public class TwitterDelete extends TwitterFunction {
 
         msg.send("解析" + (like ? "打心" : "推文") + "ing... Σ( ﾟωﾟ").exec();
 
-        clearPoint(user);
+        clearPrivatePoint(user);
 
         BufferedReader reader = IoUtil.getReader(IoUtil.toStream(file), CharsetUtil.CHARSET_UTF_8);
 
@@ -214,7 +210,7 @@ public class TwitterDelete extends TwitterFunction {
 
         thread.userId = user.id;
 
-        thread.account = (TAuth) point.data;
+        thread.account = (TAuth) data;
 
         thread.api = thread.account.createApi();
 

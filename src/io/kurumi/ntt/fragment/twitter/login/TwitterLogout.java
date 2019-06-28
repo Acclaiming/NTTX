@@ -2,26 +2,32 @@ package io.kurumi.ntt.fragment.twitter.login;
 
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.TwitterFunction;
 import io.kurumi.ntt.fragment.abs.request.Send;
 import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.fragment.BotFragment;
 
-import java.util.LinkedList;
+public class TwitterLogout extends Fragment {
 
-public class TwitterLogout extends TwitterFunction {
+	@Override
+	public void init(BotFragment origin) {
+	
+		super.init(origin);
+		
+		registerFunction("logout");
+		
+	}
 
-    public static TwitterLogout INSTANCE = new TwitterLogout();
-
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		
+		requestTwitter(user,msg);
+		
+	}
+	
     @Override
-    public void functions(LinkedList<String> names) {
-
-        names.add("logout");
-
-    }
-
-    @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
+    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
         TAuth.data.deleteById(account.id);
 

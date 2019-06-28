@@ -2,49 +2,40 @@ package io.kurumi.ntt.fragment.twitter.auto;
 
 import io.kurumi.ntt.db.Data;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Callback;
 import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.TwitterFunction;
 import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
 import io.kurumi.ntt.fragment.twitter.TAuth;
-
 import java.util.LinkedList;
+import io.kurumi.ntt.fragment.BotFragment;
 
-public class AutoUI extends TwitterFunction {
+public class AutoUI extends Fragment {
 
     public static Data<AutoSetting> autoData = new Data<AutoSetting>(AutoSetting.class);
-    final String POINT_SETTING_AECHIVE = "auto|archive";
-    final String POINT_SETTING_LIKE = "auto|like";
+	
+    //final String POINT_SETTING_AECHIVE = "auto|archive";
     final String POINT_SETTING_FOBACK = "auto|foback";
-    final String POINT_SETTING_UNFOBACK = "auto|unfoback";
-    final String POINT_SETTING_UNFOBLACK = "auto|unfoblack";
-
-    @Override
-    public int target() {
-
-        return Private;
-
-    }
-
-    @Override
-    public void points(LinkedList<String> points) {
-
-        super.points(points);
-
-        points.add(POINT_SETTING_AECHIVE);
-        points.add(POINT_SETTING_FOBACK);
+    
+	public void init(BotFragment origin) {
+		
+		super.init(origin);
+		
+		registerFunction("auto");
+		
+        registerCallback(POINT_SETTING_FOBACK);
 
     }
 
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		
+		requestTwitter(user,msg);
+		
+	}
+	
     @Override
-    public void functions(LinkedList<String> names) {
-
-        names.add("auto");
-
-    }
-
-    @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
+    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
         AutoSetting setting = autoData.getById(account.id);
 
@@ -64,7 +55,7 @@ public class AutoUI extends TwitterFunction {
 
         return new ButtonMarkup() {{
 
-            newButtonLine((setting.archive ? "「 关闭" : "「 开启") + " 时间线推文存档 」", POINT_SETTING_AECHIVE, accountId);
+           // newButtonLine((setting.archive ? "「 关闭" : "「 开启") + " 时间线推文存档 」", POINT_SETTING_AECHIVE, accountId);
             //   newButtonLine((setting.like ? "「 关闭" : "「 开启") + " 时间线打心 」",POINT_SETTING_LIKE,accountId);
             newButtonLine((setting.foback ? "「 关闭" : "「 开启") + " 关注新关注者 」", POINT_SETTING_FOBACK, accountId);
 
@@ -88,9 +79,7 @@ public class AutoUI extends TwitterFunction {
 
         switch (point) {
 
-            case POINT_SETTING_AECHIVE:
-                target = setting.archive = !setting.archive;
-                break;
+            // case POINT_SETTING_AECHIVE: target = setting.archive = !setting.archive;break;
             //	case POINT_SETTING_LIKE : target = setting.like = !setting.like;break;
             case POINT_SETTING_FOBACK:
                 target = setting.foback = !setting.foback;
@@ -98,7 +87,7 @@ public class AutoUI extends TwitterFunction {
 
         }
 
-        if (setting.foback || setting.archive) {
+        if (setting.foback) {
 
             autoData.setById(accountId, setting);
 
@@ -118,7 +107,7 @@ public class AutoUI extends TwitterFunction {
 
         public Long id;
 
-        public boolean archive = false;
+        //public boolean archive = false;
         // public boolean like = false;
 
         public boolean foback = false;

@@ -2,31 +2,38 @@ package io.kurumi.ntt.fragment.twitter.action;
 
 import cn.hutool.core.util.NumberUtil;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.TwitterFunction;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.fragment.twitter.status.MessagePoint;
 import io.kurumi.ntt.utils.NTT;
-
-import java.util.LinkedList;
-
 import twitter4j.Relationship;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-public class UnMute extends TwitterFunction {
+public class UnMute extends Fragment {
+	
+   	@Override
+	public void init(BotFragment origin) {
 
-    @Override
-    public void functions(LinkedList<String> names) {
+		super.init(origin);
 
-        names.add("unmute");
+		registerFunction("unmute");
 
     }
 
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		
+		requestTwitter(user,msg);
+		
+	}
+	
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
+    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
         Twitter api = account.createApi();
 

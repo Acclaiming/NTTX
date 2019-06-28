@@ -1,30 +1,30 @@
 package io.kurumi.ntt.fragment.twitter.ext;
 
-import io.kurumi.ntt.fragment.abs.Function;
-import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.db.UserData;
-import java.util.LinkedList;
-import io.kurumi.ntt.utils.NTT;
-import io.kurumi.ntt.fragment.abs.TwitterFunction;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.utils.NTT;
+import java.util.LinkedList;
+import twitter4j.MediaEntity;
+import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.Status;
-import twitter4j.MediaEntity;
-import cn.hutool.core.util.ArrayUtil;
-import twitter4j.MediaEntity.Variant;
+import io.kurumi.ntt.fragment.BotFragment;
 
-public class MediaDownload extends TwitterFunction {
+public class MediaDownload extends Fragment {
 
-    @Override
-    public void functions(LinkedList<String> names) {
-
-        names.add("media");
+	@Override
+	public void init(BotFragment origin) {
+		
+		super.init(origin);
+		
+        registerFunction("media");
 
     }
 
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
         if (params.length == 0) {
 
@@ -33,7 +33,15 @@ public class MediaDownload extends TwitterFunction {
             return;
 
         }
+		
+		requestTwitter(user,msg);
+		
+		
+	}
 
+	@Override
+	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+		
         Twitter api = account.createApi();
 
         try {

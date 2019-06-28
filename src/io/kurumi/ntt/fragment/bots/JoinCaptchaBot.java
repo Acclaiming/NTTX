@@ -29,6 +29,8 @@ import cn.hutool.captcha.generator.CodeGenerator;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.captcha.generator.RandomGenerator;
 import io.kurumi.ntt.db.PointStore.Point;
+import java.util.LinkedList;
+import java.util.LinkedHashSet;
 
 public class JoinCaptchaBot extends BotFragment {
 
@@ -50,6 +52,8 @@ public class JoinCaptchaBot extends BotFragment {
     HashMap<Long, HashMap<Long, Msg>> cache = new HashMap<>();
 	HashMap<Long, HashMap<Long, Msg>> secCache = new HashMap<>();
 
+	LinkedHashSet<Long> failed = new LinkedHashSet<>();
+	
     String welcomeMessage;
     Integer lastWelcomeMessage;
 
@@ -109,18 +113,30 @@ public class JoinCaptchaBot extends BotFragment {
 	}
 
 	@Override
-	public boolean onPrivate(UserData user,Msg msg) {
+	public int checkMsg(UserData user,Msg msg) {
+
+		return PROCESS_SYNC;
+
+	}
+
+	@Override
+	public void onPrivate(UserData user,Msg msg) {
 
 		msg.send("喵.... ？").exec();
 
-		return true;
+	}
+
+	@Override
+	public int checkPoint(UserData user,Msg msg,String point,Object data) {
+
+		return PROCESS_SYNC;
 
 	}
 
     @Override
-    public boolean onGroup(UserData user,final Msg msg) {
+    public void onGroup(UserData user,final Msg msg) {
 
-		if (user.developer()) return false;
+		if (user.developer()) return;
 
         if (msg.message().groupChatCreated() != null || msg.message().supergroupChatCreated() != null) {
 
@@ -148,16 +164,11 @@ public class JoinCaptchaBot extends BotFragment {
 
                 msg.delete();
 
-                return true;
-
 			} else if (!user.id.equals(msg.message().leftChatMember().id())) {
-
-                return true;
-
 			}
 
             UserData left = UserData.get(msg.message().leftChatMember());
-
+			
             if (logChannel != null) {
 
                 new Send(this,logChannel,"事件 : #成员退出","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + left.userName(),"#id" + left.id).html().exec();
@@ -182,24 +193,23 @@ public class JoinCaptchaBot extends BotFragment {
 
 				}
 
-                return false;
+                return;
 
 			}
 
             final UserData newData = UserData.get(newMember);
 
-			if (newData.developer()) return true;
-			
+			if (newData.developer()) return;
+
 			if (Firewall.block.containsId(newData.id)) {
 
 				if (msg.kick() && logChannel != null) {
-
+					
 					new Send(this,logChannel,"事件 : #未通过 #SPAM","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
 
-					return true;
+					return;
 
 				}
-
 
 			} 
 
@@ -207,11 +217,11 @@ public class JoinCaptchaBot extends BotFragment {
 
 				msg.send("你好呀，新来的绒布球 " + newData.userName() + " 因为咱处理超时，就算乃通过验证了 )").html().exec();
 
-				return true;
+				return;
 
 			}
 
-			setPoint(user,POINT_DELETE,PointStore.Type.Group);
+			setGroupPoint(user,POINT_DELETE);
 
 			Img info = new Img(800,600,Color.WHITE);
 
@@ -219,7 +229,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			info.font("Noto Sans CJK SC Thin",39);
 
-			String code = RandomUtil.randomBoolean() ? "喵" : "嘤";
+			String code = RandomUtil.randomBoolean() ? "喵" :  "嘤";
 
 			info.drawRandomColorTextCenter(0,0,0,400,"新加裙的绒布球你好呀");
 			info.drawRandomColorTextCenter(0,200,0,200,"请发送 " + code + " 通过验证");
@@ -246,7 +256,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 				}};
 
-            setPoint(newData,POINT_AUTH,PointStore.Type.Group,code);
+            setGroupPoint(newData,POINT_AUTH,code);
 
             group.put(newMember.id(),Msg.from(this,bot().execute(new SendPhoto(msg.chatId(),info.getBytes()).caption(newData.userName()).parseMode(ParseMode.HTML).replyMarkup(buttons.markup()))));
 
@@ -261,7 +271,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 						if (group.containsKey(newData.id.longValue())) {
 
-							clearPoint(newData);
+							clearGroupPoint(newData);
 
 							group.remove(newData.id).delete();
 
@@ -279,6 +289,8 @@ public class JoinCaptchaBot extends BotFragment {
 
 								msg.send(newData.userName() + " 是傻猫 , 真可惜喵...").html().failed(15 * 1000);
 
+								failed.add(newData.id);
+								
 								if (logChannel != null) {
 
 									new Send(origin,logChannel,"事件 : #未通过 #超时","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + newData.userName(),"#id" + newData.id).html().exec();
@@ -295,18 +307,14 @@ public class JoinCaptchaBot extends BotFragment {
 
 		}
 
-        return true;
-
 	}
 
-    @Override
-    public boolean onCallback(UserData user,Callback callback) {
+	@Override
+	public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
-        long target = Long.parseLong(callback.params[1]);
+        long target = Long.parseLong(params[0]);
 		HashMap<Long, Msg> group = cache.containsKey(callback.chatId()) ? cache.get(callback.chatId()) : new HashMap<Long, Msg>();
 		HashMap<Long, Msg> secGroup = secCache.containsKey(callback.chatId()) ? secCache.get(callback.chatId()) : new HashMap<Long, Msg>();
-
-		String point = callback.params[0];
 
 		if (POINT_AUTH.equals(point)) {
 
@@ -314,7 +322,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 				callback.alert("这个验证不针对乃 ~");
 
-				return true;
+				return;
 
 			}
 
@@ -351,16 +359,18 @@ public class JoinCaptchaBot extends BotFragment {
 				callback.alert("这个验证已失效 (");
 				callback.delete();
 
-				return true;
+				return;
 
 			}
 
-			clearPoint(user);
+			clearGroupPoint(user);
 
 			if (callback.kick(user.id)) {
 
 				callback.send(user.userName() + " 瞎按按钮 , 未通过验证 , 真可惜喵...").html().failed(15 * 1000);
 
+				failed.add(user.id);
+				
 				if (logChannel != null) {
 
 					new Send(this,logChannel,"事件 : #未通过 #点击按钮","群组 : " + callback.chat().title(),"[" + Html.code(callback.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
@@ -409,13 +419,15 @@ public class JoinCaptchaBot extends BotFragment {
 						callback.alert("这个验证已失效 (");
 						callback.delete();
 
-						return true;
+						return;
 
 					}
 
-					clearPoint(user);
+					clearGroupPoint(user);
 
 					if (callback.kick(user.id)) {
+						
+						failed.add(user.id);
 
 						callback.send(user.userName() + " 瞎按按钮 , 未通过验证 , 真可惜喵...").html().failed(15 * 1000);
 
@@ -431,8 +443,8 @@ public class JoinCaptchaBot extends BotFragment {
 
 					callback.alert("这个验证不针对乃 ~");
 				}
-				
-				return true;
+
+				return;
 
 			}
 
@@ -447,8 +459,8 @@ public class JoinCaptchaBot extends BotFragment {
 				secGroup.remove(target).delete();
 
 			}
-			
-			point().points.remove(target);
+
+			point().groupPoints.remove(target);
 
 			UserData targetUser = UserData.get(target);
 
@@ -502,11 +514,13 @@ public class JoinCaptchaBot extends BotFragment {
 						callback.alert("这个验证已失效 (");
 						callback.delete();
 
-						return true;
+						return;
 
 					}
 
 					if (callback.kick(user.id)) {
+						
+						failed.add(user.id);
 
 						callback.send(user.userName() + " 瞎按按钮 , 未通过验证 , 真可惜喵...").html().failed(15 * 1000);
 
@@ -523,26 +537,26 @@ public class JoinCaptchaBot extends BotFragment {
 					callback.alert("这个验证不针对乃 ~");
 
 				}
-				
-				return true;
+
+				return;
 
 			}
-			
+
 
 			if (group.containsKey(target)) {
 
 				group.remove(target).delete();
 
 			}
-			
+
 			if (secGroup.containsKey(target)) {
 
 				secGroup.remove(target).delete();
 
 			}
-			
 
-			point().points.remove(target);
+
+			point().groupPoints.remove(target);
 
 			UserData targetUser = UserData.get(target);
 
@@ -558,10 +572,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			}
 
-
 		}
-
-		return true;
 
 	}
 
@@ -613,18 +624,18 @@ public class JoinCaptchaBot extends BotFragment {
 
 	}
 
-    @Override
-    public boolean onPointedGroup(final UserData user,final Msg msg) {
+	@Override
+	public void onPoint(final UserData user,final Msg msg,String point,Object data) {
 
         HashMap<Long, Msg> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
 		HashMap<Long, Msg> secGroup = secCache.containsKey(msg.chatId()) ? secCache.get(msg.chatId()) : new HashMap<Long, Msg>();
-		
+
 		if (msg.message().newChatMember() != null && msg.message().newChatMember().id().equals(user.id)) {
-			
-			clearPoint(user);
-			
+
+			clearGroupPoint(user);
+
 			onGroup(user,msg);
-			
+
 		} else if (msg.message().leftChatMember() != null) {
 
 			if (group.containsKey(msg.message().leftChatMember().id())) {
@@ -634,7 +645,7 @@ public class JoinCaptchaBot extends BotFragment {
 				if (group.isEmpty()) cache.remove(msg.chatId());
 
 			}
-			
+
 			if (secGroup.containsKey(msg.message().leftChatMember().id())) {
 
 				secGroup.remove(msg.message().leftChatMember().id()).delete();
@@ -642,38 +653,38 @@ public class JoinCaptchaBot extends BotFragment {
 				if (secGroup.isEmpty()) secCache.remove(msg.chatId());
 
 			}
-			
+
 			if (delJoin) msg.delete();
 
 			if (user.id.equals(me.id())) {
 
 				msg.delete();
 
-				return true;
+				return;
 
 			} else if (!user.id.equals(msg.message().leftChatMember().id())) {
 
-				return true;
+				return;
 
 			}
 
 			UserData left = UserData.get(msg.message().leftChatMember());
 
 			if (logChannel != null) {
+				
+				failed.add(left.id);
 
 				new Send(this,logChannel,"事件 : #成员退出","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + left.userName(),"#id" + left.id).html().exec();
 
 			}
 
-			clearPoint(user);
+			clearGroupPoint(user);
 
 		} else {
 
-			PointStore.Point<Object> point = getPoint(user);
+			if (POINT_AUTH.equals(point) && msg.message().forwardSignature() == null && msg.hasText() && (msg.text().contains(data.toString()))) {
 
-			if (POINT_AUTH.equals(point.point) && msg.message().forwardSignature() == null && msg.hasText() && (msg.text().contains(point.data.toString())) && !(msg.text().contains("喵") && msg.text().contains("嘤"))) {
-
-				clearPoint(user);
+				clearGroupPoint(user);
 
 				if (cache.containsKey(msg.chatId())) {
 
@@ -689,7 +700,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 				if (needSecondaryVerification(user)) {
 
-					setPoint(user,POINT_DELETE,PointStore.Type.Group);
+					setGroupPoint(user,POINT_DELETE);
 
 					GeneratedCode code = new GeneratedCode();
 
@@ -728,7 +739,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 						}};
 
-					setPoint(user,POINT_SEC_AUTH,PointStore.Type.Group,code);
+					setGroupPoint(user,POINT_SEC_AUTH,code);
 
 					secGroup.put(user.id,Msg.from(this,bot().execute(new SendPhoto(msg.chatId(),info.getBytes()).caption(user.userName()).parseMode(ParseMode.HTML).replyMarkup(buttons.markup()))));
 
@@ -743,7 +754,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 								if (group.containsKey(user.id)) {
 
-									clearPoint(user);
+									clearGroupPoint(user);
 
 									group.remove(user.id).delete();
 
@@ -759,6 +770,8 @@ public class JoinCaptchaBot extends BotFragment {
 
 									if (msg.kick(user.id)) {
 
+										failed.add(user.id);
+										
 										msg.send(user.userName() + " 是傻猫 , 真可惜喵...").html().failed(15 * 1000);
 
 										if (logChannel != null) {
@@ -790,9 +803,9 @@ public class JoinCaptchaBot extends BotFragment {
 
 				}
 
-			} else if (POINT_SEC_AUTH.equals(point.point)) {
+			} else if (POINT_SEC_AUTH.equals(point)) {
 
-				if (((GeneratedCode)point.data).generator.verify(((GeneratedCode)point.data).code,msg.text())) {
+				if (((GeneratedCode)data).generator.verify(((GeneratedCode)data).code,msg.text())) {
 
 					if (secGroup.containsKey(user.id)) {
 
@@ -804,8 +817,10 @@ public class JoinCaptchaBot extends BotFragment {
 
 					msg.delete();
 
-					clearPoint(user);
+					clearGroupPoint(user);
 
+					failed.remove(user.id);
+					
 					msg.send(user.userName() + " 通过了验证 ~").html().failed(5 * 1000);
 
 					sendWelcome(user,msg);
@@ -827,21 +842,23 @@ public class JoinCaptchaBot extends BotFragment {
 					}
 
 					if (msg.kick()) {
+						
+						failed.add(user.id);
 
 						msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().failed(15 * 1000);
 
 						if (logChannel != null) {
 
 							msg.forwardTo(logChannel);
-							
+
 							msg.delete();
-							
-							new Send(this,logChannel,"事件 : #未通过 #二次验证失败","验证码为 : " + ((GeneratedCode)point.data).code,"群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
+
+							new Send(this,logChannel,"事件 : #未通过 #二次验证失败","验证码为 : " + ((GeneratedCode)data).code,"群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
 
 						} else {
-							
+
 							msg.delete();
-							
+
 						}
 
 					}
@@ -849,7 +866,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 				}
 
-			} else if (POINT_DELETE.equals(point.point)) {
+			} else if (POINT_DELETE.equals(point)) {
 
 				msg.delete();
 
@@ -863,20 +880,22 @@ public class JoinCaptchaBot extends BotFragment {
 
 				}
 
+				failed.add(user.id);
+				
 				msg.send(user.userName() + " 不懂喵喵的语言 , 真可惜喵...").html().failed(15 * 1000);
 
 				if (logChannel != null) {
 
 					msg.forwardTo(logChannel);
-					
+
 					msg.delete();
-					
+
 					new Send(this,logChannel,"事件 : #未通过 #发送其他内容","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
 
 				} else {
-					
+
 					msg.delete();
-					
+
 				}
 
 			}
@@ -884,20 +903,18 @@ public class JoinCaptchaBot extends BotFragment {
 
 		}
 
-		return true;
-
-	}
+    }
 
 	boolean needSecondaryVerification(UserData user) {
 
-		if (user.contactable != null && user.contactable) return false;
-	
-		if (user.userName == null) {
-			
-			return true;
-			
-		}
+		if (failed.contains(user.id)) return true;
 		
+		if (user.userName == null) {
+
+			return true;
+
+		}
+
 		for (Character c : user.name().toCharArray()) {
 
 			if (Character.UnicodeBlock.of(c) == Character.UnicodeBlock.ARABIC) {
@@ -907,16 +924,24 @@ public class JoinCaptchaBot extends BotFragment {
 			}
 
 		}
-		
-		GetUserProfilePhotosResponse photos = bot().execute(new GetUserProfilePhotos(user.id.intValue()).limit(1));
 
-		if (photos.isOk() && photos.photos().totalCount() == 0) {
+		GetUserProfilePhotosResponse photos = bot().execute(new GetUserProfilePhotos(user.id.intValue()));
 
-			return true;
+		if (photos.isOk()) {
+
+			if (photos.photos().totalCount() == 0) {
+
+				return true;
+
+			} else if (photos.photos().totalCount() == 1) {
+
+				return RandomUtil.randomInt(3) > 0;
+
+			}
 
 		}
 
-		return RandomUtil.randomBoolean();
+		return (user.contactable != null && user.contactable) ? (RandomUtil.randomInt(3) > 1) : RandomUtil.randomBoolean();
 
 	}
 

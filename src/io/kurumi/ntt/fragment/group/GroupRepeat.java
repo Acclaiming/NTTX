@@ -16,7 +16,7 @@ public class GroupRepeat extends Fragment {
     public HashMap<Long, LinkedList<Msg>> msgs = new HashMap<>();
 
     @Override
-    public boolean onGroup(UserData user, Msg msg) {
+    public void onGroup(UserData user, Msg msg) {
 
         synchronized (msgs) {
 
@@ -75,8 +75,7 @@ public class GroupRepeat extends Fragment {
 
                     msgs.put(msg.chatId(), history);
 
-
-                    return false;
+                    return;
 
                 }
 
@@ -97,8 +96,6 @@ public class GroupRepeat extends Fragment {
                 }
 
             }
-
-            return false;
 
         }
 

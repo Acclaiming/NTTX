@@ -2,28 +2,27 @@ package io.kurumi.ntt.fragment.twitter.action;
 
 import cn.hutool.core.util.NumberUtil;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.abs.Function;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.utils.NTT;
-
 import java.util.LinkedList;
-
 import twitter4j.TwitterException;
 
-public class Jvbao extends Function {
+public class Jvbao extends Fragment {
 
+	@Override
+	public void init(BotFragment origin) {
+
+		super.init(origin);
+
+		registerAdminFunction("jvbao");
+		
+	}
+	
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
-
-        if (!user.developer()) {
-
-            msg.send("Permission Denied").exec();
-
-            return;
-
-        }
-
 
         if (params.length == 0) {
 
@@ -79,14 +78,6 @@ public class Jvbao extends Function {
         }
 
         status.edit("Jvbao完成", "成功 : " + success, "失败 : " + failed).exec();
-
-
-    }
-
-    @Override
-    public void functions(LinkedList<String> names) {
-
-        names.add("jvbao");
 
 
     }
