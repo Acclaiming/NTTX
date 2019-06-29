@@ -24,4 +24,4 @@ mkdir ./build
 
 javac -d $(dirname $(readlink -f $0))/build -classpath $CLASSPATH @sources.txt && rm -rf ./classes && mv ./build ./classes
 
-rm -rf ./build && ./sources.txt
+rm -rf ./build ./sources.txt
