@@ -352,13 +352,13 @@ public class TrackTask extends TimerTask {
 
     String parseStatus(Twitter api, User user) {
 
-        StringBuilder status = new StringBuilder("\n");
+        StringBuilder status = new StringBuilder();
 
         try {
 
             if (!api.showFriendship(api.getId(), user.getId()).isSourceFollowingTarget() && !user.isFollowRequestSent()) {
 
-                if (user.isProtected()) status.append("这是一个是锁推用户 :)\n");
+                if (user.isProtected()) status.append("\n这是一个是锁推用户");
 
             }
 
@@ -366,14 +366,14 @@ public class TrackTask extends TimerTask {
         }
 
         // if (user.isFollowRequestSent()) status.append("乃发送了关注请求 :)\n");
-        if (user.getStatusesCount() == 0) status.append("这个用户没有发过推 :)\n");
-        if (user.getFavouritesCount() == 0) status.append("这个用户没有喜欢过推文 :)\n");
+        if (user.getStatusesCount() == 0) status.append("\n这个用户没有发过推文");
+        if (user.getFavouritesCount() == 0) status.append("\n这个用户没有喜欢过推文 :)");
         if (user.getFollowersCount() < 20)
-            status.append("这个用户关注者低 (").append(user.getFollowersCount()).append(")  :)\n");
+            status.append("\n这个用户关注者低 (").append(user.getFollowersCount()).append(")  :)");
 
         if (user.getWithheldInCountries() != null) {
 
-            status.append("警告 : 此账号违反了");
+            status.append("\n警告 : 此账号违反了");
 
             for (String countryCode : user.getWithheldInCountries()) {
 
@@ -383,7 +383,7 @@ public class TrackTask extends TimerTask {
 
             }
 
-            status.append(" 的当地法律 被Twitter标识");
+            status.append("的当地法律 被Twitter标识");
 
         }
 
