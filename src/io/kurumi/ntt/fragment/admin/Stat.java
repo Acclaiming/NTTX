@@ -21,15 +21,15 @@ public class Stat extends Fragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 		
-		StringBuilder status = new StringBuilder("=========== 系统状态 ===========");
+		StringBuilder status = new StringBuilder("===== 系统状态 ====");
 
 		status.append("\n运行线程 : " + Thread.activeCount());
 		
 		Handler4meminfo mem = new Handler4meminfo(true);
 
 		status.append("\n内存大小 : ").append(mem.shot.getMemTotal() / 1024).append("MB");
-		status.append("\n使用内存 : ").append(mem.shot.getBuffers() / 1024).append("MB");
-		status.append("\n缓存内存 : ").append(mem.shot.getCached() / 1024).append("MB");
+		status.append("\n使用内存 : ").append((mem.shot.getMemTotal() - mem.shot.getMemFree() - mem.shot.getBuffers() - mem.shot.getCached()) / 1024).append("MB");
+		status.append("\n缓存内存 : ").append((mem.shot.getCached() + mem.shot.getBuffers()) / 1024).append("MB");
 		status.append("\n空闲内存 : ").append(mem.shot.getMemFree() / 1024).append("MB");
 		
 		Handler4stat handler4stat = new Handler4stat(true);
