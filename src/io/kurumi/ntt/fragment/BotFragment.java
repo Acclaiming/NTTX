@@ -293,7 +293,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 		if ("cancel".equals(function)) {
 
-			msg.send("没有什么需要取消的").exec();
+			msg.send("没有什么需要取消的 :)").exec();
 
 			return;
 
@@ -391,8 +391,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 				if (msg.isCommand()) {
 
-					final Fragment function = functions.get(msg.command());
-
+					final Fragment function = points.get(groupPoint.point);
+					
 					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint.data);
 
 					if (checked == PROCESS_REJECT) return EMPTY;
@@ -412,9 +412,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 				} else {
 
-					final Fragment function = points.get(msg.command());
+					final Fragment function = points.get(groupPoint.point);
 
-					int checked = function.checkPoint(user,msg,msg.command(),msg.params());
+					int checked = function.checkPoint(user,msg,groupPoint.point,groupPoint.data);
 
 					if (checked == PROCESS_REJECT) return EMPTY;
 
@@ -456,7 +456,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 					}
 
-					final Fragment function = functions.get(msg.command());
+					final Fragment function = points.get(privatePoint.point);
 
 					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint.data);
 
@@ -477,9 +477,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 				} else {
 
-					final Fragment function = points.get(msg.command());
+					final Fragment function = points.get(privatePoint.point);
 
-					int checked = function.checkPoint(user,msg,msg.command(),msg.params());
+					int checked = function.checkPoint(user,msg,privatePoint.point,privatePoint.data);
 
 					if (checked == PROCESS_REJECT) return EMPTY;
 
