@@ -174,6 +174,10 @@ public class Fragment {
 
 					});
 
+			} else {
+				
+				onMsg(user,msg);
+				
 			}
 
 			if (checked == PROCESS_REJECT) return EMPTY;
@@ -480,9 +484,11 @@ public class Fragment {
 	public final int FUNCTION_GROUP = 2;
 	public final int FUNCTION_PUBLIC = 3;
 	
+	// 没有 异步
+	
 	public int checkMsg(UserData user,Msg msg) {
 		
-		return PROCESS_ASYNC;
+		return PROCESS_SYNC;
 		
 	}
 	

@@ -111,28 +111,14 @@ public class JoinCaptchaBot extends BotFragment {
         return botToken;
 
 	}
-
-	@Override
-	public int checkMsg(UserData user,Msg msg) {
-
-		return PROCESS_SYNC;
-
-	}
-
-	@Override
-	public void onPrivate(UserData user,Msg msg) {
-
-		msg.send("喵.... ？").exec();
-
-	}
-
+	
 	@Override
 	public int checkPoint(UserData user,Msg msg,String point,Object data) {
 
 		return PROCESS_SYNC;
 
 	}
-
+	
     @Override
     public void onGroup(UserData user,final Msg msg) {
 

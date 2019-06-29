@@ -650,6 +650,10 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 							});
 
+					} else {
+						
+						onMsg(user,msg);
+						
 					}
 
 					if (checked == PROCESS_REJECT) return EMPTY;
