@@ -29,7 +29,6 @@ import static com.mongodb.client.model.Filters.eq;
 import io.kurumi.ntt.utils.NTT;
 import io.kurumi.ntt.fragment.BotFragment;
 
-
 public class TrackTask extends TimerTask {
 
     public static TrackTask INSTANCE = new TrackTask();
@@ -37,7 +36,7 @@ public class TrackTask extends TimerTask {
     public static Data<IdsList> friends = new Data<IdsList>("Friends", IdsList.class);
 
     public static void onUserChange(UserArchive archive, String change) {
-
+		
         if (TrackUI.data.collection.countDocuments(and(eq("_id", archive.id), eq("hideChange", true))) > 0) {
 
             return;

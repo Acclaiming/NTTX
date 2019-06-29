@@ -123,6 +123,10 @@ public class StatusUpdate extends Fragment {
 
         UpdatePoint update = new UpdatePoint();
 
+		update.auth = auth;
+
+        update.toReply = StatusArchive.get(point.targetId);
+		
 		if (msg.hasText()) {
 
             if (msg.text().toCharArray().length > 280) {
@@ -137,13 +141,7 @@ public class StatusUpdate extends Fragment {
 
             msg.send("文本已设定",submitAndCancel).exec();
 
-        }
-		
-        update.auth = auth;
-
-        update.toReply = StatusArchive.get(point.targetId);
-
-        if (message.sticker() != null) {
+        } else if (message.sticker() != null) {
 
             msg.sendUpdatingFile();
 

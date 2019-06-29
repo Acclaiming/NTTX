@@ -48,37 +48,23 @@ public class ForumManage extends Fragment {
 
 	@Override
 	public void init(BotFragment origin) {
-		// TODO: Implement this method
+
 		super.init(origin);
 
         registerFunction("forum");
 
-		registerCallback(POINT_CREATE_FORUM,
-						 POINT_FORUM_MANAGE,
-						 POINT_EDIT_NAME,
-						 POINT_EDIT_DESC,
-						 POINT_EDIT_CHAN,
-						 POINT_EDIT_TOKEN,
-						 POINT_EDIT_ADMIN,
-						 POINT_CREATE_TAG,
-						 POINT_EDIT_TAGS,
-						 POINT_SHOW_TAG,
-						 POINT_EDIT_TAG_NAME,
-						 POINT_EDIT_TAG_DESC);
-
-
-		registerPoint(POINT_CREATE_FORUM,
-					  POINT_FORUM_MANAGE,
-					  POINT_EDIT_NAME,
-					  POINT_EDIT_DESC,
-					  POINT_EDIT_CHAN,
-					  POINT_EDIT_TOKEN,
-					  POINT_EDIT_ADMIN,
-					  POINT_CREATE_TAG,
-					  POINT_EDIT_TAGS,
-					  POINT_SHOW_TAG,
-					  POINT_EDIT_TAG_NAME,
-					  POINT_EDIT_TAG_DESC);
+		registerPoints(POINT_CREATE_FORUM,
+					   POINT_FORUM_MANAGE,
+					   POINT_EDIT_NAME,
+					   POINT_EDIT_DESC,
+					   POINT_EDIT_CHAN,
+					   POINT_EDIT_TOKEN,
+					   POINT_EDIT_ADMIN,
+					   POINT_CREATE_TAG,
+					   POINT_EDIT_TAGS,
+					   POINT_SHOW_TAG,
+					   POINT_EDIT_TAG_NAME,
+					   POINT_EDIT_TAG_DESC);
 
     }
 
@@ -129,7 +115,7 @@ public class ForumManage extends Fragment {
 
 	@Override
 	public void onPoint(UserData user,Msg msg,String pointStr,Object data) {
-		
+
 		PointStore.Point point = getPrivatePoint(user);
 
         switch (pointStr) {
@@ -753,7 +739,7 @@ public class ForumManage extends Fragment {
 
     void showTag(boolean edit,UserData user,Msg msg,final long tagId) {
 
-        ForumTag tag = ForumTag.data.getById(tagId);
+        final ForumTag tag = ForumTag.data.getById(tagId);
 
         if (tag == null) {
 
@@ -787,6 +773,7 @@ public class ForumManage extends Fragment {
                     .newButton("修改名称",POINT_EDIT_TAG_NAME,tagId)
                     .newButton("修改简介",POINT_EDIT_TAG_DESC,tagId);
 
+				newButtonLine("返回列表",POINT_EDIT_TAGS,tag.forumId);
 				newButtonLine("删除分类",POINT_DEL_TAG,tagId);
 
 			}};
@@ -921,6 +908,20 @@ public class ForumManage extends Fragment {
 
         showTag(false,user,msg,tagId);
 
+
+    }
+
+	void delTag(UserData user,Callback callback,final long tagId) {
+		
+        callback
+			.edit("确认删除分类吗？该分类下所有帖子将被删除！")
+			.buttons(new ButtonMarkup() {{
+
+					newButtonLine("返回分类",POINT_SHOW_TAG,tagId);
+					newButtonLine("返回分类",POINT_DEL_TAG,tagId);
+
+
+				}});
 
     }
 
