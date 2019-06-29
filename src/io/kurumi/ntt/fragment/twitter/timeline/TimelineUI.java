@@ -272,6 +272,14 @@ public class TimelineUI extends Fragment {
 
     }
 
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		
+		requestTwitter(user,msg);
+		
+	}
+	
+
     @Override
     public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
