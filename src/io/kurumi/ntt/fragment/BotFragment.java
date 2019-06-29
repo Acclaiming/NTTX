@@ -706,6 +706,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 				Fragment function = callbacks.containsKey(point) ?  callbacks.get(point): this;
 
+				callback.alert("Test : " + function.toString());
+				
 				int checked = function.checkCallback(user,callback,point,params);
 
 				if (checked == PROCESS_REJECT) return EMPTY;
