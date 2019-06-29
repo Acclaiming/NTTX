@@ -46,7 +46,7 @@ import java.util.Timer;
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
     Final finalFragment = new Final() {{ init(BotFragment.this); }};;
-	
+
 	public static Timer mainTimer = new Timer();
 	public static ExecutorService asyncPool = Executors.newCachedThreadPool();
 	public static LinkedBlockingQueue<UserAndUpdate> queue = new LinkedBlockingQueue<>();
@@ -97,7 +97,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 				if (processed != null) return processed;
 
 			}
-			
+
 			finalFragment.onAsyncUpdate(user,update);
 
 			return null;
@@ -536,14 +536,18 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 						} else {
 
-							return new Processed(user,update,PROCESS_ASYNC) {
+							int checked = checkPayload(user,msg,payload,params);
+
+							if (checked == PROCESS_REJECT) return EMPTY;
+
+							return new Processed(user,update,checked) {
 
 								@Override
 								public void process() {
 
 									msg.sendTyping();
 
-									onFinalMsg(user,msg);
+									onPayload(user,msg,payload,params);
 
 								}
 
@@ -630,11 +634,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 							public void process() {
 
 								if (msg.isPrivate()) {
-									
+
 									msg.sendTyping();
-									
+
 									onFinalMsg(user,msg);
-									
+
 								}
 
 							}
@@ -663,7 +667,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 					}
 
 					if (checked == PROCESS_REJECT) return EMPTY;
-					
+
 					onMsg(user,msg);
 
 				}
@@ -692,7 +696,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 			}
 
 			if (checked == PROCESS_REJECT) return EMPTY;
-			
+
 			onChanPost(user,msg);
 
 		} else if (update.callbackQuery() != null) {
