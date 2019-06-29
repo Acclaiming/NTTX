@@ -303,17 +303,17 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 	@Override
 	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,Object data) {
-		
+
 		if ("cancel".equals(function)) {
 
 			clearPrivatePoint(user);
-			
+
 			msg.send("已经取消当前操作 :) ","帮助文档 : @NTT_X").publicFailed();
 
 			return;
 
 		}
-		
+
 	}
 
     public void processAsync(final Update update) {
@@ -388,11 +388,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 			final PointStore.Point groupPoint = point().getGroup(user);
 
 			if (msg.isGroup() && groupPoint != null) {
-				
+
 				final Fragment function = points.containsKey(groupPoint.point) ? points.get(groupPoint.point) : this;
 
 				if (msg.isCommand()) {
-					
+
 					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint.data);
 
 					if (checked == PROCESS_REJECT) return EMPTY;
@@ -403,7 +403,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 						public void process() {
 
 							msg.sendTyping();
-							
+
 							function.onPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint.data);
 
 						}
@@ -422,7 +422,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 						public void process() {
 
 							msg.sendTyping();
-							
+
 							function.onPoint(user,msg,groupPoint.point,groupPoint.data);
 
 						}
@@ -430,15 +430,15 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 					};
 
 				}
-				
+
 
 			} else if (msg.isPrivate() && privatePoint != null) {
-				
+
 				final Fragment function =points.containsKey(privatePoint.point) ? points.get(privatePoint.point) : this;
-				
+
 				if (msg.isCommand()) {
 
-					
+
 					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint.data);
 
 					if (checked == PROCESS_REJECT) return EMPTY;
@@ -449,7 +449,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 						public void process() {
 
 							msg.sendTyping();
-							
+
 							function.onPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint.data);
 
 						}
@@ -457,7 +457,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 					};
 
 				} else {
-					
+
 					int checked = function.checkPoint(user,msg,privatePoint.point,privatePoint.data);
 
 					if (checked == PROCESS_REJECT) return EMPTY;
@@ -466,7 +466,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 						@Override
 						public void process() {
-							
+
 							msg.sendTyping();
 
 							function.onPoint(user,msg,privatePoint.point,privatePoint.data);
@@ -474,7 +474,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 						}
 
 					};
-					
+
 				}
 
 			} else {
@@ -500,7 +500,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 								public void process() {
 
 									msg.sendTyping();
-									
+
 									function.onPayload(user,msg,payload,params);
 
 								}
@@ -521,7 +521,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 								public void process() {
 
 									msg.sendTyping();
-									
+
 									function.onPayload(user,msg,payload,params);
 
 								}
@@ -536,7 +536,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 								public void process() {
 
 									msg.sendTyping();
-									
+
 									onFinalMsg(user,msg);
 
 								}
@@ -588,7 +588,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 							public void process() {
 
 								msg.sendTyping();
-								
+
 								function.onFunction(user,msg,msg.command(),msg.params());
 
 							}
@@ -609,7 +609,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 							public void process() {
 
 								msg.sendTyping();
-								
+
 								function.onFunction(user,msg,msg.command(),msg.params());
 
 							}
@@ -624,7 +624,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 							public void process() {
 
 								msg.sendTyping();
-								
+
 								onFinalMsg(user,msg);
 
 							}
@@ -685,12 +685,12 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 			final Callback callback = new Callback(this,update.callbackQuery());
 
-			if (callback.params.length > 0 && callbacks.containsKey(callback.params[0])) {
+			if (callback.params.length > 0) {
 
 				final String point = callback.params[0];
 				final String[] params = callback.params.length > 1 ? ArrayUtil.sub(callback.params,1,callback.params.length) : new String[0];
 
-				Fragment function = callbacks.get(point);
+				Fragment function = callbacks.containsKey(callback.params[0]) ?  callbacks.get(point): this;
 
 				int checked = function.checkCallback(user,callback,point,params);
 
