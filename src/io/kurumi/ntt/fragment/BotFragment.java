@@ -704,10 +704,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 				final String point = callback.params[0];
 				final String[] params = callback.params.length > 1 ? ArrayUtil.sub(callback.params,1,callback.params.length) : new String[0];
 
-				Fragment function = callbacks.containsKey(point) ?  callbacks.get(point): this;
+				final Fragment function = callbacks.containsKey(point) ?  callbacks.get(point): this;
 
-				callback.alert("Test : " + function.toString());
-				
 				int checked = function.checkCallback(user,callback,point,params);
 
 				if (checked == PROCESS_REJECT) return EMPTY;
@@ -717,7 +715,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 					@Override
 					public void process() {
 
-						onCallback(user,callback,point,params);
+						function.onCallback(user,callback,point,params);
 
 					}
 
