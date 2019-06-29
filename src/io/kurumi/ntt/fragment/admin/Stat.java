@@ -23,6 +23,7 @@ public class Stat extends Fragment {
 		
 		StringBuilder status = new StringBuilder("===== 系统状态 ====");
 
+		status.append("\n阻塞消息 : " + BotFragment.queue.size());
 		status.append("\n运行线程 : " + Thread.activeCount());
 		
 		Handler4meminfo mem = new Handler4meminfo(true);
