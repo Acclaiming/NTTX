@@ -493,7 +493,7 @@ public class Fragment {
 
 	public int checkMsg(UserData user,Msg msg) {
 
-		return PROCESS_SYNC;
+		return PROCESS_ASYNC;
 
 	}
 
@@ -509,7 +509,7 @@ public class Fragment {
 
 	public int checkChanPost(UserData user,Msg msg) {
 
-		return PROCESS_REJECT;
+		return PROCESS_ASYNC;
 
 	}
 
