@@ -704,7 +704,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 				final String point = callback.params[0];
 				final String[] params = callback.params.length > 1 ? ArrayUtil.sub(callback.params,1,callback.params.length) : new String[0];
 
-				Fragment function = callbacks.containsKey(callback.params[0]) ?  callbacks.get(point): this;
+				Fragment function = callbacks.containsKey(point) ?  callbacks.get(point): this;
 
 				int checked = function.checkCallback(user,callback,point,params);
 
