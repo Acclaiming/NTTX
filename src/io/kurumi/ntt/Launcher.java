@@ -175,6 +175,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 	
+		super.onFunction(user,msg,function,params);
+		
         if ("start".equals(function)) {
 
             msg.send("start failed successfully ~", "", "NTT是一只开源TelegramBot、可以作为Twitter客户端使用、也可以导出贴纸、创建私聊BOT、以及在群内沙雕发言与复读。", "", "BOT帮助文档请戳 : @NTT_X", "交流群组在这里 : @NTTDiscuss").html().publicFailed();
