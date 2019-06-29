@@ -41,11 +41,11 @@ public class Users extends Fragment {
 		
 		if ("usage".equals(function)) {
 			
-			export = new StringBuilder(" >> Authed Users >>");
+			export = new StringBuilder(" >> Authed Users >> \n");
 			
 			for (TAuth auth : TAuth.data.collection.find()) {
 
-				count++;
+				count ++;
 
 				export.append(UserData.get(auth.user).userName()).append(" -> ").append(auth.archive().urlHtml()).append("\n");
 
@@ -69,13 +69,13 @@ public class Users extends Fragment {
 			
 			count = 0;
 			
-			export = new StringBuilder(" >> User Bots << ");
+			export = new StringBuilder(" >> User Bots << \n");
 			
 			for (UserBot bot : UserBot.data.collection.find()) {
 				
-				count++;
+				count ++;
 
-				export.append(UserData.get(bot.user).userName()).append(" -> [ " + bot.typeName() + " ] @").append(bot.userName).append("\n");
+				export.append(UserData.get(bot.user).userName()).append(" -> [ " + bot.typeName() + " ] @").append(HtmlUtil.escape(bot.userName)).append("\n");
 
 				if (count == 50) {
 
