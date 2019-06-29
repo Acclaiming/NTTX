@@ -102,11 +102,13 @@ public class PointStore {
     }
 	
 	
-    public abstract class Point {
+    public static abstract class Point {
 
         public String point;
 
         public Object data;
+		
+		public void onCancel() {}
 
     }
 

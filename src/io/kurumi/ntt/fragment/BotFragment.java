@@ -46,9 +46,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 	static Final finalFragment = new Final();
 	
-	static ExecutorService asyncPool = Executors.newCachedThreadPool();
-	static LinkedBlockingQueue<UserAndUpdate> queue = new LinkedBlockingQueue<>();
-	static LinkedList<ProcessThread> threads = new LinkedList<>();
+	public static ExecutorService asyncPool = Executors.newCachedThreadPool();
+	public static LinkedBlockingQueue<UserAndUpdate> queue = new LinkedBlockingQueue<>();
+	public static LinkedList<ProcessThread> threads = new LinkedList<>();
 
     public User me;
     private TelegramBot bot;
