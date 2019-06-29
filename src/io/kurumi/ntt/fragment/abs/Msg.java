@@ -348,7 +348,45 @@ public class Msg extends Context {
 
     public boolean isCommand() {
 
-        isCommand = isCommand == 0 ? (text() != null && text().startsWith("/") && text().length() > 1) ? 1 : 2 : isCommand;
+		if (isCommand == 0) {
+	
+        if (text() != null && text().startsWith("/") && text().length() > 1) {
+			
+			String body = text().substring(1);
+
+			if (body.contains(" ")) {
+
+				String cmdAndUser = StrUtil.subBefore(body, " ", false);
+
+				if (cmdAndUser.contains("@" + fragment.origin.me.username())) {
+
+					name = StrUtil.subBefore(cmdAndUser, "@", false);
+
+				} else {
+
+					name = cmdAndUser;
+
+				}
+
+			} else if (body.contains("@" + fragment.origin.me.username())) {
+
+				name = StrUtil.subBefore(body, "@", false);
+
+			} else {
+
+				name = body;
+
+			}
+			
+			isCommand = 1;
+			
+		} else {
+			
+			isCommand = 2;
+			
+		}
+		
+		}
 
         return isCommand == 1;
 
@@ -373,7 +411,7 @@ public class Msg extends Context {
             if (cmdAndUser.contains("@" + fragment.origin.me.username())) {
 
                 name = StrUtil.subBefore(cmdAndUser, "@", false);
-
+				
             } else {
 
                 name = cmdAndUser;

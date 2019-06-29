@@ -79,8 +79,8 @@ public class AutoUI extends Fragment {
 
         switch (point) {
 
-            // case POINT_SETTING_AECHIVE: target = setting.archive = !setting.archive;break;
-            //	case POINT_SETTING_LIKE : target = setting.like = !setting.like;break;
+           // case POINT_SETTING_: target = setting.archive = !setting.archive;break;
+           //	case POINT_SETTING_LIKE : target = setting.like = !setting.like;break;
             case POINT_SETTING_FOBACK:
                 target = setting.foback = !setting.foback;
                 break;
@@ -107,8 +107,8 @@ public class AutoUI extends Fragment {
 
         public Long id;
 
-        //public boolean archive = false;
-        // public boolean like = false;
+        
+       // public boolean ai = false;
 
         public boolean foback = false;
         // public boolean unfoback = false;

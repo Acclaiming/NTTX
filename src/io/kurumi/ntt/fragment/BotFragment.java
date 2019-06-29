@@ -629,7 +629,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 								msg.sendTyping();
 
-								onFinalMsg(user,msg);
+								if (msg.isPrivate()) onFinalMsg(user,msg);
 
 							}
 
