@@ -321,8 +321,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(new NewBot());
         addFragment(new MyBots());
 
-        addFragment(new Final());
-
     }
 
     @Override

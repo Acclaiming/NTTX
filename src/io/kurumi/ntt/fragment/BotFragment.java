@@ -26,6 +26,7 @@ import io.kurumi.ntt.fragment.abs.Query;
 import io.kurumi.ntt.fragment.abs.request.Send;
 import io.kurumi.ntt.fragment.admin.DelMsg;
 import io.kurumi.ntt.fragment.admin.Firewall;
+import io.kurumi.ntt.fragment.base.Final;
 import io.kurumi.ntt.fragment.base.GetID;
 import io.kurumi.ntt.fragment.base.PingFunction;
 import io.kurumi.ntt.fragment.twitter.TAuth;
@@ -43,6 +44,8 @@ import okhttp3.OkHttpClient;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
+	static Final finalFragment = new Final();
+	
 	static ExecutorService asyncPool = Executors.newCachedThreadPool();
 	static LinkedBlockingQueue<UserAndUpdate> queue = new LinkedBlockingQueue<>();
 	static LinkedList<ProcessThread> threads = new LinkedList<>();
@@ -92,6 +95,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 				if (processed != null) return processed;
 
 			}
+			
+			finalFragment.onAsyncUpdate(user,update);
 
 			return null;
 
