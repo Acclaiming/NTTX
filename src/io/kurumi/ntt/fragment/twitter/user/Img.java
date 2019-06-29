@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 import net.coobird.thumbnailator.Thumbnails;
+import java.awt.BasicStroke;
+import java.awt.Stroke;
 
 public class Img {
 
@@ -63,20 +65,26 @@ public class Img {
 	public Img drawLineInterfere(int count) {
 
 		Paint paint = graphics.getPaint();
-
+		Stroke stoke = graphics.getStroke();
+		
 		final ThreadLocalRandom random = RandomUtil.getRandom();
 
 		for (int i = 0; i < count; i++) {
+			
 			int xs = random.nextInt(width);
 			int ys = random.nextInt(height);
 			int xe = xs + random.nextInt(width / 8);
 			int ye = ys + random.nextInt(height / 8);
+			
 			graphics.setColor(ImageUtil.randomColor(random));
+			graphics.setStroke(new BasicStroke(RandomUtil.randomInt(1,4)));
+			
 			graphics.drawLine(xs,ys,xe,ye);
 		}
 
 		graphics.setPaint(paint);
-
+		graphics.setStroke(stoke);
+		
 		return this;
 
 	}
