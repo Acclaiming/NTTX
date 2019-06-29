@@ -25,7 +25,7 @@ public class CPUInfoImpl implements CPUInfo {
 		long idle2 = handler4stat .getIdleCPUTime();
 		
 		if (total2 == total) {
-			// 总利用率未发生变化，认为这段时间利用率为0，防止除数为0
+			// 鎬诲埄鐢ㄧ巼鏈彂鐢熷彉鍖栵紝璁や负杩欐鏃堕棿鍒╃敤鐜囦负0锛岄槻姝㈤櫎鏁颁负0
 			return 0;
 		}
 		

@@ -76,10 +76,10 @@ public class Handler4meminfo {
 	/**
 	 * Unit: kB
 	 * <ul>
-	 * ´Ë´¦ÓĞÁ½ÖÖ¼ÆËã·½Ê½
-	 * <li>ÈÏÎªcachedÄÚ´æºÍbuffersÄÚ´æÊôÓÚ±»Õ¼ÓÃµÄÄÚ´æ£¬¿ÕÏĞÄÚ´æÖ±½Ó·µ»Ø{@link Snapshot4meminfo#getMemFree()}</li>
-	 * <li>ÈÏÎªÉÏÊöÁ½ÖÖÄÚ´æÊôÓÚ¿ÕÏĞÄÚ´æ£¬¿ÕÏĞÄÚ´æ·µ»Ø{@link Snapshot4meminfo#getMemFree()}£¬ {@link Snapshot4meminfo#getBuffers()}£¬ {@link Snapshot4meminfo#getCached()}Ö®ºÍ
-	 * <br><b>XXX -->´Ë´¦Ê¹ÓÃÁËµÚÒ»ÖÖ¼ÆËã·½Ê½</b>
+	 * æ­¤å¤„æœ‰ä¸¤ç§è®¡ç®—æ–¹å¼
+	 * <li>è®¤ä¸ºcachedå†…å­˜å’Œbufferså†…å­˜å±äºè¢«å ç”¨çš„å†…å­˜ï¼Œç©ºé—²å†…å­˜ç›´æ¥è¿”å›{@link Snapshot4meminfo#getMemFree()}</li>
+	 * <li>è®¤ä¸ºä¸Šè¿°ä¸¤ç§å†…å­˜å±äºç©ºé—²å†…å­˜ï¼Œç©ºé—²å†…å­˜è¿”å›{@link Snapshot4meminfo#getMemFree()}ï¼Œ {@link Snapshot4meminfo#getBuffers()}ï¼Œ {@link Snapshot4meminfo#getCached()}ä¹‹å’Œ
+	 * <br><b>XXX -->æ­¤å¤„ä½¿ç”¨äº†ç¬¬ä¸€ç§è®¡ç®—æ–¹å¼</b>
 	 * </ul>
 	 * @return
 	 */
