@@ -27,7 +27,7 @@ public class Shell extends Fragment {
 
 	}
 
-	class Exec extends PointStore.Point {
+	class Exec {
 
 		public UserData admin;
 		public Process process;
@@ -115,7 +115,7 @@ public class Shell extends Fragment {
 
 			} catch (InterruptedException e) {
 
-				new Send(admin.id,"命令行已停止").send();
+				new Send(admin.id,"命令行已停止").exec();
 
 			}
 
@@ -130,7 +130,7 @@ public class Shell extends Fragment {
 	@Override
 	public void onFunction(final UserData user,Msg msg,String function,String[] params) {
 
-		if ("shell".equals(function)) {
+		//if ("shell".equals(function)) {
 
 			setPrivatePoint(user,"admin_shell",new Exec() {{
 
@@ -155,7 +155,7 @@ public class Shell extends Fragment {
 				"      WELCOME TO NTT ROOT SHELL",
 				"----------------------------------------").exec();
 
-		}
+		//}
 
 	}
 
