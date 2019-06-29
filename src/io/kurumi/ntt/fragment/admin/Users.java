@@ -18,6 +18,7 @@ import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.bots.UserBot;
 
 public class Users extends Fragment {
 
@@ -26,19 +27,22 @@ public class Users extends Fragment {
 	
 		super.init(origin);
 		
-		registerFunction("users");
+		registerAdminFunction("users","usage");
 		
 	}
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 	
-        StringBuilder export = new StringBuilder();
+        StringBuilder export;
 
 		int count = 0;
 
-		if (msg.params().length == 0) {
-
+		
+		if ("usage".equals(function)) {
+			
+			export = new StringBuilder(" >> Authed Users >>");
+			
 			for (TAuth auth : TAuth.data.collection.find()) {
 
 				count++;
@@ -62,8 +66,37 @@ public class Users extends Fragment {
 				msg.send(export.toString()).html().exec();
 
 			}
-
+			
 			count = 0;
+			
+			export = new StringBuilder(" >> User Bots << ");
+			
+			for (UserBot bot : UserBot.data.collection.find()) {
+				
+				count++;
+
+				export.append(UserData.get(bot.user).userName()).append(" -> [ " + bot.typeName() + " ] @").append(bot.userName).append("\n");
+
+				if (count == 50) {
+
+					msg.send(export.toString()).html().exec();
+
+					export = new StringBuilder();
+
+					count = 0;
+
+				}
+
+			}
+
+			if (count > 0) {
+
+				msg.send(export.toString()).html().exec();
+
+			}
+			
+			
+		} else if (msg.params().length == 0) {
 
 			export = new StringBuilder(HtmlUtil.escape(" >> All Users << \n"));
 
