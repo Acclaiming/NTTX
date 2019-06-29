@@ -44,6 +44,11 @@ public class Fragment {
 
     }
 
+	public static void execute(Runnable runnable) {
+		
+		BotFragment.asyncPool.execute(runnable);
+		
+	}
 
     public  void setPrivatePoint(UserData user,String pointTo,Object content) {
 

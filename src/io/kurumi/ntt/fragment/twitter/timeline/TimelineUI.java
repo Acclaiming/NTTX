@@ -378,8 +378,6 @@ public class TimelineUI extends Fragment {
 
     public static class Timeline extends TimerTask {
 
-        public static ExecutorService processPool = Executors.newFixedThreadPool(3);
-
         @Override
         public void run() {
 
@@ -401,7 +399,7 @@ public class TimelineUI extends Fragment {
 
                 if (setting.timeline) {
 
-                    processPool.execute(new Runnable() {
+                    execute(new Runnable() {
 
 							@Override
 							public void run() {
@@ -443,8 +441,6 @@ public class TimelineUI extends Fragment {
 
     public static class Mention extends TimerTask {
 
-        public static ExecutorService processPool = Executors.newFixedThreadPool(3);
-
         @Override
         public void run() {
 
@@ -466,7 +462,7 @@ public class TimelineUI extends Fragment {
 
                 if (setting.mention) {
 
-                    processPool.execute(new Runnable() {
+                    execute(new Runnable() {
 
 							@Override
 							public void run() {
