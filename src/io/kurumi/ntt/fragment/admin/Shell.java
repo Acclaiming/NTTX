@@ -31,13 +31,20 @@ public class Shell extends Fragment {
 
 	}
 
-	class Exec {
+	class Exec implements Runnable {
 
 		public UserData admin;
 		public Process process;
 		public PrintStream output;
 		
 		public void start() {
+			
+			origin.asyncPool.execute(this);
+			
+		}
+		
+		@Override
+		public void run() {
 
 			final ProcessBuilder processBuilder = new ProcessBuilder("bash");
 
@@ -127,9 +134,7 @@ public class Shell extends Fragment {
 			}
 
 			clearPrivatePoint(admin);
-
-			RuntimeUtil.exec("history -c");
-
+			
 		}
 
 	}

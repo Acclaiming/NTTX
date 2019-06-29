@@ -443,7 +443,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 				if (msg.isCommand()) {
 
-
 					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint.data);
 
 					if (checked == PROCESS_REJECT) return EMPTY;
