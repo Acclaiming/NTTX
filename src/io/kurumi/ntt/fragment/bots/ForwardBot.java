@@ -220,7 +220,7 @@ public class ForwardBot extends BotFragment {
 	@Override
 	public int checkMsg(UserData user,Msg msg) {
 		
-		if (!blockList.contains(user.id.longValue())) {
+		if (userId.equals(user.id) || !blockList.contains(user.id.longValue())) {
 
             if (lastReceivedFrom == null || !lastReceivedFrom.equals(user.id)) {
 
