@@ -28,7 +28,7 @@ public class Stat extends Fragment {
 		Handler4meminfo mem = new Handler4meminfo(true);
 
 		status.append("\n内存大小 : ").append(mem.shot.getMemTotal() / 1024).append("MB");
-		status.append("\n使用内存 : ").append((mem.shot.getMemTotal() - mem.shot.getMemFree() - mem.shot.getBuffers() - mem.shot.getCached()) / 1024).append("MB");
+		status.append("\n已用内存 : ").append((mem.shot.getMemTotal() - mem.shot.getMemFree() - mem.shot.getBuffers() - mem.shot.getCached()) / 1024).append("MB");
 		status.append("\n缓存内存 : ").append((mem.shot.getCached() + mem.shot.getBuffers()) / 1024).append("MB");
 		status.append("\n空闲内存 : ").append(mem.shot.getMemFree() / 1024).append("MB");
 		
@@ -36,7 +36,7 @@ public class Stat extends Fragment {
 		long total = handler4stat.getTotalCPUTime();
 		long idle = handler4stat.getIdleCPUTime();
 		
-		status.append("\nCPU占用  : ").append(((float)(idle) / total) * 100).append("%");
+		status.append("\nCPU占用 : ").append(((float)(idle) / total) * 100).append("%");
 	
 		msg.send(status.toString()).exec();
 		
