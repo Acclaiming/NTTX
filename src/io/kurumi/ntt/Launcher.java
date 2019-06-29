@@ -12,9 +12,10 @@ import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.abs.request.Send;
 import io.kurumi.ntt.fragment.admin.Control;
 import io.kurumi.ntt.fragment.admin.Notice;
+import io.kurumi.ntt.fragment.admin.Shell;
+import io.kurumi.ntt.fragment.admin.Stat;
 import io.kurumi.ntt.fragment.admin.TASReply;
 import io.kurumi.ntt.fragment.admin.Users;
-import io.kurumi.ntt.fragment.base.Final;
 import io.kurumi.ntt.fragment.bots.MyBots;
 import io.kurumi.ntt.fragment.bots.NewBot;
 import io.kurumi.ntt.fragment.bots.UserBot;
@@ -52,7 +53,6 @@ import io.kurumi.ntt.fragment.twitter.track.TrackUI;
 import io.kurumi.ntt.utils.BotLog;
 import java.io.IOException;
 import java.util.TimeZone;
-import io.kurumi.ntt.fragment.admin.Shell;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -253,6 +253,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(new Users());
 		
 		addFragment(new Shell());
+		
+		addFragment(new Stat());
 
         addFragment(new DebugMsg());
 
