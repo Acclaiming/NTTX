@@ -21,6 +21,7 @@ import java.util.List;
 public class ForwardBot extends BotFragment {
 
     final String POINT_REPLY = "r";
+	
     public Long botId;
     public Long userId;
     public String botToken;
@@ -231,7 +232,11 @@ public class ForwardBot extends BotFragment {
 
             msg.forwardTo(userId);
 
-        }
+        } else {
+			
+			onFinalMsg(user,msg);
+			
+		}
 
 		return PROCESS_REJECT;
 		
