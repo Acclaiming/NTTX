@@ -15,8 +15,11 @@ import java.util.LinkedList;
 import io.kurumi.ntt.utils.BotLog;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.io.FileUtil;
+import java.io.PrintStream;
 
 public class Shell extends Fragment {
+
+	final String POINT_ADMIN_SHELL = "admin_shell";
 
 	@Override
 	public void init(BotFragment origin) {
@@ -24,6 +27,7 @@ public class Shell extends Fragment {
 		super.init(origin);
 
 		registerAdminFunction("shell");
+		registerPoint(POINT_ADMIN_SHELL);
 
 	}
 
@@ -31,7 +35,8 @@ public class Shell extends Fragment {
 
 		public UserData admin;
 		public Process process;
-
+		public PrintStream output;
+		
 		public void start() {
 
 			final ProcessBuilder processBuilder = new ProcessBuilder("bash");
@@ -46,6 +51,8 @@ public class Shell extends Fragment {
 
 				process = processBuilder.start();
 
+				output = new PrintStream(process.getOutputStream(),true);
+				
 				origin.asyncPool.execute(new Runnable() {
 
 						@Override
@@ -132,31 +139,41 @@ public class Shell extends Fragment {
 
 		//if ("shell".equals(function)) {
 
-			setPrivatePoint(user,"admin_shell",new Exec() {{
+		setPrivatePoint(user,POINT_ADMIN_SHELL,new Exec() {{
 
-						this.admin = user;
+					this.admin = user;
 
-						start();
+					start();
 
-					}});
+				}});
 
-			StringBuilder start = new StringBuilder("----------------------------------------\n");	
+		StringBuilder start = new StringBuilder("----------------------------------------\n");	
 
-			File motd = new File("/etc/motd");
+		File motd = new File("/etc/motd");
 
-			if (motd.isFile()) {
+		if (motd.isFile()) {
 
-				start.append(FileUtil.readUtf8String(motd));
+			start.append(FileUtil.readUtf8String(motd));
 
-			}
+		}
 
-			msg.send(
-				"----------------------------------------",
-				"      WELCOME TO NTT ROOT SHELL",
-				"----------------------------------------").exec();
+		msg.send(start.toString(),
+				 "----------------------------------------",
+				 "      WELCOME TO NTT ROOT SHELL",
+				 "----------------------------------------").exec();
 
 		//}
 
 	}
+
+	@Override
+	public void onPoint(UserData user,Msg msg,String point,Object data) {
+		
+		Exec exec = (Exec) data;
+		
+		exec.output.println(msg.text());
+		
+	}
+	
 
 }
