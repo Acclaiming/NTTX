@@ -9,7 +9,7 @@ public class Final extends Fragment {
 	@Override
 	public void onMsg(UserData user,Msg msg) {
 		
-		origin.onFinalMsg(user,msg);
+		if (msg.isPrivate()) origin.onFinalMsg(user,msg);
 		
 	}
 

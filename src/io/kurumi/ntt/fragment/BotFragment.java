@@ -387,7 +387,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 			final PointStore.Point privatePoint = point().getPrivate(user);
 			final PointStore.Point groupPoint = point().getGroup(user);
 
-			if (msg.isGroup() && groupPoint != null && points.containsKey(groupPoint.point)) {
+			if (msg.isGroup() && groupPoint != null) {
+				
+				if (points.containsKey(groupPoint.point)) {
 
 				if (msg.isCommand()) {
 
@@ -432,6 +434,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 					};
 
 				}
+				}
+				
 
 			} else if (msg.isPrivate() && privatePoint != null && points.containsKey(privatePoint.point)) {
 
