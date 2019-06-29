@@ -218,14 +218,7 @@ public class ForwardBot extends BotFragment {
 
 	@Override
 	public int checkMsg(UserData user,Msg msg) {
-	
-		return PROCESS_SYNC;
 		
-	}
-
-	@Override
-	public void onMsg(UserData user,Msg msg) {
-
 		if (!blockList.contains(user.id.longValue())) {
 
             if (lastReceivedFrom == null || !lastReceivedFrom.equals(user.id)) {
@@ -240,6 +233,8 @@ public class ForwardBot extends BotFragment {
 
         }
 
+		return PROCESS_REJECT;
+		
     }
 
 	@Override
