@@ -1,5 +1,3 @@
-rm -rf ./classes && mkdir ./classes
-
 for jar in ./libs/*.jar;do
 
  export CLASSPATH=$CLASSPATH:$jar
@@ -22,4 +20,6 @@ find src -name "*.java" > sources.txt
 
 echo ">>> Building Sources <<<"
 
-javac -d $(dirname $(readlink -f $0))/classes -classpath $CLASSPATH @sources.txt && rm -rf ./sources.txt
+javac -d $(dirname $(readlink -f $0))/build -classpath $CLASSPATH @sources.txt && rm -rf ./classes && mv ./build ./classes
+
+rm -rf ./build && ./sources.txt
