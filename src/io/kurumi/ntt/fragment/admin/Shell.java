@@ -91,7 +91,9 @@ public class Shell extends Fragment {
 
 									} else {
 
-										last.edit(last.text(),line.toString()).exec();
+									  line.append(b);
+										
+										last.edit(line.toString()).exec();
 
 									}
 
