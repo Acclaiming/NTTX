@@ -118,6 +118,19 @@ public class JoinCaptchaBot extends BotFragment {
 		return PROCESS_SYNC;
 
 	}
+
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		
+		super.onFunction(user,msg,function,params);
+		
+		if ("start".equals(function)) {
+			
+			msg.send("欢迎使用加群验证机器人，添加为群组管理员即可使用 :)","由 @NTT_X 驱动").exec();
+			
+		}
+		
+	}
 	
     @Override
     public void onGroup(UserData user,final Msg msg) {

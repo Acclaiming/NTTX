@@ -142,7 +142,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 		super.init(origin);
 
-		registerFunction("cancel");
+		registerFunction("start","help","cancel");
 
 		registerPoint(POINT_REQUEST_TWITTER);
 
