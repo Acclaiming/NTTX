@@ -162,6 +162,8 @@ public class Users extends Fragment {
 
 			String kw = msg.params()[0];
 
+			export = new StringBuilder(HtmlUtil.escape(" >> Search User << \n"));
+			
 			for (UserData userData : UserData.data.collection.find(or(regex("firstName",kw),regex("lastName",kw),regex("userName",kw)))) {
 
 				export.append("\n").append(userData.userName()).append(" ").append(Html.startPayload("Block","drop",userData.id));
