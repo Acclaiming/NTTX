@@ -77,7 +77,7 @@ public class Img {
 			int ye = ys + random.nextInt(height / 8);
 			
 			graphics.setColor(ImageUtil.randomColor(random));
-			graphics.setStroke(new BasicStroke(RandomUtil.randomInt(1,4)));
+			graphics.setStroke(new BasicStroke((float)RandomUtil.randomDouble(1,4)));
 			
 			graphics.drawLine(xs,ys,xe,ye);
 		}
