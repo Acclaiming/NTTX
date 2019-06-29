@@ -75,22 +75,23 @@ public class Shell extends Fragment {
 
 								reader = new BufferedReader(new InputStreamReader(inputStream));
 
-								String line;
+								StringBuilder line = new StringBuilder();
 
-								int count = 0;
+								int b;
+								
 								Msg last = null;
 
-								while ((line = reader.readLine()) != null) {
+								while ((b = reader.read()) != -1) {
 
-									count ++;
+									if (last == null) {
 
-									if (last == null || count > 20) {
-
-										last = new Send(admin.id,line).send();
+										line.append(b);
+										
+										last = new Send(admin.id,line.toString()).send();
 
 									} else {
 
-										last.edit(last.text(),line).exec();
+										last.edit(last.text(),line.toString()).exec();
 
 									}
 
