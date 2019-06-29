@@ -49,11 +49,6 @@ public class TimedStatus extends Fragment {
 
 	public static void start() {
 
-		stop();
-
-		timer = new Timer("Timed Status Thread");
-
-
 		LinkedList<TimedUpdate> updates = new LinkedList<>();
 
 		for (TimedUpdate update : data.collection.find()) {
@@ -70,19 +65,9 @@ public class TimedStatus extends Fragment {
 
 	}
 
-	public static void stop() {
-
-		if (timer == null) return;
-
-		timer.cancel();
-
-		timer = null;
-
-	}
-
 	public static void schedule(TimedUpdate update) {
 
-		timer.schedule(new TimedTask(update),new Date(update.time));
+		BotFragment.mainTimer.schedule(new TimedTask(update),new Date(update.time));
 
 	}
 

@@ -6,24 +6,17 @@ import cn.hutool.core.util.ZipUtil;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
-
 import java.io.File;
 import java.util.Date;
-import java.util.Timer;
 import java.util.TimerTask;
-import io.kurumi.ntt.fragment.BotFragment;
 
 public class Backup extends Fragment {
 
-    public static Backup INSTANCE = new Backup();
-    static Timer timer;
-
     public static void start() {
-
-        stop();
-
+		
         Date next = new Date();
 
         next.setHours(next.getHours() + 1);
@@ -31,20 +24,7 @@ public class Backup extends Fragment {
         next.setMinutes(0);
         next.setSeconds(0);
 
-        timer = new Timer("NTT Data Backup Task");
-        timer.scheduleAtFixedRate(AutoBackupTask.INSTANCE,next,1 * 60 * 60 * 1000);
-
-    }
-
-    public static void stop() {
-
-        if (timer != null) {
-
-            timer.cancel();
-
-            timer = null;
-
-        }
+		BotFragment.mainTimer.scheduleAtFixedRate(AutoBackupTask.INSTANCE,next,1 * 60 * 60 * 1000);
 
     }
 
@@ -77,28 +57,22 @@ public class Backup extends Fragment {
 
 	@Override
 	public void init(BotFragment origin) {
-		
+
 		super.init(origin);
 
-		registerFunction("backup");
+		registerAdminFunction("backup");
 
 	}
 
 	@Override
 	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
-		
+
 		return PROCESS_THREAD;
-		
+
 	}
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-
-		if (!user.developer()) {
-
-			msg.send("Permission Denied").exec();
-
-		}
 
         backup(msg.chatId());
 

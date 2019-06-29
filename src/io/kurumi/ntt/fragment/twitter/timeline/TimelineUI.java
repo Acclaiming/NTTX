@@ -27,30 +27,13 @@ import io.kurumi.ntt.fragment.BotFragment;
 public class TimelineUI extends Fragment {
 
     public static Data<TLSetting> data = new Data<TLSetting>(TLSetting.class);
-    static Timer timer;
     static long lastTimeline = System.currentTimeMillis();
 
     public static void start() {
 
-        stop();
+        BotFragment.mainTimer.schedule(new Mention(), new Date());
 
-        timer = new Timer("NTT Timeline Task");
-
-        timer.schedule(new Mention(), new Date());
-
-        timer.scheduleAtFixedRate(new Timeline(), new Date(), 2 * 60 * 1000);
-
-    }
-
-    public static void stop() {
-
-        if (timer != null) {
-
-            timer.cancel();
-
-            timer = null;
-
-        }
+        BotFragment.mainTimer.scheduleAtFixedRate(new Timeline(), new Date(), 2 * 60 * 1000);
 
     }
 
@@ -509,9 +492,7 @@ public class TimelineUI extends Fragment {
 
             }
 
-            timer = new Timer("NTT Timeline Task");
-
-            timer.schedule(new Mention(), new Date(System.currentTimeMillis() + delay));
+            BotFragment.mainTimer.schedule(new Mention(), new Date(System.currentTimeMillis() + delay));
 
         }
 

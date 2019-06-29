@@ -41,11 +41,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
+import java.util.Timer;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
     Final finalFragment = new Final() {{ init(BotFragment.this); }};;
 	
+	public static Timer mainTimer = new Timer();
 	public static ExecutorService asyncPool = Executors.newCachedThreadPool();
 	public static LinkedBlockingQueue<UserAndUpdate> queue = new LinkedBlockingQueue<>();
 	public static LinkedList<ProcessThread> threads = new LinkedList<>();

@@ -27,6 +27,7 @@ import java.util.*;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import io.kurumi.ntt.utils.NTT;
+import io.kurumi.ntt.fragment.BotFragment;
 
 
 public class TrackTask extends TimerTask {
@@ -34,7 +35,6 @@ public class TrackTask extends TimerTask {
     public static TrackTask INSTANCE = new TrackTask();
     public static Data<IdsList> followers = new Data<IdsList>("Followers", IdsList.class);
     public static Data<IdsList> friends = new Data<IdsList>("Friends", IdsList.class);
-    static Timer timer;
 
     public static void onUserChange(UserArchive archive, String change) {
 
@@ -189,17 +189,7 @@ public class TrackTask extends TimerTask {
 
     public static void start() {
 
-        stop();
-
-        timer = new Timer("NTT Twitter Track Task");
-        timer.schedule(INSTANCE, new Date(), 3 * 60 * 1000);
-
-    }
-
-    public static void stop() {
-
-        if (timer != null) timer.cancel();
-        timer = null;
+        BotFragment.mainTimer.schedule(INSTANCE, new Date(), 3 * 60 * 1000);
 
     }
 

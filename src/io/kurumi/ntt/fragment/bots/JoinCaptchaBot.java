@@ -34,8 +34,6 @@ import java.util.LinkedHashSet;
 
 public class JoinCaptchaBot extends BotFragment {
 
-    static Timer timer = new Timer();
-
     final String POINT_AUTH = "auth";
 	final String POINT_SEC_AUTH = "sec";
 	final String POINT_ACC = "acc";
@@ -261,7 +259,7 @@ public class JoinCaptchaBot extends BotFragment {
 
             cache.put(msg.chatId().longValue(),group);
 
-            timer.schedule(new TimerTask() {
+            mainTimer.schedule(new TimerTask() {
 
 					@Override
 					public void run() {
@@ -744,7 +742,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 					secCache.put(msg.chatId().longValue(),secGroup);
 
-					timer.schedule(new TimerTask() {
+					mainTimer.schedule(new TimerTask() {
 
 							@Override
 							public void run() {

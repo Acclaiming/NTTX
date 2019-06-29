@@ -25,10 +25,9 @@ import twitter4j.*;
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
+import io.kurumi.ntt.fragment.BotFragment;
 
 public class NTT {
-
-    static Timer deleteTimer = new Timer();
 
 	/*
 
@@ -490,7 +489,7 @@ public class NTT {
 
     public static void tryDelete(final long delay, final Msg... messages) {
 
-        deleteTimer.schedule(new TimerTask() {
+        BotFragment.mainTimer.schedule(new TimerTask() {
 
                 @Override
                 public void run() {

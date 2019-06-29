@@ -347,21 +347,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		stopThreads();
 		
-        /*
-
-         FTTask.stop();
-         UTTask.stop();
-         SubTask.stopAll();
-
-         */
-
-        TimelineUI.stop();
-
-        TrackTask.stop();
-
-        Backup.stop();
-
-        //  BotServer.INSTACNCE.stop();
+		mainTimer.cancel();
+		
 
     }
 
