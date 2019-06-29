@@ -32,7 +32,7 @@ public class BanSetickerSet extends Fragment {
 	@Override
 	public int checkFunction() {
 
-		return FUNCTION_PUBLIC;
+		return FUNCTION_GROUP;
 
 	}
 
@@ -94,7 +94,7 @@ public class BanSetickerSet extends Fragment {
 
 				if (msg.params().length == 0) {
 
-					msg.send("/banss <贴纸集名称> 或者对sticker使用啦...").publicFailed();
+					msg.send("/unbanss <贴纸集名称> 或者对sticker使用啦...").publicFailed();
 
 					return;
 
