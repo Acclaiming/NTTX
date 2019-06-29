@@ -400,7 +400,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint.data);
 
-					if (checked == PROCESS_REJECT) return EMPTY;
+					if (checked == PROCESS_REJECT) return null;
 
 					return new Processed(user,update,checked) {
 
@@ -419,7 +419,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 					int checked = function.checkPoint(user,msg,groupPoint.point,groupPoint.data);
 
-					if (checked == PROCESS_REJECT) return EMPTY;
+					if (checked == PROCESS_REJECT) return null;
 
 					return new Processed(user,update,checked) {
 
@@ -445,7 +445,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint.data);
 
-					if (checked == PROCESS_REJECT) return EMPTY;
+					if (checked == PROCESS_REJECT) return null;
 
 					return new Processed(user,update,checked) {
 
@@ -464,7 +464,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 					int checked = function.checkPoint(user,msg,privatePoint.point,privatePoint.data);
 
-					if (checked == PROCESS_REJECT) return EMPTY;
+					if (checked == PROCESS_REJECT) return null;
 
 					return new Processed(user,update,checked) {
 
@@ -496,7 +496,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 							int checked = function.checkPayload(user,msg,payload,params);
 
-							if (checked == PROCESS_REJECT) return EMPTY;
+							if (checked == PROCESS_REJECT) return null;
 
 							return new Processed(user,update,checked) {
 
@@ -517,7 +517,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 							int checked = function.checkPayload(user,msg,payload,params);
 
-							if (checked == PROCESS_REJECT) return EMPTY;
+							if (checked == PROCESS_REJECT) return null;
 
 							return new Processed(user,update,checked) {
 
@@ -555,7 +555,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 						int checked = function.checkFunction(user,msg,msg.command(),msg.params());
 
-						if (checked == PROCESS_REJECT) return EMPTY;
+						if (checked == PROCESS_REJECT) return null;
 
 						if (function.checkFunction() == FUNCTION_GROUP && !msg.isGroup()) {
 
@@ -605,7 +605,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 						int checked = function.checkFunction(user,msg,msg.command(),msg.params());
 
-						if (checked == PROCESS_REJECT) return EMPTY;
+						if (checked == PROCESS_REJECT) return null;
 
 						return new Processed(user,update,checked) {
 
@@ -627,9 +627,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 							@Override
 							public void process() {
 
-								msg.sendTyping();
-
-								if (msg.isPrivate()) onFinalMsg(user,msg);
+								if (msg.isPrivate()) {
+									
+									msg.sendTyping();
+									
+									onFinalMsg(user,msg);
+									
+								}
 
 							}
 
@@ -654,13 +658,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 							});
 
-					} else {
-						
-						onMsg(user,msg);
-						
 					}
 
-					if (checked == PROCESS_REJECT) return EMPTY;
+					if (checked == PROCESS_REJECT) return null;
+					
+					onMsg(user,msg);
 
 				}
 
@@ -687,7 +689,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 			}
 
-			if (checked == PROCESS_REJECT) return EMPTY;
+			if (checked == PROCESS_REJECT) return null;
+			
+			onChanPost(user,msg);
 
 		} else if (update.callbackQuery() != null) {
 

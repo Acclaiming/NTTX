@@ -174,13 +174,11 @@ public class Fragment {
 
 					});
 
-			} else {
-				
-				onMsg(user,msg);
-				
-			}
+			} 
 
 			if (checked == PROCESS_REJECT) return EMPTY;
+
+			onMsg(user,msg);
 
 		} else if (update.channelPost() != null) {
 
@@ -204,6 +202,8 @@ public class Fragment {
 			}
 
 			if (checked == PROCESS_REJECT) return EMPTY;
+
+			onChanPost(user,msg);
 
 		} else if (update.inlineQuery() != null) {
 
@@ -317,7 +317,7 @@ public class Fragment {
 		Fragment fragment;
 
 		boolean payload;
-		
+
 		LinkedList<Msg> msgs = new LinkedList<>();
 
 	}
@@ -327,26 +327,26 @@ public class Fragment {
 		requestTwitter(user,msg,false,false);
 
 	}
-	
+
 	public void requestTwitter(UserData user,Msg msg,boolean noCurrent) {
 
 		requestTwitter(user,msg,noCurrent,false);
 
 	}
-	
+
 	public void requestTwitterPayload(UserData user,Msg msg) {
 
 		requestTwitter(user,msg,false,true);
 
 	}
-	
+
 
 	public void requestTwitterPayload(UserData user,Msg msg,boolean noCurrent) {
 
 		requestTwitter(user,msg,noCurrent,true);
 
 	}
-	
+
 	public void requestTwitter(final UserData user,final Msg msg,boolean noCurrent,final boolean isPayload) {
 
 		if (!TAuth.contains(user.id)) {
@@ -409,7 +409,7 @@ public class Fragment {
 					this.fragment = Fragment.this;
 					this.msgs.add(send);
 					this.payload = isPayload;
-					
+
 				}});
 
 
@@ -433,16 +433,16 @@ public class Fragment {
 
 	public void onPayload(UserData user,Msg msg,String payload,String[] params) {
 	}
-	
+
 	public int checkTwitterPayload(UserData user,Msg msg,String payload,String[] params,TAuth account) {
 
 		return PROCESS_ASYNC;
 
 	}
-	
+
 	public void onTwitterPayload(UserData user,Msg msg,String payload,String[] params,TAuth account) {
 	}
-	
+
 	public int checkPoint(UserData user,Msg msg,String point,Object data) {
 
 		return PROCESS_ASYNC;
@@ -459,7 +459,7 @@ public class Fragment {
 	}
 
 	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,Object data) {
-		
+
 		onPoint(user,msg,point,data);
 
 	}
@@ -483,15 +483,15 @@ public class Fragment {
 	public final int FUNCTION_PRIVATE = 1;
 	public final int FUNCTION_GROUP = 2;
 	public final int FUNCTION_PUBLIC = 3;
-	
+
 	// 没有 异步
-	
+
 	public int checkMsg(UserData user,Msg msg) {
-		
+
 		return PROCESS_SYNC;
-		
+
 	}
-	
+
 	public void onMsg(UserData user,Msg msg) {
 
 		if (msg.isGroup()) onGroup(user,msg);
