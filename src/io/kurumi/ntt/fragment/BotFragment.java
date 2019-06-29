@@ -389,11 +389,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 			if (msg.isGroup() && groupPoint != null) {
 				
-				if (points.containsKey(groupPoint.point)) {
+				final Fragment function = points.containsKey(groupPoint.point) ? points.get(groupPoint.point) : this;
 
 				if (msg.isCommand()) {
-
-					final Fragment function = points.get(groupPoint.point);
 					
 					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint.data);
 
@@ -414,8 +412,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 				} else {
 
-					final Fragment function = points.get(groupPoint.point);
-
 					int checked = function.checkPoint(user,msg,groupPoint.point,groupPoint.data);
 
 					if (checked == PROCESS_REJECT) return EMPTY;
@@ -434,34 +430,15 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 					};
 
 				}
-				}
 				
 
-			} else if (msg.isPrivate() && privatePoint != null && points.containsKey(privatePoint.point)) {
-
+			} else if (msg.isPrivate() && privatePoint != null) {
+				
+				final Fragment function =points.containsKey(privatePoint.point) ? points.get(privatePoint.point) : this;
+				
 				if (msg.isCommand()) {
 
-					if ("cancel".equals(msg.command())) {
-
-						return new Processed(user,update,PROCESS_SYNC) {
-							
-							@Override
-							public void process() {
-
-								msg.sendTyping();
-								
-								onPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint.data);
-
-
-							}
-
-						};
-
-
-					}
-
-					final Fragment function = points.get(privatePoint.point);
-
+					
 					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint.data);
 
 					if (checked == PROCESS_REJECT) return EMPTY;
@@ -480,9 +457,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 					};
 
 				} else {
-
-					final Fragment function = points.get(privatePoint.point);
-
+					
 					int checked = function.checkPoint(user,msg,privatePoint.point,privatePoint.data);
 
 					if (checked == PROCESS_REJECT) return EMPTY;
@@ -499,8 +474,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 						}
 
 					};
-
-
+					
 				}
 
 			} else {
