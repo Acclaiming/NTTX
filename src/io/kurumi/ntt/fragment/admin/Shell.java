@@ -16,6 +16,10 @@ import io.kurumi.ntt.utils.BotLog;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.io.FileUtil;
 import java.io.PrintStream;
+import java.io.ByteArrayOutputStream;
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.serializer.IntegerCodec;
+import cn.hutool.core.util.ArrayUtil;
 
 public class Shell extends Fragment {
 
@@ -75,25 +79,33 @@ public class Shell extends Fragment {
 
 								reader = new BufferedReader(new InputStreamReader(inputStream));
 
-								StringBuilder line = new StringBuilder();
-
+								LinkedList<Byte> bytes = null;
 								int b;
+								int lines = 0;
 								
 								Msg last = null;
 
 								while ((b = reader.read()) != -1) {
 
-									if (last == null) {
-
-										line.append(b);
+									if (b == '\n') {
 										
-										last = new Send(admin.id,line.toString()).send();
+										lines ++;
+										
+									}
+									
+									if (last == null || lines > 20) {
+
+										bytes = new LinkedList<>();
+										
+										bytes.add(((Integer)b).byteValue());
+										
+										last = new Send(admin.id,StrUtil.utf8Str(ArrayUtil.unWrap(bytes.toArray(new Byte[bytes.size()])))).send();
 
 									} else {
-
-									  line.append(b);
 										
-										last.edit(line.toString()).exec();
+										bytes.add(((Integer)b).byteValue());
+					
+										last.edit(StrUtil.utf8Str(ArrayUtil.unWrap(bytes.toArray(new Byte[bytes.size()])))).exec();
 
 									}
 
