@@ -441,7 +441,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 			} else if (msg.isPrivate() && privatePoint != null) {
 
-				final Fragment function =points.containsKey(privatePoint.point) ? points.get(privatePoint.point) : this;
+				final Fragment function = !points.containsKey(privatePoint.point) || "cancel".equals(msg.command()) ? this : points.get(privatePoint.point);
 
 				if (msg.isCommand()) {
 

@@ -452,12 +452,15 @@ public class TrackTask extends TimerTask {
 
             if (!notice) return;
 
+			/*
+			
             StringBuilder msg = new StringBuilder(UserArchive.contains(id) ? UserArchive.get(id).urlHtml() : "无记录的用户 : (" + id + ")").append("关注了你").append("\n状态异常: ").append(NTT.parseTwitterException(e));
 
             if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
             new Send(auth.user, msg.toString()).html().point(0, id);
 
+			*/
 
         }
 
