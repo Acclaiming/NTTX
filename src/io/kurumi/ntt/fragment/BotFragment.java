@@ -44,7 +44,7 @@ import okhttp3.OkHttpClient;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
-	static Final finalFragment = new Final();
+    Final finalFragment = new Final() {{ init(BotFragment.this); }};;
 	
 	public static ExecutorService asyncPool = Executors.newCachedThreadPool();
 	public static LinkedBlockingQueue<UserAndUpdate> queue = new LinkedBlockingQueue<>();
