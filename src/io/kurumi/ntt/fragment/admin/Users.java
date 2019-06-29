@@ -41,7 +41,7 @@ public class Users extends Fragment {
 		
 		if ("usage".equals(function)) {
 			
-			export = new StringBuilder(" >> Authed Users >> \n");
+			export = new StringBuilder(" 「 Authed Users 」 \n");
 			
 			for (TAuth auth : TAuth.data.collection.find()) {
 
@@ -69,7 +69,7 @@ public class Users extends Fragment {
 			
 			count = 0;
 			
-			export = new StringBuilder(" >> User Bots << \n");
+			export = new StringBuilder(" 「 User Bots 」 \n");
 			
 			for (UserBot bot : UserBot.data.collection.find()) {
 				
@@ -98,7 +98,7 @@ public class Users extends Fragment {
 			
 		} else if (msg.params().length == 0) {
 
-			export = new StringBuilder(HtmlUtil.escape(" >> All Users << \n"));
+			export = new StringBuilder(HtmlUtil.escape(" 「 All Users 」\n"));
 
 			for (UserData userData : UserData.data.findByField("contactable",true)) {
 
@@ -126,7 +126,7 @@ public class Users extends Fragment {
 
 			count = 0;
 
-			export = new StringBuilder(HtmlUtil.escape(" >> Blocked Users << \n"));
+			export = new StringBuilder(HtmlUtil.escape(" 「 Blocked Users 」 \n"));
 
 			for (Firewall.Id id : Firewall.block.collection.find()) {
 
@@ -162,7 +162,7 @@ public class Users extends Fragment {
 
 			String kw = msg.params()[0];
 
-			export = new StringBuilder(HtmlUtil.escape(" >> Search User << \n"));
+			export = new StringBuilder(HtmlUtil.escape(" 「 Search User 」 \n"));
 			
 			for (UserData userData : UserData.data.collection.find(or(regex("firstName",kw),regex("lastName",kw),regex("userName",kw)))) {
 

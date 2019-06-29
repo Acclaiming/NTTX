@@ -118,10 +118,10 @@ public class UserBot {
         switch (type) {
 
             case 0:
-                return "私聊BOT";
+                return "私聊";
 
             case 1:
-                return "加群验证BOT";
+                return "加群验证";
 
             default:
                 return null;
