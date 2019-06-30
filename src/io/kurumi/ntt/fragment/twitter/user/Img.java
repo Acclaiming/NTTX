@@ -90,6 +90,10 @@ public class Img {
 
 		chart.setPadding(new RectangleInsets(50,0,0,20));
 
+		chart.setBorderPaint(MaterialColor.INDIGO.colorPrimaryDark);
+		
+		chart.setBorderStroke(new BasicStroke(3));
+		
 		return chart;
 		
 	}
