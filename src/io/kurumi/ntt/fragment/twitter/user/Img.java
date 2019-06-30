@@ -128,12 +128,8 @@ public class Img {
 
 					setPlotBackgroundPaint(Color.WHITE);
 
-					setAxisLabelPaint(Color.BLACK);
-					setTickLabelPaint(Color.BLACK);
-					setItemLabelPaint(Color.BLACK);
-					setThermometerPaint(Color.BLACK);
-					setPlotOutlinePaint(Color.WHITE);
-
+					setShadowPaint(Color.BLACK);
+					
 				}});
 
 	}
