@@ -99,10 +99,13 @@ public class Img {
 		graphics.setFont(font);
 			
 		fontSize(45);
+		
+		graphics.setColor(MaterialColor.INDIGO.colorAccent);
 			
-		drawRandomColorTextCenter(0,0,0,height - 200,title);
+		drawTextCenter(0,0,0,height - 200,title);
 		
 		graphics.setFont(font);
+		graphics.setPaint(paint);
 		
 		return this;
 
@@ -133,7 +136,11 @@ public class Img {
 		chart.setPadding(new RectangleInsets(150,0,0,20));
 		
 		chart.setBackgroundPaint(Color.WHITE);
-	
+		
+		chart.getPlot().setBackgroundPaint(Color.WHITE);
+		
+		chart.setBorderStroke(new BasicStroke(3));
+		
 		return chart;
 		
 	}
