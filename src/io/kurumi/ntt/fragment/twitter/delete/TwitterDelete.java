@@ -21,6 +21,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import io.kurumi.ntt.fragment.BotFragment;
+import twitter4j.Paging;
+import twitter4j.ResponseList;
+import twitter4j.Status;
+import io.kurumi.ntt.utils.NTT;
 
 public class TwitterDelete extends Fragment {
 
@@ -30,31 +34,31 @@ public class TwitterDelete extends Fragment {
 
 	@Override
 	public void init(BotFragment origin) {
-	
+
 		super.init(origin);
-		
+
 		registerFunction("delete","delete_cancel");
-	
+
 		registerPoint(POINT_DELETE);
 
     }
 
 	@Override
 	public int checkFunction() {
-		
+
 		return FUNCTION_PRIVATE;
-		
+
 	}
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
 		requestTwitter(user,msg);
-		
+
 	}
-	
+
     @Override
-    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
+    public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
         if (function.endsWith("cancel")) {
 
@@ -73,17 +77,19 @@ public class TwitterDelete extends Fragment {
 
         } else if (threads.containsKey(account.id)) {
 
-            msg.send("你有正在处理中的删除... 这需要大量时间处理... 取消使用 /canceldelete .").exec();
+            msg.send("你有正在处理中的删除... 这需要大量时间处理... 取消使用 /delete_cancel .").exec();
 
             return;
 
         } else {
 
-            setPrivatePoint(user, POINT_DELETE, account);
+            setPrivatePoint(user,POINT_DELETE,account);
 
             msg.send("这个功能需要从 Twitter应用/网页 - 设置 - 账号 - 你的Twitter数据 输入密码下载数据zip，并找到tweet.js/like.js的说").exec();
 
-            msg.send("现在发送 tweet.js / like.js 来删除所有推文/打心... (如果文件超过20m 需要打zip包发送哦 (tweet.js打tweet.zip / like.js打like.zip (❁´▽`❁)", "使用 /cancel 取消 ~").exec();
+            msg.send("现在发送 tweet.js / like.js 来删除所有推文/打心... (如果文件超过20m 需要打zip包发送哦 (tweet.js打tweet.zip / like.js打like.zip (❁´▽`❁)","使用 /cancel 取消 ~").exec();
+
+			msg.send("也可以发送 FETCH 执行拉取推文并删除 (无法读取久远的推文、通常是几个月之前)").exec();
 
         }
 
@@ -92,216 +98,293 @@ public class TwitterDelete extends Fragment {
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,Object data) {
 
-        if (msg.doc() == null || !msg.doc().fileName().matches("(tweet|like)\\.(js|zip)")) {
+
+		if (msg.doc() == null || !msg.doc().fileName().matches("(tweet|like)\\.(js|zip)")) {
 
             msg.send("你正在删除twetter数据... 发送 tweet.js 删除推文 like.js 删除打心...").withCancel().exec();
 
             return;
 
-        }
+        } else if ("FETCH".equals(msg.text())) {
 
-        boolean like = msg.doc().fileName().startsWith("like");
+			boolean like = msg.doc().fileName().startsWith("like");
 
-        File file = msg.file();
+			File file = msg.file();
 
-        if (file == null) {
+			if (file == null) {
 
-            if (msg.doc().fileName().endsWith(".js")) {
+				if (msg.doc().fileName().endsWith(".js")) {
 
-                msg.send("文件太大... Telegram禁止Bot下载超过20mb的文件... 请打zip包并修改为 tweet.zip / like.zip （●＾o＾●）").exec();
+					msg.send("文件太大... Telegram禁止Bot下载超过20mb的文件... 请打zip包并修改为 tweet.zip / like.zip （●＾o＾●）").exec();
 
-            } else {
+				} else {
 
-                msg.send("可能真的太大...？ zip都超过20m...").exec();
+					msg.send("可能真的太大...？ zip都超过20m...").exec();
 
-            }
+				}
 
-            return;
+				return;
 
 
-        }
+			}
 
-        File zipOut = new File(Env.CACHE_DIR, "unzip/" + msg.doc().fileId());
+			File zipOut = new File(Env.CACHE_DIR,"unzip/" + msg.doc().fileId());
 
-        if (!zipOut.isDirectory() || zipOut.list().length == 0) {
+			if (!zipOut.isDirectory() || zipOut.list().length == 0) {
 
-            if (msg.doc().fileName().endsWith(".zip")) {
+				if (msg.doc().fileName().endsWith(".zip")) {
 
-                try {
+					try {
 
-                    ZipUtil.unzip(file, zipOut);
+						ZipUtil.unzip(file,zipOut);
 
-                    file = new File(zipOut, like ? "like.js" : "tweet.js");
+						file = new File(zipOut,like ? "like.js" : "tweet.js");
 
-                    if (!file.isFile()) {
+						if (!file.isFile()) {
 
-                        msg.send("这个压缩包里面有文件吗？ 注意 : tweet.js 需要打成 tweet.zip / like.js 需要打成 like.zip 否则无法识别呢 (˚☐˚! )/").exec();
+							msg.send("这个压缩包里面有文件吗？ 注意 : tweet.js 需要打成 tweet.zip / like.js 需要打成 like.zip 否则无法识别呢 (˚☐˚! )/").exec();
 
-                        return;
+							return;
 
-                    }
+						}
 
-                } catch (Exception ex) {
+					} catch (Exception ex) {
 
-                    msg.send("解压zip包失败... 你是打了rar包改后缀了吗？(˚☐˚! )/").exec();
+						msg.send("解压zip包失败... 你是打了rar包改后缀了吗？(˚☐˚! )/").exec();
 
-                    return;
+						return;
 
-                }
+					}
 
-            }
+				}
 
-        }
+			}
 
 
-        msg.send("解析" + (like ? "打心" : "推文") + "ing... Σ( ﾟωﾟ").exec();
+			msg.send("解析" + (like ? "打心" : "推文") + "ing... Σ( ﾟωﾟ").exec();
 
-        clearPrivatePoint(user);
+			clearPrivatePoint(user);
 
-        BufferedReader reader = IoUtil.getReader(IoUtil.toStream(file), CharsetUtil.CHARSET_UTF_8);
+			BufferedReader reader = IoUtil.getReader(IoUtil.toStream(file),CharsetUtil.CHARSET_UTF_8);
 
-        LinkedList<Long> ids = new LinkedList<>();
+			LinkedList<Long> ids = new LinkedList<>();
 
-        try {
+			try {
 
-            String line = reader.readLine();
+				String line = reader.readLine();
 
-            boolean isRC = false;
+				boolean isRC = false;
 
-            while (line != null) {
+				while (line != null) {
 
-                if (like) {
+					if (like) {
 
-                    if (line.contains("tweetId")) {
+						if (line.contains("tweetId")) {
 
-                        ids.add(Long.parseLong(StrUtil.subBetween(line, "\" : \"", "\"")));
+							ids.add(Long.parseLong(StrUtil.subBetween(line,"\" : \"","\"")));
 
-                    }
+						}
 
-                } else if (isRC) {
+					} else if (isRC) {
 
-                    ids.add(Long.parseLong(StrUtil.subBetween(line, "\" : \"", "\"")));
+						ids.add(Long.parseLong(StrUtil.subBetween(line,"\" : \"","\"")));
 
-                    isRC = false;
+						isRC = false;
 
-                } else if (line.contains("retweet_count")) {
+					} else if (line.contains("retweet_count")) {
 
-                    isRC = true;
+						isRC = true;
 
-                }
+					}
 
-                line = reader.readLine();
+					line = reader.readLine();
 
-            }
+				}
 
-            reader.close();
+				reader.close();
 
-        } catch (IOException e) {
+			} catch (IOException e) {
 
-            msg.send("读取文件错误...", e.toString()).exec();
+				msg.send("读取文件错误...",e.toString()).exec();
 
-            return;
+				return;
 
-        }
+			}
 
-        msg.send("已解析 " + ids.size() + " 条" + (like ? "打心" : "推文") + "... 正在启动删除线程...").exec();
+			msg.send("已解析 " + ids.size() + " 条" + (like ? "打心" : "推文") + "... 正在启动删除线程...").exec();
 
-        DeleteThread thread = new DeleteThread();
+			DeleteThread thread = new DeleteThread();
 
-        thread.userId = user.id;
+			thread.userId = user.id;
 
-        thread.account = (TAuth) data;
+			thread.account = (TAuth) data;
 
-        thread.api = thread.account.createApi();
+			thread.api = thread.account.createApi();
 
-        thread.ids = ids;
+			thread.ids = ids;
 
-        thread.tweet = !like;
+			thread.tweet = !like;
 
-        threads.put(thread.account.id, thread);
+			threads.put(thread.account.id,thread);
 
-        thread.start();
+			thread.start();
 
+		} else {
 
-    }
+			DeleteThread thread = new DeleteThread();
 
+			thread.userId = user.id;
 
-    class DeleteThread extends Thread {
+			thread.account = (TAuth) data;
 
-        long userId;
-        TAuth account;
-        Twitter api;
-        LinkedList<Long> ids;
-        boolean tweet;
+			thread.api = thread.account.createApi();
 
-        AtomicBoolean stoped = new AtomicBoolean(false);
+			thread.tweet = true;
 
-        @Override
-        public void run() {
+			thread.fetch = true;
 
-            Msg status = new Send(userId, "正在开始删除... ").send();
+			threads.put(thread.account.id,thread);
 
-            float count = ids.size();
-            float current = 0;
+			thread.start();
 
-            float progress = 0;
+		}
 
-            for (Long id : ids) {
+	}
 
-                float last = progress;
 
-                try {
+	class DeleteThread extends Thread {
 
-                    if (tweet) {
+		long userId;
+		TAuth account;
+		Twitter api;
+		LinkedList<Long> ids;
+		boolean tweet;
+		boolean fetch;
 
-                        api.destroyStatus(id);
+		AtomicBoolean stoped = new AtomicBoolean(false);
 
-                    } else {
+		@Override
+		public void run() {
 
-                        api.destroyFavorite(id);
+			Msg status = new Send(userId,"正在删除... ","取消删除使用 /delete_cancel").send();
 
-                    }
+			if (!fetch) {
 
+				float count = ids.size();
+				float current = 0;
 
-                } catch (TwitterException e) {
+				float progress = 0;
 
-                    BotLog.info("删除，错误", e);
+				for (Long id : ids) {
 
-                }
+					float last = progress;
 
-                if (stoped.get()) {
+					try {
 
-                    status.edit("已手动取消...").exec();
+						if (tweet) {
 
-                    break;
+							api.destroyStatus(id);
 
-                }
+						} else {
 
-                current++;
+							api.destroyFavorite(id);
 
-                progress = Math.round((current / count) * 1000) / 10;
+						}
 
-                if (progress != last) {
 
-                    status.edit("删除中 : " + progress + "%", "取消删除使用 /canceldelete ...").exec();
+					} catch (TwitterException e) {
 
-                }
+						BotLog.info("删除，错误",e);
 
-                if (progress == 100) {
+					}
 
-                    status.edit("删除完成...").exec();
+					if (stoped.get()) {
 
-                }
+						status.edit("已手动取消...").exec();
 
-            }
+						break;
 
-            threads.remove(account.id);
+					}
 
+					current ++;
 
-        }
+					progress = ((float)(Math.round(current / count)) * 1000) / 100;
 
+					if (progress != last) {
 
-    }
+						status.edit("删除中 : " + progress + "%","取消删除使用 /delete_cancel ...").exec();
 
+					}
 
+					if (progress == 100) {
+
+						status.edit("删除完成...").exec();
+
+					}
+
+				}
+
+			} else {
+				
+				int current = 0;
+
+				try {
+					
+					ResponseList<Status> timeline = api.getUserTimeline(new Paging().count(200));
+
+					while (timeline != null && !timeline.isEmpty() && !stoped.get()) {
+
+						for (Status s : timeline) {
+
+							if (stoped.get()) break;
+
+							try {
+
+								api.destroyStatus(s.getId());
+
+								current ++;
+
+								if (current % 5 == 0) {
+
+									status.edit("拉取中 已删除 " + current + " 条","取消删除使用 /delete_cancel ...").exec();
+
+								}
+
+							} catch (TwitterException e) {
+
+								if (e.getErrorCode() != 144) throw e;
+
+							}
+
+						}
+
+						timeline = api.getUserTimeline(new Paging().count(200));
+
+					}
+					
+					status.edit("删除完成 : 已拉取并删除 " + current + " 条","如果有剩余推文，请使用tweet.js以删除程序无法拉取的久远推文").exec();
+
+				} catch (TwitterException e) {
+
+					status.edit("删除出错 已停止 :",NTT.parseTwitterException(e)).exec();
+
+				}
+
+				if (stoped.get()) {
+
+					status.edit("已手动取消...").exec();
+
+				}
+
+
+			}
+
+			threads.remove(account.id);
+
+
+
+		}
+
+	}
 }
+
