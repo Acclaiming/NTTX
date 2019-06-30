@@ -116,12 +116,14 @@ public class TwitterDelete extends Fragment {
 			threads.put(thread.account.id,thread);
 
 			thread.start();
-
+			
+			return;
+			
 		} else if (msg.doc() == null || !msg.doc().fileName().matches("(tweet|like)\\.(js|zip)")) {
 
             msg.send("你正在删除twetter数据... 发送 tweet.js 删除推文 like.js 删除打心...").withCancel().exec();
 
-            return;
+			return;
 
         }
 
