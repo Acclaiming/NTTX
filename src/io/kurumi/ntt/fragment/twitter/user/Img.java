@@ -23,6 +23,10 @@ import java.awt.geom.Rectangle2D;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.chart.ChartTheme;
+import org.jfree.chart.plot.DatasetRenderingOrder;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import javax.swing.plaf.basic.BasicOptionPaneUI;
+import cn.hutool.core.util.ArrayUtil;
 
 public class Img {
 
@@ -113,6 +117,24 @@ public class Img {
 		chart.setBackgroundPaint(Color.WHITE);
 		
 		chart.getPlot().setBackgroundPaint(Color.WHITE);
+		
+		int count = chart.getCategoryPlot().getRendererCount();
+	
+		MaterialColor[] colors = ArrayUtil.clone(MaterialColor.all);
+
+        for (int index = colors.length;index > 0;index --) {
+			
+            ArrayUtil.swap(colors, RandomUtil.randomInt(index), index - 1);
+			
+        }
+		
+		for (int index = 0;index < count && index < colors.length;index ++) {
+			
+			CategoryItemRenderer renderer = chart.getCategoryPlot().getRenderer(index);
+			
+			renderer.setDefaultFillPaint(colors[index].colorAccent);
+
+		}
 		
 		chart.setBorderStroke(new BasicStroke(3));
 		

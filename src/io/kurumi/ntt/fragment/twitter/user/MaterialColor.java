@@ -1,6 +1,7 @@
 package io.kurumi.ntt.fragment.twitter.user;
 
 import java.awt.Color;
+import java.util.LinkedList;
 
 public class MaterialColor {
 
@@ -15,21 +16,24 @@ public class MaterialColor {
 		this.colorPrimary = getColor(colorPrimary);
 		this.colorPrimaryDark = getColor(colorPrimaryDark);
 		this.colorAccent = getColor(colorAccent);
-		
+
 	}
-	
+
 	public Color getColor(int index) {
-		
+
 		return Color.getColor(colors[index]);
-		
+
 	}
+
+
+
 
 	public static MaterialColor RED = new MaterialColor(new String[] {"#FFEBEE", "#FFCDD2", "#EF9A9A", "#E57373", "#EF5350", "#F44336", "#E53935", "#D32F2F", "#C62828", "#B71C1C", "#FF8A80", "#FF5252", "#FF1744", "#D50000"} ,5,7,11);
 	public static MaterialColor PINK = new MaterialColor(new String[] {"#FCE4EC", "#F8BBD0", "#F48FB1", "#F06292", "#EC407A", "#E91E63", "#D81B60", "#C2185B", "#AD1457", "#880E4F", "#FF80AB", "#FF4081", "#F50057", "#C51162"} ,5,7,11);
 	public static MaterialColor PURPLE = new MaterialColor(new String[] {"#F3E5F5", "#E1BEE7", "#CE93D8", "#BA68C8", "#AB47BC", "#9C27B0", "#8E24AA", "#7B1FA2", "#6A1B9A", "#4A148C", "#EA80FC", "#E040FB", "#D500F9", "#AA00FF"} ,5,7,11);
 	public static MaterialColor PURPLE_DEEP = new MaterialColor(new String[] {"#EDE7F6", "#D1C4E9", "#B39DDB", "#9575CD", "#7E57C2", "#673AB7", "#5E35B1", "#512DA8", "#4527A0", "#311B92", "#B388FF", "#7C4DFF", "#651FFF", "#6200EA"} ,5,7,11);
 	public static MaterialColor INDIGO = new MaterialColor(new String[] {"#E8EAF6", "#C5CAE9", "#9FA8DA", "#7986CB", "#5C6BC0", "#3F51B5", "#3949AB", "#303F9F", "#283593", "#1A237E", "#8C9EFF", "#536DFE", "#3D5AFE", "#304FFE"} ,5,7,11);
-	public static MaterialColor BULE = new MaterialColor(new String[] {"#E3F2FD", "#BBDEFB", "#90CAF9", "#64B5F6", "#42A5F5", "#2196F3", "#1E88E5", "#1976D2", "#1565C0", "#0D47A1", "#82B1FF", "#448AFF", "#2979FF", "#2962FF"} ,5,7,11);
+	public static MaterialColor BLUE = new MaterialColor(new String[] {"#E3F2FD", "#BBDEFB", "#90CAF9", "#64B5F6", "#42A5F5", "#2196F3", "#1E88E5", "#1976D2", "#1565C0", "#0D47A1", "#82B1FF", "#448AFF", "#2979FF", "#2962FF"} ,5,7,11);
 	public static MaterialColor BLUE_LIGHT = new MaterialColor(new String[] {"#E1F5FE", "#B3E5FC", "#81D4FA", "#4FC3F7", "#29B6F6", "#03A9F4", "#039BE5", "#0288D1", "#0277BD", "#01579B", "#80D8FF", "#40C4FF", "#00B0FF", "#0091EA"} ,5,7,11);
 	public static MaterialColor CYAN = new MaterialColor(new String[] {"#E0F7FA", "#B2EBF2", "#80DEEA", "#4DD0E1", "#26C6DA", "#00BCD4", "#00ACC1", "#0097A7", "#00838F", "#006064", "#84FFFF", "#18FFFF", "#00E5FF", "#00B8D4"} ,5,7,11);
 	public static MaterialColor TEAL = new MaterialColor(new String[] {"#E0F2F1", "#B2DFDB", "#80CBC4", "#4DB6AC", "#26A69A", "#009688", "#00897B", "#00796B", "#00695C", "#004D40", "#A7FFEB", "#64FFDA", "#1DE9B6", "#00BFA5"} ,5,7,11);
@@ -44,6 +48,11 @@ public class MaterialColor {
 	public static MaterialColor GREY = new MaterialColor(new String[] {"#FAFAFA", "#F5F5F5", "#EEEEEE", "#E0E0E0", "#BDBDBD", "#9E9E9E", "#757575", "#616161", "#424242", "#212121"} ,5,7,5);
 	public static MaterialColor GREY_BLUE = new MaterialColor(new String[] {"#ECEFF1", "#CFD8DC", "#B0BEC5", "#90A4AE", "#78909C", "#607D8B", "#546E7A", "#455A64", "#37474F", "#263238"} ,5,7,5);
 
+	public static MaterialColor[] all = new MaterialColor[] {
+
+		RED,PINK,PURPLE,PURPLE_DEEP,INDIGO,BLUE,BLUE_LIGHT,CYAN,TEAL,GREEN,GREEN_LIGHT,LIME,YELLOW,AMBER,ORANGE,ORANGE_DEEP,BROWN,GREY,GREY_BLUE
+
+	};
 
 
 }

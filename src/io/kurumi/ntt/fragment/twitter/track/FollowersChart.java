@@ -35,13 +35,25 @@ public class FollowersChart extends Fragment {
 		
 		DefaultCategoryDataset data = new DefaultCategoryDataset();
 		
-		data.addValue(114,"Followers","9:00");
+		data.addValue(1,"Followers","9:00");
 		
-		data.addValue(514,"Followers","10:00");
+		data.addValue(2,"Followers","10:00");
 		
-		data.addValue(1919,"Followers","11:00");
+		data.addValue(3,"Followers","11:00");
 		
-		data.addValue(810,"Followers","12:00");
+		data.addValue(4,"Followers","12:00");
+		
+		data.addValue(5,"Followers","13:00");
+		
+		data.addValue(5,"Nmsl","9:00");
+
+		data.addValue(4,"Nmsl","10:00");
+
+		data.addValue(3,"Nmsl","11:00");
+
+		data.addValue(2,"Nmsl","12:00");
+
+		data.addValue(1,"Nmsl","13:00");
 		
 		img.drawLineChart("Twitter 关 注 者 统 计","","",data);
 		
