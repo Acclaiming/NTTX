@@ -25,6 +25,7 @@ import io.kurumi.ntt.fragment.twitter.status.StatusAction;
 import io.kurumi.ntt.utils.BotLog;
 import java.io.File;
 import java.util.LinkedList;
+import cn.hutool.core.util.ArrayUtil;
 
 public class Fragment {
 
@@ -45,9 +46,9 @@ public class Fragment {
     }
 
 	public static void execute(Runnable runnable) {
-		
+
 		BotFragment.asyncPool.execute(runnable);
-		
+
 	}
 
     public  void setPrivatePoint(UserData user,String pointTo,Object content) {
@@ -364,8 +365,18 @@ public class Fragment {
 
 		if (TAuth.data.countByField("user",user.id) == 1) {
 
-			onTwitterFunction(user,msg,msg.command(),msg.params(),TAuth.getByUser(user.id).first());
+			TAuth auth = TAuth.getByUser(user.id).first();
 
+			if (isPayload) {
+
+				onTwitterPayload(user,msg,msg.payload()[0],msg.payload().length > 1 ? ArrayUtil.sub(msg.payload(),1,msg.payload().length) : new String[0],auth);
+
+			} else {
+
+				onTwitterFunction(user,msg,msg.command(),msg.params(),auth);
+
+			}
+			
 			return;
 
 		}
@@ -376,8 +387,16 @@ public class Fragment {
 
 			if (current != null && current.user.equals(user.id)) {
 
-				onTwitterFunction(user,msg,msg.command(),msg.params(),current);
+				if (isPayload) {
 
+					onTwitterPayload(user,msg,msg.payload()[0],msg.payload().length > 1 ? ArrayUtil.sub(msg.payload(),1,msg.payload().length) : new String[0],current);
+
+				} else {
+
+					onTwitterFunction(user,msg,msg.command(),msg.params(),current);
+					
+				}
+				
 				return;
 
 			}
