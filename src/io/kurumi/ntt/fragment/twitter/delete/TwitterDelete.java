@@ -99,137 +99,7 @@ public class TwitterDelete extends Fragment {
 	public void onPoint(UserData user,Msg msg,String point,Object data) {
 
 
-		if (msg.doc() == null || !msg.doc().fileName().matches("(tweet|like)\\.(js|zip)")) {
-
-            msg.send("你正在删除twetter数据... 发送 tweet.js 删除推文 like.js 删除打心...").withCancel().exec();
-
-            return;
-
-        } else if (!"FETCH".equals(msg.text())) {
-
-			boolean like = msg.doc().fileName().startsWith("like");
-
-			File file = msg.file();
-
-			if (file == null) {
-
-				if (msg.doc().fileName().endsWith(".js")) {
-
-					msg.send("文件太大... Telegram禁止Bot下载超过20mb的文件... 请打zip包并修改为 tweet.zip / like.zip （●＾o＾●）").exec();
-
-				} else {
-
-					msg.send("可能真的太大...？ zip都超过20m...").exec();
-
-				}
-
-				return;
-
-
-			}
-
-			File zipOut = new File(Env.CACHE_DIR,"unzip/" + msg.doc().fileId());
-
-			if (!zipOut.isDirectory() || zipOut.list().length == 0) {
-
-				if (msg.doc().fileName().endsWith(".zip")) {
-
-					try {
-
-						ZipUtil.unzip(file,zipOut);
-
-						file = new File(zipOut,like ? "like.js" : "tweet.js");
-
-						if (!file.isFile()) {
-
-							msg.send("这个压缩包里面有文件吗？ 注意 : tweet.js 需要打成 tweet.zip / like.js 需要打成 like.zip 否则无法识别呢 (˚☐˚! )/").exec();
-
-							return;
-
-						}
-
-					} catch (Exception ex) {
-
-						msg.send("解压zip包失败... 你是打了rar包改后缀了吗？(˚☐˚! )/").exec();
-
-						return;
-
-					}
-
-				}
-
-			}
-
-
-			msg.send("解析" + (like ? "打心" : "推文") + "ing... Σ( ﾟωﾟ").exec();
-
-			clearPrivatePoint(user);
-
-			BufferedReader reader = IoUtil.getReader(IoUtil.toStream(file),CharsetUtil.CHARSET_UTF_8);
-
-			LinkedList<Long> ids = new LinkedList<>();
-
-			try {
-
-				String line = reader.readLine();
-
-				boolean isRC = false;
-
-				while (line != null) {
-
-					if (like) {
-
-						if (line.contains("tweetId")) {
-
-							ids.add(Long.parseLong(StrUtil.subBetween(line,"\" : \"","\"")));
-
-						}
-
-					} else if (isRC) {
-
-						ids.add(Long.parseLong(StrUtil.subBetween(line,"\" : \"","\"")));
-
-						isRC = false;
-
-					} else if (line.contains("retweet_count")) {
-
-						isRC = true;
-
-					}
-
-					line = reader.readLine();
-
-				}
-
-				reader.close();
-
-			} catch (IOException e) {
-
-				msg.send("读取文件错误...",e.toString()).exec();
-
-				return;
-
-			}
-
-			msg.send("已解析 " + ids.size() + " 条" + (like ? "打心" : "推文") + "... 正在启动删除线程...").exec();
-
-			DeleteThread thread = new DeleteThread();
-
-			thread.userId = user.id;
-
-			thread.account = (TAuth) data;
-
-			thread.api = thread.account.createApi();
-
-			thread.ids = ids;
-
-			thread.tweet = !like;
-
-			threads.put(thread.account.id,thread);
-
-			thread.start();
-
-		} else {
+		if ("FETCH".equals(msg.text())) {
 
 			DeleteThread thread = new DeleteThread();
 
@@ -247,7 +117,138 @@ public class TwitterDelete extends Fragment {
 
 			thread.start();
 
+		} else if (msg.doc() == null || !msg.doc().fileName().matches("(tweet|like)\\.(js|zip)")) {
+
+            msg.send("你正在删除twetter数据... 发送 tweet.js 删除推文 like.js 删除打心...").withCancel().exec();
+
+            return;
+
+        }
+
+
+		boolean like = msg.doc().fileName().startsWith("like");
+
+		File file = msg.file();
+
+		if (file == null) {
+
+			if (msg.doc().fileName().endsWith(".js")) {
+
+				msg.send("文件太大... Telegram禁止Bot下载超过20mb的文件... 请打zip包并修改为 tweet.zip / like.zip （●＾o＾●）").exec();
+
+			} else {
+
+				msg.send("可能真的太大...？ zip都超过20m...").exec();
+
+			}
+
+			return;
+
+
 		}
+
+		File zipOut = new File(Env.CACHE_DIR,"unzip/" + msg.doc().fileId());
+
+		if (!zipOut.isDirectory() || zipOut.list().length == 0) {
+
+			if (msg.doc().fileName().endsWith(".zip")) {
+
+				try {
+
+					ZipUtil.unzip(file,zipOut);
+
+					file = new File(zipOut,like ? "like.js" : "tweet.js");
+
+					if (!file.isFile()) {
+
+						msg.send("这个压缩包里面有文件吗？ 注意 : tweet.js 需要打成 tweet.zip / like.js 需要打成 like.zip 否则无法识别呢 (˚☐˚! )/").exec();
+
+						return;
+
+					}
+
+				} catch (Exception ex) {
+
+					msg.send("解压zip包失败... 你是打了rar包改后缀了吗？(˚☐˚! )/").exec();
+
+					return;
+
+				}
+
+			}
+
+		}
+
+
+		msg.send("解析" + (like ? "打心" : "推文") + "ing... Σ( ﾟωﾟ").exec();
+
+		clearPrivatePoint(user);
+
+		BufferedReader reader = IoUtil.getReader(IoUtil.toStream(file),CharsetUtil.CHARSET_UTF_8);
+
+		LinkedList<Long> ids = new LinkedList<>();
+
+		try {
+
+			String line = reader.readLine();
+
+			boolean isRC = false;
+
+			while (line != null) {
+
+				if (like) {
+
+					if (line.contains("tweetId")) {
+
+						ids.add(Long.parseLong(StrUtil.subBetween(line,"\" : \"","\"")));
+
+					}
+
+				} else if (isRC) {
+
+					ids.add(Long.parseLong(StrUtil.subBetween(line,"\" : \"","\"")));
+
+					isRC = false;
+
+				} else if (line.contains("retweet_count")) {
+
+					isRC = true;
+
+				}
+
+				line = reader.readLine();
+
+			}
+
+			reader.close();
+
+		} catch (IOException e) {
+
+			msg.send("读取文件错误...",e.toString()).exec();
+
+			return;
+
+		}
+
+		msg.send("已解析 " + ids.size() + " 条" + (like ? "打心" : "推文") + "... 正在启动删除线程...").exec();
+
+		DeleteThread thread = new DeleteThread();
+
+		thread.userId = user.id;
+
+		thread.account = (TAuth) data;
+
+		thread.api = thread.account.createApi();
+
+		thread.ids = ids;
+
+		thread.tweet = !like;
+
+		threads.put(thread.account.id,thread);
+
+		thread.start();
+
+
 
 	}
 
@@ -325,11 +326,11 @@ public class TwitterDelete extends Fragment {
 				}
 
 			} else {
-				
+
 				int current = 0;
 
 				try {
-					
+
 					ResponseList<Status> timeline = api.getUserTimeline(new Paging().count(200));
 
 					while (timeline != null && !timeline.isEmpty() && !stoped.get()) {
@@ -361,7 +362,7 @@ public class TwitterDelete extends Fragment {
 						timeline = api.getUserTimeline(new Paging().count(200));
 
 					}
-					
+
 					status.edit("删除完成 : 已拉取并删除 " + current + " 条","如果有剩余推文，请使用tweet.js以删除程序无法拉取的久远推文").exec();
 
 				} catch (TwitterException e) {
