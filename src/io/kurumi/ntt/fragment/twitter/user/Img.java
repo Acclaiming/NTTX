@@ -128,8 +128,10 @@ public class Img {
 
 					setPlotBackgroundPaint(Color.WHITE);
 
-					setShadowPaint(Color.BLACK);
+					setBaselinePaint(Color.BLACK);
 					
+					setPlotOutlinePaint(Color.WHITE);
+
 				}});
 
 	}
