@@ -124,7 +124,7 @@ public class Img {
 
         for (int index = colors.length;index > 0;index --) {
 			
-            ArrayUtil.swap(colors, RandomUtil.randomInt(index), index - 1);
+            // ArrayUtil.swap(colors, RandomUtil.randomInt(index), index - 1);
 			
         }
 		
