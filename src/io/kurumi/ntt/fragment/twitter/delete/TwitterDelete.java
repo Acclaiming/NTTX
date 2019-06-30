@@ -105,7 +105,7 @@ public class TwitterDelete extends Fragment {
 
             return;
 
-        } else if ("FETCH".equals(msg.text())) {
+        } else if (!"FETCH".equals(msg.text())) {
 
 			boolean like = msg.doc().fileName().startsWith("like");
 
