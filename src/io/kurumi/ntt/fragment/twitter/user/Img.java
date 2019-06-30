@@ -92,12 +92,14 @@ public class Img {
 			  .createLineChart("",cName,vName,dataset))
 			.draw(graphics,new Rectangle2D.Float(x,y,w,h));
 			
+		graphics.setPaint(paint);
+		graphics.setStroke(stroke);
+		graphics.setFont(font);
+			
 		fontSize(45);
 			
 		drawRandomColorTextCenter(0,0,0,width - 200,title);
 		
-		graphics.setPaint(paint);
-		graphics.setStroke(stroke);
 		graphics.setFont(font);
 		
 		return this;

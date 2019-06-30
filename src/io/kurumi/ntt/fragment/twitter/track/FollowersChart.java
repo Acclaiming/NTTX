@@ -43,7 +43,7 @@ public class FollowersChart extends Fragment {
 		
 		data.addValue(810,"Followers","12:00");
 		
-		img.drawLineChart("Twitter Chart","","",data);
+		img.drawLineChart("Twitter 关 注 者 统 计","","",data);
 		
 		bot().execute(new SendPhoto(msg.chatId(),img.getBytes()));
 		
