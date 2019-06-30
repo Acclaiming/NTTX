@@ -132,7 +132,7 @@ public class Img {
 					setTickLabelPaint(Color.BLACK);
 					setItemLabelPaint(Color.BLACK);
 					setThermometerPaint(Color.BLACK);
-
+					setPlotOutlinePaint(Color.WHITE);
 
 				}});
 
