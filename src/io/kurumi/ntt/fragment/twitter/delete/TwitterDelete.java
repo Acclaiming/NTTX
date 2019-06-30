@@ -348,7 +348,7 @@ public class TwitterDelete extends Fragment {
 
 								current ++;
 
-								if (current % 5 == 0) {
+								if (current % 20 == 0) {
 
 									status.edit("拉取中 已删除 " + current + " 条","取消删除使用 /delete_cancel ...").exec();
 
