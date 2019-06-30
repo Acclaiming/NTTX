@@ -1,5 +1,6 @@
 package io.kurumi.ntt.fragment.twitter.user;
 
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ImageUtil;
 import cn.hutool.core.util.RandomUtil;
 import java.awt.BasicStroke;
@@ -10,6 +11,7 @@ import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.Transparency;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -17,16 +19,12 @@ import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 import net.coobird.thumbnailator.Thumbnails;
 import org.jfree.chart.ChartFactory;
-import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.category.DefaultCategoryDataset;
-import java.awt.geom.Rectangle2D;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.ui.RectangleInsets;
-import org.jfree.chart.ChartTheme;
-import org.jfree.chart.plot.DatasetRenderingOrder;
+import org.jfree.chart.StandardChartTheme;
+import org.jfree.chart.plot.DefaultDrawingSupplier;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
-import javax.swing.plaf.basic.BasicOptionPaneUI;
-import cn.hutool.core.util.ArrayUtil;
+import org.jfree.chart.ui.RectangleInsets;
+import org.jfree.data.category.CategoryDataset;
 
 public class Img {
 
@@ -110,37 +108,32 @@ public class Img {
 
 	}
 
+	static {
+		
+		ChartFactory.setChartTheme(new StandardChartTheme("NTT") {{
+		
+			    Paint[] paints = new Paint[MaterialColor.all.length];
+				
+				for (int index = 0;index < paints.length;index ++) {
+					
+					paints[index] = MaterialColor.all[index].colorPrimaryDark;
+					
+				}
+			
+				DefaultDrawingSupplier drawingSupplier = new DefaultDrawingSupplier(paints, paints, paints,DefaultDrawingSupplier.DEFAULT_STROKE_SEQUENCE, DefaultDrawingSupplier.DEFAULT_OUTLINE_STROKE_SEQUENCE,																DefaultDrawingSupplier.DEFAULT_SHAPE_SEQUENCE);
+				setDrawingSupplier(drawingSupplier);
+				
+			
+		}});
+		
+	}
+	
 	private JFreeChart apply(JFreeChart chart) {
 
 		chart.setPadding(new RectangleInsets(150,0,0,20));
 		
 		chart.setBackgroundPaint(Color.WHITE);
-		
-		chart.getPlot().setBackgroundPaint(Color.WHITE);
-		
-		int count = chart.getCategoryPlot().getRendererCount();
 	
-		MaterialColor[] colors = ArrayUtil.clone(MaterialColor.all);
-
-        for (int index = colors.length;index > 0;index --) {
-			
-            ArrayUtil.swap(colors, RandomUtil.randomInt(index), index - 1);
-			
-        }
-		
-		for (int index = 0;index < count && index < colors.length;index ++) {
-			
-			CategoryItemRenderer renderer = chart.getCategoryPlot().getRenderer(index);
-			
-			renderer.setDefaultPaint(colors[index].colorPrimaryDark);
-			renderer.setDefaultOutlinePaint(colors[index].colorPrimaryDark);
-			renderer.setDefaultItemLabelPaint(colors[index].colorPrimaryDark);
-			renderer.setDefaultFillPaint(colors[index].colorPrimaryDark);
-
-		}
-		
-		chart.setBorderStroke(new BasicStroke(3));
-		
 		return chart;
 		
 	}
