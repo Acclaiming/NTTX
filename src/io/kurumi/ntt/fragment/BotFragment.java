@@ -703,9 +703,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 			final Callback callback = new Callback(this,update.callbackQuery());
 
-			if (callback.params.length > 0) {
-
-				final String point = callback.params[0];
+				final String point = callback.params.length == 0 ? "" : callback.params[0];
 				final String[] params = callback.params.length > 1 ? ArrayUtil.sub(callback.params,1,callback.params.length) : new String[0];
 
 				final Fragment function = callbacks.containsKey(point) ?  callbacks.get(point): this;
@@ -724,11 +722,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 					}
 
 				};
-
-			}
-
-			return EMPTY;
-
+			
 		} else if (update.inlineQuery() != null) {
 
 			onQuery(user,new Query(this,update.inlineQuery()));
@@ -870,6 +864,14 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 		}
 
+	}
+
+	@Override
+	public void onCallback(UserData user, Callback callback, String point, String[] params) {
+		
+		if ("".equals(point)) callback.confirm();
+		else callback.alert("无效的回调指针 : " + point + "\n请联系开发者");
+		
 	}
 
 	final String split = "------------------------\n";
