@@ -70,7 +70,7 @@ public class Img {
         graphics.setPaint(Color.BLACK);
 
 		font("Noto Sans CJK SC Thin",39);
-		
+
 	}
 
 	public Img drawLineChart(String title,String cName,String vName,CategoryDataset dataset) {
@@ -80,8 +80,8 @@ public class Img {
 		return this;
 
 	}
-	
-	
+
+
 	public Img drawLineChart(String title,String cName,String vName,CategoryDataset dataset,int x,int y,int w,int h) {
 
 		Paint paint = graphics.getPaint();
@@ -89,60 +89,65 @@ public class Img {
 		Font font = graphics.getFont();
 
 		// graphics.setColor(MaterialColor.INDIGO.colorPrimaryDark);
-		
+
 		apply(ChartFactory
 			  .createLineChart("",cName,vName,dataset))
 			.draw(graphics,new Rectangle2D.Float(x,y,w,h));
-			
+
 		graphics.setPaint(paint);
 		graphics.setStroke(stroke);
 		graphics.setFont(font);
-			
+
 		fontSize(45);
-		
+
 		graphics.setColor(MaterialColor.INDIGO.colorAccent);
-			
+
 		drawTextCenter(0,0,0,height - 200,title);
-		
+
 		graphics.setFont(font);
 		graphics.setPaint(paint);
-		
+
 		return this;
 
 	}
 
 	static {
-		
+
 		ChartFactory.setChartTheme(new StandardChartTheme("NTT") {{
-		
-			    Paint[] paints = new Paint[MaterialColor.all.length];
-				
-				for (int index = 0;index < paints.length;index ++) {
-					
-					paints[index] = MaterialColor.all[index].colorPrimaryDark;
-					
-				}
-			
-				DefaultDrawingSupplier drawingSupplier = new DefaultDrawingSupplier(paints, paints, paints,DefaultDrawingSupplier.DEFAULT_STROKE_SEQUENCE, DefaultDrawingSupplier.DEFAULT_OUTLINE_STROKE_SEQUENCE,																DefaultDrawingSupplier.DEFAULT_SHAPE_SEQUENCE);
-				setDrawingSupplier(drawingSupplier);
-				
-			
-		}});
-		
+
+					Paint[] paints = new Paint[MaterialColor.all.length];
+
+					for (int index = 0;index < paints.length;index ++) {
+
+						paints[index] = MaterialColor.all[index].colorPrimaryDark;
+
+					}
+
+					DefaultDrawingSupplier drawingSupplier = new DefaultDrawingSupplier(paints,paints,paints,DefaultDrawingSupplier.DEFAULT_STROKE_SEQUENCE,DefaultDrawingSupplier.DEFAULT_OUTLINE_STROKE_SEQUENCE,DefaultDrawingSupplier.DEFAULT_SHAPE_SEQUENCE);
+					setDrawingSupplier(drawingSupplier);
+
+					setPlotBackgroundPaint(Color.WHITE);
+
+					setAxisLabelPaint(Color.BLACK);
+					setTickLabelPaint(Color.BLACK);
+
+
+				}});
+
 	}
-	
+
 	private JFreeChart apply(JFreeChart chart) {
 
 		chart.setPadding(new RectangleInsets(150,0,0,20));
-		
+
 		chart.setBackgroundPaint(Color.WHITE);
-		
+
 		chart.getPlot().setBackgroundPaint(Color.WHITE);
-		
+
 		chart.setBorderStroke(new BasicStroke(3));
-		
+
 		return chart;
-		
+
 	}
 
 	public Img drawLineInterfere(int count) {
