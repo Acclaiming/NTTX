@@ -98,7 +98,6 @@ public class TwitterDelete extends Fragment {
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,Object data) {
 
-
 		if ("FETCH".equals(msg.text())) {
 
 			DeleteThread thread = new DeleteThread();
@@ -116,6 +115,9 @@ public class TwitterDelete extends Fragment {
 			threads.put(thread.account.id,thread);
 
 			thread.start();
+
+			clearPrivatePoint(user);
+
 			
 			return;
 			
@@ -126,7 +128,6 @@ public class TwitterDelete extends Fragment {
 			return;
 
         }
-
 
 		boolean like = msg.doc().fileName().startsWith("like");
 
