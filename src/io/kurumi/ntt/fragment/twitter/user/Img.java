@@ -133,6 +133,7 @@ public class Img {
 			CategoryItemRenderer renderer = chart.getCategoryPlot().getRenderer(index);
 			
 			renderer.setDefaultPaint(colors[index].colorPrimaryDark);
+			renderer.setDefaultOutlinePaint(colors[index].colorPrimaryDark);
 			renderer.setDefaultItemLabelPaint(colors[index].colorPrimaryDark);
 			renderer.setDefaultFillPaint(colors[index].colorPrimaryDark);
 
