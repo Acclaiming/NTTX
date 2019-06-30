@@ -31,14 +31,13 @@ public class StatusGetter extends Fragment {
 	public void onPayload(UserData user,Msg msg,String payload,String[] params) {
 		
 		requestTwitterPayload(user,msg);
-		
-		
+
 	}
 
 	@Override
 	public void onTwitterPayload(UserData user,Msg msg,String payload,String[] params,TAuth account) {
 		
-        Long statusId = NumberUtil.parseLong(msg.payload()[1]);
+        Long statusId = NumberUtil.parseLong(params[0]);
 
         if (account == null) {
 
