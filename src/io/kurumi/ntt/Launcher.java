@@ -399,8 +399,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         new Send(Env.GROUP, "NTT 异常退出", BotLog.parseError(throwable)).exec();
 
-        INSTANCE.stop();
-
         System.exit(1);
 
     }
