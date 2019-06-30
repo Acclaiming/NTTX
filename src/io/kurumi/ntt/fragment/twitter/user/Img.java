@@ -20,6 +20,8 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import java.awt.geom.Rectangle2D;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.ui.RectangleInsets;
 
 public class Img {
 
@@ -76,10 +78,20 @@ public class Img {
 
 	public Img drawLineChart(String title,String cName,String vName,CategoryDataset dataset,int x,int y,int w,int h) {
 
-		ChartFactory.createLineChart(title,cName,vName,dataset).draw(graphics,new Rectangle2D.Float(x,y,w,h));
+		apply(ChartFactory
+			  .createLineChart(title,cName,vName,dataset))
+			.draw(graphics,new Rectangle2D.Float(x,y,w,h));
 
 		return this;
 
+	}
+
+	private JFreeChart apply(JFreeChart chart) {
+
+		chart.setPadding(new RectangleInsets(50,0,0,20));
+
+		return chart;
+		
 	}
 
 	public Img drawLineInterfere(int count) {
