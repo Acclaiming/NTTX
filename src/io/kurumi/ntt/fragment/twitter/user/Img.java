@@ -102,7 +102,7 @@ public class Img {
 			
 		fontSize(45);
 			
-		drawRandomColorTextCenter(0,0,0,width - 200,title);
+		drawRandomColorTextCenter(0,0,0,height - 200,title);
 		
 		graphics.setFont(font);
 		
@@ -124,7 +124,7 @@ public class Img {
 
         for (int index = colors.length;index > 0;index --) {
 			
-            // ArrayUtil.swap(colors, RandomUtil.randomInt(index), index - 1);
+            ArrayUtil.swap(colors, RandomUtil.randomInt(index), index - 1);
 			
         }
 		
@@ -132,7 +132,9 @@ public class Img {
 			
 			CategoryItemRenderer renderer = chart.getCategoryPlot().getRenderer(index);
 			
-			renderer.setDefaultFillPaint(colors[index].colorAccent);
+			renderer.setDefaultPaint(colors[index].colorPrimaryDark);
+			renderer.setDefaultItemLabelPaint(colors[index].colorPrimaryDark);
+			renderer.setDefaultFillPaint(colors[index].colorPrimaryDark);
 
 		}
 		
