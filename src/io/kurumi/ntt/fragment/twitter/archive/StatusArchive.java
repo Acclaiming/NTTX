@@ -370,53 +370,9 @@ public class StatusArchive {
 
         }
 
-		/*
-
-		 if (!userMentions.isEmpty() && !quoted) {
-
-		 UserArchive first = UserArchive.get(userMentions.getFirst());
-
-		 archive.append(" 给 ").append(Html.a("@" + first.screenName,first.url()));
-
-		 if (userMentions.size() > 1) {
-
-		 for (long mention : userMentions.subList(1,userMentions.size())) {
-
-		 UserArchive mentionUser = UserArchive.get(mention);
-
-		 archive.append("、").append(Html.a("@" + mentionUser.screenName,mentionUser.url()));
-
-		 }
-
-		 }
-
-		 }
-
-		 */
-
         archive.append(" :");
 
         content = HtmlUtil.escape(content);
-
-		while (content.contains("@")) {
-
-			String before = StrUtil.subBefore(content,"@",false);
-			String after = StrUtil.subAfter(content,"@",false);
-
-			String screenName = after;
-
-			if (screenName.contains(" ")) {
-
-				screenName = StrUtil.subBefore(screenName," ",false);
-				after = StrUtil.subAfter(after," ",false);
-
-			}
-
-			content = before + Html.twitterUser("?AT?" + screenName,screenName) + after;
-
-		}
-
-		content.replace("?AT?","@");
 
         archive.append("\n");
 
