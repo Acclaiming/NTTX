@@ -11,4 +11,5 @@
 <classpathentry kind="lib" path="libs/thumbnailator-0.4.8.jar"/>
 <classpathentry kind="lib" path="libs/tieba-api/httpclient-4.5.5.jar"/>
 <classpathentry kind="lib" path="libs/tieba-api/httpcore-4.4.9.jar"/>
+<classpathentry kind="lib" path="libs/jfreechart-1.5.0.jar"/>
 </classpath>

@@ -53,6 +53,7 @@ import io.kurumi.ntt.fragment.twitter.track.TrackUI;
 import io.kurumi.ntt.utils.BotLog;
 import java.io.IOException;
 import java.util.TimeZone;
+import io.kurumi.ntt.fragment.twitter.track.FollowersChart;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -317,6 +318,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(new TwitterDelete());
 
+		addFragment(new FollowersChart());
+		
         // Forum
 
         addFragment(new ForumManage());

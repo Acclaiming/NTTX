@@ -2,11 +2,13 @@ package io.kurumi.ntt.fragment.twitter.user;
 
 import cn.hutool.core.util.ImageUtil;
 import cn.hutool.core.util.RandomUtil;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -14,8 +16,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 import net.coobird.thumbnailator.Thumbnails;
-import java.awt.BasicStroke;
-import java.awt.Stroke;
+import org.jfree.chart.ChartFactory;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
+import java.awt.geom.Rectangle2D;
 
 public class Img {
 
@@ -62,29 +66,45 @@ public class Img {
 
 	}
 
+	public Img drawLineChart(String title,String cName,String vName,CategoryDataset dataset) {
+
+		drawLineChart(title,cName,vName,dataset,0,0,width,height);
+
+		return this;
+
+	}
+
+	public Img drawLineChart(String title,String cName,String vName,CategoryDataset dataset,int x,int y,int w,int h) {
+
+		ChartFactory.createLineChart(title,cName,vName,dataset).draw(graphics,new Rectangle2D.Float(x,y,w,h));
+
+		return this;
+
+	}
+
 	public Img drawLineInterfere(int count) {
 
 		Paint paint = graphics.getPaint();
 		Stroke stoke = graphics.getStroke();
-		
+
 		final ThreadLocalRandom random = RandomUtil.getRandom();
 
 		for (int i = 0; i < count; i++) {
-			
+
 			int xs = random.nextInt(width);
 			int ys = random.nextInt(height);
 			int xe = xs + random.nextInt(width / 8);
 			int ye = ys + random.nextInt(height / 8);
-			
+
 			graphics.setColor(ImageUtil.randomColor(random));
 			graphics.setStroke(new BasicStroke((float)RandomUtil.randomDouble(4)));
-			
+
 			graphics.drawLine(xs,ys,xe,ye);
 		}
 
 		graphics.setPaint(paint);
 		graphics.setStroke(stoke);
-		
+
 		return this;
 
 	}
@@ -156,7 +176,7 @@ public class Img {
 		return this;
 
 	}
-	
+
 	public Img fontSize(int size) {
 
 		font(graphics.getFont().getFontName(),size);
@@ -285,7 +305,7 @@ public class Img {
 		return this;
 
 	}
-	
+
 	public Img drawRandomColorTextCenter(int xPedding,int yPedding,int xMargin,int yMargin,String text) {
 
 		int realX = xPedding + ((width - xPedding - xMargin) / 2) - (stringWidth(text) / 2);
