@@ -39,8 +39,6 @@ public class StatusGetter extends Fragment {
 		
         Long statusId = NumberUtil.parseLong(params[0]);
 
-		msg.send(payload,params[0]).exec();
-		
         if (account == null) {
 
             StatusArchive archive = StatusArchive.get(statusId);
