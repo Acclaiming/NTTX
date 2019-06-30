@@ -130,6 +130,8 @@ public class Img {
 
 					setAxisLabelPaint(Color.BLACK);
 					setTickLabelPaint(Color.BLACK);
+					setItemLabelPaint(Color.BLACK);
+					setThermometerPaint(Color.BLACK);
 
 
 				}});
@@ -138,7 +140,7 @@ public class Img {
 
 	private JFreeChart apply(JFreeChart chart) {
 
-		chart.setPadding(new RectangleInsets(150,0,0,20));
+		chart.setPadding(new RectangleInsets(150,50,40,40));
 
 		chart.setBackgroundPaint(Color.WHITE);
 
