@@ -40,9 +40,9 @@ public class MaterialColor {
 	public static MaterialColor AMBER = new MaterialColor(new String[] {"#FFF8E1", "#FFECB3", "#FFE082", "#FFD54F", "#FFCA28", "#FFC107", "#FFB300", "#FFA000", "#FF8F00", "#FF6F00", "#FFE57F", "#FFD740", "#FFC400", "#FFAB00"} ,5,7,11);
 	public static MaterialColor ORANGE = new MaterialColor(new String[] {"#FFF3E0", "#FFE0B2", "#FFCC80", "#FFB74D", "#FFA726", "#FF9800", "#FB8C00", "#F57C00", "#EF6C00", "#E65100", "#FFD180", "#FFAB40", "#FF9100", "#FF6D00"} ,5,7,11);
 	public static MaterialColor ORANGE_DEEP = new MaterialColor(new String[] {"#FBE9E7", "#FFCCBC", "#FFAB91", "#FF8A65", "#FF7043", "#FF5722", "#F4511E", "#E64A19", "#D84315", "#BF360C", "#FF9E80", "#FF6E40", "#FF3D00", "#DD2C00"} ,5,7,11);
-	public static MaterialColor BROWN = new MaterialColor(new String[] {"#EFEBE9", "#D7CCC8", "#BCAAA4", "#A1887F", "#8D6E63", "#795548", "#6D4C41", "#5D4037", "#4E342E", "#3E2723"} ,5,7,5)
-	public static MaterialColor GREY = new MaterialColor(new String[] {"#FAFAFA", "#F5F5F5", "#EEEEEE", "#E0E0E0", "#BDBDBD", "#9E9E9E", "#757575", "#616161", "#424242", "#212121"} ,5,7,5)
-	public static MaterialColor GREY_BLUE = new MaterialColor(new String[] {"#ECEFF1", "#CFD8DC", "#B0BEC5", "#90A4AE", "#78909C", "#607D8B", "#546E7A", "#455A64", "#37474F", "#263238"} ,5,7,5)
+	public static MaterialColor BROWN = new MaterialColor(new String[] {"#EFEBE9", "#D7CCC8", "#BCAAA4", "#A1887F", "#8D6E63", "#795548", "#6D4C41", "#5D4037", "#4E342E", "#3E2723"} ,5,7,5);
+	public static MaterialColor GREY = new MaterialColor(new String[] {"#FAFAFA", "#F5F5F5", "#EEEEEE", "#E0E0E0", "#BDBDBD", "#9E9E9E", "#757575", "#616161", "#424242", "#212121"} ,5,7,5);
+	public static MaterialColor GREY_BLUE = new MaterialColor(new String[] {"#ECEFF1", "#CFD8DC", "#B0BEC5", "#90A4AE", "#78909C", "#607D8B", "#546E7A", "#455A64", "#37474F", "#263238"} ,5,7,5);
 
 
 

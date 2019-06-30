@@ -224,8 +224,8 @@ public class JoinCaptchaBot extends BotFragment {
 
 		    info.drawLineInterfere(50);
 
-			info.font("Noto Sans CJK SC Thin",39);
-
+			info.fontSize(39);
+			
 			String code = RandomUtil.randomBoolean() ? "喵" :  "嘤";
 
 			info.drawRandomColorTextCenter(0,0,0,400,"新加裙的绒布球你好呀");

@@ -22,6 +22,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import java.awt.geom.Rectangle2D;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.ui.RectangleInsets;
+import org.jfree.chart.ChartTheme;
 
 public class Img {
 
@@ -66,6 +67,8 @@ public class Img {
         graphics.setColor(Color.BLACK);
         graphics.setPaint(Color.BLACK);
 
+		font("Noto Sans CJK SC Thin",39);
+		
 	}
 
 	public Img drawLineChart(String title,String cName,String vName,CategoryDataset dataset) {
@@ -75,21 +78,38 @@ public class Img {
 		return this;
 
 	}
-
+	
+	
 	public Img drawLineChart(String title,String cName,String vName,CategoryDataset dataset,int x,int y,int w,int h) {
 
-		apply(ChartFactory
-			  .createLineChart(title,cName,vName,dataset))
-			.draw(graphics,new Rectangle2D.Float(x,y,w,h));
+		Paint paint = graphics.getPaint();
+		Stroke stroke = graphics.getStroke();
+		Font font = graphics.getFont();
 
+		graphics.setColor(MaterialColor.INDIGO.colorPrimaryDark);
+		
+		apply(ChartFactory
+			  .createLineChart("",cName,vName,dataset))
+			.draw(graphics,new Rectangle2D.Float(x,y,w,h));
+			
+		fontSize(45);
+			
+		drawRandomColorTextCenter(0,0,width - 200,0,title);
+		
+		graphics.setPaint(paint);
+		graphics.setStroke(stroke);
+		graphics.setFont(font);
+		
 		return this;
 
 	}
 
 	private JFreeChart apply(JFreeChart chart) {
 
-		chart.setPadding(new RectangleInsets(50,0,0,20));
-
+		chart.setPadding(new RectangleInsets(150,0,0,20));
+		
+		chart.setBackgroundPaint(Color.WHITE);
+		
 		chart.setBorderPaint(MaterialColor.INDIGO.colorPrimaryDark);
 		
 		chart.setBorderStroke(new BasicStroke(3));
