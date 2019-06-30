@@ -21,12 +21,9 @@ public class MaterialColor {
 
 	public Color getColor(int index) {
 
-		return Color.getColor(colors[index]);
+		return Color.decode(colors[index]);
 
 	}
-
-
-
 
 	public static MaterialColor RED = new MaterialColor(new String[] {"#FFEBEE", "#FFCDD2", "#EF9A9A", "#E57373", "#EF5350", "#F44336", "#E53935", "#D32F2F", "#C62828", "#B71C1C", "#FF8A80", "#FF5252", "#FF1744", "#D50000"} ,5,7,11);
 	public static MaterialColor PINK = new MaterialColor(new String[] {"#FCE4EC", "#F8BBD0", "#F48FB1", "#F06292", "#EC407A", "#E91E63", "#D81B60", "#C2185B", "#AD1457", "#880E4F", "#FF80AB", "#FF4081", "#F50057", "#C51162"} ,5,7,11);
