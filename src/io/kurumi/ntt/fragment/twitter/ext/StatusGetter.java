@@ -39,6 +39,8 @@ public class StatusGetter extends Fragment {
 		
         Long statusId = NumberUtil.parseLong(params[0]);
 
+		msg.send(payload,params[0]).exec();
+		
         if (account == null) {
 
             StatusArchive archive = StatusArchive.get(statusId);
@@ -57,13 +59,11 @@ public class StatusGetter extends Fragment {
 
             Twitter api = account.createApi();
 
-            msg.sendTyping();
-
             try {
 
                 Status newStatus = api.showStatus(statusId);
 
-                StatusArchive archive = StatusArchive.save(api.showStatus(statusId));
+                StatusArchive archive = StatusArchive.save(newStatus);
 
                 archive.loop(api);
 
@@ -80,9 +80,7 @@ public class StatusGetter extends Fragment {
                     msg.send(NTT.parseTwitterException(e)).publicFailed();
 
                 }
-
-
-
+				
 			}
 
 		}
