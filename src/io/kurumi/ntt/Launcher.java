@@ -334,10 +334,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public void stop() {
 
-        // AutoTask.stop()
-
-        // mtp.stopBot()
-		
         for (BotFragment bot : BotServer.fragments.values()) {
 
             if (bot != this) bot.stop();
