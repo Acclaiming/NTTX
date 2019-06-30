@@ -129,7 +129,8 @@ public class Img {
 					setPlotBackgroundPaint(Color.WHITE);
 
 					setBaselinePaint(Color.BLACK);
-					
+					setRangeGridlinePaint(Color.BLACK);
+					setDomainGridlinePaint(Color.BLACK);
 					setPlotOutlinePaint(Color.WHITE);
 
 				}});
