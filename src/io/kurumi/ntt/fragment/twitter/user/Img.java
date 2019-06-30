@@ -86,7 +86,7 @@ public class Img {
 		Stroke stroke = graphics.getStroke();
 		Font font = graphics.getFont();
 
-		graphics.setColor(MaterialColor.INDIGO.colorPrimaryDark);
+		// graphics.setColor(MaterialColor.INDIGO.colorPrimaryDark);
 		
 		apply(ChartFactory
 			  .createLineChart("",cName,vName,dataset))
@@ -94,7 +94,7 @@ public class Img {
 			
 		fontSize(45);
 			
-		drawRandomColorTextCenter(0,0,width - 200,0,title);
+		drawRandomColorTextCenter(0,0,0,width - 200,title);
 		
 		graphics.setPaint(paint);
 		graphics.setStroke(stroke);
@@ -110,7 +110,7 @@ public class Img {
 		
 		chart.setBackgroundPaint(Color.WHITE);
 		
-		chart.setBorderPaint(MaterialColor.INDIGO.colorPrimaryDark);
+		chart.getPlot().setBackgroundPaint(Color.WHITE);
 		
 		chart.setBorderStroke(new BasicStroke(3));
 		
