@@ -15,6 +15,7 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
+import java.util.LinkedHashSet;
 
 public class AntiEsu extends Fragment {
 
@@ -140,6 +141,17 @@ public class AntiEsu extends Fragment {
 					
 					else {
 						
+						LinkedHashSet<String> set = new LinkedHashSet<String>();
+
+						for (String p : pinyin) {
+
+							set.add(p);
+
+						}
+						
+						pinyin = set.toArray(new String[set.size()]);
+						
+						
 						if (pinyin.length == 1) kk.append(pinyin[0]);
 						
 						else {
@@ -180,8 +192,6 @@ public class AntiEsu extends Fragment {
         kw.append(").*");
 
         regex = kw.toString();
-		
-		BotLog.debug(regex);
 
     }
 
@@ -197,7 +207,11 @@ public class AntiEsu extends Fragment {
 		
 		try {
 			
-			return PinyinHelper.toHanYuPinyinString(msg,format,"",true).matches(regex);
+			String str =  PinyinHelper.toHanYuPinyinString(msg,format,"",true);
+
+			BotLog.debug(str);
+		
+		return str.matches(regex);
 			
 		} catch (BadHanyuPinyinOutputFormatCombination e) {
 			
