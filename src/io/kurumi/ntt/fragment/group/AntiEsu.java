@@ -203,9 +203,10 @@ public class AntiEsu extends Fragment {
     public static boolean keywordMatch(String msg) {
 
 		if (msg == null) return false;
+		
 		StringBuilder text = new StringBuilder();
 
-		for (char c : msg.toCharArray()) {
+		for (char c : msg.replace(" ","").toLowerCase().toCharArray()) {
 
 			try {
 				
@@ -291,7 +292,7 @@ public class AntiEsu extends Fragment {
 
 		if (msg.isGroup() && enable.contains(msg.chatId().longValue())) {
 
-			if (msg.hasText() && msg.text().replaceAll(" ","").matches(regex)) {
+			if (msg.hasText() && keywordMatch(msg.text())) {
 
 				msg.delete();
 
