@@ -151,7 +151,7 @@ public class BotLog extends ConsoleLog {
 
         } else if (update.channelPost() != null) {
 
-            log.append("收到频道").append(update.message().chat().title()).append(" [").append(Html.code(update.channelPost().chat().id())).append("] : ").append(processMessage(user, update.channelPost()));
+            log.append("收到频道").append(update.channelPost().chat().title()).append(" [").append(Html.code(update.channelPost().chat().id())).append("] : ").append(processMessage(user, update.channelPost()));
 
         } else if (update.callbackQuery() != null) {
 
