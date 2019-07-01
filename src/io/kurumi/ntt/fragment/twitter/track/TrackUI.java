@@ -26,7 +26,7 @@ public class TrackUI extends Fragment {
 		
         registerFunction("track");
 
-		registerPoint(
+		registerCallback(
         POINT_SETTING_FOLLOWERS,
         POINT_SETTING_FOLLOWINGS_INFO,
         POINT_SETTING_FOLLOWERS_INFO,
