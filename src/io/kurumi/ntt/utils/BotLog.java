@@ -166,6 +166,8 @@ public class BotLog extends ConsoleLog {
 
 			}
 
+			new Send(Env.LOG,info.toString()).html().exec();
+			
 			msg.forwardTo(Env.LOG);
 
 		}
