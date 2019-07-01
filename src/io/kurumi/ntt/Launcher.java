@@ -56,6 +56,8 @@ import java.util.TimeZone;
 import io.kurumi.ntt.fragment.twitter.track.FollowersChart;
 import io.kurumi.ntt.fragment.twitter.list.ListExport;
 import io.kurumi.ntt.fragment.twitter.ext.AuthExport;
+import io.kurumi.ntt.fragment.twitter.action.MuteRT;
+import io.kurumi.ntt.fragment.twitter.action.UnMuteRT;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -272,6 +274,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(new Mute());
 
         addFragment(new UnMute());
+		
+		addFragment(new MuteRT());
+		
+		addFragment(new UnMuteRT());
 
         addFragment(new Block());
 

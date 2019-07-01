@@ -9,18 +9,12 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 public class AutoTask {
-
+	
 	/*
 	
-	public static AutoTask INSTANCE = new AutoTask();
-
-	public static Timer timer;
-
 	public static void start() {
 
 		stop();
-
-		timer = new Timer();
 
 		timer.scheduleAtFixedRate(INSTANCE,new Date(),5 * 60 * 1000);
 
