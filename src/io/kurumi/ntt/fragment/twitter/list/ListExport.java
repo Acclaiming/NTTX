@@ -73,10 +73,14 @@ public class ListExport extends Fragment {
 
 		if (FOLLOWING.equals(msg.text())) {
 			
+			clearPrivatePoint(user);
+			
 			try {
 				
 				LinkedList<Long> ids = TApi.getAllFrIDs(api,account.id);
 
+				msg.sendUpdatingFile();
+				
 				bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids.toArray(),"\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName("FollowingList.csv"));
 				
 			} catch (TwitterException e) {
@@ -87,10 +91,14 @@ public class ListExport extends Fragment {
 
 		} else if (FOLLOWER.equals(msg.text())) {
 			
+			clearPrivatePoint(user);
+			
 			try {
 
 				LinkedList<Long> ids = TApi.getAllFoIDs(api,account.id);
 
+				msg.sendUpdatingFile();
+				
 				bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids.toArray(),"\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName("FollowersList.csv"));
 
 			} catch (TwitterException e) {
@@ -102,10 +110,14 @@ public class ListExport extends Fragment {
 			
 		} else if (BLOCK.equals(msg.text())) {
 			
+			clearPrivatePoint(user);
+			
 			try {
 
 				long[] ids = TApi.getAllBlockIDs(api);
 
+				msg.sendUpdatingFile();
+				
 				bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids,"\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName("BlockList.csv"));
 
 			} catch (TwitterException e) {
@@ -117,10 +129,14 @@ public class ListExport extends Fragment {
 			
 		} else if (MUTE.equals(msg.text())) {
 			
+			clearPrivatePoint(user);
+			
 			try {
 
 				long[] ids = TApi.getAllMuteIDs(api);
 
+				msg.sendUpdatingFile();
+				
 				bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids,"\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName("MuteList.csv"));
 
 			} catch (TwitterException e) {
@@ -133,11 +149,7 @@ public class ListExport extends Fragment {
 			
 			msg.send("要导出什么？").exec();
 			
-			return;
-			
 		}
-		
-		clearPrivatePoint(user);
 		
 	}
 	
