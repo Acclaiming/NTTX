@@ -139,7 +139,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         });
 
-        BotLog.info("正在启动...");
+        BotLog.debug("NTT正在启动");
 
         INSTANCE.start();
 
@@ -375,9 +375,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public void uncaughtException(Thread thread, Throwable throwable) {
 
-        BotLog.error("无法处理的错误,正在停止BOT", throwable);
-
-        new Send(Env.GROUP, "NTT 异常退出", BotLog.parseError(throwable)).exec();
+        BotLog.error("NTT出错", throwable);
 
         System.exit(1);
 

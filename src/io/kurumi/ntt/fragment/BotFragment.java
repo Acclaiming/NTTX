@@ -1056,12 +1056,10 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 			BotServer.fragments.put(token,this);
 
 			BaseResponse resp = bot.execute(new SetWebhook().url(url));
-
-			BotLog.debug("SET WebHook for " + botName() + " : " + url);
-
+			
 			if (!resp.isOk()) {
 
-				BotLog.debug("Failed... : " + resp.description());
+				BotLog.debug("SET WebHook for " + botName() + " Failed : " + resp.description());
 
 				BotServer.fragments.remove(token);
 
@@ -1083,9 +1081,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 			bot.removeGetUpdatesListener();
 
 		}
-
-		BotLog.info(botName() + " 已停止 :)");
-
+		
 	}
 
 

@@ -21,7 +21,7 @@ public class BotLog extends ConsoleLog {
     public static Log log = new BotLog();
     public static PrintStream out = System.out;
 
-    private static String logFormat = "[{level}] : {msg}";
+    private static String logFormat = "[#{level}] : {msg}";
 
     public BotLog() {
 		
@@ -145,7 +145,7 @@ public class BotLog extends ConsoleLog {
 
             }
 
-            log.append("消息 :");
+            log.append("消息 : ");
 
             log.append(processMessage(user, update.message()));
 
@@ -228,7 +228,7 @@ public class BotLog extends ConsoleLog {
 
         if (msg.voice() != null) log.append("「语音消息」");
 
-        if (msg.text() != null) log.append(" : ").append(msg.text());
+        if (msg.text() != null) log.append(" ").append(msg.text());
 
         return log.toString();
 
@@ -265,11 +265,11 @@ public class BotLog extends ConsoleLog {
 
 		if (level == Level.DEBUG) {
 		
-			new Send(Env.LOG,logMsg).disableNotification().exec();
+			new Send(Env.LOG,logMsg).disableNotification().html().exec();
 			
 		} else {
 			
-			new Send(Env.LOG,logMsg).exec();
+			new Send(Env.LOG,logMsg).html().exec();
 			
 		}
 		
