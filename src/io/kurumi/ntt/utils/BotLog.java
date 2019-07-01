@@ -140,6 +140,12 @@ public class BotLog extends ConsoleLog {
 
 				info.append("\n来自群组 : ").append(HtmlUtil.escape(msg.chat().title())).append("\n[").append(Html.code(msg.chat().id())).append("]");
 
+				if (msg.chat().username() != null) {
+					
+					info.append("\n群组身份 : @").append(msg.chat().username());
+					
+				}
+				
 				String link = msg.chat().inviteLink();
 
 				if (!exportFailed.contains(msg.chatId() + msg.fragment.origin.me.id())) {
