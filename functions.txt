@@ -1,6 +1,7 @@
 ping - 可达性测试
 login - 认证账号
 logout - 移除账号
+auth - 导出认证
 follow - 关注用户
 unfo - 取关用户
 mute - 静音用户
@@ -8,13 +9,15 @@ unmute - 取消静音
 block - 屏蔽用户
 unblock - 取消屏蔽
 current - 设置默认用户
+delete - 删除推文打心
 track - 监听设置
 auto - 自动处理设置
 mention - <on|off> 启用推文通知
 timeline - <on|off> 时间流推送
 update - 发推
-media - 取得推文媒体
-banstat - 检查ShadowBan
+timed - 定时推文
+export - 列表导出
+media - 推文媒体链接得到
 status - 推文存档
 fetch - 拉取用户所有推文与上下文
 search - 推文搜索
@@ -25,4 +28,3 @@ banss - 群组屏蔽贴纸包
 unbanss - 取消屏蔽贴纸包
 newbot - 创建新BOT
 mybots - 修改/删除 BOT
-donate - 打钱

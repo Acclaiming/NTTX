@@ -115,5 +115,5 @@ systemctl enable ntt
 
 # 更新并立即滚动日志
 
-service ntt stop && cd /isr/local/ntt && bash update.sh && bash rebuild.sh && service ntt start && journalctl -u ntt -f
+service ntt stop && cd /usr/local/ntt && bash update.sh && service ntt start && journalctl -u ntt.service -f
 ```
