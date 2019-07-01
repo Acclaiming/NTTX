@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import com.pengrad.telegrambot.request.SendDocument;
 import cn.hutool.core.util.ArrayUtil;
 import io.kurumi.ntt.utils.NTT;
+import cn.hutool.core.util.StrUtil;
 
 public class ListExport extends Fragment {
 
@@ -75,7 +76,7 @@ public class ListExport extends Fragment {
 				
 				LinkedList<Long> ids = TApi.getAllFrIDs(api,account.id);
 
-				bot().execute(new SendDocument(msg.chatId(),ArrayUtil.join(ids.toArray(),"\n")).fileName("FollowingList.csv"));
+				bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids.toArray(),"\n"))).fileName("FollowingList.csv"));
 				
 			} catch (TwitterException e) {
 				
@@ -89,7 +90,7 @@ public class ListExport extends Fragment {
 
 				LinkedList<Long> ids = TApi.getAllFoIDs(api,account.id);
 
-				bot().execute(new SendDocument(msg.chatId(),ArrayUtil.join(ids.toArray(),"\n")).fileName("FollowingList.csv"));
+				bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids.toArray(),"\n"))).fileName("FollowingList.csv"));
 
 			} catch (TwitterException e) {
 
@@ -104,7 +105,7 @@ public class ListExport extends Fragment {
 
 				long[] ids = TApi.getAllBlockIDs(api);
 
-				bot().execute(new SendDocument(msg.chatId(),ArrayUtil.join(ids,"\n")).fileName("FollowingList.csv"));
+				bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids,"\n"))).fileName("FollowingList.csv"));
 
 			} catch (TwitterException e) {
 
@@ -119,7 +120,7 @@ public class ListExport extends Fragment {
 
 				long[] ids = TApi.getAllMuteIDs(api);
 
-				bot().execute(new SendDocument(msg.chatId(),ArrayUtil.join(ids,"\n")).fileName("FollowingList.csv"));
+				bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids,"\n"))).fileName("FollowingList.csv"));
 
 			} catch (TwitterException e) {
 
