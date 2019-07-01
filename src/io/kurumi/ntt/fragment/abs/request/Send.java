@@ -240,7 +240,7 @@ public class Send extends AbstractSend<Send> {
 
         SendResponse resp = exec();
 
-        if (resp.isOk() || resp.message().chat().type() == Chat.Type.Private) {
+        if (resp != null && resp.isOk() && resp.message().chat().type() == Chat.Type.Private) {
 
             MessagePoint.set(resp.message().messageId(), type, targetId);
 

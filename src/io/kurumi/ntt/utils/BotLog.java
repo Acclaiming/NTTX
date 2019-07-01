@@ -19,6 +19,7 @@ import java.io.PrintWriter;
 import java.util.LinkedHashSet;
 import com.pengrad.telegrambot.request.ExportChatInviteLink;
 import com.pengrad.telegrambot.response.StringResponse;
+import com.pengrad.telegrambot.model.Message;
 
 public class BotLog extends ConsoleLog {
 
@@ -172,10 +173,20 @@ public class BotLog extends ConsoleLog {
 
 			}
 
+			Message message = msg.message();
+
+			if (message.newChatMember() != null) {
+			
+				UserData newData = UserData.get(message.newChatMember());
+				
+				info = new StringBuilder("群组新成员 : ").append(newData.userName()).append("\n[").append(Html.code(newData.id)).append(info);
+				
+			} 
+			
 			new Send(Env.LOG,info.toString()).html().exec();
 			
 			msg.forwardTo(Env.LOG);
-
+		
 		}
 
 	}
