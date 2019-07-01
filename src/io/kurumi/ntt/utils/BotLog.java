@@ -242,12 +242,6 @@ public class BotLog extends ConsoleLog {
 
     }
 
-    public static void pointSeted(UserData user, String point) {
-
-        BotLog.debug("已设置对用户" + user.name() + " (" + user.userName() + ") 的输入指针 : " + point);
-
-    }
-
     @Override
     public void log(Level level, Throwable t, String format, Object[] arguments) {
 

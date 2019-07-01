@@ -139,8 +139,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         });
 
-        BotLog.debug("NTT正在启动");
-
         INSTANCE.start();
 
     }
