@@ -7,13 +7,25 @@ import io.kurumi.ntt.fragment.Fragment;
 
 public class Html {
 
-    public static String a(String text, String href) {
+    public static String a(String text,String href) {
 
         return "<a href=\"" + href + "\">" + HtmlUtil.escape(text) + "</a>";
 
     }
 
-    public static String user(String text, long id) {
+    public static String user(String text,long id) {
+
+        if (text.isEmpty()) {
+
+            text = " ";
+			
+        }
+
+        return a(text,"tg://user?id=" + id);
+
+    }
+
+	public static String twitterUser(String text,String id) {
 
         if (text.isEmpty()) {
 
@@ -21,31 +33,19 @@ public class Html {
 
         }
 
-        return a(text, "tg://user?id=" + id);
-
-    }
-	
-	public static String twitterUser(String text, String id) {
-
-        if (text.isEmpty()) {
-
-            text = " ";
-
-        }
-
-        return a(text, "https://twitter.com/" + id);
+        return a(text,"https://twitter.com/" + id);
 
     }
 
-    public static String startPayload(String text, Object... payload) {
+    public static String startPayload(String text,Object... payload) {
 
         return startPayload(Launcher.INSTANCE,text,payload);
 
     }
-	
-	public static String startPayload(Fragment fragment,String text, Object... payload) {
 
-        return a(text, "https://t.me/" + fragment.origin.me.username() + "?start=" + ArrayUtil.join(payload, "_"));
+	public static String startPayload(Fragment fragment,String text,Object... payload) {
+
+        return a(text,"https://t.me/" + fragment.origin.me.username() + "?start=" + ArrayUtil.join(payload,"_"));
 
     }
 

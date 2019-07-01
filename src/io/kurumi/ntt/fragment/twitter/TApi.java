@@ -63,6 +63,49 @@ public class TApi {
 
         return ArrayUtil.unWrap(set.toArray(new Long[set.size()]));
     }
+	
+	public static long[] getAllMuteIDs(Twitter api) throws TwitterException {
+
+        LinkedList<Long> all = new LinkedList<>();
+
+        IDs users = api.getMutesIDs(-1);
+
+        for (Long id : users.getIDs()) all.add(id);
+
+        while (users.hasNext()) {
+
+            users = api.getMutesIDs(users.getNextCursor());
+
+            for (Long id : users.getIDs()) all.add(id);
+
+
+        }
+
+        return ArrayUtil.unWrap(all.toArray(new Long[all.size()]));
+
+    }
+
+
+    public static LinkedList<User> getAllMute(Twitter api) throws TwitterException {
+
+        LinkedList<User> all = new LinkedList<>();
+
+        PagableResponseList<User> users = api.getBlocksList(-1);
+
+        all.addAll(users);
+
+        while (users.hasNext()) {
+
+            users = api.getMutesList(users.getNextCursor());
+
+            all.addAll(users);
+
+        }
+
+        return all;
+
+    }
+	
 
     public static long[] getAllBlockIDs(Twitter api) throws TwitterException {
 
@@ -75,7 +118,6 @@ public class TApi {
         while (users.hasNext()) {
 
             users = api.getBlocksIDs(users.getNextCursor());
-
 
             for (Long id : users.getIDs()) all.add(id);
 
