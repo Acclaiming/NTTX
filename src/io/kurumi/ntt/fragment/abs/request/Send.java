@@ -13,6 +13,7 @@ import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.twitter.status.MessagePoint;
 import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.NTT;
+import io.kurumi.ntt.Env;
 
 public class Send extends AbstractSend<Send> {
 
@@ -250,7 +251,7 @@ public class Send extends AbstractSend<Send> {
 	
 	public void debug() {
 		
-		if (!(request.chatId instanceof String) && ArrayUtil.contains(UserData.admins,(long)request.chatId)) {
+		if (!(request.chatId instanceof String) && ArrayUtil.contains(Env.ADMINS,(long)request.chatId)) {
 			
 			exec();
 			

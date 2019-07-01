@@ -1,6 +1,5 @@
 package io.kurumi.ntt.utils;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
@@ -9,8 +8,10 @@ import cn.hutool.log.level.Level;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.User;
+import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.UserData;
-
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.abs.request.Send;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -20,23 +21,28 @@ public class BotLog extends ConsoleLog {
     public static Log log = new BotLog();
     public static PrintStream out = System.out;
 
-    private static String logFormat = "[{date}] [{level}] {name}: {msg}";
+    private static String logFormat = "[{level}] : {msg}";
 
     public BotLog() {
+		
         super("NTTBot");
+		
     }
 
     public static void log(Throwable t, String template, Object... values) {
 
-        out.println(StrUtil.format(template, values));
+		String str = StrUtil.format(template, values);
+		
+        out.println();
 
         if (null != t) {
-            t.printStackTrace(out);
-
+            
+			out.println(parseError(t));
+			
         }
 
         out.flush();
-
+		
     }
 
     public static void debug(String message) {
@@ -114,25 +120,26 @@ public class BotLog extends ConsoleLog {
 
     }
 
-    public static void process(UserData user, Update update) {
+    public static void process(BotFragment fragment,UserData user, Update update) {
 
         StringBuilder log = new StringBuilder();
 
         if (update.message() != null) {
 
-            log.append("收到来自 ").append(formatName(update.message().from()));
+            log.append(UserData.get(fragment.me).userName()).append(" 收到来自 ").append(user.userName());
 
             switch (update.message().chat().type()) {
 
                 case Private:
-                    log.append("私聊");
+                    log.append("的私聊");
                     break;
 
                 case group:
-                    log.append("群组 「").append(update.message().chat().title()).append("」 ");
+                    log.append("在群组 「").append(update.message().chat().title()).append("」 ");
                     break;
+					
                 case supergroup:
-                    log.append("超级群组 「").append(update.message().chat().title()).append("」 ");
+                    log.append("在超级群组 「").append(update.message().chat().title()).append("」 ");
                     break;
 
 
@@ -249,15 +256,23 @@ public class BotLog extends ConsoleLog {
         }
 
         final Dict dict = Dict.create()
-                .set("date", DateUtil.now())
                 .set("level", level.toString())
-                .set("name", getName())
                 .set("msg", StrUtil.format(format, arguments));
 
         final String logMsg = StrUtil.format(logFormat, dict);
 
-        this.log(t, logMsg);
+       //7 this.log(t, logMsg);
 
+		if (level == Level.DEBUG) {
+		
+			new Send(Env.LOG,logMsg).disableNotification().exec();
+			
+		} else {
+			
+			new Send(Env.LOG,logMsg).exec();
+			
+		}
+		
     }
 
 }

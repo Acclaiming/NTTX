@@ -133,7 +133,7 @@ public class JoinCaptchaBot extends BotFragment {
     @Override
     public void onGroup(UserData user,final Msg msg) {
 
-		if (user.developer()) return;
+		if (user.admin()) return;
 
         if (msg.message().groupChatCreated() != null || msg.message().supergroupChatCreated() != null) {
 
@@ -196,7 +196,7 @@ public class JoinCaptchaBot extends BotFragment {
 
             final UserData newData = UserData.get(newMember);
 
-			if (newData.developer()) return;
+			if (newData.admin()) return;
 
 			if (Firewall.block.containsId(newData.id)) {
 

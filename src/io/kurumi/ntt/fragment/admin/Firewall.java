@@ -103,7 +103,7 @@ public class Firewall extends Fragment {
 
 			UserData target = UserData.get(NumberUtil.parseLong(params[0]));
 
-			if (target.developer()) {
+			if (target.admin()) {
 
 				msg.send("不可以...！").exec();
 

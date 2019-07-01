@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.model.*;
 import io.kurumi.ntt.utils.*;
 
 import java.util.*;
+import io.kurumi.ntt.Env;
 
 public class UserData {
 
@@ -163,14 +164,6 @@ public class UserData {
 
     }
 
-	public static long[] admins = new long[] {
-		
-		865266732 ,
-		589593327 ,
-		748525422 
-
-    };
-
-	public boolean developer() { return ArrayUtil.contains(admins,id); }
+	public boolean admin() { return ArrayUtil.contains(Env.ADMINS,id); }
 
 }

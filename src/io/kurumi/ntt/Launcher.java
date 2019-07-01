@@ -352,8 +352,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public boolean onUpdate(UserData user, Update update) {
 
-        BotLog.process(user, update);
-
+		super.onUpdate(user,update);
+		
         if (update.message() != null) {
 
             if (update.message().chat().type() == Chat.Type.Private && (user.contactable == null || !user.contactable)) {

@@ -802,7 +802,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 					new Send(Env.GROUP,"处理中出错 " + uau.update.toString(),BotLog.parseError(e)).exec();
 
-					if (uau.user != null && !uau.user.developer()) {
+					if (uau.user != null && !uau.user.admin()) {
 
 						new Send(uau.user.id,"处理出错，已提交报告，可以到官方群组 @NTTDiscuss  继续了解").exec();
 

@@ -101,6 +101,8 @@ public class Fragment {
 
     public boolean onUpdate(UserData user,Update update) {
 
+		BotLog.process(origin,user,update);
+		
 		return false;
 
     }
@@ -131,7 +133,7 @@ public class Fragment {
 
 				new Send(Env.GROUP,"处理中出错 " + update.toString(),BotLog.parseError(e)).exec();
 
-				if (user != null && !user.developer()) {
+				if (user != null && !user.admin()) {
 
 					new Send(user.id,"处理出错，已提交报告，可以到官方群组 @NTTDiscuss  继续了解").exec();
 

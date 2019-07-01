@@ -14,7 +14,19 @@ import java.util.Scanner;
 
 public class Env {
 
+	public static long[] ADMINS = new long[] {
+
+		865266732 , 808589072 ,
+		
+		589593327 ,
+		
+		748525422 
+
+    };
+	
     public static final Long GROUP = -1001428880645L;
+	public static final Long LOG = -1001159361304L;
+	
     /**
      * 缓存文件存放地址
      */
