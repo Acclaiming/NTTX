@@ -49,9 +49,9 @@ public class Html {
 
     }
 
-    public static String code(String code) {
+    public static String code(Object code) {
 
-        return "<code>" + HtmlUtil.escape(code) + "</code>";
+        return "<code>" + HtmlUtil.escape(code.toString()) + "</code>";
 
     }
 
