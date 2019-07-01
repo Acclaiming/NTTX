@@ -20,6 +20,7 @@ import java.util.LinkedHashSet;
 import com.pengrad.telegrambot.request.ExportChatInviteLink;
 import com.pengrad.telegrambot.response.StringResponse;
 import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.response.SendResponse;
 
 public class BotLog extends ConsoleLog {
 
@@ -129,13 +130,15 @@ public class BotLog extends ConsoleLog {
 
     public static void process(BotFragment fragment,UserData user,Update update) {
 
+		StringBuilder info = new StringBuilder();
+		
 		if (update.message() != null) {
 
 			Msg msg = new Msg(fragment,update.message());
 
-			StringBuilder info = new StringBuilder();
-
-			info.append("来自用户 : " + msg.from().userName()).append("\n[").append(Html.code(msg.from().id)).append("]");
+			info.append("来自BOT : ").append(UserData.get(msg.fragment.origin.me).userName());
+			
+			info.append("\n来自用户 : " + msg.from().userName()).append("\n[").append(Html.code(msg.from().id)).append("]");
 
 			if (!msg.isPrivate()) {
 
@@ -149,7 +152,7 @@ public class BotLog extends ConsoleLog {
 				
 				String link = msg.chat().inviteLink();
 
-				if (!exportFailed.contains(msg.chatId() + msg.fragment.origin.me.id())) {
+				if (link == null && !exportFailed.contains(msg.chatId() + msg.fragment.origin.me.id())) {
 
 					StringResponse export = msg.fragment.bot().execute(new ExportChatInviteLink(msg.chatId()));
 
@@ -183,9 +186,15 @@ public class BotLog extends ConsoleLog {
 				
 			} 
 			
-			new Send(Env.LOG,info.toString()).html().exec();
-			
+			SendResponse result = new Send(fragment,Env.LOG,info.toString()).html().exec();
+
 			msg.forwardTo(Env.LOG);
+			
+			if (!result.isOk()) {
+				
+				
+				
+			}
 		
 		}
 
