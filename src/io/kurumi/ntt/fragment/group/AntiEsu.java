@@ -4,12 +4,16 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.json.JSONArray;
 import io.kurumi.ntt.db.LocalData;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.utils.NTT;
-import java.security.acl.Group;
-import java.util.LinkedList;
-import io.kurumi.ntt.fragment.BotFragment;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
 public class AntiEsu extends Fragment {
 
@@ -89,20 +93,56 @@ public class AntiEsu extends Fragment {
 		"自嘲完美", "蛆", "完美华丽", "仏", "那您", "奇妙深刻", "唐突", "震撼",
 
 		"操", "实名","闸总","芬芳","完完全全","橄榄","干烂","您",
-		
-		
+
 		"esu\\.(wiki|moe|zone)","zhina\\.(wiki|red)"
 
     };
 
+	static HanyuPinyinOutputFormat format;
+
     static {
+
+		format = new HanyuPinyinOutputFormat();
+
+		format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
+		format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+		format.setVCharType(HanyuPinyinVCharType.WITH_V);
 
         StringBuilder kw = new StringBuilder(".*(");
 
         for (int index = 0; index < keys.length; index++) {
 
-            if (index == 0) kw.append(keys[0]);
-            else kw.append("|").append(keys[index]);
+			StringBuilder kk = new StringBuilder();
+
+			char[] key = keys[index].toCharArray();
+
+			for (char c : key) {
+
+
+				try {
+
+					String[] pinyin = PinyinHelper.toHanyuPinyinStringArray(c,format);
+
+					if (pinyin == null) kk.append(c);
+					else kk.append(ArrayUtil.join(pinyin,""));
+
+				} catch (BadHanyuPinyinOutputFormatCombination ex) {
+
+					kk.append(c);
+
+				}
+
+			}
+
+            if (index == 0) {
+
+				kw.append(format.toString());
+
+			} else {
+
+				kw.append("|").append(keys[index]);
+
+			}
 
         }
 
@@ -121,6 +161,25 @@ public class AntiEsu extends Fragment {
     public static boolean keywordMatch(String msg) {
 
 		if (msg == null) return false;
+
+		StringBuilder text = new StringBuilder();
+		
+		for (char c : msg.toCharArray()) {
+			
+			try {
+				
+				String[] pinyin = PinyinHelper.toHanyuPinyinStringArray(c,format);
+				
+				if (pinyin == null) text.append(c);
+				else text.append(ArrayUtil.join(pinyin,""));
+				
+			} catch (BadHanyuPinyinOutputFormatCombination e) {
+				
+				text.append(c);
+				
+			}
+
+		}
 
         return msg.matches(regex);
 
@@ -188,7 +247,7 @@ public class AntiEsu extends Fragment {
 
 		if (msg.isGroup() && enable.contains(msg.chatId().longValue())) {
 
-			if (msg.hasText() && msg.text().replace(" ","").matches(regex)) {
+			if (msg.hasText() && msg.text().replaceAll(" ","").matches(regex)) {
 
 				msg.delete();
 

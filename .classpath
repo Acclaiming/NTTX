@@ -12,4 +12,5 @@
 <classpathentry kind="lib" path="libs/tieba-api/httpclient-4.5.5.jar"/>
 <classpathentry kind="lib" path="libs/tieba-api/httpcore-4.4.9.jar"/>
 <classpathentry kind="lib" path="libs/jfreechart-1.5.0.jar"/>
+<classpathentry kind="lib" path="libs/pinyin4j-2.5.1.jar"/>
 </classpath>
