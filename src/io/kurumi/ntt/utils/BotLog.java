@@ -267,6 +267,12 @@ public class BotLog extends ConsoleLog {
 			
 		}
 		
+		if (t != null) {
+			
+			new Send(Env.LOG,parseError(t)).exec();
+			
+		}
+		
     }
 
 }
