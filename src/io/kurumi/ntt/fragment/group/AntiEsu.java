@@ -51,8 +51,12 @@ public class AntiEsu extends Fragment {
 		"QQciya2",
 		"weitu",
 		"CyanoxygenS",
-
-		"hanaakari"
+		"esugirl",
+		"setsunann",
+		"OriESG",
+		"EsuWiki",
+		"hanaakari",
+		"idiotmessages",
 
     };
 
@@ -84,7 +88,10 @@ public class AntiEsu extends Fragment {
 
 		"自嘲完美", "蛆", "完美华丽", "仏", "那您", "奇妙深刻", "唐突", "震撼",
 
-		"操", "实名","闸总","芬芳","完完全全","橄榄","干烂","您"
+		"操", "实名","闸总","芬芳","完完全全","橄榄","干烂","您",
+		
+		
+		"esu\\.(wiki|moe|zone)","zhina\\.(wiki|red)"
 
     };
 
