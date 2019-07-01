@@ -2,19 +2,23 @@ package io.kurumi.ntt.utils;
 
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HtmlUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.dialect.console.ConsoleLog;
 import cn.hutool.log.level.Level;
-import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.User;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.abs.request.Send;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.LinkedHashSet;
+import com.pengrad.telegrambot.request.ExportChatInviteLink;
+import com.pengrad.telegrambot.response.StringResponse;
 
 public class BotLog extends ConsoleLog {
 
@@ -24,25 +28,25 @@ public class BotLog extends ConsoleLog {
     private static String logFormat = "[#{level}] : {msg}";
 
     public BotLog() {
-		
+
         super("NTTBot");
-		
+
     }
 
-    public static void log(Throwable t, String template, Object... values) {
+    public static void log(Throwable t,String template,Object... values) {
 
-		String str = StrUtil.format(template, values);
-		
-        out.println();
+		String str = StrUtil.format(template,values);
+
+        out.println(str);
 
         if (null != t) {
-            
+
 			out.println(parseError(t));
-			
+
         }
 
         out.flush();
-		
+
     }
 
     public static void debug(String message) {
@@ -57,15 +61,15 @@ public class BotLog extends ConsoleLog {
 
     }
 
-    public static void info(String message, Throwable err) {
+    public static void info(String message,Throwable err) {
 
-        log.info(err, message);
+        log.info(err,message);
 
     }
 
     public static void infoWithStack(String message) {
 
-        log.info(new RuntimeException(), message);
+        log.info(new RuntimeException(),message);
 
     }
 
@@ -77,9 +81,9 @@ public class BotLog extends ConsoleLog {
 
     }
 
-    public static void warn(String message, Throwable err) {
+    public static void warn(String message,Throwable err) {
 
-        log.warn(err, message);
+        log.warn(err,message);
 
         //   sendToDeveloper(new Exception(message,err));
 
@@ -87,7 +91,7 @@ public class BotLog extends ConsoleLog {
 
     public static void warnWithStack(String message) {
 
-        log.warn(new RuntimeException(), message);
+        log.warn(new RuntimeException(),message);
 
     }
 
@@ -97,15 +101,15 @@ public class BotLog extends ConsoleLog {
 
     }
 
-    public static void error(String message, Throwable err) {
+    public static void error(String message,Throwable err) {
 
-        log.error(err, message);
+        log.error(err,message);
 
     }
 
     public static void errorWithStack(String message) {
 
-        log.error(new RuntimeException(), message);
+        log.error(new RuntimeException(),message);
 
 
     }
@@ -114,125 +118,59 @@ public class BotLog extends ConsoleLog {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        error.printStackTrace(new PrintWriter(out, true));
+        error.printStackTrace(new PrintWriter(out,true));
 
         return StrUtil.utf8Str(out);
 
     }
 
-    public static void process(BotFragment fragment,UserData user, Update update) {
+	public static LinkedHashSet<Long> exportFailed = new LinkedHashSet<>();
 
-        StringBuilder log = new StringBuilder();
+    public static void process(BotFragment fragment,UserData user,Update update) {
 
-        if (update.message() != null) {
+		if (update.message() != null) {
 
-            log.append(UserData.get(fragment.me).userName()).append(" 收到来自 ").append(user.userName()).append(" ");
+			Msg msg = new Msg(fragment,update.message());
 
-            switch (update.message().chat().type()) {
+			StringBuilder info = new StringBuilder();
 
-                case Private:
-                    log.append("的私聊");
-                    break;
+			info.append("来自用户 : " + msg.from().userName()).append("\n[").append(Html.code(msg.from().id)).append("]");
 
-                case group:
-                    log.append("在群组 「").append(update.message().chat().title()).append("」 ");
-                    break;
-					
-                case supergroup:
-                    log.append("在超级群组 「").append(update.message().chat().title()).append("」 ");
-                    break;
+			if (!msg.isPrivate()) {
 
+				info.append("来自群组 : ").append(HtmlUtil.escape(msg.chat().title())).append("\n[").append(Html.code(msg.chat().id())).append("]");
 
-            }
+				String link = msg.chat().inviteLink();
 
-            log.append("消息 : ");
+				if (!exportFailed.contains(msg.chatId() + msg.fragment.origin.me.id())) {
 
-            log.append(processMessage(user, update.message()));
+					StringResponse export = msg.fragment.bot().execute(new ExportChatInviteLink(msg.chatId()));
 
-        } else if (update.channelPost() != null) {
+					if (export.isOk()) {
 
-            log.append("收到频道").append(update.channelPost().chat().title()).append(" [").append(Html.code(update.channelPost().chat().id())).append("] : ").append(processMessage(user, update.channelPost()));
+						link = export.result();
 
-        } else if (update.callbackQuery() != null) {
+					} else {
 
-            log.append("收到来自 ").append(user.userName()).append(" 的回调 : ").append(update.callbackQuery().data());
+						exportFailed.add(msg.fragment.origin.me.id() + msg.chatId());
 
-        } else if (update.inlineQuery() != null) {
+					}
 
-            log.append("收到来自 ").append(user.userName()).append(" 的内联请求 : ").append(update.inlineQuery().query());
+				}
 
-        }
+				if (link == null) {
 
-        BotLog.debug(log.toString());
+					info.append("\n邀请链接 : " + link);
 
-    }
+				}
 
-    private static String processMessage(UserData user, Message msg) {
+			}
 
-        StringBuilder log = new StringBuilder();
+			msg.forwardTo(Env.LOG);
 
-        if (msg.forwardFromChat() != null) {
+		}
 
-            UserData ff = UserData.get(msg.forwardFrom());
-
-            log.append(ff != null ? ff.formattedName() : "匿名用户").append(" ");
-
-        }
-
-        if (msg.audio() != null) log.append("「语音消息」");
-
-        if (msg.channelChatCreated() != null) log.append("「被邀请到频道」");
-
-        if (msg.connectedWebsite() != null) log.append("「连接到网页 : ").append(msg.connectedWebsite()).append("」");
-
-        if (msg.contact() != null) log.append("「名片」");
-
-        if (msg.deleteChatPhoto() != null) log.append("「照片删除」");
-
-        if (msg.document() != null) log.append("「文件").append(msg.document().fileName()).append("」");
-
-        if (msg.groupChatCreated() != null) log.append("「被邀请到群组」");
-
-        if (msg.game() != null) log.append("「游戏 : ").append(msg.game().title()).append("」");
-
-        if (msg.leftChatMember() != null)
-            log.append("「群成员退出 : ").append(UserData.get(msg.leftChatMember()).formattedName()).append("」");
-
-        if (msg.location() != null) log.append("「位置信息 : ").append(msg.location().toString()).append("」");
-
-        if (msg.newChatMembers() != null)
-            log.append("「新成员 : ").append(UserData.get(msg.newChatMembers()[0]).formattedName()).append("」");
-
-        if (msg.newChatTitle() != null) log.append("「新标题 : ").append(msg.newChatTitle()).append("」");
-
-        if (msg.newChatPhoto() != null) log.append("「新图标」");
-
-        if (msg.photo() != null) log.append("「照片」");
-
-        if (msg.pinnedMessage() != null) log.append("「置顶消息 :").append(processMessage(user, msg.pinnedMessage()));
-
-        if (msg.replyToMessage() != null) {
-
-            log.append("「回复给 : ").append(formatName(msg.replyToMessage().from())).append(" : ").append(processMessage(UserData.get(msg.replyToMessage().from()), msg.replyToMessage())).append("」");
-
-        }
-
-        if (msg.sticker() != null)
-            log.append("「贴纸 : ").append(msg.sticker().emoji()).append(" 从 ").append(msg.sticker().setName()).append("」");
-
-        if (msg.supergroupChatCreated() != null) log.append("「被邀请到超级群组」");
-
-        if (msg.video() != null) log.append("「视频」");
-
-        if (msg.videoNote() != null) log.append("「小视频」");
-
-        if (msg.voice() != null) log.append("「语音消息」");
-
-        if (msg.text() != null) log.append(" ").append(msg.text());
-
-        return log.toString();
-
-    }
+	}
 
     public static String formatName(User u) {
 
@@ -243,36 +181,36 @@ public class BotLog extends ConsoleLog {
     }
 
     @Override
-    public void log(Level level, Throwable t, String format, Object[] arguments) {
+    public void log(Level level,Throwable t,String format,Object[] arguments) {
 
         if (false == isEnabled(level)) {
             return;
         }
 
         final Dict dict = Dict.create()
-                .set("level", level.toString())
-                .set("msg", StrUtil.format(format, arguments));
+			.set("level",level.toString())
+			.set("msg",StrUtil.format(format,arguments));
 
-        final String logMsg = StrUtil.format(logFormat, dict);
+        final String logMsg = StrUtil.format(logFormat,dict);
 
-       //7 this.log(t, logMsg);
+		//7 this.log(t, logMsg);
 
 		if (level == Level.DEBUG) {
-		
+
 			new Send(Env.LOG,logMsg).disableNotification().html().exec();
-			
+
 		} else {
-			
+
 			new Send(Env.LOG,logMsg).html().exec();
-			
+
 		}
-		
+
 		if (t != null) {
-			
+
 			new Send(Env.LOG,parseError(t)).exec();
-			
+
 		}
-		
+
     }
 
 }
