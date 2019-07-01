@@ -70,14 +70,18 @@ public class StatusUpdate extends Fragment {
 	
 	String submitAndCancel = "使用 /submit 发送\n使用 /timed 定时发送\n使用 /cancel 取消";
 
-    @Override
-    public void onPrivate(UserData user,Msg msg) {
+	@Override
+	public int checkMsg(UserData user,Msg msg) {
 		
-        if (!msg.isReply()) return;
-
+		if (!msg.isPrivate() || !msg.isReply()) {
+			
+		return PROCESS_ASYNC;
+		
+		}
+        
         MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
 
-        if (point == null || point.type == 0) return;
+        if (point == null || point.type == 0) return PROCESS_ASYNC;
 
         long count = TAuth.data.countByField("user",user.id);
 
@@ -87,7 +91,7 @@ public class StatusUpdate extends Fragment {
 
             msg.send("你没有认证账号，使用 /login 登录 ~").exec();
 
-            return;
+            return PROCESS_REJECT;
 
         } else if (count == 1) {
 
@@ -105,7 +109,7 @@ public class StatusUpdate extends Fragment {
 
                     msg.send("乃认证了多个账号 请使用 /current 选择默认账号再操作 ~").exec();
 
-                    return;
+                    return PROCESS_REJECT;
 
                 }
 
@@ -113,7 +117,7 @@ public class StatusUpdate extends Fragment {
 
                 msg.send("乃认证了多个账号 请使用 /current 选择默认账号再操作 ~").exec();
 
-                return;
+                return PROCESS_REJECT;
 
             }
 
@@ -133,7 +137,7 @@ public class StatusUpdate extends Fragment {
 
                 msg.send("大小超过 Twitter 280 字符限制 , 注意 : 一个中文字占两个字符。").exec();
 
-                return;
+                return PROCESS_REJECT;
 
             }
 
@@ -177,7 +181,7 @@ public class StatusUpdate extends Fragment {
 
                 msg.send("图片超过 5m ，根据Twitter官方限制,无法发送").exec();
 
-                return;
+                return PROCESS_REJECT;
 
             }
 
@@ -199,7 +203,7 @@ public class StatusUpdate extends Fragment {
 
                 msg.send("动图超过 15m ，根据Twitter官方限制,无法发送").exec();
 
-                return;
+                return PROCESS_REJECT;
 
             }
 
@@ -224,7 +228,7 @@ public class StatusUpdate extends Fragment {
 
                 msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
 
-                return;
+                return PROCESS_REJECT;
 
             }
 
@@ -249,7 +253,7 @@ public class StatusUpdate extends Fragment {
 
                 msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
 
-                return;
+                return PROCESS_REJECT;
 
             }
 
@@ -270,13 +274,13 @@ public class StatusUpdate extends Fragment {
 
         } else {
 
-            return;
+            return PROCESS_ASYNC;
 
         }
 
         setPrivatePoint(user,POINT_UPDATE_STATUS,update);
 
-        return;
+        return PROCESS_REJECT;
 
     }
 
