@@ -71,7 +71,7 @@ public class AntiEsu extends Fragment {
 
 	static String[] pinyinKeys = new String[] {
 
-		"恶俗",
+		"恶俗","迫害","文字狱",
 
 		"震撼", "废物", "弱智", "魔怔", "碰瓷", "寻思", "傻逼",
 		"迫真", "察觉", "无关心", "便乘", "棒读","你妈","野爹",
