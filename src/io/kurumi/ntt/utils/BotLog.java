@@ -224,7 +224,7 @@ public class BotLog extends ConsoleLog {
 
         final String logMsg = StrUtil.format(logFormat,dict);
 
-		//7 this.log(t, logMsg);
+	 this.log(t, logMsg);
 
 		if (level == Level.DEBUG) {
 

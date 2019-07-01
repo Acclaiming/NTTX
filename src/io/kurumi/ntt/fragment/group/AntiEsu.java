@@ -7,16 +7,14 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.NTT;
-import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
-import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
-import net.sourceforge.pinyin4j.PinyinRomanizationTranslator;
-import net.sourceforge.pinyin4j.PinyinFormatter;
-import io.kurumi.ntt.utils.BotLog;
 
 public class AntiEsu extends Fragment {
 

@@ -873,7 +873,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 	}
 
 	@Override
-	public boolean onUpdate(UserData user,Update update) {
+	public boolean onUpdate(final UserData user,final Update update) {
 
 		asyncPool.execute(new Runnable() {
 
