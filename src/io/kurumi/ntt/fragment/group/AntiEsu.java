@@ -14,6 +14,9 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
+import net.sourceforge.pinyin4j.PinyinRomanizationTranslator;
+import net.sourceforge.pinyin4j.PinyinFormatter;
+import io.kurumi.ntt.utils.BotLog;
 
 public class AntiEsu extends Fragment {
 
@@ -136,7 +139,19 @@ public class AntiEsu extends Fragment {
 					String[] pinyin = PinyinHelper.toHanyuPinyinStringArray(c,format);
 
 					if (pinyin == null) kk.append(c);
-					else kk.append(ArrayUtil.join(pinyin,""));
+					
+					else {
+						
+						if (pinyin.length == 1) kk.append(pinyin[0]);
+						
+						else {
+						
+						kk.append("(").append(ArrayUtil.join(pinyin,"|")).append(")");
+						
+						}
+						
+					}
+					
 
 				} catch (BadHanyuPinyinOutputFormatCombination ex) {
 
@@ -167,6 +182,8 @@ public class AntiEsu extends Fragment {
         kw.append(").*");
 
         regex = kw.toString();
+		
+		BotLog.debug(regex);
 
     }
 
@@ -179,28 +196,17 @@ public class AntiEsu extends Fragment {
     public static boolean keywordMatch(String msg) {
 
 		if (msg == null) return false;
-
-		StringBuilder text = new StringBuilder();
-
-		for (char c : msg.toCharArray()) {
-
-			try {
-
-				String[] pinyin = PinyinHelper.toHanyuPinyinStringArray(c,format);
-
-				if (pinyin == null) text.append(c);
-				else text.append(ArrayUtil.join(pinyin,""));
-
-			} catch (BadHanyuPinyinOutputFormatCombination e) {
-
-				text.append(c);
-
-			}
-
+		
+		try {
+			
+			return PinyinHelper.toHanYuPinyinString(msg,format,"",true).matches(regex);
+			
+		} catch (BadHanyuPinyinOutputFormatCombination e) {
+			
+			return false;
+			
 		}
-
-        return text.toString().matches(regex);
-
+		
     }
 
 	@Override
