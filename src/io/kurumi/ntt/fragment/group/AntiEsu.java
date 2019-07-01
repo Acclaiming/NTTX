@@ -98,7 +98,7 @@ public class AntiEsu extends Fragment {
 
     static String[] keys = new String[]{
 
-		"🐴", "🐮", "🍺", "👊", "¿", "恁","蛆","fo了",
+		"🐴", "🐮", "🍺", "👊", "¿", "恁","蛆","fole",
 
 		"nm$l","nmsl", "hj", "牛(子|啤|逼)", "这事", "ao的",
 
@@ -212,7 +212,7 @@ public class AntiEsu extends Fragment {
 				
 				String[] pinyin = PinyinHelper.toHanyuPinyinStringArray(c,format);
 				
-				if (pinyin == null) text.append(c);
+				if (pinyin == null || pinyin.length == 0) text.append(c);
 				else text.append(pinyin[0]);
 				
 			} catch (BadHanyuPinyinOutputFormatCombination e) {
