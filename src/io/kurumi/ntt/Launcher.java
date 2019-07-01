@@ -14,7 +14,6 @@ import io.kurumi.ntt.fragment.admin.Control;
 import io.kurumi.ntt.fragment.admin.Notice;
 import io.kurumi.ntt.fragment.admin.Shell;
 import io.kurumi.ntt.fragment.admin.Stat;
-import io.kurumi.ntt.fragment.admin.TASReply;
 import io.kurumi.ntt.fragment.admin.Users;
 import io.kurumi.ntt.fragment.bots.MyBots;
 import io.kurumi.ntt.fragment.bots.NewBot;
@@ -29,17 +28,13 @@ import io.kurumi.ntt.fragment.group.AutoReply;
 import io.kurumi.ntt.fragment.group.BanSetickerSet;
 import io.kurumi.ntt.fragment.group.ChineseAction;
 import io.kurumi.ntt.fragment.group.GroupRepeat;
-import io.kurumi.ntt.fragment.twitter.action.Block;
-import io.kurumi.ntt.fragment.twitter.action.Follow;
-import io.kurumi.ntt.fragment.twitter.action.Jvbao;
-import io.kurumi.ntt.fragment.twitter.action.Mute;
-import io.kurumi.ntt.fragment.twitter.action.UnBlock;
-import io.kurumi.ntt.fragment.twitter.action.UnFollow;
-import io.kurumi.ntt.fragment.twitter.action.UnMute;
+import io.kurumi.ntt.fragment.twitter.action.UserActions;
 import io.kurumi.ntt.fragment.twitter.auto.AutoUI;
 import io.kurumi.ntt.fragment.twitter.delete.TwitterDelete;
+import io.kurumi.ntt.fragment.twitter.ext.AuthExport;
 import io.kurumi.ntt.fragment.twitter.ext.MediaDownload;
 import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
+import io.kurumi.ntt.fragment.twitter.list.ListExport;
 import io.kurumi.ntt.fragment.twitter.login.TwitterLogin;
 import io.kurumi.ntt.fragment.twitter.login.TwitterLogout;
 import io.kurumi.ntt.fragment.twitter.status.StatusAction;
@@ -48,16 +43,13 @@ import io.kurumi.ntt.fragment.twitter.status.StatusSearch;
 import io.kurumi.ntt.fragment.twitter.status.StatusUpdate;
 import io.kurumi.ntt.fragment.twitter.status.TimedStatus;
 import io.kurumi.ntt.fragment.twitter.timeline.TimelineUI;
+import io.kurumi.ntt.fragment.twitter.track.FollowersChart;
 import io.kurumi.ntt.fragment.twitter.track.TrackTask;
 import io.kurumi.ntt.fragment.twitter.track.TrackUI;
 import io.kurumi.ntt.utils.BotLog;
 import java.io.IOException;
 import java.util.TimeZone;
-import io.kurumi.ntt.fragment.twitter.track.FollowersChart;
-import io.kurumi.ntt.fragment.twitter.list.ListExport;
-import io.kurumi.ntt.fragment.twitter.ext.AuthExport;
-import io.kurumi.ntt.fragment.twitter.action.MuteRT;
-import io.kurumi.ntt.fragment.twitter.action.UnMuteRT;
+import io.kurumi.ntt.fragment.admin.Firewall;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -265,27 +257,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(new Control());
 
-        addFragment(new TASReply());
-
-        addFragment(new Follow());
-
-        addFragment(new UnFollow());
-
-        addFragment(new Mute());
-
-        addFragment(new UnMute());
-		
-		addFragment(new MuteRT());
-		
-		addFragment(new UnMuteRT());
-
-        addFragment(new Block());
-
-        addFragment(new UnBlock());
-
-        // Twitter
-        
-        addFragment(new Jvbao());
+        addFragment(new UserActions());
 
         addFragment(new DebugUser());
 
@@ -396,7 +368,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         }
 
-        return false;
+        return Firewall.block.containsId(user.id);
 
     }
 
