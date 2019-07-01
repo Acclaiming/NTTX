@@ -39,10 +39,10 @@ public class StatusArchive {
     public Long createdAt;
     public String text;
     public Long from;
-    public Long inReplyToStatusId;
     public String inReplyToScreenName;
     public Long inReplyToUserId;
     public Long quotedStatusId;
+	public String quotedStatusUrl;
     public String quotedScreenName;
     public Long quotedUserId;
     public LinkedList<String> mediaUrls;
@@ -475,7 +475,7 @@ public class StatusArchive {
 
         }
 
-        if (quotedUserId != -1 && quotedScreenName != null) {
+        if (quotedUserId == -1 && quotedScreenName != null) {
 
             if (UserArchive.contains(quotedScreenName)) {
 
@@ -570,7 +570,7 @@ public class StatusArchive {
 
                         try {
 
-                            Status status = accessable.createApi().showStatus(quotedStatusId);
+                            Status status = accessable.createApi().showStatus(quotedUserId);
 
                             StatusArchive quoted = StatusArchive.save(status);
 
