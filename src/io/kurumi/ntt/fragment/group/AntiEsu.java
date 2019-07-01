@@ -221,6 +221,9 @@ public class AntiEsu extends Fragment {
 			}
 
 		}
+		
+		BotLog.debug("R : " + regex);
+		BotLog.debug("T : " + text.toString());
 
 		return text.toString().matches(regex);
 
