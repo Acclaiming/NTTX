@@ -35,11 +35,11 @@ public class Control extends Fragment {
 
 			new Send(Env.GROUP, "Bot Update Executed : By " + user.userName()).html().exec();
 
-			Launcher.INSTANCE.stop();
+			 // Launcher.INSTANCE.stop();
 			
             try {
 
-				String str = RuntimeUtil.execForStr("bash /usr/local/ntt/update.sh");
+				String str = RuntimeUtil.execForStr("bash update.sh");
 
 				new Send(Env.GROUP, "update successful , now restarting...\n",str).exec();
 				
