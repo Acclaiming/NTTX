@@ -71,7 +71,7 @@ public class AntiEsu extends Fragment {
 
 	static String[] pinyinKeys = new String[] {
 
-		"恶俗","草",
+		"恶俗",
 
 		"震撼", "废物", "弱智", "魔怔", "碰瓷", "寻思", "傻逼",
 		"迫真", "察觉", "无关心", "便乘", "棒读","你妈","野爹",
@@ -102,12 +102,12 @@ public class AntiEsu extends Fragment {
 
 		"nm$l","nmsl", "hj", "牛(子|啤|逼)", "这事", "ao的",
 
-		"谔谔", "呃呃","您","蛆",
+		"谔谔", "呃呃","蛆","草",
 
 		"114", "514", "壬","我局","局(的|得)","事你",
 
 		"杰哥", "阿杰", "如果早知道", "不要啊", "兄啊", "，，+", 
-		"操", "您",
+	
 		"esu\\.(wiki|moe|zone)","zhina\\.(wiki|red)"
 
     };
