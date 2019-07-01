@@ -238,7 +238,7 @@ public class BotLog extends ConsoleLog {
 
         if (u == null) return "匿名用户";
 
-        return UserData.get(u).formattedName();
+        return UserData.get(u).userName();
 
     }
 
