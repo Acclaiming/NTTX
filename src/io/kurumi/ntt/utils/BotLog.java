@@ -126,7 +126,7 @@ public class BotLog extends ConsoleLog {
 
         if (update.message() != null) {
 
-            log.append(UserData.get(fragment.me).userName()).append(" 收到来自 ").append(user.userName());
+            log.append(UserData.get(fragment.me).userName()).append(" 收到来自 ").append(user.userName()).append(" ");
 
             switch (update.message().chat().type()) {
 
@@ -151,15 +151,15 @@ public class BotLog extends ConsoleLog {
 
         } else if (update.channelPost() != null) {
 
-            log.append("频道消息 : ").append(processMessage(user, update.channelPost()));
+            log.append("收到频道").append(update.message().chat().title()).append(" [").append(Html.code(update.channelPost().chat().id())).append("] : ").append(processMessage(user, update.channelPost()));
 
         } else if (update.callbackQuery() != null) {
 
-            log.append("回调 : ").append(update.callbackQuery().data());
+            log.append("收到来自 ").append(user.userName()).append(" 的回调 : ").append(update.callbackQuery().data());
 
         } else if (update.inlineQuery() != null) {
 
-            log.append("内联请求 : ").append(update.inlineQuery().query());
+            log.append("收到来自 ").append(user.userName()).append(" 的内联请求 : ").append(update.inlineQuery().query());
 
         }
 
