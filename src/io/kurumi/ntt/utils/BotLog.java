@@ -184,7 +184,7 @@ public class BotLog extends ConsoleLog {
 				
 				info = new StringBuilder("群组新成员 : ").append(newData.userName()).append("\n[").append(Html.code(newData.id)).append(info);
 				
-			} 
+			}
 			
 			SendResponse result = new Send(fragment,Env.LOG,info.toString()).html().exec();
 
