@@ -171,7 +171,7 @@ public class AntiEsu extends Fragment {
 
         }
 
-		for (int index = 0; index < pinyinKeys.length; index++) {
+		for (int index = 0; index < keys.length; index++) {
 
 			kw.append("|").append(keys[index]);
 
