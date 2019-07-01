@@ -267,7 +267,7 @@ public class Send extends AbstractSend<Send> {
 
         while (arr.length > 4096) {
 
-            Character[] chars = (Character[]) ArrayUtil.sub(ArrayUtil.wrap((Object) arr), 0, 4096);
+            Character[] chars = (Character[]) ArrayUtil.sub(ArrayUtil.wrap((Object)arr), 0, 4096);
 
             int index = chars.length;
 
@@ -285,7 +285,7 @@ public class Send extends AbstractSend<Send> {
 
                     fork(String.valueOf(send)).exec();
 
-                    char[] subed = new char[arr.length - index - 1];
+                    char[] subed = new char[arr.length - index];
 
                     ArrayUtil.copy(arr, index, subed, 0, subed.length);
 
