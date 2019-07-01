@@ -354,7 +354,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         BotLog.process(user, update);
 
-        if (update.message() != null) {
+        if (user != null && update.message() != null) {
 
             if (update.message().chat().type() == Chat.Type.Private && (user.contactable == null || !user.contactable)) {
 
