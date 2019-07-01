@@ -354,7 +354,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         BotLog.process(user, update);
 
-        if (user != null && update.message() != null) {
+        if (update.message() != null) {
 
             if (update.message().chat().type() == Chat.Type.Private && (user.contactable == null || !user.contactable)) {
 
@@ -368,7 +368,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         }
 
-        return Firewall.block.containsId(user.id);
+        return user != null && Firewall.block.containsId(user.id);
 
     }
 
