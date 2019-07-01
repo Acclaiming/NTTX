@@ -138,7 +138,7 @@ public class BotLog extends ConsoleLog {
 
 			if (!msg.isPrivate()) {
 
-				info.append("来自群组 : ").append(HtmlUtil.escape(msg.chat().title())).append("\n[").append(Html.code(msg.chat().id())).append("]");
+				info.append("\n来自群组 : ").append(HtmlUtil.escape(msg.chat().title())).append("\n[").append(Html.code(msg.chat().id())).append("]");
 
 				String link = msg.chat().inviteLink();
 
@@ -158,7 +158,7 @@ public class BotLog extends ConsoleLog {
 
 				}
 
-				if (link == null) {
+				if (link != null) {
 
 					info.append("\n邀请链接 : " + link);
 
