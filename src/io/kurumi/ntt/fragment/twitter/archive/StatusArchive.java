@@ -39,10 +39,10 @@ public class StatusArchive {
     public Long createdAt;
     public String text;
     public Long from;
-	public Long inReplyToStatusId;
+    public Long inReplyToStatusId;
     public String inReplyToScreenName;
     public Long inReplyToUserId;
-    public Long quotedStatus;
+    public Long quotedStatusId;
     public String quotedScreenName;
     public Long quotedUserId;
     public LinkedList<String> mediaUrls;
@@ -564,13 +564,13 @@ public class StatusArchive {
 
                 if (quotedUserId != -1) {
 
-                    TAuth accessable = NTT.loopFindAccessable(quotedUserId);
+                    TAuth accessable = NTT.loopFindAccessable(quotedScreenName);
 
                     if (accessable != null) {
 
                         try {
 
-                            Status status = accessable.createApi().showStatus(quotedUserId);
+                            Status status = accessable.createApi().showStatus(quotedStatusId);
 
                             StatusArchive quoted = StatusArchive.save(status);
 
