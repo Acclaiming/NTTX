@@ -101,8 +101,6 @@ public class Fragment {
 
     public boolean onUpdate(UserData user,Update update) {
 
-		BotLog.process(origin,user,update);
-		
 		return false;
 
     }

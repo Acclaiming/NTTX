@@ -874,6 +874,14 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 	}
 
 	@Override
+	public boolean onUpdate(UserData user,Update update) {
+
+		BotLog.process(origin,user,update);
+		
+		return super.onUpdate(user,update);
+	}
+
+	@Override
 	public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
 		if ("null".equals(point)) callback.confirm();
