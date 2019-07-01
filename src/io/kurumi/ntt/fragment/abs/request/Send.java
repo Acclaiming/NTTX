@@ -277,7 +277,7 @@ public class Send extends AbstractSend<Send> {
 
                 index--;
 
-                if (c == '\n') {
+                if (c.equals('\n')) {
 
                     char[] send = new char[index];
 
