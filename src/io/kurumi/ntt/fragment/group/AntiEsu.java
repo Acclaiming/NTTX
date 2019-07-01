@@ -72,7 +72,7 @@ public class AntiEsu extends Fragment {
 	static String[] pinyinKeys = new String[] {
 
 		"恶俗",
-		
+
 		"震撼", "废物", "弱智", "魔怔", "碰瓷", "寻思", "傻逼",
 		"迫真", "察觉", "无关心", "便乘", "棒读","你妈","野爹",
 		"兄贵", "姐贵", "仙贝", "先辈","草","辱骂", "好时代",
@@ -138,9 +138,9 @@ public class AntiEsu extends Fragment {
 					String[] pinyin = PinyinHelper.toHanyuPinyinStringArray(c,format);
 
 					if (pinyin == null) kk.append(c);
-					
+
 					else {
-						
+
 						LinkedHashSet<String> set = new LinkedHashSet<String>();
 
 						for (String p : pinyin) {
@@ -148,20 +148,19 @@ public class AntiEsu extends Fragment {
 							set.add(p);
 
 						}
-						
+
 						pinyin = set.toArray(new String[set.size()]);
-						
-						
+
 						if (pinyin.length == 1) kk.append(pinyin[0]);
-						
+
 						else {
-						
-						kk.append("(").append(ArrayUtil.join(pinyin,"|")).append(")");
-						
+
+							kk.append("(").append(ArrayUtil.join(pinyin,"|")).append(")");
+
 						}
-						
+
 					}
-					
+
 
 				} catch (BadHanyuPinyinOutputFormatCombination ex) {
 
@@ -204,22 +203,28 @@ public class AntiEsu extends Fragment {
     public static boolean keywordMatch(String msg) {
 
 		if (msg == null) return false;
-		
-		try {
-			
-			String str =  PinyinHelper.toHanYuPinyinString(msg,format,"",true);
+		StringBuilder text = new StringBuilder();
 
-			BotLog.debug(str);
-		
-		return str.matches(regex);
-			
-		} catch (BadHanyuPinyinOutputFormatCombination e) {
-			
-			return false;
-			
+		for (char c : msg.toCharArray()) {
+
+			try {
+				
+				String[] pinyin = PinyinHelper.toHanyuPinyinStringArray(c,format);
+				
+				if (pinyin == null) text.append(c);
+				else text.append(pinyin[0]);
+				
+			} catch (BadHanyuPinyinOutputFormatCombination e) {
+				
+				text.append(c);
+				
+			}
+
 		}
-		
-    }
+
+		return text.toString().matches(regex);
+
+	}
 
 	@Override
 	public int checkFunction() {
