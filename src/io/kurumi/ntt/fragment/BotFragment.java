@@ -151,6 +151,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 	}
 
 	@Override
+	public int checkPoint(UserData user,Msg msg,String point,Object data) {
+		
+		return PROCESS_SYNC;
+		
+	}
+
+	@Override
 	public void onPoint(final UserData user,Msg msg,String point,Object data) {
 
 		if (POINT_REQUEST_TWITTER.equals(point)) {
