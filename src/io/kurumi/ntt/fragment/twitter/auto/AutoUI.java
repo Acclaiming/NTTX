@@ -13,7 +13,7 @@ import io.kurumi.ntt.fragment.BotFragment;
 public class AutoUI extends Fragment {
 
     public static Data<AutoSetting> autoData = new Data<AutoSetting>(AutoSetting.class);
-	,
+	
     final String POINT_SETTING_ACCEPT = "auto_accept";
     final String POINT_SETTING_FOBACK = "auto_foback";
 
