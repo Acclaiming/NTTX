@@ -131,13 +131,13 @@ public class BotLog extends ConsoleLog {
     public static void process(BotFragment fragment,UserData user,Update update) {
 
 		StringBuilder info = new StringBuilder();
-		
+
 		if (update.message() != null) {
 
 			Msg msg = new Msg(fragment,update.message());
 
 			info.append("来自BOT : ").append(UserData.get(msg.fragment.origin.me).userName());
-			
+
 			info.append("\n来自用户 : " + msg.from().userName()).append("\n[").append(Html.code(msg.from().id)).append("]");
 
 			if (!msg.isPrivate()) {
@@ -145,33 +145,36 @@ public class BotLog extends ConsoleLog {
 				info.append("\n来自群组 : ").append(HtmlUtil.escape(msg.chat().title())).append("\n[").append(Html.code(msg.chat().id())).append("]");
 
 				if (msg.chat().username() != null) {
-					
+
 					info.append("\n群组身份 : @").append(msg.chat().username());
-					
-				}
-				
-				String link = msg.chat().inviteLink();
 
-				if (link == null && !exportFailed.contains(msg.chatId() + msg.fragment.origin.me.id())) {
+				} else {
 
-					StringResponse export = msg.fragment.bot().execute(new ExportChatInviteLink(msg.chatId()));
+					String link = msg.chat().inviteLink();
 
-					if (export.isOk()) {
+					if (link == null && !exportFailed.contains(msg.chatId() + msg.fragment.origin.me.id())) {
 
-						link = export.result();
+						StringResponse export = msg.fragment.bot().execute(new ExportChatInviteLink(msg.chatId()));
 
-					} else {
+						if (export.isOk()) {
 
-						exportFailed.add(msg.fragment.origin.me.id() + msg.chatId());
+							link = export.result();
+
+						} else {
+
+							exportFailed.add(msg.fragment.origin.me.id() + msg.chatId());
+
+						}
 
 					}
 
-				}
+					if (link != null) {
 
-				if (link != null) {
+						info.append("\n邀请链接 : " + link);
 
-					info.append("\n邀请链接 : " + link);
 
+					}
+					
 				}
 
 			}
@@ -179,23 +182,23 @@ public class BotLog extends ConsoleLog {
 			Message message = msg.message();
 
 			if (message.newChatMember() != null) {
-			
+
 				UserData newData = UserData.get(message.newChatMember());
-				
+
 				info = new StringBuilder("群组新成员 : ").append(newData.userName()).append("\n[").append(Html.code(newData.id)).append(info);
-				
+
 			}
-			
+
 			SendResponse result = new Send(fragment,Env.LOG,info.toString()).html().exec();
 
 			msg.forwardTo(Env.LOG);
-			
+
 			if (!result.isOk()) {
-				
-				
-				
+
+
+
 			}
-		
+
 		}
 
 	}
