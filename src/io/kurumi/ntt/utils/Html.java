@@ -7,6 +7,12 @@ import io.kurumi.ntt.fragment.Fragment;
 
 public class Html {
 
+	public static String b(Object text) {
+
+        return "<b>" + HtmlUtil.escape(text.toString()) + "</b>";
+
+    }
+	
     public static String a(String text,String href) {
 
         return "<a href=\"" + href + "\">" + HtmlUtil.escape(text) + "</a>";

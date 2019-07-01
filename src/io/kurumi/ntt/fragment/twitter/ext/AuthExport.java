@@ -30,11 +30,11 @@ public class AuthExport extends Fragment {
 		
 		StringBuilder auth = new StringBuilder("认证信息 :");
 		
-		auth.append("\nID : ").append(Html.code(account.id));
-		auth.append("\nApiKey : ").append(Html.code(account.apiKey));
-		auth.append("\nApiKeySec : ").append(Html.code(account.apiKeySec));
-		auth.append("\nAccToken : ").append(Html.code(account.accToken));
-		auth.append("\nAccTokenSec : ").append(Html.code(account.accTokenSec));
+		auth.append("\n").append(Html.b("ID")).append(" : ").append(Html.code(account.id));
+		auth.append("\n").append(Html.b("ApiKey")).append(" : ").append(Html.code(account.apiKey));
+		auth.append("\n").append(Html.b("ApiKeySec")).append(" : ").append(Html.code(account.apiKeySec));
+		auth.append("\n").append(Html.b("AccToken")).append(" : ").append(Html.code(account.accToken));
+		auth.append("\n").append(Html.b("AccTokenSec")).append(" : ").append(Html.code(account.accTokenSec));
 		
 		msg.send(auth.toString()).html().exec();
 		
