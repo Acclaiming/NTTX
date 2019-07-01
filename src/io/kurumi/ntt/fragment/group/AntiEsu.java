@@ -98,9 +98,9 @@ public class AntiEsu extends Fragment {
 
     static String[] keys = new String[]{
 
-		"🐴", "🐮", "🍺", "👊", "¿", "恁","蛆","fole",
+		"🐴", "🐮", "🍺", "👊", "¿", "恁","蛆",
 
-		"nm(s|\\$)l", "hj", "牛(子|啤|逼)", "这事", "ao的",
+		"nmsl", "这事", "ao的","niu(pi|bi)",
 
 		"谔谔", "呃呃","蛆","草",
 
@@ -227,7 +227,7 @@ public class AntiEsu extends Fragment {
 
 		}
 
-		return text.toString().matches(regex);
+		return text.toString().matches(regex) || msg.matches(regex);
 
 	}
 
