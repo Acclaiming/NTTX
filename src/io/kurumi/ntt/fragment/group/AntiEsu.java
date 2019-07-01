@@ -100,7 +100,7 @@ public class AntiEsu extends Fragment {
 
 		"🐴", "🐮", "🍺", "👊", "¿", "恁","蛆","fole",
 
-		"nm$l","nmsl", "hj", "牛(子|啤|逼)", "这事", "ao的",
+		"nm(s|\\$)l", "hj", "牛(子|啤|逼)", "这事", "ao的",
 
 		"谔谔", "呃呃","蛆","草",
 
@@ -137,9 +137,11 @@ public class AntiEsu extends Fragment {
 
 					String[] pinyin = PinyinHelper.toHanyuPinyinStringArray(c,format);
 
-					if (pinyin == null) kk.append(c);
+					if (pinyin == null) {
+						
+						kk.append(c);
 
-					else {
+					} else {
 
 						LinkedHashSet<String> set = new LinkedHashSet<String>();
 
@@ -151,9 +153,11 @@ public class AntiEsu extends Fragment {
 
 						pinyin = set.toArray(new String[set.size()]);
 
-						if (pinyin.length == 1) kk.append(pinyin[0]);
+						if (pinyin.length == 1) {
+							
+							kk.append(pinyin[0]);
 
-						else {
+						} else {
 
 							kk.append("(").append(ArrayUtil.join(pinyin,"|")).append(")");
 
