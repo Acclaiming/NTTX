@@ -81,7 +81,7 @@ public class AntiEsu extends Fragment {
 		"创蜜", "谢绝", "创谢", "创拜", "创安", "创不起", "创哀", "创持", "已踢",
 
 		"亲甜滴", "喷香滴", "创死我了", "太创了", "姥姥", "啃", "创象",
-		
+
 		"自嘲完美", "蛆", "完美华丽", "仏", "那您", "奇妙深刻", "唐突", "震撼",
 
 		"操", "实名","闸总","芬芳","完完全全","橄榄","干烂","您"
@@ -179,29 +179,30 @@ public class AntiEsu extends Fragment {
 	@Override
 	public int checkMsg(UserData user,Msg msg) {
 
-		return PROCESS_REJECT;
+		if (msg.isGroup() && enable.contains(msg.chatId().longValue())) {
+
+			if (msg.hasText() && msg.text().replace(" ","").matches(regex)) {
+
+				msg.delete();
+
+				return PROCESS_REJECT;
+
+			} else if (msg.message().sticker() != null) {
+
+				if (ArrayUtil.contains(stickers,msg.message().sticker().setName())) {
+
+					msg.delete();
+
+					return PROCESS_REJECT;
+
+				}
+
+			}
+
+		}
+
+		return PROCESS_ASYNC;
 
 	}
-
-    @Override
-    public void onGroup(UserData user,Msg msg) {
-
-        if (!enable.contains(msg.chatId().longValue())) return;
-
-        if (msg.hasText() && msg.text().replace(" ","").matches(regex)) {
-
-            msg.delete();
-
-        } else if (msg.message().sticker() != null) {
-
-            if (ArrayUtil.contains(stickers,msg.message().sticker().setName())) {
-
-                msg.delete();
-
-            }
-
-        }
-
-    }
 
 }
