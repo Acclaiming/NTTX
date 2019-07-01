@@ -39,10 +39,10 @@ public class StatusArchive {
     public Long createdAt;
     public String text;
     public Long from;
+	public Long inReplyToStatusId;
     public String inReplyToScreenName;
     public Long inReplyToUserId;
-    public Long quotedStatusId;
-	public String quotedStatusUrl;
+    public Long quotedStatus;
     public String quotedScreenName;
     public Long quotedUserId;
     public LinkedList<String> mediaUrls;
