@@ -1,6 +1,5 @@
 package io.kurumi.ntt.fragment;
 
-
 import cn.hutool.core.util.ArrayUtil;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
