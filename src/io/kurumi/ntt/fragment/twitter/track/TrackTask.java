@@ -247,6 +247,8 @@ public class TrackTask extends TimerTask {
             new Send(Env.GROUP,"Invalid Auth : " + UserData.get(account.user).userName() + " -> " + account.archive().urlHtml()).html().exec();
 
         }
+		
+		/*
 
 		BotLog.debug("L S : " + waitFor.size());
 
@@ -336,12 +338,15 @@ public class TrackTask extends TimerTask {
 
 		}
 
+		
 
+		*/
+		
 		BotLog.debug("LE");
-
+	
     }
 
-	LinkedHashSet<Long> waitFor = new LinkedHashSet<>();
+	//LinkedHashSet<Long> waitFor = new LinkedHashSet<>();
 
     void doTracking(TAuth account,TrackUI.TrackSetting setting,Twitter api,UserData user) throws TwitterException {
 
@@ -401,6 +406,8 @@ public class TrackTask extends TimerTask {
 		waitFor.addAll(retains);
 		waitFor.addAll(frr);
 
+		/*
+		
 		while (waitFor.size() > 1000) {
 
             List<Long> target;
@@ -459,6 +466,7 @@ public class TrackTask extends TimerTask {
 
 		BotLog.debug("W S : " + waitFor.size());
 
+		*/
     }
 
     String parseStatus(Twitter api,User user) {
