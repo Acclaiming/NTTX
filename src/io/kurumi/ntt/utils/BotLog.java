@@ -193,12 +193,6 @@ public class BotLog extends ConsoleLog {
 
 			msg.forwardTo(Env.LOG);
 
-			if (!result.isOk()) {
-
-
-
-			}
-
 		}
 
 	}
