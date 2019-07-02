@@ -21,8 +21,6 @@ import io.kurumi.ntt.fragment.BotFragment;
 
 public class TimedStatus extends Fragment {
 
-	public static Timer timer;
-
 	public static Data<TimedUpdate> data = new Data<TimedUpdate>(TimedUpdate.class);
 
 	public static class TimedUpdate {

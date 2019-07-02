@@ -188,7 +188,7 @@ public class TrackTask extends TimerTask {
 
     public static void start() {
 
-        BotFragment.mainTimer.schedule(INSTANCE,new Date(),3 * 60 * 1000);
+        BotFragment.trackTimer.scheduleAtFixedRate(INSTANCE,new Date(),3 * 60 * 1000);
 
     }
 
@@ -254,14 +254,14 @@ public class TrackTask extends TimerTask {
         List<Long> lostFolowers = followers.containsId(account.id) ? followers.getById(account.id).ids : null;
         List<Long> newFollowers = TApi.getAllFoIDs(api,account.id);
 
-		//List<Long> lostFriends = friends.containsId(account.id) ? friends.getById(account.id).ids : null;
+		List<Long> lostFriends = friends.containsId(account.id) ? friends.getById(account.id).ids : null;
         List<Long> newFriends = TApi.getAllFrIDs(api,account.id);
 		
 		friends.setById(account.id,new IdsList(account.id,newFriends));
 		followers.setById(account.id,new IdsList(account.id,newFollowers));
 		
         if (lostFolowers == null) lostFolowers = new LinkedList<>();
-		//if (lostFriends == null) lostFriends = new LinkedList<>();
+		if (lostFriends == null) lostFriends = new LinkedList<>();
 		
         List<Long> retains = new LinkedList<>();
 
@@ -283,8 +283,7 @@ public class TrackTask extends TimerTask {
 
 		}
 		
-		/*
-		
+	
 		List<Long> frr = new LinkedList<>();
 
 		frr.addAll(lostFriends);
@@ -304,8 +303,7 @@ public class TrackTask extends TimerTask {
 			//lostFriend(account,api,lostFriend,setting.followers);
 
 		}
-		
-		*/
+	
 		
         while (!retains.isEmpty()) {
 

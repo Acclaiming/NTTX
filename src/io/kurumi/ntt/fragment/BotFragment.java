@@ -47,6 +47,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
     Final finalFragment = new Final() {{ init(BotFragment.this); }};;
 
 	public static Timer mainTimer = new Timer();
+	public static Timer trackTimer = new Timer();
+	
 	public static ExecutorService asyncPool = Executors.newCachedThreadPool();
 	public static LinkedBlockingQueue<UserAndUpdate> queue = new LinkedBlockingQueue<>();
 	public static LinkedList<ProcessThread> threads = new LinkedList<>();
