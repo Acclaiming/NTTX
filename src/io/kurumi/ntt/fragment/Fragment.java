@@ -469,7 +469,7 @@ public class Fragment {
 
 	public int checkPoint(UserData user,Msg msg,String point,Object data) {
 
-		return PROCESS_ASYNC;
+		return PROCESS_SYNC;
 
 	}
 
@@ -478,7 +478,7 @@ public class Fragment {
 
 	public int checkPointedFunction(UserData user,Msg msg,String function,String[] params,String point,Object data) {
 
-		return PROCESS_ASYNC;
+		return PROCESS_SYNC;
 
 	}
 

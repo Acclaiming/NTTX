@@ -109,9 +109,11 @@ public class StatusArchive {
 
         }
 
-        if (photo.size() == 1) {
+		String html = toHtml(depth);
 
-            SendPhoto send = new SendPhoto(chatId,photo.get(0)).caption(toHtml(depth)).parseMode(ParseMode.HTML);
+        if (html.length() < 1024 && photo.size() == 1) {
+
+            SendPhoto send = new SendPhoto(chatId,photo.get(0)).caption(html).parseMode(ParseMode.HTML);
 
             if (status != null) {
 
@@ -151,17 +153,25 @@ public class StatusArchive {
 
             SendResponse msg = send.point(1,id);
 
-            if (photo.size() > 1 && msg.isOk()) {
+            if (photo.size() > 0 && msg.isOk()) {
 
-                InputMediaPhoto[] input = new InputMediaPhoto[photo.size()];
+				if (photo.size() == 1) {
 
-                for (int index = 0; index < photo.size(); index++) {
+					Launcher.INSTANCE.bot().execute(new SendPhoto(chatId,photo.get(0)).replyToMessageId(msg.message().messageId()));
 
-                    input[index] = new InputMediaPhoto(photo.get(index));
+				} else {
 
-                }
+					InputMediaPhoto[] input = new InputMediaPhoto[photo.size()];
 
-                Launcher.INSTANCE.bot().execute(new SendMediaGroup(chatId,input).replyToMessageId(msg.message().messageId()));
+					for (int index = 0; index < photo.size(); index++) {
+
+						input[index] = new InputMediaPhoto(photo.get(index));
+
+					}
+
+					Launcher.INSTANCE.bot().execute(new SendMediaGroup(chatId,input).replyToMessageId(msg.message().messageId()));
+
+				}
 
             }
 
