@@ -347,24 +347,17 @@ public class TrackTask extends TimerTask {
 
 		BotLog.debug("T S : " + account.archive().urlHtml());
 		
-		BotLog.debug("0");
-		
         List<Long> lostFolowers = followers.containsId(account.id) ? followers.getById(account.id).ids : null;
         List<Long> newFollowers = TApi.getAllFoIDs(api,account.id);
 
 		List<Long> lostFriends = friends.containsId(account.id) ? friends.getById(account.id).ids : null;
         List<Long> newFriends = TApi.getAllFrIDs(api,account.id);
 
-		BotLog.debug("1");
-		
 		friends.setById(account.id,new IdsList(account.id,newFriends));
 		followers.setById(account.id,new IdsList(account.id,newFollowers));
 
         if (lostFolowers == null) lostFolowers = new LinkedList<>();
 		if (lostFriends == null) lostFriends = new LinkedList<>();
-
-		BotLog.debug("2");
-		
         List<Long> retains = new LinkedList<>();
 
 		retains.addAll(lostFolowers);
@@ -372,8 +365,6 @@ public class TrackTask extends TimerTask {
 
 		lostFolowers.removeAll(retains);
 		newFollowers.removeAll(retains);
-
-		BotLog.debug("3");
 		
 		for (Long newfollower : newFollowers) {
 
@@ -387,8 +378,6 @@ public class TrackTask extends TimerTask {
 
 		}
 		
-		BotLog.debug("4");
-
 		List<Long> frr = new LinkedList<>();
 
 		frr.addAll(lostFriends);
@@ -396,8 +385,6 @@ public class TrackTask extends TimerTask {
 
 		lostFriends.removeAll(frr);
 		newFriends.removeAll(frr);
-
-		BotLog.debug("5");
 		
 		for (Long newFriend : newFriends) {
 
@@ -410,13 +397,11 @@ public class TrackTask extends TimerTask {
 			//lostFriend(account,api,lostFriend,setting.followers);
 
 		}
-		
-		BotLog.debug("T E");
-		
+	
 		waitFor.addAll(retains);
 		waitFor.addAll(frr);
 
-		BotLog.debug("A E");
+		BotLog.debug("W S : " + waitFor.size());
 		
     }
 
