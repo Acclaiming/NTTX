@@ -247,7 +247,7 @@ public class TrackTask extends TimerTask {
             new Send(Env.GROUP,"Invalid Auth : " + UserData.get(account.user).userName() + " -> " + account.archive().urlHtml()).html().exec();
 
         }
-		
+
 		BotLog.debug("L S : " + waitFor.size());
 
 		int count = (int)TAuth.data.collection.count();
@@ -336,7 +336,7 @@ public class TrackTask extends TimerTask {
 
 		}
 
-		
+
 		BotLog.debug("LE");
 
     }
@@ -346,7 +346,7 @@ public class TrackTask extends TimerTask {
     void doTracking(TAuth account,TrackUI.TrackSetting setting,Twitter api,UserData user) throws TwitterException {
 
 		BotLog.debug("T S : " + account.archive().urlHtml());
-		
+
         List<Long> lostFolowers = followers.containsId(account.id) ? followers.getById(account.id).ids : null;
         List<Long> newFollowers = TApi.getAllFoIDs(api,account.id);
 
@@ -365,7 +365,7 @@ public class TrackTask extends TimerTask {
 
 		lostFolowers.removeAll(retains);
 		newFollowers.removeAll(retains);
-		
+
 		for (Long newfollower : newFollowers) {
 
 			newFollower(account,api,newfollower,setting.followers);
@@ -377,7 +377,7 @@ public class TrackTask extends TimerTask {
 			lostFollower(account,api,lostFolower,setting.followers);
 
 		}
-		
+
 		List<Long> frr = new LinkedList<>();
 
 		frr.addAll(lostFriends);
@@ -385,24 +385,77 @@ public class TrackTask extends TimerTask {
 
 		lostFriends.removeAll(frr);
 		newFriends.removeAll(frr);
-		
+
 		for (Long newFriend : newFriends) {
 
 			newFriend(account,api,newFriend,setting.followers);
 
 		}
-		
+
 		for (Long lostFriend : lostFriends) {
 
 			//lostFriend(account,api,lostFriend,setting.followers);
 
 		}
-	
+
 		waitFor.addAll(retains);
 		waitFor.addAll(frr);
 
+		while (waitFor.size() > 1000) {
+
+            List<Long> target;
+
+            if (waitFor.size() > 100) {
+
+                target = CollectionUtil.sub(waitFor,0,100);
+
+                waitFor.removeAll(target);
+
+            } else {
+
+                target = new LinkedList<>();
+                target.addAll(waitFor);
+
+                waitFor.clear();
+
+            }
+
+            try {
+
+                ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
+
+                for (User tuser : result) {
+
+                    target.remove(tuser.getId());
+
+                    UserArchive.save(tuser);
+
+                }
+
+                for (Long da : target) {
+
+                    UserArchive.saveDisappeared(da);
+
+                }
+
+            } catch (TwitterException e) {
+
+                if (e.getErrorCode() == 17) {
+
+                    for (Long da : target) {
+
+                        UserArchive.saveDisappeared(da);
+
+                    }
+
+                }
+
+            }
+			
+		}
+
 		BotLog.debug("W S : " + waitFor.size());
-		
+
     }
 
     String parseStatus(Twitter api,User user) {
