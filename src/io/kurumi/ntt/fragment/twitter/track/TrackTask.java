@@ -28,6 +28,8 @@ import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import io.kurumi.ntt.utils.NTT;
 import io.kurumi.ntt.fragment.BotFragment;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.RandomUtil;
 
 public class TrackTask extends TimerTask {
 
@@ -245,92 +247,64 @@ public class TrackTask extends TimerTask {
             new Send(Env.GROUP,"Invalid Auth : " + UserData.get(account.user).userName() + " -> " + account.archive().urlHtml()).html().exec();
 
         }
-
-
-    }
-
-    void doTracking(TAuth account,TrackUI.TrackSetting setting,Twitter api,UserData user) throws TwitterException {
-
-		BotLog.debug("T F " + account.archive().urlHtml());
 		
-        List<Long> lostFolowers = followers.containsId(account.id) ? followers.getById(account.id).ids : null;
-        List<Long> newFollowers = TApi.getAllFoIDs(api,account.id);
+		BotLog.debug("L S : " + waitFor.size());
 
-		List<Long> lostFriends = friends.containsId(account.id) ? friends.getById(account.id).ids : null;
-        List<Long> newFriends = TApi.getAllFrIDs(api,account.id);
-		
-		friends.setById(account.id,new IdsList(account.id,newFriends));
-		followers.setById(account.id,new IdsList(account.id,newFollowers));
-		
-        if (lostFolowers == null) lostFolowers = new LinkedList<>();
-		if (lostFriends == null) lostFriends = new LinkedList<>();
-		
-        List<Long> retains = new LinkedList<>();
+		int count = (int)TAuth.data.collection.count();
 
-		retains.addAll(lostFolowers);
-		retains.retainAll(newFollowers);
+		if (count == 0) return;
 
-		lostFolowers.removeAll(retains);
-		newFollowers.removeAll(retains);
+		int rand = RandomUtil.randomInt(count);
 
-		for (Long newfollower : newFollowers) {
+		TAuth auth = TAuth.data.collection.find().skip(rand).limit(1).first();
 
-			newFollower(account,api,newfollower,setting.followers);
+		int rc = 0;
+
+		while (true) {
+
+			rc ++; if (rc > count) return;
+
+			try {
+
+				auth.createApi().verifyCredentials();
+
+				break;
+
+			} catch (TwitterException e) {
+
+				if (e.getStatusCode() == 503) return;
+
+				rand = RandomUtil.randomInt(count);
+
+				auth = TAuth.data.collection.find().skip(rand).limit(1).first();
+
+
+			}
 
 		}
 
-		for (Long lostFolower : lostFolowers) {
-
-			lostFollower(account,api,lostFolower,setting.followers);
-
-		}
-		
-	
-		List<Long> frr = new LinkedList<>();
-
-		frr.addAll(lostFriends);
-		frr.retainAll(newFriends);
-
-		lostFriends.removeAll(frr);
-		newFriends.removeAll(frr);
-		
-		for (Long newFriend : newFriends) {
-			
-			newFriend(account,api,newFriend,setting.followers);
-
-		}
-
-		for (Long lostFriend : lostFriends) {
-
-			//lostFriend(account,api,lostFriend,setting.followers);
-
-		}
-	
-		BotLog.debug("T E");
-		
-        while (!retains.isEmpty()) {
+		while (!waitFor.isEmpty()) {
 
             List<Long> target;
 
-            if (retains.size() > 100) {
+            if (waitFor.size() > 100) {
 
-                target = retains.subList(0,100);
+                target = CollectionUtil.sub(waitFor,0,100);
 
-                retains = new LinkedList<Long>(retains.subList(99,retains.size()));
-
+                waitFor.removeAll(target);
 
             } else {
 
                 target = new LinkedList<>();
-                target.addAll(retains);
+                target.addAll(waitFor);
 
-                retains.clear();
+                waitFor.clear();
 
             }
 
             try {
 
-                ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
+                ResponseList<User> result = auth.createApi().lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
 
                 for (User tuser : result) {
 
@@ -360,10 +334,69 @@ public class TrackTask extends TimerTask {
 
             }
 
+		}
 
-        }
 		
-		BotLog.debug("F E");
+		BotLog.debug("LE");
+
+    }
+
+	LinkedHashSet<Long> waitFor = new LinkedHashSet<>();
+
+    void doTracking(TAuth account,TrackUI.TrackSetting setting,Twitter api,UserData user) throws TwitterException {
+
+        List<Long> lostFolowers = followers.containsId(account.id) ? followers.getById(account.id).ids : null;
+        List<Long> newFollowers = TApi.getAllFoIDs(api,account.id);
+
+		List<Long> lostFriends = friends.containsId(account.id) ? friends.getById(account.id).ids : null;
+        List<Long> newFriends = TApi.getAllFrIDs(api,account.id);
+
+		friends.setById(account.id,new IdsList(account.id,newFriends));
+		followers.setById(account.id,new IdsList(account.id,newFollowers));
+
+        if (lostFolowers == null) lostFolowers = new LinkedList<>();
+		if (lostFriends == null) lostFriends = new LinkedList<>();
+
+        List<Long> retains = new LinkedList<>();
+
+		retains.addAll(lostFolowers);
+		retains.retainAll(newFollowers);
+
+		lostFolowers.removeAll(retains);
+		newFollowers.removeAll(retains);
+
+		for (Long newfollower : newFollowers) {
+
+			newFollower(account,api,newfollower,setting.followers);
+
+		}
+
+		for (Long lostFolower : lostFolowers) {
+
+			lostFollower(account,api,lostFolower,setting.followers);
+
+		}
+
+		List<Long> frr = new LinkedList<>();
+
+		frr.addAll(lostFriends);
+		frr.retainAll(newFriends);
+
+		lostFriends.removeAll(frr);
+		newFriends.removeAll(frr);
+
+		for (Long newFriend : newFriends) {
+
+			newFriend(account,api,newFriend,setting.followers);
+
+		}
+
+		for (Long lostFriend : lostFriends) {
+
+			//lostFriend(account,api,lostFriend,setting.followers);
+
+		}
+
 
     }
 
@@ -494,20 +527,20 @@ public class TrackTask extends TimerTask {
             Relationship ship = api.showFriendship(auth.id,id);
 
 			/*
-			
-            if (notice) {
 
-                StringBuilder msg = new StringBuilder();
+			 if (notice) {
 
-                msg.append(ship.isSourceFollowingTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 关注了你 :)").append(parseStatus(api,follower));
+			 StringBuilder msg = new StringBuilder();
 
-                if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
+			 msg.append(ship.isSourceFollowingTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 关注了你 :)").append(parseStatus(api,follower));
 
-                new Send(auth.user,msg.toString()).html().point(0,archive.id);
+			 if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
-            }
-			
-			*/
+			 new Send(auth.user,msg.toString()).html().point(0,archive.id);
+
+			 }
+
+			 */
 
             AutoTask.onNewFriend(auth,api,archive,ship);
 
@@ -528,7 +561,7 @@ public class TrackTask extends TimerTask {
         }
 
     }
-	
+
     void lostFollower(TAuth auth,Twitter api,long id,boolean notice) {
 
         try {
