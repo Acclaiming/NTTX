@@ -874,23 +874,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 	}
 
-	@Override
-	public boolean onUpdate(final UserData user,final Update update) {
-
-		asyncPool.execute(new Runnable() {
-
-				@Override
-				public void run() {
-					
-					BotLog.process(origin,user,update);
-					
-					
-				}
-			});
-		
-		
-		return super.onUpdate(user,update);
-	}
 
 	@Override
 	public void onCallback(UserData user,Callback callback,String point,String[] params) {
