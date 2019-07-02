@@ -361,9 +361,12 @@ public class TrackTask extends TimerTask {
 		friends.setById(account.id,new IdsList(account.id,newFriends));
 		followers.setById(account.id,new IdsList(account.id,newFollowers));
 
-        if (lostFolowers == null) lostFolowers = new LinkedList<>();
-		if (lostFriends == null) lostFriends = new LinkedList<>();
-        List<Long> retains = new LinkedList<>();
+        //if (lostFolowers == null) lostFolowers = new LinkedList<>();
+		//if (lostFriends == null) lostFriends = new LinkedList<>();
+       
+		if (lostFolowers != null) {
+		
+		List<Long> retains = new LinkedList<>();
 
 		retains.addAll(lostFolowers);
 		retains.retainAll(newFollowers);
@@ -382,6 +385,10 @@ public class TrackTask extends TimerTask {
 			lostFollower(account,api,lostFolower,setting.followers);
 
 		}
+		
+		}
+		
+		if (lostFriends != null) {
 
 		List<Long> frr = new LinkedList<>();
 
@@ -403,6 +410,8 @@ public class TrackTask extends TimerTask {
 
 		}
 
+		}
+		
 		//waitFor.addAll(retains);
 		//waitFor.addAll(frr);
 
