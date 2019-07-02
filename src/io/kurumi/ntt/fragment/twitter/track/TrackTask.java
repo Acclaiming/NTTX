@@ -447,8 +447,11 @@ public class TrackTask extends TimerTask {
                         UserArchive.saveDisappeared(da);
 
                     }
-
+					
                 }
+				
+				BotLog.info("TSE",e);
+				
 
             }
 			
