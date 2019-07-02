@@ -349,7 +349,7 @@ public class TrackTask extends TimerTask {
 
 		*/
 		
-		BotLog.debug("LE");
+		//BotLog.debug("LE");
 	
     }
 
@@ -357,7 +357,7 @@ public class TrackTask extends TimerTask {
 
     void doTracking(TAuth account,TrackUI.TrackSetting setting,Twitter api,UserData user) throws TwitterException {
 
-		BotLog.debug("T S : " + account.archive().urlHtml());
+		//BotLog.debug("T S : " + account.archive().urlHtml());
 
         List<Long> lostFolowers = followers.containsId(account.id) ? followers.getById(account.id).ids : null;
         List<Long> newFollowers = TApi.getAllFoIDs(api,account.id);
