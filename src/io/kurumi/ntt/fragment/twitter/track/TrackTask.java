@@ -403,8 +403,8 @@ public class TrackTask extends TimerTask {
 
 		}
 
-		waitFor.addAll(retains);
-		waitFor.addAll(frr);
+		//waitFor.addAll(retains);
+		//waitFor.addAll(frr);
 
 		/*
 		
