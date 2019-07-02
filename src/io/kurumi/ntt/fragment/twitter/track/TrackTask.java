@@ -399,9 +399,13 @@ public class TrackTask extends TimerTask {
 
 		}
 		
+		BotLog.debug("T E");
+		
 		waitFor.addAll(retains);
 		waitFor.addAll(frr);
 
+		BotLog.debug("A E");
+		
     }
 
     String parseStatus(Twitter api,User user) {
