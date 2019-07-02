@@ -66,16 +66,15 @@ public class AntiEsu extends Fragment {
 
     };
 
-    public static AntiEsu INSTANCE = new AntiEsu();
     public static JSONArray enable = LocalData.getJSONArray("data","anti_esu",true);
 
 	static String[] pinyinKeys = new String[] {
 
-		"恶俗","迫害","文字狱",
+		"恶俗","迫害","文字狱","要素",
 
 		"震撼", "废物", "弱智", "魔怔", "碰瓷", "寻思", "傻逼",
 		"迫真", "察觉", "无关心", "便乘", "棒读","你妈","野爹",
-		"兄贵", "姐贵", "仙贝", "先辈","草","辱骂", "好时代",
+		"兄贵", "姐贵", "仙贝", "先辈","辱骂", "好时代",
 
 		"池沼", "噔噔咚", "心肺停止", "激寒", "雷普",
 

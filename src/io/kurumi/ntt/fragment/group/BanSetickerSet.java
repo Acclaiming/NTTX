@@ -11,8 +11,7 @@ import io.kurumi.ntt.fragment.BotFragment;
 
 public class BanSetickerSet extends Fragment {
 
-    public static BanSetickerSet INSTANCE = new BanSetickerSet();
-    public static JSONObject bans = LocalData.getJSON("data","ban_sticker_set",true);
+   public static JSONObject bans = LocalData.getJSON("data","ban_sticker_set",true);
 
     public static void save() {
 

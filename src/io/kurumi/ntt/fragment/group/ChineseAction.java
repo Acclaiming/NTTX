@@ -16,8 +16,7 @@ import io.kurumi.ntt.fragment.BotFragment;
 public class ChineseAction extends Fragment {
 
     public static JSONArray disable = LocalData.getJSONArray("data","disable_action",true);
-    public static ChineseAction INSTANCE = new ChineseAction();
-
+    
 	@Override
 	public void init(BotFragment origin) {
 

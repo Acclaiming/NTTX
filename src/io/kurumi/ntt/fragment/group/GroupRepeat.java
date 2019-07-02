@@ -11,8 +11,6 @@ import java.util.LinkedList;
 
 public class GroupRepeat extends Fragment {
 
-    public static GroupRepeat INSTANCE = new GroupRepeat();
-
     public HashMap<Long, LinkedList<Msg>> msgs = new HashMap<>();
 
     @Override

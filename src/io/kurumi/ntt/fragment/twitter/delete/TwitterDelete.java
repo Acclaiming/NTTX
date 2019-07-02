@@ -28,7 +28,6 @@ import io.kurumi.ntt.utils.NTT;
 
 public class TwitterDelete extends Fragment {
 
-    public static TwitterDelete INSTANCE = new TwitterDelete();
     final String POINT_DELETE = "td";
     HashMap<Long, DeleteThread> threads = new HashMap<>();
 
