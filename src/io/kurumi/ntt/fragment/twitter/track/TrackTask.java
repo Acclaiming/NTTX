@@ -255,7 +255,7 @@ public class TrackTask extends TimerTask {
         List<Long> newFollowers = TApi.getAllFoIDs(api,account.id);
 
 		List<Long> lostFriends = friends.containsId(account.id) ? friends.getById(account.id).ids : null;
-        List<Long> newFriends = TApi.getAllFoIDs(api,account.id);
+        List<Long> newFriends = TApi.getAllFrIDs(api,account.id);
 		
 		friends.setById(account.id,new IdsList(account.id,newFriends));
 		followers.setById(account.id,new IdsList(account.id,newFollowers));
