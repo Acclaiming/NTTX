@@ -14,7 +14,7 @@ public class AutoUI extends Fragment {
 
     public static Data<AutoSetting> autoData = new Data<AutoSetting>(AutoSetting.class);
 	
-    final String POINT_SETTING_ACCEPT = "auto_accept";
+    final String POINT_SETTING_MRT = "auto_mrt";
     final String POINT_SETTING_FOBACK = "auto_foback";
 
 	public void init(BotFragment origin) {
@@ -23,7 +23,7 @@ public class AutoUI extends Fragment {
 
 		registerFunction("auto");
 
-        registerCallback(POINT_SETTING_ACCEPT,POINT_SETTING_FOBACK);
+        registerCallback(POINT_SETTING_MRT,POINT_SETTING_FOBACK);
 
     }
 
@@ -56,7 +56,7 @@ public class AutoUI extends Fragment {
         return new ButtonMarkup() {{
 
 				// newButtonLine((setting.archive ? "「 关闭" : "「 开启") + " 时间线推文存档 」", POINT_SETTING_AECHIVE, accountId);
-				// newButtonLine((setting.accept ? "「 关闭" : "「 开启") + " 自动通过关注请求 」",POINT_SETTING_ACCEPT,accountId);
+				newButtonLine((setting.mrt ? "「 关闭" : "「 开启") + " 静音新关注的人的转推 」",POINT_SETTING_MRT,accountId);
 				newButtonLine((setting.foback ? "「 关闭" : "「 开启") + " 关注新关注者 」",POINT_SETTING_FOBACK,accountId);
 
 				// newButtonLine((setting.foback ? "「 关闭" : "「 开启") + " 取关新取关者 」",POINT,accountId);
@@ -80,8 +80,8 @@ public class AutoUI extends Fragment {
         switch (point) {
 
 				// case POINT_SETTING_: target = setting.archive = !setting.archive;break;
-		case POINT_SETTING_ACCEPT : 
-			target = setting.accept = !setting.accept;
+		case POINT_SETTING_MRT : 
+			target = setting.mrt = !setting.mrt;
 			break;
             case POINT_SETTING_FOBACK:
                 target = setting.foback = !setting.foback;
@@ -89,7 +89,7 @@ public class AutoUI extends Fragment {
 
         }
 
-        if (setting.foback || setting.accept) {
+        if (setting.foback || setting.mrt) {
 
             autoData.setById(accountId,setting);
 
@@ -110,7 +110,7 @@ public class AutoUI extends Fragment {
         public Long id;
 
 
-		public boolean accept = false;
+		public boolean mrt = false;
         public boolean foback = false;
         public boolean reply = false;
 

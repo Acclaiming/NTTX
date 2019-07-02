@@ -32,19 +32,19 @@ import io.kurumi.ntt.fragment.BotFragment;
 public class TrackTask extends TimerTask {
 
     public static TrackTask INSTANCE = new TrackTask();
-    public static Data<IdsList> followers = new Data<IdsList>("Followers", IdsList.class);
-    public static Data<IdsList> friends = new Data<IdsList>("Friends", IdsList.class);
+    public static Data<IdsList> followers = new Data<IdsList>("Followers",IdsList.class);
+    public static Data<IdsList> friends = new Data<IdsList>("Friends",IdsList.class);
 
-    public static void onUserChange(UserArchive archive, String change) {
-		
-        if (TrackUI.data.collection.countDocuments(and(eq("_id", archive.id), eq("hideChange", true))) > 0) {
+    public static void onUserChange(UserArchive archive,String change) {
+
+        if (TrackUI.data.collection.countDocuments(and(eq("_id",archive.id),eq("hideChange",true))) > 0) {
 
             return;
 
         }
 
-        FindIterable<IdsList> subFr = friends.collection.find(eq("ids", archive.id));
-        FindIterable<IdsList> subFo = followers.collection.find(eq("ids", archive.id));
+        FindIterable<IdsList> subFr = friends.collection.find(eq("ids",archive.id));
+        FindIterable<IdsList> subFo = followers.collection.find(eq("ids",archive.id));
 
         LinkedList<Long> processed = new LinkedList<>();
 
@@ -76,7 +76,7 @@ public class TrackTask extends TimerTask {
 
             if (setting.followingInfo) {
 
-                processChangeSend(archive, account, change, setting);
+                processChangeSend(archive,account,change,setting);
 
                 processed.add(account.id);
                 processed.add(account.user);
@@ -99,7 +99,7 @@ public class TrackTask extends TimerTask {
 
             }
 
-            System.out.println("sub : " + account.archive().name);
+			//  System.out.println("sub : " + account.archive().name);
 
             TrackUI.TrackSetting setting = TrackUI.data.getById(account.id);
 
@@ -118,7 +118,7 @@ public class TrackTask extends TimerTask {
 
             if (setting.followersInfo) {
 
-                processChangeSend(archive, account, change, setting);
+                processChangeSend(archive,account,change,setting);
 
                 processed.add(account.id);
                 processed.add(account.user);
@@ -129,12 +129,12 @@ public class TrackTask extends TimerTask {
 
     }
 
-    static void processChangeSend(UserArchive archive, TAuth account, String change, TrackUI.TrackSetting setting) {
+    static void processChangeSend(UserArchive archive,TAuth account,String change,TrackUI.TrackSetting setting) {
 
-        StringBuilder msg = new StringBuilder(TAuth.data.countByField("user", account.user) > 1 ? account.archive().urlHtml() + " : " : "");
+        StringBuilder msg = new StringBuilder(TAuth.data.countByField("user",account.user) > 1 ? account.archive().urlHtml() + " : " : "");
 
-        boolean isfo = followers.fieldEquals(account.id, "ids", archive.id);
-        boolean isfr = friends.fieldEquals(account.id, "ids", archive.id);
+        boolean isfo = followers.fieldEquals(account.id,"ids",archive.id);
+        boolean isfr = friends.fieldEquals(account.id,"ids",archive.id);
 
         if (isfo && isfr) msg.append("与乃互关");
         else if (isfo) msg.append("关注乃");
@@ -144,41 +144,41 @@ public class TrackTask extends TimerTask {
 
         if ((archive.oldPhotoUrl == null || archive.photoUrl == null) && (archive.oldBannerUrl == null || archive.bannerUrl == null)) {
 
-            new Send(account.user, msg.toString()).html().point(0, archive.id);
+            new Send(account.user,msg.toString()).html().point(0,archive.id);
 
         } else if (archive.oldPhotoUrl != null) {
 
-            File photo = new File(Env.CACHE_DIR, "twitter_profile_images/" + FileUtil.getName(archive.photoUrl));
+            File photo = new File(Env.CACHE_DIR,"twitter_profile_images/" + FileUtil.getName(archive.photoUrl));
 
             if (!photo.isFile()) {
 
-                HttpUtil.downloadFile(archive.photoUrl, photo);
+                HttpUtil.downloadFile(archive.photoUrl,photo);
 
             }
 
-            SendResponse resp = Launcher.INSTANCE.bot().execute(new SendPhoto(account.user, photo).caption(msg.toString()).parseMode(ParseMode.HTML));
+            SendResponse resp = Launcher.INSTANCE.bot().execute(new SendPhoto(account.user,photo).caption(msg.toString()).parseMode(ParseMode.HTML));
 
             if (resp.isOk()) {
 
-                MessagePoint.set(resp.message().messageId(), 0, archive.id);
+                MessagePoint.set(resp.message().messageId(),0,archive.id);
 
             }
 
         } else {
 
-            File photo = new File(Env.CACHE_DIR, "twitter_banner_images/" + archive.id + "/" + System.currentTimeMillis() + ".jpg");
+            File photo = new File(Env.CACHE_DIR,"twitter_banner_images/" + archive.id + "/" + System.currentTimeMillis() + ".jpg");
 
             if (!photo.isFile()) {
 
-                HttpUtil.downloadFile(archive.bannerUrl, photo);
+                HttpUtil.downloadFile(archive.bannerUrl,photo);
 
             }
 
-            SendResponse resp = Launcher.INSTANCE.bot().execute(new SendPhoto(account.user, photo).caption(msg.toString()).parseMode(ParseMode.HTML));
+            SendResponse resp = Launcher.INSTANCE.bot().execute(new SendPhoto(account.user,photo).caption(msg.toString()).parseMode(ParseMode.HTML));
 
             if (resp.isOk()) {
 
-                MessagePoint.set(resp.message().messageId(), 0, archive.id);
+                MessagePoint.set(resp.message().messageId(),0,archive.id);
 
             }
 
@@ -188,7 +188,7 @@ public class TrackTask extends TimerTask {
 
     public static void start() {
 
-        BotFragment.mainTimer.schedule(INSTANCE, new Date(), 3 * 60 * 1000);
+        BotFragment.mainTimer.schedule(INSTANCE,new Date(),3 * 60 * 1000);
 
     }
 
@@ -211,7 +211,7 @@ public class TrackTask extends TimerTask {
 
                 //if (setting.followers || setting.followersInfo || setting.followingInfo) {
 
-                doTracking(account, setting, api, UserData.get(account.user));
+                doTracking(account,setting,api,UserData.get(account.user));
 
                 //}
 
@@ -227,7 +227,7 @@ public class TrackTask extends TimerTask {
 
                 } else if (e.getErrorCode() != 130) {
 
-                    BotLog.error("UserArchive ERROR", e);
+                    BotLog.error("UserArchive ERROR",e);
 
                 }
             }
@@ -240,67 +240,80 @@ public class TrackTask extends TimerTask {
             TrackUI.data.deleteById(account.id);
             TAuth.data.deleteById(account.id);
 
-            new Send(account.user, "对不起，但是因乃的账号已停用 / 冻结 / NTT被取消授权，已移除 (⁎˃ᆺ˂)").exec();
+            new Send(account.user,"对不起，但是因乃的账号已停用 / 冻结 / NTT被取消授权，已移除 (⁎˃ᆺ˂)").exec();
 
-            new Send(Env.GROUP, "Invalid Auth : " + UserData.get(account.user).userName() + " -> " + account.archive().urlHtml()).html().exec();
+            new Send(Env.GROUP,"Invalid Auth : " + UserData.get(account.user).userName() + " -> " + account.archive().urlHtml()).html().exec();
 
         }
 
 
     }
 
-    void doTracking(TAuth account, TrackUI.TrackSetting setting, Twitter api, UserData user) throws TwitterException {
+    void doTracking(TAuth account,TrackUI.TrackSetting setting,Twitter api,UserData user) throws TwitterException {
 
         List<Long> lostFolowers = followers.containsId(account.id) ? followers.getById(account.id).ids : null;
-        List<Long> newFollowers = TApi.getAllFoIDs(api, account.id);
+        List<Long> newFollowers = TApi.getAllFoIDs(api,account.id);
 
-        if (lostFolowers == null) {
-
-            followers.setById(account.id, new IdsList(account.id, newFollowers));
-
-            return;
-
-        } else {
-
-            followers.setById(account.id, new IdsList(account.id, newFollowers));
-
-        }
-
-        friends.setById(account.id, new IdsList(account.id, TApi.getAllFrIDs(api, account.id)));
-
+		List<Long> lostFriends = followers.containsId(account.id) ? followers.getById(account.id).ids : null;
+        List<Long> newFriends = TApi.getAllFoIDs(api,account.id);
+		
+		friends.setById(account.id,new IdsList(account.id,newFriends));
+		followers.setById(account.id,new IdsList(account.id,newFollowers));
+		
+		
+		
+        if (lostFolowers == null) lostFolowers = new LinkedList<>();
+		if (lostFriends == null) lostFriends = new LinkedList<>();
+		
         List<Long> retains = new LinkedList<>();
 
-        if (!newFollowers.equals(lostFolowers)) {
+		retains.addAll(lostFolowers);
+		retains.retainAll(newFollowers);
 
-            retains.addAll(lostFolowers);
-            retains.retainAll(newFollowers);
+		lostFolowers.removeAll(retains);
+		newFollowers.removeAll(retains);
 
-            lostFolowers.removeAll(retains);
-            newFollowers.removeAll(retains);
+		for (Long newfollower : newFollowers) {
 
-            for (Long newfollower : newFollowers) {
+			newFollower(account,api,newfollower,setting.followers);
 
-                newFollower(account, api, newfollower, setting.followers);
+		}
 
-            }
+		for (Long lostFolower : lostFolowers) {
 
-            for (Long lostFolower : lostFolowers) {
+			lostFollower(account,api,lostFolower,setting.followers);
 
-                lostFollower(account, api, lostFolower, setting.followers);
+		}
+		
+		List<Long> frr = new LinkedList<>();
 
-            }
+		frr.addAll(lostFriends);
+		frr.retainAll(newFriends);
 
-        }
+		lostFriends.removeAll(frr);
+		newFriends.removeAll(frr);
+		
+		for (Long newFriend : newFriends) {
+			
+			newFriend(account,api,newFriend,setting.followers);
 
+		}
+
+		for (Long lostFriend : lostFriends) {
+
+			//lostFriend(account,api,lostFriend,setting.followers);
+
+		}
+		
         while (!retains.isEmpty()) {
 
             List<Long> target;
 
             if (retains.size() > 100) {
 
-                target = retains.subList(0, 100);
+                target = retains.subList(0,100);
 
-                retains = new LinkedList<Long>(retains.subList(99, retains.size()));
+                retains = new LinkedList<Long>(retains.subList(99,retains.size()));
 
 
             } else {
@@ -349,13 +362,13 @@ public class TrackTask extends TimerTask {
 
     }
 
-    String parseStatus(Twitter api, User user) {
+    String parseStatus(Twitter api,User user) {
 
         StringBuilder status = new StringBuilder();
 
         try {
 
-            if (!api.showFriendship(api.getId(), user.getId()).isSourceFollowingTarget() && !user.isFollowRequestSent()) {
+            if (!api.showFriendship(api.getId(),user.getId()).isSourceFollowingTarget() && !user.isFollowRequestSent()) {
 
                 if (user.isProtected()) status.append("\n这是一个是锁推用户");
 
@@ -415,7 +428,7 @@ public class TrackTask extends TimerTask {
 
         if (statusR.endsWith("\n")) {
 
-            statusR.substring(0, statusR.length() - 1);
+            statusR.substring(0,statusR.length() - 1);
 
         }
 
@@ -423,7 +436,7 @@ public class TrackTask extends TimerTask {
 
     }
 
-    void newFollower(TAuth auth, Twitter api, long id, boolean notice) {
+    void newFollower(TAuth auth,Twitter api,long id,boolean notice) {
 
         try {
 
@@ -431,60 +444,106 @@ public class TrackTask extends TimerTask {
 
             UserArchive archive = UserArchive.save(follower);
 
-            Relationship ship = api.showFriendship(auth.id, id);
+            Relationship ship = api.showFriendship(auth.id,id);
 
             if (notice) {
 
                 StringBuilder msg = new StringBuilder();
 
-                msg.append(ship.isSourceFollowingTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 关注了你 :)").append(parseStatus(api, follower));
+                msg.append(ship.isSourceFollowingTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 关注了你 :)").append(parseStatus(api,follower));
 
                 if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
-                new Send(auth.user, msg.toString()).html().point(0, archive.id);
+                new Send(auth.user,msg.toString()).html().point(0,archive.id);
 
             }
 
-            AutoTask.onNewFollower(auth, api, archive, ship);
+            AutoTask.onNewFollower(auth,api,archive,ship);
 
         } catch (TwitterException e) {
 
             if (!notice) return;
 
 			/*
-			
-            StringBuilder msg = new StringBuilder(UserArchive.contains(id) ? UserArchive.get(id).urlHtml() : "无记录的用户 : (" + id + ")").append("关注了你").append("\n状态异常: ").append(NTT.parseTwitterException(e));
 
-            if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
+			 StringBuilder msg = new StringBuilder(UserArchive.contains(id) ? UserArchive.get(id).urlHtml() : "无记录的用户 : (" + id + ")").append("关注了你").append("\n状态异常: ").append(NTT.parseTwitterException(e));
 
-            new Send(auth.user, msg.toString()).html().point(0, id);
+			 if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
-			*/
+			 new Send(auth.user, msg.toString()).html().point(0, id);
+
+			 */
 
         }
 
     }
 
-    void lostFollower(TAuth auth, Twitter api, long id, boolean notice) {
+	void newFriend(TAuth auth,Twitter api,long id,boolean notice) {
+
+        try {
+
+            User follower = api.showUser(id);
+
+            UserArchive archive = UserArchive.save(follower);
+
+            Relationship ship = api.showFriendship(auth.id,id);
+
+			/*
+			
+            if (notice) {
+
+                StringBuilder msg = new StringBuilder();
+
+                msg.append(ship.isSourceFollowingTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 关注了你 :)").append(parseStatus(api,follower));
+
+                if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
+
+                new Send(auth.user,msg.toString()).html().point(0,archive.id);
+
+            }
+			
+			*/
+
+            AutoTask.onNewFriend(auth,api,archive,ship);
+
+        } catch (TwitterException e) {
+
+            if (!notice) return;
+
+			/*
+
+			 StringBuilder msg = new StringBuilder(UserArchive.contains(id) ? UserArchive.get(id).urlHtml() : "无记录的用户 : (" + id + ")").append("关注了你").append("\n状态异常: ").append(NTT.parseTwitterException(e));
+
+			 if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
+
+			 new Send(auth.user, msg.toString()).html().point(0, id);
+
+			 */
+
+        }
+
+    }
+	
+    void lostFollower(TAuth auth,Twitter api,long id,boolean notice) {
 
         try {
 
             User follower = api.showUser(id);
             UserArchive archive = UserArchive.save(follower);
 
-            Relationship ship = api.showFriendship(id, auth.id);
+            Relationship ship = api.showFriendship(id,auth.id);
 
             if (notice) {
 
                 StringBuilder msg = new StringBuilder();
 
-                msg.append(ship.isSourceFollowedByTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(ship.isSourceFollowingTarget() ? " 账号异常了 :(" : " 取关了你 :)").append(parseStatus(api, follower));
+                msg.append(ship.isSourceFollowedByTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(ship.isSourceFollowingTarget() ? " 账号异常了 :(" : " 取关了你 :)").append(parseStatus(api,follower));
 
                 if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
-                new Send(auth.user, msg.toString()).html().point(0, archive.id);
+                new Send(auth.user,msg.toString()).html().point(0,archive.id);
 
-                
+
             }
 
         } catch (TwitterException e) {
@@ -495,7 +554,7 @@ public class TrackTask extends TimerTask {
 
             if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
-            new Send(auth.user, msg.toString()).html().point(0, id);
+            new Send(auth.user,msg.toString()).html().point(0,id);
 
         }
 
@@ -512,7 +571,7 @@ public class TrackTask extends TimerTask {
         public IdsList() {
         }
 
-        public IdsList(Long id, List<Long> ids) {
+        public IdsList(Long id,List<Long> ids) {
 
             this.id = id;
             this.ids = ids;
