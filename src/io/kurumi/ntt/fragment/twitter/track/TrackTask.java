@@ -198,6 +198,8 @@ public class TrackTask extends TimerTask {
     public void run() {
 
         LinkedList<TAuth> all = new LinkedList<>();
+		LinkedList<TAuth> remove = new LinkedList<>();
+
 		
         for (TAuth account : TAuth.data.collection.find()) {
 
@@ -205,7 +207,7 @@ public class TrackTask extends TimerTask {
 			
 		}
 			
-		for (TAuth account :all) {
+		for (TAuth account : all) {
 			
             TrackUI.TrackSetting setting = TrackUI.data.getById(account.id);
 
@@ -227,7 +229,7 @@ public class TrackTask extends TimerTask {
 
                 if (e.getErrorCode() == 89 || e.getErrorCode() == 215 || e.getErrorCode() == 215) {
 
-					continue;
+					remove.add(account);
                     
                 } else if (e.getErrorCode() == 326) {
 
@@ -240,11 +242,9 @@ public class TrackTask extends TimerTask {
                 }
             }
 
-			all.remove(account);
-
         }
 
-        for (TAuth account : all) {
+        for (TAuth account : remove) {
 
             TrackUI.data.deleteById(account.id);
             TAuth.data.deleteById(account.id);
