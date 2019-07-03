@@ -100,8 +100,6 @@ public class BotServer extends NanoHTTPD {
 
         }
 
-        System.out.println(url.getPath());
-
         String botToken = url.getPath().substring(1);
 
         if (fragments.containsKey(botToken)) {

@@ -102,7 +102,13 @@ public class ForwardBot extends BotFragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
+		super.onFunction(user,msg,function,params);
+		
+		if ("start".equals(function)) {
+		
 		msg.send(welcomeMessage).exec();
+		
+		}
 
 	}
 
@@ -174,13 +180,13 @@ public class ForwardBot extends BotFragment {
 
 			if (blockList.contains(target.id.longValue())) {
 
-				msg.send("已经屏蔽过了 " + target.userName() + " ~ [ " + Html.a("解除屏蔽","https://t.me/" + me.username() + "?start=unblok" + PAYLOAD_SPLIT + target.id) + " ] ~").exec();
+				msg.send("已经屏蔽过了 " + target.userName() + " ~ [ " + Html.a("解除屏蔽","https://t.me/" + me.username() + "?start=unblok" + PAYLOAD_SPLIT + target.id) + " ] ~").html().exec();
 
 			} else {
 
 				blockList.add(user.id);
 				save();
-				msg.send("已屏蔽了 " + target.userName() + " ~ [ " + Html.a("解除屏蔽","https://t.me/" + me.username() + "?start=unblock" + PAYLOAD_SPLIT + target.id) + " ] ~").exec();
+				msg.send("已屏蔽 " + target.userName() + " ~ [ " + Html.a("解除屏蔽","https://t.me/" + me.username() + "?start=unblock" + PAYLOAD_SPLIT + target.id) + " ] ~").html().exec();
 
 
 			}
@@ -203,11 +209,11 @@ public class ForwardBot extends BotFragment {
 
 				save();
 
-				msg.send("已解除屏蔽 " + target.userName() + " ~ [ " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + target.id) + " " + Html.a("发送消息","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " ]").exec();
+				msg.send("已解除屏蔽 " + target.userName() + " ~ [ " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + target.id) + " " + Html.a("发送消息","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " ]").html().exec();
 
 			} else {
 
-				msg.send("没有屏蔽 " + target.userName() + " ~ [ " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + target.id) + " " + Html.a("发送消息","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " ]").exec();
+				msg.send("没有屏蔽 " + target.userName() + " ~ [ " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + target.id) + " " + Html.a("发送消息","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " ]").html().exec();
 
 
 			}
