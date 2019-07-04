@@ -6,8 +6,12 @@ import cn.hutool.http.HtmlUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.dialect.console.ConsoleLog;
 import cn.hutool.log.level.Level;
+import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.User;
+import com.pengrad.telegrambot.request.ExportChatInviteLink;
+import com.pengrad.telegrambot.response.SendResponse;
+import com.pengrad.telegrambot.response.StringResponse;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
@@ -16,11 +20,7 @@ import io.kurumi.ntt.fragment.abs.request.Send;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.LinkedHashSet;
-import com.pengrad.telegrambot.request.ExportChatInviteLink;
-import com.pengrad.telegrambot.response.StringResponse;
-import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.response.SendResponse;
+import java.util.HashSet;
 
 public class BotLog extends ConsoleLog {
 
@@ -126,7 +126,7 @@ public class BotLog extends ConsoleLog {
 
     }
 
-	public static LinkedHashSet<Long> exportFailed = new LinkedHashSet<>();
+	public static HashSet<Long> exportFailed = new HashSet<>();
 
     public static void process(BotFragment fragment,UserData user,Update update) {
 

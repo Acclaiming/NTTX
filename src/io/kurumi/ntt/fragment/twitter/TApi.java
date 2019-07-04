@@ -2,10 +2,9 @@ package io.kurumi.ntt.fragment.twitter;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
-
-import java.util.LinkedHashSet;
+import java.util.HashSet;
+import java.util.HashSet;
 import java.util.LinkedList;
-
 import twitter4j.IDs;
 import twitter4j.PagableResponseList;
 import twitter4j.Query;
@@ -41,7 +40,7 @@ public class TApi {
 
     public static long[] longMarge(long[] a, long[] b) {
 
-        LinkedHashSet<Long> set = new LinkedHashSet<>();
+        HashSet<Long> set = new HashSet<>();
 
         for (long sa : a) {
 
@@ -322,11 +321,11 @@ public class TApi {
     }
 
 
-    public static LinkedHashSet<Status> getContextStatusWhenSearchRated(Twitter api, Status status, long[] target) throws TwitterException {
+    public static HashSet<Status> getContextStatusWhenSearchRated(Twitter api, Status status, long[] target) throws TwitterException {
 
         Status top = status;
 
-        LinkedHashSet<Status> all = new LinkedHashSet<>();
+        HashSet<Status> all = new HashSet<>();
 
         all.add(status);
 
@@ -375,11 +374,11 @@ public class TApi {
 
     }
 
-    public static LinkedHashSet<Status> getContextStatus(Twitter api, Status status, long[] target) throws TwitterException {
+    public static HashSet<Status> getContextStatus(Twitter api, Status status, long[] target) throws TwitterException {
 
         Status top = status;
 
-        LinkedHashSet<Status> all = new LinkedHashSet<>();
+        HashSet<Status> all = new HashSet<>();
 
         all.add(status);
 

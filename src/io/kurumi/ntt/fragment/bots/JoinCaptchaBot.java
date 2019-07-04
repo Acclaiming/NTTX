@@ -1,11 +1,16 @@
 package io.kurumi.ntt.fragment.bots;
 
+import cn.hutool.captcha.generator.CodeGenerator;
+import cn.hutool.captcha.generator.MathGenerator;
+import cn.hutool.captcha.generator.RandomGenerator;
+import cn.hutool.core.util.RandomUtil;
 import com.pengrad.telegrambot.model.User;
+import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.GetUserProfilePhotos;
+import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.response.GetUserProfilePhotosResponse;
 import com.pengrad.telegrambot.response.SendResponse;
-import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.abs.Callback;
@@ -19,18 +24,8 @@ import io.kurumi.ntt.utils.NTT;
 import java.awt.Color;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Timer;
+import java.util.HashSet;
 import java.util.TimerTask;
-import com.pengrad.telegrambot.request.SendPhoto;
-import com.pengrad.telegrambot.model.request.ParseMode;
-import cn.hutool.core.util.ImageUtil;
-import cn.hutool.captcha.generator.MathGenerator;
-import cn.hutool.captcha.generator.CodeGenerator;
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.captcha.generator.RandomGenerator;
-import io.kurumi.ntt.db.PointStore.Point;
-import java.util.LinkedList;
-import java.util.LinkedHashSet;
 
 public class JoinCaptchaBot extends BotFragment {
 
@@ -50,7 +45,7 @@ public class JoinCaptchaBot extends BotFragment {
     HashMap<Long, HashMap<Long, Msg>> cache = new HashMap<>();
 	HashMap<Long, HashMap<Long, Msg>> secCache = new HashMap<>();
 
-	LinkedHashSet<Long> failed = new LinkedHashSet<>();
+	HashSet<Long> failed = new HashSet<>();
 	
     String welcomeMessage;
     Integer lastWelcomeMessage;

@@ -9,8 +9,8 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.BotServer;
 import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.request.Send;
 import io.kurumi.ntt.fragment.admin.Control;
+import io.kurumi.ntt.fragment.admin.Firewall;
 import io.kurumi.ntt.fragment.admin.Notice;
 import io.kurumi.ntt.fragment.admin.Shell;
 import io.kurumi.ntt.fragment.admin.Stat;
@@ -43,13 +43,12 @@ import io.kurumi.ntt.fragment.twitter.status.StatusSearch;
 import io.kurumi.ntt.fragment.twitter.status.StatusUpdate;
 import io.kurumi.ntt.fragment.twitter.status.TimedStatus;
 import io.kurumi.ntt.fragment.twitter.timeline.TimelineUI;
-import io.kurumi.ntt.fragment.twitter.track.FollowersChart;
 import io.kurumi.ntt.fragment.twitter.track.TrackTask;
 import io.kurumi.ntt.fragment.twitter.track.TrackUI;
+import io.kurumi.ntt.fragment.twitter.track.UserTrackTask;
 import io.kurumi.ntt.utils.BotLog;
 import java.io.IOException;
 import java.util.TimeZone;
-import io.kurumi.ntt.fragment.admin.Firewall;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -222,6 +221,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 	}
 	
+	UserTrackTask userTrackTask = new UserTrackTask();
+	
 	void startTasks() {
 		
 		TimedStatus.start();
@@ -233,6 +234,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		UserBot.startAll();
 
 		Backup.start();
+		
+		userTrackTask.start();
 		
 	}
 	
@@ -298,7 +301,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(new TwitterDelete());
 
-		addFragment(new FollowersChart());
+		//addFragment(new FollowersChart());
 		
 		addFragment(new ListExport());
 		
@@ -330,6 +333,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		mainTimer.cancel();
 		
+		userTrackTask.interrupt();
 
     }
 

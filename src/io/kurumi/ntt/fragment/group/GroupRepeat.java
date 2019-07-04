@@ -4,8 +4,8 @@ import cn.hutool.core.util.RandomUtil;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
-
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
@@ -101,7 +101,7 @@ public class GroupRepeat extends Fragment {
 
     int parseUsers(LinkedList<Msg> msgs) {
 
-        LinkedHashSet<UserData> users = new LinkedHashSet<>();
+        HashSet<UserData> users = new HashSet<>();
 
         for (Msg msg : msgs) {
 

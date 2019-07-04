@@ -13,6 +13,8 @@ import static com.mongodb.client.model.Updates.set;
 import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+import java.util.List;
+import java.util.LinkedList;
 
 public class AbsData<ID, T> {
 
@@ -41,6 +43,20 @@ public class AbsData<ID, T> {
 
     }
 
+	public List<T> getAll() {
+		
+		LinkedList<T> all = new LinkedList<>();
+
+		for (T t : collection.find()) {
+			
+			all.add(t);
+			
+		}
+		
+		return all;
+
+	}
+	
     public T getById(ID id) {
 
         return collection.find(eq(FIELD_ID, id)).first();
