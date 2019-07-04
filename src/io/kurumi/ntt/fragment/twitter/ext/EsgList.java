@@ -31,7 +31,7 @@ public class EsgList extends Fragment {
 		registerFunction("esg");
 
 	}
-	
+
 	static ArrayList<Long> processing = new ArrayList<>();
 
 	@Override
@@ -43,11 +43,11 @@ public class EsgList extends Fragment {
 
 	@Override
 	public int checkTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
-	
+
 		return PROCESS_THREAD;
-		
+
 	}
-	
+
 	@Override
 	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
@@ -58,9 +58,9 @@ public class EsgList extends Fragment {
 			return;
 
 		}
-		
+
 		processing.add(user.id);
-		
+
 		Twitter api = account.createApi();
 
 		long target;
@@ -80,7 +80,7 @@ public class EsgList extends Fragment {
 				msg.send(NTT.parseTwitterException(e)).exec();
 
 				processing.remove(user.id);
-				
+
 				return;
 
 			}
@@ -100,7 +100,7 @@ public class EsgList extends Fragment {
 			msg.send(NTT.parseTwitterException(e)).exec();
 
 			processing.remove(user.id);
-			
+
 			return;
 
 		}
@@ -119,12 +119,14 @@ public class EsgList extends Fragment {
 						esgs.add(status.from);
 						esgStr.append(status.user().urlHtml()).append("\n");
 
-					}
+						if (esgs.size() % 5 == 0) {
 
-					if (esgs.size() % 5 == 0) {
+							msg.send(esgStr.toString()).html().exec();
+							esgStr = new StringBuilder();
 
-						msg.send(esgStr.toString()).html().exec();
-						esgStr = new StringBuilder();
+						}
+
+						continue;
 
 					}
 
@@ -160,23 +162,25 @@ public class EsgList extends Fragment {
 
 				}
 
-
+				boolean esg = false;
 
 				for (Status status : tl) {
 
 					StatusArchive archive = StatusArchive.save(status);
 
-					if (AntiEsu.keywordMatch(archive.text)) {
+					if (!esg && AntiEsu.keywordMatch(archive.text)) {
+
+						esg = true;
 
 						esgs.add(archive.from);
 						esgStr.append(archive.user().urlHtml()).append("\n");
 
-					}
+						if (esgs.size() % 5 == 0) {
 
-					if (esgs.size() % 5 == 0) {
+							msg.send(esgStr.toString()).html().exec();
+							esgStr = new StringBuilder();
 
-						msg.send(esgStr.toString()).html().exec();
-						esgStr = new StringBuilder();
+						}
 
 					}
 
@@ -195,7 +199,7 @@ public class EsgList extends Fragment {
 			bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(esgs.toArray(),"\n"))).fileName("EsgList.csv"));
 
 			processing.remove(user.id);
-			
+
 		}
 
 	}
