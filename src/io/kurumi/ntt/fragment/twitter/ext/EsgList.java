@@ -117,7 +117,7 @@ public class EsgList extends Fragment {
 
 				for (StatusArchive status : StatusArchive.data.findByField("from",id)) {
 
-					if (status.text.matches(AntiEsu.base)) {
+					if (!status.isRetweet && status.text.matches(AntiEsu.base)) {
 						
 						esgs.add(status.from);
 						esgStr.append(status.user().urlHtml()).append(" : ").append(Html.code(status.text)).append("\n");
@@ -170,8 +170,8 @@ public class EsgList extends Fragment {
 				for (Status status : tl) {
 
 					StatusArchive archive = StatusArchive.save(status);
-
-					if (!esg && archive.text.matches(AntiEsu.base)) {
+					
+					if (!archive.isRetweet && !esg && archive.text.matches(AntiEsu.base)) {
 
 						esg = true;
 
