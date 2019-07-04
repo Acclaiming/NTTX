@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TimerTask;
+import io.kurumi.ntt.utils.BotLog;
 
 public class JoinCaptchaBot extends BotFragment {
 
@@ -166,6 +167,8 @@ public class JoinCaptchaBot extends BotFragment {
 			}
 
 		} else if (msg.message().newChatMember() != null || msg.message().newChatMembers() != null) {
+			
+			BotLog.debug(UserData.get(me).userName() + " : 群组新成员 " + user.userName());
 			
             if (delJoin) msg.delete();
 
@@ -622,6 +625,8 @@ public class JoinCaptchaBot extends BotFragment {
 
 		if (msg.message().newChatMembers() != null && msg.message().newChatMembers()[0].id().equals(user.id)) {
 
+			BotLog.debug(UserData.get(me).userName() + " : 群组新成员 " + user.userName());
+			
 			clearGroupPoint(user);
 
 			onGroup(user,msg);

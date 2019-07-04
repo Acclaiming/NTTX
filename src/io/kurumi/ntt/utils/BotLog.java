@@ -185,7 +185,7 @@ public class BotLog extends ConsoleLog {
 
 				UserData newData = UserData.get(message.newChatMember());
 
-				info = new StringBuilder("群组新成员 : ").append(newData.userName()).append("\n[").append(Html.code(newData.id)).append(info);
+				info = new StringBuilder("群组新成员 : ").append(newData.userName()).append("\n[").append(Html.code(newData.id)).append("]\n").append(info);
 
 			}
 
