@@ -4,9 +4,12 @@ import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.request.KickChatMember;
 import com.pengrad.telegrambot.request.RestrictChatMember;
 import com.pengrad.telegrambot.request.UnbanChatMember;
+import com.pengrad.telegrambot.response.BaseResponse;
+import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.request.Send;
-import com.pengrad.telegrambot.response.BaseResponse;
+import java.util.Date;
+import java.util.TimerTask;
 
 public class Context {
 
@@ -52,21 +55,36 @@ public class Context {
 
         return kick(userId, false);
 
-
     }
 
-    public boolean kick(Long userId, boolean ban) {
+    public boolean kick(final Long userId, boolean ban) {
 
-        BaseResponse resp = fragment.bot().execute(new KickChatMember(chatId(), userId.intValue()) {{
+        BaseResponse resp = fragment.bot().execute(new KickChatMember(chatId(), userId.intValue()));
+
+        if (!ban) {
+
+			if (isSuperGroup()) {
+				
+				BotFragment.mainTimer.schedule(new TimerTask() {
+
+						@Override
+						public void run() {
+						
+							fragment.bot().execute(new UnbanChatMember(chatId(), userId.intValue()));
+							
+							
+						}
+						
+					},new Date(System.currentTimeMillis() + 10 * 100));
+				
+			} else {
+				
+				fragment.bot().execute(new UnbanChatMember(chatId(), userId.intValue()));
+				
+			}
 			
-			if (isSuperGroup()) untilDate(((int)(System.currentTimeMillis() / 1000)) + 10);
 			
-		}});
-
-        if (!ban && !isSuperGroup()) {
-
-            fragment.bot().execute(new UnbanChatMember(chatId(), userId.intValue()));
-		
+            
 		}
 
         return resp.isOk();
