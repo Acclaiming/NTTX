@@ -49,6 +49,7 @@ import io.kurumi.ntt.fragment.twitter.track.UserTrackTask;
 import io.kurumi.ntt.utils.BotLog;
 import java.io.IOException;
 import java.util.TimeZone;
+import io.kurumi.ntt.fragment.group.DeleteChannelMessage;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -59,10 +60,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
 
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
-        
+
         if (!INSTANCE.isLongPulling()) {
 
-            int serverPort = Integer.parseInt(Env.getOrDefault("server_port", "-1"));
+            int serverPort = Integer.parseInt(Env.getOrDefault("server_port","-1"));
             String serverDomain = Env.get("server_domain");
 
             while (serverPort == -1) {
@@ -73,7 +74,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
                     serverPort = Integer.parseInt(Console.input());
 
-                    Env.set("server_port", serverPort);
+                    Env.set("server_port",serverPort);
 
                 } catch (Exception e) {
                 }
@@ -86,11 +87,11 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
                 serverDomain = Console.input();
 
-                Env.set("server_domain", serverDomain);
+                Env.set("server_domain",serverDomain);
 
             }
 
-            BotServer.INSTANCE = new BotServer(serverPort, serverDomain);
+            BotServer.INSTANCE = new BotServer(serverPort,serverDomain);
 
             try {
 
@@ -106,10 +107,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         }
 
-        String dbAddr = Env.getOrDefault("db_address", "127.0.0.1");
-        Integer dbPort = Integer.parseInt(Env.getOrDefault("db_port", "27017"));
+        String dbAddr = Env.getOrDefault("db_address","127.0.0.1");
+        Integer dbPort = Integer.parseInt(Env.getOrDefault("db_port","27017"));
 
-        while (!initDB(dbAddr, dbPort)) {
+        while (!initDB(dbAddr,dbPort)) {
 
             System.out.print("输入MongoDb地址 : ");
             dbAddr = Console.scanner().nextLine();
@@ -119,8 +120,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
                 System.out.print("输入MongoDb端口 : ");
                 dbPort = Console.scanner().nextInt();
 
-                Env.set("db_address", dbAddr);
-                Env.set("db_port", dbPort);
+                Env.set("db_address",dbAddr);
+                Env.set("db_port",dbPort);
 
             } catch (Exception e) {
             }
@@ -129,24 +130,24 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         RuntimeUtil.addShutdownHook(new Runnable() {
 
-            @Override
-            public void run() {
+				@Override
+				public void run() {
 
-                INSTANCE.stop();
+					INSTANCE.stop();
 
-            }
+				}
 
-        });
+			});
 
         INSTANCE.start();
 
     }
 
-    static boolean initDB(String dbAddr, Integer dbPort) {
+    static boolean initDB(String dbAddr,Integer dbPort) {
 
         try {
 
-            BotDB.init(dbAddr, dbPort);
+            BotDB.init(dbAddr,dbPort);
 
             return true;
 
@@ -160,34 +161,34 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 	@Override
 	public void init(BotFragment origin) {
-		
+
 		super.init(origin);
-		
+
 		registerFunction("start","help");
-		
+
 	}
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-	
+
 		super.onFunction(user,msg,function,params);
-		
+
         if ("start".equals(function)) {
 
-            msg.send("start failed successfully ~", "", "NTT是一只开源TelegramBot、可以作为Twitter客户端使用、也可以导出贴纸、创建私聊BOT、以及在群内沙雕发言与复读。", "", "BOT帮助文档请戳 : @NTT_X", "交流群组在这里 : @NTTDiscuss").html().publicFailed();
+            msg.send("start failed successfully ~","","NTT是一只开源TelegramBot、可以作为Twitter客户端使用、也可以导出贴纸、创建私聊BOT、以及在群内沙雕发言与复读。","","BOT帮助文档请戳 : @NTT_X","交流群组在这里 : @NTTDiscuss").html().publicFailed();
 
         } else if ("help".equals(msg.command())) {
 
             msg.send("文档在 @NTT_X ~").publicFailed();
 
         }
-		
-		
+
+
 	}
 
     @Override
     public void start() {
-		
+
         super.start();
 
         startTasks();
@@ -214,19 +215,19 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 	@Override
 	public void realStart() {
-		
+
 		startThreads(5);
-		
+
 		super.realStart();
-		
+
 	}
-	
+
 	UserTrackTask userTrackTask = new UserTrackTask();
-	
+
 	void startTasks() {
-		
+
 		TimedStatus.start();
-		
+
 		TimelineUI.start();
 
 		TrackTask.start();
@@ -234,25 +235,27 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		UserBot.startAll();
 
 		Backup.start();
-		
+
 		userTrackTask.start();
-		
+
 	}
-	
+
     @Override
     public void reload() {
-		
+
 		super.reload();
 
         addFragment(new Notice());
-		
+
         addFragment(new Backup());
 
         addFragment(new Users());
-		
+
 		addFragment(new Shell());
-		
+
 		addFragment(new Stat());
+
+		addFragment(new DeleteChannelMessage());
 
         addFragment(new DebugMsg());
 
@@ -267,7 +270,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(new StatusUpdate());
 
 		addFragment(new TimedStatus());
-		
+
         addFragment(new StatusSearch());
 
         addFragment(new StatusGetter());
@@ -275,13 +278,13 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(new StatusFetch());
 
         addFragment(new MediaDownload());
-        
+
         addFragment(new TwitterLogin());
 
         addFragment(new TwitterLogout());
 
 		addFragment(new AuthExport());
-		
+
         addFragment(new AutoUI());
 
         addFragment(new TrackUI());
@@ -302,9 +305,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(new TwitterDelete());
 
 		//addFragment(new FollowersChart());
-		
+
 		addFragment(new ListExport());
-		
+
         // Forum
 
         addFragment(new ForumManage());
@@ -326,13 +329,13 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         }
 
         super.stop();
-		
+
         BotServer.INSTANCE.stop();
 
 		stopThreads();
-		
+
 		mainTimer.cancel();
-		
+
 		userTrackTask.interrupt();
 
     }
@@ -371,9 +374,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
                 user.contactable = true;
 
-                UserData.userDataIndex.put(user.id, user);
+                UserData.userDataIndex.put(user.id,user);
 
-                UserData.data.setById(user.id, user);
+                UserData.data.setById(user.id,user);
 
             }
 
@@ -384,12 +387,12 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     }
 
     @Override
-    public void uncaughtException(Thread thread, Throwable throwable) {
+    public void uncaughtException(Thread thread,Throwable throwable) {
 
-        BotLog.error("NTT出错", throwable);
+        BotLog.error("NTT出错",throwable);
 
         System.exit(1);
 
     }
-	
+
 }
