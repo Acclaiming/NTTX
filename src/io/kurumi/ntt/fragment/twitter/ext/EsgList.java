@@ -119,6 +119,8 @@ public class EsgList extends Fragment {
 					}
 
 				}
+				
+				}
 
 				if (!ok) {
 
@@ -130,7 +132,9 @@ public class EsgList extends Fragment {
 
 				}
 
-			}
+				
+				}
+				
 
 			LinkedList<Long> esgs = new LinkedList<>();
 			StringBuilder esgStr = new StringBuilder();
@@ -232,4 +236,4 @@ public class EsgList extends Fragment {
 
 		}
 
-	}
+}
