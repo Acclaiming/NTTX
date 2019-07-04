@@ -59,7 +59,7 @@ public class Context {
 
         BaseResponse resp = fragment.bot().execute(new KickChatMember(chatId(), userId.intValue()) {{
 			
-			if (isSuperGroup()) untilDate((int)(System.currentTimeMillis() / 100) + 10);
+			if (isSuperGroup()) untilDate(((int)(System.currentTimeMillis() / 1000)) + 10);
 			
 		}});
 
