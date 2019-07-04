@@ -90,7 +90,7 @@ public class EsgList extends Fragment {
 
 		msg.send("正在检查 这可能需要几(十)分钟的时间 ~").exec();
 
-		msg.send(Html.code(AntiEsu.regex)).debug();
+		msg.send(Html.code(AntiEsu.base)).html().debug();
 		
 		LinkedList<Long> foids;
 
