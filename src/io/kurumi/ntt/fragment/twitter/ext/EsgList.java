@@ -126,7 +126,7 @@ public class EsgList extends Fragment {
 
 						}
 
-						continue;
+						break;
 
 					}
 
@@ -187,21 +187,21 @@ public class EsgList extends Fragment {
 				}
 
 			}
-			
-			}
-			
 
-			if (esgStr.length() > 0) {
+		}
 
-				msg.send(esgStr.toString()).html().exec();
 
-			}
+		if (esgStr.length() > 0) {
 
-			msg.sendUpdatingFile();
+			msg.send(esgStr.toString()).html().exec();
 
-			bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(esgs.toArray(),"\n"))).fileName("EsgList.csv"));
+		}
 
-			processing.remove(user.id);
+		msg.sendUpdatingFile();
+
+		bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(esgs.toArray(),"\n"))).fileName("EsgList.csv"));
+
+		processing.remove(user.id);
 
 	}
 
