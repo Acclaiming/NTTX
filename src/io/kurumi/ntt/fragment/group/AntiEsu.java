@@ -18,8 +18,8 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
 
 public class AntiEsu extends Fragment {
 
-    static final String regex;
-    static final String[] stickers = new String[]{
+    public static final String regex;
+    public static final String[] stickers = new String[]{
 
 		"LzhStickers",
 		"ESUISGOD",
@@ -78,7 +78,7 @@ public class AntiEsu extends Fragment {
 		"池沼", "噔噔咚", "心肺停止", "激寒", "雷普",
 
 		"林檎", "难视", "人间之", "并感", "小鬼", "震声","硬汉",
-		"直球", "屑", "鉴", "野兽", "一般通过", "神必", "削除", "寻思",
+		"直球", "野兽", "一般通过", "神必", "削除", "寻思",
 		"出道","户籍","高雅", "正义","恶臭",
 
 		"野蛮", "文明", "大脑", "最后警告", "黑屁", "确信",
@@ -89,7 +89,7 @@ public class AntiEsu extends Fragment {
 
 		"自嘲完美",  "完美华丽", "奇妙深刻", "唐突", "震撼","实名",
 
-		"闸总","芬芳","完完全全","干烂","恶俗",
+		"闸总","芬芳","完完全全","干烂",
 
 	};
 
@@ -98,7 +98,7 @@ public class AntiEsu extends Fragment {
 
 		"🐴", "🐮", "🍺", "👊", "¿", "恁","蛆",
 
-		"nmsl", "这事", "ao的","niu(pi|bi)",
+		"nmsl", "这事", "ao的","niu(pi|bi)","屑", "鉴", 
 
 		"谔谔", "呃呃","蛆","草","神触",
 
