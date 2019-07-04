@@ -96,7 +96,7 @@ public class EsgList extends Fragment {
 
 		try {
 
-			foids =  TApi.getAllFoIDs(api,target);
+			foids =  TApi.getAllFrIDs(api,target);
 
 		} catch (TwitterException e) {
 
