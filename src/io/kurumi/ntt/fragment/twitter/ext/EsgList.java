@@ -117,7 +117,7 @@ public class EsgList extends Fragment {
 
 				for (StatusArchive status : StatusArchive.data.findByField("from",id)) {
 
-					if (AntiEsu.keywordMatch(status.text)) {
+					if (AntiEsu.base.matches(status.text)) {
 						
 						esgs.add(status.from);
 						esgStr.append(status.user().urlHtml()).append(" : ").append(Html.code(status.text)).append("\n");
@@ -171,7 +171,7 @@ public class EsgList extends Fragment {
 
 					StatusArchive archive = StatusArchive.save(status);
 
-					if (!esg && AntiEsu.keywordMatch(archive.text)) {
+					if (!esg && AntiEsu.base.matches(archive.text)) {
 
 						esg = true;
 

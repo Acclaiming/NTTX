@@ -20,6 +20,7 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
 public class AntiEsu extends Fragment {
 
     public static final String regex;
+	public static final String base;
     public static final String[] stickers = new String[]{
 
 		"LzhStickers",
@@ -70,11 +71,11 @@ public class AntiEsu extends Fragment {
 
 	static String[] pinyinKeys = new String[] {
 
-		"恶俗","迫害","文字狱","要素","哭哭",
+		"恶俗","迫害","要素","我哭哭",
 
 		"震撼", "废物", "弱智", "魔怔", "碰瓷", "寻思", "傻逼",
 		"迫真", "察觉", "无关心", "便乘", "棒读","你妈","野爹",
-		"兄贵", "姐贵", "仙贝", "先辈","辱骂", "好时代",
+		"兄贵", "姐贵", "仙贝", "先辈", "好时代",
 
 		"池沼", "噔噔咚", "心肺停止", "激寒", "雷普",
 
@@ -90,7 +91,7 @@ public class AntiEsu extends Fragment {
 
 		"自嘲完美",  "完美华丽", "奇妙深刻", "唐突", "震撼","实名",
 
-		"闸总","芬芳","完完全全","干烂",
+		"闸总","芬芳","完完全全","干烂","小将",
 
 	};
 
@@ -121,6 +122,28 @@ public class AntiEsu extends Fragment {
 		format.setToneType(HanyuPinyinToneType.WITH_TONE_NUMBER);
 		format.setVCharType(HanyuPinyinVCharType.WITH_V);
 
+		StringBuilder bw = new StringBuilder(".*(");
+		
+		for (int index = 0; index < keys.length; index++) {
+
+			if (index > 0) bw.append("|");
+			
+			bw.append(keys[index]);
+
+        }
+		
+		for (int index = 0; index < pinyinKeys.length; index++) {
+			
+			bw.append("|").append(pinyinKeys[index]);
+
+        }
+		
+
+        bw.append(").*");
+
+        base = bw.toString();
+		
+		
         StringBuilder kw = new StringBuilder(".*(");
 
         for (int index = 0; index < pinyinKeys.length; index++) {
