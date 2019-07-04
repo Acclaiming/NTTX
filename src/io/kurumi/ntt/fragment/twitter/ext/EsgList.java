@@ -19,6 +19,7 @@ import io.kurumi.ntt.fragment.group.AntiEsu;
 import com.pengrad.telegrambot.request.SendDocument;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+import java.util.ArrayList;
 
 public class EsgList extends Fragment {
 
@@ -30,6 +31,8 @@ public class EsgList extends Fragment {
 		registerFunction("esg");
 
 	}
+	
+	static ArrayList<Long> processing = new ArrayList<>();
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
@@ -48,6 +51,16 @@ public class EsgList extends Fragment {
 	@Override
 	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
+		if (processing.contains(user.id)) {
+
+			msg.send("乃有正在处理中的... 请等待完成后再试...").exec();
+
+			return;
+
+		}
+		
+		processing.add(user.id);
+		
 		Twitter api = account.createApi();
 
 		long target;
@@ -66,6 +79,8 @@ public class EsgList extends Fragment {
 
 				msg.send(NTT.parseTwitterException(e)).exec();
 
+				processing.remove(user.id);
+				
 				return;
 
 			}
@@ -84,12 +99,14 @@ public class EsgList extends Fragment {
 
 			msg.send(NTT.parseTwitterException(e)).exec();
 
+			processing.remove(user.id);
+			
 			return;
 
 		}
 
 		LinkedList<Long> esgs = new LinkedList<>();
-		StringBuilder esgStr = new StringBuilder<>();
+		StringBuilder esgStr = new StringBuilder();
 
 		for (Long id : foids) {
 
@@ -177,6 +194,8 @@ public class EsgList extends Fragment {
 
 			bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(esgs.toArray(),"\n"))).fileName("EsgList.csv"));
 
+			processing.remove(user.id);
+			
 		}
 
 	}
