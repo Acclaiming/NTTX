@@ -87,7 +87,7 @@ public class EsgList extends Fragment {
 
 		}
 
-		msg.send("正在检查 这可能需要几分钟的时间 ~").exec();
+		msg.send("正在检查 这可能需要几(十)分钟的时间 ~").exec();
 
 		LinkedList<Long> foids;
 
@@ -119,7 +119,7 @@ public class EsgList extends Fragment {
 						esgs.add(status.from);
 						esgStr.append(status.user().urlHtml()).append("\n");
 
-						if (esgs.size() % 5 == 0) {
+						if (esgs.size() % 10 == 0) {
 
 							msg.send(esgStr.toString()).html().exec();
 							esgStr = new StringBuilder();
@@ -175,7 +175,7 @@ public class EsgList extends Fragment {
 						esgs.add(archive.from);
 						esgStr.append(archive.user().urlHtml()).append("\n");
 
-						if (esgs.size() % 5 == 0) {
+						if (esgs.size() % 10 == 0) {
 
 							msg.send(esgStr.toString()).html().exec();
 							esgStr = new StringBuilder();
@@ -187,10 +187,13 @@ public class EsgList extends Fragment {
 				}
 
 			}
+			
+			}
+			
 
 			if (esgStr.length() > 0) {
 
-				msg.send(esgStr.toString()).exec();
+				msg.send(esgStr.toString()).html().exec();
 
 			}
 
@@ -199,8 +202,6 @@ public class EsgList extends Fragment {
 			bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(esgs.toArray(),"\n"))).fileName("EsgList.csv"));
 
 			processing.remove(user.id);
-
-		}
 
 	}
 
