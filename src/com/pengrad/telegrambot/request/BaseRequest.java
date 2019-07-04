@@ -40,7 +40,7 @@ abstract public class BaseRequest<T extends BaseRequest, R extends BaseResponse>
 		
         String className = this.getClass().getSimpleName();
 		
-		if (className.length() == 0) className = getClass().getSuperclass().getSimpleName();
+		if (!getClass().getName().startsWith("com.pengrad.telegrambot.request.")) className = getClass().getSuperclass().getSimpleName();
 		
         return Character.toLowerCase(className.charAt(0)) + className.substring(1);
     }

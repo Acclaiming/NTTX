@@ -63,31 +63,15 @@ public class Context {
 
     public boolean kick(final Long userId, boolean ban) {
 
-        BaseResponse resp = fragment.bot().execute(new KickChatMember(chatId(), userId.intValue()));
-
-        if (!ban) {
-
-			if (isPublicGroup()) {
-				
-				BotFragment.mainTimer.schedule(new TimerTask() {
-
-						@Override
-						public void run() {
-						
-							fragment.bot().execute(new UnbanChatMember(chatId(), userId.intValue()));
-							
-							
-						}
-						
-					},new Date(System.currentTimeMillis() + 10 * 100));
-				
-			} else {
-				
-				fragment.bot().execute(new UnbanChatMember(chatId(), userId.intValue()));
-				
-			}
+        BaseResponse resp = fragment.bot().execute(new KickChatMember(chatId(), userId.intValue()) {{
 			
+			if (isPublicGroup()) untilDate((int)(System.currentTimeMillis() / 1000) + 60);
 			
+		}});
+
+        if (!ban && !isPublicGroup()) {
+				
+			fragment.bot().execute(new UnbanChatMember(chatId(), userId.intValue()));
             
 		}
 
