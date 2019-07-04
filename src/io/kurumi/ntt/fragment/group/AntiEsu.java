@@ -118,7 +118,7 @@ public class AntiEsu extends Fragment {
 		format = new HanyuPinyinOutputFormat();
 
 		format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
-		format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+		format.setToneType(HanyuPinyinToneType.WITH_TONE_NUMBER);
 		format.setVCharType(HanyuPinyinVCharType.WITH_V);
 
         StringBuilder kw = new StringBuilder(".*(");
