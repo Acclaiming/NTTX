@@ -166,8 +166,6 @@ public class JoinCaptchaBot extends BotFragment {
 			}
 
 		} else if (msg.message().newChatMember() != null || msg.message().newChatMembers() != null) {
-
-			msg.send("Test").debug();
 			
             if (delJoin) msg.delete();
 
