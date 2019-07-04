@@ -57,13 +57,17 @@ public class Context {
 
     public boolean kick(Long userId, boolean ban) {
 
-        BaseResponse resp = fragment.bot().execute(new KickChatMember(chatId(), userId.intValue()));
+        BaseResponse resp = fragment.bot().execute(new KickChatMember(chatId(), userId.intValue()) {{
+			
+			if (isSuperGroup()) untilDate((int)(System.currentTimeMillis() / 100) + 10);
+			
+		}});
 
-        if (!ban) {
+        if (!ban && !isSuperGroup()) {
 
             fragment.bot().execute(new UnbanChatMember(chatId(), userId.intValue()));
-
-        }
+		
+		}
 
         return resp.isOk();
 
