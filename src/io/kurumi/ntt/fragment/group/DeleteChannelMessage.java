@@ -1,13 +1,13 @@
 package io.kurumi.ntt.fragment.group;
 
 import cn.hutool.json.JSONArray;
+import com.pengrad.telegrambot.request.RestrictChatMember;
 import io.kurumi.ntt.db.LocalData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.utils.NTT;
-import com.pengrad.telegrambot.model.Message;
 
 public class DeleteChannelMessage extends Fragment {
 
@@ -46,7 +46,7 @@ public class DeleteChannelMessage extends Fragment {
                 msg.send("无需重复关闭 ~").exec();
 
             } else {
-
+				
                 enable.remove(msg.chatId().longValue());
 
                 save();
@@ -63,6 +63,8 @@ public class DeleteChannelMessage extends Fragment {
 
             } else {
 
+				bot().execute(new RestrictChatMember(msg.chatId(),777000));
+				
                 enable.add(msg.chatId().longValue());
 
                 save();
