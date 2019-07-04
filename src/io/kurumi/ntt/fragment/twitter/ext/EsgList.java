@@ -115,9 +115,9 @@ public class EsgList extends Fragment {
 				for (StatusArchive status : StatusArchive.data.findByField("from",id)) {
 
 					if (AntiEsu.keywordMatch(status.text)) {
-
+						
 						esgs.add(status.from);
-						esgStr.append(status.user().urlHtml()).append("\n");
+						esgStr.append(status.user().urlHtml()).append(" : ").append(status.text).append("\n");
 
 						if (esgs.size() % 10 == 0) {
 
@@ -173,8 +173,8 @@ public class EsgList extends Fragment {
 						esg = true;
 
 						esgs.add(archive.from);
-						esgStr.append(archive.user().urlHtml()).append("\n");
-
+						esgStr.append(archive.user().urlHtml()).append(" : ").append(status.text).append("\n");
+						
 						if (esgs.size() % 10 == 0) {
 
 							msg.send(esgStr.toString()).html().exec();
