@@ -90,9 +90,9 @@ public class EsgList extends Fragment {
 
 		msg.send("正在检查 这可能需要几(十)分钟的时间 ~").exec();
 
-		msg.send(Html.code(AntiEsu.base)).html().debug();
-		
-		LinkedList<Long> foids;
+		//msg.send(Html.code(AntiEsu.base)).html().debug();
+
+		LinkedList<Long> foids = null;
 
 		try {
 
@@ -100,88 +100,114 @@ public class EsgList extends Fragment {
 
 		} catch (TwitterException e) {
 
-			msg.send(NTT.parseTwitterException(e)).exec();
+			boolean ok = false;
 
-			processing.remove(user.id);
+			if (target != account.id) {
 
-			return;
+				TAuth targetAcc = NTT.loopFindAccessable(target);
 
-		}
-
-		LinkedList<Long> esgs = new LinkedList<>();
-		StringBuilder esgStr = new StringBuilder();
-
-		for (Long id : foids) {
-
-			if (StatusArchive.data.countByField("from",id) > 50) {
-
-				for (StatusArchive status : StatusArchive.data.findByField("from",id)) {
-
-					if (!status.isRetweet && status.text.matches(AntiEsu.base)) {
-						
-						esgs.add(status.from);
-						esgStr.append(status.user().urlHtml()).append(" : ").append(Html.code(status.text)).append("\n");
-
-						if (esgs.size() % 10 == 0) {
-
-							msg.send(esgStr.toString()).html().exec();
-							esgStr = new StringBuilder();
-
-						}
-
-						break;
-
-					}
-
-				}
-
-
-			} else {
-
-				ResponseList<Status> tl;
-
-				try {
-
-					tl = api.getUserTimeline(id,new Paging().count(200));
-
-				} catch (TwitterException e) {
-
-					if (target == account.id) continue;
-
-					TAuth targetAcc = NTT.loopFindAccessable(target);
-
-					if (targetAcc == null) continue;
+				if (targetAcc != null) {
 
 					try {
 
-						tl = targetAcc.createApi().getUserTimeline(id,new Paging().count(200));
+						foids =  TApi.getAllFrIDs(targetAcc.createApi(),target);
+
+						ok = true;
 
 					} catch (TwitterException ex) {
 
-						continue;
+					}
+
+				}
+
+				if (!ok) {
+
+					msg.send(NTT.parseTwitterException(e)).exec();
+
+					processing.remove(user.id);
+
+					return;
+
+				}
+
+			}
+
+			LinkedList<Long> esgs = new LinkedList<>();
+			StringBuilder esgStr = new StringBuilder();
+
+			for (Long id : foids) {
+
+				if (StatusArchive.data.countByField("from",id) > 50) {
+
+					for (StatusArchive status : StatusArchive.data.findByField("from",id)) {
+
+						if (!status.isRetweet && status.text.matches(AntiEsu.base)) {
+
+							esgs.add(status.from);
+							esgStr.append(status.user().urlHtml()).append(" : ").append(Html.code(status.text)).append("\n");
+
+							if (esgs.size() % 10 == 0) {
+
+								msg.send(esgStr.toString()).html().exec();
+								esgStr = new StringBuilder();
+
+							}
+
+							break;
+
+						}
 
 					}
 
 
-				}
+				} else {
 
-				boolean esg = false;
+					ResponseList<Status> tl;
 
-				for (Status status : tl) {
+					try {
 
-					StatusArchive archive = StatusArchive.save(status);
-					
-					if (!archive.isRetweet && !esg && archive.text.matches(AntiEsu.base)) {
+						tl = api.getUserTimeline(id,new Paging().count(200));
 
-						esg = true;
+					} catch (TwitterException e) {
 
-						esgs.add(archive.from);
-						esgStr.append(archive.user().urlHtml()).append(" : ").append(Html.code(archive.text)).append("\n");
-						
-						if (esgs.size() % 10 == 0) {
+						if (target == account.id) continue;
 
-							msg.send(esgStr.toString()).html().exec();
-							esgStr = new StringBuilder();
+						TAuth targetAcc = NTT.loopFindAccessable(target);
+
+						if (targetAcc == null) continue;
+
+						try {
+
+							tl = targetAcc.createApi().getUserTimeline(id,new Paging().count(200));
+
+						} catch (TwitterException ex) {
+
+							continue;
+
+						}
+
+
+					}
+
+					boolean esg = false;
+
+					for (Status status : tl) {
+
+						StatusArchive archive = StatusArchive.save(status);
+
+						if (!archive.isRetweet && !esg && archive.text.matches(AntiEsu.base)) {
+
+							esg = true;
+
+							esgs.add(archive.from);
+							esgStr.append(archive.user().urlHtml()).append(" : ").append(Html.code(archive.text)).append("\n");
+
+							if (esgs.size() % 10 == 0) {
+
+								msg.send(esgStr.toString()).html().exec();
+								esgStr = new StringBuilder();
+
+							}
 
 						}
 
@@ -191,21 +217,19 @@ public class EsgList extends Fragment {
 
 			}
 
+
+			if (esgStr.length() > 0) {
+
+				msg.send(esgStr.toString()).html().exec();
+
+			}
+
+			msg.sendUpdatingFile();
+
+			bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(esgs.toArray(),"\n"))).fileName("EsgList.csv"));
+
+			processing.remove(user.id);
+
 		}
-
-
-		if (esgStr.length() > 0) {
-
-			msg.send(esgStr.toString()).html().exec();
-
-		}
-
-		msg.sendUpdatingFile();
-
-		bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(esgs.toArray(),"\n"))).fileName("EsgList.csv"));
-
-		processing.remove(user.id);
 
 	}
-
-}

@@ -30,7 +30,7 @@ public class StatusUpdate extends Fragment {
 	
 		super.init(origin);
 		
-		registerFunction("update");
+		registerFunction("update" );
 	
         registerPoint(POINT_UPDATE_STATUS);
 

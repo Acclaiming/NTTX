@@ -51,6 +51,7 @@ import java.io.IOException;
 import java.util.TimeZone;
 import io.kurumi.ntt.fragment.group.DeleteChannelMessage;
 import io.kurumi.ntt.fragment.twitter.ext.EsgList;
+import io.kurumi.ntt.fragment.twitter.action.UnMuteAll;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -277,6 +278,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(new StatusGetter());
 
         addFragment(new StatusFetch());
+		
+		addFragment(new UnMuteAll());
 
         addFragment(new MediaDownload());
 
