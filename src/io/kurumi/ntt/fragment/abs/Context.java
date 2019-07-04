@@ -42,6 +42,10 @@ public class Context {
     public boolean isGroup() {
         return chat.type() == Chat.Type.group || chat.type() == Chat.Type.supergroup;
     }
+	
+	public boolean isPublicGroup() {
+        return chat.username() != null;
+    }
 
     public boolean isSuperGroup() {
         return chat.type() == Chat.Type.supergroup;
@@ -63,7 +67,7 @@ public class Context {
 
         if (!ban) {
 
-			if (isSuperGroup()) {
+			if (isPublicGroup()) {
 				
 				BotFragment.mainTimer.schedule(new TimerTask() {
 
