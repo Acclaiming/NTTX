@@ -39,6 +39,13 @@ public class EsgList extends Fragment {
 	}
 
 	@Override
+	public int checkTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+	
+		return PROCESS_THREAD;
+		
+	}
+	
+	@Override
 	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
 		Twitter api = account.createApi();
