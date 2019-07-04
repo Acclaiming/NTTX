@@ -23,7 +23,7 @@ media - 推文媒体链接得到
 status - 推文存档
 fetch - 拉取用户所有推文与上下文
 search - 推文搜索
-reply - <on|off> 删除来自绑定频道的内容
+dcm - <on|off> 删除来自绑定频道的内容
 reply - <on|off> 群组自动回复
 action - <on|off> 群组自定义事件
 antiesu - <on|off> 群组反恶俗
