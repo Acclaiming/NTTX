@@ -7,6 +7,7 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
 import java.util.HashSet;
 import net.sourceforge.pinyin4j.PinyinHelper;
@@ -105,7 +106,7 @@ public class AntiEsu extends Fragment {
 		"114", "514", "壬","我局","局(的|得)","事你",
 
 		"杰哥", "阿杰", "如果早知道", "不要啊", "兄啊", "，，+", 
-	
+
 		"esu\\.(wiki|moe|zone)","zhina\\.(wiki|red)"
 
     };
@@ -136,7 +137,7 @@ public class AntiEsu extends Fragment {
 					String[] pinyin = PinyinHelper.toHanyuPinyinStringArray(c,format);
 
 					if (pinyin == null) {
-						
+
 						kk.append(c);
 
 					} else {
@@ -152,7 +153,7 @@ public class AntiEsu extends Fragment {
 						pinyin = set.toArray(new String[set.size()]);
 
 						if (pinyin.length == 1) {
-							
+
 							kk.append(pinyin[0]);
 
 						} else {
@@ -202,25 +203,50 @@ public class AntiEsu extends Fragment {
 
     }
 
-    public static boolean keywordMatch(String msg) {
+	public String toPinyin(String msg) {
 
-		if (msg == null) return false;
-		
 		StringBuilder text = new StringBuilder();
 
 		for (char c : msg.replace(" ","").toLowerCase().toCharArray()) {
 
 			try {
-				
+
 				String[] pinyin = PinyinHelper.toHanyuPinyinStringArray(c,format);
-				
+
 				if (pinyin == null || pinyin.length == 0) text.append(c);
 				else text.append(pinyin[0]);
-				
+
 			} catch (BadHanyuPinyinOutputFormatCombination e) {
-				
+
 				text.append(c);
-				
+
+			}
+
+		}
+
+		return text.toString();
+
+	}
+
+    public static boolean keywordMatch(String msg) {
+
+		if (msg == null) return false;
+
+		StringBuilder text = new StringBuilder();
+
+		for (char c : msg.replace(" ","").toLowerCase().toCharArray()) {
+
+			try {
+
+				String[] pinyin = PinyinHelper.toHanyuPinyinStringArray(c,format);
+
+				if (pinyin == null || pinyin.length == 0) text.append(c);
+				else text.append(pinyin[0]);
+
+			} catch (BadHanyuPinyinOutputFormatCombination e) {
+
+				text.append(c);
+
 			}
 
 		}
@@ -241,13 +267,21 @@ public class AntiEsu extends Fragment {
 
 		super.init(origin);
 
-        registerFunction("antiesu");
+        registerFunction("antiesu","py");
 
 	}
 
     @Override
     public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
+		if ("py".equals(function)) {
+		
+			msg.send(Html.code(toPinyin(ArrayUtil.join(ArrayUtil.remove(params,0)," ")))).html().exec();
+			
+			return;
+			
+		}
+		
         if (NTT.checkGroupAdmin(msg)) return;
 
         if (params.length == 1 && "off".equals(params[0])) {
