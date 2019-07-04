@@ -1,25 +1,26 @@
 package io.kurumi.ntt.fragment.twitter.ext;
 
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
+import com.pengrad.telegrambot.request.SendDocument;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.group.AntiEsu;
 import io.kurumi.ntt.fragment.twitter.TApi;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import io.kurumi.ntt.fragment.group.AntiEsu;
-import com.pengrad.telegrambot.request.SendDocument;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.StrUtil;
-import java.util.ArrayList;
 
 public class EsgList extends Fragment {
 
@@ -117,7 +118,7 @@ public class EsgList extends Fragment {
 					if (AntiEsu.keywordMatch(status.text)) {
 						
 						esgs.add(status.from);
-						esgStr.append(status.user().urlHtml()).append(" : ").append(status.text).append("\n");
+						esgStr.append(status.user().urlHtml()).append(" : ").append(Html.code(status.text)).append("\n");
 
 						if (esgs.size() % 10 == 0) {
 
@@ -173,7 +174,7 @@ public class EsgList extends Fragment {
 						esg = true;
 
 						esgs.add(archive.from);
-						esgStr.append(archive.user().urlHtml()).append(" : ").append(status.text).append("\n");
+						esgStr.append(archive.user().urlHtml()).append(" : ").append(Html.code(archive.text)).append("\n");
 						
 						if (esgs.size() % 10 == 0) {
 
