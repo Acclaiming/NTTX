@@ -63,8 +63,6 @@ public class DeleteChannelMessage extends Fragment {
 
             } else {
 
-				bot().execute(new RestrictChatMember(msg.chatId(),777000));
-				
                 enable.add(msg.chatId().longValue());
 
                 save();
