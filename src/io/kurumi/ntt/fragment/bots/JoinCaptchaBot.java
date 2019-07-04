@@ -620,7 +620,7 @@ public class JoinCaptchaBot extends BotFragment {
         HashMap<Long, Msg> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
 		HashMap<Long, Msg> secGroup = secCache.containsKey(msg.chatId()) ? secCache.get(msg.chatId()) : new HashMap<Long, Msg>();
 
-		if (msg.message().newChatMember() != null && msg.message().newChatMember().id().equals(user.id)) {
+		if (msg.message().newChatMembers() != null && msg.message().newChatMembers()[0].id().equals(user.id)) {
 
 			clearGroupPoint(user);
 
