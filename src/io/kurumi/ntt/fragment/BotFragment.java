@@ -41,6 +41,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
 import java.util.Timer;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener {
 
@@ -948,11 +949,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
             msg.sendUpdatingPhoto();
 
-            bot().execute(new SendPhoto(msg.chatId(),getFile(msg.message().sticker().fileId())).caption(str.toString()).parseMode(ParseMode.HTML).replyToMessageId(msg.messageId()));
+            bot().execute(new SendPhoto(msg.chatId(),getFile(msg.message().sticker().fileId())).caption(str.toString()).parseMode(ParseMode.HTML).replyMarkup(new ReplyKeyboardRemove()).replyToMessageId(msg.messageId()));
 
         } else {
 
-            msg.send("这一条消息未被处理 将忽略","帮助文档 / 公告频道 : @NTT_X","交流建议群组 : @NTTDiscuss :)",str.toString()).replyTo(msg).html().exec();
+            msg.send("这一条消息未被处理 将忽略","帮助文档 / 公告频道 : @NTT_X","交流建议群组 : @NTTDiscuss :)",str.toString()).replyTo(msg).html().removeKeyboard().exec();
 
 		}
 
