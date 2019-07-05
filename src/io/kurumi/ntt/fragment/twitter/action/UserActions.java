@@ -22,8 +22,8 @@ public class UserActions extends Fragment {
 
 		super.init(origin);
 
-		registerFunction("follow","unfo","mute","unmute","mute_rt","unmute_rt","block","unblock");
-		registerPayload("follow","unfo","mute","unmute","mrt","umrt","block","unblock");
+		registerFunction("twuf","follow","unfo","mute","unmute","mute_rt","unmute_rt","block","unblock");
+		registerPayload("twuf","follow","unfo","mute","unmute","mrt","umrt","block","unblock");
 		
 	}
 
@@ -310,7 +310,61 @@ public class UserActions extends Fragment {
 
 				}
 
+			} else if ("unblock".equals(function)) {
+
+				if (!ship.isSourceBlockingTarget()) {
+
+					msg.send("你没有屏蔽 " + archive.urlHtml() + " ~").html().point(0,targetId);
+
+					return;
+
+				}
+
+				try {
+
+					api.destroyBlock(targetId);
+					
+					msg.send("已解除屏蔽 " + archive.urlHtml() + " ~").html().point(0,targetId);
+
+				}  catch (TwitterException e) {
+
+					msg.send("解除屏蔽失败 :",NTT.parseTwitterException(e)).exec();
+
+				}
+
+			}else if ("twuf".equals(function)) {
+
+				if (ship.isSourceBlockingTarget()) {
+
+					msg.send("你已经把 " + archive.urlHtml() + " 屏蔽了 ~").html().point(0,targetId);
+
+					return;
+
+				}
+
+				try {
+
+					api.createBlock(targetId);
+					
+					api.destroyBlock(targetId);
+
+					TrackTask.IdsList fo = TrackTask.followers.getById(account.id);
+
+					fo.ids.remove(targetId);
+
+					TrackTask.followers.setById(account.id,fo);
+
+					msg.send("已双向取关 " + archive.urlHtml() + " ~").html().point(0,targetId);
+
+				}  catch (TwitterException e) {
+
+					msg.send("双向取关失败 :",NTT.parseTwitterException(e)).exec();
+
+				}
+
+			
 			}
+			
 
 
         } catch (TwitterException e) {
