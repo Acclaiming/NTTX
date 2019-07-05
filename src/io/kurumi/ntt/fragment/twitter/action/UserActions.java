@@ -332,7 +332,7 @@ public class UserActions extends Fragment {
 
 				}
 
-			}else if ("twuf".equals(function)) {
+			} else if ("twuf".equals(function)) {
 
 				if (ship.isSourceBlockingTarget()) {
 

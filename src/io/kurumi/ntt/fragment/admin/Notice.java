@@ -74,7 +74,7 @@ public class Notice extends Fragment {
 
                 if (userData.contactable == null || userData.contactable) {
 
-                    if (login && TAuth.data.countByField("user",userData.id) < 0) {
+                    if (login && TAuth.data.countByField("user",userData.id) == 0) {
 
                         continue;
 
