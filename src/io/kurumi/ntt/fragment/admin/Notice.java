@@ -76,6 +76,8 @@ public class Notice extends Fragment {
 
                     if (login && TAuth.data.countByField("user",userData.id) == 0) {
 
+						failed ++;
+						
                         continue;
 
                     }
