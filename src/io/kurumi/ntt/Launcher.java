@@ -181,35 +181,33 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
             msg.send("start failed successfully ~","","NTT是一只开源TelegramBot、可以作为Twitter客户端使用、也可以导出贴纸、创建私聊BOT、以及在群内沙雕发言与复读。","","BOT帮助文档请戳 : @NTT_X","交流群组在这里 : @NTTDiscuss").html().publicFailed();
 
-			if (user.userObj != null && !"zh-hans".equals(user.userObj.languageCode())) {
+			if (user.userObj != null && "zh-hans".equals(user.userObj.languageCode())) return;
 
-				msg.send("如果需要Telegram中文翻译，可以戳这里 :)\n",
+			msg.send("如果需要Telegram中文翻译，可以戳这里 :)\n",
 
-						 "瓜体 (推荐) (@DuangCN) : https://t.me/setlanguage/duang-zh-cn",
+					 "瓜体 (推荐) (@DuangCN) : https://t.me/setlanguage/duang-zh-cn",
 
-						 "简体 (zh_CN) ：https://t.me/setlanguage/classic-zh-cn",
+					 "简体 (zh_CN) ：https://t.me/setlanguage/classic-zh-cn",
 
-						 "简体 (langCN) ：https://t.me/setlanguage/zhlangcn",
+					 "简体 (langCN) ：https://t.me/setlanguage/zhlangcn",
 
-						 "简体 (zh-hans) ：https://t.me/setlanguage/zh-hans-beta",
+					 "简体 (zh-hans) ：https://t.me/setlanguage/zh-hans-beta",
 
-						 "台湾正體 ：https://t.me/setlanguage/taiwan",
+					 "台湾正體 ：https://t.me/setlanguage/taiwan",
 
-						 "繁體 (Tele_zh_TW) ：https://t.me/setlanguage/zh-hant-beta",
+					 "台湾繁體 ：https://t.me/setlanguage/zh-hant-beta",
 
-						 "香港繁體一 ：https://t.me/setlanguage/hongkong",
+					 "香港繁體一 ：https://t.me/setlanguage/hongkong",
 
-						 "香港繁體二 ：https://t.me/setlanguage/zhhant-hk",
+					 "香港繁體二 ：https://t.me/setlanguage/zhhant-hk",
 
-						 "香港人口語 ：https://t.me/setlanguage/hongkonger",
+					 "香港人口語 ：https://t.me/setlanguage/hongkonger",
 
-						 "廣東話一 ：https://t.me/setlanguage/zhhkpb1",
+					 "廣東話一 ：https://t.me/setlanguage/zhhkpb1",
 
-						 "廣東話二 ：https://t.me/setlanguage/hkcantonese"
+					 "廣東話二 ：https://t.me/setlanguage/hkcantonese"
 
-						 ).exec();
-
-			}
+					 ).exec();
 
         } else if ("help".equals(msg.command())) {
 
