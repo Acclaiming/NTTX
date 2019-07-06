@@ -19,7 +19,7 @@ public class Actions extends Fragment {
 
 		super.init(origin);
 
-		registerAdminFunction("action");
+		registerAdminFunction("do");
 
 	}
 
