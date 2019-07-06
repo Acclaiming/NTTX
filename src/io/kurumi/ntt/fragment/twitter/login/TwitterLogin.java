@@ -191,7 +191,9 @@ public class TwitterLogin extends Fragment {
 
             try {
 
-                AccessToken access = ((ApiToken)data).createApi().getOAuthAccessToken(requestToken,msg.text());
+				ApiToken token = (ApiToken) data;
+				
+                AccessToken access = token.createApi().getOAuthAccessToken(requestToken,msg.text());
 
                 long accountId = access.getUserId();
 
@@ -209,8 +211,8 @@ public class TwitterLogin extends Fragment {
 
                 TAuth auth = new TAuth();
 
-                auth.apiKey = ApiToken.defaultToken.apiToken;
-                auth.apiKeySec = ApiToken.defaultToken.apiSecToken;
+                auth.apiKey = token.apiToken;
+                auth.apiKeySec = token.apiSecToken;
 
                 auth.id = accountId;
                 auth.user = user.id;
