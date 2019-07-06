@@ -179,35 +179,31 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         if ("start".equals(function)) {
 
-            msg.send("start failed successfully ~","","NTT是一只开源TelegramBot、可以作为Twitter客户端使用、也可以导出贴纸、创建私聊BOT、以及在群内沙雕发言与复读。","","BOT帮助文档请戳 : @NTT_X","交流群组在这里 : @NTTDiscuss").html().publicFailed();
+            msg.send("start failed successfully ~","","NTT是一只开源TelegramBot、可以作为Twitter客户端使用、也可以导出贴纸、创建私聊BOT、以及在群内沙雕发言与复读。","","BOT帮助文档请戳 : @NTT_X","交流群组在这里 : @NTTDiscuss","\n如果需要Telegram中文翻译，可以戳这里 :)",
 
-			// if (user.userObj != null && "zh-hans".equals(user.userObj.languageCode())) return;
+					 "\n瓜体 (推荐) (@DuangCN) : " + Html.a("== 安装 ==","https://t.me/setlanguage/duang-zh-cn"),
 
-			msg.send("如果需要Telegram中文翻译，可以戳这里 :)\n",
+					 "\n简体中文二 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/classic-zh-cn"),
 
-					 "瓜体 (推荐) (@DuangCN) : https://t.me/setlanguage/duang-zh-cn",
+					 "\n简体中文三 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/zhlangcn"),
 
-					 "简体 (zh_CN) ：https://t.me/setlanguage/classic-zh-cn",
+					 "\n简体简体中文四 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/zh-hans-beta"),
 
-					 "简体 (langCN) ：https://t.me/setlanguage/zhlangcn",
+					 "\n台湾正體 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/taiwan"),
 
-					 "简体 (zh-hans) ：https://t.me/setlanguage/zh-hans-beta",
+					 "\n台湾繁體 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/zh-hant-beta"),
 
-					 "台湾正體 ：https://t.me/setlanguage/taiwan",
+					 "\n香港繁體一 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/hongkong"),
 
-					 "台湾繁體 ：https://t.me/setlanguage/zh-hant-beta",
+					 "\n香港繁體二 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/zhhant-hk"),
 
-					 "香港繁體一 ：https://t.me/setlanguage/hongkong",
+					 "\n香港人口語 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/hongkonger"),
 
-					 "香港繁體二 ：https://t.me/setlanguage/zhhant-hk",
+					 "\n廣東話一 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/zhhkpb1"),
 
-					 "香港人口語 ：https://t.me/setlanguage/hongkonger",
+					 "\n廣東話二 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/hkcantonese")
 
-					 "廣東話一 ：https://t.me/setlanguage/zhhkpb1",
-
-					 "廣東話二 ：https://t.me/setlanguage/hkcantonese"
-
-					 ).exec();
+					 ).html().publicFailed();
 
         } else if ("help".equals(msg.command())) {
 
