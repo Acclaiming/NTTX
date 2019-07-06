@@ -138,7 +138,7 @@ public class TwitterLogin extends Fragment {
 
             msg.send("(｡•̀ᴗ-)✧ 请输入 pin 码 : ","使用 /cancel 取消 ~").exec();
 
-            setPrivatePoint(user,POINT_INPUT_CALLBACK);
+            setPrivatePoint(user,POINT_INPUT_CALLBACK,token);
 
             // 不需要保存Point 因为request token的cache也不会保存。
 
@@ -191,7 +191,7 @@ public class TwitterLogin extends Fragment {
 
             try {
 
-                AccessToken access = ApiToken.defaultToken.createApi().getOAuthAccessToken(requestToken,msg.text());
+                AccessToken access = ((ApiToken)data).createApi().getOAuthAccessToken(requestToken,msg.text());
 
                 long accountId = access.getUserId();
 
