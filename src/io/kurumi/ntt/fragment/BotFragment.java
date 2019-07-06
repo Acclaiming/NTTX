@@ -309,7 +309,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 		if ("cancel".equals(function)) {
 
-			msg.send("没有什么需要取消的 :)").publicFailed();
+			msg.send("没有什么需要取消的 :)").removeKeyboard().publicFailed();
 
 			return;
 
@@ -324,7 +324,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 			clearPrivatePoint(user);
 
-			msg.send("已经取消当前操作 :) ","帮助文档 : @NTT_X").publicFailed();
+			msg.send("已经取消当前操作 :) ","帮助文档 : @NTT_X").removeKeyboard().publicFailed();
 
 			return;
 
