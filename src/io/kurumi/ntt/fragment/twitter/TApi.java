@@ -20,7 +20,6 @@ public class TApi {
 
     public static LinkedList<User> getListUsers(Twitter api, long id) throws TwitterException {
 
-
         LinkedList<User> list = new LinkedList<>();
         PagableResponseList<User> ppl;
         long cursor = -1;
