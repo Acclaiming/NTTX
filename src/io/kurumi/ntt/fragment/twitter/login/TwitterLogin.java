@@ -100,6 +100,12 @@ public class TwitterLogin extends Fragment {
 
                 }
 
+				if (account.getAccessLevel() < 2) {
+					
+					msg.send("注意！这个API只读！NTT的某些功能不可用。").exec();
+					
+				}
+				
                 TAuth.data.setById(auth.id,auth);
 
                 msg.send("好！现在认证成功 , " + auth.archive().urlHtml()).html().exec();
@@ -213,6 +219,12 @@ public class TwitterLogin extends Fragment {
 
                 clearPrivatePoint(user);
 
+				if (auth.createApi().verifyCredentials().getAccessLevel() < 2) {
+
+					msg.send("注意！这个API只读！NTT的某些功能不可用。").exec();
+
+				}
+				
                 TAuth.data.setById(accountId,auth);
 
                 msg.send("好！现在认证成功 , " + auth.archive().urlHtml()).html().exec();

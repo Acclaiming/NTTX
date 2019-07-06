@@ -388,7 +388,11 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         }
 
-        return user != null && Firewall.block.containsId(user.id);
+        if (user != null && Firewall.block.containsId(user.id)) {
+			
+			
+			
+		}
 
     }
 

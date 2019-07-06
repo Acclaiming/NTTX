@@ -27,22 +27,22 @@ public class StatusUpdate extends Fragment {
 
 	@Override
 	public void init(BotFragment origin) {
-	
+
 		super.init(origin);
-		
-		registerFunction("update" );
-	
+
+		registerFunction("update");
+
         registerPoint(POINT_UPDATE_STATUS);
 
-}
+	}
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-		
+
 		requestTwitter(user,msg);
-		
-}
-	
+
+	}
+
     @Override
     public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,final TAuth account) {
 
@@ -67,18 +67,18 @@ public class StatusUpdate extends Fragment {
         msg.send("现在发送推文内容 : ").withCancel().exec();
 
     }
-	
+
 	String submitAndCancel = "使用 /submit 发送\n使用 /timed 定时发送\n使用 /cancel 取消";
 
 	@Override
 	public int checkMsg(UserData user,Msg msg) {
-		
+
 		if (!msg.isPrivate() || !msg.isReply()) {
-			
-		return PROCESS_ASYNC;
-		
+
+			return PROCESS_ASYNC;
+
 		}
-        
+
         MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
 
         if (point == null || point.type == 0) return PROCESS_ASYNC;
@@ -130,7 +130,7 @@ public class StatusUpdate extends Fragment {
 		update.auth = auth;
 
         update.toReply = StatusArchive.get(point.targetId);
-		
+
 		if (msg.hasText()) {
 
             if (msg.text().toCharArray().length > 280) {
@@ -286,7 +286,7 @@ public class StatusUpdate extends Fragment {
 
 	@Override
 	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,Object data) {
-		
+
 		UpdatePoint update = (UpdatePoint) data;
 
 		if ("timed".equals(function)) {
@@ -297,8 +297,8 @@ public class StatusUpdate extends Fragment {
 
                 return;
 
-           }
-		   
+			}
+
 			long time = -1;
 
 			if (params.length == 0 || (params.length > 0 && !params[0].contains(":"))) {
@@ -437,7 +437,7 @@ public class StatusUpdate extends Fragment {
 			clearPrivatePoint(user);
 
 			return;
-			
+
 		} else if ("submit".equals(function)) {
 
             if (update.text == null && update.images.isEmpty() && update.video == -1) {
@@ -535,15 +535,15 @@ public class StatusUpdate extends Fragment {
             return;
 
         }
-		
-		
+
+
 	}
-	
+
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,Object data) {
-		
+
 		UpdatePoint update = (UpdatePoint) data;
-      
+
         if (msg.hasText()) {
 
             if (msg.text().toCharArray().length > 280) {
