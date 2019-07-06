@@ -17,6 +17,8 @@ public class UserData {
     public String lastName;
     public String userName;
     public Boolean contactable;
+	
+	public transient User userObj;
 
     public static UserData get(Long userId) {
 
@@ -31,6 +33,7 @@ public class UserData {
             if (userDataIndex.containsKey(userId)) {
 
                 return userDataIndex.get(userId);
+				
             }
 
             UserData userData = data.getById(userId);
@@ -72,7 +75,7 @@ public class UserData {
             if (data.containsId(user.id())) {
 
                 UserData userData = data.getById(user.id());
-
+				
                 userDataIndex.put(user.id(), userData);
 
                 return checkUpdate(userData, user);
@@ -82,6 +85,8 @@ public class UserData {
 
                 UserData userData = new UserData();
 
+				userData.userObj = user;
+				
                 userData.id = user.id();
 
                 userData.read(user);
@@ -100,6 +105,8 @@ public class UserData {
 
     static UserData checkUpdate(UserData userData, User user) {
 
+		userData.userObj = user;
+		
         if (!ObjectUtil.equal(user.firstName(), userData.firstName) ||
 			ObjectUtil.equal(user.lastName(), userData.lastName)) {
 

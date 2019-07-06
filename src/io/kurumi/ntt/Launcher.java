@@ -53,6 +53,7 @@ import io.kurumi.ntt.fragment.group.DeleteChannelMessage;
 import io.kurumi.ntt.fragment.twitter.ext.EsgList;
 import io.kurumi.ntt.fragment.twitter.action.UnMuteAll;
 import io.kurumi.ntt.fragment.admin.Actions;
+import io.kurumi.ntt.utils.Html;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -180,6 +181,36 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
             msg.send("start failed successfully ~","","NTT是一只开源TelegramBot、可以作为Twitter客户端使用、也可以导出贴纸、创建私聊BOT、以及在群内沙雕发言与复读。","","BOT帮助文档请戳 : @NTT_X","交流群组在这里 : @NTTDiscuss").html().publicFailed();
 
+			if (user.userObj != null && !"zh-hans".equals(user.userObj.languageCode())) {
+
+				msg.send("如果需要Telegram中文翻译，可以戳这里 :)\n",
+
+						 "瓜体 (推荐) (@DuangCN) : https://t.me/setlanguage/duang-zh-cn",
+
+						 "简体 (zh_CN) ：https://t.me/setlanguage/classic-zh-cn",
+
+						 "简体 (langCN) ：https://t.me/setlanguage/zhlangcn",
+
+						 "简体 (zh-hans) ：https://t.me/setlanguage/zh-hans-beta",
+
+						 "台湾正體 ：https://t.me/setlanguage/taiwan",
+
+						 "繁體 (Tele_zh_TW) ：https://t.me/setlanguage/zh-hant-beta",
+
+						 "香港繁體一 ：https://t.me/setlanguage/hongkong",
+
+						 "香港繁體二 ：https://t.me/setlanguage/zhhant-hk",
+
+						 "香港人口語 ：https://t.me/setlanguage/hongkonger",
+
+						 "廣東話一 ：https://t.me/setlanguage/zhhkpb1",
+
+						 "廣東話二 ：https://t.me/setlanguage/hkcantonese"
+
+						 ).exec();
+
+			}
+
         } else if ("help".equals(msg.command())) {
 
             msg.send("文档在 @NTT_X ~").publicFailed();
@@ -257,7 +288,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new Shell());
 
 		addFragment(new Actions());
-		
+
 		addFragment(new Stat());
 
 		addFragment(new DeleteChannelMessage());
@@ -398,7 +429,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		}
 
 		return false;
-		
+
     }
 
     @Override
