@@ -86,7 +86,7 @@ public class StatusSearch extends Fragment {
                     from = archive.id;
 
                 }
-
+				
             } else if (param.startsWith("to=")) {
 
                 String toC = StrUtil.subAfter(param, "=", false);
@@ -234,7 +234,7 @@ public class StatusSearch extends Fragment {
 
         }
 
-        Msg status = msg.send("正在创建查询...").send();
+        Msg status = msg.send("正在创建查询...","\n提醒 : 查找某个用户的推文前请使用 /fetch 拉取推文").send();
 
         msg.sendTyping();
 
@@ -242,7 +242,7 @@ public class StatusSearch extends Fragment {
 
         SavedSearch.data.setById(search.id, search);
 
-        status.edit("创建查询√\n正在查询...").exec();
+        status.edit("创建查询√\n正在查询...","\n提醒 : 查找某个用户的推文前请使用 /fetch 拉取推文").exec();
 
         msg.sendTyping();
 
@@ -290,6 +290,12 @@ public class StatusSearch extends Fragment {
 
         StringBuilder format = new StringBuilder("------------------ 查询结果 -------------------");
 
+		if (search.from != -1) {
+			
+			format.append("        提醒 : 查找某个用户的推文前请使用 /fetch 拉取最新推文\n\n");
+			
+		}
+		
         for (StatusArchive archive : search.query((int) (cursor - 1) * 10, 10)) {
 
             String text = archive.text;
