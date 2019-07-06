@@ -260,6 +260,12 @@ public class Send extends AbstractSend<Send> {
 	
 	}
 
+	public SendMessage request() {
+		
+		return request;
+		
+	}
+	
     @Override
     public SendResponse exec() {
 

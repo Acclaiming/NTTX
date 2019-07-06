@@ -52,7 +52,6 @@ public class TrackTask extends TimerTask {
 
         for (IdsList sub : subFr) {
 
-
             TAuth account = TAuth.getById(sub.id);
 
             if (account == null) {
@@ -373,7 +372,7 @@ public class TrackTask extends TimerTask {
        
 		if (lostFolowers != null) {
 		
-		List<Long> retains = new LinkedList<>();
+		List<Long> retains = new ArrayList<>();
 
 		retains.addAll(lostFolowers);
 		retains.retainAll(newFollowers);
