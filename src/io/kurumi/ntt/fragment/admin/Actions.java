@@ -42,7 +42,7 @@ public class Actions extends Fragment {
 
 		if ("send".equals(method)) {
 
-			if (params.length != 2) {
+			if (params.length < 2) {
 
 				msg.send("empty id and content").exec();
 
