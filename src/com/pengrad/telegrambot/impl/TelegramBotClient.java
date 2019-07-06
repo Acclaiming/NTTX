@@ -54,11 +54,17 @@ public class TelegramBotClient {
         try {
             OkHttpClient client = getOkHttpClient(request);
             Response response = client.newCall(createRequest(request)).execute();
-            return gson.fromJson(response.body().string(), request.getResponseType());
+			
+            R resp = gson.fromJson(response.body().string(), request.getResponseType());
+
+			resp.json = response.body().string();
+			
+			return resp;
+			
         } catch (IOException e) {
-
-
+			
             throw e;
+			
         }
     }
 

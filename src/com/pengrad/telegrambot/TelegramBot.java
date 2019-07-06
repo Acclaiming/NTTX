@@ -48,44 +48,14 @@ public class TelegramBot {
 
         } catch (IOException e) {
 
-            ThreadUtil.sleep(1000);
-
-            try {
-
-                return api.send(request);
-
-            } catch (IOException ex) {
-
-                ThreadUtil.sleep(1000);
-
-                try {
-
-                    return api.send(request);
-
-                } catch (IOException exc) {
-
-                    ThreadUtil.sleep(1000);
-
-                    try {
-
-                        return api.send(request);
-
-                    } catch (IOException exce) {
-
-                        throw new RuntimeException(exce);
-
-                    }
-
-                }
-
-            }
+			throw new RuntimeException(e);
 
         }
 
     }
 
-    public <T extends BaseRequest<T, R>, R extends BaseResponse> void execute(T request, Callback<T, R> callback) {
-        api.send(request, callback);
+    public <T extends BaseRequest<T, R>, R extends BaseResponse> void execute(T request,Callback<T, R> callback) {
+        api.send(request,callback);
     }
 
     public String getFullFilePath(File file) {
@@ -102,11 +72,11 @@ public class TelegramBot {
     }
 
     public void setUpdatesListener(UpdatesListener listener) {
-        setUpdatesListener(listener, new GetUpdates());
+        setUpdatesListener(listener,new GetUpdates());
     }
 
-    public void setUpdatesListener(UpdatesListener listener, GetUpdates request) {
-        updatesHandler.start(this, listener, request);
+    public void setUpdatesListener(UpdatesListener listener,GetUpdates request) {
+        updatesHandler.start(this,listener,request);
     }
 
     public void removeGetUpdatesListener() {
@@ -128,15 +98,15 @@ public class TelegramBot {
 
         public Builder(String botToken) {
             this.botToken = botToken;
-            api = new TelegramBotClient(client(null), gson(), apiUrl(API_URL, botToken));
+            api = new TelegramBotClient(client(null),gson(),apiUrl(API_URL,botToken));
             fileApi = new FileApi(botToken);
             updatesHandler = new UpdatesHandler(100);
         }
 
         private static OkHttpClient client(Interceptor interceptor) {
             OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                    .connectTimeout(75, TimeUnit.SECONDS)
-                    .readTimeout(75, TimeUnit.SECONDS);
+				.connectTimeout(75,TimeUnit.SECONDS)
+				.readTimeout(75,TimeUnit.SECONDS);
             if (interceptor != null) builder.addInterceptor(interceptor);
             return builder.build();
         }
@@ -149,7 +119,7 @@ public class TelegramBot {
             return new Gson();
         }
 
-        private static String apiUrl(String apiUrl, String botToken) {
+        private static String apiUrl(String apiUrl,String botToken) {
             return apiUrl + botToken + "/";
         }
 
@@ -181,11 +151,11 @@ public class TelegramBot {
         public TelegramBot build() {
             if (okHttpClient != null || apiUrl != null) {
                 OkHttpClient client = okHttpClient != null ? okHttpClient : client(null);
-                String baseUrl = apiUrl(apiUrl != null ? apiUrl : API_URL, botToken);
-                api = new TelegramBotClient(client, gson(), baseUrl);
+                String baseUrl = apiUrl(apiUrl != null ? apiUrl : API_URL,botToken);
+                api = new TelegramBotClient(client,gson(),baseUrl);
             }
             if (fileApiUrl != null) {
-                fileApi = new FileApi(fileApiUrl, botToken);
+                fileApi = new FileApi(fileApiUrl,botToken);
             }
             return new TelegramBot(this);
         }

@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import cn.hutool.json.JSONObject;
+import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.response.SendResponse;
 
 public class BotServer extends NanoHTTPD {
 
@@ -68,23 +70,45 @@ public class BotServer extends NanoHTTPD {
         }
 
 		if (url.getPath().startsWith("/send/")) {
-			
+
 			String botToken = StrUtil.subAfter(url.getPath(),"/send/",true);
 
 			if (!fragments.containsKey(botToken)) {
-				
-			 return newFixedLengthResponse(Response.Status.INTERNAL_ERROR,"plain/text","NO EXISTS BOT SETTED");
+
+				return newFixedLengthResponse(Response.Status.NOT_FOUND,"plain/text","NO EXISTS BOT SETTED");
 
 			} else {
-				
+
 				try {
+
+					JSONObject request = new JSONObject(readBody(session));
+					
+					if (!request.containsKey("chat")) {
+						
+						return newFixedLengthResponse(Response.Status.BAD_REQUEST,"plain/text","NO CHAT SETTED");
+						
+					} else if (!request.containsKey("text")) {
+
+						return newFixedLengthResponse(Response.Status.BAD_REQUEST,"plain/text","NO TEXT SETTED");
+
+					}
+					
+					Send send = new Send(request.getLong("chat"),request.getStr("text"));
+
+					if (request.containsKey("html")) send.html();
 				
-				JSONObject request = new JSONObject(readBody(session));
-				
-				} catch (Exception e) {}
-				
+					SendResponse resp = send.exec();
+
+					return newFixedLengthResponse(Response.Status.OK,"plain/text",resp.json == null ? resp.toString() : resp.json);
+					
+				} catch (Exception e) {
+					
+					return newFixedLengthResponse(Response.Status.INTERNAL_ERROR,"plain/text",BotLog.parseError(e));
+					
+				}
+
 			}
-			
+
 		}
 
 		if (url.getPath().startsWith("/upgrade/" + Launcher.INSTANCE.getToken())) {
@@ -139,8 +163,7 @@ public class BotServer extends NanoHTTPD {
 
                 return newFixedLengthResponse(Response.Status.INTERNAL_ERROR,MIME_PLAINTEXT,"ERROR");
 
-            }
-			finally {
+            } finally {
 
                 new TelegramBot(botToken).execute(new DeleteWebhook());
 
