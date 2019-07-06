@@ -38,7 +38,7 @@ public class Actions extends Fragment {
 
 		String method = params[0];
 
-		params = (String[]) ArrayUtil.sub(method,1,params.length);
+		params = (String[]) ArrayUtil.sub(params,1,params.length);
 
 		if ("send".equals(method)) {
 
