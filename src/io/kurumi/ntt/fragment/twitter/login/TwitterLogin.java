@@ -60,11 +60,11 @@ public class TwitterLogin extends Fragment {
 
 		} else if (params.length == 1) {
 			
-			if ("android".equals(params[0])) {
+			if ("android".equals(params[0].toLowerCase())) {
 				
 				token = ApiToken.androidToken;
 				
-			} else if ("iphone".equals(params[0])) {
+			} else if ("iphone".equals(params[0].toLowerCase())) {
 				
 				token = ApiToken.iPhoneToken;
 				
