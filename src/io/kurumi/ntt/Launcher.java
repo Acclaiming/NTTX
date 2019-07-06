@@ -181,27 +181,27 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
             msg.send("start failed successfully ~","","NTT是一只开源TelegramBot、可以作为Twitter客户端使用、也可以导出贴纸、创建私聊BOT、以及在群内沙雕发言与复读。","","BOT帮助文档请戳 : @NTT_X","交流群组在这里 : @NTTDiscuss","\n如果需要Telegram中文翻译，可以戳这里 :)",
 
-					 "\n瓜体 (推荐) (@DuangCN) : " + Html.a("== 安装 ==","https://t.me/setlanguage/duang-zh-cn"),
+					 "\n瓜体 (推荐) (@DuangCN) : " + Html.a("      安装      ","https://t.me/setlanguage/duang-zh-cn"),
 
-					 "\n简体中文二 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/classic-zh-cn"),
+					 "\n简体中文二 ：" + Html.a("      安装      ","https://t.me/setlanguage/classic-zh-cn"),
+					 
+					 "\n简体中文三 ：" + Html.a("      安装      ","https://t.me/setlanguage/zhlangcn"),
 
-					 "\n简体中文三 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/zhlangcn"),
+					 "\n简体中文四 ：" + Html.a("      安装      ","https://t.me/setlanguage/zh-hans-beta"),
 
-					 "\n简体简体中文四 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/zh-hans-beta"),
+					 "\n台湾正體 ：" + Html.a("      安装      ","https://t.me/setlanguage/taiwan"),
 
-					 "\n台湾正體 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/taiwan"),
+					 "\n台湾繁體 ：" + Html.a("      安装      ","https://t.me/setlanguage/zh-hant-beta"),
 
-					 "\n台湾繁體 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/zh-hant-beta"),
+					 "\n香港繁體一 ：" + Html.a("      安装      ","https://t.me/setlanguage/hongkong"),
 
-					 "\n香港繁體一 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/hongkong"),
+					 "\n香港繁體二 ：" + Html.a("      安装      ","https://t.me/setlanguage/zhhant-hk"),
 
-					 "\n香港繁體二 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/zhhant-hk"),
+					 "\n香港人口語 ：" + Html.a("      安装      ","https://t.me/setlanguage/hongkonger"),
 
-					 "\n香港人口語 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/hongkonger"),
-
-					 "\n廣東話一 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/zhhkpb1"),
-
-					 "\n廣東話二 ：" + Html.a("== 安装 ==","https://t.me/setlanguage/hkcantonese")
+					 "\n廣東話一 ：" + Html.a("      安装      ","https://t.me/setlanguage/zhhkpb1"),
+					 
+					 "\n廣東話二 ：" + Html.a("      安装      ","https://t.me/setlanguage/hkcantonese")
 
 					 ).html().publicFailed();
 
