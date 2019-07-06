@@ -181,7 +181,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
             msg.send("start failed successfully ~","","NTT是一只开源TelegramBot、可以作为Twitter客户端使用、也可以导出贴纸、创建私聊BOT、以及在群内沙雕发言与复读。","","BOT帮助文档请戳 : @NTT_X","交流群组在这里 : @NTTDiscuss").html().publicFailed();
 
-			if (user.userObj != null && "zh-hans".equals(user.userObj.languageCode())) return;
+			// if (user.userObj != null && "zh-hans".equals(user.userObj.languageCode())) return;
 
 			msg.send("如果需要Telegram中文翻译，可以戳这里 :)\n",
 
