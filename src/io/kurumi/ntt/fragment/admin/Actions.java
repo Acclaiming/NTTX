@@ -54,7 +54,7 @@ public class Actions extends Fragment {
 
 		} else if ("exit".equals(method)) {
 
-			if (params.length != 2) {
+			if (params.length < 1) {
 
 				msg.send("empty id").exec();
 
