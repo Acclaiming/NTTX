@@ -166,7 +166,7 @@ public class Users extends Fragment {
 			
 			for (UserData userData : UserData.data.collection.find(or(regex("firstName",kw),regex("lastName",kw),regex("userName",kw)))) {
 
-				export.append("\n").append(userData.userName()).append(" ").append(Html.startPayload("Block","drop",userData.id));
+				export.append("\n[").append(Html.code(userData.id)).append("]").append(" ").append(userData.userName()).append(" ").append(Html.startPayload("Block","drop",userData.id));
 
 				count++;
 
