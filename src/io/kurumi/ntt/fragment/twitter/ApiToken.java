@@ -7,7 +7,9 @@ import twitter4j.conf.*;
 public class ApiToken {
 
     public static final ApiToken defaultToken = new ApiToken("u50PRCPUVatU7oN70a1kYdzey", "qiPDJAhjbfeNV6TI6dMMPJu48RUpm72p0rfDmcWN2Sr8QyHslr");
-
+	public static final ApiToken androidToken = new ApiToken("F2lOKbef4axdGXpytocR5mn2u", "6lIQ3JhEykA1n0aFpT2Fz0Dx5n1yljdfSClk2s799sUlAedVkU");
+	public static final ApiToken iPhoneToken = new ApiToken("s45tEGC9syyTx3kHtZLgAcGAY", "J8AuGmdzORQfR3xqyFMKKecO4cRm0tCLarveg51uwkrfibSDwl");
+	
     public String apiToken;
     public String apiSecToken;
 

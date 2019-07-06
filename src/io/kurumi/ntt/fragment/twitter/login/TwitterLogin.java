@@ -58,9 +58,27 @@ public class TwitterLogin extends Fragment {
 
 			token = new ApiToken(params[0],params[1]);
 
+		} else if (params.length == 1) {
+			
+			if ("android".equals(params[0])) {
+				
+				token = ApiToken.androidToken;
+				
+			} else if ("iphone".equals(params[0])) {
+				
+				token = ApiToken.iPhoneToken;
+				
+			} else {
+				
+				msg.send("/login","or /login [android|iphone]","or /login <apiKey> <apiKeySec>","or /login <apiKey> <apiKeySec> <accToken> <accTokenSec>").exec();
+				
+				return;
+				
+			}
+			
 		} else if (params.length > 0) {
 
-			msg.send("/login","or /login <apiKey> <apiKeySec>","or /login <apiKey> <apiKeySec> <accToken> <accTokenSec>").exec();
+			msg.send("/login","or /login [android|iphone]","or /login <apiKey> <apiKeySec>","or /login <apiKey> <apiKeySec> <accToken> <accTokenSec>").exec();
 
 			return;
 
