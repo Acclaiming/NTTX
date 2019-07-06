@@ -8,6 +8,13 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
 import java.util.LinkedList;
 import io.kurumi.ntt.fragment.BotFragment;
+import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.request.LeaveChat;
+import com.pengrad.telegrambot.request.GetChatAdministrators;
+import com.pengrad.telegrambot.response.GetChatAdministratorsResponse;
+import com.pengrad.telegrambot.model.ChatMember;
+import com.pengrad.telegrambot.model.Chat;
+import io.kurumi.ntt.fragment.group.AntiEsu;
 
 public class Firewall extends Fragment {
 
@@ -149,7 +156,64 @@ public class Firewall extends Fragment {
 		}
 
     }
-	
+
+	@Override
+	public boolean onUpdate(UserData user,Update update) {
+
+		Message msg = update.message();
+
+		if (msg == null || user == null) return false;
+		
+		if (msg.newChatMembers() != null) {
+
+			if (!msg.newChatMembers()[0].id().equals(origin.me.id())) return false;
+
+			if (block.containsId(user.id)) {
+
+				bot().execute(new LeaveChat(msg.chat().id()));
+
+				return true;
+				
+			}
+
+			GetChatAdministratorsResponse resp = bot().execute(new GetChatAdministrators(msg.chat().id()));
+
+			if (resp != null && resp.isOk()) return false;
+
+			for (ChatMember member : resp.administrators()) {
+
+				UserData current = UserData.get(member.user());
+
+				if (!block.containsId(current.id)) continue;
+
+				bot().execute(new LeaveChat(msg.chat().id()));
+
+			}
+
+			return false;
+
+		} else {
+			
+			Msg message = new Msg(this,msg);
+		
+			for (Fragment f : origin.fragments) {
+				
+				switch (f.onBlockedMsg(user,message)) {
+					
+					case 0 : continue;
+					case 1 : break;
+					case 2 : return false;
+					
+				}
+				
+			}
+		
+			return true;
+			
+		}
+
+	}
+
     public static class Id {
 
         public long id;

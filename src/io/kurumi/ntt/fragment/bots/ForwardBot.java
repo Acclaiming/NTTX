@@ -21,7 +21,7 @@ import java.util.List;
 public class ForwardBot extends BotFragment {
 
     final String POINT_REPLY = "r";
-	
+
     public Long botId;
     public Long userId;
     public String botToken;
@@ -98,16 +98,22 @@ public class ForwardBot extends BotFragment {
 
 	}
 
+	@Override
+	public int onBlockedMsg(UserData user,Msg msg) {
+		
+		return 2;
+		
+	}
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
 		super.onFunction(user,msg,function,params);
-		
+
 		if ("start".equals(function)) {
-		
-		msg.send(welcomeMessage).exec();
-		
+
+			msg.send(welcomeMessage).exec();
+
 		}
 
 	}
@@ -225,7 +231,7 @@ public class ForwardBot extends BotFragment {
 
 	@Override
 	public int checkMsg(UserData user,Msg msg) {
-		
+
 		if (userId.equals(user.id) || !blockList.contains(user.id.longValue())) {
 
             if (lastReceivedFrom == null || !lastReceivedFrom.equals(user.id)) {
@@ -239,18 +245,18 @@ public class ForwardBot extends BotFragment {
             msg.forwardTo(userId);
 
         } else {
-			
+
 			onFinalMsg(user,msg);
-			
+
 		}
 
 		return PROCESS_REJECT;
-		
+
     }
 
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,Object data) {
-		
+
         long target = (long)data;
 
         if (POINT_REPLY.equals(point)) {
@@ -261,7 +267,7 @@ public class ForwardBot extends BotFragment {
 
             if (message.document() != null) {
 
-                SendDocument send = new SendDocument(target, message.document().fileId());
+                SendDocument send = new SendDocument(target,message.document().fileId());
 
                 send.fileName(message.document().fileName());
 
@@ -271,7 +277,7 @@ public class ForwardBot extends BotFragment {
 
                 if (!resp.isOk()) {
 
-                    msg.send("发送失败 (˚☐˚! )/", "-----------------------", resp.description()).exec();
+                    msg.send("发送失败 (˚☐˚! )/","-----------------------",resp.description()).exec();
 
                 } else {
 
@@ -281,13 +287,13 @@ public class ForwardBot extends BotFragment {
 
             } else if (message.sticker() != null) {
 
-                SendSticker send = new SendSticker(target, message.sticker().fileId());
+                SendSticker send = new SendSticker(target,message.sticker().fileId());
 
                 SendResponse resp = bot().execute(send);
 
                 if (!resp.isOk()) {
 
-                    msg.send("发送失败 (˚☐˚! )/", "-----------------------", resp.description()).exec();
+                    msg.send("发送失败 (˚☐˚! )/","-----------------------",resp.description()).exec();
 
                 } else {
 
@@ -297,13 +303,13 @@ public class ForwardBot extends BotFragment {
 
             } else if (msg.hasText()) {
 
-                SendMessage send = new SendMessage(target, msg.text());
+                SendMessage send = new SendMessage(target,msg.text());
 
                 SendResponse resp = bot().execute(send);
 
                 if (!resp.isOk()) {
 
-                    msg.send("发送失败 (˚☐˚! )/", "-----------------------", resp.description()).exec();
+                    msg.send("发送失败 (˚☐˚! )/","-----------------------",resp.description()).exec();
 
                 } else {
 
@@ -313,13 +319,13 @@ public class ForwardBot extends BotFragment {
 
             } else {
 
-                ForwardMessage forward = new ForwardMessage(target, msg.chatId(), msg.messageId());
+                ForwardMessage forward = new ForwardMessage(target,msg.chatId(),msg.messageId());
 
                 SendResponse resp = bot().execute(forward);
 
                 if (!resp.isOk()) {
 
-                    msg.send("发送失败 (˚☐˚! )/", "-----------------------", resp.description()).exec();
+                    msg.send("发送失败 (˚☐˚! )/","-----------------------",resp.description()).exec();
 
                 } else {
 
@@ -331,7 +337,7 @@ public class ForwardBot extends BotFragment {
 
             if (sended != -1) {
 
-                msg.reply("发送成功 [ " + Html.a("删除", "https://t.me/" + me.username() + "?start=del" + PAYLOAD_SPLIT + target + PAYLOAD_SPLIT + sended) + " ]", "退出回复使用 /cancel ").html().exec();
+                msg.reply("发送成功 [ " + Html.a("删除","https://t.me/" + me.username() + "?start=del" + PAYLOAD_SPLIT + target + PAYLOAD_SPLIT + sended) + " ]","退出回复使用 /cancel ").html().exec();
 
             }
 

@@ -9,12 +9,16 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.BotServer;
 import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.admin.Actions;
 import io.kurumi.ntt.fragment.admin.Control;
+import io.kurumi.ntt.fragment.admin.DelMsg;
 import io.kurumi.ntt.fragment.admin.Firewall;
 import io.kurumi.ntt.fragment.admin.Notice;
 import io.kurumi.ntt.fragment.admin.Shell;
 import io.kurumi.ntt.fragment.admin.Stat;
 import io.kurumi.ntt.fragment.admin.Users;
+import io.kurumi.ntt.fragment.base.GetID;
+import io.kurumi.ntt.fragment.base.PingFunction;
 import io.kurumi.ntt.fragment.bots.MyBots;
 import io.kurumi.ntt.fragment.bots.NewBot;
 import io.kurumi.ntt.fragment.bots.UserBot;
@@ -27,11 +31,14 @@ import io.kurumi.ntt.fragment.group.AntiEsu;
 import io.kurumi.ntt.fragment.group.AutoReply;
 import io.kurumi.ntt.fragment.group.BanSetickerSet;
 import io.kurumi.ntt.fragment.group.ChineseAction;
+import io.kurumi.ntt.fragment.group.DeleteChannelMessage;
 import io.kurumi.ntt.fragment.group.GroupRepeat;
+import io.kurumi.ntt.fragment.twitter.action.UnMuteAll;
 import io.kurumi.ntt.fragment.twitter.action.UserActions;
 import io.kurumi.ntt.fragment.twitter.auto.AutoUI;
 import io.kurumi.ntt.fragment.twitter.delete.TwitterDelete;
 import io.kurumi.ntt.fragment.twitter.ext.AuthExport;
+import io.kurumi.ntt.fragment.twitter.ext.EsgList;
 import io.kurumi.ntt.fragment.twitter.ext.MediaDownload;
 import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
 import io.kurumi.ntt.fragment.twitter.list.ListExport;
@@ -47,13 +54,9 @@ import io.kurumi.ntt.fragment.twitter.track.TrackTask;
 import io.kurumi.ntt.fragment.twitter.track.TrackUI;
 import io.kurumi.ntt.fragment.twitter.track.UserTrackTask;
 import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.utils.Html;
 import java.io.IOException;
 import java.util.TimeZone;
-import io.kurumi.ntt.fragment.group.DeleteChannelMessage;
-import io.kurumi.ntt.fragment.twitter.ext.EsgList;
-import io.kurumi.ntt.fragment.twitter.action.UnMuteAll;
-import io.kurumi.ntt.fragment.admin.Actions;
-import io.kurumi.ntt.utils.Html;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -273,6 +276,12 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		super.reload();
 
+		addFragment(new PingFunction());
+		addFragment(new GetID());
+
+		addFragment(new DelMsg());
+		
+		
         addFragment(new Notice());
 
         addFragment(new Backup());

@@ -56,7 +56,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
     public User me;
     private TelegramBot bot;
-    private LinkedList<Fragment> fragments = new LinkedList<>();
+    public LinkedList<Fragment> fragments = new LinkedList<>();
     private String token;
     private PointStore point;
 
@@ -119,13 +119,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 		fragments.clear();
 
 		addFragment(this);
-
+		
 		addFragment(new Firewall());
-		addFragment(new PingFunction());
-		addFragment(new GetID());
-
-		addFragment(new DelMsg());
-
 
     }
 

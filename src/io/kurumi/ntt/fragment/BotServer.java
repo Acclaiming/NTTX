@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import cn.hutool.json.JSONObject;
 
 public class BotServer extends NanoHTTPD {
 
@@ -66,6 +67,25 @@ public class BotServer extends NanoHTTPD {
 
         }
 
+		if (url.getPath().startsWith("/send/")) {
+			
+			String botToken = StrUtil.subAfter(url.getPath(),"/send/",true);
+
+			if (!fragments.containsKey(botToken)) {
+				
+			 return newFixedLengthResponse(Response.Status.INTERNAL_ERROR,"plain/text","NO EXISTS BOT SETTED");
+
+			} else {
+				
+				try {
+				
+				JSONObject request = new JSONObject(readBody(session));
+				
+				} catch (Exception e) {}
+				
+			}
+			
+		}
 
 		if (url.getPath().startsWith("/upgrade/" + Launcher.INSTANCE.getToken())) {
 

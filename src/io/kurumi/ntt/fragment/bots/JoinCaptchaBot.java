@@ -131,7 +131,7 @@ public class JoinCaptchaBot extends BotFragment {
 
         if (msg.message().groupChatCreated() != null || msg.message().supergroupChatCreated() != null) {
 
-            msg.send("欢迎使用由 @NTT_X 驱动的开源加群验证BOT","给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
+            msg.send("欢迎使用加群验证BOT","给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
 
 		} else if (msg.message().leftChatMember() != null) {
 
@@ -182,7 +182,7 @@ public class JoinCaptchaBot extends BotFragment {
 
                 if (newMember.id().equals(botId)) {
 
-					msg.send("欢迎使用由 @NTT_X 驱动的开源加群验证BOT","给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
+					msg.send("欢迎使用加群验证BOT","给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
 
 				}
 
@@ -197,6 +197,8 @@ public class JoinCaptchaBot extends BotFragment {
 			if (Firewall.block.containsId(newData.id)) {
 
 				if (msg.kick() && logChannel != null) {
+					
+					msg.delete();
 					
 					new Send(this,logChannel,"事件 : #未通过 #SPAM","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
 

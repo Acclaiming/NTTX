@@ -439,7 +439,9 @@ public class Fragment {
 
 
 	}
-
+	
+	public int onBlockedMsg(UserData user,Msg msg) { return 0; }
+	
 	public int checkTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
 		return PROCESS_ASYNC;
