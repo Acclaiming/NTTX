@@ -278,7 +278,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(new StatusGetter());
 
         addFragment(new StatusFetch());
-		
+
 		addFragment(new UnMuteAll());
 
         addFragment(new MediaDownload());
@@ -292,7 +292,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(new AutoUI());
 
         addFragment(new TrackUI());
-		
+
 		addFragment(new EsgList());
 
         addFragment(new StatusAction());
@@ -389,11 +389,13 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         }
 
         if (user != null && Firewall.block.containsId(user.id)) {
-			
-			
-			
+
+			return true;
+
 		}
 
+		return false;
+		
     }
 
     @Override

@@ -18,6 +18,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 import net.coobird.thumbnailator.Thumbnails;
+
+/*
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.StandardChartTheme;
@@ -25,6 +27,7 @@ import org.jfree.chart.plot.DefaultDrawingSupplier;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.category.CategoryDataset;
+*/
 
 public class Img {
 
@@ -72,6 +75,8 @@ public class Img {
 		font("Noto Sans CJK SC Thin",39);
 
 	}
+	
+	/*
 
 	public Img drawLineChart(String title,String cName,String vName,CategoryDataset dataset) {
 
@@ -150,6 +155,8 @@ public class Img {
 		return chart;
 
 	}
+	
+	*/
 
 	public Img drawLineInterfere(int count) {
 
