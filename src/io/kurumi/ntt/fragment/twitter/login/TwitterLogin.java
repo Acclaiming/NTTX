@@ -67,10 +67,14 @@ public class TwitterLogin extends Fragment {
 			} else if ("iphone".equals(params[0].toLowerCase())) {
 				
 				token = ApiToken.iPhoneToken;
+			
+			} else if ("web".equals(params[0].toLowerCase())) {
+				
+				token = ApiToken.webToken;
 				
 			} else {
 				
-				msg.send("/login","or /login [android|iphone]","or /login <apiKey> <apiKeySec>","or /login <apiKey> <apiKeySec> <accToken> <accTokenSec>").exec();
+				msg.send("/login","or /login [web|android|iphone]","or /login <apiKey> <apiKeySec>","or /login <apiKey> <apiKeySec> <accToken> <accTokenSec>").exec();
 				
 				return;
 				
@@ -78,7 +82,7 @@ public class TwitterLogin extends Fragment {
 			
 		} else if (params.length > 0) {
 
-			msg.send("/login","or /login [android|iphone]","or /login <apiKey> <apiKeySec>","or /login <apiKey> <apiKeySec> <accToken> <accTokenSec>").exec();
+			msg.send("/login","or /login [web|android|iphone]","or /login <apiKey> <apiKeySec>","or /login <apiKey> <apiKeySec> <accToken> <accTokenSec>").exec();
 
 			return;
 
