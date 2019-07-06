@@ -186,7 +186,7 @@ public class ListExport extends Fragment {
 
 				setPrivatePoint(user,POINT_USER_LIST_EXPORT,data);
 
-				msg.send("现在请发送列表的链接 可以列表 -> 分享 中导出。它看起来像这样 : twitter.com/用户名/lists/列表名").withCancel().exec();
+				msg.send("现在请发送列表的链接 可以在列表 -> 分享 中导出。它看起来像这样 : twitter.com/用户名/lists/列表名").withCancel().removeKeyboard().exec();
 
 			} else {
 
