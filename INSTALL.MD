@@ -55,6 +55,19 @@ rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.
 yum install -y ffmpeg ffmpeg-devel
 ```
 
+### 安装 Tesseract
+
+```
+yum install -y tesseract
+
+cd /usr/share
+
+wget https://github.com/tesseract-ocr/tessdata/archive/master.zip
+unzip master.zip && mv tessdata-master tessdata && rm -rf master.zip
+
+
+```
+
 ### 安装 MongoDB
 
 ```

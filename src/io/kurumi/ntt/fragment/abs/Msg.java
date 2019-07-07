@@ -306,28 +306,14 @@ public class Msg extends Context {
 
     }
 
-    public int photoSize() {
 
-        if (message.photo() != null) {
+    public File photo() {
 
-            return message.photo().length;
-
-        }
-
-        return 0;
-
-
-    }
-
-    public File photo(int index) {
-
-        if (photoSize() <= index) return null;
-
-        File local = new File(Env.CACHE_DIR, "files/" + message.photo()[index].fileId());
+        File local = new File(Env.CACHE_DIR, "files/" + message.photo()[0].fileId());
 
         if (local.isFile()) return local;
 
-        String path = fragment.bot().getFullFilePath(fragment.bot().execute(new GetFile(message.photo()[index].fileId())).file());
+        String path = fragment.bot().getFullFilePath(fragment.bot().execute(new GetFile(message.photo()[0].fileId())).file());
 
         HttpUtil.downloadFile(path, local);
 

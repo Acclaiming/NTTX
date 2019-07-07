@@ -4,7 +4,7 @@
 
 ### 环境
 
-`JDK` >= 7 、 `Git` 、`MongoDB` 、`FFMpeg`、`Noto中文字体`
+`JDK` >= 7 、 `Git` 、`MongoDB` 、`FFMpeg` 、`Tesseract`、`Noto中文字体`
 
 反向代理自己的域名到本地端口，然后在启动时输入。
 
