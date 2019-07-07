@@ -395,12 +395,14 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 			final PointData privatePoint = point().getPrivate(user);
 			final PointData groupPoint = point().getGroup(user);
-
+			
+			BotLog.debug(msg.text() + " : " + privatePoint  + " - " + groupPoint);
+			
 			if (msg.isGroup() && groupPoint != null) {
 
 				final Fragment function = points.containsKey(groupPoint.point) ? points.get(groupPoint.point) : this;
-
-				BotLog.debug(msg.text() + " : G " + function.toString());
+				
+				BotLog.debug(msg.text() + " : " + function.toString());
 				
 				
 				if (msg.isCommand()) {
@@ -448,7 +450,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 				final Fragment function = !points.containsKey(privatePoint.point) || "cancel".equals(msg.command()) ? this : points.get(privatePoint.point);
 
-				BotLog.debug(msg.text() + " : P " + function.toString());
+				BotLog.debug(msg.text() + " : " + function.toString());
 				
 				if (msg.isCommand()) {
 
