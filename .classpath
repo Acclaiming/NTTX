@@ -7,4 +7,6 @@
 <classpathentry kind="lib" path="libs/bot-api-lib.jar"/>
 <classpathentry kind="lib" path="libs/thumbnailator-0.4.8.jar"/>
 <classpathentry kind="lib" path="libs/pinyin4j-2.5.1.jar"/>
+<classpathentry kind="lib" path="libs/twitter4j.jar"/>
+<classpathentry kind="lib" path="libs/NanoHTTPD.jar"/>
 </classpath>
