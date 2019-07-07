@@ -42,6 +42,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
 import com.pengrad.telegrambot.ExceptionHandler;
 import com.pengrad.telegrambot.TelegramException;
+import io.kurumi.ntt.utils.TentcentNlp;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener,ExceptionHandler {
 
@@ -947,8 +948,12 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
             bot().execute(new SendPhoto(msg.chatId(),getFile(msg.message().sticker().fileId())).caption(str.toString()).parseMode(ParseMode.HTML).replyMarkup(new ReplyKeyboardRemove()).replyToMessageId(msg.messageId()));
 
         } else {
+			
+			msg.sendTyping();
+			
+			if (msg.hasText()) msg.send(TentcentNlp.nlpTextchat(msg.chatId().toString(),msg.text())).exec();
 
-            msg.send("这一条消息未被处理 将忽略","帮助文档 / 公告频道 : @NTT_X","交流建议群组 : @NTTDiscuss :)",str.toString()).replyTo(msg).html().removeKeyboard().exec();
+         //   msg.send("这一条消息未被处理 将忽略","帮助文档 / 公告频道 : @NTT_X","交流建议群组 : @NTTDiscuss :)",str.toString()).replyTo(msg).html().removeKeyboard().exec();
 
 		}
 
