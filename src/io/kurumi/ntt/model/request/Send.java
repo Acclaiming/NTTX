@@ -4,7 +4,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.http.HtmlUtil;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.request.ParseMode;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardHide;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import io.kurumi.ntt.Env;
@@ -112,17 +112,10 @@ public class Send extends AbstractSend<Send> {
 
     }
 
-    public Send hideKeyboard() {
-
-        request.replyMarkup(new ReplyKeyboardHide());
-
-        return this;
-
-    }
 
     public Send removeKeyboard() {
 
-        request.replyMarkup(new ReplyKeyboardHide());
+        request.replyMarkup(new ReplyKeyboardRemove());
 
         return this;
 
@@ -387,14 +380,14 @@ public class Send extends AbstractSend<Send> {
 
     public Send fork(String... msg) {
 
-        Send send = new Send(null, fragment, request.getChatId(), msg);
+        Send send = new Send(null, fragment, request.chatId, msg);
 
         if (request.mode != null) {
 
             send.request.parseMode(request.mode);
         }
 
-        send.request.disableWebPagePreview(request.disablePreview);
+        send.request.disableWebPagePreview(request.disableWebPagePreview);
 
         return send;
 

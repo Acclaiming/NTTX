@@ -11,9 +11,15 @@ import java.io.Serializable;
 public class MaskPosition implements Serializable {
     private final static long serialVersionUID = 0L;
     private final static Gson gson = new Gson();
+
+    public enum Point {
+        forehead, eyes, mouth, chin
+    }
+
     private String point;
     private Float x_shift, y_shift;
     private Float scale;
+
     public MaskPosition() {
     }
 
@@ -74,9 +80,5 @@ public class MaskPosition implements Serializable {
                 ", y_shift=" + y_shift +
                 ", scale=" + scale +
                 '}';
-    }
-
-    public enum Point {
-        forehead, eyes, mouth, chin
     }
 }

@@ -5,7 +5,6 @@ import com.pengrad.telegrambot.Callback;
 import com.pengrad.telegrambot.request.BaseRequest;
 import com.pengrad.telegrambot.response.BaseResponse;
 import okhttp3.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -18,9 +17,9 @@ import java.util.concurrent.TimeUnit;
 public class TelegramBotClient {
 
     private final OkHttpClient client;
+    private OkHttpClient clientWithTimeout;
     private final Gson gson;
     private final String baseUrl;
-    private OkHttpClient clientWithTimeout;
 
     public TelegramBotClient(OkHttpClient client, Gson gson, String baseUrl) {
         this.client = client;
@@ -34,12 +33,22 @@ public class TelegramBotClient {
         client.newCall(createRequest(request)).enqueue(new okhttp3.Callback() {
             @Override
             public void onResponse(Call call, Response response) {
+                R result = null;
+                Exception exception = null;
                 try {
-                    R result = gson.fromJson(response.body().string(), request.getResponseType());
-                    callback.onResponse(request, result);
+					String json = response.body().string();
+                    result = gson.fromJson(json, request.getResponseType());
+					result.json = json;
                 } catch (Exception e) {
-                    IOException ioEx = e instanceof IOException ? (IOException) e : new IOException(e);
+                    exception = e;
+                }
+                if (result != null) {
+                    callback.onResponse(request, result);
+                } else if (exception != null) {
+                    IOException ioEx = exception instanceof IOException ? (IOException) exception : new IOException(exception);
                     callback.onFailure(request, ioEx);
+                } else {
+                    callback.onFailure(request, new IOException("Empty response"));
                 }
             }
 
@@ -50,23 +59,16 @@ public class TelegramBotClient {
         });
     }
 
-    public <T extends BaseRequest, R extends BaseResponse> R send(final BaseRequest<T, R> request) throws IOException {
+    public <T extends BaseRequest, R extends BaseResponse> R send(final BaseRequest<T, R> request) {
         try {
             OkHttpClient client = getOkHttpClient(request);
             Response response = client.newCall(createRequest(request)).execute();
-			
-			String string = response.body().string();
-			
-            R resp = gson.fromJson(string, request.getResponseType());
-
-			resp.json = string;
-			
-			return resp;
-			
+			String json = response.body().string();
+            R result = gson.fromJson(json, request.getResponseType());
+			result.json = json;
+			return result;
         } catch (IOException e) {
-			
-            throw e;
-			
+            throw new RuntimeException(e);
         }
     }
 

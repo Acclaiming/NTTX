@@ -40,8 +40,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
+import com.pengrad.telegrambot.ExceptionHandler;
+import com.pengrad.telegrambot.TelegramException;
 
-public abstract class BotFragment extends Fragment implements UpdatesListener {
+public abstract class BotFragment extends Fragment implements UpdatesListener,ExceptionHandler {
 
     Final finalFragment = new Final() {{ init(BotFragment.this); }};;
 
@@ -1010,7 +1012,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 		bot = new TelegramBot.Builder(token)
 			.okHttpClient(okhttpClient.build()).build();
-
+		
 		me = bot.execute(new GetMe()).user();
 
 		realStart();
@@ -1069,6 +1071,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 			bot.removeGetUpdatesListener();
 
 		}
+		
+	}
+
+	@Override
+	public void onException(TelegramException e) {
+		
+		BotLog.debug(UserData.get(me).userName() + " : " + BotLog.parseError(e));
 		
 	}
 

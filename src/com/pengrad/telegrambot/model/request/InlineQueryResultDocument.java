@@ -7,9 +7,11 @@ import java.io.Serializable;
  * 06 May 2016
  */
 public class InlineQueryResultDocument extends InlineQueryResult<InlineQueryResultDocument> implements Serializable {
+    private final static long serialVersionUID = 0L;
+
     public static final String MIME_APP_PDFL = "application/pdf";
     public static final String MIME_APP_ZIP = "application/zip";
-    private final static long serialVersionUID = 0L;
+
     private String title;
     private String document_url;
     private String mime_type;

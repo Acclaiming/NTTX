@@ -9,25 +9,11 @@ import com.pengrad.telegrambot.response.SendResponse;
  */
 abstract public class AbstractSendRequest<T extends AbstractSendRequest> extends BaseRequest<T, SendResponse> {
 
-    public Object chatId;
-
+	public transient Object chatId;
+	
     public AbstractSendRequest(Object chatId) {
         super(SendResponse.class);
-        this.chatId = chatId;
-        add("chat_id", chatId);
-    }
-
-    public Object getChatId() {
-
-        return chatId;
-
-    }
-
-    public void setChatId(Object chatId) {
-
-        this.chatId = chatId;
-        add("chat_id", chatId);
-
+        add("chat_id", this.chatId = chatId);
     }
 
     public T disableNotification(boolean disableNotification) {

@@ -8,36 +8,31 @@ import com.pengrad.telegrambot.model.request.ParseMode;
  */
 public class SendMessage extends AbstractSendRequest<SendMessage> {
 
-    public ParseMode mode;
-    public boolean disablePreview = false;
-    String text;
-
+	public transient String text;
+	public transient ParseMode mode;
+	public transient boolean disableWebPagePreview = true;
+	
     public SendMessage(Object chatId, String text) {
         super(chatId);
-        add("text", text);
-        this.text = text;
+        setText(text);
     }
 
-    public String getText() {
+	public void setText(String text) {
+		this.text = text;
+		add("text", text);
+	}
 
-        return text;
-
-    }
-
-    public void setText(String text) {
-
-        add("text", text);
-        this.text = text;
-
-    }
+	public String getText() {
+		return text;
+	}
 
     public SendMessage parseMode(ParseMode parseMode) {
-        mode = parseMode;
+		this.mode = parseMode;
         return add("parse_mode", parseMode.name());
     }
 
     public SendMessage disableWebPagePreview(boolean disableWebPagePreview) {
-        disablePreview = disableWebPagePreview;
+		this.disableWebPagePreview = disableWebPagePreview;
         return add("disable_web_page_preview", disableWebPagePreview);
     }
 }

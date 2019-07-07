@@ -7,9 +7,11 @@ import java.io.Serializable;
  * 1/12/16.
  */
 public class InlineQueryResultVideo extends InlineQueryResult<InlineQueryResultVideo> implements Serializable {
+    private final static long serialVersionUID = 0L;
+
     public static final String MIME_TEXT_HTML = "text/html";
     public static final String MIME_VIDEO_MP4 = "video/mp4";
-    private final static long serialVersionUID = 0L;
+
     private String video_url;
     private String mime_type;
     private String thumb_url;

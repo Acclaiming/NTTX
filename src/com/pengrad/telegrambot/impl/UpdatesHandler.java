@@ -1,11 +1,10 @@
 package com.pengrad.telegrambot.impl;
 
-import com.pengrad.telegrambot.Callback;
-import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.UpdatesListener;
+import com.pengrad.telegrambot.*;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.GetUpdates;
 import com.pengrad.telegrambot.response.GetUpdatesResponse;
+import okhttp3.internal.platform.Platform;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,23 +18,27 @@ import static com.pengrad.telegrambot.UpdatesListener.CONFIRMED_UPDATES_NONE;
  */
 public class UpdatesHandler {
 
-    private final long sleepTimeout;
     private TelegramBot bot;
     private UpdatesListener listener;
+    private ExceptionHandler exceptionHandler;
+
+    private final long sleepTimeout;
 
     public UpdatesHandler(long sleepTimeout) {
         this.sleepTimeout = sleepTimeout;
     }
 
-    public void start(TelegramBot bot, UpdatesListener listener, GetUpdates request) {
+    public void start(TelegramBot bot, UpdatesListener listener, ExceptionHandler exceptionHandler, GetUpdates request) {
         this.bot = bot;
         this.listener = listener;
+        this.exceptionHandler = exceptionHandler;
         getUpdates(request);
     }
 
     public void stop() {
         bot = null;
         listener = null;
+        exceptionHandler = null;
     }
 
     private void getUpdates(GetUpdates request) {
@@ -47,6 +50,17 @@ public class UpdatesHandler {
                 if (listener == null) return;
 
                 if (!response.isOk() || response.updates() == null || response.updates().size() <= 0) {
+                    if (!response.isOk()) {
+                        if (exceptionHandler != null) {
+                            String message = "GetUpdates failed with error_code " +
+                                    response.errorCode() + " " + response.description();
+                            exceptionHandler.onException(new TelegramException(message, response));
+                        } else {
+                            Platform.get().log(Platform.INFO,
+                                    "Update listener error for request " + request.toWebhookResponse() +
+                                            " with response " + response.errorCode() + " " + response.description(), null);
+                        }
+                    }
                     sleep();
                     getUpdates(request);
                     return;
@@ -66,6 +80,11 @@ public class UpdatesHandler {
 
             @Override
             public void onFailure(GetUpdates request, IOException e) {
+                if (exceptionHandler != null) {
+                    exceptionHandler.onException(new TelegramException(e));
+                } else {
+                    Platform.get().log(Platform.INFO, "Update listener failure", e);
+                }
                 sleep();
                 getUpdates(request);
             }

@@ -10,19 +10,10 @@ public class Credentials implements Serializable {
     private final static long serialVersionUID = 0L;
 
     private SecureData secure_data;
-    private String payload;
     private String nonce;
 
     public SecureData secureData() {
         return secure_data;
-    }
-
-    /**
-     * @deprecated Use nonce
-     */
-    @Deprecated
-    public String payload() {
-        return payload;
     }
 
     public String nonce() {
@@ -51,7 +42,6 @@ public class Credentials implements Serializable {
     public String toString() {
         return "Credentials{" +
                 "secure_data=" + secure_data +
-                ", payload='" + payload + '\'' +
                 ", nonce='" + nonce + '\'' +
                 '}';
     }

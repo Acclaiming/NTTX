@@ -166,15 +166,13 @@ public class JoinCaptchaBot extends BotFragment {
 
 			}
 
-		} else if (msg.message().newChatMember() != null || msg.message().newChatMembers() != null) {
+		} else if (msg.message().newChatMembers() != null) {
 			
             if (delJoin) msg.delete();
 
             final HashMap<Long, Msg> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
 
-            User newMember = msg.message().newChatMember();
-
-            if (newMember == null) newMember = msg.message().newChatMembers()[0];
+            User newMember = msg.message().newChatMembers()[0];
 
             if (newMember.isBot()) {
 
