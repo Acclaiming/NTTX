@@ -271,7 +271,7 @@ public class Send extends AbstractSend<Send> {
 		
 		SendResponse resp = exec();
 		
-		if (resp.isOk()) toAdd.context.add(new Msg(fragment,resp.message()));
+		// if (resp.isOk()) toAdd.context.add(new Msg(fragment,resp.message()));
 		
 		return resp;
 

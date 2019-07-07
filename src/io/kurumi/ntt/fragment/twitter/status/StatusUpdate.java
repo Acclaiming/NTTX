@@ -48,6 +48,8 @@ public class StatusUpdate extends Fragment {
 
         StatusUpdate.UpdatePoint update = new UpdatePoint();
 
+		update.context.add(msg);
+		
         update.auth = account;
 
         if (msg.isReply()) {
