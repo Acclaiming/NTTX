@@ -37,7 +37,9 @@ public class OcrTest extends Fragment {
 	
 			msg.sendTyping();
 			
-			msg.send(ocr.discern(msg.photo())).exec();
+			msg.send(msg.photo().getPath()).exec();
+			
+			msg.send("结果 :",ocr.discern(msg.photo())).exec();
 			
 		}
 		
