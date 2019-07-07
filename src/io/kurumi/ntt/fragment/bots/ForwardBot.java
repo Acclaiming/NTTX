@@ -120,15 +120,13 @@ public class ForwardBot extends BotFragment {
 	@Override
 	public void onPayload(UserData user,Msg msg,String payload,String[] params) {
 
-		msg.delete();
-
 		if ("reply".equals(payload)) {
 
 			UserData target = UserData.get(Long.parseLong(params[0]));
 
 			if (target == null) {
 
-				msg.send("找不到目标...").exec();
+				msg.send("找不到目标...").failedWith();
 
 				return;
 
@@ -149,17 +147,17 @@ public class ForwardBot extends BotFragment {
 
 				if (resp.isOk()) {
 
-					msg.send("已删除").exec();
-
+					msg.send("已删除").failedWith();
+					
 				} else {
 
-					msg.send("删除失败 这条发送的信息还在吗 ？").exec();
+					msg.send("删除失败 这条发送的信息还在吗 ？").failedWith();
 
 				}
 
 			} catch (NumberFormatException e) {
 
-				msg.send("这个删除已经点过了 :)").exec();
+				msg.send("这个删除已经点过了 :)").failedWith();
 
 			}
 
@@ -169,7 +167,7 @@ public class ForwardBot extends BotFragment {
 
 			if (target == null) {
 
-				msg.send("找不到目标...").exec();
+				msg.send("找不到目标...").failedWith();
 
 				return;
 
@@ -177,7 +175,7 @@ public class ForwardBot extends BotFragment {
 
 			if (target.id.equals(userId)) {
 
-				msg.send("你不能屏蔽你自己...").exec();
+				msg.send("你不能屏蔽你自己...").failedWith();
 
 				return;
 
@@ -202,7 +200,7 @@ public class ForwardBot extends BotFragment {
 
 			if (target == null) {
 
-				msg.send("找不到目标...").exec();
+				msg.send("找不到目标...").failedWith();
 
 				return;
 
