@@ -58,6 +58,8 @@ public class TentcentNlp {
 
             String reply = data.getByPath("data.answer", String.class);
 
+			if (reply.contains("第二次中东战争")) return "(((";
+			
             return reply
                     .replace("你的小可爱已上线，想给我说什么悄悄话呀", "咱来啦 -")
                     .replace("呵呵，看来心情不错啊", "唉嘿 ~")
@@ -70,6 +72,7 @@ public class TentcentNlp {
                     .replace("今天的新闻", "女装援交")
                     .replace("妈", "🐴")
                     .replace("我", "咱");
+				
 
         } catch (Exception e) {
 
