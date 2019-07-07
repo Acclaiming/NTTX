@@ -51,6 +51,12 @@ public class Fragment {
 		BotFragment.asyncPool.execute(runnable);
 
 	}
+	
+	public  void setPrivatePoint(UserData user,String pointTo,PointData content) {
+
+        point().setPrivate(user,pointTo,content);
+
+    }
 
     public  void setPrivatePointData(UserData user,String pointTo,Object content) {
 
@@ -63,6 +69,13 @@ public class Fragment {
         point().setPrivate(user,pointTo,null);
 
     }
+	
+	public  void setGroupPoint(UserData user,String pointTo,PointData content) {
+
+        point().setGroup(user,pointTo,content);
+
+    }
+	
 
 	public  void setGroupPointData(UserData user,String pointTo,Object content) {
 

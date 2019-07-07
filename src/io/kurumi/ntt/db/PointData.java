@@ -23,9 +23,6 @@ public class PointData {
 	}
 	
 	public void onCancel(UserData user,Msg msg) {
-		
-		onFinish();
-		
 	}
 	
 }

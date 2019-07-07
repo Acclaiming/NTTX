@@ -24,7 +24,6 @@ import io.kurumi.ntt.fragment.debug.Backup;
 import io.kurumi.ntt.fragment.debug.DebugMsg;
 import io.kurumi.ntt.fragment.debug.DebugStatus;
 import io.kurumi.ntt.fragment.debug.DebugUser;
-import io.kurumi.ntt.fragment.forum.admin.ForumManage;
 import io.kurumi.ntt.fragment.group.AntiEsu;
 import io.kurumi.ntt.fragment.group.AutoReply;
 import io.kurumi.ntt.fragment.group.BanSetickerSet;
@@ -316,10 +315,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(new AutoReply());
 		addFragment(new DeleteChannelMessage());
 		
-        // Forum
-
-        addFragment(new ForumManage());
-
         // Bots
 
         addFragment(new NewBot());
