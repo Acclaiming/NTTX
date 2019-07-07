@@ -25,7 +25,6 @@ import io.kurumi.ntt.fragment.debug.DebugMsg;
 import io.kurumi.ntt.fragment.debug.DebugStatus;
 import io.kurumi.ntt.fragment.debug.DebugUser;
 import io.kurumi.ntt.fragment.group.AntiEsu;
-import io.kurumi.ntt.fragment.group.AutoReply;
 import io.kurumi.ntt.fragment.group.BanSetickerSet;
 import io.kurumi.ntt.fragment.group.ChineseAction;
 import io.kurumi.ntt.fragment.group.DeleteChannelMessage;
@@ -312,7 +311,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(new ChineseAction());
         addFragment(new AntiEsu());
         addFragment(new BanSetickerSet());
-        addFragment(new AutoReply());
 		addFragment(new DeleteChannelMessage());
 		
         // Bots
