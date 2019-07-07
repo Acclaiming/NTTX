@@ -1,5 +1,6 @@
 package io.kurumi.ntt.fragment.twitter.status;
 
+import cn.hutool.core.date.DateException;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.exceptions.UtilException;
@@ -7,8 +8,8 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.PhotoSize;
-import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.twitter.TAuth;
@@ -19,7 +20,6 @@ import io.kurumi.ntt.utils.NTT;
 import java.util.LinkedList;
 import twitter4j.Status;
 import twitter4j.TwitterException;
-import io.kurumi.ntt.fragment.BotFragment;
 
 public class StatusUpdate extends Fragment {
 
@@ -323,9 +323,9 @@ public class StatusUpdate extends Fragment {
 
 						time = current.getTime();
 
-					} catch (UtilException ex) {
+					} catch (DateException ex) {
 
-						msg.send("无效的时间").exec();
+						msg.send("无效的时间 例子 : /timed 23:59").exec();
 
 						return;
 
@@ -340,9 +340,9 @@ public class StatusUpdate extends Fragment {
 
 						time = date.getTime();
 
-					} catch (UtilException ex) {
+					} catch (DateException ex) {
 
-						msg.send("无效的时间").exec();
+						msg.send("无效的时间 例子 : /timed 12:59 2019-12-31").exec();
 
 						return;
 
@@ -354,7 +354,7 @@ public class StatusUpdate extends Fragment {
 
 						if (!NumberUtil.isNumber(offset)) {
 
-							msg.send("无效的时区").exec();
+							msg.send("无效的时区 例子 : /timed 12:59 2019-12-31 8").exec();
 
 							return;
 
