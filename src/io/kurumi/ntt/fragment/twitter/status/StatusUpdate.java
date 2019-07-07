@@ -62,7 +62,7 @@ public class StatusUpdate extends Fragment {
 
         }
 
-        setPrivatePointData(user,POINT_UPDATE_STATUS,update);
+        setPrivatePoint(user,POINT_UPDATE_STATUS,update);
 
         msg.send("现在发送推文内容 : ").withCancel().exec(update);
 
@@ -286,7 +286,7 @@ public class StatusUpdate extends Fragment {
 
         }
 
-        setPrivatePointData(user,POINT_UPDATE_STATUS,update);
+        setPrivatePoint(user,POINT_UPDATE_STATUS,update);
 
         return PROCESS_REJECT;
 

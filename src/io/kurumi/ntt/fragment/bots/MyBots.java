@@ -346,7 +346,7 @@ public class MyBots extends Fragment {
 
         callback.edit("好,现在发送新的欢迎语 :").withCancel().exec();
 
-        setPrivatePointData(user,POINT_CHAT_BOT_EDIT_MESSAGE,point);
+        setPrivatePoint(user,POINT_CHAT_BOT_EDIT_MESSAGE,point);
 
     }
 
@@ -461,7 +461,7 @@ public class MyBots extends Fragment {
         point.bot = bot;
         point.context.add(callback);
 
-        setPrivatePointData(user,POINT_JOIN_SET_LOGCHANNEL,point);
+        setPrivatePoint(user,POINT_JOIN_SET_LOGCHANNEL,point);
 
     }
 
@@ -558,7 +558,7 @@ public class MyBots extends Fragment {
         point.bot = bot;
         point.context.add(callback);
 
-        setPrivatePointData(user,POINT_JOIN_SET_WELCOME,point);
+        setPrivatePoint(user,POINT_JOIN_SET_WELCOME,point);
 
     }
 
