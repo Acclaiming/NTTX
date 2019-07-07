@@ -92,6 +92,13 @@ public class JoinCaptchaBot extends BotFragment {
 
 	}
 
+	@Override
+	public boolean enableSync() {
+		
+		return true;
+		
+	}
+
     @Override
     public String botName() {
 
@@ -114,15 +121,16 @@ public class JoinCaptchaBot extends BotFragment {
 	}
 
 	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+	public int checkMsg(UserData user,Msg msg) {
 		
-		super.onFunction(user,msg,function,params);
+		return msg.message().newChatMembers() != null ? PROCESS_SYNC : msg.isPrivate() ? PROCESS_REJECT : PROCESS_ASYNC;
 		
-		if ("start".equals(function)) {
-			
-			msg.send("欢迎使用加群验证机器人，添加为群组管理员即可使用 :)").exec();
-			
-		}
+	}
+
+	@Override
+	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
+		
+		return PROCESS_REJECT;
 		
 	}
 	

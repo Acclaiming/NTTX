@@ -109,6 +109,12 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 	}
 
+	public boolean enableSync() {
+
+		return false;
+
+	}
+
     @Override
     public TelegramBot bot() {
 
@@ -581,7 +587,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 						};
 
-						
+
 
 					} else {
 
@@ -748,25 +754,29 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				}
 
-				synchronized (processing) {
+				if (enableSync()) {
 
-					if ((uau.chatId != -1 && processing.contains(uau.chatId)) || (uau.user != null && processing.contains(uau.user.id))) {
+					synchronized (processing) {
 
-						queue.add(uau);
+						if ((uau.chatId != -1 && processing.contains(uau.chatId)) || (uau.user != null && processing.contains(uau.user.id))) {
 
-						continue;
+							queue.add(uau);
 
-					} else {
+							continue;
 
-						if (uau.chatId != -1) {
+						} else {
 
-							processing.add(uau.chatId);
+							if (uau.chatId != -1) {
 
-						}
+								processing.add(uau.chatId);
 
-						if (uau.user != null) {
+							}
 
-							processing.add(uau.user.id);
+							if (uau.user != null) {
+
+								processing.add(uau.user.id);
+
+							}
 
 						}
 
@@ -794,8 +804,35 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				}
 
+				if (enableSync()) {
 
-				if (processed == null) {
+					if (processed == null) {
+
+						synchronized (processing) {
+
+							if (uau.chatId != -1) {
+
+								processing.remove(uau.chatId);
+
+							}
+
+							if (uau.user != null) {
+
+								processing.remove(uau.user.id);
+
+							}
+
+						}
+
+						continue;
+
+					}
+
+					if (processed.type == 1 && !(uau.user == null && uau.chatId == -1)) {
+
+						processed.run();
+
+					}
 
 					synchronized (processing) {
 
@@ -813,39 +850,27 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 					}
 
-					continue;
+					if (processed.type == 2) {
 
-				}
+						processed.run();
 
-				if (processed.type == 1 && !(uau.user == null && uau.chatId == -1)) {
+					} else if (processed.type == 3) {
 
-					processed.run();
-
-				}
-
-				synchronized (processing) {
-
-					if (uau.chatId != -1) {
-
-						processing.remove(uau.chatId);
+						asyncPool.execute(processed);
 
 					}
 
-					if (uau.user != null) {
+				} else {
 
-						processing.remove(uau.user.id);
+					if (processed.type == 3) {
+
+						asyncPool.execute(processed);
+
+					} else {
+
+						processed.run();
 
 					}
-
-				}
-
-				if (processed.type == 2) {
-
-					processed.run();
-
-				} else if (processed.type == 3) {
-
-					asyncPool.execute(processed);
 
 				}
 
