@@ -633,7 +633,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 					} else {
 
-						return new Processed(user,update,PROCESS_ASYNC) {
+						return new Processed(user,update,PROCESS_THREAD) {
 
 							@Override
 							public void process() {
