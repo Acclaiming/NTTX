@@ -50,7 +50,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 	public static Timer mainTimer = new Timer();
 	public static Timer trackTimer = new Timer();
-	
+
 	public static ExecutorService asyncPool = Executors.newCachedThreadPool();
 	public static LinkedBlockingQueue<UserAndUpdate> queue = new LinkedBlockingQueue<>();
 	public static LinkedList<ProcessThread> threads = new LinkedList<>();
@@ -120,7 +120,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 		fragments.clear();
 
 		addFragment(this);
-		
+
 		addFragment(new Firewall());
 
     }
@@ -150,9 +150,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 	@Override
 	public int checkPoint(UserData user,Msg msg,String point,PointData data) {
-		
+
 		return PROCESS_SYNC;
-		
+
 	}
 
 	@Override
@@ -185,7 +185,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
             }
 
 			clearPrivatePoint(user);
-  
+
             msg.send("选择了 : " + account.archive().urlHtml() + " (❁´▽`❁)").removeKeyboard().html().failed(2 * 1000);
 
 			if (request.payload) {
@@ -315,7 +315,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,PointData data) {
 
 		data.context.add(msg);
-		
+
 		if ("cancel".equals(function)) {
 
 			if (data.type == 1) clearPrivatePoint(user); else clearGroupPoint(user);
@@ -398,11 +398,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 			final PointData privatePoint = point().getPrivate(user);
 			final PointData groupPoint = point().getGroup(user);
-			
+
 			if (msg.isGroup() && groupPoint != null) {
 
 				final Fragment function = points.containsKey(groupPoint.point) ? points.get(groupPoint.point) : this;
-				
+
 				if (msg.isCommand()) {
 
 					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint);
@@ -447,7 +447,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 			} else if (msg.isPrivate() && privatePoint != null) {
 
 				final Fragment function = !points.containsKey(privatePoint.point) || "cancel".equals(msg.command()) ? this : points.get(privatePoint.point);
-				
+
 				if (msg.isCommand()) {
 
 					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint);
@@ -557,12 +557,35 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 								}
 
 							};
-
 						}
 
-					} else if (functions.containsKey(msg.command())) {
 
-						final Fragment function = functions.get(msg.command());
+					} else if (adminFunctions.containsKey(msg.command())) {
+
+						final Fragment function = adminFunctions.get(msg.command());
+
+						int checked = function.checkFunction(user,msg,msg.command(),msg.params());
+
+						if (checked == PROCESS_REJECT) return EMPTY;
+
+						return new Processed(user,update,checked) {
+
+							@Override
+							public void process() {
+
+								msg.sendTyping();
+
+								function.onFunction(user,msg,msg.command(),msg.params());
+
+							}
+
+						};
+
+						
+
+					} else {
+
+						final Fragment function = functions.containsKey(msg.command()) ? functions.get(msg.command()) : this;
 
 						int checked = function.checkFunction(user,msg,msg.command(),msg.params());
 
@@ -610,47 +633,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 						};
 
-					} else if (adminFunctions.containsKey(msg.command())) {
-
-						final Fragment function = adminFunctions.get(msg.command());
-
-						int checked = function.checkFunction(user,msg,msg.command(),msg.params());
-
-						if (checked == PROCESS_REJECT) return EMPTY;
-
-						return new Processed(user,update,checked) {
-
-							@Override
-							public void process() {
-
-								msg.sendTyping();
-
-								function.onFunction(user,msg,msg.command(),msg.params());
-
-							}
-
-						};
-
-					} else {
-
-						return new Processed(user,update,PROCESS_ASYNC) {
-
-							@Override
-							public void process() {
-
-								if (msg.isPrivate()) {
-
-									msg.sendTyping();
-
-									onFinalMsg(user,msg);
-
-								}
-
-							}
-
-						};
-
 					}
+
 
 				} else {
 
@@ -948,12 +932,12 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
             bot().execute(new SendPhoto(msg.chatId(),getFile(msg.message().sticker().fileId())).caption(str.toString()).parseMode(ParseMode.HTML).replyMarkup(new ReplyKeyboardRemove()).replyToMessageId(msg.messageId()));
 
         } else {
-			
+
 			msg.sendTyping();
-			
+
 			if (msg.hasText()) msg.send(TentcentNlp.nlpTextchat(msg.chatId().toString(),msg.text())).exec();
 
-         //   msg.send("这一条消息未被处理 将忽略","帮助文档 / 公告频道 : @NTT_X","交流建议群组 : @NTTDiscuss :)",str.toString()).replyTo(msg).html().removeKeyboard().exec();
+			//   msg.send("这一条消息未被处理 将忽略","帮助文档 / 公告频道 : @NTT_X","交流建议群组 : @NTTDiscuss :)",str.toString()).replyTo(msg).html().removeKeyboard().exec();
 
 		}
 
@@ -1017,7 +1001,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 		bot = new TelegramBot.Builder(token)
 			.okHttpClient(okhttpClient.build()).build();
-		
+
 		me = bot.execute(new GetMe()).user();
 
 		realStart();
@@ -1051,7 +1035,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 			BotServer.fragments.put(token,this);
 
 			BaseResponse resp = bot.execute(new SetWebhook().url(url));
-			
+
 			if (!resp.isOk()) {
 
 				BotLog.debug("SET WebHook for " + botName() + " Failed : " + resp.description());
@@ -1076,14 +1060,14 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 			bot.removeGetUpdatesListener();
 
 		}
-		
+
 	}
 
 	@Override
 	public void onException(TelegramException e) {
-		
+
 		BotLog.debug(UserData.get(me).userName() + " : " + BotLog.parseError(e));
-		
+
 	}
 
 
