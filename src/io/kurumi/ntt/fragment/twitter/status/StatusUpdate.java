@@ -20,6 +20,8 @@ import io.kurumi.ntt.utils.NTT;
 import java.util.LinkedList;
 import twitter4j.Status;
 import twitter4j.TwitterException;
+import com.pengrad.telegrambot.response.SendResponse;
+import io.kurumi.ntt.utils.BotLog;
 
 public class StatusUpdate extends Fragment {
 
@@ -556,6 +558,8 @@ public class StatusUpdate extends Fragment {
 
 		UpdatePoint update = (UpdatePoint) data;
 
+		data.context.add(msg);
+		
         if (msg.hasText()) {
 
             if (msg.text().toCharArray().length > 280) {
@@ -567,7 +571,9 @@ public class StatusUpdate extends Fragment {
             }
 
             update.text = msg.text();
-
+			
+			msg.send("文本已设定",submitAndCancel).exec();
+			
             msg.send("文本已设定",submitAndCancel).exec(update);
 
         }
