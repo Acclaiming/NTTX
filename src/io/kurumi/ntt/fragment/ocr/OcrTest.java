@@ -31,7 +31,7 @@ public class OcrTest extends Fragment {
 
 	EasyOCR ocr = new EasyOCR(); {
 
-		ocr.setTesseractOptions("--tessdata-dir /usr/share/tessdata -l eng chi_sim chi_tra jpn");
+		ocr.setTesseractOptions("--tessdata-dir /usr/share/tessdata -l eng+chi_sim+chi_tra+jpn");
 
 	}
 
