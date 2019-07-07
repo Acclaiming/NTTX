@@ -538,7 +538,7 @@ public class StatusUpdate extends Fragment {
 
                 StatusArchive archive = StatusArchive.save(status);
 
-                msg.reply(update.toReply == null ? "发送成功 :" : "回复成功 :",StatusArchive.split_tiny,archive.toHtml(0)).buttons(StatusAction.createMarkup(archive.id,true,archive.depth() == 0,false,false)).html().point(1,archive.id);
+                msg.send(update.toReply == null ? "发送成功 :" : "回复成功 :",StatusArchive.split_tiny,archive.toHtml(0)).buttons(StatusAction.createMarkup(archive.id,true,archive.depth() == 0,false,false)).html().point(1,archive.id);
 
             } catch (TwitterException e) {
 
