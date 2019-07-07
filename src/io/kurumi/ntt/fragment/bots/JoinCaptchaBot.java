@@ -675,7 +675,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 		} else {
 
-			if (POINT_AUTH.equals(point) && msg.message().forwardSignature() == null && msg.hasText() && (msg.text().contains(data.toString()))) {
+			if (POINT_AUTH.equals(point) && msg.message().forwardSignature() == null && msg.hasText() && (msg.text().contains(data.data.toString()))) {
 
 				clearGroupPoint(user);
 
