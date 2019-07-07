@@ -113,8 +113,12 @@ public class ForwardBot extends BotFragment {
 
 			msg.send(welcomeMessage).exec();
 
+		} else if (!functions.containsKey(function)) {
+			
+			checkMsg(user,msg);
+			
 		}
-
+		
 	}
 
 	@Override
@@ -224,13 +228,6 @@ public class ForwardBot extends BotFragment {
 		}
 
 
-	}
-
-	@Override
-	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
-		
-		return checkMsg(user,msg);
-		
 	}
 
 	@Override
