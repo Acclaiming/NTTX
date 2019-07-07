@@ -37,7 +37,7 @@ public class Notice extends Fragment {
 		
 		msg.send("现在发送群发内容 :").exec();
 
-		setPrivatePoint(user,POINT_FPRWARD,ArrayUtil.join(params," "));
+		setPrivatePointData(user,POINT_FPRWARD,ArrayUtil.join(params," "));
 
     }
 

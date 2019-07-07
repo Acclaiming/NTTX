@@ -18,6 +18,7 @@ import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetMeResponse;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.admin.Firewall;
@@ -392,8 +393,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 			final Msg msg = new Msg(this,update.message());
 
-			final PointStore.Point privatePoint = point().getPrivate(user);
-			final PointStore.Point groupPoint = point().getGroup(user);
+			final PointData privatePoint = point().getPrivate(user);
+			final PointData groupPoint = point().getGroup(user);
 
 			if (msg.isGroup() && groupPoint != null) {
 

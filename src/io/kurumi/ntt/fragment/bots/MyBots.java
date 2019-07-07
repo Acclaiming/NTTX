@@ -345,7 +345,7 @@ public class MyBots extends Fragment {
         point.bot = bot;
         point.msg.add(callback);
 
-        setPrivatePoint(user,POINT_CHAT_BOT_EDIT_MESSAGE,point);
+        setPrivatePointData(user,POINT_CHAT_BOT_EDIT_MESSAGE,point);
 
     }
 
@@ -463,7 +463,7 @@ public class MyBots extends Fragment {
         point.bot = bot;
         point.msg.add(callback);
 
-        setPrivatePoint(user,POINT_JOIN_SET_LOGCHANNEL,point);
+        setPrivatePointData(user,POINT_JOIN_SET_LOGCHANNEL,point);
 
     }
 
@@ -562,7 +562,7 @@ public class MyBots extends Fragment {
         point.bot = bot;
         point.msg.add(callback);
 
-        setPrivatePoint(user,POINT_JOIN_SET_WELCOME,point);
+        setPrivatePointData(user,POINT_JOIN_SET_WELCOME,point);
 
     }
 

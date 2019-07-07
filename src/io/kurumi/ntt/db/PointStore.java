@@ -10,8 +10,8 @@ public class PointStore {
 
     public final BotFragment bot;
 	
-    public final HashMap<Long, Point> privatePoints = new HashMap<>();
-	public final HashMap<Long, Point> groupPoints = new HashMap<>();
+    public final HashMap<Long, PointData> privatePoints = new HashMap<>();
+	public final HashMap<Long, PointData> groupPoints = new HashMap<>();
 	
     private PointStore(BotFragment bot) {
         this.bot = bot;
@@ -41,7 +41,7 @@ public class PointStore {
 
     }
 
-    public Point getPrivate(UserData user) {
+    public PointData getPrivate(UserData user) {
 
         if (containsPrivate(user)) {
 
@@ -53,7 +53,7 @@ public class PointStore {
 
     }
 
-	public Point getGroup(UserData user) {
+	public PointData getGroup(UserData user) {
 
         if (containsGroup(user)) {
 
@@ -65,10 +65,16 @@ public class PointStore {
 
     }
 	
-	
-    public void setPrivate(UserData user, final String pointTo, final Object content) {
+	public void setPrivate(UserData user, final String pointTo, final PointData data) {
 
-        privatePoints.put(user.id, new Point() {{
+        privatePoints.put(user.id, data);
+
+    }
+	
+	
+    public void setPrivateData(UserData user, final String pointTo, final Object content) {
+
+        privatePoints.put(user.id, new PointData() {{
 
             point = pointTo;
             data = content;
@@ -77,9 +83,16 @@ public class PointStore {
 
     }
 	
-	public void setGroup(UserData user, final String pointTo, final Object content) {
+	public void setGroup(UserData user, final String pointTo, final PointData data) {
 
-        groupPoints.put(user.id, new Point() {{
+        groupPoints.put(user.id, data);
+
+    }
+	
+	
+	public void setGroupData(UserData user, final String pointTo, final Object content) {
+
+        groupPoints.put(user.id, new PointData() {{
 
 					point = pointTo;
 					data = content;
@@ -89,26 +102,15 @@ public class PointStore {
     }
 	
 
-    public Point clearPrivate(UserData user) {
+    public PointData clearPrivate(UserData user) {
 
         return  privatePoints.remove(user.id);
 
     }
 
-	public Point clearGroup(UserData user) {
+	public PointData clearGroup(UserData user) {
 
         return  groupPoints.remove(user.id);
-
-    }
-	
-	
-    public static abstract class Point {
-
-        public String point;
-
-        public Object data;
-		
-		public void onCancel() {}
 
     }
 

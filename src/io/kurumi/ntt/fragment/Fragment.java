@@ -26,6 +26,7 @@ import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.BotLog;
 import java.io.File;
 import java.util.LinkedList;
+import io.kurumi.ntt.db.PointData;
 
 public class Fragment {
 
@@ -51,9 +52,9 @@ public class Fragment {
 
 	}
 
-    public  void setPrivatePoint(UserData user,String pointTo,Object content) {
+    public  void setPrivatePointData(UserData user,String pointTo,Object content) {
 
-        point().setPrivate(user,pointTo,content);
+        point().setPrivateData(user,pointTo,content);
 
     }
 
@@ -63,9 +64,9 @@ public class Fragment {
 
     }
 
-	public  void setGroupPoint(UserData user,String pointTo,Object content) {
+	public  void setGroupPointData(UserData user,String pointTo,Object content) {
 
-        point().setGroup(user,pointTo,content);
+        point().setGroupData(user,pointTo,content);
 
     }
 
@@ -75,25 +76,25 @@ public class Fragment {
 
     }
 
-    public  PointStore.Point clearPrivatePoint(UserData user) {
+    public PointData clearPrivatePoint(UserData user) {
 
         return point().clearPrivate(user);
 
     }
 
-	public  PointStore.Point clearGroupPoint(UserData user) {
-
+	public PointData clearGroupPoint(UserData user) {
+		
         return point().clearGroup(user);
 
     }
 
-    public  PointStore.Point getPrivatePoint(UserData user) {
+    public  PointData getPrivatePoint(UserData user) {
 
         return point().getPrivate(user);
 
     }
 
-	public PointStore.Point getGroupPoint(UserData user) {
+	public PointData getGroupPoint(UserData user) {
 
         return point().getPrivate(user);
 
@@ -426,7 +427,7 @@ public class Fragment {
 				}}).withCancel().send();
 
 
-		setPrivatePoint(msg.from(),POINT_REQUEST_TWITTER,new TwitterRequest() {{
+		setPrivatePointData(msg.from(),POINT_REQUEST_TWITTER,new TwitterRequest() {{
 
 					this.fromUser = user;
 					this.originMsg = msg;

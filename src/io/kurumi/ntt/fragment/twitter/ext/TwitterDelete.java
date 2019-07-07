@@ -95,7 +95,7 @@ public class TwitterDelete extends Fragment {
 
         } else {
 
-            setPrivatePoint(user,POINT_DELETE,account);
+            setPrivatePointData(user,POINT_DELETE,account);
 
             msg.send("这个功能需要从 Twitter应用/网页 - 设置 - 账号 - 你的Twitter数据 输入密码下载数据zip，并找到tweet.js/like.js的说").exec();
 

@@ -160,7 +160,7 @@ public class TwitterLogin extends Fragment {
 
             msg.send("(｡•̀ᴗ-)✧ 请输入 pin 码 : ","使用 /cancel 取消 ~").exec();
 
-            setPrivatePoint(user,POINT_INPUT_CALLBACK,token);
+            setPrivatePointData(user,POINT_INPUT_CALLBACK,token);
 
             // 不需要保存Point 因为request token的cache也不会保存。
 

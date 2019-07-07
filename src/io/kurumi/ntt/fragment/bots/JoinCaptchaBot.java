@@ -248,7 +248,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 				}};
 
-            setGroupPoint(newData,POINT_AUTH,code);
+            setGroupPointData(newData,POINT_AUTH,code);
 
             group.put(newMember.id(),Msg.from(this,bot().execute(new SendPhoto(msg.chatId(),info.getBytes()).caption(newData.userName()).parseMode(ParseMode.HTML).replyMarkup(buttons.markup()))));
 
@@ -731,7 +731,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 						}};
 
-					setGroupPoint(user,POINT_SEC_AUTH,code);
+					setGroupPointData(user,POINT_SEC_AUTH,code);
 
 					secGroup.put(user.id,Msg.from(this,bot().execute(new SendPhoto(msg.chatId(),info.getBytes()).caption(user.userName()).parseMode(ParseMode.HTML).replyMarkup(buttons.markup()))));
 

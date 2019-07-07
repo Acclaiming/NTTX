@@ -26,6 +26,7 @@ import io.kurumi.ntt.model.request.Keyboard;
 import io.kurumi.ntt.utils.MongoIDs;
 import java.util.LinkedList;
 import java.util.List;
+import io.kurumi.ntt.db.PointData;
 
 public class ForumManage extends Fragment {
 
@@ -115,7 +116,7 @@ public class ForumManage extends Fragment {
 	@Override
 	public void onPoint(UserData user,Msg msg,String pointStr,Object data) {
 
-		PointStore.Point point = getPrivatePoint(user);
+		PointData point = getPrivatePoint(user);
 
         switch (pointStr) {
 
@@ -149,7 +150,7 @@ public class ForumManage extends Fragment {
 
     }
 
-    void createForum(UserData user,Msg msg,PointStore.Point point) {
+    void createForum(UserData user,Msg msg,PointData point) {
 
         if (point.data == null) {
 
@@ -384,7 +385,7 @@ public class ForumManage extends Fragment {
 
         edit.id = forumId;
 
-        setPrivatePoint(user,POINT_EDIT_NAME,edit);
+        setPrivatePointData(user,POINT_EDIT_NAME,edit);
 
         callback.confirm();
 
@@ -393,7 +394,7 @@ public class ForumManage extends Fragment {
 
     }
 
-    void forumNameEdit(UserData user,Msg msg,PointStore.Point point) {
+    void forumNameEdit(UserData user,Msg msg,PointData point) {
 
         ForumEdit edit = (ForumEdit) point.data;
 
@@ -439,7 +440,7 @@ public class ForumManage extends Fragment {
 
         edit.id = forumId;
 
-        setPrivatePoint(user,POINT_EDIT_DESC,edit);
+        setPrivatePointData(user,POINT_EDIT_DESC,edit);
 
         callback.confirm();
 
@@ -448,7 +449,7 @@ public class ForumManage extends Fragment {
 
     }
 
-    void forumDiscEdit(UserData user,Msg msg,PointStore.Point point) {
+    void forumDiscEdit(UserData user,Msg msg,PointData point) {
 
         ForumEdit edit = (ForumEdit) point.data;
 
@@ -494,7 +495,7 @@ public class ForumManage extends Fragment {
 
         edit.id = forumId;
 
-        setPrivatePoint(user,POINT_EDIT_CHAN,edit);
+        setPrivatePointData(user,POINT_EDIT_CHAN,edit);
 
         callback.confirm();
 
@@ -512,7 +513,7 @@ public class ForumManage extends Fragment {
 
     }
 
-    void forumChanEdit(UserData user,Msg msg,PointStore.Point point) {
+    void forumChanEdit(UserData user,Msg msg,PointData point) {
 
         ForumEdit edit = (ForumEdit) point.data;
 
@@ -570,7 +571,7 @@ public class ForumManage extends Fragment {
 
         edit.id = forumId;
 
-        setPrivatePoint(user,POINT_EDIT_TOKEN,edit);
+        setPrivatePointData(user,POINT_EDIT_TOKEN,edit);
 
         callback.confirm();
 
@@ -579,7 +580,7 @@ public class ForumManage extends Fragment {
 
     }
 
-    void forumTokenEdit(UserData user,Msg msg,PointStore.Point point) {
+    void forumTokenEdit(UserData user,Msg msg,PointData point) {
 
         ForumEdit edit = (ForumEdit) point.data;
         edit.msg.add(msg);
@@ -679,7 +680,7 @@ public class ForumManage extends Fragment {
 
         edit.id = forumId;
 
-        setPrivatePoint(user,POINT_CREATE_TAG,edit);
+        setPrivatePointData(user,POINT_CREATE_TAG,edit);
 
         callback.confirm();
 
@@ -688,7 +689,7 @@ public class ForumManage extends Fragment {
 
     }
 
-    void forumTagCreate(UserData user,Msg msg,PointStore.Point point) {
+    void forumTagCreate(UserData user,Msg msg,PointData point) {
 
         ForumEdit edit = (ForumEdit) point.data;
         edit.msg.add(msg);
@@ -787,7 +788,7 @@ public class ForumManage extends Fragment {
 
         edit.id = tagId;
 
-        setPrivatePoint(user,POINT_EDIT_TAG_NAME,edit);
+        setPrivatePointData(user,POINT_EDIT_TAG_NAME,edit);
 
         callback.confirm();
 
@@ -796,7 +797,7 @@ public class ForumManage extends Fragment {
 
     }
 
-    void tagNameEdit(UserData user,Msg msg,PointStore.Point point) {
+    void tagNameEdit(UserData user,Msg msg,PointData point) {
 
         ForumEdit edit = (ForumEdit) point.data;
         edit.msg.add(msg);
@@ -853,7 +854,7 @@ public class ForumManage extends Fragment {
 
         edit.id = tagId;
 
-        setPrivatePoint(user,POINT_EDIT_TAG_DESC,edit);
+        setPrivatePointData(user,POINT_EDIT_TAG_DESC,edit);
 
         callback.confirm();
 
@@ -862,7 +863,7 @@ public class ForumManage extends Fragment {
 
     }
 
-    void tagDescEdit(UserData user,Msg msg,PointStore.Point point) {
+    void tagDescEdit(UserData user,Msg msg,PointData point) {
 
         ForumEdit edit = (ForumEdit) point.data;
         edit.msg.add(msg);
