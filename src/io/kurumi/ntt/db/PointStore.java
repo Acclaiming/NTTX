@@ -9,10 +9,10 @@ public class PointStore {
     private static HashMap<BotFragment, PointStore> point = new HashMap<>();
 
     public final BotFragment bot;
-	
+
     public final HashMap<Long, PointData> privatePoints = new HashMap<>();
 	public final HashMap<Long, PointData> groupPoints = new HashMap<>();
-	
+
     private PointStore(BotFragment bot) {
         this.bot = bot;
     }
@@ -23,7 +23,7 @@ public class PointStore {
 
         PointStore instance = new PointStore(bot);
 
-        point.put(bot, instance);
+        point.put(bot,instance);
 
         return instance;
 
@@ -34,7 +34,7 @@ public class PointStore {
         return privatePoints.containsKey(user.id);
 
     }
-	
+
 	public boolean containsGroup(UserData user) {
 
         return groupPoints.containsKey(user.id);
@@ -64,52 +64,68 @@ public class PointStore {
         return null;
 
     }
-	
-	public void setPrivate(UserData user, final String pointTo, final PointData data) {
 
-        privatePoints.put(user.id, data);
+	public void setPrivate(UserData user,final String pointTo,final PointData data) {
 
-    }
-	
-	
-    public void setPrivateData(UserData user, final String pointTo, final Object content) {
+        privatePoints.put(user.id,data);
 
-        privatePoints.put(user.id, new PointData() {{
-
-            point = pointTo;
-            data = content;
-
-        }});
+		data.type = 1;
 
     }
-	
-	public void setGroup(UserData user, final String pointTo, final PointData data) {
 
-        groupPoints.put(user.id, data);
+
+    public PointData setPrivateData(UserData user,final String pointTo,final Object content) {
+
+		PointData pointData = new PointData() {{
+
+				point = pointTo;
+				data = content;
+
+				type = 1;
+
+			}};
+
+		privatePoints.put(user.id,pointData);
+		
+		return pointData;
 
     }
-	
-	
-	public void setGroupData(UserData user, final String pointTo, final Object content) {
 
-        groupPoints.put(user.id, new PointData() {{
+	public void setGroup(UserData user,final String pointTo,final PointData data) {
 
-					point = pointTo;
-					data = content;
+		data.type = 2;
 
-				}});
+        groupPoints.put(user.id,data);
 
     }
-	
+
+
+	public PointData setGroupData(UserData user,final String pointTo,final Object content) {
+
+		PointData pointData = new PointData() {{
+
+				point = pointTo;
+				data = content;
+
+				type = 2;
+
+			}};
+		
+        groupPoints.put(user.id,pointData);
+		
+		return pointData;
+
+    }
+
 
     public PointData clearPrivate(UserData user) {
 
         PointData toFinish = privatePoints.remove(user.id);
 
 		if (toFinish != null) toFinish.onFinish();
-		
+
 		return toFinish;
-		
+
     }
 
 	public PointData clearGroup(UserData user) {
@@ -119,7 +135,7 @@ public class PointStore {
 		if (toFinish != null) toFinish.onFinish();
 
 		return toFinish;
-		
+
     }
 
 }

@@ -9,6 +9,8 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.Keyboard;
 import java.util.HashMap;
+import io.kurumi.ntt.db.PointData;
+import com.pengrad.telegrambot.response.SendResponse;
 
 public class NewBot extends Fragment {
 
@@ -35,14 +37,18 @@ public class NewBot extends Fragment {
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        msg.send("现在请输入BotToken :", "", "BotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。").withCancel().exec();
+		CreateBot create = new CreateBot();
+		
+        msg.send("现在请输入BotToken :", "", "BotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。").withCancel().exec(create);
 
-        setPrivatePointData(user, POINT_CREATE_BOT, new CreateBot());
+        setPrivatePoint(user, POINT_CREATE_BOT, create);
 
     }
 
 	@Override
-	public void onPoint(UserData user,Msg msg,String point,Object data) {
+	public void onPoint(UserData user,Msg msg,String point,PointData data) {
+		
+		data.context.add(msg);
 		
         if (POINT_CREATE_BOT.equals(point)) {
 
@@ -52,19 +58,19 @@ public class NewBot extends Fragment {
 
                 if (!msg.hasText() || !msg.text().contains(":")) {
 
-                    msg.send("无效的Token.请重试. ", "Token 看起来像这样: '12345678:ABCDEfgHIDUROVjkLmNOPQRSTUvw-cdEfgHI'").withCancel().exec();
+                    msg.send("无效的Token.请重试. ", "Token 看起来像这样: '12345678:ABCDEfgHIDUROVjkLmNOPQRSTUvw-cdEfgHI'").withCancel().exec(data);
 
                     return;
 
                 }
 
-                msg.send("正在检查BOT信息...").exec();
+                msg.send("正在检查BOT信息...").exec(data);
 
                 GetMeResponse me = new TelegramBot(msg.text()).execute(new GetMe());
 
                 if (!me.isOk()) {
 
-                    msg.send("Token无效...").withCancel().exec();
+                    msg.send("Token无效... 请重新输入").withCancel().exec(data);
 
                     return;
 
@@ -89,7 +95,7 @@ public class NewBot extends Fragment {
 
                     newButtonLine("取消创建");
 
-                }}).exec();
+                }}).exec(data);
 
             } else if (create.progress == 1) {
 
@@ -97,7 +103,7 @@ public class NewBot extends Fragment {
 
                     clearPrivatePoint(user);
 
-                    msg.send("已经取消 ~").removeKeyboard().exec();
+                    msg.send("已经取消创建BOT ~").removeKeyboard().failed();
 
                 } else if ("转发私聊".equals(msg.text())) {
 
@@ -105,8 +111,8 @@ public class NewBot extends Fragment {
 
                     create.progress = 10;
 
-                    msg.send("好，请发送私聊BOT的欢迎语，这将在 /start 时发送").removeKeyboard().exec();
-                    msg.send("就像这样 : 直接喵喵就行了 ~").withCancel().exec();
+                    msg.send("好，请发送私聊BOT的欢迎语，这将在 /start 时发送").removeKeyboard().exec(data);
+                    msg.send("就像这样 : 直接喵喵就行了 ~").withCancel().exec(data);
 
                 } else if ("加群验证".equals(msg.text())) {
 
@@ -114,7 +120,7 @@ public class NewBot extends Fragment {
 
                     clearPrivatePoint(user);
 
-                    msg.send("创建成功... 正在启动").removeKeyboard().exec();
+                    Msg setup = msg.send("创建成功... 正在启动").removeKeyboard().send();
 
                     create.bot.params = new HashMap<>();
 
@@ -122,12 +128,12 @@ public class NewBot extends Fragment {
 
                     create.bot.startBot();
 
-                    msg.send("你的BOT : @" + create.bot.userName, "\n将BOT加入群组并设为管理员即可 ~", "\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
+                    setup.edit("你的BOT : @" + create.bot.userName, "\n将BOT加入群组并设为管理员即可 ~", "\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
 
 
                 } else {
 
-                    msg.send("你正在创建BOT，请在下方键盘选择").withCancel().exec();
+                    msg.send("你正在创建BOT，请在下方键盘选择 ~").withCancel().exec(data);
 
                 }
 
@@ -135,7 +141,7 @@ public class NewBot extends Fragment {
 
                 if (!msg.hasText()) {
 
-                    msg.send("你正在创建私聊BOT，请发送欢迎语").withCancel().exec();
+                    msg.send("你正在创建私聊BOT，请发送欢迎语 ~").withCancel().exec(data);
 
                     return;
 
@@ -143,7 +149,7 @@ public class NewBot extends Fragment {
 
                 clearPrivatePoint(user);
 
-                msg.send("创建成功... 正在启动").exec();
+                Msg setup = msg.send("创建成功... 正在启动").send();
 
                 create.bot.params = new HashMap<>();
                 create.bot.params.put("msg", msg.text());
@@ -152,7 +158,7 @@ public class NewBot extends Fragment {
 
                 create.bot.startBot();
 
-                msg.send("你的BOT : @" + create.bot.userName, "\n不要忘记给BOT发一条信息 这样BOT才能转发信息给你 ~", "\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
+                setup.edit("你的BOT : @" + create.bot.userName, "\n不要忘记给BOT发一条信息 这样BOT才能转发信息给你 ~", "\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
 
             }
 
@@ -160,7 +166,7 @@ public class NewBot extends Fragment {
 
     }
 
-    static class CreateBot {
+    static class CreateBot extends PointData {
 
         int progress = 0;
 

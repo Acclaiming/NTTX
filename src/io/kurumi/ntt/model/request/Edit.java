@@ -7,6 +7,7 @@ import com.pengrad.telegrambot.response.BaseResponse;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.db.PointData;
 
 public class Edit extends AbstractSend<Edit> {
 
@@ -96,6 +97,16 @@ public class Edit extends AbstractSend<Edit> {
         return this;
 
     }
+	
+	public BaseResponse exec(PointData toAdd) {
+		
+		BaseResponse resp = exec();
+		
+		if (resp.isOk() && origin != null) toAdd.context.add(origin);
+		
+		return resp;
+
+	}
 
     @Override
     public BaseResponse exec() {

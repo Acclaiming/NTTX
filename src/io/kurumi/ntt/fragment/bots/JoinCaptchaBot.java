@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TimerTask;
+import io.kurumi.ntt.db.PointData;
 
 public class JoinCaptchaBot extends BotFragment {
 
@@ -106,7 +107,7 @@ public class JoinCaptchaBot extends BotFragment {
 	}
 	
 	@Override
-	public int checkPoint(UserData user,Msg msg,String point,Object data) {
+	public int checkPoint(UserData user,Msg msg,String point,PointData data) {
 
 		return PROCESS_SYNC;
 
@@ -119,7 +120,7 @@ public class JoinCaptchaBot extends BotFragment {
 		
 		if ("start".equals(function)) {
 			
-			msg.send("欢迎使用加群验证机器人，添加为群组管理员即可使用 :)","由 @NTT_X 驱动").exec();
+			msg.send("欢迎使用加群验证机器人，添加为群组管理员即可使用 :)").exec();
 			
 		}
 		
@@ -617,7 +618,7 @@ public class JoinCaptchaBot extends BotFragment {
 	}
 
 	@Override
-	public void onPoint(final UserData user,final Msg msg,String point,Object data) {
+	public void onPoint(final UserData user,final Msg msg,String point,PointData data) {
 
         HashMap<Long, Msg> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
 		HashMap<Long, Msg> secGroup = secCache.containsKey(msg.chatId()) ? secCache.get(msg.chatId()) : new HashMap<Long, Msg>();
@@ -797,7 +798,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			} else if (POINT_SEC_AUTH.equals(point)) {
 
-				if (((GeneratedCode)data).generator.verify(((GeneratedCode)data).code,msg.text())) {
+				if (((GeneratedCode)data.data()).generator.verify(((GeneratedCode)data.data()).code,msg.text())) {
 
 					if (secGroup.containsKey(user.id)) {
 
@@ -845,7 +846,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 							msg.delete();
 
-							new Send(this,logChannel,"事件 : #未通过 #二次验证失败","验证码为 : " + ((GeneratedCode)data).code,"群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
+							new Send(this,logChannel,"事件 : #未通过 #二次验证失败","验证码为 : " + ((GeneratedCode)data.data()).code,"群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
 
 						} else {
 

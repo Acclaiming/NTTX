@@ -15,6 +15,7 @@ import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
 import java.util.LinkedList;
 import java.util.List;
+import io.kurumi.ntt.db.PointData;
 
 public class ForwardBot extends BotFragment {
 
@@ -253,9 +254,9 @@ public class ForwardBot extends BotFragment {
     }
 
 	@Override
-	public void onPoint(UserData user,Msg msg,String point,Object data) {
+	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
-        long target = (long)data;
+        long target = (long) data.data;
 
         if (POINT_REPLY.equals(point)) {
 

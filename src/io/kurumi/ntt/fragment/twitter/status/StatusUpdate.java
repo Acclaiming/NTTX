@@ -7,6 +7,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.PhotoSize;
+import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
@@ -63,7 +64,7 @@ public class StatusUpdate extends Fragment {
 
         setPrivatePointData(user,POINT_UPDATE_STATUS,update);
 
-        msg.send("现在发送推文内容 : ").withCancel().exec();
+        msg.send("现在发送推文内容 : ").withCancel().exec(update);
 
     }
 
@@ -129,12 +130,14 @@ public class StatusUpdate extends Fragment {
 		update.auth = auth;
 
         update.toReply = StatusArchive.get(point.targetId);
-
+		
+		update.context.add(msg);
+		
 		if (msg.hasText()) {
 
             if (msg.text().toCharArray().length > 280) {
 
-                msg.send("大小超过 Twitter 280 字符限制 , 注意 : 一个中文字占两个字符。").exec();
+                msg.send("大小超过 Twitter 280 字符限制 , 注意 : 一个中文字占两个字符。").exec(update);
 
                 return PROCESS_REJECT;
 
@@ -142,7 +145,7 @@ public class StatusUpdate extends Fragment {
 
             update.text = msg.text();
 
-            msg.send("文本已设定",submitAndCancel).exec();
+            msg.send("文本已设定",submitAndCancel).exec(update);
 
         } else if (message.sticker() != null) {
 
@@ -152,11 +155,11 @@ public class StatusUpdate extends Fragment {
 
                 update.images.add(NTT.telegramToTwitter(auth.createApi(),message.sticker().fileId(),"sticker.png",0));
 
-                msg.send("图片添加成功 已设置 1 / 4 张图片",submitAndCancel).exec();
+                msg.send("图片添加成功 已设置 1 / 4 张图片",submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+                msg.send("图片上传失败",NTT.parseTwitterException(e)).exec(update);
 
             }
 
@@ -178,7 +181,7 @@ public class StatusUpdate extends Fragment {
 
             if (max == null) {
 
-                msg.send("图片超过 5m ，根据Twitter官方限制,无法发送").exec();
+                msg.send("图片超过 5m ，根据Twitter官方限制,无法发送").exec(update);
 
                 return PROCESS_REJECT;
 
@@ -188,11 +191,11 @@ public class StatusUpdate extends Fragment {
 
                 update.images.add(NTT.telegramToTwitter(auth.createApi(),max.fileId(),"image.png",0));
 
-                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ",submitAndCancel).exec();
+                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ",submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+                msg.send("图片上传失败",NTT.parseTwitterException(e)).exec(update);
 
             }
 
@@ -200,7 +203,7 @@ public class StatusUpdate extends Fragment {
 
             if (message.animation().fileSize() > 1024 * 1024 * 15) {
 
-                msg.send("动图超过 15m ，根据Twitter官方限制,无法发送").exec();
+                msg.send("动图超过 15m ，根据Twitter官方限制,无法发送").exec(update);
 
                 return PROCESS_REJECT;
 
@@ -210,13 +213,19 @@ public class StatusUpdate extends Fragment {
 
             try {
 
-                update.video = NTT.telegramToTwitter(auth.createApi(),message.animation().fileId(),message.animation().fileName(),2);
+                msg.send("正在转码... 这可能需要几分钟的时间...").exec(update);
 
-                msg.send("动图添加成功",submitAndCancel).exec();
+				msg.sendTyping();
+
+                update.video = NTT.telegramToTwitter(update.auth.createApi(),message.animation().fileId(),message.animation().fileName(),2);
+
+				msg.sendUpdatingVideo();
+				
+                msg.send("动图添加成功",submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("动图上传失败",NTT.parseTwitterException(e)).exec();
+                msg.send("动图上传失败",NTT.parseTwitterException(e)).exec(update);
 
             }
 
@@ -225,7 +234,7 @@ public class StatusUpdate extends Fragment {
 
             if (message.video().fileSize() > 1024 * 1024 * 15) {
 
-                msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
+                msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec(update);
 
                 return PROCESS_REJECT;
 
@@ -237,11 +246,11 @@ public class StatusUpdate extends Fragment {
 
                 update.video = NTT.telegramToTwitter(auth.createApi(),message.video().fileId(),"video.mp4",1);
 
-                msg.send("视频添加成功",submitAndCancel).exec();
+                msg.send("视频添加成功",submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("视频上传失败",NTT.parseTwitterException(e)).exec();
+                msg.send("视频上传失败",NTT.parseTwitterException(e)).exec(update);
 
             }
 
@@ -250,7 +259,7 @@ public class StatusUpdate extends Fragment {
 
             if (message.videoNote().fileSize() > 1024 * 1024 * 15) {
 
-                msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
+                msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec(update);
 
                 return PROCESS_REJECT;
 
@@ -262,11 +271,11 @@ public class StatusUpdate extends Fragment {
 
                 update.video = NTT.telegramToTwitter(auth.createApi(),message.videoNote().fileId(),"video.mp4",1);
 
-                msg.send("视频添加成功",submitAndCancel).exec();
+                msg.send("视频添加成功",submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("视频上传失败",NTT.parseTwitterException(e)).exec();
+                msg.send("视频上传失败",NTT.parseTwitterException(e)).exec(update);
 
             }
 
@@ -284,15 +293,17 @@ public class StatusUpdate extends Fragment {
     }
 
 	@Override
-	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,Object data) {
+	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,PointData data) {
 
 		UpdatePoint update = (UpdatePoint) data;
+		
+		data.context.add(msg);
 
 		if ("timed".equals(function)) {
 
 			if (update.text == null && update.images.isEmpty() && update.video == -1) {
 
-                msg.send("好像什么内容都没有。？ 请输入文本 / 贴纸 / 图片 / 视频").exec();
+                msg.send("好像什么内容都没有。？ 请输入文本 / 贴纸 / 图片 / 视频").exec(update);
 
                 return;
 
@@ -302,7 +313,7 @@ public class StatusUpdate extends Fragment {
 
 			if (params.length == 0 || (params.length > 0 && !params[0].contains(":"))) {
 
-				msg.send("/timed 小时:分钟 [年-月-日 可选] [时区 (默认为 +8) 可选]").exec();
+				msg.send("/timed 小时:分钟 [年-月-日 可选] [时区 (默认为 +8) 可选]").exec(update);
 
 				return;
 
@@ -324,7 +335,7 @@ public class StatusUpdate extends Fragment {
 
 					} catch (DateException ex) {
 
-						msg.send("无效的时间 例子 : /timed 23:59").exec();
+						msg.send("无效的时间 例子 : /timed 23:59").exec(update);
 
 						return;
 
@@ -341,7 +352,7 @@ public class StatusUpdate extends Fragment {
 
 					} catch (DateException ex) {
 
-						msg.send("无效的时间 例子 : /timed 12:59 2019-12-31").exec();
+						msg.send("无效的时间 例子 : /timed 12:59 2019-12-31").exec(update);
 
 						return;
 
@@ -353,7 +364,7 @@ public class StatusUpdate extends Fragment {
 
 						if (!NumberUtil.isNumber(offset)) {
 
-							msg.send("无效的时区 例子 : /timed 12:59 2019-12-31 8").exec();
+							msg.send("无效的时区 例子 : /timed 12:59 2019-12-31 8").exec(update);
 
 							return;
 
@@ -369,7 +380,7 @@ public class StatusUpdate extends Fragment {
 
 			if (time < (System.currentTimeMillis() + (10 * 1000))) {
 
-				msg.send("这个时间已经过去了...").exec();
+				msg.send("这个时间已经过去了...").exec(update);
 
 				return;
 
@@ -441,7 +452,7 @@ public class StatusUpdate extends Fragment {
 
             if (update.text == null && update.images.isEmpty() && update.video == -1) {
 
-                msg.send("好像什么内容都没有。？ 请输入文本 / 贴纸 / 图片 / 视频").exec();
+                msg.send("好像什么内容都没有。？ 请输入文本 / 贴纸 / 图片 / 视频").exec(update);
 
                 return;
 
@@ -539,7 +550,7 @@ public class StatusUpdate extends Fragment {
 	}
 
 	@Override
-	public void onPoint(UserData user,Msg msg,String point,Object data) {
+	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
 		UpdatePoint update = (UpdatePoint) data;
 
@@ -547,7 +558,7 @@ public class StatusUpdate extends Fragment {
 
             if (msg.text().toCharArray().length > 280) {
 
-                msg.send("大小超过 Twitter 280 字符限制 , 注意 : 一个中文字占两个字符。").exec();
+                msg.send("大小超过 Twitter 280 字符限制 , 注意 : 一个中文字占两个字符。").exec(update);
 
                 return;
 
@@ -555,7 +566,7 @@ public class StatusUpdate extends Fragment {
 
             update.text = msg.text();
 
-            msg.send("文本已设定",submitAndCancel).exec();
+            msg.send("文本已设定",submitAndCancel).exec(update);
 
         }
 
@@ -565,13 +576,13 @@ public class StatusUpdate extends Fragment {
 
             if (update.images.size() == 4) {
 
-                msg.send("已经到了四张图片上限 ~").exec();
+                msg.send("已经到了四张图片上限 ~").exec(update);
 
                 return;
 
             } else if (update.video != -1) {
 
-                msg.send("已经有包含视频了 ~").exec();
+                msg.send("已经有包含视频了 ~").exec(update);
 
                 return;
 
@@ -583,11 +594,11 @@ public class StatusUpdate extends Fragment {
 
                 update.images.add(NTT.telegramToTwitter(update.auth.createApi(),message.sticker().fileId(),"sticker.png",0));
 
-                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ",submitAndCancel).exec();
+                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ",submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+                msg.send("图片上传失败",NTT.parseTwitterException(e)).exec(update);
 
             }
 
@@ -597,13 +608,13 @@ public class StatusUpdate extends Fragment {
 
             if (update.images.size() == 4) {
 
-                msg.send("已经到了四张图片上限 ~").exec();
+                msg.send("已经到了四张图片上限 ~").exec(update);
 
                 return;
 
             } else if (update.video != -1) {
 
-                msg.send("已经有添加视频了 ~").exec();
+                msg.send("已经有添加视频了 ~").exec(update);
 
                 return;
 
@@ -623,7 +634,7 @@ public class StatusUpdate extends Fragment {
 
             if (max == null) {
 
-                msg.send("图片超过 5m ，根据Twitter官方限制,无法发送").exec();
+                msg.send("图片超过 5m ，根据Twitter官方限制,无法发送").exec(update);
 
                 return;
 
@@ -635,11 +646,11 @@ public class StatusUpdate extends Fragment {
 
                 update.images.add(NTT.telegramToTwitter(update.auth.createApi(),max.fileId(),"image.png",0));
 
-                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ",submitAndCancel).exec();
+                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ",submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+                msg.send("图片上传失败",NTT.parseTwitterException(e)).exec(update);
 
             }
 
@@ -648,13 +659,13 @@ public class StatusUpdate extends Fragment {
 
             if (!update.images.isEmpty()) {
 
-                msg.send("已经有添加图片了 无法添加视频 ~").exec();
+                msg.send("已经有添加图片了 无法添加视频 ~").exec(update);
 
                 return;
 
             } else if (update.video != -1) {
 
-                msg.send("已经有设置视频了 ~").exec();
+                msg.send("已经有设置视频了 ~").exec(update);
 
                 return;
 
@@ -662,24 +673,28 @@ public class StatusUpdate extends Fragment {
 
             if (message.animation().fileSize() > 1024 * 1024 * 15) {
 
-                msg.send("动图超过 15m ，根据Twitter官方限制,无法发送").exec();
+                msg.send("动图超过 15m ，根据Twitter官方限制,无法发送").exec(update);
 
                 return;
 
             }
 
 
-            msg.sendUpdatingFile();
-
             try {
+				
+				msg.send("正在转码... 这可能需要几分钟的时间...").exec(update);
 
+				msg.sendTyping();
+				
                 update.video = NTT.telegramToTwitter(update.auth.createApi(),message.animation().fileId(),message.animation().fileName(),2);
 
-                msg.send("动图添加成功",submitAndCancel).exec();
+				msg.sendUpdatingVideo();
+				
+                msg.send("动图添加成功",submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("动图上传失败",NTT.parseTwitterException(e)).exec();
+                msg.send("动图上传失败",NTT.parseTwitterException(e)).exec(update);
 
             }
 
@@ -687,13 +702,13 @@ public class StatusUpdate extends Fragment {
 
             if (!update.images.isEmpty()) {
 
-                msg.send("已经有添加图片了 无法添加视频 ~").exec();
+                msg.send("已经有添加图片了 无法添加视频 ~").exec(update);
 
                 return;
 
             } else if (update.video != -1) {
 
-                msg.send("已经有设置视频了 ~").exec();
+                msg.send("已经有设置视频了 ~").exec(update);
 
                 return;
 
@@ -701,7 +716,7 @@ public class StatusUpdate extends Fragment {
 
             if (message.video().fileSize() > 1024 * 1024 * 15) {
 
-                msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
+                msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec(update);
 
                 return;
 
@@ -713,11 +728,11 @@ public class StatusUpdate extends Fragment {
 
                 update.video = NTT.telegramToTwitter(update.auth.createApi(),message.video().fileId(),"video.mp4",1);
 
-                msg.send("视频添加成功",submitAndCancel).exec();
+                msg.send("视频添加成功",submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+                msg.send("图片上传失败",NTT.parseTwitterException(e)).exec(update);
 
             }
 
@@ -726,13 +741,13 @@ public class StatusUpdate extends Fragment {
 
             if (!update.images.isEmpty()) {
 
-                msg.send("已经有添加图片了 无法添加视频 ~").exec();
+                msg.send("已经有添加图片了 无法添加视频 ~").exec(update);
 
                 return;
 
             } else if (update.video != -1) {
 
-                msg.send("已经有设置视频了 ~").exec();
+                msg.send("已经有设置视频了 ~").exec(update);
 
                 return;
 
@@ -740,7 +755,7 @@ public class StatusUpdate extends Fragment {
 
             if (message.videoNote().fileSize() > 1024 * 1024 * 15) {
 
-                msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec();
+                msg.send("视频超过 15m ，根据Twitter官方限制,无法发送").exec(update);
 
                 return;
 
@@ -752,11 +767,11 @@ public class StatusUpdate extends Fragment {
 
                 update.video = NTT.telegramToTwitter(update.auth.createApi(),message.videoNote().fileId(),"video.mp4",1);
 
-                msg.send("视频添加成功",submitAndCancel).exec();
+                msg.send("视频添加成功",submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("图片上传失败",NTT.parseTwitterException(e)).exec();
+                msg.send("图片上传失败",NTT.parseTwitterException(e)).exec(update);
 
             }
 
@@ -765,7 +780,7 @@ public class StatusUpdate extends Fragment {
 
     }
 
-    class UpdatePoint {
+    class UpdatePoint extends PointData {
 
         String text;
 

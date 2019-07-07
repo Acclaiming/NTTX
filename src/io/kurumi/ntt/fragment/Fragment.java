@@ -27,6 +27,7 @@ import io.kurumi.ntt.utils.BotLog;
 import java.io.File;
 import java.util.LinkedList;
 import io.kurumi.ntt.db.PointData;
+import io.kurumi.ntt.fragment.Fragment.TwitterRequest;
 
 public class Fragment {
 
@@ -51,41 +52,41 @@ public class Fragment {
 		BotFragment.asyncPool.execute(runnable);
 
 	}
-	
+
 	public  void setPrivatePoint(UserData user,String pointTo,PointData content) {
 
         point().setPrivate(user,pointTo,content);
 
     }
 
-    public  void setPrivatePointData(UserData user,String pointTo,Object content) {
+    public PointData setPrivatePointData(UserData user,String pointTo,Object content) {
 
-        point().setPrivateData(user,pointTo,content);
+        return point().setPrivateData(user,pointTo,content);
+
+    }
+
+    public PointData setPrivatePoint(UserData user,String pointTo) {
+
+        return point().setPrivateData(user,pointTo,null);
 
     }
 
-    public void setPrivatePoint(UserData user,String pointTo) {
-
-        point().setPrivate(user,pointTo,null);
-
-    }
-	
 	public  void setGroupPoint(UserData user,String pointTo,PointData content) {
 
         point().setGroup(user,pointTo,content);
 
     }
-	
 
-	public  void setGroupPointData(UserData user,String pointTo,Object content) {
 
-        point().setGroupData(user,pointTo,content);
+	public  PointData setGroupPointData(UserData user,String pointTo,Object content) {
+
+        return point().setGroupData(user,pointTo,content);
 
     }
 
-    public void setGroupPoint(UserData user,String pointTo) {
+    public PointData setGroupPoint(UserData user,String pointTo) {
 
-        point().setGroup(user,pointTo,null);
+       return point().setGroupData(user,pointTo,null);
 
     }
 
@@ -96,7 +97,7 @@ public class Fragment {
     }
 
 	public PointData clearGroupPoint(UserData user) {
-		
+
         return point().clearGroup(user);
 
     }
@@ -330,15 +331,13 @@ public class Fragment {
 
 	protected final String POINT_REQUEST_TWITTER = "request_twitter";
 
-	static class TwitterRequest {
+	static class TwitterRequest extends PointData {
 
 		UserData fromUser;
 		Msg originMsg;
 		Fragment fragment;
 
 		boolean payload;
-
-		LinkedList<Msg> msgs = new LinkedList<>();
 
 	}
 
@@ -390,7 +389,7 @@ public class Fragment {
 				onTwitterFunction(user,msg,msg.command(),msg.params(),auth);
 
 			}
-			
+
 			return;
 
 		}
@@ -408,9 +407,9 @@ public class Fragment {
 				} else {
 
 					onTwitterFunction(user,msg,msg.command(),msg.params(),current);
-					
+
 				}
-				
+
 				return;
 
 			}
@@ -429,7 +428,16 @@ public class Fragment {
 
 		final FindIterable<TAuth> accounts = TAuth.getByUser(user.id);
 
-		final Msg send = msg.send("请选择目标账号 Σ( ﾟωﾟ ").keyboard(new Keyboard() {{
+		TwitterRequest request = new TwitterRequest() {{
+
+				this.fromUser = user;
+				this.originMsg = msg;
+				this.fragment = Fragment.this;
+				this.payload = isPayload;
+
+			}};
+
+		msg.send("请选择目标账号 Σ( ﾟωﾟ ").keyboard(new Keyboard() {{
 
 					for (TAuth account : accounts) {
 
@@ -437,25 +445,17 @@ public class Fragment {
 
 					}
 
-				}}).withCancel().send();
+				}}).withCancel().exec(request);
 
 
-		setPrivatePointData(msg.from(),POINT_REQUEST_TWITTER,new TwitterRequest() {{
-
-					this.fromUser = user;
-					this.originMsg = msg;
-					this.fragment = Fragment.this;
-					this.msgs.add(send);
-					this.payload = isPayload;
-
-				}});
+		setPrivatePoint(msg.from(),POINT_REQUEST_TWITTER,request);
 
 
 
 	}
-	
+
 	public int onBlockedMsg(UserData user,Msg msg) { return 0; }
-	
+
 	public int checkTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
 		return PROCESS_ASYNC;
@@ -483,22 +483,22 @@ public class Fragment {
 	public void onTwitterPayload(UserData user,Msg msg,String payload,String[] params,TAuth account) {
 	}
 
-	public int checkPoint(UserData user,Msg msg,String point,Object data) {
+	public int checkPoint(UserData user,Msg msg,String point,PointData data) {
 
 		return PROCESS_SYNC;
 
 	}
 
-	public void onPoint(UserData user,Msg msg,String point,Object data) {
+	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 	}
 
-	public int checkPointedFunction(UserData user,Msg msg,String function,String[] params,String point,Object data) {
+	public int checkPointedFunction(UserData user,Msg msg,String function,String[] params,String point,PointData data) {
 
 		return PROCESS_SYNC;
 
 	}
 
-	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,Object data) {
+	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,PointData data) {
 
 		onPoint(user,msg,point,data);
 

@@ -4,6 +4,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendDocument;
+import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
@@ -68,9 +69,9 @@ public class ListExport extends Fragment {
 	}
 
 	@Override
-	public void onPoint(UserData user,Msg msg,String point,Object data) {
+	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
-		TAuth account = (TAuth) data;
+		TAuth account = data.data();
 
 		Twitter api = account.createApi();
 

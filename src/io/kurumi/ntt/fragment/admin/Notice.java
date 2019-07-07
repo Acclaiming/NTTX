@@ -9,6 +9,7 @@ import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.model.Msg;
 
 import static java.util.Arrays.asList;
+import io.kurumi.ntt.db.PointData;
 
 public class Notice extends Fragment {
 
@@ -34,23 +35,25 @@ public class Notice extends Fragment {
 
     @Override
     public void onFunction(UserData user,Msg msg,String function,String[] params) {
+	
+		PointData data = setPrivatePointData(user,POINT_FPRWARD,ArrayUtil.join(params," "));
+
+		msg.send("现在发送群发内容 :").exec(data);
 		
-		msg.send("现在发送群发内容 :").exec();
-
-		setPrivatePointData(user,POINT_FPRWARD,ArrayUtil.join(params," "));
-
     }
 
 	@Override
-	public int checkPoint(UserData user,Msg msg,String point,Object data) {
+	public int checkPoint(UserData user,Msg msg,String point,PointData data) {
 
 		return PROCESS_THREAD;
 
 	}
 
 	@Override
-	public void onPoint(UserData user,Msg msg,String point,Object data) {
+	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
+		data.context.add(msg);
+		
         String params = data.toString();
 
         boolean mute = params.contains("mute");
@@ -65,7 +68,7 @@ public class Notice extends Fragment {
             long success = 0;
             long failed = 0;
 
-            Msg status = msg.reply("正在群发 : 0 / 0 / " + count).send();
+            Msg status = msg.send("正在群发 : 0 / 0 / " + count).send();
 
             for (UserData userData : UserData.data.collection.find()) {
 

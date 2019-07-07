@@ -146,24 +146,24 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 	}
 
 	@Override
-	public int checkPoint(UserData user,Msg msg,String point,Object data) {
+	public int checkPoint(UserData user,Msg msg,String point,PointData data) {
 		
 		return PROCESS_SYNC;
 		
 	}
 
 	@Override
-	public void onPoint(final UserData user,Msg msg,String point,Object data) {
+	public void onPoint(final UserData user,Msg msg,String point,PointData data) {
 
 		if (POINT_REQUEST_TWITTER.equals(point)) {
 
             final TwitterRequest request = (TwitterRequest) data;
 
-			request.msgs.add(msg);
+			data.context.add(msg);
 
             if (!msg.hasText() || !msg.text().startsWith("@")) {
 
-                request.msgs.add(msg.send("请选择 Twitter 账号 (˚☐˚! )/").send());
+                msg.send("请选择 Twitter 账号 (˚☐˚! )/").withCancel().exec(data);
 
                 return;
 
@@ -175,17 +175,15 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
             if (account == null) {
 
-                request.msgs.add(msg.send("找不到这个账号 (？) 请重新选择 ((*゜Д゜)ゞ").send());
+                msg.send("找不到这个账号 (？) 请重新选择 ((*゜Д゜)ゞ").withCancel().exec(data);
 
                 return;
 
             }
 
-            for (Msg toDelete : request.msgs) toDelete.delete();
-
-            msg.send("选择了 : " + account.archive().urlHtml() + " (❁´▽`❁)").removeKeyboard().html().failed();
-
-            clearPrivatePoint(user);
+			clearPrivatePoint(user);
+  
+            msg.send("选择了 : " + account.archive().urlHtml() + " (❁´▽`❁)").removeKeyboard().html().failed(2 * 1000);
 
 			if (request.payload) {
 
@@ -302,7 +300,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 		if ("cancel".equals(function)) {
 
-			msg.send("没有什么需要取消的 :)").removeKeyboard().failed(5 * 100);
+			msg.send("没有什么需要取消的 :)").removeKeyboard().failedWith();
 
 			return;
 
@@ -311,13 +309,15 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 	}
 
 	@Override
-	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,Object data) {
+	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,PointData data) {
 
+		data.context.add(msg);
+		
 		if ("cancel".equals(function)) {
 
-			clearPrivatePoint(user).onCancel(user,msg);
+			if (data.type == 1) clearPrivatePoint(user); else clearGroupPoint(user);
 
-			msg.send("已经取消当前操作 :) ","帮助文档 : @NTT_X").removeKeyboard().failed(5 * 1000);
+			msg.send("已经取消当前操作 :) ","帮助文档 : @NTT_X").removeKeyboard().failedWith(9 * 1000);
 
 			return;
 
@@ -402,7 +402,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 				if (msg.isCommand()) {
 
-					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint.data);
+					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint);
 
 					if (checked == PROCESS_REJECT) return EMPTY;
 
@@ -413,7 +413,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 							msg.sendTyping();
 
-							function.onPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint.data);
+							function.onPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint);
 
 						}
 
@@ -421,7 +421,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 				} else {
 
-					int checked = function.checkPoint(user,msg,groupPoint.point,groupPoint.data);
+					int checked = function.checkPoint(user,msg,groupPoint.point,groupPoint);
 
 					if (checked == PROCESS_REJECT) return EMPTY;
 
@@ -432,7 +432,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 							msg.sendTyping();
 
-							function.onPoint(user,msg,groupPoint.point,groupPoint.data);
+							function.onPoint(user,msg,groupPoint.point,groupPoint);
 
 						}
 
@@ -447,7 +447,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 				if (msg.isCommand()) {
 
-					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint.data);
+					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint);
 
 					if (checked == PROCESS_REJECT) return EMPTY;
 
@@ -458,7 +458,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 							msg.sendTyping();
 
-							function.onPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint.data);
+							function.onPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint);
 
 						}
 
@@ -466,7 +466,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 				} else {
 
-					int checked = function.checkPoint(user,msg,privatePoint.point,privatePoint.data);
+					int checked = function.checkPoint(user,msg,privatePoint.point,privatePoint);
 
 					if (checked == PROCESS_REJECT) return EMPTY;
 
@@ -477,7 +477,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 							msg.sendTyping();
 
-							function.onPoint(user,msg,privatePoint.point,privatePoint.data);
+							function.onPoint(user,msg,privatePoint.point,privatePoint);
 
 						}
 

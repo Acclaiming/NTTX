@@ -15,6 +15,7 @@ import io.kurumi.ntt.model.request.AbstractSend;
 import io.kurumi.ntt.model.request.ButtonLine;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import java.util.LinkedList;
+import io.kurumi.ntt.db.PointData;
 
 public class MyBots extends Fragment {
 
@@ -56,11 +57,11 @@ public class MyBots extends Fragment {
 
 	@Override
 	public int checkFunction() {
-		
+
 		return FUNCTION_PRIVATE;
-		
+
 	}
-	
+
     @Override
     public void onFunction(final UserData user,Msg msg,String function,String[] params) {
 
@@ -143,8 +144,8 @@ public class MyBots extends Fragment {
     }
 
 	@Override
-	public void onPoint(UserData user,Msg msg,String point,Object data) {
-		
+	public void onPoint(UserData user,Msg msg,String point,PointData data) {
+
         if (point.equals(POINT_CHAT_BOT_EDIT_MESSAGE)) {
 
             editChatBotMessage(user,msg,(BotEdit) data);
@@ -338,24 +339,24 @@ public class MyBots extends Fragment {
 
         callback.confirm();
 
-        callback.edit("好,现在发送新的欢迎语 :").withCancel().exec();
-
-        BotEdit point = new BotEdit();
+		BotEdit point = new BotEdit();
 
         point.bot = bot;
-        point.msg.add(callback);
+        point.context.add(callback);
+
+        callback.edit("好,现在发送新的欢迎语 :").withCancel().exec();
 
         setPrivatePointData(user,POINT_CHAT_BOT_EDIT_MESSAGE,point);
 
     }
 
     void editChatBotMessage(UserData user,Msg msg,BotEdit data) {
-
-        data.msg.add(msg);
+		
+		data.context.add(msg);
 
         if (!msg.hasText()) {
 
-            data.msg.add(msg.send("你正在设置 @" + data.bot.userName + " 的欢迎语 ，请输入 : ").withCancel().send());
+			msg.send("你正在设置 @" + data.bot.userName + " 的欢迎语 ，请输入 : ").withCancel().exec(data);
 
             return;
 
@@ -369,16 +370,13 @@ public class MyBots extends Fragment {
 
         data.bot.reloadBot();
 
-        for (Msg it : data.msg) it.delete();
-
-        msg.send("修改成功！").exec();
+        msg.send("修改成功！").failed();
 
         showBot(false,user,msg,data.bot.id);
 
     }
 
     void joinBotSwitchDelJoin(UserData user,Callback callback,long botId) {
-
 
         final UserBot bot = UserBot.data.getById(botId);
 
@@ -461,7 +459,7 @@ public class MyBots extends Fragment {
         BotEdit point = new BotEdit();
 
         point.bot = bot;
-        point.msg.add(callback);
+        point.context.add(callback);
 
         setPrivatePointData(user,POINT_JOIN_SET_LOGCHANNEL,point);
 
@@ -469,7 +467,7 @@ public class MyBots extends Fragment {
 
     void joinBotLogChannelEdit(UserData user,Msg msg,BotEdit data) {
 
-        data.msg.add(msg);
+        data.context.add(msg);
 
         Message message = msg.message();
 
@@ -477,7 +475,7 @@ public class MyBots extends Fragment {
 
         if (chat == null || chat.type() != Chat.Type.channel) {
 
-            msg.send("请直接转发一条频道消息 : 如果没有消息，那就自己发一条").withCancel().exec();
+            msg.send("请直接转发一条频道消息 : 如果没有消息，那就自己发一条").withCancel().exec(data);
 
             return;
 
@@ -489,7 +487,7 @@ public class MyBots extends Fragment {
 
         if (!resp.isOk()) {
 
-            msg.send("设置的BOT无法在该频道 (" + chat.title() + ") 发言... 请重试").withCancel().exec();
+            msg.send("设置的BOT无法在该频道 (" + chat.title() + ") 发言... 请重试").withCancel().exec(data);
 
             return;
 
@@ -505,9 +503,7 @@ public class MyBots extends Fragment {
 
         data.bot.reloadBot();
 
-        for (Msg it : data.msg) it.delete();
-
-        msg.send("修改成功！").exec();
+        msg.send("修改成功！").failed();
 
         showBot(false,user,msg,data.bot.id);
 
@@ -560,7 +556,7 @@ public class MyBots extends Fragment {
         BotEdit point = new BotEdit();
 
         point.bot = bot;
-        point.msg.add(callback);
+        point.context.add(callback);
 
         setPrivatePointData(user,POINT_JOIN_SET_WELCOME,point);
 
@@ -568,11 +564,11 @@ public class MyBots extends Fragment {
 
     void joinBotWelcomeMsgEdit(UserData user,Msg msg,BotEdit data) {
 
-        data.msg.add(msg);
+        data.context.add(msg);
 
         if (!msg.hasText()) {
 
-            data.msg.add(msg.send("你正在设置 @" + data.bot.userName + " 的欢迎语 ，请输入 : ").withCancel().send());
+            msg.send("你正在设置 @" + data.bot.userName + " 的欢迎语 ，请输入 : ").withCancel().exec(data);
 
             return;
 
@@ -585,10 +581,8 @@ public class MyBots extends Fragment {
         UserBot.data.setById(data.bot.id,data.bot);
 
         data.bot.reloadBot();
-
-        for (Msg it : data.msg) it.delete();
-
-        msg.send("修改成功！").exec();
+		
+        msg.send("修改成功！").failed();
 
         showBot(false,user,msg,data.bot.id);
 
@@ -620,9 +614,7 @@ public class MyBots extends Fragment {
 
     }
 
-    static class BotEdit {
-
-        LinkedList<Msg> msg = new LinkedList<>();
+    static class BotEdit extends PointData {
 
         UserBot bot;
 

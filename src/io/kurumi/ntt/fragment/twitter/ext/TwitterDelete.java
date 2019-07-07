@@ -5,6 +5,7 @@ import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
 import io.kurumi.ntt.Env;
+import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
@@ -56,7 +57,7 @@ public class TwitterDelete extends Fragment {
 	}
 
 	@Override
-	public int checkPoint(UserData user,Msg msg,String point,Object data) {
+	public int checkPoint(UserData user,Msg msg,String point,PointData data) {
 		
 		return PROCESS_SYNC;
 		
@@ -108,7 +109,7 @@ public class TwitterDelete extends Fragment {
     }
 
 	@Override
-	public void onPoint(UserData user,Msg msg,String point,Object data) {
+	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
 		if ("FETCH".equals(msg.text())) {
 
@@ -116,7 +117,7 @@ public class TwitterDelete extends Fragment {
 
 			thread.userId = user.id;
 
-			thread.account = (TAuth) data;
+			thread.account = data.data();
 
 			thread.api = thread.account.createApi();
 
@@ -251,7 +252,7 @@ public class TwitterDelete extends Fragment {
 
 		thread.userId = user.id;
 
-		thread.account = (TAuth) data;
+		thread.account = data.data();
 
 		thread.api = thread.account.createApi();
 

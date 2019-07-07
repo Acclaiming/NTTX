@@ -2,6 +2,7 @@ package io.kurumi.ntt.fragment.twitter.login;
 
 import cn.hutool.core.util.NumberUtil;
 import io.kurumi.ntt.Env;
+import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
@@ -154,19 +155,15 @@ public class TwitterLogin extends Fragment {
 
             cache.put(user.id,request);
 
-            msg.send("点 " + Html.a("这里",request.getAuthorizationURL()) + " 认证 ( 支持多账号的呢 ~").html().exec();
+			PointData data = setPrivatePointData(user,POINT_INPUT_CALLBACK,token);
+			
+            msg.send("点 " + Html.a("这里",request.getAuthorizationURL()) + " 认证 ( 支持多账号的呢 ~").html().exec(data);
 
-            // msg.send("因为咱是一个简单的程序 所以不能自动收到认证！ T_T ","","请记住 : 认证账号之后会跳转到一个不可访问的界面 : 在浏览器显示的地址是 127.0.0.1 , 这时候不要关闭浏览器！复制这个链接并发送给咱就可以了 ~","","如果不小心关闭了浏览器 请使用 /cancel 取消认证并重新请求认证 ^_^").exec();
-
-            msg.send("(｡•̀ᴗ-)✧ 请输入 pin 码 : ","使用 /cancel 取消 ~").exec();
-
-            setPrivatePointData(user,POINT_INPUT_CALLBACK,token);
-
-            // 不需要保存Point 因为request token的cache也不会保存。
-
+            msg.send("(｡•̀ᴗ-)✧ 请输入 pin 码 : ","使用 /cancel 取消 ~").exec(data);
+       
         } catch (TwitterException e) {
 
-            msg.send("请求认证链接失败 :( ",NTT.parseTwitterException(e)).exec();
+            msg.send("请求认证链接失败 :( ",NTT.parseTwitterException(e)).failedWith();
 
         }
 
@@ -174,11 +171,11 @@ public class TwitterLogin extends Fragment {
     }
 
 	@Override
-	public void onPoint(UserData user,Msg msg,String point,Object data) {
+	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
         if (!msg.hasText() || msg.text().length() != 7 || !NumberUtil.isNumber(msg.text())) {
 
-            msg.reply("乃好像需要输入认证的 7位 PIN码 ~ 使用 /cancel 取消 :)").exec();
+            msg.reply("乃好像需要输入认证的 7位 PIN码 ~").withCancel().exec(data);
 
             return;
 
@@ -213,7 +210,7 @@ public class TwitterLogin extends Fragment {
 
             try {
 
-				ApiToken token = (ApiToken) data;
+				ApiToken token = data.data();
 				
                 AccessToken access = token.createApi().getOAuthAccessToken(requestToken,msg.text());
 
@@ -259,7 +256,7 @@ public class TwitterLogin extends Fragment {
 
             } catch (TwitterException e) {
 
-                msg.send("链接好像失效了...",NTT.parseTwitterException(e)).exec();
+                msg.send("认证失败...",NTT.parseTwitterException(e)).exec();
 
             }
 

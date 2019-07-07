@@ -1,20 +1,21 @@
 package io.kurumi.ntt.model.request;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.http.HtmlUtil;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardHide;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
+import io.kurumi.ntt.Env;
 import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.fragment.twitter.status.MessagePoint;
+import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.NTT;
-import io.kurumi.ntt.Env;
-import cn.hutool.http.HtmlUtil;
 
 public class Send extends AbstractSend<Send> {
 
@@ -264,6 +265,16 @@ public class Send extends AbstractSend<Send> {
 		
 		return request;
 		
+	}
+	
+    public SendResponse exec(PointData toAdd) {
+		
+		SendResponse resp = exec();
+		
+		if (resp.isOk()) toAdd.context.add(new Msg(fragment,resp.message()));
+		
+		return resp;
+
 	}
 	
     @Override

@@ -499,9 +499,9 @@ public class NTT {
 
                     for (Msg message : messages) {
 
-                        if (message == null) continue;
-
-                        if (!message.delete()) return;
+                        if (message != null) message.delete();
+						
+                      //  if (!message.delete()) return;
 
                     }
 
