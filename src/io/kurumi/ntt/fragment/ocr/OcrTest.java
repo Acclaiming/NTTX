@@ -28,7 +28,7 @@ public class OcrTest extends Fragment {
 		
 	}
 	
-	EasyOCR ocr = new EasyOCR();
+	EasyOCR ocr = new EasyOCR("/usr/share/tessdata");
 
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,Object data) {
