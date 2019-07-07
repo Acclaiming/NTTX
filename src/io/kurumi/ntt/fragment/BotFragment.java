@@ -400,9 +400,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 				final Fragment function = points.containsKey(groupPoint.point) ? points.get(groupPoint.point) : this;
 				
-				BotLog.debug(msg.text() + " : " + function.toString());
-				
-				
 				if (msg.isCommand()) {
 
 					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint);
@@ -446,10 +443,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 			} else if (msg.isPrivate() && privatePoint != null) {
 
-				final Fragment function = points.containsKey(privatePoint.point) ? "cancel".equals(msg.command()) ? this : points.get(privatePoint.point) : this;
-
-				BotLog.debug(msg.text() + " : " + function.toString() + " : " + points.containsKey(privatePoint.point));
-	
+				final Fragment function = !points.containsKey(privatePoint.point) || "cancel".equals(msg.command()) ? this : points.get(privatePoint.point);
+				
 				if (msg.isCommand()) {
 
 					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint);

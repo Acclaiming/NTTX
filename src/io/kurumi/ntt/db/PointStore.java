@@ -67,9 +67,10 @@ public class PointStore {
 
 	public void setPrivate(UserData user,final String pointTo,final PointData data) {
 
-        privatePoints.put(user.id,data);
-
+		data.point = pointTo;
 		data.type = 1;
+		
+        privatePoints.put(user.id,data);
 
     }
 
@@ -94,7 +95,8 @@ public class PointStore {
 	public void setGroup(UserData user,final String pointTo,final PointData data) {
 
 		data.type = 2;
-
+		data.point = pointTo;
+		
         groupPoints.put(user.id,data);
 
     }
