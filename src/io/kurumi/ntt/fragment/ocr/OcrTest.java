@@ -14,6 +14,7 @@ public class OcrTest extends Fragment {
 		super.init(origin);
 		
 		registerFunction("ocr");
+		registerPoint(POINT_OCR);
 		
 	}
 	
