@@ -2,11 +2,11 @@ package io.kurumi.ntt.fragment.twitter.login;
 
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.request.Send;
-import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.Send;
 
 public class TwitterLogout extends Fragment {
 

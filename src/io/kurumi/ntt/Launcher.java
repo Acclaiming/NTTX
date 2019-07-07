@@ -8,13 +8,11 @@ import io.kurumi.ntt.db.BotDB;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.BotServer;
-import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.admin.Actions;
 import io.kurumi.ntt.fragment.admin.Control;
 import io.kurumi.ntt.fragment.admin.DelMsg;
 import io.kurumi.ntt.fragment.admin.Firewall;
 import io.kurumi.ntt.fragment.admin.Notice;
-import io.kurumi.ntt.fragment.admin.Shell;
 import io.kurumi.ntt.fragment.admin.Stat;
 import io.kurumi.ntt.fragment.admin.Users;
 import io.kurumi.ntt.fragment.base.GetID;
@@ -33,15 +31,14 @@ import io.kurumi.ntt.fragment.group.BanSetickerSet;
 import io.kurumi.ntt.fragment.group.ChineseAction;
 import io.kurumi.ntt.fragment.group.DeleteChannelMessage;
 import io.kurumi.ntt.fragment.group.GroupRepeat;
-import io.kurumi.ntt.fragment.twitter.action.UnMuteAll;
-import io.kurumi.ntt.fragment.twitter.action.UserActions;
 import io.kurumi.ntt.fragment.twitter.auto.AutoUI;
-import io.kurumi.ntt.fragment.twitter.delete.TwitterDelete;
-import io.kurumi.ntt.fragment.twitter.ext.AuthExport;
-import io.kurumi.ntt.fragment.twitter.ext.EsgList;
 import io.kurumi.ntt.fragment.twitter.ext.MediaDownload;
 import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
+import io.kurumi.ntt.fragment.twitter.ext.TimelineUI;
+import io.kurumi.ntt.fragment.twitter.ext.TwitterDelete;
+import io.kurumi.ntt.fragment.twitter.ext.UserActions;
 import io.kurumi.ntt.fragment.twitter.list.ListExport;
+import io.kurumi.ntt.fragment.twitter.login.AuthExport;
 import io.kurumi.ntt.fragment.twitter.login.TwitterLogin;
 import io.kurumi.ntt.fragment.twitter.login.TwitterLogout;
 import io.kurumi.ntt.fragment.twitter.status.StatusAction;
@@ -49,15 +46,14 @@ import io.kurumi.ntt.fragment.twitter.status.StatusFetch;
 import io.kurumi.ntt.fragment.twitter.status.StatusSearch;
 import io.kurumi.ntt.fragment.twitter.status.StatusUpdate;
 import io.kurumi.ntt.fragment.twitter.status.TimedStatus;
-import io.kurumi.ntt.fragment.twitter.timeline.TimelineUI;
 import io.kurumi.ntt.fragment.twitter.track.TrackTask;
 import io.kurumi.ntt.fragment.twitter.track.TrackUI;
 import io.kurumi.ntt.fragment.twitter.track.UserTrackTask;
+import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.Html;
 import java.io.IOException;
 import java.util.TimeZone;
-import io.kurumi.ntt.fragment.ocr.OcrTest;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -277,83 +273,49 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		super.reload();
 
+		// ADMIN
+		
 		addFragment(new PingFunction());
 		addFragment(new GetID());
-
 		addFragment(new DelMsg());
-		
-		
         addFragment(new Notice());
-
         addFragment(new Backup());
-
         addFragment(new Users());
-
-		addFragment(new Shell());
-
 		addFragment(new Actions());
-
 		addFragment(new Stat());
-
-		addFragment(new DeleteChannelMessage());
-
-        addFragment(new DebugMsg());
-
+		addFragment(new DebugMsg());
         addFragment(new Control());
-
-        addFragment(new UserActions());
-
-        addFragment(new DebugUser());
-
+		addFragment(new DebugUser());
         addFragment(new DebugStatus());
-
-        addFragment(new StatusUpdate());
-
-		addFragment(new TimedStatus());
-
-        addFragment(new StatusSearch());
-
-        addFragment(new StatusGetter());
-
-        addFragment(new StatusFetch());
-
-		addFragment(new UnMuteAll());
-
-        addFragment(new MediaDownload());
-
-        addFragment(new TwitterLogin());
-
-        addFragment(new TwitterLogout());
-
-		addFragment(new AuthExport());
-
-        addFragment(new AutoUI());
-
-        addFragment(new TrackUI());
-
-		addFragment(new EsgList());
-
-        addFragment(new StatusAction());
-        addFragment(new TimelineUI());
-
-        addFragment(new GroupRepeat());
-
-        addFragment(new ChineseAction());
-
-        addFragment(new AntiEsu());
-
-        addFragment(new BanSetickerSet());
-
-        addFragment(new AutoReply());
-
-        addFragment(new TwitterDelete());
-
-		//addFragment(new FollowersChart());
-
-		addFragment(new ListExport());
 		
-		addFragment(new OcrTest());
+		// Twitter
+		
+		addFragment(new TwitterLogin());
+        addFragment(new TwitterLogout());
+		addFragment(new UserActions());
+		addFragment(new StatusUpdate());
+		addFragment(new TimedStatus());
+        addFragment(new StatusSearch());
+        addFragment(new StatusGetter());
+        addFragment(new StatusFetch());
+		addFragment(new MediaDownload());
+		addFragment(new AuthExport());
+        addFragment(new AutoUI());
+        addFragment(new TrackUI());
+		addFragment(new StatusAction());
+		addFragment(new TimelineUI());
+		addFragment(new TwitterDelete());
+		addFragment(new ListExport());
 
+		// GROUP
+		
+        addFragment(new GroupRepeat());
+        addFragment(new ChineseAction());
+        addFragment(new AntiEsu());
+        addFragment(new BanSetickerSet());
+        addFragment(new AutoReply());
+		addFragment(new DeleteChannelMessage());
+		
         // Forum
 
         addFragment(new ForumManage());

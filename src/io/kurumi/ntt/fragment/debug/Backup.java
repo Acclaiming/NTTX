@@ -8,7 +8,7 @@ import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.model.Msg;
 import java.io.File;
 import java.util.Date;
 import java.util.TimerTask;

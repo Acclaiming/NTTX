@@ -6,16 +6,15 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
-import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.abs.Callback;
-import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.request.AbstractSend;
-import io.kurumi.ntt.fragment.abs.request.ButtonLine;
-import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
-import java.util.LinkedList;
 import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Callback;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.AbstractSend;
+import io.kurumi.ntt.model.request.ButtonLine;
+import io.kurumi.ntt.model.request.ButtonMarkup;
+import java.util.LinkedList;
 
 public class MyBots extends Fragment {
 

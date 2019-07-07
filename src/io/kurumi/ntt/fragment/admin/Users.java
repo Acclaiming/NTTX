@@ -2,9 +2,11 @@ package io.kurumi.ntt.fragment.admin;
 
 import cn.hutool.http.HtmlUtil;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.bots.UserBot;
 import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.Html;
 
 import static com.mongodb.client.model.Filters.*;
@@ -17,8 +19,6 @@ import static com.mongodb.client.model.Updates.set;
 import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.fragment.bots.UserBot;
 
 public class Users extends Fragment {
 

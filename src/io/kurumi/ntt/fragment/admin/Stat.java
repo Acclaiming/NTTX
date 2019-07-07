@@ -3,7 +3,7 @@ package io.kurumi.ntt.fragment.admin;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.model.Msg;
 import tool.sysinfo.linux.cpu.Handler4stat;
 import tool.sysinfo.linux.memory.Handler4meminfo;
 

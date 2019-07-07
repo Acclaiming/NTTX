@@ -6,12 +6,10 @@ import cn.hutool.http.HtmlUtil;
 import cn.hutool.json.JSONArray;
 import io.kurumi.ntt.db.LocalData;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.utils.NTT;
-import java.security.acl.Group;
-import java.util.LinkedList;
 import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.utils.NTT;
 
 public class ChineseAction extends Fragment {
 

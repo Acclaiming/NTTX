@@ -3,14 +3,12 @@ package io.kurumi.ntt.fragment.bots;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.GetMe;
 import com.pengrad.telegrambot.response.GetMeResponse;
-import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.request.Keyboard;
-import java.util.HashMap;
-import java.util.LinkedList;
 import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.Keyboard;
+import java.util.HashMap;
 
 public class NewBot extends Fragment {
 

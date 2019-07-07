@@ -1,20 +1,17 @@
 package io.kurumi.ntt.fragment.admin;
 
 import cn.hutool.core.util.NumberUtil;
+import com.pengrad.telegrambot.model.ChatMember;
+import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.GetChatAdministrators;
+import com.pengrad.telegrambot.request.LeaveChat;
+import com.pengrad.telegrambot.response.GetChatAdministratorsResponse;
 import io.kurumi.ntt.db.Data;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.abs.Msg;
-import java.util.LinkedList;
 import io.kurumi.ntt.fragment.BotFragment;
-import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.request.LeaveChat;
-import com.pengrad.telegrambot.request.GetChatAdministrators;
-import com.pengrad.telegrambot.response.GetChatAdministratorsResponse;
-import com.pengrad.telegrambot.model.ChatMember;
-import com.pengrad.telegrambot.model.Chat;
-import io.kurumi.ntt.fragment.group.AntiEsu;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Msg;
 
 public class Firewall extends Fragment {
 

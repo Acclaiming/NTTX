@@ -6,7 +6,7 @@ import io.kurumi.ntt.db.LocalData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
 import java.util.HashSet;

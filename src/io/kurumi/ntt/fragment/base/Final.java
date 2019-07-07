@@ -1,8 +1,8 @@
 package io.kurumi.ntt.fragment.base;
 
-import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Msg;
 
 public class Final extends Fragment {
 

@@ -2,13 +2,12 @@ package io.kurumi.ntt.fragment.twitter.track;
 
 import io.kurumi.ntt.db.Data;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.abs.Callback;
-import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
-import io.kurumi.ntt.fragment.twitter.TAuth;
-import java.util.LinkedList;
 import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.model.Callback;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.ButtonMarkup;
 
 public class TrackUI extends Fragment {
 

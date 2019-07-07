@@ -8,13 +8,11 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendSticker;
 import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.SendResponse;
-import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.request.Send;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
-
 import java.util.LinkedList;
 import java.util.List;
 

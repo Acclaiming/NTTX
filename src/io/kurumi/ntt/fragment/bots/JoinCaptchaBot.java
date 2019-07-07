@@ -13,20 +13,19 @@ import com.pengrad.telegrambot.response.GetUserProfilePhotosResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.fragment.abs.Callback;
-import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
-import io.kurumi.ntt.fragment.abs.request.Send;
 import io.kurumi.ntt.fragment.admin.Firewall;
-import io.kurumi.ntt.fragment.twitter.user.Img;
+import io.kurumi.ntt.model.Callback;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.ButtonMarkup;
+import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
+import io.kurumi.ntt.utils.Img;
 import io.kurumi.ntt.utils.NTT;
 import java.awt.Color;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TimerTask;
-import io.kurumi.ntt.utils.BotLog;
 
 public class JoinCaptchaBot extends BotFragment {
 
@@ -167,8 +166,6 @@ public class JoinCaptchaBot extends BotFragment {
 			}
 
 		} else if (msg.message().newChatMember() != null || msg.message().newChatMembers() != null) {
-			
-			BotLog.debug(UserData.get(me).userName() + " : 群组新成员 " + user.userName());
 			
             if (delJoin) msg.delete();
 
@@ -626,8 +623,6 @@ public class JoinCaptchaBot extends BotFragment {
 		HashMap<Long, Msg> secGroup = secCache.containsKey(msg.chatId()) ? secCache.get(msg.chatId()) : new HashMap<Long, Msg>();
 
 		if (msg.message().newChatMembers() != null && msg.message().newChatMembers()[0].id().equals(user.id)) {
-
-			BotLog.debug(UserData.get(me).userName() + " : 群组新成员 " + user.userName());
 			
 			clearGroupPoint(user);
 

@@ -4,21 +4,20 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
+import cn.hutool.json.JSONObject;
 import com.pengrad.telegrambot.BotUtils;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.DeleteWebhook;
+import com.pengrad.telegrambot.response.SendResponse;
 import fi.iki.elonen.NanoHTTPD;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.Launcher;
-import io.kurumi.ntt.fragment.abs.request.Send;
+import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.BotLog;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
-import cn.hutool.json.JSONObject;
-import com.pengrad.telegrambot.request.SendMessage;
-import com.pengrad.telegrambot.response.SendResponse;
 
 public class BotServer extends NanoHTTPD {
 

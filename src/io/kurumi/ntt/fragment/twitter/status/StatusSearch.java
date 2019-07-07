@@ -5,21 +5,19 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.abs.Callback;
-import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.request.ButtonLine;
-import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
-import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
+import io.kurumi.ntt.model.Callback;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.ButtonLine;
+import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.MongoIDs;
 import io.kurumi.ntt.utils.NTT;
-import java.util.LinkedList;
 import java.util.TimeZone;
-import io.kurumi.ntt.fragment.BotFragment;
 
 public class StatusSearch extends Fragment {
 

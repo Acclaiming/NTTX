@@ -3,10 +3,9 @@ package io.kurumi.ntt.fragment.group;
 import cn.hutool.core.util.RandomUtil;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.abs.Msg;
+import io.kurumi.ntt.model.Msg;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
 public class GroupRepeat extends Fragment {

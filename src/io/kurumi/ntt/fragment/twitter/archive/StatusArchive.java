@@ -12,17 +12,15 @@ import com.pengrad.telegrambot.response.SendResponse;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.db.Data;
-import io.kurumi.ntt.fragment.abs.request.Send;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.status.MessagePoint;
 import io.kurumi.ntt.fragment.twitter.status.StatusAction;
+import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
-
 import java.io.File;
 import java.util.Calendar;
 import java.util.LinkedList;
-
 import twitter4j.MediaEntity;
 import twitter4j.Status;
 import twitter4j.Twitter;

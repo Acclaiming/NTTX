@@ -1,5 +1,6 @@
 package io.kurumi.ntt.fragment;
 
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.http.HttpUtil;
 import com.mongodb.client.FindIterable;
 import com.pengrad.telegrambot.TelegramBot;
@@ -15,17 +16,16 @@ import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.StickerPoint;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.abs.Callback;
-import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.Query;
-import io.kurumi.ntt.fragment.abs.request.Keyboard;
-import io.kurumi.ntt.fragment.abs.request.Send;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.status.StatusAction;
+import io.kurumi.ntt.model.Callback;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.Query;
+import io.kurumi.ntt.model.request.Keyboard;
+import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.BotLog;
 import java.io.File;
 import java.util.LinkedList;
-import cn.hutool.core.util.ArrayUtil;
 
 public class Fragment {
 

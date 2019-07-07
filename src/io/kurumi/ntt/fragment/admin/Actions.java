@@ -3,14 +3,13 @@ package io.kurumi.ntt.fragment.admin;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.pengrad.telegrambot.request.BaseRequest;
+import com.pengrad.telegrambot.request.LeaveChat;
+import com.pengrad.telegrambot.response.BaseResponse;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.request.Send;
-import com.pengrad.telegrambot.request.LeaveChat;
-import com.pengrad.telegrambot.response.SendResponse;
-import com.pengrad.telegrambot.response.BaseResponse;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.Send;
 
 public class Actions extends Fragment {
 

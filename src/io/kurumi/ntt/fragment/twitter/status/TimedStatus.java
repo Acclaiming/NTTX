@@ -4,20 +4,19 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
 import io.kurumi.ntt.db.Data;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.request.Send;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.Timer;
 import java.util.TimerTask;
 import twitter4j.Status;
 import twitter4j.TwitterException;
-import io.kurumi.ntt.fragment.BotFragment;
 
 public class TimedStatus extends Fragment {
 

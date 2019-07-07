@@ -2,16 +2,15 @@ package io.kurumi.ntt.fragment.twitter.ext;
 
 import cn.hutool.core.util.NumberUtil;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
+import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.NTT;
-import java.util.LinkedList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import io.kurumi.ntt.fragment.BotFragment;
 
 public class StatusGetter extends Fragment {
 

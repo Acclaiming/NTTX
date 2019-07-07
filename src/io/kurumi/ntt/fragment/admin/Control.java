@@ -2,14 +2,12 @@ package io.kurumi.ntt.fragment.admin;
 
 import cn.hutool.core.util.RuntimeUtil;
 import io.kurumi.ntt.Env;
-import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.request.Send;
-import io.kurumi.ntt.utils.BotLog;
-import java.util.LinkedList;
 import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.Send;
+import io.kurumi.ntt.utils.BotLog;
 
 public class Control extends Fragment {
 

@@ -4,11 +4,11 @@ for jar in ./libs/*.jar;do
  
 done
 
-for jar in ./libs/tieba-api/*.jar;do
-
- export CLASSPATH=$CLASSPATH:$jar
- 
-done
+#for jar in ./libs//*.jar ;do
+#
+# export CLASSPATH=$CLASSPATH:$jar
+# 
+#done
 
 find src -name "*.java" > sources.txt
 

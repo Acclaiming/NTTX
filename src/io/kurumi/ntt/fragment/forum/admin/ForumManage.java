@@ -13,20 +13,19 @@ import com.pengrad.telegrambot.response.GetMeResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.abs.Callback;
-import io.kurumi.ntt.fragment.abs.Msg;
-import io.kurumi.ntt.fragment.abs.request.ButtonLine;
-import io.kurumi.ntt.fragment.abs.request.ButtonMarkup;
-import io.kurumi.ntt.fragment.abs.request.Keyboard;
 import io.kurumi.ntt.fragment.forum.ForumE;
 import io.kurumi.ntt.fragment.forum.ForumPost;
 import io.kurumi.ntt.fragment.forum.ForumTag;
+import io.kurumi.ntt.model.Callback;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.ButtonLine;
+import io.kurumi.ntt.model.request.ButtonMarkup;
+import io.kurumi.ntt.model.request.Keyboard;
 import io.kurumi.ntt.utils.MongoIDs;
 import java.util.LinkedList;
 import java.util.List;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.db.PointStore.Point;
 
 public class ForumManage extends Fragment {
 

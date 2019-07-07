@@ -2,15 +2,13 @@ package io.kurumi.ntt.fragment.admin;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.pengrad.telegrambot.request.ForwardMessage;
-import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.abs.Msg;
 import io.kurumi.ntt.fragment.twitter.TAuth;
-import java.util.LinkedList;
+import io.kurumi.ntt.model.Msg;
 
 import static java.util.Arrays.asList;
-import io.kurumi.ntt.fragment.BotFragment;
 
 public class Notice extends Fragment {
 

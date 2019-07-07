@@ -1,8 +1,8 @@
 package io.kurumi.ntt.fragment.twitter.auto;
 
-import io.kurumi.ntt.fragment.abs.request.Send;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.NTT;
 import twitter4j.Relationship;
 import twitter4j.Twitter;
