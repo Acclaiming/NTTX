@@ -445,6 +445,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener {
 
 				final Fragment function = !points.containsKey(privatePoint.point) || "cancel".equals(msg.command()) ? this : points.get(privatePoint.point);
 
+				BotLog.debug(msg.text() + " : " +function.toString());
+				
 				if (msg.isCommand()) {
 
 					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint);

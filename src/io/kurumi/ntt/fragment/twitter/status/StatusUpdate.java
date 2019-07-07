@@ -572,8 +572,6 @@ public class StatusUpdate extends Fragment {
 
             update.text = msg.text();
 			
-			msg.send("文本已设定",submitAndCancel).exec();
-			
             msg.send("文本已设定",submitAndCancel).exec(update);
 
         }
