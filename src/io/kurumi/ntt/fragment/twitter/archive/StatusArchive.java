@@ -572,7 +572,7 @@ public class StatusArchive {
 
                 if (quotedUserId != -1) {
 
-                    TAuth accessable = NTT.loopFindAccessable(quotedScreenName);
+                    TAuth accessable = NTT.loopFindAccessable(quotedUserId);
 
                     if (accessable != null) {
 
