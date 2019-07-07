@@ -227,6 +227,13 @@ public class ForwardBot extends BotFragment {
 	}
 
 	@Override
+	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
+		
+		return checkMsg(user,msg);
+		
+	}
+
+	@Override
 	public int checkMsg(UserData user,Msg msg) {
 
 		if (userId.equals(user.id) || !blockList.contains(user.id.longValue())) {
