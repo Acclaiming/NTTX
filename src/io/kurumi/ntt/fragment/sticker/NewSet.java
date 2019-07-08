@@ -100,7 +100,7 @@ public class NewSet extends Fragment {
 			create.title = msg.text();
 			create.type = 1;
 
-			msg.send("现在发送贴纸集的简称 : 用于添加贴纸的链接 https://t.me/addstickers/你设置的简称 。只能包含英文字母，数字和下划线。必须以字母开头，不能包含连续的下划线。 ","\n并且 : 根据 " + DOC + " , " + Html.b("必须以 '_by_" + origin.me.username().toLowerCase() + "' 结尾。") + " '" + origin.me.username().toLowerCase() + "' 不区分大小写 (不带引号)。").html().exec(data);
+			msg.send("现在发送贴纸集的简称 : 用于添加贴纸的链接 https://t.me/addstickers/你设置的简称 。只能包含英文字母，数字和下划线。必须以字母开头，不能包含连续的下划线。 ","\n并且 : 根据 " + DOC + " , " + Html.b("必须以 '_by_" + origin.me.username().toLowerCase() + "' 结尾。") + " '" + Html.code("by_" + origin.me.username().toLowerCase())+ "' 不区分大小写 (不带引号)。").html().exec(data);
 
 		} else if (create.type == 1) {
 
@@ -118,7 +118,7 @@ public class NewSet extends Fragment {
 
 			} else if (!msg.text().toLowerCase().endsWith("_by_" + origin.me.username().toLowerCase())) {
 
-				msg.send("对不起，但是根据 " + DOC + " , " + Html.b("必须以 '_by_" + origin.me.username().toLowerCase() + "' 结尾。") + " '" + origin.me.username().toLowerCase() + "' 不区分大小写 (不带引号)。 :)").html().exec(data);
+				msg.send("对不起，但是根据 " + DOC + " , " + "简称必须以 '" + Html.code("_by_" + origin.me.username().toLowerCase()) + "' 结尾。" + " '" + origin.me.username().toLowerCase() + "' 不区分大小写 (不带引号)。 :)").html().exec(data);
 
 				return;
 
