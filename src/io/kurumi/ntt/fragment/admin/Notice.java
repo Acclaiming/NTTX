@@ -20,6 +20,8 @@ import static com.mongodb.client.model.Filters.not;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
 import static java.util.Arrays.asList;
+import io.kurumi.ntt.utils.BotLog;
+import com.pengrad.telegrambot.response.SendResponse;
 
 
 public class Notice extends Fragment {
@@ -103,8 +105,10 @@ public class Notice extends Fragment {
                     ForwardMessage forward = new ForwardMessage(userData.id,msg.chatId(),msg.messageId());
 
                     if (mute) forward.disableNotification(true);
+					
+					SendResponse resp = bot().execute(forward);
 
-                    if (bot().execute(forward).isOk()) {
+                    if (resp.isOk()) {
 						
 						success++;
 						
@@ -117,12 +121,17 @@ public class Notice extends Fragment {
 
                         failed++;
 
+						BotLog.info("NF : " + resp.description());
+						
+						/*
+						
                         userData.contactable = false;
 
                         UserData.userDataIndex.remove(userData.id);
 
                         userData.data.setById(userData.id,userData);
 				
+						*/
 
                     }
 
