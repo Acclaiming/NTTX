@@ -75,7 +75,7 @@ public class Notice extends Fragment {
 		
 		if (tryAll) {
 			
-			UserData.data.collection.updateMany(eq("contactable",false),new Document("contactable",null));
+			UserData.data.collection.updateMany(eq("contactable",false),eq("contactable",null));
 			
 		}
 		
