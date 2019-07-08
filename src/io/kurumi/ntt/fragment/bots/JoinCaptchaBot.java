@@ -126,7 +126,7 @@ public class JoinCaptchaBot extends BotFragment {
 	@Override
 	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
 		
-		return (user.admin() || user.id.equals(userId)) ? PROCESS_ASYNC : PROCESS_REJECT;
+		return ((user.admin() || user.id.equals(userId)) && msg.isPrivate()) ? PROCESS_ASYNC : PROCESS_REJECT;
 		
 	}
 
