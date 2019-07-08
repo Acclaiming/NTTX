@@ -416,16 +416,16 @@ public class ListImport extends Fragment {
 
 						} catch (TwitterException e) {
 
-							error.put(id,e.getStatusCode() == 403 ? "已经关注了该用户" : NTT.parseTwitterException(e));
+							error.put(id,(e.getStatusCode() == 403 && e.getErrorCode() == -1) ? "已经关注了该用户" : NTT.parseTwitterException(e));
 
-							if (!ArrayUtil.contains(new int[] { 50,63,136 },e.getErrorCode())) {
+							if (!ArrayUtil.contains(new int[] { 50,63,136,160 },e.getErrorCode())) {
 
 								break;
 
 							}
 
 						}
-
+						
 						if ((index % 10 == 1) && index != (size - 1)) {
 
 							status.edit("正在导入中 : ","关注成功 : " + success.size() + " 关注出错 : " + error.size(),"使用 /import_cancel 取消操作").exec();
@@ -436,7 +436,7 @@ public class ListImport extends Fragment {
 
 					status.delete();
 
-					status.send("导入结束 : ","已执行 " + index + " / " + size + " 条 ","关注成功 : " + (success.size() == 0 ? "无" : (success.size() + "\n" + ArrayUtil.join(success.toArray(),"\n"))) + "条 \n出错 : " + (error.size() == 0 ? "无" : ("\n" + parseError(api,error)))).html().exec();
+					status.send("导入结束 : ","已执行 " + index + " / " + size + " 条 ","关注成功 : " + (success.size() == 0 ? "无" : (success.size() + "\n" + ArrayUtil.join(success.toArray(),"\n"))),"\n出错 : " + (error.size() == 0 ? "无" : ("\n" + parseError(api,error)))).html().exec();
 
 				} else if (action.mode == 1) {
 
