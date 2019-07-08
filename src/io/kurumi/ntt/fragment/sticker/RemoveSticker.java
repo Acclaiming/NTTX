@@ -66,7 +66,7 @@ public class RemoveSticker extends Fragment {
 
 		}
 
-		msg.send("移除成功！ 继续移除请发送贴纸 , 退出使用 /cancel").withCancel().exec(data);
+		msg.send("移除成功！ 重启客户端生效 ","退出移除模式使用 /cancel").exec(data);
 		
 		
 	}
