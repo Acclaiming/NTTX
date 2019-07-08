@@ -166,6 +166,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 	}
 
 	@Override
+	public int checkFunction() {
+		
+		return FUNCTION_PUBLIC;
+		
+	}
+
+	@Override
 	public void onPoint(final UserData user,Msg msg,String point,PointData data) {
 
 		if (POINT_REQUEST_TWITTER.equals(point)) {
@@ -624,7 +631,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 								@Override
 								public void process() {
 
-									msg.send("命令请在私聊使用 请勿乱玩机器人命令 如有问题请询问群组管理员 :)").failed();
+									msg.send("命令请在私聊使用 请勿乱玩机器人命令 如有问题请询问群组管理员 :)").failedWith();
 
 								}
 

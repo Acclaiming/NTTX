@@ -60,13 +60,13 @@ public class NewSet extends Fragment {
 
 	@Override
 	public int checkPoint(UserData user,Msg msg,String point,PointData data) {
-	
+
 		return ((CreateSet)data).type == 3 ? PROCESS_THREAD : PROCESS_ASYNC;
-		
+
 	}
 
 	ArrayList<Long> forking = new ArrayList<>();
-	
+
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
@@ -147,19 +147,19 @@ public class NewSet extends Fragment {
 
 			if (CREATE_COPY.equals(msg.text())) {
 
-				msg.send("现在请发送 目标贴纸包的简称或链接 或目标贴纸包的任意贴纸 : ").withCancel().exec(data);
+				msg.send("现在请发送 目标贴纸包的简称或链接 或目标贴纸包的任意贴纸 : ").removeKeyboard().withCancel().exec(data);
 
 				create.type = 3;
 
 			} else if (CREATE_BY_IMAGE.equals(msg.text())) {
 
-				msg.send("现在请发送任意图片 (建议使用文件格式 直接发送图片会被压缩) : ").withCancel().exec(data);
+				msg.send("现在请发送任意图片 (建议使用文件格式 直接发送图片会被压缩) : ").removeKeyboard().withCancel().exec(data);
 
 				create.type = 4;
 
 			} else if (CREATE_BY_STICKER.equals(msg.text())) {
 
-				msg.send("现在请发送任意贴纸 : ").withCancel().exec(data);
+				msg.send("现在请发送任意贴纸 : ").removeKeyboard().withCancel().exec(data);
 
 				create.type = 5;
 
@@ -167,96 +167,115 @@ public class NewSet extends Fragment {
 
 		} else if (create.type == 3) {
 
-			if (!msg.hasText()) {
-
-				msg.send("请发送 目标贴纸包的简称或链接 或目标贴纸包的任意贴纸 : ").withCancel().exec(data);
-
-				return;
-
-			}
-			
 			if (forking.contains(user.id)) {
-				
+
 				msg.send("对不起，但是还有未造成的贴纸包复制任务正在进行... 请等待").withCancel().exec(data);
-				
+
 				return;
-				
+
 			} else if (!TAuth.contains(user.id)) {
-				
+
 				msg.send("对不起，但是复制贴纸包需要大量时间，为防止滥用，仅认证了Twitter账号的用户可用。").exec(data);
-				
+
 				return;
-				
+
 			} else {
-				
+
 				forking.add(user.id);
-				
-			}
-
-			String target = msg.text();
-
-			if (target.contains("/")) target = StrUtil.subAfter(target,"/",true);
-
-			final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
-
-			if (!set.isOk()) {
-
-				msg.send("无法读取贴纸包 " + target + " : " + set.description()).exec(data);
-
-				forking.remove(user.id);
-				
-				return;
 
 			}
 
-			clearPrivatePoint(user);
+			String target;
 
-			Msg status = msg.send("正在创建贴纸包...").send();
+			if (msg.hasText()) {
 
-			BaseResponse resp = bot().execute(new CreateNewStickerSet(user.id.intValue(),create.name,create.title,forkStiker(user.id,set.stickerSet().stickers()[0]),set.stickerSet().stickers()[0].emoji()) {{ 
+				target = msg.text();
 
-						if (set.stickerSet().stickers()[0].maskPosition() != null) {
+				if (target.contains("/")) {
 
-							maskPosition(set.stickerSet().stickers()[0].maskPosition()); 
+					target = StrUtil.subAfter(target,"/",true);
 
-						}
+				} else if (msg.message().sticker() != null) {
 
-					}});
+					target = msg.message().sticker().setName();
 
-			if (!resp.isOk()) {
+					if (target == null) {
 
-				status.edit("创建贴纸集失败 请重试 : " + resp.description()).withCancel().exec(data);
+						msg.send("这个贴纸没有贴纸集... 请重试 :)").exec(data);
 
-				forking.remove(user.id);
+						return;
 
-				return;
-
-			}
-
-			for (int index = 1;index < set.stickerSet().stickers().length;index ++) {
-
-				final Sticker sticker = set.stickerSet().stickers()[index];
-
-				bot().execute(new AddStickerToSet(user.id.intValue(),create.name,forkStiker(user.id,sticker),sticker.emoji()) {{
-					
-					if (sticker.maskPosition() != null) {
-						
-						maskPosition(sticker.maskPosition());
-						
 					}
-					
-				}});
-				
-				status.edit("正在复制贴纸包 进度 : " + (index + 1) + " / " + set.stickerSet().stickers().length).exec();
-			
+
+				} else {
+
+					msg.send("请发送 目标贴纸包的简称或链接 或目标贴纸包的任意贴纸 : ").withCancel().exec(data);
+
+					return;
+
+				}
+
+				final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
+
+				if (!set.isOk()) {
+
+					msg.send("无法读取贴纸包 " + target + " : " + set.description()).exec(data);
+
+					forking.remove(user.id);
+
+					return;
+
+				}
+
+
+				clearPrivatePoint(user);
+
+				Msg status = msg.send("正在创建贴纸包...").send();
+
+				BaseResponse resp = bot().execute(new CreateNewStickerSet(user.id.intValue(),create.name,create.title,forkStiker(user.id,set.stickerSet().stickers()[0]),set.stickerSet().stickers()[0].emoji()) {{ 
+
+							if (set.stickerSet().stickers()[0].maskPosition() != null) {
+
+								maskPosition(set.stickerSet().stickers()[0].maskPosition()); 
+
+							}
+
+						}});
+
+				if (!resp.isOk()) {
+
+					status.edit("创建贴纸集失败 请重试 : " + resp.description()).withCancel().exec(data);
+
+					forking.remove(user.id);
+
+					return;
+
+				}
+
+				for (int index = 1;index < set.stickerSet().stickers().length;index ++) {
+
+					final Sticker sticker = set.stickerSet().stickers()[index];
+
+					bot().execute(new AddStickerToSet(user.id.intValue(),create.name,forkStiker(user.id,sticker),sticker.emoji()) {{
+
+								if (sticker.maskPosition() != null) {
+
+									maskPosition(sticker.maskPosition());
+
+								}
+
+							}});
+
+					status.edit("正在复制贴纸包 进度 : " + (index + 1) + " / " + set.stickerSet().stickers().length).exec();
+
+				}
+
+				forking.remove(user.id);
+
+				status.edit("创建成功！ " + Html.a(create.title,"https://t.me/addstickers/" + create.name)).html().exec(data);
+
 			}
-			
-			forking.remove(user.id);
-			
-			status.edit("创建成功！ " + Html.a(create.title,"https://t.me/addstickers/" + create.name)).html().exec(data);
 
 		}
 
 	}
-
-}
