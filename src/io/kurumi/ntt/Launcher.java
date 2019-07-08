@@ -53,6 +53,9 @@ import io.kurumi.ntt.utils.Html;
 import java.io.IOException;
 import java.util.TimeZone;
 import io.kurumi.ntt.fragment.twitter.list.ListImport;
+import io.kurumi.ntt.fragment.sticker.MySets;
+import io.kurumi.ntt.fragment.sticker.NewSet;
+import io.kurumi.ntt.fragment.sticker.StickerExport;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -183,10 +186,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 					 "\n瓜体 ( @DuangCN ) : " + Html.a("      安装      ","https://t.me/setlanguage/duang-zh-cn"),
 
 					 "\n简体中文二 ：" + Html.a("      安装      ","https://t.me/setlanguage/classic-zh-cn"),
-					 
-					 "\n简体中文三 ：" + Html.a("      安装      ","https://t.me/setlanguage/zhlangcn"),
-
-					 "\n简体中文四 ：" + Html.a("      安装      ","https://t.me/setlanguage/zh-hans-beta"),
 
 					 "\n台湾正體 ：" + Html.a("      安装      ","https://t.me/setlanguage/taiwan"),
 
@@ -195,11 +194,11 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 					 "\n香港繁體一 ：" + Html.a("      安装      ","https://t.me/setlanguage/hongkong"),
 
 					 "\n香港繁體二 ：" + Html.a("      安装      ","https://t.me/setlanguage/zhhant-hk"),
-
+					 
 					 "\n香港人口語 ：" + Html.a("      安装      ","https://t.me/setlanguage/hongkonger"),
 
 					 "\n廣東話一 ：" + Html.a("      安装      ","https://t.me/setlanguage/zhhkpb1"),
-					 
+
 					 "\n廣東話二 ：" + Html.a("      安装      ","https://t.me/setlanguage/hkcantonese")
 
 					 ).html().publicFailed();
@@ -239,7 +238,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         return false;
 
     }
-	
+
 	UserTrackTask userTrackTask = new UserTrackTask();
 
 	void startTasks() {
@@ -264,7 +263,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		super.reload();
 
 		// ADMIN
-		
+
 		addFragment(new PingFunction());
 		addFragment(new GetID());
 		addFragment(new DelMsg());
@@ -277,9 +276,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(new Control());
 		addFragment(new DebugUser());
         addFragment(new DebugStatus());
-		
+
 		// Twitter
-		
+
 		addFragment(new TwitterLogin());
         addFragment(new TwitterLogout());
 		addFragment(new UserActions());
@@ -297,19 +296,25 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new TwitterDelete());
 		addFragment(new ListExport());
 		addFragment(new ListImport());
-		
+
 		// GROUP
-		
+
         addFragment(new GroupRepeat());
         addFragment(new ChineseAction());
         addFragment(new AntiEsu());
         addFragment(new BanSetickerSet());
 		addFragment(new DeleteChannelMessage());
-		
-        // Bots
+
+        // BOTS
 
         addFragment(new NewBot());
         addFragment(new MyBots());
+		
+		// SETS
+		
+		addFragment(new StickerExport());
+		addFragment(new NewSet());
+		// addFragment(new MySets());
 
     }
 
@@ -327,7 +332,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         BotServer.INSTANCE.stop();
 
 		mainTimer.cancel();
-		
+
 		trackTimer.cancel();
 
 		userTrackTask.interrupt();
@@ -351,7 +356,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 	@Override
 	public boolean onUpdate(final UserData user,final Update update) {
 
-        if (update.message() != null ) {
+        if (update.message() != null) {
 
             if (update.message().chat().type() == Chat.Type.Private && (user.contactable == null || !user.contactable)) {
 
@@ -365,7 +370,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         }
 
-        
+
 		return false;
 
     }

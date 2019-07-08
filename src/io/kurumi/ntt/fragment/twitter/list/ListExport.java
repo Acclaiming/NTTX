@@ -25,6 +25,8 @@ public class ListExport extends Fragment {
 	final String FOLLOWER = "关注者列表";
 	final String BLOCK = "屏蔽列表";
 	final String MUTE = "静音列表";
+	
+	final String MUTE_RT = "静音转推的列表";
 	final String USER = "用户创建的列表";
 
 	final String POINT_LIST_EXPORT = "list_export";
@@ -60,6 +62,7 @@ public class ListExport extends Fragment {
 					newButtonLine().newButton(FOLLOWING).newButton(FOLLOWER);
 					newButtonLine().newButton(BLOCK).newButton(MUTE);
 
+					newButtonLine(MUTE_RT);
 					newButtonLine(USER);
 
 				}})
@@ -138,9 +141,9 @@ public class ListExport extends Fragment {
 
 				try {
 
-					long[] ids = TApi.getAllBlockIDs(api);
+					LinkedList<Long> ids = TApi.getAllBlockIDs(api);
 
-					if (ids.length == 0) {
+					if (ids.size() == 0) {
 						
 						msg.send("列表为空 :)").exec();
 						
@@ -150,7 +153,7 @@ public class ListExport extends Fragment {
 					
 					msg.sendUpdatingFile();
 
-					bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids,"\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName("BlockList.csv"));
+					bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids.toArray(),"\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName("BlockList.csv"));
 
 				} catch (TwitterException e) {
 
@@ -165,9 +168,9 @@ public class ListExport extends Fragment {
 
 				try {
 
-					long[] ids = TApi.getAllMuteIDs(api);
+					LinkedList<Long> ids = TApi.getAllMuteIDs(api);
 
-					if (ids.length == 0) {
+					if (ids.size() == 0) {
 
 						msg.send("列表为空 :)").exec();
 
@@ -177,13 +180,40 @@ public class ListExport extends Fragment {
 					
 					msg.sendUpdatingFile();
 
-					bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids,"\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName("MuteList.csv"));
+					bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids.toArray(),"\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName("MuteList.csv"));
 
 				} catch (TwitterException e) {
 
 					msg.send("导出失败",NTT.parseTwitterException(e)).exec();
 
 				}
+				
+			} else if (MUTE_RT.equals(msg.text())) {
+
+				clearPrivatePoint(user);
+
+				try {
+
+					LinkedList<Long> ids = TApi.getAllNoRTIDs(api);
+
+					if (ids.size() == 0) {
+
+						msg.send("列表为空 :)").exec();
+
+						return;
+
+					}
+
+					msg.sendUpdatingFile();
+
+					bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids.toArray(),"\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName("NoRTList.csv"));
+
+				} catch (TwitterException e) {
+
+					msg.send("导出失败",NTT.parseTwitterException(e)).exec();
+
+				}
+				
 
 			} else if (USER.equals(msg.text())) {
 
@@ -196,6 +226,8 @@ public class ListExport extends Fragment {
 				msg.send("要导出什么？").withCancel().exec(data);
 
 			}
+			
+		
 
 		} else if (POINT_USER_LIST_EXPORT.equals(point)) {
 			
