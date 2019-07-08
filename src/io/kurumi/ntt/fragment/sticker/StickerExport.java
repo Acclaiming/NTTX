@@ -55,7 +55,7 @@ public class StickerExport extends Fragment {
 		
 		if (message.sticker() != null) {
 			
-			bot().execute(new SendDocument(msg.chatId(),getFile(message.sticker().fileId())));
+			bot().execute(new SendDocument(msg.chatId(),getFile(message.sticker().fileId())).fileName("sticker.png"));
 			
 		} else if (message.photo() != null || message.document() != null) {
 			
@@ -69,7 +69,7 @@ public class StickerExport extends Fragment {
 				
 			}
 			
-			File local = new File(Env.CACHE_DIR, "sticker_convert_cache/" + message.photo()[0].fileId());
+			File local = new File(Env.CACHE_DIR, "sticker_convert_cache/" + message.photo()[0].fileId() + ".png");
 
 			if (!local.isFile()) {
 				
