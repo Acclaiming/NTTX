@@ -4,7 +4,7 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
-import cn.hutool.json.JSONObject;
+import io.kurumi.ntt.utils.Html;
 
 public class DebugMsg extends Fragment {
 
@@ -37,7 +37,7 @@ public class DebugMsg extends Fragment {
 
 		if (msg.update != null) {
 
-			msg.send(new JSONObject(msg.update.json).getJSONObject("reply_to_message").toStringPretty());
+			msg.send(Html.code(msg.update.json)).exec();
 
 		} else {
 
