@@ -26,6 +26,7 @@ public class AddSticker extends Fragment {
 		super.init(origin);
 
 		registerFunction("add_sticker");
+		registerPoint(POINT_ADD_STICKER);
 
 	}
 

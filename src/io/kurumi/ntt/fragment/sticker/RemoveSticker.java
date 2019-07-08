@@ -16,6 +16,7 @@ public class RemoveSticker extends Fragment {
 		super.init(origin);
 		
 		registerFunction("remove_sticker");
+		registerPoint(POINT_REMOVE_STICKER);
 		
 	}
 	
