@@ -113,7 +113,7 @@ public class AddSticker extends Fragment {
 
 			}
 
-			msg.send("添加成功！重启客户端即可应用更改"," 退出添加使用 /cancel").exec(data);
+			msg.reply("添加成功！重启客户端生效"," 退出添加使用 /cancel").exec(data);
 			
 		} else if (msg.message().photo() != null || msg.message().document() != null) {
 
@@ -191,7 +191,7 @@ public class AddSticker extends Fragment {
 
 			}
 			
-			msg.reply("添加成功！重启客户端即可应用更改"," 退出添加使用 /cancel").exec(data);
+			msg.reply("添加成功！重启客户端生效"," 退出添加使用 /cancel").exec(data);
 	
 		} else {
 			
