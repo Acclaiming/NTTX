@@ -193,166 +193,165 @@ public class NewSet extends Fragment {
 			}
 
 			String target;
-			
-				if (msg.hasText() && (target = msg.text()).contains("/")) {
 
-					target = StrUtil.subAfter(target,"/",true);
+			if (msg.hasText() && (target = msg.text()).contains("/")) {
 
-				} else if (msg.message().sticker() != null) {
+				target = StrUtil.subAfter(target,"/",true);
 
-					target = msg.message().sticker().setName();
+			} else if (msg.message().sticker() != null) {
 
-					if (target == null) {
+				target = msg.message().sticker().setName();
 
-						msg.send("这个贴纸没有贴纸集... 请重试 :)").exec(data);
+				if (target == null) {
 
-						return;
-
-					}
-
-				} else {
-
-					msg.send("请发送 目标贴纸包的简称或链接 或目标贴纸包的任意贴纸 : ").withCancel().exec(data);
+					msg.send("这个贴纸没有贴纸集... 请重试 :)").exec(data);
 
 					return;
 
 				}
 
-				final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
+			} else {
 
-				if (!set.isOk()) {
+				msg.send("请发送 目标贴纸包的简称或链接 或目标贴纸包的任意贴纸 : ").withCancel().exec(data);
 
-					msg.send("无法读取贴纸包 " + target + " : " + set.description()).exec(data);
+				return;
 
-					forking.remove(user.id);
+			}
 
-					return;
+			final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
 
-				}
+			if (!set.isOk()) {
 
-
-				clearPrivatePoint(user);
-
-				Msg status = msg.send("正在创建贴纸包...").send();
-
-				BaseResponse resp = bot().execute(new CreateNewStickerSet(user.id.intValue(),create.name,create.title,readStiker(user.id,set.stickerSet().stickers()[0]),set.stickerSet().stickers()[0].emoji()));
-
-				if (!resp.isOk()) {
-
-					status.edit("创建贴纸集失败 请重试 : " + resp.description()).exec();
-
-					forking.remove(user.id);
-
-					return;
-
-				}
-
-				for (int index = 1;index < set.stickerSet().stickers().length;index ++) {
-
-					final Sticker sticker = set.stickerSet().stickers()[index];
-
-					bot().execute(new AddStickerToSet(user.id.intValue(),create.name,readStiker(user.id,sticker),sticker.emoji()) {{
-
-								if (sticker.maskPosition() != null) {
-
-									maskPosition(sticker.maskPosition());
-
-								}
-
-							}});
-
-					status.edit("正在复制贴纸包 进度 : " + (index + 1) + " / " + set.stickerSet().stickers().length).exec();
-
-				}
+				msg.send("无法读取贴纸包 " + target + " : " + set.description()).exec(data);
 
 				forking.remove(user.id);
 
-				status.edit("创建成功！ " + Html.a(create.title,"https://t.me/addstickers/" + create.name)).html().exec(data);
+				return;
 
-			} else if (create.type == 4) {
-				
-				File photo = msg.message().photo() != null ? msg.photo() : msg.file();
-
-				if (photo == null) {
-
-					msg.send("文件下载失败... 请重试").withCancel().exec(data);
-
-					return;
-
-				}
-
-				File local = new File(Env.CACHE_DIR, "sticker_convert_cache/" + (msg.message().photo() != null ? msg.message().photo()[0].fileId() : msg.doc().fileId()) + ".png");
-
-				if (!local.isFile()) {
-
-					long size = photo.length();
-
-					float outSize = 1.0f;
-
-					if (size > 512 * 1024) {
-
-						outSize = ((512 * 1024) / size)/* - 0.3f*/;
-
-					}
-
-					local.getParentFile().mkdirs();
-
-					try {
-
-						Thumbnails
-							.of(photo)
-							.size(512,512)
-							.outputQuality(outSize)
-							.outputFormat("png")
-							.toFile(local);
-
-					} catch (IOException e) {
-
-						msg.send("转码失败 : " + BotLog.parseError(e)).exec(data);
-
-						return;
-
-					}
-
-					
-				}
-				
-				create.file = local;
-				create.type = 6;
-				
-				msg.send("输入代表该贴纸的Emoji表情 :").withCancel().exec(data);
-				
-			} else if (create.type == 6) {
-				
-				if (!msg.hasText()) {
-					
-					msg.send("请输入代表该贴纸的Emoji表情 :").withCancel().exec(data);
-					
-					return;
-					
-				}
-			
-				clearPrivatePoint(user);
-				
-				Msg status = msg.send("正在创建贴纸包...").send();
-
-				BaseResponse resp = bot().execute(new CreateNewStickerSet(user.id.intValue(),create.name,create.title,FileUtil.readBytes(create.file),msg.text()));
-				
-				if (!resp.isOk()) {
-
-					status.edit("创建贴纸集失败 请重试 : " + resp.description()).exec();
-
-					forking.remove(user.id);
-
-					return;
-
-				}
-				
-				status.edit("创建成功！ " + Html.a(create.title
-				,"https://t.me/addstickers/" + create.name)).html().exec(data);
-				
 			}
 
-		} 
 
-	}
+			clearPrivatePoint(user);
+
+			Msg status = msg.send("正在创建贴纸包...").send();
+
+			BaseResponse resp = bot().execute(new CreateNewStickerSet(user.id.intValue(),create.name,create.title,readStiker(user.id,set.stickerSet().stickers()[0]),set.stickerSet().stickers()[0].emoji()));
+
+			if (!resp.isOk()) {
+
+				status.edit("创建贴纸集失败 请重试 : " + resp.description()).exec();
+
+				forking.remove(user.id);
+
+				return;
+
+			}
+
+			for (int index = 1;index < set.stickerSet().stickers().length;index ++) {
+
+				final Sticker sticker = set.stickerSet().stickers()[index];
+
+				bot().execute(new AddStickerToSet(user.id.intValue(),create.name,readStiker(user.id,sticker),sticker.emoji()) {{
+
+							if (sticker.maskPosition() != null) {
+
+								maskPosition(sticker.maskPosition());
+
+							}
+
+						}});
+
+				status.edit("正在复制贴纸包 进度 : " + (index + 1) + " / " + set.stickerSet().stickers().length).exec();
+
+			}
+
+			forking.remove(user.id);
+
+			status.edit("创建成功！ " + Html.a(create.title,"https://t.me/addstickers/" + create.name)).html().exec(data);
+
+		} else if (create.type == 4) {
+
+			File photo = msg.message().photo() != null ? msg.photo() : msg.file();
+
+			if (photo == null) {
+
+				msg.send("文件下载失败... 请重试").withCancel().exec(data);
+
+				return;
+
+			}
+
+			File local = new File(Env.CACHE_DIR,"sticker_convert_cache/" + (msg.message().photo() != null ? msg.message().photo()[0].fileId() : msg.doc().fileId()) + ".png");
+
+			if (!local.isFile()) {
+
+				local.getParentFile().mkdirs();
+
+				try {
+
+					Thumbnails
+						.of(photo)
+						.size(512,512)
+						.outputQuality(1f)
+						.outputFormat("png")
+						.toFile(local);
+
+					if (local.length() > 512 * 1024) {
+
+						float outSize = ((512 * 1024) / local.length())/* - 0.3f*/;
+
+						Thumbnails.of(local).outputQuality(outSize).toFile(local);
+
+					}
+
+
+				} catch (IOException e) {
+
+					msg.send("转码失败 : " + BotLog.parseError(e)).exec(data);
+
+					return;
+
+				}
+
+
+			}
+
+			create.file = local;
+			create.type = 6;
+
+			msg.send("输入代表该贴纸的Emoji表情 :").withCancel().exec(data);
+
+		} else if (create.type == 6) {
+
+			if (!msg.hasText()) {
+
+				msg.send("请输入代表该贴纸的Emoji表情 :").withCancel().exec(data);
+
+				return;
+
+			}
+
+			clearPrivatePoint(user);
+
+			Msg status = msg.send("正在创建贴纸包...").send();
+
+			BaseResponse resp = bot().execute(new CreateNewStickerSet(user.id.intValue(),create.name,create.title,FileUtil.readBytes(create.file),msg.text()));
+
+			if (!resp.isOk()) {
+
+				status.edit("创建贴纸集失败 请重试 : " + resp.description()).exec();
+
+				forking.remove(user.id);
+
+				return;
+
+			}
+
+			status.edit("创建成功！ " + Html.a(create.title
+										  ,"https://t.me/addstickers/" + create.name)).html().exec(data);
+
+		}
+
+	} 
+
+}
