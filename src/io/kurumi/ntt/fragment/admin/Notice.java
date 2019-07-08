@@ -60,9 +60,7 @@ public class Notice extends Fragment {
         boolean login = params.contains("login");
 
         clearPrivatePoint(user);
-
-        if (!login) {
-
+		
             long count = UserData.data.collection.countDocuments();
 
             long success = 0;
@@ -71,7 +69,6 @@ public class Notice extends Fragment {
             Msg status = msg.send("正在群发 : 0 / 0 / " + count).send();
 
             for (UserData userData : UserData.data.collection.find()) {
-
 
                 if (userData.contactable == null || userData.contactable) {
 
@@ -83,10 +80,9 @@ public class Notice extends Fragment {
 
                     }
 
-                    ForwardMessage forward = new ForwardMessage(userData.id,user.id,msg.messageId());
+                    ForwardMessage forward = new ForwardMessage(userData.id,msg.chatId(),msg.messageId());
 
                     if (mute) forward.disableNotification(true);
-
 
                     if (bot().execute(forward).isOk()) success++;
                     else {
@@ -115,10 +111,7 @@ public class Notice extends Fragment {
             }
 
             status.edit("正在群发 : " + success + " / " + (success + failed) + " / " + count).exec();
-
-
+			
         }
-
-    }
 
 }
