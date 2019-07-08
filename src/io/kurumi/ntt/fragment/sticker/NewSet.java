@@ -24,6 +24,7 @@ public class NewSet extends Fragment {
 		super.init(origin);
 
 		registerFunction("newset");
+		registerPoint(POINT_CREATE_SET);
 
 	}
 
