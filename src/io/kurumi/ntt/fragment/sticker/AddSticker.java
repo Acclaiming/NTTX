@@ -46,6 +46,8 @@ public class AddSticker extends Fragment {
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
 		PointData data = new StickerAdd().with(msg);
+		
+		setPrivatePoint(user,POINT_ADD_STICKER,data);
 
 		msg.send("要添加到哪个贴纸包呢？请发送简称/链接 或 贴纸包里的一张贴纸 ~").withCancel().exec(data);
 
