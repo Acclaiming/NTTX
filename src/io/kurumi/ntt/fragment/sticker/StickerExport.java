@@ -55,7 +55,7 @@ public class StickerExport extends Fragment {
 		
 		if (message.sticker() != null) {
 			
-			bot().execute(new SendDocument(msg.chatId(),message.sticker().fileId()));
+			bot().execute(new SendDocument(msg.chatId(),getFile(message.sticker().fileId())));
 			
 		} else if (message.photo() != null || message.document() != null) {
 			
@@ -82,6 +82,8 @@ public class StickerExport extends Fragment {
 					outSize = ((512 * 1024) / size)/* - 0.3f*/;
 					
 				}
+				
+				local.getParentFile().mkdirs();
 				
 				try {
 					
