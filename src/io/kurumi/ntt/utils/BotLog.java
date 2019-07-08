@@ -154,7 +154,7 @@ public class BotLog extends ConsoleLog {
 
 		if (level != Level.DEBUG) {
 
-			new Send(Env.LOG,logMsg).disableNotification().html().exec();
+			new Send(Env.LOG,logMsg).html().exec();
 
 			if (t != null) {
 

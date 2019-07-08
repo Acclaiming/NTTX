@@ -77,7 +77,7 @@ public class Notice extends Fragment {
 		
 		if (tryAll) {
 			
-			UserData.data.collection.updateMany(eq("contactable",false),unset("contactable"));
+			//UserData.data.collection.updateMany(eq("contactable",false),unset("contactable"));
 			
 		}
 		
@@ -92,8 +92,10 @@ public class Notice extends Fragment {
 
             for (UserData userData : UserData.data.collection.find()) {
 
-                if (userData.contactable == null || userData.contactable) {
+                if (tryAll || userData.contactable == null || userData.contactable) {
 
+					/*
+					
                     if (login && TAuth.data.countByField("user",userData.id) == 0) {
 
 						failed ++;
@@ -102,6 +104,9 @@ public class Notice extends Fragment {
 
                     }
 
+					
+					*/
+					
                     ForwardMessage forward = new ForwardMessage(userData.id,msg.chatId(),msg.messageId());
 
                     if (mute) forward.disableNotification(true);
