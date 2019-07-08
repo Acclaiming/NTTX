@@ -9,7 +9,7 @@ public class Final extends Fragment {
 	@Override
 	public int checkMsg(UserData user,Msg msg) {
 		
-		return PROCESS_ASYNC;
+		return PROCESS_THREAD;
 		
 	}
 	

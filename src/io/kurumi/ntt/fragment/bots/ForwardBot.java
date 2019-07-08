@@ -245,11 +245,7 @@ public class ForwardBot extends BotFragment {
 
             msg.forwardTo(userId);
 
-        } else {
-
-			onFinalMsg(user,msg);
-
-		}
+        }
 
 		return PROCESS_REJECT;
 
