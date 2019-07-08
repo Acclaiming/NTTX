@@ -187,7 +187,6 @@ public class ListImport extends Fragment {
 
 				list.target = 1;
 
-				button.newButtonLine(APPEND);
 				button.newButtonLine(REWRITE);
 				button.newButtonLine(REMOVE);
 
@@ -217,6 +216,7 @@ public class ListImport extends Fragment {
 			} else if (MUTE_RT.equals(msg.text())) {
 
 				button.newButtonLine(APPEND);
+				button.newButtonLine(REWRITE);
 				button.newButtonLine(REMOVE);
 
 				list.target = 5;
@@ -396,49 +396,7 @@ public class ListImport extends Fragment {
 
 			if (action.target == 1) {
 
-				if (action.mode == 0) {
-
-					int index = 0;
-					int size = action.list.size();
-
-					LinkedList<String> success = new LinkedList<>();
-					LinkedHashMap<Long,String> error = new LinkedHashMap<>();
-
-					for (;index < size;index ++) {
-
-						if (stopped.get()) break;
-
-						long id = action.list.get(index);
-
-						try {
-
-							success.add(UserArchive.save(api.createFriendship(id)).urlHtml());
-
-						} catch (TwitterException e) {
-
-							error.put(id,(e.getStatusCode() == 403 && e.getErrorCode() == -1) ? "已经关注了该用户" : NTT.parseTwitterException(e));
-
-							if (!ArrayUtil.contains(new int[] { 50,63,136,160 },e.getErrorCode())) {
-
-								break;
-
-							}
-
-						}
-						
-						if ((index % 10 == 1) && index != (size - 1)) {
-
-							status.edit("正在导入中 : ","关注成功 : " + success.size() + " 关注出错 : " + error.size(),"使用 /import_cancel 取消操作").exec();
-
-						}
-
-					}
-
-					status.delete();
-
-					status.send("导入结束 : ","已执行 " + index + " / " + size + " 条 ","关注成功 : " + (success.size() == 0 ? "无" : (success.size() + "\n" + ArrayUtil.join(success.toArray(),"\n"))),"\n出错 : " + (error.size() == 0 ? "无" : ("\n" + parseError(api,error)))).html().exec();
-
-				} else if (action.mode == 1) {
+			 if (action.mode == 1) {
 
 					try {
 
@@ -452,45 +410,15 @@ public class ListImport extends Fragment {
 
 						int count = 0;
 
-						LinkedList<String> fo = new LinkedList<>();
 						LinkedList<String> unfo = new LinkedList<>();
 
-						LinkedHashMap<Long,String> foError = new LinkedHashMap<>();
 						LinkedHashMap<Long,String> unfoError = new LinkedHashMap<>();
 
-						for (Long id : action.list) {
-
-							if (stopped.get()) break;
-
-							count ++;
-
-							try {
-
-								fo.add(UserArchive.save(api.createFriendship(id)).urlHtml());
-
-							} catch (TwitterException e) {
-
-								foError.put(id,(e.getStatusCode() == 403 && e.getErrorCode() == -1) ? "已经关注了该用户" : NTT.parseTwitterException(e));
-
-								if (!ArrayUtil.contains(new int[] { 50,63,136,160 },e.getErrorCode())) {
-
-									break;
-
-								}
-
-							}
-
-							if (count % 10 == 0) {
-
-								status.edit("正在导入中 : ","关注成功 : " + fo.size() + " 关注出错 : " + foError.size(),"取关成功 : 0 取关出错 : 0","使用 /import_cancel 取消操作").exec();
-
-							}
-
-						}
-
 						for (Long id : toUnFollow) {
-
+							
 							if (stopped.get()) break;
+							
+							count ++;
 
 							try {
 
@@ -504,13 +432,13 @@ public class ListImport extends Fragment {
 
 							if (count % 10 == 0) {
 
-								status.edit("正在导入中 : ","关注成功 : " + fo.size() + " 关注出错 : " + foError.size(),"取关成功 : " + unfo.size() + " 取关出错 : " + unfoError.size(),"使用 /import_cancel 取消操作").exec();
+								status.edit("正在导入中 : ","取关成功 : " + unfo.size() + " 取关出错 : " + unfoError.size(),"使用 /import_cancel 取消操作").exec();
 
 							}
 
 						}
 
-						status.send("导入结束 : ","关注已执行 " + count + " / " + action.list.size() + " 条 ","\n关注成功 : " + (fo.size() == 0 ? "无" : (fo.size() + "\n" + ArrayUtil.join(fo.toArray(),"\n"))) + " \n关注出错 : " + (foError.size() == 0 ? "无" : (foError.size() + "\n" + parseError(api,foError))),"\n取关成功 : " + (unfo.size() == 0 ? "无" : (unfo.size() + "\n" + ArrayUtil.join(unfo.toArray(),"\n"))) + "条 \n取关出错 : " + (unfoError.size() == 0 ? "无" : (unfoError.size() + "\n" + parseError(api,unfoError)))).html().exec();
+						status.send("导入结束 : ","关注已执行 " + count + " / " + action.list.size() + " 条 ","\n取关成功 : " + (unfo.size() == 0 ? "无" : (unfo.size() + "\n" + ArrayUtil.join(unfo.toArray(),"\n"))) + "条 \n取关出错 : " + (unfoError.size() == 0 ? "无" : (unfoError.size() + "\n" + parseError(api,unfoError)))).html().exec();
 
 					} catch (TwitterException e) {
 
