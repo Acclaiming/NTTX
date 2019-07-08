@@ -33,6 +33,8 @@ public class RemoveSticker extends Fragment {
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 	
+		data.with(msg);
+		
 		if (msg.sticker() == null) {
 			
 			msg.send("请发送要移除的贴纸 :").withCancel().exec(data);
