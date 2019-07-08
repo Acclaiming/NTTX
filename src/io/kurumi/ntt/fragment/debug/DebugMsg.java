@@ -37,7 +37,7 @@ public class DebugMsg extends Fragment {
 
 		if (msg.update != null) {
 
-			msg.send(new JSONObject(msg.update.toString()).getJSONObject("reply_to_message").toStringPretty());
+			msg.send(new JSONObject(msg.update.json).getJSONObject("reply_to_message").toStringPretty());
 
 		} else {
 
