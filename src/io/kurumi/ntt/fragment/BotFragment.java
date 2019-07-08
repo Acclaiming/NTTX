@@ -85,6 +85,14 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 	class UserAndUpdate {
 
+		BotFragment bot;
+		
+		{
+			
+			bot = BotFragment.this;
+			
+		}
+		
 		long chatId;
 
 		UserData user;
@@ -754,7 +762,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				}
 
-				if (enableSync()) {
+				if (uau.bot.enableSync()) {
 
 					synchronized (processing) {
 
@@ -804,7 +812,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				}
 
-				if (enableSync()) {
+				if (uau.bot.enableSync()) {
 
 					if (processed == null) {
 
