@@ -86,13 +86,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 	class UserAndUpdate {
 
 		BotFragment bot;
-		
+
 		{
-			
+
 			bot = BotFragment.this;
-			
+
 		}
-		
+
 		long chatId;
 
 		UserData user;
@@ -116,7 +116,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 		}
 
 	}
-	
+
     @Override
     public TelegramBot bot() {
 
@@ -756,29 +756,29 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				}
 
-					synchronized (processing) {
+				synchronized (processing) {
 
-						if ((uau.chatId != -1 && processing.contains(uau.chatId)) || (uau.user != null && processing.contains(uau.user.id))) {
+					if ((uau.chatId != -1 && processing.contains(uau.chatId)) || (uau.user != null && processing.contains(uau.user.id))) {
 
-							queue.add(uau);
+						queue.add(uau);
 
-							continue;
+						continue;
 
-						} else {
+					} else {
 
-							if (uau.chatId != -1) {
+						if (uau.chatId != -1) {
 
-								processing.add(uau.chatId);
-
-							}
-
-							if (uau.user != null) {
-
-								processing.add(uau.user.id);
-
-							}
+							processing.add(uau.chatId);
 
 						}
+
+						if (uau.user != null) {
+
+							processing.add(uau.user.id);
+
+						}
+
+					}
 
 				}
 
@@ -802,33 +802,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				}
 
-					if (processed == null) {
-
-						synchronized (processing) {
-
-							if (uau.chatId != -1) {
-
-								processing.remove(uau.chatId);
-
-							}
-
-							if (uau.user != null) {
-
-								processing.remove(uau.user.id);
-
-							}
-
-						}
-
-						continue;
-
-					}
-
-					if (processed.type == 1 && !(uau.user == null && uau.chatId == -1)) {
-
-						processed.run();
-
-					}
+				if (processed == null) {
 
 					synchronized (processing) {
 
@@ -846,16 +820,42 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 					}
 
-					if (processed.type == 2) {
+					continue;
 
-						processed.run();
+				}
 
-					} else if (processed.type == 3) {
+				if (processed.type == 1 && !(uau.user == null && uau.chatId == -1)) {
 
-						asyncPool.execute(processed);
+					processed.run();
+
+				}
+
+				synchronized (processing) {
+
+					if (uau.chatId != -1) {
+
+						processing.remove(uau.chatId);
 
 					}
 
+					if (uau.user != null) {
+
+						processing.remove(uau.user.id);
+
+					}
+
+				}
+
+				if (processed.type == 2) {
+
+					processed.run();
+
+				} else if (processed.type == 3) {
+
+					asyncPool.execute(processed);
+
+				}
+				
 			}
 
 		}

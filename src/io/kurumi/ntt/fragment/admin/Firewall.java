@@ -189,7 +189,7 @@ public class Firewall extends Fragment {
 
 			return false;
 
-		} else if (block.containsId(user.id)) {
+		} /* else if (block.containsId(user.id)) {
 			
 			Msg message = new Msg(this,msg);
 		
@@ -207,7 +207,7 @@ public class Firewall extends Fragment {
 		
 			return true;
 			
-		}
+		} */
 		
 		return false;
 
