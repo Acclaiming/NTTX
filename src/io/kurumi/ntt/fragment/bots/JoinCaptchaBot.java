@@ -27,6 +27,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TimerTask;
 import io.kurumi.ntt.db.PointData;
+import cn.hutool.core.util.NumberUtil;
+import com.pengrad.telegrambot.request.LeaveChat;
+import com.pengrad.telegrambot.response.BaseResponse;
 
 public class JoinCaptchaBot extends BotFragment {
 
@@ -130,7 +133,32 @@ public class JoinCaptchaBot extends BotFragment {
 	@Override
 	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
 		
-		return PROCESS_REJECT;
+		return (user.admin() || user.id.equals(userId)) ? PROCESS_ASYNC : PROCESS_REJECT;
+		
+	}
+
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		
+		if ("exit".equals(function)) {
+			
+			if (params.length < 1) {
+				
+				msg.send("退出群组 : 没有指定参数 [Long 群组ID]").exec();
+				
+			}
+
+			long groupId = NumberUtil.parseLong(params[0]);
+			
+			BaseResponse resp = bot().execute(new LeaveChat(groupId));
+
+			msg.send(resp.isOk() ? "退出成功" : ("失败 : " + resp.description())).exec();
+			
+		} else {
+			
+			msg.send("无效的管理命令").exec();
+			
+		}
 		
 	}
 	
@@ -186,6 +214,8 @@ public class JoinCaptchaBot extends BotFragment {
 
                 if (newMember.id().equals(botId)) {
 
+					new Send(this,logChannel,"事件 : #加入群组","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","来自 : " + user.userName(),"#id" + user.id).html().exec();
+					
 					msg.send("欢迎使用加群验证BOT","给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
 
 				}

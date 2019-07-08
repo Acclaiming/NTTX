@@ -31,7 +31,7 @@ public class MyBots extends Fragment {
     final String POINT_JOIN_SET_WELCOME = "bot.j.sw";
     final String POINT_JOIN_DEL_WELCOME = "bot.j.dw";
     final String POINT_JOIN_SWITCH_DELLAST = "bot.j.sd";
-
+	
 	@Override
 	public void init(BotFragment origin) {
 
