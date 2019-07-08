@@ -406,6 +406,10 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 			final Msg msg = new Msg(this,update.message());
 
+			msg.update = update;
+
+			if (msg.replyTo() != null) msg.replyTo().update = update;
+
 			final PointData privatePoint = point().getPrivate(user);
 			final PointData groupPoint = point().getGroup(user);
 
@@ -679,6 +683,10 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 			final Msg msg = new Msg(this,update.channelPost());
 
+			msg.update = update;
+
+			if (msg.replyTo() != null) msg.replyTo().update = update;
+
 			int checked = checkChanPost(user,msg); 
 
 			if (checked == PROCESS_THREAD) {
@@ -694,11 +702,15 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 					});
 
+			} else if (checked == PROCESS_REJECT) {
+
+				return EMPTY;
+
+			} else {
+
+				onChanPost(user,msg);
+
 			}
-
-			if (checked == PROCESS_REJECT) return EMPTY;
-
-			onChanPost(user,msg);
 
 		} else if (update.callbackQuery() != null) {
 

@@ -12,7 +12,7 @@ import java.util.Arrays;
  */
 public class Message implements Serializable {
     private final static long serialVersionUID = 0L;
-
+	
     private Integer message_id;
     private User from;
     private Integer date;

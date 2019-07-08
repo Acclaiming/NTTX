@@ -27,13 +27,6 @@ public class NewBot extends Fragment {
 
     }
 
-	@Override
-	public int checkFunction() {
-		
-		return FUNCTION_PRIVATE;
-		
-	}
-
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 

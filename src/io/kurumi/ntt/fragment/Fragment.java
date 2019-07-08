@@ -180,6 +180,10 @@ public class Fragment {
 
 			final Msg msg = new Msg(this,update.message());
 
+			msg.update = update;
+
+			if (msg.replyTo() != null) msg.replyTo().update = update;
+			
 			int checked = checkMsg(user,msg); 
 
 			if (checked == PROCESS_THREAD) {
@@ -209,6 +213,10 @@ public class Fragment {
 
 			final Msg msg = new Msg(this,update.channelPost());
 
+			msg.update = update;
+
+			if (msg.replyTo() != null) msg.replyTo().update = update;
+			
 			int checked = checkChanPost(user,msg); 
 
 			if (checked == PROCESS_THREAD) {

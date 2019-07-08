@@ -55,13 +55,6 @@ public class MyBots extends Fragment {
 
     }
 
-	@Override
-	public int checkFunction() {
-
-		return FUNCTION_PRIVATE;
-
-	}
-
     @Override
     public void onFunction(final UserData user,Msg msg,String function,String[] params) {
 

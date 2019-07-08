@@ -41,14 +41,7 @@ public class TwitterDelete extends Fragment {
 		registerPoint(POINT_DELETE);
 		
 	}
-
-	@Override
-	public int checkFunction() {
-
-		return FUNCTION_PRIVATE;
-
-	}
-
+	
 	@Override
 	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
 		

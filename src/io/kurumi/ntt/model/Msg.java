@@ -24,9 +24,12 @@ import java.io.File;
 
 import com.pengrad.telegrambot.request.LeaveChat;
 import io.kurumi.ntt.utils.*;
+import com.pengrad.telegrambot.model.Update;
 
 public class Msg extends Context {
 
+	public Update update;
+	
     public static String[] NO_PARAMS = new String[0];
     Msg replyTo;
     int isCommand = 0;
@@ -43,7 +46,6 @@ public class Msg extends Context {
 
     }
 
-
     public Msg(Fragment fragment, Message message) {
 
         super(fragment, message.chat());
@@ -54,7 +56,6 @@ public class Msg extends Context {
         if (message.replyToMessage() != null) {
 
             replyTo = new Msg(fragment, message.replyToMessage());
-
 
         }
 
