@@ -37,7 +37,7 @@ public class DebugMsg extends Fragment {
 
 		if (msg.update != null) {
 
-			msg.send(Html.code(msg.update.json)).exec();
+			msg.send(Html.code(msg.update.json)).html().exec();
 
 		} else {
 
