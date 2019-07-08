@@ -116,16 +116,13 @@ public class Notice extends Fragment {
                     } else {
 
                         failed++;
-						
-						/*
 
                         userData.contactable = false;
 
                         UserData.userDataIndex.remove(userData.id);
 
                         userData.data.setById(userData.id,userData);
-						
-						*/
+				
 
                     }
 
