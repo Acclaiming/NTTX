@@ -331,6 +331,8 @@ public class NewSet extends Fragment {
 					return;
 					
 				}
+			
+				clearPrivatePoint(user);
 				
 				Msg status = msg.send("正在创建贴纸包...").send();
 
