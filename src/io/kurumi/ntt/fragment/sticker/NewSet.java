@@ -223,7 +223,7 @@ public class NewSet extends Fragment {
 					
 				}});
 				
-				status.edit("正在创建贴纸包 进度 : " + (index + 1) + " / " + set.stickerSet().stickers().length).exec();
+				status.edit("正在复制贴纸包 进度 : " + (index + 1) + " / " + set.stickerSet().stickers().length).exec();
 
 			}
 			
