@@ -30,7 +30,7 @@ public class NewStickerSet extends Fragment {
 
 		super.init(origin);
 
-		registerFunction("newpack");
+		registerFunction("new_sticker_set");
 		registerPoint(POINT_CREATE_SET);
 
 	}
