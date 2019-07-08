@@ -174,7 +174,7 @@ public class BotLog extends ConsoleLog {
 
 
 					}
-					
+
 				}
 
 			}
@@ -218,21 +218,17 @@ public class BotLog extends ConsoleLog {
 
         final String logMsg = StrUtil.format(logFormat,dict);
 
-	 this.log(t, logMsg);
+		this.log(t,logMsg);
 
-		if (level == Level.DEBUG) {
+		if (level != Level.DEBUG) {
 
 			new Send(Env.LOG,logMsg).disableNotification().html().exec();
 
-		} else {
+			if (t != null) {
 
-			new Send(Env.LOG,logMsg).html().exec();
+				new Send(Env.LOG,parseError(t)).exec();
 
-		}
-
-		if (t != null) {
-
-			new Send(Env.LOG,parseError(t)).exec();
+			}
 
 		}
 
