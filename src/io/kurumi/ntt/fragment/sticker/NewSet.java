@@ -1,22 +1,27 @@
 package io.kurumi.ntt.fragment.sticker;
 
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.db.UserData;
-import com.pengrad.telegrambot.request.GetStickerSet;
-import io.kurumi.ntt.model.request.Keyboard;
-import io.kurumi.ntt.db.PointData;
-import io.kurumi.ntt.fragment.sticker.NewSet.CreateSet;
-import com.pengrad.telegrambot.request.CreateNewStickerSet;
-import io.kurumi.ntt.utils.Html;
-import com.pengrad.telegrambot.response.GetStickerSetResponse;
 import cn.hutool.core.util.StrUtil;
-import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.model.Sticker;
 import com.pengrad.telegrambot.request.AddStickerToSet;
-import java.util.ArrayList;
+import com.pengrad.telegrambot.request.CreateNewStickerSet;
+import com.pengrad.telegrambot.request.GetStickerSet;
+import com.pengrad.telegrambot.response.BaseResponse;
+import com.pengrad.telegrambot.response.GetStickerSetResponse;
+import io.kurumi.ntt.Env;
+import io.kurumi.ntt.db.PointData;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.Keyboard;
+import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.utils.Html;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import net.coobird.thumbnailator.Thumbnails;
+import cn.hutool.core.io.FileUtil;
 
 public class NewSet extends Fragment {
 
@@ -42,6 +47,8 @@ public class NewSet extends Fragment {
 
 		String name;
 		String title;
+
+		public File file;
 
 	}
 
@@ -228,19 +235,11 @@ public class NewSet extends Fragment {
 
 				Msg status = msg.send("正在创建贴纸包...").send();
 
-				BaseResponse resp = bot().execute(new CreateNewStickerSet(user.id.intValue(),create.name,create.title,readStiker(user.id,set.stickerSet().stickers()[0]),set.stickerSet().stickers()[0].emoji()) {{ 
-
-							if (set.stickerSet().stickers()[0].maskPosition() != null) {
-
-								maskPosition(set.stickerSet().stickers()[0].maskPosition()); 
-
-							}
-
-						}});
+				BaseResponse resp = bot().execute(new CreateNewStickerSet(user.id.intValue(),create.name,create.title,readStiker(user.id,set.stickerSet().stickers()[0]),set.stickerSet().stickers()[0].emoji()));
 
 				if (!resp.isOk()) {
 
-					status.edit("创建贴纸集失败 请重试 : " + resp.description()).withCancel().exec(data);
+					status.edit("创建贴纸集失败 请重试 : " + resp.description()).exec();
 
 					forking.remove(user.id);
 
@@ -270,8 +269,88 @@ public class NewSet extends Fragment {
 
 				status.edit("创建成功！ " + Html.a(create.title,"https://t.me/addstickers/" + create.name)).html().exec(data);
 
+			} else if (create.type == 4) {
+				
+				File photo = msg.message().photo() != null ? msg.photo() : msg.file();
+
+				if (photo == null) {
+
+					msg.send("文件下载失败... 请重试").withCancel().exec(data);
+
+					return;
+
+				}
+
+				File local = new File(Env.CACHE_DIR, "sticker_convert_cache/" + message.photo()[0].fileId() + ".png");
+
+				if (!local.isFile()) {
+
+					long size = photo.length();
+
+					float outSize = 1.0f;
+
+					if (size > 512 * 1024) {
+
+						outSize = ((512 * 1024) / size)/* - 0.3f*/;
+
+					}
+
+					local.getParentFile().mkdirs();
+
+					try {
+
+						Thumbnails
+							.of(photo)
+							.size(512,512)
+							.outputQuality(outSize)
+							.outputFormat("png")
+							.toFile(local);
+
+					} catch (IOException e) {
+
+						msg.send("转码失败 : " + BotLog.parseError(e)).exec(data);
+
+						return;
+
+					}
+
+					
+				}
+				
+				create.file = local;
+				create.type = 6;
+				
+				msg.send("输入代表该贴纸的Emoji表情 :").withCancel().exec(data);
+				
+			} else if (create.type == 6) {
+				
+				if (!msg.hasText()) {
+					
+					msg.send("请输入代表该贴纸的Emoji表情 :").withCancel().exec(data);
+					
+					return;
+					
+				}
+				
+				Msg status = msg.send("正在创建贴纸包...").send();
+
+				BaseResponse resp = bot().execute(new CreateNewStickerSet(user.id.intValue(),create.name,create.title,FileUtil.readBytes(create.file),msg.text()));
+				
+				if (!resp.isOk()) {
+
+					status.edit("创建贴纸集失败 请重试 : " + resp.description()).exec();
+
+					forking.remove(user.id);
+
+					return;
+
+				}
+				
+				status.edit("创建成功！ " + Html.a(create.title
+				,"https://t.me/addstickers/" + create.name)).html().exec(data);
+				
 			}
 
-		}
+		} 
 
 	}
