@@ -238,16 +238,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         return false;
 
     }
-
-	@Override
-	public void realStart() {
-
-		startThreads(5);
-
-		super.realStart();
-
-	}
-
+	
 	UserTrackTask userTrackTask = new UserTrackTask();
 
 	void startTasks() {
@@ -333,9 +324,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         BotServer.INSTANCE.stop();
 
-		stopThreads();
-
 		mainTimer.cancel();
+		
+		trackTimer.cancel();
 
 		userTrackTask.interrupt();
 

@@ -515,10 +515,10 @@ public class Fragment {
 
 	// 基本函数
 
-	public final int PROCESS_REJECT = 0;
-	public final int PROCESS_SYNC = 1;
-	public final int PROCESS_ASYNC = 2;
-	public final int PROCESS_THREAD = 3;
+	public static final int PROCESS_REJECT = 0;
+	public static final int PROCESS_SYNC = 1;
+	public static final int PROCESS_ASYNC = 2;
+	public static final int PROCESS_THREAD = 3;
 
 	public final int FUNCTION_PRIVATE = 1;
 	public final int FUNCTION_GROUP = 2;

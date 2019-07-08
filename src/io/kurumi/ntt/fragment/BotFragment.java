@@ -43,6 +43,8 @@ import okhttp3.OkHttpClient;
 import com.pengrad.telegrambot.ExceptionHandler;
 import com.pengrad.telegrambot.TelegramException;
 import io.kurumi.ntt.utils.TentcentNlp;
+import java.util.TreeSet;
+import io.kurumi.ntt.fragment.Fragment.Processed;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener,ExceptionHandler {
 
@@ -51,39 +53,30 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 	public static Timer mainTimer = new Timer();
 	public static Timer trackTimer = new Timer();
 
+	public static ExecutorService processPool = Executors.newFixedThreadPool(5);
 	public static ExecutorService asyncPool = Executors.newCachedThreadPool();
-	public static LinkedBlockingQueue<UserAndUpdate> queue = new LinkedBlockingQueue<>();
-	public static LinkedList<ProcessThread> threads = new LinkedList<>();
-
+	
     public User me;
     private TelegramBot bot;
     public LinkedList<Fragment> fragments = new LinkedList<>();
     private String token;
     private PointStore point;
 
-	public static void startThreads(int count) {
+	class UserAndUpdate implements Comparable<UserAndUpdate> {
 
-		for (int index = 0;index < count;index ++) {
+		@Override
+		public int compareTo(UserAndUpdate uau) {
 
-			threads.add(new ProcessThread() {{ start(); }});
-
-		}
-
-	}
-
-	public static void stopThreads() {
-
-		for (ProcessThread thread : threads) {
-
-			thread.stopped.set(true);
-
-			thread.interrupt();
+			return update.updateId() - uau.update.updateId();
 
 		}
 
-	}
+		@Override
+		public boolean equals(Object obj) {
 
-	class UserAndUpdate {
+			return super.equals(obj) || (obj instanceof UserAndUpdate && ((UserAndUpdate)obj).update.updateId().equals(update.updateId()));
+
+		}
 
 		BotFragment bot;
 
@@ -93,6 +86,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 		}
 
+		long userId;
 		long chatId;
 
 		UserData user;
@@ -114,6 +108,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 			return null;
 
 		}
+
+
 
 	}
 
@@ -208,7 +204,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				if (checked == PROCESS_THREAD) {
 
-					asyncPool.execute(new Runnable() {
+					processPool.execute(new Runnable() {
 
 							@Override
 							public void run() {
@@ -232,7 +228,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				if (checked == PROCESS_THREAD) {
 
-					asyncPool.execute(new Runnable() {
+					processPool.execute(new Runnable() {
 
 							@Override
 							public void run() {
@@ -390,7 +386,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 		uau.user = user;
 		uau.update = update;
 
-		queue.add(uau);
+		asyncPool.execute(new ProcessTask(uau));
 
 
     }
@@ -589,8 +585,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 						};
 
-
-
 					} else {
 
 						final Fragment function = functions.containsKey(msg.command()) ? functions.get(msg.command()) : this;
@@ -650,7 +644,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 					if (checked == PROCESS_THREAD) {
 
-						asyncPool.execute(new Processed(user,update,PROCESS_ASYNC) {
+						processPool.execute(new Processed(user,update,PROCESS_ASYNC) {
 
 								@Override
 								public void process() {
@@ -679,7 +673,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 			if (checked == PROCESS_THREAD) {
 
-				asyncPool.execute(new Processed(user,update,PROCESS_ASYNC) {
+				processPool.execute(new Processed(user,update,PROCESS_ASYNC) {
 
 						@Override
 						public void process() {
@@ -733,136 +727,109 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 		return null;
 	}
 
-	static class ProcessThread extends Thread {
+	static HashMap<Long,TreeSet<UserAndUpdate>> waitFor = new HashMap<>();
 
-		static LinkedList<Long> processing = new LinkedList<>();
+	static class ProcessTask extends TreeSet<UserAndUpdate> implements Runnable {
 
-		AtomicBoolean stopped = new AtomicBoolean(false);
+		private UserAndUpdate first;
+		private boolean sync = false;
+
+		public ProcessTask(UserAndUpdate uau) {
+			first = uau;
+		}
 
 		@Override
 		public void run() {
 
-			while (!stopped.get()) {
+			run(first);
 
-				UserAndUpdate uau;
+		}
 
-				try {
+		public void run(UserAndUpdate uau) {
 
-					uau = queue.take();
+			if (!sync) {
 
-				} catch (InterruptedException e) {
+				synchronized (waitFor) {
 
-					continue;
+					if (waitFor.containsKey(uau.userId)) {
 
-				}
+						waitFor.get(uau.userId).add(uau);
 
-				synchronized (processing) {
-
-					if ((uau.chatId != -1 && processing.contains(uau.chatId)) || (uau.user != null && processing.contains(uau.user.id))) {
-
-						queue.add(uau);
-
-						continue;
+						return;
 
 					} else {
 
-						if (uau.chatId != -1) {
+						waitFor.put(uau.userId,this);
 
-							processing.add(uau.chatId);
-
-						}
-
-						if (uau.user != null) {
-
-							processing.add(uau.user.id);
-
-						}
+						sync = true;
 
 					}
 
 				}
 
-				Processed processed;
+			}
 
-				try {
+			Processed processed;
 
-					processed = uau.process();
+			try {
 
-				} catch (Exception e) {
+				processed = uau.process();
 
-					new Send(Env.GROUP,"处理中出错 " + uau.update.toString(),BotLog.parseError(e)).exec();
+			} catch (Exception e) {
 
-					if (uau.user != null && !uau.user.admin()) {
+				new Send(Env.GROUP,"处理中出错 " + uau.update.toString(),BotLog.parseError(e)).exec();
 
-						new Send(uau.user.id,"处理出错，已提交报告，可以到官方群组 @NTTDiscuss  继续了解").exec();
+				if (uau.user != null && !uau.user.admin()) {
 
-					}
-
-					continue;
+					new Send(uau.user.id,"处理出错，已提交报告，可以到官方群组 @NTTDiscuss  继续了解").exec();
 
 				}
 
-				if (processed == null) {
+				return;
 
-					synchronized (processing) {
+			}
 
-						if (uau.chatId != -1) {
+			if (processed.type == PROCESS_THREAD) {
 
-							processing.remove(uau.chatId);
+				asyncPool.execute(processed);
 
-						}
+			} else if (processed.type == PROCESS_ASYNC) {
 
-						if (uau.user != null) {
+				processPool.execute(processed);
 
-							processing.remove(uau.user.id);
+			} else {
 
-						}
+				processed.run();
 
-					}
+			}
 
-					continue;
+			if (!isEmpty()) {
 
-				}
+				run(pollFirst());
 
-				if (processed.type == 1 && !(uau.user == null && uau.chatId == -1)) {
-
-					processed.run();
-
-				}
-
-				synchronized (processing) {
-
-					if (uau.chatId != -1) {
-
-						processing.remove(uau.chatId);
-
-					}
-
-					if (uau.user != null) {
-
-						processing.remove(uau.user.id);
-
-					}
-
-				}
-
-				if (processed.type == 2) {
-
-					processed.run();
-
-				} else if (processed.type == 3) {
-
-					asyncPool.execute(processed);
-
-				}
+			} else {
 				
+				synchronized (waitFor) {
+
+					if (isEmpty()) {
+
+						waitFor.remove(uau.userId);
+
+						return;
+
+					}
+
+				}
+
+				run(pollFirst());
+
 			}
 
 		}
 
+
 	}
-
-
+	
 	@Override
 	public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
@@ -873,72 +840,72 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 	final String split = "------------------------\n";
 
-    public void onFinalMsg(UserData user,Msg msg) {
+	public void onFinalMsg(UserData user,Msg msg) {
 
-        StringBuilder str = new StringBuilder();
+		StringBuilder str = new StringBuilder();
 
-        Message message = msg.message();
+		Message message = msg.message();
 
-        str.append("消息ID : " + message.messageId()).append("\n");
+		str.append("消息ID : " + message.messageId()).append("\n");
 
-        if (message.forwardFrom() != null) {
+		if (message.forwardFrom() != null) {
 
-            str.append("来自用户 : ").append(UserData.get(message.forwardFrom()).userName()).append("\n");
-            str.append("用户ID : ").append(message.forwardFrom().id()).append("\n");
+			str.append("来自用户 : ").append(UserData.get(message.forwardFrom()).userName()).append("\n");
+			str.append("用户ID : ").append(message.forwardFrom().id()).append("\n");
 
-        }
+		}
 
-        if (message.forwardFromChat() != null) {
+		if (message.forwardFromChat() != null) {
 
-            if (message.forwardFromChat().type() == Chat.Type.channel) {
+			if (message.forwardFromChat().type() == Chat.Type.channel) {
 
-                str.append("来自频道 : ").append(message.forwardFromChat().username() == null ? message.forwardFromChat().title() : Html.a(message.forwardFromChat().username(),"https://t.me/" + message.forwardFromChat().username())).append("\n");
+				str.append("来自频道 : ").append(message.forwardFromChat().username() == null ? message.forwardFromChat().title() : Html.a(message.forwardFromChat().username(),"https://t.me/" + message.forwardFromChat().username())).append("\n");
 
-                str.append("频道ID : ").append(message.forwardFromChat().id());
+				str.append("频道ID : ").append(message.forwardFromChat().id());
 
-                if (message.forwardSenderName() != null) {
+				if (message.forwardSenderName() != null) {
 
-                    str.append("签名用户 : ").append(message.forwardSenderName());
+					str.append("签名用户 : ").append(message.forwardSenderName());
 
-                }
+				}
 
-            } else if (message.forwardFromChat().type() == Chat.Type.group || message.forwardFromChat().type() == Chat.Type.supergroup) {
+			} else if (message.forwardFromChat().type() == Chat.Type.group || message.forwardFromChat().type() == Chat.Type.supergroup) {
 
-                str.append("来自群组 : ").append(message.forwardFromChat().username() == null ? message.forwardFromChat().title() : Html.a(message.forwardFromChat().username(),"https://t.me/" + message.forwardFromChat().username())).append("\n");
+				str.append("来自群组 : ").append(message.forwardFromChat().username() == null ? message.forwardFromChat().title() : Html.a(message.forwardFromChat().username(),"https://t.me/" + message.forwardFromChat().username())).append("\n");
 
-            } else {
+			} else {
 
-                if (message.forwardFrom() == null) {
+				if (message.forwardFrom() == null) {
 
-                    str.append("来自 : ").append(message.forwardSenderName()).append(" (隐藏来源)\n");
+					str.append("来自 : ").append(message.forwardSenderName()).append(" (隐藏来源)\n");
 
-                }
+				}
 
-            }
+			}
 
-            str.append("消息链接 : https://t.me/c/").append(message.forwardFromChat().id()).append("/").append(message.forwardFromMessageId()).append("\n");
+			str.append("消息链接 : https://t.me/c/").append(message.forwardFromChat().id()).append("/").append(message.forwardFromMessageId()).append("\n");
 
-        }
+		}
 
-        if (message.sticker() != null) {
+		if (message.sticker() != null) {
 
-            str.append(split);
+			str.append(split);
 
-            str.append("贴纸ID : ").append(message.sticker().fileId()).append("\n");
+			str.append("贴纸ID : ").append(message.sticker().fileId()).append("\n");
 
-            str.append("贴纸表情 : ").append(message.sticker().emoji()).append("\n");
+			str.append("贴纸表情 : ").append(message.sticker().emoji()).append("\n");
 
-            if (message.sticker().setName() != null) {
+			if (message.sticker().setName() != null) {
 
-                str.append("贴纸包 : ").append("https://t.me/addstickers/" + message.sticker().setName()).append("\n");
+				str.append("贴纸包 : ").append("https://t.me/addstickers/" + message.sticker().setName()).append("\n");
 
-            }
+			}
 
-            msg.sendUpdatingPhoto();
+			msg.sendUpdatingPhoto();
 
-            bot().execute(new SendPhoto(msg.chatId(),getFile(msg.message().sticker().fileId())).caption(str.toString()).parseMode(ParseMode.HTML).replyMarkup(new ReplyKeyboardRemove()).replyToMessageId(msg.messageId()));
+			bot().execute(new SendPhoto(msg.chatId(),getFile(msg.message().sticker().fileId())).caption(str.toString()).parseMode(ParseMode.HTML).replyMarkup(new ReplyKeyboardRemove()).replyToMessageId(msg.messageId()));
 
-        } else {
+		} else {
 
 			msg.sendTyping();
 
@@ -948,7 +915,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 		}
 
-    }
+	}
 
 	public boolean isLongPulling() {
 
