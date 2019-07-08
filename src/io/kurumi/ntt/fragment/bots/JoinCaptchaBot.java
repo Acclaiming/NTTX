@@ -95,13 +95,6 @@ public class JoinCaptchaBot extends BotFragment {
 
 	}
 
-	@Override
-	public boolean enableSync() {
-		
-		return true;
-		
-	}
-
     @Override
     public String botName() {
 

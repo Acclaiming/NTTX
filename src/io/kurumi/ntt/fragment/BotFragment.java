@@ -116,13 +116,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 		}
 
 	}
-
-	public boolean enableSync() {
-
-		return false;
-
-	}
-
+	
     @Override
     public TelegramBot bot() {
 
@@ -762,8 +756,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				}
 
-				if (uau.bot.enableSync()) {
-
 					synchronized (processing) {
 
 						if ((uau.chatId != -1 && processing.contains(uau.chatId)) || (uau.user != null && processing.contains(uau.user.id))) {
@@ -788,8 +780,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 						}
 
-					}
-
 				}
 
 				Processed processed;
@@ -811,8 +801,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 					continue;
 
 				}
-
-				if (uau.bot.enableSync()) {
 
 					if (processed == null) {
 
@@ -867,20 +855,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 						asyncPool.execute(processed);
 
 					}
-
-				} else {
-
-					if (processed.type == 3) {
-
-						asyncPool.execute(processed);
-
-					} else {
-
-						processed.run();
-
-					}
-
-				}
 
 			}
 
