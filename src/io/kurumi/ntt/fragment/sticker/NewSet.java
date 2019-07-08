@@ -228,7 +228,7 @@ public class NewSet extends Fragment {
 
 				Msg status = msg.send("正在创建贴纸包...").send();
 
-				BaseResponse resp = bot().execute(new CreateNewStickerSet(user.id.intValue(),create.name,create.title,forkStiker(user.id,set.stickerSet().stickers()[0]),set.stickerSet().stickers()[0].emoji()) {{ 
+				BaseResponse resp = bot().execute(new CreateNewStickerSet(user.id.intValue(),create.name,create.title,readStiker(user.id,set.stickerSet().stickers()[0]),set.stickerSet().stickers()[0].emoji()) {{ 
 
 							if (set.stickerSet().stickers()[0].maskPosition() != null) {
 
@@ -252,7 +252,7 @@ public class NewSet extends Fragment {
 
 					final Sticker sticker = set.stickerSet().stickers()[index];
 
-					bot().execute(new AddStickerToSet(user.id.intValue(),create.name,forkStiker(user.id,sticker),sticker.emoji()) {{
+					bot().execute(new AddStickerToSet(user.id.intValue(),create.name,readStiker(user.id,sticker),sticker.emoji()) {{
 
 								if (sticker.maskPosition() != null) {
 

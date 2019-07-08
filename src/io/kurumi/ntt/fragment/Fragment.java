@@ -28,6 +28,7 @@ import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.BotLog;
 import java.io.File;
 import com.pengrad.telegrambot.request.UploadStickerFile;
+import cn.hutool.core.io.FileUtil;
 
 public class Fragment {
 
@@ -574,12 +575,11 @@ public class Fragment {
     public void onQuery(UserData user,Query inlineQuery) {
     }
 	
-	public String forkStiker(Long userId,Sticker sticker) {
+	public byte[] readStiker(Long userId,Sticker sticker) {
 		
-		GetFileResponse resp = bot().execute(new UploadStickerFile(userId.intValue(),getFile(sticker.fileId())));
+		File file = getFile(sticker.fileId());
 
-		return resp.isOk() ? resp.file().fileId() : null;
-		
+		return FileUtil.readBytes(file);
 	}
 
     public File getFile(String fileId) {
