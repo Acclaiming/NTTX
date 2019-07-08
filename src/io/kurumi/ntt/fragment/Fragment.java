@@ -576,7 +576,7 @@ public class Fragment {
 	
 	public String forkStiker(Long userId,Sticker sticker) {
 		
-		GetFileResponse resp = bot().execute(new UploadStickerFile(userId.intValue(),getFile(sticker.fileId())));
+		GetFileResponse resp = bot().execute(new UploadStickerFile(userId.intValue(),sticker.fileId()));
 
 		return resp.isOk() ? resp.file().fileId() : null;
 		
