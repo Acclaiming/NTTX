@@ -67,7 +67,7 @@ public class Notice extends Fragment {
 
 		data.context.add(msg);
 		
-        String params = data.toString();
+        String params = data.data();
 
         boolean mute = params.contains("mute");
         boolean login = params.contains("login");
@@ -116,12 +116,16 @@ public class Notice extends Fragment {
                     } else {
 
                         failed++;
+						
+						/*
 
                         userData.contactable = false;
 
                         UserData.userDataIndex.remove(userData.id);
 
                         userData.data.setById(userData.id,userData);
+						
+						*/
 
                     }
 
