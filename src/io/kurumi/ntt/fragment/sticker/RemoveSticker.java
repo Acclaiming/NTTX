@@ -48,7 +48,7 @@ public class RemoveSticker extends Fragment {
 			
 			return;
 			
-		} else if (msg.sticker().setName().toLowerCase().endsWith("_by_" + origin.me.username())) {
+		} else if (!msg.sticker().setName().toLowerCase().endsWith("_by_" + origin.me.username().toLowerCase())) {
 			
 			msg.send("根据 " + NewStickerSet.DOC + " ，BOT只能操作由自己创建的贴纸包....").html().withCancel().exec(data);
 			
