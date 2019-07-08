@@ -17,6 +17,13 @@ public class DebugMsg extends Fragment {
 
     }
 
+	@Override
+	public int checkFunction() {
+		
+		return FUNCTION_PUBLIC;
+		
+	}
+
     @Override
     public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
