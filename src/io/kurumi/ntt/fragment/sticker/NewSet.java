@@ -57,6 +57,15 @@ public class NewSet extends Fragment {
 	final String DOC = Html.a("相关法律法规","https://core.telegram.org/bots/api#createnewstickerset");
 
 	@Override
+	public int checkPoint(UserData user,Msg msg,String point,PointData data) {
+	
+		return ((CreateSet)data).type == 3 ? PROCESS_THREAD : PROCESS_ASYNC;
+		
+	}
+
+	
+	
+	@Override
 	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
 		data.context.add(msg);
@@ -79,7 +88,7 @@ public class NewSet extends Fragment {
 
 			}
 
-			create.name = msg.text();
+			create.title = msg.text();
 			create.type = 1;
 
 			msg.send("现在发送贴纸集的简称 : 用于添加贴纸的链接 https://t.me/addstickers/你设置的简称 。只能包含英文字母，数字和下划线。必须以字母开头，不能包含连续的下划线。 ","\n并且 : 根据 " + DOC + " , " + Html.b("必须以 '_by_" + origin.me.username().toLowerCase() + "' 结尾。") + " '" + origin.me.username().toLowerCase() + "' 不区分大小写 (不带引号)。").html().exec(data);
@@ -178,7 +187,9 @@ public class NewSet extends Fragment {
 
 			}
 
-			msg.send("正在创建贴纸包...").exec(data);
+			clearPrivatePoint(user);
+
+			Msg status = msg.send("正在创建贴纸包...").send();
 
 			BaseResponse resp = bot().execute(new CreateNewStickerSet(user.id.intValue(),create.name,create.title,forkStiker(user.id,set.stickerSet().stickers()[0]),set.stickerSet().stickers()[0].emoji()) {{ 
 
@@ -192,7 +203,7 @@ public class NewSet extends Fragment {
 
 			if (!resp.isOk()) {
 
-				msg.send("创建贴纸集失败 请重试 : " + resp.description()).withCancel().exec(data);
+				status.edit("创建贴纸集失败 请重试 : " + resp.description()).withCancel().exec(data);
 
 				return;
 
@@ -211,12 +222,14 @@ public class NewSet extends Fragment {
 					}
 					
 				}});
+				
+				status.edit("正在创建贴纸包 进度 : " + (index + 1) + " / " + set.stickerSet().stickers().length).exec();
 
 			}
 			
 			clearPrivatePoint(user);
 			
-			msg.send("创建成功！ " + Html.a(create.title,"https://t.me/addstickers/" + create.name)).html().exec(data);
+			status.edit("创建成功！ " + Html.a(create.title,"https://t.me/addstickers/" + create.name)).html().exec(data);
 
 		}
 
