@@ -10,11 +10,24 @@ import io.kurumi.ntt.model.Msg;
 
 import static java.util.Arrays.asList;
 import io.kurumi.ntt.db.PointData;
+import org.bson.Document;
+
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Updates.*;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.gt;
+import static com.mongodb.client.model.Filters.not;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
+import static java.util.Arrays.asList;
+
 
 public class Notice extends Fragment {
 
     final String POINT_FPRWARD = "admin_notice";
 
+	
+	
 	@Override
 	public void init(BotFragment origin) {
 
@@ -60,6 +73,12 @@ public class Notice extends Fragment {
         boolean login = params.contains("login");
 		boolean tryAll = params.contains("try");
 		
+		if (tryAll) {
+			
+			UserData.data.collection.updateMany(eq("contactable",false),new Document("contactable",null));
+			
+		}
+		
         clearPrivatePoint(user);
 		
             long count = UserData.data.collection.countDocuments();
@@ -71,7 +90,7 @@ public class Notice extends Fragment {
 
             for (UserData userData : UserData.data.collection.find()) {
 
-                if (tryAll || userData.contactable == null || userData.contactable) {
+                if (userData.contactable == null || userData.contactable) {
 
                     if (login && TAuth.data.countByField("user",userData.id) == 0) {
 
