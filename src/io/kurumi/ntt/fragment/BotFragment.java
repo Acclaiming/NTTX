@@ -53,7 +53,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 	public static Timer mainTimer = new Timer();
 	public static Timer trackTimer = new Timer();
 
-	public static ExecutorService processPool = Executors.newFixedThreadPool(5);
+	public static ExecutorService processPool = Executors.newFixedThreadPool(3);
 	public static ExecutorService asyncPool = Executors.newCachedThreadPool();
 
     public User me;
