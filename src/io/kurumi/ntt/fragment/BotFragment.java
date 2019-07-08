@@ -55,7 +55,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 	public static ExecutorService processPool = Executors.newFixedThreadPool(5);
 	public static ExecutorService asyncPool = Executors.newCachedThreadPool();
-	
+
     public User me;
     private TelegramBot bot;
     public LinkedList<Fragment> fragments = new LinkedList<>();
@@ -789,26 +789,31 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 			}
 
-			if (processed.type == PROCESS_THREAD) {
+			if (processed != null) {
 
-				asyncPool.execute(processed);
+				if (processed.type == PROCESS_THREAD) {
 
-			} else if (processed.type == PROCESS_ASYNC) {
+					asyncPool.execute(processed);
 
-				processPool.execute(processed);
+				} else if (processed.type == PROCESS_ASYNC) {
 
-			} else {
+					processPool.execute(processed);
 
-				processed.run();
+				} else {
 
+					processed.run();
+
+				}
+				
 			}
+			
 
 			if (!isEmpty()) {
 
 				run(pollFirst());
 
 			} else {
-				
+
 				synchronized (waitFor) {
 
 					if (isEmpty()) {
@@ -829,7 +834,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 
 	}
-	
+
 	@Override
 	public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
