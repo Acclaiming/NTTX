@@ -58,7 +58,8 @@ public class Notice extends Fragment {
 
         boolean mute = params.contains("mute");
         boolean login = params.contains("login");
-
+		boolean tryAll = params.contains("try");
+		
         clearPrivatePoint(user);
 		
             long count = UserData.data.collection.countDocuments();
@@ -70,7 +71,7 @@ public class Notice extends Fragment {
 
             for (UserData userData : UserData.data.collection.find()) {
 
-                if (userData.contactable == null || userData.contactable) {
+                if (tryAll || userData.contactable == null || userData.contactable) {
 
                     if (login && TAuth.data.countByField("user",userData.id) == 0) {
 
@@ -84,8 +85,16 @@ public class Notice extends Fragment {
 
                     if (mute) forward.disableNotification(true);
 
-                    if (bot().execute(forward).isOk()) success++;
-                    else {
+                    if (bot().execute(forward).isOk()) {
+						
+						success++;
+						
+						userData.contactable = true;
+
+                        userData.data.setById(userData.id,userData);
+
+						
+                    } else {
 
                         failed++;
 
