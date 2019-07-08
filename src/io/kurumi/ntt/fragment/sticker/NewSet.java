@@ -15,6 +15,8 @@ import cn.hutool.core.util.StrUtil;
 import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.model.Sticker;
 import com.pengrad.telegrambot.request.AddStickerToSet;
+import java.util.ArrayList;
+import io.kurumi.ntt.fragment.twitter.TAuth;
 
 public class NewSet extends Fragment {
 
@@ -63,7 +65,7 @@ public class NewSet extends Fragment {
 		
 	}
 
-	
+	ArrayList<Long> forking = new ArrayList<>();
 	
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,PointData data) {
@@ -172,6 +174,24 @@ public class NewSet extends Fragment {
 				return;
 
 			}
+			
+			if (forking.contains(user.id)) {
+				
+				msg.send("对不起，但是还有未造成的贴纸包复制任务正在进行... 请等待").withCancel().exec(data);
+				
+				return;
+				
+			} else if (!TAuth.contains(user.id)) {
+				
+				msg.send("对不起，但是复制贴纸包需要大量时间，为防止滥用，仅认证了Twitter账号的用户可用。").exec(data);
+				
+				return;
+				
+			} else {
+				
+				forking.add(user.id);
+				
+			}
 
 			String target = msg.text();
 
@@ -183,6 +203,8 @@ public class NewSet extends Fragment {
 
 				msg.send("无法读取贴纸包 " + target + " : " + set.description()).exec(data);
 
+				forking.remove(user.id);
+				
 				return;
 
 			}
@@ -205,6 +227,8 @@ public class NewSet extends Fragment {
 
 				status.edit("创建贴纸集失败 请重试 : " + resp.description()).withCancel().exec(data);
 
+				forking.remove(user.id);
+
 				return;
 
 			}
@@ -224,10 +248,10 @@ public class NewSet extends Fragment {
 				}});
 				
 				status.edit("正在复制贴纸包 进度 : " + (index + 1) + " / " + set.stickerSet().stickers().length).exec();
-
+			
 			}
 			
-			clearPrivatePoint(user);
+			forking.remove(user.id);
 			
 			status.edit("创建成功！ " + Html.a(create.title,"https://t.me/addstickers/" + create.name)).html().exec(data);
 
