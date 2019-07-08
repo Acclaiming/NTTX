@@ -5,6 +5,7 @@ import cn.hutool.http.HttpUtil;
 import com.mongodb.client.FindIterable;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Poll;
+import com.pengrad.telegrambot.model.Sticker;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ChatAction;
 import com.pengrad.telegrambot.request.GetFile;
@@ -13,6 +14,7 @@ import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendSticker;
 import com.pengrad.telegrambot.response.GetFileResponse;
 import io.kurumi.ntt.Env;
+import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.StickerPoint;
 import io.kurumi.ntt.db.UserData;
@@ -25,9 +27,7 @@ import io.kurumi.ntt.model.request.Keyboard;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.BotLog;
 import java.io.File;
-import java.util.LinkedList;
-import io.kurumi.ntt.db.PointData;
-import io.kurumi.ntt.fragment.Fragment.TwitterRequest;
+import com.pengrad.telegrambot.request.UploadStickerFile;
 
 public class Fragment {
 
@@ -573,6 +573,14 @@ public class Fragment {
 
     public void onQuery(UserData user,Query inlineQuery) {
     }
+	
+	public String forkStiker(Long userId,Sticker sticker) {
+		
+		GetFileResponse resp = bot().execute(new UploadStickerFile(userId.intValue(),getFile(sticker.fileId())));
+
+		return resp.isOk() ? resp.file().fileId() : null;
+		
+	}
 
     public File getFile(String fileId) {
 
