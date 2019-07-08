@@ -88,9 +88,11 @@ public class ListImport extends Fragment {
 
 		data.auth = account;
 
+		data.context.add(msg);
+
 		setPrivatePoint(user,POINT_LIST_IMPORT,data);
 
-		msg.send("现在发送要导入的列表文件 (.csv) :").exec();
+		msg.send("现在发送要导入的列表文件 (.csv) :").exec(data);
 
 	}
 
@@ -280,10 +282,9 @@ public class ListImport extends Fragment {
 			list.type = 3;
 
 			msg
-				.send("请在下方按钮中选择导入模式....\n;","追加 : 普通导入模式","覆盖 : 去重导入 删除不包含的项目","删除 : 删除列表包含的项目","\n注意 : 当导入关注者列表时 追加模式不可用，覆盖模式仅删除列表中不存在的项目。\n当导入转推静音列表时 覆盖模式不可用 (因为转推静音列表无法读取)\n\n关于导入关注者 : 可能会被限制 (")
+				.send("请在下方按钮中选择导入模式....\n","追加 : 普通导入模式","覆盖 : 去重导入 删除不包含的项目","删除 : 删除列表包含的项目","\n注意 : 当导入关注者列表时 追加模式不可用，覆盖模式仅删除列表中不存在的项目。\n当导入转推静音列表时 覆盖模式不可用 (因为转推静音列表无法读取)\n\n关于导入关注者 : 可能会被限制 (")
 				.keyboard(button)
 				.withCancel()
-				.removeKeyboard()
 				.exec(data);
 
 		} else if (list.type == 2) {
@@ -329,6 +330,12 @@ public class ListImport extends Fragment {
 			} else if (REMOVE.equals(msg.text())) {
 
 				list.mode = 2;
+
+			} else {
+
+				msg.send("请选择导入模式").withCancel().exec(data);
+
+				return;
 
 			}
 
@@ -429,7 +436,7 @@ public class ListImport extends Fragment {
 
 					status.delete();
 
-					status.send("导入结束 : ","已执行 " + index + " / " + size + " 条 ","关注成功 : " + (success.size() == 0 ? "无" : ("\n" + ArrayUtil.join(success.toArray(),"\n"))) + "条 \n出错 : " + (error.size() == 0 ? "无" : ("\n" + parseError(api,error)))).html().exec();
+					status.send("导入结束 : ","已执行 " + index + " / " + size + " 条 ","关注成功 : " + (success.size() == 0 ? "无" : (success.size() + "\n" + ArrayUtil.join(success.toArray(),"\n"))) + "条 \n出错 : " + (error.size() == 0 ? "无" : ("\n" + parseError(api,error)))).html().exec();
 
 				} else if (action.mode == 1) {
 
@@ -463,9 +470,9 @@ public class ListImport extends Fragment {
 
 							} catch (TwitterException e) {
 
-								foError.put(id,e.getStatusCode() == 403 ? "已经关注了该用户" : NTT.parseTwitterException(e));
+								foError.put(id,(e.getStatusCode() == 403 && e.getErrorCode() == -1) ? "已经关注了该用户" : NTT.parseTwitterException(e));
 
-								if (!ArrayUtil.contains(new int[] { 50,63,136 },e.getErrorCode())) {
+								if (!ArrayUtil.contains(new int[] { 50,63,136,160 },e.getErrorCode())) {
 
 									break;
 
@@ -503,7 +510,7 @@ public class ListImport extends Fragment {
 
 						}
 
-						status.send("导入结束 : ","关注已执行 " + count + " / " + action.list.size() + " 条 ","\n关注成功 : " + (fo.size() == 0 ? "无" : (fo.size() + "\n" + ArrayUtil.join(fo.toArray(),"\n"))) + "条 \n关注出错 : " + (foError.size() == 0 ? "无" : (foError.size() + "\n" + parseError(api,foError))),"\n取关成功 : " + (unfo.size() == 0 ? "无" : (unfo.size() + "\n" + ArrayUtil.join(unfo.toArray(),"\n"))) + "条 \n取关出错 : " + (unfoError.size() == 0 ? "无" : (unfoError.size() + "\n" + parseError(api,unfoError)))).html().exec();
+						status.send("导入结束 : ","关注已执行 " + count + " / " + action.list.size() + " 条 ","\n关注成功 : " + (fo.size() == 0 ? "无" : (fo.size() + "\n" + ArrayUtil.join(fo.toArray(),"\n"))) + " \n关注出错 : " + (foError.size() == 0 ? "无" : (foError.size() + "\n" + parseError(api,foError))),"\n取关成功 : " + (unfo.size() == 0 ? "无" : (unfo.size() + "\n" + ArrayUtil.join(unfo.toArray(),"\n"))) + "条 \n取关出错 : " + (unfoError.size() == 0 ? "无" : (unfoError.size() + "\n" + parseError(api,unfoError)))).html().exec();
 
 					} catch (TwitterException e) {
 
