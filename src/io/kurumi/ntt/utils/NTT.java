@@ -288,7 +288,7 @@ public class NTT {
                 return "已经发送过关注请求了";
 
 			case 161:
-                return "超过用户单日关注上限 : 这通常是400人";
+                return "超过用户单日关注上限 : " + exc.getMessage();
 
 			case 179:
                 return "推文无法取得 : 对方锁推且未被关注";
