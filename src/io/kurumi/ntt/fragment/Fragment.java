@@ -324,7 +324,7 @@ public class Fragment {
 
 	public int checkFunction() {
 
-		return FUNCTION_PUBLIC;
+		return FUNCTION_PRIVATE;
 
 	}
 
