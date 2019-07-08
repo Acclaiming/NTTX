@@ -186,12 +186,8 @@ public class NewSet extends Fragment {
 			}
 
 			String target;
-
-			if (msg.hasText()) {
-
-				target = msg.text();
-
-				if (target.contains("/")) {
+			
+				if (msg.hasText() && (target = msg.text()).contains("/")) {
 
 					target = StrUtil.subAfter(target,"/",true);
 
