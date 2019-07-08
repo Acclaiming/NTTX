@@ -150,6 +150,8 @@ public class JoinCaptchaBot extends BotFragment {
 				
 				msg.send("退出群组 : 没有指定参数 [Long 群组ID]").exec();
 				
+				return;
+				
 			}
 
 			long groupId = NumberUtil.parseLong(params[0]);
