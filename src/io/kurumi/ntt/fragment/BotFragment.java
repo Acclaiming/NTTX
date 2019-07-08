@@ -107,9 +107,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				@Override
 				public void process() {
-					
+
 					finalFragment.onAsyncUpdate(user,update);
-					
+
 				}
 			};
 
@@ -661,11 +661,15 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 							});
 
+					} else if (checked == PROCESS_REJECT) {
+
+						return EMPTY;
+
+					} else {
+
+						onMsg(user,msg);
+
 					}
-
-					if (checked == PROCESS_REJECT) return EMPTY;
-
-					onMsg(user,msg);
 
 				}
 
@@ -810,9 +814,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 					processed.run();
 
 				}
-				
+
 			}
-			
+
 
 			if (!isEmpty()) {
 

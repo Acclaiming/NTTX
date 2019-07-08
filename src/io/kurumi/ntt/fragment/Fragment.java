@@ -86,7 +86,7 @@ public class Fragment {
 
     public PointData setGroupPoint(UserData user,String pointTo) {
 
-       return point().setGroupData(user,pointTo,null);
+		return point().setGroupData(user,pointTo,null);
 
     }
 
@@ -195,11 +195,15 @@ public class Fragment {
 
 					});
 
-			} 
+			} else if (checked == PROCESS_REJECT) {
 
-			if (checked == PROCESS_REJECT) return EMPTY;
+				return EMPTY;
 
-			onMsg(user,msg);
+			} else {
+
+				onMsg(user,msg);
+
+			}
 
 		} else if (update.channelPost() != null) {
 
@@ -220,11 +224,15 @@ public class Fragment {
 
 					});
 
+			} else if (checked == PROCESS_REJECT) {
+
+				return EMPTY;
+
+			} else {
+
+				onChanPost(user,msg);
+
 			}
-
-			if (checked == PROCESS_REJECT) return EMPTY;
-
-			onChanPost(user,msg);
 
 		} else if (update.inlineQuery() != null) {
 
