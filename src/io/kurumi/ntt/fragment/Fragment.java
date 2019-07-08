@@ -320,6 +320,7 @@ public class Fragment {
 
 		}
 
+		
 	}
 
 	public int checkFunction() {
