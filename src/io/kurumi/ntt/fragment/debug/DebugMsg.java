@@ -1,5 +1,6 @@
 package io.kurumi.ntt.fragment.debug;
 
+import cn.hutool.json.JSONObject;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
@@ -37,7 +38,7 @@ public class DebugMsg extends Fragment {
 
 		if (msg.update != null) {
 
-			msg.send(Html.code(msg.update.json)).html().exec();
+			msg.send(Html.code(new JSONObject(msg.update.json).getByPath("message.reply_to_message"))).html().exec();
 
 		} else {
 
