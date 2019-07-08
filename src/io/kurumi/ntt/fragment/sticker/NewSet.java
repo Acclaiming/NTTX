@@ -281,7 +281,7 @@ public class NewSet extends Fragment {
 
 				}
 
-				File local = new File(Env.CACHE_DIR, "sticker_convert_cache/" + message.photo()[0].fileId() + ".png");
+				File local = new File(Env.CACHE_DIR, "sticker_convert_cache/" + (msg.message().photo() != null ? msg.message().photo()[0].fileId() : msg.doc().fileId()) + ".png");
 
 				if (!local.isFile()) {
 
