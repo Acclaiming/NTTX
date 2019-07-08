@@ -48,7 +48,7 @@ import io.kurumi.ntt.fragment.Fragment.Processed;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener,ExceptionHandler {
 
-    Final finalFragment = new Final() {{ init(BotFragment.this); }};;
+    private Final finalFragment = new Final() {{ init(BotFragment.this); }};;
 
 	public static Timer mainTimer = new Timer();
 	public static Timer trackTimer = new Timer();
@@ -103,9 +103,15 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 			}
 
-			finalFragment.onAsyncUpdate(user,update);
+			return new Processed(user,update,PROCESS_THREAD) {
 
-			return null;
+				@Override
+				public void process() {
+					
+					finalFragment.onAsyncUpdate(user,update);
+					
+				}
+			};
 
 		}
 
