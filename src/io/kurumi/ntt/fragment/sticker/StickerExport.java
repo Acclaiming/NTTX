@@ -73,16 +73,6 @@ public class StickerExport extends Fragment {
 
 			if (!local.isFile()) {
 				
-				long size = photo.length();
-				
-				float outSize = 1.0f;
-				
-				if (size > 512 * 1024) {
-					
-					outSize = ((512 * 1024) / size)/* - 0.3f*/;
-					
-				}
-				
 				local.getParentFile().mkdirs();
 				
 				try {
@@ -90,9 +80,17 @@ public class StickerExport extends Fragment {
 					Thumbnails
 						.of(photo)
 						.size(512,512)
-						.outputQuality(outSize)
 						.outputFormat("png")
 						.toFile(local);
+						
+					if (local.length() > 512 * 1024) {
+
+						float outSize = ((512 * 1024) / local.length())/* - 0.3f*/;
+
+						Thumbnails.of(local).outputQuality(outSize).toFile(local);
+
+					}
+					
 						
 				} catch (IOException e) {
 					
@@ -105,6 +103,10 @@ public class StickerExport extends Fragment {
 			}
 
 			bot().execute(new SendDocument(msg.chatId(),local).fileName("sticker.png"));
+			
+		} else {
+			
+			msg.send("正在制作贴纸").withCancel().exec(data);
 			
 		}
 		

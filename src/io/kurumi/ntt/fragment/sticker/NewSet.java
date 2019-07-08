@@ -267,7 +267,7 @@ public class NewSet extends Fragment {
 
 			forking.remove(user.id);
 
-			status.edit("创建成功！ " + Html.a(create.title,"https://t.me/addstickers/" + create.name)).html().exec(data);
+			status.edit("创建成功！你的贴纸包 :  " + Html.a(create.title,"https://t.me/addstickers/" + create.name)).html().exec(data);
 
 		} else if (create.type == 4) {
 
@@ -347,9 +347,38 @@ public class NewSet extends Fragment {
 
 			}
 
-			status.edit("创建成功！ " + Html.a(create.title
-										  ,"https://t.me/addstickers/" + create.name)).html().exec(data);
+			status.edit("创建成功！你的贴纸包 :  " + Html.a(create.title,"https://t.me/addstickers/" + create.name)).html().exec(data);
 
+		} else if (create.type == 5) {
+			
+			if (msg.message().sticker() == null) {
+				
+			msg.send("请发送用于创建贴纸集的贴纸").withCancel().exec(data);
+			
+			return;
+				
+			}
+			
+			clearPrivatePoint(user);
+
+			Msg status = msg.send("正在创建贴纸包...").send();
+
+			BaseResponse resp = bot().execute(new CreateNewStickerSet(user.id.intValue(),create.name,create.title,readStiker(user.id,msg.message().sticker()),msg.message().sticker().emoji()));
+
+			if (!resp.isOk()) {
+
+				status.edit("创建贴纸集失败 请重试 : " + resp.description()).exec();
+
+				forking.remove(user.id);
+
+				return;
+
+			}
+			
+			forking.remove(user.id);
+
+			status.edit("创建成功！你的贴纸包 :  " + Html.a(create.title,"https://t.me/addstickers/" + create.name)).html().exec(data);
+			
 		}
 
 	} 
