@@ -140,7 +140,11 @@ public class JoinCaptchaBot extends BotFragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 		
-		if ("exit".equals(function)) {
+		if ("start".equals(function)) {
+			
+			msg.send("管理员命令 :","\n/exit <chatId> : 退出群组").exec();
+			
+		} else if ("exit".equals(function)) {
 			
 			if (params.length < 1) {
 				
