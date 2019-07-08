@@ -14,6 +14,14 @@ public class PointData {
 	public Object data;
 	public boolean cancelable = true;
 
+	public PointData with(Msg msg) {
+		
+		context.add(msg);
+		
+		return this;
+		
+	}
+	
 	public <T> T data() {
 		
 		return (T)data;

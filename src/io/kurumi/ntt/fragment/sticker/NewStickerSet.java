@@ -23,14 +23,14 @@ import java.util.ArrayList;
 import net.coobird.thumbnailator.Thumbnails;
 import cn.hutool.core.io.FileUtil;
 
-public class NewSet extends Fragment {
+public class NewStickerSet extends Fragment {
 
 	@Override
 	public void init(BotFragment origin) {
 
 		super.init(origin);
 
-		registerFunction("newset");
+		registerFunction("newpack");
 		registerPoint(POINT_CREATE_SET);
 
 	}
@@ -59,11 +59,11 @@ public class NewSet extends Fragment {
 
 		setPrivatePoint(user,POINT_CREATE_SET,data);
 
-		msg.send("好，一个新贴纸包 现在请发送标题 :","\n注意 : 虽然NTT支持通过自动重建的方式修改标题,但是还是想好再输入吧 ~").exec(data);
+		msg.send("好，一个新贴纸包 现在请发送标题 :").exec(data);
 
 	}
 
-	final String DOC = Html.a("相关法律法规","https://core.telegram.org/bots/api#createnewstickerset");
+	public static String DOC = Html.a("相关法律法规","https://core.telegram.org/bots/api#createnewstickerset");
 
 	@Override
 	public int checkPoint(UserData user,Msg msg,String point,PointData data) {
@@ -100,7 +100,7 @@ public class NewSet extends Fragment {
 			create.title = msg.text();
 			create.type = 1;
 
-			msg.send("现在发送贴纸集的简称 : 用于添加贴纸的链接 https://t.me/addstickers/你设置的简称 。只能包含英文字母，数字和下划线。必须以字母开头，不能包含连续的下划线。 ","\n并且 : 根据 " + DOC + " , " + Html.b("必须以 '_by_" + origin.me.username().toLowerCase() + "' 结尾。") + " '" + Html.code("by_" + origin.me.username().toLowerCase())+ "' 不区分大小写 (不带引号)。").html().exec(data);
+			msg.send("现在发送贴纸集的简称 : 用于添加贴纸的链接 https://t.me/addstickers/你设置的简称 。只能包含英文字母，数字和下划线。必须以字母开头，不能包含连续的下划线。 ","\n并且 : 根据 " + DOC + " , " + Html.b("必须以 '_by_" + origin.me.username().toLowerCase() + "' 结尾。") + " '" + Html.code("by_" + origin.me.username().toLowerCase()) + "' 不区分大小写 (不带引号)。").html().exec(data);
 
 		} else if (create.type == 1) {
 
@@ -176,7 +176,7 @@ public class NewSet extends Fragment {
 
 			if (forking.contains(user.id)) {
 
-				msg.send("对不起，但是还有未造成的贴纸包复制任务正在进行... 请等待").withCancel().exec(data);
+				msg.send("对不起，但是还有未完成的贴纸包复制任务正在进行... 请等待").withCancel().exec(data);
 
 				return;
 
@@ -271,6 +271,14 @@ public class NewSet extends Fragment {
 
 		} else if (create.type == 4) {
 
+			if (msg.message().photo() == null && msg.message().document() == null) {
+				
+				msg.send("请发送图片或文件作为贴纸").withCancel().exec(data);
+				
+				return;
+				
+			}
+			
 			File photo = msg.message().photo() != null ? msg.photo() : msg.file();
 
 			if (photo == null) {
@@ -350,15 +358,15 @@ public class NewSet extends Fragment {
 			status.edit("创建成功！你的贴纸包 :  " + Html.a(create.title,"https://t.me/addstickers/" + create.name)).html().exec(data);
 
 		} else if (create.type == 5) {
-			
+
 			if (msg.message().sticker() == null) {
-				
-			msg.send("请发送用于创建贴纸集的贴纸").withCancel().exec(data);
-			
-			return;
-				
+
+				msg.send("请发送用于创建贴纸集的贴纸").withCancel().exec(data);
+
+				return;
+
 			}
-			
+
 			clearPrivatePoint(user);
 
 			Msg status = msg.send("正在创建贴纸包...").send();
@@ -374,11 +382,11 @@ public class NewSet extends Fragment {
 				return;
 
 			}
-			
+
 			forking.remove(user.id);
 
 			status.edit("创建成功！你的贴纸包 :  " + Html.a(create.title,"https://t.me/addstickers/" + create.name)).html().exec(data);
-			
+
 		}
 
 	} 

@@ -5,10 +5,13 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import com.pengrad.telegrambot.model.Document;
 import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.Sticker;
+import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.EditMessageReplyMarkup;
 import com.pengrad.telegrambot.request.ForwardMessage;
 import com.pengrad.telegrambot.request.GetFile;
+import com.pengrad.telegrambot.request.LeaveChat;
 import com.pengrad.telegrambot.response.SendResponse;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.Launcher;
@@ -19,12 +22,8 @@ import io.kurumi.ntt.model.request.AbstractSend;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Edit;
 import io.kurumi.ntt.model.request.Send;
-
+import io.kurumi.ntt.utils.NTT;
 import java.io.File;
-
-import com.pengrad.telegrambot.request.LeaveChat;
-import io.kurumi.ntt.utils.*;
-import com.pengrad.telegrambot.model.Update;
 
 public class Msg extends Context {
 
@@ -68,6 +67,12 @@ public class Msg extends Context {
         return null;
 
     }
+	
+	public Sticker sticker() {
+		
+		return message.sticker();
+		
+	}
 
     public UserData from() {
 

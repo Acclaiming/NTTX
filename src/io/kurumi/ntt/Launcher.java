@@ -28,7 +28,7 @@ import io.kurumi.ntt.fragment.group.BanSetickerSet;
 import io.kurumi.ntt.fragment.group.ChineseAction;
 import io.kurumi.ntt.fragment.group.DeleteChannelMessage;
 import io.kurumi.ntt.fragment.group.GroupRepeat;
-import io.kurumi.ntt.fragment.sticker.NewSet;
+import io.kurumi.ntt.fragment.sticker.NewStickerSet;
 import io.kurumi.ntt.fragment.sticker.StickerExport;
 import io.kurumi.ntt.fragment.twitter.auto.AutoUI;
 import io.kurumi.ntt.fragment.twitter.ext.MediaDownload;
@@ -54,6 +54,8 @@ import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.Html;
 import java.io.IOException;
 import java.util.TimeZone;
+import io.kurumi.ntt.fragment.sticker.AddSticker;
+import io.kurumi.ntt.fragment.sticker.RemoveSticker;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -311,8 +313,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		// SETS
 		
 		addFragment(new StickerExport());
-		addFragment(new NewSet());
-		// addFragment(new MySets());
+		addFragment(new NewStickerSet());
+		addFragment(new AddSticker());
+		addFragment(new RemoveSticker());
 
     }
 
