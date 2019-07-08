@@ -113,8 +113,8 @@ public class AddSticker extends Fragment {
 
 			}
 
-			msg.send("添加成功！ 继续添加请发送 , 退出使用 /cancel").withCancel().exec(data);
-
+			msg.send("添加成功！重启客户端即可应用更改"," 退出添加使用 /cancel").exec(data);
+			
 		} else if (msg.message().photo() != null || msg.message().document() != null) {
 
 			File photo = msg.message().photo() != null ? msg.photo() : msg.file();
@@ -185,13 +185,13 @@ public class AddSticker extends Fragment {
 
 			if (!resp.isOk()) {
 
-				status.edit("添加贴纸成功 请重试 : " + resp.description()).exec();
+				status.edit("添加失败 请重试 : " + resp.description()).exec();
 				
 				return;
 
 			}
 			
-			msg.send("添加成功！ 继续添加请发送 , 退出使用 /cancel").withCancel().exec(data);
+			msg.reply("添加成功！重启客户端即可应用更改"," 退出添加使用 /cancel").exec(data);
 	
 		} else {
 			
