@@ -150,7 +150,7 @@ public class UserActions extends Fragment {
 
 					msg.send("你已经关注了 " + archive.urlHtml()).html().point(0,targetId);
 
-					return;
+					//return;
 
 				}
 
