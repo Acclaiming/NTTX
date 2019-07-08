@@ -62,9 +62,11 @@ public class AddSticker extends Fragment {
 
 			String target;
 
-			if (msg.hasText() && (target = msg.text()).contains("/")) {
-
-				target = StrUtil.subAfter(target,"/",true);
+			if (msg.hasText()) {
+				
+				target = msg.text();
+				
+				if (target.contains("/")) target = StrUtil.subAfter(target,"/",true);
 
 			} else if (msg.message().sticker() != null) {
 
@@ -81,16 +83,6 @@ public class AddSticker extends Fragment {
 			} else {
 
 				msg.send("请发送 目标贴纸包的简称或链接 或目标贴纸包的任意贴纸 : ").withCancel().exec(data);
-
-				return;
-
-			}
-
-			final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
-
-			if (!set.isOk()) {
-
-				msg.send("无法读取贴纸包 " + target + " : " + set.description()).exec(data);
 
 				return;
 
