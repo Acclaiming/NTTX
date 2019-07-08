@@ -52,6 +52,7 @@ import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.Html;
 import java.io.IOException;
 import java.util.TimeZone;
+import io.kurumi.ntt.fragment.twitter.list.ListImport;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -295,7 +296,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new TimelineUI());
 		addFragment(new TwitterDelete());
 		addFragment(new ListExport());
-
+		addFragment(new ListImport());
+		
 		// GROUP
 		
         addFragment(new GroupRepeat());

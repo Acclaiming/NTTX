@@ -4,8 +4,11 @@ package io.kurumi.ntt.fragment.twitter.archive;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReUtil;
 import io.kurumi.ntt.db.Data;
+import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.track.TrackTask;
 import io.kurumi.ntt.utils.Html;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import twitter4j.User;
 
 import static com.mongodb.client.model.Filters.*;
@@ -18,8 +21,6 @@ import static com.mongodb.client.model.Updates.set;
 import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
-import io.kurumi.ntt.fragment.twitter.TAuth;
-import twitter4j.TwitterException;
 
 public class UserArchive {
 
@@ -38,11 +39,11 @@ public class UserArchive {
     public transient String oldBannerUrl;
     private transient String oldScreename;
 
-    public static UserArchive show(TAuth auth,Long id) {
+    public static UserArchive show(Twitter api,Long id) {
         
         try {
             
-            User user = auth.createApi().showUser(id);
+            User user = api.showUser(id);
 
             return save(user);
             
@@ -54,11 +55,11 @@ public class UserArchive {
 
     }
 	
-	public static UserArchive show(TAuth auth,String screenName) {
+	public static UserArchive show(Twitter api,String screenName) {
 
         try {
 
-            User user = auth.createApi().showUser(screenName);
+            User user = api.showUser(screenName);
 
             return save(user);
 

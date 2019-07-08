@@ -51,7 +51,7 @@ public class ListExport extends Fragment {
 	@Override
 	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
-		setPrivatePointData(user,POINT_LIST_EXPORT,account);
+		PointData data = setPrivatePointData(user,POINT_LIST_EXPORT,account);
 
 		msg
 			.send("请选择将要导出的列表 :","将会以 .csv 官方格式导出")
@@ -64,13 +64,15 @@ public class ListExport extends Fragment {
 
 				}})
 			.withCancel()
-			.exec();
+			.exec(data);
 
 	}
 
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
+		data.context.add(msg);
+		
 		TAuth account = data.data();
 
 		Twitter api = account.createApi();
@@ -191,7 +193,7 @@ public class ListExport extends Fragment {
 
 			} else {
 
-				msg.send("要导出什么？").withCancel().exec();
+				msg.send("要导出什么？").withCancel().exec(data);
 
 			}
 
@@ -199,7 +201,7 @@ public class ListExport extends Fragment {
 			
 			if (!(msg.text().contains("twitter.com/") && msg.text().contains("/lists/"))) {
 
-				msg.send("要导出哪个 用户创建的列表？请发送该列表的链接 : 它看起来像 twitter.com/用户名/lists/列表名 ，可以在列表 -> 分享 导出。").exec();
+				msg.send("要导出哪个 用户创建的列表？请发送该列表的链接 : 它看起来像 twitter.com/用户名/lists/列表名 ，可以在列表 -> 分享 导出。").exec(data);
 
 				return;
 

@@ -481,8 +481,8 @@ public class TApi {
 
 
     }
-
-    public static LinkedList<UserList> getLists(Twitter api) throws IllegalStateException, TwitterException {
+	
+    public static LinkedList<UserList> getLists(Twitter api) throws TwitterException {
 
         return new LinkedList<UserList>(api.getUserLists(api.getId(), true));
 
