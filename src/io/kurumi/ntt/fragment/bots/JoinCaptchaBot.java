@@ -744,7 +744,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 					info.drawRandomColorTextCenter(0,0,0,400,"这是二次验证 ~");
 					info.drawRandomColorTextCenter(0,200,0,200,code.code);
-					info.drawRandomColorTextCenter(0,400,0,0,"请输入验证码 ~");
+					info.drawRandomColorTextCenter(0,400,0,0,"请输入验证码 的拼音 ~");
 
 					ButtonMarkup buttons = new ButtonMarkup() {{
 

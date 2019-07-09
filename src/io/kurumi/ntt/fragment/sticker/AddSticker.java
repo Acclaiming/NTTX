@@ -90,7 +90,7 @@ public class AddSticker extends Fragment {
 
 			if (!target.toLowerCase().endsWith("_by_" + origin.me.username().toLowerCase())) {
 
-				msg.send("对不起，但是根据 " + NewStickerSet.DOC + " , NTT只能操作由NTT创建的贴纸包。 请重新选择 :").withCancel().exec(data);
+				msg.send("对不起，但是根据 " + NewStickerSet.DOC + " , NTT只能操作由NTT创建的贴纸包。 请重新选择 :").withCancel().html().exec(data);
 
 				return;
 				
