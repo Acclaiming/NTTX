@@ -395,16 +395,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 		
 		if (processed != null) {
 			
-			if (processed.type == PROCESS_ASYNC) {
-				
-				asyncPool.execute(processed);
-				
-			} else {
-			
 				processed.run();
-		
-			}
-			
+
 		}
 
     }
