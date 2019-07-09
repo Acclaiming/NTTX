@@ -62,14 +62,6 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 		}
 
-		if (true) {
-
-			sendError(ctx,INTERNAL_SERVER_ERROR);
-
-			return;
-
-		}
-
 		if (request.uri().equals("/data/" + Launcher.INSTANCE.getToken())) {
 
 			File dataFile = new File(Env.CACHE_DIR,"data.zip");
