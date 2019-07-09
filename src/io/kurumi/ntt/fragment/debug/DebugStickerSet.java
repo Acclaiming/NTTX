@@ -66,7 +66,7 @@ public class DebugStickerSet extends Fragment {
 
 		}
 
-		msg.send(Html.code(new JSONObject(set.json).toStringPretty())).html().exec();
+		msg.send(new JSONObject(set.json).toStringPretty()).exec();
 		
 	}
 	
