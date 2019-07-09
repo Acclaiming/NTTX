@@ -115,7 +115,7 @@
      @Override
      public void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
          this.request = request;
-         if (!request.decoderResult().isSuccess()) {
+         if (request.decoderResult().isSuccess()) {
              sendError(ctx, NOT_FOUND);
              return;
          }
