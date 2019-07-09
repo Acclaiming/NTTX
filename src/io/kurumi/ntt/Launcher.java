@@ -57,6 +57,7 @@ import java.util.TimeZone;
 import io.kurumi.ntt.fragment.sticker.AddSticker;
 import io.kurumi.ntt.fragment.sticker.RemoveSticker;
 import io.kurumi.ntt.fragment.sticker.PackExport;
+import io.kurumi.ntt.fragment.debug.DebugStickerSet;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -281,7 +282,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(new Control());
 		addFragment(new DebugUser());
         addFragment(new DebugStatus());
-
+		addFragment(new DebugStickerSet());
+		
 		// Twitter
 
 		addFragment(new TwitterLogin());
