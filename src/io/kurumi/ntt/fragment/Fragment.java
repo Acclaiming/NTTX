@@ -340,7 +340,7 @@ public class Fragment {
 
 	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
 
-		return PROCESS_ASYNC;
+		return PROCESS_SYNC;
 
 	}
 
