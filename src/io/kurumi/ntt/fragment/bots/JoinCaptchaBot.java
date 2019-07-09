@@ -257,10 +257,10 @@ public class JoinCaptchaBot extends BotFragment {
 
 			info.fontSize(39);
 			
-			String code = RandomUtil.randomBoolean() ? "喵" :  "嘤";
+			boolean code = RandomUtil.randomBoolean();
 
 			info.drawRandomColorTextCenter(0,0,0,400,"新加裙的绒布球你好呀");
-			info.drawRandomColorTextCenter(0,200,0,200,"请发送 " + code + " 通过验证");
+			info.drawRandomColorTextCenter(0,200,0,200,"请发送 " + (code ? "喵" : "嘤") + " 通过验证");
 			info.drawRandomColorTextCenter(0,400,0,0,"不要戳下面的按钮");
 
             ButtonMarkup buttons = new ButtonMarkup() {{
@@ -710,7 +710,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 		} else {
 
-			if (POINT_AUTH.equals(point) && msg.message().forwardSignature() == null && msg.hasText() && (msg.text().contains(data.data.toString()))) {
+			if (POINT_AUTH.equals(point) && msg.message().forwardSignature() == null && msg.hasText() && (((Boolean)data.data) ? msg.text().contains("喵") : (msg.text().contains("嘤") || msg.text().contains("嚶")))) {
 
 				clearGroupPoint(user);
 
