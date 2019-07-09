@@ -279,7 +279,7 @@ public class AntiEsu extends Fragment {
 	}
 
 	@Override
-	public int checkFunction() {
+	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
 
 		return FUNCTION_GROUP;
 

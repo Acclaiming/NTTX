@@ -107,6 +107,8 @@ public class ForwardBot extends BotFragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
+		if (!msg.isPrivate()) return;
+		
 		super.onFunction(user,msg,function,params);
 
 		if ("start".equals(function)) {
@@ -233,6 +235,8 @@ public class ForwardBot extends BotFragment {
 	@Override
 	public int checkMsg(UserData user,Msg msg) {
 
+		if (!msg.isPrivate()) return PROCESS_REJECT;
+		
 		if (userId.equals(user.id) || !blockList.contains(user.id.longValue())) {
 
             if (lastReceivedFrom == null || !lastReceivedFrom.equals(user.id)) {

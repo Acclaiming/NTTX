@@ -17,8 +17,9 @@ public class DeleteChannelMessage extends Fragment {
         LocalData.setJSONArray("data","del_chan_msg",enable);
 
     }
+	
 	@Override
-	public int checkFunction() {
+	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
 
 		return FUNCTION_GROUP;
 

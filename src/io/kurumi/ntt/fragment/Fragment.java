@@ -332,7 +332,7 @@ public class Fragment {
 		
 	}
 
-	public int checkFunction() {
+	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
 
 		return FUNCTION_PRIVATE;
 
@@ -536,14 +536,11 @@ public class Fragment {
 	public static final int PROCESS_REJECT = 0;
 	public static final int PROCESS_SYNC = 1;
 	public static final int PROCESS_ASYNC = 2;
-	//public static final int PROCESS_THREAD = 2;
-
-	public final int FUNCTION_PRIVATE = 1;
-	public final int FUNCTION_GROUP = 2;
-	public final int FUNCTION_PUBLIC = 3;
-
-	// 没有 异步
-
+	
+	public static final int FUNCTION_PRIVATE = 1;
+	public static final int FUNCTION_GROUP = 2;
+	public static final int FUNCTION_PUBLIC = 3;
+	
 	public int checkMsg(UserData user,Msg msg) {
 
 		return PROCESS_ASYNC;

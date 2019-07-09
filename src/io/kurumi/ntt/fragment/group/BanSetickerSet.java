@@ -27,9 +27,9 @@ public class BanSetickerSet extends Fragment {
 		registerFunction("banss","unbanss");
 
 	}
-
+	
 	@Override
-	public int checkFunction() {
+	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
 
 		return FUNCTION_GROUP;
 
