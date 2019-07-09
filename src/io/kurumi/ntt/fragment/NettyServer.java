@@ -120,8 +120,8 @@ public class NettyServer extends SimpleChannelInboundHandler<FullHttpRequest> {
 					pipeline.addLast(new HttpServerCodec());
 					pipeline.addLast(new HttpObjectAggregator(65536));
 					pipeline.addLast(new ChunkedWriteHandler());
-					pipeline.addLast(NettyServer.this);
-					//pipeline.addLast(new HttpStaticFileServerHandler());
+					//pipeline.addLast(NettyServer.this);
+					pipeline.addLast(new HttpStaticFileServerHandler());
 
 				}
 

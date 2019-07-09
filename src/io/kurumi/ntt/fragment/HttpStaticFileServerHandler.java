@@ -116,7 +116,7 @@
      public void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
          this.request = request;
          if (!request.decoderResult().isSuccess()) {
-             sendError(ctx, BAD_REQUEST);
+             sendError(ctx, NOT_FOUND);
              return;
          }
  
