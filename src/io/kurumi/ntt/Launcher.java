@@ -114,7 +114,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 			return;
 
 		}
-		
+
 
         String dbAddr = Env.getOrDefault("db_address","127.0.0.1");
         Integer dbPort = Integer.parseInt(Env.getOrDefault("db_port","27017"));
@@ -135,20 +135,20 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
             } catch (Exception e) {
             }
 
-			RuntimeUtil.addShutdownHook(new Runnable() {
-
-					@Override
-					public void run() {
-
-						INSTANCE.stop();
-
-					}
-
-				});
-
-			INSTANCE.start();
-
 		}
+
+		RuntimeUtil.addShutdownHook(new Runnable() {
+
+				@Override
+				public void run() {
+
+					INSTANCE.stop();
+
+				}
+
+			});
+
+		INSTANCE.start();
 		
 	}
 
