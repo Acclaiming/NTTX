@@ -30,6 +30,7 @@ import io.kurumi.ntt.db.PointData;
 import cn.hutool.core.util.NumberUtil;
 import com.pengrad.telegrambot.request.LeaveChat;
 import com.pengrad.telegrambot.response.BaseResponse;
+import cn.hutool.core.util.ArrayUtil;
 
 public class JoinCaptchaBot extends BotFragment {
 
@@ -135,13 +136,13 @@ public class JoinCaptchaBot extends BotFragment {
 		
 		if ("start".equals(function)) {
 			
-			msg.send("管理员命令 :","\n/exit <chatId> : 退出群组").exec();
+			msg.send("管理员命令 :","\n退出群组 : /exit <chatId>","发送信息 : /msg <chatId> <text...>").exec();
 			
 		} else if ("exit".equals(function)) {
 			
 			if (params.length < 1) {
 				
-				msg.send("退出群组 : 没有指定参数 [Long 群组ID]").exec();
+				msg.send("退出群组 参数错误 : [Long 群组ID]").exec();
 				
 				return;
 				
@@ -152,6 +153,22 @@ public class JoinCaptchaBot extends BotFragment {
 			BaseResponse resp = bot().execute(new LeaveChat(groupId));
 
 			msg.send(resp.isOk() ? "退出成功" : ("失败 : " + resp.description())).exec();
+		
+		} else if ("send".equals(function)) {
+			
+			if (params.length < 2) {
+
+				msg.send("发送消息 参数错误 : [Long 群组ID] [String... 消息]").exec();
+
+				return;
+
+			}
+
+			long groupId = NumberUtil.parseLong(params[0]);
+
+			SendResponse resp = new Send(this,groupId,ArrayUtil.sub(params,1,params.length)).exec();
+
+			msg.send(resp.isOk() ? ("发送成功 消息ID : " + resp.message().messageId()) : ("失败 : " + resp.description())).exec();
 			
 		} else {
 			
@@ -191,14 +208,6 @@ public class JoinCaptchaBot extends BotFragment {
                 msg.delete();
 
 			} else if (!user.id.equals(msg.message().leftChatMember().id())) {
-			}
-
-            UserData left = UserData.get(msg.message().leftChatMember());
-			
-            if (logChannel != null) {
-
-                new Send(this,logChannel,"事件 : #成员退出","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + left.userName(),"#id" + left.id).html().exec();
-
 			}
 
 		} else if (msg.message().newChatMembers() != null) {
