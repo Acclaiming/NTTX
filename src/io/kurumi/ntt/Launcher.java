@@ -69,53 +69,52 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 
-            //int serverPort = Integer.parseInt(Env.getOrDefault("server_port","-1"));
-            String serverDomain = Env.get("server_domain");
+		//int serverPort = Integer.parseInt(Env.getOrDefault("server_port","-1"));
+		String serverDomain = Env.get("server_domain");
 
-			/*
-			
-            while (serverPort == -1) {
+		/*
 
-                System.out.print("输入本地Http服务器端口 : ");
+		 while (serverPort == -1) {
 
-                try {
+		 System.out.print("输入本地Http服务器端口 : ");
 
-                    serverPort = Integer.parseInt(Console.input());
+		 try {
 
-                    Env.set("server_port",serverPort);
+		 serverPort = Integer.parseInt(Console.input());
 
-                } catch (Exception e) {
-                }
+		 Env.set("server_port",serverPort);
 
-            }
-			
-			*/
+		 } catch (Exception e) {
+		 }
 
-            if (serverDomain == null) {
+		 }
 
-                System.out.print("输入BotWebHook域名 : ");
+		 */
 
-                serverDomain = Console.input();
+		if (serverDomain == null) {
 
-                Env.set("server_domain",serverDomain);
+			System.out.print("输入BotWebHook域名 : ");
 
-            }
+			serverDomain = Console.input();
 
-            BotServer.INSTANCE = new BotServer(new File("/var/run/ntt.sock"),serverDomain);
+			Env.set("server_domain",serverDomain);
 
-            try {
+		}
 
-                BotServer.INSTANCE.start();
+		BotServer.INSTANCE = new BotServer(new File("/var/run/ntt.sock"),serverDomain);
 
-		     } catch (Exception e) {
+		try {
 
-                BotLog.error("端口被占用 请检查其他BOT进程。",e);
+			BotServer.INSTANCE.start();
 
-                return;
+		} catch (Exception e) {
 
-            }
+			BotLog.error("端口被占用 请检查其他BOT进程。",e);
 
-        }
+			return;
+
+		}
+		
 
         String dbAddr = Env.getOrDefault("db_address","127.0.0.1");
         Integer dbPort = Integer.parseInt(Env.getOrDefault("db_port","27017"));
@@ -136,20 +135,22 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
             } catch (Exception e) {
             }
 
-        RuntimeUtil.addShutdownHook(new Runnable() {
+			RuntimeUtil.addShutdownHook(new Runnable() {
 
-				@Override
-				public void run() {
+					@Override
+					public void run() {
 
-					INSTANCE.stop();
+						INSTANCE.stop();
 
-				}
+					}
 
-			});
+				});
 
-        INSTANCE.start();
+			INSTANCE.start();
 
-    }
+		}
+		
+	}
 
     static boolean initDB(String dbAddr,Integer dbPort) {
 
