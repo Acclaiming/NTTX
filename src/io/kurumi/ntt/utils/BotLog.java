@@ -154,11 +154,11 @@ public class BotLog extends ConsoleLog {
 
 		if (level != Level.DEBUG) {
 
-			new Send(Env.LOG,logMsg).html().exec();
+			new Send(Env.GROUP,logMsg).html().exec();
 
 			if (t != null) {
 
-				new Send(Env.LOG,parseError(t)).exec();
+				new Send(Env.GROUP,parseError(t)).exec();
 
 			}
 

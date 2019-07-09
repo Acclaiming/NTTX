@@ -27,8 +27,7 @@ public class Env {
     };
 	
     public static final Long GROUP = -1001428880645L;
-	public static final Long LOG = -1001159361304L;
-	
+		
     /**
      * 缓存文件存放地址
      */
