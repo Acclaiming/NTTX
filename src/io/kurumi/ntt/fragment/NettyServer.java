@@ -105,7 +105,7 @@ public class NettyServer extends SimpleChannelInboundHandler<FullHttpRequest> {
 
 		boot.
 			group(bossGroup,workerGroup)
-			.channel((Class<ServerChannel>)(socketFile != null ? EpollServerDomainSocketChannel.class : NioServerSocketChannel.class))
+			.channel((Class)(socketFile != null ? EpollServerDomainSocketChannel.class : NioServerSocketChannel.class))
 			.option(ChannelOption.SO_BACKLOG,128)
 			.option(ChannelOption.SO_REUSEADDR,true)
 			.option(ChannelOption.SO_KEEPALIVE,false)
