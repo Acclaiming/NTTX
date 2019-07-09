@@ -22,13 +22,17 @@ import io.kurumi.ntt.fragment.bots.UserBot;
 import io.kurumi.ntt.fragment.debug.Backup;
 import io.kurumi.ntt.fragment.debug.DebugMsg;
 import io.kurumi.ntt.fragment.debug.DebugStatus;
+import io.kurumi.ntt.fragment.debug.DebugStickerSet;
 import io.kurumi.ntt.fragment.debug.DebugUser;
 import io.kurumi.ntt.fragment.group.AntiEsu;
 import io.kurumi.ntt.fragment.group.BanSetickerSet;
 import io.kurumi.ntt.fragment.group.ChineseAction;
 import io.kurumi.ntt.fragment.group.DeleteChannelMessage;
 import io.kurumi.ntt.fragment.group.GroupRepeat;
+import io.kurumi.ntt.fragment.sticker.AddSticker;
 import io.kurumi.ntt.fragment.sticker.NewStickerSet;
+import io.kurumi.ntt.fragment.sticker.PackExport;
+import io.kurumi.ntt.fragment.sticker.RemoveSticker;
 import io.kurumi.ntt.fragment.sticker.StickerExport;
 import io.kurumi.ntt.fragment.twitter.auto.AutoUI;
 import io.kurumi.ntt.fragment.twitter.ext.MediaDownload;
@@ -52,13 +56,8 @@ import io.kurumi.ntt.fragment.twitter.track.UserTrackTask;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.Html;
-import java.io.IOException;
+import java.io.File;
 import java.util.TimeZone;
-import io.kurumi.ntt.fragment.sticker.AddSticker;
-import io.kurumi.ntt.fragment.sticker.RemoveSticker;
-import io.kurumi.ntt.fragment.sticker.PackExport;
-import io.kurumi.ntt.fragment.debug.DebugStickerSet;
-import io.kurumi.ntt.fragment.NettyServer;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -72,9 +71,11 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         if (!INSTANCE.isLongPulling()) {
 
-            int serverPort = Integer.parseInt(Env.getOrDefault("server_port","-1"));
+            //int serverPort = Integer.parseInt(Env.getOrDefault("server_port","-1"));
             String serverDomain = Env.get("server_domain");
 
+			/*
+			
             while (serverPort == -1) {
 
                 System.out.print("输入本地Http服务器端口 : ");
@@ -89,6 +90,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
                 }
 
             }
+			
+			*/
 
             if (serverDomain == null) {
 
@@ -100,17 +103,13 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
             }
 
-            BotServer.INSTANCE = new BotServer(serverPort,serverDomain);
+            BotServer.INSTANCE = new BotServer(new File("/var/run/ntt.sock"),serverDomain);
 
             try {
 
                 BotServer.INSTANCE.start();
 
-				NettyServer.INSTANCE = new NettyServer(11222,serverDomain);
-
-				NettyServer.INSTANCE.start();
-
-            } catch (Exception e) {
+		     } catch (Exception e) {
 
                 BotLog.error("端口被占用 请检查其他BOT进程。",e);
 

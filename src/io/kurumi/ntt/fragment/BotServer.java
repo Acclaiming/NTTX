@@ -1,186 +1,191 @@
 package io.kurumi.ntt.fragment;
 
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.util.RuntimeUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.URLUtil;
-import cn.hutool.json.JSONObject;
-import com.pengrad.telegrambot.BotUtils;
-import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.request.DeleteWebhook;
-import com.pengrad.telegrambot.response.SendResponse;
-import fi.iki.elonen.NanoHTTPD;
-import io.kurumi.ntt.Env;
-import io.kurumi.ntt.Launcher;
-import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.utils.BotLog;
+import com.pengrad.telegrambot.request.BaseRequest;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerDomainSocketChannel;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.unix.DomainSocketAddress;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.stream.ChunkedWriteHandler;
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
+import java.net.InetSocketAddress;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class BotServer extends NanoHTTPD {
+import static io.netty.handler.codec.http.HttpMethod.*;
+import static io.netty.handler.codec.http.HttpResponseStatus.*;
+import static io.netty.handler.codec.http.HttpVersion.*;
 
-    public static HashMap<String, BotFragment> fragments = new HashMap<>();
-    public static BotServer INSTANCE;
-    public String domain;
+public class BotServer {
 
-    public BotServer(int port,String domain) {
+	public static BotServer INSTANCE;
+	
+	public static HashMap<String, BotFragment> fragments = new HashMap<>();
+   
+	public int port;
+	public File socketFile;
+    public  String domain;
 
-        super("127.0.0.1",port);
+	private static Channel server;
 
-        this.domain = domain;
+	public BotServer(int port,String domain) {
+		this.port = port;
+		this.domain = domain;
+	}
 
-    }
+	public BotServer(File socketFile,String domain) {
+		this.socketFile = socketFile;
+		this.domain = domain;
+	}
 
-    public String readBody(IHTTPSession session) {
+	public void start() throws Exception {
 
-        int contentLength = Integer.parseInt(session.getHeaders().get("content-length"));
-        byte[] buf = new byte[contentLength];
+		stop();
 
-        try {
-            session.getInputStream().read(buf,0,contentLength);
+		final EventLoopGroup bossGroup;
+		final EventLoopGroup workerGroup;
 
-            return StrUtil.utf8Str(buf);
+		if (socketFile != null) {
 
-        } catch (IOException e2) {
-        }
+			bossGroup = new EpollEventLoopGroup(1); 
+			workerGroup = new EpollEventLoopGroup();
 
-        return null;
+		} else {
 
-    }
+			bossGroup = new NioEventLoopGroup(1); 
+			workerGroup = new NioEventLoopGroup();
+
+		}
+
+		ServerBootstrap boot = new ServerBootstrap();
+
+		boot.
+			group(bossGroup,workerGroup)
+			.channel((Class)(socketFile != null ? EpollServerDomainSocketChannel.class : NioServerSocketChannel.class))
+			.option(ChannelOption.SO_BACKLOG,128)
+			.option(ChannelOption.SO_REUSEADDR,true)
+			.option(ChannelOption.SO_KEEPALIVE,false)
+			.childOption(ChannelOption.TCP_NODELAY,true)
+			.childHandler(new ChannelInitializer<SocketChannel>() {
+
+				@Override
+				protected void initChannel(SocketChannel ch) throws Exception {
+
+					ChannelPipeline pipeline = ch.pipeline();
+
+					pipeline.addLast(new HttpServerCodec());
+					pipeline.addLast(new HttpObjectAggregator(65536));
+					pipeline.addLast(new ChunkedWriteHandler());
+					pipeline.addLast(new BotServerHandler());
+					 //pipeline.addLast(new HttpStaticFileServerHandler());
+
+				}
 
 
-    @Override
-    public Response serve(IHTTPSession session) {
+			});
 
-        URL url = URLUtil.url(session.getUri());
 
-        if (url.getPath().equals("/favicon.ico")) {
+		if (socketFile != null) {
 
-            return redirectTo("https://kurumi.io/favicon.ico");
+			server = boot.bind(new DomainSocketAddress(socketFile)).sync().channel();
 
-        }
+		} else {
 
-        if (url.getPath().startsWith("/data/" + Launcher.INSTANCE.getToken())) {
+			server = boot.bind(new InetSocketAddress("0.0.0.0",11222)).sync().channel();
 
-			return newChunkedResponse(Response.Status.OK,"application/octet-stream",IoUtil.toStream(new File(Env.CACHE_DIR,"data.zip")));
+		}
 
-        }
-		
-		if (url.getPath().startsWith("/send/")) {
+		new Thread() {
 
-			String botToken = StrUtil.subAfter(url.getPath(),"/send/",true);
-
-			if (!fragments.containsKey(botToken)) {
-
-				return newFixedLengthResponse(Response.Status.NOT_FOUND,"plain/text","NO EXISTS BOT SETTED");
-
-			} else {
+			@Override
+			public void run() {
 
 				try {
 
-					JSONObject request = new JSONObject(readBody(session));
-					
-					if (!request.containsKey("chat")) {
-						
-						return newFixedLengthResponse(Response.Status.BAD_REQUEST,"plain/text","NO CHAT SETTED");
-						
-					} else if (!request.containsKey("text")) {
+					server.closeFuture().sync();
 
-						return newFixedLengthResponse(Response.Status.BAD_REQUEST,"plain/text","NO TEXT SETTED");
+				} catch (InterruptedException e) {
+				} finally {
 
-					}
-					
-					Send send = new Send(request.getLong("chat"),request.getStr("text"));
+					bossGroup.shutdownGracefully();
+					workerGroup.shutdownGracefully();
 
-					if (request.containsKey("html")) send.html();
-				
-					SendResponse resp = send.exec();
-
-					return newFixedLengthResponse(Response.Status.OK,"plain/text",resp.json == null ? resp.toString() : resp.json);
-					
-				} catch (Exception e) {
-					
-					return newFixedLengthResponse(Response.Status.INTERNAL_ERROR,"plain/text",BotLog.parseError(e));
-					
 				}
+			}
+
+
+		}.start();
+
+	}
+
+	public static void stop() {
+
+		if (server != null) {
+
+			server.close();
+
+			server = null;
+
+		}
+
+	}
+
+	public static class ProcessLock extends ReentrantLock {
+
+		private Condition condition = newCondition();
+		private BaseRequest request;
+		public AtomicBoolean used = new AtomicBoolean(false);
+
+		public BaseRequest waitFor() throws InterruptedException {
+
+			lockInterruptibly();
+
+			try {
+
+				this.condition.await(1000,TimeUnit.MILLISECONDS);
+
+				if (request != null) System.out.println(request.toWebhookResponse());
+
+				return request;
+
+			} finally {
+
+				unlock();
 
 			}
 
 		}
 
-		if (url.getPath().startsWith("/upgrade/" + Launcher.INSTANCE.getToken())) {
+		public void unlock(BaseRequest request) {
 
-			new Thread() {
+			lock();
 
-				@Override
-				public void run() {
+			this.request = request;
 
-					new Send(Env.GROUP,"Bot Update Executed : By WebHook").exec();
+			try {
 
-					// Launcher.INSTANCE.stop();
+				this.condition.signalAll();
 
-					try {
+			} finally {
 
-						String str = RuntimeUtil.execForStr("bash update.sh");
+				unlock();
 
-						new Send(Env.GROUP,"update successful , now restarting...\n",str).exec();
+			}
 
-						RuntimeUtil.exec("service ntt restart");
+		}
 
-					} catch (Exception e) {
-
-						new Send(Env.GROUP,"update failed",BotLog.parseError(e)).exec();
-
-					}
-
-				}
-
-			}.start();
-
-			return newFixedLengthResponse(Response.Status.OK,"plain/text","");
-
-        }
-
-        String botToken = url.getPath().substring(1);
-
-        if (fragments.containsKey(botToken)) {
-
-            try {
-
-                fragments.get(botToken).processAsync(BotUtils.parseUpdate(readBody(session)));
-
-            } catch (Exception ex) {
-            }
-
-            return newFixedLengthResponse("");
-
-        } else {
-
-            try {
-
-                return newFixedLengthResponse(Response.Status.INTERNAL_ERROR,MIME_PLAINTEXT,"ERROR");
-
-            } finally {
-
-                new TelegramBot(botToken).execute(new DeleteWebhook());
-
-            }
-
-        }
-
-
-    }
-
-    public Response redirectTo(String url) {
-
-        Response resp = newFixedLengthResponse(Response.Status.REDIRECT_SEE_OTHER,MIME_HTML,"<html><head><titile>Redirecting...</title></head><body></body></html>");
-
-        resp.addHeader("Location",url);
-
-        return resp;
-
-    }
+	}
 
 }

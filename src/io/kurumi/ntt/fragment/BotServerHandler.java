@@ -231,7 +231,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 		}
 
 	}
-	
+
 	void sendOk(ChannelHandlerContext ctx) {
 
 		FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,OK);
@@ -239,9 +239,9 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 		this.sendAndCleanupConnection(ctx,response);
 
 	}
-	
 
- void sendRedirect(ChannelHandlerContext ctx,String newUri) {
+
+	void sendRedirect(ChannelHandlerContext ctx,String newUri) {
 
 		FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,FOUND);
 
@@ -251,7 +251,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 	}
 
- void sendError(ChannelHandlerContext ctx,HttpResponseStatus status) {
+	void sendError(ChannelHandlerContext ctx,HttpResponseStatus status) {
 
 		FullHttpResponse response = new DefaultFullHttpResponse(
 			HTTP_1_1,status,Unpooled.copiedBuffer("Failure: " + status + "\r\n",CharsetUtil.CHARSET_UTF_8));
@@ -262,7 +262,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 	}
 
- void sendAndCleanupConnection(ChannelHandlerContext ctx,FullHttpResponse response) {
+	void sendAndCleanupConnection(ChannelHandlerContext ctx,FullHttpResponse response) {
 
 		final FullHttpRequest request = this.request;
 
