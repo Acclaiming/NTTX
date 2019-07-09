@@ -31,9 +31,9 @@ import static io.netty.handler.codec.http.HttpVersion.*;
 public class BotServer {
 
 	public static BotServer INSTANCE;
-	
+
 	public static HashMap<String, BotFragment> fragments = new HashMap<>();
-   
+
 	public int port;
 	public File socketFile;
     public  String domain;
@@ -69,16 +69,21 @@ public class BotServer {
 
 		}
 
-		ServerBootstrap boot = new ServerBootstrap();
+		ServerBootstrap boot = new ServerBootstrap().group(bossGroup,workerGroup);
 
-		boot.
-			group(bossGroup,workerGroup)
-			.channel((Class)(socketFile != null ? EpollServerDomainSocketChannel.class : NioServerSocketChannel.class))
-			.option(ChannelOption.SO_BACKLOG,128)
-			.option(ChannelOption.SO_REUSEADDR,true)
-			.option(ChannelOption.SO_KEEPALIVE,false)
-			.childOption(ChannelOption.TCP_NODELAY,true)
-			.childHandler(new ChannelInitializer<SocketChannel>() {
+		if (socketFile != null) {
+
+			boot.channel(EpollServerDomainSocketChannel.class);
+
+		} else {
+
+			boot.channel(NioServerSocketChannel.class);
+
+		}
+
+		boot.option(ChannelOption.SO_BACKLOG,128);
+
+		boot.childHandler(new ChannelInitializer<SocketChannel>() {
 
 				@Override
 				protected void initChannel(SocketChannel ch) throws Exception {
@@ -89,7 +94,6 @@ public class BotServer {
 					pipeline.addLast(new HttpObjectAggregator(65536));
 					pipeline.addLast(new ChunkedWriteHandler());
 					pipeline.addLast(new BotServerHandler());
-					 //pipeline.addLast(new HttpStaticFileServerHandler());
 
 				}
 
