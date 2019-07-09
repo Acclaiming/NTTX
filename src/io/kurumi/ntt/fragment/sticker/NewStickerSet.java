@@ -186,11 +186,7 @@ public class NewStickerSet extends Fragment {
 
 				return;
 
-			} else {
-
-				forking.add(user.id);
-
-			}
+			} 
 
 			String target;
 
@@ -219,6 +215,21 @@ public class NewStickerSet extends Fragment {
 				return;
 
 			}
+			
+			forking.add(user.id);
+			
+			final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
+
+			if (!set.isOk()) {
+
+				msg.send("无法读取贴纸包 " + target + " : " + set.description()).exec(data);
+
+				forking.remove(user.id);
+
+				return;
+
+			}
+
 			
 			clearPrivatePoint(user);
 
