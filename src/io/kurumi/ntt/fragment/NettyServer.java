@@ -20,6 +20,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -37,21 +38,20 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.stream.ChunkedFile;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import java.io.File;
+import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.activation.MimetypesFileTypeMap;
-import io.netty.channel.ChannelOption;
 
 import static io.netty.handler.codec.http.HttpMethod.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.*;
 import static io.netty.handler.codec.http.HttpVersion.*;
-import io.netty.channel.ServerChannel;
-import io.netty.handler.codec.http.HttpUtil;
 
 
 public class NettyServer extends SimpleChannelInboundHandler<FullHttpRequest> {
@@ -120,7 +120,7 @@ public class NettyServer extends SimpleChannelInboundHandler<FullHttpRequest> {
 					pipeline.addLast(new HttpServerCodec());
 					pipeline.addLast(new HttpObjectAggregator(65536));
 					pipeline.addLast(new ChunkedWriteHandler());
-					pipeline.addLast(NettyServer.this);
+					pipeline.addLast(new HttpStaticFileServerHandler());
 
 				}
 
@@ -134,7 +134,7 @@ public class NettyServer extends SimpleChannelInboundHandler<FullHttpRequest> {
 
 		} else {
 
-			server = boot.bind(port).sync().channel();
+			server = boot.bind(new InetSocketAddress("0.0.0.0",11222)).sync().channel();
 
 		}
 
