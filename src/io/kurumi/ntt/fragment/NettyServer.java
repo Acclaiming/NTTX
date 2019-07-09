@@ -120,8 +120,8 @@ public class NettyServer extends SimpleChannelInboundHandler<FullHttpRequest> {
 					pipeline.addLast(new HttpServerCodec());
 					pipeline.addLast(new HttpObjectAggregator(65536));
 					pipeline.addLast(new ChunkedWriteHandler());
-					//pipeline.addLast(NettyServer.this);
-					pipeline.addLast(new HttpStaticFileServerHandler());
+					pipeline.addLast(NettyServer.this);
+					 //pipeline.addLast(new HttpStaticFileServerHandler());
 
 				}
 
@@ -179,6 +179,14 @@ public class NettyServer extends SimpleChannelInboundHandler<FullHttpRequest> {
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx,FullHttpRequest request) throws Exception {
 
+		if (request.decoderResult().isSuccess()) {
+			
+			sendError(ctx,NOT_FOUND);
+			
+			return;
+			
+		}
+		
 		try {
 
 			this.request = request;
@@ -406,7 +414,7 @@ public class NettyServer extends SimpleChannelInboundHandler<FullHttpRequest> {
 
 	}
 
-	void sendOk(ChannelHandlerContext ctx) {
+	private void sendOk(ChannelHandlerContext ctx) {
 
 		FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,OK);
 
@@ -414,7 +422,7 @@ public class NettyServer extends SimpleChannelInboundHandler<FullHttpRequest> {
 
 	}
 
-	void sendRedirect(ChannelHandlerContext ctx,String newUri) {
+	private void sendRedirect(ChannelHandlerContext ctx,String newUri) {
 
 		FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,FOUND);
 
@@ -424,7 +432,7 @@ public class NettyServer extends SimpleChannelInboundHandler<FullHttpRequest> {
 
 	}
 
-	void sendError(ChannelHandlerContext ctx,HttpResponseStatus status) {
+	private void sendError(ChannelHandlerContext ctx,HttpResponseStatus status) {
 
 		FullHttpResponse response = new DefaultFullHttpResponse(
 			HTTP_1_1,status,Unpooled.copiedBuffer("Failure: " + status + "\r\n",CharsetUtil.CHARSET_UTF_8));
@@ -438,7 +446,7 @@ public class NettyServer extends SimpleChannelInboundHandler<FullHttpRequest> {
 	 * If Keep-Alive is disabled, attaches "Connection: close" header to the response
 	 * and closes the connection after the response being sent.
 	 */
-	void sendAndCleanupConnection(ChannelHandlerContext ctx,FullHttpResponse response) {
+	private void sendAndCleanupConnection(ChannelHandlerContext ctx,FullHttpResponse response) {
 		
 		final FullHttpRequest request = this.request;
 	
