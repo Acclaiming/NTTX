@@ -83,10 +83,10 @@ public class BotServer {
 
 		boot.option(ChannelOption.SO_BACKLOG,128);
 
-		boot.childHandler(new ChannelInitializer<SocketChannel>() {
+		boot.childHandler(new ChannelInitializer<Channel>() {
 
 				@Override
-				protected void initChannel(SocketChannel ch) throws Exception {
+				protected void initChannel(Channel ch) throws Exception {
 
 					ChannelPipeline pipeline = ch.pipeline();
 
