@@ -136,7 +136,7 @@ public class JoinCaptchaBot extends BotFragment {
 		
 		if ("start".equals(function)) {
 			
-			msg.send("管理员命令 :","\n退出群组 : /exit <chatId>","发送信息 : /msg <chatId> <text...>").exec();
+			msg.send("管理员命令 :","\n退出群组 : /exit <chatId>","发送信息 : /send <chatId> <text...>").exec();
 			
 		} else if ("exit".equals(function)) {
 			
