@@ -63,6 +63,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 	class UserAndUpdate implements Comparable<UserAndUpdate> {
 
+		public AtomicBoolean cancel = new AtomicBoolean(false);
+		
 		@Override
 		public int compareTo(UserAndUpdate uau) {
 
@@ -94,14 +96,22 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 		BotFragment.Processed process() {
 
+			if (cancel.get()) return null;
+			
 			for (final Fragment fragmnet : fragments) {
 
+				if (cancel.get()) return null;
+			
 				Fragment.Processed processed =  fragmnet.onAsyncUpdate(user,update);
-
+				
+				if (cancel.get()) return null;
+				
 				if (processed != null) return processed;
 
 			}
 
+			if (cancel.get()) return null;
+			
 			return new Processed(user,update,PROCESS_ASYNC) {
 
 				@Override
@@ -337,6 +347,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 	}
 
+	static HashMap<Long,TreeSet<UserAndUpdate>> processing = new HashMap<>();
+	
     public void processAsync(final Update update) {
 
         final UserData user;
