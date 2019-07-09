@@ -1032,7 +1032,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 		if (isLongPulling()) {
 
-			bot.setUpdatesListener(this,new GetUpdates());
+			bot.setUpdatesListener(this,this);
 
 		} else {
 
