@@ -9,4 +9,5 @@
 <classpathentry kind="lib" path="libs/pinyin4j-2.5.1.jar"/>
 <classpathentry kind="lib" path="libs/twitter4j.jar"/>
 <classpathentry kind="lib" path="libs/NanoHTTPD.jar"/>
+<classpathentry kind="lib" path="libs/netty-all-4.1.37.Final.jar"/>
 </classpath>

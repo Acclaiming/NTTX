@@ -58,6 +58,7 @@ import io.kurumi.ntt.fragment.sticker.AddSticker;
 import io.kurumi.ntt.fragment.sticker.RemoveSticker;
 import io.kurumi.ntt.fragment.sticker.PackExport;
 import io.kurumi.ntt.fragment.debug.DebugStickerSet;
+import io.kurumi.ntt.fragment.NettyServer;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -105,9 +106,13 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
                 BotServer.INSTANCE.start();
 
-            } catch (IOException e) {
+				NettyServer.INSTANCE = new NettyServer(11222,serverDomain);
 
-                BotLog.error("端口被占用 请检查其他BOT进程。");
+				NettyServer.INSTANCE.start();
+
+            } catch (Exception e) {
+
+                BotLog.error("端口被占用 请检查其他BOT进程。",e);
 
                 return;
 
@@ -196,7 +201,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 					 "\n香港繁體一 ：" + Html.a("      安装      ","https://t.me/setlanguage/hongkong"),
 
 					 "\n香港繁體二 ：" + Html.a("      安装      ","https://t.me/setlanguage/zhhant-hk"),
-					 
+
 					 "\n香港人口語 ：" + Html.a("      安装      ","https://t.me/setlanguage/hongkonger"),
 
 					 "\n廣東話一 ：" + Html.a("      安装      ","https://t.me/setlanguage/zhhkpb1"),
@@ -210,9 +215,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
             msg.send("文档在 @NTT_X ~").publicFailed();
 
         } else if (!functions.containsKey(function) && msg.isPrivate()) {
-			
+
 			msg.send("没有这个命令 " + function,"查看文档 : @NTT_X").failedWith(10 * 1000);
-			
+
 		}
 
 
@@ -283,7 +288,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new DebugUser());
         addFragment(new DebugStatus());
 		addFragment(new DebugStickerSet());
-		
+
 		// Twitter
 
 		addFragment(new TwitterLogin());
@@ -316,9 +321,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(new NewBot());
         addFragment(new MyBots());
-		
+
 		// SETS
-		
+
 		addFragment(new PackExport());
 		addFragment(new StickerExport());
 		addFragment(new NewStickerSet());
