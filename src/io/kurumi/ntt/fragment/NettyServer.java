@@ -2,7 +2,6 @@ package io.kurumi.ntt.fragment;
 
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RuntimeUtil;
-import cn.hutool.http.HttpUtil;
 import com.pengrad.telegrambot.BotUtils;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
@@ -52,12 +51,13 @@ import static io.netty.handler.codec.http.HttpMethod.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.*;
 import static io.netty.handler.codec.http.HttpVersion.*;
 import io.netty.channel.ServerChannel;
+import io.netty.handler.codec.http.HttpUtil;
 
 
 public class NettyServer extends SimpleChannelInboundHandler<FullHttpRequest> {
 
 	public static NettyServer INSTANCE;
-	
+
 	public int port;
 	public File socketFile;
     public  String domain;
@@ -278,7 +278,7 @@ public class NettyServer extends SimpleChannelInboundHandler<FullHttpRequest> {
 
 			String botToken = request.uri().substring(1);
 
-			if (!fragments.containsKey(botToken)) {
+			if (!BotServer.fragments.containsKey(botToken)) {
 
 				sendError(ctx,INTERNAL_SERVER_ERROR);
 
@@ -288,40 +288,54 @@ public class NettyServer extends SimpleChannelInboundHandler<FullHttpRequest> {
 
 			}
 
+			try {
 
-			Update update = BotUtils.parseUpdate(request.content().toString(CharsetUtil.CHARSET_UTF_8));
+				Update update = BotUtils.parseUpdate(request.content().toString(CharsetUtil.CHARSET_UTF_8));
 
-			update.lock = new ProcessLock();
-
-			sendOk(ctx);
-
-			BaseRequest webhookResponse = fragments.get(botToken).processAsync(update);
-
-			if (webhookResponse == null) {
+				BotServer.fragments.get(botToken).processAsync(update);
 
 				sendOk(ctx);
 
-			} else 	{
+			} catch (Exception ex) {
 
-				FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,OK,stringByteBuf(webhookResponse.toWebhookResponse()));
-
-				resp.headers().set(HttpHeaderNames.CONTENT_TYPE,"application/json; charset=UTF-8");
-
-				boolean keepAlive = HttpUtil.isKeepAlive(request);
-
-				if (!keepAlive) {
-
-					ctx.writeAndFlush(resp).addListener(ChannelFutureListener.CLOSE);
-
-				} else {
-
-					resp.headers().set(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
-
-					ctx.writeAndFlush(resp);
-
-				}
+				sendError(ctx,INTERNAL_SERVER_ERROR);
 
 			}
+
+			//update.lock = new ProcessLock();
+
+			/*BaseRequest webhookResponse =*/ 
+			/*
+
+			 if (webhookResponse == null) {
+
+
+
+			 sendOk(ctx); 
+
+			 } else 	{
+
+			 FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,OK,stringByteBuf(webhookResponse.toWebhookResponse()));
+
+			 resp.headers().set(HttpHeaderNames.CONTENT_TYPE,"application/json; charset=UTF-8");
+
+			 boolean keepAlive = HttpUtil.isKeepAlive(request);
+
+			 if (!keepAlive) {
+
+			 ctx.writeAndFlush(resp).addListener(ChannelFutureListener.CLOSE);
+
+			 } else {
+
+			 resp.headers().set(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
+
+			 ctx.writeAndFlush(resp);
+
+			 }
+
+			 }
+
+			 */
 
 		} catch (Exception ex) {
 
