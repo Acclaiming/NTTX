@@ -60,7 +60,7 @@ public class DebugStickerSet extends Fragment {
 
 		if (!set.isOk()) {
 
-			msg.send("无法读取贴纸包 " + target + " : " + set.description()).exec(data);
+			msg.send("无法读取贴纸包 " + target + " : " + set.description()).exec();
 
 			return;
 
