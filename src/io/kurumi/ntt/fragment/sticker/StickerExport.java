@@ -33,8 +33,8 @@ public class StickerExport extends Fragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 	
-		PointData data = setPrivatePoint(user,POINT_EXPORT_STICKER);
-
+		PointData data = setPrivatePoint(user,POINT_EXPORT_STICKER).with(msg);
+		
 		msg.send("进入贴纸制作模式 :","\n发送任意贴纸将返回原文件","发送任意图片将返回可用于添加贴纸的.png格式文件",/*"发送贴纸包链接将返回整个包 (.zip)",*/"\n使用 /cancel 结束导出").exec(data);
 		
 	}
