@@ -208,9 +208,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
             msg.send("文档在 @NTT_X ~").publicFailed();
 
-        } else if (msg.isPrivate()) {
+        } else if (!functions.containsKey(function) && msg.isPrivate()) {
 			
-			msg.send("没有这个命令 " + function,"查看文档 : @NTT_X").failedWith();
+			msg.send("没有这个命令 " + function,"查看文档 : @NTT_X").failedWith(10 * 1000);
 			
 		}
 
