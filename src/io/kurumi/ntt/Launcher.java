@@ -56,6 +56,7 @@ import java.io.IOException;
 import java.util.TimeZone;
 import io.kurumi.ntt.fragment.sticker.AddSticker;
 import io.kurumi.ntt.fragment.sticker.RemoveSticker;
+import io.kurumi.ntt.fragment.sticker.PackExport;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -316,6 +317,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		
 		// SETS
 		
+		addFragment(new PackExport());
 		addFragment(new StickerExport());
 		addFragment(new NewStickerSet());
 		addFragment(new AddSticker());
