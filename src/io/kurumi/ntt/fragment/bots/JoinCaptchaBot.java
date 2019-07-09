@@ -136,13 +136,13 @@ public class JoinCaptchaBot extends BotFragment {
 		
 		if ("start".equals(function)) {
 			
-			msg.send("管理员命令 :","\n退出群组 : /exit [Long chatId]","发送信息 : /send [Long chatId] [String... text]").exec();
+			msg.send("管理员命令 :","\n退出群组 : /exit <chatId>","发送信息 : /send <chatId> <text...>").exec();
 			
 		} else if ("exit".equals(function)) {
 			
 			if (params.length < 1) {
 				
-				msg.send("退出群组 参数错误 : [Long 群组ID]").exec();
+				msg.send("用法 : /exit <chatId>").exec();
 				
 				return;
 				
@@ -158,7 +158,7 @@ public class JoinCaptchaBot extends BotFragment {
 			
 			if (params.length < 2) {
 
-				msg.send("发送消息 参数错误 : [Long 群组ID] [String... 消息]").exec();
+				msg.send("用法 : /send <chatId> <text...>").exec();
 
 				return;
 
