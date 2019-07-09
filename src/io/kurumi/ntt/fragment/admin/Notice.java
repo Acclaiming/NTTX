@@ -58,13 +58,6 @@ public class Notice extends Fragment {
     }
 
 	@Override
-	public int checkPoint(UserData user,Msg msg,String point,PointData data) {
-
-		return PROCESS_THREAD;
-
-	}
-
-	@Override
 	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
         String params = data.data();

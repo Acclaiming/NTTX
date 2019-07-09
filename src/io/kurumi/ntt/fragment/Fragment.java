@@ -187,7 +187,7 @@ public class Fragment {
 			
 			int checked = checkMsg(user,msg); 
 
-			if (checked == PROCESS_THREAD) {
+			if (checked == PROCESS_ASYNC) {
 
 				BotFragment.asyncPool.execute(new Processed(user,update,PROCESS_ASYNC) {
 
@@ -220,7 +220,7 @@ public class Fragment {
 			
 			int checked = checkChanPost(user,msg); 
 
-			if (checked == PROCESS_THREAD) {
+			if (checked == PROCESS_ASYNC) {
 
 				BotFragment.asyncPool.execute(new Processed(user,update,PROCESS_ASYNC) {
 
@@ -536,7 +536,7 @@ public class Fragment {
 	public static final int PROCESS_REJECT = 0;
 	public static final int PROCESS_SYNC = 1;
 	public static final int PROCESS_ASYNC = 2;
-	public static final int PROCESS_THREAD = 3;
+	//public static final int PROCESS_THREAD = 2;
 
 	public final int FUNCTION_PRIVATE = 1;
 	public final int FUNCTION_GROUP = 2;

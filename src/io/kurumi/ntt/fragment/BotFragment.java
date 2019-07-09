@@ -53,7 +53,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 	public static Timer mainTimer = new Timer();
 	public static Timer trackTimer = new Timer();
 
-	public static ExecutorService processPool = Executors.newFixedThreadPool(10);
 	public static ExecutorService asyncPool = Executors.newCachedThreadPool();
 
     public User me;
@@ -167,9 +166,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 	@Override
 	public int checkFunction() {
-		
+
 		return FUNCTION_PUBLIC;
-		
+
 	}
 
 	@Override
@@ -239,9 +238,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				int checked = request.fragment.checkTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
 
-				if (checked == PROCESS_THREAD) {
+				if (checked == PROCESS_ASYNC) {
 
-					processPool.execute(new Runnable() {
+					asyncPool.execute(new Runnable() {
 
 							@Override
 							public void run() {
@@ -820,13 +819,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 			if (processed != null) {
 
-				if (processed.type == PROCESS_THREAD) {
+				if (processed.type == PROCESS_ASYNC) {
 
 					asyncPool.execute(processed);
-
-				} else if (processed.type == PROCESS_ASYNC) {
-
-					processPool.execute(processed);
 
 				} else {
 

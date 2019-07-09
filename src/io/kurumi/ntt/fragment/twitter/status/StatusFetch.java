@@ -44,7 +44,7 @@ public class StatusFetch extends Fragment {
 	@Override
 	public int checkTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 		
-		return PROCESS_THREAD;
+		return PROCESS_ASYNC;
 		
 	}
 

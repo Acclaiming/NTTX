@@ -7,13 +7,6 @@ import io.kurumi.ntt.model.Msg;
 public class Final extends Fragment {
 
 	@Override
-	public int checkMsg(UserData user,Msg msg) {
-		
-		return PROCESS_THREAD;
-		
-	}
-	
-	@Override
 	public void onMsg(UserData user,Msg msg) {
 		
 		if (msg.isPrivate()) {

@@ -65,13 +65,6 @@ public class Backup extends Fragment {
 	}
 
 	@Override
-	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
-
-		return PROCESS_THREAD;
-
-	}
-
-	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
         backup(msg.chatId());
