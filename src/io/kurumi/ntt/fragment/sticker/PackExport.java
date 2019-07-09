@@ -26,7 +26,7 @@ public class PackExport extends Fragment {
 		super.init(origin);
 		
 		registerFunction("download_sticker_set");
-		registerFunction(POINT_EXPORT_SET);
+		registerPoint(POINT_EXPORT_SET);
 		
 	}
 	
@@ -56,9 +56,11 @@ public class PackExport extends Fragment {
 		
 		String target;
 
-		if (msg.hasText() && (target = msg.text()).contains("/")) {
+		if (msg.hasText()) {
 
-			target = StrUtil.subAfter(target,"/",true);
+			target = msg.text();
+
+			if (target.contains("/")) target = StrUtil.subAfter(target,"/",true);
 
 		} else if (msg.message().sticker() != null) {
 
@@ -66,7 +68,7 @@ public class PackExport extends Fragment {
 
 			if (target == null) {
 
-				msg.send("这个贴纸没有贴纸集... 请重试 :)").exec(data);
+				msg.send("这个贴纸没有贴纸包... 请重试 :)").withCancel().exec(data);
 
 				return;
 
@@ -79,7 +81,9 @@ public class PackExport extends Fragment {
 			return;
 
 		}
-
+		
+		downloading.add(user.id);
+		
 		final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
 
 		if (!set.isOk()) {
@@ -91,6 +95,7 @@ public class PackExport extends Fragment {
 			return;
 
 		}
+	
 
 		Msg status = msg.send("正在下载贴纸包...").send();
 		

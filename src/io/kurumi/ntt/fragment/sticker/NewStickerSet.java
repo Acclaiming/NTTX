@@ -194,9 +194,11 @@ public class NewStickerSet extends Fragment {
 
 			String target;
 
-			if (msg.hasText() && (target = msg.text()).contains("/")) {
+			if (msg.hasText()) {
 
-				target = StrUtil.subAfter(target,"/",true);
+				target = msg.text();
+
+				if (target.contains("/")) target = StrUtil.subAfter(target,"/",true);
 
 			} else if (msg.message().sticker() != null) {
 
@@ -204,7 +206,7 @@ public class NewStickerSet extends Fragment {
 
 				if (target == null) {
 
-					msg.send("这个贴纸没有贴纸集... 请重试 :)").exec(data);
+					msg.send("这个贴纸没有贴纸包... 请重试 :)").withCancel().exec(data);
 
 					return;
 
@@ -217,20 +219,7 @@ public class NewStickerSet extends Fragment {
 				return;
 
 			}
-
-			final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
-
-			if (!set.isOk()) {
-
-				msg.send("无法读取贴纸包 " + target + " : " + set.description()).exec(data);
-
-				forking.remove(user.id);
-
-				return;
-
-			}
-
-
+			
 			clearPrivatePoint(user);
 
 			Msg status = msg.send("正在创建贴纸包...").send();
