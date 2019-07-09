@@ -120,7 +120,8 @@ public class NettyServer extends SimpleChannelInboundHandler<FullHttpRequest> {
 					pipeline.addLast(new HttpServerCodec());
 					pipeline.addLast(new HttpObjectAggregator(65536));
 					pipeline.addLast(new ChunkedWriteHandler());
-					pipeline.addLast(new HttpStaticFileServerHandler());
+					pipeline.addLast(NettyServer.this);
+					//pipeline.addLast(new HttpStaticFileServerHandler());
 
 				}
 
@@ -401,56 +402,61 @@ public class NettyServer extends SimpleChannelInboundHandler<FullHttpRequest> {
 
 		FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,OK);
 
-		resp.headers().set(HttpHeaderNames.CONTENT_TYPE,"text/plain; charset=UTF-8");
-
 		sendAndCleanupConnection(ctx,resp);
+
+	}
+
+	void sendRedirect(ChannelHandlerContext ctx,String newUri) {
+
+		FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,FOUND);
+
+		response.headers().set(HttpHeaderNames.LOCATION,newUri);
+
+		this.sendAndCleanupConnection(ctx,response);
 
 	}
 
 	void sendError(ChannelHandlerContext ctx,HttpResponseStatus status) {
 
-		FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,status,stringByteBuf("ERROR"));
+		FullHttpResponse response = new DefaultFullHttpResponse(
+			HTTP_1_1,status,Unpooled.copiedBuffer("Failure: " + status + "\r\n",CharsetUtil.CHARSET_UTF_8));
 
-		resp.headers().set(HttpHeaderNames.CONTENT_TYPE,"text/plain; charset=UTF-8");
+		response.headers().set(HttpHeaderNames.CONTENT_TYPE,"text/plain; charset=UTF-8");
 
-		sendAndCleanupConnection(ctx,resp);
-
+		this.sendAndCleanupConnection(ctx,response);
 	}
 
-	void sendRedirect(ChannelHandlerContext ctx,String redirectTo) {
-
-		FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,FOUND);
-
-		resp.headers().set(HttpHeaderNames.LOCATION,redirectTo);
-
-		sendAndCleanupConnection(ctx,resp);
-
-	}
-
+	/**
+	 * If Keep-Alive is disabled, attaches "Connection: close" header to the response
+	 * and closes the connection after the response being sent.
+	 */
 	void sendAndCleanupConnection(ChannelHandlerContext ctx,FullHttpResponse response) {
-
+		
+		final FullHttpRequest request = this.request;
+	
 		final boolean keepAlive = HttpUtil.isKeepAlive(request);
-
+		
 		HttpUtil.setContentLength(response,response.content().readableBytes());
-
+		
 		if (!keepAlive) {
-
+			// We're going to close the connection as soon as the response is sent,
+			// so we should also make it clear for the client.
 			response.headers().set(HttpHeaderNames.CONNECTION,HttpHeaderValues.CLOSE);
-
+	
 		} else if (request.protocolVersion().equals(HTTP_1_0)) {
-
+		
 			response.headers().set(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
-
-		}
+		
+			}
 
 		ChannelFuture flushPromise = ctx.writeAndFlush(response);
 
 		if (!keepAlive) {
-
+			
+			// Close the connection as soon as the response is sent.
 			flushPromise.addListener(ChannelFutureListener.CLOSE);
-
+			
 		}
-
 	}
 
 
