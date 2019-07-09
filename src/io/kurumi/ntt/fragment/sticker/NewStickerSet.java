@@ -65,13 +65,6 @@ public class NewStickerSet extends Fragment {
 
 	public static String DOC = Html.a("相关法律法规","https://core.telegram.org/bots/api#createnewstickerset");
 
-	@Override
-	public int checkPoint(UserData user,Msg msg,String point,PointData data) {
-
-		return ((CreateSet)data).type == 3 ? PROCESS_THREAD : PROCESS_ASYNC;
-
-	}
-
 	ArrayList<Long> forking = new ArrayList<>();
 
 	@Override

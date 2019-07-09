@@ -102,7 +102,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 			}
 
-			return new Processed(user,update,PROCESS_THREAD) {
+			return new Processed(user,update,PROCESS_ASYNC) {
 
 				@Override
 				public void process() {
@@ -214,9 +214,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				request.fragment.onTwitterPayload(user,request.originMsg,payload,params,account);
 
-				if (checked == PROCESS_THREAD) {
+				if (checked == PROCESS_ASYNC) {
 
-					processPool.execute(new Runnable() {
+					asyncPool.execute(new Runnable() {
 
 							@Override
 							public void run() {
@@ -658,9 +658,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 					int checked = checkMsg(user,msg); 
 
-					if (checked == PROCESS_THREAD) {
+					if (checked == PROCESS_ASYNC) {
 
-						processPool.execute(new Processed(user,update,PROCESS_ASYNC) {
+						asyncPool.execute(new Processed(user,update,PROCESS_ASYNC) {
 
 								@Override
 								public void process() {
@@ -695,9 +695,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 			int checked = checkChanPost(user,msg); 
 
-			if (checked == PROCESS_THREAD) {
+			if (checked == PROCESS_ASYNC) {
 
-				processPool.execute(new Processed(user,update,PROCESS_ASYNC) {
+				asyncPool.execute(new Processed(user,update,PROCESS_ASYNC) {
 
 						@Override
 						public void process() {
