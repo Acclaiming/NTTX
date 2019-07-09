@@ -768,23 +768,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 		public void run(UserAndUpdate uau) {
 
-			if (!sync) {
+			if (!sync) synchronized (waitFor) {
 
-				synchronized (waitFor) {
+				if (waitFor.containsKey(uau.userId)) {
 
-					if (waitFor.containsKey(uau.userId)) {
+					waitFor.get(uau.userId).add(uau);
 
-						waitFor.get(uau.userId).add(uau);
-
-						return;
-
-					} else {
-
-						waitFor.put(uau.userId,this);
-
-						sync = true;
-
-					}
+					return;
 
 				}
 
@@ -810,20 +800,35 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 			}
 
-			if (processed != null) {
+			if (processed == null) {
+			} else if (processed.type == PROCESS_ASYNC) {
 
-				if (processed.type == PROCESS_ASYNC) {
+				asyncPool.execute(processed);
 
-					asyncPool.execute(processed);
+			} else {
 
-				} else {
+				if (!sync) synchronized (waitFor) {
 
-					processed.run();
+					if (waitFor.containsKey(uau.userId)) {
+
+						waitFor.get(uau.userId).add(uau);
+
+						return;
+
+					} else {
+
+						waitFor.put(uau.userId,this);
+
+						sync = true;
+
+					}
 
 				}
 
-			}
 
+				processed.run();
+
+			}
 
 			if (!isEmpty()) {
 
@@ -831,13 +836,17 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 			} else {
 
-				synchronized (waitFor) {
+				if (processed.type == PROCESS_SYNC) {
 
-					if (isEmpty()) {
+					synchronized (waitFor) {
 
-						waitFor.remove(uau.userId);
+						if (isEmpty()) {
 
-						return;
+							waitFor.remove(uau.userId);
+
+							return;
+
+						}
 
 					}
 
