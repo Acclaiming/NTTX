@@ -392,14 +392,22 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 		uau.update = update;
 
 		Processed processed = uau.process();
-		
+
 		if (processed != null) {
-			
-			asyncPool.execute(processed);
+
+			if (processed.type == PROCESS_ASYNC) {
+
+				asyncPool.execute(processed);
+
+			} else {
+
+				processed.run();
+
+			}
 
 		}
 
-    }
+	}
 
 	@Override
 	public Processed onAsyncUpdate(UserData user,Update update) {
@@ -775,15 +783,15 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 			if (!sync) synchronized (waitFor) {
 
-				if (waitFor.containsKey(uau.userId)) {
+					if (waitFor.containsKey(uau.userId)) {
 
-					waitFor.get(uau.userId).add(uau);
+						waitFor.get(uau.userId).add(uau);
 
-					return;
+						return;
+
+					}
 
 				}
-
-			}
 
 			Processed processed;
 
@@ -814,21 +822,21 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				if (!sync) synchronized (waitFor) {
 
-					if (waitFor.containsKey(uau.userId)) {
+						if (waitFor.containsKey(uau.userId)) {
 
-						waitFor.get(uau.userId).add(uau);
+							waitFor.get(uau.userId).add(uau);
 
-						return;
+							return;
 
-					} else {
+						} else {
 
-						waitFor.put(uau.userId,this);
+							waitFor.put(uau.userId,this);
 
-						sync = true;
+							sync = true;
+
+						}
 
 					}
-
-				}
 
 
 				processed.run();
