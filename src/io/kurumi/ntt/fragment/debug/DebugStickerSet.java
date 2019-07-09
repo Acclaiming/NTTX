@@ -32,9 +32,9 @@ public class DebugStickerSet extends Fragment {
 		
 		String target;
 
-		if (msg.hasText()) {
+		if (params.length > 0) {
 
-			target = msg.text();
+			target = params[0];
 
 			if (target.contains("/")) target = StrUtil.subAfter(target,"/",true);
 
