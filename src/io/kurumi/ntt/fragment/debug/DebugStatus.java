@@ -16,7 +16,7 @@ public class DebugStatus extends Fragment {
 		
 		super.init(origin);
 		
-		registerFunction("get_status");
+		registerAdminFunction("get_status");
 		
 	}
 

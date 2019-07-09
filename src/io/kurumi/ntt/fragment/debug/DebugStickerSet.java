@@ -11,12 +11,13 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.Html;
 
 public class DebugStickerSet extends Fragment {
+	
 	@Override
 	public void init(BotFragment origin) {
 
 		super.init(origin);
 
-        registerFunction("get_sticker_set");
+        registerAdminFunction("get_sticker_set");
 
     }
 

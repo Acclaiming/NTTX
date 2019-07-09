@@ -14,7 +14,7 @@ public class DebugMsg extends Fragment {
 
 		super.init(origin);
 
-        registerFunction("get_msg");
+        registerAdminFunction("get_msg");
 
     }
 

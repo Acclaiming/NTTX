@@ -16,7 +16,7 @@ public class DebugUser extends Fragment {
 	
 		super.init(origin);
 		
-		registerFunction("get_user");
+		registerAdminFunction("get_user");
 		
 	}
 	
