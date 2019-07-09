@@ -963,7 +963,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 	public boolean isLongPulling() {
 
-		return false;
+		return true;
 
 	}
 
