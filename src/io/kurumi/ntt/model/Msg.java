@@ -28,7 +28,7 @@ import java.io.File;
 public class Msg extends Context {
 
 	public Update update;
-	
+
     public static String[] NO_PARAMS = new String[0];
     Msg replyTo;
     int isCommand = 0;
@@ -41,37 +41,37 @@ public class Msg extends Context {
 
     public Msg(Message message) {
 
-        this(Launcher.INSTANCE, message);
+        this(Launcher.INSTANCE,message);
 
     }
 
-    public Msg(Fragment fragment, Message message) {
+    public Msg(Fragment fragment,Message message) {
 
-        super(fragment, message.chat());
+        super(fragment,message.chat());
 
         this.fragment = fragment;
         this.message = message;
 
         if (message.replyToMessage() != null) {
 
-            replyTo = new Msg(fragment, message.replyToMessage());
+            replyTo = new Msg(fragment,message.replyToMessage());
 
         }
 
     }
 
-    public static Msg from(Fragment fragment, SendResponse resp) {
+    public static Msg from(Fragment fragment,SendResponse resp) {
 
-        if (resp.isOk()) return new Msg(fragment, resp.message());
+        if (resp.isOk()) return new Msg(fragment,resp.message());
 
         return null;
 
     }
-	
+
 	public Sticker sticker() {
-		
+
 		return message.sticker();
-		
+
 	}
 
     public UserData from() {
@@ -111,11 +111,11 @@ public class Msg extends Context {
         return message.text();
 
     }
-	
+
 	public boolean isGroupAdmin() {
-		
+
 		return NTT.isGroupAdmin(fragment,chatId(),message.from().id());
-		
+
 	}
 
     public boolean isReply() {
@@ -128,14 +128,14 @@ public class Msg extends Context {
 
         if (msg.length > 0 && !isPrivate() && message.from() != null) {
 
-            ArrayUtil.setOrAppend(msg, 0, from().userName() + " " + ArrayUtil.get(msg, 0));
+            ArrayUtil.setOrAppend(msg,0,from().userName() + " " + ArrayUtil.get(msg,0));
 
         }
 
         return super.send(msg);
     }
 
-    public AbstractSend sendOrEdit(boolean edit, String... msg) {
+    public AbstractSend sendOrEdit(boolean edit,String... msg) {
 
         if (edit) return edit(msg);
         else return send(msg);
@@ -155,32 +155,32 @@ public class Msg extends Context {
 
     public Msg sendSticker(StickerPoint sticker) {
 
-        return fragment.sendSticker(chatId(), sticker);
+        return fragment.sendSticker(chatId(),sticker);
 
 
     }
 
     public Msg sendSticker(String sticker) {
 
-        return fragment.sendSticker(chatId(), sticker);
+        return fragment.sendSticker(chatId(),sticker);
 
 
     }
 
-    public Msg sendFile(long chatId, String file) {
+    public Msg sendFile(long chatId,String file) {
 
-        return fragment.sendFile(chatId, file);
+        return fragment.sendFile(chatId,file);
 
     }
 
     public Msg sendFile(File file) {
 
-        return fragment.sendFile(chatId(), file);
+        return fragment.sendFile(chatId(),file);
     }
 
     public Msg sendFile(byte[] file) {
 
-        return fragment.sendFile(chatId(), file);
+        return fragment.sendFile(chatId(),file);
 
     }
 
@@ -192,7 +192,11 @@ public class Msg extends Context {
 
     public void sendTyping() {
 
-        fragment.sendTyping(chatId());
+		if (isPrivate()) {
+
+			fragment.sendTyping(chatId());
+
+		}
 
     }
 
@@ -260,9 +264,9 @@ public class Msg extends Context {
 
     public Edit edit(String... msg) {
 
-        System.out.println("edit调用 : " + ArrayUtil.join(msg, "\n"));
+        System.out.println("edit调用 : " + ArrayUtil.join(msg,"\n"));
 
-        Edit edit = new Edit(fragment, chatId(), messageId(), msg);
+        Edit edit = new Edit(fragment,chatId(),messageId(),msg);
 
         edit.origin = this;
 
@@ -272,13 +276,13 @@ public class Msg extends Context {
 
     public void editMarkup(ButtonMarkup markup) {
 
-        fragment.bot().execute(new EditMessageReplyMarkup(chatId(), messageId()).replyMarkup(markup.markup()));
+        fragment.bot().execute(new EditMessageReplyMarkup(chatId(),messageId()).replyMarkup(markup.markup()));
 
     }
 
     public boolean delete() {
 
-        return fragment.bot().execute(new DeleteMessage(chat().id(), messageId())).isOk();
+        return fragment.bot().execute(new DeleteMessage(chat().id(),messageId())).isOk();
 
     }
 
@@ -296,7 +300,7 @@ public class Msg extends Context {
 
     public boolean restrictUntil(long until) {
 
-        return restrict(from().id, until);
+        return restrict(from().id,until);
 
     }
 
@@ -308,20 +312,20 @@ public class Msg extends Context {
 
     public Msg forwardTo(Object chatId) {
 
-        return Msg.from(fragment, fragment.bot().execute(new ForwardMessage(chatId, chatId(), messageId())));
+        return Msg.from(fragment,fragment.bot().execute(new ForwardMessage(chatId,chatId(),messageId())));
 
     }
 
 
     public File photo() {
 
-        File local = new File(Env.CACHE_DIR, "files/" + message.photo()[0].fileId());
+        File local = new File(Env.CACHE_DIR,"files/" + message.photo()[0].fileId());
 
         if (local.isFile()) return local;
 
         String path = fragment.bot().getFullFilePath(fragment.bot().execute(new GetFile(message.photo()[0].fileId())).file());
 
-        HttpUtil.downloadFile(path, local);
+        HttpUtil.downloadFile(path,local);
 
         return local;
 
@@ -341,43 +345,43 @@ public class Msg extends Context {
     public boolean isCommand() {
 
 		if (isCommand == 0) {
-	
-        if (text() != null && text().startsWith("/") && text().length() > 1) {
-			
-			String body = text().substring(1);
 
-			if (body.contains(" ")) {
+			if (text() != null && text().startsWith("/") && text().length() > 1) {
 
-				String cmdAndUser = StrUtil.subBefore(body, " ", false);
+				String body = text().substring(1);
 
-				if (cmdAndUser.contains("@" + fragment.origin.me.username())) {
+				if (body.contains(" ")) {
 
-					name = StrUtil.subBefore(cmdAndUser, "@", false);
+					String cmdAndUser = StrUtil.subBefore(body," ",false);
+
+					if (cmdAndUser.contains("@" + fragment.origin.me.username())) {
+
+						name = StrUtil.subBefore(cmdAndUser,"@",false);
+
+					} else {
+
+						name = cmdAndUser;
+
+					}
+
+				} else if (body.contains("@" + fragment.origin.me.username())) {
+
+					name = StrUtil.subBefore(body,"@",false);
 
 				} else {
 
-					name = cmdAndUser;
+					name = body;
 
 				}
 
-			} else if (body.contains("@" + fragment.origin.me.username())) {
-
-				name = StrUtil.subBefore(body, "@", false);
+				isCommand = 1;
 
 			} else {
 
-				name = body;
+				isCommand = 2;
 
 			}
-			
-			isCommand = 1;
-			
-		} else {
-			
-			isCommand = 2;
-			
-		}
-		
+
 		}
 
         return isCommand == 1;
@@ -398,12 +402,12 @@ public class Msg extends Context {
 
         if (body.contains(" ")) {
 
-            String cmdAndUser = StrUtil.subBefore(body, " ", false);
+            String cmdAndUser = StrUtil.subBefore(body," ",false);
 
             if (cmdAndUser.contains("@" + fragment.origin.me.username())) {
 
-                name = StrUtil.subBefore(cmdAndUser, "@", false);
-				
+                name = StrUtil.subBefore(cmdAndUser,"@",false);
+
             } else {
 
                 name = cmdAndUser;
@@ -412,7 +416,7 @@ public class Msg extends Context {
 
         } else if (body.contains("@" + fragment.origin.me.username())) {
 
-            name = StrUtil.subBefore(body, "@", false);
+            name = StrUtil.subBefore(body,"@",false);
 
         } else {
 
@@ -462,11 +466,11 @@ public class Msg extends Context {
 
         }
 
-        String body = StrUtil.subAfter(text(), "/", false);
+        String body = StrUtil.subAfter(text(),"/",false);
 
         if (body.contains(" ")) {
 
-            params = StrUtil.subAfter(body, " ", false).split(" ");
+            params = StrUtil.subAfter(body," ",false).split(" ");
 
         } else {
 
