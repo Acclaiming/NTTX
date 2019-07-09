@@ -218,6 +218,8 @@ public class JoinCaptchaBot extends BotFragment {
 
             User newMember = msg.message().newChatMembers()[0];
 
+			final UserData newData = UserData.get(newMember);
+			
             if (newMember.isBot()) {
 
                 if (newMember.id().equals(botId)) {
@@ -226,15 +228,35 @@ public class JoinCaptchaBot extends BotFragment {
 					
 					msg.send("欢迎使用加群验证BOT","给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
 
+				} else {
+					
+					new Send(this,logChannel,"事件 : #邀请 #机器人","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","机器人 : " + newData.userName(),"#id" + newData.id,"来自 : " + user.userName(),"#id" + user.id).html().exec();
+					
 				}
 
                 return;
 
 			}
 
-            final UserData newData = UserData.get(newMember);
-
-			//if (newData.admin()) return;
+            
+			if (msg.isGroupAdmin()) return;
+			
+		    if (!user.id.equals(newData.id)) {
+				
+				if (NTT.isGroupAdmin(this,msg.chatId(),newData.id)) {
+			
+					new Send(this,logChannel,"事件 : #邀请 #管理员邀请","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + newData.userName(),"#id" + newData.id,"来自 : " + user.userName(),"#id" + user.id).html().exec();
+					
+				} else 	{
+					
+					new Send(this,logChannel,"事件 : #邀请","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + newData.userName(),"#id" + newData.id,"来自 : " + user.userName(),"#id" + user.id).html().exec();
+					
+					
+				}
+				
+				return;
+			
+			}
 
 			if (Firewall.block.containsId(newData.id)) {
 
@@ -258,7 +280,7 @@ public class JoinCaptchaBot extends BotFragment {
 
 			}
 
-			setGroupPoint(user,POINT_DELETE);
+			setGroupPoint(newData,POINT_DELETE);
 
 			Img info = new Img(800,600,Color.WHITE);
 
