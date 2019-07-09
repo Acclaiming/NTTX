@@ -81,7 +81,7 @@ public class BotServer {
 
 		}
 
-		boot.option(ChannelOption.SO_BACKLOG,15);
+		boot.option(ChannelOption.SO_BACKLOG,5);
 
 		boot.childHandler(new ChannelInitializer<Channel>() {
 
