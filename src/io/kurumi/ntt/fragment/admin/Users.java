@@ -37,7 +37,6 @@ public class Users extends Fragment {
         StringBuilder export;
 
 		int count = 0;
-
 		
 		if ("usage".equals(function)) {
 			

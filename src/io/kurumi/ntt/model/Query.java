@@ -1,19 +1,19 @@
 package io.kurumi.ntt.model;
 
-import cn.hutool.core.util.StrUtil;
 import com.pengrad.telegrambot.model.InlineQuery;
 import com.pengrad.telegrambot.model.request.InlineQueryResult;
 import com.pengrad.telegrambot.model.request.InlineQueryResultArticle;
 import com.pengrad.telegrambot.model.request.InlineQueryResultDocument;
+import com.pengrad.telegrambot.model.request.InputMessageContent;
+import com.pengrad.telegrambot.model.request.InputTextMessageContent;
+import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.AnswerInlineQuery;
 import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.response.GetFileResponse;
 import io.kurumi.ntt.fragment.Fragment;
-// import io.kurumi.ntt.server.BotServer;
+import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.utils.BotLog;
-
 import java.util.LinkedList;
-import java.util.Map;
 
 public class Query {
 
@@ -21,15 +21,29 @@ public class Query {
     public InlineQuery query;
     public LinkedList<InlineQueryResult> results = new LinkedList<>();
 
+	public String text;
+	
     public Query(Fragment fragment, InlineQuery query) {
         this.fragment = fragment;
         this.query = query;
+		this.text = query.query();
     }
+	
+	
+    public Query article(String title, String content,ParseMode parseMode,ButtonMarkup buttons) {
 
-    public Query article(String title, String content) {
-
-        InlineQueryResultArticle result = new InlineQueryResultArticle(query.id(), title, content);
-
+		InputTextMessageContent inputText = new InputTextMessageContent(content);
+		
+		if (parseMode != null) inputText.parseMode(parseMode);
+		
+        InlineQueryResultArticle result = new InlineQueryResultArticle(query.id(), title,inputText);
+		
+		if (buttons != null) {
+			
+			result.replyMarkup(buttons.markup());
+			
+		}
+		
         results.add(result);
 
         return this;
@@ -66,9 +80,9 @@ public class Query {
 
     }
 
-    public void reply() {
+    public AnswerInlineQuery reply() {
 
-        fragment.bot().execute(new AnswerInlineQuery(query.id(), results.toArray(new InlineQueryResult[results.size()])));
+        return new AnswerInlineQuery(query.id(), results.toArray(new InlineQueryResult[results.size()]));
 
     }
 

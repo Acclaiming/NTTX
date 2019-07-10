@@ -59,6 +59,7 @@ import io.kurumi.ntt.utils.Html;
 import java.io.File;
 import java.util.TimeZone;
 import io.kurumi.ntt.fragment.bots.BotChannnel;
+import io.kurumi.ntt.fragment.inline.MakeButtons;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -329,6 +330,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new AddSticker());
 		addFragment(new RemoveSticker());
 
+		// INLINE
+		
+		addFragment(new MakeButtons());
+		
     }
 
     @Override
