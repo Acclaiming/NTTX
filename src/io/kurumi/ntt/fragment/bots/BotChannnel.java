@@ -511,7 +511,7 @@ public class BotChannnel extends Fragment {
 
 				if (admin.canPromoteMembers() != null) {
 
-					result.append("\n添加新滥权管理员 : ").append(admin.canPostMessages() ? "✔" : "✘");
+					result.append("\n添加新滥权管理员 : ").append(admin.canPromoteMembers() ? "✔" : "✘");
 
 				}
 
