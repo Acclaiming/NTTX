@@ -119,7 +119,7 @@ public class MakeButtons extends Fragment {
 		
 		if (!resp.isOk()) {
 			
-			inlineQuery.article("解析失败",new JSONObject(request.toWebhookResponse()).toStringPretty() + "\n\n" + resp.description(),null,null);
+			inlineQuery.article("解析失败","解析失败 : \n\n" + resp.description(),null,null);
 			
 			execute(inlineQuery.reply());
 			
