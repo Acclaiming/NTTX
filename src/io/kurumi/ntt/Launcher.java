@@ -58,6 +58,7 @@ import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.Html;
 import java.io.File;
 import java.util.TimeZone;
+import io.kurumi.ntt.fragment.bots.BotChannnel;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -270,6 +271,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		super.reload();
 
 		// ADMIN
+		
+		addFragment(new BotChannnel());
 
 		addFragment(new PingFunction());
 		addFragment(new GetID());

@@ -102,8 +102,8 @@ public class Users extends Fragment {
 
 			for (UserData userData : UserData.data.findByField("contactable",true)) {
 
-				export.append("\n").append(userData.userName()).append(" ").append(Html.startPayload("Block","drop",userData.id));
-
+				export.append("\n[").append(Html.user(userData.id.toString(),userData.id)).append("]").append(" ").append(userData.name()).append(" ").append(Html.startPayload("Block","drop",userData.id));
+				
 				count++;
 
 				if (count == 50) {
@@ -139,7 +139,7 @@ public class Users extends Fragment {
 
 				} else {
 
-					export.append("\n").append(userData.userName()).append(" ").append(Html.startPayload("Accept","accept",userData.id));
+					export.append("\n[").append(Html.user(userData.id.toString(),userData.id)).append("]").append(" ").append(userData.name()).append(" ").append(Html.startPayload("Accept","accept",userData.id));
 
 				}
 
@@ -166,7 +166,7 @@ public class Users extends Fragment {
 			
 			for (UserData userData : UserData.data.collection.find(or(regex("firstName",kw),regex("lastName",kw),regex("userName",kw)))) {
 
-				export.append("\n[").append(Html.code(userData.id)).append("]").append(" ").append(userData.userName()).append(" ").append(Html.startPayload("Block","drop",userData.id));
+				export.append("\n[").append(Html.user(userData.id.toString(),userData.id)).append("]").append(" ").append(userData.name()).append(" ").append(Html.startPayload("Block","drop",userData.id));
 
 				count++;
 
