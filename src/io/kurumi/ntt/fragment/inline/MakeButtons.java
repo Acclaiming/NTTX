@@ -72,7 +72,7 @@ public class MakeButtons extends Fragment {
 				
 				while (line.contains("[")) {
 				
-					String after = StrUtil.subBefore(line,"[",true);
+					String after = StrUtil.subAfter(line,"[",true);
 					line = StrUtil.subBefore(line,"[",true);
 					
 					String bText = StrUtil.subBefore(after,"]",false);
