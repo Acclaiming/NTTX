@@ -1,18 +1,17 @@
 package io.kurumi.ntt.fragment.inline;
 
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.model.Query;
-import cn.hutool.core.util.StrUtil;
-import io.kurumi.ntt.model.request.ButtonMarkup;
 import cn.hutool.core.util.ArrayUtil;
-import io.kurumi.ntt.model.request.ButtonLine;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import com.pengrad.telegrambot.model.request.ParseMode;
-import com.pengrad.telegrambot.response.BaseResponse;
-import java.util.Collection;
-import java.util.Collections;
-import cn.hutool.core.net.URLEncoder;
 import com.pengrad.telegrambot.request.AnswerInlineQuery;
+import com.pengrad.telegrambot.response.BaseResponse;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Query;
+import io.kurumi.ntt.model.request.ButtonLine;
+import io.kurumi.ntt.model.request.ButtonMarkup;
+import java.util.Collections;
 
 public class MakeButtons extends Fragment {
 
@@ -120,7 +119,7 @@ public class MakeButtons extends Fragment {
 		
 		if (!resp.isOk()) {
 			
-			inlineQuery.article("解析失败",request.toWebhookResponse() + "\n\n" + resp.description(),null,null);
+			inlineQuery.article("解析失败",new JSONObject(request.toWebhookResponse()).toStringPretty() + "\n\n" + resp.description(),null,null);
 			
 			execute(inlineQuery.reply());
 			
