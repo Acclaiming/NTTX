@@ -30,11 +30,7 @@ public class MakeButtons extends Fragment {
 
 		while (true) {
 
-			if (text.startsWith("@" + origin.me.username())) {
-				
-				text = text.substring(origin.me.username().length() + 2);
-				
-			} else if (text.startsWith(" ") || text.startsWith("\n")) {
+		 if (text.startsWith(" ") || text.startsWith("\n")) {
 				
 				text = text.substring(1);
 				
@@ -60,7 +56,7 @@ public class MakeButtons extends Fragment {
 
 		if (StrUtil.isBlank(text) || (!html && !buttons)) {
 			
-			execute(inlineQuery.article("错误 : 不需要解析","错误 : 不需要解析",null,null).reply());
+			execute(inlineQuery.article("不需要解析 : (" + html + "," + buttons + "," + text + ")","错误 : 不需要解析",null,null).reply());
 
 			return;
 			
