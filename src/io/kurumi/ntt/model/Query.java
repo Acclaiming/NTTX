@@ -82,6 +82,8 @@ public class Query {
 
     public AnswerInlineQuery reply() {
 
+		results.clear();
+		
         return new AnswerInlineQuery(query.id(), results.toArray(new InlineQueryResult[results.size()]));
 
     }
