@@ -11,6 +11,8 @@ import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.response.BaseResponse;
 import java.util.Collection;
 import java.util.Collections;
+import cn.hutool.core.net.URLEncoder;
+import com.pengrad.telegrambot.request.AnswerInlineQuery;
 
 public class MakeButtons extends Fragment {
 
@@ -112,11 +114,13 @@ public class MakeButtons extends Fragment {
 		
 		inlineQuery.article("完成 *٩(๑´∀`๑)ง*",text,parseMode,markup);
 
-		BaseResponse resp = execute(inlineQuery.reply());
+		AnswerInlineQuery request = inlineQuery.reply();
+
+		BaseResponse resp = execute(request);
 		
 		if (!resp.isOk()) {
 			
-			inlineQuery.article("解析失败",resp.description(),null,null);
+			inlineQuery.article("解析失败",request.toWebhookResponse() + "\n\n" + resp.description(),null,null);
 			
 			execute(inlineQuery.reply());
 			
