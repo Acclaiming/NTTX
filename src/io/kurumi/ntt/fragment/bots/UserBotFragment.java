@@ -111,7 +111,7 @@ public class UserBotFragment extends BotFragment {
 
 		if (!msg.isPrivate()) return;
 
-		if (!userId.equals(user.id) || !user.admin()) return;
+		if (!userId.equals(user.id) && !user.admin()) return;
 
 		if ("start".equals(function)) {
 
