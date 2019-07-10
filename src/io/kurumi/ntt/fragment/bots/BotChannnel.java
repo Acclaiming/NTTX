@@ -450,7 +450,7 @@ public class BotChannnel extends Fragment {
 
 			if (resp.json.length() < 1024) {
 
-				msg.send(Html.json(resp.json)).html().exec();
+				msg.send(Html.json(resp.json)).html().removeKeyboard().exec();
 
 			} else {
 
