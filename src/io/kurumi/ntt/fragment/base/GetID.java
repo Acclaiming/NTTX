@@ -17,6 +17,13 @@ public class GetID extends Fragment {
 	}
 
 	@Override
+	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
+		
+		return FUNCTION_PUBLIC;
+		
+	}
+
+	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
 		if (msg.isReply()) {

@@ -15,6 +15,13 @@ public class PingFunction extends Fragment {
 		registerFunction("ping");
 
 	}
+	
+	@Override
+	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
+
+		return FUNCTION_PUBLIC;
+
+	}
 
     @Override
     public void onFunction(UserData user,Msg msg,String function,String[] params) {

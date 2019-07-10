@@ -34,6 +34,8 @@ import io.kurumi.ntt.model.request.Send;
 import com.pengrad.telegrambot.request.UnpinChatMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import io.kurumi.ntt.model.request.Edit;
+import com.pengrad.telegrambot.response.GetChatAdministratorsResponse;
+import com.pengrad.telegrambot.model.ChatMember;
 
 public class BotChannnel extends Fragment {
 
@@ -41,10 +43,10 @@ public class BotChannnel extends Fragment {
 	public void init(BotFragment origin) {
 
 		super.init(origin);
-		
+
 		registerAdminFunction("send","edit","delete","forward","export_link","restrict","promote","kick","pin","unpin","unban","exit","get_file","send_file","get_chat","get_admins","get_members_count","get_member","get_me");
 		registerPoint(POINT_INPUT_EXTRA_PARAM);
-		
+
 	}
 
 	final String POINT_INPUT_EXTRA_PARAM = "channel_input";
@@ -202,18 +204,18 @@ public class BotChannnel extends Fragment {
 
 			msg.send("ParseMode ？").keyboard("Html","Markdown","None").exec();
 
-			} else if ("edit".equals(function)) {
+		} else if ("edit".equals(function)) {
 
-				if (params.length < 3) { invalidParams(msg,"chatId","messageId","text..."); return; }
+			if (params.length < 3) { invalidParams(msg,"chatId","messageId","text..."); return; }
 
-				Edit send = new Edit(this,NumberUtil.parseLong(params[0]),NumberUtil.parseInt(params[1]),ArrayUtil.sub(params,2,params.length));
+			Edit send = new Edit(this,NumberUtil.parseLong(params[0]),NumberUtil.parseInt(params[1]),ArrayUtil.sub(params,2,params.length));
 
-				ExtraParam param = new ExtraParam(6,send);
+			ExtraParam param = new ExtraParam(6,send);
 
-				setPrivatePoint(user,POINT_INPUT_EXTRA_PARAM,param);
+			setPrivatePoint(user,POINT_INPUT_EXTRA_PARAM,param);
 
-				msg.send("ParseMode ？").keyboard("Html","Markdown","None").exec();
-			
+			msg.send("ParseMode ？").keyboard("Html","Markdown","None").exec();
+
 		} else if ("unban".equals(function)) {
 
 			if (params.length < 2) { invalidParams(msg,"chatId","userId"); return; }
@@ -429,7 +431,7 @@ public class BotChannnel extends Fragment {
 			clearPrivatePoint(user);
 
 			sendResult(msg,send.exec());
-			
+
 		}
 
 	}
@@ -445,6 +447,62 @@ public class BotChannnel extends Fragment {
 		if (resp.isOk() && resp instanceof StringResponse) {
 
 			msg.send("OK RESULT : " + ((StringResponse)resp).result()).removeKeyboard().exec();
+
+		} else if (resp.isOk() && resp instanceof GetChatAdministratorsResponse) {
+
+			StringBuilder result = new StringBuilder("所有管理员 :");
+
+			for (ChatMember admin : ((GetChatAdministratorsResponse)resp).administrators()) {
+
+				result.append("\n\n");
+
+				result.append(admin.status() == ChatMember.Status.creator ? "大绒布球" : "绒布球");
+
+				UserData userData = UserData.get(admin.user());
+
+				result.append(" : ").append(userData.userName());
+
+				result.append("\nID : ").append(Html.code(userData.id));
+
+				result.append("\n");
+
+				result.append("\n修改信息 : ").append(admin.canChangeInfo() ? "✔" : "✘");
+
+				if (admin.canPostMessages() != null) {
+
+					result.append("\n发送消息 : ").append(admin.canPostMessages() ? "✔" : "✘");
+
+				}
+
+				if (admin.canEditMessages() != null) {
+
+					result.append("\n修改消息 : ").append(admin.canEditMessages() ? "✔" : "✘");
+
+				}
+
+				result.append("\n删除消息 : ").append(admin.canDeleteMessages() ? "✔" : "✘");
+
+				if (admin.canRestrictMembers() != null) {
+
+					result.append("\n限制绒布球 : ").append(admin.canRestrictMembers() ? "✔" : "✘");
+
+				}
+
+				result.append("\n置顶 : ").append(admin.canPinMessages() ? "✔" : "✘");
+
+				if (admin.canInviteUsers() != null) {
+
+					result.append("\n添加新绒布球 : ").append(admin.canEditMessages() ? "✔" : "✘");
+
+				}
+
+				if (admin.canPromoteMembers() != null) {
+
+					result.append("\n添加新滥权管理员 : ").append(admin.canPostMessages() ? "✔" : "✘");
+
+				}
+
+			}
 
 		} else {
 
