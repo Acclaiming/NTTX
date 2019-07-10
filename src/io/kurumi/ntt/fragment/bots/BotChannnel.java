@@ -465,9 +465,13 @@ public class BotChannnel extends Fragment {
 				result.append("\nID : ").append(Html.code(userData.id));
 
 				result.append("\n");
+				
+				if (admin.canChangeInfo() != null) 	{
 
 				result.append("\n修改信息 : ").append(admin.canChangeInfo() ? "✔" : "✘");
 
+				}
+				
 				if (admin.canPostMessages() != null) {
 
 					result.append("\n发送消息 : ").append(admin.canPostMessages() ? "✔" : "✘");
@@ -503,6 +507,8 @@ public class BotChannnel extends Fragment {
 				}
 
 			}
+			
+			msg.send(result.toString()).html().exec();
 
 		} else {
 
@@ -521,3 +527,4 @@ public class BotChannnel extends Fragment {
 	}
 
 }
+
