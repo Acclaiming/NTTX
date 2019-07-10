@@ -355,7 +355,7 @@ public class JoinCaptchaBot extends UserBotFragment {
 
 				if (user.id.equals(target)) {
 
-					if (group.containsKey(user.id)) {
+					if (group.containsKey(target)) {
 
 						group.remove(user.id).delete();
 
@@ -421,11 +421,16 @@ public class JoinCaptchaBot extends UserBotFragment {
 
 				group.remove(target).delete();
 
-			}
-
-			if (secGroup.containsKey(target)) {
+			} else if (secGroup.containsKey(target)) {
 
 				secGroup.remove(target).delete();
+
+			} else {
+
+				callback.alert("这个验证已失效 (");
+				callback.delete();
+
+				return;
 
 			}
 
@@ -516,14 +521,18 @@ public class JoinCaptchaBot extends UserBotFragment {
 
 				group.remove(target).delete();
 
-			}
-
-			if (secGroup.containsKey(target)) {
+			} else if (secGroup.containsKey(target)) {
 
 				secGroup.remove(target).delete();
 
-			}
+			} else {
 
+				callback.alert("这个验证已失效 (");
+				callback.delete();
+
+				return;
+
+			}
 
 			point().groupPoints.remove(target);
 
