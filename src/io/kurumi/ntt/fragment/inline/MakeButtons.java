@@ -30,7 +30,11 @@ public class MakeButtons extends Fragment {
 
 		while (true) {
 
-			if (text.startsWith("HTML ")) {
+			if (text.startsWith("@" + origin.me.username() + " ")) {
+				
+				text = text.substring(origin.me.username().length() + 2);
+				
+			} else if (text.startsWith("HTML ")) {
 
 				text = text.substring(5);
 
