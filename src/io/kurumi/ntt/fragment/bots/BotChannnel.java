@@ -505,7 +505,7 @@ public class BotChannnel extends Fragment {
 				
 				if (admin.canInviteUsers() != null) {
 
-					result.append("\n添加新绒布球 : ").append(admin.canEditMessages() ? "✔" : "✘");
+					result.append("\n睡新绒布球 : ").append(admin.canInviteUsers() ? "✔" : "✘");
 
 				}
 
