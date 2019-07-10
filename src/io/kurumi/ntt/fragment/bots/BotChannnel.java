@@ -484,16 +484,25 @@ public class BotChannnel extends Fragment {
 
 				}
 
+				if (admin.canDeleteMessages() != null) {
+				
 				result.append("\n删除消息 : ").append(admin.canDeleteMessages() ? "✔" : "✘");
 
+				}
+				
 				if (admin.canRestrictMembers() != null) {
 
 					result.append("\n限制绒布球 : ").append(admin.canRestrictMembers() ? "✔" : "✘");
 
 				}
+				
+				if (admin.canPinMessages() != null) {
 
-				result.append("\n置顶 : ").append(admin.canPinMessages() ? "✔" : "✘");
 
+				result.append("\n置顶消息 : ").append(admin.canPinMessages() ? "✔" : "✘");
+
+				}
+				
 				if (admin.canInviteUsers() != null) {
 
 					result.append("\n添加新绒布球 : ").append(admin.canEditMessages() ? "✔" : "✘");
