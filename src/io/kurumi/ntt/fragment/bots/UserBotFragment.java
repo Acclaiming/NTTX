@@ -123,7 +123,7 @@ public class UserBotFragment extends BotFragment {
 				"/send <chatId> <text...>",
 				"/edit <chatId> <messageId> <text...>",
 				"/delete <chatId> <messageId>",
-				"/forward <fromChatId> <toChatId> <messageId>",
+				"/forward <toChatId> <fromChatId> <messageId>",
 				"/export_link <chatid>",
 				"/restrict <chatId> <userId>",
 				"/promote <chatId> <userId>",

@@ -88,7 +88,7 @@ public class BotChannnel extends Fragment {
 
 		} else if ("forward".equals(function)) {
 
-			if (params.length < 3) { invalidParams(msg,"fromChatId","toChatId","messageId"); return; }
+			if (params.length < 3) { invalidParams(msg,"toChatId","fromChatId","messageId"); return; }
 
 			ForwardMessage send = new ForwardMessage(NumberUtil.parseLong(params[0]),NumberUtil.parseLong(params[1]),NumberUtil.parseInt(params[2]));
 
