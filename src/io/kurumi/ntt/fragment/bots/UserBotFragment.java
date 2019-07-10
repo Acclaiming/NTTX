@@ -125,7 +125,7 @@ public class UserBotFragment extends BotFragment {
 				"/restrict <chatId> <userId>",
 				"/promote <chatId> <userId>",
 				"/kick <chatId> <userId>",
-				"/unban <chatId>",
+				"/unban <chatId> <userId>",
 				"/pin <chatId> <messageId>",
 				"/unpin <chatId>",
 				"/exit <chatId>",
