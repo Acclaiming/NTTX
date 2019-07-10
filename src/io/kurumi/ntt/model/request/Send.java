@@ -121,6 +121,22 @@ public class Send extends AbstractSend<Send> {
 
     }
 
+	public Send keyboard(final String... buttons) {
+		
+		request.replyMarkup(new Keyboard() {{
+			
+			for (String button : buttons) {
+				
+				newButtonLine(button);
+				
+			}
+			
+		}}.markup());
+		
+		return this;
+		
+	}
+	
     public Send keyboard(Keyboard keyboard) {
 
         request.replyMarkup(keyboard.markup());

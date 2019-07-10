@@ -36,11 +36,8 @@ public class BaseResponse {
 
     @Override
     public String toString() {
-        return "BaseResponse{" +
-                "ok=" + ok +
-                ", error_code=" + error_code +
-                ", description='" + description + '\'' +
-                ", parameters=" + parameters +
-                '}';
+		
+        return json;
+		
     }
 }

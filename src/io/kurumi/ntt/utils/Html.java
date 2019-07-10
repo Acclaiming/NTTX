@@ -4,6 +4,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.http.HtmlUtil;
 import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.fragment.Fragment;
+import cn.hutool.json.JSONObject;
 
 public class Html {
 
@@ -55,6 +56,13 @@ public class Html {
 
     }
 
+	public static String json(Object code) {
+
+        return code(new JSONObject(code).toStringPretty());
+
+    }
+	
+	
     public static String code(Object code) {
 
         return "<code>" + HtmlUtil.escape(code.toString()) + "</code>";

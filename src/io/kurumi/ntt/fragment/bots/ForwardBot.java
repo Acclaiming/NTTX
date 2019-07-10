@@ -17,16 +17,12 @@ import java.util.LinkedList;
 import java.util.List;
 import io.kurumi.ntt.db.PointData;
 
-public class ForwardBot extends BotFragment {
+public class ForwardBot extends UserBotFragment {
 
     final String POINT_REPLY = "r";
 
-    public Long botId;
-    public Long userId;
-    public String botToken;
     public Long lastReceivedFrom;
     public String welcomeMessage;
-    public String userName;
     public List<Long> blockList;
 
     @Override
@@ -34,68 +30,19 @@ public class ForwardBot extends BotFragment {
 
 		super.reload();
 
-        UserBot bot = UserBot.data.getById(botId);
+        welcomeMessage = getParam("msg");
 
-        botToken = bot.token;
-
-        userId = bot.user;
-
-        welcomeMessage = (String) bot.params.get("msg");
-
-        blockList = (List<Long>) bot.params.get("block");
+        blockList = getParam("block");
 
         if (blockList == null) {
 
             blockList = new LinkedList<>();
-
-        }
-
-        UserData user = UserData.get(userId);
-
-        if (user == null) {
-
-            userName = "(" + userId + ")";
-
-        } else {
-
-            userName = user.name();
+			
+			setParam("block",blockList);
 
         }
 
     }
-
-    public void save() {
-
-        UserBot bot = UserBot.data.getById(botId);
-
-        bot.params.put("block",blockList);
-
-        UserBot.data.setById(botId,bot);
-
-    }
-
-    @Override
-    public String botName() {
-
-        return "Forward Bot For " + userName;
-
-    }
-
-    @Override
-    public String getToken() {
-
-        return botToken;
-
-    }
-
-	@Override
-	public void init(BotFragment origin) {
-
-		super.init(origin);
-
-		registerFunction("start");
-
-	}
 
 	@Override
 	public int onBlockedMsg(UserData user,Msg msg) {
@@ -111,7 +58,7 @@ public class ForwardBot extends BotFragment {
 		
 		super.onFunction(user,msg,function,params);
 
-		if ("start".equals(function)) {
+		if (!(user.equals(userId) || user.admin()) &&  "start".equals(function)) {
 
 			msg.send(welcomeMessage).exec();
 

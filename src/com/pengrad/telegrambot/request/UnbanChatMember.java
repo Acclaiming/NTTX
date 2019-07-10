@@ -6,7 +6,7 @@ package com.pengrad.telegrambot.request;
  */
 public class UnbanChatMember extends KickChatMember {
 
-    public UnbanChatMember(Object chatId, int userId) {
+    public UnbanChatMember(Long chatId, int userId) {
         super(chatId, userId);
     }
 }

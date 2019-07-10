@@ -33,7 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.TimerTask;
 
-public class JoinCaptchaBot extends BotFragment {
+public class JoinCaptchaBot extends UserBotFragment {
 
     final String POINT_AUTH = "auth";
 	final String POINT_SEC_AUTH = "sec";
@@ -42,17 +42,12 @@ public class JoinCaptchaBot extends BotFragment {
 
 	final String POINT_DELETE = "del";
 
-    public Long botId;
-    public Long userId;
-    public String botToken;
-    public String userName;
-    public Long logChannel;
-    public Boolean delJoin;
-	
     HashMap<Long, HashMap<Long, Msg>> cache = new HashMap<>();
 	HashMap<Long, HashMap<Long, Msg>> secCache = new HashMap<>();
 	HashSet<Long> failed = new HashSet<>();
 	
+	Long logChannel;
+    Boolean delJoin;
     String welcomeMessage;
     Integer lastWelcomeMessage;
     boolean lastChanged = false;
@@ -63,49 +58,17 @@ public class JoinCaptchaBot extends BotFragment {
 
 		super.reload();
 
-        UserBot bot = UserBot.data.getById(botId);
-
-        botToken = bot.token;
-
-        userId = bot.user;
-
-        UserData user = UserData.get(userId);
-
-        if (user == null) {
-
-            userName = "(" + userId + ")";
-
-		} else {
-
-            userName = user.name();
-
-		}
-
-        delJoin = (Boolean) bot.params.get("delJoin");
+        delJoin = getParam("delJoin");
 
         if (delJoin == null) delJoin = false;
 
-        logChannel = (Long) bot.params.get("logChannel");
+        logChannel = getParam("logChannel");
 
-        welcomeMessage = (String)bot.params.get("welcome");
+        welcomeMessage = getParam("welcome");
 
-        lastWelcomeMessage = (Integer)bot.params.get("last");
+        lastWelcomeMessage = getParam("last");
 
-        deleteLastWelcome = (Boolean)bot.params.get("delLast");
-
-	}
-
-    @Override
-    public String botName() {
-
-        return "Join Captcha Bot For " + userName;
-
-	}
-
-    @Override
-    public String getToken() {
-
-        return botToken;
+        deleteLastWelcome = getParam("delLast");
 
 	}
 	
@@ -119,61 +82,9 @@ public class JoinCaptchaBot extends BotFragment {
 	@Override
 	public int checkMsg(UserData user,Msg msg) {
 		
+		if (super.checkMsg(user,msg) == PROCESS_REJECT) return PROCESS_REJECT;
+		
 		return msg.message().newChatMembers() != null ? PROCESS_SYNC : msg.isPrivate() ? PROCESS_REJECT : PROCESS_ASYNC;
-		
-	}
-
-	@Override
-	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
-		
-		return ((user.admin() || user.id.equals(userId)) && msg.isPrivate()) ? PROCESS_ASYNC : PROCESS_REJECT;
-		
-	}
-
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-		
-		if ("start".equals(function)) {
-			
-			msg.send("管理员命令 :","\n退出群组 : /exit <chatId>","发送信息 : /send <chatId> <text...>").exec();
-			
-		} else if ("exit".equals(function)) {
-			
-			if (params.length < 1) {
-				
-				msg.send("用法 : /exit <chatId>").exec();
-				
-				return;
-				
-			}
-
-			long groupId = NumberUtil.parseLong(params[0]);
-			
-			BaseResponse resp = bot().execute(new LeaveChat(groupId));
-
-			msg.send(resp.isOk() ? "退出成功" : ("失败 : " + resp.description())).exec();
-		
-		} else if ("send".equals(function)) {
-			
-			if (params.length < 2) {
-
-				msg.send("用法 : /send <chatId> <text...>").exec();
-
-				return;
-
-			}
-
-			long groupId = NumberUtil.parseLong(params[0]);
-
-			SendResponse resp = new Send(this,groupId,ArrayUtil.sub(params,1,params.length)).exec();
-
-			msg.send(resp.isOk() ? ("发送成功 消息ID : " + resp.message().messageId()) : ("失败 : " + resp.description())).exec();
-			
-		} else {
-			
-			msg.send("无效的管理命令").exec();
-			
-		}
 		
 	}
 	

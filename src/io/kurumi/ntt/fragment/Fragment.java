@@ -1,5 +1,6 @@
 package io.kurumi.ntt.fragment;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.http.HttpUtil;
 import com.mongodb.client.FindIterable;
@@ -8,10 +9,12 @@ import com.pengrad.telegrambot.model.Poll;
 import com.pengrad.telegrambot.model.Sticker;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ChatAction;
+import com.pengrad.telegrambot.request.BaseRequest;
 import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendChatAction;
 import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendSticker;
+import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetFileResponse;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.PointData;
@@ -27,8 +30,6 @@ import io.kurumi.ntt.model.request.Keyboard;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.BotLog;
 import java.io.File;
-import com.pengrad.telegrambot.request.UploadStickerFile;
-import cn.hutool.core.io.FileUtil;
 
 public class Fragment {
 
@@ -41,7 +42,14 @@ public class Fragment {
         return origin.bot();
 
     }
+	
+	public <T extends BaseRequest, R extends BaseResponse> R execute(BaseRequest<T, R> request) {
+       
+		return bot().execute(request);
+		
+    }
 
+	
     public PointStore point() {
 
         return origin.point();
@@ -588,6 +596,28 @@ public class Fragment {
         GetFileResponse file = bot().execute(new GetFile(fileId));
 
         if (!file.isOk()) {
+
+            BotLog.debug("取文件失败 : " + file.errorCode() + " " + file.description());
+
+            return null;
+
+        }
+
+        String path = bot().getFullFilePath(file.file());
+
+        HttpUtil.downloadFile(path,local);
+
+        return local;
+
+    }
+	
+	public File getFile(GetFileResponse file) {
+
+        File local = new File(Env.CACHE_DIR,"files/" + file.file().fileId());
+
+        if (local.isFile()) return local;
+
+              if (!file.isOk()) {
 
             BotLog.debug("取文件失败 : " + file.errorCode() + " " + file.description());
 
