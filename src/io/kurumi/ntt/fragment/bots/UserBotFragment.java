@@ -50,6 +50,9 @@ public class UserBotFragment extends BotFragment {
 			params.put("banned_chat",banned_chat);
 
 		}
+		
+		localAdmins.clear();
+		localAdmins.add(userId);
 
 	}
 
