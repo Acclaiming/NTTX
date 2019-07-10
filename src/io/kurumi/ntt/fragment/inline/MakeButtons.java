@@ -16,9 +16,7 @@ public class MakeButtons extends Fragment {
 	public void onQuery(UserData user,Query inlineQuery) {
 
 		if (StrUtil.isBlank(inlineQuery.text)) {
-			
-			execute(inlineQuery.article("错误 : 空的内容","错误 : 空的内容",null,null).reply());
-			
+		
 			return;
 			
 		}
@@ -34,13 +32,13 @@ public class MakeButtons extends Fragment {
 				
 				text = text.substring(1);
 				
-			} else if (text.startsWith("HTML ")) {
+			} else if (text.startsWith("HTML")) {
 
 				text = text.substring(5);
 
 				html = true;
 
-			} else if (text.startsWith("BUTTONS ")) {
+			} else if (text.startsWith("BUTTONS")) {
 
 				text = text.substring(8);
 
@@ -56,7 +54,7 @@ public class MakeButtons extends Fragment {
 
 		if (StrUtil.isBlank(text) || (!html && !buttons)) {
 			
-			execute(inlineQuery.article("不需要解析 : (" + html + "," + buttons + "," + text + ")","错误 : 不需要解析",null,null).reply());
+			execute(inlineQuery.article("不需要解析 ( ˙-˙ )",text,null,null).reply());
 
 			return;
 			
@@ -104,7 +102,7 @@ public class MakeButtons extends Fragment {
 		
 		ParseMode parseMode = html ? ParseMode.HTML : null;
 		
-		inlineQuery.article("解析完成 点击显示",text,parseMode,markup);
+		inlineQuery.article("完成 *٩(๑´∀`๑)ง*",text,parseMode,markup);
 
 		execute(inlineQuery.reply());
 		
