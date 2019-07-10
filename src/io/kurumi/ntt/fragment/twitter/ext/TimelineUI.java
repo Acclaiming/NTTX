@@ -398,7 +398,7 @@ public class TimelineUI extends Fragment {
 
 								} catch (TwitterException e) {
 
-									if (e.getStatusCode() == 503 || e.getStatusCode() == -1) return;
+									if (e.getStatusCode() == 503 || e.getErrorCode() == -1) return;
 
 									setting.timeline = false;
 
@@ -461,8 +461,8 @@ public class TimelineUI extends Fragment {
 
 								} catch (TwitterException e) {
 
-									if (e.getStatusCode() == 503 || e.getStatusCode() == -1) return;
-
+									if (e.getStatusCode() == 503 || e.getErrorCode() == -1) return;
+									
 									setting.mention = false;
 
 									new Send(auth.user, "回复流已关闭 :", NTT.parseTwitterException(e)).exec();

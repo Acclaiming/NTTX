@@ -236,6 +236,10 @@ public class TrackTask extends TimerTask {
                 } else if (e.getErrorCode() == 326) {
 
                     // 被限制;
+					
+				} else if (e.getStatusCode() == 429) {
+					
+					
 
                 } else if (e.getErrorCode() != 130) {
 
