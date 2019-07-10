@@ -9,6 +9,8 @@ import cn.hutool.core.util.ArrayUtil;
 import io.kurumi.ntt.model.request.ButtonLine;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.response.BaseResponse;
+import java.util.Collection;
+import java.util.Collections;
 
 public class MakeButtons extends Fragment {
 
@@ -72,7 +74,7 @@ public class MakeButtons extends Fragment {
 				
 				while (line.contains("[")) {
 				
-					String after = StrUtil.subAfter(line,"[",true);
+					String after = StrUtil.subBefore(line,"[",true);
 					line = StrUtil.subBefore(line,"[",true);
 					
 					String bText = StrUtil.subBefore(after,"]",false);
@@ -92,12 +94,20 @@ public class MakeButtons extends Fragment {
 
 				if (markup == null) markup = new ButtonMarkup();
 				
+				Collections.reverse(bL);
+				
 				markup.add(bL);
 				
 				text = StrUtil.subBefore(text,"\n",true);
 				
 			}
 
+		}
+		
+		if (markup != null) {
+			
+			Collections.reverse(markup);
+			
 		}
 		
 		ParseMode parseMode = html ? ParseMode.HTML : null;
