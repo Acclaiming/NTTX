@@ -3,14 +3,19 @@ package io.kurumi.ntt.fragment.bots;
 import cn.hutool.captcha.generator.CodeGenerator;
 import cn.hutool.captcha.generator.MathGenerator;
 import cn.hutool.captcha.generator.RandomGenerator;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.GetUserProfilePhotos;
+import com.pengrad.telegrambot.request.LeaveChat;
 import com.pengrad.telegrambot.request.SendPhoto;
+import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetUserProfilePhotosResponse;
 import com.pengrad.telegrambot.response.SendResponse;
+import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.admin.Firewall;
@@ -25,12 +30,8 @@ import java.awt.Color;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.TimerTask;
-import io.kurumi.ntt.db.PointData;
-import cn.hutool.core.util.NumberUtil;
-import com.pengrad.telegrambot.request.LeaveChat;
-import com.pengrad.telegrambot.response.BaseResponse;
-import cn.hutool.core.util.ArrayUtil;
 
 public class JoinCaptchaBot extends BotFragment {
 
@@ -47,18 +48,16 @@ public class JoinCaptchaBot extends BotFragment {
     public String userName;
     public Long logChannel;
     public Boolean delJoin;
+	
     HashMap<Long, HashMap<Long, Msg>> cache = new HashMap<>();
 	HashMap<Long, HashMap<Long, Msg>> secCache = new HashMap<>();
-
 	HashSet<Long> failed = new HashSet<>();
 	
     String welcomeMessage;
     Integer lastWelcomeMessage;
-
     boolean lastChanged = false;
-
     Boolean deleteLastWelcome;
-
+	
     @Override
     public void reload() {
 

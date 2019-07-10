@@ -45,6 +45,7 @@ import com.pengrad.telegrambot.TelegramException;
 import io.kurumi.ntt.utils.TentcentNlp;
 import java.util.TreeSet;
 import io.kurumi.ntt.fragment.Fragment.Processed;
+import java.util.ArrayList;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener,ExceptionHandler {
 
@@ -60,6 +61,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
     public LinkedList<Fragment> fragments = new LinkedList<>();
     private String token;
     private PointStore point;
+	
+	public List<Long> localAdmins = new ArrayList<>();
 
 	class UserAndUpdate implements Comparable<UserAndUpdate> {
 
@@ -556,7 +559,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 							};
 
-						} else if (adminPayloads.containsKey(payload)) {
+						} else if ((user.admin() || localAdmins.contains(user.id)) && adminPayloads.containsKey(payload)) {
 
 							final Fragment function = adminPayloads.get(payload);
 
@@ -598,7 +601,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 						}
 
 
-					} else if (adminFunctions.containsKey(msg.command())) {
+					} else if ((user.admin() || localAdmins.contains(user.id)) && adminFunctions.containsKey(msg.command())) {
 
 						final Fragment function = adminFunctions.get(msg.command());
 
