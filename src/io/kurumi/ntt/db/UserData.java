@@ -167,7 +167,7 @@ public class UserData {
 
     public String userName() {
 
-        return Html.a(StrUtil.isBlank(name()) ? "[已重置]" : name(), "tg://user?id=" + id);
+        return Html.a(name() == null ? "已删除的绒布球" : name(), "tg://user?id=" + id);
 
     }
 
