@@ -84,7 +84,7 @@ public class JoinCaptchaBot extends UserBotFragment {
 		
 		if (super.checkMsg(user,msg) == PROCESS_REJECT) return PROCESS_REJECT;
 		
-		return msg.message().newChatMembers() != null ? PROCESS_SYNC : msg.isPrivate() ? PROCESS_REJECT : PROCESS_ASYNC;
+		return msg.message().newChatMembers() != null ? PROCESS_SYNC : PROCESS_ASYNC;
 		
 	}
 	

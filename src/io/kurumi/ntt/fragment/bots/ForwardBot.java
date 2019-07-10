@@ -53,11 +53,11 @@ public class ForwardBot extends UserBotFragment {
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-
-		if (!msg.isPrivate()) return;
 		
 		super.onFunction(user,msg,function,params);
 
+		if (!msg.isPrivate()) return;
+		
 		if (!(user.equals(userId) || user.admin()) &&  "start".equals(function)) {
 
 			msg.send(welcomeMessage).exec();
