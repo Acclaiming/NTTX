@@ -82,10 +82,12 @@ public class Query {
 
     public AnswerInlineQuery reply() {
 
+        AnswerInlineQuery answer = new AnswerInlineQuery(query.id(),results.toArray(new InlineQueryResult[results.size()]));
+
 		results.clear();
 		
-        return new AnswerInlineQuery(query.id(), results.toArray(new InlineQueryResult[results.size()]));
-
+		return answer;
+		
     }
 
 
