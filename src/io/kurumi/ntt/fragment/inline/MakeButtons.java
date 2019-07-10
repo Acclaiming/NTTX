@@ -15,7 +15,13 @@ public class MakeButtons extends Fragment {
 	@Override
 	public void onQuery(UserData user,Query inlineQuery) {
 
-		if (StrUtil.isBlank(inlineQuery.text)) return;
+		if (StrUtil.isBlank(inlineQuery.text)) {
+			
+			execute(inlineQuery.article("错误 : 空的内容","错误 : 空的内容",null,null).reply());
+			
+			return;
+			
+		}
 
 		String text = inlineQuery.text;
 
@@ -44,7 +50,13 @@ public class MakeButtons extends Fragment {
 
 		}
 
-		if (StrUtil.isBlank(text) || (!html && !buttons)) return;
+		if (StrUtil.isBlank(text) || (!html && !buttons)) {
+			
+			execute(inlineQuery.article("错误 : 不需要解析","错误 : 不需要解析",null,null).reply());
+
+			return;
+			
+		}
 
 		ButtonMarkup markup = null;
 
