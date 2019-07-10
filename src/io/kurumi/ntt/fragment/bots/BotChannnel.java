@@ -94,7 +94,7 @@ public class BotChannnel extends Fragment {
 
 			setPrivatePoint(user,POINT_INPUT_EXTRA_PARAM,param);
 
-			msg.send("disable_notification ？").keyboard("True","False").exec();
+			msg.send("DisableNotification ？").keyboard("True","False").exec();
 
 		} else if ("get_chat".equals(function)) {
 
@@ -176,7 +176,7 @@ public class BotChannnel extends Fragment {
 
 			setPrivatePoint(user,POINT_INPUT_EXTRA_PARAM,param);
 
-			msg.send("disable_notification ？").keyboard("True","False").exec();
+			msg.send("DisableNotification ？").keyboard("True","False").exec();
 
 		} else if ("get_file".equals(function)) {
 
@@ -396,7 +396,7 @@ public class BotChannnel extends Fragment {
 
 				param.step = 1;
 
-				msg.send("disable_notification ？").keyboard("True","False").exec();
+				msg.send("DisableNotification ？").keyboard("True","False").exec();
 
 			} else if (param.step == 1) {
 
