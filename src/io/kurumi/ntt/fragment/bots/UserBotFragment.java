@@ -11,6 +11,7 @@ import cn.hutool.core.util.NumberUtil;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.LeaveChat;
 import com.pengrad.telegrambot.request.KickChatMember;
+import java.util.List;
 
 public class UserBotFragment extends BotFragment {
 
@@ -41,7 +42,7 @@ public class UserBotFragment extends BotFragment {
 
 		params = bot.params;
 
-		banned_chat = (Set<Long>) params.get("banned_chat");
+		banned_chat = new HashSet((List<Long>) params.get("banned_chat"));
 
 		if (banned_chat == null) {
 
