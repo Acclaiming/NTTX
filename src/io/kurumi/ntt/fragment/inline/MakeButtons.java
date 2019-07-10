@@ -66,7 +66,7 @@ public class MakeButtons extends Fragment {
 
 			for (String line : ArrayUtil.reverse(text.split("\n"))) {
 
-				if (!line.startsWith("[") && line.endsWith(")")) break;
+				if (!(line.startsWith("[") && line.endsWith(")"))) break;
 				
 				ButtonLine bL = new ButtonLine();
 				
