@@ -56,8 +56,6 @@ public class MakeButtons extends Fragment {
 
 		if (StrUtil.isBlank(text) || (!html && !buttons)) {
 			
-			execute(inlineQuery.article("不需要解析 ( ˙-˙ )",text,null,null).reply());
-
 			return;
 			
 		}
