@@ -142,7 +142,7 @@ public class BotChannnel extends Fragment {
 
 			if (params.length < 2) { invalidParams(msg,"chatId","userId"); return; }
 
-			KickChatMember send = new KickChatMember(NumberUtil.parseLong(params[0]),NumberUtil.parseInt(params[1]));
+			PromoteChatMember send = new PromoteChatMember(NumberUtil.parseLong(params[0]),NumberUtil.parseInt(params[1]));
 
 			ExtraParam param = new ExtraParam(2,send);
 
