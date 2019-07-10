@@ -41,9 +41,15 @@ public class UserBotFragment extends BotFragment {
         userId = bot.user;
 
 		params = bot.params;
+		
+		List<Long> banned_chat_list = getParam("banned_chat");
 
-		banned_chat = new HashSet((List<Long>) params.get("banned_chat"));
-
+		if (banned_chat_list != null) {
+			
+			banned_chat = new HashSet<Long>(banned_chat_list);
+			
+		}
+		
 		if (banned_chat == null) {
 
 			banned_chat = new HashSet<>();
