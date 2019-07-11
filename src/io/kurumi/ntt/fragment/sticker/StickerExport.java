@@ -15,6 +15,7 @@ import net.coobird.thumbnailator.Thumbnails;
 import java.io.IOException;
 import io.kurumi.ntt.utils.NTT;
 import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.utils.Html;
 
 public class StickerExport extends Fragment {
 
@@ -50,6 +51,8 @@ public class StickerExport extends Fragment {
 		if (message.sticker() != null) {
 			
 			bot().execute(new SendDocument(msg.chatId(),getFile(message.sticker().fileId())).fileName("sticker.png"));
+			
+			msg.send("Sticker Emojis : " + Html.code(message.sticker().emoji())).exec();
 			
 		} else if (message.photo() != null || message.document() != null) {
 			
