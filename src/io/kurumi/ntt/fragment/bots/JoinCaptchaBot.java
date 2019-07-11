@@ -179,7 +179,7 @@ public class JoinCaptchaBot extends UserBotFragment {
 			}
 
 
-			if (msg.isGroupAdmin()) return;
+			if (user.admin() || msg.isGroupAdmin()) return;
 
 		    if (!user.id.equals(newData.id)) {
 
@@ -191,24 +191,33 @@ public class JoinCaptchaBot extends UserBotFragment {
 
 					new Send(this,logChannel,"事件 : #邀请","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + newData.userName(),"#id" + newData.id,"来自 : " + user.userName(),"#id" + user.id).html().exec();
 
-
 				}
 
 				return;
 
 			}
 
-			if (Firewall.block.containsId(newData.id)) {
+			if (failed.contains(newData.id)) {
 
-				if (msg.kick() && logChannel != null) {
+				msg.delete();
 
-					msg.delete();
+			} else if (Firewall.block.containsId(newData.id)) {
 
-					new Send(this,logChannel,"事件 : #未通过 #SPAM","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
+				failed.add(newData.id);
 
-					return;
+				/*
 
-				}
+				 if (msg.kick() && logChannel != null) {
+
+				 msg.delete();
+
+				 new Send(this,logChannel,"事件 : #未通过 #SPAM","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
+				 
+				 return;
+
+				 }
+
+				 */
 
 			} 
 
