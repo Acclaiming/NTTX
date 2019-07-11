@@ -117,6 +117,22 @@ public class JoinCaptchaBot extends UserBotFragment {
 
                 msg.delete();
 
+			} else if (msg.message().leftChatMember().id().equals(me.id())) {
+				
+				StringBuilder groupInfo = new StringBuilder();
+				
+				groupInfo.append("群组 : ").append(msg.chat().title());
+				
+				if (msg.chat().username() != null) {
+					
+					groupInfo.append("\n群组身份 : ").append(msg.chat().username());
+					
+				}
+				
+				new Send(this,logChannel,"事件 : #移出群组",groupInfo.toString(),"[" + Html.code(msg.chatId().toString()) + "]","来自 : " + user.userName(),"#id" + user.id).html().exec();
+				
+				banned_chat.add(msg.chatId());
+				
 			} else if (!user.id.equals(msg.message().leftChatMember().id())) {
 			}
 
@@ -134,7 +150,17 @@ public class JoinCaptchaBot extends UserBotFragment {
 
                 if (newMember.id().equals(botId)) {
 
-					new Send(this,logChannel,"事件 : #加入群组","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","来自 : " + user.userName(),"#id" + user.id).html().exec();
+					StringBuilder groupInfo = new StringBuilder();
+
+					groupInfo.append("群组 : ").append(msg.chat().title());
+
+					if (msg.chat().username() != null) {
+
+						groupInfo.append("\n群组身份 : ").append(msg.chat().username());
+
+					}
+					
+					new Send(this,logChannel,"事件 : #加入群组",groupInfo.toString(),"[" + Html.code(msg.chatId().toString()) + "]","来自 : " + user.userName(),"#id" + user.id).html().exec();
 					
 					msg.send("欢迎使用加群验证BOT","给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
 
