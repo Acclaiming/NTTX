@@ -52,7 +52,7 @@ public class StickerExport extends Fragment {
 			
 			bot().execute(new SendDocument(msg.chatId(),getFile(message.sticker().fileId())).fileName("sticker.png"));
 			
-			msg.send("Sticker Emojis : " + Html.code(message.sticker().emoji())).exec();
+			msg.send("Sticker Emojis : " + Html.code(message.sticker().emoji())).html().exec();
 			
 		} else if (message.photo() != null || message.document() != null) {
 			
