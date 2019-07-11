@@ -46,8 +46,14 @@ public class Firewall extends Fragment {
 
         } else {
 
-            UserData.data.getByField("userName",params[0]);
+            UserData userD = UserData.data.getByField("userName",params[0]);
 
+			if (userD != null) {
+				
+				target = userD.id;
+				
+			}
+			
         }
 
         if (target == -1) {
@@ -177,7 +183,7 @@ public class Firewall extends Fragment {
 
 			GetChatAdministratorsResponse resp = bot().execute(new GetChatAdministrators(msg.chat().id()));
 
-			if (resp != null && resp.isOk()) return false;
+			if (resp == null || !resp.isOk()) return false;
 
 			for (ChatMember member : resp.administrators()) {
 
@@ -186,6 +192,8 @@ public class Firewall extends Fragment {
 				if (!block.containsId(current.id)) continue;
 
 				bot().execute(new LeaveChat(msg.chat().id()));
+				
+				return true;
 
 			}
 

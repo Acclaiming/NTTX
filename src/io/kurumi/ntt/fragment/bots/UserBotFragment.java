@@ -215,8 +215,6 @@ public class UserBotFragment extends BotFragment {
 				return PROCESS_REJECT;
 				
 			}
-			
-			
 
 		} else if (msg.message().leftChatMember() != null) {
 			
