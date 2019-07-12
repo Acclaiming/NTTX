@@ -196,6 +196,8 @@ public class ForwardBot extends UserBotFragment {
 
 				if (msg.isStartPayload()) {
 
+					msg.send(welcomeMessage).exec();
+					
 					new Send(this,userId,"内容 : " + msg.text()).exec();
 
 				} else {
