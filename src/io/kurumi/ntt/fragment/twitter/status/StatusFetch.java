@@ -88,6 +88,8 @@ public class StatusFetch extends Fragment {
 
         ResponseList<Status> tl = null;
 
+		if (archive == null) {
+		
         try {
 
             archive = UserArchive.save(targetL == -1 ? api.showUser(target) : api.showUser(targetL));
@@ -100,7 +102,6 @@ public class StatusFetch extends Fragment {
 
                 accessable = true;
 
-
             } catch (TwitterException e) {
 
                 exc = e;
@@ -109,17 +110,15 @@ public class StatusFetch extends Fragment {
 
         } catch (TwitterException ex) {
 
-            if (ex.getErrorCode() != 136) {
-
-                status.edit(NTT.parseTwitterException(ex)).exec();
-
-                return;
-
-            }
+            if (ex.getErrorCode() == 136) {
 
             exc = ex;
+			
+			}
 
         }
+		}
+		
 
         if (!accessable) {
 

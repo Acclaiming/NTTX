@@ -80,6 +80,21 @@ public class AbsData<ID, T> {
         return collection.find(eq(field, value));
 
     }
+	
+	public List<T> getAllByField(String field,Object value) {
+
+		LinkedList<T> all = new LinkedList<>();
+
+		for (T t : findByField(field,value)) {
+
+			all.add(t);
+
+		}
+
+		return all;
+
+	}
+	
 
     public T getByField(String field, Object value) {
 

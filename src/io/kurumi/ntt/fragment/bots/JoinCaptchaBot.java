@@ -91,11 +91,7 @@ public class JoinCaptchaBot extends UserBotFragment {
     @Override
     public void onGroup(UserData user,final Msg msg) {
 
-        if (msg.message().groupChatCreated() != null || msg.message().supergroupChatCreated() != null) {
-
-            msg.send("欢迎使用加群验证BOT","给BOT 删除消息 和 封禁用户 权限就可以使用了 ~").exec();
-
-		} else if (msg.message().leftChatMember() != null) {
+        if (msg.message().leftChatMember() != null) {
 
             if (cache.containsKey(msg.chatId())) {
 
@@ -129,7 +125,11 @@ public class JoinCaptchaBot extends UserBotFragment {
 
 				}
 
-				new Send(this,logChannel,"事件 : #移出群组",groupInfo.toString(),"[" + Html.code(msg.chatId().toString()) + "]","来自 : " + user.userName(),"#id" + user.id).html().exec();
+				if (logChannel != null) {
+
+					new Send(this,logChannel,"事件 : #移出群组",groupInfo.toString(),"[" + Html.code(msg.chatId().toString()) + "]","来自 : " + user.userName(),"#id" + user.id).html().exec();
+
+				}
 
 				if (!user.admin() && !userId.equals(user.id)) {
 
@@ -178,18 +178,21 @@ public class JoinCaptchaBot extends UserBotFragment {
 
 			}
 
-
 			if (user.admin() || msg.isGroupAdmin()) return;
 
 		    if (!user.id.equals(newData.id)) {
 
-				if (NTT.isGroupAdmin(this,msg.chatId(),newData.id)) {
+				if (logChannel != null) {
 
-					new Send(this,logChannel,"事件 : #邀请 #管理员邀请","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + newData.userName(),"#id" + newData.id,"来自 : " + user.userName(),"#id" + user.id).html().exec();
+					if (NTT.isGroupAdmin(this,msg.chatId(),newData.id)) {
 
-				} else 	{
+						new Send(this,logChannel,"事件 : #邀请 #管理员邀请","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + newData.userName(),"#id" + newData.id,"来自 : " + user.userName(),"#id" + user.id).html().exec();
 
-					new Send(this,logChannel,"事件 : #邀请","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + newData.userName(),"#id" + newData.id,"来自 : " + user.userName(),"#id" + user.id).html().exec();
+					} else 	{
+
+						new Send(this,logChannel,"事件 : #邀请","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + newData.userName(),"#id" + newData.id,"来自 : " + user.userName(),"#id" + user.id).html().exec();
+
+					}
 
 				}
 
@@ -212,7 +215,7 @@ public class JoinCaptchaBot extends UserBotFragment {
 				 msg.delete();
 
 				 new Send(this,logChannel,"事件 : #未通过 #SPAM","群组 : " + msg.chat().title(),"[" + Html.code(msg.chatId().toString()) + "]","用户 : " + user.userName(),"#id" + user.id).html().exec();
-				 
+
 				 return;
 
 				 }

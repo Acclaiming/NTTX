@@ -285,7 +285,7 @@ public class Send extends AbstractSend<Send> {
 		return resp;
 
 	}
-	
+
     @Override
     public SendResponse exec() {
 
@@ -391,6 +391,21 @@ public class Send extends AbstractSend<Send> {
 
         }
 
+
+    }
+	
+	public Send fork(Long chatId) {
+
+        Send send = new Send(null, fragment, chatId, request.getText());
+
+        if (request.mode != null) {
+
+            send.request.parseMode(request.mode);
+        }
+
+        send.request.disableWebPagePreview(request.disableWebPagePreview);
+
+        return send;
 
     }
 
