@@ -45,7 +45,6 @@ public class StickerExport extends Fragment {
 
 	}
 
-
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
@@ -161,37 +160,10 @@ public class StickerExport extends Fragment {
 
 			}
 
-		} else if (msg.hasText() && !msg.isCommand()) {
+		} else {
 
-			String target = msg.text();
-
-			if (target.contains("/")) target = StrUtil.subAfter(target,"/",true);
-
-			final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
-
-			if (!set.isOk()) {
-
-				msg.send("无法读取贴纸包 " + target + " : " + set.description()).exec(data);
-				
-				return;
-
-			}
-
-			msg.send("正在导出贴纸包 : " + set.stickerSet().title()).exec(data);
+			msg.send("正在贴纸制作模式 ，退出使用 /cancel").exec();
 			
-			for (int index = 0;index < set.stickerSet().stickers().length;index ++) {
-				
-				Sticker sticker = set.stickerSet().stickers()[index];
-				
-				bot().execute(new SendDocument(msg.chatId(),getFile(sticker.fileId())).fileName("sticker" + index + ".png"));
-
-				msg.send(sticker.emoji()).exec();
-				
-				
-			}
-			
-			msg.send("导出完成 ~").exec(data);
-
 		}
 
 	}
