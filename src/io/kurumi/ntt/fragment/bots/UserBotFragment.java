@@ -188,9 +188,7 @@ public class UserBotFragment extends BotFragment {
 			return;
 
 		}
-
-		onMsg(user,msg);
-
+		
 	}
 
 	@Override

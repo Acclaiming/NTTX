@@ -73,7 +73,11 @@ public class ForwardBot extends UserBotFragment {
 	@Override
 	public void onPayload(UserData user,Msg msg,String payload,String[] params) {
 
-		if ("reply".equals(payload)) {
+		if ("null".equals(payload)) {
+			
+			onFunction(user,msg,msg.command(),msg.params());
+			
+		} else if ("reply".equals(payload)) {
 
 			UserData target = UserData.get(Long.parseLong(params[0]));
 
@@ -174,6 +178,10 @@ public class ForwardBot extends UserBotFragment {
 
 			}
 
+		} else {
+			
+			onMsg(user,msg);
+			
 		}
 
 
