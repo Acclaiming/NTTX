@@ -182,7 +182,7 @@ public class RemoveSticker extends Fragment {
 
 			}
 			
-			final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
+			final GetStickerSetResponse set = bot().execute(new GetStickerSet(rm.setName));
 
 			if (set.isOk()) {
 

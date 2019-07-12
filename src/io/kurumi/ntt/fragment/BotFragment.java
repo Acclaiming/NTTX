@@ -340,7 +340,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 		if ("cancel".equals(function)) {
 
-			if (data.type == 1) clearPrivatePoint(user); else clearGroupPoint(user);
+			if (data.type == 1) clearPrivatePoint(user).onCancel(user,msg); else clearGroupPoint(user).onCancel(user,msg);
 
 			msg.send("已经取消当前操作 :) ","帮助文档 : @NTT_X").failedWith(9 * 1000);
 
