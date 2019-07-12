@@ -137,7 +137,7 @@ public class RemoveSticker extends Fragment {
 			msg.send("请 选择/发送 要移除的贴纸")
 				.buttons(new ButtonMarkup() {{
 
-						newCurrentInlineButtonLine("选择贴纸","SM_CH");
+						newCurrentInlineButtonLine("选择贴纸",ShowSticker.PREFIX);
 
 					}})
 				.withCancel().exec(data);
