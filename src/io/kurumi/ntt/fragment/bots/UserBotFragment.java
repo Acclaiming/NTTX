@@ -120,6 +120,8 @@ public class UserBotFragment extends BotFragment {
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
 		if (!msg.isPrivate()) return;
+		
+		onMsg(user,msg);
 
 		if (!userId.equals(user.id) && !user.admin()) return;
 
