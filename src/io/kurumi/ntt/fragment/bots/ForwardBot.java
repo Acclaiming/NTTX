@@ -33,9 +33,13 @@ public class ForwardBot extends UserBotFragment {
 
         welcomeMessage = getParam("msg");
 
-        blockList = new HashSet<Long> ((List<Long>)getParam("block"));
+		List<Long> bl = getParam("block");
 
-        if (blockList == null) {
+        if (bl != null) {
+
+			blockList = new HashSet<Long>(bl);
+
+		} else {
 
             blockList = new HashSet<>();
 
@@ -198,7 +202,7 @@ public class ForwardBot extends UserBotFragment {
 				if (msg.isStartPayload()) {
 
 					msg.send(welcomeMessage).exec();
-					
+
 					new Send(this,userId,"内容 : " + msg.text()).exec();
 
 				} else {
