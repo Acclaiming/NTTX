@@ -38,9 +38,9 @@ public class RemoveSticker extends Fragment {
 
 		@Override
 		public void onCancel(UserData user,Msg msg) {
-			
+
 			ShowSticker.current.remove(user.id);
-			
+
 		}
 
 	}
@@ -60,7 +60,7 @@ public class RemoveSticker extends Fragment {
 		}
 
 		StickerRemove data = new StickerRemove();
-		
+
 		setPrivatePoint(user,POINT_REMOVE_STICKER,data);
 
 		msg
@@ -133,7 +133,7 @@ public class RemoveSticker extends Fragment {
 			ShowSticker.current.put(user.id,set.stickerSet());
 
 			rm.type = 1;
-			
+
 			msg.send("请 选择/发送 要移除的贴纸")
 				.buttons(new ButtonMarkup() {{
 
@@ -184,10 +184,16 @@ public class RemoveSticker extends Fragment {
 
 			}
 
-			msg.reply("移除成功！ 这可能需要几个小时的时间来生效。","退出移除模式使用 /cancel").exec(data);
+			msg.reply("移除成功！ ","这可能需要几个小时的时间来生效。","\n退出移除模式使用 /cancel")
+				.buttons(new ButtonMarkup() {{
+
+						newCurrentInlineButtonLine("继续选择","SM_CH");
+
+					}})
+				.exec(data);
 
 		}
-		
+
 	}
 
 
