@@ -192,7 +192,7 @@ public class TrackTask extends TimerTask {
 
     public static void start() {
 
-        BotFragment.trackTimer.scheduleAtFixedRate(INSTANCE,new Date(),3 * 60 * 1000);
+        BotFragment.trackTimer.scheduleAtFixedRate(INSTANCE,new Date(System.currentTimeMillis() + 5 * 60 * 1000),3 * 60 * 1000);
 
     }
 
