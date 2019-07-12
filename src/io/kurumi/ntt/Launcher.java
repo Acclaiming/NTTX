@@ -64,6 +64,7 @@ import io.kurumi.ntt.fragment.sticker.MoveSticker;
 import io.kurumi.ntt.fragment.inline.ShowSticker;
 import io.kurumi.ntt.model.request.Send;
 import java.util.concurrent.atomic.AtomicBoolean;
+import io.kurumi.ntt.db.GroupData;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -348,8 +349,16 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     public void stop() {
 		
 		if (stopeed.getAndSet(true)) return;
-		
+
 		BotServer.INSTANCE.stop();
+		
+		mainTimer.cancel();
+
+		trackTimer.cancel();
+
+		userTrackTask.interrupt();
+		
+		GroupData.data.saveAll();
 		
         for (BotFragment bot : BotServer.fragments.values()) {
 
@@ -362,13 +371,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         }
 
         super.stop();
-
-		mainTimer.cancel();
-
-		trackTimer.cancel();
-
-		userTrackTask.interrupt();
-		
 		
     }
 

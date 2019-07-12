@@ -2,7 +2,7 @@ package io.kurumi.ntt.fragment.group;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.json.JSONArray;
-import io.kurumi.ntt.db.LocalData;
+import io.kurumi.ntt.db.GroupData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
@@ -67,7 +67,7 @@ public class AntiEsu extends Fragment {
 
     };
 
-    public static JSONArray enable = LocalData.getJSONArray("data","anti_esu",true);
+    public static JSONArray enable = GroupData.getJSONArray("data","anti_esu",true);
 
 	static String[] pinyinKeys = new String[] {
 
@@ -222,7 +222,7 @@ public class AntiEsu extends Fragment {
 
     public static void save() {
 
-        LocalData.setJSONArray("data","anti_esu",enable);
+        GroupData.setJSONArray("data","anti_esu",enable);
 
     }
 

@@ -2,7 +2,7 @@ package io.kurumi.ntt.fragment.group;
 
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
-import io.kurumi.ntt.db.LocalData;
+import io.kurumi.ntt.db.GroupData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
@@ -11,11 +11,11 @@ import io.kurumi.ntt.utils.NTT;
 
 public class BanSetickerSet extends Fragment {
 
-   public static JSONObject bans = LocalData.getJSON("data","ban_sticker_set",true);
+   public static JSONObject bans = GroupData.getJSON("data","ban_sticker_set",true);
 
     public static void save() {
 
-        LocalData.setJSON("data","ban_sticker_set",bans);
+        GroupData.setJSON("data","ban_sticker_set",bans);
 
     }
 

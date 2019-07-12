@@ -452,7 +452,7 @@ public class BotChannnel extends Fragment {
 
 			msg.send("OK RESULT : " + ((StringResponse)resp).result()).exec();
 
-		} else if (resp.isOk() && resp instanceof GetChatAdministratorsResponse) {
+		} else if (!resp.isOk() && resp instanceof GetChatAdministratorsResponse) {
 
 			StringBuilder result = new StringBuilder("所有管理员 :");
 

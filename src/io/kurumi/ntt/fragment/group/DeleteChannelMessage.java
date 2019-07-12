@@ -1,7 +1,7 @@
 package io.kurumi.ntt.fragment.group;
 
 import cn.hutool.json.JSONArray;
-import io.kurumi.ntt.db.LocalData;
+import io.kurumi.ntt.db.GroupData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
@@ -10,11 +10,11 @@ import io.kurumi.ntt.utils.NTT;
 
 public class DeleteChannelMessage extends Fragment {
 
-	public static JSONArray enable = LocalData.getJSONArray("data","del_chan_msg",true);
+	public static JSONArray enable = GroupData.getJSONArray("data","del_chan_msg",true);
 
 	public static void save() {
 
-        LocalData.setJSONArray("data","del_chan_msg",enable);
+        GroupData.setJSONArray("data","del_chan_msg",enable);
 
     }
 	
