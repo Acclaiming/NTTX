@@ -136,6 +136,8 @@ public class RemoveSticker extends Fragment {
 
 			ShowSticker.current.put(user.id,set.stickerSet());
 
+			rm.type = 1;
+			
 			msg.send("请选择要移动的贴纸或直接发送")
 				.buttons(new ButtonMarkup() {{
 
