@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.TimerTask;
+import com.pengrad.telegrambot.request.EditMessageReplyMarkup;
 
 public class JoinCaptchaBot extends UserBotFragment {
 
@@ -52,7 +53,7 @@ public class JoinCaptchaBot extends UserBotFragment {
     Integer lastWelcomeMessage;
     boolean lastChanged = false;
     Boolean deleteLastWelcome;
-
+	
     @Override
     public void reload() {
 
@@ -623,16 +624,37 @@ public class JoinCaptchaBot extends UserBotFragment {
     @Override
     public void stop() {
 
-        if (lastChanged) {
+		for (HashMap<Long,Msg> last : cache.values()) {
+			
+			for (final Long id : last.keySet()) {
+				
+				Msg msg = last.get(id);
+				
+				msg.edit("[[ 程序升级重启 验证丢失 ]]").buttons(new ButtonMarkup() {{ newUrlButtonLine("(*σ´∀`)σ","tg://user?id=" + id); }}).exec();
+				
+			}
+			
+		}
+		
+		for (HashMap<Long,Msg> last : secCache.values()) {
 
-            UserBot bot = UserBot.data.getById(botId);
+			for (final Long id : last.keySet()) {
 
-            bot.params.put("last",lastWelcomeMessage);
+				Msg msg = last.get(id);
 
-            UserBot.data.setById(botId,bot);
+				msg.edit("[[ 程序升级重启 验证丢失 ]]").buttons(new ButtonMarkup() {{ newUrlButtonLine("(*σ´∀`)σ","tg://user?id=" + id); }}).exec();
+
+			}
 
 		}
+		
+		
+        if (lastChanged) {
 
+            setParam("last",lastWelcomeMessage);
+
+		}
+		
         super.stop();
 
 	}
