@@ -161,7 +161,7 @@ public class StickerExport extends Fragment {
 
 			}
 
-		} else if (msg.hasText()) {
+		} else if (msg.hasText() && !msg.isCommand()) {
 
 			String target = msg.text();
 
@@ -185,7 +185,7 @@ public class StickerExport extends Fragment {
 				
 				bot().execute(new SendDocument(msg.chatId(),getFile(sticker.fileId())).fileName("sticker" + index + ".png"));
 
-				msg.send(message.sticker().emoji()).exec();
+				msg.send(sticker.emoji()).exec();
 				
 				
 			}
