@@ -18,6 +18,7 @@ import java.util.List;
 import cn.hutool.core.util.ArrayUtil;
 import com.pengrad.telegrambot.request.SetStickerPositionInSet;
 import com.pengrad.telegrambot.response.BaseResponse;
+import io.kurumi.ntt.fragment.inline.ShowSticker;
 
 public class MoveSticker extends Fragment {
 
@@ -43,7 +44,7 @@ public class MoveSticker extends Fragment {
 		@Override
 		public void onCancel(UserData user,Msg msg) {
 
-			current.remove(user.id);
+			ShowSticker.current.remove(user.id);
 
 		}
 
@@ -129,7 +130,7 @@ public class MoveSticker extends Fragment {
 			move.set = set.stickerSet();
 			move.setName = target;
 
-			current.put(user.id,set.stickerSet());
+			ShowSticker.current.put(user.id,set.stickerSet());
 
 			msg.send("请选择要移动的贴纸或直接发送")
 				.buttons(new ButtonMarkup() {{
@@ -176,7 +177,7 @@ public class MoveSticker extends Fragment {
 				move.setName = set.stickerSet().name();
 				move.set = set.stickerSet();
 				
-				current.put(user.id,set.stickerSet());
+				ShowSticker.current.put(user.id,set.stickerSet());
 
 			}
 			
@@ -229,31 +230,5 @@ public class MoveSticker extends Fragment {
 
 	}
 
-	HashMap<Long,StickerSet> current = new HashMap<>();
-
-	@Override
-	public void onQuery(UserData user,Query inlineQuery) {
-
-		if (user == null || inlineQuery.text == null || !inlineQuery.text.startsWith("SM_CH")) return;
-
-		if (current.containsKey(user.id)) {
-
-			for (Sticker sticker : current.get(user.id).stickers()) {
-
-				inlineQuery.sticker(sticker.fileId());
-
-			}
-
-			execute(inlineQuery.reply().cacheTime(0));
-
-		} else {
-			
-			inlineQuery.article("(*σ´∀`)σ","(*σ´∀`)σ",null,null);
-			
-			execute(inlineQuery.reply().cacheTime(0));
-			
-		}
-
-	}
-
+	
 }

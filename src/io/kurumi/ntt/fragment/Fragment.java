@@ -19,7 +19,6 @@ import com.pengrad.telegrambot.response.GetFileResponse;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.PointStore;
-import io.kurumi.ntt.db.StickerPoint;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.status.StatusAction;
@@ -630,12 +629,6 @@ public class Fragment {
         HttpUtil.downloadFile(path,local);
 
         return local;
-
-    }
-
-    public Msg sendSticker(long chatId,StickerPoint sticker) {
-
-        return Msg.from(this,bot().execute(new SendSticker(chatId,sticker.fileId)));
 
     }
 

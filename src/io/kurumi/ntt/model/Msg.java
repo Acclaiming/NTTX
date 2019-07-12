@@ -15,7 +15,6 @@ import com.pengrad.telegrambot.request.LeaveChat;
 import com.pengrad.telegrambot.response.SendResponse;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.Launcher;
-import io.kurumi.ntt.db.StickerPoint;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.request.AbstractSend;
@@ -150,13 +149,6 @@ public class Msg extends Context {
         send.origin = this;
 
         return send;
-
-    }
-
-    public Msg sendSticker(StickerPoint sticker) {
-
-        return fragment.sendSticker(chatId(),sticker);
-
 
     }
 

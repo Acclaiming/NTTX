@@ -18,7 +18,7 @@ public class MakeButtons extends Fragment {
 	@Override
 	public void onQuery(UserData user,Query inlineQuery) {
 
-		if (StrUtil.isBlank(inlineQuery.text)) {
+		if (StrUtil.isBlank(inlineQuery.text) || inlineQuery.text.startsWith("BUTTONS")) {
 		
 			return;
 			
@@ -31,9 +31,11 @@ public class MakeButtons extends Fragment {
 
 		while (true) {
 
-		 if (text.startsWith(" ") || text.startsWith("\n")) {
+		 if (text.startsWith("\n")) {
 				
 				text = text.substring(1);
+				
+				break;
 				
 			} else if (text.startsWith("HTML")) {
 
