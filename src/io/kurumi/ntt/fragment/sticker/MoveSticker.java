@@ -99,7 +99,7 @@ public class MoveSticker extends Fragment {
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
-		StickerMove move = (StickerMove) data;
+		StickerMove move = (StickerMove) data.with(msg);
 
 		if (move.type == 0 && msg.sticker() == null) {
 
