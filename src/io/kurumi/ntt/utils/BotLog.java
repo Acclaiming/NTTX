@@ -141,9 +141,9 @@ public class BotLog extends ConsoleLog {
     public void log(Level level,Throwable t,String format,Object[] arguments) {
 
         if (false == isEnabled(level)) {
-			
-           // return;
-			
+
+			// return;
+
         }
 
         final Dict dict = Dict.create()
@@ -153,8 +153,8 @@ public class BotLog extends ConsoleLog {
         final String logMsg = StrUtil.format(logFormat,dict);
 
 		this.log(t,logMsg);
-		
-	new Send(Env.GROUP,logMsg).html().exec();
+
+		new Send(Env.GROUP,logMsg).exec();
 
 		if (t != null) {
 
