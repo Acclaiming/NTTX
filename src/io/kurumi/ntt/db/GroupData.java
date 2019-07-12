@@ -44,8 +44,8 @@ public class GroupData {
 
 	public List<UserData> admins = new ArrayList<>();
 
-	public Boolean delete_channel_msg;
-	public Boolean anti_esu;
+	public Boolean delete_channel_msg = false;
+	//public Boolean anti_esu;
 
 	public List<String> ban_sticker_set;
 

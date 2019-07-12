@@ -35,7 +35,7 @@ public class DeleteChannelMessage extends Fragment {
 		
         if (params.length == 1 && "off".equals(params[0])) {
 
-            if (data.delete_channel_msg == null) {
+            if (!data.delete_channel_msg) {
 
                 msg.send("无需重复关闭 ~").exec();
 
@@ -49,7 +49,7 @@ public class DeleteChannelMessage extends Fragment {
 
         } else {
 
-            if (data.delete_channel_msg != null) {
+            if (data.delete_channel_msg) {
 
                 msg.send("无须重复开启 ~").exec();
 
