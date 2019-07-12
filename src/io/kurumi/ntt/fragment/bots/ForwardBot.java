@@ -59,7 +59,7 @@ public class ForwardBot extends UserBotFragment {
 		if (!msg.isPrivate()) return;
 
 		if (user.equals(userId) || user.admin()) return;
-		
+
 		if ("start".equals(function)) {
 
 			msg.send(welcomeMessage).exec();
@@ -73,11 +73,7 @@ public class ForwardBot extends UserBotFragment {
 	@Override
 	public void onPayload(UserData user,Msg msg,String payload,String[] params) {
 
-		if ("null".equals(payload)) {
-
-			onFunction(user,msg,msg.command(),msg.params());
-
-		} else if ("reply".equals(payload)) {
+		if ("reply".equals(payload)) {
 
 			UserData target = UserData.get(Long.parseLong(params[0]));
 
@@ -180,7 +176,7 @@ public class ForwardBot extends UserBotFragment {
 
 		} else {
 
-			onMsg(user,msg);
+			checkMsg(user,msg);
 
 		}
 
