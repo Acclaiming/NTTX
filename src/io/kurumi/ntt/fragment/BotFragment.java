@@ -208,7 +208,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 			clearPrivatePoint(user);
 
-            msg.send("选择了 : " + account.archive().urlHtml() + " (❁´▽`❁)").removeKeyboard().html().failed(2 * 1000);
+            msg.send("选择了 : " + account.archive().urlHtml() + " (❁´▽`❁)").html().failed(2 * 1000);
 
 			if (request.payload) {
 
@@ -325,7 +325,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 		if ("cancel".equals(function)) {
 
-			msg.send("没有什么需要取消的 :)").removeKeyboard().failedWith();
+			msg.send("没有什么需要取消的 :)").failedWith();
 
 			return;
 
@@ -342,7 +342,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 			if (data.type == 1) clearPrivatePoint(user); else clearGroupPoint(user);
 
-			msg.send("已经取消当前操作 :) ","帮助文档 : @NTT_X").removeKeyboard().failedWith(9 * 1000);
+			msg.send("已经取消当前操作 :) ","帮助文档 : @NTT_X").failedWith(9 * 1000);
 
 			return;
 

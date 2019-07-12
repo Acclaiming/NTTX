@@ -147,19 +147,19 @@ public class NewStickerSet extends Fragment {
 
 			if (CREATE_COPY.equals(msg.text())) {
 
-				msg.send("现在请发送 目标贴纸包的简称或链接 或目标贴纸包的任意贴纸 : ").removeKeyboard().withCancel().exec(data);
+				msg.send("现在请发送 目标贴纸包的简称或链接 或目标贴纸包的任意贴纸 : ").withCancel().exec(data);
 
 				create.type = 3;
 
 			} else if (CREATE_BY_IMAGE.equals(msg.text())) {
 
-				msg.send("现在请发送任意图片 (建议使用文件格式 直接发送图片会被压缩) : ").removeKeyboard().withCancel().exec(data);
+				msg.send("现在请发送任意图片 (建议使用文件格式 直接发送图片会被压缩) : ").withCancel().exec(data);
 
 				create.type = 4;
 
 			} else if (CREATE_BY_STICKER.equals(msg.text())) {
 
-				msg.send("现在请发送任意贴纸 : ").removeKeyboard().withCancel().exec(data);
+				msg.send("现在请发送任意贴纸 : ").withCancel().exec(data);
 
 				create.type = 5;
 

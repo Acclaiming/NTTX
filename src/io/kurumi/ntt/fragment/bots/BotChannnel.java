@@ -446,7 +446,7 @@ public class BotChannnel extends Fragment {
 
 		if (resp.isOk() && resp instanceof StringResponse) {
 
-			msg.send("OK RESULT : " + ((StringResponse)resp).result()).removeKeyboard().exec();
+			msg.send("OK RESULT : " + ((StringResponse)resp).result()).exec();
 
 		} else if (resp.isOk() && resp instanceof GetChatAdministratorsResponse) {
 
@@ -527,7 +527,7 @@ public class BotChannnel extends Fragment {
 
 			} else {
 
-				msg.send(new JSONObject(resp.json).toStringPretty()).removeKeyboard().exec();
+				msg.send(new JSONObject(resp.json).toStringPretty()).exec();
 
 			}
 

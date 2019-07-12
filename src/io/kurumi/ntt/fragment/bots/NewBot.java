@@ -96,7 +96,7 @@ public class NewBot extends Fragment {
 
                     clearPrivatePoint(user);
 
-                    msg.send("已经取消创建BOT ~").removeKeyboard().failed();
+                    msg.send("已经取消创建BOT ~").failed();
 
                 } else if ("转发私聊".equals(msg.text())) {
 
@@ -104,7 +104,7 @@ public class NewBot extends Fragment {
 
                     create.progress = 10;
 
-                    msg.send("好，请发送私聊BOT的欢迎语，这将在 /start 时发送").removeKeyboard().exec(data);
+                    msg.send("好，请发送私聊BOT的欢迎语，这将在 /start 时发送").exec(data);
                     msg.send("就像这样 : 直接喵喵就行了 ~").withCancel().exec(data);
 
                 } else if ("加群验证".equals(msg.text())) {
@@ -113,7 +113,7 @@ public class NewBot extends Fragment {
 
                     clearPrivatePoint(user);
 
-                    Msg setup = msg.send("创建成功... 正在启动").removeKeyboard().send();
+                    Msg setup = msg.send("创建成功... 正在启动").send();
 
                     create.bot.params = new HashMap<>();
 

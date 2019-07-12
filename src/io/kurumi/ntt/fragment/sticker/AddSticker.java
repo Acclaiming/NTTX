@@ -54,6 +54,8 @@ public class AddSticker extends Fragment {
 			
 			msg.send("你没有使用NTT创建过贴纸包....","使用 /new_sticker_set 创建").exec();
 			
+			return;
+			
 		}
 		
 		PointData data = new StickerAdd().with(msg);

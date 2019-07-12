@@ -35,7 +35,6 @@ public class Keyboard extends LinkedList<KeyboradButtonLine> {
 
     }
 
-
     public ReplyKeyboardMarkup markup() {
 
         LinkedList<KeyboardButton[]> buttons = new LinkedList<>();
@@ -47,7 +46,6 @@ public class Keyboard extends LinkedList<KeyboradButtonLine> {
         }
 
         return new ReplyKeyboardMarkup(buttons.toArray(new KeyboardButton[size()][]));
-
 
     }
 

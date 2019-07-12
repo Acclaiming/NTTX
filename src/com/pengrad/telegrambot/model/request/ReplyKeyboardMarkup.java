@@ -10,12 +10,12 @@ public class ReplyKeyboardMarkup extends Keyboard implements Serializable {
     private final static long serialVersionUID = 0L;
 
     private final KeyboardButton[][] keyboard;
-    private boolean resize_keyboard;
-    private boolean one_time_keyboard;
+    private boolean resize_keyboard = true;
+    private boolean one_time_keyboard = true;
     private boolean selective;
 
     public ReplyKeyboardMarkup(String[]... keyboard) {
-        this(keyboard, false, false, false);
+        this(keyboard, true, true, false);
     }
 
     public ReplyKeyboardMarkup(String[][] keyboard, boolean resize_keyboard, boolean one_time_keyboard, boolean selective) {

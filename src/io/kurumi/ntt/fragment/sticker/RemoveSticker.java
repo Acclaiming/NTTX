@@ -27,7 +27,7 @@ public class RemoveSticker extends Fragment {
 		
 		PointData data = setPrivatePoint(user,POINT_REMOVE_STICKER).with(msg);
 
-		msg.send("请直接发送要移除的贴纸 (必须是要操作贴纸包里的):","注意 : 根据 " + NewStickerSet.DOC + " NTT只能操作由NTT创建的贴纸包...").html().withCancel().exec(data);
+		msg.send("请直接发送要移除的贴纸 :").withCancel().exec(data);
 		
 	}
 
@@ -56,6 +56,14 @@ public class RemoveSticker extends Fragment {
 			
 		}
 		
+		if (PackOwner.data.containsId(msg.sticker().setName()) && !PackOwner.data.fieldEquals(msg.sticker().setName(),"owner",user.id)) {
+			
+			msg.send("这不是你的贴纸包 :)").exec(data);
+			
+			return;
+			
+		}
+		
 		BaseResponse resp = bot().execute(new DeleteStickerFromSet(msg.sticker().fileId()));
 
 		if (!resp.isOk()) {
@@ -66,7 +74,7 @@ public class RemoveSticker extends Fragment {
 
 		}
 
-		msg.reply("移除成功！ 重启客户端生效 ","退出移除模式使用 /cancel").exec(data);
+		msg.reply("移除成功！ 这可能需要几个小时的时间来生效。","退出移除模式使用 /cancel").exec(data);
 		
 		
 	}
