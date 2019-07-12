@@ -633,9 +633,8 @@ public class JoinCaptchaBot extends UserBotFragment {
 				
 				Msg msg = last.get(id);
 				
-				msg.edit("[[ 程序更新重启 验证丢失 (*σ´∀`)σ ]]")/*.buttons(new ButtonMarkup() {{ newUrlButtonLine("(*σ´∀`)σ","tg://user?id=" + id); }})*/.exec();
+				new Send(Env.GROUP,"L " + msg.edit("[[ 程序更新重启 验证丢失 (*σ´∀`)σ ]]")/*.buttons(new ButtonMarkup() {{ newUrlButtonLine("(*σ´∀`)σ","tg://user?id=" + id); }})*/.exec().json).exec();
 				
-				new Send(Env.GROUP,"L" + id).exec();
 				
 			}
 			
