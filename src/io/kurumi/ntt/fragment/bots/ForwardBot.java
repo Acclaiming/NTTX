@@ -194,7 +194,15 @@ public class ForwardBot extends UserBotFragment {
 
                 new Send(this,userId,"来自 " + user.userName() + " : [ " + Html.a("回复","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + user.id) + " ]").html().exec();
 
-                lastReceivedFrom = user.id;
+				if (msg.isStartPayload()) {
+
+					new Send(this,userId,"内容 : " + msg.text()).exec();
+
+				} else {
+
+					lastReceivedFrom = user.id;
+
+				}
 
             }
 
