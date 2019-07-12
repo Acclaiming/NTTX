@@ -131,14 +131,10 @@ public class RemoveSticker extends Fragment {
 			rm.set = set.stickerSet();
 			rm.setName = set.stickerSet().name();
 			ShowSticker.current.put(user.id,set.stickerSet());
-			
-			msg.send("好，现在发送任意贴纸 / 图片 / 图片文件 :","不建议直接发送图片，会被压到看不清").withCancel().exec(data);
-
-			ShowSticker.current.put(user.id,set.stickerSet());
 
 			rm.type = 1;
 			
-			msg.send("请选择要移动的贴纸或直接发送")
+			msg.send("请 选择/发送 要移除的贴纸")
 				.buttons(new ButtonMarkup() {{
 
 						newCurrentInlineButtonLine("选择贴纸","SM_CH");
