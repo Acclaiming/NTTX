@@ -16,6 +16,7 @@ import io.kurumi.ntt.fragment.admin.Stat;
 import io.kurumi.ntt.fragment.admin.Users;
 import io.kurumi.ntt.fragment.base.GetID;
 import io.kurumi.ntt.fragment.base.PingFunction;
+import io.kurumi.ntt.fragment.bots.BotChannnel;
 import io.kurumi.ntt.fragment.bots.MyBots;
 import io.kurumi.ntt.fragment.bots.NewBot;
 import io.kurumi.ntt.fragment.bots.UserBot;
@@ -29,10 +30,8 @@ import io.kurumi.ntt.fragment.group.BanSetickerSet;
 import io.kurumi.ntt.fragment.group.ChineseAction;
 import io.kurumi.ntt.fragment.group.DeleteChannelMessage;
 import io.kurumi.ntt.fragment.group.GroupRepeat;
-import io.kurumi.ntt.fragment.sticker.AddSticker;
-import io.kurumi.ntt.fragment.sticker.NewStickerSet;
+import io.kurumi.ntt.fragment.inline.MakeButtons;
 import io.kurumi.ntt.fragment.sticker.PackExport;
-import io.kurumi.ntt.fragment.sticker.RemoveSticker;
 import io.kurumi.ntt.fragment.sticker.StickerExport;
 import io.kurumi.ntt.fragment.twitter.auto.AutoUI;
 import io.kurumi.ntt.fragment.twitter.ext.MediaDownload;
@@ -58,8 +57,6 @@ import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.Html;
 import java.io.File;
 import java.util.TimeZone;
-import io.kurumi.ntt.fragment.bots.BotChannnel;
-import io.kurumi.ntt.fragment.inline.MakeButtons;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -326,10 +323,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		addFragment(new PackExport());
 		addFragment(new StickerExport());
-		addFragment(new NewStickerSet());
-		addFragment(new AddSticker());
-		addFragment(new RemoveSticker());
-
+		
 		// INLINE
 		
 		addFragment(new MakeButtons());
