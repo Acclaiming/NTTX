@@ -38,6 +38,8 @@ public class ForwardBot extends UserBotFragment {
         if (bl != null) {
 
 			blockList = new HashSet<Long>(bl);
+			
+			blockList.remove(userId);
 
 		} else {
 
@@ -145,8 +147,7 @@ public class ForwardBot extends UserBotFragment {
 
 			} else {
 
-				blockList.add(user.id);
-				save();
+				blockList.add(target.id);
 				msg.send("已屏蔽 " + target.userName() + " ~ [ " + Html.a("解除屏蔽","https://t.me/" + me.username() + "?start=unblock" + PAYLOAD_SPLIT + target.id) + " ] ~").html().exec();
 
 
@@ -167,8 +168,6 @@ public class ForwardBot extends UserBotFragment {
 			if (blockList.contains(target.id.longValue())) {
 
 				blockList.remove(target.id.longValue());
-
-				save();
 
 				msg.send("已解除屏蔽 " + target.userName() + " ~ [ " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + target.id) + " " + Html.a("发送消息","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " ]").html().exec();
 
