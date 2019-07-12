@@ -1,7 +1,6 @@
 package io.kurumi.ntt.fragment.sticker;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.StrUtil;
 import com.pengrad.telegrambot.request.AddStickerToSet;
 import com.pengrad.telegrambot.request.GetStickerSet;
 import com.pengrad.telegrambot.response.BaseResponse;
@@ -11,15 +10,16 @@ import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.fragment.inline.ShowSticker;
 import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.utils.BotLog;
-import io.kurumi.ntt.utils.Html;
-import java.io.File;
-import java.io.IOException;
-import net.coobird.thumbnailator.Thumbnails;
-import java.util.List;
+import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Keyboard;
 import io.kurumi.ntt.model.request.KeyboradButtonLine;
+import io.kurumi.ntt.utils.BotLog;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import net.coobird.thumbnailator.Thumbnails;
 
 public class AddSticker extends Fragment {
 
@@ -94,7 +94,7 @@ public class AddSticker extends Fragment {
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
-		StickerAdd add = (StickerAdd)data.with(msg);
+		final StickerAdd add = (StickerAdd)data.with(msg);
 
 		if (add.type == 0) {
 
@@ -147,7 +147,14 @@ public class AddSticker extends Fragment {
 
 			}
 
-			msg.reply("添加成功！重启客户端生效"," 退出添加使用 /cancel").exec(data);
+			msg.reply("添加成功！","这可能需要几个小时的时间来生效。","\n退出添加使用 /cancel")
+				.buttons(new ButtonMarkup() {{
+
+						newCurrentInlineButtonLine("查看贴纸包",ShowSticker.PREFIX + " " + add.setName);
+
+					}})
+				
+			.exec(data);
 			
 		} else if (msg.message().photo() != null || msg.message().document() != null) {
 
@@ -225,7 +232,15 @@ public class AddSticker extends Fragment {
 
 			}
 			
-			msg.reply("添加成功！","这可能需要几个小时的时间来生效","\n退出添加使用 /cancel").exec(data);
+			msg
+			.reply("添加成功！","这可能需要几个小时的时间来生效","\n退出添加使用 /cancel")
+				.buttons(new ButtonMarkup() {{
+
+						newCurrentInlineButtonLine("查看贴纸包",ShowSticker.PREFIX + " " + add.setName);
+
+					}})
+				
+			.exec(data);
 	
 		} else {
 			
