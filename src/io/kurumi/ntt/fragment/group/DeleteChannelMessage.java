@@ -9,14 +9,6 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.NTT;
 
 public class DeleteChannelMessage extends Fragment {
-
-	public static JSONArray enable = GroupData.getJSONArray("data","del_chan_msg",true);
-
-	public static void save() {
-
-        GroupData.setJSONArray("data","del_chan_msg",enable);
-
-    }
 	
 	@Override
 	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
@@ -39,17 +31,17 @@ public class DeleteChannelMessage extends Fragment {
 
         if (NTT.checkGroupAdmin(msg)) return;
 
+		GroupData data = GroupData.get(msg.chat());
+		
         if (params.length == 1 && "off".equals(params[0])) {
 
-            if (!enable.contains(msg.chatId().longValue())) {
+            if (data.delete_channel_msg == null) {
 
                 msg.send("无需重复关闭 ~").exec();
 
             } else {
 				
-                enable.remove(msg.chatId().longValue());
-
-                save();
+                data.delete_channel_msg = null;
 
                 msg.send("关闭成功 ~").exec();
 
@@ -57,16 +49,14 @@ public class DeleteChannelMessage extends Fragment {
 
         } else {
 
-            if (enable.contains(msg.chatId().longValue())) {
+            if (data.delete_channel_msg != null) {
 
-                msg.send("没有关闭 ~").exec();
+                msg.send("无须重复开启 ~").exec();
 
             } else {
 
-                enable.add(msg.chatId().longValue());
-
-                save();
-
+                data.delete_channel_msg = true;
+				
                 msg.send("已开启 ~").exec();
 
             }
@@ -78,14 +68,16 @@ public class DeleteChannelMessage extends Fragment {
 	@Override
 	public int checkMsg(UserData user,Msg msg) {
 
-		if (msg.isGroup() && enable.contains(msg.chatId().longValue())) {
+		if (msg.isGroup()) {
 
-			if (user.id == 777000) {
+			GroupData data = GroupData.get(msg.chat());
+
+			if (data.delete_channel_msg != null && user.id == 777000) {
 
 				msg.delete();
 
 				return PROCESS_REJECT;
-
+				
 			}
 
 		}

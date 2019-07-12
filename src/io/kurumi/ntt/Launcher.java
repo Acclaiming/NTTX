@@ -5,6 +5,7 @@ import cn.hutool.core.util.RuntimeUtil;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Update;
 import io.kurumi.ntt.db.BotDB;
+import io.kurumi.ntt.db.GroupData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.BotServer;
@@ -27,11 +28,15 @@ import io.kurumi.ntt.fragment.debug.DebugStickerSet;
 import io.kurumi.ntt.fragment.debug.DebugUser;
 import io.kurumi.ntt.fragment.group.AntiEsu;
 import io.kurumi.ntt.fragment.group.BanSetickerSet;
-import io.kurumi.ntt.fragment.group.ChineseAction;
 import io.kurumi.ntt.fragment.group.DeleteChannelMessage;
 import io.kurumi.ntt.fragment.group.GroupRepeat;
 import io.kurumi.ntt.fragment.inline.MakeButtons;
+import io.kurumi.ntt.fragment.inline.ShowSticker;
+import io.kurumi.ntt.fragment.sticker.AddSticker;
+import io.kurumi.ntt.fragment.sticker.MoveSticker;
+import io.kurumi.ntt.fragment.sticker.NewStickerSet;
 import io.kurumi.ntt.fragment.sticker.PackExport;
+import io.kurumi.ntt.fragment.sticker.RemoveSticker;
 import io.kurumi.ntt.fragment.sticker.StickerExport;
 import io.kurumi.ntt.fragment.twitter.auto.AutoUI;
 import io.kurumi.ntt.fragment.twitter.ext.MediaDownload;
@@ -57,14 +62,7 @@ import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.Html;
 import java.io.File;
 import java.util.TimeZone;
-import io.kurumi.ntt.fragment.sticker.NewStickerSet;
-import io.kurumi.ntt.fragment.sticker.AddSticker;
-import io.kurumi.ntt.fragment.sticker.RemoveSticker;
-import io.kurumi.ntt.fragment.sticker.MoveSticker;
-import io.kurumi.ntt.fragment.inline.ShowSticker;
-import io.kurumi.ntt.model.request.Send;
 import java.util.concurrent.atomic.AtomicBoolean;
-import io.kurumi.ntt.db.GroupData;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -319,8 +317,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		// GROUP
 
         addFragment(new GroupRepeat());
-        addFragment(new ChineseAction());
-        addFragment(new AntiEsu());
+        //addFragment(new ChineseAction());
+        //addFragment(new AntiEsu());
         addFragment(new BanSetickerSet());
 		addFragment(new DeleteChannelMessage());
 

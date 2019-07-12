@@ -42,6 +42,12 @@ public class CachedData<T> extends Data<T> {
 		
 	}
 	
+	public T getNoCache(Long id) {
+		
+		return super.getById(id);
+		
+	}
+	
 	@Override
 	public T getById(Long id) {
 

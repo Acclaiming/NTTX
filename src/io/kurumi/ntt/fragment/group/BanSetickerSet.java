@@ -8,16 +8,9 @@ import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.NTT;
+import java.util.ArrayList;
 
 public class BanSetickerSet extends Fragment {
-
-   public static JSONObject bans = GroupData.getJSON("data","ban_sticker_set",true);
-
-    public static void save() {
-
-        GroupData.setJSON("data","ban_sticker_set",bans);
-
-    }
 
 	@Override
 	public void init(BotFragment origin) {
@@ -27,7 +20,7 @@ public class BanSetickerSet extends Fragment {
 		registerFunction("banss","unbanss");
 
 	}
-	
+
 	@Override
 	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
 
@@ -39,7 +32,6 @@ public class BanSetickerSet extends Fragment {
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
 		if ("banss".equals(function)) {
-
 
 			if (NTT.checkGroupAdmin(msg)) return;
 
@@ -63,23 +55,21 @@ public class BanSetickerSet extends Fragment {
 
 			}
 
-			JSONArray rules = bans.getJSONArray(msg.chatId().toString());
+			GroupData data = GroupData.get(msg.chat());
 
-			if (rules == null) rules = new JSONArray();
-
-			if (rules.contains(setName)) {
+			if (data.ban_sticker_set != null && data.ban_sticker_set.contains(setName)) {
 
 				msg.send("这个贴纸包已经被屏蔽了 :)").publicFailed();
 
 				return;
 
+			} else if (data.ban_sticker_set == null) {
+
+				data.ban_sticker_set = new ArrayList<>();
+
 			}
 
-			rules.add(setName);
-
-			bans.put(msg.chatId().toString(),rules);
-
-			save();
+			data.ban_sticker_set.add(setName);
 
 			msg.send("屏蔽成功 ~").exec();
 
@@ -107,11 +97,9 @@ public class BanSetickerSet extends Fragment {
 
 			}
 
-			JSONArray rules = bans.getJSONArray(msg.chatId().toString());
+			GroupData data = GroupData.get(msg.chat());
 
-			if (rules == null) rules = new JSONArray();
-
-			if (!rules.contains(setName)) {
+			if (data.ban_sticker_set == null || !data.ban_sticker_set.contains(setName)) {
 
 				msg.send("这个贴纸包没有被屏蔽 :)").publicFailed();
 
@@ -119,14 +107,11 @@ public class BanSetickerSet extends Fragment {
 
 			}
 
-			rules.remove(setName);
+			data.ban_sticker_set.remove(setName);
 
-			bans.put(msg.chatId().toString(),rules);
+			if (data.ban_sticker_set.isEmpty()) data.ban_sticker_set = null;
 
-			save();
-
-			msg.send("取消屏蔽成功 ~").exec();
-
+			msg.send("屏蔽成功 ~").exec();
 		}
 
     }
@@ -134,14 +119,12 @@ public class BanSetickerSet extends Fragment {
 	@Override
 	public void onGroup(UserData user,Msg msg) {
 
-        if (msg.message().sticker() != null && bans.containsKey(msg.chatId().toString())) {
+		GroupData data = GroupData.get(msg.chat());
 
-            if (bans.getJSONArray(msg.chatId().toString()).contains(msg.message().sticker().setName())) {
+        if (msg.message().sticker() != null && data.ban_sticker_set != null && data.ban_sticker_set.contains(msg.sticker().setName())) {
 
-                msg.delete();
-
-            }
-
+			msg.delete();
+			
         }
 
     }

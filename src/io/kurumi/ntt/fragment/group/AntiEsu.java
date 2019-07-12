@@ -67,11 +67,9 @@ public class AntiEsu extends Fragment {
 
     };
 
-    public static JSONArray enable = GroupData.getJSONArray("data","anti_esu",true);
-
 	static String[] pinyinKeys = new String[] {
 
-		"恶俗","迫害","要素","我哭哭",
+		"恶俗","要素",
 
 		"震撼", "废物", "弱智", "魔怔","碰瓷", "寻思", "傻逼",
 		"迫真", "察觉", "无关心", "便乘", "棒读","你妈","野爹",
@@ -98,7 +96,7 @@ public class AntiEsu extends Fragment {
 
     static String[] keys = new String[]{
 
-		"🐴", "🐮", "🍺", "👊", "¿", "恁","蛆",
+		"🐴", "🐮", "🍺", "👊", "¿", "恁","蛆","我哭哭",
 
 		"nmsl", "这事", "ao的","牛啤","[^不]屑", "鉴", 
 
@@ -119,7 +117,7 @@ public class AntiEsu extends Fragment {
 		format = new HanyuPinyinOutputFormat();
 
 		format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
-		format.setToneType(HanyuPinyinToneType.WITH_TONE_NUMBER);
+		format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
 		format.setVCharType(HanyuPinyinVCharType.WITH_V);
 
 		StringBuilder bw = new StringBuilder(".*(");
@@ -220,12 +218,6 @@ public class AntiEsu extends Fragment {
 
     }
 
-    public static void save() {
-
-        GroupData.setJSONArray("data","anti_esu",enable);
-
-    }
-
 	public String toPinyin(String msg) {
 
 		StringBuilder text = new StringBuilder();
@@ -286,66 +278,10 @@ public class AntiEsu extends Fragment {
 	}
 
 	@Override
-	public void init(BotFragment origin) {
-
-		super.init(origin);
-
-        registerFunction("antiesu","py");
-
-	}
-
-    @Override
-    public void onFunction(UserData user,Msg msg,String function,String[] params) {
-
-		if ("py".equals(function)) {
-		
-			msg.send(Html.code(toPinyin(ArrayUtil.join(ArrayUtil.remove(params,0)," ")))).html().exec();
-			
-			return;
-			
-		}
-		
-        if (NTT.checkGroupAdmin(msg)) return;
-
-        if (params.length == 1 && "off".equals(params[0])) {
-
-            if (!enable.contains(msg.chatId().longValue())) {
-
-                msg.send("无需重复关闭 ~").exec();
-
-            } else {
-
-                enable.remove(msg.chatId().longValue());
-
-                save();
-
-                msg.send("关闭成功 ~").exec();
-
-            }
-
-        } else {
-
-            if (enable.contains(msg.chatId().longValue())) {
-
-                msg.send("没有关闭 ~").exec();
-
-            } else {
-
-                enable.add(msg.chatId().longValue());
-
-                save();
-
-                msg.send("已开启 ~").exec();
-
-            }
-
-        }
-
-    }
-
-	@Override
 	public int checkMsg(UserData user,Msg msg) {
 
+		/*
+		
 		if (msg.isGroup() && enable.contains(msg.chatId().longValue())) {
 
 			if (msg.hasText() && keywordMatch(msg.text())) {
@@ -367,6 +303,8 @@ public class AntiEsu extends Fragment {
 			}
 
 		}
+		
+		*/
 
 		return PROCESS_ASYNC;
 
