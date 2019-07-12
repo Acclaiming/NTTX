@@ -22,11 +22,9 @@ public class GroupData {
 
 			} else if (data.idIndex.containsKey(chat.id())) return data.idIndex.get(chat.id());
 
-		}
-
 		GroupData group = data.getNoCache(chat.id());
 
-		if (data == null) {
+		if (group == null) {
 
 			group = new GroupData();
 
@@ -37,6 +35,8 @@ public class GroupData {
 		data.idIndex.put(chat.id(),group);
 
 		return group;
+		
+		}
 
 	}
 
@@ -44,7 +44,7 @@ public class GroupData {
 
 	public List<UserData> admins;
 
-	public Boolean delete_channel_msg = false;
+	public Boolean delete_channel_msg;
 	//public Boolean anti_esu;
 
 	public List<String> ban_sticker_set;
