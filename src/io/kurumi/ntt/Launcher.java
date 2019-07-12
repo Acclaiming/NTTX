@@ -343,6 +343,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public void stop() {
 
+		BotServer.INSTANCE.stop();
+		
         for (BotFragment bot : BotServer.fragments.values()) {
 
             if (bot != this) bot.stop();
@@ -351,14 +353,13 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         super.stop();
 
-        BotServer.INSTANCE.stop();
-
 		mainTimer.cancel();
 
 		trackTimer.cancel();
 
 		userTrackTask.interrupt();
-
+		
+		
     }
 
     @Override
