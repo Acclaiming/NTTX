@@ -244,13 +244,13 @@ public class MoveSticker extends Fragment {
 
 			}
 
-			execute(inlineQuery.reply());
+			execute(inlineQuery.reply().cacheTime(0));
 
 		} else {
 			
 			inlineQuery.article("(*σ´∀`)σ","(*σ´∀`)σ",null,null);
 			
-			execute(inlineQuery.reply());
+			execute(inlineQuery.reply().cacheTime(0));
 			
 		}
 
