@@ -31,12 +31,10 @@ public class MakeButtons extends Fragment {
 
 		while (true) {
 
-		 if (text.startsWith("\n")) {
+		 if (text.startsWith("\n") || text.startsWith(" ")) {
 				
 				text = text.substring(1);
-				
-				break;
-				
+
 			} else if (text.startsWith("HTML")) {
 
 				text = text.substring(5);
