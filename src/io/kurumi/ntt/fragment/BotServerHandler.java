@@ -138,9 +138,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 		if (!BotServer.fragments.containsKey(botToken)) {
 
 			sendError(ctx,INTERNAL_SERVER_ERROR);
-
-			new TelegramBot(botToken).execute(new DeleteWebhook());
-
+			
 			return;
 
 		}
