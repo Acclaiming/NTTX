@@ -106,7 +106,7 @@ public class AddSticker extends Fragment {
 				
 				return;
 				
-			} else if (target.toLowerCase().endsWith("_by_" + origin.me.username().toLowerCase())) {
+			} else if (!target.toLowerCase().endsWith("_by_" + origin.me.username().toLowerCase())) {
 
 				msg.send("根据 " + NewStickerSet.DOC + " ，BOT只能操作由自己创建的贴纸包....").html().withCancel().exec(data);
 
