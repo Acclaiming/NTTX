@@ -630,7 +630,7 @@ public class JoinCaptchaBot extends UserBotFragment {
 				
 				Msg msg = last.get(id);
 				
-				msg.edit("[[ 程序升级重启 验证丢失 ]]").buttons(new ButtonMarkup() {{ newUrlButtonLine("(*σ´∀`)σ","tg://user?id=" + id); }}).exec();
+				msg.edit("[[ 程序升级重启 验证丢失 ]]")/*.buttons(new ButtonMarkup() {{ newUrlButtonLine("(*σ´∀`)σ","tg://user?id=" + id); }})*/.exec();
 				
 			}
 			
@@ -642,7 +642,7 @@ public class JoinCaptchaBot extends UserBotFragment {
 
 				Msg msg = last.get(id);
 
-				msg.edit("[[ 程序升级重启 验证丢失 ]]").buttons(new ButtonMarkup() {{ newUrlButtonLine("(*σ´∀`)σ","tg://user?id=" + id); }}).exec();
+				msg.edit("[[ 程序升级重启 验证丢失 ]]")/*.buttons(new ButtonMarkup() {{ newUrlButtonLine("(*σ´∀`)σ","tg://user?id=" + id); }})*/.exec();
 
 			}
 
