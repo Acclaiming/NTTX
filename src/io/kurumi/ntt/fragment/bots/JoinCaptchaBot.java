@@ -3,26 +3,23 @@ package io.kurumi.ntt.fragment.bots;
 import cn.hutool.captcha.generator.CodeGenerator;
 import cn.hutool.captcha.generator.MathGenerator;
 import cn.hutool.captcha.generator.RandomGenerator;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.GetUserProfilePhotos;
-import com.pengrad.telegrambot.request.LeaveChat;
 import com.pengrad.telegrambot.request.SendPhoto;
-import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetUserProfilePhotosResponse;
 import com.pengrad.telegrambot.response.SendResponse;
+import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.admin.Firewall;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Send;
+import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.Img;
 import io.kurumi.ntt.utils.NTT;
@@ -30,11 +27,8 @@ import java.awt.Color;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.TimerTask;
-import com.pengrad.telegrambot.request.EditMessageReplyMarkup;
-import io.kurumi.ntt.Env;
-import io.kurumi.ntt.utils.BotLog;
 
 public class JoinCaptchaBot extends UserBotFragment {
 
@@ -626,38 +620,29 @@ public class JoinCaptchaBot extends UserBotFragment {
     @Override
     public void stop() {
 		
-		new Send(Env.GROUP,"喵 : " + cache.size()).exec();
-		
-		BotLog.errorWithStack("C");
-		
-		for (HashMap<Long,Msg> last : cache.values()) {
+		for (Map.Entry<Long,HashMap<Long,Msg>> last : cache.entrySet()) {
 			
-			for (final Long id : last.keySet()) {
+			for (final Map.Entry<Long,Msg> auth : last.getValue().entrySet()) {
 				
-				Msg msg = last.get(id);
+				auth.getValue().delete();
 				
-				new Send(Env.GROUP,"L " + msg.edit("[[ 程序更新重启 验证丢失 (*σ´∀`)σ ]]")/*.buttons(new ButtonMarkup() {{ newUrlButtonLine("(*σ´∀`)σ","tg://user?id=" + id); }})*/.exec().json).exec();
-				
+				new Send(last.getKey(),"[[ 程序更新重启 为" + UserData.get(auth.getKey()).userName() + "的验证丢失 (*σ´∀`)σ ]]").buttons(new ButtonMarkup() {{ newUrlButtonLine("New Issue","https://t.me/NTT_TICKER_BOT?start=null"); }}).exec();
 				
 			}
-			
+						
 		}
 		
-		for (HashMap<Long,Msg> last : secCache.values()) {
+		for (Map.Entry<Long,HashMap<Long,Msg>> last : secCache.entrySet()) {
 
-			for (final Long id : last.keySet()) {
+			for (final Map.Entry<Long,Msg> auth : last.getValue().entrySet()) {
 
-				Msg msg = last.get(id);
+				auth.getValue().delete();
 
-				msg.edit("[[ 程序更新重启 验证丢失 (*σ´∀`)σ ]]")/*.buttons(new ButtonMarkup() {{ newUrlButtonLine("(*σ´∀`)σ","tg://user?id=" + id); }})*/.exec();
+				new Send(last.getKey(),"[[ 程序更新重启 为" + UserData.get(auth.getKey()).userName() + "的验证丢失 (*σ´∀`)σ ]]").buttons(new ButtonMarkup() {{ newUrlButtonLine("New Issue","https://t.me/NTT_TICKER_BOT?start=null"); }}).exec();
 
-				new Send(Env.GROUP,"L" + id).exec();
-				
-				
 			}
 
 		}
-		
 		
         if (lastChanged) {
 

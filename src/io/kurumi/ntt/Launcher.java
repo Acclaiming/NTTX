@@ -63,6 +63,7 @@ import io.kurumi.ntt.fragment.sticker.RemoveSticker;
 import io.kurumi.ntt.fragment.sticker.MoveSticker;
 import io.kurumi.ntt.fragment.inline.ShowSticker;
 import io.kurumi.ntt.model.request.Send;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -156,6 +157,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		INSTANCE.start();
 		
 	}
+	
+	public AtomicBoolean stopeed = new AtomicBoolean(false);
 
     static boolean initDB(String dbAddr,Integer dbPort) {
 
@@ -343,6 +346,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     @Override
     public void stop() {
+		
+		if (stopeed.getAndSet(true)) return;
 		
 		BotServer.INSTANCE.stop();
 		
