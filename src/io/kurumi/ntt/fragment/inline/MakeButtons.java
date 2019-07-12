@@ -19,7 +19,7 @@ public class MakeButtons extends Fragment {
 	public void onQuery(UserData user,Query inlineQuery) {
 
 		if (StrUtil.isBlank(inlineQuery.text)) {
-		
+
 			return;
 			
 		}

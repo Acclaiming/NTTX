@@ -107,12 +107,13 @@ public class BotLog extends ConsoleLog {
 
         log.error(err,message);
 
+
+
     }
 
     public static void errorWithStack(String message) {
 
-        new Send(Env.GROUP,message,"",parseError(new RuntimeException())).exec();
-
+		log.error(new RuntimeException(),message);
 
     }
 
@@ -152,15 +153,17 @@ public class BotLog extends ConsoleLog {
 
         final String logMsg = StrUtil.format(logFormat,dict);
 
-		this.log(t,logMsg);
-
-		new Send(Env.GROUP,logMsg).exec();
-
 		if (t != null) {
 
-			new Send(Env.GROUP,parseError(t)).exec();
+			new Send(Env.GROUP,logMsg,"",parseError(t)).exec();
+
+		} else {
+
+			new Send(Env.GROUP,logMsg).exec();
 
 		}
+
+		this.log(t,logMsg);
 
     }
 
