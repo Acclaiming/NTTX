@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.TimerTask;
 import com.pengrad.telegrambot.request.EditMessageReplyMarkup;
 import io.kurumi.ntt.Env;
+import io.kurumi.ntt.utils.BotLog;
 
 public class JoinCaptchaBot extends UserBotFragment {
 
@@ -626,6 +627,8 @@ public class JoinCaptchaBot extends UserBotFragment {
     public void stop() {
 		
 		new Send(Env.GROUP,"喵 : " + cache.size()).exec();
+		
+		BotLog.errorWithStack("C");
 		
 		for (HashMap<Long,Msg> last : cache.values()) {
 			

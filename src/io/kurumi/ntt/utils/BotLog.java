@@ -151,16 +151,12 @@ public class BotLog extends ConsoleLog {
         final String logMsg = StrUtil.format(logFormat,dict);
 
 		this.log(t,logMsg);
+		
+		new Send(Env.GROUP,logMsg).html().exec();
 
-		if (level != Level.DEBUG) {
+		if (t != null) {
 
-			new Send(Env.GROUP,logMsg).html().exec();
-
-			if (t != null) {
-
-				new Send(Env.GROUP,parseError(t)).exec();
-
-			}
+			new Send(Env.GROUP,parseError(t)).exec();
 
 		}
 
