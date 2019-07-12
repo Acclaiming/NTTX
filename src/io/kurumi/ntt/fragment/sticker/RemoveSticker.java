@@ -59,9 +59,9 @@ public class RemoveSticker extends Fragment {
 
 		}
 
-		PointData data = new StickerRemove();
+		StickerRemove data = new StickerRemove();
 		
-		setPrivatePointData(user,POINT_REMOVE_STICKER,data);
+		setPrivatePoint(user,POINT_REMOVE_STICKER,data);
 
 		msg
 			.send("选择贴纸包")
