@@ -133,9 +133,13 @@ public class AddSticker extends Fragment {
 
 		} else if (msg.message().sticker() != null) {
 
-			BaseResponse resp = bot().execute(new AddStickerToSet(user.id.intValue(),add.setName,readStiker(user.id,msg.message().sticker()),msg.message().sticker().emoji()));
+			BaseResponse resp = execute(new AddStickerToSet(user.id.intValue(),add.setName,readStiker(user.id,msg.message().sticker()),msg.message().sticker().emoji()));
 
-			if (!resp.isOk()) {
+			if (resp == null) {
+				
+				msg.send("Telegram服务器超时 请重试").withCancel().exec();
+				
+			} else if (!resp.isOk()) {
 
 				msg.send("添加失败！请重试",resp.description()).withCancel().exec(data);
 

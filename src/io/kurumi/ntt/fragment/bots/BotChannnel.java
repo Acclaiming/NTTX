@@ -444,7 +444,11 @@ public class BotChannnel extends Fragment {
 
 	void sendResult(Msg msg,BaseResponse resp) {
 
-		if (resp.isOk() && resp instanceof StringResponse) {
+		if (resp == null) {
+			
+			msg.send("Telegram服务器超时 请重试").exec();
+			
+		} else if (resp.isOk() && resp instanceof StringResponse) {
 
 			msg.send("OK RESULT : " + ((StringResponse)resp).result()).exec();
 

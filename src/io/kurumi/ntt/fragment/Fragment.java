@@ -29,6 +29,8 @@ import io.kurumi.ntt.model.request.Keyboard;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.BotLog;
 import java.io.File;
+import java.io.IOException;
+import cn.hutool.core.thread.ThreadUtil;
 
 public class Fragment {
 
@@ -43,7 +45,7 @@ public class Fragment {
     }
 	
 	public <T extends BaseRequest, R extends BaseResponse> R execute(BaseRequest<T, R> request) {
-       
+      
 		return bot().execute(request);
 		
     }

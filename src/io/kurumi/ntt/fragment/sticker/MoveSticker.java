@@ -135,7 +135,7 @@ public class MoveSticker extends Fragment {
 			msg.send("请选择要移动的贴纸或直接发送")
 				.buttons(new ButtonMarkup() {{
 
-						newCurrentInlineButtonLine("选择贴纸","SM_CH");
+						newCurrentInlineButtonLine("选择贴纸",ShowSticker.PREFIX);
 
 					}})
 				.withCancel().exec(data);
@@ -188,7 +188,7 @@ public class MoveSticker extends Fragment {
 			msg.send("请选择 / 发送要互换的位置的贴纸")
 				.buttons(new ButtonMarkup() {{
 
-						newCurrentInlineButtonLine("选择贴纸","SM_CH");
+						newCurrentInlineButtonLine("选择贴纸",ShowSticker.PREFIX);
 
 					}})
 				.withCancel().exec(data);

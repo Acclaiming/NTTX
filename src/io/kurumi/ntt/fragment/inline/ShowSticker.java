@@ -2,8 +2,11 @@ package io.kurumi.ntt.fragment.inline;
 
 import com.pengrad.telegrambot.model.Sticker;
 import com.pengrad.telegrambot.model.StickerSet;
+import com.pengrad.telegrambot.request.GetStickerSet;
+import com.pengrad.telegrambot.response.GetStickerSetResponse;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.fragment.sticker.PackOwner;
 import io.kurumi.ntt.model.Query;
 import java.util.HashMap;
 
@@ -11,10 +14,12 @@ public class ShowSticker extends Fragment {
 	
 	public static HashMap<Long,StickerSet> current = new HashMap<>();
 
+	public static String PREFIX = "STICKER";
+	
 	@Override
 	public void onQuery(UserData user,Query inlineQuery) {
 
-		if (user == null || inlineQuery.text == null || !inlineQuery.text.startsWith("SM_CH")) return;
+		if (user == null || inlineQuery.text == null || !inlineQuery.text.startsWith(PREFIX) return;
 
 		if (current.containsKey(user.id)) {
 
@@ -26,10 +31,20 @@ public class ShowSticker extends Fragment {
 
 			execute(inlineQuery.reply().cacheTime(0));
 
-		} else {
+		} else if (inlineQuery.text != null && inlineQuery.text.length() > (PREFIX.length() + 1)) {
 
-			inlineQuery.article("(*σ´∀`)σ","(*σ´∀`)σ",null,null);
+			String name = inlineQuery.text.substring(PREFIX.length() + 1).trim();
+			
+			final GetStickerSetResponse set = bot().execute(new GetStickerSet(name));
 
+			if (!set.isOk()) return;
+			
+			for (Sticker sticker : set.stickerSet().stickers()) {
+
+				inlineQuery.sticker(sticker.fileId());
+
+			}
+			
 			execute(inlineQuery.reply().cacheTime(0));
 
 		}

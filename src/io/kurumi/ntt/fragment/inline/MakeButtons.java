@@ -119,7 +119,8 @@ public class MakeButtons extends Fragment {
 
 		BaseResponse resp = execute(request);
 		
-		if (!resp.isOk()) {
+		if (resp == null) {
+        } else if (!resp.isOk()) {
 			
 			inlineQuery.article("解析失败","解析失败 : \n\n" + resp.description(),null,null);
 			

@@ -23,7 +23,7 @@ public class Query {
     public LinkedList<InlineQueryResult> results = new LinkedList<>();
 
 	public String text;
-	
+
     public Query(Fragment fragment, InlineQuery query) {
         this.fragment = fragment;
         this.query = query;
