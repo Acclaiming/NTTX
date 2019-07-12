@@ -60,9 +60,11 @@ public class RemoveSticker extends Fragment {
 		}
 
 		PointData data = new StickerRemove();
+		
+		setPrivatePointData(user,POINT_REMOVE_STICKER,data);
 
 		msg
-			.send("要添加到哪个贴纸包呢？请选择")
+			.send("选择贴纸包")
 			.keyboard(new Keyboard() {{
 
 					KeyboradButtonLine line = null;
