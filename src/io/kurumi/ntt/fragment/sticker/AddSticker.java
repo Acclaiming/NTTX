@@ -221,7 +221,7 @@ public class AddSticker extends Fragment {
 
 			}
 			
-			msg.reply("添加成功！重启客户端生效"," 退出添加使用 /cancel").exec(data);
+			msg.reply("添加成功！","这可能需要几个小时的时间来生效","\n退出添加使用 /cancel").exec(data);
 	
 		} else {
 			
