@@ -42,7 +42,7 @@ public class GroupData {
 
 	public long id;
 
-	public List<UserData> admins = new ArrayList<>();
+	public List<UserData> admins;
 
 	public Boolean delete_channel_msg = false;
 	//public Boolean anti_esu;
