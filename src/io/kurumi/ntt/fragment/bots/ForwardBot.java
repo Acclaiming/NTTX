@@ -73,7 +73,7 @@ public class ForwardBot extends UserBotFragment {
 	@Override
 	public void onPayload(UserData user,Msg msg,String payload,String[] params) {
 
-		if ("reply".equals(payload)) {
+		if (userId.equals(user.id) && "reply".equals(payload)) {
 
 			UserData target = UserData.get(Long.parseLong(params[0]));
 
@@ -89,7 +89,7 @@ public class ForwardBot extends UserBotFragment {
 
 			setPrivatePointData(user,POINT_REPLY,target.id);
 
-		} else if ("del".equals(payload)) {
+		} else if (userId.equals(user.id) && "del".equals(payload)) {
 
 			try {
 
@@ -114,7 +114,7 @@ public class ForwardBot extends UserBotFragment {
 
 			}
 
-		} else if ("block".equals(payload)) {
+		} else if (userId.equals(user.id) && "block".equals(payload)) {
 
 			UserData target = UserData.get(Long.parseLong(params[0]));
 
@@ -147,7 +147,7 @@ public class ForwardBot extends UserBotFragment {
 
 			}
 
-		} else if ("unblock".equals(payload)) {
+		} else if (userId.equals(user.id) && "unblock".equals(payload)) {
 
 			UserData target = UserData.get(Long.parseLong(params[0]));
 
