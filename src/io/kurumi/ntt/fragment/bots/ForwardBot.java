@@ -8,14 +8,15 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendSticker;
 import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.SendResponse;
+import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import io.kurumi.ntt.db.PointData;
+import java.util.Set;
 
 public class ForwardBot extends UserBotFragment {
 
@@ -23,7 +24,7 @@ public class ForwardBot extends UserBotFragment {
 
     public Long lastReceivedFrom;
     public String welcomeMessage;
-    public List<Long> blockList;
+    public Set<Long> blockList;
 
     @Override
     public void reload() {
@@ -32,11 +33,11 @@ public class ForwardBot extends UserBotFragment {
 
         welcomeMessage = getParam("msg");
 
-        blockList = getParam("block");
+        blockList = new HashSet<Long> ((List<Long>)getParam("block"));
 
         if (blockList == null) {
 
-            blockList = new LinkedList<>();
+            blockList = new HashSet<>();
 
 			setParam("block",blockList);
 
