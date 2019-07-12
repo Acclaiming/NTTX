@@ -111,7 +111,7 @@ public class BotLog extends ConsoleLog {
 
     public static void errorWithStack(String message) {
 
-        log.error(new RuntimeException(),message);
+        new Send(Env.GROUP,message,"",parseError(new RuntimeException())).exec();
 
 
     }
