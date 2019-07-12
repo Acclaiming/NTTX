@@ -96,7 +96,7 @@ public class RemoveSticker extends Fragment {
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
-		StickerRemove rm = (StickerRemove)data;
+		StickerRemove rm = (StickerRemove)data.with(msg);
 
 		if (rm.type == 0) {
 
@@ -143,9 +143,7 @@ public class RemoveSticker extends Fragment {
 				.withCancel().exec(data);
 
 		} else {
-
-			data.with(msg);
-
+			
 			if (msg.sticker() == null) {
 
 				msg.send("请选择 / 发送要移除的贴纸 :").withCancel().exec(data);
