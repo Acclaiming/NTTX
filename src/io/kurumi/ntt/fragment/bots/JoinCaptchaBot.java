@@ -646,7 +646,9 @@ public class JoinCaptchaBot extends UserBotFragment {
 
 				auth.getValue().delete();
 
-				new Send(last.getKey(),"[[ 程序更新重启 为" + UserData.get(auth.getKey()).userName() + "的验证丢失 (*σ´∀`)σ ]]").buttons(new ButtonMarkup() {{ newUrlButtonLine("New Issue","https://t.me/NTT_TICKER_BOT?start=null"); }}).html().exec();
+				UserData newData = UserData.get(auth.getKey());
+
+				new Send(last.getKey(),"[[ 程序更新重启 为" + newData.userName() + "的验证丢失 (*σ´∀`)σ ]]").buttons(new ButtonMarkup() {{ newUrlButtonLine("New Issue","https://t.me/NTT_TICKER_BOT?start=null"); }}).html().exec();
 
 				if (logChannel != null) {
 
