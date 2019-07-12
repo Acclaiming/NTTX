@@ -37,7 +37,7 @@ public class ForwardBot extends UserBotFragment {
         if (blockList == null) {
 
             blockList = new LinkedList<>();
-			
+
 			setParam("block",blockList);
 
         }
@@ -46,37 +46,37 @@ public class ForwardBot extends UserBotFragment {
 
 	@Override
 	public int onBlockedMsg(UserData user,Msg msg) {
-		
+
 		return 2;
-		
+
 	}
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-		
+
 		super.onFunction(user,msg,function,params);
 
 		if (!msg.isPrivate()) return;
+
+		if (user.equals(userId) || user.admin()) return;
 		
-		if (!(user.equals(userId) || user.admin()) &&  "start".equals(function)) {
+		if ("start".equals(function)) {
 
 			msg.send(welcomeMessage).exec();
 
-		} else if (!functions.containsKey(function)) {
-			
-			checkMsg(user,msg);
-			
 		}
-		
+
+		checkMsg(user,msg);
+
 	}
 
 	@Override
 	public void onPayload(UserData user,Msg msg,String payload,String[] params) {
 
 		if ("null".equals(payload)) {
-			
+
 			onFunction(user,msg,msg.command(),msg.params());
-			
+
 		} else if ("reply".equals(payload)) {
 
 			UserData target = UserData.get(Long.parseLong(params[0]));
@@ -105,7 +105,7 @@ public class ForwardBot extends UserBotFragment {
 				if (resp.isOk()) {
 
 					msg.send("已删除").failedWith();
-					
+
 				} else {
 
 					msg.send("删除失败 这条发送的信息还在吗 ？").failedWith();
@@ -179,9 +179,9 @@ public class ForwardBot extends UserBotFragment {
 			}
 
 		} else {
-			
+
 			onMsg(user,msg);
-			
+
 		}
 
 
@@ -191,7 +191,7 @@ public class ForwardBot extends UserBotFragment {
 	public int checkMsg(UserData user,Msg msg) {
 
 		if (!msg.isPrivate()) return PROCESS_REJECT;
-		
+
 		if (userId.equals(user.id) || !blockList.contains(user.id.longValue())) {
 
             if (lastReceivedFrom == null || !lastReceivedFrom.equals(user.id)) {
