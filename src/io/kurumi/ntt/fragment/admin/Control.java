@@ -8,6 +8,7 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.Launcher;
 
 public class Control extends Fragment {
 
@@ -27,6 +28,8 @@ public class Control extends Fragment {
 
             msg.send("Executed : By " + user.userName()).html().exec();
 
+			Launcher.INSTANCE.stop();
+			
             RuntimeUtil.exec("service ntt stop");
 
         }  else if ("upgrade".equals(function)) {
@@ -54,16 +57,22 @@ public class Control extends Fragment {
 
             new Send(Env.GROUP, "Bot Restart Executed : By " + user.userName()).html().exec();
 
+			Launcher.INSTANCE.stop();
+			
             RuntimeUtil.exec("service ntt restart");
 
         } else if ("poweroff".equals(function)) {
 
+			Launcher.INSTANCE.stop();
+			
             new Send(Env.GROUP, "Server Stop Executed : By " + user.userName()).html().exec();
 
             RuntimeUtil.exec("poweroff");
 
         } else if ("reboot".equals(function)) {
 
+			Launcher.INSTANCE.stop();
+			
             new Send(Env.GROUP, "Bot Restart Executed : By " + user.userName()).html().exec();
 
             RuntimeUtil.exec("reboot");

@@ -343,8 +343,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     @Override
     public void stop() {
-
-		new Send(Env.GROUP,"STOP").exec();
 		
 		BotServer.INSTANCE.stop();
 		
@@ -353,8 +351,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
             if (bot != this) {
 			
 				bot.stop();
-				
-				new Send(Env.GROUP,"STOP " + bot.botName()).exec();
 				
 			}
 
