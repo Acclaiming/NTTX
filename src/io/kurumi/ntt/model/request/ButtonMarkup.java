@@ -29,6 +29,18 @@ public class ButtonMarkup extends LinkedList<ButtonLine> {
         newButtonLine().newUrlButton(text, url);
 
     }
+	
+	public void newInlineButtonLine(String text, String query) {
+
+        newButtonLine().newInlineButton(text, query);
+
+    }
+	
+	public void newCurrentInlineButtonLine(String text, String query) {
+
+        newButtonLine().newCurrentInlineButton(text, query);
+
+    }
 
     public InlineKeyboardMarkup markup() {
 

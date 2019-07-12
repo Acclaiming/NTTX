@@ -106,6 +106,24 @@ public class AddSticker extends Fragment {
 				
 				return;
 				
+			} else if (target.toLowerCase().endsWith("_by_" + origin.me.username().toLowerCase())) {
+
+				msg.send("根据 " + NewStickerSet.DOC + " ，BOT只能操作由自己创建的贴纸包....").html().withCancel().exec(data);
+
+				return;
+
+			}
+			
+			final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
+
+			if (!set.isOk()) {
+
+				msg.send("无法读取贴纸包 ，已删除本地记录 " + target + " : " + set.description()).exec(data);
+
+				PackOwner.data.deleteById(target);
+				
+				return;
+
 			}
 			
 			add.type = 1;

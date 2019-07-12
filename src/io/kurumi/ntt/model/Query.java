@@ -14,6 +14,7 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.utils.BotLog;
 import java.util.LinkedList;
+import com.pengrad.telegrambot.model.request.InlineQueryResultCachedSticker;
 
 public class Query {
 
@@ -49,6 +50,16 @@ public class Query {
         return this;
 
     }
+	
+	public Query sticker(String fileId) {
+		
+		InlineQueryResultCachedSticker result = new InlineQueryResultCachedSticker(query.id(),fileId);
+
+		results.add(result);
+
+        return this;
+		
+	}
 
     public Query fileId(String fileName, String fileId) {
 
