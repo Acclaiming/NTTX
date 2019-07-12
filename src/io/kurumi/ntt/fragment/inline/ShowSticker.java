@@ -37,7 +37,13 @@ public class ShowSticker extends Fragment {
 			
 			final GetStickerSetResponse set = bot().execute(new GetStickerSet(name));
 
-			if (!set.isOk()) return;
+			if (!set.isOk()) {
+				
+				execute(inlineQuery.reply().cacheTime(114));
+				
+				return;
+				
+			}
 			
 			for (Sticker sticker : set.stickerSet().stickers()) {
 
