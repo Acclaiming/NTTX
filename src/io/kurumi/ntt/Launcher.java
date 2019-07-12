@@ -61,6 +61,7 @@ import io.kurumi.ntt.fragment.sticker.NewStickerSet;
 import io.kurumi.ntt.fragment.sticker.AddSticker;
 import io.kurumi.ntt.fragment.sticker.RemoveSticker;
 import io.kurumi.ntt.fragment.sticker.MoveSticker;
+import io.kurumi.ntt.fragment.inline.ShowSticker;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -335,6 +336,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		// INLINE
 		
 		addFragment(new MakeButtons());
+		addFragment(new ShowSticker());
 		
     }
 
