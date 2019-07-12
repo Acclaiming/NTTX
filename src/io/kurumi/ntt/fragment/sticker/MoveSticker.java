@@ -246,6 +246,12 @@ public class MoveSticker extends Fragment {
 
 			execute(inlineQuery.reply());
 
+		} else {
+			
+			inlineQuery.article("(*σ´∀`)σ","(*σ´∀`)σ",null,null);
+			
+			execute(inlineQuery.reply());
+			
 		}
 
 	}

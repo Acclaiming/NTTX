@@ -53,7 +53,7 @@ public class Query {
 	
 	public Query sticker(String fileId) {
 		
-		InlineQueryResultCachedSticker result = new InlineQueryResultCachedSticker(query.id(),fileId);
+		InlineQueryResultCachedSticker result = new InlineQueryResultCachedSticker(fileId,fileId);
 
 		results.add(result);
 
