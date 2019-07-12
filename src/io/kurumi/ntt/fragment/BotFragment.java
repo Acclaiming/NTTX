@@ -1086,7 +1086,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 		if (!isLongPulling()) {
 
-			bot.execute(new DeleteWebhook());
+			// bot.execute(new DeleteWebhook());
 
 		} else {
 
