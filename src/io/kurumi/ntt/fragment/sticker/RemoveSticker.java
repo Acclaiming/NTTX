@@ -181,6 +181,15 @@ public class RemoveSticker extends Fragment {
 				return;
 
 			}
+			
+			final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
+
+			if (set.isOk()) {
+
+				ShowSticker.current.put(user.id,set.stickerSet());
+
+			}
+		
 
 			msg.reply("移除成功！ ","这可能需要几个小时的时间来生效。","\n退出移除模式使用 /cancel")
 				.buttons(new ButtonMarkup() {{
