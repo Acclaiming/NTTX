@@ -17,6 +17,9 @@ import io.kurumi.ntt.utils.Html;
 import java.io.File;
 import java.io.IOException;
 import net.coobird.thumbnailator.Thumbnails;
+import java.util.List;
+import io.kurumi.ntt.model.request.Keyboard;
+import io.kurumi.ntt.model.request.KeyboradButtonLine;
 
 public class AddSticker extends Fragment {
 
@@ -45,11 +48,44 @@ public class AddSticker extends Fragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
+		final List<PackOwner> all = PackOwner.getAll(user.id);
+
+		if (all.isEmpty()) {
+			
+			msg.send("你没有使用NTT创建过贴纸包....","使用 /new_sticker_set 创建").exec();
+			
+		}
+		
 		PointData data = new StickerAdd().with(msg);
 		
 		setPrivatePoint(user,POINT_ADD_STICKER,data);
 
-		msg.send("要添加到哪个贴纸包呢？请发送简称/链接 或 贴纸包里的一张贴纸 ~").withCancel().exec(data);
+		msg
+		.send("要添加到哪个贴纸包呢？请选择")
+		.keyboard(new Keyboard() {{
+			
+			KeyboradButtonLine line = null;
+			
+			for (PackOwner pack : all) {
+				
+				if (line == null) {
+					
+					line = newButtonLine();
+					
+					line.newButton(pack.id);
+					
+				} else {
+					
+					line.newButton(pack.id);
+					
+					line = null;
+					
+				}
+				
+			}
+			
+		}})
+		.withCancel().exec(data);
 
 	}
 
@@ -60,42 +96,16 @@ public class AddSticker extends Fragment {
 
 		if (add.type == 0) {
 
-			String target;
-
-			if (msg.hasText()) {
+			String target = msg.text();
+			
+			if (target == null || !PackOwner.data.fieldEquals(target,"owner",user.id)) {
 				
-				target = msg.text();
+				msg.send("请选择你的贴纸包").withCancel().exec(data);
 				
-				if (target.contains("/")) target = StrUtil.subAfter(target,"/",true);
-
-			} else if (msg.message().sticker() != null) {
-
-				target = msg.message().sticker().setName();
-
-				if (target == null) {
-
-					msg.send("这个贴纸没有贴纸包... 请重试 :)").withCancel().exec(data);
-
-					return;
-
-				}
-
-			} else {
-
-				msg.send("请发送 目标贴纸包的简称或链接 或目标贴纸包的任意贴纸 : ").withCancel().exec(data);
-
-				return;
-
-			}
-
-			if (!target.toLowerCase().endsWith("_by_" + origin.me.username().toLowerCase())) {
-
-				msg.send("对不起，但是根据 " + NewStickerSet.DOC + " , NTT只能操作由NTT创建的贴纸包。 请重新选择 :").withCancel().html().exec(data);
-
 				return;
 				
 			}
-
+			
 			add.type = 1;
 			add.setName = target;
 

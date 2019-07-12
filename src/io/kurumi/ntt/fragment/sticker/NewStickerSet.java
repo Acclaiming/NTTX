@@ -239,6 +239,8 @@ public class NewStickerSet extends Fragment {
 				return;
 
 			}
+			
+			PackOwner.set(create.name,create.title,user.id);
 
 			for (int index = 1;index < set.stickerSet().stickers().length;index ++) {
 
@@ -348,6 +350,8 @@ public class NewStickerSet extends Fragment {
 
 			}
 
+			PackOwner.set(create.name,create.title,user.id);
+			
 			status.edit("创建成功！你的贴纸包 :  " + Html.a(create.title,"https://t.me/addstickers/" + create.name)).html().exec(data);
 
 		} else if (create.type == 5) {
@@ -375,6 +379,8 @@ public class NewStickerSet extends Fragment {
 				return;
 
 			}
+			
+			PackOwner.set(create.name,create.title,user.id);
 
 			forking.remove(user.id);
 
