@@ -133,6 +133,14 @@ public class AddSticker extends Fragment {
 
 		} else if (msg.message().sticker() != null) {
 
+			if (msg.sticker().setName().equals(add.setName)) {
+				
+				msg.send("这个贴纸已经在此贴纸包里了....").exec(data);
+				
+				return;
+				
+			}
+			
 			BaseResponse resp = execute(new AddStickerToSet(user.id.intValue(),add.setName,readStiker(user.id,msg.message().sticker()),msg.message().sticker().emoji()));
 
 			if (resp == null) {
