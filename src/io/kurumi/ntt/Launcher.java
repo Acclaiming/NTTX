@@ -62,6 +62,7 @@ import io.kurumi.ntt.fragment.sticker.AddSticker;
 import io.kurumi.ntt.fragment.sticker.RemoveSticker;
 import io.kurumi.ntt.fragment.sticker.MoveSticker;
 import io.kurumi.ntt.fragment.inline.ShowSticker;
+import io.kurumi.ntt.model.request.Send;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -343,11 +344,19 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public void stop() {
 
+		new Send(Env.GROUP,"STOP").exec();
+		
 		BotServer.INSTANCE.stop();
 		
         for (BotFragment bot : BotServer.fragments.values()) {
 
-            if (bot != this) bot.stop();
+            if (bot != this) {
+			
+				bot.stop();
+				
+				new Send(Env.GROUP,"STOP " + bot.botName()).exec();
+				
+			}
 
         }
 

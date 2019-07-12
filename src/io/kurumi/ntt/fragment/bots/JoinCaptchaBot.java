@@ -624,8 +624,6 @@ public class JoinCaptchaBot extends UserBotFragment {
 
     @Override
     public void stop() {
-
-		new Send(Env.GROUP,"喵").exec();
 		
 		for (HashMap<Long,Msg> last : cache.values()) {
 			
