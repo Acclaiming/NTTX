@@ -46,6 +46,8 @@ public class TelegramBot {
 
 		} catch (RuntimeException e) {
 
+			/*
+			
 			ThreadUtil.sleep(10 * 1000);
 
 			try {
@@ -54,11 +56,17 @@ public class TelegramBot {
 
 			} catch (RuntimeException ex) {
 
+				*/
+				
 				BotLog.error("发送执行错误 \n\n" + request.toWebhookResponse(),ex);
 
 				return null;
+				
+				/*
 
 			}
+			
+			*/
 
 		}
 
