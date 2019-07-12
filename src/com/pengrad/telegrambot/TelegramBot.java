@@ -52,6 +52,8 @@ public class TelegramBot {
 
 			try {
 
+				// 结果是已经发出去了 这样会重复 奇怪
+				
 				return api.send(request);
 
 			} catch (RuntimeException ex) {
