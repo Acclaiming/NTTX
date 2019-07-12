@@ -42,12 +42,11 @@ public class GroupData {
 
 	public long id;
 
-	public List<UserData> admins;
+	public List<UserData> admins = new ArrayList<>();
 
 	public Boolean delete_channel_msg;
 	public Boolean anti_esu;
 
-	public List<String> ban_sticker;
 	public List<String> ban_sticker_set;
 
 }
