@@ -41,7 +41,7 @@ public class DeleteChannelMessage extends Fragment {
 
             } else {
 				
-                data.delete_channel_msg = null;
+                data.delete_channel_msg = false;
 
                 msg.send("关闭成功 ~").exec();
 
