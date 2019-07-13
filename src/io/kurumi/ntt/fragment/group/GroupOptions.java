@@ -127,632 +127,634 @@ public class GroupOptions extends Fragment {
 
 				}
 
-				if (POINT_BACK.equals(point)) {
+				synchronized (data) {
 
-						callback.edit(Html.b(data.title),Html.i("更改群组的设定")).html().buttons(menuMarkup(data)).exec();
+						if (POINT_BACK.equals(point)) {
 
-				} else if (POINT_MENU_MAIN.equals(point)) {
+								callback.edit(Html.b(data.title),Html.i("更改群组的设定")).html().buttons(menuMarkup(data)).exec();
 
-						callback.edit("群组的管理设定. 点击名称查看功能说明.").buttons(mainMenu(data)).exec();
+						} else if (POINT_MENU_MAIN.equals(point)) {
 
-				} else if (POINT_MENU_REST.equals(point)) {
+								callback.edit("群组的管理设定. 点击名称查看功能说明.").buttons(mainMenu(data)).exec();
 
-						callback.edit("限制成员进行某些操作. ","\n注意 : 当设置了 🗑 (删除) 时 不计入警告计数。\n对于禁止邀请用户/机器人 : 🗑 表示仅移除被邀请者。").buttons(restMenu(data)).exec();
+						} else if (POINT_MENU_REST.equals(point)) {
 
-				} else if (POINT_MENU_JOIN.equals(point)) {
+								callback.edit("限制成员进行某些操作. ","\n注意 : 当设置了 🗑 (删除) 时 不计入警告计数。\n对于禁止邀请用户/机器人 : 🗑 表示仅移除被邀请者。").buttons(restMenu(data)).exec();
 
-						callback.edit("设置群组的新成员验证. ").buttons(joinMenu(data)).exec();
+						} else if (POINT_MENU_JOIN.equals(point)) {
 
-				} else if (POINT_SET_MAIN.equals(point)) {
+								callback.edit("设置群组的新成员验证. ").buttons(joinMenu(data)).exec();
 
-						if ("dcm".equals(params[1])) {
+						} else if (POINT_SET_MAIN.equals(point)) {
 
-								if (data.delete_channel_msg == null) {
+								if ("dcm".equals(params[1])) {
 
-										data.delete_channel_msg = true;
+										if (data.delete_channel_msg == null) {
 
-										callback.text("🛠️  已开启");
+												data.delete_channel_msg = true;
+
+												callback.text("🛠️  已开启");
+
+										} else {
+
+												data.delete_channel_msg = null;
+
+												callback.text("🛠️  已关闭");
+
+										}
+
+								} else if ("dsm".equals(params[1])) {
+
+										if (data.delete_service_msg == null) {
+
+												data.delete_service_msg = true;
+
+												callback.text("🛠️  已开启");
+
+										} else {
+
+												data.delete_service_msg = null;
+
+												callback.text("🛠️  已关闭");
+
+										}
+
+
 
 								} else {
 
-										data.delete_channel_msg = null;
+										callback.alert("喵...？");
 
-										callback.text("🛠️  已关闭");
+										return;
 
 								}
 
-						} else if ("dsm".equals(params[1])) {
+								execute(new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(mainMenu(data).markup()));
 
-								if (data.delete_service_msg == null) {
+						} else if (POINT_SET_REST.equals(point)) {
 
-										data.delete_service_msg = true;
+								if ("invite_user".equals(params[1])) {
 
-										callback.text("🛠️  已开启");
+										if (data.no_invite_user == null) {
+
+												data.no_invite_user = 0;
+
+												callback.text("📝  仅移除被邀请用户");
+
+										} else if (data.no_invite_user == 0) {
+
+												data.no_invite_user = 1;
+
+												callback.text("📝  移除被邀请用户并警告");
+
+
+										} else {
+
+												data.no_invite_user = null;
+
+												callback.text("📝  不处理");
+
+										}
+
+								} else if ("invite_bot".equals(params[1])) {
+
+										if (data.no_invite_bot == null) {
+
+												data.no_invite_bot = 0;
+
+												callback.text("📝  仅移除机器人");
+
+										} else if (data.no_invite_bot == 0) {
+
+												data.no_invite_bot = 1;
+
+												callback.text("📝  移除机器人并警告");
+
+
+										} else {
+
+												data.no_invite_bot = null;
+
+												callback.text("📝  不处理");
+
+										}
+
+
+								} else if ("sticker".equals(params[1])) {
+
+										if (data.no_sticker == null) {
+
+												data.no_sticker = 0;
+
+												callback.text("📝  仅删除");
+
+										} else if (data.no_sticker == 0) {
+
+												data.no_sticker = 1;
+
+												callback.text("📝  删除并警告");
+
+										} else {
+
+												data.no_sticker = null;
+
+												callback.text("📝  不处理");
+
+										}
+
+								} else if ("image".equals(params[1])) {
+
+										if (data.no_image == null) {
+
+												data.no_image = 0;
+
+												callback.text("📝  仅删除");
+
+										} else if (data.no_image == 0) {
+
+												data.no_image = 1;
+
+												callback.text("📝  删除并警告");
+
+										} else {
+
+												data.no_image = null;
+
+												callback.text("📝  不处理");
+
+										}
+
+								} else if ("animation".equals(params[1])) {
+
+										if (data.no_animation == null) {
+
+												data.no_animation = 0;
+
+												callback.text("📝  仅删除");
+
+										} else if (data.no_animation == 0) {
+
+												data.no_animation = 1;
+
+												callback.text("📝  删除并警告");
+
+										} else {
+
+												data.no_animation = null;
+
+												callback.text("📝  不处理");
+
+										}
+
+								} else if ("audio".equals(params[1])) {
+
+										if (data.no_audio == null) {
+
+												data.no_audio = 0;
+
+												callback.text("📝  仅删除");
+
+										} else if (data.no_audio == 0) {
+
+												data.no_audio = 1;
+
+												callback.text("📝  删除并警告");
+
+										} else {
+
+												data.no_audio = null;
+
+												callback.text("📝  不处理");
+
+										}
+
+								} else if ("video".equals(params[1])) {
+
+										if (data.no_video == null) {
+
+												data.no_video = 0;
+
+												callback.text("📝  仅删除");
+
+										} else if (data.no_video == 0) {
+
+												data.no_video = 1;
+
+												callback.text("📝  删除并警告");
+
+										} else {
+
+												data.no_video = null;
+
+												callback.text("📝  不处理");
+
+										}
+
+								} else if ("video_note".equals(params[1])) {
+
+										if (data.no_video_note == null) {
+
+												data.no_video_note = 0;
+
+												callback.text("📝  仅删除");
+
+										} else if (data.no_video_note == 0) {
+
+												data.no_video_note = 1;
+
+												callback.text("📝  删除并警告");
+
+										} else {
+
+												data.no_video_note = null;
+
+												callback.text("📝  不处理");
+
+										}
+
+								} else if ("contact".equals(params[1])) {
+
+										if (data.no_contact == null) {
+
+												data.no_contact = 0;
+
+												callback.text("📝  仅删除");
+
+										} else if (data.no_image == 0) {
+
+												data.no_contact = 1;
+
+												callback.text("📝  删除并警告");
+
+										} else {
+
+												data.no_contact = null;
+
+												callback.text("📝  不处理");
+
+										}
+
+								} else if ("location".equals(params[1])) {
+
+										if (data.no_location == null) {
+
+												data.no_location = 0;
+
+												callback.text("📝  仅删除");
+
+										} else if (data.no_location == 0) {
+
+												data.no_location = 1;
+
+												callback.text("📝  删除并警告");
+
+										} else {
+
+												data.no_location = null;
+
+												callback.text("📝  不处理");
+
+										}
+
+								} else if ("game".equals(params[1])) {
+
+										if (data.no_game == null) {
+
+												data.no_game = 0;
+
+												callback.text("📝  仅删除");
+
+										} else if (data.no_game == 0) {
+
+												data.no_game = 1;
+
+												callback.text("📝  删除并警告");
+
+										} else {
+
+												data.no_game = null;
+
+												callback.text("📝  不处理");
+
+										}
+
+								} else if ("voice".equals(params[1])) {
+
+										if (data.no_voice == null) {
+
+												data.no_voice = 0;
+
+												callback.text("📝  仅删除");
+
+										} else if (data.no_voice == 0) {
+
+												data.no_voice = 1;
+
+												callback.text("📝  删除并警告");
+
+										} else {
+
+												data.no_voice = null;
+
+												callback.text("📝  不处理");
+
+										}
+
+								} else if ("file".equals(params[1])) {
+
+										if (data.no_file == null) {
+
+												data.no_file = 0;
+
+												callback.text("📝  仅删除");
+
+										} else if (data.no_file == 0) {
+
+												data.no_file = 1;
+
+												callback.text("📝  删除并警告");
+
+										} else {
+
+												data.no_file = null;
+
+												callback.text("📝  不处理");
+
+										}
+
+								} else if ("action".equals(params[1])) {
+
+										if (data.rest_action == null) {
+
+												data.rest_action = 0;
+
+												callback.text("📝  禁言该用户");
+
+										} else if (data.rest_action == 0) {
+
+												data.rest_action = 1;
+
+												callback.text("📝  封锁该用户");
+
+										} else {
+
+												data.rest_action = null;
+
+												callback.text("📝  限制非文本发送");
+
+										}
+
+								} else if ("inc".equals(params[1])) {
+
+										if (data.max_count != null && data.max_count > 11) {
+
+												callback.text("📝  新数值太高 (> 12)");
+
+												return;
+
+										} 
+
+										if (data.max_count == null) {
+
+												data.max_count = 1;
+
+										}
+
+										callback.text("📝  " + data.max_count + " -> " + (data.max_count = data.max_count + 1));
+
+								} else if ("dec".equals(params[1])) {
+
+										if (data.max_count == null) {
+
+												callback.text("📝  再低就没了 (ﾟ⊿ﾟ)ﾂ");
+
+												return;
+
+										}
+
+										callback.text("📝  " + data.max_count + " -> " + (data.max_count = data.max_count - 1));
+
+										if (data.max_count == 1) {
+
+												data.max_count = null;
+
+										}
 
 								} else {
 
-										data.delete_service_msg = null;
+										callback.alert("喵...？");
 
-										callback.text("🛠️  已关闭");
+										return;
 
 								}
 
+								execute(new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(restMenu(data).markup()));
+
+						} else if (POINT_SET_JOIN.equals(point)) {
+
+								if ("enable".equals(params[1])) {
+
+										if (data.join_captcha == null) {
+
+												data.join_captcha = true;
+
+												callback.text("🚪  已开启");
+
+										} else {
+
+												data.join_captcha = null;
+
+												callback.text("🚪  已关闭");
+
+										}
+
+								} else if ("passive".equals(params[1])) {
+
+										if (data.passive_mode == null) {
+
+												data.passive_mode = true;
+
+												callback.text("🚪  已开启");
+
+										} else {
+
+												data.passive_mode = null;
+
+												callback.text("🚪  已关闭");
+
+										}
+
+								} else if ("ft_inc".equals(params[1])) {
+
+										if (data.ft_count != null && data.ft_count >= 5) {
+
+												callback.text("🚪  新数值太高 (> 5)");
+
+												return;
+
+										} 
+
+										if (data.ft_count == null) {
+
+												data.ft_count = 1;
+
+										}
+
+										callback.text("🚪  " + data.ft_count + " -> " + (data.ft_count = data.ft_count + 1));
+
+								} else if ("ft_dec".equals(params[1])) {
+
+										if (data.ft_count == null) {
+
+												callback.text("🚪  再低就没了 (ﾟ⊿ﾟ)ﾂ");
+
+												return;
+
+										}
+
+										callback.text("🚪  " + data.ft_count + " -> " + (data.ft_count = data.ft_count - 1));
+
+										if (data.ft_count == 50) {
+
+												data.ft_count = null;
+
+										}
+
+								} else if ("jt_inc".equals(params[1])) {
+
+										if (data.captcha_time != null && (data.captcha_time >= 5 * 60)) {
+
+												callback.text("🚪  新数值太高 (> 5min)");
+
+												return;
+
+										} 
+
+										if (data.captcha_time == null) {
+
+												data.captcha_time = 50;
+
+										}
+
+										callback.text("🚪  " + data.parse_time() + " -> " + (data.parse_time(data.captcha_time = data.captcha_time + 10)));
+
+										if (data.captcha_time == 50) {
+
+												data.captcha_time = null;
+
+										}
+
+								} else if ("jt_dec".equals(params[1])) {
+
+										if (data.captcha_time != null && data.captcha_time < 21) {
+
+												callback.text("🚪  再低还能验证吗 (ﾟ⊿ﾟ)ﾂ");
+
+												return;
+
+										}
+
+										if (data.captcha_time == null) {
+
+												data.captcha_time = 50;
+
+										}
+
+										callback.text("🚪  " + data.parse_time() + " -> " + data.parse_time(data.captcha_time = data.captcha_time - 10));
+
+										if (data.captcha_time == 50) {
+
+												data.captcha_time = null;
+
+										}
+
+								} else if ("fail_action".equals(params[1])) {
+
+										if (data.fail_action == null) {
+
+												data.fail_action = 0;
+
+												callback.text("🚪  移除该用户");
+
+										} else if (data.fail_action == 0) {
+
+												data.fail_action = 1;
+
+												callback.text("🚪  封锁该用户");
+
+										} else {
+
+												data.fail_action = null;
+
+												callback.text("🚪  禁言该用户");
+
+										}
 
 
-						} else {
+								} else if ("mode_def".equals(params[1])) {
 
-								callback.alert("喵...？");
+										callback.text("🚪  默认模式");
 
-								return;
+										if (data.captcha_mode == null) {
+
+												return;
+
+										}
+
+										data.captcha_mode = null;
+
+								}  else if ("mode_code".equals(params[1])) {
+
+										callback.text("🚪  验证码验证");
+
+										if (((Integer)0).equals(data.captcha_mode)) {
+
+												return;
+
+										}
+
+										data.captcha_mode = 0;
+
+								} else if ("mode_math".equals(params[1])) {
+
+										callback.text("🚪  算数验证");
+
+										if (((Integer)1).equals(data.captcha_mode)) {
+
+												return;
+
+										}
+
+										data.captcha_mode = 1;
+
+								} else if ("with_image".equals(params[1])) {
+
+										if (data.with_image == null) {
+
+												data.with_image = true;
+
+												callback.text("🚪  已开启");
+
+										} else {
+
+												data.with_image = null;
+
+												callback.text("🚪  已关闭");
+
+										}
+
+
+								} else {
+
+										callback.alert("喵...？");
+
+										return;
+
+								}
+
+								execute(new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(joinMenu(data).markup()));
 
 						}
-
-						execute(new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(mainMenu(data).markup()));
-
-				} else if (POINT_SET_REST.equals(point)) {
-
-						if ("invite_user".equals(params[1])) {
-
-								if (data.no_invite_user == null) {
-
-										data.no_invite_user = 0;
-
-										callback.text("📝  仅移除被邀请用户");
-
-								} else if (data.no_invite_user == 0) {
-
-										data.no_invite_user = 1;
-
-										callback.text("📝  移除被邀请用户并警告");
-
-
-								} else {
-
-										data.no_invite_user = null;
-
-										callback.text("📝  不处理");
-
-								}
-
-						} else if ("invite_bot".equals(params[1])) {
-
-								if (data.no_invite_bot == null) {
-
-										data.no_invite_bot = 0;
-
-										callback.text("📝  仅移除机器人");
-
-								} else if (data.no_invite_bot == 0) {
-
-										data.no_invite_bot = 1;
-
-										callback.text("📝  移除机器人并警告");
-
-
-								} else {
-
-										data.no_invite_bot = null;
-
-										callback.text("📝  不处理");
-
-								}
-
-
-						} else if ("sticker".equals(params[1])) {
-
-								if (data.no_sticker == null) {
-
-										data.no_sticker = 0;
-
-										callback.text("📝  仅删除");
-
-								} else if (data.no_sticker == 0) {
-
-										data.no_sticker = 1;
-
-										callback.text("📝  删除并警告");
-
-								} else {
-
-										data.no_sticker = null;
-
-										callback.text("📝  不处理");
-
-								}
-
-						} else if ("image".equals(params[1])) {
-
-								if (data.no_image == null) {
-
-										data.no_image = 0;
-
-										callback.text("📝  仅删除");
-
-								} else if (data.no_image == 0) {
-
-										data.no_image = 1;
-
-										callback.text("📝  删除并警告");
-
-								} else {
-
-										data.no_image = null;
-
-										callback.text("📝  不处理");
-
-								}
-
-						} else if ("animation".equals(params[1])) {
-
-								if (data.no_animation == null) {
-
-										data.no_animation = 0;
-
-										callback.text("📝  仅删除");
-
-								} else if (data.no_animation == 0) {
-
-										data.no_animation = 1;
-
-										callback.text("📝  删除并警告");
-
-								} else {
-
-										data.no_animation = null;
-
-										callback.text("📝  不处理");
-
-								}
-
-						} else if ("audio".equals(params[1])) {
-
-								if (data.no_audio == null) {
-
-										data.no_audio = 0;
-
-										callback.text("📝  仅删除");
-
-								} else if (data.no_audio == 0) {
-
-										data.no_audio = 1;
-
-										callback.text("📝  删除并警告");
-
-								} else {
-
-										data.no_audio = null;
-
-										callback.text("📝  不处理");
-
-								}
-
-						} else if ("video".equals(params[1])) {
-
-								if (data.no_video == null) {
-
-										data.no_video = 0;
-
-										callback.text("📝  仅删除");
-
-								} else if (data.no_video == 0) {
-
-										data.no_video = 1;
-
-										callback.text("📝  删除并警告");
-
-								} else {
-
-										data.no_video = null;
-
-										callback.text("📝  不处理");
-
-								}
-
-						} else if ("video_note".equals(params[1])) {
-
-								if (data.no_video_note == null) {
-
-										data.no_video_note = 0;
-
-										callback.text("📝  仅删除");
-
-								} else if (data.no_video_note == 0) {
-
-										data.no_video_note = 1;
-
-										callback.text("📝  删除并警告");
-
-								} else {
-
-										data.no_video_note = null;
-
-										callback.text("📝  不处理");
-
-								}
-
-						} else if ("contact".equals(params[1])) {
-
-								if (data.no_contact == null) {
-
-										data.no_contact = 0;
-
-										callback.text("📝  仅删除");
-
-								} else if (data.no_image == 0) {
-
-										data.no_contact = 1;
-
-										callback.text("📝  删除并警告");
-
-								} else {
-
-										data.no_contact = null;
-
-										callback.text("📝  不处理");
-
-								}
-
-						} else if ("location".equals(params[1])) {
-
-								if (data.no_location == null) {
-
-										data.no_location = 0;
-
-										callback.text("📝  仅删除");
-
-								} else if (data.no_location == 0) {
-
-										data.no_location = 1;
-
-										callback.text("📝  删除并警告");
-
-								} else {
-
-										data.no_location = null;
-
-										callback.text("📝  不处理");
-
-								}
-
-						} else if ("game".equals(params[1])) {
-
-								if (data.no_game == null) {
-
-										data.no_game = 0;
-
-										callback.text("📝  仅删除");
-
-								} else if (data.no_game == 0) {
-
-										data.no_game = 1;
-
-										callback.text("📝  删除并警告");
-
-								} else {
-
-										data.no_game = null;
-
-										callback.text("📝  不处理");
-
-								}
-
-						} else if ("voice".equals(params[1])) {
-
-								if (data.no_voice == null) {
-
-										data.no_voice = 0;
-
-										callback.text("📝  仅删除");
-
-								} else if (data.no_voice == 0) {
-
-										data.no_voice = 1;
-
-										callback.text("📝  删除并警告");
-
-								} else {
-
-										data.no_voice = null;
-
-										callback.text("📝  不处理");
-
-								}
-
-						} else if ("file".equals(params[1])) {
-
-								if (data.no_file == null) {
-
-										data.no_file = 0;
-
-										callback.text("📝  仅删除");
-
-								} else if (data.no_file == 0) {
-
-										data.no_file = 1;
-
-										callback.text("📝  删除并警告");
-
-								} else {
-
-										data.no_file = null;
-
-										callback.text("📝  不处理");
-
-								}
-
-						} else if ("action".equals(params[1])) {
-
-								if (data.rest_action == null) {
-
-										data.rest_action = 0;
-
-										callback.text("📝  禁言该用户");
-
-								} else if (data.rest_action == 0) {
-
-										data.rest_action = 1;
-
-										callback.text("📝  封锁该用户");
-
-								} else {
-
-										data.rest_action = null;
-
-										callback.text("📝  限制非文本发送");
-
-								}
-
-						} else if ("inc".equals(params[1])) {
-
-								if (data.max_count != null && data.max_count > 11) {
-
-										callback.text("📝  新数值太高 (> 12)");
-
-										return;
-
-								} 
-
-								if (data.max_count == null) {
-
-										data.max_count = 1;
-
-								}
-
-								callback.text("📝  " + data.max_count + " -> " + (data.max_count = data.max_count + 1));
-
-						} else if ("dec".equals(params[1])) {
-
-								if (data.max_count == null) {
-
-										callback.text("📝  再低就没了 (ﾟ⊿ﾟ)ﾂ");
-
-										return;
-
-								}
-
-								callback.text("📝  " + data.max_count + " -> " + (data.max_count = data.max_count - 1));
-
-								if (data.max_count == 1) {
-
-										data.max_count = null;
-
-								}
-
-						} else {
-
-								callback.alert("喵...？");
-
-								return;
-
-						}
-
-						execute(new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(restMenu(data).markup()));
-
-				} else if (POINT_SET_JOIN.equals(point)) {
-
-						if ("enable".equals(params[1])) {
-
-								if (data.join_captcha == null) {
-
-										data.join_captcha = true;
-
-										callback.text("🚪  已开启");
-
-								} else {
-
-										data.join_captcha = null;
-
-										callback.text("🚪  已关闭");
-
-								}
-
-						} else if ("passive".equals(params[1])) {
-
-								if (data.passive_mode == null) {
-
-										data.passive_mode = true;
-
-										callback.text("🚪  已开启");
-
-								} else {
-
-										data.passive_mode = null;
-
-										callback.text("🚪  已关闭");
-
-								}
-
-						} else if ("ft_inc".equals(params[1])) {
-
-								if (data.ft_count != null && data.ft_count >= 5) {
-
-										callback.text("🚪  新数值太高 (> 5)");
-
-										return;
-
-								} 
-
-								if (data.ft_count == null) {
-
-										data.ft_count = 1;
-
-								}
-
-								callback.text("🚪  " + data.ft_count + " -> " + (data.ft_count = data.ft_count + 1));
-
-					  } else if ("ft_dec".equals(params[1])) {
-
-								if (data.ft_count == null) {
-
-										callback.text("🚪  再低就没了 (ﾟ⊿ﾟ)ﾂ");
-
-										return;
-
-								}
-
-								callback.text("🚪  " + data.ft_count + " -> " + (data.ft_count = data.ft_count - 1));
-
-								if (data.ft_count == 50) {
-
-										data.ft_count = null;
-
-								}
-
-						} else if ("jt_inc".equals(params[1])) {
-
-								if (data.captcha_time != null && (data.captcha_time >= 5 * 60)) {
-
-										callback.text("🚪  新数值太高 (> 5min)");
-
-										return;
-
-								} 
-
-								if (data.captcha_time == null) {
-
-										data.captcha_time = 50;
-
-								}
-
-								callback.text("🚪  " + data.parse_time() + " -> " + (data.parse_time(data.captcha_time = data.captcha_time + 10)));
-
-								if (data.captcha_time == 50) {
-
-										data.captcha_time = null;
-
-								}
-
-						} else if ("jt_dec".equals(params[1])) {
-
-								if (data.captcha_time != null && data.captcha_time < 21) {
-
-										callback.text("🚪  再低还能验证吗 (ﾟ⊿ﾟ)ﾂ");
-
-										return;
-
-								}
-								
-								if (data.captcha_time == null) {
-
-										data.captcha_time = 50;
-
-								}
-
-								callback.text("🚪  " + data.parse_time() + " -> " + data.parse_time(data.captcha_time = data.captcha_time - 10));
-
-								if (data.captcha_time == 50) {
-
-										data.captcha_time = null;
-
-								}
-						
-						} else if ("fail_action".equals(params[1])) {
-
-								if (data.fail_action == null) {
-
-										data.fail_action = 0;
-
-										callback.text("🚪  移除该用户");
-
-								} else if (data.fail_action == 0) {
-
-										data.fail_action = 1;
-
-										callback.text("🚪  封锁该用户");
-
-								} else {
-
-										data.fail_action = null;
-
-										callback.text("🚪  禁言该用户");
-
-								}
-
-								
-						} else if ("mode_def".equals(params[1])) {
-
-								callback.text("🚪  默认模式");
-
-								if (data.captcha_mode == null) {
-
-										return;
-
-								}
-
-								data.captcha_mode = null;
-
-						}  else if ("mode_code".equals(params[1])) {
-
-								callback.text("🚪  验证码验证");
-
-								if (((Integer)0).equals(data.captcha_mode)) {
-
-										return;
-
-								}
-
-								data.captcha_mode = 0;
-
-						} else if ("mode_math".equals(params[1])) {
-
-								callback.text("🚪  算数验证");
-
-								if (((Integer)1).equals(data.captcha_mode)) {
-
-										return;
-
-								}
-
-								data.captcha_mode = 1;
-
-						} else if ("with_image".equals(params[1])) {
-								
-								if (data.with_image == null) {
-
-										data.with_image = true;
-
-										callback.text("🚪  已开启");
-
-								} else {
-
-										data.with_image = null;
-
-										callback.text("🚪  已关闭");
-
-								}
-								
-								
-						} else {
-
-								callback.alert("喵...？");
-
-								return;
-
-						}
-
-						execute(new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(joinMenu(data).markup()));
-
-
 
 				}
 
