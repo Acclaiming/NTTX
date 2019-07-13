@@ -520,6 +520,24 @@ public class GroupOptions extends Fragment {
 
 								callback.text("📝 " + data.max_count + " -> " + (data.max_count = data.max_count + 1));
 
+						} else if ("dec".equals(params[1])) {
+								
+								if (data.max_count == null) {
+										
+										callback.text("📝 再低就没了 (ﾟ⊿ﾟ)ﾂ");
+										
+										return;
+										
+								}
+								
+								callback.text("📝 " + data.max_count + " -> " + (data.max_count = data.max_count - 1));
+
+								if (data.max_count == 1) {
+										
+										data.max_count = 0;
+										
+								}
+								
 						} else {
 
 								callback.alert("喵...？");
@@ -622,9 +640,9 @@ public class GroupOptions extends Fragment {
 										.newButton("发送文件",POINT_HELP,"file")
 										.newButton(data.no_file == null ? "✅" : data.no_file == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"file");
 
-								newButtonLine("警告 " + (data.max_count == null ? 1 : data.max_count) + " 次 " + data.actionName(),POINT_SET_REST,"action");
+								newButtonLine("警告 " + (data.max_count == null ? 1 : data.max_count) + " 次 " + data.actionName(),POINT_SET_REST,data.id,"action");
 
-								newButtonLine().newButton("➕",POINT_SET_REST,"inc").newButton("➖","dec");
+								newButtonLine().newButton("➖",POINT_SET_REST,data.id,"dec").newButton("➕",POINT_SET_REST,data.id,"inc");
 
 								newButtonLine("🔙",POINT_BACK,data.id);
 
