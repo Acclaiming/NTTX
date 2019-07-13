@@ -65,7 +65,7 @@ public class GroupOptions extends Fragment {
 
 								 ).buttons(new ButtonMarkup() {{
 
-                    newButtonLine("🛠️ 功能选项",POINT_MENU_MAIN,msg.chatId());
+                    newButtonLine("🛠️  功能选项",POINT_MENU_MAIN,msg.chatId());
 
 								}}).html().exec();
 
@@ -114,7 +114,7 @@ public class GroupOptions extends Fragment {
 
 						ButtonMarkup buttons = new ButtonMarkup() {{
 
-										newButtonLine("🛠️ 功能选项",POINT_MENU_MAIN,data.id);
+										newButtonLine("🛠️  功能选项",POINT_MENU_MAIN,data.id);
 
 								}};
 
