@@ -26,6 +26,7 @@ public class GroupOptions extends Fragment {
 				registerCallback(
 						POINT_BACK,
 						POINT_MENU_MAIN,
+						POINT_MENU_REST,
 						POINT_HELP,
 						POINT_SET_MAIN,
 						POINT_SET_REST);
@@ -133,11 +134,11 @@ public class GroupOptions extends Fragment {
 
 				} else if (POINT_MENU_MAIN.equals(point)) {
 
-										callback.edit("群组的管理设定. 点击名称查看功能说明.").buttons(mainMenu(data)).exec();
+						callback.edit("群组的管理设定. 点击名称查看功能说明.").buttons(mainMenu(data)).exec();
 
 				} else if (POINT_MENU_REST.equals(point)) {
 
-						
+
 						callback.message().audio();
 
 						callback.edit("限制成员进行某些操作. ","\n注意 : 当设置了 🗑 (删除) 时 不计入警告计数。\n对于禁止邀请用户/机器人 : 🗑 表示仅移除被邀请者。").buttons(restMenu(data)).exec();
@@ -518,7 +519,7 @@ public class GroupOptions extends Fragment {
 								}
 
 								callback.text("📝 " + data.max_count + " -> " + (data.max_count = data.max_count + 1));
-								
+
 						} else {
 
 								callback.alert("喵...？");
@@ -526,30 +527,30 @@ public class GroupOptions extends Fragment {
 								return;
 
 						}
-						
+
 						execute(new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(restMenu(data).markup()));
-						
+
 
 				}
 
 		}
-		
+
 		ButtonMarkup menuMarkup(final GroupData data) {
-				
+
 				return new ButtonMarkup() {{
 
 								newButtonLine("🛠️  功能选项",POINT_MENU_MAIN,data.id);
 								newButtonLine("📝 成员限制",POINT_MENU_REST,data.id);
 
 						}};
-				
-				
+
+
 		}
-		
+
 		ButtonMarkup mainMenu(final GroupData data) {
 
 				return new ButtonMarkup() {{
-						
+
 								newButtonLine()
 										.newButton("删除频道消息",POINT_HELP,"dcm")
 										.newButton(data.delete_channel_msg != null ? "✅" : "☑",POINT_SET_MAIN,data.id,"dcm");
@@ -562,11 +563,11 @@ public class GroupOptions extends Fragment {
 								newButtonLine("🔙",POINT_BACK,data.id);
 
 						}};
-						
+
 		}
-		
+
 		ButtonMarkup restMenu(final GroupData data) {
-				
+
 				return new ButtonMarkup() {{
 
 								newButtonLine()
@@ -628,10 +629,10 @@ public class GroupOptions extends Fragment {
 								newButtonLine("🔙",POINT_BACK,data.id);
 
 						}};
-				
-				
+
+
 		}
-				
-		
+
+
 
 }
