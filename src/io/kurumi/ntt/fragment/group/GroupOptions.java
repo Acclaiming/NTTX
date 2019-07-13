@@ -126,7 +126,7 @@ public class GroupOptions extends Fragment {
 
 										newButtonLine()
 												.newButton("删除频道消息",POINT_HELP,"dcm")
-												.newButton(data.delete_channel_msg == null ? "✅" : "☑",POINT_SET,data.id,"dcm");
+												.newButton(data.delete_channel_msg != null ? "✅" : "☑",POINT_SET,data.id,"dcm");
 
 										newButtonLine("🔙",POINT_BACK,data.id);
 
@@ -164,7 +164,7 @@ public class GroupOptions extends Fragment {
 
 										newButtonLine()
 												.newButton("删除频道消息",POINT_HELP,"dcm")
-												.newButton(data.delete_channel_msg == null ? "✅" : "☑",POINT_SET,data.id,"dcm");
+												.newButton(data.delete_channel_msg != null ? "✅" : "☑",POINT_SET,data.id,"dcm");
 
 										newButtonLine("🔙",POINT_BACK,data.id);
 
