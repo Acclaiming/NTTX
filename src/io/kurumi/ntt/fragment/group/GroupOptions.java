@@ -640,7 +640,7 @@ public class GroupOptions extends Fragment {
 										.newButton("发送文件",POINT_HELP,"file")
 										.newButton(data.no_file == null ? "✅" : data.no_file == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"file");
 
-								newButtonLine("警告 " + (data.max_count == null ? 1 : data.max_count) + " 次 " + data.actionName(),POINT_SET_REST,data.id,"action");
+								newButtonLine("警告 " + (data.max_count == null ? 1 : data.max_count) + " 次 : " + data.actionName(),POINT_SET_REST,data.id,"action");
 
 								newButtonLine().newButton("➖",POINT_SET_REST,data.id,"dec").newButton("➕",POINT_SET_REST,data.id,"inc");
 
