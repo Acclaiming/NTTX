@@ -352,7 +352,7 @@ public class NTT {
 
         SendResponse resp = new Send(id,"test_user_ontactable").disableNotification().exec();
 
-        if (!resp.isOk()) return false;
+        if (resp == null || !resp.isOk()) return false;
 
         new Msg(resp.message()).delete();
 
