@@ -185,6 +185,10 @@ public class GroupFunction extends Fragment {
 
 										data.restWarn.remove(user.id.toString());
 
+								} else {
+										
+										data.restWarn.put(user.id.toString(),count);
+										
 								}
 
 						}
