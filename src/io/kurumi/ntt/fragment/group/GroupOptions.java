@@ -747,7 +747,7 @@ public class GroupOptions extends Fragment {
 
 						}
 
-						execute(new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(mainMenu(data).markup()));
+						execute(new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(joinMenu(data).markup()));
 
 
 
