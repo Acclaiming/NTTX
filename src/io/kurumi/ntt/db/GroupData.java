@@ -10,43 +10,43 @@ import com.pengrad.telegrambot.model.Chat;
 
 public class GroupData {
 
-	public static CachedData<GroupData> data = new CachedData<GroupData>(GroupData.class);
+    public static CachedData<GroupData> data = new CachedData<GroupData>(GroupData.class);
 
-	public static GroupData get(Chat chat) {
+    public static GroupData get(Chat chat) {
 
-		synchronized (data.idIndex) {
+        synchronized (data.idIndex) {
 
-			if (data.idIndex.size() > 1000) {
+            if (data.idIndex.size() > 1000) {
 
-				data.idIndex.clear();
+                data.idIndex.clear();
 
-			} else if (data.idIndex.containsKey(chat.id())) return data.idIndex.get(chat.id());
+            } else if (data.idIndex.containsKey(chat.id())) return data.idIndex.get(chat.id());
 
-		GroupData group = data.getNoCache(chat.id());
+            GroupData group = data.getNoCache(chat.id());
 
-		if (group == null) {
+            if (group == null) {
 
-			group = new GroupData();
+                group = new GroupData();
 
-			group.id = chat.id();
+                group.id = chat.id();
 
-		}
+            }
 
-		data.idIndex.put(chat.id(),group);
+            data.idIndex.put(chat.id(),group);
 
-		return group;
-		
-		}
+            return group;
 
-	}
+        }
 
-	public long id;
+    }
 
-	public List<UserData> admins;
+    public long id;
 
-	public Boolean delete_channel_msg;
-	//public Boolean anti_esu;
+    public List<UserData> admins;
 
-	public List<String> ban_sticker_set;
+    public Boolean delete_channel_msg;
+    //public Boolean anti_esu;
+
+    public List<String> ban_sticker_set;
 
 }

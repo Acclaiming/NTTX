@@ -64,6 +64,7 @@ import java.io.File;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import io.kurumi.ntt.fragment.debug.DebugUF;
+import io.kurumi.ntt.fragment.group.GroupOptions;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -75,51 +76,51 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 
-		//int serverPort = Integer.parseInt(Env.getOrDefault("server_port","-1"));
-		String serverDomain = Env.get("server_domain");
+				//int serverPort = Integer.parseInt(Env.getOrDefault("server_port","-1"));
+				String serverDomain = Env.get("server_domain");
 
-		/*
+				/*
 
-		 while (serverPort == -1) {
+				 while (serverPort == -1) {
 
-		 System.out.print("输入本地Http服务器端口 : ");
+				 System.out.print("输入本地Http服务器端口 : ");
 
-		 try {
+				 try {
 
-		 serverPort = Integer.parseInt(Console.input());
+				 serverPort = Integer.parseInt(Console.input());
 
-		 Env.set("server_port",serverPort);
+				 Env.set("server_port",serverPort);
 
-		 } catch (Exception e) {
-		 }
+				 } catch (Exception e) {
+				 }
 
-		 }
+				 }
 
-		 */
+				 */
 
-		if (serverDomain == null) {
+				if (serverDomain == null) {
 
-			System.out.print("输入BotWebHook域名 : ");
+						System.out.print("输入BotWebHook域名 : ");
 
-			serverDomain = Console.input();
+						serverDomain = Console.input();
 
-			Env.set("server_domain",serverDomain);
+						Env.set("server_domain",serverDomain);
 
-		}
+				}
 
-		BotServer.INSTANCE = new BotServer(new File("/var/run/ntt.sock"),serverDomain);
+				BotServer.INSTANCE = new BotServer(new File("/var/run/ntt.sock"),serverDomain);
 
-		try {
+				try {
 
-			BotServer.INSTANCE.start();
+						BotServer.INSTANCE.start();
 
-		} catch (Exception e) {
+				} catch (Exception e) {
 
-			BotLog.error("端口被占用 请检查其他BOT进程。",e);
+						BotLog.error("端口被占用 请检查其他BOT进程。",e);
 
-			return;
+						return;
 
-		}
+				}
 
 
         String dbAddr = Env.getOrDefault("db_address","127.0.0.1");
@@ -141,24 +142,24 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
             } catch (Exception e) {
             }
 
-		}
-
-		RuntimeUtil.addShutdownHook(new Runnable() {
-
-				@Override
-				public void run() {
-
-					INSTANCE.stop();
-
 				}
 
-			});
+				RuntimeUtil.addShutdownHook(new Runnable() {
 
-		INSTANCE.start();
-		
-	}
-	
-	public AtomicBoolean stopeed = new AtomicBoolean(false);
+								@Override
+								public void run() {
+
+										INSTANCE.stop();
+
+								}
+
+						});
+
+				INSTANCE.start();
+
+		}
+
+		public AtomicBoolean stopeed = new AtomicBoolean(false);
 
     static boolean initDB(String dbAddr,Integer dbPort) {
 
@@ -176,43 +177,43 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
-	@Override
-	public void init(BotFragment origin) {
+		@Override
+		public void init(BotFragment origin) {
 
-		super.init(origin);
+				super.init(origin);
 
-		registerFunction("start","help");
+				registerFunction("start","help");
 
-	}
+		}
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		@Override
+		public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-		super.onFunction(user,msg,function,params);
+				super.onFunction(user,msg,function,params);
 
         if ("start".equals(function)) {
 
             msg.send("start failed successfully ~","","NTT是一只开源TelegramBot、可以作为Twitter客户端使用、也可以导出贴纸、创建私聊BOT、以及在群内沙雕发言与复读。","","BOT帮助文档请戳 : @NTT_X","交流群组在这里 : @NTTDiscuss","\n如果需要Telegram中文翻译，可以戳下面 :)",
 
-					 "\n瓜体 ( @DuangCN ) : " + Html.a("      安装      ","https://t.me/setlanguage/duang-zh-cn"),
+										 "\n瓜体 ( @DuangCN ) : " + Html.a("      安装      ","https://t.me/setlanguage/duang-zh-cn"),
 
-					 "\n简体中文二 ：" + Html.a("      安装      ","https://t.me/setlanguage/classic-zh-cn"),
+										 "\n简体中文二 ：" + Html.a("      安装      ","https://t.me/setlanguage/classic-zh-cn"),
 
-					 "\n台湾正體 ：" + Html.a("      安装      ","https://t.me/setlanguage/taiwan"),
+										 "\n台湾正體 ：" + Html.a("      安装      ","https://t.me/setlanguage/taiwan"),
 
-					 "\n台湾繁體 ：" + Html.a("      安装      ","https://t.me/setlanguage/zh-hant-beta"),
+										 "\n台湾繁體 ：" + Html.a("      安装      ","https://t.me/setlanguage/zh-hant-beta"),
 
-					 "\n香港繁體一 ：" + Html.a("      安装      ","https://t.me/setlanguage/hongkong"),
+										 "\n香港繁體一 ：" + Html.a("      安装      ","https://t.me/setlanguage/hongkong"),
 
-					 "\n香港繁體二 ：" + Html.a("      安装      ","https://t.me/setlanguage/zhhant-hk"),
+										 "\n香港繁體二 ：" + Html.a("      安装      ","https://t.me/setlanguage/zhhant-hk"),
 
-					 "\n香港人口語 ：" + Html.a("      安装      ","https://t.me/setlanguage/hongkonger"),
+										 "\n香港人口語 ：" + Html.a("      安装      ","https://t.me/setlanguage/hongkonger"),
 
-					 "\n廣東話一 ：" + Html.a("      安装      ","https://t.me/setlanguage/zhhkpb1"),
+										 "\n廣東話一 ：" + Html.a("      安装      ","https://t.me/setlanguage/zhhkpb1"),
 
-					 "\n廣東話二 ：" + Html.a("      安装      ","https://t.me/setlanguage/hkcantonese")
+										 "\n廣東話二 ：" + Html.a("      安装      ","https://t.me/setlanguage/hkcantonese")
 
-					 ).html().publicFailed();
+										 ).html().publicFailed();
 
         } else if ("help".equals(function)) {
 
@@ -220,12 +221,12 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         } else if (!functions.containsKey(function) && msg.isPrivate()) {
 
-			msg.send("没有这个命令 " + function,"查看文档 : @NTT_X").failedWith(10 * 1000);
+						msg.send("没有这个命令 " + function,"查看文档 : @NTT_X").failedWith(10 * 1000);
+
+				}
+
 
 		}
-
-
-	}
 
     @Override
     public void start() {
@@ -254,125 +255,126 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
-	UserTrackTask userTrackTask = new UserTrackTask();
+		UserTrackTask userTrackTask = new UserTrackTask();
 
-	void startTasks() {
+		void startTasks() {
 
-		TimedStatus.start();
+				TimedStatus.start();
 
-		TimelineUI.start();
+				TimelineUI.start();
 
-		TrackTask.start();
+				TrackTask.start();
 
-		UserBot.startAll();
+				UserBot.startAll();
 
-		Backup.start();
+				Backup.start();
 
-		userTrackTask.start();
+				userTrackTask.start();
 
-	}
+		}
 
     @Override
     public void reload() {
 
-		super.reload();
+				super.reload();
 
-		// ADMIN
-		
-		addFragment(new BotChannnel());
+				// ADMIN
 
-		addFragment(new PingFunction());
-		addFragment(new GetID());
-		addFragment(new DelMsg());
+				addFragment(new BotChannnel());
+
+				addFragment(new PingFunction());
+				addFragment(new GetID());
+				addFragment(new DelMsg());
         addFragment(new Notice());
         addFragment(new Backup());
         addFragment(new Users());
-		addFragment(new Actions());
-		addFragment(new Stat());
-		addFragment(new DebugMsg());
+				addFragment(new Actions());
+				addFragment(new Stat());
+				addFragment(new DebugMsg());
         addFragment(new Control());
-		addFragment(new DebugUser());
+				addFragment(new DebugUser());
         addFragment(new DebugStatus());
-		addFragment(new DebugStickerSet());
-		
-		addFragment(new DebugUF());
+				addFragment(new DebugStickerSet());
 
-		// Twitter
+				addFragment(new DebugUF());
 
-		addFragment(new TwitterLogin());
+				// Twitter
+
+				addFragment(new TwitterLogin());
         addFragment(new TwitterLogout());
-		addFragment(new UserActions());
-		addFragment(new StatusUpdate());
-		addFragment(new TimedStatus());
+				addFragment(new UserActions());
+				addFragment(new StatusUpdate());
+				addFragment(new TimedStatus());
         addFragment(new StatusSearch());
         addFragment(new StatusGetter());
         addFragment(new StatusFetch());
-		addFragment(new MediaDownload());
-		addFragment(new AuthExport());
+				addFragment(new MediaDownload());
+				addFragment(new AuthExport());
         addFragment(new AutoUI());
         addFragment(new TrackUI());
-		addFragment(new StatusAction());
-		addFragment(new TimelineUI());
-		addFragment(new TwitterDelete());
-		addFragment(new ListExport());
-		addFragment(new ListImport());
+				addFragment(new StatusAction());
+				addFragment(new TimelineUI());
+				addFragment(new TwitterDelete());
+				addFragment(new ListExport());
+				addFragment(new ListImport());
 
-		// GROUP
+				// GROUP
 
         addFragment(new GroupRepeat());
+				addFragment(new GroupOptions());
         //addFragment(new ChineseAction());
         //addFragment(new AntiEsu());
         addFragment(new BanSetickerSet());
-		addFragment(new DeleteChannelMessage());
+				addFragment(new DeleteChannelMessage());
 
         // BOTS
 
         addFragment(new NewBot());
         addFragment(new MyBots());
 
-		// SETS
+				// SETS
 
-		addFragment(new PackExport());
-		addFragment(new StickerExport());
-		addFragment(new NewStickerSet());
-		addFragment(new AddSticker());
-		addFragment(new RemoveSticker());
-		addFragment(new MoveSticker());
-		
-		// INLINE
-		
-		addFragment(new MakeButtons());
-		addFragment(new ShowSticker());
-		
+				addFragment(new PackExport());
+				addFragment(new StickerExport());
+				addFragment(new NewStickerSet());
+				addFragment(new AddSticker());
+				addFragment(new RemoveSticker());
+				addFragment(new MoveSticker());
+
+				// INLINE
+
+				addFragment(new MakeButtons());
+				addFragment(new ShowSticker());
+
     }
 
     @Override
     public void stop() {
-		
-		if (stopeed.getAndSet(true)) return;
 
-		BotServer.INSTANCE.stop();
-		
-		mainTimer.cancel();
+				if (stopeed.getAndSet(true)) return;
 
-		trackTimer.cancel();
+				BotServer.INSTANCE.stop();
 
-		userTrackTask.interrupt();
-		
-		GroupData.data.saveAll();
-		
+				mainTimer.cancel();
+
+				trackTimer.cancel();
+
+				userTrackTask.interrupt();
+
+				GroupData.data.saveAll();
+
         for (BotFragment bot : BotServer.fragments.values()) {
 
             if (bot != this) {
-			
-				bot.stop();
-				
-			}
+
+								bot.stop();
+
+						}
 
         }
 
         super.stop();
-		
+
     }
 
     @Override
@@ -389,8 +391,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
-	@Override
-	public boolean onUpdate(final UserData user,final Update update) {
+		@Override
+		public boolean onUpdate(final UserData user,final Update update) {
 
         if (update.message() != null) {
 
@@ -407,7 +409,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         }
 
 
-		return false;
+				return false;
 
     }
 

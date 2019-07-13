@@ -43,7 +43,7 @@ public class Callback extends Msg {
 
     }
 
-    public void text(String[] text) {
+    public void text(String... text) {
 
         answer().text(ArrayUtil.join(text, "\n")).exec();
 
@@ -55,7 +55,7 @@ public class Callback extends Msg {
 
     }
 
-    public void alert(String[] alert) {
+    public void alert(String... alert) {
 
         answer().alert(ArrayUtil.join(alert, "\n")).exec();
 

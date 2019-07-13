@@ -9,82 +9,26 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.NTT;
 
 public class DeleteChannelMessage extends Fragment {
-	
-	@Override
-	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
 
-		return FUNCTION_GROUP;
+		public int checkMsg(UserData user,Msg msg) {
 
-	}
+				if (msg.isGroup()) {
 
-	@Override
-	public void init(BotFragment origin) {
+						GroupData data = GroupData.get(msg.chat());
 
-		super.init(origin);
+						if (data.delete_channel_msg != null && user.id == 777000) {
 
-        registerFunction("dcm");
+								msg.delete();
 
-	}
+								return PROCESS_REJECT;
 
-    @Override
-    public void onFunction(UserData user,Msg msg,String function,String[] params) {
+						}
 
-        if (NTT.checkGroupAdmin(msg)) return;
+				}
 
-		GroupData data = GroupData.get(msg.chat());
-		
-        if (params.length == 1 && "off".equals(params[0])) {
-
-            if (data.delete_channel_msg == null) {
-
-                msg.send("无需重复关闭 ~").exec();
-
-            } else {
-				
-                data.delete_channel_msg = null;
-
-                msg.send("关闭成功 ~").exec();
-
-            }
-
-        } else {
-
-            if (data.delete_channel_msg != null) {
-
-                msg.send("无须重复开启 ~").exec();
-
-            } else {
-
-                data.delete_channel_msg = true;
-				
-                msg.send("已开启 ~").exec();
-
-            }
-
-        }
-
-    }
-
-	@Override
-	public int checkMsg(UserData user,Msg msg) {
-		
-		if (msg.isGroup()) {
-
-			GroupData data = GroupData.get(msg.chat());
-
-			if (data.delete_channel_msg != null && user.id == 777000) {
-
-				msg.delete();
-
-				return PROCESS_REJECT;
-				
-			}
+				return PROCESS_ASYNC;
 
 		}
-		
-		return PROCESS_ASYNC;
-
-	}
 
 
 }
