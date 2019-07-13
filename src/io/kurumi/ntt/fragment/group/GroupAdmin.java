@@ -24,7 +24,7 @@ public class GroupAdmin extends Fragment {
 						
 						GetChatAdministratorsResponse resp = Launcher.INSTANCE.execute(new GetChatAdministrators(data.id));
 
-						if (!resp.isOk()) return false;
+						if (resp == null || !resp.isOk()) return false;
 						
 						data.admins = new ArrayList<>();
 
@@ -73,9 +73,9 @@ public class GroupAdmin extends Fragment {
 		
 				GetChatAdministratorsResponse resp = execute(new GetChatAdministrators(msg.chatId()));
 
-				if (!resp.isOk()) {
+				if (resp == null || !resp.isOk()) {
 						
-						msg.send("更新缓存失败 :",resp.description()).failedWith();
+						msg.send("更新缓存失败 :(").failedWith();
 						
 						return;
 						
