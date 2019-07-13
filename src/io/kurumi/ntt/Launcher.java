@@ -63,6 +63,7 @@ import io.kurumi.ntt.utils.Html;
 import java.io.File;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
+import io.kurumi.ntt.fragment.debug.DebugUF;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -293,6 +294,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new DebugUser());
         addFragment(new DebugStatus());
 		addFragment(new DebugStickerSet());
+		
+		addFragment(new DebugUF());
 
 		// Twitter
 

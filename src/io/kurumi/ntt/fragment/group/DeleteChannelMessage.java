@@ -67,7 +67,7 @@ public class DeleteChannelMessage extends Fragment {
 
 	@Override
 	public int checkMsg(UserData user,Msg msg) {
-
+		
 		if (msg.isGroup()) {
 
 			GroupData data = GroupData.get(msg.chat());

@@ -66,6 +66,12 @@ public class Msg extends Context {
         return null;
 
     }
+	
+	public Send invalidParams(String... params) {
+		
+		return send("无效的参数 , /" + command() + " <" + ArrayUtil.join(params,"> <") + ">");
+		
+	}
 
 	public Sticker sticker() {
 
