@@ -65,6 +65,7 @@ import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import io.kurumi.ntt.fragment.debug.DebugUF;
 import io.kurumi.ntt.fragment.group.GroupOptions;
+import io.kurumi.ntt.fragment.group.GroupAdmin;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -320,6 +321,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 				// GROUP
 
+				addFragment(new GroupAdmin());
         addFragment(new GroupRepeat());
 				addFragment(new GroupOptions());
         //addFragment(new ChineseAction());

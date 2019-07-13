@@ -23,7 +23,7 @@ public class GroupFunction extends Fragment {
 
 								msg.delete();
 
-						} else if (msg.isGroupAdmin()) {
+						} else if (GroupAdmin.fastAdminCheck(data,user.id)) {
 
 						} else if ((msg.message().newChatMembers() != null || msg.message().leftChatMember() != null)) {
 

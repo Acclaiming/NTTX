@@ -19,7 +19,7 @@ public class GroupAdmin extends Fragment {
 
 		public static boolean fastAdminCheck(GroupData data,long userId) {
 				
-				if (data.admins == null) {
+				if (data.admins == null || !lastUpdate.containsKey(data.id) || lastUpdate.get(data.id) - System.currentTimeMillis() > 30 * 60 * 1000) {
 						
 						GetChatAdministratorsResponse resp = Launcher.INSTANCE.execute(new GetChatAdministrators(data.id));
 
@@ -41,6 +41,8 @@ public class GroupAdmin extends Fragment {
 
 						}
 						
+						lastUpdate.put(data.id,System.currentTimeMillis());
+				
 				}
 				
 				return data.admins.contains(userId);
