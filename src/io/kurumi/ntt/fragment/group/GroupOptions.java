@@ -25,6 +25,13 @@ public class GroupOptions extends Fragment {
 
 		}
 
+		@Override
+		public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
+				
+				return FUNCTION_GROUP;
+				
+			}
+
 		final String POINT_SHOW_HELP = "group_help";
 		final String POINT_SWITCH_CF = "group_config";
 
