@@ -170,7 +170,7 @@ public class GroupOptions extends Fragment {
 
 								}};
 
-						execute(new EditMessageReplyMarkup(callback.inlineMessgeId()).replyMarkup(buttons.markup()));
+						execute(new EditMessageReplyMarkup(callback.chat(),callback.messageId()).replyMarkup(buttons.markup()));
 
 				}
 
