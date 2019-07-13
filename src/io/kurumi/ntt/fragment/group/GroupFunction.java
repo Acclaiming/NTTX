@@ -171,19 +171,19 @@ public class GroupFunction extends Fragment {
 
 						}
 
-						if (!data.restWarn.containsKey(user.id)) {
+						if (!data.restWarn.containsKey(user.id.toString())) {
 
 								count = 1;
 
-								data.restWarn.put(user.id,count);
+								data.restWarn.put(user.id.toString(),count);
 
 						} else {
 
-								count = data.restWarn.get(user.id) + 1;
+								count = data.restWarn.get(user.id.toString()) + 1;
 
 								if (count == data.max_count) {
 
-										data.restWarn.remove(user.id);
+										data.restWarn.remove(user.id.toString());
 
 								}
 
