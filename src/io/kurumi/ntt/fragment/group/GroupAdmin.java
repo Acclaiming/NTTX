@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import com.pengrad.telegrambot.model.ChatMember;
 import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.fragment.BotFragment;
 
 public class GroupAdmin extends Fragment {
 		
@@ -48,6 +49,15 @@ public class GroupAdmin extends Fragment {
 				return data.admins.contains(userId);
 				
 		}
+
+		@Override
+		public void init(BotFragment origin) {
+				
+				super.init(origin);
+				
+				registerFunction("update_admins_cache");
+				
+	}
 		
 		@Override
 		public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
@@ -89,7 +99,7 @@ public class GroupAdmin extends Fragment {
 						
 				}
 				
-				msg.send("管理员缓存更新完成！").exec();
+				msg.send("管理员缓存更新完成！").failedWith();
 				
 		}
 		
