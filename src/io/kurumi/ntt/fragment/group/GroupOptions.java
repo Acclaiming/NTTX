@@ -52,7 +52,7 @@ public class GroupOptions extends Fragment {
 
 				new Send(user.id,
 
-                 "这里是群组设置选单为 : " + msg.chatId()
+                 "更改群组设置 : " + msg.chat().title()
 
                  ).buttons(new ButtonMarkup() {{
 
