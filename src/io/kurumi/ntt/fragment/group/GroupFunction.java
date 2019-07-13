@@ -8,7 +8,7 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.NTT;
 
-public class DeleteChannelMessage extends Fragment {
+public class GroupFunction extends Fragment {
 
 		public int checkMsg(UserData user,Msg msg) {
 
@@ -20,8 +20,10 @@ public class DeleteChannelMessage extends Fragment {
 
 								msg.delete();
 
-								return PROCESS_REJECT;
-
+						} else if ((msg.message().newChatMembers() != null || msg.message().leftChatMember() != null) && data.delete_service_msg != null) {
+								
+								msg.delete();
+								
 						}
 
 				}

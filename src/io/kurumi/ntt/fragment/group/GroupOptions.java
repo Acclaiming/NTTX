@@ -90,6 +90,18 @@ public class GroupOptions extends Fragment {
 
 								);
 
+						} else if ("dsm".equals(params[0])) {
+								
+								callback.alert(
+
+										"删除服务消息 :\n",
+
+										"服务消息 (Service Message) 指 : 成员加群、被邀请、退群、被移除。\n",
+
+										"开启此功能自动删除服务消息。"
+
+								);
+								
 						} else {
 
 								callback.alert("喵....？");
@@ -128,6 +140,11 @@ public class GroupOptions extends Fragment {
 												.newButton("删除频道消息",POINT_HELP,"dcm")
 												.newButton(data.delete_channel_msg != null ? "✅" : "☑",POINT_SET,data.id,"dcm");
 
+										newButtonLine()
+												.newButton("删除服务消息",POINT_HELP,"dsm")
+												.newButton(data.delete_service_msg != null ? "✅" : "☑",POINT_SET,data.id,"dsm");
+										
+												
 										newButtonLine("🔙",POINT_BACK,data.id);
 
 								}};
@@ -152,6 +169,24 @@ public class GroupOptions extends Fragment {
 
 								}
 
+						} else if ("dsm".equals(params[1])) {
+						
+										if (data.delete_service_msg == null) {
+
+												data.delete_service_msg = true;
+
+												callback.text("已开启 ~");
+
+										} else {
+
+												data.delete_service_msg = null;
+
+												callback.text("已关闭 ~");
+
+										}
+										
+								
+						
 						} else {
 
 								callback.alert("喵...？");
@@ -166,6 +201,12 @@ public class GroupOptions extends Fragment {
 												.newButton("删除频道消息",POINT_HELP,"dcm")
 												.newButton(data.delete_channel_msg != null ? "✅" : "☑",POINT_SET,data.id,"dcm");
 
+										newButtonLine()
+												.newButton("删除服务消息",POINT_HELP,"dsm")
+												.newButton(data.delete_service_msg != null ? "✅" : "☑",POINT_SET,data.id,"dsm");
+
+										
+												
 										newButtonLine("🔙",POINT_BACK,data.id);
 
 								}};

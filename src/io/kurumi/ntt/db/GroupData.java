@@ -48,7 +48,11 @@ public class GroupData {
 
     public List<UserData> admins;
 
+		public Boolean delete_service_msg;
     public Boolean delete_channel_msg;
+		
+		public Boolean no_invite;
+		public Boolean no_invite_bot;
     //public Boolean anti_esu;
 
     public List<String> ban_sticker_set;
