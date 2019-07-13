@@ -14,9 +14,9 @@ public class Html {
 
     }
 		
-		public static String I(Object text) {
+		public static String i(Object text) {
 
-        return "<I>" + HtmlUtil.escape(text.toString()) + "</I>";
+        return "<i>" + HtmlUtil.escape(text.toString()) + "</i>";
 
     }
 		
