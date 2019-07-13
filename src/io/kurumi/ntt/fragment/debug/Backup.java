@@ -16,15 +16,24 @@ import java.util.TimerTask;
 public class Backup extends Fragment {
 
     public static void start() {
-		
+
         Date next = new Date();
 
-        next.setHours(next.getHours() + 1);
+		if (next.getHours() < 12) {
+
+			next.setHours(next.getHours() + 1);
+
+		} else {
+
+			next.setDate(next.getDate() + 1);
+			next.setHours(0);
+
+		}
 
         next.setMinutes(0);
         next.setSeconds(0);
 
-		BotFragment.mainTimer.scheduleAtFixedRate(AutoBackupTask.INSTANCE,next,1 * 60 * 60 * 1000);
+		BotFragment.mainTimer.scheduleAtFixedRate(AutoBackupTask.INSTANCE,next,12 * 60 * 60 * 1000);
 
     }
 
