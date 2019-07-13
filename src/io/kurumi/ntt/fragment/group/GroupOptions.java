@@ -634,7 +634,7 @@ public class GroupOptions extends Fragment {
 
 								}
 
-								callback.text("🚪  " + data.parse_time() + " -> " + (data.parse_time(data.ft_count = data.ft_count + 10)));
+								callback.text("🚪  " + data.parse_time() + " -> " + (data.parse_time(data.captcha_time = data.captcha_time + 10)));
 
 								if (data.captcha_time == 50) {
 
@@ -644,42 +644,28 @@ public class GroupOptions extends Fragment {
 
 						} else if ("jt_dec".equals(params[1])) {
 
-								if (data.captcha_time != null && data.captcha_time == 20) {
+								if (data.captcha_time != null && data.captcha_time < 21) {
 
 										callback.text("🚪  再低还能验证吗 (ﾟ⊿ﾟ)ﾂ");
 
 										return;
 
 								}
+								
+								if (data.captcha_time == null) {
+
+										data.captcha_time = 50;
+
+								}
 
 								callback.text("🚪  " + data.parse_time() + " -> " + data.parse_time(data.captcha_time = data.captcha_time - 10));
 
-								if (data.ft_count == 0) {
+								if (data.captcha_time == 50) {
 
-										data.ft_count = null;
-
-								}
-
-
-
-					  } else if ("ft_dec".equals(params[1])) {
-
-								if (data.ft_count == null) {
-
-										callback.text("🚪  再低就没了 (ﾟ⊿ﾟ)ﾂ");
-
-										return;
+										data.captcha_time = null;
 
 								}
-
-								callback.text("🚪  " + data.ft_count + " -> " + (data.ft_count = data.ft_count - 1));
-
-								if (data.ft_count == 0) {
-
-										data.ft_count = null;
-
-								}
-								
+						
 						} else if ("fail_action".equals(params[1])) {
 
 								if (data.fail_action == null) {
@@ -739,6 +725,23 @@ public class GroupOptions extends Fragment {
 
 								data.captcha_mode = 1;
 
+						} else if ("with_image".equals(params[1])) {
+								
+								if (data.with_image == null) {
+
+										data.with_image = true;
+
+										callback.text("🚪  已开启");
+
+								} else {
+
+										data.with_image = null;
+
+										callback.text("🚪  已关闭");
+
+								}
+								
+								
 						} else {
 
 								callback.alert("喵...？");
@@ -893,7 +896,7 @@ public class GroupOptions extends Fragment {
 										.newButton(((Integer)1).equals(data.captcha_mode) ? "●" : "○",POINT_SET_JOIN,data.id,"mode_math");
 
 								newButtonLine()
-										.newButton("图片代替文字描述",POINT_HELP,"with_image")
+										.newButton("图片描述",POINT_HELP,"with_image")
 										.newButton(data.with_image != null ? "✅" : "☑",POINT_SET_JOIN,data.id,"with_image");
 
 
