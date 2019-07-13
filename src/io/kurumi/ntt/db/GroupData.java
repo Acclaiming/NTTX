@@ -52,6 +52,38 @@ public class GroupData {
 		public Boolean delete_service_msg;
     public Boolean delete_channel_msg;
 		
+		public Boolean join_captcha;
+		public Boolean passive_mode;
+		
+		public Integer ft_count;
+		public Integer captcha_time;
+		
+		public String parse_time() { return parse_time(captcha_time); }
+		
+		public String parse_time(Integer time) {
+				
+				if (time == null) {
+						
+						return "50s";
+						
+				} else if (time < 60) {
+						
+						return time + "s";
+						
+				} else {
+						
+						return time / 60 + "m" + (time % 60 == 0 ? "" : " " + time % 60 + "s");
+						
+				}
+				
+		}
+		
+		public Boolean with_image;
+		
+		public Integer fail_action;	
+		
+		public Integer captcha_mode;
+		
 		public Integer no_invite_user;
 		public Integer no_invite_bot;
 		

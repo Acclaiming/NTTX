@@ -61,7 +61,20 @@ public class GroupFunction extends Fragment {
 
 								}
 
-						} else if (msg.sticker() != null && data.no_sticker != null) {
+						} else if (msg.message().leftChatMember() != null) {
+								
+								if (data.delete_service_msg != null) {
+
+										msg.delete();
+
+								} else if (user.id.equals(origin.me.id())) {
+										
+										msg.delete();
+										
+								}
+
+								
+				    } else if (msg.sticker() != null && data.no_sticker != null) {
 
 								msg.delete();
 
@@ -211,7 +224,7 @@ public class GroupFunction extends Fragment {
 
 				}
 
-				if (data.rest_action == 0) {
+				if (data.rest_action == 0 && !name.startsWith("邀请")) {
 
 						execute(new RestrictChatMember(msg.chatId(),user.id.intValue()).canSendMessages(true).canSendMediaMessages(false).canSendOtherMessages(false).canAddWebPagePreviews(false));
 
@@ -225,7 +238,7 @@ public class GroupFunction extends Fragment {
 
 						if (resp.isOk()) data.last_warn_msg = resp.message().messageId();
 
-				} else if (data.rest_action == 0) {
+				} else if (data.rest_action == 0 || name.startsWith("邀请")) {
 
 						msg.restrict();
 

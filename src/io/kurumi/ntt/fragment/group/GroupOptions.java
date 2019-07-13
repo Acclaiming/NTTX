@@ -27,9 +27,11 @@ public class GroupOptions extends Fragment {
 						POINT_BACK,
 						POINT_MENU_MAIN,
 						POINT_MENU_REST,
+						POINT_MENU_JOIN,
 						POINT_HELP,
 						POINT_SET_MAIN,
-						POINT_SET_REST);
+						POINT_SET_REST,
+						POINT_SET_JOIN);
 
 		}
 
@@ -43,10 +45,12 @@ public class GroupOptions extends Fragment {
 		final String POINT_BACK = "group_main";
 		final String POINT_MENU_MAIN = "group_menu_main";
 		final String POINT_MENU_REST = "group_menu_rest";
+		final String POINT_MENU_JOIN = "group_menu_join";
 
 		final String POINT_HELP = "group_help";
 		final String POINT_SET_MAIN = "group_main_set";
 		final String POINT_SET_REST = "group_rest_set";
+		final String POINT_SET_JOIN = "group_join_set";
 
 		@Override
 		public void onFunction(UserData user,final Msg msg,String function,String[] params) {
@@ -68,12 +72,7 @@ public class GroupOptions extends Fragment {
                  Html.b(msg.chat().title()),
 								 Html.i("更改群组的设定")
 
-								 ).buttons(new ButtonMarkup() {{
-
-                    newButtonLine("🛠️  功能选项",POINT_MENU_MAIN,msg.chatId());
-										newButtonLine("📝 成员限制",POINT_MENU_REST,data.id);
-
-								}}).html().exec();
+								 ).buttons(menuMarkup(data)).html().exec();
 
 			  msg.reply("已经通过私聊发送群组设置选项").failedWith();
 
@@ -138,10 +137,11 @@ public class GroupOptions extends Fragment {
 
 				} else if (POINT_MENU_REST.equals(point)) {
 
-
-						callback.message().audio();
-
 						callback.edit("限制成员进行某些操作. ","\n注意 : 当设置了 🗑 (删除) 时 不计入警告计数。\n对于禁止邀请用户/机器人 : 🗑 表示仅移除被邀请者。").buttons(restMenu(data)).exec();
+
+				} else if (POINT_MENU_JOIN.equals(point)) {
+
+						callback.edit("设置群组的新成员验证. ").buttons(joinMenu(data)).exec();
 
 				} else if (POINT_SET_MAIN.equals(point)) {
 
@@ -151,13 +151,13 @@ public class GroupOptions extends Fragment {
 
 										data.delete_channel_msg = true;
 
-										callback.text("已开启 ~");
+										callback.text("🛠️  已开启");
 
 								} else {
 
 										data.delete_channel_msg = null;
 
-										callback.text("已关闭 ~");
+										callback.text("🛠️  已关闭");
 
 								}
 
@@ -167,13 +167,13 @@ public class GroupOptions extends Fragment {
 
 										data.delete_service_msg = true;
 
-										callback.text("已开启 ~");
+										callback.text("🛠️  已开启");
 
 								} else {
 
 										data.delete_service_msg = null;
 
-										callback.text("已关闭 ~");
+										callback.text("🛠️  已关闭");
 
 								}
 
@@ -197,20 +197,20 @@ public class GroupOptions extends Fragment {
 
 										data.no_invite_user = 0;
 
-										callback.text("📝 仅移除被邀请用户");
+										callback.text("📝  仅移除被邀请用户");
 
 								} else if (data.no_invite_user == 0) {
 
 										data.no_invite_user = 1;
 
-										callback.text("📝 移除被邀请用户并警告");
+										callback.text("📝  移除被邀请用户并警告");
 
 
 								} else {
 
 										data.no_invite_user = null;
 
-										callback.text("📝 不处理");
+										callback.text("📝  不处理");
 
 								}
 
@@ -220,20 +220,20 @@ public class GroupOptions extends Fragment {
 
 										data.no_invite_bot = 0;
 
-										callback.text("📝 仅移除机器人");
+										callback.text("📝  仅移除机器人");
 
 								} else if (data.no_invite_bot == 0) {
 
 										data.no_invite_bot = 1;
 
-										callback.text("📝 移除机器人并警告");
+										callback.text("📝  移除机器人并警告");
 
 
 								} else {
 
 										data.no_invite_bot = null;
 
-										callback.text("📝 不处理");
+										callback.text("📝  不处理");
 
 								}
 
@@ -244,19 +244,19 @@ public class GroupOptions extends Fragment {
 
 										data.no_sticker = 0;
 
-										callback.text("📝 仅删除");
+										callback.text("📝  仅删除");
 
 								} else if (data.no_sticker == 0) {
 
 										data.no_sticker = 1;
 
-										callback.text("📝 删除并警告");
+										callback.text("📝  删除并警告");
 
 								} else {
 
 										data.no_sticker = null;
 
-										callback.text("📝 不处理");
+										callback.text("📝  不处理");
 
 								}
 
@@ -266,19 +266,19 @@ public class GroupOptions extends Fragment {
 
 										data.no_image = 0;
 
-										callback.text("📝 仅删除");
+										callback.text("📝  仅删除");
 
 								} else if (data.no_image == 0) {
 
 										data.no_image = 1;
 
-										callback.text("📝 删除并警告");
+										callback.text("📝  删除并警告");
 
 								} else {
 
 										data.no_image = null;
 
-										callback.text("📝 不处理");
+										callback.text("📝  不处理");
 
 								}
 
@@ -288,19 +288,19 @@ public class GroupOptions extends Fragment {
 
 										data.no_animation = 0;
 
-										callback.text("📝 仅删除");
+										callback.text("📝  仅删除");
 
 								} else if (data.no_animation == 0) {
 
 										data.no_animation = 1;
 
-										callback.text("📝 删除并警告");
+										callback.text("📝  删除并警告");
 
 								} else {
 
 										data.no_animation = null;
 
-										callback.text("📝 不处理");
+										callback.text("📝  不处理");
 
 								}
 
@@ -310,19 +310,19 @@ public class GroupOptions extends Fragment {
 
 										data.no_audio = 0;
 
-										callback.text("📝 仅删除");
+										callback.text("📝  仅删除");
 
 								} else if (data.no_audio == 0) {
 
 										data.no_audio = 1;
 
-										callback.text("📝 删除并警告");
+										callback.text("📝  删除并警告");
 
 								} else {
 
 										data.no_audio = null;
 
-										callback.text("📝 不处理");
+										callback.text("📝  不处理");
 
 								}
 
@@ -332,19 +332,19 @@ public class GroupOptions extends Fragment {
 
 										data.no_video = 0;
 
-										callback.text("📝 仅删除");
+										callback.text("📝  仅删除");
 
 								} else if (data.no_video == 0) {
 
 										data.no_video = 1;
 
-										callback.text("📝 删除并警告");
+										callback.text("📝  删除并警告");
 
 								} else {
 
 										data.no_video = null;
 
-										callback.text("📝 不处理");
+										callback.text("📝  不处理");
 
 								}
 
@@ -354,19 +354,19 @@ public class GroupOptions extends Fragment {
 
 										data.no_video_note = 0;
 
-										callback.text("📝 仅删除");
+										callback.text("📝  仅删除");
 
 								} else if (data.no_video_note == 0) {
 
 										data.no_video_note = 1;
 
-										callback.text("📝 删除并警告");
+										callback.text("📝  删除并警告");
 
 								} else {
 
 										data.no_video_note = null;
 
-										callback.text("📝 不处理");
+										callback.text("📝  不处理");
 
 								}
 
@@ -376,19 +376,19 @@ public class GroupOptions extends Fragment {
 
 										data.no_contact = 0;
 
-										callback.text("📝 仅删除");
+										callback.text("📝  仅删除");
 
 								} else if (data.no_image == 0) {
 
 										data.no_contact = 1;
 
-										callback.text("📝 删除并警告");
+										callback.text("📝  删除并警告");
 
 								} else {
 
 										data.no_contact = null;
 
-										callback.text("📝 不处理");
+										callback.text("📝  不处理");
 
 								}
 
@@ -398,19 +398,19 @@ public class GroupOptions extends Fragment {
 
 										data.no_location = 0;
 
-										callback.text("📝 仅删除");
+										callback.text("📝  仅删除");
 
 								} else if (data.no_location == 0) {
 
 										data.no_location = 1;
 
-										callback.text("📝 删除并警告");
+										callback.text("📝  删除并警告");
 
 								} else {
 
 										data.no_location = null;
 
-										callback.text("📝 不处理");
+										callback.text("📝  不处理");
 
 								}
 
@@ -420,19 +420,19 @@ public class GroupOptions extends Fragment {
 
 										data.no_game = 0;
 
-										callback.text("📝 仅删除");
+										callback.text("📝  仅删除");
 
 								} else if (data.no_game == 0) {
 
 										data.no_game = 1;
 
-										callback.text("📝 删除并警告");
+										callback.text("📝  删除并警告");
 
 								} else {
 
 										data.no_game = null;
 
-										callback.text("📝 不处理");
+										callback.text("📝  不处理");
 
 								}
 
@@ -442,19 +442,19 @@ public class GroupOptions extends Fragment {
 
 										data.no_voice = 0;
 
-										callback.text("📝 仅删除");
+										callback.text("📝  仅删除");
 
 								} else if (data.no_voice == 0) {
 
 										data.no_voice = 1;
 
-										callback.text("📝 删除并警告");
+										callback.text("📝  删除并警告");
 
 								} else {
 
 										data.no_voice = null;
 
-										callback.text("📝 不处理");
+										callback.text("📝  不处理");
 
 								}
 
@@ -464,19 +464,19 @@ public class GroupOptions extends Fragment {
 
 										data.no_file = 0;
 
-										callback.text("📝 仅删除");
+										callback.text("📝  仅删除");
 
 								} else if (data.no_file == 0) {
 
 										data.no_file = 1;
 
-										callback.text("📝 删除并警告");
+										callback.text("📝  删除并警告");
 
 								} else {
 
 										data.no_file = null;
 
-										callback.text("📝 不处理");
+										callback.text("📝  不处理");
 
 								}
 
@@ -486,19 +486,19 @@ public class GroupOptions extends Fragment {
 
 										data.rest_action = 0;
 
-										callback.text("📝 禁言该用户");
+										callback.text("📝  禁言该用户");
 
 								} else if (data.rest_action == 0) {
 
 										data.rest_action = 1;
 
-										callback.text("📝 封锁该用户");
+										callback.text("📝  封锁该用户");
 
 								} else {
 
-							data.rest_action = null;
+										data.rest_action = null;
 
-										callback.text("📝 限制非文本发送");
+										callback.text("📝  限制非文本发送");
 
 								}
 
@@ -506,7 +506,7 @@ public class GroupOptions extends Fragment {
 
 								if (data.max_count != null && data.max_count > 11) {
 
-										callback.text("📝 新数值太高 (> 12)");
+										callback.text("📝  新数值太高 (> 12)");
 
 										return;
 
@@ -518,26 +518,26 @@ public class GroupOptions extends Fragment {
 
 								}
 
-								callback.text("📝 " + data.max_count + " -> " + (data.max_count = data.max_count + 1));
+								callback.text("📝  " + data.max_count + " -> " + (data.max_count = data.max_count + 1));
 
 						} else if ("dec".equals(params[1])) {
-								
+
 								if (data.max_count == null) {
-										
-										callback.text("📝 再低就没了 (ﾟ⊿ﾟ)ﾂ");
-										
+
+										callback.text("📝  再低就没了 (ﾟ⊿ﾟ)ﾂ");
+
 										return;
-										
+
 								}
-								
-								callback.text("📝 " + data.max_count + " -> " + (data.max_count = data.max_count - 1));
+
+								callback.text("📝  " + data.max_count + " -> " + (data.max_count = data.max_count - 1));
 
 								if (data.max_count == 1) {
-										
+
 										data.max_count = null;
-										
+
 								}
-								
+
 						} else {
 
 								callback.alert("喵...？");
@@ -547,6 +547,208 @@ public class GroupOptions extends Fragment {
 						}
 
 						execute(new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(restMenu(data).markup()));
+
+				} else if (POINT_SET_JOIN.equals(point)) {
+
+						if ("enable".equals(params[1])) {
+
+								if (data.join_captcha == null) {
+
+										data.join_captcha = true;
+
+										callback.text("🚪  已开启");
+
+								} else {
+
+										data.join_captcha = null;
+
+										callback.text("🚪  已关闭");
+
+								}
+
+						} else if ("passive".equals(params[1])) {
+
+								if (data.passive_mode == null) {
+
+										data.passive_mode = true;
+
+										callback.text("🚪  已开启");
+
+								} else {
+
+										data.passive_mode = null;
+
+										callback.text("🚪  已关闭");
+
+								}
+
+						} else if ("ft_inc".equals(params[1])) {
+
+								if (data.ft_count != null && data.ft_count > 5) {
+
+										callback.text("🚪  新数值太高 (> 5)");
+
+										return;
+
+								} 
+
+								if (data.ft_count == null) {
+
+										data.ft_count = 1;
+
+								}
+
+								callback.text("🚪  " + data.ft_count + " -> " + (data.ft_count = data.ft_count + 1));
+
+					  } else if ("ft_dec".equals(params[1])) {
+
+								if (data.ft_count == null) {
+
+										callback.text("🚪  再低就没了 (ﾟ⊿ﾟ)ﾂ");
+
+										return;
+
+								}
+
+								callback.text("🚪  " + data.ft_count + " -> " + (data.ft_count = data.ft_count - 1));
+
+								if (data.ft_count == 50) {
+
+										data.ft_count = null;
+
+								}
+
+						} else if ("jt_inc".equals(params[1])) {
+
+								if (data.captcha_time != null && (data.captcha_time > 5 * 60)) {
+
+										callback.text("🚪  新数值太高 (> 5min)");
+
+										return;
+
+								} 
+
+								if (data.captcha_time == null) {
+
+										data.captcha_time = 50;
+
+								}
+
+								callback.text("🚪  " + data.parse_time() + " -> " + (data.parse_time(data.ft_count = data.ft_count + 10)));
+
+								if (data.captcha_time == 50) {
+
+										data.captcha_time = null;
+
+								}
+
+						} else if ("jt_dec".equals(params[1])) {
+
+								if (data.captcha_time != null && data.captcha_time == 20) {
+
+										callback.text("🚪  再低还能验证吗 (ﾟ⊿ﾟ)ﾂ");
+
+										return;
+
+								}
+
+								callback.text("🚪  " + data.parse_time() + " -> " + data.parse_time(data.captcha_time = data.captcha_time - 10));
+
+								if (data.ft_count == 0) {
+
+										data.ft_count = null;
+
+								}
+
+
+
+					  } else if ("ft_dec".equals(params[1])) {
+
+								if (data.ft_count == null) {
+
+										callback.text("🚪  再低就没了 (ﾟ⊿ﾟ)ﾂ");
+
+										return;
+
+								}
+
+								callback.text("🚪  " + data.ft_count + " -> " + (data.ft_count = data.ft_count - 1));
+
+								if (data.ft_count == 0) {
+
+										data.ft_count = null;
+
+								}
+								
+						} else if ("fail_action".equals(params[1])) {
+
+								if (data.fail_action == null) {
+
+										data.fail_action = 0;
+
+										callback.text("🚪  移除该用户");
+
+								} else if (data.fail_action == 0) {
+
+										data.fail_action = 1;
+
+										callback.text("🚪  封锁该用户");
+
+								} else {
+
+										data.fail_action = null;
+
+										callback.text("🚪  禁言该用户");
+
+								}
+
+								
+						} else if ("mode_def".equals(params[1])) {
+
+								callback.text("🚪  默认模式");
+
+								if (data.captcha_mode == null) {
+
+										return;
+
+								}
+
+								data.captcha_mode = null;
+
+						}  else if ("mode_code".equals(params[1])) {
+
+								callback.text("🚪  验证码验证");
+
+								if (((Integer)0).equals(data.captcha_mode)) {
+
+										return;
+
+								}
+
+								data.captcha_mode = 0;
+
+						} else if ("mode_math".equals(params[1])) {
+
+								callback.text("🚪  算数验证");
+
+								if (((Integer)1).equals(data.captcha_mode)) {
+
+										return;
+
+								}
+
+								data.captcha_mode = 1;
+
+						} else {
+
+								callback.alert("喵...？");
+
+								return;
+
+						}
+
+						execute(new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(mainMenu(data).markup()));
+
 
 
 				}
@@ -558,7 +760,8 @@ public class GroupOptions extends Fragment {
 				return new ButtonMarkup() {{
 
 								newButtonLine("🛠️  功能选项",POINT_MENU_MAIN,data.id);
-								newButtonLine("📝 成员限制",POINT_MENU_REST,data.id);
+								newButtonLine("📝  成员限制",POINT_MENU_REST,data.id);
+								newButtonLine("🚪  加群验证 (暂未生效)",POINT_MENU_JOIN,data.id);
 
 						}};
 
@@ -648,6 +851,63 @@ public class GroupOptions extends Fragment {
 
 						}};
 
+
+		}
+
+		ButtonMarkup joinMenu(final GroupData data) {
+
+				return new ButtonMarkup() {{
+
+								newButtonLine()
+										.newButton("开启审核",POINT_HELP,"enable")
+										.newButton(data.join_captcha != null ? "✅" : "☑",POINT_SET_JOIN,data.id,"enable");
+
+								newButtonLine()
+										.newButton("被动模式",POINT_HELP,"passive")
+										.newButton(data.passive_mode != null ? "✅" : "☑",POINT_SET_JOIN,data.id,"passive");
+
+								newButtonLine("容错次数 : " + (data.ft_count == null ? 0 : data.ft_count),"null");
+
+								newButtonLine().newButton("➖",POINT_SET_JOIN,data.id,"ft_dec").newButton("➕",POINT_SET_JOIN,data.id,"ft_inc");
+
+								newButtonLine("时间上限 : " + data.parse_time(),"null");
+
+								newButtonLine().newButton("➖",POINT_SET_JOIN,data.id,"jt_dec").newButton("➕",POINT_SET_JOIN,data.id,"jt_inc");
+
+								newButtonLine()
+										.newButton("错误执行",POINT_HELP,"fail_action")
+										.newButton(data.fail_action == null ? "禁言" : data.fail_action == 0 ? "移除" : "封锁",POINT_SET_JOIN,data.id,"fail_action");
+
+								newButtonLine("审核模式","null");
+
+								newButtonLine()
+										.newButton("默认模式",POINT_HELP,"mode_def")
+										.newButton(data.captcha_mode == null ? "●" : "○",POINT_SET_JOIN,data.id,"mode_def");
+
+								newButtonLine()
+										.newButton("验证码",POINT_HELP,"mode_code")
+										.newButton(((Integer)0).equals(data.captcha_mode) ? "●" : "○",POINT_SET_JOIN,data.id,"mode_code");
+
+								newButtonLine()
+										.newButton("算数题",POINT_HELP,"mode_math")
+										.newButton(((Integer)1).equals(data.captcha_mode) ? "●" : "○",POINT_SET_JOIN,data.id,"mode_math");
+
+								newButtonLine()
+										.newButton("图片代替文字描述",POINT_HELP,"with_image")
+										.newButton(data.with_image != null ? "✅" : "☑",POINT_SET_JOIN,data.id,"with_image");
+
+
+								/*
+
+								 newButtonLine()
+								 .newButton("定制模式",POINT_HELP,"mode_cus")
+								 .newButton(((Integer)1).equals(data.captcha_mode)? "●" : "○",POINT_SET_JOIN,data.id,"mode_cus");
+
+								 */
+
+								newButtonLine("🔙",POINT_BACK,data.id);
+
+						}};
 
 		}
 
