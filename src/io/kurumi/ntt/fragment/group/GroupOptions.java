@@ -584,7 +584,7 @@ public class GroupOptions extends Fragment {
 
 						} else if ("ft_inc".equals(params[1])) {
 
-								if (data.ft_count != null && data.ft_count > 5) {
+								if (data.ft_count != null && data.ft_count >= 5) {
 
 										callback.text("🚪  新数值太高 (> 5)");
 
@@ -620,7 +620,7 @@ public class GroupOptions extends Fragment {
 
 						} else if ("jt_inc".equals(params[1])) {
 
-								if (data.captcha_time != null && (data.captcha_time > 5 * 60)) {
+								if (data.captcha_time != null && (data.captcha_time >= 5 * 60)) {
 
 										callback.text("🚪  新数值太高 (> 5min)");
 
