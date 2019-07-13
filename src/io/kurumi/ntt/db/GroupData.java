@@ -48,6 +48,8 @@ public class GroupData {
 		public String title;
 
     public List<UserData> admins;
+		
+		public HashMap<Long,Integer> adminWarn;
 
 		public Boolean delete_service_msg;
     public Boolean delete_channel_msg;
@@ -69,6 +71,10 @@ public class GroupData {
 		
 		public Integer max_count;
 		public Integer rest_action;
+		
+		public Integer last_warn_msg;
+		
+		public Map<Long,Integer> restWarn;
 		
 		public String actionName() {
 				
