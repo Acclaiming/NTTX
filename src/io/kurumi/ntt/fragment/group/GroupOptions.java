@@ -67,8 +67,8 @@ public class GroupOptions extends Fragment {
 
                     newButtonLine("🛠️ 功能选项",POINT_MENU_MAIN,msg.chatId());
 
-								}}).exec();
-								
+								}}).html().exec();
+
 			  msg.reply("已经通过私聊发送群组设置选项").failedWith();
 
 		}
@@ -98,79 +98,75 @@ public class GroupOptions extends Fragment {
 
 				} else if (POINT_MENU_MAIN.equals(point)) {
 
-						if (POINT_BACK.equals(point)) {
+						ButtonMarkup buttons = new ButtonMarkup() {{
 
-								ButtonMarkup buttons = new ButtonMarkup() {{
+										newButtonLine()
+												.newButton("删除频道消息",POINT_HELP,"dcm")
+												.newButton(data.delete_channel_msg == null ? "✅" : "☑",POINT_SET,data.id,"dcm");
 
-												newButtonLine()
-														.newButton("删除频道消息",POINT_HELP,"dcm")
-														.newButton(data.delete_channel_msg == null ? "✅" : "☑",POINT_SET,data.id,"dcm");
+										newButtonLine("🔙",POINT_BACK,data.id);
 
-												newButtonLine("🔙",POINT_BACK,data.id);
+								}};
 
-										}};
+						callback.edit("群组的管理设定. 点击名称查看功能说明.").buttons(buttons).exec();
 
-								callback.edit("群组的管理设定. 点击名称查看功能说明.").buttons(buttons).exec();
+				} else if (POINT_HELP.equals(point)) {
 
-						} else if (POINT_HELP.equals(point)) {
+						if ("dcm".equals(params[0])) {
 
-								if ("dcm".equals(params[0])) {
+								callback.alert(
 
-										callback.alert(
+										"删除来自绑定的频道的消息 :\n",
 
-												"删除来自绑定的频道的消息 :\n",
+										"如果群组作为频道绑定的讨论群组，则每条频道消息都会被转发至群组并置顶。\n",
 
-												"如果群组作为频道绑定的讨论群组，则每条频道消息都会被转发至群组并置顶。\n",
+										"开启此功能自动删除来自频道的消息。"
 
-												"开启此功能自动删除来自频道的消息。"
+								);
 
-										);
+						} else {
 
-								} else {
-
-										callback.alert("喵....？");
-
-								}
-
-						} else if (POINT_SET.equals(point)) {
-
-								if ("dcm".equals(params[1])) {
-
-										if (data.delete_channel_msg == null) {
-
-												data.delete_channel_msg = true;
-
-												callback.text("已开启 ~");
-
-										} else {
-
-												data.delete_channel_msg = null;
-
-												callback.text("已关闭 ~");
-
-										}
-
-								} else {
-
-										callback.alert("喵...？");
-
-										return;
-
-								}
-
-								ButtonMarkup buttons = new ButtonMarkup() {{
-
-												newButtonLine()
-														.newButton("删除频道消息",POINT_HELP,"dcm")
-														.newButton(data.delete_channel_msg == null ? "✅" : "☑",POINT_SET,data.id,"dcm");
-
-												newButtonLine("🔙",POINT_BACK,data.id);
-
-										}};
-
-								execute(new EditMessageReplyMarkup(callback.inlineMessgeId()).replyMarkup(buttons.markup()));
+								callback.alert("喵....？");
 
 						}
+
+				} else if (POINT_SET.equals(point)) {
+
+						if ("dcm".equals(params[1])) {
+
+								if (data.delete_channel_msg == null) {
+
+										data.delete_channel_msg = true;
+
+										callback.text("已开启 ~");
+
+								} else {
+
+										data.delete_channel_msg = null;
+
+										callback.text("已关闭 ~");
+
+								}
+
+						} else {
+
+								callback.alert("喵...？");
+
+								return;
+
+						}
+
+						ButtonMarkup buttons = new ButtonMarkup() {{
+
+										newButtonLine()
+												.newButton("删除频道消息",POINT_HELP,"dcm")
+												.newButton(data.delete_channel_msg == null ? "✅" : "☑",POINT_SET,data.id,"dcm");
+
+										newButtonLine("🔙",POINT_BACK,data.id);
+
+								}};
+
+						execute(new EditMessageReplyMarkup(callback.inlineMessgeId()).replyMarkup(buttons.markup()));
 
 				}
 
