@@ -16,17 +16,15 @@ public class Env {
 
 	public static long[] ADMINS = new long[] {
 
-		865266732 , 896711046,
+		896711046,
 		
 		589593327 ,
 		
-		748525422 ,
-		
-		695492482
+		727892124 ,
 
     };
 	
-    public static final Long GROUP = -1001428880645L;
+    public static final Long GROUP = -1001280962128L;
 		
     /**
      * 缓存文件存放地址
