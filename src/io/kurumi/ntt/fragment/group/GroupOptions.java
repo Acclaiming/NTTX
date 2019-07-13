@@ -52,13 +52,13 @@ public class GroupOptions extends Fragment {
 
 				new Send(user.id,
 
-                 "更改群组设置 : " + msg.chat().title()
+                 "更改群组设置 (๑˃̵ᴗ˂̵)و : " + msg.chat().title()
 
                  ).buttons(new ButtonMarkup() {{
 
                     newButtonLine()
 												.newButton("删除频道信息",POINT_SHOW_HELP,"dcm")
-												.newButton(" [ > - < ] ",POINT_SHOW_HELP,"center")
+												.newButton(" [ - ] ",POINT_SHOW_HELP,"center")
 												.newButton(data.delete_channel_msg == null ? "开启" : "关闭",POINT_SWITCH_CF,msg.chatId(),"dcm");
 
                 }}).exec();
@@ -140,7 +140,7 @@ public class GroupOptions extends Fragment {
 
 										newButtonLine()
 												.newButton("删除频道信息",POINT_SHOW_HELP,"dcm")
-												.newButton(" [ > - < ] ",POINT_SHOW_HELP,"center")
+												.newButton(" [ - ] ",POINT_SHOW_HELP,"center")
 												.newButton(data.delete_channel_msg == null ? "开启" : "关闭",POINT_SWITCH_CF,data.id,"dcm");
 
 								}};
