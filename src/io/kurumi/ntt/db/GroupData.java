@@ -47,7 +47,7 @@ public class GroupData {
 		
 		public String title;
 
-    public List<UserData> admins;
+    public List<Long> admins;
 	
 		public Boolean delete_service_msg;
     public Boolean delete_channel_msg;
