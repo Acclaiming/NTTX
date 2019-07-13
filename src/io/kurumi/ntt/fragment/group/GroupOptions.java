@@ -61,7 +61,7 @@ public class GroupOptions extends Fragment {
 				new Send(user.id,
 
                  Html.b(msg.chat().title()),
-								 Html.l("更改群组的设定")
+								 Html.I("更改群组的设定")
 
 								 ).buttons(new ButtonMarkup() {{
 
@@ -118,7 +118,7 @@ public class GroupOptions extends Fragment {
 
 								}};
 
-						callback.edit(Html.b(data.title),Html.l("更改群组的设定")).buttons(buttons).exec();
+						callback.edit(Html.b(data.title),Html.I("更改群组的设定")).html().buttons(buttons).exec();
 
 				} else if (POINT_MENU_MAIN.equals(point)) {
 
