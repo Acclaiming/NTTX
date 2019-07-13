@@ -23,7 +23,7 @@ public class GroupFunction extends Fragment {
 
 								msg.delete();
 
-					//	} else if (GroupAdmin.fastAdminCheck(data,user.id)) {
+						} else if (GroupAdmin.fastAdminCheck(data,user.id)) {
 
 						} else if ((msg.message().newChatMembers() != null || msg.message().leftChatMember() != null)) {
 
@@ -58,7 +58,7 @@ public class GroupFunction extends Fragment {
 												doRest(user,msg,data,"邀请用户");
 
 										}
-										
+
 								}
 
 						} else if (msg.sticker() != null && data.no_sticker != null) {
@@ -186,9 +186,9 @@ public class GroupFunction extends Fragment {
 										data.restWarn.remove(user.id.toString());
 
 								} else {
-										
+
 										data.restWarn.put(user.id.toString(),count);
-										
+
 								}
 
 						}
