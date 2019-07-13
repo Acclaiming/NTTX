@@ -496,7 +496,7 @@ public class GroupOptions extends Fragment {
 
 								} else {
 
-										data.rest_action = null;
+							data.rest_action = null;
 
 										callback.text("📝 限制非文本发送");
 
@@ -534,7 +534,7 @@ public class GroupOptions extends Fragment {
 
 								if (data.max_count == 1) {
 										
-										data.max_count = 0;
+										data.max_count = null;
 										
 								}
 								
