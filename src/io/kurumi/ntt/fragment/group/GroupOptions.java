@@ -76,6 +76,30 @@ public class GroupOptions extends Fragment {
     @Override
     public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
+				if (POINT_HELP.equals(point)) {
+
+						if ("dcm".equals(params[0])) {
+
+								callback.alert(
+
+										"删除来自绑定的频道的消息 :\n",
+
+										"如果群组作为频道绑定的讨论群组，则每条频道消息都会被转发至群组并置顶。\n",
+
+										"开启此功能自动删除来自频道的消息。"
+
+								);
+
+						} else {
+
+								callback.alert("喵....？");
+
+						}
+						
+						return;
+
+				}
+				
 				final GroupData data = GroupData.data.getById(NumberUtil.parseLong(params[0]));
 
 				if (data == null) {
@@ -109,26 +133,6 @@ public class GroupOptions extends Fragment {
 								}};
 
 						callback.edit("群组的管理设定. 点击名称查看功能说明.").buttons(buttons).exec();
-
-				} else if (POINT_HELP.equals(point)) {
-
-						if ("dcm".equals(params[0])) {
-
-								callback.alert(
-
-										"删除来自绑定的频道的消息 :\n",
-
-										"如果群组作为频道绑定的讨论群组，则每条频道消息都会被转发至群组并置顶。\n",
-
-										"开启此功能自动删除来自频道的消息。"
-
-								);
-
-						} else {
-
-								callback.alert("喵....？");
-
-						}
 
 				} else if (POINT_SET.equals(point)) {
 
