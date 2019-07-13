@@ -197,7 +197,7 @@ public class GroupFunction extends Fragment {
 
 								}
 
-								SendResponse resp = msg.send("警告 " + user.userName() + " ！","根据群组设置 本群禁止" + name + "，你已被警告 " + count + " / " + data.max_count + " 次 ， 达到上限将被" + data.actionName() + " ！").exec();
+								SendResponse resp = msg.send("警告 " + user.userName() + " ！","根据群组设置 本群禁止" + name + "，你已被警告 " + count + " / " + data.max_count + " 次 ， 达到上限将被" + data.actionName() + " ！").html().exec();
 
 								if (resp.isOk()) data.last_warn_msg = resp.message().messageId();
 
@@ -217,7 +217,7 @@ public class GroupFunction extends Fragment {
 
 						}
 
-						SendResponse resp = msg.send(user.userName() + " ！","根据群组设置 本群禁止" + name + "，你已达到警告上限并被限制发送非文本消息。","如有疑问，请联系群组管理员").exec();
+						SendResponse resp = msg.send(user.userName() + " ！","根据群组设置 本群禁止" + name + "，你已达到警告上限并被限制发送非文本消息。","如有疑问，请联系群组管理员").html().exec();
 
 						if (resp.isOk()) data.last_warn_msg = resp.message().messageId();
 
@@ -231,7 +231,7 @@ public class GroupFunction extends Fragment {
 
 						}
 
-						SendResponse resp = msg.send(user.userName() + " ！","根据群组设置 本群禁止" + name + "，你已达到警告上限并被禁言。","如有疑问，请联系群组管理员").exec();
+						SendResponse resp = msg.send(user.userName() + " ！","根据群组设置 本群禁止" + name + "，你已达到警告上限并被禁言。","如有疑问，请联系群组管理员").html().exec();
 
 						if (resp.isOk()) data.last_warn_msg = resp.message().messageId();
 
@@ -245,7 +245,7 @@ public class GroupFunction extends Fragment {
 
 						}
 
-						SendResponse resp = msg.send("根据群组设置 本群禁止" + name + "，" + user.userName() + " 已达到警告上限并被封锁。").exec();
+						SendResponse resp = msg.send("根据群组设置 本群禁止" + name + "，" + user.userName() + " 已达到警告上限并被封锁。").html().exec();
 
 						if (resp.isOk()) data.last_warn_msg = resp.message().messageId();
 
