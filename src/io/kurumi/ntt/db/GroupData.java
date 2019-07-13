@@ -31,6 +31,8 @@ public class GroupData {
                 group.id = chat.id();
 
             }
+						
+						group.title = chat.title();
 
             data.idIndex.put(chat.id(),group);
 
@@ -41,6 +43,8 @@ public class GroupData {
     }
 
     public long id;
+		
+		public String title;
 
     public List<UserData> admins;
 

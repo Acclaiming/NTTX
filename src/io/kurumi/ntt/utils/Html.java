@@ -13,6 +13,13 @@ public class Html {
         return "<b>" + HtmlUtil.escape(text.toString()) + "</b>";
 
     }
+		
+		public static String l(Object text) {
+
+        return "<l>" + HtmlUtil.escape(text.toString()) + "</l>";
+
+    }
+		
 	
     public static String a(String text,String href) {
 

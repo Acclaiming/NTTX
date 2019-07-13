@@ -35,7 +35,11 @@ public class Callback extends Msg {
         
     }
     
-    
+    public String inlineMessgeId() {
+				
+				return query.inlineMessageId();
+				
+		}
 
     public void confirm() {
 
