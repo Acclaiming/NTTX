@@ -384,10 +384,10 @@ public class JoinCaptcha extends Fragment {
 								if (data.interfere != null) {
 
 										newButtonLine()
-												.newButton(" [ ",POINT_INTERFERE,user.id)
-												.newButton(" - ",POINT_INTERFERE,user.id)
-												.newButton(" - ",POINT_INTERFERE,user.id)
-												.newButton(" ] ",POINT_INTERFERE,user.id);
+												.newButton("□",POINT_INTERFERE,user.id)
+												.newButton("□",POINT_INTERFERE,user.id)
+												.newButton("□",POINT_INTERFERE,user.id)
+												.newButton("□",POINT_INTERFERE,user.id);
 
 								}
 
@@ -412,10 +412,10 @@ public class JoinCaptcha extends Fragment {
 								if (data.interfere != null) {
 
 										newButtonLine()
-												.newButton(" [ ",POINT_AUTH,user.id)
-												.newButton(" - ",POINT_AUTH,user.id)
-												.newButton(" - ",POINT_AUTH,user.id)
-												.newButton(" ] ",POINT_AUTH,user.id);
+												.newButton("■",POINT_INTERFERE,user.id)
+												.newButton("■",POINT_INTERFERE,user.id)
+												.newButton("■",POINT_INTERFERE,user.id)
+												.newButton("■",POINT_INTERFERE,user.id);
 
 								}
 
