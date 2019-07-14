@@ -986,6 +986,13 @@ public class JoinCaptcha extends Fragment {
 
 				}
 
+				if (gd.captchaFailed != null) {
+						
+						gd.captchaFailed.remove(user.id.toString());
+						
+						if (gd.captchaFailed.isEmpty()) gd.captchaFailed = null;
+						
+				}
 
 		}
 
