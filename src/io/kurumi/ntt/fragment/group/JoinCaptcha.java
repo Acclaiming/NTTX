@@ -548,28 +548,10 @@ public class JoinCaptcha extends Fragment {
 						public void run() {
 
 								final HashMap<Long, AuthCache> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, AuthCache>();
-								final GroupData gd = GroupData.get(msg.chat());
 
 								if (!group.containsKey(user.id)) return;
 
-								if (auth.serviceMsg == null) return;
-
-								auth.serviceMsg.delete();
-
-								if (gd.fail_ban == null) {
-
-										gd.waitForCaptcha.remove(user.id);
-
-										msg.kick();
-
-								} else {
-
-										gd.waitForCaptcha.remove(user.id);
-
-										msg.kick(user.id,true);
-
-								}
-
+								failed(user,msg,auth,data,true);
 
 						}
 
@@ -587,31 +569,20 @@ public class JoinCaptcha extends Fragment {
 
 				if (POINT_DELETE.equals(point)) { msg.delete(); return; }
 
-				final HashMap<Long, AuthCache> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, AuthCache>();
 				final GroupData gd = GroupData.get(msg.chat());
 				final AuthCache auth = (AuthCache)data;
 
-				msg.delete();
-
-				if (auth.serviceMsg == null) return;
-
 				if (msg.message().leftChatMember() != null) {
 
-						auth.serviceMsg.delete();
-						auth.task.cancel();
-
-						group.remove(user.id);
-
-						gd.waitForCaptcha.remove(user.id);
-
-						clearGroupPoint(user);
-
+						failed(user,msg,auth,gd);
+						
 						return;
 
+				} else if (msg.message().newChatMembers() != null && msg.message().newChatMembers().length != 0) {
 
-				} else if (msg.message().newChatMembers() != null) {
-
-						if (user.id.equals(msg.message().newChatMembers()[0].id())) {
+						User newMember = msg.message().newChatMembers()[0];
+						
+						if (user.id.equals(newMember.id())) {
 
 								startAuth(user,msg,gd,null);
 
@@ -619,9 +590,9 @@ public class JoinCaptcha extends Fragment {
 
 						}
 
-						msg.kick(msg.message().newChatMembers()[0].id());
+						msg.kick(newMember.id());
 
-						if (msg.message().newChatMembers()[0].isBot()) {
+						if (newMember.isBot()) {
 
 								if (gd.invite_bot_ban != null) {
 
@@ -647,68 +618,20 @@ public class JoinCaptcha extends Fragment {
 
 						}
 
-						auth.serviceMsg.delete();
-						auth.task.cancel();
-
-						group.remove(user.id);
-						gd.waitForCaptcha.remove(user.id);
-
-						clearGroupPoint(user);
+						failed(user,msg,auth,gd,true);
 
 						return;
 
 				}
 
-				auth.serviceMsg.delete();
-				auth.task.cancel();
-
-				group.remove(user.id);
-				clearGroupPoint(user);
-
 				if (auth.code.verify(msg.text())) {
 
-						gd.waitForCaptcha.remove(user.id);
+						success(user,msg,auth,gd);
 
 				} else {
 
-						msg.restrict();
-
-						if (gd.ft_count != null && (gd.captchaFailed == null || !gd.captchaFailed.containsKey(user.id.toString()) || (gd.captchaFailed.get(user.id.toString()) + 1 < gd.ft_count))) {
-
-								if (gd.captchaFailed == null) {
-
-										gd.captchaFailed = new HashMap<>();
-
-										gd.captchaFailed.put(user.id.toString(),1);
-
-								} else if (!gd.captchaFailed.containsKey(user.id.toString())) {
-
-										gd.captchaFailed.put(user.id.toString(),1);
-
-								} else {
-
-										gd.captchaFailed.put(user.id.toString(),gd.captchaFailed.get(user.id.toString()) + 1);
-
-								}
-
-								startAuth(user,msg,gd,auth.code);
-
-								return;
-
-						} else if (gd.fail_ban == null) {
-
-								gd.waitForCaptcha.remove(user.id);
-
-								msg.kick();
-
-						} else {
-
-								gd.waitForCaptcha.remove(user.id);
-
-								msg.kick(user.id,true);
-
-						}
-
+						failed(user,msg,auth,gd);
+						
 				}
 
 		}
@@ -732,6 +655,8 @@ public class JoinCaptcha extends Fragment {
 
 						startAuth(user,callback,GroupData.get(callback.chat()),null);
 
+						return;
+
 				} 
 
 				final HashMap<Long, AuthCache> group = cache.containsKey(callback.chatId()) ? cache.get(callback.chatId()) : new HashMap<Long, AuthCache>();
@@ -748,139 +673,21 @@ public class JoinCaptcha extends Fragment {
 
 						}
 
-						if (auth != null) {
-
-								auth.serviceMsg.delete();
-								auth.task.cancel();
-
-								group.remove(user.id);
-
-						}
-
-						if (gd.ft_count != null && (gd.captchaFailed == null || !gd.captchaFailed.containsKey(user.id.toString()) ||  (gd.captchaFailed.get(user.id.toString()) + 1 < gd.ft_count))) {
-
-								if (gd.captchaFailed == null) {
-
-										gd.captchaFailed = new HashMap<>();
-
-										gd.captchaFailed.put(user.id.toString(),1);
-
-								} else if (!gd.captchaFailed.containsKey(user.id.toString())) {
-
-										gd.captchaFailed.put(user.id.toString(),1);
-
-								} else {
-
-										gd.captchaFailed.put(user.id.toString(),gd.captchaFailed.get(user.id.toString()) + 1);
-
-								}
-
-								callback.send(user.userName() + " , 验证失败。 根据群组设置，你还可以继续重试 :)")
-										.buttons(new ButtonMarkup() {{
-
-														newButtonLine("开始验证",POINT_AUTH,user.id);
-
-														newButtonLine().newButton("通过",POINT_ACC,user.id).newButton("滥权",POINT_REJ,user.id);
-
-												}}).html().exec();
-
-								return;
-
-						} else if (gd.fail_ban == null) {
-
-								gd.waitForCaptcha.remove(user.id);
-
-								callback.kick(user.id);
-
-						} else {
-
-								gd.waitForCaptcha.remove(user.id);
-
-								callback.kick(user.id,true);
-
-						}
-
+						failed(user,callback,auth,gd);
 
 				} else if (POINT_ACC.equals(point) || POINT_REJ.equals(point)) {
 
 						if (user.id.equals(target)) {
 
-								callback.delete();
+								failed(user,callback,auth,gd);
 
-								if (auth != null) {
-
-										auth.serviceMsg.delete();
-										auth.task.cancel();
-
-										group.remove(user.id);
-
-								}
-
-								if (gd.ft_count != null && (gd.captcha_time == null || (gd.captchaFailed.get(user.id.toString()) + 1 < gd.ft_count))) {
-
-										if (gd.captchaFailed == null) {
-
-												gd.captchaFailed = new HashMap<>();
-
-												gd.captchaFailed.put(user.id.toString(),1);
-
-										} else if (!gd.captchaFailed.containsKey(user.id.toString())) {
-
-												gd.captchaFailed.put(user.id.toString(),1);
-
-										} else {
-
-												gd.captchaFailed.put(user.id.toString(),gd.captchaFailed.get(user.id.toString()) + 1);
-
-										}
-
-										callback.send(user.userName() + " , 验证失败。 根据群组设置，你还可以继续重试 :)")
-												.buttons(new ButtonMarkup() {{
-
-																newButtonLine("开始验证",POINT_AUTH,user.id);
-
-																newButtonLine().newButton("通过",POINT_ACC,user.id).newButton("滥权",POINT_REJ,user.id);
-
-														}}).html().exec();
-
-										return;
-
-								} else if (gd.fail_ban == null) {
-
-										gd.waitForCaptcha.remove(user.id);
-
-										callback.kick(user.id);
-
-								} else {
-
-										gd.waitForCaptcha.remove(user.id);
-
-										callback.kick(user.id,true);
-
-								}
-
-								return;
-
-						} else if (NTT.checkGroup(callback)) {
+						} else if (NTT.checkGroupAdmin(callback)) {
 
 								return;
 
 						}
 
-						if (auth != null) {
-
-								auth.serviceMsg.delete();
-								auth.task.cancel();
-
-								group.remove(user.id);
-
-						}
-
-						callback.delete();
-
-						gd.waitForCaptcha.remove(user.id);
-
-						callback.unrestrict(user.id);
+						success(user,callback,auth,gd);
 
 				} else if (POINT_ANSWER.equals(point)) {
 
@@ -888,7 +695,9 @@ public class JoinCaptcha extends Fragment {
 
 								callback.delete();
 
-								callback.send(user.userName() + " , 验证丢失。 你还可以继续重试 :)")
+								callback.restrict(user.id);
+
+								callback.send(user.userName() + " , 验证丢失。 你可以重试 :)")
 										.buttons(new ButtonMarkup() {{
 
 														newButtonLine("重新验证",POINT_AUTH,user.id);
@@ -901,56 +710,108 @@ public class JoinCaptcha extends Fragment {
 
 						}
 
-						if (cache == null) return;
-
-						if (auth.serviceMsg != null) {
-
-								auth.serviceMsg.delete();
-								auth.task.cancel();
-
-						}
-
-						group.remove(user.id);
-
 						if (auth.code.verify(params[1])) {
 
-								gd.waitForCaptcha.remove(user.id);
-
-								callback.unrestrict(user.id);
-
-						} else if (gd.ft_count != null && (gd.captchaFailed == null || (gd.captchaFailed.get(user.id.toString()) + 1 < gd.ft_count))) {
-
-								if (gd.captchaFailed == null) {
-
-										gd.captchaFailed = new HashMap<>();
-
-										gd.captchaFailed.put(user.id.toString(),1);
-
-								} else if (!gd.captchaFailed.containsKey(user.id.toString())) {
-
-										gd.captchaFailed.put(user.id.toString(),1);
-
-								} else {
-
-										gd.captchaFailed.put(user.id.toString(),gd.captchaFailed.get(user.id.toString()) + 1);
-
-								}
-
-								startAuth(user,callback,gd,auth.code);
-
-						} else if (gd.fail_ban == null) {
-
-								gd.waitForCaptcha.remove(user.id);
-
-								callback.kick(user.id);
+								success(user,callback,auth,gd);
 
 						} else {
 
-								gd.waitForCaptcha.remove(user.id);
-
-								callback.kick(user.id,true);
+								failed(user,callback,auth,gd);
 
 						}
+
+				}
+
+		}
+
+		void success(UserData user,Msg msg,AuthCache auth,GroupData gd) {
+
+				if (cache.containsKey(msg.chatId())) {
+
+						cache.get(msg.chatId()).remove(user.id);
+
+				}
+
+				if (auth != null) {
+
+						if (auth.serviceMsg != null) auth.serviceMsg.delete();
+
+						auth.task.cancel();
+
+				}
+
+				msg.delete();
+
+				gd.waitForCaptcha.remove(user.id);
+
+				msg.unrestrict(user.id);
+
+				if (!(msg instanceof Callback)) {
+
+						clearGroupPoint(user);
+
+				}
+
+		}
+		
+		void failed(UserData user,Msg msg,AuthCache auth,GroupData gd) {
+				
+				failed(user,msg,auth,gd,false);
+				
+		}
+
+		void failed(UserData user,Msg msg,AuthCache auth,GroupData gd,boolean noRetey) {
+
+				if (cache.containsKey(msg.chatId())) {
+
+						cache.get(msg.chatId()).remove(user.id);
+
+				}
+
+				msg.delete();
+
+				if (auth != null) {
+
+						if (auth.serviceMsg != null) auth.serviceMsg.delete();
+
+						auth.task.cancel();
+
+				}
+
+				if (!noRetey && gd.ft_count != null && (gd.captchaFailed == null || !gd.captchaFailed.containsKey(user.id.toString()) || (gd.captchaFailed.get(user.id.toString()) + 1 < gd.ft_count))) {
+
+						if (gd.captchaFailed == null) {
+
+								gd.captchaFailed = new HashMap<>();
+
+								gd.captchaFailed.put(user.id.toString(),1);
+
+						} else if (!gd.captchaFailed.containsKey(user.id.toString())) {
+
+								gd.captchaFailed.put(user.id.toString(),1);
+
+						} else {
+
+								gd.captchaFailed.put(user.id.toString(),gd.captchaFailed.get(user.id.toString()) + 1);
+
+						}
+
+						startAuth(user,msg,gd,auth != null ? auth.code : null);
+
+						return;
+						
+				} else if (msg.message().leftChatMember() != null) {
+				} else if (gd.fail_ban == null) {
+
+						gd.waitForCaptcha.remove(user.id);
+
+						msg.kick();
+
+				} else {
+
+						gd.waitForCaptcha.remove(user.id);
+
+						msg.kick(user.id,true);
 
 				}
 
