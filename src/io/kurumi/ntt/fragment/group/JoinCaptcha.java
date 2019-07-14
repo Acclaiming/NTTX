@@ -88,10 +88,12 @@ public class JoinCaptcha extends Fragment {
 								data.waitForCaptcha.add(user.id);
 
 						}
+						
+						msg.restrict();
 
 						if (data.passive_mode != null) {
 
-								msg.restrict();
+								
 
 								if (data.delete_service_msg != null) {
 
@@ -118,12 +120,6 @@ public class JoinCaptcha extends Fragment {
 								}
 
 								return;
-
-						}
-
-						if (data.require_input != null) {
-
-								msg.restrict();
 
 						}
 
@@ -778,6 +774,8 @@ public class JoinCaptcha extends Fragment {
 								group.remove(user.id);
 
 						}
+						
+						callback.delete();
 						
 						gd.waitForCaptcha.remove(user.id);
 
