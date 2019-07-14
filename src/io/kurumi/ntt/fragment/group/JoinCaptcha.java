@@ -805,7 +805,7 @@ public class JoinCaptcha extends Fragment {
 
 						gd.waitForCaptcha.remove(user.id);
 
-						msg.kick();
+						msg.kick(user.id);
 
 				} else {
 

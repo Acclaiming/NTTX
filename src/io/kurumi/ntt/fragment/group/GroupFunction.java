@@ -37,7 +37,35 @@ public class GroupFunction extends Fragment {
 
 										if (data.waitForCaptcha != null && data.waitForCaptcha.contains(user.id)) {
 
+												msg.kick(newUser.id());
+												
+												if (newUser.isBot()) {
 
+														if (data.invite_bot_ban != null) {
+
+																msg.kick(user.id,true);
+
+														} else {
+
+																msg.kick(user.id);
+
+														}
+
+												} else {
+
+														if (data.invite_user_ban != null) {
+
+																msg.kick(user.id,true);
+
+														} else {
+
+																msg.kick(user.id);
+
+														}
+
+												}
+												
+												data.waitForCaptcha.remove(user.id);
 
 										} else if (data.no_invite_bot != null && newUser.isBot()) {
 
