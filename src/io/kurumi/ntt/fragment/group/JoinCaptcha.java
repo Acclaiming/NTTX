@@ -29,6 +29,7 @@ import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.utils.NTT;
 import java.util.Date;
 import io.kurumi.ntt.fragment.group.JoinCaptcha.VerifyCode;
+import com.pengrad.telegrambot.request.DeleteMessage;
 
 public class JoinCaptcha extends Fragment {
 
@@ -575,13 +576,13 @@ public class JoinCaptcha extends Fragment {
 				if (msg.message().leftChatMember() != null) {
 
 						failed(user,msg,auth,gd);
-						
+
 						return;
 
 				} else if (msg.message().newChatMembers() != null && msg.message().newChatMembers().length != 0) {
 
 						User newMember = msg.message().newChatMembers()[0];
-						
+
 						if (user.id.equals(newMember.id())) {
 
 								startAuth(user,msg,gd,null);
@@ -631,7 +632,7 @@ public class JoinCaptcha extends Fragment {
 				} else {
 
 						failed(user,msg,auth,gd);
-						
+
 				}
 
 		}
@@ -752,12 +753,41 @@ public class JoinCaptcha extends Fragment {
 
 				}
 
+				if (gd.captcha_del == null && gd.last_join_msg != null) {
+
+						execute(new DeleteMessage(msg.chatId(),gd.last_join_msg));
+
+						gd.last_join_msg = null;
+
+				}
+
+				if (gd.captcha_del == null) {
+
+						Msg lastMsg = msg.send(user.userName() + " 通过了验证 ~").send();
+
+						if (lastMsg != null) {
+
+								gd.last_join_msg = lastMsg.messageId();
+
+						}
+
+				} else if (gd.captcha_del == 0) {
+
+						msg.send(user.userName() + " 通过了验证 ~").failed();
+
+				} else {
+
+						msg.send(user.userName() + " 通过了验证 ~").exec();
+
+				}
+
+
 		}
-		
+
 		void failed(UserData user,Msg msg,AuthCache auth,GroupData gd) {
-				
+
 				failed(user,msg,auth,gd,false);
-				
+
 		}
 
 		void failed(UserData user,Msg msg,AuthCache auth,GroupData gd,boolean noRetey) {
@@ -799,8 +829,11 @@ public class JoinCaptcha extends Fragment {
 						startAuth(user,msg,gd,auth != null ? auth.code : null);
 
 						return;
+
+				}
+				
+				if (msg.message().leftChatMember() != null) {
 						
-				} else if (msg.message().leftChatMember() != null) {
 				} else if (gd.fail_ban == null) {
 
 						gd.waitForCaptcha.remove(user.id);
@@ -814,6 +847,35 @@ public class JoinCaptcha extends Fragment {
 						msg.kick(user.id,true);
 
 				}
+				
+				if (gd.captcha_del == null && gd.last_join_msg != null) {
+
+						execute(new DeleteMessage(msg.chatId(),gd.last_join_msg));
+
+						gd.last_join_msg = null;
+
+				}
+
+				if (gd.captcha_del == null) {
+
+						Msg lastMsg = msg.send(user.userName() + " 验证失败 已被" + gd.fail_ban == null ? "移除" : "封锁").send();
+
+						if (lastMsg != null) {
+
+								gd.last_join_msg = lastMsg.messageId();
+
+						}
+
+				} else if (gd.captcha_del == 0) {
+
+						msg.send(user.userName() + " 验证失败 已被" + gd.fail_ban == null ? "移除" : "封锁").failed();
+						
+				} else {
+
+						msg.send(user.userName() + " 验证失败 已被" + gd.fail_ban == null ? "移除" : "封锁").exec();
+						
+				}
+				
 
 		}
 

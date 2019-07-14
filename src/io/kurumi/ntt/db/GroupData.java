@@ -62,6 +62,8 @@ public class GroupData {
 		public Integer ft_count;
 		public Integer captcha_time;
 		
+		public Integer last_join_msg;
+		
 		public String parse_time() { return parse_time(captcha_time); }
 		
 		public String parse_time(Integer time) {
@@ -92,6 +94,7 @@ public class GroupData {
 		public Boolean invite_bot_ban;
 		
 		public Integer captcha_mode;
+		public Integer captcha_del;
 		
 		public Integer no_invite_user;
 		public Integer no_invite_bot;
