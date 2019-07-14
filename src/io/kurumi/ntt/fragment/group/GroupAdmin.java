@@ -37,6 +37,9 @@ public class GroupAdmin extends Fragment {
 										continue;
 
 								}
+								
+								if (admin.user().isBot()) continue; // 自己
+				
 
 								data.admins.add(admin.user().id());
 
