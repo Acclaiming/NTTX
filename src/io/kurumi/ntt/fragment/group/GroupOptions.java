@@ -27,6 +27,8 @@ public class GroupOptions extends Fragment {
 
 				registerFunction("options");
 
+				registerPoint(POINT_SET_CUST);
+				
 				registerCallback(
 						POINT_BACK,
 						POINT_MENU_MAIN,
