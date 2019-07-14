@@ -96,6 +96,29 @@ public class GroupData {
 		public Integer captcha_mode;
 		public Integer captcha_del;
 		
+		public String custom_i_question;
+		public String custom_a_question;
+		
+		public List<CustomItem> custom_items;
+		
+		public static class CustomItem {
+				
+				public Boolean isValid;
+				public String text;
+				
+				@Override
+				public String toString() {
+					
+						if (isValid == null || text == null) return super.toString();
+						
+						return (isValid ? "[正确选项]" : "[错误选项]") + " " + text;
+						
+				}
+				
+		}
+		
+		public static String custom_regex;
+		
 		public Integer no_invite_user;
 		public Integer no_invite_bot;
 		

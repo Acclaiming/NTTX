@@ -13,6 +13,9 @@ import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
 import java.util.concurrent.atomic.AtomicInteger;
+import io.kurumi.ntt.fragment.bots.NewBot;
+import java.util.Collections;
+import cn.hutool.core.util.ArrayUtil;
 
 public class GroupOptions extends Fragment {
 
@@ -28,10 +31,12 @@ public class GroupOptions extends Fragment {
 						POINT_MENU_MAIN,
 						POINT_MENU_REST,
 						POINT_MENU_JOIN,
+						POINT_MENU_CUST,
 						POINT_HELP,
 						POINT_SET_MAIN,
 						POINT_SET_REST,
-						POINT_SET_JOIN);
+						POINT_SET_JOIN,
+						POINT_SET_CUST);
 
 		}
 
@@ -46,12 +51,14 @@ public class GroupOptions extends Fragment {
 		final String POINT_MENU_MAIN = "group_menu_main";
 		final String POINT_MENU_REST = "group_menu_rest";
 		final String POINT_MENU_JOIN = "group_menu_join";
-
+		final String POINT_MENU_CUST = "group_menu_custom";
+		
 		final String POINT_HELP = "group_help";
 		final String POINT_SET_MAIN = "group_main_set";
 		final String POINT_SET_REST = "group_rest_set";
 		final String POINT_SET_JOIN = "group_join_set";
-
+		final String POINT_SET_CUST = "group_custom_set";
+		
 		@Override
 		public void onFunction(UserData user,final Msg msg,String function,String[] params) {
 
@@ -106,11 +113,11 @@ public class GroupOptions extends Fragment {
 										"开启此功能自动删除服务消息。"
 
 								);
-								
-								
-				// } else if ("enable".equals(params[0])) {
 
-								
+
+								// } else if ("enable".equals(params[0])) {
+
+
 						} else {
 
 								callback.alert("喵....？");
@@ -607,7 +614,7 @@ public class GroupOptions extends Fragment {
 										callback.text("🚪  " + data.ft_count + " -> " + (data.ft_count = data.ft_count + 1));
 
 								} else if ("captcha_del".equals(params[1])) {
-										
+
 										if (data.captcha_del == null) {
 
 												data.captcha_del = 0;
@@ -628,8 +635,8 @@ public class GroupOptions extends Fragment {
 
 										}
 
-										
-										
+
+
 								} else if ("ft_dec".equals(params[1])) {
 
 										if (data.ft_count == null) {
@@ -904,6 +911,37 @@ public class GroupOptions extends Fragment {
 
 										}
 
+								} else if ("mode_cus".equals(params[1])) {
+										
+										StringBuilder stats = new StringBuilder();
+										
+										stats.append("选择模式问题 : ");
+										
+										if (data.custom_i_question == null) {
+												
+												stats.append("未设定");
+												
+										} else {
+												
+												stats.append(data.custom_i_question);
+												
+										}
+										
+										stats.append("\n选择模式选项 : ");
+										
+										if (data.custom_items == null) {
+												
+												stats.append("未设定");
+												
+										} else {
+												
+												stats.append("\n").append(ArrayUtil.join(data.custom_items.toArray(),"\n"));
+												
+										}
+										
+										callback.edit("编辑自定义问题. 对错选项或正确内容.").buttons(cusMenu(data)).exec();
+										
+										
 								} else {
 
 										callback.alert("喵...？");
@@ -1050,8 +1088,8 @@ public class GroupOptions extends Fragment {
 								newButtonLine()
 										.newButton("保留验证消息",POINT_HELP,"captcha_del")
 										.newButton(data.captcha_del == null ? "最后一条" : data.captcha_del == 0 ? "不保留" : "全部保留",POINT_SET_JOIN,data.id,"captcha_del");
-								
-										
+
+
 								newButtonLine("验证期间邀请用户",POINT_HELP,"invite_when_captcha");
 
 								newButtonLine()
@@ -1077,11 +1115,15 @@ public class GroupOptions extends Fragment {
 										.newButton(((Integer)1).equals(data.captcha_mode) ? "●" : "○",POINT_SET_JOIN,data.id,"mode_math");
 
 								newButtonLine()
+										.newButton("自定义",POINT_HELP,"mode_cus")
+										.newButton(((Integer)2).equals(data.captcha_mode) ? "●" : "○",POINT_SET_JOIN,data.id,"mode_cus");
+
+								newButtonLine()
 										.newButton("图片描述",POINT_HELP,"with_image")
 										.newButton(data.with_image != null ? "✅" : "☑",POINT_SET_JOIN,data.id,"with_image");
 
 								newButtonLine()
-										.newButton("伪装按钮",POINT_HELP,"interfere")
+										.newButton("干扰按钮",POINT_HELP,"interfere")
 										.newButton(data.interfere != null ? "✅" : "☑",POINT_SET_JOIN,data.id,"interfere");
 
 								newButtonLine()
@@ -1112,7 +1154,26 @@ public class GroupOptions extends Fragment {
 						}};
 
 		}
+		
+		ButtonMarkup cusMenu(final GroupData data) {
 
+				return new ButtonMarkup() {{
+
+								newButtonLine()
+										.newButton("使用自定义问题",POINT_HELP,"enable_cus")
+										.newButton(((Integer)2).equals(data.captcha_mode) ? "✅" : "☑",POINT_SET_CUST,data.id,"enable_cus");
+								
+								newButtonLine("设置选择模式问题",POINT_SET_CUST,data.id,"reset_question");
+								newButtonLine("设置选择模式选项",POINT_SET_CUST,data.id,"reset_items");
+								
+								newButtonLine("设置回答",POINT_SET_CUST,data.id,"reset_answer");
+
+								newButtonLine("🔙",POINT_MENU_JOIN,data.id);
+
+						}};
+
+		}
+		
 
 
 }

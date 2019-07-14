@@ -352,6 +352,52 @@ public class JoinCaptcha extends Fragment {
 				}
 
 		}
+		
+		static class CustomCode extends VerifyCode {
+
+				public CustomCode(boolean input) { super(input); }
+				
+				@Override
+				public String question() {
+						
+						return null;
+						
+				}
+
+				@Override
+				public String code() {
+						// TODO: Implement this method
+						return null;
+				}
+
+				@Override
+				public String validCode() {
+						// TODO: Implement this method
+						return null;
+				}
+
+				@Override
+				public String[] invalidCode() {
+						// TODO: Implement this method
+						return null;
+				}
+
+				@Override
+				public boolean verify(String input) {
+						// TODO: Implement this method
+						return false;
+				}
+
+				@Override
+				public JoinCaptcha.VerifyCode fork() {
+						// TODO: Implement this method
+						return null;
+				}
+				
+				
+				
+				
+		}
 
 		void startAuth(final UserData user,final Msg msg,final GroupData data,VerifyCode left) {
 
@@ -808,7 +854,7 @@ public class JoinCaptcha extends Fragment {
 
 				}
 
-				if (!noRetey && gd.ft_count != null && (gd.captchaFailed == null || !gd.captchaFailed.containsKey(user.id.toString()) || (gd.captchaFailed.get(user.id.toString()) < gd.ft_count))) {
+				if (!noRetey && gd.ft_count != null && (gd.captchaFailed == null || !gd.captchaFailed.containsKey(user.id.toString()) || (gd.captchaFailed.get(user.id.toString()) <= gd.ft_count))) {
 
 						if (gd.captchaFailed == null) {
 
