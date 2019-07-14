@@ -186,11 +186,11 @@ public class JoinCaptcha extends Fragment {
 
 				@Override
 				public String validCode() {
-					
+
 						return code ? "喵" : "嘤";
-						
+
 				}
-				
+
 				@Override
 				public String[] invalidCode() {
 
@@ -537,7 +537,7 @@ public class JoinCaptcha extends Fragment {
 				msg.delete();
 
 				if (msg.message().leftChatMember() != null) {
-						
+
 						auth.serviceMsg.delete();
 						auth.task.cancel();
 
@@ -553,13 +553,13 @@ public class JoinCaptcha extends Fragment {
 				} else if (msg.message().newChatMembers() != null) {
 
 						if (user.id.equals(msg.message().newChatMembers()[0].id())) {
-								
+
 								startAuth(user,msg,gd);
-								
+
 								return;
-								
+
 						}
-						
+
 						msg.kick(msg.message().newChatMembers()[0].id());
 
 						if (msg.message().newChatMembers()[0].isBot()) {
@@ -849,8 +849,12 @@ public class JoinCaptcha extends Fragment {
 
 						if (cache == null) return;
 
-						auth.serviceMsg.delete();
-						auth.task.cancel();
+						if (auth.serviceMsg != null) {
+
+								auth.serviceMsg.delete();
+								auth.task.cancel();
+
+						}
 
 						group.remove(user.id);
 
