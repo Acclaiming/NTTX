@@ -519,14 +519,11 @@ public class JoinCaptcha extends Fragment {
 
 				if (msg.message().leftChatMember() != null) {
 
-						if (auth != null) {
+						auth.serviceMsg.delete();
+						auth.task.cancel();
 
-								auth.serviceMsg.delete();
-								auth.task.cancel();
+						group.remove(user.id);
 
-								group.remove(user.id);
-
-						}
 						gd.waitForCaptcha.remove(user.id);
 
 						clearGroupPoint(user);
@@ -576,17 +573,13 @@ public class JoinCaptcha extends Fragment {
 
 				}
 
-				AuthCache cache = group.get(user.id);
-
-				if (cache == null) return;
-
 				auth.serviceMsg.delete();
 				auth.task.cancel();
 
 				group.remove(user.id);
 				clearGroupPoint(user);
-
-				if (cache.code.verify(msg.text())) {
+				
+				if (auth.code.verify(msg.text())) {
 
 						gd.waitForCaptcha.remove(user.id);
 
