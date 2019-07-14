@@ -894,8 +894,8 @@ public class GroupOptions extends Fragment {
 
 										if (data.require_input == null) {
 
-												if (((Integer)2).equals(data.captcha_mode) && (data.require_input == null && (data.custom_i_question == null || data.custom_items == null))) {
-														
+												if (((Integer)2).equals(data.captcha_mode) && (data.custom_a_question == null || data.custom_kw == null)) {
+
 														callback.alert(
 
 																"你正在使用自定义验证模式",
@@ -915,8 +915,8 @@ public class GroupOptions extends Fragment {
 
 										} else {
 
-												if (((Integer)2).equals(data.captcha_mode) && data.require_input != null && (data.custom_a_question == null || data.custom_kw == null)) {
-	
+												if (((Integer)2).equals(data.captcha_mode) && (data.custom_i_question == null || data.custom_items == null)) {
+
 														callback.alert(
 
 																"你正在使用自定义验证模式",
