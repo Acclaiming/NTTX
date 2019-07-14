@@ -319,11 +319,11 @@ public class JoinCaptcha extends Fragment {
 
 				} else if (data.captcha_mode == 0) {
 
-						code = new MathCode(data.require_input != null);
+						code = new StringCode(data.require_input != null);
 
 				} else {
 
-						code = new StringCode(data.require_input != null);
+						code = new MathCode(data.require_input != null);
 
 				}
 
