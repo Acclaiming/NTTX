@@ -358,13 +358,23 @@ public class JoinCaptcha extends Fragment {
 
 				private GroupData data;
 
+				List<String> validCode = new ArrayList<>();
+				List<String> invalidCode = new ArrayList<>();
+
 				public CustomCode(boolean input,GroupData data) {
 
 						super(input);
 
 						this.data = data;
 
-			  }
+						for (GroupData.CustomItem item : data.custom_items) {
+
+								if (item.isValid) validCode.add(item.text);
+								else invalidCode.add(item.text);
+
+						}
+
+				}
 
 				@Override
 				public String question() {
@@ -392,17 +402,23 @@ public class JoinCaptcha extends Fragment {
 				@Override
 				public String[] invalidCode() {
 
-						if (codes == null) {
+						String[] codes = new String[validCode.size() + invalidCode.size()];
 
-								codes = new String[data.custom_items.size()];
+						int index = 0;
 
-								for (int index = 0;index < data.custom_items.size();index ++) {
+						for (String code : validCode) {
 
-										GroupData.CustomItem item = data.custom_items.get(index);
+								codes[index] = code;
 
-										codes[index] = item.text;
+								index ++;
 
-								}
+						}
+
+						for (String code : invalidCode) {
+
+								codes[index] = code;
+
+								index ++;
 
 						}
 
@@ -425,7 +441,7 @@ public class JoinCaptcha extends Fragment {
 
 						} else {
 
-								return ArrayUtil.contains(codes,text);
+								return validCode.contains(text);
 
 						}
 
@@ -434,7 +450,7 @@ public class JoinCaptcha extends Fragment {
 				@Override
 				public VerifyCode fork() {
 
-						return new CustomCode(input,data);
+						return this;
 
 				}
 
@@ -468,9 +484,9 @@ public class JoinCaptcha extends Fragment {
 						code = new MathCode(data.require_input != null);
 
 				} else {
-						
+
 						code = new CustomCode(data.require_input != null,data);
-						
+
 				}
 
 				ButtonMarkup buttons = new ButtonMarkup() {{
