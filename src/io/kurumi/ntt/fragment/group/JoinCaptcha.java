@@ -497,6 +497,8 @@ public class JoinCaptcha extends Fragment {
 
 								if (!group.containsKey(user.id)) return;
 
+								if (auth.serviceMsg == null) return;
+								
 								auth.serviceMsg.delete();
 
 								if (gd.fail_ban == null) {
