@@ -424,6 +424,10 @@ public class JoinCaptcha extends Fragment {
 								auth.serviceMsg =  msg.send("新成员验证为 : " + user.userName(),"\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
 
 						}
+						
+						if (auth.serviceMsg == null) return;
+						
+						clearGroupPoint(user);
 
 					  AuthCache old = group.put(user.id,auth);
 
@@ -462,7 +466,13 @@ public class JoinCaptcha extends Fragment {
 								auth.serviceMsg = new Msg(this,resp.message());
 
 						}
-
+						
+						if (auth.serviceMsg == null) {
+								
+								clearGroupPoint(user);
+								
+						}
+						
 						if (auth.input) {
 
 								msg.unrestrict(user.id);
@@ -537,6 +547,8 @@ public class JoinCaptcha extends Fragment {
 				final AuthCache auth = (AuthCache)data;
 
 				msg.delete();
+				
+				if (auth.serviceMsg == null) return;
 
 				if (msg.message().leftChatMember() != null) {
 
@@ -561,7 +573,7 @@ public class JoinCaptcha extends Fragment {
 								return;
 
 						}
-
+						
 						msg.kick(msg.message().newChatMembers()[0].id());
 
 						if (msg.message().newChatMembers()[0].isBot()) {
@@ -688,6 +700,9 @@ public class JoinCaptcha extends Fragment {
 				final GroupData gd = GroupData.get(callback.chat());
 				AuthCache auth = group.get(user.id);
 
+				if (auth.serviceMsg == null) return;
+				
+				
 				if (POINT_INTERFERE.equals(point)) {
 
 						if (!user.id.equals(target)) {
