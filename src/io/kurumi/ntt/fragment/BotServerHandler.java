@@ -39,6 +39,14 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 				this.request = request;
 
+				if (new File("/etc/ntt/safe").isFile()) {
+						
+						sendOk(ctx);
+						
+						return;
+						
+				}
+				
 				if (!request.decoderResult().isSuccess()) {
 
 						sendError(ctx,BAD_REQUEST);
