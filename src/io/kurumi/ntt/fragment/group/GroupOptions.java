@@ -596,7 +596,7 @@ public class GroupOptions extends Fragment {
 
 										if (data.ft_count == null) {
 
-												data.ft_count = 1;
+												data.ft_count = 0;
 
 										}
 
@@ -611,10 +611,10 @@ public class GroupOptions extends Fragment {
 												return;
 
 										}
-
+										
 										callback.text("🚪  " + data.ft_count + " -> " + (data.ft_count = data.ft_count - 1));
 
-										if (data.ft_count == 50) {
+										if (data.ft_count == 0) {
 
 												data.ft_count = null;
 
