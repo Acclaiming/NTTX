@@ -572,18 +572,16 @@ public class JoinCaptcha extends Fragment {
 						return;
 
 				}
-
-				auth.serviceMsg.delete();
-				auth.task.cancel();
-
+				
+						auth.serviceMsg.delete();
+						auth.task.cancel();
+						
 				group.remove(user.id);
 				clearGroupPoint(user);
 				
 				if (auth.code.verify(msg.text())) {
 
 						gd.waitForCaptcha.remove(user.id);
-
-						msg.unrestrict();
 
 				} else {
 
