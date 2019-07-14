@@ -39,7 +39,7 @@ public class BotLog extends ConsoleLog {
 
 				String str = StrUtil.format(template,values);
 
-				new Send(Env.GROUP,str).noLog().exec();
+				//new Send(Env.GROUP,str).noLog().exec();
 
         out.println(str);
 
