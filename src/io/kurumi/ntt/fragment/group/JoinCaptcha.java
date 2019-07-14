@@ -798,7 +798,7 @@ public class JoinCaptcha extends Fragment {
 
 						}
 
-						success(user,callback,auth,gd);
+						success(UserData.get(target),callback,auth,gd);
 
 				} else if (POINT_ANSWER.equals(point)) {
 
