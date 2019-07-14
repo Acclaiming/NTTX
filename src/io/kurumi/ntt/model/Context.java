@@ -63,7 +63,7 @@ public class Context {
 
     public boolean kick(final Long userId,boolean ban) {
 
-        BaseResponse resp = fragment.bot().execute(new KickChatMember(chatId(),userId.intValue());
+        BaseResponse resp = fragment.bot().execute(new KickChatMember(chatId(),userId.intValue()));
 
 				fragment.bot().execute(new UnbanChatMember(chatId(),userId.intValue()));
 
