@@ -17,6 +17,7 @@ import io.kurumi.ntt.utils.NTT;
 import java.util.LinkedList;
 import java.util.List;
 import cn.hutool.core.util.StrUtil;
+import java.util.ArrayList;
 
 public class GroupOptions extends Fragment {
 
@@ -1109,8 +1110,20 @@ public class GroupOptions extends Fragment {
 
 						boolean valid = false;
 
+						ArrayList<String> buttons = new ArrayList<>();
+						
 						for (final String line : msg.text().split("\n")) {
 
+								if (buttons.contains(line)) {
+										
+										msg.send("选项重复 : " + line).withCancel().exec(data);
+										
+										return;
+									
+								}
+								
+								buttons.add(line);
+								
 								if (line.startsWith("+")) {
 
 										valid = true;
