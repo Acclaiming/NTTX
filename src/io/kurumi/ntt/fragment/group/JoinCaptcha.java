@@ -808,7 +808,7 @@ public class JoinCaptcha extends Fragment {
 
 				}
 
-				if (!noRetey && gd.ft_count != null && (gd.captchaFailed == null || !gd.captchaFailed.containsKey(user.id.toString()) || (gd.captchaFailed.get(user.id.toString()) + 1 < gd.ft_count))) {
+				if (!noRetey && gd.ft_count != null && (gd.captchaFailed == null || !gd.captchaFailed.containsKey(user.id.toString()) || (gd.captchaFailed.get(user.id.toString()) < gd.ft_count))) {
 
 						if (gd.captchaFailed == null) {
 
