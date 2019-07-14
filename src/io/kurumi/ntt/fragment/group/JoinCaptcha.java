@@ -313,7 +313,7 @@ public class JoinCaptcha extends Fragment {
 
 		void startAuth(final UserData user,final Msg msg,final GroupData data) {
 
-				final HashMap<Long, AuthCache> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
+				final HashMap<Long, AuthCache> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, AuthCache>();
 
 				setGroupPoint(user,POINT_DELETE);
 
@@ -471,7 +471,7 @@ public class JoinCaptcha extends Fragment {
 						@Override
 						public void run() {
 								
-								final HashMap<Long, AuthCache> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, Msg>();
+								final HashMap<Long, AuthCache> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, AuthCache>();
 								final GroupData gd = GroupData.get(msg.chat());
 								
 								if (!group.containsKey(user.id)) return;
