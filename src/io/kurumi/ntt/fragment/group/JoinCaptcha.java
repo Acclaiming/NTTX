@@ -385,6 +385,10 @@ public class JoinCaptcha extends Fragment {
 
 								setGroupPoint(user,POINT_ANSWER,auth);
 
+						} else {
+								
+								clearGroupPoint(user);
+								
 						}
 
 						if (code.code() == null) {
@@ -438,8 +442,12 @@ public class JoinCaptcha extends Fragment {
 
 						if (auth.input) {
 
-								setPrivatePoint(user,POINT_ANSWER,auth);
-
+								setGroupPoint(user,POINT_ANSWER,auth);
+								
+						} else {
+								
+								clearGroupPoint(user);
+								
 						}
 
 						AuthCache old = group.put(user.id,auth);
