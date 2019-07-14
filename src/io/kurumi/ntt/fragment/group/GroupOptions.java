@@ -900,7 +900,7 @@ public class GroupOptions extends Fragment {
 
 																"你正在使用自定义验证模式",
 
-																"\n需要设定回答模式的问题与答案才能开启回答模式"
+																"需要设定回答模式的问题与答案才能开启回答模式"
 
 														);
 
@@ -921,7 +921,7 @@ public class GroupOptions extends Fragment {
 
 																"你正在使用自定义验证模式",
 
-																"\n需要设定选择模式的问题与选项才能关闭回答模式"
+																"需要设定选择模式的问题与选项才能关闭回答模式"
 
 														);
 
