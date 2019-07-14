@@ -1127,7 +1127,7 @@ public class GroupOptions extends Fragment {
 										items.add(new GroupData.CustomItem() {{
 
 																this.isValid = false;
-																this.text = line.substring(1);
+																this.text = line;
 
 														}});
 
