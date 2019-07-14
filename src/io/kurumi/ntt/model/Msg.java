@@ -61,7 +61,7 @@ public class Msg extends Context {
 
     public static Msg from(Fragment fragment,SendResponse resp) {
 
-        if (resp.isOk()) return new Msg(fragment,resp.message());
+        if (resp != null && resp.isOk()) return new Msg(fragment,resp.message());
 
         return null;
 

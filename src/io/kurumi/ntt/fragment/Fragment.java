@@ -46,7 +46,7 @@ public class Fragment {
 	
 	public <T extends BaseRequest, R extends BaseResponse> R execute(BaseRequest<T, R> request) {
       
-		return bot().execute(request);
+		return execute(request);
 		
     }
 
@@ -594,7 +594,7 @@ public class Fragment {
 
         if (local.isFile()) return local;
 
-        GetFileResponse file = bot().execute(new GetFile(fileId));
+        GetFileResponse file = execute(new GetFile(fileId));
 
         if (!file.isOk()) {
 
@@ -636,86 +636,86 @@ public class Fragment {
 
     public Msg sendSticker(long chatId,String sticker) {
 
-        return Msg.from(this,bot().execute(new SendSticker(chatId,sticker)));
+        return Msg.from(this,execute(new SendSticker(chatId,sticker)));
 
     }
 
     public Msg sendFile(long chatId,String file) {
 
-        return Msg.from(this,this.bot().execute(new SendDocument(chatId,file)));
+        return Msg.from(this,this.execute(new SendDocument(chatId,file)));
 
     }
 
     public Msg sendFile(long chatId,File file) {
 
-        return Msg.from(this,bot().execute(new SendDocument(chatId,file)));
+        return Msg.from(this,execute(new SendDocument(chatId,file)));
 
     }
 
     public Msg sendFile(long chatId,byte[] file) {
 
-        return Msg.from(this,bot().execute(new SendDocument(chatId,file)));
+        return Msg.from(this,execute(new SendDocument(chatId,file)));
 
     }
 
     public void sendTyping(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.typing));
+        execute(new SendChatAction(chatId,ChatAction.typing));
 
     }
 
     public void sendUpdatingFile(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.upload_document));
+        execute(new SendChatAction(chatId,ChatAction.upload_document));
 
     }
 
     public void sendUpdatingPhoto(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.upload_photo));
+        execute(new SendChatAction(chatId,ChatAction.upload_photo));
 
     }
 
     public void sendUpdatingAudio(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.upload_audio));
+        execute(new SendChatAction(chatId,ChatAction.upload_audio));
 
     }
 
     public void sendUpdatingVideo(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.upload_video));
+        execute(new SendChatAction(chatId,ChatAction.upload_video));
 
     }
 
     public void sendUpdatingVideoNote(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.upload_video_note));
+        execute(new SendChatAction(chatId,ChatAction.upload_video_note));
 
     }
 
     public void sendFindingLocation(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.find_location));
+        execute(new SendChatAction(chatId,ChatAction.find_location));
 
     }
 
     public void sendRecordingAudio(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.record_audio));
+        execute(new SendChatAction(chatId,ChatAction.record_audio));
 
     }
 
 
     public void sendRecordingViedo(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.record_video));
+        execute(new SendChatAction(chatId,ChatAction.record_video));
 
     }
 
     public void sendRecordingVideoNote(long chatId) {
 
-        bot().execute(new SendChatAction(chatId,ChatAction.record_video_note));
+        execute(new SendChatAction(chatId,ChatAction.record_video_note));
 
     }
 
