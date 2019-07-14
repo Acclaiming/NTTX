@@ -552,6 +552,14 @@ public class JoinCaptcha extends Fragment {
 
 				} else if (msg.message().newChatMembers() != null) {
 
+						if (user.id.equals(msg.message().newChatMembers()[0].id())) {
+								
+								startAuth(user,msg,gd);
+								
+								return;
+								
+						}
+						
 						msg.kick(msg.message().newChatMembers()[0].id());
 
 						if (msg.message().newChatMembers()[0].isBot()) {
