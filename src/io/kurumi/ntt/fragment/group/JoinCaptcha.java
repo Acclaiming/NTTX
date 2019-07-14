@@ -700,7 +700,7 @@ public class JoinCaptcha extends Fragment {
 				final GroupData gd = GroupData.get(callback.chat());
 				AuthCache auth = group.get(user.id);
 
-				if (auth.serviceMsg == null) return;
+				if (auth == null || auth.serviceMsg == null) return;
 				
 				
 				if (POINT_INTERFERE.equals(point)) {
