@@ -25,73 +25,71 @@ public class GroupFunction extends Fragment {
 
 						} else if (GroupAdmin.fastAdminCheck(data,user.id)) {
 
-						} else if ((msg.message().newChatMembers() != null || msg.message().leftChatMember() != null)) {
+						} else if (msg.message().newChatMembers() != null) {
 
-								if (data.delete_service_msg != null) {
+								User newUser = msg.message().newChatMembers()[0];
+
+								if (data.waitForCaptcha != null && data.waitForCaptcha.contains(user.id)) {
 
 										msg.delete();
 
-								} else if (msg.message().newChatMembers().length != 0) {
+										msg.kick(newUser.id());
 
-										User newUser = msg.message().newChatMembers()[0];
+										if (newUser.isBot()) {
 
-										if (data.waitForCaptcha != null && data.waitForCaptcha.contains(user.id)) {
+												if (data.invite_bot_ban != null) {
 
-												msg.kick(newUser.id());
-												
-												if (newUser.isBot()) {
-
-														if (data.invite_bot_ban != null) {
-
-																msg.kick(user.id,true);
-
-														} else {
-
-																msg.kick(user.id);
-
-														}
+														msg.kick(user.id,true);
 
 												} else {
 
-														if (data.invite_user_ban != null) {
-
-																msg.kick(user.id,true);
-
-														} else {
-
-																msg.kick(user.id);
-
-														}
-
-												}
-												
-												data.waitForCaptcha.remove(user.id);
-
-										} else if (data.no_invite_bot != null && newUser.isBot()) {
-
-												msg.delete();
-
-												msg.kick(newUser.id());
-
-												if (data.no_invite_bot != 0) {
-
-														doRest(user,msg,data,"邀请机器人");
+														msg.kick(user.id);
 
 												}
 
-										} else if (data.no_invite_user != null && !newUser.isBot()) {
+										} else {
 
-												msg.delete();
+												if (data.invite_user_ban != null) {
 
-												msg.kick(newUser.id());
+														msg.kick(user.id,true);
 
-												if (data.no_invite_user != 0) {
+												} else {
 
-														doRest(user,msg,data,"邀请用户");
+														msg.kick(user.id);
 
 												}
 
 										}
+
+										data.waitForCaptcha.remove(user.id);
+
+								} else if (data.no_invite_bot != null && newUser.isBot()) {
+
+										msg.delete();
+
+										msg.kick(newUser.id());
+
+										if (data.no_invite_bot != 0) {
+
+												doRest(user,msg,data,"邀请机器人");
+
+										}
+
+								} else if (data.no_invite_user != null && !newUser.isBot()) {
+
+										msg.delete();
+
+										msg.kick(newUser.id());
+
+										if (data.no_invite_user != 0) {
+
+												doRest(user,msg,data,"邀请用户");
+
+										}
+
+								} else if (data.delete_service_msg != null) {
+
+										msg.delete();
 
 								}
 
@@ -108,7 +106,7 @@ public class GroupFunction extends Fragment {
 								}
 
 
-				    } else if (msg.sticker() != null && data.no_sticker != null) {
+						} else if (msg.sticker() != null && data.no_sticker != null) {
 
 								msg.delete();
 
