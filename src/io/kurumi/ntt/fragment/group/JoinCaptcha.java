@@ -30,6 +30,7 @@ import io.kurumi.ntt.utils.NTT;
 import java.util.Date;
 import io.kurumi.ntt.fragment.group.JoinCaptcha.VerifyCode;
 import com.pengrad.telegrambot.request.DeleteMessage;
+import org.omg.CORBA.CustomMarshal;
 
 public class JoinCaptcha extends Fragment {
 
@@ -352,51 +353,94 @@ public class JoinCaptcha extends Fragment {
 				}
 
 		}
-		
+
 		static class CustomCode extends VerifyCode {
 
-				public CustomCode(boolean input) { super(input); }
-				
+				private GroupData data;
+
+				public CustomCode(boolean input,GroupData data) {
+
+						super(input);
+
+						this.data = data;
+
+			  }
+
 				@Override
 				public String question() {
-						
-						return null;
-						
+
+						return input ? data.custom_a_question : data.custom_i_question;
+
 				}
 
 				@Override
 				public String code() {
-						// TODO: Implement this method
+
 						return null;
+
 				}
 
 				@Override
 				public String validCode() {
-						// TODO: Implement this method
+
 						return null;
+
 				}
+
+				String[] codes;
 
 				@Override
 				public String[] invalidCode() {
-						// TODO: Implement this method
-						return null;
+
+						if (codes == null) {
+
+								codes = new String[data.custom_items.size()];
+
+								for (int index = 0;index < data.custom_items.size();index ++) {
+
+										GroupData.CustomItem item = data.custom_items.get(index);
+
+										codes[index] = item.text;
+
+								}
+
+						}
+
+						return codes;
+
 				}
 
 				@Override
-				public boolean verify(String input) {
-						// TODO: Implement this method
-						return false;
+				public boolean verify(String text) {
+
+						if (input) {
+
+								for (String kw : data.custom_kw) {
+
+										if (text.contains(kw)) return true;
+
+								}
+
+								return false;
+
+						} else {
+
+								return ArrayUtil.contains(codes,text);
+
+						}
+
 				}
 
 				@Override
-				public JoinCaptcha.VerifyCode fork() {
-						// TODO: Implement this method
-						return null;
+				public VerifyCode fork() {
+
+						return new CustomCode(input,data);
+
 				}
-				
-				
-				
-				
+
+
+
+
 		}
 
 		void startAuth(final UserData user,final Msg msg,final GroupData data,VerifyCode left) {
@@ -419,10 +463,14 @@ public class JoinCaptcha extends Fragment {
 
 						code = new StringCode(data.require_input != null);
 
-				} else {
+				} else if (data.captcha_mode == 1) {
 
 						code = new MathCode(data.require_input != null);
 
+				} else {
+						
+						code = new CustomCode(data.require_input != null,data);
+						
 				}
 
 				ButtonMarkup buttons = new ButtonMarkup() {{
@@ -443,7 +491,7 @@ public class JoinCaptcha extends Fragment {
 
 										for (String interfere : code.invalidCode()) all.add(interfere);
 
-										all.add(code.validCode());
+										if (code.validCode() != null) all.add(code.validCode());
 
 										Collections.shuffle(all);
 
@@ -493,11 +541,11 @@ public class JoinCaptcha extends Fragment {
 
 								if (left != null) {
 
-										auth.serviceMsg =  msg.send("重新验证为 : " + user.userName(),"\n" + code.question()).buttons(buttons).html().send();
+										auth.serviceMsg =  msg.send(user.userName() + " 请重试","\n" + code.question()).buttons(buttons).html().send();
 
 								} else {
 
-										auth.serviceMsg =  msg.send("新成员验证为 : " + user.userName(),"\n" + code.question()).buttons(buttons).html().send();
+										auth.serviceMsg =  msg.send(user.userName() + " 请验证","\n" + code.question()).buttons(buttons).html().send();
 
 
 								}
@@ -506,11 +554,11 @@ public class JoinCaptcha extends Fragment {
 
 								if (left != null) {
 
-										auth.serviceMsg =  msg.send("重新验证为 : " + user.userName(),"\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
+										auth.serviceMsg =  msg.send(user.userName() + " 请重试","\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
 
 								} else {
 
-										auth.serviceMsg =  msg.send("新成员验证为 : " + user.userName(),"\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
+										auth.serviceMsg =  msg.send(user.userName() + " 请验证","\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
 
 
 								}
@@ -540,13 +588,13 @@ public class JoinCaptcha extends Fragment {
 
 						if (code.code() != null) {
 
-								info.drawRandomColorTextCenter(0,0,0,400,"开始进行验证 :)");
+								info.drawRandomColorTextCenter(0,0,0,400,left == null ? "请验证 :)" : "请重试 :)");
 								info.drawRandomColorTextCenter(0,200,0,200,code.code());
 								info.drawRandomColorTextCenter(0,400,0,0,code.question());
 
 						} else {
 
-								info.drawRandomColorTextCenter(0,0,0,300,"开始进行验证 :)");
+								info.drawRandomColorTextCenter(0,0,0,300,left == null ? "请验证 :)" : "请重试 :)");
 								info.drawRandomColorTextCenter(0,300,0,0,code.question());
 
 						}
@@ -877,9 +925,9 @@ public class JoinCaptcha extends Fragment {
 						return;
 
 				}
-				
+
 				if (msg.message().leftChatMember() != null) {
-						
+
 				} else if (gd.fail_ban == null) {
 
 						gd.waitForCaptcha.remove(user.id);
@@ -893,7 +941,7 @@ public class JoinCaptcha extends Fragment {
 						msg.kick(user.id,true);
 
 				}
-				
+
 				if (gd.captcha_del == null && gd.last_join_msg != null) {
 
 						execute(new DeleteMessage(msg.chatId(),gd.last_join_msg));
@@ -915,13 +963,13 @@ public class JoinCaptcha extends Fragment {
 				} else if (gd.captcha_del == 0) {
 
 						msg.send(user.userName() + " 验证失败 已被" + (gd.fail_ban == null ? "移除" : "封锁")).html().failed();
-						
+
 				} else {
 
 						msg.send(user.userName() + " 验证失败 已被" + (gd.fail_ban == null ? "移除" : "封锁")).html().exec();
-						
+
 				}
-				
+
 
 		}
 

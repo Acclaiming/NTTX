@@ -117,7 +117,7 @@ public class GroupData {
 				
 		}
 		
-		public static String custom_regex;
+		public static List<String> custom_kw;
 		
 		public Integer no_invite_user;
 		public Integer no_invite_bot;

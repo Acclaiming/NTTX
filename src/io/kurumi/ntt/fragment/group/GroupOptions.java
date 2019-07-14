@@ -1,8 +1,10 @@
 package io.kurumi.ntt.fragment.group;
 
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.pengrad.telegrambot.request.EditMessageReplyMarkup;
 import io.kurumi.ntt.db.GroupData;
+import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
@@ -12,10 +14,9 @@ import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
-import java.util.concurrent.atomic.AtomicInteger;
-import io.kurumi.ntt.fragment.bots.NewBot;
-import java.util.Collections;
-import cn.hutool.core.util.ArrayUtil;
+import java.util.LinkedList;
+import java.util.List;
+import cn.hutool.core.util.StrUtil;
 
 public class GroupOptions extends Fragment {
 
@@ -52,13 +53,36 @@ public class GroupOptions extends Fragment {
 		final String POINT_MENU_REST = "group_menu_rest";
 		final String POINT_MENU_JOIN = "group_menu_join";
 		final String POINT_MENU_CUST = "group_menu_custom";
-		
+
 		final String POINT_HELP = "group_help";
 		final String POINT_SET_MAIN = "group_main_set";
 		final String POINT_SET_REST = "group_rest_set";
 		final String POINT_SET_JOIN = "group_join_set";
 		final String POINT_SET_CUST = "group_custom_set";
-		
+
+		final class EditCustom extends PointData {
+
+				int type;
+				Callback origin;
+				GroupData data;
+
+				public EditCustom(int type,Callback origin,GroupData data) {
+						this.type = type;
+						this.origin = origin;
+						this.data = data;
+				}
+
+				@Override
+				public void onFinish() {
+
+						origin.edit("编辑自定义问题. 对错选项或正确内容.\n",cusStats(data)).buttons(cusMenu(data)).exec();
+
+						super.onFinish();
+
+				}
+
+		}
+
 		@Override
 		public void onFunction(UserData user,final Msg msg,String function,String[] params) {
 
@@ -867,15 +891,44 @@ public class GroupOptions extends Fragment {
 
 										if (data.require_input == null) {
 
+												if (((Integer)2).equals(data.captcha_mode) && data.require_input != null && (data.custom_a_question == null || data.custom_kw == null)) {
+
+														callback.alert(
+
+																"你正在使用自定义验证模式",
+
+																"\n需要设定回答模式的问题与答案才能开启要求输入"
+
+														);
+
+														return;
+
+												}
+
 												data.require_input = true;
 
 												callback.text("🚪  要求输入答案");
 
+
 										} else {
+
+												if (((Integer)2).equals(data.captcha_mode) && (data.require_input == null && (data.custom_i_question == null || data.custom_items == null))) {
+
+														callback.alert(
+
+																"你正在使用自定义验证模式",
+
+																"\n需要设定选择模式的问题与选项才能关闭要求输入"
+
+														);
+
+														return;
+
+												}
 
 												data.require_input = null;
 
-												callback.text("🚪  要求选择答案");
+												callback.text("🚪  要求选择答案");	
 
 										}
 
@@ -912,40 +965,11 @@ public class GroupOptions extends Fragment {
 										}
 
 								} else if ("mode_cus".equals(params[1])) {
-										
-										StringBuilder stats = new StringBuilder();
-										
-										stats.append("选择模式问题 : ");
-										
-										if (data.custom_i_question == null) {
-												
-												stats.append("未设定");
-												
-										} else {
-												
-												stats.append(data.custom_i_question);
-												
-										}
-										
-										stats.append("\n选择模式选项 : ");
-										
-										if (data.custom_items == null) {
-												
-												stats.append("未设定");
-												
-										} else {
-												
-												stats.append("\n").append(ArrayUtil.join(data.custom_items.toArray(),"\n"));
-												
-										}
-										
-										stats.append("\n\n");
-										
-										stats.append("回答模式问题 :");
-										
-										callback.edit("编辑自定义问题. 对错选项或正确内容.").buttons(cusMenu(data)).exec();
-										
-										
+
+										callback.edit("编辑自定义问题. 对错选项或正确内容.\n",cusStats(data)).buttons(cusMenu(data)).exec();
+
+										return;
+
 								} else {
 
 										callback.alert("喵...？");
@@ -956,9 +980,225 @@ public class GroupOptions extends Fragment {
 
 								execute(new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(joinMenu(data).markup()));
 
+						} else if (POINT_SET_CUST.equals(point)) {
+
+								if ("enable_cus".equals(params[1])) {
+
+										if (((Integer)2).equals(data.captcha_mode)) {
+
+												callback.text("🚪  已关闭");
+
+												data.captcha_mode = null;
+
+										} else if (data.require_input == null && (data.custom_i_question == null || data.custom_items == null)) {
+
+												callback.alert(
+
+														"你正在使用选项模式 (没有开启 要求输入 选项)",
+
+														"\n需要设定选项模式的问题与选项"
+
+
+												);
+
+												return;
+
+										} else if (data.require_input != null && (data.custom_a_question == null || data.custom_kw == null)) {
+
+												callback.alert(
+
+														"你正在使用回答模式 (有开启 要求输入 选项)",
+
+														"\n需要设定回答模式的问题与正确回答"
+
+
+												);
+
+												return;
+
+										} else if ("reset_i_question".equals(params[1])) {
+
+												callback.confirm();
+
+												EditCustom edit = new EditCustom(0,callback,data);
+
+												callback.send("现在发送问题 :").exec(edit);
+
+										} else if ("reset_items".equals(params[1])) {
+
+												callback.confirm();
+
+												EditCustom edit = new EditCustom(1,callback,data);
+
+												callback.send("现在发送选项 每行一个 至少一个 最多五个 正确答案以 + 号开头 :").exec(edit);
+
+										} else if ("reset_a_question".equals(params[1])) {
+
+												callback.confirm();
+
+												EditCustom edit = new EditCustom(2,callback,data);
+
+												callback.send("现在发送问题 :").exec(edit);
+
+										} else if ("reset_answer".equals(params[1])) {
+
+												callback.confirm();
+
+												EditCustom edit = new EditCustom(3,callback,data);
+
+												callback.send("现在发送正确关键字 每行一个 :").exec(edit);
+
+										} else {
+
+												callback.text("🚪  已开启");
+
+												data.captcha_mode = 2;
+
+										}
+
+								}
+
+								execute(new EditMessageReplyMarkup(callback.chatId(),callback.message().messageId()).replyMarkup(cusMenu(data).markup()));
+
 						}
 
 				}
+
+		}
+
+		@Override
+		public void onPoint(UserData user,Msg msg,String point,PointData data) {
+
+				EditCustom edit = (EditCustom)data.with(msg);
+
+				if (edit.type == 0) {
+
+						if (!msg.hasText()) {
+
+								msg.send("请输入新的选择模式问题 :").withCancel().exec(data);
+
+								return;
+
+						}
+
+						edit.data.custom_i_question = msg.text();
+
+						clearPrivatePoint(user);
+
+				} else if (edit.type == 1) {
+
+						if (!msg.hasText()) {
+
+								msg.send("请输入新的选择模式选项 :").withCancel().exec(data);
+
+								return;
+
+						}
+
+						List<GroupData.CustomItem> items = new LinkedList<>();
+
+						boolean valid = false;
+
+						for (final String line : msg.text().split("\n")) {
+
+								if (line.startsWith("+")) {
+
+										valid = true;
+
+										items.add(new GroupData.CustomItem() {{
+
+																this.isValid = true;
+																this.text = line.substring(1);
+
+														}});
+
+								} else {
+
+										items.add(new GroupData.CustomItem() {{
+
+																this.isValid = false;
+																this.text = line.substring(1);
+
+														}});
+
+								}
+
+					  }
+
+						if (items.isEmpty()) {
+
+								msg.send("选项为空 请重试").withCancel().exec(data);
+
+								return;
+
+						} else if (items.size() > 5) {
+
+								msg.send("选项太多 (> 5)").exec(data);
+
+								return;
+
+						} else if (!valid) {
+
+								msg.send("没有包含一个正确选项","再说一遍 : 每行一个选项，正确选项以+开头").exec(data);
+
+								return;
+
+						}
+
+						edit.data.custom_items = items;
+
+						clearPrivatePoint(user);
+
+				} else if (edit.type == 2) {
+
+						if (!msg.hasText()) {
+
+								msg.send("请输入新的回答模式问题 :").withCancel().exec(data);
+
+								return;
+
+						}
+
+						edit.data.custom_a_question = msg.text();
+
+						clearPrivatePoint(user);
+
+				} else if (edit.type == 0) {
+
+						if (StrUtil.isBlank(msg.text())) {
+
+								msg.send("请输入新的选择模式答案 :").withCancel().exec(data);
+
+								return;
+
+						}
+
+						LinkedList<String> custom_kw = new LinkedList<>();
+
+						for (String kw : msg.text().split("\n")) {
+
+								if (!StrUtil.isBlank(kw)) {
+
+										edit.data.custom_kw.add(kw);
+
+								}
+
+						}
+
+						if (custom_kw.isEmpty()) {
+
+								msg.send("选项为空 请重试！").withCancel().exec(data);
+
+								return;
+
+						}
+
+						edit.data.custom_kw = custom_kw;
+
+						clearPrivatePoint(user);
+
+				}
+
 
 		}
 
@@ -1158,7 +1398,65 @@ public class GroupOptions extends Fragment {
 						}};
 
 		}
-		
+
+		String cusStats(GroupData data) {
+
+				StringBuilder stats = new StringBuilder();
+
+				stats.append("选择模式问题 : ");
+
+				if (data.custom_i_question == null) {
+
+						stats.append("未设定");
+
+				} else {
+
+						stats.append(data.custom_i_question);
+
+				}
+
+				stats.append("\n选择模式选项 : ");
+
+				if (data.custom_items == null) {
+
+						stats.append("未设定");
+
+				} else {
+
+						stats.append("\n").append(ArrayUtil.join(data.custom_items.toArray(),"\n"));
+
+				}
+
+				stats.append("\n\n");
+
+				stats.append("回答模式问题 : ");
+
+				if (data.custom_a_question == null) {
+
+						stats.append("未设定");
+
+				} else {
+
+						stats.append(data.custom_a_question);
+
+				}
+
+				stats.append("\n正确关键字 : ");
+
+				if (data.custom_kw == null) {
+
+						stats.append("未设定");
+
+				} else {
+
+						stats.append(ArrayUtil.join(data.custom_kw.toArray(),"\n"));
+
+				}
+
+				return stats.toString();
+
+		}
+
 		ButtonMarkup cusMenu(final GroupData data) {
 
 				return new ButtonMarkup() {{
@@ -1166,18 +1464,19 @@ public class GroupOptions extends Fragment {
 								newButtonLine()
 										.newButton("使用自定义问题",POINT_HELP,"enable_cus")
 										.newButton(((Integer)2).equals(data.captcha_mode) ? "✅" : "☑",POINT_SET_CUST,data.id,"enable_cus");
-								
-								newButtonLine("设置选择模式问题",POINT_SET_CUST,data.id,"reset_question");
+
+								newButtonLine("设置选择模式问题",POINT_SET_CUST,data.id,"reset_i_question");
 								newButtonLine("设置选择模式选项",POINT_SET_CUST,data.id,"reset_items");
-								
-								newButtonLine("设置回答",POINT_SET_CUST,data.id,"reset_answer");
+
+								newButtonLine("设置回答模式问题",POINT_SET_CUST,data.id,"reset_a_question");
+								newButtonLine("设置回答模式答案",POINT_SET_CUST,data.id,"reset_answer");
 
 								newButtonLine("🔙",POINT_MENU_JOIN,data.id);
 
 						}};
 
 		}
-		
+
 
 
 }
