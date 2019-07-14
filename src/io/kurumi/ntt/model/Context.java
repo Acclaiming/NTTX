@@ -65,7 +65,7 @@ public class Context {
 
         BaseResponse resp = fragment.bot().execute(new KickChatMember(chatId(), userId.intValue()) {{
 			
-			if (isPublicGroup()) untilDate((int)(System.currentTimeMillis() / 1000) + 30);
+			//if (isPublicGroup()) untilDate((int)(System.currentTimeMillis() / 1000) + 30);
 			
 		}});
 
