@@ -137,7 +137,6 @@ public class JoinCaptcha extends Fragment {
 
 				UserData user;
 				Msg serviceMsg;
-				Msg authMsg;
 
 				boolean input;
 				VerifyCode code;
@@ -374,7 +373,6 @@ public class JoinCaptcha extends Fragment {
 				final AuthCache auth = new AuthCache();
 
 				auth.user = user;
-				auth.serviceMsg = msg;
 
 				auth.input = data.require_input != null;
 				auth.code = code;
@@ -408,7 +406,6 @@ public class JoinCaptcha extends Fragment {
 						if (old != null) {
 
 								old.serviceMsg.delete();
-								old.authMsg.delete();
 								old.task.cancel();
 
 						}
@@ -438,7 +435,7 @@ public class JoinCaptcha extends Fragment {
 
 						if (resp != null && resp.isOk()) {
 
-								auth.authMsg = new Msg(this,resp.message());
+								auth.serviceMsg = new Msg(this,resp.message());
 
 						}
 
@@ -459,7 +456,6 @@ public class JoinCaptcha extends Fragment {
 						if (old != null) {
 
 								old.serviceMsg.delete();
-								old.authMsg.delete();
 								old.task.cancel();
 
 						}
@@ -478,7 +474,6 @@ public class JoinCaptcha extends Fragment {
 								if (!group.containsKey(user.id)) return;
 
 								auth.serviceMsg.delete();
-								auth.authMsg.delete();
 
 								if (gd.fail_ban == null) {
 
@@ -572,13 +567,13 @@ public class JoinCaptcha extends Fragment {
 						return;
 
 				}
-				
-						auth.serviceMsg.delete();
-						auth.task.cancel();
-						
+
+				auth.serviceMsg.delete();
+				auth.task.cancel();
+
 				group.remove(user.id);
 				clearGroupPoint(user);
-				
+
 				if (auth.code.verify(msg.text())) {
 
 						gd.waitForCaptcha.remove(user.id);
@@ -588,7 +583,6 @@ public class JoinCaptcha extends Fragment {
 						msg.restrict();
 
 						if (gd.ft_count != null && (gd.captcha_time == null || (gd.captchaFailed.get(user.id.toString()) + 1 < gd.ft_count))) {
-
 
 								if (gd.captchaFailed == null) {
 
