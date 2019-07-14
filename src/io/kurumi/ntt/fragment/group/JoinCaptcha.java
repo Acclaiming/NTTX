@@ -28,6 +28,7 @@ import java.util.TimerTask;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.utils.NTT;
 import java.util.Date;
+import io.kurumi.ntt.fragment.group.JoinCaptcha.VerifyCode;
 
 public class JoinCaptcha extends Fragment {
 
@@ -162,6 +163,8 @@ public class JoinCaptcha extends Fragment {
 				public abstract String[] invalidCode();
 				public abstract boolean verify(String input);
 
+				public abstract VerifyCode fork();
+
 		}
 
 		static class BaseCode extends VerifyCode {
@@ -169,6 +172,13 @@ public class JoinCaptcha extends Fragment {
 				public BaseCode(boolean input) { super(input); }
 
 				boolean code = RandomUtil.randomBoolean();
+
+				@Override
+				public VerifyCode fork() {
+
+						return new BaseCode(input);
+
+				}
 
 				@Override
 				public String question() {
@@ -220,6 +230,13 @@ public class JoinCaptcha extends Fragment {
 				public String question() {
 
 						return "请" + (input ? "发送" : "选择") + " 答案以通过验证 ~";
+
+				}
+
+				@Override
+				public VerifyCode fork() {
+
+						return new MathCode(input);
 
 				}
 
@@ -288,6 +305,12 @@ public class JoinCaptcha extends Fragment {
 
 						return "请" + (input ? "发送" : "选择") + " 验证码以通过验证 ~";
 
+				}
+
+				@Override
+				public VerifyCode fork() {
+
+						return new StringCode(input);
 
 				}
 
@@ -329,7 +352,7 @@ public class JoinCaptcha extends Fragment {
 
 		}
 
-		void startAuth(final UserData user,final Msg msg,final GroupData data) {
+		void startAuth(final UserData user,final Msg msg,final GroupData data,VerifyCode left) {
 
 				final HashMap<Long, AuthCache> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, AuthCache>();
 
@@ -337,7 +360,11 @@ public class JoinCaptcha extends Fragment {
 
 				final VerifyCode code;
 
-				if (data.captcha_mode == null) {
+				if (left != null) {
+
+						code = left.fork();
+
+				} else if (data.captcha_mode == null) {
 
 						code = new BaseCode(data.require_input != null);
 
@@ -417,16 +444,34 @@ public class JoinCaptcha extends Fragment {
 
 						if (code.code() == null) {
 
-								auth.serviceMsg =  msg.send("新成员验证为 : " + user.userName(),"\n" + code.question()).buttons(buttons).html().send();
+								if (left != null) {
+
+										auth.serviceMsg =  msg.send("重新验证为 : " + user.userName(),"\n" + code.question()).buttons(buttons).html().send();
+
+								} else {
+
+										auth.serviceMsg =  msg.send("新成员验证为 : " + user.userName(),"\n" + code.question()).buttons(buttons).html().send();
+
+
+								}
 
 						} else {
 
-								auth.serviceMsg =  msg.send("新成员验证为 : " + user.userName(),"\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
+								if (left != null) {
+
+										auth.serviceMsg =  msg.send("重新验证为 : " + user.userName(),"\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
+
+								} else {
+
+										auth.serviceMsg =  msg.send("新成员验证为 : " + user.userName(),"\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
+
+
+								}
 
 						}
-						
+
 						if (auth.serviceMsg == null) return;
-						
+
 						clearGroupPoint(user);
 
 					  AuthCache old = group.put(user.id,auth);
@@ -466,13 +511,13 @@ public class JoinCaptcha extends Fragment {
 								auth.serviceMsg = new Msg(this,resp.message());
 
 						}
-						
+
 						if (auth.serviceMsg == null) {
-								
+
 								clearGroupPoint(user);
-								
+
 						}
-						
+
 						if (auth.input) {
 
 								msg.unrestrict(user.id);
@@ -508,7 +553,7 @@ public class JoinCaptcha extends Fragment {
 								if (!group.containsKey(user.id)) return;
 
 								if (auth.serviceMsg == null) return;
-								
+
 								auth.serviceMsg.delete();
 
 								if (gd.fail_ban == null) {
@@ -547,7 +592,7 @@ public class JoinCaptcha extends Fragment {
 				final AuthCache auth = (AuthCache)data;
 
 				msg.delete();
-				
+
 				if (auth.serviceMsg == null) return;
 
 				if (msg.message().leftChatMember() != null) {
@@ -568,12 +613,12 @@ public class JoinCaptcha extends Fragment {
 
 						if (user.id.equals(msg.message().newChatMembers()[0].id())) {
 
-								startAuth(user,msg,gd);
+								startAuth(user,msg,gd,null);
 
 								return;
 
 						}
-						
+
 						msg.kick(msg.message().newChatMembers()[0].id());
 
 						if (msg.message().newChatMembers()[0].isBot()) {
@@ -646,14 +691,7 @@ public class JoinCaptcha extends Fragment {
 
 								}
 
-								msg.send(user.userName() + " , 验证失败。 根据群组设置，你还可以继续重试 :)")
-										.buttons(new ButtonMarkup() {{
-
-														newButtonLine("开始验证",POINT_AUTH,user.id);
-
-														newButtonLine().newButton("通过",POINT_ACC,user.id).newButton("滥权",POINT_REJ,user.id);
-
-												}}).html().exec();
+								startAuth(user,msg,gd,auth.code);
 
 								return;
 
@@ -692,7 +730,7 @@ public class JoinCaptcha extends Fragment {
 
 						callback.delete();
 
-						startAuth(user,callback,GroupData.get(callback.chat()));
+						startAuth(user,callback,GroupData.get(callback.chat()),null);
 
 				} 
 
@@ -768,7 +806,7 @@ public class JoinCaptcha extends Fragment {
 						if (user.id.equals(target)) {
 
 								callback.delete();
-								
+
 								if (auth != null) {
 
 										auth.serviceMsg.delete();
@@ -898,18 +936,7 @@ public class JoinCaptcha extends Fragment {
 
 								}
 
-								callback.send(user.userName() + " , 验证失败。 根据群组设置，你还可以 在30秒内开始重试 :)")
-										.buttons(new ButtonMarkup() {{
-
-														newButtonLine("重新验证",POINT_AUTH,user.id);
-
-														newButtonLine().newButton("通过",POINT_ACC,user.id).newButton("滥权",POINT_REJ,user.id);
-
-												}}).html().exec();
-
-
-
-								return;
+								startAuth(user,callback,gd,auth.code);
 
 						} else if (gd.fail_ban == null) {
 

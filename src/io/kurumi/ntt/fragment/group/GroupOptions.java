@@ -106,7 +106,11 @@ public class GroupOptions extends Fragment {
 										"开启此功能自动删除服务消息。"
 
 								);
+								
+								
+				// } else if ("enable".equals(params[0])) {
 
+								
 						} else {
 
 								callback.alert("喵....？");
