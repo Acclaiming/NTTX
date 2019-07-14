@@ -31,53 +31,55 @@ public class GroupFunction extends Fragment {
 
 										msg.delete();
 
-								}
+								} else if (msg.message().newChatMembers().length != 0) {
 
-								User newUser = msg.message().newChatMembers()[0];
+										User newUser = msg.message().newChatMembers()[0];
 
-								if (data.waitForCaptcha != null && data.waitForCaptcha.contains(user.id)) {
-						
-										
-								
-								} else if (data.no_invite_bot != null && newUser.isBot()) {
+										if (data.waitForCaptcha != null && data.waitForCaptcha.contains(user.id)) {
 
-										msg.delete();
 
-										msg.kick(newUser.id());
 
-										if (data.no_invite_bot != 0) {
+										} else if (data.no_invite_bot != null && newUser.isBot()) {
 
-												doRest(user,msg,data,"邀请机器人");
+												msg.delete();
 
-										}
+												msg.kick(newUser.id());
 
-								} else if (data.no_invite_user != null && !newUser.isBot()) {
+												if (data.no_invite_bot != 0) {
 
-										msg.delete();
+														doRest(user,msg,data,"邀请机器人");
 
-										msg.kick(newUser.id());
+												}
 
-										if (data.no_invite_user != 0) {
+										} else if (data.no_invite_user != null && !newUser.isBot()) {
 
-												doRest(user,msg,data,"邀请用户");
+												msg.delete();
+
+												msg.kick(newUser.id());
+
+												if (data.no_invite_user != 0) {
+
+														doRest(user,msg,data,"邀请用户");
+
+												}
 
 										}
 
 								}
 
 						} else if (msg.message().leftChatMember() != null) {
-								
+
 								if (data.delete_service_msg != null) {
 
 										msg.delete();
 
 								} else if (user.id.equals(origin.me.id())) {
-										
+
 										msg.delete();
-										
+
 								}
 
-								
+
 				    } else if (msg.sticker() != null && data.no_sticker != null) {
 
 								msg.delete();
