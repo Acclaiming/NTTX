@@ -31,8 +31,6 @@ public class GroupFunction extends Fragment {
 
 								if (data.waitForCaptcha != null && data.waitForCaptcha.contains(user.id)) {
 
-										msg.delete();
-
 										msg.kick(newUser.id());
 
 										if (newUser.isBot()) {
@@ -62,6 +60,8 @@ public class GroupFunction extends Fragment {
 										}
 
 										data.waitForCaptcha.remove(user.id);
+										
+										JoinCaptcha.INSTANCE.failed(user,msg,null,data,true);
 
 								} else if (data.no_invite_bot != null && newUser.isBot()) {
 

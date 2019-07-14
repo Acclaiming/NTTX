@@ -34,6 +34,8 @@ import org.omg.CORBA.CustomMarshal;
 
 public class JoinCaptcha extends Fragment {
 
+		public static JoinCaptcha INSTANCE;
+		
 		final String POINT_AUTH = "join_auth";
 		final String POINT_INTERFERE = "join_interfere";
 		final String POINT_ANSWER = "join_answer";
@@ -47,6 +49,8 @@ public class JoinCaptcha extends Fragment {
 		public void init(BotFragment origin) {
 
 				super.init(origin);
+				
+				INSTANCE = this;
 
 				registerPoints(POINT_AUTH,POINT_DELETE,POINT_ANSWER,POINT_ACC,POINT_REJ);
 
@@ -839,8 +843,10 @@ public class JoinCaptcha extends Fragment {
 
 				if (cache.containsKey(msg.chatId())) {
 
-						cache.get(msg.chatId()).remove(user.id);
+						AuthCache rdc = cache.get(msg.chatId()).remove(user.id);
 
+						if (auth == null) auth = rdc;
+						
 				}
 
 				if (auth != null) {
@@ -904,10 +910,11 @@ public class JoinCaptcha extends Fragment {
 
 				if (cache.containsKey(msg.chatId())) {
 
-						cache.get(msg.chatId()).remove(user.id);
+						AuthCache rdc = cache.get(msg.chatId()).remove(user.id);
+
+						if (auth == null) auth = rdc;
 
 				}
-
 				msg.delete();
 
 				if (auth != null) {
@@ -943,7 +950,7 @@ public class JoinCaptcha extends Fragment {
 				}
 
 				if (msg.message().leftChatMember() != null) {
-
+				} else if (msg.message().newChatMembers() != null) {
 				} else if (gd.fail_ban == null) {
 
 						gd.waitForCaptcha.remove(user.id);

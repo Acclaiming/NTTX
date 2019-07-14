@@ -65,7 +65,7 @@ public class Context {
 
         BaseResponse resp = fragment.bot().execute(new KickChatMember(chatId(),userId.intValue()));
 
-				fragment.bot().execute(new UnbanChatMember(chatId(),userId.intValue()));
+				if (!ban) fragment.bot().execute(new UnbanChatMember(chatId(),userId.intValue()));
 
         return resp.isOk();
 
