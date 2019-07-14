@@ -157,6 +157,8 @@ public class JoinCaptcha extends Fragment {
 
 				public abstract String question();
 				public abstract String code();
+
+				public abstract String validCode();
 				public abstract String[] invalidCode();
 				public abstract boolean verify(String input);
 
@@ -183,9 +185,16 @@ public class JoinCaptcha extends Fragment {
 				}
 
 				@Override
+				public String validCode() {
+					
+						return code ? "喵" : "嘤";
+						
+				}
+				
+				@Override
 				public String[] invalidCode() {
 
-						return new String[] { "嘤" , "喵" };
+						return new String[] { code ? "嘤" : "喵" };
 
 				}
 
@@ -229,6 +238,13 @@ public class JoinCaptcha extends Fragment {
 				public String code() {
 
 						return left + " " + typeCode() + " " + right;
+
+				}
+
+				@Override
+				public String validCode() {
+
+						return (type == 0 ? left + right : left - right) + "";
 
 				}
 
@@ -281,6 +297,14 @@ public class JoinCaptcha extends Fragment {
 						return code;
 
 				}
+
+				@Override
+				public String validCode() {
+
+						return code;
+
+				}
+
 
 				@Override
 				public String[] invalidCode() {
@@ -345,7 +369,7 @@ public class JoinCaptcha extends Fragment {
 
 										for (String interfere : code.invalidCode()) all.add(interfere);
 
-										if (code.code() != null) all.add(code.code());
+										all.add(code.validCode());
 
 										Collections.shuffle(all);
 
