@@ -143,7 +143,7 @@ public class GroupOptions extends Fragment {
 
 						} else if (POINT_MENU_JOIN.equals(point)) {
 
-								callback.edit("设置群组的新成员验证. ").buttons(joinMenu(data)).exec();
+								callback.edit("编辑群组的新成员加群验证设置. ").buttons(joinMenu(data)).exec();
 
 						} else if (POINT_SET_MAIN.equals(point)) {
 
@@ -643,7 +643,43 @@ public class GroupOptions extends Fragment {
 												data.captcha_time = null;
 
 										}
+										
+								} else if ("jt_inc_t".equals(params[1])) {
 
+										if (data.captcha_time != null && (data.captcha_time >= 5 * 60)) {
+
+												callback.text("🚪  新数值太高 (> 5min)");
+
+												return;
+
+										} 
+
+										if (data.captcha_time == null) {
+
+												data.captcha_time = 50;
+
+										}
+										
+										int time = data.captcha_time;
+										
+										if (time + 30 > 5 * 60) {
+												
+												data.captcha_time = 5 * 60;
+												
+										} else {
+												
+												data.captcha_time = time + 30;
+												
+										}
+
+										callback.text("🚪  " + data.parse_time(time) + " -> " + data.parse_time());
+
+										if (data.captcha_time == 50) {
+
+												data.captcha_time = null;
+
+										}
+										
 								} else if ("jt_dec".equals(params[1])) {
 
 										if (data.captcha_time != null && data.captcha_time < 21) {
@@ -668,6 +704,45 @@ public class GroupOptions extends Fragment {
 
 										}
 
+										
+
+								} else if ("jt_dec_t".equals(params[1])) {
+
+										if (data.captcha_time != null && data.captcha_time < 21) {
+
+												callback.text("🚪  再低还能验证吗 (ﾟ⊿ﾟ)ﾂ");
+
+												return;
+
+										}
+
+										if (data.captcha_time == null) {
+
+												data.captcha_time = 50;
+
+										}
+										
+										int time = data.captcha_time;
+										
+										if (time - 30 > 20) {
+
+												data.captcha_time = 20;
+
+										} else {
+
+												data.captcha_time = time - 30;
+
+										}
+
+										callback.text("🚪  " + data.parse_time(time) + " -> " + data.parse_time());
+
+										if (data.captcha_time == 50) {
+
+												data.captcha_time = null;
+
+										}
+
+											
 								} else if ("fail_action".equals(params[1])) {
 
 										if (data.fail_action == null) {
@@ -877,7 +952,12 @@ public class GroupOptions extends Fragment {
 
 								newButtonLine("时间上限 : " + data.parse_time(),"null");
 
-								newButtonLine().newButton("➖",POINT_SET_JOIN,data.id,"jt_dec").newButton("➕",POINT_SET_JOIN,data.id,"jt_inc");
+								newButtonLine()
+										.newButton("➖",POINT_SET_JOIN,data.id,"jt_dec")
+										.newButton("➖➖",POINT_SET_JOIN,data.id,"jt_dec_t")
+										.newButton("➕",POINT_SET_JOIN,data.id,"jt_inc")
+										.newButton("➕➕",POINT_SET_JOIN,data.id,"jt_inc_t");
+
 
 								newButtonLine()
 										.newButton("错误执行",POINT_HELP,"fail_action")
