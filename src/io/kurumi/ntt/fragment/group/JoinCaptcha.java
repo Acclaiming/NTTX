@@ -763,7 +763,7 @@ public class JoinCaptcha extends Fragment {
 
 				if (gd.captcha_del == null) {
 
-						Msg lastMsg = msg.send(user.userName() + " 通过了验证 ~").send();
+						Msg lastMsg = msg.send(user.userName() + " 通过了验证 ~").html().send();
 
 						if (lastMsg != null) {
 
@@ -773,11 +773,11 @@ public class JoinCaptcha extends Fragment {
 
 				} else if (gd.captcha_del == 0) {
 
-						msg.send(user.userName() + " 通过了验证 ~").failed();
+						msg.send(user.userName() + " 通过了验证 ~").html().failed();
 
 				} else {
 
-						msg.send(user.userName() + " 通过了验证 ~").exec();
+						msg.send(user.userName() + " 通过了验证 ~").html().exec();
 
 				}
 
@@ -858,7 +858,7 @@ public class JoinCaptcha extends Fragment {
 
 				if (gd.captcha_del == null) {
 
-						Msg lastMsg = msg.send(user.userName() + " 验证失败 已被" + (gd.fail_ban == null ? "移除" : "封锁")).send();
+						Msg lastMsg = msg.send(user.userName() + " 验证失败 已被" + (gd.fail_ban == null ? "移除" : "封锁")).html().send();
 
 						if (lastMsg != null) {
 
@@ -868,11 +868,11 @@ public class JoinCaptcha extends Fragment {
 
 				} else if (gd.captcha_del == 0) {
 
-						msg.send(user.userName() + " 验证失败 已被" + (gd.fail_ban == null ? "移除" : "封锁")).failed();
+						msg.send(user.userName() + " 验证失败 已被" + (gd.fail_ban == null ? "移除" : "封锁")).html().failed();
 						
 				} else {
 
-						msg.send(user.userName() + " 验证失败 已被" + (gd.fail_ban == null ? "移除" : "封锁")).exec();
+						msg.send(user.userName() + " 验证失败 已被" + (gd.fail_ban == null ? "移除" : "封锁")).html().exec();
 						
 				}
 				
