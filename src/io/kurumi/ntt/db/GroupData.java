@@ -51,9 +51,13 @@ public class GroupData {
 	
 		public Boolean delete_service_msg;
     public Boolean delete_channel_msg;
-		
+			
 		public Boolean join_captcha;
 		public Boolean passive_mode;
+		
+		public Map<String,Integer> captchaFailed;
+		public List<Long> waitForCaptcha;
+		
 		
 		public Integer ft_count;
 		public Integer captcha_time;
@@ -82,7 +86,7 @@ public class GroupData {
 		public Boolean interfere;
 		public Boolean require_input;
 		
-		public Integer fail_action;
+		public Boolean fail_ban;
 		
 		public Boolean invite_user_ban;
 		public Boolean invite_bot_ban;

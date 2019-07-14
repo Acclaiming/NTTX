@@ -35,7 +35,11 @@ public class GroupFunction extends Fragment {
 
 								User newUser = msg.message().newChatMembers()[0];
 
-								if (data.no_invite_bot != null && newUser.isBot()) {
+								if (data.waitForCaptcha != null && data.waitForCaptcha.contains(user.id)) {
+						
+										
+								
+								} else if (data.no_invite_bot != null && newUser.isBot()) {
 
 										msg.delete();
 

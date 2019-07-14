@@ -743,25 +743,19 @@ public class GroupOptions extends Fragment {
 										}
 
 
-								} else if ("fail_action".equals(params[1])) {
+								} else if ("fail_ban".equals(params[1])) {
 
-										if (data.fail_action == null) {
+										if (data.fail_ban == null) {
 
-												data.fail_action = 0;
-
-												callback.text("🚪  移除该用户");
-
-										} else if (data.fail_action == 0) {
-
-												data.fail_action = 1;
+												data.fail_ban = true;
 
 												callback.text("🚪  封锁该用户");
 
 										} else {
 
-												data.fail_action = null;
+												data.fail_ban = null;
 
-												callback.text("🚪  禁言该用户");
+												callback.text("🚪  移除该用户");
 
 										}
 
@@ -1022,8 +1016,8 @@ public class GroupOptions extends Fragment {
 										.newButton("➕➕",POINT_SET_JOIN,data.id,"jt_inc_t");
 
 								newButtonLine()
-										.newButton("错误执行",POINT_HELP,"fail_action")
-										.newButton(data.fail_action == null ? "禁言" : data.fail_action == 0 ? "移除" : "封锁",POINT_SET_JOIN,data.id,"fail_action");
+										.newButton("验证失败",POINT_HELP,"fail_ban")
+										.newButton(data.fail_ban == null ? "移除" : "封锁",POINT_SET_JOIN,data.id,"fail_ban");
 
 								newButtonLine("验证期间邀请用户",POINT_HELP,"invite_when_captcha");
 

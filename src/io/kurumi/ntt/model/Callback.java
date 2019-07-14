@@ -10,7 +10,7 @@ import io.kurumi.ntt.db.UserData;
 public class Callback extends Msg {
 
     public String[] params;
-    private CallbackQuery query;
+    public CallbackQuery query;
 
     public Callback(CallbackQuery query) {
 

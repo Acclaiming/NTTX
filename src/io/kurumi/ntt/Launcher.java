@@ -66,6 +66,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import io.kurumi.ntt.fragment.debug.DebugUF;
 import io.kurumi.ntt.fragment.group.GroupOptions;
 import io.kurumi.ntt.fragment.group.GroupAdmin;
+import io.kurumi.ntt.fragment.group.JoinCaptcha;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -328,6 +329,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         //addFragment(new AntiEsu());
         addFragment(new BanSetickerSet());
 				addFragment(new GroupFunction());
+				addFragment(new JoinCaptcha());
 
         // BOTS
 
