@@ -1398,7 +1398,7 @@ public class GroupOptions extends Fragment {
 										.newButton(data.interfere != null ? "✅" : "☑",POINT_SET_JOIN,data.id,"interfere");
 
 								newButtonLine()
-										.newButton("输入结果",POINT_HELP,"require_input")
+										.newButton("回答模式",POINT_HELP,"require_input")
 										.newButton(data.require_input != null ? "✅" : "☑",POINT_SET_JOIN,data.id,"require_input");
 
 								/*
