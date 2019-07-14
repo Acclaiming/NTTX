@@ -122,7 +122,7 @@ public class JoinCaptcha extends Fragment {
 
 						}
 
-						startAuth(user,msg,data);
+						startAuth(user,msg,data,null);
 
 				} else if (data.waitForCaptcha != null && data.waitForCaptcha.contains(user.id)) {
 
