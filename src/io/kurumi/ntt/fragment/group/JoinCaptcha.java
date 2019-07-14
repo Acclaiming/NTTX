@@ -27,6 +27,7 @@ import io.kurumi.ntt.fragment.group.JoinCaptcha.AuthCache;
 import java.util.TimerTask;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.utils.NTT;
+import java.util.Date;
 
 public class JoinCaptcha extends Fragment {
 
@@ -191,7 +192,7 @@ public class JoinCaptcha extends Fragment {
 				@Override
 				public String[] invalidCode() {
 
-						return new String[] { code ? "嘤" : "喵" };
+						return new String[] { "嘤" , "喵" };
 
 				}
 
@@ -497,6 +498,8 @@ public class JoinCaptcha extends Fragment {
 						}
 						
 				};
+				
+				BotFragment.mainTimer.schedule(auth.task,new Date(System.currentTimeMillis() + ((data.captcha_time == null ? 50 : data.captcha_time) * 1000)));
 
 		}
 
