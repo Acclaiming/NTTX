@@ -997,22 +997,22 @@ public class GroupOptions extends Fragment {
 
 												callback.alert(
 
-														"你正在使用选项模式 (没有开启 要求输入 选项)",
+														"你正在使用选项模式",
 
-														"\n需要设定选项模式的问题与选项"
+														"需要设定选项模式的问题与选项才能继续"
 
 
 												);
-
+												
 												return;
 
 										} else if (data.require_input != null && (data.custom_a_question == null || data.custom_kw == null)) {
 
 												callback.alert(
 
-														"你正在使用回答模式 (有开启 要求输入 选项)",
+														"你正在使用回答模式",
 
-														"\n需要设定回答模式的问题与正确回答"
+														"需要设定回答模式的问题与正确回答才能继续"
 
 
 												);
