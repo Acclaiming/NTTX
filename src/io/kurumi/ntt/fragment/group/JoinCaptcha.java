@@ -767,6 +767,8 @@ public class JoinCaptcha extends Fragment {
 
 						if (user.id.equals(target)) {
 
+								callback.delete();
+								
 								if (auth != null) {
 
 										auth.serviceMsg.delete();
