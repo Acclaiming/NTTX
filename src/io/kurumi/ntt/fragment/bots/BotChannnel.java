@@ -44,7 +44,7 @@ public class BotChannnel extends Fragment {
 
 		super.init(origin);
 
-		registerAdminFunction("send","edit","delete","forward","export_link","restrict","promote","kick","pin","unpin","unban","exit","get_file","send_file","get_chat","get_admins","get_members_count","get_member","get_me");
+		registerAdminFunction("send","edit","delete_message","forward","export_link","restrict","promote","kick","pin","unpin","unban","exit","get_file","send_file","get_chat","get_admins","get_members_count","get_member","get_me");
 		registerPoint(POINT_INPUT_EXTRA_PARAM);
 
 	}
@@ -74,7 +74,7 @@ public class BotChannnel extends Fragment {
 
 			sendResult(msg,execute(new DeleteChatPhoto(NumberUtil.parseLong(params[0]))));
 
-		} else if ("delete".equals(function)) {
+		} else if ("delete_message".equals(function)) {
 
 			if (params.length < 2) { invalidParams(msg,"chatId","messageId"); return; }
 

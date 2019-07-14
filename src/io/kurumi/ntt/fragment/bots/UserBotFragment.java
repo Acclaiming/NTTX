@@ -127,7 +127,7 @@ public class UserBotFragment extends BotFragment {
 					"管理员命令 :\n",
 					"/send <chatId> <text...>",
 					"/edit <chatId> <messageId> <text...>",
-					"/delete <chatId> <messageId>",
+					"/delete_message <chatId> <messageId>",
 					"/forward <toChatId> <fromChatId> <messageId>",
 					"/export_link <chatid>",
 					"/restrict <chatId> <userId>",
