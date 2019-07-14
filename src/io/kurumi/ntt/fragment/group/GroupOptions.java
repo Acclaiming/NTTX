@@ -939,6 +939,10 @@ public class GroupOptions extends Fragment {
 												
 										}
 										
+										stats.append("\n\n");
+										
+										stats.append("回答模式问题 :");
+										
 										callback.edit("编辑自定义问题. 对错选项或正确内容.").buttons(cusMenu(data)).exec();
 										
 										
