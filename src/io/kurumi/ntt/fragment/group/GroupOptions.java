@@ -1016,39 +1016,7 @@ public class GroupOptions extends Fragment {
 
 												return;
 
-										} else if ("reset_i_question".equals(params[1])) {
-
-												callback.confirm();
-
-												EditCustom edit = new EditCustom(0,callback,data);
-
-												callback.send("现在发送问题 :").exec(edit);
-
-										} else if ("reset_items".equals(params[1])) {
-
-												callback.confirm();
-
-												EditCustom edit = new EditCustom(1,callback,data);
-
-												callback.send("现在发送选项 每行一个 至少一个 最多五个 正确答案以 + 号开头 :").exec(edit);
-
-										} else if ("reset_a_question".equals(params[1])) {
-
-												callback.confirm();
-
-												EditCustom edit = new EditCustom(2,callback,data);
-
-												callback.send("现在发送问题 :").exec(edit);
-
-										} else if ("reset_answer".equals(params[1])) {
-
-												callback.confirm();
-
-												EditCustom edit = new EditCustom(3,callback,data);
-
-												callback.send("现在发送正确关键字 每行一个 :").exec(edit);
-
-										} else {
+										}	else {
 
 												callback.text("🚪  已开启");
 
@@ -1056,10 +1024,42 @@ public class GroupOptions extends Fragment {
 
 										}
 
-								}
+										execute(new EditMessageReplyMarkup(callback.chatId(),callback.message().messageId()).replyMarkup(cusMenu(data).markup()));
 
-								execute(new EditMessageReplyMarkup(callback.chatId(),callback.message().messageId()).replyMarkup(cusMenu(data).markup()));
+								} else if ("reset_i_question".equals(params[1])) {
 
+										callback.confirm();
+
+										EditCustom edit = new EditCustom(0,callback,data);
+
+										callback.send("现在发送问题 :").exec(edit);
+
+								} else if ("reset_items".equals(params[1])) {
+
+										callback.confirm();
+
+										EditCustom edit = new EditCustom(1,callback,data);
+
+										callback.send("现在发送选项 每行一个 至少一个 最多五个 正确答案以 + 号开头 :").exec(edit);
+
+								} else if ("reset_a_question".equals(params[1])) {
+
+										callback.confirm();
+
+										EditCustom edit = new EditCustom(2,callback,data);
+
+										callback.send("现在发送问题 :").exec(edit);
+
+								} else if ("reset_answer".equals(params[1])) {
+
+										callback.confirm();
+
+										EditCustom edit = new EditCustom(3,callback,data);
+
+										callback.send("现在发送正确关键字 每行一个 :").exec(edit);
+
+								} 
+								
 						}
 
 				}
