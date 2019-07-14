@@ -93,8 +93,6 @@ public class JoinCaptcha extends Fragment {
 
 						if (data.passive_mode != null) {
 
-								
-
 								if (data.delete_service_msg != null) {
 
 										msg.send("你好，新成员 " + newData.userName() + " 为确保群组安全，已将你暂时禁言。请点击下方按钮开始验证。")
@@ -380,7 +378,7 @@ public class JoinCaptcha extends Fragment {
 
 				auth.input = data.require_input != null;
 				auth.code = code;
-
+				
 				if (data.with_image == null) {
 
 						if (auth.input) {
@@ -456,12 +454,6 @@ public class JoinCaptcha extends Fragment {
 
 
 				}
-
-				if (data.require_input != null) {
-
-						msg.unrestrict(user.id);
-
-				}
 				
 				auth.task = new TimerTask() {
 
@@ -494,6 +486,9 @@ public class JoinCaptcha extends Fragment {
 						}
 						
 				};
+				
+				if (group.isEmpty()) cache.remove(msg.chatId());
+				else cache.put(msg.chatId(),group);
 				
 				BotFragment.mainTimer.schedule(auth.task,new Date(System.currentTimeMillis() + ((data.captcha_time == null ? 50 : data.captcha_time) * 1000)));
 
@@ -795,6 +790,8 @@ public class JoinCaptcha extends Fragment {
 														newButtonLine().newButton("通过",POINT_ACC,user.id).newButton("滥权",POINT_REJ,user.id);
 
 												}}).html().exec();
+												
+								return;
 
 						}
 
