@@ -849,7 +849,7 @@ public class GroupOptions extends Fragment {
 												callback.text("🚪  要求选择答案");
 
 										}
-										
+
 								} else if ("invite_user".equals(params[1])) {
 
 										if (data.invite_user_ban == null) {
@@ -865,7 +865,7 @@ public class GroupOptions extends Fragment {
 												callback.text("🚪  移除");
 
 										}
-										
+
 								} else if ("invite_bot".equals(params[1])) {
 
 										if (data.invite_bot_ban == null) {
@@ -881,7 +881,7 @@ public class GroupOptions extends Fragment {
 												callback.text("🚪  移除");
 
 										}
-										
+
 								} else {
 
 										callback.alert("喵...？");
@@ -1026,19 +1026,15 @@ public class GroupOptions extends Fragment {
 										.newButton(data.fail_action == null ? "禁言" : data.fail_action == 0 ? "移除" : "封锁",POINT_SET_JOIN,data.id,"fail_action");
 
 								newButtonLine("验证期间邀请用户",POINT_HELP,"invite_when_captcha");
-										
+
 								newButtonLine()
 										.newButton("邀请用户",POINT_HELP,"invite_user")
 										.newButton(data.invite_user_ban == null ? "移除" : "封锁",POINT_SET_JOIN,data.id,"invite_user");
-							
-										newButtonLine()
-										.newButton("被邀请用户",POINT_HELP,"invite_bot")
+
+								newButtonLine()
+										.newButton("邀请机器人",POINT_HELP,"invite_bot")
 										.newButton(data.invite_bot_ban == null ? "移除" : "封锁",POINT_SET_JOIN,data.id,"invite_bot");
-								
-											newButtonLine()
-										.newButton("邀请机器人",POINT_HELP,"invited_bot_action")
-										.newButton(data.fail_action == null ? "禁言" : data.fail_action == 0 ? "移除" : "封锁",POINT_SET_JOIN,data.id,"fail_action");
-										
+
 								newButtonLine("审核模式","null");
 
 								newButtonLine()
@@ -1066,15 +1062,15 @@ public class GroupOptions extends Fragment {
 										.newButton(data.require_input != null ? "✅" : "☑",POINT_SET_JOIN,data.id,"require_input");
 
 								/*
-										
-								newButtonLine("预设配置","null");
 
-								newButtonLine("简易",POINT_SET_JOIN,data.id,"easy");
-								newButtonLine("一般 ",POINT_SET_JOIN,data.id,"base");
-								newButtonLine("最严 ",POINT_SET_JOIN,data.id,"hard");
-								newButtonLine("重置所有配置",POINT_SET_JOIN,data.id,"reset");
-								
-								*/
+								 newButtonLine("预设配置","null");
+
+								 newButtonLine("简易",POINT_SET_JOIN,data.id,"easy");
+								 newButtonLine("一般 ",POINT_SET_JOIN,data.id,"base");
+								 newButtonLine("最严 ",POINT_SET_JOIN,data.id,"hard");
+								 newButtonLine("重置所有配置",POINT_SET_JOIN,data.id,"reset");
+
+								 */
 
 								/*
 
