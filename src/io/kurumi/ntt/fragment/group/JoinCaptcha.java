@@ -429,8 +429,8 @@ public class JoinCaptcha extends Fragment {
 
 						} else {
 
-								info.drawRandomColorTextCenter(0,0,0,600,"开始进行验证 :)");
-								info.drawRandomColorTextCenter(0,600,0,0,code.question());
+								info.drawRandomColorTextCenter(0,0,0,300,"开始进行验证 :)");
+								info.drawRandomColorTextCenter(0,300,0,0,code.question());
 
 						}
 
