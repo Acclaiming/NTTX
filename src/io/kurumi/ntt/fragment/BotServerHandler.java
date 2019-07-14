@@ -160,13 +160,16 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 						BotServer.fragments.get(botToken).processAsync(update);
 
-						sendOk(ctx);
-
+					
 				} catch (Exception ex) {
+						
+						BotLog.error("出错",ex);
 
-						sendError(ctx,INTERNAL_SERVER_ERROR);
+						//sendError(ctx,INTERNAL_SERVER_ERROR);
 
 				}
+				
+				sendOk(ctx);
 
 				//update.lock = new ProcessLock();
 
