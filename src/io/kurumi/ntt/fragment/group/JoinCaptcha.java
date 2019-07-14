@@ -673,7 +673,7 @@ public class JoinCaptcha extends Fragment {
 
 						msg.restrict();
 
-						if (gd.ft_count != null && (gd.captcha_time == null || (gd.captchaFailed.get(user.id.toString()) + 1 < gd.ft_count))) {
+						if (gd.ft_count != null && (gd.captchaFailed == null || (gd.captchaFailed.get(user.id.toString()) + 1 < gd.ft_count))) {
 
 								if (gd.captchaFailed == null) {
 
