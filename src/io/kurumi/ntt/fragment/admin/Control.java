@@ -24,15 +24,7 @@ public class Control extends Fragment {
     @Override
     public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-        if ("stop".equals(function)) {
-
-            msg.send("Executed : By " + user.userName()).html().exec();
-
-						Launcher.INSTANCE.stop();
-
-            RuntimeUtil.exec("service ntt stop");
-
-        }  else if ("upgrade".equals(function)) {
+         if ("upgrade".equals(function)) {
 
 						new Send(Env.GROUP,"Bot Update Executed : By " + user.userName()).html().exec();
 
