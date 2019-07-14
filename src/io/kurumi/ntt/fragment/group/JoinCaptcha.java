@@ -123,7 +123,7 @@ public class JoinCaptcha extends Fragment {
 
 						startAuth(user,msg,data);
 
-				} else if (data.waitForCaptcha.contains(user.id)) {
+				} else if (data.waitForCaptcha != null && data.waitForCaptcha.contains(user.id)) {
 
 						data.waitForCaptcha.remove(user.id);
 
@@ -537,7 +537,7 @@ public class JoinCaptcha extends Fragment {
 				msg.delete();
 
 				if (msg.message().leftChatMember() != null) {
-
+						
 						auth.serviceMsg.delete();
 						auth.task.cancel();
 
