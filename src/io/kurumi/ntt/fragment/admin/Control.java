@@ -17,7 +17,7 @@ public class Control extends Fragment {
 
 				super.init(origin);
 
-				registerAdminFunction("stop","upgrade","restart","poweroff","reboot");
+			// registerAdminFunction("stop","upgrade","restart","poweroff","reboot");
 
     }
 
@@ -46,6 +46,8 @@ public class Control extends Fragment {
 						
 				} else if ("restart".equals(function)) {
 
+						
+						
             new Send(Env.GROUP,"Bot Restart Executed : By " + user.userName()).html().exec();
 
 						Launcher.INSTANCE.stop();
