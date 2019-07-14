@@ -1045,7 +1045,7 @@ public class GroupOptions extends Fragment {
 
 										EditCustom edit = new EditCustom(1,callback,data);
 
-										callback.send("现在发送选项 每行一个 至少一个 最多五个 正确答案以 + 号开头 :").exec(edit);
+										callback.send("现在发送选项 每行一个 至少一个 最多六个 正确答案以 + 号开头 :").exec(edit);
 
 										setPrivatePoint(user,POINT_SET_CUST,edit);
 
@@ -1122,10 +1122,12 @@ public class GroupOptions extends Fragment {
 									
 								}
 								
-								buttons.add(line);
+								
 								
 								if (line.startsWith("+")) {
-
+										
+										buttons.add(line.substring(1));
+										
 										valid = true;
 
 										items.add(new GroupData.CustomItem() {{
@@ -1136,6 +1138,8 @@ public class GroupOptions extends Fragment {
 														}});
 
 								} else {
+										
+										buttons.add(line);
 
 										items.add(new GroupData.CustomItem() {{
 
@@ -1154,9 +1158,9 @@ public class GroupOptions extends Fragment {
 
 								return;
 
-						} else if (items.size() > 5) {
+						} else if (items.size() > 6) {
 
-								msg.send("选项太多 (> 5)").exec(data);
+								msg.send("选项太多 (> 6)").exec(data);
 
 								return;
 
