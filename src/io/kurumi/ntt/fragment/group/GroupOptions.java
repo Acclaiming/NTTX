@@ -611,7 +611,7 @@ public class GroupOptions extends Fragment {
 												return;
 
 										}
-										
+
 										callback.text("🚪  " + data.ft_count + " -> " + (data.ft_count = data.ft_count - 1));
 
 										if (data.ft_count == 0) {
@@ -821,7 +821,7 @@ public class GroupOptions extends Fragment {
 								} else if ("interfere".equals(params[1])) {
 
 										if (data.interfere == null) {
-												
+
 												data.interfere = true;
 
 												callback.text("🚪  开启按钮干扰");
@@ -849,8 +849,38 @@ public class GroupOptions extends Fragment {
 												callback.text("🚪  要求选择答案");
 
 										}
-
 										
+								} else if ("invite_user".equals(params[1])) {
+
+										if (data.invite_user_ban == null) {
+
+												data.invite_user_ban = true;
+
+												callback.text("🚪  封锁");
+
+										} else {
+
+												data.invite_user_ban = null;
+
+												callback.text("🚪  移除");
+
+										}
+										
+								} else if ("invite_bot".equals(params[1])) {
+
+										if (data.invite_bot_ban == null) {
+
+												data.invite_bot_ban = true;
+
+												callback.text("🚪  封锁");
+
+										} else {
+
+												data.invite_bot_ban = null;
+
+												callback.text("🚪  移除");
+
+										}
 										
 								} else {
 
@@ -991,11 +1021,24 @@ public class GroupOptions extends Fragment {
 										.newButton("➕",POINT_SET_JOIN,data.id,"jt_inc")
 										.newButton("➕➕",POINT_SET_JOIN,data.id,"jt_inc_t");
 
-
 								newButtonLine()
 										.newButton("错误执行",POINT_HELP,"fail_action")
 										.newButton(data.fail_action == null ? "禁言" : data.fail_action == 0 ? "移除" : "封锁",POINT_SET_JOIN,data.id,"fail_action");
 
+								newButtonLine("验证期间邀请用户",POINT_HELP,"invite_when_captcha");
+										
+								newButtonLine()
+										.newButton("邀请用户",POINT_HELP,"invite_user")
+										.newButton(data.invite_user_ban == null ? "移除" : "封锁",POINT_SET_JOIN,data.id,"invite_user");
+							
+										newButtonLine()
+										.newButton("被邀请用户",POINT_HELP,"invite_bot")
+										.newButton(data.invite_bot_ban == null ? "移除" : "封锁",POINT_SET_JOIN,data.id,"invite_bot");
+								
+											newButtonLine()
+										.newButton("邀请机器人",POINT_HELP,"invited_bot_action")
+										.newButton(data.fail_action == null ? "禁言" : data.fail_action == 0 ? "移除" : "封锁",POINT_SET_JOIN,data.id,"fail_action");
+										
 								newButtonLine("审核模式","null");
 
 								newButtonLine()
@@ -1022,6 +1065,16 @@ public class GroupOptions extends Fragment {
 										.newButton("输入结果",POINT_HELP,"require_input")
 										.newButton(data.require_input != null ? "✅" : "☑",POINT_SET_JOIN,data.id,"require_input");
 
+								/*
+										
+								newButtonLine("预设配置","null");
+
+								newButtonLine("简易",POINT_SET_JOIN,data.id,"easy");
+								newButtonLine("一般 ",POINT_SET_JOIN,data.id,"base");
+								newButtonLine("最严 ",POINT_SET_JOIN,data.id,"hard");
+								newButtonLine("重置所有配置",POINT_SET_JOIN,data.id,"reset");
+								
+								*/
 
 								/*
 

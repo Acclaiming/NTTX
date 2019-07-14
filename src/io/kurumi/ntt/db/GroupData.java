@@ -82,7 +82,10 @@ public class GroupData {
 		public Boolean interfere;
 		public Boolean require_input;
 		
-		public Integer fail_action;	
+		public Integer fail_action;
+		
+		public Boolean invite_user_ban;
+		public Boolean invite_bot_ban;
 		
 		public Integer captcha_mode;
 		
