@@ -79,6 +79,8 @@ public class GroupData {
 		}
 		
 		public Boolean with_image;
+		public Boolean interfere;
+		public Boolean require_input;
 		
 		public Integer fail_action;	
 		

@@ -643,7 +643,7 @@ public class GroupOptions extends Fragment {
 												data.captcha_time = null;
 
 										}
-										
+
 								} else if ("jt_inc_t".equals(params[1])) {
 
 										if (data.captcha_time != null && (data.captcha_time >= 5 * 60)) {
@@ -659,17 +659,17 @@ public class GroupOptions extends Fragment {
 												data.captcha_time = 50;
 
 										}
-										
+
 										int time = data.captcha_time;
-										
+
 										if (time + 30 > 5 * 60) {
-												
+
 												data.captcha_time = 5 * 60;
-												
+
 										} else {
-												
+
 												data.captcha_time = time + 30;
-												
+
 										}
 
 										callback.text("🚪  " + data.parse_time(time) + " -> " + data.parse_time());
@@ -679,7 +679,7 @@ public class GroupOptions extends Fragment {
 												data.captcha_time = null;
 
 										}
-										
+
 								} else if ("jt_dec".equals(params[1])) {
 
 										if (data.captcha_time != null && data.captcha_time < 21) {
@@ -704,7 +704,7 @@ public class GroupOptions extends Fragment {
 
 										}
 
-										
+
 
 								} else if ("jt_dec_t".equals(params[1])) {
 
@@ -721,9 +721,9 @@ public class GroupOptions extends Fragment {
 												data.captcha_time = 50;
 
 										}
-										
+
 										int time = data.captcha_time;
-										
+
 										if (time - 30 > 20) {
 
 												data.captcha_time = 20;
@@ -742,7 +742,7 @@ public class GroupOptions extends Fragment {
 
 										}
 
-											
+
 								} else if ("fail_action".equals(params[1])) {
 
 										if (data.fail_action == null) {
@@ -808,17 +808,50 @@ public class GroupOptions extends Fragment {
 
 												data.with_image = true;
 
-												callback.text("🚪  已开启");
+												callback.text("🚪  以图片显示问题");
 
 										} else {
 
 												data.with_image = null;
 
-												callback.text("🚪  已关闭");
+												callback.text("🚪  以文字显示问题");
 
 										}
 
+								} else if ("interfere".equals(params[1])) {
 
+										if (data.interfere == null) {
+												
+												data.interfere = true;
+
+												callback.text("🚪  开启按钮干扰");
+
+										} else {
+
+												data.interfere = null;
+
+												callback.text("🚪  关闭按钮干扰");
+
+										}
+
+								} else if ("require_input".equals(params[1])) {
+
+										if (data.require_input == null) {
+
+												data.require_input = true;
+
+												callback.text("🚪  要求输入答案");
+
+										} else {
+
+												data.require_input = null;
+
+												callback.text("🚪  要求选择答案");
+
+										}
+
+										
+										
 								} else {
 
 										callback.alert("喵...？");
@@ -980,6 +1013,14 @@ public class GroupOptions extends Fragment {
 								newButtonLine()
 										.newButton("图片描述",POINT_HELP,"with_image")
 										.newButton(data.with_image != null ? "✅" : "☑",POINT_SET_JOIN,data.id,"with_image");
+
+								newButtonLine()
+										.newButton("伪装按钮",POINT_HELP,"interfere")
+										.newButton(data.interfere != null ? "✅" : "☑",POINT_SET_JOIN,data.id,"interfere");
+
+								newButtonLine()
+										.newButton("输入结果",POINT_HELP,"require_input")
+										.newButton(data.require_input != null ? "✅" : "☑",POINT_SET_JOIN,data.id,"require_input");
 
 
 								/*
