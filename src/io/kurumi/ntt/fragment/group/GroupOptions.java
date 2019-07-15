@@ -418,7 +418,7 @@ public class GroupOptions extends Fragment {
 
 												callback.text("📝  仅删除");
 
-										} else if (data.no_image == 0) {
+										} else if (data.no_contact == 0) {
 
 												data.no_contact = 1;
 
