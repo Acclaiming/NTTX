@@ -21,17 +21,19 @@ import java.util.TimerTask;
 import io.kurumi.ntt.utils.BotLog;
 import com.rometools.fetcher.impl.HttpClientFeedFetcher;
 import java.util.Collections;
+import cn.hutool.http.HtmlUtil;
+import cn.hutool.core.util.StrUtil;
 
 public class FeedFetchTask extends TimerTask {
 
 		public static Timer rssTimer = new Timer();
-		
+
 		public static FeedFetchTask INSTANCE = new FeedFetchTask();
-		
+
 		public static void start() {
-				
+
 				rssTimer.scheduleAtFixedRate(INSTANCE,new Date(),5 * 60 * 1000);
-				
+
 		}
 
 		public static String USER_AGENT = "NTT RSS Fetcher By Kazama Wataru (https://t.me/NTT_X)";
@@ -60,7 +62,7 @@ public class FeedFetchTask extends TimerTask {
 								RssSub.RssInfo info = RssSub.info.getById(url);
 
 								BotLog.debug("拉取 " + feed.getTitle());
-								
+
 								if (info == null) {
 
 										info = new RssSub.RssInfo();
@@ -72,70 +74,81 @@ public class FeedFetchTask extends TimerTask {
 										RssSub.info.setById(info.id,info);
 
 										BotLog.debug("已保存");
-										
+
 										return;
 
 								}
 
-								LinkedList<String> posts = new LinkedList<>();
+								LinkedList<SyndEntry> posts = new LinkedList<>();
 
 								for (SyndEntry entry : feed.getEntries()) {
 
-										// BotLog.debug("第一 : " + entry.getTitle());
-										
 										if (entry.getLink().equals(info.last)) {
 
-											break;
+												break;
 
 										}
-										
-										
-										StringBuilder post = new StringBuilder();
-
-										post.append(Html.b(feed.getTitle()));
-
-										post.append("\n\n");
-
-										post.append(Html.a(entry.getTitle(),entry.getLink()));
-
-										posts.add(post.toString());
 
 								}
-								
+
+								if (posts.isEmpty())  return;
+
 								Collections.reverse(posts);
 
-								if (posts.isEmpty()) {
-										
-										BotLog.debug("没有新文章");
-										
-										return;
-										
-								}
-								
 								info.last = feed.getEntries().get(0).getLink();
 
 								RssSub.info.setById(info.id,info);
 
 								for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions",info.id)) {
-										
-										for (String post : posts) {
 
-												BotLog.debug("发送 " + post);
+										for (SyndEntry entry : posts) {
+
+												StringBuilder post = new StringBuilder();
+
+												if (channel.format == 2) {
+
+														post.append(Html.b(entry.getTitle()));
+
+														post.append("\n\n");
+
+														String html = entry.getDescription().getValue();
+
+														html = html.replace("<br>","\n");
+
+														html = HtmlUtil.removeHtmlTag(html,"img");
+														
+														post.append(html);
+														
+														post.append("来自 : ").append(Html.a(feed.getTitle(),entry.getLink()));
+
+												} else {
+
+														post.append(Html.b(feed.getTitle()));
+
+														post.append("\n\n");
+
+														post.append(Html.a(entry.getTitle(),entry.getLink()));
+
+														new Send(channel.id,post.toString()).html().exec();
+
+
+												}
+
+												new Send(channel.id,post.toString()).html().exec();
 												
-												new Send(channel.id,post).html().exec();
 
 										}
 
 								}
-								
-								
+
+
 						} catch (Exception e) {
 
 								BotLog.error("拉取错误",e);
-							
-								
+
+
 						}
-						
+
 				}
 
 

@@ -38,6 +38,8 @@ public class RssSub extends Fragment {
 
 				public Long id;
 
+				public int format = 0;
+				
 				public List<String> subscriptions;
 
 		}
@@ -47,7 +49,7 @@ public class RssSub extends Fragment {
 
 				super.init(origin);
 
-				registerFunction("rss_sub","rss_list","rss_unsub","rss_unsub_all");
+				registerFunction("rss_sub","rss_list","rss_unsub","rss_unsub_all","rss_set_format");
 
 		}
 
@@ -184,7 +186,7 @@ public class RssSub extends Fragment {
 								
 						}
 				
-				}else if ("rss_unsub_all".equals(function)) {
+				} else if ("rss_unsub_all".equals(function)) {
 						
 						if (conf.subscriptions.isEmpty()) {
 
@@ -192,12 +194,42 @@ public class RssSub extends Fragment {
 
 						} else {
 
-								channel.deleteById(conf.id);
+								conf.subscriptions.clear();
+								
+								channel.setById(conf.id,conf);
 								
 								msg.send("已经全部取消 :)").exec();
 
 						}
 
+				} else if ("rss_set_format".equals(function)) {
+						
+						if (params.length < 2) {
+								
+								msg.invalidParams("channelId","[link|full]").exec();
+								
+								return;
+								
+						}
+						
+					 if ("full".equals(params[1])) {
+								
+								conf.format = 1;
+								
+							 msg.send("格式已设定为 全文 .").exec();
+								
+						} else {
+								
+								msg.send("格式已设定为 默认 .").exec();
+								
+								conf.format = 0;
+								
+						}
+						
+						channel.setById(conf.id,conf);
+						
+						
+						
 				}
 
 		}
