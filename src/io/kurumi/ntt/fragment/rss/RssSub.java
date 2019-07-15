@@ -72,7 +72,7 @@ public class RssSub extends Fragment {
 
 						String username = params[0];
 
-						if (username.startsWith("@")) username = username.substring(1);
+						if (!username.startsWith("@")) username = "@" + username;
 
 						GetChatResponse resp = execute(new GetChat(username));
 
@@ -84,7 +84,7 @@ public class RssSub extends Fragment {
 
 						} else if (!resp.isOk()) {
 
-								msg.send("错误 : BOT不在该频道 : @" + username,"( " + resp.description() + " )","\n如果一直出现该错误 请使用频道ID作为参数。").exec();
+								msg.send("错误 : BOT不在该频道 : @" + username,"( " + resp.description() + " )").exec();
 
 								return;
 
