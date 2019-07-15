@@ -133,7 +133,15 @@ public class FeedFetchTask extends TimerTask {
 														
 														post.append("\n\n");
 
-														post.append("来自 : ").append(Html.a(feed.getTitle(),entry.getLink()));
+														post.append("来自 : ");
+														
+														if (entry.getAuthor() != null) {
+																
+																post.append(Html.b(entry.getAuthor())).append(" - ");
+																
+														}
+														
+														post.append(Html.a(feed.getTitle(),entry.getLink()));
 
 												} else {
 
