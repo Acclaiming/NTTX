@@ -18,6 +18,12 @@ public class GroupAdmin extends Fragment {
 		
 		public static HashMap<Long,Long> lastUpdate = new HashMap<>();
 
+		public static boolean fastAdminCheck(long chatId,long userId) {
+				
+				return fastAdminCheck(GroupData.get(chatId),userId);
+				
+		}
+		
 		public static boolean fastAdminCheck(GroupData data,long userId) {
 				
 				if (data.admins == null || !lastUpdate.containsKey(data.id) || lastUpdate.get(data.id) - System.currentTimeMillis() > 30 * 60 * 1000) {

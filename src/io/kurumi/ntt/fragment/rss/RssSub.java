@@ -20,6 +20,8 @@ import java.util.List;
 import io.kurumi.ntt.fragment.rss.RssSub.ChannelRss;
 import java.util.LinkedList;
 import io.kurumi.ntt.fragment.rss.RssSub.RssInfo;
+import io.kurumi.ntt.fragment.group.GroupAdmin;
+import io.kurumi.ntt.db.GroupData;
 
 public class RssSub extends Fragment {
 
@@ -60,17 +62,9 @@ public class RssSub extends Fragment {
 
 				long channelId = NumberUtil.parseLong(params[0]);
 
-				GetChatMemberResponse resp = execute(new GetChatMember(channelId,user.id.intValue()));
-
-				if (!resp.isOk()) {
-
-						msg.send("错误 : " + resp.description(),"\n把机器人添加到该频道了吗？").exec();
-
-						return;
-
-				} else if (!(resp.chatMember().status() == ChatMember.Status.creator || resp.chatMember().status() == ChatMember.Status.administrator)) {
-
-						msg.send("错误 : 你不是该频道的创建者或管理员").exec();
+				if (!GroupAdmin.fastAdminCheck(channelId,user.id)) {
+			
+						msg.send("错误 : 机器人不在该频道 或 你不是该频道的创建者或管理员。").exec();
 
 						return;
 

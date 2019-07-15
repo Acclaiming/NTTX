@@ -13,6 +13,35 @@ public class GroupData {
 
     public static CachedData<GroupData> data = new CachedData<GroupData>(GroupData.class);
 
+		public static GroupData get(long id) {
+
+        synchronized (data.idIndex) {
+
+            if (data.idIndex.size() > 1000) {
+
+                data.idIndex.clear();
+
+            } else if (data.idIndex.containsKey(id)) return data.idIndex.get(id);
+
+            GroupData group = data.getNoCache(id);
+
+            if (group == null) {
+
+                group = new GroupData();
+
+                group.id = id;
+
+            }
+						
+            data.idIndex.put(id,group);
+
+            return group;
+
+        }
+
+    }
+		
+		
     public static GroupData get(Chat chat) {
 
         synchronized (data.idIndex) {
