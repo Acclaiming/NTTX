@@ -89,7 +89,7 @@ public class FeedFetchTask extends TimerTask {
 
 										if (entry.getLink().equals(info.last)) {
 
-												break next;
+												break;
 
 										}
 										
