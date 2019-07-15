@@ -84,7 +84,7 @@ public class RssSub extends Fragment {
 
 						} else if (!resp.isOk()) {
 
-								msg.send("错误 : BOT不在该频道","( " + resp.description() + " )").exec();
+								msg.send("错误 : BOT不在该频道 : @" + username,"( " + resp.description() + " )").exec();
 
 								return;
 
