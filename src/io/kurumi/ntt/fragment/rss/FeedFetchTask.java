@@ -36,6 +36,8 @@ public class FeedFetchTask extends TimerTask implements FetcherListener {
 
 				SyndFeed feed = event.getFeed();
 
+				if (feed == null) return;
+				
 				RssSub.RssInfo info = RssSub.info.getById(feed.getLink());
 
 				if (info == null) {
