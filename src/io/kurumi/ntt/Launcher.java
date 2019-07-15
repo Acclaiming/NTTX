@@ -358,13 +358,15 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 				if (stopeed.getAndSet(true)) return;
 
 				BotServer.INSTANCE.stop();
-
+				
 				mainTimer.cancel();
 
 				trackTimer.cancel();
 
 				userTrackTask.interrupt();
 
+				JoinCaptcha.INSTANCE.stop();
+				
 				GroupData.data.saveAll();
 
         for (BotFragment bot : BotServer.fragments.values()) {
