@@ -61,7 +61,7 @@ public class MongoFeedCache implements FeedFetcherCache {
 				
 				data.deleteById(url.toString());
 				
-				return cache.info;
+				return ObjectUtil.unserialize(cache.info);
 				
 		}
 
