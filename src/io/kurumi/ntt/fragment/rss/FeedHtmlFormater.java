@@ -212,10 +212,10 @@ public class FeedHtmlFormater {
 				html = Html.unescape(html);
 				
 				html = URLUtil.decode(html);
-				
-			//	html = CharsetUtil.convert(html,"ISO-8859-1","UTF-8");
-					
+
 				html = html.replace("<br>","\n");
+				
+				html = html.replaceAll("<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>","<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>");
 				
 				html = html.replaceAll("<(?!/?(a|b|i|code|pre|em)\b)[^>]+>","");
 
