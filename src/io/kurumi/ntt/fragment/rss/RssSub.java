@@ -19,6 +19,7 @@ import java.net.URL;
 import java.util.List;
 import io.kurumi.ntt.fragment.rss.RssSub.ChannelRss;
 import java.util.LinkedList;
+import io.kurumi.ntt.fragment.rss.RssSub.RssInfo;
 
 public class RssSub extends Fragment {
 
@@ -40,99 +41,151 @@ public class RssSub extends Fragment {
 				public List<String> subscriptions;
 
 		}
-		
+
 		@Override
 		public void init(BotFragment origin) {
-				
+
 				super.init(origin);
-				
+
 				registerFunction("rss_sub","rss_list","rss_unsub","rss_unsub_all");
-				
+
 		}
 
 		@Override
 		public void onFunction(UserData user,Msg msg,String function,String[] params) {
-				
+
 				if (params.length == 0) { msg.invalidParams("channelId"); }
-				
+
 				long channelId = NumberUtil.parseLong(params[0]);
-				
+
 				GetChatMemberResponse resp = execute(new GetChatMember(channelId,user.id.intValue()));
 
 				if (!resp.isOk()) {
-						
+
 						msg.send("错误 : " + resp.description(),"\n把机器人添加到该频道了吗？").exec();
-						
+
 						return;
-						
+
 				} else if (!(resp.chatMember().status() == ChatMember.Status.creator || resp.chatMember().status() == ChatMember.Status.administrator)) {
-						
+
 						msg.send("错误 : 你不是该频道的创建者或管理员").exec();
-						
+
 						return;
-						
+
 				}
-				
+
+				ChannelRss conf = channel.getById(channelId);
+
+				if (conf == null) {
+
+						conf = new ChannelRss();
+						conf.id = channelId;
+						conf.subscriptions = new LinkedList<>();
+
+				}
+
 				if ("rss_sub".equals(function)) {
-						
+
 						if (params.length < 2) {
-								
+
 								msg.invalidParams("channelId","rssUrl");
-								
-								return;
-								
-						}
-						
-						ChannelRss conf = channel.getById(channelId);
 
-						if (conf == null) {
-								
-								conf = new ChannelRss();
-								conf.id = channelId;
-								conf.subscriptions = new LinkedList<>();
-								
+								return;
+
 						}
-						
+
 						try {
-								
+
 								SyndFeed feed = FeedFetchTask.fetcher.retrieveFeed(new URL(params[1]));
-								
+
 								if (conf.subscriptions.contains(params[1])) {
-										
+
 										msg.send("已经订阅过了 " + Html.a(feed.getTitle(),feed.getLink())).html().exec();
-										
+
 										return;
-										
+
 								}
-								
+
 								conf.subscriptions.add(params[1]);
-								
+
 								channel.setById(channelId,conf);
-								
+
+								RssInfo rss = new RssSub.RssInfo();
+
+								rss.id = params[1];
+								rss.title = feed.getTitle();
+								rss.last = feed.getEntries().get(0).getLink();
+
+								info.setById(rss.id,rss);
+
 								msg.send("订阅成功 : " + Html.a(feed.getTitle(),feed.getLink())).html().exec();
-								
+
 						} catch (FetcherException e) {
-								
+
 								msg.send("拉取出错 : " + e.getMessage()).exec();
-								
+
 								return;
-								
+
 						} catch (FeedException e) {
-								
+
 								msg.send("拉取出错 : " + e.getMessage()).exec();
-								
+
 						} catch (IOException e) {
-								
+
 								msg.send("拉取出错 : " + e.getMessage()).exec();
-								
+
 						} catch (IllegalArgumentException e) {
-								
+
 								msg.send("无效的RSS链接").exec();
+
+						}
+
+				} else if ("rss_list".equals(function)) {
+
+						if (conf.subscriptions.isEmpty()) {
+
+								msg.send("没有订阅任何RSS").exec();
+
+								return;
+
+						}
+
+						StringBuilder list = new StringBuilder("订阅列表");
+
+						for (String url : conf.subscriptions) {
+
+								RssInfo rss = info.getById(url);
+
+								list.append("\n").append(Html.b(rss.title)).append(" : ").append(Html.code(url));
 								
 						}
 
-				}
+						msg.send(list.toString()).html().exec();
+
+				} else if ("rss_unsub".equals(function)) {
 				
+						if (params.length < 2) {
+
+								msg.invalidParams("channelId","rssUrl");
+
+								return;
+
+						}
+						
+						if (conf.subscriptions.remove(params[1])) {
+								
+								msg.send("取消订阅成功").exec();
+								
+								channel.setById(conf.id,conf);
+								
+						} else {
+						
+								msg.send("没有订阅这个链接").exec();
+								
+						}
+				
+				}
+
 		}
-		
+
 }

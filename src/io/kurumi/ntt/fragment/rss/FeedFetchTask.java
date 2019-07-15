@@ -115,7 +115,6 @@ public class FeedFetchTask extends TimerTask {
 								info.last = feed.getEntries().get(0).getLink();
 
 								RssSub.info.setById(info.id,info);
-								
 
 								for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions",info.id)) {
 										
