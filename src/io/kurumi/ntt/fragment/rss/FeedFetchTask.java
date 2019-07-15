@@ -125,7 +125,7 @@ public class FeedFetchTask extends TimerTask {
 
 														html = html.replace("<br>","\n");
 
-														html = html.replaceAll("(<[^(a|b|i|code|pre|em)]([^<]*?)>)|(<[^(a|b|i|code|pre|em)]([\\s]*?/[^<]*?)>)|(<[^(a|b|i|code|pre|em)]([^<]*?/[\\s]*?)>)","");
+														html = html.replaceAll("<(?!/?(a|b|i|code|pre|em)\b)[^>]+>","");
 														
 														post.append(html);
 
