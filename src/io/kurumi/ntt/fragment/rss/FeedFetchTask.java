@@ -117,7 +117,7 @@ public class FeedFetchTask extends TimerTask {
 
 												StringBuilder post = new StringBuilder();
 
-												if (channel.format == 2) {
+												if (channel.format == 1) {
 
 														post.append(Html.b(entry.getTitle()));
 
