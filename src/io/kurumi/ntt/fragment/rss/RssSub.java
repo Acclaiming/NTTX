@@ -54,7 +54,7 @@ public class RssSub extends Fragment {
 		@Override
 		public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-				if (params.length == 0) { msg.invalidParams("channelId"); }
+				if (params.length == 0) { msg.invalidParams("channelId").exec(); return;}
 
 				long channelId = NumberUtil.parseLong(params[0]);
 
@@ -88,7 +88,7 @@ public class RssSub extends Fragment {
 
 						if (params.length < 2) {
 
-								msg.invalidParams("channelId","rssUrl");
+								msg.invalidParams("channelId","rssUrl").exec();
 
 								return;
 
