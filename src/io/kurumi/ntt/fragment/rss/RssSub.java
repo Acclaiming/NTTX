@@ -22,6 +22,8 @@ import java.util.LinkedList;
 import io.kurumi.ntt.fragment.rss.RssSub.RssInfo;
 import io.kurumi.ntt.fragment.group.GroupAdmin;
 import io.kurumi.ntt.db.GroupData;
+import com.pengrad.telegrambot.request.GetChat;
+import com.pengrad.telegrambot.response.GetChatResponse;
 
 public class RssSub extends Fragment {
 
@@ -60,7 +62,37 @@ public class RssSub extends Fragment {
 
 				if (params.length == 0) { msg.invalidParams("channelId").exec(); return;}
 
-				long channelId = NumberUtil.parseLong(params[0]);
+				long channelId;
+
+				if (NumberUtil.isNumber(params[0])) {
+
+						channelId = NumberUtil.parseLong(params[0]);
+
+				} else {
+
+						String username = params[0];
+
+						if (username.startsWith("@")) username = username.substring(1);
+
+						GetChatResponse resp = execute(new GetChat(username));
+
+						if (resp == null) {
+
+								msg.send("Telegram 服务器连接错误").exec();
+
+								return;
+
+						} else if (!resp.isOk()) {
+
+								msg.send("错误 : BOT不在该频道","( " + resp.description() + " )").exec();
+
+								return;
+
+						}
+
+						channelId = resp.chat().id();
+
+				}
 
 				if (!GroupAdmin.fastAdminCheck(channelId,user.id)) {
 
@@ -74,16 +106,16 @@ public class RssSub extends Fragment {
 
 						} else if (!resp.isOk()) {
 
-								msg.send("错误 : 机器人不在该频道","( " + resp.description() + " )").exec();
+								msg.send("错误 : 频道读取失败","( " + resp.description() + " )").exec();
 
 								return;
-								
+
 						} else if (!(resp.chatMember().status() == ChatMember.Status.creator || resp.chatMember().status() == ChatMember.Status.administrator)) {
 
 								msg.send("错误 : 你不是频道管理员").exec();
 
 								return;
-								
+
 						}
 
 						return;
