@@ -27,7 +27,7 @@ public class FeedFetchTask extends TimerTask implements FetcherListener {
 		
 		public static void start() {
 				
-				rssTimer.scheduleAtFixedRate(INSTANCE,new Date(),10 * 60 * 1000);
+				rssTimer.scheduleAtFixedRate(INSTANCE,new Date(),2 * 60 * 1000);
 				
 		}
 		

@@ -33,82 +33,82 @@ public class StatusAction extends Fragment {
 
         return new ButtonMarkup() {{
 
-				ButtonLine line = newButtonLine();
+								ButtonLine line = newButtonLine();
 
-				if (retweeted) {
+								if (retweeted) {
 
-					line.newButton("❎️",POINT_DESTROY_RETWEET,statusId,full,retweeted,liked);
+										line.newButton("❎️",POINT_DESTROY_RETWEET,statusId,full,retweeted,liked);
 
-				} else {
+								} else {
 
-					line.newButton("🔄",POINT_RETWEET_STATUS,statusId,full,retweeted,liked);
+										line.newButton("🔄",POINT_RETWEET_STATUS,statusId,full,retweeted,liked);
 
-				}
+								}
 
-				if (liked) {
+								if (liked) {
 
-					line.newButton("💔",POINT_UNLIKE_STATUS,statusId,full,retweeted,liked);
+										line.newButton("💔",POINT_UNLIKE_STATUS,statusId,full,retweeted,liked);
 
-				} else {
+								} else {
 
-					line.newButton("❤",POINT_LIKE_STATUS,statusId,full,retweeted,liked);
+										line.newButton("❤",POINT_LIKE_STATUS,statusId,full,retweeted,liked);
 
-				}
+								}
 
-				if (del) {
+								if (del) {
 
-					line.newButton("❌️",POINT_DESTROY_STATUS,statusId);
+										line.newButton("❌️",POINT_DESTROY_STATUS,statusId);
 
-				}
+								}
 
-				if (!full) {
+								if (!full) {
 
-					line.newButton("🔎",POINT_SHOW_FULL,statusId,true,retweeted,liked);
+										line.newButton("🔎",POINT_SHOW_FULL,statusId,true,retweeted,liked);
 
-				}
+								}
 
-				// line.newButton("🔇",POINT_MUTE_USER,status.getUser().getId());
+								// line.newButton("🔇",POINT_MUTE_USER,status.getUser().getId());
 
 
-			}};
+						}};
 
     }
 
-	@Override
-	public void init(BotFragment origin) {
+		@Override
+		public void init(BotFragment origin) {
 
-		super.init(origin);
+				super.init(origin);
 
-		registerFunction("current");
+				registerFunction("current");
 
-		registerCallback(
-			POINT_LIKE_STATUS,
-			POINT_UNLIKE_STATUS,
-			POINT_RETWEET_STATUS,
-			POINT_DESTROY_RETWEET,
-			POINT_DESTROY_STATUS,
-			POINT_SHOW_FULL);
+				registerCallback(
+						POINT_LIKE_STATUS,
+						POINT_UNLIKE_STATUS,
+						POINT_RETWEET_STATUS,
+						POINT_DESTROY_RETWEET,
+						POINT_DESTROY_STATUS,
+						POINT_SHOW_FULL);
 
 
-	}
+		}
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		@Override
+		public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-		requestTwitter(user,msg,true);
+				requestTwitter(user,msg,true);
 
-	}
+		}
 
     @Override
     public void onTwitterFunction(final UserData user,Msg msg,String function,String[] params,final TAuth account) {
 
         current.setById(user.id,new CurrentAccount() {{
 
-					id = user.id;
+										id = user.id;
 
-					accountId = account.id;
+										accountId = account.id;
 
-				}});
+								}});
 
         msg.send("当前操作账号已设为 : " + account.archive().urlHtml(),"当多用户时，可用此命令设置默认账号。").html().exec();
 
@@ -118,7 +118,7 @@ public class StatusAction extends Fragment {
     public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
         long statusId = Long.parseLong(params[0]);
-
+				
         boolean isFull = params.length > 1 && "true".equals(params[1]);
         boolean retweeted = params.length > 1 && "true".equals(params[2]);
         boolean liked = params.length > 1 && "true".equals(params[3]);
@@ -283,23 +283,23 @@ public class StatusAction extends Fragment {
 
         } else if (POINT_SHOW_FULL.equals(point)) {
 
-			archive.loop(api);
+						archive.loop(api);
 
-			if (callback.message().caption() != null) {
+						if (callback.message().caption() != null) {
 
-				BaseResponse resp = bot().execute(new EditMessageCaption(callback.chatId(),callback.messageId()).caption(archive.toHtml()).parseMode(ParseMode.HTML).replyMarkup(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,liked).markup()));
+								BaseResponse resp = bot().execute(new EditMessageCaption(callback.chatId(),callback.messageId()).caption(archive.toHtml()).parseMode(ParseMode.HTML).replyMarkup(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,liked).markup()));
 
-				if (!resp.isOk()) {
+								if (!resp.isOk()) {
 
-					BotLog.debug("显示全文失败 :" + resp.errorCode() + " " + resp.description());
+										BotLog.debug("显示全文失败 :" + resp.errorCode() + " " + resp.description());
 
-				}
+								}
 
-			} else {
+						} else {
 
-				callback.edit(archive.toHtml()).buttons(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,liked)).html().exec();
+								callback.edit(archive.toHtml()).buttons(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,liked)).html().exec();
 
-			}
+						}
 
             callback.text("已展开 ~");
 
