@@ -84,7 +84,7 @@ public class NewBot extends Fragment {
 
                     newButtonLine("转发私聊");
 
-                    newButtonLine("加群验证");
+                   // newButtonLine("加群验证");
 
                     newButtonLine("取消创建");
 

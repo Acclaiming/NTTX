@@ -663,7 +663,6 @@ public class GroupOptions extends Fragment {
 										}
 
 
-
 								} else if ("ft_dec".equals(params[1])) {
 
 										if (data.ft_count == null) {
@@ -1235,7 +1234,7 @@ public class GroupOptions extends Fragment {
 
 								newButtonLine("🛠️  功能选项",POINT_MENU_MAIN,data.id);
 								newButtonLine("📝  成员限制",POINT_MENU_REST,data.id);
-								newButtonLine("🚪  加群验证 (未稳定)",POINT_MENU_JOIN,data.id);
+								newButtonLine("🚪  加群验证",POINT_MENU_JOIN,data.id);
 
 						}};
 
