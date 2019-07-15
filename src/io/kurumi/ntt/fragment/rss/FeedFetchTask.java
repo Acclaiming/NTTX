@@ -158,7 +158,7 @@ public class FeedFetchTask extends TimerTask {
 
 														post.append("来自 : ");
 
-														if (entry.getAuthor() != null) {
+														if (!StrUtil.isBlank(entry.getAuthor())) {
 
 																post.append(Html.b(entry.getAuthor())).append(" - ");
 
