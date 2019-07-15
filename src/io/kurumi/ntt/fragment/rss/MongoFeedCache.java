@@ -6,6 +6,8 @@ import com.rometools.fetcher.impl.SyndFeedInfo;
 import java.net.URL;
 import io.kurumi.ntt.db.AbsData;
 import io.kurumi.ntt.fragment.rss.MongoFeedCache.Cache;
+import java.io.Serializable;
+import cn.hutool.core.util.ObjectUtil;
 
 public class MongoFeedCache implements FeedFetcherCache {
 
@@ -16,7 +18,7 @@ public class MongoFeedCache implements FeedFetcherCache {
 		public static class Cache {
 
 				public String url;
-				public SyndFeedInfo info;
+				public byte[] info;
 
 		}
 
@@ -27,7 +29,7 @@ public class MongoFeedCache implements FeedFetcherCache {
 
 				if (cache == null) return null;
 
-				return cache.info;
+				return ObjectUtil.unserialize(cache.info);
 
 		}
 
@@ -37,7 +39,7 @@ public class MongoFeedCache implements FeedFetcherCache {
 				data.setById(urlToSet.toString(),new Cache() {{
 						
 						this.url = urlToSet.toString();
-						this.info = infoToSet;
+						this.info = ObjectUtil.serialize(infoToSet);
 						
 				}});
 				
