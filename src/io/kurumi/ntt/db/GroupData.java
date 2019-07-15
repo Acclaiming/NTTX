@@ -55,6 +55,8 @@ public class GroupData {
 		public Boolean join_captcha;
 		public Boolean passive_mode;
 		
+		public Map<String,Integer> passive_msg;
+		
 		public Map<String,Integer> captchaFailed;
 		public List<Long> waitForCaptcha;
 		

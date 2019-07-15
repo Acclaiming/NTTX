@@ -102,7 +102,7 @@ public class JoinCaptcha extends Fragment {
 
 								if (data.delete_service_msg != null) {
 
-										msg.send("你好，新成员 " + newData.userName() + " 为确保群组安全，已将你暂时禁言。请点击下方按钮开始验证。")
+										SendResponse resp = msg.send("你好，新成员 " + newData.userName() + " 为确保群组安全，已将你暂时禁言。请点击下方按钮开始验证。")
 												.buttons(new ButtonMarkup() {{
 
 																newButtonLine("开始验证",POINT_AUTH,user.id);
@@ -110,10 +110,20 @@ public class JoinCaptcha extends Fragment {
 																newButtonLine().newButton("通过",POINT_ACC,user.id).newButton("滥权",POINT_REJ,user.id);
 
 														}}).html().exec();
+														
+														if (resp.isOk()) {
+																
+																if (data.passive_msg == null) data.passive_msg = new HashMap<>();
+																data.passive_msg.put(user.id.toString(),resp.message().messageId());
+																
+													}
+													
+													
+													
 
 								} else {
 
-										msg.reply("新成员你好，为确保群组安全，已将你暂时禁言。请点击下方按钮开始验证。")
+										SendResponse resp = msg.reply("新成员你好，为确保群组安全，已将你暂时禁言。请点击下方按钮开始验证。")
 												.buttons(new ButtonMarkup() {{
 
 																newButtonLine("开始验证",POINT_AUTH);
@@ -121,6 +131,13 @@ public class JoinCaptcha extends Fragment {
 																newButtonLine().newButton("通过",POINT_ACC,user.id).newButton("滥权",POINT_REJ,user.id);
 
 														}}).exec();
+														
+										if (resp.isOk()) {
+
+												if (data.passive_msg == null) data.passive_msg = new HashMap<>();
+												data.passive_msg.put(user.id.toString(),resp.message().messageId());
+
+										}
 
 								}
 
@@ -915,6 +932,7 @@ public class JoinCaptcha extends Fragment {
 						if (auth == null) auth = rdc;
 
 				}
+				
 				msg.delete();
 
 				if (auth != null) {
@@ -991,6 +1009,16 @@ public class JoinCaptcha extends Fragment {
 
 						msg.send(user.userName() + " 验证失败 已被" + (gd.fail_ban == null ? "移除" : "封锁")).html().exec();
 
+				}
+				
+				if (gd.passive_msg != null && gd.passive_msg.containsKey(user.id.toString())) {
+						
+						int id = gd.passive_msg.remove(user.id.toString());
+						
+						execute(new DeleteMessage(msg.chatId(),id));
+						
+						if (gd.passive_msg.isEmpty()) gd.passive_msg = null;
+						
 				}
 
 				if (gd.captchaFailed != null) {
