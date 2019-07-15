@@ -6,9 +6,9 @@ import io.kurumi.ntt.utils.Html;
 import java.util.LinkedList;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HtmlUtil;
 
 public class FeedHtmlFormater {
-
 
 		public static String format(int type,SyndFeed feed,SyndEntry entry) {
 
@@ -205,12 +205,11 @@ public class FeedHtmlFormater {
 						html = entry.getDescription().getValue();
 
 				}
-
-				html = html
-						.replace("<br>","\n")
-						.replace("&ldquo;","“")
-						.replace("&rdquo;","”");
-
+		
+				html = HtmlUtil.unescape(html);
+					
+				html = html.replace("<br>","\n");
+				
 				html = html.replaceAll("<(?!/?(a|b|i|code|pre|em)\b)[^>]+>","");
 
 				html = removeADs(html).trim();
