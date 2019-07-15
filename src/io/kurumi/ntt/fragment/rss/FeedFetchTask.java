@@ -34,12 +34,6 @@ public class FeedFetchTask extends TimerTask implements FetcherListener {
 		@Override
 		public void fetcherEvent(FetcherEvent event) {
 
-				if (!event.getEventType().equals(FetcherEvent.EVENT_TYPE_FEED_RETRIEVED)) {
-
-						return;
-
-				}
-
 				SyndFeed feed = event.getFeed();
 
 				RssSub.RssInfo info = RssSub.info.getById(feed.getUri());
