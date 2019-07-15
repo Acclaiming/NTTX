@@ -46,20 +46,16 @@ public class FeedFetchTask extends TimerTask {
 		@Override
 		public void run() {
 
-				LinkedList<String> sites = new LinkedList<>();
+				Set<String> sites = new HashSet<>();
 
 				for (RssSub.ChannelRss info : RssSub.channel.getAll()) {
 
-						for (String url : info.subscriptions) {
-								
-								if (!sites.contains(url)) sites.add(url);
-								
-						}
+						sites.addAll(info.subscriptions);
 
 				}
 
 				
-				for (String url : sites) {
+				next:for (String url : sites) {
 
 						try {
 
@@ -83,7 +79,7 @@ public class FeedFetchTask extends TimerTask {
 
 										BotLog.debug("已保存");
 
-										return;
+										continue next;
 
 								}
 
@@ -93,7 +89,7 @@ public class FeedFetchTask extends TimerTask {
 
 										if (entry.getLink().equals(info.last)) {
 
-												break;
+												continue next;
 
 										}
 
