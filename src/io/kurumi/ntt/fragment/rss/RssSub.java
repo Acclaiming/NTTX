@@ -272,7 +272,7 @@ public class RssSub extends Fragment {
 						
 						channel.setById(conf.id,conf);
 
-
+						msg.send("修改成功 输出格式为 : " + target + " .").exec();
 
 				}
 
