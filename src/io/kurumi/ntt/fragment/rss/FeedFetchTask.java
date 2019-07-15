@@ -141,8 +141,6 @@ public class FeedFetchTask extends TimerTask {
 
 														post.append(Html.a(entry.getTitle(),entry.getLink()));
 
-														new Send(channel.id,post.toString()).html().exec();
-
 
 												}
 
