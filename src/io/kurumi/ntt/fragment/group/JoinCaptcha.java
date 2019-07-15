@@ -84,7 +84,7 @@ public class JoinCaptcha extends Fragment {
 
 										}
 
-										SendResponse resp = new Send(this,"你好，新成员 " + user.userName(),"因为服务中断，已将你暂时禁言。请点击下方重新验证。")
+										SendResponse resp = new Send(this,data.id,"你好，新成员 " + user.userName(),"因为服务中断，已将你暂时禁言。请点击下方重新验证。")
 												.buttons(new ButtonMarkup() {{
 
 																newButtonLine("开始验证",POINT_AUTH,user.id);
