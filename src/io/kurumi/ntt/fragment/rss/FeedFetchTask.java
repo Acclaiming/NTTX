@@ -82,12 +82,6 @@ public class FeedFetchTask extends TimerTask {
 
 										BotLog.debug("第一 : " + entry.getTitle());
 										
-										if (entry.getLink().equals(info.last)) {
-
-												break;
-
-										}
-
 										StringBuilder post = new StringBuilder();
 
 										post.append(Html.b(feed.getTitle()));
