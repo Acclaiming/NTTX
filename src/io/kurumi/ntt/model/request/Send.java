@@ -379,7 +379,7 @@ public class Send extends AbstractSend<Send> {
 
                 }
 								
-								/*
+							
 
                 BotLog.infoWithStack(
 
@@ -392,7 +392,7 @@ public class Send extends AbstractSend<Send> {
 
 								);
 								
-								*/
+							
 
             }
 
