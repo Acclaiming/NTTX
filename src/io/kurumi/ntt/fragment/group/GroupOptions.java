@@ -1237,7 +1237,7 @@ public class GroupOptions extends Fragment {
 								newButtonLine("🛠️  功能选项",POINT_MENU_MAIN,data.id);
 								newButtonLine("📝  成员限制",POINT_MENU_REST,data.id);
 								newButtonLine("🚪  加群验证",POINT_MENU_JOIN,data.id);
-								newButtonLine("📢  欢迎消息",POINT_MENU_SHOW,data.id);
+							//	newButtonLine("📢  欢迎消息",POINT_MENU_SHOW,data.id);
 								
 						}};
 
