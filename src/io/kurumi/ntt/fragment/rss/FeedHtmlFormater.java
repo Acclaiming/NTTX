@@ -13,7 +13,7 @@ public class FeedHtmlFormater {
 		public static String format(int type,SyndFeed feed,SyndEntry entry) {
 
 				if (type == 0) type = 2;
-				
+
 				StringBuilder html = new StringBuilder();
 
 				/*
@@ -206,7 +206,10 @@ public class FeedHtmlFormater {
 
 				}
 
-				html = html.replace("<br>","\n");
+				html = html
+						.replace("<br>","\n")
+						.replace("&ldquo;","“")
+						.replace("&rdquo;","”");
 
 				html = html.replaceAll("<(?!/?(a|b|i|code|pre|em)\b)[^>]+>","");
 
