@@ -213,7 +213,7 @@ public class FeedHtmlFormater {
 				
 				html = URLUtil.decode(html);
 				
-				html = CharsetUtil.convert(html,"ISO-8859-1","UTF-8");
+			//	html = CharsetUtil.convert(html,"ISO-8859-1","UTF-8");
 					
 				html = html.replace("<br>","\n");
 				
