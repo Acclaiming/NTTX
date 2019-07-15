@@ -184,7 +184,7 @@ public class JoinCaptcha extends Fragment {
 										SendResponse resp = msg.reply("新成员你好，为确保群组安全，已将你暂时禁言。请点击下方按钮开始验证。")
 												.buttons(new ButtonMarkup() {{
 
-																newButtonLine("开始验证",POINT_AUTH);
+																newButtonLine("开始验证",POINT_AUTH,user.id);
 
 																newButtonLine().newButton("通过",POINT_ACC,user.id).newButton("滥权",POINT_REJ,user.id);
 

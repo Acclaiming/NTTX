@@ -56,13 +56,15 @@ public class GroupOptions extends Fragment {
 		final String POINT_MENU_REST = "group_menu_rest";
 		final String POINT_MENU_JOIN = "group_menu_join";
 		final String POINT_MENU_CUST = "group_menu_custom";
-
+		final String POINT_MENU_SHOW = "group_menu_show";
+		
 		final String POINT_HELP = "group_help";
 		final String POINT_SET_MAIN = "group_main_set";
 		final String POINT_SET_REST = "group_rest_set";
 		final String POINT_SET_JOIN = "group_join_set";
 		final String POINT_SET_CUST = "group_custom_set";
-
+		final String POINT_SET_SHOW = "group_custom_show";
+		
 		final class EditCustom extends PointData {
 
 				int type;
@@ -1235,7 +1237,8 @@ public class GroupOptions extends Fragment {
 								newButtonLine("🛠️  功能选项",POINT_MENU_MAIN,data.id);
 								newButtonLine("📝  成员限制",POINT_MENU_REST,data.id);
 								newButtonLine("🚪  加群验证",POINT_MENU_JOIN,data.id);
-
+								newButtonLine("📢  欢迎消息",POINT_MENU_SHOW,data.id);
+								
 						}};
 
 
@@ -1503,6 +1506,28 @@ public class GroupOptions extends Fragment {
 
 		}
 
+		ButtonMarkup showMenu(final GroupData data) {
+
+				return new ButtonMarkup() {{
+
+								newButtonLine()
+										.newButton("欢迎信息",POINT_HELP,"enable_cus")
+										.newButton(((Integer)2).equals(data.captcha_mode) ? "✅" : "☑",POINT_SET_CUST,data.id,"enable_cus");
+
+								newButtonLine("设置欢迎信息",POINT_SET_CUST,data.id,"reset_i_question");
+								newButtonLine("设置选择模式选项",POINT_SET_CUST,data.id,"reset_items");
+
+								newButtonLine("设置回答模式问题",POINT_SET_CUST,data.id,"reset_a_question");
+								newButtonLine("设置回答模式答案",POINT_SET_CUST,data.id,"reset_answer");
+
+								newButtonLine("🔙",POINT_MENU_JOIN,data.id);
+
+						}};
+
+		}
+
+
+		
 
 
 }

@@ -182,6 +182,17 @@ public class GroupData {
 		
     //public Boolean anti_esu;
 
-    public List<String> ban_sticker_set;
-
+    public Integer welcome;
+		
+		public String welcomeMessage;
+		public List<List<CustomButton>> buttons;
+		public String welcomeSticker;
+		
+		public static class CustomButton {
+				
+				public String text;
+				public String url;
+				
+		}
+		
 }
