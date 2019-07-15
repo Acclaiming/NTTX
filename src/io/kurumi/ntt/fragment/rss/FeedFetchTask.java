@@ -130,6 +130,8 @@ public class FeedFetchTask extends TimerTask {
 														html = html.replaceAll("<(?!/?(a|b|i|code|pre|em)\b)[^>]+>","");
 														
 														post.append(html);
+														
+														post.append("\n\n");
 
 														post.append("来自 : ").append(Html.a(feed.getTitle(),entry.getLink()));
 
