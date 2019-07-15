@@ -101,7 +101,7 @@ public class FeedFetchTask extends TimerTask {
 
 										BotLog.debug("无新文章");
 
-										return;
+										continue;
 
 								}
 
