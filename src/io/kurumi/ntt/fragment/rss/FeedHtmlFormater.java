@@ -9,6 +9,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HtmlUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.core.net.URLEncoder;
+import cn.hutool.core.util.CharsetUtil;
 
 public class FeedHtmlFormater {
 
@@ -211,6 +212,8 @@ public class FeedHtmlFormater {
 				html = HtmlUtil.unescape(html);
 				
 				html = URLUtil.decode(html);
+				
+				html = CharsetUtil.convert(html,"ISO-8859-1","UTF-8");
 					
 				html = html.replace("<br>","\n");
 				
