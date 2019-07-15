@@ -80,7 +80,14 @@ public class FeedFetchTask extends TimerTask {
 
 								for (SyndEntry entry : feed.getEntries()) {
 
-										BotLog.debug("第一 : " + entry.getTitle());
+										// BotLog.debug("第一 : " + entry.getTitle());
+										
+										if (entry.getLink().equals(info.last)) {
+
+											//	break;
+
+										}
+										
 										
 										StringBuilder post = new StringBuilder();
 
