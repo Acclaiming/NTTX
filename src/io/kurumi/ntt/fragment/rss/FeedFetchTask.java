@@ -125,8 +125,10 @@ public class FeedFetchTask extends TimerTask {
 
 														html = html.replace("<br>","\n");
 
-														html = HtmlUtil.removeHtmlTag(html,"img");
+														html = HtmlUtil.removeHtmlTag(html,"img","p");
 
+													//	html = HtmlUtil.unwrapHtmlTag(html,"b","a","strong","i","code","pre","em");
+														
 														post.append(html);
 
 														post.append("来自 : ").append(Html.a(feed.getTitle(),entry.getLink()));
