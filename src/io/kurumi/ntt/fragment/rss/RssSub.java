@@ -97,13 +97,15 @@ public class RssSub extends Fragment {
 								
 								SyndFeed feed = FeedFetchTask.fetcher.retrieveFeed(new URL(params[1]));
 								
-								if (conf.subscriptions.contains(feed.getLink())) {
+								if (conf.subscriptions.contains(params[1])) {
 										
 										msg.send("已经订阅过了 " + Html.a(feed.getTitle(),feed.getLink())).html().exec();
 										
+										return;
+										
 								}
 								
-								conf.subscriptions.add(feed.getLink());
+								conf.subscriptions.add(params[1]);
 								
 								channel.setById(channelId,conf);
 								

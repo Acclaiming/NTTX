@@ -61,7 +61,7 @@ public class FeedFetchTask extends TimerTask {
 
 										info = new RssSub.RssInfo();
 
-										info.id = feed.getLink();
+										info.id = url;
 										info.title = feed.getTitle();
 										info.last = feed.getEntries().get(0).getLink();
 
