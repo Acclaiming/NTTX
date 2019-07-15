@@ -24,6 +24,7 @@ import java.util.Collections;
 import cn.hutool.http.HtmlUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ReUtil;
 
 public class FeedFetchTask extends TimerTask {
 
@@ -54,7 +55,7 @@ public class FeedFetchTask extends TimerTask {
 
 				}
 
-				
+
 				next:for (String url : sites) {
 
 						try {
@@ -92,7 +93,7 @@ public class FeedFetchTask extends TimerTask {
 												break;
 
 										}
-										
+
 										posts.add(entry);
 
 								}
@@ -117,30 +118,52 @@ public class FeedFetchTask extends TimerTask {
 
 												StringBuilder post = new StringBuilder();
 
-												if (channel.format == 1) {
+												if (channel.format != 0) {
 
 														post.append(Html.b(entry.getTitle()));
 
 														post.append("\n\n");
 
-														String html = entry.getDescription().getValue();
+														String html;
+
+														if (entry.getContents() != null && !entry.getContents().isEmpty()) {
+
+																html = entry.getContents().get(0).getValue();
+
+														} else {
+
+																html = entry.getDescription().getValue();
+
+														}
 
 														html = html.replace("<br>","\n");
 
 														html = html.replaceAll("<(?!/?(a|b|i|code|pre|em)\b)[^>]+>","");
-														
+
+														if (channel.format == 2 && html.length() > 140) {
+
+																String after = html.substring(139,html.length());
+																
+															//	html = html.substring(140);
+																
+								
+
+														}
+
 														post.append(html);
-														
+
+
+
 														post.append("\n\n");
 
 														post.append("来自 : ");
-														
+
 														if (entry.getAuthor() != null) {
-																
+
 																post.append(Html.b(entry.getAuthor())).append(" - ");
-																
+
 														}
-														
+
 														post.append(Html.a(feed.getTitle(),entry.getLink()));
 
 												} else {

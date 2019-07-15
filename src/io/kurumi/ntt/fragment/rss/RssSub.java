@@ -41,7 +41,7 @@ public class RssSub extends Fragment {
 				public Long id;
 
 				public int format = 0;
-				
+
 				public List<String> subscriptions;
 
 		}
@@ -63,8 +63,28 @@ public class RssSub extends Fragment {
 				long channelId = NumberUtil.parseLong(params[0]);
 
 				if (!GroupAdmin.fastAdminCheck(channelId,user.id)) {
-			
-						msg.send("错误 : 机器人不在该频道 或 你不是该频道的创建者或管理员。").exec();
+
+						GetChatMemberResponse resp = execute(new GetChatMember(channelId,user.id.intValue()));
+
+						if (resp == null) {
+
+								msg.send("Telegram 服务器连接错误").exec();
+
+								return;
+
+						} else if (!resp.isOk()) {
+
+								msg.send("错误 : 机器人不在该频道","( " + resp.description() + " )").exec();
+
+								return;
+								
+						} else if (!(resp.chatMember().status() == ChatMember.Status.creator || resp.chatMember().status() == ChatMember.Status.administrator)) {
+
+								msg.send("错误 : 你不是频道管理员").exec();
+
+								return;
+								
+						}
 
 						return;
 
@@ -153,13 +173,13 @@ public class RssSub extends Fragment {
 								RssInfo rss = info.getById(url);
 
 								list.append("\n\n").append(Html.b(rss.title)).append(" : ").append(Html.code(url));
-								
+
 						}
 
 						msg.send(list.toString()).html().exec();
 
 				} else if ("rss_unsub".equals(function)) {
-				
+
 						if (params.length < 2) {
 
 								msg.invalidParams("channelId","rssUrl");
@@ -167,21 +187,21 @@ public class RssSub extends Fragment {
 								return;
 
 						}
-						
+
 						if (conf.subscriptions.remove(params[1])) {
-								
+
 								msg.send("取消订阅成功").exec();
-								
+
 								channel.setById(conf.id,conf);
-								
+
 						} else {
-						
+
 								msg.send("没有订阅这个链接").exec();
-								
+
 						}
-				
+
 				} else if ("rss_unsub_all".equals(function)) {
-						
+
 						if (conf.subscriptions.isEmpty()) {
 
 								msg.send("没有订阅任何源 :)").exec();
@@ -189,41 +209,41 @@ public class RssSub extends Fragment {
 						} else {
 
 								conf.subscriptions.clear();
-								
+
 								channel.setById(conf.id,conf);
-								
+
 								msg.send("已经全部取消 :)").exec();
 
 						}
 
 				} else if ("rss_set_format".equals(function)) {
-						
+
 						if (params.length < 2) {
-								
+
 								msg.invalidParams("channelId","[link|full]").exec();
-								
+
 								return;
-								
+
 						}
-						
-					 if ("full".equals(params[1])) {
-								
+
+						if ("full".equals(params[1])) {
+
 								conf.format = 1;
-								
-							 msg.send("格式已设定为 全文 .").exec();
-								
+
+								msg.send("格式已设定为 全文 .").exec();
+
 						} else {
-								
+
 								msg.send("格式已设定为 默认 .").exec();
-								
+
 								conf.format = 0;
-								
+
 						}
-						
+
 						channel.setById(conf.id,conf);
-						
-						
-						
+
+
+
 				}
 
 		}
