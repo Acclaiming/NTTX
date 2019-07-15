@@ -87,6 +87,7 @@ public class RssSub extends Fragment {
 
 						if (conf == null) {
 								
+								conf = new ChannelRss();
 								conf.id = channelId;
 								conf.subscriptions = new LinkedList<>();
 								
