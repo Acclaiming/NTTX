@@ -20,6 +20,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import io.kurumi.ntt.utils.BotLog;
 import com.rometools.fetcher.impl.HttpClientFeedFetcher;
+import java.util.Collections;
 
 public class FeedFetchTask extends TimerTask {
 
@@ -84,7 +85,7 @@ public class FeedFetchTask extends TimerTask {
 										
 										if (entry.getLink().equals(info.last)) {
 
-											//	break;
+											break;
 
 										}
 										
@@ -100,6 +101,8 @@ public class FeedFetchTask extends TimerTask {
 										posts.add(post.toString());
 
 								}
+								
+								Collections.reverse(posts);
 
 								if (posts.isEmpty()) {
 										
@@ -108,6 +111,11 @@ public class FeedFetchTask extends TimerTask {
 										return;
 										
 								}
+								
+								info.last = feed.getEntries().get(0).getLink();
+
+								RssSub.info.setById(info.id,info);
+								
 
 								for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions",info.id)) {
 										
