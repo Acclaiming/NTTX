@@ -209,7 +209,7 @@ public class FeedHtmlFormater {
 
 				}
 		
-				html = HtmlUtil.unescape(html);
+				html = Html.unescape(html);
 				
 				html = URLUtil.decode(html);
 				
