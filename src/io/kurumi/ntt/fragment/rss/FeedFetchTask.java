@@ -23,6 +23,7 @@ import com.rometools.fetcher.impl.HttpClientFeedFetcher;
 import java.util.Collections;
 import cn.hutool.http.HtmlUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.ArrayUtil;
 
 public class FeedFetchTask extends TimerTask {
 
@@ -45,14 +46,19 @@ public class FeedFetchTask extends TimerTask {
 		@Override
 		public void run() {
 
-				Set<String> sites = new HashSet<>();
+				LinkedList<String> sites = new LinkedList<>();
 
 				for (RssSub.ChannelRss info : RssSub.channel.getAll()) {
 
-						sites.addAll(info.subscriptions);
+						for (String url : info.subscriptions) {
+								
+								if (!sites.contains(url)) sites.add(url);
+								
+						}
 
 				}
 
+				
 				for (String url : sites) {
 
 						try {
