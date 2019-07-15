@@ -59,7 +59,7 @@ public class FeedFetchTask extends TimerTask {
 
 						try {
 
-								BotLog.debug("开始拉取 : " + url);
+								//BotLog.debug("开始拉取 : " + url);
 
 								SyndFeed feed = fetcher.retrieveFeed(new URL(url));
 
@@ -92,6 +92,8 @@ public class FeedFetchTask extends TimerTask {
 												continue next;
 
 										}
+										
+										posts.add(entry);
 
 								}
 
