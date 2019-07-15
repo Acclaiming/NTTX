@@ -252,26 +252,24 @@ public class RssSub extends Fragment {
 
 						if (params.length < 2) {
 
-								msg.invalidParams("channelId","[link|full]").exec();
+								msg.invalidParams("channelId","1 - 8").exec();
 
 								return;
 
 						}
+						
+						int target;
 
-						if ("full".equals(params[1])) {
-
-								conf.format = 1;
-
-								msg.send("格式已设定为 全文 .").exec();
-
-						} else {
-
-								msg.send("格式已设定为 默认 .").exec();
-
-								conf.format = 0;
-
+						if (!NumberUtil.isNumber(params[1]) || (target = NumberUtil.parseInt(params[1])) < 1 || target > 8) {
+								
+								msg.send("请选择有效的格式 : 1 -8").exec();
+								
+								return;
+								
 						}
-
+						
+						conf.format = target;
+						
 						channel.setById(conf.id,conf);
 
 

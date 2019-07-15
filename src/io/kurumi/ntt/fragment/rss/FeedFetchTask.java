@@ -116,70 +116,8 @@ public class FeedFetchTask extends TimerTask {
 
 										for (SyndEntry entry : posts) {
 
-												StringBuilder post = new StringBuilder();
-
-												if (channel.format != 0) {
-
-														post.append(Html.b(entry.getTitle()));
-
-														post.append("\n\n");
-
-														String html;
-
-														if (entry.getContents() != null && !entry.getContents().isEmpty()) {
-
-																html = entry.getContents().get(0).getValue();
-
-														} else {
-
-																html = entry.getDescription().getValue();
-
-														}
-
-														html = html.replace("<br>","\n");
-
-														html = html.replaceAll("<(?!/?(a|b|i|code|pre|em)\b)[^>]+>","");
-
-														if (channel.format == 2 && html.length() > 140) {
-
-																String after = html.substring(139,html.length());
-																
-															//	html = html.substring(140);
-																
-								
-
-														}
-
-														post.append(html);
-
-
-
-														post.append("\n\n");
-
-														post.append("来自 : ");
-
-														if (!StrUtil.isBlank(entry.getAuthor())) {
-
-																post.append(Html.b(entry.getAuthor())).append(" - ");
-
-														}
-
-														post.append(Html.a(feed.getTitle(),entry.getLink()));
-
-												} else {
-
-														post.append(Html.b(feed.getTitle()));
-
-														post.append("\n\n");
-
-														post.append(Html.a(entry.getTitle(),entry.getLink()));
-
-
-												}
-
-												new Send(channel.id,post.toString()).html().exec();
-
-
+												new Send(channel.id,FeedHtmlFormater.format(channel.format,feed,entry)).html().exec();
+												
 										}
 
 								}
