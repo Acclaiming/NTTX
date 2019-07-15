@@ -214,6 +214,12 @@ public class FeedHtmlFormater {
 
 				html = removeADs(html).trim();
 
+				if (html.startsWith(entry.getTitle())) {
+						
+						html = html.substring(entry.getTitle().length()).trim();
+						
+				}
+				
 				if (desciption) {
 
 						//	String after = html.substring(139,html.length());
