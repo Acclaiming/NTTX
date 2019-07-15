@@ -20,7 +20,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import io.kurumi.ntt.utils.BotLog;
 
-public class FeedFetchTask extends TimerTask implements FetcherListener {
+public class FeedFetchTask extends TimerTask {
 
 		public static Timer rssTimer = new Timer();
 		
@@ -31,74 +31,12 @@ public class FeedFetchTask extends TimerTask implements FetcherListener {
 				rssTimer.scheduleAtFixedRate(INSTANCE,new Date(),2 * 60 * 1000);
 				
 		}
-		
-		@Override
-		public void fetcherEvent(FetcherEvent event) {
-
-				SyndFeed feed = event.getFeed();
-
-				BotLog.debug(event.getEventType() + " : " + event.getFeed());
-				
-				if (feed == null) return;
-				
-				RssSub.RssInfo info = RssSub.info.getById(feed.getLink());
-
-				if (info == null) {
-
-						info = new RssSub.RssInfo();
-
-						info.id = feed.getLink();
-						info.title = feed.getTitle();
-						info.last = feed.getEntries().get(0).getLink();
-
-						RssSub.info.setById(info.id,info);
-
-						return;
-
-				}
-
-				LinkedList<String> posts = new LinkedList<>();
-
-				for (SyndEntry entry : feed.getEntries()) {
-
-						if (entry.getLink().equals(info.last)) {
-
-								break;
-
-						}
-
-						StringBuilder post = new StringBuilder();
-
-						post.append(Html.b(feed.getTitle()));
-
-						post.append("\n\n");
-
-						post.append(Html.a(entry.getTitle(),entry.getLink()));
-
-						posts.add(post.toString());
-
-				}
-
-				if (posts.isEmpty()) return;
-
-				for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions",info.id)) {
-
-						for (String post : posts) {
-
-								new Send(channel.id,post).html().exec();
-
-						}
-
-				}
-
-
-		}
 
 		public static String USER_AGENT = "NTT RSS Fetcher By Kazama Wataru (https://t.me/NTT_X)";
 
 		public static FeedFetcher fetcher = new HttpURLFeedFetcher(MongoFeedCache.INSTANCE);
 
-		static { fetcher.setUserAgent(USER_AGENT);fetcher.addFetcherEventListener(INSTANCE); }
+		static { fetcher.setUserAgent(USER_AGENT); }
 
 		@Override
 		public void run() {
@@ -115,8 +53,59 @@ public class FeedFetchTask extends TimerTask implements FetcherListener {
 
 						try {
 
-								fetcher.retrieveFeed(new URL(url));
+								SyndFeed feed = fetcher.retrieveFeed(new URL(url));
 
+								RssSub.RssInfo info = RssSub.info.getById(feed.getLink());
+
+								if (info == null) {
+
+										info = new RssSub.RssInfo();
+
+										info.id = feed.getLink();
+										info.title = feed.getTitle();
+										info.last = feed.getEntries().get(0).getLink();
+
+										RssSub.info.setById(info.id,info);
+
+										return;
+
+								}
+
+								LinkedList<String> posts = new LinkedList<>();
+
+								for (SyndEntry entry : feed.getEntries()) {
+
+										if (entry.getLink().equals(info.last)) {
+
+												break;
+
+										}
+
+										StringBuilder post = new StringBuilder();
+
+										post.append(Html.b(feed.getTitle()));
+
+										post.append("\n\n");
+
+										post.append(Html.a(entry.getTitle(),entry.getLink()));
+
+										posts.add(post.toString());
+
+								}
+
+								if (posts.isEmpty()) return;
+
+								for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions",info.id)) {
+
+										for (String post : posts) {
+
+												new Send(channel.id,post).html().exec();
+
+										}
+
+								}
+								
+								
 						} catch (FetcherException e) {
 
 						} catch (FeedException e) {
