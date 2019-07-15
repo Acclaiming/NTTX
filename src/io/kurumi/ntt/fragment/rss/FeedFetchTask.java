@@ -57,6 +57,8 @@ public class FeedFetchTask extends TimerTask {
 
 						try {
 
+								BotLog.debug("开始拉取 : " + url);
+
 								SyndFeed feed = fetcher.retrieveFeed(new URL(url));
 
 								RssSub.RssInfo info = RssSub.info.getById(url);
@@ -91,7 +93,13 @@ public class FeedFetchTask extends TimerTask {
 
 								}
 
-								if (posts.isEmpty())  return;
+								if (posts.isEmpty()) {
+
+										BotLog.debug("无新文章");
+
+										return;
+
+								}
 
 								Collections.reverse(posts);
 
@@ -116,9 +124,9 @@ public class FeedFetchTask extends TimerTask {
 														html = html.replace("<br>","\n");
 
 														html = HtmlUtil.removeHtmlTag(html,"img");
-														
+
 														post.append(html);
-														
+
 														post.append("来自 : ").append(Html.a(feed.getTitle(),entry.getLink()));
 
 												} else {
@@ -135,7 +143,7 @@ public class FeedFetchTask extends TimerTask {
 												}
 
 												new Send(channel.id,post.toString()).html().exec();
-												
+
 
 										}
 
