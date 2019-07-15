@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import io.kurumi.ntt.utils.BotLog;
+import com.rometools.fetcher.impl.HttpClientFeedFetcher;
 
 public class FeedFetchTask extends TimerTask {
 
@@ -34,7 +35,7 @@ public class FeedFetchTask extends TimerTask {
 
 		public static String USER_AGENT = "NTT RSS Fetcher By Kazama Wataru (https://t.me/NTT_X)";
 
-		public static FeedFetcher fetcher = new HttpURLFeedFetcher(MongoFeedCache.INSTANCE);
+		public static FeedFetcher fetcher = new HttpClientFeedFetcher(MongoFeedCache.INSTANCE);
 
 		static { fetcher.setUserAgent(USER_AGENT); }
 
@@ -55,8 +56,10 @@ public class FeedFetchTask extends TimerTask {
 
 								SyndFeed feed = fetcher.retrieveFeed(new URL(url));
 
-								RssSub.RssInfo info = RssSub.info.getById(feed.getLink());
+								RssSub.RssInfo info = RssSub.info.getById(url);
 
+								BotLog.debug("拉取 " + feed.getTitle());
+								
 								if (info == null) {
 
 										info = new RssSub.RssInfo();
@@ -67,6 +70,8 @@ public class FeedFetchTask extends TimerTask {
 
 										RssSub.info.setById(info.id,info);
 
+										BotLog.debug("已保存");
+										
 										return;
 
 								}
@@ -93,12 +98,20 @@ public class FeedFetchTask extends TimerTask {
 
 								}
 
-								if (posts.isEmpty()) return;
+								if (posts.isEmpty()) {
+										
+										BotLog.debug("没有新文章");
+										
+										return;
+										
+								}
 
 								for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions",info.id)) {
-
+										
 										for (String post : posts) {
 
+												BotLog.debug("发送 " + post);
+												
 												new Send(channel.id,post).html().exec();
 
 										}
@@ -106,14 +119,13 @@ public class FeedFetchTask extends TimerTask {
 								}
 								
 								
-						} catch (FetcherException e) {
+						} catch (Exception e) {
 
-						} catch (FeedException e) {
-
-						} catch (IOException e) {
+								BotLog.error("拉取错误",e);
+							
 								
-						} catch (IllegalArgumentException e) {}
-
+						}
+						
 				}
 
 
