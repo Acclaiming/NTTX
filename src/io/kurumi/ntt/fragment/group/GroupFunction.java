@@ -125,6 +125,19 @@ public class GroupFunction extends Fragment {
 										doRest(user,msg,data,"发送图片");
 
 								}
+								
+
+						} else if (msg.message().animation() != null && data.no_animation != null) {
+
+								msg.delete();
+
+								if (data.no_animation != 0)  {
+
+										doRest(user,msg,data,"发送动图");
+
+								}
+
+								
 
 						} else if (msg.message().audio() != null && data.no_audio != null) {
 
