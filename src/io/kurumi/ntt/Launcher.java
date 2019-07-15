@@ -67,6 +67,8 @@ import io.kurumi.ntt.fragment.debug.DebugUF;
 import io.kurumi.ntt.fragment.group.GroupOptions;
 import io.kurumi.ntt.fragment.group.GroupAdmin;
 import io.kurumi.ntt.fragment.group.JoinCaptcha;
+import io.kurumi.ntt.fragment.rss.FeedFetchTask;
+import io.kurumi.ntt.fragment.rss.RssSub;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -270,6 +272,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 				UserBot.startAll();
 
 				Backup.start();
+				
+				FeedFetchTask.start();
 
 				userTrackTask.start();
 
@@ -348,6 +352,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 				addFragment(new MakeButtons());
 				addFragment(new ShowSticker());
+				
+				// RSS
+				
+				addFragment(new RssSub());
 
     }
 

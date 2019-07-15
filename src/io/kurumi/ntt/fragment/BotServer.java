@@ -30,166 +30,166 @@ import static io.netty.handler.codec.http.HttpVersion.*;
 
 public class BotServer {
 
-	public static BotServer INSTANCE;
+		public static BotServer INSTANCE;
 
-	public static HashMap<String, BotFragment> fragments = new HashMap<>();
+		public static HashMap<String, BotFragment> fragments = new HashMap<>();
 
-	public int port;
-	public File socketFile;
+		public int port;
+		public File socketFile;
     public  String domain;
 
-	private static Channel server;
+		private static Channel server;
 
-	public BotServer(int port,String domain) {
-		this.port = port;
-		this.domain = domain;
-	}
-
-	public BotServer(File socketFile,String domain) {
-		this.socketFile = socketFile;
-		this.domain = domain;
-	}
-
-	public void start() throws Exception {
-
-		stop();
-
-		final EventLoopGroup bossGroup;
-		final EventLoopGroup workerGroup;
-
-		if (socketFile != null) {
-
-			bossGroup = new EpollEventLoopGroup(1); 
-			workerGroup = new EpollEventLoopGroup();
-
-		} else {
-
-			bossGroup = new NioEventLoopGroup(1); 
-			workerGroup = new NioEventLoopGroup();
-
+		public BotServer(int port,String domain) {
+				this.port = port;
+				this.domain = domain;
 		}
 
-		ServerBootstrap boot = new ServerBootstrap().group(bossGroup,workerGroup);
-
-		if (socketFile != null) {
-
-			boot.channel(EpollServerDomainSocketChannel.class);
-
-		} else {
-
-			boot.channel(NioServerSocketChannel.class);
-
+		public BotServer(File socketFile,String domain) {
+				this.socketFile = socketFile;
+				this.domain = domain;
 		}
 
-		boot.option(ChannelOption.SO_BACKLOG,64);
+		public void start() throws Exception {
 
-		boot.childHandler(new ChannelInitializer<Channel>() {
+				stop();
 
-				@Override
-				protected void initChannel(Channel ch) throws Exception {
+				final EventLoopGroup bossGroup;
+				final EventLoopGroup workerGroup;
 
-					ChannelPipeline pipeline = ch.pipeline();
+				if (socketFile != null) {
 
-					pipeline.addLast(new HttpServerCodec());
-					pipeline.addLast(new HttpObjectAggregator(65536));
-					pipeline.addLast(new ChunkedWriteHandler());
-					pipeline.addLast(new BotServerHandler());
+						bossGroup = new EpollEventLoopGroup(1); 
+						workerGroup = new EpollEventLoopGroup();
+
+				} else {
+
+						bossGroup = new NioEventLoopGroup(1); 
+						workerGroup = new NioEventLoopGroup();
 
 				}
 
+				ServerBootstrap boot = new ServerBootstrap().group(bossGroup,workerGroup);
 
-			});
+				if (socketFile != null) {
 
+						boot.channel(EpollServerDomainSocketChannel.class);
 
-		if (socketFile != null) {
+				} else {
 
-			server = boot.bind(new DomainSocketAddress(socketFile)).sync().channel();
-
-		} else {
-
-			server = boot.bind(new InetSocketAddress("0.0.0.0",11222)).sync().channel();
-
-		}
-
-		new Thread() {
-
-			@Override
-			public void run() {
-
-				try {
-
-					server.closeFuture().sync();
-
-				} catch (InterruptedException e) {
-				} finally {
-
-					bossGroup.shutdownGracefully();
-					workerGroup.shutdownGracefully();
+						boot.channel(NioServerSocketChannel.class);
 
 				}
-			}
+
+				boot.option(ChannelOption.SO_BACKLOG,64);
+
+				boot.childHandler(new ChannelInitializer<Channel>() {
+
+								@Override
+								protected void initChannel(Channel ch) throws Exception {
+
+										ChannelPipeline pipeline = ch.pipeline();
+
+										pipeline.addLast(new HttpServerCodec());
+										pipeline.addLast(new HttpObjectAggregator(65536));
+										pipeline.addLast(new ChunkedWriteHandler());
+										pipeline.addLast(new BotServerHandler());
+
+								}
 
 
-		}.start();
+						});
 
-	}
 
-	public static void stop() {
+				if (socketFile != null) {
 
-		if (server != null) {
+						server = boot.bind(new DomainSocketAddress(socketFile)).sync().channel();
 
-			server.close();
+				} else {
 
-			server = null;
+						server = boot.bind(new InetSocketAddress("0.0.0.0",11222)).sync().channel();
 
-		}
+				}
 
-	}
+				new Thread() {
 
-	public static class ProcessLock extends ReentrantLock {
+						@Override
+						public void run() {
 
-		private Condition condition = newCondition();
-		private BaseRequest request;
-		public AtomicBoolean used = new AtomicBoolean(false);
+								try {
 
-		public BaseRequest waitFor() throws InterruptedException {
+										server.closeFuture().sync();
 
-			lockInterruptibly();
+								} catch (InterruptedException e) {
+								} finally {
 
-			try {
+										bossGroup.shutdownGracefully();
+										workerGroup.shutdownGracefully();
 
-				this.condition.await(1000,TimeUnit.MILLISECONDS);
+								}
+						}
 
-				if (request != null) System.out.println(request.toWebhookResponse());
 
-				return request;
-
-			} finally {
-
-				unlock();
-
-			}
-
-		}
-
-		public void unlock(BaseRequest request) {
-
-			lock();
-
-			this.request = request;
-
-			try {
-
-				this.condition.signalAll();
-
-			} finally {
-
-				unlock();
-
-			}
+				}.start();
 
 		}
 
-	}
+		public static void stop() {
+
+				if (server != null) {
+
+						server.close();
+
+						server = null;
+
+				}
+
+		}
+
+		public static class ProcessLock extends ReentrantLock {
+
+				private Condition condition = newCondition();
+				private BaseRequest request;
+				public AtomicBoolean used = new AtomicBoolean(false);
+
+				public BaseRequest waitFor() throws InterruptedException {
+
+						lockInterruptibly();
+
+						try {
+
+								this.condition.await(1000,TimeUnit.MILLISECONDS);
+
+								if (request != null) System.out.println(request.toWebhookResponse());
+
+								return request;
+
+						} finally {
+
+								unlock();
+
+						}
+
+				}
+
+				public void unlock(BaseRequest request) {
+
+						lock();
+
+						this.request = request;
+
+						try {
+
+								this.condition.signalAll();
+
+						} finally {
+
+								unlock();
+
+						}
+
+				}
+
+		}
 
 }
