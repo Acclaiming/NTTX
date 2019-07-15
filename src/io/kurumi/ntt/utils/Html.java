@@ -8,19 +8,25 @@ import cn.hutool.json.JSONObject;
 
 public class Html {
 
-	public static String b(Object text) {
+		public static String escape(String text) {
+				
+				return HtmlUtil.escape(text);
+				
+		}
+		
+		public static String b(Object text) {
 
         return "<b>" + HtmlUtil.escape(text.toString()) + "</b>";
 
     }
-		
+
 		public static String i(Object text) {
 
         return "<i>" + HtmlUtil.escape(text.toString()) + "</i>";
 
     }
-		
-	
+
+
     public static String a(String text,String href) {
 
         return "<a href=\"" + href + "\">" + HtmlUtil.escape(text) + "</a>";
@@ -32,14 +38,14 @@ public class Html {
         if (text.isEmpty()) {
 
             text = " ";
-			
+
         }
 
         return a(text,"tg://user?id=" + id);
 
     }
 
-	public static String twitterUser(String text,String id) {
+		public static String twitterUser(String text,String id) {
 
         if (text.isEmpty()) {
 
@@ -57,19 +63,19 @@ public class Html {
 
     }
 
-	public static String startPayload(Fragment fragment,String text,Object... payload) {
+		public static String startPayload(Fragment fragment,String text,Object... payload) {
 
         return a(text,"https://t.me/" + fragment.origin.me.username() + "?start=" + ArrayUtil.join(payload,"_"));
 
     }
 
-	public static String json(Object code) {
+		public static String json(Object code) {
 
         return code(new JSONObject(code).toStringPretty());
 
     }
-	
-	
+
+
     public static String code(Object code) {
 
         return "<code>" + HtmlUtil.escape(code.toString()) + "</code>";

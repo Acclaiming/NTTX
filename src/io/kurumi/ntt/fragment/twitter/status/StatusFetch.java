@@ -162,7 +162,7 @@ public class StatusFetch extends Fragment {
 
         boolean all = params.length > 1 && params[1].equals("--all");
 
-				new Send(Env.GROUP,"对 " + archive.url() + " 的推文拉取由 " + user.userName() + " 执行").exec();
+				new Send(Env.GROUP,"对 " + archive.url() + " 的推文拉取由 " + user.userName() + " 执行").html().exec();
 				
         try {
 

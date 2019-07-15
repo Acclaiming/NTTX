@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HtmlUtil;
+import cn.hutool.core.util.URLUtil;
+import cn.hutool.core.net.URLEncoder;
 
 public class FeedHtmlFormater {
 
@@ -207,6 +209,8 @@ public class FeedHtmlFormater {
 				}
 		
 				html = HtmlUtil.unescape(html);
+				
+				html = URLUtil.decode(html);
 					
 				html = html.replace("<br>","\n");
 				
