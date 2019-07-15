@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import io.kurumi.ntt.utils.BotLog;
 
 public class FeedFetchTask extends TimerTask implements FetcherListener {
 
@@ -36,6 +37,8 @@ public class FeedFetchTask extends TimerTask implements FetcherListener {
 
 				SyndFeed feed = event.getFeed();
 
+				BotLog.debug(event.getEventType() + " : " + event.getFeed());
+				
 				if (feed == null) return;
 				
 				RssSub.RssInfo info = RssSub.info.getById(feed.getLink());
