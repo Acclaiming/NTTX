@@ -150,13 +150,13 @@ public class RssSub extends Fragment {
 
 						}
 
-						StringBuilder list = new StringBuilder("订阅列表");
+						StringBuilder list = new StringBuilder("订阅列表 :");
 
 						for (String url : conf.subscriptions) {
 
 								RssInfo rss = info.getById(url);
 
-								list.append("\n").append(Html.b(rss.title)).append(" : ").append(Html.code(url));
+								list.append("\n\n").append(Html.b(rss.title)).append(" : ").append(Html.code(url));
 								
 						}
 
@@ -184,6 +184,20 @@ public class RssSub extends Fragment {
 								
 						}
 				
+				}else if ("rss_unsub_all".equals(function)) {
+						
+						if (conf.subscriptions.isEmpty()) {
+
+								msg.send("没有订阅任何源 :)").exec();
+
+						} else {
+
+								channel.deleteById(conf.id);
+								
+								msg.send("已经全部取消 :)").exec();
+
+						}
+
 				}
 
 		}

@@ -30,7 +30,7 @@ public class FeedFetchTask extends TimerTask {
 		
 		public static void start() {
 				
-				rssTimer.scheduleAtFixedRate(INSTANCE,new Date(),1 * 60 * 1000);
+				rssTimer.scheduleAtFixedRate(INSTANCE,new Date(),5 * 60 * 1000);
 				
 		}
 
