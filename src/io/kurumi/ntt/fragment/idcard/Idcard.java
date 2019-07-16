@@ -25,6 +25,7 @@ import cn.hutool.core.util.StrUtil;
 import java.util.List;
 import java.util.ArrayList;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.ArrayUtil;
 
 public class Idcard extends Fragment {
 
@@ -38,7 +39,7 @@ public class Idcard extends Fragment {
 				registerFunction("ic_check","ic_18","ic_gen","ic_rand");
 
 				registerPoint(POINT_IC_GEN);
-				
+
 		}
 
     final static char[] PARITYBIT = {'1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'};
@@ -128,13 +129,13 @@ public class Idcard extends Fragment {
 						Set<String> districtList = new HashSet<>();
 
 						AreaCode code = null;
-						
+
 						for (AreaCode areaCode : codeMap.values()) {
 
 								if (msg.text().contains(areaCode.getProvince()) || areaCode.getProvince().contains(msg.text())) {
 
 										code = areaCode;
-										
+
 										if (!StrUtil.isBlank(areaCode.getCity())) {
 
 												gen.code.add(areaCode);
@@ -148,29 +149,21 @@ public class Idcard extends Fragment {
 						}
 
 						if (districtList.isEmpty()) {
-							
-								String ic17 = code.getAreaCode() + RandomUtil.randomInt(1950,Calendar.getInstance().get(Calendar.YEAR) - 8);
 
-								int month = RandomUtil.randomInt(1,13);
+								String[] ics = new String[10];
 
-								if (month < 10) ic17 = ic17 + "0";
+								for(int index = 0;index < ics.length;index ++) {
 
-								ic17 = ic17 + month;
+										ics[index] = Html.code(idCardGen(code));
 
-								int day = RandomUtil.randomInt(1,29);
+								}
 
-								if (day < 10) ic17 = ic17 + "0";
-
-								ic17 = ic17 + day + String.valueOf((int) (Math.random() * 900 + 100));
-
-								clearPrivatePoint(user);
-
-								msg.send("生成完成 : " + Html.code(ic17 + getParityBit(ic17))).html().exec();
+								msg.send("生成完成 : " + Html.code(code.getFull()) + "\n",ArrayUtil.join(ics,"\n")).html().exec();
 								
 								return;
-								
+
 						}
-						
+
 						Keyboard buttons = new Keyboard();
 
 						KeyboradButtonLine line = buttons.newButtonLine();
@@ -209,21 +202,21 @@ public class Idcard extends Fragment {
 								if (msg.text().contains(areaCode.getCity()) || areaCode.getCity().contains(msg.text())) {
 
 										if (!StrUtil.isBlank(areaCode.getDetail())) {
-												
+
 												String detail = areaCode.getDetail();
-												
+
 												if (detail.startsWith(areaCode.getProvince())) {
-														
+
 														detail = detail.substring(areaCode.getProvince().length());
-														
+
 												}
-												
+
 												if (detail.startsWith(areaCode.getCity())) {
-														
+
 														detail = detail.substring(areaCode.getCity().length());
-														
+
 												}
-												
+
 												code.put(detail,areaCode);
 
 												districtList.add(detail);
@@ -284,48 +277,62 @@ public class Idcard extends Fragment {
 						}
 
 						AreaCode code = gen.detailMap.get(msg.text());
-						
-						String ic17 = code.getAreaCode() + RandomUtil.randomInt(1950,Calendar.getInstance().get(Calendar.YEAR) - 0);
-						
-						int month = RandomUtil.randomInt(1,13);
 
-						if (month < 10) ic17 = ic17 + "0";
-						
-						ic17 = ic17 + month;
-						
-						int day = RandomUtil.randomInt(1,29);
-						
-						if (day < 10) ic17 = ic17 + "0";
-						
-						ic17 = ic17 + day + String.valueOf((int) (Math.random() * 900 + 100));
-						
 						clearPrivatePoint(user);
+
+						String[] ics = new String[10];
 						
-						msg.send("生成完成 : " + Html.code(ic17 + getParityBit(ic17))).html().exec();
+					 for(int index = 0;index < ics.length;index ++) {
+							 
+							 ics[index] = Html.code(idCardGen(code));
+							 
+					}
 						
+						msg.send("生成完成 : " + Html.code(code.getFull()) + "\n",ArrayUtil.join(ics,"\n")).html().exec();
+
 				}
-				
-				
+
+
 
 		}
-		
+
+		private String idCardGen(AreaCode code) {
+
+				String ic17 = code.getAreaCode() + RandomUtil.randomInt(1950,Calendar.getInstance().get(Calendar.YEAR) - 0);
+
+				int month = RandomUtil.randomInt(1,13);
+
+				if (month < 10) ic17 = ic17 + "0";
+
+				ic17 = ic17 + month;
+
+				int day = RandomUtil.randomInt(1,29);
+
+				if (day < 10) ic17 = ic17 + "0";
+
+				ic17 = ic17 + day + String.valueOf((int) (Math.random() * 900 + 100));
+
+				return ic17 + getParityBit(ic17);
+
+		}
+
 		private char getParityBit(String cardCode17) {
-				
+
         final char[] cs = cardCode17.toUpperCase().toCharArray();
-      
+
 				int power = 0;
-				
+
         for (int i = 0; i < cs.length; i++) {
-						
+
             power += (cs[i] - '0') * POWER_LIST[i];
-						
+
         }
-				
+
         char keyChar = PARITYBIT[power % 11];
-				
+
         return keyChar;
     }
-		
+
 
 		@Override
 		public void onFunction(UserData user,Msg msg,String function,String[] params) {
@@ -359,7 +366,7 @@ public class Idcard extends Fragment {
 						ICGen data = new ICGen();
 
 						setPrivatePoint(user,POINT_IC_GEN,data);
-						
+
 						msg.send("请选择省/直辖市").keyboard(buttons).exec(data);
 
 				} else if ("ic_18".equals(function)) {

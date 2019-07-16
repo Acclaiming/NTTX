@@ -72,4 +72,20 @@ public class AreaCode {
     public void setDetail(String detail) {
         this.detail = detail;
     }
+		
+		public String getFull() {
+				
+				String full = getDetail();
+				
+				if (full.startsWith(getProvince()) && !full.contains(getCity())) {
+						
+						full = getProvince() + getCity() + full.substring(getProvince().length());
+						
+				}
+				
+				return full;
+				
+		}
+		
+		
 }
