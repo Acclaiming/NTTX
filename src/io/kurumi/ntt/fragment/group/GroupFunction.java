@@ -251,13 +251,18 @@ public class GroupFunction extends Fragment {
 
 						}
 
+						if (data.last_warn_msg != null) {
+
+								execute(new DeleteMessage(msg.chatId(),data.last_warn_msg));
+
+								data.last_warn_msg = null;
+								
+						}
+						
+						
 						if (count != data.max_count) {
 
-								if (data.last_warn_msg != null) {
-
-										execute(new DeleteMessage(msg.chatId(),data.last_warn_msg));
-
-								}
+								
 
 								SendResponse resp = msg.send(user.userName(),"\n根据群组设置 本群禁止" + name + "，你已被警告 " + count + " / " + data.max_count + " 次 ， 达到上限将被" + data.actionName() + " ！").html().exec();
 
@@ -269,7 +274,7 @@ public class GroupFunction extends Fragment {
 
 				}
 
-				if (data.rest_action == 0 && !name.startsWith("邀请")) {
+				if (data.rest_action == null && !name.startsWith("邀请")) {
 
 						execute(new RestrictChatMember(msg.chatId(),user.id.intValue()).canSendMessages(true).canSendMediaMessages(false).canSendOtherMessages(false).canAddWebPagePreviews(false));
 
