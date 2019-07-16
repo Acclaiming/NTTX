@@ -1,4 +1,4 @@
-export CLASSPATH=./;./classes
+export CLASSPATH=./classes;./src
 
 for jar in ./libs/*.jar;do
 
