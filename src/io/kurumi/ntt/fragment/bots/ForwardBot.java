@@ -184,7 +184,7 @@ public class ForwardBot extends UserBotFragment {
 
 				} else {
 						
-						checkMsg(user,m
+						checkMsg(user,msg);
 						
 				}
 
