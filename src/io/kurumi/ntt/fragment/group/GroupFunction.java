@@ -15,9 +15,11 @@ public class GroupFunction extends Fragment {
 
 		public int checkMsg(UserData user,Msg msg) {
 
-				if (msg.isGroup()) {
+				if (!msg.isGroup()) return PROCESS_SYNC;
 
-						GroupData data = GroupData.get(msg.chat());
+				GroupData data = GroupData.get(msg.chat());
+
+				synchronized (data) {
 
 						if (data.delete_channel_msg != null && user.id == 777000) {
 
@@ -60,7 +62,7 @@ public class GroupFunction extends Fragment {
 										}
 
 										data.waitForCaptcha.remove(user.id);
-										
+
 										JoinCaptcha.INSTANCE.failed(user,msg,null,data,true);
 
 								} else if (data.no_invite_bot != null && newUser.isBot()) {
@@ -125,7 +127,7 @@ public class GroupFunction extends Fragment {
 										doRest(user,msg,data,"发送图片");
 
 								}
-								
+
 
 						} else if (msg.message().animation() != null && data.no_animation != null) {
 
@@ -137,7 +139,7 @@ public class GroupFunction extends Fragment {
 
 								}
 
-								
+
 
 						} else if (msg.message().audio() != null && data.no_audio != null) {
 
@@ -256,13 +258,10 @@ public class GroupFunction extends Fragment {
 								execute(new DeleteMessage(msg.chatId(),data.last_warn_msg));
 
 								data.last_warn_msg = null;
-								
-						}
-						
-						
-						if (count != data.max_count) {
 
-								
+						}
+
+						if (count != data.max_count) {
 
 								SendResponse resp = msg.send(user.userName(),"\n根据群组设置 本群禁止" + name + "，你已被警告 " + count + " / " + data.max_count + " 次 ， 达到上限将被" + data.actionName() + " ！").html().exec();
 
