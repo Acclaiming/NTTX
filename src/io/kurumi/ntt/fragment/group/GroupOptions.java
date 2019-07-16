@@ -103,7 +103,7 @@ public class GroupOptions extends Fragment {
 
 				}
 
-				new Send(user.id,
+				new Send(this,user.id,
 
                  Html.b(msg.chat().title()),
 								 Html.i("更改群组的设定")
