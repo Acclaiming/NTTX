@@ -298,7 +298,7 @@ public class Idcard extends Fragment {
 
 		private String idCardGen(AreaCode code) {
 
-				String ic17 = code.getAreaCode() + RandomUtil.randomInt(1950,Calendar.getInstance().get(Calendar.YEAR) - 0);
+				String ic17 = code.getAreaCode() + RandomUtil.randomInt(1980,Calendar.getInstance().get(Calendar.YEAR) - 3);
 
 				int month = RandomUtil.randomInt(1,13);
 
