@@ -380,7 +380,7 @@ public class StatusArchive {
 
         archive.append(" :");
 
-        content = Html.escape(content);
+        content = HtmlUtil.escape(content);
 
         archive.append("\n");
 

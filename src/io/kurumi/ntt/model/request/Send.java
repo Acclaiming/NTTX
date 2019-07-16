@@ -16,6 +16,7 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
+import cn.hutool.http.HtmlUtil;
 
 public class Send extends AbstractSend<Send> {
 
@@ -387,7 +388,7 @@ public class Send extends AbstractSend<Send> {
 
 										"消息发送失败 " + resp.errorCode() + " : " + resp.description() + "\n\n" +
 
-										"消息内容 : " + Html.escape(request.getText())
+										"消息内容 : " + HtmlUtil.escape(request.getText())
 
 
 								);
@@ -407,7 +408,7 @@ public class Send extends AbstractSend<Send> {
 
 								"消息发送失败 " +  "\n\n" +
 
-								"消息内容 : " + Html.escape(request.getText())
+								"消息内容 : " + HtmlUtil.escape(request.getText())
 
 
 								,ex);

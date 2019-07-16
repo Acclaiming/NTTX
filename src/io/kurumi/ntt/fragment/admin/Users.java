@@ -74,7 +74,7 @@ public class Users extends Fragment {
 				
 				count ++;
 
-				export.append(UserData.get(bot.user).userName()).append(" -> [ " + bot.typeName() + " ] @").append(Html.escape(bot.userName)).append("\n");
+				export.append(UserData.get(bot.user).userName()).append(" -> [ " + bot.typeName() + " ] @").append(HtmlUtil.escape(bot.userName)).append("\n");
 
 				if (count == 50) {
 
@@ -97,7 +97,7 @@ public class Users extends Fragment {
 			
 		} else if (msg.params().length == 0) {
 
-			export = new StringBuilder(Html.escape(" 「 All Users 」\n"));
+			export = new StringBuilder(HtmlUtil.escape(" 「 All Users 」\n"));
 
 			for (UserData userData : UserData.data.findByField("contactable",true)) {
 
@@ -125,7 +125,7 @@ public class Users extends Fragment {
 
 			count = 0;
 
-			export = new StringBuilder(Html.escape(" 「 Blocked Users 」 \n"));
+			export = new StringBuilder(HtmlUtil.escape(" 「 Blocked Users 」 \n"));
 
 			for (Firewall.Id id : Firewall.block.collection.find()) {
 
@@ -161,7 +161,7 @@ public class Users extends Fragment {
 
 			String kw = msg.params()[0];
 
-			export = new StringBuilder(Html.escape(" 「 Search User 」 \n"));
+			export = new StringBuilder(HtmlUtil.escape(" 「 Search User 」 \n"));
 			
 			for (UserData userData : UserData.data.collection.find(or(regex("firstName",kw),regex("lastName",kw),regex("userName",kw)))) {
 
