@@ -8,7 +8,7 @@ public class TentcentNlp {
     static final String APP_ID = "2111414508";
     static final String APP_KEY = "e1Z3XyOYI7VuVQP0";
 
-    static TAipNlp nlp = new TAipNlp(APP_ID, APP_KEY);
+    static TAipNlp nlp = new TAipNlp(APP_ID,APP_KEY);
 
     public static float nlpTextpolar(String text) {
 
@@ -34,11 +34,11 @@ public class TentcentNlp {
 
     }
 
-    public static String nlpTextchat(String id, String text) {
+    public static String nlpTextchat(String id,String text) {
 
         try {
 
-            text = text.replace("🐴", "妈");
+            text = text.replace("🐴","妈");
 
             if (text.matches("(\\?+|？+)")) {
 
@@ -46,7 +46,7 @@ public class TentcentNlp {
 
             }
 
-            JSONObject data = new JSONObject(nlp.nlpTextchat(id.toString(), text));
+            JSONObject data = new JSONObject(nlp.nlpTextchat(id.toString(),text));
 
             if (data.getInt("ret") != 0) {
 
@@ -56,27 +56,27 @@ public class TentcentNlp {
 
             }
 
-            String reply = data.getByPath("data.answer", String.class);
+            String reply = data.getByPath("data.answer",String.class);
 
-			if (reply.contains("第二次中东战争")) return "(((";
-			
+						if (reply.contains("第二次中东战争")) return "(((";
+
             return reply
-                    .replace("你的小可爱已上线，想给我说什么悄悄话呀", "咱来啦 -")
-                    .replace("呵呵，看来心情不错啊", "唉嘿 ~")
-                    .replace("先让我堵上耳朵，捂上眼睛", "噫呜呜噫")
-                    .replace("好好说话", "好好当个rbq")
-                    .replace("不明白你说的什么意思", "呜呜呜")
-                    .replace("不太懂哦", "噫呜呜噫")
-                    .replace("咱们还是聊点儿别的吧", "咱们还是聊点儿别的吧 ( 指女装援交")
-                    .replace("听不大懂耶", "「 数据删除 」")
-                    .replace("今天的新闻", "女装援交")
-                    .replace("妈", "🐴")
-                    .replace("我", "咱");
-				
+								.replace("你的小可爱已上线，想给我说什么悄悄话呀","咱来啦 -")
+								.replace("呵呵，看来心情不错啊","唉嘿 ~")
+								.replace("先让我堵上耳朵，捂上眼睛","噫呜呜噫")
+								.replace("好好说话","好好当个rbq")
+								.replace("不明白你说的什么意思","呜呜呜")
+								.replace("不太懂哦","噫呜呜噫")
+								.replace("咱们还是聊点儿别的吧","咱们还是聊点儿别的吧 ( 指女装援交")
+								.replace("听不大懂耶","「 数据删除 」")
+								.replace("今天的新闻","女装援交")
+								.replace("妈","🐴")
+								.replace("我","咱");
+
 
         } catch (Exception e) {
 
-            BotLog.info("error", e);
+            BotLog.info("error",e);
 
         }
 

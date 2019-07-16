@@ -903,12 +903,16 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				StringBuilder str = new StringBuilder();
 
+				boolean no_reply = false;
+				
 				Message message = msg.message();
 
 				str.append("消息ID : " + message.messageId()).append("\n");
 
 				if (message.forwardFrom() != null) {
 
+						no_reply = true;
+						
 						str.append("来自用户 : ").append(UserData.get(message.forwardFrom()).userName()).append("\n");
 						str.append("用户ID : ").append(message.forwardFrom().id()).append("\n");
 
@@ -916,17 +920,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				if (message.forwardFromChat() != null) {
 
+						no_reply = true;
+						
 						if (message.forwardFromChat().type() == Chat.Type.channel) {
 
 								str.append("来自频道 : ").append(message.forwardFromChat().username() == null ? message.forwardFromChat().title() : Html.a(message.forwardFromChat().username(),"https://t.me/" + message.forwardFromChat().username())).append("\n");
 
 								str.append("频道ID : ").append(message.forwardFromChat().id());
-
-								if (message.forwardSenderName() != null) {
-
-										str.append("签名用户 : ").append(message.forwardSenderName());
-
-								}
 
 						} else if (message.forwardFromChat().type() == Chat.Type.group || message.forwardFromChat().type() == Chat.Type.supergroup) {
 
@@ -942,12 +942,20 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 						}
 
-						str.append("消息链接 : https://t.me/c/").append(message.forwardFromChat().id()).append("/").append(message.forwardFromMessageId()).append("\n");
+				}
+				
+				if (message.forwardSenderName() != null) {
+						
+						no_reply = true;
+
+						str.append("来自用户 : ").append(message.forwardSenderName());
 
 				}
 
 				if (message.sticker() != null) {
 
+						no_reply = true;
+						
 						str.append(split);
 
 						str.append("贴纸ID : ").append(message.sticker().fileId()).append("\n");
@@ -964,15 +972,25 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 						bot().execute(new SendPhoto(msg.chatId(),getFile(msg.message().sticker().fileId())).caption(str.toString()).parseMode(ParseMode.HTML).replyMarkup(new ReplyKeyboardRemove()).replyToMessageId(msg.messageId()));
 
-				} else {
+				}
+				
+				if (!no_reply) {
 
 						msg.sendTyping();
 
-						if (msg.hasText()) msg.send(TentcentNlp.nlpTextchat(msg.chatId().toString(),msg.text())).exec();
+						if (msg.hasText()) {
+								
+								String text = TentcentNlp.nlpTextchat(msg.chatId().toString(),msg.text());
 
-						//   msg.send("这一条消息未被处理 将忽略","帮助文档 / 公告频道 : @NTT_X","交流建议群组 : @NTTDiscuss :)",str.toString()).replyTo(msg).html().removeKeyboard().exec();
-
-				}
+								if (text != null) msg.send(text).exec();
+								
+								return;
+								
+					  }
+							
+			  }
+						
+				msg.send("喵......？",str.toString()).replyTo(msg).html().removeKeyboard().exec();
 
 		}
 

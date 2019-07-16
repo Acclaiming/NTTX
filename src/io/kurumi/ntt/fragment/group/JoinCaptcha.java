@@ -963,6 +963,10 @@ public class JoinCaptcha extends Fragment {
 
 				if (gd.captcha_del == null) {
 
+						msg.send(user.userName() + " 通过了验证 ~").html().failed();
+
+				} else if (gd.captcha_del == 0) {
+
 						Msg lastMsg = msg.send(user.userName() + " 通过了验证 ~").html().send();
 
 						if (lastMsg != null) {
@@ -970,11 +974,7 @@ public class JoinCaptcha extends Fragment {
 								gd.last_join_msg = lastMsg.messageId();
 
 						}
-
-				} else if (gd.captcha_del == 0) {
-
-						msg.send(user.userName() + " 通过了验证 ~").html().failed();
-
+						
 				} else {
 
 						msg.send(user.userName() + " 通过了验证 ~").html().exec();

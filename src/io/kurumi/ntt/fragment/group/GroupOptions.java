@@ -656,7 +656,7 @@ public class GroupOptions extends Fragment {
 
 												data.captcha_del = 0;
 
-												callback.text("🚪  全部延时删除");
+												callback.text("🚪  保留一条");
 
 										} else if (data.captcha_del == 0) {
 
@@ -668,7 +668,7 @@ public class GroupOptions extends Fragment {
 
 												data.captcha_del = null;
 
-												callback.text("🚪  保留最后一条");
+												callback.text("🚪  延时删除");
 
 										}
 
@@ -1368,7 +1368,7 @@ public class GroupOptions extends Fragment {
 
 								newButtonLine()
 										.newButton("保留验证消息",POINT_HELP,"captcha_del")
-										.newButton(data.captcha_del == null ? "最后一条" : data.captcha_del == 0 ? "不保留" : "全部保留",POINT_SET_JOIN,data.id,"captcha_del");
+										.newButton(data.captcha_del == null ? "延时删除" : data.captcha_del == 0 ? "保留一条" : "全部保留",POINT_SET_JOIN,data.id,"captcha_del");
 
 
 								newButtonLine("验证期间邀请用户",POINT_HELP,"invite_when_captcha");
