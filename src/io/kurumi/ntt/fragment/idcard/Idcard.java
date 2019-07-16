@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import cn.hutool.core.io.resource.ResourceUtil;
 
 public class Idcard extends Fragment {
 
@@ -37,7 +38,7 @@ public class Idcard extends Fragment {
 
 		void loadData() {
 
-				String json = FileUtil.readUtf8String("./res/areacode.json");
+				String json = ResourceUtil.readUtf8Str("res/areacode.json");
 
 				AreaCode[] areaCodeArr = new Gson().fromJson(json,AreaCode[].class);
 
