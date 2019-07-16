@@ -150,6 +150,8 @@ public class Idcard extends Fragment {
 
 						if (districtList.isEmpty()) {
 
+								clearPrivatePoint(user);
+								
 								String[] ics = new String[10];
 
 								for(int index = 0;index < ics.length;index ++) {
