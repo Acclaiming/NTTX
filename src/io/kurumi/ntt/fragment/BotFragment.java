@@ -406,20 +406,10 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 				uau.user = user;
 				uau.update = update;
 
-				Processed processed = uau.process();
+				
+								asyncPool.execute(new ProcessTask(uau));
 
-				if (processed != null) {
-
-						if (processed.type == PROCESS_ASYNC) {
-
-								asyncPool.execute(processed);
-
-						} else {
-
-								processed.run();
-
-						}
-
+		
 				}
 
 		}
