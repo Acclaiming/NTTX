@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import cn.hutool.core.util.URLUtil;
+import cn.hutool.core.util.ArrayUtil;
 
 public class ForwardBot extends UserBotFragment {
 
@@ -80,7 +81,7 @@ public class ForwardBot extends UserBotFragment {
 
 						if ("gen_payload".equals(function)) {
 
-								msg.send(URLUtil.encode("https://t.me/" + me.username() + "/start=" + msg.text())).exec();
+								msg.send(URLUtil.encode("https://t.me/" + me.username() + "/start=" + ArrayUtil.join(ArrayUtil.sub(params,1,params.length)," "))).exec();
 
 						}
 
