@@ -259,7 +259,7 @@ public class Idcard extends Fragment {
 						
 						clearPrivatePoint(user);
 						
-						msg.send("生成完成 : " + Html.code(ic17 + getParityBit(ic17))).html().exec();
+						msg.send("生成完成 : " + Html.code(ic17 + getParityBit(ic17)),"地址 : " + Html.code(code.getDistrict())).html().exec();
 						
 				}
 				
