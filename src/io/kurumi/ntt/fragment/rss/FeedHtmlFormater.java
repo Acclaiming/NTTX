@@ -209,25 +209,48 @@ public class FeedHtmlFormater {
 						html = entry.getDescription().getValue();
 
 				}
-		
+
 				html = Html.unescape(html);
-				
+
 				html = URLUtil.decode(html);
 
 				html = html.replace("<br>","\n");
-				
-				html = ReUtil.replaceAll(html,"<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>"," <a href=\"{}\">图片</a>");
-				
+
+				// html = ReUtil.replaceAll(html,"<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>"," <a href=\"{}\">图片</a>");
+
+				while (html.contains("<img")) {
+
+						String before = StrUtil.subBefore(html,"<img",false);
+
+						String after = StrUtil.subAfter(html,"<img",false);
+
+						if (!after.contains(">")) break;
+
+						String code = StrUtil.subBefore(after,">",false);
+
+						after = StrUtil.subAfter(after,">",false);
+
+						if (!code.contains("src")) break;
+
+						code = StrUtil.subAfter(code,"src",false);
+
+						code = StrUtil.subAfter(code,"\"",false);
+						code = StrUtil.subBefore(code,"\"",false);
+
+						html = before + Html.a("图片",code) + after;
+
+				}
+
 				html = html.replaceAll("<(?!/?(a|b|i|code|pre|em)\b)[^>]+>","");
 
 				html = removeADs(html).trim();
 
 				if (html.startsWith(entry.getTitle())) {
-						
+
 						html = html.substring(entry.getTitle().length()).trim();
-						
+
 				}
-				
+
 				if (desciption) {
 
 						//	String after = html.substring(139,html.length());
