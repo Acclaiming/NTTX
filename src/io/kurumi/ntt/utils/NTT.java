@@ -410,7 +410,7 @@ public class NTT {
 
         String notContactableMsg = "咱无法给乃发送信息呢，请私聊点击 'start' 启用咱 ~";
 
-        if (!msg.isPrivate() && !isUserContactable(user.id)) {
+        if (!msg.isPrivate() && !isUserContactable(msg.fragment,user.id)) {
 
             if (msg instanceof Callback) {
 
