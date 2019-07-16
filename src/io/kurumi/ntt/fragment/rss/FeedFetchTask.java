@@ -25,6 +25,8 @@ import cn.hutool.http.HtmlUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReUtil;
+import cn.hutool.crypto.digest.MD5;
+import cn.hutool.crypto.digest.DigestUtil;
 
 public class FeedFetchTask extends TimerTask {
 
@@ -74,7 +76,7 @@ public class FeedFetchTask extends TimerTask {
 
 										info.id = url;
 										info.title = feed.getTitle();
-										info.last = feed.getEntries().get(0).getLink();
+										info.last = generateSign(feed.getEntries().get(0));
 
 										RssSub.info.setById(info.id,info);
 
@@ -87,7 +89,7 @@ public class FeedFetchTask extends TimerTask {
 								LinkedList<SyndEntry> posts = new LinkedList<>();
 
 								for (SyndEntry entry : feed.getEntries()) {
-
+										
 										if (entry.getLink().equals(info.last)) {
 
 												break;
@@ -108,7 +110,7 @@ public class FeedFetchTask extends TimerTask {
 
 								Collections.reverse(posts);
 
-								info.last = feed.getEntries().get(0).getLink();
+								info.last = generateSign(feed.getEntries().get(0));
 
 								RssSub.info.setById(info.id,info);
 
@@ -133,6 +135,19 @@ public class FeedFetchTask extends TimerTask {
 				}
 
 
+		}
+		
+		String generateSign(SyndEntry entry) {
+				
+				long time = entry.getPublishedDate().getTime();
+				
+				String content;
+				
+				if (entry.getContents() != null && !entry.getContents().isEmpty()) content= entry.getContents().get(0).getValue();
+				else content = entry.getDescription().getValue();
+				
+				return DigestUtil.md5Hex(time + entry.getTitle() + content);
+				
 		}
 
 }
