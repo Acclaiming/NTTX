@@ -111,13 +111,13 @@ public class Idcard extends Fragment {
 		@Override
 		public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
-				ICGen gen = (ICGen)data.with(msg);
+				ICGen gen = (ICGen)data;
 
 				if (gen.type == 0) {
 
 						if (!provinceMap.containsValue(msg.text())) {
 
-								msg.send("没有这个省 / 直辖市").withCancel().exec(data);
+								msg.send("没有这个省 / 直辖市").withCancel().exec(data.with(msg));
 
 								return;
 
@@ -230,7 +230,7 @@ public class Idcard extends Fragment {
 
 						if (districtList.isEmpty()) {
 
-								msg.send("没有这个市").withCancel().exec();
+								msg.send("没有这个市").withCancel().exec(data.with(msg));
 
 								return;
 
@@ -271,7 +271,7 @@ public class Idcard extends Fragment {
 
 						if (!gen.detailMap.containsKey(msg.text())) {
 
-								msg.send("没有这个地区").withCancel().exec();
+								msg.send("没有这个地区").withCancel().exec(data.with(msg));
 
 								return;
 
