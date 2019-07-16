@@ -44,10 +44,6 @@ public class MaliciousMessage {
 
 		
 
-	  public static boolean isMaliciousMessage(String msg) {
-
-				
-
-		}
+	  
 
 }

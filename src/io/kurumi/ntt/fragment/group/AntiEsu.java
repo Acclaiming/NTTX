@@ -19,6 +19,8 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
 
 public class AntiEsu extends Fragment {
 
+		/*
+		
     public static final String regex;
 		public static final String base;
     public static final String[] stickers = new String[]{
@@ -262,10 +264,12 @@ public class AntiEsu extends Fragment {
 
 				 }
 
-				 */
+				 
 
 				return PROCESS_ASYNC;
 
 		}
+		
+		*/
 
 }
