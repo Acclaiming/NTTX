@@ -409,9 +409,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 				
 								asyncPool.execute(new ProcessTask(uau));
 
-		
-				}
-
 		}
 
 		@Override
