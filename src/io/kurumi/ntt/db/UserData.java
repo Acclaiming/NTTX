@@ -6,6 +6,8 @@ import io.kurumi.ntt.utils.*;
 
 import java.util.*;
 import io.kurumi.ntt.Env;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.Launcher;
 
 public class UserData {
 
@@ -130,9 +132,11 @@ public class UserData {
 
     }
 
-    public boolean contactable() {
+    public boolean contactable(Fragment fragment) {
 
-        if (NTT.isUserContactable(id) != contactable) {
+				if (fragment.origin == Launcher.INSTANCE && contactable) return true;
+				
+        if (NTT.isUserContactable(fragment,id) != contactable && fragment.origin == Launcher.INSTANCE) {
 
             contactable = !contactable;
 

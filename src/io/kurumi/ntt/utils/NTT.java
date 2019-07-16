@@ -348,13 +348,13 @@ public class NTT {
 
     }
 
-    public static boolean isUserContactable(long id) {
+    public static boolean isUserContactable(Fragment f,long id) {
 
-        SendResponse resp = new Send(id,"test_user_ontactable").disableNotification().exec();
+        SendResponse resp = new Send(f,id,"test_user_ontactable").disableNotification().exec();
 
         if (resp == null || !resp.isOk()) return false;
 
-        new Msg(resp.message()).delete();
+        new Msg(f,resp.message()).delete();
 
         return true;
 

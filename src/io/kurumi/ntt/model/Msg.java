@@ -197,6 +197,12 @@ public class Msg extends Context {
 		}
 
     }
+		
+		public boolean contactable() {
+				
+				return from().contactable(fragment);
+				
+		}
 
     public void sendUpdatingFile() {
 

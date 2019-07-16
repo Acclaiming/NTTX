@@ -95,7 +95,7 @@ public class GroupOptions extends Fragment {
 
 				final GroupData data = GroupData.get(msg.chat());
 
-				if (!user.contactable()) {
+				if (!msg.contactable()) {
 
 						msg.send("请主动给BOT发送一条消息 : 通常是使用 /start 按钮。"," ( 因为BOT不能主动发送私聊消息 )").exec();
 
