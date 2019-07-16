@@ -144,7 +144,7 @@ public class FeedFetchTask extends TimerTask {
 				
 				String content;
 				
-				if (entry.getContents() != null && !entry.getContents().isEmpty()) content= entry.getContents().get(0).getValue();
+				if (entry.getContents() != null && !entry.getContents().isEmpty() && !StrUtil.isBlank(entry.getContents().get(0).getValue())) content = entry.getContents().get(0).getValue();
 				else content = entry.getDescription().getValue();
 				
 				return DigestUtil.md5Hex(time + entry.getTitle() + content);
