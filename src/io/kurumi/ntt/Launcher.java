@@ -70,6 +70,7 @@ import io.kurumi.ntt.fragment.group.JoinCaptcha;
 import io.kurumi.ntt.fragment.rss.FeedFetchTask;
 import io.kurumi.ntt.fragment.rss.RssSub;
 import io.kurumi.ntt.fragment.group.RemoveKeyboard;
+import io.kurumi.ntt.fragment.idcard.Idcard;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -360,6 +361,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 				
 				addFragment(new RssSub());
 
+				// IC
+				
+				addFragment(new Idcard());
+				
     }
 
     @Override
