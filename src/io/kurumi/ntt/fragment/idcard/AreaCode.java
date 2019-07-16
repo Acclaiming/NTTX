@@ -77,7 +77,7 @@ public class AreaCode {
 				
 				String full = getDetail();
 				
-				if (full.startsWith(getProvince()) && !full.contains(getCity())) {
+				if (getCity() != null && full.startsWith(getProvince()) && !full.contains(getCity())) {
 						
 						full = getProvince() + getCity() + full.substring(getProvince().length());
 						
