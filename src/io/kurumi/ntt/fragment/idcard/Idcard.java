@@ -218,6 +218,12 @@ public class Idcard extends Fragment {
 														
 												}
 												
+												if (detail.startsWith(areaCode.getCity())) {
+														
+														detail = detail.substring(areaCode.getCity().length());
+														
+												}
+												
 												code.put(detail,areaCode);
 
 												districtList.add(detail);
