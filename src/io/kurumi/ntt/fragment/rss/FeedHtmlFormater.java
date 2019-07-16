@@ -216,8 +216,10 @@ public class FeedHtmlFormater {
 
 				html = html.replace("<br>","\n");
 
-				// html = ReUtil.replaceAll(html,"<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>"," <a href=\"{}\">图片</a>");
-
+				
+				html = ReUtil.replaceAll(html,"<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>"," {}");
+				/*
+				
 				while (html.contains("<img")) {
 
 						String before = StrUtil.subBefore(html,"<img",false);
@@ -240,6 +242,8 @@ public class FeedHtmlFormater {
 						html = before + Html.a("图片",code) + after;
 
 				}
+				
+				*/
 
 				html = html.replaceAll("<(?!/?(a|b|i|code|pre|em)\b)[^>]+>","");
 
