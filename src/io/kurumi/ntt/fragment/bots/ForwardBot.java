@@ -66,19 +66,27 @@ public class ForwardBot extends UserBotFragment {
 
 				if (!msg.isPrivate()) return;
 
-				if (user.equals(userId) || user.admin()) return;
+				if (!(user.equals(userId) || user.admin())) 	{
 
-				if ("start".equals(function)) {
+						if ("start".equals(function)) {
 
-						msg.send(welcomeMessage).exec();
+								msg.send(welcomeMessage).exec();
 
-				} else if ("gen_payload".equals(function)) {
-						
-						msg.send(URLUtil.encode("https://t.me/" + me.username() + "/start=" + msg.text())).exec();
-						
+						} 
+
+						checkMsg(user,msg);
+
+				} else {
+
+						if ("gen_payload".equals(function)) {
+
+								msg.send(URLUtil.encode("https://t.me/" + me.username() + "/start=" + msg.text())).exec();
+
+						}
+
 				}
 
-				checkMsg(user,msg);
+
 
 		}
 
@@ -188,9 +196,9 @@ public class ForwardBot extends UserBotFragment {
 						onFunction(user,msg,msg.command(),msg.params());
 
 				} else {
-						
+
 						checkMsg(user,msg);
-						
+
 				}
 
 
@@ -207,7 +215,7 @@ public class ForwardBot extends UserBotFragment {
 
                 new Send(this,userId,"来自 " + user.userName() + " : [ " + Html.a("回复","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + user.id) + " ]").html().exec();
 
-										lastReceivedFrom = user.id;
+								lastReceivedFrom = user.id;
 
             }
 
@@ -218,7 +226,7 @@ public class ForwardBot extends UserBotFragment {
 								new Send(this,userId,"内容 : " + msg.text()).exec();
 
 						}
-						
+
         }
 
 				return PROCESS_REJECT;
