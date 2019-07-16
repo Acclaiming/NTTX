@@ -10,9 +10,9 @@ import io.kurumi.ntt.fragment.BotServer;
 
 public class UserBot {
 
-    public static Data<UserBot> data = new Data<UserBot>("UserCustomBot", UserBot.class);
-    
-	public Long id;
+    public static Data<UserBot> data = new Data<UserBot>("UserCustomBot",UserBot.class);
+
+		public Long id;
     public String userName;
     public Long user;
     public String token;
@@ -42,7 +42,7 @@ public class UserBot {
 
             } else if (type == 1) {
 
-                JoinCaptchaBot client = new JoinCaptchaBot();
+                GroupBot client = new GroupBot();
 
                 client.botId = id;
                 client.silentStart();
@@ -83,31 +83,6 @@ public class UserBot {
 
             information.append("欢迎语 : > ").append(welcomeMsg).append(" <");
 
-        } else if (type == 1) {
-
-            Boolean delJoin = (Boolean) params.get("delJoin");
-
-            if (delJoin == null) delJoin = false;
-
-            information.append("删除加群退群消息 : ").append(delJoin ? "开启" : "关闭");
-
-            Long logChannel = (Long) params.get("logChannel");
-
-            information.append("\n日志频道 : " + (logChannel == null ? "未设置" : logChannel));
-            
-            String welcomeMsg = (String) params.get("welcome");
-
-            if (welcomeMsg == null) welcomeMsg = "未设置";
-            
-            information.append("\n欢迎语 : > ").append(welcomeMsg).append(" <");
-            
-            Boolean delLast = (Boolean) params.get("delLast");
-
-            if (delLast == null) delJoin = false;
-
-            information.append("\n仅保留最新欢迎信息 : ").append(delJoin ? "开启" : "关闭");
-            
-            
         }
 
         return information.toString();
@@ -122,7 +97,7 @@ public class UserBot {
                 return "私聊";
 
             case 1:
-                return "加群验证";
+                return "群组管理";
 
             default:
                 return null;

@@ -7,7 +7,7 @@ import io.kurumi.ntt.fragment.group.JoinCaptcha;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.Msg;
 
-public class JoinCaptchaBot extends UserBotFragment {
+public class GroupBot extends UserBotFragment {
 
 		@Override
 		public void reload() {
