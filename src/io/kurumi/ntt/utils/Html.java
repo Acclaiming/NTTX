@@ -10,7 +10,7 @@ public class Html {
 
 		public static String escape(String text) {
 				
-				return HtmlUtil.escape(text)
+				return HtmlUtil.escape(text) /*
 						.replace(" ","&nbsp;")
 						.replace("¡","&iexcl;")
 						.replace("¢","&cent;")
@@ -44,7 +44,7 @@ public class Html {
 						.replace("¾","&frac34;")
 						.replace("¿","&iquest;")
 						.replace("×","&times;")
-						.replace("÷","&divide;");
+						.replace("÷","&divide;")*/;
 				
 		}
 		
