@@ -838,6 +838,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 								asyncPool.execute(processed);
 
 						} else {
+								
+								/*
 
 								if (!sync) synchronized (waitFor) {
 
@@ -856,12 +858,14 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 												}
 
 										}
+										
+										*/
 
 
 								processed.run();
 
-						}
-						
+						} 
+				
 						/*
 
 						if (!isEmpty()) {
