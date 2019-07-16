@@ -212,7 +212,7 @@ public class Idcard extends Fragment {
 
 								line.newButton(detail);
 
-								if (size == 3) {
+								if (size == 2) {
 
 										line = buttons.newButtonLine();
 
