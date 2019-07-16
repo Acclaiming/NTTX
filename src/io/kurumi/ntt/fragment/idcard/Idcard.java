@@ -149,7 +149,7 @@ public class Idcard extends Fragment {
 
 						if (districtList.isEmpty()) {
 							
-								String ic17 = code.getAreaCode() + RandomUtil.randomInt(1900,Calendar.getInstance().get(Calendar.YEAR) + 1);
+								String ic17 = code.getAreaCode() + RandomUtil.randomInt(1950,Calendar.getInstance().get(Calendar.YEAR) - 8);
 
 								int month = RandomUtil.randomInt(1,13);
 
@@ -271,7 +271,7 @@ public class Idcard extends Fragment {
 
 						AreaCode code = gen.detailMap.get(msg.text());
 						
-						String ic17 = code.getAreaCode() + RandomUtil.randomInt(1900,Calendar.getInstance().get(Calendar.YEAR) + 1);
+						String ic17 = code.getAreaCode() + RandomUtil.randomInt(1950,Calendar.getInstance().get(Calendar.YEAR) - 0);
 						
 						int month = RandomUtil.randomInt(1,13);
 
