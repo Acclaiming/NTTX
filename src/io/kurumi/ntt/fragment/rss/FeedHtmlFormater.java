@@ -217,7 +217,7 @@ public class FeedHtmlFormater {
 				html = html.replace("<br>","\n");
 
 				
-				html = ReUtil.replaceAll(html,"<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>"," {}");
+				//html = ReUtil.replaceAll(html,"<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>");
 				/*
 				
 				while (html.contains("<img")) {
@@ -295,6 +295,14 @@ public class FeedHtmlFormater {
 
 						if (line.contains("http://fetchrss.com")) continue;
 
+						// Feed43
+						
+						if (line.contains("http://feed43.com/")) {
+
+								line = StrUtil.subBefore(line,"<p><sub><i>-- Delivered by",false);
+
+						}
+						
 						result.add(line);
 
 				}
