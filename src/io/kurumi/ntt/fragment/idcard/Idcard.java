@@ -209,7 +209,15 @@ public class Idcard extends Fragment {
 								if (msg.text().contains(areaCode.getCity()) || areaCode.getCity().contains(msg.text())) {
 
 										if (!StrUtil.isBlank(areaCode.getDetail())) {
-
+												
+												String detail = areaCode.getDetail();
+												
+												if (!detail.contains(areaCode.getCity()) && detail.startsWith(areaCode.getProvince())) {
+														
+														detail = areaCode.getProvince() + areaCode.getCity() + StrUtil.subAfter(detail,areaCode.getProvince(),false);
+														
+												}
+												
 												code.put(areaCode.getDetail(),areaCode);
 
 												districtList.add(areaCode.getDetail());
