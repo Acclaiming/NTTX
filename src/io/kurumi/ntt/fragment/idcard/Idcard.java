@@ -14,8 +14,21 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import io.kurumi.ntt.model.request.ButtonMarkup;
+import io.kurumi.ntt.model.request.ButtonLine;
+import io.kurumi.ntt.model.request.Keyboard;
+import com.pengrad.telegrambot.model.request.KeyboardButton;
+import io.kurumi.ntt.model.request.KeyboradButtonLine;
+import io.kurumi.ntt.db.PointData;
+import java.util.Set;
+import cn.hutool.core.util.StrUtil;
+import java.util.List;
+import java.util.ArrayList;
+import cn.hutool.core.util.RandomUtil;
 
 public class Idcard extends Fragment {
+
+		final String POINT_IC_GEN = "ic_gen";
 
 		@Override
 		public void init(BotFragment origin) {
@@ -83,35 +96,234 @@ public class Idcard extends Fragment {
 
 		}
 
+		class ICGen extends PointData {
+
+				int type = 0;
+
+				List<AreaCode> code;
+				Map<String,AreaCode> detailMap;
+
+
+		}
+
+		@Override
+		public void onPoint(UserData user,Msg msg,String point,PointData data) {
+
+				ICGen gen = (ICGen)data.with(msg);
+
+				if (gen.type == 0) {
+
+						if (!provinceMap.containsValue(msg.text())) {
+
+								msg.send("没有这个省 / 直辖市").withCancel().exec(data);
+
+								return;
+
+						}
+
+						gen.code = new ArrayList<>();
+
+						Set<String> districtList = new HashSet<>();
+
+						for (AreaCode areaCode : codeMap.values()) {
+
+								if (msg.text().contains(areaCode.getProvince()) || areaCode.getProvince().contains(msg.text())) {
+
+										if (!StrUtil.isBlank(areaCode.getCity())) {
+
+												gen.code.add(areaCode);
+
+												districtList.add(areaCode.getCity());
+
+										}
+
+								}
+
+						}
+
+						Keyboard buttons = new Keyboard();
+
+						KeyboradButtonLine line = buttons.newButtonLine();
+
+						int size = 0;
+
+						for (String city : districtList) {
+
+								size ++;
+
+								line.newButton(city);
+
+								if (size == 3) {
+
+										line = buttons.newButtonLine();
+
+										size = 0;
+
+								}
+
+						}
+
+						gen.type = 1;
+
+						msg.send("请选择市").keyboard(buttons).exec(data);
+
+				} else if (gen.type == 1) {
+
+
+						Map<String,AreaCode> code = new HashMap<>();
+
+						Set<String> districtList = new HashSet<>();
+
+						for (AreaCode areaCode : gen.code) {
+
+								if (msg.text().contains(areaCode.getCity()) || areaCode.getCity().contains(msg.text())) {
+
+										if (!StrUtil.isBlank(areaCode.getDetail())) {
+
+												code.put(areaCode.getDetail(),areaCode);
+
+												districtList.add(areaCode.getDetail());
+
+										}
+
+								}
+
+						}
+
+						if (districtList.isEmpty()) {
+
+								msg.send("没有这个市").withCancel().exec();
+
+								return;
+
+						}
+
+						Keyboard buttons = new Keyboard();
+
+						KeyboradButtonLine line = buttons.newButtonLine();
+
+						int size = 0;
+
+						for (String detail : districtList) {
+
+								size ++;
+
+								line.newButton(detail);
+
+								if (size == 3) {
+
+										line = buttons.newButtonLine();
+
+										size = 0;
+
+								}
+
+						}
+
+
+
+						gen.detailMap = code;
+
+						gen.type = 2;
+
+						msg.send("请选择地区").keyboard(buttons).exec(data);
+
+
+				} else if (gen.type == 2) {
+
+						if (!gen.detailMap.containsKey(msg.text())) {
+
+								msg.send("没有这个地区").withCancel().exec();
+
+								return;
+
+						}
+
+						AreaCode code = gen.detailMap.get(msg.text());
+						
+						String ic17 = code.getAreaCode() + RandomUtil.randomInt(1900,Calendar.getInstance().get(Calendar.YEAR) + 1);
+						
+						int month = RandomUtil.randomInt(1,13);
+
+						if (month < 10) ic17 = ic17 + "0";
+						
+						ic17 = ic17 + month;
+						
+						int day = RandomUtil.randomInt(1,29);
+						
+						if (day < 10) ic17 = ic17 + "0";
+						
+						ic17 = ic17 + day + String.valueOf((int) (Math.random() * 900 + 100));
+						
+						clearPrivatePoint(user);
+						
+						msg.send("生成完成 : " + Html.code(ic17 + getParityBit(ic17))).html().exec();
+						
+				}
+				
+				
+
+		}
+		
+		private char getParityBit(String cardCode17) {
+        final char[] cs = cardCode17.toUpperCase().toCharArray();
+        int power = 0;
+        for (int i = 0; i < cs.length; i++) {
+            power += (cs[i] - '0') * POWER_LIST[i];
+        }
+        char keyChar = PARITYBIT[power % 11];
+        return keyChar;
+    }
+		
+
 		@Override
 		public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
 				if (codeMap.isEmpty()) loadData();
 
-				if ("ic_18".equals(function)) {
+				if ("ic_gen".equals(function)) {
+
+						Keyboard buttons = new Keyboard();
+
+						KeyboradButtonLine line = buttons.newButtonLine();
+
+						int size = 0;
+
+						for (String province :provinceMap.values()) {
+
+								size ++;
+
+								line.newButton(province);
+
+								if (size == 3) {
+
+										line = buttons.newButtonLine();
+
+										size = 0;
+
+								}
+
+						}
+
+						ICGen data = new ICGen();
+
+						msg.send("请选择省/直辖市").keyboard(buttons).exec(data);
+
+				} else if ("ic_18".equals(function)) {
 
 						String certNo = params.length == 0 ? null : params[0];
-						
+
 						if (certNo == null || certNo.length() != 17) {
-								
+
 								msg.send("请输入前 17 位 身份证").exec();
-								
+
 								return;
-								
+
 						}
-						
-						final char[] cs = certNo.toUpperCase().toCharArray();
-						
-						int power = 0;
-						
-						for (int i = 0; i < cs.length; i++) {
-								
-								power += (cs[i] - '0') * POWER_LIST[i];
-								
-						}
-						
-						char valid = PARITYBIT[power % 11];
-						
+
+
+						char valid = getParityBit(certNo);
+
 						msg.send("第十八位为 : " + valid + " , 身份证为 " + Html.code(certNo + valid)).html().exec();
 
 				} else if ("ic_check".equals(function)) {
