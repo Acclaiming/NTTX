@@ -37,6 +37,8 @@ public class Idcard extends Fragment {
 
 				registerFunction("ic_check","ic_18","ic_gen","ic_rand");
 
+				registerPoint(POINT_IC_GEN);
+				
 		}
 
     final static char[] PARITYBIT = {'1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'};
@@ -266,12 +268,19 @@ public class Idcard extends Fragment {
 		}
 		
 		private char getParityBit(String cardCode17) {
+				
         final char[] cs = cardCode17.toUpperCase().toCharArray();
-        int power = 0;
+      
+				int power = 0;
+				
         for (int i = 0; i < cs.length; i++) {
+						
             power += (cs[i] - '0') * POWER_LIST[i];
+						
         }
+				
         char keyChar = PARITYBIT[power % 11];
+				
         return keyChar;
     }
 		
@@ -307,6 +316,8 @@ public class Idcard extends Fragment {
 
 						ICGen data = new ICGen();
 
+						setPrivatePoint(user,POINT_IC_GEN,data);
+						
 						msg.send("请选择省/直辖市").keyboard(buttons).exec(data);
 
 				} else if ("ic_18".equals(function)) {
