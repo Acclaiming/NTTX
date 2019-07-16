@@ -184,7 +184,7 @@ public class ForwardBot extends UserBotFragment {
 
 				} else {
 						
-						checkMsg(user,msg);
+						checkMsg(user,m
 						
 				}
 
@@ -202,22 +202,18 @@ public class ForwardBot extends UserBotFragment {
 
                 new Send(this,userId,"来自 " + user.userName() + " : [ " + Html.a("回复","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + user.id) + " ]").html().exec();
 
-								if (msg.isStartPayload()) {
-
-										msg.send(welcomeMessage).exec();
-
-										new Send(this,userId,"内容 : " + msg.text()).exec();
-
-								} else {
-
 										lastReceivedFrom = user.id;
-
-								}
 
             }
 
             msg.forwardTo(userId);
 
+						if (msg.isStartPayload()) {
+
+								new Send(this,userId,"内容 : " + msg.text()).exec();
+
+						}
+						
         }
 
 				return PROCESS_REJECT;
