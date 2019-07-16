@@ -796,6 +796,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				public void run(UserAndUpdate uau) {
 
+						/*
+						
 						if (!sync) synchronized (waitFor) {
 
 										if (waitFor.containsKey(uau.userId)) {
@@ -807,6 +809,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 										}
 
 								}
+								
+						*/
 
 						Processed processed;
 
@@ -857,6 +861,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 								processed.run();
 
 						}
+						
+						/*
 
 						if (!isEmpty()) {
 
@@ -883,6 +889,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 								run(pollFirst());
 
 						}
+						
+						*/
 
 				}
 
