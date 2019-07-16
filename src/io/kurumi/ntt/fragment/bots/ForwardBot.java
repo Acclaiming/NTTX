@@ -81,7 +81,7 @@ public class ForwardBot extends UserBotFragment {
 
 						if ("gen_payload".equals(function)) {
 
-								msg.send(URLUtil.encode("https://t.me/" + me.username() + "/start=" + ArrayUtil.join(params," "))).exec();
+								msg.send(URLUtil.encode("https://t.me/" + me.username() + "?start=" + ArrayUtil.join(params," "))).exec();
 								
 						}
 
