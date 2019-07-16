@@ -84,7 +84,7 @@ public class NewBot extends Fragment {
 
                     newButtonLine("转发私聊");
 
-                    newButtonLine("加群验证");
+                    newButtonLine("群组管理");
 
                     newButtonLine("取消创建");
 
@@ -107,7 +107,7 @@ public class NewBot extends Fragment {
                     msg.send("好，请发送私聊BOT的欢迎语，这将在 /start 时发送").exec(data);
                     msg.send("就像这样 : 直接喵喵就行了 ~").withCancel().exec(data);
 
-                } else if ("加群验证".equals(msg.text())) {
+                } else if ("群组管理".equals(msg.text())) {
 
                     create.bot.type = 1;
 
@@ -121,7 +121,7 @@ public class NewBot extends Fragment {
 
                     create.bot.startBot();
 
-                    setup.edit("你的BOT : @" + create.bot.userName, "\n将BOT加入群组并设为管理员即可 ~", "\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
+                    setup.edit("你的BOT : @" + create.bot.userName, "\n将BOT加入群组并设为管理员 ~", "\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
 
 
                 } else {
