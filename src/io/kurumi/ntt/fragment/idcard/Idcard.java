@@ -101,27 +101,13 @@ public class Idcard extends Fragment {
 						}
 						
 						final char[] cs = certNo.toUpperCase().toCharArray();
-
-						//校验位数
-
+						
 						int power = 0;
-
+						
 						for (int i = 0; i < cs.length; i++) {
-
-								if (cs[i] < '0' || cs[i] > '9') {
-
-										msg.send("无效的数字 : 非最后一位不能为数字以外字符").exec();
-
-										return;
-
-								}
-
-								if (i < cs.length) {
-
-										power += (cs[i] - '0') * POWER_LIST[i];
-
-								}
-
+								
+								power += (cs[i] - '0') * POWER_LIST[i];
+								
 						}
 						
 						char valid = PARITYBIT[power % 11];
