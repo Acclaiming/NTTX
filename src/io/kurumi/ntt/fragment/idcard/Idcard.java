@@ -127,10 +127,14 @@ public class Idcard extends Fragment {
 
 						Set<String> districtList = new HashSet<>();
 
+						AreaCode code = null;
+						
 						for (AreaCode areaCode : codeMap.values()) {
 
 								if (msg.text().contains(areaCode.getProvince()) || areaCode.getProvince().contains(msg.text())) {
 
+										code = areaCode;
+										
 										if (!StrUtil.isBlank(areaCode.getCity())) {
 
 												gen.code.add(areaCode);
@@ -143,6 +147,29 @@ public class Idcard extends Fragment {
 
 						}
 
+						if (districtList.isEmpty()) {
+							
+								String ic17 = code.getAreaCode() + RandomUtil.randomInt(1900,Calendar.getInstance().get(Calendar.YEAR) + 1);
+
+								int month = RandomUtil.randomInt(1,13);
+
+								if (month < 10) ic17 = ic17 + "0";
+
+								ic17 = ic17 + month;
+
+								int day = RandomUtil.randomInt(1,29);
+
+								if (day < 10) ic17 = ic17 + "0";
+
+								ic17 = ic17 + day + String.valueOf((int) (Math.random() * 900 + 100));
+
+								clearPrivatePoint(user);
+
+								msg.send("生成完成 : " + Html.code(ic17 + getParityBit(ic17))).html().exec();
+								
+								
+						}
+						
 						Keyboard buttons = new Keyboard();
 
 						KeyboradButtonLine line = buttons.newButtonLine();
