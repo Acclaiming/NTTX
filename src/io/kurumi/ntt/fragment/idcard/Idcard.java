@@ -212,15 +212,15 @@ public class Idcard extends Fragment {
 												
 												String detail = areaCode.getDetail();
 												
-												if (!detail.contains(areaCode.getCity()) && detail.startsWith(areaCode.getProvince())) {
+												if (detail.startsWith(areaCode.getProvince())) {
 														
-														detail = areaCode.getProvince() + areaCode.getCity() + StrUtil.subAfter(detail,areaCode.getProvince(),false);
+														detail = detail.substring(areaCode.getProvince().length());
 														
 												}
 												
-												code.put(areaCode.getDetail(),areaCode);
+												code.put(detail,areaCode);
 
-												districtList.add(areaCode.getDetail());
+												districtList.add(detail);
 
 										}
 
