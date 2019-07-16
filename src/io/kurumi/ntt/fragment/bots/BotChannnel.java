@@ -68,6 +68,8 @@ public class BotChannnel extends Fragment {
 		@Override
 		public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
+				if (msg.isGroup()) return;
+				
 				if ("delete_chat_photo".equals(function)) {
 
 						if (params.length < 1) { invalidParams(msg,"chatId"); return; }
