@@ -69,6 +69,7 @@ import io.kurumi.ntt.fragment.group.GroupAdmin;
 import io.kurumi.ntt.fragment.group.JoinCaptcha;
 import io.kurumi.ntt.fragment.rss.FeedFetchTask;
 import io.kurumi.ntt.fragment.rss.RssSub;
+import io.kurumi.ntt.fragment.group.RemoveKeyboard;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -333,6 +334,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(new BanSetickerSet());
 				addFragment(new GroupFunction());
 				addFragment(new JoinCaptcha());
+				
+				addFragment(new RemoveKeyboard());
 
         // BOTS
 
