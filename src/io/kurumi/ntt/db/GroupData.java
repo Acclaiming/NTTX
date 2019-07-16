@@ -189,6 +189,10 @@ public class GroupData {
 		public String welcomeMessage;
 		public List<List<CustomButton>> buttons;
 		public String welcomeSticker;
+		public List<String> welcomeSet;
+		
+		public Boolean del_welcome_msg;
+		public Integer last_welcome_msg;
 		
 		public static class CustomButton {
 				

@@ -1505,22 +1505,57 @@ public class GroupOptions extends Fragment {
 						}};
 
 		}
+		
+		String showStats(GroupData data) {
+				
+				StringBuilder stats = new StringBuilder();
+				
+				stats.append("欢迎消息文本 : ");
+				
+				if (data.welcomeMessage == null) {
+						
+						stats.append("未设定");
+						
+				}
+				
+				return stats.toString();
+				
+		}
 
 		ButtonMarkup showMenu(final GroupData data) {
 
 				return new ButtonMarkup() {{
 
 								newButtonLine()
-										.newButton("欢迎信息",POINT_HELP,"enable_cus")
-										.newButton(((Integer)2).equals(data.captcha_mode) ? "✅" : "☑",POINT_SET_CUST,data.id,"enable_cus");
+										.newButton("关闭欢迎消息",POINT_HELP,"show_disable")
+										.newButton(data.welcome == null ? "●" : "○",POINT_SET_SHOW,data.id,"show_disable");
+								
+								newButtonLine()
+										.newButton("仅文本信息",POINT_HELP,"show_text")
+										.newButton(((Integer)0).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"show_text");
 
-								newButtonLine("设置欢迎信息",POINT_SET_CUST,data.id,"reset_i_question");
-								newButtonLine("设置选择模式选项",POINT_SET_CUST,data.id,"reset_items");
+								newButtonLine()
+										.newButton("消息与按钮",POINT_HELP,"show_text")
+										.newButton(((Integer)1).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"show_text_with_buttons");
 
-								newButtonLine("设置回答模式问题",POINT_SET_CUST,data.id,"reset_a_question");
-								newButtonLine("设置回答模式答案",POINT_SET_CUST,data.id,"reset_answer");
+								newButtonLine()
+										.newButton("发送欢迎贴纸",POINT_HELP,"show_sticker")
+										.newButton(((Integer)2).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"show_sticker");
 
-								newButtonLine("🔙",POINT_MENU_JOIN,data.id);
+								newButtonLine()
+										.newButton("随机欢迎贴纸",POINT_HELP,"show_random_sticker")
+										.newButton(((Integer)3).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"show_sticker");
+								
+								newButtonLine("设置文本信息",POINT_SET_SHOW,data.id,"reset_msg");
+								newButtonLine("设置显示按钮",POINT_SET_SHOW,data.id,"reset_buttons");
+								newButtonLine("设置单个贴纸",POINT_SET_SHOW,data.id,"reset_sticker");
+								newButtonLine("设置贴纸集合",POINT_SET_SHOW,data.id,"reset_sticker_set");
+								
+								newButtonLine()
+										.newButton("仅保留最后一条",POINT_HELP,"del_welcome")
+										.newButton(data.del_welcome_msg != null ? "✅" : "☑",POINT_SET_SHOW,data.id,"del_welcome");
+								
+								newButtonLine("🔙",POINT_BACK,data.id);
 
 						}};
 

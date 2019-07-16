@@ -215,7 +215,7 @@ public class FeedHtmlFormater {
 
 				html = html.replace("<br>","\n");
 				
-				html = html.replaceAll("<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>","<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>");
+				html = html.replaceAll("<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>","<a href=\"$1\">图片</a>");
 				
 				html = html.replaceAll("<(?!/?(a|b|i|code|pre|em)\b)[^>]+>","");
 
