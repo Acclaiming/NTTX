@@ -12,6 +12,8 @@ public class GroupRepeat extends Fragment {
 
     public HashMap<Long, LinkedList<Msg>> msgs = new HashMap<>();
 
+		public static GroupRepeat INSTANCE;
+
     @Override
     public void onGroup(UserData user, Msg msg) {
 

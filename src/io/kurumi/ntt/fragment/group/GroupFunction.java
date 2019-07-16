@@ -25,8 +25,23 @@ public class GroupFunction extends Fragment {
 
 								msg.delete();
 
-						} else if (GroupAdmin.fastAdminCheck(data,user.id)) {
+						} else if (msg.message().leftChatMember() != null) {
 
+								if (data.delete_service_msg != null) {
+
+										msg.delete();
+
+								} else if (user.id.equals(origin.me.id())) {
+
+										msg.delete();
+
+								}
+
+
+						} else if (GroupAdmin.fastAdminCheck(this,data,user.id)) {
+								
+								if (msg.message().newChatMembers() != null) msg.delete();
+								
 						} else if (msg.message().newChatMembers() != null) {
 
 								User newUser = msg.message().newChatMembers()[0];
@@ -94,19 +109,6 @@ public class GroupFunction extends Fragment {
 										msg.delete();
 
 								}
-
-						} else if (msg.message().leftChatMember() != null) {
-
-								if (data.delete_service_msg != null) {
-
-										msg.delete();
-
-								} else if (user.id.equals(origin.me.id())) {
-
-										msg.delete();
-
-								}
-
 
 						} else if (msg.sticker() != null && data.no_sticker != null) {
 
@@ -212,6 +214,8 @@ public class GroupFunction extends Fragment {
 								}
 
 						}
+						
+			
 
 				}
 
