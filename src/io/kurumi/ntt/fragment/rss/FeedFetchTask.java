@@ -27,6 +27,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.crypto.digest.MD5;
 import cn.hutool.crypto.digest.DigestUtil;
+import javax.annotation.Generated;
 
 public class FeedFetchTask extends TimerTask {
 
@@ -90,7 +91,7 @@ public class FeedFetchTask extends TimerTask {
 
 								for (SyndEntry entry : feed.getEntries()) {
 										
-										if (entry.getLink().equals(info.last)) {
+										if (generateSign(entry).equals(info.last)) {
 
 												break;
 
