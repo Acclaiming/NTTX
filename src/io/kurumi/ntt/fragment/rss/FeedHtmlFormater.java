@@ -10,6 +10,7 @@ import cn.hutool.http.HtmlUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.core.net.URLEncoder;
 import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.ReUtil;
 
 public class FeedHtmlFormater {
 
@@ -215,7 +216,7 @@ public class FeedHtmlFormater {
 
 				html = html.replace("<br>","\n");
 				
-				html = html.replaceAll("<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>","<a href=\"$1\">图片</a>");
+				html = ReUtil.replaceAll(html,"<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>","<a href=\"{}\">图片</a>");
 				
 				html = html.replaceAll("<(?!/?(a|b|i|code|pre|em)\b)[^>]+>","");
 
