@@ -167,6 +167,7 @@ public class Idcard extends Fragment {
 
 								msg.send("生成完成 : " + Html.code(ic17 + getParityBit(ic17))).html().exec();
 								
+								return;
 								
 						}
 						
