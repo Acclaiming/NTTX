@@ -108,12 +108,6 @@ public class Idcard extends Fragment {
 
 						for (int i = 0; i < cs.length; i++) {
 
-								if (i == cs.length - 1 && cs[i] == 'X') {
-
-										break;//最后一位可以 是X或x
-
-							  }
-
 								if (cs[i] < '0' || cs[i] > '9') {
 
 										msg.send("无效的数字 : 非最后一位不能为数字以外字符").exec();
@@ -122,7 +116,7 @@ public class Idcard extends Fragment {
 
 								}
 
-								if (i < cs.length - 1) {
+								if (i < cs.length) {
 
 										power += (cs[i] - '0') * POWER_LIST[i];
 
