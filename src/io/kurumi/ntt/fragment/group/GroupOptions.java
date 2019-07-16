@@ -91,8 +91,16 @@ public class GroupOptions extends Fragment {
 		@Override
 		public void onFunction(UserData user,final Msg msg,String function,String[] params) {
 
+				if (!NTT.isGroupAdmin(msg.fragment,msg.chatId(),origin.me.id())) {
+						
+						msg.reply("BOT不是群组管理员 :)").exec();
+						
+						return;
+						
+				}
+				
 				if (NTT.checkGroupAdmin(msg)) return;
-
+				
 				final GroupData data = GroupData.get(msg.chat());
 
 				if (!msg.contactable()) {
