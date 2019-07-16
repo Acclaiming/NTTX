@@ -509,6 +509,8 @@ public class Html {
 
     public static String a(String text,String href) {
 
+				if (href == null) return text;
+				
         return "<a href=\"" + href + "\">" + HtmlUtil.escape(text) + "</a>";
 
     }
