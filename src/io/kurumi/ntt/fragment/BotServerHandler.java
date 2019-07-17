@@ -170,7 +170,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 						
 						BotServer.fragments.get(botToken).processAsync(update);
 
-				webhookResponse = null;// lock.waitFor();
+				webhookResponse = lock.waitFor();
 						
 				} catch (Exception ex) {
 

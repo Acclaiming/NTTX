@@ -3,6 +3,7 @@ package io.kurumi.ntt.fragment;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.TimeUnit;
 
 public class ProcessLock<T>  extends ReentrantLock {
 
@@ -18,7 +19,7 @@ public class ProcessLock<T>  extends ReentrantLock {
 
             lock();
 
-						condition.awaitNanos(3 * 1000);
+						condition.await(3 * 1000,TimeUnit.MILLISECONDS);
 						
 						return obj;
 						
