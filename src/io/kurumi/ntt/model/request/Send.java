@@ -408,7 +408,7 @@ public class Send extends AbstractSend<Send> {
 
             SendResponse resp = fragment.execute(request);
 
-            if (!resp.isOk()) {
+            if (resp != null && !resp.isOk()) {
 
                 if (resp.errorCode() == 403 && !(request.chatId instanceof String) && ((long) request.chatId > 0)) {
 
