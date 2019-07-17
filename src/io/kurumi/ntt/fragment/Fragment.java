@@ -45,25 +45,9 @@ public class Fragment {
 
     }
 
-		public LinkedList<ProcessLock<BaseRequest>> locks = new LinkedList<>();
-
 		public <T extends BaseRequest, R extends BaseResponse> R execute(BaseRequest<T, R> request) {
 
-				synchronized (locks) {
-
-						if (locks.isEmpty() || request.getClass().getSimpleName().startsWith("Get")) {
-
-								return bot().execute(request);
-
-						} else {
-								
-								locks.remove().send(request);
-
-								return null;
-
-						}
-
-				}
+				return bot().execute(request);
 
     }
 

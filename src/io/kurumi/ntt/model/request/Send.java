@@ -17,6 +17,7 @@ import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
 import cn.hutool.http.HtmlUtil;
+import io.kurumi.ntt.fragment.BotFragment;
 
 public class Send extends AbstractSend<Send> {
 
@@ -297,6 +298,16 @@ public class Send extends AbstractSend<Send> {
 
 		}
 
+		private boolean async = false;
+
+		public Send async() {
+
+				this.async = true;
+
+				return this;
+
+		}
+
     @Override
     public SendResponse exec() {
 
@@ -359,6 +370,30 @@ public class Send extends AbstractSend<Send> {
         }
 
         try {
+
+						if (async) {
+
+								if (origin != null && !origin.update.lock.used.getAndSet(true)) {
+
+										origin.update.lock.send(request);
+
+								} else {
+
+										BotFragment.asyncPool.execute(new Runnable() {
+
+														@Override
+														public void run() {
+
+															  fragment.execute(request);
+
+														}
+												});
+
+								}
+
+								return null;
+
+						}
 
             SendResponse resp = fragment.execute(request);
 
