@@ -29,7 +29,7 @@ public class TelegraphAccount {
 						
 						auth.author_name = account.author_name;
 						
-						auth.author_url = account.auth_url;
+						auth.author_url = account.author_url;
 						
 						data.setById(auth.id,auth);
 						
