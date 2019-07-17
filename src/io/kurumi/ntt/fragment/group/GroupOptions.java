@@ -1382,6 +1382,8 @@ public class GroupOptions extends Fragment {
 								
 								String target = msg.text();
 								
+								if (target.contains("/")) target = StrUtil.subAfter(target,"/",true);
+								
 								final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
 
 								if (!set.isOk()) {
@@ -1398,8 +1400,6 @@ public class GroupOptions extends Fragment {
 								
 						}
 						
-						edit.data.welcomeMessage = msg.text();
-
 						clearPrivatePoint(user);
 
 				}
