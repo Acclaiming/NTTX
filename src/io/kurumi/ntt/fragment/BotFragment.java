@@ -123,7 +123,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 										finalFragment.onAsyncUpdate(user,update);
 
 								}
+								
 						};
+						
+						
+				
 
 				}
 
@@ -405,9 +409,10 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 				uau.chatId = targetId;
 				uau.user = user;
 				uau.update = update;
-
 				
-								asyncPool.execute(new ProcessTask(uau));
+				locks.add(update.lock);
+
+				asyncPool.execute(new ProcessTask(uau));
 
 		}
 
@@ -442,7 +447,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 												@Override
 												public void process() {
 
-														msg.sendTyping();
+
 
 														function.onPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint);
 
@@ -461,7 +466,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 												@Override
 												public void process() {
 
-														msg.sendTyping();
+														
 
 														function.onPoint(user,msg,groupPoint.point,groupPoint);
 
@@ -487,7 +492,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 												@Override
 												public void process() {
 
-														msg.sendTyping();
+
 
 														function.onPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint);
 
@@ -506,7 +511,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 												@Override
 												public void process() {
 
-														msg.sendTyping();
+
 
 														function.onPoint(user,msg,privatePoint.point,privatePoint);
 
@@ -538,7 +543,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 																@Override
 																public void process() {
 
-																		msg.sendTyping();
+
 
 																		function.onPayload(user,msg,payload,params);
 
@@ -559,7 +564,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 																@Override
 																public void process() {
 
-																		msg.sendTyping();
+
 
 																		function.onPayload(user,msg,payload,params);
 
@@ -578,7 +583,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 																@Override
 																public void process() {
 
-																		msg.sendTyping();
+
 
 																		onPayload(user,msg,payload,params);
 
@@ -601,7 +606,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 														@Override
 														public void process() {
 
-																msg.sendTyping();
+
 
 																function.onFunction(user,msg,msg.command(),msg.params());
 
@@ -651,9 +656,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 														@Override
 														public void process() {
 
-																if (msg.isPrivate()) msg.sendTyping();
+																if (msg.isPrivate()) 
 
-																function.onFunction(user,msg,msg.command(),msg.params());
+																		function.onFunction(user,msg,msg.command(),msg.params());
 
 														}
 
@@ -784,20 +789,20 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 				public void run(UserAndUpdate uau) {
 
 						/*
-						
-						if (!sync) synchronized (waitFor) {
 
-										if (waitFor.containsKey(uau.userId)) {
+						 if (!sync) synchronized (waitFor) {
 
-												waitFor.get(uau.userId).add(uau);
+						 if (waitFor.containsKey(uau.userId)) {
 
-												return;
+						 waitFor.get(uau.userId).add(uau);
 
-										}
+						 return;
 
-								}
-								
-						*/
+						 }
+
+						 }
+
+						 */
 
 						Processed processed;
 
@@ -820,68 +825,71 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 						}
 
 						if (processed == null) {
+								
+								uau.update.lock.send(null);
+								
 						} else if (processed.type == PROCESS_ASYNC) {
 
 								asyncPool.execute(processed);
 
 						} else {
-								
+
 								/*
 
-								if (!sync) synchronized (waitFor) {
+								 if (!sync) synchronized (waitFor) {
 
-												if (waitFor.containsKey(uau.userId)) {
+								 if (waitFor.containsKey(uau.userId)) {
 
-														waitFor.get(uau.userId).add(uau);
+								 waitFor.get(uau.userId).add(uau);
 
-														return;
+								 return;
 
-												} else {
+								 } else {
 
-														waitFor.put(uau.userId,this);
+								 waitFor.put(uau.userId,this);
 
-														sync = true;
+								 sync = true;
 
-												}
+								 }
 
-										}
-										
-										*/
+								 }
+
+								 */
 
 
 								processed.run();
 
 						} 
-				
+
 						/*
 
-						if (!isEmpty()) {
+						 if (!isEmpty()) {
 
-								run(pollFirst());
+						 run(pollFirst());
 
-						} else {
+						 } else {
 
-								if (processed.type == PROCESS_SYNC) {
+						 if (processed.type == PROCESS_SYNC) {
 
-										synchronized (waitFor) {
+						 synchronized (waitFor) {
 
-												if (isEmpty()) {
+						 if (isEmpty()) {
 
-														waitFor.remove(uau.userId);
+						 waitFor.remove(uau.userId);
 
-														return;
+						 return;
 
-												}
+						 }
 
-										}
+						 }
 
-								}
+						 }
 
-								run(pollFirst());
+						 run(pollFirst());
 
-						}
-						
-						*/
+						 }
+
+						 */
 
 				}
 
@@ -903,7 +911,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 				StringBuilder str = new StringBuilder();
 
 				boolean no_reply = false;
-				
+
 				Message message = msg.message();
 
 				str.append("消息ID : " + message.messageId()).append("\n");
@@ -911,7 +919,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 				if (message.forwardFrom() != null) {
 
 						no_reply = true;
-						
+
 						str.append("来自用户 : ").append(UserData.get(message.forwardFrom()).userName()).append("\n");
 						str.append("用户ID : ").append(message.forwardFrom().id()).append("\n");
 
@@ -920,7 +928,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 				if (message.forwardFromChat() != null) {
 
 						no_reply = true;
-						
+
 						if (message.forwardFromChat().type() == Chat.Type.channel) {
 
 								str.append("来自频道 : ").append(message.forwardFromChat().username() == null ? message.forwardFromChat().title() : Html.a(message.forwardFromChat().username(),"https://t.me/" + message.forwardFromChat().username())).append("\n");
@@ -942,9 +950,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 						}
 
 				}
-				
+
 				if (message.forwardSenderName() != null) {
-						
+
 						no_reply = true;
 
 						str.append("来自用户 : ").append(message.forwardSenderName());
@@ -954,7 +962,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 				if (message.sticker() != null) {
 
 						no_reply = true;
-						
+
 						str.append(split);
 
 						str.append("贴纸ID : ").append(message.sticker().fileId()).append("\n");
@@ -972,23 +980,23 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 						bot().execute(new SendPhoto(msg.chatId(),getFile(msg.message().sticker().fileId())).caption(str.toString()).parseMode(ParseMode.HTML).replyMarkup(new ReplyKeyboardRemove()).replyToMessageId(msg.messageId()));
 
 				}
-				
+
 				if (!no_reply) {
 
-						msg.sendTyping();
+
 
 						if (msg.hasText()) {
-								
+
 								String text = TentcentNlp.nlpTextchat(msg.chatId().toString(),msg.text());
 
 								if (text != null) msg.send(text).exec();
-								
+
 								return;
-								
+
 					  }
-							
+
 			  }
-						
+
 				msg.send("喵......？",str.toString()).replyTo(msg).html().removeKeyboard().exec();
 
 		}

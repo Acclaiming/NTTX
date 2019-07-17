@@ -286,15 +286,15 @@ public class Send extends AbstractSend<Send> {
 				return resp;
 
 		}
-		
+
 		private boolean noLog = false;
-		
+
 		public Send noLog() {
-				
+
 				noLog = true;
-				
-		return this;
-				
+
+				return this;
+
 		}
 
     @Override
@@ -360,7 +360,7 @@ public class Send extends AbstractSend<Send> {
 
         try {
 
-            SendResponse resp = fragment.bot().execute(request);
+            SendResponse resp = fragment.execute(request);
 
             if (!resp.isOk()) {
 
@@ -379,8 +379,8 @@ public class Send extends AbstractSend<Send> {
                     }
 
                 }
-								
-							
+
+
 
                 BotLog.infoWithStack(
 
@@ -392,8 +392,8 @@ public class Send extends AbstractSend<Send> {
 
 
 								);
-								
-							
+
+
 
             }
 
@@ -404,14 +404,14 @@ public class Send extends AbstractSend<Send> {
 
 						if (!noLog) BotLog.info(
 
-								UserData.get(fragment.origin.me).userName() + " : " +
+										UserData.get(fragment.origin.me).userName() + " : " +
 
-								"消息发送失败 " +  "\n\n" +
+										"消息发送失败 " +  "\n\n" +
 
-								"消息内容 : " + HtmlUtil.escape(request.getText())
+										"消息内容 : " + HtmlUtil.escape(request.getText())
 
 
-								,ex);
+										,ex);
 
 
             return null;

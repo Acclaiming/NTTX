@@ -1,6 +1,8 @@
 package com.pengrad.telegrambot.model;
 
 import java.io.Serializable;
+import io.kurumi.ntt.fragment.ProcessLock;
+import com.pengrad.telegrambot.request.BaseRequest;
 
 /**
  * stas
@@ -9,8 +11,9 @@ import java.io.Serializable;
 public class Update implements Serializable {
     private final static long serialVersionUID = 0L;
 
-	public transient String json;
-	
+		public transient String json;
+		public transient ProcessLock<BaseRequest> lock;
+
     private Integer update_id;
     private Message message;
     private Message edited_message;
@@ -101,17 +104,17 @@ public class Update implements Serializable {
     @Override
     public String toString() {
         return "Update{" +
-                "update_id=" + update_id +
-                ", message=" + message +
-                ", edited_message=" + edited_message +
-                ", channel_post=" + channel_post +
-                ", edited_channel_post=" + edited_channel_post +
-                ", inline_query=" + inline_query +
-                ", chosen_inline_result=" + chosen_inline_result +
-                ", callback_query=" + callback_query +
-                ", shipping_query=" + shipping_query +
-                ", pre_checkout_query=" + pre_checkout_query +
-                ", poll=" + poll +
-                '}';
+						"update_id=" + update_id +
+						", message=" + message +
+						", edited_message=" + edited_message +
+						", channel_post=" + channel_post +
+						", edited_channel_post=" + edited_channel_post +
+						", inline_query=" + inline_query +
+						", chosen_inline_result=" + chosen_inline_result +
+						", callback_query=" + callback_query +
+						", shipping_query=" + shipping_query +
+						", pre_checkout_query=" + pre_checkout_query +
+						", poll=" + poll +
+						'}';
     }
 }

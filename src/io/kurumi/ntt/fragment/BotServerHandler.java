@@ -29,6 +29,10 @@ import javax.activation.MimetypesFileTypeMap;
 import static io.netty.handler.codec.http.HttpMethod.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.*;
 import static io.netty.handler.codec.http.HttpVersion.*;
+import com.pengrad.telegrambot.request.BaseRequest;
+import com.mongodb.internal.connection.tlschannel.impl.ByteBufferUtil;
+import java.nio.ByteBuffer;
+import io.netty.buffer.ByteBuf;
 
 public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
@@ -40,13 +44,13 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 				this.request = request;
 
 				if (new File("/etc/ntt/safe").isFile()) {
-						
+
 						sendOk(ctx);
-						
+
 						return;
-						
+
 				}
-				
+
 				if (!request.decoderResult().isSuccess()) {
 
 						sendError(ctx,BAD_REQUEST);
@@ -122,13 +126,13 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 												new Send(Env.GROUP,"update failed",BotLog.parseError(e)).exec();
 
 										}
-										
+
 										RuntimeUtil.exec("service ntt restart");
-										
+
 
 								}
-								
-								
+
+
 
 						}.start();
 
@@ -153,58 +157,59 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 						return;
 
 				}
-
+				
+				BaseRequest webhookResponse;
+			
 				try {
+						
+						ProcessLock<BaseRequest> lock = new ProcessLock<>();
 
 						Update update = BotUtils.parseUpdate(request.content().toString(CharsetUtil.CHARSET_UTF_8));
 
+						update.lock = lock;
+						
 						BotServer.fragments.get(botToken).processAsync(update);
 
-					
-				} catch (Exception ex) {
+						webhookResponse = lock.waitFor();
 						
+				} catch (Exception ex) {
+
 						BotLog.error("出错",ex);
 
+						webhookResponse = null;
+						
 						//sendError(ctx,INTERNAL_SERVER_ERROR);
 
 				}
+
 				
-				sendOk(ctx);
+				if (webhookResponse == null) {
 
-				//update.lock = new ProcessLock();
+						sendOk(ctx); 
 
-				/*BaseRequest webhookResponse =*/ 
-				/*
+				} else 	{
+						
+						System.out.println(webhookResponse.toWebhookResponse());
 
-				 if (webhookResponse == null) {
+						FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,OK,Unpooled.copiedBuffer(webhookResponse.toWebhookResponse(),CharsetUtil.CHARSET_UTF_8));
 
+						resp.headers().set(HttpHeaderNames.CONTENT_TYPE,"application/json; charset=UTF-8");
 
+						boolean keepAlive = HttpUtil.isKeepAlive(request);
 
-				 sendOk(ctx); 
+						if (!keepAlive) {
 
-				 } else 	{
+								ctx.writeAndFlush(resp).addListener(ChannelFutureListener.CLOSE);
 
-				 FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,OK,stringByteBuf(webhookResponse.toWebhookResponse()));
+						} else {
 
-				 resp.headers().set(HttpHeaderNames.CONTENT_TYPE,"application/json; charset=UTF-8");
+								resp.headers().set(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
 
-				 boolean keepAlive = HttpUtil.isKeepAlive(request);
+								ctx.writeAndFlush(resp);
 
-				 if (!keepAlive) {
+						}
 
-				 ctx.writeAndFlush(resp).addListener(ChannelFutureListener.CLOSE);
-
-				 } else {
-
-				 resp.headers().set(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
-
-				 ctx.writeAndFlush(resp);
-
-				 }
-
-				 }
-
-				 */
+				}
 
 		}
 

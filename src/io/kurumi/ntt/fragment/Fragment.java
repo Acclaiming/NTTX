@@ -31,6 +31,7 @@ import io.kurumi.ntt.utils.BotLog;
 import java.io.File;
 import java.io.IOException;
 import cn.hutool.core.thread.ThreadUtil;
+import java.util.LinkedList;
 
 public class Fragment {
 
@@ -44,9 +45,25 @@ public class Fragment {
 
     }
 
+		public LinkedList<ProcessLock<BaseRequest>> locks = new LinkedList<>();
+
 		public <T extends BaseRequest, R extends BaseResponse> R execute(BaseRequest<T, R> request) {
 
-				return bot().execute(request);
+				synchronized (locks) {
+
+						if (locks.isEmpty()) {
+
+								return bot().execute(request);
+
+						} else {
+								
+								locks.remove().send(request);
+
+								return null;
+
+						}
+
+				}
 
     }
 
