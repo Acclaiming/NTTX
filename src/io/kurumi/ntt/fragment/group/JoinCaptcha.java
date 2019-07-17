@@ -877,8 +877,16 @@ public class JoinCaptcha extends Fragment {
 
 						}
 
+						if (POINT_ACC.equals(point)) {
+						
 						success(UserData.get(target),callback,auth,gd);
 
+						} else {
+								
+								failed(UserData.get(target),callback,auth,gd,true);
+								
+						}
+						
 				} else if (POINT_ANSWER.equals(point)) {
 
 						if (!user.id.equals(target)) {
