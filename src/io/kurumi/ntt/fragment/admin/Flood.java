@@ -25,7 +25,9 @@ public class Flood extends Fragment {
 				
 				long chatId = NumberUtil.parseLong(params[0]);
 				
-				for (int index = 0;index < 114514;index ++) {
+				loop:while(true) {
+				
+				for (int index = 0;index < 10;index ++) {
 						
 						SendResponse resp = execute(new SendMessage(chatId,"/ping"));
 
@@ -37,8 +39,11 @@ public class Flood extends Fragment {
 								
 						}
 						
-						ThreadUtil.sleep(1000);
-						
+				}
+				
+				ThreadUtil.sleep(5000);
+				
+				
 				}
 				
 		}
