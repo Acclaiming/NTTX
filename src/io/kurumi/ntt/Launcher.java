@@ -72,6 +72,8 @@ import io.kurumi.ntt.fragment.rss.RssSub;
 import io.kurumi.ntt.fragment.group.RemoveKeyboard;
 import io.kurumi.ntt.fragment.idcard.Idcard;
 import io.kurumi.ntt.fragment.admin.Flood;
+import io.kurumi.telegraph.Telegraph;
+import io.kurumi.ntt.fragment.graph.TelegraphTest;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -367,6 +369,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 				// IC
 				
 				addFragment(new Idcard());
+				
+				// Telegraph
+				
+				addFragment(new TelegraphTest());
 				
     }
 
