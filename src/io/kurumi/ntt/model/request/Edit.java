@@ -8,16 +8,17 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.db.PointData;
+import io.kurumi.ntt.fragment.BotFragment;
 
 public class Edit extends AbstractSend<Edit> {
 
     private EditMessageText request;
 
-    public Edit(Fragment fragment, Object chatId, int messageId, String... msg) {
+    public Edit(Fragment fragment,Object chatId,int messageId,String... msg) {
 
         super(fragment);
 
-        request = new EditMessageText(chatId, messageId, ArrayUtil.join(msg, "\n"));
+        request = new EditMessageText(chatId,messageId,ArrayUtil.join(msg,"\n"));
 
         this.fragment = fragment;
 
@@ -70,13 +71,13 @@ public class Edit extends AbstractSend<Edit> {
 
         } else {
 
-            failedWith(5000, message);
+            failedWith(5000,message);
 
         }
 
     }
 
-    public void failedWith(final long delay, final Msg message) {
+    public void failedWith(final long delay,final Msg message) {
 
         if (origin == null) return;
 
@@ -84,7 +85,7 @@ public class Edit extends AbstractSend<Edit> {
 
         if (resp != null && resp.isOk()) {
 
-            io.kurumi.ntt.utils.NTT.tryDelete(delay, message, origin);
+            io.kurumi.ntt.utils.NTT.tryDelete(delay,message,origin);
 
         }
 
@@ -97,16 +98,39 @@ public class Edit extends AbstractSend<Edit> {
         return this;
 
     }
-	
-	public BaseResponse exec(PointData toAdd) {
-		
-		BaseResponse resp = exec();
-		
-		if (resp.isOk() && origin != null) toAdd.context.add(origin);
-		
-		return resp;
 
-	}
+		public BaseResponse exec(PointData toAdd) {
+
+				BaseResponse resp = exec();
+
+				if (resp.isOk() && origin != null) toAdd.context.add(origin);
+
+				return resp;
+
+		}
+		
+		public void async() {
+				
+				if (origin == null && origin.update.lock.used.getAndSet(true)) {
+						
+						BotFragment.asyncPool.execute(new Runnable() {
+
+										@Override
+										public void run() {
+												
+												fragment.execute(request);
+												
+										}
+										
+								});
+						
+				} else {
+						
+						origin.update.lock.send(request);
+						
+				}
+				
+		}
 
     @Override
     public BaseResponse exec() {
