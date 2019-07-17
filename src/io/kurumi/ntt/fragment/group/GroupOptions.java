@@ -18,6 +18,9 @@ import java.util.LinkedList;
 import java.util.List;
 import cn.hutool.core.util.StrUtil;
 import java.util.ArrayList;
+import com.pengrad.telegrambot.response.GetStickerSetResponse;
+import com.pengrad.telegrambot.request.GetStickerSet;
+import com.pengrad.telegrambot.model.Sticker;
 
 public class GroupOptions extends Fragment {
 
@@ -29,7 +32,7 @@ public class GroupOptions extends Fragment {
 				registerFunction("options");
 
 				registerPoint(POINT_SET_CUST);
-				
+
 				registerCallback(
 						POINT_BACK,
 						POINT_MENU_MAIN,
@@ -57,14 +60,14 @@ public class GroupOptions extends Fragment {
 		final String POINT_MENU_JOIN = "group_menu_join";
 		final String POINT_MENU_CUST = "group_menu_custom";
 		final String POINT_MENU_SHOW = "group_menu_show";
-		
+
 		final String POINT_HELP = "group_help";
 		final String POINT_SET_MAIN = "group_main_set";
 		final String POINT_SET_REST = "group_rest_set";
 		final String POINT_SET_JOIN = "group_join_set";
 		final String POINT_SET_CUST = "group_custom_set";
 		final String POINT_SET_SHOW = "group_custom_show";
-		
+
 		final class EditCustom extends PointData {
 
 				int type;
@@ -80,7 +83,16 @@ public class GroupOptions extends Fragment {
 				@Override
 				public void onFinish() {
 
-						origin.edit("编辑自定义问题. 对错选项或正确内容.\n",cusStats(data)).buttons(cusMenu(data)).exec();
+						if (type < 4) {
+
+								origin.edit("编辑自定义问题. 对错选项或正确内容.\n",cusStats(data)).buttons(cusMenu(data)).exec();
+
+						} else {
+
+								origin.edit(showStats(data)).buttons(showMenu(data)).exec();
+
+
+						}
 
 						super.onFinish();
 
@@ -92,15 +104,15 @@ public class GroupOptions extends Fragment {
 		public void onFunction(UserData user,final Msg msg,String function,String[] params) {
 
 				if (!NTT.isGroupAdmin(msg.fragment,msg.chatId(),origin.me.id())) {
-						
+
 						msg.reply("BOT不是群组管理员 :)").exec();
-						
+
 						return;
-						
+
 				}
-				
+
 				if (NTT.checkGroupAdmin(msg)) return;
-				
+
 				final GroupData data = GroupData.get(msg.chat());
 
 				if (!msg.contactable()) {
@@ -1012,7 +1024,7 @@ public class GroupOptions extends Fragment {
 
 
 												);
-												
+
 												return;
 
 										} else if (data.require_input != null && (data.custom_a_question == null || data.custom_kw == null)) {
@@ -1047,7 +1059,7 @@ public class GroupOptions extends Fragment {
 										callback.send("现在发送问题 :").exec(edit);
 
 										setPrivatePoint(user,POINT_SET_CUST,edit);
-										
+
 								} else if ("reset_items".equals(params[1])) {
 
 										callback.confirm();
@@ -1065,9 +1077,9 @@ public class GroupOptions extends Fragment {
 										EditCustom edit = new EditCustom(2,callback,data);
 
 										callback.send("现在发送问题 :").exec(edit);
-										
+
 										setPrivatePoint(user,POINT_SET_CUST,edit);
-										
+
 								} else if ("reset_answer".equals(params[1])) {
 
 										callback.confirm();
@@ -1077,9 +1089,112 @@ public class GroupOptions extends Fragment {
 										callback.send("现在发送正确关键字 每行一个 :").exec(edit);
 
 										setPrivatePoint(user,POINT_SET_CUST,edit);
-										
+
 								} 
-								
+
+						} else if (POINT_MENU_SHOW.equals(point)) {
+
+								callback.edit(showStats(data)).buttons(showMenu(data)).exec();
+
+						} else if (POINT_SET_SHOW.equals(point)) {
+
+							  if ("show_disable".equals(params[1])) {
+
+										data.welcome = null;
+
+										callback.text("📢  已关闭");
+
+								} else if ("show_text".equals(params[1])) {
+
+										if (data.welcomeMessage == null) {
+
+												callback.alert("文本内容未设定");
+
+												return;
+
+										}
+
+										data.welcome = 0;
+
+										callback.text("📢  文本欢迎消息");
+
+								} else if ("show_sticker".equals(params[1])) {
+
+										if (data.welcomeSet == null) {
+
+												callback.alert("贴纸未设定");
+
+												return;
+
+										}
+
+										data.welcome = 1;
+
+										callback.text("📢  贴纸欢迎消息");
+
+								} else if ("text_and_sticker".equals(params[1])) {
+
+										if (data.welcomeMessage == null) {
+
+												callback.alert("文本内容未设定");
+
+												return;
+
+										} else if (data.welcomeSet == null) {
+
+												callback.alert("贴纸未设定");
+
+												return;
+
+										}
+
+										data.welcome = 2;
+
+										callback.text("📢  贴纸与文本");
+
+								} else if ("set_msg".equals(params[1])) {
+
+										callback.confirm();
+
+										EditCustom edit = new EditCustom(4,callback,data);
+
+										callback.send("现在发送欢迎文本 :").exec(edit);
+
+										setPrivatePoint(user,POINT_SET_CUST,edit);
+
+
+								} else if ("set_set".equals(params[1])) {
+
+										callback.confirm();
+
+										EditCustom edit = new EditCustom(5,callback,data);
+
+										callback.send("现在发送贴纸来设定","注意 : 如果发送贴纸包链接，则每次随机一张作为欢迎信息").exec(edit);
+
+										setPrivatePoint(user,POINT_SET_CUST,edit);
+
+
+								} else if ("del_welcome".equals(params[1])) {
+
+										if (data.del_welcome_msg == null) {
+
+												data.del_welcome_msg = true;
+
+												callback.text("??📢  全部保留");
+
+										} else {
+
+												data.del_welcome_msg = null;
+
+												callback.text("📢  保留最后一条");
+
+										}
+
+								}
+
+
+
+
 						}
 
 				}
@@ -1120,23 +1235,23 @@ public class GroupOptions extends Fragment {
 						boolean valid = false;
 
 						ArrayList<String> buttons = new ArrayList<>();
-						
+
 						for (final String line : msg.text().split("\n")) {
 
 								if (buttons.contains(line)) {
-										
+
 										msg.send("选项重复 : " + line).withCancel().exec(data);
-										
+
 										return;
-									
+
 								}
-								
-								
-								
+
+
+
 								if (line.startsWith("+")) {
-										
+
 										buttons.add(line.substring(1));
-										
+
 										valid = true;
 
 										items.add(new GroupData.CustomItem() {{
@@ -1147,7 +1262,7 @@ public class GroupOptions extends Fragment {
 														}});
 
 								} else {
-										
+
 										buttons.add(line);
 
 										items.add(new GroupData.CustomItem() {{
@@ -1199,11 +1314,11 @@ public class GroupOptions extends Fragment {
 
 						clearPrivatePoint(user);
 
-				} else if (edit.type == 0) {
+				} else if (edit.type == 3) {
 
 						if (StrUtil.isBlank(msg.text())) {
 
-								msg.send("请输入新的选择模式答案 :").withCancel().exec(data);
+								msg.send("请输入新的回答模式答案 :").withCancel().exec(data);
 
 								return;
 
@@ -1233,6 +1348,58 @@ public class GroupOptions extends Fragment {
 
 						clearPrivatePoint(user);
 
+				} else if (edit.type == 4) {
+
+						if (!msg.hasText()) {
+
+								msg.send("请发送欢迎文本").withCancel().exec(data);
+
+								return;
+
+						}
+
+						edit.data.welcomeMessage = msg.text();
+
+						clearPrivatePoint(user);
+						
+				}else if (edit.type == 5) {
+
+						if (msg.sticker() != null) {
+
+								edit.data.welcomeSet = new LinkedList<>();
+								
+								edit.data.welcomeSet.add(msg.sticker().fileId());
+
+						} else 	if (!msg.hasText()) {
+
+								msg.send("请发送欢迎贴纸").withCancel().exec(data);
+
+								return;
+
+						} else {
+								
+								String target = msg.text();
+								
+								final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
+
+								if (!set.isOk()) {
+
+										msg.send("无法读取贴纸包 " + target + " : " + set.description()).exec(data);
+
+										return;
+
+								}
+								
+								edit.data.welcomeSet = new LinkedList<>();
+								
+								for (Sticker sticker :set.stickerSet().stickers()) edit.data.welcomeSet.add(sticker.fileId());
+								
+						}
+						
+						edit.data.welcomeMessage = msg.text();
+
+						clearPrivatePoint(user);
+
 				}
 
 
@@ -1245,8 +1412,8 @@ public class GroupOptions extends Fragment {
 								newButtonLine("🛠️  功能选项",POINT_MENU_MAIN,data.id);
 								newButtonLine("📝  成员限制",POINT_MENU_REST,data.id);
 								newButtonLine("🚪  加群验证",POINT_MENU_JOIN,data.id);
-							//	newButtonLine("📢  欢迎消息",POINT_MENU_SHOW,data.id);
-								
+								newButtonLine("📢  欢迎消息",POINT_MENU_SHOW,data.id);
+
 						}};
 
 
@@ -1343,7 +1510,7 @@ public class GroupOptions extends Fragment {
 				return new ButtonMarkup() {{
 
 								newButtonLine()
-										.newButton("开启审核",POINT_HELP,"enable")
+										.newButton("开启验证",POINT_HELP,"enable")
 										.newButton(data.join_captcha != null ? "✅" : "☑",POINT_SET_JOIN,data.id,"enable");
 
 								newButtonLine()
@@ -1513,21 +1680,35 @@ public class GroupOptions extends Fragment {
 						}};
 
 		}
-		
+
 		String showStats(GroupData data) {
-				
+
 				StringBuilder stats = new StringBuilder();
-				
-				stats.append("欢迎消息文本 : ");
-				
+
+				stats.append("设置欢迎消息，BOT将在新成员加入时发送 (如果开启了加群验证，则在通过验证后发送)");
+
+				stats.append("\n\n欢迎消息 : ");
+
 				if (data.welcomeMessage == null) {
-						
+
 						stats.append("未设定");
-						
+
 				}
-				
+
+				stats.append("\n欢迎贴纸 : ");
+
+				if (data.welcomeSet == null) {
+
+						stats.append("未设定");
+
+				} else {
+
+						stats.append("已设定 ").append(data.welcomeSet.size()).append(" 张");
+
+				}
+
 				return stats.toString();
-				
+
 		}
 
 		ButtonMarkup showMenu(final GroupData data) {
@@ -1537,32 +1718,26 @@ public class GroupOptions extends Fragment {
 								newButtonLine()
 										.newButton("关闭欢迎消息",POINT_HELP,"show_disable")
 										.newButton(data.welcome == null ? "●" : "○",POINT_SET_SHOW,data.id,"show_disable");
-								
+
 								newButtonLine()
-										.newButton("仅文本信息",POINT_HELP,"show_text")
+										.newButton("文本消息",POINT_HELP,"show_text")
 										.newButton(((Integer)0).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"show_text");
 
 								newButtonLine()
-										.newButton("消息与按钮",POINT_HELP,"show_text")
-										.newButton(((Integer)1).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"show_text_with_buttons");
+										.newButton("贴纸消息",POINT_HELP,"show_sticker")
+										.newButton(((Integer)1).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"show_sticker");								
 
 								newButtonLine()
-										.newButton("发送欢迎贴纸",POINT_HELP,"show_sticker")
-										.newButton(((Integer)2).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"show_sticker");
+										.newButton("文本与贴纸",POINT_HELP,"text_and_set")
+										.newButton(((Integer)2).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"show_animation");
 
-								newButtonLine()
-										.newButton("随机欢迎贴纸",POINT_HELP,"show_random_sticker")
-										.newButton(((Integer)3).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"show_sticker");
-								
-								newButtonLine("设置文本信息",POINT_SET_SHOW,data.id,"reset_msg");
-								newButtonLine("设置显示按钮",POINT_SET_SHOW,data.id,"reset_buttons");
-								newButtonLine("设置单个贴纸",POINT_SET_SHOW,data.id,"reset_sticker");
-								newButtonLine("设置贴纸集合",POINT_SET_SHOW,data.id,"reset_sticker_set");
-								
+								newButtonLine("设置欢迎文本",POINT_SET_SHOW,data.id,"set_msg");
+								newButtonLine("设置欢迎贴纸",POINT_SET_SHOW,data.id,"set_set");
+
 								newButtonLine()
 										.newButton("仅保留最后一条",POINT_HELP,"del_welcome")
 										.newButton(data.del_welcome_msg != null ? "✅" : "☑",POINT_SET_SHOW,data.id,"del_welcome");
-								
+
 								newButtonLine("🔙",POINT_BACK,data.id);
 
 						}};
@@ -1570,7 +1745,7 @@ public class GroupOptions extends Fragment {
 		}
 
 
-		
+
 
 
 }
