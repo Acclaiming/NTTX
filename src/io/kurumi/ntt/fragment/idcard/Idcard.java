@@ -160,7 +160,7 @@ public class Idcard extends Fragment {
 
 								}
 
-								msg.send("生成完成 : " + Html.code(code.getFull()) + "\n",ArrayUtil.join(ics,"\n")).html().exec();
+								msg.send("生成完成 : " + Html.code(code.getFull()) + "\n",ArrayUtil.join(ics,"\n")).html().async();
 								
 								return;
 

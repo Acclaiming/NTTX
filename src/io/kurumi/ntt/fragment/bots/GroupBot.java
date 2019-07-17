@@ -28,7 +28,7 @@ public class GroupBot extends UserBotFragment {
 						
 						if (me.id().equals(msg.message().newChatMembers()[0].id())) {
 								
-								msg.send("欢迎使用 :)","在群组发送 /options 即可调出设置。").exec();
+								msg.send("欢迎使用 :)","在群组发送 /options 即可调出设置。").async();
 								
 								return PROCESS_REJECT;
 								

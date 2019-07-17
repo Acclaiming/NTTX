@@ -36,7 +36,7 @@ public class Stat extends Fragment {
 		long total = handler4stat.getTotalCPUTime();
 		long idle = handler4stat.getIdleCPUTime();
 		
-		status.append("\nCPU占用 : ").append(((float)(idle) / total) * 100).append("%");
+		status.append("\nCPU占用 : ").append((100 - ((float)(idle) / total) * 100)).append("%");
 	
 		msg.send(status.toString()).exec();
 		
