@@ -145,7 +145,9 @@ public class AddSticker extends Fragment {
 
 			if (resp == null) {
 				
-				msg.send("Telegram服务器超时 请重试").withCancel().exec();
+				msg.reply("Telegram服务器超时 请重试").withCancel().exec();
+				
+				return;
 				
 			} else if (!resp.isOk()) {
 
