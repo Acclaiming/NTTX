@@ -216,7 +216,7 @@ public class FeedHtmlFormater {
 
 				html = html.replace("<br>","\n");
 
-				html = ReUtil.replaceAll(html,"<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>","\n\n");
+				html = ReUtil.replaceAll(html,"<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>","\n");
 				
 				/*
 				
