@@ -1730,8 +1730,8 @@ public class GroupOptions extends Fragment {
 										.newButton(((Integer)1).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"show_sticker");								
 
 								newButtonLine()
-										.newButton("文本与贴纸",POINT_HELP,"text_and_set")
-										.newButton(((Integer)2).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"show_animation");
+										.newButton("文本与贴纸",POINT_HELP,"text_and_sticker")
+										.newButton(((Integer)2).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"text_and_sticker");
 
 								newButtonLine("设置欢迎文本",POINT_SET_SHOW,data.id,"set_msg");
 								newButtonLine("设置欢迎贴纸",POINT_SET_SHOW,data.id,"set_set");
