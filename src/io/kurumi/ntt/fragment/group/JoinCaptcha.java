@@ -28,6 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
+import io.kurumi.ntt.fragment.admin.Firewall;
 
 public class JoinCaptcha extends Fragment {
 
@@ -141,6 +142,14 @@ public class JoinCaptcha extends Fragment {
 						if (user.admin() || msg.isGroupAdmin()) return;
 
 						if (!user.id.equals(newData.id)) return;
+
+						if (Firewall.block.containsId(user.id)) {
+
+								msg.kick(user.id,true);
+
+								return;
+
+						}
 
 						if (data.waitForCaptcha == null) {
 
@@ -1069,7 +1078,7 @@ public class JoinCaptcha extends Fragment {
 				if (gd.captcha_del == null) {
 
 						msg.send(user.userName() + " 验证失败 已被" + (gd.fail_ban == null ? "移除" : "封锁")).html().failed();
-						
+
 				} else if (gd.captcha_del == 0) {
 
 						Msg lastMsg = msg.send(user.userName() + " 验证失败 已被" + (gd.fail_ban == null ? "移除" : "封锁")).html().send();
@@ -1079,7 +1088,6 @@ public class JoinCaptcha extends Fragment {
 								gd.last_join_msg = lastMsg.messageId();
 
 						}
-
 
 				} else {
 
