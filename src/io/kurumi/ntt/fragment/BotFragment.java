@@ -1100,6 +1100,12 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 		public void stop() {
 
+				for (Long id : point().privatePoints.keySet()) {
+						
+						new Send(this,id,"当前操作已取消 : NTT 正在更新 / 重启").exec();
+						
+				}
+				
 				if (!isLongPulling()) {
 
 						// bot.execute(new DeleteWebhook());
