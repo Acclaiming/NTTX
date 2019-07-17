@@ -1695,6 +1695,10 @@ public class GroupOptions extends Fragment {
 
 						stats.append("未设定");
 
+				} else {
+						
+						stats.append(data.welcomeMessage);
+						
 				}
 
 				stats.append("\n欢迎贴纸 : ");
