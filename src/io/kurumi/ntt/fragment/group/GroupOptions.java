@@ -39,11 +39,13 @@ public class GroupOptions extends Fragment {
 						POINT_MENU_REST,
 						POINT_MENU_JOIN,
 						POINT_MENU_CUST,
+						POINT_MENU_SHOW,
 						POINT_HELP,
 						POINT_SET_MAIN,
 						POINT_SET_REST,
 						POINT_SET_JOIN,
-						POINT_SET_CUST);
+						POINT_SET_CUST,
+						POINT_SET_SHOW);
 
 		}
 
