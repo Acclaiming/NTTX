@@ -878,15 +878,15 @@ public class JoinCaptcha extends Fragment {
 						}
 
 						if (POINT_ACC.equals(point)) {
-						
-						success(UserData.get(target),callback,auth,gd);
+
+								success(UserData.get(target),callback,auth,gd);
 
 						} else {
-								
+
 								failed(UserData.get(target),callback,auth,gd,true);
-								
+
 						}
-						
+
 				} else if (POINT_ANSWER.equals(point)) {
 
 						if (!user.id.equals(target)) {
@@ -896,8 +896,8 @@ public class JoinCaptcha extends Fragment {
 								return;
 
 						}
-						
-						
+
+
 						if (auth == null) {
 
 								callback.delete();
@@ -982,7 +982,7 @@ public class JoinCaptcha extends Fragment {
 								gd.last_join_msg = lastMsg.messageId();
 
 						}
-						
+
 				} else {
 
 						msg.send(user.userName() + " 通过了验证 ~").html().exec();
@@ -1068,6 +1068,10 @@ public class JoinCaptcha extends Fragment {
 
 				if (gd.captcha_del == null) {
 
+						msg.send(user.userName() + " 验证失败 已被" + (gd.fail_ban == null ? "移除" : "封锁")).html().failed();
+						
+				} else if (gd.captcha_del == 0) {
+
 						Msg lastMsg = msg.send(user.userName() + " 验证失败 已被" + (gd.fail_ban == null ? "移除" : "封锁")).html().send();
 
 						if (lastMsg != null) {
@@ -1076,9 +1080,6 @@ public class JoinCaptcha extends Fragment {
 
 						}
 
-				} else if (gd.captcha_del == 0) {
-
-						msg.send(user.userName() + " 验证失败 已被" + (gd.fail_ban == null ? "移除" : "封锁")).html().failed();
 
 				} else {
 
