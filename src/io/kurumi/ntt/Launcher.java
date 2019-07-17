@@ -71,6 +71,7 @@ import io.kurumi.ntt.fragment.rss.FeedFetchTask;
 import io.kurumi.ntt.fragment.rss.RssSub;
 import io.kurumi.ntt.fragment.group.RemoveKeyboard;
 import io.kurumi.ntt.fragment.idcard.Idcard;
+import io.kurumi.ntt.fragment.admin.Flood;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -287,6 +288,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 				super.reload();
 
 				// ADMIN
+				
+				addFragment(new Flood());
 
 				addFragment(new BotChannnel());
 
