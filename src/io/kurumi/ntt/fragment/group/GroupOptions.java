@@ -93,7 +93,6 @@ public class GroupOptions extends Fragment {
 
 								origin.edit(showStats(data)).buttons(showMenu(data)).exec();
 
-
 						}
 
 						super.onFinish();
@@ -1182,7 +1181,7 @@ public class GroupOptions extends Fragment {
 
 												data.del_welcome_msg = true;
 
-												callback.text("??📢  全部保留");
+												callback.text("📢  全部保留");
 
 										} else {
 
@@ -1194,7 +1193,8 @@ public class GroupOptions extends Fragment {
 
 								}
 
-
+								callback.edit(showStats(data)).buttons(showMenu(data)).exec();
+								
 
 
 						}
