@@ -212,42 +212,43 @@ public class FeedHtmlFormater {
 
 				html = Html.unescape(html);
 
-			//	html = URLUtil.decode(html);
+				//	html = URLUtil.decode(html);
 
 				html = html.replace("<br>","\n");
 
+				html = removeADs(html).trim();
+
 				html = ReUtil.replaceAll(html,"<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>","\n");
-				
+
 				/*
-				
-				while (html.contains("<img")) {
 
-						String before = StrUtil.subBefore(html,"<img",false);
+				 while (html.contains("<img")) {
 
-						String after = StrUtil.subAfter(html,"<img",false);
+				 String before = StrUtil.subBefore(html,"<img",false);
 
-						if (!after.contains(">")) break;
+				 String after = StrUtil.subAfter(html,"<img",false);
 
-						String code = StrUtil.subBefore(after,">",false);
+				 if (!after.contains(">")) break;
 
-						after = StrUtil.subAfter(after,">",false);
+				 String code = StrUtil.subBefore(after,">",false);
 
-						if (!code.contains("src")) break;
+				 after = StrUtil.subAfter(after,">",false);
 
-						code = StrUtil.subAfter(code,"src",false);
+				 if (!code.contains("src")) break;
 
-						code = StrUtil.subAfter(code,"\"",false);
-						code = StrUtil.subBefore(code,"\"",false);
+				 code = StrUtil.subAfter(code,"src",false);
 
-						html = before + Html.a("图片",code) + after;
+				 code = StrUtil.subAfter(code,"\"",false);
+				 code = StrUtil.subBefore(code,"\"",false);
 
-				}
-				
-				*/
+				 html = before + Html.a("图片",code) + after;
+
+				 }
+
+				 */
+
 
 				html = html.replaceAll("<(?!/?(a|b|i|code|pre|em)\b)[^>]+>","");
-
-				html = removeADs(html).trim();
 
 				if (html.startsWith(entry.getTitle())) {
 
@@ -273,7 +274,7 @@ public class FeedHtmlFormater {
 
 				}
 
-				return html;
+				return html.trim();
 
 		}
 
@@ -296,13 +297,13 @@ public class FeedHtmlFormater {
 						if (line.contains("http://fetchrss.com")) continue;
 
 						// Feed43
-						
+
 						if (line.contains("http://feed43.com/")) {
 
 								line = StrUtil.subBefore(line,"<p><sub><i>-- Delivered by",false);
 
 						}
-						
+
 						result.add(line);
 
 				}
