@@ -51,7 +51,7 @@ public class Fragment {
 
 				synchronized (locks) {
 
-						if (locks.isEmpty()) {
+						if (locks.isEmpty() || request.getClass().getSimpleName().startsWith("Get")) {
 
 								return bot().execute(request);
 
