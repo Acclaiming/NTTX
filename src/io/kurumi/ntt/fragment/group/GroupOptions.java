@@ -87,11 +87,11 @@ public class GroupOptions extends Fragment {
 
 						if (type < 4) {
 
-								origin.edit("编辑自定义问题. 对错选项或正确内容.\n",cusStats(data)).buttons(cusMenu(data)).exec();
+								origin.edit("编辑自定义问题. 对错选项或正确内容.\n",cusStats(data)).buttons(cusMenu(data)).async();
 
 						} else {
 
-								origin.edit(showStats(data)).buttons(showMenu(data)).exec();
+								origin.edit(showStats(data)).buttons(showMenu(data)).async();
 
 						}
 
@@ -192,19 +192,19 @@ public class GroupOptions extends Fragment {
 
 						if (POINT_BACK.equals(point)) {
 
-								callback.edit(Html.b(data.title),Html.i("更改群组的设定")).html().buttons(menuMarkup(data)).exec();
+								callback.edit(Html.b(data.title),Html.i("更改群组的设定")).html().buttons(menuMarkup(data)).async();
 
 						} else if (POINT_MENU_MAIN.equals(point)) {
 
-								callback.edit("群组的管理设定. 点击名称查看功能说明.").buttons(mainMenu(data)).exec();
+								callback.edit("群组的管理设定. 点击名称查看功能说明.").buttons(mainMenu(data)).async();
 
 						} else if (POINT_MENU_REST.equals(point)) {
 
-								callback.edit("限制成员进行某些操作. ","\n注意 : 当设置了 🗑 (删除) 时 不计入警告计数。\n对于禁止邀请用户/机器人 : 🗑 表示仅移除被邀请者。").buttons(restMenu(data)).exec();
+								callback.edit("限制成员进行某些操作. ","\n注意 : 当设置了 🗑 (删除) 时 不计入警告计数。\n对于禁止邀请用户/机器人 : 🗑 表示仅移除被邀请者。").buttons(restMenu(data)).async();
 
 						} else if (POINT_MENU_JOIN.equals(point)) {
 
-								callback.edit("编辑群组的新成员加群验证设置. ").buttons(joinMenu(data)).exec();
+								callback.edit("编辑群组的新成员加群验证设置. ").buttons(joinMenu(data)).async();
 
 						} else if (POINT_SET_MAIN.equals(point)) {
 
@@ -991,7 +991,7 @@ public class GroupOptions extends Fragment {
 
 								} else if ("mode_cus".equals(params[1])) {
 
-										callback.edit("编辑自定义问题. 对错选项或正确内容.\n",cusStats(data)).buttons(cusMenu(data)).exec();
+										callback.edit("编辑自定义问题. 对错选项或正确内容.\n",cusStats(data)).buttons(cusMenu(data)).async();
 
 										return;
 
@@ -1095,7 +1095,7 @@ public class GroupOptions extends Fragment {
 
 						} else if (POINT_MENU_SHOW.equals(point)) {
 
-								callback.edit(showStats(data)).buttons(showMenu(data)).exec();
+								callback.edit(showStats(data)).buttons(showMenu(data)).async();
 
 						} else if (POINT_SET_SHOW.equals(point)) {
 
@@ -1193,7 +1193,7 @@ public class GroupOptions extends Fragment {
 
 								}
 
-								callback.edit(showStats(data)).buttons(showMenu(data)).exec();
+								callback.edit(showStats(data)).buttons(showMenu(data)).async();
 								
 
 
