@@ -60,12 +60,12 @@ public class BotServer {
 				if (socketFile != null) {
 
 						bossGroup = new EpollEventLoopGroup(); 
-						workerGroup = new EpollEventLoopGroup();
+						workerGroup = new EpollEventLoopGroup(32);
 
 				} else {
 
 						bossGroup = new NioEventLoopGroup(); 
-						workerGroup = new NioEventLoopGroup();
+						workerGroup = new NioEventLoopGroup(32);
 
 				}
 
@@ -141,52 +141,6 @@ public class BotServer {
 						server.close();
 
 						server = null;
-
-				}
-
-		}
-
-		public static class ProcessLock extends ReentrantLock {
-
-				private Condition condition = newCondition();
-				private BaseRequest request;
-				public AtomicBoolean used = new AtomicBoolean(false);
-
-				public BaseRequest waitFor() throws InterruptedException {
-
-						lockInterruptibly();
-
-						try {
-
-								this.condition.await(1000,TimeUnit.MILLISECONDS);
-
-								if (request != null) System.out.println(request.toWebhookResponse());
-
-								return request;
-
-						} finally {
-
-								unlock();
-
-						}
-
-				}
-
-				public void unlock(BaseRequest request) {
-
-						lock();
-
-						this.request = request;
-
-						try {
-
-								this.condition.signalAll();
-
-						} finally {
-
-								unlock();
-
-						}
 
 				}
 
