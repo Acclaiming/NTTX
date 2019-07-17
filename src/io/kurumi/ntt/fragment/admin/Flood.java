@@ -7,6 +7,7 @@ import io.kurumi.ntt.model.Msg;
 import cn.hutool.core.util.NumberUtil;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
+import cn.hutool.core.thread.ThreadUtil;
 
 public class Flood extends Fragment {
 
@@ -35,6 +36,8 @@ public class Flood extends Fragment {
 								break;
 								
 						}
+						
+						ThreadUtil.sleep(1000);
 						
 				}
 				
