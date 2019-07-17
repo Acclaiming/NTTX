@@ -12,6 +12,7 @@ import cn.hutool.json.JSONObject;
 import io.kurumi.telegraph.model.NodeElement;
 import io.kurumi.telegraph.model.PageList;
 import io.kurumi.telegraph.model.PageViews;
+import cn.hutool.http.HttpRequest;
 
 public class Telegraph {
 
@@ -19,60 +20,63 @@ public class Telegraph {
 
 		public static Gson gson = new Gson();
 
+	  static <T extends Object> T send(String path,Class<T> resultClass,Object... params) {
+
+				HttpRequest request = HttpUtil.createGet(API + path);
+
+				for (int index = 0;index < params.length;index = index + 2) {
+
+						if (params[index + 1] == null) continue;
+
+						request.form(params[index].toString(),params[index + 1]);
+
+				}
+
+				HttpResponse resp = request.execute();
+
+				if (!resp.isOk()) return null;
+
+				JSONObject result = new JSONObject(resp.body());
+
+				if (!result.getBool("ok",false)) return null;
+
+				return gson.fromJson(result.getJSONObject("result").toString(),resultClass);
+
+
+		}
+
 		public static Account createAccount(String short_name,String author_name,String author_url) {
 
-				HttpResponse resp = HttpUtil.createGet(API + "/createAccount")
-
-						.form("short_name",short_name)
-						.form("author_name",author_name)
-						.form("author_url",author_url)
-
-						.execute();
-						
-					System.out.println(resp);
-
-				return resp.isOk() ? gson.fromJson(resp.body(),Account.class) : null;
+				return (Account) send("createAccount",Account.class,
+															"short_name",short_name,
+															"author_name",author_name,
+															"author_url",author_url);
 
 		}
 
 		public static Account editAccountInfo(String access_token,String short_name,String author_name,String author_url) {
 
-				HttpResponse resp = HttpUtil.createGet(API + "/editAccountInfo")
-
-						.form("access_token",access_token)
-						.form("short_name",short_name)
-						.form("author_name",author_name)
-						.form("author_url",author_url)
-
-						.execute();
-
-				return resp.isOk() ? gson.fromJson(resp.body(),Account.class) : null;
+				return (Account) send("editAccountInfo",Account.class,
+															"access_token",access_token,
+															"short_name",short_name,
+															"author_name",author_name,
+															"author_url",author_url);
 
 		}
 
 		public static Account getAccountInfo(String access_token) {
 
-				HttpResponse resp = HttpUtil.createGet(API + "/getAccountInfo")
-
-						.form("access_token",access_token)
-						.form("fields","[\"short_name\", \"author_name\", \"author_url\", \"auth_url\", \"page_count\"")
-
-						.execute();
-
-				return resp.isOk() ? gson.fromJson(resp.body(),Account.class) : null;
+				return (Account) send("getAccountInfo",Account.class,
+															"access_token",access_token,
+															"fields","[\"short_name\", \"author_name\", \"author_url\", \"auth_url\", \"page_count\""
+															);
 
 		}
 
 
 		public static Account revokeAccessToken(String access_token) {
 
-				HttpResponse resp = HttpUtil.createGet(API + "/revokeAccessToken")
-
-						.form("access_token",access_token)
-
-						.execute();
-
-				return resp.isOk() ? gson.fromJson(resp.body(),Account.class) : null;
+				return (Account) send("revokeAccessToken",Account.class,"access_token",access_token);
 
 		}
 
@@ -95,20 +99,13 @@ public class Telegraph {
 
 				}
 
-				HttpResponse resp = HttpUtil.createGet(API + "/createPage")
-
-						.form("access_token",access_token)
-						.form("title",title)
-						.form("author_name",author_name)
-						.form("author_url",author_url)
-						.form("content",contentFormat.toString())
-						.form("return_content",return_content)
-
-						.execute();
-						
-						System.out.println(resp);
-
-				return resp.isOk() ? gson.fromJson(resp.body(),Page.class) : null;
+			  return (Page) send("createPage",Page.class,
+													 "access_token",access_token,
+													 "title",title,
+													 "author_name",author_name,
+													 "author_url",author_url,
+													 "content",contentFormat.toString(),
+													 "return_content",return_content);
 
 		}
 
@@ -131,63 +128,48 @@ public class Telegraph {
 
 				}
 
-				HttpResponse resp = HttpUtil.createGet(API + "/editPage")
+				return (Page) send("editPage",Page.class,
 
-						.form("access_token",access_token)
-						.form("title",title)
-						.form("path",path)
-						.form("author_name",author_name)
-						.form("author_url",author_url)
-						.form("content",contentFormat.toString())
-						.form("return_content",return_content)
-
-						.execute();
-
-				return resp.isOk() ? gson.fromJson(resp.body(),Page.class) : null;
+													 "access_token",access_token,
+													 "title",title,
+													 "path",path,
+													 "author_name",author_name,
+													 "author_url",author_url,
+													 "content",contentFormat.toString(),
+													 "return_content",return_content);
 
 		}
 
 		public static Page getPage(String path,Boolean return_content) {
 
-				HttpResponse resp = HttpUtil.createGet(API + "/getPage")
+				return (Page) send("getPage",Page.class,
 
-						.form("path",path)
-						.form("return_content",return_content)
+													 "path",path,
+													 "return_content",return_content);
 
-						.execute();
-
-				return resp.isOk() ? gson.fromJson(resp.body(),Page.class) : null;
 
 		}
 
 		public static PageList getPageList(String access_token,Integer offset,Integer limit) {
 
-				HttpResponse resp = HttpUtil.createGet(API + "/getPageList")
+				return (PageList) send("getPageList",PageList.class,
 
-						.form("access_token",access_token)
-						.form("offset",offset)
-						.form("limit",limit)
-
-						.execute();
-
-				return resp.isOk() ? gson.fromJson(resp.body(),PageList.class) : null;
+															 "access_token",access_token,
+															 "offset",offset,
+															 "limit",limit);
 
 		}
 
 		public static PageViews getViews(String path,Integer year,Integer month,Integer day,Integer hour) {
 
-				HttpResponse resp = HttpUtil.createGet(API + "/getViews")
+				return (PageViews) send("getViews",PageViews.class,
 
-						.form("path",path)
-						.form("year",year)
-						.form("month",month)
-						.form("day",day)
-						.form("hour",hour)
-
-						.execute();
-
-				return resp.isOk() ? gson.fromJson(resp.body(),PageViews.class) : null;
-
+																"path",path,
+																"year",year,
+																"month",month,
+																"day",day,
+																"hour",hour);
+				
 		}
 
 }
