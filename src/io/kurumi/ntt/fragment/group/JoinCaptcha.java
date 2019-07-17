@@ -242,7 +242,7 @@ public class JoinCaptcha extends Fragment {
 
 														msg.send(user.userName() + " , " + data.welcomeMessage).async();
 
-														execute(new SendSticker(data.id,sticker).replyToMessageId(msg.messageId()));
+														execute(new SendSticker(data.id,sticker));
 
 												}
 
@@ -256,7 +256,7 @@ public class JoinCaptcha extends Fragment {
 
 												}
 
-												resp = execute(new SendSticker(data.id,sticker).replyToMessageId(msg.messageId()));
+												resp = execute(new SendSticker(data.id,sticker));
 
 												if (resp != null && resp.isOk()) {
 
@@ -1222,7 +1222,7 @@ public class JoinCaptcha extends Fragment {
 
 								} else {
 
-										SendResponse resp = execute(new SendSticker(gd.id,sticker).replyToMessageId(auth.serviceMsg.messageId()));
+										SendResponse resp = execute(new SendSticker(gd.id,sticker));
 
 										if (resp != null && resp.isOk()) {
 
@@ -1254,7 +1254,7 @@ public class JoinCaptcha extends Fragment {
 
 												msg.send(user.userName() + " , " + gd.welcomeMessage).async();
 
-												execute(new SendSticker(gd.id,sticker).replyToMessageId(auth.serviceMsg.messageId()));
+												execute(new SendSticker(gd.id,sticker));
 
 										}
 
@@ -1268,7 +1268,7 @@ public class JoinCaptcha extends Fragment {
 
 										}
 
-										resp = execute(new SendSticker(gd.id,sticker).replyToMessageId(auth.serviceMsg.messageId()));
+										resp = execute(new SendSticker(gd.id,sticker));
 
 										if (resp != null && resp.isOk()) {
 
