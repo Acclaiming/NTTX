@@ -212,7 +212,7 @@ public class FeedHtmlFormater {
 
 				html = Html.unescape(html);
 
-				html = URLUtil.decode(html);
+			//	html = URLUtil.decode(html);
 
 				html = html.replace("<br>","\n");
 

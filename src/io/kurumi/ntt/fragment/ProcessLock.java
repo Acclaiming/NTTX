@@ -37,7 +37,7 @@ public class ProcessLock<T>  extends ReentrantLock {
 		
 		public void send(T obj) {
 				
-				if (used.getAndSet(true)) return;
+				//if (used.getAndSet(true)) return;
 				
 				try {
 
