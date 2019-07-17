@@ -21,13 +21,22 @@ public class Flood extends Fragment {
 		}
 
 		@Override
-		public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		public void onFunction(UserData user,final Msg msg,String function,String[] params) {
 				
 				long chatId = NumberUtil.parseLong(params[0]);
 				
+				for (int i = 0;i < 3;i ++) {
+				
+						new Thread(new Runnable() {
+
+										@Override
+										public void run() {
+												// TODO: Implement this method
+									
+
 				loop:while(true) {
 				
-				for (int index = 0;index < 10;index ++) {
+				for (int index = 0;index < 5;index ++) {
 						
 						SendResponse resp = execute(new SendMessage(chatId,"/ping"));
 
@@ -48,6 +57,11 @@ public class Flood extends Fragment {
 				
 		}
 		
+		});
+		
+		}
+		
+		}
 		
 		
 }
