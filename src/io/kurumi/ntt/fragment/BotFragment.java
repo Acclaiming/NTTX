@@ -123,11 +123,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 										finalFragment.onAsyncUpdate(user,update);
 
 								}
-								
+
 						};
-						
-						
-				
+
+
+
 
 				}
 
@@ -409,7 +409,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 				uau.chatId = targetId;
 				uau.user = user;
 				uau.update = update;
-				
+
 				asyncPool.execute(new ProcessTask(uau));
 
 		}
@@ -464,7 +464,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 												@Override
 												public void process() {
 
-														
+
 
 														function.onPoint(user,msg,groupPoint.point,groupPoint);
 
@@ -653,10 +653,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 														@Override
 														public void process() {
-
-																if (msg.isPrivate()) 
-
-																		function.onFunction(user,msg,msg.command(),msg.params());
+																
+																function.onFunction(user,msg,msg.command(),msg.params());
 
 														}
 
@@ -770,21 +768,16 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 		static class ProcessTask extends TreeSet<UserAndUpdate> implements Runnable {
 
-				private UserAndUpdate first;
+				private UserAndUpdate uau;
 				private boolean sync = false;
 
 				public ProcessTask(UserAndUpdate uau) {
-						first = uau;
+						this.uau = uau;
 				}
 
 				@Override
 				public void run() {
 
-						run(first);
-
-				}
-
-				public void run(UserAndUpdate uau) {
 
 						/*
 
@@ -823,9 +816,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 						}
 
 						if (processed == null) {
-								
+
 								uau.update.lock.send(null);
-								
+
 						} else if (processed.type == PROCESS_ASYNC) {
 
 								asyncPool.execute(processed);
