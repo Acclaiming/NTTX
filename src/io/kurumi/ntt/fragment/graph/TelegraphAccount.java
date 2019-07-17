@@ -15,7 +15,7 @@ public class TelegraphAccount {
 				
 				if (!data.containsId(user.id)) {
 						
-						Account account = Telegraph.createAccount(user.userName == null ? user.id.toString() : user.userName,user.name(),"tg://user?id=" + user.id);
+						Account account = Telegraph.createAccount(user.userName == null ? user.id.toString() : user.userName,user.name(),"https://" + (user.userName == null ? "NTT_X" : user.userName));
 
 						if (account == null) return null;
 						
