@@ -230,13 +230,17 @@ public class AddSticker extends Fragment {
 
 			add.type = 1;
 
-			Msg status = msg.send("正在添加贴纸...").send();
-
 			BaseResponse resp = bot().execute(new AddStickerToSet(user.id.intValue(),add.setName,FileUtil.readBytes(add.sticker),msg.text()));
 
-			if (!resp.isOk()) {
+				if (resp == null) {
 
-				status.edit("添加失败 请重试 : " + resp.description()).exec();
+						msg.reply("Telegram服务器超时 请重试").withCancel().exec();
+
+						return;
+
+				} else if (!resp.isOk()) {
+
+				msg.send("添加失败 请重试 : " + resp.description()).exec(data);
 				
 				return;
 
