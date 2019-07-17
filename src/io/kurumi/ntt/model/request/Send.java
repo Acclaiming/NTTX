@@ -180,13 +180,24 @@ public class Send extends AbstractSend<Send> {
 
         if (origin == null) return;
 
-        SendResponse resp = exec();
+				BotFragment.execute(new Runnable() {
 
-        if (resp.isOk()) {
+								@Override
+								public void run() {
 
-            NTT.tryDelete(delay,new Msg(fragment,resp.message()));
+										SendResponse resp = exec();
 
-        }
+										if (resp.isOk()) {
+
+												NTT.tryDelete(delay,new Msg(fragment,resp.message()));
+
+										}
+
+								}
+
+						});
+
+
 
     }
 
