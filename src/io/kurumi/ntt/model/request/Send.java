@@ -300,11 +300,11 @@ public class Send extends AbstractSend<Send> {
 
 		private boolean async = false;
 
-		public Send async() {
+		public void async() {
 
 				this.async = true;
 
-				return this;
+				exec();
 
 		}
 
