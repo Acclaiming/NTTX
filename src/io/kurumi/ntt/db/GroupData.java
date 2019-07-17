@@ -192,7 +192,8 @@ public class GroupData {
 
 		public Boolean del_welcome_msg;
 		public Integer last_welcome_msg;
-
+		public Integer last_welcome_msg_2;
+		
 		public static class CustomButton {
 
 				public String text;

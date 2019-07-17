@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
 import io.kurumi.ntt.fragment.admin.Firewall;
+import com.pengrad.telegrambot.request.SendSticker;
 
 public class JoinCaptcha extends Fragment {
 
@@ -57,11 +58,11 @@ public class JoinCaptcha extends Fragment {
 
 								auth.task.cancel();
 
-								if (auth.serviceMsg != null)  {
+								if (auth.authMsg != null)  {
 
-										auth.serviceMsg.delete();
+										auth.authMsg.delete();
 
-										auth.serviceMsg.restrict(user.id);
+										auth.authMsg.restrict(user.id);
 
 
 										if (data.passive_msg != null && data.passive_msg.containsKey(user.id.toString())) {
@@ -131,14 +132,158 @@ public class JoinCaptcha extends Fragment {
 
 				GroupData data = GroupData.get(msg.chat());
 
-				if (data.join_captcha == null) return;
+				if (data.join_captcha == null) {
+
+						if (data.welcome == null) return;
+
+						if (data.del_welcome_msg != null) {
+
+								if (data.last_welcome_msg != null) {
+
+										execute(new DeleteMessage(data.id,data.last_welcome_msg));
+
+								}
+
+								if (data.last_welcome_msg_2 != null) {
+
+										execute(new DeleteMessage(data.id,data.last_welcome_msg_2));
+
+								}
+
+						}
+
+						if (data.welcome == 0) {
+
+								if (data.delete_service_msg == null) {
+
+										if (data.del_welcome_msg == null) {
+
+												msg.reply(data.welcomeMessage).async();
+
+										} else {
+
+												SendResponse resp = msg.reply(data.welcomeMessage).exec();
+
+												if (resp != null && resp.isOk()) {
+
+														data.last_welcome_msg = resp.message().messageId();
+
+												}
+
+										}
+
+								} else {
+
+										if (data.del_welcome_msg == null) {
+
+												msg.send(user.userName() + " , " + data.welcomeMessage).async();
+
+										} else {
+
+												SendResponse resp = msg.send(user.userName() + " , " + data.welcomeMessage).exec();
+
+												if (resp != null && resp.isOk()) {
+
+														data.last_welcome_msg = resp.message().messageId();
+
+												}
+
+										}
+
+								}
+
+						} else {
+
+								String sticker = data.welcomeSet.get(RandomUtil.randomInt(0,data.welcomeSet.size()));
+
+								if (data.delete_service_msg == null) {
+
+										if (data.del_welcome_msg == null) {
+
+												execute(new SendSticker(data.id,sticker).replyToMessageId(msg.messageId()));
+
+												if (data.welcome == 2) {
+
+														msg.send(data.welcomeMessage).async();
+
+												}
+
+										} else {
+
+												SendResponse resp = execute(new SendSticker(data.id,sticker).replyToMessageId(msg.messageId()));
+
+												if (resp != null && resp.isOk()) {
+
+														data.last_welcome_msg = resp.message().messageId();
+
+												}
+
+												if (data.welcome == 2) {
+
+														resp = msg.send(data.welcomeMessage).exec();
+
+														if (resp != null && resp.isOk()) {
+
+																data.last_welcome_msg_2 = resp.message().messageId();
+
+														}
+
+												}
+
+										}
+
+
+
+								} else {
+
+										if (data.del_welcome_msg == null) {
+
+												if (data.welcome == 2) {
+
+														msg.send(user.userName() + " , " + data.welcomeMessage).async();
+
+														execute(new SendSticker(data.id,sticker).replyToMessageId(msg.messageId()));
+
+												}
+
+										} else {
+
+												SendResponse resp = msg.send(user.userName() + " , " + data.welcomeMessage).exec();
+
+												if (resp != null && resp.isOk()) {
+
+														data.last_welcome_msg = resp.message().messageId();
+
+												}
+
+												resp = execute(new SendSticker(data.id,sticker).replyToMessageId(msg.messageId()));
+
+												if (resp != null && resp.isOk()) {
+
+														data.last_welcome_msg = resp.message().messageId();
+
+
+												}
+
+										}
+
+
+								}
+
+						}
+
+						return;
+
+
+
+				}
 
 				if (msg.message().newChatMembers() != null) {
 
-            User newMember = msg.message().newChatMembers()[0];
+						User newMember = msg.message().newChatMembers()[0];
 
 						final UserData newData = UserData.get(newMember);
-
+						
 						if (user.admin() || msg.isGroupAdmin()) return;
 
 						if (!user.id.equals(newData.id)) return;
@@ -227,6 +372,7 @@ public class JoinCaptcha extends Fragment {
 		class AuthCache extends PointData {
 
 				UserData user;
+				Msg authMsg;
 				Msg serviceMsg;
 
 				boolean input;
@@ -627,6 +773,8 @@ public class JoinCaptcha extends Fragment {
 				auth.input = data.require_input != null;
 				auth.code = code;
 
+				if (msg.message().newChatMembers() != null) auth.serviceMsg = msg;
+
 				if (data.with_image == null) {
 
 						if (auth.input) {
@@ -645,11 +793,11 @@ public class JoinCaptcha extends Fragment {
 
 								if (left != null) {
 
-										auth.serviceMsg =  msg.send(user.userName() + " 请重试","\n" + code.question()).buttons(buttons).html().send();
+										auth.authMsg =  msg.send(user.userName() + " 请重试","\n" + code.question()).buttons(buttons).html().send();
 
 								} else {
 
-										auth.serviceMsg =  msg.send(user.userName() + " 请验证","\n" + code.question()).buttons(buttons).html().send();
+										auth.authMsg =  msg.send(user.userName() + " 请验证","\n" + code.question()).buttons(buttons).html().send();
 
 
 								}
@@ -658,18 +806,18 @@ public class JoinCaptcha extends Fragment {
 
 								if (left != null) {
 
-										auth.serviceMsg =  msg.send(user.userName() + " 请重试","\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
+										auth.authMsg =  msg.send(user.userName() + " 请重试","\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
 
 								} else {
 
-										auth.serviceMsg =  msg.send(user.userName() + " 请验证","\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
+										auth.authMsg =  msg.send(user.userName() + " 请验证","\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
 
 
 								}
 
 						}
 
-						if (auth.serviceMsg == null) return;
+						if (auth.authMsg == null) return;
 
 						clearGroupPoint(user);
 
@@ -677,7 +825,7 @@ public class JoinCaptcha extends Fragment {
 
 						if (old != null) {
 
-								old.serviceMsg.delete();
+								old.authMsg.delete();
 								old.task.cancel();
 
 						}
@@ -707,11 +855,11 @@ public class JoinCaptcha extends Fragment {
 
 						if (resp != null && resp.isOk()) {
 
-								auth.serviceMsg = new Msg(this,resp.message());
+								auth.authMsg = new Msg(this,resp.message());
 
 						}
 
-						if (auth.serviceMsg == null) {
+						if (auth.authMsg == null) {
 
 								clearGroupPoint(user);
 
@@ -733,7 +881,7 @@ public class JoinCaptcha extends Fragment {
 
 						if (old != null) {
 
-								old.serviceMsg.delete();
+								old.authMsg.delete();
 								old.task.cancel();
 
 						}
@@ -952,7 +1100,7 @@ public class JoinCaptcha extends Fragment {
 
 				if (auth != null) {
 
-						if (auth.serviceMsg != null) auth.serviceMsg.delete();
+						if (auth.authMsg != null) auth.authMsg.delete();
 
 						auth.task.cancel();
 
@@ -998,6 +1146,144 @@ public class JoinCaptcha extends Fragment {
 
 				}
 
+				if (gd.welcome == null) return;
+
+				if (gd.del_welcome_msg != null) {
+
+						if (gd.last_welcome_msg != null) {
+
+								execute(new DeleteMessage(gd.id,gd.last_welcome_msg));
+
+						}
+
+						if (gd.last_welcome_msg_2 != null) {
+
+								execute(new DeleteMessage(gd.id,gd.last_welcome_msg_2));
+
+						}
+
+				}
+
+				if (gd.welcome == 0) {
+
+						if (gd.delete_service_msg == null && auth != null && auth.serviceMsg != null) {
+
+								if (gd.del_welcome_msg == null) {
+
+										msg.reply(gd.welcomeMessage).async();
+
+								} else {
+
+										SendResponse resp = msg.reply(gd.welcomeMessage).exec();
+
+										if (resp != null && resp.isOk()) {
+
+												gd.last_welcome_msg = resp.message().messageId();
+
+										}
+
+								}
+
+						} else {
+
+								if (gd.del_welcome_msg == null) {
+
+										msg.send(user.userName() + " , " + gd.welcomeMessage).async();
+
+								} else {
+
+										SendResponse resp = msg.send(user.userName() + " , " + gd.welcomeMessage).exec();
+
+										if (resp != null && resp.isOk()) {
+
+												gd.last_welcome_msg = resp.message().messageId();
+
+										}
+
+								}
+
+						}
+
+				} else {
+
+						String sticker = gd.welcomeSet.get(RandomUtil.randomInt(0,gd.welcomeSet.size()));
+
+						if (gd.delete_service_msg == null && auth != null && auth.serviceMsg != null) {
+
+								if (gd.del_welcome_msg == null) {
+
+										execute(new SendSticker(gd.id,sticker).replyToMessageId(auth.serviceMsg.messageId()));
+
+										if (gd.welcome == 2) {
+
+												msg.send(gd.welcomeMessage).async();
+
+										}
+
+								} else {
+
+										SendResponse resp = execute(new SendSticker(gd.id,sticker).replyToMessageId(auth.serviceMsg.messageId()));
+
+										if (resp != null && resp.isOk()) {
+
+												gd.last_welcome_msg = resp.message().messageId();
+
+										}
+
+										if (gd.welcome == 2) {
+
+												resp = msg.send(gd.welcomeMessage).exec();
+
+												if (resp != null && resp.isOk()) {
+
+														gd.last_welcome_msg_2 = resp.message().messageId();
+
+												}
+
+										}
+
+								}
+
+
+
+						} else {
+
+								if (gd.del_welcome_msg == null) {
+
+										if (gd.welcome == 2) {
+
+												msg.send(user.userName() + " , " + gd.welcomeMessage).async();
+
+												execute(new SendSticker(gd.id,sticker).replyToMessageId(auth.serviceMsg.messageId()));
+
+										}
+
+								} else {
+
+										SendResponse resp = msg.send(user.userName() + " , " + gd.welcomeMessage).exec();
+
+										if (resp != null && resp.isOk()) {
+
+												gd.last_welcome_msg = resp.message().messageId();
+
+										}
+
+										resp = execute(new SendSticker(gd.id,sticker).replyToMessageId(auth.serviceMsg.messageId()));
+
+										if (resp != null && resp.isOk()) {
+
+												gd.last_welcome_msg = resp.message().messageId();
+
+										}
+
+								}
+
+
+						}
+
+
+				}
+
 
 		}
 
@@ -1021,7 +1307,7 @@ public class JoinCaptcha extends Fragment {
 
 				if (auth != null) {
 
-						if (auth.serviceMsg != null) auth.serviceMsg.delete();
+						if (auth.authMsg != null) auth.authMsg.delete();
 
 						auth.task.cancel();
 

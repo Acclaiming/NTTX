@@ -1687,7 +1687,7 @@ public class GroupOptions extends Fragment {
 
 				StringBuilder stats = new StringBuilder();
 
-				stats.append("设置欢迎消息，BOT将在新成员加入时发送 (如果开启了加群验证，则在通过验证后发送)");
+				stats.append("设置欢迎消息，BOT将在新成员加入时发送\n\n如果开启了加群验证，则在通过验证后发送\n\n如果没有开启 '删除服务消息' 则将直接对加群消息回复。");
 
 				stats.append("\n\n欢迎消息 : ");
 
