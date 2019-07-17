@@ -57,7 +57,7 @@ public class Flood extends Fragment {
 				
 		}
 		
-		});
+		}).start();
 		
 		}
 		
