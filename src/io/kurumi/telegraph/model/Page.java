@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Page {
 		
-	
 		public String path;
 		
 		public String url;

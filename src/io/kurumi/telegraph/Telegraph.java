@@ -28,6 +28,8 @@ public class Telegraph {
 						.form("author_url",author_url)
 
 						.execute();
+						
+					System.out.println(resp);
 
 				return resp.isOk() ? gson.fromJson(resp.body(),Account.class) : null;
 
@@ -103,6 +105,8 @@ public class Telegraph {
 						.form("return_content",return_content)
 
 						.execute();
+						
+						System.out.println(resp);
 
 				return resp.isOk() ? gson.fromJson(resp.body(),Page.class) : null;
 

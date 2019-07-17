@@ -23,7 +23,7 @@ public class TelegraphTest extends Fragment {
 		@Override
 		public void onFunction(UserData user,Msg msg,String function,String[] params) {
 				
-				TelegraphAccount account =TelegraphAccount.get(user);
+				TelegraphAccount account = TelegraphAccount.get(user);
 
 				msg.send("你的账号 : " + account.access_token).async();
 				
