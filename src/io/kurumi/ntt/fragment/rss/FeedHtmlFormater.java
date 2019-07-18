@@ -35,7 +35,7 @@ public class FeedHtmlFormater {
 
 		public static Pattern matchTagInterrupted = Pattern.compile(".*</[^>]+>.+<[^>]+");
 
-		public static String format(int type,SyndFeed feed,SyndEntry entry) {
+		public static String format(int type,SyndFeed feed,final SyndEntry entry) {
 
 				// if (type == 0) type = 2;
 
@@ -112,6 +112,8 @@ public class FeedHtmlFormater {
 
 						next:for (String line : htmlText.split("\n")) {
 
+							  if (!StrUtil.isBlank(line)) {
+								
 								final Matcher matcher = matchAll.matcher(line);
 
 								while (matcher.find()) {
@@ -152,6 +154,9 @@ public class FeedHtmlFormater {
 
 														node.attrs.put("href",href);
 
+														System.out.println("HREF : " + href);
+														
+														
 												} else if ("img".equals(tag)) {
 
 														if (StrUtil.isBlank(attrs)) continue;
@@ -161,6 +166,8 @@ public class FeedHtmlFormater {
 														node.attrs = new HashMap<>();
 
 														node.attrs.put("src",src);
+														
+														System.out.println("SRC : " + src);
 
 												}
 
@@ -170,13 +177,29 @@ public class FeedHtmlFormater {
 
 								}
 
-								content.add(new NodeElement() {{
-
-														tag = "br";
-
-												}});
-
+								content.add(new NodeElement() {{ tag = "br"; }});
+								
+								}
+								
 						}
+						
+						content.add(new NodeElement() {{ tag = "br"; }});
+						content.add(new NodeElement() {{ tag = "br"; }});
+						
+						content.add(new NodeElement() {{
+								
+								tag = "a";
+								
+								attrs = new HashMap<>();
+								
+								attrs.put("href",entry.getLink());
+								
+								children = new LinkedList<>();
+								
+								children.add(new Node() {{ text = "点此查看原文" ; }});
+					
+								
+						}});
 
 						Page page = Telegraph.createPage(account.access_token,entry.getTitle(),StrUtil.isBlank(entry.getAuthor()) ? feed.getTitle() : entry.getAuthor().trim(),feed.getLink(),content,false);
 
