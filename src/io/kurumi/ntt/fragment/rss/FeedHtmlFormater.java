@@ -324,7 +324,7 @@ public class FeedHtmlFormater {
 				
 				if (!withImg) {
 				
-				html = ReUtil.extractMulti(matchImg,html," " + Html.a("图片","$1") + " ");
+				html = ReUtil.replaceAll(html,matchImg," " + Html.a("图片","$1") + " ");
 
 						System.out.println("REM IMG");
 				
@@ -360,7 +360,6 @@ public class FeedHtmlFormater {
 				 */
 				 
 				 System.out.println("REM TAGS");
-
 
 				html = ReUtil.replaceAll(html,withImg ? removeTagsWithoutImg : removeTags,"");
 
