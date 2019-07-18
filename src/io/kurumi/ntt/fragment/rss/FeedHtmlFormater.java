@@ -342,7 +342,7 @@ public class FeedHtmlFormater {
 
 				if (!withImg) {
 
-						html = ReUtil.replaceAll(html,matchImg," " + Html.a("图片","$1") + " ");
+						html = ReUtil.replaceAll(html,matchImg,"  " + Html.a("图片","$1") + "\n");
 
 						System.out.println("REM IMG");
 

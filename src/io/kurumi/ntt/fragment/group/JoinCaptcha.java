@@ -1313,7 +1313,7 @@ public class JoinCaptcha extends Fragment {
 
 				}
 				
-				if (auth.serviceMsg != null) {
+				if (auth != null && auth.serviceMsg != null) {
 						
 						auth.serviceMsg.delete();
 						
