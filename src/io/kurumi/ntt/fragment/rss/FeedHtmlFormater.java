@@ -37,7 +37,7 @@ public class FeedHtmlFormater {
 		
 		public static String format(int type,SyndFeed feed,SyndEntry entry) {
 
-			//	if (type == 0) type = 2;
+				// if (type == 0) type = 2;
 
 				StringBuilder html = new StringBuilder();
 
@@ -108,7 +108,7 @@ public class FeedHtmlFormater {
 
 						List<Node> content = new LinkedList<>();
 
-						final String htmlText = getContent(entry,false,false);
+						final String htmlText = getContent(entry,false,true);
 
 						next:for (String line : htmlText.split("\n")) {
 
@@ -318,10 +318,18 @@ public class FeedHtmlFormater {
 
 				html = removeADs(html).trim();
 
+				System.out.println(html);
+				
+				
+				
 				if (!withImg) {
 				
 				html = ReUtil.extractMulti(matchImg,html," " + Html.a("图片","$1") + " ");
 
+						System.out.println("REM IMG");
+				
+				System.out.println(html);
+				
 				}
 				
 				/*
@@ -350,10 +358,14 @@ public class FeedHtmlFormater {
 				 }
 
 				 */
+				 
+				 System.out.println("REM TAGS");
 
 
 				html = ReUtil.replaceAll(html,withImg ? removeTagsWithoutImg : removeTags,"");
 
+				System.out.println(html);
+				
 				if (html.startsWith(entry.getTitle())) {
 
 						html = html.substring(entry.getTitle().length()).trim();
