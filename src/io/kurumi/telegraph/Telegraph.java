@@ -88,7 +88,7 @@ public class Telegraph {
 
 						if (node instanceof NodeElement) {
 
-								contentFormat.add(new JSONObject(gson.toJson(node)));
+								contentFormat.add(new JSONObject(gson.toJson(node,NodeElement.class)));
 
 						} else {
 
