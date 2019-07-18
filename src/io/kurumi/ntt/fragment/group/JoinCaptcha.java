@@ -1312,6 +1312,14 @@ public class JoinCaptcha extends Fragment {
 						auth.task.cancel();
 
 				}
+				
+				if (auth.serviceMsg != null) {
+						
+						auth.serviceMsg.delete();
+						
+						auth.serviceMsg = null;
+						
+				}
 
 				if (!noRetey && gd.ft_count != null && (gd.captchaFailed == null || !gd.captchaFailed.containsKey(user.id.toString()) || (gd.captchaFailed.get(user.id.toString()) <= gd.ft_count))) {
 
