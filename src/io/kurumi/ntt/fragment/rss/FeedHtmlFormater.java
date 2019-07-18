@@ -19,7 +19,7 @@ import java.util.*;
 
 public class FeedHtmlFormater {
 
-		public static Pattern matchAll = Pattern.compile("(<([^> ]+)([^>]+)?>([^<]+)?</([^<]+)>|<[^<]+>|</|[^<]+)");
+		public static Pattern matchAll = Pattern.compile("(<([^> ]+)([^>]+)?>([^<]+)?</([^<]+)>|<[^<]+>|</|[^<]+)",Pattern.MULTILINE);
 
 		public static String matchAttr = "[^\">]+\"([^\">]*)\"";
 
@@ -110,96 +110,87 @@ public class FeedHtmlFormater {
 
 						final String htmlText = getContent(entry,false,true);
 
-						next:for (String line : htmlText.split("\n")) {
+						final Matcher matcher = matchAll.matcher(htmlText);
 
-							  if (!StrUtil.isBlank(line)) {
-								
-								final Matcher matcher = matchAll.matcher(line);
+						while (matcher.find()) {
 
-								while (matcher.find()) {
+								final String all = matcher.group(1);
 
-										final String all = matcher.group(1);
+								String tag = matcher.group(2);
 
-										String tag = matcher.group(2);
+								String attrs = matcher.group(3);
 
-										String attrs = matcher.group(3);
+								final String chText = matcher.group(4);
 
-										final String chText = matcher.group(4);
+								// String endTag = matcher.group(5);
 
-										// String endTag = matcher.group(5);
+								if (StrUtil.isBlank(tag)) {
 
-										if (StrUtil.isBlank(tag)) {
+										content.add(new Node() {{ text = all; }});
 
-												content.add(new Node() {{ text = all; }});
+								} else {
 
-										} else {
+										NodeElement node = new NodeElement();
 
-												NodeElement node = new NodeElement();
+										node.tag = tag;
 
-												node.tag = tag;
+										if (!StrUtil.isBlank(chText)) {
 
-												if (!StrUtil.isBlank(chText)) {
-
-														node.children.add(new Node() {{ text = chText; }});
-
-												}
-
-												if ("a".equals(tag)) {
-
-														if (StrUtil.isBlank(attrs)) continue;
-
-														String href = ReUtil.getGroup1(matchHref,attrs);
-
-														node.attrs = new HashMap<>();
-
-														node.attrs.put("href",href);
-
-														System.out.println("HREF : " + href);
-														
-														
-												} else if ("img".equals(tag)) {
-
-														if (StrUtil.isBlank(attrs)) continue;
-
-														String src = ReUtil.getGroup1(matchSrc,attrs);
-
-														node.attrs = new HashMap<>();
-
-														node.attrs.put("src",src);
-														
-														System.out.println("SRC : " + src);
-
-												}
-
-												content.add(node);
+												node.children.add(new Node() {{ text = chText; }});
 
 										}
 
+										if ("a".equals(tag)) {
+
+												if (StrUtil.isBlank(attrs)) continue;
+
+												String href = ReUtil.getGroup1(matchHref,attrs);
+
+												node.attrs = new HashMap<>();
+
+												node.attrs.put("href",href);
+
+												System.out.println("HREF : " + href);
+
+
+										} else if ("img".equals(tag)) {
+
+												if (StrUtil.isBlank(attrs)) continue;
+
+												String src = ReUtil.getGroup1(matchSrc,attrs);
+
+												node.attrs = new HashMap<>();
+
+												node.attrs.put("src",src);
+
+												System.out.println("SRC : " + src);
+
+										}
+
+										content.add(node);
+
 								}
 
-								content.add(new NodeElement() {{ tag = "br"; }});
-								
-								}
-								
 						}
-						
+
+
 						content.add(new NodeElement() {{ tag = "br"; }});
 						content.add(new NodeElement() {{ tag = "br"; }});
-						
+
 						content.add(new NodeElement() {{
-								
-								tag = "a";
-								
-								attrs = new HashMap<>();
-								
-								attrs.put("href",entry.getLink());
-								
-								children = new LinkedList<>();
-								
-								children.add(new Node() {{ text = "点此查看原文" ; }});
-					
-								
-						}});
+
+												tag = "a";
+
+												attrs = new HashMap<>();
+
+												attrs.put("href",entry.getLink());
+
+												children = new LinkedList<>();
+
+												children.add(new Node() {{ text = "点此查看原文" ; }});
+
+
+										}});
 
 						Page page = Telegraph.createPage(account.access_token,entry.getTitle(),StrUtil.isBlank(entry.getAuthor()) ? feed.getTitle() : entry.getAuthor().trim(),feed.getLink(),content,false);
 
@@ -337,7 +328,11 @@ public class FeedHtmlFormater {
 
 				//	html = URLUtil.decode(html);
 
-				html = html.replace("<br>","\n");
+				if (!withImg) {
+
+						html = html.replace("<br>","\n");
+
+				}
 
 				html = removeADs(html).trim();
 
@@ -383,7 +378,7 @@ public class FeedHtmlFormater {
 				 */
 
 				System.out.println("REM TAGS");
-				
+
 				html = ReUtil.replaceAll(html,withImg ? removeTagsWithoutImg : removeTags,"");
 
 				System.out.println(html);
