@@ -43,6 +43,8 @@ public class RssSub extends Fragment {
 				public Long id;
 
 				public int format = 0;
+				
+				public boolean preview = false;
 
 				public List<String> subscriptions;
 
@@ -53,7 +55,7 @@ public class RssSub extends Fragment {
 
 				super.init(origin);
 
-				registerFunction("rss_sub","rss_list","rss_unsub","rss_unsub_all","rss_set_format");
+				registerFunction("rss_sub","rss_list","rss_unsub","rss_unsub_all","rss_set_format","rss_link_preview");
 
 		}
 
@@ -274,6 +276,31 @@ public class RssSub extends Fragment {
 
 						msg.send("修改成功 输出格式为 : " + target + " .").exec();
 
+				} else if ("rss_link_preview".equals(function)) {
+						
+						if (params.length < 2) {
+
+								msg.invalidParams("channelId","on/off").exec();
+
+								return;
+
+						}
+
+						if ("on".equals(params[0])) {
+
+								conf.preview = true;
+
+						} else if ("off".equals(params[0])) {
+								
+								conf.preview = false;
+								
+						}
+						
+						channel.setById(conf.id,conf);
+
+						msg.send("修改成功 原文链接预览已设为" + (conf.preview ? "开启" : "关闭") + " .").exec();
+						
+						
 				}
 
 		}
