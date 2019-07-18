@@ -30,11 +30,11 @@ public class FeedHtmlFormater {
 		public static Pattern matchImg = Pattern.compile("<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>");
 
 	  public static Pattern removeTags = Pattern.compile("<(?!/?(a|b|i|code|pre|em)\b)[^>]+>");
-		
+
 		public static Pattern removeTagsWithoutImg = Pattern.compile("<(?!/?(a|b|i|code|pre|em|img)\b)[^>]+>");
-		
+
 		public static Pattern matchTagInterrupted = Pattern.compile(".*</[^>]+>.+<[^>]+");
-		
+
 		public static String format(int type,SyndFeed feed,SyndEntry entry) {
 
 				// if (type == 0) type = 2;
@@ -104,7 +104,7 @@ public class FeedHtmlFormater {
 
 				if (type == 0) {
 
-						TelegraphAccount account = TelegraphAccount.getDefault();
+						TelegraphAccount account = TelegraphAccount.defaultAccount();
 
 						List<Node> content = new LinkedList<>();
 
@@ -163,7 +163,7 @@ public class FeedHtmlFormater {
 														node.attrs.put("src",src);
 
 												}
-												
+
 												content.add(node);
 
 										}
@@ -319,19 +319,19 @@ public class FeedHtmlFormater {
 				html = removeADs(html).trim();
 
 				System.out.println(html);
-				
-				
-				
+
+
+
 				if (!withImg) {
-				
-				html = ReUtil.replaceAll(html,matchImg," " + Html.a("图片","$1") + " ");
+
+						html = ReUtil.replaceAll(html,matchImg," " + Html.a("图片","$1") + " ");
 
 						System.out.println("REM IMG");
-				
-				System.out.println(html);
-				
+
+						System.out.println(html);
+
 				}
-				
+
 				/*
 
 				 while (html.contains("<img")) {
@@ -358,13 +358,13 @@ public class FeedHtmlFormater {
 				 }
 
 				 */
-				 
-				 System.out.println("REM TAGS");
 
+				System.out.println("REM TAGS");
+				
 				html = ReUtil.replaceAll(html,withImg ? removeTagsWithoutImg : removeTags,"");
 
 				System.out.println(html);
-				
+
 				if (html.startsWith(entry.getTitle())) {
 
 						html = html.substring(entry.getTitle().length()).trim();
