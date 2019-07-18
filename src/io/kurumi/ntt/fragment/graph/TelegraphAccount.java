@@ -11,6 +11,39 @@ public class TelegraphAccount {
 		
 		static { data.collection.drop(); }
 	
+		public static TelegraphAccount getDefault() {
+
+				if (!data.containsId(-1L)) {
+
+						Account account = Telegraph.createAccount("NTT","NTT","https://t.me/NTT");
+						
+						if (account == null) return null;
+
+						TelegraphAccount auth = new TelegraphAccount();
+
+						auth.id = -1L;
+
+						auth.access_token = account.access_token;
+
+						auth.short_name = account.short_name;
+
+						auth.author_name = account.author_name;
+
+						auth.author_url = account.author_url;
+
+						data.setById(auth.id,auth);
+
+						return auth;
+
+				}
+
+				TelegraphAccount account = data.getById(-1L);
+
+				return account;
+
+		}
+		
+		
 		public static TelegraphAccount get(UserData user) {
 				
 				if (!data.containsId(user.id)) {

@@ -1,18 +1,24 @@
 package io.kurumi.ntt.fragment.rss;
 
-import com.rometools.rome.feed.synd.SyndFeed;
-import com.rometools.rome.feed.synd.SyndEntry;
-import io.kurumi.ntt.utils.Html;
-import java.util.LinkedList;
 import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HtmlUtil;
-import cn.hutool.core.util.URLUtil;
-import cn.hutool.core.net.URLEncoder;
-import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.StrUtil;
+import com.rometools.rome.feed.synd.SyndEntry;
+import com.rometools.rome.feed.synd.SyndFeed;
+import io.kurumi.ntt.fragment.graph.TelegraphAccount;
+import io.kurumi.ntt.utils.Html;
+import io.kurumi.telegraph.Telegraph;
+import io.kurumi.telegraph.model.Node;
+import java.util.LinkedList;
+import java.util.List;
+import io.kurumi.telegraph.model.Page;
+import io.kurumi.telegraph.model.NodeElement;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class FeedHtmlFormater {
+
+		public static Pattern regex = Pattern.compile("(<([^> ]+)([^>]+)?>([^<]+)?</([^<]+)>|<[^<]+>|</|[^<]+)");
 
 		public static String format(int type,SyndFeed feed,SyndEntry entry) {
 
@@ -81,8 +87,58 @@ public class FeedHtmlFormater {
 
 				 */
 
+				if (type == 0) {
 
-				if (type == 1) {
+						TelegraphAccount account = TelegraphAccount.getDefault();
+
+						List<Node> content = new LinkedList<>();
+
+						final String htmlText = getContent(entry,false);
+
+						next:for (String line : htmlText.split("\n")) {
+
+								final Matcher matcher = regex.matcher(line);
+
+								while (matcher.find()) {
+
+										final String all = matcher.group(1);
+
+										String tag = matcher.group(2);
+										
+										String attrs = matcher.group(3);
+										
+										String text = matcher.group(4);
+										
+										String endTag = matcher.group(5);
+
+										if (StrUtil.isBlank(tag)) {
+												
+												content.add(new Node() {{ text = all; }});
+												
+										} else if ("a".equals(tag)) {
+												
+												
+												
+										}
+
+								}
+
+								content.add(new NodeElement() {{
+
+														tag = "br";
+
+												}});
+
+						}
+
+						Page page = Telegraph.createPage(account.access_token,entry.getTitle(),StrUtil.isBlank(entry.getAuthor()) ? feed.getTitle() : entry.getAuthor().trim(),feed.getLink(),content,false);
+
+						content.add(new NodeElement() {{ 
+
+
+										}});
+
+				} else if (type == 1) {
 
 						html.append(Html.a(entry.getTitle(),entry.getLink()));
 

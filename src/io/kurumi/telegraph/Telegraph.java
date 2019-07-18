@@ -19,7 +19,7 @@ public class Telegraph {
 		public static String API = "https://api.telegra.ph/";
 
 		public static Gson gson = new Gson();
-
+		
 	  static <T extends Object> T send(String path,Class<T> resultClass,Object... params) {
 
 				HttpRequest request = HttpUtil.createGet(API + path);
