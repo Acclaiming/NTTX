@@ -1332,7 +1332,7 @@ public class GroupOptions extends Fragment {
 
 								if (!StrUtil.isBlank(kw)) {
 
-										edit.data.custom_kw.add(kw);
+										custom_kw.add(kw);
 
 								}
 
@@ -1340,7 +1340,7 @@ public class GroupOptions extends Fragment {
 
 						if (custom_kw.isEmpty()) {
 
-								msg.send("选项为空 请重试！").withCancel().exec(data);
+								msg.send("为空 请重试！").withCancel().exec(data);
 
 								return;
 

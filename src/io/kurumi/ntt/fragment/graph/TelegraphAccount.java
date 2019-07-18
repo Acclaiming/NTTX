@@ -9,6 +9,7 @@ public class TelegraphAccount {
 		
 		public static Data<TelegraphAccount> data = new Data<TelegraphAccount>(TelegraphAccount.class);
 		
+		
 		public static TelegraphAccount defaultAccount() {
 
 				if (!data.containsId(-1L)) {
