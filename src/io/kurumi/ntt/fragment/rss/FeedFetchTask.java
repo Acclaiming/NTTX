@@ -27,7 +27,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.crypto.digest.MD5;
 import cn.hutool.crypto.digest.DigestUtil;
-import javax.annotation.Generated;
+import com.pengrad.telegrambot.response.*;
 
 public class FeedFetchTask extends TimerTask {
 
@@ -119,7 +119,15 @@ public class FeedFetchTask extends TimerTask {
 
 										for (SyndEntry entry : posts) {
 
-												new Send(channel.id,FeedHtmlFormater.format(channel.format,feed,entry)).html().exec();
+												Send request = new Send(channel.id,FeedHtmlFormater.format(channel.format,feed,entry));
+
+												if (channel.format == 0) {
+														
+														request.enableLinkPreview();
+														
+												}
+												
+												request.html().async();
 												
 										}
 

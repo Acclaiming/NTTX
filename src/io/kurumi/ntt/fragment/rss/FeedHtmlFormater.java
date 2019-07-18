@@ -15,14 +15,29 @@ import io.kurumi.telegraph.model.Page;
 import io.kurumi.telegraph.model.NodeElement;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.*;
 
 public class FeedHtmlFormater {
 
-		public static Pattern regex = Pattern.compile("(<([^> ]+)([^>]+)?>([^<]+)?</([^<]+)>|<[^<]+>|</|[^<]+)");
+		public static Pattern matchAll = Pattern.compile("(<([^> ]+)([^>]+)?>([^<]+)?</([^<]+)>|<[^<]+>|</|[^<]+)");
 
+		public static String matchAttr = "[^\">]+\"([^\">]*)\"";
+
+		public static Pattern matchHref = Pattern.compile("href" + matchAll);
+
+		public static Pattern matchSrc = Pattern.compile("src" + matchAll);
+
+		public static Pattern matchImg = Pattern.compile("<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>");
+
+	  public static Pattern removeTags = Pattern.compile("<(?!/?(a|b|i|code|pre|em)\b)[^>]+>");
+		
+		public static Pattern removeTagsWithoutImg = Pattern.compile("<(?!/?(a|b|i|code|pre|em|img)\b)[^>]+>");
+		
+		public static Pattern matchTagInterrupted = Pattern.compile(".*</[^>]+>.+<[^>]+");
+		
 		public static String format(int type,SyndFeed feed,SyndEntry entry) {
 
-				if (type == 0) type = 2;
+			//	if (type == 0) type = 2;
 
 				StringBuilder html = new StringBuilder();
 
@@ -93,32 +108,64 @@ public class FeedHtmlFormater {
 
 						List<Node> content = new LinkedList<>();
 
-						final String htmlText = getContent(entry,false);
+						final String htmlText = getContent(entry,false,false);
 
 						next:for (String line : htmlText.split("\n")) {
 
-								final Matcher matcher = regex.matcher(line);
+								final Matcher matcher = matchAll.matcher(line);
 
 								while (matcher.find()) {
 
 										final String all = matcher.group(1);
 
 										String tag = matcher.group(2);
-										
+
 										String attrs = matcher.group(3);
-										
-										String text = matcher.group(4);
-										
-										String endTag = matcher.group(5);
+
+										final String chText = matcher.group(4);
+
+										// String endTag = matcher.group(5);
 
 										if (StrUtil.isBlank(tag)) {
-												
+
 												content.add(new Node() {{ text = all; }});
+
+										} else {
+
+												NodeElement node = new NodeElement();
+
+												node.tag = tag;
+
+												if (!StrUtil.isBlank(chText)) {
+
+														node.children.add(new Node() {{ text = chText; }});
+
+												}
+
+												if ("a".equals(tag)) {
+
+														if (StrUtil.isBlank(attrs)) continue;
+
+														String href = ReUtil.getGroup1(matchHref,attrs);
+
+														node.attrs = new HashMap<>();
+
+														node.attrs.put("href",href);
+
+												} else if ("img".equals(tag)) {
+
+														if (StrUtil.isBlank(attrs)) continue;
+
+														String src = ReUtil.getGroup1(matchSrc,attrs);
+
+														node.attrs = new HashMap<>();
+
+														node.attrs.put("src",src);
+
+												}
 												
-										} else if ("a".equals(tag)) {
-												
-												
-												
+												content.add(node);
+
 										}
 
 								}
@@ -133,10 +180,7 @@ public class FeedHtmlFormater {
 
 						Page page = Telegraph.createPage(account.access_token,entry.getTitle(),StrUtil.isBlank(entry.getAuthor()) ? feed.getTitle() : entry.getAuthor().trim(),feed.getLink(),content,false);
 
-						content.add(new NodeElement() {{ 
-
-
-										}});
+						html.append(Html.a(entry.getTitle(),page.url));
 
 				} else if (type == 1) {
 
@@ -161,7 +205,7 @@ public class FeedHtmlFormater {
 
 						html.append("\n\n");
 
-						html.append(getContent(entry,true));
+						html.append(getContent(entry,true,false));
 
 				} else if (type == 4) {
 
@@ -169,7 +213,7 @@ public class FeedHtmlFormater {
 
 						html.append("\n\n");
 
-						html.append(getContent(entry,true));
+						html.append(getContent(entry,true,false));
 
 						html.append("\n\n");
 
@@ -181,7 +225,7 @@ public class FeedHtmlFormater {
 
 						html.append("\n\n");
 
-						html.append(getContent(entry,true));
+						html.append(getContent(entry,true,false));
 
 						html.append("\n\n");
 
@@ -205,7 +249,7 @@ public class FeedHtmlFormater {
 
 						html.append("\n\n");
 
-						html.append(getContent(entry,false));
+						html.append(getContent(entry,false,false));
 
 				} else if (type == 7) {
 
@@ -213,7 +257,7 @@ public class FeedHtmlFormater {
 
 						html.append("\n\n");
 
-						html.append(getContent(entry,false));
+						html.append(getContent(entry,false,false));
 
 						html.append("\n\n");
 
@@ -225,7 +269,7 @@ public class FeedHtmlFormater {
 
 						html.append("\n\n");
 
-						html.append(getContent(entry,false));
+						html.append(getContent(entry,false,false));
 
 						html.append("\n\n");
 
@@ -250,7 +294,7 @@ public class FeedHtmlFormater {
 
 		}
 
-		private static String getContent(SyndEntry entry,boolean desciption) {
+		private static String getContent(SyndEntry entry,boolean desciption,boolean withImg) {
 
 				String html;
 
@@ -274,8 +318,12 @@ public class FeedHtmlFormater {
 
 				html = removeADs(html).trim();
 
-				html = ReUtil.replaceAll(html,"<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>","\n");
+				if (!withImg) {
+				
+				html = ReUtil.extractMulti(matchImg,html," " + Html.a("图片","$1") + " ");
 
+				}
+				
 				/*
 
 				 while (html.contains("<img")) {
@@ -304,7 +352,7 @@ public class FeedHtmlFormater {
 				 */
 
 
-				html = html.replaceAll("<(?!/?(a|b|i|code|pre|em)\b)[^>]+>","");
+				html = ReUtil.delAll(withImg ? removeTagsWithoutImg : removeTags,html);
 
 				if (html.startsWith(entry.getTitle())) {
 
@@ -318,9 +366,9 @@ public class FeedHtmlFormater {
 
 						html = html.substring(140);
 
-						if (html.matches(".*</[^>]+>.+<[^>]+")) {
+						if (ReUtil.isMatch(matchTagInterrupted,html)) {
 
-								html = StrUtil.subBefore(html,"<",true);
+								html = html + StrUtil.subBefore(html,"<",true);
 
 								// 如果HTML被截断 向前截取开始符号
 
