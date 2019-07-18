@@ -254,7 +254,7 @@ public class RssSub extends Fragment {
 
 						if (params.length < 2) {
 
-								msg.invalidParams("channelId","0 - 8").exec();
+								msg.invalidParams("channelId","1 - 9").exec();
 
 								return;
 
@@ -262,9 +262,9 @@ public class RssSub extends Fragment {
 						
 						int target;
 
-						if (!NumberUtil.isNumber(params[1]) || (target = NumberUtil.parseInt(params[1])) < 0 || target > 8) {
+						if (!NumberUtil.isNumber(params[1]) || (target = NumberUtil.parseInt(params[1])) < 0 || target > 9) {
 								
-								msg.send("请选择有效的格式 : 1 -8").exec();
+								msg.send("请选择有效的格式 : 1 - 9").exec();
 								
 								return;
 								

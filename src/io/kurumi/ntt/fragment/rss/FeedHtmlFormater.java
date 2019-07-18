@@ -37,7 +37,7 @@ public class FeedHtmlFormater {
 
 		public static String format(int type,SyndFeed feed,final SyndEntry entry) {
 
-				// if (type == 0) type = 2;
+				if (type == 0) type = 2;
 
 				StringBuilder html = new StringBuilder();
 
@@ -102,7 +102,7 @@ public class FeedHtmlFormater {
 
 				 */
 
-				if (type == 0) {
+				if (type == 9) {
 
 						TelegraphAccount account = TelegraphAccount.defaultAccount();
 
