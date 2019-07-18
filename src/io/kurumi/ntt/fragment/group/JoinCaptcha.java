@@ -1345,6 +1345,8 @@ public class JoinCaptcha extends Fragment {
 
 				}
 
+				msg.unrestrict(user.id);
+				
 				if (msg.message().leftChatMember() != null) {
 				} else if (msg.message().newChatMembers() != null) {
 				} else if (gd.fail_ban == null) {
