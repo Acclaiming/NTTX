@@ -90,7 +90,7 @@ public class FeedFetchTask extends TimerTask {
 								LinkedList<SyndEntry> posts = new LinkedList<>();
 
 								for (SyndEntry entry : feed.getEntries()) {
-										
+
 										if (generateSign(entry).equals(info.last)) {
 
 												break;
@@ -111,10 +111,6 @@ public class FeedFetchTask extends TimerTask {
 
 								Collections.reverse(posts);
 
-								info.last = generateSign(feed.getEntries().get(0));
-
-								RssSub.info.setById(info.id,info);
-
 								for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions",info.id)) {
 
 										for (SyndEntry entry : posts) {
@@ -122,19 +118,25 @@ public class FeedFetchTask extends TimerTask {
 												Send request = new Send(channel.id,FeedHtmlFormater.format(channel.format,feed,entry));
 
 												if (channel.format == 0 || channel.preview) {
-														
+
 														request.enableLinkPreview();
-														
+
 												}
-												
+
 												request.html().async();
-												
+
 										}
 
 								}
 
+								info.last = generateSign(feed.getEntries().get(0));
 
-						} catch (Exception e) {
+								RssSub.info.setById(info.id,info);
+
+								
+
+						}
+						catch (Exception e) {
 
 								BotLog.error("拉取错误",e);
 
@@ -145,18 +147,18 @@ public class FeedFetchTask extends TimerTask {
 
 
 		}
-		
+
 		String generateSign(SyndEntry entry) {
-				
+
 				long time = entry.getPublishedDate().getTime();
-				
+
 				String content;
-				
+
 				if (entry.getContents() != null && !entry.getContents().isEmpty() && !StrUtil.isBlank(entry.getContents().get(0).getValue())) content = entry.getContents().get(0).getValue();
 				else content = entry.getDescription().getValue();
-				
+
 				return DigestUtil.md5Hex(time + entry.getTitle() + content);
-				
+
 		}
 
 }
