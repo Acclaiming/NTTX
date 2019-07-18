@@ -352,7 +352,7 @@ public class FeedHtmlFormater {
 				 */
 
 
-				html = ReUtil.delAll(withImg ? removeTagsWithoutImg : removeTags,html);
+				html = ReUtil.replaceAll(html,withImg ? removeTagsWithoutImg : removeTags,"");
 
 				if (html.startsWith(entry.getTitle())) {
 
