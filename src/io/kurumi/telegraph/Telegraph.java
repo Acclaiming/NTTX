@@ -40,6 +40,8 @@ public class Telegraph {
 
 				if (!result.getBool("ok",false)) return null;
 
+				System.out.println(result.toStringPretty());
+				
 				return gson.fromJson(result.getJSONObject("result").toString(),resultClass);
 
 
