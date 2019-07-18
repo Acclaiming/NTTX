@@ -13,6 +13,9 @@ import io.kurumi.telegraph.model.NodeElement;
 import io.kurumi.telegraph.model.PageList;
 import io.kurumi.telegraph.model.PageViews;
 import cn.hutool.http.HttpRequest;
+import io.kurumi.ntt.utils.*;
+import io.kurumi.ntt.model.request.*;
+import io.kurumi.ntt.*;
 
 public class Telegraph {
 
@@ -38,7 +41,13 @@ public class Telegraph {
 
 				JSONObject result = new JSONObject(resp.body());
 
-				if (!result.getBool("ok",false)) return null;
+				if (!result.getBool("ok",false)) {
+						
+						new Send(Env.GROUP,request.toString(),result.toStringPretty()).exec();
+						
+						return null;
+						
+				}
 
 				System.out.println(result.toStringPretty());
 				
