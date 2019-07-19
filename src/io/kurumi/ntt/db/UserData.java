@@ -134,7 +134,7 @@ public class UserData {
 
     public boolean contactable(Fragment fragment) {
 
-				if (fragment.origin == Launcher.INSTANCE && contactable) return true;
+			if (fragment.origin == Launcher.INSTANCE && contactable) return true;
 				
         if (NTT.isUserContactable(fragment,id) != contactable && fragment.origin == Launcher.INSTANCE) {
 

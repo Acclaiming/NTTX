@@ -128,7 +128,7 @@ public class GroupOptions extends Fragment {
 
 				}
 				
-				if (!msg.contactable()) {
+				if (!NTT.isUserContactable(this,user.id)) {
 						
 						ButtonMarkup buttons = new ButtonMarkup();
 
