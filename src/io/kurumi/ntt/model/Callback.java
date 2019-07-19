@@ -6,6 +6,7 @@ import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.request.AnswerCallback;
 import io.kurumi.ntt.db.UserData;
+import com.pengrad.telegrambot.request.*;
 
 public class Callback extends Msg {
 
@@ -43,44 +44,31 @@ public class Callback extends Msg {
 
     public void confirm() {
 
-        answer().exec();
+        fragment.executeAsync(update,answer());
 
     }
 
     public void text(String... text) {
 
-        answer().text(ArrayUtil.join(text, "\n")).exec();
-
-    }
-
-    public void text(String text) {
-
-        answer().cacheTime(0).text(text).exec();
+        fragment.executeAsync(update,answer().text(ArrayUtil.join(text, "\n")));
 
     }
 
     public void alert(String... alert) {
 
-        answer().alert(ArrayUtil.join(alert, "\n")).exec();
-
-    }
-
-
-    public void alert(String alert) {
-
-        answer().alert(alert).exec();
-
+        fragment.executeAsync(update,answer().text(ArrayUtil.join(alert, "\n")).showAlert(true));
+				
     }
 
     public void url(String url) {
 
-        answer().url(url).exec();
+        fragment.executeAsync(update,answer().url(url));
 
     }
 
-    public AnswerCallback answer() {
+    public AnswerCallbackQuery answer() {
 
-        return new AnswerCallback(fragment, query.id());
+       return new AnswerCallbackQuery(query.id());
 
     }
 

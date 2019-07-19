@@ -86,6 +86,10 @@ public class FeedFetchTask extends TimerTask {
 										continue next;
 
 								}
+								
+								info.last = generateSign(feed.getEntries().get(0));
+
+								RssSub.info.setById(info.id,info);
 
 								LinkedList<SyndEntry> posts = new LinkedList<>();
 
@@ -129,9 +133,7 @@ public class FeedFetchTask extends TimerTask {
 
 								}
 
-								info.last = generateSign(feed.getEntries().get(0));
-
-								RssSub.info.setById(info.id,info);
+								
 
 								
 

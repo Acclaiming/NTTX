@@ -34,6 +34,7 @@ public class GroupOptions extends Fragment {
 				registerPoint(POINT_SET_CUST);
 
 				registerCallback(
+				POINT_OPTIONS,
 						POINT_BACK,
 						POINT_MENU_MAIN,
 						POINT_MENU_REST,
@@ -46,6 +47,9 @@ public class GroupOptions extends Fragment {
 						POINT_SET_JOIN,
 						POINT_SET_CUST,
 						POINT_SET_SHOW);
+						
+	
+						registerPayload(POINT_OPTIONS);
 
 		}
 
@@ -55,7 +59,9 @@ public class GroupOptions extends Fragment {
 				return FUNCTION_GROUP;
 
 		}
-
+		
+		final String POINT_OPTIONS = "group.options";
+		
 		final String POINT_BACK = "group_main";
 		final String POINT_MENU_MAIN = "group_menu_main";
 		final String POINT_MENU_REST = "group_menu_rest";
@@ -104,6 +110,16 @@ public class GroupOptions extends Fragment {
 		@Override
 		public void onFunction(UserData user,final Msg msg,String function,String[] params) {
 
+				final GroupData data = GroupData.get(msg.chat());
+
+				if (!GroupAdmin.fastAdminCheck(this,data,user.id)) {
+						
+						msg.send("你不是群组管理员，如果管理员在半个小时之内变动，可以请其他任意管理员使用 /update_admins_cahce 更新列表").async();
+						
+						return;
+						
+				}
+				
 				if (!NTT.isGroupAdmin(msg.fragment,msg.chatId(),origin.me.id())) {
 
 						msg.reply("BOT不是群组管理员 :)").exec();
@@ -111,15 +127,15 @@ public class GroupOptions extends Fragment {
 						return;
 
 				}
-
-				if (NTT.checkGroupAdmin(msg)) return;
-
-				final GroupData data = GroupData.get(msg.chat());
-
+				
 				if (!msg.contactable()) {
+						
+						ButtonMarkup buttons = new ButtonMarkup();
 
-						msg.send("请主动给BOT发送一条消息 : 通常是使用 /start 按钮。"," ( 因为BOT不能主动发送私聊消息 )").exec();
-
+						buttons.newButtonLine("打开",POINT_OPTIONS,user.id);
+						
+						msg.reply("点击下方按钮打开设置面板 :)").buttons(buttons).async();
+						
 						return;
 
 				}
@@ -135,10 +151,47 @@ public class GroupOptions extends Fragment {
 
 		}
 
+		@Override
+		public void onPayload(UserData user,Msg msg,String payload,String[] params) {
+				
+				long groupId = NumberUtil.parseLong(params[0]);
+
+				if (!GroupAdmin.fastAdminCheck(this,groupId,user.id)) {
+						
+						msg.reply("你不是该群组的管理员 如果最近半小时更改 请在群组中使用 /update_admins_cache 更新缓存.");
+						
+						return;
+						
+				}
+				
+				final GroupData data = GroupData.get(groupId);
+
+				msg.send(
+
+                 Html.b(msg.chat().title()),
+								 Html.i("更改群组的设定")
+
+								 ).buttons(menuMarkup(data)).html().exec();
+				
+				
+		}
+
     @Override
     public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
-				if (POINT_HELP.equals(point)) {
+				if (POINT_OPTIONS.equals(point)) {
+				
+						long userId = NumberUtil.parseLong(params[0]);
+						
+						if (user.id.equals(userId)) {
+								
+								callback.url("https://t.me/" + origin.me.username() + "?start=" + POINT_OPTIONS + PAYLOAD_SPLIT + callback.chatId() + PAYLOAD_SPLIT + user.id);
+								
+								return;
+								
+						}
+						
+				} else if (POINT_HELP.equals(point)) {
 
 						if ("dcm".equals(params[0])) {
 
