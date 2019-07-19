@@ -49,7 +49,7 @@ public class GroupOptions extends Fragment {
 						POINT_SET_SHOW);
 						
 	
-						registerPayload(POINT_OPTIONS);
+						registerPayload(PAYLOAD_OPTIONS);
 
 		}
 
@@ -60,7 +60,9 @@ public class GroupOptions extends Fragment {
 
 		}
 		
-		final String POINT_OPTIONS = "group.options";
+		final String POINT_OPTIONS = "group_options";
+		
+		final String PAYLOAD_OPTIONS = "go";
 		
 		final String POINT_BACK = "group_main";
 		final String POINT_MENU_MAIN = "group_menu_main";
@@ -185,7 +187,7 @@ public class GroupOptions extends Fragment {
 						
 						if (user.id.equals(userId)) {
 								
-								callback.url("https://t.me/" + origin.me.username() + "?start=" + POINT_OPTIONS + PAYLOAD_SPLIT + callback.chatId() + PAYLOAD_SPLIT + user.id);
+								callback.url("https://t.me/" + origin.me.username() + "?start=" + PAYLOAD_OPTIONS + PAYLOAD_SPLIT + callback.chatId() + PAYLOAD_SPLIT + user.id);
 								
 								return;
 								
