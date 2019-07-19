@@ -78,7 +78,9 @@ public class GroupData {
 
     public List<Long> admins;
 
-		public Boolean delete_service_msg;
+		public Integer delete_service_msg;
+		public Integer last_service_msg;
+		
     public Boolean delete_channel_msg;
 
 		public Boolean join_captcha;

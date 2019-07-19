@@ -29,7 +29,21 @@ public class GroupFunction extends Fragment {
 
 								if (data.delete_service_msg != null) {
 
-										msg.delete();
+										if (data.delete_service_msg == 0) {
+										
+												if (data.last_welcome_msg != null) {
+														
+														executeAsync(msg.update,new DeleteMessage(msg.chatId(),data.last_welcome_msg));
+														
+												}
+												
+										data.last_welcome_msg = msg.messageId();
+										
+										} else {
+												
+												msg.delete();
+												
+										}
 
 								} else if (user.id.equals(origin.me.id())) {
 

@@ -228,16 +228,23 @@ public class GroupOptions extends Fragment {
 
 										if (data.delete_service_msg == null) {
 
-												data.delete_service_msg = true;
+												data.delete_service_msg = 0;
 
-												callback.text("🛠️  已开启");
+												callback.text("🛠️  保留一条");
+
+										} else if (data.delete_service_msg == 0) {
+
+												data.delete_service_msg = 1;
+
+												callback.text("🛠️  全部删除");
 
 										} else {
+												
+												data.delete_service_msg = 0;
 
-												data.delete_service_msg = null;
-
-												callback.text("🛠️  已关闭");
-
+												callback.text("🛠️  不处理");
+												
+												
 										}
 
 
@@ -1431,7 +1438,7 @@ public class GroupOptions extends Fragment {
 
 								newButtonLine()
 										.newButton("删除服务消息",POINT_HELP,"dsm")
-										.newButton(data.delete_service_msg != null ? "✅" : "☑",POINT_SET_MAIN,data.id,"dsm");
+										.newButton(data.delete_service_msg == null ? "不处理" : data.delete_service_msg == 0 ? "保留一条" : "全部删除",POINT_SET_MAIN,data.id,"dsm");
 
 
 								newButtonLine("🔙",POINT_BACK,data.id);
