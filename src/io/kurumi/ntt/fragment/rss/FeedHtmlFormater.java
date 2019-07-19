@@ -332,7 +332,8 @@ public class FeedHtmlFormater {
 
 				if (!withImg) {
 
-						html = html.replace("<br>","\n");
+						html = html.replaceAll("<br ?/? ?>","\n");
+
 
 				}
 
