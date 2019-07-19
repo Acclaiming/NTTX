@@ -1,29 +1,21 @@
 package io.kurumi.ntt.fragment.rss;
 
-import cn.hutool.core.util.NumberUtil;
-import com.pengrad.telegrambot.model.ChatMember;
-import com.pengrad.telegrambot.request.GetChatMember;
-import com.pengrad.telegrambot.response.GetChatMemberResponse;
-import com.rometools.fetcher.FetcherException;
-import com.rometools.rome.feed.synd.SyndFeed;
-import com.rometools.rome.io.FeedException;
-import io.kurumi.ntt.db.AbsData;
-import io.kurumi.ntt.db.Data;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.utils.Html;
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-import io.kurumi.ntt.fragment.rss.RssSub.ChannelRss;
-import java.util.LinkedList;
-import io.kurumi.ntt.fragment.rss.RssSub.RssInfo;
-import io.kurumi.ntt.fragment.group.GroupAdmin;
-import io.kurumi.ntt.db.GroupData;
-import com.pengrad.telegrambot.request.GetChat;
-import com.pengrad.telegrambot.response.GetChatResponse;
+import cn.hutool.core.util.*;
+import com.pengrad.telegrambot.model.*;
+import com.pengrad.telegrambot.request.*;
+import com.pengrad.telegrambot.response.*;
+import com.rometools.fetcher.*;
+import com.rometools.rome.feed.synd.*;
+import com.rometools.rome.io.*;
+import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.fragment.*;
+import io.kurumi.ntt.fragment.group.*;
+import io.kurumi.ntt.model.*;
+import io.kurumi.ntt.model.request.*;
+import io.kurumi.ntt.utils.*;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 public class RssSub extends Fragment {
 
@@ -55,7 +47,7 @@ public class RssSub extends Fragment {
 
 				super.init(origin);
 
-				registerFunction("rss_sub","rss_list","rss_unsub","rss_unsub_all","rss_set_format","rss_link_preview");
+				registerFunction("rss_sub","rss_list","rss_unsub","rss_unsub_all","rss_set_format","rss_link_preview","rss_export");
 
 		}
 
@@ -123,7 +115,7 @@ public class RssSub extends Fragment {
 						return;
 
 				}
-
+				
 				ChannelRss conf = channel.getById(channelId);
 
 				if (conf == null) {
@@ -133,6 +125,62 @@ public class RssSub extends Fragment {
 						conf.subscriptions = new LinkedList<>();
 
 				}
+				
+				if ("rss_export".equals(function)) {
+						
+						if (params.length < 2) {
+
+								msg.invalidParams("channelId","rssUrl").exec();
+
+								return;
+
+						}
+						
+						try {
+
+								SyndFeed feed = FeedFetchTask.fetcher.retrieveFeed(new URL(params[1]));
+
+								msg.send("正在输出 " + Html.a(feed.getTitle(),feed.getLink())).html().exec();
+
+								for (SyndEntry entry : feed.getEntries()) {
+
+										Send request = new Send(conf.id,FeedHtmlFormater.format(conf.format,feed,entry));
+
+										if (conf.format == 0 || conf.preview) {
+
+												request.enableLinkPreview();
+
+										}
+
+										request.html().async();
+
+								}
+
+							
+						} catch (FetcherException e) {
+
+								msg.send("拉取出错 : ",BotLog.parseError(e)).exec();
+
+								return;
+
+						} catch (FeedException e) {
+
+								msg.send("拉取出错 : ",BotLog.parseError(e)).exec();
+
+						} catch (IOException e) {
+
+								msg.send("拉取出错 : ",BotLog.parseError(e)).exec();
+
+						} catch (IllegalArgumentException e) {
+
+								msg.send("无效的RSS链接").exec();
+
+						}
+						
+						
+				}
+
+				
 
 				if ("rss_sub".equals(function)) {
 
@@ -172,17 +220,17 @@ public class RssSub extends Fragment {
 
 						} catch (FetcherException e) {
 
-								msg.send("拉取出错 : " + e.getMessage()).exec();
+								msg.send("拉取出错 : " + BotLog.parseError(e)).exec();
 
 								return;
 
 						} catch (FeedException e) {
 
-								msg.send("拉取出错 : " + e.getMessage()).exec();
+								msg.send("拉取出错 : " + BotLog.parseError(e)).exec();
 
 						} catch (IOException e) {
 
-								msg.send("拉取出错 : " + e.getMessage()).exec();
+								msg.send("拉取出错 : " + BotLog.parseError(e)).exec();
 
 						} catch (IllegalArgumentException e) {
 

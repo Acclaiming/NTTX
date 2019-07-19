@@ -893,9 +893,7 @@ public class JoinCaptcha extends Fragment {
 
 						@Override
 						public void run() {
-
-								final HashMap<Long, AuthCache> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, AuthCache>();
-
+								
 								if (!group.containsKey(user.id)) return;
 
 								failed(user,msg,auth,data,true);
@@ -904,8 +902,7 @@ public class JoinCaptcha extends Fragment {
 
 				};
 
-				if (group.isEmpty()) cache.remove(msg.chatId());
-				else cache.put(msg.chatId(),group);
+				cache.put(msg.chatId(),group);
 
 				BotFragment.mainTimer.schedule(auth.task,new Date(System.currentTimeMillis() + ((data.captcha_time == null ? 50 : data.captcha_time) * 1000)));
 
@@ -1245,7 +1242,6 @@ public class JoinCaptcha extends Fragment {
 								}
 
 
-
 						} else {
 
 								if (gd.del_welcome_msg == null) {
@@ -1310,16 +1306,17 @@ public class JoinCaptcha extends Fragment {
 						if (auth.authMsg != null) auth.authMsg.delete();
 
 						auth.task.cancel();
+						
+						if (auth.serviceMsg != null) {
+
+								auth.serviceMsg.delete();
+
+								auth.serviceMsg = null;
+
+						}
 
 				}
 				
-				if (auth != null && auth.serviceMsg != null) {
-						
-						auth.serviceMsg.delete();
-						
-						auth.serviceMsg = null;
-						
-				}
 
 				if (!noRetey && gd.ft_count != null && (gd.captchaFailed == null || !gd.captchaFailed.containsKey(user.id.toString()) || (gd.captchaFailed.get(user.id.toString()) <= gd.ft_count))) {
 
