@@ -292,10 +292,10 @@ public class JoinCaptcha extends Fragment {
 
 						}
 
-						msg.restrict();
-
 						if (data.passive_mode != null) {
 
+								msg.restrict();
+								
 								if (data.delete_service_msg != null) {
 
 										SendResponse resp = msg.send("你好，新成员 " + newData.userName() + " 为确保群组安全，已将你暂时禁言。请点击下方按钮开始验证。")
@@ -313,9 +313,6 @@ public class JoinCaptcha extends Fragment {
 												data.passive_msg.put(user.id.toString(),resp.message().messageId());
 
 										}
-
-
-
 
 								} else {
 
@@ -769,6 +766,8 @@ public class JoinCaptcha extends Fragment {
 
 						} else {
 
+								msg.restrict();
+								
 								clearGroupPoint(user);
 
 						}
@@ -856,6 +855,8 @@ public class JoinCaptcha extends Fragment {
 								setGroupPoint(user,POINT_ANSWER,auth);
 
 						} else {
+								
+								msg.restrict();
 
 								clearGroupPoint(user);
 
