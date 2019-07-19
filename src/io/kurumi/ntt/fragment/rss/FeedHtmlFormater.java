@@ -31,7 +31,7 @@ public class FeedHtmlFormater {
 
 	  public static Pattern removeTags = Pattern.compile("<(?!/?(a|b|i|code|pre|em)\b)[^>]+>");
 
-		public static Pattern removeTagsWithoutImg = Pattern.compile("<(?!/?(a|b|i|code|pre|em|img)\b)[^>]+>");
+		public static Pattern removeTagsWithoutImg = Pattern.compile("<(?!/?(a|b|i|code|pre|em|img)\b)[^>]+>",Pattern.MULTILINE);
 
 		public static Pattern matchTagInterrupted = Pattern.compile(".*</[^>]+>.+<[^>]+");
 
@@ -194,6 +194,8 @@ public class FeedHtmlFormater {
 
 						Page page = Telegraph.createPage(account.access_token,entry.getTitle(),StrUtil.isBlank(entry.getAuthor()) ? feed.getTitle() : entry.getAuthor().trim(),feed.getLink(),content,false);
 
+						if (page == null) {}
+						
 						html.append(Html.a(entry.getTitle(),page.url));
 
 				} else if (type == 1) {
