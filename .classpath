@@ -13,4 +13,5 @@
 <classpathentry kind="lib" path="libs/rome/rome-fetcher-1.12.1.jar"/>
 <classpathentry kind="lib" path="libs/rome/rome-opml-1.12.1.jar"/>
 <classpathentry kind="lib" path="libs/rome/rome-modules-1.12.1.jar"/>
+<classpathentry kind="lib" path="libs/nv-i18n-1.25.jar"/>
 </classpath>
