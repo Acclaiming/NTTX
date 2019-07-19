@@ -136,7 +136,7 @@ public class GroupOptions extends Fragment {
 
 						buttons.newButtonLine("打开",POINT_OPTIONS,user.id);
 						
-						msg.reply("点击下方按钮打开设置面板 :)").buttons(buttons).async();
+						msg.reply("点击按钮在私聊打开设置面板 :)","\n如果没有反应 请检查是否停用了BOT (私聊内点击 '取消屏蔽' 解除) 然后重新点击下方 '打开' 按钮 ~").buttons(buttons).async();
 						
 						return;
 
