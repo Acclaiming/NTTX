@@ -146,7 +146,7 @@ public class JoinCaptcha extends Fragment {
 
 						if (data.welcome == 0) {
 
-								if (data.delete_service_msg == null) {
+								if (!((Integer)1).equals(data.delete_service_msg)) {
 
 										if (data.del_welcome_msg == null) {
 
@@ -188,7 +188,7 @@ public class JoinCaptcha extends Fragment {
 
 								String sticker = data.welcomeSet.get(RandomUtil.randomInt(0,data.welcomeSet.size()));
 
-								if (data.delete_service_msg == null) {
+								if (!((Integer)1).equals(data.delete_service_msg)) {
 
 										if (data.del_welcome_msg == null) {
 
@@ -275,7 +275,7 @@ public class JoinCaptcha extends Fragment {
 						User newMember = msg.message().newChatMembers()[0];
 
 						final UserData newData = UserData.get(newMember);
-						
+
 						if (user.admin()) return;
 
 						if (!user.id.equals(newData.id)) return;
@@ -295,7 +295,7 @@ public class JoinCaptcha extends Fragment {
 						if (data.passive_mode != null) {
 
 								msg.restrict();
-								
+
 								if (data.delete_service_msg != null) {
 
 										SendResponse resp = msg.send("你好，新成员 " + newData.userName() + " 为确保群组安全，已将你暂时禁言。请点击下方按钮开始验证。")
@@ -503,7 +503,8 @@ public class JoinCaptcha extends Fragment {
 
 								return (type == 0 ? left + right : left - right) == NumberUtil.parseInt(input.trim());
 
-						} catch (Exception ex) { return false; }
+						}
+						catch (Exception ex) { return false; }
 
 				}
 
@@ -767,7 +768,7 @@ public class JoinCaptcha extends Fragment {
 						} else {
 
 								msg.restrict();
-								
+
 								clearGroupPoint(user);
 
 						}
@@ -855,7 +856,7 @@ public class JoinCaptcha extends Fragment {
 								setGroupPoint(user,POINT_ANSWER,auth);
 
 						} else {
-								
+
 								msg.restrict();
 
 								clearGroupPoint(user);
@@ -878,7 +879,7 @@ public class JoinCaptcha extends Fragment {
 
 						@Override
 						public void run() {
-								
+
 								if (!group.containsKey(user.id)) return;
 
 								failed(user,msg,auth,data,true);
@@ -1093,7 +1094,7 @@ public class JoinCaptcha extends Fragment {
 				gd.waitForCaptcha.remove(user.id);
 
 				msg.unrestrict();
-				
+
 				if (!(msg instanceof Callback)) {
 
 						clearGroupPoint(user);
@@ -1148,7 +1149,7 @@ public class JoinCaptcha extends Fragment {
 
 				if (gd.welcome == 0) {
 
-						if (gd.delete_service_msg == null && auth != null && auth.serviceMsg != null) {
+						if ((!((Integer)1).equals(gd.delete_service_msg) && auth != null && auth.serviceMsg != null)) {
 
 								if (gd.del_welcome_msg == null) {
 
@@ -1190,7 +1191,7 @@ public class JoinCaptcha extends Fragment {
 
 						String sticker = gd.welcomeSet.get(RandomUtil.randomInt(0,gd.welcomeSet.size()));
 
-						if (gd.delete_service_msg == null && auth != null && auth.serviceMsg != null) {
+						if (!((Integer)1).equals(gd.delete_service_msg) && auth != null && auth.serviceMsg != null) {
 
 								if (gd.del_welcome_msg == null) {
 
@@ -1291,7 +1292,7 @@ public class JoinCaptcha extends Fragment {
 						if (auth.authMsg != null) auth.authMsg.delete();
 
 						auth.task.cancel();
-						
+
 						if (auth.serviceMsg != null) {
 
 								auth.serviceMsg.delete();
@@ -1301,7 +1302,7 @@ public class JoinCaptcha extends Fragment {
 						}
 
 				}
-				
+
 
 				if (!noRetey && gd.ft_count != null && (gd.captchaFailed == null || !gd.captchaFailed.containsKey(user.id.toString()) || (gd.captchaFailed.get(user.id.toString()) <= gd.ft_count))) {
 
@@ -1328,16 +1329,16 @@ public class JoinCaptcha extends Fragment {
 				}
 
 				msg.unrestrict();
-				
-		//	if (msg.message().leftChatMember() != null) {
-			//	} else if (msg.message().newChatMembers() != null) {0
-				
-			gd.waitForCaptcha.remove(user.id);
-				
-			
-			 if (gd.fail_ban == null) {
 
-						
+				//	if (msg.message().leftChatMember() != null) {
+				//	} else if (msg.message().newChatMembers() != null) {0
+
+				gd.waitForCaptcha.remove(user.id);
+
+
+				if (gd.fail_ban == null) {
+
+
 						msg.kick();
 
 				} else {
