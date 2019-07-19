@@ -23,10 +23,11 @@ import io.kurumi.ntt.model.request.Edit;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.NTT;
 import java.io.File;
+import com.pengrad.telegrambot.request.*;
 
 public class Msg extends Context {
 
-	public Update update;
+		public Update update;
 
     public static String[] NO_PARAMS = new String[0];
     Msg replyTo;
@@ -66,18 +67,18 @@ public class Msg extends Context {
         return null;
 
     }
-	
-	public Send invalidParams(String... params) {
-		
-		return send("无效的参数 , /" + command() + " <" + ArrayUtil.join(params,"> <") + ">");
-		
-	}
 
-	public Sticker sticker() {
+		public Send invalidParams(String... params) {
 
-		return message.sticker();
+				return send("无效的参数 , /" + command() + " <" + ArrayUtil.join(params,"> <") + ">");
 
-	}
+		}
+
+		public Sticker sticker() {
+
+				return message.sticker();
+
+		}
 
     public UserData from() {
 
@@ -117,11 +118,11 @@ public class Msg extends Context {
 
     }
 
-	public boolean isGroupAdmin() {
+		public boolean isGroupAdmin() {
 
-		return NTT.isGroupAdmin(fragment,chatId(),message.from().id());
+				return NTT.isGroupAdmin(fragment,chatId(),message.from().id());
 
-	}
+		}
 
     public boolean isReply() {
 
@@ -190,18 +191,18 @@ public class Msg extends Context {
 
     public void sendTyping() {
 
-		if (isPrivate()) {
+				if (isPrivate()) {
 
-			// fragment.sendTyping(chatId());
+						//fragment.sendTyping(chatId());
 
-		}
+				}
 
     }
-		
+
 		public boolean contactable() {
-				
+
 				return from().contactable(fragment);
-				
+
 		}
 
     public void sendUpdatingFile() {
@@ -283,36 +284,78 @@ public class Msg extends Context {
         fragment.bot().execute(new EditMessageReplyMarkup(chatId(),messageId()).replyMarkup(markup.markup()));
 
     }
+		
+		public void delete() {
 
-    public boolean delete() {
+				delete(messageId());
+        
+    }
 
-        return fragment.bot().execute(new DeleteMessage(chat().id(),messageId())).isOk();
+    public void delete(int messageId) {
+
+        fragment.executeAsync(update,new DeleteMessage(chatId(),messageId));
+
+    }
+		
+		public void kick() {
+				
+				kick(true);
+				
+		}
+
+		public void kick(boolean ban) {
+				
+				kick(from().id,ban);
+				
+		}
+		
+		public void kick(Long userId) {
+
+				kick(userId,false);
+
+		}
+
+		public void kick(Long userId,boolean ban) {
+
+        fragment.executeAsync(update,new KickChatMember(chatId(),userId.intValue()));
+
+				if (!ban) fragment.executeAsync(update,new UnbanChatMember(chatId(),userId.intValue()));
 
     }
 
-    public boolean unrestrict() {
+    public void unrestrict() {
 
-        return unrestrict(from().id);
+				fragment.executeAsync(update,new RestrictChatMember(chatId(),from().id.intValue())
+															.canSendMessages(true)
+															.canSendMediaMessages(true)
+															.canSendOtherMessages(true)
+															.canAddWebPagePreviews(true)
+															);
+    }
+
+    public void restrict() {
+
+        fragment.executeAsync(update,new RestrictChatMember(chatId(),from().id.intValue())
+											 .canSendMessages(false)
+											 .canSendMediaMessages(false)
+											 .canSendOtherMessages(false)
+											 .canAddWebPagePreviews(false)
+											 );
 
     }
 
-    public boolean restrict() {
+    public void restrict(long until) {
 
-        return restrict(from().id);
-
-    }
-
-    public boolean restrictUntil(long until) {
-
-        return restrict(from().id,until);
-
-    }
-
-    public boolean kick() {
-
-        return kick(from().id);
+        fragment.executeAsync(update,new RestrictChatMember(chatId(), from().id.intValue())
+																			.canSendMessages(false)
+																			.canSendMediaMessages(false)
+																			.canSendOtherMessages(false)
+																			.canAddWebPagePreviews(false)
+																			.untilDate((int) until));
 
     }
+
+
 
     public Msg forwardTo(Object chatId) {
 
@@ -348,45 +391,45 @@ public class Msg extends Context {
 
     public boolean isCommand() {
 
-		if (isCommand == 0) {
+				if (isCommand == 0) {
 
-			if (text() != null && text().startsWith("/") && text().length() > 1) {
+						if (text() != null && text().startsWith("/") && text().length() > 1) {
 
-				String body = text().substring(1);
+								String body = text().substring(1);
 
-				if (body.contains(" ")) {
+								if (body.contains(" ")) {
 
-					String cmdAndUser = StrUtil.subBefore(body," ",false);
+										String cmdAndUser = StrUtil.subBefore(body," ",false);
 
-					if (cmdAndUser.contains("@" + fragment.origin.me.username())) {
+										if (cmdAndUser.contains("@" + fragment.origin.me.username())) {
 
-						name = StrUtil.subBefore(cmdAndUser,"@",false);
+												name = StrUtil.subBefore(cmdAndUser,"@",false);
 
-					} else {
+										} else {
 
-						name = cmdAndUser;
+												name = cmdAndUser;
 
-					}
+										}
 
-				} else if (body.contains("@" + fragment.origin.me.username())) {
+								} else if (body.contains("@" + fragment.origin.me.username())) {
 
-					name = StrUtil.subBefore(body,"@",false);
+										name = StrUtil.subBefore(body,"@",false);
 
-				} else {
+								} else {
 
-					name = body;
+										name = body;
+
+								}
+
+								isCommand = 1;
+
+						} else {
+
+								isCommand = 2;
+
+						}
 
 				}
-
-				isCommand = 1;
-
-			} else {
-
-				isCommand = 2;
-
-			}
-
-		}
 
         return isCommand == 1;
 

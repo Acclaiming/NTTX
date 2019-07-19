@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import cn.hutool.core.thread.ThreadUtil;
 import java.util.LinkedList;
+import com.pengrad.telegrambot.request.*;
 
 public class Fragment {
 
@@ -50,7 +51,40 @@ public class Fragment {
 				return bot().execute(request);
 
     }
+		
+		public void executeAsync(BaseRequest request) { executeAsync(null,request); }
 
+		public void executeAsync(Update update,final BaseRequest request) {
+				
+				if (update != null && !update.lock.used.getAndSet(true)) {
+						
+						update.lock.send(request);
+						
+				} else {
+				 
+						execute(new Runnable() {
+
+										@Override
+										public void run() {
+												
+												bot().execute(request);
+												
+										}
+										
+								});
+						
+			
+			 
+			 }
+
+    }
+    
+		
+		public DeleteMessage deleteMessage(long chatId,int messageId) {
+				
+				return new DeleteMessage(chatId,messageId);
+				
+		}
 
     public PointStore point() {
 

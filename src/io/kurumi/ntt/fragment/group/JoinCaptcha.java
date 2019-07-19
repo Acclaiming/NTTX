@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.TimerTask;
 import io.kurumi.ntt.fragment.admin.Firewall;
 import com.pengrad.telegrambot.request.SendSticker;
+import com.pengrad.telegrambot.request.*;
 
 public class JoinCaptcha extends Fragment {
 
@@ -117,15 +118,6 @@ public class JoinCaptcha extends Fragment {
 		}
 
 		@Override
-		public int checkMsg(UserData user,Msg msg) {
-
-				if (!msg.isSuperGroup()) return PROCESS_ASYNC;
-
-				return msg.message().newChatMembers() != null ? PROCESS_SYNC : PROCESS_ASYNC;
-
-		}
-
-		@Override
 		public void onMsg(final UserData user,Msg msg) {
 
 				if (!msg.isSuperGroup()) return;
@@ -140,13 +132,13 @@ public class JoinCaptcha extends Fragment {
 
 								if (data.last_welcome_msg != null) {
 
-										execute(new DeleteMessage(data.id,data.last_welcome_msg));
+										executeAsync(msg.update,deleteMessage(data.id,data.last_welcome_msg));
 
 								}
 
 								if (data.last_welcome_msg_2 != null) {
 
-										execute(new DeleteMessage(data.id,data.last_welcome_msg_2));
+										executeAsync(msg.update,new DeleteMessage(data.id,data.last_welcome_msg_2));
 
 								}
 
@@ -200,7 +192,7 @@ public class JoinCaptcha extends Fragment {
 
 										if (data.del_welcome_msg == null) {
 
-												execute(new SendSticker(data.id,sticker).replyToMessageId(msg.messageId()));
+												executeAsync(msg.update,new SendSticker(data.id,sticker).replyToMessageId(msg.messageId()));
 
 												if (data.welcome == 2) {
 
@@ -242,7 +234,7 @@ public class JoinCaptcha extends Fragment {
 
 														msg.send(user.userName() + " , " + data.welcomeMessage).async();
 
-														execute(new SendSticker(data.id,sticker));
+														executeAsync(msg.update,new SendSticker(data.id,sticker));
 
 												}
 
@@ -284,17 +276,9 @@ public class JoinCaptcha extends Fragment {
 
 						final UserData newData = UserData.get(newMember);
 						
-						if (user.admin() || msg.isGroupAdmin()) return;
+						if (user.admin()) return;
 
 						if (!user.id.equals(newData.id)) return;
-
-						if (Firewall.block.containsId(user.id)) {
-
-								msg.kick(user.id,true);
-
-								return;
-
-						}
 
 						if (data.waitForCaptcha == null) {
 
@@ -779,7 +763,7 @@ public class JoinCaptcha extends Fragment {
 
 						if (auth.input) {
 
-								msg.unrestrict(user.id);
+								msg.unrestrict();
 
 								setGroupPoint(user,POINT_ANSWER,auth);
 
@@ -867,7 +851,7 @@ public class JoinCaptcha extends Fragment {
 
 						if (auth.input) {
 
-								msg.unrestrict(user.id);
+								msg.unrestrict();
 
 								setGroupPoint(user,POINT_ANSWER,auth);
 
@@ -934,13 +918,13 @@ public class JoinCaptcha extends Fragment {
 
 						}
 
-						msg.kick(newMember.id());
+						executeAsync(msg.update,new KickChatMember(msg.chatId(),newMember.id().intValue()));
 
 						if (newMember.isBot()) {
 
 								if (gd.invite_bot_ban != null) {
 
-										msg.kick(user.id,true);
+										msg.kick(true);
 
 								} else {
 
@@ -952,7 +936,7 @@ public class JoinCaptcha extends Fragment {
 
 								if (gd.invite_user_ban != null) {
 
-										msg.kick(user.id,true);
+										msg.kick(true);
 
 								} else {
 
@@ -1107,8 +1091,8 @@ public class JoinCaptcha extends Fragment {
 
 				gd.waitForCaptcha.remove(user.id);
 
-				msg.unrestrict(user.id);
-
+				msg.unrestrict();
+				
 				if (!(msg instanceof Callback)) {
 
 						clearGroupPoint(user);
@@ -1250,7 +1234,7 @@ public class JoinCaptcha extends Fragment {
 
 												msg.send(user.userName() + " , " + gd.welcomeMessage).async();
 
-												execute(new SendSticker(gd.id,sticker));
+												executeAsync(new SendSticker(gd.id,sticker));
 
 										}
 
@@ -1342,27 +1326,28 @@ public class JoinCaptcha extends Fragment {
 
 				}
 
-				msg.unrestrict(user.id);
+				msg.unrestrict();
 				
 		//	if (msg.message().leftChatMember() != null) {
-			//	} else if (msg.message().newChatMembers() != null) {
+			//	} else if (msg.message().newChatMembers() != null) {0
+				
+			gd.waitForCaptcha.remove(user.id);
+				
+			
 			 if (gd.fail_ban == null) {
 
-						gd.waitForCaptcha.remove(user.id);
-
-						msg.kick(user.id);
+						
+						msg.kick();
 
 				} else {
 
-						gd.waitForCaptcha.remove(user.id);
-
-						msg.kick(user.id,true);
+						msg.kick(true);
 
 				}
 
 				if (gd.captcha_del == null && gd.last_join_msg != null) {
 
-						execute(new DeleteMessage(msg.chatId(),gd.last_join_msg));
+						executeAsync(msg.update,deleteMessage(msg.chatId(),gd.last_join_msg));
 
 						gd.last_join_msg = null;
 
