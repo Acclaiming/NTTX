@@ -170,7 +170,7 @@ public class GroupOptions extends Fragment {
 
 				msg.send(
 
-                 Html.b(msg.chat().title()),
+                 Html.b(data.title),
 								 Html.i("更改群组的设定")
 
 								 ).buttons(menuMarkup(data)).html().exec();
