@@ -900,6 +900,7 @@ public class JoinCaptcha extends Fragment {
 				if (POINT_DELETE.equals(point)) { msg.delete(); return; }
 
 				final GroupData gd = GroupData.get(msg.chat());
+				
 				final AuthCache auth = (AuthCache)data;
 
 				if (msg.message().leftChatMember() != null) {

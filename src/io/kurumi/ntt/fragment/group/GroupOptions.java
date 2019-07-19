@@ -124,7 +124,7 @@ public class GroupOptions extends Fragment {
 				
 				if (!NTT.isGroupAdmin(msg.fragment,msg.chatId(),origin.me.id())) {
 
-						msg.reply("BOT不是群组管理员 :)").exec();
+						msg.reply("BOT不是群组管理员 :)").async();
 
 						return;
 
@@ -147,7 +147,7 @@ public class GroupOptions extends Fragment {
                  Html.b(msg.chat().title()),
 								 Html.i("更改群组的设定")
 
-								 ).buttons(menuMarkup(data)).html().exec();
+								 ).buttons(menuMarkup(data)).html().async();
 
 			  msg.reply("已经通过私聊发送群组设置选项").failedWith();
 
@@ -312,7 +312,7 @@ public class GroupOptions extends Fragment {
 
 								}
 
-								execute(new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(mainMenu(data).markup()));
+								executeAsync(callback.update,new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(mainMenu(data).markup()));
 
 						} else if (POINT_SET_REST.equals(point)) {
 
@@ -671,7 +671,7 @@ public class GroupOptions extends Fragment {
 
 								}
 
-								execute(new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(restMenu(data).markup()));
+								executeAsync(callback.update,new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(restMenu(data).markup()));
 
 						} else if (POINT_SET_JOIN.equals(point)) {
 
@@ -1065,7 +1065,7 @@ public class GroupOptions extends Fragment {
 
 								}
 
-								execute(new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(joinMenu(data).markup()));
+								executeAsync(callback.update,new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(joinMenu(data).markup()));
 
 						} else if (POINT_SET_CUST.equals(point)) {
 
@@ -1111,7 +1111,7 @@ public class GroupOptions extends Fragment {
 
 										}
 
-										execute(new EditMessageReplyMarkup(callback.chatId(),callback.message().messageId()).replyMarkup(cusMenu(data).markup()));
+										executeAsync(callback.update,new EditMessageReplyMarkup(callback.chatId(),callback.message().messageId()).replyMarkup(cusMenu(data).markup()));
 
 								} else if ("reset_i_question".equals(params[1])) {
 
@@ -1257,8 +1257,6 @@ public class GroupOptions extends Fragment {
 
 								callback.edit(showStats(data)).buttons(showMenu(data)).async();
 								
-
-
 						}
 
 				}
