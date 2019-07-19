@@ -29,9 +29,9 @@ public class FeedHtmlFormater {
 
 		public static Pattern matchImg = Pattern.compile("<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>");
 
-	  public static Pattern removeTags = Pattern.compile("<(?!/?(a|b|i|code|pre|em)\b)[^>]+>");
+	  public static Pattern removeTags = Pattern.compile("<(?!/?(a|b|i|code|pre|em)\b)[^>]+>",Pattern.DOTALL);
 
-		public static Pattern removeTagsWithoutImg = Pattern.compile("<(?!/?(a|b|i|code|pre|em|img)\b)[^>]+>",Pattern.MULTILINE);
+		public static Pattern removeTagsWithoutImg = Pattern.compile("<(?!/?(a|b|i|code|pre|em|img)\b)[^>]+>",Pattern.DOTALL);
 
 		public static Pattern matchTagInterrupted = Pattern.compile(".*</[^>]+>.+<[^>]+");
 
