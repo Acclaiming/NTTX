@@ -88,7 +88,7 @@ public class RssSub extends Fragment {
 
 				}
 
-				if (!GroupAdmin.fastAdminCheck(this,channelId,user.id)) {
+				if (!GroupAdmin.fastAdminCheck(this,channelId,user.id,false)) {
 
 						GetChatMemberResponse resp = execute(new GetChatMember(channelId,user.id.intValue()));
 

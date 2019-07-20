@@ -76,11 +76,15 @@ public class GroupData {
 
 		public String title;
 
+		public Long owner;
+		
     public List<Long> admins;
-
+		public List<Long> full_admins;
+		
+		public Boolean not_trust_admin;
 		public Integer delete_service_msg;
 		public Integer last_service_msg;
-		
+
     public Boolean delete_channel_msg;
 
 		public Boolean join_captcha;
@@ -195,12 +199,29 @@ public class GroupData {
 		public Boolean del_welcome_msg;
 		public Integer last_welcome_msg;
 		public Integer last_welcome_msg_2;
-		
-		public static class CustomButton {
 
-				public String text;
-				public String url;
+		public Boolean dynamic_join;
 
+		public static class DynamicLink {
+
+				public String name;
+
+				public Integer type; 
+
+				// 0 允许所有人加入
+
+				// 1 管理员确认
+
+			  // 2 回答问题并由管理员确认
+				
+				// 3 正确回答问题
+				
+				// 4 不允许任何人加入
+				
+				public Boolean no_trust_admin;
+
+				public String not_allow_msg;
+				
 		}
 
 }

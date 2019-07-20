@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import com.pengrad.telegrambot.response.GetStickerSetResponse;
 import com.pengrad.telegrambot.request.GetStickerSet;
 import com.pengrad.telegrambot.model.Sticker;
+import io.kurumi.ntt.fragment.bots.*;
 
 public class GroupOptions extends Fragment {
 
@@ -34,7 +35,7 @@ public class GroupOptions extends Fragment {
 				registerPoint(POINT_SET_CUST);
 
 				registerCallback(
-				POINT_OPTIONS,
+						POINT_OPTIONS,
 						POINT_BACK,
 						POINT_MENU_MAIN,
 						POINT_MENU_REST,
@@ -47,9 +48,9 @@ public class GroupOptions extends Fragment {
 						POINT_SET_JOIN,
 						POINT_SET_CUST,
 						POINT_SET_SHOW);
-						
-	
-						registerPayload(PAYLOAD_OPTIONS);
+
+
+				registerPayload(PAYLOAD_OPTIONS);
 
 		}
 
@@ -59,11 +60,11 @@ public class GroupOptions extends Fragment {
 				return FUNCTION_GROUP;
 
 		}
-		
+
 		final String POINT_OPTIONS = "group_options";
-		
+
 		final String PAYLOAD_OPTIONS = "go";
-		
+
 		final String POINT_BACK = "group_main";
 		final String POINT_MENU_MAIN = "group_menu_main";
 		final String POINT_MENU_REST = "group_menu_rest";
@@ -114,14 +115,26 @@ public class GroupOptions extends Fragment {
 
 				final GroupData data = GroupData.get(msg.chat());
 
-				if (!GroupAdmin.fastAdminCheck(this,data,user.id)) {
-						
-						msg.send("你不是群组管理员，如果管理员在半个小时之内变动，可以请其他任意管理员使用 /update_admins_cahce 更新列表").async();
-						
+				if (!GroupAdmin.fastAdminCheck(this,data,user.id,false)) {
+
+						msg.reply("你不是群组管理员，如果管理员在半个小时之内变动，可以请其他任意管理员使用 /update_admins_cahce 更新列表").async();
+
 						return;
-						
+
 				}
-				
+
+				if (data.full_admins != null && data.not_trust_admin) {
+
+						if ((!(origin instanceof GroupBot) || !((GroupBot)origin).userId.equals(user.id)) && !data.full_admins.contains(user.id)) {
+
+								msg.reply("根据群组设定，你不可以更改群组选项 , 除非本群组没有群主与全权限管理员").send();
+
+								return;
+
+						}
+
+				}
+
 				if (!NTT.isGroupAdmin(msg.fragment,msg.chatId(),origin.me.id())) {
 
 						msg.reply("BOT不是群组管理员 :)").async();
@@ -129,15 +142,15 @@ public class GroupOptions extends Fragment {
 						return;
 
 				}
-				
+
 				if (!NTT.isUserContactable(this,user.id)) {
-						
+
 						ButtonMarkup buttons = new ButtonMarkup();
 
 						buttons.newButtonLine("打开",POINT_OPTIONS,user.id);
-						
+
 						msg.reply("点击按钮在私聊打开设置面板 :)","\n如果没有反应 请检查是否停用了BOT (私聊内点击 '取消屏蔽' 解除) 然后重新点击下方 '打开' 按钮 ~").buttons(buttons).async();
-						
+
 						return;
 
 				}
@@ -155,44 +168,44 @@ public class GroupOptions extends Fragment {
 
 		@Override
 		public void onPayload(UserData user,Msg msg,String payload,String[] params) {
-				
+
 				long groupId = NumberUtil.parseLong(params[0]);
 
-				if (!GroupAdmin.fastAdminCheck(this,groupId,user.id)) {
-						
+				if (!GroupAdmin.fastAdminCheck(this,groupId,user.id,false)) {
+
 						msg.reply("你不是该群组的管理员 如果最近半小时更改 请在群组中使用 /update_admins_cache 更新缓存.");
-						
+
 						return;
-						
+
 				}
-				
+
 				final GroupData data = GroupData.get(groupId);
 
 				msg.send(
 
-                 Html.b(data.title),
-								 Html.i("更改群组的设定")
+						Html.b(data.title),
+						Html.i("更改群组的设定")
 
-								 ).buttons(menuMarkup(data)).html().exec();
-				
-				
+				).buttons(menuMarkup(data)).html().exec();
+
+
 		}
 
     @Override
     public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
 				if (POINT_OPTIONS.equals(point)) {
-				
+
 						long userId = NumberUtil.parseLong(params[0]);
-						
+
 						if (user.id.equals(userId)) {
-								
+
 								callback.url("https://t.me/" + origin.me.username() + "?start=" + PAYLOAD_OPTIONS + PAYLOAD_SPLIT + callback.chatId() + PAYLOAD_SPLIT + user.id);
-								
+
 								return;
-								
+
 						}
-						
+
 				} else if (POINT_HELP.equals(point)) {
 
 						if ("dcm".equals(params[0])) {
@@ -294,21 +307,39 @@ public class GroupOptions extends Fragment {
 												callback.text("🛠️  全部删除");
 
 										} else {
-												
+
 												data.delete_service_msg = 0;
 
 												callback.text("🛠️  不处理");
-												
-												
+
+
+
+
 										}
 
+								} else if ("not_trust_admin".equals(params[1])) {
 
+										if (!GroupAdmin.fastAdminCheck(this,data,user.id,true)) {
 
-								} else {
+												callback.alert("您不是该群组的创建者或全权限管理员 无法更改此项");
 
-										callback.alert("喵...？");
+												return;
 
-										return;
+										}
+
+										if (data.not_trust_admin == null) {
+
+												data.not_trust_admin = true;
+
+												callback.text("🛠️  已开启");
+
+										} else {
+
+												data.not_trust_admin = null;
+
+												callback.text("🛠️  已关闭");
+
+										}
 
 								}
 
@@ -1256,7 +1287,7 @@ public class GroupOptions extends Fragment {
 								}
 
 								callback.edit(showStats(data)).buttons(showMenu(data)).async();
-								
+
 						}
 
 				}
@@ -1423,13 +1454,13 @@ public class GroupOptions extends Fragment {
 						edit.data.welcomeMessage = msg.text();
 
 						clearPrivatePoint(user);
-						
-				}else if (edit.type == 5) {
+
+				} else if (edit.type == 5) {
 
 						if (msg.sticker() != null) {
 
 								edit.data.welcomeSet = new LinkedList<>();
-								
+
 								edit.data.welcomeSet.add(msg.sticker().fileId());
 
 						} else 	if (!msg.hasText()) {
@@ -1439,11 +1470,11 @@ public class GroupOptions extends Fragment {
 								return;
 
 						} else {
-								
+
 								String target = msg.text();
-								
+
 								if (target.contains("/")) target = StrUtil.subAfter(target,"/",true);
-								
+
 								final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
 
 								if (!set.isOk()) {
@@ -1453,13 +1484,13 @@ public class GroupOptions extends Fragment {
 										return;
 
 								}
-								
+
 								edit.data.welcomeSet = new LinkedList<>();
-								
+
 								for (Sticker sticker :set.stickerSet().stickers()) edit.data.welcomeSet.add(sticker.fileId());
-								
+
 						}
-						
+
 						clearPrivatePoint(user);
 
 				}
@@ -1493,6 +1524,9 @@ public class GroupOptions extends Fragment {
 										.newButton("删除服务消息",POINT_HELP,"dsm")
 										.newButton(data.delete_service_msg == null ? "不处理" : data.delete_service_msg == 0 ? "保留一条" : "全部删除",POINT_SET_MAIN,data.id,"dsm");
 
+								newButtonLine()
+										.newButton("不信任管理员",POINT_HELP,"not_trust_admin")
+										.newButton(data.not_trust_admin != null ? "✅" : "☑",POINT_SET_MAIN,data.id,"not_trust_admin");
 
 								newButtonLine("🔙",POINT_BACK,data.id);
 
@@ -1756,9 +1790,9 @@ public class GroupOptions extends Fragment {
 						stats.append("未设定");
 
 				} else {
-						
+
 						stats.append(data.welcomeMessage);
-						
+
 				}
 
 				stats.append("\n欢迎贴纸 : ");

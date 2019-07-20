@@ -54,7 +54,7 @@ public class GroupFunction extends Fragment {
 								}
 
 
-						} else if (GroupAdmin.fastAdminCheck(this,data,user.id)) {
+						} else if (GroupAdmin.fastAdminCheck(this,data,user.id,false)) {
 
 								if (msg.message().newChatMembers() != null) msg.delete();
 
