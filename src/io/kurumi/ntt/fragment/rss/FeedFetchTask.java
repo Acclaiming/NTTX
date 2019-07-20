@@ -87,10 +87,7 @@ public class FeedFetchTask extends TimerTask {
 
 								}
 								
-								info.last = generateSign(feed.getEntries().get(0));
-
-								RssSub.info.setById(info.id,info);
-
+								
 								LinkedList<SyndEntry> posts = new LinkedList<>();
 
 								for (SyndEntry entry : feed.getEntries()) {
@@ -104,7 +101,11 @@ public class FeedFetchTask extends TimerTask {
 										posts.add(entry);
 
 								}
+								
+								info.last = generateSign(feed.getEntries().get(0));
 
+								RssSub.info.setById(info.id,info);
+								
 								if (posts.isEmpty()) {
 
 										BotLog.debug("无新文章");

@@ -77,10 +77,10 @@ public class GroupData {
 		public String title;
 
 		public Long owner;
-		
+
     public List<Long> admins;
 		public List<Long> full_admins;
-		
+
 		public Boolean not_trust_admin;
 		public Integer delete_service_msg;
 		public Integer last_service_msg;
@@ -201,27 +201,41 @@ public class GroupData {
 		public Integer last_welcome_msg_2;
 
 		public Boolean dynamic_join;
+		
+		public Integer type; 
 
-		public static class DynamicLink {
+		// 0 允许所有人加入
 
-				public String name;
+		public Boolean default_msg;
+		
+		/*
+		
+		// 1 管理员确认
 
-				public Integer type; 
+		public Boolean wait_msg;
+		
+		public String dynamic_question;
+		
+		// 2 回答问题并由管理员确认
 
-				// 0 允许所有人加入
+		public Boolean question_wait_msg;
+		
+		// 3 正确回答问题
+		
+		public List<String> dynamic_kw;
 
-				// 1 管理员确认
+		// 4 不允许任何人加入
+		
+		public String not_allow_msg;
+		
+		*/
+		
+		public Integer link_valid_time;
+		
+		public Boolean dynamic_strict;
+		
+		public Boolean dynamic_no_trust_admin;
 
-			  // 2 回答问题并由管理员确认
-				
-				// 3 正确回答问题
-				
-				// 4 不允许任何人加入
-				
-				public Boolean no_trust_admin;
-
-				public String not_allow_msg;
-				
-		}
+		
 
 }

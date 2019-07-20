@@ -40,12 +40,14 @@ public class GroupOptions extends Fragment {
 						POINT_MENU_MAIN,
 						POINT_MENU_REST,
 						POINT_MENU_JOIN,
+						POINT_MENU_DYNA,
 						POINT_MENU_CUST,
 						POINT_MENU_SHOW,
 						POINT_HELP,
 						POINT_SET_MAIN,
 						POINT_SET_REST,
 						POINT_SET_JOIN,
+						POINT_SET_DYNA,
 						POINT_SET_CUST,
 						POINT_SET_SHOW);
 
@@ -69,6 +71,7 @@ public class GroupOptions extends Fragment {
 		final String POINT_MENU_MAIN = "group_menu_main";
 		final String POINT_MENU_REST = "group_menu_rest";
 		final String POINT_MENU_JOIN = "group_menu_join";
+		final String POINT_MENU_DYNA = "group_menu_dyna";
 		final String POINT_MENU_CUST = "group_menu_custom";
 		final String POINT_MENU_SHOW = "group_menu_show";
 
@@ -76,6 +79,7 @@ public class GroupOptions extends Fragment {
 		final String POINT_SET_MAIN = "group_main_set";
 		final String POINT_SET_REST = "group_rest_set";
 		final String POINT_SET_JOIN = "group_join_set";
+		final String POINT_SET_DYNA = "group_join_set";
 		final String POINT_SET_CUST = "group_custom_set";
 		final String POINT_SET_SHOW = "group_custom_show";
 
@@ -1698,6 +1702,80 @@ public class GroupOptions extends Fragment {
 						}};
 
 		}
+		
+		public static String defaultDynamicMsg(GroupData data) {
+				
+				return "$用户名 你好，欢迎加入" + data.title + " , 请点击下方按钮获取一个一次性加群链接。";
+				
+		}
+
+		String dynStats(GroupData data) {
+
+				StringBuilder stats = new StringBuilder();
+
+				stats.append("动态加群设置 :)");
+				
+				stats.append("\n\n加群链接 : ");
+				
+				if (data.dynamic_join == null) {
+						
+						stats.append("未开启");
+						
+				} else {
+						
+						stats.append("https://t.me/" + origin.me.username() + "start=join" + PAYLOAD_SPLIT + data.id);
+						
+				}
+				
+				stats.append("\n\n显示信息 : ");
+
+				if (data.default_msg == null) {
+
+						stats.append("(默认) ").append(defaultDynamicMsg(data));
+
+				} else {
+
+						stats.append(data.default_msg);
+
+				}
+
+				return stats.toString();
+
+		}
+
+		ButtonMarkup dynaMenu(final GroupData data) {
+
+				return new ButtonMarkup() {{
+
+								newButtonLine()
+										.newButton("开启动态加群",POINT_HELP,"enable_dynamic")
+										.newButton(data.welcome == null ? "●" : "○",POINT_SET_SHOW,data.id,"show_disable");
+
+								newButtonLine()
+										.newButton("文本消息",POINT_HELP,"show_text")
+										.newButton(((Integer)0).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"show_text");
+
+								newButtonLine()
+										.newButton("贴纸消息",POINT_HELP,"show_sticker")
+										.newButton(((Integer)1).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"show_sticker");								
+
+								newButtonLine()
+										.newButton("文本与贴纸",POINT_HELP,"text_and_sticker")
+										.newButton(((Integer)2).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"text_and_sticker");
+
+								newButtonLine("设置欢迎文本",POINT_SET_SHOW,data.id,"set_msg");
+								newButtonLine("设置欢迎贴纸",POINT_SET_SHOW,data.id,"set_set");
+
+								newButtonLine()
+										.newButton("仅保留最后一条",POINT_HELP,"del_welcome")
+										.newButton(data.del_welcome_msg != null ? "✅" : "☑",POINT_SET_SHOW,data.id,"del_welcome");
+
+								newButtonLine("🔙",POINT_BACK,data.id);
+
+						}};
+
+		}
+		
 
 		String cusStats(GroupData data) {
 
