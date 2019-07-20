@@ -27,6 +27,7 @@ public class MakeButtons extends Fragment {
 				String text = inlineQuery.text;
 
 				boolean html = false;
+				boolean md = false;
 				boolean buttons = false;
 
 				while (true) {
@@ -34,6 +35,12 @@ public class MakeButtons extends Fragment {
 						if (text.startsWith(" ") || text.startsWith("\n")) {
 
 								text = text.substring(1);
+
+						} else if (text.startsWith("MD")) {
+
+								text = text.substring(2);
+
+								md = true;
 
 						} else if (text.startsWith("HTML")) {
 
@@ -109,7 +116,10 @@ public class MakeButtons extends Fragment {
 
 				}
 
-				ParseMode parseMode = html ? ParseMode.HTML : null;
+				ParseMode parseMode = null;
+
+				if (md) parseMode = ParseMode.Markdown;
+				if (html) parseMode = ParseMode.HTML;
 
 				inlineQuery.article("完成 *٩(๑´∀`๑)ง*",text,parseMode,markup);
 
