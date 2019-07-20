@@ -127,7 +127,7 @@ public class GroupOptions extends Fragment {
 
 				}
 
-				if (data.full_admins != null && data.not_trust_admin) {
+				if (data.full_admins != null && data.not_trust_admin != null) {
 
 						if ((!(origin instanceof GroupBot) || !((GroupBot)origin).userId.equals(user.id)) && !data.full_admins.contains(user.id)) {
 
