@@ -312,7 +312,7 @@ public class GroupOptions extends Fragment {
 
 										} else {
 
-												data.delete_service_msg = 0;
+												data.delete_service_msg = null;
 
 												callback.text("🛠️  不处理");
 
