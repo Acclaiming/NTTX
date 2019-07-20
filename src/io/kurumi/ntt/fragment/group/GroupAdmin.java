@@ -87,12 +87,12 @@ public class GroupAdmin extends Fragment {
 
 								data.admins.add(admin.user().id());
 
-								if (admin.canChangeInfo() != null || !admin.canChangeInfo()) continue;
-								if (admin.canDeleteMessages() != null || !admin.canDeleteMessages()) continue;
-								if (admin.canRestrictMembers() != null || !admin.canRestrictMembers()) continue;
-								if (admin.canInviteUsers() != null || !admin.canInviteUsers()) continue;
-								if (admin.canPinMessages() != null || !admin.canPinMessages()) continue;
-								if (admin.canPromoteMembers() != null || !admin.canPromoteMembers()) continue;
+								if (admin.canChangeInfo() != null && !admin.canChangeInfo()) continue;
+								if (admin.canDeleteMessages() != null && !admin.canDeleteMessages()) continue;
+								if (admin.canRestrictMembers() != null && !admin.canRestrictMembers()) continue;
+								if (admin.canInviteUsers() != null && !admin.canInviteUsers()) continue;
+								if (admin.canPinMessages() != null && !admin.canPinMessages()) continue;
+								if (admin.canPromoteMembers() != null && !admin.canPromoteMembers()) continue;
 
 								data.full_admins.add(admin.user().id());
 
