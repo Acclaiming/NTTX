@@ -62,7 +62,7 @@ public class MakeButtons extends Fragment {
 
 				}
 
-				if (StrUtil.isBlank(text) || (!html && !buttons)) {
+				if (StrUtil.isBlank(text) || (!html && !buttons && !md)) {
 
 						return;
 
