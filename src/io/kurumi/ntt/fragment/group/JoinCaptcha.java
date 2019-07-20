@@ -1300,8 +1300,6 @@ public class JoinCaptcha extends Fragment {
 
 				}
 
-				msg.delete();
-
 				if (auth != null) {
 
 						if (auth.authMsg != null) auth.authMsg.delete();
@@ -1408,6 +1406,8 @@ public class JoinCaptcha extends Fragment {
 
 				}
 
+				msg.delete();
+				
 		}
 
 }
