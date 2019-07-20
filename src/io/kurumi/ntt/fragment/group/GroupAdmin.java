@@ -28,9 +28,9 @@ public class GroupAdmin extends Fragment {
 
 				updateGroupAdmins(fragment,data);
 
-				if (full) {
+				if (!full) {
 						
-						return data.admins == null && data.full_admins.contains(userId);
+						return data.admins != null && data.full_admins.contains(userId);
 						
 			 } else {
 					 
