@@ -122,7 +122,7 @@ public class StatusFetch extends Fragment {
 				}
 
 
-        if (!accessable) {
+        if (!accessable && !user.admin()) {
 
             status.edit("尝试拉取...").exec();
 
