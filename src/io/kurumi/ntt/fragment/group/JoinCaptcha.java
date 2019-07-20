@@ -340,7 +340,7 @@ public class JoinCaptcha extends Fragment {
 
 				} else if (msg.message().leftChatMember() != null) {
 				
-						User newMember = msg.message().newChatMembers()[0];
+						User newMember = msg.message().leftChatMember();
 
 						final UserData newData = UserData.get(newMember);
 
