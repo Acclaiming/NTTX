@@ -29,14 +29,14 @@ public class GroupAdmin extends Fragment {
 				updateGroupAdmins(fragment,data);
 
 				if (!full) {
-						
+
 						return data.admins != null && data.full_admins.contains(userId);
-						
-			 } else {
-					 
-					 return data.full_admins != null && data.admins.contains(userId);
-					 
-			 }
+
+				} else {
+
+						return data.full_admins != null && data.admins.contains(userId);
+
+				}
 
 		}
 
@@ -58,7 +58,7 @@ public class GroupAdmin extends Fragment {
 
 		public static boolean updateGroupAdmins(Fragment fragment,GroupData data) {
 
-				if (data.admins == null || !lastUpdate.containsKey(data.id) || lastUpdate.get(data.id) - System.currentTimeMillis() > 30 * 60 * 1000) {
+				if (!lastUpdate.containsKey(data.id) || lastUpdate.get(data.id) - System.currentTimeMillis() > 30 * 60 * 1000) {
 
 						GetChatAdministratorsResponse resp = Launcher.INSTANCE.execute(new GetChatAdministrators(data.id));
 
@@ -68,7 +68,7 @@ public class GroupAdmin extends Fragment {
 						data.full_admins = new ArrayList<>();
 
 						for (ChatMember admin : resp.administrators()) {
-								
+
 								if (admin.status() == ChatMember.Status.creator) {
 
 										data.owner = admin.user().id();
@@ -85,15 +85,14 @@ public class GroupAdmin extends Fragment {
 
 								if (admin.user().isBot()) continue; // 自己
 
-
 								data.admins.add(admin.user().id());
 
-								if (admin.canChangeInfo() == null || !admin.canChangeInfo()) continue;
-								if (admin.canDeleteMessages() == null || !admin.canDeleteMessages()) continue;
-								if (admin.canRestrictMembers() == null || !admin.canRestrictMembers()) continue;
-								if (admin.canInviteUsers() == null || !admin.canInviteUsers()) continue;
-								if (admin.canPinMessages() == null || !admin.canPinMessages()) continue;
-								if (admin.canPromoteMembers() == null || !admin.canPromoteMembers()) continue;
+								if (admin.canChangeInfo() != null || !admin.canChangeInfo()) continue;
+								if (admin.canDeleteMessages() != null || !admin.canDeleteMessages()) continue;
+								if (admin.canRestrictMembers() != null || !admin.canRestrictMembers()) continue;
+								if (admin.canInviteUsers() != null || !admin.canInviteUsers()) continue;
+								if (admin.canPinMessages() != null || !admin.canPinMessages()) continue;
+								if (admin.canPromoteMembers() != null || !admin.canPromoteMembers()) continue;
 
 								data.full_admins.add(admin.user().id());
 
@@ -103,11 +102,11 @@ public class GroupAdmin extends Fragment {
 
 						if (data.admins.isEmpty()) data.admins = null;
 						if (data.full_admins.isEmpty()) data.full_admins = null;
-						
+
 						lastUpdate.put(data.id,System.currentTimeMillis());
 
 				}
-				
+
 				return true;
 
 		}
@@ -118,7 +117,7 @@ public class GroupAdmin extends Fragment {
 				if (NTT.checkGroupAdmin(msg)) return;
 
 				updateGroupAdmins(this,GroupData.get(msg.chat()));
-			
+
 				msg.send("管理员缓存更新完成！").failedWith();
 
 		}
