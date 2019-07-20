@@ -299,7 +299,7 @@ public class Msg extends Context {
 		
 		public void kick() {
 				
-				kick(true);
+				kick(false);
 				
 		}
 
