@@ -753,7 +753,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				} else if (update.inlineQuery() != null) {
 
-						onQuery(user,new Query(this,update.inlineQuery()));
+						Query query = new Query(this,update.inlineQuery());
+
+						query.update = update;
+						
+						onQuery(user,query);
 
 				} else if (update.poll() != null) {
 

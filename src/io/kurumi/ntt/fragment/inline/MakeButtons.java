@@ -123,9 +123,7 @@ public class MakeButtons extends Fragment {
 
 				inlineQuery.article("完成 *٩(๑´∀`๑)ง*",text,parseMode,markup);
 
-				AnswerInlineQuery request = inlineQuery.reply();
-
-				BaseResponse resp = execute(request);
+				BaseResponse resp = execute(inlineQuery.reply());
 
 				if (!resp.isOk()) {
 

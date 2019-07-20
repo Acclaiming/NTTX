@@ -11,51 +11,51 @@ import io.kurumi.ntt.model.Query;
 import java.util.HashMap;
 
 public class ShowSticker extends Fragment {
-	
-	public static HashMap<Long,StickerSet> current = new HashMap<>();
-		
-	public static String PREFIX = "STICKER";
-	
-	@Override
-	public void onQuery(UserData user,Query inlineQuery) {
 
-		if (user == null || inlineQuery.text == null || !inlineQuery.text.startsWith(PREFIX)) return;
+		public static HashMap<Long,StickerSet> current = new HashMap<>();
 
-		if (current.containsKey(user.id)) {
+		public static String PREFIX = "STICKER";
 
-			for (Sticker sticker : current.get(user.id).stickers()) {
+		@Override
+		public void onQuery(UserData user,Query inlineQuery) {
 
-				inlineQuery.sticker(sticker.fileId());
+				if (user == null || inlineQuery.text == null || !inlineQuery.text.startsWith(PREFIX)) return;
 
-			}
+				if (current.containsKey(user.id)) {
 
-			execute(inlineQuery.reply().cacheTime(0));
+						for (Sticker sticker : current.get(user.id).stickers()) {
 
-		} else if (inlineQuery.text != null && inlineQuery.text.length() > (PREFIX.length() + 1)) {
+								inlineQuery.sticker(sticker.fileId());
 
-			String name = inlineQuery.text.substring(PREFIX.length() + 1).trim();
-			
-			final GetStickerSetResponse set = bot().execute(new GetStickerSet(name));
+						}
 
-			if (!set.isOk()) {
-				
-				execute(inlineQuery.reply().cacheTime(114));
-				
-				return;
-				
-			}
-			
-			for (Sticker sticker : set.stickerSet().stickers()) {
+						executeAsync(inlineQuery.update,inlineQuery.reply().cacheTime(0));
 
-				inlineQuery.sticker(sticker.fileId());
+				} else if (inlineQuery.text != null && inlineQuery.text.length() > (PREFIX.length() + 1)) {
 
-			}
-			
-			execute(inlineQuery.reply().cacheTime(0));
+						String name = inlineQuery.text.substring(PREFIX.length() + 1).trim();
+
+						final GetStickerSetResponse set = bot().execute(new GetStickerSet(name));
+
+						if (!set.isOk()) {
+
+								execute(inlineQuery.reply().cacheTime(114));
+
+								return;
+
+						}
+
+						for (Sticker sticker : set.stickerSet().stickers()) {
+
+								inlineQuery.sticker(sticker.fileId());
+
+						}
+
+						executeAsync(inlineQuery.reply().cacheTime(0));
+
+				}
 
 		}
 
-	}
-	
-	
+
 }

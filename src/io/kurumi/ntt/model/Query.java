@@ -15,53 +15,55 @@ import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.utils.BotLog;
 import java.util.LinkedList;
 import com.pengrad.telegrambot.model.request.InlineQueryResultCachedSticker;
+import com.pengrad.telegrambot.model.*;
 
 public class Query {
 
+		public Update update;
     public Fragment fragment;
     public InlineQuery query;
     public LinkedList<InlineQueryResult> results = new LinkedList<>();
 
-	public String text;
+		public String text;
 
-    public Query(Fragment fragment, InlineQuery query) {
+    public Query(Fragment fragment,InlineQuery query) {
         this.fragment = fragment;
         this.query = query;
-		this.text = query.query();
+				this.text = query.query();
     }
-	
-	
-    public Query article(String title, String content,ParseMode parseMode,ButtonMarkup buttons) {
 
-		InputTextMessageContent inputText = new InputTextMessageContent(content);
-		
-		if (parseMode != null) inputText.parseMode(parseMode);
-		
-        InlineQueryResultArticle result = new InlineQueryResultArticle(query.id(), title,inputText);
-		
-		if (buttons != null) {
-			
-			result.replyMarkup(buttons.markup());
-			
-		}
-		
+
+    public Query article(String title,String content,ParseMode parseMode,ButtonMarkup buttons) {
+
+				InputTextMessageContent inputText = new InputTextMessageContent(content);
+
+				if (parseMode != null) inputText.parseMode(parseMode);
+
+        InlineQueryResultArticle result = new InlineQueryResultArticle(query.id(),title,inputText);
+
+				if (buttons != null) {
+
+						result.replyMarkup(buttons.markup());
+
+				}
+
         results.add(result);
 
         return this;
 
     }
-	
-	public Query sticker(String fileId) {
-		
-		InlineQueryResultCachedSticker result = new InlineQueryResultCachedSticker(fileId,fileId);
 
-		results.add(result);
+		public Query sticker(String fileId) {
+
+				InlineQueryResultCachedSticker result = new InlineQueryResultCachedSticker(fileId,fileId);
+
+				results.add(result);
 
         return this;
-		
-	}
 
-    public Query fileId(String fileName, String fileId) {
+		}
+
+    public Query fileId(String fileName,String fileId) {
 
         GetFileResponse resp = fragment.bot().execute(new GetFile(fileId));
 
@@ -73,17 +75,17 @@ public class Query {
 
         }
 
-        return fileUrl(fileName, fragment.bot().getFullFilePath(resp.file()));
+        return fileUrl(fileName,fragment.bot().getFullFilePath(resp.file()));
 
     }
 
-    public Query fileUrl(String fileName, String url) {
+    public Query fileUrl(String fileName,String url) {
 
         String mimeType = "application/octet-stream";
 
         // TODO
 
-        InlineQueryResultDocument result = new InlineQueryResultDocument(query.id(), url, fileName, mimeType);
+        InlineQueryResultDocument result = new InlineQueryResultDocument(query.id(),url,fileName,mimeType);
 
         results.add(result);
 
@@ -95,10 +97,10 @@ public class Query {
 
         AnswerInlineQuery answer = new AnswerInlineQuery(query.id(),results.toArray(new InlineQueryResult[results.size()]));
 
-		results.clear();
-		
-		return answer;
-		
+				results.clear();
+
+				return answer;
+
     }
 
 
