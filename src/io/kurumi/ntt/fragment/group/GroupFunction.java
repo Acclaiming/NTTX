@@ -10,6 +10,7 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import java.util.HashMap;
+import com.pengrad.telegrambot.request.*;
 
 public class GroupFunction extends Fragment {
 
@@ -23,7 +24,15 @@ public class GroupFunction extends Fragment {
 
 						if (data.delete_channel_msg != null && user.id == 777000) {
 
-								msg.delete();
+								if (data.delete_channel_msg == 0) {
+
+										executeAsync(msg.update,new UnpinChatMessage(msg.chatId()));
+
+								} else {
+
+										msg.delete();
+
+								}
 
 						} else if (msg.message().leftChatMember() != null) {
 
@@ -42,7 +51,7 @@ public class GroupFunction extends Fragment {
 										} else {
 
 												data.last_service_msg = null;
-												
+
 												msg.delete();
 
 										}

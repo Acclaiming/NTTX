@@ -284,16 +284,22 @@ public class GroupOptions extends Fragment {
 
 										if (data.delete_channel_msg == null) {
 
-												data.delete_channel_msg = true;
+												data.delete_channel_msg = 0;
 
-												callback.text("🛠️  已开启");
+												callback.text("🛠️  仅取消置顶");
+
+										} else if (data.delete_channel_msg == 0) {
+
+												data.delete_channel_msg = 1;
+
+												callback.text("🛠️  全部删除");
 
 										} else {
+												
+												data.delete_channel_msg = 0;
 
-												data.delete_channel_msg = null;
-
-												callback.text("🛠️  已关闭");
-
+												callback.text("🛠️  不处理");
+												
 										}
 
 								} else if ("dsm".equals(params[1])) {
@@ -1522,7 +1528,7 @@ public class GroupOptions extends Fragment {
 
 								newButtonLine()
 										.newButton("删除频道消息",POINT_HELP,"dcm")
-										.newButton(data.delete_channel_msg != null ? "✅" : "☑",POINT_SET_MAIN,data.id,"dcm");
+										.newButton(data.delete_channel_msg == null ? "不处理" : data.delete_channel_msg == 0 ? "取消置顶" : "全部删除",POINT_SET_MAIN,data.id,"dcm");
 
 								newButtonLine()
 										.newButton("删除服务消息",POINT_HELP,"dsm")

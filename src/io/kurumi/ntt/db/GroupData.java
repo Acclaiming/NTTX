@@ -28,6 +28,7 @@ public class GroupData {
 		static {
 				
 				data.collection.updateMany(eq("del_service_msg",true),set("del_service_msg",1));
+				data.collection.updateMany(eq("delete_channel_msg",true),set("delete_channel_msg",1));
 				
 		}
 		
@@ -103,8 +104,8 @@ public class GroupData {
 		public Integer delete_service_msg;
 		public Integer last_service_msg;
 
-    public Boolean delete_channel_msg;
-
+ 		public Integer delete_channel_msg;
+		
 		public Boolean join_captcha;
 		public Boolean passive_mode;
 
