@@ -384,23 +384,7 @@ public class Send extends AbstractSend<Send> {
 
 						if (async) {
 
-								if (origin != null && !origin.update.lock.used.getAndSet(true)) {
-
-										origin.update.lock.send(request);
-
-								} else {
-
-										BotFragment.asyncPool.execute(new Runnable() {
-
-														@Override
-														public void run() {
-
-															  fragment.execute(request);
-
-														}
-												});
-
-								}
+								fragment.executeAsync(origin == null ? null : origin.update,request);
 
 								return null;
 
@@ -446,7 +430,8 @@ public class Send extends AbstractSend<Send> {
             return resp;
 
 
-        } catch (Exception ex) {
+        }
+				catch (Exception ex) {
 
 						if (!noLog) BotLog.info(
 
