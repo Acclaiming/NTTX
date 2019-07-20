@@ -20,7 +20,6 @@ import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
-
 public class GroupData {
 
     public static CachedData<GroupData> data = new CachedData<GroupData>(GroupData.class);
@@ -134,7 +133,7 @@ public class GroupData {
 
 				} else {
 
-						return time / 60 + "m" + (time % 60 == 0 ? "" : " " + time % 60 + "s");
+						return time / 60 + "分" + (time % 60 == 0 ? "" : " " + time % 60 + "秒");
 
 				}
 

@@ -791,11 +791,11 @@ public class JoinCaptcha extends Fragment {
 
 								if (left != null) {
 
-										auth.authMsg =  msg.send(user.userName() + " 请重试","\n" + code.question()).buttons(buttons).html().send();
+										auth.authMsg =  msg.send(user.userName() + " ，验证失败 请重试 : 你有" + data.parse_time() + "的时间","\n" + code.question()).buttons(buttons).html().send();
 
 								} else {
 
-										auth.authMsg =  msg.send(user.userName() + " 请验证","\n" + code.question()).buttons(buttons).html().send();
+										auth.authMsg =  msg.send(user.userName() + " ，请验证  : 你有" + data.parse_time() + "的时间","\n" + code.question()).buttons(buttons).html().send();
 
 
 								}
@@ -804,11 +804,11 @@ public class JoinCaptcha extends Fragment {
 
 								if (left != null) {
 
-										auth.authMsg =  msg.send(user.userName() + " 请重试","\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
+										auth.authMsg =  msg.send(user.userName() + " ，验证失败 请重试  : 你有" + data.parse_time() + "的时间","\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
 
 								} else {
 
-										auth.authMsg =  msg.send(user.userName() + " 请验证","\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
+										auth.authMsg =  msg.send(user.userName() + " ，请验证  : 你有" + data.parse_time() + "的时间","\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
 
 
 								}
@@ -849,7 +849,7 @@ public class JoinCaptcha extends Fragment {
 
 						}
 
-						SendResponse resp = execute(new SendPhoto(msg.chatId(),info.getBytes()).caption(user.userName()).parseMode(ParseMode.HTML).replyMarkup(buttons.markup()));
+						SendResponse resp = execute(new SendPhoto(msg.chatId(),info.getBytes()).caption(user.userName() + " 你有" + data.parse_time() + "的时间").parseMode(ParseMode.HTML).replyMarkup(buttons.markup()));
 
 						if (resp != null && resp.isOk()) {
 
