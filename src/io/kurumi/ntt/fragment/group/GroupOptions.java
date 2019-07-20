@@ -296,7 +296,7 @@ public class GroupOptions extends Fragment {
 
 										} else {
 												
-												data.delete_channel_msg = 0;
+												data.delete_channel_msg = null;
 
 												callback.text("🛠️  不处理");
 												
