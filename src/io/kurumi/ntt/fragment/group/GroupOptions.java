@@ -120,8 +120,8 @@ public class GroupOptions extends Fragment {
 				final GroupData data = GroupData.get(msg.chat());
 
 				if (!GroupAdmin.fastAdminCheck(this,data,user.id,false)) {
-
-						msg.reply("你不是群组管理员，如果管理员在半个小时之内变动，可以请其他任意管理员使用 /update_admins_cahce 更新列表").async();
+						
+						msg.reply("你不是群组管理员，如果管理员在半个小时之内变动，可以请其他任意管理员使用 /update_admins_cache 更新列表").async();
 
 						return;
 
