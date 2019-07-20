@@ -1108,7 +1108,11 @@ public class JoinCaptcha extends Fragment {
 
 				gd.waitForCaptcha.remove(user.id);
 
+				if (gd.require_input == null) {
+				
 				msg.unrestrict();
+				
+				}
 
 				if (!(msg instanceof Callback)) {
 
@@ -1341,8 +1345,6 @@ public class JoinCaptcha extends Fragment {
 
 				}
 
-				msg.unrestrict();
-
 				//	if (msg.message().leftChatMember() != null) {
 				//	} else if (msg.message().newChatMembers() != null) {0
 
@@ -1350,8 +1352,7 @@ public class JoinCaptcha extends Fragment {
 
 
 				if (gd.fail_ban == null) {
-
-
+						
 						msg.kick();
 
 				} else {
