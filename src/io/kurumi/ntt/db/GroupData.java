@@ -9,10 +9,28 @@ import java.util.*;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.request.SendAnimation;
 
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Updates.*;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.gt;
+import static com.mongodb.client.model.Filters.not;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
+import static java.util.Arrays.asList;
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+
+
 public class GroupData {
 
     public static CachedData<GroupData> data = new CachedData<GroupData>(GroupData.class);
 
+		static {
+				
+				data.collection.updateMany(eq("del_service_msg",true),set("del_service_msg",1));
+				
+		}
+		
 		public static GroupData get(long id) {
 
         synchronized (data.idIndex) {
