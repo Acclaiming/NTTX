@@ -52,8 +52,9 @@ public class TwitterLogin extends Fragment {
 
 			token = new ApiToken(params[0],params[1]);
 
-		} else if (params.length == 1) {
+		} /* else if (params.length == 1) {
 			
+				
 			if ("android".equals(params[0].toLowerCase())) {
 				
 				token = ApiToken.androidToken;
@@ -85,6 +86,10 @@ public class TwitterLogin extends Fragment {
 			token = ApiToken.defaultToken;
 
 		}
+		
+		*/
+		
+		token = ApiToken.twidere;
 
 		if (params.length == 4) {
 
