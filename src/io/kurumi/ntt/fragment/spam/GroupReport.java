@@ -106,10 +106,6 @@ public class GroupReport extends Fragment {
 
 						}
 
-						callback.payload(
-
-								execute(new ForwardMessage(userId,callback.chatId(),messageId));
-
 				}
 
 		}
