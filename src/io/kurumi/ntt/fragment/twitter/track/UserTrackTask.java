@@ -15,91 +15,91 @@ import twitter4j.User;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UserTrackTask extends Thread {
-	
-	public HashSet<Long> waitFor = new HashSet<>();
 
-	@Override
-	public void run() {
+		public HashSet<Long> waitFor = new HashSet<>();
 
-		while (!isInterrupted()) {
+		@Override
+		public void run() {
 
-			for (TrackTask.IdsList ids : TrackTask.friends.collection.find()) {
+				while (!isInterrupted()) {
 
-				waitFor.addAll(ids.ids);
+						for (TrackTask.IdsList ids : TrackTask.friends.collection.find()) {
 
-			}
-
-			for (TrackTask.IdsList ids : TrackTask.followers.collection.find()) {
-
-				waitFor.addAll(ids.ids);
-
-			}
-
-			List<TAuth> allAuth = TAuth.data.getAll();
-
-			Iterator<TAuth> iter = allAuth.iterator();
-
-			while (allAuth != null && !waitFor.isEmpty()) {
-
-				if (!iter.hasNext()) iter = allAuth.iterator();
-
-				List<Long> target;
-
-				if (waitFor.size() > 100) {
-
-					target = CollectionUtil.sub(waitFor,0,100);
-					waitFor.removeAll(target);
-
-				} else {
-
-					target = new LinkedList<>();
-					target.addAll(waitFor);
-
-					waitFor.clear();
-
-				}
-
-				try {
-
-					ResponseList<User> result = iter.next().createApi().lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
-
-					for (User tuser : result) {
-
-						target.remove(tuser.getId());
-
-						UserArchive.save(tuser);
-
-					}
-
-					for (Long da : target) {
-
-						UserArchive.saveDisappeared(da);
-
-					}
-
-				} catch (TwitterException e) {
-
-					if (e.getErrorCode() == 17) {
-
-						for (Long da : target) {
-
-							UserArchive.saveDisappeared(da);
+								waitFor.addAll(ids.ids);
 
 						}
 
-					} else {
+						for (TrackTask.IdsList ids : TrackTask.followers.collection.find()) {
 
-						waitFor.addAll(target);
+								waitFor.addAll(ids.ids);
 
-					}
+						}
+
+						List<TAuth> allAuth = TAuth.data.getAll();
+
+						Iterator<TAuth> iter = allAuth.iterator();
+
+						while (allAuth != null && !waitFor.isEmpty()) {
+
+								if (!iter.hasNext()) iter = allAuth.iterator();
+
+								List<Long> target;
+
+								if (waitFor.size() > 100) {
+
+										target = CollectionUtil.sub(waitFor,0,100);
+										waitFor.removeAll(target);
+
+								} else {
+
+										target = new LinkedList<>();
+										target.addAll(waitFor);
+
+										waitFor.clear();
+
+								}
+
+								try {
+
+										ResponseList<User> result = iter.next().createApi().lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
+
+										for (User tuser : result) {
+
+												target.remove(tuser.getId());
+
+												UserArchive.save(tuser);
+
+										}
+
+										for (Long da : target) {
+
+												UserArchive.saveDisappeared(da);
+												
+										}
+
+								} catch (TwitterException e) {
+
+										if (e.getErrorCode() == 17) {
+
+												for (Long da : target) {
+
+														UserArchive.saveDisappeared(da);
+
+												}
+
+										} else {
+
+												waitFor.addAll(target);
+
+										}
+
+								}
+
+						}
+
 
 				}
 
-			}
-
-
 		}
-
-	}
 
 }
