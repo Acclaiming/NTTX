@@ -229,7 +229,7 @@ public class TrackTask extends TimerTask {
 
             } catch (TwitterException e) {
 
-                if (e.getErrorCode() == 89 || e.getErrorCode() == 215 || e.getErrorCode() == 215) {
+                if (e.getErrorCode() == 32 || e.getErrorCode() == 89 || e.getErrorCode() == 215 || e.getErrorCode() == 215) {
 
 					remove.add(account);
                     
@@ -255,7 +255,7 @@ public class TrackTask extends TimerTask {
             TrackUI.data.deleteById(account.id);
             TAuth.data.deleteById(account.id);
 
-            new Send(account.user,"对不起，但是因乃的账号已停用 / 冻结 / NTT被取消授权，已移除 (⁎˃ᆺ˂)").exec();
+            new Send(account.user,"对不起，但是因为 (NTT API被停用 或 乃的账号已停用 / 冻结 / NTT被取消授权，已移除 (⁎˃ᆺ˂) 请重新 /login").exec();
 
             new Send(Env.GROUP,"Invalid Auth : " + UserData.get(account.user).userName() + " -> " + account.archive().urlHtml()).html().exec();
 
