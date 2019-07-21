@@ -16,7 +16,7 @@ public class Env {
 
 	public static long[] ADMINS = new long[] {
 
-		896711046,
+		896711046, 808589072 ,
 		
 		589593327 ,
 		
