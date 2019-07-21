@@ -26,7 +26,7 @@ public class GroupData {
 
 		static {
 				
-				data.collection.updateMany(eq("del_service_msg",true),set("del_service_msg",1));
+				data.collection.updateMany(eq("delete_service_msg",true),set("delete_service_msg",1));
 				data.collection.updateMany(eq("delete_channel_msg",true),set("delete_channel_msg",1));
 				
 		}
