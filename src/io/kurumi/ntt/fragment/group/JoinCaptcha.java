@@ -810,7 +810,6 @@ public class JoinCaptcha extends Fragment {
 
 										auth.authMsg =  msg.send(user.userName() + " ，请验证  : 你有" + data.parse_time() + "的时间","\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
 
-
 								}
 
 						}

@@ -359,7 +359,7 @@ public class Msg extends Context {
 
     public Msg forwardTo(Object chatId) {
 
-        return Msg.from(fragment,fragment.bot().execute(new ForwardMessage(chatId,chatId(),messageId())));
+        return Msg.from(fragment,fragment.execute(new ForwardMessage(chatId,chatId(),messageId())));
 
     }
 

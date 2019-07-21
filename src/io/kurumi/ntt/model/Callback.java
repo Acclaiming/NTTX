@@ -59,6 +59,12 @@ public class Callback extends Msg {
         fragment.executeAsync(update,answer().text(ArrayUtil.join(alert, "\n")).showAlert(true));
 				
     }
+		
+		public void payload(String... text) {
+				
+				url("https://t.me/" + fragment.origin.me.username() + "?start=" + ArrayUtil.join(text,fragment.PAYLOAD_SPLIT));
+				
+		}
 
     public void url(String url) {
 

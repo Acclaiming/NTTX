@@ -13,7 +13,7 @@ import java.util.HashMap;
 import com.pengrad.telegrambot.request.*;
 
 public class GroupFunction extends Fragment {
-
+		
 		public int checkMsg(UserData user,Msg msg) {
 
 				if (!msg.isGroup()) return PROCESS_SYNC;
@@ -42,7 +42,7 @@ public class GroupFunction extends Fragment {
 
 												if (data.last_service_msg != null) {
 
-														executeAsync(msg.update,new DeleteMessage(msg.chatId(),data.last_welcome_msg));
+														executeAsync(msg.update,new DeleteMessage(msg.chatId(),data.last_service_msg));
 
 												}
 
