@@ -15,240 +15,258 @@ import java.util.List;
 
 public class UserBotFragment extends BotFragment {
 
-		private UserBot bot;
+	private UserBot bot;
 
-		public Long botId;
-		private String userName;
+	public Long botId;
+	private String userName;
     private String botToken;
 
-		public Long userId;
+	public Long userId;
 
-		public Map<String,Object> params;
-		public Set<Long> banned_chat;
+	public Map<String,Object> params;
+	public Set<Long> banned_chat;
 
-		@Override
-		public void reload() {
+	@Override
+	public void reload() {
 
-				super.reload();
+		super.reload();
 
-				addFragment(new BotChannnel());
+		addFragment(new BotChannnel());
 
-				bot = UserBot.data.getById(botId);
+		bot = UserBot.data.getById(botId);
 
-				botId = bot.id;
-				userName = bot.userName;
+		botId = bot.id;
+		userName = bot.userName;
         botToken = bot.token;
         userId = bot.user;
 
-				params = bot.params;
 
-				List<Long> banned_chat_list = getParam("banned_chat");
+	}
 
-				if (banned_chat_list != null) {
+	/*
 
-						banned_chat = new HashSet<Long>(banned_chat_list);
+	 params = bot.params;
 
-				}
+	 List<Long> banned_chat_list = getParam("banned_chat");
 
-				if (banned_chat == null) {
+	 if (banned_chat_list != null) {
 
-						banned_chat = new HashSet<>();
+	 banned_chat = new HashSet<Long>(banned_chat_list);
 
-						params.put("banned_chat",banned_chat);
+	 }
 
-				}
+	 if (banned_chat == null) {
 
-				localAdmins.clear();
-				localAdmins.add(userId);
+	 banned_chat = new HashSet<>();
 
-		}
+	 params.put("banned_chat",banned_chat);
 
-		@Override
-		public void init(BotFragment origin) {
+	 }
 
-				super.init(origin);
+	 localAdmins.clear();
+	 localAdmins.add(userId);
 
-				registerFunction("start");
+	 }
 
-		}
+	 @Override
+	 public void init(BotFragment origin) {
 
-		public UserData getOwner() {
+	 super.init(origin);
 
-				return UserData.get(userId);
+	 registerFunction("start");
 
-		}
+	 }
 
-		@Override
-		public String botName() {
+	 */
 
-				return getClass().getSimpleName();
+	public UserData getOwner() {
 
-		}
+		return UserData.get(userId);
 
-		@Override
-		public String getToken() {
+	}
 
-				return botToken;
+	@Override
+	public String botName() {
 
-		}
+		return getClass().getSimpleName();
 
-		public <T> T getParam(String key) {
+	}
 
-				return (T)params.get(key);
+	@Override
+	public String getToken() {
 
-		}
+		return botToken;
 
-		public void setParam(String key,Object value) {
+	}
 
-				params.put(key,value);
+	public <T> T getParam(String key) {
 
-		}
+		return (T)params.get(key);
 
-		public void save() {
+	}
 
-				if (banned_chat.isEmpty()) {
+	public void setParam(String key,Object value) {
 
-						params.remove("banned_chat");
+		params.put(key,value);
 
-				}
 
-				UserBot.data.setById(botId,bot);
+	}
 
-		}
+	public void save() {
 
-		@Override
-		public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		/*
 
-				super.onFunction(user,msg,function,params);
+		 if (banned_chat.isEmpty()) {
 
-				if (msg.isPrivate() && (userId.equals(user.id) || user.admin())) {
+		 params.remove("banned_chat");
 
-						if ("start".equals(function)) {
+		 }
 
-								msg.send(
-										"管理员命令 :\n",
-										"/send <chatId> <text...>",
-										"/edit <chatId> <messageId> <text...>",
-										"/delete_message <chatId> <messageId>",
-										"/forward <toChatId> <fromChatId> <messageId>",
-										"/export_link <chatid>",
-										"/restrict <chatId> <userId>",
-										"/promote <chatId> <userId>",
-										"/kick <chatId> <userId>",
-										"/unban <chatId> <userId>",
-										"/pin <chatId> <messageId>",
-										"/unpin <chatId>",
-										"/exit <chatId>",
-										"/get_file <fileId>",
-										"/send_file <chatId> <fileId>",
-										"/get_admins <chatId>",
-										"/get_members_count <chatId>",
-										"/get_member <chatId> <userId>",
-										"/ban_chat <chatId>",
-										"/unban_chat <chatId>").exec();
+		 */
 
-						} else if ("ban_chat".equals(function)) {
+		UserBot.data.setById(botId,bot);
 
-								if (params.length < 1) { invalidParams(msg,"chatId"); return; }
+	}
 
-								long target = NumberUtil.parseLong(params[0]);
+	/*
 
-								if (userId.equals(target)) {
+	 @Override
+	 public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-										msg.send("不能屏蔽你自己...").exec();
+	 super.onFunction(user,msg,function,params);
 
-										return;
+	 if (msg.isPrivate() && (userId.equals(user.id) || user.admin())) {
 
-								}
+	 if ("start".equals(function)) {
 
-								if (banned_chat.add(target)) {
+	 msg.send(
+	 "管理员命令 :\n",
+	 "/send <chatId> <text...>",
+	 "/edit <chatId> <messageId> <text...>",
+	 "/delete_message <chatId> <messageId>",
+	 "/forward <toChatId> <fromChatId> <messageId>",
+	 "/export_link <chatid>",
+	 "/restrict <chatId> <userId>",
+	 "/promote <chatId> <userId>",
+	 "/kick <chatId> <userId>",
+	 "/unban <chatId> <userId>",
+	 "/pin <chatId> <messageId>",
+	 "/unpin <chatId>",
+	 "/exit <chatId>",
+	 "/get_file <fileId>",
+	 "/send_file <chatId> <fileId>",
+	 "/get_admins <chatId>",
+	 "/get_members_count <chatId>",
+	 "/get_member <chatId> <userId>",
+	 "/ban_chat <chatId>",
+	 "/unban_chat <chatId>").exec();
 
-										msg.send("已屏蔽 如果未退出 请手动退出").exec();
+	 } else if ("ban_chat".equals(function)) {
 
-								} else {
+	 if (params.length < 1) { invalidParams(msg,"chatId"); return; }
 
-										msg.send("已经屏蔽过了...").exec();
+	 long target = NumberUtil.parseLong(params[0]);
 
-								}
+	 if (userId.equals(target)) {
 
-						} else if ("unban_chat".equals(function)) {
+	 msg.send("不能屏蔽你自己...").exec();
 
-								if (params.length < 1) { invalidParams(msg,"chatId"); return; }
+	 return;
 
-								if (banned_chat.remove((NumberUtil.parseLong(params[0])))) {
+	 }
 
-										msg.send("已解除").exec();
+	 if (banned_chat.add(target)) {
 
-								} else {
+	 msg.send("已屏蔽 如果未退出 请手动退出").exec();
 
-										msg.send("没有屏蔽过...").exec();
+	 } else {
 
-								}
+	 msg.send("已经屏蔽过了...").exec();
 
-						}
+	 }
 
-						return;
+	 } else if ("unban_chat".equals(function)) {
 
-				}
+	 if (params.length < 1) { invalidParams(msg,"chatId"); return; }
 
-		}
+	 if (banned_chat.remove((NumberUtil.parseLong(params[0])))) {
 
-		@Override
-		public int checkMsg(UserData user,Msg msg) {
+	 msg.send("已解除").exec();
 
-				if (msg.isPrivate() && !(user.admin() || user.id.equals(userId)) && banned_chat.contains(msg.chatId())) {
+	 } else {
 
-						return PROCESS_REJECT;
+	 msg.send("没有屏蔽过...").exec();
 
-				}
+	 }
 
-				if (msg.message().newChatMembers() != null) {
+	 }
 
-						User newMember = msg.message().newChatMembers()[0];
+	 return;
 
-						if (newMember.id().equals(botId) && banned_chat.contains(msg.chatId()))  {
 
-								execute(new LeaveChat(msg.chatId()));
 
-								return PROCESS_REJECT;
+	 }
 
-						} else if (banned_chat.contains(newMember.id())) {
+	 }
 
-								execute(new KickChatMember(msg.chatId(),newMember.id().intValue()));
+	 @Override
+	 public int checkMsg(UserData user,Msg msg) {
 
-								return PROCESS_REJECT;
+	 if (msg.isPrivate() && !(user.admin() || user.id.equals(userId)) && banned_chat.contains(msg.chatId())) {
 
-						}
+	 return PROCESS_REJECT;
 
-				} else if (msg.message().leftChatMember() != null) {
+	 }
 
-						if (banned_chat.contains(msg.message().leftChatMember().id())) {
+	 if (msg.message().newChatMembers() != null) {
 
-								msg.delete();
+	 User newMember = msg.message().newChatMembers()[0];
 
-								return PROCESS_REJECT;
+	 if (newMember.id().equals(botId) && banned_chat.contains(msg.chatId()))  {
 
-						}
+	 execute(new LeaveChat(msg.chatId()));
 
-				}
+	 return PROCESS_REJECT;
 
-				return PROCESS_ASYNC;
+	 } else if (banned_chat.contains(newMember.id())) {
 
-		}
+	 execute(new KickChatMember(msg.chatId(),newMember.id().intValue()));
 
-		void invalidParams(Msg msg,String... params) {
+	 return PROCESS_REJECT;
 
-				msg.send("无效的参数 , /" + msg.command() + " <" + ArrayUtil.join(params,"> <") + ">").exec();
+	 }
 
-		}
+	 } else if (msg.message().leftChatMember() != null) {
 
-		@Override
-		public void stop() {
+	 if (banned_chat.contains(msg.message().leftChatMember().id())) {
 
-				save();
+	 msg.delete();
 
-				super.stop();
+	 return PROCESS_REJECT;
 
-		}
+	 }
+
+	 }
+
+	 return PROCESS_ASYNC;
+
+	 }
+
+	 */
+
+	void invalidParams(Msg msg,String... params) {
+
+		msg.send("无效的参数 , /" + msg.command() + " <" + ArrayUtil.join(params,"> <") + ">").exec();
+
+	}
+
+	@Override
+	public void stop() {
+
+		save();
+
+		super.stop();
+
+	}
 
 }
