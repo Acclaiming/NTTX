@@ -29,7 +29,7 @@ public class FeedHtmlFormater {
 
 		public static Pattern matchImg = Pattern.compile("<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>");
 
-	  public static Pattern removeTags = Pattern.compile("<(?!/?(a|b|i|code|pre|em)\b)[^>]+>");
+	  public static Pattern removeTags = Pattern.compile("<[/?^(a|b|i|code|pre|em|img)][^>]+>");
 
 		public static Pattern removeTagsWithoutImg = Pattern.compile("<(?!/?(a|b|i|code|pre|em|img)\b)[^>]+>");
 		public static Pattern matchTagInterrupted = Pattern.compile(".*</[^>]+>.+<[^>]+");
@@ -344,7 +344,7 @@ public class FeedHtmlFormater {
 
 				if (!withImg) {
 
-						html = ReUtil.replaceAll(html,matchImg,"");//"  " + Html.a("图片","$1") + "\n");
+						html = ReUtil.replaceAll(html,matchImg,"  " + Html.a("图片","$1") + "\n");
 
 						System.out.println("REM IMG");
 
