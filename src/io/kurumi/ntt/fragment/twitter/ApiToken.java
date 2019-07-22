@@ -7,7 +7,6 @@ import twitter4j.conf.*;
 public class ApiToken {
 	
 	public static final ApiToken overflowcat = new ApiToken("VwvCRQnzMY26nGQFVhTTZxAqM","2Q98qYh9lUL7FPqi0VNZo9ZrmdlZhQdkYvBrUHqIzvrwiPaneL");
-
 	public static final ApiToken twidere = new ApiToken("i5XtSVfoWjLjKlnrvhiLPMZC0","sQncmZ2atQR6tKbqnnAtqjrECqN8k6FD4p4OoNS0XTDkUz3HGH");
 	
 	
