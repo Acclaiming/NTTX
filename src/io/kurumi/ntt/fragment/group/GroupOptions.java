@@ -1560,11 +1560,15 @@ public class GroupOptions extends Fragment {
 										.newButton("发送贴纸",POINT_HELP,"sticker")
 										.newButton(data.no_sticker == null ? "✅" : data.no_sticker == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"sticker");
 
+										/*
+										
 						newButtonLine()
 							.newButton("动态贴纸",POINT_HELP,"animated")
 							.newButton(data.no_animated_sticker == null ? "✅" : data.no_animated_sticker == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"animated");
 						
 										
+							*/
+							
 								newButtonLine()
 										.newButton("发送图片",POINT_HELP,"image")
 										.newButton(data.no_image == null ? "✅" : data.no_image == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"image");
