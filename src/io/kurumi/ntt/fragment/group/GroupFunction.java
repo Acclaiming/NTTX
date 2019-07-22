@@ -239,7 +239,7 @@ public class GroupFunction extends Fragment {
 
 								}
 
-						} else if (new JSONObject(msg.update.json).size() == 3 && data.no_animated_sticker != null) {
+						} else if (new JSONObject(msg.update.json).size() < 5 && data.no_animated_sticker != null) {
 							
 							msg.delete();
 
