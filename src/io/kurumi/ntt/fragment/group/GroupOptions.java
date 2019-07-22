@@ -1585,7 +1585,7 @@ public class GroupOptions extends Fragment {
 
 						newButtonLine()
 							.newButton("动态贴纸",POINT_HELP,"animated")
-							.newButton(data.no_sticker == null ? "✅" : data.no_sticker == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"animated");
+							.newButton(data.no_animated_sticker == null ? "✅" : data.no_animated_sticker == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"animated");
 						
 										
 								newButtonLine()
