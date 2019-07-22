@@ -46,15 +46,16 @@ import io.kurumi.ntt.utils.TentcentNlp;
 import java.util.TreeSet;
 import io.kurumi.ntt.fragment.Fragment.Processed;
 import java.util.ArrayList;
+import cn.hutool.json.*;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener,ExceptionHandler {
 
     private Final finalFragment = new Final() {{ init(BotFragment.this); }};;
 
-		public static Timer mainTimer = new Timer();
-		public static Timer trackTimer = new Timer();
+	public static Timer mainTimer = new Timer();
+	public static Timer trackTimer = new Timer();
 
-		public static ExecutorService asyncPool = Executors.newCachedThreadPool();
+	public static ExecutorService asyncPool = Executors.newCachedThreadPool();
 
     public User me;
     private TelegramBot bot;
@@ -62,78 +63,78 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
     private String token;
     private PointStore point;
 
-		public List<Long> localAdmins = new ArrayList<>();
+	public List<Long> localAdmins = new ArrayList<>();
 
-		class UserAndUpdate implements Comparable<UserAndUpdate> {
+	class UserAndUpdate implements Comparable<UserAndUpdate> {
 
-				public AtomicBoolean cancel = new AtomicBoolean(false);
+		public AtomicBoolean cancel = new AtomicBoolean(false);
+
+		@Override
+		public int compareTo(UserAndUpdate uau) {
+
+			return update.updateId() - uau.update.updateId();
+
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+
+			return super.equals(obj) || (obj instanceof UserAndUpdate && ((UserAndUpdate)obj).update.updateId().equals(update.updateId()));
+
+		}
+
+		BotFragment bot;
+
+		{
+
+			bot = BotFragment.this;
+
+		}
+
+		long userId;
+		long chatId;
+
+		UserData user;
+
+		Update update;
+
+		BotFragment.Processed process() {
+
+			if (cancel.get()) return null;
+
+			for (final Fragment fragmnet : fragments) {
+
+				if (cancel.get()) return null;
+
+				Fragment.Processed processed =  fragmnet.onAsyncUpdate(user,update);
+
+				if (cancel.get()) return null;
+
+				if (processed != null) return processed;
+
+			}
+
+			if (cancel.get()) return null;
+
+			return new Processed(user,update,PROCESS_ASYNC) {
 
 				@Override
-				public int compareTo(UserAndUpdate uau) {
+				public void process() {
 
-						return update.updateId() - uau.update.updateId();
-
-				}
-
-				@Override
-				public boolean equals(Object obj) {
-
-						return super.equals(obj) || (obj instanceof UserAndUpdate && ((UserAndUpdate)obj).update.updateId().equals(update.updateId()));
+					finalFragment.onAsyncUpdate(user,update);
 
 				}
 
-				BotFragment bot;
+			};
 
-				{
-
-						bot = BotFragment.this;
-
-				}
-
-				long userId;
-				long chatId;
-
-				UserData user;
-
-				Update update;
-
-				BotFragment.Processed process() {
-
-						if (cancel.get()) return null;
-
-						for (final Fragment fragmnet : fragments) {
-
-								if (cancel.get()) return null;
-
-								Fragment.Processed processed =  fragmnet.onAsyncUpdate(user,update);
-
-								if (cancel.get()) return null;
-
-								if (processed != null) return processed;
-
-						}
-
-						if (cancel.get()) return null;
-
-						return new Processed(user,update,PROCESS_ASYNC) {
-
-								@Override
-								public void process() {
-
-										finalFragment.onAsyncUpdate(user,update);
-
-								}
-
-						};
-
-
-
-
-				}
 
 
 
 		}
+
+
+
+	}
 
     @Override
     public TelegramBot bot() {
@@ -143,52 +144,52 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
     public void reload() {
 
-				fragments.clear();
+		fragments.clear();
 
-				addFragment(this);
+		addFragment(this);
 
-				addFragment(new Firewall());
+		addFragment(new Firewall());
 
     }
 
-		public HashMap<String,Fragment> functions = new HashMap<>();
+	public HashMap<String,Fragment> functions = new HashMap<>();
 
-		public HashMap<String,Fragment> adminFunctions = new HashMap<>();
+	public HashMap<String,Fragment> adminFunctions = new HashMap<>();
 
-		public HashMap<String,Fragment> payloads = new HashMap<>();
+	public HashMap<String,Fragment> payloads = new HashMap<>();
 
-		public HashMap<String,Fragment> adminPayloads = new HashMap<>();
+	public HashMap<String,Fragment> adminPayloads = new HashMap<>();
 
-		public HashMap<String,Fragment> points = new HashMap<>();
-		public HashMap<String,Fragment> callbacks = new HashMap<>();
+	public HashMap<String,Fragment> points = new HashMap<>();
+	public HashMap<String,Fragment> callbacks = new HashMap<>();
 
 
-		@Override
-		public void init(BotFragment origin) {
+	@Override
+	public void init(BotFragment origin) {
 
-				super.init(origin);
+		super.init(origin);
 
-				registerFunction("cancel");
+		registerFunction("cancel");
 
-				registerPoint(POINT_REQUEST_TWITTER);
+		registerPoint(POINT_REQUEST_TWITTER);
 
-		}
+	}
 
-		@Override
-		public int checkPoint(UserData user,Msg msg,String point,PointData data) {
+	@Override
+	public int checkPoint(UserData user,Msg msg,String point,PointData data) {
 
-				return PROCESS_SYNC;
+		return PROCESS_SYNC;
 
-		}
+	}
 
-		@Override
-		public void onPoint(final UserData user,Msg msg,String point,PointData data) {
+	@Override
+	public void onPoint(final UserData user,Msg msg,String point,PointData data) {
 
-				if (POINT_REQUEST_TWITTER.equals(point)) {
+		if (POINT_REQUEST_TWITTER.equals(point)) {
 
             final TwitterRequest request = (TwitterRequest) data;
 
-						data.context.add(msg);
+			data.context.add(msg);
 
             if (!msg.hasText() || !msg.text().startsWith("@")) {
 
@@ -210,74 +211,74 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
             }
 
-						clearPrivatePoint(user);
+			clearPrivatePoint(user);
 
             msg.send("选择了 : " + account.archive().urlHtml() + " (❁´▽`❁)").html().failed(2 * 1000);
 
-						if (request.payload) {
+			if (request.payload) {
 
-								String payload = request.originMsg.payload()[0];
+				String payload = request.originMsg.payload()[0];
 
-								String[] params = request.originMsg.payload().length > 1 ? ArrayUtil.sub(request.originMsg.payload(),1,request.originMsg.payload().length) : new String[0];
+				String[] params = request.originMsg.payload().length > 1 ? ArrayUtil.sub(request.originMsg.payload(),1,request.originMsg.payload().length) : new String[0];
 
-								int checked = request.fragment.checkTwitterPayload(user,request.originMsg,payload,params,account);
+				int checked = request.fragment.checkTwitterPayload(user,request.originMsg,payload,params,account);
 
-								request.fragment.onTwitterPayload(user,request.originMsg,payload,params,account);
+				request.fragment.onTwitterPayload(user,request.originMsg,payload,params,account);
 
-								if (checked == PROCESS_ASYNC) {
+				if (checked == PROCESS_ASYNC) {
 
-										asyncPool.execute(new Runnable() {
+					asyncPool.execute(new Runnable() {
 
-														@Override
-														public void run() {
+							@Override
+							public void run() {
 
-																request.fragment.onTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
+								request.fragment.onTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
 
-														}
+							}
 
-												});
+						});
 
-								} else {
+				} else {
 
-										request.fragment.onTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
+					request.fragment.onTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
 
-								}
+				}
 
 
-						} else {
+			} else {
 
-								int checked = request.fragment.checkTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
+				int checked = request.fragment.checkTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
 
-								if (checked == PROCESS_ASYNC) {
+				if (checked == PROCESS_ASYNC) {
 
-										asyncPool.execute(new Runnable() {
+					asyncPool.execute(new Runnable() {
 
-														@Override
-														public void run() {
+							@Override
+							public void run() {
 
-																request.fragment.onTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
+								request.fragment.onTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
 
-														}
+							}
 
-												});
+						});
 
-								} else {
+				} else {
 
-										request.fragment.onTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
+					request.fragment.onTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
 
-								}
+				}
 
-						}
+			}
 
         }
 
-		}
+	}
 
     public void addFragment(Fragment fragment) {
 
-				fragment.init(this);
+		fragment.init(this);
 
-				fragments.add(fragment);
+		fragments.add(fragment);
 
     }
 
@@ -324,75 +325,77 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
     }
 
-		@Override
-		public void onFunction(UserData user,Msg msg,String function,String[] params) {
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-				if ("cancel".equals(function)) {
+		if ("cancel".equals(function)) {
 
-						msg.send("没有什么需要取消的 :)").failedWith();
+			msg.send("没有什么需要取消的 :)").failedWith();
 
-						return;
-
-				}
+			return;
 
 		}
 
-		@Override
-		public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,PointData data) {
+	}
 
-				data.context.add(msg);
+	@Override
+	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,PointData data) {
 
-				if ("cancel".equals(function)) {
+		data.context.add(msg);
 
-						if (data.type == 1) clearPrivatePoint(user).onCancel(user,msg); else clearGroupPoint(user).onCancel(user,msg);
+		if ("cancel".equals(function)) {
 
-						msg.send("已经取消当前操作 :) ","帮助文档 : @NTT_X").failedWith(9 * 1000);
+			if (data.type == 1) clearPrivatePoint(user).onCancel(user,msg); else clearGroupPoint(user).onCancel(user,msg);
 
-						return;
+			msg.send("已经取消当前操作 :) ","帮助文档 : @NTT_X").failedWith(9 * 1000);
 
-				}
+			return;
 
 		}
 
-		static HashMap<Long,TreeSet<UserAndUpdate>> processing = new HashMap<>();
+	}
+
+	static HashMap<Long,TreeSet<UserAndUpdate>> processing = new HashMap<>();
 
     public void processAsync(final Update update) {
 
+		System.out.println(new JSONObject(update.json).toStringPretty());
+		
         final UserData user;
 
-				long targetId = -1;
+		long targetId = -1;
 
         if (update.message() != null) {
 
             user = UserData.get(update.message().from());
 
-						if (update.message().chat().type() != Chat.Type.Private) {
+			if (update.message().chat().type() != Chat.Type.Private) {
 
-								targetId = update.message().chat().id();
+				targetId = update.message().chat().id();
 
-						}
+			}
 
         } else if (update.editedMessage() != null) {
 
-						user = UserData.get(update.editedMessage().from());
+			user = UserData.get(update.editedMessage().from());
 
-						if (update.editedMessage().chat().type() != Chat.Type.Private) {
+			if (update.editedMessage().chat().type() != Chat.Type.Private) {
 
-								targetId = update.editedMessage().chat().id();
+				targetId = update.editedMessage().chat().id();
 
-						}
+			}
 
-				} else if (update.channelPost() != null) {
+		} else if (update.channelPost() != null) {
 
             user = update.channelPost().from() != null ? UserData.get(update.channelPost().from()) : null;
 
-						targetId = update.channelPost().chat().id();
+			targetId = update.channelPost().chat().id();
 
-				} else if (update.editedChannelPost() != null) {
+		} else if (update.editedChannelPost() != null) {
 
-						user = update.editedChannelPost().from() != null ? UserData.get(update.editedChannelPost().from()) : null;
+			user = update.editedChannelPost().from() != null ? UserData.get(update.editedChannelPost().from()) : null;
 
-						targetId = update.editedChannelPost().chat().id();
+			targetId = update.editedChannelPost().chat().id();
 
         } else if (update.callbackQuery() != null) {
 
@@ -404,730 +407,730 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
         } else user = null;
 
-				UserAndUpdate uau = new UserAndUpdate();
+		UserAndUpdate uau = new UserAndUpdate();
 
-				uau.chatId = targetId;
-				uau.user = user;
-				uau.update = update;
+		uau.chatId = targetId;
+		uau.user = user;
+		uau.update = update;
 
-				asyncPool.execute(new ProcessTask(uau));
+		asyncPool.execute(new ProcessTask(uau));
 
-		}
+	}
 
-		@Override
-		public Processed onAsyncUpdate(UserData user,Update update) {
+	@Override
+	public Processed onAsyncUpdate(UserData user,Update update) {
 
-				if (onUpdate(user,update)) return EMPTY;
+		if (onUpdate(user,update)) return EMPTY;
 
-				if (update.message() != null) {
+		if (update.message() != null) {
 
-						final Msg msg = new Msg(this,update.message());
+			final Msg msg = new Msg(this,update.message());
 
-						msg.update = update;
+			msg.update = update;
 
-						if (msg.replyTo() != null) msg.replyTo().update = update;
+			if (msg.replyTo() != null) msg.replyTo().update = update;
 
-						final PointData privatePoint = point().getPrivate(user);
-						final PointData groupPoint = point().getGroup(user);
+			final PointData privatePoint = point().getPrivate(user);
+			final PointData groupPoint = point().getGroup(user);
 
-						if (msg.isGroup() && groupPoint != null) {
+			if (msg.isGroup() && groupPoint != null) {
 
-								final Fragment function = points.containsKey(groupPoint.point) ? points.get(groupPoint.point) : this;
+				final Fragment function = points.containsKey(groupPoint.point) ? points.get(groupPoint.point) : this;
 
-								if (msg.isCommand()) {
+				if (msg.isCommand()) {
 
-										int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint);
+					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint);
 
-										if (checked == PROCESS_REJECT) return EMPTY;
+					if (checked == PROCESS_REJECT) return EMPTY;
 
-										return new Processed(user,update,checked) {
+					return new Processed(user,update,checked) {
 
-												@Override
-												public void process() {
+						@Override
+						public void process() {
 
 
 
-														function.onPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint);
-
-												}
-
-										};
-
-								} else {
-
-										int checked = function.checkPoint(user,msg,groupPoint.point,groupPoint);
-
-										if (checked == PROCESS_REJECT) return EMPTY;
-
-										return new Processed(user,update,checked) {
-
-												@Override
-												public void process() {
-
-
-
-														function.onPoint(user,msg,groupPoint.point,groupPoint);
-
-												}
-
-										};
-
-								}
-
-
-						} else if (msg.isPrivate() && privatePoint != null) {
-
-								final Fragment function = !points.containsKey(privatePoint.point) || "cancel".equals(msg.command()) ? this : points.get(privatePoint.point);
-
-								if (msg.isCommand()) {
-
-										int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint);
-
-										if (checked == PROCESS_REJECT) return EMPTY;
-
-										return new Processed(user,update,checked) {
-
-												@Override
-												public void process() {
-
-
-
-														function.onPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint);
-
-												}
-
-										};
-
-								} else {
-
-										int checked = function.checkPoint(user,msg,privatePoint.point,privatePoint);
-
-										if (checked == PROCESS_REJECT) return EMPTY;
-
-										return new Processed(user,update,checked) {
-
-												@Override
-												public void process() {
-
-
-
-														function.onPoint(user,msg,privatePoint.point,privatePoint);
-
-												}
-
-										};
-
-								}
-
-						} else {
-
-								if (msg.isCommand()) {
-
-										if (msg.isStartPayload()) {
-
-												final String payload = msg.payload()[0];
-												final String[] params = msg.payload().length > 1 ? ArrayUtil.sub(msg.payload(),1,msg.payload().length) : new String[0];
-
-												if (payloads.containsKey(payload)) {
-
-														final Fragment function = payloads.get(payload);
-
-														int checked = function.checkPayload(user,msg,payload,params);
-
-														if (checked == PROCESS_REJECT) return EMPTY;
-
-														return new Processed(user,update,checked) {
-
-																@Override
-																public void process() {
-
-
-
-																		function.onPayload(user,msg,payload,params);
-
-																}
-
-														};
-
-												} else if ((user.admin() || localAdmins.contains(user.id)) && adminPayloads.containsKey(payload)) {
-
-														final Fragment function = adminPayloads.get(payload);
-
-														int checked = function.checkPayload(user,msg,payload,params);
-
-														if (checked == PROCESS_REJECT) return EMPTY;
-
-														return new Processed(user,update,checked) {
-
-																@Override
-																public void process() {
-
-
-
-																		function.onPayload(user,msg,payload,params);
-
-																}
-
-														};
-
-												} else {
-
-														int checked = checkPayload(user,msg,payload,params);
-
-														if (checked == PROCESS_REJECT) return EMPTY;
-
-														return new Processed(user,update,checked) {
-
-																@Override
-																public void process() {
-
-
-
-																		onPayload(user,msg,payload,params);
-
-																}
-
-														};
-												}
-
-
-										} else if ((user.admin() || localAdmins.contains(user.id)) && adminFunctions.containsKey(msg.command())) {
-
-												final Fragment function = adminFunctions.get(msg.command());
-
-												int checked = function.checkFunction(user,msg,msg.command(),msg.params());
-
-												if (checked == PROCESS_REJECT) return EMPTY;
-
-												return new Processed(user,update,checked) {
-
-														@Override
-														public void process() {
-
-
-
-																function.onFunction(user,msg,msg.command(),msg.params());
-
-														}
-
-												};
-
-										} else {
-
-												final Fragment function = functions.containsKey(msg.command()) ? functions.get(msg.command()) : this;
-
-												int checked = function.checkFunction(user,msg,msg.command(),msg.params());
-
-												if (checked == PROCESS_REJECT) return EMPTY;
-
-												if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.params()) == FUNCTION_GROUP && !msg.isGroup()) {
-
-														return new Processed(user,update,checked) {
-
-																@Override
-																public void process() {
-
-																		msg.send("请在群组使用 :)").exec();
-
-																}
-
-														};
-
-
-												} else if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.params()) == FUNCTION_PRIVATE && !msg.isPrivate()) {
-
-														return new Processed(user,update,checked) {
-
-																@Override
-																public void process() {
-
-																		msg.send("命令请在私聊使用 :)").failedWith();
-
-																}
-
-														};
-
-												}
-
-												return new Processed(user,update,checked) {
-
-														@Override
-														public void process() {
-																
-																function.onFunction(user,msg,msg.command(),msg.params());
-
-														}
-
-												};
-
-										}
-
-
-								} else {
-
-										int checked = checkMsg(user,msg); 
-
-										if (checked == PROCESS_ASYNC) {
-
-												asyncPool.execute(new Processed(user,update,PROCESS_ASYNC) {
-
-																@Override
-																public void process() {
-
-																		onMsg(user,msg);
-
-																}
-
-														});
-
-										} else if (checked == PROCESS_REJECT) {
-
-												return EMPTY;
-
-										} else {
-
-												onMsg(user,msg);
-
-										}
-
-								}
+							function.onPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint);
 
 						}
 
-				} else if (update.channelPost() != null) {
+					};
 
-						final Msg msg = new Msg(this,update.channelPost());
+				} else {
 
-						msg.update = update;
+					int checked = function.checkPoint(user,msg,groupPoint.point,groupPoint);
 
-						if (msg.replyTo() != null) msg.replyTo().update = update;
+					if (checked == PROCESS_REJECT) return EMPTY;
 
-						int checked = checkChanPost(user,msg); 
+					return new Processed(user,update,checked) {
 
-						if (checked == PROCESS_ASYNC) {
+						@Override
+						public void process() {
 
-								asyncPool.execute(new Processed(user,update,PROCESS_ASYNC) {
 
-												@Override
-												public void process() {
 
-														onChanPost(user,msg);
-
-												}
-
-										});
-
-						} else if (checked == PROCESS_REJECT) {
-
-								return EMPTY;
-
-						} else {
-
-								onChanPost(user,msg);
+							function.onPoint(user,msg,groupPoint.point,groupPoint);
 
 						}
 
-				} else if (update.callbackQuery() != null) {
+					};
 
-						final Callback callback = new Callback(this,update.callbackQuery());
+				}
 
-						final String point = callback.params.length == 0 ? "" : callback.params[0];
-						final String[] params = callback.params.length > 1 ? ArrayUtil.sub(callback.params,1,callback.params.length) : new String[0];
 
-						final Fragment function = callbacks.containsKey(point) ?  callbacks.get(point): this;
+			} else if (msg.isPrivate() && privatePoint != null) {
 
-						int checked = function.checkCallback(user,callback,point,params);
+				final Fragment function = !points.containsKey(privatePoint.point) || "cancel".equals(msg.command()) ? this : points.get(privatePoint.point);
+
+				if (msg.isCommand()) {
+
+					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint);
+
+					if (checked == PROCESS_REJECT) return EMPTY;
+
+					return new Processed(user,update,checked) {
+
+						@Override
+						public void process() {
+
+
+
+							function.onPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint);
+
+						}
+
+					};
+
+				} else {
+
+					int checked = function.checkPoint(user,msg,privatePoint.point,privatePoint);
+
+					if (checked == PROCESS_REJECT) return EMPTY;
+
+					return new Processed(user,update,checked) {
+
+						@Override
+						public void process() {
+
+
+
+							function.onPoint(user,msg,privatePoint.point,privatePoint);
+
+						}
+
+					};
+
+				}
+
+			} else {
+
+				if (msg.isCommand()) {
+
+					if (msg.isStartPayload()) {
+
+						final String payload = msg.payload()[0];
+						final String[] params = msg.payload().length > 1 ? ArrayUtil.sub(msg.payload(),1,msg.payload().length) : new String[0];
+
+						if (payloads.containsKey(payload)) {
+
+							final Fragment function = payloads.get(payload);
+
+							int checked = function.checkPayload(user,msg,payload,params);
+
+							if (checked == PROCESS_REJECT) return EMPTY;
+
+							return new Processed(user,update,checked) {
+
+								@Override
+								public void process() {
+
+
+
+									function.onPayload(user,msg,payload,params);
+
+								}
+
+							};
+
+						} else if ((user.admin() || localAdmins.contains(user.id)) && adminPayloads.containsKey(payload)) {
+
+							final Fragment function = adminPayloads.get(payload);
+
+							int checked = function.checkPayload(user,msg,payload,params);
+
+							if (checked == PROCESS_REJECT) return EMPTY;
+
+							return new Processed(user,update,checked) {
+
+								@Override
+								public void process() {
+
+
+
+									function.onPayload(user,msg,payload,params);
+
+								}
+
+							};
+
+						} else {
+
+							int checked = checkPayload(user,msg,payload,params);
+
+							if (checked == PROCESS_REJECT) return EMPTY;
+
+							return new Processed(user,update,checked) {
+
+								@Override
+								public void process() {
+
+
+
+									onPayload(user,msg,payload,params);
+
+								}
+
+							};
+						}
+
+
+					} else if ((user.admin() || localAdmins.contains(user.id)) && adminFunctions.containsKey(msg.command())) {
+
+						final Fragment function = adminFunctions.get(msg.command());
+
+						int checked = function.checkFunction(user,msg,msg.command(),msg.params());
 
 						if (checked == PROCESS_REJECT) return EMPTY;
 
 						return new Processed(user,update,checked) {
 
-								@Override
-								public void process() {
+							@Override
+							public void process() {
 
-										function.onCallback(user,callback,point,params);
 
-								}
+
+								function.onFunction(user,msg,msg.command(),msg.params());
+
+							}
 
 						};
 
-				} else if (update.inlineQuery() != null) {
+					} else {
 
-						Query query = new Query(this,update.inlineQuery());
+						final Fragment function = functions.containsKey(msg.command()) ? functions.get(msg.command()) : this;
 
-						query.update = update;
-						
-						onQuery(user,query);
+						int checked = function.checkFunction(user,msg,msg.command(),msg.params());
 
-				} else if (update.poll() != null) {
+						if (checked == PROCESS_REJECT) return EMPTY;
 
-						onPollUpdate(update.poll());
+						if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.params()) == FUNCTION_GROUP && !msg.isGroup()) {
+
+							return new Processed(user,update,checked) {
+
+								@Override
+								public void process() {
+
+									msg.send("请在群组使用 :)").exec();
+
+								}
+
+							};
+
+
+						} else if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.params()) == FUNCTION_PRIVATE && !msg.isPrivate()) {
+
+							return new Processed(user,update,checked) {
+
+								@Override
+								public void process() {
+
+									msg.send("命令请在私聊使用 :)").failedWith();
+
+								}
+
+							};
+
+						}
+
+						return new Processed(user,update,checked) {
+
+							@Override
+							public void process() {
+
+								function.onFunction(user,msg,msg.command(),msg.params());
+
+							}
+
+						};
+
+					}
+
+
+				} else {
+
+					int checked = checkMsg(user,msg); 
+
+					if (checked == PROCESS_ASYNC) {
+
+						asyncPool.execute(new Processed(user,update,PROCESS_ASYNC) {
+
+								@Override
+								public void process() {
+
+									onMsg(user,msg);
+
+								}
+
+							});
+
+					} else if (checked == PROCESS_REJECT) {
+
+						return EMPTY;
+
+					} else {
+
+						onMsg(user,msg);
+
+					}
 
 				}
 
-				return null;
-		}
+			}
 
-		static HashMap<Long,TreeSet<UserAndUpdate>> waitFor = new HashMap<>();
+		} else if (update.channelPost() != null) {
 
-		static class ProcessTask extends TreeSet<UserAndUpdate> implements Runnable {
+			final Msg msg = new Msg(this,update.channelPost());
 
-				private UserAndUpdate uau;
-				private boolean sync = false;
+			msg.update = update;
 
-				public ProcessTask(UserAndUpdate uau) {
-						this.uau = uau;
-				}
+			if (msg.replyTo() != null) msg.replyTo().update = update;
+
+			int checked = checkChanPost(user,msg); 
+
+			if (checked == PROCESS_ASYNC) {
+
+				asyncPool.execute(new Processed(user,update,PROCESS_ASYNC) {
+
+						@Override
+						public void process() {
+
+							onChanPost(user,msg);
+
+						}
+
+					});
+
+			} else if (checked == PROCESS_REJECT) {
+
+				return EMPTY;
+
+			} else {
+
+				onChanPost(user,msg);
+
+			}
+
+		} else if (update.callbackQuery() != null) {
+
+			final Callback callback = new Callback(this,update.callbackQuery());
+
+			final String point = callback.params.length == 0 ? "" : callback.params[0];
+			final String[] params = callback.params.length > 1 ? ArrayUtil.sub(callback.params,1,callback.params.length) : new String[0];
+
+			final Fragment function = callbacks.containsKey(point) ?  callbacks.get(point): this;
+
+			int checked = function.checkCallback(user,callback,point,params);
+
+			if (checked == PROCESS_REJECT) return EMPTY;
+
+			return new Processed(user,update,checked) {
 
 				@Override
-				public void run() {
+				public void process() {
 
-
-						/*
-
-						 if (!sync) synchronized (waitFor) {
-
-						 if (waitFor.containsKey(uau.userId)) {
-
-						 waitFor.get(uau.userId).add(uau);
-
-						 return;
-
-						 }
-
-						 }
-
-						 */
-
-						Processed processed;
-
-						try {
-
-								processed = uau.process();
-
-						} catch (Exception e) {
-
-								new Send(Env.GROUP,"处理中出错 " + uau.update.toString(),BotLog.parseError(e)).exec();
-
-								if (uau.user != null && !uau.user.admin()) {
-
-										new Send(uau.user.id,"处理出错，已提交报告，可以到官方群组 @NTTDiscuss  继续了解").exec();
-
-								}
-
-								return;
-
-						}
-
-						if (processed == null) {
-
-								uau.update.lock.send(null);
-
-						} else if (processed.type == PROCESS_ASYNC) {
-
-								asyncPool.execute(processed);
-
-						} else {
-
-								/*
-
-								 if (!sync) synchronized (waitFor) {
-
-								 if (waitFor.containsKey(uau.userId)) {
-
-								 waitFor.get(uau.userId).add(uau);
-
-								 return;
-
-								 } else {
-
-								 waitFor.put(uau.userId,this);
-
-								 sync = true;
-
-								 }
-
-								 }
-
-								 */
-
-
-								processed.run();
-
-						} 
-
-						/*
-
-						 if (!isEmpty()) {
-
-						 run(pollFirst());
-
-						 } else {
-
-						 if (processed.type == PROCESS_SYNC) {
-
-						 synchronized (waitFor) {
-
-						 if (isEmpty()) {
-
-						 waitFor.remove(uau.userId);
-
-						 return;
-
-						 }
-
-						 }
-
-						 }
-
-						 run(pollFirst());
-
-						 }
-
-						 */
+					function.onCallback(user,callback,point,params);
 
 				}
 
+			};
 
+		} else if (update.inlineQuery() != null) {
+
+			Query query = new Query(this,update.inlineQuery());
+
+			query.update = update;
+
+			onQuery(user,query);
+
+		} else if (update.poll() != null) {
+
+			onPollUpdate(update.poll());
+
+		}
+
+		return null;
+	}
+
+	static HashMap<Long,TreeSet<UserAndUpdate>> waitFor = new HashMap<>();
+
+	static class ProcessTask extends TreeSet<UserAndUpdate> implements Runnable {
+
+		private UserAndUpdate uau;
+		private boolean sync = false;
+
+		public ProcessTask(UserAndUpdate uau) {
+			this.uau = uau;
 		}
 
 		@Override
-		public void onCallback(UserData user,Callback callback,String point,String[] params) {
+		public void run() {
 
-				if ("null".equals(point)) callback.confirm();
-				else callback.alert("无效的回调指针 : " + point + "\n请联系开发者");
 
-		}
+			/*
 
-		final String split = "------------------------\n";
+			 if (!sync) synchronized (waitFor) {
 
-		public void onFinalMsg(UserData user,Msg msg) {
+			 if (waitFor.containsKey(uau.userId)) {
 
-				StringBuilder str = new StringBuilder();
+			 waitFor.get(uau.userId).add(uau);
 
-				boolean no_reply = false;
+			 return;
 
-				Message message = msg.message();
+			 }
 
-				str.append("消息ID : " + message.messageId()).append("\n");
+			 }
 
-				if (message.forwardFrom() != null) {
+			 */
 
-						no_reply = true;
+			Processed processed;
 
-						str.append("来自用户 : ").append(UserData.get(message.forwardFrom()).userName()).append("\n");
-						str.append("用户ID : ").append(message.forwardFrom().id()).append("\n");
+			try {
 
-				}
+				processed = uau.process();
 
-				if (message.forwardFromChat() != null) {
+			} catch (Exception e) {
 
-						no_reply = true;
+				new Send(Env.GROUP,"处理中出错 " + uau.update.toString(),BotLog.parseError(e)).exec();
 
-						if (message.forwardFromChat().type() == Chat.Type.channel) {
+				if (uau.user != null && !uau.user.admin()) {
 
-								str.append("来自频道 : ").append(message.forwardFromChat().username() == null ? message.forwardFromChat().title() : Html.a(message.forwardFromChat().username(),"https://t.me/" + message.forwardFromChat().username())).append("\n");
-
-								str.append("频道ID : ").append(message.forwardFromChat().id());
-
-						} else if (message.forwardFromChat().type() == Chat.Type.group || message.forwardFromChat().type() == Chat.Type.supergroup) {
-
-								str.append("来自群组 : ").append(message.forwardFromChat().username() == null ? message.forwardFromChat().title() : Html.a(message.forwardFromChat().username(),"https://t.me/" + message.forwardFromChat().username())).append("\n");
-
-						} else {
-
-								if (message.forwardFrom() == null) {
-
-										str.append("来自 : ").append(message.forwardSenderName()).append(" (隐藏来源)\n");
-
-								}
-
-						}
+					new Send(uau.user.id,"处理出错，已提交报告，可以到官方群组 @NTTDiscuss  继续了解").exec();
 
 				}
 
-				if (message.forwardSenderName() != null) {
+				return;
 
-						no_reply = true;
+			}
 
-						str.append("来自用户 : ").append(message.forwardSenderName());
+			if (processed == null) {
+
+				uau.update.lock.send(null);
+
+			} else if (processed.type == PROCESS_ASYNC) {
+
+				asyncPool.execute(processed);
+
+			} else {
+
+				/*
+
+				 if (!sync) synchronized (waitFor) {
+
+				 if (waitFor.containsKey(uau.userId)) {
+
+				 waitFor.get(uau.userId).add(uau);
+
+				 return;
+
+				 } else {
+
+				 waitFor.put(uau.userId,this);
+
+				 sync = true;
+
+				 }
+
+				 }
+
+				 */
+
+
+				processed.run();
+
+			} 
+
+			/*
+
+			 if (!isEmpty()) {
+
+			 run(pollFirst());
+
+			 } else {
+
+			 if (processed.type == PROCESS_SYNC) {
+
+			 synchronized (waitFor) {
+
+			 if (isEmpty()) {
+
+			 waitFor.remove(uau.userId);
+
+			 return;
+
+			 }
+
+			 }
+
+			 }
+
+			 run(pollFirst());
+
+			 }
+
+			 */
+
+		}
+
+
+	}
+
+	@Override
+	public void onCallback(UserData user,Callback callback,String point,String[] params) {
+
+		if ("null".equals(point)) callback.confirm();
+		else callback.alert("无效的回调指针 : " + point + "\n请联系开发者");
+
+	}
+
+	final String split = "------------------------\n";
+
+	public void onFinalMsg(UserData user,Msg msg) {
+
+		StringBuilder str = new StringBuilder();
+
+		boolean no_reply = false;
+
+		Message message = msg.message();
+
+		str.append("消息ID : " + message.messageId()).append("\n");
+
+		if (message.forwardFrom() != null) {
+
+			no_reply = true;
+
+			str.append("来自用户 : ").append(UserData.get(message.forwardFrom()).userName()).append("\n");
+			str.append("用户ID : ").append(message.forwardFrom().id()).append("\n");
+
+		}
+
+		if (message.forwardFromChat() != null) {
+
+			no_reply = true;
+
+			if (message.forwardFromChat().type() == Chat.Type.channel) {
+
+				str.append("来自频道 : ").append(message.forwardFromChat().username() == null ? message.forwardFromChat().title() : Html.a(message.forwardFromChat().username(),"https://t.me/" + message.forwardFromChat().username())).append("\n");
+
+				str.append("频道ID : ").append(message.forwardFromChat().id());
+
+			} else if (message.forwardFromChat().type() == Chat.Type.group || message.forwardFromChat().type() == Chat.Type.supergroup) {
+
+				str.append("来自群组 : ").append(message.forwardFromChat().username() == null ? message.forwardFromChat().title() : Html.a(message.forwardFromChat().username(),"https://t.me/" + message.forwardFromChat().username())).append("\n");
+
+			} else {
+
+				if (message.forwardFrom() == null) {
+
+					str.append("来自 : ").append(message.forwardSenderName()).append(" (隐藏来源)\n");
 
 				}
 
-				if (message.sticker() != null) {
-
-						no_reply = true;
-
-						str.append(split);
-
-						str.append("贴纸ID : ").append(message.sticker().fileId()).append("\n");
-
-						str.append("贴纸表情 : ").append(message.sticker().emoji()).append("\n");
-
-						if (message.sticker().setName() != null) {
-
-								str.append("贴纸包 : ").append("https://t.me/addstickers/" + message.sticker().setName()).append("\n");
-
-						}
-
-						msg.sendUpdatingPhoto();
-
-						bot().execute(new SendPhoto(msg.chatId(),getFile(msg.message().sticker().fileId())).caption(str.toString()).parseMode(ParseMode.HTML).replyMarkup(new ReplyKeyboardRemove()).replyToMessageId(msg.messageId()));
-
-				}
-
-				if (!no_reply) {
-
-
-
-						if (msg.hasText()) {
-
-								String text = TentcentNlp.nlpTextchat(msg.chatId().toString(),msg.text());
-
-								if (text != null) msg.send(text).exec();
-
-								return;
-
-					  }
-
-			  }
-
-				msg.send("喵......？",str.toString()).replyTo(msg).html().removeKeyboard().exec();
+			}
 
 		}
 
-		public boolean isLongPulling() {
+		if (message.forwardSenderName() != null) {
 
-				return false;
+			no_reply = true;
 
-		}
-
-		public String getToken() {
-
-				return Env.get("token." + botName());
+			str.append("来自用户 : ").append(message.forwardSenderName());
 
 		}
 
-		public void setToken(String botToken) {
+		if (message.sticker() != null) {
 
-				Env.set("token." + botName(),token);
+			no_reply = true;
 
-		}
+			str.append(split);
 
-		public boolean silentStart() {
+			str.append("贴纸ID : ").append(message.sticker().fileId()).append("\n");
 
-				reload();
+			str.append("贴纸表情 : ").append(message.sticker().emoji()).append("\n");
 
-				token = getToken();
+			if (message.sticker().setName() != null) {
 
-				bot = new TelegramBot.Builder(token).build();
+				str.append("贴纸包 : ").append("https://t.me/addstickers/" + message.sticker().setName()).append("\n");
 
-				GetMeResponse resp = bot.execute(new GetMe());
+			}
 
-				if (resp == null || !resp.isOk()) return false;
+			msg.sendUpdatingPhoto();
 
-				me = resp.user();
-
-				realStart();
-
-				return true;
+			bot().execute(new SendPhoto(msg.chatId(),getFile(msg.message().sticker().fileId())).caption(str.toString()).parseMode(ParseMode.HTML).replyMarkup(new ReplyKeyboardRemove()).replyToMessageId(msg.messageId()));
 
 		}
 
-		public void start() {
+		if (!no_reply) {
 
-				reload();
 
-				token = getToken();
 
-				if (token == null || !Env.verifyToken(token)) {
+			if (msg.hasText()) {
 
-						token = Env.inputToken(botName());
+				String text = TentcentNlp.nlpTextchat(msg.chatId().toString(),msg.text());
 
-				}
+				if (text != null) msg.send(text).exec();
 
-				setToken(token);
+				return;
 
-				OkHttpClient.Builder okhttpClient = new OkHttpClient.Builder();
-
-				okhttpClient.networkInterceptors().clear();
-
-				bot = new TelegramBot.Builder(token)
-						.okHttpClient(okhttpClient.build()).build();
-
-				me = bot.execute(new GetMe()).user();
-
-				realStart();
+			}
 
 		}
 
-		public void realStart() {
+		msg.send("喵......？",str.toString()).replyTo(msg).html().removeKeyboard().exec();
 
-				bot.execute(new DeleteWebhook());
+	}
 
-				if (isLongPulling()) {
+	public boolean isLongPulling() {
 
-						bot.setUpdatesListener(this,this);
+		return false;
 
-				} else {
+	}
 
-						/*
+	public String getToken() {
 
-						 GetUpdatesResponse update = bot.execute(new GetUpdates());
+		return Env.get("token." + botName());
 
-						 if (update.isOk()) {
+	}
 
-						 process(update.updates());
+	public void setToken(String botToken) {
 
-						 }
+		Env.set("token." + botName(),token);
 
-						 */
+	}
 
-						String url = "https://" + BotServer.INSTANCE.domain + "/" + token;
+	public boolean silentStart() {
 
-						BotServer.fragments.put(token,this);
+		reload();
 
-						BaseResponse resp = bot.execute(new SetWebhook().url(url));
+		token = getToken();
 
-						if (!resp.isOk()) {
+		bot = new TelegramBot.Builder(token).build();
 
-								BotLog.debug("SET WebHook for " + botName() + " Failed : " + resp.description());
+		GetMeResponse resp = bot.execute(new GetMe());
 
-								BotServer.fragments.remove(token);
+		if (resp == null || !resp.isOk()) return false;
 
-						}
+		me = resp.user();
 
+		realStart();
 
-				}
+		return true;
 
-		}
+	}
 
-		public void stop() {
+	public void start() {
 
-				for (Long id : point().privatePoints.keySet()) {
-						
-						new Send(this,id,"当前操作已经取消 : NTT 正在更新 / 重启").removeKeyboard().exec();
-						
-				}
-				
-				if (!isLongPulling()) {
+		reload();
 
-						// bot.execute(new DeleteWebhook());
+		token = getToken();
 
-				} else {
+		if (token == null || !Env.verifyToken(token)) {
 
-						bot.removeGetUpdatesListener();
-
-				}
+			token = Env.inputToken(botName());
 
 		}
 
-		@Override
-		public void onException(TelegramException e) {
+		setToken(token);
 
-				BotLog.debug(UserData.get(me).userName() + " : " + BotLog.parseError(e));
+		OkHttpClient.Builder okhttpClient = new OkHttpClient.Builder();
+
+		okhttpClient.networkInterceptors().clear();
+
+		bot = new TelegramBot.Builder(token)
+			.okHttpClient(okhttpClient.build()).build();
+
+		me = bot.execute(new GetMe()).user();
+
+		realStart();
+
+	}
+
+	public void realStart() {
+
+		bot.execute(new DeleteWebhook());
+
+		if (isLongPulling()) {
+
+			bot.setUpdatesListener(this,this);
+
+		} else {
+
+			/*
+
+			 GetUpdatesResponse update = bot.execute(new GetUpdates());
+
+			 if (update.isOk()) {
+
+			 process(update.updates());
+
+			 }
+
+			 */
+
+			String url = "https://" + BotServer.INSTANCE.domain + "/" + token;
+
+			BotServer.fragments.put(token,this);
+
+			BaseResponse resp = bot.execute(new SetWebhook().url(url));
+
+			if (!resp.isOk()) {
+
+				BotLog.debug("SET WebHook for " + botName() + " Failed : " + resp.description());
+
+				BotServer.fragments.remove(token);
+
+			}
+
 
 		}
+
+	}
+
+	public void stop() {
+
+		for (Long id : point().privatePoints.keySet()) {
+
+			new Send(this,id,"当前操作已经取消 : NTT 正在更新 / 重启").removeKeyboard().exec();
+
+		}
+
+		if (!isLongPulling()) {
+
+			// bot.execute(new DeleteWebhook());
+
+		} else {
+
+			bot.removeGetUpdatesListener();
+
+		}
+
+	}
+
+	@Override
+	public void onException(TelegramException e) {
+
+		BotLog.debug(UserData.get(me).userName() + " : " + BotLog.parseError(e));
+
+	}
 
 
 }
