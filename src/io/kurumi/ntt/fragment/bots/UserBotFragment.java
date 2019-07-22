@@ -40,12 +40,11 @@ public class UserBotFragment extends BotFragment {
         botToken = bot.token;
         userId = bot.user;
 
+		params = bot.params;
 
 	}
 
 	/*
-
-	 params = bot.params;
 
 	 List<Long> banned_chat_list = getParam("banned_chat");
 
