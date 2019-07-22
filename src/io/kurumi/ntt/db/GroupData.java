@@ -178,7 +178,7 @@ public class GroupData {
 	public Integer no_invite_bot;
 
 	public Integer no_sticker;
-	public Integer no_animated_sticker;
+	// public Integer no_animated_sticker;
 	public Integer no_image;
 	public Integer no_animation;
 	public Integer no_audio;

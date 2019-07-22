@@ -425,29 +425,6 @@ public class GroupOptions extends Fragment {
 												callback.text("📝  不处理");
 
 										}
-
-								} else if ("animated".equals(params[1])) {
-
-									if (data.no_animated_sticker == null) {
-
-										data.no_animated_sticker = 0;
-
-										callback.text("📝  仅删除");
-
-									} else if (data.no_animated_sticker == 0) {
-
-										data.no_animated_sticker = 1;
-
-										callback.text("📝  删除并警告");
-
-									} else {
-
-										data.no_animated_sticker = null;
-
-										callback.text("📝  不处理");
-
-									}
-									
 										
 								} else if ("image".equals(params[1])) {
 
