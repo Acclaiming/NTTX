@@ -98,7 +98,7 @@ public class BotChannnel extends Fragment {
 
 			setPrivatePoint(user,POINT_INPUT_EXTRA_PARAM,param);
 
-			msg.send("DisableNotification ？").keyboard("True","False").exec();
+			msg.send("DisableNotification ？").keyboard("True","False").async();
 
 		} else if ("get_chat".equals(function)) {
 
@@ -138,7 +138,7 @@ public class BotChannnel extends Fragment {
 
 			setPrivatePoint(user,POINT_INPUT_EXTRA_PARAM,param);
 
-			msg.send("ban ？").keyboard("True","False").exec();
+			msg.send("ban ？").keyboard("True","False").async();
 
 		} else if ("promote".equals(function)) {
 
@@ -150,7 +150,7 @@ public class BotChannnel extends Fragment {
 
 			setPrivatePoint(user,POINT_INPUT_EXTRA_PARAM,param);
 
-			msg.send("UnPromote ？").keyboard("True","False").exec();
+			msg.send("UnPromote ？").keyboard("True","False").async();
 
 		} else if ("restrict".equals(function)) {
 
@@ -162,7 +162,7 @@ public class BotChannnel extends Fragment {
 
 			setPrivatePoint(user,POINT_INPUT_EXTRA_PARAM,param);
 
-			msg.send("can_send_messages ？").keyboard("True","False","Read Only").exec();
+			msg.send("can_send_messages ？").keyboard("True","False","Read Only").async();
 
 		} else if ("exit".equals(function)) {
 
@@ -180,7 +180,7 @@ public class BotChannnel extends Fragment {
 
 			setPrivatePoint(user,POINT_INPUT_EXTRA_PARAM,param);
 
-			msg.send("DisableNotification ？").keyboard("True","False").exec();
+			msg.send("DisableNotification ？").keyboard("True","False").async();
 
 		} else if ("get_file".equals(function)) {
 
@@ -204,7 +204,7 @@ public class BotChannnel extends Fragment {
 
 			setPrivatePoint(user,POINT_INPUT_EXTRA_PARAM,param);
 
-			msg.send("ParseMode ？").keyboard("Html","Markdown","None").exec();
+			msg.send("ParseMode ？").keyboard("Html","Markdown","None").async();
 
 		} else if ("edit".equals(function)) {
 
@@ -216,7 +216,7 @@ public class BotChannnel extends Fragment {
 
 			setPrivatePoint(user,POINT_INPUT_EXTRA_PARAM,param);
 
-			msg.send("ParseMode ？").keyboard("Html","Markdown","None").exec();
+			msg.send("ParseMode ？").keyboard("Html","Markdown","None").async();
 
 		} else if ("unban".equals(function)) {
 
@@ -341,7 +341,7 @@ public class BotChannnel extends Fragment {
 
 				param.step = 1;
 
-				msg.send("can_send_media_messages ？").keyboard("True","False").exec();
+				msg.send("can_send_media_messages ？").keyboard("True","False").async();
 
 			} else if (param.step == 1) {
 
@@ -353,7 +353,7 @@ public class BotChannnel extends Fragment {
 
 				param.step = 2;
 
-				msg.send("can_send_other_messages ？").keyboard("True","False").exec();
+				msg.send("can_send_other_messages ？").keyboard("True","False").async();
 
 			} else if (param.step == 2) {
 
@@ -365,7 +365,7 @@ public class BotChannnel extends Fragment {
 
 				param.step = 3;
 
-				msg.send("can_send_media_messages ？").keyboard("True","False").exec();
+				msg.send("can_send_media_messages ？").keyboard("True","False").async();
 
 			} else if (param.step == 3) {
 
@@ -400,7 +400,7 @@ public class BotChannnel extends Fragment {
 
 				param.step = 1;
 
-				msg.send("DisableNotification ？").keyboard("True","False").exec();
+				msg.send("DisableNotification ？").keyboard("True","False").async();
 
 			} else if (param.step == 1) {
 
@@ -440,7 +440,7 @@ public class BotChannnel extends Fragment {
 
 	void invalidParams(Msg msg,String... params) {
 
-		msg.send("无效的参数 , /" + msg.command() + " <" + ArrayUtil.join(params,"> <") + ">").exec();
+		msg.send("无效的参数 , /" + msg.command() + " <" + ArrayUtil.join(params,"> <") + ">").async();
 
 	}
 
@@ -448,11 +448,11 @@ public class BotChannnel extends Fragment {
 
 		if (resp == null) {
 
-			msg.send("Telegram服务器超时 请重试").exec();
+			msg.send("Telegram服务器超时 请重试").async();
 
 		} else if (resp.isOk() && resp instanceof StringResponse) {
 
-			msg.send("OK RESULT : " + ((StringResponse)resp).result()).exec();
+			msg.send("OK RESULT : " + ((StringResponse)resp).result()).async();
 
 		} else if (!resp.isOk() && resp instanceof GetChatAdministratorsResponse) {
 
@@ -523,17 +523,17 @@ public class BotChannnel extends Fragment {
 
 			}
 
-			msg.send(result.toString()).html().exec();
+			msg.send(result.toString()).html().async();
 
 		} else {
 
 			if (resp.json.length() < 1024) {
 
-				msg.send(Html.json(resp.json)).html().removeKeyboard().exec();
+				msg.send(Html.json(resp.json)).html().removeKeyboard().async();
 
 			} else {
 
-				msg.send(new JSONObject(resp.json).toStringPretty()).exec();
+				msg.send(new JSONObject(resp.json).toStringPretty()).async();
 
 			}
 

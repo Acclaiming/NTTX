@@ -52,44 +52,27 @@ public class TwitterLogin extends Fragment {
 
 			token = new ApiToken(params[0],params[1]);
 
-		} /* else if (params.length == 1) {
-			
-				
-			if ("android".equals(params[0].toLowerCase())) {
-				
-				token = ApiToken.androidToken;
-				
-			} else if ("iphone".equals(params[0].toLowerCase())) {
-				
-				token = ApiToken.iPhoneToken;
-			
-			} else if ("web".equals(params[0].toLowerCase())) {
-				
-				token = ApiToken.webToken;
-				
+		} else if (params.length == 1) {
+
+			if ("twidere".equals(params[0].toLowerCase())) {
+
+				token = ApiToken.twidere;
+
 			} else {
-				
-				msg.send("/login","or /login [web|android|iphone]","or /login <apiKey> <apiKeySec>","or /login <apiKey> <apiKeySec> <accToken> <accTokenSec>").exec();
-				
+
+				msg.send("目前仅可选 /login twidere").async();
+
+				// msg.send("/login","or /login [web|android|iphone]","or /login <apiKey> <apiKeySec>","or /login <apiKey> <apiKeySec> <accToken> <accTokenSec>").exec();
+
 				return;
-				
+
 			}
-			
-		} else if (params.length > 0) {
-
-			msg.send("/login","or /login [web|android|iphone]","or /login <apiKey> <apiKeySec>","or /login <apiKey> <apiKeySec> <accToken> <accTokenSec>").exec();
-
-			return;
 
 		} else {
 
-			token = ApiToken.defaultToken;
+			token = ApiToken.overflowcat;
 
 		}
-		
-		*/
-		
-		token = ApiToken.twidere;
 
 		if (params.length == 4) {
 
@@ -122,11 +105,11 @@ public class TwitterLogin extends Fragment {
                 }
 
 				if (account.getAccessLevel() < 2) {
-					
+
 					msg.send("注意！这个API只读！NTT的某些功能不可用。").exec();
-					
+
 				}
-				
+
                 TAuth.data.setById(auth.id,auth);
 
                 msg.send("好！现在认证成功 , " + auth.archive().urlHtml()).html().exec();
@@ -154,11 +137,11 @@ public class TwitterLogin extends Fragment {
             cache.put(user.id,request);
 
 			PointData data = setPrivatePointData(user,POINT_INPUT_CALLBACK,token);
-			
+
             msg.send("点 " + Html.a("这里",request.getAuthorizationURL()) + " 认证 ( 支持多账号的呢 ~").html().exec(data);
 
             msg.send("(｡•̀ᴗ-)✧ 请输入 pin 码 : ","使用 /cancel 取消 ~").exec(data);
-       
+
         } catch (TwitterException e) {
 
             msg.send("请求认证链接失败 :( ",NTT.parseTwitterException(e)).failedWith();
@@ -209,7 +192,7 @@ public class TwitterLogin extends Fragment {
             try {
 
 				ApiToken token = data.data();
-				
+
                 AccessToken access = token.createApi().getOAuthAccessToken(requestToken,msg.text());
 
                 long accountId = access.getUserId();
@@ -243,7 +226,7 @@ public class TwitterLogin extends Fragment {
 					msg.send("注意！这个API只读！NTT的某些功能不可用。").exec();
 
 				}
-				
+
                 TAuth.data.setById(accountId,auth);
 
                 msg.send("好！现在认证成功 , " + auth.archive().urlHtml()).html().exec();
