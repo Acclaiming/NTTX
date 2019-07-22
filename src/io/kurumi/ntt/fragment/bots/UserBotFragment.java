@@ -31,7 +31,7 @@ public class UserBotFragment extends BotFragment {
 
 		super.reload();
 
-		addFragment(new BotChannnel());
+		// addFragment(new BotChannnel());
 
 		bot = UserBot.data.getById(botId);
 
