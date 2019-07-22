@@ -11,6 +11,7 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import java.util.HashMap;
 import com.pengrad.telegrambot.request.*;
+import cn.hutool.json.*;
 
 public class GroupFunction extends Fragment {
 		
@@ -238,6 +239,16 @@ public class GroupFunction extends Fragment {
 
 								}
 
+						} else if (new JSONObject(msg.update.json).size() == 3 && data.no_animated_sticker != null) {
+							
+							msg.delete();
+
+							if (data.no_animated_sticker != 0)  {
+
+								doRest(user,msg,data,"发送动态贴纸");
+
+							}
+							
 						}
 
 
