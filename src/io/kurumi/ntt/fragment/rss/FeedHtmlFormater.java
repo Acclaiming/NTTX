@@ -244,7 +244,7 @@ public class FeedHtmlFormater {
 
 			html.append("\n\n");
 
-			if (!StrUtil.isBlank(entry.getAuthor()) && "rsshub".equals(entry.getAuthor().trim().toLowerCase())) {
+			if (!StrUtil.isBlank(entry.getAuthor()) && !"rsshub".equals(entry.getAuthor().trim().toLowerCase())) {
 
 				html.append("作者 : ");
 
