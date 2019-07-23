@@ -308,6 +308,8 @@ public class FeedHtmlFormater {
 		return html.toString();
 
 	}
+	
+	public static Pattern LINES = Pattern.compile("\n( +)?\n( +)?\n",Pattern.MULTILINE);
 
 	private static String getContent(SyndEntry entry,boolean desciption,boolean withImg) {
 
@@ -341,7 +343,7 @@ public class FeedHtmlFormater {
 
 		if (!withImg) {
 
-			html = ReUtil.replaceAll(html,matchImg,"\n" + Html.a("图片","$1") + "\n");
+			html = ReUtil.replaceAll(html,matchImg,"\n\n" + Html.a("图片","$1") + "\n\n");
 
 		}
 
@@ -382,6 +384,7 @@ public class FeedHtmlFormater {
 			
 		}
 		
+		html = ReUtil.replaceAll(html,LINES,"\n\n");
 		
 		System.out.println(html);
 		
