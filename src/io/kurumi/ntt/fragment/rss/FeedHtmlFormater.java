@@ -16,6 +16,7 @@ import io.kurumi.telegraph.model.NodeElement;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.*;
+import cn.hutool.core.util.*;
 
 public class FeedHtmlFormater {
 
@@ -336,7 +337,6 @@ public class FeedHtmlFormater {
 
 			html = html.replaceAll("<br ?/? ?>","\n");
 
-
 		}
 
 		html = removeADs(html).trim();
@@ -346,6 +346,7 @@ public class FeedHtmlFormater {
 			html = ReUtil.replaceAll(html,matchImg,"\n\n" + Html.a("图片","$1") + "\n\n");
 
 		}
+		
 
 		/*
 

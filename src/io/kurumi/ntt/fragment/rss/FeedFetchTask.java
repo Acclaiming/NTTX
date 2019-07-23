@@ -63,13 +63,13 @@ public class FeedFetchTask extends TimerTask {
 
 			try {
 
-				//BotLog.debug("开始拉取 : " + url);
+				BotLog.debug("开始拉取 : " + url);
 
 				SyndFeed feed = fetcher.retrieveFeed(new URL(url));
 
 				RssSub.RssInfo info = RssSub.info.getById(url);
 
-				BotLog.debug("拉取 " + feed.getTitle());
+				//BotLog.debug("拉取 " + feed.getTitle());
 
 				if (info == null) {
 
@@ -141,7 +141,6 @@ public class FeedFetchTask extends TimerTask {
 			} catch (Exception e) {
 
 				BotLog.error("拉取错误",e);
-
 
 			}
 
