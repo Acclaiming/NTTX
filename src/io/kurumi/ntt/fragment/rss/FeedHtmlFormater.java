@@ -32,7 +32,7 @@ public class FeedHtmlFormater {
 
 	public static HTMLFilter removeTags = new HTMLFilter(true);
 	public static HTMLFilter removeTagsWithoutImg = new HTMLFilter(false);
-	
+
 	public static Pattern matchTagInterrupted = Pattern.compile(".*</[^>]+>.+<[^>]+");
 
 	public static String format(int type,SyndFeed feed,final SyndEntry entry) {
@@ -309,7 +309,7 @@ public class FeedHtmlFormater {
 		return html.toString();
 
 	}
-	
+
 	public static Pattern LINES = Pattern.compile("\n( +)?\n( +)?\n",Pattern.MULTILINE);
 
 	private static String getContent(SyndEntry entry,boolean desciption,boolean withImg) {
@@ -319,7 +319,7 @@ public class FeedHtmlFormater {
 		if (entry.getContents() != null && !entry.getContents().isEmpty() && !StrUtil.isBlank(entry.getContents().get(0).getValue())) {
 
 			// Atom Feed
-		
+
 
 			html = entry.getContents().get(0).getValue();
 
@@ -346,7 +346,7 @@ public class FeedHtmlFormater {
 			html = ReUtil.replaceAll(html,matchImg,"\n\n" + Html.a("图片","$1") + "\n\n");
 
 		}
-		
+
 
 		/*
 
@@ -374,21 +374,25 @@ public class FeedHtmlFormater {
 		 }
 
 		 */
-		 
+
 		if (withImg) {
-			
+
 			html = removeTagsWithoutImg.filter(html);
-			
+
 		} else {
-			
+
 			html = removeTags.filter(html);
-			
+
 		}
-		
-		html = ReUtil.replaceAll(html,LINES,"\n\n");
-		
+
+		while (ReUtil.isMatch(LINES,html)) {
+
+			html = ReUtil.replaceAll(html,LINES,"\n\n");
+
+		}
+
 		System.out.println(html);
-		
+
 		if (html.startsWith(entry.getTitle())) {
 
 			// html = html.substring(entry.getTitle().length()).trim();
