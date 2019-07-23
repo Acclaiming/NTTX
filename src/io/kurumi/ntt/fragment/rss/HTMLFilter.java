@@ -7,15 +7,15 @@ import java.util.regex.*;
 
 public final class HTMLFilter {
 
-	private static final int REGEX_FLAGS_SI = Pattern.CASE_INSENSITIVE | Pattern.DOTALL;
-	private static final Pattern P_TAGS = Pattern.compile("<(.*?)>",Pattern.DOTALL);
-	private static final Pattern P_END_TAG = Pattern.compile("^/([a-z0-9]+)",REGEX_FLAGS_SI);
-	private static final Pattern P_START_TAG = Pattern.compile("^([a-z0-9]+)(.*?)(/?)$",REGEX_FLAGS_SI);
-	private static final Pattern P_QUOTED_ATTRIBUTES = Pattern.compile("([a-z0-9]+)=([\"'])(.*?)\\2",REGEX_FLAGS_SI);
-	private static final Pattern P_UNQUOTED_ATTRIBUTES = Pattern.compile("([a-z0-9]+)(=)([^\"\\s']+)",REGEX_FLAGS_SI);
-	private static final Pattern P_END_ARROW = Pattern.compile("^>");
-	private static final Pattern P_BODY_TO_END = Pattern.compile("<([^>]*?)(?=<|$)");
-	private static final Pattern P_XML_CONTENT = Pattern.compile("(^|>)([^<]*?)(?=>)");
+	public static final int REGEX_FLAGS_SI = Pattern.CASE_INSENSITIVE | Pattern.DOTALL;
+	public static final Pattern P_TAGS = Pattern.compile("<(.*?)>",Pattern.DOTALL);
+	public static final Pattern P_END_TAG = Pattern.compile("^/([a-z0-9]+)",REGEX_FLAGS_SI);
+	public static final Pattern P_START_TAG = Pattern.compile("^([a-z0-9]+)(.*?)(/?)$",REGEX_FLAGS_SI);
+	public static final Pattern P_QUOTED_ATTRIBUTES = Pattern.compile("([a-z0-9]+)=([\"'])(.*?)\\2",REGEX_FLAGS_SI);
+	public static final Pattern P_UNQUOTED_ATTRIBUTES = Pattern.compile("([a-z0-9]+)(=)([^\"\\s']+)",REGEX_FLAGS_SI);
+	public static final Pattern P_END_ARROW = Pattern.compile("^>");
+	public static final Pattern P_BODY_TO_END = Pattern.compile("<([^>]*?)(?=<|$)");
+	public static final Pattern P_XML_CONTENT = Pattern.compile("(^|>)([^<]*?)(?=>)");
 
 	// @xxx could grow large... maybe use sesat's ReferenceMap
 	private static final ConcurrentMap<String, Pattern> P_REMOVE_PAIR_BLANKS = new ConcurrentHashMap<String, Pattern>();
