@@ -31,132 +31,131 @@ import com.pengrad.telegrambot.response.*;
 
 public class FeedFetchTask extends TimerTask {
 
-		public static Timer rssTimer = new Timer();
+	public static Timer rssTimer = new Timer();
 
-		public static FeedFetchTask INSTANCE = new FeedFetchTask();
+	public static FeedFetchTask INSTANCE = new FeedFetchTask();
 
-		public static void start() {
+	public static void start() {
 
-				rssTimer.scheduleAtFixedRate(INSTANCE,new Date(),5 * 60 * 1000);
+		rssTimer.scheduleAtFixedRate(INSTANCE,new Date(),5 * 60 * 1000);
+
+	}
+
+	public static String USER_AGENT = "NTT RSS Fetcher By Kazama Wataru (https://t.me/NTT_X)";
+
+	public static FeedFetcher fetcher = new HttpClientFeedFetcher(MongoFeedCache.INSTANCE);
+
+	static { fetcher.setUserAgent(USER_AGENT); }
+
+	@Override
+	public void run() {
+
+		Set<String> sites = new HashSet<>();
+
+		for (RssSub.ChannelRss info : RssSub.channel.getAll()) {
+
+			sites.addAll(info.subscriptions);
 
 		}
 
-		public static String USER_AGENT = "NTT RSS Fetcher By Kazama Wataru (https://t.me/NTT_X)";
 
-		public static FeedFetcher fetcher = new HttpClientFeedFetcher(MongoFeedCache.INSTANCE);
+		next:for (String url : sites) {
 
-		static { fetcher.setUserAgent(USER_AGENT); }
+			try {
 
-		@Override
-		public void run() {
+				//BotLog.debug("开始拉取 : " + url);
 
-				Set<String> sites = new HashSet<>();
+				SyndFeed feed = fetcher.retrieveFeed(new URL(url));
 
-				for (RssSub.ChannelRss info : RssSub.channel.getAll()) {
+				RssSub.RssInfo info = RssSub.info.getById(url);
 
-						sites.addAll(info.subscriptions);
+				BotLog.debug("拉取 " + feed.getTitle());
+
+				if (info == null) {
+
+					info = new RssSub.RssInfo();
+
+					info.id = url;
+					info.title = feed.getTitle();
+					info.last = generateSign(feed.getEntries().get(0));
+
+					RssSub.info.setById(info.id,info);
+
+					BotLog.debug("已保存");
+
+					continue next;
 
 				}
 
 
-				next:for (String url : sites) {
+				LinkedList<SyndEntry> posts = new LinkedList<>();
 
-						try {
+				for (SyndEntry entry : feed.getEntries()) {
 
-								//BotLog.debug("开始拉取 : " + url);
+					if (generateSign(entry).equals(info.last)) {
 
-								SyndFeed feed = fetcher.retrieveFeed(new URL(url));
+						break;
 
-								RssSub.RssInfo info = RssSub.info.getById(url);
+					}
 
-								BotLog.debug("拉取 " + feed.getTitle());
+					posts.add(entry);
 
-								if (info == null) {
+				}
 
-										info = new RssSub.RssInfo();
+				info.last = generateSign(feed.getEntries().get(0));
 
-										info.id = url;
-										info.title = feed.getTitle();
-										info.last = generateSign(feed.getEntries().get(0));
+				RssSub.info.setById(info.id,info);
 
-										RssSub.info.setById(info.id,info);
+				if (posts.isEmpty()) {
 
-										BotLog.debug("已保存");
+					BotLog.debug("无新文章");
 
-										continue next;
+					continue next;
 
-								}
-								
-								
-								LinkedList<SyndEntry> posts = new LinkedList<>();
+				}
 
-								for (SyndEntry entry : feed.getEntries()) {
+				Collections.reverse(posts);
 
-										if (generateSign(entry).equals(info.last)) {
+				for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions",info.id)) {
 
-												break;
+					for (SyndEntry entry : posts) {
 
-										}
+						Send request = new Send(channel.id,FeedHtmlFormater.format(channel.format,feed,entry));
 
-										posts.add(entry);
+						if (channel.format == 0 || channel.preview) {
 
-								}
-								
-								info.last = generateSign(feed.getEntries().get(0));
-
-								RssSub.info.setById(info.id,info);
-								
-								if (posts.isEmpty()) {
-
-										BotLog.debug("无新文章");
-
-										continue next;
-
-								}
-
-								Collections.reverse(posts);
-
-								for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions",info.id)) {
-
-										for (SyndEntry entry : posts) {
-
-												Send request = new Send(channel.id,FeedHtmlFormater.format(channel.format,feed,entry));
-
-												if (channel.format == 0 || channel.preview) {
-
-														request.enableLinkPreview();
-
-												}
-
-												request.html().async();
-
-										}
-
-								}
-
-								
-
-								
+							request.enableLinkPreview();
 
 						}
-						catch (Exception e) {
 
-								BotLog.error("拉取错误",e);
+						request.html().async();
 
-
-						}
+					}
 
 				}
 
 
+
+
+
+			} catch (Exception e) {
+
+				BotLog.error("拉取错误",e);
+
+
+			}
+
 		}
 
-		String generateSign(SyndEntry entry) {
 
-				long time = entry.getPublishedDate().getTime();
-				
-				return DigestUtil.md5Hex(time + (StrUtil.isBlank(entry.getLink()) ? entry.getTitle() : entry.getTitle() + entry.getLink()));
+	}
 
-		}
+	String generateSign(SyndEntry entry) {
+
+		long time = entry.getPublishedDate().getTime();
+
+		return DigestUtil.md5Hex(time + (StrUtil.isBlank(entry.getLink()) ? entry.getTitle() : entry.getTitle() + entry.getLink()));
+
+	}
 
 }

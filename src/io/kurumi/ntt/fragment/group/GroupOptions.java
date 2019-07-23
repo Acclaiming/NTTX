@@ -25,63 +25,68 @@ import io.kurumi.ntt.fragment.bots.*;
 
 public class GroupOptions extends Fragment {
 
-		@Override
-		public void init(BotFragment origin) {
+	@Override
+	public void init(BotFragment origin) {
 
-				super.init(origin);
+		super.init(origin);
 
-				registerFunction("options");
+		registerFunction("options");
 
-				registerPoint(POINT_SET_CUST);
+		registerPoint(POINT_SET_CUST);
 
-				registerCallback(
-						POINT_OPTIONS,
-						POINT_BACK,
-						POINT_MENU_MAIN,
-						POINT_MENU_REST,
-						POINT_MENU_JOIN,
-						POINT_MENU_DYNA,
-						POINT_MENU_CUST,
-						POINT_MENU_SHOW,
-						POINT_HELP,
-						POINT_SET_MAIN,
-						POINT_SET_REST,
-						POINT_SET_JOIN,
-						POINT_SET_DYNA,
-						POINT_SET_CUST,
-						POINT_SET_SHOW);
+		registerCallback(
+			POINT_OPTIONS,
+			POINT_BACK,
+			POINT_MENU_MAIN,
+			POINT_MENU_REST,
+			POINT_MENU_JOIN,
+			POINT_MENU_DYNA,
+			POINT_MENU_CUST,
+			POINT_MENU_SHOW,
+			POINT_MENU_SPAM,
+			POINT_HELP,
+			POINT_SET_MAIN,
+			POINT_SET_REST,
+			POINT_SET_JOIN,
+			POINT_SET_DYNA,
+			POINT_SET_CUST,
+			POINT_SET_SHOW,
+			POINT_SET_SPAM);
 
 
-				registerPayload(PAYLOAD_OPTIONS);
+		registerPayload(PAYLOAD_OPTIONS);
 
-		}
+	}
 
-		@Override
-		public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
+	@Override
+	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
 
-				return FUNCTION_GROUP;
+		return FUNCTION_GROUP;
 
-		}
+	}
 
-		final String POINT_OPTIONS = "group_options";
+	final String POINT_OPTIONS = "group_options";
 
-		final String PAYLOAD_OPTIONS = "go";
+	final String PAYLOAD_OPTIONS = "go";
 
-		final String POINT_BACK = "group_main";
-		final String POINT_MENU_MAIN = "group_menu_main";
-		final String POINT_MENU_REST = "group_menu_rest";
-		final String POINT_MENU_JOIN = "group_menu_join";
-		final String POINT_MENU_DYNA = "group_menu_dyna";
-		final String POINT_MENU_CUST = "group_menu_custom";
-		final String POINT_MENU_SHOW = "group_menu_show";
+	final String POINT_BACK = "group_main";
+	final String POINT_MENU_MAIN = "group_menu_main";
+	final String POINT_MENU_REST = "group_menu_rest";
+	final String POINT_MENU_JOIN = "group_menu_join";
+	final String POINT_MENU_DYNA = "group_menu_dyna";
+	final String POINT_MENU_CUST = "group_menu_custom";
+	final String POINT_MENU_SHOW = "group_menu_show";
+	final String POINT_MENU_SPAM = "group_menu_spam";
 
-		final String POINT_HELP = "group_help";
-		final String POINT_SET_MAIN = "group_main_set";
-		final String POINT_SET_REST = "group_rest_set";
-		final String POINT_SET_JOIN = "group_join_set";
-		final String POINT_SET_DYNA = "group_join_set";
-		final String POINT_SET_CUST = "group_custom_set";
-		final String POINT_SET_SHOW = "group_custom_show";
+
+	final String POINT_HELP = "group_help";
+	final String POINT_SET_MAIN = "group_main_set";
+	final String POINT_SET_REST = "group_rest_set";
+	final String POINT_SET_JOIN = "group_join_set";
+	final String POINT_SET_DYNA = "group_join_set";
+	final String POINT_SET_CUST = "group_custom_set";
+	final String POINT_SET_SHOW = "group_custom_show";
+	final String POINT_SET_SPAM = "group_custom_spam";
 
 		final class EditCustom extends PointData {
 
@@ -1939,6 +1944,27 @@ public class GroupOptions extends Fragment {
 
 
 
+	ButtonMarkup spamMenu(final GroupData data) {
+
+		return new ButtonMarkup() {{
+
+				newButtonLine()
+					.newButton("阿拉伯文字",POINT_HELP,"anti_halal")
+					.newButton(data.anti_halal != null ? "✅" : "☑",POINT_SET_SPAM,data.id,"anti_halal");
+				
+				newButtonLine()
+					.newButton("CAS 名单检查",POINT_HELP,"cas_spam")
+					.newButton(data.cas_spam != null ? "✅" : "☑",POINT_SET_SPAM,data.id,"cas_spam");
+
+				newButtonLine()
+					.newButton("黑箱",POINT_HELP,"blackhole")
+					.newButton(data.backhole != null ? "✅" : "☑",POINT_SET_SPAM,data.id,"backhole");
+				
+				newButtonLine("🔙",POINT_BACK,data.id);
+
+			}};
+
+	}
 
 
 }

@@ -123,21 +123,21 @@ public class Send extends AbstractSend<Send> {
 
     }
 
-		public Send keyboard(final String... buttons) {
+	public Send keyboard(final String... buttons) {
 
-				request.replyMarkup(new Keyboard() {{
+		request.replyMarkup(new Keyboard() {{
 
-																		for (String button : buttons) {
+									for (String button : buttons) {
 
-																				newButtonLine(button);
+										newButtonLine(button);
 
-																		}
+									}
 
-																}}.markup());
+								}}.markup());
 
-				return this;
+		return this;
 
-		}
+	}
 
     public Send keyboard(Keyboard keyboard) {
 
@@ -180,22 +180,22 @@ public class Send extends AbstractSend<Send> {
 
         if (origin == null) return;
 
-				BotFragment.execute(new Runnable() {
+		BotFragment.execute(new Runnable() {
 
-								@Override
-								public void run() {
+				@Override
+				public void run() {
 
-										SendResponse resp = exec();
+					SendResponse resp = exec();
 
-										if (resp.isOk()) {
+					if (resp.isOk()) {
 
-												NTT.tryDelete(delay,new Msg(fragment,resp.message()));
+						NTT.tryDelete(delay,new Msg(fragment,resp.message()));
 
-										}
+					}
 
-								}
+				}
 
-						});
+			});
 
 
 
@@ -209,15 +209,23 @@ public class Send extends AbstractSend<Send> {
 
     public void failedWith(final long delay) {
 
-        if (origin == null) return;
 
-        SendResponse resp = exec();
+        BotFragment.execute(new Runnable() {
 
-        if (resp.isOk()) {
+				@Override
+				public void run() {
 
-            NTT.tryDelete(delay,origin,new Msg(fragment,resp.message()));
+					SendResponse resp = exec();
 
-        }
+					if (resp.isOk()) {
+
+						NTT.tryDelete(delay,origin,new Msg(fragment,resp.message()));
+
+					}
+
+				}
+
+			});
 
     }
 
@@ -273,51 +281,51 @@ public class Send extends AbstractSend<Send> {
 
     }
 
-		public void debug() {
+	public void debug() {
 
-				if (!(request.chatId instanceof String) && ArrayUtil.contains(Env.ADMINS,(long)request.chatId)) {
+		if (!(request.chatId instanceof String) && ArrayUtil.contains(Env.ADMINS,(long)request.chatId)) {
 
-						exec();
-
-				}
+			exec();
 
 		}
 
-		public SendMessage request() {
+	}
 
-				return request;
+	public SendMessage request() {
 
-		}
+		return request;
+
+	}
 
     public SendResponse exec(PointData toAdd) {
 
-				SendResponse resp = exec();
+		SendResponse resp = exec();
 
-				if (resp.isOk()) toAdd.context.add(new Msg(fragment,resp.message()));
+		if (resp.isOk()) toAdd.context.add(new Msg(fragment,resp.message()));
 
-				return resp;
+		return resp;
 
-		}
+	}
 
-		private boolean noLog = false;
+	private boolean noLog = false;
 
-		public Send noLog() {
+	public Send noLog() {
 
-				noLog = true;
+		noLog = true;
 
-				return this;
+		return this;
 
-		}
+	}
 
-		private boolean async = false;
+	private boolean async = false;
 
-		public void async() {
+	public void async() {
 
-				this.async = true;
+		this.async = true;
 
-				exec();
+		exec();
 
-		}
+	}
 
     @Override
     public SendResponse exec() {
@@ -382,13 +390,13 @@ public class Send extends AbstractSend<Send> {
 
         try {
 
-						if (async) {
+			if (async) {
 
-								fragment.executeAsync(origin == null ? null : origin.update,request);
+				fragment.executeAsync(origin == null ? null : origin.update,request);
 
-								return null;
+				return null;
 
-						}
+			}
 
             SendResponse resp = fragment.execute(request);
 
@@ -414,14 +422,14 @@ public class Send extends AbstractSend<Send> {
 
                 BotLog.infoWithStack(
 
-										UserData.get(fragment.origin.me).userName() + " : " +
+					UserData.get(fragment.origin.me).userName() + " : " +
 
-										"消息发送失败 " + resp.errorCode() + " : " + resp.description() + "\n\n" +
+					"消息发送失败 " + resp.errorCode() + " : " + resp.description() + "\n\n" +
 
-										"消息内容 : " + HtmlUtil.escape(request.getText())
+					"消息内容 : " + HtmlUtil.escape(request.getText())
 
 
-								);
+				);
 
 
 
@@ -430,19 +438,18 @@ public class Send extends AbstractSend<Send> {
             return resp;
 
 
-        }
-				catch (Exception ex) {
+        } catch (Exception ex) {
 
-						if (!noLog) BotLog.info(
+			if (!noLog) BotLog.info(
 
-										UserData.get(fragment.origin.me).userName() + " : " +
+					UserData.get(fragment.origin.me).userName() + " : " +
 
-										"消息发送失败 " +  "\n\n" +
+					"消息发送失败 " +  "\n\n" +
 
-										"消息内容 : " + HtmlUtil.escape(request.getText())
+					"消息内容 : " + HtmlUtil.escape(request.getText())
 
 
-										,ex);
+					,ex);
 
 
             return null;
@@ -452,7 +459,7 @@ public class Send extends AbstractSend<Send> {
 
     }
 
-		public Send fork(Long chatId) {
+	public Send fork(Long chatId) {
 
         Send send = new Send(null,fragment,chatId,request.getText());
 

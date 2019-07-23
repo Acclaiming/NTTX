@@ -221,8 +221,13 @@ public class GroupData {
 
 	public Boolean dynamic_join;
 
-	public Integer type; 
-
+	public Integer type;
+	
+	public Boolean anti_halal;
+	public Boolean cas_spam;
+	public Boolean backhole;
+	
+	
 	// 0 允许所有人加入
 
 	public Boolean default_msg;
