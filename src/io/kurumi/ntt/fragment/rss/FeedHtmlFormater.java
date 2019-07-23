@@ -339,10 +339,6 @@ public class FeedHtmlFormater {
 
 		html = removeADs(html).trim();
 
-		System.out.println(html);
-
-
-
 		if (!withImg) {
 
 			html = ReUtil.replaceAll(html,matchImg,"\n" + Html.a("图片","$1") + "\n");
@@ -377,6 +373,8 @@ public class FeedHtmlFormater {
 		 */
 		 
 		html = ReUtil.replaceAll(html,withImg ? removeTagsWithoutImg : removeTags,"");
+		
+		System.out.println(html);
 		
 		if (html.startsWith(entry.getTitle())) {
 
