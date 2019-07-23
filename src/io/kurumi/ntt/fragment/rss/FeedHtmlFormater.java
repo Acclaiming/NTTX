@@ -338,7 +338,9 @@ public class FeedHtmlFormater {
 			html = html.replaceAll("<br ?/? ?>","\n");
 
 		}
-
+		
+		html = html.replace("<strong>","<b>").replace("</strong>","</b>");
+		
 		html = removeADs(html).trim();
 
 		if (!withImg) {
