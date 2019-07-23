@@ -29,9 +29,9 @@ public class FeedHtmlFormater {
 
 	public static Pattern matchImg = Pattern.compile("<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>");
 
-	public static Pattern removeTags = Pattern.compile("<(?!/?(a|b|i|code|pre|em))[^>]+>");
-
-	public static Pattern removeTagsWithoutImg = Pattern.compile("<(?!/?(a|b|i|code|pre|em|img))[^>]+>");
+	public static HTMLFilter removeTags = new HTMLFilter(true);
+	public static HTMLFilter removeTagsWithoutImg = new HTMLFilter(false);
+	
 	public static Pattern matchTagInterrupted = Pattern.compile(".*</[^>]+>.+<[^>]+");
 
 	public static String format(int type,SyndFeed feed,final SyndEntry entry) {
@@ -372,7 +372,16 @@ public class FeedHtmlFormater {
 
 		 */
 		 
-		html = ReUtil.replaceAll(html,withImg ? removeTagsWithoutImg : removeTags,"");
+		if (withImg) {
+			
+			html = removeTagsWithoutImg.filter(html);
+			
+		} else {
+			
+			html = removeTags.filter(html);
+			
+		}
+		
 		
 		System.out.println(html);
 		
