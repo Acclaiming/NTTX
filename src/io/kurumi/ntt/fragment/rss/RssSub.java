@@ -334,11 +334,11 @@ public class RssSub extends Fragment {
 
 						}
 
-						if ("on".equals(params[0])) {
+						if ("on".equals(params[1])) {
 
 								conf.preview = true;
 
-						} else if ("off".equals(params[0])) {
+						} else if ("off".equals(params[1])) {
 								
 								conf.preview = false;
 								
