@@ -1302,7 +1302,7 @@ public class GroupOptions extends Fragment {
 
 						} else if (POINT_MENU_SPAM.equals(point)) {
 							
-							callback.edit("群组反垃圾功能选单 (Anti Spam)").buttons(spamMenu(data)).async();
+							callback.edit("群组反垃圾用户功能选单 (Anti Spam)").buttons(spamMenu(data)).async();
 							
 						} else if (POINT_SET_SPAM.equals(point)) {
 							
@@ -1358,7 +1358,7 @@ public class GroupOptions extends Fragment {
 
 							}
 							
-							callback.edit("群组反垃圾功能选单 (Anti Spam)").buttons(spamMenu(data)).async();
+							callback.edit("群组反垃圾用户功能选单 (Anti Spam)").buttons(spamMenu(data)).async();
 							
 						}
 
