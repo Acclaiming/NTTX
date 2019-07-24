@@ -38,9 +38,9 @@ import cn.hutool.core.util.*;
 
 public class JoinCaptcha extends Fragment {
 
-	 static Pattern arabicCharacter = Pattern.compile("\\x{0600}-\\x{06FF}\\x{0750}-\\x{077F}\\x{08A0}-\\x{08FF}\\x{FB50}-\\x{FDFF}\\x{FE70}-\\x{FEFF}\\x{10E60}-\\x{10E7F}\\x{1EC70}-\\x{1ECBF}\\x{1ED00}-\\x{1ED4F}\\x{1EE00}-\\x{1EEFF}");
+	static Pattern arabicCharacter = Pattern.compile("\\x{0600}-\\x{06FF}\\x{0750}-\\x{077F}\\x{08A0}-\\x{08FF}\\x{FB50}-\\x{FDFF}\\x{FE70}-\\x{FEFF}\\x{10E60}-\\x{10E7F}\\x{1EC70}-\\x{1ECBF}\\x{1ED00}-\\x{1ED4F}\\x{1EE00}-\\x{1EEFF}");
 
-	//static Pattern arabicCharacter = Pattern.compile("\\p{Arabic}",Pattern.UNICODE_CHARACTER_CLASS);
+	// static Pattern arabicCharacter = Pattern.compile("\\p{Arabic}",Pattern.UNICODE_CHARACTER_CLASS);
 	
 	@Override
 	public boolean msg() {
@@ -1090,11 +1090,11 @@ public class JoinCaptcha extends Fragment {
 
 			if (POINT_ACC.equals(point)) {
 
-				success(UserData.get(target),callback,auth,gd);
+				success(user,callback,auth,gd);
 
 			} else {
 
-				failed(UserData.get(target),callback,auth,gd,true);
+				failed(user,callback,auth,gd,true);
 
 			}
 
