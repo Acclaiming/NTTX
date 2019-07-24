@@ -9,6 +9,7 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.utils.*;
 
 public class Edit extends AbstractSend<Edit> {
 
@@ -85,7 +86,7 @@ public class Edit extends AbstractSend<Edit> {
 
         if (resp != null && resp.isOk()) {
 
-            io.kurumi.ntt.utils.NTT.tryDelete(delay,message,origin);
+            NTT.tryDelete(delay,message,origin);
 
         }
 

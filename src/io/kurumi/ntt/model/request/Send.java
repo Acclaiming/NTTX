@@ -209,23 +209,14 @@ public class Send extends AbstractSend<Send> {
 
     public void failedWith(final long delay) {
 
-        BotFragment.execute(new Runnable() {
+		SendResponse resp = exec();
 
-				@Override
-				public void run() {
+		if (resp.isOk()) {
 
-					SendResponse resp = exec();
+			NTT.tryDelete(delay,origin,new Msg(fragment,resp.message()));
 
-					if (resp.isOk()) {
-
-						NTT.tryDelete(delay,origin,new Msg(fragment,resp.message()));
-
-					}
-
-				}
-
-			});
-
+		}
+		
     }
 
     public void cancel() {
