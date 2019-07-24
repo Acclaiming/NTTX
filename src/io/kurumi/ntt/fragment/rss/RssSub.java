@@ -44,7 +44,7 @@ public class RssSub extends Fragment {
 		
 		public static class FeedError {
 			
-			public long startAt;
+			public Long startAt;
 		
 			public String errorMsg;
 			

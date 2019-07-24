@@ -55,19 +55,27 @@ public class FeedFetchTask extends TimerTask {
 
 		Set<String> sites = new HashSet<>();
 		Set<String> errors = new HashSet<>();
-		
+
 		for (RssSub.ChannelRss info : RssSub.channel.getAll()) {
 
 			sites.addAll(info.subscriptions);
-			
+
 			if (info.error != null) {
-			
-			errors.addAll(info.error.keySet());
-			
+
+				for (Map.Entry<String,RssSub.ChannelRss.FeedError> error : info.error.entrySet()) {
+					
+					if (System.currentTimeMillis() -  error.getValue().startAt > 6 * 60 * 60 * 1000) {
+						
+						sites.add(error.getKey());
+						
+					}
+					
+				}
+
 			}
-			
+
 		}
-		
+
 		if (step < 3) {
 
 			step ++;
