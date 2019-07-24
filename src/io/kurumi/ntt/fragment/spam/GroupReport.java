@@ -11,103 +11,103 @@ import io.kurumi.ntt.utils.*;
 
 public class GroupReport extends Fragment {
 
-		@Override
-		public void init(BotFragment origin) {
+	@Override
+	public void init(BotFragment origin) {
 
-				super.init(origin);
+		super.init(origin);
 
-				registerFunction("report");
+		registerFunction("report");
 
-		}
+	}
 
-		final String POINT_REPORT = "report_continue";
-		final String POINT_REASON = "report_reason";
-		
-		@Override
-		public void onFunction(UserData user,Msg msg,String function,String[] params) {
+	final String POINT_REPORT = "report_continue";
+	final String POINT_REASON = "report_reason";
 
-				if (msg.isGroup()) {
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-						if (msg.replyTo() == null) {
+		if (msg.isGroup()) {
 
-								msg.reply("请对消息回复").failedWith();
+			if (msg.replyTo() == null) {
 
-								return;
+				msg.reply("请对消息回复").failedWith();
 
-						}
+				return;
 
-						Msg replyTo = msg.replyTo();
+			}
 
-						if (replyTo.from().id.equals(user.id)) {
+			Msg replyTo = msg.replyTo();
 
-								msg.reply("你不能举报你自己").failed();
+			if (replyTo.from().id.equals(user.id)) {
 
-								return;
+				msg.send("你不能举报你自己").failed();
 
-						}
+				return;
 
-						if (replyTo.message().from().isBot()) {
+			}
 
-								msg.reply("暂不支持举报机器人").failedWith();
+			if (replyTo.message().from().isBot()) {
 
-								return;
+				msg.send("暂不支持举报机器人").failedWith();
 
-						}
+				return;
 
-						if (!msg.contactable()) {
+			}
 
-								msg.reply("机器人不能给您发送消息 :(").failedWith();
+			if (!msg.contactable()) {
 
-						} else {
+				msg.send("机器人不能给您发送消息 :(").failedWith();
 
-								msg.delete();
+			} else {
 
-								Msg target = replyTo.forwardTo(user.id);
+				msg.delete();
 
-								ButtonMarkup buttons = new ButtonMarkup();
+				Msg target = replyTo.forwardTo(user.id);
 
-								buttons.newButtonLine("垃圾广告",POINT_REASON,0,target.messageId(),replyTo.from().id);
-								buttons.newButtonLine("恶意消息",POINT_REASON,0,target.messageId(),replyTo.from().id);
+				ButtonMarkup buttons = new ButtonMarkup();
 
-								target.reply("你正在举报 " + replyTo.from().userName() + " 的这条消息，请选择 " + Html.b("或直接发送举报原因") + " : ").buttons(buttons).html().async();
+				buttons.newButtonLine("垃圾广告",POINT_REASON,0,target.messageId(),replyTo.from().id);
+				buttons.newButtonLine("恶意消息",POINT_REASON,0,target.messageId(),replyTo.from().id);
 
-						}
+				target.reply("你正在举报 " + replyTo.from().userName() + " 的这条消息，请选择 " + Html.b("或直接发送举报原因") + " : ").buttons(buttons).html().async();
 
-				} else {
+			}
 
-
-
-				}
-
-		}
-
-		class ReportData extends PointData {
+		} else {
 
 
 
 		}
 
-		@Override
-		public void onCallback(UserData user,Callback callback,String point,String[] params) {
+	}
 
-				if (POINT_REPORT.equals(point)) {
+	class ReportData extends PointData {
 
-						long userId = NumberUtil.parseLong(params[0]);
 
-						long target = NumberUtil.parseLong(params[1]);
 
-						int messageId = NumberUtil.parseInt(params[2]);
+	}
 
-						if (!user.id.equals(userId)) {
+	@Override
+	public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
-								callback.alert("这不是你发起的投票 :(");
+		if (POINT_REPORT.equals(point)) {
 
-								return;
+			long userId = NumberUtil.parseLong(params[0]);
 
-						}
+			long target = NumberUtil.parseLong(params[1]);
 
-				}
+			int messageId = NumberUtil.parseInt(params[2]);
+
+			if (!user.id.equals(userId)) {
+
+				callback.alert("这不是你发起的投票 :(");
+
+				return;
+
+			}
 
 		}
+
+	}
 
 }
