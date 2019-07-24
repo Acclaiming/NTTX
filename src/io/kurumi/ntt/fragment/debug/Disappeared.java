@@ -44,7 +44,7 @@ public class Disappeared extends Fragment {
 			
 		}
 		
-		if (!list.isEmpty()) msg.send(ArrayUtil.join(list.toArray(),"\n")).html().async();
+		if (!list.isEmpty()) msg.send(ArrayUtil.join(list.toArray(),"\n\n")).html().async();
 		
 		
 	}
