@@ -258,7 +258,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
     public void processAsync(final Update update) {
 
-		System.out.println(new JSONObject(update.json).toStringPretty());
+		// System.out.println(new JSONObject(update.json).toStringPretty());
 
         final UserData user;
 
