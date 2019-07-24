@@ -29,6 +29,7 @@ import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import java.util.*;
 
 public class NTT {
 
@@ -499,13 +500,13 @@ public class NTT {
 
                     for (Msg message : messages) {
 
-                        if (message != null) message.delete();
+                        message.delete();
 						
                     }
 
                 }
 
-            },delay);
+            },new Date(System.currentTimeMillis() + delay));
 
     }
 
