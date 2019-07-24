@@ -262,6 +262,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new TwitterDelete());
 		addFragment(new ListExport());
 		addFragment(new ListImport());
+		
+		addFragment(new Disappeared());
 
 		// GROUP
 
@@ -297,6 +299,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		// RSS
 
 		addFragment(new RssSub());
+
 
 		// IC
 
