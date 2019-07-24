@@ -27,7 +27,7 @@ public class RssSub extends Fragment {
 		public String id;
 		public String title;
 		public String last;
-
+		
 	}
 
 	public static class ChannelRss {
@@ -40,6 +40,16 @@ public class RssSub extends Fragment {
 
 		public List<String> subscriptions;
 
+		public Map<String,FeedError> error;
+		
+		public static class FeedError {
+			
+			public long startAt;
+		
+			public String errorMsg;
+			
+		}
+		
 	}
 
 	@Override

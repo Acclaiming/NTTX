@@ -28,6 +28,7 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.crypto.digest.MD5;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.pengrad.telegrambot.response.*;
+import java.util.*;
 
 public class FeedFetchTask extends TimerTask {
 
@@ -47,22 +48,37 @@ public class FeedFetchTask extends TimerTask {
 
 	static { fetcher.setUserAgent(USER_AGENT); }
 
+	int step = 0;
+
 	@Override
 	public void run() {
 
 		Set<String> sites = new HashSet<>();
-
+		Set<String> errors = new HashSet<>();
+		
 		for (RssSub.ChannelRss info : RssSub.channel.getAll()) {
 
 			sites.addAll(info.subscriptions);
+			errors.addAll(info.error.keySet());
+			
+		}
+		
+		if (step < 20) {
+
+			step ++;
+
+			sites.removeAll(errors);
+
+		} else {
+
+			step = 0;
 
 		}
-
 
 		next:for (String url : sites) {
 
 			try {
-				
+
 				SyndFeed feed = fetcher.retrieveFeed(new URL(url));
 
 				RssSub.RssInfo info = RssSub.info.getById(url);
@@ -78,7 +94,7 @@ public class FeedFetchTask extends TimerTask {
 					info.last = generateSign(feed.getEntries().get(0));
 
 					RssSub.info.setById(info.id,info);
-					
+
 					continue next;
 
 				}
@@ -128,13 +144,64 @@ public class FeedFetchTask extends TimerTask {
 
 				}
 
-			} catch (Exception e) {
+			} catch (FetcherException e) {
 
-				BotLog.error("拉取错误",e);
+				fetchError(url,e);
+
+			} catch (FeedException e) {
+
+				fetchError(url,e);
+
+			} catch (IOException e) {} catch (IllegalArgumentException e) {}
+
+
+
+		}
+
+
+	}
+
+	void fetchError(String url,Exception e) {
+
+		RssSub.RssInfo info = RssSub.info.getById(url);
+
+		for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions",info.id)) {
+
+			if (channel.error == null) {
+
+				channel.error = new HashMap<>();
+
+			}
+
+			RssSub.ChannelRss.FeedError error;
+
+			if (channel.error.containsKey(url)) {
+
+				error = channel.error.get(url);
+
+			} else {
+
+				error = new RssSub.ChannelRss.FeedError();
+
+				error.startAt = System.currentTimeMillis();
+
+				error.errorMsg = e.getMessage();
+
+			}
+
+			if (System.currentTimeMillis() - error.startAt > 3 * 24 * 60 * 60 * 1000) {
+
+				channel.subscriptions.remove(url);
+				channel.error.remove(url);
+
+				if (channel.error.isEmpty()) channel.error = null;
+
+				new Send(channel.id,Html.b(info.title) + " 连续三天拉取错误，已取消订阅 (" + error.errorMsg).async();
 
 			}
 
 		}
+
 
 
 	}
