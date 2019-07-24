@@ -277,8 +277,6 @@ public class JoinCaptcha extends Fragment {
 
 			final UserData newData = UserData.get(newMember);
 
-			if (user.admin()) return;
-
 			if (!user.id.equals(newData.id)) return;
 
 			if (data.waitForCaptcha == null) {
