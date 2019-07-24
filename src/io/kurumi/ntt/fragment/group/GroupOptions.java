@@ -327,9 +327,6 @@ public class GroupOptions extends Fragment {
 
 												callback.text("🛠️  不处理");
 
-
-
-
 										}
 
 								} else if ("not_trust_admin".equals(params[1])) {
@@ -1303,6 +1300,66 @@ public class GroupOptions extends Fragment {
 
 								callback.edit(showStats(data)).buttons(showMenu(data)).async();
 
+						} else if (POINT_MENU_SPAM.equals(point)) {
+							
+							callback.edit("群组反垃圾 (Anti Spam)","\n",Html.b("警告 : 如果你不知道你在干什么，请不要开启 '黑箱' ！")).buttons(spamMenu(data)).async();
+							
+						} else if (POINT_SET_SPAM.equals(point)) {
+							
+							if ("anti_halal".equals(params[1])) {
+								
+								if (data.anti_halal == null) {
+
+									data.anti_halal = true;
+
+									callback.text("🔎 已开启");
+
+								} else {
+
+									data.anti_halal = null;
+
+									callback.text("🔎️  已关闭");
+
+								}
+								
+								
+							} else if ("cas".equals(params[1])) {
+
+								if (data.cas_spam == null) {
+
+									data.cas_spam = true;
+
+									callback.text("🔎 已开启");
+
+								} else {
+
+									data.cas_spam = null;
+
+									callback.text("🔎️  已关闭");
+
+								}
+
+							} else if ("backhole".equals(params[1])) {
+
+								if (data.backhole == null) {
+
+									data.backhole = true;
+
+									callback.alert("警告 : 如果你不知道你在干什么，请关闭 '黑箱'");
+
+								} else {
+
+									data.backhole = null;
+
+									callback.text("🔎️  已关闭");
+
+								}
+
+
+							}
+							
+							callback.edit("群组反垃圾 (Anti Spam)","\n",Html.b("警告 : 如果你不知道你在干什么，请不要开启 '黑箱' ！")).buttons(spamMenu(data)).async();
+							
 						}
 
 				}
@@ -1521,7 +1578,8 @@ public class GroupOptions extends Fragment {
 								newButtonLine("📝  成员限制",POINT_MENU_REST,data.id);
 								newButtonLine("🚪  加群验证",POINT_MENU_JOIN,data.id);
 								newButtonLine("📢  欢迎消息",POINT_MENU_SHOW,data.id);
-
+								newButtonLine("🔎 反垃圾",POINT_MENU_SPAM,data.id);
+						
 						}};
 
 
@@ -1949,12 +2007,12 @@ public class GroupOptions extends Fragment {
 		return new ButtonMarkup() {{
 
 				newButtonLine()
-					.newButton("阿拉伯文字",POINT_HELP,"anti_halal")
+					.newButton("反清真",POINT_HELP,"anti_halal")
 					.newButton(data.anti_halal != null ? "✅" : "☑",POINT_SET_SPAM,data.id,"anti_halal");
 				
 				newButtonLine()
-					.newButton("CAS 名单检查",POINT_HELP,"cas_spam")
-					.newButton(data.cas_spam != null ? "✅" : "☑",POINT_SET_SPAM,data.id,"cas_spam");
+					.newButton("Combot Anti-Spam",POINT_HELP,"cas")
+					.newButton(data.cas_spam != null ? "✅" : "☑",POINT_SET_SPAM,data.id,"cas");
 
 				newButtonLine()
 					.newButton("黑箱",POINT_HELP,"blackhole")
