@@ -33,8 +33,12 @@ import com.pengrad.telegrambot.request.SendSticker;
 import com.pengrad.telegrambot.request.*;
 import cn.hutool.http.*;
 import cn.hutool.json.*;
+import java.util.regex.*;
+import cn.hutool.core.util.*;
 
 public class JoinCaptcha extends Fragment {
+
+	static Pattern arabicCharacter = Pattern.compile("\\x{0600}-\\x{06FF}\\x{0750}-\\x{077F}\\x{08A0}-\\x{08FF}\\x{FB50}-\\x{FDFF}\\x{FE70}-\\x{FEFF}\\x{10E60}-\\x{10E7F}\\x{1EC70}-\\x{1ECBF}\\x{1ED00}-\\x{1ED4F}\\x{1EE00}-\\x{1EEFF}");
 
 	@Override
 	public boolean msg() {
@@ -137,9 +141,7 @@ public class JoinCaptcha extends Fragment {
 
 			if (data.anti_halal != null) {
 
-				/*
-				
-				if (newData.name().matches(".+\\p{Arabic}.+")) {
+				if (ReUtil.isMatch(arabicCharacter,newData.name())) {
 
 					msg.delete();
 
@@ -149,8 +151,6 @@ public class JoinCaptcha extends Fragment {
 
 				}
 				
-				*/
-
 			}
 
 			if (data.backhole != null) {
@@ -399,7 +399,7 @@ public class JoinCaptcha extends Fragment {
 			final HashMap<Long, AuthCache> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, AuthCache>();
 
 			User newMember = msg.message().leftChatMember();
-			
+
 			final UserData newData = UserData.get(newMember);
 
 			if (group.containsKey(newData.id)) {
