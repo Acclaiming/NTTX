@@ -34,12 +34,15 @@ public class Disappeared extends Fragment {
 				
 			}
 			
-			list.add(archive.name + " : @" + archive.screenName);
-			
 			if (!StrUtil.isBlank(archive.bio)) {
 			
-			list.add(Html.code(archive.bio));
-			
+				list.add(Html.code(archive.name + " : @" + archive.screenName));
+				
+			} else {
+				
+				list.add(archive.name + " : @" + archive.screenName + "\n\n简介 : " + archive.bio);
+				
+				
 			}
 			
 		}
