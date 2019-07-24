@@ -12,6 +12,8 @@ public class Disappeared extends Fragment {
 
 	@Override
 	public void init(BotFragment origin) {
+	
+		super.init(origin);
 		
 		registerAdminFunction("disappeared");
 		
