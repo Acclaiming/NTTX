@@ -63,7 +63,7 @@ public class FeedFetchTask extends TimerTask {
 			
 		}
 		
-		if (step < 4) {
+		if (step < 3) {
 
 			step ++;
 
