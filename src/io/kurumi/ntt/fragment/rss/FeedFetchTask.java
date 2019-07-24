@@ -59,7 +59,12 @@ public class FeedFetchTask extends TimerTask {
 		for (RssSub.ChannelRss info : RssSub.channel.getAll()) {
 
 			sites.addAll(info.subscriptions);
+			
+			if (info.error != null) {
+			
 			errors.addAll(info.error.keySet());
+			
+			}
 			
 		}
 		
