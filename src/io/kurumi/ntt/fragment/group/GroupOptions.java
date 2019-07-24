@@ -1578,7 +1578,7 @@ public class GroupOptions extends Fragment {
 								newButtonLine("📝  成员限制",POINT_MENU_REST,data.id);
 								newButtonLine("🚪  加群验证",POINT_MENU_JOIN,data.id);
 								newButtonLine("📢  欢迎消息",POINT_MENU_SHOW,data.id);
-								newButtonLine("🔎 Anti Spam",POINT_MENU_SPAM,data.id);
+								newButtonLine("🔎  Anti Spam",POINT_MENU_SPAM,data.id);
 						
 						}};
 
@@ -2011,7 +2011,7 @@ public class GroupOptions extends Fragment {
 					.newButton(data.anti_halal != null ? "✅" : "☑",POINT_SET_SPAM,data.id,"anti_halal");
 				
 				newButtonLine()
-					.newButton("Combot Anti-Spam",POINT_HELP,"cas")
+					.newButton("CAS",POINT_HELP,"cas")
 					.newButton(data.cas_spam != null ? "✅" : "☑",POINT_SET_SPAM,data.id,"cas");
 
 				newButtonLine()
