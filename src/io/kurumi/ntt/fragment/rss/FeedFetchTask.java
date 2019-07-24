@@ -62,9 +62,7 @@ public class FeedFetchTask extends TimerTask {
 		next:for (String url : sites) {
 
 			try {
-
-				BotLog.debug("开始拉取 : " + url);
-
+				
 				SyndFeed feed = fetcher.retrieveFeed(new URL(url));
 
 				RssSub.RssInfo info = RssSub.info.getById(url);
@@ -80,9 +78,7 @@ public class FeedFetchTask extends TimerTask {
 					info.last = generateSign(feed.getEntries().get(0));
 
 					RssSub.info.setById(info.id,info);
-
-					BotLog.debug("已保存");
-
+					
 					continue next;
 
 				}
@@ -108,8 +104,6 @@ public class FeedFetchTask extends TimerTask {
 
 				if (posts.isEmpty()) {
 
-					BotLog.debug("无新文章");
-
 					continue next;
 
 				}
@@ -133,10 +127,6 @@ public class FeedFetchTask extends TimerTask {
 					}
 
 				}
-
-
-
-
 
 			} catch (Exception e) {
 
