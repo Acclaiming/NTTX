@@ -129,42 +129,42 @@ public class JoinCaptcha extends Fragment {
 
 		GroupData data = GroupData.get(msg.chat());
 
-				if (msg.message().newChatMembers() != null) {
+		if (msg.message().newChatMembers() != null) {
 
-					User newMember = msg.message().newChatMembers()[0];
+			User newMember = msg.message().newChatMembers()[0];
 
-					final UserData newData = UserData.get(newMember);
+			final UserData newData = UserData.get(newMember);
 
-					if (data.anti_halal != null) {
+			if (data.anti_halal != null) {
 
-						if (newData.name().matches(".+\\p{Arabic}.+")) {
+				if (newData.name().matches(".+\\p{Arabic}.+")) {
 
-							msg.delete();
+					msg.delete();
 
-							msg.kick();
+					msg.kick();
 
-							return;
+					return;
 
-						}
+				}
 
-					}
+			}
 
-					if (data.backhole != null) {
+			if (data.backhole != null) {
 
-						if (Firewall.block.containsId(newData.id)) {
+				if (Firewall.block.containsId(newData.id)) {
 
-							msg.kick(true);
+					msg.kick(true);
 
-							msg.delete();
+					msg.delete();
 
-							return;
+					return;
 
-						}
+				}
 
-					}
+			}
 
-					
-					
+
+
 			if (data.join_captcha == null) {
 
 				if (data.cas_spam != null) {
@@ -393,6 +393,10 @@ public class JoinCaptcha extends Fragment {
 		} else if (msg.message().leftChatMember() != null) {
 
 			final HashMap<Long, AuthCache> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, AuthCache>();
+
+			User newMember = msg.message().newChatMembers()[0];
+
+			final UserData newData = UserData.get(newMember);
 
 			if (group.containsKey(newData.id)) {
 
