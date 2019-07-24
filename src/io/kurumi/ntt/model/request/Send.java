@@ -209,6 +209,8 @@ public class Send extends AbstractSend<Send> {
 
     public void failedWith(final long delay) {
 
+		fork(origin == null ? null : "exists").async();
+
 		SendResponse resp = exec();
 
 		if (resp.isOk()) {
@@ -216,7 +218,7 @@ public class Send extends AbstractSend<Send> {
 			NTT.tryDelete(delay,origin,new Msg(fragment,resp.message()));
 
 		}
-		
+
     }
 
     public void cancel() {
