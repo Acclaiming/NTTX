@@ -129,40 +129,42 @@ public class JoinCaptcha extends Fragment {
 
 		GroupData data = GroupData.get(msg.chat());
 
-		User newMember = msg.message().newChatMembers()[0];
+				if (msg.message().newChatMembers() != null) {
 
-		final UserData newData = UserData.get(newMember);
+					User newMember = msg.message().newChatMembers()[0];
 
-		if (data.anti_halal != null) {
+					final UserData newData = UserData.get(newMember);
 
-			if (newData.name().matches(".+\\p{Arabic}.+")) {
+					if (data.anti_halal != null) {
 
-				msg.delete();
+						if (newData.name().matches(".+\\p{Arabic}.+")) {
 
-				msg.kick();
+							msg.delete();
 
-				return;
+							msg.kick();
 
-			}
+							return;
 
-		}
+						}
 
-		if (data.backhole != null) {
-			
-			if (Firewall.block.containsId(newData.id)) {
-				
-				msg.kick(true);
-				
-				msg.delete();
-				
-				return;
-				
-			}
-			
-		}
-		
-		if (msg.message().newChatMembers() != null) {
+					}
 
+					if (data.backhole != null) {
+
+						if (Firewall.block.containsId(newData.id)) {
+
+							msg.kick(true);
+
+							msg.delete();
+
+							return;
+
+						}
+
+					}
+
+					
+					
 			if (data.join_captcha == null) {
 
 				if (data.cas_spam != null) {
