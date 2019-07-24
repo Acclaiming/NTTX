@@ -37,15 +37,15 @@ public class BotLog extends ConsoleLog {
 
     public static void log(Throwable t,String template,Object... values) {
 
-				String str = StrUtil.format(template,values);
+		String str = StrUtil.format(template,values);
 
-				//new Send(Env.GROUP,str).noLog().exec();
+		//new Send(Env.GROUP,str).noLog().exec();
 
         out.println(str);
 
         if (null != t) {
 
-						out.println(parseError(t));
+			out.println(parseError(t));
 
         }
 
@@ -109,13 +109,13 @@ public class BotLog extends ConsoleLog {
 
         log.error(err,message);
 
-
+		new Send(Env.GROUP, message,parseError(err)).exec();
 
     }
 
     public static void errorWithStack(String message) {
 
-				log.error(new RuntimeException(),message);
+		log.error(new RuntimeException(),message);
 
     }
 
@@ -129,7 +129,7 @@ public class BotLog extends ConsoleLog {
 
     }
 
-		public static HashSet<Long> exportFailed = new HashSet<>();
+	public static HashSet<Long> exportFailed = new HashSet<>();
 
 
     public static String formatName(User u) {
@@ -139,34 +139,5 @@ public class BotLog extends ConsoleLog {
         return UserData.get(u).userName();
 
     }
-
-    @Override
-    public void log(Level level,Throwable t,String format,Object[] arguments) {
-
-        if (false == isEnabled(level)) {
-
-						// return;
-
-        }
-
-        final Dict dict = Dict.create()
-						.set("level",level.toString())
-						.set("msg",StrUtil.format(format,arguments));
-
-        final String logMsg = StrUtil.format(logFormat,dict);
-
-				if (t != null) {
-
-						new Send(Env.GROUP,logMsg,"",parseError(t)).exec();
-
-				} else {
-
-						new Send(Env.GROUP,logMsg).exec();
-
-				}
-
-				this.log(t,logMsg);
-
-    }
-
+	
 }
