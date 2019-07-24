@@ -110,6 +110,28 @@ public class GroupFunction extends Fragment {
 
 				}
 
+				if (data.delete_service_msg != null) {
+
+					if (data.delete_service_msg == 0) {
+
+						if (data.last_service_msg != null) {
+
+							executeAsync(msg.update,new DeleteMessage(msg.chatId(),data.last_service_msg));
+
+						}
+
+						data.last_service_msg = msg.messageId();
+
+					} else {
+
+						data.last_service_msg = null;
+
+						msg.delete();
+
+					}
+
+				}
+
 			} else if (msg.sticker() != null && data.no_sticker != null) {
 
 				msg.delete();

@@ -284,9 +284,15 @@ public class Msg extends Context {
         fragment.bot().execute(new EditMessageReplyMarkup(chatId(),messageId()).replyMarkup(markup.markup()));
 
     }
+	
+	public Boolean deleted;
 
 	public void delete() {
 
+		if (deleted != null) return;
+		
+		deleted = true;
+		
 		delete(messageId());
 
     }
