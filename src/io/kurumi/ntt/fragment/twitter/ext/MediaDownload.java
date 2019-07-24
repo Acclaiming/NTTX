@@ -71,11 +71,11 @@ public class MediaDownload extends Fragment {
 
             }
             
-            msg.send("视频链接 :",urls.toString()).enableLinkPreview().exec();
+            msg.send("视频链接 :",urls.toString()).enableLinkPreview().async();
 
         } catch (TwitterException e) {
 
-            msg.send(NTT.parseTwitterException(e)).exec();
+            msg.send(NTT.parseTwitterException(e)).async();
 
         }
 

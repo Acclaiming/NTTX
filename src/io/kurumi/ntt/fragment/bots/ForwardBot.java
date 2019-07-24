@@ -31,211 +31,223 @@ public class ForwardBot extends UserBotFragment {
     @Override
     public void reload() {
 
-				super.reload();
+		super.reload();
 
         welcomeMessage = getParam("msg");
 
-				List<Long> bl = getParam("block");
+		List<Long> bl = getParam("block");
 
         if (bl != null) {
 
-						blockList = new HashSet<Long>(bl);
+			blockList = new HashSet<Long>(bl);
 
-						blockList.remove(userId);
+			blockList.remove(userId);
 
-				} else {
+		} else {
 
             blockList = new HashSet<>();
 
-						setParam("block",blockList);
+			setParam("block",blockList);
 
         }
 
     }
 
-		@Override
-		public int onBlockedMsg(UserData user,Msg msg) {
+	@Override
+	public int onBlockedMsg(UserData user,Msg msg) {
 
-				return 2;
+		return 2;
+
+	}
+
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+
+		super.onFunction(user,msg,function,params);
+
+		if (!msg.isPrivate()) return;
+
+		if (!(user.equals(userId) || user.admin())) 	{
+
+			if ("start".equals(function)) {
+
+				msg.send(welcomeMessage).exec();
+
+			} 
+
+			checkMsg(user,msg);
+
+		} else {
+
+			if ("gen_payload".equals(function)) {
+
+				msg.send(URLUtil.encode("https://t.me/" + me.username() + "?start=" + ArrayUtil.join(params," "))).exec();
+
+			}
 
 		}
 
-		@Override
-		public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-				super.onFunction(user,msg,function,params);
 
-				if (!msg.isPrivate()) return;
+	}
 
-				if (!(user.equals(userId) || user.admin())) 	{
+	@Override
+	public void onPayload(UserData user,Msg msg,String payload,String[] params) {
 
-						if ("start".equals(function)) {
+		if (userId.equals(user.id) && "reply".equals(payload)) {
 
-								msg.send(welcomeMessage).exec();
+			UserData target = UserData.get(Long.parseLong(params[0]));
 
-						} 
+			if (target == null) {
 
-						checkMsg(user,msg);
+				msg.send("找不到目标...").failedWith();
+
+				return;
+
+			}
+
+			msg.send("回复 " + target.userName() + " : ","直接发送信息即可 (非文本，表情，文件 会直接转发) : ","使用 /cancel 退出").html().exec();
+
+			setPrivatePointData(user,POINT_REPLY,target.id);
+
+		} else if (userId.equals(user.id) && "del".equals(payload)) {
+
+			try {
+
+				long target = Long.parseLong(params[0]);
+				int messageId = Integer.parseInt(params[1]);
+
+				BaseResponse resp = bot().execute(new DeleteMessage(target,messageId));
+
+				if (resp.isOk()) {
+
+					msg.send("已删除").failedWith();
 
 				} else {
 
-						if ("gen_payload".equals(function)) {
-
-								msg.send(URLUtil.encode("https://t.me/" + me.username() + "?start=" + ArrayUtil.join(params," "))).exec();
-								
-						}
+					msg.send("删除失败 这条发送的信息还在吗 ？").failedWith();
 
 				}
 
+			} catch (NumberFormatException e) {
+
+				msg.send("这个删除已经点过了 :)").failedWith();
+
+			}
+
+		} else if (userId.equals(user.id) && "block".equals(payload)) {
+
+			UserData target = UserData.get(Long.parseLong(params[0]));
+
+			if (target == null) {
+
+				msg.send("找不到目标...").failedWith();
+
+				return;
+
+			}
+
+			if (target.id.equals(userId)) {
+
+				msg.send("你不能屏蔽你自己...").failedWith();
+
+				return;
+
+			}
+
+			if (blockList.contains(target.id.longValue())) {
+
+				msg.send("已经屏蔽过了 " + target.userName() + " ~ [ " + Html.a("解除屏蔽","https://t.me/" + me.username() + "?start=unblok" + PAYLOAD_SPLIT + target.id) + " ] ~").html().exec();
+
+			} else {
+
+				blockList.add(target.id);
+				msg.send("已屏蔽 " + target.userName() + " ~ [ " + Html.a("解除屏蔽","https://t.me/" + me.username() + "?start=unblock" + PAYLOAD_SPLIT + target.id) + " ] ~").html().exec();
 
 
-		}
+			}
 
-		@Override
-		public void onPayload(UserData user,Msg msg,String payload,String[] params) {
+		} else if (userId.equals(user.id) && "unblock".equals(payload)) {
 
-				if (userId.equals(user.id) && "reply".equals(payload)) {
+			UserData target = UserData.get(Long.parseLong(params[0]));
 
-						UserData target = UserData.get(Long.parseLong(params[0]));
+			if (target == null) {
 
-						if (target == null) {
+				msg.send("找不到目标...").failedWith();
 
-								msg.send("找不到目标...").failedWith();
+				return;
 
-								return;
+			}
 
-						}
+			if (blockList.contains(target.id.longValue())) {
 
-						msg.send("回复 " + target.userName() + " : ","直接发送信息即可 (非文本，表情，文件 会直接转发) : ","使用 /cancel 退出").html().exec();
+				blockList.remove(target.id.longValue());
 
-						setPrivatePointData(user,POINT_REPLY,target.id);
+				msg.send("已解除屏蔽 " + target.userName() + " ~ [ " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + target.id) + " " + Html.a("发送消息","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " ]").html().exec();
 
-				} else if (userId.equals(user.id) && "del".equals(payload)) {
+			} else {
 
-						try {
-
-								long target = Long.parseLong(params[0]);
-								int messageId = Integer.parseInt(params[1]);
-
-								BaseResponse resp = bot().execute(new DeleteMessage(target,messageId));
-
-								if (resp.isOk()) {
-
-										msg.send("已删除").failedWith();
-
-								} else {
-
-										msg.send("删除失败 这条发送的信息还在吗 ？").failedWith();
-
-								}
-
-						} catch (NumberFormatException e) {
-
-								msg.send("这个删除已经点过了 :)").failedWith();
-
-						}
-
-				} else if (userId.equals(user.id) && "block".equals(payload)) {
-
-						UserData target = UserData.get(Long.parseLong(params[0]));
-
-						if (target == null) {
-
-								msg.send("找不到目标...").failedWith();
-
-								return;
-
-						}
-
-						if (target.id.equals(userId)) {
-
-								msg.send("你不能屏蔽你自己...").failedWith();
-
-								return;
-
-						}
-
-						if (blockList.contains(target.id.longValue())) {
-
-								msg.send("已经屏蔽过了 " + target.userName() + " ~ [ " + Html.a("解除屏蔽","https://t.me/" + me.username() + "?start=unblok" + PAYLOAD_SPLIT + target.id) + " ] ~").html().exec();
-
-						} else {
-
-								blockList.add(target.id);
-								msg.send("已屏蔽 " + target.userName() + " ~ [ " + Html.a("解除屏蔽","https://t.me/" + me.username() + "?start=unblock" + PAYLOAD_SPLIT + target.id) + " ] ~").html().exec();
+				msg.send("没有屏蔽 " + target.userName() + " ~ [ " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + target.id) + " " + Html.a("发送消息","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " ]").html().exec();
 
 
-						}
+			}
 
-				} else if (userId.equals(user.id) && "unblock".equals(payload)) {
+		} else if (msg.isStartPayload())  {
 
-						UserData target = UserData.get(Long.parseLong(params[0]));
+			onFunction(user,msg,msg.command(),msg.params());
 
-						if (target == null) {
+		} else {
 
-								msg.send("找不到目标...").failedWith();
-
-								return;
-
-						}
-
-						if (blockList.contains(target.id.longValue())) {
-
-								blockList.remove(target.id.longValue());
-
-								msg.send("已解除屏蔽 " + target.userName() + " ~ [ " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + target.id) + " " + Html.a("发送消息","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " ]").html().exec();
-
-						} else {
-
-								msg.send("没有屏蔽 " + target.userName() + " ~ [ " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + target.id) + " " + Html.a("发送消息","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " ]").html().exec();
-
-
-						}
-
-				} else if (msg.isStartPayload())  {
-
-						onFunction(user,msg,msg.command(),msg.params());
-
-				} else {
-
-						checkMsg(user,msg);
-
-				}
-
+			checkMsg(user,msg);
 
 		}
 
-		@Override
-		public int checkMsg(UserData user,Msg msg) {
 
-				if (!msg.isPrivate()) return PROCESS_REJECT;
+	}
 
-				if (userId.equals(user.id) || !blockList.contains(user.id.longValue())) {
+	@Override
+	public boolean msg() {
+		
+		return true;
+		
+	}
+	
+	@Override
+	public int checkMsg(UserData user,Msg msg) {
+
+		if (!msg.isPrivate()) return PROCESS_REJECT;
+
+		return PROCESS_SYNC;
+
+    }
+
+	@Override
+	public void onMsg(UserData user,Msg msg) {
+		
+		if (userId.equals(user.id) || !blockList.contains(user.id.longValue())) {
 
             if (lastReceivedFrom == null || !lastReceivedFrom.equals(user.id)) {
 
                 new Send(this,userId,"来自 " + user.userName() + " : [ " + Html.a("回复","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + user.id) + " ]").html().exec();
 
-								lastReceivedFrom = user.id;
+				lastReceivedFrom = user.id;
 
             }
 
             msg.forwardTo(userId);
 
-						if (msg.isStartPayload()) {
+			if (msg.isStartPayload()) {
 
-								new Send(this,userId,"内容 : " + msg.text()).exec();
+				new Send(this,userId,"内容 : " + msg.text()).exec();
 
-						}
+			}
 
         }
-
-				return PROCESS_REJECT;
-
-    }
-
-		@Override
-		public void onPoint(UserData user,Msg msg,String point,PointData data) {
+		
+	}
+	
+	@Override
+	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
         long target = (long) data.data;
 

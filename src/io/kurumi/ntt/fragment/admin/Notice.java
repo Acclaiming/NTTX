@@ -28,8 +28,6 @@ public class Notice extends Fragment {
 
     final String POINT_FPRWARD = "admin_notice";
 
-
-
 	@Override
 	public void init(BotFragment origin) {
 

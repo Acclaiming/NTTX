@@ -160,6 +160,13 @@ public class Firewall extends Fragment {
 
     }
 
+	@Override
+	public boolean update() {
+		
+		return true;
+		
+	}
+
 	
 	
 	@Override

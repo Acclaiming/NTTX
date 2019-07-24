@@ -22,6 +22,8 @@ public abstract class AbstractSend<T extends AbstractSend> {
 
     public abstract T html();
 
+	public abstract void async();
+	
     public abstract BaseResponse exec();
 
 }

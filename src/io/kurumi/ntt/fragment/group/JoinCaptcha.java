@@ -34,8 +34,13 @@ import com.pengrad.telegrambot.request.*;
 
 public class JoinCaptcha extends Fragment {
 
-	public static JoinCaptcha INSTANCE;
-
+	@Override
+	public boolean msg() {
+		
+		return true;
+		
+	}
+	
 	final String POINT_AUTH = "join_auth";
 	final String POINT_INTERFERE = "join_interfere";
 	final String POINT_ANSWER = "join_answer";

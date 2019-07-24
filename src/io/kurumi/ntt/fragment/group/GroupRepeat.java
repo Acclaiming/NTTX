@@ -10,13 +10,18 @@ import java.util.LinkedList;
 
 public class GroupRepeat extends Fragment {
 
+	@Override
+	public boolean msg() {
+		
+		return true;
+		
+	}
+
     public HashMap<Long, LinkedList<Msg>> msgs = new HashMap<>();
-
-		public static GroupRepeat INSTANCE;
-
+	
     @Override
     public void onGroup(UserData user, Msg msg) {
-
+		
         synchronized (msgs) {
 
             if (msg.isCommand()) {

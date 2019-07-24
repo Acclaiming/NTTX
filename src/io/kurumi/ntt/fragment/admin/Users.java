@@ -24,24 +24,24 @@ public class Users extends Fragment {
 
 	@Override
 	public void init(BotFragment origin) {
-	
+
 		super.init(origin);
-		
+
 		registerAdminFunction("users","usage");
-		
+
 	}
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-	
+
         StringBuilder export;
 
 		int count = 0;
-		
+
 		if ("usage".equals(function)) {
-			
+
 			export = new StringBuilder(" 「 Authed Users 」 \n");
-			
+
 			for (TAuth auth : TAuth.data.collection.find()) {
 
 				count ++;
@@ -65,13 +65,13 @@ public class Users extends Fragment {
 				msg.send(export.toString()).html().exec();
 
 			}
-			
+
 			count = 0;
-			
+
 			export = new StringBuilder(" 「 User Bots 」 \n");
-			
+
 			for (UserBot bot : UserBot.data.collection.find()) {
-				
+
 				count ++;
 
 				export.append(UserData.get(bot.user).userName()).append(" -> [ " + bot.typeName() + " ] @").append(HtmlUtil.escape(bot.userName)).append("\n");
@@ -93,8 +93,8 @@ public class Users extends Fragment {
 				msg.send(export.toString()).html().exec();
 
 			}
-			
-			
+
+
 		} else if (msg.params().length == 0) {
 
 			export = new StringBuilder(HtmlUtil.escape(" 「 All Users 」\n"));
@@ -102,7 +102,7 @@ public class Users extends Fragment {
 			for (UserData userData : UserData.data.findByField("contactable",true)) {
 
 				export.append("\n[").append(Html.user(userData.id.toString(),userData.id)).append("]").append(" ").append(userData.name()).append(" ").append(Html.startPayload("Block","drop",userData.id));
-				
+
 				count++;
 
 				if (count == 50) {
@@ -162,7 +162,7 @@ public class Users extends Fragment {
 			String kw = msg.params()[0];
 
 			export = new StringBuilder(HtmlUtil.escape(" 「 Search User 」 \n"));
-			
+
 			for (UserData userData : UserData.data.collection.find(or(regex("firstName",kw),regex("lastName",kw),regex("userName",kw)))) {
 
 				export.append("\n[").append(Html.user(userData.id.toString(),userData.id)).append("]").append(" ").append(userData.name()).append(" ").append(Html.startPayload("Block","drop",userData.id));

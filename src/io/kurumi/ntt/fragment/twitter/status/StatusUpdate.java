@@ -25,6 +25,13 @@ import io.kurumi.ntt.utils.BotLog;
 
 public class StatusUpdate extends Fragment {
 
+	@Override
+	public boolean msg() {
+
+		return true;
+
+	}
+	
     final String POINT_UPDATE_STATUS = "status_update";
 
 	@Override

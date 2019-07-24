@@ -12,7 +12,7 @@ public class UserBot {
 
     public static Data<UserBot> data = new Data<UserBot>("UserCustomBot",UserBot.class);
 
-		public Long id;
+	public Long id;
     public String userName;
     public Long user;
     public String token;

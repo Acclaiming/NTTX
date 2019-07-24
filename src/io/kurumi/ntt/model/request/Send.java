@@ -209,7 +209,6 @@ public class Send extends AbstractSend<Send> {
 
     public void failedWith(final long delay) {
 
-
         BotFragment.execute(new Runnable() {
 
 				@Override

@@ -117,14 +117,28 @@ public class BanSetickerSet extends Fragment {
     }
 
 	@Override
+	public boolean msg() {
+
+		return true;
+
+	}
+
+	@Override
+	public int checkMsg(UserData user,Msg msg) {
+
+		return msg.isGroup() && msg.sticker() != null ? PROCESS_SYNC : PROCESS_REJECT;
+
+	}
+
+	@Override
 	public void onGroup(UserData user,Msg msg) {
 
 		GroupData data = GroupData.get(msg.chat());
 
-        if (msg.message().sticker() != null && data.ban_sticker_set != null && data.ban_sticker_set.contains(msg.sticker().setName())) {
+        if (data.ban_sticker_set != null && data.ban_sticker_set.contains(msg.sticker().setName())) {
 
 			msg.delete();
-			
+
         }
 
     }

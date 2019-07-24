@@ -1,56 +1,28 @@
 package io.kurumi.ntt.fragment;
 
-import cn.hutool.core.util.ArrayUtil;
-import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.UpdatesListener;
-import com.pengrad.telegrambot.model.Chat;
-import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.User;
-import com.pengrad.telegrambot.model.request.ParseMode;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
-import com.pengrad.telegrambot.request.DeleteWebhook;
-import com.pengrad.telegrambot.request.GetMe;
-import com.pengrad.telegrambot.request.GetUpdates;
-import com.pengrad.telegrambot.request.SendPhoto;
-import com.pengrad.telegrambot.request.SetWebhook;
-import com.pengrad.telegrambot.response.BaseResponse;
-import com.pengrad.telegrambot.response.GetMeResponse;
-import io.kurumi.ntt.Env;
-import io.kurumi.ntt.Launcher;
-import io.kurumi.ntt.db.PointData;
-import io.kurumi.ntt.db.PointStore;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.admin.Firewall;
-import io.kurumi.ntt.fragment.base.Final;
-import io.kurumi.ntt.fragment.twitter.TAuth;
-import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
-import io.kurumi.ntt.model.Callback;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.model.Query;
-import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.utils.BotLog;
-import io.kurumi.ntt.utils.Html;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Timer;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
-import okhttp3.OkHttpClient;
-import com.pengrad.telegrambot.ExceptionHandler;
-import com.pengrad.telegrambot.TelegramException;
-import io.kurumi.ntt.utils.TentcentNlp;
-import java.util.TreeSet;
-import io.kurumi.ntt.fragment.Fragment.Processed;
-import java.util.ArrayList;
+import cn.hutool.core.util.*;
 import cn.hutool.json.*;
+import com.pengrad.telegrambot.*;
+import com.pengrad.telegrambot.model.*;
+import com.pengrad.telegrambot.model.request.*;
+import com.pengrad.telegrambot.request.*;
+import com.pengrad.telegrambot.response.*;
+import io.kurumi.ntt.*;
+import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.fragment.admin.*;
+import io.kurumi.ntt.fragment.twitter.*;
+import io.kurumi.ntt.fragment.twitter.archive.*;
+import io.kurumi.ntt.model.*;
+import io.kurumi.ntt.model.request.*;
+import io.kurumi.ntt.utils.*;
+import java.util.*;
+import java.util.concurrent.*;
+import okhttp3.*;
+
+import io.kurumi.ntt.model.Callback;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener,ExceptionHandler {
 
-    private Final finalFragment = new Final() {{ init(BotFragment.this); }};;
 
 	public static Timer mainTimer = new Timer();
 	public static Timer trackTimer = new Timer();
@@ -64,77 +36,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
     private PointStore point;
 
 	public List<Long> localAdmins = new ArrayList<>();
-
-	class UserAndUpdate implements Comparable<UserAndUpdate> {
-
-		public AtomicBoolean cancel = new AtomicBoolean(false);
-
-		@Override
-		public int compareTo(UserAndUpdate uau) {
-
-			return update.updateId() - uau.update.updateId();
-
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-
-			return super.equals(obj) || (obj instanceof UserAndUpdate && ((UserAndUpdate)obj).update.updateId().equals(update.updateId()));
-
-		}
-
-		BotFragment bot;
-
-		{
-
-			bot = BotFragment.this;
-
-		}
-
-		long userId;
-		long chatId;
-
-		UserData user;
-
-		Update update;
-
-		BotFragment.Processed process() {
-
-			if (cancel.get()) return null;
-
-			for (final Fragment fragmnet : fragments) {
-
-				if (cancel.get()) return null;
-
-				Fragment.Processed processed =  fragmnet.onAsyncUpdate(user,update);
-
-				if (cancel.get()) return null;
-
-				if (processed != null) return processed;
-
-			}
-
-			if (cancel.get()) return null;
-
-			return new Processed(user,update,PROCESS_ASYNC) {
-
-				@Override
-				public void process() {
-
-					finalFragment.onAsyncUpdate(user,update);
-
-				}
-
-			};
-
-
-
-
-		}
-
-
-
-	}
 
     @Override
     public TelegramBot bot() {
@@ -355,12 +256,10 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 	}
 
-	static HashMap<Long,TreeSet<UserAndUpdate>> processing = new HashMap<>();
-
     public void processAsync(final Update update) {
 
 		System.out.println(new JSONObject(update.json).toStringPretty());
-		
+
         final UserData user;
 
 		long targetId = -1;
@@ -407,20 +306,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
         } else user = null;
 
-		UserAndUpdate uau = new UserAndUpdate();
+		if (onUpdate(user,update)) return;
 
-		uau.chatId = targetId;
-		uau.user = user;
-		uau.update = update;
-
-		asyncPool.execute(new ProcessTask(uau));
-
-	}
-
-	@Override
-	public Processed onAsyncUpdate(UserData user,Update update) {
-
-		if (onUpdate(user,update)) return EMPTY;
+		for (Fragment f : fragments) if (f.update() && f.onUpdate(user,update)) return;
 
 		if (update.message() != null) {
 
@@ -441,42 +329,53 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint);
 
-					if (checked == PROCESS_REJECT) return EMPTY;
+					if (checked == PROCESS_REJECT) return;
 
-					return new Processed(user,update,checked) {
+					if (checked == PROCESS_ASYNC) {
 
-						@Override
-						public void process() {
+						asyncPool.execute(new Runnable() {
 
+								@Override
+								public void run() {
 
+									function.onPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint);
 
-							function.onPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint);
+								}
 
-						}
+							});
 
-					};
+					} else {
+
+						function.onPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint);
+
+					}
 
 				} else {
 
 					int checked = function.checkPoint(user,msg,groupPoint.point,groupPoint);
 
-					if (checked == PROCESS_REJECT) return EMPTY;
+					if (checked == PROCESS_REJECT) return;
 
-					return new Processed(user,update,checked) {
+					if (checked == PROCESS_ASYNC) {
 
-						@Override
-						public void process() {
+						asyncPool.execute(new Runnable() {
 
+								@Override
+								public void run() {
 
+									function.onPoint(user,msg,groupPoint.point,groupPoint);
 
-							function.onPoint(user,msg,groupPoint.point,groupPoint);
+								}
 
-						}
+							});
 
-					};
+					} else {
+
+						function.onPoint(user,msg,groupPoint.point,groupPoint);
+
+					}
 
 				}
-
 
 			} else if (msg.isPrivate() && privatePoint != null) {
 
@@ -486,39 +385,53 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint);
 
-					if (checked == PROCESS_REJECT) return EMPTY;
+					if (checked == PROCESS_REJECT) return;
 
-					return new Processed(user,update,checked) {
+					if (checked == PROCESS_ASYNC) {
 
-						@Override
-						public void process() {
+						asyncPool.execute(new Runnable() {
+
+								@Override
+								public void run() {
 
 
+									function.onPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint);
 
-							function.onPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint);
+								}
 
-						}
+							});
 
-					};
+					} else {
+
+						function.onPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint);
+
+
+					}
 
 				} else {
 
 					int checked = function.checkPoint(user,msg,privatePoint.point,privatePoint);
 
-					if (checked == PROCESS_REJECT) return EMPTY;
+					if (checked == PROCESS_REJECT) return;
 
-					return new Processed(user,update,checked) {
+					if (checked == PROCESS_ASYNC) {
 
-						@Override
-						public void process() {
+						asyncPool.execute(new Runnable() {
 
+								@Override
+								public void run() {
 
+									function.onPoint(user,msg,privatePoint.point,privatePoint);
 
-							function.onPoint(user,msg,privatePoint.point,privatePoint);
+								}
 
-						}
+							});
 
-					};
+					} else {
+
+						function.onPoint(user,msg,privatePoint.point,privatePoint);
+
+					}
 
 				}
 
@@ -537,20 +450,27 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 							int checked = function.checkPayload(user,msg,payload,params);
 
-							if (checked == PROCESS_REJECT) return EMPTY;
+							if (checked == PROCESS_REJECT) return;
 
-							return new Processed(user,update,checked) {
+							if (checked == PROCESS_ASYNC) {
 
-								@Override
-								public void process() {
+								asyncPool.execute(new Runnable() {
+
+										@Override
+										public void run() {
+
+											function.onPayload(user,msg,payload,params);
+
+										}
+
+									});
+
+							} else {
+
+								function.onPayload(user,msg,payload,params);
 
 
-
-									function.onPayload(user,msg,payload,params);
-
-								}
-
-							};
+							}
 
 						} else if ((user.admin() || localAdmins.contains(user.id)) && adminPayloads.containsKey(payload)) {
 
@@ -558,39 +478,53 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 							int checked = function.checkPayload(user,msg,payload,params);
 
-							if (checked == PROCESS_REJECT) return EMPTY;
+							if (checked == PROCESS_REJECT) return;
 
-							return new Processed(user,update,checked) {
+							if (checked == PROCESS_ASYNC) {
 
-								@Override
-								public void process() {
+								asyncPool.execute(new Runnable() {
 
+										@Override
+										public void run() {
 
+											function.onPayload(user,msg,payload,params);
 
-									function.onPayload(user,msg,payload,params);
+										}
 
-								}
+									});
 
-							};
+							} else {
+
+								function.onPayload(user,msg,payload,params);
+
+							}
+
 
 						} else {
 
 							int checked = checkPayload(user,msg,payload,params);
 
-							if (checked == PROCESS_REJECT) return EMPTY;
+							if (checked == PROCESS_REJECT) return;
 
-							return new Processed(user,update,checked) {
+							if (checked == PROCESS_ASYNC) {
 
-								@Override
-								public void process() {
+								asyncPool.execute(new Runnable() {
 
+										@Override
+										public void run() {
 
+											onPayload(user,msg,payload,params);
 
-									onPayload(user,msg,payload,params);
+										}
 
-								}
+									});
 
-							};
+							} else {
+
+								onPayload(user,msg,payload,params);
+
+							}
+
 						}
 
 
@@ -600,20 +534,26 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 						int checked = function.checkFunction(user,msg,msg.command(),msg.params());
 
-						if (checked == PROCESS_REJECT) return EMPTY;
+						if (checked == PROCESS_REJECT) return;
 
-						return new Processed(user,update,checked) {
+						if (checked == PROCESS_ASYNC) {
 
-							@Override
-							public void process() {
+							asyncPool.execute(new Runnable() {
 
+									@Override
+									public void run() {
 
+										function.onFunction(user,msg,msg.command(),msg.params());
 
-								function.onFunction(user,msg,msg.command(),msg.params());
+									}
 
-							}
+								});
 
-						};
+						} else {
+
+							function.onFunction(user,msg,msg.command(),msg.params());
+
+						}
 
 					} else {
 
@@ -621,75 +561,79 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 						int checked = function.checkFunction(user,msg,msg.command(),msg.params());
 
-						if (checked == PROCESS_REJECT) return EMPTY;
+						if (checked == PROCESS_REJECT) return;
 
 						if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.params()) == FUNCTION_GROUP && !msg.isGroup()) {
 
-							return new Processed(user,update,checked) {
-
-								@Override
-								public void process() {
-
-									msg.send("请在群组使用 :)").exec();
-
-								}
-
-							};
+							msg.send("请在群组使用 :)").async();
 
 
 						} else if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.params()) == FUNCTION_PRIVATE && !msg.isPrivate()) {
 
-							return new Processed(user,update,checked) {
+							asyncPool.execute(new Runnable() {
 
-								@Override
-								public void process() {
+									@Override
+									public void run() {
 
-									msg.send("命令请在私聊使用 :)").failedWith();
+										msg.send("命令请在私聊使用 :)").failedWith();
 
-								}
 
-							};
+									}
+
+								});
+
 
 						}
 
-						return new Processed(user,update,checked) {
+						if (checked == PROCESS_ASYNC) {
 
-							@Override
-							public void process() {
+							asyncPool.execute(new Runnable() {
 
-								function.onFunction(user,msg,msg.command(),msg.params());
+									@Override
+									public void run() {
 
-							}
+										function.onFunction(user,msg,msg.command(),msg.params());
 
-						};
+									}
+
+								});
+
+						} else {
+
+							function.onFunction(user,msg,msg.command(),msg.params());
+
+						}
 
 					}
 
-
 				} else {
 
-					int checked = checkMsg(user,msg); 
+					for (final Fragment f : fragments) {
 
-					if (checked == PROCESS_ASYNC) {
+						int checked = f.checkMsg(user,msg); 
 
-						asyncPool.execute(new Processed(user,update,PROCESS_ASYNC) {
+						if (checked == PROCESS_ASYNC) {
 
-								@Override
-								public void process() {
+							asyncPool.execute(new Runnable() {
 
-									onMsg(user,msg);
+									@Override
+									public void run() {
 
-								}
+										f.onMsg(user,msg);
 
-							});
+									}
 
-					} else if (checked == PROCESS_REJECT) {
+								});
 
-						return EMPTY;
+						} else if (checked == PROCESS_REJECT) {
 
-					} else {
+							continue;
 
-						onMsg(user,msg);
+						} else {
+
+							f.onMsg(user,msg);
+
+						}
 
 					}
 
@@ -705,28 +649,32 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 			if (msg.replyTo() != null) msg.replyTo().update = update;
 
-			int checked = checkChanPost(user,msg); 
+			for (final Fragment f : fragments) {
 
-			if (checked == PROCESS_ASYNC) {
+				if (!f.post()) continue;
 
-				asyncPool.execute(new Processed(user,update,PROCESS_ASYNC) {
+				int checked = f.checkChanPost(user,msg); 
 
-						@Override
-						public void process() {
+				if (checked == PROCESS_REJECT) continue;
 
-							onChanPost(user,msg);
+				if (checked == PROCESS_ASYNC) {
 
-						}
+					asyncPool.execute(new Runnable() {
 
-					});
+							@Override
+							public void run() {
 
-			} else if (checked == PROCESS_REJECT) {
+								f.onChanPost(user,msg);
 
-				return EMPTY;
+							}
 
-			} else {
+						});
 
-				onChanPost(user,msg);
+				} else {
+
+					f.onChanPost(user,msg);
+
+				}
 
 			}
 
@@ -741,18 +689,29 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 			int checked = function.checkCallback(user,callback,point,params);
 
-			if (checked == PROCESS_REJECT) return EMPTY;
+			if (checked == PROCESS_REJECT) return;
 
-			return new Processed(user,update,checked) {
+			if (checked == PROCESS_ASYNC) {
 
-				@Override
-				public void process() {
+				asyncPool.execute(new Runnable() {
 
-					function.onCallback(user,callback,point,params);
+						@Override
+						public void run() {
 
-				}
+							function.onCallback(user,callback,point,params);
 
-			};
+
+						}
+
+					});
+
+			} else {
+
+				function.onCallback(user,callback,point,params);
+
+
+			}
+
 
 		} else if (update.inlineQuery() != null) {
 
@@ -760,137 +719,21 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 			query.update = update;
 
-			onQuery(user,query);
+			for (Fragment f : fragments) {
 
-		} else if (update.poll() != null) {
-
-			onPollUpdate(update.poll());
-
-		}
-
-		return null;
-	}
-
-	static HashMap<Long,TreeSet<UserAndUpdate>> waitFor = new HashMap<>();
-
-	static class ProcessTask extends TreeSet<UserAndUpdate> implements Runnable {
-
-		private UserAndUpdate uau;
-		private boolean sync = false;
-
-		public ProcessTask(UserAndUpdate uau) {
-			this.uau = uau;
-		}
-
-		@Override
-		public void run() {
-
-
-			/*
-
-			 if (!sync) synchronized (waitFor) {
-
-			 if (waitFor.containsKey(uau.userId)) {
-
-			 waitFor.get(uau.userId).add(uau);
-
-			 return;
-
-			 }
-
-			 }
-
-			 */
-
-			Processed processed;
-
-			try {
-
-				processed = uau.process();
-
-			} catch (Exception e) {
-
-				new Send(Env.GROUP,"处理中出错 " + uau.update.toString(),BotLog.parseError(e)).exec();
-
-				if (uau.user != null && !uau.user.admin()) {
-
-					new Send(uau.user.id,"处理出错，已提交报告，可以到官方群组 @NTTDiscuss  继续了解").exec();
-
-				}
-
-				return;
+				if (f.query()) f.onQuery(user,query);
 
 			}
 
-			if (processed == null) {
+		} else if (update.poll() != null) {
 
-				uau.update.lock.send(null);
+			for (Fragment f : fragments) {
 
-			} else if (processed.type == PROCESS_ASYNC) {
+				if (f.poll()) f.onPollUpdate(update.poll());
 
-				asyncPool.execute(processed);
-
-			} else {
-
-				/*
-
-				 if (!sync) synchronized (waitFor) {
-
-				 if (waitFor.containsKey(uau.userId)) {
-
-				 waitFor.get(uau.userId).add(uau);
-
-				 return;
-
-				 } else {
-
-				 waitFor.put(uau.userId,this);
-
-				 sync = true;
-
-				 }
-
-				 }
-
-				 */
-
-
-				processed.run();
-
-			} 
-
-			/*
-
-			 if (!isEmpty()) {
-
-			 run(pollFirst());
-
-			 } else {
-
-			 if (processed.type == PROCESS_SYNC) {
-
-			 synchronized (waitFor) {
-
-			 if (isEmpty()) {
-
-			 waitFor.remove(uau.userId);
-
-			 return;
-
-			 }
-
-			 }
-
-			 }
-
-			 run(pollFirst());
-
-			 }
-
-			 */
+			}
 
 		}
-
 
 	}
 

@@ -101,7 +101,7 @@ public class MyBots extends Fragment {
 
         if (UserBot.data.countByField("user",user.id) == 0) {
 
-            msg.sendOrEdit(edit,"你还没有任何BOT ，使用 /newbot 创建一只新BOT ~").exec();
+            msg.sendOrEdit(edit,"你还没有任何BOT ，使用 /newbot 创建一只新BOT ~").async();
 
             return;
 
@@ -128,7 +128,7 @@ public class MyBots extends Fragment {
 
                     }
 
-                }}).exec();
+                }}).async();
 
     }
 
@@ -144,7 +144,7 @@ public class MyBots extends Fragment {
 
             } else {
 
-                msg.send("这个BOT无效...").exec();
+                msg.send("这个BOT无效...").async();
 
             }
 
@@ -166,8 +166,8 @@ public class MyBots extends Fragment {
                     newButtonLine()
                         .newButton("删除BOT",POINT_DELETE_BOT,bot.id)
                         .newButton("返回列表",POINT_BACK_TO_LIST);
-
-                }}).exec();
+						
+                }}).async();
 
     }
 
@@ -194,7 +194,7 @@ public class MyBots extends Fragment {
                     newButtonLine("点着玩",POINT_CHOOSE_BOT,bot.id);
                     newButtonLine("删掉罢",POINT_CONFIRM_DEL,bot.id);
 
-                }}).exec();
+                }}).async();
 
     }
 
@@ -243,7 +243,7 @@ public class MyBots extends Fragment {
         point.bot = bot;
         point.context.add(callback);
 
-        callback.edit("好,现在发送新的欢迎语 :").withCancel().exec();
+        callback.edit("好,现在发送新的欢迎语 :").withCancel().async();
 
         setPrivatePoint(user,POINT_CHAT_BOT_EDIT_MESSAGE,point);
 

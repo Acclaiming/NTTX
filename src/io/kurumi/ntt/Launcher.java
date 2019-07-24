@@ -1,79 +1,34 @@
 package io.kurumi.ntt;
 
+import cn.hutool.core.lang.*;
+import cn.hutool.core.util.*;
+import com.pengrad.telegrambot.model.*;
+import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.fragment.*;
+import io.kurumi.ntt.fragment.admin.*;
+import io.kurumi.ntt.fragment.base.*;
+import io.kurumi.ntt.fragment.bots.*;
+import io.kurumi.ntt.fragment.debug.*;
+import io.kurumi.ntt.fragment.graph.*;
+import io.kurumi.ntt.fragment.group.*;
+import io.kurumi.ntt.fragment.idcard.*;
+import io.kurumi.ntt.fragment.inline.*;
+import io.kurumi.ntt.fragment.rss.*;
+import io.kurumi.ntt.fragment.sticker.*;
+import io.kurumi.ntt.fragment.twitter.auto.*;
+import io.kurumi.ntt.fragment.twitter.ext.*;
+import io.kurumi.ntt.fragment.twitter.list.*;
+import io.kurumi.ntt.fragment.twitter.login.*;
+import io.kurumi.ntt.fragment.twitter.status.*;
+import io.kurumi.ntt.fragment.twitter.track.*;
+import io.kurumi.ntt.model.*;
+import io.kurumi.ntt.utils.*;
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.atomic.*;
+
 import cn.hutool.core.lang.Console;
-import cn.hutool.core.util.RuntimeUtil;
-import com.pengrad.telegrambot.model.Chat;
-import com.pengrad.telegrambot.model.Update;
-import io.kurumi.ntt.db.BotDB;
-import io.kurumi.ntt.db.GroupData;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.fragment.BotServer;
-import io.kurumi.ntt.fragment.admin.Actions;
-import io.kurumi.ntt.fragment.admin.Control;
-import io.kurumi.ntt.fragment.admin.DelMsg;
-import io.kurumi.ntt.fragment.admin.Notice;
-import io.kurumi.ntt.fragment.admin.Stat;
-import io.kurumi.ntt.fragment.admin.Users;
-import io.kurumi.ntt.fragment.base.GetID;
-import io.kurumi.ntt.fragment.base.PingFunction;
-import io.kurumi.ntt.fragment.bots.BotChannnel;
-import io.kurumi.ntt.fragment.bots.MyBots;
-import io.kurumi.ntt.fragment.bots.NewBot;
-import io.kurumi.ntt.fragment.bots.UserBot;
-import io.kurumi.ntt.fragment.debug.Backup;
-import io.kurumi.ntt.fragment.debug.DebugMsg;
-import io.kurumi.ntt.fragment.debug.DebugStatus;
-import io.kurumi.ntt.fragment.debug.DebugStickerSet;
-import io.kurumi.ntt.fragment.debug.DebugUser;
-import io.kurumi.ntt.fragment.group.AntiEsu;
-import io.kurumi.ntt.fragment.group.BanSetickerSet;
-import io.kurumi.ntt.fragment.group.GroupFunction;
-import io.kurumi.ntt.fragment.group.GroupRepeat;
-import io.kurumi.ntt.fragment.inline.MakeButtons;
-import io.kurumi.ntt.fragment.inline.ShowSticker;
-import io.kurumi.ntt.fragment.sticker.AddSticker;
-import io.kurumi.ntt.fragment.sticker.MoveSticker;
-import io.kurumi.ntt.fragment.sticker.NewStickerSet;
-import io.kurumi.ntt.fragment.sticker.PackExport;
-import io.kurumi.ntt.fragment.sticker.RemoveSticker;
-import io.kurumi.ntt.fragment.sticker.StickerExport;
-import io.kurumi.ntt.fragment.twitter.auto.AutoUI;
-import io.kurumi.ntt.fragment.twitter.ext.MediaDownload;
-import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
-import io.kurumi.ntt.fragment.twitter.ext.TimelineUI;
-import io.kurumi.ntt.fragment.twitter.ext.TwitterDelete;
-import io.kurumi.ntt.fragment.twitter.ext.UserActions;
-import io.kurumi.ntt.fragment.twitter.list.ListExport;
-import io.kurumi.ntt.fragment.twitter.list.ListImport;
-import io.kurumi.ntt.fragment.twitter.login.AuthExport;
-import io.kurumi.ntt.fragment.twitter.login.TwitterLogin;
-import io.kurumi.ntt.fragment.twitter.login.TwitterLogout;
-import io.kurumi.ntt.fragment.twitter.status.StatusAction;
-import io.kurumi.ntt.fragment.twitter.status.StatusFetch;
-import io.kurumi.ntt.fragment.twitter.status.StatusSearch;
-import io.kurumi.ntt.fragment.twitter.status.StatusUpdate;
-import io.kurumi.ntt.fragment.twitter.status.TimedStatus;
-import io.kurumi.ntt.fragment.twitter.track.TrackTask;
-import io.kurumi.ntt.fragment.twitter.track.TrackUI;
-import io.kurumi.ntt.fragment.twitter.track.UserTrackTask;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.utils.BotLog;
-import io.kurumi.ntt.utils.Html;
 import java.io.File;
-import java.util.TimeZone;
-import java.util.concurrent.atomic.AtomicBoolean;
-import io.kurumi.ntt.fragment.debug.DebugUF;
-import io.kurumi.ntt.fragment.group.GroupOptions;
-import io.kurumi.ntt.fragment.group.GroupAdmin;
-import io.kurumi.ntt.fragment.group.JoinCaptcha;
-import io.kurumi.ntt.fragment.rss.FeedFetchTask;
-import io.kurumi.ntt.fragment.rss.RssSub;
-import io.kurumi.ntt.fragment.group.RemoveKeyboard;
-import io.kurumi.ntt.fragment.idcard.Idcard;
-import io.kurumi.ntt.fragment.admin.Flood;
-import io.kurumi.telegraph.Telegraph;
-import io.kurumi.ntt.fragment.graph.TelegraphTest;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -85,51 +40,51 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 
-				//int serverPort = Integer.parseInt(Env.getOrDefault("server_port","-1"));
-				String serverDomain = Env.get("server_domain");
+		//int serverPort = Integer.parseInt(Env.getOrDefault("server_port","-1"));
+		String serverDomain = Env.get("server_domain");
 
-				/*
+		/*
 
-				 while (serverPort == -1) {
+		 while (serverPort == -1) {
 
-				 System.out.print("输入本地Http服务器端口 : ");
+		 System.out.print("输入本地Http服务器端口 : ");
 
-				 try {
+		 try {
 
-				 serverPort = Integer.parseInt(Console.input());
+		 serverPort = Integer.parseInt(Console.input());
 
-				 Env.set("server_port",serverPort);
+		 Env.set("server_port",serverPort);
 
-				 } catch (Exception e) {
-				 }
+		 } catch (Exception e) {
+		 }
 
-				 }
+		 }
 
-				 */
+		 */
 
-				if (serverDomain == null) {
+		if (serverDomain == null) {
 
-						System.out.print("输入BotWebHook域名 : ");
+			System.out.print("输入BotWebHook域名 : ");
 
-						serverDomain = Console.input();
+			serverDomain = Console.input();
 
-						Env.set("server_domain",serverDomain);
+			Env.set("server_domain",serverDomain);
 
-				}
+		}
 
-				BotServer.INSTANCE = new BotServer(new File("/var/run/ntt.sock"),serverDomain);
+		BotServer.INSTANCE = new BotServer(new File("/var/run/ntt.sock"),serverDomain);
 
-				try {
+		try {
 
-						BotServer.INSTANCE.start();
+			BotServer.INSTANCE.start();
 
-				} catch (Exception e) {
+		} catch (Exception e) {
 
-						BotLog.error("端口被占用 请检查其他BOT进程。",e);
+			BotLog.error("端口被占用 请检查其他BOT进程。",e);
 
-						return;
+			return;
 
-				}
+		}
 
 
         String dbAddr = Env.getOrDefault("db_address","127.0.0.1");
@@ -151,24 +106,24 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
             } catch (Exception e) {
             }
 
-				}
-
-				RuntimeUtil.addShutdownHook(new Runnable() {
-
-								@Override
-								public void run() {
-
-										INSTANCE.stop();
-
-								}
-
-						});
-
-				INSTANCE.start();
-
 		}
 
-		public AtomicBoolean stopeed = new AtomicBoolean(false);
+		RuntimeUtil.addShutdownHook(new Runnable() {
+
+				@Override
+				public void run() {
+
+					INSTANCE.stop();
+
+				}
+
+			});
+
+		INSTANCE.start();
+
+	}
+
+	public AtomicBoolean stopeed = new AtomicBoolean(false);
 
     static boolean initDB(String dbAddr,Integer dbPort) {
 
@@ -186,43 +141,43 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
-		@Override
-		public void init(BotFragment origin) {
+	@Override
+	public void init(BotFragment origin) {
 
-				super.init(origin);
+		super.init(origin);
 
-				registerFunction("start","help");
+		registerFunction("start","help");
 
-		}
+	}
 
-		@Override
-		public void onFunction(UserData user,Msg msg,String function,String[] params) {
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-				super.onFunction(user,msg,function,params);
+		super.onFunction(user,msg,function,params);
 
         if ("start".equals(function)) {
 
             msg.send("start failed successfully ~","","NTT是一只开源TelegramBot、可以作为Twitter客户端使用、也可以导出贴纸、创建私聊BOT、以及在群内沙雕发言与复读。","","BOT帮助文档请戳 : @NTT_X","交流群组在这里 : @NTTDiscuss","\n如果需要Telegram中文翻译，可以戳下面 :)",
 
-										 "\n瓜体 ( @DuangCN ) : " + Html.a("      安装      ","https://t.me/setlanguage/duang-zh-cn"),
+					 "\n瓜体 ( @DuangCN ) : " + Html.a("      安装      ","https://t.me/setlanguage/duang-zh-cn"),
 
-										 "\n简体中文二 ：" + Html.a("      安装      ","https://t.me/setlanguage/classic-zh-cn"),
+					 "\n简体中文二 ：" + Html.a("      安装      ","https://t.me/setlanguage/classic-zh-cn"),
 
-										 "\n台湾正體 ：" + Html.a("      安装      ","https://t.me/setlanguage/taiwan"),
+					 "\n台湾正體 ：" + Html.a("      安装      ","https://t.me/setlanguage/taiwan"),
 
-										 "\n台湾繁體 ：" + Html.a("      安装      ","https://t.me/setlanguage/zh-hant-beta"),
+					 "\n台湾繁體 ：" + Html.a("      安装      ","https://t.me/setlanguage/zh-hant-beta"),
 
-										 "\n香港繁體一 ：" + Html.a("      安装      ","https://t.me/setlanguage/hongkong"),
+					 "\n香港繁體一 ：" + Html.a("      安装      ","https://t.me/setlanguage/hongkong"),
 
-										 "\n香港繁體二 ：" + Html.a("      安装      ","https://t.me/setlanguage/zhhant-hk"),
+					 "\n香港繁體二 ：" + Html.a("      安装      ","https://t.me/setlanguage/zhhant-hk"),
 
-										 "\n香港人口語 ：" + Html.a("      安装      ","https://t.me/setlanguage/hongkonger"),
+					 "\n香港人口語 ：" + Html.a("      安装      ","https://t.me/setlanguage/hongkonger"),
 
-										 "\n廣東話一 ：" + Html.a("      安装      ","https://t.me/setlanguage/zhhkpb1"),
+					 "\n廣東話一 ：" + Html.a("      安装      ","https://t.me/setlanguage/zhhkpb1"),
 
-										 "\n廣東話二 ：" + Html.a("      安装      ","https://t.me/setlanguage/hkcantonese")
+					 "\n廣東話二 ：" + Html.a("      安装      ","https://t.me/setlanguage/hkcantonese")
 
-										 ).html().publicFailed();
+					 ).html().publicFailed();
 
         } else if ("help".equals(function)) {
 
@@ -230,12 +185,12 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         } else if (!functions.containsKey(function) && msg.isPrivate()) {
 
-						msg.send("没有这个命令 " + function,"查看文档 : @NTT_X").failedWith(10 * 1000);
-
-				}
-
+			msg.send("没有这个命令 " + function,"查看文档 : @NTT_X").failedWith(10 * 1000);
 
 		}
+
+
+	}
 
     @Override
     public void start() {
@@ -264,142 +219,139 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
-		UserTrackTask userTrackTask = new UserTrackTask();
+	UserTrackTask userTrackTask = new UserTrackTask();
 
-		void startTasks() {
+	void startTasks() {
 
-				TimedStatus.start();
+		TimedStatus.start();
 
-				TimelineUI.start();
+		TimelineUI.start();
 
-				TrackTask.start();
+		TrackTask.start();
 
-				UserBot.startAll();
+		UserBot.startAll();
 
-				Backup.start();
-				
-				FeedFetchTask.start();
+		Backup.start();
 
-				userTrackTask.start();
+		FeedFetchTask.start();
 
-		}
+		userTrackTask.start();
+
+	}
 
     @Override
     public void reload() {
 
-				super.reload();
+		super.reload();
 
-				// ADMIN
-				
-				addFragment(new Flood());
+		// ADMIN
 
-				addFragment(new BotChannnel());
+		addFragment(new BotChannnel());
 
-				addFragment(new PingFunction());
-				addFragment(new GetID());
-				addFragment(new DelMsg());
+		addFragment(new PingFunction());
+		addFragment(new GetID());
+		addFragment(new DelMsg());
         addFragment(new Notice());
         addFragment(new Backup());
         addFragment(new Users());
-				addFragment(new Actions());
-				addFragment(new Stat());
-				addFragment(new DebugMsg());
-        addFragment(new Control());
-				addFragment(new DebugUser());
+		addFragment(new Stat());
+		addFragment(new DebugMsg());
+ 
+		addFragment(new DebugUser());
         addFragment(new DebugStatus());
-				addFragment(new DebugStickerSet());
+		addFragment(new DebugStickerSet());
 
-				addFragment(new DebugUF());
+		addFragment(new DebugUF());
 
-				// Twitter
+		// Twitter
 
-				addFragment(new TwitterLogin());
+		addFragment(new TwitterLogin());
         addFragment(new TwitterLogout());
-				addFragment(new UserActions());
-				addFragment(new StatusUpdate());
-				addFragment(new TimedStatus());
+		addFragment(new UserActions());
+		addFragment(new StatusUpdate());
+		addFragment(new TimedStatus());
         addFragment(new StatusSearch());
         addFragment(new StatusGetter());
         addFragment(new StatusFetch());
-				addFragment(new MediaDownload());
-				addFragment(new AuthExport());
+		addFragment(new MediaDownload());
+		addFragment(new AuthExport());
         addFragment(new AutoUI());
         addFragment(new TrackUI());
-				addFragment(new StatusAction());
-				addFragment(new TimelineUI());
-				addFragment(new TwitterDelete());
-				addFragment(new ListExport());
-				addFragment(new ListImport());
+		addFragment(new StatusAction());
+		addFragment(new TimelineUI());
+		addFragment(new TwitterDelete());
+		addFragment(new ListExport());
+		addFragment(new ListImport());
 
-				// GROUP
+		// GROUP
 
-				addFragment(new GroupAdmin());
+		addFragment(new GroupAdmin());
         addFragment(new GroupRepeat());
-				addFragment(new GroupOptions());
+		addFragment(new GroupOptions());
         //addFragment(new AntiEsu());
         addFragment(new BanSetickerSet());
-				addFragment(new GroupFunction());
-				addFragment(new JoinCaptcha());
-				
-				addFragment(new RemoveKeyboard());
+		addFragment(new GroupFunction());
+		addFragment(new JoinCaptcha());
+
+		addFragment(new RemoveKeyboard());
 
         // BOTS
 
         addFragment(new NewBot());
         addFragment(new MyBots());
 
-				// SETS
+		// SETS
 
-				addFragment(new PackExport());
-				addFragment(new StickerExport());
-				addFragment(new NewStickerSet());
-				addFragment(new AddSticker());
-				addFragment(new RemoveSticker());
-				addFragment(new MoveSticker());
+		addFragment(new PackExport());
+		addFragment(new StickerExport());
+		addFragment(new NewStickerSet());
+		addFragment(new AddSticker());
+		addFragment(new RemoveSticker());
+		addFragment(new MoveSticker());
 
-				// INLINE
+		// INLINE
 
-				addFragment(new MakeButtons());
-				addFragment(new ShowSticker());
-				
-				// RSS
-				
-				addFragment(new RssSub());
+		addFragment(new MakeButtons());
+		addFragment(new ShowSticker());
 
-				// IC
-				
-				addFragment(new Idcard());
-				
-				// Telegraph
-				
-				addFragment(new TelegraphTest());
-				
+		// RSS
+
+		addFragment(new RssSub());
+
+		// IC
+
+		addFragment(new Idcard());
+
+		// Telegraph
+
+		addFragment(new TelegraphTest());
+
     }
 
     @Override
     public void stop() {
 
-				if (stopeed.getAndSet(true)) return;
+		if (stopeed.getAndSet(true)) return;
 
-				BotServer.INSTANCE.stop();
-				
-				mainTimer.cancel();
+		BotServer.INSTANCE.stop();
 
-				trackTimer.cancel();
+		mainTimer.cancel();
 
-				userTrackTask.interrupt();
+		trackTimer.cancel();
 
-				JoinCaptcha.INSTANCE.stop();
-				
-				GroupData.data.saveAll();
+		userTrackTask.interrupt();
+
+		JoinCaptcha.INSTANCE.stop();
+
+		GroupData.data.saveAll();
 
         for (BotFragment bot : BotServer.fragments.values()) {
 
             if (bot != this) {
 
-								bot.stop();
+				bot.stop();
 
-						}
+			}
 
         }
 
@@ -421,8 +373,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
-		@Override
-		public boolean onUpdate(final UserData user,final Update update) {
+	@Override
+	public boolean onUpdate(final UserData user,final Update update) {
 
         if (update.message() != null) {
 
@@ -439,7 +391,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         }
 
 
-				return false;
+		return false;
 
     }
 

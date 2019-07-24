@@ -12,7 +12,7 @@ import io.kurumi.ntt.model.request.ButtonMarkup;
 public class AutoUI extends Fragment {
 
     public static Data<AutoSetting> autoData = new Data<AutoSetting>(AutoSetting.class);
-	
+
     final String POINT_SETTING_MRT = "auto_mrt";
     final String POINT_SETTING_FOBACK = "auto_foback";
 
@@ -46,7 +46,7 @@ public class AutoUI extends Fragment {
 
         }
 
-        msg.send("自动处理设置... (按钮UI (❁´▽`❁)").buttons(makeSettings(setting,account.id)).exec();
+        msg.send("自动处理设置... (按钮UI (❁´▽`❁)").buttons(makeSettings(setting,account.id)).async();
 
     }
 
@@ -79,12 +79,12 @@ public class AutoUI extends Fragment {
         switch (point) {
 
 				// case POINT_SETTING_: target = setting.archive = !setting.archive;break;
-		case POINT_SETTING_MRT : 
-			target = setting.mrt = !setting.mrt;
-			break;
+			case POINT_SETTING_MRT : 
+				target = setting.mrt = !setting.mrt;
+				break;
             case POINT_SETTING_FOBACK:
                 target = setting.foback = !setting.foback;
-     break;
+				break;
 
         }
 
