@@ -166,9 +166,11 @@ public class GroupOptions extends Fragment {
 
 				new Send(this,user.id,
 
-                 Html.b(msg.chat().title()),
-								 Html.i("更改群组的设定")
+					 Html.i("更改群组的设定"),
+					 "\n",
+					 Html.b("注意 : ") + "使用前请阅读 " + Html.a("文档","https://manual.kurumi.io/group")
 
+					 
 								 ).buttons(menuMarkup(data)).html().async();
 
 			  msg.reply("已经通过私聊发送群组设置选项").failedWith();
@@ -193,7 +195,10 @@ public class GroupOptions extends Fragment {
 				msg.send(
 
 						Html.b(data.title),
-						Html.i("更改群组的设定")
+						Html.i("更改群组的设定"),
+						"\n",
+						Html.b("注意 : ") + "使用前请阅读 " + Html.a("文档","https://manual.kurumi.io/group")
+						
 
 				).buttons(menuMarkup(data)).html().exec();
 

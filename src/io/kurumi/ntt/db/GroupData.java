@@ -23,14 +23,7 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 public class GroupData {
 
     public static CachedData<GroupData> data = new CachedData<GroupData>(GroupData.class);
-
-	static {
-
-		data.collection.updateMany(eq("delete_service_msg",true),set("delete_service_msg",1));
-		data.collection.updateMany(eq("delete_channel_msg",true),set("delete_channel_msg",1));
-
-	}
-
+	
 	public static GroupData get(long id) {
 
         synchronized (data.idIndex) {
