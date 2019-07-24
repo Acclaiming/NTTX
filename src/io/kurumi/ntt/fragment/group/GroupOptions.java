@@ -1302,7 +1302,7 @@ public class GroupOptions extends Fragment {
 
 						} else if (POINT_MENU_SPAM.equals(point)) {
 							
-							callback.edit("群组反垃圾 (Anti Spam)","\n",Html.b("警告 : 如果你不知道你在干什么，请不要开启 '黑箱' ！")).buttons(spamMenu(data)).async();
+							callback.edit("群组反垃圾 (Anti Spam)").buttons(spamMenu(data)).async();
 							
 						} else if (POINT_SET_SPAM.equals(point)) {
 							
@@ -1358,7 +1358,7 @@ public class GroupOptions extends Fragment {
 
 							}
 							
-							callback.edit("群组反垃圾 (Anti Spam)","\n",Html.b("警告 : 如果你不知道你在干什么，请不要开启 '黑箱' ！")).buttons(spamMenu(data)).async();
+							callback.edit("群组反垃圾 (Anti Spam)").buttons(spamMenu(data)).async();
 							
 						}
 
@@ -1578,7 +1578,7 @@ public class GroupOptions extends Fragment {
 								newButtonLine("📝  成员限制",POINT_MENU_REST,data.id);
 								newButtonLine("🚪  加群验证",POINT_MENU_JOIN,data.id);
 								newButtonLine("📢  欢迎消息",POINT_MENU_SHOW,data.id);
-								newButtonLine("🔎 反垃圾",POINT_MENU_SPAM,data.id);
+								newButtonLine("🔎 Anti Spam",POINT_MENU_SPAM,data.id);
 						
 						}};
 
