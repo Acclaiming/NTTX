@@ -155,6 +155,8 @@ public class JoinCaptcha extends Fragment {
 				
 				msg.delete();
 				
+				return;
+				
 			}
 			
 		}
