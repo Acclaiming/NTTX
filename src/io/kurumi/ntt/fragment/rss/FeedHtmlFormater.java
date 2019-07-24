@@ -419,6 +419,8 @@ public class FeedHtmlFormater {
 
 		}
 
+		html.replace("\t","").replace("\\t","");
+		
 		return html.trim();
 
 	}
