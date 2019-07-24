@@ -394,8 +394,8 @@ public class JoinCaptcha extends Fragment {
 
 			final HashMap<Long, AuthCache> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, AuthCache>();
 
-			User newMember = msg.message().newChatMembers()[0];
-
+			User newMember = msg.message().leftChatMember();
+			
 			final UserData newData = UserData.get(newMember);
 
 			if (group.containsKey(newData.id)) {
