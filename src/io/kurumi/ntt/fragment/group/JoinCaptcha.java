@@ -137,7 +137,9 @@ public class JoinCaptcha extends Fragment {
 
 			if (data.anti_halal != null) {
 
-				if (newData.name().matches(".+\\p{Arabic}.+")) {
+				/*
+				
+				if (newData.name().matches("")) {
 
 					msg.delete();
 
@@ -146,6 +148,8 @@ public class JoinCaptcha extends Fragment {
 					return;
 
 				}
+				
+				*/
 
 			}
 
