@@ -151,7 +151,7 @@ public class FeedFetchTask extends TimerTask {
 
 						}
 
-						request.html().async();
+						request.html().exec();
 
 					}
 
