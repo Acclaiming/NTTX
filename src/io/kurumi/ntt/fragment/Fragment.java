@@ -46,6 +46,8 @@ public class Fragment {
 	public boolean query() { return false; }
 	public boolean poll() { return false; }
 	
+	public void onStop() {}
+	
     public TelegramBot bot() {
 
         return origin.bot();

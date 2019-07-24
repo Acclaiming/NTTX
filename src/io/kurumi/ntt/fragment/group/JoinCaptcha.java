@@ -33,7 +33,7 @@ import com.pengrad.telegrambot.request.SendSticker;
 import com.pengrad.telegrambot.request.*;
 
 public class JoinCaptcha extends Fragment {
-
+	
 	@Override
 	public boolean msg() {
 		
@@ -50,7 +50,7 @@ public class JoinCaptcha extends Fragment {
 
     HashMap<Long, HashMap<Long, AuthCache>> cache = new HashMap<>();
 
-	public void stop() {
+	public void onStop() {
 
 		for (Map.Entry<Long,HashMap<Long,AuthCache>> g : cache.entrySet()) {
 
@@ -115,8 +115,6 @@ public class JoinCaptcha extends Fragment {
 	public void init(BotFragment origin) {
 
 		super.init(origin);
-
-		INSTANCE = this;
 
 		registerPoints(POINT_AUTH,POINT_DELETE,POINT_ANSWER,POINT_ACC,POINT_REJ);
 

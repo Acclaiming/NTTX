@@ -322,10 +322,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		addFragment(new Idcard());
 
-		// Telegraph
-
-		addFragment(new TelegraphTest());
-
     }
 
     @Override
@@ -340,8 +336,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		trackTimer.cancel();
 
 		userTrackTask.interrupt();
-
-		JoinCaptcha.INSTANCE.stop();
 
 		GroupData.data.saveAll();
 

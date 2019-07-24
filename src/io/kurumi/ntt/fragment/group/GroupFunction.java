@@ -103,9 +103,7 @@ public class GroupFunction extends Fragment {
 					}
 
 					data.waitForCaptcha.remove(user.id);
-
-					JoinCaptcha.INSTANCE.failed(user,msg,null,data,true);
-
+					
 				} else if (data.no_invite_bot != null && newUser.isBot()) {
 
 					msg.delete();
@@ -202,7 +200,7 @@ public class GroupFunction extends Fragment {
 			} else if (msg.message().videoNote() != null && data.no_video_note != null) {
 
 				msg.delete();
-				
+
 				if (data.no_video_note != 0)  {
 
 					doRest(user,msg,data,"录制视频");
