@@ -213,9 +213,7 @@ public class Send extends AbstractSend<Send> {
 
 		if (resp.isOk()) {
 
-			if (origin != null) origin.delete();
-			
-			NTT.tryDelete(delay,new Msg(fragment,resp.message()));
+			NTT.tryDelete(delay,new Msg(fragment,resp.message()),origin);
 
 		}
 
