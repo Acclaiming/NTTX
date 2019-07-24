@@ -219,7 +219,7 @@ public class FeedFetchTask extends TimerTask {
 
 	}
 
-	String generateSign(SyndEntry entry) {
+	static String generateSign(SyndEntry entry) {
 
 		long time = entry.getPublishedDate().getTime();
 

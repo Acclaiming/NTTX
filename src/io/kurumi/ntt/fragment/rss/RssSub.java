@@ -222,7 +222,7 @@ public class RssSub extends Fragment {
 
 				rss.id = params[1];
 				rss.title = feed.getTitle();
-				rss.last = feed.getEntries().get(0).getLink();
+				rss.last = FeedFetchTask.generateSign(feed.getEntries().get(0));
 
 				info.setById(rss.id,rss);
 
