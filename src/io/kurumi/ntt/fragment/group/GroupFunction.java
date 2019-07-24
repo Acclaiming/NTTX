@@ -317,7 +317,7 @@ public class GroupFunction extends Fragment {
 
 			if (resp.isOk()) data.last_warn_msg = resp.message().messageId();
 
-		} else if (name.startsWith("邀请") || data.rest_action == 0) {
+		} else if (data.rest_action == 0 && !name.startsWith("邀请")) {
 
 			msg.restrict();
 
