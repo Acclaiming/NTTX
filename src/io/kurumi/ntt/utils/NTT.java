@@ -30,6 +30,8 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import java.util.*;
+import com.pengrad.telegrambot.request.*;
+import com.pengrad.telegrambot.response.*;
 
 public class NTT {
 
@@ -500,7 +502,13 @@ public class NTT {
 
                     for (Msg message : messages) {
 
-                        message.delete();
+                        BaseResponse resp = message.fragment.execute(new DeleteMessage(message.chatId(),message.messageId()));
+
+						if (!resp.isOk()) {
+							
+							BotLog.error("删除消息失败 : " + resp.description());
+							
+						}
 						
                     }
 
