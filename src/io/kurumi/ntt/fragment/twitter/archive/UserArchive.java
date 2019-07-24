@@ -21,6 +21,9 @@ import static com.mongodb.client.model.Updates.set;
 import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+import io.kurumi.ntt.*;
+import io.kurumi.ntt.model.request.*;
+import cn.hutool.core.util.*;
 
 public class UserArchive {
 
@@ -149,7 +152,17 @@ public class UserArchive {
             isDisappeared = true;
 
             TrackTask.onUserChange(this, "用户被冻结或已停用 :)");
+			
+			if (StrUtil.isBlank(bio)) {
 
+				new Send(Env.GROUP,"账号冻结 / 停用",Html.code(name + " : @" + screenName)).async();
+
+			} else {
+				
+				new Send(Env.GROUP,"账号冻结 / 停用",Html.code(name + " : @" + screenName + "\n\n简介 : " + bio)).async();
+				
+			}
+			
             return true;
 
         }
