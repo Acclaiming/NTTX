@@ -31,16 +31,18 @@ import java.util.TimerTask;
 import io.kurumi.ntt.fragment.admin.Firewall;
 import com.pengrad.telegrambot.request.SendSticker;
 import com.pengrad.telegrambot.request.*;
+import cn.hutool.http.*;
+import cn.hutool.json.*;
 
 public class JoinCaptcha extends Fragment {
-	
+
 	@Override
 	public boolean msg() {
-		
+
 		return true;
-		
+
 	}
-	
+
 	final String POINT_AUTH = "join_auth";
 	final String POINT_INTERFERE = "join_interfere";
 	final String POINT_ANSWER = "join_answer";
@@ -127,9 +129,57 @@ public class JoinCaptcha extends Fragment {
 
 		GroupData data = GroupData.get(msg.chat());
 
+		User newMember = msg.message().newChatMembers()[0];
+
+		final UserData newData = UserData.get(newMember);
+
+		if (data.anti_halal != null) {
+
+			if (newData.name().matches(".+\\p{Arabic}.+")) {
+
+				msg.delete();
+
+				msg.kick();
+
+				return;
+
+			}
+
+		}
+
+		if (data.backhole != null) {
+			
+			if (Firewall.block.containsId(newData.id)) {
+				
+				msg.kick(true);
+				
+				msg.delete();
+				
+			}
+			
+		}
+		
 		if (msg.message().newChatMembers() != null) {
 
 			if (data.join_captcha == null) {
+
+				if (data.cas_spam != null) {
+
+					String result = HttpUtil.get("https://combot.org/api/cas/check?user_id=" + newData.id);
+
+					if (result != null) {
+
+						if (new JSONObject(result).getBool("ok",false)) {
+
+							msg.kick(true);
+
+							msg.send(newData.userName() + " 在 Combot Anit-Spam 黑名单内，已封锁。","详情请查看 : https://combot.org/cas/query?u=" + newData.id).async();
+
+						}
+
+					}
+
+				}
 
 				if (data.welcome == null) return;
 
@@ -269,81 +319,74 @@ public class JoinCaptcha extends Fragment {
 
 				}
 
-				return;
 
-			}
+			} else {
 
-			User newMember = msg.message().newChatMembers()[0];
+				if (!user.id.equals(newData.id)) return;
 
-			final UserData newData = UserData.get(newMember);
+				if (data.waitForCaptcha == null) {
 
-			if (!user.id.equals(newData.id)) return;
+					data.waitForCaptcha = new ArrayList<>();
 
-			if (data.waitForCaptcha == null) {
+					data.waitForCaptcha.add(user.id);
 
-				data.waitForCaptcha = new ArrayList<>();
+				} else if (!data.waitForCaptcha.contains(user.id)) {
 
-				data.waitForCaptcha.add(user.id);
-
-			} else if (!data.waitForCaptcha.contains(user.id)) {
-
-				data.waitForCaptcha.add(user.id);
-
-			}
-
-			if (data.passive_mode != null) {
-
-				msg.restrict();
-
-				if (data.delete_service_msg != null) {
-
-					SendResponse resp = msg.send("你好，新成员 " + newData.userName() + " 为确保群组安全，已将你暂时禁言。请点击下方按钮开始验证。")
-						.buttons(new ButtonMarkup() {{
-
-								newButtonLine("开始验证",POINT_AUTH,user.id);
-
-								newButtonLine().newButton("通过",POINT_ACC,user.id).newButton("滥权",POINT_REJ,user.id);
-
-							}}).html().exec();
-
-					if (resp.isOk()) {
-
-						if (data.passive_msg == null) data.passive_msg = new HashMap<>();
-						data.passive_msg.put(user.id.toString(),resp.message().messageId());
-
-					}
-
-				} else {
-
-					SendResponse resp = msg.reply("新成员你好，为确保群组安全，已将你暂时禁言。请点击下方按钮开始验证。")
-						.buttons(new ButtonMarkup() {{
-
-								newButtonLine("开始验证",POINT_AUTH,user.id);
-
-								newButtonLine().newButton("通过",POINT_ACC,user.id).newButton("滥权",POINT_REJ,user.id);
-
-							}}).exec();
-
-					if (resp.isOk()) {
-
-						if (data.passive_msg == null) data.passive_msg = new HashMap<>();
-						data.passive_msg.put(user.id.toString(),resp.message().messageId());
-
-					}
+					data.waitForCaptcha.add(user.id);
 
 				}
 
-				return;
+				if (data.passive_mode != null) {
+
+					msg.restrict();
+
+					if (data.delete_service_msg != null) {
+
+						SendResponse resp = msg.send("你好，新成员 " + newData.userName() + " 为确保群组安全，已将你暂时禁言。请点击下方按钮开始验证。")
+							.buttons(new ButtonMarkup() {{
+
+									newButtonLine("开始验证",POINT_AUTH,user.id);
+
+									newButtonLine().newButton("通过",POINT_ACC,user.id).newButton("滥权",POINT_REJ,user.id);
+
+								}}).html().exec();
+
+						if (resp.isOk()) {
+
+							if (data.passive_msg == null) data.passive_msg = new HashMap<>();
+							data.passive_msg.put(user.id.toString(),resp.message().messageId());
+
+						}
+
+					} else {
+
+						SendResponse resp = msg.reply("新成员你好，为确保群组安全，已将你暂时禁言。请点击下方按钮开始验证。")
+							.buttons(new ButtonMarkup() {{
+
+									newButtonLine("开始验证",POINT_AUTH,user.id);
+
+									newButtonLine().newButton("通过",POINT_ACC,user.id).newButton("滥权",POINT_REJ,user.id);
+
+								}}).exec();
+
+						if (resp.isOk()) {
+
+							if (data.passive_msg == null) data.passive_msg = new HashMap<>();
+							data.passive_msg.put(user.id.toString(),resp.message().messageId());
+
+						}
+
+					}
+
+					return;
+
+				}
+
+				startAuth(user,msg,data,null);
 
 			}
 
-			startAuth(user,msg,data,null);
-
 		} else if (msg.message().leftChatMember() != null) {
-
-			User newMember = msg.message().leftChatMember();
-			
-			final UserData newData = UserData.get(newMember);
 
 			final HashMap<Long, AuthCache> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, AuthCache>();
 
@@ -1124,6 +1167,26 @@ public class JoinCaptcha extends Fragment {
 			execute(new DeleteMessage(msg.chatId(),gd.last_join_msg));
 
 			gd.last_join_msg = null;
+
+		}
+
+		if (gd.cas_spam != null) {
+
+			String result = HttpUtil.get("https://combot.org/api/cas/check?user_id=" + newData.id);
+
+			if (result != null) {
+
+				if (new JSONObject(result).getBool("ok",false)) {
+
+					msg.kick(true);
+
+					msg.send(user.userName() + " 在 Combot Anit-Spam 黑名单内，已封锁。","详情请查看 : https://combot.org/cas/query?u=" + user.id).async();
+
+					return;
+
+				}
+
+			}
 
 		}
 
