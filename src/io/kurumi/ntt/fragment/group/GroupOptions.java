@@ -920,11 +920,11 @@ public class GroupOptions extends Fragment {
 
 										if (time - 30 > 20) {
 
-												data.captcha_time = 20;
+												data.captcha_time = time  - 30;
 
 										} else {
 
-												data.captcha_time = time - 30;
+												data.captcha_time = 20;
 
 										}
 
