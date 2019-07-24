@@ -108,10 +108,6 @@ public class GroupFunction extends Fragment {
 
 					}
 
-				} else if (data.delete_service_msg != null) {
-
-					msg.delete();
-
 				}
 
 			} else if (msg.sticker() != null && data.no_sticker != null) {
