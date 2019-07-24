@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import com.google.gson.*;
+import io.kurumi.ntt.utils.*;
 
 /**
  * stas
@@ -64,9 +66,23 @@ public class TelegramBotClient {
             OkHttpClient client = getOkHttpClient(request);
             Response response = client.newCall(createRequest(request)).execute();
 			String json = response.body().string();
-            R result = gson.fromJson(json, request.getResponseType());
-			result.json = json;
-			return result;
+			
+            try {
+				
+				R result = gson.fromJson(json,request.getResponseType());
+				
+				result.json = json;
+				
+				return result;
+				
+			} catch (JsonSyntaxException e) {
+				
+				BotLog.error("回复解析失败\n\n" + json,e);
+				
+			}
+
+			return null;
+			
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
