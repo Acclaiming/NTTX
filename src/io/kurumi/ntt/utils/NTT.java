@@ -501,8 +501,6 @@ public class NTT {
 
                         if (message != null) message.delete();
 						
-                      //  if (!message.delete()) return;
-
                     }
 
                 }

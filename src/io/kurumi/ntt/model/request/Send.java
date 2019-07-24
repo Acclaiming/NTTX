@@ -209,8 +209,6 @@ public class Send extends AbstractSend<Send> {
 
     public void failedWith(final long delay) {
 
-		fork(origin == null ? null : "exists").async();
-
 		SendResponse resp = exec();
 
 		if (resp.isOk()) {

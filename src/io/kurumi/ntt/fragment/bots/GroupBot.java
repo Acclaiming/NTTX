@@ -35,13 +35,13 @@ public class GroupBot extends UserBotFragment {
 
 			if (me.id().equals(msg.message().newChatMembers()[0].id())) {
 
-				return PROCESS_REJECT;
+				return PROCESS_SYNC;
 
 			}
 
 		}
 
-		return PROCESS_SYNC;
+		return PROCESS_REJECT;
 
 	}
 
