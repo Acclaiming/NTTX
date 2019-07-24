@@ -52,7 +52,7 @@ public class Send extends AbstractSend<Send> {
 
         super(fragment);
 
-        request = new SendMessage(chatId,ArrayUtil.join(msg,"\n"));
+        request = new SendMessage(chatId,ArrayUtil.join(msg,"\n").replace("\t",""));
 
         this.fragment = fragment;
 
