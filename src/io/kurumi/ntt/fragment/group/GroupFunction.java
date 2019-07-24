@@ -37,27 +37,7 @@ public class GroupFunction extends Fragment {
 
 			} else if (msg.message().leftChatMember() != null) {
 
-				if (data.delete_service_msg != null) {
-
-					if (data.delete_service_msg == 0) {
-
-						if (data.last_service_msg != null) {
-
-							executeAsync(msg.update,new DeleteMessage(msg.chatId(),data.last_service_msg));
-
-						}
-
-						data.last_service_msg = msg.messageId();
-
-					} else {
-
-						data.last_service_msg = null;
-
-						msg.delete();
-
-					}
-
-				} else if (user.id.equals(origin.me.id())) {
+				if (data.delete_service_msg != null || user.id.equals(origin.me.id())) {
 
 					msg.delete();
 
@@ -103,7 +83,7 @@ public class GroupFunction extends Fragment {
 					}
 
 					data.waitForCaptcha.remove(user.id);
-					
+
 				} else if (data.no_invite_bot != null && newUser.isBot()) {
 
 					msg.delete();

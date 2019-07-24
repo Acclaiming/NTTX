@@ -342,14 +342,6 @@ public class JoinCaptcha extends Fragment {
 		} else if (msg.message().leftChatMember() != null) {
 
 			User newMember = msg.message().leftChatMember();
-
-			if (user.id.equals(origin.me.id())) {
-				
-				msg.delete();
-				
-				return;
-				
-			}
 			
 			final UserData newData = UserData.get(newMember);
 
