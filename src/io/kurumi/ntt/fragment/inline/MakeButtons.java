@@ -24,13 +24,21 @@ public class MakeButtons extends Fragment {
 	
 	@Override
 	public void onQuery(UserData user,Query inlineQuery) {
-
+		
 		if (StrUtil.isBlank(inlineQuery.text)) {
 
 			return;
 
 		}
 
+		if (user.blocked()) {
+
+			executeAsync(inlineQuery.update,inlineQuery.article("你不能这么做 (为什么？)",":(",null,null).reply().cacheTime(114514));
+
+			return;
+
+		}
+		
 		String text = inlineQuery.text;
 
 		boolean html = false;
