@@ -175,7 +175,15 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     @Override
     public void start() {
 
-        super.start();
+        try {
+			
+			super.start();
+			
+		} catch (Exception e) {
+			
+			return;
+			
+		}
 
         startTasks();
 

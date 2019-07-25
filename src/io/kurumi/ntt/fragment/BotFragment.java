@@ -880,7 +880,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 	}
 
-	public void start() {
+	public void start() throws Exception {
 
 		reload();
 
