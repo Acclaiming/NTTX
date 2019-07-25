@@ -39,9 +39,15 @@ public class FeedFetchTask extends TimerTask {
 
 			sites.addAll(info.subscriptions);
 
-			if (first || info.error != null) {
+			if (info.error != null) {
 
-				first = false;
+				if (first) {
+
+					first = false;
+
+					break;
+
+				}
 
 				for (Map.Entry<String,RssSub.ChannelRss.FeedError> error : info.error.entrySet()) {
 
@@ -119,7 +125,7 @@ public class FeedFetchTask extends TimerTask {
 
 
 				for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions",info.id)) {
-					
+
 					if (channel.error != null) {
 
 						if (channel.error.remove(url) != null) {
