@@ -85,7 +85,7 @@ public class FeedFetchTask extends TimerTask {
 
 				}
 
-				if (resp.isOk()) {
+				if (!resp.isOk()) {
 
 					StringBuilder error = new StringBuilder();
 

@@ -172,7 +172,7 @@ public class RssSub extends Fragment {
 
 				}
 
-				if (resp.isOk()) {
+				if (!resp.isOk()) {
 
 					StringBuilder error = new StringBuilder();
 
@@ -256,7 +256,7 @@ public class RssSub extends Fragment {
 
 				}
 
-				if (resp.isOk()) {
+				if (!resp.isOk()) {
 
 					StringBuilder error = new StringBuilder();
 
