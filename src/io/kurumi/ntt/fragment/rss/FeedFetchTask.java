@@ -39,7 +39,7 @@ public class FeedFetchTask extends TimerTask {
 
 			sites.addAll(info.subscriptions);
 
-			if (first && info.error != null) {
+			if (first || info.error != null) {
 
 				first = false;
 
