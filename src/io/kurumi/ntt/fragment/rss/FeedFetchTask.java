@@ -29,6 +29,11 @@ import cn.hutool.crypto.digest.MD5;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.pengrad.telegrambot.response.*;
 import java.util.*;
+import com.rometools.rome.feed.synd.*;
+import com.rometools.rome.io.*;
+import cn.hutool.http.*;
+import java.io.*;
+import cn.hutool.core.io.*;
 
 public class FeedFetchTask extends TimerTask {
 
@@ -43,10 +48,6 @@ public class FeedFetchTask extends TimerTask {
 	}
 
 	public static String USER_AGENT = "NTT RSS Fetcher By Kazama Wataru (https://t.me/NTT_X)";
-
-	public static FeedFetcher fetcher = new HttpClientFeedFetcher();
-
-	static { fetcher.setUserAgent(USER_AGENT); }
 
 	int step = 0;
 
@@ -63,13 +64,13 @@ public class FeedFetchTask extends TimerTask {
 			if (info.error != null) {
 
 				for (Map.Entry<String,RssSub.ChannelRss.FeedError> error : info.error.entrySet()) {
-					
+
 					if (System.currentTimeMillis() -  error.getValue().startAt > 6 * 60 * 60 * 1000) {
-						
+
 						sites.add(error.getKey());
-						
+
 					}
-					
+
 				}
 
 			}
@@ -92,7 +93,45 @@ public class FeedFetchTask extends TimerTask {
 
 			try {
 
-				SyndFeed feed = fetcher.retrieveFeed(new URL(url));
+				SyndFeedInput input = new SyndFeedInput();
+
+				HttpResponse resp;
+
+				try {
+
+					resp = HttpUtil.createGet(url).header(Header.USER_AGENT,"NTT Feed Fetcher ( https://github.com/HiedaNaKan/NTTools)").execute();
+
+				} catch (IORuntimeException ex) {
+
+					fetchError(url,ex);
+
+					continue;
+
+				}
+
+				if (resp.isOk()) {
+
+					StringBuilder error = new StringBuilder();
+
+					error.append("HTTP ERROR ").append(resp.getStatus());
+
+					String content = resp.body();
+
+					if (!StrUtil.isBlank(content)) {
+
+						error.append(" : \n\n");
+
+						error.append(content);
+
+					}
+
+					fetchError(url,new Exception(error.toString()));
+
+					continue;
+
+				}
+
+				SyndFeed feed = input.build(new StringReader(resp.body()));
 
 				RssSub.RssInfo info = RssSub.info.getById(url);
 
@@ -157,15 +196,11 @@ public class FeedFetchTask extends TimerTask {
 
 				}
 
-			} catch (FetcherException e) {
-
-				fetchError(url,e);
-
 			} catch (FeedException e) {
 
 				fetchError(url,e);
 
-			} catch (IOException e) {} catch (IllegalArgumentException e) {}
+			} catch (IllegalArgumentException e) {}
 
 
 
