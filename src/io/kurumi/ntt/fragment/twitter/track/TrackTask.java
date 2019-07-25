@@ -193,7 +193,7 @@ public class TrackTask extends TimerTask {
 
     public static void start() {
 
-        BotFragment.trackTimer.scheduleAtFixedRate(INSTANCE,new Date(System.currentTimeMillis() + 5 * 60 * 1000),3 * 60 * 1000);
+        BotFragment.trackTimer.scheduleAtFixedRate(INSTANCE,new Date(System.currentTimeMillis() + 5 * 60 * 1000),60 * 1000);
 
     }
 
@@ -212,7 +212,7 @@ public class TrackTask extends TimerTask {
 
 		for (TAuth account : all) {
 
-			if (Firewall.block.containsId(account.id)) {
+			if (Firewall.block.containsId(account.user)) {
 				
 				remove.add(account);
 				
