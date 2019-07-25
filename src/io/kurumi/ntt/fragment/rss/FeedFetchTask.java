@@ -27,6 +27,8 @@ public class FeedFetchTask extends TimerTask {
 
 	int step = 0;
 
+	static boolean first = true;
+
 	@Override
 	public void run() {
 
@@ -37,7 +39,9 @@ public class FeedFetchTask extends TimerTask {
 
 			sites.addAll(info.subscriptions);
 
-			if (info.error != null) {
+			if (first && info.error != null) {
+
+				first = false;
 
 				for (Map.Entry<String,RssSub.ChannelRss.FeedError> error : info.error.entrySet()) {
 
@@ -112,6 +116,23 @@ public class FeedFetchTask extends TimerTask {
 				RssSub.RssInfo info = RssSub.info.getById(url);
 
 				//BotLog.debug("拉取 " + feed.getTitle());
+
+
+				for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions",info.id)) {
+					
+					if (channel.error != null) {
+
+						if (channel.error.remove(url) != null) {
+
+							if (channel.error.isEmpty()) channel.error = null;
+
+							RssSub.channel.setById(channel.id,channel);
+
+						}
+
+					}
+
+				}
 
 				if (info == null) {
 
