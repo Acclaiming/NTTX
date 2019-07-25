@@ -9,7 +9,6 @@ import io.kurumi.ntt.fragment.admin.*;
 import io.kurumi.ntt.fragment.base.*;
 import io.kurumi.ntt.fragment.bots.*;
 import io.kurumi.ntt.fragment.debug.*;
-import io.kurumi.ntt.fragment.graph.*;
 import io.kurumi.ntt.fragment.group.*;
 import io.kurumi.ntt.fragment.idcard.*;
 import io.kurumi.ntt.fragment.inline.*;
@@ -299,7 +298,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		// RSS
 
 		addFragment(new RssSub());
-
 
 		// IC
 
