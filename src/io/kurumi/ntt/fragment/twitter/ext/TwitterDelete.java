@@ -59,6 +59,14 @@ public class TwitterDelete extends Fragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
+		if (user.blocked()) {
+
+			msg.send("你不能这么做 (为什么？)").async();
+
+			return;
+
+		}
+		
 		requestTwitter(user,msg);
 
 	}

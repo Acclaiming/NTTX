@@ -53,6 +53,14 @@ public class ListExport extends Fragment {
 	@Override
 	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
+		if (user.blocked()) {
+
+			msg.send("你不能这么做 (为什么？)").async();
+
+			return;
+
+		}
+		
 		PointData data = setPrivatePointData(user,POINT_LIST_EXPORT,account);
 
 		msg

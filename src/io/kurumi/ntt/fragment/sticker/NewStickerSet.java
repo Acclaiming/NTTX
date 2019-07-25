@@ -55,6 +55,14 @@ public class NewStickerSet extends Fragment {
 		@Override
 		public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
+			if (user.blocked()) {
+
+				msg.send("你不能这么做 (为什么？)").async();
+
+				return;
+
+			}
+			
 				PointData data = new CreateSet().with(msg);
 
 				setPrivatePoint(user,POINT_CREATE_SET,data);
