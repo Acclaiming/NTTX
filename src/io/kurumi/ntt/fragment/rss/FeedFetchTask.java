@@ -47,7 +47,7 @@ public class FeedFetchTask extends TimerTask {
 
 					if (System.currentTimeMillis() -  error.getValue().startAt > 6 * 60 * 60 * 1000) {
 
-						sites.add(error.getKey());
+						errors.add(error.getKey());
 
 					}
 
