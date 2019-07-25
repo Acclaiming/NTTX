@@ -157,7 +157,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         if ("start".equals(function)) {
 
-            msg.send("start failed successfully ~","快戳咱的说明书 : https://manual.kurumi.io/").async();
+            msg.send("start failed successfully ~","\n快戳 " +Html.b("说明书") + " ！https://manual.kurumi.io/").async();
 			
 			} else if ("help".equals(function)) {
 
