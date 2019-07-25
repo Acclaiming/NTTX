@@ -44,7 +44,7 @@ public class FeedFetchTask extends TimerTask {
 
 	public static String USER_AGENT = "NTT RSS Fetcher By Kazama Wataru (https://t.me/NTT_X)";
 
-	public static FeedFetcher fetcher = new HttpClientFeedFetcher(MongoFeedCache.INSTANCE);
+	public static FeedFetcher fetcher = new HttpClientFeedFetcher();
 
 	static { fetcher.setUserAgent(USER_AGENT); }
 
