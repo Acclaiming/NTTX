@@ -12,12 +12,16 @@ import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.LeaveChat;
 import com.pengrad.telegrambot.request.KickChatMember;
 import java.util.List;
+import java.util.*;
 
 public class UserBotFragment extends BotFragment {
 
 	private UserBot bot;
 
 	public Long botId;
+	
+	public static HashMap<Long,UserBotFragment> bots = new HashMap<>();
+	
 	private String userName;
     private String botToken;
 
@@ -36,6 +40,9 @@ public class UserBotFragment extends BotFragment {
 		bot = UserBot.data.getById(botId);
 
 		botId = bot.id;
+		
+		bots.put(botId,this);
+		
 		userName = bot.userName;
         botToken = bot.token;
         userId = bot.user;

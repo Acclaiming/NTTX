@@ -10,6 +10,9 @@ import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.utils.*;
 import java.io.*;
 import java.util.*;
+import io.kurumi.ntt.*;
+import io.kurumi.ntt.fragment.*;
+import io.kurumi.ntt.fragment.bots.*;
 
 public class FeedFetchTask extends TimerTask {
 
@@ -184,10 +187,18 @@ public class FeedFetchTask extends TimerTask {
 				for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions",info.id)) {
 
 					for (SyndEntry entry : posts) {
+						
+						Fragment sender = Launcher.INSTANCE;
+						
+						if (channel.fromBot != null) {
+							
+							sender = UserBotFragment.bots.get(channel.fromBot);
+							
+						}
+						
+						Send request = new Send(sender,channel.id,FeedHtmlFormater.format(channel.format,feed,entry));
 
-						Send request = new Send(channel.id,FeedHtmlFormater.format(channel.format,feed,entry));
-
-						if (channel.format == 0 || channel.preview) {
+						if (channel.format == 9 || channel.preview) {
 
 							request.enableLinkPreview();
 

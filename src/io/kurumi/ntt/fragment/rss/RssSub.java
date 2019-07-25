@@ -42,6 +42,8 @@ public class RssSub extends Fragment {
 
 		public Map<String,FeedError> error;
 
+		public Long fromBot;
+		
 		public static class FeedError {
 
 			public Long startAt;
