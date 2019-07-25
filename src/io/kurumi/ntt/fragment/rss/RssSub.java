@@ -1,6 +1,8 @@
 package io.kurumi.ntt.fragment.rss;
 
+import cn.hutool.core.io.*;
 import cn.hutool.core.util.*;
+import cn.hutool.http.*;
 import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.request.*;
 import com.pengrad.telegrambot.response.*;
@@ -27,7 +29,7 @@ public class RssSub extends Fragment {
 		public String id;
 		public String title;
 		public String last;
-		
+
 	}
 
 	public static class ChannelRss {
@@ -41,15 +43,15 @@ public class RssSub extends Fragment {
 		public List<String> subscriptions;
 
 		public Map<String,FeedError> error;
-		
+
 		public static class FeedError {
-			
+
 			public Long startAt;
-		
+
 			public String errorMsg;
-			
+
 		}
-		
+
 	}
 
 	@Override
@@ -71,7 +73,7 @@ public class RssSub extends Fragment {
 			return;
 
 		}
-		
+
 		if (params.length == 0) { msg.invalidParams("channelId").exec(); return;}
 
 		long channelId;
@@ -156,7 +158,46 @@ public class RssSub extends Fragment {
 
 			try {
 
-				SyndFeed feed = FeedFetchTask.fetcher.retrieveFeed(new URL(params[1]));
+				SyndFeedInput input = new SyndFeedInput();
+
+				HttpResponse resp;
+
+				try {
+
+					resp = HttpUtil.createGet(params[1]).header(Header.USER_AGENT,"NTT Feed Fetcher ( https://github.com/HiedaNaKan/NTTools)").execute();
+
+				} catch (IORuntimeException ex) {
+
+					msg.send("拉取失败 :",ex.getMessage()).async();
+
+					return;
+
+				}
+
+				if (resp.isOk()) {
+
+					StringBuilder error = new StringBuilder();
+
+					error.append("HTTP ERROR ").append(resp.getStatus());
+
+					String content = resp.body();
+
+					if (!StrUtil.isBlank(content)) {
+
+						error.append(" : \n\n");
+
+						error.append(content);
+
+					}
+
+
+					msg.send("拉取失败",error.toString()).async();
+
+					return;
+
+				}
+
+				SyndFeed feed = input.build(new StringReader(resp.body()));
 
 				msg.send("正在输出 " + Html.a(feed.getTitle(),feed.getLink())).html().exec();
 
@@ -170,22 +211,11 @@ public class RssSub extends Fragment {
 
 					}
 
-					request.html().async();
+					request.html().exec();
 
 				}
 
-
-			} catch (FetcherException e) {
-
-				msg.send("拉取出错 : ",BotLog.parseError(e)).exec();
-
-				return;
-
 			} catch (FeedException e) {
-
-				msg.send("拉取出错 : ",BotLog.parseError(e)).exec();
-
-			} catch (IOException e) {
 
 				msg.send("拉取出错 : ",BotLog.parseError(e)).exec();
 
@@ -212,7 +242,46 @@ public class RssSub extends Fragment {
 
 			try {
 
-				SyndFeed feed = FeedFetchTask.fetcher.retrieveFeed(new URL(params[1]));
+				SyndFeedInput input = new SyndFeedInput();
+
+				HttpResponse resp;
+
+				try {
+
+					resp = HttpUtil.createGet(params[1]).header(Header.USER_AGENT,"NTT Feed Fetcher ( https://github.com/HiedaNaKan/NTTools)").execute();
+
+				} catch (IORuntimeException ex) {
+
+					msg.send("拉取失败 :",ex.getMessage()).async();
+
+					return;
+
+				}
+
+				if (resp.isOk()) {
+
+					StringBuilder error = new StringBuilder();
+
+					error.append("HTTP ERROR ").append(resp.getStatus());
+
+					String content = resp.body();
+
+					if (!StrUtil.isBlank(content)) {
+
+						error.append(" : \n\n");
+
+						error.append(content);
+
+					}
+
+
+					msg.send("拉取失败",error.toString()).async();
+
+					return;
+
+				}
+
+				SyndFeed feed = input.build(new StringReader(resp.body()));
 
 				if (conf.subscriptions.contains(params[1])) {
 
@@ -236,20 +305,10 @@ public class RssSub extends Fragment {
 
 				msg.send("订阅成功 : " + Html.a(feed.getTitle(),feed.getLink())).html().exec();
 
-			} catch (FetcherException e) {
-
-				msg.send("拉取出错 : " + BotLog.parseError(e)).exec();
-
-				return;
-
 			} catch (FeedException e) {
 
 				msg.send("拉取出错 : " + BotLog.parseError(e)).exec();
-
-			} catch (IOException e) {
-
-				msg.send("拉取出错 : " + BotLog.parseError(e)).exec();
-
+				
 			} catch (IllegalArgumentException e) {
 
 				msg.send("无效的RSS链接").exec();
