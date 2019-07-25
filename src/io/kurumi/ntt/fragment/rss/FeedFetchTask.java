@@ -1,39 +1,15 @@
 package io.kurumi.ntt.fragment.rss;
 
-import com.rometools.fetcher.FeedFetcher;
-import com.rometools.fetcher.FetcherEvent;
-import com.rometools.fetcher.FetcherException;
-import com.rometools.fetcher.FetcherListener;
-import com.rometools.fetcher.impl.HttpURLFeedFetcher;
-import com.rometools.rome.feed.synd.SyndEntry;
-import com.rometools.rome.feed.synd.SyndFeed;
-import com.rometools.rome.io.FeedException;
-import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.utils.Html;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-import io.kurumi.ntt.utils.BotLog;
-import com.rometools.fetcher.impl.HttpClientFeedFetcher;
-import java.util.Collections;
-import cn.hutool.http.HtmlUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.ReUtil;
-import cn.hutool.crypto.digest.MD5;
-import cn.hutool.crypto.digest.DigestUtil;
-import com.pengrad.telegrambot.response.*;
-import java.util.*;
+import cn.hutool.core.io.*;
+import cn.hutool.core.util.*;
+import cn.hutool.crypto.digest.*;
+import cn.hutool.http.*;
 import com.rometools.rome.feed.synd.*;
 import com.rometools.rome.io.*;
-import cn.hutool.http.*;
+import io.kurumi.ntt.model.request.*;
+import io.kurumi.ntt.utils.*;
 import java.io.*;
-import cn.hutool.core.io.*;
+import java.util.*;
 
 public class FeedFetchTask extends TimerTask {
 

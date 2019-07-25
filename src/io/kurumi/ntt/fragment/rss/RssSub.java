@@ -6,7 +6,6 @@ import cn.hutool.http.*;
 import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.request.*;
 import com.pengrad.telegrambot.response.*;
-import com.rometools.fetcher.*;
 import com.rometools.rome.feed.synd.*;
 import com.rometools.rome.io.*;
 import io.kurumi.ntt.db.*;
@@ -16,7 +15,6 @@ import io.kurumi.ntt.model.*;
 import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.utils.*;
 import java.io.*;
-import java.net.*;
 import java.util.*;
 
 public class RssSub extends Fragment {
