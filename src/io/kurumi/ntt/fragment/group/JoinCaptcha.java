@@ -1090,11 +1090,11 @@ public class JoinCaptcha extends Fragment {
 
 			if (POINT_ACC.equals(point)) {
 
-				success(user,callback,auth,gd);
+				success(UserData.get(target),callback,auth,gd);
 
 			} else {
 
-				failed(user,callback,auth,gd,true);
+				failed(UserData.get(target),callback,auth,gd,true);
 
 			}
 
