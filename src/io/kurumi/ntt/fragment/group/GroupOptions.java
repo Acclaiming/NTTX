@@ -122,6 +122,14 @@ public class GroupOptions extends Fragment {
 		@Override
 		public void onFunction(UserData user,final Msg msg,String function,String[] params) {
 
+			if (user.blocked()) {
+
+				msg.send("你不能这么做 (为什么？)").async();
+
+				return;
+
+			}
+			
 				final GroupData data = GroupData.get(msg.chat());
 
 						if (!NTT.isGroupAdmin(this,msg.chatId(),user.id)) {

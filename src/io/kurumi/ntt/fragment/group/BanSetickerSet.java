@@ -31,6 +31,14 @@ public class BanSetickerSet extends Fragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
+		if (user.blocked()) {
+
+			msg.send("你不能这么做 (为什么？)").async();
+
+			return;
+
+		}
+		
 		if ("banss".equals(function)) {
 
 			if (NTT.checkGroupAdmin(msg)) return;

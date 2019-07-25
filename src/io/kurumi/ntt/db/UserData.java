@@ -8,6 +8,7 @@ import java.util.*;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.fragment.admin.*;
 
 public class UserData {
 
@@ -147,6 +148,12 @@ public class UserData {
         return contactable;
 
     }
+	
+	public boolean blocked() {
+		
+		return Firewall.block.containsId(id);
+		
+	}
 
     public String formattedName() {
 
