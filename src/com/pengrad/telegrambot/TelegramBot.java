@@ -60,7 +60,7 @@ public class TelegramBot {
 
 				*/
 				
-				BotLog.error("发送执行错误 \n\n" + request.toWebhookResponse(),e);
+				// BotLog.error("发送执行错误 \n\n" + request.toWebhookResponse(),e);
 
 				return null;
 				

@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.*;
 
 import cn.hutool.core.lang.Console;
 import java.io.File;
+import com.pengrad.telegrambot.request.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -153,7 +154,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
 		super.onFunction(user,msg,function,params);
-
+		
         if ("start".equals(function)) {
 
             msg.send("start failed successfully ~","\n快戳 " + Html.b("说明书") + " ！https://manual.kurumi.io/").html().async();
