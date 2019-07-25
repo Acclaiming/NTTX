@@ -1429,11 +1429,11 @@ public class JoinCaptcha extends Fragment {
 
 		if (gd.fail_ban == null) {
 
-			msg.kick();
+			msg.kick(user.id);
 
 		} else {
 
-			msg.kick(true);
+			msg.kick(user.id,true);
 
 		}
 
