@@ -156,9 +156,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         if ("start".equals(function)) {
 
-            msg.send("start failed successfully ~","\n快戳 " +Html.b("说明书") + " ！https://manual.kurumi.io/").async();
-			
-			} else if ("help".equals(function)) {
+            msg.send("start failed successfully ~","\n快戳 " + Html.b("说明书") + " ！https://manual.kurumi.io/").html().async();
+
+		} else if ("help".equals(function)) {
 
             msg.send("快看说明书！ https://manual.kurumi.io/ ~").publicFailed();
 
@@ -235,7 +235,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(new Users());
 		addFragment(new Stat());
 		addFragment(new DebugMsg());
- 
+
 		addFragment(new DebugUser());
         addFragment(new DebugStatus());
 		addFragment(new DebugStickerSet());
@@ -261,7 +261,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new TwitterDelete());
 		addFragment(new ListExport());
 		addFragment(new ListImport());
-		
+
 		addFragment(new Disappeared());
 
 		// GROUP
