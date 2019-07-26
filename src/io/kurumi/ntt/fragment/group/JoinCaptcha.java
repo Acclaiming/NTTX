@@ -651,16 +651,16 @@ public class JoinCaptcha extends Fragment {
 			super(input);
 
 			this.data = data;
-			
+
 			if (!input) {
 
-			for (GroupData.CustomItem item : data.custom_items) {
+				for (GroupData.CustomItem item : data.custom_items) {
 
-				if (item.isValid) validCode.add(item.text);
-				else invalidCode.add(item.text);
+					if (item.isValid) validCode.add(item.text);
+					else invalidCode.add(item.text);
 
-			}
-			
+				}
+
 			}
 
 		}
@@ -1043,7 +1043,7 @@ public class JoinCaptcha extends Fragment {
 	public void onCallback(final UserData user,Callback callback,String point,String[] params) {
 
 		if (params.length == 0) return;
-		
+
 		long target = NumberUtil.parseInt(params[0]);
 
 		if (POINT_AUTH.equals(point)) {

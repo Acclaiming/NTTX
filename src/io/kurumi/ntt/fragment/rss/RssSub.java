@@ -167,7 +167,7 @@ public class RssSub extends Fragment {
 
 					resp = HttpUtil.createGet(params[1]).header(Header.USER_AGENT,"NTT Feed Fetcher ( https://github.com/HiedaNaKan/NTTools)").execute();
 
-				} catch (IORuntimeException ex) {
+				} catch (HttpException ex) {
 
 					msg.send("拉取失败 :",ex.getMessage()).async();
 
