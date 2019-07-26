@@ -651,12 +651,16 @@ public class JoinCaptcha extends Fragment {
 			super(input);
 
 			this.data = data;
+			
+			if (!input) {
 
 			for (GroupData.CustomItem item : data.custom_items) {
 
 				if (item.isValid) validCode.add(item.text);
 				else invalidCode.add(item.text);
 
+			}
+			
 			}
 
 		}

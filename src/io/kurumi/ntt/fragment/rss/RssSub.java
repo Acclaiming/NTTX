@@ -16,6 +16,7 @@ import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.utils.*;
 import java.io.*;
 import java.util.*;
+import io.kurumi.ntt.*;
 
 public class RssSub extends Fragment {
 
@@ -228,8 +229,6 @@ public class RssSub extends Fragment {
 
 		}
 
-
-
 		if ("rss_sub".equals(function)) {
 
 			if (params.length < 2) {
@@ -292,7 +291,13 @@ public class RssSub extends Fragment {
 				}
 
 				conf.subscriptions.add(params[1]);
+			
+				if (origin != Launcher.INSTANCE) {
 
+					conf.fromBot = origin.me.id();
+
+				}
+				
 				channel.setById(channelId,conf);
 
 				RssInfo rss = new RssSub.RssInfo();
@@ -301,6 +306,7 @@ public class RssSub extends Fragment {
 				rss.title = feed.getTitle();
 				rss.last = FeedFetchTask.generateSign(feed.getEntries().get(0));
 
+				
 				info.setById(rss.id,rss);
 
 				msg.send("订阅成功 : " + Html.a(feed.getTitle(),feed.getLink())).html().exec();
