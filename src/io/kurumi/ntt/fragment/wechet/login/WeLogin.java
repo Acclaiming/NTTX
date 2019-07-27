@@ -87,7 +87,11 @@ public class WeLogin extends Fragment {
 
 		if (loginResult.code == 200) {
 			
+			callback.alert("正在初始化");
+			
 			api.webwxnewloginpage(loginResult.redirectUri);
+			
+			callback.send("初始化完成...").exec();
 			
 			WeAuth auth = new WeAuth();
 			
