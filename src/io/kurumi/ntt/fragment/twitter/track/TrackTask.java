@@ -700,6 +700,8 @@ public class TrackTask extends TimerTask {
 
 			UserArchive archive  = UserArchive.get(id);
 
+			UserArchive.saveDisappeared(id);
+			
 			if (archive != null) {
 
 				if (StrUtil.isBlank(archive.bio)) {
