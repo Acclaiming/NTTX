@@ -64,12 +64,24 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		try {
 
+			BotDB.init(Env.DB_ADDRESS,Env.DB_PORT);
+
+		} catch (Exception ex) {
+
+			ex.printStackTrace();
+
+			return;
+
+		}
+
+		try {
+
 			BotServer.INSTANCE.start();
 
 		} catch (Exception e) {
 
 			e.printStackTrace();
-			
+
 			return;
 
 		}
@@ -93,14 +105,14 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 	@Override
 	public String getToken() {
-		
+
 		return Env.BOT_TOKEN;
-		
+
 	}
 
 	public AtomicBoolean stopeed = new AtomicBoolean(false);
 
- 
+
 	@Override
 	public void init(BotFragment origin) {
 
