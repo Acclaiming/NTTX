@@ -58,7 +58,7 @@ public class WeLogin extends Fragment {
 
 		button.newButtonLine("已经扫码",POIMT_LOGIN);
 
-		executeAsync(msg.update,new SendPhoto(msg.chatId(),bytes).caption("请扫码登录 有效期 1 - 7 天 (玄学)").replyMarkup(button.markup()));
+		execute(new SendPhoto(msg.chatId(),bytes).caption("请扫码登录 有效期 1 - 7 天 (玄学)").replyMarkup(button.markup()));
 
 	}
 
