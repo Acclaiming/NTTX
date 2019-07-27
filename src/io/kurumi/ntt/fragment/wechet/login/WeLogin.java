@@ -119,7 +119,11 @@ public class WeLogin extends Fragment {
 			
 			WeAuth.data.setById(user.id,auth);
 			
-			callback.send(new Gson().toJson(auth)).exec();
+			callback.alert("登录成功");
+			
+			callback.delete();
+			
+			callback.send(new Gson().toJson(auth,WeAuth.class)).exec();
 			
 		} else if (loginResult.code == 201 || loginResult.code == 408) {
 			
