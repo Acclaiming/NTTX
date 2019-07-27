@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.*;
 import cn.hutool.core.lang.Console;
 import java.io.File;
 import com.pengrad.telegrambot.request.*;
+import io.kurumi.ntt.fragment.wechet.login.WeLogin;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -284,6 +285,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		addFragment(new Idcard());
 
+		// WeChat
+		
+		addFragment(new WeLogin());
+		
     }
 
     @Override

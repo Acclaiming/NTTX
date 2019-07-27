@@ -10,6 +10,6 @@
     "debug_mode": false,
     "bot_token": "",
     "admins": [],
-    "log_channel": "-1001280962128"
+    "log_channel": "",
     "help_message": "快戳 <b>说明书</b>！ : https://manual.kurumi.io ("
 }
