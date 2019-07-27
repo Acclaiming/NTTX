@@ -1,6 +1,7 @@
 package io.kurumi.ntt.fragment.twitter.track;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import com.mongodb.client.FindIterable;
 import com.neovisionaries.i18n.CountryCode;
@@ -12,6 +13,7 @@ import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.db.Data;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.admin.Firewall;
 import io.kurumi.ntt.fragment.twitter.TApi;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
@@ -19,6 +21,7 @@ import io.kurumi.ntt.fragment.twitter.auto.AutoTask;
 import io.kurumi.ntt.fragment.twitter.status.MessagePoint;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
 import java.io.File;
 import java.util.ArrayList;
@@ -33,7 +36,6 @@ import twitter4j.User;
 
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
-import io.kurumi.ntt.fragment.admin.*;
 
 public class TrackTask extends TimerTask {
 
@@ -213,13 +215,13 @@ public class TrackTask extends TimerTask {
 		for (TAuth account : all) {
 
 			if (Firewall.block.containsId(account.user)) {
-				
+
 				remove.add(account);
-				
+
 				continue;
-				
+
 			}
-			
+
             TrackUI.TrackSetting setting = TrackUI.data.getById(account.id);
 
             if (setting == null) setting = new TrackUI.TrackSetting();
@@ -696,9 +698,25 @@ public class TrackTask extends TimerTask {
 
         } catch (TwitterException e) {
 
+			UserArchive archive  = UserArchive.get(id);
+
+			if (archive != null) {
+
+				if (StrUtil.isBlank(archive.bio)) {
+
+					new Send(Env.GROUP,"账号冻结 / 停用",Html.code(archive.name + " : @" + archive.screenName)).async();
+
+				} else {
+					
+					new Send(Env.GROUP,"账号冻结 / 停用",Html.code(archive.name + " : @" + archive.screenName + "\n\n简介 : " + archive.bio)).async();
+
+				}
+
+			}
+
             if (!notice) return;
 
-            StringBuilder msg = new StringBuilder(UserArchive.contains(id) ? UserArchive.get(id).urlHtml() : "无记录的用户 : (" + id + ")").append(" 取关了你\n\n状态异常 : ").append(NTT.parseTwitterException(e));
+            StringBuilder msg = new StringBuilder(archive != null ? archive.urlHtml() : "无记录的用户 : (" + id + ")").append(" 取关了你\n\n状态异常 : ").append(NTT.parseTwitterException(e));
 
             if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
