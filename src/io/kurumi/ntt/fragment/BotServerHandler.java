@@ -191,7 +191,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 		} else 	{
 
-			System.out.println(webhookResponse.toWebhookResponse());
+			// System.out.println(webhookResponse.toWebhookResponse());
 
 			FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,OK,Unpooled.copiedBuffer(webhookResponse.toWebhookResponse(),CharsetUtil.CHARSET_UTF_8));
 

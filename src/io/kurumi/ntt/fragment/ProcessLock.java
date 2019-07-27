@@ -7,53 +7,55 @@ import java.util.concurrent.TimeUnit;
 
 public class ProcessLock<T>  extends ReentrantLock {
 
-		public AtomicBoolean used = new AtomicBoolean(false);
-		
-		public T obj;
+	public AtomicBoolean used = new AtomicBoolean(false);
 
-		public Condition condition = newCondition();
+	public T obj;
 
-		public T waitFor() {
+	public Condition condition = newCondition();
 
-				try {
+	public T waitFor() {
+
+		try {
 
             lock();
 
-						condition.await(3 * 1000,TimeUnit.MILLISECONDS);
-						
-						return obj;
-						
+			condition.await(3 * 1000,TimeUnit.MILLISECONDS);
+
+			return obj;
+
         } catch (InterruptedException e) {
-            
-						return null;
-						
-        } finally {
-						
+
+			return null;
+
+        }
+		finally {
+
             unlock();
-						
+
         }
 
-		}
-		
-		public void send(T obj) {
-				
-				//if (used.getAndSet(true)) return;
-				
-				try {
+	}
+
+	public void send(T obj) {
+
+		//if (used.getAndSet(true)) return;
+
+		try {
 
             lock();
-						
-						this.obj = obj;
 
-						condition.signal();
+			this.obj = obj;
 
-        } finally {
+			condition.signal();
+
+        }
+		finally {
 
             unlock();
 
         }
-				
-		}
+
+	}
 
 }
 
