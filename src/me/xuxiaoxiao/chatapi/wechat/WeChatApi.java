@@ -25,7 +25,7 @@ import io.kurumi.ntt.Env;
 /**
  * 网页版微信全部接口
  */
-final class WeChatApi {
+public final class WeChatApi {
 
     private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
     private static final String[] HOSTS = {"wx.qq.com", "wx2.qq.com", "wx8.qq.com", "web.wechat.com", "web2.wechat.com"};

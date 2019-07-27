@@ -134,11 +134,11 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		} else if ("help".equals(function)) {
 
-            msg.send(Env.HELP_MESSAGE).publicFailed();
+            msg.send(Env.HELP_MESSAGE).html().publicFailed();
 
         } else if (!functions.containsKey(function) && msg.isPrivate()) {
 
-			msg.send("没有这个命令 " + function,Env.HELP_MESSAGE).failedWith(10 * 1000);
+			msg.send("没有这个命令 " + function,Env.HELP_MESSAGE).html().failedWith(10 * 1000);
 
 		}
 
