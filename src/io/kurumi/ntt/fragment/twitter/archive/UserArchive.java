@@ -131,10 +131,10 @@ public class UserArchive {
 
         if (user != null) {
 
-            user.isDisappeared = true;
-
+			user.read(null);
+			
             data.setById(da, user);
-
+			
         }
 
     }
