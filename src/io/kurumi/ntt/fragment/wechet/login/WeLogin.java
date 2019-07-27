@@ -83,11 +83,13 @@ public class WeLogin extends Fragment {
 		
 		WeChatApi api = loginCache.get(user.id);
 
+		callback.send("正在登....").exec();
+		
 		RspLogin loginResult = api.login();
 
 		if (loginResult.code == 200) {
 			
-			callback.alert("正在初始化");
+			callback.send("正在初始化").exec();
 			
 			api.webwxnewloginpage(loginResult.redirectUri);
 			
