@@ -391,9 +391,9 @@ public class TrackTask extends TimerTask {
 
 		List<Long> lostFriends = friends.containsId(account.id) ? friends.getById(account.id).ids : null;
         List<Long> newFriends = TApi.getAllFrIDs(api,account.id);
-
-		friends.setById(account.id,new IdsList(account.id,newFriends));
+		
 		followers.setById(account.id,new IdsList(account.id,newFollowers));
+		friends.setById(account.id,new IdsList(account.id,newFriends));
 
         //if (lostFolowers == null) lostFolowers = new LinkedList<>();
 		//if (lostFriends == null) lostFriends = new LinkedList<>();
@@ -421,7 +421,8 @@ public class TrackTask extends TimerTask {
 			}
 
 		}
-
+		
+		
 		if (lostFriends != null) {
 
 			List<Long> frr = new LinkedList<>();
@@ -581,6 +582,12 @@ public class TrackTask extends TimerTask {
             statusR.substring(0,statusR.length() - 1);
 
         }
+		
+		if (!statusR.trim().isEmpty()) {
+			
+			statusR = "\n" + statusR;
+			
+		}
 
         return statusR;
 
@@ -700,6 +707,8 @@ public class TrackTask extends TimerTask {
 
 			UserArchive archive  = UserArchive.get(id);
 
+			if (archive.isDisappeared) return;
+			
 			UserArchive.saveDisappeared(id);
 			
             if (!notice) return;
