@@ -105,14 +105,18 @@ public final class WeChatApi {
      *
      * @param url 登录url
      */
-    public void webwxnewloginpage(String url) {
+    public String webwxnewloginpage(String url) {
         String rspStr = XTools.http(httpExecutor,XRequest.GET(url)).string();
+		
         if (!XTools.strEmpty(rspStr) && REX_LOGIN.matcher(rspStr).find()) {
             this.uin = StrUtil.subBetween(rspStr,"<wxuin>","</wxuin>");
             this.sid = StrUtil.subBetween(rspStr,"<wxsid>","</wxsid>");
             this.skey = StrUtil.subBetween(rspStr,"<skey>","</skey>");
             this.passticket = StrUtil.subBetween(rspStr,"<pass_ticket>","</pass_ticket>");
         }
+		
+		return rspStr;
+		
     }
 
     /**

@@ -40,7 +40,7 @@ public class WeLogin extends Fragment {
 
 			msg.send("你已经登录，使用 /we_logout 登出。").exec();
 
-			return;
+			// return;
 
 		}
 
@@ -91,9 +91,7 @@ public class WeLogin extends Fragment {
 			
 			callback.send("正在初始化").exec();
 			
-			api.webwxnewloginpage(loginResult.redirectUri);
-			
-			callback.send("初始化完成...").exec();
+			callback.send(api.webwxnewloginpage(loginResult.redirectUri)).exec();
 			
 			WeAuth auth = new WeAuth();
 			
