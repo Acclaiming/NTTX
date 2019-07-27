@@ -33,7 +33,7 @@ public final class WeChatApi {
 
     private final long timeInit = System.currentTimeMillis();
     private final AtomicBoolean firstLogin = new AtomicBoolean(true);
-    private final XHttpExecutor httpExecutor = XConfigTools.supply(WXHttpExecutor.class.getName());
+    public final XHttpExecutor httpExecutor = XConfigTools.supply(toString());
 
     public String host;
     public String uin;
