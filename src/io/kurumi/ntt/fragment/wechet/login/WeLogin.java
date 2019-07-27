@@ -25,7 +25,7 @@ public class WeLogin extends Fragment {
 
 	}
 
-	HashMap<Long,WeChatApi> loginCache;
+	HashMap<Long,WeChatApi> loginCache = new HashMap<>();
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
