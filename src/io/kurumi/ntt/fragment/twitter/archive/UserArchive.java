@@ -155,11 +155,11 @@ public class UserArchive {
 			
 			if (StrUtil.isBlank(bio)) {
 
-				new Send(Env.GROUP,"账号冻结 / 停用",Html.code(name + " : @" + screenName)).async();
+				new Send(Env.LOG_CHANNEL,"账号冻结 / 停用",Html.code(name + " : @" + screenName)).html().async();
 
 			} else {
 				
-				new Send(Env.GROUP,"账号冻结 / 停用",Html.code(name + " : @" + screenName + "\n\n简介 : " + bio)).async();
+				new Send(Env.LOG_CHANNEL,"账号冻结 / 停用",Html.code(name + " : @" + screenName + "\n\n简介 : " + bio)).html().async();
 				
 			}
 			

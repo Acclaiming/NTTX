@@ -30,120 +30,121 @@ import static io.netty.handler.codec.http.HttpVersion.*;
 
 public class BotServer {
 
-		public static BotServer INSTANCE;
+	public static BotServer INSTANCE;
 
-		public static HashMap<String, BotFragment> fragments = new HashMap<>();
+	public static HashMap<String, BotFragment> fragments = new HashMap<>();
 
-		public int port;
-		public File socketFile;
+	public int port;
+	public File socketFile;
     public  String domain;
 
-		private static Channel server;
+	private static Channel server;
 
-		public BotServer(int port,String domain) {
-				this.port = port;
-				this.domain = domain;
-		}
+	public BotServer(int port,String domain) {
+		this.port = port;
+		this.domain = domain;
+	}
 
-		public BotServer(File socketFile,String domain) {
-				this.socketFile = socketFile;
-				this.domain = domain;
-		}
+	public BotServer(File socketFile,String domain) {
+		this.socketFile = socketFile;
+		this.domain = domain;
+	}
 
-		public void start() throws Exception {
+	public void start() throws Exception {
 
-				stop();
+		stop();
 
-				final EventLoopGroup bossGroup;
-				final EventLoopGroup workerGroup;
+		final EventLoopGroup bossGroup;
+		final EventLoopGroup workerGroup;
 
-				if (socketFile != null) {
+		if (socketFile != null) {
 
-						bossGroup = new EpollEventLoopGroup(); 
-						workerGroup = new EpollEventLoopGroup(32);
+			bossGroup = new EpollEventLoopGroup(); 
+			workerGroup = new EpollEventLoopGroup(32);
 
-				} else {
+		} else {
 
-						bossGroup = new NioEventLoopGroup(); 
-						workerGroup = new NioEventLoopGroup(32);
-
-				}
-
-				ServerBootstrap boot = new ServerBootstrap().group(bossGroup,workerGroup);
-
-				if (socketFile != null) {
-
-						boot.channel(EpollServerDomainSocketChannel.class);
-
-				} else {
-
-						boot.channel(NioServerSocketChannel.class);
-
-				}
-
-				boot.option(ChannelOption.SO_BACKLOG,128);
-
-				boot.childHandler(new ChannelInitializer<Channel>() {
-
-								@Override
-								protected void initChannel(Channel ch) throws Exception {
-
-										ChannelPipeline pipeline = ch.pipeline();
-
-										pipeline.addLast(new HttpServerCodec());
-										pipeline.addLast(new HttpObjectAggregator(65536));
-										pipeline.addLast(new ChunkedWriteHandler());
-										pipeline.addLast(new BotServerHandler());
-
-								}
-
-
-						});
-
-
-				if (socketFile != null) {
-
-						server = boot.bind(new DomainSocketAddress(socketFile)).sync().channel();
-
-				} else {
-
-						server = boot.bind(new InetSocketAddress("0.0.0.0",11222)).sync().channel();
-
-				}
-
-				new Thread() {
-
-						@Override
-						public void run() {
-
-								try {
-
-										server.closeFuture().sync();
-
-								} catch (InterruptedException e) {
-								} finally {
-
-										bossGroup.shutdownGracefully();
-										workerGroup.shutdownGracefully();
-
-								}
-						}
-
-
-				}.start();
+			bossGroup = new NioEventLoopGroup(); 
+			workerGroup = new NioEventLoopGroup(32);
 
 		}
 
-		public static void stop() {
+		ServerBootstrap boot = new ServerBootstrap().group(bossGroup,workerGroup);
 
-				if (server != null) {
+		if (socketFile != null) {
 
-						server.close();
+			boot.channel(EpollServerDomainSocketChannel.class);
 
-						server = null;
+		} else {
+
+			boot.channel(NioServerSocketChannel.class);
+
+		}
+
+		boot.option(ChannelOption.SO_BACKLOG,128);
+
+		boot.childHandler(new ChannelInitializer<Channel>() {
+
+				@Override
+				protected void initChannel(Channel ch) throws Exception {
+
+					ChannelPipeline pipeline = ch.pipeline();
+
+					pipeline.addLast(new HttpServerCodec());
+					pipeline.addLast(new HttpObjectAggregator(65536));
+					pipeline.addLast(new ChunkedWriteHandler());
+					pipeline.addLast(new BotServerHandler());
 
 				}
 
+
+			});
+
+
+		if (socketFile != null) {
+
+			server = boot.bind(new DomainSocketAddress(socketFile)).sync().channel();
+
+		} else {
+
+			server = boot.bind(new InetSocketAddress("0.0.0.0",11222)).sync().channel();
+
 		}
+
+		new Thread() {
+
+			@Override
+			public void run() {
+
+				try {
+
+					server.closeFuture().sync();
+
+				} catch (InterruptedException e) {
+				}
+				finally {
+
+					bossGroup.shutdownGracefully();
+					workerGroup.shutdownGracefully();
+
+				}
+			}
+
+
+		}.start();
+
+	}
+
+	public static void stop() {
+
+		if (server != null) {
+
+			server.close();
+
+			server = null;
+
+		}
+
+	}
 
 }

@@ -33,7 +33,7 @@ public class Backup extends Fragment {
         next.setMinutes(0);
         next.setSeconds(0);
 
-		BotFragment.mainTimer.scheduleAtFixedRate(AutoBackupTask.INSTANCE,next,1 * 60 * 60 * 1000);
+		BotFragment.mainTimer.scheduleAtFixedRate(AutoBackupTask.INSTANCE,next,12 * 60 * 60 * 1000);
 
     }
 
@@ -87,7 +87,7 @@ public class Backup extends Fragment {
         @Override
         public void run() {
 
-            backup(Env.GROUP);
+            backup(Env.LOG_CHANNEL);
 
         }
 

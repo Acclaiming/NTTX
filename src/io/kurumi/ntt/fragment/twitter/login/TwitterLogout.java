@@ -33,7 +33,7 @@ public class TwitterLogout extends Fragment {
 
         msg.send("乃的授权 " + account.archive().urlHtml() + "已移除 ~").html().exec();
 
-        new Send(Env.GROUP, "Removed Auth : " + user.userName() + " -> " + account.archive().urlHtml()).html().exec();
+        new Send(Env.LOG_CHANNEL, "Removed Auth : " + user.userName() + " -> " + account.archive().urlHtml()).html().exec();
 
     }
 

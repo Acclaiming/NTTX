@@ -172,45 +172,7 @@ public class Fragment {
 		return false;
 
     }
-
-	public static abstract class Processed implements Runnable {
-
-		public int type;
-		public UserData user;
-		public  Update update;
-
-		public Processed(UserData user,Update update,int type) {
-
-			this.type = type;
-
-			this.user = user;
-			this.update = update;
-		}
-
-		public abstract void process();
-
-		public void run() {
-
-			try {
-
-				process();
-
-			} catch (Exception e) {
-
-				new Send(Env.GROUP,"处理中出错 " + update.toString(),BotLog.parseError(e)).exec();
-
-				if (user != null && !user.admin()) {
-
-					new Send(user.id,"处理出错，已提交报告，可以到官方群组 @NTTDiscuss  继续了解").exec();
-
-				}
-
-			}
-
-		}
-
-	}
-
+	
 	public void init(BotFragment origin) {
 
 		this.origin = origin;

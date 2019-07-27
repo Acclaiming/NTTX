@@ -270,13 +270,13 @@ public class TrackTask extends TimerTask {
 
 				new Send(account.user,"已将你的认证移除 (为什么？)").exec();
 
-				new Send(Env.GROUP,"Blocked Auth : " + UserData.get(account.user).userName() + " -> " + account.archive().urlHtml()).html().exec();
+				new Send(Env.LOG_CHANNEL,"Blocked Auth : " + UserData.get(account.user).userName() + " -> " + account.archive().urlHtml()).html().exec();
 
 			} else {
 
 				new Send(account.user,"对不起，但是因为 (NTT API被停用 或 乃的账号已停用 / 冻结 / NTT被取消授权，已移除 (⁎˃ᆺ˂) 请重新 /login").exec();
 
-				new Send(Env.GROUP,"Invalid Auth : " + UserData.get(account.user).userName() + " -> " + account.archive().urlHtml()).html().exec();
+				new Send(Env.LOG_CHANNEL,"Invalid Auth : " + UserData.get(account.user).userName() + " -> " + account.archive().urlHtml()).html().exec();
 
 			}
 
@@ -702,20 +702,6 @@ public class TrackTask extends TimerTask {
 
 			UserArchive.saveDisappeared(id);
 			
-			if (archive != null) {
-
-				if (StrUtil.isBlank(archive.bio)) {
-
-					new Send(Env.GROUP,"账号冻结 / 停用",Html.code(archive.name + " : @" + archive.screenName)).async();
-
-				} else {
-					
-					new Send(Env.GROUP,"账号冻结 / 停用",Html.code(archive.name + " : @" + archive.screenName + "\n\n简介 : " + archive.bio)).async();
-
-				}
-
-			}
-
             if (!notice) return;
 
             StringBuilder msg = new StringBuilder(archive != null ? archive.urlHtml() : "无记录的用户 : (" + id + ")").append(" 取关了你\n\n状态异常 : ").append(NTT.parseTwitterException(e));

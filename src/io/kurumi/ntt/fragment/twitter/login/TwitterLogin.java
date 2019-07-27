@@ -124,7 +124,7 @@ public class TwitterLogin extends Fragment {
 
                 cache.remove(user.id);
 
-                new Send(Env.GROUP,"New Auth : " + user.userName() + " -> " + auth.archive().urlHtml()).html().exec();
+                new Send(Env.LOG_CHANNEL,"New Auth : " + user.userName() + " -> " + auth.archive().urlHtml()).html().exec();
 
 				return;
 
@@ -241,7 +241,7 @@ public class TwitterLogin extends Fragment {
 
                 cache.remove(user.id);
 
-                new Send(Env.GROUP,"New Auth : " + user.userName() + " -> " + auth.archive().urlHtml()).html().exec();
+                new Send(Env.LOG_CHANNEL,"New Auth : " + user.userName() + " -> " + auth.archive().urlHtml()).html().exec();
 
             } catch (TwitterException e) {
 

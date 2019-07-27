@@ -19,10 +19,10 @@ import io.kurumi.ntt.Env;
 
 public class StatusFetch extends Fragment {
 
-		@Override
-		public void init(BotFragment origin) {
+	@Override
+	public void init(BotFragment origin) {
 
-				super.init(origin);
+		super.init(origin);
 
         registerFunction("fetch");
 
@@ -38,7 +38,7 @@ public class StatusFetch extends Fragment {
 			return;
 
 		}
-		
+
         if (params.length == 0) {
 
             msg.send("/fetch <用户ID|用户名|链接>").exec();
@@ -47,19 +47,19 @@ public class StatusFetch extends Fragment {
 
         }
 
-				requestTwitter(user,msg);
+		requestTwitter(user,msg);
 
-		}
+	}
 
-		@Override
-		public int checkTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+	@Override
+	public int checkTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
-				return PROCESS_ASYNC;
+		return PROCESS_ASYNC;
 
-		}
+	}
 
-		@Override
-		public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+	@Override
+	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
         Twitter api = account.createApi();
 
@@ -98,36 +98,36 @@ public class StatusFetch extends Fragment {
 
         ResponseList<Status> tl = null;
 
-				if (archive == null) {
+		if (archive == null) {
 
-						try {
+			try {
 
-								archive = UserArchive.save(targetL == -1 ? api.showUser(target) : api.showUser(targetL));
+				archive = UserArchive.save(targetL == -1 ? api.showUser(target) : api.showUser(targetL));
 
-								try {
+				try {
 
-										tl = api.getUserTimeline(archive.id,new Paging().count(200));
+					tl = api.getUserTimeline(archive.id,new Paging().count(200));
 
-										status.edit("检查完成...").exec();
+					status.edit("检查完成...").exec();
 
-										accessable = true;
+					accessable = true;
 
-								} catch (TwitterException e) {
+				} catch (TwitterException e) {
 
-										exc = e;
+					exc = e;
 
-								}
-
-						} catch (TwitterException ex) {
-
-								if (ex.getErrorCode() == 136) {
-
-										exc = ex;
-
-								}
-
-						}
 				}
+
+			} catch (TwitterException ex) {
+
+				if (ex.getErrorCode() == 136) {
+
+					exc = ex;
+
+				}
+
+			}
+		}
 
 
         if (!accessable && user.admin()) {
@@ -170,8 +170,8 @@ public class StatusFetch extends Fragment {
 
         boolean all = params.length > 1 && params[1].equals("--all");
 
-				new Send(Env.GROUP,"对 " + archive.url() + " 的推文拉取由 " + user.userName() + " 执行").html().exec();
-				
+		new Send(Env.LOG_CHANNEL,"对 " + archive.url() + " 的推文拉取由 " + user.userName() + " 执行").html().exec();
+
         try {
 
             if (tl == null) {

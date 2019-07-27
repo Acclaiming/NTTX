@@ -111,19 +111,19 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 				@Override
 				public void run() {
 
-					new Send(Env.GROUP,"Bot Update Executed : By WebHook").exec();
+					new Send(Env.LOG_CHANNEL,"Bot Update Executed : By WebHook").exec();
 
 					try {
 
 						String str = RuntimeUtil.execForStr("bash update.sh");
 
-						new Send(Env.GROUP,str).exec();
+						new Send(Env.LOG_CHANNEL,str).exec();
 
 						Launcher.INSTANCE.stop();
 
 					} catch (Exception e) {
 
-						new Send(Env.GROUP,"update failed",BotLog.parseError(e)).exec();
+						new Send(Env.LOG_CHANNEL,BotLog.parseError(e)).exec();
 
 					}
 

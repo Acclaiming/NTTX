@@ -32,7 +32,7 @@ import com.pengrad.telegrambot.request.*;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
-    public static final Launcher INSTANCE = new Launcher();
+    public static Launcher INSTANCE;
 
     public static void main(String[] args) {
 
@@ -40,39 +40,27 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 
-		//int serverPort = Integer.parseInt(Env.getOrDefault("server_port","-1"));
-		String serverDomain = Env.get("server_domain");
+		try {
 
-		/*
+			Env.init();
 
-		 while (serverPort == -1) {
+		} catch (Exception e) {
 
-		 System.out.print("输入本地Http服务器端口 : ");
+			e.printStackTrace();
 
-		 try {
-
-		 serverPort = Integer.parseInt(Console.input());
-
-		 Env.set("server_port",serverPort);
-
-		 } catch (Exception e) {
-		 }
-
-		 }
-
-		 */
-
-		if (serverDomain == null) {
-
-			System.out.print("输入BotWebHook域名 : ");
-
-			serverDomain = Console.input();
-
-			Env.set("server_domain",serverDomain);
+			return;
 
 		}
 
-		BotServer.INSTANCE = new BotServer(new File("/var/run/ntt.sock"),serverDomain);
+		if (Env.USE_UNIX_SOCKET) {
+
+			BotServer.INSTANCE = new BotServer(Env.UDS_PATH,Env.SERVER_DOMAIN);
+
+		} else {
+
+			BotServer.INSTANCE = new BotServer(Env.LOCAL_PORT,Env.SERVER_DOMAIN);
+
+		}
 
 		try {
 
@@ -80,33 +68,13 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		} catch (Exception e) {
 
-			BotLog.error("端口被占用 请检查其他BOT进程。",e);
-
+			e.printStackTrace();
+			
 			return;
 
 		}
 
-
-        String dbAddr = Env.getOrDefault("db_address","127.0.0.1");
-        Integer dbPort = Integer.parseInt(Env.getOrDefault("db_port","27017"));
-
-        while (!initDB(dbAddr,dbPort)) {
-
-            System.out.print("输入MongoDb地址 : ");
-            dbAddr = Console.scanner().nextLine();
-
-            try {
-
-                System.out.print("输入MongoDb端口 : ");
-                dbPort = Console.scanner().nextInt();
-
-                Env.set("db_address",dbAddr);
-                Env.set("db_port",dbPort);
-
-            } catch (Exception e) {
-            }
-
-		}
+		INSTANCE = new Launcher();
 
 		RuntimeUtil.addShutdownHook(new Runnable() {
 
@@ -123,24 +91,16 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 	}
 
+	@Override
+	public String getToken() {
+		
+		return Env.BOT_TOKEN;
+		
+	}
+
 	public AtomicBoolean stopeed = new AtomicBoolean(false);
 
-    static boolean initDB(String dbAddr,Integer dbPort) {
-
-        try {
-
-            BotDB.init(dbAddr,dbPort);
-
-            return true;
-
-        } catch (Exception e) {
-
-            return false;
-
-        }
-
-    }
-
+ 
 	@Override
 	public void init(BotFragment origin) {
 
@@ -154,18 +114,18 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
 		super.onFunction(user,msg,function,params);
-		
+
         if ("start".equals(function)) {
 
-            msg.send("start failed successfully ~","\n快戳 " + Html.b("说明书") + " ！https://manual.kurumi.io/").html().async();
+            msg.send("start failed successfully ~",Env.HELP_MESSAGE).html().async();
 
 		} else if ("help".equals(function)) {
 
-            msg.send("快看说明书！ https://manual.kurumi.io/ ~").publicFailed();
+            msg.send(Env.HELP_MESSAGE).publicFailed();
 
         } else if (!functions.containsKey(function) && msg.isPrivate()) {
 
-			msg.send("没有这个命令 " + function,"查看文档 : https://manual.kurumi.io/ ").failedWith(10 * 1000);
+			msg.send("没有这个命令 " + function,Env.HELP_MESSAGE).failedWith(10 * 1000);
 
 		}
 
@@ -176,13 +136,13 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     public void start() {
 
         try {
-			
+
 			super.start();
-			
+
 		} catch (Exception e) {
-			
+
 			return;
-			
+
 		}
 
         startTasks();

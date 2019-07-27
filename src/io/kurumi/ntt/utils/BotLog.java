@@ -109,7 +109,7 @@ public class BotLog extends ConsoleLog {
 
         log.error(err,message);
 
-		new Send(Env.GROUP, message,parseError(err)).exec();
+		new Send(Env.LOG_CHANNEL, message,parseError(err)).exec();
 
     }
 

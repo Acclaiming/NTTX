@@ -14,70 +14,54 @@ import java.util.Scanner;
 
 public class Env {
 
-	public static long[] ADMINS = new long[] {
-
-		896711046, 808589072 ,
-		
-		589593327
-
-    };
-	
-    public static final Long GROUP = -1001280962128L;
-		
-    /**
-     * 缓存文件存放地址
-     */
+	public static String DB_ADDRESS;
+	public static int DB_PORT;
+	public static String SERVER_DOMAIN;
 
     public static File CACHE_DIR;
-
-    /**
-     * 数据文件存放地址
-     */
-
     public static File DATA_DIR;
-    private static JSONObject conf = new JSONObject();
 
-    static {
+	public static boolean USE_UNIX_SOCKET;
+	public static File UDS_PATH;
+	public static Integer LOCAL_PORT;
 
-        // ROOT = new File("/etc/ntt");
-        DATA_DIR = new File("/etc/ntt");
-        CACHE_DIR = new File("/var/cache/ntt");
+	public static String SERVICE_NAME;
 
-    }
+	public static boolean DEBUG_MODE;
+	public static String BOT_TOKEN;
+	public static long[] ADMINS;
+	public static Long LOG_CHANNEL;
 
-    static {
+	public static String HELP_MESSAGE;
 
-        try {
+    private static JSONObject conf;
 
-            conf = new JSONObject(FileUtil.readUtf8String(new File(DATA_DIR, "settings.json")));
+    public static void init() throws Exception {
 
-        } catch (Exception e) {
-        }
+		DATA_DIR = new File("/etc/ntt");
+		
+		conf = new JSONObject(FileUtil.readUtf8String(new File(DATA_DIR,"settings.json")));
 
-    }
+		DB_ADDRESS = conf.getStr("db_address");
 
-    /**
-     * 命令行输入 Token 并保存到数据库
-     */
-    public static String inputToken(String name) {
 
-        Scanner session = new Scanner(System.in);
+		DB_PORT = conf.getInt("db_port");
+		SERVER_DOMAIN = conf.getStr("server_domain");
 
-        System.out.print("输入" + name + " BotToken : ");
+		SERVICE_NAME = conf.getStr("service_name");
 
-        String token = session.next();
+		DEBUG_MODE = conf.getBool("debug_mode");
+		USE_UNIX_SOCKET = conf.getBool("use_unix_socket");
+		UDS_PATH = new File(conf.getStr("uds_path"));
+		LOCAL_PORT = conf.getInt("local_port");
 
-        while (!verifyToken(token)) {
+		CACHE_DIR = new File(conf.getStr("cache_path"));
 
-            System.out.println();
-            System.out.println("BotToken 无效 ！ ");
-            System.out.print("重新输入" + name + "的 BotToken : ");
+		BOT_TOKEN = conf.getStr("bot_token");
+		ADMINS = (long[])conf.getJSONArray("admins").toArray(long.class);
+		LOG_CHANNEL = conf.getLong("log_channel");
 
-            token = session.nextLine();
-
-        }
-
-        return token;
+		HELP_MESSAGE = conf.getStr("help_message");
 
     }
 
@@ -102,7 +86,7 @@ public class Env {
 
         if (key.contains(".")) {
 
-            return conf.getByPath(key, String.class);
+            return conf.getByPath(key,String.class);
 
         } else {
 
@@ -112,7 +96,7 @@ public class Env {
 
     }
 
-    public static String getOrDefault(String key, String defaultValue) {
+    public static String getOrDefault(String key,String defaultValue) {
 
         if (key == null) {
 
@@ -131,7 +115,7 @@ public class Env {
 
         } else if (value == null) {
 
-            set(key, defaultValue);
+            set(key,defaultValue);
 
             value = defaultValue;
 
@@ -141,21 +125,21 @@ public class Env {
 
     }
 
-    public static void set(String key, Object value) {
+    public static void set(String key,Object value) {
 
         if (value != null) value = value.toString();
 
         if (key.contains(".")) {
 
-            conf.putByPath(key, value);
+            conf.putByPath(key,value);
 
         } else {
 
-            conf.put(key, value);
+            conf.put(key,value);
 
         }
 
-        FileUtil.writeUtf8String(conf.toStringPretty(), new File(DATA_DIR, "settings.json"));
+        FileUtil.writeUtf8String(conf.toStringPretty(),new File(DATA_DIR,"settings.json"));
 
     }
 

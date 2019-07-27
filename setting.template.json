@@ -1,0 +1,15 @@
+{
+    "db_address": "127.0.0.1",
+    "db_port": 27017,
+    "service_name": "ntt",
+    "cache_path": "/var/cache/ntt",
+    "use_unix_socket": true,
+    "uds_path": "/var/run/ntt.sock",
+    "local_port": 65535,
+    "server_domain": "example.com",
+    "debug_mode": false,
+    "bot_token": "",
+    "admins": [],
+    "log_channel": "-1001280962128"
+    "help_message": "快戳 <b>说明书</b>！ : https://manual.kurumi.io ("
+}

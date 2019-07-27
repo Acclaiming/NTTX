@@ -848,18 +848,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 	}
 
-	public String getToken() {
-
-		return Env.get("token." + botName());
-
-	}
-
-	public void setToken(String botToken) {
-
-		Env.set("token." + botName(),token);
-
-	}
-
+	public abstract String getToken();
+	
 	public boolean silentStart() {
 
 		reload();
@@ -885,14 +875,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 		reload();
 
 		token = getToken();
-
-		if (token == null || !Env.verifyToken(token)) {
-
-			token = Env.inputToken(botName());
-
-		}
-
-		setToken(token);
 
 		OkHttpClient.Builder okhttpClient = new OkHttpClient.Builder();
 
