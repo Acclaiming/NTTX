@@ -30,6 +30,7 @@ import cn.hutool.core.lang.Console;
 import java.io.File;
 import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntt.fragment.wechet.login.WeLogin;
+import io.kurumi.ntt.fragment.extra.Manchurize;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -288,6 +289,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		// WeChat
 		
 		addFragment(new WeLogin());
+		
+		// Extra
+		
+		addFragment(new Manchurize());
 		
     }
 
