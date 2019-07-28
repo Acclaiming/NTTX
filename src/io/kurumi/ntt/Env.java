@@ -31,7 +31,8 @@ public class Env {
 	public static String BOT_TOKEN;
 	public static long[] ADMINS;
 	public static Long LOG_CHANNEL;
-
+	public static Long TEP_CHANNEL;
+	
 	public static String HELP_MESSAGE;
 
     private static JSONObject conf;
@@ -60,7 +61,8 @@ public class Env {
 		BOT_TOKEN = conf.getStr("bot_token");
 		ADMINS = (long[])conf.getJSONArray("admins").toArray(long.class);
 		LOG_CHANNEL = conf.getLong("log_channel");
-
+		TEP_CHANNEL = conf.getLong("tep_channel");
+		
 		HELP_MESSAGE = conf.getStr("help_message");
 
     }
