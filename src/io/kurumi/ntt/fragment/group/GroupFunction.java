@@ -65,6 +65,12 @@ public class GroupFunction extends Fragment {
 
 				User newUser = msg.message().newChatMembers()[0];
 
+				if (newUser.id().equals(origin.me.id())) {
+					
+					return;
+					
+				}
+				
 				if (data.waitForCaptcha != null && data.waitForCaptcha.contains(user.id)) {
 
 					msg.kick(newUser.id());
