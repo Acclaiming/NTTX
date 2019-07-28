@@ -30,7 +30,7 @@ public class Manchurize extends Fragment {
 		
 		inlineQuery.article("完成",manchurize(inlineQuery.text.substring(2).trim()),null,null);
 		
-		executeAsync(inlineQuery.update,inlineQuery.reply());
+		executeAsync(inlineQuery.update,inlineQuery.reply().cacheTime(114514));
 		
 	}
 
