@@ -20,7 +20,7 @@ public class Manchurize extends Fragment {
 
 		super.init(origin);
 		
-		registerFunction("manchurize");
+		registerFunction("manc");
 		
 	}
 
