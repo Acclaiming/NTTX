@@ -49,8 +49,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 		addFragment(this);
 
-		addFragment(new Firewall());
-
     }
 
 	public HashMap<String,Fragment> functions = new HashMap<>();
