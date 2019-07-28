@@ -33,7 +33,7 @@ public class Manchurize extends Fragment {
 		
 		String str = inlineQuery.text.substring(2).trim();
 		
-		str = cndic.cn_ma(str);
+		str = cndic.cn_ma(str,false);
 		
 		if (str != null) {
 			
