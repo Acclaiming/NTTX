@@ -225,6 +225,19 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		addFragment(new DebugUF());
 
+		// GROUP
+
+		addFragment(new GroupAdmin());
+        addFragment(new GroupRepeat());
+		addFragment(new GroupOptions());
+        //addFragment(new AntiEsu());
+        addFragment(new BanSetickerSet());
+		addFragment(new GroupFunction());
+		addFragment(new JoinCaptcha());
+
+		addFragment(new RemoveKeyboard());
+		
+		
 		// Twitter
 
 		addFragment(new TwitterLogin());
@@ -247,17 +260,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		addFragment(new Disappeared());
 
-		// GROUP
-
-		addFragment(new GroupAdmin());
-        addFragment(new GroupRepeat());
-		addFragment(new GroupOptions());
-        //addFragment(new AntiEsu());
-        addFragment(new BanSetickerSet());
-		addFragment(new GroupFunction());
-		addFragment(new JoinCaptcha());
-
-		addFragment(new RemoveKeyboard());
 
         // BOTS
 
