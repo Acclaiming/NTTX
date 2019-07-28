@@ -12,6 +12,10 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.model.request.Send;
+import io.kurumi.ntt.Env;
+import io.kurumi.ntt.utils.Html;
 
 public class Firewall extends Fragment {
 
@@ -182,8 +186,14 @@ public class Firewall extends Fragment {
 
 			if (block.containsId(user.id)) {
 
+				if (origin == Launcher.INSTANCE) {
+				
 				bot().execute(new LeaveChat(msg.chat().id()));
 
+				}
+				
+				new Send(Env.LOG_CHANNEL,"BOT " + UserData.get(origin.me) + " 被 " + user.userName() + " 邀请到 " + msg.chat().title() + " [" + Html.code(msg.chat().id()) + "]").html().async();
+				
 				return true;
 				
 			}
@@ -199,6 +209,8 @@ public class Firewall extends Fragment {
 				if (!block.containsId(current.id)) continue;
 
 				bot().execute(new LeaveChat(msg.chat().id()));
+				
+				new Send(Env.LOG_CHANNEL,"BOT " + UserData.get(origin.me) + " 被 " + user.userName() + " 邀请到 " + msg.chat().title() + " [" + Html.code(msg.chat().id()) + "] 因为管理员 " +current.userName()).html().async();
 				
 				return true;
 

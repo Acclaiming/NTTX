@@ -18,6 +18,7 @@ import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
 import cn.hutool.http.HtmlUtil;
 import io.kurumi.ntt.fragment.BotFragment;
+import com.pengrad.telegrambot.model.Update;
 
 public class Send extends AbstractSend<Send> {
 
@@ -306,7 +307,7 @@ public class Send extends AbstractSend<Send> {
 		return this;
 
 	}
-
+	
 	private boolean async = false;
 
 	public void async() {
@@ -316,7 +317,7 @@ public class Send extends AbstractSend<Send> {
 		exec();
 
 	}
-
+	
     @Override
     public SendResponse exec() {
 
