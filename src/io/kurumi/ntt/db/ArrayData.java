@@ -6,13 +6,13 @@ public class ArrayData<T> extends AbsData<T,DataArray<T>> {
 
 	public ArrayData(Class clazz) {
 
-        super(clazz.getSimpleName(),(Class<DataArray<T>>)DataArray.class);
+        super(clazz.getSimpleName(),(Class<DataArray<T>>) (Object) DataArray.class);
 
     }
 
     public ArrayData(String collectionName) {
 
-		super(collectionName,(Class<DataArray<T>>)DataArray.class);
+		super(collectionName,(Class<DataArray<T>>) (Object) DataArray.class);
 
     }
 
