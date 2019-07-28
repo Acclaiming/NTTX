@@ -31,6 +31,7 @@ import java.io.File;
 import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntt.fragment.wechet.login.WeLogin;
 import io.kurumi.ntt.fragment.extra.Manchurize;
+import io.kurumi.ntt.fragment.twitter.archive.TEPH;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -259,7 +260,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new ListImport());
 
 		addFragment(new Disappeared());
-
+		addFragment(new TEPH());
 
         // BOTS
 

@@ -155,14 +155,22 @@ public class UserArchive {
 
 			if (StrUtil.isBlank(bio)) {
 
-				if (Env.TEP_CHANNEL != null) new Send(Env.TEP_CHANNEL,"#推友消失 (冻结 / 删除账号)\n",urlHtml() + " ( #" + screenName + " )").html().async();
+				if (Env.TEP_CHANNEL != null && !TEPH.data.containsId(id)) {
+					
+					new Send(Env.TEP_CHANNEL,"#推友消失 (冻结 / 删除账号)\n",urlHtml() + " ( #" + screenName + " )").html().async();
 
+				}
+					
 				new Send(Env.LOG_CHANNEL,"#账号冻结 / 停用",Html.code(name + " : @" + screenName)).html().disableNotification().async();
 
 			} else {
 
-				if (Env.TEP_CHANNEL != null) new Send(Env.TEP_CHANNEL,"#推友消失 (冻结 / 删除账号)\n",urlHtml() + " ( #" + screenName + " )","\n简介 : " + bio).html().async();
+				if (Env.TEP_CHANNEL != null && !TEPH.data.containsId(id)) {
+					
+					new Send(Env.TEP_CHANNEL,"#推友消失 (冻结 / 删除账号)\n",urlHtml() + " ( #" + screenName + " )","\n简介 : " + bio).html().async();
 				
+				}
+					
 				new Send(Env.LOG_CHANNEL,"账号冻结 / 停用",Html.code(name + " : @" + screenName + "\n\n简介 : " + bio)).html().disableNotification().async();
 
 			}
@@ -191,14 +199,22 @@ public class UserArchive {
 
 			if (StrUtil.isBlank(bio)) {
 
-				if (Env.TEP_CHANNEL != null) new Send(Env.TEP_CHANNEL,"#推友回档 (取消冻结 / 重新启用)\n",urlHtml() + " ( #" + screenName + " )").html().async();
+				if (Env.TEP_CHANNEL != null && !TEPH.data.containsId(id)) {
+					
+					new Send(Env.TEP_CHANNEL,"#推友回档 (取消冻结 / 重新启用)\n",urlHtml() + " ( #" + screenName + " )").html().async();
 
+				}
+					
 				new Send(Env.LOG_CHANNEL,"#取消冻结 / 重新启用",Html.code(name + " : @" + screenName)).html().async();
 
 			} else {
 
-				if (Env.TEP_CHANNEL != null) new Send(Env.TEP_CHANNEL,"#推友回档 (取消冻结 / 重新启用)\n",urlHtml() + " ( #" + screenName + " )","\n简介 : " + bio).html().async();
+				if (Env.TEP_CHANNEL != null && !TEPH.data.containsId(id)) {
+					
+					new Send(Env.TEP_CHANNEL,"#推友回档 (取消冻结 / 重新启用)\n",urlHtml() + " ( #" + screenName + " )","\n简介 : " + bio).html().async();
 
+				}
+					
 				new Send(Env.LOG_CHANNEL,"取消冻结 / 重新启用",Html.code(name + " : @" + screenName + "\n\n简介 : " + bio)).html().async();
 
 			}

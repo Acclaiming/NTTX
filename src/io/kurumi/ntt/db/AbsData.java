@@ -136,7 +136,7 @@ public class AbsData<ID, T> {
 
         synchronized (this) {
 
-            return collection.deleteOne(eq(field, value)).getDeletedCount() > 1;
+            return collection.deleteOne(eq(field, value)).getDeletedCount() > 0;
 
         }
 
