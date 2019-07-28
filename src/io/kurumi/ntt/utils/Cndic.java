@@ -59,7 +59,7 @@ public class Cndic {
 
 		}
 		
-		result = result.replace(",","᠉").replace("，","᠉");
+		result = result.replace("，","᠈").replace("。","᠉");
 
 		result = result.replace("?","？");
 		
