@@ -627,7 +627,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 						} else if (checked == PROCESS_REJECT) {
 
-							continue;
+							return;
 
 						} else {
 
@@ -636,6 +636,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 						}
 
 					}
+					
+					
 
 				}
 

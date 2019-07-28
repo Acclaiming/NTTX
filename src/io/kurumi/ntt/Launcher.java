@@ -209,8 +209,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		// ADMIN
 
 		addFragment(new BotChannnel());
-
-		addFragment(new PingFunction());
+		addFragment(new Manchurize());
+		
+		
 		addFragment(new GetID());
 		addFragment(new DelMsg());
         addFragment(new Notice());
@@ -293,8 +294,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new WeLogin());
 		
 		// Extra
-		
-		addFragment(new Manchurize());
+		addFragment(new PingFunction());
 		
     }
 
