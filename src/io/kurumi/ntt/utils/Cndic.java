@@ -24,7 +24,7 @@ public class Cndic {
 
 	}
 
-	public String cn_ma(String str) {
+	public String cn_ma(String str,boolean noReset) {
 
 		if (__VIEWSTATE == null) reset();
 
@@ -45,15 +45,17 @@ public class Cndic {
 
 		result = StrUtil.subBetween(result,">","<").trim();
 
-		if (result.trim().isEmpty()) {
+		result = result.trim();
+		
+		if (!noReset && result.isEmpty()) {
 		
 			reset();
 			
-			return cn_ma(str);
+			return cn_ma(str,true);
 			
-		}
+		} 
 			
-		if (result.contains("您输入的内容未能翻译出来")) {
+		if (result.isEmpty() || result.contains("您输入的内容未能翻译出来")) {
 
 			result = null;
 
