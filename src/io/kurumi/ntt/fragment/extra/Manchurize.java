@@ -6,6 +6,7 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.Msg;
 import cn.hutool.core.util.ArrayUtil;
 import io.kurumi.ntt.model.Query;
+import io.kurumi.ntt.utils.Cndic;
 
 /*
 
@@ -22,13 +23,28 @@ public class Manchurize extends Fragment {
 		return true;
 		
 	}
+	
+	Cndic cndic = new Cndic();
 
 	@Override
 	public void onQuery(UserData user,Query inlineQuery) {
 		
 		if (inlineQuery.text == null || !inlineQuery.text.startsWith("M ")) return;
 		
-		inlineQuery.article("完成",manchurize(inlineQuery.text.substring(2).trim()),null,null);
+		String str = inlineQuery.text.substring(2).trim();
+		
+		str = cndic.cn_ma(str);
+		
+		if (str == null) {
+			
+			inlineQuery.article("完成",manchurize(str),null,null);
+			
+		} else {
+			
+			inlineQuery.article("翻译失败",":(",null,null);
+			
+			
+		}
 		
 		executeAsync(inlineQuery.update,inlineQuery.reply().cacheTime(114514));
 		
