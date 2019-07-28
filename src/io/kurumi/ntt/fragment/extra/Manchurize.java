@@ -35,7 +35,7 @@ public class Manchurize extends Fragment {
 		
 		str = cndic.cn_ma(str);
 		
-		if (str == null) {
+		if (str != null) {
 			
 			inlineQuery.article("完成",manchurize(str),null,null);
 			
