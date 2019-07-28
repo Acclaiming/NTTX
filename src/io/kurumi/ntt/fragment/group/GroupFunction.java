@@ -15,10 +15,23 @@ import cn.hutool.json.*;
 
 public class GroupFunction extends Fragment {
 
+	@Override
+	public boolean msg() {
+		
+		return true;
+		
+	}
+	
 	public int checkMsg(UserData user,Msg msg) {
 
 		if (!msg.isGroup()) return PROCESS_SYNC;
+		else return PROCESS_ASYNC;
+		
+	}
 
+	@Override
+	public void onGroup(UserData user,Msg msg) {
+	
 		GroupData data = GroupData.get(msg.chat());
 
 		synchronized (data) {
@@ -240,8 +253,6 @@ public class GroupFunction extends Fragment {
 
 
 		}
-
-		return PROCESS_ASYNC;
 
 	}
 
