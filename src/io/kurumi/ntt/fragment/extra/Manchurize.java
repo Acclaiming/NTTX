@@ -7,6 +7,7 @@ import io.kurumi.ntt.model.Msg;
 import cn.hutool.core.util.ArrayUtil;
 import io.kurumi.ntt.model.Query;
 import io.kurumi.ntt.utils.Cndic;
+import cn.hutool.core.util.StrUtil;
 
 /*
 
@@ -32,6 +33,8 @@ public class Manchurize extends Fragment {
 		if (inlineQuery.text == null || !inlineQuery.text.startsWith("M ")) return;
 		
 		String str = inlineQuery.text.substring(2).trim();
+		
+		if (StrUtil.isBlank(str)) return;
 		
 		str = cndic.cn_ma(str,false);
 		
