@@ -185,6 +185,16 @@ public class UserArchive {
 
             str.append(split).append("用户被取消了冻结/重新启用 :)");
 
+			if (StrUtil.isBlank(bio)) {
+
+				new Send(Env.LOG_CHANNEL,"账号取消冻结 / 启用",Html.code(name + " : @" + screenName)).html().async();
+
+			} else {
+
+				new Send(Env.LOG_CHANNEL,"账号取消冻结 / 启用",Html.code(name + " : @" + screenName + "\n\n简介 : " + bio)).html().async();
+
+			}
+
             change = true;
 
         }
