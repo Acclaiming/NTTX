@@ -17,21 +17,21 @@ public class GroupFunction extends Fragment {
 
 	@Override
 	public boolean msg() {
-		
+
 		return true;
-		
+
 	}
-	
+
 	public int checkMsg(UserData user,Msg msg) {
 
 		if (!msg.isGroup()) return PROCESS_SYNC;
 		else return PROCESS_ASYNC;
-		
+
 	}
 
 	@Override
 	public void onGroup(UserData user,Msg msg) {
-	
+
 		GroupData data = GroupData.get(msg.chat());
 
 		synchronized (data) {
@@ -50,10 +50,14 @@ public class GroupFunction extends Fragment {
 
 			} else if (msg.message().leftChatMember() != null) {
 
-				if (data.delete_service_msg != null || user.id.equals(origin.me.id())) {
+				if (msg.message().leftChatMember().id().equals(origin.me.id())) {
 
-					msg.delete();
+					GroupData.delete(msg.chatId());
+					
+				} else {
 
+				msg.delete();
+				
 				}
 
 
@@ -66,11 +70,11 @@ public class GroupFunction extends Fragment {
 				User newUser = msg.message().newChatMembers()[0];
 
 				if (newUser.id().equals(origin.me.id())) {
-					
+
 					return;
-					
+
 				}
-				
+
 				if (data.waitForCaptcha != null && data.waitForCaptcha.contains(user.id)) {
 
 					msg.kick(newUser.id());

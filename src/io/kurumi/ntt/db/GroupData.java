@@ -24,6 +24,18 @@ public class GroupData {
 
     public static CachedData<GroupData> data = new CachedData<GroupData>(GroupData.class);
 	
+	public static void delete(long id) {
+		
+		synchronized (data.idIndex) {
+			
+			data.deleteById(id);
+			
+			data.idIndex.remove(id);
+			
+		}
+		
+	}
+	
 	public static GroupData get(long id) {
 
         synchronized (data.idIndex) {
