@@ -67,7 +67,7 @@ public class Cndic {
 		
 		result = result.replace("：","᠄").replace(":","᠄");
 		
-		result = result.replaceAll("\\.*","᠁");
+		// result = result.replaceAll("\\.*","᠁");
 		
 		return result;
 
