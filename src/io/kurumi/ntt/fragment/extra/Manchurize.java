@@ -26,7 +26,7 @@ public class Manchurize extends Fragment {
 	@Override
 	public void onQuery(UserData user,Query inlineQuery) {
 		
-		if (inlineQuery.text == null || inlineQuery.text.startsWith("M ")) return;
+		if (inlineQuery.text == null || !inlineQuery.text.startsWith("M ")) return;
 		
 		inlineQuery.article("完成",manchurize(inlineQuery.text.substring(2).trim()),null,null);
 		
