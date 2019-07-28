@@ -58,7 +58,17 @@ public class Cndic {
 			result = null;
 
 		}
+		
+		result = result.replace(",","᠉").replace("，","᠉");
 
+		result = result.replace("?","？");
+		
+		result = result.replace("，","᠈").replace(",","᠈");
+		
+		result = result.replace("：","᠄").replace(":","᠄");
+		
+		result = result.replaceAll("\\.*","᠁");
+		
 		return result;
 
 	}
