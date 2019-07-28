@@ -657,7 +657,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				int checked = f.checkChanPost(user,msg); 
 
-				if (checked == PROCESS_REJECT) continue;
+				if (checked == PROCESS_REJECT) return;
 
 				if (checked == PROCESS_ASYNC) {
 
