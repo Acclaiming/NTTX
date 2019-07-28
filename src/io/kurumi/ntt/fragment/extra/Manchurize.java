@@ -5,6 +5,7 @@ import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.Msg;
 import cn.hutool.core.util.ArrayUtil;
+import io.kurumi.ntt.model.Query;
 
 /*
 
@@ -16,29 +17,23 @@ import cn.hutool.core.util.ArrayUtil;
 public class Manchurize extends Fragment {
 
 	@Override
-	public void init(BotFragment origin) {
-
-		super.init(origin);
+	public boolean query() {
 		
-		registerFunction("manc");
+		return true;
 		
 	}
 
 	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+	public void onQuery(UserData user,Query inlineQuery) {
 		
-		if (params.length == 0) {
-			
-			msg.invalidParams("str...").async();
-			
-			return;
-			
-		}
+		if (inlineQuery.text == null || inlineQuery.text.startsWith("M ")) return;
 		
-		msg.send(manchurize(ArrayUtil.join(params," "))).async();
+		inlineQuery.article("完成",manchurize(inlineQuery.text.substring(2).trim()),null,null);
+		
+		executeAsync(inlineQuery.update,inlineQuery.reply());
 		
 	}
-	
+
 	public static String manchurize(String str) {
 
 		String tmp = "";
