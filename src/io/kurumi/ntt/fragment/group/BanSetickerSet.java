@@ -38,7 +38,7 @@ public class BanSetickerSet extends Fragment {
 			return;
 
 		}
-		
+
 		if ("banss".equals(function)) {
 
 			if (NTT.checkGroupAdmin(msg)) return;
@@ -131,23 +131,21 @@ public class BanSetickerSet extends Fragment {
 
 	}
 
-	@Override
-	public int checkMsg(UserData user,Msg msg) {
-
-		return msg.isGroup() && msg.sticker() != null ? PROCESS_SYNC : PROCESS_REJECT;
-
-	}
 
 	@Override
 	public void onGroup(UserData user,Msg msg) {
 
-		GroupData data = GroupData.get(msg.chat());
+		if (msg.isGroup() && msg.sticker() != null) {
 
-        if (data.ban_sticker_set != null && data.ban_sticker_set.contains(msg.sticker().setName())) {
+			GroupData data = GroupData.get(msg.chat());
 
-			msg.delete();
+			if (data.ban_sticker_set != null && data.ban_sticker_set.contains(msg.sticker().setName())) {
 
-        }
+				msg.delete();
+
+			}
+
+		}
 
     }
 
