@@ -610,6 +610,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 					for (final Fragment f : fragments) {
 
+						if (!f.msg()) continue;
+						
 						int checked = f.checkMsg(user,msg); 
 
 						if (checked == PROCESS_ASYNC) {
