@@ -24,6 +24,7 @@ import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.NTT;
 import java.io.File;
 import com.pengrad.telegrambot.request.*;
+import io.kurumi.ntt.utils.BotLog;
 
 public class Msg extends Context {
 
@@ -284,15 +285,15 @@ public class Msg extends Context {
         fragment.bot().execute(new EditMessageReplyMarkup(chatId(),messageId()).replyMarkup(markup.markup()));
 
     }
-	
+
 	public Boolean deleted;
 
 	public void delete() {
 
 		if (deleted != null) return;
-		
+
 		deleted = true;
-		
+
 		delete(messageId());
 
     }
@@ -323,9 +324,17 @@ public class Msg extends Context {
 
 	public void kick(Long userId,boolean ban) {
 
-        fragment.executeAsync(update,new KickChatMember(chatId(),userId.intValue()));
+		if (userId.equals(fragment.origin.me.id())) {
 
-		if (!ban) fragment.executeAsync(update,new UnbanChatMember(chatId(),userId.intValue()));
+			BotLog.errorWithStack("错误 : 移除自己");
+
+		} else {
+
+			fragment.executeAsync(update,new KickChatMember(chatId(),userId.intValue()));
+
+			if (!ban) fragment.executeAsync(update,new UnbanChatMember(chatId(),userId.intValue()));
+
+		}
 
     }
 
