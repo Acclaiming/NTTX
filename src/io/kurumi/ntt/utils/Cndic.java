@@ -46,33 +46,35 @@ public class Cndic {
 		result = StrUtil.subBetween(result,">","<").trim();
 
 		result = result.trim();
-		
+
 		if (!noReset && result.isEmpty()) {
-		
+
 			reset();
-			
+
 			return cn_ma(str,true);
-			
+
 		} 
-			
+
 		if (result.isEmpty() || result.contains("您输入的内容未能翻译出来")) {
 
 			result = null;
 
-		}
-		
-		result = result.replace("，","᠈").replace("。","᠉");
+		} else {
 
-		result = result.replace("?","？");
-		
-		result = result.replace("，","᠈").replace(",","᠈");
-		
-		result = result.replace("：","᠄").replace(":","᠄");
-		
-		// result = result.replaceAll("\\.*","᠁");
-		
+			result = result.replace("，","᠈").replace("。","᠉");
+
+			result = result.replace("?","？");
+
+			result = result.replace("，","᠈").replace(",","᠈");
+
+			result = result.replace("：","᠄").replace(":","᠄");
+
+			// result = result.replaceAll("\\.*","᠁");
+
+		}
+
 		return result;
 
 	}
-	
+
 }
