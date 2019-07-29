@@ -47,7 +47,14 @@ public class UserBot {
                 client.botId = id;
                 client.silentStart();
 
-            }
+            } else if (type == 2) {
+				
+				RssBot client = new RssBot();
+
+                client.botId = id;
+                client.silentStart();
+				
+			}
 
         }
 
@@ -98,6 +105,9 @@ public class UserBot {
 
             case 1:
                 return "群组管理";
+				
+		case 2 : 
+			return "RSS";
 
             default:
                 return null;

@@ -154,25 +154,25 @@ public class RssSub extends Fragment {
 			conf.subscriptions = new LinkedList<>();
 
 		}
-		
+
 		if (function.endsWith("set_current")) {
 
 			if (isMainInstance()) {
-				
+
 				conf.fromBot = null;
-				
+
 				msg.send("重置成功 来源为 NTT本体").exec();
-				
+
 			} else {
-				
+
 
 				conf.fromBot = origin.me.id();
 
 				msg.send("设置成功 , 来源为 " + UserData.get(origin.me).userName()).html().exec();
-				
-				
+
+
 			}
-			
+
 		} else if (function.endsWith("export")) {
 
 			if (params.length < 2) {
@@ -324,13 +324,21 @@ public class RssSub extends Fragment {
 
 				}
 
-				conf.subscriptions.add(params[1]);
 
-				if (origin != Launcher.INSTANCE) {
+				if (!isMainInstance() && !origin.me.id().equals(conf.fromBot)) {
 
 					conf.fromBot = origin.me.id();
 
+					if (!conf.subscriptions.isEmpty() || conf.fromBot != null) {
+
+						msg.send("已将输入源设为本机器人。").exec();
+
+					}
+
 				}
+
+				conf.subscriptions.add(params[1]);
+
 
 				channel.setById(channelId,conf);
 
@@ -339,7 +347,7 @@ public class RssSub extends Fragment {
 				rss.id = params[1];
 				rss.title = feed.getTitle();
 				rss.last = FeedFetchTask.generateSign(feed.getEntries().get(0));
-				
+
 				info.setById(rss.id,rss);
 
 				msg.send("订阅成功 : " + Html.a(feed.getTitle(),feed.getLink())).html().exec();
