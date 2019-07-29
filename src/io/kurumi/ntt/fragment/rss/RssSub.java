@@ -217,6 +217,8 @@ public class RssSub extends Fragment {
 					}
 
 					request.html().exec();
+					
+					return;
 
 				}
 

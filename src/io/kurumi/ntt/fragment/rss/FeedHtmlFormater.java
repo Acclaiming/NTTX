@@ -342,7 +342,7 @@ public class FeedHtmlFormater {
 		
 		html = html.replace("<strong>","<b>").replace("</strong>","</b>");
 		
-		html = removeADs(html).trim();
+		html = removeADs(html);
 
 		if (!withImg) {
 
@@ -378,6 +378,8 @@ public class FeedHtmlFormater {
 
 		 */
 
+		new Send(Env.LOG_CHANNEL,html).exec();
+		 
 		if (withImg) {
 
 			html = removeTagsWithoutImg.filter(html);
@@ -388,15 +390,13 @@ public class FeedHtmlFormater {
 
 		}
 		
-		/*
+		new Send(Env.LOG_CHANNEL,html).exec();
 		
 		while (ReUtil.isMatch(LINES,html)) {
 
 			html = ReUtil.replaceAll(html,LINES,"\n\n");
 
 		}
-		
-		*/
 
 		if (html.startsWith(entry.getTitle())) {
 
@@ -422,7 +422,10 @@ public class FeedHtmlFormater {
 
 		}
 
-		html.replace("\t","").replace("\\t","");
+		html.replace("\t","");
+		
+		new Send(Env.LOG_CHANNEL,html).exec();
+		
 		
 		return html.trim();
 
