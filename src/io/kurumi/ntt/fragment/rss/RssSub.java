@@ -202,7 +202,11 @@ public class RssSub extends Fragment {
 
 				msg.send("正在输出 " + Html.a(feed.getTitle(),feed.getLink())).html().exec();
 
-				for (SyndEntry entry : feed.getEntries()) {
+				List<SyndEntry> entries = feed.getEntries();
+
+				Collections.reverse(entries);
+				
+				for (SyndEntry entry :  entries) {
 
 					Send request = new Send(conf.id,FeedHtmlFormater.format(conf.format,feed,entry));
 
