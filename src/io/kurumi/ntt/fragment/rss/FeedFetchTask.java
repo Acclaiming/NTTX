@@ -198,7 +198,7 @@ public class FeedFetchTask extends TimerTask {
 						
 						Send request = new Send(sender,channel.id,FeedHtmlFormater.format(channel,feed,entry));
 
-						if (channel.format == 9 || channel.preview) {
+						if (channel.format > 8 || channel.preview) {
 
 							request.enableLinkPreview();
 
