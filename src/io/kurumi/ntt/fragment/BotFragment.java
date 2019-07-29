@@ -821,6 +821,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 			bot().execute(new SendPhoto(msg.chatId(),getFile(msg.message().sticker().fileId())).caption(str.toString()).parseMode(ParseMode.HTML).replyMarkup(new ReplyKeyboardRemove()).replyToMessageId(msg.messageId()));
 
+			return;
+			
 		}
 
 		if (!no_reply) {
