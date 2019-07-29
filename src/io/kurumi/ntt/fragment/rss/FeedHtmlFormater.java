@@ -231,7 +231,7 @@ public class FeedHtmlFormater {
 
 			html.append("\n\n");
 
-			html.append(getContent(entry,true,false));
+			html.append(getContent(entry,true,false,debug));
 
 		} else if (type == 4) {
 
@@ -239,7 +239,7 @@ public class FeedHtmlFormater {
 
 			html.append("\n\n");
 
-			html.append(getContent(entry,true,false));
+			html.append(getContent(entry,true,false,debug));
 
 			html.append("\n\n");
 
@@ -251,7 +251,7 @@ public class FeedHtmlFormater {
 
 			html.append("\n\n");
 
-			html.append(getContent(entry,true,false));
+			html.append(getContent(entry,true,false,debug));
 
 			html.append("\n\n");
 
@@ -275,7 +275,7 @@ public class FeedHtmlFormater {
 
 			html.append("\n\n");
 
-			html.append(getContent(entry,false,false));
+			html.append(getContent(entry,false,false,debug));
 
 		} else if (type == 7) {
 
@@ -283,7 +283,7 @@ public class FeedHtmlFormater {
 
 			html.append("\n\n");
 
-			html.append(getContent(entry,false,false));
+			html.append(getContent(entry,false,false,debug));
 
 			html.append("\n\n");
 
@@ -295,7 +295,7 @@ public class FeedHtmlFormater {
 
 			html.append("\n\n");
 
-			html.append(getContent(entry,false,false));
+			html.append(getContent(entry,false,false,debug));
 
 			html.append("\n\n");
 
@@ -321,8 +321,8 @@ public class FeedHtmlFormater {
 	}
 
 	public static Pattern LINES = Pattern.compile("\n( +)?\n( +)?\n",Pattern.MULTILINE);
-
-	private static String getContent(SyndEntry entry,boolean desciption,boolean withImg) {
+	
+	private static String getContent(SyndEntry entry,boolean desciption,boolean withImg,boolean debug) {
 
 		String html;
 
@@ -358,7 +358,6 @@ public class FeedHtmlFormater {
 
 		}
 
-
 		/*
 
 		 while (html.contains("<img")) {
@@ -388,7 +387,12 @@ public class FeedHtmlFormater {
 		 
 		 String host = StrUtil.subBefore(entry.getLink(),"/",true);
 
-		
+		 if (debug) {
+			 
+			 new Send(Env.LOG_CHANNEL,html).exec();
+			 
+		 }
+		 
 		if (withImg) {
 
 			html = removeTagsWithoutImg.filter(html,host);
@@ -396,6 +400,12 @@ public class FeedHtmlFormater {
 		} else {
 
 			html = removeTags.filter(html,host);
+
+		}
+		
+		if (debug) {
+
+			new Send(Env.LOG_CHANNEL,html).exec();
 
 		}
 
