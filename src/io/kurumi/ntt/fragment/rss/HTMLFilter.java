@@ -160,6 +160,10 @@ public final class HTMLFilter {
 
 				}
 
+			} else if (newNode != null) {
+				
+				node = newNode;
+				
 			}
 
 		}
