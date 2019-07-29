@@ -56,15 +56,15 @@ public final class HTMLFilter {
 
 		final ArrayList<String> no_atts = new ArrayList<String>();
 
-		//vAllowed.put("b",no_atts);
+		vAllowed.put("b",no_atts);
 		vAllowed.put("i",no_atts);
 		vAllowed.put("pre",no_atts);
 		vAllowed.put("code",no_atts);
 		vAllowed.put("em",no_atts);
 
 		vSelfClosingTags = new String[] { "img" };
-		vNeedClosingTags = new String[] { "a", "code","pre", "i", "em" };
-		vRemoveBlanks = new String[] { "a", "pre","code", "i", "em" };
+		vNeedClosingTags = new String[] { "a", "b", "code","pre", "i", "em" };
+		vRemoveBlanks = new String[] { "a", "b", "pre","code", "i", "em" };
 		encodeQuotes = true;
 	}
 
