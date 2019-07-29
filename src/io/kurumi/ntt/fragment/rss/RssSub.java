@@ -279,10 +279,15 @@ public class RssSub extends Fragment {
 
 				int limit = params.length < 3 ? -1: NumberUtil.parseInt(params[2]);
 				
+				if (limit > 0 && limit < entries.size()) {
+					
+					entries = entries.subList(limit - 1,entries.size());
+					
+				}
+				
 				for (SyndEntry entry :  entries) {
 
-					if (limit == 0) { return; }
-					
+
 					limit --;
 					
 					Send request = new Send(this,conf.id,FeedHtmlFormater.format(conf,feed,entry));
