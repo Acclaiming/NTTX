@@ -440,18 +440,6 @@ public class Fragment {
 	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 	}
 
-	public int checkPointedFunction(UserData user,Msg msg,String function,String[] params,String point,PointData data) {
-
-		return PROCESS_SYNC;
-
-	}
-
-	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,PointData data) {
-
-		onPoint(user,msg,point,data);
-
-	}
-
 	public int checkCallback(UserData user,Callback callback,String point,String[] params) {
 
 		return PROCESS_ASYNC;

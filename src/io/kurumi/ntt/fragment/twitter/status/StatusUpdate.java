@@ -310,8 +310,7 @@ public class StatusUpdate extends Fragment {
         return PROCESS_REJECT;
 
     }
-
-	@Override
+	
 	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,PointData data) {
 
 		UpdatePoint update = (UpdatePoint) data;
@@ -571,6 +570,14 @@ public class StatusUpdate extends Fragment {
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
+		if (msg.isCommand()) {
+			
+			onPointedFunction(user,msg,msg.command(),msg.params(),point,data);
+			
+			return;
+			
+		}
+		
 		UpdatePoint update = (UpdatePoint) data;
 
 		data.context.add(msg);
