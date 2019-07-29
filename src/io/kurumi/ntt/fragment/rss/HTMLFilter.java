@@ -12,7 +12,7 @@ import io.kurumi.ntt.utils.BotLog;
 public final class HTMLFilter {
 
 	public static final int REGEX_FLAGS_SI = Pattern.CASE_INSENSITIVE | Pattern.DOTALL;
-	 static final Pattern P_TAGS = Pattern.compile("<(.*?)>",Pattern.DOTALL);
+	static final Pattern P_TAGS = Pattern.compile("<(.*?)>",Pattern.DOTALL);
 	public static final Pattern P_END_TAG = Pattern.compile("^/([a-z0-9]+)",REGEX_FLAGS_SI);
 	public static final Pattern P_START_TAG = Pattern.compile("^([a-z0-9]+)(.*?)(/?)$",REGEX_FLAGS_SI);
 	public static final Pattern P_QUOTED_ATTRIBUTES = Pattern.compile("([a-z0-9]+)=([\"'])(.*?)\\2",REGEX_FLAGS_SI);
@@ -120,9 +120,9 @@ public final class HTMLFilter {
 					content.add(new Node() {{ text = str; }});
 
 				} else if (!"img".equals(node.tag)) {
-					
+
 					if (node.children == null) node.children = new LinkedList<>();
-				
+
 					node.children.add(new Node() {{ text = str; }});
 				}
 
@@ -145,61 +145,61 @@ public final class HTMLFilter {
 						node = null;
 
 					} else {
-						
+
 						// ignore
-						
+
 						/*
 
-						NodeElement superNode = node.superNode;
+						 NodeElement superNode = node.superNode;
 
-						node.superNode = null;
+						 node.superNode = null;
 
-						if (superNode.children == null) superNode.children = new LinkedList<>();
+						 if (superNode.children == null) superNode.children = new LinkedList<>();
 
-						superNode.children.add(node);
+						 superNode.children.add(node);
 
-						node = superNode;
-						
-						*/
+						 node = superNode;
+
+						 */
 
 					}
 
 				}
 
 			} else if (newNode != null) {
-				
+
 				if (newNode.end) {
-					
+
 					newNode.end = null;
-					
+
 					content.add(newNode);
-					
+
 				} else {
-					
+
 					node = newNode;
-					
+
 				}
-				
+
 			}
 
 		}
-		
+
 		if (node != null) {
-			
+
 			content.add(node);
-			
+
 		}
 
 		if (s.length() != end) {
 
 			final String str = s.substring(end);
-			
+
 			content.add(new Node() {{ text = str; }});
 
 		}
-		
+
 		return content;
-		
+
 	}
 
 	private NodeElement processNode(NodeElement node,final String s,String host) {
@@ -249,22 +249,18 @@ public final class HTMLFilter {
 					// debug( "paramValue='" + paramValue + "'" );
 					// debug( "allowed? " + vAllowed.get( name ).contains( paramName ) );
 
-					if (allowedAttribute(name,paramName)) {
+					if (StrUtil.isBlank(paramValue)) return null;
 
-						if (StrUtil.isBlank(paramValue)) return null;
+					if (!paramValue.startsWith("http")) {
 
-						if (!paramValue.startsWith("http")) {
+						if (paramValue.startsWith("/")) {
 
-							if (paramValue.startsWith("/")) {
-
-								paramValue = paramValue.substring(1);
-
-							}
-
-							paramValue = host + "/" + paramValue;
+							paramValue = paramValue.substring(1);
 
 						}
 
+						paramValue = host + "/" + paramValue;
+						
 						params.put(paramName,paramValue);
 
 
@@ -288,11 +284,11 @@ public final class HTMLFilter {
 						vTagCounts.put(name,1);
 					}
 				} else {
-					
+
 					ending = " /";
-					
+
 				}
-				
+
 				final Boolean isEnd = " /".equals(ending);
 
 				return new NodeElement() {{
@@ -301,7 +297,7 @@ public final class HTMLFilter {
 						attrs = params;
 
 						end = isEnd;
-						
+
 					}};
 
 			} else {
