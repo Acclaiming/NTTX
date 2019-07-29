@@ -33,6 +33,7 @@ import com.pengrad.telegrambot.request.BaseRequest;
 import com.mongodb.internal.connection.tlschannel.impl.ByteBufferUtil;
 import java.nio.ByteBuffer;
 import io.netty.buffer.ByteBuf;
+import cn.hutool.json.JSONObject;
 
 public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
@@ -104,6 +105,20 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 		} else if (request.uri().equals("/upgrade/" + Launcher.INSTANCE.getToken())) {
 
+			try {
+			
+				JSONObject json = new JSONObject(request.content().toString(CharsetUtil.CHARSET_UTF_8));
+
+				if (!"refs/heads/master".equals(json.getStr("ref"))) {
+					
+					sendOk(ctx);
+					
+					return;
+					
+				}
+			
+			} catch (Exception ex) {}
+			
 			sendOk(ctx);
 
 			new Thread() {
