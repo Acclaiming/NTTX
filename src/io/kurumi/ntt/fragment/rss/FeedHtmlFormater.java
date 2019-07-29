@@ -68,8 +68,8 @@ public class FeedHtmlFormater {
 
 			String host = StrUtil.subBefore(entry.getLink(),"/",true);
 
-			final String str = getContent(entry,false,true,false);
-
+			final String str = getContent(entry,false,true,false).replace("\n","<br />");
+			
 			final List<Node> content = removeTagsWithoutImg.formatTelegraph(str,host);
 
 			content.add(new NodeElement() {{ tag = "hr"; }});
@@ -266,11 +266,7 @@ public class FeedHtmlFormater {
 
 		//	html = URLUtil.decode(html);
 
-		if (!withImg) {
-
-			html = html.replaceAll("<br ?/? ?>","\n");
-
-		}
+		html = html.replaceAll("<br ?/? ?>","\n");
 
 		html = html.replace("<strong>","<b>").replace("</strong>","</b>");
 
