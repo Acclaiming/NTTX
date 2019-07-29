@@ -684,6 +684,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 	public void onFinalMsg(UserData user,Msg msg) {
 
+		if (!msg.isPrivate()) return;
+		
 		StringBuilder str = new StringBuilder();
 
 		boolean no_reply = false;
