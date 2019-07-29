@@ -331,11 +331,16 @@ public class RssSub extends Fragment {
 
 				SyndFeedInput input = new SyndFeedInput();
 
+				String link = params[1];
+
+				link = URLUtil.encode(link);
+				
+				
 				HttpResponse resp;
 
 				try {
 
-					resp = HttpUtil.createGet(params[1]).header(Header.USER_AGENT,"NTT Feed Fetcher ( https://github.com/HiedaNaKan/NTTools)").execute();
+					resp = HttpUtil.createGet(link).header(Header.USER_AGENT,"NTT Feed Fetcher ( https://github.com/HiedaNaKan/NTTools)").execute();
 
 				} catch (IORuntimeException ex) {
 
