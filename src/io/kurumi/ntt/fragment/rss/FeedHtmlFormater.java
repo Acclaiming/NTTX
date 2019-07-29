@@ -32,7 +32,7 @@ public class FeedHtmlFormater {
 
 	public static Pattern matchSrc = Pattern.compile("src" + matchAll);
 
-	public static Pattern matchImg = Pattern.compile("<img[^>].*src[^\">]+\"([^\">]+)\"[^>]*>");
+	public static Pattern matchImg = Pattern.compile("<img[^>].*src[^\">]+\"([^\">]*)\"[^>]*>");
 
 	public static HTMLFilter removeTags = new HTMLFilter(true);
 	public static HTMLFilter removeTagsWithoutImg = new HTMLFilter(false);

@@ -187,6 +187,8 @@ public final class HTMLFilter {
 
 					if (allowedAttribute(name,paramName)) {
 						
+						if (paramValue.isEmpty()) return "";
+						
 						if (!paramValue.startsWith("http")) {
 							
 							if (paramValue.startsWith("/")) {
