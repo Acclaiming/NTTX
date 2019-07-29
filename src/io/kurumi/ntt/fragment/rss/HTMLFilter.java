@@ -145,6 +145,10 @@ public final class HTMLFilter {
 						node = null;
 
 					} else {
+						
+						// ignore
+						
+						/*
 
 						NodeElement superNode = node.superNode;
 
@@ -155,6 +159,8 @@ public final class HTMLFilter {
 						superNode.children.add(node);
 
 						node = superNode;
+						
+						*/
 
 					}
 
