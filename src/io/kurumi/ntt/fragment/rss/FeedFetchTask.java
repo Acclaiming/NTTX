@@ -196,7 +196,7 @@ public class FeedFetchTask extends TimerTask {
 							
 						}
 						
-						Send request = new Send(sender,channel.id,FeedHtmlFormater.format(channel.format,feed,entry));
+						Send request = new Send(sender,channel.id,FeedHtmlFormater.format(channel,feed,entry));
 
 						if (channel.format == 9 || channel.preview) {
 

@@ -40,13 +40,15 @@ public class FeedHtmlFormater {
 
 	public static Pattern matchTagInterrupted = Pattern.compile(".*</[^>]+>.+<[^>]+");
 
-	public static String format(int type,SyndFeed feed,final SyndEntry entry) {
+	public static String format(RssSub.ChannelRss channel,SyndFeed feed,final SyndEntry entry) {
 
-		return format(type,feed,entry,false);
+		return format(channel,feed,entry,false);
 
 	}
 
-	public static String format(int type,final SyndFeed feed,final SyndEntry entry,boolean debug) {
+	public static String format(final RssSub.ChannelRss channel,final SyndFeed feed,final SyndEntry entry,boolean debug) {
+
+		int type = channel.format;
 
 		if (type == 0) type = 2;
 
@@ -118,36 +120,46 @@ public class FeedHtmlFormater {
 			html.append(Html.b(feed.getTitle()));
 
 			html.append("\n\n");
-			
+
 			TelegraphAccount account = TelegraphAccount.defaultAccount();
 
 			String host = StrUtil.subBefore(entry.getLink(),"/",true);
-			
+
 			final String str = getContent(entry,false,true,false);
-			
+
 			final List<Node> content = removeTagsWithoutImg.formatTelegraph(str,host);
 
 			content.add(new NodeElement() {{ tag = "hr"; }});
-			
-			content.add(new Node() {{ text = "由 "; }});
-			
-			content.add(new NodeElement() {{
 
-						tag = "a";
+			if (channel.copyright == null) {
 
-						attrs = new HashMap<>();
+				content.add(new Node() {{ text = "由 "; }});
 
-						attrs.put("href","https://manual.kurumi.io");
+				content.add(new NodeElement() {{
 
-						children = new LinkedList<>();
+							tag = "a";
 
-						children.add(new Node() {{ text = "NTT"; }});
+							attrs = new HashMap<>();
+
+							attrs.put("href","https://manual.kurumi.io");
+
+							children = new LinkedList<>();
+
+							children.add(new Node() {{ text = "NTT"; }});
 
 
-					}});
-					
-			content.add(new Node() {{ text = " 制作 查看原文 : "; }});
-			
+						}});
+
+				content.add(new Node() {{ text = " 制作"; }});
+
+			} else {
+
+				content.add(new Node() {{ text = channel.copyright; }});
+
+			}
+
+			content.add(new Node() {{ text = "查看原文 : "; }});
+
 			content.add(new NodeElement() {{
 
 						tag = "a";
@@ -159,17 +171,17 @@ public class FeedHtmlFormater {
 						children = new LinkedList<>();
 
 						children.add(new Node() {{ text = entry.getTitle() ; }});
-						
+
 
 					}});
 
 			content.add(new NodeElement() {{ tag = "br"; }});
-					
+
 			Page page = Telegraph.createPage(account.access_token,entry.getTitle(),StrUtil.isBlank(entry.getAuthor()) ? feed.getTitle() : entry.getAuthor().trim(),feed.getLink(),content,false);
 
 			if (page == null) {
 
-				
+
 
 			} else {
 
@@ -313,7 +325,7 @@ public class FeedHtmlFormater {
 
 		//if (!withImg) {
 
-			html = html.replaceAll("<br ?/? ?>","\n");
+		html = html.replaceAll("<br ?/? ?>","\n");
 
 		//}
 

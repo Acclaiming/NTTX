@@ -41,6 +41,8 @@ public class RssSub extends Fragment {
 
 		public List<String> subscriptions;
 
+		public String copyright;
+		
 		public Map<String,FeedError> error;
 
 		public Long fromBot;
@@ -62,11 +64,11 @@ public class RssSub extends Fragment {
 
 		if (origin == Launcher.INSTANCE) {
 
-			registerFunction("rss_sub","rss_list","rss_unsub","rss_unsub_all","rss_set_format","rss_link_preview","rss_export");
+			registerFunction("rss_set_current","rss_sub","rss_set_copyright","rss_list","rss_unsub","rss_unsub_all","rss_set_format","rss_link_preview","rss_export");
 
 		} else {
 
-			registerFunction("set_current","sub","list","unsub","unsub_all","set_format","link_preview","export");
+			registerFunction("set_current","sub","set_copyright","list","unsub","unsub_all","set_format","link_preview","export");
 
 		}
 
@@ -156,6 +158,22 @@ public class RssSub extends Fragment {
 		}
 
 		if (function.endsWith("set_current")) {
+			
+			if (params.length == 0) {
+				
+				conf.copyright = null;
+				
+				msg.send("已还原，感谢对NTT的支持。").exec();
+				
+			} else {
+				
+				conf.copyright = ArrayUtil.join(params," ");
+				
+				msg.send("已还原，已设定。").exec();
+				
+			}
+			
+		} else if (function.endsWith("set_current")) {
 
 			if (isMainInstance()) {
 
@@ -234,7 +252,7 @@ public class RssSub extends Fragment {
 
 				for (SyndEntry entry :  entries) {
 
-					Send request = new Send(this,conf.id,FeedHtmlFormater.format(conf.format,feed,entry));
+					Send request = new Send(this,conf.id,FeedHtmlFormater.format(conf,feed,entry));
 
 					if (conf.format == 9 || conf.preview) {
 
