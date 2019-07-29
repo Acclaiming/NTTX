@@ -111,7 +111,7 @@ public final class HTMLFilter {
 
 			if (start != 0) {
 				
-				BotLog.error("string : " + s);
+				BotLog.error("string : " + s.length());
 				BotLog.error("start : " + m.start(0));
 				BotLog.error("end : " + m.end(0));
 				BotLog.error("group 0" + m.group(0));
