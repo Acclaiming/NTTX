@@ -277,8 +277,14 @@ public class RssSub extends Fragment {
 
 				Collections.reverse(entries);
 
+				int limit = params.length < 3 ? -1: NumberUtil.parseInt(params[2]);
+				
 				for (SyndEntry entry :  entries) {
 
+					if (limit == 0) { return; }
+					
+					limit --;
+					
 					Send request = new Send(this,conf.id,FeedHtmlFormater.format(conf,feed,entry));
 
 					if (conf.format > 8 || conf.preview) {
