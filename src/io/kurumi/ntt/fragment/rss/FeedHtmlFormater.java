@@ -118,12 +118,20 @@ public class FeedHtmlFormater {
 
 			String host = StrUtil.subBefore(entry.getLink(),"/",true);
 			
-			final List<Node> content = removeTagsWithoutImg.formatTelegraph(getContent(entry,false,true,false),host);
+			final String str = getContent(entry,false,true,false);
+			
+			final List<Node> content = removeTagsWithoutImg.formatTelegraph(str,host);
 
+			content.add(new NodeElement() {{ tag = "hr"; }});
+			
+			content.add(new Node() {{ text = str; }});
+			
 			content.add(new NodeElement() {{ tag = "hr"; }});
 
 			content.add(new Node() {{ text = Telegraph.parseContent(content).toStringPretty(); }});
-	
+			
+			content.add(new NodeElement() {{ tag = "hr"; }});
+			
 			
 			content.add(new NodeElement() {{
 
