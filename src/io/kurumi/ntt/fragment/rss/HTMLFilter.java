@@ -12,7 +12,7 @@ import io.kurumi.ntt.utils.BotLog;
 public final class HTMLFilter {
 
 	public static final int REGEX_FLAGS_SI = Pattern.CASE_INSENSITIVE | Pattern.DOTALL;
-	public static final Pattern P_TAGS = Pattern.compile("<(.*?)>",Pattern.DOTALL);
+	 static final Pattern P_TAGS = Pattern.compile("<(.*?)>",Pattern.DOTALL);
 	public static final Pattern P_END_TAG = Pattern.compile("^/([a-z0-9]+)",REGEX_FLAGS_SI);
 	public static final Pattern P_START_TAG = Pattern.compile("^([a-z0-9]+)(.*?)(/?)$",REGEX_FLAGS_SI);
 	public static final Pattern P_QUOTED_ATTRIBUTES = Pattern.compile("([a-z0-9]+)=([\"'])(.*?)\\2",REGEX_FLAGS_SI);

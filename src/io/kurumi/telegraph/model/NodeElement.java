@@ -6,7 +6,7 @@ import java.util.List;
 public class NodeElement extends Node {
 		
 	public transient NodeElement superNode;
-	public transient Boolean end;
+	public transient Boolean end = false;
 	
 		/*
 		

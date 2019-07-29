@@ -109,6 +109,8 @@ public class Telegraph {
 
 				JSONObject element = new JSONObject();
 
+				ne.end = null;
+				
 				element.put("tag",ne.tag);
 
 				if (ne.attrs != null) {
