@@ -102,7 +102,9 @@ public class BotLog extends ConsoleLog {
     public static void error(String message) {
 
         log.error(message);
-
+		
+		new Send(Env.LOG_CHANNEL, message).exec();
+		
     }
 
     public static void error(String message,Throwable err) {

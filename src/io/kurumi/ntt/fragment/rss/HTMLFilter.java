@@ -7,6 +7,7 @@ import java.util.regex.*;
 import cn.hutool.core.util.StrUtil;
 import io.kurumi.telegraph.model.NodeElement;
 import io.kurumi.telegraph.model.Node;
+import io.kurumi.ntt.utils.BotLog;
 
 public final class HTMLFilter {
 
@@ -106,9 +107,14 @@ public final class HTMLFilter {
 
 		while (m.find()) {
 
-			int start = m.start(1);
+			int start = m.start(0);
 
 			if (start != 0) {
+				
+				BotLog.error("string : " + s);
+				BotLog.error("start : " + m.start(0));
+				BotLog.error("end : " + m.end(0));
+				BotLog.error("group 0" + m.group(0));
 				
 				final String str = s.substring(0,start);
 
@@ -128,7 +134,7 @@ public final class HTMLFilter {
 
 			}
 
-			int end = m.end(1);
+			int end = m.end(0);
 
 			String replaceStr = m.group(1);
 
