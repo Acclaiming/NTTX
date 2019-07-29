@@ -53,73 +53,16 @@ public class FeedHtmlFormater {
 		if (type == 0) type = 2;
 
 		StringBuilder html = new StringBuilder();
+		
+		if (type > 8) {
 
-		/*
+			if (type == 9) {
 
-		 1 : 
+				html.append(Html.b(feed.getTitle()));
 
-		 [文章标题](文章链接)
+				html.append("\n\n");
 
-		 2 : 
-
-		 **来源**
-
-		 [文章标题](文章链接)
-
-		 3 :
-
-		 **来源**
-
-		 [文章标题](文章链接)
-
-		 简介...
-
-		 4.
-
-		 **标题**
-
-		 简介...
-
-		 链接
-
-		 5.
-
-		 **标题**
-
-		 简介
-
-		 [作者 如果存在 - ] [来源](文章链接)
-
-		 6.
-
-		 **标题**
-
-		 全文
-
-		 7.
-
-		 **标题**
-
-		 全文
-
-		 链接
-
-		 8.
-
-		 **标题**
-
-		 全文
-
-		 来自 [作者 如果存在 - ] [来源](文章链接)
-
-
-		 */
-
-		if (type == 9) {
-
-			html.append(Html.b(feed.getTitle()));
-
-			html.append("\n\n");
+			}
 
 			TelegraphAccount account = TelegraphAccount.defaultAccount();
 
@@ -270,7 +213,7 @@ public class FeedHtmlFormater {
 
 			html.append(entry.getLink());
 
-		} else {
+		} else if (type == 8) {
 
 			html.append(Html.b(entry.getTitle()));
 

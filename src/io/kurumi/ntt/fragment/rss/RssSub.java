@@ -75,6 +75,13 @@ public class RssSub extends Fragment {
 	}
 
 	@Override
+	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
+		
+		return PROCESS_ASYNC;
+		
+	}
+
+	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
 		if (user.blocked()) {
@@ -274,7 +281,7 @@ public class RssSub extends Fragment {
 
 					Send request = new Send(this,conf.id,FeedHtmlFormater.format(conf,feed,entry));
 
-					if (conf.format == 9 || conf.preview) {
+					if (conf.format > 8 || conf.preview) {
 
 						request.enableLinkPreview();
 
@@ -485,9 +492,9 @@ public class RssSub extends Fragment {
 
 			int target;
 
-			if (!NumberUtil.isNumber(params[1]) || (target = NumberUtil.parseInt(params[1])) < 0 || target > 9) {
+			if (!NumberUtil.isNumber(params[1]) || (target = NumberUtil.parseInt(params[1])) < 0 || target > 10) {
 
-				msg.send("请选择有效的格式 : 1 - 9").exec();
+				msg.send("请选择有效的格式 : 1 - 10").exec();
 
 				return;
 
