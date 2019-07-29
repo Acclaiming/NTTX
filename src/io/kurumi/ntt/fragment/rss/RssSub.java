@@ -230,8 +230,6 @@ public class RssSub extends Fragment {
 						
 						
 					}
-					
-					return;
 
 				}
 
