@@ -98,25 +98,22 @@ public final class HTMLFilter {
 	public List<Node> formatTelegraph(String input,String host) {
 
 		String s = input;
-		
+
 		Matcher m = P_TAGS.matcher(s);
 
 		LinkedList<Node> content = new LinkedList<>();
 
 		NodeElement node = null;
 
+		int end = 0;
+
 		while (m.find()) {
 
 			int start = m.start(0);
 
 			if (start != 0) {
-				
-				BotLog.error("string : " + s.length());
-				BotLog.error("start : " + m.start(0));
-				BotLog.error("end : " + m.end(0));
-				BotLog.error("group 0" + m.group(0));
-				
-				final String str = s.substring(0,start);
+
+				final String str = s.substring(end,start);
 
 				if (node == null) {
 
@@ -127,54 +124,57 @@ public final class HTMLFilter {
 					NodeElement newNode = new NodeElement();
 
 					newNode.superNode = node;
-					
+
 					node = newNode;
 
 				}
 
 			}
 
-			int end = m.end(0);
+			end = m.end(0);
 
 			String replaceStr = m.group(1);
 
 			NodeElement newNode = processNode(node,replaceStr,host);
 
 			if (node != null) {
-				
+
 				if (newNode == null) {
-					
+
 					if (node.superNode == null) {
-						
+
 						content.add(node);
-						
+
 						node = null;
-						
+
 					} else {
-						
+
 						NodeElement superNode = node.superNode;
 
 						node.superNode = null;
-						
+
 						if (superNode.children == null) superNode.children = new LinkedList<>();
-						
+
 						superNode.children.add(node);
-						
+
 						node = superNode;
-						
+
 					}
-					
+
 				}
-				
+
 			}
-			
-			s = s.substring(end);
 
 		}
 
-		final String str = s;
+		if (s.length() != end) {
 
-		content.add(new Node() {{ text = str; }});
+			final String str = s;
+			
+			content.add(new Node() {{ text = str; }});
+
+		}
+
 
 		return content;
 
