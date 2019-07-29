@@ -44,7 +44,7 @@ public class RssSub extends Fragment {
 		public Map<String,FeedError> error;
 
 		public Long fromBot;
-		
+
 		public static class FeedError {
 
 			public Long startAt;
@@ -60,7 +60,15 @@ public class RssSub extends Fragment {
 
 		super.init(origin);
 
-		registerFunction("rss_sub","rss_list","rss_unsub","rss_unsub_all","rss_set_format","rss_link_preview","rss_export");
+		if (origin == Launcher.INSTANCE) {
+
+			registerFunction("rss_sub","rss_list","rss_unsub","rss_unsub_all","rss_set_format","rss_link_preview","rss_export");
+
+		} else {
+
+			registerFunction("set_current","sub","list","unsub","unsub_all","set_format","link_preview","export");
+
+		}
 
 	}
 
@@ -146,8 +154,26 @@ public class RssSub extends Fragment {
 			conf.subscriptions = new LinkedList<>();
 
 		}
+		
+		if (function.endsWith("set_current")) {
 
-		if ("rss_export".equals(function)) {
+			if (isMainInstance()) {
+				
+				conf.fromBot = null;
+				
+				msg.send("重置成功 来源为 NTT本体").exec();
+				
+			} else {
+				
+
+				conf.fromBot = origin.me.id();
+
+				msg.send("设置成功 , 来源为 " + UserData.get(origin.me).userName()).html().exec();
+				
+				
+			}
+			
+		} else if (function.endsWith("export")) {
 
 			if (params.length < 2) {
 
@@ -205,10 +231,10 @@ public class RssSub extends Fragment {
 				List<SyndEntry> entries = feed.getEntries();
 
 				Collections.reverse(entries);
-				
+
 				for (SyndEntry entry :  entries) {
 
-					Send request = new Send(conf.id,FeedHtmlFormater.format(conf.format,feed,entry));
+					Send request = new Send(this,conf.id,FeedHtmlFormater.format(conf.format,feed,entry));
 
 					if (conf.format == 9 || conf.preview) {
 
@@ -216,10 +242,10 @@ public class RssSub extends Fragment {
 
 					}
 
-					 request.html().exec();
+					request.html().exec();
 
 					// if (conf.format == 9) return;
-					 
+
 					//msg.send(request.request().getText()).exec();
 
 				}
@@ -237,7 +263,7 @@ public class RssSub extends Fragment {
 
 		}
 
-		if ("rss_sub".equals(function)) {
+		if (function.endsWith("sub")) {
 
 			if (params.length < 2) {
 
@@ -299,13 +325,13 @@ public class RssSub extends Fragment {
 				}
 
 				conf.subscriptions.add(params[1]);
-			
+
 				if (origin != Launcher.INSTANCE) {
 
 					conf.fromBot = origin.me.id();
 
 				}
-				
+
 				channel.setById(channelId,conf);
 
 				RssInfo rss = new RssSub.RssInfo();
@@ -313,7 +339,6 @@ public class RssSub extends Fragment {
 				rss.id = params[1];
 				rss.title = feed.getTitle();
 				rss.last = FeedFetchTask.generateSign(feed.getEntries().get(0));
-
 				
 				info.setById(rss.id,rss);
 
@@ -322,14 +347,14 @@ public class RssSub extends Fragment {
 			} catch (FeedException e) {
 
 				msg.send("拉取出错 : " + BotLog.parseError(e)).exec();
-				
+
 			} catch (IllegalArgumentException e) {
 
 				msg.send("无效的RSS链接").exec();
 
 			}
 
-		} else if ("rss_list".equals(function)) {
+		} else if (function.endsWith("list")) {
 
 			if (conf.subscriptions.isEmpty()) {
 
@@ -351,7 +376,7 @@ public class RssSub extends Fragment {
 
 			msg.send(list.toString()).html().exec();
 
-		} else if ("rss_unsub".equals(function)) {
+		} else if (function.endsWith("unsub")) {
 
 			if (params.length < 2) {
 
@@ -373,7 +398,7 @@ public class RssSub extends Fragment {
 
 			}
 
-		} else if ("rss_unsub_all".equals(function)) {
+		} else if (function.endsWith("unsub_all")) {
 
 			if (conf.subscriptions.isEmpty()) {
 
@@ -389,7 +414,7 @@ public class RssSub extends Fragment {
 
 			}
 
-		} else if ("rss_set_format".equals(function)) {
+		} else if (function.endsWith("set_format")) {
 
 			if (params.length < 2) {
 
@@ -415,7 +440,7 @@ public class RssSub extends Fragment {
 
 			msg.send("修改成功 输出格式为 : " + target + " .").exec();
 
-		} else if ("rss_link_preview".equals(function)) {
+		} else if (function.endsWith("link_preview")) {
 
 			if (params.length < 2) {
 

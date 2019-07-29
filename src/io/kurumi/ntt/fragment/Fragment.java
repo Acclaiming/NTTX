@@ -33,6 +33,7 @@ import java.io.IOException;
 import cn.hutool.core.thread.ThreadUtil;
 import java.util.LinkedList;
 import com.pengrad.telegrambot.request.*;
+import io.kurumi.ntt.Launcher;
 
 public class Fragment {
 
@@ -53,6 +54,12 @@ public class Fragment {
         return origin.bot();
 
     }
+	
+	public boolean isMainInstance() {
+		
+		return origin == Launcher.INSTANCE;
+		
+	}
 
 	public <T extends BaseRequest, R extends BaseResponse> R execute(BaseRequest<T, R> request) {
 

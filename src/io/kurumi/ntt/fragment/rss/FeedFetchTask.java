@@ -190,7 +190,7 @@ public class FeedFetchTask extends TimerTask {
 						
 						Fragment sender = Launcher.INSTANCE;
 						
-						if (channel.fromBot != null) {
+						if (channel.fromBot != null && UserBotFragment.bots.containsKey(channel.fromBot)) {
 							
 							sender = UserBotFragment.bots.get(channel.fromBot);
 							
