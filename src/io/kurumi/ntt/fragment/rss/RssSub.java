@@ -93,6 +93,31 @@ public class RssSub extends Fragment {
 
 			channelId = NumberUtil.parseLong(params[0]);
 
+			GetChatResponse resp = execute(new GetChat(channelId));
+
+			if (resp == null) {
+
+				msg.send("Telegram 服务器连接错误").exec();
+
+				return;
+
+			} else if (!resp.isOk()) {
+
+				msg.send("错误 : BOT不在该频道","( " + resp.description() + " )").exec();
+
+				return;
+
+			} else if (resp.chat().type() != Chat.Type.channel) {
+				
+				msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").exec();
+				
+				return;
+				
+			}
+
+			channelId = resp.chat().id();
+		
+			
 		} else {
 
 			String username = params[0];
@@ -113,7 +138,14 @@ public class RssSub extends Fragment {
 
 				return;
 
+			}else if (resp.chat().type() != Chat.Type.channel) {
+
+				msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").exec();
+
+				return;
+
 			}
+			
 
 			channelId = resp.chat().id();
 
