@@ -88,7 +88,7 @@ public class FeedFetchTask extends TimerTask {
 
 				try {
 
-					resp = HttpUtil.createGet(url).header(Header.USER_AGENT,"NTT Feed Fetcher ( https://github.com/HiedaNaKan/NTTools)").execute();
+					resp = HttpUtil.createGet(URLUtil.encode(url)).header(Header.USER_AGENT,"NTT Feed Fetcher ( https://github.com/HiedaNaKan/NTTools)").execute();
 
 				} catch (HttpException ex) {
 
