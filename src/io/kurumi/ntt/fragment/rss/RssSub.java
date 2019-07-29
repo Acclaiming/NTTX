@@ -335,7 +335,6 @@ public class RssSub extends Fragment {
 
 				link = URLUtil.encode(link);
 				
-				
 				HttpResponse resp;
 
 				try {

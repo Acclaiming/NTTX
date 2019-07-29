@@ -567,7 +567,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 							msg.send("请在群组使用 :)").async();
 
-
 						} else if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.params()) == FUNCTION_PRIVATE && !msg.isPrivate()) {
 
 							asyncPool.execute(new Runnable() {
@@ -583,9 +582,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 								});
 
 
-						}
-
-						if (checked == PROCESS_ASYNC) {
+						} else if (checked == PROCESS_ASYNC) {
 
 							asyncPool.execute(new Runnable() {
 
