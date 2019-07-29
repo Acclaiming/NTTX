@@ -320,7 +320,6 @@ public class FeedHtmlFormater {
 
 	}
 	
-	public static Pattern MATCH_LINES = Pattern.compile(".*\n( |　)*\n( |　)*\n.*");
 	public static Pattern LINES = Pattern.compile("\n( |　)*\n( |　)*\n");
 	
 	private static String getContent(SyndEntry entry,boolean desciption,boolean withImg,boolean debug) {
@@ -404,7 +403,7 @@ public class FeedHtmlFormater {
 			
 		}
 
-		while (ReUtil.isMatch(MATCH_LINES,html)) {
+		while (ReUtil.contains(LINES,html)) {
 
 			html = ReUtil.replaceAll(html,LINES,"\n\n");
 

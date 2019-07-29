@@ -218,7 +218,7 @@ public class RssSub extends Fragment {
 
 					 request.html().exec();
 
-					msg.send(request.request().getText()).exec();
+					//msg.send(request.request().getText()).exec();
 
 				}
 
