@@ -120,13 +120,10 @@ public final class HTMLFilter {
 					content.add(new Node() {{ text = str; }});
 
 				} else {
-
-					NodeElement newNode = new NodeElement();
-
-					newNode.superNode = node;
-
-					node = newNode;
-
+					
+					if (node.children == null) node.children = new LinkedList<>();
+				
+					node.children.add(new Node() {{ text = str; }});
 				}
 
 			}
