@@ -53,11 +53,11 @@ public class GroupFunction extends Fragment {
 				if (msg.message().leftChatMember().id().equals(origin.me.id())) {
 
 					GroupData.delete(msg.chatId());
-					
+
 				} else {
 
-				msg.delete();
-				
+					msg.delete();
+
 				}
 
 
@@ -155,13 +155,27 @@ public class GroupFunction extends Fragment {
 
 				}
 
-			} else if (msg.sticker() != null && data.no_sticker != null) {
+			} else if (msg.sticker() != null) {
 
-				msg.delete();
+				if (msg.sticker().animated() && data.no_animated_sticker != null) {
 
-				if (data.no_sticker != 0)  {
+					msg.delete();
 
-					doRest(user,msg,data,"发送贴纸");
+					if (data.no_sticker != 0)  {
+
+						doRest(user,msg,data,"发送贴纸");
+
+					}
+
+				} else if (!msg.sticker().animated() && data.no_sticker != null) {
+
+					msg.delete();
+
+					if (data.no_sticker != 0)  {
+
+						doRest(user,msg,data,"发送贴纸");
+
+					}
 
 				}
 

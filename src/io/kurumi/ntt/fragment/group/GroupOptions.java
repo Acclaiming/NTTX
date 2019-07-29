@@ -441,6 +441,29 @@ public class GroupOptions extends Fragment {
 
 										}
 										
+								} else if ("animated".equals(params[1])) {
+
+									if (data.no_animated_sticker == null) {
+
+										data.no_animated_sticker = 0;
+
+										callback.text("📝  仅删除");
+
+									} else if (data.no_animated_sticker == 0) {
+
+										data.no_animated_sticker = 1;
+
+										callback.text("📝  删除并警告");
+
+									} else {
+
+										data.no_animated_sticker = null;
+
+										callback.text("📝  不处理");
+
+									}
+									
+										
 								} else if ("image".equals(params[1])) {
 
 										if (data.no_image == null) {
@@ -463,7 +486,7 @@ public class GroupOptions extends Fragment {
 
 										}
 
-								} else if ("animation".equals(params[1])) {
+								} else if ("ann".equals(params[1])) {
 
 										if (data.no_animation == null) {
 
@@ -1636,15 +1659,11 @@ public class GroupOptions extends Fragment {
 										.newButton("发送贴纸",POINT_HELP,"sticker")
 										.newButton(data.no_sticker == null ? "✅" : data.no_sticker == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"sticker");
 
-										/*
-										
 						newButtonLine()
 							.newButton("动态贴纸",POINT_HELP,"animated")
 							.newButton(data.no_animated_sticker == null ? "✅" : data.no_animated_sticker == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"animated");
 						
 										
-							*/
-							
 								newButtonLine()
 										.newButton("发送图片",POINT_HELP,"image")
 										.newButton(data.no_image == null ? "✅" : data.no_image == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"image");

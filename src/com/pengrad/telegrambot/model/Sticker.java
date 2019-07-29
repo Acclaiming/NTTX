@@ -17,7 +17,8 @@ public class Sticker implements Serializable {
     private String set_name;
     private MaskPosition mask_position;
     private Integer file_size;
-
+	private boolean is_animated;
+	
     public String fileId() {
         return file_id;
     }
@@ -42,6 +43,10 @@ public class Sticker implements Serializable {
         return set_name;
     }
 
+	public boolean animated() {
+		return is_animated;
+	}
+	
     public MaskPosition maskPosition() {
         return mask_position;
     }
