@@ -208,27 +208,12 @@ public class RssSub extends Fragment {
 				
 				for (SyndEntry entry :  entries) {
 
-					Send request = new Send(conf.id,FeedHtmlFormater.format(conf.format,feed,entry,true));
+					Send request = new Send(conf.id,FeedHtmlFormater.format(conf.format,feed,entry));
 
 					if (conf.format == 0 || conf.preview) {
 
 						request.enableLinkPreview();
 
-					}
-
-					SendResponse result = request.html().exec();
-
-					if (result == null) {
-						
-						msg.send(request.request().getText()).exec();
-						msg.send("timeout").exec();
-						
-					} else if (!result.isOk()){
-						
-						msg.send(request.request().getText()).exec();
-						msg.send(result.description()).exec();
-						
-						
 					}
 
 				}
