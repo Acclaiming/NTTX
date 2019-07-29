@@ -189,23 +189,7 @@ public class RssSub extends Fragment {
 
 		}
 
-		if (function.endsWith("set_current")) {
-			
-			if (params.length == 0) {
-				
-				conf.copyright = null;
-				
-				msg.send("已还原，感谢对NTT的支持。").exec();
-				
-			} else {
-				
-				conf.copyright = ArrayUtil.join(params," ");
-				
-				msg.send("已还原，已设定。").exec();
-				
-			}
-			
-		} else if (function.endsWith("set_current")) {
+	 if (function.endsWith("set_current")) {
 
 			if (isMainInstance()) {
 
@@ -296,12 +280,21 @@ public class RssSub extends Fragment {
 
 					}
 
-					request.html().exec();
+					SendResponse result = request.html().exec();
 
 					// if (conf.format == 9) return;
 
-					//msg.send(request.request().getText()).exec();
-
+					if (result != null) {
+					
+						if (result.isOk()) continue;
+						
+					msg.send(result.errorCode() + " - " + result.description()).exec();
+						
+					}
+					
+					msg.send(request.request().getText()).exec();
+					
+					
 				}
 
 			} catch (FeedException e) {
