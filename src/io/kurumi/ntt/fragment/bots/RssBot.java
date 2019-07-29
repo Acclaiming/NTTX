@@ -23,6 +23,8 @@ public class RssBot extends UserBotFragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
+		super.onFunction(user,msg,function,params);
+		
 		if ("start".equals(function)) {
 
 			msg.send("欢迎使用Rss订阅机器人 , 点此 " + Html.a("查看文档",link) + " ~").html().async();

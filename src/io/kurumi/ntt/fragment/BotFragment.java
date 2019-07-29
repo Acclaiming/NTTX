@@ -50,7 +50,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 		addFragment(this);
 
 		addFragment(new Firewall());
-		
+
     }
 
 	public HashMap<String,Fragment> functions = new HashMap<>();
@@ -75,7 +75,21 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 		registerPoint(POINT_REQUEST_TWITTER);
 
 	}
+	
+	
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
+		if ("cancel".equals(function)) {
+
+			msg.send("没有什么需要取消的 :)").removeKeyboard().failedWith();
+
+			return;
+
+		}
+
+	}
+	
 	@Override
 	public int checkPoint(UserData user,Msg msg,String point,PointData data) {
 
@@ -85,8 +99,18 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 	@Override
 	public void onPoint(final UserData user,Msg msg,String point,PointData data) {
+		
+		data.context.add(msg);
 
-		if (POINT_REQUEST_TWITTER.equals(point)) {
+		if ("cancel".equals(msg.command())) {
+
+			if (data.type == 1) clearPrivatePoint(user).onCancel(user,msg); else clearGroupPoint(user).onCancel(user,msg);
+
+			msg.send("已经取消当前操作 :) ",Env.HELP_MESSAGE).removeKeyboard().failedWith(9 * 1000);
+
+			return;
+
+		} else if (POINT_REQUEST_TWITTER.equals(point)) {
 
             final TwitterRequest request = (TwitterRequest) data;
 
@@ -226,36 +250,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
     }
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-
-		if ("cancel".equals(function)) {
-
-			msg.send("没有什么需要取消的 :)").failedWith();
-
-			return;
-
-		}
-
-	}
-
-	@Override
-	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,PointData data) {
-
-		data.context.add(msg);
-
-		if ("cancel".equals(function)) {
-
-			if (data.type == 1) clearPrivatePoint(user).onCancel(user,msg); else clearGroupPoint(user).onCancel(user,msg);
-
-			msg.send("已经取消当前操作 :) ",Env.HELP_MESSAGE).failedWith(9 * 1000);
-
-			return;
-
-		}
-
-	}
-
     public void processAsync(final Update update) {
 
 		// System.out.println(new JSONObject(update.json).toStringPretty());
@@ -325,55 +319,26 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				final Fragment function = points.containsKey(groupPoint.point) ? points.get(groupPoint.point) : this;
 
-				if (msg.isCommand()) {
+				int checked = function.checkPoint(user,msg,groupPoint.point,groupPoint);
 
-					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint);
+				if (checked == PROCESS_REJECT) return;
 
-					if (checked == PROCESS_REJECT) return;
+				if (checked == PROCESS_ASYNC) {
 
-					if (checked == PROCESS_ASYNC) {
+					asyncPool.execute(new Runnable() {
 
-						asyncPool.execute(new Runnable() {
+							@Override
+							public void run() {
 
-								@Override
-								public void run() {
+								function.onPoint(user,msg,groupPoint.point,groupPoint);
 
-									function.onPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint);
+							}
 
-								}
-
-							});
-
-					} else {
-
-						function.onPointedFunction(user,msg,msg.command(),msg.params(),groupPoint.point,groupPoint);
-
-					}
+						});
 
 				} else {
 
-					int checked = function.checkPoint(user,msg,groupPoint.point,groupPoint);
-
-					if (checked == PROCESS_REJECT) return;
-
-					if (checked == PROCESS_ASYNC) {
-
-						asyncPool.execute(new Runnable() {
-
-								@Override
-								public void run() {
-
-									function.onPoint(user,msg,groupPoint.point,groupPoint);
-
-								}
-
-							});
-
-					} else {
-
-						function.onPoint(user,msg,groupPoint.point,groupPoint);
-
-					}
+					function.onPoint(user,msg,groupPoint.point,groupPoint);
 
 				}
 
@@ -381,57 +346,26 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 				final Fragment function = !points.containsKey(privatePoint.point) || "cancel".equals(msg.command()) ? this : points.get(privatePoint.point);
 
-				if (msg.isCommand()) {
+				int checked = function.checkPoint(user,msg,privatePoint.point,privatePoint);
 
-					int checked = function.checkPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint);
+				if (checked == PROCESS_REJECT) return;
 
-					if (checked == PROCESS_REJECT) return;
+				if (checked == PROCESS_ASYNC) {
 
-					if (checked == PROCESS_ASYNC) {
+					asyncPool.execute(new Runnable() {
 
-						asyncPool.execute(new Runnable() {
+							@Override
+							public void run() {
 
-								@Override
-								public void run() {
+								function.onPoint(user,msg,privatePoint.point,privatePoint);
 
+							}
 
-									function.onPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint);
-
-								}
-
-							});
-
-					} else {
-
-						function.onPointedFunction(user,msg,msg.command(),msg.params(),privatePoint.point,privatePoint);
-
-
-					}
+						});
 
 				} else {
 
-					int checked = function.checkPoint(user,msg,privatePoint.point,privatePoint);
-
-					if (checked == PROCESS_REJECT) return;
-
-					if (checked == PROCESS_ASYNC) {
-
-						asyncPool.execute(new Runnable() {
-
-								@Override
-								public void run() {
-
-									function.onPoint(user,msg,privatePoint.point,privatePoint);
-
-								}
-
-							});
-
-					} else {
-
-						function.onPoint(user,msg,privatePoint.point,privatePoint);
-
-					}
+					function.onPoint(user,msg,privatePoint.point,privatePoint);
 
 				}
 
@@ -608,7 +542,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 					for (final Fragment f : fragments) {
 
 						if (!f.msg()) continue;
-						
+
 						int checked = f.checkMsg(user,msg); 
 
 						if (checked == PROCESS_ASYNC) {
@@ -635,7 +569,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 						}
 
 					}
-					
+
 					onFinalMsg(user,msg);
 
 				}
@@ -822,7 +756,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 			bot().execute(new SendPhoto(msg.chatId(),getFile(msg.message().sticker().fileId())).caption(str.toString()).parseMode(ParseMode.HTML).replyMarkup(new ReplyKeyboardRemove()).replyToMessageId(msg.messageId()));
 
 			return;
-			
+
 		}
 
 		if (!no_reply) {
@@ -850,7 +784,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 	}
 
 	public abstract String getToken();
-	
+
 	public boolean silentStart() throws Exception {
 
 		reload();
@@ -862,13 +796,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 		GetMeResponse resp = bot.execute(new GetMe());
 
 		if (resp == null) return false;
-		
-		if (!resp.isOk()) {
-			
-			BotLog.error(token,new Exception(resp.errorCode() + " : " + resp.description()));
-			
-			return false;
-			
+
+		if (resp.errorCode() == 401) {
+
+			throw new Exception(resp.errorCode() + " : " + resp.description());
+
 		}
 
 		me = resp.user();
@@ -946,7 +878,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 			new Send(this,id,"当前操作已经取消 : NTT 正在更新 / 重启").removeKeyboard().exec();
 
 		}
-		
+
 		for (Fragment f : fragments) f.onStop();
 
 		if (!isLongPulling()) {
