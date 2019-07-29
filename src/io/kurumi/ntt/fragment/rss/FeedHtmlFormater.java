@@ -378,8 +378,6 @@ public class FeedHtmlFormater {
 
 		 */
 
-		new Send(Env.LOG_CHANNEL,html).exec();
-		 
 		if (withImg) {
 
 			html = removeTagsWithoutImg.filter(html);
@@ -389,8 +387,6 @@ public class FeedHtmlFormater {
 			html = removeTags.filter(html);
 
 		}
-		
-		new Send(Env.LOG_CHANNEL,html).exec();
 		
 		while (ReUtil.isMatch(LINES,html)) {
 
