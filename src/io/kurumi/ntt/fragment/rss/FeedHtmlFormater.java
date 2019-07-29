@@ -320,7 +320,7 @@ public class FeedHtmlFormater {
 
 	}
 	
-	public static Pattern LINES = Pattern.compile("\n *\n *\n");
+	public static Pattern LINES = Pattern.compile("\n *\n *\n",HTMLFilter.REGEX_FLAGS_SI);
 	
 	private static String getContent(SyndEntry entry,boolean desciption,boolean withImg,boolean debug) {
 
