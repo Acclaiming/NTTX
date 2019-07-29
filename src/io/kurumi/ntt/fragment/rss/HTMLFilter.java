@@ -168,9 +168,11 @@ public final class HTMLFilter {
 
 			} else if (newNode != null) {
 				
-				if (node.end) {
+				if (newNode.end) {
 					
-					content.add(node);
+					newNode.end = null;
+					
+					content.add(newNode);
 					
 				} else {
 					
