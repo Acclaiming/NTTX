@@ -330,10 +330,17 @@ public class Msg extends Context {
 
 		} else {
 
+			if (ban) {
+			
 			fragment.executeAsync(update,new KickChatMember(chatId(),userId.intValue()));
 
-			if (!ban) fragment.executeAsync(update,new UnbanChatMember(chatId(),userId.intValue()));
+			} else {
+			
+				fragment.execute(new KickChatMember(chatId(),userId.intValue()));
+			 fragment.execute(new UnbanChatMember(chatId(),userId.intValue()));
 
+			 }
+			 
 		}
 
     }

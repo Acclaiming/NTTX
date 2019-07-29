@@ -1430,7 +1430,6 @@ public class JoinCaptcha extends Fragment {
 
 		gd.waitForCaptcha.remove(user.id);
 
-
 		if (gd.fail_ban == null) {
 
 			msg.kick(user.id);
