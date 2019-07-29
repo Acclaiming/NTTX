@@ -310,7 +310,7 @@ public class FeedHtmlFormater {
 
 	}
 
-	public static Pattern LINES = Pattern.compile("\n( +)?\n( +)?\n",Pattern.MULTILINE);
+	public static Pattern LINES = Pattern.compile("\n( +)?\n( +)?\n",Pattern.DOTALL);
 
 	private static String getContent(SyndEntry entry,boolean desciption,boolean withImg) {
 
