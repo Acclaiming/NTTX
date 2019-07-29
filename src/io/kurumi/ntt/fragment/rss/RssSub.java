@@ -62,7 +62,7 @@ public class RssSub extends Fragment {
 
 		super.init(origin);
 
-		if (origin == Launcher.INSTANCE) {
+		if (isMainInstance()) {
 
 			registerFunction("rss_set_current","rss_sub","rss_set_copyright","rss_list","rss_unsub","rss_unsub_all","rss_set_format","rss_link_preview","rss_export");
 
