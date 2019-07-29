@@ -40,11 +40,11 @@ public class FeedHtmlFormater {
 	public static Pattern matchTagInterrupted = Pattern.compile(".*</[^>]+>.+<[^>]+");
 
 	public static String format(int type,SyndFeed feed,final SyndEntry entry) {
-		
+
 		return format(type,feed,entry,false);
-		
+
 	}
-	
+
 	public static String format(int type,SyndFeed feed,final SyndEntry entry,boolean debug) {
 
 		if (type == 0) type = 2;
@@ -185,7 +185,7 @@ public class FeedHtmlFormater {
 
 
 			content.add(new NodeElement() {{ tag = "br"; }});
-			content.add(new NodeElement() {{ tag = "br"; }});
+			content.add(new NodeElement() {{ tag = "hr"; }});
 
 			content.add(new NodeElement() {{
 
@@ -204,9 +204,15 @@ public class FeedHtmlFormater {
 
 			Page page = Telegraph.createPage(account.access_token,entry.getTitle(),StrUtil.isBlank(entry.getAuthor()) ? feed.getTitle() : entry.getAuthor().trim(),feed.getLink(),content,false);
 
-			if (page == null) {}
+			if (page == null) {
 
-			html.append(Html.a(entry.getTitle(),page.url));
+				
+				
+			} else {
+
+				html.append(Html.a(entry.getTitle(),page.url));
+
+			}
 
 		} else if (type == 1) {
 
@@ -319,9 +325,9 @@ public class FeedHtmlFormater {
 		return html.toString();
 
 	}
-	
+
 	public static Pattern LINES = Pattern.compile("\n( |　)*\n( |　)*\n");
-	
+
 	private static String getContent(SyndEntry entry,boolean desciption,boolean withImg,boolean debug) {
 
 		String html;
@@ -347,9 +353,9 @@ public class FeedHtmlFormater {
 			html = html.replaceAll("<br ?/? ?>","\n");
 
 		}
-		
+
 		html = html.replace("<strong>","<b>").replace("</strong>","</b>");
-		
+
 		html = removeADs(html);
 
 		if (!withImg) {
@@ -384,9 +390,9 @@ public class FeedHtmlFormater {
 		 }
 
 		 */
-		 
-		 String host = StrUtil.subBefore(entry.getLink(),"/",true);
-		 
+
+		String host = StrUtil.subBefore(entry.getLink(),"/",true);
+
 		if (withImg) {
 
 			html = removeTagsWithoutImg.filter(html,host);
@@ -396,11 +402,11 @@ public class FeedHtmlFormater {
 			html = removeTags.filter(html,host);
 
 		}
-		
+
 		if (html.contains("<b> +<b>")) {
-			
+
 			html = html.replaceAll("</?b>","");
-			
+
 		}
 
 		while (ReUtil.contains(LINES,html)) {
@@ -434,7 +440,7 @@ public class FeedHtmlFormater {
 		}
 
 		html.replace("\t","");
-		
+
 		return html.trim();
 
 	}
