@@ -97,7 +97,7 @@ public class Telegraph {
 
 	}
 
-	private static JSONArray parseContent(List<Node> nodes) {
+	public static JSONArray parseContent(List<Node> nodes) {
 
 		JSONArray contentFormat = new JSONArray();
 
