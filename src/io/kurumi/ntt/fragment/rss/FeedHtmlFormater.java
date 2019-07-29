@@ -17,6 +17,8 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.*;
 import cn.hutool.core.util.*;
+import io.kurumi.ntt.Env;
+import io.kurumi.ntt.model.request.Send;
 
 public class FeedHtmlFormater {
 
@@ -310,7 +312,7 @@ public class FeedHtmlFormater {
 
 	}
 
-	public static Pattern LINES = Pattern.compile("\n( +)?\n( +)?\n",Pattern.DOTALL);
+	public static Pattern LINES = Pattern.compile("\n( +)?\n( +)?\n",Pattern.MULTILINE);
 
 	private static String getContent(SyndEntry entry,boolean desciption,boolean withImg) {
 
@@ -319,7 +321,6 @@ public class FeedHtmlFormater {
 		if (entry.getContents() != null && !entry.getContents().isEmpty() && !StrUtil.isBlank(entry.getContents().get(0).getValue())) {
 
 			// Atom Feed
-
 
 			html = entry.getContents().get(0).getValue();
 
@@ -386,14 +387,16 @@ public class FeedHtmlFormater {
 			html = removeTags.filter(html);
 
 		}
-
+		
+		/*
+		
 		while (ReUtil.isMatch(LINES,html)) {
 
 			html = ReUtil.replaceAll(html,LINES,"\n\n");
 
 		}
-
-		System.out.println(html);
+		
+		*/
 
 		if (html.startsWith(entry.getTitle())) {
 
