@@ -216,7 +216,20 @@ public class RssSub extends Fragment {
 
 					}
 
-					request.html().exec();
+					SendResponse result = request.html().exec();
+
+					if (result == null) {
+						
+						msg.send(request.request().getText()).exec();
+						msg.send("timeout").exec();
+						
+					} else if (!result.isOk()){
+						
+						msg.send(request.request().getText()).exec();
+						msg.send(result.description()).exec();
+						
+						
+					}
 					
 					return;
 
