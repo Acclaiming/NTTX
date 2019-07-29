@@ -114,6 +114,10 @@ public class FeedHtmlFormater {
 
 		if (type == 9) {
 
+			html.append(Html.b(feed.getTitle()));
+
+			html.append("\n\n");
+			
 			TelegraphAccount account = TelegraphAccount.defaultAccount();
 
 			String host = StrUtil.subBefore(entry.getLink(),"/",true);

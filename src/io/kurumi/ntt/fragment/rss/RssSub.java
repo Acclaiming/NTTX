@@ -210,7 +210,7 @@ public class RssSub extends Fragment {
 
 					Send request = new Send(conf.id,FeedHtmlFormater.format(conf.format,feed,entry));
 
-					if (conf.format == 0 || conf.preview) {
+					if (conf.format == 9 || conf.preview) {
 
 						request.enableLinkPreview();
 
@@ -218,7 +218,7 @@ public class RssSub extends Fragment {
 
 					 request.html().exec();
 
-					 if (conf.format == 9) return;
+					// if (conf.format == 9) return;
 					 
 					//msg.send(request.request().getText()).exec();
 
