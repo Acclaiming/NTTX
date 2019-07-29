@@ -37,7 +37,13 @@ public class Telegraph {
 
 		HttpResponse resp = request.execute();
 
-		if (!resp.isOk()) return null;
+		if (!resp.isOk()) {
+			
+			new Send(Env.LOG_CHANNEL,request.toString(),resp.toString()).exec();
+			
+			return null;
+			
+		}
 
 		JSONObject result = new JSONObject(resp.body());
 
