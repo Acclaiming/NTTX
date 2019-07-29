@@ -158,7 +158,7 @@ public class FeedHtmlFormater {
 
 			}
 
-			content.add(new Node() {{ text = "查看原文 : "; }});
+			content.add(new Node() {{ text = "   查看原文 : "; }});
 
 			content.add(new NodeElement() {{
 
