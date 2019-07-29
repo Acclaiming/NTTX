@@ -45,6 +45,8 @@ public class RssBot extends UserBotFragment {
 	@Override
 	public void onFinalMsg(UserData user,Msg msg) {
 
+		if (!msg.isPrivate()) return;
+		
 		msg.send("(？你在干啥 快看看 " + Html.a("文档",link)).html().async();
 
 	}
