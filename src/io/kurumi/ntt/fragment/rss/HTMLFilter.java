@@ -68,14 +68,14 @@ public final class HTMLFilter {
 		encodeQuotes = true;
 	}
 
-	public String filter(final String input) {
+	public String filter(final String input,String host) {
 
 		vTagCounts.clear();
 
 		String s = input;
 
 		s = balanceHTML(s);
-		s = checkTags(s);
+		s = checkTags(s,host);
 		s = processRemoveBlanks(s);
 
 		return s;
@@ -90,14 +90,14 @@ public final class HTMLFilter {
 		return s;
 	}
 
-	private String checkTags(String s) {
+	private String checkTags(String s,String host) {
 
 		Matcher m = P_TAGS.matcher(s);
 
 		final StringBuffer buf = new StringBuffer();
 		while (m.find()) {
 			String replaceStr = m.group(1);
-			replaceStr = processTag(replaceStr);
+			replaceStr = processTag(replaceStr,host);
 			m.appendReplacement(buf,Matcher.quoteReplacement(replaceStr));
 		}
 		m.appendTail(buf);
@@ -136,7 +136,7 @@ public final class HTMLFilter {
 		return m.replaceAll(replacement);
 	}
 
-	private String processTag(final String s) {
+	private String processTag(final String s,String host) {
 		// ending tags
 		Matcher m = P_END_TAG.matcher(s);
 		if (m.find()) {
@@ -185,8 +185,25 @@ public final class HTMLFilter {
 					// debug( "allowed? " + vAllowed.get( name ).contains( paramName ) );
 
 					if (allowedAttribute(name,paramName)) {
+						
+						if (!paramValue.startsWith("http")) {
+							
+							if (paramValue.startsWith("/")) {
+								
+								paramValue = paramValue.substring(1);
+								
+							}
+							
+							paramValue = host + "/"+ paramValue;
+							
+						}
+						
 						params += " " + paramName + "=\"" + paramValue + "\"";
+						
+						
+						
 					}
+					
 				}
 
 				if (inArray(name,vSelfClosingTags)) {

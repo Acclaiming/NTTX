@@ -19,6 +19,8 @@ import java.util.*;
 import cn.hutool.core.util.*;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.model.request.Send;
+import java.net.URL;
+import java.net.MalformedURLException;
 
 public class FeedHtmlFormater {
 
@@ -383,23 +385,20 @@ public class FeedHtmlFormater {
 		 }
 
 		 */
+		 
+		 String host = StrUtil.subBefore(entry.getLink(),"/",true);
 
+		
 		if (withImg) {
 
-			html = removeTagsWithoutImg.filter(html);
+			html = removeTagsWithoutImg.filter(html,host);
 
 		} else {
 
-			html = removeTags.filter(html);
+			html = removeTags.filter(html,host);
 
 		}
-		
-		if (html.contains("<b><b>")) {
-			
-			html.replaceAll("</?b>","");
-			
-		}
-		
+
 		while (ReUtil.isMatch(LINES,html)) {
 
 			html = ReUtil.replaceAll(html,LINES,"\n\n");
