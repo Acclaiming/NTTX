@@ -21,6 +21,7 @@ import io.kurumi.ntt.Env;
 import io.kurumi.ntt.model.request.Send;
 import java.net.URL;
 import java.net.MalformedURLException;
+import io.kurumi.ntt.Launcher;
 
 public class FeedHtmlFormater {
 
@@ -45,7 +46,7 @@ public class FeedHtmlFormater {
 
 	}
 
-	public static String format(int type,SyndFeed feed,final SyndEntry entry,boolean debug) {
+	public static String format(int type,final SyndFeed feed,final SyndEntry entry,boolean debug) {
 
 		if (type == 0) type = 2;
 
@@ -128,6 +129,25 @@ public class FeedHtmlFormater {
 
 			content.add(new NodeElement() {{ tag = "hr"; }});
 			
+			content.add(new Node() {{ text = "由 "; }});
+			
+			content.add(new NodeElement() {{
+
+						tag = "a";
+
+						attrs = new HashMap<>();
+
+						attrs.put("href","https://manual.kurumi.io");
+
+						children = new LinkedList<>();
+
+						children.add(new Node() {{ text = "NTT"; }});
+
+
+					}});
+					
+			content.add(new Node() {{ text = " 制作 查看原文 : "; }});
+			
 			content.add(new NodeElement() {{
 
 						tag = "a";
@@ -138,11 +158,13 @@ public class FeedHtmlFormater {
 
 						children = new LinkedList<>();
 
-						children.add(new Node() {{ text = "点此查看原文" ; }});
+						children.add(new Node() {{ text = entry.getTitle() ; }});
 						
 
 					}});
 
+			content.add(new NodeElement() {{ tag = "br"; }});
+					
 			Page page = Telegraph.createPage(account.access_token,entry.getTitle(),StrUtil.isBlank(entry.getAuthor()) ? feed.getTitle() : entry.getAuthor().trim(),feed.getLink(),content,false);
 
 			if (page == null) {
