@@ -851,7 +851,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 	public abstract String getToken();
 	
-	public boolean silentStart() {
+	public boolean silentStart() throws Exception {
 
 		reload();
 
@@ -861,7 +861,15 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 		GetMeResponse resp = bot.execute(new GetMe());
 
-		if (resp == null || !resp.isOk()) return false;
+		if (resp == null) return false;
+		
+		if (!resp.isOk()) {
+			
+			BotLog.error(token,new Exception(resp.errorCode() + " : " + resp.description()));
+			
+			return false;
+			
+		}
 
 		me = resp.user();
 

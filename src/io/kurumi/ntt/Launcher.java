@@ -168,7 +168,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     // public MtProtoBot mtp;
 
     @Override
-    public boolean silentStart() {
+    public boolean silentStart() throws Exception {
 
         if (super.silentStart()) {
 

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import io.kurumi.ntt.fragment.BotServer;
+import io.kurumi.ntt.model.request.Send;
 
 public class UserBot {
 
@@ -29,35 +30,50 @@ public class UserBot {
 
     }
 
-    public void startBot() {
+    public boolean startBot() {
 
         if (!BotServer.fragments.containsKey(token)) {
-
-            if (type == 0) {
-
-                ForwardBot client = new ForwardBot();
-
-                client.botId = id;
-                client.silentStart();
-
-            } else if (type == 1) {
-
-                GroupBot client = new GroupBot();
-
-                client.botId = id;
-                client.silentStart();
-
-            } else if (type == 2) {
+			
+			try {
 				
-				RssBot client = new RssBot();
+				if (type == 0) {
 
-                client.botId = id;
-                client.silentStart();
+					ForwardBot client = new ForwardBot();
+
+					client.botId = id;
+
+					client.silentStart();
+
+				} else if (type == 1) {
+
+					GroupBot client = new GroupBot();
+
+					client.botId = id;
+					client.silentStart();
+
+				} else if (type == 2) {
+
+					RssBot client = new RssBot();
+
+					client.botId = id;
+					client.silentStart();
+
+				}
+				
+			} catch (Exception e) {
+				
+				data.deleteById(id);
+				
+				new Send(user,"对不起，但是你的机器人 : @" + userName + " 的令牌已失效，已自动移除。").exec();
+				
+				return false;
 				
 			}
 
         }
 
+		return true;
+		
     }
 
     public void stopBot() {
@@ -105,9 +121,9 @@ public class UserBot {
 
             case 1:
                 return "群组管理";
-				
-		case 2 : 
-			return "RSS";
+
+			case 2 : 
+				return "RSS";
 
             default:
                 return null;
