@@ -118,7 +118,7 @@ public class FeedHtmlFormater {
 
 			List<Node> content = new LinkedList<>();
 
-			final String htmlText = getContent(entry,false,true);
+			final String htmlText = getContent(entry,false,true,debug);
 
 			final Matcher matcher = matchAll.matcher(htmlText);
 
