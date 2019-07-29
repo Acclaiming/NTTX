@@ -38,6 +38,12 @@ public class FeedHtmlFormater {
 	public static Pattern matchTagInterrupted = Pattern.compile(".*</[^>]+>.+<[^>]+");
 
 	public static String format(int type,SyndFeed feed,final SyndEntry entry) {
+		
+		return format(type,feed,entry,false);
+		
+	}
+	
+	public static String format(int type,SyndFeed feed,final SyndEntry entry,boolean debug) {
 
 		if (type == 0) type = 2;
 
