@@ -25,7 +25,7 @@ public class Telegraph {
 
 	static <T extends Object> T send(String path,Class<T> resultClass,Object... params) {
 
-		HttpRequest request = HttpUtil.createGet(API + path);
+		HttpRequest request = HttpUtil.createPost(API + path);
 
 		for (int index = 0;index < params.length;index = index + 2) {
 
