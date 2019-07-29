@@ -68,7 +68,7 @@ public class FeedHtmlFormater {
 
 			String host = StrUtil.subBefore(entry.getLink(),"/",true);
 
-			final String str = getContent(entry,false,true,false).replace("\n","<br>");
+			final String str = getContent(entry,false,true,false).replace("\n","<br><br>");
 			
 			final List<Node> content = removeTagsWithoutImg.formatTelegraph(str,host);
 

@@ -67,7 +67,7 @@ public final class HTMLFilter {
 		vAllowed.put("code",no_atts);
 		vAllowed.put("em",no_atts);
 
-		vSelfClosingTags = new String[] { "img" };
+		vSelfClosingTags = new String[] { "img" , "br" };
 		vNeedClosingTags = new String[] { "a", "b", "code","pre", "i", "em" };
 		vRemoveBlanks = new String[] { "a", "b", "pre","code", "i", "em" };
 		encodeQuotes = true;
