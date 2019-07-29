@@ -56,7 +56,7 @@ public final class HTMLFilter {
 
 		final ArrayList<String> no_atts = new ArrayList<String>();
 
-		// vAllowed.put("b",no_atts);
+		vAllowed.put("b",no_atts);
 		vAllowed.put("i",no_atts);
 		vAllowed.put("pre",no_atts);
 		vAllowed.put("code",no_atts);

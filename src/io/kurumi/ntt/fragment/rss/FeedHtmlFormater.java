@@ -394,6 +394,12 @@ public class FeedHtmlFormater {
 
 		}
 		
+		if (html.contains("<b><b>")) {
+			
+			html.replaceAll("</?b>","");
+			
+		}
+		
 		while (ReUtil.isMatch(LINES,html)) {
 
 			html = ReUtil.replaceAll(html,LINES,"\n\n");
