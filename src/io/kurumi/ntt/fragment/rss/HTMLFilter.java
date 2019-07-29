@@ -106,10 +106,10 @@ public final class HTMLFilter {
 
 		while (m.find()) {
 
-			int start = m.start(0);
+			int start = m.start(1);
 
 			if (start != 0) {
-
+				
 				final String str = s.substring(0,start);
 
 				if (node == null) {
@@ -128,7 +128,7 @@ public final class HTMLFilter {
 
 			}
 
-			int end = m.end(0);
+			int end = m.end(1);
 
 			String replaceStr = m.group(1);
 
