@@ -26,7 +26,7 @@ public class FeedFetchTask extends TimerTask {
 
 	}
 
-	public static String USER_AGENT = "NTT RSS Fetcher By Kazama Wataru (https://t.me/NTT_X)";
+	public static String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64;) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157";
 
 	int step = 0;
 
