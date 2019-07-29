@@ -319,8 +319,8 @@ public class FeedHtmlFormater {
 		return html.toString();
 
 	}
-
-	public static Pattern LINES = Pattern.compile("\n( +)?\n( +)?\n",Pattern.MULTILINE);
+	
+	public static Pattern LINES = Pattern.compile("\n( +)?\n( +)?\n");
 	
 	private static String getContent(SyndEntry entry,boolean desciption,boolean withImg,boolean debug) {
 
@@ -386,12 +386,6 @@ public class FeedHtmlFormater {
 		 */
 		 
 		 String host = StrUtil.subBefore(entry.getLink(),"/",true);
-
-		 if (debug) {
-			 
-			 new Send(Env.LOG_CHANNEL,html).exec();
-			 
-		 }
 		 
 		if (withImg) {
 
@@ -408,12 +402,18 @@ public class FeedHtmlFormater {
 			new Send(Env.LOG_CHANNEL,html).exec();
 
 		}
+		
+		if (html.contains("<b> +<b>")) {
+			
+			html = html.replaceAll("</?b>","");
+			
+		}
 
-		while (ReUtil.isMatch(LINES,html)) {
+		//while (ReUtil.isMatch(LINES,html)) {
 
 			html = ReUtil.replaceAll(html,LINES,"\n\n");
 
-		}
+		//}
 
 		if (html.startsWith(entry.getTitle())) {
 
