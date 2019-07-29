@@ -208,7 +208,7 @@ public class RssSub extends Fragment {
 				
 				for (SyndEntry entry :  entries) {
 
-					Send request = new Send(conf.id,FeedHtmlFormater.format(conf.format,feed,entry));
+					Send request = new Send(conf.id,FeedHtmlFormater.format(conf.format,feed,entry,true));
 
 					if (conf.format == 0 || conf.preview) {
 
