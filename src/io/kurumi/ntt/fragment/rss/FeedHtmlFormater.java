@@ -266,11 +266,11 @@ public class FeedHtmlFormater {
 
 		//	html = URLUtil.decode(html);
 
-		//if (!withImg) {
+		if (!withImg) {
 
 		html = html.replaceAll("<br ?/? ?>","\n");
 
-		//}
+		}
 
 		html = html.replace("<strong>","<b>").replace("</strong>","</b>");
 
