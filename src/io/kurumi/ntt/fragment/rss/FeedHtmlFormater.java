@@ -124,15 +124,6 @@ public class FeedHtmlFormater {
 
 			content.add(new NodeElement() {{ tag = "hr"; }});
 			
-			content.add(new Node() {{ text = str; }});
-			
-			content.add(new NodeElement() {{ tag = "hr"; }});
-
-			content.add(new Node() {{ text = Telegraph.parseContent(content).toStringPretty(); }});
-			
-			content.add(new NodeElement() {{ tag = "hr"; }});
-			
-			
 			content.add(new NodeElement() {{
 
 						tag = "a";

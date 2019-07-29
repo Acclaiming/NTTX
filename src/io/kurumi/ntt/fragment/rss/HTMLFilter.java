@@ -168,15 +168,29 @@ public final class HTMLFilter {
 
 			} else if (newNode != null) {
 				
-				node = newNode;
+				if (node.end) {
+					
+					content.add(node);
+					
+				} else {
+					
+					node = newNode;
+					
+				}
 				
 			}
 
 		}
+		
+		if (node != null) {
+			
+			content.add(node);
+			
+		}
 
 		if (s.length() != end) {
 
-			final String str = s;
+			final String str = s.substring(end);
 			
 			content.add(new Node() {{ text = str; }});
 
@@ -272,14 +286,20 @@ public final class HTMLFilter {
 						vTagCounts.put(name,1);
 					}
 				} else {
+					
 					ending = " /";
+					
 				}
+				
+				final Boolean isEnd = " /".equals(ending);
 
 				return new NodeElement() {{
 
 						tag = name;
 						attrs = params;
 
+						end = isEnd;
+						
 					}};
 
 			} else {
