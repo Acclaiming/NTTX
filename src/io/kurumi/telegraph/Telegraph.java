@@ -19,168 +19,174 @@ import io.kurumi.ntt.*;
 
 public class Telegraph {
 
-		public static String API = "https://api.telegra.ph/";
+	public static String API = "https://api.telegra.ph/";
 
-		public static Gson gson = new Gson();
-		
-	  static <T extends Object> T send(String path,Class<T> resultClass,Object... params) {
+	public static Gson gson = new Gson();
 
-				HttpRequest request = HttpUtil.createGet(API + path);
+	static <T extends Object> T send(String path,Class<T> resultClass,Object... params) {
 
-				for (int index = 0;index < params.length;index = index + 2) {
+		HttpRequest request = HttpUtil.createGet(API + path);
 
-						if (params[index + 1] == null) continue;
+		for (int index = 0;index < params.length;index = index + 2) {
 
-						request.form(params[index].toString(),params[index + 1]);
+			if (params[index + 1] == null) continue;
+
+			request.form(params[index].toString(),params[index + 1]);
+
+		}
+
+		HttpResponse resp = request.execute();
+
+		if (!resp.isOk()) return null;
+
+		JSONObject result = new JSONObject(resp.body());
+
+		if (!result.getBool("ok",false)) {
+
+			new Send(Env.LOG_CHANNEL,request.toString(),result.toStringPretty()).exec();
+
+			return null;
+
+		}
+
+		System.out.println(result.toStringPretty());
+
+		return gson.fromJson(result.getJSONObject("result").toString(),resultClass);
+
+
+	}
+
+	public static Account createAccount(String short_name,String author_name,String author_url) {
+
+		return (Account) send("createAccount",Account.class,
+							  "short_name",short_name,
+							  "author_name",author_name,
+							  "author_url",author_url);
+
+	}
+
+	public static Account editAccountInfo(String access_token,String short_name,String author_name,String author_url) {
+
+		return (Account) send("editAccountInfo",Account.class,
+							  "access_token",access_token,
+							  "short_name",short_name,
+							  "author_name",author_name,
+							  "author_url",author_url);
+
+	}
+
+	public static Account getAccountInfo(String access_token) {
+
+		return (Account) send("getAccountInfo",Account.class,
+							  "access_token",access_token,
+							  "fields","[\"short_name\", \"author_name\", \"author_url\", \"auth_url\", \"page_count\""
+							  );
+
+	}
+
+
+	public static Account revokeAccessToken(String access_token) {
+
+		return (Account) send("revokeAccessToken",Account.class,"access_token",access_token);
+
+	}
+
+	private static JSONArray parseContent(List<Node> nodes) {
+
+		JSONArray contentFormat = new JSONArray();
+
+		for (Node node : nodes) {
+
+			if (node instanceof NodeElement) {
+
+				NodeElement ne = (NodeElement)node;
+
+				JSONObject element = new JSONObject();
+
+				element.put("tag",ne.tag);
+
+				if (ne.attrs != null) {
+
+					element.put("attrs",ne.attrs);
 
 				}
 
-				HttpResponse resp = request.execute();
+				if (ne.children != null) {
 
-				if (!resp.isOk()) return null;
-
-				JSONObject result = new JSONObject(resp.body());
-
-				if (!result.getBool("ok",false)) {
-						
-						new Send(Env.LOG_CHANNEL,request.toString(),result.toStringPretty()).exec();
-						
-						return null;
-						
-				}
-
-				System.out.println(result.toStringPretty());
-				
-				return gson.fromJson(result.getJSONObject("result").toString(),resultClass);
-
-
-		}
-
-		public static Account createAccount(String short_name,String author_name,String author_url) {
-
-				return (Account) send("createAccount",Account.class,
-															"short_name",short_name,
-															"author_name",author_name,
-															"author_url",author_url);
-
-		}
-
-		public static Account editAccountInfo(String access_token,String short_name,String author_name,String author_url) {
-
-				return (Account) send("editAccountInfo",Account.class,
-															"access_token",access_token,
-															"short_name",short_name,
-															"author_name",author_name,
-															"author_url",author_url);
-
-		}
-
-		public static Account getAccountInfo(String access_token) {
-
-				return (Account) send("getAccountInfo",Account.class,
-															"access_token",access_token,
-															"fields","[\"short_name\", \"author_name\", \"author_url\", \"auth_url\", \"page_count\""
-															);
-
-		}
-
-
-		public static Account revokeAccessToken(String access_token) {
-
-				return (Account) send("revokeAccessToken",Account.class,"access_token",access_token);
-
-		}
-
-		public static Page createPage(String access_token,String title,String author_name,String author_url,List<Node> content,Boolean return_content) {
-
-				JSONArray contentFormat = new JSONArray();
-
-				for (Node node : content) {
-
-						if (node instanceof NodeElement) {
-
-								contentFormat.add(new JSONObject(gson.toJson(node,NodeElement.class)));
-
-						} else {
-
-								contentFormat.add(node.text);
-
-						}
-
+					element.put("children",parseContent(ne.children));
 
 				}
 
-			  return (Page) send("createPage",Page.class,
-													 "access_token",access_token,
-													 "title",title,
-													 "author_name",author_name,
-													 "author_url",author_url,
-													 "content",contentFormat.toString(),
-													 "return_content",return_content);
+				contentFormat.add(element);
+
+			} else {
+
+				contentFormat.add(node.text);
+
+			}
 
 		}
 
-		public static Page editPage(String access_token,String path,String title,String author_name,String author_url,List<Node> content,Boolean return_content) {
+		return contentFormat;
 
-				JSONArray contentFormat = new JSONArray();
+	}
 
-				for (Node node : content) {
+	public static Page createPage(String access_token,String title,String author_name,String author_url,List<Node> content,Boolean return_content) {
 
-						if (node instanceof NodeElement) {
+		return (Page) send("createPage",Page.class,
+						   "access_token",access_token,
+						   "title",title,
+						   "author_name",author_name,
+						   "author_url",author_url,
+						   "content",parseContent(content).toString(),
+						   "return_content",return_content);
 
-								contentFormat.add(new JSONObject(gson.toJson(node)));
+	}
 
-						} else {
+	public static Page editPage(String access_token,String path,String title,String author_name,String author_url,List<Node> content,Boolean return_content) {
 
-								contentFormat.add(node.text);
+		return (Page) send("editPage",Page.class,
 
-						}
+						   "access_token",access_token,
+						   "title",title,
+						   "path",path,
+						   "author_name",author_name,
+						   "author_url",author_url,
+						   "content",parseContent(content).toString(),
+						   "return_content",return_content);
 
+	}
 
-				}
+	public static Page getPage(String path,Boolean return_content) {
 
-				return (Page) send("editPage",Page.class,
+		return (Page) send("getPage",Page.class,
 
-													 "access_token",access_token,
-													 "title",title,
-													 "path",path,
-													 "author_name",author_name,
-													 "author_url",author_url,
-													 "content",contentFormat.toString(),
-													 "return_content",return_content);
-
-		}
-
-		public static Page getPage(String path,Boolean return_content) {
-
-				return (Page) send("getPage",Page.class,
-
-													 "path",path,
-													 "return_content",return_content);
+						   "path",path,
+						   "return_content",return_content);
 
 
-		}
+	}
 
-		public static PageList getPageList(String access_token,Integer offset,Integer limit) {
+	public static PageList getPageList(String access_token,Integer offset,Integer limit) {
 
-				return (PageList) send("getPageList",PageList.class,
+		return (PageList) send("getPageList",PageList.class,
 
-															 "access_token",access_token,
-															 "offset",offset,
-															 "limit",limit);
+							   "access_token",access_token,
+							   "offset",offset,
+							   "limit",limit);
 
-		}
+	}
 
-		public static PageViews getViews(String path,Integer year,Integer month,Integer day,Integer hour) {
+	public static PageViews getViews(String path,Integer year,Integer month,Integer day,Integer hour) {
 
-				return (PageViews) send("getViews",PageViews.class,
+		return (PageViews) send("getViews",PageViews.class,
 
-																"path",path,
-																"year",year,
-																"month",month,
-																"day",day,
-																"hour",hour);
-				
-		}
+								"path",path,
+								"year",year,
+								"month",month,
+								"day",day,
+								"hour",hour);
+
+	}
 
 }

@@ -175,10 +175,9 @@ public final class HTMLFilter {
 			content.add(new Node() {{ text = str; }});
 
 		}
-
-
+		
 		return content;
-
+		
 	}
 
 	private NodeElement processNode(NodeElement node,final String s,String host) {
