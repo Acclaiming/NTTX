@@ -4,6 +4,7 @@ import cn.hutool.log.*;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.*;
+import cn.hutool.core.util.StrUtil;
 
 public final class HTMLFilter {
 
@@ -187,7 +188,7 @@ public final class HTMLFilter {
 
 					if (allowedAttribute(name,paramName)) {
 						
-						if (paramValue.isEmpty()) return "";
+						if (StrUtil.isBlank(paramValue)) return "";
 						
 						if (!paramValue.startsWith("http")) {
 							
