@@ -397,12 +397,6 @@ public class FeedHtmlFormater {
 
 		}
 		
-		if (debug) {
-
-			new Send(Env.LOG_CHANNEL,html).exec();
-
-		}
-		
 		if (html.contains("<b> +<b>")) {
 			
 			html = html.replaceAll("</?b>","");
