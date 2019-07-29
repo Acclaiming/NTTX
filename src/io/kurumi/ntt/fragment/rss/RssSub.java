@@ -85,7 +85,7 @@ public class RssSub extends Fragment {
 
 		}
 
-		if (params.length == 0) { msg.invalidParams("channelId").exec(); return;}
+		if (params.length == 0) { msg.invalidParams("频道","...").exec(); return;}
 
 		long channelId;
 
@@ -227,7 +227,7 @@ public class RssSub extends Fragment {
 
 			if (params.length < 2) {
 
-				msg.invalidParams("channelId","rssUrl").exec();
+				msg.invalidParams("频道","链接").exec();
 
 				return;
 
@@ -446,7 +446,7 @@ public class RssSub extends Fragment {
 
 			if (params.length < 2) {
 
-				msg.invalidParams("channelId","rssUrl");
+				msg.invalidParams("频道","链接");
 
 				return;
 
@@ -484,7 +484,7 @@ public class RssSub extends Fragment {
 
 			if (params.length < 2) {
 
-				msg.invalidParams("channelId","1 - 9").exec();
+				msg.invalidParams("频道","1 - 9").exec();
 
 				return;
 
@@ -510,7 +510,7 @@ public class RssSub extends Fragment {
 
 			if (params.length < 2) {
 
-				msg.invalidParams("channelId","on/off").exec();
+				msg.invalidParams("频道","on/off").exec();
 
 				return;
 
