@@ -636,7 +636,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 					}
 					
-					
+					onFinalMsg(user,msg);
 
 				}
 
@@ -824,8 +824,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 		}
 
 		if (!no_reply) {
-
-
 
 			if (msg.hasText()) {
 
