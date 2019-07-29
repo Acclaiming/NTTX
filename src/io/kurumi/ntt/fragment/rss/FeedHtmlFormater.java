@@ -420,9 +420,6 @@ public class FeedHtmlFormater {
 
 		html.replace("\t","");
 		
-		new Send(Env.LOG_CHANNEL,html).exec();
-		
-		
 		return html.trim();
 
 	}
