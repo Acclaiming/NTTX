@@ -281,7 +281,7 @@ public class RssSub extends Fragment {
 				
 				if (limit > 0 && limit < entries.size()) {
 					
-					entries = entries.subList(limit - 1,entries.size());
+					entries = entries.subList(entries.size() - limit,entries.size());
 					
 				}
 				
