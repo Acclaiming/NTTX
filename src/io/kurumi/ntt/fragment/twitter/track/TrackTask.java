@@ -388,13 +388,13 @@ public class TrackTask extends TimerTask {
 
         List<Long> lostFolowers = followers.containsId(account.id) ? followers.getById(account.id).ids : null;
         List<Long> newFollowers = TApi.getAllFoIDs(api,account.id);
-
+		List<Long> latestFollowers = new LinkedList<Long>(newFollowers);
+		
 		List<Long> lostFriends = friends.containsId(account.id) ? friends.getById(account.id).ids : null;
         List<Long> newFriends = TApi.getAllFrIDs(api,account.id);
 		
-		followers.setById(account.id,new IdsList(account.id,newFollowers));
 		friends.setById(account.id,new IdsList(account.id,newFriends));
-
+		
         //if (lostFolowers == null) lostFolowers = new LinkedList<>();
 		//if (lostFriends == null) lostFriends = new LinkedList<>();
 
@@ -416,12 +416,13 @@ public class TrackTask extends TimerTask {
 
 			for (Long lostFolower : lostFolowers) {
 
-				lostFollower(account,api,lostFolower,setting.followers);
+				lostFollower(account,api,lostFolower,setting.followers,latestFollowers);
 
 			}
 
 		}
 		
+		followers.setById(account.id,new IdsList(account.id,latestFollowers));
 		
 		if (lostFriends != null) {
 
@@ -681,7 +682,7 @@ public class TrackTask extends TimerTask {
 
     }
 
-    void lostFollower(TAuth auth,Twitter api,long id,boolean notice) {
+    void lostFollower(TAuth auth,Twitter api,long id,boolean notice,List<Long> latest) {
 
         try {
 
@@ -690,11 +691,19 @@ public class TrackTask extends TimerTask {
 
             Relationship ship = api.showFriendship(id,auth.id);
 
+			if (ship.isSourceFollowingTarget()) {
+				
+				latest.add(id);
+				
+				return;
+				
+			}
+			
             if (notice) {
 
                 StringBuilder msg = new StringBuilder();
 
-                msg.append(ship.isSourceFollowedByTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(ship.isSourceFollowingTarget() ? " 账号异常了 :(" : " 取关了你 :)").append(parseStatus(api,follower));
+                msg.append(ship.isSourceFollowedByTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 取关了你 :)").append(parseStatus(api,follower));
 
                 if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
