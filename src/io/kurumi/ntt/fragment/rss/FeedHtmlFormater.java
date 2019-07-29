@@ -116,75 +116,10 @@ public class FeedHtmlFormater {
 
 			TelegraphAccount account = TelegraphAccount.defaultAccount();
 
-			List<Node> content = new LinkedList<>();
+			String host = StrUtil.subBefore(entry.getLink(),"/",true);
+			
+			List<Node> content = removeTagsWithoutImg.formatTelegraph(getContent(entry,false,false,false),host);
 
-			final String htmlText = getContent(entry,false,true,debug);
-
-			final Matcher matcher = matchAll.matcher(htmlText);
-
-			while (matcher.find()) {
-
-				final String all = matcher.group(1);
-
-				String tag = matcher.group(2);
-
-				String attrs = matcher.group(3);
-
-				final String chText = matcher.group(4);
-
-				// String endTag = matcher.group(5);
-
-				if (StrUtil.isBlank(tag)) {
-
-					content.add(new Node() {{ text = all; }});
-
-				} else {
-
-					NodeElement node = new NodeElement();
-
-					node.tag = tag;
-
-					if (!StrUtil.isBlank(chText)) {
-
-						node.children.add(new Node() {{ text = chText; }});
-
-					}
-
-					if ("a".equals(tag)) {
-
-						if (StrUtil.isBlank(attrs)) continue;
-
-						String href = ReUtil.getGroup1(matchHref,attrs);
-
-						node.attrs = new HashMap<>();
-
-						node.attrs.put("href",href);
-
-						System.out.println("HREF : " + href);
-
-
-					} else if ("img".equals(tag)) {
-
-						if (StrUtil.isBlank(attrs)) continue;
-
-						String src = ReUtil.getGroup1(matchSrc,attrs);
-
-						node.attrs = new HashMap<>();
-
-						node.attrs.put("src",src);
-
-						System.out.println("SRC : " + src);
-
-					}
-
-					content.add(node);
-
-				}
-
-			}
-
-
-			content.add(new NodeElement() {{ tag = "br"; }});
 			content.add(new NodeElement() {{ tag = "hr"; }});
 
 			content.add(new NodeElement() {{
@@ -198,7 +133,7 @@ public class FeedHtmlFormater {
 						children = new LinkedList<>();
 
 						children.add(new Node() {{ text = "点此查看原文" ; }});
-
+						
 
 					}});
 
@@ -206,8 +141,8 @@ public class FeedHtmlFormater {
 
 			if (page == null) {
 
-				
-				
+
+
 			} else {
 
 				html.append(Html.a(entry.getTitle(),page.url));

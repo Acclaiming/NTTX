@@ -5,6 +5,8 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.*;
 import cn.hutool.core.util.StrUtil;
+import io.kurumi.telegraph.model.NodeElement;
+import io.kurumi.telegraph.model.Node;
 
 public final class HTMLFilter {
 
@@ -58,7 +60,7 @@ public final class HTMLFilter {
 		final ArrayList<String> no_atts = new ArrayList<String>();
 
 		// vAllowed.put("b",no_atts);
-		
+
 		vAllowed.put("i",no_atts);
 		vAllowed.put("pre",no_atts);
 		vAllowed.put("code",no_atts);
@@ -90,6 +92,193 @@ public final class HTMLFilter {
 		s = regexReplace(P_XML_CONTENT,"$1<$2",s);
 
 		return s;
+	}
+
+	public List<Node> formatTelegraph(String input,String host) {
+
+		String s = input;
+		
+		Matcher m = P_TAGS.matcher(s);
+
+		LinkedList<Node> content = new LinkedList<>();
+
+		NodeElement node = null;
+
+		while (m.find()) {
+
+			int start = m.start(0);
+
+			if (start != 0) {
+
+				final String str = s.substring(0,start);
+
+				if (node == null) {
+
+					content.add(new Node() {{ text = str; }});
+
+				} else {
+
+					NodeElement newNode = new NodeElement();
+
+					newNode.superNode = node;
+					
+					node = newNode;
+
+				}
+
+			}
+
+			int end = m.end(0);
+
+			String replaceStr = m.group(1);
+
+			NodeElement newNode = processNode(node,replaceStr,host);
+
+			if (node != null) {
+				
+				if (newNode == null) {
+					
+					if (node.superNode == null) {
+						
+						content.add(node);
+						
+						node = null;
+						
+					} else {
+						
+						NodeElement superNode = node.superNode;
+
+						node.superNode = null;
+						
+						if (superNode.children == null) superNode.children = new LinkedList<>();
+						
+						superNode.children.add(node);
+						
+						node = superNode;
+						
+					}
+					
+				}
+				
+			}
+			
+			s = s.substring(end);
+
+		}
+
+		final String str = s;
+
+		content.add(new Node() {{ text = str; }});
+
+		return content;
+
+	}
+
+	private NodeElement processNode(NodeElement node,final String s,String host) {
+
+		Matcher m = P_END_TAG.matcher(s);
+
+		if (m.find()) {
+
+			return null;
+
+		}
+
+
+		m = P_START_TAG.matcher(s);
+
+		if (m.find()) {
+
+			final String name = m.group(1).toLowerCase();
+			final String body = m.group(2);
+			String ending = m.group(3);
+
+			// debug( "in a starting tag, name='" + name + "'; body='" + body + "'; ending='" + ending + "'" );
+
+			if (allowed(name)) {
+
+				final HashMap<String,String> params = new HashMap<>();
+
+				final Matcher m2 = P_QUOTED_ATTRIBUTES.matcher(body);
+				final Matcher m3 = P_UNQUOTED_ATTRIBUTES.matcher(body);
+				final List<String> paramNames = new ArrayList<String>();
+				final List<String> paramValues = new ArrayList<String>();
+				while (m2.find()) {
+					paramNames.add(m2.group(1)); // ([a-z0-9]+)
+					paramValues.add(m2.group(3)); // (.*?)
+				}
+				while (m3.find()) {
+					paramNames.add(m3.group(1)); // ([a-z0-9]+)
+					paramValues.add(m3.group(3)); // ([^\"\\s']+)
+				}
+
+				String paramName, paramValue;
+				for (int ii = 0; ii < paramNames.size(); ii++) {
+					paramName = paramNames.get(ii).toLowerCase();
+					paramValue = paramValues.get(ii);
+
+					// debug( "paramName='" + paramName + "'" );
+					// debug( "paramValue='" + paramValue + "'" );
+					// debug( "allowed? " + vAllowed.get( name ).contains( paramName ) );
+
+					if (allowedAttribute(name,paramName)) {
+
+						if (StrUtil.isBlank(paramValue)) return null;
+
+						if (!paramValue.startsWith("http")) {
+
+							if (paramValue.startsWith("/")) {
+
+								paramValue = paramValue.substring(1);
+
+							}
+
+							paramValue = host + "/" + paramValue;
+
+						}
+
+						params.put(paramName,paramValue);
+
+
+
+					}
+
+				}
+
+				if (inArray(name,vSelfClosingTags)) {
+					ending = " /";
+				}
+
+				if (inArray(name,vNeedClosingTags)) {
+					ending = "";
+				}
+
+				if (ending == null || ending.length() < 1) {
+					if (vTagCounts.containsKey(name)) {
+						vTagCounts.put(name,vTagCounts.get(name) + 1);
+					} else {
+						vTagCounts.put(name,1);
+					}
+				} else {
+					ending = " /";
+				}
+
+				return new NodeElement() {{
+
+						tag = name;
+						attrs = params;
+
+					}};
+
+			} else {
+
+				return null;
+
+			}
+		}
+
+		return null;
+
 	}
 
 	private String checkTags(String s,String host) {
@@ -187,27 +376,27 @@ public final class HTMLFilter {
 					// debug( "allowed? " + vAllowed.get( name ).contains( paramName ) );
 
 					if (allowedAttribute(name,paramName)) {
-						
+
 						if (StrUtil.isBlank(paramValue)) return "";
-						
+
 						if (!paramValue.startsWith("http")) {
-							
+
 							if (paramValue.startsWith("/")) {
-								
+
 								paramValue = paramValue.substring(1);
-								
+
 							}
-							
-							paramValue = host + "/"+ paramValue;
-							
+
+							paramValue = host + "/" + paramValue;
+
 						}
-						
+
 						params += " " + paramName + "=\"" + paramValue + "\"";
-						
-						
-						
+
+
+
 					}
-					
+
 				}
 
 				if (inArray(name,vSelfClosingTags)) {
