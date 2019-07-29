@@ -53,7 +53,7 @@ public class FeedHtmlFormater {
 		if (type == 0) type = 2;
 
 		StringBuilder html = new StringBuilder();
-		
+
 		if (type > 8) {
 
 			if (type == 9) {
@@ -268,7 +268,7 @@ public class FeedHtmlFormater {
 
 		if (!withImg) {
 
-		html = html.replaceAll("<br ?/? ?>","\n");
+			html = html.replaceAll("<br ?/? ?>","\n");
 
 		}
 
