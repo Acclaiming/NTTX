@@ -239,6 +239,8 @@ public class RssSub extends Fragment {
 		
 			Opml opml = new Opml();
 			
+			opml.setFeedType("opml_1.0");
+			
 			List<Outline> outlines = new LinkedList<>();
 			
 			for (String rss : conf.subscriptions) {
