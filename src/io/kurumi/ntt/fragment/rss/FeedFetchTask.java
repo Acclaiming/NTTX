@@ -24,7 +24,7 @@ public class FeedFetchTask extends TimerTask {
 
 	public static void start() {
 
-		rssTimer.scheduleAtFixedRate(INSTANCE,new Date(),15 * 60 * 1000);
+		rssTimer.scheduleAtFixedRate(INSTANCE,new Date(),5 * 60 * 1000);
 
 		for (RssSub.ChannelRss info : RssSub.channel.getAll()) {
 
@@ -108,7 +108,7 @@ public class FeedFetchTask extends TimerTask {
 
 		}
 
-	    if (step < 3) {
+	    if (step < 9) {
 
 			step ++;
 
