@@ -54,6 +54,7 @@ public class RssSub extends Fragment {
 
 		public String id;
 		public String title;
+		public String link;
 		public String last;
 
 	}
@@ -245,15 +246,11 @@ public class RssSub extends Fragment {
 			
 			for (String rss : conf.subscriptions) {
 				
-				String title = rss;
-				
 				RssInfo rssInfo = info.getById(rss);
-
-				if (rssInfo != null) title = rssInfo.title;
 				
 				URL url = URLUtil.url(rss);
 				
-				Outline outline = new Outline(title,url,url);
+				Outline outline = rssInfo == null ?  new Outline(rss,url,url) : new Outline(rssInfo.title,URLUtil.url(rssInfo.link),url);
 
 				outlines.add(outline);
 				
@@ -269,7 +266,7 @@ public class RssSub extends Fragment {
 				
 				output.output(opml,IoUtil.getWriter(bytes,CharsetUtil.CHARSET_UTF_8));
 				
-				executeAsync(new SendDocument(msg.chatId(),bytes.toByteArray()).caption("rss.opml"));
+				executeAsync(new SendDocument(msg.chatId(),bytes.toByteArray()).fileName("rss_list.opml"));
 				
 			} catch (Exception e) {
 				
@@ -590,6 +587,7 @@ public class RssSub extends Fragment {
 
 				rss.id = params[1];
 				rss.title = feed.getTitle();
+				rss.link = feed.getLink();
 				rss.last = FeedFetchTask.generateSign(feed.getEntries().get(0));
 
 				msg.send("订阅成功 : " + Html.a(feed.getTitle(),feed.getLink())).html().exec();

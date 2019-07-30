@@ -169,6 +169,7 @@ public class FeedFetchTask extends TimerTask {
 
 					info.id = url;
 					info.title = feed.getTitle();
+					info.link = feed.getLink();
 					info.last = generateSign(feed.getEntries().get(0));
 
 					RssSub.info.setById(info.id,info);
@@ -192,6 +193,8 @@ public class FeedFetchTask extends TimerTask {
 
 				}
 
+				info.title = feed.getTitle();
+				info.link = feed.getLink();
 				info.last = generateSign(feed.getEntries().get(0));
 
 				RssSub.info.setById(info.id,info);
