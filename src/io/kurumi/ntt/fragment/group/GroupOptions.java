@@ -174,9 +174,10 @@ public class GroupOptions extends Fragment {
 
 				new Send(this,user.id,
 
+					 Html.b(data.title),
 					 Html.i("更改群组的设定"),
-					 "\n",
-					 Html.b("注意 : ") + "使用前请阅读 " + Html.a("文档","https://manual.kurumi.io/group")
+					 
+					 "\n" + Html.b("注意 : ") + "使用前请阅读 " + Html.a("文档","https://manual.kurumi.io/group")
 
 					 
 								 ).buttons(menuMarkup(data)).html().async();
@@ -202,12 +203,12 @@ public class GroupOptions extends Fragment {
 
 				msg.send(
 
-						Html.b(data.title),
-						Html.i("更改群组的设定"),
-						"\n",
-						Html.b("注意 : ") + "使用前请阅读 " + Html.a("文档","https://manual.kurumi.io/group")
-						
+				Html.b(data.title),
+				Html.i("更改群组的设定"),
 
+				"\n" + Html.b("注意 : ") + "使用前请阅读 " + Html.a("文档","https://manual.kurumi.io/group")
+
+			
 				).buttons(menuMarkup(data)).html().exec();
 
 
@@ -282,7 +283,14 @@ public class GroupOptions extends Fragment {
 
 						if (POINT_BACK.equals(point)) {
 
-								callback.edit(Html.b(data.title),Html.i("更改群组的设定")).html().buttons(menuMarkup(data)).async();
+								callback.edit(
+								
+								Html.b(data.title),
+								Html.i("更改群组的设定"),
+
+								"\n" + Html.b("注意 : ") + "使用前请阅读 " + Html.a("文档","https://manual.kurumi.io/group")
+								
+								).html().buttons(menuMarkup(data)).async();
 
 						} else if (POINT_MENU_MAIN.equals(point)) {
 
