@@ -99,9 +99,7 @@ public final class HTMLFilter {
 
 	public List<Node> formatTelegraph(String input,String host) {
 
-		BotLog.error(input);
-		
-		String s = input;
+		String s = input.replaceAll("\n","<br />");
 
 		Matcher m = P_TAGS.matcher(s);
 
