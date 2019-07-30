@@ -863,9 +863,9 @@ public class RssSub extends Fragment {
 
 			int target;
 
-			if (!NumberUtil.isNumber(params[1]) || (target = NumberUtil.parseInt(params[1])) < 0 || target > 10) {
+			if (!NumberUtil.isNumber(params[1]) || (target = NumberUtil.parseInt(params[1])) < 0 || target > 12) {
 
-				msg.send("请选择有效的格式 : 1 - 10").async();
+				msg.send("请选择有效的格式 : 1 - 12").async();
 
 				return;
 
