@@ -8,6 +8,7 @@ import cn.hutool.core.util.StrUtil;
 import io.kurumi.telegraph.model.NodeElement;
 import io.kurumi.telegraph.model.Node;
 import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.telegraph.Telegraph;
 
 public final class HTMLFilter {
 
@@ -100,7 +101,7 @@ public final class HTMLFilter {
 	public List<Node> formatTelegraph(String input,String host) {
 
 		BotLog.error(input);
-
+		
 		String s = input.replaceAll("\n","<br />");
 
 		Matcher m = P_TAGS.matcher(s);
@@ -202,6 +203,8 @@ public final class HTMLFilter {
 
 		}
 
+	BotLog.error(Telegraph.parseContent(content).toStringPretty());
+		
 		return content;
 
 	}
