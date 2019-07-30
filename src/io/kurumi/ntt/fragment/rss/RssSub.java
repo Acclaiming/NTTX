@@ -1,22 +1,49 @@
 package io.kurumi.ntt.fragment.rss;
 
-import cn.hutool.core.io.*;
-import cn.hutool.core.util.*;
-import cn.hutool.http.*;
-import com.pengrad.telegrambot.model.*;
-import com.pengrad.telegrambot.request.*;
-import com.pengrad.telegrambot.response.*;
-import com.rometools.rome.feed.synd.*;
-import com.rometools.rome.io.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.fragment.*;
-import io.kurumi.ntt.fragment.group.*;
-import io.kurumi.ntt.model.*;
-import io.kurumi.ntt.model.request.*;
-import io.kurumi.ntt.utils.*;
-import java.io.*;
-import java.util.*;
-import io.kurumi.ntt.*;
+import cn.hutool.core.io.IORuntimeException;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
+import cn.hutool.http.Header;
+import cn.hutool.http.HttpException;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
+import com.pengrad.telegrambot.model.Chat;
+import com.pengrad.telegrambot.model.ChatMember;
+import com.pengrad.telegrambot.request.GetChat;
+import com.pengrad.telegrambot.request.GetChatMember;
+import com.pengrad.telegrambot.response.GetChatMemberResponse;
+import com.pengrad.telegrambot.response.GetChatResponse;
+import com.pengrad.telegrambot.response.SendResponse;
+import com.rometools.opml.feed.opml.Opml;
+import com.rometools.opml.feed.opml.Outline;
+import com.rometools.rome.feed.synd.SyndEntry;
+import com.rometools.rome.feed.synd.SyndFeed;
+import com.rometools.rome.io.FeedException;
+import com.rometools.rome.io.SyndFeedInput;
+import io.kurumi.ntt.db.AbsData;
+import io.kurumi.ntt.db.Data;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.fragment.group.GroupAdmin;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.Send;
+import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.utils.Html;
+import java.io.StringReader;
+import java.net.URL;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import com.rometools.rome.io.WireFeedOutput;
+import cn.hutool.core.io.IoUtil;
+import java.io.ByteArrayOutputStream;
+import cn.hutool.core.util.CharsetUtil;
+import java.io.IOException;
+import com.pengrad.telegrambot.request.SendDocument;
 
 public class RssSub extends Fragment {
 
@@ -65,14 +92,14 @@ public class RssSub extends Fragment {
 	public void init(BotFragment origin) {
 
 		super.init(origin);
-
+		
 		if (isMainInstance()) {
 
-			registerFunction("rss_set_delay","rss_set_current","rss_sub","rss_set_copyright","rss_list","rss_unsub","rss_unsub_all","rss_set_format","rss_link_preview","rss_export");
+			registerFunction("rss_import","rss_export","rss_set_delay","rss_set_current","rss_sub","rss_set_copyright","rss_list","rss_unsub","rss_unsub_all","rss_set_format","rss_link_preview","rss_export");
 
 		} else {
 
-			registerFunction("set_delay","set_current","sub","set_copyright","list","unsub","unsub_all","set_format","link_preview","export");
+			registerFunction("import","export","set_delay","set_current","sub","set_copyright","list","unsub","unsub_all","set_format","link_preview","export");
 
 		}
 
@@ -200,7 +227,57 @@ public class RssSub extends Fragment {
 
 		}
 		
-		if (function.endsWith("set_copyright")) {
+		if (function.endsWith("export")) {
+			
+			if (conf.subscriptions == null || conf.subscriptions.isEmpty()) {
+				
+				msg.send("这个频道还没有订阅过RSS，无法导出。").async();
+				
+				return;
+				
+			}
+		
+			Opml opml = new Opml();
+			
+			List<Outline> outlines = new LinkedList<>();
+			
+			for (String rss : conf.subscriptions) {
+				
+				String title = rss;
+				
+				RssInfo rssInfo = info.getById(rss);
+
+				if (rssInfo != null) title = rssInfo.title;
+				
+				URL url = URLUtil.url(rss);
+				
+				Outline outline = new Outline(title,url,url);
+
+				outlines.add(outline);
+				
+			}
+			
+			opml.setOutlines(outlines);
+			
+			WireFeedOutput output = new WireFeedOutput();
+			
+			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+			
+			try {
+				
+				output.output(opml,IoUtil.getWriter(bytes,CharsetUtil.CHARSET_UTF_8));
+				
+				executeAsync(new SendDocument(msg.chatId(),bytes.toByteArray()).caption("rss.opml"));
+				
+			} catch (Exception e) {
+				
+				msg.send("导出失败",BotLog.parseError(e)).async();
+				
+				return;
+				
+			}
+			
+		} else if (function.endsWith("set_copyright")) {
 			
 			if (params.length == 1) {
 				
