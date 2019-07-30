@@ -40,19 +40,17 @@ public class FeedFetchTask extends TimerTask {
 
 		for (RssSub.ChannelRss info : RssSub.channel.getAll()) {
 
-			if (info.delay != null) {
+			if (info.delay == null) info.delay = 40L;
 
-				if (info.last == null || (System.currentTimeMillis() - info.last) > info.delay * 60 * 1000) {
+			if (info.last == null || (System.currentTimeMillis() - info.last) > info.delay * 60 * 1000) {
 
-					info.last = System.currentTimeMillis();
+				info.last = System.currentTimeMillis();
 
-					RssSub.channel.setById(info.id,info);
+				RssSub.channel.setById(info.id,info);
 
-				} else {
+			} else {
 
-					continue;
-
-				}
+				continue;
 
 			}
 
@@ -61,7 +59,7 @@ public class FeedFetchTask extends TimerTask {
 			if (info.error != null) {
 
 				if (first) {
-					
+
 					continue;
 
 				}
@@ -242,7 +240,7 @@ public class FeedFetchTask extends TimerTask {
 
 
 		}
-		
+
 		first = false;
 
 
