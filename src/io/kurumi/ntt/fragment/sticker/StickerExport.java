@@ -149,7 +149,7 @@ public class StickerExport extends Fragment {
 
 							float outSize = ((512 * 1024) / local.length())/* - 0.3f*/;
 
-							Thumbnails.of(local).outputQuality(outSize).toFile(local);
+							Thumbnails.of(local).outputQuality(outSize).scale(1).toFile(local);
 
 						}
 
