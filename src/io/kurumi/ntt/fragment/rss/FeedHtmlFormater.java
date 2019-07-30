@@ -108,7 +108,7 @@ public class FeedHtmlFormater {
 
 						}});
 
-				content.add(new Node() {{ text = " 解析自RSS 源站点版权所有"; }});
+				content.add(new Node() {{ text = " 解析 | 源站点版权所有"; }});
 
 			} else {
 
