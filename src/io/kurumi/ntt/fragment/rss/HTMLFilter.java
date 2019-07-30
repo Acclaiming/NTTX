@@ -173,9 +173,19 @@ public final class HTMLFilter {
 
 				} else {
 
-					newNode.superNode = node;
+					if (newNode.end) {
+					
+						if (node.children == null) node.children = new LinkedList<>();
 
-					node = newNode;					
+						node.children.add(newNode);
+						
+					} else {
+						
+						newNode.superNode = node;
+
+						node = newNode;
+						
+					}
 
 				}
 
