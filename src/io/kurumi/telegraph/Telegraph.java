@@ -114,7 +114,7 @@ public class Telegraph {
 
 				if ("br".equals(ne.tag)) {
 					
-					// if (brLimit == 0) continue;
+					if (brLimit == 0) continue;
 					
 					brLimit --;
 					
@@ -147,9 +147,11 @@ public class Telegraph {
 				contentFormat.add(element);
 
 			} else {
-
+				
 				contentFormat.add(node.text);
 
+				brLimit = 2;
+				
 			}
 
 		}
