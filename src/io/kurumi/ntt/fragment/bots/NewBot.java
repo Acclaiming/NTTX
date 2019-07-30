@@ -149,7 +149,7 @@ public class NewBot extends Fragment {
 
 						create.bot.startBot();
 						
-						setup.edit("你的BOT : @" + create.bot.userName,"\n自定义BOT使用文档 : https://manual.kurumi.io/bos/ ~").exec();
+						setup.edit("你的BOT : @" + create.bot.userName,"\n自定义BOT使用文档 : https://manual.kurumi.io/bots/ ~").exec();
 						
 					} else {
 
