@@ -90,7 +90,7 @@ public final class HTMLFilter {
 	}
 
 	private String balanceHTML(String s) {
-		
+
 		s = regexReplace(P_END_ARROW,"",s);
 		s = regexReplace(P_BODY_TO_END,"<$1>",s);
 		s = regexReplace(P_XML_CONTENT,"$1<$2",s);
@@ -145,7 +145,15 @@ public final class HTMLFilter {
 
 					if (node.superNode == null) {
 
-						content.add(node);
+						if ("a".equals(node.tag) && node.children != null) {
+
+							for (Node ch : node.children) content.add(ch);
+
+						} else {
+
+							content.add(node);
+
+						}
 
 						node = null;
 
@@ -250,9 +258,9 @@ public final class HTMLFilter {
 				paramName = paramNames.get(ii).toLowerCase();
 				paramValue = paramValues.get(ii);
 
-				BotLog.error( "paramName='" + paramName + "'" );
-				BotLog.error( "paramValue='" + paramValue + "'" );
-			BotLog.error( "allowed? " + vAllowed.get( name ).contains( paramName ) );
+				BotLog.error("paramName='" + paramName + "'");
+				BotLog.error("paramValue='" + paramValue + "'");
+				BotLog.error("allowed? " + vAllowed.get(name).contains(paramName));
 
 				if (StrUtil.isBlank(paramValue)) return null;
 
@@ -292,7 +300,7 @@ public final class HTMLFilter {
 			return new NodeElement() {{
 
 					tag = name;
-					attrs = params.isEmpty() ? null : params;
+					attrs = params.is;
 					end = isEnd;
 
 				}};
