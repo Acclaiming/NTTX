@@ -40,6 +40,8 @@ public final class HTMLFilter {
 
 	public HTMLFilter(boolean noImg) {
 
+		final ArrayList<String> no_atts = new ArrayList<String>();
+		
 		vAllowed = new HashMap<String, List<String>>();
 
 		final ArrayList<String> a_atts = new ArrayList<String>();
@@ -55,13 +57,13 @@ public final class HTMLFilter {
 			img_atts.add("src");
 
 			vAllowed.put("img",img_atts);
+			
+			vAllowed.put("br",no_atts);
 
 		}
 
-		final ArrayList<String> no_atts = new ArrayList<String>();
-
-		// vAllowed.put("b",no_atts);
-
+		
+		vAllowed.put("b",no_atts);
 		vAllowed.put("i",no_atts);
 		vAllowed.put("pre",no_atts);
 		vAllowed.put("code",no_atts);
