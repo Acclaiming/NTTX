@@ -91,7 +91,7 @@ public class FeedHtmlFormater {
 
 			if (channel.copyright == null) {
 
-				content.add(new Node() {{ text = "由 "; }});
+				content.add(new Node() {{ text = "文章由 "; }});
 
 				content.add(new NodeElement() {{
 
@@ -108,15 +108,17 @@ public class FeedHtmlFormater {
 
 						}});
 
-				content.add(new Node() {{ text = " 制作"; }});
+				content.add(new Node() {{ text = " 解析自RSS 源站点版权所有"; }});
 
 			} else {
 
 				content.add(new Node() {{ text = channel.copyright; }});
 
 			}
+			
+			content.add(new NodeElement() {{ tag = "br"; }});
 
-			content.add(new Node() {{ text = "   查看原文 : "; }});
+			content.add(new Node() {{ text = "查看原文 : "; }});
 
 			content.add(new NodeElement() {{
 
@@ -132,8 +134,6 @@ public class FeedHtmlFormater {
 
 
 					}});
-
-			// content.add(new NodeElement() {{ tag = "br"; }});
 
 			Page page;
 
