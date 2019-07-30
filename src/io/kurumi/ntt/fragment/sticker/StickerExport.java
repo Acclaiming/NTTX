@@ -113,9 +113,9 @@ public class StickerExport extends Fragment {
 
 						if (file.length() > 512 * 1024) {
 
-							float outSize = ((512 * 1024) / local.length())/* - 0.3f*/;
+							float outSize = ((512 * 1024) / local.length()) - 0.3f;
 
-							Thumbnails.of(local).outputQuality(outSize).toFile(file);
+							Thumbnails.of(local).outputQuality(outSize).scale(1).toFile(file);
 
 						}
 
@@ -147,7 +147,7 @@ public class StickerExport extends Fragment {
 
 						if (local.length() > 512 * 1024) {
 
-							float outSize = ((512 * 1024) / local.length())/* - 0.3f*/;
+							float outSize = ((512 * 1024) / local.length()) - 0.3f;
 
 							Thumbnails.of(local).outputQuality(outSize).scale(1).toFile(local);
 
