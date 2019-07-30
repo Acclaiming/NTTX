@@ -261,23 +261,26 @@ public final class HTMLFilter {
 				//BotLog.error("paramValue='" + paramValue + "'");
 				//BotLog.error("allowed? " + vAllowed.get(name).contains(paramName));
 
-				if (StrUtil.isBlank(paramValue)) return null;
+				if (allowedAttribute(name,paramName)) {
 
-				if (!paramValue.startsWith("http")) {
+					if (StrUtil.isBlank(paramValue)) return null;
 
-					if (paramValue.startsWith("/")) {
+					if (!paramValue.startsWith("http")) {
 
-						paramValue = paramValue.substring(1);
+						if (paramValue.startsWith("/")) {
+
+							paramValue = paramValue.substring(1);
+
+						}
+
+						paramValue = host + "/" + paramValue;
+
 
 					}
 
-					paramValue = host + "/" + paramValue;
-
+					params.put(paramName,paramValue);
 
 				}
-
-				params.put(paramName,paramValue);
-
 
 			}
 
