@@ -102,12 +102,26 @@ public class Telegraph {
 
 		JSONArray contentFormat = new JSONArray();
 
+		int brLimit = 2;
+		
 		for (Node node : nodes) {
 
 			if (node instanceof NodeElement) {
 
 				NodeElement ne = (NodeElement)node;
 
+				if ("br".equals(ne.tag)) {
+					
+					if (brLimit == 0) continue;
+					
+					brLimit --;
+					
+				} else {
+					
+					brLimit = 2;
+					
+				}
+				
 				JSONObject element = new JSONObject();
 
 				ne.end = null;
