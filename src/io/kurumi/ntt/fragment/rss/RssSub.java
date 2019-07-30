@@ -199,8 +199,24 @@ public class RssSub extends Fragment {
 			conf.subscriptions = new LinkedList<>();
 
 		}
+		
+		if (function.endsWith("set_copyright")) {
+			
+			if (params.length == 1) {
+				
+				conf.copyright = null;
+				
+				msg.send("已重置，感谢对NTT的支持。").async();
+				
+			} else {
+				
+				conf.copyright = ArrayUtil.join(ArrayUtil.remove(params,0)," ");
+				
+				msg.send("设置成功 ~").async();
+				
+			}
 
-		if (function.endsWith("set_delay")) {
+		} else if (function.endsWith("set_delay")) {
 
 			if (params.length == 1) {
 
