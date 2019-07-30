@@ -221,10 +221,8 @@ public final class HTMLFilter {
 			final String body = m.group(2);
 			String ending = m.group(3);
 
-			// debug( "in a starting tag, name='" + name + "'; body='" + body + "'; ending='" + ending + "'" );
-
-			if (allowed(name)) {
-
+			// debug( "in a starting tag, name='" + name + "'; body='" + body + "'; ending='" + ending + "'" )
+			
 				final HashMap<String,String> params = new HashMap<>();
 
 				final Matcher m2 = P_QUOTED_ATTRIBUTES.matcher(body);
@@ -305,9 +303,6 @@ public final class HTMLFilter {
 				return null;
 
 			}
-		}
-
-		return null;
 
 	}
 
