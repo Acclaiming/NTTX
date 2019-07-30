@@ -145,15 +145,15 @@ public final class HTMLFilter {
 
 					if (node.superNode == null) {
 
-						/*if ("a".equals(node.tag) && node.children != null) {
+						if ("a".equals(node.tag) && node.children != null) {
 
 							for (Node ch : node.children) content.add(ch);
 
-						} else {*/
+						} else {
 
 							content.add(node);
 
-						//}
+						}
 
 						node = null;
 
@@ -171,15 +171,13 @@ public final class HTMLFilter {
 
 					}
 
-				} /* else {
+				} else {
 
 					newNode.superNode = node;
 
 					node = newNode;					
 
 				}
-				
-				*/
 
 			} else if (newNode != null) {
 
@@ -274,10 +272,11 @@ public final class HTMLFilter {
 
 					}
 					
+					paramValue = host + "/" + paramValue;
+					
+					
 				}
 				
-				paramValue = host + "/" + paramValue;
-
 				params.put(paramName,paramValue);
 				
 
