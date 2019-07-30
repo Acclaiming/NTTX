@@ -213,11 +213,11 @@ public class JoinCaptcha extends Fragment {
 
 						if (data.del_welcome_msg == null) {
 
-							msg.reply(data.welcomeMessage).async();
+							msg.reply(data.welcomeMessage).html().async();
 
 						} else {
 
-							SendResponse resp = msg.reply(data.welcomeMessage).exec();
+							SendResponse resp = msg.reply(data.welcomeMessage).html().exec();
 
 							if (resp != null && resp.isOk()) {
 
@@ -231,7 +231,7 @@ public class JoinCaptcha extends Fragment {
 
 						if (data.del_welcome_msg == null) {
 
-							msg.send(user.userName() + " , " + data.welcomeMessage).async();
+							msg.send(user.userName() + " , " + data.welcomeMessage).html().async();
 
 						} else {
 
@@ -259,7 +259,7 @@ public class JoinCaptcha extends Fragment {
 
 							if (data.welcome == 2) {
 
-								msg.send(data.welcomeMessage).async();
+								msg.send(data.welcomeMessage).html().async();
 
 							}
 
@@ -275,7 +275,7 @@ public class JoinCaptcha extends Fragment {
 
 							if (data.welcome == 2) {
 
-								resp = msg.send(data.welcomeMessage).exec();
+								resp = msg.send(data.welcomeMessage).html().exec();
 
 								if (resp != null && resp.isOk()) {
 
@@ -295,7 +295,7 @@ public class JoinCaptcha extends Fragment {
 
 							if (data.welcome == 2) {
 
-								msg.send(user.userName() + " , " + data.welcomeMessage).async();
+								msg.send(user.userName() + " , " + data.welcomeMessage).html().async();
 
 								executeAsync(msg.update,new SendSticker(data.id,sticker));
 

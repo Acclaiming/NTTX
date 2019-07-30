@@ -217,6 +217,7 @@ public class GroupData {
     public Integer welcome;
 
 	public String welcomeMessage;
+	
 	public String welcomeSticker;
 	public List<String> welcomeSet;
 
