@@ -67,7 +67,7 @@ public class FeedFetchTask extends TimerTask {
 
 		Set<String> sites = new HashSet<>();
 		Set<String> errors = new HashSet<>();
-
+		
 		for (RssSub.ChannelRss info : RssSub.channel.getAll()) {
 
 			if (info.delay == null) info.delay = 40L;
@@ -86,13 +86,7 @@ public class FeedFetchTask extends TimerTask {
 
 			sites.addAll(info.subscriptions);
 
-			if (info.error != null) {
-
-				if (first) {
-
-					continue;
-
-				}
+			if (!first && info.error != null) {
 
 				for (Map.Entry<String,RssSub.ChannelRss.FeedError> error : info.error.entrySet()) {
 
@@ -125,6 +119,8 @@ public class FeedFetchTask extends TimerTask {
 			step = 0;
 
 		}
+		
+		BotLog.error("FETCHING : \n\n" + ArrayUtil.join(sites,"\n"));
 
 		next:for (String url : sites) {
 
