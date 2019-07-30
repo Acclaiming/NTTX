@@ -100,7 +100,7 @@ public final class HTMLFilter {
 
 	public List<Node> formatTelegraph(String input,String host) {
 
-		// BotLog.error(input);
+		BotLog.error(input);
 
 		String s = input.replaceAll("\n","<br />");
 
@@ -211,7 +211,7 @@ public final class HTMLFilter {
 
 		}
 
-		//BotLog.error(Telegraph.parseContent(content).toStringPretty());
+		BotLog.error(Telegraph.parseContent(content).toStringPretty());
 
 		return content;
 
