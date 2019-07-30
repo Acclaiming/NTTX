@@ -222,11 +222,10 @@ public final class HTMLFilter {
 		Matcher m = P_END_TAG.matcher(s);
 
 		if (m.find()) {
-
-			return null;
-
-		}
-
+			
+				return null;
+				
+			}
 
 		m = P_START_TAG.matcher(s);
 
@@ -373,6 +372,10 @@ public final class HTMLFilter {
 						return "</" + name + ">";
 					}
 				}
+			} else if ("p".equals(name)) {
+				
+				return "<br />";
+				
 			}
 		}
 
