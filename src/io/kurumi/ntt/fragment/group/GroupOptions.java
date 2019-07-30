@@ -22,6 +22,7 @@ import com.pengrad.telegrambot.response.GetStickerSetResponse;
 import com.pengrad.telegrambot.request.GetStickerSet;
 import com.pengrad.telegrambot.model.Sticker;
 import io.kurumi.ntt.fragment.bots.*;
+import cn.hutool.http.HtmlUtil;
 
 public class GroupOptions extends Fragment {
 
@@ -1567,8 +1568,8 @@ public class GroupOptions extends Fragment {
 
 						}
 
-						edit.data.welcomeMessage = msg.text();
-
+						edit.data.welcomeMessage = HtmlUtil.escape(msg.text());
+						
 						clearPrivatePoint(user);
 
 				} else if (edit.type == 5) {
@@ -1987,7 +1988,7 @@ public class GroupOptions extends Fragment {
 
 				} else {
 
-						stats.append(data.welcomeMessage);
+						stats.append(HtmlUtil.escape(data.welcomeMessage));
 
 				}
 

@@ -235,7 +235,7 @@ public class JoinCaptcha extends Fragment {
 
 						} else {
 
-							SendResponse resp = msg.send(user.userName() + " , " + data.welcomeMessage).exec();
+							SendResponse resp = msg.send(user.userName() + " , " + data.welcomeMessage).html().exec();
 
 							if (resp != null && resp.isOk()) {
 
@@ -303,7 +303,7 @@ public class JoinCaptcha extends Fragment {
 
 						} else {
 
-							SendResponse resp = msg.send(user.userName() + " , " + data.welcomeMessage).exec();
+							SendResponse resp = msg.send(user.userName() + " , " + data.welcomeMessage).html().exec();
 
 							if (resp != null && resp.isOk()) {
 
@@ -1252,11 +1252,11 @@ public class JoinCaptcha extends Fragment {
 
 				if (gd.del_welcome_msg == null) {
 
-					msg.reply(gd.welcomeMessage).async();
+					msg.reply(gd.welcomeMessage).html().async();
 
 				} else {
 
-					SendResponse resp = msg.reply(gd.welcomeMessage).exec();
+					SendResponse resp = msg.reply(gd.welcomeMessage).html().exec();
 
 					if (resp != null && resp.isOk()) {
 
@@ -1270,11 +1270,11 @@ public class JoinCaptcha extends Fragment {
 
 				if (gd.del_welcome_msg == null) {
 
-					msg.send(user.userName() + " , " + gd.welcomeMessage).async();
+					msg.send(user.userName() + " , " + gd.welcomeMessage).html().async();
 
 				} else {
 
-					SendResponse resp = msg.send(user.userName() + " , " + gd.welcomeMessage).exec();
+					SendResponse resp = msg.send(user.userName() + " , " + gd.welcomeMessage).html().exec();
 
 					if (resp != null && resp.isOk()) {
 
@@ -1298,7 +1298,7 @@ public class JoinCaptcha extends Fragment {
 
 					if (gd.welcome == 2) {
 
-						msg.send(gd.welcomeMessage).async();
+						msg.send(gd.welcomeMessage).html().async();
 
 					}
 
@@ -1314,7 +1314,7 @@ public class JoinCaptcha extends Fragment {
 
 					if (gd.welcome == 2) {
 
-						resp = msg.send(gd.welcomeMessage).exec();
+						resp = msg.send(gd.welcomeMessage).html().exec();
 
 						if (resp != null && resp.isOk()) {
 
@@ -1333,7 +1333,7 @@ public class JoinCaptcha extends Fragment {
 
 					if (gd.welcome == 2) {
 
-						msg.send(user.userName() + " , " + gd.welcomeMessage).async();
+						msg.send(user.userName() + " , " + gd.welcomeMessage).html().async();
 
 						executeAsync(new SendSticker(gd.id,sticker));
 
@@ -1341,7 +1341,7 @@ public class JoinCaptcha extends Fragment {
 
 				} else {
 
-					SendResponse resp = msg.send(user.userName() + " , " + gd.welcomeMessage).exec();
+					SendResponse resp = msg.send(user.userName() + " , " + gd.welcomeMessage).html().exec();
 
 					if (resp != null && resp.isOk()) {
 
