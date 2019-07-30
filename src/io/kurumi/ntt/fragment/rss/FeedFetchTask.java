@@ -24,7 +24,7 @@ public class FeedFetchTask extends TimerTask {
 
 	public static void start() {
 
-		rssTimer.scheduleAtFixedRate(INSTANCE,new Date(),5 * 60 * 1000);
+		rssTimer.schedule(INSTANCE,new Date(),5 * 60 * 1000);
 
 		for (RssSub.ChannelRss info : RssSub.channel.getAll()) {
 
