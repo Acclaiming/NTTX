@@ -13,6 +13,8 @@ import java.util.*;
 import io.kurumi.ntt.*;
 import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.fragment.bots.*;
+import com.pengrad.telegrambot.request.GetChat;
+import com.pengrad.telegrambot.response.GetChatResponse;
 
 public class FeedFetchTask extends TimerTask {
 
@@ -23,6 +25,34 @@ public class FeedFetchTask extends TimerTask {
 	public static void start() {
 
 		rssTimer.scheduleAtFixedRate(INSTANCE,new Date(),15 * 60 * 1000);
+
+		for (RssSub.ChannelRss info : RssSub.channel.getAll()) {
+
+			BotFragment bot = Launcher.INSTANCE;
+
+			if (info.fromBot != null) {
+
+				if (!UserBotFragment.bots.containsKey(info.fromBot)) {
+
+					info.fromBot = null;
+
+				} else {
+
+					bot = UserBotFragment.bots.get(info.fromBot);
+
+				}
+
+			}
+			
+			GetChatResponse resp = bot.execute(new GetChat(info.id));
+
+			if (resp.errorCode() == 403) {
+				
+				RssSub.channel.deleteById(info.id);
+				
+			}
+			
+		}
 
 	}
 
