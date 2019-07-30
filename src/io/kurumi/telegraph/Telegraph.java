@@ -113,7 +113,7 @@ public class Telegraph {
 				
 				element.put("tag",ne.tag);
 
-				if (ne.attrs != null) {
+				if (ne.attrs != null && !ne.attrs.isEmpty()) {
 
 					element.put("attrs",ne.attrs);
 
