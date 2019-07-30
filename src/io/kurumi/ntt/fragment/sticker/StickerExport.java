@@ -103,10 +103,11 @@ public class StickerExport extends Fragment {
 					
 					File file = files.get(index);
 					
-					while (file.length() > 512 * 1000) {
-						
 					
 					try {
+						
+						if (file.length() > 512 * 1000) {
+							
 
 						Thumbnails
 							.of(file)
@@ -118,17 +119,15 @@ public class StickerExport extends Fragment {
 							float outSize = ((512 * 1000) / local.length());
 
 							Thumbnails.of(local).outputQuality(outSize).scale(1).toFile(file);
-
-		
+							
+					}
+					
 						bot().execute(new SendDocument(msg.chatId(),file).fileName("sticker" + index + ".png"));
-						
+							
 					} catch (IOException e) {
 
 						msg.send(file.getName() + " 转码失败 : " + BotLog.parseError(e)).exec(data);
 
-					}
-					
-					
 					}
 					
 				}
@@ -149,9 +148,9 @@ public class StickerExport extends Fragment {
 							.outputFormat("png")
 							.toFile(local);
 
-						if (local.length() > 512 * 1024) {
+						if (local.length() > 512 * 1000) {
 
-							float outSize = ((512 * 1024) / local.length()) - 0.3f;
+							float outSize = ((512 * 1000) / local.length());
 
 							Thumbnails.of(local).outputQuality(outSize).scale(1).toFile(local);
 
