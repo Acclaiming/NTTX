@@ -185,18 +185,18 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 	UserTrackTask userTrackTask = new UserTrackTask();
 
 	void startTasks() {
-
+		
 		TimedStatus.start();
 
 		TimelineUI.start();
 
 		TrackTask.start();
 
+		FeedFetchTask.start();
+		
 		UserBot.startAll();
 
 		Backup.start();
-
-		FeedFetchTask.start();
 
 		userTrackTask.start();
 
