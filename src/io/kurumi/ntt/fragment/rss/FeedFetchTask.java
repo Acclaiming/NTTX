@@ -120,7 +120,7 @@ public class FeedFetchTask extends TimerTask {
 
 		}
 		
-		BotLog.error("FETCHING : \n\n" + ArrayUtil.join(sites,"\n"));
+		BotLog.error("FETCHING : \n\n" + ArrayUtil.join(sites.toArray(),"\n"));
 
 		next:for (String url : sites) {
 
