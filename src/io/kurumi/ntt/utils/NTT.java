@@ -502,13 +502,7 @@ public class NTT {
 
                     for (Msg message : messages) {
 
-                        BaseResponse resp = message.fragment.execute(new DeleteMessage(message.chatId(),message.messageId()));
-
-						if (!resp.isOk()) {
-							
-							BotLog.error("删除消息失败 : " + resp.description());
-							
-						}
+                        message.fragment.execute(new DeleteMessage(message.chatId(),message.messageId()));
 						
                     }
 
