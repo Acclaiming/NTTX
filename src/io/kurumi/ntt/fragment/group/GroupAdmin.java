@@ -30,7 +30,7 @@ public class GroupAdmin extends Fragment {
 
 		if (full) {
 
-			return data.full_admins != null && data.full_admins.contains(userId);
+			return (data.full_admins != null && data.full_admins.contains(userId)) || (data.owner != null && data.owner.equals(userId));
 
 		} else {
 
