@@ -321,6 +321,8 @@ public class Send extends AbstractSend<Send> {
     @Override
     public SendResponse exec() {
 
+		if (request.getText() == null) return null;
+		
         char[] arr = request.getText().toCharArray();
 
         while (arr.length > 4096) {
