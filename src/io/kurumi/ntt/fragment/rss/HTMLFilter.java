@@ -250,9 +250,9 @@ public final class HTMLFilter {
 				paramName = paramNames.get(ii).toLowerCase();
 				paramValue = paramValues.get(ii);
 
-				// debug( "paramName='" + paramName + "'" );
-				// debug( "paramValue='" + paramValue + "'" );
-				// debug( "allowed? " + vAllowed.get( name ).contains( paramName ) );
+				BotLog.error( "paramName='" + paramName + "'" );
+				BotLog.error( "paramValue='" + paramValue + "'" );
+			BotLog.error( "allowed? " + vAllowed.get( name ).contains( paramName ) );
 
 				if (StrUtil.isBlank(paramValue)) return null;
 
@@ -268,8 +268,6 @@ public final class HTMLFilter {
 
 					params.put(paramName,paramValue);
 
-
-
 				}
 
 			}
@@ -283,11 +281,6 @@ public final class HTMLFilter {
 			}
 
 			if (ending == null || ending.length() < 1) {
-				if (vTagCounts.containsKey(name)) {
-					vTagCounts.put(name,vTagCounts.get(name) + 1);
-				} else {
-					vTagCounts.put(name,1);
-				}
 			} else {
 
 				ending = " /";
