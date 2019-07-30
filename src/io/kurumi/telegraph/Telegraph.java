@@ -50,13 +50,15 @@ public class Telegraph {
 
 		if (!result.getBool("ok",false)) {
 
-			new Send(Env.LOG_CHANNEL,request.toString(),result.toStringPretty()).exec();
-
+			if (result.getStr("error").contains("FLOOD_WAIT")) {
+				
+				throw new FloodWaitException();
+				
+			}
+			
 			return null;
 
 		}
-
-		System.out.println(result.toStringPretty());
 
 		return gson.fromJson(result.getJSONObject("result").toString(),resultClass);
 
@@ -121,6 +123,8 @@ public class Telegraph {
 					brLimit = 2;
 					
 				}
+				
+				// 防止因为 p结束标签被转换成两个换行 而连续的b标签导致的换行过多
 				
 				JSONObject element = new JSONObject();
 

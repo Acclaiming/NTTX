@@ -22,6 +22,7 @@ import io.kurumi.ntt.model.request.Send;
 import java.net.URL;
 import java.net.MalformedURLException;
 import io.kurumi.ntt.Launcher;
+import io.kurumi.telegraph.FloodWaitException;
 
 public class FeedHtmlFormater {
 
@@ -55,7 +56,7 @@ public class FeedHtmlFormater {
 		StringBuilder html = new StringBuilder();
 
 		String host = StrUtil.subBefore(entry.getLink(),"/",true);
-		
+
 		if (type > 8) {
 
 			if (type == 9) {
@@ -69,7 +70,7 @@ public class FeedHtmlFormater {
 			TelegraphAccount account = TelegraphAccount.defaultAccount();
 
 			final String str = getContent(entry,false,true,false);
-			
+
 			final List<Node> content = removeTagsWithoutImg.formatTelegraph(str,host);
 
 			content.add(new NodeElement() {{ tag = "hr"; }});
@@ -120,17 +121,32 @@ public class FeedHtmlFormater {
 
 			// content.add(new NodeElement() {{ tag = "br"; }});
 
-			Page page = Telegraph.createPage(account.access_token,entry.getTitle(),StrUtil.isBlank(entry.getAuthor()) ? feed.getTitle() : entry.getAuthor().trim(),feed.getLink(),content,false);
+			Page page;
 
-			if (page == null) {
+			try {
 
+				page = Telegraph.createPage(account.access_token,entry.getTitle(),StrUtil.isBlank(entry.getAuthor()) ? feed.getTitle() : entry.getAuthor().trim(),feed.getLink(),content,false);
 
+			} catch (FloodWaitException ex) {
 
-			} else {
+				account = TelegraphAccount.revokeDefaultAccount();
 
-				html.append(Html.a(entry.getTitle(),page.url));
+				try {
+
+					page = Telegraph.createPage(account.access_token,entry.getTitle(),StrUtil.isBlank(entry.getAuthor()) ? feed.getTitle() : entry.getAuthor().trim(),feed.getLink(),content,false);
+
+				} catch (FloodWaitException ignored) {
+
+					return null;
+
+				}
 
 			}
+
+
+			if (page == null) return null;
+
+			html.append(Html.a(entry.getTitle(),page.url));
 
 		} else if (type == 1) {
 
