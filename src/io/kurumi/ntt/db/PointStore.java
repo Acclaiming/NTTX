@@ -65,12 +65,14 @@ public class PointStore {
 
     }
 
-	public void setPrivate(UserData user,final String pointTo,final PointData data) {
+	public PointData setPrivate(UserData user,final String pointTo,final PointData data) {
 
 		data.point = pointTo;
 		data.type = 1;
-		
+
         privatePoints.put(user.id,data);
+
+		return data;
 
     }
 
@@ -87,17 +89,19 @@ public class PointStore {
 			}};
 
 		privatePoints.put(user.id,pointData);
-		
+
 		return pointData;
 
     }
 
-	public void setGroup(UserData user,final String pointTo,final PointData data) {
+	public PointData setGroup(UserData user,final String pointTo,final PointData data) {
 
 		data.type = 2;
 		data.point = pointTo;
-		
+
         groupPoints.put(user.id,data);
+
+		return data;
 
     }
 
@@ -112,9 +116,9 @@ public class PointStore {
 				type = 2;
 
 			}};
-		
+
         groupPoints.put(user.id,pointData);
-		
+
 		return pointData;
 
     }

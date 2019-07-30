@@ -113,9 +113,9 @@ public class Fragment {
 
 	}
 
-	public  void setPrivatePoint(UserData user,String pointTo,PointData content) {
+	public  PointData setPrivatePoint(UserData user,String pointTo,PointData content) {
 
-        point().setPrivate(user,pointTo,content);
+       return point().setPrivate(user,pointTo,content);
 
     }
 
@@ -131,12 +131,11 @@ public class Fragment {
 
     }
 
-	public  void setGroupPoint(UserData user,String pointTo,PointData content) {
+	public  PointData setGroupPoint(UserData user,String pointTo,PointData content) {
 
-        point().setGroup(user,pointTo,content);
+        return point().setGroup(user,pointTo,content);
 
     }
-
 
 	public  PointData setGroupPointData(UserData user,String pointTo,Object content) {
 

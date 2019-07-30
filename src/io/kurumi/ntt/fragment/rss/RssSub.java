@@ -44,6 +44,8 @@ import java.io.ByteArrayOutputStream;
 import cn.hutool.core.util.CharsetUtil;
 import java.io.IOException;
 import com.pengrad.telegrambot.request.SendDocument;
+import io.kurumi.ntt.db.PointData;
+import com.rometools.rome.io.WireFeedInput;
 
 public class RssSub extends Fragment {
 
@@ -93,7 +95,7 @@ public class RssSub extends Fragment {
 	public void init(BotFragment origin) {
 
 		super.init(origin);
-		
+
 		if (isMainInstance()) {
 
 			registerFunction("rss_import","rss_export","rss_set_delay","rss_set_current","rss_sub","rss_set_copyright","rss_list","rss_unsub","rss_unsub_all","rss_set_format","rss_link_preview","rss_export");
@@ -113,12 +115,204 @@ public class RssSub extends Fragment {
 
 	}
 
+	final String POINT_IMPORT_OPML = "rss_import";
+	
+	@Override
+	public void onPoint(UserData user,Msg msg,String point,PointData data) {
+
+		if (data.with(msg).type == 0) {
+
+		if (msg.doc() == null || !msg.doc().fileName().endsWith(".opml")) {
+
+			msg.send("你正在导入 .opml 文件").withCancel().exec(data);
+
+			return;
+
+		}
+
+		Opml opml;
+		
+		try {
+			
+			opml = (Opml) new WireFeedInput().build(msg.file());
+			
+		} catch (Exception ex) {
+			
+			msg.send("导入失败",BotLog.parseError(ex)).async();
+			
+			return;
+			
+		}
+		
+		StringBuilder notice = new StringBuilder();
+		
+		for (Outline outline : opml.getOutlines()) {
+			
+			notice.append("\n").append(Html.b(outline.getTitle()));
+			
+		}
+		
+		data.data = opml;
+		data.type = 1;
+		
+		msg.send("将要导入 :",notice.toString(),"\n现在发送目标频道的用户名或者ID ~").html().async();
+
+		} else {
+			
+			Opml opml = data.data();
+			
+			if (!msg.hasText()) { 
+			
+			msg.send("请输入目标频道").withCancel().async(); return;
+			
+			}
+
+			long channelId;
+
+			if (NumberUtil.isNumber(msg.text())) {
+
+				channelId = NumberUtil.parseLong(msg.text());
+
+				GetChatResponse resp = execute(new GetChat(channelId));
+
+				if (resp == null) {
+
+					msg.send("Telegram 服务器连接错误").exec();
+
+					return;
+
+				} else if (!resp.isOk()) {
+
+					msg.send("错误 : BOT不在该频道","( " + resp.description() + " )").exec();
+
+					return;
+
+				} else if (resp.chat().type() != Chat.Type.channel) {
+
+					msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").exec();
+
+					return;
+
+				}
+
+				channelId = resp.chat().id();
+
+
+			} else {
+
+				String username = msg.text();
+
+				if (!username.startsWith("@")) username = "@" + username;
+
+				GetChatResponse resp = execute(new GetChat(username));
+
+				if (resp == null) {
+
+					msg.send("Telegram 服务器连接错误").exec();
+
+					return;
+
+				} else if (!resp.isOk()) {
+
+					msg.send("错误 : BOT不在该频道 : @" + username,"( " + resp.description() + " )").exec();
+
+					return;
+
+				} else if (resp.chat().type() != Chat.Type.channel) {
+
+					msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").exec();
+
+					return;
+
+				}
+
+
+				channelId = resp.chat().id();
+
+			}
+
+			if (!user.admin() && !GroupAdmin.fastAdminCheck(this,channelId,user.id,false)) {
+
+				GetChatMemberResponse resp = execute(new GetChatMember(channelId,user.id.intValue()));
+
+				if (resp == null) {
+
+					msg.send("Telegram 服务器连接错误").exec();
+
+					return;
+
+				} else if (!resp.isOk()) {
+
+					msg.send("错误 : 频道读取失败","( " + resp.description() + " )").exec();
+
+					return;
+
+				} else if (!(resp.chatMember().status() == ChatMember.Status.creator || resp.chatMember().status() == ChatMember.Status.administrator)) {
+
+					msg.send("错误 : 你不是频道管理员").exec();
+
+					return;
+
+				}
+
+				return;
+
+			}
+
+			ChannelRss conf = channel.getById(channelId);
+
+			if (conf == null) {
+
+				conf = new ChannelRss();
+				conf.id = channelId;
+				conf.subscriptions = new LinkedList<>();
+
+			}
+			
+			for (Outline outline : opml.getOutlines()) {
+				
+				if (outline.getXmlUrl() == null) return;
+				
+				if (!info.containsId(outline.getXmlUrl())) {
+					
+					RssInfo rss = new RssInfo();
+					
+					rss.id = outline.getXmlUrl();
+					rss.title = outline.getTitle();
+					rss.link = outline.getHtmlUrl();
+					
+					info.setById(rss.id,rss);
+					
+				}
+				
+				conf.subscriptions.add(outline.getXmlUrl());
+				
+			}
+			
+			clearGroupPoint(user);
+			
+			msg.send("导入成功 ！").async();
+			
+		}
+		
+	}
+
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
 		if (user.blocked()) {
 
 			msg.send("你不能这么做 (为什么？)").async();
+
+			return;
+
+		}
+
+		if (function.endsWith("import")) {
+
+		    PointData data = setPrivatePoint(user,POINT_IMPORT_OPML);
+
+			msg.send("现在发送 .opml 文件 ( opml 1.0 或 2.0)").exec(data);
 
 			return;
 
@@ -227,69 +421,69 @@ public class RssSub extends Fragment {
 			conf.subscriptions = new LinkedList<>();
 
 		}
-		
+
 		if (function.endsWith("export")) {
-			
+
 			if (conf.subscriptions == null || conf.subscriptions.isEmpty()) {
-				
+
 				msg.send("这个频道还没有订阅过RSS，无法导出。").async();
-				
+
 				return;
-				
+
 			}
-		
+
 			Opml opml = new Opml();
-			
+
 			opml.setFeedType("opml_1.0");
-			
+
 			List<Outline> outlines = new LinkedList<>();
-			
+
 			for (String rss : conf.subscriptions) {
-				
+
 				RssInfo rssInfo = info.getById(rss);
-				
+
 				URL url = URLUtil.url(rss);
-				
+
 				Outline outline = rssInfo == null ?  new Outline(rss,url,url) : new Outline(rssInfo.title,URLUtil.url(rssInfo.link),url);
 
 				outlines.add(outline);
-				
+
 			}
-			
+
 			opml.setOutlines(outlines);
-			
+
 			WireFeedOutput output = new WireFeedOutput();
-			
+
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-			
+
 			try {
-				
+
 				output.output(opml,IoUtil.getWriter(bytes,CharsetUtil.CHARSET_UTF_8));
-				
+
 				executeAsync(new SendDocument(msg.chatId(),bytes.toByteArray()).fileName("rss_list.opml"));
-				
+
 			} catch (Exception e) {
-				
+
 				msg.send("导出失败",BotLog.parseError(e)).async();
-				
+
 				return;
-				
+
 			}
-			
+
 		} else if (function.endsWith("set_copyright")) {
-			
+
 			if (params.length == 1) {
-				
+
 				conf.copyright = null;
-				
+
 				msg.send("已重置，感谢对NTT的支持。").async();
-				
+
 			} else {
-				
+
 				conf.copyright = ArrayUtil.join(ArrayUtil.remove(params,0)," ");
-				
+
 				msg.send("设置成功 ~").async();
-				
+
 			}
 
 		} else if (function.endsWith("set_delay")) {
