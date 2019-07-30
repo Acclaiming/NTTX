@@ -42,10 +42,14 @@ public class RssSub extends Fragment {
 		public List<String> subscriptions;
 
 		public String copyright;
-		
+
 		public Map<String,FeedError> error;
 
 		public Long fromBot;
+
+		public Long delay;
+
+		public Long last;
 
 		public static class FeedError {
 
@@ -64,11 +68,11 @@ public class RssSub extends Fragment {
 
 		if (isMainInstance()) {
 
-			registerFunction("rss_set_current","rss_sub","rss_set_copyright","rss_list","rss_unsub","rss_unsub_all","rss_set_format","rss_link_preview","rss_export");
+			registerFunction("rss_set_delay","rss_set_current","rss_sub","rss_set_copyright","rss_list","rss_unsub","rss_unsub_all","rss_set_format","rss_link_preview","rss_export");
 
 		} else {
 
-			registerFunction("set_current","sub","set_copyright","list","unsub","unsub_all","set_format","link_preview","export");
+			registerFunction("set_delay","set_current","sub","set_copyright","list","unsub","unsub_all","set_format","link_preview","export");
 
 		}
 
@@ -76,9 +80,9 @@ public class RssSub extends Fragment {
 
 	@Override
 	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
-		
+
 		return PROCESS_ASYNC;
-		
+
 	}
 
 	@Override
@@ -115,16 +119,16 @@ public class RssSub extends Fragment {
 				return;
 
 			} else if (resp.chat().type() != Chat.Type.channel) {
-				
+
 				msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").exec();
-				
+
 				return;
-				
+
 			}
 
 			channelId = resp.chat().id();
-		
-			
+
+
 		} else {
 
 			String username = params[0];
@@ -145,14 +149,14 @@ public class RssSub extends Fragment {
 
 				return;
 
-			}else if (resp.chat().type() != Chat.Type.channel) {
+			} else if (resp.chat().type() != Chat.Type.channel) {
 
 				msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").exec();
 
 				return;
 
 			}
-			
+
 
 			channelId = resp.chat().id();
 
@@ -196,7 +200,84 @@ public class RssSub extends Fragment {
 
 		}
 
-	 if (function.endsWith("set_current")) {
+		if (function.endsWith("set_delay")) {
+
+			if (params.length == 1) {
+
+				conf.delay = null;
+
+				msg.send("已经重置为 15分钟").async();
+
+			} else {
+
+
+				long delay = 0;
+
+				int m;
+
+				if (!NumberUtil.isNumber(params[1]) || (m = NumberUtil.parseInt(params[1])) > 60 || m < 0) {
+
+					msg.send("无效的分钟数量 : " + params[1]).async();
+
+					return;
+
+				}
+
+				delay += m;
+
+				if (params.length > 2) {
+
+					int h;
+
+					if (!NumberUtil.isNumber(params[2]) || (h = NumberUtil.parseInt(params[2])) > 24 || h < 0) {
+
+						msg.send("无效的小时数量 : " + params[2]).async();
+
+						return;
+
+					}
+
+					delay += h * 60;
+
+				}
+
+				if (params.length > 3) {
+
+					int d;
+
+					if (!NumberUtil.isNumber(params[3]) || (d = NumberUtil.parseInt(params[2])) > 7 || d < 1) {
+
+						msg.send("无效的天数 : " + params[3]).async();
+
+						return;
+
+					}
+
+					delay += d * 24 * 60;
+
+				}
+
+				if (delay < 15) {
+
+					msg.send("无效的延时设置 ( < 15分钟 )").async();
+
+					return;
+
+				} else if (delay > 7 * 24 * 60) {
+
+					msg.send("无效的延时设置 ( < 7天 )").async();
+
+					return;
+
+				}
+
+				conf.delay = delay;
+
+				msg.send("拉取间隔设置成功。").async();
+
+			}
+
+		} else if (function.endsWith("set_current")) {
 
 			if (isMainInstance()) {
 
@@ -205,7 +286,6 @@ public class RssSub extends Fragment {
 				msg.send("重置成功 来源为 NTT本体").exec();
 
 			} else {
-
 
 				conf.fromBot = origin.me.id();
 
@@ -229,9 +309,9 @@ public class RssSub extends Fragment {
 				SyndFeedInput input = new SyndFeedInput();
 
 				String link = params[1];
-				
+
 				link = URLUtil.encode(link);
-				
+
 				HttpResponse resp;
 
 				try {
@@ -278,18 +358,18 @@ public class RssSub extends Fragment {
 				Collections.reverse(entries);
 
 				int limit = params.length < 3 ? -1: NumberUtil.parseInt(params[2]);
-				
+
 				if (limit > 0 && limit < entries.size()) {
-					
+
 					entries = entries.subList(entries.size() - limit,entries.size());
-					
+
 				}
-				
+
 				for (SyndEntry entry :  entries) {
 
 
 					limit --;
-					
+
 					Send request = new Send(this,conf.id,FeedHtmlFormater.format(conf,feed,entry));
 
 					if (conf.format > 8 || conf.preview) {
@@ -303,16 +383,16 @@ public class RssSub extends Fragment {
 					// if (conf.format == 9) return;
 
 					if (result != null) {
-					
+
 						if (result.isOk()) continue;
-						
-					msg.send(result.errorCode() + " - " + result.description()).exec();
-						
+
+						msg.send(result.errorCode() + " - " + result.description()).exec();
+
 					}
-					
+
 					msg.send(request.request().getText()).exec();
-					
-					
+
+
 				}
 
 			} catch (FeedException e) {
@@ -345,7 +425,7 @@ public class RssSub extends Fragment {
 				String link = params[1];
 
 				link = URLUtil.encode(link);
-				
+
 				HttpResponse resp;
 
 				try {
@@ -417,8 +497,6 @@ public class RssSub extends Fragment {
 				rss.title = feed.getTitle();
 				rss.last = FeedFetchTask.generateSign(feed.getEntries().get(0));
 
-				info.setById(rss.id,rss);
-
 				msg.send("订阅成功 : " + Html.a(feed.getTitle(),feed.getLink())).html().exec();
 
 			} catch (FeedException e) {
@@ -467,8 +545,6 @@ public class RssSub extends Fragment {
 
 				msg.send("取消订阅成功").exec();
 
-				channel.setById(conf.id,conf);
-
 			} else {
 
 				msg.send("没有订阅这个链接").exec();
@@ -484,8 +560,6 @@ public class RssSub extends Fragment {
 			} else {
 
 				conf.subscriptions.clear();
-
-				channel.setById(conf.id,conf);
 
 				msg.send("已经全部取消 :)").exec();
 
@@ -513,8 +587,6 @@ public class RssSub extends Fragment {
 
 			conf.format = target;
 
-			channel.setById(conf.id,conf);
-
 			msg.send("修改成功 输出格式为 : " + target + " .").exec();
 
 		} else if (function.endsWith("link_preview")) {
@@ -537,12 +609,12 @@ public class RssSub extends Fragment {
 
 			}
 
-			channel.setById(conf.id,conf);
-
 			msg.send("修改成功 原文链接预览已设为" + (conf.preview ? "开启" : "关闭") + " .").exec();
 
 
 		}
+
+		channel.setById(conf.id,conf);
 
 	}
 
