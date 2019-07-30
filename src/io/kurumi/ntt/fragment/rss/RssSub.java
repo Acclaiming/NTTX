@@ -408,8 +408,6 @@ public class RssSub extends Fragment {
 
 			}
 
-			return;
-
 		}
 
 		ChannelRss conf = channel.getById(channelId);
