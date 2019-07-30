@@ -171,13 +171,15 @@ public final class HTMLFilter {
 
 					}
 
-				} else {
+				} /* else {
 
 					newNode.superNode = node;
 
 					node = newNode;					
 
 				}
+				
+				*/
 
 			} else if (newNode != null) {
 
