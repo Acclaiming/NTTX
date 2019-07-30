@@ -271,12 +271,13 @@ public final class HTMLFilter {
 						paramValue = paramValue.substring(1);
 
 					}
-
-					paramValue = host + "/" + paramValue;
-
-					params.put(paramName,paramValue);
-
+					
 				}
+				
+				paramValue = host + "/" + paramValue;
+
+				params.put(paramName,paramValue);
+				
 
 			}
 
