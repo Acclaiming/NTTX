@@ -16,6 +16,7 @@ import cn.hutool.http.HttpRequest;
 import io.kurumi.ntt.utils.*;
 import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.*;
+import java.util.Map;
 
 public class Telegraph {
 
