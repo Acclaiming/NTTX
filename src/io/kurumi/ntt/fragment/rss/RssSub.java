@@ -46,6 +46,7 @@ import java.io.IOException;
 import com.pengrad.telegrambot.request.SendDocument;
 import io.kurumi.ntt.db.PointData;
 import com.rometools.rome.io.WireFeedInput;
+import cn.hutool.core.exceptions.UtilException;
 
 public class RssSub extends Fragment {
 
@@ -683,7 +684,7 @@ public class RssSub extends Fragment {
 
 				msg.send("拉取出错 : ",BotLog.parseError(e)).async();
 
-			} catch (IllegalArgumentException e) {
+			} catch (UtilException e) {
 
 				msg.send("无效的RSS链接").async();
 
@@ -788,7 +789,7 @@ public class RssSub extends Fragment {
 
 				msg.send("拉取出错 : " + BotLog.parseError(e)).async();
 
-			} catch (IllegalArgumentException e) {
+			} catch (UtilException e) {
 
 				msg.send("无效的RSS链接").async();
 
