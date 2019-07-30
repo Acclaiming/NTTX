@@ -211,7 +211,7 @@ public final class HTMLFilter {
 
 		}
 
-		BotLog.error(Telegraph.parseContent(content).toStringPretty());
+		//BotLog.error(Telegraph.parseContent(content).toStringPretty());
 
 		return content;
 
