@@ -121,7 +121,7 @@ public final class HTMLFilter {
 
 					content.add(new Node() {{ text = str; }});
 
-				} else if (!"img".equals(node.tag)) {
+				} else {
 
 					if (node.children == null) node.children = new LinkedList<>();
 
