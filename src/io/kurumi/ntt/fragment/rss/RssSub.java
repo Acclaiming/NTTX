@@ -542,9 +542,9 @@ public class RssSub extends Fragment {
 
 				}
 
-				if (delay < 15) {
+				if (user.admin() ? delay < 5 : delay < 15) {
 
-					msg.send("无效的延时设置 ( < 15分钟 )").async();
+					msg.send("无效的延时设置 ( 时间太短 )").async();
 
 					return;
 
