@@ -145,15 +145,15 @@ public final class HTMLFilter {
 
 					if (node.superNode == null) {
 
-						if ("a".equals(node.tag) && node.children != null) {
+						/*if ("a".equals(node.tag) && node.children != null) {
 
 							for (Node ch : node.children) content.add(ch);
 
-						} else {
+						} else {*/
 
 							content.add(node);
 
-						}
+						//}
 
 						node = null;
 

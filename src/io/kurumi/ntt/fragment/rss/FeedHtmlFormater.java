@@ -54,6 +54,8 @@ public class FeedHtmlFormater {
 
 		StringBuilder html = new StringBuilder();
 
+		String host = StrUtil.subBefore(entry.getLink(),"/",true);
+		
 		if (type > 8) {
 
 			if (type == 9) {
@@ -65,8 +67,6 @@ public class FeedHtmlFormater {
 			}
 
 			TelegraphAccount account = TelegraphAccount.defaultAccount();
-
-			String host = StrUtil.subBefore(entry.getLink(),"/",true);
 
 			final String str = getContent(entry,false,true,false);
 			
@@ -118,7 +118,7 @@ public class FeedHtmlFormater {
 
 					}});
 
-			content.add(new NodeElement() {{ tag = "br"; }});
+			// content.add(new NodeElement() {{ tag = "br"; }});
 
 			Page page = Telegraph.createPage(account.access_token,entry.getTitle(),StrUtil.isBlank(entry.getAuthor()) ? feed.getTitle() : entry.getAuthor().trim(),feed.getLink(),content,false);
 
