@@ -62,15 +62,35 @@ public class TwitterLogin extends Fragment {
 
 		} else if (params.length == 1) {
 
-			if ("twidere".equals(params[0].toLowerCase())) {
+			String type = params[0].toLowerCase();
+			
+			if ("android".equals(type)) {
+			
+				token = ApiToken.androidToken;
+
+			} else if ("iphone".equals(type)) {
+
+				token = ApiToken.iPhoneToken;
+
+			} else if ("web_app".equals(type)) {
+
+				token = ApiToken.webAppToken;
+
+			} else if ("web_client".equals(type)) {
+
+				token = ApiToken.webClientToken;
+				
+			} else if ("cat".equals(type)) {
+				
+				token = ApiToken.overflowcat;
+			
+			} else if ("twidere".equals(params[0].toLowerCase())) {
 
 				token = ApiToken.twidere;
 
 			} else {
 
-				msg.send("目前仅可选 /login twidere").async();
-
-				// msg.send("/login","or /login [web|android|iphone]","or /login <apiKey> <apiKeySec>","or /login <apiKey> <apiKeySec> <accToken> <accTokenSec>").exec();
+				msg.send("/login","or /login [web_client|web_app|android|iphone|cat|twidere]","or /login <apiKey> <apiKeySec>","or /login <apiKey> <apiKeySec> <accToken> <accTokenSec>").exec();
 
 				return;
 
@@ -78,7 +98,7 @@ public class TwitterLogin extends Fragment {
 
 		} else {
 
-			token = ApiToken.overflowcat;
+			token = ApiToken.defaultToken;
 
 		}
 
