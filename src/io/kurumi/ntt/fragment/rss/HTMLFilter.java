@@ -41,7 +41,7 @@ public final class HTMLFilter {
 	public HTMLFilter(boolean noImg) {
 
 		final ArrayList<String> no_atts = new ArrayList<String>();
-		
+
 		vAllowed = new HashMap<String, List<String>>();
 
 		final ArrayList<String> a_atts = new ArrayList<String>();
@@ -57,12 +57,12 @@ public final class HTMLFilter {
 			img_atts.add("src");
 
 			vAllowed.put("img",img_atts);
-			
+
 			vAllowed.put("br",no_atts);
 
 		}
 
-		
+
 		vAllowed.put("b",no_atts);
 		vAllowed.put("i",no_atts);
 		vAllowed.put("pre",no_atts);
@@ -100,7 +100,7 @@ public final class HTMLFilter {
 	public List<Node> formatTelegraph(String input,String host) {
 
 		BotLog.error(input);
-		
+
 		String s = input.replaceAll("\n","<br />");
 
 		Matcher m = P_TAGS.matcher(s);
@@ -150,23 +150,23 @@ public final class HTMLFilter {
 
 					} else {
 
-						// ignore
+						NodeElement superNode = node.superNode;
 
-						/*
+						node.superNode = null;
 
-						 NodeElement superNode = node.superNode;
+						if (superNode.children == null) superNode.children = new LinkedList<>();
 
-						 node.superNode = null;
+						superNode.children.add(node);
 
-						 if (superNode.children == null) superNode.children = new LinkedList<>();
-
-						 superNode.children.add(node);
-
-						 node = superNode;
-
-						 */
+						node = superNode;
 
 					}
+
+				} else {
+
+					newNode.superNode = node;
+					
+					node = newNode;					
 
 				}
 
@@ -226,87 +226,87 @@ public final class HTMLFilter {
 			String ending = m.group(3);
 
 			// debug( "in a starting tag, name='" + name + "'; body='" + body + "'; ending='" + ending + "'" )
-			
-				final HashMap<String,String> params = new HashMap<>();
 
-				final Matcher m2 = P_QUOTED_ATTRIBUTES.matcher(body);
-				final Matcher m3 = P_UNQUOTED_ATTRIBUTES.matcher(body);
-				final List<String> paramNames = new ArrayList<String>();
-				final List<String> paramValues = new ArrayList<String>();
-				while (m2.find()) {
-					paramNames.add(m2.group(1)); // ([a-z0-9]+)
-					paramValues.add(m2.group(3)); // (.*?)
-				}
-				while (m3.find()) {
-					paramNames.add(m3.group(1)); // ([a-z0-9]+)
-					paramValues.add(m3.group(3)); // ([^\"\\s']+)
-				}
+			final HashMap<String,String> params = new HashMap<>();
 
-				String paramName, paramValue;
-				for (int ii = 0; ii < paramNames.size(); ii++) {
-					paramName = paramNames.get(ii).toLowerCase();
-					paramValue = paramValues.get(ii);
+			final Matcher m2 = P_QUOTED_ATTRIBUTES.matcher(body);
+			final Matcher m3 = P_UNQUOTED_ATTRIBUTES.matcher(body);
+			final List<String> paramNames = new ArrayList<String>();
+			final List<String> paramValues = new ArrayList<String>();
+			while (m2.find()) {
+				paramNames.add(m2.group(1)); // ([a-z0-9]+)
+				paramValues.add(m2.group(3)); // (.*?)
+			}
+			while (m3.find()) {
+				paramNames.add(m3.group(1)); // ([a-z0-9]+)
+				paramValues.add(m3.group(3)); // ([^\"\\s']+)
+			}
 
-					// debug( "paramName='" + paramName + "'" );
-					// debug( "paramValue='" + paramValue + "'" );
-					// debug( "allowed? " + vAllowed.get( name ).contains( paramName ) );
+			String paramName, paramValue;
+			for (int ii = 0; ii < paramNames.size(); ii++) {
+				paramName = paramNames.get(ii).toLowerCase();
+				paramValue = paramValues.get(ii);
 
-					if (StrUtil.isBlank(paramValue)) return null;
+				// debug( "paramName='" + paramName + "'" );
+				// debug( "paramValue='" + paramValue + "'" );
+				// debug( "allowed? " + vAllowed.get( name ).contains( paramName ) );
 
-					if (!paramValue.startsWith("http")) {
+				if (StrUtil.isBlank(paramValue)) return null;
 
-						if (paramValue.startsWith("/")) {
+				if (!paramValue.startsWith("http")) {
 
-							paramValue = paramValue.substring(1);
+					if (paramValue.startsWith("/")) {
 
-						}
-
-						paramValue = host + "/" + paramValue;
-						
-						params.put(paramName,paramValue);
-
-
+						paramValue = paramValue.substring(1);
 
 					}
 
-				}
+					paramValue = host + "/" + paramValue;
 
-				if (inArray(name,vSelfClosingTags)) {
-					ending = " /";
-				}
+					params.put(paramName,paramValue);
 
-				if (inArray(name,vNeedClosingTags)) {
-					ending = "";
-				}
 
-				if (ending == null || ending.length() < 1) {
-					if (vTagCounts.containsKey(name)) {
-						vTagCounts.put(name,vTagCounts.get(name) + 1);
-					} else {
-						vTagCounts.put(name,1);
-					}
-				} else {
-
-					ending = " /";
 
 				}
-
-				final Boolean isEnd = " /".equals(ending);
-
-				return new NodeElement() {{
-
-						tag = name;
-						attrs = params;
-
-						end = isEnd;
-
-					}};
-
-			} else {
-
-				return null;
 
 			}
+
+			if (inArray(name,vSelfClosingTags)) {
+				ending = " /";
+			}
+
+			if (inArray(name,vNeedClosingTags)) {
+				ending = "";
+			}
+
+			if (ending == null || ending.length() < 1) {
+				if (vTagCounts.containsKey(name)) {
+					vTagCounts.put(name,vTagCounts.get(name) + 1);
+				} else {
+					vTagCounts.put(name,1);
+				}
+			} else {
+
+				ending = " /";
+
+			}
+
+			final Boolean isEnd = " /".equals(ending);
+
+			return new NodeElement() {{
+
+					tag = name;
+					attrs = params;
+
+					end = isEnd;
+
+				}};
+
+		} else {
+
+			return null;
+
+		}
 
 	}
 
