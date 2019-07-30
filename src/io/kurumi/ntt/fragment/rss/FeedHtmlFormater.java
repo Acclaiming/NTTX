@@ -55,11 +55,25 @@ public class FeedHtmlFormater {
 
 		StringBuilder html = new StringBuilder();
 
-		String host = StrUtil.subBefore(entry.getLink(),"/",true);
+		String host = StrUtil.subBefore(feed.getLink(),"/",true);
 
+		String link_ = entry.getLink();
+
+		if (!link_.startsWith("http")) {
+
+			if (link_.startsWith("/")) link_ = link_.substring(1);
+
+			link_ = host + "/" + link_;
+
+		}
+
+		final String link = link_;
+
+		entry.setLink(link);
+		
 		if (type > 8) {
 
-			if (type == 9) {
+			if (type == 9 || type == 11) {
 
 				html.append(Html.b(feed.getTitle()));
 
@@ -110,7 +124,7 @@ public class FeedHtmlFormater {
 
 						attrs = new HashMap<>();
 
-						attrs.put("href",entry.getLink());
+						attrs.put("href",link);
 
 						children = new LinkedList<>();
 
@@ -146,11 +160,19 @@ public class FeedHtmlFormater {
 
 			if (page == null) return null;
 
-			html.append(Html.a(entry.getTitle(),page.url));
+			if (type < 11) {
+
+				html.append(Html.a(entry.getTitle(),page.url));
+
+			} else {
+
+				html.append(entry.getTitle()).append(" | ").append(Html.a("Telegraph",page.url)).append(" | ").append(Html.a("原文",link));
+
+			}
 
 		} else if (type == 1) {
 
-			html.append(Html.a(entry.getTitle(),entry.getLink()));
+			html.append(Html.a(entry.getTitle(),link));
 
 		} else if (type == 2) {
 
@@ -158,7 +180,7 @@ public class FeedHtmlFormater {
 
 			html.append("\n\n");
 
-			html.append(Html.a(entry.getTitle(),entry.getLink()));
+			html.append(Html.a(entry.getTitle(),link));
 
 
 		} else if (type == 3) {
@@ -167,7 +189,7 @@ public class FeedHtmlFormater {
 
 			html.append("\n\n");
 
-			html.append(Html.a(entry.getTitle(),entry.getLink()));
+			html.append(Html.a(entry.getTitle(),link));
 
 			html.append("\n\n");
 
@@ -183,7 +205,7 @@ public class FeedHtmlFormater {
 
 			html.append("\n\n");
 
-			html.append(entry.getLink());
+			html.append(link);
 
 		} else if (type == 5) {
 
@@ -207,7 +229,7 @@ public class FeedHtmlFormater {
 
 			}
 
-			html.append(Html.a(feed.getTitle(),entry.getLink()));
+			html.append(Html.a(feed.getTitle(),link));
 
 		} else if (type == 6) {
 
@@ -227,7 +249,7 @@ public class FeedHtmlFormater {
 
 			html.append("\n\n");
 
-			html.append(entry.getLink());
+			html.append(link);
 
 		} else if (type == 8) {
 
@@ -251,7 +273,7 @@ public class FeedHtmlFormater {
 
 			}
 
-			html.append(Html.a(feed.getTitle(),entry.getLink()));
+			html.append(Html.a(feed.getTitle(),link));
 
 
 		}
