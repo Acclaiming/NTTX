@@ -211,7 +211,7 @@ public final class HTMLFilter {
 
 		}
 
-		//BotLog.error(Telegraph.parseContent(content).toStringPretty());
+		BotLog.error(Telegraph.parseContent(content).toStringPretty());
 
 		return content;
 
@@ -258,9 +258,9 @@ public final class HTMLFilter {
 				paramName = paramNames.get(ii).toLowerCase();
 				paramValue = paramValues.get(ii);
 
-				BotLog.error("paramName='" + paramName + "'");
-				BotLog.error("paramValue='" + paramValue + "'");
-				BotLog.error("allowed? " + vAllowed.get(name).contains(paramName));
+				//BotLog.error("paramName='" + paramName + "'");
+				//BotLog.error("paramValue='" + paramValue + "'");
+				//BotLog.error("allowed? " + vAllowed.get(name).contains(paramName));
 
 				if (StrUtil.isBlank(paramValue)) return null;
 
@@ -300,7 +300,7 @@ public final class HTMLFilter {
 			return new NodeElement() {{
 
 					tag = name;
-					attrs = params.is;
+					attrs = params.isEmpty() ? null : params;
 					end = isEnd;
 
 				}};
