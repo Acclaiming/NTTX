@@ -66,11 +66,17 @@ public class FeedFetchTask extends TimerTask {
 
 		}
 
-		if (step < 3) {
+	    if (step < 3) {
 
 			step ++;
 
 			sites.removeAll(errors);
+			
+			if (step != 2) {
+				
+			
+				
+			}
 
 		} else {
 

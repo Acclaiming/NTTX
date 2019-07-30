@@ -328,7 +328,7 @@ public class RssSub extends Fragment {
 
 		}
 
-		if (function.endsWith("sub")) {
+		if (function.matches("(rss_sub|sub)")) {
 
 			if (params.length < 2) {
 
