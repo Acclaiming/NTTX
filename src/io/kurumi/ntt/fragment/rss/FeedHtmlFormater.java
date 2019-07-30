@@ -70,7 +70,7 @@ public class FeedHtmlFormater {
 		final String link = link_;
 
 		entry.setLink(link);
-		
+
 		if (type > 8) {
 
 			if (type == 9 || type == 11) {
@@ -115,9 +115,10 @@ public class FeedHtmlFormater {
 				content.add(new Node() {{ text = channel.copyright; }});
 
 			}
-			
-			content.add(new NodeElement() {{ tag = "br"; }});
 
+			content.add(new NodeElement() {{ tag = "br"; }});
+			content.add(new NodeElement() {{ tag = "br"; }});
+			
 			content.add(new Node() {{ text = "查看原文 : "; }});
 
 			content.add(new NodeElement() {{
