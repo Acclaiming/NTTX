@@ -24,7 +24,7 @@ public class Cndic {
 
 	}
 
-	public String cn_ma(String str,boolean noReset) {
+	public String cn_ma(String str,boolean noReset,boolean unTrans) {
 
 		if (__VIEWSTATE == null) reset();
 
@@ -34,7 +34,7 @@ public class Cndic {
 			.form("__EVENTVALIDATION",__EVENTVALIDATION)
 			.form("__VIEWSTATEGENERATOR",__VIEWSTATEGENERATOR)
 			.form("tbLeft",str)
-			.form("selType","cn_ma")
+			.form("selType",unTrans ? "ma_cn" : "cn_ma")
 			.form("selWordText","selText")
 			.form("btnTranslate","+翻+译+")
 			.form("tbRight","Dit+ding+").execute();
@@ -51,7 +51,7 @@ public class Cndic {
 
 			reset();
 
-			return cn_ma(str,true);
+			return cn_ma(str,true,unTrans);
 
 		} 
 
