@@ -443,7 +443,7 @@ public class RssSub extends Fragment {
 
 				URL url = URLUtil.url(rss);
 
-				Outline outline = rssInfo == null ?  new Outline(rss,url,url) : new Outline(rssInfo.title,URLUtil.url(rssInfo.link),url);
+				Outline outline = rssInfo == null ?  new Outline(rss,url,url) : new Outline(rssInfo.title,url,URLUtil.url(rssInfo.link));
 
 				outlines.add(outline);
 
