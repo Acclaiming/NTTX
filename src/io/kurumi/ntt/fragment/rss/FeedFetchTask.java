@@ -40,6 +40,22 @@ public class FeedFetchTask extends TimerTask {
 
 		for (RssSub.ChannelRss info : RssSub.channel.getAll()) {
 
+			if (info.delay != null) {
+
+				if (info.last == null || (System.currentTimeMillis() - info.last) < info.delay * 60 * 1000) {
+
+					info.last = System.currentTimeMillis();
+
+					RssSub.channel.setById(info.id,info);
+
+				} else {
+
+					continue;
+
+				}
+
+			}
+
 			sites.addAll(info.subscriptions);
 
 			if (info.error != null) {
@@ -71,11 +87,11 @@ public class FeedFetchTask extends TimerTask {
 			step ++;
 
 			sites.removeAll(errors);
-			
+
 			if (step != 2) {
-				
-			
-				
+
+
+
 			}
 
 		} else {
@@ -193,15 +209,15 @@ public class FeedFetchTask extends TimerTask {
 				for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions",info.id)) {
 
 					for (SyndEntry entry : posts) {
-						
+
 						Fragment sender = Launcher.INSTANCE;
-						
+
 						if (channel.fromBot != null && UserBotFragment.bots.containsKey(channel.fromBot)) {
-							
+
 							sender = UserBotFragment.bots.get(channel.fromBot);
-							
+
 						}
-						
+
 						Send request = new Send(sender,channel.id,FeedHtmlFormater.format(channel,feed,entry));
 
 						if (channel.format > 8 || channel.preview) {
