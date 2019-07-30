@@ -90,7 +90,7 @@ public final class HTMLFilter {
 	}
 
 	private String balanceHTML(String s) {
-
+		
 		s = regexReplace(P_END_ARROW,"",s);
 		s = regexReplace(P_BODY_TO_END,"<$1>",s);
 		s = regexReplace(P_XML_CONTENT,"$1<$2",s);
@@ -100,8 +100,8 @@ public final class HTMLFilter {
 
 	public List<Node> formatTelegraph(String input,String host) {
 
-		BotLog.error(input);
-		
+		// BotLog.error(input);
+
 		String s = input.replaceAll("\n","<br />");
 
 		Matcher m = P_TAGS.matcher(s);
@@ -166,7 +166,7 @@ public final class HTMLFilter {
 				} else {
 
 					newNode.superNode = node;
-					
+
 					node = newNode;					
 
 				}
@@ -203,8 +203,8 @@ public final class HTMLFilter {
 
 		}
 
-	BotLog.error(Telegraph.parseContent(content).toStringPretty());
-		
+		//BotLog.error(Telegraph.parseContent(content).toStringPretty());
+
 		return content;
 
 	}
