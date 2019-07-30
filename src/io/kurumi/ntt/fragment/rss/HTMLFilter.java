@@ -292,8 +292,7 @@ public final class HTMLFilter {
 			return new NodeElement() {{
 
 					tag = name;
-					attrs = params;
-
+					attrs = params.isEmpty() ? null : params;
 					end = isEnd;
 
 				}};
