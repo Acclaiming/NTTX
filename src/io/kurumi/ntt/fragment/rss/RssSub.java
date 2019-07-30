@@ -177,19 +177,19 @@ public class RssSub extends Fragment {
 
 				if (resp == null) {
 
-					msg.send("Telegram 服务器连接错误").exec();
+					msg.send("Telegram 服务器连接错误").async();
 
 					return;
 
 				} else if (!resp.isOk()) {
 
-					msg.send("错误 : BOT不在该频道","( " + resp.description() + " )").exec();
+					msg.send("错误 : BOT不在该频道","( " + resp.description() + " )").async();
 
 					return;
 
 				} else if (resp.chat().type() != Chat.Type.channel) {
 
-					msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").exec();
+					msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").async();
 
 					return;
 
@@ -208,19 +208,19 @@ public class RssSub extends Fragment {
 
 				if (resp == null) {
 
-					msg.send("Telegram 服务器连接错误").exec();
+					msg.send("Telegram 服务器连接错误").async();
 
 					return;
 
 				} else if (!resp.isOk()) {
 
-					msg.send("错误 : BOT不在该频道 : @" + username,"( " + resp.description() + " )").exec();
+					msg.send("错误 : BOT不在该频道 : @" + username,"( " + resp.description() + " )").async();
 
 					return;
 
 				} else if (resp.chat().type() != Chat.Type.channel) {
 
-					msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").exec();
+					msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").async();
 
 					return;
 
@@ -237,19 +237,19 @@ public class RssSub extends Fragment {
 
 				if (resp == null) {
 
-					msg.send("Telegram 服务器连接错误").exec();
+					msg.send("Telegram 服务器连接错误").async();
 
 					return;
 
 				} else if (!resp.isOk()) {
 
-					msg.send("错误 : 频道读取失败","( " + resp.description() + " )").exec();
+					msg.send("错误 : 频道读取失败","( " + resp.description() + " )").async();
 
 					return;
 
 				} else if (!(resp.chatMember().status() == ChatMember.Status.creator || resp.chatMember().status() == ChatMember.Status.administrator)) {
 
-					msg.send("错误 : 你不是频道管理员").exec();
+					msg.send("错误 : 你不是频道管理员").async();
 
 					return;
 
@@ -318,7 +318,7 @@ public class RssSub extends Fragment {
 
 		}
 
-		if (params.length == 0) { msg.invalidParams("频道","...").exec(); return;}
+		if (params.length == 0) { msg.invalidParams("频道","...").async(); return;}
 
 		long channelId;
 
@@ -330,19 +330,19 @@ public class RssSub extends Fragment {
 
 			if (resp == null) {
 
-				msg.send("Telegram 服务器连接错误").exec();
+				msg.send("Telegram 服务器连接错误").async();
 
 				return;
 
 			} else if (!resp.isOk()) {
 
-				msg.send("错误 : BOT不在该频道","( " + resp.description() + " )").exec();
+				msg.send("错误 : BOT不在该频道","( " + resp.description() + " )").async();
 
 				return;
 
 			} else if (resp.chat().type() != Chat.Type.channel) {
 
-				msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").exec();
+				msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").async();
 
 				return;
 
@@ -361,19 +361,19 @@ public class RssSub extends Fragment {
 
 			if (resp == null) {
 
-				msg.send("Telegram 服务器连接错误").exec();
+				msg.send("Telegram 服务器连接错误").async();
 
 				return;
 
 			} else if (!resp.isOk()) {
 
-				msg.send("错误 : BOT不在该频道 : @" + username,"( " + resp.description() + " )").exec();
+				msg.send("错误 : BOT不在该频道 : @" + username,"( " + resp.description() + " )").async();
 
 				return;
 
 			} else if (resp.chat().type() != Chat.Type.channel) {
 
-				msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").exec();
+				msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").async();
 
 				return;
 
@@ -390,19 +390,19 @@ public class RssSub extends Fragment {
 
 			if (resp == null) {
 
-				msg.send("Telegram 服务器连接错误").exec();
+				msg.send("Telegram 服务器连接错误").async();
 
 				return;
 
 			} else if (!resp.isOk()) {
 
-				msg.send("错误 : 频道读取失败","( " + resp.description() + " )").exec();
+				msg.send("错误 : 频道读取失败","( " + resp.description() + " )").async();
 
 				return;
 
 			} else if (!(resp.chatMember().status() == ChatMember.Status.creator || resp.chatMember().status() == ChatMember.Status.administrator)) {
 
-				msg.send("错误 : 你不是频道管理员").exec();
+				msg.send("错误 : 你不是频道管理员").async();
 
 				return;
 
@@ -569,13 +569,13 @@ public class RssSub extends Fragment {
 
 				conf.fromBot = null;
 
-				msg.send("重置成功 来源为 NTT本体").exec();
+				msg.send("重置成功 来源为 NTT本体").async();
 
 			} else {
 
 				conf.fromBot = origin.me.id();
 
-				msg.send("设置成功 , 来源为 " + UserData.get(origin.me).userName()).html().exec();
+				msg.send("设置成功 , 来源为 " + UserData.get(origin.me).userName()).html().async();
 
 
 			}
@@ -584,7 +584,7 @@ public class RssSub extends Fragment {
 
 			if (params.length < 2) {
 
-				msg.invalidParams("频道","链接").exec();
+				msg.invalidParams("频道","链接").async();
 
 				return;
 
@@ -637,7 +637,7 @@ public class RssSub extends Fragment {
 
 				SyndFeed feed = input.build(new StringReader(resp.body()));
 
-				msg.send("正在输出 " + Html.a(feed.getTitle(),feed.getLink())).html().exec();
+				msg.send("正在输出 " + Html.a(feed.getTitle(),feed.getLink())).html().async();
 
 				List<SyndEntry> entries = feed.getEntries();
 
@@ -672,22 +672,22 @@ public class RssSub extends Fragment {
 
 						if (result.isOk()) continue;
 
-						msg.send(result.errorCode() + " - " + result.description()).exec();
+						msg.send(result.errorCode() + " - " + result.description()).async();
 
 					}
 
-					msg.send(request.request().getText()).exec();
+					msg.send(request.request().getText()).async();
 
 
 				}
 
 			} catch (FeedException e) {
 
-				msg.send("拉取出错 : ",BotLog.parseError(e)).exec();
+				msg.send("拉取出错 : ",BotLog.parseError(e)).async();
 
 			} catch (IllegalArgumentException e) {
 
-				msg.send("无效的RSS链接").exec();
+				msg.send("无效的RSS链接").async();
 
 			}
 
@@ -698,7 +698,7 @@ public class RssSub extends Fragment {
 
 			if (params.length < 2) {
 
-				msg.invalidParams("channelId","rssUrl").exec();
+				msg.invalidParams("channelId","rssUrl").async();
 
 				return;
 
@@ -753,7 +753,7 @@ public class RssSub extends Fragment {
 
 				if (conf.subscriptions.contains(params[1])) {
 
-					msg.send("已经订阅过了 " + Html.a(feed.getTitle(),feed.getLink())).html().exec();
+					msg.send("已经订阅过了 " + Html.a(feed.getTitle(),feed.getLink())).html().async();
 
 					return;
 
@@ -766,7 +766,7 @@ public class RssSub extends Fragment {
 
 					if (!conf.subscriptions.isEmpty() || conf.fromBot != null) {
 
-						msg.send("已将输入源设为本机器人。").exec();
+						msg.send("已将输入源设为本机器人。").async();
 
 					}
 
@@ -784,15 +784,15 @@ public class RssSub extends Fragment {
 				rss.link = feed.getLink();
 				rss.last = FeedFetchTask.generateSign(feed.getEntries().get(0));
 
-				msg.send("订阅成功 : " + Html.a(feed.getTitle(),feed.getLink())).html().exec();
+				msg.send("订阅成功 : " + Html.a(feed.getTitle(),feed.getLink())).html().async();
 
 			} catch (FeedException e) {
 
-				msg.send("拉取出错 : " + BotLog.parseError(e)).exec();
+				msg.send("拉取出错 : " + BotLog.parseError(e)).async();
 
 			} catch (IllegalArgumentException e) {
 
-				msg.send("无效的RSS链接").exec();
+				msg.send("无效的RSS链接").async();
 
 			}
 
@@ -800,7 +800,7 @@ public class RssSub extends Fragment {
 
 			if (conf.subscriptions.isEmpty()) {
 
-				msg.send("没有订阅任何RSS").exec();
+				msg.send("没有订阅任何RSS").async();
 
 				return;
 
@@ -816,7 +816,7 @@ public class RssSub extends Fragment {
 
 			}
 
-			msg.send(list.toString()).html().exec();
+			msg.send(list.toString()).html().async();
 
 		} else if (function.endsWith("unsub")) {
 
@@ -830,11 +830,11 @@ public class RssSub extends Fragment {
 
 			if (conf.subscriptions.remove(params[1])) {
 
-				msg.send("取消订阅成功").exec();
+				msg.send("取消订阅成功").async();
 
 			} else {
 
-				msg.send("没有订阅这个链接").exec();
+				msg.send("没有订阅这个链接").async();
 
 			}
 
@@ -842,13 +842,13 @@ public class RssSub extends Fragment {
 
 			if (conf.subscriptions.isEmpty()) {
 
-				msg.send("没有订阅任何源 :)").exec();
+				msg.send("没有订阅任何源 :)").async();
 
 			} else {
 
 				conf.subscriptions.clear();
 
-				msg.send("已经全部取消 :)").exec();
+				msg.send("已经全部取消 :)").async();
 
 			}
 
@@ -856,7 +856,7 @@ public class RssSub extends Fragment {
 
 			if (params.length < 2) {
 
-				msg.invalidParams("频道","1 - 9").exec();
+				msg.invalidParams("频道","1 - 9").async();
 
 				return;
 
@@ -866,7 +866,7 @@ public class RssSub extends Fragment {
 
 			if (!NumberUtil.isNumber(params[1]) || (target = NumberUtil.parseInt(params[1])) < 0 || target > 10) {
 
-				msg.send("请选择有效的格式 : 1 - 10").exec();
+				msg.send("请选择有效的格式 : 1 - 10").async();
 
 				return;
 
@@ -874,13 +874,13 @@ public class RssSub extends Fragment {
 
 			conf.format = target;
 
-			msg.send("修改成功 输出格式为 : " + target + " .").exec();
+			msg.send("修改成功 输出格式为 : " + target + " .").async();
 
 		} else if (function.endsWith("link_preview")) {
 
 			if (params.length < 2) {
 
-				msg.invalidParams("频道","on/off").exec();
+				msg.invalidParams("频道","on/off").async();
 
 				return;
 
@@ -896,7 +896,7 @@ public class RssSub extends Fragment {
 
 			}
 
-			msg.send("修改成功 原文链接预览已设为" + (conf.preview ? "开启" : "关闭") + " .").exec();
+			msg.send("修改成功 原文链接预览已设为" + (conf.preview ? "开启" : "关闭") + " .").async();
 
 
 		}
