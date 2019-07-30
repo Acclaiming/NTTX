@@ -73,6 +73,11 @@ public class GroupAdmin extends Fragment {
 
 					data.owner = admin.user().id();
 
+					data.admins.add(admin.user().id());
+					data.full_admins.add(admin.user().id());
+					
+					continue;
+					
 				}
 
 				if (admin.user().firstName().equals("")) {
