@@ -38,7 +38,7 @@ public class Manchurize extends Fragment {
 		
 		if (StrUtil.isBlank(str)) return;
 		
-		str = cndic.cn_ma(str,isManchuScript(str),false);
+		str = cndic.cn_ma(isManchuScript(str) ? deManchurize(str) : str,isManchuScript(str),false);
 		
 		if (str != null) {
 			
