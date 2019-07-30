@@ -222,10 +222,10 @@ public final class HTMLFilter {
 		Matcher m = P_END_TAG.matcher(s);
 
 		if (m.find()) {
-			
-				return null;
-				
-			}
+
+			return null;
+
+		}
 
 		m = P_START_TAG.matcher(s);
 
@@ -270,14 +270,14 @@ public final class HTMLFilter {
 						paramValue = paramValue.substring(1);
 
 					}
-					
+
 					paramValue = host + "/" + paramValue;
-					
-					
+
+
 				}
-				
+
 				params.put(paramName,paramValue);
-				
+
 
 			}
 
@@ -373,9 +373,9 @@ public final class HTMLFilter {
 					}
 				}
 			} else if ("p".equals(name)) {
-				
-				return "<br />";
-				
+
+				return "<br /><br />";
+
 			}
 		}
 
