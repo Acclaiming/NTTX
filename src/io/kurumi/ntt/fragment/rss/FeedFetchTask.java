@@ -72,7 +72,7 @@ public class FeedFetchTask extends TimerTask {
 
 			if (info.delay == null) info.delay = 40L;
 
-			if (info.last == null || (System.currentTimeMillis() - info.last) > info.delay * 60 * 1000) {
+			if (first || info.last == null || (System.currentTimeMillis() - info.last) > info.delay * 60 * 1000) {
 
 				info.last = System.currentTimeMillis();
 
