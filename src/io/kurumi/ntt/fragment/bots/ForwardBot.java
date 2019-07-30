@@ -87,8 +87,6 @@ public class ForwardBot extends UserBotFragment {
 
 		}
 
-
-
 	}
 
 	@Override
@@ -209,6 +207,13 @@ public class ForwardBot extends UserBotFragment {
 	public boolean msg() {
 		
 		return true;
+		
+	}
+
+	@Override
+	public int checkMsg(UserData user,Msg msg) {
+		
+		return PROCESS_REJECT;
 		
 	}
 	

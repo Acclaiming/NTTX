@@ -61,10 +61,8 @@ public class FeedFetchTask extends TimerTask {
 			if (info.error != null) {
 
 				if (first) {
-
-					first = false;
-
-					break;
+					
+					continue;
 
 				}
 
@@ -241,6 +239,8 @@ public class FeedFetchTask extends TimerTask {
 
 
 		}
+		
+		first = false;
 
 
 	}
