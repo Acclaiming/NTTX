@@ -42,7 +42,7 @@ public class MvnDownloader extends Fragment {
 
 		try {
 
-			result = resolver.resolve(params[0],params[1],params[2],null);
+			result = resolver.resolve(params[0],params[1],params[2]);
 
 		} catch (MvnException e) {
 
