@@ -1,17 +1,15 @@
 package io.kurumi.maven;
 
-import java.util.List;
-import javax.naming.spi.ResolveResult;
-import java.util.LinkedList;
-import cn.hutool.http.HttpUtil;
 import cn.hutool.http.HttpException;
-import org.jdom2.input.SAXBuilder;
-import java.io.IOException;
-import org.jdom2.JDOMException;
+import cn.hutool.http.HttpUtil;
+import java.io.StringReader;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import org.jdom2.Document;
 import org.jdom2.Element;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import org.jdom2.input.SAXBuilder;
 
 public class MvnResolver {
 
@@ -182,7 +180,7 @@ public class MvnResolver {
 
 			try {
 
-				document = new SAXBuilder().build(mavenMeta);
+				document = new SAXBuilder().build(new StringReader(mavenMeta));
 
 			} catch (Exception e) {
 
