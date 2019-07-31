@@ -99,7 +99,7 @@ public class MvnResolver {
 
 	public MvnArtifact resolve(String groupId,String artifactId,String version) throws MvnException {
 		
-		return resolve(groupId,artifactId,version);
+		return resolve(groupId,artifactId,version,null,null);
 		
 	}
 	
