@@ -99,11 +99,11 @@ public class RssSub extends Fragment {
 
 		if (isMainInstance()) {
 
-			registerFunction("rss_import","rss_export","rss_set_delay","rss_set_current","rss_sub","rss_set_copyright","rss_list","rss_unsub","rss_unsub_all","rss_set_format","rss_link_preview","rss_export");
+			registerFunction("rss_import","rss_export","rss_set_delay","rss_set_current","rss_sub","rss_set_copyright","rss_list","rss_unsub","rss_unsub_all","rss_set_format","rss_link_preview","rss_fetch");
 
 		} else {
 
-			registerFunction("import","export","set_delay","set_current","sub","set_copyright","list","unsub","unsub_all","set_format","link_preview","export");
+			registerFunction("import","export","set_delay","set_current","sub","set_copyright","list","unsub","unsub_all","set_format","link_preview","fetch");
 
 		}
 
@@ -579,7 +579,7 @@ public class RssSub extends Fragment {
 
 			}
 
-		} else if (function.endsWith("export")) {
+		} else if (function.endsWith("fetch")) {
 
 			if (params.length < 2) {
 
