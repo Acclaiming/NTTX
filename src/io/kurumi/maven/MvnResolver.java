@@ -97,7 +97,7 @@ public class MvnResolver {
 
 	}
 
-	public MvnArtifact resolve(String groupId,String artifactId,String version,String defaultRepository) {
+	public MvnArtifact resolve(String groupId,String artifactId,String version,String defaultRepository) throws MvnException {
 
 		MvnArtifact art = new MvnArtifact();
 
@@ -142,7 +142,7 @@ public class MvnResolver {
 
 			}
 
-			if (mavenMeta == null) return null;
+			if (mavenMeta == null) throw new MvnException("找不到这个库");
 
 			Document document;
 
@@ -152,7 +152,7 @@ public class MvnResolver {
 
 			} catch (Exception e) {
 
-				return null;
+				throw new MvnException("metadata 解析失败",e);
 
 			}
 
@@ -202,7 +202,7 @@ public class MvnResolver {
 
 		}
 
-		if (pomXml == null) return null;
+		if (pomXml == null) throw new MvnException("找不到 pom.xml");
 
 		Document document;
 
@@ -212,7 +212,7 @@ public class MvnResolver {
 
 		} catch (Exception e) {
 
-			return null;
+			throw new MvnException("pom.xml 解析失败");
 
 		}
 
