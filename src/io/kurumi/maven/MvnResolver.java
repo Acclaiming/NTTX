@@ -11,6 +11,9 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 import cn.hutool.core.util.ArrayUtil;
+import java.net.URL;
+import cn.hutool.core.util.URLUtil;
+import org.jdom2.Namespace;
 
 public class MvnResolver {
 
@@ -262,9 +265,11 @@ public class MvnResolver {
 			throw new MvnException(log.toString());
 
 		}
+		 
+		Namespace NS =  Namespace.getNamespace("http://maven.apache.org/POM/4.0.0");
+
 
 		Element packaging = document.getRootElement().getChild("packaging");
-
 		if (packaging == null) {
 
 			art.packaging = "jar";
@@ -277,7 +282,7 @@ public class MvnResolver {
 		
 		LinkedHashMap<String,String> props = new LinkedHashMap<>();
 		
-		Element properties = document.getRootElement().getChild("properties");
+		Element properties = document.getRootElement().getChild("properties",NS);
 
 		if (properties != null) {
 			
@@ -289,11 +294,11 @@ public class MvnResolver {
 			
 		}
 		
-		Element parent = document.getRootElement().getChild("parent");
+		Element parent = document.getRootElement().getChild("parent",NS);
 		
 		if (parent != null) {
 			
-			Element parentVersion = parent.getChild("version");
+			Element parentVersion = parent.getChild("version",NS);
 			
 			if (parentVersion != null) {
 				
@@ -303,7 +308,7 @@ public class MvnResolver {
 			
 		}
 		
-		Element dependencies = document.getRootElement().getChild("dependencies");
+		Element dependencies = document.getRootElement().getChild("dependencies",NS);
 
 		art.dependencies = new LinkedList<>();
 		
@@ -317,12 +322,12 @@ public class MvnResolver {
 		
 		for (Element dependency : dependencies.getChildren()) {
 					
-			String group = dependency.getChild("groupId").getValue();
-			String artifact = dependency.getChild("artifactId").getValue();
+			String group = dependency.getChild("groupId",NS).getValue();
+			String artifact = dependency.getChild("artifactId",NS).getValue();
 
 			String depVer = null;
 			
-			Element versionObj = dependency.getChild("version");
+			Element versionObj = dependency.getChild("version",NS);
 
 			if (versionObj != null) {
 				
@@ -338,7 +343,7 @@ public class MvnResolver {
 			
 			log.append("\n发现依赖 : " + group + ":" + artifact + ":" + depVer);
 			
-			Element optional = dependency.getChild("optional");
+			Element optional = dependency.getChild("optional",NS);
 
 			if (optional != null && "true".equals(optional.getValue())) {
 				
@@ -348,7 +353,7 @@ public class MvnResolver {
 				
 			}
 
-			Element scope = dependency.getChild("scope");
+			Element scope = dependency.getChild("scope",NS);
 
 			if (scope != null && !"compile".equals(scope.getValue())) {
 				
