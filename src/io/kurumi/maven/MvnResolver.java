@@ -239,10 +239,12 @@ public class MvnResolver {
 			try {
 
 				HttpResponse resp = HttpUtil.createGet(defaultRepository + groupId.replace(".","/") + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version + ".pom").execute();
-
+				
 				if (resp.isOk()) {
 
 					pomXml = resp.body();
+					
+					targetRepository = defaultRepository;
 
 					log.append("\n从上级源获取 Pom 成功");
 
@@ -271,8 +273,6 @@ public class MvnResolver {
 					if (resp.isOk()) {
 
 						pomXml = resp.body();
-
-
 
 						targetRepository = repository;
 
@@ -303,6 +303,7 @@ public class MvnResolver {
 			throw new MvnException(log.toString());
 
 		}
+
 		
 		art.repository = targetRepository;
 
