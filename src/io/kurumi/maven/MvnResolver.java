@@ -95,12 +95,6 @@ public class MvnResolver {
 
 	}
 
-	public MvnArtifact resolve(String groupId,String artifactId,String version) throws MvnException {
-		
-		return resolve(groupId,artifactId,version,null,null);
-		
-	}
-	
 	public MvnArtifact resolve(String groupId,String artifactId,String version,String defaultRepository,StringBuilder log) throws MvnException {
 
 		MvnArtifact art = new MvnArtifact();
@@ -110,12 +104,6 @@ public class MvnResolver {
 
 		String targetRepository = null;
 
-		if (log == null) {
-		
-		log = new StringBuilder("解析失败 :");
-	
-		}
-		
 		log.append("\n\n正在解析 : ").append(groupId).append(":").append(artifactId).append(":").append(version);
 		
 		if (version.matches("(\\+|latest)")) {
@@ -321,15 +309,7 @@ public class MvnResolver {
 		if (dependencies == null) return art;
 		
 		for (Element dependency : dependencies.getChildren()) {
-
-			Element optional = dependency.getChild("optional");
-
-			if (optional != null && "true".equals(optional.getValue())) continue;
-			
-			Element scope = dependency.getChild("scope");
-
-			if (scope != null && !"compile".equals(scope.getValue())) continue;
-			
+					
 			String group = dependency.getChild("groupId").getValue();
 			String artifact = dependency.getChild("artifactId").getValue();
 
@@ -348,6 +328,29 @@ public class MvnResolver {
 				}
 				
 			}
+			
+			log.append("\n发现依赖 : " + group + ":" + artifact + ":" + depVer);
+			
+			Element optional = dependency.getChild("optional");
+
+			if (optional != null && "true".equals(optional.getValue())) {
+				
+				log.append("\n 是可选依赖 跳过");
+				
+				continue;
+				
+			}
+
+			Element scope = dependency.getChild("scope");
+
+			if (scope != null && !"compile".equals(scope.getValue())) {
+				
+				log.append("\n 是可选依赖 跳过");
+				
+				continue;
+				
+			}
+			
 			
 			MvnArtifact dep = resolve(group,artifact,depVer,targetRepository,log);
 

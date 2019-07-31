@@ -40,9 +40,11 @@ public class MvnDownloader extends Fragment {
 
 		MvnArtifact result;
 
+		StringBuilder log = new StringBuilder();
+		
 		try {
 
-			result = resolver.resolve(params[0],params[1],params[2]);
+			result = resolver.resolve(params[0],params[1],params[2],null,log);
 
 		} catch (MvnException e) {
 
@@ -51,6 +53,8 @@ public class MvnDownloader extends Fragment {
 			return;
 
 		}
+		
+		msg.send(log.toString()).async();
 
 		msg.send(new JSONObject(new Gson().toJson(result,MvnArtifact.class)).toStringPretty()).async();
 
