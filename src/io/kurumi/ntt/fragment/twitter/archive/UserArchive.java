@@ -181,15 +181,15 @@ public class UserArchive {
 				}
 
 				if (photo.isFile()) {
-					
+
 					Launcher.INSTANCE.execute(new SendPhoto(Env.TEP_CHANNEL,photo).caption(notice).parseMode(ParseMode.HTML));
-					
+
 				} else {
-					
+
 					new Send(Env.TEP_CHANNEL,notice).html().exec();
-					
+
 				}
-				
+
 			}
 
             return true;
@@ -214,120 +214,112 @@ public class UserArchive {
 
             str.append(split).append("用户被取消了冻结/重新启用 :)");
 
-			if (StrUtil.isBlank(bio)) {
+			if (Env.TEP_CHANNEL != null && !TEPH.data.containsId(id)) {
 
-				if (Env.TEP_CHANNEL != null && !TEPH.data.containsId(id)) {
+				if (StrUtil.isBlank(bio)) {
 
 					new Send(Env.TEP_CHANNEL,"#推友回档 (取消冻结 / 重新启用)\n",urlHtml() + " ( #" + screenName + " )").html().async();
 
-				}
-
-				new Send(Env.LOG_CHANNEL,"#取消冻结 / 重新启用",Html.code(name + " : @" + screenName)).html().async();
-
-			} else {
-
-				if (Env.TEP_CHANNEL != null && !TEPH.data.containsId(id)) {
+				} else {
 
 					new Send(Env.TEP_CHANNEL,"#推友回档 (取消冻结 / 重新启用)\n",urlHtml() + " ( #" + screenName + " )","\n简介 : " + bio).html().async();
 
 				}
 
-				new Send(Env.LOG_CHANNEL,"取消冻结 / 重新启用",Html.code(name + " : @" + screenName + "\n\n简介 : " + bio)).html().async();
+				change = true;
 
 			}
 
-            change = true;
+		}
 
-        }
+		if (!(name = user.getName()).equals(nameL)) {
 
-        if (!(name = user.getName()).equals(nameL)) {
+			str.append(split).append("名称更改 : ").append(nameL).append(" ------> ").append(name);
 
-            str.append(split).append("名称更改 : ").append(nameL).append(" ------> ").append(name);
+			change = true;
 
-            change = true;
+		}
 
-        }
+		String screenNameL = screenName;
 
-        String screenNameL = screenName;
+		if (!(screenName = user.getScreenName()).equals(screenNameL)) {
 
-        if (!(screenName = user.getScreenName()).equals(screenNameL)) {
+			str.append(split).append("用户名更改 : @").append(screenNameL).append(" ------> @").append(screenName);
 
-            str.append(split).append("用户名更改 : @").append(screenNameL).append(" ------> @").append(screenName);
+			oldScreename = screenNameL;
 
-            oldScreename = screenNameL;
+			change = true;
 
-            change = true;
+		}
 
-        }
+		String bioL = bio;
 
-        String bioL = bio;
+		if (!ObjectUtil.equal(bio = user.getDescription(),bioL)) {
 
-        if (!ObjectUtil.equal(bio = user.getDescription(),bioL)) {
+			str.append(split).append("简介更改 : \n\n").append(bioL).append(" \n\n ------> \n\n").append(bio);
 
-            str.append(split).append("简介更改 : \n\n").append(bioL).append(" \n\n ------> \n\n").append(bio);
+			change = true;
 
-            change = true;
+		}
 
-        }
+		oldPhotoUrl = photoUrl;
 
-        oldPhotoUrl = photoUrl;
+		if ((!ObjectUtil.equal(photoUrl = user.getOriginalProfileImageURLHttps(),oldPhotoUrl))) {
 
-        if ((!ObjectUtil.equal(photoUrl = user.getOriginalProfileImageURLHttps(),oldPhotoUrl))) {
+			str.append(split).append("头像更改 : " + Html.a("新头像",photoUrl));
 
-            str.append(split).append("头像更改 : " + Html.a("新头像",photoUrl));
+			change = true;
 
-            change = true;
+		} else oldPhotoUrl = null;
 
-        } else oldPhotoUrl = null;
+		Boolean protectL = isProtected;
 
-        Boolean protectL = isProtected;
+		if (protectL != (isProtected = user.isProtected())) {
 
-        if (protectL != (isProtected = user.isProtected())) {
+			str.append(split).append("保护状态更改 : ").append(isProtected ? "开启了锁推" : "关闭了锁推");
 
-            str.append(split).append("保护状态更改 : ").append(isProtected ? "开启了锁推" : "关闭了锁推");
+			change = true;
 
-            change = true;
+		}
 
-        }
+		oldBannerUrl = bannerUrl;
 
-        oldBannerUrl = bannerUrl;
+		if (!ObjectUtil.equal(bannerUrl = user.getProfileBannerURL(),oldBannerUrl)) {
 
-        if (!ObjectUtil.equal(bannerUrl = user.getProfileBannerURL(),oldBannerUrl)) {
+			str.append(split).append("横幅更改 : " + Html.a("新横幅",photoUrl));
 
-            str.append(split).append("横幅更改 : " + Html.a("新横幅",photoUrl));
+			change = true;
 
-            change = true;
-
-        } else oldBannerUrl = null;
+		} else oldBannerUrl = null;
 
 
-        String urlL = url;
+		String urlL = url;
 
-        if (!ObjectUtil.equal(url = user.getURL(),urlL)) {
+		if (!ObjectUtil.equal(url = user.getURL(),urlL)) {
 
-            str.append(split).append("链接更改 : \n\n").append(urlL).append(" \n\n ------> \n\n").append(url);
+			str.append(split).append("链接更改 : \n\n").append(urlL).append(" \n\n ------> \n\n").append(url);
 
-            change = true;
+			change = true;
 
-        }
+		}
 
-        if (createdAt == null) {
+		if (createdAt == null) {
 
-            createdAt = user.getCreatedAt().getTime();
+			createdAt = user.getCreatedAt().getTime();
 
-            change = false;
+			change = false;
 
-        }
+		}
 
-        if (change) {
+		if (change) {
 
-            TrackTask.onUserChange(this,str.toString());
+			TrackTask.onUserChange(this,str.toString());
 
-        }
+		}
 
-        return change;
+		return change;
 
-    }
+	}
 
 
 

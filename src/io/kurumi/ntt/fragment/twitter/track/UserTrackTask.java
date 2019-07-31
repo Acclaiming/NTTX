@@ -19,7 +19,7 @@ public class UserTrackTask extends Thread {
 	public HashSet<Long> waitFor = new HashSet<>();
 
 	int step = 0;
-	
+
 	@Override
 	public void run() {
 
@@ -36,21 +36,21 @@ public class UserTrackTask extends Thread {
 				waitFor.addAll(ids.ids);
 
 			}
-			
+
 			if (step == 10) {
-				
+
 				step = 0;
-				
+
 				for (UserArchive u : UserArchive.data.getAllByField("isDisappeared",true)) {
-					
+
 					waitFor.add(u.id);
-					
+
 				}
-				
+
 			}
 
 			step ++;
-			
+
 			List<TAuth> allAuth = TAuth.data.getAll();
 
 			Iterator<TAuth> iter = allAuth.iterator();
@@ -95,7 +95,11 @@ public class UserTrackTask extends Thread {
 
 				} catch (TwitterException e) {
 
-					if (e.getErrorCode() == 17) {
+					if (e.getStatusCode() == 503) {
+
+						return;
+
+					} else if (e.getErrorCode() == 17) {
 
 						for (Long da : target) {
 

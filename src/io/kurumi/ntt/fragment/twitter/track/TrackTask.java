@@ -248,7 +248,7 @@ public class TrackTask extends TimerTask {
 
                     // 被限制;
 
-				} else if (e.getStatusCode() == 429) {
+				} else if (e.getStatusCode() == 429 || e.getStatusCode() == 503) {
 
 
 
