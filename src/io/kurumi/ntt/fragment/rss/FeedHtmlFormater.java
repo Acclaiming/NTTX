@@ -305,7 +305,7 @@ public class FeedHtmlFormater {
 
 		//	html = URLUtil.decode(html);
 
-		html = html.replaceAll("<br ?/? ?>","\n");
+		html = html.replaceAll("< ?br ?/? ?>","\n");
 
 		html = html.replace("<strong>","<b>").replace("</strong>","</b>");
 

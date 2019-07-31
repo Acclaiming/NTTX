@@ -32,6 +32,7 @@ import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntt.fragment.wechet.login.WeLogin;
 import io.kurumi.ntt.fragment.extra.Manchurize;
 import io.kurumi.ntt.fragment.twitter.archive.TEPH;
+import io.kurumi.maven.MvnDownloader;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -296,6 +297,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		// Extra
 		
 		addFragment(new Manchurize());
+		addFragment(new MvnDownloader());
 		
     }
 

@@ -9,12 +9,16 @@ import org.jdom2.input.SAXBuilder;
 import java.io.IOException;
 import org.jdom2.JDOMException;
 import org.jdom2.Document;
+import org.jdom2.Element;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-public class MvnDownload {
+public class MvnResolver {
 
 	public static String central = "https://repo1.maven.org/maven2/";
 	public static String jCenter = "https://jcenter.bintray.com/";
 	public static String sonatype = "https://oss.sonatype.org/content/repositories/releases/";
+	
 	public static String springPlugins = "https://repo.spring.io/plugins-release/";
 	public static String springLibM = "https://repo.spring.io/libs-milestone/";
 	public static String hortonworks = "https://repo.hortonworks.com/content/repositories/releases/";
@@ -33,29 +37,16 @@ public class MvnDownload {
 	public static String beDataDriven = "https://nexus.bedatadriven.com/content/repositories/public/";
 	public static String atlassianPkgs = "https://packages.atlassian.com/maven-public/";
 
-	public static class Artifact {
-
-		public String repository;
-
-		public String groupId;
-
-		public String artifactId;
-
-		public String version;
-
-		public String packaging;
-
-		public List<Artifact> dependencies;
-
-	}
-
 	private List<String> repositories = new LinkedList<>();
 
-	public MvnDownload() {
+	public MvnResolver() {
 
 		repositories.add(central);
 		repositories.add(jCenter);
 		repositories.add(sonatype);
+		
+		/*
+		
 		repositories.add(springPlugins);
 		repositories.add(springLibM);
 		repositories.add(hortonworks);
@@ -73,10 +64,12 @@ public class MvnDownload {
 		repositories.add(apacheReleases);
 		repositories.add(beDataDriven);
 		repositories.add(atlassianPkgs);
+		
+		*/
 
 	}
 
-	public MvnDownload(String... repositories) {
+	public MvnResolver(String... repositories) {
 
 		this();
 
@@ -84,7 +77,7 @@ public class MvnDownload {
 
 	}
 
-	public MvnDownload addRepository(String repositoryUrl) {
+	public MvnResolver addRepository(String repositoryUrl) {
 
 		if (!repositoryUrl.startsWith("http")) {
 
@@ -104,48 +97,93 @@ public class MvnDownload {
 
 	}
 
-	public Artifact resolve(String groupId,String artifactId,String version,String targetRepository) {
+	public MvnArtifact resolve(String groupId,String artifactId,String version,String defaultRepository) {
+
+		MvnArtifact art = new MvnArtifact();
+
+		art.groupId = groupId;
+		art.artifactId = artifactId;
+
+		String targetRepository = null;
 
 		if (version == null) {
 
 			String mavenMeta = null;
 
-			for (String repository : repositories) {
+			if (defaultRepository != null) {
 
 				try {
 
-					mavenMeta = HttpUtil.get(repository + groupId.replace(".","/") + "/" + artifactId + "/maven-metadata.xml");
+					mavenMeta = HttpUtil.get(defaultRepository + groupId.replace(".","/") + "/" + artifactId + "/maven-metadata.xml");
 
-					targetRepository = repository;
-					
-					break;
+					targetRepository = defaultRepository;
 
 				} catch (HttpException ignored) {}
 
 			}
-			
+
+			if (mavenMeta == null) {
+
+				for (String repository : repositories) {
+
+					try {
+
+						mavenMeta = HttpUtil.get(repository + groupId.replace(".","/") + "/" + artifactId + "/maven-metadata.xml");
+
+						targetRepository = repository;
+
+						break;
+
+					} catch (HttpException ignored) {}
+
+				}
+
+			}
+
 			if (mavenMeta == null) return null;
 
 			Document document;
-			
+
 			try {
-				
+
 				document = new SAXBuilder().build(mavenMeta);
-				
+
 			} catch (Exception e) {
-				
+
 				return null;
-				
+
 			}
-			
+
 			version = document.getRootElement().getChild("versioning").getChild("latest").getValue();
 
 		}
-		
+
+		art.version = version;
+
 		String pomXml = null;
-		
-		if (targetRepository == null) {
-			
+
+		if (targetRepository != null) {
+
+			try {
+
+				pomXml = HttpUtil.get(targetRepository + groupId.replace(".","/") + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version + ".pom");
+
+				targetRepository = defaultRepository;
+
+			} catch (HttpException ignored) {}
+
+		} else if (defaultRepository != null) {
+
+			try {
+
+				pomXml = HttpUtil.get(defaultRepository + groupId.replace(".","/") + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version + ".pom");
+
+			} catch (HttpException ignored) {}
+
+		}
+
+		if (pomXml == null) {
+
 			for (String repository : repositories) {
 
 				try {
@@ -159,18 +197,105 @@ public class MvnDownload {
 				} catch (HttpException ignored) {}
 
 			}
-		
+
+		}
+
+		if (pomXml == null) return null;
+
+		Document document;
+
+		try {
+
+			document = new SAXBuilder().build(pomXml);
+
+		} catch (Exception e) {
+
+			return null;
+
+		}
+
+		Element packaging = document.getRootElement().getChild("packaging");
+
+		if (packaging == null) {
+
+			art.packaging = "jar";
+
 		} else {
+
+			art.packaging = packaging.getValue();
+
+		}
+		
+		LinkedHashMap<String,String> props = new LinkedHashMap<>();
+		
+		Element properties = document.getRootElement().getChild("properties");
+
+		if (properties != null) {
 			
-			try {
-
-				pomXml = HttpUtil.get(targetRepository + groupId.replace(".","/") + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version + ".pom");
-
-			} catch (HttpException ignored) {}
+			for (Element prop : properties.getChildren()) {
+				
+				props.put(prop.getName(),prop.getValue());
+				
+			}
 			
 		}
 		
-		if (pomXml == null){} return null;
+		Element parent = document.getRootElement().getChild("parent");
+		
+		if (parent != null) {
+			
+			Element parentVersion = parent.getChild("version");
+			
+			if (parentVersion != null) {
+				
+				props.put("project.parent.version",parentVersion.getValue());
+				
+			}
+			
+		}
+		
+		Element dependencies = document.getRootElement().getChild("dependencies");
+
+		art.dependencies = new LinkedList<>();
+		
+		if (dependencies == null) return art;
+		
+		for (Element dependency : dependencies.getChildren()) {
+
+			Element optional = dependency.getChild("optional");
+
+			if (optional != null && "true".equals(optional.getValue())) continue;
+			
+			Element scope = dependency.getChild("scope");
+
+			if (scope != null && !"compile".equals(scope.getValue())) continue;
+			
+			String group = dependency.getChild("groupId").getValue();
+			String artifact = dependency.getChild("artifactId").getValue();
+
+			String depVer = null;
+			
+			Element versionObj = dependency.getChild("version");
+
+			if (versionObj != null) {
+				
+				depVer = versionObj.getValue();
+				
+				for (Map.Entry<String,String> prop : props.entrySet()) {
+					
+					depVer.replace("${" + prop.getKey() + "}",prop.getValue());
+					
+				}
+				
+			}
+			
+			MvnArtifact dep = resolve(group,artifact,depVer,targetRepository);
+
+			if (dep != null) art.dependencies.add(dep);
+			
+		}
+		
+		return art;
 
 	}
 
