@@ -76,8 +76,6 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     public static void main(String[] args) {
 
-        Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
-
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 
 		try {
@@ -128,6 +126,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
 		INSTANCE = new Launcher();
 
+		Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
+		
 		RuntimeUtil.addShutdownHook(new Runnable() {
 
 				@Override
