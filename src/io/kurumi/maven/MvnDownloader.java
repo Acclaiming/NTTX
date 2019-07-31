@@ -110,7 +110,7 @@ public class MvnDownloader extends Fragment {
 			return;
 
 		}
-
+		
 		status.edit("正在打包...").exec();
 	
 		ZipUtil.zip(zipFile,false,cache.toArray(new File[cache.size()]));

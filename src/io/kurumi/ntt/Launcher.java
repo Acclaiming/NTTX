@@ -1,38 +1,74 @@
 package io.kurumi.ntt;
 
-import cn.hutool.core.lang.*;
-import cn.hutool.core.util.*;
-import com.pengrad.telegrambot.model.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.fragment.*;
-import io.kurumi.ntt.fragment.admin.*;
-import io.kurumi.ntt.fragment.base.*;
-import io.kurumi.ntt.fragment.bots.*;
-import io.kurumi.ntt.fragment.debug.*;
-import io.kurumi.ntt.fragment.group.*;
-import io.kurumi.ntt.fragment.idcard.*;
-import io.kurumi.ntt.fragment.inline.*;
-import io.kurumi.ntt.fragment.rss.*;
-import io.kurumi.ntt.fragment.sticker.*;
-import io.kurumi.ntt.fragment.twitter.auto.*;
-import io.kurumi.ntt.fragment.twitter.ext.*;
-import io.kurumi.ntt.fragment.twitter.list.*;
-import io.kurumi.ntt.fragment.twitter.login.*;
-import io.kurumi.ntt.fragment.twitter.status.*;
-import io.kurumi.ntt.fragment.twitter.track.*;
-import io.kurumi.ntt.model.*;
-import io.kurumi.ntt.utils.*;
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.atomic.*;
-
-import cn.hutool.core.lang.Console;
-import java.io.File;
-import com.pengrad.telegrambot.request.*;
-import io.kurumi.ntt.fragment.wechet.login.WeLogin;
-import io.kurumi.ntt.fragment.extra.Manchurize;
-import io.kurumi.ntt.fragment.twitter.archive.TEPH;
+import cn.hutool.core.util.RuntimeUtil;
+import com.pengrad.telegrambot.model.Chat;
+import com.pengrad.telegrambot.model.Update;
 import io.kurumi.maven.MvnDownloader;
+import io.kurumi.ntt.db.BotDB;
+import io.kurumi.ntt.db.GroupData;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.BotServer;
+import io.kurumi.ntt.fragment.admin.DelMsg;
+import io.kurumi.ntt.fragment.admin.Notice;
+import io.kurumi.ntt.fragment.admin.Stat;
+import io.kurumi.ntt.fragment.admin.Users;
+import io.kurumi.ntt.fragment.base.GetID;
+import io.kurumi.ntt.fragment.base.PingFunction;
+import io.kurumi.ntt.fragment.bots.BotChannnel;
+import io.kurumi.ntt.fragment.bots.MyBots;
+import io.kurumi.ntt.fragment.bots.NewBot;
+import io.kurumi.ntt.fragment.bots.UserBot;
+import io.kurumi.ntt.fragment.debug.Backup;
+import io.kurumi.ntt.fragment.debug.DebugMsg;
+import io.kurumi.ntt.fragment.debug.DebugStatus;
+import io.kurumi.ntt.fragment.debug.DebugStickerSet;
+import io.kurumi.ntt.fragment.debug.DebugUF;
+import io.kurumi.ntt.fragment.debug.DebugUser;
+import io.kurumi.ntt.fragment.debug.Disappeared;
+import io.kurumi.ntt.fragment.extra.Manchurize;
+import io.kurumi.ntt.fragment.group.BanSetickerSet;
+import io.kurumi.ntt.fragment.group.GroupAdmin;
+import io.kurumi.ntt.fragment.group.GroupFunction;
+import io.kurumi.ntt.fragment.group.GroupOptions;
+import io.kurumi.ntt.fragment.group.GroupRepeat;
+import io.kurumi.ntt.fragment.group.JoinCaptcha;
+import io.kurumi.ntt.fragment.group.RemoveKeyboard;
+import io.kurumi.ntt.fragment.idcard.Idcard;
+import io.kurumi.ntt.fragment.inline.MakeButtons;
+import io.kurumi.ntt.fragment.inline.ShowSticker;
+import io.kurumi.ntt.fragment.rss.FeedFetchTask;
+import io.kurumi.ntt.fragment.rss.RssSub;
+import io.kurumi.ntt.fragment.sticker.AddSticker;
+import io.kurumi.ntt.fragment.sticker.MoveSticker;
+import io.kurumi.ntt.fragment.sticker.NewStickerSet;
+import io.kurumi.ntt.fragment.sticker.PackExport;
+import io.kurumi.ntt.fragment.sticker.RemoveSticker;
+import io.kurumi.ntt.fragment.sticker.StickerExport;
+import io.kurumi.ntt.fragment.twitter.archive.TEPH;
+import io.kurumi.ntt.fragment.twitter.auto.AutoUI;
+import io.kurumi.ntt.fragment.twitter.ext.MediaDownload;
+import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
+import io.kurumi.ntt.fragment.twitter.ext.TimelineUI;
+import io.kurumi.ntt.fragment.twitter.ext.TwitterDelete;
+import io.kurumi.ntt.fragment.twitter.ext.UserActions;
+import io.kurumi.ntt.fragment.twitter.list.ListExport;
+import io.kurumi.ntt.fragment.twitter.list.ListImport;
+import io.kurumi.ntt.fragment.twitter.login.AuthExport;
+import io.kurumi.ntt.fragment.twitter.login.TwitterLogin;
+import io.kurumi.ntt.fragment.twitter.login.TwitterLogout;
+import io.kurumi.ntt.fragment.twitter.status.StatusAction;
+import io.kurumi.ntt.fragment.twitter.status.StatusFetch;
+import io.kurumi.ntt.fragment.twitter.status.StatusSearch;
+import io.kurumi.ntt.fragment.twitter.status.StatusUpdate;
+import io.kurumi.ntt.fragment.twitter.status.TimedStatus;
+import io.kurumi.ntt.fragment.twitter.track.TrackTask;
+import io.kurumi.ntt.fragment.twitter.track.TrackUI;
+import io.kurumi.ntt.fragment.twitter.track.UserTrackTask;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.utils.BotLog;
+import java.util.TimeZone;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -186,7 +222,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 	UserTrackTask userTrackTask = new UserTrackTask();
 
 	void startTasks() {
-		
+
 		TimedStatus.start();
 
 		TimelineUI.start();
@@ -194,9 +230,9 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		TrackTask.start();
 
 		UserBot.startAll();
-		
+
 		FeedFetchTask.start();
-		
+
 		Backup.start();
 
 		userTrackTask.start();
@@ -238,8 +274,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new JoinCaptcha());
 
 		addFragment(new RemoveKeyboard());
-		
-		
+
+
 		// Twitter
 
 		addFragment(new TwitterLogin());
@@ -289,16 +325,12 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		// IC
 
 		addFragment(new Idcard());
-
-		// WeChat
-		
-		addFragment(new WeLogin());
 		
 		// Extra
-		
+
 		addFragment(new Manchurize());
 		addFragment(new MvnDownloader());
-		
+
     }
 
     @Override

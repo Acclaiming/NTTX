@@ -1,8 +1,9 @@
 package io.kurumi.ntt.db;
 
-import com.mongodb.MongoClient;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -17,8 +18,8 @@ public class BotDB {
 
     public static void init(String address, int port) throws MongoException {
 
-        client = new MongoClient(address, port);
-
+        client = MongoClients.create("mongodb://" + address + ":" + port);
+		
         CodecRegistry registry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
         db = client.getDatabase("NTTools").withCodecRegistry(registry);
