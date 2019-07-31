@@ -53,9 +53,9 @@ public class MvnArtifact {
 		
 	}
 	
-	public String fileNameWithDep() {
+	public String fileNameZip() {
 
-		return artifactId + "-" + version + "-with-dependencies" + "." + packaging;
+		return artifactId + "-" + version + ".zip";
 
 	}
 
