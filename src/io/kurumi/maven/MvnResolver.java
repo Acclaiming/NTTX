@@ -283,7 +283,7 @@ public class MvnResolver {
 					} else {
 
 						log.append("\n从 " + repository + " 获取 Pom 失败");
-						
+
 					}
 
 				} catch (HttpException ignored) {
@@ -397,7 +397,7 @@ public class MvnResolver {
 
 			}
 
-			log.append("\n发现依赖 : " + group + ":" + artifact + ":" + depVer);
+			log.append("\n\n发现依赖 : " + group + ":" + artifact + ":" + depVer);
 
 			Element optional = dependency.getChild("optional",NS);
 
@@ -418,7 +418,6 @@ public class MvnResolver {
 				continue;
 
 			}
-
 
 			MvnArtifact dep = resolve(group,artifact,depVer,targetRepository,log);
 
