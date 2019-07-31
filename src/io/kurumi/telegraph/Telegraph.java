@@ -112,6 +112,8 @@ public class Telegraph {
 
 				NodeElement ne = (NodeElement)node;
 
+				if (ne.tag.equals("style")) continue;
+				
 				if ("br".equals(ne.tag)) {
 					
 					if (brLimit == 0) continue;
