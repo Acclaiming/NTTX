@@ -58,6 +58,8 @@ public class MvnDownloader extends Fragment {
 			return;
 
 		}
+		
+		msg.send(log.toString()).async();
 
 		File zipFile = new File(Env.CACHE_DIR,"maven_marge/" + result.fileNameZip());
 
