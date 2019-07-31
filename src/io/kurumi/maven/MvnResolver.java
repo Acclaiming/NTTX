@@ -303,6 +303,8 @@ public class MvnResolver {
 			throw new MvnException(log.toString());
 
 		}
+		
+		art.repository = targetRepository;
 
 		Document document;
 
@@ -320,8 +322,8 @@ public class MvnResolver {
 
 		Namespace NS =  Namespace.getNamespace("http://maven.apache.org/POM/4.0.0");
 
-
 		Element packaging = document.getRootElement().getChild("packaging");
+		
 		if (packaging == null) {
 
 			art.packaging = "jar";
