@@ -228,46 +228,11 @@ public class GroupData {
     public Integer last_welcome_msg;
     public Integer last_welcome_msg_2;
 
-    public Boolean dynamic_join;
-
-    public Integer type;
-
     public Boolean anti_halal;
     public Boolean cas_spam;
     public Boolean backhole;
 
-
-    // 0 允许所有人加入
-
-    public Boolean default_msg;
-
-	/*
-
-	 // 1 管理员确认
-
-	 public Boolean wait_msg;
-
-	 public String dynamic_question;
-
-	 // 2 回答问题并由管理员确认
-
-	 public Boolean question_wait_msg;
-
-	 // 3 正确回答问题
-
-	 public List<String> dynamic_kw;
-
-	 // 4 不允许任何人加入
-
-	 public String not_allow_msg;
-
-	 */
-
-    public Integer link_valid_time;
-
-    public Boolean dynamic_strict;
-
-    public Boolean dynamic_no_trust_admin;
-
+	public Boolean enable_log;
+	public Long log_channel;
 
 }

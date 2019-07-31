@@ -27,6 +27,7 @@ import com.pengrad.telegrambot.request.GetStickerSet;
 import com.pengrad.telegrambot.model.Sticker;
 import io.kurumi.ntt.fragment.bots.*;
 import cn.hutool.http.HtmlUtil;
+import com.pengrad.telegrambot.model.Chat;
 
 public class GroupOptions extends Fragment {
 
@@ -45,18 +46,18 @@ public class GroupOptions extends Fragment {
                 POINT_MENU_MAIN,
                 POINT_MENU_REST,
                 POINT_MENU_JOIN,
-                POINT_MENU_DYNA,
                 POINT_MENU_CUST,
                 POINT_MENU_SHOW,
                 POINT_MENU_SPAM,
+				POINT_MENU_CLOG,
                 POINT_HELP,
                 POINT_SET_MAIN,
                 POINT_SET_REST,
                 POINT_SET_JOIN,
-                POINT_SET_DYNA,
                 POINT_SET_CUST,
                 POINT_SET_SHOW,
-                POINT_SET_SPAM);
+                POINT_SET_SPAM,
+				POINT_SET_CLOG);
 
 
         registerPayload(PAYLOAD_OPTIONS);
@@ -78,21 +79,20 @@ public class GroupOptions extends Fragment {
     final String POINT_MENU_MAIN = "group_menu_main";
     final String POINT_MENU_REST = "group_menu_rest";
     final String POINT_MENU_JOIN = "group_menu_join";
-    final String POINT_MENU_DYNA = "group_menu_dyna";
     final String POINT_MENU_CUST = "group_menu_custom";
     final String POINT_MENU_SHOW = "group_menu_show";
     final String POINT_MENU_SPAM = "group_menu_spam";
-
+	final String POINT_MENU_CLOG = "group_menu_clog";
 
     final String POINT_HELP = "group_help";
-    final String POINT_SET_MAIN = "group_main_set";
-    final String POINT_SET_REST = "group_rest_set";
-    final String POINT_SET_JOIN = "group_join_set";
-    final String POINT_SET_DYNA = "group_join_set";
-    final String POINT_SET_CUST = "group_custom_set";
-    final String POINT_SET_SHOW = "group_custom_show";
-    final String POINT_SET_SPAM = "group_custom_spam";
-
+    final String POINT_SET_MAIN = "group_set_main";
+    final String POINT_SET_REST = "group_set_rest";
+    final String POINT_SET_JOIN = "group_set_join";
+    final String POINT_SET_CUST = "group_set_custom";
+    final String POINT_SET_SHOW = "group_set_show";
+    final String POINT_SET_SPAM = "group_set_spam";
+	final String POINT_SET_CLOG = "group_set_clog";
+	
     final class EditCustom extends PointData {
 
         int type;
@@ -112,11 +112,15 @@ public class GroupOptions extends Fragment {
 
                 origin.edit("编辑自定义问题. 对错选项或正确内容.\n", cusStats(data)).buttons(cusMenu(data)).async();
 
-            } else {
+            } else if (type < 6) {
 
                 origin.edit(showStats(data)).buttons(showMenu(data)).async();
 
-            }
+            } else {
+				
+				origin.edit(logStat(data)).buttons(logMenu(data)).async();
+				
+			}
 
             super.onFinish();
 
@@ -309,6 +313,10 @@ public class GroupOptions extends Fragment {
 
                 callback.edit("编辑群组的新成员加群验证设置. ").buttons(joinMenu(data)).async();
 
+			} else if (POINT_MENU_CLOG.equals(point)) {
+				
+				callback.edit(logStat(data)).buttons(logMenu(data)).async();
+				
             } else if (POINT_SET_MAIN.equals(point)) {
 
                 if ("dcm".equals(params[1])) {
@@ -1245,7 +1253,7 @@ public class GroupOptions extends Fragment {
                     setPrivatePoint(user, POINT_SET_CUST, edit);
 
                 }
-
+				
             } else if (POINT_MENU_SHOW.equals(point)) {
 
                 callback.edit(showStats(data)).buttons(showMenu(data)).async();
@@ -1405,12 +1413,50 @@ public class GroupOptions extends Fragment {
 
 
                 }
+				
+				executeAsync(callback.update, new EditMessageReplyMarkup(callback.chatId(), callback.messageId()).replyMarkup(spamMenu(data).markup()));
+			
+            } else if (POINT_SET_CLOG.equals(point)) {
+				
+				if ("switch".equals(params[1])) {
 
-                callback.edit("群组反垃圾用户功能选单 (Anti Spam)").buttons(spamMenu(data)).async();
+                    if (data.enable_log == null) {
 
-            }
+						if (data.log_channel == null) {
+					
+							callback.alert("你还没有设置日志频道 无法开启 :)");
+							
+							return;
+							
+						}
+						
+                        data.enable_log = true;
 
-        }
+						callback.text("🎥  已开启");
+						
+                    } else {
+
+                        data.enable_log = null;
+
+                        callback.text("🎥  已关闭");
+
+                    }
+					
+				} else if ("set_channel".equals(params[1])) {
+					
+					callback.confirm();
+
+                    EditCustom edit = new EditCustom(6, callback, data);
+
+                    callback.send("现在转发一条该频道的消息 没有就发一条 :)").exec(edit);
+
+                    setPrivatePoint(user, POINT_SET_CUST, edit);
+					
+				}
+				
+			}
+			
+		}
 
     }
 
@@ -1612,7 +1658,27 @@ public class GroupOptions extends Fragment {
 
             clearPrivatePoint(user);
 
-        }
+        } else if (edit.type == 6) {
+			
+			if (msg.message().forwardFromChat() == null) {
+				
+				msg.send("请转发一条将要被设为日志频道的频道的消息").withCancel().async();
+				
+				return;
+			
+			} else if (msg.message().forwardFromChat().type() != Chat.Type.channel) {
+				
+				msg.send("这条消息不来自一个频道 ！").withCancel().async();
+				
+				return;
+
+			}
+			
+			edit.data.log_channel = msg.message().forwardFromChat().id();
+			
+			clearPrivatePoint(user);
+			
+		}
 
 
     }
@@ -1621,11 +1687,13 @@ public class GroupOptions extends Fragment {
 
         return new ButtonMarkup() {{
 
-            newButtonLine("🛠️  功能选项", POINT_MENU_MAIN, data.id);
-            newButtonLine("📝  成员限制", POINT_MENU_REST, data.id);
-            newButtonLine("🚪  加群验证", POINT_MENU_JOIN, data.id);
-            newButtonLine("📢  欢迎消息", POINT_MENU_SHOW, data.id);
+            newButtonLine("🛠️  功能 选项", POINT_MENU_MAIN, data.id);
+            newButtonLine("📝  成员 限制", POINT_MENU_REST, data.id);
+            newButtonLine("🚪  加群 验证", POINT_MENU_JOIN, data.id);
+            newButtonLine("📢  欢迎 消息", POINT_MENU_SHOW, data.id);
             newButtonLine("🔎  Anti Spam", POINT_MENU_SPAM, data.id);
+			newButtonLine("🎥  日志 记录", POINT_MENU_CLOG, data.id);
+			
 
         }};
 
@@ -1799,104 +1867,11 @@ public class GroupOptions extends Fragment {
                     .newButton("回答模式", POINT_HELP, "require_input")
                     .newButton(data.require_input != null ? "✅" : "☑", POINT_SET_JOIN, data.id, "require_input");
 
-								/*
-
-								 newButtonLine("预设配置","null");
-
-								 newButtonLine("简易",POINT_SET_JOIN,data.id,"easy");
-								 newButtonLine("一般 ",POINT_SET_JOIN,data.id,"base");
-								 newButtonLine("最严 ",POINT_SET_JOIN,data.id,"hard");
-								 newButtonLine("重置所有配置",POINT_SET_JOIN,data.id,"reset");
-
-								 */
-
-								/*
-
-								 newButtonLine()
-								 .newButton("定制模式",POINT_HELP,"mode_cus")
-								 .newButton(((Integer)1).equals(data.captcha_mode)? "●" : "○",POINT_SET_JOIN,data.id,"mode_cus");
-
-								 */
-
             newButtonLine("🔙", POINT_BACK, data.id);
 
         }};
 
     }
-
-    public static String defaultDynamicMsg(GroupData data) {
-
-        return "$用户名 你好，欢迎加入" + data.title + " , 请点击下方按钮获取一个一次性加群链接。";
-
-    }
-
-    String dynStats(GroupData data) {
-
-        StringBuilder stats = new StringBuilder();
-
-        stats.append("动态加群设置 :)");
-
-        stats.append("\n\n加群链接 : ");
-
-        if (data.dynamic_join == null) {
-
-            stats.append("未开启");
-
-        } else {
-
-            stats.append("https://t.me/" + origin.me.username() + "start=join" + PAYLOAD_SPLIT + data.id);
-
-        }
-
-        stats.append("\n\n显示信息 : ");
-
-        if (data.default_msg == null) {
-
-            stats.append("(默认) ").append(defaultDynamicMsg(data));
-
-        } else {
-
-            stats.append(data.default_msg);
-
-        }
-
-        return stats.toString();
-
-    }
-
-    ButtonMarkup dynaMenu(final GroupData data) {
-
-        return new ButtonMarkup() {{
-
-            newButtonLine()
-                    .newButton("开启动态加群", POINT_HELP, "enable_dynamic")
-                    .newButton(data.welcome == null ? "●" : "○", POINT_SET_SHOW, data.id, "show_disable");
-
-            newButtonLine()
-                    .newButton("文本消息", POINT_HELP, "show_text")
-                    .newButton(((Integer) 0).equals(data.welcome) ? "●" : "○", POINT_SET_SHOW, data.id, "show_text");
-
-            newButtonLine()
-                    .newButton("贴纸消息", POINT_HELP, "show_sticker")
-                    .newButton(((Integer) 1).equals(data.welcome) ? "●" : "○", POINT_SET_SHOW, data.id, "show_sticker");
-
-            newButtonLine()
-                    .newButton("文本与贴纸", POINT_HELP, "text_and_sticker")
-                    .newButton(((Integer) 2).equals(data.welcome) ? "●" : "○", POINT_SET_SHOW, data.id, "text_and_sticker");
-
-            newButtonLine("设置欢迎文本", POINT_SET_SHOW, data.id, "set_msg");
-            newButtonLine("设置欢迎贴纸", POINT_SET_SHOW, data.id, "set_set");
-
-            newButtonLine()
-                    .newButton("仅保留最后一条", POINT_HELP, "del_welcome")
-                    .newButton(data.del_welcome_msg != null ? "✅" : "☑", POINT_SET_SHOW, data.id, "del_welcome");
-
-            newButtonLine("🔙", POINT_BACK, data.id);
-
-        }};
-
-    }
-
 
     String cusStats(GroupData data) {
 
@@ -2065,6 +2040,40 @@ public class GroupOptions extends Fragment {
         }};
 
     }
+	
+	String logStat(final GroupData data) {
+		
+		StringBuilder stat = new StringBuilder();
+		
+		stat.append("设置机器人群组管理操作日志选项. \n\n日志频道 : ");
+		
+		if (data.log_channel == null) {
+			
+			stat.append("未设定");
+			
+		} else {
+			
+			stat.append(data.log_channel);
+			
+		}
+		
+		return stat.toString();
+		
+	}
+	
+	ButtonMarkup logMenu(final GroupData data) {
 
+        return new ButtonMarkup() {{
 
+				newButtonLine()
+                    .newButton("开启日志")
+                    .newButton(data.enable_log != null ? "✅" : "☑", POINT_SET_CLOG, data.id, "switch");
+
+				newButtonLine("设置日志频道",POINT_SET_CLOG,"set_channel");
+					
+				newButtonLine("🔙", POINT_BACK, data.id);
+
+			}};
+
+		}
 }
