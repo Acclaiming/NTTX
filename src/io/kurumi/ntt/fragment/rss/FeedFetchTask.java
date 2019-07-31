@@ -169,9 +169,8 @@ public class FeedFetchTask extends TimerTask {
 				RssSub.RssInfo info = RssSub.info.getById(url);
 
 				//BotLog.debug("拉取 " + feed.getTitle());
-
-
-				for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions",info.id)) {
+				
+				for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions",url)) {
 
 					if (channel.error != null) {
 
@@ -186,7 +185,7 @@ public class FeedFetchTask extends TimerTask {
 					}
 
 				}
-
+				
 				if (info == null) {
 
 					info = new RssSub.RssInfo();
