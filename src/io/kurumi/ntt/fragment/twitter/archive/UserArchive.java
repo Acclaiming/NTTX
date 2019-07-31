@@ -160,6 +160,8 @@ public class UserArchive {
 
 			if (Env.TEP_CHANNEL != -1 && !TEPH.data.containsId(id)) {
 
+				/*
+				
 				File photo = new File(Env.CACHE_DIR,"twitter_profile_images/" + FileUtil.getName(photoUrl));
 
 				if (!photo.isFile()) {
@@ -167,6 +169,8 @@ public class UserArchive {
 					HttpUtil.downloadFile(photoUrl,photo);
 
 				}
+				
+				*/
 
 				String notice;
 
@@ -179,16 +183,20 @@ public class UserArchive {
 					notice = "#推友消失 (冻结 / 删除账号)\n\n" + urlHtml() + " ( #" + screenName + " )" + "\n\n简介 : " + bio;
 
 				}
+				
+			/*
 
 				if (photo.isFile()) {
 
 					Launcher.INSTANCE.execute(new SendPhoto(Env.TEP_CHANNEL,photo).caption(notice).parseMode(ParseMode.HTML));
 
 				} else {
+					
+					*/
 
 					new Send(Env.TEP_CHANNEL,notice).html().exec();
 
-				}
+				//}
 
 			}
 
