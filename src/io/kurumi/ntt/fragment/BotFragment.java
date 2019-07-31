@@ -106,7 +106,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener,Ex
 
 			if (data.type == 1) clearPrivatePoint(user).onCancel(user,msg); else clearGroupPoint(user).onCancel(user,msg);
 
-			msg.send("已经取消当前操作 :) ",Env.HELP_MESSAGE).removeKeyboard().failedWith(9 * 1000);
+			msg.send("已经取消当前操作 :) ",Env.HELP_MESSAGE).html().removeKeyboard().failedWith(9 * 1000);
 
 			return;
 
