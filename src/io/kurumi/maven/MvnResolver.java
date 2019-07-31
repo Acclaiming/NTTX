@@ -302,6 +302,8 @@ public class MvnResolver {
 			
 			if (parentVersion != null) {
 				
+				log.append("\n发现上级项目版本 : " + parentVersion.getValue());
+				
 				props.put("project.parent.version",parentVersion.getValue());
 				
 			}
