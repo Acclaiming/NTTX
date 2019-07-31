@@ -302,7 +302,7 @@ public class MvnResolver {
 			
 			if (parentVersion != null) {
 				
-				log.append("\n发现上级项目版本 : " + parentVersion.getValue());
+				//log.append("\n发现上级项目版本 : " + parentVersion.getValue());
 				
 				props.put("project.parent.version",parentVersion.getValue());
 				
@@ -337,7 +337,9 @@ public class MvnResolver {
 				
 				for (Map.Entry<String,String> prop : props.entrySet()) {
 					
-					depVer.replace("${" + prop.getKey() + "}",prop.getValue());
+					depVer = depVer.replace("${" + prop.getKey() + "}",prop.getValue());
+					
+					//log.append("替换值 : " + prop.getKey() + " 为 " + prop.getValue());
 					
 				}
 				
