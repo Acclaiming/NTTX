@@ -28,6 +28,17 @@ public class Cndic {
 
 		if (__VIEWSTATE == null) reset();
 
+		if (unTrans) {
+			
+			str = str.replace("᠈","，").replace("᠉","。");
+
+			str = str.replace("？","？");
+
+			str = str.replace("᠄","：");
+			
+			
+		}
+		
 		HttpResponse resp = HttpUtil
 			.createPost("http://www.cndic.com/manchu.aspx")
 			.form("__VIEWSTATE",__VIEWSTATE)
@@ -59,7 +70,7 @@ public class Cndic {
 
 			result = null;
 
-		} else {
+		} else if (!unTrans) {
 
 			result = result.replace("，","᠈").replace("。","᠉");
 

@@ -139,12 +139,12 @@ public class Manchurize extends Fragment {
 
 				} else if (val == 'ᡤ' || val == 'ᠩ') {
 
-					if (prev == 'ᠨ' || prev == 'n') {
-						tmp = tmp.substring(0,tmp.length() - 1);
-						tmp += 'ᠩ';
-					} else {
-						tmp += 'ᡤ';
-					}
+					/*if (prev == 'ᠨ' || prev == 'n') {
+					 tmp = tmp.substring(0,tmp.length() - 1);
+					 tmp += 'ᠩ';
+					 } else {
+					 tmp += 'ᡤ';
+					 }*/
 
 					tmp += 'g';
 
@@ -170,17 +170,20 @@ public class Manchurize extends Fragment {
 
 				} else if (val == 'ᠰ' || val == 'ᡮ') {
 
-					if (prev == 'ᡨ' || prev == 't') {
+					/*
+					 if (prev == 'ᡨ' || prev == 't') {
 
-						tmp = tmp.substring(0,tmp.length() - 1);
+					 tmp = tmp.substring(0,tmp.length() - 1);
 
-						tmp += 'ᡮ';
+					 tmp += 'ᡮ';
 
-					} else {
+					 } else {
 
-						tmp += 'ᠰ';
+					 tmp += 'ᠰ';
 
-					}
+					 }
+
+					 */
 
 					tmp += 's';
 
@@ -235,17 +238,17 @@ public class Manchurize extends Fragment {
 				} else if (val == 'ᡯ') {
 
 					// 'z') {
-					if (prev == 'ᡩ' || prev == 'd') {
+					/*if (prev == 'ᡩ' || prev == 'd') {
 
-						tmp = tmp.substring(0,tmp.length() - 1);
+					 tmp = tmp.substring(0,tmp.length() - 1);
 
-						tmp += 'z';
+					 tmp += 'z';
 
-					} else {
+					 } else { */
 
-						tmp += 'z';
+					tmp += 'z';
 
-					}
+					//}
 
 				} else if (val == '\"') {
 
@@ -284,6 +287,7 @@ public class Manchurize extends Fragment {
 		return tmp;
 
 	}
+	
 
 	public static String manchurize(String str) {
 
