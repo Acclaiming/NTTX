@@ -15,132 +15,133 @@ import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.Html;
+
 import java.io.File;
 import java.util.ArrayList;
 
 public class PackExport extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
-		
-		super.init(origin);
-		
-		registerFunction("download_sticker_set");
-		registerPoint(POINT_EXPORT_SET);
-		
-	}
-	
-	final String POINT_EXPORT_SET = "export_set";
+    @Override
+    public void init(BotFragment origin) {
 
-	ArrayList<Long> downloading = new ArrayList<>();
-	
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-		
-		if (user.blocked()) {
+        super.init(origin);
 
-			msg.send("你不能这么做 (为什么？)").async();
+        registerFunction("download_sticker_set");
+        registerPoint(POINT_EXPORT_SET);
 
-			return;
+    }
 
-		}
-		
-		PointData data = setPrivatePoint(user,POINT_EXPORT_SET);
+    final String POINT_EXPORT_SET = "export_set";
 
-		msg.send("现在发送要导出的贴纸包的简称/链接 或 贴纸包中的任意贴纸").exec(data);
-		
-	}
+    ArrayList<Long> downloading = new ArrayList<>();
 
-	@Override
-	public void onPoint(UserData user,Msg msg,String point,PointData data) {
-		
-		if (downloading.contains(user.id)) {
-			
-			msg.send("请等待上一个贴纸包导出完成").withCancel().exec(data.with(msg));
-			
-			return;
-			
-		}
-		
-		String target;
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		if (msg.hasText()) {
+        if (user.blocked()) {
 
-			target = msg.text();
+            msg.send("你不能这么做 (为什么？)").async();
 
-			if (target.contains("/")) target = StrUtil.subAfter(target,"/",true);
+            return;
 
-		} else if (msg.message().sticker() != null) {
+        }
 
-			target = msg.message().sticker().setName();
+        PointData data = setPrivatePoint(user, POINT_EXPORT_SET);
 
-			if (target == null) {
+        msg.send("现在发送要导出的贴纸包的简称/链接 或 贴纸包中的任意贴纸").exec(data);
 
-				msg.send("这个贴纸没有贴纸包... 请重试 :)").withCancel().exec(data);
+    }
 
-				return;
+    @Override
+    public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
-			}
+        if (downloading.contains(user.id)) {
 
-		} else {
+            msg.send("请等待上一个贴纸包导出完成").withCancel().exec(data.with(msg));
 
-			msg.send("请发送 目标贴纸包的简称或链接 或目标贴纸包的任意贴纸 : ").withCancel().exec(data);
+            return;
 
-			return;
+        }
 
-		}
-		
-		downloading.add(user.id);
-		
-		final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
+        String target;
 
-		if (!set.isOk()) {
+        if (msg.hasText()) {
 
-			msg.send("无法读取贴纸包 " + target + " : " + set.description()).exec(data);
+            target = msg.text();
 
-			downloading.remove(user.id);
+            if (target.contains("/")) target = StrUtil.subAfter(target, "/", true);
 
-			return;
+        } else if (msg.message().sticker() != null) {
 
-		}
-	
+            target = msg.message().sticker().setName();
 
-		Msg status = msg.send("正在下载贴纸包...").send();
-		
-		File cachePath = new File(Env.CACHE_DIR,"pack_export_cache/from_update" + msg.update.updateId());
-		
-		File cacheDir = new File(cachePath,set.stickerSet().title());
-		
-		cacheDir.mkdirs();
-		
-		for (int index = 0;index < set.stickerSet().stickers().length;index ++) {
-			
-			Sticker sticker = set.stickerSet().stickers()[index];
-			
-			FileUtil.copy(getFile(sticker.fileId()),new File(cacheDir,index + ".png"),true);
-		
-			status.edit("正在下载贴纸 : " + (index + 1) + " / " + set.stickerSet().stickers().length + " ...").exec();
-			
-		}
-		
-		status.edit("下载完成 正在打包...").exec();
-		
-		File zip = new File(cachePath,set.stickerSet().title() + ".zip");
+            if (target == null) {
 
-		ZipUtil.zip(cacheDir.getPath(),zip.getPath(),true);
-	
-		status.edit(Html.code(set.stickerSet().name()) + " 导出完成 :)").html().exec();
-		
-		msg.sendUpdatingFile();
-		
-		bot().execute(new SendDocument(msg.chatId(),zip));
-		
-		downloading.remove(user.id);
-		
-		msg.send("继续导出请发送简称/链接或目标贴纸包的贴纸","退出导出使用 /cancel").exec(data);
-		
-		RuntimeUtil.exec("rm -rf " + cachePath.getPath());
-		
-	}
-	
+                msg.send("这个贴纸没有贴纸包... 请重试 :)").withCancel().exec(data);
+
+                return;
+
+            }
+
+        } else {
+
+            msg.send("请发送 目标贴纸包的简称或链接 或目标贴纸包的任意贴纸 : ").withCancel().exec(data);
+
+            return;
+
+        }
+
+        downloading.add(user.id);
+
+        final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
+
+        if (!set.isOk()) {
+
+            msg.send("无法读取贴纸包 " + target + " : " + set.description()).exec(data);
+
+            downloading.remove(user.id);
+
+            return;
+
+        }
+
+
+        Msg status = msg.send("正在下载贴纸包...").send();
+
+        File cachePath = new File(Env.CACHE_DIR, "pack_export_cache/from_update" + msg.update.updateId());
+
+        File cacheDir = new File(cachePath, set.stickerSet().title());
+
+        cacheDir.mkdirs();
+
+        for (int index = 0; index < set.stickerSet().stickers().length; index++) {
+
+            Sticker sticker = set.stickerSet().stickers()[index];
+
+            FileUtil.copy(getFile(sticker.fileId()), new File(cacheDir, index + ".png"), true);
+
+            status.edit("正在下载贴纸 : " + (index + 1) + " / " + set.stickerSet().stickers().length + " ...").exec();
+
+        }
+
+        status.edit("下载完成 正在打包...").exec();
+
+        File zip = new File(cachePath, set.stickerSet().title() + ".zip");
+
+        ZipUtil.zip(cacheDir.getPath(), zip.getPath(), true);
+
+        status.edit(Html.code(set.stickerSet().name()) + " 导出完成 :)").html().exec();
+
+        msg.sendUpdatingFile();
+
+        bot().execute(new SendDocument(msg.chatId(), zip));
+
+        downloading.remove(user.id);
+
+        msg.send("继续导出请发送简称/链接或目标贴纸包的贴纸", "退出导出使用 /cancel").exec(data);
+
+        RuntimeUtil.exec("rm -rf " + cachePath.getPath());
+
+    }
+
 }

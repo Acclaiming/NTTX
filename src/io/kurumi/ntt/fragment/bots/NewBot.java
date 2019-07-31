@@ -8,7 +8,9 @@ import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.Keyboard;
+
 import java.util.HashMap;
+
 import io.kurumi.ntt.db.PointData;
 import com.pengrad.telegrambot.response.SendResponse;
 
@@ -16,40 +18,40 @@ public class NewBot extends Fragment {
 
     final String POINT_CREATE_BOT = "bot.create";
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerFunction("newbot");
+        registerFunction("newbot");
 
-		registerPoint(POINT_CREATE_BOT);
+        registerPoint(POINT_CREATE_BOT);
 
     }
 
     @Override
-    public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		if (user.blocked()) {
+        if (user.blocked()) {
 
-			msg.send("你不能这么做 (为什么？)").async();
+            msg.send("你不能这么做 (为什么？)").async();
 
-			return;
+            return;
 
-		}
+        }
 
-		CreateBot create = new CreateBot();
+        CreateBot create = new CreateBot();
 
-        msg.send("现在请输入BotToken :","","BotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。").withCancel().exec(create);
+        msg.send("现在请输入BotToken :", "", "BotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。").withCancel().exec(create);
 
-        setPrivatePoint(user,POINT_CREATE_BOT,create);
+        setPrivatePoint(user, POINT_CREATE_BOT, create);
 
     }
 
-	@Override
-	public void onPoint(UserData user,Msg msg,String point,PointData data) {
+    @Override
+    public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
-		data.context.add(msg);
+        data.context.add(msg);
 
         if (POINT_CREATE_BOT.equals(point)) {
 
@@ -59,7 +61,7 @@ public class NewBot extends Fragment {
 
                 if (!msg.hasText() || !msg.text().contains(":")) {
 
-                    msg.send("无效的Token.请重试. ","Token 看起来像这样: '12345678:ABCDEfgHIDUROVjkLmNOPQRSTUvw-cdEfgHI'").withCancel().exec(data);
+                    msg.send("无效的Token.请重试. ", "Token 看起来像这样: '12345678:ABCDEfgHIDUROVjkLmNOPQRSTUvw-cdEfgHI'").withCancel().exec(data);
 
                     return;
 
@@ -90,15 +92,15 @@ public class NewBot extends Fragment {
 
                 msg.send("现在选择BOT类型 :").keyboard(new Keyboard() {{
 
-							newButtonLine("转发私聊");
+                    newButtonLine("转发私聊");
 
-							newButtonLine("群组管理");
+                    newButtonLine("群组管理");
 
-							newButtonLine("RSS订阅");
+                    newButtonLine("RSS订阅");
 
-							newButtonLine("取消创建");
+                    newButtonLine("取消创建");
 
-						}}).exec(data);
+                }}).exec(data);
 
             } else if (create.progress == 1) {
 
@@ -119,78 +121,77 @@ public class NewBot extends Fragment {
 
                 } else {
 
-					if ("群组管理".equals(msg.text())) {
+                    if ("群组管理".equals(msg.text())) {
 
-						create.bot.type = 1;
+                        create.bot.type = 1;
 
-						clearPrivatePoint(user);
+                        clearPrivatePoint(user);
 
-						Msg setup = msg.send("创建成功... 正在启动").send();
+                        Msg setup = msg.send("创建成功... 正在启动").send();
 
-						create.bot.params = new HashMap<>();
+                        create.bot.params = new HashMap<>();
 
-						UserBot.data.setById(create.bot.id,create.bot);
+                        UserBot.data.setById(create.bot.id, create.bot);
 
-						create.bot.startBot();
+                        create.bot.startBot();
 
-						setup.edit("你的BOT : @" + create.bot.userName,"\n将BOT加入群组并设为管理员 ~","\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
-						
-					} else if ("RSS订阅".equals(msg.text())) {
+                        setup.edit("你的BOT : @" + create.bot.userName, "\n将BOT加入群组并设为管理员 ~", "\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
 
-						create.bot.type = 2;
+                    } else if ("RSS订阅".equals(msg.text())) {
 
-						clearPrivatePoint(user);
+                        create.bot.type = 2;
 
-						Msg setup = msg.send("创建成功... 正在启动").send();
+                        clearPrivatePoint(user);
 
-						create.bot.params = new HashMap<>();
+                        Msg setup = msg.send("创建成功... 正在启动").send();
 
-						UserBot.data.setById(create.bot.id,create.bot);
+                        create.bot.params = new HashMap<>();
 
-						create.bot.startBot();
-						
-						setup.edit("你的BOT : @" + create.bot.userName,"\n自定义BOT使用文档 : https://manual.kurumi.io/bots/ ~").exec();
-						
-					} else {
+                        UserBot.data.setById(create.bot.id, create.bot);
 
-						msg.send("你正在创建BOT，请在下方键盘选择 ~").withCancel().exec(data);
+                        create.bot.startBot();
 
-						return;
+                        setup.edit("你的BOT : @" + create.bot.userName, "\n自定义BOT使用文档 : https://manual.kurumi.io/bots/ ~").exec();
 
-					}
+                    } else {
+
+                        msg.send("你正在创建BOT，请在下方键盘选择 ~").withCancel().exec(data);
+
+                        return;
+
+                    }
 
 
-                    
-				}
+                }
 
-			} else if (create.progress == 10) {
+            } else if (create.progress == 10) {
 
-				if (!msg.hasText()) {
+                if (!msg.hasText()) {
 
-					msg.send("你正在创建私聊BOT，请发送欢迎语 ~").withCancel().exec(data);
+                    msg.send("你正在创建私聊BOT，请发送欢迎语 ~").withCancel().exec(data);
 
-					return;
+                    return;
 
-				}
+                }
 
-				clearPrivatePoint(user);
+                clearPrivatePoint(user);
 
-				Msg setup = msg.send("创建成功... 正在启动").send();
+                Msg setup = msg.send("创建成功... 正在启动").send();
 
-				create.bot.params = new HashMap<>();
-				create.bot.params.put("msg",msg.text());
+                create.bot.params = new HashMap<>();
+                create.bot.params.put("msg", msg.text());
 
-				UserBot.data.setById(create.bot.id,create.bot);
+                UserBot.data.setById(create.bot.id, create.bot);
 
-				create.bot.startBot();
+                create.bot.startBot();
 
-				setup.edit("你的BOT : @" + create.bot.userName,"\n不要忘记给BOT发一条信息 这样BOT才能转发信息给你 ~","\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
+                setup.edit("你的BOT : @" + create.bot.userName, "\n不要忘记给BOT发一条信息 这样BOT才能转发信息给你 ~", "\n现在你可以使用 /mybots 修改或删除这只BOT了 ~").exec();
 
-			}
+            }
 
-		}
+        }
 
-	}
+    }
 
     static class CreateBot extends PointData {
 

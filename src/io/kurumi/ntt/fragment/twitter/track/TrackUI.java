@@ -12,42 +12,42 @@ import io.kurumi.ntt.model.request.ButtonMarkup;
 public class TrackUI extends Fragment {
 
     public static Data<TrackSetting> data = new Data<TrackSetting>(TrackSetting.class);
-	
+
     final String POINT_SETTING_FOLLOWERS = "tr|f";
     final String POINT_SETTING_FOLLOWERS_INFO = "tr|o";
     final String POINT_SETTING_FOLLOWINGS_INFO = "tr|r";
     final String POINT_SETTING_HIDE_ME = "tr|h";
 
-	@Override
-	public void init(BotFragment origin) {
-	
-		super.init(origin);
-		
+    @Override
+    public void init(BotFragment origin) {
+
+        super.init(origin);
+
         registerFunction("track");
 
-		registerCallback(
-        POINT_SETTING_FOLLOWERS,
-        POINT_SETTING_FOLLOWINGS_INFO,
-        POINT_SETTING_FOLLOWERS_INFO,
-        POINT_SETTING_HIDE_ME);
+        registerCallback(
+                POINT_SETTING_FOLLOWERS,
+                POINT_SETTING_FOLLOWINGS_INFO,
+                POINT_SETTING_FOLLOWERS_INFO,
+                POINT_SETTING_HIDE_ME);
 
     }
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-		
-		if (user.blocked()) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-			msg.send("你不能这么做 (为什么？)").async();
+        if (user.blocked()) {
 
-			return;
+            msg.send("你不能这么做 (为什么？)").async();
 
-		}
-		
-		requestTwitter(user,msg);
-		
-	}
-	
+            return;
+
+        }
+
+        requestTwitter(user, msg);
+
+    }
+
 
     @Override
     public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, final TAuth account) {

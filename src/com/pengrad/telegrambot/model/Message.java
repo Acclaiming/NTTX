@@ -12,7 +12,7 @@ import java.util.Arrays;
  */
 public class Message implements Serializable {
     private final static long serialVersionUID = 0L;
-	
+
     private Integer message_id;
     private User from;
     private Integer date;
@@ -260,7 +260,8 @@ public class Message implements Serializable {
         if (from != null ? !from.equals(message.from) : message.from != null) return false;
         if (date != null ? !date.equals(message.date) : message.date != null) return false;
         if (chat != null ? !chat.equals(message.chat) : message.chat != null) return false;
-        if (forward_from != null ? !forward_from.equals(message.forward_from) : message.forward_from != null) return false;
+        if (forward_from != null ? !forward_from.equals(message.forward_from) : message.forward_from != null)
+            return false;
         if (forward_from_chat != null ? !forward_from_chat.equals(message.forward_from_chat) : message.forward_from_chat != null)
             return false;
         if (forward_from_message_id != null ? !forward_from_message_id.equals(message.forward_from_message_id) : message.forward_from_message_id != null)
@@ -269,7 +270,8 @@ public class Message implements Serializable {
             return false;
         if (forward_sender_name != null ? !forward_sender_name.equals(message.forward_sender_name) : message.forward_sender_name != null)
             return false;
-        if (forward_date != null ? !forward_date.equals(message.forward_date) : message.forward_date != null) return false;
+        if (forward_date != null ? !forward_date.equals(message.forward_date) : message.forward_date != null)
+            return false;
         if (reply_to_message != null ? !reply_to_message.equals(message.reply_to_message) : message.reply_to_message != null)
             return false;
         if (edit_date != null ? !edit_date.equals(message.edit_date) : message.edit_date != null) return false;
@@ -324,7 +326,8 @@ public class Message implements Serializable {
             return false;
         if (connected_website != null ? !connected_website.equals(message.connected_website) : message.connected_website != null)
             return false;
-        if (passport_data != null ? !passport_data.equals(message.passport_data) : message.passport_data != null) return false;
+        if (passport_data != null ? !passport_data.equals(message.passport_data) : message.passport_data != null)
+            return false;
         return reply_markup != null ? reply_markup.equals(message.reply_markup) : message.reply_markup == null;
     }
 

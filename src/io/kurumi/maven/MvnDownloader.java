@@ -4,125 +4,129 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
+
 import java.io.File;
 import java.util.LinkedList;
 import java.util.Set;
+
 import io.kurumi.ntt.Env;
+
 import java.util.Iterator;
+
 import cn.hutool.http.HttpUtil;
 import cn.hutool.core.util.ZipUtil;
 
 public class MvnDownloader extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerFunction("mvn");
+        registerFunction("mvn");
 
-	}
+    }
 
-	@Override
-	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public int checkFunction(UserData user, Msg msg, String function, String[] params) {
 
-		return PROCESS_ASYNC;
+        return PROCESS_ASYNC;
 
-	}
+    }
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		if (params.length < 2) {
+        if (params.length < 2) {
 
-			msg.invalidParams("groupId","artifactId","version").async();
+            msg.invalidParams("groupId", "artifactId", "version").async();
 
-			return;
+            return;
 
-		}
-		
-		String version = params.length == 2 ? "+" : params[2];
+        }
 
-		MvnResolver resolver = new MvnResolver();
+        String version = params.length == 2 ? "+" : params[2];
 
-		MvnArtifact result;
+        MvnResolver resolver = new MvnResolver();
 
-		StringBuilder log = new StringBuilder();
+        MvnArtifact result;
 
-		try {
+        StringBuilder log = new StringBuilder();
 
-			result = resolver.resolve(params[0],params[1],version,null,log);
+        try {
 
-		} catch (MvnException e) {
+            result = resolver.resolve(params[0], params[1], version, null, log);
 
-			msg.send("解析失败 :\n",log.toString()).async();
+        } catch (MvnException e) {
 
-			return;
+            msg.send("解析失败 :\n", log.toString()).async();
 
-		}
-		
-		// msg.send(log.toString()).async();
+            return;
 
-		File zipFile = new File(Env.CACHE_DIR,"maven_marge/" + result.fileNameZip());
+        }
 
-		if (zipFile.isFile()) {
+        // msg.send(log.toString()).async();
 
-			msg.sendUpdatingFile();
+        File zipFile = new File(Env.CACHE_DIR, "maven_marge/" + result.fileNameZip());
 
-			msg.sendFile(zipFile);
+        if (zipFile.isFile()) {
 
-			return;
+            msg.sendUpdatingFile();
 
-		}
+            msg.sendFile(zipFile);
 
-		Set<MvnArtifact> all = result.marge();
+            return;
 
-		Msg status = msg.send("解析完成 数量 : " + all.size()).send();
+        }
 
-		LinkedList<File> cache = new LinkedList<>();
+        Set<MvnArtifact> all = result.marge();
 
-		Iterator<MvnArtifact> iter = all.iterator();
+        Msg status = msg.send("解析完成 数量 : " + all.size()).send();
 
-		for (int index = 0;index < all.size();index ++) {
+        LinkedList<File> cache = new LinkedList<>();
 
-			MvnArtifact art = iter.next();
+        Iterator<MvnArtifact> iter = all.iterator();
 
-			File localFile = new File(Env.CACHE_DIR,"maven/" + art.fileName());
+        for (int index = 0; index < all.size(); index++) {
 
-			if (!localFile.isFile()) {
+            MvnArtifact art = iter.next();
 
-				status.edit("正在下载 : " + art.fileName() + " ( " + (index + 1) + " / " + all.size() + " )").exec();
+            File localFile = new File(Env.CACHE_DIR, "maven/" + art.fileName());
 
-				HttpUtil.downloadFile(art.path(),localFile);
+            if (!localFile.isFile()) {
 
-			}
+                status.edit("正在下载 : " + art.fileName() + " ( " + (index + 1) + " / " + all.size() + " )").exec();
 
-			cache.add(localFile);
+                HttpUtil.downloadFile(art.path(), localFile);
 
-		}
+            }
 
-		if (cache.size() == 1) {
+            cache.add(localFile);
 
-			status.delete();
+        }
 
-			msg.sendUpdatingFile();
+        if (cache.size() == 1) {
 
-			msg.sendFile(cache.get(0));
+            status.delete();
 
-			return;
+            msg.sendUpdatingFile();
 
-		}
-		
-		status.edit("正在打包...").exec();
-	
-		ZipUtil.zip(zipFile,false,cache.toArray(new File[cache.size()]));
-		
-		msg.delete();
-		
-		msg.sendUpdatingFile();
-		
-		msg.sendFile(zipFile);
+            msg.sendFile(cache.get(0));
 
-	}
+            return;
+
+        }
+
+        status.edit("正在打包...").exec();
+
+        ZipUtil.zip(zipFile, false, cache.toArray(new File[cache.size()]));
+
+        msg.delete();
+
+        msg.sendUpdatingFile();
+
+        msg.sendFile(zipFile);
+
+    }
 
 }

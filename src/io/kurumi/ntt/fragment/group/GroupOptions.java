@@ -14,10 +14,14 @@ import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
+
 import java.util.LinkedList;
 import java.util.List;
+
 import cn.hutool.core.util.StrUtil;
+
 import java.util.ArrayList;
+
 import com.pengrad.telegrambot.response.GetStickerSetResponse;
 import com.pengrad.telegrambot.request.GetStickerSet;
 import com.pengrad.telegrambot.model.Sticker;
@@ -26,1776 +30,1774 @@ import cn.hutool.http.HtmlUtil;
 
 public class GroupOptions extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
-
-		super.init(origin);
-
-		registerFunction("options");
-
-		registerPoint(POINT_SET_CUST);
-
-		registerCallback(
-			POINT_OPTIONS,
-			POINT_BACK,
-			POINT_MENU_MAIN,
-			POINT_MENU_REST,
-			POINT_MENU_JOIN,
-			POINT_MENU_DYNA,
-			POINT_MENU_CUST,
-			POINT_MENU_SHOW,
-			POINT_MENU_SPAM,
-			POINT_HELP,
-			POINT_SET_MAIN,
-			POINT_SET_REST,
-			POINT_SET_JOIN,
-			POINT_SET_DYNA,
-			POINT_SET_CUST,
-			POINT_SET_SHOW,
-			POINT_SET_SPAM);
-
-
-		registerPayload(PAYLOAD_OPTIONS);
-
-	}
-
-	@Override
-	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
-
-		return FUNCTION_GROUP;
-
-	}
-
-	final String POINT_OPTIONS = "group_options";
-
-	final String PAYLOAD_OPTIONS = "go";
-
-	final String POINT_BACK = "group_main";
-	final String POINT_MENU_MAIN = "group_menu_main";
-	final String POINT_MENU_REST = "group_menu_rest";
-	final String POINT_MENU_JOIN = "group_menu_join";
-	final String POINT_MENU_DYNA = "group_menu_dyna";
-	final String POINT_MENU_CUST = "group_menu_custom";
-	final String POINT_MENU_SHOW = "group_menu_show";
-	final String POINT_MENU_SPAM = "group_menu_spam";
-
-
-	final String POINT_HELP = "group_help";
-	final String POINT_SET_MAIN = "group_main_set";
-	final String POINT_SET_REST = "group_rest_set";
-	final String POINT_SET_JOIN = "group_join_set";
-	final String POINT_SET_DYNA = "group_join_set";
-	final String POINT_SET_CUST = "group_custom_set";
-	final String POINT_SET_SHOW = "group_custom_show";
-	final String POINT_SET_SPAM = "group_custom_spam";
-
-		final class EditCustom extends PointData {
-
-				int type;
-				Callback origin;
-				GroupData data;
-
-				public EditCustom(int type,Callback origin,GroupData data) {
-						this.type = type;
-						this.origin = origin;
-						this.data = data;
-				}
-
-				@Override
-				public void onFinish() {
-
-						if (type < 4) {
-
-								origin.edit("编辑自定义问题. 对错选项或正确内容.\n",cusStats(data)).buttons(cusMenu(data)).async();
-
-						} else {
-
-								origin.edit(showStats(data)).buttons(showMenu(data)).async();
-
-						}
-
-						super.onFinish();
-
-				}
-
-		}
-
-		@Override
-		public void onFunction(UserData user,final Msg msg,String function,String[] params) {
-
-			if (user.blocked()) {
-
-				msg.send("你不能这么做 (为什么？)").async();
-
-				return;
-
-			}
-			
-				final GroupData data = GroupData.get(msg.chat());
-
-						if (!NTT.isGroupAdmin(this,msg.chatId(),user.id)) {
-						
-						msg.reply("你不是绒布球").failedWith();
-						
-						return;
-						
-						}
-
-				if (data.full_admins != null && data.not_trust_admin != null) {
-
-						if ((!(origin instanceof GroupBot) || !((GroupBot)origin).userId.equals(user.id)) && !data.full_admins.contains(user.id)) {
-
-								msg.reply("根据群组设定，你不可以更改群组选项 , 除非本群组没有群主与全权限管理员").send();
-
-								return;
-
-						}
-
-				}
-
-				if (!NTT.isGroupAdmin(msg.fragment,msg.chatId(),origin.me.id())) {
-
-						msg.reply("BOT不是群组管理员 :)").async();
-
-						return;
-
-				}
-
-				if (!NTT.isUserContactable(this,user.id)) {
-
-						ButtonMarkup buttons = new ButtonMarkup();
-
-						buttons.newButtonLine("打开",POINT_OPTIONS,user.id);
-
-						msg.reply("点击按钮在私聊打开设置面板 :)","\n如果没有反应 请检查是否停用了BOT (私聊内点击 '取消屏蔽' 解除) 然后重新点击下方 '打开' 按钮 ~").buttons(buttons).async();
-
-						return;
-
-				}
-
-				new Send(this,user.id,
-
-					 Html.b(data.title),
-					 Html.i("更改群组的设定"),
-					 
-					 "\n" + Html.b("注意 : ") + "使用前请阅读 " + Html.a("文档","https://manual.kurumi.io/group")
-
-					 
-								 ).buttons(menuMarkup(data)).html().async();
-
-			  msg.reply("已经通过私聊发送群组设置选项").failedWith();
-
-		}
-
-		@Override
-		public void onPayload(UserData user,Msg msg,String payload,String[] params) {
-
-				long groupId = NumberUtil.parseLong(params[0]);
-
-				if (!GroupAdmin.fastAdminCheck(this,groupId,user.id,false)) {
-
-						msg.reply("你不是该群组的管理员 如果最近半小时更改 请在群组中使用 /update_admins_cache 更新缓存.");
-
-						return;
-
-				}
-
-				final GroupData data = GroupData.get(groupId);
-
-				msg.send(
-
-				Html.b(data.title),
-				Html.i("更改群组的设定"),
-
-				"\n" + Html.b("注意 : ") + "使用前请阅读 " + Html.a("文档","https://manual.kurumi.io/group")
-
-			
-				).buttons(menuMarkup(data)).html().exec();
-
-
-		}
+    @Override
+    public void init(BotFragment origin) {
+
+        super.init(origin);
+
+        registerFunction("options");
+
+        registerPoint(POINT_SET_CUST);
+
+        registerCallback(
+                POINT_OPTIONS,
+                POINT_BACK,
+                POINT_MENU_MAIN,
+                POINT_MENU_REST,
+                POINT_MENU_JOIN,
+                POINT_MENU_DYNA,
+                POINT_MENU_CUST,
+                POINT_MENU_SHOW,
+                POINT_MENU_SPAM,
+                POINT_HELP,
+                POINT_SET_MAIN,
+                POINT_SET_REST,
+                POINT_SET_JOIN,
+                POINT_SET_DYNA,
+                POINT_SET_CUST,
+                POINT_SET_SHOW,
+                POINT_SET_SPAM);
+
+
+        registerPayload(PAYLOAD_OPTIONS);
+
+    }
 
     @Override
-    public void onCallback(UserData user,Callback callback,String point,String[] params) {
+    public int checkFunctionContext(UserData user, Msg msg, String function, String[] params) {
 
-				if (POINT_OPTIONS.equals(point)) {
+        return FUNCTION_GROUP;
 
-						long userId = NumberUtil.parseLong(params[0]);
+    }
 
-						if (user.id.equals(userId)) {
+    final String POINT_OPTIONS = "group_options";
 
-								callback.url("https://t.me/" + origin.me.username() + "?start=" + PAYLOAD_OPTIONS + PAYLOAD_SPLIT + callback.chatId() + PAYLOAD_SPLIT + user.id);
+    final String PAYLOAD_OPTIONS = "go";
 
-								return;
+    final String POINT_BACK = "group_main";
+    final String POINT_MENU_MAIN = "group_menu_main";
+    final String POINT_MENU_REST = "group_menu_rest";
+    final String POINT_MENU_JOIN = "group_menu_join";
+    final String POINT_MENU_DYNA = "group_menu_dyna";
+    final String POINT_MENU_CUST = "group_menu_custom";
+    final String POINT_MENU_SHOW = "group_menu_show";
+    final String POINT_MENU_SPAM = "group_menu_spam";
 
-						}
 
-				} else if (POINT_HELP.equals(point)) {
+    final String POINT_HELP = "group_help";
+    final String POINT_SET_MAIN = "group_main_set";
+    final String POINT_SET_REST = "group_rest_set";
+    final String POINT_SET_JOIN = "group_join_set";
+    final String POINT_SET_DYNA = "group_join_set";
+    final String POINT_SET_CUST = "group_custom_set";
+    final String POINT_SET_SHOW = "group_custom_show";
+    final String POINT_SET_SPAM = "group_custom_spam";
 
-						if ("dcm".equals(params[0])) {
+    final class EditCustom extends PointData {
 
-								callback.alert(
+        int type;
+        Callback origin;
+        GroupData data;
 
-										"删除来自绑定的频道的消息 :\n",
+        public EditCustom(int type, Callback origin, GroupData data) {
+            this.type = type;
+            this.origin = origin;
+            this.data = data;
+        }
 
-										"如果群组作为频道绑定的讨论群组，则每条频道消息都会被转发至群组并置顶。\n",
+        @Override
+        public void onFinish() {
 
-										"开启此功能自动删除来自频道的消息。"
+            if (type < 4) {
 
-								);
+                origin.edit("编辑自定义问题. 对错选项或正确内容.\n", cusStats(data)).buttons(cusMenu(data)).async();
 
-						} else if ("dsm".equals(params[0])) {
+            } else {
 
-								callback.alert(
+                origin.edit(showStats(data)).buttons(showMenu(data)).async();
 
-										"删除服务消息 :\n",
+            }
 
-										"服务消息 (Service Message) 指 : 成员加群、被邀请、退群、被移除。\n",
+            super.onFinish();
 
-										"开启此功能自动删除服务消息。"
+        }
 
-								);
+    }
 
+    @Override
+    public void onFunction(UserData user, final Msg msg, String function, String[] params) {
 
-								// } else if ("enable".equals(params[0])) {
+        if (user.blocked()) {
 
+            msg.send("你不能这么做 (为什么？)").async();
 
-						} else {
+            return;
 
-								callback.alert("喵....？");
+        }
 
-						}
+        final GroupData data = GroupData.get(msg.chat());
 
-						return;
+        if (!NTT.isGroupAdmin(this, msg.chatId(), user.id)) {
 
-				}
+            msg.reply("你不是绒布球").failedWith();
 
-				final GroupData data = GroupData.data.getById(NumberUtil.parseLong(params[0]));
+            return;
 
-				if (data == null) {
+        }
 
-						callback.alert("Error","无效的目标群组");
+        if (data.full_admins != null && data.not_trust_admin != null) {
 
-						return;
+            if ((!(origin instanceof GroupBot) || !((GroupBot) origin).userId.equals(user.id)) && !data.full_admins.contains(user.id)) {
 
-				}
+                msg.reply("根据群组设定，你不可以更改群组选项 , 除非本群组没有群主与全权限管理员").send();
 
-				synchronized (data) {
+                return;
 
-						if (POINT_BACK.equals(point)) {
+            }
 
-								callback.edit(
-								
-								Html.b(data.title),
-								Html.i("更改群组的设定"),
+        }
 
-								"\n" + Html.b("注意 : ") + "使用前请阅读 " + Html.a("文档","https://manual.kurumi.io/group")
-								
-								).html().buttons(menuMarkup(data)).async();
+        if (!NTT.isGroupAdmin(msg.fragment, msg.chatId(), origin.me.id())) {
 
-						} else if (POINT_MENU_MAIN.equals(point)) {
+            msg.reply("BOT不是群组管理员 :)").async();
 
-								callback.edit("群组的管理设定. 点击名称查看功能说明.").buttons(mainMenu(data)).async();
+            return;
 
-						} else if (POINT_MENU_REST.equals(point)) {
+        }
 
-								callback.edit("限制成员进行某些操作. ","\n注意 : 当设置了 🗑 (删除) 时 不计入警告计数。\n对于禁止邀请用户/机器人 : 🗑 表示仅移除被邀请者。").buttons(restMenu(data)).async();
+        if (!NTT.isUserContactable(this, user.id)) {
 
-						} else if (POINT_MENU_JOIN.equals(point)) {
+            ButtonMarkup buttons = new ButtonMarkup();
 
-								callback.edit("编辑群组的新成员加群验证设置. ").buttons(joinMenu(data)).async();
+            buttons.newButtonLine("打开", POINT_OPTIONS, user.id);
 
-						} else if (POINT_SET_MAIN.equals(point)) {
+            msg.reply("点击按钮在私聊打开设置面板 :)", "\n如果没有反应 请检查是否停用了BOT (私聊内点击 '取消屏蔽' 解除) 然后重新点击下方 '打开' 按钮 ~").buttons(buttons).async();
 
-								if ("dcm".equals(params[1])) {
+            return;
 
-										if (data.delete_channel_msg == null) {
+        }
 
-												data.delete_channel_msg = 0;
+        new Send(this, user.id,
 
-												callback.text("🛠️  仅取消置顶");
+                Html.b(data.title),
+                Html.i("更改群组的设定"),
 
-										} else if (data.delete_channel_msg == 0) {
+                "\n" + Html.b("注意 : ") + "使用前请阅读 " + Html.a("文档", "https://manual.kurumi.io/group")
 
-												data.delete_channel_msg = 1;
 
-												callback.text("🛠️  全部删除");
+        ).buttons(menuMarkup(data)).html().async();
 
-										} else {
-												
-												data.delete_channel_msg = null;
+        msg.reply("已经通过私聊发送群组设置选项").failedWith();
 
-												callback.text("🛠️  不处理");
-												
-										}
+    }
 
-								} else if ("dsm".equals(params[1])) {
+    @Override
+    public void onPayload(UserData user, Msg msg, String payload, String[] params) {
 
-										if (data.delete_service_msg == null) {
+        long groupId = NumberUtil.parseLong(params[0]);
 
-												data.delete_service_msg = 0;
+        if (!GroupAdmin.fastAdminCheck(this, groupId, user.id, false)) {
 
-												callback.text("🛠️  保留一条");
+            msg.reply("你不是该群组的管理员 如果最近半小时更改 请在群组中使用 /update_admins_cache 更新缓存.");
 
-										} else if (data.delete_service_msg == 0) {
+            return;
 
-												data.delete_service_msg = 1;
+        }
 
-												callback.text("🛠️  全部删除");
+        final GroupData data = GroupData.get(groupId);
 
-										} else {
+        msg.send(
 
-												data.delete_service_msg = null;
+                Html.b(data.title),
+                Html.i("更改群组的设定"),
 
-												callback.text("🛠️  不处理");
+                "\n" + Html.b("注意 : ") + "使用前请阅读 " + Html.a("文档", "https://manual.kurumi.io/group")
 
-										}
 
-								} else if ("not_trust_admin".equals(params[1])) {
+        ).buttons(menuMarkup(data)).html().exec();
 
-										if (!GroupAdmin.fastAdminCheck(this,data,user.id,true)) {
 
-												callback.alert("您不是该群组的创建者或全权限管理员 无法更改此项");
+    }
 
-												return;
+    @Override
+    public void onCallback(UserData user, Callback callback, String point, String[] params) {
 
-										}
+        if (POINT_OPTIONS.equals(point)) {
 
-										if (data.not_trust_admin == null) {
+            long userId = NumberUtil.parseLong(params[0]);
 
-												data.not_trust_admin = true;
+            if (user.id.equals(userId)) {
 
-												callback.text("🛠️  已开启");
+                callback.url("https://t.me/" + origin.me.username() + "?start=" + PAYLOAD_OPTIONS + PAYLOAD_SPLIT + callback.chatId() + PAYLOAD_SPLIT + user.id);
 
-										} else {
+                return;
 
-												data.not_trust_admin = null;
+            }
 
-												callback.text("🛠️  已关闭");
+        } else if (POINT_HELP.equals(point)) {
 
-										}
+            if ("dcm".equals(params[0])) {
 
-								}
+                callback.alert(
 
-								executeAsync(callback.update,new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(mainMenu(data).markup()));
+                        "删除来自绑定的频道的消息 :\n",
 
-						} else if (POINT_SET_REST.equals(point)) {
+                        "如果群组作为频道绑定的讨论群组，则每条频道消息都会被转发至群组并置顶。\n",
 
-								if ("invite_user".equals(params[1])) {
+                        "开启此功能自动删除来自频道的消息。"
 
-										if (data.no_invite_user == null) {
+                );
 
-												data.no_invite_user = 0;
+            } else if ("dsm".equals(params[0])) {
 
-												callback.text("📝  仅移除被邀请用户");
+                callback.alert(
 
-										} else if (data.no_invite_user == 0) {
+                        "删除服务消息 :\n",
 
-												data.no_invite_user = 1;
+                        "服务消息 (Service Message) 指 : 成员加群、被邀请、退群、被移除。\n",
 
-												callback.text("📝  移除被邀请用户并警告");
+                        "开启此功能自动删除服务消息。"
 
+                );
 
-										} else {
 
-												data.no_invite_user = null;
+                // } else if ("enable".equals(params[0])) {
 
-												callback.text("📝  不处理");
 
-										}
+            } else {
 
-								} else if ("invite_bot".equals(params[1])) {
+                callback.alert("喵....？");
 
-										if (data.no_invite_bot == null) {
+            }
 
-												data.no_invite_bot = 0;
+            return;
 
-												callback.text("📝  仅移除机器人");
+        }
 
-										} else if (data.no_invite_bot == 0) {
+        final GroupData data = GroupData.data.getById(NumberUtil.parseLong(params[0]));
 
-												data.no_invite_bot = 1;
+        if (data == null) {
 
-												callback.text("📝  移除机器人并警告");
+            callback.alert("Error", "无效的目标群组");
 
+            return;
 
-										} else {
+        }
 
-												data.no_invite_bot = null;
+        synchronized (data) {
 
-												callback.text("📝  不处理");
+            if (POINT_BACK.equals(point)) {
 
-										}
+                callback.edit(
 
+                        Html.b(data.title),
+                        Html.i("更改群组的设定"),
 
-								} else if ("sticker".equals(params[1])) {
+                        "\n" + Html.b("注意 : ") + "使用前请阅读 " + Html.a("文档", "https://manual.kurumi.io/group")
 
-										if (data.no_sticker == null) {
+                ).html().buttons(menuMarkup(data)).async();
 
-												data.no_sticker = 0;
+            } else if (POINT_MENU_MAIN.equals(point)) {
 
-												callback.text("📝  仅删除");
+                callback.edit("群组的管理设定. 点击名称查看功能说明.").buttons(mainMenu(data)).async();
 
-										} else if (data.no_sticker == 0) {
+            } else if (POINT_MENU_REST.equals(point)) {
 
-												data.no_sticker = 1;
+                callback.edit("限制成员进行某些操作. ", "\n注意 : 当设置了 🗑 (删除) 时 不计入警告计数。\n对于禁止邀请用户/机器人 : 🗑 表示仅移除被邀请者。").buttons(restMenu(data)).async();
 
-												callback.text("📝  删除并警告");
+            } else if (POINT_MENU_JOIN.equals(point)) {
 
-										} else {
+                callback.edit("编辑群组的新成员加群验证设置. ").buttons(joinMenu(data)).async();
 
-												data.no_sticker = null;
+            } else if (POINT_SET_MAIN.equals(point)) {
 
-												callback.text("📝  不处理");
+                if ("dcm".equals(params[1])) {
 
-										}
-										
-								} else if ("animated".equals(params[1])) {
+                    if (data.delete_channel_msg == null) {
 
-									if (data.no_animated_sticker == null) {
+                        data.delete_channel_msg = 0;
 
-										data.no_animated_sticker = 0;
+                        callback.text("🛠️  仅取消置顶");
 
-										callback.text("📝  仅删除");
+                    } else if (data.delete_channel_msg == 0) {
 
-									} else if (data.no_animated_sticker == 0) {
+                        data.delete_channel_msg = 1;
 
-										data.no_animated_sticker = 1;
+                        callback.text("🛠️  全部删除");
 
-										callback.text("📝  删除并警告");
+                    } else {
 
-									} else {
+                        data.delete_channel_msg = null;
 
-										data.no_animated_sticker = null;
+                        callback.text("🛠️  不处理");
 
-										callback.text("📝  不处理");
+                    }
 
-									}
-									
-										
-								} else if ("image".equals(params[1])) {
+                } else if ("dsm".equals(params[1])) {
 
-										if (data.no_image == null) {
+                    if (data.delete_service_msg == null) {
 
-												data.no_image = 0;
+                        data.delete_service_msg = 0;
 
-												callback.text("📝  仅删除");
+                        callback.text("🛠️  保留一条");
 
-										} else if (data.no_image == 0) {
+                    } else if (data.delete_service_msg == 0) {
 
-												data.no_image = 1;
+                        data.delete_service_msg = 1;
 
-												callback.text("📝  删除并警告");
+                        callback.text("🛠️  全部删除");
 
-										} else {
+                    } else {
 
-												data.no_image = null;
+                        data.delete_service_msg = null;
 
-												callback.text("📝  不处理");
+                        callback.text("🛠️  不处理");
 
-										}
+                    }
 
-								} else if ("ann".equals(params[1])) {
+                } else if ("not_trust_admin".equals(params[1])) {
 
-										if (data.no_animation == null) {
+                    if (!GroupAdmin.fastAdminCheck(this, data, user.id, true)) {
 
-												data.no_animation = 0;
+                        callback.alert("您不是该群组的创建者或全权限管理员 无法更改此项");
 
-												callback.text("📝  仅删除");
+                        return;
 
-										} else if (data.no_animation == 0) {
+                    }
 
-												data.no_animation = 1;
+                    if (data.not_trust_admin == null) {
 
-												callback.text("📝  删除并警告");
+                        data.not_trust_admin = true;
 
-										} else {
+                        callback.text("🛠️  已开启");
 
-												data.no_animation = null;
+                    } else {
 
-												callback.text("📝  不处理");
+                        data.not_trust_admin = null;
 
-										}
+                        callback.text("🛠️  已关闭");
 
-								} else if ("audio".equals(params[1])) {
+                    }
 
-										if (data.no_audio == null) {
+                }
 
-												data.no_audio = 0;
+                executeAsync(callback.update, new EditMessageReplyMarkup(callback.chatId(), callback.messageId()).replyMarkup(mainMenu(data).markup()));
 
-												callback.text("📝  仅删除");
+            } else if (POINT_SET_REST.equals(point)) {
 
-										} else if (data.no_audio == 0) {
+                if ("invite_user".equals(params[1])) {
 
-												data.no_audio = 1;
+                    if (data.no_invite_user == null) {
 
-												callback.text("📝  删除并警告");
+                        data.no_invite_user = 0;
 
-										} else {
+                        callback.text("📝  仅移除被邀请用户");
 
-												data.no_audio = null;
+                    } else if (data.no_invite_user == 0) {
 
-												callback.text("📝  不处理");
+                        data.no_invite_user = 1;
 
-										}
+                        callback.text("📝  移除被邀请用户并警告");
 
-								} else if ("video".equals(params[1])) {
 
-										if (data.no_video == null) {
+                    } else {
 
-												data.no_video = 0;
+                        data.no_invite_user = null;
 
-												callback.text("📝  仅删除");
+                        callback.text("📝  不处理");
 
-										} else if (data.no_video == 0) {
+                    }
 
-												data.no_video = 1;
+                } else if ("invite_bot".equals(params[1])) {
 
-												callback.text("📝  删除并警告");
+                    if (data.no_invite_bot == null) {
 
-										} else {
+                        data.no_invite_bot = 0;
 
-												data.no_video = null;
+                        callback.text("📝  仅移除机器人");
 
-												callback.text("📝  不处理");
+                    } else if (data.no_invite_bot == 0) {
 
-										}
+                        data.no_invite_bot = 1;
 
-								} else if ("video_note".equals(params[1])) {
+                        callback.text("📝  移除机器人并警告");
 
-										if (data.no_video_note == null) {
 
-												data.no_video_note = 0;
+                    } else {
 
-												callback.text("📝  仅删除");
+                        data.no_invite_bot = null;
 
-										} else if (data.no_video_note == 0) {
+                        callback.text("📝  不处理");
 
-												data.no_video_note = 1;
+                    }
 
-												callback.text("📝  删除并警告");
 
-										} else {
+                } else if ("sticker".equals(params[1])) {
 
-												data.no_video_note = null;
+                    if (data.no_sticker == null) {
 
-												callback.text("📝  不处理");
+                        data.no_sticker = 0;
 
-										}
+                        callback.text("📝  仅删除");
 
-								} else if ("contact".equals(params[1])) {
+                    } else if (data.no_sticker == 0) {
 
-										if (data.no_contact == null) {
+                        data.no_sticker = 1;
 
-												data.no_contact = 0;
+                        callback.text("📝  删除并警告");
 
-												callback.text("📝  仅删除");
+                    } else {
 
-										} else if (data.no_contact == 0) {
+                        data.no_sticker = null;
 
-												data.no_contact = 1;
+                        callback.text("📝  不处理");
 
-												callback.text("📝  删除并警告");
+                    }
 
-										} else {
+                } else if ("animated".equals(params[1])) {
 
-												data.no_contact = null;
+                    if (data.no_animated_sticker == null) {
 
-												callback.text("📝  不处理");
+                        data.no_animated_sticker = 0;
 
-										}
+                        callback.text("📝  仅删除");
 
-								} else if ("location".equals(params[1])) {
+                    } else if (data.no_animated_sticker == 0) {
 
-										if (data.no_location == null) {
+                        data.no_animated_sticker = 1;
 
-												data.no_location = 0;
+                        callback.text("📝  删除并警告");
 
-												callback.text("📝  仅删除");
+                    } else {
 
-										} else if (data.no_location == 0) {
+                        data.no_animated_sticker = null;
 
-												data.no_location = 1;
+                        callback.text("📝  不处理");
 
-												callback.text("📝  删除并警告");
+                    }
 
-										} else {
 
-												data.no_location = null;
+                } else if ("image".equals(params[1])) {
 
-												callback.text("📝  不处理");
+                    if (data.no_image == null) {
 
-										}
+                        data.no_image = 0;
 
-								} else if ("game".equals(params[1])) {
+                        callback.text("📝  仅删除");
 
-										if (data.no_game == null) {
+                    } else if (data.no_image == 0) {
 
-												data.no_game = 0;
+                        data.no_image = 1;
 
-												callback.text("📝  仅删除");
+                        callback.text("📝  删除并警告");
 
-										} else if (data.no_game == 0) {
+                    } else {
 
-												data.no_game = 1;
+                        data.no_image = null;
 
-												callback.text("📝  删除并警告");
+                        callback.text("📝  不处理");
 
-										} else {
+                    }
 
-												data.no_game = null;
+                } else if ("ann".equals(params[1])) {
 
-												callback.text("📝  不处理");
+                    if (data.no_animation == null) {
 
-										}
+                        data.no_animation = 0;
 
-								} else if ("voice".equals(params[1])) {
+                        callback.text("📝  仅删除");
 
-										if (data.no_voice == null) {
+                    } else if (data.no_animation == 0) {
 
-												data.no_voice = 0;
+                        data.no_animation = 1;
 
-												callback.text("📝  仅删除");
+                        callback.text("📝  删除并警告");
 
-										} else if (data.no_voice == 0) {
+                    } else {
 
-												data.no_voice = 1;
+                        data.no_animation = null;
 
-												callback.text("📝  删除并警告");
+                        callback.text("📝  不处理");
 
-										} else {
+                    }
 
-												data.no_voice = null;
+                } else if ("audio".equals(params[1])) {
 
-												callback.text("📝  不处理");
+                    if (data.no_audio == null) {
 
-										}
+                        data.no_audio = 0;
 
-								} else if ("file".equals(params[1])) {
+                        callback.text("📝  仅删除");
 
-										if (data.no_file == null) {
+                    } else if (data.no_audio == 0) {
 
-												data.no_file = 0;
+                        data.no_audio = 1;
 
-												callback.text("📝  仅删除");
+                        callback.text("📝  删除并警告");
 
-										} else if (data.no_file == 0) {
+                    } else {
 
-												data.no_file = 1;
+                        data.no_audio = null;
 
-												callback.text("📝  删除并警告");
+                        callback.text("📝  不处理");
 
-										} else {
+                    }
 
-												data.no_file = null;
+                } else if ("video".equals(params[1])) {
 
-												callback.text("📝  不处理");
+                    if (data.no_video == null) {
 
-										}
+                        data.no_video = 0;
 
-								} else if ("action".equals(params[1])) {
+                        callback.text("📝  仅删除");
 
-										if (data.rest_action == null) {
+                    } else if (data.no_video == 0) {
 
-												data.rest_action = 0;
+                        data.no_video = 1;
 
-												callback.text("📝  禁言该用户");
+                        callback.text("📝  删除并警告");
 
-										} else if (data.rest_action == 0) {
+                    } else {
 
-												data.rest_action = 1;
+                        data.no_video = null;
 
-												callback.text("📝  封锁该用户");
+                        callback.text("📝  不处理");
 
-										} else {
+                    }
 
-												data.rest_action = null;
+                } else if ("video_note".equals(params[1])) {
 
-												callback.text("📝  限制非文本发送");
+                    if (data.no_video_note == null) {
 
-										}
+                        data.no_video_note = 0;
 
-								} else if ("inc".equals(params[1])) {
+                        callback.text("📝  仅删除");
 
-										if (data.max_count != null && data.max_count > 11) {
+                    } else if (data.no_video_note == 0) {
 
-												callback.text("📝  新数值太高 (> 12)");
+                        data.no_video_note = 1;
 
-												return;
+                        callback.text("📝  删除并警告");
 
-										} 
+                    } else {
 
-										if (data.max_count == null) {
+                        data.no_video_note = null;
 
-												data.max_count = 1;
+                        callback.text("📝  不处理");
 
-										}
+                    }
 
-										callback.text("📝  " + data.max_count + " -> " + (data.max_count = data.max_count + 1));
+                } else if ("contact".equals(params[1])) {
 
-								} else if ("dec".equals(params[1])) {
+                    if (data.no_contact == null) {
 
-										if (data.max_count == null) {
+                        data.no_contact = 0;
 
-												callback.text("📝  再低就没了 (ﾟ⊿ﾟ)ﾂ");
+                        callback.text("📝  仅删除");
 
-												return;
+                    } else if (data.no_contact == 0) {
 
-										}
+                        data.no_contact = 1;
 
-										callback.text("📝  " + data.max_count + " -> " + (data.max_count = data.max_count - 1));
+                        callback.text("📝  删除并警告");
 
-										if (data.max_count == 1) {
+                    } else {
 
-												data.max_count = null;
+                        data.no_contact = null;
 
-										}
+                        callback.text("📝  不处理");
 
-								} else {
+                    }
 
-										callback.alert("喵...？");
+                } else if ("location".equals(params[1])) {
 
-										return;
+                    if (data.no_location == null) {
 
-								}
+                        data.no_location = 0;
 
-								executeAsync(callback.update,new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(restMenu(data).markup()));
+                        callback.text("📝  仅删除");
 
-						} else if (POINT_SET_JOIN.equals(point)) {
+                    } else if (data.no_location == 0) {
 
-								if ("enable".equals(params[1])) {
+                        data.no_location = 1;
 
-										if (data.join_captcha == null) {
+                        callback.text("📝  删除并警告");
 
-												data.join_captcha = true;
+                    } else {
 
-												callback.text("🚪  已开启");
+                        data.no_location = null;
 
-										} else {
+                        callback.text("📝  不处理");
 
-												data.join_captcha = null;
+                    }
 
-												callback.text("🚪  已关闭");
+                } else if ("game".equals(params[1])) {
 
-										}
+                    if (data.no_game == null) {
 
-								} else if ("passive".equals(params[1])) {
+                        data.no_game = 0;
 
-										if (data.passive_mode == null) {
+                        callback.text("📝  仅删除");
 
-												data.passive_mode = true;
+                    } else if (data.no_game == 0) {
 
-												callback.text("🚪  已开启");
+                        data.no_game = 1;
 
-										} else {
+                        callback.text("📝  删除并警告");
 
-												data.passive_mode = null;
+                    } else {
 
-												callback.text("🚪  已关闭");
+                        data.no_game = null;
 
-										}
+                        callback.text("📝  不处理");
 
-								} else if ("ft_inc".equals(params[1])) {
+                    }
 
-										if (data.ft_count != null && data.ft_count >= 5) {
+                } else if ("voice".equals(params[1])) {
 
-												callback.text("🚪  新数值太高 (> 5)");
+                    if (data.no_voice == null) {
 
-												return;
+                        data.no_voice = 0;
 
-										} 
+                        callback.text("📝  仅删除");
 
-										if (data.ft_count == null) {
+                    } else if (data.no_voice == 0) {
 
-												data.ft_count = 0;
+                        data.no_voice = 1;
 
-										}
+                        callback.text("📝  删除并警告");
 
-										callback.text("🚪  " + data.ft_count + " -> " + (data.ft_count = data.ft_count + 1));
+                    } else {
 
-								} else if ("captcha_del".equals(params[1])) {
+                        data.no_voice = null;
 
-										if (data.captcha_del == null) {
+                        callback.text("📝  不处理");
 
-												data.captcha_del = 0;
+                    }
 
-												callback.text("🚪  保留一条");
+                } else if ("file".equals(params[1])) {
 
-										} else if (data.captcha_del == 0) {
+                    if (data.no_file == null) {
 
-												data.captcha_del = 1;
+                        data.no_file = 0;
 
-												callback.text("🚪  全部保留");
+                        callback.text("📝  仅删除");
 
-										} else {
+                    } else if (data.no_file == 0) {
 
-												data.captcha_del = null;
+                        data.no_file = 1;
 
-												callback.text("🚪  延时删除");
+                        callback.text("📝  删除并警告");
 
-										}
+                    } else {
 
+                        data.no_file = null;
 
-								} else if ("ft_dec".equals(params[1])) {
+                        callback.text("📝  不处理");
 
-										if (data.ft_count == null) {
+                    }
 
-												callback.text("🚪  再低就没了 (ﾟ⊿ﾟ)ﾂ");
+                } else if ("action".equals(params[1])) {
 
-												return;
+                    if (data.rest_action == null) {
 
-										}
+                        data.rest_action = 0;
 
-										callback.text("🚪  " + data.ft_count + " -> " + (data.ft_count = data.ft_count - 1));
+                        callback.text("📝  禁言该用户");
 
-										if (data.ft_count == 0) {
+                    } else if (data.rest_action == 0) {
 
-												data.ft_count = null;
+                        data.rest_action = 1;
 
-										}
+                        callback.text("📝  封锁该用户");
 
-								} else if ("jt_inc".equals(params[1])) {
+                    } else {
 
-										if (data.captcha_time != null && (data.captcha_time >= 5 * 60)) {
+                        data.rest_action = null;
 
-												callback.text("🚪  新数值太高 (> 5min)");
+                        callback.text("📝  限制非文本发送");
 
-												return;
+                    }
 
-										} 
+                } else if ("inc".equals(params[1])) {
 
-										if (data.captcha_time == null) {
+                    if (data.max_count != null && data.max_count > 11) {
 
-												data.captcha_time = 50;
+                        callback.text("📝  新数值太高 (> 12)");
 
-										}
+                        return;
 
-										callback.text("🚪  " + data.parse_time() + " -> " + (data.parse_time(data.captcha_time = data.captcha_time + 10)));
+                    }
 
-										if (data.captcha_time == 50) {
+                    if (data.max_count == null) {
 
-												data.captcha_time = null;
+                        data.max_count = 1;
 
-										}
+                    }
 
-								} else if ("jt_inc_t".equals(params[1])) {
+                    callback.text("📝  " + data.max_count + " -> " + (data.max_count = data.max_count + 1));
 
-										if (data.captcha_time != null && (data.captcha_time >= 5 * 60)) {
+                } else if ("dec".equals(params[1])) {
 
-												callback.text("🚪  新数值太高 (> 5min)");
+                    if (data.max_count == null) {
 
-												return;
+                        callback.text("📝  再低就没了 (ﾟ⊿ﾟ)ﾂ");
 
-										} 
+                        return;
 
-										if (data.captcha_time == null) {
+                    }
 
-												data.captcha_time = 50;
+                    callback.text("📝  " + data.max_count + " -> " + (data.max_count = data.max_count - 1));
 
-										}
+                    if (data.max_count == 1) {
 
-										int time = data.captcha_time;
+                        data.max_count = null;
 
-										if (time + 30 > 5 * 60) {
+                    }
 
-												data.captcha_time = 5 * 60;
+                } else {
 
-										} else {
+                    callback.alert("喵...？");
 
-												data.captcha_time = time + 30;
+                    return;
 
-										}
+                }
 
-										callback.text("🚪  " + data.parse_time(time) + " -> " + data.parse_time());
+                executeAsync(callback.update, new EditMessageReplyMarkup(callback.chatId(), callback.messageId()).replyMarkup(restMenu(data).markup()));
 
-										if (data.captcha_time == 50) {
+            } else if (POINT_SET_JOIN.equals(point)) {
 
-												data.captcha_time = null;
+                if ("enable".equals(params[1])) {
 
-										}
+                    if (data.join_captcha == null) {
 
-								} else if ("jt_dec".equals(params[1])) {
+                        data.join_captcha = true;
 
-										if (data.captcha_time != null && data.captcha_time < 21) {
+                        callback.text("🚪  已开启");
 
-												callback.text("🚪  再低还能验证吗 (ﾟ⊿ﾟ)ﾂ");
+                    } else {
 
-												return;
+                        data.join_captcha = null;
 
-										}
+                        callback.text("🚪  已关闭");
 
-										if (data.captcha_time == null) {
+                    }
 
-												data.captcha_time = 50;
+                } else if ("passive".equals(params[1])) {
 
-										}
+                    if (data.passive_mode == null) {
 
-										callback.text("🚪  " + data.parse_time() + " -> " + data.parse_time(data.captcha_time = data.captcha_time - 10));
+                        data.passive_mode = true;
 
-										if (data.captcha_time == 50) {
+                        callback.text("🚪  已开启");
 
-												data.captcha_time = null;
+                    } else {
 
-										}
+                        data.passive_mode = null;
 
+                        callback.text("🚪  已关闭");
 
+                    }
 
-								} else if ("jt_dec_t".equals(params[1])) {
+                } else if ("ft_inc".equals(params[1])) {
 
-										if (data.captcha_time != null && data.captcha_time < 21) {
+                    if (data.ft_count != null && data.ft_count >= 5) {
 
-												callback.text("🚪  再低还能验证吗 (ﾟ⊿ﾟ)ﾂ");
+                        callback.text("🚪  新数值太高 (> 5)");
 
-												return;
+                        return;
 
-										}
+                    }
 
-										if (data.captcha_time == null) {
+                    if (data.ft_count == null) {
 
-												data.captcha_time = 50;
+                        data.ft_count = 0;
 
-										}
+                    }
 
-										int time = data.captcha_time;
+                    callback.text("🚪  " + data.ft_count + " -> " + (data.ft_count = data.ft_count + 1));
 
-										if (time - 30 > 20) {
+                } else if ("captcha_del".equals(params[1])) {
 
-												data.captcha_time = time  - 30;
+                    if (data.captcha_del == null) {
 
-										} else {
+                        data.captcha_del = 0;
 
-												data.captcha_time = 20;
+                        callback.text("🚪  保留一条");
 
-										}
+                    } else if (data.captcha_del == 0) {
 
-										callback.text("🚪  " + data.parse_time(time) + " -> " + data.parse_time());
+                        data.captcha_del = 1;
 
-										if (data.captcha_time == 50) {
+                        callback.text("🚪  全部保留");
 
-												data.captcha_time = null;
+                    } else {
 
-										}
+                        data.captcha_del = null;
 
+                        callback.text("🚪  延时删除");
 
-								} else if ("fail_ban".equals(params[1])) {
+                    }
 
-										if (data.fail_ban == null) {
 
-												data.fail_ban = true;
+                } else if ("ft_dec".equals(params[1])) {
 
-												callback.text("🚪  封锁该用户");
+                    if (data.ft_count == null) {
 
-										} else {
+                        callback.text("🚪  再低就没了 (ﾟ⊿ﾟ)ﾂ");
 
-												data.fail_ban = null;
+                        return;
 
-												callback.text("🚪  移除该用户");
+                    }
 
-										}
+                    callback.text("🚪  " + data.ft_count + " -> " + (data.ft_count = data.ft_count - 1));
 
+                    if (data.ft_count == 0) {
 
-								} else if ("mode_def".equals(params[1])) {
+                        data.ft_count = null;
 
-										callback.text("🚪  默认模式");
+                    }
 
-										if (data.captcha_mode == null) {
+                } else if ("jt_inc".equals(params[1])) {
 
-												return;
+                    if (data.captcha_time != null && (data.captcha_time >= 5 * 60)) {
 
-										}
+                        callback.text("🚪  新数值太高 (> 5min)");
 
-										data.captcha_mode = null;
+                        return;
 
-								}  else if ("mode_code".equals(params[1])) {
+                    }
 
-										callback.text("🚪  验证码验证");
+                    if (data.captcha_time == null) {
 
-										if (((Integer)0).equals(data.captcha_mode)) {
+                        data.captcha_time = 50;
 
-												return;
+                    }
 
-										}
+                    callback.text("🚪  " + data.parse_time() + " -> " + (data.parse_time(data.captcha_time = data.captcha_time + 10)));
 
-										data.captcha_mode = 0;
+                    if (data.captcha_time == 50) {
 
-								} else if ("mode_math".equals(params[1])) {
+                        data.captcha_time = null;
 
-										callback.text("🚪  算数验证");
+                    }
 
-										if (((Integer)1).equals(data.captcha_mode)) {
+                } else if ("jt_inc_t".equals(params[1])) {
 
-												return;
+                    if (data.captcha_time != null && (data.captcha_time >= 5 * 60)) {
 
-										}
+                        callback.text("🚪  新数值太高 (> 5min)");
 
-										data.captcha_mode = 1;
+                        return;
 
-								} else if ("with_image".equals(params[1])) {
+                    }
 
-										if (data.with_image == null) {
+                    if (data.captcha_time == null) {
 
-												data.with_image = true;
+                        data.captcha_time = 50;
 
-												callback.text("🚪  以图片显示问题");
+                    }
 
-										} else {
+                    int time = data.captcha_time;
 
-												data.with_image = null;
+                    if (time + 30 > 5 * 60) {
 
-												callback.text("🚪  以文字显示问题");
+                        data.captcha_time = 5 * 60;
 
-										}
+                    } else {
 
-								} else if ("interfere".equals(params[1])) {
+                        data.captcha_time = time + 30;
 
-										if (data.interfere == null) {
+                    }
 
-												data.interfere = true;
+                    callback.text("🚪  " + data.parse_time(time) + " -> " + data.parse_time());
 
-												callback.text("🚪  开启按钮干扰");
+                    if (data.captcha_time == 50) {
 
-										} else {
+                        data.captcha_time = null;
 
-												data.interfere = null;
+                    }
 
-												callback.text("🚪  关闭按钮干扰");
+                } else if ("jt_dec".equals(params[1])) {
 
-										}
+                    if (data.captcha_time != null && data.captcha_time < 21) {
 
-								} else if ("require_input".equals(params[1])) {
+                        callback.text("🚪  再低还能验证吗 (ﾟ⊿ﾟ)ﾂ");
 
-										if (data.require_input == null) {
+                        return;
 
-												if (((Integer)2).equals(data.captcha_mode) && (data.custom_a_question == null || data.custom_kw == null)) {
+                    }
 
-														callback.alert(
+                    if (data.captcha_time == null) {
 
-																"你正在使用自定义验证模式",
+                        data.captcha_time = 50;
 
-																"需要设定回答模式的问题与答案才能开启回答模式"
+                    }
 
-														);
+                    callback.text("🚪  " + data.parse_time() + " -> " + data.parse_time(data.captcha_time = data.captcha_time - 10));
 
-														return;
+                    if (data.captcha_time == 50) {
 
-												}
+                        data.captcha_time = null;
 
-												data.require_input = true;
+                    }
 
-												callback.text("🚪  要求输入答案");
 
+                } else if ("jt_dec_t".equals(params[1])) {
 
-										} else {
+                    if (data.captcha_time != null && data.captcha_time < 21) {
 
-												if (((Integer)2).equals(data.captcha_mode) && (data.custom_i_question == null || data.custom_items == null)) {
+                        callback.text("🚪  再低还能验证吗 (ﾟ⊿ﾟ)ﾂ");
 
-														callback.alert(
+                        return;
 
-																"你正在使用自定义验证模式",
+                    }
 
-																"需要设定选择模式的问题与选项才能关闭回答模式"
+                    if (data.captcha_time == null) {
 
-														);
+                        data.captcha_time = 50;
 
-														return;
+                    }
 
-												}
+                    int time = data.captcha_time;
 
-												data.require_input = null;
+                    if (time - 30 > 20) {
 
-												callback.text("🚪  要求选择答案");	
+                        data.captcha_time = time - 30;
 
-										}
+                    } else {
 
-								} else if ("invite_user".equals(params[1])) {
+                        data.captcha_time = 20;
 
-										if (data.invite_user_ban == null) {
+                    }
 
-												data.invite_user_ban = true;
+                    callback.text("🚪  " + data.parse_time(time) + " -> " + data.parse_time());
 
-												callback.text("🚪  封锁");
+                    if (data.captcha_time == 50) {
 
-										} else {
+                        data.captcha_time = null;
 
-												data.invite_user_ban = null;
+                    }
 
-												callback.text("🚪  移除");
 
-										}
+                } else if ("fail_ban".equals(params[1])) {
 
-								} else if ("invite_bot".equals(params[1])) {
+                    if (data.fail_ban == null) {
 
-										if (data.invite_bot_ban == null) {
+                        data.fail_ban = true;
 
-												data.invite_bot_ban = true;
+                        callback.text("🚪  封锁该用户");
 
-												callback.text("🚪  封锁");
+                    } else {
 
-										} else {
+                        data.fail_ban = null;
 
-												data.invite_bot_ban = null;
+                        callback.text("🚪  移除该用户");
 
-												callback.text("🚪  移除");
+                    }
 
-										}
 
-								} else if ("mode_cus".equals(params[1])) {
+                } else if ("mode_def".equals(params[1])) {
 
-										callback.edit("编辑自定义问题. 对错选项或正确内容.\n",cusStats(data)).buttons(cusMenu(data)).async();
+                    callback.text("🚪  默认模式");
 
-										return;
+                    if (data.captcha_mode == null) {
 
-								} else {
+                        return;
 
-										callback.alert("喵...？");
+                    }
 
-										return;
+                    data.captcha_mode = null;
 
-								}
+                } else if ("mode_code".equals(params[1])) {
 
-								executeAsync(callback.update,new EditMessageReplyMarkup(callback.chatId(),callback.messageId()).replyMarkup(joinMenu(data).markup()));
+                    callback.text("🚪  验证码验证");
 
-						} else if (POINT_SET_CUST.equals(point)) {
+                    if (((Integer) 0).equals(data.captcha_mode)) {
 
-								if ("enable_cus".equals(params[1])) {
+                        return;
 
-										if (((Integer)2).equals(data.captcha_mode)) {
+                    }
 
-												callback.text("🚪  已关闭");
+                    data.captcha_mode = 0;
 
-												data.captcha_mode = null;
+                } else if ("mode_math".equals(params[1])) {
 
-										} else if (data.require_input == null && (data.custom_i_question == null || data.custom_items == null)) {
+                    callback.text("🚪  算数验证");
 
-												callback.alert(
+                    if (((Integer) 1).equals(data.captcha_mode)) {
 
-														"你正在使用选项模式",
+                        return;
 
-														"需要设定选项模式的问题与选项才能继续"
+                    }
 
+                    data.captcha_mode = 1;
 
-												);
+                } else if ("with_image".equals(params[1])) {
 
-												return;
+                    if (data.with_image == null) {
 
-										} else if (data.require_input != null && (data.custom_a_question == null || data.custom_kw == null)) {
+                        data.with_image = true;
 
-												callback.alert(
+                        callback.text("🚪  以图片显示问题");
 
-														"你正在使用回答模式",
+                    } else {
 
-														"需要设定回答模式的问题与正确回答才能继续"
+                        data.with_image = null;
 
+                        callback.text("🚪  以文字显示问题");
 
-												);
+                    }
 
-												return;
+                } else if ("interfere".equals(params[1])) {
 
-										}	else {
+                    if (data.interfere == null) {
 
-												callback.text("🚪  已开启");
+                        data.interfere = true;
 
-												data.captcha_mode = 2;
+                        callback.text("🚪  开启按钮干扰");
 
-										}
+                    } else {
 
-										executeAsync(callback.update,new EditMessageReplyMarkup(callback.chatId(),callback.message().messageId()).replyMarkup(cusMenu(data).markup()));
+                        data.interfere = null;
 
-								} else if ("reset_i_question".equals(params[1])) {
+                        callback.text("🚪  关闭按钮干扰");
 
-										callback.confirm();
+                    }
 
-										EditCustom edit = new EditCustom(0,callback,data);
+                } else if ("require_input".equals(params[1])) {
 
-										callback.send("现在发送问题 :").exec(edit);
+                    if (data.require_input == null) {
 
-										setPrivatePoint(user,POINT_SET_CUST,edit);
+                        if (((Integer) 2).equals(data.captcha_mode) && (data.custom_a_question == null || data.custom_kw == null)) {
 
-								} else if ("reset_items".equals(params[1])) {
+                            callback.alert(
 
-										callback.confirm();
+                                    "你正在使用自定义验证模式",
 
-										EditCustom edit = new EditCustom(1,callback,data);
+                                    "需要设定回答模式的问题与答案才能开启回答模式"
 
-										callback.send("现在发送选项 每行一个 至少一个 最多六个 正确答案以 + 号开头 :").exec(edit);
+                            );
 
-										setPrivatePoint(user,POINT_SET_CUST,edit);
+                            return;
 
-								} else if ("reset_a_question".equals(params[1])) {
+                        }
 
-										callback.confirm();
+                        data.require_input = true;
 
-										EditCustom edit = new EditCustom(2,callback,data);
+                        callback.text("🚪  要求输入答案");
 
-										callback.send("现在发送问题 :").exec(edit);
 
-										setPrivatePoint(user,POINT_SET_CUST,edit);
+                    } else {
 
-								} else if ("reset_answer".equals(params[1])) {
+                        if (((Integer) 2).equals(data.captcha_mode) && (data.custom_i_question == null || data.custom_items == null)) {
 
-										callback.confirm();
+                            callback.alert(
 
-										EditCustom edit = new EditCustom(3,callback,data);
+                                    "你正在使用自定义验证模式",
 
-										callback.send("现在发送正确关键字 每行一个 :").exec(edit);
+                                    "需要设定选择模式的问题与选项才能关闭回答模式"
 
-										setPrivatePoint(user,POINT_SET_CUST,edit);
+                            );
 
-								} 
+                            return;
 
-						} else if (POINT_MENU_SHOW.equals(point)) {
+                        }
 
-								callback.edit(showStats(data)).buttons(showMenu(data)).async();
+                        data.require_input = null;
 
-						} else if (POINT_SET_SHOW.equals(point)) {
+                        callback.text("🚪  要求选择答案");
 
-							  if ("show_disable".equals(params[1])) {
+                    }
 
-										data.welcome = null;
+                } else if ("invite_user".equals(params[1])) {
 
-										callback.text("📢  已关闭");
+                    if (data.invite_user_ban == null) {
 
-								} else if ("show_text".equals(params[1])) {
+                        data.invite_user_ban = true;
 
-										if (data.welcomeMessage == null) {
+                        callback.text("🚪  封锁");
 
-												callback.alert("文本内容未设定");
+                    } else {
 
-												return;
+                        data.invite_user_ban = null;
 
-										}
+                        callback.text("🚪  移除");
 
-										data.welcome = 0;
+                    }
 
-										callback.text("📢  文本欢迎消息");
+                } else if ("invite_bot".equals(params[1])) {
 
-								} else if ("show_sticker".equals(params[1])) {
+                    if (data.invite_bot_ban == null) {
 
-										if (data.welcomeSet == null) {
+                        data.invite_bot_ban = true;
 
-												callback.alert("贴纸未设定");
+                        callback.text("🚪  封锁");
 
-												return;
+                    } else {
 
-										}
+                        data.invite_bot_ban = null;
 
-										data.welcome = 1;
+                        callback.text("🚪  移除");
 
-										callback.text("📢  贴纸欢迎消息");
+                    }
 
-								} else if ("text_and_sticker".equals(params[1])) {
+                } else if ("mode_cus".equals(params[1])) {
 
-										if (data.welcomeMessage == null) {
+                    callback.edit("编辑自定义问题. 对错选项或正确内容.\n", cusStats(data)).buttons(cusMenu(data)).async();
 
-												callback.alert("文本内容未设定");
+                    return;
 
-												return;
+                } else {
 
-										} else if (data.welcomeSet == null) {
+                    callback.alert("喵...？");
 
-												callback.alert("贴纸未设定");
+                    return;
 
-												return;
+                }
 
-										}
+                executeAsync(callback.update, new EditMessageReplyMarkup(callback.chatId(), callback.messageId()).replyMarkup(joinMenu(data).markup()));
 
-										data.welcome = 2;
+            } else if (POINT_SET_CUST.equals(point)) {
 
-										callback.text("📢  贴纸与文本");
+                if ("enable_cus".equals(params[1])) {
 
-								} else if ("set_msg".equals(params[1])) {
+                    if (((Integer) 2).equals(data.captcha_mode)) {
 
-										callback.confirm();
+                        callback.text("🚪  已关闭");
 
-										EditCustom edit = new EditCustom(4,callback,data);
+                        data.captcha_mode = null;
 
-										callback.send("现在发送欢迎文本 :").exec(edit);
+                    } else if (data.require_input == null && (data.custom_i_question == null || data.custom_items == null)) {
 
-										setPrivatePoint(user,POINT_SET_CUST,edit);
+                        callback.alert(
 
+                                "你正在使用选项模式",
 
-								} else if ("set_set".equals(params[1])) {
+                                "需要设定选项模式的问题与选项才能继续"
 
-										callback.confirm();
 
-										EditCustom edit = new EditCustom(5,callback,data);
+                        );
 
-										callback.send("现在发送贴纸来设定","注意 : 如果发送贴纸包链接，则每次随机一张作为欢迎信息").exec(edit);
+                        return;
 
-										setPrivatePoint(user,POINT_SET_CUST,edit);
+                    } else if (data.require_input != null && (data.custom_a_question == null || data.custom_kw == null)) {
 
+                        callback.alert(
 
-								} else if ("del_welcome".equals(params[1])) {
+                                "你正在使用回答模式",
 
-										if (data.del_welcome_msg == null) {
+                                "需要设定回答模式的问题与正确回答才能继续"
 
-												data.del_welcome_msg = true;
 
-												callback.text("📢  全部保留");
+                        );
 
-										} else {
+                        return;
 
-												data.del_welcome_msg = null;
+                    } else {
 
-												callback.text("📢  保留最后一条");
+                        callback.text("🚪  已开启");
 
-										}
+                        data.captcha_mode = 2;
 
-								}
+                    }
 
-								callback.edit(showStats(data)).buttons(showMenu(data)).async();
+                    executeAsync(callback.update, new EditMessageReplyMarkup(callback.chatId(), callback.message().messageId()).replyMarkup(cusMenu(data).markup()));
 
-						} else if (POINT_MENU_SPAM.equals(point)) {
-							
-							callback.edit("群组反垃圾用户功能选单 (Anti Spam)").buttons(spamMenu(data)).async();
-							
-						} else if (POINT_SET_SPAM.equals(point)) {
-							
-							if ("anti_halal".equals(params[1])) {
-								
-								if (data.anti_halal == null) {
+                } else if ("reset_i_question".equals(params[1])) {
 
-									data.anti_halal = true;
+                    callback.confirm();
 
-									callback.text("🔎 已开启");
+                    EditCustom edit = new EditCustom(0, callback, data);
 
-								} else {
+                    callback.send("现在发送问题 :").exec(edit);
 
-									data.anti_halal = null;
+                    setPrivatePoint(user, POINT_SET_CUST, edit);
 
-									callback.text("🔎️  已关闭");
+                } else if ("reset_items".equals(params[1])) {
 
-								}
-								
-								
-							} else if ("cas".equals(params[1])) {
+                    callback.confirm();
 
-								if (data.cas_spam == null) {
+                    EditCustom edit = new EditCustom(1, callback, data);
 
-									data.cas_spam = true;
+                    callback.send("现在发送选项 每行一个 至少一个 最多六个 正确答案以 + 号开头 :").exec(edit);
 
-									callback.text("🔎 已开启");
+                    setPrivatePoint(user, POINT_SET_CUST, edit);
 
-								} else {
+                } else if ("reset_a_question".equals(params[1])) {
 
-									data.cas_spam = null;
+                    callback.confirm();
 
-									callback.text("🔎️  已关闭");
+                    EditCustom edit = new EditCustom(2, callback, data);
 
-								}
+                    callback.send("现在发送问题 :").exec(edit);
 
-							} else if ("backhole".equals(params[1])) {
+                    setPrivatePoint(user, POINT_SET_CUST, edit);
 
-								if (data.backhole == null) {
+                } else if ("reset_answer".equals(params[1])) {
 
-									data.backhole = true;
+                    callback.confirm();
 
-									callback.alert("警告 : 如果你不知道你自己干什么，请关闭 '黑箱'！");
+                    EditCustom edit = new EditCustom(3, callback, data);
 
-								} else {
+                    callback.send("现在发送正确关键字 每行一个 :").exec(edit);
 
-									data.backhole = null;
+                    setPrivatePoint(user, POINT_SET_CUST, edit);
 
-									callback.text("🔎️  已关闭");
+                }
 
-								}
+            } else if (POINT_MENU_SHOW.equals(point)) {
 
+                callback.edit(showStats(data)).buttons(showMenu(data)).async();
 
-							}
-							
-							callback.edit("群组反垃圾用户功能选单 (Anti Spam)").buttons(spamMenu(data)).async();
-							
-						}
+            } else if (POINT_SET_SHOW.equals(point)) {
 
-				}
+                if ("show_disable".equals(params[1])) {
 
-		}
+                    data.welcome = null;
 
-		@Override
-		public void onPoint(UserData user,Msg msg,String point,PointData data) {
+                    callback.text("📢  已关闭");
 
-				EditCustom edit = (EditCustom)data.with(msg);
+                } else if ("show_text".equals(params[1])) {
 
-				if (edit.type == 0) {
+                    if (data.welcomeMessage == null) {
 
-						if (!msg.hasText()) {
+                        callback.alert("文本内容未设定");
 
-								msg.send("请输入新的选择模式问题 :").withCancel().exec(data);
+                        return;
 
-								return;
+                    }
 
-						}
+                    data.welcome = 0;
 
-						edit.data.custom_i_question = msg.text();
+                    callback.text("📢  文本欢迎消息");
 
-						clearPrivatePoint(user);
+                } else if ("show_sticker".equals(params[1])) {
 
-				} else if (edit.type == 1) {
+                    if (data.welcomeSet == null) {
 
-						if (!msg.hasText()) {
+                        callback.alert("贴纸未设定");
 
-								msg.send("请输入新的选择模式选项 :").withCancel().exec(data);
+                        return;
 
-								return;
+                    }
 
-						}
+                    data.welcome = 1;
 
-						List<GroupData.CustomItem> items = new LinkedList<>();
+                    callback.text("📢  贴纸欢迎消息");
 
-						boolean valid = false;
+                } else if ("text_and_sticker".equals(params[1])) {
 
-						ArrayList<String> buttons = new ArrayList<>();
+                    if (data.welcomeMessage == null) {
 
-						for (final String line : msg.text().split("\n")) {
+                        callback.alert("文本内容未设定");
 
-								if (buttons.contains(line)) {
+                        return;
 
-										msg.send("选项重复 : " + line).withCancel().exec(data);
+                    } else if (data.welcomeSet == null) {
 
-										return;
+                        callback.alert("贴纸未设定");
 
-								}
+                        return;
 
+                    }
 
+                    data.welcome = 2;
 
-								if (line.startsWith("+")) {
+                    callback.text("📢  贴纸与文本");
 
-										buttons.add(line.substring(1));
+                } else if ("set_msg".equals(params[1])) {
 
-										valid = true;
+                    callback.confirm();
 
-										items.add(new GroupData.CustomItem() {{
+                    EditCustom edit = new EditCustom(4, callback, data);
 
-																this.isValid = true;
-																this.text = line.substring(1);
+                    callback.send("现在发送欢迎文本 :").exec(edit);
 
-														}});
+                    setPrivatePoint(user, POINT_SET_CUST, edit);
 
-								} else {
 
-										buttons.add(line);
+                } else if ("set_set".equals(params[1])) {
 
-										items.add(new GroupData.CustomItem() {{
+                    callback.confirm();
 
-																this.isValid = false;
-																this.text = line;
+                    EditCustom edit = new EditCustom(5, callback, data);
 
-														}});
+                    callback.send("现在发送贴纸来设定", "注意 : 如果发送贴纸包链接，则每次随机一张作为欢迎信息").exec(edit);
 
-								}
+                    setPrivatePoint(user, POINT_SET_CUST, edit);
 
-					  }
 
-						if (items.isEmpty()) {
+                } else if ("del_welcome".equals(params[1])) {
 
-								msg.send("选项为空 请重试").withCancel().exec(data);
+                    if (data.del_welcome_msg == null) {
 
-								return;
+                        data.del_welcome_msg = true;
 
-						} else if (items.size() > 6) {
+                        callback.text("📢  全部保留");
 
-								msg.send("选项太多 (> 6)").exec(data);
+                    } else {
 
-								return;
+                        data.del_welcome_msg = null;
 
-						} else if (!valid) {
+                        callback.text("📢  保留最后一条");
 
-								msg.send("没有包含一个正确选项","再说一遍 : 每行一个选项，正确选项以+开头").exec(data);
+                    }
 
-								return;
+                }
 
-						}
+                callback.edit(showStats(data)).buttons(showMenu(data)).async();
 
-						edit.data.custom_items = items;
+            } else if (POINT_MENU_SPAM.equals(point)) {
 
-						clearPrivatePoint(user);
+                callback.edit("群组反垃圾用户功能选单 (Anti Spam)").buttons(spamMenu(data)).async();
 
-				} else if (edit.type == 2) {
+            } else if (POINT_SET_SPAM.equals(point)) {
 
-						if (!msg.hasText()) {
+                if ("anti_halal".equals(params[1])) {
 
-								msg.send("请输入新的回答模式问题 :").withCancel().exec(data);
+                    if (data.anti_halal == null) {
 
-								return;
+                        data.anti_halal = true;
 
-						}
+                        callback.text("🔎 已开启");
 
-						edit.data.custom_a_question = msg.text();
+                    } else {
 
-						clearPrivatePoint(user);
+                        data.anti_halal = null;
 
-				} else if (edit.type == 3) {
+                        callback.text("🔎️  已关闭");
 
-						if (StrUtil.isBlank(msg.text())) {
+                    }
 
-								msg.send("请输入新的回答模式答案 :").withCancel().exec(data);
 
-								return;
+                } else if ("cas".equals(params[1])) {
 
-						}
+                    if (data.cas_spam == null) {
 
-						LinkedList<String> custom_kw = new LinkedList<>();
+                        data.cas_spam = true;
 
-						for (String kw : msg.text().split("\n")) {
+                        callback.text("🔎 已开启");
 
-								if (!StrUtil.isBlank(kw)) {
+                    } else {
 
-										custom_kw.add(kw);
+                        data.cas_spam = null;
 
-								}
+                        callback.text("🔎️  已关闭");
 
-						}
+                    }
 
-						if (custom_kw.isEmpty()) {
+                } else if ("backhole".equals(params[1])) {
 
-								msg.send("为空 请重试！").withCancel().exec(data);
+                    if (data.backhole == null) {
 
-								return;
+                        data.backhole = true;
 
-						}
+                        callback.alert("警告 : 如果你不知道你自己干什么，请关闭 '黑箱'！");
 
-						edit.data.custom_kw = custom_kw;
+                    } else {
 
-						clearPrivatePoint(user);
+                        data.backhole = null;
 
-				} else if (edit.type == 4) {
+                        callback.text("🔎️  已关闭");
 
-						if (!msg.hasText()) {
+                    }
 
-								msg.send("请发送欢迎文本").withCancel().exec(data);
 
-								return;
+                }
 
-						}
+                callback.edit("群组反垃圾用户功能选单 (Anti Spam)").buttons(spamMenu(data)).async();
 
-						edit.data.welcomeMessage = HtmlUtil.escape(msg.text());
-						
-						clearPrivatePoint(user);
+            }
 
-				} else if (edit.type == 5) {
+        }
 
-						if (msg.sticker() != null) {
+    }
 
-								edit.data.welcomeSet = new LinkedList<>();
+    @Override
+    public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
-								edit.data.welcomeSet.add(msg.sticker().fileId());
+        EditCustom edit = (EditCustom) data.with(msg);
 
-						} else 	if (!msg.hasText()) {
+        if (edit.type == 0) {
 
-								msg.send("请发送欢迎贴纸").withCancel().exec(data);
+            if (!msg.hasText()) {
 
-								return;
+                msg.send("请输入新的选择模式问题 :").withCancel().exec(data);
 
-						} else {
+                return;
 
-								String target = msg.text();
+            }
 
-								if (target.contains("/")) target = StrUtil.subAfter(target,"/",true);
+            edit.data.custom_i_question = msg.text();
 
-								final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
+            clearPrivatePoint(user);
 
-								if (!set.isOk()) {
+        } else if (edit.type == 1) {
 
-										msg.send("无法读取贴纸包 " + target + " : " + set.description()).exec(data);
+            if (!msg.hasText()) {
 
-										return;
+                msg.send("请输入新的选择模式选项 :").withCancel().exec(data);
 
-								}
+                return;
 
-								edit.data.welcomeSet = new LinkedList<>();
+            }
 
-								for (Sticker sticker :set.stickerSet().stickers()) edit.data.welcomeSet.add(sticker.fileId());
+            List<GroupData.CustomItem> items = new LinkedList<>();
 
-						}
+            boolean valid = false;
 
-						clearPrivatePoint(user);
+            ArrayList<String> buttons = new ArrayList<>();
 
-				}
+            for (final String line : msg.text().split("\n")) {
 
+                if (buttons.contains(line)) {
 
-		}
+                    msg.send("选项重复 : " + line).withCancel().exec(data);
 
-		ButtonMarkup menuMarkup(final GroupData data) {
+                    return;
 
-				return new ButtonMarkup() {{
+                }
 
-								newButtonLine("🛠️  功能选项",POINT_MENU_MAIN,data.id);
-								newButtonLine("📝  成员限制",POINT_MENU_REST,data.id);
-								newButtonLine("🚪  加群验证",POINT_MENU_JOIN,data.id);
-								newButtonLine("📢  欢迎消息",POINT_MENU_SHOW,data.id);
-								newButtonLine("🔎  Anti Spam",POINT_MENU_SPAM,data.id);
-						
-						}};
 
+                if (line.startsWith("+")) {
 
-		}
+                    buttons.add(line.substring(1));
 
-		ButtonMarkup mainMenu(final GroupData data) {
+                    valid = true;
 
-				return new ButtonMarkup() {{
+                    items.add(new GroupData.CustomItem() {{
 
-								newButtonLine()
-										.newButton("删除频道消息",POINT_HELP,"dcm")
-										.newButton(data.delete_channel_msg == null ? "不处理" : data.delete_channel_msg == 0 ? "取消置顶" : "全部删除",POINT_SET_MAIN,data.id,"dcm");
+                        this.isValid = true;
+                        this.text = line.substring(1);
 
-								newButtonLine()
-										.newButton("删除服务消息",POINT_HELP,"dsm")
-										.newButton(data.delete_service_msg == null ? "不处理" : data.delete_service_msg == 0 ? "保留一条" : "全部删除",POINT_SET_MAIN,data.id,"dsm");
+                    }});
 
-								newButtonLine()
-										.newButton("不信任管理员",POINT_HELP,"not_trust_admin")
-										.newButton(data.not_trust_admin != null ? "✅" : "☑",POINT_SET_MAIN,data.id,"not_trust_admin");
+                } else {
 
-								newButtonLine("🔙",POINT_BACK,data.id);
+                    buttons.add(line);
 
-						}};
+                    items.add(new GroupData.CustomItem() {{
 
-		}
+                        this.isValid = false;
+                        this.text = line;
 
-		ButtonMarkup restMenu(final GroupData data) {
+                    }});
 
-				return new ButtonMarkup() {{
+                }
 
-								newButtonLine()
-										.newButton("邀请新成员",POINT_HELP,"invite_user")
-										.newButton(data.no_invite_user == null ? "✅" : data.no_invite_user == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"invite_user");
+            }
 
-								newButtonLine()
-										.newButton("邀请机器人",POINT_HELP,"invite_bot")
-										.newButton(data.no_invite_bot == null ? "✅" : data.no_invite_bot == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"invite_bot");
+            if (items.isEmpty()) {
 
-								newButtonLine()
-										.newButton("发送贴纸",POINT_HELP,"sticker")
-										.newButton(data.no_sticker == null ? "✅" : data.no_sticker == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"sticker");
+                msg.send("选项为空 请重试").withCancel().exec(data);
 
-						newButtonLine()
-							.newButton("动态贴纸",POINT_HELP,"animated")
-							.newButton(data.no_animated_sticker == null ? "✅" : data.no_animated_sticker == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"animated");
-						
-										
-								newButtonLine()
-										.newButton("发送图片",POINT_HELP,"image")
-										.newButton(data.no_image == null ? "✅" : data.no_image == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"image");
+                return;
 
-								newButtonLine()
-										.newButton("发送动图",POINT_HELP,"animation")
-										.newButton(data.no_animation == null ? "✅" : data.no_animation == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"animation");
+            } else if (items.size() > 6) {
 
-								newButtonLine()
-										.newButton("发送音频",POINT_HELP,"audio")
-										.newButton(data.no_audio == null ? "✅" : data.no_audio == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"audio");
+                msg.send("选项太多 (> 6)").exec(data);
 
-								newButtonLine()
-										.newButton("录制语音",POINT_HELP,"voice")
-										.newButton(data.no_voice == null ? "✅" : data.no_voice == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"voice");
+                return;
 
-								newButtonLine()
-										.newButton("发送视频",POINT_HELP,"video")
-										.newButton(data.no_video == null ? "✅" : data.no_video == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"video");
+            } else if (!valid) {
 
-								newButtonLine()
-										.newButton("录制视频",POINT_HELP,"video_note")
-										.newButton(data.no_video_note == null ? "✅" : data.no_video_note == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"video_note");
+                msg.send("没有包含一个正确选项", "再说一遍 : 每行一个选项，正确选项以+开头").exec(data);
 
-								newButtonLine()
-										.newButton("发送名片",POINT_HELP,"contact")
-										.newButton(data.no_contact == null ? "✅" : data.no_contact == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"contact");
+                return;
 
-								newButtonLine()
-										.newButton("发送位置",POINT_HELP,"location")
-										.newButton(data.no_location == null ? "✅" : data.no_location == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"location");
+            }
 
-								newButtonLine()
-										.newButton("发送游戏",POINT_HELP,"game")
-										.newButton(data.no_game == null ? "✅" : data.no_game == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"game");
+            edit.data.custom_items = items;
 
-								newButtonLine()
-										.newButton("发送文件",POINT_HELP,"file")
-										.newButton(data.no_file == null ? "✅" : data.no_file == 0 ? "🗑" : "❌",POINT_SET_REST,data.id,"file");
+            clearPrivatePoint(user);
 
-								newButtonLine("警告 " + (data.max_count == null ? 1 : data.max_count) + " 次 : " + data.actionName(),POINT_SET_REST,data.id,"action");
+        } else if (edit.type == 2) {
 
-								newButtonLine().newButton("➖",POINT_SET_REST,data.id,"dec").newButton("➕",POINT_SET_REST,data.id,"inc");
+            if (!msg.hasText()) {
 
-								newButtonLine("🔙",POINT_BACK,data.id);
+                msg.send("请输入新的回答模式问题 :").withCancel().exec(data);
 
-						}};
+                return;
 
+            }
 
-		}
+            edit.data.custom_a_question = msg.text();
 
-		ButtonMarkup joinMenu(final GroupData data) {
+            clearPrivatePoint(user);
 
-				return new ButtonMarkup() {{
+        } else if (edit.type == 3) {
 
-								newButtonLine()
-										.newButton("开启验证",POINT_HELP,"enable")
-										.newButton(data.join_captcha != null ? "✅" : "☑",POINT_SET_JOIN,data.id,"enable");
+            if (StrUtil.isBlank(msg.text())) {
 
-								newButtonLine()
-										.newButton("被动模式",POINT_HELP,"passive")
-										.newButton(data.passive_mode != null ? "✅" : "☑",POINT_SET_JOIN,data.id,"passive");
+                msg.send("请输入新的回答模式答案 :").withCancel().exec(data);
 
-								newButtonLine("容错次数 : " + (data.ft_count == null ? 0 : data.ft_count),"null");
+                return;
 
-								newButtonLine().newButton("➖",POINT_SET_JOIN,data.id,"ft_dec").newButton("➕",POINT_SET_JOIN,data.id,"ft_inc");
+            }
 
-								newButtonLine("时间上限 : " + data.parse_time(),"null");
+            LinkedList<String> custom_kw = new LinkedList<>();
 
-								newButtonLine()
-										.newButton("➖",POINT_SET_JOIN,data.id,"jt_dec")
-										.newButton("➖➖",POINT_SET_JOIN,data.id,"jt_dec_t")
-										.newButton("➕",POINT_SET_JOIN,data.id,"jt_inc")
-										.newButton("➕➕",POINT_SET_JOIN,data.id,"jt_inc_t");
+            for (String kw : msg.text().split("\n")) {
 
-								newButtonLine()
-										.newButton("验证失败",POINT_HELP,"fail_ban")
-										.newButton(data.fail_ban == null ? "移除" : "封锁",POINT_SET_JOIN,data.id,"fail_ban");
+                if (!StrUtil.isBlank(kw)) {
 
-								newButtonLine()
-										.newButton("保留验证消息",POINT_HELP,"captcha_del")
-										.newButton(data.captcha_del == null ? "延时删除" : data.captcha_del == 0 ? "保留一条" : "全部保留",POINT_SET_JOIN,data.id,"captcha_del");
+                    custom_kw.add(kw);
 
+                }
 
-								newButtonLine("验证期间邀请用户",POINT_HELP,"invite_when_captcha");
+            }
 
-								newButtonLine()
-										.newButton("邀请用户",POINT_HELP,"invite_user")
-										.newButton(data.invite_user_ban == null ? "移除" : "封锁",POINT_SET_JOIN,data.id,"invite_user");
+            if (custom_kw.isEmpty()) {
 
-								newButtonLine()
-										.newButton("邀请机器人",POINT_HELP,"invite_bot")
-										.newButton(data.invite_bot_ban == null ? "移除" : "封锁",POINT_SET_JOIN,data.id,"invite_bot");
+                msg.send("为空 请重试！").withCancel().exec(data);
 
-								newButtonLine("审核模式","null");
+                return;
 
-								newButtonLine()
-										.newButton("默认模式",POINT_HELP,"mode_def")
-										.newButton(data.captcha_mode == null ? "●" : "○",POINT_SET_JOIN,data.id,"mode_def");
+            }
 
-								newButtonLine()
-										.newButton("验证码",POINT_HELP,"mode_code")
-										.newButton(((Integer)0).equals(data.captcha_mode) ? "●" : "○",POINT_SET_JOIN,data.id,"mode_code");
+            edit.data.custom_kw = custom_kw;
 
-								newButtonLine()
-										.newButton("算数题",POINT_HELP,"mode_math")
-										.newButton(((Integer)1).equals(data.captcha_mode) ? "●" : "○",POINT_SET_JOIN,data.id,"mode_math");
+            clearPrivatePoint(user);
 
-								newButtonLine()
-										.newButton("自定义",POINT_HELP,"mode_cus")
-										.newButton(((Integer)2).equals(data.captcha_mode) ? "●" : "○",POINT_SET_JOIN,data.id,"mode_cus");
+        } else if (edit.type == 4) {
 
-								newButtonLine()
-										.newButton("图片描述",POINT_HELP,"with_image")
-										.newButton(data.with_image != null ? "✅" : "☑",POINT_SET_JOIN,data.id,"with_image");
+            if (!msg.hasText()) {
 
-								newButtonLine()
-										.newButton("干扰按钮",POINT_HELP,"interfere")
-										.newButton(data.interfere != null ? "✅" : "☑",POINT_SET_JOIN,data.id,"interfere");
+                msg.send("请发送欢迎文本").withCancel().exec(data);
 
-								newButtonLine()
-										.newButton("回答模式",POINT_HELP,"require_input")
-										.newButton(data.require_input != null ? "✅" : "☑",POINT_SET_JOIN,data.id,"require_input");
+                return;
+
+            }
+
+            edit.data.welcomeMessage = HtmlUtil.escape(msg.text());
+
+            clearPrivatePoint(user);
+
+        } else if (edit.type == 5) {
+
+            if (msg.sticker() != null) {
+
+                edit.data.welcomeSet = new LinkedList<>();
+
+                edit.data.welcomeSet.add(msg.sticker().fileId());
+
+            } else if (!msg.hasText()) {
+
+                msg.send("请发送欢迎贴纸").withCancel().exec(data);
+
+                return;
+
+            } else {
+
+                String target = msg.text();
+
+                if (target.contains("/")) target = StrUtil.subAfter(target, "/", true);
+
+                final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
+
+                if (!set.isOk()) {
+
+                    msg.send("无法读取贴纸包 " + target + " : " + set.description()).exec(data);
+
+                    return;
+
+                }
+
+                edit.data.welcomeSet = new LinkedList<>();
+
+                for (Sticker sticker : set.stickerSet().stickers()) edit.data.welcomeSet.add(sticker.fileId());
+
+            }
+
+            clearPrivatePoint(user);
+
+        }
+
+
+    }
+
+    ButtonMarkup menuMarkup(final GroupData data) {
+
+        return new ButtonMarkup() {{
+
+            newButtonLine("🛠️  功能选项", POINT_MENU_MAIN, data.id);
+            newButtonLine("📝  成员限制", POINT_MENU_REST, data.id);
+            newButtonLine("🚪  加群验证", POINT_MENU_JOIN, data.id);
+            newButtonLine("📢  欢迎消息", POINT_MENU_SHOW, data.id);
+            newButtonLine("🔎  Anti Spam", POINT_MENU_SPAM, data.id);
+
+        }};
+
+
+    }
+
+    ButtonMarkup mainMenu(final GroupData data) {
+
+        return new ButtonMarkup() {{
+
+            newButtonLine()
+                    .newButton("删除频道消息", POINT_HELP, "dcm")
+                    .newButton(data.delete_channel_msg == null ? "不处理" : data.delete_channel_msg == 0 ? "取消置顶" : "全部删除", POINT_SET_MAIN, data.id, "dcm");
+
+            newButtonLine()
+                    .newButton("删除服务消息", POINT_HELP, "dsm")
+                    .newButton(data.delete_service_msg == null ? "不处理" : data.delete_service_msg == 0 ? "保留一条" : "全部删除", POINT_SET_MAIN, data.id, "dsm");
+
+            newButtonLine()
+                    .newButton("不信任管理员", POINT_HELP, "not_trust_admin")
+                    .newButton(data.not_trust_admin != null ? "✅" : "☑", POINT_SET_MAIN, data.id, "not_trust_admin");
+
+            newButtonLine("🔙", POINT_BACK, data.id);
+
+        }};
+
+    }
+
+    ButtonMarkup restMenu(final GroupData data) {
+
+        return new ButtonMarkup() {{
+
+            newButtonLine()
+                    .newButton("邀请新成员", POINT_HELP, "invite_user")
+                    .newButton(data.no_invite_user == null ? "✅" : data.no_invite_user == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "invite_user");
+
+            newButtonLine()
+                    .newButton("邀请机器人", POINT_HELP, "invite_bot")
+                    .newButton(data.no_invite_bot == null ? "✅" : data.no_invite_bot == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "invite_bot");
+
+            newButtonLine()
+                    .newButton("发送贴纸", POINT_HELP, "sticker")
+                    .newButton(data.no_sticker == null ? "✅" : data.no_sticker == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "sticker");
+
+            newButtonLine()
+                    .newButton("动态贴纸", POINT_HELP, "animated")
+                    .newButton(data.no_animated_sticker == null ? "✅" : data.no_animated_sticker == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "animated");
+
+
+            newButtonLine()
+                    .newButton("发送图片", POINT_HELP, "image")
+                    .newButton(data.no_image == null ? "✅" : data.no_image == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "image");
+
+            newButtonLine()
+                    .newButton("发送动图", POINT_HELP, "animation")
+                    .newButton(data.no_animation == null ? "✅" : data.no_animation == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "animation");
+
+            newButtonLine()
+                    .newButton("发送音频", POINT_HELP, "audio")
+                    .newButton(data.no_audio == null ? "✅" : data.no_audio == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "audio");
+
+            newButtonLine()
+                    .newButton("录制语音", POINT_HELP, "voice")
+                    .newButton(data.no_voice == null ? "✅" : data.no_voice == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "voice");
+
+            newButtonLine()
+                    .newButton("发送视频", POINT_HELP, "video")
+                    .newButton(data.no_video == null ? "✅" : data.no_video == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "video");
+
+            newButtonLine()
+                    .newButton("录制视频", POINT_HELP, "video_note")
+                    .newButton(data.no_video_note == null ? "✅" : data.no_video_note == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "video_note");
+
+            newButtonLine()
+                    .newButton("发送名片", POINT_HELP, "contact")
+                    .newButton(data.no_contact == null ? "✅" : data.no_contact == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "contact");
+
+            newButtonLine()
+                    .newButton("发送位置", POINT_HELP, "location")
+                    .newButton(data.no_location == null ? "✅" : data.no_location == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "location");
+
+            newButtonLine()
+                    .newButton("发送游戏", POINT_HELP, "game")
+                    .newButton(data.no_game == null ? "✅" : data.no_game == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "game");
+
+            newButtonLine()
+                    .newButton("发送文件", POINT_HELP, "file")
+                    .newButton(data.no_file == null ? "✅" : data.no_file == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "file");
+
+            newButtonLine("警告 " + (data.max_count == null ? 1 : data.max_count) + " 次 : " + data.actionName(), POINT_SET_REST, data.id, "action");
+
+            newButtonLine().newButton("➖", POINT_SET_REST, data.id, "dec").newButton("➕", POINT_SET_REST, data.id, "inc");
+
+            newButtonLine("🔙", POINT_BACK, data.id);
+
+        }};
+
+
+    }
+
+    ButtonMarkup joinMenu(final GroupData data) {
+
+        return new ButtonMarkup() {{
+
+            newButtonLine()
+                    .newButton("开启验证", POINT_HELP, "enable")
+                    .newButton(data.join_captcha != null ? "✅" : "☑", POINT_SET_JOIN, data.id, "enable");
+
+            newButtonLine()
+                    .newButton("被动模式", POINT_HELP, "passive")
+                    .newButton(data.passive_mode != null ? "✅" : "☑", POINT_SET_JOIN, data.id, "passive");
+
+            newButtonLine("容错次数 : " + (data.ft_count == null ? 0 : data.ft_count), "null");
+
+            newButtonLine().newButton("➖", POINT_SET_JOIN, data.id, "ft_dec").newButton("➕", POINT_SET_JOIN, data.id, "ft_inc");
+
+            newButtonLine("时间上限 : " + data.parse_time(), "null");
+
+            newButtonLine()
+                    .newButton("➖", POINT_SET_JOIN, data.id, "jt_dec")
+                    .newButton("➖➖", POINT_SET_JOIN, data.id, "jt_dec_t")
+                    .newButton("➕", POINT_SET_JOIN, data.id, "jt_inc")
+                    .newButton("➕➕", POINT_SET_JOIN, data.id, "jt_inc_t");
+
+            newButtonLine()
+                    .newButton("验证失败", POINT_HELP, "fail_ban")
+                    .newButton(data.fail_ban == null ? "移除" : "封锁", POINT_SET_JOIN, data.id, "fail_ban");
+
+            newButtonLine()
+                    .newButton("保留验证消息", POINT_HELP, "captcha_del")
+                    .newButton(data.captcha_del == null ? "延时删除" : data.captcha_del == 0 ? "保留一条" : "全部保留", POINT_SET_JOIN, data.id, "captcha_del");
+
+
+            newButtonLine("验证期间邀请用户", POINT_HELP, "invite_when_captcha");
+
+            newButtonLine()
+                    .newButton("邀请用户", POINT_HELP, "invite_user")
+                    .newButton(data.invite_user_ban == null ? "移除" : "封锁", POINT_SET_JOIN, data.id, "invite_user");
+
+            newButtonLine()
+                    .newButton("邀请机器人", POINT_HELP, "invite_bot")
+                    .newButton(data.invite_bot_ban == null ? "移除" : "封锁", POINT_SET_JOIN, data.id, "invite_bot");
+
+            newButtonLine("审核模式", "null");
+
+            newButtonLine()
+                    .newButton("默认模式", POINT_HELP, "mode_def")
+                    .newButton(data.captcha_mode == null ? "●" : "○", POINT_SET_JOIN, data.id, "mode_def");
+
+            newButtonLine()
+                    .newButton("验证码", POINT_HELP, "mode_code")
+                    .newButton(((Integer) 0).equals(data.captcha_mode) ? "●" : "○", POINT_SET_JOIN, data.id, "mode_code");
+
+            newButtonLine()
+                    .newButton("算数题", POINT_HELP, "mode_math")
+                    .newButton(((Integer) 1).equals(data.captcha_mode) ? "●" : "○", POINT_SET_JOIN, data.id, "mode_math");
+
+            newButtonLine()
+                    .newButton("自定义", POINT_HELP, "mode_cus")
+                    .newButton(((Integer) 2).equals(data.captcha_mode) ? "●" : "○", POINT_SET_JOIN, data.id, "mode_cus");
+
+            newButtonLine()
+                    .newButton("图片描述", POINT_HELP, "with_image")
+                    .newButton(data.with_image != null ? "✅" : "☑", POINT_SET_JOIN, data.id, "with_image");
+
+            newButtonLine()
+                    .newButton("干扰按钮", POINT_HELP, "interfere")
+                    .newButton(data.interfere != null ? "✅" : "☑", POINT_SET_JOIN, data.id, "interfere");
+
+            newButtonLine()
+                    .newButton("回答模式", POINT_HELP, "require_input")
+                    .newButton(data.require_input != null ? "✅" : "☑", POINT_SET_JOIN, data.id, "require_input");
 
 								/*
 
@@ -1816,254 +1818,253 @@ public class GroupOptions extends Fragment {
 
 								 */
 
-								newButtonLine("🔙",POINT_BACK,data.id);
+            newButtonLine("🔙", POINT_BACK, data.id);
 
-						}};
+        }};
 
-		}
-		
-		public static String defaultDynamicMsg(GroupData data) {
-				
-				return "$用户名 你好，欢迎加入" + data.title + " , 请点击下方按钮获取一个一次性加群链接。";
-				
-		}
+    }
 
-		String dynStats(GroupData data) {
+    public static String defaultDynamicMsg(GroupData data) {
 
-				StringBuilder stats = new StringBuilder();
+        return "$用户名 你好，欢迎加入" + data.title + " , 请点击下方按钮获取一个一次性加群链接。";
 
-				stats.append("动态加群设置 :)");
-				
-				stats.append("\n\n加群链接 : ");
-				
-				if (data.dynamic_join == null) {
-						
-						stats.append("未开启");
-						
-				} else {
-						
-						stats.append("https://t.me/" + origin.me.username() + "start=join" + PAYLOAD_SPLIT + data.id);
-						
-				}
-				
-				stats.append("\n\n显示信息 : ");
+    }
 
-				if (data.default_msg == null) {
+    String dynStats(GroupData data) {
 
-						stats.append("(默认) ").append(defaultDynamicMsg(data));
+        StringBuilder stats = new StringBuilder();
 
-				} else {
+        stats.append("动态加群设置 :)");
 
-						stats.append(data.default_msg);
+        stats.append("\n\n加群链接 : ");
 
-				}
+        if (data.dynamic_join == null) {
 
-				return stats.toString();
+            stats.append("未开启");
 
-		}
+        } else {
 
-		ButtonMarkup dynaMenu(final GroupData data) {
+            stats.append("https://t.me/" + origin.me.username() + "start=join" + PAYLOAD_SPLIT + data.id);
 
-				return new ButtonMarkup() {{
+        }
 
-								newButtonLine()
-										.newButton("开启动态加群",POINT_HELP,"enable_dynamic")
-										.newButton(data.welcome == null ? "●" : "○",POINT_SET_SHOW,data.id,"show_disable");
+        stats.append("\n\n显示信息 : ");
 
-								newButtonLine()
-										.newButton("文本消息",POINT_HELP,"show_text")
-										.newButton(((Integer)0).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"show_text");
+        if (data.default_msg == null) {
 
-								newButtonLine()
-										.newButton("贴纸消息",POINT_HELP,"show_sticker")
-										.newButton(((Integer)1).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"show_sticker");								
+            stats.append("(默认) ").append(defaultDynamicMsg(data));
 
-								newButtonLine()
-										.newButton("文本与贴纸",POINT_HELP,"text_and_sticker")
-										.newButton(((Integer)2).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"text_and_sticker");
+        } else {
 
-								newButtonLine("设置欢迎文本",POINT_SET_SHOW,data.id,"set_msg");
-								newButtonLine("设置欢迎贴纸",POINT_SET_SHOW,data.id,"set_set");
+            stats.append(data.default_msg);
 
-								newButtonLine()
-										.newButton("仅保留最后一条",POINT_HELP,"del_welcome")
-										.newButton(data.del_welcome_msg != null ? "✅" : "☑",POINT_SET_SHOW,data.id,"del_welcome");
+        }
 
-								newButtonLine("🔙",POINT_BACK,data.id);
+        return stats.toString();
 
-						}};
+    }
 
-		}
-		
+    ButtonMarkup dynaMenu(final GroupData data) {
 
-		String cusStats(GroupData data) {
+        return new ButtonMarkup() {{
 
-				StringBuilder stats = new StringBuilder();
+            newButtonLine()
+                    .newButton("开启动态加群", POINT_HELP, "enable_dynamic")
+                    .newButton(data.welcome == null ? "●" : "○", POINT_SET_SHOW, data.id, "show_disable");
 
-				stats.append("选择模式问题 : ");
+            newButtonLine()
+                    .newButton("文本消息", POINT_HELP, "show_text")
+                    .newButton(((Integer) 0).equals(data.welcome) ? "●" : "○", POINT_SET_SHOW, data.id, "show_text");
 
-				if (data.custom_i_question == null) {
+            newButtonLine()
+                    .newButton("贴纸消息", POINT_HELP, "show_sticker")
+                    .newButton(((Integer) 1).equals(data.welcome) ? "●" : "○", POINT_SET_SHOW, data.id, "show_sticker");
 
-						stats.append("未设定");
+            newButtonLine()
+                    .newButton("文本与贴纸", POINT_HELP, "text_and_sticker")
+                    .newButton(((Integer) 2).equals(data.welcome) ? "●" : "○", POINT_SET_SHOW, data.id, "text_and_sticker");
 
-				} else {
+            newButtonLine("设置欢迎文本", POINT_SET_SHOW, data.id, "set_msg");
+            newButtonLine("设置欢迎贴纸", POINT_SET_SHOW, data.id, "set_set");
 
-						stats.append(data.custom_i_question);
+            newButtonLine()
+                    .newButton("仅保留最后一条", POINT_HELP, "del_welcome")
+                    .newButton(data.del_welcome_msg != null ? "✅" : "☑", POINT_SET_SHOW, data.id, "del_welcome");
 
-				}
+            newButtonLine("🔙", POINT_BACK, data.id);
 
-				stats.append("\n选择模式选项 : ");
+        }};
 
-				if (data.custom_items == null) {
+    }
 
-						stats.append("未设定");
 
-				} else {
+    String cusStats(GroupData data) {
 
-						stats.append("\n").append(ArrayUtil.join(data.custom_items.toArray(),"\n"));
+        StringBuilder stats = new StringBuilder();
 
-				}
+        stats.append("选择模式问题 : ");
 
-				stats.append("\n\n");
+        if (data.custom_i_question == null) {
 
-				stats.append("回答模式问题 : ");
+            stats.append("未设定");
 
-				if (data.custom_a_question == null) {
+        } else {
 
-						stats.append("未设定");
+            stats.append(data.custom_i_question);
 
-				} else {
+        }
 
-						stats.append(data.custom_a_question);
+        stats.append("\n选择模式选项 : ");
 
-				}
+        if (data.custom_items == null) {
 
-				stats.append("\n正确关键字 : ");
+            stats.append("未设定");
 
-				if (data.custom_kw == null) {
+        } else {
 
-						stats.append("未设定");
+            stats.append("\n").append(ArrayUtil.join(data.custom_items.toArray(), "\n"));
 
-				} else {
+        }
 
-						stats.append(ArrayUtil.join(data.custom_kw.toArray(),"\n"));
+        stats.append("\n\n");
 
-				}
+        stats.append("回答模式问题 : ");
 
-				return stats.toString();
+        if (data.custom_a_question == null) {
 
-		}
+            stats.append("未设定");
 
-		ButtonMarkup cusMenu(final GroupData data) {
+        } else {
 
-				return new ButtonMarkup() {{
+            stats.append(data.custom_a_question);
 
-								newButtonLine()
-										.newButton("使用自定义问题",POINT_HELP,"enable_cus")
-										.newButton(((Integer)2).equals(data.captcha_mode) ? "✅" : "☑",POINT_SET_CUST,data.id,"enable_cus");
+        }
 
-								newButtonLine("设置选择模式问题",POINT_SET_CUST,data.id,"reset_i_question");
-								newButtonLine("设置选择模式选项",POINT_SET_CUST,data.id,"reset_items");
+        stats.append("\n正确关键字 : ");
 
-								newButtonLine("设置回答模式问题",POINT_SET_CUST,data.id,"reset_a_question");
-								newButtonLine("设置回答模式答案",POINT_SET_CUST,data.id,"reset_answer");
+        if (data.custom_kw == null) {
 
-								newButtonLine("🔙",POINT_MENU_JOIN,data.id);
+            stats.append("未设定");
 
-						}};
+        } else {
 
-		}
+            stats.append(ArrayUtil.join(data.custom_kw.toArray(), "\n"));
 
-		String showStats(GroupData data) {
+        }
 
-				StringBuilder stats = new StringBuilder();
+        return stats.toString();
 
-				stats.append("设置欢迎消息，BOT将在新成员加入时发送\n\n如果开启了加群验证，则在通过验证后发送\n\n如果没有开启 '删除服务消息' 则将直接对加群消息回复。");
+    }
 
-				stats.append("\n\n欢迎消息 : ");
+    ButtonMarkup cusMenu(final GroupData data) {
 
-				if (data.welcomeMessage == null) {
+        return new ButtonMarkup() {{
 
-						stats.append("未设定");
+            newButtonLine()
+                    .newButton("使用自定义问题", POINT_HELP, "enable_cus")
+                    .newButton(((Integer) 2).equals(data.captcha_mode) ? "✅" : "☑", POINT_SET_CUST, data.id, "enable_cus");
 
-				} else {
+            newButtonLine("设置选择模式问题", POINT_SET_CUST, data.id, "reset_i_question");
+            newButtonLine("设置选择模式选项", POINT_SET_CUST, data.id, "reset_items");
 
-						stats.append(HtmlUtil.escape(data.welcomeMessage));
+            newButtonLine("设置回答模式问题", POINT_SET_CUST, data.id, "reset_a_question");
+            newButtonLine("设置回答模式答案", POINT_SET_CUST, data.id, "reset_answer");
 
-				}
+            newButtonLine("🔙", POINT_MENU_JOIN, data.id);
 
-				stats.append("\n欢迎贴纸 : ");
+        }};
 
-				if (data.welcomeSet == null) {
+    }
 
-						stats.append("未设定");
+    String showStats(GroupData data) {
 
-				} else {
+        StringBuilder stats = new StringBuilder();
 
-						stats.append("已设定 ").append(data.welcomeSet.size()).append(" 张");
+        stats.append("设置欢迎消息，BOT将在新成员加入时发送\n\n如果开启了加群验证，则在通过验证后发送\n\n如果没有开启 '删除服务消息' 则将直接对加群消息回复。");
 
-				}
+        stats.append("\n\n欢迎消息 : ");
 
-				return stats.toString();
+        if (data.welcomeMessage == null) {
 
-		}
+            stats.append("未设定");
 
-		ButtonMarkup showMenu(final GroupData data) {
+        } else {
 
-				return new ButtonMarkup() {{
+            stats.append(HtmlUtil.escape(data.welcomeMessage));
 
-								newButtonLine()
-										.newButton("关闭欢迎消息",POINT_HELP,"show_disable")
-										.newButton(data.welcome == null ? "●" : "○",POINT_SET_SHOW,data.id,"show_disable");
+        }
 
-								newButtonLine()
-										.newButton("文本消息",POINT_HELP,"show_text")
-										.newButton(((Integer)0).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"show_text");
+        stats.append("\n欢迎贴纸 : ");
 
-								newButtonLine()
-										.newButton("贴纸消息",POINT_HELP,"show_sticker")
-										.newButton(((Integer)1).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"show_sticker");								
+        if (data.welcomeSet == null) {
 
-								newButtonLine()
-										.newButton("文本与贴纸",POINT_HELP,"text_and_sticker")
-										.newButton(((Integer)2).equals(data.welcome) ? "●" : "○",POINT_SET_SHOW,data.id,"text_and_sticker");
+            stats.append("未设定");
 
-								newButtonLine("设置欢迎文本",POINT_SET_SHOW,data.id,"set_msg");
-								newButtonLine("设置欢迎贴纸",POINT_SET_SHOW,data.id,"set_set");
+        } else {
 
-								newButtonLine()
-										.newButton("仅保留最后一条",POINT_HELP,"del_welcome")
-										.newButton(data.del_welcome_msg != null ? "✅" : "☑",POINT_SET_SHOW,data.id,"del_welcome");
+            stats.append("已设定 ").append(data.welcomeSet.size()).append(" 张");
 
-								newButtonLine("🔙",POINT_BACK,data.id);
+        }
 
-						}};
+        return stats.toString();
 
-		}
+    }
 
+    ButtonMarkup showMenu(final GroupData data) {
 
+        return new ButtonMarkup() {{
 
-	ButtonMarkup spamMenu(final GroupData data) {
+            newButtonLine()
+                    .newButton("关闭欢迎消息", POINT_HELP, "show_disable")
+                    .newButton(data.welcome == null ? "●" : "○", POINT_SET_SHOW, data.id, "show_disable");
 
-		return new ButtonMarkup() {{
+            newButtonLine()
+                    .newButton("文本消息", POINT_HELP, "show_text")
+                    .newButton(((Integer) 0).equals(data.welcome) ? "●" : "○", POINT_SET_SHOW, data.id, "show_text");
 
-				newButtonLine()
-					.newButton("反清真",POINT_HELP,"anti_halal")
-					.newButton(data.anti_halal != null ? "✅" : "☑",POINT_SET_SPAM,data.id,"anti_halal");
-				
-				newButtonLine()
-					.newButton("CAS",POINT_HELP,"cas")
-					.newButton(data.cas_spam != null ? "✅" : "☑",POINT_SET_SPAM,data.id,"cas");
+            newButtonLine()
+                    .newButton("贴纸消息", POINT_HELP, "show_sticker")
+                    .newButton(((Integer) 1).equals(data.welcome) ? "●" : "○", POINT_SET_SHOW, data.id, "show_sticker");
 
-				newButtonLine()
-					.newButton("黑箱",POINT_HELP,"blackhole")
-					.newButton(data.backhole != null ? "✅" : "☑",POINT_SET_SPAM,data.id,"backhole");
-				
-				newButtonLine("🔙",POINT_BACK,data.id);
+            newButtonLine()
+                    .newButton("文本与贴纸", POINT_HELP, "text_and_sticker")
+                    .newButton(((Integer) 2).equals(data.welcome) ? "●" : "○", POINT_SET_SHOW, data.id, "text_and_sticker");
 
-			}};
+            newButtonLine("设置欢迎文本", POINT_SET_SHOW, data.id, "set_msg");
+            newButtonLine("设置欢迎贴纸", POINT_SET_SHOW, data.id, "set_set");
 
-	}
+            newButtonLine()
+                    .newButton("仅保留最后一条", POINT_HELP, "del_welcome")
+                    .newButton(data.del_welcome_msg != null ? "✅" : "☑", POINT_SET_SHOW, data.id, "del_welcome");
+
+            newButtonLine("🔙", POINT_BACK, data.id);
+
+        }};
+
+    }
+
+
+    ButtonMarkup spamMenu(final GroupData data) {
+
+        return new ButtonMarkup() {{
+
+            newButtonLine()
+                    .newButton("反清真", POINT_HELP, "anti_halal")
+                    .newButton(data.anti_halal != null ? "✅" : "☑", POINT_SET_SPAM, data.id, "anti_halal");
+
+            newButtonLine()
+                    .newButton("CAS", POINT_HELP, "cas")
+                    .newButton(data.cas_spam != null ? "✅" : "☑", POINT_SET_SPAM, data.id, "cas");
+
+            newButtonLine()
+                    .newButton("黑箱", POINT_HELP, "blackhole")
+                    .newButton(data.backhole != null ? "✅" : "☑", POINT_SET_SPAM, data.id, "backhole");
+
+            newButtonLine("🔙", POINT_BACK, data.id);
+
+        }};
+
+    }
 
 
 }

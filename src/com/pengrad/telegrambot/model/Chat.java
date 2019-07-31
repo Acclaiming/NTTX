@@ -12,7 +12,7 @@ public class Chat implements Serializable {
     private final static long serialVersionUID = 0L;
 
     public enum Type {
-        @SerializedName("private")Private, group, supergroup, channel
+        @SerializedName("private") Private, group, supergroup, channel
     }
 
     private Long id;
@@ -107,7 +107,8 @@ public class Chat implements Serializable {
         if (photo != null ? !photo.equals(chat.photo) : chat.photo != null) return false;
         if (description != null ? !description.equals(chat.description) : chat.description != null) return false;
         if (invite_link != null ? !invite_link.equals(chat.invite_link) : chat.invite_link != null) return false;
-        if (pinned_message != null ? !pinned_message.equals(chat.pinned_message) : chat.pinned_message != null) return false;
+        if (pinned_message != null ? !pinned_message.equals(chat.pinned_message) : chat.pinned_message != null)
+            return false;
         if (sticker_set_name != null ? !sticker_set_name.equals(chat.sticker_set_name) : chat.sticker_set_name != null)
             return false;
         return can_set_sticker_set != null ? can_set_sticker_set.equals(chat.can_set_sticker_set) : chat.can_set_sticker_set == null;

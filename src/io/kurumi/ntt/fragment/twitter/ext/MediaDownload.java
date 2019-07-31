@@ -13,11 +13,11 @@ import twitter4j.TwitterException;
 
 public class MediaDownload extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
-		
-		super.init(origin);
-		
+    @Override
+    public void init(BotFragment origin) {
+
+        super.init(origin);
+
         registerFunction("media");
 
     }
@@ -25,14 +25,14 @@ public class MediaDownload extends Fragment {
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		if (user.blocked()) {
+        if (user.blocked()) {
 
-			msg.send("你不能这么做 (为什么？)").async();
+            msg.send("你不能这么做 (为什么？)").async();
 
-			return;
+            return;
 
-		}
-		
+        }
+
         if (params.length == 0) {
 
             msg.send("/media [推文ID|链接]...").exec();
@@ -40,15 +40,15 @@ public class MediaDownload extends Fragment {
             return;
 
         }
-		
-		requestTwitter(user,msg);
-		
-		
-	}
 
-	@Override
-	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
-		
+        requestTwitter(user, msg);
+
+
+    }
+
+    @Override
+    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
+
         Twitter api = account.createApi();
 
         try {
@@ -58,13 +58,13 @@ public class MediaDownload extends Fragment {
             MediaEntity[] medias = status.getMediaEntities();
 
             if (medias.length == 0) {
-                
+
                 msg.send("这条推文好像没有媒体... (").exec();
-                
+
                 return;
-                
+
             }
-            
+
             StringBuilder urls = new StringBuilder();
 
             for (MediaEntity entry : medias) {
@@ -78,8 +78,8 @@ public class MediaDownload extends Fragment {
                 }
 
             }
-            
-            msg.send("视频链接 :",urls.toString()).enableLinkPreview().async();
+
+            msg.send("视频链接 :", urls.toString()).enableLinkPreview().async();
 
         } catch (TwitterException e) {
 

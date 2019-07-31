@@ -13,629 +13,637 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.Keyboard;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.NTT;
+
 import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserList;
 import com.pengrad.telegrambot.response.SendResponse;
+
 import java.util.LinkedHashMap;
+
 import twitter4j.User;
 import cn.hutool.core.util.ArrayUtil;
+
 import java.util.Map;
+
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+
 import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.HashMap;
+
 import io.kurumi.ntt.fragment.twitter.list.ListImport.ImportThread;
 import com.pengrad.telegrambot.request.SendDocument;
 
 public class ListImport extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerFunction("import","import_cancel");
-		registerPoint(POINT_LIST_IMPORT);
+        registerFunction("import", "import_cancel");
+        registerPoint(POINT_LIST_IMPORT);
 
-	}
+    }
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		if (user.blocked()) {
+        if (user.blocked()) {
 
-			msg.send("你不能这么做 (为什么？)").async();
+            msg.send("你不能这么做 (为什么？)").async();
 
-			return;
+            return;
 
-		}
-		
-		requestTwitter(user,msg);
+        }
 
-	}
+        requestTwitter(user, msg);
 
-	final String POINT_LIST_IMPORT = "import_list";
+    }
 
-	static class ImportList extends PointData {
+    final String POINT_LIST_IMPORT = "import_list";
 
-		LinkedList<Long> list = new LinkedList<>();
-		TAuth auth;
-		int type = 0;
-		long target = 0;
-		int mode = 0;
+    static class ImportList extends PointData {
 
-	}
+        LinkedList<Long> list = new LinkedList<>();
+        TAuth auth;
+        int type = 0;
+        long target = 0;
+        int mode = 0;
 
-	@Override
-	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+    }
 
-		if (function.endsWith("_cancel")) {
+    @Override
+    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
-			ImportThread toCancel = threads.remove(account.id);
+        if (function.endsWith("_cancel")) {
 
-			if (toCancel == null) msg.send("没有正在执行的导入...").exec();
-			else toCancel.stopped.set(true);
+            ImportThread toCancel = threads.remove(account.id);
 
-			return;
+            if (toCancel == null) msg.send("没有正在执行的导入...").exec();
+            else toCancel.stopped.set(true);
 
-		}
+            return;
 
-		if (threads.containsKey(account.id)) {
+        }
 
-			msg.send("有导入正在执行... 请等待或使用 /import_cancel 取消执行").exec();
+        if (threads.containsKey(account.id)) {
 
-			return;
+            msg.send("有导入正在执行... 请等待或使用 /import_cancel 取消执行").exec();
 
-		}
+            return;
 
-		ImportList data = new ImportList();
+        }
 
-		data.auth = account;
+        ImportList data = new ImportList();
 
-		data.context.add(msg);
+        data.auth = account;
 
-		setPrivatePoint(user,POINT_LIST_IMPORT,data);
+        data.context.add(msg);
 
-		msg.send("现在发送要导入的列表文件 (.csv) :").exec(data);
+        setPrivatePoint(user, POINT_LIST_IMPORT, data);
 
-	}
+        msg.send("现在发送要导入的列表文件 (.csv) :").exec(data);
 
-	final String FOLLOWING = "关注中列表";
-	//final String FOLLOWER = "关注者列表";
-	final String BLOCK = "屏蔽列表";
-	final String MUTE = "静音列表";
-	final String MUTE_RT = "转推静音列表";
-	final String USER = "我创建的列表";
+    }
 
-	final String APPEND = "追加模式";
-	final String REWRITE = "覆盖模式";
-	final String REMOVE = "删除模式";
+    final String FOLLOWING = "关注中列表";
+    //final String FOLLOWER = "关注者列表";
+    final String BLOCK = "屏蔽列表";
+    final String MUTE = "静音列表";
+    final String MUTE_RT = "转推静音列表";
+    final String USER = "我创建的列表";
 
-	@Override
-	public void onPoint(UserData user,Msg msg,String point,PointData data) {
+    final String APPEND = "追加模式";
+    final String REWRITE = "覆盖模式";
+    final String REMOVE = "删除模式";
 
-		ImportList list = (ImportList) data;
+    @Override
+    public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
-		data.context.add(msg);
+        ImportList list = (ImportList) data;
 
-		if (list.type == 0) {
+        data.context.add(msg);
 
-			if (msg.doc() == null || !msg.doc().fileName().endsWith(".csv")) {
+        if (list.type == 0) {
 
-				msg.send("正在导入列表 请发送文件 (.csv)").exec(data);
+            if (msg.doc() == null || !msg.doc().fileName().endsWith(".csv")) {
 
-				return;
+                msg.send("正在导入列表 请发送文件 (.csv)").exec(data);
 
-			}
+                return;
 
-			msg.sendTyping();
+            }
 
-			File csv = msg.file();
+            msg.sendTyping();
 
-			if (csv == null) {
+            File csv = msg.file();
 
-				msg.send("读取文件失败 由于 Telegram 官方限制，BOT无法下载超过20m的文件。").exec(data);
+            if (csv == null) {
 
-				return;
+                msg.send("读取文件失败 由于 Telegram 官方限制，BOT无法下载超过20m的文件。").exec(data);
 
-			}
+                return;
 
-			msg.sendTyping();
+            }
 
-			for (String line : FileUtil.readUtf8Lines(csv)) {
+            msg.sendTyping();
 
-				try {
+            for (String line : FileUtil.readUtf8Lines(csv)) {
 
-					list.list.add(Long.parseLong(line));
+                try {
 
-				} catch (Exception ex) {
+                    list.list.add(Long.parseLong(line));
 
-					msg.send("第 " + (list.list.size() + 1) + " 行解析失败 请重新发送文件 : ",line).exec(data);
+                } catch (Exception ex) {
 
-					list.list.clear();
+                    msg.send("第 " + (list.list.size() + 1) + " 行解析失败 请重新发送文件 : ", line).exec(data);
 
-					return;
+                    list.list.clear();
 
-				}
+                    return;
 
-			}
+                }
 
-			if (list.list.isEmpty()) {
+            }
 
-				msg.send("好像是空列表... 请重新发送").withCancel().exec(data);
+            if (list.list.isEmpty()) {
 
-				return;
+                msg.send("好像是空列表... 请重新发送").withCancel().exec(data);
 
-			}
+                return;
 
-			list.type = 1;
+            }
 
-			msg
-				.send("导入成功！ 已导入 " + list.list.size() + " 条记录 请选择要导入到的列表")
-				.keyboard(new Keyboard() {{
+            list.type = 1;
 
-						newButtonLine().newButton(FOLLOWING)/*.newButton(FOLLOWER)*/;
-						//newButtonLine().newButton(MUTE).newButton(BLOCK);
+            msg
+                    .send("导入成功！ 已导入 " + list.list.size() + " 条记录 请选择要导入到的列表")
+                    .keyboard(new Keyboard() {{
 
-						//newButtonLine().newButton(MUTE_RT).newButton(USER);
+                        newButtonLine().newButton(FOLLOWING)/*.newButton(FOLLOWER)*/;
+                        //newButtonLine().newButton(MUTE).newButton(BLOCK);
 
-					}})
-				.withCancel()
-				.exec(data);
+                        //newButtonLine().newButton(MUTE_RT).newButton(USER);
 
-		} else if (list.type == 1) {
+                    }})
+                    .withCancel()
+                    .exec(data);
 
-			Keyboard button = new Keyboard();
+        } else if (list.type == 1) {
 
-			if (FOLLOWING.equals(msg.text())) {
+            Keyboard button = new Keyboard();
 
-				list.target = 1;
+            if (FOLLOWING.equals(msg.text())) {
 
-				button.newButtonLine(REWRITE);
-				button.newButtonLine(REMOVE);
+                list.target = 1;
 
-			} else if (MUTE.equals(msg.text())) {
+                button.newButtonLine(REWRITE);
+                button.newButtonLine(REMOVE);
 
-				button.newButtonLine(APPEND);
-				button.newButtonLine(REWRITE);
-				button.newButtonLine(REMOVE);
+            } else if (MUTE.equals(msg.text())) {
 
-				list.target = 3;
+                button.newButtonLine(APPEND);
+                button.newButtonLine(REWRITE);
+                button.newButtonLine(REMOVE);
 
-			} else if (BLOCK.equals(msg.text())) {
+                list.target = 3;
 
-				button.newButtonLine(APPEND);
-				button.newButtonLine(REWRITE);
-				button.newButtonLine(REMOVE);
+            } else if (BLOCK.equals(msg.text())) {
 
-				list.target = 4;
+                button.newButtonLine(APPEND);
+                button.newButtonLine(REWRITE);
+                button.newButtonLine(REMOVE);
 
-			} else if (MUTE_RT.equals(msg.text())) {
+                list.target = 4;
 
-				button.newButtonLine(APPEND);
-				button.newButtonLine(REWRITE);
-				button.newButtonLine(REMOVE);
+            } else if (MUTE_RT.equals(msg.text())) {
 
-				list.target = 5;
+                button.newButtonLine(APPEND);
+                button.newButtonLine(REWRITE);
+                button.newButtonLine(REMOVE);
 
-			} else if (USER.equals(msg.text())) {
+                list.target = 5;
 
-				try {
+            } else if (USER.equals(msg.text())) {
 
-					final LinkedList<UserList> lists = TApi.getLists(list.auth.createApi());
+                try {
 
-					Iterator<UserList> iter = lists.iterator();
+                    final LinkedList<UserList> lists = TApi.getLists(list.auth.createApi());
 
-					while (iter.hasNext()) {
+                    Iterator<UserList> iter = lists.iterator();
 
-						if (!list.auth.id.equals(iter.next().getUser().getId())) {
+                    while (iter.hasNext()) {
 
-							iter.remove();
+                        if (!list.auth.id.equals(iter.next().getUser().getId())) {
 
-						}
+                            iter.remove();
 
-					}
+                        }
 
-					if (lists.isEmpty()) {
+                    }
 
-						msg.send("你还没有创建列表，请重新选择 )").exec(data);
+                    if (lists.isEmpty()) {
 
-						return;
+                        msg.send("你还没有创建列表，请重新选择 )").exec(data);
 
-					}
+                        return;
 
-					list.type = 2;
+                    }
 
-					msg
-						.send("请在你创建的列表中选择 :")
-						.keyboard(new Keyboard() {{
+                    list.type = 2;
 
-								for (UserList userList : lists) {
+                    msg
+                            .send("请在你创建的列表中选择 :")
+                            .keyboard(new Keyboard() {{
 
-									newButtonLine(userList.getFullName() + " [ " + userList.getId() + " ]");
+                                for (UserList userList : lists) {
 
-								}
+                                    newButtonLine(userList.getFullName() + " [ " + userList.getId() + " ]");
 
-							}})
-						.withCancel()
-						.exec(data);
+                                }
 
-				} catch (TwitterException e) {
+                            }})
+                            .withCancel()
+                            .exec(data);
 
-					msg.send("读取创建的列表失败",NTT.parseTwitterException(e)).exec(data);
+                } catch (TwitterException e) {
 
-				}
+                    msg.send("读取创建的列表失败", NTT.parseTwitterException(e)).exec(data);
 
-				return;
+                }
 
-			} else {
+                return;
 
-				msg.send("请在下方按钮中选择要导入到的位置...").withCancel().exec(data);
+            } else {
 
-				return;
+                msg.send("请在下方按钮中选择要导入到的位置...").withCancel().exec(data);
 
-			}
+                return;
 
-			list.type = 3;
+            }
 
-			msg
-				.send("请在下方按钮中选择导入模式....\n","追加 : 普通导入模式","覆盖 : 去重导入 删除不包含的项目","删除 : 删除列表包含的项目","\n注意 : 当导入关注者列表时 追加模式不可用，覆盖模式仅删除列表中不存在的项目。\n当导入转推静音列表时 覆盖模式不可用 (因为转推静音列表无法读取)\n\n关于导入关注者 : 可能会被限制 (")
-				.keyboard(button)
-				.withCancel()
-				.exec(data);
+            list.type = 3;
 
-		} else if (list.type == 2) {
+            msg
+                    .send("请在下方按钮中选择导入模式....\n", "追加 : 普通导入模式", "覆盖 : 去重导入 删除不包含的项目", "删除 : 删除列表包含的项目", "\n注意 : 当导入关注者列表时 追加模式不可用，覆盖模式仅删除列表中不存在的项目。\n当导入转推静音列表时 覆盖模式不可用 (因为转推静音列表无法读取)\n\n关于导入关注者 : 可能会被限制 (")
+                    .keyboard(button)
+                    .withCancel()
+                    .exec(data);
 
-			if (msg.hasText() && msg.text().contains("[ ")) {
+        } else if (list.type == 2) {
 
-				list.target = NumberUtil.parseLong(StrUtil.subBefore(StrUtil.subAfter(msg.text(),"[ ",true)," ]",false));
+            if (msg.hasText() && msg.text().contains("[ ")) {
 
-				list.type = 3;
+                list.target = NumberUtil.parseLong(StrUtil.subBefore(StrUtil.subAfter(msg.text(), "[ ", true), " ]", false));
 
-			} else {
+                list.type = 3;
 
-				msg.send("请在下方键盘中选择你的列表 :").withCancel().exec(data);
+            } else {
 
-			}
+                msg.send("请在下方键盘中选择你的列表 :").withCancel().exec(data);
 
-		} else if (list.type == 3) {
+            }
 
-			if (APPEND.equals(msg.text())) {
+        } else if (list.type == 3) {
 
-				list.mode = 0;
+            if (APPEND.equals(msg.text())) {
 
-			} else if (REWRITE.equals(msg.text())) {
+                list.mode = 0;
 
-				list.mode = 1;
+            } else if (REWRITE.equals(msg.text())) {
 
-			} else if (REMOVE.equals(msg.text())) {
+                list.mode = 1;
 
-				list.mode = 2;
+            } else if (REMOVE.equals(msg.text())) {
 
-			} else {
+                list.mode = 2;
 
-				msg.send("请选择导入模式").withCancel().exec(data);
+            } else {
 
-				return;
+                msg.send("请选择导入模式").withCancel().exec(data);
 
-			}
+                return;
 
-			list.type = 4;
+            }
 
-			msg
-				.send("任务已创建 某些操作无法撤销 是否继续？")
-				.keyboard(new Keyboard() {{
+            list.type = 4;
 
-						newButtonLine().newButton("确认").newButton("取消");
+            msg
+                    .send("任务已创建 某些操作无法撤销 是否继续？")
+                    .keyboard(new Keyboard() {{
 
-					}}).exec(data);
+                        newButtonLine().newButton("确认").newButton("取消");
 
-		} else if (list.type == 4) {
+                    }}).exec(data);
 
-			if (!"确认".equals(msg.text())) {
+        } else if (list.type == 4) {
 
-				msg.send().withCancel().exec(data);
+            if (!"确认".equals(msg.text())) {
 
-				return;
+                msg.send().withCancel().exec(data);
 
-			}
+                return;
 
-			clearPrivatePoint(user);
+            }
 
-			threads.put(list.auth.id,new ImportThread(list) {{ start(); }});
+            clearPrivatePoint(user);
 
-		}
+            threads.put(list.auth.id, new ImportThread(list) {{
+                start();
+            }});
 
-	}
+        }
 
-	HashMap<Long,ImportThread> threads = new HashMap<>();
+    }
 
-	class ImportThread extends Thread {
+    HashMap<Long, ImportThread> threads = new HashMap<>();
 
-		private ImportList action;
+    class ImportThread extends Thread {
 
-		public ImportThread(ImportList action) {
+        private ImportList action;
 
-			this.action = action;
+        public ImportThread(ImportList action) {
 
-		}
+            this.action = action;
 
-		public AtomicBoolean stopped = new AtomicBoolean(false);
+        }
 
-		Send send(String... text) {
+        public AtomicBoolean stopped = new AtomicBoolean(false);
 
-			return new Send(ListImport.this,action.auth.user,text);
+        Send send(String... text) {
 
-		}
+            return new Send(ListImport.this, action.auth.user, text);
 
-		@Override
-		public void run() {
+        }
 
-			Twitter api = action.auth.createApi();
+        @Override
+        public void run() {
 
-			Msg status = send("正在导入...","使用 /import_cancel 取消 ~").send();
+            Twitter api = action.auth.createApi();
 
-			if (action.target == 1) {
+            Msg status = send("正在导入...", "使用 /import_cancel 取消 ~").send();
 
-				if (action.mode == 1) {
+            if (action.target == 1) {
 
-					try {
+                if (action.mode == 1) {
 
-						LinkedList<Long> toUnFollow = TApi.getAllFrIDs(api,action.auth.id);
+                    try {
 
-						ArrayList<Long> retain = new ArrayList<Long>(toUnFollow);
-						retain.retainAll(action.list);
+                        LinkedList<Long> toUnFollow = TApi.getAllFrIDs(api, action.auth.id);
 
-						toUnFollow.removeAll(retain);
-						//action.list.remove(retain);
+                        ArrayList<Long> retain = new ArrayList<Long>(toUnFollow);
+                        retain.retainAll(action.list);
 
-						int count = 0;
+                        toUnFollow.removeAll(retain);
+                        //action.list.remove(retain);
 
-						LinkedList<String> unfo = new LinkedList<>();
-						LinkedHashMap<Long,String> unfoError = new LinkedHashMap<>();
+                        int count = 0;
 
-						for (Long id : toUnFollow) {
+                        LinkedList<String> unfo = new LinkedList<>();
+                        LinkedHashMap<Long, String> unfoError = new LinkedHashMap<>();
 
-							if (stopped.get()) break;
+                        for (Long id : toUnFollow) {
 
-							count ++;
+                            if (stopped.get()) break;
 
-							try {
+                            count++;
 
-								unfo.add(UserArchive.save(api.destroyFriendship(id)).urlHtml());
+                            try {
 
-							} catch (TwitterException e) {
+                                unfo.add(UserArchive.save(api.destroyFriendship(id)).urlHtml());
 
-								unfoError.put(id,NTT.parseTwitterException(e));
+                            } catch (TwitterException e) {
 
-							}
+                                unfoError.put(id, NTT.parseTwitterException(e));
 
-							if (count % 10 == 0) {
+                            }
 
-								status.edit("正在导入中 : ","取关成功 : " + unfo.size() + " 取关出错 : " + unfoError.size(),"使用 /import_cancel 取消操作").exec();
+                            if (count % 10 == 0) {
 
-							}
+                                status.edit("正在导入中 : ", "取关成功 : " + unfo.size() + " 取关出错 : " + unfoError.size(), "使用 /import_cancel 取消操作").exec();
 
-						}
+                            }
 
-						status.delete();
+                        }
 
-						status.send("导入结束 : ","已执行 " + count + " / " + toUnFollow.size() + " 条 ","\n取关成功 : " + (unfo.size() == 0 ? "无" : (unfo.size() + "\n\n" + ArrayUtil.join(unfo.toArray(),"\n"))),"\n取关出错 : " + (unfoError.size() == 0 ? "无" : (unfoError.size() + "\n" + parseError(api,unfoError)))).html().exec();
+                        status.delete();
 
-						bot().execute(new SendDocument(action.auth.user,StrUtil.utf8Bytes(ArrayUtil.join(toUnFollow.toArray(),"\n"))).fileName("UnFollowedList.csv"));
+                        status.send("导入结束 : ", "已执行 " + count + " / " + toUnFollow.size() + " 条 ", "\n取关成功 : " + (unfo.size() == 0 ? "无" : (unfo.size() + "\n\n" + ArrayUtil.join(unfo.toArray(), "\n"))), "\n取关出错 : " + (unfoError.size() == 0 ? "无" : (unfoError.size() + "\n" + parseError(api, unfoError)))).html().exec();
 
-					} catch (TwitterException e) {
+                        bot().execute(new SendDocument(action.auth.user, StrUtil.utf8Bytes(ArrayUtil.join(toUnFollow.toArray(), "\n"))).fileName("UnFollowedList.csv"));
 
-						status.edit("读取关注中列表失败",NTT.parseTwitterException(e)).exec();
+                    } catch (TwitterException e) {
 
-					}
+                        status.edit("读取关注中列表失败", NTT.parseTwitterException(e)).exec();
 
-				} else if (action.mode == 2) {
+                    }
 
-					int index = 0;
-					int size = action.list.size();
+                } else if (action.mode == 2) {
 
-					LinkedList<String> success = new LinkedList<>();
-					LinkedHashMap<Long,String> error = new LinkedHashMap<>();
+                    int index = 0;
+                    int size = action.list.size();
 
-					for (;index < size;index ++) {
+                    LinkedList<String> success = new LinkedList<>();
+                    LinkedHashMap<Long, String> error = new LinkedHashMap<>();
 
-						if (stopped.get()) break;
+                    for (; index < size; index++) {
 
-						long id = action.list.get(index);
+                        if (stopped.get()) break;
 
-						try {
+                        long id = action.list.get(index);
 
-							success.add(UserArchive.save(api.destroyFriendship(id)).urlHtml());
+                        try {
 
-						} catch (TwitterException e) {
+                            success.add(UserArchive.save(api.destroyFriendship(id)).urlHtml());
 
-							error.put(id,NTT.parseTwitterException(e));
+                        } catch (TwitterException e) {
 
-						}
+                            error.put(id, NTT.parseTwitterException(e));
 
-						if ((index % 10 == 1) && index != (size - 1)) {
+                        }
 
-							status.edit("正在导入中 : ","取关成功 : " + success.size() + " 取关出错 : " + error.size(),"使用 /import_cancel 取消操作").exec();
+                        if ((index % 10 == 1) && index != (size - 1)) {
 
-						}
+                            status.edit("正在导入中 : ", "取关成功 : " + success.size() + " 取关出错 : " + error.size(), "使用 /import_cancel 取消操作").exec();
 
-					}
+                        }
 
-					status.delete();
+                    }
 
-					status.send("导入结束 : ","已执行 " + index + " / " + size + " 条 ","取关成功 : " + (success.size() == 0 ? "无" : ("\n\n" + ArrayUtil.join(success.toArray(),"\n"))) ,"\n取关出错 : " + (error.size() == 0 ? "无" : ("\n" + parseError(api,error)))).html().exec();
+                    status.delete();
 
-					bot().execute(new SendDocument(action.auth.user,StrUtil.utf8Bytes(ArrayUtil.join(action.list.toArray(),"\n"))).fileName("UnFollowedList.csv"));
+                    status.send("导入结束 : ", "已执行 " + index + " / " + size + " 条 ", "取关成功 : " + (success.size() == 0 ? "无" : ("\n\n" + ArrayUtil.join(success.toArray(), "\n"))), "\n取关出错 : " + (error.size() == 0 ? "无" : ("\n" + parseError(api, error)))).html().exec();
 
-				}
+                    bot().execute(new SendDocument(action.auth.user, StrUtil.utf8Bytes(ArrayUtil.join(action.list.toArray(), "\n"))).fileName("UnFollowedList.csv"));
 
-			} else if (action.target == 3) {
+                }
 
-				if (action.mode == 0) {
+            } else if (action.target == 3) {
 
-					int index = 0;
-					int size = action.list.size();
+                if (action.mode == 0) {
 
-					LinkedList<String> success = new LinkedList<>();
-					LinkedHashMap<Long,String> error = new LinkedHashMap<>();
+                    int index = 0;
+                    int size = action.list.size();
 
-					for (;index < size;index ++) {
+                    LinkedList<String> success = new LinkedList<>();
+                    LinkedHashMap<Long, String> error = new LinkedHashMap<>();
 
-						if (stopped.get()) break;
+                    for (; index < size; index++) {
 
-						long id = action.list.get(index);
+                        if (stopped.get()) break;
 
-						try {
+                        long id = action.list.get(index);
 
-							success.add(UserArchive.save(api.createMute(id)).urlHtml());
+                        try {
 
-						} catch (TwitterException e) {
+                            success.add(UserArchive.save(api.createMute(id)).urlHtml());
 
-							error.put(id,NTT.parseTwitterException(e));
+                        } catch (TwitterException e) {
 
-						}
+                            error.put(id, NTT.parseTwitterException(e));
 
-						if ((index % 10 == 1) && index != (size - 1)) {
+                        }
 
-							status.edit("正在导入中 : ","静音成功 : " + success.size() + " 静音出错 : " + error.size(),"使用 /import_cancel 取消操作").exec();
+                        if ((index % 10 == 1) && index != (size - 1)) {
 
-						}
+                            status.edit("正在导入中 : ", "静音成功 : " + success.size() + " 静音出错 : " + error.size(), "使用 /import_cancel 取消操作").exec();
 
-					}
+                        }
 
-					status.delete();
+                    }
 
-					status.send("导入结束 : ","已执行 " + index + " / " + size + " 条 ","静音成功 : " + (success.size() == 0 ? "无" : ("\n\n" + ArrayUtil.join(success.toArray(),"\n"))) ,"\n静音出错 : " + (error.size() == 0 ? "无" : ("\n" + parseError(api,error)))).html().exec();
+                    status.delete();
 
-					bot().execute(new SendDocument(action.auth.user,StrUtil.utf8Bytes(ArrayUtil.join(action.list.toArray(),"\n"))).fileName("MutedList.csv"));
+                    status.send("导入结束 : ", "已执行 " + index + " / " + size + " 条 ", "静音成功 : " + (success.size() == 0 ? "无" : ("\n\n" + ArrayUtil.join(success.toArray(), "\n"))), "\n静音出错 : " + (error.size() == 0 ? "无" : ("\n" + parseError(api, error)))).html().exec();
 
-				} else if (action.mode == 1) {
+                    bot().execute(new SendDocument(action.auth.user, StrUtil.utf8Bytes(ArrayUtil.join(action.list.toArray(), "\n"))).fileName("MutedList.csv"));
 
-					try {
+                } else if (action.mode == 1) {
 
-						LinkedList<Long> toUnMute = TApi.getAllMuteIDs(api);
+                    try {
 
-						ArrayList<Long> retain = new ArrayList<Long>(toUnMute);
-						retain.retainAll(action.list);
+                        LinkedList<Long> toUnMute = TApi.getAllMuteIDs(api);
 
-						toUnMute.removeAll(retain);
-						action.list.remove(retain);
+                        ArrayList<Long> retain = new ArrayList<Long>(toUnMute);
+                        retain.retainAll(action.list);
 
-						int count = 0;
+                        toUnMute.removeAll(retain);
+                        action.list.remove(retain);
 
-						LinkedList<String> mute = new LinkedList<>();
-						LinkedList<String> unmute = new LinkedList<>();
+                        int count = 0;
 
-						LinkedHashMap<Long,String> muteError = new LinkedHashMap<>();
-						LinkedHashMap<Long,String> unmuteError = new LinkedHashMap<>();
+                        LinkedList<String> mute = new LinkedList<>();
+                        LinkedList<String> unmute = new LinkedList<>();
 
-						for (Long id : toUnMute) {
+                        LinkedHashMap<Long, String> muteError = new LinkedHashMap<>();
+                        LinkedHashMap<Long, String> unmuteError = new LinkedHashMap<>();
 
-							if (stopped.get()) break;
+                        for (Long id : toUnMute) {
 
-							count ++;
+                            if (stopped.get()) break;
 
-							try {
+                            count++;
 
-								unmute.add(UserArchive.save(api.destroyMute(id)).urlHtml());
+                            try {
 
-							} catch (TwitterException e) {
+                                unmute.add(UserArchive.save(api.destroyMute(id)).urlHtml());
 
-								unmuteError.put(id,NTT.parseTwitterException(e));
+                            } catch (TwitterException e) {
 
-							}
+                                unmuteError.put(id, NTT.parseTwitterException(e));
 
-							if (count % 10 == 0) {
+                            }
 
-								status.edit("正在导入中 : ","取消静音成功 : " + unmute.size() + " 取关静音出错 : " + unmuteError.size(),"静音成功 : 0 静音出错 : 0","\n使用 /import_cancel 取消操作").exec();
+                            if (count % 10 == 0) {
 
-							}
+                                status.edit("正在导入中 : ", "取消静音成功 : " + unmute.size() + " 取关静音出错 : " + unmuteError.size(), "静音成功 : 0 静音出错 : 0", "\n使用 /import_cancel 取消操作").exec();
 
-						}
+                            }
 
-						for (Long id : action.list) {
+                        }
 
-							if (stopped.get()) break;
+                        for (Long id : action.list) {
 
-							count ++;
+                            if (stopped.get()) break;
 
-							try {
+                            count++;
 
-								mute.add(UserArchive.save(api.createMute(id)).urlHtml());
+                            try {
 
-							} catch (TwitterException e) {
+                                mute.add(UserArchive.save(api.createMute(id)).urlHtml());
 
-								muteError.put(id,NTT.parseTwitterException(e));
+                            } catch (TwitterException e) {
 
-							}
+                                muteError.put(id, NTT.parseTwitterException(e));
 
-							if (count % 10 == 0) {
+                            }
 
-								status.edit("正在导入中 : ","取消静音成功 : " + unmute.size() + " 取关静音出错 : " + unmuteError.size(),"静音成功 : " + mute.size() + " 静音出错 : " + muteError.size(),"\n使用 /import_cancel 取消操作").exec();
+                            if (count % 10 == 0) {
 
-							}
+                                status.edit("正在导入中 : ", "取消静音成功 : " + unmute.size() + " 取关静音出错 : " + unmuteError.size(), "静音成功 : " + mute.size() + " 静音出错 : " + muteError.size(), "\n使用 /import_cancel 取消操作").exec();
 
-						}
+                            }
 
-						status.delete();
+                        }
 
-						status.send("导入结束 : ","已执行 " + count + " / " + (toUnMute.size() + action.list.size()) + " 条 ","\n静音成功 : " + (mute.size() == 0 ? "无" : (mute.size() + "\n\n" + ArrayUtil.join(mute.toArray(),"\n"))),"\n静音出错 : " + (muteError.size() == 0 ? "无" : (muteError.size() + "\n" + parseError(api,muteError))),"\n取消静音成功 : " + (unmute.size() == 0 ? "无" : (unmute.size() + "\n\n" + ArrayUtil.join(unmute.toArray(),"\n"))),"\n取消静音出错 : " + (unmuteError.size() == 0 ? "无" : (unmuteError.size() + "\n" + parseError(api,unmuteError)))).html().exec();
+                        status.delete();
 
-						bot().execute(new SendDocument(action.auth.user,StrUtil.utf8Bytes(ArrayUtil.join(action.list.toArray(),"\n"))).fileName("MutedList.csv"));
-						bot().execute(new SendDocument(action.auth.user,StrUtil.utf8Bytes(ArrayUtil.join(toUnMute.toArray(),"\n"))).fileName("UnMutedList.csv"));
+                        status.send("导入结束 : ", "已执行 " + count + " / " + (toUnMute.size() + action.list.size()) + " 条 ", "\n静音成功 : " + (mute.size() == 0 ? "无" : (mute.size() + "\n\n" + ArrayUtil.join(mute.toArray(), "\n"))), "\n静音出错 : " + (muteError.size() == 0 ? "无" : (muteError.size() + "\n" + parseError(api, muteError))), "\n取消静音成功 : " + (unmute.size() == 0 ? "无" : (unmute.size() + "\n\n" + ArrayUtil.join(unmute.toArray(), "\n"))), "\n取消静音出错 : " + (unmuteError.size() == 0 ? "无" : (unmuteError.size() + "\n" + parseError(api, unmuteError)))).html().exec();
 
+                        bot().execute(new SendDocument(action.auth.user, StrUtil.utf8Bytes(ArrayUtil.join(action.list.toArray(), "\n"))).fileName("MutedList.csv"));
+                        bot().execute(new SendDocument(action.auth.user, StrUtil.utf8Bytes(ArrayUtil.join(toUnMute.toArray(), "\n"))).fileName("UnMutedList.csv"));
 
 
-					} catch (TwitterException e) {
+                    } catch (TwitterException e) {
 
-						status.edit("读取静音列表失败",NTT.parseTwitterException(e)).exec();
+                        status.edit("读取静音列表失败", NTT.parseTwitterException(e)).exec();
 
-					}
+                    }
 
 
+                }
 
-				}
+            }
 
-			}
+            threads.remove(action.auth.id);
 
-			threads.remove(action.auth.id);
+        }
 
-		}
+        String parseError(Twitter api, LinkedHashMap<Long, String> error) {
 
-		String parseError(Twitter api,LinkedHashMap<Long, String> error) {
+            StringBuilder str = new StringBuilder();
 
-			StringBuilder str = new StringBuilder();
+            for (Map.Entry<Long, String> entry : error.entrySet()) {
 
-			for (Map.Entry<Long,String> entry  : error.entrySet()) {
+                String user;
 
-				String user;
+                UserArchive archive = UserArchive.show(api, entry.getKey());
 
-				UserArchive archive = UserArchive.show(api,entry.getKey());
+                if (archive != null) {
 
-				if (archive != null) {
+                    user = archive.urlHtml();
 
-					user = archive.urlHtml();
+                } else {
 
-				} else {
+                    user = entry.getKey().toString();
 
-					user = entry.getKey().toString();
+                }
 
-				}
+                str.append("\n").append(user).append(" : ").append(entry.getValue());
 
-				str.append("\n").append(user).append(" : ").append(entry.getValue());
+            }
 
-			}
+            return str.toString();
 
-			return str.toString();
+        }
 
-		}
-
-	}
+    }
 
 }

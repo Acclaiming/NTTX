@@ -2,9 +2,11 @@ package io.kurumi.ntt.fragment.twitter;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+
 import twitter4j.IDs;
 import twitter4j.PagableResponseList;
 import twitter4j.Query;
@@ -29,7 +31,7 @@ public class TApi {
             ppl = api.getUserListMembers(id, cursor);
             cursor = ppl.getNextCursor();
 
-            list.addAll((List)ppl);
+            list.addAll((List) ppl);
 
         } while (ppl.hasNext());
 
@@ -61,8 +63,8 @@ public class TApi {
 
         return ArrayUtil.unWrap(set.toArray(new Long[set.size()]));
     }
-	
-	public static LinkedList<Long> getAllNoRTIDs(Twitter api) throws TwitterException {
+
+    public static LinkedList<Long> getAllNoRTIDs(Twitter api) throws TwitterException {
 
         LinkedList<Long> all = new LinkedList<>();
 
@@ -72,10 +74,10 @@ public class TApi {
 
         return all;
 
-	}
-	
-	
-	public static LinkedList<Long> getAllMuteIDs(Twitter api) throws TwitterException {
+    }
+
+
+    public static LinkedList<Long> getAllMuteIDs(Twitter api) throws TwitterException {
 
         LinkedList<Long> all = new LinkedList<>();
 
@@ -93,8 +95,8 @@ public class TApi {
         }
 
         return all;
-		
-	}
+
+    }
 
 
     public static LinkedList<User> getAllMute(Twitter api) throws TwitterException {
@@ -103,20 +105,20 @@ public class TApi {
 
         PagableResponseList<User> users = api.getBlocksList(-1);
 
-        all.addAll((List)users);
+        all.addAll((List) users);
 
         while (users.hasNext()) {
 
             users = api.getMutesList(users.getNextCursor());
 
-            all.addAll((List)users);
+            all.addAll((List) users);
 
         }
 
         return all;
 
     }
-	
+
 
     public static LinkedList<Long> getAllBlockIDs(Twitter api) throws TwitterException {
 
@@ -136,7 +138,7 @@ public class TApi {
         }
 
         return all;
-		
+
     }
 
 
@@ -146,13 +148,13 @@ public class TApi {
 
         PagableResponseList<User> users = api.getBlocksList(-1);
 
-        all.addAll((List)users);
+        all.addAll((List) users);
 
         while (users.hasNext()) {
 
             users = api.getBlocksList(users.getNextCursor());
 
-            all.addAll((List)users);
+            all.addAll((List) users);
 
         }
 
@@ -167,13 +169,13 @@ public class TApi {
 
         PagableResponseList<User> users = api.getFriendsList(target, -1, 200);
 
-        all.addAll((List)users);
+        all.addAll((List) users);
 
         while (users.hasNext()) {
 
             users = api.getFriendsList(target, users.getNextCursor(), 200);
 
-            all.addAll((List)users);
+            all.addAll((List) users);
 
         }
 
@@ -244,13 +246,13 @@ public class TApi {
 
         PagableResponseList<User> users = api.getFollowersList(target, -1, 200);
 
-        all.addAll((List)users);
+        all.addAll((List) users);
 
         while (users.hasNext()) {
 
             users = api.getFollowersList(target, users.getNextCursor(), 200);
 
-            all.addAll((List)users);
+            all.addAll((List) users);
 
         }
 
@@ -264,13 +266,13 @@ public class TApi {
 
         PagableResponseList<User> users = api.getFollowersList(target, -1, 200);
 
-        all.addAll((List)users);
+        all.addAll((List) users);
 
         while (users.hasNext()) {
 
             users = api.getFollowersList(target, users.getNextCursor(), 200);
 
-            all.addAll((List)users);
+            all.addAll((List) users);
 
         }
 
@@ -399,9 +401,9 @@ public class TApi {
             while (top.getInReplyToStatusId() != -1 || top.getQuotedStatusId() != -1) {
 
                 if (top.getInReplyToStatusId() != -1) {
-                    
+
                     Status superStatus = api.showStatus(top.getInReplyToStatusId());
-                    
+
                     if (target == null || ArrayUtil.contains(target, superStatus.getUser().getId())) {
 
                         top = superStatus;
@@ -469,7 +471,7 @@ public class TApi {
                         .getUser()
                         .getScreenName())
                 .sinceId(status.getId())
-				.count(100)
+                .count(100)
                 .resultType(Query.RECENT));
 
         for (Status s : resp.getTweets()) {
@@ -477,7 +479,7 @@ public class TApi {
             if (s.getInReplyToStatusId() == status.getId()) list.add(s);
 
         }
-		
+
         while (resp.hasNext()) {
 
             resp = api.search(resp.nextQuery());
@@ -494,7 +496,7 @@ public class TApi {
 
 
     }
-	
+
     public static LinkedList<UserList> getLists(Twitter api) throws TwitterException {
 
         return new LinkedList<UserList>(api.getUserLists(api.getId(), true));
@@ -507,12 +509,12 @@ public class TApi {
         LinkedList<UserList> list = new LinkedList<>();
 
         PagableResponseList<UserList> sublist = api.getUserListSubscriptions(api.getId(), -1);
-        list.addAll((List)sublist);
+        list.addAll((List) sublist);
 
         if (sublist.hasNext()) {
 
             sublist = api.getUserListSubscriptions(api.getId(), sublist.getNextCursor());
-            list.addAll((List)sublist);
+            list.addAll((List) sublist);
 
         }
 
@@ -529,12 +531,12 @@ public class TApi {
         list.addAll(ownlists);
 
         PagableResponseList<UserList> sublist = api.getUserListSubscriptions(api.getId(), -1);
-        list.addAll((List)sublist);
+        list.addAll((List) sublist);
 
         if (sublist.hasNext()) {
 
             sublist = api.getUserListSubscriptions(api.getId(), sublist.getNextCursor());
-            list.addAll((List)sublist);
+            list.addAll((List) sublist);
 
         }
 

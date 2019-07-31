@@ -13,7 +13,9 @@ import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.Keyboard;
 import io.kurumi.ntt.utils.NTT;
+
 import java.util.LinkedList;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
@@ -21,300 +23,299 @@ import twitter4j.UserList;
 
 public class ListExport extends Fragment {
 
-	final String FOLLOWING = "关注中列表";
-	final String FOLLOWER = "关注者列表";
-	final String BLOCK = "屏蔽列表";
-	final String MUTE = "静音列表";
-	
-	final String MUTE_RT = "静音转推的列表";
-	final String USER = "用户创建的列表";
+    final String FOLLOWING = "关注中列表";
+    final String FOLLOWER = "关注者列表";
+    final String BLOCK = "屏蔽列表";
+    final String MUTE = "静音列表";
 
-	final String POINT_LIST_EXPORT = "list_export";
-	final String POINT_USER_LIST_EXPORT = "user_list_export";
+    final String MUTE_RT = "静音转推的列表";
+    final String USER = "用户创建的列表";
 
-	@Override
-	public void init(BotFragment origin) {
+    final String POINT_LIST_EXPORT = "list_export";
+    final String POINT_USER_LIST_EXPORT = "user_list_export";
 
-		super.init(origin);
+    @Override
+    public void init(BotFragment origin) {
 
-		registerFunction("export");
+        super.init(origin);
 
-		registerPoints(POINT_LIST_EXPORT);
+        registerFunction("export");
 
-	}
+        registerPoints(POINT_LIST_EXPORT);
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    }
 
-		requestTwitter(user,msg);
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-	}
+        requestTwitter(user, msg);
 
-	@Override
-	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+    }
 
-		if (user.blocked()) {
+    @Override
+    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
-			msg.send("你不能这么做 (为什么？)").async();
+        if (user.blocked()) {
 
-			return;
+            msg.send("你不能这么做 (为什么？)").async();
 
-		}
-		
-		PointData data = setPrivatePointData(user,POINT_LIST_EXPORT,account);
+            return;
 
-		msg
-			.send("请选择将要导出的列表 :","将会以 .csv 官方格式导出")
-			.keyboard(new Keyboard() {{
+        }
 
-					newButtonLine().newButton(FOLLOWING).newButton(FOLLOWER);
-					newButtonLine().newButton(BLOCK).newButton(MUTE);
+        PointData data = setPrivatePointData(user, POINT_LIST_EXPORT, account);
 
-					newButtonLine(MUTE_RT);
-					newButtonLine(USER);
+        msg
+                .send("请选择将要导出的列表 :", "将会以 .csv 官方格式导出")
+                .keyboard(new Keyboard() {{
 
-				}})
-			.withCancel()
-			.exec(data);
+                    newButtonLine().newButton(FOLLOWING).newButton(FOLLOWER);
+                    newButtonLine().newButton(BLOCK).newButton(MUTE);
 
-	}
+                    newButtonLine(MUTE_RT);
+                    newButtonLine(USER);
 
-	@Override
-	public void onPoint(UserData user,Msg msg,String point,PointData data) {
+                }})
+                .withCancel()
+                .exec(data);
 
-		data.context.add(msg);
-		
-		TAuth account = data.data();
+    }
 
-		Twitter api = account.createApi();
+    @Override
+    public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
-		if (POINT_LIST_EXPORT.equals(point)) {
+        data.context.add(msg);
 
-			if (FOLLOWING.equals(msg.text())) {
+        TAuth account = data.data();
 
-				clearPrivatePoint(user);
+        Twitter api = account.createApi();
 
-				try {
+        if (POINT_LIST_EXPORT.equals(point)) {
 
-					LinkedList<Long> ids = TApi.getAllFrIDs(api,account.id);
+            if (FOLLOWING.equals(msg.text())) {
 
-					if (ids.size() == 0) {
+                clearPrivatePoint(user);
 
-						msg.send("列表为空 :)").exec();
+                try {
 
-						return;
+                    LinkedList<Long> ids = TApi.getAllFrIDs(api, account.id);
 
-					}
-					
-					msg.sendUpdatingFile();
+                    if (ids.size() == 0) {
 
-					bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids.toArray(),"\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName("FollowingList.csv"));
+                        msg.send("列表为空 :)").exec();
 
-				} catch (TwitterException e) {
+                        return;
 
-					msg.send("导出失败",NTT.parseTwitterException(e)).exec();
+                    }
 
-				}
+                    msg.sendUpdatingFile();
 
-			} else if (FOLLOWER.equals(msg.text())) {
+                    bot().execute(new SendDocument(msg.chatId(), StrUtil.utf8Bytes(ArrayUtil.join(ids.toArray(), "\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName("FollowingList.csv"));
 
-				clearPrivatePoint(user);
+                } catch (TwitterException e) {
 
-				try {
+                    msg.send("导出失败", NTT.parseTwitterException(e)).exec();
 
-					LinkedList<Long> ids = TApi.getAllFoIDs(api,account.id);
+                }
 
-					if (ids.size() == 0) {
+            } else if (FOLLOWER.equals(msg.text())) {
 
-						msg.send("列表为空 :)").exec();
+                clearPrivatePoint(user);
 
-						return;
+                try {
 
-					}
-					
-					msg.sendUpdatingFile();
+                    LinkedList<Long> ids = TApi.getAllFoIDs(api, account.id);
 
-					bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids.toArray(),"\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName("FollowersList.csv"));
+                    if (ids.size() == 0) {
 
-				} catch (TwitterException e) {
+                        msg.send("列表为空 :)").exec();
 
-					msg.send("导出失败",NTT.parseTwitterException(e)).exec();
+                        return;
 
-				}
+                    }
 
+                    msg.sendUpdatingFile();
 
-			} else if (BLOCK.equals(msg.text())) {
+                    bot().execute(new SendDocument(msg.chatId(), StrUtil.utf8Bytes(ArrayUtil.join(ids.toArray(), "\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName("FollowersList.csv"));
 
-				clearPrivatePoint(user);
+                } catch (TwitterException e) {
 
-				try {
+                    msg.send("导出失败", NTT.parseTwitterException(e)).exec();
 
-					LinkedList<Long> ids = TApi.getAllBlockIDs(api);
+                }
 
-					if (ids.size() == 0) {
-						
-						msg.send("列表为空 :)").exec();
-						
-						return;
-						
-					}
-					
-					msg.sendUpdatingFile();
 
-					bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids.toArray(),"\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName("BlockList.csv"));
+            } else if (BLOCK.equals(msg.text())) {
 
-				} catch (TwitterException e) {
+                clearPrivatePoint(user);
 
-					msg.send("导出失败",NTT.parseTwitterException(e)).exec();
+                try {
 
-				}
+                    LinkedList<Long> ids = TApi.getAllBlockIDs(api);
 
+                    if (ids.size() == 0) {
 
-			} else if (MUTE.equals(msg.text())) {
+                        msg.send("列表为空 :)").exec();
 
-				clearPrivatePoint(user);
+                        return;
 
-				try {
+                    }
 
-					LinkedList<Long> ids = TApi.getAllMuteIDs(api);
+                    msg.sendUpdatingFile();
 
-					if (ids.size() == 0) {
+                    bot().execute(new SendDocument(msg.chatId(), StrUtil.utf8Bytes(ArrayUtil.join(ids.toArray(), "\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName("BlockList.csv"));
 
-						msg.send("列表为空 :)").exec();
+                } catch (TwitterException e) {
 
-						return;
+                    msg.send("导出失败", NTT.parseTwitterException(e)).exec();
 
-					}
-					
-					msg.sendUpdatingFile();
+                }
 
-					bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids.toArray(),"\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName("MuteList.csv"));
 
-				} catch (TwitterException e) {
+            } else if (MUTE.equals(msg.text())) {
 
-					msg.send("导出失败",NTT.parseTwitterException(e)).exec();
+                clearPrivatePoint(user);
 
-				}
-				
-			} else if (MUTE_RT.equals(msg.text())) {
+                try {
 
-				clearPrivatePoint(user);
+                    LinkedList<Long> ids = TApi.getAllMuteIDs(api);
 
-				try {
+                    if (ids.size() == 0) {
 
-					LinkedList<Long> ids = TApi.getAllNoRTIDs(api);
+                        msg.send("列表为空 :)").exec();
 
-					if (ids.size() == 0) {
+                        return;
 
-						msg.send("列表为空 :)").exec();
+                    }
 
-						return;
+                    msg.sendUpdatingFile();
 
-					}
+                    bot().execute(new SendDocument(msg.chatId(), StrUtil.utf8Bytes(ArrayUtil.join(ids.toArray(), "\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName("MuteList.csv"));
 
-					msg.sendUpdatingFile();
+                } catch (TwitterException e) {
 
-					bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids.toArray(),"\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName("NoRTList.csv"));
+                    msg.send("导出失败", NTT.parseTwitterException(e)).exec();
 
-				} catch (TwitterException e) {
+                }
 
-					msg.send("导出失败",NTT.parseTwitterException(e)).exec();
+            } else if (MUTE_RT.equals(msg.text())) {
 
-				}
-				
+                clearPrivatePoint(user);
 
-			} else if (USER.equals(msg.text())) {
+                try {
 
-				setPrivatePointData(user,POINT_USER_LIST_EXPORT,data);
+                    LinkedList<Long> ids = TApi.getAllNoRTIDs(api);
 
-				msg.send("现在请发送列表的链接 可以在列表 -> 分享 中导出。它看起来像这样 : twitter.com/用户名/lists/列表名").withCancel().exec();
+                    if (ids.size() == 0) {
 
-			} else {
+                        msg.send("列表为空 :)").exec();
 
-				msg.send("要导出什么？").withCancel().exec(data);
+                        return;
 
-			}
-			
-		
+                    }
 
-		} else if (POINT_USER_LIST_EXPORT.equals(point)) {
-			
-			if (!(msg.text().contains("twitter.com/") && msg.text().contains("/lists/"))) {
+                    msg.sendUpdatingFile();
 
-				msg.send("要导出哪个 用户创建的列表？请发送该列表的链接 : 它看起来像 twitter.com/用户名/lists/列表名 ，可以在列表 -> 分享 导出。").exec(data);
+                    bot().execute(new SendDocument(msg.chatId(), StrUtil.utf8Bytes(ArrayUtil.join(ids.toArray(), "\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName("NoRTList.csv"));
 
-				return;
+                } catch (TwitterException e) {
 
-			}
-			
-			clearPrivatePoint(user);
+                    msg.send("导出失败", NTT.parseTwitterException(e)).exec();
 
-			String screenName = StrUtil.subBefore(StrUtil.subAfter(msg.text(),"lists/",true),"/",false);
-			String slug = StrUtil.subAfter(msg.text(),screenName,true);
-			
-			if (slug.contains("?")) {
-				
-				slug = StrUtil.subBefore(slug,"?",false);
-				
-			}
-			
-			if (slug.contains(" ")) {
-				
-				slug = StrUtil.subBefore(slug," ",false);
-				
-			}
-			
-			UserList list;
-			
-			try {
-				
-				list = api.showUserList(screenName,slug);
-				
-			} catch (TwitterException e) {
-				
-				msg.send("查找列表失败",NTT.parseTwitterException(e)).exec();
-				
-				return;
-				
-			}
-			
-			
-			long[] ids;
-		
-			try {
-				
-				LinkedList<User> userList = TApi.getListUsers(api,list.getId());
+                }
 
-				ids = new long[userList.size()];
-				
-				if (ids.length == 0) {
 
-					msg.send("列表为空 :)").exec();
+            } else if (USER.equals(msg.text())) {
 
-					return;
+                setPrivatePointData(user, POINT_USER_LIST_EXPORT, data);
 
-				}
-				
-				for (int index = 0;index < ids.length;index ++) {
-					
-					ids[index] = userList.get(index).getId();
-					
-				}
-				
-			} catch (TwitterException e) {
-				
-				msg.send("导出列表失败",NTT.parseTwitterException(e)).exec();
-				
-				return;
-				
-			}
-			
-			msg.sendUpdatingFile();
+                msg.send("现在请发送列表的链接 可以在列表 -> 分享 中导出。它看起来像这样 : twitter.com/用户名/lists/列表名").withCancel().exec();
 
-			bot().execute(new SendDocument(msg.chatId(),StrUtil.utf8Bytes(ArrayUtil.join(ids,"\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName(list.getSlug() + ".csv"));
+            } else {
 
-		}
+                msg.send("要导出什么？").withCancel().exec(data);
 
-	}
+            }
+
+
+        } else if (POINT_USER_LIST_EXPORT.equals(point)) {
+
+            if (!(msg.text().contains("twitter.com/") && msg.text().contains("/lists/"))) {
+
+                msg.send("要导出哪个 用户创建的列表？请发送该列表的链接 : 它看起来像 twitter.com/用户名/lists/列表名 ，可以在列表 -> 分享 导出。").exec(data);
+
+                return;
+
+            }
+
+            clearPrivatePoint(user);
+
+            String screenName = StrUtil.subBefore(StrUtil.subAfter(msg.text(), "lists/", true), "/", false);
+            String slug = StrUtil.subAfter(msg.text(), screenName, true);
+
+            if (slug.contains("?")) {
+
+                slug = StrUtil.subBefore(slug, "?", false);
+
+            }
+
+            if (slug.contains(" ")) {
+
+                slug = StrUtil.subBefore(slug, " ", false);
+
+            }
+
+            UserList list;
+
+            try {
+
+                list = api.showUserList(screenName, slug);
+
+            } catch (TwitterException e) {
+
+                msg.send("查找列表失败", NTT.parseTwitterException(e)).exec();
+
+                return;
+
+            }
+
+
+            long[] ids;
+
+            try {
+
+                LinkedList<User> userList = TApi.getListUsers(api, list.getId());
+
+                ids = new long[userList.size()];
+
+                if (ids.length == 0) {
+
+                    msg.send("列表为空 :)").exec();
+
+                    return;
+
+                }
+
+                for (int index = 0; index < ids.length; index++) {
+
+                    ids[index] = userList.get(index).getId();
+
+                }
+
+            } catch (TwitterException e) {
+
+                msg.send("导出列表失败", NTT.parseTwitterException(e)).exec();
+
+                return;
+
+            }
+
+            msg.sendUpdatingFile();
+
+            bot().execute(new SendDocument(msg.chatId(), StrUtil.utf8Bytes(ArrayUtil.join(ids, "\n"))).replyMarkup(new ReplyKeyboardRemove()).fileName(list.getSlug() + ".csv"));
+
+        }
+
+    }
 
 }

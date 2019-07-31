@@ -11,143 +11,144 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Query;
 import io.kurumi.ntt.model.request.ButtonLine;
 import io.kurumi.ntt.model.request.ButtonMarkup;
+
 import java.util.Collections;
 
 public class MakeButtons extends Fragment {
 
-	@Override
-	public boolean query() {
-		
-		return true;
-		
-	}
-	
-	@Override
-	public void onQuery(UserData user,Query inlineQuery) {
-		
-		if (StrUtil.isBlank(inlineQuery.text)) {
+    @Override
+    public boolean query() {
 
-			return;
+        return true;
 
-		}
+    }
 
-		if (user.blocked()) {
+    @Override
+    public void onQuery(UserData user, Query inlineQuery) {
 
-			executeAsync(inlineQuery.update,inlineQuery.article("你不能这么做 (为什么？)",":(",null,null).reply().cacheTime(114514));
+        if (StrUtil.isBlank(inlineQuery.text)) {
 
-			return;
+            return;
 
-		}
-		
-		String text = inlineQuery.text;
+        }
 
-		boolean html = false;
-		boolean md = false;
-		boolean buttons = false;
+        if (user.blocked()) {
 
-		while (true) {
+            executeAsync(inlineQuery.update, inlineQuery.article("你不能这么做 (为什么？)", ":(", null, null).reply().cacheTime(114514));
 
-			if (text.startsWith(" ") || text.startsWith("\n")) {
+            return;
 
-				text = text.substring(1);
+        }
 
-			} else if (text.startsWith("MD")) {
+        String text = inlineQuery.text;
 
-				text = text.substring(2);
+        boolean html = false;
+        boolean md = false;
+        boolean buttons = false;
 
-				md = true;
+        while (true) {
 
-			} else if (text.startsWith("HTML")) {
+            if (text.startsWith(" ") || text.startsWith("\n")) {
 
-				text = text.substring(4);
+                text = text.substring(1);
 
-				html = true;
+            } else if (text.startsWith("MD")) {
 
-			} else if (text.startsWith("BUTTONS")) {
+                text = text.substring(2);
 
-				text = text.substring(7);
+                md = true;
 
-				buttons = true;
+            } else if (text.startsWith("HTML")) {
 
-			} else {
+                text = text.substring(4);
 
-				break;
+                html = true;
 
-			}
+            } else if (text.startsWith("BUTTONS")) {
 
-		}
+                text = text.substring(7);
 
-		if (StrUtil.isBlank(text) || (!html && !buttons && !md)) {
+                buttons = true;
 
-			return;
+            } else {
 
-		}
+                break;
 
-		ButtonMarkup markup = null;
+            }
 
-		if (buttons) {
+        }
 
-			for (String line : ArrayUtil.reverse(text.split("\n"))) {
+        if (StrUtil.isBlank(text) || (!html && !buttons && !md)) {
 
-				if (!(line.startsWith("[") && line.endsWith(")"))) break;
+            return;
 
-				ButtonLine bL = new ButtonLine();
+        }
 
-				while (line.contains("[")) {
+        ButtonMarkup markup = null;
 
-					String after = StrUtil.subAfter(line,"[",true);
-					line = StrUtil.subBefore(line,"[",true);
+        if (buttons) {
 
-					String bText = StrUtil.subBefore(after,"]",false);
-					String bUrl = StrUtil.subBetween(after,"(",")");
+            for (String line : ArrayUtil.reverse(text.split("\n"))) {
 
-					if (bText == null || bUrl == null) {
+                if (!(line.startsWith("[") && line.endsWith(")"))) break;
 
-						// invalid format
+                ButtonLine bL = new ButtonLine();
 
-						break;
+                while (line.contains("[")) {
 
-					}
+                    String after = StrUtil.subAfter(line, "[", true);
+                    line = StrUtil.subBefore(line, "[", true);
 
-					bL.newUrlButton(bText,bUrl);
+                    String bText = StrUtil.subBefore(after, "]", false);
+                    String bUrl = StrUtil.subBetween(after, "(", ")");
 
-				}
+                    if (bText == null || bUrl == null) {
 
-				if (markup == null) markup = new ButtonMarkup();
+                        // invalid format
 
-				Collections.reverse(bL);
+                        break;
 
-				markup.add(bL);
+                    }
 
-				text = StrUtil.subBefore(text,"\n",true);
+                    bL.newUrlButton(bText, bUrl);
 
-			}
+                }
 
-		}
+                if (markup == null) markup = new ButtonMarkup();
 
-		if (markup != null) {
+                Collections.reverse(bL);
 
-			Collections.reverse(markup);
+                markup.add(bL);
 
-		}
+                text = StrUtil.subBefore(text, "\n", true);
 
-		ParseMode parseMode = null;
+            }
 
-		if (md) parseMode = ParseMode.Markdown;
-		if (html) parseMode = ParseMode.HTML;
+        }
 
-		inlineQuery.article("完成 *٩(๑´∀`๑)ง*",text,parseMode,markup);
+        if (markup != null) {
 
-		BaseResponse resp = execute(inlineQuery.reply());
+            Collections.reverse(markup);
 
-		if (!resp.isOk()) {
+        }
 
-			inlineQuery.article("解析失败","解析失败 : \n\n" + resp.description(),null,null);
+        ParseMode parseMode = null;
 
-			execute(inlineQuery.reply());
+        if (md) parseMode = ParseMode.Markdown;
+        if (html) parseMode = ParseMode.HTML;
 
-		}
+        inlineQuery.article("完成 *٩(๑´∀`๑)ง*", text, parseMode, markup);
 
-	}
+        BaseResponse resp = execute(inlineQuery.reply());
+
+        if (!resp.isOk()) {
+
+            inlineQuery.article("解析失败", "解析失败 : \n\n" + resp.description(), null, null);
+
+            execute(inlineQuery.reply());
+
+        }
+
+    }
 
 }

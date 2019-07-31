@@ -7,26 +7,26 @@ import io.kurumi.ntt.model.Msg;
 
 public class PingFunction extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerFunction("ping");
+        registerFunction("ping");
 
-	}
-
-	@Override
-	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
-
-		return FUNCTION_PUBLIC;
-
-	}
+    }
 
     @Override
-    public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    public int checkFunctionContext(UserData user, Msg msg, String function, String[] params) {
 
-		msg.send("pong").failedWith();
+        return FUNCTION_PUBLIC;
+
+    }
+
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+
+        msg.send("pong").failedWith();
 
     }
 

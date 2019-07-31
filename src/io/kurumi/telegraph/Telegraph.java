@@ -6,7 +6,9 @@ import com.google.gson.Gson;
 import io.kurumi.telegraph.model.Account;
 import io.kurumi.telegraph.model.Node;
 import io.kurumi.telegraph.model.Page;
+
 import java.util.List;
+
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import io.kurumi.telegraph.model.NodeElement;
@@ -16,208 +18,209 @@ import cn.hutool.http.HttpRequest;
 import io.kurumi.ntt.utils.*;
 import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.*;
+
 import java.util.Map;
 
 public class Telegraph {
 
-	public static String API = "https://api.telegra.ph/";
+    public static String API = "https://api.telegra.ph/";
 
-	public static Gson gson = new Gson();
+    public static Gson gson = new Gson();
 
-	static <T extends Object> T send(String path,Class<T> resultClass,Object... params) {
+    static <T extends Object> T send(String path, Class<T> resultClass, Object... params) {
 
-		HttpRequest request = HttpUtil.createPost(API + path);
+        HttpRequest request = HttpUtil.createPost(API + path);
 
-		for (int index = 0;index < params.length;index = index + 2) {
+        for (int index = 0; index < params.length; index = index + 2) {
 
-			if (params[index + 1] == null) continue;
+            if (params[index + 1] == null) continue;
 
-			request.form(params[index].toString(),params[index + 1]);
+            request.form(params[index].toString(), params[index + 1]);
 
-		}
+        }
 
-		HttpResponse resp = request.execute();
+        HttpResponse resp = request.execute();
 
-		if (!resp.isOk()) {
-			
-			new Send(Env.LOG_CHANNEL,request.toString(),resp.toString()).exec();
-			
-			return null;
-			
-		}
+        if (!resp.isOk()) {
 
-		JSONObject result = new JSONObject(resp.body());
+            new Send(Env.LOG_CHANNEL, request.toString(), resp.toString()).exec();
 
-		if (!result.getBool("ok",false)) {
+            return null;
 
-			if (result.getStr("error").contains("FLOOD_WAIT")) {
-				
-				throw new FloodWaitException();
-				
-			}
-			
-			return null;
+        }
 
-		}
+        JSONObject result = new JSONObject(resp.body());
 
-		return gson.fromJson(result.getJSONObject("result").toString(),resultClass);
+        if (!result.getBool("ok", false)) {
 
+            if (result.getStr("error").contains("FLOOD_WAIT")) {
 
-	}
+                throw new FloodWaitException();
 
-	public static Account createAccount(String short_name,String author_name,String author_url) {
+            }
 
-		return (Account) send("createAccount",Account.class,
-							  "short_name",short_name,
-							  "author_name",author_name,
-							  "author_url",author_url);
+            return null;
 
-	}
+        }
 
-	public static Account editAccountInfo(String access_token,String short_name,String author_name,String author_url) {
+        return gson.fromJson(result.getJSONObject("result").toString(), resultClass);
 
-		return (Account) send("editAccountInfo",Account.class,
-							  "access_token",access_token,
-							  "short_name",short_name,
-							  "author_name",author_name,
-							  "author_url",author_url);
 
-	}
+    }
 
-	public static Account getAccountInfo(String access_token) {
+    public static Account createAccount(String short_name, String author_name, String author_url) {
 
-		return (Account) send("getAccountInfo",Account.class,
-							  "access_token",access_token,
-							  "fields","[\"short_name\", \"author_name\", \"author_url\", \"auth_url\", \"page_count\""
-							  );
+        return (Account) send("createAccount", Account.class,
+                "short_name", short_name,
+                "author_name", author_name,
+                "author_url", author_url);
 
-	}
+    }
 
+    public static Account editAccountInfo(String access_token, String short_name, String author_name, String author_url) {
 
-	public static Account revokeAccessToken(String access_token) {
+        return (Account) send("editAccountInfo", Account.class,
+                "access_token", access_token,
+                "short_name", short_name,
+                "author_name", author_name,
+                "author_url", author_url);
 
-		return (Account) send("revokeAccessToken",Account.class,"access_token",access_token);
+    }
 
-	}
+    public static Account getAccountInfo(String access_token) {
 
-	public static JSONArray parseContent(List<Node> nodes) {
+        return (Account) send("getAccountInfo", Account.class,
+                "access_token", access_token,
+                "fields", "[\"short_name\", \"author_name\", \"author_url\", \"auth_url\", \"page_count\""
+        );
 
-		JSONArray contentFormat = new JSONArray();
+    }
 
-		int brLimit = 2;
-		
-		for (Node node : nodes) {
 
-			if (node instanceof NodeElement) {
+    public static Account revokeAccessToken(String access_token) {
 
-				NodeElement ne = (NodeElement)node;
+        return (Account) send("revokeAccessToken", Account.class, "access_token", access_token);
 
-				if (ne.tag.equals("style")) continue;
-				
-				if ("br".equals(ne.tag)) {
-					
-					if (brLimit == 0) continue;
-					
-					brLimit --;
-					
-				} else {
-					
-					brLimit = 2;
-					
-				}
-				
-				// 防止因为 p结束标签被转换成两个换行 而连续的b标签导致的换行过多
-				
-				JSONObject element = new JSONObject();
+    }
 
-				ne.end = null;
-				
-				element.put("tag",ne.tag);
+    public static JSONArray parseContent(List<Node> nodes) {
 
-				if (ne.attrs != null && !ne.attrs.isEmpty()) {
+        JSONArray contentFormat = new JSONArray();
 
-					element.put("attrs",ne.attrs);
+        int brLimit = 2;
 
-				}
+        for (Node node : nodes) {
 
-				if (ne.children != null) {
+            if (node instanceof NodeElement) {
 
-					element.put("children",parseContent(ne.children));
+                NodeElement ne = (NodeElement) node;
 
-				}
+                if (ne.tag.equals("style")) continue;
 
-				contentFormat.add(element);
+                if ("br".equals(ne.tag)) {
 
-			} else {
-				
-				contentFormat.add(node.text);
+                    if (brLimit == 0) continue;
 
-				brLimit = 2;
-				
-			}
+                    brLimit--;
 
-		}
+                } else {
 
-		return contentFormat;
+                    brLimit = 2;
 
-	}
+                }
 
-	public static Page createPage(String access_token,String title,String author_name,String author_url,List<Node> content,Boolean return_content) {
+                // 防止因为 p结束标签被转换成两个换行 而连续的b标签导致的换行过多
 
-		return (Page) send("createPage",Page.class,
-						   "access_token",access_token,
-						   "title",title,
-						   "author_name",author_name,
-						   "author_url",author_url,
-						   "content",parseContent(content).toString(),
-						   "return_content",return_content);
+                JSONObject element = new JSONObject();
 
-	}
+                ne.end = null;
 
-	public static Page editPage(String access_token,String path,String title,String author_name,String author_url,List<Node> content,Boolean return_content) {
+                element.put("tag", ne.tag);
 
-		return (Page) send("editPage",Page.class,
+                if (ne.attrs != null && !ne.attrs.isEmpty()) {
 
-						   "access_token",access_token,
-						   "title",title,
-						   "path",path,
-						   "author_name",author_name,
-						   "author_url",author_url,
-						   "content",parseContent(content).toString(),
-						   "return_content",return_content);
+                    element.put("attrs", ne.attrs);
 
-	}
+                }
 
-	public static Page getPage(String path,Boolean return_content) {
+                if (ne.children != null) {
 
-		return (Page) send("getPage",Page.class,
+                    element.put("children", parseContent(ne.children));
 
-						   "path",path,
-						   "return_content",return_content);
+                }
 
+                contentFormat.add(element);
 
-	}
+            } else {
 
-	public static PageList getPageList(String access_token,Integer offset,Integer limit) {
+                contentFormat.add(node.text);
 
-		return (PageList) send("getPageList",PageList.class,
+                brLimit = 2;
 
-							   "access_token",access_token,
-							   "offset",offset,
-							   "limit",limit);
+            }
 
-	}
+        }
 
-	public static PageViews getViews(String path,Integer year,Integer month,Integer day,Integer hour) {
+        return contentFormat;
 
-		return (PageViews) send("getViews",PageViews.class,
+    }
 
-								"path",path,
-								"year",year,
-								"month",month,
-								"day",day,
-								"hour",hour);
+    public static Page createPage(String access_token, String title, String author_name, String author_url, List<Node> content, Boolean return_content) {
 
-	}
+        return (Page) send("createPage", Page.class,
+                "access_token", access_token,
+                "title", title,
+                "author_name", author_name,
+                "author_url", author_url,
+                "content", parseContent(content).toString(),
+                "return_content", return_content);
+
+    }
+
+    public static Page editPage(String access_token, String path, String title, String author_name, String author_url, List<Node> content, Boolean return_content) {
+
+        return (Page) send("editPage", Page.class,
+
+                "access_token", access_token,
+                "title", title,
+                "path", path,
+                "author_name", author_name,
+                "author_url", author_url,
+                "content", parseContent(content).toString(),
+                "return_content", return_content);
+
+    }
+
+    public static Page getPage(String path, Boolean return_content) {
+
+        return (Page) send("getPage", Page.class,
+
+                "path", path,
+                "return_content", return_content);
+
+
+    }
+
+    public static PageList getPageList(String access_token, Integer offset, Integer limit) {
+
+        return (PageList) send("getPageList", PageList.class,
+
+                "access_token", access_token,
+                "offset", offset,
+                "limit", limit);
+
+    }
+
+    public static PageViews getViews(String path, Integer year, Integer month, Integer day, Integer hour) {
+
+        return (PageViews) send("getViews", PageViews.class,
+
+                "path", path,
+                "year", year,
+                "month", month,
+                "day", day,
+                "hour", hour);
+
+    }
 
 }

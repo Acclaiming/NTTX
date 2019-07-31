@@ -6,86 +6,86 @@ import cn.hutool.http.HttpResponse;
 
 public class Cndic {
 
-	String __VIEWSTATE;
+    String __VIEWSTATE;
 
-	String __EVENTVALIDATION;
+    String __EVENTVALIDATION;
 
-	String __VIEWSTATEGENERATOR;
+    String __VIEWSTATEGENERATOR;
 
-	public void reset() {
+    public void reset() {
 
-		String html = HttpUtil.get("http://www.cndic.com/manchu.aspx");
+        String html = HttpUtil.get("http://www.cndic.com/manchu.aspx");
 
-		__VIEWSTATE = StrUtil.subBetween(html,"__VIEWSTATE\" value=\"","\"");
+        __VIEWSTATE = StrUtil.subBetween(html, "__VIEWSTATE\" value=\"", "\"");
 
-		__EVENTVALIDATION = StrUtil.subBetween(html,"__EVENTVALIDATION\" value=\"","\"");
+        __EVENTVALIDATION = StrUtil.subBetween(html, "__EVENTVALIDATION\" value=\"", "\"");
 
-		__VIEWSTATEGENERATOR = StrUtil.subBetween(html,"__VIEWSTATEGENERATOR\" value=\"","\"");
+        __VIEWSTATEGENERATOR = StrUtil.subBetween(html, "__VIEWSTATEGENERATOR\" value=\"", "\"");
 
-	}
+    }
 
-	public String cn_ma(String str,boolean noReset,boolean unTrans) {
+    public String cn_ma(String str, boolean noReset, boolean unTrans) {
 
-		if (__VIEWSTATE == null) reset();
+        if (__VIEWSTATE == null) reset();
 
-		if (unTrans) {
-			
-			str = str.replace("᠈","，").replace("᠉","。");
+        if (unTrans) {
 
-			str = str.replace("？","？");
+            str = str.replace("᠈", "，").replace("᠉", "。");
 
-			str = str.replace("᠄","：");
-			
-			
-		}
-		
-		HttpResponse resp = HttpUtil
-			.createPost("http://www.cndic.com/manchu.aspx")
-			.form("__VIEWSTATE",__VIEWSTATE)
-			.form("__EVENTVALIDATION",__EVENTVALIDATION)
-			.form("__VIEWSTATEGENERATOR",__VIEWSTATEGENERATOR)
-			.form("tbLeft",str)
-			.form("selType",unTrans ? "ma_cn" : "cn_ma")
-			.form("selWordText","selText")
-			.form("btnTranslate","+翻+译+")
-			.form("tbRight","Dit+ding+").execute();
+            str = str.replace("？", "？");
 
-		String result = resp.body();
+            str = str.replace("᠄", "：");
 
-		result = StrUtil.subAfter(result,"<textarea",true);
 
-		result = StrUtil.subBetween(result,">","<").trim();
+        }
 
-		result = result.trim();
+        HttpResponse resp = HttpUtil
+                .createPost("http://www.cndic.com/manchu.aspx")
+                .form("__VIEWSTATE", __VIEWSTATE)
+                .form("__EVENTVALIDATION", __EVENTVALIDATION)
+                .form("__VIEWSTATEGENERATOR", __VIEWSTATEGENERATOR)
+                .form("tbLeft", str)
+                .form("selType", unTrans ? "ma_cn" : "cn_ma")
+                .form("selWordText", "selText")
+                .form("btnTranslate", "+翻+译+")
+                .form("tbRight", "Dit+ding+").execute();
 
-		if (!noReset && result.isEmpty()) {
+        String result = resp.body();
 
-			reset();
+        result = StrUtil.subAfter(result, "<textarea", true);
 
-			return cn_ma(str,true,unTrans);
+        result = StrUtil.subBetween(result, ">", "<").trim();
 
-		} 
+        result = result.trim();
 
-		if (result.isEmpty() || result.contains("您输入的内容未能翻译出来")) {
+        if (!noReset && result.isEmpty()) {
 
-			result = null;
+            reset();
 
-		} else if (!unTrans) {
+            return cn_ma(str, true, unTrans);
 
-			result = result.replace("，","᠈").replace("。","᠉");
+        }
 
-			result = result.replace("?","？");
+        if (result.isEmpty() || result.contains("您输入的内容未能翻译出来")) {
 
-			result = result.replace("，","᠈").replace(",","᠈");
+            result = null;
 
-			result = result.replace("：","᠄").replace(":","᠄");
+        } else if (!unTrans) {
 
-			// result = result.replaceAll("\\.*","᠁");
+            result = result.replace("，", "᠈").replace("。", "᠉");
 
-		}
+            result = result.replace("?", "？");
 
-		return result;
+            result = result.replace("，", "᠈").replace(",", "᠈");
 
-	}
+            result = result.replace("：", "᠄").replace(":", "᠄");
+
+            // result = result.replaceAll("\\.*","᠁");
+
+        }
+
+        return result;
+
+    }
 
 }

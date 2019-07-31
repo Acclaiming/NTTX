@@ -7,14 +7,14 @@ import com.pengrad.telegrambot.response.BaseResponse;
  * 5/2/16.
  */
 public class KickChatMember extends BaseRequest<KickChatMember, BaseResponse> {
-	
-	public long chatId;
-	public int userId;
-	
+
+    public long chatId;
+    public int userId;
+
     public KickChatMember(Long chatId, int userId) {
         super(BaseResponse.class);
-		this.chatId = chatId;
-		this.userId = userId;
+        this.chatId = chatId;
+        this.userId = userId;
         add("chat_id", chatId).add("user_id", userId);
     }
 

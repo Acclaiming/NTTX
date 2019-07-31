@@ -16,33 +16,33 @@ public class AutoUI extends Fragment {
     final String POINT_SETTING_MRT = "auto_mrt";
     final String POINT_SETTING_FOBACK = "auto_foback";
 
-	public void init(BotFragment origin) {
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerFunction("auto");
+        registerFunction("auto");
 
-        registerCallback(POINT_SETTING_MRT,POINT_SETTING_FOBACK);
+        registerCallback(POINT_SETTING_MRT, POINT_SETTING_FOBACK);
 
     }
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		if (user.blocked()) {
+        if (user.blocked()) {
 
-			msg.send("你不能这么做 (为什么？)").async();
+            msg.send("你不能这么做 (为什么？)").async();
 
-			return;
+            return;
 
-		}
-		
-		requestTwitter(user,msg);
+        }
 
-	}
+        requestTwitter(user, msg);
+
+    }
 
     @Override
-    public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
         AutoSetting setting = autoData.getById(account.id);
 
@@ -54,27 +54,27 @@ public class AutoUI extends Fragment {
 
         }
 
-        msg.send("自动处理设置... (按钮UI (❁´▽`❁)").buttons(makeSettings(setting,account.id)).async();
+        msg.send("自动处理设置... (按钮UI (❁´▽`❁)").buttons(makeSettings(setting, account.id)).async();
 
     }
 
-    ButtonMarkup makeSettings(final AutoSetting setting,final long accountId) {
+    ButtonMarkup makeSettings(final AutoSetting setting, final long accountId) {
 
         return new ButtonMarkup() {{
 
-				// newButtonLine((setting.archive ? "「 关闭" : "「 开启") + " 时间线推文存档 」", POINT_SETTING_AECHIVE, accountId);
-				newButtonLine((setting.mrt ? "「 关闭" : "「 开启") + " 静音新关注的人的转推 」",POINT_SETTING_MRT,accountId);
-				newButtonLine((setting.foback ? "「 关闭" : "「 开启") + " 关注新关注者 」",POINT_SETTING_FOBACK,accountId);
+            // newButtonLine((setting.archive ? "「 关闭" : "「 开启") + " 时间线推文存档 」", POINT_SETTING_AECHIVE, accountId);
+            newButtonLine((setting.mrt ? "「 关闭" : "「 开启") + " 静音新关注的人的转推 」", POINT_SETTING_MRT, accountId);
+            newButtonLine((setting.foback ? "「 关闭" : "「 开启") + " 关注新关注者 」", POINT_SETTING_FOBACK, accountId);
 
-				// newButtonLine((setting.foback ? "「 关闭" : "「 开启") + " 取关新取关者 」",POINT,accountId);
+            // newButtonLine((setting.foback ? "「 关闭" : "「 开启") + " 取关新取关者 」",POINT,accountId);
 
 
-			}};
+        }};
 
     }
 
     @Override
-    public void onCallback(UserData user,Callback callback,String point,String[] params) {
+    public void onCallback(UserData user, Callback callback, String point, String[] params) {
 
         long accountId = Long.parseLong(params[0]);
 
@@ -86,19 +86,19 @@ public class AutoUI extends Fragment {
 
         switch (point) {
 
-				// case POINT_SETTING_: target = setting.archive = !setting.archive;break;
-			case POINT_SETTING_MRT : 
-				target = setting.mrt = !setting.mrt;
-				break;
+            // case POINT_SETTING_: target = setting.archive = !setting.archive;break;
+            case POINT_SETTING_MRT:
+                target = setting.mrt = !setting.mrt;
+                break;
             case POINT_SETTING_FOBACK:
                 target = setting.foback = !setting.foback;
-				break;
+                break;
 
         }
 
         if (setting.foback || setting.mrt) {
 
-            autoData.setById(accountId,setting);
+            autoData.setById(accountId, setting);
 
         } else {
 
@@ -107,7 +107,7 @@ public class AutoUI extends Fragment {
         }
 
         callback.text("已" + (target ? "开启" : "关闭") + " ~");
-        callback.editMarkup(makeSettings(setting,accountId));
+        callback.editMarkup(makeSettings(setting, accountId));
 
 
     }
@@ -117,7 +117,7 @@ public class AutoUI extends Fragment {
         public Long id;
 
 
-		public boolean mrt = false;
+        public boolean mrt = false;
         public boolean foback = false;
         public boolean reply = false;
 

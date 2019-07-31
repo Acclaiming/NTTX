@@ -14,202 +14,202 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Keyboard;
 import io.kurumi.ntt.model.request.KeyboradButtonLine;
+
 import java.util.List;
 
 public class RemoveSticker extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerFunction("remove_sticker");
-		registerPoint(POINT_REMOVE_STICKER);
+        registerFunction("remove_sticker");
+        registerPoint(POINT_REMOVE_STICKER);
 
-	}
+    }
 
-	final String POINT_REMOVE_STICKER = "remove_sticker";
+    final String POINT_REMOVE_STICKER = "remove_sticker";
 
-	class StickerRemove extends PointData {
+    class StickerRemove extends PointData {
 
-		int type = 0;
-		String setName;
-		StickerSet  set;
+        int type = 0;
+        String setName;
+        StickerSet set;
 
-		@Override
-		public void onCancel(UserData user,Msg msg) {
+        @Override
+        public void onCancel(UserData user, Msg msg) {
 
-			ShowSticker.current.remove(user.id);
+            ShowSticker.current.remove(user.id);
 
-		}
+        }
 
-	}
+    }
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String functipon,String[] params) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String functipon, String[] params) {
 
-		if (user.blocked()) {
+        if (user.blocked()) {
 
-			msg.send("你不能这么做 (为什么？)").async();
+            msg.send("你不能这么做 (为什么？)").async();
 
-			return;
+            return;
 
-		}
-		
-		final List<PackOwner> all = PackOwner.getAll(user.id);
+        }
 
-		if (all.isEmpty()) {
+        final List<PackOwner> all = PackOwner.getAll(user.id);
 
-			msg.send("你没有使用NTT创建过贴纸包....","使用 /new_sticker_set 创建").exec();
+        if (all.isEmpty()) {
 
-			return;
+            msg.send("你没有使用NTT创建过贴纸包....", "使用 /new_sticker_set 创建").exec();
 
+            return;
 
-		}
 
-		StickerRemove data = new StickerRemove();
+        }
 
-		setPrivatePoint(user,POINT_REMOVE_STICKER,data);
+        StickerRemove data = new StickerRemove();
 
-		msg
-			.send("选择贴纸包")
-			.keyboard(new Keyboard() {{
+        setPrivatePoint(user, POINT_REMOVE_STICKER, data);
 
-					KeyboradButtonLine line = null;
+        msg
+                .send("选择贴纸包")
+                .keyboard(new Keyboard() {{
 
-					for (PackOwner pack : all) {
+                    KeyboradButtonLine line = null;
 
-						if (line == null) {
+                    for (PackOwner pack : all) {
 
-							line = newButtonLine();
+                        if (line == null) {
 
-							line.newButton(pack.id);
+                            line = newButtonLine();
 
-						} else {
+                            line.newButton(pack.id);
 
-							line.newButton(pack.id);
+                        } else {
 
-							line = null;
+                            line.newButton(pack.id);
 
-						}
+                            line = null;
 
-					}
+                        }
 
-				}})
-			.withCancel().exec(data);
+                    }
 
-	}
+                }})
+                .withCancel().exec(data);
 
+    }
 
-	@Override
-	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
-		StickerRemove rm = (StickerRemove)data.with(msg);
+    @Override
+    public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
-		if (rm.type == 0) {
+        StickerRemove rm = (StickerRemove) data.with(msg);
 
-			String target = msg.text();
+        if (rm.type == 0) {
 
-			if (target == null || !PackOwner.data.fieldEquals(target,"owner",user.id)) {
+            String target = msg.text();
 
-				msg.send("请选择你的贴纸包").withCancel().exec(data);
+            if (target == null || !PackOwner.data.fieldEquals(target, "owner", user.id)) {
 
-				return;
+                msg.send("请选择你的贴纸包").withCancel().exec(data);
 
-			} else if (!target.toLowerCase().endsWith("_by_" + origin.me.username().toLowerCase())) {
+                return;
 
-				msg.send("根据 " + NewStickerSet.DOC + " ，BOT只能操作由自己创建的贴纸包....").html().withCancel().exec(data);
+            } else if (!target.toLowerCase().endsWith("_by_" + origin.me.username().toLowerCase())) {
 
-				return;
+                msg.send("根据 " + NewStickerSet.DOC + " ，BOT只能操作由自己创建的贴纸包....").html().withCancel().exec(data);
 
-			}
+                return;
 
-			final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
+            }
 
-			if (!set.isOk()) {
+            final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
 
-				msg.send("无法读取贴纸包 ，已删除本地记录 " + target + " : " + set.description()).exec(data);
+            if (!set.isOk()) {
 
-				PackOwner.data.deleteById(target);
+                msg.send("无法读取贴纸包 ，已删除本地记录 " + target + " : " + set.description()).exec(data);
 
-				return;
+                PackOwner.data.deleteById(target);
 
-			}
+                return;
 
-			rm.set = set.stickerSet();
-			rm.setName = set.stickerSet().name();
-			ShowSticker.current.put(user.id,set.stickerSet());
+            }
 
-			rm.type = 1;
+            rm.set = set.stickerSet();
+            rm.setName = set.stickerSet().name();
+            ShowSticker.current.put(user.id, set.stickerSet());
 
-			msg.send("请 选择/发送 要移除的贴纸")
-				.buttons(new ButtonMarkup() {{
+            rm.type = 1;
 
-						newCurrentInlineButtonLine("选择贴纸",ShowSticker.PREFIX);
+            msg.send("请 选择/发送 要移除的贴纸")
+                    .buttons(new ButtonMarkup() {{
 
-					}})
-				.withCancel().exec(data);
+                        newCurrentInlineButtonLine("选择贴纸", ShowSticker.PREFIX);
 
-		} else {
-			
-			if (msg.sticker() == null) {
+                    }})
+                    .withCancel().exec(data);
 
-				msg.send("请选择 / 发送要移除的贴纸 :").withCancel().exec(data);
+        } else {
 
-				return;
+            if (msg.sticker() == null) {
 
-			} else if (msg.sticker().setName() == null) {
+                msg.send("请选择 / 发送要移除的贴纸 :").withCancel().exec(data);
 
-				msg.send("这个贴纸不属于任何贴纸包...").withCancel().exec(data);
+                return;
 
-				return;
+            } else if (msg.sticker().setName() == null) {
 
-			} else if (!msg.sticker().setName().toLowerCase().endsWith("_by_" + origin.me.username().toLowerCase())) {
+                msg.send("这个贴纸不属于任何贴纸包...").withCancel().exec(data);
 
-				msg.send("根据 " + NewStickerSet.DOC + " ，BOT只能操作由自己创建的贴纸包....").html().withCancel().exec(data);
+                return;
 
-				return;
+            } else if (!msg.sticker().setName().toLowerCase().endsWith("_by_" + origin.me.username().toLowerCase())) {
 
-			}
+                msg.send("根据 " + NewStickerSet.DOC + " ，BOT只能操作由自己创建的贴纸包....").html().withCancel().exec(data);
 
-			if (PackOwner.data.containsId(msg.sticker().setName()) && !PackOwner.data.fieldEquals(msg.sticker().setName(),"owner",user.id)) {
+                return;
 
-				msg.send("这不是你的贴纸包 :)").exec(data);
+            }
 
-				return;
+            if (PackOwner.data.containsId(msg.sticker().setName()) && !PackOwner.data.fieldEquals(msg.sticker().setName(), "owner", user.id)) {
 
-			}
+                msg.send("这不是你的贴纸包 :)").exec(data);
 
-			BaseResponse resp = bot().execute(new DeleteStickerFromSet(msg.sticker().fileId()));
+                return;
 
-			if (!resp.isOk()) {
+            }
 
-				msg.send("移除失败！请重试",resp.description()).withCancel().exec(data);
+            BaseResponse resp = bot().execute(new DeleteStickerFromSet(msg.sticker().fileId()));
 
-				return;
+            if (!resp.isOk()) {
 
-			}
-			
-			final GetStickerSetResponse set = bot().execute(new GetStickerSet(rm.setName));
+                msg.send("移除失败！请重试", resp.description()).withCancel().exec(data);
 
-			if (set.isOk()) {
+                return;
 
-				ShowSticker.current.put(user.id,set.stickerSet());
+            }
 
-			}
-		
-			msg.reply("移除成功！ ","这可能需要几个小时的时间来生效。","\n退出移除模式使用 /cancel")
-				.buttons(new ButtonMarkup() {{
+            final GetStickerSetResponse set = bot().execute(new GetStickerSet(rm.setName));
 
-						newCurrentInlineButtonLine("继续选择",ShowSticker.PREFIX);
+            if (set.isOk()) {
 
-					}})
-				.exec(data);
+                ShowSticker.current.put(user.id, set.stickerSet());
 
-		}
+            }
 
-	}
+            msg.reply("移除成功！ ", "这可能需要几个小时的时间来生效。", "\n退出移除模式使用 /cancel")
+                    .buttons(new ButtonMarkup() {{
 
+                        newCurrentInlineButtonLine("继续选择", ShowSticker.PREFIX);
+
+                    }})
+                    .exec(data);
+
+        }
+
+    }
 
 
 }

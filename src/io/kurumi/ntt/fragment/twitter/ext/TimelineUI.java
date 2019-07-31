@@ -10,9 +10,11 @@ import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.NTT;
+
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.TimerTask;
+
 import twitter4j.DirectMessage;
 import twitter4j.DirectMessageList;
 import twitter4j.Paging;
@@ -171,7 +173,7 @@ public class TimelineUI extends Fragment {
         data.setById(auth.id, setting);
 
     }
-    
+
     static void processDM(TAuth auth, Twitter api, TLSetting setting) throws TwitterException {
 
         if (setting.directMessageOffset != -1) {
@@ -187,11 +189,10 @@ public class TimelineUI extends Fragment {
                     offset = dm.getId();
 
                 }
-                
+
                 if (!auth.id.equals(dm.getSenderId())) {
-                    
-                    
-                    
+
+
                 }
 
             }
@@ -257,25 +258,25 @@ public class TimelineUI extends Fragment {
         }
 
         data.setById(auth.id, setting);
-        
-    }
-
-	@Override
-	public void init(BotFragment origin) {
-		
-		super.init(origin);
-
-		registerFunction("timeline","mention","dm");
 
     }
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-		
-		requestTwitter(user,msg);
-		
-	}
-	
+    @Override
+    public void init(BotFragment origin) {
+
+        super.init(origin);
+
+        registerFunction("timeline", "mention", "dm");
+
+    }
+
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+
+        requestTwitter(user, msg);
+
+    }
+
 
     @Override
     public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
@@ -301,39 +302,39 @@ public class TimelineUI extends Fragment {
             setting.directMessages = target;
 
         } else if ("timeline".equals(function)) {
-            
+
             old = setting.timeline;
-            
+
             setting.timeline = target;
-            
+
         } else {
-            
+
             old = setting.mention;
-            
-            setting.mention =target;
-            
+
+            setting.mention = target;
+
         }
-        
+
         msg.send(old == target ? (target ? "无须重复开启" : "没有开启") : target ? "已开启" : "已关闭").exec();
 
-		if (!target) {
+        if (!target) {
 
             if ("dm".equals(function)) {
-                
+
                 setting.directMessageOffset = -1;
-                
-			} else if ("timeline".equals(function)) {
 
-				setting.timelineOffset = -1;
+            } else if ("timeline".equals(function)) {
 
-			} else {
+                setting.timelineOffset = -1;
 
-				setting.retweetsOffset = -1;
-				setting.mentionOffset = -1;
+            } else {
 
-			}
+                setting.retweetsOffset = -1;
+                setting.mentionOffset = -1;
 
-		}
+            }
+
+        }
 
         if (setting.mention || setting.timeline || setting.directMessages) {
 
@@ -389,28 +390,28 @@ public class TimelineUI extends Fragment {
 
                     execute(new Runnable() {
 
-							@Override
-							public void run() {
+                        @Override
+                        public void run() {
 
-								try {
+                            try {
 
-									processTimeline(auth, api, setting);
+                                processTimeline(auth, api, setting);
 
-								} catch (TwitterException e) {
+                            } catch (TwitterException e) {
 
-									if (e.getStatusCode() == 503 || e.getErrorCode() == -1) return;
+                                if (e.getStatusCode() == 503 || e.getErrorCode() == -1) return;
 
-									setting.timeline = false;
+                                setting.timeline = false;
 
-									new Send(auth.user, "时间流已关闭 :", NTT.parseTwitterException(e)).exec();
+                                new Send(auth.user, "时间流已关闭 :", NTT.parseTwitterException(e)).exec();
 
-									data.setById(auth.id, setting);
+                                data.setById(auth.id, setting);
 
-								}
+                            }
 
-							}
+                        }
 
-						});
+                    });
 
                 }
 
@@ -452,28 +453,28 @@ public class TimelineUI extends Fragment {
 
                     execute(new Runnable() {
 
-							@Override
-							public void run() {
+                        @Override
+                        public void run() {
 
-								try {
+                            try {
 
-									processMention(auth, api, setting);
+                                processMention(auth, api, setting);
 
-								} catch (TwitterException e) {
+                            } catch (TwitterException e) {
 
-									if (e.getStatusCode() == 503 || e.getErrorCode() == -1) return;
-									
-									setting.mention = false;
+                                if (e.getStatusCode() == 503 || e.getErrorCode() == -1) return;
 
-									new Send(auth.user, "回复流已关闭 :", NTT.parseTwitterException(e)).exec();
+                                setting.mention = false;
 
-									data.setById(auth.id, setting);
+                                new Send(auth.user, "回复流已关闭 :", NTT.parseTwitterException(e)).exec();
 
-								}
+                                data.setById(auth.id, setting);
 
-							}
+                            }
 
-						});
+                        }
+
+                    });
 
                 }
 

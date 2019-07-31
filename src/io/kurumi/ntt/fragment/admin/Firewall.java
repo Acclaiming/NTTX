@@ -19,20 +19,20 @@ import io.kurumi.ntt.utils.Html;
 
 public class Firewall extends Fragment {
 
-    public static Data<Id> block = new Data<Id>("UserBlock",Id.class);
-
-	@Override
-	public void init(BotFragment origin) {
-
-		super.init(origin);
-
-		registerAdminFunction("accept","drop");
-		registerAdminPayload("accept","drop");
-
-	}
+    public static Data<Id> block = new Data<Id>("UserBlock", Id.class);
 
     @Override
-    public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    public void init(BotFragment origin) {
+
+        super.init(origin);
+
+        registerAdminFunction("accept", "drop");
+        registerAdminPayload("accept", "drop");
+
+    }
+
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
         if (params.length == 0) {
 
@@ -50,13 +50,13 @@ public class Firewall extends Fragment {
 
         } else {
 
-            UserData userD = UserData.data.getByField("userName",params[0]);
+            UserData userD = UserData.data.getByField("userName", params[0]);
 
-			if (userD != null) {
+            if (userD != null) {
 
-				target = userD.id;
+                target = userD.id;
 
-			}
+            }
 
         }
 
@@ -92,7 +92,7 @@ public class Firewall extends Fragment {
 
             } else {
 
-                block.setById(target,new Id(target));
+                block.setById(target, new Id(target));
 
                 msg.send("blocked").exec();
 
@@ -102,119 +102,118 @@ public class Firewall extends Fragment {
 
     }
 
-	@Override
-	public void onPayload(UserData user,Msg msg,String payload,String[] params) {
+    @Override
+    public void onPayload(UserData user, Msg msg, String payload, String[] params) {
 
-		if ("accept".equals(payload) || "drop".equals(payload)) {
+        if ("accept".equals(payload) || "drop".equals(payload)) {
 
-			if (params.length < 1) {
+            if (params.length < 1) {
 
-				msg.send("invlid params").exec();
+                msg.send("invlid params").exec();
 
-				return;
+                return;
 
-			}
+            }
 
-			UserData target = UserData.get(NumberUtil.parseLong(params[0]));
+            UserData target = UserData.get(NumberUtil.parseLong(params[0]));
 
-			if (target.admin()) {
+            if (target.admin()) {
 
-				msg.send("不可以...！").exec();
+                msg.send("不可以...！").exec();
 
-				return;
+                return;
 
-			}
+            }
 
-			boolean exists = block.containsId(target.id);
+            boolean exists = block.containsId(target.id);
 
-			if ("accept".equals(payload)) {
+            if ("accept".equals(payload)) {
 
-				if (exists) {
+                if (exists) {
 
-					block.deleteById(target.id);
+                    block.deleteById(target.id);
 
-					msg.send("removed block").exec();
+                    msg.send("removed block").exec();
 
-				} else {
+                } else {
 
-					msg.send("not blocked").exec();
+                    msg.send("not blocked").exec();
 
-				}
+                }
 
-			} else {
+            } else {
 
-				if (exists) {
+                if (exists) {
 
-					msg.send("already blocked").exec();
+                    msg.send("already blocked").exec();
 
-				} else {
+                } else {
 
-					block.setById(target.id,new Id(target.id));
+                    block.setById(target.id, new Id(target.id));
 
-					msg.send("blocked").exec();
+                    msg.send("blocked").exec();
 
-				}
+                }
 
-			}
+            }
 
-			return;
+            return;
 
 
-		}
+        }
 
     }
 
-	@Override
-	public boolean update() {
+    @Override
+    public boolean update() {
 
-		return true;
+        return true;
 
-	}
+    }
 
 
+    @Override
+    public boolean onUpdate(UserData user, Update update) {
 
-	@Override
-	public boolean onUpdate(UserData user,Update update) {
+        Message msg = update.message();
 
-		Message msg = update.message();
+        if (msg == null || user == null) return false;
 
-		if (msg == null || user == null) return false;
+        if (msg.newChatMembers() != null) {
 
-		if (msg.newChatMembers() != null) {
+            if (!msg.newChatMembers()[0].id().equals(origin.me.id())) return false;
 
-			if (!msg.newChatMembers()[0].id().equals(origin.me.id())) return false;
+            if (block.containsId(user.id)) {
 
-			if (block.containsId(user.id)) {
+                bot().execute(new LeaveChat(msg.chat().id()));
 
-				bot().execute(new LeaveChat(msg.chat().id()));
+                new Send(Env.LOG_CHANNEL, "BOT " + UserData.get(origin.me) + " 被 " + user.userName() + " 邀请到 " + msg.chat().title() + " [" + Html.code(msg.chat().id()) + "]").html().async();
 
-				new Send(Env.LOG_CHANNEL,"BOT " + UserData.get(origin.me) + " 被 " + user.userName() + " 邀请到 " + msg.chat().title() + " [" + Html.code(msg.chat().id()) + "]").html().async();
+                return true;
 
-				return true;
+            }
 
-			}
+            GetChatAdministratorsResponse resp = bot().execute(new GetChatAdministrators(msg.chat().id()));
 
-			GetChatAdministratorsResponse resp = bot().execute(new GetChatAdministrators(msg.chat().id()));
+            if (resp == null || !resp.isOk()) return false;
 
-			if (resp == null || !resp.isOk()) return false;
+            for (ChatMember member : resp.administrators()) {
 
-			for (ChatMember member : resp.administrators()) {
+                UserData current = UserData.get(member.user());
 
-				UserData current = UserData.get(member.user());
+                if (!block.containsId(current.id)) continue;
 
-				if (!block.containsId(current.id)) continue;
+                bot().execute(new LeaveChat(msg.chat().id()));
 
-				bot().execute(new LeaveChat(msg.chat().id()));
+                new Send(Env.LOG_CHANNEL, "BOT " + UserData.get(origin.me) + " 被 " + user.userName() + " 邀请到 " + msg.chat().title() + " [" + Html.code(msg.chat().id()) + "] 因为管理员 " + current.userName()).html().async();
 
-				new Send(Env.LOG_CHANNEL,"BOT " + UserData.get(origin.me) + " 被 " + user.userName() + " 邀请到 " + msg.chat().title() + " [" + Html.code(msg.chat().id()) + "] 因为管理员 " + current.userName()).html().async();
+                return true;
 
-				return true;
+            }
 
-			}
+            return false;
 
-			return false;
-
-		} /* else if (block.containsId(user.id)) {
+        } /* else if (block.containsId(user.id)) {
 
 		 Msg message = new Msg(this,msg);
 
@@ -234,9 +233,9 @@ public class Firewall extends Fragment {
 
 		 } */
 
-		return false;
+        return false;
 
-	}
+    }
 
     public static class Id {
 

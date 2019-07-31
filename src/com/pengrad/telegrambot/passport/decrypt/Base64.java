@@ -403,6 +403,7 @@ public class Base64 {
             return true;
         }
     }
+
     private Base64() {
     }   // don't instantiate
 }

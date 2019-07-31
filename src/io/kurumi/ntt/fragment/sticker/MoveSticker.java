@@ -13,8 +13,10 @@ import io.kurumi.ntt.model.Query;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Keyboard;
 import io.kurumi.ntt.model.request.KeyboradButtonLine;
+
 import java.util.HashMap;
 import java.util.List;
+
 import cn.hutool.core.util.ArrayUtil;
 import com.pengrad.telegrambot.request.SetStickerPositionInSet;
 import com.pengrad.telegrambot.response.BaseResponse;
@@ -22,221 +24,221 @@ import io.kurumi.ntt.fragment.inline.ShowSticker;
 
 public class MoveSticker extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerFunction("move_sticker");
-		registerPoint(POINT_MOVE_STICKER);
+        registerFunction("move_sticker");
+        registerPoint(POINT_MOVE_STICKER);
 
-	}
+    }
 
-	final String POINT_MOVE_STICKER = "move_sticker";
+    final String POINT_MOVE_STICKER = "move_sticker";
 
-	class StickerMove extends PointData {
+    class StickerMove extends PointData {
 
-		int type;
-		String setName;
-		StickerSet set;
-		Sticker from;
+        int type;
+        String setName;
+        StickerSet set;
+        Sticker from;
 
-		@Override
-		public void onCancel(UserData user,Msg msg) {
+        @Override
+        public void onCancel(UserData user, Msg msg) {
 
-			ShowSticker.current.remove(user.id);
+            ShowSticker.current.remove(user.id);
 
-		}
+        }
 
-	}
+    }
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		if (user.blocked()) {
+        if (user.blocked()) {
 
-			msg.send("你不能这么做 (为什么？)").async();
+            msg.send("你不能这么做 (为什么？)").async();
 
-			return;
+            return;
 
-		}
-		
-		final List<PackOwner> all = PackOwner.getAll(user.id);
+        }
 
-		if (all.isEmpty()) {
+        final List<PackOwner> all = PackOwner.getAll(user.id);
 
-			msg.send("你没有使用NTT创建过贴纸包....","使用 /new_sticker_set 创建").exec();
+        if (all.isEmpty()) {
 
-			return;
+            msg.send("你没有使用NTT创建过贴纸包....", "使用 /new_sticker_set 创建").exec();
 
-		}
+            return;
 
+        }
 
-		PointData data = new StickerMove().with(msg);
 
-		setPrivatePoint(user,POINT_MOVE_STICKER,data);
+        PointData data = new StickerMove().with(msg);
 
-		msg.send("请选择贴纸包 / 或直接发送要移动的贴纸")
-			.keyboard(new Keyboard() {{
+        setPrivatePoint(user, POINT_MOVE_STICKER, data);
 
-					KeyboradButtonLine line = null;
+        msg.send("请选择贴纸包 / 或直接发送要移动的贴纸")
+                .keyboard(new Keyboard() {{
 
-					for (PackOwner pack : all) {
+                    KeyboradButtonLine line = null;
 
-						if (line == null) {
+                    for (PackOwner pack : all) {
 
-							line = newButtonLine();
+                        if (line == null) {
 
-							line.newButton(pack.id);
+                            line = newButtonLine();
 
-						} else {
+                            line.newButton(pack.id);
 
-							line.newButton(pack.id);
+                        } else {
 
-							line = null;
+                            line.newButton(pack.id);
 
-						}
+                            line = null;
 
-					}
+                        }
 
-				}})
-			.withCancel().exec(data);
+                    }
 
+                }})
+                .withCancel().exec(data);
 
-	}
 
-	@Override
-	public void onPoint(UserData user,Msg msg,String point,PointData data) {
+    }
 
-		StickerMove move = (StickerMove) data.with(msg);
+    @Override
+    public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
-		if (move.type == 0 && msg.sticker() == null) {
+        StickerMove move = (StickerMove) data.with(msg);
 
-			String target = msg.text();
+        if (move.type == 0 && msg.sticker() == null) {
 
-			if (target == null || !PackOwner.data.fieldEquals(target,"owner",user.id)) {
+            String target = msg.text();
 
-				msg.send("请选择你的贴纸包").withCancel().exec(data);
+            if (target == null || !PackOwner.data.fieldEquals(target, "owner", user.id)) {
 
-				return;
+                msg.send("请选择你的贴纸包").withCancel().exec(data);
 
-			}
+                return;
 
-			final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
+            }
 
-			if (!set.isOk()) {
+            final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
 
-				msg.send("无法读取贴纸包 ，已删除本地记录 " + target + " : " + set.description()).exec(data);
+            if (!set.isOk()) {
 
-				PackOwner.data.deleteById(target);
+                msg.send("无法读取贴纸包 ，已删除本地记录 " + target + " : " + set.description()).exec(data);
 
-				return;
+                PackOwner.data.deleteById(target);
 
-			}
+                return;
 
-			move.type = 1;
-			move.set = set.stickerSet();
-			move.setName = target;
+            }
 
-			ShowSticker.current.put(user.id,set.stickerSet());
+            move.type = 1;
+            move.set = set.stickerSet();
+            move.setName = target;
 
-			msg.send("请选择要移动的贴纸或直接发送")
-				.buttons(new ButtonMarkup() {{
+            ShowSticker.current.put(user.id, set.stickerSet());
 
-						newCurrentInlineButtonLine("选择贴纸",ShowSticker.PREFIX);
+            msg.send("请选择要移动的贴纸或直接发送")
+                    .buttons(new ButtonMarkup() {{
 
-					}})
-				.withCancel().exec(data);
+                        newCurrentInlineButtonLine("选择贴纸", ShowSticker.PREFIX);
 
-		} else if (move.type < 2) {
+                    }})
+                    .withCancel().exec(data);
 
-			if (msg.sticker() == null) {
+        } else if (move.type < 2) {
 
-				msg.send("请选择或发送要修改位置的贴纸").withCancel().exec(data);
+            if (msg.sticker() == null) {
 
-				return;
+                msg.send("请选择或发送要修改位置的贴纸").withCancel().exec(data);
 
-			} else if (msg.sticker().setName() == null) {
+                return;
 
-				msg.send("这个贴纸没有贴纸包").withCancel().exec(data);
+            } else if (msg.sticker().setName() == null) {
 
-				return;
+                msg.send("这个贴纸没有贴纸包").withCancel().exec(data);
 
-			} else if (!msg.sticker().setName().toLowerCase().endsWith("_by_" + origin.me.username().toLowerCase())) {
+                return;
 
-				msg.send("根据 " + NewStickerSet.DOC + " ，BOT只能操作由自己创建的贴纸包....").html().withCancel().exec(data);
+            } else if (!msg.sticker().setName().toLowerCase().endsWith("_by_" + origin.me.username().toLowerCase())) {
 
-				return;
+                msg.send("根据 " + NewStickerSet.DOC + " ，BOT只能操作由自己创建的贴纸包....").html().withCancel().exec(data);
 
-			}
+                return;
 
-			if (move.set == null) {
+            }
 
-				final GetStickerSetResponse set = bot().execute(new GetStickerSet(msg.sticker().setName()));
+            if (move.set == null) {
 
-				if (!set.isOk()) {
+                final GetStickerSetResponse set = bot().execute(new GetStickerSet(msg.sticker().setName()));
 
-					msg.send("无法读取贴纸包 ，请重试 : " + set.description()).exec(data);
+                if (!set.isOk()) {
 
-					return;
+                    msg.send("无法读取贴纸包 ，请重试 : " + set.description()).exec(data);
 
-				}
+                    return;
 
-				move.setName = set.stickerSet().name();
-				move.set = set.stickerSet();
-				
-				ShowSticker.current.put(user.id,set.stickerSet());
+                }
 
-			}
-			
-			move.from = msg.sticker();
+                move.setName = set.stickerSet().name();
+                move.set = set.stickerSet();
 
-			move.type = 3;
+                ShowSticker.current.put(user.id, set.stickerSet());
 
-			msg.send("请选择 / 发送要互换的位置的贴纸")
-				.buttons(new ButtonMarkup() {{
+            }
 
-						newCurrentInlineButtonLine("选择贴纸",ShowSticker.PREFIX);
+            move.from = msg.sticker();
 
-					}})
-				.withCancel().exec(data);
+            move.type = 3;
 
+            msg.send("请选择 / 发送要互换的位置的贴纸")
+                    .buttons(new ButtonMarkup() {{
 
-		} else if (move.type == 3) {
-			
-			if (msg.sticker() == null) {
-				
-				msg.send("请选择 / 发送要互换的位置的贴纸").withCancel().exec(data);
-				
-				return;
-				
-			} else if (!msg.sticker().setName().equals(move.setName)) {
-				
-				msg.send("请选择贴纸包 " + move.setName + " 的贴纸").withCancel().exec(data);
-				
-				return;
-				
-			}
-			
-			int index = ArrayUtil.indexOf(move.set.stickers(),msg.sticker());
-			
-			clearPrivatePoint(user);
-			
-			BaseResponse resp = execute(new SetStickerPositionInSet(move.from.fileId(),index));
+                        newCurrentInlineButtonLine("选择贴纸", ShowSticker.PREFIX);
 
-			if (resp.isOk()) {
-				
-				msg.send("修改成功！和添加贴纸不同，这可能需要几个小时的时间来更新客户端的缓存。").exec();
-				
-			} else {
-				
-				msg.send("修改失败！",resp.description());
-				
-			}
-			
-		}
+                    }})
+                    .withCancel().exec(data);
 
-	}
 
-	
+        } else if (move.type == 3) {
+
+            if (msg.sticker() == null) {
+
+                msg.send("请选择 / 发送要互换的位置的贴纸").withCancel().exec(data);
+
+                return;
+
+            } else if (!msg.sticker().setName().equals(move.setName)) {
+
+                msg.send("请选择贴纸包 " + move.setName + " 的贴纸").withCancel().exec(data);
+
+                return;
+
+            }
+
+            int index = ArrayUtil.indexOf(move.set.stickers(), msg.sticker());
+
+            clearPrivatePoint(user);
+
+            BaseResponse resp = execute(new SetStickerPositionInSet(move.from.fileId(), index));
+
+            if (resp.isOk()) {
+
+                msg.send("修改成功！和添加贴纸不同，这可能需要几个小时的时间来更新客户端的缓存。").exec();
+
+            } else {
+
+                msg.send("修改失败！", resp.description());
+
+            }
+
+        }
+
+    }
+
+
 }

@@ -11,12 +11,12 @@ import com.pengrad.telegrambot.response.SendResponse;
  */
 public class EditMessageText extends BaseRequest<EditMessageText, BaseResponse> {
 
-	private String text;
-	
+    private String text;
+
     public EditMessageText(Object chatId, int messageId, String text) {
         super(SendResponse.class);
-        add("chat_id", chatId).add("message_id", messageId).add("text",this.text =  text);
-		
+        add("chat_id", chatId).add("message_id", messageId).add("text", this.text = text);
+
     }
 
     public EditMessageText(String inlineMessageId, String text) {
@@ -24,14 +24,14 @@ public class EditMessageText extends BaseRequest<EditMessageText, BaseResponse> 
         add("inline_message_id", inlineMessageId).add("text", text);
     }
 
-	public void setText(String text) {
-		this.text = text;
-		add("text", text);
-	}
+    public void setText(String text) {
+        this.text = text;
+        add("text", text);
+    }
 
-	public String getText() {
-		return text;
-	}
+    public String getText() {
+        return text;
+    }
 
     public EditMessageText parseMode(ParseMode parseMode) {
         return add("parse_mode", parseMode.name());

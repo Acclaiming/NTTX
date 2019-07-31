@@ -17,8 +17,8 @@ public class Sticker implements Serializable {
     private String set_name;
     private MaskPosition mask_position;
     private Integer file_size;
-	private boolean is_animated;
-	
+    private boolean is_animated;
+
     public String fileId() {
         return file_id;
     }
@@ -43,10 +43,10 @@ public class Sticker implements Serializable {
         return set_name;
     }
 
-	public boolean animated() {
-		return is_animated;
-	}
-	
+    public boolean animated() {
+        return is_animated;
+    }
+
     public MaskPosition maskPosition() {
         return mask_position;
     }
@@ -68,7 +68,8 @@ public class Sticker implements Serializable {
         if (thumb != null ? !thumb.equals(sticker.thumb) : sticker.thumb != null) return false;
         if (emoji != null ? !emoji.equals(sticker.emoji) : sticker.emoji != null) return false;
         if (set_name != null ? !set_name.equals(sticker.set_name) : sticker.set_name != null) return false;
-        if (mask_position != null ? !mask_position.equals(sticker.mask_position) : sticker.mask_position != null) return false;
+        if (mask_position != null ? !mask_position.equals(sticker.mask_position) : sticker.mask_position != null)
+            return false;
         return file_size != null ? file_size.equals(sticker.file_size) : sticker.file_size == null;
     }
 

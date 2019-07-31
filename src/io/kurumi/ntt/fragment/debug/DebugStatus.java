@@ -11,19 +11,19 @@ import twitter4j.TwitterException;
 
 public class DebugStatus extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
-		
-		super.init(origin);
-		
-		registerAdminFunction("get_status");
-		
-	}
+    @Override
+    public void init(BotFragment origin) {
 
-	
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-	
+        super.init(origin);
+
+        registerAdminFunction("get_status");
+
+    }
+
+
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+
         if (params.length == 0) {
 
             msg.send("invalid status id").exec();
@@ -32,13 +32,13 @@ public class DebugStatus extends Fragment {
 
         }
 
-		requestTwitter(user,msg);
-		
-	}
+        requestTwitter(user, msg);
 
-	@Override
-	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
-		
+    }
+
+    @Override
+    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
+
         try {
 
             Status status = account.createApi().showStatus(NTT.parseStatusId(params[0]));
@@ -52,5 +52,5 @@ public class DebugStatus extends Fragment {
         }
 
     }
-	
+
 }

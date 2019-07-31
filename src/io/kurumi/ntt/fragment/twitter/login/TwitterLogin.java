@@ -12,7 +12,9 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
+
 import java.util.HashMap;
+
 import twitter4j.TwitterException;
 import twitter4j.User;
 import twitter4j.auth.AccessToken;
@@ -32,155 +34,155 @@ public class TwitterLogin extends Fragment {
     final String POINT_INPUT_CALLBACK = "twitter_login";
     public HashMap<Long, RequestToken> cache = new HashMap<>();
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerFunction("login");
+        registerFunction("login");
 
-		registerPoints(POINT_INPUT_CALLBACK);
+        registerPoints(POINT_INPUT_CALLBACK);
 
     }
 
     @Override
-    public void onFunction(UserData user,Msg msg,String function,String[] params) {
-		
-		if (user.blocked()) {
-			
-			msg.send("你不能这么做 (为什么？)").async();
-			
-			return;
-			
-		}
-		
-		ApiToken token;
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		if (params.length == 2 || params.length == 4) {
+        if (user.blocked()) {
 
-			token = new ApiToken(params[0],params[1]);
+            msg.send("你不能这么做 (为什么？)").async();
 
-		} else if (params.length == 1) {
+            return;
 
-			String type = params[0].toLowerCase();
-			
-			if ("android".equals(type)) {
-			
-				token = ApiToken.androidToken;
+        }
 
-			} else if ("iphone".equals(type)) {
+        ApiToken token;
 
-				token = ApiToken.iPhoneToken;
+        if (params.length == 2 || params.length == 4) {
 
-			} else if ("web_app".equals(type)) {
+            token = new ApiToken(params[0], params[1]);
 
-				token = ApiToken.webAppToken;
+        } else if (params.length == 1) {
 
-			} else if ("web_client".equals(type)) {
+            String type = params[0].toLowerCase();
 
-				token = ApiToken.webClientToken;
-				
-			} else if ("cat".equals(type)) {
-				
-				token = ApiToken.overflowcat;
-			
-			} else if ("twidere".equals(params[0].toLowerCase())) {
+            if ("android".equals(type)) {
 
-				token = ApiToken.twidere;
+                token = ApiToken.androidToken;
 
-			} else {
+            } else if ("iphone".equals(type)) {
 
-				msg.send("/login","or /login [web_client|web_app|android|iphone|cat|twidere]","or /login <apiKey> <apiKeySec>","or /login <apiKey> <apiKeySec> <accToken> <accTokenSec>").exec();
+                token = ApiToken.iPhoneToken;
 
-				return;
+            } else if ("web_app".equals(type)) {
 
-			}
+                token = ApiToken.webAppToken;
 
-		} else {
+            } else if ("web_client".equals(type)) {
 
-			token = ApiToken.defaultToken;
+                token = ApiToken.webClientToken;
 
-		}
+            } else if ("cat".equals(type)) {
 
-		if (params.length == 4) {
+                token = ApiToken.overflowcat;
 
-			TAuth auth = new TAuth();
+            } else if ("twidere".equals(params[0].toLowerCase())) {
 
-			auth.apiKey = params[0];
-			auth.apiKeySec = params[1];
+                token = ApiToken.twidere;
 
-			auth.user = user.id;
+            } else {
 
-			auth.accToken = params[2];
-			auth.accTokenSec = params[3];
+                msg.send("/login", "or /login [web_client|web_app|android|iphone|cat|twidere]", "or /login <apiKey> <apiKeySec>", "or /login <apiKey> <apiKeySec> <accToken> <accTokenSec>").exec();
 
-			try {
+                return;
 
-				User account = auth.createApi().verifyCredentials();
+            }
 
-				auth.id = account.getId();
+        } else {
 
-				TAuth old = TAuth.getById(auth.id);
+            token = ApiToken.defaultToken;
+
+        }
+
+        if (params.length == 4) {
+
+            TAuth auth = new TAuth();
+
+            auth.apiKey = params[0];
+            auth.apiKeySec = params[1];
+
+            auth.user = user.id;
+
+            auth.accToken = params[2];
+            auth.accTokenSec = params[3];
+
+            try {
+
+                User account = auth.createApi().verifyCredentials();
+
+                auth.id = account.getId();
+
+                TAuth old = TAuth.getById(auth.id);
 
                 if (old != null) {
 
                     if (!user.id.equals(old.user)) {
 
-                        new Send(old.user,"乃的账号 " + old.archive().urlHtml() + " 已被 " + user.userName() + " 认证（●＾o＾●").html().exec();
+                        new Send(old.user, "乃的账号 " + old.archive().urlHtml() + " 已被 " + user.userName() + " 认证（●＾o＾●").html().exec();
 
                     }
 
                 }
 
-				if (account.getAccessLevel() < 2) {
+                if (account.getAccessLevel() < 2) {
 
-					msg.send("注意！这个API只读！NTT的某些功能不可用。").exec();
+                    msg.send("注意！这个API只读！NTT的某些功能不可用。").exec();
 
-				}
+                }
 
-                TAuth.data.setById(auth.id,auth);
+                TAuth.data.setById(auth.id, auth);
 
                 msg.send("好！现在认证成功 , " + auth.archive().urlHtml()).html().exec();
 
                 cache.remove(user.id);
 
-                new Send(Env.LOG_CHANNEL,"New Auth : " + user.userName() + " -> " + auth.archive().urlHtml()).html().exec();
+                new Send(Env.LOG_CHANNEL, "New Auth : " + user.userName() + " -> " + auth.archive().urlHtml()).html().exec();
 
-				return;
+                return;
 
-			} catch (TwitterException e) {
+            } catch (TwitterException e) {
 
-				msg.send("检查认证失败",NTT.parseTwitterException(e)).exec();
+                msg.send("检查认证失败", NTT.parseTwitterException(e)).exec();
 
-				return;
+                return;
 
-			}
+            }
 
-		}
+        }
 
         try {
 
             RequestToken request = token.createApi().getOAuthRequestToken("oob");
 
-            cache.put(user.id,request);
+            cache.put(user.id, request);
 
-			PointData data = setPrivatePointData(user,POINT_INPUT_CALLBACK,token);
+            PointData data = setPrivatePointData(user, POINT_INPUT_CALLBACK, token);
 
-            msg.send("点 " + Html.a("这里",request.getAuthorizationURL()) + " 认证 ( 支持多账号的呢 ~").html().exec(data);
+            msg.send("点 " + Html.a("这里", request.getAuthorizationURL()) + " 认证 ( 支持多账号的呢 ~").html().exec(data);
 
-            msg.send("(｡•̀ᴗ-)✧ 请输入 pin 码 : ","使用 /cancel 取消 ~").exec(data);
+            msg.send("(｡•̀ᴗ-)✧ 请输入 pin 码 : ", "使用 /cancel 取消 ~").exec(data);
 
         } catch (TwitterException e) {
 
-            msg.send("请求认证链接失败 :( ",NTT.parseTwitterException(e)).failedWith();
+            msg.send("请求认证链接失败 :( ", NTT.parseTwitterException(e)).failedWith();
 
         }
 
 
     }
 
-	@Override
-	public void onPoint(UserData user,Msg msg,String point,PointData data) {
+    @Override
+    public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
         if (!msg.hasText() || msg.text().length() != 7 || !NumberUtil.isNumber(msg.text())) {
 
@@ -219,9 +221,9 @@ public class TwitterLogin extends Fragment {
 
             try {
 
-				ApiToken token = data.data();
+                ApiToken token = data.data();
 
-                AccessToken access = token.createApi().getOAuthAccessToken(requestToken,msg.text());
+                AccessToken access = token.createApi().getOAuthAccessToken(requestToken, msg.text());
 
                 long accountId = access.getUserId();
 
@@ -231,7 +233,7 @@ public class TwitterLogin extends Fragment {
 
                     if (!user.id.equals(old.user)) {
 
-                        new Send(old.user,"乃的账号 " + old.archive().urlHtml() + " 已被 " + user.userName() + " 认证（●＾o＾●").html().exec();
+                        new Send(old.user, "乃的账号 " + old.archive().urlHtml() + " 已被 " + user.userName() + " 认证（●＾o＾●").html().exec();
 
                     }
 
@@ -249,23 +251,23 @@ public class TwitterLogin extends Fragment {
 
                 clearPrivatePoint(user);
 
-				if (auth.createApi().verifyCredentials().getAccessLevel() < 2) {
+                if (auth.createApi().verifyCredentials().getAccessLevel() < 2) {
 
-					msg.send("注意！这个API只读！NTT的某些功能不可用。").exec();
+                    msg.send("注意！这个API只读！NTT的某些功能不可用。").exec();
 
-				}
+                }
 
-                TAuth.data.setById(accountId,auth);
+                TAuth.data.setById(accountId, auth);
 
                 msg.send("好！现在认证成功 , " + auth.archive().urlHtml()).html().exec();
 
                 cache.remove(user.id);
 
-                new Send(Env.LOG_CHANNEL,"New Auth : " + user.userName() + " -> " + auth.archive().urlHtml()).html().exec();
+                new Send(Env.LOG_CHANNEL, "New Auth : " + user.userName() + " -> " + auth.archive().urlHtml()).html().exec();
 
             } catch (TwitterException e) {
 
-                msg.send("认证失败...",NTT.parseTwitterException(e)).exec();
+                msg.send("认证失败...", NTT.parseTwitterException(e)).exec();
 
             }
 

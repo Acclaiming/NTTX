@@ -7,17 +7,17 @@ import io.kurumi.ntt.model.Msg;
 
 public class DelMsg extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
-		
-		super.init(origin);
-		
-		registerAdminFunction("d");
-		
-	}
-	
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public void init(BotFragment origin) {
+
+        super.init(origin);
+
+        registerAdminFunction("d");
+
+    }
+
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
         msg.delete();
 

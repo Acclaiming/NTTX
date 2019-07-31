@@ -9,8 +9,8 @@ import com.pengrad.telegrambot.response.SendResponse;
  */
 abstract public class AbstractSendRequest<T extends AbstractSendRequest> extends BaseRequest<T, SendResponse> {
 
-	public transient Object chatId;
-	
+    public transient Object chatId;
+
     public AbstractSendRequest(Object chatId) {
         super(SendResponse.class);
         add("chat_id", this.chatId = chatId);

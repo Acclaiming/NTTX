@@ -3,6 +3,7 @@ package io.kurumi.ntt.utils;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ImageUtil;
 import cn.hutool.core.util.RandomUtil;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -17,6 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
+
 import net.coobird.thumbnailator.Thumbnails;
 
 /*
@@ -31,50 +33,51 @@ import org.jfree.data.category.CategoryDataset;
 
 public class Img {
 
-	private BufferedImage image;
-	private Graphics2D graphics;
+    private BufferedImage image;
+    private Graphics2D graphics;
 
-	public final int width;
-	public final int height;
+    public final int width;
+    public final int height;
 
-	public Img(int width,int height) {
+    public Img(int width, int height) {
 
-		this(width,height,null);
+        this(width, height, null);
 
-	}
+    }
 
-	public Img(int width,int height,Color backgroundColor) {
+    public Img(int width, int height, Color backgroundColor) {
 
-		this.width = width; this.height = height;
+        this.width = width;
+        this.height = height;
 
-		image = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
+        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-		graphics = image.createGraphics();
+        graphics = image.createGraphics();
 
 
-		if (backgroundColor != null) {
+        if (backgroundColor != null) {
 
-			graphics.setBackground(backgroundColor);
-			graphics.clearRect(0,0,width,height);
+            graphics.setBackground(backgroundColor);
+            graphics.clearRect(0, 0, width, height);
 
-		} else {
+        } else {
 
-			image = graphics.getDeviceConfiguration().createCompatibleImage(width,height,Transparency.TRANSLUCENT);
-			graphics.dispose();
-			graphics = image.createGraphics();
+            image = graphics.getDeviceConfiguration().createCompatibleImage(width, height, Transparency.TRANSLUCENT);
+            graphics.dispose();
+            graphics = image.createGraphics();
 
-		}
+        }
 
-		// graphics.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_ANTIALIAS_ON);
-		graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+        // graphics.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         graphics.setColor(Color.BLACK);
         graphics.setPaint(Color.BLACK);
 
-		font("Noto Sans CJK SC Thin",39);
+        font("Noto Sans CJK SC Thin", 39);
 
-	}
+    }
 	
 	/*
 
@@ -158,345 +161,348 @@ public class Img {
 	
 	*/
 
-	public Img drawLineInterfere(int count) {
+    public Img drawLineInterfere(int count) {
 
-		Paint paint = graphics.getPaint();
-		Stroke stoke = graphics.getStroke();
+        Paint paint = graphics.getPaint();
+        Stroke stoke = graphics.getStroke();
 
-		final ThreadLocalRandom random = RandomUtil.getRandom();
+        final ThreadLocalRandom random = RandomUtil.getRandom();
 
-		for (int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
 
-			int xs = random.nextInt(width);
-			int ys = random.nextInt(height);
-			int xe = xs + random.nextInt(width / 8);
-			int ye = ys + random.nextInt(height / 8);
+            int xs = random.nextInt(width);
+            int ys = random.nextInt(height);
+            int xe = xs + random.nextInt(width / 8);
+            int ye = ys + random.nextInt(height / 8);
 
-			graphics.setColor(ImageUtil.randomColor(random));
-			graphics.setStroke(new BasicStroke((float)RandomUtil.randomDouble(4)));
+            graphics.setColor(ImageUtil.randomColor(random));
+            graphics.setStroke(new BasicStroke((float) RandomUtil.randomDouble(4)));
 
-			graphics.drawLine(xs,ys,xe,ye);
-		}
+            graphics.drawLine(xs, ys, xe, ye);
+        }
 
-		graphics.setPaint(paint);
-		graphics.setStroke(stoke);
+        graphics.setPaint(paint);
+        graphics.setStroke(stoke);
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public Img drawCircleInterfere(int count) {
+    public Img drawCircleInterfere(int count) {
 
-		Paint paint = graphics.getPaint();
+        Paint paint = graphics.getPaint();
 
-		final ThreadLocalRandom random = RandomUtil.getRandom();
+        final ThreadLocalRandom random = RandomUtil.getRandom();
 
-		for (int i = 0; i < count; i++) {
-			graphics.setColor(ImageUtil.randomColor(random));
-			graphics.drawOval(random.nextInt(width),random.nextInt(height),random.nextInt(height >> 1),random.nextInt(height >> 1));
-		}
+        for (int i = 0; i < count; i++) {
+            graphics.setColor(ImageUtil.randomColor(random));
+            graphics.drawOval(random.nextInt(width), random.nextInt(height), random.nextInt(height >> 1), random.nextInt(height >> 1));
+        }
 
-		graphics.setPaint(paint);
+        graphics.setPaint(paint);
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public Img drawShearInterfere(int count,Color color) {
+    public Img drawShearInterfere(int count, Color color) {
 
-		Paint paint = graphics.getPaint();
+        Paint paint = graphics.getPaint();
 
-		int period = RandomUtil.randomInt(2);
+        int period = RandomUtil.randomInt(2);
 
-		boolean borderGap = true;
-		int frames = 1;
-		int phase = RandomUtil.randomInt(2);
+        boolean borderGap = true;
+        int frames = 1;
+        int phase = RandomUtil.randomInt(2);
 
-		for (int i = 0; i < height; i++) {
+        for (int i = 0; i < height; i++) {
 
-			double d = (double) (period >> 1) * Math.sin((double) i / (double) period + (6.2831853071795862D * (double) phase) / (double) frames);
+            double d = (double) (period >> 1) * Math.sin((double) i / (double) period + (6.2831853071795862D * (double) phase) / (double) frames);
 
-			graphics.copyArea(0,i,width,1,(int) d,0);
+            graphics.copyArea(0, i, width, 1, (int) d, 0);
 
-			if (borderGap) {
-				graphics.setColor(color);
-				graphics.drawLine((int) d,i,0,i);
-				graphics.drawLine((int) d + width,i,width,i);
-			}
-		}
+            if (borderGap) {
+                graphics.setColor(color);
+                graphics.drawLine((int) d, i, 0, i);
+                graphics.drawLine((int) d + width, i, width, i);
+            }
+        }
 
-		period = RandomUtil.randomInt(40) + 10; // 50;
+        period = RandomUtil.randomInt(40) + 10; // 50;
 
-		borderGap = true;
-		frames = 20;
-		phase = 7;
+        borderGap = true;
+        frames = 20;
+        phase = 7;
 
-		for (int i = 0; i < width; i++) {
+        for (int i = 0; i < width; i++) {
 
-			double d = (double) (period >> 1) * Math.sin((double) i / (double) period + (6.2831853071795862D * (double) phase) / (double) frames);
+            double d = (double) (period >> 1) * Math.sin((double) i / (double) period + (6.2831853071795862D * (double) phase) / (double) frames);
 
-			graphics.copyArea(i,0,1,height,0,(int) d);
+            graphics.copyArea(i, 0, 1, height, 0, (int) d);
 
-			if (borderGap) {
+            if (borderGap) {
 
-				graphics.setColor(color);
-				graphics.drawLine(i,(int) d,i,0);
-				graphics.drawLine(i,(int) d + height,i,height);
+                graphics.setColor(color);
+                graphics.drawLine(i, (int) d, i, 0);
+                graphics.drawLine(i, (int) d + height, i, height);
 
-			}
+            }
 
-		}
+        }
 
-		graphics.setPaint(paint);
+        graphics.setPaint(paint);
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public Img fontSize(int size) {
+    public Img fontSize(int size) {
 
-		font(graphics.getFont().getFontName(),size);
+        font(graphics.getFont().getFontName(), size);
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public Img font(String newFont) {
+    public Img font(String newFont) {
 
-		font(newFont,graphics.getFont().getSize());
+        font(newFont, graphics.getFont().getSize());
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public Img font(String newFont,int size) {
+    public Img font(String newFont, int size) {
 
-		graphics().setFont(new Font(newFont,graphics.getFont().getStyle(),size));
+        graphics().setFont(new Font(newFont, graphics.getFont().getStyle(), size));
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public int stringWidth(String string) {
+    public int stringWidth(String string) {
 
-		return graphics.getFontMetrics().stringWidth(string);
+        return graphics.getFontMetrics().stringWidth(string);
 
-	}
+    }
 
-	public int stringHeight() {
+    public int stringHeight() {
 
-		return graphics.getFontMetrics().getHeight();
+        return graphics.getFontMetrics().getHeight();
 
-	}
+    }
 
-	public Img drawImageCenter(int xPedding,int yPedding,int xMargin,int yMargin,File newImage,int width,int height) {
+    public Img drawImageCenter(int xPedding, int yPedding, int xMargin, int yMargin, File newImage, int width, int height) {
 
-		drawImageCenter(xPedding,yPedding,xMargin,yMargin,newImage,width,height,null);
+        drawImageCenter(xPedding, yPedding, xMargin, yMargin, newImage, width, height, null);
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public Img drawImageCenter(int xPedding,int yPedding,int xMargin,int yMargin,File newImage,int width,int height,Color bgColor) {
+    public Img drawImageCenter(int xPedding, int yPedding, int xMargin, int yMargin, File newImage, int width, int height, Color bgColor) {
 
-		int realX = xPedding + ((this.width - xMargin - width) / 2);
-		int realY = yPedding + ((this.height - yMargin - height) / 2);
+        int realX = xPedding + ((this.width - xMargin - width) / 2);
+        int realY = yPedding + ((this.height - yMargin - height) / 2);
 
-		drawImage(realX,realY,newImage,width,height,bgColor);
+        drawImage(realX, realY, newImage, width, height, bgColor);
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public Img drawImageCenter(int xPedding,int yPedding,int xMargin,int yMargin,BufferedImage newImage,int width,int height) {
+    public Img drawImageCenter(int xPedding, int yPedding, int xMargin, int yMargin, BufferedImage newImage, int width, int height) {
 
-		drawImageCenter(xPedding,yPedding,xMargin,yMargin,newImage,width,height,null);
+        drawImageCenter(xPedding, yPedding, xMargin, yMargin, newImage, width, height, null);
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public Img drawImageCenter(int xPedding,int yPedding,int xMargin,int yMargin,BufferedImage newImage,int width,int height,Color bgColor) {
+    public Img drawImageCenter(int xPedding, int yPedding, int xMargin, int yMargin, BufferedImage newImage, int width, int height, Color bgColor) {
 
-		int realX = xPedding + ((this.width - xMargin - width) / 2);
-		int realY = yPedding + ((this.height - yMargin - height) / 2);
+        int realX = xPedding + ((this.width - xMargin - width) / 2);
+        int realY = yPedding + ((this.height - yMargin - height) / 2);
 
-		drawImage(realX,realY,newImage,width,height,bgColor);
+        drawImage(realX, realY, newImage, width, height, bgColor);
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public Img drawImage(int x,int y,File image,int width,int height) {
+    public Img drawImage(int x, int y, File image, int width, int height) {
 
-		drawImage(x,y,image,width,height,null);
+        drawImage(x, y, image, width, height, null);
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public Img drawImage(int x,int y,File image,int width,int height,Color bgCplor) {
+    public Img drawImage(int x, int y, File image, int width, int height, Color bgCplor) {
 
-		try {
+        try {
 
-			drawImage(x,y,Thumbnails.of(image).size(width,height).asBufferedImage(),width,height,bgCplor);
+            drawImage(x, y, Thumbnails.of(image).size(width, height).asBufferedImage(), width, height, bgCplor);
 
-		} catch (IOException e) {}
+        } catch (IOException e) {
+        }
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public Img drawImage(int x,int y,BufferedImage newImage,int width,int height) {
+    public Img drawImage(int x, int y, BufferedImage newImage, int width, int height) {
 
-		drawImage(x,y,newImage,width,height,null);
+        drawImage(x, y, newImage, width, height, null);
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public Img drawImage(int x,int y,BufferedImage newImage,int width,int height,Color bgColor) {
+    public Img drawImage(int x, int y, BufferedImage newImage, int width, int height, Color bgColor) {
 
-		if (bgColor == null) {
+        if (bgColor == null) {
 
-			graphics.drawImage(newImage,x,y,width,height,null);
+            graphics.drawImage(newImage, x, y, width, height, null);
 
-		} else {
+        } else {
 
-			graphics.drawImage(newImage,x,y,width,height,bgColor,null);
+            graphics.drawImage(newImage, x, y, width, height, bgColor, null);
 
-		}
+        }
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public Img drawTextCenter(int xPedding,int yPedding,int xMargin,int yMargin,String text) {
+    public Img drawTextCenter(int xPedding, int yPedding, int xMargin, int yMargin, String text) {
 
-		int realX = xPedding + ((width - xPedding - xMargin) / 2) - (stringWidth(text) / 2);
-		int realY = yPedding + ((height - yPedding - yMargin) / 2);
+        int realX = xPedding + ((width - xPedding - xMargin) / 2) - (stringWidth(text) / 2);
+        int realY = yPedding + ((height - yPedding - yMargin) / 2);
 
-		drawText(realX,realY,text);
+        drawText(realX, realY, text);
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public Img drawRandomColorTextCenter(int xPedding,int yPedding,int xMargin,int yMargin,String text) {
+    public Img drawRandomColorTextCenter(int xPedding, int yPedding, int xMargin, int yMargin, String text) {
 
-		int realX = xPedding + ((width - xPedding - xMargin) / 2) - (stringWidth(text) / 2);
-		int realY = yPedding + ((height - yPedding - yMargin) / 2);
+        int realX = xPedding + ((width - xPedding - xMargin) / 2) - (stringWidth(text) / 2);
+        int realY = yPedding + ((height - yPedding - yMargin) / 2);
 
-		drawRandomColorText(realX,realY,text);
+        drawRandomColorText(realX, realY, text);
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public Img drawText(int x,int y,String text) {
+    public Img drawText(int x, int y, String text) {
 
-		Paint paint = graphics.getPaint();
+        Paint paint = graphics.getPaint();
 
-		graphics.setPaint(new Color(0,0,0,64));
+        graphics.setPaint(new Color(0, 0, 0, 64));
 
-		graphics.drawString(text,x,y);
+        graphics.drawString(text, x, y);
 
-		graphics.setPaint(paint);
+        graphics.setPaint(paint);
 
-		graphics.drawString(text,x,y);
+        graphics.drawString(text, x, y);
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public Img drawRandomColorText(int x,int y,String text) {
+    public Img drawRandomColorText(int x, int y, String text) {
 
-		final ThreadLocalRandom random = RandomUtil.getRandom();
+        final ThreadLocalRandom random = RandomUtil.getRandom();
 
-		Paint paint = graphics.getPaint();
+        Paint paint = graphics.getPaint();
 
-		int length = 0;
+        int length = 0;
 
-		for (int index = 0;index < text.length();index ++) {
+        for (int index = 0; index < text.length(); index++) {
 
-			graphics.setPaint(new Color(0,0,0,64));
+            graphics.setPaint(new Color(0, 0, 0, 64));
 
-			String word = text.subSequence(index,index + 1).toString();
+            String word = text.subSequence(index, index + 1).toString();
 
-			graphics.drawString(word,x + length ,y);
+            graphics.drawString(word, x + length, y);
 
-			graphics.setPaint(ImageUtil.randomColor(random));
+            graphics.setPaint(ImageUtil.randomColor(random));
 
-			graphics.drawString(word,x + length ,y);
+            graphics.drawString(word, x + length, y);
 
-			length += stringWidth(word);
+            length += stringWidth(word);
 
-		}
+        }
 
-		graphics.setPaint(paint);
+        graphics.setPaint(paint);
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public byte[] getBytes() {
+    public byte[] getBytes() {
 
-		return getBytes("png");
+        return getBytes("png");
 
-	}
+    }
 
-	public byte[] getBytes(String format) {
+    public byte[] getBytes(String format) {
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         try {
 
             Thumbnails.of(image)
-                .size(width,height)
-                .outputFormat(format)
-                .outputQuality(1f)
-                .toOutputStream(out);
+                    .size(width, height)
+                    .outputFormat(format)
+                    .outputQuality(1f)
+                    .toOutputStream(out);
 
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        }
 
-		return out.toByteArray();
+        return out.toByteArray();
 
-	}
+    }
 
-	public Img toFile(File outPut) {
+    public Img toFile(File outPut) {
 
-		toFile(outPut,"png");
+        toFile(outPut, "png");
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public Img toFile(File outPut,String format) {
+    public Img toFile(File outPut, String format) {
 
-		try {
+        try {
 
-			Thumbnails.of(image)
-				.size(width,height)
-				.outputFormat(format)
-				.outputQuality(1f)
-				.toFile(outPut);
+            Thumbnails.of(image)
+                    .size(width, height)
+                    .outputFormat(format)
+                    .outputQuality(1f)
+                    .toFile(outPut);
 
-		} catch (IOException e) {}
+        } catch (IOException e) {
+        }
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public BufferedImage image() {
+    public BufferedImage image() {
 
-		return image;
+        return image;
 
-	}
+    }
 
-	public Graphics2D graphics() {
+    public Graphics2D graphics() {
 
-		return graphics;
+        return graphics;
 
-	}
+    }
 
 }

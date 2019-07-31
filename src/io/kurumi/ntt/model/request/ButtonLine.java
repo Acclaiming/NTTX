@@ -23,24 +23,24 @@ public class ButtonLine extends LinkedList<InlineKeyboardButton> {
         return this;
 
     }
-	
-	public ButtonLine newInlineButton(String text,String query) {
-		
-		add(new InlineKeyboardButton(text).switchInlineQuery(query));
-		
-		return this;
-		
-	}
 
-	public ButtonLine newCurrentInlineButton(String text,String query) {
+    public ButtonLine newInlineButton(String text, String query) {
 
-		add(new InlineKeyboardButton(text).switchInlineQueryCurrentChat(query));
+        add(new InlineKeyboardButton(text).switchInlineQuery(query));
 
-		return this;
+        return this;
 
-	}
-	
-	
+    }
+
+    public ButtonLine newCurrentInlineButton(String text, String query) {
+
+        add(new InlineKeyboardButton(text).switchInlineQueryCurrentChat(query));
+
+        return this;
+
+    }
+
+
     @Override
     public InlineKeyboardButton[] toArray() {
 

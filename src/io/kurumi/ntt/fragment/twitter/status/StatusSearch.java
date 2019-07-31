@@ -17,34 +17,35 @@ import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.MongoIDs;
 import io.kurumi.ntt.utils.NTT;
+
 import java.util.TimeZone;
 
 public class StatusSearch extends Fragment {
 
     final String POINT_SHOW_PAGE = "search_show_page";
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
-		
-		registerFunction("search");
-		
-		registerCallback(POINT_SHOW_PAGE);
-		
-	}
+        super.init(origin);
+
+        registerFunction("search");
+
+        registerCallback(POINT_SHOW_PAGE);
+
+    }
 
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		if (user.blocked()) {
+        if (user.blocked()) {
 
-			msg.send("你不能这么做 (为什么？)").async();
+            msg.send("你不能这么做 (为什么？)").async();
 
-			return;
+            return;
 
-		}
-		
+        }
+
         int index = 0;
 
         long from = -1;
@@ -92,7 +93,7 @@ public class StatusSearch extends Fragment {
                     from = archive.id;
 
                 }
-				
+
             } else if (param.startsWith("to=")) {
 
                 String toC = StrUtil.subAfter(param, "=", false);
@@ -240,7 +241,7 @@ public class StatusSearch extends Fragment {
 
         }
 
-        Msg status = msg.send("正在创建查询...","\n提醒 : 查找某个用户的推文前请使用 /fetch 拉取推文").send();
+        Msg status = msg.send("正在创建查询...", "\n提醒 : 查找某个用户的推文前请使用 /fetch 拉取推文").send();
 
         msg.sendTyping();
 
@@ -248,7 +249,7 @@ public class StatusSearch extends Fragment {
 
         SavedSearch.data.setById(search.id, search);
 
-        status.edit("创建查询√\n正在查询...","\n提醒 : 查找某个用户的推文前请使用 /fetch 拉取推文").exec();
+        status.edit("创建查询√\n正在查询...", "\n提醒 : 查找某个用户的推文前请使用 /fetch 拉取推文").exec();
 
         msg.sendTyping();
 
@@ -296,12 +297,12 @@ public class StatusSearch extends Fragment {
 
         StringBuilder format = new StringBuilder("------------------ 查询结果 -------------------");
 
-		if (search.from != -1) {
-			
-			format.append("        提醒 : 查找某个用户的推文前请使用 /fetch 拉取最新推文\n\n");
-			
-		}
-		
+        if (search.from != -1) {
+
+            format.append("        提醒 : 查找某个用户的推文前请使用 /fetch 拉取最新推文\n\n");
+
+        }
+
         for (StatusArchive archive : search.query((int) (cursor - 1) * 10, 10)) {
 
             String text = archive.text;
@@ -319,7 +320,7 @@ public class StatusSearch extends Fragment {
         return format.toString();
 
     }
-	
+
     ButtonMarkup makeButtons(final long searchId, final long count, final long current) {
 
         return new ButtonMarkup() {{

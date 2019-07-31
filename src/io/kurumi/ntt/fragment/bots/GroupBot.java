@@ -9,40 +9,39 @@ import io.kurumi.ntt.model.Msg;
 
 public class GroupBot extends UserBotFragment {
 
-	@Override
-	public void reload() {
+    @Override
+    public void reload() {
 
-		super.reload();
+        super.reload();
 
-		addFragment(new GroupOptions());
-		addFragment(new GroupFunction());
-		addFragment(new GroupAdmin());
-		addFragment(new JoinCaptcha());
+        addFragment(new GroupOptions());
+        addFragment(new GroupFunction());
+        addFragment(new GroupAdmin());
+        addFragment(new JoinCaptcha());
 
-	}
+    }
 
-	@Override
-	public boolean msg() {
+    @Override
+    public boolean msg() {
 
-		return true;
+        return true;
 
-	}
+    }
 
-	@Override
-	public void onMsg(UserData user,Msg msg) {
+    @Override
+    public void onMsg(UserData user, Msg msg) {
 
-		if (msg.message().newChatMembers() != null) {
+        if (msg.message().newChatMembers() != null) {
 
-			if (me.id().equals(msg.message().newChatMembers()[0].id())) {
+            if (me.id().equals(msg.message().newChatMembers()[0].id())) {
 
-				msg.send("欢迎使用 :)","在群组发送 /options 即可调出设置。").async();
+                msg.send("欢迎使用 :)", "在群组发送 /options 即可调出设置。").async();
 
-			}
+            }
 
-		}
+        }
 
-	}
-
+    }
 
 
 }

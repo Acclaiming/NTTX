@@ -8,7 +8,9 @@ import cn.hutool.core.util.ArrayUtil;
 import io.kurumi.ntt.model.Query;
 import io.kurumi.ntt.utils.Cndic;
 import cn.hutool.core.util.StrUtil;
+
 import java.util.regex.Pattern;
+
 import cn.hutool.core.util.ReUtil;
 
 /*
@@ -20,124 +22,124 @@ import cn.hutool.core.util.ReUtil;
  */
 public class Manchurize extends Fragment {
 
-	@Override
-	public boolean query() {
+    @Override
+    public boolean query() {
 
-		return true;
+        return true;
 
-	}
+    }
 
-	Cndic cndic = new Cndic();
+    Cndic cndic = new Cndic();
 
-	@Override
-	public void onQuery(UserData user,Query inlineQuery) {
+    @Override
+    public void onQuery(UserData user, Query inlineQuery) {
 
-		if (inlineQuery.text == null || !inlineQuery.text.startsWith("M ")) return;
+        if (inlineQuery.text == null || !inlineQuery.text.startsWith("M ")) return;
 
-		String str = inlineQuery.text.substring(2).trim();
+        String str = inlineQuery.text.substring(2).trim();
 
-		if (StrUtil.isBlank(str)) return;
+        if (StrUtil.isBlank(str)) return;
 
-		str = cndic.cn_ma(isManchuScript(str) ? deManchurize(str) : str,isManchuScript(str),false);
+        str = cndic.cn_ma(isManchuScript(str) ? deManchurize(str) : str, isManchuScript(str), false);
 
-		if (str != null) {
+        if (str != null) {
 
-			inlineQuery.article("完成",manchurize(str),null,null);
+            inlineQuery.article("完成", manchurize(str), null, null);
 
-		} else {
+        } else {
 
-			inlineQuery.article("翻译失败",":(",null,null);
+            inlineQuery.article("翻译失败", ":(", null, null);
 
 
-		}
+        }
 
-		executeAsync(inlineQuery.update,inlineQuery.reply().cacheTime(114514));
+        executeAsync(inlineQuery.update, inlineQuery.reply().cacheTime(114514));
 
-	}
+    }
 
-	private static Pattern manchuMatcher = Pattern.compile("(([\u1800-\u18AA\u00AB\u00BB\u2039\u203A\\?\\!\u203D\u2E2E])+\\s*((-*—?[0-9])+\\s+)*)+$",Pattern.MULTILINE);
+    private static Pattern manchuMatcher = Pattern.compile("(([\u1800-\u18AA\u00AB\u00BB\u2039\u203A\\?\\!\u203D\u2E2E])+\\s*((-*—?[0-9])+\\s+)*)+$", Pattern.MULTILINE);
 
-	public static boolean isManchuScript(String str) {
+    public static boolean isManchuScript(String str) {
 
-		return ReUtil.contains(manchuMatcher,str);
+        return ReUtil.contains(manchuMatcher, str);
 
-	}
+    }
 
-	public static String deManchurize(String str) {
+    public static String deManchurize(String str) {
 
-		String tmp = "";
+        String tmp = "";
 
-		if (str.length() > 0) {
+        if (str.length() > 0) {
 
-			for (int i = 0; i < str.length(); i++) {
+            for (int i = 0; i < str.length(); i++) {
 
-				char val = str.charAt(i);
+                char val = str.charAt(i);
 
-				char prev = ' ';
+                char prev = ' ';
 
-				if (i > 0) {
+                if (i > 0) {
 
-					prev = str.charAt(i - 1);
+                    prev = str.charAt(i - 1);
 
-				}
+                }
 
-				if (val == 'ᠠ') {
+                if (val == 'ᠠ') {
 
-					tmp += 'a';
+                    tmp += 'a';
 
-				} else if (val == 'ᡝ') {
+                } else if (val == 'ᡝ') {
 
-					tmp += 'e';
+                    tmp += 'e';
 
-				} else if (val == 'ᡳ') {
+                } else if (val == 'ᡳ') {
 
-					tmp += 'i';
+                    tmp += 'i';
 
-				} else if (val == 'ᠣ') {
+                } else if (val == 'ᠣ') {
 
-					tmp += 'o';
+                    tmp += 'o';
 
-				} else if (val == 'ᡠ') {
+                } else if (val == 'ᡠ') {
 
-					tmp += 'u';
+                    tmp += 'u';
 
-				} else if (val == 'ᡡ') {
+                } else if (val == 'ᡡ') {
 
-					tmp += 'v';
+                    tmp += 'v';
 
-				} else if (val == '@') {
+                } else if (val == '@') {
 
-					tmp += 'ᡡ';
+                    tmp += 'ᡡ';
 
-				} else if (val == 'ᠨ') {
+                } else if (val == 'ᠨ') {
 
-					tmp += 'n';
+                    tmp += 'n';
 
-				} else if (val == 'ᠩ') {
+                } else if (val == 'ᠩ') {
 
-					tmp += 'N';
+                    tmp += 'N';
 
-				} else if (val == 'ᠪ') {
+                } else if (val == 'ᠪ') {
 
-					tmp += 'b';
+                    tmp += 'b';
 
-				} else if (val == 'ᡦ') {
+                } else if (val == 'ᡦ') {
 
-					tmp += 'p';
+                    tmp += 'p';
 
-				} else if (val == 'ᡧ') {
+                } else if (val == 'ᡧ') {
 
-					tmp += 'x';
+                    tmp += 'x';
 
-				} else if (val == 'ᡧ') {
+                } else if (val == 'ᡧ') {
 
-					tmp += 'S';
+                    tmp += 'S';
 
-				} else if (val == 'ᡴ') {
+                } else if (val == 'ᡴ') {
 
-					tmp += 'k';
+                    tmp += 'k';
 
-				} else if (val == 'ᡤ' || val == 'ᠩ') {
+                } else if (val == 'ᡤ' || val == 'ᠩ') {
 
 					/*if (prev == 'ᠨ' || prev == 'n') {
 					 tmp = tmp.substring(0,tmp.length() - 1);
@@ -146,29 +148,29 @@ public class Manchurize extends Fragment {
 					 tmp += 'ᡤ';
 					 }*/
 
-					tmp += 'g';
+                    tmp += 'g';
 
-				} else if (val == 'ᡥ') {
+                } else if (val == 'ᡥ') {
 
-					tmp += 'h';
+                    tmp += 'h';
 
-				} else if (val == 'ᠮ') {
+                } else if (val == 'ᠮ') {
 
-					tmp += 'm';
+                    tmp += 'm';
 
-				} else if (val == 'ᠯ') {
+                } else if (val == 'ᠯ') {
 
-					tmp += 'l';
+                    tmp += 'l';
 
-				} else if (val == 'ᡨ') {
+                } else if (val == 'ᡨ') {
 
-					tmp += 't';
+                    tmp += 't';
 
-				} else if (val == 'ᡩ') {
+                } else if (val == 'ᡩ') {
 
-					tmp += 'd';
+                    tmp += 'd';
 
-				} else if (val == 'ᠰ' || val == 'ᡮ') {
+                } else if (val == 'ᠰ' || val == 'ᡮ') {
 
 					/*
 					 if (prev == 'ᡨ' || prev == 't') {
@@ -185,59 +187,59 @@ public class Manchurize extends Fragment {
 
 					 */
 
-					tmp += 's';
+                    tmp += 's';
 
-				} else if (val == 'ᠴ') {
+                } else if (val == 'ᠴ') {
 
-					tmp += 'c';
+                    tmp += 'c';
 
-				} else if (val == 'ᠵ') {
+                } else if (val == 'ᠵ') {
 
-					tmp += 'j';
+                    tmp += 'j';
 
-				} else if (val == 'ᠶ') {
+                } else if (val == 'ᠶ') {
 
-					tmp += 'y';
+                    tmp += 'y';
 
-				} else if (val == 'ᡵ') {
+                } else if (val == 'ᡵ') {
 
-					tmp += 'r';
+                    tmp += 'r';
 
-				} else if (val == 'ᠸ') {
+                } else if (val == 'ᠸ') {
 
-					tmp += 'w';
+                    tmp += 'w';
 
-				} else if (val == 'ᡶ') {
+                } else if (val == 'ᡶ') {
 
-					tmp += 'f';
+                    tmp += 'f';
 
-				} else if (val == 'ᠺ') {
+                } else if (val == 'ᠺ') {
 
-					tmp += 'K';
+                    tmp += 'K';
 
-				} else if (val == 'ᡬ') {
+                } else if (val == 'ᡬ') {
 
-					tmp += 'G';
+                    tmp += 'G';
 
-				} else if (val == 'ᡭ') {
+                } else if (val == 'ᡭ') {
 
-					tmp += 'H';
+                    tmp += 'H';
 
-				} else if (val == 'ᡷ') {
+                } else if (val == 'ᡷ') {
 
-					tmp += 'J';
+                    tmp += 'J';
 
-				} else if (val == 'ᡱ') {
+                } else if (val == 'ᡱ') {
 
-					tmp += 'C';
+                    tmp += 'C';
 
-				} else if (val == 'ᡰ') {
+                } else if (val == 'ᡰ') {
 
-					tmp += 'R';
+                    tmp += 'R';
 
-				} else if (val == 'ᡯ') {
+                } else if (val == 'ᡯ') {
 
-					// 'z') {
+                    // 'z') {
 					/*if (prev == 'ᡩ' || prev == 'd') {
 
 					 tmp = tmp.substring(0,tmp.length() - 1);
@@ -246,269 +248,269 @@ public class Manchurize extends Fragment {
 
 					 } else { */
 
-					tmp += 'z';
+                    tmp += 'z';
 
-					//}
+                    //}
 
-				} else if (val == '\"') {
+                } else if (val == '\"') {
 
-					tmp += '\u180B';
+                    tmp += '\u180B';
 
-				} else if (val == '\u180C') {
+                } else if (val == '\u180C') {
 
-					tmp += '\\';
+                    tmp += '\\';
 
-				} else if (val == '\u180D') {
+                } else if (val == '\u180D') {
 
-					tmp += '`';
+                    tmp += '`';
 
-				} else if (val == '\u180E') {
+                } else if (val == '\u180E') {
 
-					tmp += '_';
+                    tmp += '_';
 
-				} else if (val == '\u202F') {
+                } else if (val == '\u202F') {
 
-					tmp += '-';
+                    tmp += '-';
 
-				} else if (val == '\u200D') {
+                } else if (val == '\u200D') {
 
-					tmp += '*';
+                    tmp += '*';
 
-				} else {
+                } else {
 
-					tmp += val;
+                    tmp += val;
 
-				}
+                }
 
-			}
+            }
 
-		}
+        }
 
-		return tmp;
+        return tmp;
 
-	}
-	
+    }
 
-	public static String manchurize(String str) {
 
-		String tmp = "";
+    public static String manchurize(String str) {
 
-		if (str.length() > 0) {
+        String tmp = "";
 
-			for (int i = 0; i < str.length(); i++) {
+        if (str.length() > 0) {
 
-				char val = str.charAt(i);
+            for (int i = 0; i < str.length(); i++) {
 
-				char prev = ' ';
+                char val = str.charAt(i);
 
-				if (i > 0) {
+                char prev = ' ';
 
-					prev = str.charAt(i - 1);
+                if (i > 0) {
 
-				}
+                    prev = str.charAt(i - 1);
 
-				if (val == 'a') {
+                }
 
-					tmp += 'ᠠ';
+                if (val == 'a') {
 
-				} else if (val == 'e') {
+                    tmp += 'ᠠ';
 
-					tmp += 'ᡝ';
+                } else if (val == 'e') {
 
-				} else if (val == 'i') {
+                    tmp += 'ᡝ';
 
-					tmp += 'ᡳ';
+                } else if (val == 'i') {
 
-				} else if (val == 'o') {
+                    tmp += 'ᡳ';
 
-					tmp += 'ᠣ';
+                } else if (val == 'o') {
 
-				} else if (val == 'u') {
+                    tmp += 'ᠣ';
 
-					tmp += 'ᡠ';
+                } else if (val == 'u') {
 
-				} else if (val == 'v') {
+                    tmp += 'ᡠ';
 
-					tmp += 'ᡡ';
+                } else if (val == 'v') {
 
-				} else if (val == '@') {
+                    tmp += 'ᡡ';
 
-					tmp += 'ᡡ';
+                } else if (val == '@') {
 
-				} else if (val == 'n') {
+                    tmp += 'ᡡ';
 
-					tmp += 'ᠨ';
+                } else if (val == 'n') {
 
-				} else if (val == 'N') {
+                    tmp += 'ᠨ';
 
-					tmp += 'ᠩ';
+                } else if (val == 'N') {
 
-				} else if (val == 'b') {
+                    tmp += 'ᠩ';
 
-					tmp += 'ᠪ';
+                } else if (val == 'b') {
 
-				} else if (val == 'p') {
+                    tmp += 'ᠪ';
 
-					tmp += 'ᡦ';
+                } else if (val == 'p') {
 
-				} else if (val == 'x') {
+                    tmp += 'ᡦ';
 
-					tmp += 'ᡧ';
+                } else if (val == 'x') {
 
-				} else if (val == 'S') {
+                    tmp += 'ᡧ';
 
-					tmp += 'ᡧ';
+                } else if (val == 'S') {
 
-				} else if (val == 'k') {
+                    tmp += 'ᡧ';
 
-					tmp += 'ᡴ';
+                } else if (val == 'k') {
 
-				} else if (val == 'g') {
+                    tmp += 'ᡴ';
 
-					if (prev == 'ᠨ' || prev == 'n') {
+                } else if (val == 'g') {
 
-						tmp = tmp.substring(0,tmp.length() - 1);
+                    if (prev == 'ᠨ' || prev == 'n') {
 
-						tmp += 'ᠩ';
+                        tmp = tmp.substring(0, tmp.length() - 1);
 
-					} else {
+                        tmp += 'ᠩ';
 
-						tmp += 'ᡤ';
+                    } else {
 
-					}
+                        tmp += 'ᡤ';
 
-				} else if (val == 'h') {
+                    }
 
-					tmp += 'ᡥ';
+                } else if (val == 'h') {
 
-				} else if (val == 'm') {
+                    tmp += 'ᡥ';
 
-					tmp += 'ᠮ';
+                } else if (val == 'm') {
 
-				} else if (val == 'l') {
+                    tmp += 'ᠮ';
 
-					tmp += 'ᠯ';
+                } else if (val == 'l') {
 
-				} else if (val == 't') {
+                    tmp += 'ᠯ';
 
-					tmp += 'ᡨ';
+                } else if (val == 't') {
 
-				} else if (val == 'd') {
+                    tmp += 'ᡨ';
 
-					tmp += 'ᡩ';
+                } else if (val == 'd') {
 
-				} else if (val == 's') {
+                    tmp += 'ᡩ';
 
-					if (prev == 'ᡨ' || prev == 't') {
+                } else if (val == 's') {
 
-						tmp = tmp.substring(0,tmp.length() - 1);
+                    if (prev == 'ᡨ' || prev == 't') {
 
-						tmp += 'ᡮ';
+                        tmp = tmp.substring(0, tmp.length() - 1);
 
-					} else {
+                        tmp += 'ᡮ';
 
-						tmp += 'ᠰ';
+                    } else {
 
-					}
+                        tmp += 'ᠰ';
 
-				} else if (val == 'c') {
+                    }
 
-					tmp += 'ᠴ';
+                } else if (val == 'c') {
 
-				} else if (val == 'j') {
+                    tmp += 'ᠴ';
 
-					tmp += 'ᠵ';
+                } else if (val == 'j') {
 
-				} else if (val == 'y') {
+                    tmp += 'ᠵ';
 
-					tmp += 'ᠶ';
+                } else if (val == 'y') {
 
-				} else if (val == 'r') {
+                    tmp += 'ᠶ';
 
-					tmp += 'ᡵ';
+                } else if (val == 'r') {
 
-				} else if (val == 'w') {
+                    tmp += 'ᡵ';
 
-					tmp += 'ᠸ';
+                } else if (val == 'w') {
 
-				} else if (val == 'f') {
+                    tmp += 'ᠸ';
 
-					tmp += 'ᡶ';
+                } else if (val == 'f') {
 
-				} else if (val == 'K') {
+                    tmp += 'ᡶ';
 
-					tmp += 'ᠺ';
+                } else if (val == 'K') {
 
-				} else if (val == 'G') {
+                    tmp += 'ᠺ';
 
-					tmp += 'ᡬ';
+                } else if (val == 'G') {
 
-				} else if (val == 'H') {
+                    tmp += 'ᡬ';
 
-					tmp += 'ᡭ';
+                } else if (val == 'H') {
 
-				} else if (val == 'J') {
+                    tmp += 'ᡭ';
 
-					tmp += 'ᡷ';
+                } else if (val == 'J') {
 
-				} else if (val == 'C') {
+                    tmp += 'ᡷ';
 
-					tmp += 'ᡱ';
+                } else if (val == 'C') {
 
-				} else if (val == 'R') {
+                    tmp += 'ᡱ';
 
-					tmp += 'ᡰ';
+                } else if (val == 'R') {
 
-				} else if (val == 'z') {
+                    tmp += 'ᡰ';
 
-					if (prev == 'ᡩ' || prev == 'd') {
+                } else if (val == 'z') {
 
-						tmp = tmp.substring(0,tmp.length() - 1);
+                    if (prev == 'ᡩ' || prev == 'd') {
 
-						tmp += 'ᡯ';
+                        tmp = tmp.substring(0, tmp.length() - 1);
 
-					} else {
+                        tmp += 'ᡯ';
 
-						tmp += 'z';
+                    } else {
 
-					}
+                        tmp += 'z';
 
-				} else if (val == '\'') {
+                    }
 
-					tmp += '\u180B';
+                } else if (val == '\'') {
 
-				} else if (val == '"') {
+                    tmp += '\u180B';
 
-					tmp += '\u180C';
+                } else if (val == '"') {
 
-				} else if (val == '`') {
+                    tmp += '\u180C';
 
-					tmp += '\u180D';
+                } else if (val == '`') {
 
-				} else if (val == '_') {
+                    tmp += '\u180D';
 
-					tmp += '\u180E';
+                } else if (val == '_') {
 
-				} else if (val == '-') {
+                    tmp += '\u180E';
 
-					tmp += '\u202F';
+                } else if (val == '-') {
 
-				} else if (val == '*') {
+                    tmp += '\u202F';
 
-					tmp += '\u200D';
+                } else if (val == '*') {
 
-				} else {
+                    tmp += '\u200D';
 
-					tmp += val;
+                } else {
 
-				}
+                    tmp += val;
 
-			}
+                }
 
-		}
+            }
 
-		return tmp;
+        }
 
-	}
+        return tmp;
+
+    }
 
 }

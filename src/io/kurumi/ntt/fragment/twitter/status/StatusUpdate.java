@@ -17,7 +17,9 @@ import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.MongoIDs;
 import io.kurumi.ntt.utils.NTT;
+
 import java.util.LinkedList;
+
 import twitter4j.Status;
 import twitter4j.TwitterException;
 import com.pengrad.telegrambot.response.SendResponse;
@@ -25,48 +27,48 @@ import io.kurumi.ntt.utils.BotLog;
 
 public class StatusUpdate extends Fragment {
 
-	@Override
-	public boolean msg() {
+    @Override
+    public boolean msg() {
 
-		return true;
+        return true;
 
-	}
-	
+    }
+
     final String POINT_UPDATE_STATUS = "status_update";
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerFunction("update");
+        registerFunction("update");
 
         registerPoint(POINT_UPDATE_STATUS);
 
-	}
-
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-
-		if (user.blocked()) {
-
-			msg.send("你不能这么做 (为什么？)").async();
-
-			return;
-
-		}
-		
-		requestTwitter(user,msg);
-
-	}
+    }
 
     @Override
-    public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,final TAuth account) {
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+
+        if (user.blocked()) {
+
+            msg.send("你不能这么做 (为什么？)").async();
+
+            return;
+
+        }
+
+        requestTwitter(user, msg);
+
+    }
+
+    @Override
+    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, final TAuth account) {
 
         StatusUpdate.UpdatePoint update = new UpdatePoint();
 
-		update.context.add(msg);
-		
+        update.context.add(msg);
+
         update.auth = account;
 
         if (msg.isReply()) {
@@ -81,28 +83,28 @@ public class StatusUpdate extends Fragment {
 
         }
 
-        setPrivatePoint(user,POINT_UPDATE_STATUS,update);
+        setPrivatePoint(user, POINT_UPDATE_STATUS, update);
 
         msg.send("现在发送推文内容 : ").withCancel().exec(update);
 
     }
 
-	String submitAndCancel = "使用 /submit 发送\n使用 /timed 定时发送\n使用 /cancel 取消";
+    String submitAndCancel = "使用 /submit 发送\n使用 /timed 定时发送\n使用 /cancel 取消";
 
-	@Override
-	public int checkMsg(UserData user,Msg msg) {
+    @Override
+    public int checkMsg(UserData user, Msg msg) {
 
-		if (!msg.isPrivate() || !msg.isReply()) {
+        if (!msg.isPrivate() || !msg.isReply()) {
 
-			return PROCESS_ASYNC;
+            return PROCESS_ASYNC;
 
-		}
+        }
 
         MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
 
         if (point == null || point.type == 0) return PROCESS_ASYNC;
 
-        long count = TAuth.data.countByField("user",user.id);
+        long count = TAuth.data.countByField("user", user.id);
 
         TAuth auth;
 
@@ -146,13 +148,13 @@ public class StatusUpdate extends Fragment {
 
         UpdatePoint update = new UpdatePoint();
 
-		update.auth = auth;
+        update.auth = auth;
 
         update.toReply = StatusArchive.get(point.targetId);
-		
-		update.context.add(msg);
-		
-		if (msg.hasText()) {
+
+        update.context.add(msg);
+
+        if (msg.hasText()) {
 
             if (msg.text().toCharArray().length > 280) {
 
@@ -164,7 +166,7 @@ public class StatusUpdate extends Fragment {
 
             update.text = msg.text();
 
-            msg.send("文本已设定",submitAndCancel).exec(update);
+            msg.send("文本已设定", submitAndCancel).exec(update);
 
         } else if (message.sticker() != null) {
 
@@ -172,13 +174,13 @@ public class StatusUpdate extends Fragment {
 
             try {
 
-                update.images.add(NTT.telegramToTwitter(auth.createApi(),message.sticker().fileId(),"sticker.png",0));
+                update.images.add(NTT.telegramToTwitter(auth.createApi(), message.sticker().fileId(), "sticker.png", 0));
 
-                msg.send("图片添加成功 已设置 1 / 4 张图片",submitAndCancel).exec(update);
+                msg.send("图片添加成功 已设置 1 / 4 张图片", submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("图片上传失败",NTT.parseTwitterException(e)).exec(update);
+                msg.send("图片上传失败", NTT.parseTwitterException(e)).exec(update);
 
             }
 
@@ -208,13 +210,13 @@ public class StatusUpdate extends Fragment {
 
             try {
 
-                update.images.add(NTT.telegramToTwitter(auth.createApi(),max.fileId(),"image.png",0));
+                update.images.add(NTT.telegramToTwitter(auth.createApi(), max.fileId(), "image.png", 0));
 
-                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ",submitAndCancel).exec(update);
+                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ", submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("图片上传失败",NTT.parseTwitterException(e)).exec(update);
+                msg.send("图片上传失败", NTT.parseTwitterException(e)).exec(update);
 
             }
 
@@ -234,17 +236,17 @@ public class StatusUpdate extends Fragment {
 
                 msg.send("正在转码... 这可能需要几分钟的时间...").exec(update);
 
-				msg.sendTyping();
+                msg.sendTyping();
 
-                update.video = NTT.telegramToTwitter(update.auth.createApi(),message.animation().fileId(),message.animation().fileName(),2);
+                update.video = NTT.telegramToTwitter(update.auth.createApi(), message.animation().fileId(), message.animation().fileName(), 2);
 
-				msg.sendUpdatingVideo();
-				
-                msg.send("动图添加成功",submitAndCancel).exec(update);
+                msg.sendUpdatingVideo();
+
+                msg.send("动图添加成功", submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("动图上传失败",NTT.parseTwitterException(e)).exec(update);
+                msg.send("动图上传失败", NTT.parseTwitterException(e)).exec(update);
 
             }
 
@@ -263,13 +265,13 @@ public class StatusUpdate extends Fragment {
 
             try {
 
-                update.video = NTT.telegramToTwitter(auth.createApi(),message.video().fileId(),"video.mp4",1);
+                update.video = NTT.telegramToTwitter(auth.createApi(), message.video().fileId(), "video.mp4", 1);
 
-                msg.send("视频添加成功",submitAndCancel).exec(update);
+                msg.send("视频添加成功", submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("视频上传失败",NTT.parseTwitterException(e)).exec(update);
+                msg.send("视频上传失败", NTT.parseTwitterException(e)).exec(update);
 
             }
 
@@ -288,13 +290,13 @@ public class StatusUpdate extends Fragment {
 
             try {
 
-                update.video = NTT.telegramToTwitter(auth.createApi(),message.videoNote().fileId(),"video.mp4",1);
+                update.video = NTT.telegramToTwitter(auth.createApi(), message.videoNote().fileId(), "video.mp4", 1);
 
-                msg.send("视频添加成功",submitAndCancel).exec(update);
+                msg.send("视频添加成功", submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("视频上传失败",NTT.parseTwitterException(e)).exec(update);
+                msg.send("视频上传失败", NTT.parseTwitterException(e)).exec(update);
 
             }
 
@@ -305,108 +307,108 @@ public class StatusUpdate extends Fragment {
 
         }
 
-        setPrivatePoint(user,POINT_UPDATE_STATUS,update);
+        setPrivatePoint(user, POINT_UPDATE_STATUS, update);
 
         return PROCESS_REJECT;
 
     }
-	
-	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,PointData data) {
 
-		UpdatePoint update = (UpdatePoint) data;
-		
-		data.context.add(msg);
+    public void onPointedFunction(UserData user, Msg msg, String function, String[] params, String point, PointData data) {
 
-		if ("timed".equals(function)) {
+        UpdatePoint update = (UpdatePoint) data;
 
-			if (update.text == null && update.images.isEmpty() && update.video == -1) {
+        data.context.add(msg);
+
+        if ("timed".equals(function)) {
+
+            if (update.text == null && update.images.isEmpty() && update.video == -1) {
 
                 msg.send("好像什么内容都没有。？ 请输入文本 / 贴纸 / 图片 / 视频").exec(update);
 
                 return;
 
-			}
+            }
 
-			long time = -1;
+            long time = -1;
 
-			if (params.length == 0 || (params.length > 0 && !params[0].contains(":"))) {
+            if (params.length == 0 || (params.length > 0 && !params[0].contains(":"))) {
 
-				msg.send("/timed 小时:分钟 [年-月-日 可选] [时区 (默认为 +8) 可选]").exec(update);
+                msg.send("/timed 小时:分钟 [年-月-日 可选] [时区 (默认为 +8) 可选]").exec(update);
 
-				return;
+                return;
 
-			} else { 
+            } else {
 
-				if (params.length == 1) {
+                if (params.length == 1) {
 
-					try {
+                    try {
 
-						DateTime date = DateUtil.parse(params[0],"HH:mm");
+                        DateTime date = DateUtil.parse(params[0], "HH:mm");
 
-						DateTime current = new DateTime();
+                        DateTime current = new DateTime();
 
-						current.setHours(date.hour(true));
+                        current.setHours(date.hour(true));
 
-						current.setMinutes(date.minute());
+                        current.setMinutes(date.minute());
 
-						time = current.getTime();
+                        time = current.getTime();
 
-					} catch (DateException ex) {
+                    } catch (DateException ex) {
 
-						msg.send("无效的时间 例子 : /timed 23:59").exec(update);
+                        msg.send("无效的时间 例子 : /timed 23:59").exec(update);
 
-						return;
+                        return;
 
-					}
+                    }
 
 
-				} else if (params.length > 1) {
+                } else if (params.length > 1) {
 
-					try {
+                    try {
 
-						DateTime date = DateUtil.parse(params[1] + " " + params[0],"yyyy-MM-dd HH:mm");
+                        DateTime date = DateUtil.parse(params[1] + " " + params[0], "yyyy-MM-dd HH:mm");
 
-						time = date.getTime();
+                        time = date.getTime();
 
-					} catch (DateException ex) {
+                    } catch (DateException ex) {
 
-						msg.send("无效的时间 例子 : /timed 12:59 2019-12-31").exec(update);
+                        msg.send("无效的时间 例子 : /timed 12:59 2019-12-31").exec(update);
 
-						return;
+                        return;
 
-					}
+                    }
 
-					if (params.length > 2) {
+                    if (params.length > 2) {
 
-						String offset = params[2];
+                        String offset = params[2];
 
-						if (!NumberUtil.isNumber(offset)) {
+                        if (!NumberUtil.isNumber(offset)) {
 
-							msg.send("无效的时区 例子 : /timed 12:59 2019-12-31 8").exec(update);
+                            msg.send("无效的时区 例子 : /timed 12:59 2019-12-31 8").exec(update);
 
-							return;
+                            return;
 
-						}
+                        }
 
-						time = time + (60 * 60 * 1000 * (NumberUtil.parseInt(offset) - 8));
+                        time = time + (60 * 60 * 1000 * (NumberUtil.parseInt(offset) - 8));
 
-					}
+                    }
 
-				}
+                }
 
-			}
+            }
 
-			if (time < (System.currentTimeMillis() + (10 * 1000))) {
+            if (time < (System.currentTimeMillis() + (10 * 1000))) {
 
-				msg.send("这个时间已经过去了...").exec(update);
+                msg.send("这个时间已经过去了...").exec(update);
 
-				return;
+                return;
 
-			}
+            }
 
-			TimedStatus.TimedUpdate timed = new TimedStatus.TimedUpdate();
+            TimedStatus.TimedUpdate timed = new TimedStatus.TimedUpdate();
 
-			if (update.toReply != null) {
+            if (update.toReply != null) {
 
                 String reply = "@" + update.toReply.user().screenName + " ";
 
@@ -448,25 +450,25 @@ public class StatusUpdate extends Fragment {
 
             }
 
-			timed.auth = update.auth.id;
-			timed.time = time;
-			timed.images = update.images;
-			timed.text = update.text;
-			timed.video = update.video;
+            timed.auth = update.auth.id;
+            timed.time = time;
+            timed.images = update.images;
+            timed.text = update.text;
+            timed.video = update.video;
 
-			timed.id = MongoIDs.getNextId(TimedStatus.TimedUpdate.class.getSimpleName());
+            timed.id = MongoIDs.getNextId(TimedStatus.TimedUpdate.class.getSimpleName());
 
-			TimedStatus.data.setById(timed.id,timed);
+            TimedStatus.data.setById(timed.id, timed);
 
-			TimedStatus.schedule(timed);
+            TimedStatus.schedule(timed);
 
-			msg.send("已创建定时推文 : " + timed.id,"使用 /timed 管理定时推文").exec();
+            msg.send("已创建定时推文 : " + timed.id, "使用 /timed 管理定时推文").exec();
 
-			clearPrivatePoint(user);
+            clearPrivatePoint(user);
 
-			return;
+            return;
 
-		} else if ("submit".equals(function)) {
+        } else if ("submit".equals(function)) {
 
             if (update.text == null && update.images.isEmpty() && update.video == -1) {
 
@@ -552,11 +554,11 @@ public class StatusUpdate extends Fragment {
 
                 StatusArchive archive = StatusArchive.save(status);
 
-                msg.send(update.toReply == null ? "发送成功 :" : "回复成功 :",StatusArchive.split_tiny,archive.toHtml(0)).buttons(StatusAction.createMarkup(archive.id,true,archive.depth() == 0,false,false)).html().point(1,archive.id);
+                msg.send(update.toReply == null ? "发送成功 :" : "回复成功 :", StatusArchive.split_tiny, archive.toHtml(0)).buttons(StatusAction.createMarkup(archive.id, true, archive.depth() == 0, false, false)).html().point(1, archive.id);
 
             } catch (TwitterException e) {
 
-                msg.send(update.toReply == null ? "发送失败 :(" : "回复失败 :(",NTT.parseTwitterException(e)).exec();
+                msg.send(update.toReply == null ? "发送失败 :(" : "回复失败 :(", NTT.parseTwitterException(e)).exec();
 
             }
 
@@ -565,23 +567,23 @@ public class StatusUpdate extends Fragment {
         }
 
 
-	}
+    }
 
-	@Override
-	public void onPoint(UserData user,Msg msg,String point,PointData data) {
+    @Override
+    public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
-		if (msg.isCommand()) {
-			
-			onPointedFunction(user,msg,msg.command(),msg.params(),point,data);
-			
-			return;
-			
-		}
-		
-		UpdatePoint update = (UpdatePoint) data;
+        if (msg.isCommand()) {
 
-		data.context.add(msg);
-		
+            onPointedFunction(user, msg, msg.command(), msg.params(), point, data);
+
+            return;
+
+        }
+
+        UpdatePoint update = (UpdatePoint) data;
+
+        data.context.add(msg);
+
         if (msg.hasText()) {
 
             if (msg.text().toCharArray().length > 280) {
@@ -593,8 +595,8 @@ public class StatusUpdate extends Fragment {
             }
 
             update.text = msg.text();
-			
-            msg.send("文本已设定",submitAndCancel).exec(update);
+
+            msg.send("文本已设定", submitAndCancel).exec(update);
 
         }
 
@@ -620,13 +622,13 @@ public class StatusUpdate extends Fragment {
 
             try {
 
-                update.images.add(NTT.telegramToTwitter(update.auth.createApi(),message.sticker().fileId(),"sticker.png",0));
+                update.images.add(NTT.telegramToTwitter(update.auth.createApi(), message.sticker().fileId(), "sticker.png", 0));
 
-                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ",submitAndCancel).exec(update);
+                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ", submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("图片上传失败",NTT.parseTwitterException(e)).exec(update);
+                msg.send("图片上传失败", NTT.parseTwitterException(e)).exec(update);
 
             }
 
@@ -672,13 +674,13 @@ public class StatusUpdate extends Fragment {
 
             try {
 
-                update.images.add(NTT.telegramToTwitter(update.auth.createApi(),max.fileId(),"image.png",0));
+                update.images.add(NTT.telegramToTwitter(update.auth.createApi(), max.fileId(), "image.png", 0));
 
-                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ",submitAndCancel).exec(update);
+                msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ", submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("图片上传失败",NTT.parseTwitterException(e)).exec(update);
+                msg.send("图片上传失败", NTT.parseTwitterException(e)).exec(update);
 
             }
 
@@ -709,20 +711,20 @@ public class StatusUpdate extends Fragment {
 
 
             try {
-				
-				msg.send("正在转码... 这可能需要几分钟的时间...").exec(update);
 
-				msg.sendTyping();
-				
-                update.video = NTT.telegramToTwitter(update.auth.createApi(),message.animation().fileId(),message.animation().fileName(),2);
+                msg.send("正在转码... 这可能需要几分钟的时间...").exec(update);
 
-				msg.sendUpdatingVideo();
-				
-                msg.send("动图添加成功",submitAndCancel).exec(update);
+                msg.sendTyping();
+
+                update.video = NTT.telegramToTwitter(update.auth.createApi(), message.animation().fileId(), message.animation().fileName(), 2);
+
+                msg.sendUpdatingVideo();
+
+                msg.send("动图添加成功", submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("动图上传失败",NTT.parseTwitterException(e)).exec(update);
+                msg.send("动图上传失败", NTT.parseTwitterException(e)).exec(update);
 
             }
 
@@ -754,13 +756,13 @@ public class StatusUpdate extends Fragment {
 
             try {
 
-                update.video = NTT.telegramToTwitter(update.auth.createApi(),message.video().fileId(),"video.mp4",1);
+                update.video = NTT.telegramToTwitter(update.auth.createApi(), message.video().fileId(), "video.mp4", 1);
 
-                msg.send("视频添加成功",submitAndCancel).exec(update);
+                msg.send("视频添加成功", submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("图片上传失败",NTT.parseTwitterException(e)).exec(update);
+                msg.send("图片上传失败", NTT.parseTwitterException(e)).exec(update);
 
             }
 
@@ -793,13 +795,13 @@ public class StatusUpdate extends Fragment {
 
             try {
 
-                update.video = NTT.telegramToTwitter(update.auth.createApi(),message.videoNote().fileId(),"video.mp4",1);
+                update.video = NTT.telegramToTwitter(update.auth.createApi(), message.videoNote().fileId(), "video.mp4", 1);
 
-                msg.send("视频添加成功",submitAndCancel).exec(update);
+                msg.send("视频添加成功", submitAndCancel).exec(update);
 
             } catch (TwitterException e) {
 
-                msg.send("图片上传失败",NTT.parseTwitterException(e)).exec(update);
+                msg.send("图片上传失败", NTT.parseTwitterException(e)).exec(update);
 
             }
 

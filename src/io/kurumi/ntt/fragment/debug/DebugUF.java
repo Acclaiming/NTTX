@@ -13,45 +13,45 @@ import io.kurumi.ntt.utils.Html;
 public class DebugUF extends Fragment {
 
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
         registerAdminFunction("get_uf");
 
     }
 
-	@Override
-	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public int checkFunctionContext(UserData user, Msg msg, String function, String[] params) {
 
-		return FUNCTION_PUBLIC;
+        return FUNCTION_PUBLIC;
 
-	}
+    }
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		if (params.length < 1) {
+        if (params.length < 1) {
 
-			msg.invalidParams("userId").exec();
+            msg.invalidParams("userId").exec();
 
-			return;
+            return;
 
-		}
-		
-		GetUserProfilePhotosResponse resp = execute(new GetUserProfilePhotos((int)NumberUtil.parseLong(params[0])));
+        }
 
-		if (resp.json.length() < 1024) {
+        GetUserProfilePhotosResponse resp = execute(new GetUserProfilePhotos((int) NumberUtil.parseLong(params[0])));
 
-			msg.send(Html.json(resp.json)).html().removeKeyboard().exec();
+        if (resp.json.length() < 1024) {
 
-		} else {
+            msg.send(Html.json(resp.json)).html().removeKeyboard().exec();
 
-			msg.send(new JSONObject(resp.json).toStringPretty()).exec();
+        } else {
 
-		}
-		
-	}
+            msg.send(new JSONObject(resp.json).toStringPretty()).exec();
+
+        }
+
+    }
 
 }

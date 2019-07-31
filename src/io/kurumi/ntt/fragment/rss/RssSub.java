@@ -32,17 +32,23 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.Html;
+
 import java.io.StringReader;
 import java.net.URL;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import com.rometools.rome.io.WireFeedOutput;
 import cn.hutool.core.io.IoUtil;
+
 import java.io.ByteArrayOutputStream;
+
 import cn.hutool.core.util.CharsetUtil;
+
 import java.io.IOException;
+
 import com.pengrad.telegrambot.request.SendDocument;
 import io.kurumi.ntt.db.PointData;
 import com.rometools.rome.io.WireFeedInput;
@@ -50,858 +56,862 @@ import cn.hutool.core.exceptions.UtilException;
 
 public class RssSub extends Fragment {
 
-	public static AbsData<String,RssInfo> info = new AbsData<String,RssInfo>(RssInfo.class);
-	public static Data<ChannelRss> channel = new Data<ChannelRss>(ChannelRss.class);
+    public static AbsData<String, RssInfo> info = new AbsData<String, RssInfo>(RssInfo.class);
+    public static Data<ChannelRss> channel = new Data<ChannelRss>(ChannelRss.class);
 
-	public static class RssInfo {
+    public static class RssInfo {
 
-		public String id;
-		public String title;
-		public String link;
-		public String last;
+        public String id;
+        public String title;
+        public String link;
+        public String last;
 
-	}
+    }
 
-	public static class ChannelRss {
+    public static class ChannelRss {
 
-		public Long id;
+        public Long id;
 
-		public int format = 0;
+        public int format = 0;
 
-		public boolean preview = false;
+        public boolean preview = false;
 
-		public List<String> subscriptions;
+        public List<String> subscriptions;
 
-		public String copyright;
+        public String copyright;
 
-		public Map<String,FeedError> error;
+        public Map<String, FeedError> error;
 
-		public Long fromBot;
+        public Long fromBot;
 
-		public Long delay;
+        public Long delay;
 
-		public Long last;
+        public Long last;
 
-		public static class FeedError {
+        public static class FeedError {
 
-			public Long startAt;
+            public Long startAt;
 
-			public String errorMsg;
+            public String errorMsg;
 
-		}
+        }
 
-	}
+    }
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		if (isMainInstance()) {
+        if (isMainInstance()) {
 
-			registerFunction("rss_import","rss_export","rss_set_delay","rss_set_current","rss_sub","rss_set_copyright","rss_list","rss_unsub","rss_unsub_all","rss_set_format","rss_link_preview","rss_fetch");
+            registerFunction("rss_import", "rss_export", "rss_set_delay", "rss_set_current", "rss_sub", "rss_set_copyright", "rss_list", "rss_unsub", "rss_unsub_all", "rss_set_format", "rss_link_preview", "rss_fetch");
 
-		} else {
+        } else {
 
-			registerFunction("import","export","set_delay","set_current","sub","set_copyright","list","unsub","unsub_all","set_format","link_preview","fetch");
+            registerFunction("import", "export", "set_delay", "set_current", "sub", "set_copyright", "list", "unsub", "unsub_all", "set_format", "link_preview", "fetch");
 
-		}
+        }
 
-	}
+    }
 
-	@Override
-	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public int checkFunction(UserData user, Msg msg, String function, String[] params) {
 
-		return PROCESS_ASYNC;
+        return PROCESS_ASYNC;
 
-	}
+    }
 
-	final String POINT_IMPORT_OPML = "rss_import";
-	
-	@Override
-	public void onPoint(UserData user,Msg msg,String point,PointData data) {
+    final String POINT_IMPORT_OPML = "rss_import";
 
-		if (data.with(msg).type == 0) {
+    @Override
+    public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
-		if (msg.doc() == null || !msg.doc().fileName().endsWith(".opml")) {
+        if (data.with(msg).type == 0) {
 
-			msg.send("你正在导入 .opml 文件").withCancel().exec(data);
+            if (msg.doc() == null || !msg.doc().fileName().endsWith(".opml")) {
 
-			return;
+                msg.send("你正在导入 .opml 文件").withCancel().exec(data);
 
-		}
+                return;
 
-		Opml opml;
-		
-		try {
-			
-			opml = (Opml) new WireFeedInput().build(msg.file());
-			
-		} catch (Exception ex) {
-			
-			msg.send("导入失败",BotLog.parseError(ex)).async();
-			
-			return;
-			
-		}
-		
-		StringBuilder notice = new StringBuilder();
-		
-		for (Outline outline : opml.getOutlines()) {
-			
-			notice.append("\n").append(Html.b(outline.getTitle()));
-			
-		}
-		
-		data.data = opml;
-		data.type = 1;
-		
-		msg.send("将要导入 :",notice.toString(),"\n现在发送目标频道的用户名或者ID ~").html().async();
+            }
 
-		} else {
-			
-			Opml opml = data.data();
-			
-			if (!msg.hasText()) { 
-			
-			msg.send("请输入目标频道").withCancel().async(); return;
-			
-			}
+            Opml opml;
 
-			long channelId;
+            try {
 
-			if (NumberUtil.isNumber(msg.text())) {
+                opml = (Opml) new WireFeedInput().build(msg.file());
 
-				channelId = NumberUtil.parseLong(msg.text());
+            } catch (Exception ex) {
 
-				GetChatResponse resp = execute(new GetChat(channelId));
+                msg.send("导入失败", BotLog.parseError(ex)).async();
 
-				if (resp == null) {
+                return;
 
-					msg.send("Telegram 服务器连接错误").async();
+            }
 
-					return;
+            StringBuilder notice = new StringBuilder();
 
-				} else if (!resp.isOk()) {
+            for (Outline outline : opml.getOutlines()) {
 
-					msg.send("错误 : BOT不在该频道","( " + resp.description() + " )").async();
+                notice.append("\n").append(Html.b(outline.getTitle()));
 
-					return;
+            }
 
-				} else if (resp.chat().type() != Chat.Type.channel) {
+            data.data = opml;
+            data.type = 1;
 
-					msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").async();
+            msg.send("将要导入 :", notice.toString(), "\n现在发送目标频道的用户名或者ID ~").html().async();
 
-					return;
+        } else {
 
-				}
+            Opml opml = data.data();
 
-				channelId = resp.chat().id();
+            if (!msg.hasText()) {
 
+                msg.send("请输入目标频道").withCancel().async();
+                return;
 
-			} else {
+            }
 
-				String username = msg.text();
+            long channelId;
 
-				if (!username.startsWith("@")) username = "@" + username;
+            if (NumberUtil.isNumber(msg.text())) {
 
-				GetChatResponse resp = execute(new GetChat(username));
+                channelId = NumberUtil.parseLong(msg.text());
 
-				if (resp == null) {
+                GetChatResponse resp = execute(new GetChat(channelId));
 
-					msg.send("Telegram 服务器连接错误").async();
+                if (resp == null) {
 
-					return;
+                    msg.send("Telegram 服务器连接错误").async();
 
-				} else if (!resp.isOk()) {
+                    return;
 
-					msg.send("错误 : BOT不在该频道 : @" + username,"( " + resp.description() + " )").async();
+                } else if (!resp.isOk()) {
 
-					return;
+                    msg.send("错误 : BOT不在该频道", "( " + resp.description() + " )").async();
 
-				} else if (resp.chat().type() != Chat.Type.channel) {
+                    return;
 
-					msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").async();
+                } else if (resp.chat().type() != Chat.Type.channel) {
 
-					return;
+                    msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").async();
 
-				}
+                    return;
 
+                }
 
-				channelId = resp.chat().id();
+                channelId = resp.chat().id();
 
-			}
 
-			if (!user.admin() && !GroupAdmin.fastAdminCheck(this,channelId,user.id,false)) {
+            } else {
 
-				GetChatMemberResponse resp = execute(new GetChatMember(channelId,user.id.intValue()));
+                String username = msg.text();
 
-				if (resp == null) {
+                if (!username.startsWith("@")) username = "@" + username;
 
-					msg.send("Telegram 服务器连接错误").async();
+                GetChatResponse resp = execute(new GetChat(username));
 
-					return;
+                if (resp == null) {
 
-				} else if (!resp.isOk()) {
+                    msg.send("Telegram 服务器连接错误").async();
 
-					msg.send("错误 : 频道读取失败","( " + resp.description() + " )").async();
+                    return;
 
-					return;
+                } else if (!resp.isOk()) {
 
-				} else if (!(resp.chatMember().status() == ChatMember.Status.creator || resp.chatMember().status() == ChatMember.Status.administrator)) {
+                    msg.send("错误 : BOT不在该频道 : @" + username, "( " + resp.description() + " )").async();
 
-					msg.send("错误 : 你不是频道管理员").async();
+                    return;
 
-					return;
+                } else if (resp.chat().type() != Chat.Type.channel) {
 
-				}
+                    msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").async();
 
-				return;
+                    return;
 
-			}
+                }
 
-			ChannelRss conf = channel.getById(channelId);
 
-			if (conf == null) {
+                channelId = resp.chat().id();
 
-				conf = new ChannelRss();
-				conf.id = channelId;
-				conf.subscriptions = new LinkedList<>();
+            }
 
-			}
-			
-			for (Outline outline : opml.getOutlines()) {
-				
-				if (outline.getXmlUrl() == null) return;
-				
-				if (!info.containsId(outline.getXmlUrl())) {
-					
-					RssInfo rss = new RssInfo();
-					
-					rss.id = outline.getXmlUrl();
-					rss.title = outline.getTitle();
-					rss.link = outline.getHtmlUrl();
-					
-					info.setById(rss.id,rss);
-					
-				}
-				
-				conf.subscriptions.add(outline.getXmlUrl());
-				
-			}
-			
-			clearGroupPoint(user);
-			
-			msg.send("导入成功 ！").async();
-			
-		}
-		
-	}
+            if (!user.admin() && !GroupAdmin.fastAdminCheck(this, channelId, user.id, false)) {
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+                GetChatMemberResponse resp = execute(new GetChatMember(channelId, user.id.intValue()));
 
-		if (user.blocked()) {
+                if (resp == null) {
 
-			msg.send("你不能这么做 (为什么？)").async();
+                    msg.send("Telegram 服务器连接错误").async();
 
-			return;
+                    return;
 
-		}
+                } else if (!resp.isOk()) {
 
-		if (function.endsWith("import")) {
+                    msg.send("错误 : 频道读取失败", "( " + resp.description() + " )").async();
 
-		    PointData data = setPrivatePoint(user,POINT_IMPORT_OPML);
+                    return;
 
-			msg.send("现在发送 .opml 文件 ( opml 1.0 或 2.0)").exec(data);
+                } else if (!(resp.chatMember().status() == ChatMember.Status.creator || resp.chatMember().status() == ChatMember.Status.administrator)) {
 
-			return;
+                    msg.send("错误 : 你不是频道管理员").async();
 
-		}
+                    return;
 
-		if (params.length == 0) { msg.invalidParams("频道","...").async(); return;}
+                }
 
-		long channelId;
+                return;
 
-		if (NumberUtil.isNumber(params[0])) {
+            }
 
-			channelId = NumberUtil.parseLong(params[0]);
+            ChannelRss conf = channel.getById(channelId);
 
-			GetChatResponse resp = execute(new GetChat(channelId));
+            if (conf == null) {
 
-			if (resp == null) {
+                conf = new ChannelRss();
+                conf.id = channelId;
+                conf.subscriptions = new LinkedList<>();
 
-				msg.send("Telegram 服务器连接错误").async();
+            }
 
-				return;
+            for (Outline outline : opml.getOutlines()) {
 
-			} else if (!resp.isOk()) {
+                if (outline.getXmlUrl() == null) return;
 
-				msg.send("错误 : BOT不在该频道","( " + resp.description() + " )").async();
+                if (!info.containsId(outline.getXmlUrl())) {
 
-				return;
+                    RssInfo rss = new RssInfo();
 
-			} else if (resp.chat().type() != Chat.Type.channel) {
+                    rss.id = outline.getXmlUrl();
+                    rss.title = outline.getTitle();
+                    rss.link = outline.getHtmlUrl();
 
-				msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").async();
+                    info.setById(rss.id, rss);
 
-				return;
+                }
 
-			}
+                conf.subscriptions.add(outline.getXmlUrl());
 
-			channelId = resp.chat().id();
+            }
 
+            clearGroupPoint(user);
 
-		} else {
+            msg.send("导入成功 ！").async();
 
-			String username = params[0];
+        }
 
-			if (!username.startsWith("@")) username = "@" + username;
+    }
 
-			GetChatResponse resp = execute(new GetChat(username));
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-			if (resp == null) {
+        if (user.blocked()) {
 
-				msg.send("Telegram 服务器连接错误").async();
+            msg.send("你不能这么做 (为什么？)").async();
 
-				return;
+            return;
 
-			} else if (!resp.isOk()) {
+        }
 
-				msg.send("错误 : BOT不在该频道 : @" + username,"( " + resp.description() + " )").async();
+        if (function.endsWith("import")) {
 
-				return;
+            PointData data = setPrivatePoint(user, POINT_IMPORT_OPML);
 
-			} else if (resp.chat().type() != Chat.Type.channel) {
+            msg.send("现在发送 .opml 文件 ( opml 1.0 或 2.0)").exec(data);
 
-				msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").async();
+            return;
 
-				return;
+        }
 
-			}
+        if (params.length == 0) {
+            msg.invalidParams("频道", "...").async();
+            return;
+        }
 
+        long channelId;
 
-			channelId = resp.chat().id();
+        if (NumberUtil.isNumber(params[0])) {
 
-		}
+            channelId = NumberUtil.parseLong(params[0]);
 
-		if (!user.admin() && !GroupAdmin.fastAdminCheck(this,channelId,user.id,false)) {
+            GetChatResponse resp = execute(new GetChat(channelId));
 
-			GetChatMemberResponse resp = execute(new GetChatMember(channelId,user.id.intValue()));
+            if (resp == null) {
 
-			if (resp == null) {
+                msg.send("Telegram 服务器连接错误").async();
 
-				msg.send("Telegram 服务器连接错误").async();
+                return;
 
-				return;
+            } else if (!resp.isOk()) {
 
-			} else if (!resp.isOk()) {
+                msg.send("错误 : BOT不在该频道", "( " + resp.description() + " )").async();
 
-				msg.send("错误 : 频道读取失败","( " + resp.description() + " )").async();
+                return;
 
-				return;
+            } else if (resp.chat().type() != Chat.Type.channel) {
 
-			} else if (!(resp.chatMember().status() == ChatMember.Status.creator || resp.chatMember().status() == ChatMember.Status.administrator)) {
+                msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").async();
 
-				msg.send("错误 : 你不是频道管理员").async();
+                return;
 
-				return;
+            }
 
-			}
+            channelId = resp.chat().id();
 
-		}
 
-		ChannelRss conf = channel.getById(channelId);
+        } else {
 
-		if (conf == null) {
+            String username = params[0];
 
-			conf = new ChannelRss();
-			conf.id = channelId;
-			conf.subscriptions = new LinkedList<>();
+            if (!username.startsWith("@")) username = "@" + username;
 
-		}
+            GetChatResponse resp = execute(new GetChat(username));
 
-		if (function.endsWith("export")) {
+            if (resp == null) {
 
-			if (conf.subscriptions == null || conf.subscriptions.isEmpty()) {
+                msg.send("Telegram 服务器连接错误").async();
 
-				msg.send("这个频道还没有订阅过RSS，无法导出。").async();
+                return;
 
-				return;
+            } else if (!resp.isOk()) {
 
-			}
+                msg.send("错误 : BOT不在该频道 : @" + username, "( " + resp.description() + " )").async();
 
-			Opml opml = new Opml();
+                return;
 
-			opml.setFeedType("opml_1.0");
+            } else if (resp.chat().type() != Chat.Type.channel) {
 
-			List<Outline> outlines = new LinkedList<>();
+                msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").async();
 
-			for (String rss : conf.subscriptions) {
+                return;
 
-				RssInfo rssInfo = info.getById(rss);
+            }
 
-				URL url = URLUtil.url(rss);
 
-				Outline outline = rssInfo == null ?  new Outline(rss,url,url) : new Outline(rssInfo.title,url,URLUtil.url(rssInfo.link));
+            channelId = resp.chat().id();
 
-				outlines.add(outline);
+        }
 
-			}
+        if (!user.admin() && !GroupAdmin.fastAdminCheck(this, channelId, user.id, false)) {
 
-			opml.setOutlines(outlines);
+            GetChatMemberResponse resp = execute(new GetChatMember(channelId, user.id.intValue()));
 
-			WireFeedOutput output = new WireFeedOutput();
+            if (resp == null) {
 
-			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                msg.send("Telegram 服务器连接错误").async();
 
-			try {
+                return;
 
-				output.output(opml,IoUtil.getWriter(bytes,CharsetUtil.CHARSET_UTF_8));
+            } else if (!resp.isOk()) {
 
-				executeAsync(new SendDocument(msg.chatId(),bytes.toByteArray()).fileName("rss_list.opml"));
+                msg.send("错误 : 频道读取失败", "( " + resp.description() + " )").async();
 
-			} catch (Exception e) {
+                return;
 
-				msg.send("导出失败",BotLog.parseError(e)).async();
+            } else if (!(resp.chatMember().status() == ChatMember.Status.creator || resp.chatMember().status() == ChatMember.Status.administrator)) {
 
-				return;
+                msg.send("错误 : 你不是频道管理员").async();
 
-			}
+                return;
 
-		} else if (function.endsWith("set_copyright")) {
+            }
 
-			if (params.length == 1) {
+        }
 
-				conf.copyright = null;
+        ChannelRss conf = channel.getById(channelId);
 
-				msg.send("已重置，感谢对NTT的支持。").async();
+        if (conf == null) {
 
-			} else {
+            conf = new ChannelRss();
+            conf.id = channelId;
+            conf.subscriptions = new LinkedList<>();
 
-				conf.copyright = ArrayUtil.join(ArrayUtil.remove(params,0)," ");
+        }
 
-				msg.send("设置成功 ~").async();
+        if (function.endsWith("export")) {
 
-			}
+            if (conf.subscriptions == null || conf.subscriptions.isEmpty()) {
 
-		} else if (function.endsWith("set_delay")) {
+                msg.send("这个频道还没有订阅过RSS，无法导出。").async();
 
-			if (params.length == 1) {
+                return;
 
-				conf.delay = null;
+            }
 
-				msg.send("已经重置为 15分钟").async();
+            Opml opml = new Opml();
 
-			} else {
+            opml.setFeedType("opml_1.0");
 
+            List<Outline> outlines = new LinkedList<>();
 
-				long delay = 0;
+            for (String rss : conf.subscriptions) {
 
-				int m;
+                RssInfo rssInfo = info.getById(rss);
 
-				if (!NumberUtil.isNumber(params[1]) || (m = NumberUtil.parseInt(params[1])) > 60 || m < 0) {
+                URL url = URLUtil.url(rss);
 
-					msg.send("无效的分钟数量 : " + params[1]).async();
+                Outline outline = rssInfo == null ? new Outline(rss, url, url) : new Outline(rssInfo.title, url, URLUtil.url(rssInfo.link));
 
-					return;
+                outlines.add(outline);
 
-				}
+            }
 
-				delay += m;
+            opml.setOutlines(outlines);
 
-				if (params.length > 2) {
+            WireFeedOutput output = new WireFeedOutput();
 
-					int h;
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 
-					if (!NumberUtil.isNumber(params[2]) || (h = NumberUtil.parseInt(params[2])) > 24 || h < 0) {
+            try {
 
-						msg.send("无效的小时数量 : " + params[2]).async();
+                output.output(opml, IoUtil.getWriter(bytes, CharsetUtil.CHARSET_UTF_8));
 
-						return;
+                executeAsync(new SendDocument(msg.chatId(), bytes.toByteArray()).fileName("rss_list.opml"));
 
-					}
+            } catch (Exception e) {
 
-					delay += h * 60;
+                msg.send("导出失败", BotLog.parseError(e)).async();
 
-				}
+                return;
 
-				if (params.length > 3) {
+            }
 
-					int d;
+        } else if (function.endsWith("set_copyright")) {
 
-					if (!NumberUtil.isNumber(params[3]) || (d = NumberUtil.parseInt(params[2])) > 7 || d < 1) {
+            if (params.length == 1) {
 
-						msg.send("无效的天数 : " + params[3]).async();
+                conf.copyright = null;
 
-						return;
+                msg.send("已重置，感谢对NTT的支持。").async();
 
-					}
+            } else {
 
-					delay += d * 24 * 60;
+                conf.copyright = ArrayUtil.join(ArrayUtil.remove(params, 0), " ");
 
-				}
+                msg.send("设置成功 ~").async();
 
-				if (user.admin() ? delay < 5 : delay < 15) {
+            }
 
-					msg.send("无效的延时设置 ( 时间太短 )").async();
+        } else if (function.endsWith("set_delay")) {
 
-					return;
+            if (params.length == 1) {
 
-				} else if (delay > 7 * 24 * 60) {
+                conf.delay = null;
 
-					msg.send("无效的延时设置 ( < 7天 )").async();
+                msg.send("已经重置为 15分钟").async();
 
-					return;
+            } else {
 
-				}
 
-				conf.delay = delay;
+                long delay = 0;
 
-				msg.send("拉取间隔设置成功。").async();
+                int m;
 
-			}
+                if (!NumberUtil.isNumber(params[1]) || (m = NumberUtil.parseInt(params[1])) > 60 || m < 0) {
 
-		} else if (function.endsWith("set_current")) {
+                    msg.send("无效的分钟数量 : " + params[1]).async();
 
-			if (isMainInstance()) {
+                    return;
 
-				conf.fromBot = null;
+                }
 
-				msg.send("重置成功 来源为 NTT本体").async();
+                delay += m;
 
-			} else {
+                if (params.length > 2) {
 
-				conf.fromBot = origin.me.id();
+                    int h;
 
-				msg.send("设置成功 , 来源为 " + UserData.get(origin.me).userName()).html().async();
+                    if (!NumberUtil.isNumber(params[2]) || (h = NumberUtil.parseInt(params[2])) > 24 || h < 0) {
 
+                        msg.send("无效的小时数量 : " + params[2]).async();
 
-			}
+                        return;
 
-		} else if (function.endsWith("fetch")) {
+                    }
 
-			if (params.length < 2) {
+                    delay += h * 60;
 
-				msg.invalidParams("频道","链接").async();
+                }
 
-				return;
+                if (params.length > 3) {
 
-			}
+                    int d;
 
-			try {
+                    if (!NumberUtil.isNumber(params[3]) || (d = NumberUtil.parseInt(params[2])) > 7 || d < 1) {
 
-				SyndFeedInput input = new SyndFeedInput();
+                        msg.send("无效的天数 : " + params[3]).async();
 
-				String link = params[1];
+                        return;
 
-				link = URLUtil.encode(link);
+                    }
 
-				HttpResponse resp;
+                    delay += d * 24 * 60;
 
-				try {
+                }
 
-					resp = HttpUtil.createGet(link).header(Header.USER_AGENT,"NTT Feed Fetcher ( https://github.com/HiedaNaKan/NTTools)").execute();
+                if (user.admin() ? delay < 5 : delay < 15) {
 
-				} catch (HttpException ex) {
+                    msg.send("无效的延时设置 ( 时间太短 )").async();
 
-					msg.send("拉取失败 :",ex.getMessage()).async();
+                    return;
 
-					return;
+                } else if (delay > 7 * 24 * 60) {
 
-				}
+                    msg.send("无效的延时设置 ( < 7天 )").async();
 
-				if (!resp.isOk()) {
+                    return;
 
-					StringBuilder error = new StringBuilder();
+                }
 
-					error.append("HTTP ERROR ").append(resp.getStatus());
+                conf.delay = delay;
 
-					String content = resp.body();
+                msg.send("拉取间隔设置成功。").async();
 
-					if (!StrUtil.isBlank(content)) {
+            }
 
-						error.append(" : \n\n");
+        } else if (function.endsWith("set_current")) {
 
-						error.append(content);
+            if (isMainInstance()) {
 
-					}
+                conf.fromBot = null;
 
+                msg.send("重置成功 来源为 NTT本体").async();
 
-					msg.send("拉取失败",error.toString()).async();
+            } else {
 
-					return;
+                conf.fromBot = origin.me.id();
 
-				}
+                msg.send("设置成功 , 来源为 " + UserData.get(origin.me).userName()).html().async();
 
-				SyndFeed feed = input.build(new StringReader(resp.body()));
 
-				msg.send("正在输出 " + Html.a(feed.getTitle(),feed.getLink())).html().async();
+            }
 
-				List<SyndEntry> entries = feed.getEntries();
+        } else if (function.endsWith("fetch")) {
 
-				Collections.reverse(entries);
+            if (params.length < 2) {
 
-				int limit = params.length < 3 ? -1: NumberUtil.parseInt(params[2]);
+                msg.invalidParams("频道", "链接").async();
 
-				if (limit > 0 && limit < entries.size()) {
+                return;
 
-					entries = entries.subList(entries.size() - limit,entries.size());
+            }
 
-				}
+            try {
 
-				for (SyndEntry entry :  entries) {
+                SyndFeedInput input = new SyndFeedInput();
 
+                String link = params[1];
 
-					limit --;
+                link = URLUtil.encode(link);
 
-					Send request = new Send(this,conf.id,FeedHtmlFormater.format(conf,feed,entry));
+                HttpResponse resp;
 
-					if (conf.format > 8 || conf.preview) {
+                try {
 
-						request.enableLinkPreview();
+                    resp = HttpUtil.createGet(link).header(Header.USER_AGENT, "NTT Feed Fetcher ( https://github.com/HiedaNaKan/NTTools)").execute();
 
-					}
+                } catch (HttpException ex) {
 
-					SendResponse result = request.html().exec();
+                    msg.send("拉取失败 :", ex.getMessage()).async();
 
-					// if (conf.format == 9) return;
+                    return;
 
-					if (result != null) {
+                }
 
-						if (result.isOk()) continue;
+                if (!resp.isOk()) {
 
-						msg.send(result.errorCode() + " - " + result.description()).async();
+                    StringBuilder error = new StringBuilder();
 
-					}
+                    error.append("HTTP ERROR ").append(resp.getStatus());
 
-					msg.send(request.request().getText()).async();
+                    String content = resp.body();
 
+                    if (!StrUtil.isBlank(content)) {
 
-				}
+                        error.append(" : \n\n");
 
-			} catch (FeedException e) {
+                        error.append(content);
 
-				msg.send("拉取出错 : ",BotLog.parseError(e)).async();
+                    }
 
-			} catch (UtilException e) {
 
-				msg.send("无效的RSS链接").async();
+                    msg.send("拉取失败", error.toString()).async();
 
-			}
+                    return;
 
+                }
 
-		}
+                SyndFeed feed = input.build(new StringReader(resp.body()));
 
-		if (function.matches("(rss_sub|sub)")) {
+                msg.send("正在输出 " + Html.a(feed.getTitle(), feed.getLink())).html().async();
 
-			if (params.length < 2) {
+                List<SyndEntry> entries = feed.getEntries();
 
-				msg.invalidParams("channelId","rssUrl").async();
+                Collections.reverse(entries);
 
-				return;
+                int limit = params.length < 3 ? -1 : NumberUtil.parseInt(params[2]);
 
-			}
+                if (limit > 0 && limit < entries.size()) {
 
-			try {
+                    entries = entries.subList(entries.size() - limit, entries.size());
 
-				SyndFeedInput input = new SyndFeedInput();
+                }
 
-				String link = params[1];
+                for (SyndEntry entry : entries) {
 
-				link = URLUtil.encode(link);
 
-				HttpResponse resp;
+                    limit--;
 
-				try {
+                    Send request = new Send(this, conf.id, FeedHtmlFormater.format(conf, feed, entry));
 
-					resp = HttpUtil.createGet(link).header(Header.USER_AGENT,"NTT Feed Fetcher ( https://github.com/HiedaNaKan/NTTools)").execute();
+                    if (conf.format > 8 || conf.preview) {
 
-				} catch (IORuntimeException ex) {
+                        request.enableLinkPreview();
 
-					msg.send("拉取失败 :",ex.getMessage()).async();
+                    }
 
-					return;
+                    SendResponse result = request.html().exec();
 
-				}
+                    // if (conf.format == 9) return;
 
-				if (!resp.isOk()) {
+                    if (result != null) {
 
-					StringBuilder error = new StringBuilder();
+                        if (result.isOk()) continue;
 
-					error.append("HTTP ERROR ").append(resp.getStatus());
+                        msg.send(result.errorCode() + " - " + result.description()).async();
 
-					String content = resp.body();
+                    }
 
-					if (!StrUtil.isBlank(content)) {
+                    msg.send(request.request().getText()).async();
 
-						error.append(" : \n\n");
 
-						error.append(content);
+                }
 
-					}
+            } catch (FeedException e) {
 
+                msg.send("拉取出错 : ", BotLog.parseError(e)).async();
 
-					msg.send("拉取失败",error.toString()).async();
+            } catch (UtilException e) {
 
-					return;
+                msg.send("无效的RSS链接").async();
 
-				}
+            }
 
-				SyndFeed feed = input.build(new StringReader(resp.body()));
 
-				if (conf.subscriptions.contains(params[1])) {
+        }
 
-					msg.send("已经订阅过了 " + Html.a(feed.getTitle(),feed.getLink())).html().async();
+        if (function.matches("(rss_sub|sub)")) {
 
-					return;
+            if (params.length < 2) {
 
-				}
+                msg.invalidParams("channelId", "rssUrl").async();
 
+                return;
 
-				if (!isMainInstance() && !origin.me.id().equals(conf.fromBot)) {
+            }
 
-					conf.fromBot = origin.me.id();
+            try {
 
-					if (!conf.subscriptions.isEmpty() || conf.fromBot != null) {
+                SyndFeedInput input = new SyndFeedInput();
 
-						msg.send("已将输入源设为本机器人。").async();
+                String link = params[1];
 
-					}
+                link = URLUtil.encode(link);
 
-				}
+                HttpResponse resp;
 
-				conf.subscriptions.add(params[1]);
+                try {
 
+                    resp = HttpUtil.createGet(link).header(Header.USER_AGENT, "NTT Feed Fetcher ( https://github.com/HiedaNaKan/NTTools)").execute();
 
-				channel.setById(channelId,conf);
+                } catch (IORuntimeException ex) {
 
-				RssInfo rss = new RssSub.RssInfo();
+                    msg.send("拉取失败 :", ex.getMessage()).async();
 
-				rss.id = params[1];
-				rss.title = feed.getTitle();
-				rss.link = feed.getLink();
-				rss.last = FeedFetchTask.generateSign(feed.getEntries().get(0));
+                    return;
 
-				msg.send("订阅成功 : " + Html.a(feed.getTitle(),feed.getLink())).html().async();
+                }
 
-			} catch (FeedException e) {
+                if (!resp.isOk()) {
 
-				msg.send("拉取出错 : " + BotLog.parseError(e)).async();
+                    StringBuilder error = new StringBuilder();
 
-			} catch (UtilException e) {
+                    error.append("HTTP ERROR ").append(resp.getStatus());
 
-				msg.send("无效的RSS链接").async();
+                    String content = resp.body();
 
-			}
+                    if (!StrUtil.isBlank(content)) {
 
-		} else if (function.endsWith("list")) {
+                        error.append(" : \n\n");
 
-			if (conf.subscriptions.isEmpty()) {
+                        error.append(content);
 
-				msg.send("没有订阅任何RSS").async();
+                    }
 
-				return;
 
-			}
+                    msg.send("拉取失败", error.toString()).async();
 
-			StringBuilder list = new StringBuilder("订阅列表 :");
+                    return;
 
-			for (String url : conf.subscriptions) {
+                }
 
-				RssInfo rss = info.getById(url);
+                SyndFeed feed = input.build(new StringReader(resp.body()));
 
-				list.append("\n\n").append(Html.b(rss.title)).append(" : ").append(Html.code(url));
+                if (conf.subscriptions.contains(params[1])) {
 
-			}
+                    msg.send("已经订阅过了 " + Html.a(feed.getTitle(), feed.getLink())).html().async();
 
-			msg.send(list.toString()).html().async();
+                    return;
 
-		} else if (function.endsWith("unsub")) {
+                }
 
-			if (params.length < 2) {
 
-				msg.invalidParams("频道","链接");
+                if (!isMainInstance() && !origin.me.id().equals(conf.fromBot)) {
 
-				return;
+                    conf.fromBot = origin.me.id();
 
-			}
+                    if (!conf.subscriptions.isEmpty() || conf.fromBot != null) {
 
-			if (conf.subscriptions.remove(params[1])) {
+                        msg.send("已将输入源设为本机器人。").async();
 
-				msg.send("取消订阅成功").async();
+                    }
 
-			} else {
+                }
 
-				msg.send("没有订阅这个链接").async();
+                conf.subscriptions.add(params[1]);
 
-			}
 
-		} else if (function.endsWith("unsub_all")) {
+                channel.setById(channelId, conf);
 
-			if (conf.subscriptions.isEmpty()) {
+                RssInfo rss = new RssSub.RssInfo();
 
-				msg.send("没有订阅任何源 :)").async();
+                rss.id = params[1];
+                rss.title = feed.getTitle();
+                rss.link = feed.getLink();
+                rss.last = FeedFetchTask.generateSign(feed.getEntries().get(0));
 
-			} else {
+                msg.send("订阅成功 : " + Html.a(feed.getTitle(), feed.getLink())).html().async();
 
-				conf.subscriptions.clear();
+            } catch (FeedException e) {
 
-				msg.send("已经全部取消 :)").async();
+                msg.send("拉取出错 : " + BotLog.parseError(e)).async();
 
-			}
+            } catch (UtilException e) {
 
-		} else if (function.endsWith("set_format")) {
+                msg.send("无效的RSS链接").async();
 
-			if (params.length < 2) {
+            }
 
-				msg.invalidParams("频道","1 - 9").async();
+        } else if (function.endsWith("list")) {
 
-				return;
+            if (conf.subscriptions.isEmpty()) {
 
-			}
+                msg.send("没有订阅任何RSS").async();
 
-			int target;
+                return;
 
-			if (!NumberUtil.isNumber(params[1]) || (target = NumberUtil.parseInt(params[1])) < 0 || target > 12) {
+            }
 
-				msg.send("请选择有效的格式 : 1 - 12").async();
+            StringBuilder list = new StringBuilder("订阅列表 :");
 
-				return;
+            for (String url : conf.subscriptions) {
 
-			}
+                RssInfo rss = info.getById(url);
 
-			conf.format = target;
+                list.append("\n\n").append(Html.b(rss.title)).append(" : ").append(Html.code(url));
 
-			msg.send("修改成功 输出格式为 : " + target + " .").async();
+            }
 
-		} else if (function.endsWith("link_preview")) {
+            msg.send(list.toString()).html().async();
 
-			if (params.length < 2) {
+        } else if (function.endsWith("unsub")) {
 
-				msg.invalidParams("频道","on/off").async();
+            if (params.length < 2) {
 
-				return;
+                msg.invalidParams("频道", "链接");
 
-			}
+                return;
 
-			if ("on".equals(params[1])) {
+            }
 
-				conf.preview = true;
+            if (conf.subscriptions.remove(params[1])) {
 
-			} else if ("off".equals(params[1])) {
+                msg.send("取消订阅成功").async();
 
-				conf.preview = false;
+            } else {
 
-			}
+                msg.send("没有订阅这个链接").async();
 
-			msg.send("修改成功 原文链接预览已设为" + (conf.preview ? "开启" : "关闭") + " .").async();
+            }
 
+        } else if (function.endsWith("unsub_all")) {
 
-		}
+            if (conf.subscriptions.isEmpty()) {
 
-		channel.setById(conf.id,conf);
+                msg.send("没有订阅任何源 :)").async();
 
-	}
+            } else {
+
+                conf.subscriptions.clear();
+
+                msg.send("已经全部取消 :)").async();
+
+            }
+
+        } else if (function.endsWith("set_format")) {
+
+            if (params.length < 2) {
+
+                msg.invalidParams("频道", "1 - 9").async();
+
+                return;
+
+            }
+
+            int target;
+
+            if (!NumberUtil.isNumber(params[1]) || (target = NumberUtil.parseInt(params[1])) < 0 || target > 12) {
+
+                msg.send("请选择有效的格式 : 1 - 12").async();
+
+                return;
+
+            }
+
+            conf.format = target;
+
+            msg.send("修改成功 输出格式为 : " + target + " .").async();
+
+        } else if (function.endsWith("link_preview")) {
+
+            if (params.length < 2) {
+
+                msg.invalidParams("频道", "on/off").async();
+
+                return;
+
+            }
+
+            if ("on".equals(params[1])) {
+
+                conf.preview = true;
+
+            } else if ("off".equals(params[1])) {
+
+                conf.preview = false;
+
+            }
+
+            msg.send("修改成功 原文链接预览已设为" + (conf.preview ? "开启" : "关闭") + " .").async();
+
+
+        }
+
+        channel.setById(conf.id, conf);
+
+    }
 
 }

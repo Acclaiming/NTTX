@@ -17,9 +17,9 @@ public class BotUtils {
     private static Gson gson = new Gson();
 
     public static Update parseUpdate(String update) {
-        Update obj =  gson.fromJson(update,Update.class);
-		obj.json = update;
-		return obj;
+        Update obj = gson.fromJson(update, Update.class);
+        obj.json = update;
+        return obj;
     }
 
     static byte[] getBytesFromInputStream(InputStream is) throws IOException {

@@ -7,58 +7,57 @@ import io.kurumi.ntt.model.Msg;
 
 public class GetID extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerFunction("id");
-
-	}
-
-	@Override
-	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
-
-		return FUNCTION_PUBLIC;
-
-	}
-
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-
-		if (msg.isReply()) {
-
-			msg.send(msg.replyTo().from().id.toString()).publicFailed();
-
-		} else {
-
-			msg.send(msg.chatId().toString()).publicFailed();
-
-		}
+        registerFunction("id");
 
     }
 
-	@Override
-	public boolean post() {
-		
-		return true;
+    @Override
+    public int checkFunctionContext(UserData user, Msg msg, String function, String[] params) {
 
-	}
+        return FUNCTION_PUBLIC;
 
-	@Override
-	public int checkChanPost(UserData user,Msg msg) {
+    }
 
-		return "id".equals(msg.command()) ? 2 : 0;
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-	}
+        if (msg.isReply()) {
 
-	@Override
-	public void onChanPost(UserData user,Msg msg) {
+            msg.send(msg.replyTo().from().id.toString()).publicFailed();
 
-		msg.send(msg.chatId().toString()).publicFailed();
+        } else {
 
-	}
+            msg.send(msg.chatId().toString()).publicFailed();
 
+        }
+
+    }
+
+    @Override
+    public boolean post() {
+
+        return true;
+
+    }
+
+    @Override
+    public int checkChanPost(UserData user, Msg msg) {
+
+        return "id".equals(msg.command()) ? 2 : 0;
+
+    }
+
+    @Override
+    public void onChanPost(UserData user, Msg msg) {
+
+        msg.send(msg.chatId().toString()).publicFailed();
+
+    }
 
 
 }

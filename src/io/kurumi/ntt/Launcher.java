@@ -67,6 +67,7 @@ import io.kurumi.ntt.fragment.twitter.track.TrackUI;
 import io.kurumi.ntt.fragment.twitter.track.UserTrackTask;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.BotLog;
+
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -78,124 +79,124 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 
-		try {
+        try {
 
-			Env.init();
+            Env.init();
 
-		} catch (Exception e) {
+        } catch (Exception e) {
 
-			e.printStackTrace();
+            e.printStackTrace();
 
-			return;
+            return;
 
-		}
+        }
 
-		if (Env.USE_UNIX_SOCKET) {
+        if (Env.USE_UNIX_SOCKET) {
 
-			BotServer.INSTANCE = new BotServer(Env.UDS_PATH,Env.SERVER_DOMAIN);
+            BotServer.INSTANCE = new BotServer(Env.UDS_PATH, Env.SERVER_DOMAIN);
 
-		} else {
+        } else {
 
-			BotServer.INSTANCE = new BotServer(Env.LOCAL_PORT,Env.SERVER_DOMAIN);
+            BotServer.INSTANCE = new BotServer(Env.LOCAL_PORT, Env.SERVER_DOMAIN);
 
-		}
+        }
 
-		try {
+        try {
 
-			BotDB.init(Env.DB_ADDRESS,Env.DB_PORT);
+            BotDB.init(Env.DB_ADDRESS, Env.DB_PORT);
 
-		} catch (Exception ex) {
+        } catch (Exception ex) {
 
-			ex.printStackTrace();
+            ex.printStackTrace();
 
-			return;
+            return;
 
-		}
+        }
 
-		try {
+        try {
 
-			BotServer.INSTANCE.start();
+            BotServer.INSTANCE.start();
 
-		} catch (Exception e) {
+        } catch (Exception e) {
 
-			e.printStackTrace();
+            e.printStackTrace();
 
-			return;
+            return;
 
-		}
+        }
 
-		INSTANCE = new Launcher();
+        INSTANCE = new Launcher();
 
-		Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
-		
-		RuntimeUtil.addShutdownHook(new Runnable() {
+        Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
 
-				@Override
-				public void run() {
+        RuntimeUtil.addShutdownHook(new Runnable() {
 
-					INSTANCE.stop();
+            @Override
+            public void run() {
 
-				}
+                INSTANCE.stop();
 
-			});
+            }
 
-		INSTANCE.start();
+        });
 
-	}
+        INSTANCE.start();
 
-	@Override
-	public String getToken() {
+    }
 
-		return Env.BOT_TOKEN;
+    @Override
+    public String getToken() {
 
-	}
+        return Env.BOT_TOKEN;
 
-	public AtomicBoolean stopeed = new AtomicBoolean(false);
+    }
+
+    public AtomicBoolean stopeed = new AtomicBoolean(false);
 
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerFunction("start","help");
+        registerFunction("start", "help");
 
-	}
+    }
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		super.onFunction(user,msg,function,params);
+        super.onFunction(user, msg, function, params);
 
         if ("start".equals(function)) {
 
-            msg.send("start failed successfully ~",Env.HELP_MESSAGE).html().async();
+            msg.send("start failed successfully ~", Env.HELP_MESSAGE).html().async();
 
-		} else if ("help".equals(function)) {
+        } else if ("help".equals(function)) {
 
             msg.send(Env.HELP_MESSAGE).html().publicFailed();
 
         } else if (!functions.containsKey(function) && msg.isPrivate()) {
 
-			msg.send("没有这个命令 " + function,Env.HELP_MESSAGE).html().failedWith(10 * 1000);
+            msg.send("没有这个命令 " + function, Env.HELP_MESSAGE).html().failedWith(10 * 1000);
 
-		}
+        }
 
 
-	}
+    }
 
     @Override
     public void start() {
 
         try {
 
-			super.start();
+            super.start();
 
-		} catch (Exception e) {
+        } catch (Exception e) {
 
-			return;
+            return;
 
-		}
+        }
 
         startTasks();
 
@@ -219,142 +220,142 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
-	UserTrackTask userTrackTask = new UserTrackTask();
+    UserTrackTask userTrackTask = new UserTrackTask();
 
-	void startTasks() {
+    void startTasks() {
 
-		TimedStatus.start();
+        TimedStatus.start();
 
-		TimelineUI.start();
+        TimelineUI.start();
 
-		TrackTask.start();
+        TrackTask.start();
 
-		UserBot.startAll();
+        UserBot.startAll();
 
-		FeedFetchTask.start();
+        FeedFetchTask.start();
 
-		Backup.start();
+        Backup.start();
 
-		userTrackTask.start();
+        userTrackTask.start();
 
-	}
+    }
 
     @Override
     public void reload() {
 
-		super.reload();
+        super.reload();
 
-		// ADMIN
+        // ADMIN
 
-		addFragment(new BotChannnel());
+        addFragment(new BotChannnel());
 
-		addFragment(new PingFunction());
-		addFragment(new GetID());
-		addFragment(new DelMsg());
+        addFragment(new PingFunction());
+        addFragment(new GetID());
+        addFragment(new DelMsg());
         addFragment(new Notice());
         addFragment(new Backup());
         addFragment(new Users());
-		addFragment(new Stat());
-		addFragment(new DebugMsg());
+        addFragment(new Stat());
+        addFragment(new DebugMsg());
 
-		addFragment(new DebugUser());
+        addFragment(new DebugUser());
         addFragment(new DebugStatus());
-		addFragment(new DebugStickerSet());
+        addFragment(new DebugStickerSet());
 
-		addFragment(new DebugUF());
+        addFragment(new DebugUF());
 
-		// GROUP
+        // GROUP
 
-		addFragment(new GroupAdmin());
+        addFragment(new GroupAdmin());
         addFragment(new GroupRepeat());
-		addFragment(new GroupOptions());
+        addFragment(new GroupOptions());
         //addFragment(new AntiEsu());
         addFragment(new BanSetickerSet());
-		addFragment(new GroupFunction());
-		addFragment(new JoinCaptcha());
+        addFragment(new GroupFunction());
+        addFragment(new JoinCaptcha());
 
-		addFragment(new RemoveKeyboard());
+        addFragment(new RemoveKeyboard());
 
 
-		// Twitter
+        // Twitter
 
-		addFragment(new TwitterLogin());
+        addFragment(new TwitterLogin());
         addFragment(new TwitterLogout());
-		addFragment(new UserActions());
-		addFragment(new StatusUpdate());
-		addFragment(new TimedStatus());
+        addFragment(new UserActions());
+        addFragment(new StatusUpdate());
+        addFragment(new TimedStatus());
         addFragment(new StatusSearch());
         addFragment(new StatusGetter());
         addFragment(new StatusFetch());
-		addFragment(new MediaDownload());
-		addFragment(new AuthExport());
+        addFragment(new MediaDownload());
+        addFragment(new AuthExport());
         addFragment(new AutoUI());
         addFragment(new TrackUI());
-		addFragment(new StatusAction());
-		addFragment(new TimelineUI());
-		addFragment(new TwitterDelete());
-		addFragment(new ListExport());
-		addFragment(new ListImport());
+        addFragment(new StatusAction());
+        addFragment(new TimelineUI());
+        addFragment(new TwitterDelete());
+        addFragment(new ListExport());
+        addFragment(new ListImport());
 
-		addFragment(new Disappeared());
-		addFragment(new TEPH());
+        addFragment(new Disappeared());
+        addFragment(new TEPH());
 
         // BOTS
 
         addFragment(new NewBot());
         addFragment(new MyBots());
 
-		// SETS
+        // SETS
 
-		addFragment(new PackExport());
-		addFragment(new StickerExport());
-		addFragment(new NewStickerSet());
-		addFragment(new AddSticker());
-		addFragment(new RemoveSticker());
-		addFragment(new MoveSticker());
+        addFragment(new PackExport());
+        addFragment(new StickerExport());
+        addFragment(new NewStickerSet());
+        addFragment(new AddSticker());
+        addFragment(new RemoveSticker());
+        addFragment(new MoveSticker());
 
-		// INLINE
+        // INLINE
 
-		addFragment(new MakeButtons());
-		addFragment(new ShowSticker());
+        addFragment(new MakeButtons());
+        addFragment(new ShowSticker());
 
-		// RSS
+        // RSS
 
-		addFragment(new RssSub());
+        addFragment(new RssSub());
 
-		// IC
+        // IC
 
-		addFragment(new Idcard());
-		
-		// Extra
+        addFragment(new Idcard());
 
-		addFragment(new Manchurize());
-		addFragment(new MvnDownloader());
+        // Extra
+
+        addFragment(new Manchurize());
+        addFragment(new MvnDownloader());
 
     }
 
     @Override
     public void stop() {
 
-		if (stopeed.getAndSet(true)) return;
+        if (stopeed.getAndSet(true)) return;
 
-		BotServer.INSTANCE.stop();
+        BotServer.INSTANCE.stop();
 
-		mainTimer.cancel();
+        mainTimer.cancel();
 
-		trackTimer.cancel();
+        trackTimer.cancel();
 
-		userTrackTask.interrupt();
+        userTrackTask.interrupt();
 
-		GroupData.data.saveAll();
+        GroupData.data.saveAll();
 
         for (BotFragment bot : BotServer.fragments.values()) {
 
             if (bot != this) {
 
-				bot.stop();
+                bot.stop();
 
-			}
+            }
 
         }
 
@@ -376,8 +377,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
     }
 
-	@Override
-	public boolean onUpdate(final UserData user,final Update update) {
+    @Override
+    public boolean onUpdate(final UserData user, final Update update) {
 
         if (update.message() != null) {
 
@@ -385,23 +386,23 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
                 user.contactable = true;
 
-                UserData.userDataIndex.put(user.id,user);
+                UserData.userDataIndex.put(user.id, user);
 
-                UserData.data.setById(user.id,user);
+                UserData.data.setById(user.id, user);
 
             }
 
         }
 
 
-		return false;
+        return false;
 
     }
 
     @Override
-    public void uncaughtException(Thread thread,Throwable throwable) {
+    public void uncaughtException(Thread thread, Throwable throwable) {
 
-        BotLog.error("NTT出错",throwable);
+        BotLog.error("NTT出错", throwable);
 
         System.exit(1);
 

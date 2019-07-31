@@ -9,24 +9,24 @@ import io.kurumi.ntt.utils.Html;
 
 public class DebugMsg extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
         registerAdminFunction("get_msg");
 
     }
 
-	@Override
-	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public int checkFunctionContext(UserData user, Msg msg, String function, String[] params) {
 
-		return FUNCTION_PUBLIC;
+        return FUNCTION_PUBLIC;
 
-	}
+    }
 
     @Override
-    public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
         if (msg.replyTo() == null) {
 
@@ -36,15 +36,15 @@ public class DebugMsg extends Fragment {
 
         }
 
-		if (msg.update != null) {
+        if (msg.update != null) {
 
-			msg.send(Html.code(new JSONObject(msg.update.json).getByPath("message.reply_to_message"))).html().exec();
+            msg.send(Html.code(new JSONObject(msg.update.json).getByPath("message.reply_to_message"))).html().exec();
 
-		} else {
+        } else {
 
-			msg.send(msg.replyTo().message().toString()).exec();
+            msg.send(msg.replyTo().message().toString()).exec();
 
-		}
+        }
 
     }
 

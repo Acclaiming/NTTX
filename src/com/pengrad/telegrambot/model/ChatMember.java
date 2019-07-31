@@ -110,7 +110,8 @@ public class ChatMember implements Serializable {
         if (user != null ? !user.equals(that.user) : that.user != null) return false;
         if (status != that.status) return false;
         if (until_date != null ? !until_date.equals(that.until_date) : that.until_date != null) return false;
-        if (can_be_edited != null ? !can_be_edited.equals(that.can_be_edited) : that.can_be_edited != null) return false;
+        if (can_be_edited != null ? !can_be_edited.equals(that.can_be_edited) : that.can_be_edited != null)
+            return false;
         if (can_change_info != null ? !can_change_info.equals(that.can_change_info) : that.can_change_info != null)
             return false;
         if (can_post_messages != null ? !can_post_messages.equals(that.can_post_messages) : that.can_post_messages != null)

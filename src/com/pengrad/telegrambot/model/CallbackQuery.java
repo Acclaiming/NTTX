@@ -57,7 +57,8 @@ public class CallbackQuery implements Serializable {
         if (message != null ? !message.equals(that.message) : that.message != null) return false;
         if (inline_message_id != null ? !inline_message_id.equals(that.inline_message_id) : that.inline_message_id != null)
             return false;
-        if (chat_instance != null ? !chat_instance.equals(that.chat_instance) : that.chat_instance != null) return false;
+        if (chat_instance != null ? !chat_instance.equals(that.chat_instance) : that.chat_instance != null)
+            return false;
         if (data != null ? !data.equals(that.data) : that.data != null) return false;
         return game_short_name != null ? game_short_name.equals(that.game_short_name) : that.game_short_name == null;
     }

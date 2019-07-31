@@ -11,9 +11,9 @@ import io.kurumi.ntt.model.request.Send;
 
 public class UserBot {
 
-    public static Data<UserBot> data = new Data<UserBot>("UserCustomBot",UserBot.class);
+    public static Data<UserBot> data = new Data<UserBot>("UserCustomBot", UserBot.class);
 
-	public Long id;
+    public Long id;
     public String userName;
     public Long user;
     public String token;
@@ -33,47 +33,47 @@ public class UserBot {
     public boolean startBot() {
 
         if (!BotServer.fragments.containsKey(token)) {
-			
-			try {
-				
-				if (type == 0) {
 
-					ForwardBot client = new ForwardBot();
+            try {
 
-					client.botId = id;
+                if (type == 0) {
 
-					client.silentStart();
+                    ForwardBot client = new ForwardBot();
 
-				} else if (type == 1) {
+                    client.botId = id;
 
-					GroupBot client = new GroupBot();
+                    client.silentStart();
 
-					client.botId = id;
-					client.silentStart();
+                } else if (type == 1) {
 
-				} else if (type == 2) {
+                    GroupBot client = new GroupBot();
 
-					RssBot client = new RssBot();
+                    client.botId = id;
+                    client.silentStart();
 
-					client.botId = id;
-					client.silentStart();
+                } else if (type == 2) {
 
-				}
-				
-			} catch (Exception e) {
-				
-				data.deleteById(id);
-				
-				new Send(user,"对不起，但是你的机器人 : @" + userName + " 的令牌已失效，已自动移除。").exec();
-				
-				return false;
-				
-			}
+                    RssBot client = new RssBot();
+
+                    client.botId = id;
+                    client.silentStart();
+
+                }
+
+            } catch (Exception e) {
+
+                data.deleteById(id);
+
+                new Send(user, "对不起，但是你的机器人 : @" + userName + " 的令牌已失效，已自动移除。").exec();
+
+                return false;
+
+            }
 
         }
 
-		return true;
-		
+        return true;
+
     }
 
     public void stopBot() {
@@ -122,8 +122,8 @@ public class UserBot {
             case 1:
                 return "群组管理";
 
-			case 2 : 
-				return "RSS";
+            case 2:
+                return "RSS";
 
             default:
                 return null;

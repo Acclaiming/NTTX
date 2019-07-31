@@ -9,313 +9,337 @@ import io.kurumi.ntt.fragment.graph.TelegraphAccount;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.telegraph.Telegraph;
 import io.kurumi.telegraph.model.Node;
+
 import java.util.LinkedList;
 import java.util.List;
+
 import io.kurumi.telegraph.model.Page;
 import io.kurumi.telegraph.model.NodeElement;
+
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.*;
+
 import cn.hutool.core.util.*;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.model.request.Send;
+
 import java.net.URL;
 import java.net.MalformedURLException;
+
 import io.kurumi.ntt.Launcher;
 import io.kurumi.telegraph.FloodWaitException;
 
 public class FeedHtmlFormater {
 
-	public static Pattern matchAll = Pattern.compile("(<([^> ]+)([^>]+)?>([^<]+)?</([^<]+)>|<[^<]+>|</|[^<]+)",Pattern.MULTILINE);
+    public static Pattern matchAll = Pattern.compile("(<([^> ]+)([^>]+)?>([^<]+)?</([^<]+)>|<[^<]+>|</|[^<]+)", Pattern.MULTILINE);
 
-	public static String matchAttr = "[^\">]+\"([^\">]*)\"";
+    public static String matchAttr = "[^\">]+\"([^\">]*)\"";
 
-	public static Pattern matchHref = Pattern.compile("href" + matchAll);
+    public static Pattern matchHref = Pattern.compile("href" + matchAll);
 
-	public static Pattern matchSrc = Pattern.compile("src" + matchAll);
+    public static Pattern matchSrc = Pattern.compile("src" + matchAll);
 
-	public static Pattern matchImg = Pattern.compile("<img[^>].*src[^\">]+\"([^\">]+)\"[^>]*>");
+    public static Pattern matchImg = Pattern.compile("<img[^>].*src[^\">]+\"([^\">]+)\"[^>]*>");
 
-	public static HTMLFilter removeTags = new HTMLFilter(true);
-	public static HTMLFilter removeTagsWithoutImg = new HTMLFilter(false);
+    public static HTMLFilter removeTags = new HTMLFilter(true);
+    public static HTMLFilter removeTagsWithoutImg = new HTMLFilter(false);
 
-	public static Pattern matchTagInterrupted = Pattern.compile(".*</[^>]+>.+<[^>]+");
+    public static Pattern matchTagInterrupted = Pattern.compile(".*</[^>]+>.+<[^>]+");
 
-	public static String format(RssSub.ChannelRss channel,SyndFeed feed,final SyndEntry entry) {
+    public static String format(RssSub.ChannelRss channel, SyndFeed feed, final SyndEntry entry) {
 
-		return format(channel,feed,entry,false);
+        return format(channel, feed, entry, false);
 
-	}
+    }
 
-	public static String format(final RssSub.ChannelRss channel,final SyndFeed feed,final SyndEntry entry,boolean debug) {
+    public static String format(final RssSub.ChannelRss channel, final SyndFeed feed, final SyndEntry entry, boolean debug) {
 
-		int type = channel.format;
+        int type = channel.format;
 
-		if (type == 0) type = 2;
+        if (type == 0) type = 2;
 
-		StringBuilder html = new StringBuilder();
+        StringBuilder html = new StringBuilder();
 
-		String host = StrUtil.subBefore(feed.getLink(),"/",true);
+        String host = StrUtil.subBefore(feed.getLink(), "/", true);
 
-		String link_ = entry.getLink();
+        String link_ = entry.getLink();
 
-		if (!link_.startsWith("http")) {
+        if (!link_.startsWith("http")) {
 
-			if (link_.startsWith("/")) link_ = link_.substring(1);
+            if (link_.startsWith("/")) link_ = link_.substring(1);
 
-			link_ = host + "/" + link_;
+            link_ = host + "/" + link_;
 
-		}
+        }
 
-		final String link = link_;
+        final String link = link_;
 
-		entry.setLink(link);
+        entry.setLink(link);
 
-		if (type > 8) {
+        if (type > 8) {
 
-			if (type == 9 || type == 11) {
+            if (type == 9 || type == 11) {
 
-				html.append(Html.b(feed.getTitle()));
+                html.append(Html.b(feed.getTitle()));
 
-				html.append("\n\n");
+                html.append("\n\n");
 
-			}
+            }
 
-			TelegraphAccount account = TelegraphAccount.defaultAccount();
+            TelegraphAccount account = TelegraphAccount.defaultAccount();
 
-			final String str = getContent(entry,false,true,false);
+            final String str = getContent(entry, false, true, false);
 
-			final List<Node> content = removeTagsWithoutImg.formatTelegraph(str,host);
+            final List<Node> content = removeTagsWithoutImg.formatTelegraph(str, host);
 
-			content.add(new NodeElement() {{ tag = "hr"; }});
+            content.add(new NodeElement() {{
+                tag = "hr";
+            }});
 
-			if (channel.copyright == null) {
+            if (channel.copyright == null) {
 
-				content.add(new Node() {{ text = "文章由 "; }});
+                content.add(new Node() {{
+                    text = "文章由 ";
+                }});
 
-				content.add(new NodeElement() {{
+                content.add(new NodeElement() {{
 
-							tag = "a";
+                    tag = "a";
 
-							attrs = new HashMap<>();
+                    attrs = new HashMap<>();
 
-							attrs.put("href","https://manual.kurumi.io");
+                    attrs.put("href", "https://manual.kurumi.io");
 
-							children = new LinkedList<>();
+                    children = new LinkedList<>();
 
-							children.add(new Node() {{ text = "NTT"; }});
+                    children.add(new Node() {{
+                        text = "NTT";
+                    }});
 
 
-						}});
+                }});
 
-				content.add(new Node() {{ text = " 解析 | 源站版权所有"; }});
+                content.add(new Node() {{
+                    text = " 解析 | 源站版权所有";
+                }});
 
-			} else {
+            } else {
 
-				content.add(new Node() {{ text = channel.copyright; }});
+                content.add(new Node() {{
+                    text = channel.copyright;
+                }});
 
-			}
+            }
 
-			content.add(new NodeElement() {{ tag = "br"; }});
-			content.add(new NodeElement() {{ tag = "br"; }});
-			
-			content.add(new Node() {{ text = "查看原文 : "; }});
+            content.add(new NodeElement() {{
+                tag = "br";
+            }});
+            content.add(new NodeElement() {{
+                tag = "br";
+            }});
 
-			content.add(new NodeElement() {{
+            content.add(new Node() {{
+                text = "查看原文 : ";
+            }});
 
-						tag = "a";
+            content.add(new NodeElement() {{
 
-						attrs = new HashMap<>();
+                tag = "a";
 
-						attrs.put("href",link);
+                attrs = new HashMap<>();
 
-						children = new LinkedList<>();
+                attrs.put("href", link);
 
-						children.add(new Node() {{ text = entry.getTitle() ; }});
+                children = new LinkedList<>();
 
+                children.add(new Node() {{
+                    text = entry.getTitle();
+                }});
 
-					}});
 
-			Page page;
+            }});
 
-			try {
+            Page page;
 
-				page = Telegraph.createPage(account.access_token,entry.getTitle(),StrUtil.isBlank(entry.getAuthor()) ? feed.getTitle() : entry.getAuthor().trim(),feed.getLink(),content,false);
+            try {
 
-			} catch (FloodWaitException ex) {
+                page = Telegraph.createPage(account.access_token, entry.getTitle(), StrUtil.isBlank(entry.getAuthor()) ? feed.getTitle() : entry.getAuthor().trim(), feed.getLink(), content, false);
 
-				account = TelegraphAccount.revokeDefaultAccount();
+            } catch (FloodWaitException ex) {
 
-				try {
+                account = TelegraphAccount.revokeDefaultAccount();
 
-					page = Telegraph.createPage(account.access_token,entry.getTitle(),StrUtil.isBlank(entry.getAuthor()) ? feed.getTitle() : entry.getAuthor().trim(),feed.getLink(),content,false);
+                try {
 
-				} catch (FloodWaitException ignored) {
+                    page = Telegraph.createPage(account.access_token, entry.getTitle(), StrUtil.isBlank(entry.getAuthor()) ? feed.getTitle() : entry.getAuthor().trim(), feed.getLink(), content, false);
 
-					return null;
+                } catch (FloodWaitException ignored) {
 
-				}
+                    return null;
 
-			}
+                }
 
+            }
 
-			if (page == null) return null;
 
-			if (type < 11) {
+            if (page == null) return null;
 
-				html.append(Html.a(entry.getTitle(),page.url));
+            if (type < 11) {
 
-			} else {
+                html.append(Html.a(entry.getTitle(), page.url));
 
-				html.append(entry.getTitle()).append(" | ").append(Html.a("Telegraph",page.url)).append(" | ").append(Html.a("原文",link));
+            } else {
 
-			}
+                html.append(entry.getTitle()).append(" | ").append(Html.a("Telegraph", page.url)).append(" | ").append(Html.a("原文", link));
 
-		} else if (type == 1) {
+            }
 
-			html.append(Html.a(entry.getTitle(),link));
+        } else if (type == 1) {
 
-		} else if (type == 2) {
+            html.append(Html.a(entry.getTitle(), link));
 
-			html.append(Html.b(feed.getTitle()));
+        } else if (type == 2) {
 
-			html.append("\n\n");
+            html.append(Html.b(feed.getTitle()));
 
-			html.append(Html.a(entry.getTitle(),link));
+            html.append("\n\n");
 
+            html.append(Html.a(entry.getTitle(), link));
 
-		} else if (type == 3) {
 
-			html.append(Html.b(feed.getTitle()));
+        } else if (type == 3) {
 
-			html.append("\n\n");
+            html.append(Html.b(feed.getTitle()));
 
-			html.append(Html.a(entry.getTitle(),link));
+            html.append("\n\n");
 
-			html.append("\n\n");
+            html.append(Html.a(entry.getTitle(), link));
 
-			html.append(getContent(entry,true,false,debug));
+            html.append("\n\n");
 
-		} else if (type == 4) {
+            html.append(getContent(entry, true, false, debug));
 
-			html.append(Html.b(entry.getTitle()));
+        } else if (type == 4) {
 
-			html.append("\n\n");
+            html.append(Html.b(entry.getTitle()));
 
-			html.append(getContent(entry,true,false,debug));
+            html.append("\n\n");
 
-			html.append("\n\n");
+            html.append(getContent(entry, true, false, debug));
 
-			html.append(link);
+            html.append("\n\n");
 
-		} else if (type == 5) {
+            html.append(link);
 
-			html.append(Html.b(entry.getTitle()));
+        } else if (type == 5) {
 
-			html.append("\n\n");
+            html.append(Html.b(entry.getTitle()));
 
-			html.append(getContent(entry,true,false,debug));
+            html.append("\n\n");
 
-			html.append("\n\n");
+            html.append(getContent(entry, true, false, debug));
 
-			if (!StrUtil.isBlank(entry.getAuthor()) && !"rsshub".equals(entry.getAuthor().trim().toLowerCase())) {
+            html.append("\n\n");
 
-				html.append("作者 : ");
+            if (!StrUtil.isBlank(entry.getAuthor()) && !"rsshub".equals(entry.getAuthor().trim().toLowerCase())) {
 
-				html.append(Html.b(entry.getAuthor())).append(" - ");
+                html.append("作者 : ");
 
-			} else {
+                html.append(Html.b(entry.getAuthor())).append(" - ");
 
-				html.append("来自 : ");
+            } else {
 
-			}
+                html.append("来自 : ");
 
-			html.append(Html.a(feed.getTitle(),link));
+            }
 
-		} else if (type == 6) {
+            html.append(Html.a(feed.getTitle(), link));
 
-			html.append(Html.b(entry.getTitle()));
+        } else if (type == 6) {
 
-			html.append("\n\n");
+            html.append(Html.b(entry.getTitle()));
 
-			html.append(getContent(entry,false,false,debug));
+            html.append("\n\n");
 
-		} else if (type == 7) {
+            html.append(getContent(entry, false, false, debug));
 
-			html.append(Html.b(entry.getTitle()));
+        } else if (type == 7) {
 
-			html.append("\n\n");
+            html.append(Html.b(entry.getTitle()));
 
-			html.append(getContent(entry,false,false,debug));
+            html.append("\n\n");
 
-			html.append("\n\n");
+            html.append(getContent(entry, false, false, debug));
 
-			html.append(link);
+            html.append("\n\n");
 
-		} else if (type == 8) {
+            html.append(link);
 
-			html.append(Html.b(entry.getTitle()));
+        } else if (type == 8) {
 
-			html.append("\n\n");
+            html.append(Html.b(entry.getTitle()));
 
-			html.append(getContent(entry,false,false,debug));
+            html.append("\n\n");
 
-			html.append("\n\n");
+            html.append(getContent(entry, false, false, debug));
 
-			if (!StrUtil.isBlank(entry.getAuthor()) && !"rsshub".equals(entry.getAuthor().trim().toLowerCase())) {
+            html.append("\n\n");
 
-				html.append("作者 : ");
+            if (!StrUtil.isBlank(entry.getAuthor()) && !"rsshub".equals(entry.getAuthor().trim().toLowerCase())) {
 
-				html.append(Html.b(entry.getAuthor())).append(" - ");
+                html.append("作者 : ");
 
-			} else {
+                html.append(Html.b(entry.getAuthor())).append(" - ");
 
-				html.append("来自 : ");
+            } else {
 
-			}
+                html.append("来自 : ");
 
-			html.append(Html.a(feed.getTitle(),link));
+            }
 
+            html.append(Html.a(feed.getTitle(), link));
 
-		}
 
-		return html.toString();
+        }
 
-	}
+        return html.toString();
 
-	public static Pattern LINES = Pattern.compile("\n( |　)*\n( |　)*\n");
+    }
 
-	private static String getContent(SyndEntry entry,boolean desciption,boolean withImg,boolean debug) {
+    public static Pattern LINES = Pattern.compile("\n( |　)*\n( |　)*\n");
 
-		String html;
+    private static String getContent(SyndEntry entry, boolean desciption, boolean withImg, boolean debug) {
 
-		if (entry.getContents() != null && !entry.getContents().isEmpty() && !StrUtil.isBlank(entry.getContents().get(0).getValue())) {
+        String html;
 
-			// Atom Feed
+        if (entry.getContents() != null && !entry.getContents().isEmpty() && !StrUtil.isBlank(entry.getContents().get(0).getValue())) {
 
-			html = entry.getContents().get(0).getValue();
+            // Atom Feed
 
-		} else {
+            html = entry.getContents().get(0).getValue();
 
-			html = entry.getDescription().getValue();
+        } else {
 
-		}
+            html = entry.getDescription().getValue();
 
-		html = Html.unescape(html);
+        }
 
-		//	html = URLUtil.decode(html);
+        html = Html.unescape(html);
 
-		html = html.replaceAll("< ?br ?/? ?>","\n");
+        //	html = URLUtil.decode(html);
 
-		html = html.replace("<strong>","<b>").replace("</strong>","</b>");
+        html = html.replaceAll("< ?br ?/? ?>", "\n");
 
-		html = removeADs(html);
+        html = html.replace("<strong>", "<b>").replace("</strong>", "</b>");
 
-		if (!withImg) {
+        html = removeADs(html);
 
-			html = ReUtil.replaceAll(html,matchImg,"\n\n" + Html.a("图片","$1") + "\n\n");
+        if (!withImg) {
 
-		}
+            html = ReUtil.replaceAll(html, matchImg, "\n\n" + Html.a("图片", "$1") + "\n\n");
+
+        }
 
 		/*
 
@@ -344,90 +368,90 @@ public class FeedHtmlFormater {
 
 		 */
 
-		String host = StrUtil.subBefore(entry.getLink(),"/",true);
+        String host = StrUtil.subBefore(entry.getLink(), "/", true);
 
-		if (withImg) {
+        if (withImg) {
 
-			html = removeTagsWithoutImg.filter(html,host);
+            html = removeTagsWithoutImg.filter(html, host);
 
-		} else {
+        } else {
 
-			html = removeTags.filter(html,host);
+            html = removeTags.filter(html, host);
 
-		}
+        }
 
-		if (!withImg && html.contains("<b> +<b>")) {
+        if (!withImg && html.contains("<b> +<b>")) {
 
-			html = html.replaceAll("</?b>","");
+            html = html.replaceAll("</?b>", "");
 
-		}
+        }
 
-		while (ReUtil.contains(LINES,html)) {
+        while (ReUtil.contains(LINES, html)) {
 
-			html = ReUtil.replaceAll(html,LINES,"\n\n");
+            html = ReUtil.replaceAll(html, LINES, "\n\n");
 
-		}
+        }
 
-		if (html.startsWith(entry.getTitle())) {
+        if (html.startsWith(entry.getTitle())) {
 
-			// html = html.substring(entry.getTitle().length()).trim();
+            // html = html.substring(entry.getTitle().length()).trim();
 
-		}
+        }
 
-		if (desciption) {
+        if (desciption) {
 
-			//	String after = html.substring(139,html.length());
+            //	String after = html.substring(139,html.length());
 
-			html = html.substring(140);
+            html = html.substring(140);
 
-			if (ReUtil.isMatch(matchTagInterrupted,html)) {
+            if (ReUtil.isMatch(matchTagInterrupted, html)) {
 
-				html = html + StrUtil.subBefore(html,"<",true);
+                html = html + StrUtil.subBefore(html, "<", true);
 
-				// 如果HTML被截断 向前截取开始符号
+                // 如果HTML被截断 向前截取开始符号
 
-			}
+            }
 
-			html = html + "...";
+            html = html + "...";
 
-		}
+        }
 
-		return html.trim();
+        return html.trim();
 
-	}
+    }
 
-	private static String removeADs(String content) {
+    private static String removeADs(String content) {
 
-		String[] lines = content.split("\n");
+        String[] lines = content.split("\n");
 
-		LinkedList<String> result = new LinkedList<>();
+        LinkedList<String> result = new LinkedList<>();
 
-		for (String line : ArrayUtil.reverse(lines)) {
+        for (String line : ArrayUtil.reverse(lines)) {
 
-			// FeedX 广告
+            // FeedX 广告
 
-			if (line.contains("获取更多RSS")) continue;
-			if (line.contains("https://feedx.net")) continue;
-			if (line.contains("https://feedx.co")) continue;
+            if (line.contains("获取更多RSS")) continue;
+            if (line.contains("https://feedx.net")) continue;
+            if (line.contains("https://feedx.co")) continue;
 
-			// FetchRSS
+            // FetchRSS
 
-			if (line.contains("http://fetchrss.com")) continue;
+            if (line.contains("http://fetchrss.com")) continue;
 
-			// Feed43
+            // Feed43
 
-			if (line.contains("http://feed43.com/")) {
+            if (line.contains("http://feed43.com/")) {
 
-				line = StrUtil.subBefore(line,"<p><sub><i>-- Delivered by",false);
+                line = StrUtil.subBefore(line, "<p><sub><i>-- Delivered by", false);
 
-			}
+            }
 
-			result.add(line);
+            result.add(line);
 
-		}
+        }
 
-		return ArrayUtil.join(ArrayUtil.reverse(result.toArray()),"\n");
+        return ArrayUtil.join(ArrayUtil.reverse(result.toArray()), "\n");
 
-	}
+    }
 
 }

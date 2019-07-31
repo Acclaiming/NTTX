@@ -11,30 +11,30 @@ import twitter4j.TwitterException;
 
 public class DebugUser extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
-	
-		super.init(origin);
-		
-		registerAdminFunction("get_user");
-		
-	}
-	
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-		
-		if (params.length == 0) {
+    @Override
+    public void init(BotFragment origin) {
+
+        super.init(origin);
+
+        registerAdminFunction("get_user");
+
+    }
+
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+
+        if (params.length == 0) {
 
             msg.send("invaild user").exec();
 
             return;
 
         }
-		
-		requestTwitter(user,msg);
-		
-	}
-	
+
+        requestTwitter(user, msg);
+
+    }
+
     @Override
     public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 

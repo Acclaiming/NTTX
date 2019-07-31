@@ -10,22 +10,22 @@ import io.kurumi.ntt.model.request.Send;
 
 public class TwitterLogout extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
-	
-		super.init(origin);
-		
-		registerFunction("logout");
-		
-	}
+    @Override
+    public void init(BotFragment origin) {
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-		
-		requestTwitter(user,msg,true);
-		
-	}
-	
+        super.init(origin);
+
+        registerFunction("logout");
+
+    }
+
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+
+        requestTwitter(user, msg, true);
+
+    }
+
     @Override
     public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 

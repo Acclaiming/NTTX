@@ -33,14 +33,14 @@ public class AutoTask {
 	}
 	
 	*/
-	
-	public static void onNewFriend(TAuth auth, Twitter api, UserArchive archive, Relationship ship) {
+
+    public static void onNewFriend(TAuth auth, Twitter api, UserArchive archive, Relationship ship) {
 
         if (ship.isSourceWantRetweets() && AutoUI.autoData.fieldEquals(auth.id, "mrt", true)) {
 
             try {
 
-                api.updateFriendship(archive.id,ship.isSourceNotificationsEnabled(),false);
+                api.updateFriendship(archive.id, ship.isSourceNotificationsEnabled(), false);
 
             } catch (TwitterException e) {
             }

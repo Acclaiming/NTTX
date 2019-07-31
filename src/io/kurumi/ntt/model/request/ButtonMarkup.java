@@ -4,6 +4,7 @@ import cn.hutool.core.util.ArrayUtil;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import io.kurumi.ntt.model.request.ButtonLine;
+
 import java.util.LinkedList;
 
 public class ButtonMarkup extends LinkedList<ButtonLine> {
@@ -29,14 +30,14 @@ public class ButtonMarkup extends LinkedList<ButtonLine> {
         newButtonLine().newUrlButton(text, url);
 
     }
-	
-	public void newInlineButtonLine(String text, String query) {
+
+    public void newInlineButtonLine(String text, String query) {
 
         newButtonLine().newInlineButton(text, query);
 
     }
-	
-	public void newCurrentInlineButtonLine(String text, String query) {
+
+    public void newCurrentInlineButtonLine(String text, String query) {
 
         newButtonLine().newCurrentInlineButton(text, query);
 

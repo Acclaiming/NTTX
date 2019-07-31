@@ -1,6 +1,7 @@
 package com.pengrad.telegrambot.model;
 
 import java.io.Serializable;
+
 import io.kurumi.ntt.fragment.ProcessLock;
 import com.pengrad.telegrambot.request.BaseRequest;
 
@@ -11,8 +12,8 @@ import com.pengrad.telegrambot.request.BaseRequest;
 public class Update implements Serializable {
     private final static long serialVersionUID = 0L;
 
-		public transient String json;
-		public transient ProcessLock<BaseRequest> lock;
+    public transient String json;
+    public transient ProcessLock<BaseRequest> lock;
 
     private Integer update_id;
     private Message message;
@@ -81,10 +82,12 @@ public class Update implements Serializable {
         if (message != null ? !message.equals(update.message) : update.message != null) return false;
         if (edited_message != null ? !edited_message.equals(update.edited_message) : update.edited_message != null)
             return false;
-        if (channel_post != null ? !channel_post.equals(update.channel_post) : update.channel_post != null) return false;
+        if (channel_post != null ? !channel_post.equals(update.channel_post) : update.channel_post != null)
+            return false;
         if (edited_channel_post != null ? !edited_channel_post.equals(update.edited_channel_post) : update.edited_channel_post != null)
             return false;
-        if (inline_query != null ? !inline_query.equals(update.inline_query) : update.inline_query != null) return false;
+        if (inline_query != null ? !inline_query.equals(update.inline_query) : update.inline_query != null)
+            return false;
         if (chosen_inline_result != null ? !chosen_inline_result.equals(update.chosen_inline_result) : update.chosen_inline_result != null)
             return false;
         if (callback_query != null ? !callback_query.equals(update.callback_query) : update.callback_query != null)
@@ -104,17 +107,17 @@ public class Update implements Serializable {
     @Override
     public String toString() {
         return "Update{" +
-						"update_id=" + update_id +
-						", message=" + message +
-						", edited_message=" + edited_message +
-						", channel_post=" + channel_post +
-						", edited_channel_post=" + edited_channel_post +
-						", inline_query=" + inline_query +
-						", chosen_inline_result=" + chosen_inline_result +
-						", callback_query=" + callback_query +
-						", shipping_query=" + shipping_query +
-						", pre_checkout_query=" + pre_checkout_query +
-						", poll=" + poll +
-						'}';
+                "update_id=" + update_id +
+                ", message=" + message +
+                ", edited_message=" + edited_message +
+                ", channel_post=" + channel_post +
+                ", edited_channel_post=" + edited_channel_post +
+                ", inline_query=" + inline_query +
+                ", chosen_inline_result=" + chosen_inline_result +
+                ", callback_query=" + callback_query +
+                ", shipping_query=" + shipping_query +
+                ", pre_checkout_query=" + pre_checkout_query +
+                ", poll=" + poll +
+                '}';
     }
 }

@@ -9,6 +9,7 @@ import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.model.Msg;
 
 import static java.util.Arrays.asList;
+
 import io.kurumi.ntt.db.PointData;
 import org.bson.Document;
 
@@ -20,6 +21,7 @@ import static com.mongodb.client.model.Filters.not;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
 import static java.util.Arrays.asList;
+
 import io.kurumi.ntt.utils.BotLog;
 import com.pengrad.telegrambot.response.SendResponse;
 
@@ -28,60 +30,60 @@ public class Notice extends Fragment {
 
     final String POINT_FPRWARD = "admin_notice";
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerAdminFunction("notice");
+        registerAdminFunction("notice");
 
-		registerPoint(POINT_FPRWARD);
+        registerPoint(POINT_FPRWARD);
 
     }
-
-	@Override
-	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
-
-		return PROCESS_SYNC;
-
-	}
 
     @Override
-    public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    public int checkFunction(UserData user, Msg msg, String function, String[] params) {
 
-		PointData data = setPrivatePointData(user,POINT_FPRWARD,ArrayUtil.join(params," "));
-
-		msg.send("现在发送群发内容 :").exec(data);
+        return PROCESS_SYNC;
 
     }
 
-	@Override
-	public void onPoint(UserData user,Msg msg,String point,PointData data) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+
+        PointData data = setPrivatePointData(user, POINT_FPRWARD, ArrayUtil.join(params, " "));
+
+        msg.send("现在发送群发内容 :").exec(data);
+
+    }
+
+    @Override
+    public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
         String params = data.data();
 
         boolean mute = params.contains("mute");
         boolean login = params.contains("login");
-		boolean tryAll = params.contains("try");
+        boolean tryAll = params.contains("try");
 
-		if (tryAll) {
+        if (tryAll) {
 
-			//UserData.data.collection.updateMany(eq("contactable",false),unset("contactable"));
+            //UserData.data.collection.updateMany(eq("contactable",false),unset("contactable"));
 
-		}
+        }
 
         clearPrivatePoint(user);
 
-		long count = UserData.data.collection.countDocuments();
+        long count = UserData.data.collection.countDocuments();
 
-		long success = 0;
-		long failed = 0;
+        long success = 0;
+        long failed = 0;
 
-		Msg status = msg.send("正在群发 : 0 / 0 / " + count).send();
+        Msg status = msg.send("正在群发 : 0 / 0 / " + count).send();
 
-		for (UserData userData : UserData.data.collection.find()) {
+        for (UserData userData : UserData.data.collection.find()) {
 
-			if (tryAll || userData.contactable == null || userData.contactable) {
+            if (tryAll || userData.contactable == null || userData.contactable) {
 
 				/*
 
@@ -96,26 +98,26 @@ public class Notice extends Fragment {
 
 				 */
 
-				ForwardMessage forward = new ForwardMessage(userData.id,msg.chatId(),msg.messageId());
+                ForwardMessage forward = new ForwardMessage(userData.id, msg.chatId(), msg.messageId());
 
-				if (mute) forward.disableNotification(true);
+                if (mute) forward.disableNotification(true);
 
-				SendResponse resp = bot().execute(forward);
+                SendResponse resp = bot().execute(forward);
 
-				if (resp.isOk()) {
+                if (resp.isOk()) {
 
-					success++;
+                    success++;
 
-					userData.contactable = true;
+                    userData.contactable = true;
 
-					userData.data.setById(userData.id,userData);
+                    userData.data.setById(userData.id, userData);
 
 
-				} else {
+                } else {
 
-					failed++;
+                    failed++;
 
-					BotLog.info("NF : " + resp.description());
+                    BotLog.info("NF : " + resp.description());
 
 					/*
 
@@ -127,23 +129,23 @@ public class Notice extends Fragment {
 
 					 */
 
-				}
+                }
 
-			} else {
+            } else {
 
-				failed++;
+                failed++;
 
-				continue;
+                continue;
 
-			}
+            }
 
 
-			status.edit("正在群发 : " + success + " / " + (success + failed) + " / " + count).exec();
+            status.edit("正在群发 : " + success + " / " + (success + failed) + " / " + count).exec();
 
-		}
+        }
 
-		status.edit("正在群发 : " + success + " / " + (success + failed) + " / " + count).exec();
+        status.edit("正在群发 : " + success + " / " + (success + failed) + " / " + count).exec();
 
-	}
+    }
 
 }

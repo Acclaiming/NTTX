@@ -17,6 +17,7 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.Send;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -35,17 +36,17 @@ public class BotLog extends ConsoleLog {
 
     }
 
-    public static void log(Throwable t,String template,Object... values) {
+    public static void log(Throwable t, String template, Object... values) {
 
-		String str = StrUtil.format(template,values);
+        String str = StrUtil.format(template, values);
 
-		//new Send(Env.GROUP,str).noLog().exec();
+        //new Send(Env.GROUP,str).noLog().exec();
 
         out.println(str);
 
         if (null != t) {
 
-			out.println(parseError(t));
+            out.println(parseError(t));
 
         }
 
@@ -65,15 +66,15 @@ public class BotLog extends ConsoleLog {
 
     }
 
-    public static void info(String message,Throwable err) {
+    public static void info(String message, Throwable err) {
 
-        log.info(err,message);
+        log.info(err, message);
 
     }
 
     public static void infoWithStack(String message) {
 
-        log.info(new RuntimeException(),message);
+        log.info(new RuntimeException(), message);
 
     }
 
@@ -85,9 +86,9 @@ public class BotLog extends ConsoleLog {
 
     }
 
-    public static void warn(String message,Throwable err) {
+    public static void warn(String message, Throwable err) {
 
-        log.warn(err,message);
+        log.warn(err, message);
 
         //   sendToDeveloper(new Exception(message,err));
 
@@ -95,29 +96,29 @@ public class BotLog extends ConsoleLog {
 
     public static void warnWithStack(String message) {
 
-        log.warn(new RuntimeException(),message);
+        log.warn(new RuntimeException(), message);
 
     }
 
     public static void error(String message) {
 
         log.error(message);
-		
-		new Send(Env.LOG_CHANNEL, message).exec();
-		
+
+        new Send(Env.LOG_CHANNEL, message).exec();
+
     }
 
-    public static void error(String message,Throwable err) {
+    public static void error(String message, Throwable err) {
 
-        log.error(err,message);
+        log.error(err, message);
 
-		new Send(Env.LOG_CHANNEL, message,parseError(err)).exec();
+        new Send(Env.LOG_CHANNEL, message, parseError(err)).exec();
 
     }
 
     public static void errorWithStack(String message) {
 
-		log.error(new RuntimeException(),message);
+        log.error(new RuntimeException(), message);
 
     }
 
@@ -125,13 +126,13 @@ public class BotLog extends ConsoleLog {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        error.printStackTrace(new PrintWriter(out,true));
+        error.printStackTrace(new PrintWriter(out, true));
 
         return StrUtil.utf8Str(out);
 
     }
 
-	public static HashSet<Long> exportFailed = new HashSet<>();
+    public static HashSet<Long> exportFailed = new HashSet<>();
 
 
     public static String formatName(User u) {
@@ -141,5 +142,5 @@ public class BotLog extends ConsoleLog {
         return UserData.get(u).userName();
 
     }
-	
+
 }

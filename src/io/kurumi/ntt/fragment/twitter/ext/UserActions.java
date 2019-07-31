@@ -17,57 +17,57 @@ import twitter4j.TwitterException;
 
 public class UserActions extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerFunction("twuf","follow","unfo","mute","unmute","mute_rt","unmute_rt","block","unblock");
-		registerPayload("twuf","follow","unfo","mute","unmute","mrt","umrt","block","unblock");
+        registerFunction("twuf", "follow", "unfo", "mute", "unmute", "mute_rt", "unmute_rt", "block", "unblock");
+        registerPayload("twuf", "follow", "unfo", "mute", "unmute", "mrt", "umrt", "block", "unblock");
 
-	}
+    }
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		if (user.blocked()) {
+        if (user.blocked()) {
 
-			msg.send("你不能这么做 (为什么？)").async();
+            msg.send("你不能这么做 (为什么？)").async();
 
-			return;
+            return;
 
-		}
-		
-		requestTwitter(user,msg);
+        }
 
-	}
+        requestTwitter(user, msg);
 
-	@Override
-	public void onPayload(UserData user,Msg msg,String payload,String[] params) {
+    }
 
-		requestTwitterPayload(user,msg);
+    @Override
+    public void onPayload(UserData user, Msg msg, String payload, String[] params) {
 
-	}
+        requestTwitterPayload(user, msg);
 
-	@Override
-	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+    }
 
-		doAction(user,msg,function,params,account);
+    @Override
+    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
-	}
+        doAction(user, msg, function, params, account);
 
-	@Override
-	public void onTwitterPayload(UserData user,Msg msg,String payload,String[] params,TAuth account) {
+    }
 
-		doAction(user,msg,payload,params,account);
+    @Override
+    public void onTwitterPayload(UserData user, Msg msg, String payload, String[] params, TAuth account) {
 
-	}
+        doAction(user, msg, payload, params, account);
 
-	public void doAction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+    }
+
+    public void doAction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
         Twitter api = account.createApi();
 
-		long targetId = -1;
+        long targetId = -1;
 
         if (params.length > 0) {
 
@@ -143,241 +143,240 @@ public class UserActions extends Fragment {
 
         try {
 
-            Relationship ship = api.showFriendship(account.id,targetId);
+            Relationship ship = api.showFriendship(account.id, targetId);
 
-			if ("follow".equals(function)) 	{
+            if ("follow".equals(function)) {
 
 
-				if (ship.isSourceBlockingTarget()) {
+                if (ship.isSourceBlockingTarget()) {
 
-					msg.send("你被 " + archive.urlHtml() + " 屏蔽了").html().point(0,targetId);
+                    msg.send("你被 " + archive.urlHtml() + " 屏蔽了").html().point(0, targetId);
 
-					return;
+                    return;
 
-				} else if (ship.isSourceFollowedByTarget()) {
+                } else if (ship.isSourceFollowedByTarget()) {
 
-					msg.send("你已经关注了 " + archive.urlHtml()).html().point(0,targetId);
+                    msg.send("你已经关注了 " + archive.urlHtml()).html().point(0, targetId);
 
-					return;
+                    return;
 
-				}
+                }
 
-				try {
+                try {
 
-					api.createFriendship(targetId);
+                    api.createFriendship(targetId);
 
-					msg.send((archive.isProtected ? "已发送关注请求给 " : "已关注 ") + archive.urlHtml() + " ~").html().point(0,targetId);
+                    msg.send((archive.isProtected ? "已发送关注请求给 " : "已关注 ") + archive.urlHtml() + " ~").html().point(0, targetId);
 
-				} catch (TwitterException e) {
+                } catch (TwitterException e) {
 
-					msg.send("关注失败 :",NTT.parseTwitterException(e)).exec();
+                    msg.send("关注失败 :", NTT.parseTwitterException(e)).exec();
 
-				}
+                }
 
-			} else if ("unfo".equals(function)) {
+            } else if ("unfo".equals(function)) {
 
-				if (ship.isSourceBlockingTarget()) {
+                if (ship.isSourceBlockingTarget()) {
 
-					msg.send("你已经把 " + archive.urlHtml() + " 屏蔽了").html().point(0,targetId);
+                    msg.send("你已经把 " + archive.urlHtml() + " 屏蔽了").html().point(0, targetId);
 
-					return;
+                    return;
 
-				} else if (!ship.isSourceFollowingTarget()) {
+                } else if (!ship.isSourceFollowingTarget()) {
 
-					msg.send("你没有关注了 " + archive.urlHtml()).html().point(0,targetId);
+                    msg.send("你没有关注了 " + archive.urlHtml()).html().point(0, targetId);
 
-					return;
+                    return;
 
-				}
+                }
 
-				try {
+                try {
 
-					api.destroyFriendship(targetId);
+                    api.destroyFriendship(targetId);
 
-					msg.send("已取关 " + archive.urlHtml() + " ~").html().point(0,targetId);
+                    msg.send("已取关 " + archive.urlHtml() + " ~").html().point(0, targetId);
 
-				} catch (TwitterException e) {
+                } catch (TwitterException e) {
 
-					msg.send("取关失败 :",NTT.parseTwitterException(e)).exec();
+                    msg.send("取关失败 :", NTT.parseTwitterException(e)).exec();
 
-				}
+                }
 
-			} else if ("mute".equals(function)) {
+            } else if ("mute".equals(function)) {
 
-				if (ship.isSourceMutingTarget()) {
+                if (ship.isSourceMutingTarget()) {
 
-					msg.send("你已经停用了对 " + archive.urlHtml() + " 的通知").html().point(0,targetId);
+                    msg.send("你已经停用了对 " + archive.urlHtml() + " 的通知").html().point(0, targetId);
 
-					return;
+                    return;
 
-				}
+                }
 
-				try {
+                try {
 
-					api.createMute(targetId);
+                    api.createMute(targetId);
 
-					msg.send("已静音来自 " + archive.urlHtml() + " 的通知 ~").html().point(0,targetId);
+                    msg.send("已静音来自 " + archive.urlHtml() + " 的通知 ~").html().point(0, targetId);
 
-				} catch (TwitterException e) {
+                } catch (TwitterException e) {
 
-					msg.send("静音失败 :",NTT.parseTwitterException(e)).exec();
+                    msg.send("静音失败 :", NTT.parseTwitterException(e)).exec();
 
-				}
+                }
 
-			} else if ("unmute".equals(function)) {
+            } else if ("unmute".equals(function)) {
 
-				if (!ship.isSourceMutingTarget()) {
+                if (!ship.isSourceMutingTarget()) {
 
-					msg.send("你没有停用对 " + archive.urlHtml() + " 的通知 ~").html().point(0,targetId);
+                    msg.send("你没有停用对 " + archive.urlHtml() + " 的通知 ~").html().point(0, targetId);
 
-					return;
+                    return;
 
-				}
+                }
 
-				try {
+                try {
 
-					api.destroyMute(targetId);
+                    api.destroyMute(targetId);
 
-					msg.send("已启用对 " + archive.urlHtml() + " 的通知 ~").html().point(0,targetId);
+                    msg.send("已启用对 " + archive.urlHtml() + " 的通知 ~").html().point(0, targetId);
 
-				} catch (TwitterException e) {
+                } catch (TwitterException e) {
 
-					msg.send("启用失败 :",NTT.parseTwitterException(e)).exec();
+                    msg.send("启用失败 :", NTT.parseTwitterException(e)).exec();
 
-				}
+                }
 
-			} else if ("mute_rt".equals(function) || "mrt".equals(function)) {
+            } else if ("mute_rt".equals(function) || "mrt".equals(function)) {
 
-				if (!ship.isSourceWantRetweets()) {
+                if (!ship.isSourceWantRetweets()) {
 
-					msg.send("你已经屏蔽了 " + archive.urlHtml() + " 的转推 ~").html().point(0,targetId);
+                    msg.send("你已经屏蔽了 " + archive.urlHtml() + " 的转推 ~").html().point(0, targetId);
 
-					return;
+                    return;
 
-				}
+                }
 
-				try {
+                try {
 
-					api.updateFriendship(targetId,ship.isSourceNotificationsEnabled(),false);
+                    api.updateFriendship(targetId, ship.isSourceNotificationsEnabled(), false);
 
-					msg.send("已屏蔽 " + archive.urlHtml() + " 的转推 ~").html().point(0,targetId);
+                    msg.send("已屏蔽 " + archive.urlHtml() + " 的转推 ~").html().point(0, targetId);
 
-				} catch (TwitterException e) {
+                } catch (TwitterException e) {
 
-					msg.send("屏蔽转推失败 :",NTT.parseTwitterException(e)).exec();
+                    msg.send("屏蔽转推失败 :", NTT.parseTwitterException(e)).exec();
 
-				}
+                }
 
-			} else if ("unmute_rt".equals(function) || "umrt".equals(function)) {
+            } else if ("unmute_rt".equals(function) || "umrt".equals(function)) {
 
-				if (ship.isSourceWantRetweets()) {
+                if (ship.isSourceWantRetweets()) {
 
-					msg.send("你没有屏蔽 " + archive.urlHtml() + " 的转推 ~").html().point(0,targetId);
+                    msg.send("你没有屏蔽 " + archive.urlHtml() + " 的转推 ~").html().point(0, targetId);
 
-					return;
+                    return;
 
-				}
+                }
 
-				try {
+                try {
 
-					api.updateFriendship(targetId,ship.isSourceNotificationsEnabled(),true);
+                    api.updateFriendship(targetId, ship.isSourceNotificationsEnabled(), true);
 
-					msg.send("已取消屏蔽 " + archive.urlHtml() + " 的转推 ~").html().point(0,targetId);
+                    msg.send("已取消屏蔽 " + archive.urlHtml() + " 的转推 ~").html().point(0, targetId);
 
-				} catch (TwitterException e) {
+                } catch (TwitterException e) {
 
-					msg.send("取消屏蔽转推失败 :",NTT.parseTwitterException(e)).exec();
+                    msg.send("取消屏蔽转推失败 :", NTT.parseTwitterException(e)).exec();
 
-				}
+                }
 
-			} else if ("block".equals(function)) {
+            } else if ("block".equals(function)) {
 
-				if (ship.isSourceBlockingTarget()) {
+                if (ship.isSourceBlockingTarget()) {
 
-					msg.send("你已经把 " + archive.urlHtml() + " 屏蔽了 ~").html().point(0,targetId);
+                    msg.send("你已经把 " + archive.urlHtml() + " 屏蔽了 ~").html().point(0, targetId);
 
-					return;
+                    return;
 
-				}
+                }
 
-				try {
+                try {
 
-					api.createBlock(targetId);
+                    api.createBlock(targetId);
 
-					TrackTask.IdsList fo = TrackTask.followers.getById(account.id);
+                    TrackTask.IdsList fo = TrackTask.followers.getById(account.id);
 
-					fo.ids.remove(targetId);
+                    fo.ids.remove(targetId);
 
-					TrackTask.followers.setById(account.id,fo);
+                    TrackTask.followers.setById(account.id, fo);
 
-					msg.send("已屏蔽 " + archive.urlHtml() + " ~").html().point(0,targetId);
+                    msg.send("已屏蔽 " + archive.urlHtml() + " ~").html().point(0, targetId);
 
-				}  catch (TwitterException e) {
+                } catch (TwitterException e) {
 
-					msg.send("屏蔽失败 :",NTT.parseTwitterException(e)).exec();
+                    msg.send("屏蔽失败 :", NTT.parseTwitterException(e)).exec();
 
-				}
+                }
 
-			} else if ("unblock".equals(function)) {
+            } else if ("unblock".equals(function)) {
 
-				if (!ship.isSourceBlockingTarget()) {
+                if (!ship.isSourceBlockingTarget()) {
 
-					msg.send("你没有屏蔽 " + archive.urlHtml() + " ~").html().point(0,targetId);
+                    msg.send("你没有屏蔽 " + archive.urlHtml() + " ~").html().point(0, targetId);
 
-					return;
+                    return;
 
-				}
+                }
 
-				try {
+                try {
 
-					api.destroyBlock(targetId);
+                    api.destroyBlock(targetId);
 
-					msg.send("已解除屏蔽 " + archive.urlHtml() + " ~").html().point(0,targetId);
+                    msg.send("已解除屏蔽 " + archive.urlHtml() + " ~").html().point(0, targetId);
 
-				}  catch (TwitterException e) {
+                } catch (TwitterException e) {
 
-					msg.send("解除屏蔽失败 :",NTT.parseTwitterException(e)).exec();
+                    msg.send("解除屏蔽失败 :", NTT.parseTwitterException(e)).exec();
 
-				}
+                }
 
-			} else if ("twuf".equals(function)) {
+            } else if ("twuf".equals(function)) {
 
-				if (ship.isSourceBlockingTarget()) {
+                if (ship.isSourceBlockingTarget()) {
 
-					msg.send("你已经把 " + archive.urlHtml() + " 屏蔽了 ~").html().point(0,targetId);
+                    msg.send("你已经把 " + archive.urlHtml() + " 屏蔽了 ~").html().point(0, targetId);
 
-					return;
+                    return;
 
-				}
+                }
 
-				try {
+                try {
 
-					api.createBlock(targetId);
+                    api.createBlock(targetId);
 
-					api.destroyBlock(targetId);
+                    api.destroyBlock(targetId);
 
-					TrackTask.IdsList fo = TrackTask.followers.getById(account.id);
+                    TrackTask.IdsList fo = TrackTask.followers.getById(account.id);
 
-					fo.ids.remove(targetId);
+                    fo.ids.remove(targetId);
 
-					TrackTask.followers.setById(account.id,fo);
+                    TrackTask.followers.setById(account.id, fo);
 
-					msg.send("已双向取关 " + archive.urlHtml() + " ~").html().point(0,targetId);
+                    msg.send("已双向取关 " + archive.urlHtml() + " ~").html().point(0, targetId);
 
-				}  catch (TwitterException e) {
+                } catch (TwitterException e) {
 
-					msg.send("双向取关失败 :",NTT.parseTwitterException(e)).exec();
+                    msg.send("双向取关失败 :", NTT.parseTwitterException(e)).exec();
 
-				}
+                }
 
 
-			}
-
+            }
 
 
         } catch (TwitterException e) {
 
-            msg.send("读取对方状态错误 :",NTT.parseTwitterException(e)).exec();
+            msg.send("读取对方状态错误 :", NTT.parseTwitterException(e)).exec();
 
         }
 

@@ -8,6 +8,7 @@ import com.pengrad.telegrambot.response.BaseResponse;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.request.Send;
+
 import java.util.Date;
 import java.util.TimerTask;
 
@@ -17,7 +18,7 @@ public class Context {
     public long targetChatId = -1;
     private Chat chat;
 
-    public Context(Fragment fragment,Chat chat) {
+    public Context(Fragment fragment, Chat chat) {
 
         this.fragment = fragment;
         this.chat = chat;
@@ -43,7 +44,7 @@ public class Context {
         return chat.type() == Chat.Type.group || chat.type() == Chat.Type.supergroup;
     }
 
-		public boolean isPublicGroup() {
+    public boolean isPublicGroup() {
         return chat.username() != null;
     }
 
@@ -55,9 +56,9 @@ public class Context {
         return chat.type() == Chat.Type.channel;
     }
 
-     public Send send(String... msg) {
+    public Send send(String... msg) {
 
-        return new Send(fragment,chatId(),msg);
+        return new Send(fragment, chatId(), msg);
 
     }
 

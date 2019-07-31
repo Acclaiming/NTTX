@@ -42,7 +42,8 @@ public class Contact implements Serializable {
 
         Contact contact = (Contact) o;
 
-        if (phone_number != null ? !phone_number.equals(contact.phone_number) : contact.phone_number != null) return false;
+        if (phone_number != null ? !phone_number.equals(contact.phone_number) : contact.phone_number != null)
+            return false;
         if (first_name != null ? !first_name.equals(contact.first_name) : contact.first_name != null) return false;
         if (last_name != null ? !last_name.equals(contact.last_name) : contact.last_name != null) return false;
         if (user_id != null ? !user_id.equals(contact.user_id) : contact.user_id != null) return false;

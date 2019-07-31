@@ -14,36 +14,37 @@ import twitter4j.TwitterException;
 
 public class StatusGetter extends Fragment {
 
-	public static String PAYLOAD_SHOW_STATUS = "status";
+    public static String PAYLOAD_SHOW_STATUS = "status";
 
-	@Override
-	public void init(BotFragment origin) {
-		
-		super.init(origin);
-		
-		registerFunction("status");
-		
-		registerPayload("status");
-		
-	}
-	@Override
-	public void onPayload(UserData user,Msg msg,String payload,String[] params) {
-		
-		if (user.blocked()) {
+    @Override
+    public void init(BotFragment origin) {
 
-			msg.send("你不能这么做 (为什么？)").async();
+        super.init(origin);
 
-			return;
+        registerFunction("status");
 
-		}
-		
-		requestTwitterPayload(user,msg);
+        registerPayload("status");
 
-	}
+    }
 
-	@Override
-	public void onTwitterPayload(UserData user,Msg msg,String payload,String[] params,TAuth account) {
-		
+    @Override
+    public void onPayload(UserData user, Msg msg, String payload, String[] params) {
+
+        if (user.blocked()) {
+
+            msg.send("你不能这么做 (为什么？)").async();
+
+            return;
+
+        }
+
+        requestTwitterPayload(user, msg);
+
+    }
+
+    @Override
+    public void onTwitterPayload(UserData user, Msg msg, String payload, String[] params, TAuth account) {
+
         Long statusId = NumberUtil.parseLong(params[0]);
 
         if (account == null) {
@@ -85,26 +86,25 @@ public class StatusGetter extends Fragment {
                     msg.send(NTT.parseTwitterException(e)).publicFailed();
 
                 }
-				
-			}
 
-		}
+            }
 
-	}
+        }
 
+    }
 
 
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		if (user.blocked()) {
+        if (user.blocked()) {
 
-			msg.send("你不能这么做 (为什么？)").async();
+            msg.send("你不能这么做 (为什么？)").async();
 
-			return;
+            return;
 
-		}
-		
+        }
+
         if (params.length != 1) {
 
             msg.send("用法 /status <推文链接|ID>").publicFailed();
@@ -120,19 +120,19 @@ public class StatusGetter extends Fragment {
             return;
 
         }
-		
-		requestTwitter(user,msg);
 
-	}
+        requestTwitter(user, msg);
 
-	@Override
-	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
-		
+    }
+
+    @Override
+    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
+
         Twitter api = account.createApi();
 
         msg.sendTyping();
-		
-		Long statusId = NTT.parseStatusId(params[0]);
+
+        Long statusId = NTT.parseStatusId(params[0]);
 
         if (StatusArchive.contains(statusId) && !msg.isPrivate()) {
 

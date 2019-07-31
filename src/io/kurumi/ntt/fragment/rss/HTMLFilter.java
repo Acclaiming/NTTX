@@ -1,9 +1,11 @@
 package io.kurumi.ntt.fragment.rss;
 
 import cn.hutool.log.*;
+
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.*;
+
 import cn.hutool.core.util.StrUtil;
 import io.kurumi.telegraph.model.NodeElement;
 import io.kurumi.telegraph.model.Node;
@@ -12,484 +14,497 @@ import io.kurumi.telegraph.Telegraph;
 
 public final class HTMLFilter {
 
-	public static final int REGEX_FLAGS_SI = Pattern.CASE_INSENSITIVE | Pattern.DOTALL;
-	static final Pattern P_TAGS = Pattern.compile("<(.*?)>",Pattern.DOTALL);
-	public static final Pattern P_END_TAG = Pattern.compile("^/([a-z0-9]+)",REGEX_FLAGS_SI);
-	public static final Pattern P_START_TAG = Pattern.compile("^([a-z0-9]+)(.*?)(/?)$",REGEX_FLAGS_SI);
-	public static final Pattern P_QUOTED_ATTRIBUTES = Pattern.compile("([a-z0-9]+)=([\"'])(.*?)\\2",REGEX_FLAGS_SI);
-	public static final Pattern P_UNQUOTED_ATTRIBUTES = Pattern.compile("([a-z0-9]+)(=)([^\"\\s']+)",REGEX_FLAGS_SI);
-	public static final Pattern P_END_ARROW = Pattern.compile("^>");
-	public static final Pattern P_BODY_TO_END = Pattern.compile("<([^>]*?)(?=<|$)");
-	public static final Pattern P_XML_CONTENT = Pattern.compile("(^|>)([^<]*?)(?=>)");
+    public static final int REGEX_FLAGS_SI = Pattern.CASE_INSENSITIVE | Pattern.DOTALL;
+    static final Pattern P_TAGS = Pattern.compile("<(.*?)>", Pattern.DOTALL);
+    public static final Pattern P_END_TAG = Pattern.compile("^/([a-z0-9]+)", REGEX_FLAGS_SI);
+    public static final Pattern P_START_TAG = Pattern.compile("^([a-z0-9]+)(.*?)(/?)$", REGEX_FLAGS_SI);
+    public static final Pattern P_QUOTED_ATTRIBUTES = Pattern.compile("([a-z0-9]+)=([\"'])(.*?)\\2", REGEX_FLAGS_SI);
+    public static final Pattern P_UNQUOTED_ATTRIBUTES = Pattern.compile("([a-z0-9]+)(=)([^\"\\s']+)", REGEX_FLAGS_SI);
+    public static final Pattern P_END_ARROW = Pattern.compile("^>");
+    public static final Pattern P_BODY_TO_END = Pattern.compile("<([^>]*?)(?=<|$)");
+    public static final Pattern P_XML_CONTENT = Pattern.compile("(^|>)([^<]*?)(?=>)");
 
-	// @xxx could grow large... maybe use sesat's ReferenceMap
-	private static final ConcurrentMap<String, Pattern> P_REMOVE_PAIR_BLANKS = new ConcurrentHashMap<String, Pattern>();
-	private static final ConcurrentMap<String, Pattern> P_REMOVE_SELF_BLANKS = new ConcurrentHashMap<String, Pattern>();
+    // @xxx could grow large... maybe use sesat's ReferenceMap
+    private static final ConcurrentMap<String, Pattern> P_REMOVE_PAIR_BLANKS = new ConcurrentHashMap<String, Pattern>();
+    private static final ConcurrentMap<String, Pattern> P_REMOVE_SELF_BLANKS = new ConcurrentHashMap<String, Pattern>();
 
-	/** set of allowed html elements, along with allowed attributes for each element **/
-	private final Map<String, List<String>> vAllowed;
-	/** counts of open tags for each (allowable) html element **/
-	private final Map<String, Integer> vTagCounts = new HashMap<String, Integer>();
+    /**
+     * set of allowed html elements, along with allowed attributes for each element
+     **/
+    private final Map<String, List<String>> vAllowed;
+    /**
+     * counts of open tags for each (allowable) html element
+     **/
+    private final Map<String, Integer> vTagCounts = new HashMap<String, Integer>();
 
-	/** html elements which must always be self-closing (e.g. "<img />") **/
-	private final String[] vSelfClosingTags;
-	/** html elements which must always have separate opening and closing tags (e.g. "<b></b>") **/
-	private final String[] vNeedClosingTags;
-	private final String[] vRemoveBlanks;
+    /**
+     * html elements which must always be self-closing (e.g. "<img />")
+     **/
+    private final String[] vSelfClosingTags;
+    /**
+     * html elements which must always have separate opening and closing tags (e.g. "<b></b>")
+     **/
+    private final String[] vNeedClosingTags;
+    private final String[] vRemoveBlanks;
 
-	private final boolean encodeQuotes;
+    private final boolean encodeQuotes;
 
-	public HTMLFilter(boolean noImg) {
+    public HTMLFilter(boolean noImg) {
 
-		final ArrayList<String> no_atts = new ArrayList<String>();
+        final ArrayList<String> no_atts = new ArrayList<String>();
 
-		vAllowed = new HashMap<String, List<String>>();
+        vAllowed = new HashMap<String, List<String>>();
 
-		final ArrayList<String> a_atts = new ArrayList<String>();
+        final ArrayList<String> a_atts = new ArrayList<String>();
 
-		a_atts.add("href");
+        a_atts.add("href");
 
-		vAllowed.put("a",a_atts);
+        vAllowed.put("a", a_atts);
 
-		if (!noImg) {
+        if (!noImg) {
 
-			final ArrayList<String> img_atts = new ArrayList<String>();
+            final ArrayList<String> img_atts = new ArrayList<String>();
 
-			img_atts.add("src");
+            img_atts.add("src");
 
-			vAllowed.put("img",img_atts);
+            vAllowed.put("img", img_atts);
 
-			vAllowed.put("br",no_atts);
+            vAllowed.put("br", no_atts);
 
-		}
+        }
 
 
-		vAllowed.put("b",no_atts);
-		vAllowed.put("i",no_atts);
-		vAllowed.put("pre",no_atts);
-		vAllowed.put("code",no_atts);
-		vAllowed.put("em",no_atts);
+        vAllowed.put("b", no_atts);
+        vAllowed.put("i", no_atts);
+        vAllowed.put("pre", no_atts);
+        vAllowed.put("code", no_atts);
+        vAllowed.put("em", no_atts);
 
-		vSelfClosingTags = new String[] { "img" , "br" };
-		vNeedClosingTags = new String[] { "a", "b", "code","pre", "i", "em" };
-		vRemoveBlanks = new String[] { "a", "b", "pre","code", "i", "em" };
-		encodeQuotes = true;
-	}
+        vSelfClosingTags = new String[]{"img", "br"};
+        vNeedClosingTags = new String[]{"a", "b", "code", "pre", "i", "em"};
+        vRemoveBlanks = new String[]{"a", "b", "pre", "code", "i", "em"};
+        encodeQuotes = true;
+    }
 
-	public String filter(final String input,String host) {
+    public String filter(final String input, String host) {
 
-		vTagCounts.clear();
+        vTagCounts.clear();
 
-		String s = input;
+        String s = input;
 
-		s = balanceHTML(s);
-		s = checkTags(s,host);
-		s = processRemoveBlanks(s);
+        s = balanceHTML(s);
+        s = checkTags(s, host);
+        s = processRemoveBlanks(s);
 
-		return s;
-	}
+        return s;
+    }
 
-	private String balanceHTML(String s) {
+    private String balanceHTML(String s) {
 
-		s = regexReplace(P_END_ARROW,"",s);
-		s = regexReplace(P_BODY_TO_END,"<$1>",s);
-		s = regexReplace(P_XML_CONTENT,"$1<$2",s);
+        s = regexReplace(P_END_ARROW, "", s);
+        s = regexReplace(P_BODY_TO_END, "<$1>", s);
+        s = regexReplace(P_XML_CONTENT, "$1<$2", s);
 
-		return s;
-	}
+        return s;
+    }
 
-	public List<Node> formatTelegraph(String input,String host) {
+    public List<Node> formatTelegraph(String input, String host) {
 
-		// BotLog.error(input);
+        // BotLog.error(input);
 
-		String s = input.replaceAll("\n","<br />");
+        String s = input.replaceAll("\n", "<br />");
 
-		Matcher m = P_TAGS.matcher(s);
+        Matcher m = P_TAGS.matcher(s);
 
-		LinkedList<Node> content = new LinkedList<>();
+        LinkedList<Node> content = new LinkedList<>();
 
-		NodeElement node = null;
+        NodeElement node = null;
 
-		int end = 0;
+        int end = 0;
 
-		while (m.find()) {
+        while (m.find()) {
 
-			int start = m.start(0);
+            int start = m.start(0);
 
-			if (start != 0) {
+            if (start != 0) {
 
-				final String str = s.substring(end,start);
+                final String str = s.substring(end, start);
 
-				if (node == null) {
+                if (node == null) {
 
-					content.add(new Node() {{ text = str; }});
+                    content.add(new Node() {{
+                        text = str;
+                    }});
 
-				} else if (!"img".equals(node.tag)) {
+                } else if (!"img".equals(node.tag)) {
 
-					if (node.children == null) node.children = new LinkedList<>();
+                    if (node.children == null) node.children = new LinkedList<>();
 
-					node.children.add(new Node() {{ text = str; }});
-				}
+                    node.children.add(new Node() {{
+                        text = str;
+                    }});
+                }
 
-			}
+            }
 
-			end = m.end(0);
+            end = m.end(0);
 
-			String replaceStr = m.group(1);
+            String replaceStr = m.group(1);
 
-			NodeElement newNode = processNode(node,replaceStr,host);
+            NodeElement newNode = processNode(node, replaceStr, host);
 
-			if (node != null) {
+            if (node != null) {
 
-				if (newNode == null) {
+                if (newNode == null) {
 
-					if (node.superNode == null) {
+                    if (node.superNode == null) {
 
-						if ("a".equals(node.tag) && node.children != null) {
+                        if ("a".equals(node.tag) && node.children != null) {
 
-							for (Node ch : node.children) content.add(ch);
+                            for (Node ch : node.children) content.add(ch);
 
-						} else {
+                        } else {
 
-							content.add(node);
+                            content.add(node);
 
-						}
+                        }
 
-						node = null;
+                        node = null;
 
-					} else {
+                    } else {
 
-						NodeElement superNode = node.superNode;
+                        NodeElement superNode = node.superNode;
 
-						node.superNode = null;
+                        node.superNode = null;
 
-						if (superNode.children == null) superNode.children = new LinkedList<>();
+                        if (superNode.children == null) superNode.children = new LinkedList<>();
 
-						superNode.children.add(node);
+                        superNode.children.add(node);
 
-						node = superNode;
+                        node = superNode;
 
-					}
+                    }
 
-				} else {
+                } else {
 
-					if (newNode.end) {
-					
-						if (node.children == null) node.children = new LinkedList<>();
+                    if (newNode.end) {
 
-						node.children.add(newNode);
-						
-					} else {
-						
-						newNode.superNode = node;
+                        if (node.children == null) node.children = new LinkedList<>();
 
-						node = newNode;
-						
-					}
+                        node.children.add(newNode);
 
-				}
+                    } else {
 
-			} else if (newNode != null) {
+                        newNode.superNode = node;
 
-				if (newNode.end) {
+                        node = newNode;
 
-					newNode.end = null;
+                    }
 
-					content.add(newNode);
+                }
 
-				} else {
+            } else if (newNode != null) {
 
-					node = newNode;
+                if (newNode.end) {
 
-				}
+                    newNode.end = null;
 
-			}
+                    content.add(newNode);
 
-		}
+                } else {
 
-		if (node != null) {
+                    node = newNode;
 
-			content.add(node);
+                }
 
-		}
+            }
 
-		if (s.length() != end) {
+        }
 
-			final String str = s.substring(end);
+        if (node != null) {
 
-			content.add(new Node() {{ text = str; }});
+            content.add(node);
 
-		}
+        }
 
-		// BotLog.error(Telegraph.parseContent(content).toStringPretty());
+        if (s.length() != end) {
 
-		return content;
+            final String str = s.substring(end);
 
-	}
+            content.add(new Node() {{
+                text = str;
+            }});
 
-	private NodeElement processNode(NodeElement node,final String s,String host) {
+        }
 
-		Matcher m = P_END_TAG.matcher(s);
+        // BotLog.error(Telegraph.parseContent(content).toStringPretty());
 
-		if (m.find()) {
+        return content;
 
-			return null;
+    }
 
-		}
+    private NodeElement processNode(NodeElement node, final String s, String host) {
 
-		m = P_START_TAG.matcher(s);
+        Matcher m = P_END_TAG.matcher(s);
 
-		if (m.find()) {
+        if (m.find()) {
 
-			final String name = m.group(1).toLowerCase();
-			final String body = m.group(2);
-			String ending = m.group(3);
+            return null;
 
-			// debug( "in a starting tag, name='" + name + "'; body='" + body + "'; ending='" + ending + "'" )
+        }
 
-			final HashMap<String,String> params = new HashMap<>();
+        m = P_START_TAG.matcher(s);
 
-			final Matcher m2 = P_QUOTED_ATTRIBUTES.matcher(body);
-			final Matcher m3 = P_UNQUOTED_ATTRIBUTES.matcher(body);
-			final List<String> paramNames = new ArrayList<String>();
-			final List<String> paramValues = new ArrayList<String>();
-			while (m2.find()) {
-				paramNames.add(m2.group(1)); // ([a-z0-9]+)
-				paramValues.add(m2.group(3)); // (.*?)
-			}
-			while (m3.find()) {
-				paramNames.add(m3.group(1)); // ([a-z0-9]+)
-				paramValues.add(m3.group(3)); // ([^\"\\s']+)
-			}
+        if (m.find()) {
 
-			String paramName, paramValue;
-			for (int ii = 0; ii < paramNames.size(); ii++) {
-				paramName = paramNames.get(ii).toLowerCase();
-				paramValue = paramValues.get(ii);
+            final String name = m.group(1).toLowerCase();
+            final String body = m.group(2);
+            String ending = m.group(3);
 
-				//BotLog.error("paramName='" + paramName + "'");
-				//BotLog.error("paramValue='" + paramValue + "'");
-				//BotLog.error("allowed? " + vAllowed.get(name).contains(paramName));
+            // debug( "in a starting tag, name='" + name + "'; body='" + body + "'; ending='" + ending + "'" )
 
-				if (allowedAttribute(name,paramName)) {
+            final HashMap<String, String> params = new HashMap<>();
 
-					if (StrUtil.isBlank(paramValue)) return null;
+            final Matcher m2 = P_QUOTED_ATTRIBUTES.matcher(body);
+            final Matcher m3 = P_UNQUOTED_ATTRIBUTES.matcher(body);
+            final List<String> paramNames = new ArrayList<String>();
+            final List<String> paramValues = new ArrayList<String>();
+            while (m2.find()) {
+                paramNames.add(m2.group(1)); // ([a-z0-9]+)
+                paramValues.add(m2.group(3)); // (.*?)
+            }
+            while (m3.find()) {
+                paramNames.add(m3.group(1)); // ([a-z0-9]+)
+                paramValues.add(m3.group(3)); // ([^\"\\s']+)
+            }
 
-					if (!paramValue.startsWith("http")) {
+            String paramName, paramValue;
+            for (int ii = 0; ii < paramNames.size(); ii++) {
+                paramName = paramNames.get(ii).toLowerCase();
+                paramValue = paramValues.get(ii);
 
-						if (paramValue.startsWith("/")) {
+                //BotLog.error("paramName='" + paramName + "'");
+                //BotLog.error("paramValue='" + paramValue + "'");
+                //BotLog.error("allowed? " + vAllowed.get(name).contains(paramName));
 
-							paramValue = paramValue.substring(1);
+                if (allowedAttribute(name, paramName)) {
 
-						}
+                    if (StrUtil.isBlank(paramValue)) return null;
 
-						paramValue = host + "/" + paramValue;
+                    if (!paramValue.startsWith("http")) {
 
+                        if (paramValue.startsWith("/")) {
 
-					}
+                            paramValue = paramValue.substring(1);
 
-					params.put(paramName,paramValue);
+                        }
 
-				}
+                        paramValue = host + "/" + paramValue;
 
-			}
 
-			if (inArray(name,vSelfClosingTags)) {
-				ending = " /";
-			}
+                    }
 
-			if (inArray(name,vNeedClosingTags)) {
-				ending = "";
-			}
+                    params.put(paramName, paramValue);
 
-			if (ending == null || ending.length() < 1) {
-			} else {
+                }
 
-				ending = " /";
+            }
 
-			}
+            if (inArray(name, vSelfClosingTags)) {
+                ending = " /";
+            }
 
-			final Boolean isEnd = " /".equals(ending);
+            if (inArray(name, vNeedClosingTags)) {
+                ending = "";
+            }
 
-			return new NodeElement() {{
+            if (ending == null || ending.length() < 1) {
+            } else {
 
-					tag = name;
-					attrs = params.isEmpty() ? null : params;
-					end = isEnd;
+                ending = " /";
 
-				}};
+            }
 
-		} else {
+            final Boolean isEnd = " /".equals(ending);
 
-			return null;
+            return new NodeElement() {{
 
-		}
+                tag = name;
+                attrs = params.isEmpty() ? null : params;
+                end = isEnd;
 
-	}
+            }};
 
-	private String checkTags(String s,String host) {
+        } else {
 
-		Matcher m = P_TAGS.matcher(s);
+            return null;
 
-		final StringBuffer buf = new StringBuffer();
-		while (m.find()) {
-			String replaceStr = m.group(1);
-			replaceStr = processTag(replaceStr,host);
-			m.appendReplacement(buf,Matcher.quoteReplacement(replaceStr));
-		}
-		m.appendTail(buf);
+        }
 
-		s = buf.toString();
+    }
 
-		// these get tallied in processTag
-		// (remember to reset before subsequent calls to filter method)
-		for (String key : vTagCounts.keySet()) {
-			for (int ii = 0; ii < vTagCounts.get(key); ii++) {
-				s += "</" + key + ">";
-			}
-		}
+    private String checkTags(String s, String host) {
 
-		return s;
-	}
+        Matcher m = P_TAGS.matcher(s);
 
-	private String processRemoveBlanks(final String s) {
-		String result = s;
-		for (String tag : vRemoveBlanks) {
-			if (!P_REMOVE_PAIR_BLANKS.containsKey(tag)) {
-				P_REMOVE_PAIR_BLANKS.putIfAbsent(tag,Pattern.compile("<" + tag + "(\\s[^>]*)?></" + tag + ">"));
-			}
-			result = regexReplace(P_REMOVE_PAIR_BLANKS.get(tag),"",result);
-			if (!P_REMOVE_SELF_BLANKS.containsKey(tag)) {
-				P_REMOVE_SELF_BLANKS.putIfAbsent(tag,Pattern.compile("<" + tag + "(\\s[^>]*)?/>"));
-			}
-			result = regexReplace(P_REMOVE_SELF_BLANKS.get(tag),"",result);
-		}
+        final StringBuffer buf = new StringBuffer();
+        while (m.find()) {
+            String replaceStr = m.group(1);
+            replaceStr = processTag(replaceStr, host);
+            m.appendReplacement(buf, Matcher.quoteReplacement(replaceStr));
+        }
+        m.appendTail(buf);
 
-		return result;
-	}
+        s = buf.toString();
 
-	private static String regexReplace(final Pattern regex_pattern,final String replacement,final String s) {
-		Matcher m = regex_pattern.matcher(s);
-		return m.replaceAll(replacement);
-	}
+        // these get tallied in processTag
+        // (remember to reset before subsequent calls to filter method)
+        for (String key : vTagCounts.keySet()) {
+            for (int ii = 0; ii < vTagCounts.get(key); ii++) {
+                s += "</" + key + ">";
+            }
+        }
 
-	private String processTag(final String s,String host) {
-		// ending tags
-		Matcher m = P_END_TAG.matcher(s);
-		if (m.find()) {
-			final String name = m.group(1).toLowerCase();
-			if (allowed(name)) {
-				if (false == inArray(name,vSelfClosingTags)) {
-					if (vTagCounts.containsKey(name)) {
-						vTagCounts.put(name,vTagCounts.get(name) - 1);
-						return "</" + name + ">";
-					}
-				}
-			} else if ("p".equals(name)) {
+        return s;
+    }
 
-				return "<br /><br />";
+    private String processRemoveBlanks(final String s) {
+        String result = s;
+        for (String tag : vRemoveBlanks) {
+            if (!P_REMOVE_PAIR_BLANKS.containsKey(tag)) {
+                P_REMOVE_PAIR_BLANKS.putIfAbsent(tag, Pattern.compile("<" + tag + "(\\s[^>]*)?></" + tag + ">"));
+            }
+            result = regexReplace(P_REMOVE_PAIR_BLANKS.get(tag), "", result);
+            if (!P_REMOVE_SELF_BLANKS.containsKey(tag)) {
+                P_REMOVE_SELF_BLANKS.putIfAbsent(tag, Pattern.compile("<" + tag + "(\\s[^>]*)?/>"));
+            }
+            result = regexReplace(P_REMOVE_SELF_BLANKS.get(tag), "", result);
+        }
 
-			}
-		}
+        return result;
+    }
 
-		// starting tags
-		m = P_START_TAG.matcher(s);
-		if (m.find()) {
-			final String name = m.group(1).toLowerCase();
-			final String body = m.group(2);
-			String ending = m.group(3);
+    private static String regexReplace(final Pattern regex_pattern, final String replacement, final String s) {
+        Matcher m = regex_pattern.matcher(s);
+        return m.replaceAll(replacement);
+    }
 
-			// debug( "in a starting tag, name='" + name + "'; body='" + body + "'; ending='" + ending + "'" );
-			if (allowed(name)) {
-				String params = "";
+    private String processTag(final String s, String host) {
+        // ending tags
+        Matcher m = P_END_TAG.matcher(s);
+        if (m.find()) {
+            final String name = m.group(1).toLowerCase();
+            if (allowed(name)) {
+                if (false == inArray(name, vSelfClosingTags)) {
+                    if (vTagCounts.containsKey(name)) {
+                        vTagCounts.put(name, vTagCounts.get(name) - 1);
+                        return "</" + name + ">";
+                    }
+                }
+            } else if ("p".equals(name)) {
 
-				final Matcher m2 = P_QUOTED_ATTRIBUTES.matcher(body);
-				final Matcher m3 = P_UNQUOTED_ATTRIBUTES.matcher(body);
-				final List<String> paramNames = new ArrayList<String>();
-				final List<String> paramValues = new ArrayList<String>();
-				while (m2.find()) {
-					paramNames.add(m2.group(1)); // ([a-z0-9]+)
-					paramValues.add(m2.group(3)); // (.*?)
-				}
-				while (m3.find()) {
-					paramNames.add(m3.group(1)); // ([a-z0-9]+)
-					paramValues.add(m3.group(3)); // ([^\"\\s']+)
-				}
+                return "<br /><br />";
 
-				String paramName, paramValue;
-				for (int ii = 0; ii < paramNames.size(); ii++) {
-					paramName = paramNames.get(ii).toLowerCase();
-					paramValue = paramValues.get(ii);
+            }
+        }
 
-					// debug( "paramName='" + paramName + "'" );
-					// debug( "paramValue='" + paramValue + "'" );
-					// debug( "allowed? " + vAllowed.get( name ).contains( paramName ) );
+        // starting tags
+        m = P_START_TAG.matcher(s);
+        if (m.find()) {
+            final String name = m.group(1).toLowerCase();
+            final String body = m.group(2);
+            String ending = m.group(3);
 
-					if (allowedAttribute(name,paramName)) {
+            // debug( "in a starting tag, name='" + name + "'; body='" + body + "'; ending='" + ending + "'" );
+            if (allowed(name)) {
+                String params = "";
 
-						if (StrUtil.isBlank(paramValue)) return "";
+                final Matcher m2 = P_QUOTED_ATTRIBUTES.matcher(body);
+                final Matcher m3 = P_UNQUOTED_ATTRIBUTES.matcher(body);
+                final List<String> paramNames = new ArrayList<String>();
+                final List<String> paramValues = new ArrayList<String>();
+                while (m2.find()) {
+                    paramNames.add(m2.group(1)); // ([a-z0-9]+)
+                    paramValues.add(m2.group(3)); // (.*?)
+                }
+                while (m3.find()) {
+                    paramNames.add(m3.group(1)); // ([a-z0-9]+)
+                    paramValues.add(m3.group(3)); // ([^\"\\s']+)
+                }
 
-						if (!paramValue.startsWith("http")) {
+                String paramName, paramValue;
+                for (int ii = 0; ii < paramNames.size(); ii++) {
+                    paramName = paramNames.get(ii).toLowerCase();
+                    paramValue = paramValues.get(ii);
 
-							if (paramValue.startsWith("/")) {
+                    // debug( "paramName='" + paramName + "'" );
+                    // debug( "paramValue='" + paramValue + "'" );
+                    // debug( "allowed? " + vAllowed.get( name ).contains( paramName ) );
 
-								paramValue = paramValue.substring(1);
+                    if (allowedAttribute(name, paramName)) {
 
-							}
+                        if (StrUtil.isBlank(paramValue)) return "";
 
-							paramValue = host + "/" + paramValue;
+                        if (!paramValue.startsWith("http")) {
 
-						}
+                            if (paramValue.startsWith("/")) {
 
-						params += " " + paramName + "=\"" + paramValue + "\"";
+                                paramValue = paramValue.substring(1);
 
+                            }
 
+                            paramValue = host + "/" + paramValue;
 
-					}
+                        }
 
-				}
+                        params += " " + paramName + "=\"" + paramValue + "\"";
 
-				if (inArray(name,vSelfClosingTags)) {
-					ending = " /";
-				}
 
-				if (inArray(name,vNeedClosingTags)) {
-					ending = "";
-				}
+                    }
 
-				if (ending == null || ending.length() < 1) {
-					if (vTagCounts.containsKey(name)) {
-						vTagCounts.put(name,vTagCounts.get(name) + 1);
-					} else {
-						vTagCounts.put(name,1);
-					}
-				} else {
-					ending = " /";
-				}
-				return "<" + name + params + ending + ">";
-			} else {
-				return "";
-			}
-		}
+                }
 
-		return "";
-	}
+                if (inArray(name, vSelfClosingTags)) {
+                    ending = " /";
+                }
 
-	private static boolean inArray(final String s,final String[] array) {
-		for (String item : array) {
-			if (item != null && item.equals(s)) {
-				return true;
-			}
-		}
-		return false;
-	}
+                if (inArray(name, vNeedClosingTags)) {
+                    ending = "";
+                }
 
-	private boolean allowed(final String name) {
-		return (vAllowed.isEmpty() || vAllowed.containsKey(name));
-	}
+                if (ending == null || ending.length() < 1) {
+                    if (vTagCounts.containsKey(name)) {
+                        vTagCounts.put(name, vTagCounts.get(name) + 1);
+                    } else {
+                        vTagCounts.put(name, 1);
+                    }
+                } else {
+                    ending = " /";
+                }
+                return "<" + name + params + ending + ">";
+            } else {
+                return "";
+            }
+        }
 
-	private boolean allowedAttribute(final String name,final String paramName) {
-		return allowed(name) && (vAllowed.isEmpty() || vAllowed.get(name).contains(paramName));
-	}
+        return "";
+    }
+
+    private static boolean inArray(final String s, final String[] array) {
+        for (String item : array) {
+            if (item != null && item.equals(s)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean allowed(final String name) {
+        return (vAllowed.isEmpty() || vAllowed.containsKey(name));
+    }
+
+    private boolean allowedAttribute(final String name, final String paramName) {
+        return allowed(name) && (vAllowed.isEmpty() || vAllowed.get(name).contains(paramName));
+    }
 }
 

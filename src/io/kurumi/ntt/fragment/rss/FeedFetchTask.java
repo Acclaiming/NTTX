@@ -8,8 +8,10 @@ import com.rometools.rome.feed.synd.*;
 import com.rometools.rome.io.*;
 import io.kurumi.ntt.model.request.*;
 import io.kurumi.ntt.utils.*;
+
 import java.io.*;
 import java.util.*;
+
 import io.kurumi.ntt.*;
 import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.fragment.bots.*;
@@ -18,310 +20,309 @@ import com.pengrad.telegrambot.response.GetChatResponse;
 
 public class FeedFetchTask extends TimerTask {
 
-	public static Timer rssTimer = new Timer();
+    public static Timer rssTimer = new Timer();
 
-	public static FeedFetchTask INSTANCE = new FeedFetchTask();
+    public static FeedFetchTask INSTANCE = new FeedFetchTask();
 
-	public static void start() {
+    public static void start() {
 
-		rssTimer.schedule(INSTANCE,new Date(),5 * 60 * 1000);
+        rssTimer.schedule(INSTANCE, new Date(), 5 * 60 * 1000);
 
-		for (RssSub.ChannelRss info : RssSub.channel.getAll()) {
+        for (RssSub.ChannelRss info : RssSub.channel.getAll()) {
 
-			BotFragment bot = Launcher.INSTANCE;
+            BotFragment bot = Launcher.INSTANCE;
 
-			if (info.fromBot != null) {
+            if (info.fromBot != null) {
 
-				if (!UserBotFragment.bots.containsKey(info.fromBot)) {
+                if (!UserBotFragment.bots.containsKey(info.fromBot)) {
 
-					info.fromBot = null;
+                    info.fromBot = null;
 
-				} else {
+                } else {
 
-					bot = UserBotFragment.bots.get(info.fromBot);
+                    bot = UserBotFragment.bots.get(info.fromBot);
 
-				}
+                }
 
-			}
-			
-			GetChatResponse resp = bot.execute(new GetChat(info.id));
+            }
 
-			if (resp.errorCode() == 403) {
-				
-				RssSub.channel.deleteById(info.id);
-				
-			}
-			
-		}
+            GetChatResponse resp = bot.execute(new GetChat(info.id));
 
-	}
+            if (resp.errorCode() == 403) {
 
-	public static String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64;) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157";
+                RssSub.channel.deleteById(info.id);
 
-	int step = 0;
+            }
 
-	static boolean first = true;
+        }
 
-	@Override
-	public void run() {
+    }
 
-		Set<String> sites = new HashSet<>();
-		Set<String> errors = new HashSet<>();
-		
-		for (RssSub.ChannelRss info : RssSub.channel.getAll()) {
+    public static String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64;) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157";
 
-			if (info.delay == null) info.delay = 40L;
+    int step = 0;
 
-			if (first || info.last == null || (System.currentTimeMillis() - info.last) > info.delay * 60 * 1000) {
+    static boolean first = true;
 
-				info.last = System.currentTimeMillis();
+    @Override
+    public void run() {
 
-				RssSub.channel.setById(info.id,info);
+        Set<String> sites = new HashSet<>();
+        Set<String> errors = new HashSet<>();
 
-			} else {
+        for (RssSub.ChannelRss info : RssSub.channel.getAll()) {
 
-				continue;
+            if (info.delay == null) info.delay = 40L;
 
-			}
+            if (first || info.last == null || (System.currentTimeMillis() - info.last) > info.delay * 60 * 1000) {
 
-			sites.addAll(info.subscriptions);
+                info.last = System.currentTimeMillis();
 
-			if (!first && info.error != null) {
+                RssSub.channel.setById(info.id, info);
 
-				for (Map.Entry<String,RssSub.ChannelRss.FeedError> error : info.error.entrySet()) {
+            } else {
 
-					if (System.currentTimeMillis() -  error.getValue().startAt > 6 * 60 * 60 * 1000) {
+                continue;
 
-						errors.add(error.getKey());
+            }
 
-					}
+            sites.addAll(info.subscriptions);
 
-				}
+            if (!first && info.error != null) {
 
-			}
+                for (Map.Entry<String, RssSub.ChannelRss.FeedError> error : info.error.entrySet()) {
 
-		}
+                    if (System.currentTimeMillis() - error.getValue().startAt > 6 * 60 * 60 * 1000) {
 
-	    if (step < 9) {
+                        errors.add(error.getKey());
 
-			step ++;
+                    }
 
-			// sites.removeAll(errors);
+                }
 
-			if (step != 2) {
+            }
 
+        }
 
+        if (step < 9) {
 
-			}
+            step++;
 
-		} else {
+            // sites.removeAll(errors);
 
-			step = 0;
+            if (step != 2) {
 
-		}
-		
-		// BotLog.error("FETCHING : \n\n" + ArrayUtil.join(sites.toArray(),"\n"));
 
-		next:for (String url : sites) {
+            }
 
-			try {
+        } else {
 
-				SyndFeedInput input = new SyndFeedInput();
+            step = 0;
 
-				HttpResponse resp;
+        }
 
-				try {
+        // BotLog.error("FETCHING : \n\n" + ArrayUtil.join(sites.toArray(),"\n"));
 
-					resp = HttpUtil.createGet(URLUtil.encode(url)).header(Header.USER_AGENT,"NTT Feed Fetcher ( https://github.com/HiedaNaKan/NTTools)").execute();
+        next:
+        for (String url : sites) {
 
-				} catch (HttpException ex) {
+            try {
 
-					fetchError(url,ex);
+                SyndFeedInput input = new SyndFeedInput();
 
-					continue;
+                HttpResponse resp;
 
-				}
+                try {
 
-				if (!resp.isOk()) {
+                    resp = HttpUtil.createGet(URLUtil.encode(url)).header(Header.USER_AGENT, "NTT Feed Fetcher ( https://github.com/HiedaNaKan/NTTools)").execute();
 
-					StringBuilder error = new StringBuilder();
+                } catch (HttpException ex) {
 
-					error.append("HTTP ERROR ").append(resp.getStatus());
+                    fetchError(url, ex);
 
-					String content = resp.body();
+                    continue;
 
-					if (!StrUtil.isBlank(content)) {
+                }
 
-						error.append(" : \n\n");
+                if (!resp.isOk()) {
 
-						error.append(content);
+                    StringBuilder error = new StringBuilder();
 
-					}
+                    error.append("HTTP ERROR ").append(resp.getStatus());
 
-					fetchError(url,new Exception(error.toString()));
+                    String content = resp.body();
 
-					continue;
+                    if (!StrUtil.isBlank(content)) {
 
-				}
+                        error.append(" : \n\n");
 
-				SyndFeed feed = input.build(new StringReader(resp.body()));
+                        error.append(content);
 
-				RssSub.RssInfo info = RssSub.info.getById(url);
+                    }
 
-				//BotLog.debug("拉取 " + feed.getTitle());
-				
-				for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions",url)) {
+                    fetchError(url, new Exception(error.toString()));
 
-					if (channel.error != null) {
+                    continue;
 
-						if (channel.error.remove(url) != null) {
+                }
 
-							if (channel.error.isEmpty()) channel.error = null;
+                SyndFeed feed = input.build(new StringReader(resp.body()));
 
-							RssSub.channel.setById(channel.id,channel);
+                RssSub.RssInfo info = RssSub.info.getById(url);
 
-						}
+                //BotLog.debug("拉取 " + feed.getTitle());
 
-					}
+                for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions", url)) {
 
-				}
-				
-				if (info == null) {
+                    if (channel.error != null) {
 
-					info = new RssSub.RssInfo();
+                        if (channel.error.remove(url) != null) {
 
-					info.id = url;
-					info.title = feed.getTitle();
-					info.link = feed.getLink();
-					info.last = generateSign(feed.getEntries().get(0));
+                            if (channel.error.isEmpty()) channel.error = null;
 
-					RssSub.info.setById(info.id,info);
+                            RssSub.channel.setById(channel.id, channel);
 
-					continue next;
+                        }
 
-				}
+                    }
 
+                }
 
-				LinkedList<SyndEntry> posts = new LinkedList<>();
+                if (info == null) {
 
-				for (SyndEntry entry : feed.getEntries()) {
+                    info = new RssSub.RssInfo();
 
-					if (generateSign(entry).equals(info.last)) {
+                    info.id = url;
+                    info.title = feed.getTitle();
+                    info.link = feed.getLink();
+                    info.last = generateSign(feed.getEntries().get(0));
 
-						break;
+                    RssSub.info.setById(info.id, info);
 
-					}
+                    continue next;
 
-					posts.add(entry);
+                }
 
-				}
 
-				info.title = feed.getTitle();
-				info.link = feed.getLink();
-				info.last = generateSign(feed.getEntries().get(0));
+                LinkedList<SyndEntry> posts = new LinkedList<>();
 
-				RssSub.info.setById(info.id,info);
+                for (SyndEntry entry : feed.getEntries()) {
 
-				if (posts.isEmpty()) {
+                    if (generateSign(entry).equals(info.last)) {
 
-					continue next;
+                        break;
 
-				}
+                    }
 
-				Collections.reverse(posts);
+                    posts.add(entry);
 
-				for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions",info.id)) {
+                }
 
-					for (SyndEntry entry : posts) {
+                info.title = feed.getTitle();
+                info.link = feed.getLink();
+                info.last = generateSign(feed.getEntries().get(0));
 
-						Fragment sender = Launcher.INSTANCE;
+                RssSub.info.setById(info.id, info);
 
-						if (channel.fromBot != null && UserBotFragment.bots.containsKey(channel.fromBot)) {
+                if (posts.isEmpty()) {
 
-							sender = UserBotFragment.bots.get(channel.fromBot);
+                    continue next;
 
-						}
+                }
 
-						Send request = new Send(sender,channel.id,FeedHtmlFormater.format(channel,feed,entry));
+                Collections.reverse(posts);
 
-						if (channel.format > 8 || channel.preview) {
+                for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions", info.id)) {
 
-							request.enableLinkPreview();
+                    for (SyndEntry entry : posts) {
 
-						}
+                        Fragment sender = Launcher.INSTANCE;
 
-						request.html().exec();
+                        if (channel.fromBot != null && UserBotFragment.bots.containsKey(channel.fromBot)) {
 
-					}
+                            sender = UserBotFragment.bots.get(channel.fromBot);
 
-				}
+                        }
 
-			} catch (FeedException e) {
+                        Send request = new Send(sender, channel.id, FeedHtmlFormater.format(channel, feed, entry));
 
-				fetchError(url,e);
+                        if (channel.format > 8 || channel.preview) {
 
-			} catch (IllegalArgumentException e) {}
+                            request.enableLinkPreview();
 
+                        }
 
+                        request.html().exec();
 
-		}
+                    }
 
-		first = false;
+                }
 
+            } catch (FeedException e) {
 
-	}
+                fetchError(url, e);
 
-	void fetchError(String url,Exception e) {
+            } catch (IllegalArgumentException e) {
+            }
 
-		RssSub.RssInfo info = RssSub.info.getById(url);
 
-		for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions",info.id)) {
+        }
 
-			if (channel.error == null) {
+        first = false;
 
-				channel.error = new HashMap<>();
 
-			}
+    }
 
-			RssSub.ChannelRss.FeedError error;
+    void fetchError(String url, Exception e) {
 
-			if (channel.error.containsKey(url)) {
+        RssSub.RssInfo info = RssSub.info.getById(url);
 
-				error = channel.error.get(url);
+        for (RssSub.ChannelRss channel : RssSub.channel.findByField("subscriptions", info.id)) {
 
-			} else {
+            if (channel.error == null) {
 
-				error = new RssSub.ChannelRss.FeedError();
+                channel.error = new HashMap<>();
 
-				error.startAt = System.currentTimeMillis();
+            }
 
-				error.errorMsg = e.getMessage();
+            RssSub.ChannelRss.FeedError error;
 
-			}
+            if (channel.error.containsKey(url)) {
 
-			if (System.currentTimeMillis() - error.startAt > 3 * 24 * 60 * 60 * 1000) {
+                error = channel.error.get(url);
 
-				channel.subscriptions.remove(url);
-				channel.error.remove(url);
+            } else {
 
-				if (channel.error.isEmpty()) channel.error = null;
+                error = new RssSub.ChannelRss.FeedError();
 
-				new Send(channel.id,Html.b(info.title) + " 连续三天拉取错误，已取消订阅 (" + error.errorMsg).async();
+                error.startAt = System.currentTimeMillis();
 
-			}
+                error.errorMsg = e.getMessage();
 
-		}
+            }
 
+            if (System.currentTimeMillis() - error.startAt > 3 * 24 * 60 * 60 * 1000) {
 
+                channel.subscriptions.remove(url);
+                channel.error.remove(url);
 
-	}
+                if (channel.error.isEmpty()) channel.error = null;
 
-	static String generateSign(SyndEntry entry) {
+                new Send(channel.id, Html.b(info.title) + " 连续三天拉取错误，已取消订阅 (" + error.errorMsg).async();
 
-		long time = entry.getPublishedDate().getTime();
+            }
 
-		return DigestUtil.md5Hex(time + (StrUtil.isBlank(entry.getLink()) ? entry.getTitle() : entry.getTitle() + entry.getLink()));
+        }
 
-	}
+
+    }
+
+    static String generateSign(SyndEntry entry) {
+
+        long time = entry.getPublishedDate().getTime();
+
+        return DigestUtil.md5Hex(time + (StrUtil.isBlank(entry.getLink()) ? entry.getTitle() : entry.getTitle() + entry.getLink()));
+
+    }
 
 }

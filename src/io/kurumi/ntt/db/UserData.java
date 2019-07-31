@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.model.*;
 import io.kurumi.ntt.utils.*;
 
 import java.util.*;
+
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.Launcher;
@@ -20,8 +21,8 @@ public class UserData {
     public String lastName;
     public String userName;
     public Boolean contactable;
-	
-	public transient User userObj;
+
+    public transient User userObj;
 
     public static UserData get(Long userId) {
 
@@ -36,7 +37,7 @@ public class UserData {
             if (userDataIndex.containsKey(userId)) {
 
                 return userDataIndex.get(userId);
-				
+
             }
 
             UserData userData = data.getById(userId);
@@ -78,7 +79,7 @@ public class UserData {
             if (data.containsId(user.id())) {
 
                 UserData userData = data.getById(user.id());
-				
+
                 userDataIndex.put(user.id(), userData);
 
                 return checkUpdate(userData, user);
@@ -88,8 +89,8 @@ public class UserData {
 
                 UserData userData = new UserData();
 
-				userData.userObj = user;
-				
+                userData.userObj = user;
+
                 userData.id = user.id();
 
                 userData.read(user);
@@ -108,10 +109,10 @@ public class UserData {
 
     static UserData checkUpdate(UserData userData, User user) {
 
-		userData.userObj = user;
-		
+        userData.userObj = user;
+
         if (!ObjectUtil.equal(user.firstName(), userData.firstName) ||
-			ObjectUtil.equal(user.lastName(), userData.lastName)) {
+                ObjectUtil.equal(user.lastName(), userData.lastName)) {
 
             userData.read(user);
 
@@ -135,9 +136,9 @@ public class UserData {
 
     public boolean contactable(Fragment fragment) {
 
-			if (fragment.origin == Launcher.INSTANCE && contactable) return true;
-				
-        if (NTT.isUserContactable(fragment,id) != contactable && fragment.origin == Launcher.INSTANCE) {
+        if (fragment.origin == Launcher.INSTANCE && contactable) return true;
+
+        if (NTT.isUserContactable(fragment, id) != contactable && fragment.origin == Launcher.INSTANCE) {
 
             contactable = !contactable;
 
@@ -148,12 +149,12 @@ public class UserData {
         return contactable;
 
     }
-	
-	public boolean blocked() {
-		
-		return Firewall.block.containsId(id);
-		
-	}
+
+    public boolean blocked() {
+
+        return Firewall.block.containsId(id);
+
+    }
 
     public String formattedName() {
 
@@ -182,6 +183,8 @@ public class UserData {
 
     }
 
-	public boolean admin() { return ArrayUtil.contains(Env.ADMINS,id); }
+    public boolean admin() {
+        return ArrayUtil.contains(Env.ADMINS, id);
+    }
 
 }

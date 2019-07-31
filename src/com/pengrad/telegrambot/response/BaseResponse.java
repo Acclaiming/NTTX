@@ -8,8 +8,8 @@ import com.pengrad.telegrambot.model.ResponseParameters;
  */
 public class BaseResponse {
 
-	public transient String json;
-	
+    public transient String json;
+
     private boolean ok;
     private int error_code;
     private String description;
@@ -36,8 +36,8 @@ public class BaseResponse {
 
     @Override
     public String toString() {
-		
+
         return json;
-		
+
     }
 }

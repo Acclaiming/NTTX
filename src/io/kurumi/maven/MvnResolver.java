@@ -2,51 +2,55 @@ package io.kurumi.maven;
 
 import cn.hutool.http.HttpException;
 import cn.hutool.http.HttpUtil;
+
 import java.io.StringReader;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 import cn.hutool.core.util.ArrayUtil;
+
 import java.net.URL;
+
 import cn.hutool.core.util.URLUtil;
 import org.jdom2.Namespace;
 import cn.hutool.http.HttpResponse;
 
 public class MvnResolver {
 
-	public static String central = "https://repo1.maven.org/maven2/";
-	public static String jCenter = "https://jcenter.bintray.com/";
-	public static String sonatype = "https://oss.sonatype.org/content/repositories/releases/";
+    public static String central = "https://repo1.maven.org/maven2/";
+    public static String jCenter = "https://jcenter.bintray.com/";
+    public static String sonatype = "https://oss.sonatype.org/content/repositories/releases/";
 
-	public static String springPlugins = "https://repo.spring.io/plugins-release/";
-	public static String springLibM = "https://repo.spring.io/libs-milestone/";
-	public static String hortonworks = "https://repo.hortonworks.com/content/repositories/releases/";
-	public static String atlassian = "https://maven.atlassian.com/content/repositories/atlassian-public/";
-	public static String jBossReleases = "https://repository.jboss.org/nexus/content/repositories/releases/";
-	public static String jBossEA = "https://repository.jboss.org/nexus/content/repositories/ea/";
-	public static String springLibRelease = "https://repo.spring.io/libs-release/";
-	public static String iBiblio = "https://maven.ibiblio.org/maven2/";
-	public static String xWikiReleases = "https://maven.xwiki.org/releases/";
-	public static String wSO2Releases = "https://maven.wso2.org/nexus/content/repositories/releases/";
-	public static String nuxeo = "https://maven-eu.nuxeo.org/nexus/content/repositories/public-releases/";
-	public static String wSO2Public = "https://maven.wso2.org/nexus/content/repositories/public/";
-	public static String clojars = "https://clojars.org/repo/";
-	public static String geomajas = "http://maven.geomajas.org/";
-	public static String apacheReleases = "https://repository.apache.org/content/repositories/releases/";
-	public static String beDataDriven = "https://nexus.bedatadriven.com/content/repositories/public/";
-	public static String atlassianPkgs = "https://packages.atlassian.com/maven-public/";
+    public static String springPlugins = "https://repo.spring.io/plugins-release/";
+    public static String springLibM = "https://repo.spring.io/libs-milestone/";
+    public static String hortonworks = "https://repo.hortonworks.com/content/repositories/releases/";
+    public static String atlassian = "https://maven.atlassian.com/content/repositories/atlassian-public/";
+    public static String jBossReleases = "https://repository.jboss.org/nexus/content/repositories/releases/";
+    public static String jBossEA = "https://repository.jboss.org/nexus/content/repositories/ea/";
+    public static String springLibRelease = "https://repo.spring.io/libs-release/";
+    public static String iBiblio = "https://maven.ibiblio.org/maven2/";
+    public static String xWikiReleases = "https://maven.xwiki.org/releases/";
+    public static String wSO2Releases = "https://maven.wso2.org/nexus/content/repositories/releases/";
+    public static String nuxeo = "https://maven-eu.nuxeo.org/nexus/content/repositories/public-releases/";
+    public static String wSO2Public = "https://maven.wso2.org/nexus/content/repositories/public/";
+    public static String clojars = "https://clojars.org/repo/";
+    public static String geomajas = "http://maven.geomajas.org/";
+    public static String apacheReleases = "https://repository.apache.org/content/repositories/releases/";
+    public static String beDataDriven = "https://nexus.bedatadriven.com/content/repositories/public/";
+    public static String atlassianPkgs = "https://packages.atlassian.com/maven-public/";
 
-	private List<String> repositories = new LinkedList<>();
+    private List<String> repositories = new LinkedList<>();
 
-	public MvnResolver() {
+    public MvnResolver() {
 
-		repositories.add(central);
-		repositories.add(jCenter);
-		repositories.add(sonatype);
+        repositories.add(central);
+        repositories.add(jCenter);
+        repositories.add(sonatype);
 
 		/*
 
@@ -70,370 +74,371 @@ public class MvnResolver {
 
 		 */
 
-	}
+    }
 
-	public MvnResolver(String... repositories) {
+    public MvnResolver(String... repositories) {
 
-		this();
+        this();
 
-		for (String repository : repositories) addRepository(repository);
+        for (String repository : repositories) addRepository(repository);
 
-	}
+    }
 
-	public MvnResolver addRepository(String repositoryUrl) {
+    public MvnResolver addRepository(String repositoryUrl) {
 
-		if (!repositoryUrl.startsWith("http")) {
+        if (!repositoryUrl.startsWith("http")) {
 
-			repositoryUrl = "http://" + repositoryUrl;
+            repositoryUrl = "http://" + repositoryUrl;
 
-		}
+        }
 
-		if (!repositoryUrl.endsWith("/")) {
+        if (!repositoryUrl.endsWith("/")) {
 
-			repositoryUrl = repositoryUrl + "/";
+            repositoryUrl = repositoryUrl + "/";
 
-		}
+        }
 
-		this.repositories.add(repositoryUrl);
+        this.repositories.add(repositoryUrl);
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public MvnArtifact resolve(String groupId,String artifactId,String version,String defaultRepository,StringBuilder log) throws MvnException {
+    public MvnArtifact resolve(String groupId, String artifactId, String version, String defaultRepository, StringBuilder log) throws MvnException {
 
-		MvnArtifact art = new MvnArtifact();
+        MvnArtifact art = new MvnArtifact();
 
-		art.groupId = groupId;
-		art.artifactId = artifactId;
+        art.groupId = groupId;
+        art.artifactId = artifactId;
 
-		String targetRepository = null;
+        String targetRepository = null;
 
-		log.append("\n\n正在解析 : ").append(groupId).append(":").append(artifactId).append(":").append(version);
+        log.append("\n\n正在解析 : ").append(groupId).append(":").append(artifactId).append(":").append(version);
 
-		if (version.matches("(\\+|latest)")) {
+        if (version.matches("(\\+|latest)")) {
 
-			version = null;
+            version = null;
 
-		}
+        }
 
-		if (version == null) {
+        if (version == null) {
 
-			log.append("\n没有指定版本，正在获取");
+            log.append("\n没有指定版本，正在获取");
 
-			String mavenMeta = null;
+            String mavenMeta = null;
 
-			if (defaultRepository != null) {
+            if (defaultRepository != null) {
 
-				try {
+                try {
 
-					HttpResponse resp = HttpUtil.createGet(defaultRepository + groupId.replace(".","/") + "/" + artifactId + "/maven-metadata.xml").execute();
+                    HttpResponse resp = HttpUtil.createGet(defaultRepository + groupId.replace(".", "/") + "/" + artifactId + "/maven-metadata.xml").execute();
 
-					if (resp.isOk()) {
+                    if (resp.isOk()) {
 
-						mavenMeta = resp.body();
+                        mavenMeta = resp.body();
 
-						targetRepository = defaultRepository;
+                        targetRepository = defaultRepository;
 
-						log.append("\n从上级获取最新版本 成功");
+                        log.append("\n从上级获取最新版本 成功");
 
-					} else {
+                    } else {
 
-						log.append("\n从上级获取最新版本 失败");
+                        log.append("\n从上级获取最新版本 失败");
 
-					}
+                    }
 
-				} catch (HttpException ignored) {
+                } catch (HttpException ignored) {
 
-					log.append("\n从上级获取最新版本 失败");
+                    log.append("\n从上级获取最新版本 失败");
 
-				}
+                }
 
-			}
+            }
 
-			if (mavenMeta == null) {
+            if (mavenMeta == null) {
 
-				for (String repository : repositories) {
+                for (String repository : repositories) {
 
-					try {
+                    try {
 
-						HttpResponse resp = HttpUtil.createGet(repository + groupId.replace(".","/") + "/" + artifactId + "/maven-metadata.xml").execute();
+                        HttpResponse resp = HttpUtil.createGet(repository + groupId.replace(".", "/") + "/" + artifactId + "/maven-metadata.xml").execute();
 
-						if (resp.isOk()) {
+                        if (resp.isOk()) {
 
-							mavenMeta = resp.body();
+                            mavenMeta = resp.body();
 
-							targetRepository = repository;
+                            targetRepository = repository;
 
-							log.append("\n从 " + repository + " 获取最新版本 成功");
+                            log.append("\n从 " + repository + " 获取最新版本 成功");
 
-							break;
+                            break;
 
-						} else {
+                        } else {
 
-							log.append("\n从 " + repository + " 获取最新版本 失败");
+                            log.append("\n从 " + repository + " 获取最新版本 失败");
 
-						}
+                        }
 
-					} catch (HttpException ignored) {
+                    } catch (HttpException ignored) {
 
-						log.append("\n从 " + repository + " 获取最新版本 失败");
+                        log.append("\n从 " + repository + " 获取最新版本 失败");
 
 
-					}
+                    }
 
-				}
+                }
 
-			}
+            }
 
-			if (mavenMeta == null) throw new MvnException(log.toString());
+            if (mavenMeta == null) throw new MvnException(log.toString());
 
-			Document document;
+            Document document;
 
-			try {
+            try {
 
-				document = new SAXBuilder().build(new StringReader(mavenMeta));
+                document = new SAXBuilder().build(new StringReader(mavenMeta));
 
-			} catch (Exception e) {
+            } catch (Exception e) {
 
-				log.append("\n解析元数据失败 : " + e.toString());
+                log.append("\n解析元数据失败 : " + e.toString());
 
-				throw new MvnException(log.toString());
+                throw new MvnException(log.toString());
 
-			}
+            }
 
-			version = document.getRootElement().getChild("versioning").getChild("latest").getValue();
+            version = document.getRootElement().getChild("versioning").getChild("latest").getValue();
 
-		}
+        }
 
-		art.version = version;
+        art.version = version;
 
-		String pomXml = null;
+        String pomXml = null;
 
-		if (targetRepository != null && !targetRepository.equals(defaultRepository)) {
+        if (targetRepository != null && !targetRepository.equals(defaultRepository)) {
 
-			try {
+            try {
 
-				HttpResponse resp = HttpUtil.createGet(targetRepository + groupId.replace(".","/") + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version + ".pom").execute();
+                HttpResponse resp = HttpUtil.createGet(targetRepository + groupId.replace(".", "/") + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version + ".pom").execute();
 
-				if (resp.isOk()) {
+                if (resp.isOk()) {
 
-					pomXml = resp.body();
+                    pomXml = resp.body();
 
-					log.append("\n从 " + targetRepository + " 获取 Pom 成功");
+                    log.append("\n从 " + targetRepository + " 获取 Pom 成功");
 
-				} else {
+                } else {
 
-					log.append("\n从 " + targetRepository + " 获取 Pom 失败");
+                    log.append("\n从 " + targetRepository + " 获取 Pom 失败");
 
-				}
+                }
 
-			} catch (HttpException ignored) {
+            } catch (HttpException ignored) {
 
-				log.append("\n从 " + targetRepository + " 获取 Pom 失败");
+                log.append("\n从 " + targetRepository + " 获取 Pom 失败");
 
-			}
+            }
 
-		} else if (defaultRepository != null) {
+        } else if (defaultRepository != null) {
 
-			try {
+            try {
 
-				HttpResponse resp = HttpUtil.createGet(defaultRepository + groupId.replace(".","/") + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version + ".pom").execute();
-				
-				if (resp.isOk()) {
+                HttpResponse resp = HttpUtil.createGet(defaultRepository + groupId.replace(".", "/") + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version + ".pom").execute();
 
-					pomXml = resp.body();
-					
-					targetRepository = defaultRepository;
+                if (resp.isOk()) {
 
-					log.append("\n从上级源获取 Pom 成功");
+                    pomXml = resp.body();
 
-				} else {
+                    targetRepository = defaultRepository;
 
-					log.append("\n从上级源获取 Pom 失败");
+                    log.append("\n从上级源获取 Pom 成功");
 
-				}
+                } else {
 
-			} catch (HttpException ignored) {
+                    log.append("\n从上级源获取 Pom 失败");
 
-				log.append("\n从上级源获取 Pom 失败");
+                }
 
-			}
+            } catch (HttpException ignored) {
 
-		}
+                log.append("\n从上级源获取 Pom 失败");
 
-		if (pomXml == null) {
+            }
 
-			for (String repository : repositories) {
+        }
 
-				try {
+        if (pomXml == null) {
 
-					HttpResponse resp = HttpUtil.createGet(repository + groupId.replace(".","/") + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version + ".pom").execute();
+            for (String repository : repositories) {
 
-					if (resp.isOk()) {
+                try {
 
-						pomXml = resp.body();
+                    HttpResponse resp = HttpUtil.createGet(repository + groupId.replace(".", "/") + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version + ".pom").execute();
 
-						targetRepository = repository;
+                    if (resp.isOk()) {
 
-						log.append("\n从 " + repository + " 获取 Pom 成功");
+                        pomXml = resp.body();
 
-						break;
+                        targetRepository = repository;
 
-					} else {
+                        log.append("\n从 " + repository + " 获取 Pom 成功");
 
-						log.append("\n从 " + repository + " 获取 Pom 失败");
+                        break;
 
-					}
+                    } else {
 
-				} catch (HttpException ignored) {
+                        log.append("\n从 " + repository + " 获取 Pom 失败");
 
-					log.append("\n从 " + repository + " 获取 Pom 失败");
+                    }
 
-				}
+                } catch (HttpException ignored) {
 
-			}
+                    log.append("\n从 " + repository + " 获取 Pom 失败");
 
-		}
+                }
 
-		if (pomXml == null) {
+            }
 
-			log.append("\n获取 Pom 失败");
+        }
 
-			throw new MvnException(log.toString());
+        if (pomXml == null) {
 
-		}
+            log.append("\n获取 Pom 失败");
 
-		
-		art.repository = targetRepository;
+            throw new MvnException(log.toString());
 
-		Document document;
+        }
 
-		try {
 
-			document = new SAXBuilder().build(new StringReader(pomXml));
+        art.repository = targetRepository;
 
-		} catch (Exception e) {
+        Document document;
 
-			log.append("\n解析 Pom 失败 : " + e.toString());
+        try {
 
-			throw new MvnException(log.toString());
+            document = new SAXBuilder().build(new StringReader(pomXml));
 
-		}
+        } catch (Exception e) {
 
-		Namespace NS =  Namespace.getNamespace("http://maven.apache.org/POM/4.0.0");
+            log.append("\n解析 Pom 失败 : " + e.toString());
 
-		Element packaging = document.getRootElement().getChild("packaging");
-		
-		if (packaging == null) {
+            throw new MvnException(log.toString());
 
-			art.packaging = "jar";
+        }
 
-		} else {
+        Namespace NS = Namespace.getNamespace("http://maven.apache.org/POM/4.0.0");
 
-			art.packaging = packaging.getValue();
+        Element packaging = document.getRootElement().getChild("packaging");
 
-		}
+        if (packaging == null) {
 
-		LinkedHashMap<String,String> props = new LinkedHashMap<>();
+            art.packaging = "jar";
 
-		Element properties = document.getRootElement().getChild("properties",NS);
+        } else {
 
-		if (properties != null) {
+            art.packaging = packaging.getValue();
 
-			for (Element prop : properties.getChildren()) {
+        }
 
-				props.put(prop.getName(),prop.getValue());
+        LinkedHashMap<String, String> props = new LinkedHashMap<>();
 
-			}
+        Element properties = document.getRootElement().getChild("properties", NS);
 
-		}
+        if (properties != null) {
 
-		Element parent = document.getRootElement().getChild("parent",NS);
+            for (Element prop : properties.getChildren()) {
 
-		if (parent != null) {
+                props.put(prop.getName(), prop.getValue());
 
-			Element parentVersion = parent.getChild("version",NS);
+            }
 
-			if (parentVersion != null) {
+        }
 
-				//log.append("\n发现上级项目版本 : " + parentVersion.getValue());
+        Element parent = document.getRootElement().getChild("parent", NS);
 
-				props.put("project.parent.version",parentVersion.getValue());
+        if (parent != null) {
 
-			}
+            Element parentVersion = parent.getChild("version", NS);
 
-		}
+            if (parentVersion != null) {
 
-		Element dependencies = document.getRootElement().getChild("dependencies",NS);
+                //log.append("\n发现上级项目版本 : " + parentVersion.getValue());
 
-		art.dependencies = new LinkedList<>();
+                props.put("project.parent.version", parentVersion.getValue());
 
-		if (dependencies == null) {
+            }
 
-			log.append("\n没有依赖项");;
+        }
 
-			return art;
+        Element dependencies = document.getRootElement().getChild("dependencies", NS);
 
-		}
+        art.dependencies = new LinkedList<>();
 
-		for (Element dependency : dependencies.getChildren()) {
+        if (dependencies == null) {
 
-			String group = dependency.getChild("groupId",NS).getValue();
-			String artifact = dependency.getChild("artifactId",NS).getValue();
+            log.append("\n没有依赖项");
+            ;
 
-			String depVer = null;
+            return art;
 
-			Element versionObj = dependency.getChild("version",NS);
+        }
 
-			if (versionObj != null) {
+        for (Element dependency : dependencies.getChildren()) {
 
-				depVer = versionObj.getValue();
+            String group = dependency.getChild("groupId", NS).getValue();
+            String artifact = dependency.getChild("artifactId", NS).getValue();
 
-				for (Map.Entry<String,String> prop : props.entrySet()) {
+            String depVer = null;
 
-					depVer = depVer.replace("${" + prop.getKey() + "}",prop.getValue());
+            Element versionObj = dependency.getChild("version", NS);
 
-					//log.append("替换值 : " + prop.getKey() + " 为 " + prop.getValue());
+            if (versionObj != null) {
 
-				}
+                depVer = versionObj.getValue();
 
-			} else {
-				
-				depVer = "+";
-				
-			}
+                for (Map.Entry<String, String> prop : props.entrySet()) {
 
-			log.append("\n\n发现依赖 : " + group + ":" + artifact + ":" + depVer);
+                    depVer = depVer.replace("${" + prop.getKey() + "}", prop.getValue());
 
-			Element optional = dependency.getChild("optional",NS);
+                    //log.append("替换值 : " + prop.getKey() + " 为 " + prop.getValue());
 
-			if (optional != null && "true".equals(optional.getValue())) {
+                }
 
-				log.append("\n 是可选依赖 跳过");
+            } else {
 
-				continue;
+                depVer = "+";
 
-			}
+            }
 
-			Element scope = dependency.getChild("scope",NS);
+            log.append("\n\n发现依赖 : " + group + ":" + artifact + ":" + depVer);
 
-			if (scope != null && !"compile".equals(scope.getValue())) {
+            Element optional = dependency.getChild("optional", NS);
 
-				log.append("\n 是可选依赖 跳过");
+            if (optional != null && "true".equals(optional.getValue())) {
 
-				continue;
+                log.append("\n 是可选依赖 跳过");
 
-			}
+                continue;
 
-			MvnArtifact dep = resolve(group,artifact,depVer,targetRepository,log);
+            }
 
-			if (dep != null) art.dependencies.add(dep);
+            Element scope = dependency.getChild("scope", NS);
 
-		}
+            if (scope != null && !"compile".equals(scope.getValue())) {
 
-		return art;
+                log.append("\n 是可选依赖 跳过");
 
-	}
+                continue;
+
+            }
+
+            MvnArtifact dep = resolve(group, artifact, depVer, targetRepository, log);
+
+            if (dep != null) art.dependencies.add(dep);
+
+        }
+
+        return art;
+
+    }
 
 }

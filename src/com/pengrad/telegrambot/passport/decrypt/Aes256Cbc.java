@@ -441,8 +441,8 @@ class Aes256Cbc {
         /**
          * Creates the temporary buffers.
          *
-         * @param iv initial value of {@link Cbc#_tmp}
-         * @param key key for {@link Cbc#_cipher}
+         * @param iv     initial value of {@link Cbc#_tmp}
+         * @param key    key for {@link Cbc#_cipher}
          * @param output stream where the encrypted or decrypted data is written
          */
         public Cbc(byte[] iv, byte[] key, OutputStream output) {
@@ -461,7 +461,7 @@ class Aes256Cbc {
         /**
          * Decrypts a block. {@link Cbc#_current} will be modified.
          *
-         * @param inBuffer storage of the encrypted block
+         * @param inBuffer  storage of the encrypted block
          * @param outBuffer storage of the decrypted block
          */
         private void decryptBlock(byte[] inBuffer) {
@@ -490,7 +490,7 @@ class Aes256Cbc {
          * Decrypts a part of the array. Only the first {@code length} {@code byte}s of the array will
          * be decrypted.
          *
-         * @param data {@code byte}s that should be decrypted
+         * @param data   {@code byte}s that should be decrypted
          * @param length number of {@code byte}s that should be decrypted
          * @throws IOException if the writing fails
          */
@@ -516,7 +516,7 @@ class Aes256Cbc {
          * Finishes the decryption process.
          *
          * @throws DecryptException if the last block is no legal conclusion of the stream
-         * @throws IOException if the writing fails
+         * @throws IOException      if the writing fails
          */
         public void finishDecryption() throws DecryptException, IOException {
             if (this._overflowUsed != 0) {
@@ -533,7 +533,7 @@ class Aes256Cbc {
 
 //            int left = BLOCK_SIZE - pad;
 //            if (left > 0) {
-                this._output.write(this._outBuffer, 0, 16);
+            this._output.write(this._outBuffer, 0, 16);
 //            }
             this._output.close();
         }

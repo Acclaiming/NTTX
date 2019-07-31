@@ -5,10 +5,12 @@ import com.pengrad.telegrambot.Callback;
 import com.pengrad.telegrambot.request.BaseRequest;
 import com.pengrad.telegrambot.response.BaseResponse;
 import okhttp3.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
 import com.google.gson.*;
 import io.kurumi.ntt.utils.*;
 
@@ -38,9 +40,9 @@ public class TelegramBotClient {
                 R result = null;
                 Exception exception = null;
                 try {
-					String json = response.body().string();
+                    String json = response.body().string();
                     result = gson.fromJson(json, request.getResponseType());
-					result.json = json;
+                    result.json = json;
                 } catch (Exception e) {
                     exception = e;
                 }
@@ -65,24 +67,24 @@ public class TelegramBotClient {
         try {
             OkHttpClient client = getOkHttpClient(request);
             Response response = client.newCall(createRequest(request)).execute();
-			String json = response.body().string();
-			
-            try {
-				
-				R result = gson.fromJson(json,request.getResponseType());
-				
-				result.json = json;
-				
-				return result;
-				
-			} catch (JsonSyntaxException e) {
-				
-				BotLog.error("回复解析失败\n\n" + json,e);
-				
-			}
+            String json = response.body().string();
 
-			return null;
-			
+            try {
+
+                R result = gson.fromJson(json, request.getResponseType());
+
+                result.json = json;
+
+                return result;
+
+            } catch (JsonSyntaxException e) {
+
+                BotLog.error("回复解析失败\n\n" + json, e);
+
+            }
+
+            return null;
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

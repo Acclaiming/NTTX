@@ -4,52 +4,55 @@ import cn.hutool.core.util.ArrayUtil;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.model.Msg;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
+
 import cn.hutool.core.util.NumberUtil;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.LeaveChat;
 import com.pengrad.telegrambot.request.KickChatMember;
+
 import java.util.List;
 import java.util.*;
 
 public class UserBotFragment extends BotFragment {
 
-	private UserBot bot;
+    private UserBot bot;
 
-	public Long botId;
-	
-	public static HashMap<Long,UserBotFragment> bots = new HashMap<>();
-	
-	private String userName;
+    public Long botId;
+
+    public static HashMap<Long, UserBotFragment> bots = new HashMap<>();
+
+    private String userName;
     private String botToken;
 
-	public Long userId;
+    public Long userId;
 
-	public Map<String,Object> params;
-	public Set<Long> banned_chat;
+    public Map<String, Object> params;
+    public Set<Long> banned_chat;
 
-	@Override
-	public void reload() {
+    @Override
+    public void reload() {
 
-		super.reload();
+        super.reload();
 
-		// addFragment(new BotChannnel());
+        // addFragment(new BotChannnel());
 
-		bot = UserBot.data.getById(botId);
+        bot = UserBot.data.getById(botId);
 
-		botId = bot.id;
-		
-		bots.put(botId,this);
-		
-		userName = bot.userName;
+        botId = bot.id;
+
+        bots.put(botId, this);
+
+        userName = bot.userName;
         botToken = bot.token;
         userId = bot.user;
 
-		params = bot.params;
+        params = bot.params;
 
-	}
+    }
 
 	/*
 
@@ -85,40 +88,40 @@ public class UserBotFragment extends BotFragment {
 
 	 */
 
-	public UserData getOwner() {
+    public UserData getOwner() {
 
-		return UserData.get(userId);
+        return UserData.get(userId);
 
-	}
+    }
 
-	@Override
-	public String botName() {
+    @Override
+    public String botName() {
 
-		return getClass().getSimpleName();
+        return getClass().getSimpleName();
 
-	}
+    }
 
-	@Override
-	public String getToken() {
+    @Override
+    public String getToken() {
 
-		return botToken;
+        return botToken;
 
-	}
+    }
 
-	public <T> T getParam(String key) {
+    public <T> T getParam(String key) {
 
-		return (T)params.get(key);
+        return (T) params.get(key);
 
-	}
+    }
 
-	public void setParam(String key,Object value) {
+    public void setParam(String key, Object value) {
 
-		params.put(key,value);
+        params.put(key, value);
 
 
-	}
+    }
 
-	public void save() {
+    public void save() {
 
 		/*
 
@@ -130,9 +133,9 @@ public class UserBotFragment extends BotFragment {
 
 		 */
 
-		UserBot.data.setById(botId,bot);
+        UserBot.data.setById(botId, bot);
 
-	}
+    }
 
 	/*
 
@@ -260,19 +263,19 @@ public class UserBotFragment extends BotFragment {
 
 	 */
 
-	void invalidParams(Msg msg,String... params) {
+    void invalidParams(Msg msg, String... params) {
 
-		msg.send("无效的参数 , /" + msg.command() + " <" + ArrayUtil.join(params,"> <") + ">").exec();
+        msg.send("无效的参数 , /" + msg.command() + " <" + ArrayUtil.join(params, "> <") + ">").exec();
 
-	}
+    }
 
-	@Override
-	public void stop() {
+    @Override
+    public void stop() {
 
-		save();
+        save();
 
-		super.stop();
+        super.stop();
 
-	}
+    }
 
 }

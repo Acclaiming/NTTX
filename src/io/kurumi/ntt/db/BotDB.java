@@ -19,7 +19,7 @@ public class BotDB {
     public static void init(String address, int port) throws MongoException {
 
         client = MongoClients.create("mongodb://" + address + ":" + port);
-		
+
         CodecRegistry registry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
         db = client.getDatabase("NTTools").withCodecRegistry(registry);

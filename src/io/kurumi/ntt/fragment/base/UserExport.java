@@ -6,22 +6,21 @@ import io.kurumi.ntt.db.*;
 
 public class UserExport extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
-		
-		registerFunction("user");
-		
-		registerPayload("user");
-		
-	}
+        super.init(origin);
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-		
-		
-		
-	}
-	
+        registerFunction("user");
+
+        registerPayload("user");
+
+    }
+
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+
+
+    }
+
 }

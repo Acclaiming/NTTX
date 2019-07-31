@@ -7,90 +7,90 @@ import io.kurumi.telegraph.model.Account;
 
 public class TelegraphAccount {
 
-	public static Data<TelegraphAccount> data = new Data<TelegraphAccount>(TelegraphAccount.class);
+    public static Data<TelegraphAccount> data = new Data<TelegraphAccount>(TelegraphAccount.class);
 
-	public static TelegraphAccount revokeDefaultAccount() {
+    public static TelegraphAccount revokeDefaultAccount() {
 
-		data.deleteById(-1L);
-		
-		return defaultAccount();
+        data.deleteById(-1L);
 
-	}
+        return defaultAccount();
 
-	public static TelegraphAccount defaultAccount() {
+    }
 
-		if (!data.containsId(-1L)) {
+    public static TelegraphAccount defaultAccount() {
 
-			Account account = Telegraph.createAccount("NTT","NTT","https://t.me/NTT");
+        if (!data.containsId(-1L)) {
 
-			if (account == null) return null;
+            Account account = Telegraph.createAccount("NTT", "NTT", "https://t.me/NTT");
 
-			TelegraphAccount auth = new TelegraphAccount();
+            if (account == null) return null;
 
-			auth.id = -1L;
+            TelegraphAccount auth = new TelegraphAccount();
 
-			auth.access_token = account.access_token;
+            auth.id = -1L;
 
-			auth.short_name = account.short_name;
+            auth.access_token = account.access_token;
 
-			auth.author_name = account.author_name;
+            auth.short_name = account.short_name;
 
-			auth.author_url = account.author_url;
+            auth.author_name = account.author_name;
 
-			data.setById(auth.id,auth);
+            auth.author_url = account.author_url;
 
-			return auth;
+            data.setById(auth.id, auth);
 
-		}
+            return auth;
 
-		TelegraphAccount account = data.getById(-1L);
+        }
 
-		return account;
+        TelegraphAccount account = data.getById(-1L);
 
-	}
+        return account;
 
-
-	public static TelegraphAccount get(UserData user) {
-
-		if (!data.containsId(user.id)) {
-
-			Account account = Telegraph.createAccount(user.userName == null ? user.id.toString() : user.userName,user.name(),"https://" + (user.userName == null ? "NTT_X" : user.userName));
-
-			if (account == null) return null;
-
-			TelegraphAccount auth = new TelegraphAccount();
-
-			auth.id = user.id;
-
-			auth.access_token = account.access_token;
-
-			auth.short_name = account.short_name;
-
-			auth.author_name = account.author_name;
-
-			auth.author_url = account.author_url;
-
-			data.setById(auth.id,auth);
-
-			return auth;
-
-		}
-
-		TelegraphAccount account = data.getById(user.id);
+    }
 
 
-		return account;
+    public static TelegraphAccount get(UserData user) {
 
-	}
+        if (!data.containsId(user.id)) {
 
-	public Long id;
+            Account account = Telegraph.createAccount(user.userName == null ? user.id.toString() : user.userName, user.name(), "https://" + (user.userName == null ? "NTT_X" : user.userName));
 
-	public String short_name;
+            if (account == null) return null;
 
-	public String author_name;
+            TelegraphAccount auth = new TelegraphAccount();
 
-	public String author_url;
+            auth.id = user.id;
 
-	public String access_token;
+            auth.access_token = account.access_token;
+
+            auth.short_name = account.short_name;
+
+            auth.author_name = account.author_name;
+
+            auth.author_url = account.author_url;
+
+            data.setById(auth.id, auth);
+
+            return auth;
+
+        }
+
+        TelegraphAccount account = data.getById(user.id);
+
+
+        return account;
+
+    }
+
+    public Long id;
+
+    public String short_name;
+
+    public String author_name;
+
+    public String author_url;
+
+    public String access_token;
 
 }

@@ -11,64 +11,64 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.Html;
 
 public class DebugStickerSet extends Fragment {
-	
-	@Override
-	public void init(BotFragment origin) {
 
-		super.init(origin);
+    @Override
+    public void init(BotFragment origin) {
+
+        super.init(origin);
 
         registerAdminFunction("get_sticker_set");
 
     }
 
-	@Override
-	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
-
-		return FUNCTION_PUBLIC;
-
-	}
-	
     @Override
-    public void onFunction(UserData user,Msg msg,String function,String[] params) {
-		
-		String target;
+    public int checkFunctionContext(UserData user, Msg msg, String function, String[] params) {
 
-		if (params.length > 0) {
+        return FUNCTION_PUBLIC;
 
-			target = params[0];
+    }
 
-			if (target.contains("/")) target = StrUtil.subAfter(target,"/",true);
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		} else if (msg.replyTo().sticker() != null) {
+        String target;
 
-			target = msg.replyTo().sticker().setName();
+        if (params.length > 0) {
 
-			if (target == null) {
+            target = params[0];
 
-				msg.send("这个贴纸没有贴纸包").publicFailed();
+            if (target.contains("/")) target = StrUtil.subAfter(target, "/", true);
 
-				return;
+        } else if (msg.replyTo().sticker() != null) {
 
-			}
+            target = msg.replyTo().sticker().setName();
 
-		} else {
+            if (target == null) {
 
-			return;
+                msg.send("这个贴纸没有贴纸包").publicFailed();
 
-		}
+                return;
 
-		final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
+            }
 
-		if (!set.isOk()) {
+        } else {
 
-			msg.send("无法读取贴纸包 " + target + " : " + set.description()).exec();
+            return;
 
-			return;
+        }
 
-		}
+        final GetStickerSetResponse set = bot().execute(new GetStickerSet(target));
 
-		msg.send(new JSONObject(set.json).toStringPretty()).exec();
-		
-	}
-	
+        if (!set.isOk()) {
+
+            msg.send("无法读取贴纸包 " + target + " : " + set.description()).exec();
+
+            return;
+
+        }
+
+        msg.send(new JSONObject(set.json).toStringPretty()).exec();
+
+    }
+
 }

@@ -4,122 +4,125 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ArrayUtil;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TimerTask;
+
 import twitter4j.ResponseList;
 import twitter4j.TwitterException;
 import twitter4j.User;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UserTrackTask extends Thread {
 
-	public HashSet<Long> waitFor = new HashSet<>();
+    public HashSet<Long> waitFor = new HashSet<>();
 
-	int step = 0;
+    int step = 0;
 
-	@Override
-	public void run() {
+    @Override
+    public void run() {
 
-		while (!isInterrupted()) {
+        while (!isInterrupted()) {
 
-			for (TrackTask.IdsList ids : TrackTask.friends.collection.find()) {
+            for (TrackTask.IdsList ids : TrackTask.friends.collection.find()) {
 
-				waitFor.addAll(ids.ids);
+                waitFor.addAll(ids.ids);
 
-			}
+            }
 
-			for (TrackTask.IdsList ids : TrackTask.followers.collection.find()) {
+            for (TrackTask.IdsList ids : TrackTask.followers.collection.find()) {
 
-				waitFor.addAll(ids.ids);
+                waitFor.addAll(ids.ids);
 
-			}
+            }
 
-			if (step == 10) {
+            if (step == 10) {
 
-				step = 0;
+                step = 0;
 
-				for (UserArchive u : UserArchive.data.getAllByField("isDisappeared",true)) {
+                for (UserArchive u : UserArchive.data.getAllByField("isDisappeared", true)) {
 
-					waitFor.add(u.id);
+                    waitFor.add(u.id);
 
-				}
+                }
 
-			}
+            }
 
-			step ++;
+            step++;
 
-			List<TAuth> allAuth = TAuth.data.getAll();
+            List<TAuth> allAuth = TAuth.data.getAll();
 
-			Iterator<TAuth> iter = allAuth.iterator();
+            Iterator<TAuth> iter = allAuth.iterator();
 
-			while (allAuth != null && !waitFor.isEmpty()) {
+            while (allAuth != null && !waitFor.isEmpty()) {
 
-				if (!iter.hasNext()) iter = allAuth.iterator();
+                if (!iter.hasNext()) iter = allAuth.iterator();
 
-				List<Long> target;
+                List<Long> target;
 
-				if (waitFor.size() > 100) {
+                if (waitFor.size() > 100) {
 
-					target = CollectionUtil.sub(waitFor,0,100);
-					waitFor.removeAll(target);
+                    target = CollectionUtil.sub(waitFor, 0, 100);
+                    waitFor.removeAll(target);
 
-				} else {
+                } else {
 
-					target = new LinkedList<>();
-					target.addAll(waitFor);
+                    target = new LinkedList<>();
+                    target.addAll(waitFor);
 
-					waitFor.clear();
+                    waitFor.clear();
 
-				}
+                }
 
-				try {
+                try {
 
-					ResponseList<User> result = iter.next().createApi().lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
+                    ResponseList<User> result = iter.next().createApi().lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
 
-					for (User tuser : result) {
+                    for (User tuser : result) {
 
-						target.remove(tuser.getId());
+                        target.remove(tuser.getId());
 
-						UserArchive.save(tuser);
+                        UserArchive.save(tuser);
 
-					}
+                    }
 
-					for (Long da : target) {
+                    for (Long da : target) {
 
-						UserArchive.saveDisappeared(da);
+                        UserArchive.saveDisappeared(da);
 
-					}
+                    }
 
-				} catch (TwitterException e) {
+                } catch (TwitterException e) {
 
-					if (e.getStatusCode() == 503) {
+                    if (e.getStatusCode() == 503) {
 
-						return;
+                        return;
 
-					} else if (e.getErrorCode() == 17) {
+                    } else if (e.getErrorCode() == 17) {
 
-						for (Long da : target) {
+                        for (Long da : target) {
 
-							UserArchive.saveDisappeared(da);
+                            UserArchive.saveDisappeared(da);
 
-						}
+                        }
 
-					} else {
+                    } else {
 
-						waitFor.addAll(target);
+                        waitFor.addAll(target);
 
-					}
+                    }
 
-				}
+                }
 
-			}
+            }
 
 
-		}
+        }
 
-	}
+    }
 
 }

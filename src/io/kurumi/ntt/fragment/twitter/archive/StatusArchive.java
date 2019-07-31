@@ -18,9 +18,11 @@ import io.kurumi.ntt.fragment.twitter.status.StatusAction;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
+
 import java.io.File;
 import java.util.Calendar;
 import java.util.LinkedList;
+
 import twitter4j.MediaEntity;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -71,27 +73,27 @@ public class StatusArchive {
 
         archive.read(status);
 
-        data.setById(archive.id,archive);
+        data.setById(archive.id, archive);
 
         return archive;
 
     }
 
-    public void sendTo(long chatId,int depth,TAuth auth,Status status) {
+    public void sendTo(long chatId, int depth, TAuth auth, Status status) {
 
         LinkedList<File> photo = new LinkedList<>();
 
         for (String url : mediaUrls) {
 
-            String suffix = StrUtil.subAfter(url,".com/",false);
+            String suffix = StrUtil.subAfter(url, ".com/", false);
 
-            File cache = new File(Env.CACHE_DIR,suffix);
+            File cache = new File(Env.CACHE_DIR, suffix);
 
             if (!cache.isFile()) {
 
                 try {
 
-                    HttpUtil.downloadFile(url,cache);
+                    HttpUtil.downloadFile(url, cache);
 
                 } catch (Exception ex) {
                 }
@@ -99,23 +101,23 @@ public class StatusArchive {
 
             }
 
-			if (cache.isFile()) {
+            if (cache.isFile()) {
 
-				photo.add(cache);
+                photo.add(cache);
 
-			}
+            }
 
         }
 
-		String html = toHtml(depth);
+        String html = toHtml(depth);
 
         if (html.length() < 1024 && photo.size() == 1) {
 
-            SendPhoto send = new SendPhoto(chatId,photo.get(0)).caption(html).parseMode(ParseMode.HTML);
+            SendPhoto send = new SendPhoto(chatId, photo.get(0)).caption(html).parseMode(ParseMode.HTML);
 
             if (status != null) {
 
-                send.replyMarkup(StatusAction.createMarkup(id,from.equals(auth.id),depth() <= depth,status.isRetweetedByMe(),status.isFavorited()).markup());
+                send.replyMarkup(StatusAction.createMarkup(id, from.equals(auth.id), depth() <= depth, status.isRetweetedByMe(), status.isFavorited()).markup());
 
             }
 
@@ -123,53 +125,53 @@ public class StatusArchive {
 
             if (resp.isOk() && resp.message().chat().type() == Chat.Type.Private) {
 
-                MessagePoint.set(resp.message().messageId(),1,id);
+                MessagePoint.set(resp.message().messageId(), 1, id);
 
             } else if (!resp.isOk()) {
 
-                Send sendN = new Send(chatId,toHtml(depth)).html();
+                Send sendN = new Send(chatId, toHtml(depth)).html();
 
                 if (status != null) {
 
-                    sendN.buttons(StatusAction.createMarkup(id,from.equals(auth.id),depth == -1 || depth() <= depth,status.isRetweetedByMe(),status.isFavorited()));
+                    sendN.buttons(StatusAction.createMarkup(id, from.equals(auth.id), depth == -1 || depth() <= depth, status.isRetweetedByMe(), status.isFavorited()));
 
                 }
 
-                sendN.point(1,id);
+                sendN.point(1, id);
 
             }
 
         } else {
 
-            Send send = new Send(chatId,toHtml(depth)).html();
+            Send send = new Send(chatId, toHtml(depth)).html();
 
             if (status != null) {
 
-                send.buttons(StatusAction.createMarkup(id,from.equals(auth.id),depth == -1 || depth() <= depth,status.isRetweetedByMe(),status.isFavorited()));
+                send.buttons(StatusAction.createMarkup(id, from.equals(auth.id), depth == -1 || depth() <= depth, status.isRetweetedByMe(), status.isFavorited()));
 
             }
 
-            SendResponse msg = send.point(1,id);
+            SendResponse msg = send.point(1, id);
 
             if (photo.size() > 0 && msg.isOk()) {
 
-				if (photo.size() == 1) {
+                if (photo.size() == 1) {
 
-					Launcher.INSTANCE.bot().execute(new SendPhoto(chatId,photo.get(0)).replyToMessageId(msg.message().messageId()));
+                    Launcher.INSTANCE.bot().execute(new SendPhoto(chatId, photo.get(0)).replyToMessageId(msg.message().messageId()));
 
-				} else {
+                } else {
 
-					InputMediaPhoto[] input = new InputMediaPhoto[photo.size()];
+                    InputMediaPhoto[] input = new InputMediaPhoto[photo.size()];
 
-					for (int index = 0; index < photo.size(); index++) {
+                    for (int index = 0; index < photo.size(); index++) {
 
-						input[index] = new InputMediaPhoto(photo.get(index));
+                        input[index] = new InputMediaPhoto(photo.get(index));
 
-					}
+                    }
 
-					Launcher.INSTANCE.bot().execute(new SendMediaGroup(chatId,input).replyToMessageId(msg.message().messageId()));
+                    Launcher.INSTANCE.bot().execute(new SendMediaGroup(chatId, input).replyToMessageId(msg.message().messageId()));
 
-				}
+                }
 
             }
 
@@ -185,7 +187,7 @@ public class StatusArchive {
 
         userMentions = new LinkedList<>();
 
-		from = UserArchive.save(status.getUser()).id;
+        from = UserArchive.save(status.getUser()).id;
 
         inReplyToStatusId = status.getInReplyToStatusId();
 
@@ -195,21 +197,21 @@ public class StatusArchive {
 
         quotedStatusId = status.getQuotedStatusId();
 
-		if (inReplyToStatusId != -1) {
+        if (inReplyToStatusId != -1) {
 
-			for (UserMentionEntity mention : status.getUserMentionEntities()) {
+            for (UserMentionEntity mention : status.getUserMentionEntities()) {
 
-				if (text.startsWith("@" + mention.getScreenName() + " ")) {
+                if (text.startsWith("@" + mention.getScreenName() + " ")) {
 
-					userMentions.add(mention.getId());
+                    userMentions.add(mention.getId());
 
-					text = StrUtil.subAfter(text,"@" + mention.getScreenName() + " ",false);
+                    text = StrUtil.subAfter(text, "@" + mention.getScreenName() + " ", false);
 
-				}
+                }
 
-			}
+            }
 
-		}
+        }
 
         for (URLEntity url : status.getURLEntities()) {
 
@@ -217,13 +219,13 @@ public class StatusArchive {
 
                 // 引用推文
 
-                text = StrUtil.subBefore(text,url.getURL(),true);
+                text = StrUtil.subBefore(text, url.getURL(), true);
 
                 quotedScreenName = NTT.parseScreenName(url.getExpandedURL());
 
             } else {
 
-                text = text.replace(url.getURL(),url.getExpandedURL());
+                text = text.replace(url.getURL(), url.getExpandedURL());
 
             }
 
@@ -287,7 +289,7 @@ public class StatusArchive {
 
     public String htmlURL() {
 
-        return Html.a(StrUtil.padAfter(text,5,"..."),url());
+        return Html.a(StrUtil.padAfter(text, 5, "..."), url());
 
     }
 
@@ -321,11 +323,11 @@ public class StatusArchive {
 
     public String toHtml(int depth) {
 
-        return toHtml(depth,false,true);
+        return toHtml(depth, false, true);
 
     }
 
-    public String toHtml(int depth,boolean quoted,boolean current) {
+    public String toHtml(int depth, boolean quoted, boolean current) {
 
         StringBuilder archive = new StringBuilder();
 
@@ -337,11 +339,11 @@ public class StatusArchive {
 
                 if (inReplyTo != null) {
 
-                    archive.append(inReplyTo.toHtml(depth > 0 ? depth - 1 : depth,false,false));
+                    archive.append(inReplyTo.toHtml(depth > 0 ? depth - 1 : depth, false, false));
 
                 } else {
 
-                    archive.append(notAvilableStatus(inReplyToUserId,inReplyToScreenName));
+                    archive.append(notAvilableStatus(inReplyToUserId, inReplyToScreenName));
 
                 }
 
@@ -349,24 +351,24 @@ public class StatusArchive {
 
             }
 
-            archive.append(user().urlHtml()).append(" 的 ").append(Html.a("回复",current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id));
+            archive.append(user().urlHtml()).append(" 的 ").append(Html.a("回复", current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id));
 
 
         } else if (!quoted && isRetweet) {
 
             StatusArchive retweeted = StatusArchive.get(retweetedStatus);
 
-            archive.append(user().urlHtml()).append(" 转推从 " + retweeted.user().urlHtml()).append(" 的 ").append(Html.a("推文",current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id)).append(" : ");
+            archive.append(user().urlHtml()).append(" 转推从 " + retweeted.user().urlHtml()).append(" 的 ").append(Html.a("推文", current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id)).append(" : ");
 
             archive.append(split);
 
-            archive.append(retweeted.toHtml(depth > 0 ? depth - 1 : depth,false,false));
+            archive.append(retweeted.toHtml(depth > 0 ? depth - 1 : depth, false, false));
 
             return archive.toString();
 
         } else {
 
-            archive.append(user().urlHtml()).append(" 的 ").append(Html.a("推文",current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id));
+            archive.append(user().urlHtml()).append(" 的 ").append(Html.a("推文", current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id));
 
         }
 
@@ -374,7 +376,7 @@ public class StatusArchive {
 
         if (!mediaUrls.isEmpty()) {
 
-            content = StrUtil.subBefore(content,"https://t.co",true);
+            content = StrUtil.subBefore(content, "https://t.co", true);
 
         }
 
@@ -396,7 +398,7 @@ public class StatusArchive {
 
             for (String url : mediaUrls) {
 
-                archive.append(Html.a("媒体文件",url)).append(" ");
+                archive.append(Html.a("媒体文件", url)).append(" ");
 
             }
 
@@ -412,7 +414,7 @@ public class StatusArchive {
 
             if (quotedStatus != null) {
 
-                archive.append("引用 " + quotedStatus.toHtml(1,true,false));
+                archive.append("引用 " + quotedStatus.toHtml(1, true, false));
 
             } else {
 
@@ -446,7 +448,7 @@ public class StatusArchive {
 
     }
 
-    String notAvilableStatus(Long id,String screenName) {
+    String notAvilableStatus(Long id, String screenName) {
 
         if (UserArchive.contains(id)) {
 
@@ -454,7 +456,7 @@ public class StatusArchive {
 
         } else {
 
-            return Html.a("@" + screenName,"https://twitter.com/" + screenName) + " 的 不可用的推文";
+            return Html.a("@" + screenName, "https://twitter.com/" + screenName) + " 的 不可用的推文";
 
         }
 
@@ -462,11 +464,11 @@ public class StatusArchive {
 
     public StatusArchive loop(Twitter api) {
 
-        return loop(api,false);
+        return loop(api, false);
 
     }
 
-    public StatusArchive loop(Twitter api,boolean avoid) {
+    public StatusArchive loop(Twitter api, boolean avoid) {
 
         for (long mention : userMentions) {
 
@@ -502,7 +504,7 @@ public class StatusArchive {
 
             if (quotedUserId != -1) {
 
-                data.setById(id,this);
+                data.setById(id, this);
 
             }
 

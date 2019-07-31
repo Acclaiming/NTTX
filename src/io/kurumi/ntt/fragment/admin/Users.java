@@ -22,167 +22,167 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class Users extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerAdminFunction("users","usage");
+        registerAdminFunction("users", "usage");
 
-	}
+    }
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
         StringBuilder export;
 
-		int count = 0;
+        int count = 0;
 
-		if ("usage".equals(function)) {
+        if ("usage".equals(function)) {
 
-			export = new StringBuilder(" 「 Authed Users 」 \n");
+            export = new StringBuilder(" 「 Authed Users 」 \n");
 
-			for (TAuth auth : TAuth.data.collection.find()) {
+            for (TAuth auth : TAuth.data.collection.find()) {
 
-				count ++;
+                count++;
 
-				export.append(UserData.get(auth.user).userName()).append(" -> ").append(auth.archive().urlHtml()).append("\n");
+                export.append(UserData.get(auth.user).userName()).append(" -> ").append(auth.archive().urlHtml()).append("\n");
 
-				if (count == 50) {
+                if (count == 50) {
 
-					msg.send(export.toString()).html().exec();
+                    msg.send(export.toString()).html().exec();
 
-					export = new StringBuilder();
+                    export = new StringBuilder();
 
-					count = 0;
+                    count = 0;
 
-				}
+                }
 
-			}
+            }
 
-			if (count > 0) {
+            if (count > 0) {
 
-				msg.send(export.toString()).html().exec();
+                msg.send(export.toString()).html().exec();
 
-			}
+            }
 
-			count = 0;
+            count = 0;
 
-			export = new StringBuilder(" 「 User Bots 」 \n");
+            export = new StringBuilder(" 「 User Bots 」 \n");
 
-			for (UserBot bot : UserBot.data.collection.find()) {
+            for (UserBot bot : UserBot.data.collection.find()) {
 
-				count ++;
+                count++;
 
-				export.append(UserData.get(bot.user).userName()).append(" -> [ " + bot.typeName() + " ] @").append(HtmlUtil.escape(bot.userName)).append("\n");
+                export.append(UserData.get(bot.user).userName()).append(" -> [ " + bot.typeName() + " ] @").append(HtmlUtil.escape(bot.userName)).append("\n");
 
-				if (count == 50) {
+                if (count == 50) {
 
-					msg.send(export.toString()).html().exec();
+                    msg.send(export.toString()).html().exec();
 
-					export = new StringBuilder();
+                    export = new StringBuilder();
 
-					count = 0;
+                    count = 0;
 
-				}
+                }
 
-			}
+            }
 
-			if (count > 0) {
+            if (count > 0) {
 
-				msg.send(export.toString()).html().exec();
+                msg.send(export.toString()).html().exec();
 
-			}
+            }
 
 
-		} else if (msg.params().length == 0) {
+        } else if (msg.params().length == 0) {
 
-			export = new StringBuilder(HtmlUtil.escape(" 「 All Users 」\n"));
+            export = new StringBuilder(HtmlUtil.escape(" 「 All Users 」\n"));
 
-			for (UserData userData : UserData.data.findByField("contactable",true)) {
+            for (UserData userData : UserData.data.findByField("contactable", true)) {
 
-				export.append("\n[").append(Html.user(userData.id.toString(),userData.id)).append("]").append(" ").append(userData.name()).append(" ").append(Html.startPayload("Block","drop",userData.id));
+                export.append("\n[").append(Html.user(userData.id.toString(), userData.id)).append("]").append(" ").append(userData.name()).append(" ").append(Html.startPayload("Block", "drop", userData.id));
 
-				count++;
+                count++;
 
-				if (count == 50) {
+                if (count == 50) {
 
-					msg.send(export.toString()).html().exec();
+                    msg.send(export.toString()).html().exec();
 
-					export = new StringBuilder();
+                    export = new StringBuilder();
 
-					count = 0;
+                    count = 0;
 
-				}
+                }
 
-			}
+            }
 
-			if (count > 0) {
+            if (count > 0) {
 
-				msg.send(export.toString()).html().exec();
+                msg.send(export.toString()).html().exec();
 
-			}
+            }
 
-			count = 0;
+            count = 0;
 
-			export = new StringBuilder(HtmlUtil.escape(" 「 Blocked Users 」 \n"));
+            export = new StringBuilder(HtmlUtil.escape(" 「 Blocked Users 」 \n"));
 
-			for (Firewall.Id id : Firewall.block.collection.find()) {
+            for (Firewall.Id id : Firewall.block.collection.find()) {
 
-				UserData userData = UserData.get(id.id);
+                UserData userData = UserData.get(id.id);
 
-				if (userData == null) {
+                if (userData == null) {
 
-					export.append("\n").append(Html.user("[ " + id.id + " ]",id.id)).append(" ").append(Html.startPayload("Accept","accept",id.id));
+                    export.append("\n").append(Html.user("[ " + id.id + " ]", id.id)).append(" ").append(Html.startPayload("Accept", "accept", id.id));
 
 
-				} else {
+                } else {
 
-					export.append("\n[").append(Html.user(userData.id.toString(),userData.id)).append("]").append(" ").append(userData.name()).append(" ").append(Html.startPayload("Accept","accept",userData.id));
+                    export.append("\n[").append(Html.user(userData.id.toString(), userData.id)).append("]").append(" ").append(userData.name()).append(" ").append(Html.startPayload("Accept", "accept", userData.id));
 
-				}
+                }
 
-				count++;
+                count++;
 
-				if (count == 50) {
+                if (count == 50) {
 
-					msg.send(export.toString()).html().exec();
+                    msg.send(export.toString()).html().exec();
 
-					export = new StringBuilder();
+                    export = new StringBuilder();
 
-					count = 0;
+                    count = 0;
 
-				}
+                }
 
 
-			}
+            }
 
-		} else {
+        } else {
 
-			String kw = msg.params()[0];
+            String kw = msg.params()[0];
 
-			export = new StringBuilder(HtmlUtil.escape(" 「 Search User 」 \n"));
+            export = new StringBuilder(HtmlUtil.escape(" 「 Search User 」 \n"));
 
-			for (UserData userData : UserData.data.collection.find(or(regex("firstName",kw),regex("lastName",kw),regex("userName",kw),regex("id",kw)))) {
+            for (UserData userData : UserData.data.collection.find(or(regex("firstName", kw), regex("lastName", kw), regex("userName", kw), regex("id", kw)))) {
 
-				export.append("\n[").append(Html.user(userData.id.toString(),userData.id)).append("]").append(" ").append(userData.name()).append(" ").append(Html.startPayload("Block","drop",userData.id));
+                export.append("\n[").append(Html.user(userData.id.toString(), userData.id)).append("]").append(" ").append(userData.name()).append(" ").append(Html.startPayload("Block", "drop", userData.id));
 
-				count++;
+                count++;
 
-				if (count == 50) {
+                if (count == 50) {
 
-					msg.send(export.toString()).html().exec();
+                    msg.send(export.toString()).html().exec();
 
-					export = new StringBuilder();
+                    export = new StringBuilder();
 
-					count = 0;
+                    count = 0;
 
-				}
+                }
 
-			}
+            }
 
 
-		}
+        }
 
         if (count > 0) {
 

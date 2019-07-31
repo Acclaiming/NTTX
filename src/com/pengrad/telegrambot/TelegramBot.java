@@ -10,10 +10,12 @@ import com.pengrad.telegrambot.request.BaseRequest;
 import com.pengrad.telegrambot.request.GetUpdates;
 import com.pengrad.telegrambot.response.BaseResponse;
 import io.kurumi.ntt.utils.BotLog;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.concurrent.TimeUnit;
+
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -40,11 +42,11 @@ public class TelegramBot {
 
     public <T extends BaseRequest, R extends BaseResponse> R execute(BaseRequest<T, R> request) {
 
-		try {
+        try {
 
-			return api.send(request);
+            return api.send(request);
 
-		} catch (RuntimeException e) {
+        } catch (RuntimeException e) {
 
 			/*
 			
@@ -59,10 +61,10 @@ public class TelegramBot {
 			} catch (RuntimeException ex) {
 
 				*/
-				
-				// BotLog.error("发送执行错误 \n\n" + request.toWebhookResponse(),e);
 
-				return null;
+            // BotLog.error("发送执行错误 \n\n" + request.toWebhookResponse(),e);
+
+            return null;
 				
 				/*
 
@@ -70,12 +72,12 @@ public class TelegramBot {
 			
 			*/
 
-		}
+        }
 
     }
 
-    public <T extends BaseRequest<T, R>, R extends BaseResponse> void execute(T request,Callback<T, R> callback) {
-        api.send(request,callback);
+    public <T extends BaseRequest<T, R>, R extends BaseResponse> void execute(T request, Callback<T, R> callback) {
+        api.send(request, callback);
     }
 
     public String getFullFilePath(File file) {
@@ -92,19 +94,19 @@ public class TelegramBot {
     }
 
     public void setUpdatesListener(UpdatesListener listener) {
-        setUpdatesListener(listener,new GetUpdates());
+        setUpdatesListener(listener, new GetUpdates());
     }
 
-    public void setUpdatesListener(UpdatesListener listener,GetUpdates request) {
-        setUpdatesListener(listener,null,request);
+    public void setUpdatesListener(UpdatesListener listener, GetUpdates request) {
+        setUpdatesListener(listener, null, request);
     }
 
-    public void setUpdatesListener(UpdatesListener listener,ExceptionHandler exceptionHandler) {
-        setUpdatesListener(listener,exceptionHandler,new GetUpdates());
+    public void setUpdatesListener(UpdatesListener listener, ExceptionHandler exceptionHandler) {
+        setUpdatesListener(listener, exceptionHandler, new GetUpdates());
     }
 
-    public void setUpdatesListener(UpdatesListener listener,ExceptionHandler exceptionHandler,GetUpdates request) {
-        updatesHandler.start(this,listener,exceptionHandler,request);
+    public void setUpdatesListener(UpdatesListener listener, ExceptionHandler exceptionHandler, GetUpdates request) {
+        updatesHandler.start(this, listener, exceptionHandler, request);
     }
 
     public void removeGetUpdatesListener() {
@@ -126,7 +128,7 @@ public class TelegramBot {
 
         public Builder(String botToken) {
             this.botToken = botToken;
-            api = new TelegramBotClient(client(null),gson(),apiUrl(API_URL,botToken));
+            api = new TelegramBotClient(client(null), gson(), apiUrl(API_URL, botToken));
             fileApi = new FileApi(botToken);
             updatesHandler = new UpdatesHandler(100);
         }
@@ -159,19 +161,19 @@ public class TelegramBot {
         public TelegramBot build() {
             if (okHttpClient != null || apiUrl != null) {
                 OkHttpClient client = okHttpClient != null ? okHttpClient : client(null);
-                String baseUrl = apiUrl(apiUrl != null ? apiUrl : API_URL,botToken);
-                api = new TelegramBotClient(client,gson(),baseUrl);
+                String baseUrl = apiUrl(apiUrl != null ? apiUrl : API_URL, botToken);
+                api = new TelegramBotClient(client, gson(), baseUrl);
             }
             if (fileApiUrl != null) {
-                fileApi = new FileApi(fileApiUrl,botToken);
+                fileApi = new FileApi(fileApiUrl, botToken);
             }
             return new TelegramBot(this);
         }
 
         private static OkHttpClient client(Interceptor interceptor) {
             OkHttpClient.Builder builder = new OkHttpClient.Builder()
-				.connectTimeout(75,TimeUnit.SECONDS)
-				.readTimeout(75,TimeUnit.SECONDS);
+                    .connectTimeout(75, TimeUnit.SECONDS)
+                    .readTimeout(75, TimeUnit.SECONDS);
             if (interceptor != null) builder.addInterceptor(interceptor);
             return builder.build();
         }
@@ -184,7 +186,7 @@ public class TelegramBot {
             return new Gson();
         }
 
-        private static String apiUrl(String apiUrl,String botToken) {
+        private static String apiUrl(String apiUrl, String botToken) {
             return apiUrl + botToken + "/";
         }
     }

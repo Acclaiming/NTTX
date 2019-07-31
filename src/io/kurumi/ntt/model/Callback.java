@@ -31,50 +31,50 @@ public class Callback extends Msg {
 
     @Override
     public UserData from() {
-        
+
         return UserData.get(query.from());
-        
+
     }
-    
+
     public String inlineMessgeId() {
-				
-				return query.inlineMessageId();
-				
-		}
+
+        return query.inlineMessageId();
+
+    }
 
     public void confirm() {
 
-        fragment.executeAsync(update,answer());
+        fragment.executeAsync(update, answer());
 
     }
 
     public void text(String... text) {
 
-        fragment.executeAsync(update,answer().text(ArrayUtil.join(text, "\n")));
+        fragment.executeAsync(update, answer().text(ArrayUtil.join(text, "\n")));
 
     }
 
     public void alert(String... alert) {
 
-        fragment.executeAsync(update,answer().text(ArrayUtil.join(alert, "\n")).showAlert(true));
-				
+        fragment.executeAsync(update, answer().text(ArrayUtil.join(alert, "\n")).showAlert(true));
+
     }
-		
-		public void payload(String... text) {
-				
-				url("https://t.me/" + fragment.origin.me.username() + "?start=" + ArrayUtil.join(text,fragment.PAYLOAD_SPLIT));
-				
-		}
+
+    public void payload(String... text) {
+
+        url("https://t.me/" + fragment.origin.me.username() + "?start=" + ArrayUtil.join(text, fragment.PAYLOAD_SPLIT));
+
+    }
 
     public void url(String url) {
 
-        fragment.executeAsync(update,answer().url(url));
+        fragment.executeAsync(update, answer().url(url));
 
     }
 
     public AnswerCallbackQuery answer() {
 
-       return new AnswerCallbackQuery(query.id());
+        return new AnswerCallbackQuery(query.id());
 
     }
 

@@ -6,6 +6,7 @@ import io.kurumi.ntt.*;
 
 import java.io.*;
 import java.util.*;
+
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.request.SendAnimation;
 
@@ -23,20 +24,20 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 public class GroupData {
 
     public static CachedData<GroupData> data = new CachedData<GroupData>(GroupData.class);
-	
-	public static void delete(long id) {
-		
-		synchronized (data.idIndex) {
-			
-			data.deleteById(id);
-			
-			data.idIndex.remove(id);
-			
-		}
-		
-	}
-	
-	public static GroupData get(long id) {
+
+    public static void delete(long id) {
+
+        synchronized (data.idIndex) {
+
+            data.deleteById(id);
+
+            data.idIndex.remove(id);
+
+        }
+
+    }
+
+    public static GroupData get(long id) {
 
         synchronized (data.idIndex) {
 
@@ -56,7 +57,7 @@ public class GroupData {
 
             }
 
-            data.idIndex.put(id,group);
+            data.idIndex.put(id, group);
 
             return group;
 
@@ -85,9 +86,9 @@ public class GroupData {
 
             }
 
-			group.title = chat.title();
+            group.title = chat.title();
 
-            data.idIndex.put(chat.id(),group);
+            data.idIndex.put(chat.id(), group);
 
             return group;
 
@@ -97,146 +98,148 @@ public class GroupData {
 
     public long id;
 
-	public String title;
+    public String title;
 
-	public Long owner;
+    public Long owner;
 
     public List<Long> admins;
-	public List<Long> full_admins;
+    public List<Long> full_admins;
 
-	public Boolean not_trust_admin;
-	public Integer delete_service_msg;
-	public Integer last_service_msg;
+    public Boolean not_trust_admin;
+    public Integer delete_service_msg;
+    public Integer last_service_msg;
 
-	public Integer delete_channel_msg;
+    public Integer delete_channel_msg;
 
-	public Boolean join_captcha;
-	public Boolean passive_mode;
+    public Boolean join_captcha;
+    public Boolean passive_mode;
 
-	public Map<String,Integer> passive_msg;
+    public Map<String, Integer> passive_msg;
 
-	public Map<String,Integer> captchaFailed;
-	public List<Long> waitForCaptcha;
+    public Map<String, Integer> captchaFailed;
+    public List<Long> waitForCaptcha;
 
 
-	public Integer ft_count;
-	public Integer captcha_time;
+    public Integer ft_count;
+    public Integer captcha_time;
 
-	public Integer last_join_msg;
+    public Integer last_join_msg;
 
-	public String parse_time() { return parse_time(captcha_time); }
+    public String parse_time() {
+        return parse_time(captcha_time);
+    }
 
-	public String parse_time(Integer time) {
+    public String parse_time(Integer time) {
 
-		if (time == null) {
+        if (time == null) {
 
-			return "50s";
+            return "50s";
 
-		} else if (time < 60) {
+        } else if (time < 60) {
 
-			return time + "s";
+            return time + "s";
 
-		} else {
+        } else {
 
-			return time / 60 + "分" + (time % 60 == 0 ? "" : " " + time % 60 + "秒");
+            return time / 60 + "分" + (time % 60 == 0 ? "" : " " + time % 60 + "秒");
 
-		}
+        }
 
-	}
+    }
 
-	public Boolean with_image;
-	public Boolean interfere;
-	public Boolean require_input;
+    public Boolean with_image;
+    public Boolean interfere;
+    public Boolean require_input;
 
-	public Boolean fail_ban;
+    public Boolean fail_ban;
 
-	public Boolean invite_user_ban;
-	public Boolean invite_bot_ban;
+    public Boolean invite_user_ban;
+    public Boolean invite_bot_ban;
 
-	public Integer captcha_mode;
-	public Integer captcha_del;
+    public Integer captcha_mode;
+    public Integer captcha_del;
 
-	public String custom_i_question;
-	public String custom_a_question;
+    public String custom_i_question;
+    public String custom_a_question;
 
-	public List<CustomItem> custom_items;
+    public List<CustomItem> custom_items;
 
-	public static class CustomItem {
+    public static class CustomItem {
 
-		public Boolean isValid;
-		public String text;
+        public Boolean isValid;
+        public String text;
 
-		@Override
-		public String toString() {
+        @Override
+        public String toString() {
 
-			if (isValid == null || text == null) return super.toString();
+            if (isValid == null || text == null) return super.toString();
 
-			return (isValid ? "[正确选项]" : "[错误选项]") + " " + text;
+            return (isValid ? "[正确选项]" : "[错误选项]") + " " + text;
 
-		}
+        }
 
-	}
+    }
 
-	public static List<String> custom_kw;
+    public static List<String> custom_kw;
 
-	public Integer no_invite_user;
-	public Integer no_invite_bot;
+    public Integer no_invite_user;
+    public Integer no_invite_bot;
 
-	public Integer no_sticker;
-	public Integer no_animated_sticker;
-	public Integer no_image;
-	public Integer no_animation;
-	public Integer no_audio;
-	public Integer no_video;
-	public Integer no_video_note;
-	public Integer no_contact;
-	public Integer no_location;
-	public Integer no_game;
-	public Integer no_voice;
-	public Integer no_file;
+    public Integer no_sticker;
+    public Integer no_animated_sticker;
+    public Integer no_image;
+    public Integer no_animation;
+    public Integer no_audio;
+    public Integer no_video;
+    public Integer no_video_note;
+    public Integer no_contact;
+    public Integer no_location;
+    public Integer no_game;
+    public Integer no_voice;
+    public Integer no_file;
 
-	public Integer max_count;
-	public Integer rest_action;
+    public Integer max_count;
+    public Integer rest_action;
 
-	public Integer last_warn_msg;
+    public Integer last_warn_msg;
 
-	public Map<String,Integer> restWarn;
+    public Map<String, Integer> restWarn;
 
-	public String actionName() {
+    public String actionName() {
 
-		return rest_action == null ? "限制" :
-			rest_action == 0 ? "禁言" :
-			/* rest_action == 1 ? */"封锁";
+        return rest_action == null ? "限制" :
+                rest_action == 0 ? "禁言" :
+                        /* rest_action == 1 ? */"封锁";
 
-	}
+    }
 
     //public Boolean anti_esu;
 
-	public List<String> ban_sticker_set;
+    public List<String> ban_sticker_set;
 
     public Integer welcome;
 
-	public String welcomeMessage;
-	
-	public String welcomeSticker;
-	public List<String> welcomeSet;
+    public String welcomeMessage;
 
-	public Boolean del_welcome_msg;
-	public Integer last_welcome_msg;
-	public Integer last_welcome_msg_2;
+    public String welcomeSticker;
+    public List<String> welcomeSet;
 
-	public Boolean dynamic_join;
+    public Boolean del_welcome_msg;
+    public Integer last_welcome_msg;
+    public Integer last_welcome_msg_2;
 
-	public Integer type;
-	
-	public Boolean anti_halal;
-	public Boolean cas_spam;
-	public Boolean backhole;
-	
-	
-	// 0 允许所有人加入
+    public Boolean dynamic_join;
 
-	public Boolean default_msg;
+    public Integer type;
+
+    public Boolean anti_halal;
+    public Boolean cas_spam;
+    public Boolean backhole;
+
+
+    // 0 允许所有人加入
+
+    public Boolean default_msg;
 
 	/*
 
@@ -260,12 +263,11 @@ public class GroupData {
 
 	 */
 
-	public Integer link_valid_time;
+    public Integer link_valid_time;
 
-	public Boolean dynamic_strict;
+    public Boolean dynamic_strict;
 
-	public Boolean dynamic_no_trust_admin;
-
+    public Boolean dynamic_no_trust_admin;
 
 
 }

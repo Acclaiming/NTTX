@@ -16,11 +16,11 @@ public class TAuth {
     public static Data<TAuth> data = new Data<TAuth>(TAuth.class);
 
     public boolean multiUser() {
-        
-        return data.countByField("user",user) > 1;
-        
+
+        return data.countByField("user", user) > 1;
+
     }
-    
+
     static {
         
         /*

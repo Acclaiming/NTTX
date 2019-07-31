@@ -13,6 +13,7 @@ import static com.mongodb.client.model.Updates.set;
 import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+
 import java.util.List;
 import java.util.LinkedList;
 
@@ -43,20 +44,20 @@ public class AbsData<ID, T> {
 
     }
 
-	public List<T> getAll() {
-		
-		LinkedList<T> all = new LinkedList<>();
+    public List<T> getAll() {
 
-		for (T t : collection.find()) {
-			
-			all.add(t);
-			
-		}
-		
-		return all;
+        LinkedList<T> all = new LinkedList<>();
 
-	}
-	
+        for (T t : collection.find()) {
+
+            all.add(t);
+
+        }
+
+        return all;
+
+    }
+
     public T getById(ID id) {
 
         return collection.find(eq(FIELD_ID, id)).first();
@@ -80,21 +81,21 @@ public class AbsData<ID, T> {
         return collection.find(eq(field, value));
 
     }
-	
-	public List<T> getAllByField(String field,Object value) {
 
-		LinkedList<T> all = new LinkedList<>();
+    public List<T> getAllByField(String field, Object value) {
 
-		for (T t : findByField(field,value)) {
+        LinkedList<T> all = new LinkedList<>();
 
-			all.add(t);
+        for (T t : findByField(field, value)) {
 
-		}
+            all.add(t);
 
-		return all;
+        }
 
-	}
-	
+        return all;
+
+    }
+
 
     public T getByField(String field, Object value) {
 
