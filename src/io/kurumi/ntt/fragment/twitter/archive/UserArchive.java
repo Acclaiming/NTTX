@@ -24,6 +24,11 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import io.kurumi.ntt.*;
 import io.kurumi.ntt.model.request.*;
 import cn.hutool.core.util.*;
+import java.io.File;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.http.HttpUtil;
+import com.pengrad.telegrambot.request.SendPhoto;
+import com.pengrad.telegrambot.model.request.ParseMode;
 
 public class UserArchive {
 
@@ -153,26 +158,38 @@ public class UserArchive {
 
             TrackTask.onUserChange(this,"用户被冻结或已停用 :)");
 
-			if (StrUtil.isBlank(bio)) {
+			if (Env.TEP_CHANNEL == -1 || TEPH.data.containsId(id)) {
 
-				if (Env.TEP_CHANNEL != null && !TEPH.data.containsId(id)) {
-					
-					new Send(Env.TEP_CHANNEL,"#推友消失 (冻结 / 删除账号)\n",urlHtml() + " ( #" + screenName + " )").html().async();
+				File photo = new File(Env.CACHE_DIR,"twitter_profile_images/" + FileUtil.getName(photoUrl));
+
+				if (!photo.isFile()) {
+
+					HttpUtil.downloadFile(photoUrl,photo);
 
 				}
-					
-				new Send(Env.LOG_CHANNEL,"#账号冻结 / 停用",Html.code(name + " : @" + screenName)).html().disableNotification().async();
 
-			} else {
+				String notice;
 
-				if (Env.TEP_CHANNEL != null && !TEPH.data.containsId(id)) {
+				if (StrUtil.isBlank(bio)) {
+
+					notice = "#推友消失 (冻结 / 删除账号)\n\n" + urlHtml() + " ( #" + screenName + " )";
+
+				} else {
+
+					notice = "#推友消失 (冻结 / 删除账号)\n\n" + urlHtml() + " ( #" + screenName + " )" + "\n\n简介 : " + bio;
+
+				}
+
+				if (photo.isFile()) {
 					
-					new Send(Env.TEP_CHANNEL,"#推友消失 (冻结 / 删除账号)\n",urlHtml() + " ( #" + screenName + " )","\n简介 : " + bio).html().async();
+					Launcher.INSTANCE.execute(new SendPhoto(Env.TEP_CHANNEL,photo).caption(notice).parseMode(ParseMode.HTML));
+					
+				} else {
+					
+					new Send(Env.TEP_CHANNEL,notice).html().exec();
+					
+				}
 				
-				}
-					
-				new Send(Env.LOG_CHANNEL,"账号冻结 / 停用",Html.code(name + " : @" + screenName + "\n\n简介 : " + bio)).html().disableNotification().async();
-
 			}
 
             return true;
@@ -200,21 +217,21 @@ public class UserArchive {
 			if (StrUtil.isBlank(bio)) {
 
 				if (Env.TEP_CHANNEL != null && !TEPH.data.containsId(id)) {
-					
+
 					new Send(Env.TEP_CHANNEL,"#推友回档 (取消冻结 / 重新启用)\n",urlHtml() + " ( #" + screenName + " )").html().async();
 
 				}
-					
+
 				new Send(Env.LOG_CHANNEL,"#取消冻结 / 重新启用",Html.code(name + " : @" + screenName)).html().async();
 
 			} else {
 
 				if (Env.TEP_CHANNEL != null && !TEPH.data.containsId(id)) {
-					
+
 					new Send(Env.TEP_CHANNEL,"#推友回档 (取消冻结 / 重新启用)\n",urlHtml() + " ( #" + screenName + " )","\n简介 : " + bio).html().async();
 
 				}
-					
+
 				new Send(Env.LOG_CHANNEL,"取消冻结 / 重新启用",Html.code(name + " : @" + screenName + "\n\n简介 : " + bio)).html().async();
 
 			}
