@@ -104,6 +104,8 @@ public class MvnResolver {
 		art.groupId = groupId;
 		art.artifactId = artifactId;
 
+		if (version.matches("(\\+|latest)")) version = null;
+		
 		String targetRepository = null;
 
 		if (version == null) {

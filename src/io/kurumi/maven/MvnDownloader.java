@@ -37,7 +37,7 @@ public class MvnDownloader extends Fragment {
 		}
 		
 		MvnResolver resolver = new MvnResolver();
-	
+		
 		MvnArtifact result = resolver.resolve(params[0],params[1],params[2],null);
 
 		if (result == null) {
