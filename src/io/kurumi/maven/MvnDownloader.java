@@ -33,13 +33,15 @@ public class MvnDownloader extends Fragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-		if (params.length < 3) {
+		if (params.length < 2) {
 
 			msg.invalidParams("groupId","artifactId","version").async();
 
 			return;
 
 		}
+		
+		String version = params.length == 2 ? "+" : params[2];
 
 		MvnResolver resolver = new MvnResolver();
 
@@ -49,7 +51,7 @@ public class MvnDownloader extends Fragment {
 
 		try {
 
-			result = resolver.resolve(params[0],params[1],params[2],null,log);
+			result = resolver.resolve(params[0],params[1],version,null,log);
 
 		} catch (MvnException e) {
 
