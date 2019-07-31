@@ -97,19 +97,39 @@ public class MvnResolver {
 
 	}
 
-	public MvnArtifact resolve(String groupId,String artifactId,String version,String defaultRepository) throws MvnException {
+	public MvnArtifact resolve(String groupId,String artifactId,String version) throws MvnException {
+		
+		return resolve(groupId,artifactId,version);
+		
+	}
+	
+	public MvnArtifact resolve(String groupId,String artifactId,String version,String defaultRepository,StringBuilder log) throws MvnException {
 
 		MvnArtifact art = new MvnArtifact();
 
 		art.groupId = groupId;
 		art.artifactId = artifactId;
 
-		if (version.matches("(\\+|latest)")) version = null;
-		
 		String targetRepository = null;
 
+		if (log == null) {
+		
+		log = new StringBuilder("解析失败 :");
+	
+		}
+		
+		log.append("\n\n正在解析 : ").append(groupId).append(":").append(artifactId).append(":").append(version);
+		
+		if (version.matches("(\\+|latest)")) {
+			
+			version = null;
+			
+		}
+		
 		if (version == null) {
 
+			log.append("\n没有指定版本，正在获取");
+			
 			String mavenMeta = null;
 
 			if (defaultRepository != null) {
@@ -120,7 +140,14 @@ public class MvnResolver {
 
 					targetRepository = defaultRepository;
 
-				} catch (HttpException ignored) {}
+					log.append("\n从上级获取最新版本 成功");
+					
+				} catch (HttpException ignored) {
+					
+					log.append("\n从上级获取最新版本 失败");
+					
+					
+				}
 
 			}
 
@@ -134,15 +161,22 @@ public class MvnResolver {
 
 						targetRepository = repository;
 
+						log.append("\n从 "+ repository + " 获取最新版本 成功");
+						
 						break;
 
-					} catch (HttpException ignored) {}
+					} catch (HttpException ignored) {
+						
+						log.append("\n从 "+ repository + " 获取最新版本 失败");
+						
+						
+					}
 
 				}
 
 			}
 
-			if (mavenMeta == null) throw new MvnException("找不到这个库");
+			if (mavenMeta == null) throw new MvnException(log.toString());
 
 			Document document;
 
@@ -152,7 +186,9 @@ public class MvnResolver {
 
 			} catch (Exception e) {
 
-				throw new MvnException("metadata 解析失败",e);
+				log.append("\n解析元数据失败 : " + e.toString());
+				
+				throw new MvnException(log.toString());
 
 			}
 
@@ -164,7 +200,7 @@ public class MvnResolver {
 
 		String pomXml = null;
 
-		if (targetRepository != null) {
+		if (targetRepository != null && !targetRepository.equals(defaultRepository)) {
 
 			try {
 
@@ -172,7 +208,13 @@ public class MvnResolver {
 
 				targetRepository = defaultRepository;
 
-			} catch (HttpException ignored) {}
+				log.append("\n从 " + targetRepository + " 获取 Pom 成功");
+				
+			} catch (HttpException ignored) {
+				
+				log.append("\n从 " + targetRepository + " 获取 Pom 失败");
+				
+			}
 
 		} else if (defaultRepository != null) {
 
@@ -180,7 +222,13 @@ public class MvnResolver {
 
 				pomXml = HttpUtil.get(defaultRepository + groupId.replace(".","/") + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version + ".pom");
 
-			} catch (HttpException ignored) {}
+				log.append("\n从上级源获取 Pom 成功");
+				
+			} catch (HttpException ignored) {
+				
+				log.append("\n从上级源获取 Pom 失败");
+				
+			}
 
 		}
 
@@ -194,16 +242,28 @@ public class MvnResolver {
 
 					targetRepository = repository;
 
+					log.append("\n从 " + repository + " 获取 Pom 成功");
+					
 					break;
 
-				} catch (HttpException ignored) {}
+				} catch (HttpException ignored) {
+					
+					log.append("\n从 " + repository + " 获取 Pom 失败");
+					
+				}
 
 			}
 
 		}
 
-		if (pomXml == null) throw new MvnException("找不到 pom.xml");
+		if (pomXml == null) {
+			
+			log.append("\n获取 Pom 失败");
+			
+			throw new MvnException(log.toString());
 
+		}
+			
 		Document document;
 
 		try {
@@ -212,7 +272,9 @@ public class MvnResolver {
 
 		} catch (Exception e) {
 
-			throw new MvnException("pom.xml 解析失败");
+			log.append("\n解析 Pom 失败 : " + e.toString());
+			
+			throw new MvnException(log.toString());
 
 		}
 
@@ -291,7 +353,7 @@ public class MvnResolver {
 				
 			}
 			
-			MvnArtifact dep = resolve(group,artifact,depVer,targetRepository);
+			MvnArtifact dep = resolve(group,artifact,depVer,targetRepository,log);
 
 			if (dep != null) art.dependencies.add(dep);
 			
