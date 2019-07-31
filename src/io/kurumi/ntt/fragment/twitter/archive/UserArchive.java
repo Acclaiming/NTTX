@@ -158,7 +158,7 @@ public class UserArchive {
 
             TrackTask.onUserChange(this,"用户被冻结或已停用 :)");
 
-			if (Env.TEP_CHANNEL == -1 || TEPH.data.containsId(id)) {
+			if (Env.TEP_CHANNEL != -1 && !TEPH.data.containsId(id)) {
 
 				File photo = new File(Env.CACHE_DIR,"twitter_profile_images/" + FileUtil.getName(photoUrl));
 
