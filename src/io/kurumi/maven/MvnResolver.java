@@ -204,8 +204,6 @@ public class MvnResolver {
 
 				pomXml = HttpUtil.get(targetRepository + groupId.replace(".","/") + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version + ".pom");
 
-				targetRepository = defaultRepository;
-
 				log.append("\n从 " + targetRepository + " 获取 Pom 成功");
 				
 			} catch (HttpException ignored) {
@@ -266,7 +264,7 @@ public class MvnResolver {
 
 		try {
 
-			document = new SAXBuilder().build(pomXml);
+			document = new SAXBuilder().build(new StringReader(pomXml));
 
 		} catch (Exception e) {
 
