@@ -306,7 +306,13 @@ public class MvnResolver {
 
 		art.dependencies = new LinkedList<>();
 		
-		if (dependencies == null) return art;
+		if (dependencies == null) {
+			
+			log.append("\n没有依赖项");
+			
+			return art;
+			
+		}
 		
 		for (Element dependency : dependencies.getChildren()) {
 					
