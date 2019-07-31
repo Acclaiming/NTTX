@@ -398,6 +398,10 @@ public class MvnResolver {
 
 				}
 
+			} else {
+				
+				depVer = "+";
+				
 			}
 
 			log.append("\n\n发现依赖 : " + group + ":" + artifact + ":" + depVer);
