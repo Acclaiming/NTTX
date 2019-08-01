@@ -39,6 +39,7 @@ import cn.hutool.json.*;
 import java.util.regex.*;
 
 import cn.hutool.core.util.*;
+import io.kurumi.ntt.utils.BotLog;
 
 public class JoinCaptcha extends Fragment {
 
@@ -1394,6 +1395,8 @@ public class JoinCaptcha extends Fragment {
 
     void failed(UserData user, Msg msg, AuthCache auth, GroupData gd, boolean noRetey) {
 
+		BotLog.errorWithStack("test");
+		
         if (cache.containsKey(msg.chatId())) {
 
             AuthCache rdc = cache.get(msg.chatId()).remove(user.id);
