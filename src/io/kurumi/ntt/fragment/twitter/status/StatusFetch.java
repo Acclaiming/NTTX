@@ -120,11 +120,11 @@ public class StatusFetch extends Fragment {
 
             } catch (TwitterException ex) {
 
-                if (ex.getErrorCode() == 136) {
+                //if (ex.getErrorCode() == 136) {
 
                     exc = ex;
 
-                }
+               // }
 
             }
         }
