@@ -192,9 +192,9 @@ public class Msg extends Context {
 
     }
 
-    public boolean exit() {
+    public void exit() {
 
-        return fragment.bot().execute(new LeaveChat(chatId())).isOk();
+        return fragment.executeAsync(update,new LeaveChat(chatId())).isOk();
 
     }
 
