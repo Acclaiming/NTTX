@@ -194,7 +194,7 @@ public class Msg extends Context {
 
     public void exit() {
 
-        return fragment.executeAsync(update,new LeaveChat(chatId())).isOk();
+        fragment.executeAsync(update,new LeaveChat(chatId()));
 
     }
 
