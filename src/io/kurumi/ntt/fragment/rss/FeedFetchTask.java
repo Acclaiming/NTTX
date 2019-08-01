@@ -319,9 +319,23 @@ public class FeedFetchTask extends TimerTask {
 
     static String generateSign(SyndEntry entry) {
 
-        long time = entry.getPublishedDate().getTime();
+		StringBuilder str = new StringBuilder();
+		
+		if (entry.getPublishedDate() != null) {
+		
+        str.append(entry.getPublishedDate().getTime());
 
-        return DigestUtil.md5Hex(time + (StrUtil.isBlank(entry.getLink()) ? entry.getTitle() : entry.getTitle() + entry.getLink()));
+		}
+		
+		str.append(entry.getTitle());
+		
+		if (!StrUtil.isBlank(entry.getLink())) {
+			
+			str.append(entry.getLink());
+			
+		}
+		
+        return DigestUtil.md5Hex(str.toString());
 
     }
 
