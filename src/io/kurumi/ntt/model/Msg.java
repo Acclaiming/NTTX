@@ -326,6 +326,8 @@ public class Msg extends Context {
 
     public void kick(Long userId, boolean ban) {
 
+		BotLog.errorWithStack("kick");
+		
         if (userId.equals(fragment.origin.me.id())) {
 
             BotLog.errorWithStack("错误 : 移除自己");

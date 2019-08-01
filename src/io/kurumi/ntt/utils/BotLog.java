@@ -118,7 +118,7 @@ public class BotLog extends ConsoleLog {
 
     public static void errorWithStack(String message) {
 
-        log.error(new RuntimeException(), message);
+        error( message,new Exception());
 
     }
 
