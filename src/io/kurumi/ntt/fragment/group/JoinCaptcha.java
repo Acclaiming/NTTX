@@ -113,8 +113,15 @@ public class JoinCaptcha extends Fragment {
                     if (resp.isOk()) {
 
                         if (data.passive_msg == null) data.passive_msg = new HashMap<>();
-                        data.passive_msg.put(user.id.toString(), resp.message().messageId());
+                       
+						Integer last = data.passive_msg.put(user.id.toString(),resp.message().messageId());
 
+						if (last != null) {
+							
+							execute(new DeleteMessage(data.id,last));
+							
+						}
+						
                     }
 
                 }
