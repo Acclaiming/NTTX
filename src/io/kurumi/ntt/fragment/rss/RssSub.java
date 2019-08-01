@@ -540,7 +540,7 @@ public class RssSub extends Fragment {
 
                     int d;
 
-                    if (!NumberUtil.isNumber(params[3]) || (d = NumberUtil.parseInt(params[2])) > 7 || d < 1) {
+                    if (!NumberUtil.isNumber(params[3]) || (d = NumberUtil.parseInt(params[3])) > 7 || d < 1) {
 
                         msg.send("无效的天数 : " + params[3]).async();
 
