@@ -192,9 +192,9 @@ public class JoinCaptcha extends Fragment {
 
                         if (new JSONObject(result).getBool("ok", false)) {
 
-                            msg.kick(true);
+                            msg.restrict();
 
-                            msg.send(newData.userName() + " 在 Combot Anit-Spam 黑名单内，已封锁。", "详情请查看 : https://combot.org/cas/query?u=" + newData.id).async();
+                            msg.send(newData.userName() + " 在 Combot Anit-Spam 黑名单内，已禁言。", "详情请查看 : https://combot.org/cas/query?u=" + newData.id).async();
 
                         }
 
