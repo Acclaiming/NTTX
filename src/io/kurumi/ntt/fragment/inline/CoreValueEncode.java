@@ -23,6 +23,8 @@ public class CoreValueEncode extends Fragment {
 		
 		inlineQuery.article("编码完成",encoder.encode(inlineQuery.queryString()),null,null);
 		
+		executeAsync(inlineQuery.update,inlineQuery.reply());
+		
 	}
 	
 }
