@@ -185,9 +185,9 @@ public class Firewall extends Fragment {
 
             if (block.containsId(user.id)) {
 
-                bot().execute(new LeaveChat(msg.chat().id()));
+                if (isMainInstance()) bot().execute(new LeaveChat(msg.chat().id()));
 
-                new Send(Env.LOG_CHANNEL, "BOT " + UserData.get(origin.me) + " 被 " + user.userName() + " 邀请到 " + msg.chat().title() + " [" + Html.code(msg.chat().id()) + "]").html().async();
+                new Send(Env.LOG_CHANNEL, "BOT " + UserData.get(origin.me).userName() + " 被 " + user.userName() + " 邀请到 " + msg.chat().title() + " [" + Html.code(msg.chat().id()) + "]").html().async();
 
                 return true;
 
@@ -203,9 +203,9 @@ public class Firewall extends Fragment {
 
                 if (!block.containsId(current.id)) continue;
 
-                bot().execute(new LeaveChat(msg.chat().id()));
+                if (isMainInstance()) bot().execute(new LeaveChat(msg.chat().id()));
 
-                new Send(Env.LOG_CHANNEL, "BOT " + UserData.get(origin.me) + " 被 " + user.userName() + " 邀请到 " + msg.chat().title() + " [" + Html.code(msg.chat().id()) + "] 因为管理员 " + current.userName()).html().async();
+                new Send(Env.LOG_CHANNEL, "BOT " + UserData.get(origin.me).userName() + " 被 " + user.userName() + " 邀请到 " + msg.chat().title() + " [" + Html.code(msg.chat().id()) + "] 因为管理员 " + current.userName()).html().async();
 
                 return true;
 
