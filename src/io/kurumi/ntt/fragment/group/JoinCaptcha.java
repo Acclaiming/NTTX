@@ -74,6 +74,8 @@ public class JoinCaptcha extends Fragment {
 
                 final UserData user = UserData.get(c.getKey());
 
+				if (user == null) continue;
+				
                 auth.task.cancel();
 
                 if (auth.authMsg != null) {
@@ -81,7 +83,6 @@ public class JoinCaptcha extends Fragment {
                     auth.authMsg.delete();
 
                     auth.authMsg.restrict(user.id);
-
 
                     if (data.passive_msg != null && data.passive_msg.containsKey(user.id.toString())) {
 

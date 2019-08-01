@@ -137,7 +137,7 @@ public class GroupOptions extends Fragment {
 
         if (user.blocked()) {
 
-            msg.send("你不能这么做 (为什么？)").async();
+            msg.send("你不能这么做 (为什么？)").failedWith();
 
             return;
 

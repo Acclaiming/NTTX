@@ -74,9 +74,9 @@ public class GroupData {
 
                 data.idIndex.clear();
 
-            } else if (data.idIndex.containsKey(chat.id())) return data.idIndex.get(chat.id());
+            } else if (data.idIndex.containsKey(chat.id().longValue())) return data.idIndex.get(chat.id().longValue());
 
-            GroupData group = data.getNoCache(chat.id());
+            GroupData group = data.getNoCache(chat.id().longValue());
 
             if (group == null) {
 
@@ -88,7 +88,7 @@ public class GroupData {
 
             group.title = chat.title();
 
-            data.idIndex.put(chat.id(), group);
+            data.idIndex.put(chat.id().longValue(), group);
 
             return group;
 
