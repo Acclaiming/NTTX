@@ -79,6 +79,8 @@ public class GroupFunction extends Fragment {
 
                 if (data.waitForCaptcha != null && data.waitForCaptcha.contains(user.id)) {
 
+					if (newUser.id().equals(user.id)) return;
+					
                     msg.kick(newUser.id());
 
                     if (newUser.isBot()) {
