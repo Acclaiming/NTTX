@@ -2088,7 +2088,7 @@ public class GroupOptions extends Fragment {
                     .newButton("开启日志")
                     .newButton(data.enable_log != null ? "✅" : "☑", POINT_SET_CLOG, data.id, "switch");
 
-				newButtonLine("设置日志频道",POINT_SET_CLOG,"set_channel");
+				newButtonLine("设置日志频道",POINT_SET_CLOG,data.id,"set_channel");
 					
 				newButtonLine("🔙", POINT_BACK, data.id);
 

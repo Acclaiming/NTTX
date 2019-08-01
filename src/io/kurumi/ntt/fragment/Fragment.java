@@ -462,7 +462,7 @@ public class Fragment {
 
     public int checkCallback(UserData user, Callback callback, String point, String[] params) {
 
-        return PROCESS_ASYNC;
+        return PROCESS_SYNC;
 
     }
 
