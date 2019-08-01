@@ -19,7 +19,7 @@ public class CoreValueEncode extends Fragment {
 	@Override
 	public void onQuery(UserData user, Query inlineQuery) {
 		
-		if (inlineQuery.startsWith("C")) return;
+		if (!inlineQuery.startsWith("C")) return;
 		
 		inlineQuery.article("编码完成",encoder.encode(inlineQuery.queryString()),null,null);
 		
