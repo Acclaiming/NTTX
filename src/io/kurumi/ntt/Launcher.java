@@ -70,6 +70,7 @@ import io.kurumi.ntt.utils.BotLog;
 
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
+import io.kurumi.ntt.fragment.extra.ShowFile;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -331,6 +332,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         addFragment(new Manchurize());
         addFragment(new MvnDownloader());
+		addFragment(new ShowFile());
 
     }
 

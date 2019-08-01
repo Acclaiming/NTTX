@@ -41,7 +41,7 @@ import io.kurumi.ntt.Launcher;
 
 public class Fragment {
 
-    public String PAYLOAD_SPLIT = "_";
+    public static String PAYLOAD_SPLIT = "_";
 
     public BotFragment origin;
 

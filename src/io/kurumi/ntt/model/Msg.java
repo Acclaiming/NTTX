@@ -70,6 +70,12 @@ public class Msg extends Context {
         return null;
 
     }
+	
+	public void invalidQuery() {
+		
+		send("Invalid Query :)").async();
+		
+	}
 
     public Send invalidParams(String... params) {
 
