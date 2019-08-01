@@ -29,6 +29,9 @@ import io.kurumi.ntt.fragment.bots.*;
 import cn.hutool.http.HtmlUtil;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.response.SendResponse;
+import com.pengrad.telegrambot.request.GetChatMember;
+import com.pengrad.telegrambot.response.GetChatMemberResponse;
+import com.pengrad.telegrambot.model.ChatMember;
 
 public class GroupOptions extends Fragment {
 
@@ -1671,13 +1674,13 @@ public class GroupOptions extends Fragment {
 			
 			if (msg.message().forwardFromChat() == null) {
 				
-				msg.send("请转发一条将要被设为日志频道的频道的消息").withCancel().async();
+				msg.send("请转发一条将要被设为日志频道的频道的消息").withCancel().exec(data);
 				
 				return;
 			
 			} else if (msg.message().forwardFromChat().type() != Chat.Type.channel) {
 				
-				msg.send("这条消息不来自一个频道 ！").withCancel().async();
+				msg.send("这条消息不来自一个频道 ！").withCancel().exec(data);
 				
 				return;
 
@@ -1685,21 +1688,28 @@ public class GroupOptions extends Fragment {
 			
 			long channelId = msg.message().forwardFromChat().id();
 			
-			SendResponse resp = new Send(this,channelId,".Test").disableNotification().exec();
+			GetChatMemberResponse resp = execute(new GetChatMember(channelId,user.id.intValue()));
 
 			if (resp == null) {
 				
-				msg.send("Telegram 超时 请重试").async();
-				
+				msg.send("Telegram 超时 请重试").exec(data);
+			
 				return;
 				
 			} else if (!resp.isOk()) {
 				
-				msg.send("无法在该频道发言 ( " + resp.errorCode() + " : " + resp.description() + " )").async();
+				msg.send("BOT不在该频道 ( " + resp.errorCode() + " : " + resp.description() + " )").exec(data);
+				
+				return;
+				
+			} else if (!(resp.chatMember().status() == ChatMember.Status.creator || resp.chatMember().status() == ChatMember.Status.administrator)) {
+				
+				msg.send("你不是该频道的管理员 :)").exec(data);
 				
 				return;
 				
 			}
+			
 			
 			edit.data.log_channel = channelId;
 			
