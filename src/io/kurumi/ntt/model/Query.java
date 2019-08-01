@@ -18,6 +18,7 @@ import java.util.LinkedList;
 
 import com.pengrad.telegrambot.model.request.InlineQueryResultCachedSticker;
 import com.pengrad.telegrambot.model.*;
+import cn.hutool.core.util.StrUtil;
 
 public class Query {
 
@@ -34,6 +35,17 @@ public class Query {
         this.text = query.query();
     }
 
+	public boolean startsWith(String prefix) {
+		
+		return text != null && text.startsWith(prefix + " ") && !StrUtil.isEmpty(text.substring(prefix.length()));
+		
+	}
+	
+	public String queryString() {
+		
+		return StrUtil.subAfter(text," ",false).trim();
+		
+	}
 
     public Query article(String title, String content, ParseMode parseMode, ButtonMarkup buttons) {
 
