@@ -769,7 +769,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 			
 			str.append("文件名称 : ").append(Html.code(msg.doc().fileName()));
 			str.append("文件ID : ").append(Html.code(msg.doc().fileId()));
-			str.append("分享链接 : ").append(ShowFile.createPayload(this,msg.doc().fileId());
+			str.append("分享链接 : ").append(ShowFile.createPayload(this,msg.doc().fileId()));
 			
 		}
 
