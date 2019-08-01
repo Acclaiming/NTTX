@@ -28,6 +28,7 @@ import com.pengrad.telegrambot.model.Sticker;
 import io.kurumi.ntt.fragment.bots.*;
 import cn.hutool.http.HtmlUtil;
 import com.pengrad.telegrambot.model.Chat;
+import com.pengrad.telegrambot.response.SendResponse;
 
 public class GroupOptions extends Fragment {
 
@@ -1674,7 +1675,25 @@ public class GroupOptions extends Fragment {
 
 			}
 			
-			edit.data.log_channel = msg.message().forwardFromChat().id();
+			long channelId = msg.message().forwardFromChat().id();
+			
+			SendResponse resp = new Send(this,channelId,".Test").disableNotification().exec();
+
+			if (resp == null) {
+				
+				msg.send("Telegram 超时 请重试").async();
+				
+				return;
+				
+			} else if (!resp.isOk()) {
+				
+				msg.send("无法在该频道发言 ( " + resp.errorCode() + " : " + resp.description() + " )").async();
+				
+				return;
+				
+			}
+			
+			edit.data.log_channel = channelId;
 			
 			clearPrivatePoint(user);
 			
