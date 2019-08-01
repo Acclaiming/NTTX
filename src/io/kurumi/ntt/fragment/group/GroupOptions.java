@@ -278,6 +278,14 @@ public class GroupOptions extends Fragment {
             return;
 
         }
+		
+		if (!NumberUtil.isNumber(params[0])) {
+			
+			callback.alert("Invalid Call");
+			
+			return;
+			
+		}
 
         final GroupData data = GroupData.data.getById(NumberUtil.parseLong(params[0]));
 
