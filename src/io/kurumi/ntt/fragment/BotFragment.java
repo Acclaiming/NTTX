@@ -22,6 +22,7 @@ import java.util.concurrent.*;
 import okhttp3.*;
 
 import io.kurumi.ntt.model.Callback;
+import io.kurumi.ntt.fragment.extra.ShowFile;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener, ExceptionHandler {
 
@@ -763,6 +764,14 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
             return;
 
         }
+		
+		if (msg.doc() != null) {
+			
+			str.append("文件名称 : ").append(Html.code(msg.doc().fileName()));
+			str.append("文件ID : ").append(Html.code(msg.doc().fileId()));
+			str.append("分享链接 : ").append(ShowFile.createPayload(this,msg.doc().fileId());
+			
+		}
 
         if (!no_reply) {
 
