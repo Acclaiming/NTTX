@@ -29,7 +29,7 @@ public class StatusFetch extends Fragment {
     }
 
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
         if (user.blocked()) {
 
@@ -47,19 +47,19 @@ public class StatusFetch extends Fragment {
 
         }
 
-        requestTwitter(user, msg);
+        requestTwitter(user,msg);
 
     }
 
     @Override
-    public int checkTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
+    public int checkTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
         return PROCESS_ASYNC;
 
     }
 
     @Override
-    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
+    public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
         Twitter api = account.createApi();
 
@@ -106,7 +106,7 @@ public class StatusFetch extends Fragment {
 
                 try {
 
-                    tl = api.getUserTimeline(archive.id, new Paging().count(200));
+                    tl = api.getUserTimeline(archive.id,new Paging().count(200));
 
                     status.edit("检查完成...").exec();
 
@@ -130,37 +130,47 @@ public class StatusFetch extends Fragment {
         }
 
 
-        if (!accessable && user.admin()) {
+        if (!accessable) {
 
-            status.edit("尝试拉取...").exec();
+			if (user.admin()) {
 
-            TAuth accessableAuth = NTT.loopFindAccessable(targetL == -1 ? target : targetL);
+				status.edit("尝试拉取...").exec();
 
-            if (accessableAuth == null) {
+				TAuth accessableAuth = NTT.loopFindAccessable(targetL == -1 ? target : targetL);
 
-                if (exc != null) {
+				if (accessableAuth == null) {
 
-                    status.edit("尝试失败", NTT.parseTwitterException(exc)).exec();
+					if (exc != null) {
 
-                    return;
+						status.edit("尝试失败",NTT.parseTwitterException(exc)).exec();
 
-                } else {
+						return;
 
-                    status.edit("尝试失败", "这个人锁推了...").exec();
+					} else {
 
-                    return;
+						status.edit("尝试失败","这个人锁推了...").exec();
 
-                }
+						return;
 
-            }
+					}
 
-            api = accessableAuth.createApi();
+				}
 
-            if (archive == null) {
+				api = accessableAuth.createApi();
 
-                archive = targetL == -1 ? UserArchive.get(target) : UserArchive.get(targetL);
+				if (archive == null) {
 
-            }
+					archive = targetL == -1 ? UserArchive.get(target) : UserArchive.get(targetL);
+
+				}
+
+			} else {
+
+				msg.send(NTT.parseTwitterException(exc)).async();
+
+				return;
+
+			}
 
         }
 
@@ -170,13 +180,13 @@ public class StatusFetch extends Fragment {
 
         boolean all = params.length > 1 && params[1].equals("--all");
 
-        new Send(Env.LOG_CHANNEL, "对 " + archive.url() + " 的推文拉取由 " + user.userName() + " 执行").html().exec();
+        new Send(Env.LOG_CHANNEL,"对 " + archive.url() + " 的推文拉取由 " + user.userName() + " 执行").html().exec();
 
         try {
 
             if (tl == null) {
 
-                tl = api.getUserTimeline(archive.id, new Paging().count(200));
+                tl = api.getUserTimeline(archive.id,new Paging().count(200));
 
             }
             if (tl.isEmpty()) {
@@ -225,12 +235,12 @@ public class StatusFetch extends Fragment {
 
             }
 
-            status.edit("正在拉取中... : ", count + "条推文已拉取").exec();
+            status.edit("正在拉取中... : ",count + "条推文已拉取").exec();
 
             w:
             while (!tl.isEmpty()) {
 
-                tl = api.getUserTimeline(archive.id, new Paging().count(200).maxId(sinceId - 1));
+                tl = api.getUserTimeline(archive.id,new Paging().count(200).maxId(sinceId - 1));
 
                 if (exists >= 10) {
 
@@ -278,15 +288,15 @@ public class StatusFetch extends Fragment {
 
                 if (tl.isEmpty()) break;
 
-                status.edit("正在拉取中...", count + "条推文已拉取").exec();
+                status.edit("正在拉取中...",count + "条推文已拉取").exec();
 
             }
 
-            status.edit("已拉取完成 :", count + "条推文已拉取").exec();
+            status.edit("已拉取完成 :",count + "条推文已拉取").exec();
 
         } catch (TwitterException e) {
 
-            status.edit("拉取失败", NTT.parseTwitterException(e)).exec();
+            status.edit("拉取失败",NTT.parseTwitterException(e)).exec();
 
         }
 
