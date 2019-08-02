@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class PointData {
 
-    public int type;
+    public int type = 0;
 
     public LinkedList<Msg> context = new LinkedList<>();
 
