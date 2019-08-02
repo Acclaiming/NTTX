@@ -64,31 +64,31 @@ public class MakeGif extends Fragment {
 			msg.send("请输入文字，一行一句。 默认 : ",ArrayUtil.join(temp.hint,"\n")).async();
 
 			return;
-			
+
 		} else if (data.type == 1) {
-		
-		clearPrivatePoint(user);
-		
-		Msg status = msg.send("正在请求....").send();
 
-		SorryApi api = data.data();
-		
-		File file = api.make(msg.hasText() ? msg.text().split("\n") : new String[0]);
+			clearPrivatePoint(user);
 
-		if (file == null) {
-			
-			status.edit("服务器繁忙 请重试....").async();
-			
-			return;
-			
+			Msg status = msg.send("正在请求....").send();
+
+			SorryApi api = data.data();
+
+			File file = api.make(msg.hasText() ? msg.text().split("\n") : new String[0]);
+
+			if (file == null) {
+
+				status.edit("服务器繁忙 请重试....").async();
+
+				return;
+
+			}
+
+			status.delete();
+
+			executeAsync(new SendAnimation(msg.chatId(),file));
+
 		}
-		
-		status.delete();
-		
-		executeAsync(new SendAnimation(msg.chatId(),file));
-		
-		}
-		
+
 	}
 
 

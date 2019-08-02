@@ -19,6 +19,8 @@ public class SorryApi {
 
 	public static HashMap<String,SorryApi> templates; static {
 		
+		templates = new HashMap<>();
+		
 		templates.put("为所欲为",new SorryApi("sorry","就算你是一流工程师","就算你出报告再完美","我叫你改报告你就要改","毕竟我是客户","客户了不起啊","sorry 客户真的了不起","以后叫他天天改报告","天天改 天天改"));
 		templates.put("王境泽",new SorryApi("wangjingze","我就是饿死","死外边 从这跳下去","也不会吃你们一点东西","真香"));
 		templates.put("学习防身术",new SorryApi("fangshen","我将教你如何应对歹徒","集中注意","希望你有所收获"));
