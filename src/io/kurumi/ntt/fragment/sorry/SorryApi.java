@@ -84,7 +84,10 @@ public class SorryApi {
 		File templateDir = new File("../res/templates",template);
 		File cache = new File(Env.CACHE_DIR,"sorry_make/" + UUID.fastUUID().toString(true) + ".gif");
 		
-		if (templateDir.exists()) {
+		System.out.println(templateDir.toString());
+		System.out.println(templateDir.exists());
+		
+		if (templateDir.isDirectory()) {
 
 			File mp4File = new File(templateDir,"template.mp4");
 			File assFile = new File(Env.CACHE_DIR,"ass_cache/" + UUID.fastUUID().toString(true) + ".ass");
