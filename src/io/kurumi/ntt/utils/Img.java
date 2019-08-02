@@ -272,7 +272,7 @@ public class Img {
 
     public Img font(String newFont, int size) {
 
-        graphics().setFont(new Font(newFont, Font.BOLD, size));
+        graphics().setFont(new Font(newFont, graphics.getFont().getStyle(), size));
 
         return this;
 
