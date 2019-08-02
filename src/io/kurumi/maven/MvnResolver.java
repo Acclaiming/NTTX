@@ -26,7 +26,7 @@ public class MvnResolver {
     public static String jCenter = "https://jcenter.bintray.com/";
     public static String sonatype = "https://oss.sonatype.org/content/repositories/releases/";
 	public static String jitpack = "https://jitpack.io/";
-	
+
     public static String springPlugins = "https://repo.spring.io/plugins-release/";
     public static String springLibM = "https://repo.spring.io/libs-milestone/";
     public static String hortonworks = "https://repo.hortonworks.com/content/repositories/releases/";
@@ -105,7 +105,7 @@ public class MvnResolver {
 
     }
 
-    public MvnArtifact resolve(String groupId, String artifactId, String version, String defaultRepository, StringBuilder log) throws MvnException {
+    public MvnArtifact resolve(String groupId,String artifactId,String version,String defaultRepository,StringBuilder log) throws MvnException {
 
         MvnArtifact art = new MvnArtifact();
 
@@ -132,7 +132,7 @@ public class MvnResolver {
 
                 try {
 
-                    HttpResponse resp = HttpUtil.createGet(defaultRepository + groupId.replace(".", "/") + "/" + artifactId + "/maven-metadata.xml").execute();
+                    HttpResponse resp = HttpUtil.createGet(defaultRepository + groupId.replace(".","/") + "/" + artifactId + "/maven-metadata.xml").execute();
 
                     if (resp.isOk()) {
 
@@ -162,7 +162,7 @@ public class MvnResolver {
 
                     try {
 
-                        HttpResponse resp = HttpUtil.createGet(repository + groupId.replace(".", "/") + "/" + artifactId + "/maven-metadata.xml").execute();
+                        HttpResponse resp = HttpUtil.createGet(repository + groupId.replace(".","/") + "/" + artifactId + "/maven-metadata.xml").execute();
 
                         if (resp.isOk()) {
 
@@ -207,9 +207,29 @@ public class MvnResolver {
 
             }
 
-            version = document.getRootElement().getChild("versioning").getChild("latest").getValue();
+            Element versioning = document.getRootElement().getChild("versioning");
 
-        }
+			Element latest = versioning.getChild("latest");
+
+			if (latest != null) {
+
+				version = latest.getValue();
+
+			} else if ((latest = versioning.getChild("release")) != null) {
+
+				version = latest.getValue();
+
+			} else {
+
+				log.append("\n无法解析版本");
+				
+				throw new MvnException(log.toString());
+
+			}
+
+		}
+
+
 
         art.version = version;
 
@@ -219,7 +239,7 @@ public class MvnResolver {
 
             try {
 
-                HttpResponse resp = HttpUtil.createGet(targetRepository + groupId.replace(".", "/") + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version + ".pom").execute();
+                HttpResponse resp = HttpUtil.createGet(targetRepository + groupId.replace(".","/") + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version + ".pom").execute();
 
                 if (resp.isOk()) {
 
@@ -243,7 +263,7 @@ public class MvnResolver {
 
             try {
 
-                HttpResponse resp = HttpUtil.createGet(defaultRepository + groupId.replace(".", "/") + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version + ".pom").execute();
+                HttpResponse resp = HttpUtil.createGet(defaultRepository + groupId.replace(".","/") + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version + ".pom").execute();
 
                 if (resp.isOk()) {
 
@@ -273,7 +293,7 @@ public class MvnResolver {
 
                 try {
 
-                    HttpResponse resp = HttpUtil.createGet(repository + groupId.replace(".", "/") + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version + ".pom").execute();
+                    HttpResponse resp = HttpUtil.createGet(repository + groupId.replace(".","/") + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version + ".pom").execute();
 
                     if (resp.isOk()) {
 
@@ -342,35 +362,35 @@ public class MvnResolver {
 
         LinkedHashMap<String, String> props = new LinkedHashMap<>();
 
-        Element properties = document.getRootElement().getChild("properties", NS);
+        Element properties = document.getRootElement().getChild("properties",NS);
 
         if (properties != null) {
 
             for (Element prop : properties.getChildren()) {
 
-                props.put(prop.getName(), prop.getValue());
+                props.put(prop.getName(),prop.getValue());
 
             }
 
         }
 
-        Element parent = document.getRootElement().getChild("parent", NS);
+        Element parent = document.getRootElement().getChild("parent",NS);
 
         if (parent != null) {
 
-            Element parentVersion = parent.getChild("version", NS);
+            Element parentVersion = parent.getChild("version",NS);
 
             if (parentVersion != null) {
 
                 //log.append("\n发现上级项目版本 : " + parentVersion.getValue());
 
-                props.put("project.parent.version", parentVersion.getValue());
+                props.put("project.parent.version",parentVersion.getValue());
 
             }
 
         }
 
-        Element dependencies = document.getRootElement().getChild("dependencies", NS);
+        Element dependencies = document.getRootElement().getChild("dependencies",NS);
 
         art.dependencies = new LinkedList<>();
 
@@ -385,12 +405,12 @@ public class MvnResolver {
 
         for (Element dependency : dependencies.getChildren()) {
 
-            String group = dependency.getChild("groupId", NS).getValue();
-            String artifact = dependency.getChild("artifactId", NS).getValue();
+            String group = dependency.getChild("groupId",NS).getValue();
+            String artifact = dependency.getChild("artifactId",NS).getValue();
 
             String depVer = null;
 
-            Element versionObj = dependency.getChild("version", NS);
+            Element versionObj = dependency.getChild("version",NS);
 
             if (versionObj != null) {
 
@@ -398,7 +418,7 @@ public class MvnResolver {
 
                 for (Map.Entry<String, String> prop : props.entrySet()) {
 
-                    depVer = depVer.replace("${" + prop.getKey() + "}", prop.getValue());
+                    depVer = depVer.replace("${" + prop.getKey() + "}",prop.getValue());
 
                     //log.append("替换值 : " + prop.getKey() + " 为 " + prop.getValue());
 
@@ -412,7 +432,7 @@ public class MvnResolver {
 
             log.append("\n\n发现依赖 : " + group + ":" + artifact + ":" + depVer);
 
-            Element optional = dependency.getChild("optional", NS);
+            Element optional = dependency.getChild("optional",NS);
 
             if (optional != null && "true".equals(optional.getValue())) {
 
@@ -422,7 +442,7 @@ public class MvnResolver {
 
             }
 
-            Element scope = dependency.getChild("scope", NS);
+            Element scope = dependency.getChild("scope",NS);
 
             if (scope != null && !"compile".equals(scope.getValue())) {
 
@@ -432,7 +452,7 @@ public class MvnResolver {
 
             }
 
-            MvnArtifact dep = resolve(group, artifact, depVer, targetRepository, log);
+            MvnArtifact dep = resolve(group,artifact,depVer,targetRepository,log);
 
             if (dep != null) art.dependencies.add(dep);
 

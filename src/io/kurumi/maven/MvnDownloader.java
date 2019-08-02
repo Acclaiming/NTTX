@@ -15,6 +15,8 @@ import java.util.Iterator;
 
 import cn.hutool.http.HttpUtil;
 import cn.hutool.core.util.ZipUtil;
+import io.kurumi.ntt.utils.NTT;
+import io.kurumi.ntt.utils.BotLog;
 
 public class MvnDownloader extends Fragment {
 
@@ -57,9 +59,9 @@ public class MvnDownloader extends Fragment {
 
             result = resolver.resolve(params[0], params[1], version, null, log);
 
-        } catch (MvnException e) {
+        } catch (Exception e) {
 
-            msg.send("解析失败 :\n", log.toString()).async();
+            msg.send("解析失败 :\n", BotLog.parseError(e)).async();
 
             return;
 
