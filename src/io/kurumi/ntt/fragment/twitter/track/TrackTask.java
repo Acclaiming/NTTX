@@ -200,13 +200,12 @@ public class TrackTask extends TimerTask {
         BotFragment.trackTimer.scheduleAtFixedRate(INSTANCE, new Date(System.currentTimeMillis() + 5 * 60 * 1000), 60 * 1000);
 
     }
-
+	
     @Override
     public void run() {
 
         LinkedList<TAuth> all = new LinkedList<>();
         LinkedList<TAuth> remove = new LinkedList<>();
-
 
         for (TAuth account : TAuth.data.collection.find()) {
 

@@ -85,7 +85,7 @@ public class MakeGif extends Fragment {
 
 			status.delete();
 			
-			msg.sendUpdatingPhoto();
+			msg.sendUpdatingVideo();
 
 			executeAsync(new SendAnimation(msg.chatId(),file));
 

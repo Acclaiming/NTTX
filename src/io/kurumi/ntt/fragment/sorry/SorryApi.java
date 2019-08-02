@@ -10,6 +10,7 @@ import cn.hutool.core.lang.UUID;
 import java.util.LinkedList;
 import java.util.HashMap;
 import cn.hutool.core.util.StrUtil;
+import java.util.LinkedHashMap;
 
 public class SorryApi {
 
@@ -18,9 +19,9 @@ public class SorryApi {
 	private String template;
 	public String[] hint;
 
-	public static HashMap<String,SorryApi> templates; static {
+	public static LinkedHashMap<String,SorryApi> templates; static {
 		
-		templates = new HashMap<>();
+		templates = new LinkedHashMap<>();
 		
 		templates.put("为所欲为",new SorryApi("sorry","就算你是一流工程师","就算你出报告再完美","我叫你改报告你就要改","毕竟我是客户","客户了不起啊","sorry 客户真的了不起","以后叫他天天改报告","天天改 天天改"));
 		templates.put("王境泽",new SorryApi("wangjingze","我就是饿死","死外边 从这跳下去","也不会吃你们一点东西","真香"));
