@@ -7,8 +7,10 @@ import java.util.HashMap;
 
 public class PointData {
 
-    public int type = 0;
-
+    public int type;
+	
+	public int step = 0;
+ 
     public LinkedList<Msg> context = new LinkedList<>();
 
     public String point;

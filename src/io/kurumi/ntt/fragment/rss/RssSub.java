@@ -127,7 +127,7 @@ public class RssSub extends Fragment {
     @Override
     public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
-        if (data.with(msg).type == 0) {
+        if (data.with(msg).step == 0) {
 
             if (msg.doc() == null || !msg.doc().fileName().endsWith(".opml")) {
 
@@ -160,7 +160,7 @@ public class RssSub extends Fragment {
             }
 
             data.data = opml;
-            data.type = 1;
+            data.step = 1;
 
             msg.send("将要导入 :", notice.toString(), "\n现在发送目标频道的用户名或者ID ~").html().async();
 

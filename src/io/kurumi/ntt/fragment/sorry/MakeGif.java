@@ -44,7 +44,7 @@ public class MakeGif extends Fragment {
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
-		if (data.type == 0) {
+		if (data.step == 0) {
 
 			if (!SorryApi.templates.containsKey(msg.text())) {
 
@@ -65,7 +65,7 @@ public class MakeGif extends Fragment {
 
 			return;
 
-		} else if (data.type == 1) {
+		} else if (data.step == 1) {
 
 			clearPrivatePoint(user);
 
