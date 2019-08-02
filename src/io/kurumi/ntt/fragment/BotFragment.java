@@ -270,7 +270,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 				
             }
 			
-			System.out.println("msg : " + update.message().text());
+			System.out.println("来自 : " + update.message().chat().title());
+			System.out.println("用户 : " + user.name());
+			System.out.println("消息 : " + update.message().text());
 
         } else if (update.editedMessage() != null) {
 
