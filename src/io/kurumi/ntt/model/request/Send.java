@@ -241,7 +241,7 @@ public class Send extends AbstractSend<Send> {
 
     public Send withCancel() {
 
-        request.setText(request.getText() + "\n\n你知道吗 : 你好像执行了某个命令 然后把它忘了 :) \n使用 /cancel 取消当前操作 ~");
+        request.setText(request.getText() + "\n\n使用 /cancel 取消当前正在进行的操作 ~");
 
         return this;
 
