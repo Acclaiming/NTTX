@@ -72,6 +72,7 @@ import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import io.kurumi.ntt.fragment.extra.ShowFile;
 import io.kurumi.ntt.fragment.inline.CoreValueEncode;
+import io.kurumi.ntt.fragment.sorry.MakeGif;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -328,6 +329,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         // IC
 
         addFragment(new Idcard());
+		
+		// Gif
+		
+		addFragment(new MakeGif());
 
         // Extra
 
