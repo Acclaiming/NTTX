@@ -79,7 +79,7 @@ public class SorryApi {
 
 		File cache = new File(Env.CACHE_DIR,"sorry_make/" + UUID.fastUUID().toString(true) + ".gif");
 
-		HttpUtil.downloadFile(origin + StrUtil.subBetween(result.body(),"href=\"", "\""),cache);
+		HttpUtil.downloadFile(origin + result.body(),cache);
 
 		return cache;
 
