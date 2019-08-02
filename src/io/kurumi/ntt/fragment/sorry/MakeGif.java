@@ -65,7 +65,7 @@ public class MakeGif extends Fragment {
 
 			return;
 			
-		}
+		} else if (data.type == 1) {
 		
 		clearPrivatePoint(user);
 		
@@ -86,6 +86,8 @@ public class MakeGif extends Fragment {
 		status.delete();
 		
 		executeAsync(new SendAnimation(msg.chatId(),file));
+		
+		}
 		
 	}
 
