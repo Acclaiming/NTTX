@@ -20,6 +20,8 @@ public class ProcessLock<T> extends ReentrantLock {
         try {
 
             lock();
+			
+			if (obj != null) return obj;
 
             condition.await(100, TimeUnit.MILLISECONDS);
 
