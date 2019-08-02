@@ -75,8 +75,6 @@ public class Img {
         graphics.setColor(Color.BLACK);
         graphics.setPaint(Color.BLACK);
 
-        font("Noto Sans CJK SC Thin", 39);
-
     }
 	
 	/*

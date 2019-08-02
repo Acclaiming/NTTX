@@ -76,6 +76,7 @@ import io.kurumi.ntt.fragment.sorry.MakeGif;
 import cn.hutool.log.StaticLog;
 import cn.hutool.log.LogFactory;
 import cn.hutool.log.Log;
+import io.kurumi.ntt.fragment.debug.AwtTest;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -344,6 +345,8 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		addFragment(new ShowFile());
 		addFragment(new CoreValueEncode());
 
+		addFragment(new AwtTest());
+		
     }
 
     @Override
