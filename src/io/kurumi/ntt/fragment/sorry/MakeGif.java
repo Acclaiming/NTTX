@@ -58,7 +58,7 @@ public class MakeGif extends Fragment {
 
 			SorryApi temp = SorryApi.templates.get(msg.text());
 
-			data.type = 1;
+			data.step = 1;
 			data.data = temp;
 
 			msg.send("请输入文字，一行一句。 默认 : ",ArrayUtil.join(temp.hint,"\n")).async();
