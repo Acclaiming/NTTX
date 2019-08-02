@@ -9,10 +9,11 @@ import io.kurumi.ntt.Env;
 import cn.hutool.core.lang.UUID;
 import java.util.LinkedList;
 import java.util.HashMap;
+import cn.hutool.core.util.StrUtil;
 
 public class SorryApi {
 
-	public static String origin = "https://sorry.xuty.tk/api/";
+	public static String origin = "https://sorry.xuty.tk";
 
 	private String template;
 	public String[] hint;
@@ -66,7 +67,7 @@ public class SorryApi {
 
 		try {
 
-			result = HttpUtil.createPost(origin + template + "/make").body(array).execute();
+			result = HttpUtil.createPost(origin + "/api/" + template + "/make").body(array).execute();
 
 		} catch (HttpException exc) {
 
@@ -78,7 +79,7 @@ public class SorryApi {
 
 		File cache = new File(Env.CACHE_DIR,"sorry_make/" + UUID.fastUUID().toString(true) + ".gif");
 
-		HttpUtil.downloadFile(result.body(),cache);
+		HttpUtil.downloadFile(origin + StrUtil.subBetween(result.body(),"href=\"", "\""),cache);
 
 		return cache;
 
