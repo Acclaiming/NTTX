@@ -7,6 +7,7 @@ import cn.hutool.core.util.*;
 import io.kurumi.ntt.*;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.io.*;
+import cn.hutool.crypto.SecureUtil;
 
 public class FFMpeg {
 
@@ -18,8 +19,10 @@ public class FFMpeg {
 
     public static File getGifPalettePic(File media) {
 
-        File cacheFile = new File(Env.CACHE_DIR, "palette_pic/" + media.getName() + ".png");
+        File cacheFile = new File(Env.CACHE_DIR, "palette_pic/" + SecureUtil.md5(media) + ".png");
 
+		if (cacheFile.isFile()) return cacheFile;
+		
         cacheFile.getParentFile().mkdirs();
 
         try {
@@ -33,7 +36,24 @@ public class FFMpeg {
 
 
     }
+	
+	
+	public static boolean makeGif(File globalPalettePicPath,File template,File ass, File out) {
 
+        out.getParentFile().mkdirs();
+
+        try {
+
+            return RuntimeUtil.exec("ffmpeg -i " + template + " -i " + globalPalettePicPath.getPath() + " -r 6 -vf ass=" + ass.getPath() + ",fps=50,scale=480:-1:flags=lanczos[x];[x][1:v]paletteuse -y " + out.getPath()).waitFor() == 0;
+
+        } catch (InterruptedException e) {
+
+            return false;
+
+        }
+
+    }
+	
     public static boolean toGif(File globalPalettePicPath, File in, File out) {
 
         out.getParentFile().mkdirs();
