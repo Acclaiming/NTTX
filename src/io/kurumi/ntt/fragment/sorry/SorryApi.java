@@ -85,6 +85,11 @@ public class SorryApi {
 		File mp4File = FileUtil.file(templateDir,"template.mp4");
 		File cache = FileUtil.file(Env.CACHE_DIR,"sorry_make/" + UUID.fastUUID().toString(true) + ".gif");
 		
+		System.out.print(templateDir.getPath());
+		System.out.print(" : ");
+		System.out.println(templateDir.isDirectory());
+		System.out.println(FileUtil.file("../res/areacode.json").isFile());
+		
 		if (mp4File.isFile()) {
 
 			File assFile = FileUtil.file(Env.CACHE_DIR,"ass_cache/" + UUID.fastUUID().toString(true) + ".ass");
