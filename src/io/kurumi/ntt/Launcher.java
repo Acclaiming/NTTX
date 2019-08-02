@@ -73,6 +73,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import io.kurumi.ntt.fragment.extra.ShowFile;
 import io.kurumi.ntt.fragment.inline.CoreValueEncode;
 import io.kurumi.ntt.fragment.sorry.MakeGif;
+import cn.hutool.log.StaticLog;
+import cn.hutool.log.LogFactory;
+import cn.hutool.log.Log;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -81,7 +84,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
     public static void main(String[] args) {
 
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
-
+		
         try {
 
             Env.init();
