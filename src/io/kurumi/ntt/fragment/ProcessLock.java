@@ -14,6 +14,8 @@ public class ProcessLock<T> extends ReentrantLock {
     public Condition condition = newCondition();
 
     public T waitFor() {
+		
+		if (obj != null) return obj;
 
         try {
 

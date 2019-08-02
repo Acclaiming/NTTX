@@ -30,7 +30,7 @@ public class MakeGif extends Fragment {
 
 		setPrivatePoint(user,POINT_MAKE_GIF);
 
-		msg.send("请选择模板 :").keyboard(SorryApi.templates.keySet().toArray(new String[SorryApi.templates.size()])).exec();
+		msg.send("请选择模板 :").keyboard(SorryApi.templates.keySet().toArray(new String[SorryApi.templates.size()])).async();
 
 	}
 
