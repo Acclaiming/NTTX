@@ -69,7 +69,7 @@ public class MakeGif extends Fragment {
 
 			clearPrivatePoint(user);
 
-			Msg status = msg.send("正在请求....").send();
+			Msg status = msg.send("正在制作....").send();
 
 			SorryApi api = data.data();
 
