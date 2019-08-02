@@ -23,6 +23,7 @@ import okhttp3.*;
 
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.fragment.extra.ShowFile;
+import cn.hutool.http.cookie.GlobalCookieManager;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener, ExceptionHandler {
 
@@ -79,6 +80,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
     }
 
+	
 
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {

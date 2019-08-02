@@ -98,6 +98,10 @@ public class Fragment {
 
         } else {
 
+			execute(request);
+			
+			/*
+			
             execute(new Runnable() {
 
                 @Override
@@ -109,6 +113,7 @@ public class Fragment {
 
             });
 
+			*/
 
         }
 
