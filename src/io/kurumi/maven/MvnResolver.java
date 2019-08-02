@@ -52,6 +52,7 @@ public class MvnResolver {
         repositories.add(central);
         repositories.add(jCenter);
         repositories.add(sonatype);
+		repositories.add(jitpack);
 
 		/*
 
