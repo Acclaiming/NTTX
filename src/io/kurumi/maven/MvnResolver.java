@@ -25,7 +25,8 @@ public class MvnResolver {
     public static String central = "https://repo1.maven.org/maven2/";
     public static String jCenter = "https://jcenter.bintray.com/";
     public static String sonatype = "https://oss.sonatype.org/content/repositories/releases/";
-
+	public static String jitpack = "https://jitpack.io/";
+	
     public static String springPlugins = "https://repo.spring.io/plugins-release/";
     public static String springLibM = "https://repo.spring.io/libs-milestone/";
     public static String hortonworks = "https://repo.hortonworks.com/content/repositories/releases/";
