@@ -191,7 +191,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
             BotServer.fragments.get(botToken).processAsync(update);
 			
-			System.out.println("处理完成 : " + (start -  System.currentTimeMillis()) + "ms");
+			System.out.println("处理完成 : " + (System.currentTimeMillis() - start) + "ms");
 			
             webhookResponse = lock.waitFor();
 
