@@ -1,12 +1,13 @@
 package io.kurumi.ntt.fragment.debug;
 
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.model.Msg;
-import com.pengrad.telegrambot.request.SendPhoto;
-import io.kurumi.ntt.utils.Img;
 import cn.hutool.core.util.ArrayUtil;
+import com.pengrad.telegrambot.request.SendPhoto;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.utils.Img;
+import java.awt.GraphicsEnvironment;
 
 public class AwtTest extends Fragment {
 
@@ -28,7 +29,17 @@ public class AwtTest extends Fragment {
 			
 			img.font(ArrayUtil.join(params," "));
 			
+		} else {
+			
+			GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			
+			String[] fontNames = e.getAvailableFontFamilyNames();
+			
+			msg.send(ArrayUtil.join(fontNames,"\n")).async();
+			
 		}
+		
+		
 		
 		img.fontSize(39);
 		
