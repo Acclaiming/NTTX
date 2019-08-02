@@ -1,14 +1,14 @@
 package io.kurumi.ntt.fragment.sorry;
 
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.db.PointData;
 import cn.hutool.core.util.ArrayUtil;
-import java.io.File;
-import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.request.SendAnimation;
+import io.kurumi.ntt.db.PointData;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.utils.Html;
+import java.io.File;
 
 public class MakeGif extends Fragment {
 
@@ -61,7 +61,7 @@ public class MakeGif extends Fragment {
 			data.step = 1;
 			data.data = temp;
 
-			msg.send("请输入文字，一行一句。 默认 : \n",ArrayUtil.join(temp.hint,"\n")).withCancel().async();
+			msg.send("请输入文字，一行一句。 默认 : \n",Html.code(ArrayUtil.join(temp.hint,"\n"))).html().withCancel().async();
 
 			return;
 
