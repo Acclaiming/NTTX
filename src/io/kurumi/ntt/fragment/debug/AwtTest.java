@@ -6,6 +6,7 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.Msg;
 import com.pengrad.telegrambot.request.SendPhoto;
 import io.kurumi.ntt.utils.Img;
+import cn.hutool.core.util.ArrayUtil;
 
 public class AwtTest extends Fragment {
 
@@ -25,7 +26,7 @@ public class AwtTest extends Fragment {
 		
 		if (params.length != 0) {
 			
-			img.font(params[0]);
+			img.font(ArrayUtil.join(params," "));
 			
 		}
 		
