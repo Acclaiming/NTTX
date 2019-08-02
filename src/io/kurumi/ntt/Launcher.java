@@ -1,6 +1,7 @@
 package io.kurumi.ntt;
 
 import cn.hutool.core.util.RuntimeUtil;
+import com.google.gson.Gson;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Update;
 import io.kurumi.maven.MvnDownloader;
@@ -19,6 +20,7 @@ import io.kurumi.ntt.fragment.bots.BotChannnel;
 import io.kurumi.ntt.fragment.bots.MyBots;
 import io.kurumi.ntt.fragment.bots.NewBot;
 import io.kurumi.ntt.fragment.bots.UserBot;
+import io.kurumi.ntt.fragment.debug.AwtTest;
 import io.kurumi.ntt.fragment.debug.Backup;
 import io.kurumi.ntt.fragment.debug.DebugMsg;
 import io.kurumi.ntt.fragment.debug.DebugStatus;
@@ -27,6 +29,7 @@ import io.kurumi.ntt.fragment.debug.DebugUF;
 import io.kurumi.ntt.fragment.debug.DebugUser;
 import io.kurumi.ntt.fragment.debug.Disappeared;
 import io.kurumi.ntt.fragment.extra.Manchurize;
+import io.kurumi.ntt.fragment.extra.ShowFile;
 import io.kurumi.ntt.fragment.group.BanSetickerSet;
 import io.kurumi.ntt.fragment.group.GroupAdmin;
 import io.kurumi.ntt.fragment.group.GroupFunction;
@@ -35,10 +38,12 @@ import io.kurumi.ntt.fragment.group.GroupRepeat;
 import io.kurumi.ntt.fragment.group.JoinCaptcha;
 import io.kurumi.ntt.fragment.group.RemoveKeyboard;
 import io.kurumi.ntt.fragment.idcard.Idcard;
+import io.kurumi.ntt.fragment.inline.CoreValueEncode;
 import io.kurumi.ntt.fragment.inline.MakeButtons;
 import io.kurumi.ntt.fragment.inline.ShowSticker;
 import io.kurumi.ntt.fragment.rss.FeedFetchTask;
 import io.kurumi.ntt.fragment.rss.RssSub;
+import io.kurumi.ntt.fragment.sorry.MakeGif;
 import io.kurumi.ntt.fragment.sticker.AddSticker;
 import io.kurumi.ntt.fragment.sticker.MoveSticker;
 import io.kurumi.ntt.fragment.sticker.NewStickerSet;
@@ -67,21 +72,18 @@ import io.kurumi.ntt.fragment.twitter.track.TrackUI;
 import io.kurumi.ntt.fragment.twitter.track.UserTrackTask;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.BotLog;
-
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
-import io.kurumi.ntt.fragment.extra.ShowFile;
-import io.kurumi.ntt.fragment.inline.CoreValueEncode;
-import io.kurumi.ntt.fragment.sorry.MakeGif;
-import cn.hutool.log.StaticLog;
-import cn.hutool.log.LogFactory;
-import cn.hutool.log.Log;
-import io.kurumi.ntt.fragment.debug.AwtTest;
+import okhttp3.OkHttpClient;
+import io.kurumi.ntt.fragment.mstd.login.MstdLogin;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
     public static Launcher INSTANCE;
 
+	public static OkHttpClient.Builder OKHTTP = new OkHttpClient.Builder();
+	public static Gson GSON = new Gson();
+	
     public static void main(String[] args) {
 
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
@@ -307,6 +309,10 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
         addFragment(new Disappeared());
         addFragment(new TEPH());
 
+		// Mastodon
+		
+		addFragment(new MstdLogin());
+		
         // BOTS
 
         addFragment(new NewBot());

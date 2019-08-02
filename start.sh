@@ -6,7 +6,7 @@ for jar in ./libs/*.jar;do
  
 done
 
-for jar in ./libs/jgit/*.jar;do
+for jar in ./libs/mstd/*.jar;do
 
 export CLASSPATH=$CLASSPATH:$jar
  
