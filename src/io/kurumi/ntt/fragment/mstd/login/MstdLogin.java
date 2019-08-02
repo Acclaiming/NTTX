@@ -18,6 +18,7 @@ import io.kurumi.ntt.fragment.mstd.MstdAuth;
 import com.sys1yagi.mastodon4j.api.entity.Account;
 import com.sys1yagi.mastodon4j.api.method.Accounts;
 import io.kurumi.ntt.fragment.mstd.MstdApi;
+import io.kurumi.ntt.fragment.BotFragment;
 
 public class MstdLogin extends Fragment {
 
@@ -30,6 +31,17 @@ public class MstdLogin extends Fragment {
 		
 	}
 
+	@Override
+	public void init(BotFragment origin) {
+	
+		super.init(origin);
+		
+		registerFunction("ms_login");
+		
+		registerPoint(POINT_MSTD_LOGIN);
+		
+	}
+	
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
