@@ -105,9 +105,7 @@ public class SorryApi {
 			
 			FileUtil.writeUtf8String(assSource,assFile);
 			
-			File pic = FFMpeg.getGifPalettePic(mp4File);
-
-			FFMpeg.makeGif(pic,mp4File,assFile,cache);
+			FFMpeg.makeGif(mp4File,assFile,cache);
 			
 			FileUtil.del(assFile);
 			

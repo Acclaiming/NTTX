@@ -38,7 +38,7 @@ public class FFMpeg {
     }
 	
 	
-	public static boolean makeGif(File globalPalettePicPath,File template,File ass, File out) {
+	public static boolean makeGif(File template,File ass, File out) {
 
         out.getParentFile().mkdirs();
 
