@@ -88,7 +88,7 @@ public class SorryApi {
 		System.out.print(templateDir.getPath());
 		System.out.print(" : ");
 		System.out.println(templateDir.isDirectory());
-		System.out.println(FileUtil.file("../res/test").isDirectory());
+		System.out.println(FileUtil.file("../res/test.json").isDirectory());
 		
 		if (mp4File.isFile()) {
 
