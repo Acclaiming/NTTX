@@ -81,13 +81,13 @@ public class SorryApi {
 
 	private static File make(String template,String[] lines) {
 
-		File templateDir = new File("../res/templates",template);
-		File mp4File = new File(templateDir,"template.mp4");
-		File cache = new File(Env.CACHE_DIR,"sorry_make/" + UUID.fastUUID().toString(true) + ".gif");
+		File templateDir = FileUtil.file("../res/templates",template);
+		File mp4File = FileUtil.file(templateDir,"template.mp4");
+		File cache = FileUtil.file(Env.CACHE_DIR,"sorry_make/" + UUID.fastUUID().toString(true) + ".gif");
 		
 		if (mp4File.isFile()) {
 
-			File assFile = new File(Env.CACHE_DIR,"ass_cache/" + UUID.fastUUID().toString(true) + ".ass");
+			File assFile = FileUtil.file(Env.CACHE_DIR,"ass_cache/" + UUID.fastUUID().toString(true) + ".ass");
 			
 			String assSource = FileUtil.readUtf8String(new File(templateDir,"template.ass"));
 			
