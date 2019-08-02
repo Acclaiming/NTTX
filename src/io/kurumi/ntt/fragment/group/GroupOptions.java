@@ -519,7 +519,7 @@ public class GroupOptions extends Fragment {
 
                     }
 
-                } else if ("ann".equals(params[1])) {
+                } else if ("animation".equals(params[1])) {
 
                     if (data.no_animation == null) {
 
