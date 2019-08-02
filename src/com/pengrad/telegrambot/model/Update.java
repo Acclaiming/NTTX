@@ -12,6 +12,7 @@ import com.pengrad.telegrambot.request.BaseRequest;
 public class Update implements Serializable {
     private final static long serialVersionUID = 0L;
 
+	public transient long createAt = System.currentTimeMillis();
     public transient String json;
     public transient ProcessLock<BaseRequest> lock;
 

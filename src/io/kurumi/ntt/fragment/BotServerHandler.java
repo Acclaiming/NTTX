@@ -176,7 +176,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
             return;
 
         }
-
+		
         BaseRequest webhookResponse;
 
         try {
@@ -187,8 +187,12 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
             update.lock = lock;
 
-            BotServer.fragments.get(botToken).processAsync(update);
+			long start = System.currentTimeMillis();
 
+            BotServer.fragments.get(botToken).processAsync(update);
+			
+			System.out.println("处理完成 : " + (start -  System.currentTimeMillis()) + "ms");
+			
             webhookResponse = lock.waitFor();
 
         } catch (Exception ex) {
@@ -201,10 +205,9 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         }
 
-
         if (webhookResponse == null) {
 
-            sendOk(ctx);
+           sendOk(ctx);
 
         } else {
 

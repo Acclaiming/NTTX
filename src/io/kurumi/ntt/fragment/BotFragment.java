@@ -255,11 +255,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
     }
 
     public void processAsync(final Update update) {
-
-        // System.out.println(new JSONObject(update.json).toStringPretty());
-
-        final UserData user;
-
+       
+		final UserData user;
+		
         long targetId = -1;
 
         if (update.message() != null) {
@@ -269,8 +267,10 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
             if (update.message().chat().type() != Chat.Type.Private) {
 
                 targetId = update.message().chat().id();
-
+				
             }
+			
+			System.out.println("msg : " + update.message().text());
 
         } else if (update.editedMessage() != null) {
 
@@ -297,7 +297,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
         } else if (update.callbackQuery() != null) {
 
             user = UserData.get(update.callbackQuery().from());
-
+			
         } else if (update.inlineQuery() != null) {
 
             user = UserData.get(update.inlineQuery().from());
@@ -673,7 +673,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
             }
 
         }
-
+	
     }
 
     @Override
