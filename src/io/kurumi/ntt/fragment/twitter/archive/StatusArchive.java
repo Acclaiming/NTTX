@@ -123,11 +123,11 @@ public class StatusArchive {
 
             SendResponse resp = Launcher.INSTANCE.bot().execute(send);
 
-            if (resp.isOk() && resp.message().chat().type() == Chat.Type.Private) {
+            if (resp != null && resp.isOk() && resp.message().chat().type() == Chat.Type.Private) {
 
                 MessagePoint.set(resp.message().messageId(), 1, id);
 
-            } else if (!resp.isOk()) {
+            } else if (resp != null && !resp.isOk()) {
 
                 Send sendN = new Send(chatId, toHtml(depth)).html();
 
