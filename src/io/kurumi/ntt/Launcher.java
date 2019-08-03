@@ -201,7 +201,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 			if (!isMainInstance()) {
 				
-				msg.send("警告！这里是旧式实例，已经无法控制，请尽快切换到 @" + INSTANCE.me.username() + " :(").async();
+				// msg.send("警告！这里是旧式实例，已经无法控制，请尽快切换到 @" + INSTANCE.me.username() + " :(").async();
 				
 			}
 			
