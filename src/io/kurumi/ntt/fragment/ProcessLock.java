@@ -15,6 +15,8 @@ public class ProcessLock<T> extends ReentrantLock {
 
     public T waitFor() {
 		
+		used.set(true);
+		
 		if (obj != null) return obj;
 
         try {
