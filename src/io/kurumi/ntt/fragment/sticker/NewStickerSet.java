@@ -58,8 +58,6 @@ public class NewStickerSet extends Fragment {
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        if (NTT.checkDropped(user,msg)) return;
-
         PointData data = new CreateSet().with(msg);
 
         setPrivatePoint(user, POINT_CREATE_SET, data);

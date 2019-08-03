@@ -52,8 +52,6 @@ public class MoveSticker extends Fragment {
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        if (NTT.checkDropped(user,msg)) return;
-
         final List<PackOwner> all = PackOwner.getAll(user.id);
 
         if (all.isEmpty()) {

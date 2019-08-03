@@ -368,7 +368,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                 }
 
             } else if (msg.isPrivate() && privatePoint != null) {
-
+				
+				if (NTT.checkDropped(user,msg)) return;
+				
                 final Fragment function = !points.containsKey(privatePoint.point) || "cancel".equals(msg.command()) ? this : points.get(privatePoint.point);
 
                 int checked = function.checkPoint(user, msg, privatePoint.point, privatePoint);
@@ -398,6 +400,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                 if (msg.isCommand()) {
 
+					if (NTT.checkDropped(user,msg)) return;
+					
                     if (msg.isStartPayload()) {
 
                         final String payload = msg.payload()[0];
@@ -516,8 +520,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                     } else {
 						
-						if (NTT.checkDropped(user,msg)) return;
-
                         final Fragment function = functions.containsKey(msg.command()) ? functions.get(msg.command()) : this;
 
                         int checked = function.checkFunction(user, msg, msg.command(), msg.params());
@@ -713,6 +715,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
         if (!msg.isPrivate()) return;
 
+		if (NTT.checkDropped(user,msg)) return;
+		
         StringBuilder str = new StringBuilder();
 
         boolean no_reply = false;

@@ -50,8 +50,6 @@ public class RemoveSticker extends Fragment {
     @Override
     public void onFunction(UserData user, Msg msg, String functipon, String[] params) {
 
-        if (NTT.checkDropped(user,msg)) return;
-		
         final List<PackOwner> all = PackOwner.getAll(user.id);
 
         if (all.isEmpty()) {

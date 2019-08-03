@@ -48,8 +48,6 @@ public class TwitterLogin extends Fragment {
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        if (NTT.checkDropped(user,msg)) return;
-		
         ApiToken token;
 
         if (params.length == 2 || params.length == 4) {

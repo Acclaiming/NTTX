@@ -251,8 +251,6 @@ public class TimedStatus extends Fragment {
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        if (NTT.checkDropped(user,msg)) return;
-
         super.onFunction(user, msg, function, params);
 
         requestTwitter(user, msg);

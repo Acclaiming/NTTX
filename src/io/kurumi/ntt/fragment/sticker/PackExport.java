@@ -39,8 +39,6 @@ public class PackExport extends Fragment {
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        if (NTT.checkDropped(user,msg)) return;
-		
         PointData data = setPrivatePoint(user, POINT_EXPORT_SET);
 
         msg.send("现在发送要导出的贴纸包的简称/链接 或 贴纸包中的任意贴纸").exec(data);

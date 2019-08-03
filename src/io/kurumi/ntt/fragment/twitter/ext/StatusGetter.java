@@ -30,8 +30,6 @@ public class StatusGetter extends Fragment {
     @Override
     public void onPayload(UserData user, Msg msg, String payload, String[] params) {
 
-        if (NTT.checkDropped(user,msg)) return;
-		
         requestTwitterPayload(user, msg);
 
     }
@@ -91,8 +89,6 @@ public class StatusGetter extends Fragment {
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        if (NTT.checkDropped(user,msg)) return;
-		
         if (params.length != 1) {
 
             msg.send("用法 /status <推文链接|ID>").publicFailed();

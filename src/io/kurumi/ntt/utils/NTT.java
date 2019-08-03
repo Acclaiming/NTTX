@@ -417,15 +417,7 @@ public class NTT {
 		
 		if (!user.blocked()) return false;
 		
-		if (msg instanceof Callback) {
-			
-			((Callback)msg).alert("你不能这么做。 (为什么？)");
-			
-		} else {
-			
-			msg.reply("你不能这么做。 (为什么？)").failedWith();
-			
-		}
+		// do domething
 		
 		return true;
 		

@@ -55,8 +55,6 @@ public class ListExport extends Fragment {
     @Override
     public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
-        if (NTT.checkDropped(user,msg)) return;
-
         PointData data = setPrivatePointData(user, POINT_LIST_EXPORT, account);
 
         msg
