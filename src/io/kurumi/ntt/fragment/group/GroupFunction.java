@@ -44,9 +44,13 @@ public class GroupFunction extends Fragment {
 
                 if (data.delete_channel_msg == 0) {
 
+					data.log(this,"#删除频道消息 解除了来自频道的消息置顶");
+
                     executeAsync(msg.update,new UnpinChatMessage(msg.chatId()));
 
                 } else {
+
+					data.log(this,"#删除频道消息 删除了来自频道的置顶消息");
 
                     msg.delete();
 
@@ -91,9 +95,14 @@ public class GroupFunction extends Fragment {
 
                             msg.kick(true);
 
+							data.log(this,"#加群验证 #验证期间邀请 #邀请 #邀请机器人","机器人 : @" + newUser.username(),"用户 : " + user.userName() + "已被封锁");
+
                         } else {
 
                             msg.kick();
+
+							data.log(this,"#加群验证 #验证期间邀请机 #邀请 #邀请机器人","机器人 : @" + newUser.username(),"用户 : " + user.userName() + "已被移除");
+
 
                         }
 
@@ -103,9 +112,13 @@ public class GroupFunction extends Fragment {
 
                             msg.kick(true);
 
+							data.log(this,"#加群验证 #验证期间邀请 #邀请 #邀请用户","被邀请用户 : " + UserData.get(newUser).userName(),"用户 : " + user.userName() + "已被封锁");
+
                         } else {
 
                             msg.kick();
+
+							data.log(this,"#加群验证 #验证期间邀请 #邀请 #邀请用户","被邀请用户 : " + UserData.get(newUser).userName(),"用户 : " + user.userName() + "已被移除");
 
                         }
 
@@ -123,7 +136,12 @@ public class GroupFunction extends Fragment {
 
                         doRest(user,msg,data,"邀请机器人");
 
+						data.log(this,"#成员限制 #邀请 #邀请机器人","机器人 : @" + newUser.username(),"用户 : " + user.userName());
+
                     }
+
+					data.log(this,"#成员限制 #邀请 #邀请机器人","机器人 : @" + newUser.username(),"用户 : " + user.userName());
+					
 
                 } else if (data.no_invite_user != null && !newUser.isBot()) {
 

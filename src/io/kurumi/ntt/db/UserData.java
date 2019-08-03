@@ -156,12 +156,6 @@ public class UserData {
 
     }
 
-    public String formattedName() {
-
-        return name() + " (" + userName != null ? userName : id + ") ";
-
-    }
-
     public String name() {
 
         String name = firstName;

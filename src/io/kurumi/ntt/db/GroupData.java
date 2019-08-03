@@ -1,14 +1,11 @@
 package io.kurumi.ntt.db;
 
-import cn.hutool.core.io.*;
-import cn.hutool.json.*;
-import io.kurumi.ntt.*;
-
-import java.io.*;
-import java.util.*;
-
+import cn.hutool.core.util.ArrayUtil;
 import com.pengrad.telegrambot.model.Chat;
-import com.pengrad.telegrambot.request.SendAnimation;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.request.Send;
+import java.util.List;
+import java.util.Map;
 
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
@@ -57,7 +54,7 @@ public class GroupData {
 
             }
 
-            data.idIndex.put(id, group);
+            data.idIndex.put(id,group);
 
             return group;
 
@@ -88,7 +85,7 @@ public class GroupData {
 
             group.title = chat.title();
 
-            data.idIndex.put(chat.id().longValue(), group);
+            data.idIndex.put(chat.id().longValue(),group);
 
             return group;
 
@@ -187,7 +184,7 @@ public class GroupData {
 
 	public Integer no_esu_words;
 	public Integer no_esu_stickers;
-	
+
     public Integer no_sticker;
     public Integer no_animated_sticker;
     public Integer no_image;
@@ -211,8 +208,8 @@ public class GroupData {
     public String actionName() {
 
         return rest_action == null ? "限制" :
-                rest_action == 0 ? "禁言" :
-                        /* rest_action == 1 ? */"封锁";
+			rest_action == 0 ? "禁言" :
+			/* rest_action == 1 ? */"封锁";
 
     }
 
@@ -236,6 +233,17 @@ public class GroupData {
     public Boolean backhole;
 
 	public Boolean enable_log;
+
 	public Long log_channel;
+
+	public void log(Fragment fragment,Object... str) {
+
+		if (enable_log != null && log_channel != null) {
+
+			new Send(fragment,id,str).html().async();
+
+		}
+
+	}
 
 }

@@ -8,10 +8,11 @@ import java.util.HashMap;
 
 import io.kurumi.ntt.fragment.BotServer;
 import io.kurumi.ntt.model.request.Send;
+import io.kurumi.ntt.fragment.admin.Firewall;
 
 public class UserBot {
 
-    public static Data<UserBot> data = new Data<UserBot>("UserCustomBot", UserBot.class);
+    public static Data<UserBot> data = new Data<UserBot>("UserCustomBot",UserBot.class);
 
     public Long id;
     public String userName;
@@ -24,8 +25,18 @@ public class UserBot {
 
         for (UserBot bot : data.collection.find()) {
 
-            bot.startBot();
+			if (Firewall.block.containsId(bot.user)) {
 
+				data.deleteById(bot.id);
+
+				new Send(bot.user,"你的机器人 @" + bot.userName + " 的已从NTT取消接管。(为什么？)").exec();
+
+				continue;
+
+			}
+
+            bot.startBot();
+			
         }
 
     }
@@ -64,7 +75,7 @@ public class UserBot {
 
                 data.deleteById(id);
 
-                new Send(user, "对不起，但是你的机器人 : @" + userName + " 的令牌已失效，已自动移除。").exec();
+                new Send(user,"对不起，但是你的机器人 : @" + userName + " 的令牌已失效，已自动移除。").exec();
 
                 return false;
 
