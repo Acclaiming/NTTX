@@ -34,7 +34,7 @@ public class Html {
 
         if (href == null) return text;
 		
-		if (href.startsWith("http")) href = URLUtil.encodeQuery(href);
+		if (href.startsWith("http")) href = URLUtil.url(href).toString();
 
         return "<a href=\"" + href + "\">" + HtmlUtil.escape(text) + "</a>";
 
