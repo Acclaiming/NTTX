@@ -42,23 +42,23 @@ public class Notice extends Fragment {
     }
 
     @Override
-    public int checkFunction(UserData user, Msg msg, String function, String[] params) {
+    public int checkFunction(UserData user,Msg msg,String function,String[] params) {
 
         return PROCESS_SYNC;
 
     }
 
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-        PointData data = setPrivatePointData(user, POINT_FPRWARD, ArrayUtil.join(params, " "));
+        PointData data = setPrivatePointData(user,POINT_FPRWARD,ArrayUtil.join(params," "));
 
         msg.send("现在发送群发内容 :").exec(data);
 
     }
 
     @Override
-    public void onPoint(UserData user, Msg msg, String point, PointData data) {
+    public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
         String params = data.data();
 
@@ -85,20 +85,16 @@ public class Notice extends Fragment {
 
             if (tryAll || userData.contactable == null || userData.contactable) {
 
-				/*
 
-				 if (login && TAuth.data.countByField("user",userData.id) == 0) {
+				if (login && TAuth.data.countByField("user",userData.id) == 0) {
 
-				 failed ++;
+					failed ++;
 
-				 continue;
+					continue;
 
-				 }
+				}
 
-
-				 */
-
-                ForwardMessage forward = new ForwardMessage(userData.id, msg.chatId(), msg.messageId());
+                ForwardMessage forward = new ForwardMessage(userData.id,msg.chatId(),msg.messageId());
 
                 if (mute) forward.disableNotification(true);
 
@@ -110,7 +106,7 @@ public class Notice extends Fragment {
 
                     userData.contactable = true;
 
-                    userData.data.setById(userData.id, userData);
+                    userData.data.setById(userData.id,userData);
 
 
                 } else {
@@ -119,16 +115,12 @@ public class Notice extends Fragment {
 
                     BotLog.info("NF : " + resp.description());
 
-					/*
+					userData.contactable = false;
 
-					 userData.contactable = false;
+					UserData.userDataIndex.remove(userData.id);
 
-					 UserData.userDataIndex.remove(userData.id);
-
-					 userData.data.setById(userData.id,userData);
-
-					 */
-
+					userData.data.setById(userData.id,userData);
+					
                 }
 
             } else {
