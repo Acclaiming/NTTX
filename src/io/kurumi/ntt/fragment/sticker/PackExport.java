@@ -45,6 +45,13 @@ public class PackExport extends Fragment {
 
     }
 
+	@Override
+	public int checkPoint(UserData user,Msg msg,String point,PointData data) {
+		
+		return PROCESS_ASYNC;
+		
+	}
+
     @Override
     public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
