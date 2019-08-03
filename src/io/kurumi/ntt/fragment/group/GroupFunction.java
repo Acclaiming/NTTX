@@ -44,15 +44,15 @@ public class GroupFunction extends Fragment {
 
                 if (data.delete_channel_msg == 0) {
 
-					data.log(this,"#删除频道消息 解除了来自频道的消息置顶");
-
                     executeAsync(msg.update,new UnpinChatMessage(msg.chatId()));
 
+					data.log(this,"#删除频道消息 解除了来自频道的消息置顶");
+					
                 } else {
 
+					msg.delete();
+					
 					data.log(this,"#删除频道消息 删除了来自频道的置顶消息");
-
-                    msg.delete();
 
                 }
 
@@ -155,6 +155,8 @@ public class GroupFunction extends Fragment {
 
                     }
 
+					data.log(this,"#成员限制 #邀请 #邀请用户","被邀请用户 : " + UserData.get(newUser).userName(),"用户 : " + user.userName());
+					
                 }
 
                 if (data.delete_service_msg != null) {
@@ -165,6 +167,8 @@ public class GroupFunction extends Fragment {
 
                             executeAsync(msg.update,new DeleteMessage(msg.chatId(),data.last_service_msg));
 
+							data.log(this,"#删除服务消息 删除了上一条加群消息");
+							
                         }
 
                         data.last_service_msg = msg.messageId();
@@ -174,6 +178,8 @@ public class GroupFunction extends Fragment {
                         data.last_service_msg = null;
 
                         msg.delete();
+						
+						data.log(this,"#删除服务消息 删除了加群消息");
 
                     }
 
@@ -192,6 +198,8 @@ public class GroupFunction extends Fragment {
                     }
 
 				}
+				
+				data.log(this,"#成员限制 #烂俗消息","来自 : " + user.name());
 
             } else if (msg.sticker() != null) {
 
@@ -204,6 +212,9 @@ public class GroupFunction extends Fragment {
                         doRest(user,msg,data,"发送贴纸");
 
                     }
+					
+					data.log(this,"#成员限制 #贴纸","来自 : " + user.name());
+					
 
                 } else if (!msg.sticker().animated() && data.no_sticker != null) {
 
@@ -215,6 +226,8 @@ public class GroupFunction extends Fragment {
 
                     }
 
+					data.log(this,"#成员限制 #动态贴纸","来自 : " + user.name());
+					
                 } else if (data.no_esu_stickers != null && ArrayUtil.contains(MaliciousMessage.esuStickers,msg.sticker().setName())) {
 
 					msg.delete();
@@ -224,6 +237,8 @@ public class GroupFunction extends Fragment {
                         doRest(user,msg,data,"发送烂俗贴纸");
 
                     }
+					
+					data.log(this,"#成员限制 #烂俗贴纸","来自 : " + user.name());
 
 				}
 
@@ -237,6 +252,7 @@ public class GroupFunction extends Fragment {
 
                 }
 
+				data.log(this,"#成员限制 #图片","来自 : " + user.name());
 
             } else if (msg.message().animation() != null && data.no_animation != null) {
 
@@ -247,7 +263,8 @@ public class GroupFunction extends Fragment {
                     doRest(user,msg,data,"发送动图");
 
                 }
-
+				
+				data.log(this,"#成员限制 #动图","来自 : " + user.name());
 
             } else if (msg.message().audio() != null && data.no_audio != null) {
 
@@ -258,6 +275,8 @@ public class GroupFunction extends Fragment {
                     doRest(user,msg,data,"发送音频");
 
                 }
+				
+				data.log(this,"#成员限制 #音频","来自 : " + user.name());
 
             } else if (msg.message().voice() != null && data.no_voice != null) {
 
@@ -268,6 +287,8 @@ public class GroupFunction extends Fragment {
                     doRest(user,msg,data,"录制语音");
 
                 }
+				
+				data.log(this,"#成员限制 #语音","来自 : " + user.name());
 
             } else if (msg.message().video() != null && data.no_video != null) {
 
@@ -278,6 +299,8 @@ public class GroupFunction extends Fragment {
                     doRest(user,msg,data,"发送视频");
 
                 }
+				
+				data.log(this,"#成员限制 #视频","来自 : " + user.name());
 
             } else if (msg.message().videoNote() != null && data.no_video_note != null) {
 
@@ -288,6 +311,8 @@ public class GroupFunction extends Fragment {
                     doRest(user,msg,data,"录制视频");
 
                 }
+				
+				data.log(this,"#成员限制 #录制视频","来自 : " + user.name());
 
             } else if (msg.message().contact() != null && data.no_contact != null) {
 
@@ -298,6 +323,9 @@ public class GroupFunction extends Fragment {
                     doRest(user,msg,data,"发送名片");
 
                 }
+				
+				data.log(this,"#成员限制 #名片","来自 : " + user.name());
+				
 
             } else if (msg.message().location() != null && data.no_location != null) {
 
@@ -308,6 +336,8 @@ public class GroupFunction extends Fragment {
                     doRest(user,msg,data,"分享位置");
 
                 }
+				
+				data.log(this,"#成员限制 #分享位置","来自 : " + user.name());
 
             } else if (msg.doc() != null && data.no_file != null) {
 
@@ -318,6 +348,8 @@ public class GroupFunction extends Fragment {
                     doRest(user,msg,data,"发送文件");
 
                 }
+				
+				data.log(this,"#成员限制 #文件","来自 : " + user.name());
 
             }
 

@@ -17,6 +17,7 @@ import static com.mongodb.client.model.Updates.set;
 import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+import io.kurumi.ntt.utils.BotLog;
 
 public class GroupData {
 
@@ -237,7 +238,7 @@ public class GroupData {
 	public Long log_channel;
 
 	public void log(Fragment fragment,Object... str) {
-
+		
 		if (enable_log != null && log_channel != null) {
 
 			new Send(fragment,id,ArrayUtil.join(str,"\n")).html().async();
