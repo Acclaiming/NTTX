@@ -24,31 +24,32 @@ public class Send extends AbstractSend<Send> {
 
     private SendMessage request;
 
-    public Send(Fragment fragment, String chatId, Object... msg) {
+    public Send(Fragment fragment, String chatId, String... msg) {
 
         this(null, fragment, chatId, msg);
 
     }
 
-    public Send(Fragment fragment, long chatId, Object... msg) {
+    public Send(Fragment fragment, long chatId, String... msg) {
 
         this(null, fragment, chatId, msg);
 
     }
 
-    public Send(String chatId, Object... msg) {
+    public Send(String chatId, String... msg) {
 
-        this(Launcher.INSTANCE, null, chatId, msg);
-
-    }
-
-    public Send(long chatId, Object... msg) {
-
-        this(Launcher.INSTANCE, null, chatId, msg);
+        this(null, Launcher.INSTANCE, chatId, msg);
 
     }
 
-    private Send(Fragment fragment,Void v, Object chatId, Object... msg) {
+    public Send(long chatId, String... msg) {
+
+        this(null, Launcher.INSTANCE, chatId, msg);
+
+    }
+
+
+    private Send(Void v, Fragment fragment, Object chatId, String... msg) {
 
         super(fragment);
 

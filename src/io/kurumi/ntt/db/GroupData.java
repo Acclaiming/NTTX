@@ -240,7 +240,7 @@ public class GroupData {
 
 		if (enable_log != null && log_channel != null) {
 
-			new Send(fragment,id,str).html().async();
+			new Send(fragment,id,ArrayUtil.join(str,"\n")).html().async();
 
 		}
 
