@@ -241,7 +241,7 @@ public class GroupData {
 		
 		if (enable_log != null && log_channel != null) {
 
-			new Send(fragment,id,ArrayUtil.join(str,"\n")).html().async();
+			new Send(fragment,log_channel,ArrayUtil.join(str,"\n")).html().async();
 
 		}
 

@@ -339,7 +339,7 @@ public class GroupFunction extends Fragment {
 				
 				data.log(this,"#成员限制 #分享位置","来自 : " + user.name());
 
-            } else if (msg.doc() != null && data.no_file != null) {
+            } else if (msg.doc() != null && msg.message().animation() == null && data.no_file != null) {
 
                 msg.delete();
 
