@@ -781,7 +781,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             if (msg.hasText()) {
 
-                String text = TentcentNlp.nlpTextchat(msg.chatId().toString(), msg.text());
+                String text = TencentNlp.nlpTextchat(msg.chatId().toString(), msg.text());
 
                 if (text != null) msg.send(text).exec();
 

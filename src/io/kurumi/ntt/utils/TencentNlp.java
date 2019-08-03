@@ -3,7 +3,7 @@ package io.kurumi.ntt.utils;
 import cn.hutool.json.JSONObject;
 import cn.xsshome.taip.nlp.TAipNlp;
 
-public class TentcentNlp {
+public class TencentNlp {
 
     static final String APP_ID = "2111414508";
     static final String APP_KEY = "e1Z3XyOYI7VuVQP0";
@@ -36,6 +36,8 @@ public class TentcentNlp {
 
     public static String nlpTextchat(String id, String text) {
 
+		if (text.contains("草")) return "草";
+		
         try {
 
             text = text.replace("🐴", "妈");
