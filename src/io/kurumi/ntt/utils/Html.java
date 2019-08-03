@@ -7,6 +7,7 @@ import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.fragment.Fragment;
 import cn.hutool.core.text.escape.Html4Unescape;
 import cn.hutool.core.util.EscapeUtil;
+import cn.hutool.core.util.URLUtil;
 
 public class Html {
 
@@ -32,6 +33,8 @@ public class Html {
     public static String a(String text, String href) {
 
         if (href == null) return text;
+		
+		if (href.startsWith("http")) href = URLUtil.encode(href);
 
         return "<a href=\"" + href + "\">" + HtmlUtil.escape(text) + "</a>";
 

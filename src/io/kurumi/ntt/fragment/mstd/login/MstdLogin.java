@@ -85,7 +85,7 @@ public class MstdLogin extends Fragment {
 			login.app = app;
 			login.api = api;
 
-			msg.send("打开链接认证并发送得到的验证码 : " + Html.a("戳这里",url)).withCancel().exec(login);
+			msg.send("打开链接认证并发送得到的验证码 : " + Html.a("戳这里",url)).withCancel().html().exec(login);
 
 		} else if (params.length == 3) {
 
