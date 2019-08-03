@@ -16,7 +16,7 @@ import io.kurumi.ntt.fragment.mstd.MstdAuth;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.Html;
 
-public class MstdLogin extends Fragment {
+public class MsLogin extends Fragment {
 
 	final String POINT_MSTD_LOGIN = "mstd_login";
 
@@ -41,9 +41,17 @@ public class MstdLogin extends Fragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
+		if (MstdAuth.data.containsId(user.id)) {
+			
+			msg.send("你已经认证过账号了 使用 /ms_logout 移除 :)").async();
+			
+			return;
+			
+		}
+		
 		if (params.length == 1) {
 
-			LoginMstd login = (MstdLogin.LoginMstd) setPrivatePoint(user,POINT_MSTD_LOGIN,new LoginMstd());
+			LoginMstd login = (MsLogin.LoginMstd) setPrivatePoint(user,POINT_MSTD_LOGIN,new LoginMstd());
 
 			MstdApp app;
 
