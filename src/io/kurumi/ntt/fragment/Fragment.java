@@ -73,6 +73,12 @@ public class Fragment {
         return origin.bot();
 
     }
+	
+	public boolean isLauncher() {
+
+        return origin instanceof Launcher;
+
+    }
 
     public boolean isMainInstance() {
 

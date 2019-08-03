@@ -103,7 +103,7 @@ public class RssSub extends Fragment {
 
         super.init(origin);
 
-        if (isMainInstance()) {
+        if (isLauncher()) {
 
             registerFunction("rss_import", "rss_export", "rss_set_delay", "rss_set_current", "rss_sub", "rss_set_copyright", "rss_list", "rss_unsub", "rss_unsub_all", "rss_set_format", "rss_link_preview", "rss_fetch");
 
