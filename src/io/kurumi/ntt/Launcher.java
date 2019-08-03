@@ -78,7 +78,7 @@ import okhttp3.OkHttpClient;
 import io.kurumi.ntt.fragment.mstd.login.MsLogin;
 import io.kurumi.ntt.fragment.mstd.login.MsLogout;
 
-public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
+public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
     public static Launcher INSTANCE;
 
@@ -135,8 +135,17 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         }
 
-        INSTANCE = new Launcher();
+        INSTANCE = new Launcher() {
 
+			@Override
+			public String getToken() {
+				
+				return Env.BOT_TOKEN;
+				
+			}
+			
+		};
+		
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
 
         RuntimeUtil.addShutdownHook(new Runnable() {
@@ -152,17 +161,27 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         INSTANCE.start();
 
+		for (final String aliasToken : Env.ALIAS) {
+
+			new Launcher() {
+
+				@Override
+				public String getToken() {
+
+					return aliasToken;
+
+				}
+
+			}.start();
+
+		}
+		
     }
 
     @Override
-    public String getToken() {
-
-        return Env.BOT_TOKEN;
-
-    }
+    public abstract String getToken();
 
     public AtomicBoolean stopeed = new AtomicBoolean(false);
-
 
     @Override
     public void init(BotFragment origin) {
@@ -180,6 +199,12 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         if ("start".equals(function)) {
 
+			if (!isMainInstance()) {
+				
+				msg.send("警告！这里是旧式实例，已经无法控制，请尽快切换到 @" + INSTANCE.me.username() + " :(").async();
+				
+			}
+			
             msg.send("start failed successfully ~", Env.HELP_MESSAGE).html().async();
 
         } else if ("help".equals(function)) {
@@ -208,17 +233,14 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 
         }
 
-        startTasks();
+        if (isMainInstance()) startTasks();
 
     }
-
-
-    // public MtProtoBot mtp;
 
     @Override
     public boolean silentStart() throws Exception {
 
-        if (super.silentStart()) {
+        if (isMainInstance() && super.silentStart()) {
 
             startTasks();
 

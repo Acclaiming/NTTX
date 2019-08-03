@@ -9,6 +9,7 @@
   "server_domain": "example.com",
   "debug_mode": false,
   "bot_token": "",
+  "alias": [],
   "admins": [],
   "log_channel": "-1",
   "tep_channel": "-1",
