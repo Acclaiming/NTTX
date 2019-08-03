@@ -199,7 +199,7 @@ public class GroupFunction extends Fragment {
 
 				}
 				
-				data.log(this,"#成员限制 #烂俗消息","来自 : " + user.name());
+				data.log(this,"#成员限制 #烂俗消息",user.format());
 
             } else if (msg.sticker() != null) {
 
@@ -213,7 +213,7 @@ public class GroupFunction extends Fragment {
 
                     }
 					
-					data.log(this,"#成员限制 #贴纸","来自 : " + user.name());
+					data.log(this,"#成员限制 #贴纸",user.format());
 					
 
                 } else if (!msg.sticker().animated() && data.no_sticker != null) {
@@ -226,7 +226,7 @@ public class GroupFunction extends Fragment {
 
                     }
 
-					data.log(this,"#成员限制 #动态贴纸","来自 : " + user.name());
+					data.log(this,"#成员限制 #动态贴纸",user.format());
 					
                 } else if (data.no_esu_stickers != null && ArrayUtil.contains(MaliciousMessage.esuStickers,msg.sticker().setName())) {
 
@@ -238,7 +238,7 @@ public class GroupFunction extends Fragment {
 
                     }
 					
-					data.log(this,"#成员限制 #烂俗贴纸","来自 : " + user.name());
+					data.log(this,"#成员限制 #烂俗贴纸",user.format());
 
 				}
 
@@ -252,7 +252,7 @@ public class GroupFunction extends Fragment {
 
                 }
 
-				data.log(this,"#成员限制 #图片","来自 : " + user.name());
+				data.log(this,"#成员限制 #图片",user.format());
 
             } else if (msg.message().animation() != null && data.no_animation != null) {
 
@@ -264,7 +264,7 @@ public class GroupFunction extends Fragment {
 
                 }
 				
-				data.log(this,"#成员限制 #动图","来自 : " + user.name());
+				data.log(this,"#成员限制 #动图",user.format());
 
             } else if (msg.message().audio() != null && data.no_audio != null) {
 
@@ -276,7 +276,7 @@ public class GroupFunction extends Fragment {
 
                 }
 				
-				data.log(this,"#成员限制 #音频","来自 : " + user.name());
+				data.log(this,"#成员限制 #音频",user.format());
 
             } else if (msg.message().voice() != null && data.no_voice != null) {
 
@@ -288,7 +288,7 @@ public class GroupFunction extends Fragment {
 
                 }
 				
-				data.log(this,"#成员限制 #语音","来自 : " + user.name());
+				data.log(this,"#成员限制 #语音",user.format());
 
             } else if (msg.message().video() != null && data.no_video != null) {
 
@@ -300,7 +300,7 @@ public class GroupFunction extends Fragment {
 
                 }
 				
-				data.log(this,"#成员限制 #视频","来自 : " + user.name());
+				data.log(this,"#成员限制 #视频",user.format());
 
             } else if (msg.message().videoNote() != null && data.no_video_note != null) {
 
@@ -312,7 +312,7 @@ public class GroupFunction extends Fragment {
 
                 }
 				
-				data.log(this,"#成员限制 #录制视频","来自 : " + user.name());
+				data.log(this,"#成员限制 #录制视频",user.format());
 
             } else if (msg.message().contact() != null && data.no_contact != null) {
 
@@ -324,7 +324,7 @@ public class GroupFunction extends Fragment {
 
                 }
 				
-				data.log(this,"#成员限制 #名片","来自 : " + user.name());
+				data.log(this,"#成员限制 #名片",user.format());
 				
 
             } else if (msg.message().location() != null && data.no_location != null) {
@@ -337,7 +337,7 @@ public class GroupFunction extends Fragment {
 
                 }
 				
-				data.log(this,"#成员限制 #分享位置","来自 : " + user.name());
+				data.log(this,"#成员限制 #分享位置",user.format());
 
             } else if (msg.doc() != null && msg.message().animation() == null && data.no_file != null) {
 
@@ -349,7 +349,7 @@ public class GroupFunction extends Fragment {
 
                 }
 				
-				data.log(this,"#成员限制 #文件","来自 : " + user.name());
+				data.log(this,"#成员限制 #文件",user.format());
 
             }
 

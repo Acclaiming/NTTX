@@ -176,6 +176,12 @@ public class UserData {
         return Html.a(StrUtil.isBlank(name()) ? "[已重置]" : name(), "tg://user?id=" + id);
 
     }
+	
+	public String format() {
+
+        return Html.a("ID","tg://user?id=" + id) + " : " + Html.code(id) + "\n" + "用户名 : " + Html.code(name());
+		
+    }
 
     public boolean admin() {
         return ArrayUtil.contains(Env.ADMINS, id);

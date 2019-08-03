@@ -1391,7 +1391,7 @@ public class JoinCaptcha extends Fragment {
 
         }
 		
-		gd.log(this,"#加群验证 #通过 " + cause == null ? "" : " #" + cause,"用户 : " + user.name());
+		gd.log(this,"#加群验证 #通过 " + (cause == null ? "" : " #" + cause),"用户 : " + user.format());
 		
 
     }
@@ -1516,7 +1516,7 @@ public class JoinCaptcha extends Fragment {
 
         msg.delete();
 
-		gd.log(this,"#加群验证 #未通过 " + cause == null ? "" : " #" + cause,"用户 : " + user.name());
+		gd.log(this,"#加群验证 #未通过 " + (cause == null ? "" : " #" + cause),"用户 : " + user.format());
 		
     }
 
