@@ -29,7 +29,7 @@ public class UserBot {
 
 				data.deleteById(bot.id);
 
-				new Send(bot.user,"你的机器人 @" + bot.userName + " 的已从NTT取消接管。(为什么？)").exec();
+				// new Send(bot.user,"你的机器人 @" + bot.userName + " 的已从NTT取消接管。(为什么？)").exec();
 
 				continue;
 
