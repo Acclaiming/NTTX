@@ -14,6 +14,8 @@ import java.util.HashMap;
 
 import com.pengrad.telegrambot.request.*;
 import cn.hutool.json.*;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ReUtil;
 
 public class GroupFunction extends Fragment {
 
@@ -158,7 +160,21 @@ public class GroupFunction extends Fragment {
                     }
 
                 }
+				
+			} else if (data.no_esu_words != null && msg.hasText()) {
 
+				if (ReUtil.contains(MaliciousMessage.esuWordsRegex,msg.text())) {
+					
+					msg.delete();
+
+					if (data.no_esu_stickers != 0) {
+
+                        doRest(user, msg, data, "发送烂俗消息");
+
+                    }
+					
+				}
+				
             } else if (msg.sticker() != null) {
 
                 if (msg.sticker().animated() && data.no_animated_sticker != null) {
@@ -177,11 +193,21 @@ public class GroupFunction extends Fragment {
 
                     if (data.no_sticker != 0) {
 
-                        doRest(user, msg, data, "发送贴纸");
+                        doRest(user, msg, data, "发送动态贴纸");
 
                     }
 
-                }
+                } else if (data.no_esu_stickers != null && ArrayUtil.contains(MaliciousMessage.esuStickers,msg.sticker().setName())) {
+					
+					msg.delete();
+					
+					if (data.no_esu_stickers != 0) {
+
+                        doRest(user, msg, data, "发送烂俗贴纸");
+
+                    }
+					
+				}
 
             } else if (msg.message().photo() != null && data.no_image != null) {
 

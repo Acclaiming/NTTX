@@ -185,6 +185,9 @@ public class GroupData {
     public Integer no_invite_user;
     public Integer no_invite_bot;
 
+	public Integer no_esu_words;
+	public Integer no_esu_stickers;
+	
     public Integer no_sticker;
     public Integer no_animated_sticker;
     public Integer no_image;

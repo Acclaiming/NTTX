@@ -451,7 +451,50 @@ public class GroupOptions extends Fragment {
 
                     }
 
+				} else if ("esu_words".equals(params[1])) {
 
+                    if (data.no_esu_words == null) {
+
+                        data.no_esu_words = 0;
+
+                        callback.text("📝  仅删除");
+
+                    } else if (data.no_esu_words == 0) {
+
+                        data.no_esu_words = 1;
+
+                        callback.text("📝  删除并警告");
+
+                    } else {
+
+                        data.no_esu_words = null;
+
+                        callback.text("📝  不处理");
+
+                    }
+					
+				} else if ("esu_stickers".equals(params[1])) {
+
+                    if (data.no_esu_stickers == null) {
+
+                        data.no_esu_stickers = 0;
+
+                        callback.text("📝  仅删除");
+
+                    } else if (data.no_esu_stickers == 0) {
+
+                        data.no_esu_stickers = 1;
+
+                        callback.text("📝  删除并警告");
+
+                    } else {
+
+                        data.no_esu_stickers = null;
+
+                        callback.text("📝  不处理");
+
+                    }
+					
                 } else if ("sticker".equals(params[1])) {
 
                     if (data.no_sticker == null) {
@@ -1771,6 +1814,15 @@ public class GroupOptions extends Fragment {
                     .newButton("邀请机器人", POINT_HELP, "invite_bot")
                     .newButton(data.no_invite_bot == null ? "✅" : data.no_invite_bot == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "invite_bot");
 
+			newButtonLine()
+                    .newButton("烂俗文本", POINT_HELP, "esu_words")
+                    .newButton(data.no_esu_words == null ? "✅" : data.no_esu_words == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "esu_words");
+			
+			newButtonLine()
+                    .newButton("烂俗贴纸", POINT_HELP, "esu_stickers")
+                    .newButton(data.no_esu_stickers == null ? "✅" : data.no_esu_stickers == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "esu_stickers");
+				
+					
             newButtonLine()
                     .newButton("发送贴纸", POINT_HELP, "sticker")
                     .newButton(data.no_sticker == null ? "✅" : data.no_sticker == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "sticker");
@@ -1778,7 +1830,6 @@ public class GroupOptions extends Fragment {
             newButtonLine()
                     .newButton("动态贴纸", POINT_HELP, "animated")
                     .newButton(data.no_animated_sticker == null ? "✅" : data.no_animated_sticker == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "animated");
-
 
             newButtonLine()
                     .newButton("发送图片", POINT_HELP, "image")

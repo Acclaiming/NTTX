@@ -2,10 +2,58 @@ package io.kurumi.ntt.fragment.group;
 
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.lang.Matcher;
+import java.util.regex.Pattern;
 
 public class MaliciousMessage {
 
-    static String[] esuKeywords = new String[]{
+ static final String[] esuStickers = new String[]{
+	 
+		"LzhStickers",
+		"ESUISGOD",
+		"qiezi",
+		"Jason_Funderburker",
+		"Suicas",
+		"jvbao",
+		"JieGeBuYao",
+		"EsuXi",
+		"youdontcry",
+		"pandahead",
+		"frogthepepe",
+		"tieba_new",
+		"jiaomoren",
+		"weitu",
+		"chinapig",
+		"duren13",
+		"Ruhuaism",
+		"EliotStickerPack",
+		"myphzy",
+		"sikesocute",
+		"thonkang",
+		"route_boy",
+		"MyISP",
+		"JojosBA",
+		"undertalepack",
+		"Chainizi",
+		"zhenxiang",
+		"dongtu",
+		"Tetsaiphoto",
+		"YouCountry",
+		"piyixia",
+		"QQciya",
+		"QQciya2",
+		"weitu",
+		"CyanoxygenS",
+		"esugirl",
+		"setsunann",
+		"OriESG",
+		"EsuWiki",
+		"hanaakari",
+		"idiotmessages",
+
+    };
+	
+	
+    final static String[] esuKeywords = new String[]{
 
             "恶俗", "要素", "李威",
 
@@ -42,5 +90,26 @@ public class MaliciousMessage {
             "esu\\.(wiki|moe|zone)", "zhina\\.(wiki|red)"
 
     };
+	
+	static Pattern esuWordsRegex;
+	
+	static {
+		
+		StringBuilder kw = new StringBuilder("(");
+
+		for (int index = 0; index < esuKeywords.length; index++) {
+
+			if (index > 0) kw.append("|");
+
+			kw.append(esuKeywords[index]);
+
+        }
+
+
+        kw.append(")");
+		
+        esuWordsRegex = Pattern.compile(kw.toString());
+		
+	}
 
 }
