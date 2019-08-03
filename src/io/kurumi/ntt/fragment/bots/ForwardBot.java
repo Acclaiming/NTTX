@@ -65,13 +65,6 @@ public class ForwardBot extends UserBotFragment {
 	}
 
     @Override
-    public int onBlockedMsg(UserData user, Msg msg) {
-
-        return 2;
-
-    }
-
-    @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
         super.onFunction(user, msg, function, params);

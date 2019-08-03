@@ -185,7 +185,7 @@ public class GroupFunction extends Fragment {
 
 					msg.delete();
 
-					if (data.no_esu_stickers != 0) {
+					if (data.no_esu_words != 0) {
 
                         doRest(user,msg,data,"发送烂俗消息");
 
