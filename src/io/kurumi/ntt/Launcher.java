@@ -76,6 +76,7 @@ import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
 import io.kurumi.ntt.fragment.mstd.login.MsLogin;
+import io.kurumi.ntt.fragment.mstd.login.MsLogout;
 
 public class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -312,7 +313,7 @@ public class Launcher extends BotFragment implements Thread.UncaughtExceptionHan
 		// Mastodon
 		
 		addFragment(new MsLogin());
-		addFragment(new MsLogin());
+		addFragment(new MsLogout());
 		
         // BOTS
 
