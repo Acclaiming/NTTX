@@ -418,7 +418,7 @@ public class JoinCaptcha extends Fragment {
 
                 msg.delete();
 
-                failed(user, msg, group.get(newData.id), data);
+                failed(user, msg, group.get(newData.id), data,"主动退群");
 
             }
 
@@ -977,7 +977,7 @@ public class JoinCaptcha extends Fragment {
 
                 if (!group.containsKey(user.id)) return;
 
-                failed(user, msg, auth, data, true);
+                failed(user, msg, auth, data, true,"超时");
 
             }
 
@@ -1003,7 +1003,7 @@ public class JoinCaptcha extends Fragment {
 
         if (msg.message().leftChatMember() != null) {
 
-            failed(user, msg, auth, gd);
+            failed(user, msg, auth, gd,"主动退群");
 
             return;
 
@@ -1047,7 +1047,7 @@ public class JoinCaptcha extends Fragment {
 
             }
 
-            failed(user, msg, auth, gd, true);
+            failed(user, msg, auth, gd, true,"验证期间邀请用户");
 
             return;
 
@@ -1055,11 +1055,11 @@ public class JoinCaptcha extends Fragment {
 
         if (auth.code.verify(msg.text())) {
 
-            success(user, msg, auth, gd);
+            success(user, msg, auth, gd,null);
 
         } else {
 
-            failed(user, msg, auth, gd);
+            failed(user, msg, auth, gd,"验证失败");
 
         }
 
@@ -1104,13 +1104,13 @@ public class JoinCaptcha extends Fragment {
 
             }
 
-            failed(user, callback, auth, gd);
+            failed(user, callback, auth, gd,"点击按钮");
 
         } else if (POINT_ACC.equals(point) || POINT_REJ.equals(point)) {
 
             if (user.id.equals(target)) {
 
-                failed(user, callback, auth, gd);
+                failed(user, callback, auth, gd,"点击按钮");
 
             } else if (NTT.checkGroupAdmin(callback)) {
 
@@ -1120,11 +1120,11 @@ public class JoinCaptcha extends Fragment {
 
             if (POINT_ACC.equals(point)) {
 
-                success(UserData.get(target), callback, auth, gd);
+                success(UserData.get(target), callback, auth, gd,"管理员通过");
 
             } else {
 
-                failed(UserData.get(target), callback, auth, gd, true);
+                failed(UserData.get(target), callback, auth, gd, true,"点击按钮");
 
             }
 
@@ -1160,11 +1160,11 @@ public class JoinCaptcha extends Fragment {
 
             if (auth.code.verify(params[1])) {
 
-                success(user, callback, auth, gd);
+                success(user, callback, auth, gd,null);
 
             } else {
 
-                failed(user, callback, auth, gd);
+                failed(user, callback, auth, gd,"验证失败");
 
             }
 
@@ -1172,7 +1172,7 @@ public class JoinCaptcha extends Fragment {
 
     }
 
-    void success(UserData user, Msg msg, AuthCache auth, GroupData gd) {
+    void success(UserData user, Msg msg, AuthCache auth, GroupData gd,String cause) {
 
         if (cache.containsKey(msg.chatId())) {
 
@@ -1390,17 +1390,19 @@ public class JoinCaptcha extends Fragment {
 
 
         }
-
-
-    }
-
-    void failed(UserData user, Msg msg, AuthCache auth, GroupData gd) {
-
-        failed(user, msg, auth, gd, false);
+		
+		gd.log(this,"#加群验证 #通过 " + cause == null ? "" : " #" + cause,"用户 : " + user.name());
+		
 
     }
 
-    void failed(UserData user, Msg msg, AuthCache auth, GroupData gd, boolean noRetey) {
+    void failed(UserData user, Msg msg, AuthCache auth, GroupData gd,String cause) {
+
+        failed(user, msg, auth, gd, false,cause);
+
+    }
+
+    void failed(UserData user, Msg msg, AuthCache auth, GroupData gd, boolean noRetey,String cause) {
 
         if (cache.containsKey(msg.chatId())) {
 
@@ -1514,6 +1516,8 @@ public class JoinCaptcha extends Fragment {
 
         msg.delete();
 
+		gd.log(this,"#加群验证 #未通过 " + cause == null ? "" : " #" + cause,"用户 : " + user.name());
+		
     }
 
 }
