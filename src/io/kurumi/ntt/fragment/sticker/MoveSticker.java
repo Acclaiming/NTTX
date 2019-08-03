@@ -1,26 +1,23 @@
 package io.kurumi.ntt.fragment.sticker;
 
+import cn.hutool.core.util.ArrayUtil;
 import com.pengrad.telegrambot.model.Sticker;
 import com.pengrad.telegrambot.model.StickerSet;
 import com.pengrad.telegrambot.request.GetStickerSet;
+import com.pengrad.telegrambot.request.SetStickerPositionInSet;
+import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetStickerSetResponse;
 import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.fragment.inline.ShowSticker;
 import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.model.Query;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Keyboard;
 import io.kurumi.ntt.model.request.KeyboradButtonLine;
-
-import java.util.HashMap;
+import io.kurumi.ntt.utils.NTT;
 import java.util.List;
-
-import cn.hutool.core.util.ArrayUtil;
-import com.pengrad.telegrambot.request.SetStickerPositionInSet;
-import com.pengrad.telegrambot.response.BaseResponse;
-import io.kurumi.ntt.fragment.inline.ShowSticker;
 
 public class MoveSticker extends Fragment {
 
@@ -55,13 +52,7 @@ public class MoveSticker extends Fragment {
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        if (user.blocked()) {
-
-            msg.send("你不能这么做 (为什么？)").async();
-
-            return;
-
-        }
+        if (NTT.checkDropped(user,msg)) return;
 
         final List<PackOwner> all = PackOwner.getAll(user.id);
 

@@ -8,6 +8,7 @@ import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonMarkup;
+import io.kurumi.ntt.utils.NTT;
 
 public class AutoUI extends Fragment {
 
@@ -29,14 +30,8 @@ public class AutoUI extends Fragment {
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        if (user.blocked()) {
-
-            msg.send("你不能这么做 (为什么？)").async();
-
-            return;
-
-        }
-
+        if (NTT.checkDropped(user,msg)) return;
+		
         requestTwitter(user, msg);
 
     }

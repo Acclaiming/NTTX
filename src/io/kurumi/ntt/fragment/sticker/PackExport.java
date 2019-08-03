@@ -18,6 +18,7 @@ import io.kurumi.ntt.utils.Html;
 
 import java.io.File;
 import java.util.ArrayList;
+import io.kurumi.ntt.utils.NTT;
 
 public class PackExport extends Fragment {
 
@@ -38,14 +39,8 @@ public class PackExport extends Fragment {
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        if (user.blocked()) {
-
-            msg.send("你不能这么做 (为什么？)").async();
-
-            return;
-
-        }
-
+        if (NTT.checkDropped(user,msg)) return;
+		
         PointData data = setPrivatePoint(user, POINT_EXPORT_SET);
 
         msg.send("现在发送要导出的贴纸包的简称/链接 或 贴纸包中的任意贴纸").exec(data);

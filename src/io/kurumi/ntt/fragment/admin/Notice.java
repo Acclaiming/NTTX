@@ -41,10 +41,11 @@ public class Notice extends Fragment {
 
     }
 
-    @Override
-    public int checkFunction(UserData user,Msg msg,String function,String[] params) {
-
-        return PROCESS_SYNC;
+	
+	@Override
+	public int checkPoint(UserData user,Msg msg,String point,PointData data) {
+		
+        return PROCESS_ASYNC;
 
     }
 

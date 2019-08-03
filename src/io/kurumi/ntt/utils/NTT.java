@@ -412,6 +412,24 @@ public class NTT {
 	 }
 
 	 */
+	 
+	public static boolean checkDropped(UserData user,Msg msg) {
+		
+		if (!user.blocked()) return false;
+		
+		if (msg instanceof Callback) {
+			
+			((Callback)msg).alert("你不能这么做。 (为什么？)");
+			
+		} else {
+			
+			msg.reply("你不能这么做。 (为什么？)").failedWith();
+			
+		}
+		
+		return true;
+		
+	}
 
     public static boolean checkNonContactable(UserData user, Msg msg) {
 

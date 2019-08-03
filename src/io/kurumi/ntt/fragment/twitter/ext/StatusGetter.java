@@ -30,14 +30,8 @@ public class StatusGetter extends Fragment {
     @Override
     public void onPayload(UserData user, Msg msg, String payload, String[] params) {
 
-        if (user.blocked()) {
-
-            msg.send("你不能这么做 (为什么？)").async();
-
-            return;
-
-        }
-
+        if (NTT.checkDropped(user,msg)) return;
+		
         requestTwitterPayload(user, msg);
 
     }
@@ -97,14 +91,8 @@ public class StatusGetter extends Fragment {
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        if (user.blocked()) {
-
-            msg.send("你不能这么做 (为什么？)").async();
-
-            return;
-
-        }
-
+        if (NTT.checkDropped(user,msg)) return;
+		
         if (params.length != 1) {
 
             msg.send("用法 /status <推文链接|ID>").publicFailed();

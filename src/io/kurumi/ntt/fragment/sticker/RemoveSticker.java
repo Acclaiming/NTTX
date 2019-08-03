@@ -16,6 +16,7 @@ import io.kurumi.ntt.model.request.Keyboard;
 import io.kurumi.ntt.model.request.KeyboradButtonLine;
 
 import java.util.List;
+import io.kurumi.ntt.utils.NTT;
 
 public class RemoveSticker extends Fragment {
 
@@ -49,14 +50,8 @@ public class RemoveSticker extends Fragment {
     @Override
     public void onFunction(UserData user, Msg msg, String functipon, String[] params) {
 
-        if (user.blocked()) {
-
-            msg.send("你不能这么做 (为什么？)").async();
-
-            return;
-
-        }
-
+        if (NTT.checkDropped(user,msg)) return;
+		
         final List<PackOwner> all = PackOwner.getAll(user.id);
 
         if (all.isEmpty()) {

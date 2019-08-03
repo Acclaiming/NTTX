@@ -1,29 +1,46 @@
 package io.kurumi.ntt.fragment;
 
-import cn.hutool.core.util.*;
-import cn.hutool.json.*;
-import com.pengrad.telegrambot.*;
-import com.pengrad.telegrambot.model.*;
-import com.pengrad.telegrambot.model.request.*;
-import com.pengrad.telegrambot.request.*;
-import com.pengrad.telegrambot.response.*;
-import io.kurumi.ntt.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.fragment.admin.*;
-import io.kurumi.ntt.fragment.twitter.*;
-import io.kurumi.ntt.fragment.twitter.archive.*;
-import io.kurumi.ntt.model.*;
-import io.kurumi.ntt.model.request.*;
-import io.kurumi.ntt.utils.*;
-
-import java.util.*;
-import java.util.concurrent.*;
-
-import okhttp3.*;
-
-import io.kurumi.ntt.model.Callback;
+import cn.hutool.core.util.ArrayUtil;
+import com.pengrad.telegrambot.ExceptionHandler;
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.TelegramException;
+import com.pengrad.telegrambot.UpdatesListener;
+import com.pengrad.telegrambot.model.Chat;
+import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.User;
+import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
+import com.pengrad.telegrambot.request.GetMe;
+import com.pengrad.telegrambot.request.SendPhoto;
+import com.pengrad.telegrambot.request.SetWebhook;
+import com.pengrad.telegrambot.response.BaseResponse;
+import com.pengrad.telegrambot.response.GetMeResponse;
+import io.kurumi.ntt.Env;
+import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.db.PointData;
+import io.kurumi.ntt.db.PointStore;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.admin.Firewall;
 import io.kurumi.ntt.fragment.extra.ShowFile;
-import cn.hutool.http.cookie.GlobalCookieManager;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import io.kurumi.ntt.model.Callback;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.Query;
+import io.kurumi.ntt.model.request.Send;
+import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.utils.Html;
+import io.kurumi.ntt.utils.NTT;
+import io.kurumi.ntt.utils.TencentNlp;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Timer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import okhttp3.OkHttpClient;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener, ExceptionHandler {
 
@@ -498,13 +515,15 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                         }
 
                     } else {
+						
+						if (NTT.checkDropped(user,msg)) return;
 
                         final Fragment function = functions.containsKey(msg.command()) ? functions.get(msg.command()) : this;
 
                         int checked = function.checkFunction(user, msg, msg.command(), msg.params());
 
                         if (checked == PROCESS_REJECT) return;
-
+						
                         if (function != this && function.checkFunctionContext(user, msg, msg.command(), msg.params()) == FUNCTION_GROUP && !msg.isGroup()) {
 
                             msg.send("请在群组使用 :)").async();

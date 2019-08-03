@@ -1,13 +1,9 @@
 package io.kurumi.ntt.fragment.sticker;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
 import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.Sticker;
-import com.pengrad.telegrambot.request.GetStickerSet;
 import com.pengrad.telegrambot.request.SendDocument;
-import com.pengrad.telegrambot.response.GetStickerSetResponse;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
@@ -15,13 +11,12 @@ import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.BotLog;
-
+import io.kurumi.ntt.utils.NTT;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import net.coobird.thumbnailator.Thumbnails;
 
 public class StickerExport extends Fragment {
@@ -41,14 +36,8 @@ public class StickerExport extends Fragment {
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        if (user.blocked()) {
-
-            msg.send("你不能这么做 (为什么？)").async();
-
-            return;
-
-        }
-
+        if (NTT.checkDropped(user,msg)) return;
+		
         PointData data = setPrivatePoint(user, POINT_EXPORT_STICKER).with(msg);
 
         msg.send("进入贴纸制作模式 :", "\n发送任意贴纸将返回原文件", "发送任意图片将返回可用于添加贴纸的.png格式文件", "\n使用 /cancel 结束导出").exec(data);
