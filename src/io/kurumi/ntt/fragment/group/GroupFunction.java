@@ -364,15 +364,23 @@ public class GroupFunction extends Fragment {
 
         if (data.rest_action == null && !name.startsWith("邀请")) {
 
+			if ("name".equals("发送烂俗消息")) {
+				
+				execute(new RestrictChatMember(msg.chatId(), user.id.intValue()).canSendMessages(false).canSendMediaMessages(false).canSendOtherMessages(false).canAddWebPagePreviews(false));
+				
+			} else {
+			
             execute(new RestrictChatMember(msg.chatId(), user.id.intValue()).canSendMessages(true).canSendMediaMessages(false).canSendOtherMessages(false).canAddWebPagePreviews(false));
 
+			}
+			
             if (data.last_warn_msg != null) {
 
                 execute(new DeleteMessage(msg.chatId(), data.last_warn_msg));
 
             }
 
-            SendResponse resp = msg.send(user.userName(), "\n根据群组设置 本群禁止" + name + "，你已达到警告上限并被限制发送非文本消息。", "如有疑问，请联系群组管理员").html().exec();
+            SendResponse resp = msg.send(user.userName(), "\n根据群组设置 本群禁止" + name + "，你已达到警告上限并被限制。", "如有疑问，请联系群组管理员").html().exec();
 
             if (resp.isOk()) data.last_warn_msg = resp.message().messageId();
 
