@@ -54,7 +54,7 @@ public class GroupFunction extends Fragment {
 
                 if (msg.message().leftChatMember().id().equals(origin.me.id())) {
 
-                    GroupData.delete(msg.chatId());
+                   // GroupData.delete(msg.chatId());
 
                 } else {
 
