@@ -213,13 +213,6 @@ public class ForwardBot extends UserBotFragment {
     }
 
     @Override
-    public int checkMsg(UserData user, Msg msg) {
-
-        return PROCESS_REJECT;
-
-    }
-
-    @Override
     public void onMsg(UserData user, Msg msg) {
 
         if (msg.isPrivate()) {
