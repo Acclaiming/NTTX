@@ -43,7 +43,7 @@ public class MsLogin extends Fragment {
 
 		if (MstdAuth.data.containsId(user.id)) {
 			
-			msg.send("你已经认证过账号了 使用 /ms_logout 移除 :)").async();
+			msg.send("已经认证过账号了唔","使用 /ms_logout 移除 :)").async();
 			
 			return;
 			
