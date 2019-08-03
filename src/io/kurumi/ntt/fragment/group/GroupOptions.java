@@ -2,36 +2,31 @@ package io.kurumi.ntt.fragment.group;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HtmlUtil;
+import com.pengrad.telegrambot.model.Chat;
+import com.pengrad.telegrambot.model.ChatMember;
+import com.pengrad.telegrambot.model.Sticker;
 import com.pengrad.telegrambot.request.EditMessageReplyMarkup;
+import com.pengrad.telegrambot.request.GetChatMember;
+import com.pengrad.telegrambot.request.GetStickerSet;
+import com.pengrad.telegrambot.response.GetChatMemberResponse;
+import com.pengrad.telegrambot.response.GetStickerSetResponse;
 import io.kurumi.ntt.db.GroupData;
 import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.fragment.bots.GroupBot;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
-
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
-import cn.hutool.core.util.StrUtil;
-
-import java.util.ArrayList;
-
-import com.pengrad.telegrambot.response.GetStickerSetResponse;
-import com.pengrad.telegrambot.request.GetStickerSet;
-import com.pengrad.telegrambot.model.Sticker;
-import io.kurumi.ntt.fragment.bots.*;
-import cn.hutool.http.HtmlUtil;
-import com.pengrad.telegrambot.model.Chat;
-import com.pengrad.telegrambot.response.SendResponse;
-import com.pengrad.telegrambot.request.GetChatMember;
-import com.pengrad.telegrambot.response.GetChatMemberResponse;
-import com.pengrad.telegrambot.model.ChatMember;
 
 public class GroupOptions extends Fragment {
 
