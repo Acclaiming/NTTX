@@ -54,11 +54,9 @@ import io.kurumi.ntt.fragment.sticker.RemoveSticker;
 import io.kurumi.ntt.fragment.sticker.StickerExport;
 import io.kurumi.ntt.fragment.twitter.TwitterMain;
 import io.kurumi.ntt.fragment.twitter.archive.TEPH;
-import io.kurumi.ntt.fragment.twitter.auto.AutoUI;
 import io.kurumi.ntt.fragment.twitter.bots.MediaDownloadBot;
 import io.kurumi.ntt.fragment.twitter.ext.MediaDownload;
 import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
-import io.kurumi.ntt.fragment.twitter.ext.TimelineUI;
 import io.kurumi.ntt.fragment.twitter.ext.TwitterDelete;
 import io.kurumi.ntt.fragment.twitter.ext.UserActions;
 import io.kurumi.ntt.fragment.twitter.list.ListExport;
@@ -69,13 +67,13 @@ import io.kurumi.ntt.fragment.twitter.status.StatusSearch;
 import io.kurumi.ntt.fragment.twitter.status.StatusUpdate;
 import io.kurumi.ntt.fragment.twitter.status.TimedStatus;
 import io.kurumi.ntt.fragment.twitter.track.TrackTask;
-import io.kurumi.ntt.fragment.twitter.track.TrackUI;
 import io.kurumi.ntt.fragment.twitter.track.UserTrackTask;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.BotLog;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
+import io.kurumi.ntt.fragment.twitter.status.TimelineMain;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -261,7 +259,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         TimedStatus.start();
 
-        TimelineUI.start();
+        TimelineMain.start();
 
         TrackTask.start();
 
@@ -322,7 +320,6 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         addFragment(new StatusFetch());
         addFragment(new MediaDownload());
         addFragment(new StatusAction());
-        addFragment(new TimelineUI());
         addFragment(new TwitterDelete());
         addFragment(new ListExport());
         addFragment(new ListImport());

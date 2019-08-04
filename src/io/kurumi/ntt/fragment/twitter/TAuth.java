@@ -72,6 +72,23 @@ public class TAuth {
 	public Boolean fo_info;
 	public Boolean fr_info;
 
+	public Boolean tl;
+	public Long tl_offset;
+
+	public Boolean mention;
+
+	public Long mention_offset;
+	public Long rt_offset;
+	
+	public Boolean mdb;
+
+	/*
+	
+	public boolean directMessages = false;
+	public long directMessageOffset = -1;
+	
+	*/
+	
     public static TAuth getById(Long accountid) {
 
         return data.getById(accountid);

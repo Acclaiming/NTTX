@@ -11,7 +11,7 @@ import io.kurumi.ntt.model.request.ButtonMarkup;
 import twitter4j.AccountSettings;
 import io.kurumi.ntt.fragment.twitter.AccountMain;
 
-public class AutoUI extends Fragment {
+public class AutoMain extends Fragment {
 
 	public static final String POINT_AUTO = "twi_auto";
 

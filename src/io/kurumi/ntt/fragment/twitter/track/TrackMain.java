@@ -9,7 +9,7 @@ import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 
-public class TrackUI extends Fragment {
+public class TrackMain extends Fragment {
 
 	public static final String POINT_TRACK = "twi_track";
 
