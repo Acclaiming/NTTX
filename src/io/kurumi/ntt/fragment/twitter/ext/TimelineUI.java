@@ -1,28 +1,6 @@
 package io.kurumi.ntt.fragment.twitter.ext;
 
-import cn.hutool.core.util.ArrayUtil;
-import io.kurumi.ntt.db.Data;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.twitter.TAuth;
-import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.utils.NTT;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.TimerTask;
-
-import twitter4j.DirectMessage;
-import twitter4j.DirectMessageList;
-import twitter4j.Paging;
-import twitter4j.ResponseList;
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import io.kurumi.ntt.fragment.twitter.bots.MediaDownloadBot;
 
 /*
 

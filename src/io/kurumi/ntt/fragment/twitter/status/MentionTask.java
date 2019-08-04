@@ -3,7 +3,6 @@ package io.kurumi.ntt.fragment.twitter.status;
 import cn.hutool.core.util.ArrayUtil;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
-import io.kurumi.ntt.fragment.twitter.bots.MediaDownloadBot;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.NTT;
 import java.util.TimerTask;
@@ -12,6 +11,8 @@ import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import java.util.HashMap;
+import io.kurumi.ntt.fragment.twitter.bots.MDListener;
 
 public class MentionTask extends TimerTask {
 
@@ -48,6 +49,8 @@ public class MentionTask extends TimerTask {
 
 	}
 	
+	static HashMap<Long,MDListener> bots = new HashMap<>();
+	
 	static void processMention(TAuth auth,Twitter api) throws TwitterException {
 
 		long offset = -1;
@@ -74,9 +77,17 @@ public class MentionTask extends TimerTask {
 
                 }
 
-				if (MediaDownloadBot.data.containsId(auth.id)) {
+				if (bots.containsKey(auth.id)) {
 
-					MediaDownloadBot.getListener(auth).onStatus(mention);
+					bots.get(auth.id).onStatus(mention);
+
+				} else {
+					
+					MDListener bot = new MDListener(auth);
+					
+					bots.put(auth.id,bot);
+					
+					bot.onStatus(mention);
 
 				}
 
