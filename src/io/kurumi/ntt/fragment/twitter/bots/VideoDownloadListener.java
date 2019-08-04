@@ -54,7 +54,7 @@ public class VideoDownloadListener implements StatusListener {
 	@Override
 	public void onStatus(final Status status) {
 
-		if (status.getText().contains("@" + screenName)) {
+		if (status.getText().endsWith(" @" + screenName)) {
 
 			if (status.getInReplyToStatusId() == -1) {
 				
