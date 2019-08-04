@@ -45,8 +45,7 @@ public class Venue implements Serializable {
         if (location != null ? !location.equals(venue.location) : venue.location != null) return false;
         if (title != null ? !title.equals(venue.title) : venue.title != null) return false;
         if (address != null ? !address.equals(venue.address) : venue.address != null) return false;
-        if (foursquare_id != null ? !foursquare_id.equals(venue.foursquare_id) : venue.foursquare_id != null)
-            return false;
+        if (foursquare_id != null ? !foursquare_id.equals(venue.foursquare_id) : venue.foursquare_id != null) return false;
         return foursquare_type != null ? foursquare_type.equals(venue.foursquare_type) : venue.foursquare_type == null;
     }
 

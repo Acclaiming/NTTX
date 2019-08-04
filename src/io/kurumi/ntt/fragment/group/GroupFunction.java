@@ -203,7 +203,7 @@ public class GroupFunction extends Fragment {
 
             } else if (msg.sticker() != null) {
 
-                if (msg.sticker().animated() && data.no_animated_sticker != null) {
+                if (msg.sticker().isAnimated() && data.no_animated_sticker != null) {
 
                     msg.delete();
 
@@ -216,7 +216,7 @@ public class GroupFunction extends Fragment {
 					data.log(this,"#成员限制 #贴纸",user.format());
 					
 
-                } else if (!msg.sticker().animated() && data.no_sticker != null) {
+                } else if (!msg.sticker().isAnimated() && data.no_sticker != null) {
 
                     msg.delete();
 
