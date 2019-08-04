@@ -85,7 +85,7 @@ public class VideoDownloadListener implements StatusListener {
 
 					for (MediaEntity.Variant variant : varints) {
 
-						urls.append("\n");
+						urls.append("\n\n");
 						
 						if (variant.getUrl().contains("mp4")) {
 							
@@ -93,7 +93,7 @@ public class VideoDownloadListener implements StatusListener {
 							
 						} else {
 							
-							urls.append("[").append(StrUtil.subBefore(StrUtil.subAfter(variant.getUrl(),".",true),"?",false)).append("] ");
+							urls.append("[").append(variant.getContentType()).append("] ");
 							
 						}
 						
