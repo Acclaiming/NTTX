@@ -69,7 +69,7 @@ public class AccountMain extends Fragment {
 		
 		functions.newButtonLine("🔙",TwitterMain.POINT_BACK);
 		
-		callback.edit(message).buttons(functions).async();
+		callback.edit(message).buttons(functions).html().async();
 		
 	}
 	
