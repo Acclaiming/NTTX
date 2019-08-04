@@ -59,7 +59,7 @@ public class AutoUI extends Fragment {
 
 	void autoMain(UserData user,Callback callback,TAuth account) {
 
-		String message = "自动处理设置 [ " + account.archive().name + " ]";
+		String message = "自动处理设置选单 : [ " + account.archive().name + " ]";
 
 		ButtonMarkup config = new ButtonMarkup();
 
@@ -81,7 +81,7 @@ public class AutoUI extends Fragment {
 		
 		if (POINT_SETTING_MRT.equals(point)) {
 			
-			if (account.mrt != null) {
+			if (account.mrt == null) {
 				
 				account.mrt = true;
 				
@@ -97,7 +97,7 @@ public class AutoUI extends Fragment {
 			
 		} else if (POINT_SETTING_FOBACK.equals(point)) {
 
-			if (account.fb != null) {
+			if (account.fb == null) {
 
 				account.fb = true;
 
