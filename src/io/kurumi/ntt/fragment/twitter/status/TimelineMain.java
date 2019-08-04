@@ -33,7 +33,9 @@ public class TimelineMain extends Fragment {
         registerCallback(
 			POINT_TL,
 			POINT_SETTING_TIMELINE,
-			POINT_SETTING_MENTION);
+			POINT_SETTING_MENTION,
+			
+			POINT_SETTING_MDB);
 
     }
 
