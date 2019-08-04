@@ -53,6 +53,7 @@ import com.pengrad.telegrambot.request.SendDocument;
 import io.kurumi.ntt.db.PointData;
 import com.rometools.rome.io.WireFeedInput;
 import cn.hutool.core.exceptions.UtilException;
+import cn.hutool.http.HtmlUtil;
 
 public class RssSub extends Fragment {
 
@@ -105,18 +106,18 @@ public class RssSub extends Fragment {
 
         if (isLauncher()) {
 
-            registerFunction("rss_import", "rss_export", "rss_set_delay", "rss_set_current", "rss_sub", "rss_set_copyright", "rss_list", "rss_unsub", "rss_unsub_all", "rss_set_format", "rss_link_preview", "rss_fetch");
+            registerFunction("rss_import","rss_export","rss_set_delay","rss_set_current","rss_sub","rss_set_copyright","rss_list","rss_unsub","rss_unsub_all","rss_set_format","rss_link_preview","rss_fetch");
 
         } else {
 
-            registerFunction("import", "export", "set_delay", "set_current", "sub", "set_copyright", "list", "unsub", "unsub_all", "set_format", "link_preview", "fetch");
+            registerFunction("import","export","set_delay","set_current","sub","set_copyright","list","unsub","unsub_all","set_format","link_preview","fetch");
 
         }
 
     }
 
     @Override
-    public int checkFunction(UserData user, Msg msg, String function, String[] params) {
+    public int checkFunction(UserData user,Msg msg,String function,String[] params) {
 
         return PROCESS_ASYNC;
 
@@ -125,7 +126,7 @@ public class RssSub extends Fragment {
     final String POINT_IMPORT_OPML = "rss_import";
 
     @Override
-    public void onPoint(UserData user, Msg msg, String point, PointData data) {
+    public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
         if (data.with(msg).step == 0) {
 
@@ -145,7 +146,7 @@ public class RssSub extends Fragment {
 
             } catch (Exception ex) {
 
-                msg.send("导入失败", BotLog.parseError(ex)).async();
+                msg.send("导入失败",BotLog.parseError(ex)).async();
 
                 return;
 
@@ -162,7 +163,7 @@ public class RssSub extends Fragment {
             data.data = opml;
             data.step = 1;
 
-            msg.send("将要导入 :", notice.toString(), "\n现在发送目标频道的用户名或者ID ~").html().async();
+            msg.send("将要导入 :",notice.toString(),"\n现在发送目标频道的用户名或者ID ~").html().async();
 
         } else {
 
@@ -191,7 +192,7 @@ public class RssSub extends Fragment {
 
                 } else if (!resp.isOk()) {
 
-                    msg.send("错误 : BOT不在该频道", "( " + resp.description() + " )").async();
+                    msg.send("错误 : BOT不在该频道","( " + resp.description() + " )").async();
 
                     return;
 
@@ -222,7 +223,7 @@ public class RssSub extends Fragment {
 
                 } else if (!resp.isOk()) {
 
-                    msg.send("错误 : BOT不在该频道 : @" + username, "( " + resp.description() + " )").async();
+                    msg.send("错误 : BOT不在该频道 : @" + username,"( " + resp.description() + " )").async();
 
                     return;
 
@@ -239,9 +240,9 @@ public class RssSub extends Fragment {
 
             }
 
-            if (!user.admin() && !GroupAdmin.fastAdminCheck(this, channelId, user.id, false)) {
+            if (!user.admin() && !GroupAdmin.fastAdminCheck(this,channelId,user.id,false)) {
 
-                GetChatMemberResponse resp = execute(new GetChatMember(channelId, user.id.intValue()));
+                GetChatMemberResponse resp = execute(new GetChatMember(channelId,user.id.intValue()));
 
                 if (resp == null) {
 
@@ -251,7 +252,7 @@ public class RssSub extends Fragment {
 
                 } else if (!resp.isOk()) {
 
-                    msg.send("错误 : 频道读取失败", "( " + resp.description() + " )").async();
+                    msg.send("错误 : 频道读取失败","( " + resp.description() + " )").async();
 
                     return;
 
@@ -289,7 +290,7 @@ public class RssSub extends Fragment {
                     rss.title = outline.getTitle();
                     rss.link = outline.getHtmlUrl();
 
-                    info.setById(rss.id, rss);
+                    info.setById(rss.id,rss);
 
                 }
 
@@ -306,7 +307,7 @@ public class RssSub extends Fragment {
     }
 
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
         if (user.blocked()) {
 
@@ -318,7 +319,7 @@ public class RssSub extends Fragment {
 
         if (function.endsWith("import")) {
 
-            PointData data = setPrivatePoint(user, POINT_IMPORT_OPML);
+            PointData data = setPrivatePoint(user,POINT_IMPORT_OPML);
 
             msg.send("现在发送 .opml 文件 ( opml 1.0 或 2.0)").exec(data);
 
@@ -327,7 +328,7 @@ public class RssSub extends Fragment {
         }
 
         if (params.length == 0) {
-            msg.invalidParams("频道", "...").async();
+            msg.invalidParams("频道","...").async();
             return;
         }
 
@@ -347,7 +348,7 @@ public class RssSub extends Fragment {
 
             } else if (!resp.isOk()) {
 
-                msg.send("错误 : BOT不在该频道", "( " + resp.description() + " )").async();
+                msg.send("错误 : BOT不在该频道","( " + resp.description() + " )").async();
 
                 return;
 
@@ -378,7 +379,7 @@ public class RssSub extends Fragment {
 
             } else if (!resp.isOk()) {
 
-                msg.send("错误 : BOT不在该频道 : @" + username, "( " + resp.description() + " )").async();
+                msg.send("错误 : BOT不在该频道 : @" + username,"( " + resp.description() + " )").async();
 
                 return;
 
@@ -395,9 +396,9 @@ public class RssSub extends Fragment {
 
         }
 
-        if (!user.admin() && !GroupAdmin.fastAdminCheck(this, channelId, user.id, false)) {
+        if (!user.admin() && !GroupAdmin.fastAdminCheck(this,channelId,user.id,false)) {
 
-            GetChatMemberResponse resp = execute(new GetChatMember(channelId, user.id.intValue()));
+            GetChatMemberResponse resp = execute(new GetChatMember(channelId,user.id.intValue()));
 
             if (resp == null) {
 
@@ -407,7 +408,7 @@ public class RssSub extends Fragment {
 
             } else if (!resp.isOk()) {
 
-                msg.send("错误 : 频道读取失败", "( " + resp.description() + " )").async();
+                msg.send("错误 : 频道读取失败","( " + resp.description() + " )").async();
 
                 return;
 
@@ -453,7 +454,7 @@ public class RssSub extends Fragment {
 
                 URL url = URLUtil.url(rss);
 
-                Outline outline = rssInfo == null ? new Outline(rss, url, url) : new Outline(rssInfo.title, url, URLUtil.url(rssInfo.link));
+                Outline outline = rssInfo == null ? new Outline(rss,url,url) : new Outline(rssInfo.title,url,URLUtil.url(rssInfo.link));
 
                 outlines.add(outline);
 
@@ -467,13 +468,13 @@ public class RssSub extends Fragment {
 
             try {
 
-                output.output(opml, IoUtil.getWriter(bytes, CharsetUtil.CHARSET_UTF_8));
+                output.output(opml,IoUtil.getWriter(bytes,CharsetUtil.CHARSET_UTF_8));
 
-                executeAsync(new SendDocument(msg.chatId(), bytes.toByteArray()).fileName("rss_list.opml"));
+                executeAsync(new SendDocument(msg.chatId(),bytes.toByteArray()).fileName("rss_list.opml"));
 
             } catch (Exception e) {
 
-                msg.send("导出失败", BotLog.parseError(e)).async();
+                msg.send("导出失败",BotLog.parseError(e)).async();
 
                 return;
 
@@ -489,7 +490,7 @@ public class RssSub extends Fragment {
 
             } else {
 
-                conf.copyright = ArrayUtil.join(ArrayUtil.remove(params, 0), " ");
+                conf.copyright = ArrayUtil.join(ArrayUtil.remove(params,0)," ");
 
                 msg.send("设置成功 ~").async();
 
@@ -593,7 +594,7 @@ public class RssSub extends Fragment {
 
             if (params.length < 2) {
 
-                msg.invalidParams("频道", "链接").async();
+                msg.invalidParams("频道","链接").async();
 
                 return;
 
@@ -611,11 +612,11 @@ public class RssSub extends Fragment {
 
                 try {
 
-                    resp = HttpUtil.createGet(link).header(Header.USER_AGENT, "NTT Feed Fetcher ( https://github.com/HiedaNaKan/NTTools)").execute();
+                    resp = HttpUtil.createGet(link).header(Header.USER_AGENT,"NTT Feed Fetcher ( https://github.com/HiedaNaKan/NTTools)").execute();
 
                 } catch (HttpException ex) {
 
-                    msg.send("拉取失败 :", ex.getMessage()).async();
+                    msg.send("拉取失败 :",ex.getMessage()).async();
 
                     return;
 
@@ -627,18 +628,25 @@ public class RssSub extends Fragment {
 
                     error.append("HTTP ERROR ").append(resp.getStatus());
 
-                    String content = resp.body();
+					if (resp.getStatus() == 301 || resp.getStatus() == 302) {
 
-                    if (!StrUtil.isBlank(content)) {
+						error.append("\n\n链接指向新地址 : ").append(Html.code(resp.header(Header.LOCATION)));
 
-                        error.append(" : \n\n");
+					} else {
 
-                        error.append(content);
+						String content = resp.body();
 
-                    }
+						if (!StrUtil.isBlank(content)) {
 
+							error.append(" : \n\n");
 
-                    msg.send("拉取失败", error.toString()).async();
+							error.append(HtmlUtil.escape(content));
+
+						}
+
+					}
+
+                    msg.send("拉取失败",error.toString()).html().async();
 
                     return;
 
@@ -646,7 +654,7 @@ public class RssSub extends Fragment {
 
                 SyndFeed feed = input.build(new StringReader(resp.body()));
 
-                msg.send("正在输出 " + Html.a(feed.getTitle(), feed.getLink())).html().async();
+                msg.send("正在输出 " + Html.a(feed.getTitle(),feed.getLink())).html().async();
 
                 List<SyndEntry> entries = feed.getEntries();
 
@@ -656,7 +664,7 @@ public class RssSub extends Fragment {
 
                 if (limit > 0 && limit < entries.size()) {
 
-                    entries = entries.subList(entries.size() - limit, entries.size());
+                    entries = entries.subList(entries.size() - limit,entries.size());
 
                 }
 
@@ -665,7 +673,7 @@ public class RssSub extends Fragment {
 
                     limit--;
 
-                    Send request = new Send(this, conf.id, FeedHtmlFormater.format(conf, feed, entry));
+                    Send request = new Send(this,conf.id,FeedHtmlFormater.format(conf,feed,entry));
 
                     if (conf.format > 8 || conf.preview) {
 
@@ -692,7 +700,7 @@ public class RssSub extends Fragment {
 
             } catch (FeedException e) {
 
-                msg.send("拉取出错 : ", BotLog.parseError(e)).async();
+                msg.send("拉取出错 : ",BotLog.parseError(e)).async();
 
             } catch (UtilException e) {
 
@@ -707,7 +715,7 @@ public class RssSub extends Fragment {
 
             if (params.length < 2) {
 
-                msg.invalidParams("channelId", "rssUrl").async();
+                msg.invalidParams("channelId","rssUrl").async();
 
                 return;
 
@@ -725,11 +733,11 @@ public class RssSub extends Fragment {
 
                 try {
 
-                    resp = HttpUtil.createGet(link).header(Header.USER_AGENT, "NTT Feed Fetcher ( https://github.com/HiedaNaKan/NTTools)").execute();
+                    resp = HttpUtil.createGet(link).header(Header.USER_AGENT,"NTT Feed Fetcher ( https://github.com/HiedaNaKan/NTTools)").execute();
 
                 } catch (IORuntimeException ex) {
 
-                    msg.send("拉取失败 :", ex.getMessage()).async();
+                    msg.send("拉取失败 :",ex.getMessage()).async();
 
                     return;
 
@@ -752,7 +760,7 @@ public class RssSub extends Fragment {
                     }
 
 
-                    msg.send("拉取失败", error.toString()).async();
+                    msg.send("拉取失败",error.toString()).async();
 
                     return;
 
@@ -762,7 +770,7 @@ public class RssSub extends Fragment {
 
                 if (conf.subscriptions.contains(params[1])) {
 
-                    msg.send("已经订阅过了 " + Html.a(feed.getTitle(), feed.getLink())).html().async();
+                    msg.send("已经订阅过了 " + Html.a(feed.getTitle(),feed.getLink())).html().async();
 
                     return;
 
@@ -784,7 +792,7 @@ public class RssSub extends Fragment {
                 conf.subscriptions.add(params[1]);
 
 
-                channel.setById(channelId, conf);
+                channel.setById(channelId,conf);
 
                 RssInfo rss = new RssSub.RssInfo();
 
@@ -793,7 +801,7 @@ public class RssSub extends Fragment {
                 rss.link = feed.getLink();
                 rss.last = FeedFetchTask.generateSign(feed.getEntries().get(0));
 
-                msg.send("订阅成功 : " + Html.a(feed.getTitle(), feed.getLink())).html().async();
+                msg.send("订阅成功 : " + Html.a(feed.getTitle(),feed.getLink())).html().async();
 
             } catch (FeedException e) {
 
@@ -831,7 +839,7 @@ public class RssSub extends Fragment {
 
             if (params.length < 2) {
 
-                msg.invalidParams("频道", "链接");
+                msg.invalidParams("频道","链接");
 
                 return;
 
@@ -865,7 +873,7 @@ public class RssSub extends Fragment {
 
             if (params.length < 2) {
 
-                msg.invalidParams("频道", "1 - 9").async();
+                msg.invalidParams("频道","1 - 9").async();
 
                 return;
 
@@ -889,7 +897,7 @@ public class RssSub extends Fragment {
 
             if (params.length < 2) {
 
-                msg.invalidParams("频道", "on/off").async();
+                msg.invalidParams("频道","on/off").async();
 
                 return;
 
@@ -910,7 +918,7 @@ public class RssSub extends Fragment {
 
         }
 
-        channel.setById(conf.id, conf);
+        channel.setById(conf.id,conf);
 
     }
 
