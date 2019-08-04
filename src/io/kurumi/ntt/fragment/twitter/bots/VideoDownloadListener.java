@@ -86,14 +86,14 @@ public class VideoDownloadListener implements StatusListener {
 					for (MediaEntity.Variant variant : varints) {
 
 						urls.append("\n\n");
-						
+					
 						if (variant.getUrl().contains("mp4")) {
 							
 							urls.append("[mp4 ").append(StrUtil.subBetween(variant.getUrl(),"vid/","/")).append("] ");
 							
 						} else {
 							
-							urls.append("[").append(variant.getContentType()).append("] ");
+							urls.append("[").append(StrUtil.subBefore(StrUtil.subAfter(variant.getUrl(),".",true),"?",false)).append("] ");
 							
 						}
 						
