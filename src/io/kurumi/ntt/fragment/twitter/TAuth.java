@@ -66,6 +66,11 @@ public class TAuth {
 	
 	public Boolean mrt;
 	public Boolean fb;
+	
+	public Boolean fo;
+	
+	public Boolean fo_info;
+	public Boolean fr_info;
 
     public static TAuth getById(Long accountid) {
 

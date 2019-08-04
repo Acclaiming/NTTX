@@ -76,6 +76,7 @@ public class AccountMain extends Fragment {
 		ButtonMarkup functions = new ButtonMarkup();
 		
 		functions.newButtonLine("自动处理设置 >>",AutoUI.POINT_AUTO,account.id);
+		functions.newButtonLine("账号监听设置 >>",TrackUI.POINT_TRACK,account.id);
 		
 		functions.newButtonLine("导出认证",POINT_EXPORT,account.id);
 		functions.newButtonLine("移除账号",POINT_LOGOUT,account.id);
