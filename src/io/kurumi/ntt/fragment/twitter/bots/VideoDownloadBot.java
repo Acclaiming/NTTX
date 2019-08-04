@@ -1,17 +1,16 @@
-package io.kurumi.ntt.fragment.twitter.bot;
+package io.kurumi.ntt.fragment.twitter.bots;
 
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.db.DataLongArray;
 import io.kurumi.ntt.db.LongArrayData;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.twitter.TAuth;
-import twitter4j.TwitterStreamFactory;
+import io.kurumi.ntt.model.Msg;
+import java.util.HashMap;
 import twitter4j.FilterQuery;
 import twitter4j.TwitterStream;
-import java.util.HashMap;
-import io.kurumi.ntt.db.DataLongArray;
-import twitter4j.TwitterStreamImpl;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.model.Msg;
+import twitter4j.TwitterStreamFactory;
 
 public class VideoDownloadBot extends Fragment {
 
@@ -56,7 +55,7 @@ public class VideoDownloadBot extends Fragment {
 
 		super.init(origin);
 
-		registerFunction("vdb_init","vdb_unset");
+		registerAdminFunction("vdb_init","vdb_unset");
 
 	}
 	

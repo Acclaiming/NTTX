@@ -1,17 +1,17 @@
-package io.kurumi.ntt.fragment.twitter.bot;
+package io.kurumi.ntt.fragment.twitter.bots;
 
+import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.utils.BotLog;
 import twitter4j.MediaEntity;
 import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
 import twitter4j.StatusListener;
+import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserMentionEntity;
-import twitter4j.StatusUpdate;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.utils.BotLog;
 
 public class VideoDownloadListener implements StatusListener {
 
