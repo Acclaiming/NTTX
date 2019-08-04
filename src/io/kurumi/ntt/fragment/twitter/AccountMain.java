@@ -69,9 +69,9 @@ public class AccountMain extends Fragment {
 
 	void accountMain(UserData user,Callback callback,TAuth account) {
 
-		String message = "User [ " + Html.code(account.id) + " ]";
+		String message = Html.b("User") + " [ " + Html.code(account.id) + " ]";
 
-		message += "\n\nName : " + Html.b(account.archive().name);
+		message += "\n\nName : " + account.archive().name;
 
 		message += "\nSN : " + Html.code("@" + account.archive().screenName);
 
