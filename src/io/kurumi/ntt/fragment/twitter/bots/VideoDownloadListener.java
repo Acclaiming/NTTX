@@ -32,6 +32,8 @@ public class VideoDownloadListener implements StatusListener {
 
 		String reply = "@" + replyTo.getUser().getScreenName() + " ";
 
+		/*
+		
 		if (replyTo.getUserMentionEntities().length != 0) {
 
 			for (UserMentionEntity mention : replyTo.getUserMentionEntities()) {
@@ -45,6 +47,8 @@ public class VideoDownloadListener implements StatusListener {
 			}
 
 		}
+		
+		*/
 
 		api.updateStatus(new StatusUpdate(reply + " " + str).inReplyToStatusId(replyTo.getId()));
 
