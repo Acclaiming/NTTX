@@ -174,6 +174,8 @@ public class TwitterMain extends Fragment {
 		@Override
 		public void onFinish() {
 
+			super.onFinish();
+			
 			loginAccount(user,origin);
 
 		}
