@@ -61,7 +61,7 @@ public class AccountMain extends Fragment {
 		
 		message += "\nName : " + Html.code(account.archive().name);
 		
-		message += "\nSN : " + Html.b(account.archive().screenName);
+		message += "\nSN : " + Html.b("@" + account.archive().screenName);
 		
 		ButtonMarkup functions = new ButtonMarkup();
 		
@@ -75,7 +75,7 @@ public class AccountMain extends Fragment {
 	
 	void accountLogout(UserData user,Callback callback,TAuth account) {
 		
-		String message = "点击来确认移除你的账号 [ " + account.archive().name + " ] , 服务器端记录会被完全删除 , 但 Twitter 中的会话管理中仍会显示NTT , 在会话管理中移除NTT使导出功能导出的认证失效 .";
+		String message = "点击来确认移除你的账号 [ " + account.archive().name + " ]\n\n服务器端记录会被完全删除 , 但 Twitter 中的会话管理中仍会显示NTT , 在会话管理中移除NTT使导出功能导出的认证失效 .";
 		
 		ButtonMarkup logout = new ButtonMarkup();
 		
