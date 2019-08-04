@@ -36,7 +36,7 @@ public class AutoTask {
 
     public static void onNewFriend(TAuth auth, Twitter api, UserArchive archive, Relationship ship) {
 
-        if (ship.isSourceWantRetweets() && AutoUI.autoData.fieldEquals(auth.id, "mrt", true)) {
+        if (ship.isSourceWantRetweets() && auth.mrt) {
 
             try {
 
@@ -51,7 +51,7 @@ public class AutoTask {
 
     public static void onNewFollower(TAuth auth, Twitter api, UserArchive archive, Relationship ship) {
 
-        if (!ship.isSourceFollowingTarget() && AutoUI.autoData.fieldEquals(auth.id, "foback", true)) {
+        if (!ship.isSourceFollowingTarget() && auth.fb) {
 
             try {
 
