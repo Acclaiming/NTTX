@@ -34,8 +34,6 @@ public class MDListener implements StatusListener {
 
 		api.updateStatus(new StatusUpdate(reply + " " + str).inReplyToStatusId(replyTo.getId()));
 
-		BotLog.info("回复推文 : " + str);
-		
 	}
 
 	@Override

@@ -22,7 +22,7 @@ public class MediaDownloadBot extends Fragment {
 
 		super.init(origin);
 
-		registerAdminFunction("vdb_init","vdb_unset");
+		registerAdminFunction("mdb_init","mdb_unset");
 
 	}
 	
