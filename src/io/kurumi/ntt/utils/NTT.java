@@ -230,8 +230,8 @@ public class NTT {
             case 413:
                 return "这你妈是个官方文档都没写的错误，查了一下是不允许重复上传文件，奇妙深刻";
 
-            case TwitterException.TOO_MANY_REQUESTS:
-                return "请求过多被限制 : 请稍后操作";
+           case TwitterException.TOO_MANY_REQUESTS:
+                return "请求过多被限制 : 请稍后操作\n\n( 如果在一般情况出现此错误 , 可能为账号刚刚重新启用 , ( 关注者正在被清零 ) .";
 
             case TwitterException.ENHANCE_YOUR_CLAIM:
                 return "NTT被限制 : 请联系开发者";

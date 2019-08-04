@@ -343,13 +343,28 @@ public class Fragment {
         requestTwitter(user, msg, false, true);
 
     }
-
-
+	
     public void requestTwitterPayload(UserData user, Msg msg, boolean noCurrent) {
 
         requestTwitter(user, msg, noCurrent, true);
 
     }
+	
+	public <T extends Fragment> T getInstance(Class<T> target) {
+		
+		for (Fragment fragment : origin.fragments) {
+			
+			if (target.getClass().equals(target)) {
+				
+				return (T) fragment;
+				
+			}
+			
+		}
+		
+		return null;
+		
+	}
 
     public void requestTwitter(final UserData user, final Msg msg, boolean noCurrent, final boolean isPayload) {
 

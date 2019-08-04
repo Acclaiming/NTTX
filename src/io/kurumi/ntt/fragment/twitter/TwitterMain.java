@@ -25,18 +25,19 @@ public class TwitterMain extends Fragment {
 	public void init(BotFragment origin) {
 
 		super.init(origin);
+		
+		origin.addFragment(new AccountMain());
 
 		registerFunction("twitter");
 
-		registerCallback(POINT_BACK,POINT_NEW_AUTH,POINT_ACCOUNT,POINT_LOGIN_METHOD);
+		registerCallback(POINT_BACK,POINT_NEW_AUTH,AccountMain.POINT_ACCOUNT,POINT_LOGIN_METHOD);
 
 		registerPoint(POINT_INPUT_CODE,POINT_CUSTOM_API,POINT_CUSTOM_TOKEN);
 
 	}
 
-	final String POINT_BACK = "twi_back";
+	static final String POINT_BACK = "twi_back";
 	final String POINT_NEW_AUTH = "twi_auth";
-	final String POINT_ACCOUNT = "twi_show_account";
 
 	final String POINT_LOGIN_METHOD = "twi_method";
 	final String POINT_INPUT_CODE = "twi_code";
@@ -63,7 +64,7 @@ public class TwitterMain extends Fragment {
 
 			for (TAuth account : TAuth.data.getAllByField("user",user.id)) {
 
-				accounts.newButtonLine(account.archive().name,POINT_ACCOUNT,account.id);
+				accounts.newButtonLine(account.archive().name,AccountMain.POINT_ACCOUNT,account.id);
 
 			}
 
