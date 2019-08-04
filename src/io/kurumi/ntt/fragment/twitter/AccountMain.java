@@ -69,7 +69,7 @@ public class AccountMain extends Fragment {
 
 	void accountMain(UserData user,Callback callback,TAuth account) {
 
-		String message = Html.b("User") + " [ " + Html.code(account.id) + " ]";
+		String message = "功能选单 : " + Html.b("User") + " [ " + Html.code(account.id) + " ]";
 
 		message += "\n\nName : " + account.archive().name;
 
@@ -81,8 +81,9 @@ public class AccountMain extends Fragment {
 		functions.newButtonLine("通知 >>",TrackMain.POINT_TRACK,account.id);
 		functions.newButtonLine("推文流 >>",TimelineMain.POINT_TL,account.id);
 
-		functions.newButtonLine("导出认证",POINT_EXPORT,account.id);
-		functions.newButtonLine("移除账号",POINT_LOGOUT,account.id);
+		functions.newButtonLine()
+			.newButton("导出",POINT_EXPORT,account.id)
+			.newButton("移除",POINT_LOGOUT,account.id);
 
 		functions.newButtonLine("🔙",TwitterMain.POINT_BACK);
 
