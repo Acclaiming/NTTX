@@ -22,7 +22,7 @@ public class AutoUI extends Fragment {
 
         super.init(origin);
 
-        registerCallback(POINT_SETTING_MRT,POINT_SETTING_FOBACK);
+        registerCallback(POINT_AUTO,POINT_SETTING_MRT,POINT_SETTING_FOBACK);
 
     }
 

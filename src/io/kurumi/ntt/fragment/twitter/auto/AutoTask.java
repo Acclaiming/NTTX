@@ -9,30 +9,6 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 public class AutoTask {
-	
-	/*
-	
-	public static void start() {
-
-		stop();
-
-		timer.scheduleAtFixedRate(INSTANCE,new Date(),5 * 60 * 1000);
-
-	}
-
-	public static void stop() {
-
-		if (timer != null) {
-
-			timer.cancel();
-
-			timer = null;
-
-		}
-
-	}
-	
-	*/
 
     public static void onNewFriend(TAuth auth, Twitter api, UserArchive archive, Relationship ship) {
 
