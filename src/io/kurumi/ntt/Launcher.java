@@ -321,8 +321,6 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         addFragment(new StatusGetter());
         addFragment(new StatusFetch());
         addFragment(new MediaDownload());
-        addFragment(new AutoUI());
-        addFragment(new TrackUI());
         addFragment(new StatusAction());
         addFragment(new TimelineUI());
         addFragment(new TwitterDelete());
