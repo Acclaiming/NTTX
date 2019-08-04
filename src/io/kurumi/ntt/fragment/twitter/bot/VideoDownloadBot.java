@@ -60,8 +60,6 @@ public class VideoDownloadBot extends Fragment {
 
 	}
 	
-	
-	
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 		
