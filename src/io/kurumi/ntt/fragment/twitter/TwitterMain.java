@@ -25,8 +25,6 @@ public class TwitterMain extends Fragment {
 	public void init(BotFragment origin) {
 
 		super.init(origin);
-		
-		origin.addFragment(new AccountMain());
 
 		registerFunction("twitter");
 

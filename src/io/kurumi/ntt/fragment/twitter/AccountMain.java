@@ -20,7 +20,7 @@ public class AccountMain extends Fragment {
 		
 		super.init(origin);
 		
-		registerCallback(POINT_ACCOUNT);
+		registerCallback(POINT_ACCOUNT,POINT_LOGOUT,POINT_LOGOUT_CONFIRM);
 		
 	}
 
