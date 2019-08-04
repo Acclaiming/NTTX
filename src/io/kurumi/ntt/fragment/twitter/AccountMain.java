@@ -69,6 +69,8 @@ public class AccountMain extends Fragment {
 		
 		functions.newButtonLine("🔙",TwitterMain.POINT_BACK);
 		
+		callback.edit(message).buttons(functions).async();
+		
 	}
 	
 	void accountLogout(UserData user,Callback callback,TAuth account) {
