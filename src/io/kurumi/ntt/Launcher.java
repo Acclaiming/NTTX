@@ -271,6 +271,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         FeedFetchTask.start();
 
+		VideoDownloadBot.startAll();
+		
         Backup.start();
 
         userTrackTask.start();
@@ -394,6 +396,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         trackTimer.cancel();
 
+		VideoDownloadBot.stopAll();
+		
         userTrackTask.interrupt();
 
         GroupData.data.saveAll();

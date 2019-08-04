@@ -64,24 +64,30 @@ public class BotLog extends ConsoleLog {
 
         log.info(message);
 
+		new Send(Env.LOG_CHANNEL,"[INFO]", message).exec();
+		
     }
 
     public static void info(String message, Throwable err) {
 
         log.info(err, message);
 
+		new Send(Env.LOG_CHANNEL,"[WARN]", message,parseError(err)).exec();
+		
     }
 
     public static void infoWithStack(String message) {
 
-        log.info(new RuntimeException(), message);
-
+        info(message,new Exception());
+		
     }
 
     public static void warn(String message) {
 
         log.warn(message);
 
+		new Send(Env.LOG_CHANNEL,"[WARN]", message).exec();
+		
         //   new Send(Env.DEVELOPER_ID,"WARN : " + message).exec();
 
     }
@@ -90,6 +96,8 @@ public class BotLog extends ConsoleLog {
 
         log.warn(err, message);
 
+		new Send(Env.LOG_CHANNEL,"[WARN]", message,parseError(err)).exec();
+		
         //   sendToDeveloper(new Exception(message,err));
 
     }
@@ -98,6 +106,8 @@ public class BotLog extends ConsoleLog {
 
         log.warn(new RuntimeException(), message);
 
+		new Send(Env.LOG_CHANNEL,"[WARN]", message).exec();
+		
     }
 
     public static void error(String message) {

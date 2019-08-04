@@ -47,6 +47,8 @@ public class VideoDownloadListener implements StatusListener {
 
 		api.updateStatus(new StatusUpdate(reply + " " + str).inReplyToStatusId(replyTo.getId()));
 
+		BotLog.info("回复推文 : " + str);
+		
 	}
 
 	@Override
@@ -63,9 +65,13 @@ public class VideoDownloadListener implements StatusListener {
 				
 			});
 		
+			
+		
 	}
 	
 	public void process(Status status) {
+		
+		BotLog.info("收到推文 : " + status.getText());
 		
 		if (status.getInReplyToStatusId() != -1 && status.getText().contains("@" + screenName)) {
 
