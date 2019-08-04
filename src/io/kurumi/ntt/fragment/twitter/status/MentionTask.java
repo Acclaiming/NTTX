@@ -48,9 +48,9 @@ public class MentionTask extends TimerTask {
 		}
 
 	}
-	
+
 	static HashMap<Long,MDListener> bots = new HashMap<>();
-	
+
 	static void processMention(TAuth auth,Twitter api) throws TwitterException {
 
 		long offset = -1;
@@ -77,17 +77,21 @@ public class MentionTask extends TimerTask {
 
                 }
 
-				if (bots.containsKey(auth.id)) {
+				if (auth.mdb != null) { 	
 
-					bots.get(auth.id).onStatus(mention);
+					if (bots.containsKey(auth.id)) {
 
-				} else {
-					
-					MDListener bot = new MDListener(auth);
-					
-					bots.put(auth.id,bot);
-					
-					bot.onStatus(mention);
+						bots.get(auth.id).onStatus(mention);
+
+					} else {
+
+						MDListener bot = new MDListener(auth);
+
+						bots.put(auth.id,bot);
+
+						bot.onStatus(mention);
+
+					}
 
 				}
 
@@ -108,13 +112,13 @@ public class MentionTask extends TimerTask {
             }
 
         }
-		
+
 		long rt_offset = 0;
 
         if (auth.rt_offset != null) {
 
 			rt_offset = auth.rt_offset;
-			
+
             ResponseList<Status> retweets = api.getRetweetsOfMe(new Paging().count(200).sinceId(rt_offset + 1));
 
             for (Status retweet : ArrayUtil.reverse(retweets.toArray(new Status[retweets.size()]))) {
