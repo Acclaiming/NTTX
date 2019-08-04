@@ -48,12 +48,6 @@ public class TrackTask extends TimerTask {
 
     public static void onUserChange(UserArchive archive,String change) {
 
-        if (TrackUI.data.collection.countDocuments(and(eq("_id",archive.id),eq("hideChange",true))) > 0) {
-
-            return;
-
-        }
-
         FindIterable<IdsList> subFr = friends.collection.find(eq("ids",archive.id));
         FindIterable<IdsList> subFo = followers.collection.find(eq("ids",archive.id));
 
@@ -70,28 +64,16 @@ public class TrackTask extends TimerTask {
                 continue;
 
             }
+			
+			if (account.fr_info != null) {
 
-            TrackUI.TrackSetting setting = TrackUI.data.getById(account.id);
-
-            if (setting == null || (!setting.followers && !setting.followersInfo && !setting.followingInfo)) {
-
-                friends.deleteById(account.id);
-                followers.deleteById(account.id);
-
-                if (setting != null) TrackUI.data.deleteById(account.id);
-
-                return;
-
-            }
-
-            if (setting.followingInfo) {
-
-                processChangeSend(archive,account,change,setting);
+                processChangeSend(archive,account,change);
 
                 processed.add(account.id);
                 processed.add(account.user);
 
             }
+			
 
         }
 
@@ -111,24 +93,11 @@ public class TrackTask extends TimerTask {
 
             //  System.out.println("sub : " + account.archive().name);
 
-            TrackUI.TrackSetting setting = TrackUI.data.getById(account.id);
-
-            if (setting == null || (!setting.followers && !setting.followersInfo && !setting.followingInfo)) {
-
-                friends.deleteById(account.id);
-                followers.deleteById(account.id);
-
-                if (setting != null) TrackUI.data.deleteById(account.id);
-
-                return;
-
-            }
-
             if (processed.contains(account.user)) continue;
 
-            if (setting.followersInfo) {
+            if (account.fo_info != null) {
 
-                processChangeSend(archive,account,change,setting);
+                processChangeSend(archive,account,change);
 
                 processed.add(account.id);
                 processed.add(account.user);
@@ -139,7 +108,7 @@ public class TrackTask extends TimerTask {
 
     }
 
-    static void processChangeSend(UserArchive archive,TAuth account,String change,TrackUI.TrackSetting setting) {
+    static void processChangeSend(UserArchive archive,TAuth account,String change) {
 
         StringBuilder msg = new StringBuilder(TAuth.data.countByField("user",account.user) > 1 ? account.archive().urlHtml() + " : " : "");
 
@@ -232,10 +201,6 @@ public class TrackTask extends TimerTask {
 
             }
 
-            TrackUI.TrackSetting setting = TrackUI.data.getById(account.id);
-
-            if (setting == null) setting = new TrackUI.TrackSetting();
-
             Twitter api = account.createApi();
 
             try {
@@ -244,7 +209,7 @@ public class TrackTask extends TimerTask {
 
                 //if (setting.followers || setting.followersInfo || setting.followingInfo) {
 
-                doTracking(account,setting,api,UserData.get(account.user));
+                doTracking(account,api,UserData.get(account.user));
 
                 //}
 
@@ -272,7 +237,6 @@ public class TrackTask extends TimerTask {
 
         for (TAuth account : remove) {
 
-            TrackUI.data.deleteById(account.id);
             TAuth.data.deleteById(account.id);
 
             if (Firewall.block.containsId(account.user)) {
@@ -391,7 +355,7 @@ public class TrackTask extends TimerTask {
 
     //LinkedHashSet<Long> waitFor = new LinkedHashSet<>();
 
-    void doTracking(TAuth account,TrackUI.TrackSetting setting,Twitter api,UserData user) throws TwitterException {
+    void doTracking(TAuth account,Twitter api,UserData user) throws TwitterException {
 
         //BotLog.debug("T S : " + account.archive().urlHtml());
 
@@ -419,13 +383,13 @@ public class TrackTask extends TimerTask {
 
             for (Long newfollower : newFollowers) {
 
-                newFollower(account,api,newfollower,setting.followers);
+                newFollower(account,api,newfollower,account.fo != null);
 
             }
 
             for (Long lostFolower : lostFolowers) {
 
-                lostFollower(account,api,lostFolower,setting.followers,latestFollowers);
+                lostFollower(account,api,lostFolower,account.fo != null,latestFollowers);
 
             }
 
@@ -445,7 +409,7 @@ public class TrackTask extends TimerTask {
 
             for (Long newFriend : newFriends) {
 
-                newFriend(account,api,newFriend,setting.followers);
+                newFriend(account,api,newFriend,account.fo != null);
 
             }
 
