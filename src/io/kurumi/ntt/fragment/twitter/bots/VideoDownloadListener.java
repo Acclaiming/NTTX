@@ -69,14 +69,7 @@ public class VideoDownloadListener implements StatusListener {
 
 				MediaEntity[] medias = replyTo.getMediaEntities();
 
-				if (medias.length == 0) {
-					
-					mkReply(status,"[媒体下载] 这条推文没有视频/GIF");
-					
-					return;
-					
-				}
-
+				
 				StringBuilder urls = new StringBuilder();
 
 				for (MediaEntity entry : medias) {
@@ -103,6 +96,15 @@ public class VideoDownloadListener implements StatusListener {
 
 				}
 
+				if (urls.toString().isEmpty()) {
+
+					mkReply(status,"[媒体下载] 这条推文没有视频/GIF");
+
+					return;
+
+				}
+				
+				
 				mkReply(status,"[媒体下载] 所有下载链接 :\n" + urls.toString());
 
 
