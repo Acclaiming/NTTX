@@ -111,7 +111,7 @@ public class TimelineUI extends Fragment {
 				
 				if (VideoDownloadBot.data.containsId(auth.id)) {
 					
-					VideoDownloadBot.data
+					VideoDownloadBot.getListener(auth).onStatus(mention);
 					
 				}
 
