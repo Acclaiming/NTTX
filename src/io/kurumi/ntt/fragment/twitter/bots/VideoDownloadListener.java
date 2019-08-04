@@ -12,6 +12,7 @@ import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserMentionEntity;
+import cn.hutool.core.util.StrUtil;
 
 public class VideoDownloadListener implements StatusListener {
 
@@ -84,7 +85,19 @@ public class VideoDownloadListener implements StatusListener {
 
 					for (MediaEntity.Variant variant : varints) {
 
-						urls.append("\n").append(variant.getUrl());
+						urls.append("\n");
+						
+						if (variant.getUrl().contains("mp4")) {
+							
+							urls.append("[mp4 ").append(StrUtil.subBetween(variant.getUrl(),"vid/","/")).append("] ");
+							
+						} else {
+							
+							urls.append("[").append(StrUtil.subBetween(variant.getUrl(),".","?")).append("] ");
+							
+						}
+						
+						urls.append(variant.getUrl());
 
 					}
 
