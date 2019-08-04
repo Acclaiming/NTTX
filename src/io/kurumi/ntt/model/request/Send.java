@@ -410,19 +410,6 @@ public class Send extends AbstractSend<Send> {
 
                 }
 
-
-                BotLog.infoWithStack(
-
-                        UserData.get(fragment.origin.me).userName() + " : " +
-
-                                "消息发送失败 " + resp.errorCode() + " : " + resp.description() + "\n\n" +
-
-                                "消息内容 : " + HtmlUtil.escape(request.getText())
-
-
-                );
-
-
             }
 
             return resp;
