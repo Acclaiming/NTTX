@@ -73,8 +73,20 @@ public class VideoDownloadListener implements StatusListener {
 		
 		BotLog.info("收到推文 : " + status.getText());
 		
-		if (status.getInReplyToStatusId() != -1 && status.getText().contains("@" + screenName)) {
+		if (status.getText().contains("@" + screenName)) {
 
+			if (status.getInReplyToStatusId() == -1 ) {
+				
+				try {
+					
+					mkReply(status,"[媒体下载] 对视频/GIF 回复 @" + screenName + " BOT会回复所有下载链接");
+					
+				} catch (TwitterException e) {}
+
+				return;
+				
+			}
+			
 			try {
 
 				Status replyTo = api.showStatus(status.getInReplyToStatusId());
