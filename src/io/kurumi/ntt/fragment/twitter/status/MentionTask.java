@@ -111,7 +111,7 @@ public class MentionTask extends TimerTask {
 		
 		long rt_offset = 0;
 
-        if (auth.rt_offset != -1) {
+        if (auth.rt_offset != null) {
 
 			rt_offset = auth.rt_offset;
 			
