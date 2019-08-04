@@ -23,7 +23,7 @@ public class AccountMain extends Fragment {
 		
 		super.init(origin);
 		
-		registerCallback(POINT_ACCOUNT,POINT_LOGOUT,POINT_LOGOUT_CONFIRM);
+		registerCallback(POINT_ACCOUNT,POINT_EXPORT,POINT_LOGOUT,POINT_LOGOUT_CONFIRM);
 		
 		origin.addFragment(new AutoUI());
 		origin.addFragment(new TrackUI());
