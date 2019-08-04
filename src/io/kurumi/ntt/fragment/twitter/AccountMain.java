@@ -59,9 +59,9 @@ public class AccountMain extends Fragment {
 		
 		String message = "User [ " + Html.code(account.id) + " ]";
 		
-		message += "\nName : " + Html.code(account.archive().name);
+		message += "\n\nName : " + Html.b(account.archive().name);
 		
-		message += "\nSN : " + Html.b("@" + account.archive().screenName);
+		message += "\nSN : " + Html.code("@" + account.archive().screenName);
 		
 		ButtonMarkup functions = new ButtonMarkup();
 		
