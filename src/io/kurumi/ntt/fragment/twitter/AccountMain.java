@@ -71,7 +71,7 @@ public class AccountMain extends Fragment {
 
 		String message = "==========================";
 		
-		message += Html.b("User") + " [ " + Html.code(account.id) + " ]";
+		message += "\n" + Html.b("User") + " [ " + Html.code(account.id) + " ]";
 
 		message += "\n\nName : " + account.archive().name;
 
