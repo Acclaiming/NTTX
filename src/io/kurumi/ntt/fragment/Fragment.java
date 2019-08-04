@@ -663,6 +663,8 @@ public class Fragment {
         execute(new SendChatAction(chatId, ChatAction.record_video_note));
 
     }
+	
+	public void gc() {}
 
 
 }

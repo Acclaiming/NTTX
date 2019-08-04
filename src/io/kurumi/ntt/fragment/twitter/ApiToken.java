@@ -12,9 +12,6 @@ public class ApiToken {
     public static final ApiToken webAppToken = new ApiToken("pSsknvuoiZH7pv0eItLPFLSAc", "TFntXmXcvgx3H4lkMH7HeQyB1CGxjSdOtebUETJt5fwJtgmzkJ");
     public static final ApiToken webClientToken = new ApiToken("hgGFRIscjCnjLmO3rRSV1JY0d", "uG7JWYLIP7TyeGLudkgIdYqg9kS2aDzhzGjmIBXjrSYYyVbuKa");
 
-    public static final ApiToken overflowcat = new ApiToken("VwvCRQnzMY26nGQFVhTTZxAqM", "2Q98qYh9lUL7FPqi0VNZo9ZrmdlZhQdkYvBrUHqIzvrwiPaneL");
-    public static final ApiToken twidere = new ApiToken("i5XtSVfoWjLjKlnrvhiLPMZC0", "sQncmZ2atQR6tKbqnnAtqjrECqN8k6FD4p4OoNS0XTDkUz3HGH");
-
     public String apiToken;
     public String apiSecToken;
 

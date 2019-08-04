@@ -74,17 +74,9 @@ public class TwitterLogin extends Fragment {
 
                 token = ApiToken.webClientToken;
 
-            } else if ("cat".equals(type)) {
-
-                token = ApiToken.overflowcat;
-
-            } else if ("twidere".equals(params[0].toLowerCase())) {
-
-                token = ApiToken.twidere;
-
             } else {
 
-                msg.send("/login", "or /login [web_client|web_app|android|iphone|cat|twidere]", "or /login <apiKey> <apiKeySec>", "or /login <apiKey> <apiKeySec> <accToken> <accTokenSec>").exec();
+                msg.send("/login", "or /login [web_client|web_app|android|iphone]", "or /login <apiKey> <apiKeySec>", "or /login <apiKey> <apiKeySec> <accToken> <accTokenSec>").exec();
 
                 return;
 

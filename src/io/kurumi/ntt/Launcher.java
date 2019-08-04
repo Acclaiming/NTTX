@@ -77,7 +77,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
 import io.kurumi.ntt.fragment.mstd.login.MsLogin;
 import io.kurumi.ntt.fragment.mstd.login.MsLogout;
-import io.kurumi.ntt.fragment.twitter.bots.VideoDownloadBot;
+import io.kurumi.ntt.fragment.twitter.bots.MediaDownloadBot;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -331,7 +331,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         addFragment(new TwitterDelete());
         addFragment(new ListExport());
         addFragment(new ListImport());
-		addFragment(new VideoDownloadBot());
+		addFragment(new MediaDownloadBot());
 		
         addFragment(new Disappeared());
         addFragment(new TEPH());

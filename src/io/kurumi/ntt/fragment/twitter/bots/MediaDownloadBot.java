@@ -13,7 +13,7 @@ import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 import twitter4j.StatusListener;
 
-public class VideoDownloadBot extends Fragment {
+public class MediaDownloadBot extends Fragment {
 
 	public static LongArrayData data = new LongArrayData("TDBot");
 
@@ -39,7 +39,7 @@ public class VideoDownloadBot extends Fragment {
 		
 		if (bots.containsKey(auth.id)) return bots.get(auth.id);
 		
-		StatusListener listener = new VideoDownloadListener(auth);
+		StatusListener listener = new MDListener(auth);
 		
 		bots.put(auth.id,listener);
 		

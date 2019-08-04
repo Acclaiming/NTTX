@@ -14,13 +14,13 @@ import twitter4j.TwitterException;
 import twitter4j.UserMentionEntity;
 import cn.hutool.core.util.StrUtil;
 
-public class VideoDownloadListener implements StatusListener {
+public class MDListener implements StatusListener {
 
 	private TAuth account;
 	private Twitter api;
 	private String screenName;
 
-	public VideoDownloadListener(TAuth account) {
+	public MDListener(TAuth account) {
 
 		this.account = account;
 		this.api = account.createApi();
@@ -31,24 +31,6 @@ public class VideoDownloadListener implements StatusListener {
 	void mkReply(Status replyTo,String str) throws TwitterException {
 
 		String reply = "@" + replyTo.getUser().getScreenName() + " ";
-
-		/*
-		
-		if (replyTo.getUserMentionEntities().length != 0) {
-
-			for (UserMentionEntity mention : replyTo.getUserMentionEntities()) {
-
-				if (!account.id.equals(mention)) {
-
-					reply = reply + "@" + mention.getScreenName() + " ";
-
-				}
-
-			}
-
-		}
-		
-		*/
 
 		api.updateStatus(new StatusUpdate(reply + " " + str).inReplyToStatusId(replyTo.getId()));
 
@@ -73,7 +55,6 @@ public class VideoDownloadListener implements StatusListener {
 
 				MediaEntity[] medias = replyTo.getMediaEntities();
 
-				
 				StringBuilder urls = new StringBuilder();
 
 				for (MediaEntity entry : medias) {

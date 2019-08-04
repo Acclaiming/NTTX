@@ -1,5 +1,6 @@
 package io.kurumi.ntt.fragment.twitter.ext;
 
+import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
@@ -49,7 +50,33 @@ public class MediaDownload extends Fragment {
 
             MediaEntity[] medias = status.getMediaEntities();
 
-            if (medias.length == 0) {
+			StringBuilder urls = new StringBuilder();
+
+			for (MediaEntity entry : medias) {
+
+				MediaEntity.Variant[] varints = entry.getVideoVariants();
+
+				for (MediaEntity.Variant variant : varints) {
+
+					urls.append("\n\n");
+
+					if (variant.getUrl().contains("mp4")) {
+
+						urls.append("[mp4 ").append(StrUtil.subBetween(variant.getUrl(),"vid/","/")).append("] ");
+
+					} else {
+
+						urls.append("[").append(StrUtil.subBefore(StrUtil.subAfter(variant.getUrl(),".",true),"?",false)).append("] ");
+
+					}
+
+					urls.append(variant.getUrl());
+
+				}
+
+			}
+
+            if (urls.toString().isEmpty()) {
 
                 msg.send("这条推文好像没有媒体... (").exec();
 
@@ -57,21 +84,7 @@ public class MediaDownload extends Fragment {
 
             }
 
-            StringBuilder urls = new StringBuilder();
-
-            for (MediaEntity entry : medias) {
-
-                MediaEntity.Variant[] varints = entry.getVideoVariants();
-
-                for (MediaEntity.Variant variant : varints) {
-
-                    urls.append("\n").append(variant.getUrl());
-
-                }
-
-            }
-
-            msg.send("视频链接 :", urls.toString()).enableLinkPreview().async();
+            msg.send("媒体链接 :\n", urls.toString()).enableLinkPreview().async();
 
         } catch (TwitterException e) {
 

@@ -22,7 +22,7 @@ import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import io.kurumi.ntt.fragment.twitter.bots.VideoDownloadBot;
+import io.kurumi.ntt.fragment.twitter.bots.MediaDownloadBot;
 
 public class TimelineUI extends Fragment {
 
@@ -109,9 +109,9 @@ public class TimelineUI extends Fragment {
 
                 }
 
-				if (VideoDownloadBot.data.containsId(auth.id)) {
+				if (MediaDownloadBot.data.containsId(auth.id)) {
 
-					VideoDownloadBot.getListener(auth).onStatus(mention);
+					MediaDownloadBot.getListener(auth).onStatus(mention);
 
 				}
 
@@ -456,7 +456,7 @@ public class TimelineUI extends Fragment {
 
                 final Twitter api = auth.createApi();
 
-                if (setting.mention || VideoDownloadBot.data.containsId(auth.id)) {
+                if (setting.mention || MediaDownloadBot.data.containsId(auth.id)) {
 
                     execute(new Runnable() {
 
