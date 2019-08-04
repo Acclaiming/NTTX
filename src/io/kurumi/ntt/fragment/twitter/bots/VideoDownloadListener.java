@@ -93,7 +93,7 @@ public class VideoDownloadListener implements StatusListener {
 							
 						} else {
 							
-							urls.append("[").append(StrUtil.subBetween(variant.getUrl(),".","?")).append("] ");
+							urls.append("[").append(StrUtil.subBefore(StrUtil.subAfter(variant.getUrl(),".",true),"?",false)).append("] ");
 							
 						}
 						
