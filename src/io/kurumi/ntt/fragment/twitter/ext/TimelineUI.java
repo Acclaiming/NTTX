@@ -22,6 +22,7 @@ import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import io.kurumi.ntt.fragment.twitter.bots.VideoDownloadBot;
 
 public class TimelineUI extends Fragment {
 
@@ -107,6 +108,12 @@ public class TimelineUI extends Fragment {
                     archive.sendTo(auth.user, 1, auth, mention);
 
                 }
+				
+				if (VideoDownloadBot.data.containsId(auth.id)) {
+					
+					VideoDownloadBot.data
+					
+				}
 
             }
 

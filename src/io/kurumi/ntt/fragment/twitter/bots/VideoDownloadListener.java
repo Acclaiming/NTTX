@@ -53,23 +53,6 @@ public class VideoDownloadListener implements StatusListener {
 
 	@Override
 	public void onStatus(final Status status) {
-
-		BotFragment.asyncPool.execute(new Runnable() {
-
-				@Override
-				public void run() {
-					
-					process(status);
-					
-				}
-				
-			});
-		
-			
-		
-	}
-	
-	public void process(Status status) {
 		
 		BotLog.info("收到推文 : " + status.getText());
 		
