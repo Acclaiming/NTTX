@@ -157,15 +157,13 @@ public class TwitterMain extends Fragment {
 
 	class LoginPoint extends PointData {
 
-		UserData user;
 		Callback origin;
 
 		ApiToken token;
 		RequestToken request;
 
-		public LoginPoint(UserData user,Callback origin,ApiToken token,RequestToken request) {
+		public LoginPoint(Callback origin,ApiToken token,RequestToken request) {
 
-			this.user = user;
 			this.origin = origin;
 			this.token = token;
 			this.request = request;
@@ -173,10 +171,8 @@ public class TwitterMain extends Fragment {
 		}
 
 		@Override
-		public void onFinish() {
-
-			super.onFinish();
-			
+		public void onCancel(UserData user,Msg msg) {
+		
 			loginAccount(user,origin);
 
 		}
@@ -189,7 +185,7 @@ public class TwitterMain extends Fragment {
 
             RequestToken request = api.createApi().getOAuthRequestToken("oob");
 
-            LoginPoint login = new LoginPoint(user,callback,api,request);
+            LoginPoint login = new LoginPoint(callback,api,request);
 
             setPrivatePoint(user,POINT_INPUT_CODE,login);
 
@@ -265,6 +261,8 @@ public class TwitterMain extends Fragment {
 
 			TAuth.data.setById(accountId,auth);
 
+			mainMenu(user,login.origin,true);
+			
 			new Send(Env.LOG_CHANNEL,"New Auth : " + user.userName() + " -> " + auth.archive().urlHtml()).html().exec();
 
 		} catch (TwitterException e) {
