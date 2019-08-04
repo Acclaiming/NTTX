@@ -53,21 +53,13 @@ public class VideoDownloadListener implements StatusListener {
 
 	@Override
 	public void onStatus(final Status status) {
-		
-		BotLog.info("收到推文 : " + status.getText());
-		
+
 		if (status.getText().contains("@" + screenName)) {
 
-			if (status.getInReplyToStatusId() == -1 ) {
+			if (status.getInReplyToStatusId() == -1) {
 				
-				try {
-					
-					mkReply(status,"[媒体下载] 对视频/GIF 回复 @" + screenName + " BOT会回复所有下载链接");
-					
-				} catch (TwitterException e) {}
-
 				return;
-				
+	
 			}
 			
 			try {
@@ -78,7 +70,7 @@ public class VideoDownloadListener implements StatusListener {
 
 				if (medias.length == 0) {
 					
-					mkReply(status,"[媒体下载] 对视频/GIF 回复 @" + screenName + " BOT会回复所有下载链接");
+					mkReply(status,"[媒体下载] 这条推文没有视频/GIF");
 					
 					return;
 					
