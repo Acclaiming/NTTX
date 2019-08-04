@@ -69,12 +69,16 @@ public class AccountMain extends Fragment {
 
 	void accountMain(UserData user,Callback callback,TAuth account) {
 
-		String message = "功能选单 : " + Html.b("User") + " [ " + Html.code(account.id) + " ]";
+		String message = "==========================";
+		
+		message += Html.b("User") + " [ " + Html.code(account.id) + " ]";
 
 		message += "\n\nName : " + account.archive().name;
 
 		message += "\nSN : " + Html.code("@" + account.archive().screenName);
 
+		message += "\n==========================";
+		
 		ButtonMarkup functions = new ButtonMarkup();
 
 		functions.newButtonLine("自动处理 >>",AutoMain.POINT_AUTO,account.id);
