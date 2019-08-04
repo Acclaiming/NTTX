@@ -238,6 +238,14 @@ public class FeedFetchTask extends TimerTask {
 
                         Fragment sender = Launcher.INSTANCE;
 
+						if (Launcher.INSTANCE.me.id().equals(channel.fromBot)) {
+							
+							channel.fromBot = null;
+							
+							RssSub.channel.setById(channel.id,channel);
+							
+						}
+						
                         if (channel.fromBot != null && UserBotFragment.bots.containsKey(channel.fromBot)) {
 
                             sender = UserBotFragment.bots.get(channel.fromBot);
