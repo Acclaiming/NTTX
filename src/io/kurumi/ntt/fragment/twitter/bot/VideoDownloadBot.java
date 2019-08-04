@@ -56,7 +56,7 @@ public class VideoDownloadBot extends Fragment {
 
 		super.init(origin);
 
-		registerAdminFunction("vdb_init","vdb_unset");
+		registerFunction("vdb_init","vdb_unset");
 
 	}
 	
