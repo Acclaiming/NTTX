@@ -64,11 +64,11 @@ public class AutoUI extends Fragment {
 		ButtonMarkup config = new ButtonMarkup();
 
 		config.newButtonLine()
-			.newButton("屏蔽新关注者转推")
+			.newButton("屏蔽新关注中的转推")
 			.newButton(account.mrt != null ? "✅" : "☑",POINT_SETTING_MRT,account.id);
 
 		config.newButtonLine()
-			.newButton("关注新关注者")
+			.newButton("自动关注新关注者")
 			.newButton(account.fb != null ? "✅" : "☑",POINT_SETTING_FOBACK,account.id);
 		
 		config.newButtonLine("🔙",AccountMain.POINT_ACCOUNT,account.id);
