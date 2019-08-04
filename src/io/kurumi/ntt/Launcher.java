@@ -317,7 +317,6 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         // Twitter
 
 		addFragment(new TwitterMain());
-		addFragment(new AccountMain());
 		
         addFragment(new TwitterLogin());
         addFragment(new TwitterLogout());

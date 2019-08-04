@@ -25,13 +25,15 @@ public class TwitterMain extends Fragment {
 	public void init(BotFragment origin) {
 
 		super.init(origin);
-
+		
 		registerFunction("twitter");
 
-		registerCallback(POINT_BACK,POINT_NEW_AUTH,AccountMain.POINT_ACCOUNT,POINT_LOGIN_METHOD);
+		registerCallback(POINT_BACK,POINT_NEW_AUTH,POINT_LOGIN_METHOD);
 
 		registerPoint(POINT_INPUT_CODE,POINT_CUSTOM_API,POINT_CUSTOM_TOKEN);
 
+		origin.addFragment(new AccountMain());
+		
 	}
 
 	static final String POINT_BACK = "twi_back";
