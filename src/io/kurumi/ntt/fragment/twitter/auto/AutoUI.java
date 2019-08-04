@@ -64,7 +64,7 @@ public class AutoUI extends Fragment {
 		ButtonMarkup config = new ButtonMarkup();
 
 		config.newButtonLine()
-			.newButton("隐藏新关注的人的转推")
+			.newButton("屏蔽新关注者转推")
 			.newButton(account.mrt != null ? "✅" : "☑",POINT_SETTING_MRT,account.id);
 
 		config.newButtonLine()
