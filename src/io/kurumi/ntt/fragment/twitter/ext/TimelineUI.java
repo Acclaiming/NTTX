@@ -103,7 +103,7 @@ public class TimelineUI extends Fragment {
 
                 StatusArchive archive = StatusArchive.save(mention).loop(api);
 
-                if (!archive.from.equals(auth.id)) {
+                if (setting.mention || !archive.from.equals(auth.id)) {
 
                     archive.sendTo(auth.user, 1, auth, mention);
 
@@ -456,7 +456,7 @@ public class TimelineUI extends Fragment {
 
                 final Twitter api = auth.createApi();
 
-                if (setting.mention) {
+                //if (setting.mention) {
 
                     execute(new Runnable() {
 
@@ -483,7 +483,7 @@ public class TimelineUI extends Fragment {
 
                     });
 
-                }
+               // }
 
             }
 
