@@ -11,6 +11,7 @@ import twitter4j.TwitterException;
 import twitter4j.UserMentionEntity;
 import twitter4j.StatusUpdate;
 import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.utils.BotLog;
 
 public class VideoDownloadListener implements StatusListener {
 
@@ -76,7 +77,7 @@ public class VideoDownloadListener implements StatusListener {
 
 				if (medias.length == 0) {
 					
-					mkReply(status,"[媒体下载] 这条推文没有视频/GIF");
+					mkReply(status,"[媒体下载] 对视频/GIF 回复 @" + screenName + " BOT会回复所有下载链接");
 					
 					return;
 					
@@ -101,7 +102,7 @@ public class VideoDownloadListener implements StatusListener {
 
 			} catch (TwitterException e) {
 
-
+				BotLog.error("[VDB]",e);
 
 			}
 
