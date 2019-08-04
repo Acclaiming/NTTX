@@ -126,21 +126,13 @@ public class PointStore {
 
     public PointData clearPrivate(UserData user) {
 
-        PointData toFinish = privatePoints.remove(user.id);
-
-        if (toFinish != null) toFinish.onFinish();
-
-        return toFinish;
+        return privatePoints.remove(user.id);
 
     }
 
     public PointData clearGroup(UserData user) {
 
-        PointData toFinish = groupPoints.remove(user.id);
-
-        if (toFinish != null) toFinish.onFinish();
-
-        return toFinish;
+        return groupPoints.remove(user.id);
 
     }
 

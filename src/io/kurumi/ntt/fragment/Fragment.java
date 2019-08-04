@@ -182,13 +182,20 @@ public class Fragment {
 
     public PointData clearPrivatePoint(UserData user) {
 
-        return point().clearPrivate(user);
+        PointData toFinish = point().clearPrivate(user);
 
+        if (toFinish != null) toFinish.onFinish();
+
+        return toFinish;
     }
 
     public PointData clearGroupPoint(UserData user) {
 
-        return point().clearGroup(user);
+        PointData toFinish = point().clearGroup(user);
+
+        if (toFinish != null) toFinish.onFinish();
+
+        return toFinish;
 
     }
 

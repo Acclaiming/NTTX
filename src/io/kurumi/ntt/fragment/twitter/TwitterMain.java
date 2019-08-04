@@ -16,6 +16,8 @@ import java.util.HashMap;
 import twitter4j.auth.AccessToken;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.Env;
+import cn.hutool.core.util.StrUtil;
+import twitter4j.User;
 
 public class TwitterMain extends Fragment {
 
@@ -25,6 +27,10 @@ public class TwitterMain extends Fragment {
 		super.init(origin);
 
 		registerFunction("twitter");
+		
+		registerCallback(POINT_BACK,POINT_NEW_AUTH,POINT_ACCOUNT,POINT_LOGIN_METHOD);
+		
+		registerPoint(POINT_INPUT_CODE,POINT_CUSTOM_API,POINT_CUSTOM_TOKEN);
 
 	}
 
@@ -35,6 +41,9 @@ public class TwitterMain extends Fragment {
 	final String POINT_LOGIN_METHOD = "twi_method";
 	final String POINT_INPUT_CODE = "twi_code";
 
+	final String POINT_CUSTOM_API = "twi_capi";
+	final String POINT_CUSTOM_TOKEN = "twi_ctoken";
+	
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
@@ -133,23 +142,40 @@ public class TwitterMain extends Fragment {
 
 			startAuth(user,callback,ApiToken.webClientToken);
 
+		} else if (method == 5) {
+			
+			startCustomAuth(user,callback,false);
+			
+		} else if (method == 6) {
+			
+			startCustomAuth(user,callback,true);
+			
 		}
 
 	}
 
 	class LoginPoint extends PointData {
 
+		UserData user;
 		Callback origin;
 
 		ApiToken token;
 		RequestToken request;
 
-		public LoginPoint(Callback origin,ApiToken token,RequestToken request) {
-
+		public LoginPoint(UserData user,Callback origin,ApiToken token,RequestToken request) {
+			
+			this.user = user;
 			this.origin = origin;
 			this.token = token;
 			this.request = request;
-
+			
+		}
+		
+		@Override
+		public void onFinish() {
+	
+			loginAccount(user,origin);
+	
 		}
 
 	}
@@ -160,7 +186,7 @@ public class TwitterMain extends Fragment {
 
             RequestToken request = api.createApi().getOAuthRequestToken("oob");
 
-            LoginPoint login = new LoginPoint(callback,api,request);
+            LoginPoint login = new LoginPoint(user,callback,api,request);
 
             setPrivatePoint(user,POINT_INPUT_CODE,login.with(callback));
 
@@ -181,18 +207,21 @@ public class TwitterMain extends Fragment {
 		
 		if (POINT_INPUT_CODE.equals(point)) {
 			
-			inputCode(user,msg,(LoginPoint) data.with(msg));
+			onInputCode(user,msg,(LoginPoint) data.with(msg));
+			
+		} else if (POINT_CUSTOM_API.equals(point) || POINT_CUSTOM_TOKEN.equals(point)) {
+			
+			onCustomAuth(user,msg,point, (CustomTokenAuth)data.with(msg));
 			
 		}
 		
 	}
 	
-	void inputCode(UserData user,Msg msg,LoginPoint login) {
+	void onInputCode(UserData user,Msg msg,LoginPoint login) {
 		
 		ApiToken token = login.token;
 		RequestToken request = login.request;
-		Callback origin = login.origin;
-
+		
 		if (!msg.hasText() || msg.text().length() != 7) {
 			
 			msg.send("当前正在登录 Twitter 账号，请输入 PIN 码").withCancel().exec(login);
@@ -233,8 +262,6 @@ public class TwitterMain extends Fragment {
 
 			TAuth.data.setById(accountId, auth);
 			
-			mainMenu(user,origin,true);
-
 			new Send(Env.LOG_CHANNEL, "New Auth : " + user.userName() + " -> " + auth.archive().urlHtml()).html().exec();
 
 		} catch (TwitterException e) {
@@ -242,8 +269,146 @@ public class TwitterMain extends Fragment {
 			msg.send("认证失败...", NTT.parseTwitterException(e)).exec();
 
 		}
+	
+	}
+	
+	class CustomTokenAuth extends PointData {
+	
+		Callback origin;
 		
+		String apiKey;
+		String apiSec;
+		String accessToken;
+		String accessSec;
+
+		public CustomTokenAuth(Callback origin) {
+			
+			this.origin = origin;
+			
+		}
+
+		@Override
+		public void onCancel(UserData user,Msg msg) {
+	
+			loginAccount(user,origin);
+	
+		}
 		
+	}
+	
+	void startCustomAuth(UserData user,Callback callback,boolean recovery) {
+		
+		PointData data = setPrivatePoint(user,POINT_CUSTOM_API,new CustomTokenAuth(callback));
+		
+		String message = "请输入 Consumer Key : ";
+		
+		callback.edit(message).withCancel().exec(data);
+		
+	}
+	
+	void onCustomAuth(UserData user,Msg msg,String point,CustomTokenAuth auth) {
+		
+		if (StrUtil.isBlank(msg.text())) {
+			
+			msg.send("请输入 Token").withCancel().async();
+			
+			return;
+			
+		}
+		
+		if (auth.step == 0) {
+			
+			auth.step = 1;
+			
+			auth.apiKey = msg.text();
+			
+			String message = "请输入 Consumer Key Secret : ";
+
+			msg.send(message).withCancel().exec(auth);
+			
+		} else if (auth.step == 1) {
+			
+			auth.step = 2;
+			
+			auth.apiSec = msg.text();
+		
+			if (POINT_CUSTOM_API.equals(point)) {
+				
+				clearPrivatePoint(user);
+				
+				startAuth(user,auth.origin,new ApiToken(auth.apiKey,auth.apiSec));
+				
+				return;
+				
+			}
+
+			String message = "请输入 Access Token : ";
+
+			msg.send(message).withCancel().exec(auth);
+		
+		} else if (auth.step == 2) {
+			
+			auth.step = 3;
+			
+			auth.accessToken = msg.text();
+			
+			String message = "请输入 Access Token Secret : ";
+
+			msg.send(message).withCancel().exec(auth);
+			
+		} else if (auth.step == 3) {
+			
+			TAuth account = new TAuth();
+
+            account.apiKey = auth.apiKey;
+			account.apiKeySec = auth.apiSec;
+			
+            account.user = user.id;
+
+            account.accToken = auth.accessToken;
+			account.accTokenSec = auth.accessSec;
+
+            try {
+
+                User u = account.createApi().verifyCredentials();
+
+				clearPrivatePoint(user);
+				
+                account.id = u.getId();
+
+                TAuth old = TAuth.getById(account.id);
+
+                if (old != null) {
+
+                    if (!user.id.equals(old.user)) {
+
+                        new Send(old.user, "乃的账号 " + old.archive().urlHtml() + " 已被 " + user.userName() + " 认证 , 已移除 .").html().exec();
+
+                    }
+
+                }
+
+                TAuth.data.setById(account.id, account);
+
+				mainMenu(user,auth.origin,true);
+                
+                new Send(Env.LOG_CHANNEL, "New Auth : " + user.userName() + " -> " + account.archive().urlHtml()).html().exec();
+
+                return;
+
+            } catch (TwitterException e) {
+
+                msg.send("检查认证失败", NTT.parseTwitterException(e)).exec();
+
+				clearPrivatePoint(user);
+				
+                return;
+
+            }
+			
+			
+		}
+
 	}
 
 }

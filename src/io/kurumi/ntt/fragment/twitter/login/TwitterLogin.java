@@ -32,6 +32,7 @@ import static java.util.Arrays.asList;
 public class TwitterLogin extends Fragment {
 
     final String POINT_INPUT_CALLBACK = "twitter_login";
+	
     public HashMap<Long, RequestToken> cache = new HashMap<>();
 
     @Override

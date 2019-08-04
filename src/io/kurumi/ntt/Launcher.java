@@ -78,6 +78,7 @@ import okhttp3.OkHttpClient;
 import io.kurumi.ntt.fragment.mstd.login.MsLogin;
 import io.kurumi.ntt.fragment.mstd.login.MsLogout;
 import io.kurumi.ntt.fragment.twitter.bots.MediaDownloadBot;
+import io.kurumi.ntt.fragment.twitter.TwitterMain;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -314,6 +315,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         // Twitter
 
+		addFragment(new TwitterMain());
+		
         addFragment(new TwitterLogin());
         addFragment(new TwitterLogout());
         addFragment(new UserActions());
