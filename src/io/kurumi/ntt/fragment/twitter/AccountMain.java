@@ -12,6 +12,7 @@ public class AccountMain extends Fragment {
 	
 	static final String POINT_ACCOUNT = "twi_show";
 
+	final String POINT_EXPORT = "twi_export";
 	final String POINT_LOGOUT = "twi_logout";
 	final String POINT_LOGOUT_CONFIRM = "twi_logout_confim";
 	
@@ -51,6 +52,10 @@ public class AccountMain extends Fragment {
 			
 			accountLogout(user,callback,account);
 			
+		} else if (POINT_EXPORT.equals(point)) {
+			
+			accountExport(user,callback,account);
+			
 		}
 		
 	}
@@ -65,6 +70,7 @@ public class AccountMain extends Fragment {
 		
 		ButtonMarkup functions = new ButtonMarkup();
 		
+		functions.newButtonLine("导出认证",POINT_EXPORT,account.id);
 		functions.newButtonLine("移除账号",POINT_LOGOUT,account.id);
 		
 		functions.newButtonLine("🔙",TwitterMain.POINT_BACK);
@@ -73,6 +79,23 @@ public class AccountMain extends Fragment {
 		
 	}
 	
+	void accountExport(UserData user,Callback callback,TAuth account) {
+		
+		String message = "认证信息 [ " + account.archive().name + " ]";
+		
+        message += "\n\n" + Html.b("Consumer Key") + " : " + Html.code(account.apiKey);
+        message += "\n\n" + Html.b("Consumer Key Secret") + " : " + Html.code(account.apiKeySec);
+        message += "\n\n" + Html.b("Access Token") + " : " + Html.code(account.accToken);
+        message += "\n\n" + Html.b("Access Token Secret") + " : " + Html.code(account.accTokenSec);
+
+        ButtonMarkup back = new ButtonMarkup();
+		
+		back.newButtonLine("🔙",POINT_ACCOUNT,account.id);
+		
+		callback.edit(message).buttons(back).async();
+		
+	}
+		
 	void accountLogout(UserData user,Callback callback,TAuth account) {
 		
 		String message = "点击来确认移除你的账号 [ " + account.archive().name + " ]\n\n服务器端记录会被完全删除 , 但 Twitter 中的会话管理中仍会显示NTT , 在会话管理中移除NTT使导出功能导出的认证失效 .";
