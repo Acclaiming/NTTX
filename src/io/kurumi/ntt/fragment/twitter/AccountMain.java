@@ -8,6 +8,7 @@ import cn.hutool.core.util.NumberUtil;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.fragment.twitter.auto.AutoUI;
+import io.kurumi.ntt.fragment.twitter.track.TrackUI;
 
 public class AccountMain extends Fragment {
 	
@@ -25,6 +26,7 @@ public class AccountMain extends Fragment {
 		registerCallback(POINT_ACCOUNT,POINT_LOGOUT,POINT_LOGOUT_CONFIRM);
 		
 		origin.addFragment(new AutoUI());
+		origin.addFragment(new TrackUI());
 		
 	}
 
