@@ -100,7 +100,7 @@ public class AccountMain extends Fragment {
 		
 		back.newButtonLine("🔙",POINT_ACCOUNT,account.id);
 		
-		callback.edit(message).buttons(back).async();
+		callback.edit(message).buttons(back).html().async();
 		
 	}
 		
