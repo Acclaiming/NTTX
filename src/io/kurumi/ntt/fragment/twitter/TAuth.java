@@ -63,6 +63,9 @@ public class TAuth {
     public String apiKeySec;
     public String accToken;
     public String accTokenSec;
+	
+	public Boolean mrt;
+	public Boolean fb;
 
     public static TAuth getById(Long accountid) {
 

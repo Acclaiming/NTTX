@@ -7,10 +7,11 @@ import io.kurumi.ntt.db.UserData;
 import cn.hutool.core.util.NumberUtil;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.model.request.ButtonMarkup;
+import io.kurumi.ntt.fragment.twitter.auto.AutoUI;
 
 public class AccountMain extends Fragment {
 	
-	static final String POINT_ACCOUNT = "twi_show";
+	public static final String POINT_ACCOUNT = "twi_show";
 
 	final String POINT_EXPORT = "twi_export";
 	final String POINT_LOGOUT = "twi_logout";
@@ -22,6 +23,8 @@ public class AccountMain extends Fragment {
 		super.init(origin);
 		
 		registerCallback(POINT_ACCOUNT,POINT_LOGOUT,POINT_LOGOUT_CONFIRM);
+		
+		origin.addFragment(new AutoUI());
 		
 	}
 
@@ -69,6 +72,8 @@ public class AccountMain extends Fragment {
 		message += "\nSN : " + Html.code("@" + account.archive().screenName);
 		
 		ButtonMarkup functions = new ButtonMarkup();
+		
+		functions.newButtonLine("自动处理设置 >>",AutoUI.POINT_AUTO,account.id);
 		
 		functions.newButtonLine("导出认证",POINT_EXPORT,account.id);
 		functions.newButtonLine("移除账号",POINT_LOGOUT,account.id);

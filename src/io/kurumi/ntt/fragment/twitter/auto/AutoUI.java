@@ -1,120 +1,122 @@
 package io.kurumi.ntt.fragment.twitter.auto;
 
+import cn.hutool.core.util.NumberUtil;
 import io.kurumi.ntt.db.Data;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.model.Callback;
-import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonMarkup;
-import io.kurumi.ntt.utils.NTT;
+import twitter4j.AccountSettings;
+import io.kurumi.ntt.fragment.twitter.AccountMain;
 
 public class AutoUI extends Fragment {
 
-    public static Data<AutoSetting> autoData = new Data<AutoSetting>(AutoSetting.class);
+	public static final String POINT_AUTO = "twi_auto";
 
-    final String POINT_SETTING_MRT = "auto_mrt";
-    final String POINT_SETTING_FOBACK = "auto_foback";
+    final String POINT_SETTING_MRT = "twi_mrt";
+    final String POINT_SETTING_FOBACK = "twi_foback";
 
     public void init(BotFragment origin) {
 
         super.init(origin);
 
-        registerFunction("auto");
-
-        registerCallback(POINT_SETTING_MRT, POINT_SETTING_FOBACK);
+        registerCallback(POINT_SETTING_MRT,POINT_SETTING_FOBACK);
 
     }
 
-    @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+	@Override
+	public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
-        requestTwitter(user, msg);
+		if (params.length == 0 || !NumberUtil.isNumber(params[0])) return;
 
-    }
+		long accountId = NumberUtil.parseLong(params[0]);
 
-    @Override
-    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
+		TAuth account = TAuth.getById(accountId);
 
-        AutoSetting setting = autoData.getById(account.id);
+		if (account == null) {
 
-        if (setting == null) {
+			callback.alert("无效的账号 .");
 
-            setting = new AutoSetting();
+			callback.delete();
 
-            setting.id = account.id;
+			return;
 
-        }
+		}
 
-        msg.send("自动处理设置... (按钮UI (❁´▽`❁)").buttons(makeSettings(setting, account.id)).async();
+		if (POINT_AUTO.equals(point)) {
 
-    }
+			autoMain(user,callback,account);
 
-    ButtonMarkup makeSettings(final AutoSetting setting, final long accountId) {
+		} else {
+			
+			setConfig(user,callback,point,account);
+			
+		}
 
-        return new ButtonMarkup() {{
+	}
 
-            // newButtonLine((setting.archive ? "「 关闭" : "「 开启") + " 时间线推文存档 」", POINT_SETTING_AECHIVE, accountId);
-            newButtonLine((setting.mrt ? "「 关闭" : "「 开启") + " 静音新关注的人的转推 」", POINT_SETTING_MRT, accountId);
-            newButtonLine((setting.foback ? "「 关闭" : "「 开启") + " 关注新关注者 」", POINT_SETTING_FOBACK, accountId);
+	void autoMain(UserData user,Callback callback,TAuth account) {
 
-            // newButtonLine((setting.foback ? "「 关闭" : "「 开启") + " 取关新取关者 」",POINT,accountId);
+		String message = "自动处理设置 [ " + account.archive().name + " ]";
 
+		ButtonMarkup config = new ButtonMarkup();
 
-        }};
+		config.newButtonLine()
+			.newButton("隐藏新关注的人的转推")
+			.newButton(account.mrt != null ? "✅" : "☑",POINT_SETTING_MRT,account.id);
 
-    }
+		config.newButtonLine()
+			.newButton("关注新关注者")
+			.newButton(account.fb != null ? "✅" : "☑",POINT_SETTING_FOBACK,account.id);
+		
+		config.newButtonLine("🔙",AccountMain.POINT_ACCOUNT,account.id);
+		
+		callback.edit(message).buttons(config).async();
 
-    @Override
-    public void onCallback(UserData user, Callback callback, String point, String[] params) {
+	}
+	
+	void setConfig(UserData user,Callback callback,String point,TAuth account) {
+		
+		if (POINT_SETTING_MRT.equals(point)) {
+			
+			if (account.mrt != null) {
+				
+				account.mrt = true;
+				
+				callback.text("✅ 已开启");
+				
+			} else {
+				
+				account.mrt = null;
+				
+				callback.text("✅ 已关闭");
+				
+			}
+			
+		} else if (POINT_SETTING_FOBACK.equals(point)) {
 
-        long accountId = Long.parseLong(params[0]);
+			if (account.fb != null) {
 
-        AutoSetting setting = autoData.containsId(accountId) ? autoData.getById(accountId) : new AutoSetting();
+				account.fb = true;
 
-        setting.id = accountId;
+				callback.text("✅ 已开启");
 
-        boolean target = true;
+			} else {
 
-        switch (point) {
+				account.fb = null;
 
-            // case POINT_SETTING_: target = setting.archive = !setting.archive;break;
-            case POINT_SETTING_MRT:
-                target = setting.mrt = !setting.mrt;
-                break;
-            case POINT_SETTING_FOBACK:
-                target = setting.foback = !setting.foback;
-                break;
+				callback.text("✅ 已关闭");
 
-        }
+			}
 
-        if (setting.foback || setting.mrt) {
-
-            autoData.setById(accountId, setting);
-
-        } else {
-
-            autoData.deleteById(accountId);
-
-        }
-
-        callback.text("已" + (target ? "开启" : "关闭") + " ~");
-        callback.editMarkup(makeSettings(setting, accountId));
-
-
-    }
-
-    public static class AutoSetting {
-
-        public Long id;
-
-
-        public boolean mrt = false;
-        public boolean foback = false;
-        public boolean reply = false;
-
-    }
-
+		}
+		
+		TAuth.data.setById(account.id,account);
+		
+		autoMain(user,callback,account);
+		
+	}
 
 }
