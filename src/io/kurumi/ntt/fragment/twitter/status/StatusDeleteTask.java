@@ -40,7 +40,7 @@ public class StatusDeleteTask extends TimerTask {
 
 		for (TAuth account : TAuth.data.getAll()) {
 
-			if (account.ad_s == null && account.ad_r == null && account.ad_rt == null) return;
+			if (account.ad_s == null && account.ad_r == null && account.ad_rt == null) break;
 
 			try {
 
@@ -78,27 +78,27 @@ public class StatusDeleteTask extends TimerTask {
 
 				if (account.ad_d == null) {
 
-					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 24 * 60 * 60 * 1000) return;
+					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 24 * 60 * 60 * 1000) break;
 
 				} else if (account.ad_d == 0) {
 
-					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 3 * 24 * 60 * 60 * 1000) return;
+					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 3 * 24 * 60 * 60 * 1000) break;
 
 				} else if (account.ad_d == 1) {
 
-					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 7 * 24 * 60 * 60 * 1000) return;
+					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 7 * 24 * 60 * 60 * 1000) break;
 
 				} else if (account.ad_d == 2) {
 
-					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 30 * 24 * 60 * 60 * 1000) return;
+					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 30 * 24 * 60 * 60 * 1000) break;
 
 				} else if (account.ad_d == 3) {
 
-					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 2 * 30 * 24 * 60 * 60 * 1000) return;
+					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 2 * 30 * 24 * 60 * 60 * 1000) break;
 
 				} else if (account.ad_d == 4) {
 
-					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 3 * 30 * 24 * 60 * 60 * 1000) return;
+					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 3 * 30 * 24 * 60 * 60 * 1000) break;
 
 				}
 
@@ -106,27 +106,27 @@ public class StatusDeleteTask extends TimerTask {
 
 				if (account.ad_d == null) {
 
-					if (DateUtil.betweenDay(s.getCreatedAt(),new Date(),true) < 1) return;
+					if (DateUtil.betweenDay(s.getCreatedAt(),new Date(),true) < 1) break;
 
 				} else if (account.ad_d == 0) {
 
-					if (DateUtil.betweenDay(s.getCreatedAt(),new Date(),true) < 3) return;
+					if (DateUtil.betweenDay(s.getCreatedAt(),new Date(),true) < 3) break;
 
 				} else if (account.ad_d == 1) {
 
-					if (DateUtil.betweenDay(s.getCreatedAt(),new Date(),true) < 7) return;
+					if (DateUtil.betweenDay(s.getCreatedAt(),new Date(),true) < 7) break;
 
 				} else if (account.ad_d == 2) {
 
-					if (DateUtil.betweenMonth(s.getCreatedAt(),new Date(),true) < 1) return;
+					if (DateUtil.betweenMonth(s.getCreatedAt(),new Date(),true) < 1) break;
 
 				} else if (account.ad_d == 3) {
 
-					if (DateUtil.betweenMonth(s.getCreatedAt(),new Date(),true) < 2) return;
+					if (DateUtil.betweenMonth(s.getCreatedAt(),new Date(),true) < 2) break;
 
 				} else if (account.ad_d == 4) {
 
-					if (DateUtil.betweenMonth(s.getCreatedAt(),new Date(),true) < 3) return;
+					if (DateUtil.betweenMonth(s.getCreatedAt(),new Date(),true) < 3) break;
 
 				}
 
