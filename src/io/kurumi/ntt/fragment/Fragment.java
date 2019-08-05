@@ -354,7 +354,7 @@ public class Fragment {
 		
 		for (Fragment fragment : origin.fragments) {
 			
-			if (target.getClass().equals(target)) {
+			if (target.isInstance(fragment)) {
 				
 				return (T) fragment;
 				
