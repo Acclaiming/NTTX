@@ -122,7 +122,7 @@ public class StatusUpdate extends Fragment {
 		
 		callbacl.confirm();
 		
-		callbacl.send("发送回复内容 :").withCancel().async();
+		callbacl.send("发送回复内容 :").withCancel().exec(update);
 		
 	}
 
