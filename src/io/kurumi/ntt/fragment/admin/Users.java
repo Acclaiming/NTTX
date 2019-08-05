@@ -165,7 +165,15 @@ public class Users extends Fragment {
 
             for (UserData userData : UserData.data.collection.find(or(regex("firstName", kw), regex("lastName", kw), regex("userName", kw), regex("id", kw)))) {
 
-                export.append("\n[").append(Html.user(userData.id.toString(), userData.id)).append("]").append(" ").append(userData.name()).append(" ").append(Html.startPayload("Block", "drop", userData.id));
+                export.append("\n[").append(Html.user(userData.id.toString(), userData.id)).append("]");
+				
+				if (userData.userName != null) {
+					
+					export.append(" (@").append(userData.userName).append(")");
+					
+				}
+				
+				export.append(" ").append(userData.name()).append(" ").append(Html.startPayload("Block", "drop", userData.id));
 
                 count++;
 
