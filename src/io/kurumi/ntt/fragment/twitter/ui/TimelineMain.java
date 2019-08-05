@@ -10,13 +10,16 @@ import io.kurumi.ntt.fragment.twitter.tasks.TimelineTask;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import java.util.Date;
+import java.util.Timer;
 
 public class TimelineMain extends Fragment {
 
+	public static Timer tlTimer = new Timer();
+	
 	public static void start() {
 
-		BotFragment.trackTimer.scheduleAtFixedRate(new MentionTask(),new Date(System.currentTimeMillis() + 60 * 1000),30 * 1000);
-        BotFragment.trackTimer.scheduleAtFixedRate(new TimelineTask(),new Date(System.currentTimeMillis() + 60 * 1000),3 * 60 * 1000);
+		tlTimer.scheduleAtFixedRate(new MentionTask(),new Date(System.currentTimeMillis()),30 * 1000);
+        tlTimer.scheduleAtFixedRate(new TimelineTask(),new Date(System.currentTimeMillis()),3 * 60 * 1000);
 
 	}
 
