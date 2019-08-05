@@ -21,6 +21,13 @@ public class UserExport extends Fragment {
 
     }
 
+	@Override
+	public void onPayload(UserData user,Msg msg,String payload,String[] params) {
+		
+		onFunction(user,msg,payload,params);
+		
+	}
+	
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
