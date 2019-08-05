@@ -1,4 +1,4 @@
-package io.kurumi.ntt.fragment.twitter.auto;
+package io.kurumi.ntt.fragment.twitter.tasks;
 
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;

@@ -1,4 +1,4 @@
-package io.kurumi.ntt.fragment.twitter.track;
+package io.kurumi.ntt.fragment.twitter.tasks;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ArrayUtil;

@@ -1,7 +1,7 @@
-package io.kurumi.ntt.fragment.twitter.track;
+package io.kurumi.ntt.fragment.twitter.tasks;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpException;
 import cn.hutool.http.HttpUtil;
 import com.mongodb.client.FindIterable;
 import com.neovisionaries.i18n.CountryCode;
@@ -17,20 +17,16 @@ import io.kurumi.ntt.fragment.admin.Firewall;
 import io.kurumi.ntt.fragment.twitter.TApi;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
-import io.kurumi.ntt.fragment.twitter.auto.AutoTask;
 import io.kurumi.ntt.fragment.twitter.status.MessagePoint;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.BotLog;
-import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TimerTask;
-
 import twitter4j.Relationship;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -38,7 +34,6 @@ import twitter4j.User;
 
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
-import cn.hutool.http.HttpException;
 
 public class TrackTask extends TimerTask {
 

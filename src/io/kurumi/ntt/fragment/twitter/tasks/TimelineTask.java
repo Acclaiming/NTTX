@@ -1,4 +1,4 @@
-package io.kurumi.ntt.fragment.twitter.status;
+package io.kurumi.ntt.fragment.twitter.tasks;
 
 import cn.hutool.core.util.ArrayUtil;
 import io.kurumi.ntt.fragment.twitter.TAuth;

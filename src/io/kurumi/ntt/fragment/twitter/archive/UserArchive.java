@@ -3,9 +3,11 @@ package io.kurumi.ntt.fragment.twitter.archive;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.StrUtil;
+import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.Data;
-import io.kurumi.ntt.fragment.twitter.TAuth;
-import io.kurumi.ntt.fragment.twitter.track.TrackTask;
+import io.kurumi.ntt.fragment.twitter.tasks.TrackTask;
+import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -21,17 +23,6 @@ import static com.mongodb.client.model.Updates.set;
 import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
-
-import io.kurumi.ntt.*;
-import io.kurumi.ntt.model.request.*;
-import cn.hutool.core.util.*;
-
-import java.io.File;
-
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.http.HttpUtil;
-import com.pengrad.telegrambot.request.SendPhoto;
-import com.pengrad.telegrambot.model.request.ParseMode;
 
 public class UserArchive {
 

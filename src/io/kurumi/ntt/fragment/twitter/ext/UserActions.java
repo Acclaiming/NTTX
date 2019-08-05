@@ -8,7 +8,7 @@ import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.fragment.twitter.status.MessagePoint;
-import io.kurumi.ntt.fragment.twitter.track.TrackTask;
+import io.kurumi.ntt.fragment.twitter.tasks.TrackTask;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.NTT;
 import twitter4j.Relationship;

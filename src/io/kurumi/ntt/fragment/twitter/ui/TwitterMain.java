@@ -1,23 +1,24 @@
-package io.kurumi.ntt.fragment.twitter;
+package io.kurumi.ntt.fragment.twitter.ui;
 
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
+import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.fragment.twitter.ApiToken;
+import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonMarkup;
+import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
 import twitter4j.TwitterException;
-import twitter4j.auth.RequestToken;
-import java.util.HashMap;
-import twitter4j.auth.AccessToken;
-import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.Env;
-import cn.hutool.core.util.StrUtil;
 import twitter4j.User;
+import twitter4j.auth.AccessToken;
+import twitter4j.auth.RequestToken;
 
 public class TwitterMain extends Fragment {
 

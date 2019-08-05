@@ -1,15 +1,13 @@
-package io.kurumi.ntt.fragment.twitter;
+package io.kurumi.ntt.fragment.twitter.ui;
 
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.model.Callback;
-import io.kurumi.ntt.db.UserData;
 import cn.hutool.core.util.NumberUtil;
-import io.kurumi.ntt.utils.Html;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.request.ButtonMarkup;
-import io.kurumi.ntt.fragment.twitter.auto.AutoMain;
-import io.kurumi.ntt.fragment.twitter.track.TrackMain;
-import io.kurumi.ntt.fragment.twitter.status.TimelineMain;
+import io.kurumi.ntt.utils.Html;
 
 public class AccountMain extends Fragment {
 
