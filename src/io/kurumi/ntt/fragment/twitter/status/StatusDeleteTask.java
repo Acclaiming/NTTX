@@ -138,6 +138,20 @@ public class StatusDeleteTask extends TimerTask {
 
 
 			}
+			
+			if (s.isRetweet() && account.ad_rt == null) {
+				
+				continue;
+				
+			} else if (s.getInReplyToStatusId() != -1 && account.ad_r == null) {
+				
+				continue;
+				
+			} else if (account.ad_s == null) {
+				
+				continue;
+				
+			}
 
 			try {
 

@@ -85,6 +85,7 @@ public class TAuth {
 	public Boolean ad_s;
 	public Boolean ad_r;
 	public Boolean ad_rt;
+	
 	public Boolean ad_a;
 	public Integer ad_d;
 	
