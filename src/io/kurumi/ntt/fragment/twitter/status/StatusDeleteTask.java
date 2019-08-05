@@ -21,7 +21,7 @@ public class StatusDeleteTask extends TimerTask {
 
 	public static void start() {
 
-		timer.schedule(new StatusDeleteTask(),30 * 60 * 100);
+		timer.schedule(new StatusDeleteTask(),new Date(System.currentTimeMillis() + 30 * 60 * 1000),2 * 60 * 60 * 1000);
 
 	}
 
