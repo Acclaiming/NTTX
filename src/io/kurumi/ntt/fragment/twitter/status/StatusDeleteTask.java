@@ -34,7 +34,6 @@ public class StatusDeleteTask extends TimerTask {
 
 	}
 
-
 	@Override
 	public void run() {
 
