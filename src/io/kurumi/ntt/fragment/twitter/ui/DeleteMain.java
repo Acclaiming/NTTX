@@ -86,7 +86,7 @@ public class DeleteMain extends Fragment {
 
 		config.newButtonLine()
 			.newButton("一天")
-			.newButton(account.ad_d == null ? "●" : "○",POINT_SETTING_AD_STATUS,account.id,null);
+			.newButton(account.ad_d == null ? "●" : "○",POINT_SETTING_AD_DELAY,account.id,null);
 
 		config.newButtonLine()
 			.newButton("三天")
