@@ -19,6 +19,8 @@ public class UserExport extends Fragment {
 
         registerPayload("user");
 
+		registerCallback(POINT_SHOW_USER);
+		
     }
 
 	@Override
