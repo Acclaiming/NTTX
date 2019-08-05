@@ -385,6 +385,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         trackTimer.cancel();
 
         userTrackTask.interrupt();
+		
+		TimelineMain.stop();
 
         GroupData.data.saveAll();
 

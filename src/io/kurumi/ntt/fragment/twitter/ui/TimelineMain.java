@@ -22,6 +22,12 @@ public class TimelineMain extends Fragment {
         tlTimer.scheduleAtFixedRate(new TimelineTask(),new Date(System.currentTimeMillis()),3 * 60 * 1000);
 
 	}
+	
+	public static void stop() {
+		
+		tlTimer.cancel();
+		
+	}
 
 	public static final String POINT_TL = "twi_tlui";
 
