@@ -30,50 +30,50 @@ public class StatusAction extends Fragment {
     static final String POINT_UNLIKE_STATUS = "s_ul";
     public static Data<CurrentAccount> current = new Data<CurrentAccount>(CurrentAccount.class);
 
-    public static ButtonMarkup createMarkup(final long statusId, final boolean del, final boolean full, final boolean retweeted, final boolean liked) {
+    public static ButtonMarkup createMarkup(final long statusId,final boolean del,final boolean full,final boolean retweeted,final boolean liked) {
 
         return new ButtonMarkup() {{
 
-            ButtonLine line = newButtonLine();
-			
-			line.newButton("↪",POINT_REPLY,statusId);
-			
-            if (retweeted) {
+				ButtonLine line = newButtonLine();
 
-                line.newButton("❎️", POINT_DESTROY_RETWEET, statusId, full, retweeted, liked);
+				line.newButton("↪",POINT_REPLY,statusId);
 
-            } else {
+				if (retweeted) {
 
-                line.newButton("🔄", POINT_RETWEET_STATUS, statusId, full, retweeted, liked);
+					line.newButton("❎️",POINT_DESTROY_RETWEET,statusId,full,retweeted,liked);
 
-            }
+				} else {
 
-            if (liked) {
+					line.newButton("🔄",POINT_RETWEET_STATUS,statusId,full,retweeted,liked);
 
-                line.newButton("💔", POINT_UNLIKE_STATUS, statusId, full, retweeted, liked);
+				}
 
-            } else {
+				if (liked) {
 
-                line.newButton("❤", POINT_LIKE_STATUS, statusId, full, retweeted, liked);
+					line.newButton("💔",POINT_UNLIKE_STATUS,statusId,full,retweeted,liked);
 
-            }
+				} else {
 
-            if (del) {
+					line.newButton("❤",POINT_LIKE_STATUS,statusId,full,retweeted,liked);
 
-                line.newButton("❌️", POINT_DESTROY_STATUS, statusId);
+				}
 
-            }
+				if (del) {
 
-            if (!full) {
+					line.newButton("❌️",POINT_DESTROY_STATUS,statusId);
 
-                line.newButton("🔎", POINT_SHOW_FULL, statusId, true, retweeted, liked);
+				}
 
-            }
+				if (!full) {
 
-            // line.newButton("🔇",POINT_MUTE_USER,status.getUser().getId());
+					line.newButton("🔎",POINT_SHOW_FULL,statusId,true,retweeted,liked);
+
+				}
+
+				// line.newButton("🔇",POINT_MUTE_USER,status.getUser().getId());
 
 
-        }};
+			}};
 
     }
 
@@ -85,56 +85,57 @@ public class StatusAction extends Fragment {
         registerFunction("current");
 
         registerCallback(
-                POINT_LIKE_STATUS,
-                POINT_UNLIKE_STATUS,
-                POINT_RETWEET_STATUS,
-                POINT_DESTROY_RETWEET,
-                POINT_DESTROY_STATUS,
-                POINT_SHOW_FULL);
+			POINT_REPLY,
+			POINT_LIKE_STATUS,
+			POINT_UNLIKE_STATUS,
+			POINT_RETWEET_STATUS,
+			POINT_DESTROY_RETWEET,
+			POINT_DESTROY_STATUS,
+			POINT_SHOW_FULL);
 
 
     }
 
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-        requestTwitter(user, msg, true);
-
-    }
-
-    @Override
-    public void onTwitterFunction(final UserData user, Msg msg, String function, String[] params, final TAuth account) {
-
-        current.setById(user.id, new CurrentAccount() {{
-
-            id = user.id;
-
-            accountId = account.id;
-
-        }});
-
-        msg.send("当前操作账号已设为 : " + account.archive().urlHtml(), "当多用户时，可用此命令设置默认账号。").html().exec();
+        requestTwitter(user,msg,true);
 
     }
 
     @Override
-    public void onCallback(UserData user, Callback callback, String point, String[] params) {
+    public void onTwitterFunction(final UserData user,Msg msg,String function,String[] params,final TAuth account) {
+
+        current.setById(user.id,new CurrentAccount() {{
+
+					id = user.id;
+
+					accountId = account.id;
+
+				}});
+
+        msg.send("当前操作账号已设为 : " + account.archive().urlHtml(),"当多用户时，可用此命令设置默认账号。").html().exec();
+
+    }
+
+    @Override
+    public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
         long statusId = Long.parseLong(params[0]);
 
 		if (POINT_REPLY.equals(point)) {
-			
+
 			getInstance(StatusUpdate.class).reply(user,callback,statusId);
-			
+
 			return;
-	
+
 		}
-		
+
         boolean isFull = params.length > 1 && "true".equals(params[1]);
         boolean retweeted = params.length > 1 && "true".equals(params[2]);
         boolean liked = params.length > 1 && "true".equals(params[3]);
 
-        long count = TAuth.data.countByField("user", user.id);
+        long count = TAuth.data.countByField("user",user.id);
 
         if (count == 0) {
 
@@ -298,7 +299,7 @@ public class StatusAction extends Fragment {
 
             if (callback.message().caption() != null) {
 
-                BaseResponse resp = bot().execute(new EditMessageCaption(callback.chatId(), callback.messageId()).caption(archive.toHtml()).parseMode(ParseMode.HTML).replyMarkup(createMarkup(archive.id, archive.from.equals(auth.id), true, retweeted, liked).markup()));
+                BaseResponse resp = bot().execute(new EditMessageCaption(callback.chatId(),callback.messageId()).caption(archive.toHtml()).parseMode(ParseMode.HTML).replyMarkup(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,liked).markup()));
 
                 if (!resp.isOk()) {
 
@@ -308,7 +309,7 @@ public class StatusAction extends Fragment {
 
             } else {
 
-                callback.edit(archive.toHtml()).buttons(createMarkup(archive.id, archive.from.equals(auth.id), true, retweeted, liked)).html().exec();
+                callback.edit(archive.toHtml()).buttons(createMarkup(archive.id,archive.from.equals(auth.id),true,retweeted,liked)).html().exec();
 
             }
 
@@ -318,7 +319,7 @@ public class StatusAction extends Fragment {
 
         }
 
-        callback.editMarkup(createMarkup(archive.id, archive.from.equals(auth.id), isFull, retweeted, liked));
+        callback.editMarkup(createMarkup(archive.id,archive.from.equals(auth.id),isFull,retweeted,liked));
 
     }
 
