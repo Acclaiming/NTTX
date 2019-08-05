@@ -25,7 +25,7 @@ public class DeleteMain extends Fragment {
 
         super.init(origin);
 
-        registerCallback(POINT_DELETE,POINT_SETTING_AD_STATUS,POINT_SETTING_AD_REPLY,POINT_SETTING_AD_RETWEET,POINT_AD_EXECUTE);
+        registerCallback(POINT_DELETE,POINT_SETTING_AD_STATUS,POINT_SETTING_AD_REPLY,POINT_SETTING_AD_RETWEET,POINT_SETTING_AD_DELAY,POINT_AD_EXECUTE);
 
     }
 
@@ -66,9 +66,7 @@ public class DeleteMain extends Fragment {
 
 	void deleteMain(UserData user,Callback callback,TAuth account) {
 
-		String message = "推文定时自动删除 : [ " + account.archive().name + " ]";
-
-		message += "\n时间间隔 : ";
+		String message = "推文定时自动删除设置  : [ " + account.archive().name + " ]";
 
 		ButtonMarkup config = new ButtonMarkup();
 
