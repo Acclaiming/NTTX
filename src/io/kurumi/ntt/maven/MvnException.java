@@ -1,4 +1,4 @@
-package io.kurumi.maven;
+package io.kurumi.ntt.maven;
 
 public class MvnException extends Exception {
 

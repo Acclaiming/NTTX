@@ -2,8 +2,8 @@ package io.kurumi.ntt.fragment.graph;
 
 import io.kurumi.ntt.db.Data;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.telegraph.Telegraph;
-import io.kurumi.telegraph.model.Account;
+import io.kurumi.ntt.telegraph.Telegraph;
+import io.kurumi.ntt.telegraph.model.Account;
 
 public class TelegraphAccount {
 

@@ -1,4 +1,4 @@
-package io.kurumi.telegraph.model;
+package io.kurumi.ntt.telegraph.model;
 
 public abstract class Node {
 

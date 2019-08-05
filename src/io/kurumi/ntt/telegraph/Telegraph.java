@@ -1,19 +1,19 @@
-package io.kurumi.telegraph;
+package io.kurumi.ntt.telegraph;
 
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import com.google.gson.Gson;
-import io.kurumi.telegraph.model.Account;
-import io.kurumi.telegraph.model.Node;
-import io.kurumi.telegraph.model.Page;
+import io.kurumi.ntt.telegraph.model.Account;
+import io.kurumi.ntt.telegraph.model.Node;
+import io.kurumi.ntt.telegraph.model.Page;
 
 import java.util.List;
 
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
-import io.kurumi.telegraph.model.NodeElement;
-import io.kurumi.telegraph.model.PageList;
-import io.kurumi.telegraph.model.PageViews;
+import io.kurumi.ntt.telegraph.model.NodeElement;
+import io.kurumi.ntt.telegraph.model.PageList;
+import io.kurumi.ntt.telegraph.model.PageViews;
 import cn.hutool.http.HttpRequest;
 import io.kurumi.ntt.utils.*;
 import io.kurumi.ntt.model.request.*;

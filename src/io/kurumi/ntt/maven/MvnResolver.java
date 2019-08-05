@@ -1,4 +1,4 @@
-package io.kurumi.maven;
+package io.kurumi.ntt.maven;
 
 import cn.hutool.http.HttpException;
 import cn.hutool.http.HttpUtil;

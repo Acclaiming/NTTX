@@ -68,7 +68,7 @@ public class AccountMain extends Fragment {
 	}
 
 	void accountMain(UserData user,Callback callback,TAuth account) {
-
+		
 		String message = "==========================";
 		
 		message += "\n" + Html.b("User") + " [ " + Html.code(account.id) + " ]";

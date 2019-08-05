@@ -1,4 +1,4 @@
-package io.kurumi.maven;
+package io.kurumi.ntt.maven;
 
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;

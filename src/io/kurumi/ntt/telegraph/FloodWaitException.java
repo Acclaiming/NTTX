@@ -1,4 +1,4 @@
-package io.kurumi.telegraph;
+package io.kurumi.ntt.telegraph;
 
 public class FloodWaitException extends RuntimeException {
 }

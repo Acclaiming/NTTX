@@ -6,29 +6,16 @@ import cn.hutool.core.util.StrUtil;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import io.kurumi.ntt.fragment.graph.TelegraphAccount;
+import io.kurumi.ntt.telegraph.FloodWaitException;
+import io.kurumi.ntt.telegraph.Telegraph;
+import io.kurumi.ntt.telegraph.model.Node;
+import io.kurumi.ntt.telegraph.model.NodeElement;
+import io.kurumi.ntt.telegraph.model.Page;
 import io.kurumi.ntt.utils.Html;
-import io.kurumi.telegraph.Telegraph;
-import io.kurumi.telegraph.model.Node;
-
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
-import io.kurumi.telegraph.model.Page;
-import io.kurumi.telegraph.model.NodeElement;
-
 import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.util.*;
-
-import cn.hutool.core.util.*;
-import io.kurumi.ntt.Env;
-import io.kurumi.ntt.model.request.Send;
-
-import java.net.URL;
-import java.net.MalformedURLException;
-
-import io.kurumi.ntt.Launcher;
-import io.kurumi.telegraph.FloodWaitException;
 
 public class FeedHtmlFormater {
 

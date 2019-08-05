@@ -1,4 +1,4 @@
-package io.kurumi.maven;
+package io.kurumi.ntt.maven;
 
 import java.util.LinkedList;
 import java.util.List;

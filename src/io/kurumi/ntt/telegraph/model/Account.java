@@ -1,4 +1,4 @@
-package io.kurumi.telegraph.model;
+package io.kurumi.ntt.telegraph.model;
 
 // This object represents a Telegraph account. 
 
