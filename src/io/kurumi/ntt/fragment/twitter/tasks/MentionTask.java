@@ -157,6 +157,9 @@ public class MentionTask extends TimerTask {
 
         if (auth.mention_offset == null || !auth.mention_offset.equals(offset) || auth.rt_offset == null || !auth.rt_offset.equals(rt_offset)) {
 
+			auth.mention_offset = offset;
+			auth.rt_offset = rt_offset;
+			
 			TAuth.data.setById(auth.id,auth);
 
 		}

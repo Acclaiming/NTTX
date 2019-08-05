@@ -18,8 +18,8 @@ public class TimelineMain extends Fragment {
 	
 	public static void start() {
 
-		tlTimer.scheduleAtFixedRate(new MentionTask(),new Date(System.currentTimeMillis()),30 * 1000);
-        tlTimer.scheduleAtFixedRate(new TimelineTask(),new Date(System.currentTimeMillis()),3 * 60 * 1000);
+		tlTimer.scheduleAtFixedRate(new MentionTask(),new Date(),30 * 1000);
+        tlTimer.scheduleAtFixedRate(new TimelineTask(),new Date(),3 * 60 * 1000);
 
 	}
 	

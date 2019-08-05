@@ -95,6 +95,8 @@ public class TimelineTask extends TimerTask {
 
 		if (auth.tl_offset == null || !auth.tl_offset.equals(offset)) {
 
+			auth.tl_offset = offset;
+			
 			TAuth.data.setById(auth.id,auth);
 
 		}
