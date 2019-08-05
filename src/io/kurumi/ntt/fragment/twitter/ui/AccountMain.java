@@ -27,7 +27,8 @@ public class AccountMain extends Fragment {
 		origin.addFragment(new AutoMain());
 		origin.addFragment(new TrackMain());
 		origin.addFragment(new TimelineMain());
-
+		origin.addFragment(new DeleteMain());
+		
 	}
 
 	@Override
@@ -66,25 +67,31 @@ public class AccountMain extends Fragment {
 	}
 
 	void accountMain(UserData user,Callback callback,TAuth account) {
-		
+
 		String message = "==========================";
-		
+
 		message += "\n" + Html.b("User") + " [ " + Html.code(account.id) + " ]";
 
 		message += "\n==========================";
-		
+
 		message += "\nName : " + account.archive().name;
 
 		message += "\nSN : " + Html.code("@" + account.archive().screenName);
 
 		message += "\n==========================";
-		
+
 		ButtonMarkup functions = new ButtonMarkup();
 
 		functions.newButtonLine("自动处理 >>",AutoMain.POINT_AUTO,account.id);
 		functions.newButtonLine("通知 >>",TrackMain.POINT_TRACK,account.id);
 		functions.newButtonLine("推文流 >>",TimelineMain.POINT_TL,account.id);
 
+		if (user.admin()) {
+
+			functions.newButtonLine("自动删除 >>",DeleteMain.POINT_DDELETE,account.id);
+
+		}
+		
 		functions.newButtonLine()
 			.newButton("导出",POINT_EXPORT,account.id)
 			.newButton("移除",POINT_LOGOUT,account.id);

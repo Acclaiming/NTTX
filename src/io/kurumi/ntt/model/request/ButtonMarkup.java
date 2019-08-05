@@ -19,6 +19,13 @@ public class ButtonMarkup extends LinkedList<ButtonLine> {
 
     }
 
+	public void newButtonLine(String text) {
+
+        newButtonLine().newButton(text);
+
+    }
+	
+	
     public void newButtonLine(String text, String point, Object... data) {
 
         newButtonLine().newButton(text, ArrayUtil.join(ArrayUtil.insert(data, 0, point), ","));

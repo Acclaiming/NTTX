@@ -50,7 +50,7 @@ public class TrackMain extends Fragment {
 
 		if (POINT_TRACK.equals(point)) {
 
-			autoMain(user,callback,account);
+			trackMain(user,callback,account);
 
 		} else {
 
@@ -60,7 +60,7 @@ public class TrackMain extends Fragment {
 
 	}
 
-	void autoMain(UserData user,Callback callback,TAuth account) {
+	void trackMain(UserData user,Callback callback,TAuth account) {
 
 		String message = "账号通知设置选单 : [ " + account.archive().name + " ]";
 
@@ -138,7 +138,7 @@ public class TrackMain extends Fragment {
 
 		TAuth.data.setById(account.id,account);
 
-		autoMain(user,callback,account);
+		trackMain(user,callback,account);
 
 	}
 

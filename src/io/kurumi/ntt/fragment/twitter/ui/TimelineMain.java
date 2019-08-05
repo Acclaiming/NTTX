@@ -61,7 +61,7 @@ public class TimelineMain extends Fragment {
 
 		if (POINT_TL.equals(point)) {
 
-			autoMain(user,callback,account);
+			tlMain(user,callback,account);
 
 		} else {
 
@@ -71,7 +71,7 @@ public class TimelineMain extends Fragment {
 
 	}
 
-	void autoMain(UserData user,Callback callback,TAuth account) {
+	void tlMain(UserData user,Callback callback,TAuth account) {
 
 		String message = "时间流与回复流选单 : [ " + account.archive().name + " ]";
 
@@ -156,7 +156,7 @@ public class TimelineMain extends Fragment {
 
 		TAuth.data.setById(account.id,account);
 
-		autoMain(user,callback,account);
+		tlMain(user,callback,account);
 
 	}
 
