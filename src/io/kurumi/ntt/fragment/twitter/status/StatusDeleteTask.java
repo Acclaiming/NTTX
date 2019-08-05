@@ -43,6 +43,12 @@ public class StatusDeleteTask extends TimerTask {
 			if (account.ad_s == null && account.ad_r == null && account.ad_rt == null) break;
 
 			try {
+				
+				if (ArrayUtil.contains(Env.ADMINS,account.user)) {
+
+					new Send(account.user,"正在开始删除 :)").async();
+
+				}
 
 				int count = executeDelete(account);
 
