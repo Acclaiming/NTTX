@@ -24,7 +24,7 @@ public class StatusDeleteTask extends TimerTask {
 
 	public static void start() {
 
-		timer.schedule(new StatusDeleteTask(),new Date(/*System.currentTimeMillis() + 30 * 60 * 1000*/),2 * 60 * 60 * 1000);
+		timer.schedule(new StatusDeleteTask(),new Date(),2 * 60 * 60 * 1000);
 
 	}
 
@@ -42,13 +42,13 @@ public class StatusDeleteTask extends TimerTask {
 			if (account.ad_s == null && account.ad_r == null && account.ad_rt == null) continue;
 
 			try {
-			
-					BotLog.info("@" + account.archive().screenName + " 正在开始删除 :)");
-					
+
+				BotLog.info("@" + account.archive().screenName + " 正在开始删除 :)");
+
 				int count = executeDelete(account);
 
 				BotLog.info("结果: " + count);
-				
+
 			} catch (TwitterException e) {
 
 				BotLog.error("DELETE STATUS",e);
@@ -60,9 +60,9 @@ public class StatusDeleteTask extends TimerTask {
 	}
 
 	public static int executeDelete(TAuth account) throws TwitterException {
-		
+
 		int count = 0;
-		
+
 		Twitter api = account.createApi();
 
 		LinkedList<Status> statues = TApi.getAllStatus(api,account.id);
@@ -129,19 +129,27 @@ public class StatusDeleteTask extends TimerTask {
 
 
 			}
-			
-			if (s.isRetweet() && account.ad_rt == null) {
-				
-				continue;
-				
-			} else if (s.getInReplyToStatusId() != -1 && account.ad_r == null) {
-				
-				continue;
-				
+
+			if (s.isRetweet()) {
+
+				if (account.ad_rt == null) {
+
+					continue;
+
+				}
+
+			} if (s.getInReplyToStatusId() != -1) {
+
+				if (account.ad_r == null) {
+
+					continue;
+
+				}
+
 			} else if (account.ad_s == null) {
-				
+
 				continue;
-				
+
 			}
 
 			try {
@@ -149,7 +157,7 @@ public class StatusDeleteTask extends TimerTask {
 				api.destroyStatus(s.getId());
 
 				count ++;
-				
+
 			} catch (TwitterException e) {
 
 				if (e.getErrorCode() != 144) throw e;
@@ -157,7 +165,7 @@ public class StatusDeleteTask extends TimerTask {
 			}
 
 		}
-		
+
 		return count;
 
 	}
