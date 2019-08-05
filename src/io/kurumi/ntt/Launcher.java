@@ -74,6 +74,7 @@ import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
 import io.kurumi.ntt.fragment.twitter.status.StatusDeleteTask;
+import io.kurumi.ntt.fragment.base.UserExport;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -292,6 +293,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         addFragment(new Users());
         addFragment(new Stat());
         addFragment(new DebugMsg());
+		addFragment(new UserExport());
 
         addFragment(new DebugUser());
         addFragment(new DebugStatus());
