@@ -19,6 +19,7 @@ public class DeleteMain extends Fragment {
     final String POINT_SETTING_AD_REPLY = "twi_adr";
 	final String POINT_SETTING_AD_RETWEET = "twi_adrt";
 	final String POINT_SETTING_AD_DELAY = "twi_add";
+	final String POINT_SETTING_AD_ABS = "twi_abs";
 	final String POINT_AD_EXECUTE = "twi_adex";
 
     public void init(BotFragment origin) {
@@ -85,29 +86,33 @@ public class DeleteMain extends Fragment {
 		config.newButtonLine("推文删除间隔");
 
 		config.newButtonLine()
-			.newButton("一天")
+			.newButton("保留一天")
 			.newButton(account.ad_d == null ? "●" : "○",POINT_SETTING_AD_DELAY,account.id,null);
 
 		config.newButtonLine()
-			.newButton("三天")
+			.newButton("保留三天")
 			.newButton(((Integer) 0).equals(account.ad_d) ? "●" : "○",POINT_SETTING_AD_DELAY,account.id,0);
 
 		config.newButtonLine()
-			.newButton("七天")
+			.newButton("保留七天")
 			.newButton(((Integer) 1).equals(account.ad_d) ? "●" : "○",POINT_SETTING_AD_DELAY,account.id,1);
 
 		config.newButtonLine()
-			.newButton("一月")
+			.newButton("保留一月")
 			.newButton(((Integer) 2).equals(account.ad_d) ? "●" : "○",POINT_SETTING_AD_DELAY,account.id,2);
 
 		config.newButtonLine()
-			.newButton("二月")
+			.newButton("保留二月")
 			.newButton(((Integer) 3).equals(account.ad_d) ? "●" : "○",POINT_SETTING_AD_DELAY,account.id,3);
 
 		config.newButtonLine()
-			.newButton("三月")
+			.newButton("保留三月")
 			.newButton(((Integer) 4).equals(account.ad_d) ? "●" : "○",POINT_SETTING_AD_DELAY,account.id,4);
 
+		config.newButtonLine()
+			.newButton("使用绝对时间")
+			.newButton(account.ad_a != null ? "✅" : "☑",POINT_SETTING_AD_ABS,account.id);
+			
 		//config.newButtonLine("立即执行",POINT_AD_EXECUTE,account.id);
 
 		config.newButtonLine("🔙",AccountMain.POINT_ACCOUNT,account.id);
@@ -161,6 +166,22 @@ public class DeleteMain extends Fragment {
 			} else {
 
 				account.ad_rt = null;
+
+				callback.text("✅ 已关闭");
+
+			}
+
+		} else if (POINT_SETTING_AD_ABS.equals(point)) {
+
+			if (account.ad_a == null) {
+
+				account.ad_a = true;
+
+				callback.text("✅ 已开启");
+
+			} else {
+
+				account.ad_a  = null;
 
 				callback.text("✅ 已关闭");
 
