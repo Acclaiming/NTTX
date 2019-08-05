@@ -62,13 +62,22 @@ public class MediaDownload extends Fragment {
 
 					if (variant.getUrl().contains("mp4")) {
 
-						urls.append("[mp4 ").append(StrUtil.subBetween(variant.getUrl(),"vid/","/")).append("] ");
+						if (variant.getUrl().contains("?")) {
+
+							urls.append("[mp4 ").append(StrUtil.subBetween(variant.getUrl(),"vid/","/")).append("] ");
+
+						} else {
+
+							urls.append("[mp4] ");
+
+						}
 
 					} else {
 
 						urls.append("[").append(StrUtil.subBefore(StrUtil.subAfter(variant.getUrl(),".",true),"?",false)).append("] ");
 
 					}
+					
 
 					urls.append(variant.getUrl());
 
