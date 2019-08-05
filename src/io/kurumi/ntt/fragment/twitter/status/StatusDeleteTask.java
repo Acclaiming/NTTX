@@ -39,12 +39,11 @@ public class StatusDeleteTask extends TimerTask {
 
 		for (TAuth account : TAuth.data.getAll()) {
 
-			if (account.ad_s == null && account.ad_r == null && account.ad_rt == null) break;
+			if (account.ad_s == null && account.ad_r == null && account.ad_rt == null) continue;
 
 			try {
 			
 					BotLog.info("@" + account.archive().screenName + " 正在开始删除 :)");
-					
 					
 				int count = executeDelete(account);
 
