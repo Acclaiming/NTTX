@@ -21,6 +21,7 @@ import twitter4j.TwitterException;
 
 public class StatusAction extends Fragment {
 
+	static final String POINT_REPLY = "s_reply";
     static final String POINT_RETWEET_STATUS = "s_rt";
     static final String POINT_DESTROY_RETWEET = "s_unrt";
     static final String POINT_DESTROY_STATUS = "s_del";
@@ -34,7 +35,9 @@ public class StatusAction extends Fragment {
         return new ButtonMarkup() {{
 
             ButtonLine line = newButtonLine();
-
+			
+			line.newButton("↪",POINT_REPLY,statusId);
+			
             if (retweeted) {
 
                 line.newButton("❎️", POINT_DESTROY_RETWEET, statusId, full, retweeted, liked);
@@ -119,6 +122,14 @@ public class StatusAction extends Fragment {
 
         long statusId = Long.parseLong(params[0]);
 
+		if (POINT_REPLY.equals(point)) {
+			
+			getInstance(StatusUpdate.class).reply(user,callback,statusId);
+			
+			return;
+	
+		}
+		
         boolean isFull = params.length > 1 && "true".equals(params[1]);
         boolean retweeted = params.length > 1 && "true".equals(params[2]);
         boolean liked = params.length > 1 && "true".equals(params[3]);
