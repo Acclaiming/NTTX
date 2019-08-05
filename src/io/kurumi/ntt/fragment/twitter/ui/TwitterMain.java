@@ -63,7 +63,7 @@ public class TwitterMain extends Fragment {
 
 		if (TAuth.contains(user.id)) {
 
-			for (TAuth account : user.admin() ? TAuth.data.getAll() : TAuth.data.getAllByField("user",user.id)) {
+			for (TAuth account : TAuth.data.getAllByField("user",user.id)) {
 
 				accounts.newButtonLine(account.archive().name,AccountMain.POINT_ACCOUNT,account.id);
 
