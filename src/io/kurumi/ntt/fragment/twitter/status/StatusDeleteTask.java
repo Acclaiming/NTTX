@@ -42,20 +42,13 @@ public class StatusDeleteTask extends TimerTask {
 			if (account.ad_s == null && account.ad_r == null && account.ad_rt == null) break;
 
 			try {
-				
-				if (ArrayUtil.contains(Env.ADMINS,account.user)) {
-
-					new Send(account.user,"正在开始删除 :)").async();
-
-				}
-
+			
+					BotLog.info("@" + account.archive().screenName + " 正在开始删除 :)");
+					
+					
 				int count = executeDelete(account);
 
-				if (ArrayUtil.contains(Env.ADMINS,account.user)) {
-					
-					new Send(account.user,"删除了 " + count + " 条推文 :)").async();
-					
-				}
+				BotLog.info("结果: " + count);
 				
 			} catch (TwitterException e) {
 
