@@ -37,6 +37,10 @@ public class UserArchive {
     public String url;
     public Boolean isProtected;
     public Boolean isDisappeared;
+	
+	public Integer following;
+	public Integer followers;
+	
     public transient String oldPhotoUrl;
     public transient String oldBannerUrl;
     private transient String oldScreename;
@@ -318,6 +322,9 @@ public class UserArchive {
             TrackTask.onUserChange(this, str.toString());
 
         }
+		
+		following = user.getFriendsCount();
+		followers = user.getFollowersCount();
 
         return change;
 
