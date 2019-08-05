@@ -43,12 +43,14 @@ public class StatusDeleteTask extends TimerTask {
 
 			try {
 
-				BotLog.info("@" + account.archive().screenName + " 正在开始删除 :)");
-
 				int count = executeDelete(account);
 
-				BotLog.info("结果: " + count);
-
+				if (count > 0) {
+					
+					new Send(account.user,"[推文定时删除] 已删除 " + count + " 条 .").async();
+					
+				}
+				
 			} catch (TwitterException e) {
 
 				BotLog.error("DELETE STATUS",e);
