@@ -42,11 +42,11 @@ public class MDListener implements StatusListener {
 		if (status.getText().endsWith(" @" + screenName)) {
 
 			if (status.getInReplyToStatusId() == -1) {
-				
+
 				return;
-	
+
 			}
-			
+
 			try {
 
 				Status replyTo = api.showStatus(status.getInReplyToStatusId());
@@ -62,17 +62,25 @@ public class MDListener implements StatusListener {
 					for (MediaEntity.Variant variant : varints) {
 
 						urls.append("\n\n");
-					
+
 						if (variant.getUrl().contains("mp4")) {
-							
-							urls.append("[mp4 ").append(StrUtil.subBetween(variant.getUrl(),"vid/","/")).append("] ");
-							
+
+							if (variant.getUrl().contains("?")) {
+
+								urls.append("[mp4 ").append(StrUtil.subBetween(variant.getUrl(),"vid/","/")).append("] ");
+
+							} else {
+
+								urls.append("[mp4] ");
+
+							}
+
 						} else {
-							
+
 							urls.append("[").append(StrUtil.subBefore(StrUtil.subAfter(variant.getUrl(),".",true),"?",false)).append("] ");
-							
+
 						}
-						
+
 						urls.append(variant.getUrl());
 
 					}
@@ -86,8 +94,8 @@ public class MDListener implements StatusListener {
 					return;
 
 				}
-				
-				
+
+
 				mkReply(status,"[媒体下载] 所有下载链接 :\n" + urls.toString());
 
 
