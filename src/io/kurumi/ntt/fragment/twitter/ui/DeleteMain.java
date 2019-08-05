@@ -13,7 +13,7 @@ import cn.hutool.core.date.DateUtil;
 
 public class DeleteMain extends Fragment {
 
-	public static final String POINT_DDELETE = "twi_ad";
+	public static final String POINT_DELETE = "twi_ad";
 
     final String POINT_SETTING_AD_STATUS = "twi_ads";
     final String POINT_SETTING_AD_REPLY = "twi_adr";
@@ -25,7 +25,7 @@ public class DeleteMain extends Fragment {
 
         super.init(origin);
 
-        registerCallback(POINT_SETTING_AD_STATUS,POINT_SETTING_AD_REPLY,POINT_SETTING_AD_RETWEET,POINT_AD_EXECUTE);
+        registerCallback(POINT_DELETE,POINT_SETTING_AD_STATUS,POINT_SETTING_AD_REPLY,POINT_SETTING_AD_RETWEET,POINT_AD_EXECUTE);
 
     }
 
@@ -48,7 +48,7 @@ public class DeleteMain extends Fragment {
 
 		}
 
-		if (POINT_DDELETE.equals(point)) {
+		if (POINT_DELETE.equals(point)) {
 
 			deleteMain(user,callback,account);
 

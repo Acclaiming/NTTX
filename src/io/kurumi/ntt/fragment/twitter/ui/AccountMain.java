@@ -88,7 +88,7 @@ public class AccountMain extends Fragment {
 
 		if (user.admin()) {
 
-			functions.newButtonLine("自动删除 >>",DeleteMain.POINT_DDELETE,account.id);
+			functions.newButtonLine("自动删除 >>",DeleteMain.POINT_DELETE,account.id);
 
 		}
 		
