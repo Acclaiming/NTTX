@@ -14,6 +14,9 @@ import io.kurumi.ntt.utils.BotLog;
 import java.util.Collections;
 import io.kurumi.ntt.fragment.twitter.TApi;
 import java.util.LinkedList;
+import cn.hutool.core.util.ArrayUtil;
+import io.kurumi.ntt.Env;
+import io.kurumi.ntt.model.request.Send;
 
 public class StatusDeleteTask extends TimerTask {
 
@@ -41,8 +44,14 @@ public class StatusDeleteTask extends TimerTask {
 
 			try {
 
-				executeDelete(account);
+				int count = executeDelete(account);
 
+				if (ArrayUtil.contains(Env.ADMINS,account.user)) {
+					
+					new Send(account.user,"删除了 " + count + " 条推文 :)").async();
+					
+				}
+				
 			} catch (TwitterException e) {
 
 				BotLog.error("DELETE STATUS",e);
@@ -53,8 +62,10 @@ public class StatusDeleteTask extends TimerTask {
 
 	}
 
-	void executeDelete(TAuth account) throws TwitterException {
-
+	public static int executeDelete(TAuth account) throws TwitterException {
+		
+		int count = 0;
+		
 		Twitter api = account.createApi();
 
 		LinkedList<Status> statues = TApi.getAllStatus(api,account.id);
@@ -126,6 +137,8 @@ public class StatusDeleteTask extends TimerTask {
 
 				api.destroyStatus(s.getId());
 
+				count ++;
+				
 			} catch (TwitterException e) {
 
 				if (e.getErrorCode() != 144) throw e;
@@ -133,6 +146,8 @@ public class StatusDeleteTask extends TimerTask {
 			}
 
 		}
+		
+		return count;
 
 	}
 
