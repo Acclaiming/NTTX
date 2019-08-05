@@ -201,7 +201,7 @@ public class StatusUpdate extends Fragment {
 
 			update.text = msg.text();
 
-			msg.send("文本已设定",submitAndCancel).exec(update);
+			// msg.send("文本已设定",submitAndCancel).exec(update);
 
 		} else if (message.sticker() != null) {
 
@@ -211,7 +211,7 @@ public class StatusUpdate extends Fragment {
 
 				update.images.add(NTT.telegramToTwitter(auth.createApi(),message.sticker().fileId(),"sticker.png",0));
 
-				msg.send("图片添加成功 已设置 1 / 4 张图片",submitAndCancel).exec(update);
+				// msg.send("图片添加成功 已设置 1 / 4 张图片",submitAndCancel).exec(update);
 
 			} catch (TwitterException e) {
 
@@ -247,7 +247,7 @@ public class StatusUpdate extends Fragment {
 
 				update.images.add(NTT.telegramToTwitter(auth.createApi(),max.fileId(),"image.png",0));
 
-				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ",submitAndCancel).exec(update);
+				// msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ",submitAndCancel).exec(update);
 
 			} catch (TwitterException e) {
 
@@ -277,7 +277,7 @@ public class StatusUpdate extends Fragment {
 
 				msg.sendUpdatingVideo();
 
-				msg.send("动图添加成功",submitAndCancel).exec(update);
+				// msg.send("动图添加成功",submitAndCancel).exec(update);
 
 			} catch (TwitterException e) {
 
@@ -302,7 +302,7 @@ public class StatusUpdate extends Fragment {
 
 				update.video = NTT.telegramToTwitter(auth.createApi(),message.video().fileId(),"video.mp4",1);
 
-				msg.send("视频添加成功",submitAndCancel).exec(update);
+				// msg.send("视频添加成功",submitAndCancel).exec(update);
 
 			} catch (TwitterException e) {
 
@@ -327,7 +327,7 @@ public class StatusUpdate extends Fragment {
 
 				update.video = NTT.telegramToTwitter(auth.createApi(),message.videoNote().fileId(),"video.mp4",1);
 
-				msg.send("视频添加成功",submitAndCancel).exec(update);
+				// msg.send("视频添加成功",submitAndCancel).exec(update);
 
 			} catch (TwitterException e) {
 
@@ -344,6 +344,8 @@ public class StatusUpdate extends Fragment {
 
 		setPrivatePoint(user,POINT_UPDATE_STATUS,update);
 
+		onPointedFunction(user,msg,"submit",null,null,update);
+		
 		return PROCESS_REJECT;
 
 	}
