@@ -33,6 +33,13 @@ public class MsMain extends Fragment {
 		
 	}
 
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		
+		msMain(user,msg,false);
+		
+	}
+
 	void msMain(UserData user,Msg msg,boolean edit) {
 
 		String message;
@@ -86,7 +93,7 @@ public class MsMain extends Fragment {
 
 			LoginMstd login = (LoginMstd) setPrivatePoint(user,POINT_LOGIN,new LoginMstd(callback));
 
-			callback.edit("请输入实例域名 :)").withCancel().exec(login)
+			callback.edit("请输入实例域名 :)").withCancel().exec(login);
 
 			return;
 
