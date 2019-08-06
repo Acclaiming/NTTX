@@ -69,7 +69,7 @@ public class TwitterMain extends Fragment {
 
 			}
 
-			message = "选择一个账号查看设置 或者认证你的账号 :)";
+			message = "选择一个账号查看设置 :)";
 
 		} else {
 
