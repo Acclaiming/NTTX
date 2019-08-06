@@ -212,7 +212,7 @@ public class UserArchive {
         StringBuilder str = new StringBuilder();
         String split = "\n--------------------------------\n";
 
-        String nameL = name == null ? null : name.replace("\n","");
+        String nameL = name == null ? null : name.replaceAll("[:cntrl:]","");
 
         if (isDisappeared) {
 
@@ -238,7 +238,7 @@ public class UserArchive {
 
         }
 
-        if (!(name = user.getName().replace("\n","")).equals(nameL)) {
+        if (!(name = user.getName().replaceAll("[:cntrl:]","")).equals(nameL)) {
 
             str.append(split).append("名称更改 : ").append(nameL).append(" ------> ").append(name);
 
