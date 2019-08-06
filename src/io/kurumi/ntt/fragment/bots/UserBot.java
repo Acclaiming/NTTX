@@ -25,6 +25,8 @@ public class UserBot {
 
         for (UserBot bot : data.collection.find()) {
 
+			/*
+			
 			if (Firewall.block.containsId(bot.user)) {
 
 				data.deleteById(bot.id);
@@ -34,6 +36,8 @@ public class UserBot {
 				continue;
 
 			}
+			
+			*/
 
             bot.startBot();
 			
