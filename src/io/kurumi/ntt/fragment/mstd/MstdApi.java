@@ -6,6 +6,8 @@ import io.kurumi.ntt.Launcher;
 import com.sys1yagi.mastodon4j.api.method.Accounts;
 import com.sys1yagi.mastodon4j.api.method.Blocks;
 import com.sys1yagi.mastodon4j.api.method.Favourites;
+import com.sys1yagi.mastodon4j.api.method.Statuses;
+import com.sys1yagi.mastodon4j.api.method.Timelines;
 
 public class MstdApi {
 	
@@ -34,7 +36,7 @@ public class MstdApi {
 	public Accounts accounts() {
 
 		if (accounts == null) accounts = new Accounts(client);
-
+		
 		return accounts;
 
 	}
@@ -60,13 +62,35 @@ public class MstdApi {
 	}
 	
 	private Favourites favs;
-	
+
 	public Favourites favs() {
-		
+
 		if (favs == null) favs = new Favourites(client);
-		
+
 		return favs;
-		
+
 	}
+	
+	private Timelines tls;
+
+	public Timelines tls() {
+
+		if (tls == null) tls = new Timelines(client);
+
+		return tls;
+
+	}
+	
+	
+	private Statuses statuses;
+
+	public Statuses statuses() {
+
+		if (statuses == null) statuses = new Statuses(client);
+
+		return statuses;
+
+	}
+	
 	
 }

@@ -195,6 +195,8 @@ public class MsMain extends Fragment {
 			msg.send("验证码错误 : " + e.getMessage()).async();
 
 		}
+	
+		api.favs();
 
 	}
 

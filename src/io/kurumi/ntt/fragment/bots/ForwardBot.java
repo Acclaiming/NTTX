@@ -70,7 +70,7 @@ public class ForwardBot extends UserBotFragment {
         super.onFunction(user,msg,function,params);
 
         if (!msg.isPrivate() || "cancel".equals(msg.command())) return;
-		
+
 		if ("start".equals(function)) {
 
 			msg.send(welcomeMessage).exec();
