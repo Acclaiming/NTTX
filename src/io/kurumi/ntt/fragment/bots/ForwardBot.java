@@ -70,26 +70,14 @@ public class ForwardBot extends UserBotFragment {
         super.onFunction(user,msg,function,params);
 
         if (!msg.isPrivate()) return;
+		
+		if ("start".equals(function)) {
 
-        if (!(user.equals(userId) || user.admin())) {
+			msg.send(welcomeMessage).exec();
 
-            if ("start".equals(function)) {
+		}
 
-                msg.send(welcomeMessage).exec();
-
-            }
-
-            checkMsg(user,msg);
-
-        } else {
-
-            if ("gen_payload".equals(function)) {
-
-                msg.send(URLUtil.encode("https://t.me/" + me.username() + "?start=" + ArrayUtil.join(params," "))).exec();
-
-            }
-
-        }
+		checkMsg(user,msg);
 
     }
 
@@ -253,18 +241,18 @@ public class ForwardBot extends UserBotFragment {
 		if (msg.isCommand()) {
 
 			if ("cancel".equals(msg.command())) {
-				
+
 				super.onPoint(user,msg,point,data);
 
 			} else if (msg.isStartPayload()) {
-				
+
 				final String payload = msg.payload()[0];
-				final String[] params = msg.payload().length > 1 ? ArrayUtil.sub(msg.payload(), 1, msg.payload().length) : new String[0];
-				
+				final String[] params = msg.payload().length > 1 ? ArrayUtil.sub(msg.payload(),1,msg.payload().length) : new String[0];
+
 				onPayload(user,msg,payload,params);
-				
+
 			}
-				
+
 			return;
 
 		}
