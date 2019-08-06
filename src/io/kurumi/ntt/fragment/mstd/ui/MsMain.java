@@ -192,7 +192,7 @@ public class MsMain extends Fragment {
 
 		} catch (Mastodon4jRequestException e) {
 
-			msg.send("认证失败 : " + e.getMessage()).async();
+			msg.send("验证码错误 : " + e.getMessage()).async();
 
 		}
 
