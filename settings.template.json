@@ -8,7 +8,7 @@
   "local_port": 65535,
   "server_domain": "example.com",
   "debug_mode": false,
-  "netesae_token": "",
+  "netease_cookie": "",
   "bot_token": "",
   "alias": [],
   "admins": [],
