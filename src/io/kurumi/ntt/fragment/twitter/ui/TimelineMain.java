@@ -168,14 +168,10 @@ public class TimelineMain extends Fragment {
 
 				account.tl = true;
 
-				callback.text("✅ 已开启");
-
 			} else {
 
 				account.tl = null;
 				account.tl_offset = null;
-
-				callback.text("✅ 已关闭");
 
 			}
 			
@@ -187,15 +183,11 @@ public class TimelineMain extends Fragment {
 
 				account.mention = true;
 
-				callback.text("✅ 已开启");
-
 			} else {
 
 				account.mention = null;
 				account.mention_offset = null;
 				account.rt_offset = null;
-
-				callback.text("✅ 已关闭");
 
 			}
 			
