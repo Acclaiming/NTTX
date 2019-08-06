@@ -252,8 +252,19 @@ public class ForwardBot extends UserBotFragment {
 
 		if (msg.isCommand()) {
 
-			super.onPoint(user,msg,point,data);
+			if ("cancel".equals(msg.command())) {
+				
+				super.onPoint(user,msg,point,data);
 
+			} else if (msg.isStartPayload()) {
+				
+				final String payload = msg.payload()[0];
+				final String[] params = msg.payload().length > 1 ? ArrayUtil.sub(msg.payload(), 1, msg.payload().length) : new String[0];
+				
+				onPayload(user,msg,payload,params);
+				
+			}
+				
 			return;
 
 		}
