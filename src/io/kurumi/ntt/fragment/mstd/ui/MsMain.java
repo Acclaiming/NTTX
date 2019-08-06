@@ -15,42 +15,52 @@ import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.utils.Html;
+import io.kurumi.ntt.fragment.BotFragment;
 
 public class MsMain extends Fragment {
-	
+
 	public static final String POINT_MS_MAIN = "ms_main";
 
 	final String POINT_LOGIN = "ms_login";
 	final String POINT_LOGOUT = "ms_logout";
-	
-	void msMain(UserData user,Msg msg,boolean edit) {
+
+	@Override
+	public void init(BotFragment origin) {
 		
-		String message;
+		super.init(origin);
 		
-		ButtonMarkup buttons = new ButtonMarkup();
-		
-		if (MstdAuth.data.containsId(user.id)) {
-			
-			message = "查看你的账号 ~";
-			
-			buttons.newButtonLine("移除账号",POINT_LOGOUT);
-			
-		} else {
-			
-			message = "还没有认证账号 :)";
-			
-			buttons.newButtonLine("认证账号",POINT_LOGIN);
-			
-		}
-		
-		msg.sendOrEdit(edit,message).buttons(buttons).async();
+		registerFunction("mstd");
 		
 	}
-	
+
+	void msMain(UserData user,Msg msg,boolean edit) {
+
+		String message;
+
+		ButtonMarkup buttons = new ButtonMarkup();
+
+		if (MstdAuth.data.containsId(user.id)) {
+
+			message = "查看你的账号 ~";
+
+			buttons.newButtonLine("移除账号",POINT_LOGOUT);
+
+		} else {
+
+			message = "还没有认证账号 :)";
+
+			buttons.newButtonLine("认证账号",POINT_LOGIN);
+
+		}
+
+		msg.sendOrEdit(edit,message).buttons(buttons).async();
+
+	}
+
 	class LoginMstd extends PointData {
 
 		Callback origin;
-		
+
 		MstdApp app;
 		MstdApi api;
 
@@ -60,48 +70,48 @@ public class MsMain extends Fragment {
 
 		@Override
 		public void onFinish() {
-			
+
 			msMain(origin.from(),origin,true);
-			
+
 			super.onFinish();
-			
+
 		}
-		
+
 	}
 
 	@Override
 	public void onCallback(UserData user,Callback callback,String point,String[] params) {
-	
+
 		if (POINT_LOGIN.equals(point)) {
-			
+
 			LoginMstd login = (LoginMstd) setPrivatePoint(user,POINT_LOGIN,new LoginMstd(callback));
-			
+
 			callback.edit("请输入实例域名 :)").withCancel().exec(login)
-		
+
 			return;
-			
+
 		}
-		
+
 	}
-	
-	
+
+
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
 		LoginMstd login = (LoginMstd) data;
 
 		if (login.step == 0) {
-			
+
 			if (!msg.hasText() || !msg.text().contains(".")) {
-				
+
 				msg.send("这不是一个 Mastodon 实例的域名，你知道吗？你刚刚点了认证 Mastodon 账号，但是你没有点取消就在发送其他内容 :(","每次给你这种人写这种提示很麻烦的，理解一下好吗？").exec(login);
-				
+
 				return;
-				
+
 			}
-			
+
 			MstdApp app;
-			
+
 			MstdApi api = new MstdApi(msg.text());
 
 			if (MstdApp.data.containsId(msg.text())) {
@@ -139,15 +149,15 @@ public class MsMain extends Fragment {
 
 			login.app = app;
 			login.api = api;
-			
+
 			login.step = 1;
 
 			msg.send("戳这里验证 : " + Html.a("戳这里",url),"发送得到的验证码给咱就可以了 :)").withCancel().html().exec(login);
-			
+
 			return;
-			
+
 		}
-		
+
 		MstdApp app = login.app;
 		MstdApi api = login.api;
 
@@ -174,8 +184,8 @@ public class MsMain extends Fragment {
 			msg.send("认证失败 : " + e.getMessage()).async();
 
 		}
-		
+
 	}
 
-	
+
 }

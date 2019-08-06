@@ -462,7 +462,7 @@ public class Msg extends Context {
 
                 isCommand = 1;
 
-            } else {
+            } else if (text() != null && text().startsWith("!") && text().length() > 1) {
 
                 isCommand = 2;
 
@@ -477,12 +477,6 @@ public class Msg extends Context {
     public String command() {
 
         if (!isCommand()) return null;
-
-        if (name != null) return name;
-
-        if (text() == null) return null;
-
-        if (!text().contains("/")) return null;
 
         String body = text().substring(1);
 
