@@ -815,7 +815,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 						}
 
-						executeAsync(new SendDocument(msg.chatId(),converted).fileName(msg.doc().fileName().replace(".gif.mp4",".gif.喵")));
+						executeAsync(new SendDocument(msg.chatId(),converted).fileName(msg.doc().fileName().replace(".gif.mp4",".gif.喵")).caption("Telegram Bot 无法直接发送 GIF 原图，会被转换成 .mp4 所以只能这样啦 :)"));
 						
 					}
 					
