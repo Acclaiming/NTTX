@@ -155,6 +155,9 @@ public class TimelineMain extends Fragment {
 
 		config.newButtonLine("🔙",POINT_TL,account.id);
 
+		callback.edit(message).buttons(config).async();
+		
+
 	}
 
 	void setConfig(UserData user,Callback callback,String point,TAuth account) {
