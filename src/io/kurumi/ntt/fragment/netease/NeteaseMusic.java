@@ -56,6 +56,14 @@ public class NeteaseMusic extends Fragment {
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
 		String text = ArrayUtil.join(params," ");
+	
+		String name = null;
+
+		if (text.contains("《")) {
+
+			name = StrUtil.subBetween(text,"《","》");
+
+		}
 		
 		if (text.contains("song/")) text = StrUtil.subBetween(text,"song/","/");
 
@@ -68,15 +76,7 @@ public class NeteaseMusic extends Fragment {
 		}
 		
 		String link = getDownloadLink(text,Env.NETEASE_COOKIE);
-		
-		String name = null;
-		
-		if (text.contains("《")) {
-			
-			name = StrUtil.subBetween(text,"《","》");
-			
-		}
-		
+	
 		String suffix = StrUtil.subAfter(link,".",true);
 		
 		File cache = new File(Env.CACHE_DIR,"music/" + text + "." + suffix);
@@ -90,6 +90,8 @@ public class NeteaseMusic extends Fragment {
 			HttpUtil.downloadFile(link,cache);
 			
 		}
+		
+		msg.sendUpdatingAudio();
 		
 		executeAsync(new SendAudio(msg.chatId(),cache).fileName(name));
 		
