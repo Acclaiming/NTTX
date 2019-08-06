@@ -30,6 +30,8 @@ public class ShowFile extends Fragment {
 		
 		registerFunction("file");
 		
+		registerPayload("file");
+		
 	}
 
 	@Override
