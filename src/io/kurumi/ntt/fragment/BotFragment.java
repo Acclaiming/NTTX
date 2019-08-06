@@ -371,7 +371,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             } else if (msg.isPrivate() && privatePoint != null) {
 				
-				if (NTT.checkDropped(user,msg)) return;
+				// if (NTT.checkDropped(user,msg)) return;
 				
                 final Fragment function = !points.containsKey(privatePoint.point) || "cancel".equals(msg.command()) ? this : points.get(privatePoint.point);
 
@@ -402,7 +402,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                 if (msg.isCommand()) {
 
-					if (NTT.checkDropped(user,msg)) return;
+					// if (NTT.checkDropped(user,msg)) return;
 					
                     if (msg.isStartPayload()) {
 
