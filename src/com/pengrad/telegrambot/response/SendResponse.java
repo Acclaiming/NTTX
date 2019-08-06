@@ -12,6 +12,12 @@ public class SendResponse extends BaseResponse {
 
     SendResponse() {
     }
+	
+	public SendResponse(String description) {
+		
+		super(description);
+		
+	}
 
     public Message message() {
         return result;

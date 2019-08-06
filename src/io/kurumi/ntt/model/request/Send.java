@@ -419,7 +419,7 @@ public class Send extends AbstractSend<Send> {
         }
 		
 		
-		return new SendResponse();
+		return new SendResponse("Telegram 服务器超时");
 
 
     }
