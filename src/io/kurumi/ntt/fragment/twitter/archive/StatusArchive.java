@@ -336,7 +336,7 @@ public class StatusArchive {
 
 			for (int i = 0; i < contentCharArr.length; i++) {
 
-				if (contentCharArr[i] != '\n' && contentCharArr[i] < 0x20 || contentCharArr[i] == 0x7F) {
+				if (contentCharArr[i] != '\n' && (contentCharArr[i] < 0x20 || contentCharArr[i] == 0x7F)) {
 
 					contentCharArr[i] = 0x20;
 
