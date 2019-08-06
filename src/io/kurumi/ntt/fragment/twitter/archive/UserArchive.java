@@ -238,7 +238,7 @@ public class UserArchive {
 
         }
 
-        if (!(name = user.getName().replaceAll("([:cntrl:]|\n)","")).equals(nameL)) {
+        if (!(name = user.getName()).equals(nameL)) {
 
             str.append(split).append("名称更改 : ").append(nameL).append(" ------> ").append(name);
 
