@@ -780,6 +780,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             str.append("贴纸表情 : ").append(Html.code(message.sticker().emoji())).append("\n");
 
+			str.append("分享链接 : ").append(ShowFile.createPayload(this,msg.sticker().fileId())).append("\n");
+			
             if (message.sticker().setName() != null) {
 
                 str.append("贴纸包 : ").append("https://t.me/addstickers/" + message.sticker().setName()).append("\n");
@@ -827,7 +829,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 			
 			str.append("文件名称 : ").append(Html.code(msg.doc().fileName())).append("\n");
 			//str.append("文件ID : ").append(Html.code(msg.doc().fileId())).append("\n");
-			str.append("\n分享链接 : ").append(ShowFile.createPayload(this,msg.doc().fileId())).append("\n");
+			str.append("分享链接 : ").append(ShowFile.createPayload(this,msg.doc().fileId())).append("\n");
 			
 		}
 
