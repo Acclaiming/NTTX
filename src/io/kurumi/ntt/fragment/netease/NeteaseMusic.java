@@ -104,7 +104,7 @@ public class NeteaseMusic extends Fragment {
 
 		// 320000 极高 999000 无损
 		
-		String url = "https://interface3.music.163.com/api/song/enhance/download/url?br=320000&id=" + musicId + "_0";
+		String url = "https://interface3.music.163.com/api/song/enhance/download/url?br=999000&id=" + musicId + "_0";
 
 		String userAgent = "NeteaseMusic/6.3.0.1563892465(149);Dalvik/2.1.0 (Linux; U; Android 9; TEST Build/114514)";
 
