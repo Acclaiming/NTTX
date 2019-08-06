@@ -250,6 +250,14 @@ public class ForwardBot extends UserBotFragment {
     @Override
     public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
+		if (msg.isCommand()) {
+			
+			onFunction(user,msg,msg.command(),msg.params());
+			
+			return;
+			
+		}
+		
         long target = (long) data.data;
 
         if (POINT_REPLY.equals(point)) {
