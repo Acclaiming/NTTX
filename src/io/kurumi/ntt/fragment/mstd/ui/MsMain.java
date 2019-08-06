@@ -31,6 +31,10 @@ public class MsMain extends Fragment {
 		
 		registerFunction("mstd");
 		
+		registerCallback(POINT_LOGIN,POINT_LOGOUT);
+		
+		registerPoint(POINT_LOGIN);
+		
 	}
 
 	@Override
