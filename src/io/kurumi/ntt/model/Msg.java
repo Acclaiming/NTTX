@@ -464,6 +464,10 @@ public class Msg extends Context {
 
             } else if (text() != null && text().startsWith("!") && text().length() > 1) {
 
+				isCommand = 1;
+				
+			} else {
+				
                 isCommand = 2;
 
             }
