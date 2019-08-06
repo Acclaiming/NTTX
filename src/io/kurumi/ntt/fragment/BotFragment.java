@@ -815,7 +815,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 						}
 
-						executeAsync(new SendDocument(msg.chatId(),converted).fileName(msg.doc().fileName().substring(0,msg.doc().fileName().length() - 4)).caption("~"));
+						executeAsync(new SendDocument(msg.chatId(),converted).fileName(msg.doc().fileName().replace(".gif.mp4",".gif.喵")));
 						
 					}
 					
