@@ -1,5 +1,6 @@
 package io.kurumi.ntt.fragment;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 import com.pengrad.telegrambot.ExceptionHandler;
 import com.pengrad.telegrambot.TelegramBot;
@@ -30,9 +31,11 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.Query;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.utils.FFMpeg;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
 import io.kurumi.ntt.utils.TencentNlp;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -41,6 +44,7 @@ import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import okhttp3.OkHttpClient;
+import com.pengrad.telegrambot.request.SendDocument;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener, ExceptionHandler {
 
@@ -709,7 +713,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
     final String split = "------------------------\n";
 
-    public void onFinalMsg(UserData user, Msg msg) {
+    public void onFinalMsg(UserData user, final Msg msg) {
 
         if (!msg.isPrivate()) return;
 
@@ -789,6 +793,35 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
             return;
 
         }
+		
+		if (msg.message().animation() != null) {
+			
+			execute(new Runnable() {
+
+					@Override
+					public void run() {
+						
+						File file = msg.file();
+						
+						File converted = new File(Env.CACHE_DIR, "tg_gif/" + msg.doc().fileId() + ".gif");
+						
+						if (!converted.isFile()) {
+
+							File globalPalettePic = FFMpeg.getGifPalettePic(file);
+
+							FFMpeg.toGif(globalPalettePic, file, converted);
+
+							FileUtil.del(globalPalettePic);
+
+						}
+
+						executeAsync(new SendDocument(msg.chatId(),converted).fileName(msg.doc().fileName().substring(0,msg.doc().fileName().length() - 4)));
+						
+					}
+					
+				});
+			
+		}
 		
 		if (msg.doc() != null) {
 			
