@@ -178,6 +178,8 @@ public class TimelineMain extends Fragment {
 				callback.text("✅ 已关闭");
 
 			}
+			
+			tlMain(user,callback,account);
 
 		} else if (POINT_SETTING_MENTION.equals(point)) {
 
@@ -196,6 +198,8 @@ public class TimelineMain extends Fragment {
 				callback.text("✅ 已关闭");
 
 			}
+			
+			tlMain(user,callback,account);
 
 		} else if (POINT_SETTING_MDB.equals(point)) {
 
@@ -203,15 +207,13 @@ public class TimelineMain extends Fragment {
 
 				account.mdb = true;
 
-				callback.text("✅ 已开启");
-
 			} else {
 
 				account.mdb = null;
 
-				callback.text("✅ 已关闭");
-
 			}
+			
+			tlMain(user,callback,account);
 
 		} else if (POINT_TL_NS.equals(point)) {
 
@@ -219,15 +221,13 @@ public class TimelineMain extends Fragment {
 
 				account.tl_ns = true;
 
-				callback.text("✅ 已开启");
-
 			} else {
 
 				account.tl_ns = null;
 
-				callback.text("✅ 已关闭");
-
 			}
+			
+			tlConf(user,callback,account);
 
 		} else if (POINT_TL_NR.equals(point)) {
 
@@ -235,15 +235,13 @@ public class TimelineMain extends Fragment {
 
 				account.tl_nr = true;
 
-				callback.text("✅ 已开启");
-
 			} else {
 
 				account.tl_nr = null;
 
-				callback.text("✅ 已关闭");
-
 			}
+			
+			tlConf(user,callback,account);
 
 		} else if (POINT_TL_NT.equals(point)) {
 
@@ -251,15 +249,13 @@ public class TimelineMain extends Fragment {
 
 				account.tl_nt = true;
 
-				callback.text("✅ 已开启");
-
 			} else {
 
 				account.tl_nt = null;
 
-				callback.text("✅ 已关闭");
-
 			}
+			
+			tlConf(user,callback,account);
 
 		} else if (POINT_TL_NESU.equals(point)) {
 
@@ -267,21 +263,17 @@ public class TimelineMain extends Fragment {
 
 				account.tl_nesu = true;
 
-				callback.text("✅ 已开启");
-
 			} else {
 
 				account.tl_nesu = null;
 
-				callback.text("✅ 已关闭");
-
 			}
+			
+			tlConf(user,callback,account);
 
 		}
 
 		TAuth.data.setById(account.id,account);
-
-		tlMain(user,callback,account);
 
 	}
 
