@@ -32,6 +32,7 @@ public class TimelineMain extends Fragment {
 	public static final String POINT_TL = "twi_tlui";
 
     final String POINT_SETTING_TIMELINE = "twi_tl";
+	final String POINT_SETTING_TL_CONF = "twi_tc";
     final String POINT_SETTING_MENTION = "twi_mention";
 	final String POINT_SETTING_MDB = "twi_mdb";
 
@@ -41,8 +42,12 @@ public class TimelineMain extends Fragment {
         super.init(origin);
 
         registerCallback(
+		
 			POINT_TL,
+			
 			POINT_SETTING_TIMELINE,
+			POINT_SETTING_TL_CONF,
+			
 			POINT_SETTING_MENTION,
 			
 			POINT_SETTING_MDB);
@@ -90,6 +95,8 @@ public class TimelineMain extends Fragment {
 			.newButton("时间流")
 			.newButton(account.tl != null ? "✅" : "☑",POINT_SETTING_TIMELINE,account.id);
 
+		config.newButtonLine("时间流设定 >>",POINT_SETTING_TL_CONF,account.id);
+		
 		config.newButtonLine()
 			.newButton("回复流")
 			.newButton(account.mention != null ? "✅" : "☑",POINT_SETTING_MENTION,account.id);
