@@ -328,25 +328,6 @@ public class StatusArchive {
 
     }
 
-	private static String filter(String content) {
-
-		if (content != null && content.length() > 0) {
-
-			char[] contentCharArr = content.toCharArray() ;
-
-			for (int i = 0; i < contentCharArr.length; i++) {
-
-				if (contentCharArr[i] != '\n' && (contentCharArr[i] < 0x20 || contentCharArr[i] == 0x7F)) {
-
-					contentCharArr[i] = 0x20;
-
-				}    
-			}    
-			return new String(contentCharArr);    
-		}    
-		return "";    
-	}    
-
     public String toHtml(int depth,boolean quoted,boolean current) {
 
         StringBuilder archive = new StringBuilder();
@@ -463,7 +444,7 @@ public class StatusArchive {
 
         }
 
-        return filter(archive.toString());
+        return archive.toString().replaceAll("[:cntrl:]","");
 
     }
 
