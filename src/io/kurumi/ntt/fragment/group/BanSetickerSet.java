@@ -80,8 +80,8 @@ public class BanSetickerSet extends Fragment {
 
             data.ban_sticker_set.add(setName);
 
-            msg.send("屏蔽成功 ~").exec();
-
+			msg.delete();
+           
         } else if ("unbanss".equals(function)) {
 
             if (NTT.checkGroupAdmin(msg)) return;
