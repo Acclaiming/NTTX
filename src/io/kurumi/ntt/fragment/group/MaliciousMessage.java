@@ -55,7 +55,7 @@ public class MaliciousMessage {
 	
     public final static String[] esuKeywords = new String[]{
 
-            "恶俗", "要素", "李威",
+            "恶俗", "要素", "李威","人肉",
 
             "震撼", "废物", "弱智", "魔怔", "碰瓷", "寻思", "傻逼",
             "迫真", "察觉", "无关心", "便乘", "棒读", "你妈", "野爹",

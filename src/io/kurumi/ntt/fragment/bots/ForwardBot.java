@@ -217,14 +217,13 @@ public class ForwardBot extends UserBotFragment {
     @Override
     public void onMsg(UserData user, Msg msg) {
 
-        if (msg.isPrivate()) {
+        if (!msg.isPrivate()) {
 			
 			msg.exit();
 			
 			return;
 			
 		}
-		
 		
         if (userId.equals(user.id) || !blockList.contains(user.id.longValue())) {
 
