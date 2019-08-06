@@ -1216,7 +1216,7 @@ public class JoinCaptcha extends Fragment {
 
         if (gd.cas_spam != null) {
 
-			HttpResponse result = HttpUtil.createGet("https://combot.org/api/cas/check?user_id=" + newData.id).execute();
+			HttpResponse result = HttpUtil.createGet("https://combot.org/api/cas/check?user_id=" + user.id).execute();
 
 			if (result != null && result.isOk()) {
 
