@@ -15,6 +15,7 @@ import io.kurumi.ntt.fragment.admin.Stat;
 import io.kurumi.ntt.fragment.admin.Users;
 import io.kurumi.ntt.fragment.base.GetID;
 import io.kurumi.ntt.fragment.base.PingFunction;
+import io.kurumi.ntt.fragment.base.UserExport;
 import io.kurumi.ntt.fragment.bots.BotChannnel;
 import io.kurumi.ntt.fragment.bots.MyBots;
 import io.kurumi.ntt.fragment.bots.NewBot;
@@ -40,8 +41,7 @@ import io.kurumi.ntt.fragment.idcard.Idcard;
 import io.kurumi.ntt.fragment.inline.CoreValueEncode;
 import io.kurumi.ntt.fragment.inline.MakeButtons;
 import io.kurumi.ntt.fragment.inline.ShowSticker;
-import io.kurumi.ntt.fragment.mstd.login.MsLogin;
-import io.kurumi.ntt.fragment.mstd.login.MsLogout;
+import io.kurumi.ntt.fragment.mstd.ui.MsMain;
 import io.kurumi.ntt.fragment.rss.FeedFetchTask;
 import io.kurumi.ntt.fragment.rss.RssSub;
 import io.kurumi.ntt.fragment.sorry.MakeGif;
@@ -59,6 +59,7 @@ import io.kurumi.ntt.fragment.twitter.ext.UserActions;
 import io.kurumi.ntt.fragment.twitter.list.ListExport;
 import io.kurumi.ntt.fragment.twitter.list.ListImport;
 import io.kurumi.ntt.fragment.twitter.status.StatusAction;
+import io.kurumi.ntt.fragment.twitter.status.StatusDeleteTask;
 import io.kurumi.ntt.fragment.twitter.status.StatusFetch;
 import io.kurumi.ntt.fragment.twitter.status.StatusSearch;
 import io.kurumi.ntt.fragment.twitter.status.StatusUpdate;
@@ -73,8 +74,6 @@ import io.kurumi.ntt.utils.BotLog;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
-import io.kurumi.ntt.fragment.twitter.status.StatusDeleteTask;
-import io.kurumi.ntt.fragment.base.UserExport;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -333,8 +332,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 		// Mastodon
 		
-		addFragment(new MsLogin());
-		addFragment(new MsLogout());
+		addFragment(new MsMain());
 		
         // BOTS
 
