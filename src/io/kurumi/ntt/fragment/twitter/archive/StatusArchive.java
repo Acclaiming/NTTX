@@ -444,7 +444,7 @@ public class StatusArchive {
 
         }
 
-        return archive.toString().replaceAll("[:cntrl:]","");
+        return archive.toString();
 
     }
 
