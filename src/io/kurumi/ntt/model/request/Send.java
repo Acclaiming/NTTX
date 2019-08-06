@@ -412,14 +412,14 @@ public class Send extends AbstractSend<Send> {
 
             }
 
-            return resp;
+            if (resp != null) return resp;
 
 
         } catch (Exception ex) {
-
-            return null;
-
         }
+		
+		
+		return new SendResponse();
 
 
     }
