@@ -36,6 +36,8 @@ public class Env {
 
     public static String HELP_MESSAGE;
 
+	public static String NETEASE_COOKIE;
+	
     private static JSONObject conf;
 
     public static void init() throws Exception {
@@ -67,6 +69,8 @@ public class Env {
 
         HELP_MESSAGE = conf.getStr("help_message");
 
+		NETEASE_COOKIE = conf.getStr("netease_cookie");
+		
     }
 
     /**
