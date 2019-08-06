@@ -12,6 +12,8 @@ import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import io.kurumi.ntt.fragment.group.MaliciousMessage;
+import cn.hutool.core.util.ReUtil;
 
 public class TimelineTask extends TimerTask {
 
@@ -71,6 +73,30 @@ public class TimelineTask extends TimerTask {
 
                 if (!archive.from.equals(auth.id)) {
 
+					if (archive.retweetedStatus != -1) {
+						
+						if (auth.tl_nt != null) return;
+						
+					} else if (archive.inReplyToStatusId == -1) {
+						
+						if (auth.tl_ns != null) return;
+						
+					} else {
+						
+						if (auth.tl_nr != null) return;
+						
+					}
+					
+					if (auth.tl_nesu != null) {
+						
+						if (ReUtil.contains(MaliciousMessage.esuWordsRegex,archive.text)) {
+							
+							return;
+							
+						}
+						
+					}
+					
                     archive.sendTo(auth.user,1,auth,status);
 
                 }

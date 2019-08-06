@@ -81,7 +81,7 @@ public class DeleteMain extends Fragment {
 
 		config.newButtonLine()
 			.newButton("转推")
-			.newButton(account.ad_rt != null ? "✅" : "☑",POINT_SETTING_AD_RETWEET,account.id);
+			.newButton(account.ad_t != null ? "✅" : "☑",POINT_SETTING_AD_RETWEET,account.id);
 
 		config.newButtonLine("推文删除间隔");
 
@@ -157,15 +157,15 @@ public class DeleteMain extends Fragment {
 
 		} else if (POINT_SETTING_AD_RETWEET.equals(point)) {
 
-			if (account.ad_rt == null) {
+			if (account.ad_t == null) {
 
-				account.ad_rt = true;
+				account.ad_t = true;
 
 				callback.text("✅ 已开启");
 
 			} else {
 
-				account.ad_rt = null;
+				account.ad_t = null;
 
 				callback.text("✅ 已关闭");
 

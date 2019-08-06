@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 public class MaliciousMessage {
 
- static final String[] esuStickers = new String[]{
+	public static final String[] esuStickers = new String[]{
 	 
 		"LzhStickers",
 		"ESUISGOD",
@@ -53,7 +53,7 @@ public class MaliciousMessage {
     };
 	
 	
-    final static String[] esuKeywords = new String[]{
+    public final static String[] esuKeywords = new String[]{
 
             "恶俗", "要素", "李威",
 
@@ -91,7 +91,7 @@ public class MaliciousMessage {
 
     };
 	
-	static Pattern esuWordsRegex;
+	public static Pattern esuWordsRegex;
 	
 	static {
 		

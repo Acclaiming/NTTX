@@ -39,7 +39,7 @@ public class StatusDeleteTask extends TimerTask {
 
 		for (TAuth account : TAuth.data.getAll()) {
 
-			if (account.ad_s == null && account.ad_r == null && account.ad_rt == null) continue;
+			if (account.ad_s == null && account.ad_r == null && account.ad_t == null) continue;
 
 			try {
 
@@ -134,7 +134,7 @@ public class StatusDeleteTask extends TimerTask {
 
 			if (s.isRetweet()) {
 
-				if (account.ad_rt == null) {
+				if (account.ad_t == null) {
 
 					continue;
 

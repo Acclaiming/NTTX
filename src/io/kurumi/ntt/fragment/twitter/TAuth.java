@@ -75,6 +75,11 @@ public class TAuth {
 	public Boolean tl;
 	public Long tl_offset;
 
+	public Boolean tl_ns;
+	public Boolean tl_nr;
+	public Boolean tl_nt;
+	public Boolean tl_nesu;
+	
 	public Boolean mention;
 
 	public Long mention_offset;
@@ -84,7 +89,7 @@ public class TAuth {
 
 	public Boolean ad_s;
 	public Boolean ad_r;
-	public Boolean ad_rt;
+	public Boolean ad_t;
 	
 	public Boolean ad_a;
 	public Integer ad_d;
