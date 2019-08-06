@@ -211,8 +211,8 @@ public class UserArchive {
         boolean change = false;
         StringBuilder str = new StringBuilder();
         String split = "\n--------------------------------\n";
-
-        String nameL = name = name == null ? null : name.replaceAll("([:cntrl:]|\n)","");
+		
+        String nameL = name;
 
         if (isDisappeared) {
 
