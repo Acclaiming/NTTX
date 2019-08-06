@@ -186,11 +186,11 @@ public class JoinCaptcha extends Fragment {
 
                 if (data.cas_spam != null) {
 
-                    String result = HttpUtil.get("https://combot.org/api/cas/check?user_id=" + newData.id);
+                    HttpResponse result = HttpUtil.createGet("https://combot.org/api/cas/check?user_id=" + newData.id).execute();
 
-                    if (result != null) {
+                    if (result != null && result.isOk()) {
 
-                        if (new JSONObject(result).getBool("ok", false)) {
+                        if (new JSONObject(result.body()).getBool("ok", false)) {
 
                             msg.restrict();
 
@@ -1216,12 +1216,12 @@ public class JoinCaptcha extends Fragment {
 
         if (gd.cas_spam != null) {
 
-            String result = HttpUtil.get("https://combot.org/api/cas/check?user_id=" + user.id);
+			HttpResponse result = HttpUtil.createGet("https://combot.org/api/cas/check?user_id=" + newData.id).execute();
 
-            if (result != null) {
+			if (result != null && result.isOk()) {
 
-                if (new JSONObject(result).getBool("ok", false)) {
-
+				if (new JSONObject(result.body()).getBool("ok", false)) {
+					
                     msg.kick(true);
 
                     msg.send(user.userName() + " 在 Combot Anit-Spam 黑名单内，已封锁。", "详情请查看 : https://combot.org/cas/query?u=" + user.id).async();
