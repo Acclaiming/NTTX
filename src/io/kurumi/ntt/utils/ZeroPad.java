@@ -2,26 +2,21 @@ package io.kurumi.ntt.utils;
 
 import cn.hutool.core.util.StrUtil;
 import java.math.BigInteger;
+import cn.hutool.core.util.ArrayUtil;
+
+/**
+ **
+ **    零宽度字符水印
+ **    
+ **    https://www.freebuf.com/articles/web/167903.html
+ **
+ **/
 
 public class ZeroPad {
 
 	public static String decodeFrom(String text) {
 
-		String encoded;
-
-		if (text.charAt(0) == 8203) {
-
-			encoded = "";
-
-		} else if (text.charAt(0) == 8204) {
-
-			encoded = "-";
-
-		} else {
-
-			return "";
-
-		}
+		String encoded = "";
 
 		for (char c : text.substring(1).toCharArray()) {
 
@@ -33,8 +28,20 @@ public class ZeroPad {
 
 				encoded += "1";
 
-			} else break;
+			}
 
+		}
+		
+		if (encoded.length() == 0) return "";
+		
+		if (encoded.startsWith("0")) {
+			
+			encoded = encoded.substring(1);
+			
+		} else {
+			
+			encoded = "-" + encoded.substring(1);
+			
 		}
 
 		return StrUtil.utf8Str(new BigInteger(encoded,2).toByteArray());
@@ -43,20 +50,18 @@ public class ZeroPad {
 
 	public static String encodeTo(String text,String content) {
 
-		char current;
-
-		while (text.length() > 0 && ((current = text.charAt(0)) == 8203 || current == 8204)) text = text.substring(1);
+		text = text.replace((char)8203 + "","").replace((char)8204 + "","");
 
 		String encoded = new BigInteger(StrUtil.utf8Bytes(content)) .toString(2);
 
 		if (!encoded.startsWith("-")) {
-			
+
 			encoded = "0" + encoded;
-			
+
 		} else {
-			
+
 			encoded = "1" + encoded.substring(1);
-			
+
 		}
 
 		content = "";
@@ -75,7 +80,35 @@ public class ZeroPad {
 
 		}
 
-		return content + text;
+		int length;
+
+		if ((length = text.length()) < 2) {
+
+			return content + text;
+
+		}
+		
+		String[] encodedArray = StrUtil.split(encoded,length - 1);
+
+		StringBuilder result = new StringBuilder();
+		
+		int index = 0;
+		
+		for (;index < encodedArray.length;index ++) {
+			
+			result.append(text.substring(index,index + 1));
+			
+			result.append(encodedArray[0]);
+			
+		}
+		
+		if (index < length) {
+			
+			result.append(text.substring(index,length));
+			
+		}
+		
+		return result.toString();
 
 	}
 
