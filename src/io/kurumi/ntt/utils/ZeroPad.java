@@ -86,7 +86,7 @@ public class ZeroPad {
 
 		}
 		
-		String[] encodedArray = StrUtil.split(content,text.length() - 1 > content.length()  ? content.length() : text.length() - 1  );
+		String[] encodedArray = StrUtil.split(content,text.length() > content.length()  ? content.length() - 1 : text.length() - 1);
 
 		StringBuilder result = new StringBuilder();
 		
