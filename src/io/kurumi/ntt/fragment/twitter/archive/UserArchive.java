@@ -25,6 +25,7 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import cn.hutool.core.date.DateUtil;
 import java.util.Date;
+import twitter4j.URLEntity;
 
 public class UserArchive {
 
@@ -249,8 +250,16 @@ public class UserArchive {
         }
 
         String bioL = bio;
-
-        if (!ObjectUtil.equal(bio = user.getDescription(),bioL)) {
+		
+		String newBio = user.getDescription();
+		
+		for (URLEntity entry : user.getDescriptionURLEntities()) {
+			
+			newBio = newBio.replace(entry.getURL(),entry.getExpandedURL());
+			
+		}
+		
+        if ((bio == null || !bio.contains("://t.co/")) && !ObjectUtil.equal(bio = newBio,bioL)) {
 
             str.append(split).append("简介更改 : \n\n").append(bioL).append(" \n\n ------> \n\n").append(bio);
 
@@ -290,8 +299,18 @@ public class UserArchive {
 
 
         String urlL = url;
+		
+		String newUrl = user.getURL();
+		
+		if (newUrl != null && user.getURLEntity() != null) {
+			
+			URLEntity entry = user.getURLEntity();
 
-        if (!ObjectUtil.equal(url = user.getURL(),urlL)) {
+			newUrl = newUrl.replace(entry.getURL(),entry.getExpandedURL());
+			
+		}
+		
+        if ((urlL == null || !urlL.contains("://t.co/")) && !ObjectUtil.equal(url = user.getURL(),urlL)) {
 
             str.append(split).append("链接更改 : \n\n").append(urlL).append(" \n\n ------> \n\n").append(url);
 
