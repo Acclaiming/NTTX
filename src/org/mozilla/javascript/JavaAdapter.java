@@ -631,10 +631,10 @@ public final class JavaAdapter implements IdFunctionCall
 
     public static Scriptable runScript(final Script script)
     {
-        return ContextFactory.getGlobal().call(new ContextAction() {
+        return ContextFactory.getGlobal().call(new ContextAction<Scriptable>() {
 
 				@Override
-				public Object run(Context cx) {
+				public Scriptable run(Context cx) {
 					ScriptableObject global = ScriptRuntime.getGlobal(cx);
 					script.exec(cx, global);
 					return global;

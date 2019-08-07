@@ -252,10 +252,10 @@ public final class Interpreter extends Icode implements Evaluator
         }
 
         private boolean equalsInTopScope(final Object other) {
-            return EqualObjectGraphs.withThreadLocal(new java.util.function.Function<EqualObjectGraphs,Object>(){
+            return EqualObjectGraphs.withThreadLocal(new java.util.function.Function<EqualObjectGraphs,Boolean>(){
 
 					@Override
-					public Object apply(EqualObjectGraphs eq) {
+					public Boolean apply(EqualObjectGraphs eq) {
 						// TODO: Implement this method
 						return CallFrame.equals(CallFrame.this,(CallFrame)other,eq);
 					}
