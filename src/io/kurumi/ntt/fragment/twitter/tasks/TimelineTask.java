@@ -75,15 +75,15 @@ public class TimelineTask extends TimerTask {
 
 					if (archive.retweetedStatus != -1) {
 						
-						if (auth.tl_nt != null) return;
+						if (auth.tl_nt != null) continue;
 						
 					} else if (archive.inReplyToStatusId == -1) {
 						
-						if (auth.tl_ns != null) return;
+						if (auth.tl_ns != null) continue;
 						
 					} else {
 						
-						if (auth.tl_nr != null) return;
+						if (auth.tl_nr != null) continue;
 						
 					}
 					
@@ -91,7 +91,7 @@ public class TimelineTask extends TimerTask {
 						
 						if (ReUtil.contains(MaliciousMessage.esuWordsRegex,archive.text)) {
 							
-							return;
+							continue;
 							
 						}
 						
