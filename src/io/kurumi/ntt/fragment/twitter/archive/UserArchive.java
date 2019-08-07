@@ -23,6 +23,8 @@ import static com.mongodb.client.model.Updates.set;
 import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+import cn.hutool.core.date.DateUtil;
+import java.util.Date;
 
 public class UserArchive {
 
@@ -37,15 +39,15 @@ public class UserArchive {
     public String url;
     public Boolean isProtected;
     public Boolean isDisappeared;
-	
+
 	public Integer following;
 	public Integer followers;
-	
+
     public transient String oldPhotoUrl;
     public transient String oldBannerUrl;
     private transient String oldScreename;
 
-    public static UserArchive show(Twitter api, Long id) {
+    public static UserArchive show(Twitter api,Long id) {
 
         try {
 
@@ -61,7 +63,7 @@ public class UserArchive {
 
     }
 
-    public static UserArchive show(Twitter api, String screenName) {
+    public static UserArchive show(Twitter api,String screenName) {
 
         try {
 
@@ -78,26 +80,26 @@ public class UserArchive {
     }
 
     public static UserArchive get(Long id) {
-		
+
         return data.getById(id);
-		
+
     }
 
     public static UserArchive get(String screenName) {
 
-        return data.collection.find(regex("screenName", ReUtil.escape(screenName), "i")).first();
+        return data.collection.find(regex("screenName",ReUtil.escape(screenName),"i")).first();
 
     }
 
     public static boolean contains(Long id) {
-		
+
         return data.containsId(id);
-		
+
     }
 
     public static boolean contains(String screenName) {
 
-        return data.collection.count(regex("user", ReUtil.escape(screenName), "i")) > 0;
+        return data.collection.count(regex("user",ReUtil.escape(screenName),"i")) > 0;
 
     }
 
@@ -111,7 +113,7 @@ public class UserArchive {
 
             archive = data.getById(user.getId());
 
-            if (archive.read(user)) data.setById(archive.id, archive);
+            if (archive.read(user)) data.setById(archive.id,archive);
 
         } else {
 
@@ -123,7 +125,7 @@ public class UserArchive {
 
             archive.read(user);
 
-            data.setById(user.getId(), archive);
+            data.setById(user.getId(),archive);
 
         }
 
@@ -140,7 +142,7 @@ public class UserArchive {
 
             user.read(null);
 
-            data.setById(da, user);
+            data.setById(da,user);
 
         }
 
@@ -158,45 +160,37 @@ public class UserArchive {
 
             isDisappeared = true;
 
-            TrackTask.onUserChange(this, "用户被冻结或已停用 :)");
+            TrackTask.onUserChange(this,"用户被冻结或已停用 :)");
 
             if (Env.TEP_CHANNEL != -1 && !TEPH.data.containsId(id)) {
 
 				/*
-				
-				File photo = new File(Env.CACHE_DIR,"twitter_profile_images/" + FileUtil.getName(photoUrl));
 
-				if (!photo.isFile()) {
+				 File photo = new File(Env.CACHE_DIR,"twitter_profile_images/" + FileUtil.getName(photoUrl));
 
-					HttpUtil.downloadFile(photoUrl,photo);
+				 if (!photo.isFile()) {
 
-				}
-				
-				*/
+				 HttpUtil.downloadFile(photoUrl,photo);
 
-                String notice;
+				 }
 
-                if (StrUtil.isBlank(bio)) {
+				 */
 
-                    notice = "#推友消失 (冻结 / 删除账号)\n\n" + urlHtml() + " ( #" + screenName + " )";
+                String notice = "#推友消失 \n\n" + formatToChannel();
 
-                } else {
 
-                    notice = "#推友消失 (冻结 / 删除账号)\n\n" + urlHtml() + " ( #" + screenName + " )" + "\n\n简介 : " + bio;
 
-                }
-				
-			/*
+				/*
 
-				if (photo.isFile()) {
+				 if (photo.isFile()) {
 
-					Launcher.INSTANCE.execute(new SendPhoto(Env.TEP_CHANNEL,photo).caption(notice).parseMode(ParseMode.HTML));
+				 Launcher.INSTANCE.execute(new SendPhoto(Env.TEP_CHANNEL,photo).caption(notice).parseMode(ParseMode.HTML));
 
-				} else {
-					
-					*/
+				 } else {
 
-                new Send(Env.TEP_CHANNEL, notice).html().exec();
+				 */
+
+                new Send(Env.TEP_CHANNEL,notice).html().exec();
 
                 //}
 
@@ -215,7 +209,7 @@ public class UserArchive {
         boolean change = false;
         StringBuilder str = new StringBuilder();
         String split = "\n--------------------------------\n";
-		
+
         String nameL = name;
 
         if (isDisappeared) {
@@ -226,15 +220,7 @@ public class UserArchive {
 
             if (Env.TEP_CHANNEL != null && !TEPH.data.containsId(id)) {
 
-                if (StrUtil.isBlank(bio)) {
-
-                    new Send(Env.TEP_CHANNEL, "#推友回档 (取消冻结 / 重新启用)\n", urlHtml() + " ( #" + screenName + " )").html().async();
-
-                } else {
-
-                    new Send(Env.TEP_CHANNEL, "#推友回档 (取消冻结 / 重新启用)\n", urlHtml() + " ( #" + screenName + " )", "\n简介 : " + bio).html().async();
-
-                }
+				new Send(Env.TEP_CHANNEL,"#推友回档\n",formatToChannel()).html().async();
 
                 change = true;
 
@@ -264,7 +250,7 @@ public class UserArchive {
 
         String bioL = bio;
 
-        if (!ObjectUtil.equal(bio = user.getDescription(), bioL)) {
+        if (!ObjectUtil.equal(bio = user.getDescription(),bioL)) {
 
             str.append(split).append("简介更改 : \n\n").append(bioL).append(" \n\n ------> \n\n").append(bio);
 
@@ -274,9 +260,9 @@ public class UserArchive {
 
         oldPhotoUrl = photoUrl;
 
-        if ((!ObjectUtil.equal(photoUrl = user.getOriginalProfileImageURLHttps(), oldPhotoUrl))) {
+        if ((!ObjectUtil.equal(photoUrl = user.getOriginalProfileImageURLHttps(),oldPhotoUrl))) {
 
-            str.append(split).append("头像更改 : " + Html.a("新头像", photoUrl));
+            str.append(split).append("头像更改 : " + Html.a("新头像",photoUrl));
 
             change = true;
 
@@ -294,9 +280,9 @@ public class UserArchive {
 
         oldBannerUrl = bannerUrl;
 
-        if (!ObjectUtil.equal(bannerUrl = user.getProfileBannerURL(), oldBannerUrl)) {
+        if (!ObjectUtil.equal(bannerUrl = user.getProfileBannerURL(),oldBannerUrl)) {
 
-            str.append(split).append("横幅更改 : " + Html.a("新横幅", photoUrl));
+            str.append(split).append("横幅更改 : " + Html.a("新横幅",photoUrl));
 
             change = true;
 
@@ -305,7 +291,7 @@ public class UserArchive {
 
         String urlL = url;
 
-        if (!ObjectUtil.equal(url = user.getURL(), urlL)) {
+        if (!ObjectUtil.equal(url = user.getURL(),urlL)) {
 
             str.append(split).append("链接更改 : \n\n").append(urlL).append(" \n\n ------> \n\n").append(url);
 
@@ -323,10 +309,10 @@ public class UserArchive {
 
         if (change) {
 
-            TrackTask.onUserChange(this, str.toString());
+            TrackTask.onUserChange(this,str.toString());
 
         }
-		
+
 		following = user.getFriendsCount();
 		followers = user.getFollowersCount();
 
@@ -334,10 +320,41 @@ public class UserArchive {
 
     }
 
+	public String formatToChannel() {
+
+		String message = urlHtml() + " (#" + screenName + ")";
+
+		if (isProtected) message += " [ 锁推 ]";
+
+		message += "\nUID : " + Html.code(id);
+
+		if (!StrUtil.isBlank(bio)) {
+
+			message += "\n\nBIO : " + bio + "\n";
+
+		}
+
+		if (!(StrUtil.isBlank(url))) {
+
+			message += "\n个人链接 : " + url;
+
+		}
+
+		if (followers != null) {
+
+			message += "\n" + following + " 正在关注   " + followers + " 关注者";
+
+		}
+
+		message += "\n加入时间 : " + DateUtil.formatChineseDate(new Date(createdAt),false);
+
+		return message;
+
+	}
 
     public String urlHtml() {
 
-        return Html.a(name, url());
+        return Html.a(name,url());
 
     }
 
