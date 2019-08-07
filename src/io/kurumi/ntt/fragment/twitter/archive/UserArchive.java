@@ -310,7 +310,7 @@ public class UserArchive {
 			
 		}
 		
-        if ((urlL == null || !urlL.contains("://t.co/")) && !ObjectUtil.equal(url = user.getURL(),urlL)) {
+        if ((urlL == null || !urlL.contains("://t.co/")) && !ObjectUtil.equal(url = newUrl,urlL)) {
 
             str.append(split).append("链接更改 : \n\n").append(urlL).append(" \n\n ------> \n\n").append(url);
 
