@@ -78,7 +78,9 @@ public class UserArchive {
     }
 
     public static UserArchive get(Long id) {
+		
         return data.getById(id);
+		
     }
 
     public static UserArchive get(String screenName) {
@@ -88,7 +90,9 @@ public class UserArchive {
     }
 
     public static boolean contains(Long id) {
+		
         return data.containsId(id);
+		
     }
 
     public static boolean contains(String screenName) {

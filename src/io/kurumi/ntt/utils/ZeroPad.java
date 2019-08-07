@@ -18,7 +18,7 @@ public class ZeroPad {
 
 		String encoded = "";
 
-		for (char c : text.substring(1).toCharArray()) {
+		for (char c : text.toCharArray()) {
 
 			if (c == 8203) {
 
