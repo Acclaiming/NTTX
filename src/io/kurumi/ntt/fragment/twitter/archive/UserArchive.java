@@ -325,14 +325,14 @@ public class UserArchive {
 		String message = urlHtml() + " (#" + screenName + ")";
 
 		if (isProtected) message += " [ 锁推 ]";
-
-		message += "\nUID : " + Html.code(id);
-
+		
 		if (!StrUtil.isBlank(bio)) {
 
 			message += "\n\nBIO : " + bio + "\n";
 
 		}
+		
+		message += "\nUID : " + Html.code(id);
 
 		if (!(StrUtil.isBlank(url))) {
 
