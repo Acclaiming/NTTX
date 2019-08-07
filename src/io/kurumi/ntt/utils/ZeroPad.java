@@ -124,7 +124,7 @@ public class ZeroPad {
 			
 			result.append(text.substring(index,index + 1));
 			
-			result.append(encodedArray[0]);
+			result.append(encodedArray[index]);
 			
 		}
 		
