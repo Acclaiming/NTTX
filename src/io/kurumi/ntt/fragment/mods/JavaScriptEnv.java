@@ -1,4 +1,5 @@
 package io.kurumi.ntt.fragment.mods;
+
 import org.mozilla.javascript.Context;
 
 public class JavaScriptEnv {
@@ -7,7 +8,7 @@ public class JavaScriptEnv {
 	
 	public JavaScriptEnv() {
 		
-		
+		ctx = Context.enter();
 		
 	}
 	

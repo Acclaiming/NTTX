@@ -1,6 +1,5 @@
 package io.kurumi.ntt.fragment.twitter.archive;
 
-
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
