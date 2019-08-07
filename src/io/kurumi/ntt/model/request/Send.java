@@ -251,7 +251,7 @@ public class Send extends AbstractSend<Send> {
 
         SendResponse resp = exec();
 
-        if (resp == null || !resp.isOk()) return null;
+        if (!resp.isOk()) return null;
 
         return new Msg(fragment, resp.message());
 

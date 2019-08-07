@@ -869,13 +869,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
         GetMeResponse resp = bot.execute(new GetMe());
 
-        if (resp == null) return false;
-
         if (resp.errorCode() == 401) {
 
             throw new Exception(resp.errorCode() + " : " + resp.description());
 
-        }
+        } else if (!resp.isOk()) return false;
 
         me = resp.user();
 
