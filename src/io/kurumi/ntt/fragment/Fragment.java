@@ -575,7 +575,7 @@ public class Fragment {
 
         HttpUtil.downloadFile(path, local);
 
-        return local;
+        return local.isFile() ? local : null;
 
     }
 
