@@ -48,7 +48,7 @@ public class ZeroPad {
 
 	}
 	
-	String[] stringSplit(String text,int length) {
+	static String[] stringSplit(String text,int length) {
 		
 		if (length > text.length()) length = text.length();
 		
@@ -56,13 +56,23 @@ public class ZeroPad {
 		
 		int split = text.length() / length;
 		
-		for (int index = 0;index < array.length;index ++) {
+		int index = 0;
+		
+		for (;index < array.length;index ++) {
 			
 			array[index] = text.substring(index * split,(index + 1) * split);
 			
 		}
 		
-		// iftext.length() % length;
+		int last = text.length() % length;
+		
+		if (split != 0) {
+			
+			array[index] = array[index] + text.substring((index + 1) * split,((index + 1) * split) + last);
+			
+		}
+		
+		return array;
 		
 	}
 
@@ -104,7 +114,7 @@ public class ZeroPad {
 
 		}
 		
-		String[] encodedArray = StrUtil.split();
+		String[] encodedArray = stringSplit(content,text.length() - 1);
 
 		StringBuilder result = new StringBuilder();
 		
