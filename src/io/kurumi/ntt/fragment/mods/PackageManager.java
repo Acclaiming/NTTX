@@ -25,10 +25,10 @@ public class PackageManager extends Fragment {
 
 			"用法  : /yum <命令> [参数...]",
 
-			"\n/yum install <packages>",
-			"/yum show <packages>",
-			"/yum reinstall <packages>",
-			"/yum uninstall <packages>",
+			"\n/yum install <package>",
+			"/yum show <package>",
+			"/yum reinstall <package>",
+			"/yum uninstall <package>",
 			"/yum search <query>",
 			"/yum update",
 			"/yum list-local",
@@ -48,7 +48,19 @@ public class PackageManager extends Fragment {
 
 		params = ArrayUtil.remove(params,0);
 		
-		//if ("install".equals()) {}
+		if ("install".equals(subFn)) {
+			
+			if (params.length == 0) {
+				
+				msg.send(mainHelp).async();
+				
+				return;
+				
+			}
+				
+			ModuleEnv env = ModuleEnv.get(user.id);
+
+		}
 		
 	}
 

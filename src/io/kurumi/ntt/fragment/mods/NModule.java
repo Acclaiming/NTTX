@@ -1,6 +1,7 @@
 package io.kurumi.ntt.fragment.mods;
 
 import java.util.List;
+import org.mozilla.javascript.Scriptable;
 
 public class NModule {
 
@@ -13,5 +14,8 @@ public class NModule {
 	public String main;
 	public List<String> cmds;
 	public List<String> actions;
+	
+	public transient Scriptable env;
+	public transient ModuleException error;
 	
 }

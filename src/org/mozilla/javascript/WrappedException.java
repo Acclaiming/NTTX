@@ -5,6 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 package org.mozilla.javascript;
+import io.kurumi.ntt.utils.BotLog;
 
 /**
  * A wrapper for runtime exceptions.
@@ -23,7 +24,7 @@ public class WrappedException extends EvaluatorException
      */
     public WrappedException(Throwable exception)
     {
-        super("Wrapped " + exception.toString());
+        super(BotLog.parseError(exception));
         this.exception = exception;
         this.initCause(exception);
 
