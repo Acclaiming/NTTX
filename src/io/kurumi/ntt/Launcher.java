@@ -42,6 +42,8 @@ import io.kurumi.ntt.fragment.inline.CoreValueEncode;
 import io.kurumi.ntt.fragment.inline.MakeButtons;
 import io.kurumi.ntt.fragment.inline.ShowSticker;
 import io.kurumi.ntt.fragment.mstd.ui.MsMain;
+import io.kurumi.ntt.fragment.netease.NeteaseMusic;
+import io.kurumi.ntt.fragment.other.ZeroPadEncode;
 import io.kurumi.ntt.fragment.rss.FeedFetchTask;
 import io.kurumi.ntt.fragment.rss.RssSub;
 import io.kurumi.ntt.fragment.sorry.MakeGif;
@@ -74,7 +76,6 @@ import io.kurumi.ntt.utils.BotLog;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
-import io.kurumi.ntt.fragment.netease.NeteaseMusic;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -373,6 +374,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		addFragment(new ShowFile());
 		addFragment(new CoreValueEncode());
 		addFragment(new NeteaseMusic());
+		addFragment(new ZeroPadEncode());
 		
 		addFragment(new AwtTest());
 		
