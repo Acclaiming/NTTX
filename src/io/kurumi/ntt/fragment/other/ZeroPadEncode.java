@@ -36,9 +36,9 @@ public class ZeroPadEncode extends Fragment {
 		
 		if (function.endsWith("encode")) {
 			
-			setPrivatePoint(user,POINT_ENCODE_ZREOPAD,new StringEncode().with(msg));
-			
-			msg.send("现在输入正常显示的字符 :").async();
+			PointData data = setPrivatePoint(user,POINT_ENCODE_ZREOPAD,new StringEncode().with(msg));
+
+			msg.send("现在输入正常显示的字符 :").exec(data);
 			
 		} else {
 			
