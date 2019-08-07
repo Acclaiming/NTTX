@@ -37,9 +37,9 @@ public class PackExport extends Fragment {
     ArrayList<Long> downloading = new ArrayList<>();
 
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-        PointData data = setPrivatePoint(user, POINT_EXPORT_SET);
+        PointData data = setPrivatePoint(user,POINT_EXPORT_SET);
 
         msg.send("现在发送要导出的贴纸包的简称/链接 或 贴纸包中的任意贴纸").exec(data);
 
@@ -47,13 +47,13 @@ public class PackExport extends Fragment {
 
 	@Override
 	public int checkPoint(UserData user,Msg msg,String point,PointData data) {
-		
+
 		return PROCESS_ASYNC;
-		
+
 	}
 
     @Override
-    public void onPoint(UserData user, Msg msg, String point, PointData data) {
+    public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
         if (downloading.contains(user.id)) {
 
@@ -69,7 +69,7 @@ public class PackExport extends Fragment {
 
             target = msg.text();
 
-            if (target.contains("/")) target = StrUtil.subAfter(target, "/", true);
+            if (target.contains("/")) target = StrUtil.subAfter(target,"/",true);
 
         } else if (msg.message().sticker() != null) {
 
@@ -108,9 +108,9 @@ public class PackExport extends Fragment {
 
         Msg status = msg.send("正在下载贴纸包...").send();
 
-        File cachePath = new File(Env.CACHE_DIR, "pack_export_cache/from_update" + msg.update.updateId());
+        File cachePath = new File(Env.CACHE_DIR,"pack_export_cache/from_update" + msg.update.updateId());
 
-        File cacheDir = new File(cachePath, set.stickerSet().title());
+        File cacheDir = new File(cachePath,set.stickerSet().title());
 
         cacheDir.mkdirs();
 
@@ -118,7 +118,13 @@ public class PackExport extends Fragment {
 
             Sticker sticker = set.stickerSet().stickers()[index];
 
-            FileUtil.copy(getFile(sticker.fileId()), new File(cacheDir, index + ".png"), true);
+			File stickerFile = getFile(sticker.fileId());
+
+			if (sticker != null) {
+
+				FileUtil.copy(stickerFile,new File(cacheDir,index + ".png"),true);
+
+			}
 
             status.edit("正在下载贴纸 : " + (index + 1) + " / " + set.stickerSet().stickers().length + " ...").exec();
 
@@ -126,19 +132,19 @@ public class PackExport extends Fragment {
 
         status.edit("下载完成 正在打包...").exec();
 
-        File zip = new File(cachePath, set.stickerSet().title() + ".zip");
+        File zip = new File(cachePath,set.stickerSet().title() + ".zip");
 
-        ZipUtil.zip(cacheDir.getPath(), zip.getPath(), true);
+        ZipUtil.zip(cacheDir.getPath(),zip.getPath(),true);
 
         status.edit(Html.code(set.stickerSet().name()) + " 导出完成 :)").html().exec();
 
         msg.sendUpdatingFile();
 
-        bot().execute(new SendDocument(msg.chatId(), zip));
+        bot().execute(new SendDocument(msg.chatId(),zip));
 
         downloading.remove(user.id);
 
-        msg.send("继续导出请发送简称/链接或目标贴纸包的贴纸", "退出导出使用 /cancel").exec(data);
+        msg.send("继续导出请发送简称/链接或目标贴纸包的贴纸","退出导出使用 /cancel").exec(data);
 
         RuntimeUtil.exec("rm -rf " + cachePath.getPath());
 

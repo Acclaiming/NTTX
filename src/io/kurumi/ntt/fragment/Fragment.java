@@ -563,7 +563,7 @@ public class Fragment {
 
         GetFileResponse file = execute(new GetFile(fileId));
 
-        if (!file.isOk()) {
+        if (file == null || !file.isOk()) {
 
             BotLog.debug("取文件失败 : " + file.errorCode() + " " + file.description());
 

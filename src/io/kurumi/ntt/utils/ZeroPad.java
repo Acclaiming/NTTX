@@ -47,6 +47,24 @@ public class ZeroPad {
 		return StrUtil.utf8Str(new BigInteger(encoded,2).toByteArray());
 
 	}
+	
+	String[] stringSplit(String text,int length) {
+		
+		if (length > text.length()) length = text.length();
+		
+		String[] array = new String[length];
+		
+		int split = text.length() / length;
+		
+		for (int index = 0;index < array.length;index ++) {
+			
+			array[index] = text.substring(index * split,(index + 1) * split);
+			
+		}
+		
+		// iftext.length() % length;
+		
+	}
 
 	public static String encodeTo(String text,String content) {
 
@@ -86,7 +104,7 @@ public class ZeroPad {
 
 		}
 		
-		String[] encodedArray = StrUtil.split(content,text.length() > content.length() ? content.length() : text.length() - 1);
+		String[] encodedArray = StrUtil.split();
 
 		StringBuilder result = new StringBuilder();
 		
