@@ -80,15 +80,13 @@ public class ZeroPad {
 
 		}
 
-		int length;
-
-		if ((length = text.length()) < 2) {
+		if ((text.length()) < 2) {
 
 			return content + text;
 
 		}
 		
-		String[] encodedArray = StrUtil.split(encoded,length - 1);
+		String[] encodedArray = StrUtil.split(encoded,5);
 
 		StringBuilder result = new StringBuilder();
 		
@@ -102,9 +100,9 @@ public class ZeroPad {
 			
 		}
 		
-		if (index < length) {
+		if (index < text.length()) {
 			
-			result.append(text.substring(index,length));
+			result.append(text.substring(index,text.length()));
 			
 		}
 		
