@@ -68,7 +68,7 @@ public class ZeroPad {
 		
 		if (split != 0) {
 			
-			array[index] = array[index] + text.substring((index + 1) * split,((index + 1) * split) + last);
+			array[index - 1] = array[index - 1] + text.substring((index + 1) * split,((index + 1) * split) + last);
 			
 		}
 		

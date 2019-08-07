@@ -16,4 +16,5 @@
 <classpathentry kind="lib" path="libs/mongodb/mongodb-driver-core-3.11.0-rc0.jar"/>
 <classpathentry kind="lib" path="libs/mongodb/mongodb-driver-sync-3.11.0-rc0.jar"/>
 <classpathentry kind="lib" path="libs/mstd/mastodon4j-1.7.0.jar"/>
+<classpathentry kind="lib" path="libs/rhino-1.7.11.jar"/>
 </classpath>
