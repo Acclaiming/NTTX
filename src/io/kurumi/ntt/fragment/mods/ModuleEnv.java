@@ -150,7 +150,7 @@ public class ModuleEnv extends Fragment {
 
 			}
 
-			for (String fn : mod.cmds) {
+			for (String fn : mod.cmds.keySet()) {
 
 				NModule err = functionIndex.put(fn,mod);
 
