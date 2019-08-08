@@ -21,4 +21,10 @@ public class NModule {
 	public transient Scriptable env;
 	public transient ModuleException error;
 	
+	public String format() {
+		
+		return "[ " + name + " - " + version + " ]";
+		
+	}
+	
 }

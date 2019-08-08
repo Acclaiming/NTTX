@@ -45,6 +45,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import okhttp3.OkHttpClient;
 import com.pengrad.telegrambot.request.SendDocument;
+import io.kurumi.ntt.fragment.mods.ModuleEnv;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener, ExceptionHandler {
 
@@ -101,10 +102,10 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
     }
 
-	
+
 
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
         if ("cancel".equals(function)) {
 
@@ -117,21 +118,21 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
     }
 
     @Override
-    public int checkPoint(UserData user, Msg msg, String point, PointData data) {
+    public int checkPoint(UserData user,Msg msg,String point,PointData data) {
 
         return PROCESS_SYNC;
 
     }
 
     @Override
-    public void onPoint(final UserData user, Msg msg, String point, PointData data) {
+    public void onPoint(final UserData user,Msg msg,String point,PointData data) {
 
         data.context.add(msg);
 
         if ("cancel".equals(msg.command())) {
 
-            if (data.type == 1) clearPrivatePoint(user).onCancel(user, msg);
-            else clearGroupPoint(user).onCancel(user, msg);
+            if (data.type == 1) clearPrivatePoint(user).onCancel(user,msg);
+            else clearGroupPoint(user).onCancel(user,msg);
 
             return;
 
@@ -169,52 +170,52 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                 String payload = request.originMsg.payload()[0];
 
-                String[] params = request.originMsg.payload().length > 1 ? ArrayUtil.sub(request.originMsg.payload(), 1, request.originMsg.payload().length) : new String[0];
+                String[] params = request.originMsg.payload().length > 1 ? ArrayUtil.sub(request.originMsg.payload(),1,request.originMsg.payload().length) : new String[0];
 
-                int checked = request.fragment.checkTwitterPayload(user, request.originMsg, payload, params, account);
+                int checked = request.fragment.checkTwitterPayload(user,request.originMsg,payload,params,account);
 
-                request.fragment.onTwitterPayload(user, request.originMsg, payload, params, account);
+                request.fragment.onTwitterPayload(user,request.originMsg,payload,params,account);
 
                 if (checked == PROCESS_ASYNC) {
 
                     asyncPool.execute(new Runnable() {
 
-                        @Override
-                        public void run() {
+							@Override
+							public void run() {
 
-                            request.fragment.onTwitterFunction(user, request.originMsg, request.originMsg.command(), request.originMsg.params(), account);
+								request.fragment.onTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
 
-                        }
+							}
 
-                    });
+						});
 
                 } else {
 
-                    request.fragment.onTwitterFunction(user, request.originMsg, request.originMsg.command(), request.originMsg.params(), account);
+                    request.fragment.onTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
 
                 }
 
 
             } else {
 
-                int checked = request.fragment.checkTwitterFunction(user, request.originMsg, request.originMsg.command(), request.originMsg.params(), account);
+                int checked = request.fragment.checkTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
 
                 if (checked == PROCESS_ASYNC) {
 
                     asyncPool.execute(new Runnable() {
 
-                        @Override
-                        public void run() {
+							@Override
+							public void run() {
 
-                            request.fragment.onTwitterFunction(user, request.originMsg, request.originMsg.command(), request.originMsg.params(), account);
+								request.fragment.onTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
 
-                        }
+							}
 
-                    });
+						});
 
                 } else {
 
-                    request.fragment.onTwitterFunction(user, request.originMsg, request.originMsg.command(), request.originMsg.params(), account);
+                    request.fragment.onTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
 
                 }
 
@@ -245,9 +246,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             } catch (Exception e) {
 
-                BotLog.error("更新出错", e);
+                BotLog.error("更新出错",e);
 
-                Launcher.INSTANCE.uncaughtException(Thread.currentThread(), e);
+                Launcher.INSTANCE.uncaughtException(Thread.currentThread(),e);
 
             }
 
@@ -276,9 +277,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
     }
 
     public void processAsync(final Update update) {
-       
+
 		final UserData user;
-		
+
         long targetId = -1;
 
         if (update.message() != null) {
@@ -288,11 +289,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
             if (update.message().chat().type() != Chat.Type.Private) {
 
                 targetId = update.message().chat().id();
-				
+
             }
-			
+
 			System.out.println("[ " + update.message().chat().title() + " ] " + user.name() + " : " + update.message().text());
-					
+
         } else if (update.editedMessage() != null) {
 
             user = UserData.get(update.editedMessage().from());
@@ -318,22 +319,22 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
         } else if (update.callbackQuery() != null) {
 
             user = UserData.get(update.callbackQuery().from());
-			
+
 			System.out.println("call : " + update.callbackQuery().data());
-			
+
         } else if (update.inlineQuery() != null) {
 
             user = UserData.get(update.inlineQuery().from());
 
         } else user = null;
 
-        if (onUpdate(user, update)) return;
+        if (onUpdate(user,update)) return;
 
-        for (Fragment f : fragments) if (f.update() && f.onUpdate(user, update)) return;
+        for (Fragment f : fragments) if (f.update() && f.onUpdate(user,update)) return;
 
         if (update.message() != null) {
 
-            final Msg msg = new Msg(this, update.message());
+            final Msg msg = new Msg(this,update.message());
 
             msg.update = update;
 
@@ -346,7 +347,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                 final Fragment function = points.containsKey(groupPoint.point) ? points.get(groupPoint.point) : this;
 
-                int checked = function.checkPoint(user, msg, groupPoint.point, groupPoint);
+                int checked = function.checkPoint(user,msg,groupPoint.point,groupPoint);
 
                 if (checked == PROCESS_REJECT) return;
 
@@ -354,28 +355,28 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                     asyncPool.execute(new Runnable() {
 
-                        @Override
-                        public void run() {
+							@Override
+							public void run() {
 
-                            function.onPoint(user, msg, groupPoint.point, groupPoint);
+								function.onPoint(user,msg,groupPoint.point,groupPoint);
 
-                        }
+							}
 
-                    });
+						});
 
                 } else {
 
-                    function.onPoint(user, msg, groupPoint.point, groupPoint);
+                    function.onPoint(user,msg,groupPoint.point,groupPoint);
 
                 }
 
             } else if (msg.isPrivate() && privatePoint != null) {
-				
+
 				// if (NTT.checkDropped(user,msg)) return;
-				
+
                 final Fragment function = !points.containsKey(privatePoint.point) || "cancel".equals(msg.command()) ? this : points.get(privatePoint.point);
 
-                int checked = function.checkPoint(user, msg, privatePoint.point, privatePoint);
+                int checked = function.checkPoint(user,msg,privatePoint.point,privatePoint);
 
                 if (checked == PROCESS_REJECT) return;
 
@@ -383,18 +384,18 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                     asyncPool.execute(new Runnable() {
 
-                        @Override
-                        public void run() {
+							@Override
+							public void run() {
 
-                            function.onPoint(user, msg, privatePoint.point, privatePoint);
+								function.onPoint(user,msg,privatePoint.point,privatePoint);
 
-                        }
+							}
 
-                    });
+						});
 
                 } else {
 
-                    function.onPoint(user, msg, privatePoint.point, privatePoint);
+                    function.onPoint(user,msg,privatePoint.point,privatePoint);
 
                 }
 
@@ -403,17 +404,17 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                 if (msg.isCommand()) {
 
 					// if (NTT.checkDropped(user,msg)) return;
-					
+
                     if (msg.isStartPayload()) {
 
                         final String payload = msg.payload()[0];
-                        final String[] params = msg.payload().length > 1 ? ArrayUtil.sub(msg.payload(), 1, msg.payload().length) : new String[0];
+                        final String[] params = msg.payload().length > 1 ? ArrayUtil.sub(msg.payload(),1,msg.payload().length) : new String[0];
 
                         if (payloads.containsKey(payload)) {
 
                             final Fragment function = payloads.get(payload);
 
-                            int checked = function.checkPayload(user, msg, payload, params);
+                            int checked = function.checkPayload(user,msg,payload,params);
 
                             if (checked == PROCESS_REJECT) return;
 
@@ -421,18 +422,18 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                                 asyncPool.execute(new Runnable() {
 
-                                    @Override
-                                    public void run() {
+										@Override
+										public void run() {
 
-                                        function.onPayload(user, msg, payload, params);
+											function.onPayload(user,msg,payload,params);
 
-                                    }
+										}
 
-                                });
+									});
 
                             } else {
 
-                                function.onPayload(user, msg, payload, params);
+                                function.onPayload(user,msg,payload,params);
 
 
                             }
@@ -441,7 +442,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                             final Fragment function = adminPayloads.get(payload);
 
-                            int checked = function.checkPayload(user, msg, payload, params);
+                            int checked = function.checkPayload(user,msg,payload,params);
 
                             if (checked == PROCESS_REJECT) return;
 
@@ -449,25 +450,25 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                                 asyncPool.execute(new Runnable() {
 
-                                    @Override
-                                    public void run() {
+										@Override
+										public void run() {
 
-                                        function.onPayload(user, msg, payload, params);
+											function.onPayload(user,msg,payload,params);
 
-                                    }
+										}
 
-                                });
+									});
 
                             } else {
 
-                                function.onPayload(user, msg, payload, params);
+                                function.onPayload(user,msg,payload,params);
 
                             }
 
 
                         } else {
 
-                            int checked = checkPayload(user, msg, payload, params);
+                            int checked = checkPayload(user,msg,payload,params);
 
                             if (checked == PROCESS_REJECT) return;
 
@@ -475,18 +476,18 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                                 asyncPool.execute(new Runnable() {
 
-                                    @Override
-                                    public void run() {
+										@Override
+										public void run() {
 
-                                        onPayload(user, msg, payload, params);
+											onPayload(user,msg,payload,params);
 
-                                    }
+										}
 
-                                });
+									});
 
                             } else {
 
-                                onPayload(user, msg, payload, params);
+                                onPayload(user,msg,payload,params);
 
                             }
 
@@ -497,7 +498,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                         final Fragment function = adminFunctions.get(msg.command());
 
-                        int checked = function.checkFunction(user, msg, msg.command(), msg.params());
+                        int checked = function.checkFunction(user,msg,msg.command(),msg.params());
 
                         if (checked == PROCESS_REJECT) return;
 
@@ -505,64 +506,84 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                             asyncPool.execute(new Runnable() {
 
-                                @Override
-                                public void run() {
+									@Override
+									public void run() {
 
-                                    function.onFunction(user, msg, msg.command(), msg.params());
+										function.onFunction(user,msg,msg.command(),msg.params());
 
-                                }
+									}
 
-                            });
+								});
 
                         } else {
 
-                            function.onFunction(user, msg, msg.command(), msg.params());
+                            function.onFunction(user,msg,msg.command(),msg.params());
 
                         }
 
                     } else {
-						
-                        final Fragment function = functions.containsKey(msg.command()) ? functions.get(msg.command()) : this;
 
-                        int checked = function.checkFunction(user, msg, msg.command(), msg.params());
+                        final Fragment function;
+
+						if (isMainInstance()) {
+
+							ModuleEnv env = ModuleEnv.get(user.id);
+
+							if (env != null && env.functionIndex.containsKey(msg.command())) {
+
+								function = env;
+
+							} else {
+
+								function = functions.containsKey(msg.command()) ? functions.get(msg.command()) : this;
+
+							}
+
+						} else {
+
+							function = functions.containsKey(msg.command()) ? functions.get(msg.command()) : this;
+
+						}
+						
+						int checked = function.checkFunction(user,msg,msg.command(),msg.params());
 
                         if (checked == PROCESS_REJECT) return;
-						
-                        if (function != this && function.checkFunctionContext(user, msg, msg.command(), msg.params()) == FUNCTION_GROUP && !msg.isGroup()) {
+
+                        if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.params()) == FUNCTION_GROUP && !msg.isGroup()) {
 
                             msg.send("请在群组使用 :)").async();
 
-                        } else if (function != this && function.checkFunctionContext(user, msg, msg.command(), msg.params()) == FUNCTION_PRIVATE && !msg.isPrivate()) {
+                        } else if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.params()) == FUNCTION_PRIVATE && !msg.isPrivate()) {
 
                             asyncPool.execute(new Runnable() {
 
-                                @Override
-                                public void run() {
+									@Override
+									public void run() {
 
-                                    msg.send("命令请在私聊使用 :)").failedWith();
+										msg.send("命令请在私聊使用 :)").failedWith();
 
 
-                                }
+									}
 
-                            });
+								});
 
 
                         } else if (checked == PROCESS_ASYNC) {
 
                             asyncPool.execute(new Runnable() {
 
-                                @Override
-                                public void run() {
+									@Override
+									public void run() {
 
-                                    function.onFunction(user, msg, msg.command(), msg.params());
+										function.onFunction(user,msg,msg.command(),msg.params());
 
-                                }
+									}
 
-                            });
+								});
 
                         } else {
 
-                            function.onFunction(user, msg, msg.command(), msg.params());
+                            function.onFunction(user,msg,msg.command(),msg.params());
 
                         }
 
@@ -574,20 +595,20 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                         if (!f.msg()) continue;
 
-                        int checked = f.checkMsg(user, msg);
+                        int checked = f.checkMsg(user,msg);
 
                         if (checked == PROCESS_ASYNC) {
 
                             asyncPool.execute(new Runnable() {
 
-                                @Override
-                                public void run() {
+									@Override
+									public void run() {
 
-                                    f.onMsg(user, msg);
+										f.onMsg(user,msg);
 
-                                }
+									}
 
-                            });
+								});
 
                         } else if (checked == PROCESS_REJECT) {
 
@@ -595,13 +616,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                         } else {
 
-                            f.onMsg(user, msg);
+                            f.onMsg(user,msg);
 
                         }
 
                     }
 
-                    onFinalMsg(user, msg);
+                    onFinalMsg(user,msg);
 
                 }
 
@@ -609,7 +630,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
         } else if (update.channelPost() != null) {
 
-            final Msg msg = new Msg(this, update.channelPost());
+            final Msg msg = new Msg(this,update.channelPost());
 
             msg.update = update;
 
@@ -619,7 +640,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                 if (!f.post()) continue;
 
-                int checked = f.checkChanPost(user, msg);
+                int checked = f.checkChanPost(user,msg);
 
                 if (checked == PROCESS_REJECT) return;
 
@@ -627,18 +648,18 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                     asyncPool.execute(new Runnable() {
 
-                        @Override
-                        public void run() {
+							@Override
+							public void run() {
 
-                            f.onChanPost(user, msg);
+								f.onChanPost(user,msg);
 
-                        }
+							}
 
-                    });
+						});
 
                 } else {
 
-                    f.onChanPost(user, msg);
+                    f.onChanPost(user,msg);
 
                 }
 
@@ -646,14 +667,14 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
         } else if (update.callbackQuery() != null) {
 
-            final Callback callback = new Callback(this, update.callbackQuery());
+            final Callback callback = new Callback(this,update.callbackQuery());
 
             final String point = callback.params.length == 0 ? "" : callback.params[0];
-            final String[] params = callback.params.length > 1 ? ArrayUtil.sub(callback.params, 1, callback.params.length) : new String[0];
+            final String[] params = callback.params.length > 1 ? ArrayUtil.sub(callback.params,1,callback.params.length) : new String[0];
 
             final Fragment function = callbacks.containsKey(point) ? callbacks.get(point) : this;
 
-            int checked = function.checkCallback(user, callback, point, params);
+            int checked = function.checkCallback(user,callback,point,params);
 
             if (checked == PROCESS_REJECT) return;
 
@@ -661,19 +682,19 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                 asyncPool.execute(new Runnable() {
 
-                    @Override
-                    public void run() {
+						@Override
+						public void run() {
 
-                        function.onCallback(user, callback, point, params);
+							function.onCallback(user,callback,point,params);
 
 
-                    }
+						}
 
-                });
+					});
 
             } else {
 
-                function.onCallback(user, callback, point, params);
+                function.onCallback(user,callback,point,params);
 
 
             }
@@ -681,13 +702,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
         } else if (update.inlineQuery() != null) {
 
-            Query query = new Query(this, update.inlineQuery());
+            Query query = new Query(this,update.inlineQuery());
 
             query.update = update;
 
             for (Fragment f : fragments) {
 
-                if (f.query()) f.onQuery(user, query);
+                if (f.query()) f.onQuery(user,query);
 
             }
 
@@ -700,11 +721,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
             }
 
         }
-	
+
     }
 
     @Override
-    public void onCallback(UserData user, Callback callback, String point, String[] params) {
+    public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
         if ("null".equals(point)) callback.confirm();
         else callback.alert("无效的回调指针 : " + point + "\n请联系开发者");
@@ -713,12 +734,12 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
     final String split = "------------------------\n";
 
-    public void onFinalMsg(UserData user, final Msg msg) {
+    public void onFinalMsg(UserData user,final Msg msg) {
 
         if (!msg.isPrivate()) return;
 
 		if (NTT.checkDropped(user,msg)) return;
-		
+
         StringBuilder str = new StringBuilder();
 
         boolean no_reply = false;
@@ -742,13 +763,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             if (message.forwardFromChat().type() == Chat.Type.channel) {
 
-                str.append("来自频道 : ").append(message.forwardFromChat().username() == null ? message.forwardFromChat().title() : Html.a(message.forwardFromChat().username(), "https://t.me/" + message.forwardFromChat().username())).append("\n");
+                str.append("来自频道 : ").append(message.forwardFromChat().username() == null ? message.forwardFromChat().title() : Html.a(message.forwardFromChat().username(),"https://t.me/" + message.forwardFromChat().username())).append("\n");
 
                 str.append("频道ID : ").append(message.forwardFromChat().id());
 
             } else if (message.forwardFromChat().type() == Chat.Type.group || message.forwardFromChat().type() == Chat.Type.supergroup) {
 
-                str.append("来自群组 : ").append(message.forwardFromChat().username() == null ? message.forwardFromChat().title() : Html.a(message.forwardFromChat().username(), "https://t.me/" + message.forwardFromChat().username())).append("\n");
+                str.append("来自群组 : ").append(message.forwardFromChat().username() == null ? message.forwardFromChat().title() : Html.a(message.forwardFromChat().username(),"https://t.me/" + message.forwardFromChat().username())).append("\n");
 
             } else {
 
@@ -781,7 +802,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
             str.append("贴纸表情 : ").append(Html.code(message.sticker().emoji())).append("\n");
 
 			str.append("分享链接 : ").append(ShowFile.createPayload(this,msg.sticker().fileId())).append("\n");
-			
+
             if (message.sticker().setName() != null) {
 
                 str.append("贴纸包 : ").append("https://t.me/addstickers/" + message.sticker().setName()).append("\n");
@@ -790,54 +811,54 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             msg.sendUpdatingPhoto();
 
-            bot().execute(new SendPhoto(msg.chatId(), getFile(msg.message().sticker().fileId())).caption(str.toString()).parseMode(ParseMode.HTML).replyMarkup(new ReplyKeyboardRemove()).replyToMessageId(msg.messageId()));
+            bot().execute(new SendPhoto(msg.chatId(),getFile(msg.message().sticker().fileId())).caption(str.toString()).parseMode(ParseMode.HTML).replyMarkup(new ReplyKeyboardRemove()).replyToMessageId(msg.messageId()));
 
             return;
 
         }
-		
+
 		if (msg.message().animation() != null) {
-			
+
 			execute(new Runnable() {
 
 					@Override
 					public void run() {
-						
+
 						File file = msg.file();
-						
-						File converted = new File(Env.CACHE_DIR, "tg_gif/" + msg.doc().fileId() + ".gif");
-						
+
+						File converted = new File(Env.CACHE_DIR,"tg_gif/" + msg.doc().fileId() + ".gif");
+
 						if (!converted.isFile()) {
 
 							File globalPalettePic = FFMpeg.getGifPalettePic(file);
 
-							FFMpeg.toGif(globalPalettePic, file, converted);
+							FFMpeg.toGif(globalPalettePic,file,converted);
 
 							FileUtil.del(globalPalettePic);
 
 						}
 
 						executeAsync(new SendDocument(msg.chatId(),converted).fileName(msg.doc().fileName().replace(".gif.mp4",".gif.喵")).caption("无法直接发送 GIF 只能这样啦 :)"));
-						
+
 					}
-					
+
 				});
-			
+
 		}
-		
+
 		if (msg.doc() != null) {
-			
+
 			str.append("文件名称 : ").append(Html.code(msg.doc().fileName())).append("\n");
 			//str.append("文件ID : ").append(Html.code(msg.doc().fileId())).append("\n");
 			str.append("分享链接 : ").append(ShowFile.createPayload(this,msg.doc().fileId())).append("\n");
-			
+
 		}
 
         if (!no_reply) {
 
             if (msg.hasText()) {
 
-                String text = TencentNlp.nlpTextchat(msg.chatId().toString(), msg.text());
+                String text = TencentNlp.nlpTextchat(msg.chatId().toString(),msg.text());
 
                 if (text != null) msg.send(text).exec();
 
@@ -847,7 +868,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
         }
 
-        msg.send("喵......？", str.toString()).replyTo(msg).html().removeKeyboard().exec();
+        msg.send("喵......？",str.toString()).replyTo(msg).html().removeKeyboard().exec();
 
     }
 
@@ -894,7 +915,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
         okhttpClient.networkInterceptors().clear();
 
         bot = new TelegramBot.Builder(token)
-                .okHttpClient(okhttpClient.build()).build();
+			.okHttpClient(okhttpClient.build()).build();
 
         me = bot.execute(new GetMe()).user();
 
@@ -908,7 +929,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
         if (isLongPulling()) {
 
-            bot.setUpdatesListener(this, this);
+            bot.setUpdatesListener(this,this);
 
         } else {
 
@@ -926,7 +947,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             String url = "https://" + BotServer.INSTANCE.domain + "/" + token;
 
-            BotServer.fragments.put(token, this);
+            BotServer.fragments.put(token,this);
 
             BaseResponse resp = bot.execute(new SetWebhook().url(url));
 
@@ -947,7 +968,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
         for (Long id : point().privatePoints.keySet()) {
 
-            new Send(this, id, "当前操作已经取消 : NTT 正在更新 / 重启").removeKeyboard().exec();
+            new Send(this,id,"当前操作已经取消 : NTT 正在更新 / 重启").removeKeyboard().exec();
 
         }
 

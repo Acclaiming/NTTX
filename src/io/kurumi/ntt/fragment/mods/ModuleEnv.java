@@ -1,19 +1,18 @@
 package io.kurumi.ntt.fragment.mods;
 
+import cn.hutool.core.io.FileUtil;
 import io.kurumi.ntt.Env;
+import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.utils.BotLog;
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
-import cn.hutool.core.io.FileUtil;
-import com.google.gson.Gson;
-import io.kurumi.ntt.Launcher;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import java.io.IOException;
-import io.kurumi.ntt.utils.BotLog;
-import java.util.concurrent.atomic.AtomicLongArray;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.db.UserData;
 
-public class ModuleEnv {
+public class ModuleEnv extends Fragment {
 
 	public static HashMap<Long,ModuleEnv> envs = new HashMap<>();
 
@@ -81,6 +80,19 @@ public class ModuleEnv {
 
 	public HashMap<String,NModule> functionIndex = new HashMap<>();
 
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		
+		NModule mod = functionIndex.get(function);
+		
+		if (mod.error != null) {
+			
+			msg.send("命令 [ /" + function + " ] 所在模块 " + mod.format() +  出错","\n" + BotLog.parseError(mod.error)).async();
+			
+		}
+
+	}
+	
 	public void reLoadModules() {
 
 		File[] files = path.listFiles();
