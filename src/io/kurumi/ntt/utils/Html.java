@@ -85,7 +85,7 @@ public class Html {
 
     public static String code(Object code) {
 
-        return "<code>" + HtmlUtil.escape(code.toString()) + "</code>";
+        return "<code>" + HtmlUtil.escape(code == null ? "null" : code.toString()) + "</code>";
 
     }
 
