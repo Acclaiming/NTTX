@@ -206,6 +206,9 @@ public class UserArchive {
 
         }
 
+		following = user.getFriendsCount();
+		followers = user.getFollowersCount();
+		
         boolean change = false;
         StringBuilder str = new StringBuilder();
         String split = "\n--------------------------------\n";
@@ -330,10 +333,7 @@ public class UserArchive {
             TrackTask.onUserChange(this,str.toString());
 
         }
-
-		following = user.getFriendsCount();
-		followers = user.getFollowersCount();
-
+		
         return change;
 
     }
