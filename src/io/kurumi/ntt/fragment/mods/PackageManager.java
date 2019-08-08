@@ -196,7 +196,7 @@ public class PackageManager extends Fragment {
 
 			ModuleEnv.exitEnv(user.id);
 
-			executeGitCommand(env.mainPath,"git clone " + Env.MODULES_REPO + "/" + modName);
+			executeGitCommand(env.path,"git clone " + Env.MODULES_REPO + "/" + modName);
 
 			status.edit("模块已安装 : " + mod.name + " [ " + mod.version + " ] ").async();
 
