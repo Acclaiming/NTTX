@@ -38,6 +38,16 @@ public class Env {
 
 	public static String NETEASE_COOKIE;
 	
+	public static String MODULES_REPO = "https://kurumi.io/NTT-Modules-Repo";
+	
+	public static String RAW_FORMAT = "<Repo>/raw/branch/master/<Path>";
+	
+	public static String formatRawFile(String repoName,String path) {
+		
+		return MODULES_REPO + "/" + RAW_FORMAT.replace("<Repo>",repoName).replace("<Path>",path);
+		
+	}
+	
     private static JSONObject conf;
 
     public static void init() throws Exception {

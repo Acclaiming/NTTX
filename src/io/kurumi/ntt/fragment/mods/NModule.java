@@ -7,6 +7,7 @@ import java.io.File;
 public class NModule {
 
 	public String id;
+	public String name;
 	public String version;
 	public Integer versionCode;
 	public String author;

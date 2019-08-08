@@ -11,18 +11,21 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import java.io.IOException;
 import io.kurumi.ntt.utils.BotLog;
+import java.util.concurrent.atomic.AtomicLongArray;
 
 public class ModuleEnv {
 
 	public static HashMap<Long,ModuleEnv> envs = new HashMap<>();
 
-	public static File mainPath = new File(Env.DATA_DIR,"mods");
+	public static File mainPath = new File(Env.DATA_DIR,"mods/users");
 
 	public static void loadAllEnv() {
 
 	}
 	
 	public static ModuleEnv get(Long userId) {
+		
+		if (exiting.containsKey(userId)) return null;
 		
 		if (envs.containsKey(userId)) {
 			
@@ -35,6 +38,20 @@ public class ModuleEnv {
 		envs.put(userId,mod);
 		
 		return mod;
+		
+	}
+	
+	public static HashMap<Long,Boolean> exiting = new HashMap<>();
+	
+	public static void exitEnv(Long userId) {
+		
+		exiting.put(userId,true);
+		
+		envs.remove(userId);
+		
+		ModuleEnv toExit = envs.get(userId);
+
+		toExit.env.ctx.exit();
 		
 	}
 
@@ -56,7 +73,7 @@ public class ModuleEnv {
 
 		env.putConst("__F",functions);
 		
-		loadAllEnv();
+		reLoadModules();
 
 	}
 
@@ -64,7 +81,7 @@ public class ModuleEnv {
 
 	public HashMap<String,NModule> functionIndex = new HashMap<>();
 
-	public void reLoadModules() throws ModuleException {
+	public void reLoadModules() {
 
 		File[] files = path.listFiles();
 
@@ -86,7 +103,9 @@ public class ModuleEnv {
 				
 				if (!modules.containsKey(dep)) {
 					
-					throw new ModuleException("模块 " + mod.id + " 缺少依赖 " + dep);
+					mod.error = new ModuleException("模块 " + mod.id + " 缺少依赖 " + dep);
+					
+					continue;
 					
 				}
 				
@@ -98,8 +117,10 @@ public class ModuleEnv {
 
 				if (err != null) {
 
-					throw new ModuleException("模块函数重复 " + fn + " 在 : " + mod.id + " 与 " + err.id);
+					mod.error = new ModuleException("模块函数重复 " + fn + " 在 : " + mod.id + " 与 " + err.id);
 
+					continue;
+					
 				}
 
 			}
