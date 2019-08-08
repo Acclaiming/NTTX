@@ -86,6 +86,16 @@ public class PackageManager extends Fragment {
 
 		params = ArrayUtil.remove(params,0);
 
+		ModuleEnv env = ModuleEnv.get(user.id);
+
+		if (env == null) {
+			
+			msg.send("当前有正运行的模块管理程序 :(").async();
+			
+			return;
+			
+		}
+		
 		if ("install".equals(subFn)) {
 
 			if (params.length == 0) {
@@ -97,8 +107,6 @@ public class PackageManager extends Fragment {
 			}
 
 			String modName = params[0];
-
-			ModuleEnv env = ModuleEnv.get(user.id);
 
 			if (env.modules.containsKey(modName)) {
 
