@@ -51,7 +51,7 @@ public class ModuleEnv {
 		
 		ModuleEnv toExit = envs.get(userId);
 
-		toExit.env.ctx.exit();
+		if (toExit != null) toExit.env.ctx.exit();
 		
 	}
 
