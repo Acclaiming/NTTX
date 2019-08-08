@@ -202,6 +202,10 @@ public class PackageManager extends Fragment {
 
 			ModuleEnv.exiting.remove(user.id);
 			
+		} else {
+			
+			status.edit(mainHelp).async();
+			
 		}
 
 	}
