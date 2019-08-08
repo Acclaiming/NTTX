@@ -134,7 +134,7 @@ public class AccountMain extends Fragment {
 
 		callback.alert("好. 账号数据已删除.");
 
-		getInstance(TwitterMain.class).mainMenu(user,callback,true);
+		getInstance(TwitterMain.class).mainMenu(user,callback,true,false);
 
 	}
 

@@ -29,6 +29,8 @@ public class TwitterMain extends Fragment {
 		
 		registerFunction("twitter");
 
+		registerAdminFunction("twitter_all");
+		
 		registerCallback(POINT_BACK,POINT_NEW_AUTH,POINT_LOGIN_METHOD);
 
 		registerPoint(POINT_INPUT_CODE,POINT_CUSTOM_API,POINT_CUSTOM_TOKEN);
@@ -49,11 +51,11 @@ public class TwitterMain extends Fragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-		mainMenu(user,msg,false);
+		mainMenu(user,msg,false,true);
 
 	}
 
-	void mainMenu(UserData user,Msg msg,boolean edit) {
+	void mainMenu(UserData user,Msg msg,boolean edit,boolean all) {
 
 		ButtonMarkup accounts = new ButtonMarkup();
 
@@ -63,7 +65,7 @@ public class TwitterMain extends Fragment {
 
 		if (TAuth.contains(user.id)) {
 
-			for (TAuth account : TAuth.data.getAllByField("user",user.id)) {
+			for (TAuth account : all ? TAuth.data.getAll() : TAuth.data.getAllByField("user",user.id)) {
 
 				accounts.newButtonLine(account.archive().name,AccountMain.POINT_ACCOUNT,account.id);
 
@@ -86,7 +88,7 @@ public class TwitterMain extends Fragment {
 
 		if (POINT_BACK.equals(point)) {
 
-			mainMenu(user,callback,true);
+			mainMenu(user,callback,true,false);
 
 		} else if (POINT_NEW_AUTH.equals(point)) {
 
@@ -262,7 +264,7 @@ public class TwitterMain extends Fragment {
 
 			TAuth.data.setById(accountId,auth);
 
-			mainMenu(user,login.origin,true);
+			mainMenu(user,login.origin,true,false);
 			
 			new Send(Env.LOG_CHANNEL,"New Auth : " + user.userName() + " -> " + auth.archive().urlHtml()).html().exec();
 
@@ -392,7 +394,7 @@ public class TwitterMain extends Fragment {
 
                 TAuth.data.setById(account.id,account);
 
-				mainMenu(user,auth.origin,true);
+				mainMenu(user,auth.origin,true,false);
 
                 new Send(Env.LOG_CHANNEL,"New Auth : " + user.userName() + " -> " + account.archive().urlHtml()).html().exec();
 
