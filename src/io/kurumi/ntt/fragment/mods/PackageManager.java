@@ -28,12 +28,14 @@ public class PackageManager extends Fragment {
 
 	}
 
+	final String GIT_FORCE_UPDATE = "git fetch --depth=1 origin master && git checkout -f FETCH_HEAD && git clean -fdx";
+
 	File envPath = new File(Env.DATA_DIR,"mods/env");
 
 	String executeGitCommand(File path,String... command) {
 
 		path.mkdirs();
-		
+
 		return RuntimeUtil.getResult(RuntimeUtil.exec(null,path,command));
 
 	}
@@ -89,13 +91,13 @@ public class PackageManager extends Fragment {
 		ModuleEnv env = ModuleEnv.get(user.id);
 
 		if (env == null) {
-			
+
 			msg.send("当前有正运行的模块管理程序 :(").async();
-			
+
 			return;
-			
+
 		}
-		
+
 		if ("install".equals(subFn)) {
 
 			if (params.length == 0) {
@@ -119,7 +121,7 @@ public class PackageManager extends Fragment {
 					return;
 
 				}
-				
+
 				HttpResponse result = HttpUtil.createGet(Env.formatRawFile(modName,"package.json")).execute();
 
 				if (!result.isOk()) {
@@ -146,26 +148,26 @@ public class PackageManager extends Fragment {
 
 				if (syncMod.versionCode <= mod.versionCode) {
 
-					status.edit("模块 " + mod.name + " 已经是最新版本 [ " + mod.version + " ]").async();
+					status.edit("模块 " + mod.name + " 已经是最新版本 [ " + mod.version + " ]",mod.info()).async();
 
 					return;
 
 				}
 
 				status.edit("正在更新模块 : " + mod.name + " [ " + mod.version + " --> " + syncMod.version + " ] ").async();
-				
+
 				ModuleEnv.exitEnv(user.id);
-				
-				executeGitCommand(mod.modPath,"git fetch --depth=1 origin master && git checkout -f FETCH_HEAD && git clean -fdx");
-				
+
+				executeGitCommand(mod.modPath,GIT_FORCE_UPDATE);
+
 				status.edit("模块已更新 : " + mod.name + " [ " + mod.version + " --> " + syncMod.version + " ] ",syncMod.info()).async();
-				
+
 				ModuleEnv.exiting.remove(user.id);
-				
+
 				return;
-				
+
 			}
-			
+
 			if (!mods.contains(modName)) {
 
 				status.edit("模块源没有该模块 : " + modName).async();
@@ -183,7 +185,7 @@ public class PackageManager extends Fragment {
 				return;
 
 			}
-			
+
 			NModule mod;
 
 			try {
@@ -191,7 +193,7 @@ public class PackageManager extends Fragment {
 				mod = Launcher.GSON.fromJson(result.body(),NModule.class);
 
 				mod.modPath = new File(env.mainPath,mod.name);
-				
+
 			} catch (Exception ex) {
 
 				status.edit("元数据获取失败 : 模块设定格式错误",BotLog.parseError(ex)).async();
@@ -199,21 +201,21 @@ public class PackageManager extends Fragment {
 				return;
 
 			}
-			
+
 			status.edit("正在安装模块 : " + mod.name + " [ " + mod.version + " ] ").async();
 
 			ModuleEnv.exitEnv(user.id);
 
 			executeGitCommand(env.path,"git clone " + Env.MODULES_REPO + "/" + modName);
 
-			status.edit("模块已安装 : " + mod.name + " [ " + mod.version + " ] ").async();
+			status.edit("模块已安装 : " + mod.name + " [ " + mod.version + " ] ",mod.info()).async();
 
 			ModuleEnv.exiting.remove(user.id);
-			
+
 		} else {
-			
+
 			status.edit(mainHelp).async();
-			
+
 		}
 
 	}
