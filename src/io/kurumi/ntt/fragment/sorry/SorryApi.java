@@ -146,7 +146,7 @@ public class SorryApi {
 
 				try {
 
-					result = HttpUtil.createPost(url).body(query).execute();
+					result = HttpUtil.createPost(url).contentType("application/json;charset=UTF-8").body(query).execute();
 
 				} catch (HttpException exc) {
 
