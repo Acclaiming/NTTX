@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 import io.kurumi.ntt.Launcher;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
+import java.io.IOException;
+import io.kurumi.ntt.utils.BotLog;
 
 public class ModuleEnv {
 
@@ -35,8 +37,6 @@ public class ModuleEnv {
 		return mod;
 		
 	}
-	
-	public Boolean error;
 
 	public long userId;
 	public File path;
@@ -71,9 +71,11 @@ public class ModuleEnv {
 		if (files == null || files.length == 0) return;
 		
 		for (File modDir : path.listFiles()) {
-
+			
 			NModule mod = Launcher.GSON.fromJson(FileUtil.readUtf8String(new File(modDir,"package.json")),NModule.class);
 
+			mod.modPath = modDir;
+			
 			modules.put(mod.id,mod);
 
 		}
@@ -102,9 +104,29 @@ public class ModuleEnv {
 
 			}
 			
+			File mainPath = new File(mod.modPath,mod.main);
+			
+			if (!mainPath.exists()) {
+				
+				mod.error = new ModuleException("入口文件 " + mod.main + " 不存在");
+				
+				continue;
+				
+			}
+			
 			mod.env = env.ctx.newObject(env.env);
 			
 			ScriptableObject.putConstProperty(mod.env,"mod",mod);
+			
+			try {
+				
+				env.ctx.evaluateReader(mod.env,FileUtil.getUtf8Reader(mainPath),mainPath.getName(),1,null);
+				
+			} catch (Exception e) {
+				
+				mod.error = new ModuleException("初始化出错 : \n\n" + BotLog.parseError(e));
+				
+			}
 
 		}
 
