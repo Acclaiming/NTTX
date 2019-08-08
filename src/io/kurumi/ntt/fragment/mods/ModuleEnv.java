@@ -19,10 +19,6 @@ public class ModuleEnv extends Fragment {
 
 	public static File mainPath = new File(Env.DATA_DIR,"mods/users");
 
-	public static void loadAllEnv() {
-
-	}
-
 	public static ModuleEnv get(Long userId) {
 
 		if (exiting.containsKey(userId)) return null;
