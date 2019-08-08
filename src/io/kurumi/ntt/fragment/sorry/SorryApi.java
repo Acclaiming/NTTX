@@ -31,6 +31,10 @@ public class SorryApi {
 		templates.put("工作细胞",new SorryApi("hataraku","那个呢 那个呢","因为出了些状况","施工进度推迟了"));
 		templates.put("元首",new SorryApi("fuhrer","我们装备再好 总会死在外挂手里","没关系 我们可以苦练枪法","这外挂...","这外挂有锁血的 根本打不死","。。。"));
 		
+		templates.put("扔电脑",new SorryApi("21","(索尼倒闭了)"));
+		templates.put("北京第三区交通委提醒您",new SorryApi("13","北京第三区交通委提醒您","道路千万条 安全第一条","行车不规范 亲人两行泪");
+		// templates.put("S代表着什么?",new SorryApi("8","
+		
 		templates.put("为所欲为",new SorryApi("sorry","就算你是一流工程师","就算你出报告再完美","我叫你改报告你就要改","毕竟我是客户","客户了不起啊","sorry 客户真的了不起","以后叫他天天改报告","天天改 天天改"));
 		templates.put("王境泽",new SorryApi("wangjingze","我就是饿死","死外边 从这跳下去","也不会吃你们一点东西","真香"));
 		templates.put("学习防身术",new SorryApi("fangshen","我将教你如何应对歹徒","集中注意","希望你有所收获"));

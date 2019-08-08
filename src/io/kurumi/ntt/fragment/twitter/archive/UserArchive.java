@@ -212,22 +212,6 @@ public class UserArchive {
 
         String nameL = name;
 
-        if (isDisappeared) {
-
-            isDisappeared = false;
-
-            str.append(split).append("用户被取消了冻结/重新启用 :)");
-
-            if (Env.TEP_CHANNEL != null && !TEPH.data.containsId(id)) {
-
-				new Send(Env.TEP_CHANNEL,"#推友回档\n",formatToChannel()).html().async();
-
-                change = true;
-
-            }
-
-        }
-
         if (!(name = user.getName()).equals(nameL)) {
 
             str.append(split).append("名称更改 : ").append(nameL).append(" ------> ").append(name);
@@ -249,15 +233,15 @@ public class UserArchive {
         }
 
         String bioL = bio;
-		
+
 		String newBio = user.getDescription();
-		
+
 		for (URLEntity entry : user.getDescriptionURLEntities()) {
-			
+
 			newBio = newBio.replace(entry.getURL(),entry.getExpandedURL());
-			
+
 		}
-		
+
         if ((bio == null || !bio.contains("://t.co/")) && !ObjectUtil.equal(bio = newBio,bioL)) {
 
             str.append(split).append("简介更改 : \n\n").append(bioL).append(" \n\n ------> \n\n").append(bio);
@@ -298,17 +282,17 @@ public class UserArchive {
 
 
         String urlL = url;
-		
+
 		String newUrl = user.getURL();
-		
+
 		if (newUrl != null && user.getURLEntity() != null) {
-			
+
 			URLEntity entry = user.getURLEntity();
 
 			newUrl = newUrl.replace(entry.getURL(),entry.getExpandedURL());
-			
+
 		}
-		
+
         if ((urlL == null || !urlL.contains("://t.co/")) && !ObjectUtil.equal(url = newUrl,urlL)) {
 
             str.append(split).append("链接更改 : \n\n").append(urlL).append(" \n\n ------> \n\n").append(url);
@@ -322,6 +306,22 @@ public class UserArchive {
             createdAt = user.getCreatedAt().getTime();
 
             change = false;
+
+        }
+		
+		if (isDisappeared) {
+
+            isDisappeared = false;
+
+            str.append(split).append("用户被取消了冻结/重新启用 :)");
+
+            if (Env.TEP_CHANNEL != null && !TEPH.data.containsId(id)) {
+
+				new Send(Env.TEP_CHANNEL,"#推友回档\n",formatToChannel()).html().async();
+
+			}
+
+			change = true;
 
         }
 
@@ -343,13 +343,13 @@ public class UserArchive {
 		String message = urlHtml() + " (#" + screenName + ")";
 
 		if (isProtected) message += " [ 锁推 ]";
-		
+
 		if (!StrUtil.isBlank(bio)) {
 
 			message += "\n\nBIO : " + bio + "\n";
 
 		}
-		
+
 		message += "\nUID : " + Html.code(id);
 
 		if (!(StrUtil.isBlank(url))) {
