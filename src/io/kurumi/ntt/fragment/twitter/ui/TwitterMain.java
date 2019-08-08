@@ -51,7 +51,7 @@ public class TwitterMain extends Fragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-		mainMenu(user,msg,false,true);
+		mainMenu(user,msg,false,false);
 
 	}
 
