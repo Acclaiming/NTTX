@@ -138,7 +138,7 @@ public class PackageManager extends Fragment {
 
 				if (syncMod.versionCode <= mod.versionCode) {
 
-					status.edit("模块 " + mod.name + " 已经是最新版本").async();
+					status.edit("模块 " + mod.name + " 已经是最新版本 [ " + mod.version + " ]").async();
 
 					return;
 
