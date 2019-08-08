@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import cn.hutool.extra.template.TemplateEngine;
 import io.kurumi.ntt.utils.FFMpeg;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.NumberUtil;
 
 public class SorryApi {
 
@@ -30,17 +31,17 @@ public class SorryApi {
 		templates.put("盘他",new SorryApi("panta","一看这龙就来气","干干巴巴的","麻麻赖赖的","一点都不圆润","盘他"));
 		templates.put("工作细胞",new SorryApi("hataraku","那个呢 那个呢","因为出了些状况","施工进度推迟了"));
 		templates.put("元首",new SorryApi("fuhrer","我们装备再好 总会死在外挂手里","没关系 我们可以苦练枪法","这外挂...","这外挂有锁血的 根本打不死","。。。"));
-		
+
 		templates.put("扔电脑",new SorryApi("21","(索尼倒闭了)"));
-		templates.put("北京第三区交通委提醒您",new SorryApi("13","北京第三区交通委提醒您","道路千万条 安全第一条","行车不规范 亲人两行泪");
+		templates.put("北京第三区交通委提醒您",new SorryApi("13","北京第三区交通委提醒您","道路千万条 安全第一条","行车不规范 亲人两行泪"));
 		// templates.put("S代表着什么?",new SorryApi("8","
-		
+
 		templates.put("为所欲为",new SorryApi("sorry","就算你是一流工程师","就算你出报告再完美","我叫你改报告你就要改","毕竟我是客户","客户了不起啊","sorry 客户真的了不起","以后叫他天天改报告","天天改 天天改"));
 		templates.put("王境泽",new SorryApi("wangjingze","我就是饿死","死外边 从这跳下去","也不会吃你们一点东西","真香"));
 		templates.put("学习防身术",new SorryApi("fangshen","我将教你如何应对歹徒","集中注意","希望你有所收获"));
 		templates.put("星际还是魔兽",new SorryApi("dati","平时你打电子游戏吗","偶尔","星际还是魔兽","赛尔号"));
-		templates.put("在座的各位都是垃圾",new SorryApi("dashixiong","问得好，如果各位有兴趣的话", "可以加入我们空手道部门", "不过要经过选拔", "因为我只会训练精英", "绝对不会接收垃圾", "看我干嘛？你把我当垃圾？", "不是...不要误会，我不是针对你", "我是说在座的各位都是垃圾"));
-		templates.put("pop子和pipi美的日常",new SorryApi("popteamepic","嘿嘿！", "丢雷楼谋", "大力D", "嘿嘿！！", "丢埋雷楼豆", "再大力D", "唔好丢我啊"));
+		templates.put("在座的各位都是垃圾",new SorryApi("dashixiong","问得好，如果各位有兴趣的话","可以加入我们空手道部门","不过要经过选拔","因为我只会训练精英","绝对不会接收垃圾","看我干嘛？你把我当垃圾？","不是...不要误会，我不是针对你","我是说在座的各位都是垃圾"));
+		templates.put("pop子和pipi美的日常",new SorryApi("popteamepic","嘿嘿！","丢雷楼谋","大力D","嘿嘿！！","丢埋雷楼豆","再大力D","唔好丢我啊"));
 		templates.put("今天星期五",new SorryApi("friday","今天星期五了","我的天","明天不上班","熬夜到天亮","再睡上一整天","周五万岁"));
 		templates.put("谁反对",new SorryApi("mini-disagree","我话说完了","谁赞成","谁反对"));
 		templates.put("报告梁非凡",new SorryApi("liangfeifan","报告非凡哥，不必去操场","我在这里说也行，也是六个字","吃屎吧，梁非凡"));
@@ -92,56 +93,102 @@ public class SorryApi {
 		if (mp4File.isFile()) {
 
 			File assFile = FileUtil.file(Env.CACHE_DIR,"ass_cache/" + UUID.fastUUID().toString(true) + ".ass");
-			
+
 			String assSource = FileUtil.readUtf8String(new File(templateDir,"template.ass"));
-			
+
 			for (int index = 0;;index ++) {
-				
+
 				if (!assSource.contains("<?=[" + index + "]=?>")) {
-					
+
 					break;
-					
+
 				}
-				
+
 				assSource = assSource.replace("<?=[" + index + "]=?>",lines.length > index ? lines[index] : "");
-				
+
 			}
-			
+
 			FileUtil.writeUtf8String(assSource,assFile);
-			
+
 			FFMpeg.makeGif(mp4File,assFile,cache);
-			
+
 			FileUtil.del(assFile);
-			
+
 			return cache;
-			
+
 		} else {
 
-			JSONObject array = new JSONObject();
+			if (NumberUtil.isNumber(template)) {
 
-			for (Integer index = 0;index < lines.length;index ++) {
+				String url = "https://app.xuty.tk/memeet/api/v1/template/make";
 
-				array.put(index.toString(),lines[index]);
+				JSONObject query = new JSONObject();
+				
+				query.put("id",template);
+				
+				JSONObject array = new JSONObject();
+
+				for (Integer index = 0;index < lines.length;index ++) {
+
+					array.put("sentence" + index.toString(),lines[index]);
+
+				}
+				
+				query.put("fillings",array);
+				
+				HttpResponse result;
+
+				try {
+
+					result = HttpUtil.createPost(url).body(query).execute();
+
+				} catch (HttpException exc) {
+
+					return null;
+
+				}
+
+				if (!result.isOk()) return null;
+
+				JSONObject gifObj = new JSONObject(result.body());
+				
+				if (!gifObj.getBool("ok",false)) return null;
+				
+				String gif = gifObj.getByPath("body.url",String.class);
+				
+				HttpUtil.downloadFile(origin + gif,cache);
+
+				return cache;
+				
+			} else {
+
+				JSONObject array = new JSONObject();
+
+				for (Integer index = 0;index < lines.length;index ++) {
+
+					array.put(index.toString(),lines[index]);
+
+				}
+
+				HttpResponse result;
+
+				try {
+
+					result = HttpUtil.createPost(origin + "/api/" + template + "/make").body(array).execute();
+
+				} catch (HttpException exc) {
+
+					return null;
+
+				}
+
+				if (!result.isOk()) return null;
+
+				HttpUtil.downloadFile(origin + result.body(),cache);
+
+				return cache;
 
 			}
-
-			HttpResponse result;
-
-			try {
-
-				result = HttpUtil.createPost(origin + "/api/" + template + "/make").body(array).execute();
-
-			} catch (HttpException exc) {
-
-				return null;
-
-			}
-
-			if (!result.isOk()) return null;
-
-			HttpUtil.downloadFile(origin + result.body(),cache);
-
-			return cache;
 
 		}
 
