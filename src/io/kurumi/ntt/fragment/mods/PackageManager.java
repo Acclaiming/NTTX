@@ -24,7 +24,7 @@ public class PackageManager extends Fragment {
 
 		super.init(origin);
 
-		registerFunction("yum");
+		registerAdminFunction("yum");
 
 	}
 
