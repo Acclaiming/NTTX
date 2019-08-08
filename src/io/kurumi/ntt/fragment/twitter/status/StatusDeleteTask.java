@@ -73,34 +73,36 @@ public class StatusDeleteTask extends TimerTask {
 
 			if (account.ad_a != null) {
 
+				long day = 24L * 60L * 60L * 1000L;
+				
 				// 绝对时间
 
 				if (account.ad_d == null) {
 
-					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 24 * 60 * 60 * 1000) break;
+					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < day) break;
 
 				} else if (account.ad_d == 0) {
 
-					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 3 * 24 * 60 * 60 * 1000) break;
+					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 3L * day) break;
 
 				} else if (account.ad_d == 1) {
 
-					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 7 * 24 * 60 * 60 * 1000) break;
+					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 7L * day) break;
 
 				} else if (account.ad_d == 2) {
 
-					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 30 * 24 * 60 * 60 * 1000) break;
+					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 30L * day) break;
 
 				} else if (account.ad_d == 3) {
 
-					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 2 * 30 * 24 * 60 * 60 * 1000) break;
+					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 60L * day) break;
 
 				} else if (account.ad_d == 4) {
 
-					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 3 * 30 * 24 * 60 * 60 * 1000) break;
+					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 90L * day) break;
 
 				}
-
+				
 			} else {
 
 				if (account.ad_d == null) {
