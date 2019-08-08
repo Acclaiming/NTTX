@@ -158,7 +158,7 @@ public class PackageManager extends Fragment {
 				
 				executeGitCommand(mod.modPath,"git fetch --depth=1 origin master && git checkout -f FETCH_HEAD && git clean -fdx");
 				
-				status.edit("模块已更新 : " + mod.name + " [ " + mod.version + " --> " + syncMod.version + " ] ").async();
+				status.edit("模块已更新 : " + mod.name + " [ " + mod.version + " --> " + syncMod.version + " ] ",syncMod.info()).async();
 				
 				ModuleEnv.exiting.remove(user.id);
 				
