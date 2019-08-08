@@ -32,6 +32,8 @@ public class PackageManager extends Fragment {
 
 	String executeGitCommand(File path,String... command) {
 
+		path.mkdirs();
+		
 		return RuntimeUtil.getResult(RuntimeUtil.exec(null,path,command));
 
 	}
