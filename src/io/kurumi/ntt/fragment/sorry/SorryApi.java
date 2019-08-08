@@ -83,7 +83,7 @@ public class SorryApi {
 
 		File templateDir = FileUtil.file("/usr/local/ntt/res/templates",template);
 		File mp4File = FileUtil.file(templateDir,"template.mp4");
-		File cache = FileUtil.file(Env.CACHE_DIR,"sorry_make/" + UUID.fastUUID().toString(true) + ".gif");
+		File cache = FileUtil.file(Env.CACHE_DIR,"sorry_make/" + UUID.fastUUID().toString(true) + ".mp4");
 
 		if (mp4File.isFile()) {
 
