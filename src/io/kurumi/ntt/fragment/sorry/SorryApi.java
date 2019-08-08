@@ -130,7 +130,7 @@ public class SorryApi {
 
 				for (Integer index = 0;index < lines.length;index ++) {
 
-					array.put("sentence" + index.toString(),lines[index]);
+					array.put("sentence" + index,lines[index]);
 
 				}
 				
