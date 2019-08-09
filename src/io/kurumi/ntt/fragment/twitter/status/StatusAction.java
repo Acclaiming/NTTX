@@ -124,14 +124,8 @@ public class StatusAction extends Fragment {
     @Override
     public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
-		long accountId;
-		long statusId;
-		
 		InlineKeyboardButton[] buttons = callback.message().replyMarkup().inlineKeyboard()[0];
-		
-		accountId = NumberUtil.parseLong(ArrayUtil.remove(buttons[0].callbackData().split(","),0)[0]);
-		statusId = NumberUtil.parseLong(ArrayUtil.remove(buttons[1].callbackData().split(","),0)[0]);
-		
+	
 		params = ArrayUtil.remove(buttons[2].callbackData().split(","),0);
 		
 		if (params.length != 3) {
@@ -141,6 +135,10 @@ public class StatusAction extends Fragment {
 			return;
 			
 		}
+		
+		long accountId = NumberUtil.parseLong(ArrayUtil.remove(buttons[0].callbackData().split(","),0)[0]);
+		long statusId = NumberUtil.parseLong(ArrayUtil.remove(buttons[1].callbackData().split(","),0)[0]);
+		
 		
 		boolean isFull = "true".equals(params[0]);
         boolean retweeted = "true".equals(params[1]);
