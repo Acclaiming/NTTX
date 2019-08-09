@@ -40,13 +40,15 @@ public class Stat extends Fragment {
         long total = handler4stat.getTotalCPUTime();
         long idle = handler4stat.getIdleCPUTime();
 
+		int processId = NumberUtil.parseInt(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
+		
         status.append("\nCPU占用 : ").append((100 - ((float) (idle) / total) * 100)).append("%");
 
+		status.append("\n进程ID : ").append(processId);
+		
 		status.append("\n\nDUMP :\n\n");
 		
-		int processId = NumberUtil.parseInt(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
-
-		status.append(RuntimeUtil.execForStr("jstack -l " + processId + " | tee -a jstack.log"));
+		status.append(RuntimeUtil.execForStr("jstack -l " + processId));
 		
         msg.send(status.toString()).exec();
 
