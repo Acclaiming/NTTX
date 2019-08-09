@@ -48,7 +48,7 @@ public class Stat extends Fragment {
 		
 		status.append("\n\nDUMP :\n\n");
 		
-		status.append(RuntimeUtil.execForStr("jstack -l " + processId));
+		status.append(RuntimeUtil.execForStr("jmap -histo " + processId));
 		
         msg.send(status.toString()).exec();
 
