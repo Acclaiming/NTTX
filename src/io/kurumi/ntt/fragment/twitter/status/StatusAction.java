@@ -38,12 +38,11 @@ public class StatusAction extends Fragment {
 
 				ButtonLine line = newButtonLine();
 
-				line.newButton("↪",POINT_REPLY,statusId);
+				line.newButton("↪",POINT_REPLY,accountId,statusId,full,retweeted,liked,accountId);
 
 				if (retweeted) {
 
-					line.newButton("❎️",POINT_DESTROY_RETWEET,accountId,statusId,full,retweeted,liked,accountId);
-
+					line.newButton("❎️",POINT_DESTROY_RETWEET);
 				} else {
 
 					line.newButton("🔄",POINT_RETWEET_STATUS);
@@ -155,7 +154,6 @@ public class StatusAction extends Fragment {
 			return;
 
 		}
-
 
         boolean isFull = params.length > 1 && "true".equals(params.length == 5 ? params[1] : params[2]);
         boolean retweeted = params.length > 1 && "true".equals(params.length == 5 ?  params[2] : params[3]);
