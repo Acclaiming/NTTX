@@ -162,7 +162,7 @@ public class UserArchive {
 
             TrackTask.onUserChange(this,"用户被冻结或已停用 :)");
 
-            if (Env.TEP_CHANNEL != -1 && !TEPH.data.containsId(id)) {
+            if (Env.TEP_CHANNEL != -1 && !TEPH.needPuhlish(id)) {
 
 				/*
 

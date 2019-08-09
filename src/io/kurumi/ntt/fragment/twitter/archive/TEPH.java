@@ -10,10 +10,29 @@ import io.kurumi.ntt.utils.NTT;
 import cn.hutool.core.util.ArrayUtil;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.model.request.Send;
+import cn.hutool.core.util.ReUtil;
+import io.kurumi.ntt.fragment.group.JoinCaptcha;
+import cn.hutool.core.util.CharUtil;
+import io.netty.util.AsciiString;
+import java.util.regex.ASCII;
 
 public class TEPH extends Fragment {
 
     public static LongArrayData data = new LongArrayData(TEPH.class);
+	
+	public static boolean needPuhlish(UserArchive archive) {
+		
+		if (data.containsId(archive.id)) return false;
+		
+		if (archive.name.contains("\u200F") || (archive.bio != null && archive.bio.contains("\u200F"))) return false;
+		
+		if (ReUtil.contains(JoinCaptcha.arabicCharacter,archive.name)) return false;
+		
+		if (archive.bio != null && ReUtil.contains(JoinCaptcha.arabicCharacter,archive.bio)) return false;
+		
+		return true;
+		
+	}
 
     @Override
     public void init(BotFragment origin) {
