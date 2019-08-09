@@ -73,7 +73,7 @@ public class Fragment {
         return origin.bot();
 
     }
-	
+
 	public boolean isLauncher() {
 
         return origin instanceof Launcher;
@@ -93,10 +93,10 @@ public class Fragment {
     }
 
     public void executeAsync(BaseRequest request) {
-        executeAsync(null, request);
+        executeAsync(null,request);
     }
 
-    public void executeAsync(Update update, final BaseRequest request) {
+    public void executeAsync(Update update,final BaseRequest request) {
 
         if (update != null && !update.lock.used.getAndSet(true)) {
 
@@ -105,30 +105,30 @@ public class Fragment {
         } else {
 
 			execute(request);
-			
+
 			/*
-			
-            execute(new Runnable() {
 
-                @Override
-                public void run() {
+			 execute(new Runnable() {
 
-                    bot().execute(request);
+			 @Override
+			 public void run() {
 
-                }
+			 bot().execute(request);
 
-            });
+			 }
 
-			*/
+			 });
+
+			 */
 
         }
 
     }
 
 
-    public DeleteMessage deleteMessage(long chatId, int messageId) {
+    public DeleteMessage deleteMessage(long chatId,int messageId) {
 
-        return new DeleteMessage(chatId, messageId);
+        return new DeleteMessage(chatId,messageId);
 
     }
 
@@ -144,39 +144,39 @@ public class Fragment {
 
     }
 
-    public PointData setPrivatePoint(UserData user, String pointTo, PointData content) {
+    public PointData setPrivatePoint(UserData user,String pointTo,PointData content) {
 
-        return point().setPrivate(user, pointTo, content);
-
-    }
-
-    public PointData setPrivatePointData(UserData user, String pointTo, Object content) {
-
-        return point().setPrivateData(user, pointTo, content);
+        return point().setPrivate(user,pointTo,content);
 
     }
 
-    public PointData setPrivatePoint(UserData user, String pointTo) {
+    public PointData setPrivatePointData(UserData user,String pointTo,Object content) {
 
-        return point().setPrivateData(user, pointTo, null);
-
-    }
-
-    public PointData setGroupPoint(UserData user, String pointTo, PointData content) {
-
-        return point().setGroup(user, pointTo, content);
+        return point().setPrivateData(user,pointTo,content);
 
     }
 
-    public PointData setGroupPointData(UserData user, String pointTo, Object content) {
+    public PointData setPrivatePoint(UserData user,String pointTo) {
 
-        return point().setGroupData(user, pointTo, content);
+        return point().setPrivateData(user,pointTo,null);
 
     }
 
-    public PointData setGroupPoint(UserData user, String pointTo) {
+    public PointData setGroupPoint(UserData user,String pointTo,PointData content) {
 
-        return point().setGroupData(user, pointTo, null);
+        return point().setGroup(user,pointTo,content);
+
+    }
+
+    public PointData setGroupPointData(UserData user,String pointTo,Object content) {
+
+        return point().setGroupData(user,pointTo,content);
+
+    }
+
+    public PointData setGroupPoint(UserData user,String pointTo) {
+
+        return point().setGroupData(user,pointTo,null);
 
     }
 
@@ -211,7 +211,7 @@ public class Fragment {
 
     }
 
-    public boolean onUpdate(UserData user, Update update) {
+    public boolean onUpdate(UserData user,Update update) {
 
         return false;
 
@@ -230,7 +230,7 @@ public class Fragment {
 
         for (String function : functions) {
 
-            origin.functions.put(function, this);
+            origin.functions.put(function,this);
 
         }
 
@@ -240,7 +240,7 @@ public class Fragment {
 
         for (String function : functions) {
 
-            origin.adminFunctions.put(function, this);
+            origin.adminFunctions.put(function,this);
 
         }
 
@@ -250,7 +250,7 @@ public class Fragment {
 
         for (String payload : payloads) {
 
-            origin.payloads.put(payload, this);
+            origin.payloads.put(payload,this);
 
         }
 
@@ -260,7 +260,7 @@ public class Fragment {
 
         for (String payload : payloads) {
 
-            origin.adminPayloads.put(payload, this);
+            origin.adminPayloads.put(payload,this);
 
         }
 
@@ -270,7 +270,7 @@ public class Fragment {
 
         for (String point : points) {
 
-            origin.points.put(point, this);
+            origin.points.put(point,this);
 
         }
 
@@ -280,8 +280,8 @@ public class Fragment {
 
         for (String point : points) {
 
-            origin.callbacks.put(point, this);
-            origin.points.put(point, this);
+            origin.callbacks.put(point,this);
+            origin.points.put(point,this);
 
         }
 
@@ -292,26 +292,26 @@ public class Fragment {
 
         for (String point : points) {
 
-            origin.callbacks.put(point, this);
+            origin.callbacks.put(point,this);
 
         }
 
 
     }
 
-    public int checkFunctionContext(UserData user, Msg msg, String function, String[] params) {
+    public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
 
         return FUNCTION_PRIVATE;
 
     }
 
-    public int checkFunction(UserData user, Msg msg, String function, String[] params) {
+    public int checkFunction(UserData user,Msg msg,String function,String[] params) {
 
         return PROCESS_SYNC;
 
     }
 
-    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
     }
 
     protected final String POINT_REQUEST_TWITTER = "request_twitter";
@@ -326,99 +326,127 @@ public class Fragment {
 
     }
 
-    public void requestTwitter(UserData user, Msg msg) {
+    public void requestTwitter(UserData user,Msg msg) {
 
-        requestTwitter(user, msg, false, false);
-
-    }
-
-    public void requestTwitter(UserData user, Msg msg, boolean noCurrent) {
-
-        requestTwitter(user, msg, noCurrent, false);
+        requestTwitter(user,msg,false,false);
 
     }
 
-    public void requestTwitterPayload(UserData user, Msg msg) {
+    public void requestTwitter(UserData user,Msg msg,boolean noCurrent) {
 
-        requestTwitter(user, msg, false, true);
-
-    }
-	
-    public void requestTwitterPayload(UserData user, Msg msg, boolean noCurrent) {
-
-        requestTwitter(user, msg, noCurrent, true);
+        requestTwitter(user,msg,noCurrent,false);
 
     }
-	
+
+    public void requestTwitterPayload(UserData user,Msg msg) {
+
+        requestTwitter(user,msg,false,true);
+
+    }
+
+    public void requestTwitterPayload(UserData user,Msg msg,boolean noCurrent) {
+
+        requestTwitter(user,msg,noCurrent,true);
+
+    }
+
 	public <T extends Fragment> T getInstance(Class<T> target) {
-		
+
 		for (Fragment fragment : origin.fragments) {
-			
+
 			if (target.isInstance(fragment)) {
-				
+
 				return (T) fragment;
-				
+
 			}
-			
+
 		}
-		
+
 		return null;
-		
+
 	}
 
-    public void requestTwitter(final UserData user, final Msg msg, boolean noCurrent, final boolean isPayload) {
+    public void requestTwitter(final UserData user,final Msg msg,boolean noCurrent,final boolean isPayload) {
 
         if (!TAuth.contains(user.id)) {
 
-            msg.send("这个功能需要授权 Twitter账号 才能使用 (❁´▽`❁)", "使用 /login 认证账号 ~").exec();
-
-            return;
-
-        }
-		
-        if (TAuth.data.countByField("user", user.id) == 1) {
-
-            TAuth auth = TAuth.getByUser(user.id).first();
-
-            if (isPayload) {
-
-                onTwitterPayload(user, msg, msg.payload()[0], msg.payload().length > 1 ? ArrayUtil.sub(msg.payload(), 1, msg.payload().length) : new String[0], auth);
-
-            } else {
-
-                onTwitterFunction(user, msg, msg.command(), msg.params(), auth);
-
-            }
+            msg.send("这个功能需要授权 Twitter账号 才能使用 (❁´▽`❁)","使用 /login 认证账号 ~").exec();
 
             return;
 
         }
 
-        if (!noCurrent && StatusAction.current.containsId(user.id)) {
+		final TAuth account;
 
-            TAuth current = TAuth.getById(StatusAction.current.getById(user.id).accountId);
+        if (TAuth.data.countByField("user",user.id) == 1) {
 
-            if (current != null && current.user.equals(user.id)) {
+			account = TAuth.getByUser(user.id).first();
 
-                if (isPayload) {
+        } else if (!noCurrent && StatusAction.current.containsId(user.id)) {
 
-                    onTwitterPayload(user, msg, msg.payload()[0], msg.payload().length > 1 ? ArrayUtil.sub(msg.payload(), 1, msg.payload().length) : new String[0], current);
+			account = TAuth.getById(StatusAction.current.getById(user.id).accountId);
 
-                } else {
+        } else account = null;
 
-                    onTwitterFunction(user, msg, msg.command(), msg.params(), current);
+		if (account != null) {
 
-                }
+			if (isPayload) {
 
-                return;
+				final String payload = msg.payload()[0];
 
-            }
+				final String[] params = msg.payload().length > 1 ? ArrayUtil.sub(msg.payload(),1,msg.payload().length) : new String[0];
 
-        }
+				int checked = checkTwitterPayload(user,msg,payload,params,account);
+
+				if (checked == PROCESS_ASYNC) {
+
+					execute(new Runnable() {
+
+							@Override
+							public void run() {
+
+								onTwitterPayload(user,msg,payload,params,account);
+							}
+
+						});
+
+				} else {
+
+					onTwitterPayload(user,msg,payload,params,account);
+
+				}
+
+
+			} else {
+
+				int checked = checkTwitterFunction(user,msg,msg.command(),msg.params(),account);
+
+				if (checked == PROCESS_ASYNC) {
+
+					execute(new Runnable() {
+
+							@Override
+							public void run() {
+
+								onTwitterFunction(user,msg,msg.command(),msg.params(),account);
+
+							}
+
+						});
+
+				} else {
+
+					onTwitterFunction(user,msg,msg.command(),msg.params(),account);
+
+				}
+
+			}
+
+		}
 
         if (msg.isGroup()) {
 
-            msg.send("咱已经在私聊回复了你。", "如果BOT有删除信息权限,命令和此回复将被自动删除。:)").failedWith();
+            msg.send("咱已经在私聊回复了你。","如果BOT有删除信息权限,命令和此回复将被自动删除。:)").failedWith();
 
             msg.targetChatId = user.id;
 
@@ -430,78 +458,78 @@ public class Fragment {
 
         TwitterRequest request = new TwitterRequest() {{
 
-            this.fromUser = user;
-            this.originMsg = msg;
-            this.fragment = Fragment.this;
-            this.payload = isPayload;
+				this.fromUser = user;
+				this.originMsg = msg;
+				this.fragment = Fragment.this;
+				this.payload = isPayload;
 
-        }};
+			}};
 
         msg.send("请选择目标账号 Σ( ﾟωﾟ ").keyboard(new Keyboard() {{
 
-            for (TAuth account : accounts) {
+					for (TAuth account : accounts) {
 
-                newButtonLine("@" + account.archive().screenName);
+						newButtonLine("@" + account.archive().screenName);
 
-            }
+					}
 
-        }}).withCancel().exec(request);
+				}}).withCancel().exec(request);
 
 
-        setPrivatePoint(msg.from(), POINT_REQUEST_TWITTER, request);
+        setPrivatePoint(msg.from(),POINT_REQUEST_TWITTER,request);
 
 
     }
 
-    public int checkBlockedMsg(UserData user, Msg msg) {
-        
+    public int checkBlockedMsg(UserData user,Msg msg) {
+
 		return PROCESS_REJECT;
-		
+
     }
 
-    public int checkTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
+    public int checkTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
         return PROCESS_ASYNC;
 
     }
 
-    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
+    public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
     }
 
-    public int checkPayload(UserData user, Msg msg, String payload, String[] params) {
+    public int checkPayload(UserData user,Msg msg,String payload,String[] params) {
 
         return PROCESS_ASYNC;
 
     }
 
-    public void onPayload(UserData user, Msg msg, String payload, String[] params) {
+    public void onPayload(UserData user,Msg msg,String payload,String[] params) {
     }
 
-    public int checkTwitterPayload(UserData user, Msg msg, String payload, String[] params, TAuth account) {
+    public int checkTwitterPayload(UserData user,Msg msg,String payload,String[] params,TAuth account) {
 
         return PROCESS_ASYNC;
 
     }
 
-    public void onTwitterPayload(UserData user, Msg msg, String payload, String[] params, TAuth account) {
+    public void onTwitterPayload(UserData user,Msg msg,String payload,String[] params,TAuth account) {
     }
 
-    public int checkPoint(UserData user, Msg msg, String point, PointData data) {
+    public int checkPoint(UserData user,Msg msg,String point,PointData data) {
 
         return PROCESS_SYNC;
 
     }
 
-    public void onPoint(UserData user, Msg msg, String point, PointData data) {
+    public void onPoint(UserData user,Msg msg,String point,PointData data) {
     }
 
-    public int checkCallback(UserData user, Callback callback, String point, String[] params) {
+    public int checkCallback(UserData user,Callback callback,String point,String[] params) {
 
         return PROCESS_SYNC;
 
     }
 
-    public void onCallback(UserData user, Callback callback, String point, String[] params) {
+    public void onCallback(UserData user,Callback callback,String point,String[] params) {
     }
 
     // 基本函数
@@ -514,41 +542,41 @@ public class Fragment {
     public static final int FUNCTION_GROUP = 2;
     public static final int FUNCTION_PUBLIC = 3;
 
-    public int checkMsg(UserData user, Msg msg) {
+    public int checkMsg(UserData user,Msg msg) {
 
         return PROCESS_ASYNC;
 
     }
 
-    public void onMsg(UserData user, Msg msg) {
+    public void onMsg(UserData user,Msg msg) {
 
-        if (msg.isGroup()) onGroup(user, msg);
-        if (msg.isPrivate()) onPrivate(user, msg);
+        if (msg.isGroup()) onGroup(user,msg);
+        if (msg.isPrivate()) onPrivate(user,msg);
 
     }
 
-    public void onGroup(UserData user, Msg msg) {
+    public void onGroup(UserData user,Msg msg) {
     }
 
-    public void onPrivate(UserData user, Msg msg) {
+    public void onPrivate(UserData user,Msg msg) {
     }
 
-    public int checkChanPost(UserData user, Msg msg) {
+    public int checkChanPost(UserData user,Msg msg) {
 
         return PROCESS_ASYNC;
 
     }
 
-    public void onChanPost(UserData user, Msg msg) {
+    public void onChanPost(UserData user,Msg msg) {
     }
 
     public void onPollUpdate(Poll poll) {
     }
 
-    public void onQuery(UserData user, Query inlineQuery) {
+    public void onQuery(UserData user,Query inlineQuery) {
     }
 
-    public byte[] readStiker(Long userId, Sticker sticker) {
+    public byte[] readStiker(Long userId,Sticker sticker) {
 
         File file = getFile(sticker.fileId());
 
@@ -557,7 +585,7 @@ public class Fragment {
 
     public File getFile(String fileId) {
 
-        File local = new File(Env.CACHE_DIR, "files/" + fileId);
+        File local = new File(Env.CACHE_DIR,"files/" + fileId);
 
         if (local.isFile()) return local;
 
@@ -573,7 +601,7 @@ public class Fragment {
 
         String path = bot().getFullFilePath(file.file());
 
-        HttpUtil.downloadFile(path, local);
+        HttpUtil.downloadFile(path,local);
 
         return local.isFile() ? local : null;
 
@@ -581,7 +609,7 @@ public class Fragment {
 
     public File getFile(GetFileResponse file) {
 
-        File local = new File(Env.CACHE_DIR, "files/" + file.file().fileId());
+        File local = new File(Env.CACHE_DIR,"files/" + file.file().fileId());
 
         if (local.isFile()) return local;
 
@@ -595,97 +623,97 @@ public class Fragment {
 
         String path = bot().getFullFilePath(file.file());
 
-        HttpUtil.downloadFile(path, local);
+        HttpUtil.downloadFile(path,local);
 
         return local;
 
     }
 
-    public Msg sendSticker(long chatId, String sticker) {
+    public Msg sendSticker(long chatId,String sticker) {
 
-        return Msg.from(this, execute(new SendSticker(chatId, sticker)));
-
-    }
-
-    public Msg sendFile(long chatId, String file) {
-
-        return Msg.from(this, this.execute(new SendDocument(chatId, file)));
+        return Msg.from(this,execute(new SendSticker(chatId,sticker)));
 
     }
 
-    public Msg sendFile(long chatId, File file) {
+    public Msg sendFile(long chatId,String file) {
 
-        return Msg.from(this, execute(new SendDocument(chatId, file)));
+        return Msg.from(this,this.execute(new SendDocument(chatId,file)));
 
     }
 
-    public Msg sendFile(long chatId, byte[] file) {
+    public Msg sendFile(long chatId,File file) {
 
-        return Msg.from(this, execute(new SendDocument(chatId, file)));
+        return Msg.from(this,execute(new SendDocument(chatId,file)));
+
+    }
+
+    public Msg sendFile(long chatId,byte[] file) {
+
+        return Msg.from(this,execute(new SendDocument(chatId,file)));
 
     }
 
     public void sendTyping(long chatId) {
 
-        execute(new SendChatAction(chatId, ChatAction.typing));
+        execute(new SendChatAction(chatId,ChatAction.typing));
 
     }
 
     public void sendUpdatingFile(long chatId) {
 
-        execute(new SendChatAction(chatId, ChatAction.upload_document));
+        execute(new SendChatAction(chatId,ChatAction.upload_document));
 
     }
 
     public void sendUpdatingPhoto(long chatId) {
 
-        execute(new SendChatAction(chatId, ChatAction.upload_photo));
+        execute(new SendChatAction(chatId,ChatAction.upload_photo));
 
     }
 
     public void sendUpdatingAudio(long chatId) {
 
-        execute(new SendChatAction(chatId, ChatAction.upload_audio));
+        execute(new SendChatAction(chatId,ChatAction.upload_audio));
 
     }
 
     public void sendUpdatingVideo(long chatId) {
 
-        execute(new SendChatAction(chatId, ChatAction.upload_video));
+        execute(new SendChatAction(chatId,ChatAction.upload_video));
 
     }
 
     public void sendUpdatingVideoNote(long chatId) {
 
-        execute(new SendChatAction(chatId, ChatAction.upload_video_note));
+        execute(new SendChatAction(chatId,ChatAction.upload_video_note));
 
     }
 
     public void sendFindingLocation(long chatId) {
 
-        execute(new SendChatAction(chatId, ChatAction.find_location));
+        execute(new SendChatAction(chatId,ChatAction.find_location));
 
     }
 
     public void sendRecordingAudio(long chatId) {
 
-        execute(new SendChatAction(chatId, ChatAction.record_audio));
+        execute(new SendChatAction(chatId,ChatAction.record_audio));
 
     }
 
 
     public void sendRecordingViedo(long chatId) {
 
-        execute(new SendChatAction(chatId, ChatAction.record_video));
+        execute(new SendChatAction(chatId,ChatAction.record_video));
 
     }
 
     public void sendRecordingVideoNote(long chatId) {
 
-        execute(new SendChatAction(chatId, ChatAction.record_video_note));
+        execute(new SendChatAction(chatId,ChatAction.record_video_note));
 
     }
-	
+
 	public void gc() {}
 
 

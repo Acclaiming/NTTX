@@ -168,13 +168,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             if (request.payload) {
 
-                String payload = request.originMsg.payload()[0];
+                final String payload = request.originMsg.payload()[0];
 
-                String[] params = request.originMsg.payload().length > 1 ? ArrayUtil.sub(request.originMsg.payload(),1,request.originMsg.payload().length) : new String[0];
+                final String[] params = request.originMsg.payload().length > 1 ? ArrayUtil.sub(request.originMsg.payload(),1,request.originMsg.payload().length) : new String[0];
 
                 int checked = request.fragment.checkTwitterPayload(user,request.originMsg,payload,params,account);
-
-                request.fragment.onTwitterPayload(user,request.originMsg,payload,params,account);
 
                 if (checked == PROCESS_ASYNC) {
 
@@ -183,17 +181,17 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 							@Override
 							public void run() {
 
-								request.fragment.onTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
-
+								request.fragment.onTwitterPayload(user,request.originMsg,payload,params,account);
+								
 							}
 
 						});
 
                 } else {
 
-                    request.fragment.onTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
-
-                }
+                    request.fragment.onTwitterPayload(user,request.originMsg,payload,params,account);
+				
+				}
 
 
             } else {
