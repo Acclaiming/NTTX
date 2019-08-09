@@ -1,20 +1,17 @@
 package io.kurumi.ntt.fragment.twitter.archive;
 
-import io.kurumi.ntt.fragment.Fragment;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.ReUtil;
+import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.LongArrayData;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.fragment.BotFragment;
-import cn.hutool.core.util.NumberUtil;
-import io.kurumi.ntt.utils.NTT;
-import cn.hutool.core.util.ArrayUtil;
-import io.kurumi.ntt.Env;
-import io.kurumi.ntt.model.request.Send;
-import cn.hutool.core.util.ReUtil;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.group.JoinCaptcha;
-import cn.hutool.core.util.CharUtil;
-import io.netty.util.AsciiString;
-import java.util.regex.ASCII;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.Send;
+import io.kurumi.ntt.utils.NTT;
 
 public class TEPH extends Fragment {
 
