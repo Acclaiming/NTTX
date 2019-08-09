@@ -56,6 +56,7 @@ public class TimelineMain extends Fragment {
 			POINT_TIMELINE,
 			POINT_TL_CONF,
 			
+			POINT_TL_DN,
 			POINT_TL_NS,
 			POINT_TL_NR,
 			POINT_TL_NT,
