@@ -38,7 +38,7 @@ public class StatusAction extends Fragment {
 
 				ButtonLine line = newButtonLine();
 
-				line.newButton("↪",POINT_REPLY,accountId,statusId,full,retweeted,liked,accountId);
+				line.newButton("↪",POINT_REPLY,accountId,statusId,full,retweeted,liked);
 
 				if (retweeted) {
 
