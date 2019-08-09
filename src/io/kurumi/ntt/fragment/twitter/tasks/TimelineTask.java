@@ -78,6 +78,8 @@ public class TimelineTask extends TimerTask {
 					
 					if (status.getSource().contains("fllwrs")) continue;
 					
+					if (status.getSource().contains("twittbot.net")) continue;
+					
 				}
 
                 StatusArchive archive = StatusArchive.save(status).loop(api);
