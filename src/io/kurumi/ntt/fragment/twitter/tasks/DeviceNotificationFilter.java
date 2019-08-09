@@ -45,8 +45,6 @@ public class DeviceNotificationFilter {
 
 				lastUpdates.put(target,System.currentTimeMillis());
 
-				BotLog.info("DNF : " + enabled);
-				
 				return enabled;
 				
 			} catch (TwitterException e) {
