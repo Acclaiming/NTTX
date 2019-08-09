@@ -35,6 +35,7 @@ public class TimelineMain extends Fragment {
 
 	final String POINT_TL_CONF = "twi_tc";
 
+	final String POINT_TL_DN = "twi_dn";
 	final String POINT_TL_NS = "twi_ns";
 	final String POINT_TL_NR = "twi_nr";
 	final String POINT_TL_NT = "twi_nt";
@@ -138,6 +139,11 @@ public class TimelineMain extends Fragment {
 		ButtonMarkup config = new ButtonMarkup();
 
 		config.newButtonLine()
+			.newButton("只看特别关注")
+			.newButton(account.tl_dn != null ? "✅" : "☑",POINT_TL_DN,account.id);
+		
+		
+		config.newButtonLine()
 			.newButton("不看推文")
 			.newButton(account.tl_ns != null ? "✅" : "☑",POINT_TL_NS,account.id);
 
@@ -207,6 +213,20 @@ public class TimelineMain extends Fragment {
 			
 			tlMain(user,callback,account);
 
+		} else if (POINT_TL_DN.equals(point)) {
+
+			if (account.tl_dn == null) {
+
+				account.tl_ns = true;
+
+			} else {
+
+				account.tl_dn = null;
+
+			}
+
+			tlConf(user,callback,account);
+			
 		} else if (POINT_TL_NS.equals(point)) {
 
 			if (account.tl_ns == null) {

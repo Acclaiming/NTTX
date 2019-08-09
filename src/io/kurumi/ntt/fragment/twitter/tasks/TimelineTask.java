@@ -50,7 +50,6 @@ public class TimelineTask extends TimerTask {
 
 	}
 
-
     void processTimeline(TAuth auth,Twitter api) throws TwitterException {
 
 		long offset = 0;
@@ -71,35 +70,39 @@ public class TimelineTask extends TimerTask {
 
                 StatusArchive archive = StatusArchive.save(status).loop(api);
 
-                if (!archive.from.equals(auth.id)) {
+                if (archive.from.equals(auth.id)) continue;
 
-					if (archive.retweetedStatus != -1) {
-						
-						if (auth.tl_nt != null) continue;
-						
-					} else if (archive.inReplyToStatusId == -1) {
-						
-						if (auth.tl_ns != null) continue;
-						
-					} else {
-						
-						if (auth.tl_nr != null) continue;
-						
-					}
+				if (auth.tl_dn != null) {
 					
-					if (auth.tl_nesu != null) {
-						
-						if (ReUtil.contains(MaliciousMessage.esuWordsRegex,archive.text)) {
-							
-							continue;
-							
-						}
-						
-					}
+					if (!DeviceNotificationFilter.isDeviceNotificationEnabled(auth,api,status.getUser().getId())) continue;
 					
-                    archive.sendTo(auth.user,1,auth,status);
+				}
+				
+				if (archive.retweetedStatus != -1) {
 
-                }
+					if (auth.tl_nt != null) continue;
+
+				} else if (archive.inReplyToStatusId == -1) {
+
+					if (auth.tl_ns != null) continue;
+
+				} else {
+
+					if (auth.tl_nr != null) continue;
+
+				}
+
+				if (auth.tl_nesu != null) {
+
+					if (ReUtil.contains(MaliciousMessage.esuWordsRegex,archive.text)) {
+
+						continue;
+
+					}
+
+				}
+
+				archive.sendTo(auth.user,1,auth,status);
 
             }
 
@@ -122,7 +125,7 @@ public class TimelineTask extends TimerTask {
 		if (auth.tl_offset == null || !auth.tl_offset.equals(offset)) {
 
 			auth.tl_offset = offset;
-			
+
 			TAuth.data.setById(auth.id,auth);
 
 		}
