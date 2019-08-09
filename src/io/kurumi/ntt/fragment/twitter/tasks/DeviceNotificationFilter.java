@@ -5,6 +5,7 @@ import java.util.HashMap;
 import twitter4j.Relationship;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import io.kurumi.ntt.utils.BotLog;
 
 public class DeviceNotificationFilter {
 	
@@ -38,12 +39,20 @@ public class DeviceNotificationFilter {
 
 				Relationship ship = api.showFriendship(auth.id,target);
 
-				ships.put(target,ship.isSourceNotificationsEnabled());
+				boolean enabled = ship.isSourceNotificationsEnabled();
+
+				ships.put(target,enabled);
 
 				lastUpdates.put(target,System.currentTimeMillis());
 
+				BotLog.info("DNF : " + enabled);
+				
+				return enabled;
+				
 			} catch (TwitterException e) {
-
+				
+				BotLog.info("DNF",e);
+				
 				if (!ships.containsKey(target)) return false;
 
 			}
