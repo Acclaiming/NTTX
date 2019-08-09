@@ -372,7 +372,7 @@ public class UserArchive {
 
     public String urlHtml() {
 
-        return Html.a(name,url());
+        return Html.a(name.replaceAll(" ?\n ?",""),url());
 
     }
 
