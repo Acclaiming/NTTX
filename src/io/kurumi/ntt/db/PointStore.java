@@ -23,7 +23,7 @@ public class PointStore {
 
         PointStore instance = new PointStore(bot);
 
-        point.put(bot, instance);
+        point.put(bot,instance);
 
         return instance;
 
@@ -65,59 +65,54 @@ public class PointStore {
 
     }
 
-    public PointData setPrivate(UserData user, final String pointTo, final PointData data) {
+    public PointData setPrivate(UserData user,final String pointTo,final PointData data) {
 
         data.point = pointTo;
         data.type = 1;
 
-        privatePoints.put(user.id, data);
+        privatePoints.put(user.id,data);
 
         return data;
 
     }
 
 
-    public PointData setPrivateData(UserData user, final String pointTo, final Object content) {
+    public PointData setPrivateData(UserData user,final String pointTo,final Object content) {
 
-        PointData pointData = new PointData() {{
+        PointData pointData = new PointData();
 
-            point = pointTo;
-            data = content;
+		pointData.point = pointTo;
+		pointData.data = content;
 
-            type = 1;
+		pointData.type = 1;
 
-        }};
-
-        privatePoints.put(user.id, pointData);
+        privatePoints.put(user.id,pointData);
 
         return pointData;
 
     }
 
-    public PointData setGroup(UserData user, final String pointTo, final PointData data) {
+    public PointData setGroup(UserData user,final String pointTo,final PointData data) {
 
         data.type = 2;
         data.point = pointTo;
 
-        groupPoints.put(user.id, data);
+        groupPoints.put(user.id,data);
 
         return data;
 
     }
 
 
-    public PointData setGroupData(UserData user, final String pointTo, final Object content) {
+    public PointData setGroupData(UserData user,final String pointTo,final Object content) {
 
-        PointData pointData = new PointData() {{
+        PointData pointData = new PointData();
 
-            point = pointTo;
-            data = content;
-
-            type = 2;
-
-        }};
-
-        groupPoints.put(user.id, pointData);
+		pointData.point = pointTo;
+		pointData.data = content;
+		
+		
+        groupPoints.put(user.id,pointData);
 
         return pointData;
 
