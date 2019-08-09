@@ -218,7 +218,7 @@ public class TimelineMain extends Fragment {
 
 			if (account.tl_dn == null) {
 
-				account.tl_ns = true;
+				account.tl_dn = true;
 
 			} else {
 
