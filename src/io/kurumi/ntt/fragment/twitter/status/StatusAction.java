@@ -20,6 +20,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.NumberUtil;
 
 public class StatusAction extends Fragment {
 
@@ -38,25 +39,25 @@ public class StatusAction extends Fragment {
 
 				ButtonLine line = newButtonLine();
 
-				line.newButton("↪",POINT_REPLY,accountId,statusId,full ? 1 : 0,retweeted ? 1 : 0,liked ? 1 :0);
+				line.newButton("↪",POINT_REPLY,accountId);
 
 				if (retweeted) {
 
-					line.newButton("❎️",POINT_DESTROY_RETWEET);
+					line.newButton("❎️",POINT_DESTROY_RETWEET,statusId);
 					
 				} else {
 
-					line.newButton("🔄",POINT_RETWEET_STATUS);
+					line.newButton("🔄",POINT_RETWEET_STATUS,statusId);
 
 				}
 
 				if (liked) {
 
-					line.newButton("💔",POINT_UNLIKE_STATUS);
+					line.newButton("💔",POINT_UNLIKE_STATUS,full,retweeted,liked);
 
 				} else {
 
-					line.newButton("❤",POINT_LIKE_STATUS);
+					line.newButton("❤",POINT_LIKE_STATUS,full,retweeted,liked);
 
 				}
 
@@ -123,30 +124,19 @@ public class StatusAction extends Fragment {
     @Override
     public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
-		if (params.length == 0) {
-
-			InlineKeyboardButton[] buttons = callback.message().replyMarkup().inlineKeyboard()[0];
-
-			params = ArrayUtil.remove(buttons[0].callbackData().split(","),0);
-
-		}
-
 		long accountId;
 		long statusId;
+		
+		InlineKeyboardButton[] buttons = callback.message().replyMarkup().inlineKeyboard()[0];
 
-		if (params.length == 5) {
-
-			accountId = Long.parseLong(params[0]);
-
-			statusId = Long.parseLong(params[1]);
-
-		} else {
-
-			accountId = -1;
-
-			statusId = Long.parseLong(params[0]);
-
-		}
+		accountId = NumberUtil.parseLong(ArrayUtil.remove(buttons[0].callbackData().split(","),0)[0]);
+		statusId = NumberUtil.parseLong(ArrayUtil.remove(buttons[1].callbackData().split(","),0)[0]);
+		
+		params = ArrayUtil.remove(buttons[2].callbackData().split(","),0);
+		
+		boolean isFull = "true".equals(params[0]);
+        boolean retweeted = "true".equals(params[1]);
+        boolean liked = "true".equals(params[3]);
 
 		if (POINT_REPLY.equals(point)) {
 
@@ -156,10 +146,7 @@ public class StatusAction extends Fragment {
 
 		}
 
-        boolean isFull = params.length > 1 && "1".equals(params.length == 5 ? params[2] : params[1]);
-        boolean retweeted = params.length > 1 && "1".equals(params.length == 5 ?  params[3] : params[2]);
-        boolean liked = params.length > 1 && "1".equals(params.length == 5 ? params[4] : params[3]);
-
+        
         long count = TAuth.data.countByField("user",user.id);
 
         if (count == 0) {
