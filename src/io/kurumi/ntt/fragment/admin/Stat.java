@@ -6,6 +6,10 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import tool.sysinfo.linux.cpu.Handler4stat;
 import tool.sysinfo.linux.memory.Handler4meminfo;
+import cn.hutool.core.thread.ThreadUtil;
+import java.lang.management.ManagementFactory;
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.RuntimeUtil;
 
 public class Stat extends Fragment {
 
@@ -38,6 +42,12 @@ public class Stat extends Fragment {
 
         status.append("\nCPU占用 : ").append((100 - ((float) (idle) / total) * 100)).append("%");
 
+		status.append("\n\nDUMP :\n\n");
+		
+		int processId = NumberUtil.parseInt(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
+
+		status.append(RuntimeUtil.execForStr("jstack -l " + processId + " | tee -a jstack.log"));
+		
         msg.send(status.toString()).exec();
 
     }
