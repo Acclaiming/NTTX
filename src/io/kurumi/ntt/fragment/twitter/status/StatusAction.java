@@ -128,11 +128,19 @@ public class StatusAction extends Fragment {
 		long statusId;
 		
 		InlineKeyboardButton[] buttons = callback.message().replyMarkup().inlineKeyboard()[0];
-
+		
 		accountId = NumberUtil.parseLong(ArrayUtil.remove(buttons[0].callbackData().split(","),0)[0]);
 		statusId = NumberUtil.parseLong(ArrayUtil.remove(buttons[1].callbackData().split(","),0)[0]);
 		
 		params = ArrayUtil.remove(buttons[2].callbackData().split(","),0);
+		
+		if (params.length != 3) {
+			
+			callback.invalidQuery();
+			
+			return;
+			
+		}
 		
 		boolean isFull = "true".equals(params[0]);
         boolean retweeted = "true".equals(params[1]);
