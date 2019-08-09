@@ -525,7 +525,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                         final Fragment function;
 
-						if (isMainInstance()) {
+						if (user.admin() && isLauncher()) {
 
 							ModuleEnv env = ModuleEnv.get(user.id);
 
@@ -544,7 +544,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 							function = functions.containsKey(msg.command()) ? functions.get(msg.command()) : this;
 
 						}
-						
+
 						int checked = function.checkFunction(user,msg,msg.command(),msg.params());
 
                         if (checked == PROCESS_REJECT) return;
@@ -553,7 +553,15 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                             msg.send("请在群组使用 :)").async();
 
-                        } else if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.params()) == FUNCTION_PRIVATE && !msg.isPrivate()) {
+                        }
+
+						if (isLauncher() && !isMainInstance()) {
+
+							msg.send("警告！这里是旧式实例，已经无法控制，请尽快切换到 @" + Launcher.INSTANCE.me.username() + " :(").async();
+
+						}
+
+						if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.params()) == FUNCTION_PRIVATE && !msg.isPrivate()) {
 
                             asyncPool.execute(new Runnable() {
 

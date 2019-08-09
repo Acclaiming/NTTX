@@ -375,7 +375,7 @@ public class Fragment {
             return;
 
         }
-
+		
         if (TAuth.data.countByField("user", user.id) == 1) {
 
             TAuth auth = TAuth.getByUser(user.id).first();
