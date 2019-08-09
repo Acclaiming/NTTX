@@ -68,7 +68,7 @@ public class StatusAction extends Fragment {
 
 				if (!full) {
 
-					line.newButton("🔎",POINT_SHOW_FULL,accountId,statusId,true,retweeted,liked,accountId);
+					line.newButton("🔎",POINT_SHOW_FULL,accountId,statusId,true,retweeted,liked);
 
 				}
 
