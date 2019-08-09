@@ -38,7 +38,7 @@ public class StatusAction extends Fragment {
 
 				ButtonLine line = newButtonLine();
 
-				line.newButton("↪",POINT_REPLY,accountId,statusId,full,retweeted,liked);
+				line.newButton("↪",POINT_REPLY,accountId,statusId,full ? 1 : 0,retweeted ? 1 : 0,liked ? 1 :0);
 
 				if (retweeted) {
 
@@ -68,8 +68,8 @@ public class StatusAction extends Fragment {
 
 				if (!full) {
 
-					line.newButton("🔎",POINT_SHOW_FULL,accountId,statusId,true,retweeted,liked);
-
+					line.newButton("🔎",POINT_SHOW_FULL,accountId,statusId,1,retweeted ? 1 : 0,liked ? 1 :0);
+					
 				}
 
 				// line.newButton("🔇",POINT_MUTE_USER,status.getUser().getId());
@@ -156,9 +156,9 @@ public class StatusAction extends Fragment {
 
 		}
 
-        boolean isFull = params.length > 1 && "true".equals(params.length == 5 ? params[2] : params[1]);
-        boolean retweeted = params.length > 1 && "true".equals(params.length == 5 ?  params[3] : params[2]);
-        boolean liked = params.length > 1 && "true".equals(params.length == 5 ? params[4] : params[3]);
+        boolean isFull = params.length > 1 && "1".equals(params.length == 5 ? params[2] : params[1]);
+        boolean retweeted = params.length > 1 && "1".equals(params.length == 5 ?  params[3] : params[2]);
+        boolean liked = params.length > 1 && "1".equals(params.length == 5 ? params[4] : params[3]);
 
         long count = TAuth.data.countByField("user",user.id);
 
