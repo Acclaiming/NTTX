@@ -123,8 +123,8 @@ public class StatusArchive {
             }
 
             SendResponse resp = Launcher.INSTANCE.bot().execute(send);
-
-            if (resp != null && resp.isOk() && resp.message().chat().type() == Chat.Type.Private) {
+			
+            if (status != null && resp != null && resp.isOk() && resp.message().chat().type() == Chat.Type.Private) {
 
                 MessagePoint.set(resp.message().messageId(),1,id);
 
