@@ -118,7 +118,7 @@ public class StatusArchive {
 
             if (status != null) {
 
-                send.replyMarkup(StatusAction.createMarkup(id,from.equals(auth.id),depth() <= depth,status.isRetweetedByMe(),status.isFavorited()).markup());
+                send.replyMarkup(StatusAction.createMarkup(auth.id,id,from.equals(auth.id),depth() <= depth,status.isRetweetedByMe(),status.isFavorited()).markup());
 
             }
 
@@ -134,11 +134,15 @@ public class StatusArchive {
 
                 if (status != null) {
 
-                    sendN.buttons(StatusAction.createMarkup(id,from.equals(auth.id),depth == -1 || depth() <= depth,status.isRetweetedByMe(),status.isFavorited()));
+                    sendN.buttons(StatusAction.createMarkup(auth.id,id,from.equals(auth.id),depth == -1 || depth() <= depth,status.isRetweetedByMe(),status.isFavorited()));
 
-                }
+					sendN.exec();
 
-                sendN.point(1,id);
+                } else {
+
+					sendN.point(1,id);
+
+				}
 
             }
 
@@ -146,13 +150,19 @@ public class StatusArchive {
 
             Send send = new Send(chatId,toHtml(depth)).html();
 
+			SendResponse msg;
+
             if (status != null) {
 
-                send.buttons(StatusAction.createMarkup(id,from.equals(auth.id),depth == -1 || depth() <= depth,status.isRetweetedByMe(),status.isFavorited()));
+                send.buttons(StatusAction.createMarkup(auth.id,id,from.equals(auth.id),depth == -1 || depth() <= depth,status.isRetweetedByMe(),status.isFavorited()));
 
-            }
+				msg = send.exec();
 
-            SendResponse msg = send.point(1,id);
+            } else {
+
+				msg = send.point(1,id);
+
+			}
 
             if (photo.size() > 0 && msg.isOk()) {
 

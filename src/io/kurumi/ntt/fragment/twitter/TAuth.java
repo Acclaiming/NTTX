@@ -72,6 +72,8 @@ public class TAuth {
 	public Boolean fo_info;
 	public Boolean fr_info;
 
+	public Boolean ign_target;
+	
 	public Boolean tl;
 	public Long tl_offset;
 

@@ -42,7 +42,7 @@ public class StatusUpdate extends Fragment {
 
         super.init(origin);
 
-        registerFunction("update");
+        registerFunction("update","reply");
 
         registerPoint(POINT_UPDATE_STATUS);
 
@@ -66,13 +66,41 @@ public class StatusUpdate extends Fragment {
 
         if (msg.isReply()) {
 
-            MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
+            MessagePoint point = MessagePoint.getFromStatus(msg.replyTo().message());
 
-            if (point != null && point.type == 1) {
+			if (point == null || point.type == 0) {
 
-                update.quoted = point.targetId;
+				point = MessagePoint.get(msg.replyTo().messageId());
 
-            }
+				if (point == null || point.type == 0) {
+					
+				} else point.userId = -1;
+
+			}
+			
+			if (point != null) {
+				
+				if ("update".equals(function)) {
+					
+					update.quoted = point.targetId;
+					
+				} else {
+					
+					StatusArchive toReply = StatusArchive.get(point.targetId);
+					
+					if (toReply == null) {
+						
+						msg.send("回复的推文没有记录...").async();
+						
+						return;
+						
+					}
+					
+					update.toReply = toReply;
+					
+				}
+				
+			}
 
         }
 
@@ -84,30 +112,40 @@ public class StatusUpdate extends Fragment {
 
     String submitAndCancel = "使用 /submit 发送\n使用 /timed 定时发送\n使用 /cancel 取消";
 
-	public void reply(UserData user,Callback callbacl,long statusId) {
+	public void reply(UserData user,Callback callbacl,long accountId,long statusId) {
 
-		StatusAction.CurrentAccount current = StatusAction.current.getById(user.id);
+		TAuth auth = null;
 
-		TAuth auth;
+		if (accountId != -1) {
 
-		if (current != null) {
+			auth = TAuth.getById(accountId);
 
-			auth = TAuth.getById(current.accountId);
+		}
 
-			if (auth == null || !auth.user.equals(user.id)) {
+		if (auth == null || !auth.user.equals(user.id) || auth.ign_target != null) {
+
+			StatusAction.CurrentAccount current = StatusAction.current.getById(user.id);
+
+			if (current != null) {
+
+				auth = TAuth.getById(current.accountId);
+
+				if (auth == null || !auth.user.equals(user.id)) {
+
+					callbacl.alert("乃认证了多个账号 请使用 /current 选择默认账号再操作 ~");
+
+					return;
+
+				}
+
+
+			} else {
 
 				callbacl.alert("乃认证了多个账号 请使用 /current 选择默认账号再操作 ~");
 
 				return;
 
 			}
-
-
-		} else {
-
-			callbacl.alert("乃认证了多个账号 请使用 /current 选择默认账号再操作 ~");
-
-			return;
 
 		}
 
@@ -119,11 +157,11 @@ public class StatusUpdate extends Fragment {
 		update.toReply = StatusArchive.get(statusId);
 
 		setPrivatePoint(user,POINT_UPDATE_STATUS,update);
-		
+
 		callbacl.confirm();
-		
+
 		callbacl.send("发送回复内容 :").withCancel().exec(update);
-		
+
 	}
 
 	@Override
@@ -135,13 +173,23 @@ public class StatusUpdate extends Fragment {
 
 		}
 
-		MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
+		MessagePoint point = MessagePoint.getFromStatus(msg.replyTo().message());
 
-		if (point == null || point.type == 0) return PROCESS_ASYNC;
+		if (point == null || point.type == 0) {
+
+			point = MessagePoint.get(msg.replyTo().messageId());
+
+			if (point == null || point.type == 0) {
+
+				return PROCESS_ASYNC;
+
+			} else point.accountId = -1;
+
+		}
 
 		long count = TAuth.data.countByField("user",user.id);
 
-		TAuth auth;
+		TAuth auth = null;
 
 		if (count == 0) {
 
@@ -155,25 +203,35 @@ public class StatusUpdate extends Fragment {
 
 		} else {
 
-			StatusAction.CurrentAccount current = StatusAction.current.getById(user.id);
+			if (point.accountId != -1) {
 
-			if (current != null) {
+				auth = TAuth.getById(point.accountId);
 
-				auth = TAuth.getById(current.accountId);
+			}
 
-				if (auth == null || !auth.user.equals(user.id)) {
+			if (auth == null || !auth.user.equals(user.id) || auth.ign_target != null) {
+
+				StatusAction.CurrentAccount current = StatusAction.current.getById(user.id);
+
+				if (current != null) {
+
+					auth = TAuth.getById(current.accountId);
+
+					if (auth == null || !auth.user.equals(user.id)) {
+
+						msg.send("乃认证了多个账号 请使用 /current 选择默认账号再操作 ~").exec();
+
+						return PROCESS_REJECT;
+
+					}
+
+				} else {
 
 					msg.send("乃认证了多个账号 请使用 /current 选择默认账号再操作 ~").exec();
 
 					return PROCESS_REJECT;
 
 				}
-
-			} else {
-
-				msg.send("乃认证了多个账号 请使用 /current 选择默认账号再操作 ~").exec();
-
-				return PROCESS_REJECT;
 
 			}
 
@@ -345,7 +403,7 @@ public class StatusUpdate extends Fragment {
 		setPrivatePoint(user,POINT_UPDATE_STATUS,update);
 
 		onPointedFunction(user,msg,"submit",null,null,update);
-		
+
 		return PROCESS_REJECT;
 
 	}
@@ -591,7 +649,7 @@ public class StatusUpdate extends Fragment {
 
 				StatusArchive archive = StatusArchive.save(status);
 
-				msg.send(update.toReply == null ? "发送成功 :" : "回复成功 :",StatusArchive.split_tiny,archive.toHtml(0)).buttons(StatusAction.createMarkup(archive.id,true,archive.depth() == 0,false,false)).html().point(1,archive.id);
+				msg.send(update.toReply == null ? "发送成功 :" : "回复成功 :",StatusArchive.split_tiny,archive.toHtml(0)).buttons(StatusAction.createMarkup(update.auth.id,archive.id,true,archive.depth() == 0,false,false)).html().point(1,archive.id);
 
 			} catch (TwitterException e) {
 
@@ -847,7 +905,7 @@ public class StatusUpdate extends Fragment {
 
 	}
 
- class UpdatePoint extends PointData {
+	class UpdatePoint extends PointData {
 
 		String text;
 
