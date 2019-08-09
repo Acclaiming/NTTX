@@ -134,7 +134,7 @@ public class StatusAction extends Fragment {
 		long accountId;
 		long statusId;
 
-		if (params.length == 6) {
+		if (params.length == 5) {
 
 			accountId = Long.parseLong(params[0]);
 
@@ -156,9 +156,9 @@ public class StatusAction extends Fragment {
 
 		}
 
-        boolean isFull = params.length > 1 && "true".equals(params.length == 6 ? params[2] : params[1]);
-        boolean retweeted = params.length > 1 && "true".equals(params.length == 6 ?  params[3] : params[2]);
-        boolean liked = params.length > 1 && "true".equals(params.length == 6 ? params[4] : params[3]);
+        boolean isFull = params.length > 1 && "true".equals(params.length == 5 ? params[2] : params[1]);
+        boolean retweeted = params.length > 1 && "true".equals(params.length == 5 ?  params[3] : params[2]);
+        boolean liked = params.length > 1 && "true".equals(params.length == 5 ? params[4] : params[3]);
 
         long count = TAuth.data.countByField("user",user.id);
 
