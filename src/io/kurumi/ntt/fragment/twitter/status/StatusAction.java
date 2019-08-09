@@ -139,10 +139,9 @@ public class StatusAction extends Fragment {
 		long accountId = NumberUtil.parseLong(ArrayUtil.remove(buttons[0].callbackData().split(","),0)[0]);
 		long statusId = NumberUtil.parseLong(ArrayUtil.remove(buttons[1].callbackData().split(","),0)[0]);
 		
-		
 		boolean isFull = "true".equals(params[0]);
         boolean retweeted = "true".equals(params[1]);
-        boolean liked = "true".equals(params[3]);
+        boolean liked = "true".equals(params[2]);
 
 		if (POINT_REPLY.equals(point)) {
 
