@@ -412,7 +412,7 @@ public class Send extends AbstractSend<Send> {
 				
 				if (resp != null) {
 					
-					BotLog.debug("发送出错 : " + request.getText() + "\n" + resp.description());
+					BotLog.debug("发送出错 : " + request + "\n" + resp.description());
 					
 				}
 

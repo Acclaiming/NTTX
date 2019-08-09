@@ -43,6 +43,7 @@ public class StatusAction extends Fragment {
 				if (retweeted) {
 
 					line.newButton("❎️",POINT_DESTROY_RETWEET);
+					
 				} else {
 
 					line.newButton("🔄",POINT_RETWEET_STATUS);
