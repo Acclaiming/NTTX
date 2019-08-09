@@ -93,13 +93,13 @@ public class MessagePoint {
 
 		point.type = 1;
 		
-		if (params.length == 5) {
+		if (params.length == 4) {
 			
 			point.targetId = Long.parseLong(params[0]);
 
 			point.accountId = -1;
 			
-		} else if (params.length == 6) {
+		} else if (params.length == 5) {
 			
 			point.targetId = Long.parseLong(params[1]);
 
