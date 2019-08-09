@@ -549,18 +549,18 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                         if (checked == PROCESS_REJECT) return;
 
-                        if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.params()) == FUNCTION_GROUP && !msg.isGroup()) {
-
-                            msg.send("请在群组使用 :)").async();
-
-                        }
-
 						if (isLauncher() && !isMainInstance()) {
 
 							msg.send("警告！这里是旧式实例，已经无法控制，请尽快切换到 @" + Launcher.INSTANCE.me.username() + " :(").async();
 
 						}
+						
+                        if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.params()) == FUNCTION_GROUP && !msg.isGroup()) {
 
+                            msg.send("请在群组使用 :)").async();
+
+                        }
+						
 						if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.params()) == FUNCTION_PRIVATE && !msg.isPrivate()) {
 
                             asyncPool.execute(new Runnable() {
