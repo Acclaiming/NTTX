@@ -155,9 +155,9 @@ public class StatusAction extends Fragment {
 
 		}
 
-        boolean isFull = params.length > 1 && "true".equals(params.length == 5 ? params[1] : params[2]);
-        boolean retweeted = params.length > 1 && "true".equals(params.length == 5 ?  params[2] : params[3]);
-        boolean liked = params.length > 1 && "true".equals(params.length == 5 ? params[3] : params[4]);
+        boolean isFull = params.length > 1 && "true".equals(params.length == 6 ? params[2] : params[1]);
+        boolean retweeted = params.length > 1 && "true".equals(params.length == 6 ?  params[3] : params[2]);
+        boolean liked = params.length > 1 && "true".equals(params.length == 6 ? params[4] : params[3]);
 
         long count = TAuth.data.countByField("user",user.id);
 
