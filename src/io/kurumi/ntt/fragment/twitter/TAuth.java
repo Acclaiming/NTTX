@@ -79,6 +79,7 @@ public class TAuth {
 
 	public Boolean tl_dn;
 	public Boolean tl_ns;
+	public Boolean tl_na;
 	public Boolean tl_nr;
 	public Boolean tl_nt;
 	public Boolean tl_nesu;

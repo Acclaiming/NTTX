@@ -67,6 +67,18 @@ public class TimelineTask extends TimerTask {
                     offset = status.getId();
 
                 }
+				
+				if (auth.tl_na != null) {
+					
+					if (status.getSource().contains("IFTTT")) continue;
+					
+					if (status.getSource().contains("ツイ廃あらーと")) continue;
+					
+					if (status.getSource().contains("今日のツイライフ")) continue;
+					
+					if (status.getSource().contains("fllwrs")) continue;
+					
+				}
 
                 StatusArchive archive = StatusArchive.save(status).loop(api);
 
