@@ -147,7 +147,7 @@ public class StatusArchive {
 
             }
 
-            SendResponse resp = Launcher.INSTANCE.bot().execute(send);
+            SendResponse resp = Launcher.INSTANCE.bot().execute((AbstractSendRequest)send);
 
             if (status != null && resp != null && resp.isOk() && resp.message().chat().type() == Chat.Type.Private) {
 
