@@ -34,6 +34,7 @@ import twitter4j.User;
 
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
+import io.kurumi.ntt.fragment.twitter.ui.extra.OWUnfoPublish;
 
 public class TrackTask extends TimerTask {
 
@@ -661,9 +662,9 @@ public class TrackTask extends TimerTask {
             User follower = api.showUser(id);
             UserArchive archive = UserArchive.save(follower);
 
-            Relationship ship = api.showFriendship(id,auth.id);
+            Relationship ship = api.showFriendship(auth.id,id);
 
-            if (ship.isSourceFollowingTarget()) {
+            if (ship.isSourceFollowedByTarget()) {
 
                 latest.add(id);
 
@@ -675,14 +676,19 @@ public class TrackTask extends TimerTask {
 
                 StringBuilder msg = new StringBuilder();
 
-                msg.append(ship.isSourceFollowedByTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 取关了你 :)").append(parseStatus(api,follower));
+                msg.append(ship.isSourceFollowingTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 取关了你 :)").append(parseStatus(api,follower));
 
                 if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
                 new Send(auth.user,msg.toString()).html().point(0,archive.id);
 
-
             }
+			
+			if (ship.isSourceFollowingTarget()) {
+			
+				OWUnfoPublish.onUnfo(auth,api,archive);
+				
+			}
 
         } catch (TwitterException e) {
 

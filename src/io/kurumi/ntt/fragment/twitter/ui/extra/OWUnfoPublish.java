@@ -1,28 +1,48 @@
 package io.kurumi.ntt.fragment.twitter.ui.extra;
 
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.http.HtmlUtil;
+import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.twitter.TAuth;
-import io.kurumi.ntt.fragment.twitter.ui.AccountMain;
-import io.kurumi.ntt.model.Callback;
-import io.kurumi.ntt.model.request.ButtonMarkup;
+import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
-import cn.hutool.core.date.DateUtil;
-import java.text.DateFormat;
 import io.kurumi.ntt.fragment.twitter.ui.ExtraMain;
-import io.kurumi.ntt.db.PointData;
-import io.kurumi.ntt.fragment.twitter.ui.extra.OWUnfoPublish.OupSet;
-import io.kurumi.ntt.utils.Html;
+import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.http.HtmlUtil;
+import io.kurumi.ntt.model.request.ButtonMarkup;
+import io.kurumi.ntt.model.request.Send;
+import io.kurumi.ntt.utils.Html;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import io.kurumi.ntt.utils.NTT;
 
 public class OWUnfoPublish extends Fragment {
 
 	public static String POINT_OUP = "twi_oup";
 	public static String POINT_OUP_SET = "twi_oup_set";
+
+	public static void onUnfo(TAuth auth,Twitter api,UserArchive archive) {
+		
+		if (auth.oup == null) return;
+		
+		try {
+			
+			Status status = api.updateStatus(formatMessage(auth,archive));
+
+			new Send(auth.user,"单向取关已推送 :\n\n",StatusArchive.save(status).url()).enableLinkPreview().async();
+			
+		} catch (TwitterException e) {
+			
+			new Send(auth.user,"单向取关推送失败 :\n\n",NTT.parseTwitterException(e)).async();
+			
+		}
+
+	}
 
 	@Override
 	public void init(BotFragment origin) {
