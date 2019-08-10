@@ -156,11 +156,15 @@ public class UserArchive {
 
     public boolean read(User user) {
 
+		boolean change = false;
+        StringBuilder str = new StringBuilder();
+        String split = "\n--------------------------------\n";
+		
         if (user == null && !isDisappeared) {
 
             isDisappeared = true;
 
-            TrackTask.onUserChange(this,"用户被冻结或已停用 :)");
+            TrackTask.onUserChange(this,split + "用户被冻结或已停用 :)");
 
             if (Env.TEP_CHANNEL != -1 && !TEPH.needPuhlish(this)) {
 
@@ -206,10 +210,7 @@ public class UserArchive {
 
         }
 
-        boolean change = false;
-        StringBuilder str = new StringBuilder();
-        String split = "\n--------------------------------\n";
-
+        
         String nameL = name;
 
         if (!(name = user.getName()).equals(nameL)) {
@@ -274,7 +275,17 @@ public class UserArchive {
 
         if (!ObjectUtil.equal(bannerUrl = user.getProfileBannerURL(),oldBannerUrl)) {
 
-            str.append(split).append("横幅更改 : " + Html.a("新横幅",photoUrl));
+            str.append(split).append("横幅更改 : ");
+			
+			if (photoUrl != null) {
+				
+				str.append(Html.a("新横幅",photoUrl));
+				
+			} else {
+				
+				str.append("移除横幅");
+				
+			}
 
             change = true;
 
