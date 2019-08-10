@@ -150,8 +150,6 @@ public class OWUnfoPublish extends Fragment {
 
 	void oupConfig(UserData user,Callback callback,String[] params,TAuth account) {
 
-		callback.alert("喵");
-		
 		if (params.length == 0) {
 
 			if (account.oup == null) {
