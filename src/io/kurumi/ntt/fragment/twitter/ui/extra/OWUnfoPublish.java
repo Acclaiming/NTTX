@@ -123,7 +123,7 @@ public class OWUnfoPublish extends Fragment {
 
 		if (account.oup_msg == null) {
 
-			message += "[默认]";
+			message += "[ 默认 ]";
 
 		}
 
