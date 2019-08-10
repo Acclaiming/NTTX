@@ -109,7 +109,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
         if ("cancel".equals(function)) {
 
-            msg.send("没有什么需要取消的 :)").removeKeyboard().failedWith();
+            msg.send("已重置会话状态").removeKeyboard().failedWith(2333);
 
             return;
 
@@ -131,9 +131,24 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
         if ("cancel".equals(msg.command())) {
 
-            if (data.type == 1) clearPrivatePoint(user).onCancel(user,msg);
-            else clearGroupPoint(user).onCancel(user,msg);
+            if (data.type == 1) {
+				
+				Msg status = msg.send("已重置会话状态").removeKeyboard().send();
 
+				clearPrivatePoint(user).onCancel(user,msg);
+				
+				status.delete();
+				
+            } else {
+				
+				Msg status = msg.send("已重置会话状态").removeKeyboard().send();
+				
+				clearGroupPoint(user).onCancel(user,msg);
+
+				status.delete();
+				
+			}
+				
             return;
 
         } else if (POINT_REQUEST_TWITTER.equals(point)) {

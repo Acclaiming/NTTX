@@ -12,16 +12,13 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.NTT;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Status;

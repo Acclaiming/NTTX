@@ -68,7 +68,6 @@ public class StatusArchive {
 
     public static StatusArchive save(Status status) {
 
-
         StatusArchive archive = data.getById(status.getId());
 
         if (archive == null) {
