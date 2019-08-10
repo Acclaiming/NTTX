@@ -96,7 +96,13 @@ public class TwitterMain extends Fragment {
 
 		} else if (POINT_LOGIN_METHOD.equals(point)) {
 
-			if (params.length != 1 || !NumberUtil.isNumber(params[0])) return;
+			if (params.length != 1 || !NumberUtil.isNumber(params[0])) {
+				
+				callback.invalidQuery();
+				
+				return;
+				
+			}
 
 			accountLogin(user,callback,NumberUtil.parseInt(params[0]));
 

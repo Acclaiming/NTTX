@@ -27,16 +27,22 @@ public class OWUnfoPublish extends Fragment {
 
 		super.init(origin);
 
-		registerCallback(POINT_OUP);
+		registerCallback(POINT_OUP,POINT_OUP_SET);
 
-		registerPoints(POINT_OUP_SET);
-
+		registerPoint(POINT_OUP_SET);
+		
 	}
 
 	@Override
 	public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
-		if (params.length == 0 || !NumberUtil.isNumber(params[0])) return;
+		if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
+			
+			callback.invalidQuery();
+			
+			return;
+			
+		}
 
 		long accountId = NumberUtil.parseLong(params[0]);
 

@@ -35,8 +35,14 @@ public class AccountMain extends Fragment {
 	@Override
 	public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
-		if (params.length == 0 || !NumberUtil.isNumber(params[0])) return;
+		if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
 
+			callback.invalidQuery();
+
+			return;
+
+		}
+		
 		long accountId = NumberUtil.parseLong(params[0]);
 
 		TAuth account = TAuth.getById(accountId);
