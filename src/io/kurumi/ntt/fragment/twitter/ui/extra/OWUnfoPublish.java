@@ -194,9 +194,10 @@ public class OWUnfoPublish extends Fragment {
 
 			set.account.oup_msg = msg.text().trim().equals(defaultMessage()) ? null : msg.text();
 			
-			TAuth.data.setById(set.account.id,set.account);
-
 			clearPrivatePoint(user);
+			
+			TAuth.data.setById(set.account.id,set.account);
+			
 
 		}
 
