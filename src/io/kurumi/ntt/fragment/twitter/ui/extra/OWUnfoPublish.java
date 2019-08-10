@@ -107,7 +107,7 @@ public class OWUnfoPublish extends Fragment {
 
 		}
 
-		message += "\n\n" + (account.oup_msg == null ? defaultMessage() : account.oup_msg);
+		message += "\n\n" + Html.code(account.oup_msg == null ? defaultMessage() : account.oup_msg);
 
 		ButtonMarkup buttons = new ButtonMarkup();
 
@@ -119,7 +119,7 @@ public class OWUnfoPublish extends Fragment {
 
 		buttons.newButtonLine("🔙",ExtraMain.POINT_EXTRA,account.id);
 
-		callback.edit(message).buttons(buttons).async();
+		callback.edit(message).buttons(buttons).html().async();
 
 	}
 
