@@ -16,6 +16,7 @@ import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.fragment.twitter.ui.extra.OWUnfoPublish.OupSet;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.model.Msg;
+import cn.hutool.core.util.ArrayUtil;
 
 public class OWUnfoPublish extends Fragment {
 
@@ -64,6 +65,8 @@ public class OWUnfoPublish extends Fragment {
 
 		} else {
 
+			params = ArrayUtil.remove(params,0);
+			
 			oupConfig(user,callback,params,account);
 
 		}
