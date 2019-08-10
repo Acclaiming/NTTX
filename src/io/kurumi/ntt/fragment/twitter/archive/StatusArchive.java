@@ -131,7 +131,7 @@ public class StatusArchive {
 
 			AbstractSendRequest send;
 			
-			if (file.getName().endsWith(".jpg")) {
+			if (file.getName().contains(".jpg")) {
 				
 				send = new SendPhoto(chatId,file).caption(html).parseMode(ParseMode.HTML);
 				
