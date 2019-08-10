@@ -65,8 +65,31 @@ public class NeteaseMusic extends Fragment {
 
 		}
 		
-		if (text.contains("song/")) text = StrUtil.subBetween(text,"song/","/");
+		if (text.contains("song/")) {
+			
+			text = StrUtil.subAfter(text,"song/",false);
+			
+		}
 
+		if (text.contains("song?id=")) {
+			
+			text = StrUtil.subAfter(text,"id=",false);
+			
+		}
+		
+		if (text.contains("/")) {
+
+			text = StrUtil.subBefore(text,"/",false);
+
+		}
+		
+		if (text.contains("&")) {
+
+			text = StrUtil.subBefore(text,"&",false);
+
+		}
+	
+		
 		if (!NumberUtil.isNumber(text)) {
 			
 			msg.send("请输入正确的链接、音乐ID！").async();

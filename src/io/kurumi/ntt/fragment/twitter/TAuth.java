@@ -64,6 +64,8 @@ public class TAuth {
     public String accToken;
     public String accTokenSec;
 	
+	public Boolean pm;
+	
 	public Boolean mrt;
 	public Boolean fb;
 	

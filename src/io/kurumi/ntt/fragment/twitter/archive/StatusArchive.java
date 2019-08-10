@@ -30,6 +30,7 @@ import twitter4j.TwitterException;
 import twitter4j.URLEntity;
 import twitter4j.UserMentionEntity;
 import io.netty.util.AsciiString;
+import twitter4j.MediaEntity.Variant;
 
 public class StatusArchive {
 
@@ -123,7 +124,7 @@ public class StatusArchive {
             }
 
             SendResponse resp = Launcher.INSTANCE.bot().execute(send);
-			
+
             if (status != null && resp != null && resp.isOk() && resp.message().chat().type() == Chat.Type.Private) {
 
                 MessagePoint.set(resp.message().messageId(),1,id);
@@ -260,7 +261,43 @@ public class StatusArchive {
 
         for (MediaEntity media : status.getMediaEntities()) {
 
-            mediaUrls.add(media.getMediaURL());
+			if (media.getVideoVariants().length == 0) {
+
+				mediaUrls.add(media.getMediaURL());
+
+			} else {
+				
+				Variant[] variants = media.getVideoVariants();
+
+				if (variants.length == 1) {
+					
+					mediaUrls.add(variants[0].getUrl());
+					
+				} else {
+					
+					Variant max = null;
+					
+					for (Variant var : variants) {
+						
+						if (var.getUrl().contains("m3u8?tag=10")) {
+							
+							continue;
+							
+						}
+						
+						if (max == null || max.getBitrate() < var.getBitrate()) {
+							
+							max = var;
+							
+						}
+						
+					}
+					
+					mediaUrls.add(max.getUrl());
+					
+				}
+				
+			}
 
         }
 
