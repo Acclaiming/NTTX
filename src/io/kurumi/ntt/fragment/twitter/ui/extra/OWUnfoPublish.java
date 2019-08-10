@@ -76,7 +76,7 @@ public class OWUnfoPublish extends Fragment {
 
 	public static String defaultMessage() {
 
-		String message = "大家好，我被 '<名称>' ( @<用户名> ) 单向取关了，今天你们被单向取关了吗？";
+		String message = "被 '<名称>' ( @<用户名> ) 单向取关了。今天你们被单向取关了吗？";
 
 		message += "\n\n自动推送由 @NTT_X";
 
