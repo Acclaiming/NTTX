@@ -171,7 +171,7 @@ public class OWUnfoPublish extends Fragment {
 
 			setPrivatePoint(user,POINT_OUP_SET,new OupSet(callback,account,"temp"));
 			
-			callback.edit("请发送新的消息模板 : ","\n默认模板 : " + Html.code(defaultMessage()),"\n可用变量 : " + HtmlUtil.escape(" <名称> 、 <用户名>")).html().async();
+			callback.edit("请发送新的消息模板 : ","\n默认模板 : " + Html.code(defaultMessage()),"\n可用变量 : " + HtmlUtil.escape(" <名称> 、 <用户名>")).withCancel().html().async();
 			
 		}
 
