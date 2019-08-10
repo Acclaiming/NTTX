@@ -87,9 +87,9 @@ public class OWUnfoPublish extends Fragment {
 
 	void oupMain(UserData user,Callback callback,TAuth account) {
 
-		String message = "被单向取关自动推文推送";
-
-		message += "\n\n自动推送模板 : ";
+		String message = "被单向取关自动推文推送 : [ " + account.archive().name + " ]";
+		
+		message += "\n\n推文模板 : ";
 
 		if (account.oup_msg == null) {
 
