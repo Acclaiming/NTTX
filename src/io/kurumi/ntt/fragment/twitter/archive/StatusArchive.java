@@ -129,26 +129,35 @@ public class StatusArchive {
 
 			File file = media.get(0);
 
-			AbstractSendRequest send;
+			SendResponse resp;
 			
 			if (file.getName().contains(".jpg")) {
 				
-				send = new SendPhoto(chatId,file).caption(html).parseMode(ParseMode.HTML);
+				SendPhoto send = new SendPhoto(chatId,file).caption(html).parseMode(ParseMode.HTML);
+
+				if (status != null) {
+
+					send.replyMarkup(StatusAction.createMarkup(auth.id,id,from.equals(auth.id),depth() <= depth,status.isRetweetedByMe(),status.isFavorited()).markup());
+
+				}
+
+				resp = Launcher.INSTANCE.bot().execute(send);
 				
 			} else {
 				
-				send = new SendAnimation(chatId,file).caption(html).parseMode(ParseMode.HTML);
+				SendAnimation send = new SendAnimation(chatId,file).caption(html).parseMode(ParseMode.HTML);
+
+				if (status != null) {
+
+					send.replyMarkup(StatusAction.createMarkup(auth.id,id,from.equals(auth.id),depth() <= depth,status.isRetweetedByMe(),status.isFavorited()).markup());
+
+				}
+
+				resp = Launcher.INSTANCE.bot().execute(send);
 				
 			}
 
-            if (status != null) {
-
-                send.replyMarkup(StatusAction.createMarkup(auth.id,id,from.equals(auth.id),depth() <= depth,status.isRetweetedByMe(),status.isFavorited()).markup());
-
-            }
-
-            SendResponse resp = Launcher.INSTANCE.bot().execute((AbstractSendRequest)send);
-
+            
             if (status != null && resp != null && resp.isOk() && resp.message().chat().type() == Chat.Type.Private) {
 
                 MessagePoint.set(resp.message().messageId(),1,id);
