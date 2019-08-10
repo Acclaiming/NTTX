@@ -46,6 +46,7 @@ import java.util.concurrent.Executors;
 import okhttp3.OkHttpClient;
 import com.pengrad.telegrambot.request.SendDocument;
 import io.kurumi.ntt.fragment.mods.ModuleEnv;
+import io.kurumi.ntt.i18n.LocalString;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener, ExceptionHandler {
 
@@ -109,7 +110,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
         if ("cancel".equals(function)) {
 
-            msg.send("已重置会话状态").removeKeyboard().failedWith(2333);
+            msg.send(LocalString.get(user).CANCEL).removeKeyboard().failedWith(2333);
 
             return;
 
@@ -133,7 +134,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             if (data.type == 1) {
 				
-				Msg status = msg.send("已重置会话状态").removeKeyboard().send();
+				Msg status = msg.send(LocalString.get(user).CANCEL).removeKeyboard().send();
 
 				clearPrivatePoint(user).onCancel(user,msg);
 				
@@ -141,7 +142,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 				
             } else {
 				
-				Msg status = msg.send("已重置会话状态").removeKeyboard().send();
+				Msg status = msg.send(LocalString.get(user).CANCEL).removeKeyboard().send();
 				
 				clearGroupPoint(user).onCancel(user,msg);
 
@@ -171,9 +172,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             if (account == null) {
 
-                msg.send("找不到这个账号 (？) 请重新选择 ((*゜Д゜)ゞ").withCancel().exec(data);
-
-                return;
+                clearPrivatePoint(user);
+				
+				return;
 
             }
 
@@ -570,7 +571,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 						
                         if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.params()) == FUNCTION_GROUP && !msg.isGroup()) {
 
-                            msg.send("请在群组使用 :)").async();
+                            msg.send(LocalString.get(user).COMMAND_GROUP_ONLY).async();
 
                         }
 						
@@ -581,7 +582,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 									@Override
 									public void run() {
 
-										msg.send("命令请在私聊使用 :)").failedWith();
+										msg.send(LocalString.get(user).COMMAND_PRIVATE_ONLY).failedWith();
 
 
 									}
@@ -749,7 +750,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
     public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
         if ("null".equals(point)) callback.confirm();
-        else callback.alert("无效的回调指针 : " + point + "\n请联系开发者");
+        else callback.alert("Error Callbacl Point : " + point);
 
     }
 
@@ -767,14 +768,14 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
         Message message = msg.message();
 
-        str.append("消息ID : " + message.messageId()).append("\n");
+        str.append("MessageId : " + message.messageId()).append("\n");
 
         if (message.forwardFrom() != null) {
 
             no_reply = true;
 
-            str.append("来自用户 : ").append(UserData.get(message.forwardFrom()).userName()).append("\n");
-            str.append("用户ID : ").append(message.forwardFrom().id()).append("\n");
+            str.append("FromUser : ").append(UserData.get(message.forwardFrom()).userName()).append("\n");
+            str.append("UserId : ").append(message.forwardFrom().id()).append("\n");
 
         }
 
@@ -784,19 +785,19 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             if (message.forwardFromChat().type() == Chat.Type.channel) {
 
-                str.append("来自频道 : ").append(message.forwardFromChat().username() == null ? message.forwardFromChat().title() : Html.a(message.forwardFromChat().username(),"https://t.me/" + message.forwardFromChat().username())).append("\n");
+                str.append("From Cahnnel : ").append(message.forwardFromChat().username() == null ? message.forwardFromChat().title() : Html.a(message.forwardFromChat().username(),"https://t.me/" + message.forwardFromChat().username())).append("\n");
 
-                str.append("频道ID : ").append(message.forwardFromChat().id());
+                str.append("Channel Id : ").append(message.forwardFromChat().id());
 
             } else if (message.forwardFromChat().type() == Chat.Type.group || message.forwardFromChat().type() == Chat.Type.supergroup) {
 
-                str.append("来自群组 : ").append(message.forwardFromChat().username() == null ? message.forwardFromChat().title() : Html.a(message.forwardFromChat().username(),"https://t.me/" + message.forwardFromChat().username())).append("\n");
+                str.append("Form Group : ").append(message.forwardFromChat().username() == null ? message.forwardFromChat().title() : Html.a(message.forwardFromChat().username(),"https://t.me/" + message.forwardFromChat().username())).append("\n");
 
             } else {
 
                 if (message.forwardFrom() == null) {
 
-                    str.append("来自 : ").append(message.forwardSenderName()).append(" (隐藏来源)\n");
+                    str.append("From : ").append(message.forwardSenderName()).append(" (隐藏来源)\n");
 
                 }
 
@@ -808,7 +809,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             no_reply = true;
 
-            str.append("来自用户 : ").append(message.forwardSenderName());
+            str.append("Sender Name : ").append(message.forwardSenderName());
 
         }
 
@@ -818,15 +819,15 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             str.append(split);
 
-            str.append("贴纸ID : ").append(Html.code(message.sticker().fileId())).append("\n");
+            str.append("Sticker Id : ").append(Html.code(message.sticker().fileId())).append("\n");
 
-            str.append("贴纸表情 : ").append(Html.code(message.sticker().emoji())).append("\n");
+            str.append("Sticker Emoji : ").append(Html.code(message.sticker().emoji())).append("\n");
 
-			str.append("分享链接 : ").append(ShowFile.createPayload(this,msg.sticker().fileId())).append("\n");
+			str.append("Share Link : ").append(ShowFile.createPayload(this,msg.sticker().fileId())).append("\n");
 
             if (message.sticker().setName() != null) {
 
-                str.append("贴纸包 : ").append("https://t.me/addstickers/" + message.sticker().setName()).append("\n");
+                str.append("Sticker Set : ").append("https://t.me/addstickers/" + message.sticker().setName()).append("\n");
 
             }
 
@@ -869,9 +870,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 		if (msg.doc() != null) {
 
-			str.append("文件名称 : ").append(Html.code(msg.doc().fileName())).append("\n");
+			str.append("File Name : ").append(Html.code(msg.doc().fileName())).append("\n");
 			//str.append("文件ID : ").append(Html.code(msg.doc().fileId())).append("\n");
-			str.append("分享链接 : ").append(ShowFile.createPayload(this,msg.doc().fileId())).append("\n");
+			str.append("Share Link : ").append(ShowFile.createPayload(this,msg.doc().fileId())).append("\n");
 
 		}
 
@@ -889,7 +890,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
         }
 
-        msg.send("喵......？",str.toString()).replyTo(msg).html().removeKeyboard().exec();
+        msg.send(LocalString.get(user).UNPROCESSED,str.toString()).replyTo(msg).html().removeKeyboard().exec();
 
     }
 
@@ -989,7 +990,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
         for (Long id : point().privatePoints.keySet()) {
 
-            new Send(this,id,"当前操作已经取消 : NTT 正在更新 / 重启").removeKeyboard().exec();
+			UserData user = UserData.get(id);
+			
+			clearPrivatePoint(user);
+			
+            new Send(this,id,LocalString.get(UserData.get(id)).FORCE_CANCEL).removeKeyboard().exec();
 
         }
 

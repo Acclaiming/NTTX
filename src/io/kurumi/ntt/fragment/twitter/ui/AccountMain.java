@@ -5,6 +5,7 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.i18n.LocalString;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.utils.Html;
@@ -49,7 +50,7 @@ public class AccountMain extends Fragment {
 
 		if (account == null) {
 
-			callback.alert("无效的账号 .");
+			callback.alert(LocalString.get(user).TWITTER_INVALID_ACCOUNT);
 
 			callback.delete();
 

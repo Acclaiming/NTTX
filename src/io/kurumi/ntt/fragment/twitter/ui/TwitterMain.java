@@ -19,6 +19,7 @@ import twitter4j.TwitterException;
 import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
+import io.kurumi.ntt.i18n.LocalString;
 
 public class TwitterMain extends Fragment {
 
@@ -59,7 +60,7 @@ public class TwitterMain extends Fragment {
 
 		ButtonMarkup accounts = new ButtonMarkup();
 
-		accounts.newButtonLine("认证新账号",POINT_NEW_AUTH);
+		accounts.newButtonLine(LocalString.get(user).TWITTER_NEW_AUTH,POINT_NEW_AUTH);
 
 		String message;
 
@@ -71,11 +72,11 @@ public class TwitterMain extends Fragment {
 
 			}
 
-			message = "选择一个账号查看设置 :)";
+			message = LocalString.get(user).TWITTER_CHOOSE_ACCOUNT;
 
 		} else {
 
-			message = "还没有认证账号 :)";
+			message = LocalString.get(user).TWITTER_NO_ACCOUNT;
 
 		}
 
@@ -112,7 +113,7 @@ public class TwitterMain extends Fragment {
 
 	void loginAccount(UserData user,Callback callback) {
 
-		String message = "请选择接口 (发送的推文下方显示的来源)";
+		String message = LocalString.get(user).TWITTER_AUTH_API;
 
 		ButtonMarkup methods = new ButtonMarkup();
 
@@ -121,8 +122,8 @@ public class TwitterMain extends Fragment {
 		methods.newButtonLine("iPhone",POINT_LOGIN_METHOD,2);
 		methods.newButtonLine("Web App",POINT_LOGIN_METHOD,3);
 		methods.newButtonLine("Web Client",POINT_LOGIN_METHOD,4);
-		methods.newButtonLine("第三方接口",POINT_LOGIN_METHOD,5);
-		methods.newButtonLine("恢复认证",POINT_LOGIN_METHOD,6);
+		methods.newButtonLine(LocalString.get(user).TWITTER_AUTH_CUSTOM,POINT_LOGIN_METHOD,5);
+		methods.newButtonLine(LocalString.get(user).TWITTER_AUTH_IMPORT,POINT_LOGIN_METHOD,6);
 
 		methods.newButtonLine("🔙",POINT_BACK);
 
@@ -198,13 +199,13 @@ public class TwitterMain extends Fragment {
 
             setPrivatePoint(user,POINT_INPUT_CODE,login);
 
-            callback.edit("点 " + Html.a("这里",request.getAuthorizationURL()) + " 认证 :)").html().async();
+            callback.edit(LocalString.get(user).TWITTER_AUTH_LINK,request.getAuthorizationURL()).async();
 
-            callback.send("(｡•̀ᴗ-)✧ 请输入 pin 码 : ").withCancel().exec(login);
+            callback.send(LocalString.get(user).TWITTER_AUTH_PIN).withCancel().exec(login);
 
         } catch (TwitterException e) {
 
-            callback.alert("请求认证链接失败 :( ",NTT.parseTwitterException(e));
+            callback.alert(LocalString.get(user).TWITTER_REQEUST_AUTH_FAILED,NTT.parseTwitterException(e));
 
         }
 
@@ -232,8 +233,8 @@ public class TwitterMain extends Fragment {
 
 		if (!msg.hasText() || msg.text().length() != 7) {
 
-			msg.send("当前正在登录 Twitter 账号，请输入 PIN 码").withCancel().exec(login);
-
+			clearPrivatePoint(user);
+			
 			return;
 
 		}
@@ -252,7 +253,7 @@ public class TwitterMain extends Fragment {
 
 				if (!user.id.equals(old.user)) {
 
-					new Send(old.user,"乃的账号 " + old.archive().urlHtml() + " 已被 " + user.userName() + " 认证 , 已移除。").html().exec();
+					new Send(old.user,LocalString.get(user).twitterAuthedByOther(old.archive().urlHtml(),user.userName())).html().exec();
 
 				}
 

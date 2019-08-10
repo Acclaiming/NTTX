@@ -44,7 +44,7 @@ public class Backup extends Fragment {
 
             RuntimeUtil.exec(
                     "mongodump",
-                    "-h", Env.getOrDefault("db_address", "127.0.0.1") + ":" + Env.getOrDefault("db_port", "27017"),
+                    "-h", Env.DB_ADDRESS + ":" + Env.DB_PORT,
                     "-d", "NTTools",
                     "-o", Env.DATA_DIR.getPath() + "/db"
             ).waitFor();

@@ -38,6 +38,7 @@ import java.util.LinkedList;
 
 import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.i18n.LocalString;
 
 public class Fragment {
 
@@ -370,7 +371,7 @@ public class Fragment {
 
         if (!TAuth.contains(user.id)) {
 
-            msg.send("这个功能需要授权 Twitter账号 才能使用 (❁´▽`❁)","使用 /login 认证账号 ~").exec();
+            msg.send(LocalString.get(user).TWITTER_AUTH_NEED).exec();
 
             return;
 

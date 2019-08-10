@@ -15,7 +15,6 @@ import io.kurumi.ntt.fragment.admin.Stat;
 import io.kurumi.ntt.fragment.admin.Users;
 import io.kurumi.ntt.fragment.base.GetID;
 import io.kurumi.ntt.fragment.base.PingFunction;
-import io.kurumi.ntt.fragment.base.UserExport;
 import io.kurumi.ntt.fragment.bots.BotChannnel;
 import io.kurumi.ntt.fragment.bots.MyBots;
 import io.kurumi.ntt.fragment.bots.NewBot;
@@ -41,6 +40,7 @@ import io.kurumi.ntt.fragment.idcard.Idcard;
 import io.kurumi.ntt.fragment.inline.CoreValueEncode;
 import io.kurumi.ntt.fragment.inline.MakeButtons;
 import io.kurumi.ntt.fragment.inline.ShowSticker;
+import io.kurumi.ntt.fragment.mods.PackageManager;
 import io.kurumi.ntt.fragment.mstd.ui.MsMain;
 import io.kurumi.ntt.fragment.netease.NeteaseMusic;
 import io.kurumi.ntt.fragment.other.ZeroPadEncode;
@@ -76,7 +76,6 @@ import io.kurumi.ntt.utils.BotLog;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
-import io.kurumi.ntt.fragment.mods.PackageManager;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -295,8 +294,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         addFragment(new Users());
         addFragment(new Stat());
         addFragment(new DebugMsg());
-		addFragment(new UserExport());
-
+		
         addFragment(new DebugUser());
         addFragment(new DebugStatus());
         addFragment(new DebugStickerSet());

@@ -3,6 +3,7 @@ package io.kurumi.ntt.fragment.base;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.i18n.LocalString;
 import io.kurumi.ntt.model.Msg;
 
 public class PingFunction extends Fragment {
@@ -26,7 +27,7 @@ public class PingFunction extends Fragment {
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        msg.send("pong").failedWith();
+        msg.send(LocalString.get(user).PING_RESULT).failedWith();
 
     }
 
