@@ -166,7 +166,7 @@ public class UserArchive {
 
             TrackTask.onUserChange(this,split + "用户被冻结或已停用 :)");
 
-            if (Env.TEP_CHANNEL != -1 && !TEPH.needPuhlish(this)) {
+            if (Env.TEP_CHANNEL != -1 && TEPH.needPuhlish(this)) {
 
 				/*
 
@@ -326,7 +326,7 @@ public class UserArchive {
 
             str.append(split).append("用户被取消了冻结/重新启用 :)");
 
-            if (Env.TEP_CHANNEL != null && !TEPH.needPuhlish(this)) {
+            if (Env.TEP_CHANNEL != null && TEPH.needPuhlish(this)) {
 
 				new Send(Env.TEP_CHANNEL,"#推友回档\n",formatToChannel()).html().async();
 
