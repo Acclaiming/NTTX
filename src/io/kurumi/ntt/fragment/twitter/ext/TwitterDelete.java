@@ -305,7 +305,7 @@ public class TwitterDelete extends Fragment {
 
                     } catch (TwitterException e) {
 
-                        BotLog.info("删除，错误", e);
+                       //  BotLog.info("删除，错误", e);
 
                     }
 
