@@ -170,9 +170,9 @@ public class OWUnfoPublish extends Fragment {
 		} else if ("temp".equals(params[0])) {
 
 			setPrivatePoint(user,POINT_OUP_SET,new OupSet(callback,account,"temp"));
-
+			
 			callback.edit("请发送新的消息模板 : ","\n默认模板 : " + Html.code(defaultMessage()),"\n可用变量 : " + HtmlUtil.escape(" <名称> 、 <用户名>")).html().async();
-
+			
 		}
 
 	}
@@ -182,6 +182,8 @@ public class OWUnfoPublish extends Fragment {
 
 		if (POINT_OUP_SET.equals(point)) {
 
+			OupSet set = (OupSet) data.with(msg);
+			
 			if (!msg.hasText()) {
 
 				clearPrivatePoint(user);
@@ -189,8 +191,6 @@ public class OWUnfoPublish extends Fragment {
 				return;
 
 			}
-
-			OupSet set = (OupSet) data;
 
 			set.account.oup_msg = msg.text();
 
