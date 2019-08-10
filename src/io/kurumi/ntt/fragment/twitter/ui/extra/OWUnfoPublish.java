@@ -97,7 +97,7 @@ public class OWUnfoPublish extends Fragment {
 
 		}
 
-		message += "\n\n" + account.oup_msg == null ? defaultMessage() : account.oup_msg;
+		message += "\n\n" + (account.oup_msg == null ? defaultMessage() : account.oup_msg);
 
 		ButtonMarkup buttons = new ButtonMarkup();
 
@@ -152,11 +152,11 @@ public class OWUnfoPublish extends Fragment {
 				account.oup = null;
 
 			}
-
-			TAuth.data.setById(account.id,account);
-
+			
 			oupMain(user,callback,account);
 
+			TAuth.data.setById(account.id,account);
+			
 		} else if ("temp".equals(params[0])) {
 
 			setPrivatePoint(user,POINT_OUP_SET,new OupSet(callback,account,"temp"));

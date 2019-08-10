@@ -54,8 +54,10 @@ public class ExtraMain extends Fragment {
 	}
 
 	void extraMain(UserData user,Callback callback,TAuth account) {
-
-		String message = "实验性功能选单 ( 已发布到不适合加入标准的功能 )";
+		
+		String message = "实验性功能选单 : [ " + account.archive().name + " ]";
+		
+		message += "\n\n ( 已发布但不适合加入标准的功能 )";
 
 		ButtonMarkup buttons = new ButtonMarkup();
 		
