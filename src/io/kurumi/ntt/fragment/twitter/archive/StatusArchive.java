@@ -31,6 +31,12 @@ import twitter4j.URLEntity;
 import twitter4j.UserMentionEntity;
 import io.netty.util.AsciiString;
 import twitter4j.MediaEntity.Variant;
+import cn.hutool.core.io.FileUtil;
+import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.BaseRequest;
+import com.pengrad.telegrambot.request.SendVideo;
+import com.pengrad.telegrambot.request.AbstractSendRequest;
+import com.pengrad.telegrambot.request.SendAnimation;
 
 public class StatusArchive {
 
@@ -83,13 +89,19 @@ public class StatusArchive {
 
     public void sendTo(long chatId,int depth,TAuth auth,Status status) {
 
-        LinkedList<File> photo = new LinkedList<>();
+        LinkedList<File> media = new LinkedList<>();
 
         for (String url : mediaUrls) {
 
-            String suffix = StrUtil.subAfter(url,".com/",false);
+            String name = StrUtil.subAfter(url,"/",true);
 
-            File cache = new File(Env.CACHE_DIR,suffix);
+			if (name.contains("?")) {
+
+				name = StrUtil.subBefore(name,"?",false);
+
+			}
+
+            File cache = new File(Env.CACHE_DIR,"twitter_media/" + name);
 
             if (!cache.isFile()) {
 
@@ -105,7 +117,7 @@ public class StatusArchive {
 
             if (cache.isFile()) {
 
-                photo.add(cache);
+                media.add(cache);
 
             }
 
@@ -113,9 +125,21 @@ public class StatusArchive {
 
         String html = toHtml(depth);
 
-        if (html.length() < 1024 && photo.size() == 1) {
+        if (html.length() < 1024 && media.size() == 1) {
 
-            SendPhoto send = new SendPhoto(chatId,photo.get(0)).caption(html).parseMode(ParseMode.HTML);
+			File file = media.get(0);
+
+			AbstractSendRequest send;
+			
+			if (file.getName().endsWith(".jpg")) {
+				
+				send = new SendPhoto(chatId,file).caption(html).parseMode(ParseMode.HTML);
+				
+			} else {
+				
+				send = new SendAnimation(chatId,file).caption(html).parseMode(ParseMode.HTML);
+				
+			}
 
             if (status != null) {
 
@@ -266,37 +290,37 @@ public class StatusArchive {
 				mediaUrls.add(media.getMediaURL());
 
 			} else {
-				
+
 				Variant[] variants = media.getVideoVariants();
 
 				if (variants.length == 1) {
-					
+
 					mediaUrls.add(variants[0].getUrl());
-					
+
 				} else {
-					
+
 					Variant max = null;
-					
+
 					for (Variant var : variants) {
-						
+
 						if (var.getUrl().contains("m3u8?tag=10")) {
-							
+
 							continue;
-							
+
 						}
-						
+
 						if (max == null || max.getBitrate() < var.getBitrate()) {
-							
+
 							max = var;
-							
+
 						}
-						
+
 					}
-					
+
 					mediaUrls.add(max.getUrl());
-					
+
 				}
-				
+
 			}
 
         }
