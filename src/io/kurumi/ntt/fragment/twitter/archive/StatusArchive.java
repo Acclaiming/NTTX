@@ -189,19 +189,19 @@ public class StatusArchive {
 
 			}
 
-            if (photo.size() > 0 && msg.isOk()) {
+            if (media.size() > 0 && msg.isOk()) {
 
-                if (photo.size() == 1) {
+                if (media.size() == 1) {
 
-                    Launcher.INSTANCE.bot().execute(new SendPhoto(chatId,photo.get(0)).replyToMessageId(msg.message().messageId()));
+                    Launcher.INSTANCE.bot().execute(new SendPhoto(chatId,media.get(0)).replyToMessageId(msg.message().messageId()));
 
                 } else {
 
-                    InputMediaPhoto[] input = new InputMediaPhoto[photo.size()];
+                    InputMediaPhoto[] input = new InputMediaPhoto[media.size()];
 
-                    for (int index = 0; index < photo.size(); index++) {
+                    for (int index = 0; index < media.size(); index++) {
 
-                        input[index] = new InputMediaPhoto(photo.get(index));
+                        input[index] = new InputMediaPhoto(media.get(index));
 
                     }
 
