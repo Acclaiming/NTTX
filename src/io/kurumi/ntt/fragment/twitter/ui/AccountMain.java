@@ -28,6 +28,7 @@ public class AccountMain extends Fragment {
 		origin.addFragment(new TrackMain());
 		origin.addFragment(new TimelineMain());
 		origin.addFragment(new DeleteMain());
+		origin.addFragment(new ExtraMain());
 
 	}
 
@@ -86,7 +87,8 @@ public class AccountMain extends Fragment {
 		functions.newButtonLine("通知 >>",TrackMain.POINT_TRACK,account.id);
 		functions.newButtonLine("推文流 >>",TimelineMain.POINT_TL,account.id);
 		functions.newButtonLine("自动删除 >>",DeleteMain.POINT_DELETE,account.id);
-
+		functions.newButtonLine("实验性 >>",ExtraMain.POINT_EXTRA,account.id);
+		
 		functions.newButtonLine()
 			.newButton("导出",POINT_EXPORT,account.id)
 			.newButton("移除",POINT_LOGOUT,account.id);

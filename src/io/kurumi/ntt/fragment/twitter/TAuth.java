@@ -98,6 +98,9 @@ public class TAuth {
 	public Boolean ad_a;
 	public Integer ad_d;
 	
+	public Boolean oup;
+	public String oup_msg;
+	
 	/*
 	
 	public boolean directMessages = false;
