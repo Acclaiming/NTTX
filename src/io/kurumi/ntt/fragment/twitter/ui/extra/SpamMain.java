@@ -54,7 +54,10 @@ public class SpamMain extends Fragment {
 			POINT_RN_TAG,
 			POINT_RD_TAG,
 			POINT_DEL_TAG,
-			POINT_CONFIRM_DEL_TAG
+			POINT_CONFIRM_DEL_TAG,
+			
+			POINT_ADD_RECORD,
+			POINT_REMOVE_RECORD
 
 		);
 
@@ -64,7 +67,11 @@ public class SpamMain extends Fragment {
 
 			POINT_RN_TAG,
 			POINT_RD_TAG,
-			POINT_DEL_TAG
+			POINT_DEL_TAG,
+			
+			POINT_ADD_RECORD,
+			POINT_REMOVE_RECORD
+	
 
 		);
 

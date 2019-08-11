@@ -746,7 +746,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
     public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
         if ("null".equals(point)) callback.confirm();
-        else callback.alert("Error Callbacl Point : " + point);
+        else callback.alert("Error Callback Point : " + point);
 
     }
 
