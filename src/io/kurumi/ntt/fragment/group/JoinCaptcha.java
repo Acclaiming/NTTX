@@ -1243,7 +1243,6 @@ public class JoinCaptcha extends Fragment {
             Msg lastMsg = msg.send(user.userName() + " 通过了验证 ~").html().send();
 
 			gd.last_join_msg = lastMsg.messageId();
-			
 
         } else {
 
@@ -1465,7 +1464,7 @@ public class JoinCaptcha extends Fragment {
 
         }
 
-        if (gd.captcha_del == null && gd.last_join_msg != null) {
+        if (gd.captcha_del != null && gd.last_join_msg != null) {
 
             executeAsync(msg.update,deleteMessage(msg.chatId(),gd.last_join_msg));
 
@@ -1481,11 +1480,7 @@ public class JoinCaptcha extends Fragment {
 
             Msg lastMsg = msg.send(user.userName() + " 验证失败 已被" + (gd.fail_ban == null ? "移除" : "封锁")).html().send();
 
-            if (lastMsg != null) {
-
-                gd.last_join_msg = lastMsg.messageId();
-
-            }
+			gd.last_join_msg = lastMsg.messageId();
 
         } else {
 
