@@ -33,15 +33,36 @@ public class SpamMain extends Fragment {
 	public static String POINT_RN_TAG = "twi_srn";
 	public static String POINT_RD_TAG = "twi_srd";
 	public static String POINT_DEL_TAG = "twi_ssd";
+	public static String POINT_CONFIRM_DEL_TAG = "twi_sfd";
 
 	@Override
 	public void init(BotFragment origin) {
 
 		super.init(origin);
 
-		registerCallback(POINT_SPAM,POINT_NEW_TAG,POINT_SPAM_TAG,POINT_SPAM_SET);
+		registerCallback(
 
-		registerPoint(POINT_NEW_TAG);
+			POINT_SPAM,
+			POINT_NEW_TAG,
+			POINT_SPAM_TAG,
+			POINT_SPAM_SET,
+
+			POINT_RN_TAG,
+			POINT_RD_TAG,
+			POINT_DEL_TAG,
+			POINT_CONFIRM_DEL_TAG
+
+		);
+
+		registerPoint(
+
+			POINT_NEW_TAG,
+
+			POINT_RN_TAG,
+			POINT_RD_TAG,
+			POINT_DEL_TAG
+
+		);
 
 	}
 
@@ -126,6 +147,18 @@ public class SpamMain extends Fragment {
 
 			rdTag(user,callback,params[1],account);
 
+		} else if (POINT_DEL_TAG.equals(point)) {
+
+			if (params.length < 2) {
+
+				callback.invalidQuery();
+
+				return;
+
+			}
+
+			delTag(user,callback,params[1],account);
+
 		}
 
 	}
@@ -204,6 +237,28 @@ public class SpamMain extends Fragment {
 		setPrivatePoint(user,POINT_RD_TAG,new TagPoint(user,callback,account,tagName));
 
 		callback.edit("输入新说明 :").async();
+
+	}
+
+	void delTag(UserData user,Callback callback,String tagName,TAuth account) {
+
+		String message = "确认删除分类 : " + tagName + " ？";
+
+		ButtonMarkup buttons = new ButtonMarkup();
+
+		buttons.newButtonLine("确认",POINT_CONFIRM_DEL_TAG,account.id,tagName);
+
+		buttons.newButtonLine("🔙",POINT_SPAM_TAG,account.id,tagName);
+
+		callback.edit(message).buttons(buttons).async();
+
+	}
+
+	void comfirmDelTag(UserData user,Callback callback,String tagName,TAuth account) {
+
+		SpamTag.data.deleteById(tagName);
+
+		spamMain(user,callback,account);
 
 	}
 
