@@ -61,12 +61,12 @@ public class BotServer {
         if (socketFile != null) {
 
             bossGroup = new EpollEventLoopGroup();
-            workerGroup = new EpollEventLoopGroup(32);
+            workerGroup = new EpollEventLoopGroup(16);
 
         } else {
 
             bossGroup = new NioEventLoopGroup();
-            workerGroup = new NioEventLoopGroup(32);
+            workerGroup = new NioEventLoopGroup(16);
 
         }
 
