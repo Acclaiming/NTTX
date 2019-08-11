@@ -11,7 +11,7 @@ public class NameUpdateTask extends TimerTask {
 
 	public static void start() {
 		
-		BotFragment.mainTimer.schedule(new NameUpdateTask(),15 * 60 * 1000L);
+		BotFragment.mainTimer.schedule(new NameUpdateTask(),5 * 60 * 1000L);
 		
 	}
 	
