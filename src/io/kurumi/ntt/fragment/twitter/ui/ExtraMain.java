@@ -72,7 +72,7 @@ public class ExtraMain extends Fragment {
 
 		buttons.newButtonLine("单向取关推送 >>",OWUnfoPublish.POINT_OUP,account.id);
 
-		if (user.admin() && !Env.SPAM_CHANNEL.isEmpty()) {
+		if (!Env.SPAM_CHANNEL.isEmpty()) {
 
 			buttons.newButtonLine("联合封禁 >>",SpamMain.POINT_SPAM,account.id);
 

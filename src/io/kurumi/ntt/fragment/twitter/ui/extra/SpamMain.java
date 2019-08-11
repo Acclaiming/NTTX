@@ -570,7 +570,7 @@ public class SpamMain extends Fragment {
 			.newButton("同步")
 			.newButton(subed ? "✅" : "☑",POINT_SPAM_SET,account.id,tag.id);
 
-		buttons.newButtonLine("查看所有",POINT_SHOW_RECORDS,account.id,tag.id);
+		// buttons.newButtonLine("查看所有",POINT_SHOW_RECORDS,account.id,tag.id);
 
 		if (user.admin()) {
 
