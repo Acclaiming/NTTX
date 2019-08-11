@@ -134,19 +134,15 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             if (data.type == 1) {
 				
-				Msg status = msg.send(LocalString.get(user).CANCEL).removeKeyboard().send();
-
 				clearPrivatePoint(user).onCancel(user,msg);
 				
-				status.delete();
+				msg.send(LocalString.get(user).CANCEL).removeKeyboard().failed(1000);
 				
             } else {
-				
-				Msg status = msg.send(LocalString.get(user).CANCEL).removeKeyboard().send();
-				
+			
 				clearGroupPoint(user).onCancel(user,msg);
 
-				status.delete();
+				msg.send(LocalString.get(user).CANCEL).removeKeyboard().failed(1000);
 				
 			}
 				

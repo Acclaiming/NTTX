@@ -1,0 +1,344 @@
+package io.kurumi.ntt.fragment.twitter.ui.extra;
+
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.NumberUtil;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
+import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import io.kurumi.ntt.model.Callback;
+import io.kurumi.ntt.model.request.Send;
+import io.kurumi.ntt.utils.NTT;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import io.kurumi.ntt.model.request.ButtonMarkup;
+import io.kurumi.ntt.fragment.twitter.spam.SpamTag;
+import java.util.List;
+import io.kurumi.ntt.fragment.twitter.ui.ExtraMain;
+import io.kurumi.ntt.db.PointData;
+import io.kurumi.ntt.model.Msg;
+import java.util.HashMap;
+import java.util.LinkedList;
+
+public class SpamMain extends Fragment {
+
+	public static String POINT_SPAM = "twi_spam";
+	public static String POINT_SPAM_TAG = "twi_stag";
+	public static String POINT_SPAM_SET = "twi_sset";
+
+	public static String POINT_NEW_TAG = "twi_stn";
+	public static String POINT_RN_TAG = "twi_srn";
+	public static String POINT_RD_TAG = "twi_srd";
+	public static String POINT_DEL_TAG = "twi_ssd";
+
+	@Override
+	public void init(BotFragment origin) {
+
+		super.init(origin);
+
+		registerCallback(POINT_SPAM,POINT_NEW_TAG,POINT_SPAM_TAG,POINT_SPAM_SET);
+
+		registerPoint(POINT_NEW_TAG);
+
+	}
+
+	@Override
+	public void onCallback(UserData user,Callback callback,String point,String[] params) {
+
+		if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
+
+			callback.invalidQuery();
+
+			return;
+
+		}
+
+		long accountId = NumberUtil.parseLong(params[0]);
+
+		TAuth account = TAuth.getById(accountId);
+
+		if (account == null) {
+
+			callback.alert("无效的账号 .");
+
+			callback.delete();
+
+			return;
+
+		}
+
+		if (POINT_SPAM.equals(point)) {
+
+			spamMain(user,callback,account);
+
+		} else if (POINT_NEW_TAG.equals(point)) {
+
+			newTag(user,callback,account);
+
+		} else if (POINT_SPAM_TAG.equals(point)) {
+
+			if (params.length < 2) {
+
+				callback.invalidQuery();
+
+				return;
+
+			}
+
+			spamTag(user,callback,params[1],account);
+
+		} else if (POINT_SPAM_SET.equals(point)) {
+
+			if (params.length < 2) {
+
+				callback.invalidQuery();
+
+				return;
+
+			}
+
+			spamSet(user,callback,params[1],account);
+
+		} else if (POINT_SPAM_SET.equals(point)) {
+
+			if (params.length < 2) {
+
+				callback.invalidQuery();
+
+				return;
+
+			}
+
+			spamSet(user,callback,params[1],account);
+
+		}
+
+	}
+
+	class MainPoint extends PointData {
+
+		UserData user;
+		Callback origin;
+		TAuth auth;
+
+		public MainPoint(UserData user,Callback origin,TAuth auth) {
+
+			this.user = user;
+			this.origin = origin;
+			this.auth = auth;
+
+		}
+
+		@Override
+		public void onFinish() {
+
+			spamMain(user,origin,auth);
+
+			super.onFinish();
+
+		}
+
+	}
+
+	class TagPoint extends PointData {
+
+		UserData user;
+		Callback origin;
+		TAuth auth;
+		String tagName;
+
+		public TagPoint(UserData user,Callback origin,TAuth auth,String tagName) {
+
+			this.user = user;
+			this.origin = origin;
+			this.auth = auth;
+			this.tagName = tagName;
+
+		}
+
+		@Override
+		public void onFinish() {
+
+			spamTag(user,origin,tagName,auth);
+
+			super.onFinish();
+
+		}
+
+	}
+
+
+	void newTag(UserData user,Callback callback,TAuth account) {
+
+		setPrivatePoint(user,POINT_NEW_TAG,new MainPoint(user,callback,account));
+
+		callback.edit("输入新分类名称 :").async();
+
+	}
+
+	void rnTag(UserData user,Callback callback,String tagName,TAuth account) {
+
+		setPrivatePoint(user,POINT_RN_TAG,new TagPoint(user,callback,account,tagName));
+
+		callback.edit("输入新分类名 :").async();
+
+	}
+	
+	void rdTag(UserData user,Callback callback,String tagName,TAuth account) {
+
+		setPrivatePoint(user,POINT_RD_TAG,new TagPoint(user,callback,account,tagName));
+
+		callback.edit("输入新说明 :").async();
+
+	}
+
+	@Override
+	public void onPoint(UserData user,Msg msg,String point,PointData data) {
+
+		if (POINT_NEW_TAG.equals(point)) {
+
+			if (!msg.hasText()) {
+
+				clearPrivatePoint(user);
+
+				return;
+
+			}
+
+			if (SpamTag.data.containsId(msg.text())) {
+
+				msg.send("该分类已存在").exec(data);
+
+				return;
+
+			}
+
+			SpamTag newTag = new SpamTag();
+
+			newTag.id = msg.text();
+
+			newTag.description = ":)";
+
+			newTag.records = new HashMap<>();
+
+			newTag.subscribers = new LinkedList<>();
+
+			SpamTag.data.setById(newTag.id,newTag);
+
+			clearPrivatePoint(user);
+
+		}
+
+	}
+
+	void spamTag(UserData user,Callback callback,String tagName,TAuth account) {
+
+		SpamTag tag = SpamTag.data.getById(tagName);
+
+		if (tag == null) {
+
+			callback.invalidQuery();
+
+			spamMain(user,callback,account);
+
+			return;
+
+		}
+
+		String message = "分类 : " + tag.id + " [ " + account.archive().name + " ]";
+
+		message += "\n\n" + tag.description;
+
+		ButtonMarkup buttons = new ButtonMarkup();
+
+		if (user.admin()) {
+
+			buttons.newButtonLine()
+				.newButton("重命名",POINT_RN_TAG,account.id,tag.id)
+				.newButton("设置介绍",POINT_RD_TAG,account.id,tag.id);
+
+		}
+
+		boolean subed = tag.subscribers.contains(account.id);
+
+		buttons.newButtonLine()
+			.newButton("同步")
+			.newButton(subed ? "✅" : "☑",POINT_SPAM_SET,account.id,tag.id);
+
+		if (user.admin()) {
+
+			buttons.newButtonLine("删除分类",POINT_DEL_TAG,account.id,tag.id);
+
+		}
+
+		buttons.newButtonLine("🔙",POINT_SPAM,account.id);
+
+	}
+
+	void spamSet(UserData user,Callback callback,String tagName,TAuth account) {
+
+		SpamTag tag = SpamTag.data.getById(tagName);
+
+		if (tag == null) {
+
+			callback.invalidQuery();
+
+			spamMain(user,callback,account);
+
+			return;
+
+		}
+
+		if (tag.subscribers.contains(account.id)) {
+
+			tag.subscribers.remove(account.id);
+
+		} else {
+
+			tag.subscribers.add(account.id);
+
+		}
+
+		SpamTag.data.setById(tag.id,tag);
+
+	}
+
+	void spamMain(UserData user,Callback callback,TAuth account) {
+
+		String message = "Twitter 联合联合封禁分类 [ " + account.archive().name + " ]";
+
+		ButtonMarkup buttons = new ButtonMarkup();
+
+		if (user.admin()) {
+
+			buttons.newButtonLine(">> 新建 <<",POINT_NEW_TAG,account.id);
+
+		}
+
+		List<SpamTag> tags = SpamTag.data.getAll();
+
+		if (tags.isEmpty()) {
+
+			buttons.newButtonLine("暂无分类");
+
+		} else {
+
+			for (SpamTag tag : tags) {
+
+				buttons.newButtonLine(tag.id,POINT_SPAM_TAG,account.id,tag.id);
+
+			}
+
+		}
+
+		buttons.newButtonLine("🔙",ExtraMain.POINT_EXTRA,account.id);
+
+		callback.edit(message).buttons(buttons).async();
+
+	}
+
+
+}
