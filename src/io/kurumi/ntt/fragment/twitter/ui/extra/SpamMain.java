@@ -473,7 +473,7 @@ public class SpamMain extends Fragment {
 
 			SpamTag tag = SpamTag.data.getById(edit.tagName);
 
-			Msg record = new Send(Env.SPAM_CHANNEL,"#新增记录 [ " + edit.tagName + " ]\n",archive.formatSimple()).send();
+			Msg record = new Send(Env.SPAM_CHANNEL,"#新增记录 [ " + edit.tagName + " ]\n",archive.formatSimple()).html().send();
 
 			tag.records.put(archive.id.toString(),record.messageId());
 
@@ -522,7 +522,7 @@ public class SpamMain extends Fragment {
 
 			}
 			
-			new Send(Env.SPAM_CHANNEL,"#移除记录 [ " + edit.tagName + " ]\n",archive.formatSimple()).send();
+			new Send(Env.SPAM_CHANNEL,"#移除记录 [ " + edit.tagName + " ]\n",archive.formatSimple()).html().send();
 
 			SpamTag tag = SpamTag.data.getById(edit.tagName);
 
