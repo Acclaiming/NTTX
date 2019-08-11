@@ -35,6 +35,10 @@ public class SpamMain extends Fragment {
 	public static String POINT_DEL_TAG = "twi_ssd";
 	public static String POINT_CONFIRM_DEL_TAG = "twi_sfd";
 
+	public static String POINT_SHOW_RECORDS = "twi_ssow";
+	public static String POINT_ADD_RECORD = "twi_sadd";
+	public static String POINT_REMOVE_RECORD = "twi_srem";
+
 	@Override
 	public void init(BotFragment origin) {
 
@@ -232,7 +236,7 @@ public class SpamMain extends Fragment {
 
 		setPrivatePoint(user,POINT_NEW_TAG,new MainPoint(user,callback,account));
 
-		callback.edit("输入新分类名称 :").async();
+		callback.edit("输入新分类名称 :").withCancel().async();
 
 	}
 
@@ -240,7 +244,7 @@ public class SpamMain extends Fragment {
 
 		setPrivatePoint(user,POINT_RN_TAG,new TagPoint(user,callback,account,tagName));
 
-		callback.edit("输入新分类名 :").async();
+		callback.edit("输入新分类名 :").withCancel().async();
 
 	}
 
@@ -248,7 +252,7 @@ public class SpamMain extends Fragment {
 
 		setPrivatePoint(user,POINT_RD_TAG,new TagPoint(user,callback,account,tagName));
 
-		callback.edit("输入新说明 :").async();
+		callback.edit("输入新说明 :").withCancel().async();
 
 	}
 
@@ -274,11 +278,19 @@ public class SpamMain extends Fragment {
 
 	}
 
+	void addRecord(UserData user,Callback callback,String tagName,TAuth account) {
+
+		setPrivatePoint(user,POINT_ADD_RECORD,new TagPoint(user,callback,account,tagName));
+
+		callback.edit("输入对方 ID 或 链接:").withCancel().async();
+
+	}
+
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
 		data.with(msg);
-		
+
 		if (POINT_NEW_TAG.equals(point)) {
 
 			if (!msg.hasText()) {
@@ -377,6 +389,117 @@ public class SpamMain extends Fragment {
 
 			clearPrivatePoint(user);
 
+		} else if (POINT_ADD_RECORD.equals(point)) {
+
+			TagPoint edit = (TagPoint) data;
+
+			if (!msg.hasText()) {
+
+				clearPrivatePoint(user);
+
+				return;
+
+			}
+
+			if (data.step == 0) {
+
+				UserArchive archive;
+
+				if (NumberUtil.isNumber(msg.text())) {
+
+					archive = UserArchive.show(edit.auth.createApi(),NumberUtil.parseLong(msg.text()));
+
+
+				} else {
+
+					archive = UserArchive.show(edit.auth.createApi(),msg.text());
+
+				}
+
+				if (archive == null) {
+
+					msg.send("查无此人").withCancel().exec(data);
+
+					return;
+
+				}
+
+				data.step = 1;
+				data.data = archive;
+
+				msg.send("请输入理由 :").withCancel().exec();
+
+				return;
+
+			} 
+
+			UserArchive archive = data.data();
+
+			if (!SpamTag.data.containsId(edit.tagName)) {
+
+				clearPrivatePoint(user);
+
+				return;
+
+			}
+
+			SpamTag tag = SpamTag.data.getById(edit.tagName);
+
+			tag.records.put(archive.id.toString(),msg.text());
+
+			SpamTag.data.setById(tag.id,tag);
+
+			clearPrivatePoint(user);
+
+		} else if (POINT_REMOVE_RECORD.equals(point)) {
+
+			TagPoint edit = (TagPoint) data;
+
+			if (!msg.hasText()) {
+
+				clearPrivatePoint(user);
+
+				return;
+
+			}
+			
+			UserArchive archive;
+
+			if (NumberUtil.isNumber(msg.text())) {
+
+				archive = UserArchive.show(edit.auth.createApi(),NumberUtil.parseLong(msg.text()));
+
+
+			} else {
+
+				archive = UserArchive.show(edit.auth.createApi(),msg.text());
+
+			}
+
+			if (archive == null) {
+
+				msg.send("查无此人").withCancel().exec(data);
+
+				return;
+
+			}
+
+			if (!SpamTag.data.containsId(edit.tagName)) {
+
+				clearPrivatePoint(user);
+
+				return;
+
+			}
+
+			SpamTag tag = SpamTag.data.getById(edit.tagName);
+
+			tag.records.remove(archive.id.toString());
+
+			SpamTag.data.setById(tag.id,tag);
+
+			clearPrivatePoint(user);
+
 		}
 
 	}
@@ -415,7 +538,13 @@ public class SpamMain extends Fragment {
 			.newButton("同步")
 			.newButton(subed ? "✅" : "☑",POINT_SPAM_SET,account.id,tag.id);
 
+		buttons.newButtonLine("查看所有",POINT_SHOW_RECORDS,account.id,tag.id);
+
 		if (user.admin()) {
+
+			buttons.newButtonLine()
+				.newButton("添加记录",POINT_ADD_RECORD,account.id,tag.id)
+				.newButton("移除记录",POINT_REMOVE_RECORD,account.id,tag.id);
 
 			buttons.newButtonLine("删除分类",POINT_DEL_TAG,account.id,tag.id);
 
@@ -424,7 +553,7 @@ public class SpamMain extends Fragment {
 		buttons.newButtonLine("🔙",POINT_SPAM,account.id);
 
 		callback.edit(message).buttons(buttons).async();
-		
+
 	}
 
 	void spamSet(UserData user,Callback callback,String tagName,TAuth account) {
@@ -452,7 +581,7 @@ public class SpamMain extends Fragment {
 		}
 
 		SpamTag.data.setById(tag.id,tag);
-		
+
 		spamTag(user,callback,tagName,account);
 
 	}

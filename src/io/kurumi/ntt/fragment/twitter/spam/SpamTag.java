@@ -9,11 +9,12 @@ public class SpamTag {
 	
 	public static AbsData<String,SpamTag> data = new AbsData<>(SpamTag.class);
 	
+	
 	public String id;
 	
 	public String description;
 	
-	public HashMap<String,SpamRecord> records;
+	public HashMap<String,String> records;
 	
 	public List<Long> subscribers;
 	
