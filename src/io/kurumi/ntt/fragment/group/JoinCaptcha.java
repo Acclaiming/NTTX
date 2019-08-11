@@ -1206,7 +1206,7 @@ public class JoinCaptcha extends Fragment {
 
         }
 
-        if (gd.captcha_del == null && gd.last_join_msg != null) {
+        if (gd.captcha_del != null && gd.last_join_msg != null) {
 
             execute(new DeleteMessage(msg.chatId(), gd.last_join_msg));
 
@@ -1241,7 +1241,7 @@ public class JoinCaptcha extends Fragment {
         } else if (gd.captcha_del == 0) {
 
             Msg lastMsg = msg.send(user.userName() + " 通过了验证 ~").html().send();
-
+			
             if (lastMsg != null) {
 
                 gd.last_join_msg = lastMsg.messageId();
