@@ -9,6 +9,7 @@ import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.fragment.twitter.ui.extra.OWUnfoPublish;
 import io.kurumi.ntt.fragment.twitter.ui.extra.SpamMain;
+import io.kurumi.ntt.Env;
 
 public class ExtraMain extends Fragment {
 
@@ -71,7 +72,7 @@ public class ExtraMain extends Fragment {
 
 		buttons.newButtonLine("单向取关推送 >>",OWUnfoPublish.POINT_OUP,account.id);
 
-		if (user.admin()) {
+		if (user.admin() && !Env.SPAM_CHANNEL.isEmpty()) {
 
 			buttons.newButtonLine("联合封禁 >>",SpamMain.POINT_SPAM,account.id);
 
