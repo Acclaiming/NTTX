@@ -182,7 +182,32 @@ public class SpamMain extends Fragment {
 
 			confirmDelTag(user,callback,params[1],account);
 
+		} else if (POINT_ADD_RECORD.equals(point)) {
+
+			if (params.length < 2) {
+
+				callback.invalidQuery();
+
+				return;
+
+			}
+
+			addRecord(user,callback,params[1],account);
+
+		} else if (POINT_REMOVE_RECORD.equals(point)) {
+
+			if (params.length < 2) {
+
+				callback.invalidQuery();
+
+				return;
+
+			}
+
+			removeRecord(user,callback,params[1],account);
+
 		}
+		
 
 	}
 
@@ -288,6 +313,14 @@ public class SpamMain extends Fragment {
 	void addRecord(UserData user,Callback callback,String tagName,TAuth account) {
 
 		setPrivatePoint(user,POINT_ADD_RECORD,new TagPoint(user,callback,account,tagName));
+
+		callback.edit("输入对方 ID 或 链接:").withCancel().async();
+
+	}
+	
+	void removeRecord(UserData user,Callback callback,String tagName,TAuth account) {
+
+		setPrivatePoint(user,POINT_REMOVE_RECORD,new TagPoint(user,callback,account,tagName));
 
 		callback.edit("输入对方 ID 或 链接:").withCancel().async();
 
