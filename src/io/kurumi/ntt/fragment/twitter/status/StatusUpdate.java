@@ -193,7 +193,7 @@ public class StatusUpdate extends Fragment {
 
 		if (count == 0) {
 
-			msg.send("你没有认证账号，使用 /login 登录 ~").exec();
+			msg.send("你还未认证 Twitter 账号 ~").exec();
 
 			return PROCESS_REJECT;
 

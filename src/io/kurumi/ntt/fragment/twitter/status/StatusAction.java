@@ -156,7 +156,7 @@ public class StatusAction extends Fragment {
 
         if (count == 0) {
 
-            callback.alert("这需要认证Twitter账号才可使用 :) \n请私聊BOT使用 /login");
+            callback.alert("这需要认证Twitter账号才可使用 :)");
 
             return;
 
