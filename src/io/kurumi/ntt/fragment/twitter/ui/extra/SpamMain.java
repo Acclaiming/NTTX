@@ -56,7 +56,7 @@ public class SpamMain extends Fragment {
 			POINT_RD_TAG,
 			POINT_DEL_TAG,
 			POINT_CONFIRM_DEL_TAG,
-			
+
 			POINT_ADD_RECORD,
 			POINT_REMOVE_RECORD
 
@@ -69,10 +69,10 @@ public class SpamMain extends Fragment {
 			POINT_RN_TAG,
 			POINT_RD_TAG,
 			POINT_DEL_TAG,
-			
+
 			POINT_ADD_RECORD,
 			POINT_REMOVE_RECORD
-	
+
 
 		);
 
@@ -208,7 +208,7 @@ public class SpamMain extends Fragment {
 			removeRecord(user,callback,params[1],account);
 
 		}
-		
+
 
 	}
 
@@ -318,7 +318,7 @@ public class SpamMain extends Fragment {
 		callback.edit("输入对方 ID 或 链接:").withCancel().async();
 
 	}
-	
+
 	void removeRecord(UserData user,Callback callback,String tagName,TAuth account) {
 
 		setPrivatePoint(user,POINT_REMOVE_RECORD,new TagPoint(user,callback,account,tagName));
@@ -442,27 +442,27 @@ public class SpamMain extends Fragment {
 
 			}
 
-				UserArchive archive;
+			UserArchive archive;
 
-				if (NumberUtil.isNumber(msg.text())) {
+			if (NumberUtil.isNumber(msg.text())) {
 
-					archive = UserArchive.show(edit.auth.createApi(),NumberUtil.parseLong(msg.text()));
+				archive = UserArchive.show(edit.auth.createApi(),NumberUtil.parseLong(msg.text()));
 
 
-				} else {
+			} else {
 
-					archive = UserArchive.show(edit.auth.createApi(),msg.text());
+				archive = UserArchive.show(edit.auth.createApi(),msg.text());
 
-				}
+			}
 
-				if (archive == null) {
+			if (archive == null) {
 
-					msg.send("查无此人").withCancel().exec(data);
+				msg.send("查无此人").withCancel().exec(data);
 
-					return;
+				return;
 
-		}
-		
+			}
+
 			if (!SpamTag.data.containsId(edit.tagName)) {
 
 				clearPrivatePoint(user);
@@ -492,7 +492,7 @@ public class SpamMain extends Fragment {
 				return;
 
 			}
-			
+
 			UserArchive archive;
 
 			if (NumberUtil.isNumber(msg.text())) {
@@ -521,6 +521,8 @@ public class SpamMain extends Fragment {
 				return;
 
 			}
+			
+			new Send(Env.SPAM_CHANNEL,"#移除记录 [ " + edit.tagName + " ]\n",archive.formatSimple()).send();
 
 			SpamTag tag = SpamTag.data.getById(edit.tagName);
 
