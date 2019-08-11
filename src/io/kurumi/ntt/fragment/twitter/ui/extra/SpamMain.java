@@ -395,7 +395,7 @@ public class SpamMain extends Fragment {
 
 		}
 
-		String message = "分类 : " + tag.id + " [ " + account.archive().name + " ]";
+		String message = tag.id + " [ " + account.archive().name + " ]";
 
 		message += "\n\n" + tag.description;
 
