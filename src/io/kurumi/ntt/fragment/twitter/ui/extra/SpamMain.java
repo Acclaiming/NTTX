@@ -265,6 +265,8 @@ public class SpamMain extends Fragment {
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
+		data.with(msg);
+		
 		if (POINT_NEW_TAG.equals(point)) {
 
 			if (!msg.hasText()) {
@@ -409,6 +411,8 @@ public class SpamMain extends Fragment {
 
 		buttons.newButtonLine("🔙",POINT_SPAM,account.id);
 
+		callback.edit(message).buttons(buttons).async();
+		
 	}
 
 	void spamSet(UserData user,Callback callback,String tagName,TAuth account) {
