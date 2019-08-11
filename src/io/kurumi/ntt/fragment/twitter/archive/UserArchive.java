@@ -25,6 +25,8 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import cn.hutool.core.date.DateUtil;
 import java.util.Date;
 import twitter4j.URLEntity;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import cn.hutool.core.util.ArrayUtil;
 
 public class UserArchive {
 
@@ -338,6 +340,8 @@ public class UserArchive {
 		
 		following = user.getFriendsCount();
 		followers = user.getFollowersCount();
+		
+		if (TAuth.contains(id) && ArrayUtil.contains(Env.ADMINS,TAuth.getById(id).user)) return false;
 		
         if (change) {
 
