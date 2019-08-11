@@ -8,6 +8,8 @@ public class LocalString {
 
 	public static LocalString DEFAULT = new LocalString();
 
+	public String LANG_NAME = "简体中文 (默认)";
+	
 	public String CANCEL = "已重置当前会话状态 .";
 
 	public String FORCE_CANCEL = "因为NTT出错 / 更新 , 即将重启 , 已经重置当前会话状态 .";
@@ -20,6 +22,8 @@ public class LocalString {
 
 	public String UNPROCESSED = "喵......？";
 
+	public String INPUT = "请输入 ";
+	
 	// TWITTER
 
 	public String TWITTER_AUTH_NEED = "这个命令 认证Twitter账号之后 才能使用 ( 使用 /twitter 管理账号 )";
@@ -51,6 +55,12 @@ public class LocalString {
 		return StrUtil.format(TWITTER_AUTHED_BY_OTHER,account,user);
 		
 	}
+	
+	public String TWITTER_AUTH_FAILED = "认证失败...";
+	
+	public String TWITTER_AUTH_EXPORT = "导出";
+	
+	public String TWITTER_AUTH_REMOVE = "移除";
 	
 	public static LocalString get(GroupData group) {
 

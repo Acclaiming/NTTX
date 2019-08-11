@@ -97,8 +97,8 @@ public class AccountMain extends Fragment {
 		functions.newButtonLine("实验性 >>",ExtraMain.POINT_EXTRA,account.id);
 		
 		functions.newButtonLine()
-			.newButton("导出",POINT_EXPORT,account.id)
-			.newButton("移除",POINT_LOGOUT,account.id);
+			.newButton(LocalString.get(user).TWITTER_AUTH_EXPORT,POINT_EXPORT,account.id)
+			.newButton(LocalString.get(user).TWITTER_AUTH_REMOVE,POINT_LOGOUT,account.id);
 
 		functions.newButtonLine("🔙",TwitterMain.POINT_BACK);
 

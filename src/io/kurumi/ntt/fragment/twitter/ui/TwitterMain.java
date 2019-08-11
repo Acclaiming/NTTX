@@ -277,7 +277,7 @@ public class TwitterMain extends Fragment {
 
 		} catch (TwitterException e) {
 
-			msg.send("认证失败...",NTT.parseTwitterException(e)).exec();
+			msg.send(LocalString.get(user).TWITTER_AUTH_FAILED,NTT.parseTwitterException(e)).exec();
 
 		}
 
@@ -311,7 +311,7 @@ public class TwitterMain extends Fragment {
 
 		setPrivatePoint(user,POINT_CUSTOM_API,new CustomTokenAuth(callback));
 
-		String message = "请输入 Consumer Key : ";
+		String message = LocalString.get(user).INPUT + "Consumer Key : ";
 
 		callback.edit(message).withCancel().async();
 
@@ -321,7 +321,7 @@ public class TwitterMain extends Fragment {
 
 		if (StrUtil.isBlank(msg.text())) {
 
-			msg.send("请输入 Token").withCancel().async();
+			clearPrivatePoint(user);
 
 			return;
 
@@ -333,7 +333,7 @@ public class TwitterMain extends Fragment {
 
 			auth.apiKey = msg.text();
 
-			String message = "请输入 Consumer Key Secret : ";
+			String message = LocalString.get(user).INPUT + "Consumer Key Secret : ";
 
 			msg.send(message).withCancel().exec(auth);
 
@@ -353,7 +353,7 @@ public class TwitterMain extends Fragment {
 
 			}
 
-			String message = "请输入 Access Token : ";
+			String message = LocalString.get(user).INPUT + "Access Token : ";
 
 			msg.send(message).withCancel().exec(auth);
 
@@ -363,7 +363,7 @@ public class TwitterMain extends Fragment {
 
 			auth.accessToken = msg.text();
 
-			String message = "请输入 Access Token Secret : ";
+			String message = LocalString.get(user).INPUT + "Access Token Secret : ";
 
 			msg.send(message).withCancel().exec(auth);
 
@@ -393,8 +393,8 @@ public class TwitterMain extends Fragment {
 
                     if (!user.id.equals(old.user)) {
 
-                        new Send(old.user,"乃的账号 " + old.archive().urlHtml() + " 已被 " + user.userName() + " 认证 , 已移除 .").html().exec();
-
+                        new Send(old.user,LocalString.get(user).twitterAuthedByOther(old.archive().urlHtml(),user.userName())).html().exec();
+						
                     }
 
                 }
@@ -409,7 +409,7 @@ public class TwitterMain extends Fragment {
 
             } catch (TwitterException e) {
 
-                msg.send("检查认证失败",NTT.parseTwitterException(e)).exec();
+                msg.send(LocalString.get(user).TWITTER_REQEUST_AUTH_FAILED,NTT.parseTwitterException(e)).exec();
 
 				clearPrivatePoint(user);
 
