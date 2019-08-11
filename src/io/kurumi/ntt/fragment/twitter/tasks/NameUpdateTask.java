@@ -20,7 +20,9 @@ public class NameUpdateTask extends TimerTask {
 	@Override
 	public void run() {
 		
-		for (TAuth account : TAuth.data.getAllByField("anu",true)) {
+		for (TAuth account : TAuth.data.getAll()) {
+			
+			if (account.anu == null) continue;
 			
 			try {
 				
