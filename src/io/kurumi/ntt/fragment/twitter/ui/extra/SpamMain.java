@@ -451,7 +451,7 @@ public class SpamMain extends Fragment {
 
 			} else {
 
-				archive = UserArchive.show(edit.auth.createApi(),msg.text());
+				archive = UserArchive.show(edit.auth.createApi(),NTT.parseScreenName(msg.text()));
 
 			}
 
