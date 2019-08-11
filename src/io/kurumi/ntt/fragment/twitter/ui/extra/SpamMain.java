@@ -102,7 +102,7 @@ public class SpamMain extends Fragment {
 
 			spamSet(user,callback,params[1],account);
 
-		} else if (POINT_SPAM_SET.equals(point)) {
+		} else if (POINT_RN_TAG.equals(point)) {
 
 			if (params.length < 2) {
 
@@ -112,7 +112,19 @@ public class SpamMain extends Fragment {
 
 			}
 
-			spamSet(user,callback,params[1],account);
+			rnTag(user,callback,params[1],account);
+
+		} else if (POINT_RD_TAG.equals(point)) {
+
+			if (params.length < 2) {
+
+				callback.invalidQuery();
+
+				return;
+
+			}
+
+			rdTag(user,callback,params[1],account);
 
 		}
 
@@ -186,7 +198,7 @@ public class SpamMain extends Fragment {
 		callback.edit("输入新分类名 :").async();
 
 	}
-	
+
 	void rdTag(UserData user,Callback callback,String tagName,TAuth account) {
 
 		setPrivatePoint(user,POINT_RD_TAG,new TagPoint(user,callback,account,tagName));
@@ -227,6 +239,72 @@ public class SpamMain extends Fragment {
 			newTag.subscribers = new LinkedList<>();
 
 			SpamTag.data.setById(newTag.id,newTag);
+
+			clearPrivatePoint(user);
+
+		} else if (POINT_RN_TAG.equals(point)) {
+
+			TagPoint edit = (TagPoint) data;
+
+			if (!msg.hasText()) {
+
+				clearPrivatePoint(user);
+
+				return;
+
+			}
+
+			if (!SpamTag.data.containsId(edit.tagName)) {
+
+				clearPrivatePoint(user);
+
+				return;
+
+			}
+
+			if (SpamTag.data.containsId(msg.text())) {
+
+				msg.send("该分类已存在").exec(data);
+
+				return;
+
+			}
+
+			SpamTag tag = SpamTag.data.getById(edit.tagName);
+
+			tag.id = msg.text();
+
+			SpamTag.data.deleteById(tag.id);
+
+			SpamTag.data.setById(tag.id,tag);
+
+			clearPrivatePoint(user);
+
+		} else if (POINT_RD_TAG.equals(point)) {
+
+			TagPoint edit = (TagPoint) data;
+
+			if (!msg.hasText()) {
+
+				clearPrivatePoint(user);
+
+				return;
+
+			}
+
+			if (!SpamTag.data.containsId(edit.tagName)) {
+
+				clearPrivatePoint(user);
+
+				return;
+
+			}
+
+			SpamTag tag = SpamTag.data.getById(edit.tagName);
+
+			tag.description = msg.text();
+
+			SpamTag.data.setById(tag.id,tag);
 
 			clearPrivatePoint(user);
 
