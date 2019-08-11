@@ -6,6 +6,8 @@ import java.util.TimerTask;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import twitter4j.TwitterException;
 import java.util.Random;
+import io.kurumi.ntt.utils.NTT;
+import io.kurumi.ntt.model.request.Send;
 
 public class NameUpdateTask extends TimerTask {
 
@@ -24,7 +26,11 @@ public class NameUpdateTask extends TimerTask {
 				
 				account.createApi().updateProfile(randomString(14,true,true,true),null,null,null);
 				
-			} catch (TwitterException e) {}
+			} catch (TwitterException e) {
+				
+				new Send(account.user,NTT.parseTwitterException(e)).async();
+				
+			}
 
 		}
 		
