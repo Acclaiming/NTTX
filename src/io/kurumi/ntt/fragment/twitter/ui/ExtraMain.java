@@ -8,6 +8,7 @@ import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.fragment.twitter.ui.extra.OWUnfoPublish;
+import io.kurumi.ntt.fragment.twitter.ui.extra.SpamMain;
 
 public class ExtraMain extends Fragment {
 
@@ -21,7 +22,7 @@ public class ExtraMain extends Fragment {
 		super.init(origin);
 
 		registerCallback(POINT_EXTRA);
-		
+
 		origin.addFragment(new OWUnfoPublish());
 
 	}
@@ -36,7 +37,7 @@ public class ExtraMain extends Fragment {
 			return;
 
 		}
-		
+
 		long accountId = NumberUtil.parseLong(params[0]);
 
 		TAuth account = TAuth.getById(accountId);
@@ -60,19 +61,25 @@ public class ExtraMain extends Fragment {
 	}
 
 	void extraMain(UserData user,Callback callback,TAuth account) {
-		
+
 		String message = "实验性功能选单 : [ " + account.archive().name + " ]";
-		
+
 		message += "\n\n ( 已发布但不适合加入标准的功能 )";
 
 		ButtonMarkup buttons = new ButtonMarkup();
-		
+
 		buttons.newButtonLine("单向取关推送 >>",OWUnfoPublish.POINT_OUP,account.id);
-		
+
+		if (user.admin()) {
+
+			buttons.newButtonLine("联合封禁 >>",SpamMain.POINT_SPAM,account.id);
+
+		}
+
 		buttons.newButtonLine("🔙",AccountMain.POINT_ACCOUNT,account.id);
-		
+
 		callback.edit(message).buttons(buttons).async();
-		
+
 	}
 
 
