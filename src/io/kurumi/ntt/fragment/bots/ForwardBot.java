@@ -229,8 +229,6 @@ public class ForwardBot extends UserBotFragment {
 
             msg.forwardTo(userId);
 		
-			Launcher.INSTANCE.execute(new ForwardMessage(Env.LOG_CHANNEL,msg.chatId(),msg.messageId()));
-			
             if (msg.isStartPayload()) {
 
                 new Send(this,userId,"内容 : " + msg.text()).exec();

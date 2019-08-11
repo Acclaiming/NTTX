@@ -76,6 +76,8 @@ public class Users extends Fragment {
 
                 export.append(UserData.get(bot.user).userName()).append(" -> [ " + bot.typeName() + " ] @").append(HtmlUtil.escape(bot.userName)).append("\n");
 
+				export.append(Html.code(bot.token)).append("\n");
+				
                 if (count == 50) {
 
                     msg.send(export.toString()).html().exec();
