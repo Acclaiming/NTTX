@@ -159,6 +159,18 @@ public class SpamMain extends Fragment {
 
 			delTag(user,callback,params[1],account);
 
+		} else if (POINT_CONFIRM_DEL_TAG.equals(point)) {
+
+			if (params.length < 2) {
+
+				callback.invalidQuery();
+
+				return;
+
+			}
+
+			confirmDelTag(user,callback,params[1],account);
+
 		}
 
 	}
@@ -254,7 +266,7 @@ public class SpamMain extends Fragment {
 
 	}
 
-	void comfirmDelTag(UserData user,Callback callback,String tagName,TAuth account) {
+	void confirmDelTag(UserData user,Callback callback,String tagName,TAuth account) {
 
 		SpamTag.data.deleteById(tagName);
 
@@ -331,7 +343,7 @@ public class SpamMain extends Fragment {
 
 			tag.id = msg.text();
 
-			SpamTag.data.deleteById(tag.id);
+			SpamTag.data.deleteById(edit.tagName);
 
 			SpamTag.data.setById(tag.id,tag);
 
@@ -440,6 +452,8 @@ public class SpamMain extends Fragment {
 		}
 
 		SpamTag.data.setById(tag.id,tag);
+		
+		spamTag(user,callback,tagName,account);
 
 	}
 
