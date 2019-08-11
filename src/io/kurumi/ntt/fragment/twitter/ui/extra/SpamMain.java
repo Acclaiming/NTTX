@@ -22,6 +22,7 @@ import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.model.Msg;
 import java.util.HashMap;
 import java.util.LinkedList;
+import io.kurumi.ntt.Env;
 
 public class SpamMain extends Fragment {
 
@@ -441,8 +442,6 @@ public class SpamMain extends Fragment {
 
 			}
 
-			if (data.step == 0) {
-
 				UserArchive archive;
 
 				if (NumberUtil.isNumber(msg.text())) {
@@ -462,19 +461,8 @@ public class SpamMain extends Fragment {
 
 					return;
 
-				}
-
-				data.step = 1;
-				data.data = archive;
-
-				msg.send("请输入理由 :").withCancel().exec();
-
-				return;
-
-			} 
-
-			UserArchive archive = data.data();
-
+		}
+		
 			if (!SpamTag.data.containsId(edit.tagName)) {
 
 				clearPrivatePoint(user);
@@ -485,7 +473,9 @@ public class SpamMain extends Fragment {
 
 			SpamTag tag = SpamTag.data.getById(edit.tagName);
 
-			tag.records.put(archive.id.toString(),msg.text());
+			Msg record = new Send(Env.SPAM_CHANNEL,"#新增记录 [ " + edit.tagName + " ]\n",archive.formatSimple()).send();
+
+			tag.records.put(archive.id.toString(),record.messageId());
 
 			SpamTag.data.setById(tag.id,tag);
 

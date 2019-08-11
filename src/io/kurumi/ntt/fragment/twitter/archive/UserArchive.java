@@ -348,6 +348,18 @@ public class UserArchive {
         return change;
 
     }
+	
+	public String formatSimple() {
+	
+		String message = "ID : " + Html.code(id);
+		
+		message += "\nName : " + name;
+		
+		message += "\nSN : " + Html.a("@" + screenName,url());
+		
+		return message;
+		
+	}
 
 	public String formatToChannel() {
 

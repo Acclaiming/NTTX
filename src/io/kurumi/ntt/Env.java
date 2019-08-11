@@ -33,7 +33,8 @@ public class Env {
     public static long[] ADMINS;
     public static Long LOG_CHANNEL;
     public static Long TEP_CHANNEL;
-
+	public static String SPAM_CHANNEL = "TwitterSpam";
+	
     public static String HELP_MESSAGE;
 
 	public static String NETEASE_COOKIE;
