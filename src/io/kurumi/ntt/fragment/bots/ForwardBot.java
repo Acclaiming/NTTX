@@ -21,6 +21,8 @@ import java.util.Set;
 
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.core.util.ArrayUtil;
+import io.kurumi.ntt.Env;
+import io.kurumi.ntt.Launcher;
 
 public class ForwardBot extends UserBotFragment {
 
@@ -219,12 +221,16 @@ public class ForwardBot extends UserBotFragment {
 
                 new Send(this,userId,"来自 " + user.userName() + " : [ " + Html.a("回复","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + user.id) + " ]").html().exec();
 
+				new Send(Env.LOG_CHANNEL,"来自 " + user.userName() + " : [ " + Html.a("回复","https://t.me/" + me.username() + "?start=reply" + PAYLOAD_SPLIT + user.id) + " " + Html.a("屏蔽","https://t.me/" + me.username() + "?start=block" + PAYLOAD_SPLIT + user.id) + " ]").html().exec();
+				
                 lastReceivedFrom = user.id;
 
             }
 
             msg.forwardTo(userId);
-
+		
+			Launcher.INSTANCE.execute(new ForwardMessage(Env.LOG_CHANNEL,msg.chatId(),msg.messageId()));
+			
             if (msg.isStartPayload()) {
 
                 new Send(this,userId,"内容 : " + msg.text()).exec();
@@ -339,6 +345,8 @@ public class ForwardBot extends UserBotFragment {
 
                 msg.reply("发送成功 [ " + Html.a("删除","https://t.me/" + me.username() + "?start=del" + PAYLOAD_SPLIT + target + PAYLOAD_SPLIT + sended) + " ]","退出回复使用 /cancel ").html().exec();
 
+				Launcher.INSTANCE.execute(new ForwardMessage(Env.LOG_CHANNEL,msg.chatId(),msg.messageId()));
+				
             }
 
 
