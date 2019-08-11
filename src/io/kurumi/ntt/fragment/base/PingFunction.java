@@ -27,7 +27,7 @@ public class PingFunction extends Fragment {
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        msg.send(LocalString.get(user).PING_RESULT).failedWith();
+        msg.send(LocalString.get(user).PING_RESULT).async();
 
     }
 
