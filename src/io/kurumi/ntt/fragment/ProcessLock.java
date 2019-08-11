@@ -15,8 +15,6 @@ public class ProcessLock<T> extends ReentrantLock {
 
     public T waitFor() {
 		
-		used.set(true);
-		
 		if (obj != null) return obj;
 
         try {
@@ -25,8 +23,10 @@ public class ProcessLock<T> extends ReentrantLock {
 			
 			if (obj != null) return obj;
 
-            condition.await(1000, TimeUnit.MILLISECONDS);
+            condition.await(200, TimeUnit.MILLISECONDS);
 
+			used.set(true);
+			
             return obj;
 
         } catch (InterruptedException e) {
