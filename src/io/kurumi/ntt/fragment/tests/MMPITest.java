@@ -93,15 +93,15 @@ public class MMPITest extends Fragment {
 
 		if (test.index == test.answer.length - 1) {
 
-			msg.send(questions[test.index]).keyboardHorizontal("男","女","上一题").async();
+			msg.send((test.index + 1) + " / " + questions.length + " : " + questions[test.index]).keyboardHorizontal("男","女","上一题").async();
 
 		} else if (test.index == 0) {
 
-			msg.send(questions[test.index]).keyboardHorizontal("是","否").async();
+			msg.send("1 / " + questions.length + " : " + questions[test.index]).keyboardHorizontal("是","否").async();
 
 		} else {
 
-			msg.send(questions[test.index]).keyboardHorizontal("是","否","上一题").async();
+			msg.send((test.index + 1) + " / " + questions.length + " : " + questions[test.index]).keyboardHorizontal("是","否","上一题").async();
 
 		}
 
