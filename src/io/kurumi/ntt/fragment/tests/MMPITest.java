@@ -36,11 +36,11 @@ public class MMPITest extends Fragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-		String message = "请尽快填写你看完题目后的第一印象，不要在每一道题目上费太多时间思索。答案无所谓对与不对，好与不好，完全不必有任何顾虑。";
+		String message = "请尽快填写你看完题目后的第一印象，不要在每一道题目上费太多时间思索。答案无所谓对与不对，好与不好，完全不必有任何顾虑。\n\n可以随时使用 /cancel 退出答题。";
 
 		setPrivatePoint(user,POINT_TEST,new Test());
 
-		msg.send(message).keyboardHorizontal("开始").withCancel().async();
+		msg.send(message).keyboardHorizontal("开始").async();
 
 	}
 
