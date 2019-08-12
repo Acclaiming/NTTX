@@ -94,7 +94,9 @@ public class Fragment {
     }
 
     public void executeAsync(BaseRequest request) {
+		
         executeAsync(null,request);
+		
     }
 
     public void executeAsync(Update update,final BaseRequest request) {

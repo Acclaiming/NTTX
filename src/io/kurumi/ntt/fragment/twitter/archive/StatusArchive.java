@@ -86,11 +86,38 @@ public class StatusArchive {
 
     }
 
+	public LinkedList<String> findMedias() {
+
+		if (!mediaUrls.isEmpty()) {
+
+			return mediaUrls;
+
+		}
+		
+		StatusArchive archive;
+		
+		if (quotedStatusId != -1 && (archive = StatusArchive.get(quotedStatusId)) != null && !archive.mediaUrls.isEmpty()) {
+			
+			return archive.mediaUrls;
+			
+		}
+
+		if (inReplyToStatusId != -1 && (archive = StatusArchive.get(inReplyToStatusId)) != null) {
+			
+			return archive.findMedias();
+			
+		}
+		
+		return mediaUrls;
+		
+	}
+
+
     public void sendTo(long chatId,int depth,TAuth auth,Status status) {
 
         LinkedList<File> media = new LinkedList<>();
 
-        for (String url : mediaUrls) {
+        for (String url : findMedias()) {
 
             String name = StrUtil.subAfter(url,"/",true);
 
@@ -129,9 +156,9 @@ public class StatusArchive {
 			File file = media.get(0);
 
 			SendResponse resp;
-			
+
 			if (file.getName().contains(".jpg")) {
-				
+
 				SendPhoto send = new SendPhoto(chatId,file).caption(html).parseMode(ParseMode.HTML);
 
 				if (status != null) {
@@ -141,9 +168,9 @@ public class StatusArchive {
 				}
 
 				resp = Launcher.INSTANCE.bot().execute(send);
-				
+
 			} else {
-				
+
 				SendAnimation send = new SendAnimation(chatId,file).caption(html).parseMode(ParseMode.HTML);
 
 				if (status != null) {
@@ -153,10 +180,10 @@ public class StatusArchive {
 				}
 
 				resp = Launcher.INSTANCE.bot().execute(send);
-				
+
 			}
 
-            
+
             if (status != null && resp != null && resp.isOk() && resp.message().chat().type() == Chat.Type.Private) {
 
                 MessagePoint.set(resp.message().messageId(),1,id);

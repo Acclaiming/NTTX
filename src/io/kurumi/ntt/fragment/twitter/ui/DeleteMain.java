@@ -119,7 +119,7 @@ public class DeleteMain extends Fragment {
 			.newButton("使用绝对时间")
 			.newButton(account.ad_a != null ? "✅" : "☑",POINT_SETTING_AD_ABS,account.id);
 			
-		//config.newButtonLine("立即执行",POINT_AD_EXECUTE,account.id);
+		config.newButtonLine("立即执行",POINT_AD_EXECUTE,account.id);
 
 		config.newButtonLine("🔙",AccountMain.POINT_ACCOUNT,account.id);
 

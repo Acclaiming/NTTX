@@ -386,6 +386,13 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		
     }
 
+	@Override
+	public void processAsync(Update update) {
+		
+		super.processAsync(update);
+		
+	}
+
     @Override
     public void stop() {
 

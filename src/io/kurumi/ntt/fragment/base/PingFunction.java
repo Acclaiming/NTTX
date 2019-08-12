@@ -7,7 +7,7 @@ import io.kurumi.ntt.i18n.LocalString;
 import io.kurumi.ntt.model.Msg;
 
 public class PingFunction extends Fragment {
-
+	
     @Override
     public void init(BotFragment origin) {
 
