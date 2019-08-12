@@ -79,7 +79,7 @@ public class MMPITest extends Fragment {
 
 			if ("上一题".equals(msg.text())) {
 
-				test.index --;
+				test.index = test.index - 2;
 
 			} else {
 
