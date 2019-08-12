@@ -51,6 +51,8 @@ public class MMPITest extends Fragment {
 
 		if (test.index == test.answer.length - 1) {
 
+			clearPrivatePoint(user);
+			
 			test.answer[test.index] = "男".equals(msg.text());
 
 			// 提交
