@@ -24,36 +24,36 @@ public class Send extends AbstractSend<Send> {
 
     private SendMessage request;
 
-    public Send(Fragment fragment, String chatId, String... msg) {
+    public Send(Fragment fragment,String chatId,String... msg) {
 
-        this(null, fragment, chatId, msg);
-
-    }
-
-    public Send(Fragment fragment, long chatId, String... msg) {
-
-        this(null, fragment, chatId, msg);
+        this(null,fragment,chatId,msg);
 
     }
 
-    public Send(String chatId, String... msg) {
+    public Send(Fragment fragment,long chatId,String... msg) {
 
-        this(null, Launcher.INSTANCE, chatId, msg);
-
-    }
-
-    public Send(long chatId, String... msg) {
-
-        this(null, Launcher.INSTANCE, chatId, msg);
+        this(null,fragment,chatId,msg);
 
     }
 
+    public Send(String chatId,String... msg) {
 
-    private Send(Void v, Fragment fragment, Object chatId, String... msg) {
+        this(null,Launcher.INSTANCE,chatId,msg);
+
+    }
+
+    public Send(long chatId,String... msg) {
+
+        this(null,Launcher.INSTANCE,chatId,msg);
+
+    }
+
+
+    private Send(Void v,Fragment fragment,Object chatId,String... msg) {
 
         super(fragment);
 
-        request = new SendMessage(chatId, ArrayUtil.join(msg, "\n").replace("\t", ""));
+        request = new SendMessage(chatId,ArrayUtil.join(msg,"\n").replace("\t",""));
 
         this.fragment = fragment;
 
@@ -124,21 +124,32 @@ public class Send extends AbstractSend<Send> {
 
     }
 
-    public Send keyboard(final String... buttons) {
+    public Send keyboardVertical(final String... buttons) {
 
-        request.replyMarkup(new Keyboard() {{
+		Keyboard keyboard = new Keyboard();
 
-            for (String button : buttons) {
+		for (String button : buttons) keyboard.newButtonLine(button);
 
-                newButtonLine(button);
-
-            }
-
-        }}.markup());
-
-        return this;
+		keyboard(keyboard);
+		
+		return this;
 
     }
+	
+	public Send keyboardHorizontal(final String... buttons) {
+
+		Keyboard keyboard = new Keyboard();
+
+		KeyboradButtonLine line = keyboard.newButtonLine();
+
+		for (String button : buttons) line.newButton(button);
+
+		keyboard(keyboard);
+		
+		return this;
+
+    }
+	
 
     public Send keyboard(Keyboard keyboard) {
 
@@ -183,20 +194,20 @@ public class Send extends AbstractSend<Send> {
 
         BotFragment.execute(new Runnable() {
 
-            @Override
-            public void run() {
+				@Override
+				public void run() {
 
-                SendResponse resp = exec();
+					SendResponse resp = exec();
 
-                if (resp.isOk()) {
+					if (resp.isOk()) {
 
-                    NTT.tryDelete(delay, new Msg(fragment, resp.message()));
+						NTT.tryDelete(delay,new Msg(fragment,resp.message()));
 
-                }
+					}
 
-            }
+				}
 
-        });
+			});
 
 
     }
@@ -213,7 +224,7 @@ public class Send extends AbstractSend<Send> {
 
         if (resp.isOk()) {
 
-            NTT.tryDelete(delay, new Msg(fragment, resp.message()), origin);
+            NTT.tryDelete(delay,new Msg(fragment,resp.message()),origin);
 
         }
 
@@ -233,12 +244,12 @@ public class Send extends AbstractSend<Send> {
 
         if (resp.isOk()) {
 
-            NTT.tryDelete(delay, new Msg(fragment, resp.message()));
+            NTT.tryDelete(delay,new Msg(fragment,resp.message()));
 
         }
 
     }
-	
+
     public Send withCancel() {
 
         request.setText(request.getText() + "\n\n使用 /cancel 取消当前正在进行的操作 ~");
@@ -253,17 +264,17 @@ public class Send extends AbstractSend<Send> {
 
         if (!resp.isOk()) return null;
 
-        return new Msg(fragment, resp.message());
+        return new Msg(fragment,resp.message());
 
     }
 
-    public SendResponse point(int type, long targetId) {
+    public SendResponse point(int type,long targetId) {
 
         SendResponse resp = exec();
 
         if (resp != null && resp.isOk() && resp.message().chat().type() == Chat.Type.Private) {
 
-            MessagePoint.set(resp.message().messageId(), type, targetId);
+            MessagePoint.set(resp.message().messageId(),type,targetId);
 
         }
 
@@ -273,7 +284,7 @@ public class Send extends AbstractSend<Send> {
 
     public void debug() {
 
-        if (!(request.chatId instanceof String) && ArrayUtil.contains(Env.ADMINS, (long) request.chatId)) {
+        if (!(request.chatId instanceof String) && ArrayUtil.contains(Env.ADMINS,(long) request.chatId)) {
 
             exec();
 
@@ -291,7 +302,7 @@ public class Send extends AbstractSend<Send> {
 
         SendResponse resp = exec();
 
-        if (resp.isOk()) toAdd.context.add(new Msg(fragment, resp.message()));
+        if (resp.isOk()) toAdd.context.add(new Msg(fragment,resp.message()));
 
         return resp;
 
@@ -326,7 +337,7 @@ public class Send extends AbstractSend<Send> {
 
         while (arr.length > 4096) {
 
-            Character[] chars = (Character[]) ArrayUtil.sub(ArrayUtil.wrap((Object) arr), 0, 4096);
+            Character[] chars = (Character[]) ArrayUtil.sub(ArrayUtil.wrap((Object) arr),0,4096);
 
             int index = chars.length;
 
@@ -340,13 +351,13 @@ public class Send extends AbstractSend<Send> {
 
                     char[] send = new char[index];
 
-                    ArrayUtil.copy(arr, send, index);
+                    ArrayUtil.copy(arr,send,index);
 
                     fork(String.valueOf(send)).exec();
 
                     char[] subed = new char[arr.length - index];
 
-                    ArrayUtil.copy(arr, index, subed, 0, subed.length);
+                    ArrayUtil.copy(arr,index,subed,0,subed.length);
 
                     request.setText(String.valueOf(subed));
 
@@ -364,13 +375,13 @@ public class Send extends AbstractSend<Send> {
 
                 char[] send = new char[4096];
 
-                ArrayUtil.copy(arr, send, 4096);
+                ArrayUtil.copy(arr,send,4096);
 
                 fork(String.valueOf(send)).exec();
 
                 char[] subed = new char[arr.length - 4096];
 
-                ArrayUtil.copy(arr, 4095, subed, 0, subed.length);
+                ArrayUtil.copy(arr,4095,subed,0,subed.length);
 
                 request.setText(String.valueOf(subed));
 
@@ -384,7 +395,7 @@ public class Send extends AbstractSend<Send> {
 
             if (async) {
 
-                fragment.executeAsync(origin == null ? null : origin.update, request);
+                fragment.executeAsync(origin == null ? null : origin.update,request);
 
                 return null;
 
@@ -402,18 +413,18 @@ public class Send extends AbstractSend<Send> {
 
                         user.contactable = false;
 
-                        UserData.userDataIndex.put(user.id, user);
+                        UserData.userDataIndex.put(user.id,user);
 
-                        UserData.data.setById(user.id, user);
+                        UserData.data.setById(user.id,user);
 
                     }
 
                 }
-				
+
 				if (resp != null) {
-					
+
 					BotLog.debug("发送出错 : " + request.toWebhookResponse() + "\n" + resp.description());
-					
+
 				}
 
             }
@@ -423,8 +434,8 @@ public class Send extends AbstractSend<Send> {
 
         } catch (Exception ex) {
         }
-		
-		
+
+
 		return new SendResponse("Telegram 服务器超时");
 
 
@@ -432,7 +443,7 @@ public class Send extends AbstractSend<Send> {
 
     public Send fork(Long chatId) {
 
-        Send send = new Send(null, fragment, chatId, request.getText());
+        Send send = new Send(null,fragment,chatId,request.getText());
 
         if (request.mode != null) {
 
@@ -447,7 +458,7 @@ public class Send extends AbstractSend<Send> {
 
     public Send fork(String... msg) {
 
-        Send send = new Send(null, fragment, request.chatId, msg);
+        Send send = new Send(null,fragment,request.chatId,msg);
 
         if (request.mode != null) {
 

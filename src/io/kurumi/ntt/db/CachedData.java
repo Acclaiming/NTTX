@@ -2,6 +2,7 @@ package io.kurumi.ntt.db;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 public class CachedData<T> extends Data<T> {
 
@@ -34,7 +35,7 @@ public class CachedData<T> extends Data<T> {
 
         synchronized (idIndex) {
 
-            idIndex.remove(id);
+            idIndex.put(id,object);
 
         }
 
@@ -51,8 +52,10 @@ public class CachedData<T> extends Data<T> {
     @Override
     public T getById(Long id) {
 
-        if (idIndex.size() > 1000) {
+        if (idIndex.size() > 233) {
 
+			saveAll();
+			
             idIndex.clear();
 
         } else if (idIndex.containsKey(id)) return idIndex.get(id);

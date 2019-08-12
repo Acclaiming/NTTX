@@ -110,7 +110,7 @@ public class BotChannnel extends Fragment {
 
             setPrivatePoint(user, POINT_INPUT_EXTRA_PARAM, param);
 
-            msg.send("DisableNotification ？").keyboard("True", "False").async();
+            msg.send("DisableNotification ？").keyboardHorizontal("True", "False").async();
 
         } else if ("get_chat".equals(function)) {
 
@@ -165,7 +165,7 @@ public class BotChannnel extends Fragment {
 
             setPrivatePoint(user, POINT_INPUT_EXTRA_PARAM, param);
 
-            msg.send("ban ？").keyboard("True", "False").async();
+            msg.send("ban ？").keyboardHorizontal("True", "False").async();
 
         } else if ("promote".equals(function)) {
 
@@ -180,7 +180,7 @@ public class BotChannnel extends Fragment {
 
             setPrivatePoint(user, POINT_INPUT_EXTRA_PARAM, param);
 
-            msg.send("UnPromote ？").keyboard("True", "False").async();
+            msg.send("UnPromote ？").keyboardHorizontal("True", "False").async();
 
         } else if ("restrict".equals(function)) {
 
@@ -195,7 +195,7 @@ public class BotChannnel extends Fragment {
 
             setPrivatePoint(user, POINT_INPUT_EXTRA_PARAM, param);
 
-            msg.send("can_send_messages ？").keyboard("True", "False", "Read Only").async();
+            msg.send("can_send_messages ？").keyboardHorizontal("True", "False", "Read Only").async();
 
         } else if ("exit".equals(function)) {
 
@@ -219,7 +219,7 @@ public class BotChannnel extends Fragment {
 
             setPrivatePoint(user, POINT_INPUT_EXTRA_PARAM, param);
 
-            msg.send("DisableNotification ？").keyboard("True", "False").async();
+            msg.send("DisableNotification ？").keyboardHorizontal("True", "False").async();
 
         } else if ("get_file".equals(function)) {
 
@@ -252,7 +252,7 @@ public class BotChannnel extends Fragment {
 
             setPrivatePoint(user, POINT_INPUT_EXTRA_PARAM, param);
 
-            msg.send("ParseMode ？").keyboard("Html", "Markdown", "None").async();
+            msg.send("ParseMode ？").keyboardHorizontal("Html", "Markdown", "None").async();
 
         } else if ("edit".equals(function)) {
 
@@ -267,7 +267,7 @@ public class BotChannnel extends Fragment {
 
             setPrivatePoint(user, POINT_INPUT_EXTRA_PARAM, param);
 
-            msg.send("ParseMode ？").keyboard("Html", "Markdown", "None").async();
+            msg.send("ParseMode ？").keyboardHorizontal("Html", "Markdown", "None").async();
 
         } else if ("unban".equals(function)) {
 
@@ -397,7 +397,7 @@ public class BotChannnel extends Fragment {
 
                 param.step = 1;
 
-                msg.send("can_send_media_messages ？").keyboard("True", "False").async();
+                msg.send("can_send_media_messages ？").keyboardHorizontal("True", "False").async();
 
             } else if (param.step == 1) {
 
@@ -409,7 +409,7 @@ public class BotChannnel extends Fragment {
 
                 param.step = 2;
 
-                msg.send("can_send_other_messages ？").keyboard("True", "False").async();
+                msg.send("can_send_other_messages ？").keyboardHorizontal("True", "False").async();
 
             } else if (param.step == 2) {
 
@@ -421,7 +421,7 @@ public class BotChannnel extends Fragment {
 
                 param.step = 3;
 
-                msg.send("can_send_media_messages ？").keyboard("True", "False").async();
+                msg.send("can_send_media_messages ？").keyboardHorizontal("True", "False").async();
 
             } else if (param.step == 3) {
 
@@ -456,7 +456,7 @@ public class BotChannnel extends Fragment {
 
                 param.step = 1;
 
-                msg.send("DisableNotification ？").keyboard("True", "False").async();
+                msg.send("DisableNotification ？").keyboardHorizontal("True", "False").async();
 
             } else if (param.step == 1) {
 

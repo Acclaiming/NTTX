@@ -10,6 +10,8 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
+import java.util.List;
+import io.kurumi.ntt.db.CachedData;
 
 public class TAuth {
 
@@ -70,6 +72,11 @@ public class TAuth {
 	public Boolean fb;
 	
 	public Boolean fo;
+	
+	public Boolean fo_marge;
+	
+	public List<Long> nf;
+	public List<Long> lf;
 	
 	public Boolean fo_info;
 	public Boolean fr_info;
