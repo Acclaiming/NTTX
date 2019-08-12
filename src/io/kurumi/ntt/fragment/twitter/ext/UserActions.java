@@ -91,7 +91,9 @@ public class UserActions extends Fragment {
 
         } else if (msg.targetChatId == -1 && msg.isPrivate() && msg.isReply()) {
 
-            MessagePoint point = MessagePoint.get(msg.replyTo().messageId());
+            MessagePoint point = MessagePoint.getFromStatus(msg.replyTo().message());
+			
+			if (point == null) point = MessagePoint.get(msg.replyTo().messageId());
 
             if (point == null) {
 
