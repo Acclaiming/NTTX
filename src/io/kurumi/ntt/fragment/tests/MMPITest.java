@@ -60,7 +60,7 @@ public class MMPITest extends Fragment {
 
 		}
 
-		String resultId = StrUtil.subBetween(request.execute().body(),"id=\"","\"");
+		String resultId = StrUtil.subBetween(request.execute().body(),"id=","\"");
 		
 		msg.send("查看结果 : http://apesk.com/mensa/common_report_getid/mmpi_report_admin_m.asp?id=" + resultId).async();
 		
