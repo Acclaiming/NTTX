@@ -71,7 +71,7 @@ public class MentionTask extends TimerTask {
 
                 StatusArchive archive = StatusArchive.save(mention).loop(api);
 
-                if (auth.mention != null || !archive.from.equals(auth.id)) {
+                if (auth.mention != null && !archive.from.equals(auth.id)) {
 
                     archive.sendTo(auth.user,1,auth,mention);
 
