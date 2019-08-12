@@ -86,13 +86,15 @@ public class StatusArchive {
 
     }
 
-	public LinkedList<String> findMedias() {
+	public LinkedList<String> findMedias(int depth) {
 
-		if (!mediaUrls.isEmpty()) {
+		if (!mediaUrls.isEmpty() || depth == 0) {
 
 			return mediaUrls;
 
 		}
+		
+		depth --;
 		
 		StatusArchive archive;
 		
@@ -104,7 +106,7 @@ public class StatusArchive {
 
 		if (inReplyToStatusId != -1 && (archive = StatusArchive.get(inReplyToStatusId)) != null) {
 			
-			return archive.findMedias();
+			return archive.findMedias(depth);
 			
 		}
 		
@@ -117,7 +119,7 @@ public class StatusArchive {
 
         LinkedList<File> media = new LinkedList<>();
 
-        for (String url : findMedias()) {
+        for (String url : findMedias(depth)) {
 
             String name = StrUtil.subAfter(url,"/",true);
 
