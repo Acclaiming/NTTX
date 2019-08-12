@@ -1,14 +1,14 @@
 package io.kurumi.ntt.fragment.twitter.tasks;
 
-import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.BotFragment;
-import java.util.TimerTask;
 import io.kurumi.ntt.fragment.twitter.TAuth;
-import twitter4j.TwitterException;
-import java.util.Random;
-import io.kurumi.ntt.utils.NTT;
-import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import io.kurumi.ntt.model.request.Send;
+import io.kurumi.ntt.utils.NTT;
+import java.util.Date;
+import java.util.Random;
+import java.util.TimerTask;
+import twitter4j.TwitterException;
 
 public class NameUpdateTask extends TimerTask {
 
