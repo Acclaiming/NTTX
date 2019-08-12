@@ -13,90 +13,102 @@ import cn.hutool.core.util.StrUtil;
 public class MMPITest extends Fragment {
 
 	final String POINT_TEST = "mmpi";
-	
+
 	@Override
 	public void init(BotFragment origin) {
-		
+
 		super.init(origin);
-		
+
 		registerFunction("mmpi");
-		
+
 		registerPoint(POINT_TEST);
-		
+
 	}
-	
+
 	class Test extends PointData {
-		
+
 		int index = -1;
-		
+
 		boolean[] answer = new boolean[questions.length];
-		
+
 	}
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-		
+
 		String message = "请尽快填写你看完题目后的第一印象，不要在每一道题目上费太多时间思索。答案无所谓对与不对，好与不好，完全不必有任何顾虑。";
 
 		setPrivatePoint(user,POINT_TEST,new Test());
 
 		msg.send(message).keyboardHorizontal("开始").withCancel().async();
-				
+
 	}
 
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,PointData data) {
-		
+
 		Test test = (Test) data;
-		
+
 		if (test.index == test.answer.length - 1) {
-			
+
 			test.answer[test.index] = "男".equals(msg.text());
-			
+
 			// 提交
-			
+
 			HttpRequest request = HttpUtil.createPost(POST);
 
 			request.form("test_name",user.name());
 			request.form("test_email","noreply@kurumi.io");
 			request.form("hr_email","");
-			
+
 			request.form("checkbox","checkbox");
-			
+
 			for (int index = 0;index < test.answer.length;index ++) {
-				
+
 				request.form("answer" + (index + 1),test.answer[index] ? 1 : 0);
-				
+
 			}
-			
+
 			String resultId = StrUtil.subBetween(request.execute().body(),"id=","\"");
 
 			msg.send("查看结果 : http://apesk.com/mensa/common_report_getid/mmpi_report_admin_m.asp?id=" + resultId).async();
-			
+
 		}
-		
+
 		if (test.index != -1) {
-			
-			test.answer[test.index] = "是".equals(msg.text());
-			
+
+			if ("上一题".equals(msg.text())) {
+
+				test.index --;
+
+			} else {
+
+				test.answer[test.index] = "是".equals(msg.text());
+
+			}
+
 		}
 
 		test.index ++;
-		
+
 		if (test.index == test.answer.length - 1) {
-			
-			msg.send(questions[test.index]).keyboardHorizontal("男","女").async();
-			
-		} else {
-			
+
+			msg.send(questions[test.index]).keyboardHorizontal("男","女","上一题").async();
+
+		} else if (test.index == 0) {
+
 			msg.send(questions[test.index]).keyboardHorizontal("是","否").async();
-			
+
+		} else {
+
+			msg.send(questions[test.index]).keyboardHorizontal("是","否","上一题").async();
+
 		}
-		
+
 	}
-	
+
 	public static String POST = "https://www.apesk.com/mensa/common_submit_hr/submit_mmpi_conn_m.asp";
-	
+
 	public static String[] questions = new String[] {
 
 		"我喜欢看科技方面的网站",
@@ -665,9 +677,9 @@ public class MMPITest extends Fragment {
 		"我不轻易生气",
 		"当我站在高处的时候，我就很想往下跳",
 		"我喜欢电影里的爱情镜头",
-		"你的性别",
-		
-		
+		"那么，性别",
+
+
 	};
-	
+
 }
