@@ -14,7 +14,7 @@ public class NameUpdateTask extends TimerTask {
 
 	public static void start() {
 		
-		BotFragment.mainTimer.schedule(new NameUpdateTask(),new Date(),5 * 60 * 1000L);
+		BotFragment.mainTimer.schedule(new NameUpdateTask(),new Date(),15 * 60 * 1000L);
 		
 	}
 	
@@ -29,7 +29,7 @@ public class NameUpdateTask extends TimerTask {
 				
 				UserArchive archive = UserArchive.save(account.createApi().updateProfile(randomString(14,true,true,true),null,null,null));
 
-				new Send(account.user,"更改到 : " + archive.name).async();
+				// new Send(account.user,"更改到 : " + archive.name).async();
 				
 			} catch (TwitterException e) {
 				
