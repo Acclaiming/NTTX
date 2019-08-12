@@ -8,12 +8,13 @@ import twitter4j.TwitterException;
 import java.util.Random;
 import io.kurumi.ntt.utils.NTT;
 import io.kurumi.ntt.model.request.Send;
+import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 
 public class NameUpdateTask extends TimerTask {
 
 	public static void start() {
 		
-		BotFragment.mainTimer.schedule(new NameUpdateTask(),5 * 60 * 1000L);
+		BotFragment.mainTimer.schedule(new NameUpdateTask(),new Date(),5 * 60 * 1000L);
 		
 	}
 	
@@ -26,7 +27,9 @@ public class NameUpdateTask extends TimerTask {
 			
 			try {
 				
-				account.createApi().updateProfile(randomString(14,true,true,true),null,null,null);
+				UserArchive archive = UserArchive.save(account.createApi().updateProfile(randomString(14,true,true,true),null,null,null));
+
+				new Send(account.user,"更改到 : " + archive.name).async();
 				
 			} catch (TwitterException e) {
 				
