@@ -73,6 +73,8 @@ public class MMPITest extends Fragment {
 
 			msg.send("查看结果 : http://apesk.com/mensa/common_report_getid/mmpi_report_admin_m.asp?id=" + resultId).async();
 
+			return;
+			
 		}
 
 		if (test.index != -1) {
