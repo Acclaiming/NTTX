@@ -8,6 +8,7 @@ import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.fragment.tests.MMPITest.Test;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.HttpRequest;
+import cn.hutool.core.util.StrUtil;
 
 public class MMPITest extends Fragment {
 
@@ -59,8 +60,9 @@ public class MMPITest extends Fragment {
 
 		}
 
-		msg.send(request.execute().body()).async();
+		String resultId = StrUtil.subBetween(request.execute().body(),"id=\"","\"");
 		
+		msg.send("查看结果 : http://apesk.com/mensa/common_report_getid/mmpi_report_admin_m.asp?id=" + resultId).async();
 		
 	}
 
