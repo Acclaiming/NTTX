@@ -94,9 +94,15 @@ public class StatusArchive {
 
 		}
 		
-		depth --;
-		
 		StatusArchive archive;
+		
+		if (retweetedStatus != -1 && (archive = StatusArchive.get(retweetedStatus)) != null) {
+
+			return archive.findMedias(depth);
+
+		}
+		
+		depth --;
 		
 		if (quotedStatusId != -1 && (archive = StatusArchive.get(quotedStatusId)) != null && !archive.mediaUrls.isEmpty()) {
 			
