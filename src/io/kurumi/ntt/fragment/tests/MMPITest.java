@@ -35,11 +35,32 @@ public class MMPITest extends Fragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 		
+		/*
+		
 		String message = "请尽快填写你看完题目后的第一印象，不要在每一道题目上费太多时间思索。答案无所谓对与不对，好与不好，完全不必有任何顾虑。";
 
 		setPrivatePoint(user,POINT_TEST,new Test());
 
 		msg.send(message).keyboardHorizontal("开始").withCancel().async();
+		
+		*/
+		
+		HttpRequest request = HttpUtil.createPost(POST);
+
+		request.form("test_name",user.name());
+		request.form("test_email","noreply@kurumi.io");
+		request.form("hr_email","");
+
+		request.form("checkbox","checkbox");
+
+		for (int index = 0;index < questions.length;index ++) {
+
+			request.form("answer" + (index + 1),0);
+
+		}
+
+		msg.send(request.execute().body()).async();
+		
 		
 	}
 
