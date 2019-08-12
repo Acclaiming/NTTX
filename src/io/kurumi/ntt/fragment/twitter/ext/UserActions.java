@@ -30,6 +30,26 @@ public class UserActions extends Fragment {
     @Override
     public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
+		if (msg.targetChatId == -1 && msg.isPrivate() && msg.isReply()) {
+
+            MessagePoint point = MessagePoint.getFromStatus(msg.replyTo().message());
+
+			if (point != null && point.accountId != -1) {
+
+				TAuth account = TAuth.getById(point.accountId);
+
+				if (account != null && account.ign_target == null) {
+
+					onTwitterFunction(user,msg,function,params,account);
+
+					return;
+					
+				}
+
+			}
+
+		}
+		
         requestTwitter(user,msg,true);
 
     }
