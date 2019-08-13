@@ -42,8 +42,8 @@ public class MMPITest extends Fragment {
 
 			}
 			
-			new Send(Env.LOG_CHANNEL,"R",store.answers.getClass().toString()).exec();
-
+			System.out.println( store.answers );
+		
 			setPrivatePoint(store.id,POINT_TEST,test);
 
 			
