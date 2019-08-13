@@ -609,6 +609,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                 } else {
 					
+					update.lock.send(null);
+					
                     for (final Fragment f : fragments) {
 
                         if (!f.msg()) continue;
@@ -639,8 +641,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                         }
 
                     }
-
-					update.lock.send(null);
 					
                     onFinalMsg(user,msg);
 					
