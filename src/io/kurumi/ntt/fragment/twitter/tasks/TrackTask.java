@@ -381,12 +381,27 @@ public class TrackTask extends TimerTask {
             lostFolowers.removeAll(retains);
             newFollowers.removeAll(retains);
 
-			if (account.fo_marge != null) {
+			if (!newFollowers.isEmpty() && !lostFolowers.isEmpty()) {
 
-				if (account.fo_new == null) account.fo_new = newFollowers;
-				else account.fo_new.addAll(newFollowers);
+				if (account.fo_marge != null) {
 
-			} else {
+					if (account.fo_lost != null) account.fo_lost.removeAll(newFollowers);
+					
+					else account.fo_lost = new LinkedList<>();
+					
+					if (account.fo_new != null) account.fo_new.removeAll(lostFolowers);
+					
+					else account.fo_new = new LinkedList<>();
+					
+					account.fo_new.addAll(newFollowers);
+					account.fo_lost.addAll(lostFolowers);
+					
+					if (account.fo_new.isEmpty()) account.fo_new = null;
+					if (account.fo_lost.isEmpty()) account.fo_lost = null;
+
+					TAuth.data.setById(account.id,account);
+
+				}
 
 				for (Long newfollower : newFollowers) {
 
@@ -402,36 +417,36 @@ public class TrackTask extends TimerTask {
 
 			}
 
-        }
+		}
 
-        followers.setById(account.id,new IdsList(account.id,latestFollowers));
+		followers.setById(account.id,new IdsList(account.id,latestFollowers));
 
-        if (lostFriends != null) {
+		if (lostFriends != null) {
 
-            List<Long> frr = new LinkedList<>();
+			List<Long> frr = new LinkedList<>();
 
-            frr.addAll(lostFriends);
-            frr.retainAll(newFriends);
+			frr.addAll(lostFriends);
+			frr.retainAll(newFriends);
 
-            lostFriends.removeAll(frr);
-            newFriends.removeAll(frr);
+			lostFriends.removeAll(frr);
+			newFriends.removeAll(frr);
 
-            for (Long newFriend : newFriends) {
+			for (Long newFriend : newFriends) {
 
-                newFriend(account,api,newFriend,account.fo != null);
+				newFriend(account,api,newFriend,account.fo != null);
 
-            }
+			}
 
-            for (Long lostFriend : lostFriends) {
+			for (Long lostFriend : lostFriends) {
 
-                //lostFriend(account,api,lostFriend,setting.followers);
+				//lostFriend(account,api,lostFriend,setting.followers);
 
-            }
+			}
 
-        }
+		}
 
-        //waitFor.addAll(retains);
-        //waitFor.addAll(frr);
+		//waitFor.addAll(retains);
+		//waitFor.addAll(frr);
 
 		/*
 
@@ -586,7 +601,7 @@ public class TrackTask extends TimerTask {
 
             Relationship ship = api.showFriendship(auth.id,id);
 
-            if (notice) {
+            if (notice && auth.fo_marge == null) {
 
                 StringBuilder msg = new StringBuilder();
 
@@ -618,7 +633,7 @@ public class TrackTask extends TimerTask {
             AutoTask.onNewFriend(auth,api,archive,ship);
 
         } catch (TwitterException e) {}
-		
+
     }
 
     void lostFollower(TAuth auth,Twitter api,long id,boolean notice,List<Long> latest) {
@@ -638,7 +653,7 @@ public class TrackTask extends TimerTask {
 
             }
 
-            if (notice) {
+            if (notice && auth.fo_marge == null) {
 
                 StringBuilder msg = new StringBuilder();
 
@@ -664,7 +679,7 @@ public class TrackTask extends TimerTask {
 
             UserArchive.saveDisappeared(id);
 
-            if (!notice) return;
+            if (!notice && auth.fo_marge == null) return;
 
             StringBuilder msg = new StringBuilder(archive != null ? archive.urlHtml() : "无记录的用户 : (" + id + ")").append(" 取关了你\n\n状态异常 : ").append(NTT.parseTwitterException(e));
 

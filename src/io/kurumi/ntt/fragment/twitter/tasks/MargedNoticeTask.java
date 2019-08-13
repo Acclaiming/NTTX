@@ -37,6 +37,8 @@ public class MargedNoticeTask extends TimerTask {
 	
 	void doNotice(TAuth account) {
 		
+		if (account.fo_new == null && account.fo_lost == null) return;
+		
 		String message = "新关注者 :";
 		
 		Twitter api = account.createApi();
@@ -46,6 +48,8 @@ public class MargedNoticeTask extends TimerTask {
 			message += "暂时没有";
 
 		} else {
+			
+			message += "\n";
 			
 			for (Long id : account.fo_new) {
 
@@ -57,9 +61,50 @@ public class MargedNoticeTask extends TimerTask {
 
 					Relationship ship = api.showFriendship(account.id,id);
 						
+					message += "\n" + archive.urlHtml() + " #" + archive.screenName;
+					
+					if (ship.isSourceFollowingTarget()) message += " [ 互相关注 ]";
+					else if (archive.isProtected) message += " [ 锁推 ]";
+					
+					AutoTask.onNewFollower(account,api,archive,ship);
+					
 				} catch (TwitterException e) {
 				}
 				
+			}
+			
+		}
+		
+		message += "\n失去关注者 :";
+		
+		if (account.fo_new == null) {
+
+			message += "暂时没有";
+
+		} else {
+
+			message += "\n";
+
+			for (Long id : account.fo_new) {
+
+				try {
+
+					User follower = api.showUser(id);
+
+					UserArchive archive = UserArchive.save(follower);
+
+					Relationship ship = api.showFriendship(account.id,id);
+
+					message += "\n" + archive.urlHtml() + " #" + archive.screenName;
+
+					if (ship.isSourceFollowingTarget()) message += " [ 互相关注 ]";
+					else if (archive.isProtected) message += " [ 锁推 ]";
+
+					AutoTask.onNewFollower(account,api,archive,ship);
+
+				} catch (TwitterException e) {
+				}
+
 			}
 			
 		}
