@@ -17,4 +17,5 @@
 <classpathentry kind="lib" path="libs/mstd/mastodon4j-1.7.0.jar"/>
 <classpathentry kind="lib" path="libs/rhino-1.7.11-java7.jar"/>
 <classpathentry kind="lib" path="libs/twitter4j.jar"/>
+<classpathentry kind="lib" path="libs/zxing-3.4.0.jar"/>
 </classpath>

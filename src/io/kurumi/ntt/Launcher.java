@@ -78,6 +78,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
 import io.kurumi.ntt.fragment.twitter.tasks.NameUpdateTask;
 import io.kurumi.ntt.fragment.tests.MMPITest;
+import io.kurumi.ntt.fragment.qr.QrDecoder;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -378,6 +379,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		addFragment(new CoreValueEncode());
 		addFragment(new NeteaseMusic());
 		addFragment(new ZeroPadEncode());
+		addFragment(new QrDecoder());
 		
 		addFragment(new MMPITest());
 		

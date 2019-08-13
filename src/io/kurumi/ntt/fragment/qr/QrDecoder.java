@@ -4,6 +4,12 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.Msg;
+import com.google.zxing.MultiFormatReader;
+import cn.hutool.core.util.ImageUtil;
+import cn.hutool.extra.qrcode.QrCodeUtil;
+import cn.hutool.core.util.StrUtil;
+import io.kurumi.ntt.utils.Html;
+
 public class QrDecoder extends Fragment {
 
 	@Override
@@ -26,7 +32,17 @@ public class QrDecoder extends Fragment {
 			
 		}
 		
-		new MultiFormatReader();
+		String result = QrCodeUtil.decode(msg.photo());
+
+		if (StrUtil.isBlank(result)) {
+			
+			msg.send("无结果 :)").async();
+			
+		} else {
+			
+			msg.send("结果 :\n",Html.code(result)).html().async();
+			
+		}
 		
 	}
 	
