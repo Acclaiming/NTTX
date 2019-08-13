@@ -60,7 +60,7 @@ public class MMPITest extends Fragment {
 			HttpRequest request = HttpUtil.createPost(POST);
 
 			request.form("test_name",user.name());
-			request.form("test_email","noreply@kurumi.io");
+			request.form("test_email",user.id + "@noreply.kurumi.io");
 			request.form("hr_email","");
 
 			request.form("checkbox","checkbox");

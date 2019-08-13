@@ -815,7 +815,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             str.append(split);
 
-            str.append("Sticker Id : ").append(Html.code(message.sticker().fileId())).append("\n");
+            str.append("Sticker ID : ").append(Html.code(message.sticker().fileId())).append("\n");
 
             str.append("Sticker Emoji : ").append(Html.code(message.sticker().emoji())).append("\n");
 

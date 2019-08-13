@@ -4,6 +4,7 @@ import io.kurumi.ntt.model.Msg;
 
 import java.util.LinkedList;
 import java.util.HashMap;
+import io.kurumi.ntt.fragment.BotFragment;
 
 public class PointData {
 
@@ -33,8 +34,16 @@ public class PointData {
 
     public void onFinish() {
 
-        for (Msg toDelete : context) toDelete.delete();
+		BotFragment.asyncPool.execute(new Runnable() {
 
+				@Override
+				public void run() {
+					
+					for (Msg toDelete : context) toDelete.delete();
+					
+				}
+			});
+		
     }
 
     public void onCancel(UserData user, Msg msg) {
