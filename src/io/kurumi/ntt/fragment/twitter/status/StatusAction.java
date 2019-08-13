@@ -200,7 +200,6 @@ public class StatusAction extends Fragment {
 
 				auth = TAuth.getByUser(user.id).first();
 
-
 			}
 			
 		}
