@@ -41,6 +41,7 @@ public class Msg extends Context {
     boolean noParams = false;
     private Message message;
     private String name;
+	private String function;
     private String[] params;
 
     public Msg(Message message) {
@@ -63,6 +64,13 @@ public class Msg extends Context {
         }
 
     }
+
+	public void setFunctionAndParam(String function,String... params) {
+		
+		this.function = function;
+		this.params = params;
+		
+	}
 
     public static Msg from(Fragment fragment,SendResponse resp) {
 
@@ -492,6 +500,8 @@ public class Msg extends Context {
 
         if (!isCommand()) return null;
 
+		if (function != null) return function;
+		
         String body = text().substring(1);
 
         if (body.contains(" ")) {
@@ -517,6 +527,8 @@ public class Msg extends Context {
             name = body;
 
         }
+		
+		function = name;
 
         return name;
 
