@@ -4,8 +4,6 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.Msg;
-import com.google.zxing.MultiFormatReader;
-
 public class QrDecoder extends Fragment {
 
 	@Override
