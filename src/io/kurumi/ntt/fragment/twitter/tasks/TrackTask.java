@@ -633,7 +633,7 @@ public class TrackTask extends TimerTask {
 
                 StringBuilder msg = new StringBuilder();
 
-                msg.append("关注的 ").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 屏蔽了你 :)").append(parseStatus(api,follower));
+                msg.append("关注的 ").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" ").append(" 屏蔽了你 :)").append(parseStatus(api,follower));
 
                 if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
@@ -647,7 +647,7 @@ public class TrackTask extends TimerTask {
 
 			StringBuilder msg = new StringBuilder();
 
-			msg.append("关注的 ").append(archive.urlHtml()).append(" #").append(archive.screenName).append(NTT.parseTwitterException(e)).append("了 :)");
+			msg.append("关注的 ").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" ").append(NTT.parseTwitterException(e)).append("了 :)");
 
 			if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
