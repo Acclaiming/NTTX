@@ -46,7 +46,7 @@ public class QrEncoder extends Fragment {
 
 		cacheFile.getParentFile().mkdirs();
 
-		QrCodeUtil.generate(ArrayUtil.join(params," "),new QrConfig(500,500).setBackColor(0xAD1457).setForeColor(0xffffff),cacheFile);
+		QrCodeUtil.generate(ArrayUtil.join(params," "),new QrConfig(500,500).setBackColor(0xE91E63).setForeColor(0xffffff),cacheFile);
 
 		msg.sendUpdatingPhoto();
 
