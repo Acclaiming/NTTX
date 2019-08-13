@@ -381,7 +381,7 @@ public class TrackTask extends TimerTask {
             lostFolowers.removeAll(retains);
             newFollowers.removeAll(retains);
 
-			if (!newFollowers.isEmpty() && !lostFolowers.isEmpty()) {
+			if (!newFollowers.isEmpty() || !lostFolowers.isEmpty()) {
 
 				if (account.fo_marge != null) {
 
