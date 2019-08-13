@@ -334,7 +334,7 @@ public class StatusAction extends Fragment {
 
 			if (callback.message().caption() != null) {
 
-				BaseResponse resp = bot().execute(new EditMessageCaption(callback.chatId(),callback.messageId()).caption(archive.toHtml()).parseMode(ParseMode.HTML).replyMarkup(createMarkup(auth.id,archive.id,archive.from.equals(auth.id),true,retweeted,liked).markup()));
+				BaseResponse resp = bot().execute(new EditMessageCaption(callback.chatId(),callback.messageId()).caption(archive.toHtml(auth)).parseMode(ParseMode.HTML).replyMarkup(createMarkup(auth.id,archive.id,archive.from.equals(auth.id),true,retweeted,liked).markup()));
 
 				if (!resp.isOk()) {
 
@@ -344,7 +344,7 @@ public class StatusAction extends Fragment {
 
 			} else {
 
-				callback.edit(archive.toHtml()).buttons(createMarkup(auth.id,archive.id,archive.from.equals(auth.id),true,retweeted,liked)).html().exec();
+				callback.edit(archive.toHtml(auth)).buttons(createMarkup(auth.id,archive.id,archive.from.equals(auth.id),true,retweeted,liked)).html().exec();
 
 			}
 

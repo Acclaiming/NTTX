@@ -93,31 +93,31 @@ public class StatusArchive {
 			return mediaUrls;
 
 		}
-		
+
 		StatusArchive archive;
-		
+
 		if (retweetedStatus != -1 && (archive = StatusArchive.get(retweetedStatus)) != null) {
 
 			return archive.findMedias(depth);
 
 		}
-		
+
 		depth --;
-		
+
 		if (quotedStatusId != -1 && (archive = StatusArchive.get(quotedStatusId)) != null && !archive.mediaUrls.isEmpty()) {
-			
+
 			return archive.mediaUrls;
-			
+
 		}
 
 		if (inReplyToStatusId != -1 && (archive = StatusArchive.get(inReplyToStatusId)) != null) {
-			
+
 			return archive.findMedias(depth);
-			
+
 		}
-		
+
 		return mediaUrls;
-		
+
 	}
 
 
@@ -157,7 +157,7 @@ public class StatusArchive {
 
         }
 
-        String html = toHtml(depth);
+        String html = toHtml(depth,auth);
 
         if (html.length() < 1024 && media.size() == 1) {
 
@@ -198,7 +198,7 @@ public class StatusArchive {
 
             } else if (resp != null && !resp.isOk()) {
 
-                Send sendN = new Send(chatId,toHtml(depth)).html();
+                Send sendN = new Send(chatId,toHtml(depth,auth)).html();
 
                 if (status != null) {
 
@@ -216,7 +216,7 @@ public class StatusArchive {
 
         } else {
 
-            Send send = new Send(chatId,toHtml(depth)).html();
+            Send send = new Send(chatId,toHtml(depth,auth)).html();
 
 			SendResponse msg;
 
@@ -388,9 +388,13 @@ public class StatusArchive {
 
     }
 
+	private transient UserArchive user;
+
     public UserArchive user() {
 
-        UserArchive user = UserArchive.get(from);
+		if (user != null) return user;
+
+        user = UserArchive.get(from);
 
         return user;
 
@@ -408,9 +412,9 @@ public class StatusArchive {
 
     }
 
-    public String toHtml() {
+    public String toHtml(TAuth auth) {
 
-        return toHtml(-1);
+        return toHtml(-1,auth);
 
     }
 
@@ -436,13 +440,13 @@ public class StatusArchive {
 
     }
 
-    public String toHtml(int depth) {
+    public String toHtml(int depth,TAuth auth) {
 
-        return toHtml(depth,false,true);
+        return toHtml(depth,false,true,auth);
 
     }
 
-    public String toHtml(int depth,boolean quoted,boolean current) {
+    public String toHtml(int depth,boolean quoted,boolean current,TAuth auth) {
 
         StringBuilder archive = new StringBuilder();
 
@@ -454,7 +458,7 @@ public class StatusArchive {
 
                 if (inReplyTo != null) {
 
-                    archive.append(inReplyTo.toHtml(depth > 0 ? depth - 1 : depth,false,false));
+                    archive.append(inReplyTo.toHtml(depth > 0 ? depth - 1 : depth,false,false,auth));
 
                 } else {
 
@@ -477,13 +481,24 @@ public class StatusArchive {
 
             archive.append(split);
 
-            archive.append(retweeted.toHtml(depth > 0 ? depth - 1 : depth,false,false));
+            archive.append(retweeted.toHtml(depth > 0 ? depth - 1 : depth,false,false,auth));
 
             return archive.toString();
 
         } else {
 
-            archive.append(user().urlHtml()).append(" 的 ").append(Html.a("推文",current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id));
+			if (false && auth != null && from.equals(auth.id)) {
+
+				archive.append("我");
+
+			} else {
+
+				archive.append(Html.a(user().name + " [ @" + user().screenName + " ]",user().url())).append(" ");
+
+			}
+
+			archive.append("的 ").append(Html.a("推文",current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id));
+
 
         }
 
@@ -528,7 +543,7 @@ public class StatusArchive {
 
             if (quotedStatus != null) {
 
-                archive.append("引用 " + quotedStatus.toHtml(1,true,false));
+                archive.append("引用 " + quotedStatus.toHtml(1,true,false,auth));
 
             } else {
 

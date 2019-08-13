@@ -49,7 +49,7 @@ public class StatusGetter extends Fragment {
 
             } else {
 
-                msg.send(archive.toHtml()).html().exec();
+                msg.send(archive.toHtml(account)).html().exec();
 
             }
 
@@ -168,7 +168,7 @@ public class StatusGetter extends Fragment {
 
             if (StatusArchive.contains(statusId)) {
 
-                msg.send(StatusArchive.get(statusId).toHtml()).html().point(1, statusId);
+                msg.send(StatusArchive.get(statusId).toHtml(account)).html().point(1, statusId);
 
             } else {
 
