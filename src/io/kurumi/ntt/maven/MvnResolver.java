@@ -445,7 +445,7 @@ public class MvnResolver {
 
             Element scope = dependency.getChild("scope",NS);
 
-            if (scope != null && !"compile".equals(scope.getValue())) {
+            if (scope != null && !("compile".equals(scope.getValue()) || "runtime".equals(scope.getValue()))) {
 
                 log.append("\n 是可选依赖 跳过");
 

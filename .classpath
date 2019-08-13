@@ -18,4 +18,6 @@
 <classpathentry kind="lib" path="libs/rhino-1.7.11-java7.jar"/>
 <classpathentry kind="lib" path="libs/taip.jar"/>
 <classpathentry kind="lib" path="libs/twitter4j.jar"/>
+<classpathentry kind="lib" path="libs/zxing/core-3.4.0.jar"/>
+<classpathentry kind="lib" path="libs/zxing/javase-3.4.0.jar"/>
 </classpath>
