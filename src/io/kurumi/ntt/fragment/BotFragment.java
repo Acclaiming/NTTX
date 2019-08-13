@@ -841,35 +841,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
         }
 
-		if (msg.message().animation() != null) {
-
-			execute(new Runnable() {
-
-					@Override
-					public void run() {
-
-						File file = msg.file();
-
-						File converted = new File(Env.CACHE_DIR,"tg_gif/" + msg.doc().fileId() + ".gif");
-
-						if (!converted.isFile()) {
-
-							File globalPalettePic = FFMpeg.getGifPalettePic(file);
-
-							FFMpeg.toGif(globalPalettePic,file,converted);
-
-							FileUtil.del(globalPalettePic);
-
-						}
-
-						executeAsync(new SendDocument(msg.chatId(),converted).fileName(msg.doc().fileName().replace(".gif.mp4",".gif.喵")).caption("无法直接发送 GIF 只能这样啦 :)"));
-
-					}
-
-				});
-
-		}
-
 		if (msg.doc() != null) {
 
 			str.append("File Name : ").append(Html.code(msg.doc().fileName())).append("\n");
@@ -877,20 +848,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 			str.append("Share Link : ").append(ShowFile.createPayload(this,msg.doc().fileId())).append("\n");
 
 		}
-
-        if (!no_reply) {
-
-            if (msg.hasText()) {
-
-                String text = TencentNlp.nlpTextchat(msg.chatId().toString(),msg.text());
-
-                if (text != null) msg.send(text).exec();
-
-                return;
-
-            }
-
-        }
 
         msg.send(LocalString.get(user).UNPROCESSED,str.toString()).replyTo(msg).html().removeKeyboard().exec();
 
