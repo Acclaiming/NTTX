@@ -60,7 +60,7 @@ public class TrackTask extends TimerTask {
                 continue;
 
             }
-			
+
 			if (account.fr_info != null) {
 
                 processChangeSend(archive,account,change);
@@ -69,7 +69,7 @@ public class TrackTask extends TimerTask {
                 processed.add(account.user);
 
             }
-			
+
 
         }
 
@@ -152,7 +152,7 @@ public class TrackTask extends TimerTask {
 				try {
 
 					HttpUtil.downloadFile(archive.bannerUrl,photo);
-					
+
 				} catch (HttpException ex) { return; }
 
             }
@@ -190,16 +190,16 @@ public class TrackTask extends TimerTask {
         for (TAuth account : all) {
 
 			/*
-			
-            if (Firewall.block.containsId(account.user)) {
 
-                remove.add(account);
+			 if (Firewall.block.containsId(account.user)) {
 
-                continue;
+			 remove.add(account);
 
-            }
-			
-			*/
+			 continue;
+
+			 }
+
+			 */
 
             Twitter api = account.createApi();
 
@@ -381,19 +381,26 @@ public class TrackTask extends TimerTask {
             lostFolowers.removeAll(retains);
             newFollowers.removeAll(retains);
 
-			if (account.fo_marge != null) {}
-			
-            for (Long newfollower : newFollowers) {
+			if (account.fo_marge != null) {
 
-                newFollower(account,api,newfollower,account.fo != null);
+				if (account.fo_new == null) account.fo_new = newFollowers;
+				else account.fo_new.addAll(newFollowers);
 
-            }
+			} else {
 
-            for (Long lostFolower : lostFolowers) {
+				for (Long newfollower : newFollowers) {
 
-                lostFollower(account,api,lostFolower,account.fo != null,latestFollowers);
+					newFollower(account,api,newfollower,account.fo != null);
 
-            }
+				}
+
+				for (Long lostFolower : lostFolowers) {
+
+					lostFollower(account,api,lostFolower,account.fo != null,latestFollowers);
+
+				}
+
+			}
 
         }
 
@@ -594,19 +601,6 @@ public class TrackTask extends TimerTask {
             AutoTask.onNewFollower(auth,api,archive,ship);
 
         } catch (TwitterException e) {
-
-            if (!notice) return;
-
-			/*
-
-			 StringBuilder msg = new StringBuilder(UserArchive.contains(id) ? UserArchive.get(id).urlHtml() : "无记录的用户 : (" + id + ")").append("关注了你").append("\n\n状态异常: ").append(NTT.parseTwitterException(e));
-
-			 if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
-
-			 new Send(auth.user, msg.toString()).html().point(0, id);
-
-			 */
-
         }
 
     }
@@ -621,40 +615,10 @@ public class TrackTask extends TimerTask {
 
             Relationship ship = api.showFriendship(auth.id,id);
 
-			/*
-
-			 if (notice) {
-
-			 StringBuilder msg = new StringBuilder();
-
-			 msg.append(ship.isSourceFollowingTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 关注了你 :)").append(parseStatus(api,follower));
-
-			 if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
-
-			 new Send(auth.user,msg.toString()).html().point(0,archive.id);
-
-			 }
-
-			 */
-
             AutoTask.onNewFriend(auth,api,archive,ship);
 
-        } catch (TwitterException e) {
-
-            if (!notice) return;
-
-			/*
-
-			 StringBuilder msg = new StringBuilder(UserArchive.contains(id) ? UserArchive.get(id).urlHtml() : "无记录的用户 : (" + id + ")").append("关注了你").append("\n\n状态异常: ").append(NTT.parseTwitterException(e));
-
-			 if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
-
-			 new Send(auth.user, msg.toString()).html().point(0, id);
-
-			 */
-
-        }
-
+        } catch (TwitterException e) {}
+		
     }
 
     void lostFollower(TAuth auth,Twitter api,long id,boolean notice,List<Long> latest) {
@@ -685,11 +649,11 @@ public class TrackTask extends TimerTask {
                 new Send(auth.user,msg.toString()).html().point(0,archive.id);
 
             }
-			
+
 			if (ship.isSourceFollowingTarget()) {
-			
+
 				OWUnfoPublish.onUnfo(auth,api,archive);
-				
+
 			}
 
         } catch (TwitterException e) {

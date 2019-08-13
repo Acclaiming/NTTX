@@ -204,6 +204,14 @@ public class StatusAction extends Fragment {
 			}
 			
 		}
+		
+		if (auth == null) {
+			
+			callback.alert("你还没有认证账号...");
+			
+			return;
+			
+		}
 
 		Twitter api = auth.createApi();
 
