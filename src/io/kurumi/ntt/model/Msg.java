@@ -27,6 +27,7 @@ import java.io.File;
 
 import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntt.utils.BotLog;
+import com.pengrad.telegrambot.model.PhotoSize;
 
 public class Msg extends Context {
 
@@ -405,7 +406,9 @@ public class Msg extends Context {
 
     public File photo() {
 
-        File local = new File(Env.CACHE_DIR,"files/" + message.photo()[0].fileId());
+		PhotoSize[] sizes = message.photo();
+		
+        File local = new File(Env.CACHE_DIR,"files/" + sizes[sizes.length - 1].fileId());
 
         if (local.isFile()) return local;
 
