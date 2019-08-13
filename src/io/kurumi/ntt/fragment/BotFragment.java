@@ -984,18 +984,18 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
     public void stop() {
 
-        for (Long id : new HashMap<>(point().privatePoints).keySet()) {
+        for (Fragment f : fragments) f.onStop();
+
+		for (Long id : new HashMap<>(point().privatePoints).keySet()) {
 
 			UserData user = UserData.get(id);
-			
+
 			clearPrivatePoint(user);
-			
+
             new Send(this,id,LocalString.get(UserData.get(id)).FORCE_CANCEL).removeKeyboard().exec();
 
         }
-
-        for (Fragment f : fragments) f.onStop();
-
+		
         if (!isLongPulling()) {
 
             // bot.execute(new DeleteWebhook());

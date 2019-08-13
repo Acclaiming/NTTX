@@ -70,6 +70,8 @@ public class MMPITest extends Fragment {
 				
 				this.data.setById(store.id,store);
 				
+				clearPrivatePoint(store.id);
+				
 			}
 			
 		}
