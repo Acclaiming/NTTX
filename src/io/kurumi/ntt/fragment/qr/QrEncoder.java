@@ -12,6 +12,7 @@ import io.kurumi.ntt.model.Msg;
 import java.io.File;
 import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.response.SendResponse;
+import cn.hutool.core.util.NumberUtil;
 
 public class QrEncoder extends Fragment {
 
@@ -34,19 +35,39 @@ public class QrEncoder extends Fragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
+		int color = 0xE91E63;
+		
 		if (params.length == 0) {
 
-			msg.invalidParams("文本...").async();
+			msg.send("/qr_encode [#颜色 可选] <文本...>").async();
 
 			return;
 
+		} else if (params.length > 2) {
+			
+			if (params[0].charAt(0) == '#') {
+				
+				try {
+				
+				color = NumberUtil.parseInt("0x" + params[0].substring(1));
+				
+				} catch (Exception ex) {
+					
+					msg.send("无效的颜色格式 例子 : #E91E63 (Material Pink 500)").async();
+					
+					return;
+					
+				}
+				
+			}
+			
 		}
 
 		File cacheFile = new File(Env.CACHE_DIR,"qr_gen/" + UUID.fastUUID().toString(true) + ".jpg");
 
 		cacheFile.getParentFile().mkdirs();
 
-		QrCodeUtil.generate(ArrayUtil.join(params," "),new QrConfig(500,500).setBackColor(0xE91E63).setForeColor(0xffffff),cacheFile);
+		QrCodeUtil.generate(ArrayUtil.join(params," "),new QrConfig(500,500).setBackColor(color).setForeColor(0xffffff),cacheFile);
 
 		msg.sendUpdatingPhoto();
 
