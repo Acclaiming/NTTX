@@ -15,7 +15,7 @@ public class ProcessLock<T> extends ReentrantLock {
 
     public T waitFor() {
 
-		if (obj != null) return obj;
+		if (obj != null || used.get()) return obj;
 
         try {
 
@@ -33,8 +33,7 @@ public class ProcessLock<T> extends ReentrantLock {
 
             return null;
 
-        }
-		finally {
+        } finally {
 
             unlock();
 
@@ -44,7 +43,7 @@ public class ProcessLock<T> extends ReentrantLock {
 
     public void send(T obj) {
 
-		used.getAndSet(true);
+		if (used.getAndSet(true)) return;
 
         try {
 
@@ -54,8 +53,7 @@ public class ProcessLock<T> extends ReentrantLock {
 
             condition.signalAll();
 
-        }
-		finally {
+        } finally {
 
             unlock();
 

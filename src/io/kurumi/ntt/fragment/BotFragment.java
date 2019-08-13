@@ -294,13 +294,17 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
         if (update.message() != null) {
 
-            user = UserData.get(update.message().from());
-
             if (update.message().chat().type() != Chat.Type.Private) {
 
                 targetId = update.message().chat().id();
 
-            }
+            } else if (!point().containsGroup(update.message().chat().id())) {
+				
+				update.lock.send(null);
+				
+			}
+			
+			user = UserData.get(update.message().from());
 
 			System.out.println("[ " + update.message().chat().title() + " ] " + user.name() + " : " + update.message().text());
 
@@ -353,8 +357,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
             final PointData privatePoint = point().getPrivate(user.id);
             final PointData groupPoint = point().getGroup(user.id);
 
-			if (groupPoint == null && !msg.isCommand()) update.lock.send(null);
-			
             if (msg.isGroup() && groupPoint != null) {
 
                 final Fragment function = points.containsKey(groupPoint.point) ? points.get(groupPoint.point) : this;
