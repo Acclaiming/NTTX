@@ -133,19 +133,19 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
         if ("cancel".equals(msg.command())) {
 
             if (data.type == 1) {
-				
+
 				clearPrivatePoint(user).onCancel(user,msg);
-				
+
 				msg.send(LocalString.get(user).CANCEL).removeKeyboard().failed(1000);
-				
+
             } else {
-			
+
 				clearGroupPoint(user).onCancel(user,msg);
 
 				msg.send(LocalString.get(user).CANCEL).removeKeyboard().failed(1000);
-				
+
 			}
-				
+
             return;
 
         } else if (POINT_REQUEST_TWITTER.equals(point)) {
@@ -169,7 +169,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
             if (account == null) {
 
                 clearPrivatePoint(user);
-				
+
 				return;
 
             }
@@ -194,7 +194,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 							public void run() {
 
 								request.fragment.onTwitterPayload(user,request.originMsg,payload,params,account);
-								
+
 							}
 
 						});
@@ -202,7 +202,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                 } else {
 
                     request.fragment.onTwitterPayload(user,request.originMsg,payload,params,account);
-				
+
 				}
 
 
@@ -298,12 +298,14 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                 targetId = update.message().chat().id();
 
-            } else if (!point().containsGroup(update.message().from().id())) {
-				
-				update.lock.send(null);
-				
+				if (!point().containsGroup(update.message().from().id())) {
+
+					update.lock.send(null);
+
+				}
+
 			}
-			
+
 			user = UserData.get(update.message().from());
 
 			System.out.println("[ " + update.message().chat().title() + " ] " + user.name() + " : " + update.message().text());
@@ -568,13 +570,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 							msg.send("警告！这里是旧式实例，已经无法控制，请尽快切换到 @" + Launcher.INSTANCE.me.username() + " :(").async();
 
 						}
-						
+
                         if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.params()) == FUNCTION_GROUP && !msg.isGroup()) {
 
                             msg.send(LocalString.get(user).COMMAND_GROUP_ONLY).async();
 
                         }
-						
+
 						if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.params()) == FUNCTION_PRIVATE && !msg.isPrivate()) {
 
                             asyncPool.execute(new Runnable() {
@@ -612,7 +614,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                     }
 
                 } else {
-					
+
                     for (final Fragment f : fragments) {
 
                         if (!f.msg()) continue;
@@ -643,9 +645,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                         }
 
                     }
-					
+
                     onFinalMsg(user,msg);
-					
+
                 }
 
             }
@@ -686,7 +688,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                 }
 
             }
-			
+
 			update.lock.send(null);
 
         } else if (update.callbackQuery() != null) {
@@ -721,7 +723,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                 function.onCallback(user,callback,point,params);
 
             }
-			
+
         } else if (update.inlineQuery() != null) {
 
             Query query = new Query(this,update.inlineQuery());
@@ -733,7 +735,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                 if (f.query()) f.onQuery(user,query);
 
             }
-		
+
         } else if (update.poll() != null) {
 
             for (Fragment f : fragments) {
@@ -999,7 +1001,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
             new Send(this,id,LocalString.get(UserData.get(id)).FORCE_CANCEL).removeKeyboard().exec();
 
         }
-		
+
         if (!isLongPulling()) {
 
             // bot.execute(new DeleteWebhook());
