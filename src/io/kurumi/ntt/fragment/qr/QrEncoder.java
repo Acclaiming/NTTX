@@ -43,7 +43,7 @@ public class QrEncoder extends Fragment {
 
 		msg.sendUpdatingPhoto();
 
-		executeAsync(msg.update,new SendPhoto(msg.chatId(),cacheFile));
+		execute(new SendPhoto(msg.chatId(),cacheFile));
 		
 		cacheFile.delete();
 
