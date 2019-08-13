@@ -126,9 +126,25 @@ public class Fragment {
 
     }
 
-    public static void execute(Runnable runnable) {
+    public static void execute(final Runnable runnable) {
 
-        BotFragment.asyncPool.execute(runnable);
+        BotFragment.asyncPool.execute(new Runnable() {
+
+				@Override
+				public void run() {
+
+					try {
+
+						runnable.run();
+
+					} catch (Exception ex) {
+
+						BotLog.error("出错",ex);
+
+					}
+
+				}
+			});
 
     }
 
