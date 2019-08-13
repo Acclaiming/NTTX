@@ -1,13 +1,12 @@
 package io.kurumi.ntt.fragment.qr;
 
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.model.Msg;
-import com.google.zxing.MultiFormatReader;
-import cn.hutool.core.util.ImageUtil;
-import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.qrcode.QrCodeException;
+import cn.hutool.extra.qrcode.QrCodeUtil;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.Html;
 
 public class QrDecoder extends Fragment {
@@ -39,15 +38,23 @@ public class QrDecoder extends Fragment {
 			
 		}
 		
-		String result = QrCodeUtil.decode(msg.replyTo().photo());
+		try {
 
-		if (StrUtil.isBlank(result)) {
+			String result = QrCodeUtil.decode(msg.replyTo().photo());
+
+			if (StrUtil.isBlank(result)) {
+
+				msg.send("无结果 :)").async();
+
+			} else {
+
+				msg.send("结果 :\n",Html.code(result)).html().async();
+
+			}
+
+		} catch (QrCodeException ex) {
 			
 			msg.send("无结果 :)").async();
-			
-		} else {
-			
-			msg.send("结果 :\n",Html.code(result)).html().async();
 			
 		}
 		

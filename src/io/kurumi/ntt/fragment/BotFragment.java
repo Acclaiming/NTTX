@@ -44,6 +44,7 @@ import okhttp3.OkHttpClient;
 import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
+import cn.hutool.extra.qrcode.QrCodeException;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener, ExceptionHandler {
 
@@ -309,20 +310,20 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
         } else if (update.editedMessage() != null) {
 
 			update.lock.send(null);
-			
+
 			return;
-			
+
 			/*
-			
-            user = UserData.get(update.editedMessage().from());
 
-            if (update.editedMessage().chat().type() != Chat.Type.Private) {
+			 user = UserData.get(update.editedMessage().from());
 
-                targetId = update.editedMessage().chat().id();
+			 if (update.editedMessage().chat().type() != Chat.Type.Private) {
 
-            }
-			
-			*/
+			 targetId = update.editedMessage().chat().id();
+
+			 }
+
+			 */
 
         } else if (update.channelPost() != null) {
 
@@ -852,34 +853,38 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 			//str.append("Share Link : ").append(ShowFile.createPayload(this,msg.doc().fileId())).append("\n");
 
 		}
-		
+
 		if (msg.message().photo() != null) {
-			
+
 			str.append("File ID : ").append(Html.code(msg.maxSize().fileId())).append("\n");
-			
+
 		}
-		
+
 		Long statusId = NTT.parseStatusId(msg.text());
-		
+
 		if (statusId != -1) {
-			
+
 			getInstance(StatusGetter.class).onFunction(user,msg,"status",new String[] { statusId.toString() });
-			
+
 			return;
-			
+
 		}
-		
+
 		msg.send(LocalString.get(user).UNPROCESSED,str.toString()).replyTo(msg).html().removeKeyboard().async();
 
 		if (msg.message().photo() != null) {
 
-			String result = QrCodeUtil.decode(msg.photo());
+			try {
 
-			if (!StrUtil.isBlank(result)) {
+				String result = QrCodeUtil.decode(msg.photo());
 
-				msg.send("二维码解析结果 :\n",result).async();
+				if (!StrUtil.isBlank(result)) {
 
-			}
+					msg.send("二维码解析结果 :\n",result).async();
+
+				}
+
+			} catch (QrCodeException ex) {}
 
 		}
 
