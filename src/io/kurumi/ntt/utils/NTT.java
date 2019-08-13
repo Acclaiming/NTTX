@@ -476,6 +476,8 @@ public class NTT {
 
         Long statusId = -1L;
 
+		if (input == null) return statusId;
+		
         if (NumberUtil.isLong(input)) {
 
             statusId = NumberUtil.parseLong(input);
