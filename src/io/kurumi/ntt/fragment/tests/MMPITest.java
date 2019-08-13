@@ -36,6 +36,8 @@ public class MMPITest extends Fragment {
 			setPrivatePoint(UserData.get(store.id),POINT_TEST,test);
 			
 		}
+		
+		data.collection.drop();
 
 	}
 	
