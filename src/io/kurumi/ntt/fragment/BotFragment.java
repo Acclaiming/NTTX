@@ -1,6 +1,5 @@
 package io.kurumi.ntt.fragment;
 
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 import com.pengrad.telegrambot.ExceptionHandler;
 import com.pengrad.telegrambot.TelegramBot;
@@ -17,25 +16,23 @@ import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.request.SetWebhook;
 import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetMeResponse;
-import io.kurumi.ntt.Env;
 import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.PointStore;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.admin.Firewall;
 import io.kurumi.ntt.fragment.extra.ShowFile;
+import io.kurumi.ntt.fragment.mods.ModuleEnv;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import io.kurumi.ntt.i18n.LocalString;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.Query;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.BotLog;
-import io.kurumi.ntt.utils.FFMpeg;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
-import io.kurumi.ntt.utils.TencentNlp;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -44,9 +41,6 @@ import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import okhttp3.OkHttpClient;
-import com.pengrad.telegrambot.request.SendDocument;
-import io.kurumi.ntt.fragment.mods.ModuleEnv;
-import io.kurumi.ntt.i18n.LocalString;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener, ExceptionHandler {
 

@@ -19,7 +19,6 @@ import io.kurumi.ntt.fragment.bots.BotChannnel;
 import io.kurumi.ntt.fragment.bots.MyBots;
 import io.kurumi.ntt.fragment.bots.NewBot;
 import io.kurumi.ntt.fragment.bots.UserBot;
-import io.kurumi.ntt.fragment.debug.AwtTest;
 import io.kurumi.ntt.fragment.debug.Backup;
 import io.kurumi.ntt.fragment.debug.DebugMsg;
 import io.kurumi.ntt.fragment.debug.DebugStatus;
@@ -44,6 +43,7 @@ import io.kurumi.ntt.fragment.mods.PackageManager;
 import io.kurumi.ntt.fragment.mstd.ui.MsMain;
 import io.kurumi.ntt.fragment.netease.NeteaseMusic;
 import io.kurumi.ntt.fragment.other.ZeroPadEncode;
+import io.kurumi.ntt.fragment.qr.QrDecoder;
 import io.kurumi.ntt.fragment.rss.FeedFetchTask;
 import io.kurumi.ntt.fragment.rss.RssSub;
 import io.kurumi.ntt.fragment.sorry.MakeGif;
@@ -53,6 +53,7 @@ import io.kurumi.ntt.fragment.sticker.NewStickerSet;
 import io.kurumi.ntt.fragment.sticker.PackExport;
 import io.kurumi.ntt.fragment.sticker.RemoveSticker;
 import io.kurumi.ntt.fragment.sticker.StickerExport;
+import io.kurumi.ntt.fragment.tests.MMPITest;
 import io.kurumi.ntt.fragment.twitter.archive.TEPH;
 import io.kurumi.ntt.fragment.twitter.ext.MediaDownload;
 import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
@@ -66,6 +67,7 @@ import io.kurumi.ntt.fragment.twitter.status.StatusFetch;
 import io.kurumi.ntt.fragment.twitter.status.StatusSearch;
 import io.kurumi.ntt.fragment.twitter.status.StatusUpdate;
 import io.kurumi.ntt.fragment.twitter.status.TimedStatus;
+import io.kurumi.ntt.fragment.twitter.tasks.NameUpdateTask;
 import io.kurumi.ntt.fragment.twitter.tasks.TrackTask;
 import io.kurumi.ntt.fragment.twitter.tasks.UserTrackTask;
 import io.kurumi.ntt.fragment.twitter.ui.TimelineMain;
@@ -76,9 +78,6 @@ import io.kurumi.ntt.utils.BotLog;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
-import io.kurumi.ntt.fragment.twitter.tasks.NameUpdateTask;
-import io.kurumi.ntt.fragment.tests.MMPITest;
-import io.kurumi.ntt.fragment.qr.QrDecoder;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -382,9 +381,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		addFragment(new QrDecoder());
 		
 		addFragment(new MMPITest());
-		
-		addFragment(new AwtTest());
-		
+	
 		// Mods
 		
 		addFragment(new PackageManager());
