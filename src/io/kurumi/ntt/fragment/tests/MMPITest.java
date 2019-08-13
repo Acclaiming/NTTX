@@ -12,6 +12,10 @@ import cn.hutool.core.util.StrUtil;
 import java.util.HashMap;
 import java.util.Map;
 import io.kurumi.ntt.db.Data;
+import java.util.List;
+import java.util.LinkedList;
+import io.kurumi.ntt.Env;
+import io.kurumi.ntt.model.request.Send;
 
 public class MMPITest extends Fragment {
 
@@ -25,59 +29,74 @@ public class MMPITest extends Fragment {
 		registerFunction("mmpi");
 
 		registerPoint(POINT_TEST);
-		
+
 		for (TestData store : data.getAll()) {
-			
+
 			Test test = new Test();
-			
+
 			test.index = store.index;
-			test.answer = store.answers;
+
+			for (int index = 0;index < store.answers.size();index ++) {
+
+				test.answer[index] = store.answers.get(index);
+
+			}
 			
-			setPrivatePoint(UserData.get(store.id),POINT_TEST,test);
+			new Send(Env.LOG_CHANNEL,store.answers.toString()).async();
+
+			setPrivatePoint(store.id,POINT_TEST,test);
+
 			
 		}
-		
+
 		data.collection.drop();
 
 	}
-	
+
 	public static Data<TestData> data = new Data<>(TestData.class);
 
 	public static class TestData {
-		
+
 		public Long id;
-		
+
 		public int index;
-		public Boolean[] answers;
-		
+		public List<Boolean> answers;
+
 	}
-	
+
 	@Override
 	public void onStop() {
-		
+
 		for (Map.Entry<Long,PointData> data : new HashMap<Long,PointData>(point().privatePoints).entrySet()) {
-			
+
 			if (data.getValue() instanceof Test) {
-				
+
 				Test test = (Test)data.getValue();
-				
+
 				TestData store = new TestData();
-				
+
 				store.id = data.getKey();
-				
+
 				store.index = test.index;
-				store.answers = test.answer;
+
+				store.answers = new LinkedList<>();
 				
+				for (int index = 0;index < test.index - 1;index ++) {
+
+					store.answers.add(test.answer[index]);
+
+				}
+
 				this.data.setById(store.id,store);
-				
+
 				clearPrivatePoint(store.id);
-				
+
 			}
-			
+
 		}
-		
+
 		super.onStop();
-		
+
 	}
 
 	class Test extends PointData {
@@ -107,7 +126,7 @@ public class MMPITest extends Fragment {
 		if (test.index == test.answer.length - 1) {
 
 			clearPrivatePoint(user);
-			
+
 			test.answer[test.index] = "男".equals(msg.text());
 
 			// 提交
@@ -131,7 +150,7 @@ public class MMPITest extends Fragment {
 			msg.send("查看结果 : http://apesk.com/mensa/common_report_getid/mmpi_report_admin_m.asp?id=" + resultId).async();
 
 			return;
-			
+
 		}
 
 		if (test.index != -1) {
