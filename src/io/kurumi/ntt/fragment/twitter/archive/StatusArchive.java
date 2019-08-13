@@ -484,7 +484,7 @@ public class StatusArchive {
 
             }
 
-			if (false && auth != null && from.equals(auth.id)) {
+			if (auth != null && from.equals(auth.id)) {
 
 				archive.append("我");
 
@@ -501,7 +501,7 @@ public class StatusArchive {
 
             StatusArchive retweeted = StatusArchive.get(retweetedStatus);
 
-			if (false && auth != null && from.equals(auth.id)) {
+			if (auth != null && from.equals(auth.id)) {
 
 				archive.append("我");
 
@@ -521,7 +521,7 @@ public class StatusArchive {
 
         } else {
 
-			if (false && auth != null && from.equals(auth.id)) {
+			if (auth != null && from.equals(auth.id)) {
 
 				archive.append("我");
 
