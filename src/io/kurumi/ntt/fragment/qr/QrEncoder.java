@@ -87,14 +87,13 @@ public class QrEncoder extends Fragment {
 
 		}
 		
+		msg.sendUpdatingPhoto();
 
 		File cacheFile = new File(Env.CACHE_DIR,"qr_gen/" + UUID.fastUUID().toString(true) + ".jpg");
 
 		cacheFile.getParentFile().mkdirs();
 
 		QrCodeUtil.generate(ArrayUtil.join(params," "),new QrConfig(500,500).setBackColor(background).setForeColor(color),cacheFile);
-
-		msg.sendUpdatingPhoto();
 
 		execute(new SendPhoto(msg.chatId(),cacheFile));
 
