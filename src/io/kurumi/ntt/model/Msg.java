@@ -403,6 +403,13 @@ public class Msg extends Context {
 
     }
 
+	public PhotoSize maxSize() {
+		
+		PhotoSize[] sizes = message.photo();
+		
+		return sizes[sizes.length - 1];
+		
+	}
 
     public File photo() {
 

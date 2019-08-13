@@ -41,6 +41,9 @@ import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import okhttp3.OkHttpClient;
+import cn.hutool.extra.qrcode.QrCodeUtil;
+import cn.hutool.core.util.StrUtil;
+import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener, ExceptionHandler {
 
@@ -681,7 +684,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                 }
 
             }
-			
+
         } else if (update.callbackQuery() != null) {
 
             final Callback callback = new Callback(this,update.callbackQuery());
@@ -751,9 +754,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
     public void onFinalMsg(UserData user,final Msg msg) {
 
-        if (!msg.isPrivate()) return;
+        if (!msg.isPrivate() || NTT.checkDropped(user,msg)) {
 
-		if (NTT.checkDropped(user,msg)) return;
+			msg.update.lock.send(null);
+
+			return;
+
+		}
 
         StringBuilder str = new StringBuilder();
 
@@ -840,7 +847,35 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 		}
 
-        msg.send(LocalString.get(user).UNPROCESSED,str.toString()).replyTo(msg).html().removeKeyboard().exec();
+		if (msg.message().photo() != null) {
+
+			str.append("Share Link : ").append(ShowFile.createPayload(this,msg.doc().fileId())).append("\n");
+
+		}
+		
+		Long statusId = NTT.parseStatusId(msg.text());
+		
+		if (statusId != -1) {
+			
+			getInstance(StatusGetter.class).onFunction(user,msg,"status",new String[] { statusId.toString() });
+			
+			return;
+			
+		}
+
+        msg.send(LocalString.get(user).UNPROCESSED,str.toString()).replyTo(msg).html().removeKeyboard().async();
+
+		if (msg.message().photo() != null) {
+
+			String result = QrCodeUtil.decode(msg.photo());
+
+			if (!StrUtil.isBlank(result)) {
+
+				msg.send("二维码解析结果 :\n",result).async();
+
+			}
+
+		}
 
     }
 
