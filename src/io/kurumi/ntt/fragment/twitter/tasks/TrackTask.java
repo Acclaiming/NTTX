@@ -439,7 +439,7 @@ public class TrackTask extends TimerTask {
 
 			for (Long lostFriend : lostFriends) {
 
-				//lostFriend(account,api,lostFriend,setting.followers);
+				lostFriend(account,api,lostFriend,account.fo != null);
 
 			}
 
@@ -619,6 +619,46 @@ public class TrackTask extends TimerTask {
         }
 
     }
+	
+	void lostFriend(TAuth auth,Twitter api,long id,boolean notice) {
+
+        try {
+
+            User follower = api.showUser(id);
+            UserArchive archive = UserArchive.save(follower);
+
+            Relationship ship = api.showFriendship(id,auth.id);
+
+            if (notice && ship.isSourceBlockingTarget())  {
+
+                StringBuilder msg = new StringBuilder();
+
+                msg.append("关注的 ").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 屏蔽了你 :)").append(parseStatus(api,follower));
+
+                if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
+
+                new Send(auth.user,msg.toString()).html().point(0,archive.id);
+
+            }
+
+        } catch (TwitterException e) {
+
+            UserArchive archive = UserArchive.get(id);
+
+			StringBuilder msg = new StringBuilder();
+
+			msg.append("关注的 ").append(archive.urlHtml()).append(" #").append(archive.screenName).append(NTT.parseTwitterException(e)).append("了 :)");
+
+			if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
+
+			new Send(auth.user,msg.toString()).html().point(0,archive.id);
+
+			
+        }
+
+
+    }
+	
 
     void newFriend(TAuth auth,Twitter api,long id,boolean notice) {
 
