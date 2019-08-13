@@ -988,7 +988,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 			UserData user = UserData.get(id);
 			
-			clearPrivatePoint(user);
+			// clearPrivatePoint(user);
 			
             new Send(this,id,LocalString.get(UserData.get(id)).FORCE_CANCEL).removeKeyboard().exec();
 
