@@ -866,7 +866,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 			msg.setFunctionAndParam("status",statusId.toString());
 			
-			getInstance(StatusGetter.class).onFunction(user,msg,null,null);
+			getInstance(StatusGetter.class).onFunction(user,msg,null,msg.params());
 
 			return;
 
