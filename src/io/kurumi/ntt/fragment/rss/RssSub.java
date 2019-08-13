@@ -298,7 +298,7 @@ public class RssSub extends Fragment {
 
             }
 
-            clearGroupPoint(user);
+            clearGroupPoint(user.id);
 
             msg.send("导入成功 ！").async();
 

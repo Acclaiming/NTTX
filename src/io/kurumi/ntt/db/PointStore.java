@@ -29,23 +29,23 @@ public class PointStore {
 
     }
 
-    public boolean containsPrivate(UserData user) {
+    public boolean containsPrivate(Long userId) {
 
-        return privatePoints.containsKey(user.id);
-
-    }
-
-    public boolean containsGroup(UserData user) {
-
-        return groupPoints.containsKey(user.id);
+        return privatePoints.containsKey(userId);
 
     }
 
-    public PointData getPrivate(UserData user) {
+    public boolean containsGroup(Long userId) {
 
-        if (containsPrivate(user)) {
+        return groupPoints.containsKey(userId);
 
-            return privatePoints.get(user.id);
+    }
+
+    public PointData getPrivate(Long userId) {
+
+        if (containsPrivate(userId)) {
+
+            return privatePoints.get(userId);
 
         }
 
@@ -53,11 +53,11 @@ public class PointStore {
 
     }
 
-    public PointData getGroup(UserData user) {
+    public PointData getGroup(long userId) {
 
-        if (containsGroup(user)) {
+        if (containsGroup(userId)) {
 
-            return groupPoints.get(user.id);
+            return groupPoints.get(userId);
 
         }
 
@@ -65,19 +65,19 @@ public class PointStore {
 
     }
 
-    public PointData setPrivate(UserData user,final String pointTo,final PointData data) {
+    public PointData setPrivate(Long userId,final String pointTo,final PointData data) {
 
         data.point = pointTo;
         data.type = 1;
 
-        privatePoints.put(user.id,data);
+        privatePoints.put(userId,data);
 
         return data;
 
     }
 
 
-    public PointData setPrivateData(UserData user,final String pointTo,final Object content) {
+    public PointData setPrivateData(Long userId,final String pointTo,final Object content) {
 
         PointData pointData = new PointData();
 
@@ -86,25 +86,25 @@ public class PointStore {
 
 		pointData.type = 1;
 
-        privatePoints.put(user.id,pointData);
+        privatePoints.put(userId,pointData);
 
         return pointData;
 
     }
 
-    public PointData setGroup(UserData user,final String pointTo,final PointData data) {
+    public PointData setGroup(Long userId,final String pointTo,final PointData data) {
 
         data.type = 2;
         data.point = pointTo;
 
-        groupPoints.put(user.id,data);
+        groupPoints.put(userId,data);
 
         return data;
 
     }
 
 
-    public PointData setGroupData(UserData user,final String pointTo,final Object content) {
+    public PointData setGroupData(Long userId,final String pointTo,final Object content) {
 
         PointData pointData = new PointData();
 
@@ -112,22 +112,22 @@ public class PointStore {
 		pointData.data = content;
 		
 		
-        groupPoints.put(user.id,pointData);
+        groupPoints.put(userId,pointData);
 
         return pointData;
 
     }
 
 
-    public PointData clearPrivate(UserData user) {
+    public PointData clearPrivate(Long userId) {
 
-        return privatePoints.remove(user.id);
+        return privatePoints.remove(userId);
 
     }
 
-    public PointData clearGroup(UserData user) {
+    public PointData clearGroup(Long userId) {
 
-        return groupPoints.remove(user.id);
+        return groupPoints.remove(userId);
 
     }
 

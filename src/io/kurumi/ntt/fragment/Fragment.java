@@ -94,9 +94,9 @@ public class Fragment {
     }
 
     public void executeAsync(BaseRequest request) {
-		
+
         executeAsync(null,request);
-		
+
     }
 
     public void executeAsync(Update update,final BaseRequest request) {
@@ -147,45 +147,114 @@ public class Fragment {
 
     }
 
+
+    public PointData setPrivatePoint(Long userId,String pointTo,PointData content) {
+
+        return point().setPrivate(userId,pointTo,content);
+
+    }
+
+    public PointData setPrivatePointData(Long userId,String pointTo,Object content) {
+
+        return point().setPrivateData(userId,pointTo,content);
+
+    }
+
+    public PointData setPrivatePoint(Long userId,String pointTo) {
+
+        return point().setPrivateData(userId,pointTo,null);
+
+    }
+
+    public PointData setGroupPoint(Long userId,String pointTo,PointData content) {
+
+        return point().setGroup(userId,pointTo,content);
+
+    }
+
+    public PointData setGroupPointData(Long userId,String pointTo,Object content) {
+
+        return point().setGroupData(userId,pointTo,content);
+
+    }
+
+    public PointData setGroupPoint(Long userId,String pointTo) {
+
+        return point().setGroupData(userId,pointTo,null);
+
+    }
+
+    public PointData clearPrivatePoint(Long userId) {
+
+        PointData toFinish = point().clearPrivate(userId);
+
+        if (toFinish != null) toFinish.onFinish();
+
+        return toFinish;
+    }
+
+    public PointData clearGroupPoint(Long userId) {
+
+        PointData toFinish = point().clearGroup(userId);
+
+        if (toFinish != null) toFinish.onFinish();
+
+        return toFinish;
+
+    }
+
+    public PointData getPrivatePoint(Long userId) {
+
+        return point().getPrivate(userId);
+
+    }
+
+    public PointData getGroupPoint(Long userId) {
+
+        return point().getPrivate(userId);
+
+    }
+
+
     public PointData setPrivatePoint(UserData user,String pointTo,PointData content) {
 
-        return point().setPrivate(user,pointTo,content);
+        return point().setPrivate(user.id,pointTo,content);
 
     }
 
     public PointData setPrivatePointData(UserData user,String pointTo,Object content) {
 
-        return point().setPrivateData(user,pointTo,content);
+        return point().setPrivateData(user.id,pointTo,content);
 
     }
 
     public PointData setPrivatePoint(UserData user,String pointTo) {
 
-        return point().setPrivateData(user,pointTo,null);
+        return point().setPrivateData(user.id,pointTo,null);
 
     }
 
     public PointData setGroupPoint(UserData user,String pointTo,PointData content) {
 
-        return point().setGroup(user,pointTo,content);
+        return point().setGroup(user.id,pointTo,content);
 
     }
 
     public PointData setGroupPointData(UserData user,String pointTo,Object content) {
 
-        return point().setGroupData(user,pointTo,content);
+        return point().setGroupData(user.id,pointTo,content);
 
     }
 
     public PointData setGroupPoint(UserData user,String pointTo) {
 
-        return point().setGroupData(user,pointTo,null);
+        return point().setGroupData(user.id,pointTo,null);
 
     }
 
     public PointData clearPrivatePoint(UserData user) {
 
-        PointData toFinish = point().clearPrivate(user);
+        PointData toFinish = point().clearPrivate(user.id);
 
         if (toFinish != null) toFinish.onFinish();
 
@@ -194,7 +263,7 @@ public class Fragment {
 
     public PointData clearGroupPoint(UserData user) {
 
-        PointData toFinish = point().clearGroup(user);
+        PointData toFinish = point().clearGroup(user.id);
 
         if (toFinish != null) toFinish.onFinish();
 
@@ -204,13 +273,13 @@ public class Fragment {
 
     public PointData getPrivatePoint(UserData user) {
 
-        return point().getPrivate(user);
+        return point().getPrivate(user.id);
 
     }
 
     public PointData getGroupPoint(UserData user) {
 
-        return point().getPrivate(user);
+        return point().getPrivate(user.id);
 
     }
 
@@ -444,7 +513,7 @@ public class Fragment {
 				}
 
 			}
-			
+
 			return;
 
 		}
