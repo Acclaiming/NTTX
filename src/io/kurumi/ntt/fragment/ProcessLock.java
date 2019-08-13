@@ -14,26 +14,27 @@ public class ProcessLock<T> extends ReentrantLock {
     public Condition condition = newCondition();
 
     public T waitFor() {
-		
+
 		if (obj != null) return obj;
 
         try {
 
             lock();
-			
+
 			if (obj != null) return obj;
 
-            condition.await(233, TimeUnit.MILLISECONDS);
+            condition.await(233,TimeUnit.MILLISECONDS);
 
 			used.set(true);
-			
+
             return obj;
 
         } catch (InterruptedException e) {
 
             return null;
 
-        } finally {
+        }
+		finally {
 
             unlock();
 
@@ -43,7 +44,7 @@ public class ProcessLock<T> extends ReentrantLock {
 
     public void send(T obj) {
 
-        //if (used.getAndSet(true)) return;
+		used.getAndSet(true);
 
         try {
 
@@ -51,9 +52,10 @@ public class ProcessLock<T> extends ReentrantLock {
 
             this.obj = obj;
 
-            condition.signal();
+            condition.signalAll();
 
-        } finally {
+        }
+		finally {
 
             unlock();
 
