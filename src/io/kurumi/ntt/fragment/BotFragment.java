@@ -984,11 +984,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
     public void stop() {
 
-        for (Long id : point().privatePoints.keySet()) {
+        for (Long id : new HashMap<>(point().privatePoints).keySet()) {
 
 			UserData user = UserData.get(id);
 			
-			// clearPrivatePoint(user);
+			clearPrivatePoint(user);
 			
             new Send(this,id,LocalString.get(UserData.get(id)).FORCE_CANCEL).removeKeyboard().exec();
 
