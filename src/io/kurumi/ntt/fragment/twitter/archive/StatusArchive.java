@@ -493,7 +493,7 @@ public class StatusArchive {
 
 			} else {
 
-				archive.append(Html.b(user.name)).append(" ").append(Html.a("@" + user().screenName,user().url())).append(" ");
+				archive.append(Html.b(user().name)).append(" ").append(Html.a("@" + user().screenName,user().url())).append(" ");
 
 			}
 
