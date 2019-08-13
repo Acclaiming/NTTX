@@ -42,7 +42,7 @@ public class MMPITest extends Fragment {
 
 			}
 			
-			System.out.println( store.answers );
+			System.out.println( store.answers.getClass() );
 		
 			setPrivatePoint(store.id,POINT_TEST,test);
 
