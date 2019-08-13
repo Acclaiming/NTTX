@@ -608,7 +608,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                     }
 
                 } else {
-
+					
                     for (final Fragment f : fragments) {
 
                         if (!f.msg()) continue;
@@ -640,8 +640,10 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                     }
 
+					update.lock.send(null);
+					
                     onFinalMsg(user,msg);
-
+					
                 }
 
             }
@@ -682,6 +684,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                 }
 
             }
+			
+			update.lock.send(null);
 
         } else if (update.callbackQuery() != null) {
 
@@ -714,9 +718,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                 function.onCallback(user,callback,point,params);
 
-
             }
-
+			
+			update.lock.send(null);
 
         } else if (update.inlineQuery() != null) {
 
@@ -729,6 +733,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                 if (f.query()) f.onQuery(user,query);
 
             }
+			
+			update.lock.send(null);
 
         } else if (update.poll() != null) {
 
@@ -737,6 +743,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                 if (f.poll()) f.onPollUpdate(update.poll());
 
             }
+			
+			update.lock.send(null);
 
         }
 
