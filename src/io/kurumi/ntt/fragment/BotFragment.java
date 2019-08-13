@@ -874,18 +874,26 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 		if (msg.message().photo() != null) {
 
-			try {
+			execute(new Runnable() {
 
-				String result = QrCodeUtil.decode(msg.photo());
+					@Override
+					public void run() {
+						
+						try {
 
-				if (!StrUtil.isBlank(result)) {
+							String result = QrCodeUtil.decode(msg.photo());
 
-					msg.send("二维码解析结果 :\n",result).async();
+							if (!StrUtil.isBlank(result)) {
 
-				}
+								msg.send("二维码解析结果 :\n",result).async();
 
-			} catch (QrCodeException ex) {}
+							}
 
+						} catch (QrCodeException ex) {}
+						
+					}
+				});
+			
 		}
 
     }
