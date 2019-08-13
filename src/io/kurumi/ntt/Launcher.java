@@ -78,6 +78,7 @@ import io.kurumi.ntt.utils.BotLog;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
+import io.kurumi.ntt.fragment.qr.QrEncoder;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -379,6 +380,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		addFragment(new NeteaseMusic());
 		addFragment(new ZeroPadEncode());
 		addFragment(new QrDecoder());
+		addFragment(new QrEncoder());
 		
 		addFragment(new MMPITest());
 	
