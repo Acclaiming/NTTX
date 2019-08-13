@@ -25,6 +25,7 @@ public class TrackMain extends Fragment {
         registerCallback(
 			POINT_TRACK,
 			POINT_SETTING_FOLLOWERS,
+			POINT_SETTING_FOMARGE,
 			POINT_SETTING_FOLLOWINGS_INFO,
 			POINT_SETTING_FOLLOWERS_INFO);
 
@@ -71,31 +72,31 @@ public class TrackMain extends Fragment {
 
 		String message = "账号通知设置选单 : [ " + account.archive().name + " ]";
 
-		ButtonMarkup config = new ButtonMarkup();
+		ButtonMarkup buttons = new ButtonMarkup();
 
-		config.newButtonLine()
+		buttons.newButtonLine()
 			.newButton("关注者变化")
 			.newButton(account.fo != null ? "✅" : "☑",POINT_SETTING_FOLLOWERS,account.id);
 
 		if (account.fo != null) {
 
-			config.newButtonLine()
-				.newButton("每日通知")
+			buttons.newButtonLine()
+				.newButton("-- 每日通知")
 				.newButton(account.fo_marge != null ? "✅" : "☑",POINT_SETTING_FOMARGE,account.id);
 
 		}
 
-		config.newButtonLine()
+		buttons.newButtonLine()
 			.newButton("关注中账号更改")
 			.newButton(account.fr_info != null ? "✅" : "☑",POINT_SETTING_FOLLOWINGS_INFO,account.id);
 
-		config.newButtonLine()
+		buttons.newButtonLine()
 			.newButton("关注者账号更改")
 			.newButton(account.fo_info != null ? "✅" : "☑",POINT_SETTING_FOLLOWERS_INFO,account.id);
 
-		config.newButtonLine("🔙",AccountMain.POINT_ACCOUNT,account.id);
+		buttons.newButtonLine("🔙",AccountMain.POINT_ACCOUNT,account.id);
 
-		callback.edit(message).buttons(config).async();
+		callback.edit(message).buttons(buttons).async();
 
 	}
 
