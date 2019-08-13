@@ -59,7 +59,7 @@ public class MMPITest extends Fragment {
 			
 			if (data.getValue() instanceof Test) {
 				
-				Test test = (Test)data;
+				Test test = (Test)data.getValue();
 				
 				TestData store = new TestData();
 				
