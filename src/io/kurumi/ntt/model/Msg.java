@@ -412,7 +412,7 @@ public class Msg extends Context {
 
         if (local.isFile()) return local;
 
-        String path = fragment.bot().getFullFilePath(fragment.bot().execute(new GetFile(message.photo()[0].fileId())).file());
+        String path = fragment.bot().getFullFilePath(fragment.bot().execute(new GetFile(sizes[sizes.length - 1].fileId())).file());
 
         HttpUtil.downloadFile(path,local);
 
