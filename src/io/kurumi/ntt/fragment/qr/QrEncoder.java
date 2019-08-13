@@ -36,6 +36,8 @@ public class QrEncoder extends Fragment {
 		
 		File cacheFile = new File(Env.CACHE_DIR,"qr_gen/" + UUID.fastUUID().toString(true) + ".jpg");
 
+		cacheFile.getParentFile().mkdirs();
+		
 		QrCodeUtil.generate(ArrayUtil.join(params," "),500,500,cacheFile);
 
 		executeAsync(msg.update,new SendPhoto(msg.chatId(),cacheFile));
