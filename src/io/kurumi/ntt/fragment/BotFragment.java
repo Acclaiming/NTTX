@@ -50,7 +50,6 @@ import io.kurumi.ntt.i18n.LocalString;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener, ExceptionHandler {
 
-
     public static Timer mainTimer = new Timer();
     public static Timer trackTimer = new Timer();
 
@@ -688,9 +687,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                 }
 
             }
-
-			update.lock.send(null);
-
+			
         } else if (update.callbackQuery() != null) {
 
             final Callback callback = new Callback(this,update.callbackQuery());

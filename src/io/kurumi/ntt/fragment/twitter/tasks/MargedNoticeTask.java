@@ -66,8 +66,6 @@ public class MargedNoticeTask extends TimerTask {
 					if (ship.isSourceFollowingTarget()) message += " [ 互相关注 ]";
 					else if (archive.isProtected) message += " [ 锁推 ]";
 					
-					AutoTask.onNewFollower(account,api,archive,ship);
-					
 				} catch (TwitterException e) {
 				}
 				
@@ -90,21 +88,39 @@ public class MargedNoticeTask extends TimerTask {
 				try {
 
 					User follower = api.showUser(id);
-
 					UserArchive archive = UserArchive.save(follower);
 
 					Relationship ship = api.showFriendship(account.id,id);
 
+					if (ship.isSourceFollowedByTarget()) {
+
+						continue;
+
+					}
+
 					message += "\n" + archive.urlHtml() + " #" + archive.screenName;
-
-					if (ship.isSourceFollowingTarget()) message += " [ 互相关注 ]";
+					
+					if (ship.isSourceFollowingTarget()) message += " [ 单向取关 ]";
 					else if (archive.isProtected) message += " [ 锁推 ]";
-
-					AutoTask.onNewFollower(account,api,archive,ship);
-
+					
 				} catch (TwitterException e) {
-				}
 
+					UserArchive archive = UserArchive.get(id);
+
+					if (archive.isDisappeared) return;
+
+					UserArchive.saveDisappeared(id);
+
+					if (!notice && auth.fo_marge == null) return;
+
+					StringBuilder msg = new StringBuilder(archive != null ? archive.urlHtml() : "无记录的用户 : (" + id + ")").append(" 取关了你\n\n状态异常 : ").append(NTT.parseTwitterException(e));
+
+					if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
+
+					new Send(auth.user,msg.toString()).html().point(0,id);
+
+				}
+				
 			}
 			
 		}
