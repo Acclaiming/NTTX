@@ -381,6 +381,8 @@ public class TrackTask extends TimerTask {
             lostFolowers.removeAll(retains);
             newFollowers.removeAll(retains);
 
+			if (account.fo_marge != null) {}
+			
             for (Long newfollower : newFollowers) {
 
                 newFollower(account,api,newfollower,account.fo != null);

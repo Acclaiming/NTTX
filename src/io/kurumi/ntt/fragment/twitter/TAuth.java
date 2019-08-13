@@ -73,7 +73,9 @@ public class TAuth {
 	
 	public Boolean fo;
 	
-	public Boolean fo_marge;
+	public Integer fo_marge;
+	public List<Long> fo_new;
+	public List<Long> fo_lost;
 	
 	public List<Long> nf;
 	public List<Long> lf;
