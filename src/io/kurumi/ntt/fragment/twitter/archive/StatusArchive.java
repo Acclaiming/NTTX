@@ -153,6 +153,7 @@ public class StatusArchive {
 						Thumbnails
 							.of(cache)
 							.outputFormat("png")
+							.scale(1.0f)
 							.toFile(trans);
 							
 					} catch (IOException e) {}
