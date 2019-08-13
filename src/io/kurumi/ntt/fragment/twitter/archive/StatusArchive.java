@@ -497,7 +497,7 @@ public class StatusArchive {
 
 			}
 			
-            archive.append("的").append(Html.a("转推",current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id)).append(" : ");
+            archive.append("的").append(" ").append(Html.a("转推",current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id)).append(" : ");
 
             archive.append(split);
 
