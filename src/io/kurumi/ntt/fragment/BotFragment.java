@@ -353,7 +353,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
             final PointData privatePoint = point().getPrivate(user.id);
             final PointData groupPoint = point().getGroup(user.id);
 
-			if (privatePoint == null && groupPoint == null && !msg.isCommand()) update.lock.send(null);
+			if (groupPoint == null && !msg.isCommand()) update.lock.send(null);
 			
             if (msg.isGroup() && groupPoint != null) {
 
