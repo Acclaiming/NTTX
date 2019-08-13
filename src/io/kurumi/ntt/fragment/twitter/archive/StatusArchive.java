@@ -6,6 +6,7 @@ import cn.hutool.http.HttpUtil;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.request.InputMediaPhoto;
 import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.request.SendAnimation;
 import com.pengrad.telegrambot.request.SendMediaGroup;
 import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.response.SendResponse;
@@ -18,25 +19,18 @@ import io.kurumi.ntt.fragment.twitter.status.StatusAction;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
-
 import java.io.File;
 import java.util.Calendar;
 import java.util.LinkedList;
-
+import net.coobird.thumbnailator.Thumbnails;
 import twitter4j.MediaEntity;
+import twitter4j.MediaEntity.Variant;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.URLEntity;
 import twitter4j.UserMentionEntity;
-import io.netty.util.AsciiString;
-import twitter4j.MediaEntity.Variant;
-import cn.hutool.core.io.FileUtil;
-import com.pengrad.telegrambot.request.SendMessage;
-import com.pengrad.telegrambot.request.BaseRequest;
-import com.pengrad.telegrambot.request.SendVideo;
-import com.pengrad.telegrambot.request.AbstractSendRequest;
-import com.pengrad.telegrambot.request.SendAnimation;
+import java.io.IOException;
 
 public class StatusArchive {
 
@@ -146,8 +140,28 @@ public class StatusArchive {
                 } catch (Exception ex) {
                 }
 
-
             }
+			
+			if (cache.isFile() && cache.getName().endsWith(".png")) {
+				
+				File trans = new File(Env.CACHE_DIR,"twitter_media/" + name + ".jpg");
+				
+				if (!trans.isFile()) {
+					
+					try {
+						
+						Thumbnails
+							.of(cache)
+							.outputFormat("png")
+							.toFile(trans);
+							
+					} catch (IOException e) {}
+
+				}
+				
+				cache = trans;
+				
+			}
 
             if (cache.isFile()) {
 
