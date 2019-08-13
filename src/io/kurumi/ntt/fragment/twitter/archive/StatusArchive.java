@@ -470,14 +470,34 @@ public class StatusArchive {
 
             }
 
-            archive.append(user().urlHtml()).append(" 的 ").append(Html.a("回复",current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id));
+			if (false && auth != null && from.equals(auth.id)) {
+
+				archive.append("我");
+
+			} else {
+
+				archive.append(Html.b(user().name)).append(" ").append(Html.a("@" + user().screenName,user().url())).append(" ");
+
+			}
+			
+            archive.append("的 ").append(Html.a("回复",current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id));
 
 
         } else if (!quoted && isRetweet) {
 
             StatusArchive retweeted = StatusArchive.get(retweetedStatus);
 
-            archive.append(user().urlHtml()).append(" 转推从 " + retweeted.user().urlHtml()).append(" 的 ").append(Html.a("推文",current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id)).append(" : ");
+			if (false && auth != null && from.equals(auth.id)) {
+
+				archive.append("我");
+
+			} else {
+
+				archive.append(Html.b(user().name)).append(" ").append(Html.a("@" + user().screenName,user().url())).append(" ");
+
+			}
+			
+            archive.append("转推从 " + retweeted.user().urlHtml()).append(" 的 ").append(Html.a("推文",current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id)).append(" : ");
 
             archive.append(split);
 
