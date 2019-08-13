@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.LinkedList;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.model.request.Send;
+import cn.hutool.json.JSONArray;
+import cn.hutool.core.text.csv.CsvUtil;
 
 public class MMPITest extends Fragment {
 
@@ -36,14 +38,12 @@ public class MMPITest extends Fragment {
 
 			test.index = store.index;
 
-			for (int index = 0;index < store.answers.size();index ++) {
+			for (int index = 0;index < store.answer.length();index ++) {
 
-				test.answer[index] = store.answers.get(index);
+				test.answer[index] = store.answer.charAt(index) == '1' ? true : false;
 
 			}
 			
-			System.out.println( store.answers.getClass() );
-		
 			setPrivatePoint(store.id,POINT_TEST,test);
 
 			
@@ -60,7 +60,7 @@ public class MMPITest extends Fragment {
 		public Long id;
 
 		public int index;
-		public List<Boolean> answers;
+		public String answer;
 
 	}
 
@@ -79,13 +79,15 @@ public class MMPITest extends Fragment {
 
 				store.index = test.index;
 
-				store.answers = new LinkedList<>();
+				StringBuilder answers = new StringBuilder();
 				
 				for (int index = 0;index < test.index - 1;index ++) {
 
-					store.answers.add(test.answer[index]);
+					answers.append(test.answer[index] ? 1 : 0);
 
 				}
+				
+				store.answer = answers.toString();
 
 				this.data.setById(store.id,store);
 
