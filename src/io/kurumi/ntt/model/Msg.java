@@ -87,7 +87,7 @@ public class Msg extends Context {
 
     public Send invalidParams(String... params) {
 
-        return send("无效的参数 , /" + command() + " <" + ArrayUtil.join(params,"> <") + ">");
+        return send("/" + command() + " <" + ArrayUtil.join(params,"> <") + ">");
 
     }
 
