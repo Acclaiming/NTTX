@@ -308,6 +308,12 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
         } else if (update.editedMessage() != null) {
 
+			update.lock.send(null);
+			
+			return;
+			
+			/*
+			
             user = UserData.get(update.editedMessage().from());
 
             if (update.editedMessage().chat().type() != Chat.Type.Private) {
@@ -315,6 +321,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                 targetId = update.editedMessage().chat().id();
 
             }
+			
+			*/
 
         } else if (update.channelPost() != null) {
 
@@ -339,8 +347,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
             user = UserData.get(update.inlineQuery().from());
 
         } else user = null;
-
-        if (onUpdate(user,update)) return;
 
         for (Fragment f : fragments) if (f.update() && f.onUpdate(user,update)) return;
 
