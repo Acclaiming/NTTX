@@ -9,9 +9,17 @@ import twitter4j.Relationship;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
+import io.kurumi.ntt.fragment.BotFragment;
+import cn.hutool.core.date.DateUtil;
 
 public class MargedNoticeTask extends TimerTask {
 
+	public static void start() {
+		
+		BotFragment.mainTimer.schedule(new MargedNoticeTask(),DateUtil.tomorrow().toJdkDate(),1 * 24 * 60 * 60 * 1000L);
+		
+	}
+	
 	@Override
 	public void run() {
 
@@ -20,9 +28,9 @@ public class MargedNoticeTask extends TimerTask {
 			@Override
 			public void run() {
 
-				for (TAuth account : TAuth.data.getAll()) {
+				for (TAuth account : TAuth.data.getAllByField("fo_marge",true)) {
 
-					if (account.fo == null || account.fo_marge != null) continue;
+					//if (account.fo == null || account.fo_marge ) continue;
 
 					doNotice(account);
 
@@ -108,6 +116,8 @@ public class MargedNoticeTask extends TimerTask {
 
 					UserArchive archive = UserArchive.get(id);
 
+					if (archive == null) continue;
+					
 					message += "\n" + archive.urlHtml() + " #" + archive.screenName + " [ " + NTT.parseTwitterException(e) + " ]";
 					
 				}
@@ -115,6 +125,8 @@ public class MargedNoticeTask extends TimerTask {
 			}
 
 		}
+		
+		new Send(account.user,message).async();
 
 	}
 

@@ -237,13 +237,13 @@ public class NTT {
 
             case 17:
             case 50:
-                return "不存在";
+                return "账号不存在";
 
             case 34:
                 return "找不到内容";
 
             case 63:
-                return "被冻结";
+                return "账号被冻结";
 
             case 64:
                 return "账号被限制";
@@ -272,13 +272,13 @@ public class NTT {
                 return "服务器时间戳错误，请联系开发者";
 
             case 136:
-                return "操作失败 : 你被对方屏蔽";
+                return "你被对方屏蔽";
 
             case 139:
                 return "你已经喜欢过了这条推文";
 
             case 144:
-                return "推文找不到 / 被删除";
+                return "推文不存在";
 
             case 150:
                 return "你没有关注对方，无法发送私信";

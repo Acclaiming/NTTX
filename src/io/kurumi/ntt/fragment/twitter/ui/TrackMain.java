@@ -13,6 +13,7 @@ public class TrackMain extends Fragment {
 	public static final String POINT_TRACK = "twi_track";
 
     final String POINT_SETTING_FOLLOWERS = "twi_fo";
+	final String POINT_SETTING_FOMARGE = "twi_fo_marge";
     final String POINT_SETTING_FOLLOWERS_INFO = "twi_fo_info";
     final String POINT_SETTING_FOLLOWINGS_INFO = "twi_fr_info";
 
@@ -39,7 +40,7 @@ public class TrackMain extends Fragment {
 			return;
 
 		}
-		
+
 		long accountId = NumberUtil.parseLong(params[0]);
 
 		TAuth account = TAuth.getById(accountId);
@@ -76,6 +77,14 @@ public class TrackMain extends Fragment {
 			.newButton("关注者变化")
 			.newButton(account.fo != null ? "✅" : "☑",POINT_SETTING_FOLLOWERS,account.id);
 
+		if (account.fo != null) {
+
+			config.newButtonLine()
+				.newButton("每日通知")
+				.newButton(account.fo_marge != null ? "✅" : "☑",POINT_SETTING_FOMARGE,account.id);
+
+		}
+
 		config.newButtonLine()
 			.newButton("关注中账号更改")
 			.newButton(account.fr_info != null ? "✅" : "☑",POINT_SETTING_FOLLOWINGS_INFO,account.id);
@@ -103,6 +112,23 @@ public class TrackMain extends Fragment {
 			} else {
 
 				account.fo = null;
+				account.fo_marge = null;
+
+				callback.text("✅ 已关闭");
+
+			}
+			
+		} else if (POINT_SETTING_FOMARGE.equals(point)) {
+
+			if (account.fo_marge == null) {
+
+				account.fo_marge = true;
+
+				callback.text("✅ 已开启");
+
+			} else {
+
+				account.fo_marge = null;
 
 				callback.text("✅ 已关闭");
 
