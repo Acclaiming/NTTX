@@ -298,7 +298,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                 targetId = update.message().chat().id();
 
-            } else if (!point().containsGroup(update.message().chat().id())) {
+            } else if (!point().containsGroup(update.message().from().id())) {
 				
 				update.lock.send(null);
 				
