@@ -842,15 +842,15 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 		if (msg.doc() != null) {
 
 			str.append("File Name : ").append(Html.code(msg.doc().fileName())).append("\n");
-			//str.append("文件ID : ").append(Html.code(msg.doc().fileId())).append("\n");
-			str.append("Share Link : ").append(ShowFile.createPayload(this,msg.doc().fileId())).append("\n");
+			str.append("File ID : ").append(Html.code(msg.doc().fileId())).append("\n");
+			//str.append("Share Link : ").append(ShowFile.createPayload(this,msg.doc().fileId())).append("\n");
 
 		}
-
+		
 		if (msg.message().photo() != null) {
-
-			str.append("Share Link : ").append(ShowFile.createPayload(this,msg.maxSize().fileId())).append("\n");
-
+			
+			str.append("File ID : ").append(Html.code(msg.maxSize().fileId())).append("\n");
+			
 		}
 		
 		Long statusId = NTT.parseStatusId(msg.text());
@@ -862,8 +862,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 			return;
 			
 		}
-
-        msg.send(LocalString.get(user).UNPROCESSED,str.toString()).replyTo(msg).html().removeKeyboard().async();
+		
+		msg.send(LocalString.get(user).UNPROCESSED,str.toString()).replyTo(msg).html().removeKeyboard().async();
 
 		if (msg.message().photo() != null) {
 

@@ -107,16 +107,7 @@ public class Fragment {
 
         } else {
 
-			execute(new Runnable() {
-
-					@Override
-					public void run() {
-
-						bot().execute(request);
-
-					}
-
-				});
+			execute(request);
 
         }
 
