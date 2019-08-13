@@ -32,7 +32,7 @@ public class QrDecoder extends Fragment {
 			
 		}
 		
-		String result = QrCodeUtil.decode(msg.photo());
+		String result = QrCodeUtil.decode(msg.replyTo().photo());
 
 		if (StrUtil.isBlank(result)) {
 			
