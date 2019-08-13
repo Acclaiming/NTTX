@@ -35,25 +35,29 @@ public class QrEncoder extends Fragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-		int color = 0xE91E63;
+		int background = 0xE91E63;
+		
+		int color = 0xffffff;
 
 		if (params.length == 0) {
 
-			msg.send("/qr_encode [#颜色 可选] <文本...>").async();
+			msg.send("/qr_encode [#背景] [#颜色] <文本...>").async();
 
 			return;
 
-		} else if (params.length > 1) {
+		}
+		
+		if (params.length > 1) {
 
 			if (params[0].charAt(0) == '#') {
 
 				try {
 
-					color = NumberUtil.parseInt("0x" + params[0].substring(1));
+					background = NumberUtil.parseInt("0x" + params[0].substring(1));
 
 				} catch (Exception ex) {
 
-					msg.send("无效的颜色格式 例子 : #E91E63 (Material Pink 500)").async();
+					msg.send("无效的背景颜色格式 例子 : #E91E63 (Material Pink 500)").async();
 
 					return;
 
@@ -62,12 +66,33 @@ public class QrEncoder extends Fragment {
 			}
 
 		}
+		
+		if (params.length > 2) {
+
+			if (params[1].charAt(0) == '#') {
+
+				try {
+
+					color = NumberUtil.parseInt("0x" + params[1].substring(1));
+
+				} catch (Exception ex) {
+
+					msg.send("无效的颜色格式 例子 : #FFFFFF (白色)").async();
+
+					return;
+
+				}
+
+			}
+
+		}
+		
 
 		File cacheFile = new File(Env.CACHE_DIR,"qr_gen/" + UUID.fastUUID().toString(true) + ".jpg");
 
 		cacheFile.getParentFile().mkdirs();
 
-		QrCodeUtil.generate(ArrayUtil.join(params," "),new QrConfig(500,500).setBackColor(color).setForeColor(0xffffff),cacheFile);
+		QrCodeUtil.generate(ArrayUtil.join(params," "),new QrConfig(500,500).setBackColor(background).setForeColor(color),cacheFile);
 
 		msg.sendUpdatingPhoto();
 
