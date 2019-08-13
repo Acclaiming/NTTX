@@ -849,7 +849,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 		if (msg.message().photo() != null) {
 
-			str.append("Share Link : ").append(ShowFile.createPayload(this,msg.doc().fileId())).append("\n");
+			str.append("Share Link : ").append(ShowFile.createPayload(this,msg.maxSize().fileId())).append("\n");
 
 		}
 		
