@@ -353,6 +353,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
             final PointData privatePoint = point().getPrivate(user.id);
             final PointData groupPoint = point().getGroup(user.id);
 
+			if (privatePoint == null && groupPoint == null && !msg.isCommand()) update.lock.send(null);
+			
             if (msg.isGroup() && groupPoint != null) {
 
                 final Fragment function = points.containsKey(groupPoint.point) ? points.get(groupPoint.point) : this;
@@ -609,8 +611,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                 } else {
 					
-					update.lock.send(null);
-					
                     for (final Fragment f : fragments) {
 
                         if (!f.msg()) continue;
@@ -720,8 +720,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             }
 			
-			update.lock.send(null);
-
         } else if (update.inlineQuery() != null) {
 
             Query query = new Query(this,update.inlineQuery());
@@ -733,9 +731,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                 if (f.query()) f.onQuery(user,query);
 
             }
-			
-			update.lock.send(null);
-
+		
         } else if (update.poll() != null) {
 
             for (Fragment f : fragments) {
@@ -743,8 +739,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                 if (f.poll()) f.onPollUpdate(update.poll());
 
             }
-			
-			update.lock.send(null);
 
         }
 
