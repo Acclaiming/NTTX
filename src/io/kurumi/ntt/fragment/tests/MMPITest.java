@@ -48,7 +48,7 @@ public class MMPITest extends Fragment {
 		public Long id;
 		
 		public int index;
-		public boolean[] answers;
+		public Boolean[] answers;
 		
 	}
 	
