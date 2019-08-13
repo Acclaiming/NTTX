@@ -48,9 +48,7 @@ public class MargedNoticeTask extends TimerTask {
 		} else {
 			
 			for (Long id : account.fo_new) {
-				
-				/*
-				
+
 				try {
 
 					User follower = api.showUser(id);
@@ -59,19 +57,8 @@ public class MargedNoticeTask extends TimerTask {
 
 					Relationship ship = api.showFriendship(account.id,id);
 						
-						msg.append(ship.isSourceFollowingTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 关注了你 :)").append(parseStatus(api,follower));
-
-						if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
-
-						new Send(auth.user,msg.toString()).html().point(0,archive.id);
-						
-					AutoTask.onNewFollower(auth,api,archive,ship);
-
 				} catch (TwitterException e) {
 				}
-
-				*/
-				
 				
 			}
 			

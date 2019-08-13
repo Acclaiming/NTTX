@@ -9,6 +9,9 @@ import io.kurumi.ntt.fragment.tests.MMPITest.Test;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.core.util.StrUtil;
+import java.util.HashMap;
+import java.util.Map;
+import io.kurumi.ntt.db.Data;
 
 public class MMPITest extends Fragment {
 
@@ -22,7 +25,55 @@ public class MMPITest extends Fragment {
 		registerFunction("mmpi");
 
 		registerPoint(POINT_TEST);
+		
+		for (TestData store : data.getAll()) {
+			
+			Test test = new Test();
+			
+			test.index = store.index;
+			test.answer = store.answers;
+			
+			setPrivatePoint(UserData.get(store.id),POINT_TEST,test);
+			
+		}
 
+	}
+	
+	public static Data<TestData> data = new Data<>(TestData.class);
+
+	public static class TestData {
+		
+		public Long id;
+		
+		public int index;
+		public boolean[] answers;
+		
+	}
+	
+	@Override
+	public void onStop() {
+		
+		for (Map.Entry<Long,PointData> data : new HashMap<Long,PointData>(point().privatePoints).entrySet()) {
+			
+			if (data.getValue() instanceof Test) {
+				
+				Test test = (Test)data;
+				
+				TestData store = new TestData();
+				
+				store.id = data.getKey();
+				
+				store.index = test.index;
+				store.answers = test.answer;
+				
+				this.data.setById(store.id,store);
+				
+			}
+			
+		}
+		
+		super.onStop();
+		
 	}
 
 	class Test extends PointData {

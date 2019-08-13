@@ -7,7 +7,7 @@ import java.util.HashMap;
 import io.kurumi.ntt.fragment.BotFragment;
 
 public class PointData {
-
+	
     public int type;
 	
 	public int step = 0;
