@@ -11,6 +11,7 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import java.io.File;
 import com.pengrad.telegrambot.request.SendPhoto;
+import com.pengrad.telegrambot.response.SendResponse;
 
 public class QrEncoder extends Fragment {
 
@@ -42,7 +43,13 @@ public class QrEncoder extends Fragment {
 
 		msg.sendUpdatingPhoto();
 		
-		execute(new SendPhoto(msg.chatId(),cacheFile));
+		SendResponse result = execute(new SendPhoto(msg.chatId(),cacheFile));
+
+		if (!result.isOk()) {
+			
+			msg.send(result.description()).async();
+			
+		}
 		
 		cacheFile.delete();
 		
