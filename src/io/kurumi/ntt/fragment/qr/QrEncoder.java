@@ -40,6 +40,8 @@ public class QrEncoder extends Fragment {
 		
 		QrCodeUtil.generate(ArrayUtil.join(params," "),500,500,cacheFile);
 
+		msg.sendUpdatingPhoto();
+		
 		executeAsync(msg.update,new SendPhoto(msg.chatId(),cacheFile));
 		
 		cacheFile.delete();
