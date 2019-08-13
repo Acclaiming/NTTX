@@ -237,16 +237,16 @@ public class NTT {
 
             case 17:
             case 50:
-                return "用户不存在";
+                return "不存在";
 
             case 34:
                 return "找不到内容";
 
             case 63:
-                return "用户被冻结";
+                return "被冻结";
 
             case 64:
-                return "你的账号被限制 : 无法进行此操作";
+                return "账号被限制";
 
             case 87:
                 return "使用的API无权限进行此操作 : 请联系开发者";
