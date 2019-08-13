@@ -31,36 +31,36 @@ public class QrEncoder extends Fragment {
 		return FUNCTION_PUBLIC;
 
 	}
-	
+
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
 		int color = 0xE91E63;
-		
+
 		if (params.length == 0) {
 
 			msg.send("/qr_encode [#颜色 可选] <文本...>").async();
 
 			return;
 
-		} else if (params.length > 2) {
-			
+		} else if (params.length > 1) {
+
 			if (params[0].charAt(0) == '#') {
-				
+
 				try {
-				
-				color = NumberUtil.parseInt("0x" + params[0].substring(1));
-				
+
+					color = NumberUtil.parseInt("0x" + params[0].substring(1));
+
 				} catch (Exception ex) {
-					
+
 					msg.send("无效的颜色格式 例子 : #E91E63 (Material Pink 500)").async();
-					
+
 					return;
-					
+
 				}
-				
+
 			}
-			
+
 		}
 
 		File cacheFile = new File(Env.CACHE_DIR,"qr_gen/" + UUID.fastUUID().toString(true) + ".jpg");
@@ -72,7 +72,7 @@ public class QrEncoder extends Fragment {
 		msg.sendUpdatingPhoto();
 
 		execute(new SendPhoto(msg.chatId(),cacheFile));
-		
+
 		cacheFile.delete();
 
 	}
