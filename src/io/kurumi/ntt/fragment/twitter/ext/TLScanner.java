@@ -95,7 +95,7 @@ public class TLScanner extends Fragment {
 
 			try {
 
-				ResponseList<Status> tl = api.getUserTimeline(userId,new Paging().count(30));
+				ResponseList<Status> tl = api.getUserTimeline(userId,new Paging().count(20));
 
 				for (Status status : tl) {
 
