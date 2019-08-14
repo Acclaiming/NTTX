@@ -159,11 +159,11 @@ public class TLScanner extends Fragment {
 
 			value -= blockedBy.split("\n").length * 4;
 
-			blockedBy = Html.b("\n被这些人，所以这个结果可能不准确 :\n") + blockedBy;
+			blockedBy = "\n被这些人，所以这个结果可能不准确 :\n" + blockedBy;
 
 		} else {
 
-			blockedBy = Html.b("没有被圈子里的任何人屏蔽。");
+			blockedBy = "没有被圈子里的任何人屏蔽。";
 
 		}
 
