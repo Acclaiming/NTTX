@@ -85,6 +85,7 @@ public class TLScanner extends Fragment {
 		Iterator<Long> iter = ids.iterator();
 
 		String blockedBy = "";
+		String locked = "";
 		
 		for (int index = 0;iter.hasNext();index ++) {
 
@@ -112,6 +113,12 @@ public class TLScanner extends Fragment {
 					
 					blockedBy += "\n" + Html.b(bb.name) + " " + Html.a("@" + bb.screenName,bb.url());
 
+				} else if (e.getStatusCode() == 401 && e.getErrorCode() == -1) {
+					
+					UserArchive bb = UserArchive.show(api,userId);
+
+					locked += "\n" + Html.b(bb.name) + " " + Html.a("@" + bb.screenName,bb.url());
+					
 				} else {
 
 					stat.edit(NTT.parseTwitterException(e)).async();
@@ -132,7 +139,7 @@ public class TLScanner extends Fragment {
 		
 		if (!StrUtil.isEmpty(blockedBy)) {
 			
-			value -= blockedBy.split("\n").length * 2;
+			value -= blockedBy.split("\n").length * 4;
 			
 			blockedBy = Html.b("\n在你的圈子里，你被他们屏蔽了，所以这个结果可能不准确 :\n") + blockedBy;
 			
@@ -141,6 +148,19 @@ public class TLScanner extends Fragment {
 			blockedBy = Html.b("\n很好，你没有被你圈子里的任何人屏蔽。");
 			
 		}
+		
+		if (!StrUtil.isEmpty(locked)) {
+
+			value -= locked.split("\n").length * 2;
+
+			locked = Html.b("\n在你的圈子里，这些用户锁推了，所以这个结果可能不准确 :\n") + blockedBy;
+
+		} else {
+
+			blockedBy = Html.b("\n很好，你的圈子里没有未关注的锁推用户。");
+
+		}
+		
 		
 		float max = target.size();
 		
@@ -206,13 +226,13 @@ public class TLScanner extends Fragment {
 
 		}
 		
-		String status = "你的圈子一共有 " + max + " 人 你 :";
+		String status = "你的圈子一共有 " + ids.size() + " 外扩一层有 " + ((int)max) + " 人 你 :";
 		
 		status += "\n\n与 " + tw + " 人互相关注";
 		status += "\n单向关注 " + fr + " 人";
 		status += "\n被 " + fo + " 人单向关注";
 
-		stat.edit("解析完成 你的结果是 : " + ((double)(((int)((value / (max * 2)) * 10000)) / 100)) + "%",HtmlUtil.escape(status),blockedBy).html().async();
+		stat.edit("解析完成 你的结果是 : " + ((double)(((int)((value / (max * 2)) * 10000)) / 100)) + "%",HtmlUtil.escape(status),locked,blockedBy).html().async();
 
 	}
 
