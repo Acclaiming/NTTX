@@ -10,7 +10,7 @@ public class MargeNotice extends Fragment {
 		
 		super.init(origin);
 		
-		registerFunction("
+		// registerFunction("
 		
 	}
 	
