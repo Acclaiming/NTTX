@@ -95,13 +95,20 @@ public class TLScanner extends Fragment {
 
 			try {
 
-				ResponseList<Status> tl = api.getUserTimeline(userId,new Paging().count(200));
+				ResponseList<Status> tl = api.getUserTimeline(userId,new Paging().count(20));
 
 				for (Status status : tl) {
 
-					if (status.isRetweet()) target.add(status.getRetweetedStatus().getUser().getId());
+					if (status.isRetweet()) {
+						
+						target.add(status.getRetweetedStatus().getUser().getId());
 
-					else if (status.getInReplyToUserId() != -1) target.add(status.getInReplyToStatusId());
+					} else for (UserMentionEntity m : status.getUserMentionEntities()) {
+						
+						target.add(m.getId());
+						
+					}
+					
 				}
 
 			} catch (TwitterException e) {
@@ -225,7 +232,7 @@ public class TLScanner extends Fragment {
 
 		}
 
-		String status = "你的圈子一共有 " + ids.size() + " 外扩一层有 " + ((int)max) + " 人 你 :";
+		String status = "你的圈子一共有 " + ids.size() + " 外扩一层 ( 10条最近回复 ) 有 " + ((int)max) + " 人 你 :";
 
 		status += "\n\n与 " + tw + " 人互相关注";
 		status += "\n单向关注 " + fr + " 人";
