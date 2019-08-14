@@ -1,24 +1,22 @@
 package io.kurumi.ntt.fragment.twitter.ext;
 
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.model.Msg;
+import cn.hutool.core.util.ArrayUtil;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.twitter.TAuth;
-import twitter4j.Twitter;
-import twitter4j.ResponseList;
-import twitter4j.Status;
-import twitter4j.TwitterException;
-import io.kurumi.ntt.fragment.twitter.TApi;
-import twitter4j.Paging;
+import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.NTT;
 import java.util.HashSet;
-import twitter4j.UserMentionEntity;
 import java.util.Iterator;
 import java.util.LinkedList;
-import cn.hutool.core.util.ArrayUtil;
 import twitter4j.Friendship;
-import twitter4j.FriendshipJSONImpl;
+import twitter4j.Paging;
+import twitter4j.ResponseList;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.UserMentionEntity;
 
 public class TLScanner extends Fragment {
 
