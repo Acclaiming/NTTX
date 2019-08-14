@@ -13,6 +13,7 @@ import java.io.File;
 import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.response.SendResponse;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.ZipUtil;
 
 public class QrEncoder extends Fragment {
 
@@ -93,7 +94,9 @@ public class QrEncoder extends Fragment {
 
 		cacheFile.getParentFile().mkdirs();
 
-		QrCodeUtil.generate(ArrayUtil.join(params," "),new QrConfig(500,500).setBackColor(background).setForeColor(color),cacheFile);
+		ZipUtil.gzip(
+		
+		QrCodeUtil.generate(ArrayUtil.join(params," "),new QrConfig(1024,1024).setBackColor(background).setForeColor(color),cacheFile));
 
 		execute(new SendPhoto(msg.chatId(),cacheFile));
 
