@@ -134,11 +134,11 @@ public class TLScanner extends Fragment {
 			
 			value -= blockedBy.split("\n").length * 2;
 			
-			blockedBy = "在你的圈子里，你被他们屏蔽了，所以这个结果可能不准确 :\n\n" + blockedBy;
+			blockedBy = Html.b("\n在你的圈子里，你被他们屏蔽了，所以这个结果可能不准确 :\n") + blockedBy;
 			
 		} else {
 			
-			blockedBy = "很好，你没有被你圈子里的任何人屏蔽。";
+			blockedBy = Html.b("\n很好，你没有被你圈子里的任何人屏蔽。");
 			
 		}
 		
@@ -156,11 +156,11 @@ public class TLScanner extends Fragment {
 
 			LinkedList<Long> current = new LinkedList<>();
 
-			for (int index = 0;index < 200;index ++) {
+			f:for (int index = 0;index < 200;index ++) {
 
 				if (iter.hasNext()) current.add(iter.next());
 
-				else break;
+				else break f;
 
 			}
 			
@@ -194,7 +194,13 @@ public class TLScanner extends Fragment {
 
 				}
 
-			} catch (TwitterException e) {}
+			} catch (TwitterException e) {
+				
+				stat.edit(NTT.parseTwitterException(e)).async();
+				
+				return;
+				
+			}
 
 			stat.edit("正在解析... " + ((int)(max - target.size())) + " / " + ((int)max)).async();
 
