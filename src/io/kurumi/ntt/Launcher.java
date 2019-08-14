@@ -80,6 +80,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
 import io.kurumi.ntt.fragment.qr.QrEncoder;
 import io.kurumi.ntt.fragment.debug.GetRepliesTest;
+import io.kurumi.ntt.fragment.twitter.ext.TLScanner;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -338,6 +339,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		
         addFragment(new Disappeared());
         addFragment(new TEPH());
+		
+		addFragment(new TLScanner());
 
 		// Mastodon
 		
