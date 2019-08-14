@@ -86,7 +86,7 @@ public class TLScanner extends Fragment {
 
 		String blockedBy = "";
 		String locked = "";
-		
+
 		for (int index = 0;iter.hasNext();index ++) {
 
 			Long userId = iter.next();
@@ -110,15 +110,15 @@ public class TLScanner extends Fragment {
 				if (e.getErrorCode() == 136) {
 
 					UserArchive bb = UserArchive.show(api,userId);
-					
+
 					blockedBy += "\n" + Html.b(bb.name) + " " + Html.a("@" + bb.screenName,bb.url());
 
 				} else if (e.getStatusCode() == 401 && e.getErrorCode() == -1) {
-					
+
 					UserArchive bb = UserArchive.show(api,userId);
 
 					locked += "\n" + Html.b(bb.name) + " " + Html.a("@" + bb.screenName,bb.url());
-					
+
 				} else {
 
 					stat.edit(NTT.parseTwitterException(e)).async();
@@ -136,19 +136,19 @@ public class TLScanner extends Fragment {
 		stat.edit("扫描完成 已发现 " + target.size() + " 项 正在解析...").async();
 
 		float value = 0;
-		
+
 		if (!StrUtil.isEmpty(blockedBy)) {
-			
+
 			value -= blockedBy.split("\n").length * 4;
-			
+
 			blockedBy = Html.b("\n在你的圈子里，你被他们屏蔽了，所以这个结果可能不准确 :\n") + blockedBy;
-			
+
 		} else {
-			
+
 			blockedBy = Html.b("\n很好，你没有被你圈子里的任何人屏蔽。");
-			
+
 		}
-		
+
 		if (!StrUtil.isEmpty(locked)) {
 
 			value -= locked.split("\n").length * 2;
@@ -160,10 +160,10 @@ public class TLScanner extends Fragment {
 			blockedBy = Html.b("\n很好，你的圈子里没有未关注的锁推用户。");
 
 		}
-		
-		
+
+
 		float max = target.size();
-		
+
 		float fr = 0;
 		float fo = 0;
 		float tw = 0;
@@ -176,14 +176,14 @@ public class TLScanner extends Fragment {
 
 			LinkedList<Long> current = new LinkedList<>();
 
-			f:for (int index = 0;index < 200;index ++) {
+			for (int index = 0;index < 100;index ++) {
 
 				if (iter.hasNext()) current.add(iter.next());
 
-				else break f;
+				else break;
 
 			}
-			
+
 			target.removeAll(current);
 
 			try {
@@ -193,41 +193,41 @@ public class TLScanner extends Fragment {
 				for (Friendship ship : ships) {
 
 					if (ship.isFollowedBy() && ship.isFollowing()) {
-						
+
 						value += 2;
-						
+
 						tw ++;
-						
+
 					} else if (ship.isFollowedBy()) {
-						
+
 						value ++;
-						
+
 						fo ++;
-						
+
 					} else if (ship.isFollowing()) {
-						
+
 						value --;
-						
+
 						fr ++;
-						
+
 					}
 
 				}
 
 			} catch (TwitterException e) {
-				
+
 				stat.edit(NTT.parseTwitterException(e)).async();
-				
+
 				return;
-				
+
 			}
 
 			stat.edit("正在解析... " + ((int)(max - target.size())) + " / " + ((int)max)).async();
 
 		}
-		
+
 		String status = "你的圈子一共有 " + ids.size() + " 外扩一层有 " + ((int)max) + " 人 你 :";
-		
+
 		status += "\n\n与 " + tw + " 人互相关注";
 		status += "\n单向关注 " + fr + " 人";
 		status += "\n被 " + fo + " 人单向关注";
