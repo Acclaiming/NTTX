@@ -147,7 +147,7 @@ public class TLScanner extends Fragment {
 
 			value -= locked.split("\n").length * 2;
 
-			locked = Html.b("\n这些用户锁推了，所以这个结果可能不准确 :\n") + locked;
+			locked = Html.b("\n这些用户锁推了，所以这个结果可能不准确 :\n") + locked + "\n";
 
 		} else {
 
