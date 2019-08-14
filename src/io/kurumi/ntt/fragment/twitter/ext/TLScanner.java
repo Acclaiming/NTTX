@@ -175,7 +175,7 @@ public class TLScanner extends Fragment {
 
 			} catch (TwitterException e) {}
 
-			stat.edit("正在解析... " + (max - target.size()) + " / " + max).async();
+			stat.edit("正在解析... " + ((int)(max - target.size())) + " / " + ((int)max)).async();
 
 		}
 
