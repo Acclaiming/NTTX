@@ -170,9 +170,9 @@ public class TLScanner extends Fragment {
 
 		float max = target.size();
 
-		float fr = 0;
-		float fo = 0;
-		float tw = 0;
+		int fr = 0;
+		int fo = 0;
+		int tw = 0;
 
 		while (!target.isEmpty()) {
 
@@ -234,7 +234,7 @@ public class TLScanner extends Fragment {
 
 		}
 
-		String status = "你的圈子一共有 " + ids.size() + " 外扩一层 ( 10条最近回复 ) 有 " + ((int)max) + " 人 你 :";
+		String status = "你的圈子一共有 " + ids.size() + " 人 外扩条最近回复有 " + ((int)max) + " 人 :";
 
 		status += "\n\n与 " + tw + " 人互相关注";
 		status += "\n单向关注 " + fr + " 人";
