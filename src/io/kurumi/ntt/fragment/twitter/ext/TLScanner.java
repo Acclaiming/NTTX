@@ -20,6 +20,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserMentionEntity;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HtmlUtil;
 
 public class TLScanner extends Fragment {
 
@@ -205,7 +206,7 @@ public class TLScanner extends Fragment {
 		status += "\n单向关注 " + fr + " 人";
 		status += "\n被 " + fo + " 人单向关注";
 
-		stat.edit("解析完成 你的结果是 : " + ((double)(((int)((value / (max * 2)) * 10000)) / 100)) + "%",status,blockedBy).html().async();
+		stat.edit("解析完成 你的结果是 : " + ((double)(((int)((value / (max * 2)) * 10000)) / 100)) + "%",HtmlUtil.escape(status),blockedBy).html().async();
 
 	}
 
