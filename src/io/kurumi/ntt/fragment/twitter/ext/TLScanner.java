@@ -143,18 +143,6 @@ public class TLScanner extends Fragment {
 
 		float value = 0;
 
-		if (!StrUtil.isEmpty(blockedBy)) {
-
-			value -= blockedBy.split("\n").length * 4;
-
-			blockedBy = Html.b("\n你被他们屏蔽了，所以这个结果可能不准确 :\n") + blockedBy;
-
-		} else {
-
-			blockedBy = Html.b("\n没有被你圈子里的任何人屏蔽。");
-
-		}
-
 		if (!StrUtil.isEmpty(locked)) {
 
 			value -= locked.split("\n").length * 2;
@@ -163,10 +151,21 @@ public class TLScanner extends Fragment {
 
 		} else {
 
-			locked = Html.b("圈子里没有未关注的锁推用户。");
+			locked = Html.b("\n圈子里没有未关注的锁推用户。");
 
 		}
+		
+		if (!StrUtil.isEmpty(blockedBy)) {
 
+			value -= blockedBy.split("\n").length * 4;
+
+			blockedBy = Html.b("\n你被他们屏蔽了，所以这个结果可能不准确 :\n") + blockedBy;
+
+		} else {
+
+			blockedBy = Html.b("没有被你圈子里的任何人屏蔽。");
+
+		}
 
 		float max = target.size();
 
@@ -244,7 +243,7 @@ public class TLScanner extends Fragment {
 
 		double result = ((double)(((int)((value / (max)) * 10000)) / 100));
 		
-		stat.edit(Html.b("你的结果是 : " + result + "%"),HtmlUtil.escape(status),locked,blockedBy).html().async();
+		stat.edit(Html.b("你的结果是 : " + result + "%"),status,locked,blockedBy).html().async();
 
 	}
 
