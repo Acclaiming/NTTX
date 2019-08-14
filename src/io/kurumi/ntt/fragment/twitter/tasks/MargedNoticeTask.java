@@ -11,6 +11,7 @@ import twitter4j.TwitterException;
 import twitter4j.User;
 import io.kurumi.ntt.fragment.BotFragment;
 import cn.hutool.core.date.DateUtil;
+import io.kurumi.ntt.utils.Html;
 
 public class MargedNoticeTask extends TimerTask {
 
@@ -48,7 +49,7 @@ public class MargedNoticeTask extends TimerTask {
 
 		if (account.fo_new == null && account.fo_lost == null) return;
 
-		String message = "新关注者 :";
+		String message = Html.b("新关注者 : ");
 
 		Twitter api = account.createApi();
 
@@ -82,7 +83,7 @@ public class MargedNoticeTask extends TimerTask {
 
 		}
 
-		message += "\n失去关注者 :";
+		message += "\n\n" + Html.b("失去关注者 : ");
 
 		if (account.fo_lost == null) {
 
