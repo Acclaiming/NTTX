@@ -151,7 +151,7 @@ public class TLScanner extends Fragment {
 
 		}
 		
-		stat.edit("解析完成 你的百分比是 : " + (value / (max * 2))).async();
+		stat.edit("解析完成 你的结果是 : " + ((value / (max * 2)) * 100) + "% 你觉得怎么样呢？").async();
 		
 	}
 
