@@ -79,6 +79,7 @@ import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
 import io.kurumi.ntt.fragment.qr.QrEncoder;
+import io.kurumi.ntt.fragment.debug.GetRepliesTest;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -305,6 +306,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         addFragment(new DebugStickerSet());
 
         addFragment(new DebugUF());
+		
+		addFragment(new GetRepliesTest());
 
         // GROUP
 
