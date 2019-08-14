@@ -103,11 +103,11 @@ public class TLScanner extends Fragment {
 
 						target.add(status.getRetweetedStatus().getUser().getId());
 
-					} else for (UserMentionEntity m : status.getUserMentionEntities()) {
-
-							target.add(m.getId());
-
-						}
+					} else if (status.getInReplyToStatusId() != -1) {
+						
+						target.add(status.getInReplyToUserId());
+						
+					}
 
 				}
 
@@ -221,7 +221,7 @@ public class TLScanner extends Fragment {
 
 			} catch (TwitterException e) {
 
-				stat.edit("接口调用频繁 (请过 15分钟 再试)").exec();
+				stat.edit(NTT.parseTwitterException(e)).exec();
 
 				return;
 
