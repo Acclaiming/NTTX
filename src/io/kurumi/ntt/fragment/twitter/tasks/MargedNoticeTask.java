@@ -84,7 +84,7 @@ public class MargedNoticeTask extends TimerTask {
 
 		message += "\n失去关注者 :";
 
-		if (account.fo_new == null) {
+		if (account.fo_lost == null) {
 
 			message += "暂时没有";
 
@@ -92,7 +92,7 @@ public class MargedNoticeTask extends TimerTask {
 
 			message += "\n";
 
-			for (Long id : account.fo_new) {
+			for (Long id : account.fo_lost) {
 
 				try {
 
@@ -125,6 +125,11 @@ public class MargedNoticeTask extends TimerTask {
 			}
 
 		}
+		
+		account.fo_new = null;
+		account.fo_lost = null;
+		
+		TAuth.data.setById(account.id,account);
 		
 		new Send(account.user,message).html().async();
 
