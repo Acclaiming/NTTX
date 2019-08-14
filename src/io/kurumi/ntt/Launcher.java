@@ -81,6 +81,7 @@ import okhttp3.OkHttpClient;
 import io.kurumi.ntt.fragment.qr.QrEncoder;
 import io.kurumi.ntt.fragment.debug.GetRepliesTest;
 import io.kurumi.ntt.fragment.twitter.ext.TLScanner;
+import io.kurumi.ntt.fragment.twitter.tasks.MargedNoticeTask;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -271,6 +272,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         TrackTask.start();
 		
 		StatusDeleteTask.start();
+		
+		MargedNoticeTask.start();
 
         UserBot.startAll();
 
