@@ -10,15 +10,21 @@ import cn.hutool.core.util.NumberUtil;
 
 public class TwitterWeb {
 
-	public static HashSet<Long> fetchStatusReplies(String screenName,Long statusId) {
+	public static HashSet<Long> fetchStatusReplies(String screenName,Long statusId,boolean loop) {
 
 		HashSet<Long> replies = new HashSet<>();
 
-		HttpResponse result = HttpUtil.createGet("https://mobile.twitter.com/" + screenName + "/status/" + statusId).execute();
+		HttpResponse result = HttpUtil
+			.createGet("https://mobile.twitter.com/" + screenName + "/status/" + statusId)
+			.header(Header.USER_AGENT,"MSIE 6.0")
+			.execute();
 
 		if (result.getStatus() == 301) {
 
-			result = HttpUtil.createGet("https://mobile.twitter.com" + result.header(Header.LOCATION)).execute();
+			result = HttpUtil
+				.createGet("https://mobile.twitter.com" + result.header(Header.LOCATION))
+				.header(Header.USER_AGENT,"MSIE 6.0")
+				.execute();
 
 		}
 
@@ -40,7 +46,11 @@ public class TwitterWeb {
 
 				replies.add(replyId);
 
-				replies.addAll(fetchStatusReplies(replyFrom,replyId));
+				if (loop) {
+
+					replies.addAll(fetchStatusReplies(replyFrom,replyId,loop));
+
+				}
 
 			}
 
