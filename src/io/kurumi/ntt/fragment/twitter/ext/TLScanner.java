@@ -147,11 +147,11 @@ public class TLScanner extends Fragment {
 
 			value -= blockedBy.split("\n").length * 4;
 
-			blockedBy = Html.b("\n在你的圈子里，你被他们屏蔽了，所以这个结果可能不准确 :\n") + blockedBy;
+			blockedBy = Html.b("\n你被他们屏蔽了，所以这个结果可能不准确 :\n") + blockedBy;
 
 		} else {
 
-			blockedBy = Html.b("\n很好，你没有被你圈子里的任何人屏蔽。");
+			blockedBy = Html.b("\n没有被你圈子里的任何人屏蔽。");
 
 		}
 
@@ -159,11 +159,11 @@ public class TLScanner extends Fragment {
 
 			value -= locked.split("\n").length * 2;
 
-			locked = Html.b("\n在你的圈子里，这些用户锁推了，所以这个结果可能不准确 :\n") + locked;
+			locked = Html.b("\n这些用户锁推了，所以这个结果可能不准确 :\n") + locked;
 
 		} else {
 
-			locked = Html.b("\n很好，你的圈子里没有未关注的锁推用户。");
+			locked = Html.b("\n圈子里没有未关注的锁推用户。");
 
 		}
 
@@ -236,17 +236,15 @@ public class TLScanner extends Fragment {
 
 		}
 
-		String status = "你的圈子一共有 " + ids.size() + " 人 外扩条最近回复有 " + ((int)max) + " 人 :";
+		String status = "圈子共有 " + ids.size() + " 人 外扩至 " + ((int)max) + " 人 :";
 
-		status += "\n\n与 " + tw + " 人互相关注";
-		status += "\n单向关注 " + fr + " 人";
-		status += "\n被 " + fo + " 人单向关注";
+		status += "\n\n与 " + Html.b(tw) + " 人互相关注";
+		status += "\n单向关注 " + Html.b(fr) + " 人";
+		status += "\n被 " + Html.b(fo) + " 人单向关注";
 
-		double result = ((double)(((int)((value / (max * 2)) * 10000)) / 100));
+		double result = ((double)(((int)((value / (max)) * 10000)) / 100));
 		
-		result = 50 + (result / 2);
-		
-		stat.edit("解析完成 你的结果是 : " + result + "%",HtmlUtil.escape(status),locked,blockedBy).html().async();
+		stat.edit(Html.b("你的结果是 : " + result + "%"),HtmlUtil.escape(status),locked,blockedBy).html().async();
 
 	}
 
