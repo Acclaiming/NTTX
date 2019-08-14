@@ -78,7 +78,7 @@ public class TLScanner extends Fragment {
 		
 		HashSet<Long> target = new HashSet<>();
 		
-		Iterator<Long> iter = target.iterator();
+		Iterator<Long> iter = ids.iterator();
 
 		for (int index = 0;iter.hasNext();index ++) {
 			
