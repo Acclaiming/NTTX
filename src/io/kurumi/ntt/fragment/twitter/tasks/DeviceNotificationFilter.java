@@ -49,9 +49,18 @@ public class DeviceNotificationFilter {
 				
 			} catch (TwitterException e) {
 				
-				BotLog.info("DNF",e);
+				// BotLog.info("DNF",e);
 				
-				if (!ships.containsKey(target)) return false;
+				lastUpdates.put(target,System.currentTimeMillis());
+				
+				if (!ships.containsKey(target)) {
+					
+					ships.put(target,false);
+					
+					return false;
+
+					
+				}
 
 			}
 
