@@ -242,7 +242,11 @@ public class TLScanner extends Fragment {
 		status += "\n单向关注 " + fr + " 人";
 		status += "\n被 " + fo + " 人单向关注";
 
-		stat.edit("解析完成 你的结果是 : " + ((double)(((int)((value / (max * 2)) * 10000)) / 100)) + "%",HtmlUtil.escape(status),locked,blockedBy).html().async();
+		double result = ((double)(((int)((value / (max * 2)) * 10000)) / 100));
+		
+		result = 50 + (result / 2);
+		
+		stat.edit("解析完成 你的结果是 : " + result + "%",HtmlUtil.escape(status),locked,blockedBy).html().async();
 
 	}
 
