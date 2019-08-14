@@ -222,15 +222,13 @@ public class TLScanner extends Fragment {
 
 			} catch (TwitterException e) {
 
-				//stat.edit("接口调用频繁 (请过 15分钟 再试)").async();
+				stat.edit("接口调用频繁 (请过 15分钟 再试)").exec();
 
-				target.clear();
-				
 				return;
 
 			}
 
-			stat.edit("正在解析... " + ((int)(max - target.size())) + " / " + ((int)max)).async();
+			stat.edit("正在解析... " + ((int)(max - target.size())) + " / " + ((int)max)).exec();
 
 		}
 
