@@ -11,7 +11,7 @@ public class DeviceNotificationFilter {
 	
 	public static HashMap<Long,HashMap<Long,Boolean>> allShips = new HashMap<>();
 	public static HashMap<Long,HashMap<Long,Long>> allLastUpdates = new HashMap<>();
-
+	
 	public static boolean isDeviceNotificationEnabled(TAuth auth,Twitter api,Long target) {
 
 		HashMap<Long, Boolean> ships = allShips.get(auth.id);
@@ -33,7 +33,7 @@ public class DeviceNotificationFilter {
 			
 		}
 		
-		if (!ships.containsKey(target) || !lastUpdates.containsKey(target) || System.currentTimeMillis() -  lastUpdates.get(target) > 15 * 60 * 1000L) {
+		if (!ships.containsKey(target) || !lastUpdates.containsKey(target) || System.currentTimeMillis() -  lastUpdates.get(target) > 30 * 60 * 1000L) {
 
 			try {
 
