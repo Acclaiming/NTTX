@@ -100,15 +100,15 @@ public class TLScanner extends Fragment {
 				for (Status status : tl) {
 
 					if (status.isRetweet()) {
-						
+
 						target.add(status.getRetweetedStatus().getUser().getId());
 
 					} else for (UserMentionEntity m : status.getUserMentionEntities()) {
-						
-						target.add(m.getId());
-						
-					}
-					
+
+							target.add(m.getId());
+
+						}
+
 				}
 
 			} catch (TwitterException e) {
@@ -228,7 +228,11 @@ public class TLScanner extends Fragment {
 
 			}
 
-			stat.edit("正在解析... " + ((int)(max - target.size())) + " / " + ((int)max)).exec();
+			if (!target.isEmpty()) {
+
+				stat.edit("正在解析... " + ((int)(max - target.size())) + " / " + ((int)max)).exec();
+
+			}
 
 		}
 
