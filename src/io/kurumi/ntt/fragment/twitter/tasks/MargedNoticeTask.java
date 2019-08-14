@@ -44,7 +44,7 @@ public class MargedNoticeTask extends TimerTask {
 
 	}
 
-	void doNotice(TAuth account) {
+	public static void doNotice(TAuth account) {
 
 		if (account.fo_new == null && account.fo_lost == null) return;
 
