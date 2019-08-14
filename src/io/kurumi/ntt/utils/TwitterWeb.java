@@ -7,12 +7,13 @@ import cn.hutool.http.Header;
 import cn.hutool.core.util.StrUtil;
 import java.util.HashSet;
 import cn.hutool.core.util.NumberUtil;
+import java.util.TreeSet;
 
 public class TwitterWeb {
 
-	public static HashSet<Long> fetchStatusReplies(String screenName,Long statusId,boolean loop) {
+	public static TreeSet<Long> fetchStatusReplies(String screenName,Long statusId,boolean loop) {
 
-		HashSet<Long> replies = new HashSet<>();
+		TreeSet<Long> replies = new TreeSet<>();
 
 		HttpResponse result = HttpUtil
 			.createGet("https://mobile.twitter.com/" + screenName + "/status/" + statusId)
