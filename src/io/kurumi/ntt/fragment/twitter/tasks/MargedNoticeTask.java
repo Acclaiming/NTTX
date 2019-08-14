@@ -71,10 +71,13 @@ public class MargedNoticeTask extends TimerTask {
 
 					Relationship ship = api.showFriendship(account.id,id);
 
-					message += "\n" + archive.urlHtml() + " #" + archive.screenName;
-
-					if (ship.isSourceFollowingTarget()) message += " [ 互相关注 ]";
-					else if (archive.isProtected) message += " [ 锁推 ]";
+					message += "\n";
+					
+					if (ship.isSourceFollowingTarget()) message += "[ 互相关注 ]";
+					else if (archive.isProtected) message += "[ 锁推 ]";
+					
+					message += " " + archive.urlHtml() + " #" + archive.screenName;
+					
 
 				} catch (TwitterException e) {
 				}
@@ -108,18 +111,20 @@ public class MargedNoticeTask extends TimerTask {
 
 					}
 
-					message += "\n" + archive.urlHtml() + " #" + archive.screenName;
+					message += "\n";
+					
+					if (ship.isSourceFollowingTarget()) message += "[ 单向取关 ]";
+					else if (archive.isProtected) message += "[ 锁推 ]";
 
-					if (ship.isSourceFollowingTarget()) message += " [ 单向取关 ]";
-					else if (archive.isProtected) message += " [ 锁推 ]";
-
+					message += " " + archive.urlHtml() + " #" + archive.screenName;
+					
 				} catch (TwitterException e) {
 
 					UserArchive archive = UserArchive.get(id);
 
 					if (archive == null) continue;
 					
-					message += "\n" + archive.urlHtml() + " #" + archive.screenName + " [ " + NTT.parseTwitterException(e) + " ]";
+					message += "\n[ " + NTT.parseTwitterException(e) + " ] " + archive.urlHtml() + " #" + archive.screenName;
 					
 				}
 
