@@ -80,7 +80,7 @@ public class TLScanner extends Fragment {
 		
 		Iterator<Long> iter = target.iterator();
 
-		for (int index = 0;index < ids.size();index ++) {
+		for (int index = 0;iter.hasNext();index ++) {
 			
 			Long userId = iter.next();
 			
