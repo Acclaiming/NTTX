@@ -147,11 +147,11 @@ public class TLScanner extends Fragment {
 
 			value -= locked.split("\n").length * 2;
 
-			locked = Html.b("\n这些用户锁推了，所以这个结果可能不准确 :\n") + locked + "\n";
+			locked = "\n这些用户锁推了，所以这个结果可能不准确 :\n" + locked + "\n";
 
 		} else {
 
-			locked = Html.b("\n圈子里没有未关注的锁推用户。");
+			locked = "\n圈子里没有未关注的锁推用户。";
 
 		}
 		
@@ -159,11 +159,11 @@ public class TLScanner extends Fragment {
 
 			value -= blockedBy.split("\n").length * 4;
 
-			blockedBy = Html.b("\n你被他们屏蔽了，所以这个结果可能不准确 :\n") + blockedBy;
+			blockedBy = Html.b("\n被这些人，所以这个结果可能不准确 :\n") + blockedBy;
 
 		} else {
 
-			blockedBy = Html.b("没有被你圈子里的任何人屏蔽。");
+			blockedBy = Html.b("没有被圈子里的任何人屏蔽。");
 
 		}
 
