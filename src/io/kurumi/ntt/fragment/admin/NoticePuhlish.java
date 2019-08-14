@@ -7,14 +7,14 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.tasks.MargedNoticeTask;
 
-public class MargeNotice extends Fragment {
+public class NoticePuhlish extends Fragment {
 
 	@Override
 	public void init(BotFragment origin) {
 		
 		super.init(origin);
 		
-		registerAdminFunction("marge_publish");
+		registerAdminFunction("notice_publish");
 		
 	}
 

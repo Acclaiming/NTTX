@@ -82,6 +82,7 @@ import io.kurumi.ntt.fragment.qr.QrEncoder;
 import io.kurumi.ntt.fragment.debug.GetRepliesTest;
 import io.kurumi.ntt.fragment.twitter.ext.TLScanner;
 import io.kurumi.ntt.fragment.twitter.tasks.MargedNoticeTask;
+import io.kurumi.ntt.fragment.admin.NoticePuhlish;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -304,7 +305,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         addFragment(new Users());
         addFragment(new Stat());
         addFragment(new DebugMsg());
-		
+		addFragment(new NoticePuhlish());
         addFragment(new DebugUser());
         addFragment(new DebugStatus());
         addFragment(new DebugStickerSet());
