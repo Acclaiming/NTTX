@@ -73,8 +73,6 @@ public class GetRepliesTest extends Fragment {
 
 				StatusArchive archive = StatusArchive.save(newStatus).loop(api);
 
-				archive.sendTo(msg.chatId(),-1,account,msg.isPrivate() ? newStatus : null);
-
 				screenName = archive.user().screenName;
 
 			} catch (TwitterException ex) {
@@ -120,6 +118,14 @@ public class GetRepliesTest extends Fragment {
 			
 			ResponseList<Status> replies = api.lookup(ArrayUtil.unWrap(repliesSet.toArray(new Long[repliesSet.size()])));
 
+			if (replies.isEmpty()) {
+				
+				msg.send("无结果 :)").async();
+				
+				return;
+				
+			}
+			
 			for (Status reply : replies) {
 				
 				StatusArchive.save(reply).loop(api).sendTo(msg.chatId(),0,account,reply);
