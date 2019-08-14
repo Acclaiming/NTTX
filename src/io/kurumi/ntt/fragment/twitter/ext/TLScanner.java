@@ -241,7 +241,7 @@ public class TLScanner extends Fragment {
 		status += "\n单向关注 " + Html.b(fr) + " 人";
 		status += "\n被 " + Html.b(fo) + " 人单向关注";
 
-		float result = ((value / (max * 2)) * 100);
+		Float result = ((value / (max * 2)) * 100);
 
 		stat.edit(Html.b("你的结果是 : " + result + "%"),status,locked,blockedBy).html().async();
 
