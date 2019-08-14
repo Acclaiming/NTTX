@@ -122,7 +122,7 @@ public class GetRepliesTest extends Fragment {
 
 			for (Status reply : replies) {
 				
-				StatusArchive.save(reply).loop(api).sendTo(msg.chatId(),1,account,reply);
+				StatusArchive.save(reply).loop(api).sendTo(msg.chatId(),0,account,reply);
 				
 			}
 			
