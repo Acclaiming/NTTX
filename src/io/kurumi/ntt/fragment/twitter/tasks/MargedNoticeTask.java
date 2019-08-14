@@ -126,7 +126,7 @@ public class MargedNoticeTask extends TimerTask {
 
 		}
 		
-		new Send(account.user,message).async();
+		new Send(account.user,message).html().async();
 
 	}
 
