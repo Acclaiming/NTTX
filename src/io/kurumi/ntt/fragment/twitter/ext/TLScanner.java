@@ -163,7 +163,7 @@ public class TLScanner extends Fragment {
 
 		} else {
 
-			locked = Html.b("\n圈子里没有未关注的锁推用户。");
+			locked = Html.b("圈子里没有未关注的锁推用户。");
 
 		}
 
