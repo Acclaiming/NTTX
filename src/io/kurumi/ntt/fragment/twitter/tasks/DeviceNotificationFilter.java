@@ -9,6 +9,8 @@ import io.kurumi.ntt.utils.BotLog;
 
 public class DeviceNotificationFilter {
 	
+	public static HashMap<Long,Long> delay = new HashMap<>();
+	
 	public static HashMap<Long,HashMap<Long,Boolean>> allShips = new HashMap<>();
 	public static HashMap<Long,HashMap<Long,Long>> allLastUpdates = new HashMap<>();
 	
@@ -33,7 +35,9 @@ public class DeviceNotificationFilter {
 			
 		}
 		
-		if (!ships.containsKey(target) || !lastUpdates.containsKey(target) || System.currentTimeMillis() -  lastUpdates.get(target) > 30 * 60 * 1000L) {
+		long fetchDelay = delay.getOrDefault(auth.id,15 * 60 * 1000L);
+		
+		if (!ships.containsKey(target) || !lastUpdates.containsKey(target) || System.currentTimeMillis() -  lastUpdates.get(target) > fetchDelay) {
 
 			try {
 
@@ -50,6 +54,8 @@ public class DeviceNotificationFilter {
 			} catch (TwitterException e) {
 				
 				// BotLog.info("DNF",e);
+				
+				delay.put(auth.id,60 * 60 * 1000L);
 				
 				lastUpdates.put(target,System.currentTimeMillis());
 				
