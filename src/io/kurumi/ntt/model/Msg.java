@@ -219,7 +219,7 @@ public class Msg extends Context {
 
         if (isPrivate()) {
 
-            //fragment.sendTyping(chatId());
+            fragment.sendTyping(chatId());
 
         }
 
