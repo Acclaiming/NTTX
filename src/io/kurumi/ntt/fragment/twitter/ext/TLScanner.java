@@ -243,7 +243,7 @@ public class TLScanner extends Fragment {
 
 		Float result = ((value / (max * 2)) * 100);
 
-		stat.edit(Html.b("你的结果是 : " + result + "%"),status,locked,blockedBy).html().async();
+		stat.edit(Html.b("你的结果是 : " + result + "%\n"),status,locked,blockedBy).html().async();
 
 	}
 
