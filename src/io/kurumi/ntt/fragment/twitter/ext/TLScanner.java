@@ -131,7 +131,7 @@ public class TLScanner extends Fragment {
 		
 		if (!StrUtil.isEmpty(blockedBy)) {
 			
-			value -= blockedBy.split("\n").length * 3;
+			value -= blockedBy.split("\n").length * 2;
 			
 			blockedBy = "在你的圈子里，你被他们屏蔽了，所以这个结果可能不准确 :\n\n" + blockedBy;
 			
@@ -142,6 +142,10 @@ public class TLScanner extends Fragment {
 		}
 		
 		float max = target.size();
+		
+		float fr = 0;
+		float fo = 0;
+		float tw = 0;
 
 		while (!target.isEmpty()) {
 
@@ -167,9 +171,25 @@ public class TLScanner extends Fragment {
 
 				for (Friendship ship : ships) {
 
-					if (ship.isFollowedBy() && ship.isFollowing()) value += 2;
-					else if (ship.isFollowedBy()) value ++;
-					else if (ship.isFollowing()) value --;
+					if (ship.isFollowedBy() && ship.isFollowing()) {
+						
+						value += 2;
+						
+						tw ++;
+						
+					} else if (ship.isFollowedBy()) {
+						
+						value ++;
+						
+						fo ++;
+						
+					} else if (ship.isFollowing()) {
+						
+						value --;
+						
+						fr ++;
+						
+					}
 
 				}
 
@@ -178,8 +198,14 @@ public class TLScanner extends Fragment {
 			stat.edit("正在解析... " + ((int)(max - target.size())) + " / " + ((int)max)).async();
 
 		}
+		
+		String status = "你的圈子一共有 " + max + " 人 你 :";
+		
+		status += "\n\n与 " + tw + " 人互相关注";
+		status += "\n单向关注 " + fr + " 人";
+		status += "\n被 " + fo + " 人单向关注";
 
-		stat.edit("解析完成 你的结果是 : " + ((value / (max * 2)) * 100) + "%",blockedBy).async();
+		stat.edit("解析完成 你的结果是 : " + ((double)(((int)((value / (max * 2)) * 10000)) / 100)) + "%",status,blockedBy).html().async();
 
 	}
 
