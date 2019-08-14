@@ -132,6 +132,8 @@ public class MargedNoticeTask extends TimerTask {
 
 		}
 		
+		if (account.multiUser()) message += "\n\n账号 : " + account.archive().bName();
+		
 		account.fo_new = null;
 		account.fo_lost = null;
 		

@@ -353,6 +353,12 @@ public class UserArchive {
 
     }
 	
+	public String bName() {
+		
+		return Html.b(name) + " " + Html.a("@" + screenName,url());
+		
+	}
+	
 	public String formatSimple() {
 	
 		String message = "ID : " + Html.code(id);
