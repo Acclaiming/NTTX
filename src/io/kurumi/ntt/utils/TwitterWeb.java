@@ -11,6 +11,8 @@ import java.util.TreeSet;
 
 public class TwitterWeb {
 
+	/*
+	
 	public static TreeSet<Long> fetchStatus(String screenName,int maxDepth) {
 
 		TreeSet<Long> statuses = new TreeSet<>();
@@ -29,6 +31,8 @@ public class TwitterWeb {
 		
 		
 	}
+	
+	*/
 
 	public static TreeSet<Long> fetchStatusReplies(String screenName,Long statusId,boolean loop) {
 
