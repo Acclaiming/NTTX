@@ -158,6 +158,8 @@ public class TLScanner extends Fragment {
 				else break;
 
 			}
+			
+			target.removeAll(current);
 
 			try {
 
