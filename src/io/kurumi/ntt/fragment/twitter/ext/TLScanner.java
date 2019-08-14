@@ -159,11 +159,11 @@ public class TLScanner extends Fragment {
 
 			value -= locked.split("\n").length * 2;
 
-			locked = Html.b("\n在你的圈子里，这些用户锁推了，所以这个结果可能不准确 :\n") + blockedBy;
+			locked = Html.b("\n在你的圈子里，这些用户锁推了，所以这个结果可能不准确 :\n") + locked;
 
 		} else {
 
-			blockedBy = Html.b("\n很好，你的圈子里没有未关注的锁推用户。");
+			locked = Html.b("\n很好，你的圈子里没有未关注的锁推用户。");
 
 		}
 
@@ -222,8 +222,10 @@ public class TLScanner extends Fragment {
 
 			} catch (TwitterException e) {
 
-				stat.edit("接口调用频繁 (请过 15分钟 再试)").async();
+				//stat.edit("接口调用频繁 (请过 15分钟 再试)").async();
 
+				target.clear();
+				
 				return;
 
 			}
