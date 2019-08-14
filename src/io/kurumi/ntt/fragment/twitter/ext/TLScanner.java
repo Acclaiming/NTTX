@@ -95,7 +95,7 @@ public class TLScanner extends Fragment {
 
 			try {
 
-				ResponseList<Status> tl = api.getUserTimeline(userId,new Paging().count(50));
+				ResponseList<Status> tl = api.getUserTimeline(userId,new Paging().count(30));
 
 				for (Status status : tl) {
 
@@ -241,8 +241,8 @@ public class TLScanner extends Fragment {
 		status += "\n单向关注 " + Html.b(fr) + " 人";
 		status += "\n被 " + Html.b(fo) + " 人单向关注";
 
-		double result = ((double)(((int)((value / (max * 2)) * 1000)) / 10));
-		
+		float result = ((value / (max * 2)) * 100);
+
 		stat.edit(Html.b("你的结果是 : " + result + "%"),status,locked,blockedBy).html().async();
 
 	}
