@@ -22,7 +22,7 @@ public class GroupFunction extends Fragment {
     @Override
     public int checkMsg(UserData user,Msg msg) {
 
-        if (!msg.isGroup()) return PROCESS_SYNC;
+        if (msg.isGroup()) return PROCESS_SYNC;
         else return PROCESS_CONTINUE;
 
     }
