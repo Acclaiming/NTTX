@@ -12,12 +12,25 @@ import twitter4j.User;
 import io.kurumi.ntt.fragment.BotFragment;
 import cn.hutool.core.date.DateUtil;
 import io.kurumi.ntt.utils.Html;
+import java.util.Date;
 
 public class MargedNoticeTask extends TimerTask {
 
 	public static void start() {
 		
-		BotFragment.mainTimer.schedule(new MargedNoticeTask(),DateUtil.tomorrow().toJdkDate(),1 * 24 * 60 * 60 * 1000L);
+		Date next = new Date();
+		
+		if (next.getHours() >= 8) {
+			
+			next.setDate(next.getDate() + 1);
+			
+		}
+		
+		next.setHours(8);
+		next.setMinutes(0);
+		next.setSeconds(0);
+		
+		BotFragment.mainTimer.schedule(new MargedNoticeTask(),next,1 * 24 * 60 * 60 * 1000L);
 		
 	}
 	
