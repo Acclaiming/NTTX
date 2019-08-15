@@ -491,7 +491,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		
 		if (!msg.isSuperGroup()) {
 			
-			msg.reply("对不起, NTT 只能在 " + Html.b("超级群组") + " 工作, 如果需要继续, 请群组创建者将群组转换为超级群组.").async();
+			msg.reply("对不起, NTT 只能在 " + Html.b("超级群组") + " 工作, 如果需要继续, 请群组创建者将群组转换为超级群组.").html().async();
 			
 			msg.exit();
 			
@@ -509,7 +509,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 			
 		} else {
 			
-			msg.reply("很抱歉, NTT 正常运行 需要 " + Html.b("限制成员") + " 和 " + Html.b("删除消息") + " 权限 :)").async();
+			msg.reply("很抱歉, NTT 正常运行 需要 " + Html.b("限制成员") + " 和 " + Html.b("删除消息") + " 权限 :)").html().async();
 			
 			msg.exit();
 			
