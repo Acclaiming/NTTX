@@ -13,40 +13,52 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import java.util.HashMap;
 import io.kurumi.ntt.fragment.twitter.bots.MDListener;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MentionTask extends TimerTask {
 
+	public static ExecutorService mentionPool = Executors.newFixedThreadPool(3);
+	
 	@Override
 	public void run() {
 
-		for (TAuth account : TAuth.data.getAll()) {
+		for (final TAuth account : TAuth.data.getAll()) {
 
 		 if (account.mention == null && account.mdb == null) continue;
 
 			final Twitter api = account.createApi();
 
-			try {
+			mentionPool.execute(new Runnable() {
 
-				processMention(account,api);
+					@Override
+					public void run() {
+						
+						try {
 
-			} catch (TwitterException e) {
+							processMention(account,api);
 
-				if (account.mention == null && account.mdb == null) continue;
-				
-				if (e.getStatusCode() == 503 || e.getErrorCode() == -1 || e.getStatusCode() == 429) return;
+						} catch (TwitterException e) {
 
-				account.mention = null;
+							if (e.getStatusCode() == 503 || e.getErrorCode() == -1 || e.getStatusCode() == 429) return;
 
-				new Send(account.user,"回复流已关闭 :",NTT.parseTwitterException(e)).exec();
+							account.mention = null;
 
-				if (TAuth.data.containsId(account.id)) {
+							new Send(account.user,"回复流已关闭 :",NTT.parseTwitterException(e)).exec();
 
-					TAuth.data.setById(account.id,account);
+							if (TAuth.data.containsId(account.id)) {
 
-				}
+								TAuth.data.setById(account.id,account);
 
-			}
+							}
 
+						}
+						
+						
+					}
+					
+				});
+		
 		}
 
 	}
