@@ -21,7 +21,7 @@ public class MentionTask extends TimerTask {
 
 		for (TAuth account : TAuth.data.getAll()) {
 
-			if (account.mention == null && account.mdb == null) continue;
+			// if (account.mention == null && account.mdb == null) continue;
 
 			final Twitter api = account.createApi();
 
@@ -31,6 +31,8 @@ public class MentionTask extends TimerTask {
 
 			} catch (TwitterException e) {
 
+				if (account.mention == null && account.mdb == null) continue;
+				
 				if (e.getStatusCode() == 503 || e.getErrorCode() == -1 || e.getStatusCode() == 429) return;
 
 				account.mention = null;

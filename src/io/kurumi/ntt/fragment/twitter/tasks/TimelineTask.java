@@ -22,7 +22,7 @@ public class TimelineTask extends TimerTask {
 
 		for (TAuth account : TAuth.data.getAll()) {
 
-			if (account.tl == null) continue;
+			// if (account.tl == null) continue;
 
 			final Twitter api = account.createApi();
 
@@ -32,6 +32,8 @@ public class TimelineTask extends TimerTask {
 
 			} catch (TwitterException e) {
 
+				if (account.tl == null) continue;
+				
 				if (e.getStatusCode() == 503 || e.getErrorCode() == -1 || e.getStatusCode() == 429) return;
 
 				account.tl = null;
@@ -84,6 +86,8 @@ public class TimelineTask extends TimerTask {
 
                 StatusArchive archive = StatusArchive.save(status).loop(api);
 
+				if (auth.tl == null) continue;
+				
                 if (archive.from.equals(auth.id)) continue;
 
 				if (auth.tl_dn != null) {
