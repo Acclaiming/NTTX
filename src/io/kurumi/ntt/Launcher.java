@@ -84,6 +84,11 @@ import io.kurumi.ntt.utils.BotLog;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
+import io.kurumi.ntt.utils.NTT;
+import com.pengrad.telegrambot.response.GetChatMemberResponse;
+import com.pengrad.telegrambot.request.GetChatMember;
+import com.pengrad.telegrambot.model.ChatMember;
+import io.kurumi.ntt.utils.Html;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -483,13 +488,32 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 	
 		if (msg.newUser() != null && msg.newUser().id.equals(origin.me.id())) {
 			
-			msg.reply("这里是 NTT. 群组管理相关功能文档在这里 : https://manual.kurumi.io/group").async();
-		
 			return PROCESS_ASYNC_REJ;
 			
 		}
 		
 		return PROCESS_CONTINUE;
+		
+	}
+
+	@Override
+	public void onGroup(UserData user,Msg msg) {
+		
+		GetChatMemberResponse resp = execute(new GetChatMember(msg.chatId(), origin.me.id().intValue()));
+
+        ChatMember curr = resp.chatMember();
+
+		if (curr.canRestrictMembers() && curr.canDeleteMessages()) {
+			
+			msg.send("这里是NTT. 正正常运行, 使用 /options 调出设置选单.").async();
+			
+		} else {
+			
+			msg.send("很抱歉, NTT 正常运行 需要 " + Html.b("限制成员") + " 和 " + Html.b("删除消息") + " 权限 :)").async();
+			
+			msg.exit();
+			
+		}
 		
 	}
 
