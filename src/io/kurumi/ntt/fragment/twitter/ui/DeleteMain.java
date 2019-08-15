@@ -10,6 +10,8 @@ import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import cn.hutool.core.date.DateUtil;
+import io.kurumi.ntt.fragment.twitter.status.StatusDeleteTask;
+import twitter4j.TwitterException;
 
 public class DeleteMain extends Fragment {
 
@@ -63,6 +65,10 @@ public class DeleteMain extends Fragment {
 
 			setDelay(user,callback,"null".equals(params[1]) ? null : NumberUtil.parseInt(params[1]),account);
 
+		} else if (POINT_AD_EXECUTE.equals(point)) {
+			
+			deleteNow(user,callback,account);
+			
 		} else {
 
 			setConfig(user,callback,point,account);
@@ -119,7 +125,7 @@ public class DeleteMain extends Fragment {
 			.newButton("使用绝对时间")
 			.newButton(account.ad_a != null ? "✅" : "☑",POINT_SETTING_AD_ABS,account.id);
 			
-		config.newButtonLine("立即执行",POINT_AD_EXECUTE,account.id);
+		// config.newButtonLine("立即执行",POINT_AD_EXECUTE,account.id);
 
 		config.newButtonLine("🔙",AccountMain.POINT_ACCOUNT,account.id);
 
