@@ -811,14 +811,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
     public void onFinalMsg(UserData user,final Msg msg) {
 
-        if (!msg.isPrivate() || NTT.checkDropped(user,msg)) {
-
-			msg.update.lock.send(null);
-
-			return;
-
-		}
-
         StringBuilder str = new StringBuilder();
 
         boolean no_reply = false;
@@ -937,7 +929,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 							if (!StrUtil.isBlank(result)) {
 
-								msg.send("二维码解析结果 :\n",result).async();
+								msg.send("二维码解析结果 :\n",Html.code(result)).html().async();
 
 							}
 
