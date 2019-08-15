@@ -11,7 +11,9 @@ import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.BotServer;
 import io.kurumi.ntt.fragment.admin.DelMsg;
 import io.kurumi.ntt.fragment.admin.Notice;
+import io.kurumi.ntt.fragment.admin.NoticePuhlish;
 import io.kurumi.ntt.fragment.admin.Stat;
+import io.kurumi.ntt.fragment.admin.StatusDel;
 import io.kurumi.ntt.fragment.admin.Users;
 import io.kurumi.ntt.fragment.base.GetID;
 import io.kurumi.ntt.fragment.base.PingFunction;
@@ -26,6 +28,7 @@ import io.kurumi.ntt.fragment.debug.DebugStickerSet;
 import io.kurumi.ntt.fragment.debug.DebugUF;
 import io.kurumi.ntt.fragment.debug.DebugUser;
 import io.kurumi.ntt.fragment.debug.Disappeared;
+import io.kurumi.ntt.fragment.debug.GetRepliesTest;
 import io.kurumi.ntt.fragment.extra.Manchurize;
 import io.kurumi.ntt.fragment.extra.ShowFile;
 import io.kurumi.ntt.fragment.group.BanSetickerSet;
@@ -44,6 +47,7 @@ import io.kurumi.ntt.fragment.mstd.ui.MsMain;
 import io.kurumi.ntt.fragment.netease.NeteaseMusic;
 import io.kurumi.ntt.fragment.other.ZeroPadEncode;
 import io.kurumi.ntt.fragment.qr.QrDecoder;
+import io.kurumi.ntt.fragment.qr.QrEncoder;
 import io.kurumi.ntt.fragment.rss.FeedFetchTask;
 import io.kurumi.ntt.fragment.rss.RssSub;
 import io.kurumi.ntt.fragment.sorry.MakeGif;
@@ -57,6 +61,7 @@ import io.kurumi.ntt.fragment.tests.MMPITest;
 import io.kurumi.ntt.fragment.twitter.archive.TEPH;
 import io.kurumi.ntt.fragment.twitter.ext.MediaDownload;
 import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
+import io.kurumi.ntt.fragment.twitter.ext.TLScanner;
 import io.kurumi.ntt.fragment.twitter.ext.TwitterDelete;
 import io.kurumi.ntt.fragment.twitter.ext.UserActions;
 import io.kurumi.ntt.fragment.twitter.list.ListExport;
@@ -67,6 +72,7 @@ import io.kurumi.ntt.fragment.twitter.status.StatusFetch;
 import io.kurumi.ntt.fragment.twitter.status.StatusSearch;
 import io.kurumi.ntt.fragment.twitter.status.StatusUpdate;
 import io.kurumi.ntt.fragment.twitter.status.TimedStatus;
+import io.kurumi.ntt.fragment.twitter.tasks.MargedNoticeTask;
 import io.kurumi.ntt.fragment.twitter.tasks.NameUpdateTask;
 import io.kurumi.ntt.fragment.twitter.tasks.TrackTask;
 import io.kurumi.ntt.fragment.twitter.tasks.UserTrackTask;
@@ -78,11 +84,6 @@ import io.kurumi.ntt.utils.BotLog;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
-import io.kurumi.ntt.fragment.qr.QrEncoder;
-import io.kurumi.ntt.fragment.debug.GetRepliesTest;
-import io.kurumi.ntt.fragment.twitter.ext.TLScanner;
-import io.kurumi.ntt.fragment.twitter.tasks.MargedNoticeTask;
-import io.kurumi.ntt.fragment.admin.NoticePuhlish;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -310,6 +311,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         addFragment(new DebugStatus());
         addFragment(new DebugStickerSet());
 
+		addFragment(new StatusDel());
         addFragment(new DebugUF());
 		
 		addFragment(new GetRepliesTest());

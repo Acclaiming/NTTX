@@ -16,6 +16,7 @@ import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.utils.Html;
+import java.util.HashMap;
 
 public class Firewall extends Fragment {
 
@@ -171,6 +172,27 @@ public class Firewall extends Fragment {
 
     }
 
+	public static HashMap<Long,Lock> instances = new HashMap<>();
+	
+	static class Lock {
+		
+		public static Lock getInstcnae(UserData user) {
+			
+			synchronized (user) {
+				
+				if (instances.containsKey(user.id)) {
+					
+					
+					
+				}
+				
+			}
+			
+			return null;
+			
+		}
+		
+	}
 
     @Override
     public boolean onUpdate(UserData user, Update update) {
