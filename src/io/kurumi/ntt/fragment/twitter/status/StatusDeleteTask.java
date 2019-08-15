@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import cn.hutool.core.util.ArrayUtil;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.model.request.Send;
+import io.kurumi.ntt.utils.NTT;
 
 public class StatusDeleteTask extends TimerTask {
 
@@ -24,7 +25,7 @@ public class StatusDeleteTask extends TimerTask {
 
 	public static void start() {
 
-		timer.schedule(new StatusDeleteTask(),new Date(System.currentTimeMillis() + 30 * 60 * 1000),60 * 60 * 1000);
+		timer.scheduleAtFixedRate(new StatusDeleteTask(),NTT.nextHour(1),60 * 60 * 1000L);
 
 	}
 

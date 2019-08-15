@@ -31,6 +31,7 @@ import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import cn.hutool.core.date.DateUtil;
 
 public class NTT {
 
@@ -75,6 +76,32 @@ public class NTT {
 	 }
 
 	 */
+	 
+	public static Date nextHour(int offset) {
+		
+		Date next = new Date();
+		
+		next.setMinutes(0);
+		next.setSeconds(0);
+		
+		int nextHour = next.getHours();
+		
+		nextHour += offset;
+		
+		if (nextHour > 23) {
+			
+			next.setHours(nextHour - 24);
+			next.setDate(next.getDate() + 1);
+			
+		} else {
+			
+			next.setHours(nextHour);
+			
+		}
+		
+		return next;
+		
+	}
 
     public static long telegramToTwitter(Twitter api, String fileId, String fileName, int type) throws TwitterException {
 
