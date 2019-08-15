@@ -54,8 +54,8 @@ public class QrDecoder extends Fragment {
 
 		} catch (QrCodeException ex) {
 			
-			msg.send("无结果 :)").async();
-			
+			msg.send(ex.getMessage()).async();
+		
 		}
 		
 	}
