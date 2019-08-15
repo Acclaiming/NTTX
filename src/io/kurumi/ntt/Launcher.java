@@ -499,6 +499,16 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 	@Override
 	public void onGroup(UserData user,Msg msg) {
 		
+		if (!msg.isSuperGroup()) {
+			
+			msg.send("对不起, NTT 只能在 " + Html.b("超级群组") + " 工作. ").async();
+			
+			msg.exit();
+			
+			return;
+			
+		}
+		
 		GetChatMemberResponse resp = execute(new GetChatMember(msg.chatId(), origin.me.id().intValue()));
 
         ChatMember curr = resp.chatMember();
