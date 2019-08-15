@@ -815,15 +815,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 		
         StringBuilder str = new StringBuilder();
 
-        boolean no_reply = false;
-
         Message message = msg.message();
 
         str.append("MessageId : " + message.messageId()).append("\n");
 
         if (message.forwardFrom() != null) {
-
-            no_reply = true;
 
             str.append("FromUser : ").append(UserData.get(message.forwardFrom()).userName()).append("\n");
             str.append("UserId : ").append(message.forwardFrom().id()).append("\n");
@@ -831,8 +827,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
         }
 
         if (message.forwardFromChat() != null) {
-
-            no_reply = true;
 
             if (message.forwardFromChat().type() == Chat.Type.channel) {
 
@@ -858,15 +852,11 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
         if (message.forwardSenderName() != null) {
 
-            no_reply = true;
-
             str.append("Sender Name : ").append(message.forwardSenderName());
 
         }
 
         if (message.sticker() != null) {
-
-            no_reply = true;
 
             str.append(split);
 
