@@ -20,12 +20,6 @@ import cn.hutool.core.util.ReUtil;
 public class GroupFunction extends Fragment {
 
     @Override
-    public boolean msg() {
-
-        return true;
-
-    }
-
     public int checkMsg(UserData user,Msg msg) {
 
         if (!msg.isGroup()) return PROCESS_SYNC;
