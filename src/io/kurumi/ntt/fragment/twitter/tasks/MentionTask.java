@@ -21,7 +21,7 @@ public class MentionTask extends TimerTask {
 
 		for (TAuth account : TAuth.data.getAll()) {
 
-			// if (account.mention == null && account.mdb == null) continue;
+		 if (account.mention == null && account.mdb == null) continue;
 
 			final Twitter api = account.createApi();
 

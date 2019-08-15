@@ -33,7 +33,9 @@ public class ShowUser extends Fragment {
 	
 	static String formatUser(UserArchive user) {
 		
+		String message = "";
 		
+		return message;
 		
 	}
 	
