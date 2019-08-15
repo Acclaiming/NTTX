@@ -643,6 +643,8 @@ public class TrackTask extends TimerTask {
 
         } catch (TwitterException e) {
 
+			/*
+			
             UserArchive archive = UserArchive.get(id);
 
 			StringBuilder msg = new StringBuilder();
@@ -653,6 +655,7 @@ public class TrackTask extends TimerTask {
 
 			new Send(auth.user,msg.toString()).html().point(0,archive.id);
 
+			*/
 			
         }
 
