@@ -29,7 +29,7 @@ public class GroupFunction extends Fragment {
     public int checkMsg(UserData user,Msg msg) {
 
         if (!msg.isGroup()) return PROCESS_SYNC;
-        else return PROCESS_ASYNC;
+        else return PROCESS_CONTINUE;
 
     }
 
