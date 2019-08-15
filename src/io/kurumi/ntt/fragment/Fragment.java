@@ -556,12 +556,6 @@ public class Fragment {
 
     }
 
-    public int checkBlockedMsg(UserData user,Msg msg) {
-
-		return PROCESS_REJECT;
-
-    }
-
     public int checkTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
         return PROCESS_ASYNC;
@@ -612,7 +606,14 @@ public class Fragment {
     public static final int PROCESS_REJECT = 0;
     public static final int PROCESS_SYNC = 1;
     public static final int PROCESS_ASYNC = 2;
-
+	public static final int PROCESS_CONTINUE = 3;
+	public static final int PROCESS_SYNC_REJ = 4;
+	public static final int PROCESS_ASYNC_REJ = 5;
+	public static final int PROCESS_SYNC_CONTINUE = 6;
+	public static final int PROCESS_ASYNC_CONTINUE = 7;
+	
+	
+	
     public static final int FUNCTION_PRIVATE = 1;
     public static final int FUNCTION_GROUP = 2;
     public static final int FUNCTION_PUBLIC = 3;

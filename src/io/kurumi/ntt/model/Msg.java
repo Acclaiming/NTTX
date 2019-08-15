@@ -66,10 +66,10 @@ public class Msg extends Context {
     }
 
 	public void setFunctionAndParam(String function,String... params) {
-		
+
 		this.function = function;
 		this.params = params;
-		
+
 	}
 
     public static Msg from(Fragment fragment,SendResponse resp) {
@@ -115,6 +115,22 @@ public class Msg extends Context {
     public Message message() {
         return message;
     }
+
+	private UserData newData;
+
+	public UserData newUser() {
+
+		if (message.newChatMembers() == null) return null;
+
+		if (newData == null) {
+
+			newData = UserData.get(message.newChatMembers()[0]);
+
+		}
+
+		return newData;
+
+	}
 
     public int messageId() {
         return message.messageId();
@@ -412,17 +428,17 @@ public class Msg extends Context {
     }
 
 	public PhotoSize maxSize() {
-		
+
 		PhotoSize[] sizes = message.photo();
-		
+
 		return sizes[sizes.length - 1];
-		
+
 	}
 
     public File photo() {
 
 		PhotoSize[] sizes = message.photo();
-		
+
         File local = new File(Env.CACHE_DIR,"files/" + sizes[sizes.length - 1].fileId());
 
         if (local.isFile()) return local;
@@ -483,9 +499,9 @@ public class Msg extends Context {
             } else if (text() != null && text().startsWith("!") && text().length() > 1) {
 
 				isCommand = 1;
-				
+
 			} else {
-				
+
                 isCommand = 2;
 
             }
@@ -501,7 +517,7 @@ public class Msg extends Context {
         if (!isCommand()) return null;
 
 		if (function != null) return function;
-		
+
         String body = text().substring(1);
 
         if (body.contains(" ")) {
@@ -527,7 +543,7 @@ public class Msg extends Context {
             name = body;
 
         }
-		
+
 		function = name;
 
         return name;

@@ -478,6 +478,21 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
     }
 
+	@Override
+	public int checkMsg(UserData user,Msg msg) {
+	
+		if (msg.newUser() != null && msg.newUser().id.equals(origin.me.id())) {
+			
+			msg.reply("这里是 NTT. 群组管理相关功能文档在这里 : https://manual.kurumi.io/group").async();
+		
+			return PROCESS_ASYNC_REJ;
+			
+		}
+		
+		return PROCESS_CONTINUE;
+		
+	}
+
     @Override
     public void uncaughtException(Thread thread, Throwable throwable) {
 

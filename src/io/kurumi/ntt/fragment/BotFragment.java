@@ -624,7 +624,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                         int checked = f.checkMsg(user,msg);
 
-                        if (checked == PROCESS_ASYNC) {
+                        if (checked == PROCESS_ASYNC || checked == PROCESS_ASYNC_REJ || checked == PROCESS_ASYNC_CONTINUE) {
 
                             asyncPool.execute(new Runnable() {
 
@@ -637,13 +637,41 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 								});
 
+							if (checked == PROCESS_ASYNC_REJ) {
+
+								return;
+
+							}
+
+							if (checked == PROCESS_ASYNC_CONTINUE) {
+
+								continue;
+
+							}
+
                         } else if (checked == PROCESS_REJECT) {
 
                             return;
 
+						} else if (checked == PROCESS_CONTINUE) {
+
+                            continue;
+
                         } else {
 
                             f.onMsg(user,msg);
+
+							if (checked == PROCESS_SYNC_REJ) {
+
+								return;
+
+							}
+
+							if (checked == PROCESS_SYNC_CONTINUE) {
+
+								continue;
+
+							}
 
                         }
 
@@ -670,8 +698,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                 int checked = f.checkChanPost(user,msg);
 
                 if (checked == PROCESS_REJECT) return;
+				if (checked == PROCESS_CONTINUE) continue;
 
-                if (checked == PROCESS_ASYNC) {
+                if (checked == PROCESS_ASYNC || checked == PROCESS_ASYNC_REJ || checked == PROCESS_ASYNC_CONTINUE) {
 
                     asyncPool.execute(new Runnable() {
 
@@ -684,9 +713,34 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 						});
 
+					if (checked == PROCESS_ASYNC_REJ) {
+
+						return;
+
+					}
+
+					if (checked == PROCESS_ASYNC_CONTINUE) {
+
+						continue;
+
+					}
+
+
                 } else {
 
                     f.onChanPost(user,msg);
+
+					if (checked == PROCESS_SYNC_REJ) {
+
+						return;
+
+					}
+
+					if (checked == PROCESS_SYNC_CONTINUE) {
+
+						continue;
+
+					}
 
                 }
 
@@ -865,7 +919,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 		if (statusId != -1) {
 
 			msg.setFunctionAndParam("status",statusId.toString());
-			
+
 			getInstance(StatusGetter.class).onFunction(user,msg,null,msg.params());
 
 			return;
@@ -880,7 +934,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 					@Override
 					public void run() {
-						
+
 						try {
 
 							String result = QrCodeUtil.decode(msg.photo());
@@ -892,10 +946,10 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 							}
 
 						} catch (QrCodeException ex) {}
-						
+
 					}
 				});
-			
+
 		}
 
     }

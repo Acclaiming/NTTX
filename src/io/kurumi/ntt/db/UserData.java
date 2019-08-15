@@ -17,6 +17,7 @@ public class UserData {
 
     public static HashMap<Long, UserData> userDataIndex = new HashMap<>();
     public Long id;
+	public Boolean isBot;
     public String firstName;
     public String lastName;
     public String userName;
@@ -131,6 +132,8 @@ public class UserData {
         firstName = user.firstName();
 
         lastName = user.lastName();
+		
+		isBot = user.isBot();
 
     }
 
