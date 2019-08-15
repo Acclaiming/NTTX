@@ -503,7 +503,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         ChatMember curr = resp.chatMember();
 
-		if (resp.isOk() && curr.canRestrictMembers() && curr.canDeleteMessages()) {
+		if (resp.isOk() && curr.canRestrictMembers() != null && curr.canRestrictMembers() && curr.canDeleteMessages() != null && curr.canDeleteMessages()) {
 			
 			msg.reply("这里是NTT. 使用 /options 调出设置选单.").async();
 			
