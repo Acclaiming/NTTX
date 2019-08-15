@@ -620,8 +620,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                     for (final Fragment f : fragments) {
 
-                        if (!f.msg()) continue;
-
                         int checked = f.checkMsg(user,msg);
 
                         if (checked == PROCESS_ASYNC || checked == PROCESS_ASYNC_REJ || checked == PROCESS_ASYNC_CONTINUE) {
@@ -692,8 +690,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
             if (msg.replyTo() != null) msg.replyTo().update = update;
 
             for (final Fragment f : fragments) {
-
-                if (!f.post()) continue;
 
                 int checked = f.checkChanPost(user,msg);
 

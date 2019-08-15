@@ -620,7 +620,7 @@ public class Fragment {
 
     public int checkMsg(UserData user,Msg msg) {
 
-        return PROCESS_ASYNC;
+        return PROCESS_CONTINUE;
 
     }
 
@@ -639,7 +639,7 @@ public class Fragment {
 
     public int checkChanPost(UserData user,Msg msg) {
 
-        return PROCESS_ASYNC;
+        return PROCESS_CONTINUE;
 
     }
 
