@@ -233,7 +233,7 @@ public class StatusSearch extends Fragment {
 
         }
 
-        Msg status = msg.send("正在创建查询...", "\n提醒 : 查找某个用户的推文前请使用 /fetch 拉取推文").send();
+        Msg status = msg.send("正在创建查询...").send();
 
         msg.sendTyping();
 
@@ -241,7 +241,7 @@ public class StatusSearch extends Fragment {
 
         SavedSearch.data.setById(search.id, search);
 
-        status.edit("创建查询√\n正在查询...", "\n提醒 : 查找某个用户的推文前请使用 /fetch 拉取推文").exec();
+        status.edit("创建查询√\n正在查询...").exec();
 
         msg.sendTyping();
 
@@ -291,7 +291,7 @@ public class StatusSearch extends Fragment {
 
         if (search.from != -1) {
 
-            format.append("        提醒 : 查找某个用户的推文前请使用 /fetch 拉取最新推文\n\n");
+            format.append("\n       提醒 : 查找某个用户的推文前请使用 /fetch 拉取最新推文\n\n");
 
         }
 
