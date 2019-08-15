@@ -211,16 +211,6 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         if ("start".equals(function)) {
 
-			if (isMainInstance()) {
-				
-				msg.send("这里是 NTT 的新位置 (数据互通哦 ~").async();
-				
-			} else {
-				
-				msg.send("警告！这里是旧式实例，已经无法控制，请尽快切换到 @" + INSTANCE.me.username() + " :(").async();
-				
-			}
-			
             msg.send("start failed successfully ~\n", Env.HELP_MESSAGE).html().async();
 
         } else if ("help".equals(function)) {
