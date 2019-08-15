@@ -67,7 +67,7 @@ public class DeleteMain extends Fragment {
 
 		} else if (POINT_AD_EXECUTE.equals(point)) {
 			
-			deleteNow(user,callback,account);
+			//deleteNow(user,callback,account);
 			
 		} else {
 
