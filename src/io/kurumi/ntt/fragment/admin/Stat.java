@@ -40,15 +40,11 @@ public class Stat extends Fragment {
         long total = handler4stat.getTotalCPUTime();
         long idle = handler4stat.getIdleCPUTime();
 
-		int processId = NumberUtil.parseInt(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
+		// int processId = NumberUtil.parseInt(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
 		
         status.append("\nCPU占用 : ").append((100 - ((float) (idle) / total) * 100)).append("%");
 
-		status.append("\n进程ID : ").append(processId);
-		
-		status.append("\n\nDUMP :\n\n");
-		
-		status.append(RuntimeUtil.execForStr("jmap -histo " + processId));
+		// status.append("\n进程ID : ").append(processId);
 		
         msg.send(status.toString()).exec();
 
