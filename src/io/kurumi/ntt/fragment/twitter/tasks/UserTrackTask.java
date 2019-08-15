@@ -16,6 +16,7 @@ import twitter4j.TwitterException;
 import twitter4j.User;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import com.mongodb.MongoInterruptedException;
 
 public class UserTrackTask extends Thread {
 
@@ -28,97 +29,101 @@ public class UserTrackTask extends Thread {
 
         while (!isInterrupted()) {
 
-            for (TrackTask.IdsList ids : TrackTask.friends.collection.find()) {
+			try {
 
-                waitFor.addAll(ids.ids);
+				for (TrackTask.IdsList ids : TrackTask.friends.collection.find()) {
 
-            }
+					waitFor.addAll(ids.ids);
 
-            for (TrackTask.IdsList ids : TrackTask.followers.collection.find()) {
+				}
 
-                waitFor.addAll(ids.ids);
+				for (TrackTask.IdsList ids : TrackTask.followers.collection.find()) {
 
-            }
+					waitFor.addAll(ids.ids);
 
-            if (step == 10) {
+				}
 
-                step = 0;
+				if (step == 10) {
 
-                for (UserArchive u : UserArchive.data.getAllByField("isDisappeared", true)) {
+					step = 0;
 
-                    waitFor.add(u.id);
+					for (UserArchive u : UserArchive.data.getAllByField("isDisappeared",true)) {
 
-                }
+						waitFor.add(u.id);
 
-            }
+					}
 
-            step++;
+				}
 
-            List<TAuth> allAuth = TAuth.data.getAll();
+				step++;
 
-            Iterator<TAuth> iter = allAuth.iterator();
+				List<TAuth> allAuth = TAuth.data.getAll();
 
-            while (allAuth != null && !waitFor.isEmpty()) {
+				Iterator<TAuth> iter = allAuth.iterator();
 
-                if (!iter.hasNext()) iter = allAuth.iterator();
+				while (allAuth != null && !waitFor.isEmpty()) {
 
-                List<Long> target;
+					if (!iter.hasNext()) iter = allAuth.iterator();
 
-                if (waitFor.size() > 100) {
+					List<Long> target;
 
-                    target = CollectionUtil.sub(waitFor, 0, 100);
-                    waitFor.removeAll(target);
+					if (waitFor.size() > 100) {
 
-                } else {
+						target = CollectionUtil.sub(waitFor,0,100);
+						waitFor.removeAll(target);
 
-                    target = new LinkedList<>();
-                    target.addAll(waitFor);
+					} else {
 
-                    waitFor.clear();
+						target = new LinkedList<>();
+						target.addAll(waitFor);
 
-                }
+						waitFor.clear();
 
-                try {
+					}
 
-                    ResponseList<User> result = iter.next().createApi().lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
+					try {
 
-                    for (User tuser : result) {
+						ResponseList<User> result = iter.next().createApi().lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
 
-                        target.remove(tuser.getId());
+						for (User tuser : result) {
 
-                        UserArchive.save(tuser);
+							target.remove(tuser.getId());
 
-                    }
+							UserArchive.save(tuser);
 
-                    for (Long da : target) {
+						}
 
-                        UserArchive.saveDisappeared(da);
+						for (Long da : target) {
 
-                    }
+							UserArchive.saveDisappeared(da);
 
-                } catch (TwitterException e) {
+						}
 
-                    if (e.getStatusCode() == 503) {
+					} catch (TwitterException e) {
 
-                        return;
+						if (e.getStatusCode() == 503) {
 
-                    } else if (e.getErrorCode() == 17) {
+							return;
 
-                        for (Long da : target) {
+						} else if (e.getErrorCode() == 17) {
 
-                            UserArchive.saveDisappeared(da);
+							for (Long da : target) {
 
-                        }
+								UserArchive.saveDisappeared(da);
 
-                    } else {
+							}
 
-                        waitFor.addAll(target);
+						} else {
 
-                    }
+							waitFor.addAll(target);
 
-                }
+						}
 
-            }
+					}
+
+				}
+
+			} catch (Exception ex) {}
 
 
         }
