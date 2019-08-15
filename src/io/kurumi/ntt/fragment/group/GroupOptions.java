@@ -233,9 +233,14 @@ public class GroupOptions extends Fragment {
 
                 callback.url("https://t.me/" + origin.me.username() + "?start=" + PAYLOAD_OPTIONS + PAYLOAD_SPLIT + callback.chatId() + PAYLOAD_SPLIT + user.id);
 
-                return;
-
-            }
+			} else {
+				
+				callback.alert("你不是绒布球 :)");
+				
+			}
+			
+            return;
+   
 
         } else if (POINT_HELP.equals(point)) {
 
