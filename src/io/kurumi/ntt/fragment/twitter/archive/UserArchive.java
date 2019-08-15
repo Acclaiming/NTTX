@@ -42,6 +42,7 @@ public class UserArchive {
     public Boolean isProtected;
     public Boolean isDisappeared;
 
+	public String location;
 	public Integer following;
 	public Integer followers;
 
@@ -340,6 +341,7 @@ public class UserArchive {
 		
 		following = user.getFriendsCount();
 		followers = user.getFollowersCount();
+		location = user.getLocation();
 		
 		if (TAuth.contains(id) && ArrayUtil.contains(Env.ADMINS,TAuth.getById(id).user)) return false;
 		
