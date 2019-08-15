@@ -21,27 +21,9 @@ public class GroupBot extends UserBotFragment {
 
     }
 
-    @Override
-    public boolean msg() {
-
-        return true;
-
-    }
-
-    @Override
-    public void onMsg(UserData user, Msg msg) {
-
-        if (msg.message().newChatMembers() != null) {
-
-            if (me.id().equals(msg.message().newChatMembers()[0].id())) {
-
-                msg.send("欢迎使用 :)", "在群组发送 /options 即可调出设置。").async();
-
-            }
-
-        }
-
-    }
+	@Override
+	public void onFinalMsg(UserData user,Msg msg) {
+	}
 
 
 }
