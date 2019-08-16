@@ -66,7 +66,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 		if (request.uri().equals("/api")) {
 
-			if (request.getMethod() != POST || !request.headers().get("Content-Type","application/json").equals("application/json")) {
+			if (request.getMethod() != POST) {
 
 				sendError(ctx,BAD_REQUEST);
 
