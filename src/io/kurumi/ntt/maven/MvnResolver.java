@@ -361,10 +361,8 @@ public class MvnResolver {
 
         LinkedHashMap<String, String> props = new LinkedHashMap<>();
 
-		log.append("\nGroupId : ").append(groupId);
-		
-		props.put("project.groupId",art.groupId);
-		props.put("project.version",art.version);
+		props.put("project.groupId",groupId);
+		props.put("project.version",version);
 		
         Element properties = document.getRootElement().getChild("properties",NS);
 
@@ -423,7 +421,7 @@ public class MvnResolver {
 
                     depVer = depVer.replace("${" + prop.getKey() + "}",prop.getValue());
 
-                    //log.append("替换值 : " + prop.getKey() + " 为 " + prop.getValue());
+                    log.append("替换值 : " + "${" + prop.getKey() + "}" + " 为 " + prop.getValue());
 
                 }
 
