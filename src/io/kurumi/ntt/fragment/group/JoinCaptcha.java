@@ -570,7 +570,7 @@ public class JoinCaptcha extends Fragment {
         @Override
         public String code() {
 
-            return left + " " + typeCode() + " " + right;
+            return formatNumber(left + " " + typeCode() + " " + right);
 
         }
 
