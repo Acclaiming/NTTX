@@ -361,6 +361,8 @@ public class MvnResolver {
 
         LinkedHashMap<String, String> props = new LinkedHashMap<>();
 
+		log.append("\nGroupId : ").append(groupId);
+		
 		props.put("project.groupId",art.groupId);
 		props.put("project.version",art.version);
 		
