@@ -244,11 +244,11 @@ public class MvnResolver {
 
                     pomXml = resp.body();
 
-                    log.append("\n从 " + targetRepository + " 获取 Pom 成功");
+                    log.append("\n获取 Pom 成功");
 
                 } else {
 
-                    log.append("\n从 " + targetRepository + " 获取 Pom 失败");
+                    log.append("\n获取 Pom 失败");
 
                 }
 
@@ -407,8 +407,16 @@ public class MvnResolver {
         for (Element dependency : dependencies.getChildren()) {
 
             String group = dependency.getChild("groupId",NS).getValue();
+			
             String artifact = dependency.getChild("artifactId",NS).getValue();
 
+			for (Map.Entry<String, String> prop : props.entrySet()) {
+
+				group = group.replace("${" + prop.getKey() + "}",prop.getValue());
+				artifact = artifact.replace("${" + prop.getKey() + "}",prop.getValue());
+				
+			}
+			
             String depVer = null;
 
             Element versionObj = dependency.getChild("version",NS);
@@ -420,8 +428,6 @@ public class MvnResolver {
                 for (Map.Entry<String, String> prop : props.entrySet()) {
 
                     depVer = depVer.replace("${" + prop.getKey() + "}",prop.getValue());
-
-                    log.append("替换值 : " + "${" + prop.getKey() + "}" + " 为 " + prop.getValue());
 
                 }
 
