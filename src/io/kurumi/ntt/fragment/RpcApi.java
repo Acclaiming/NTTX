@@ -135,7 +135,7 @@ public class RpcApi extends Fragment {
 			
 			TAuth account = TAuth.getById(accountId);
 			
-			if (account == null || !account.id.equals(user)) {
+			if (account == null || !account.user.equals(user)) {
 				
 				return makeError("invalid account id.");
 				
