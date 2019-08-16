@@ -230,8 +230,6 @@ public class MvnResolver {
 
 		}
 
-
-
         art.version = version;
 
         String pomXml = null;
@@ -363,8 +361,8 @@ public class MvnResolver {
 
         LinkedHashMap<String, String> props = new LinkedHashMap<>();
 
-		props.put("project.groupId",groupId);
-		props.put("project.version",version);
+		props.put("project.groupId",art.groupId);
+		props.put("project.version",art.version);
 		
         Element properties = document.getRootElement().getChild("properties",NS);
 
