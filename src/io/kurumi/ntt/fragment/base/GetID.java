@@ -17,14 +17,14 @@ public class GetID extends Fragment {
     }
 
     @Override
-    public int checkFunctionContext(UserData user, Msg msg, String function, String[] params) {
+    public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
 
         return FUNCTION_PUBLIC;
 
     }
 
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
         if (msg.isReply()) {
 
@@ -39,23 +39,20 @@ public class GetID extends Fragment {
     }
 
     @Override
-    public boolean post() {
+    public int checkChanPost(UserData user,Msg msg) {
 
-        return true;
-
-    }
-
-    @Override
-    public int checkChanPost(UserData user, Msg msg) {
-
-        return "id".equals(msg.command()) ? 2 : 0;
+        return PROCESS_SYNC;
 
     }
 
     @Override
-    public void onChanPost(UserData user, Msg msg) {
+    public void onChanPost(UserData user,Msg msg) {
 
-        msg.send(msg.chatId().toString()).publicFailed();
+		if ("id".equals(msg.command())) {
+
+			msg.send(msg.chatId().toString()).publicFailed();
+
+		}
 
     }
 

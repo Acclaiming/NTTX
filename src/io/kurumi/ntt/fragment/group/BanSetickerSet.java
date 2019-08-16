@@ -123,32 +123,7 @@ public class BanSetickerSet extends Fragment {
             msg.send("屏蔽成功 ~").exec();
         }
 
-    }
-
-    @Override
-    public boolean msg() {
-
-        return true;
-
-    }
-
-
-    @Override
-    public void onGroup(UserData user, Msg msg) {
-
-        if (msg.isGroup() && msg.sticker() != null) {
-
-            GroupData data = GroupData.get(msg.chat());
-
-            if (data.ban_sticker_set != null && data.ban_sticker_set.contains(msg.sticker().setName())) {
-
-                msg.delete();
-
-            }
-
-        }
-
-    }
+	}
 
 }
 

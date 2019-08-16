@@ -60,9 +60,7 @@ public class ForwardBot extends UserBotFragment {
 	@Override
 	public int checkMsg(UserData user,Msg msg) {
 
-		onMsg(user,msg);
-
-		return PROCESS_REJECT;
+		return PROCESS_SYNC_REJ;
 
 	}
 
@@ -194,13 +192,6 @@ public class ForwardBot extends UserBotFragment {
 
         }
 
-
-    }
-
-    @Override
-    public boolean msg() {
-
-        return true;
 
     }
 

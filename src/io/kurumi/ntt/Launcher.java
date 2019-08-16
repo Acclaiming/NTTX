@@ -3,7 +3,10 @@ package io.kurumi.ntt;
 import cn.hutool.core.util.RuntimeUtil;
 import com.google.gson.Gson;
 import com.pengrad.telegrambot.model.Chat;
+import com.pengrad.telegrambot.model.ChatMember;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.GetChatMember;
+import com.pengrad.telegrambot.response.GetChatMemberResponse;
 import io.kurumi.ntt.db.BotDB;
 import io.kurumi.ntt.db.GroupData;
 import io.kurumi.ntt.db.UserData;
@@ -29,13 +32,14 @@ import io.kurumi.ntt.fragment.debug.DebugUF;
 import io.kurumi.ntt.fragment.debug.DebugUser;
 import io.kurumi.ntt.fragment.debug.Disappeared;
 import io.kurumi.ntt.fragment.debug.GetRepliesTest;
+import io.kurumi.ntt.fragment.dns.DNSLookup;
+import io.kurumi.ntt.fragment.dns.WhoisLookup;
 import io.kurumi.ntt.fragment.extra.Manchurize;
 import io.kurumi.ntt.fragment.extra.ShowFile;
 import io.kurumi.ntt.fragment.group.BanSetickerSet;
 import io.kurumi.ntt.fragment.group.GroupAdmin;
 import io.kurumi.ntt.fragment.group.GroupFunction;
 import io.kurumi.ntt.fragment.group.GroupOptions;
-import io.kurumi.ntt.fragment.group.GroupRepeat;
 import io.kurumi.ntt.fragment.group.JoinCaptcha;
 import io.kurumi.ntt.fragment.group.RemoveKeyboard;
 import io.kurumi.ntt.fragment.idcard.Idcard;
@@ -81,16 +85,10 @@ import io.kurumi.ntt.fragment.twitter.ui.TwitterMain;
 import io.kurumi.ntt.maven.MvnDownloader;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.utils.Html;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
-import io.kurumi.ntt.utils.NTT;
-import com.pengrad.telegrambot.response.GetChatMemberResponse;
-import com.pengrad.telegrambot.request.GetChatMember;
-import com.pengrad.telegrambot.model.ChatMember;
-import io.kurumi.ntt.utils.Html;
-import io.kurumi.ntt.fragment.dns.DNSLookup;
-import io.kurumi.ntt.fragment.dns.WhoisLookup;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -316,7 +314,6 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         // GROUP
 
         addFragment(new GroupAdmin());
-        addFragment(new GroupRepeat());
         addFragment(new GroupOptions());
         addFragment(new BanSetickerSet());
         addFragment(new GroupFunction());

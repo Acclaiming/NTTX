@@ -42,13 +42,6 @@ public class RssBot extends UserBotFragment {
 
     }
 
-	@Override
-	public boolean msg() {
-	
-		return true;
-		
-	}
-
     @Override
     public void onFinalMsg(UserData user, Msg msg) {
 

@@ -49,19 +49,12 @@ public class Fragment {
     public boolean update() {
         return false;
     }
-
-    public boolean msg() {
+	
+	public boolean query() {
         return false;
     }
-
-    public boolean post() {
-        return false;
-    }
-
-    public boolean query() {
-        return false;
-    }
-
+	
+	
     public boolean poll() {
         return false;
     }

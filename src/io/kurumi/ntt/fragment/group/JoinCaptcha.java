@@ -47,13 +47,6 @@ public class JoinCaptcha extends Fragment {
 
     // static Pattern arabicCharacter = Pattern.compile("\\p{Arabic}",Pattern.UNICODE_CHARACTER_CLASS);
 
-    @Override
-    public boolean msg() {
-
-        return true;
-
-    }
-
     final String POINT_AUTH = "join_auth";
     final String POINT_INTERFERE = "join_interfere";
     final String POINT_ANSWER = "join_answer";

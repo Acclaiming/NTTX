@@ -28,13 +28,6 @@ import io.kurumi.ntt.model.Callback;
 
 public class StatusUpdate extends Fragment {
 
-    @Override
-    public boolean msg() {
-
-        return true;
-
-    }
-
     final String POINT_UPDATE_STATUS = "status_update";
 
     @Override
@@ -169,7 +162,7 @@ public class StatusUpdate extends Fragment {
 
 		if (!msg.isPrivate() || !msg.isReply()) {
 
-			return PROCESS_ASYNC;
+			return PROCESS_CONTINUE;
 
 		}
 
@@ -181,7 +174,7 @@ public class StatusUpdate extends Fragment {
 
 			if (point == null || point.type == 0) {
 
-				return PROCESS_ASYNC;
+				return PROCESS_CONTINUE;
 
 			} else point.accountId = -1;
 
