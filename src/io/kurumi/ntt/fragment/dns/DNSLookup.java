@@ -72,7 +72,7 @@ public class DNSLookup extends Fragment {
 
 		}
 
-		String message = "域名 : " + params[0] + " 查询结果 (" + type + ") : ";
+		String message = "域名 : " + params[0] + " 查询结果 (" + Type.string(type) + ") : ";
 
 		Record[] records = lookup.getAnswers();
 
