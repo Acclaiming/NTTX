@@ -44,7 +44,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
     private FullHttpRequest request;
 
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
+    public void channelRead0(ChannelHandlerContext ctx,FullHttpRequest request) throws Exception {
 
         this.request = request;
 
@@ -58,40 +58,86 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         if (!request.decoderResult().isSuccess()) {
 
-            sendError(ctx, BAD_REQUEST);
+            sendError(ctx,BAD_REQUEST);
 
             return;
 
         }
 
+		if (request.uri().equals("/api")) {
+
+			if (request.getMethod() != POST || !request.headers().get("Content-Type","application/json").equals("application/json")) {
+
+				sendError(ctx,BAD_REQUEST);
+
+				return;
+
+			}
+
+			JSONObject json;
+
+			try {
+
+				json = new JSONObject(request.content().toString(CharsetUtil.CHARSET_UTF_8));
+
+			} catch (Exception ex) {
+
+				sendError(ctx,BAD_REQUEST);
+
+				return;
+
+			}
+			
+			FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,OK,Unpooled.copiedBuffer(RpcApi.execute(json).toStringPretty(),CharsetUtil.CHARSET_UTF_8));
+
+            resp.headers().set(HttpHeaderNames.CONTENT_TYPE,"application/json; charset=UTF-8");
+
+            boolean keepAlive = HttpUtil.isKeepAlive(request);
+
+            if (!keepAlive) {
+
+                ctx.writeAndFlush(resp).addListener(ChannelFutureListener.CLOSE);
+
+            } else {
+
+                resp.headers().set(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
+
+                ctx.writeAndFlush(resp);
+
+            }
+			
+			return;
+
+		}
+
         if (request.uri().equals("/data/" + Launcher.INSTANCE.getToken())) {
 
-            File dataFile = new File(Env.CACHE_DIR, "data.zip");
+            File dataFile = new File(Env.CACHE_DIR,"data.zip");
 
             if (!dataFile.isFile()) {
 
-                sendError(ctx, NOT_FOUND);
+                sendError(ctx,NOT_FOUND);
 
                 return;
 
             }
 
-            FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1, OK);
+            FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,OK);
 
             MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
 
-            resp.headers().set(HttpHeaderNames.CONTENT_TYPE, mimeTypesMap.getContentType(dataFile));
-            resp.headers().set(HttpHeaderNames.CONTENT_LENGTH, dataFile.length());
+            resp.headers().set(HttpHeaderNames.CONTENT_TYPE,mimeTypesMap.getContentType(dataFile));
+            resp.headers().set(HttpHeaderNames.CONTENT_LENGTH,dataFile.length());
 
             final boolean keepAlive = HttpUtil.isKeepAlive(request);
 
             if (!keepAlive) {
 
-                resp.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+                resp.headers().set(HttpHeaderNames.CONNECTION,HttpHeaderValues.CLOSE);
 
             } else if (request.protocolVersion().equals(HTTP_1_0)) {
 
-                resp.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+                resp.headers().set(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
 
             }
 
@@ -131,19 +177,19 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                 @Override
                 public void run() {
 
-                    new Send(Env.LOG_CHANNEL, "Bot Update Executed : By WebHook").exec();
+                    new Send(Env.LOG_CHANNEL,"Bot Update Executed : By WebHook").exec();
 
                     try {
 
                         String str = RuntimeUtil.execForStr("bash update.sh");
 
-                        new Send(Env.LOG_CHANNEL, str).exec();
+                        new Send(Env.LOG_CHANNEL,str).exec();
 
                         Launcher.INSTANCE.stop();
 
                     } catch (Exception e) {
 
-                        new Send(Env.LOG_CHANNEL, BotLog.parseError(e)).exec();
+                        new Send(Env.LOG_CHANNEL,BotLog.parseError(e)).exec();
 
                     }
 
@@ -161,7 +207,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         } else if (request.getMethod() != POST || request.uri().length() <= 1) {
 
-            sendError(ctx, NOT_FOUND);
+            sendError(ctx,NOT_FOUND);
 
             return;
 
@@ -171,12 +217,12 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         if (!BotServer.fragments.containsKey(botToken)) {
 
-            sendError(ctx, INTERNAL_SERVER_ERROR);
+            sendError(ctx,INTERNAL_SERVER_ERROR);
 
             return;
 
         }
-		
+
         BaseRequest webhookResponse;
 
         try {
@@ -190,15 +236,15 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 			long start = System.currentTimeMillis();
 
 			BotServer.fragments.get(botToken).processAsync(update);
-			
+
 			webhookResponse = lock.waitFor();
-			
+
 			System.out.println("处理完成 : " + (System.currentTimeMillis() - start) + "ms");
-			
-            
+
+
         } catch (Exception ex) {
 
-            BotLog.error("出错", ex);
+            BotLog.error("出错",ex);
 
             webhookResponse = null;
 
@@ -208,15 +254,15 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         if (webhookResponse == null) {
 
-           sendOk(ctx);
+			sendOk(ctx);
 
         } else {
 
             // System.out.println(webhookResponse.toWebhookResponse());
 
-            FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.copiedBuffer(webhookResponse.toWebhookResponse(), CharsetUtil.CHARSET_UTF_8));
+            FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,OK,Unpooled.copiedBuffer(webhookResponse.toWebhookResponse(),CharsetUtil.CHARSET_UTF_8));
 
-            resp.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json; charset=UTF-8");
+            resp.headers().set(HttpHeaderNames.CONTENT_TYPE,"application/json; charset=UTF-8");
 
             boolean keepAlive = HttpUtil.isKeepAlive(request);
 
@@ -226,7 +272,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
             } else {
 
-                resp.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+                resp.headers().set(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
 
                 ctx.writeAndFlush(resp);
 
@@ -237,13 +283,13 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+    public void exceptionCaught(ChannelHandlerContext ctx,Throwable cause) {
 
         cause.printStackTrace();
 
         if (ctx.channel().isActive()) {
 
-            sendError(ctx, INTERNAL_SERVER_ERROR);
+            sendError(ctx,INTERNAL_SERVER_ERROR);
 
         }
 
@@ -251,52 +297,52 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
     void sendOk(ChannelHandlerContext ctx) {
 
-        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK);
+        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,OK);
 
-        this.sendAndCleanupConnection(ctx, response);
-
-    }
-
-
-    void sendRedirect(ChannelHandlerContext ctx, String newUri) {
-
-        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, FOUND);
-
-        response.headers().set(HttpHeaderNames.LOCATION, newUri);
-
-        this.sendAndCleanupConnection(ctx, response);
+        this.sendAndCleanupConnection(ctx,response);
 
     }
 
-    void sendError(ChannelHandlerContext ctx, HttpResponseStatus status) {
+
+    void sendRedirect(ChannelHandlerContext ctx,String newUri) {
+
+        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,FOUND);
+
+        response.headers().set(HttpHeaderNames.LOCATION,newUri);
+
+        this.sendAndCleanupConnection(ctx,response);
+
+    }
+
+    void sendError(ChannelHandlerContext ctx,HttpResponseStatus status) {
 
         FullHttpResponse response = new DefaultFullHttpResponse(
-                HTTP_1_1, status, Unpooled.copiedBuffer("Failure: " + status + "\r\n", CharsetUtil.CHARSET_UTF_8));
+			HTTP_1_1,status,Unpooled.copiedBuffer("Failure: " + status + "\r\n",CharsetUtil.CHARSET_UTF_8));
 
-        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain; charset=UTF-8");
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE,"text/plain; charset=UTF-8");
 
-        this.sendAndCleanupConnection(ctx, response);
+        this.sendAndCleanupConnection(ctx,response);
 
     }
 
-    void sendAndCleanupConnection(ChannelHandlerContext ctx, FullHttpResponse response) {
+    void sendAndCleanupConnection(ChannelHandlerContext ctx,FullHttpResponse response) {
 
         final FullHttpRequest request = this.request;
 
         final boolean keepAlive = HttpUtil.isKeepAlive(request);
 
-        HttpUtil.setContentLength(response, response.content().readableBytes());
+        HttpUtil.setContentLength(response,response.content().readableBytes());
 
         if (!keepAlive) {
 
             // We're going to close the connection as soon as the response is sent,
             // so we should also make it clear for the client.
 
-            response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+            response.headers().set(HttpHeaderNames.CONNECTION,HttpHeaderValues.CLOSE);
 
         } else if (request.protocolVersion().equals(HTTP_1_0)) {
 
-            response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+            response.headers().set(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
 
         }
 
