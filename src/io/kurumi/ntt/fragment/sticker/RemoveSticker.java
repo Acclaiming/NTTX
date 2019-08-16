@@ -40,10 +40,16 @@ public class RemoveSticker extends Fragment {
 
         @Override
         public void onCancel(UserData user, Msg msg) {
-
+			
             ShowSticker.current.remove(user.id);
 
+			super.onCancel(user,msg);
+			
         }
+		
+		StickerRemove(Msg command) {
+			super(command);
+		}
 
     }
 
@@ -61,7 +67,7 @@ public class RemoveSticker extends Fragment {
 
         }
 
-        StickerRemove data = new StickerRemove();
+        StickerRemove data = new StickerRemove(msg);
 
         setPrivatePoint(user, POINT_REMOVE_STICKER, data);
 

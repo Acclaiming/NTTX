@@ -1,8 +1,8 @@
 package io.kurumi.ntt.db;
 
-import java.util.*;
-
-import io.kurumi.ntt.fragment.*;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.model.Msg;
+import java.util.HashMap;
 
 public class PointStore {
 
@@ -77,9 +77,9 @@ public class PointStore {
     }
 
 
-    public PointData setPrivateData(Long userId,final String pointTo,final Object content) {
+    public PointData setPrivateData(Long userId,Msg command,final String pointTo,final Object content) {
 
-        PointData pointData = new PointData();
+        PointData pointData = new PointData(command);
 
 		pointData.point = pointTo;
 		pointData.data = content;
@@ -104,9 +104,9 @@ public class PointStore {
     }
 
 
-    public PointData setGroupData(Long userId,final String pointTo,final Object content) {
+    public PointData setGroupData(Long userId,Msg command,final String pointTo,final Object content) {
 
-        PointData pointData = new PointData();
+        PointData pointData = new PointData(command);
 
 		pointData.point = pointTo;
 		pointData.data = content;

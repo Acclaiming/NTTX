@@ -112,7 +112,8 @@ public class Idcard extends Fragment {
         List<AreaCode> code;
         Map<String, AreaCode> detailMap;
 
-
+		ICGen(Msg command) { super(command); }
+		
     }
 
     @Override
@@ -196,7 +197,7 @@ public class Idcard extends Fragment {
 
             gen.type = 1;
 
-            msg.send("请选择市").keyboard(buttons).exec(data);
+            msg.send("请选择市").keyboard(buttons).withCancel().exec(data);
 
         } else if (gen.type == 1) {
 
@@ -270,7 +271,7 @@ public class Idcard extends Fragment {
 
             gen.type = 2;
 
-            msg.send("请选择地区").keyboard(buttons).exec(data);
+            msg.send("请选择地区").keyboard(buttons).withCancel().exec(data);
 
 
         } else if (gen.type == 2) {
@@ -377,7 +378,7 @@ public class Idcard extends Fragment {
 
             }
 
-            ICGen data = new ICGen();
+            ICGen data = new ICGen(msg);
 
             setPrivatePoint(user, POINT_IC_GEN, data);
 

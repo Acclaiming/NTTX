@@ -125,8 +125,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
     @Override
     public void onPoint(final UserData user,Msg msg,String point,PointData data) {
 
-        data.context.add(msg);
-
+		data.with(msg);
+		
         if ("cancel".equals(msg.command())) {
 
             if (data.type == 1) {
@@ -148,8 +148,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
         } else if (POINT_REQUEST_TWITTER.equals(point)) {
 
             final TwitterRequest request = (TwitterRequest) data;
-
-            data.context.add(msg);
 
             if (!msg.hasText() || !msg.text().startsWith("@")) {
 

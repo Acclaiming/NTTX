@@ -319,7 +319,7 @@ public class RssSub extends Fragment {
 
         if (function.endsWith("import")) {
 
-            PointData data = setPrivatePoint(user,POINT_IMPORT_OPML);
+            PointData data = setPrivatePoint(user,msg,POINT_IMPORT_OPML);
 
             msg.send("现在发送 .opml 文件 ( opml 1.0 或 2.0)").exec(data);
 

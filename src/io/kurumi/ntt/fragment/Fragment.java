@@ -49,12 +49,12 @@ public class Fragment {
     public boolean update() {
         return false;
     }
-	
+
 	public boolean query() {
         return false;
     }
-	
-	
+
+
     public boolean poll() {
         return false;
     }
@@ -148,15 +148,27 @@ public class Fragment {
 
     }
 
-    public PointData setPrivatePointData(Long userId,String pointTo,Object content) {
+    public PointData setPrivatePointData(Long userId,Msg command,String pointTo,Object content) {
 
-        return point().setPrivateData(userId,pointTo,content);
+        return point().setPrivateData(userId,command,pointTo,content);
 
     }
 
     public PointData setPrivatePoint(Long userId,String pointTo) {
 
-        return point().setPrivateData(userId,pointTo,null);
+        return point().setPrivateData(userId,null,pointTo,null);
+
+    }
+
+	public PointData setPrivatePointData(Long userId,String pointTo,Object content) {
+
+        return point().setPrivateData(userId,null,pointTo,content);
+
+    }
+
+    public PointData setPrivatePoint(Long userId,Msg command,String pointTo) {
+
+        return point().setPrivateData(userId,command,pointTo,null);
 
     }
 
@@ -166,15 +178,27 @@ public class Fragment {
 
     }
 
-    public PointData setGroupPointData(Long userId,String pointTo,Object content) {
+    public PointData setGroupPointData(Long userId,Msg command,String pointTo,Object content) {
 
-        return point().setGroupData(userId,pointTo,content);
+        return point().setGroupData(userId,command,pointTo,content);
+
+    }
+
+    public PointData setGroupPoint(Long userId,Msg command,String pointTo) {
+
+        return point().setGroupData(userId,command,pointTo,null);
+
+    }
+
+	public PointData setGroupPointData(Long userId,String pointTo,Object content) {
+
+        return point().setGroupData(userId,null,pointTo,content);
 
     }
 
     public PointData setGroupPoint(Long userId,String pointTo) {
 
-        return point().setGroupData(userId,pointTo,null);
+        return point().setGroupData(userId,null,pointTo,null);
 
     }
 
@@ -216,33 +240,57 @@ public class Fragment {
 
     }
 
-    public PointData setPrivatePointData(UserData user,String pointTo,Object content) {
+    public PointData setPrivatePointData(UserData user,Msg command,String pointTo,Object content) {
 
-        return point().setPrivateData(user.id,pointTo,content);
+        return point().setPrivateData(user.id,command,pointTo,content);
+
+    }
+
+    public PointData setPrivatePoint(UserData user,Msg command,String pointTo) {
+
+        return point().setPrivateData(user.id,command,pointTo,null);
+
+    }
+	
+	public PointData setPrivatePointData(UserData user,String pointTo,Object content) {
+
+        return point().setPrivateData(user.id,null,pointTo,content);
 
     }
 
     public PointData setPrivatePoint(UserData user,String pointTo) {
 
-        return point().setPrivateData(user.id,pointTo,null);
+        return point().setPrivateData(user.id,null,pointTo,null);
 
     }
-
+	
     public PointData setGroupPoint(UserData user,String pointTo,PointData content) {
 
         return point().setGroup(user.id,pointTo,content);
 
     }
 
-    public PointData setGroupPointData(UserData user,String pointTo,Object content) {
+    public PointData setGroupPointData(UserData user,Msg command,String pointTo,Object content) {
 
-        return point().setGroupData(user.id,pointTo,content);
+        return point().setGroupData(user.id,command,pointTo,content);
+
+    }
+
+    public PointData setGroupPoint(UserData user,Msg command,String pointTo) {
+
+        return point().setGroupData(user.id,command,pointTo,null);
+
+    }
+	
+	public PointData setGroupPointData(UserData user,String pointTo,Object content) {
+
+        return point().setGroupData(user.id,null,pointTo,content);
 
     }
 
     public PointData setGroupPoint(UserData user,String pointTo) {
 
-        return point().setGroupData(user.id,pointTo,null);
+        return point().setGroupData(user.id,null,pointTo,null);
 
     }
 
@@ -604,9 +652,9 @@ public class Fragment {
 	public static final int PROCESS_ASYNC_REJ = 5;
 	public static final int PROCESS_SYNC_CONTINUE = 6;
 	public static final int PROCESS_ASYNC_CONTINUE = 7;
-	
-	
-	
+
+
+
     public static final int FUNCTION_PRIVATE = 1;
     public static final int FUNCTION_GROUP = 2;
     public static final int FUNCTION_PUBLIC = 3;

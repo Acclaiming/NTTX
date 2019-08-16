@@ -68,6 +68,8 @@ public class ListImport extends Fragment {
         int type = 0;
         long target = 0;
         int mode = 0;
+		
+		ImportList(Msg command) { super(command); }
 
     }
 
@@ -93,11 +95,9 @@ public class ListImport extends Fragment {
 
         }
 
-        ImportList data = new ImportList();
+        ImportList data = new ImportList(msg);
 
         data.auth = account;
-
-        data.context.add(msg);
 
         setPrivatePoint(user, POINT_LIST_IMPORT, data);
 
@@ -119,9 +119,7 @@ public class ListImport extends Fragment {
     @Override
     public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
-        ImportList list = (ImportList) data;
-
-        data.context.add(msg);
+        ImportList list = (ImportList) data.with(msg);
 
         if (list.type == 0) {
 

@@ -298,11 +298,11 @@ public class Send extends AbstractSend<Send> {
 
     }
 
-    public SendResponse exec(PointData toAdd) {
+    public Msg exec(PointData toAdd) {
 
-        SendResponse resp = exec();
+        Msg resp = send();
 
-        if (resp.isOk()) toAdd.context.add(new Msg(fragment,resp.message()));
+        if (resp != null) toAdd.with(resp);
 
         return resp;
 

@@ -55,7 +55,7 @@ public class ListExport extends Fragment {
     @Override
     public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
-        PointData data = setPrivatePointData(user, POINT_LIST_EXPORT, account);
+        PointData data = setPrivatePointData(user,msg, POINT_LIST_EXPORT, account);
 
         msg
                 .send("请选择将要导出的列表 :", "将会以 .csv 官方格式导出")
@@ -76,7 +76,7 @@ public class ListExport extends Fragment {
     @Override
     public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
-        data.context.add(msg);
+        data.with(msg);
 
         TAuth account = data.data();
 
@@ -219,7 +219,11 @@ public class ListExport extends Fragment {
 
             } else if (USER.equals(msg.text())) {
 
-                setPrivatePointData(user, POINT_USER_LIST_EXPORT, data);
+				data.command = null;
+				
+				clearPrivatePoint(user);
+				
+                setPrivatePointData(user,data.command, POINT_USER_LIST_EXPORT, data);
 
                 msg.send("现在请发送列表的链接 可以在列表 -> 分享 中导出。它看起来像这样 : twitter.com/用户名/lists/列表名").withCancel().exec();
 

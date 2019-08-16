@@ -51,10 +51,10 @@ public class StatusUpdate extends Fragment {
     @Override
     public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,final TAuth account) {
 
-        StatusUpdate.UpdatePoint update = new UpdatePoint();
+        UpdatePoint update = new UpdatePoint();
 
-        update.context.add(msg);
-
+		update.with(msg);
+		
         update.auth = account;
 
         if (msg.isReply()) {
@@ -238,8 +238,8 @@ public class StatusUpdate extends Fragment {
 
 		update.toReply = StatusArchive.get(point.targetId);
 
-		update.context.add(msg);
-
+		update.with(msg);
+		
 		if (msg.hasText()) {
 
 			if (msg.text().toCharArray().length > 280) {
@@ -403,9 +403,7 @@ public class StatusUpdate extends Fragment {
 
 	public void onPointedFunction(UserData user,Msg msg,String function,String[] params,String point,PointData data) {
 
-		UpdatePoint update = (UpdatePoint) data;
-
-		data.context.add(msg);
+		UpdatePoint update = (UpdatePoint) data.with(msg);
 
 		if ("timed".equals(function)) {
 
@@ -668,9 +666,7 @@ public class StatusUpdate extends Fragment {
 
 		}
 
-		UpdatePoint update = (UpdatePoint) data;
-
-		data.context.add(msg);
+		UpdatePoint update = (UpdatePoint) data.with(msg);
 
 		if (msg.hasText()) {
 

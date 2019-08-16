@@ -88,13 +88,13 @@ public class TwitterDelete extends Fragment {
 
         } else {
 
-            setPrivatePointData(user, POINT_DELETE, account);
+            setPrivatePointData(user,msg,POINT_DELETE, account);
 
-            msg.send("这个功能需要从 Twitter应用/网页 - 设置 - 账号 - 你的Twitter数据 输入密码下载数据zip，并找到tweet.js/like.js的说").exec();
+            msg.send("这个功能需要从 Twitter应用/网页 - 设置 - 账号 - 你的Twitter数据 输入密码下载数据zip，并找到 tweet.js .").exec();
 
-            msg.send("现在发送 tweet.js / like.js 来删除所有推文/打心... (如果文件超过20m 需要打zip包发送哦 (tweet.js打tweet.zip / like.js打like.zip (❁´▽`❁)", "使用 /cancel 取消 ~").exec();
+            msg.send("现在发送 tweet.js 来删除所有推文 (如果文件超过20m 需要打zip包发送").withCancel().exec();
 
-            msg.send("也可以发送 FETCH 执行拉取推文并删除 (无法读取久远的推文、通常是几个月之前)").exec();
+          //  msg.send("也可以发送 FETCH 执行拉取推文并删除 (无法读取久远的推文、通常是几个月之前)").exec();
 
         }
 

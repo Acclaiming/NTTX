@@ -43,7 +43,9 @@ public class AddSticker extends Fragment {
         String setName;
 
         File sticker;
-
+		
+		StickerAdd(Msg command) { super(command); }
+		
     }
 
     final String POINT_ADD_STICKER = "add_sticker";
@@ -61,7 +63,7 @@ public class AddSticker extends Fragment {
 
         }
 
-        PointData data = new StickerAdd().with(msg);
+        PointData data = new StickerAdd(msg);
 
         setPrivatePoint(user, POINT_ADD_STICKER, data);
 

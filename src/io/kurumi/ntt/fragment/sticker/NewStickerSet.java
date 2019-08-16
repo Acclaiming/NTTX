@@ -52,13 +52,17 @@ public class NewStickerSet extends Fragment {
         String title;
 
         public File file;
+		
+		CreateSet(Msg command) {
+			super(command);
+		}
 
     }
 
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        PointData data = new CreateSet().with(msg);
+        PointData data = new CreateSet(msg);
 
         setPrivatePoint(user, POINT_CREATE_SET, data);
 
@@ -73,9 +77,7 @@ public class NewStickerSet extends Fragment {
     @Override
     public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
-        data.context.add(msg);
-
-        CreateSet create = (CreateSet) data;
+        CreateSet create = (CreateSet) data.with(msg);
 
         if (create.type == 0) {
 

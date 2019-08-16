@@ -40,7 +40,7 @@ public class NewBot extends Fragment {
 
         }
 
-        CreateBot create = new CreateBot();
+        CreateBot create = new CreateBot(msg);
 
         msg.send("现在请输入BotToken :", "", "BotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。").withCancel().exec(create);
 
@@ -51,11 +51,9 @@ public class NewBot extends Fragment {
     @Override
     public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
-        data.context.add(msg);
-
         if (POINT_CREATE_BOT.equals(point)) {
 
-            CreateBot create = (CreateBot) data;
+            CreateBot create = (CreateBot) data.with(msg);
 
             if (create.progress == 0) {
 
@@ -200,6 +198,10 @@ public class NewBot extends Fragment {
         UserBot bot;
 
         int type = -1;
+		
+		CreateBot(Msg command) {
+			super(command);
+		}
 
     }
 

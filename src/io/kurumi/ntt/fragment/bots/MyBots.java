@@ -243,7 +243,7 @@ public class MyBots extends Fragment {
         BotEdit point = new BotEdit();
 
         point.bot = bot;
-        point.context.add(callback);
+        point.with(callback);
 
         callback.edit("好,现在发送新的欢迎语 :").withCancel().async();
 
@@ -253,7 +253,7 @@ public class MyBots extends Fragment {
 
     void editChatBotMessage(UserData user, Msg msg, BotEdit data) {
 
-        data.context.add(msg);
+        data.with(msg);
 
         if (!msg.hasText()) {
 

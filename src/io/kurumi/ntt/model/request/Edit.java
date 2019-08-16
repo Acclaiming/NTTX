@@ -104,7 +104,7 @@ public class Edit extends AbstractSend<Edit> {
 
         BaseResponse resp = exec();
 
-        if (resp.isOk() && origin != null) toAdd.context.add(origin);
+        if (resp.isOk() && origin != null) toAdd.with(origin);
 
         return resp;
 

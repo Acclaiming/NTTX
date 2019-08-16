@@ -45,8 +45,8 @@ public class StickerExport extends Fragment {
     @Override
     public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
-        data.context.add(msg);
-
+        data.with(msg);
+		
         Message message = msg.message();
 
         if (message.sticker() != null) {

@@ -27,6 +27,8 @@ public class ListEdit extends Fragment {
         int mode = 0;
         int type = 0;
         long[] array;
+		
+		EditList(Msg command) { super(command); }
 
     }
 
@@ -38,7 +40,7 @@ public class ListEdit extends Fragment {
 
         }
 
-        EditList edit = new EditList();
+        EditList edit = new EditList(msg);
 
         setPrivatePoint(user, POINT_OPEN, edit);
 

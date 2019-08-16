@@ -12,12 +12,20 @@ public class PointData {
 	
 	public int step = 0;
  
-    public LinkedList<Msg> context = new LinkedList<>();
+    private LinkedList<Msg> context = new LinkedList<>();
 
     public String point;
     public Object data;
     public boolean cancelable = true;
 
+	public Msg command;
+	
+	public PointData() {}
+	
+	public PointData(Msg command) {
+		this.command = command;
+	}
+	
     public PointData with(Msg msg) {
 
         context.add(msg);
@@ -47,6 +55,9 @@ public class PointData {
     }
 
     public void onCancel(UserData user, Msg msg) {
+		
+		if (command != null) command.delete();
+		
     }
 
 }

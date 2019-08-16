@@ -41,34 +41,40 @@ public class MoveSticker extends Fragment {
         Sticker from;
 
         @Override
-        public void onCancel(UserData user, Msg msg) {
+        public void onCancel(UserData user,Msg msg) {
 
             ShowSticker.current.remove(user.id);
 
+			super.onCancel(user,msg);
+
         }
+
+		StickerMove(Msg command) {
+			super(command);
+		}
 
     }
 
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
         final List<PackOwner> all = PackOwner.getAll(user.id);
 
         if (all.isEmpty()) {
 
-            msg.send("你没有使用NTT创建过贴纸包....", "使用 /new_sticker_set 创建").exec();
+            msg.send("你没有使用NTT创建过贴纸包....","使用 /new_sticker_set 创建").exec();
 
             return;
 
         }
 
 
-        PointData data = new StickerMove().with(msg);
+        PointData data = new StickerMove(msg);
 
-        setPrivatePoint(user, POINT_MOVE_STICKER, data);
+        setPrivatePoint(user,POINT_MOVE_STICKER,data);
 
         msg.send("请选择贴纸包 / 或直接发送要移动的贴纸")
-                .keyboard(new Keyboard() {{
+			.keyboard(new Keyboard() {{
 
                     KeyboradButtonLine line = null;
 
@@ -91,21 +97,21 @@ public class MoveSticker extends Fragment {
                     }
 
                 }})
-                .withCancel().exec(data);
+			.withCancel().exec(data);
 
 
     }
 
     @Override
-    public void onPoint(UserData user, Msg msg, String point, PointData data) {
+    public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
-        StickerMove move = (StickerMove) data.with(msg);
+        final StickerMove move = (StickerMove) data.with(msg);
 
         if (move.type == 0 && msg.sticker() == null) {
 
             String target = msg.text();
 
-            if (target == null || !PackOwner.data.fieldEquals(target, "owner", user.id)) {
+            if (target == null || !PackOwner.data.fieldEquals(target,"owner",user.id)) {
 
                 msg.send("请选择你的贴纸包").withCancel().exec(data);
 
@@ -129,15 +135,15 @@ public class MoveSticker extends Fragment {
             move.set = set.stickerSet();
             move.setName = target;
 
-            ShowSticker.current.put(user.id, set.stickerSet());
+            ShowSticker.current.put(user.id,set.stickerSet());
 
             msg.send("请选择要移动的贴纸或直接发送")
-                    .buttons(new ButtonMarkup() {{
+				.buttons(new ButtonMarkup() {{
 
-                        newCurrentInlineButtonLine("选择贴纸", ShowSticker.PREFIX);
+                        newCurrentInlineButtonLine("选择贴纸",ShowSticker.PREFIX);
 
                     }})
-                    .withCancel().exec(data);
+				.withCancel().exec(data);
 
         } else if (move.type < 2) {
 
@@ -176,7 +182,7 @@ public class MoveSticker extends Fragment {
                 move.setName = set.stickerSet().name();
                 move.set = set.stickerSet();
 
-                ShowSticker.current.put(user.id, set.stickerSet());
+                ShowSticker.current.put(user.id,set.stickerSet());
 
             }
 
@@ -185,12 +191,12 @@ public class MoveSticker extends Fragment {
             move.type = 3;
 
             msg.send("请选择 / 发送要互换的位置的贴纸")
-                    .buttons(new ButtonMarkup() {{
+				.buttons(new ButtonMarkup() {{
 
-                        newCurrentInlineButtonLine("选择贴纸", ShowSticker.PREFIX);
+                        newCurrentInlineButtonLine("选择贴纸",ShowSticker.PREFIX);
 
                     }})
-                    .withCancel().exec(data);
+				.withCancel().exec(data);
 
 
         } else if (move.type == 3) {
@@ -209,19 +215,24 @@ public class MoveSticker extends Fragment {
 
             }
 
-            int index = ArrayUtil.indexOf(move.set.stickers(), msg.sticker());
+            int index = ArrayUtil.indexOf(move.set.stickers(),msg.sticker());
 
             clearPrivatePoint(user);
 
-            BaseResponse resp = execute(new SetStickerPositionInSet(move.from.fileId(), index));
+            BaseResponse resp = execute(new SetStickerPositionInSet(move.from.fileId(),index));
 
             if (resp.isOk()) {
 
-                msg.send("修改成功！和添加贴纸不同，这可能需要几个小时的时间来更新客户端的缓存。").exec();
+                msg.send("修改成功！").buttons(new ButtonMarkup() {{
+
+							newCurrentInlineButtonLine("查看贴纸包",ShowSticker.PREFIX + " " + move.setName);
+
+						}}).exec();
+
 
             } else {
 
-                msg.send("修改失败！", resp.description());
+                msg.send("修改失败！",resp.description());
 
             }
 
