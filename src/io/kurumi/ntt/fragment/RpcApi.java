@@ -11,6 +11,10 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.NumberUtil;
 import io.kurumi.ntt.model.request.Send;
 import com.pengrad.telegrambot.response.SendResponse;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import twitter4j.TwitterException;
+import io.kurumi.ntt.utils.NTT;
+import twitter4j.Status;
 
 public class RpcApi extends Fragment {
 
@@ -118,6 +122,48 @@ public class RpcApi extends Fragment {
 			}
 
 			return makeResult(new JSONObject(send.exec().json));
+
+		} else if ("update_status".equals(methodName)) {
+			
+			Long accountId = request.getLong("accountId");
+			
+			if (accountId == null) {
+				
+				return makeError("empty account id.");
+				
+			}
+			
+			TAuth account = TAuth.getById(accountId);
+			
+			if (account == null || !account.id.equals(user)) {
+				
+				return makeError("invalid account id.");
+				
+			}
+			
+			String text = request.getStr("text");
+
+			if (text == null) {
+
+				return makeError("empty status text.");
+
+			}
+			
+			try {
+				
+				Status status = account.createApi().updateStatus(text);
+
+				JSONObject result = new JSONObject();
+				
+				result.put("statusId",status.getId());
+				
+				return makeResult(result);
+				
+			} catch (TwitterException e) {
+				
+				return makeError(NTT.parseTwitterException(e));
+				
+			}
 
 		} else {
 
