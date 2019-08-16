@@ -67,7 +67,7 @@ public class DNSLookup extends Fragment {
 
 		try {
 
-			lookup = new Lookup(params[0],type);
+			lookup = new Lookup(domain,type);
 
 		} catch (TextParseException e) {
 
@@ -87,7 +87,7 @@ public class DNSLookup extends Fragment {
 
 		}
 
-		String message = "域名 : " + params[0] + " 查询结果 (" + Type.string(type) + ") : ";
+		String message = "域名 : " + domain + " 查询结果 (" + Type.string(type) + ") : ";
 
 		Record[] records = lookup.getAnswers();
 
