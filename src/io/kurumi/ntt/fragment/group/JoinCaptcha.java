@@ -1323,7 +1323,7 @@ public class JoinCaptcha extends Fragment {
 
                 } else {
 
-                    SendResponse resp = auth.se.reply(gd.welcomeMessage).html().exec();
+                    SendResponse resp = auth.serviceMsg.reply(gd.welcomeMessage).html().exec();
 
                     if (resp != null && resp.isOk()) {
 
