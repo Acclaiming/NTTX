@@ -96,7 +96,7 @@ public class QrEncoder extends Fragment {
 
 		ZipUtil.gzip(
 		
-		QrCodeUtil.generate(ArrayUtil.join(params," "),new QrConfig(300,300).setBackColor(background).setForeColor(color),cacheFile));
+		QrCodeUtil.generate(ArrayUtil.join(params," "),new QrConfig(512,512).setBackColor(background).setForeColor(color),cacheFile));
 
 		execute(new SendPhoto(msg.chatId(),cacheFile));
 
