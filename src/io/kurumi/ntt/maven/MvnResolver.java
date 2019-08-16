@@ -478,6 +478,8 @@ public class MvnResolver {
             MvnArtifact dep = resolve(group,artifact,depVer,targetRepository,log,props);
 
             if (dep != null) art.dependencies.add(dep);
+			
+			log.append("\n结束");
 
         }
 
