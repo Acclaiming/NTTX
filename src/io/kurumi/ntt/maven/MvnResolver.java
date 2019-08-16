@@ -376,7 +376,8 @@ public class MvnResolver {
 		}
 		
 		if (props == null) props = new LinkedHashMap<>();
-
+		else props = new LinkedHashMap<>(props);
+	
 		props.put("project.groupId",groupId);
 		props.put("project.version",version);
 		
