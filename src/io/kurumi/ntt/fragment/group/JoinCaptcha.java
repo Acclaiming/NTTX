@@ -845,7 +845,7 @@ public class JoinCaptcha extends Fragment {
 
         } else if (data.captcha_mode == 1) {
 
-            code = new MathCode(data.require_input != null);
+            code = new MathCode(data.require_input != null,data.with_image != null);
 
         } else {
 
