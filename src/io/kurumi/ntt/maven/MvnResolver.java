@@ -363,6 +363,9 @@ public class MvnResolver {
 
         LinkedHashMap<String, String> props = new LinkedHashMap<>();
 
+		props.put("project.groupId",groupId);
+		props.put("project.version",version);
+		
         Element properties = document.getRootElement().getChild("properties",NS);
 
         if (properties != null) {
