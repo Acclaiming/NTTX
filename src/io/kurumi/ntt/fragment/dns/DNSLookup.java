@@ -41,9 +41,13 @@ public class DNSLookup extends Fragment {
 
 		int type = Type.A;
 
+		String domain;
+		
 		if (params.length > 1) {
 
-			type = Type.value(params[1]);
+			type = Type.value(params[0]);
+			
+			domain = params[1];
 
 			if (type < 0) {
 
@@ -53,6 +57,10 @@ public class DNSLookup extends Fragment {
 
 			}
 
+		} else {
+			
+			domain = params[0];
+			
 		}
 
 		Lookup lookup;
@@ -99,7 +107,7 @@ public class DNSLookup extends Fragment {
 
 		}
 
-		msg.send(message).async();
+		msg.send(message).html().async();
 
 	}
 
