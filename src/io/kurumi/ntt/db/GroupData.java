@@ -135,11 +135,15 @@ public class GroupData {
 
         } else if (time < 60) {
 
-            return time + "s";
+            return time + "秒";
 
+		} else if (time % 60 == 0) {
+			
+			return (time / 60) + "分钟";
+			
         } else {
 
-            return time / 60 + "分" + (time % 60 == 0 ? "" : " " + time % 60 + "秒");
+            return time / 60 + "分 " + (time % 60) + "秒";
 
         }
 

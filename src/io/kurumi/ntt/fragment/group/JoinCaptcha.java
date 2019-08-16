@@ -143,9 +143,9 @@ public class JoinCaptcha extends Fragment {
 
 	@Override
 	public int checkMsg(UserData user,Msg msg) {
-		
+
 		return PROCESS_SYNC;
-		
+
 	}
 
     @Override
@@ -542,7 +542,7 @@ public class JoinCaptcha extends Fragment {
         @Override
         public String question() {
 
-            return "请" + (input ? "发送" : "选择") + " 答案以通过验证 ~";
+            return "请" + (input ? "发送" : "选择") + " 答案 ~";
 
         }
 
@@ -558,9 +558,10 @@ public class JoinCaptcha extends Fragment {
             switch (type) {
 
                 case 0:
-                    return "加";
+                    return "➕";
+
                 default:
-                    return "减";
+                    return "➖";
 
             }
 
@@ -576,7 +577,7 @@ public class JoinCaptcha extends Fragment {
         @Override
         public String validCode() {
 
-            return (type == 0 ? left + right : left - right) + "";
+            return formatNumber((type == 0 ? left + right : left - right) + "");
 
         }
 
@@ -585,21 +586,54 @@ public class JoinCaptcha extends Fragment {
 
             return new String[]{
 
-				RandomUtil.randomInt(-100,101) + "",
-				RandomUtil.randomInt(-100,101) + "",
-				RandomUtil.randomInt(-100,101) + "",
-				RandomUtil.randomInt(-100,101) + ""
+				formatNumber(RandomUtil.randomInt(-100,101) + ""),
+				formatNumber(RandomUtil.randomInt(-100,101) + ""),
+				formatNumber(RandomUtil.randomInt(-100,101) + ""),
+				formatNumber(RandomUtil.randomInt(-100,101) + "")
 
             };
 
         }
+
+		static String formatNumber(String text) {
+
+			return text
+				.replace("0","0⃣")
+				.replace("1","1⃣")
+				.replace("2","2⃣")
+				.replace("3","3⃣")
+				.replace("4","4⃣")
+				.replace("5","5⃣")
+				.replace("6","6⃣")
+				.replace("7","7⃣")
+				.replace("8","8⃣")
+				.replace("9","9⃣");
+
+		}
+
+		static String unFormatNumber(String text) {
+
+			return text
+				.replace("0⃣","0")
+				.replace("1⃣","1")
+				.replace("2⃣","2")
+				.replace("3⃣","3")
+				.replace("4⃣","4")
+				.replace("5⃣","5")
+				.replace("6⃣","6")
+				.replace("7⃣","7")
+				.replace("8⃣","8")
+				.replace("9⃣","9");
+
+		}
+
 
         @Override
         public boolean verify(String input) {
 
             try {
 
-                return (type == 0 ? left + right : left - right) == NumberUtil.parseInt(input.trim());
+                return (type == 0 ? left + right : left - right) == NumberUtil.parseInt(unFormatNumber(input.trim()));
 
             } catch (Exception ex) {
                 return false;
@@ -880,11 +914,11 @@ public class JoinCaptcha extends Fragment {
 
                 if (left != null) {
 
-                    auth.authMsg = msg.send(user.userName() + " ，验证失败 请重试 : 你有" + data.parse_time() + "的时间","\n" + code.question()).buttons(buttons).html().send();
+                    auth.authMsg = msg.send(user.userName() + " ，验证失败 请重试 : 你有 " + data.parse_time() + " 的时间","\n\n" + code.question()).buttons(buttons).html().send();
 
                 } else {
 
-                    auth.authMsg = msg.send(user.userName() + " ，请验证  : 你有" + data.parse_time() + "的时间","\n" + code.question()).buttons(buttons).html().send();
+                    auth.authMsg = msg.send(user.userName() + " ，请验证  : 你有 " + data.parse_time() + " 的时间","\n\n" + code.question()).buttons(buttons).html().send();
 
 
                 }
@@ -893,11 +927,11 @@ public class JoinCaptcha extends Fragment {
 
                 if (left != null) {
 
-                    auth.authMsg = msg.send(user.userName() + " ，验证失败 请重试  : 你有" + data.parse_time() + "的时间","\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
+                    auth.authMsg = msg.send(user.userName() + " ，验证失败 请重试  : 你有 " + data.parse_time() + " 的时间","\n\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
 
                 } else {
 
-                    auth.authMsg = msg.send(user.userName() + " ，请验证  : 你有" + data.parse_time() + "的时间","\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
+                    auth.authMsg = msg.send(user.userName() + " ，请验证  : 你有 " + data.parse_time() + " 的时间","\n\n" + code.question(),"\n\n" + code.code()).buttons(buttons).html().send();
 
                 }
 
@@ -937,7 +971,7 @@ public class JoinCaptcha extends Fragment {
 
             }
 
-            SendResponse resp = execute(new SendPhoto(msg.chatId(),info.getBytes()).caption(user.userName() + " 你有" + data.parse_time() + "的时间").parseMode(ParseMode.HTML).replyMarkup(buttons.markup()));
+            SendResponse resp = execute(new SendPhoto(msg.chatId(),info.getBytes()).caption(user.userName() + " 你有 " + data.parse_time() + " 的时间").parseMode(ParseMode.HTML).replyMarkup(buttons.markup()));
 
             if (resp != null && resp.isOk()) {
 
