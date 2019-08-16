@@ -124,7 +124,7 @@ public class RpcApi extends Fragment {
 
 			SendResponse response = send.exec();
 
-			log(user,"调用了发送消息 文本 : {} 解析方法 : {} 结果 : {}",text,parseMode,response.isOk() ? "成功" : "失败");
+			// log(user,"调用了发送消息 文本 : {} 解析方法 : {} 结果 : {}",text,parseMode,response.isOk() ? "成功" : "失败");
 			
 			if (response.isOk()) {
 
@@ -166,7 +166,7 @@ public class RpcApi extends Fragment {
 
 			}
 			
-			log(user,"调用了发送推文 \n\n账号 : {}\n\n文本 : {}",account.archive().formatSimple());
+			// log(user,"调用了发送推文 \n\n账号 : {}\n\n文本 : {}",account.archive().formatSimple());
 
 			try {
 
