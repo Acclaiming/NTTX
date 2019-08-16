@@ -43,6 +43,8 @@ public class DNSLookup extends Fragment {
 			return;
 			
 		}
+		
+		lookup.run();
 
 		if (lookup.getResult() != Lookup.SUCCESSFUL) {
 			
