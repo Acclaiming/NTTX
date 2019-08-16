@@ -530,8 +530,11 @@ public class JoinCaptcha extends Fragment {
 
     static class MathCode extends VerifyCode {
 
-        public MathCode(boolean input) {
+		boolean img;
+
+        public MathCode(boolean input,boolean img) {
             super(input);
+			this.img = img;
         }
 
         int left = RandomUtil.randomInt(101);
@@ -549,7 +552,7 @@ public class JoinCaptcha extends Fragment {
         @Override
         public VerifyCode fork() {
 
-            return new MathCode(input);
+            return new MathCode(input,img);
 
         }
 
@@ -595,7 +598,9 @@ public class JoinCaptcha extends Fragment {
 
         }
 
-		static String formatNumber(String text) {
+		String formatNumber(String text) {
+
+			if (img) return text;
 
 			return text
 				.replace("0","0⃣")
@@ -613,7 +618,7 @@ public class JoinCaptcha extends Fragment {
 
 		}
 
-		static String unFormatNumber(String text) {
+		String unFormatNumber(String text) {
 
 			return text
 				.replace("0⃣","0")
@@ -640,9 +645,9 @@ public class JoinCaptcha extends Fragment {
                 return (type == 0 ? left + right : left - right) == NumberUtil.parseInt(unFormatNumber(input.trim()));
 
             } catch (Exception ex) {
-				
+
                 return false;
-				
+
             }
 
         }
