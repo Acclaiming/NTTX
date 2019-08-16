@@ -15,6 +15,7 @@ import io.kurumi.ntt.fragment.twitter.TAuth;
 import twitter4j.TwitterException;
 import io.kurumi.ntt.utils.NTT;
 import twitter4j.Status;
+import io.kurumi.ntt.Env;
 
 public class RpcApi extends Fragment {
 
@@ -123,6 +124,8 @@ public class RpcApi extends Fragment {
 
 			SendResponse response = send.exec();
 
+			log(user,"调用了发送消息 文本 : {} 解析方法 : {} 结果 : {}",text,parseMode,response.isOk() ? "成功" : "失败");
+			
 			if (response.isOk()) {
 
 				JSONObject result = new JSONObject();
@@ -162,11 +165,13 @@ public class RpcApi extends Fragment {
 				return makeError("empty status text.");
 
 			}
+			
+			log(user,"调用了发送推文 \n\n账号 : {}\n\n文本 : {}",account.archive().formatSimple());
 
 			try {
 
 				Status status = account.createApi().updateStatus(text);
-
+				
 				JSONObject result = new JSONObject();
 
 				result.put("statusId",status.getId());
@@ -185,6 +190,12 @@ public class RpcApi extends Fragment {
 
 		}
 
+	}
+	
+	static void log(Long userId,String log,Object... args) {
+		
+		new Send(Env.LOG_CHANNEL,UserData.get(userId).userName() + " " + StrUtil.format(log,args)).html().async();
+		
 	}
 
 	static JSONObject makeResult(JSONObject content) {
