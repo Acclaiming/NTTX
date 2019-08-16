@@ -223,7 +223,7 @@ public class MvnResolver {
 			} else {
 
 				log.append("\n无法解析版本");
-				
+
 				throw new MvnException(log.toString());
 
 			}
@@ -358,29 +358,35 @@ public class MvnResolver {
             art.packaging = packaging.getValue();
 
         }
-		
+
 		Element repositories = document.getRootElement().getChild("repositories",NS);
-		
+
 		if (repositories != null) {
-			
+
 			for (Element repository : repositories.getChildren()) {
-				
-				String repo = repository.getChild("url").getValue().trim();
-				
-				addRepository(repo);
-				
-				log.append("\n导入源 : " + repo);
-				
+
+				Element repoUrl = repository.getChild("url");
+
+				if (repoUrl != null) {
+
+					String repo = repoUrl.getValue().trim();
+
+					addRepository(repo);
+
+					log.append("\n导入源 : " + repo);
+
+				}
+
 			}
-			
+
 		}
-		
+
 		if (props == null) props = new LinkedHashMap<>();
 		else props = new LinkedHashMap<>(props);
-	
+
 		props.put("project.groupId",groupId);
 		props.put("project.version",version);
-		
+
         Element properties = document.getRootElement().getChild("properties",NS);
 
         if (properties != null) {
@@ -424,16 +430,16 @@ public class MvnResolver {
         for (Element dependency : dependencies.getChildren()) {
 
             String group = dependency.getChild("groupId",NS).getValue();
-			
+
             String artifact = dependency.getChild("artifactId",NS).getValue();
 
 			for (Map.Entry<String, String> prop : props.entrySet()) {
 
 				group = group.replace("${" + prop.getKey() + "}",prop.getValue());
 				artifact = artifact.replace("${" + prop.getKey() + "}",prop.getValue());
-				
+
 			}
-			
+
             String depVer = null;
 
             Element versionObj = dependency.getChild("version",NS);
@@ -458,7 +464,7 @@ public class MvnResolver {
 
             if (optional != null && "true".equals(optional.getValue())) {
 
-               // log.append("\n 是可选依赖 跳过");
+				// log.append("\n 是可选依赖 跳过");
 
                 continue;
 
@@ -473,13 +479,13 @@ public class MvnResolver {
                 continue;
 
             }
-			
+
 			log.append("\n\n发现依赖 ( ").append(art.artifactId).append(" ) : " + group + ":" + artifact + ":" + depVer);
 
             MvnArtifact dep = resolve(group,artifact,depVer,targetRepository,log,props);
 
             if (dep != null) art.dependencies.add(dep);
-			
+
 			log.append("\n结束");
 
         }
