@@ -473,7 +473,7 @@ public class MvnResolver {
 
             }
 			
-			log.append("\n\n发现依赖 : " + group + ":" + artifact + ":" + depVer);
+			log.append("\n\n发现依赖 ( ").append(art.artifactId).append(" ) : " + group + ":" + artifact + ":" + depVer);
 
             MvnArtifact dep = resolve(group,artifact,depVer,targetRepository,log,props);
 
