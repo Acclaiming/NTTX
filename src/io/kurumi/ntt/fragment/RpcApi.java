@@ -121,26 +121,40 @@ public class RpcApi extends Fragment {
 
 			}
 
-			return makeResult(new JSONObject(send.exec().json));
+			SendResponse response = send.exec();
+
+			if (response.isOk()) {
+
+				JSONObject result = new JSONObject();
+
+				result.put("messageId",response.message().messageId());
+
+				return makeResult(result);
+
+			} else {
+
+				return makeError(response.description());
+
+			}
 
 		} else if ("update_status".equals(methodName)) {
-			
+
 			Long accountId = request.getLong("accountId");
-			
+
 			if (accountId == null) {
-				
+
 				return makeError("empty account id.");
-				
+
 			}
-			
+
 			TAuth account = TAuth.getById(accountId);
-			
+
 			if (account == null || !account.user.equals(user)) {
-				
+
 				return makeError("invalid account id.");
-				
+
 			}
-			
+
 			String text = request.getStr("text");
 
 			if (text == null) {
@@ -148,21 +162,21 @@ public class RpcApi extends Fragment {
 				return makeError("empty status text.");
 
 			}
-			
+
 			try {
-				
+
 				Status status = account.createApi().updateStatus(text);
 
 				JSONObject result = new JSONObject();
-				
+
 				result.put("statusId",status.getId());
-				
+
 				return makeResult(result);
-				
+
 			} catch (TwitterException e) {
-				
+
 				return makeError(NTT.parseTwitterException(e));
-				
+
 			}
 
 		} else {
