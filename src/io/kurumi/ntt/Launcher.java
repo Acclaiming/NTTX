@@ -89,6 +89,7 @@ import com.pengrad.telegrambot.response.GetChatMemberResponse;
 import com.pengrad.telegrambot.request.GetChatMember;
 import com.pengrad.telegrambot.model.ChatMember;
 import io.kurumi.ntt.utils.Html;
+import io.kurumi.ntt.fragment.dns.DNSLookup;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -388,7 +389,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		addFragment(new ZeroPadEncode());
 		addFragment(new QrDecoder());
 		addFragment(new QrEncoder());
-		
+		addFragment(new DNSLookup());
 		addFragment(new MMPITest());
 	
 		// Mods
