@@ -558,10 +558,10 @@ public class JoinCaptcha extends Fragment {
             switch (type) {
 
                 case 0:
-                    return "➕";
+                    return "+";
 
                 default:
-                    return "➖";
+                    return "-";
 
             }
 
@@ -607,7 +607,9 @@ public class JoinCaptcha extends Fragment {
 				.replace("6","6⃣")
 				.replace("7","7⃣")
 				.replace("8","8⃣")
-				.replace("9","9⃣");
+				.replace("9","9⃣")
+				.replace("+","➕")
+				.replace("-","➖");
 
 		}
 
@@ -623,7 +625,9 @@ public class JoinCaptcha extends Fragment {
 				.replace("6⃣","6")
 				.replace("7⃣","7")
 				.replace("8⃣","8")
-				.replace("9⃣","9");
+				.replace("9⃣","9")
+				.replace("➕","+")
+				.replace("➖","-");
 
 		}
 
@@ -636,7 +640,9 @@ public class JoinCaptcha extends Fragment {
                 return (type == 0 ? left + right : left - right) == NumberUtil.parseInt(unFormatNumber(input.trim()));
 
             } catch (Exception ex) {
+				
                 return false;
+				
             }
 
         }
