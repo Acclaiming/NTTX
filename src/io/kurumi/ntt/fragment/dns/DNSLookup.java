@@ -33,7 +33,7 @@ public class DNSLookup extends Fragment {
 
 		if (params.length == 0) {
 
-			msg.invalidParams("domain").async();
+			msg.invalidParams("type","domain").async();
 
 			return;
 
