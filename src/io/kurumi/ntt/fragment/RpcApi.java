@@ -117,7 +117,7 @@ public class RpcApi extends Fragment {
 
 			}
 
-			return makeResult(new JSONObject(send.exec().json).toStringPretty());
+			return makeResult(new JSONObject(send.exec().json));
 
 		} else {
 
@@ -127,7 +127,7 @@ public class RpcApi extends Fragment {
 
 	}
 
-	static JSONObject makeResult(String content) {
+	static JSONObject makeResult(JSONObject content) {
 
 		JSONObject response = new JSONObject();
 
