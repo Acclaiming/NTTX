@@ -69,6 +69,8 @@ public class WhoisLookup extends Fragment {
 			if (message == null) message = line;
 			else message += "\n" + line;
 			
+			if (line.contains("<<<")) break;
+			
 		}
 		
 		msg.send(message).async();
