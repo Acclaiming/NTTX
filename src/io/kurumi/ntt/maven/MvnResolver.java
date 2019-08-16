@@ -453,13 +453,11 @@ public class MvnResolver {
 
             }
 
-            log.append("\n\n发现依赖 : " + group + ":" + artifact + ":" + depVer);
-
             Element optional = dependency.getChild("optional",NS);
 
             if (optional != null && "true".equals(optional.getValue())) {
 
-                log.append("\n 是可选依赖 跳过");
+               // log.append("\n 是可选依赖 跳过");
 
                 continue;
 
@@ -469,11 +467,13 @@ public class MvnResolver {
 
             if (scope != null && !("compile".equals(scope.getValue()) || "runtime".equals(scope.getValue()))) {
 
-                log.append("\n 是可选依赖 跳过");
+                // log.append("\n 是可选依赖 跳过");
 
                 continue;
 
             }
+			
+			log.append("\n\n发现依赖 : " + group + ":" + artifact + ":" + depVer);
 
             MvnArtifact dep = resolve(group,artifact,depVer,targetRepository,log,props);
 
