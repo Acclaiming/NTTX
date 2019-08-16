@@ -401,7 +401,6 @@ public class MvnResolver {
         if (dependencies == null) {
 
             log.append("\n没有依赖项");
-            ;
 
             return art;
 
