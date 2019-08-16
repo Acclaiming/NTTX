@@ -57,7 +57,7 @@ public class MvnDownloader extends Fragment {
 
         try {
 
-            result = resolver.resolve(params[0], params[1], version, null, log);
+            result = resolver.resolve(params[0], params[1], version, null, log,null);
 
         } catch (Exception e) {
 

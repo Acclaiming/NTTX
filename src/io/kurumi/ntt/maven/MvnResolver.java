@@ -106,7 +106,7 @@ public class MvnResolver {
 
     }
 
-    public MvnArtifact resolve(String groupId,String artifactId,String version,String defaultRepository,StringBuilder log) throws MvnException {
+    public MvnArtifact resolve(String groupId,String artifactId,String version,String defaultRepository,StringBuilder log,LinkedHashMap<String, String> props) throws MvnException {
 
         MvnArtifact art = new MvnArtifact();
 
@@ -358,8 +358,24 @@ public class MvnResolver {
             art.packaging = packaging.getValue();
 
         }
-
-        LinkedHashMap<String, String> props = new LinkedHashMap<>();
+		
+		Element repositories = document.getRootElement().getChild("repositories",NS);
+		
+		if (repositories != null) {
+			
+			for (Element repository : repositories.getChildren()) {
+				
+				String repo = repository.getChild("url").getValue().trim();
+				
+				addRepository(repo);
+				
+				log.append("\n导入源 : " + repo);
+				
+			}
+			
+		}
+		
+		if (props == null) props = new LinkedHashMap<>();
 
 		props.put("project.groupId",groupId);
 		props.put("project.version",version);
@@ -459,7 +475,7 @@ public class MvnResolver {
 
             }
 
-            MvnArtifact dep = resolve(group,artifact,depVer,targetRepository,log);
+            MvnArtifact dep = resolve(group,artifact,depVer,targetRepository,log,props);
 
             if (dep != null) art.dependencies.add(dep);
 
