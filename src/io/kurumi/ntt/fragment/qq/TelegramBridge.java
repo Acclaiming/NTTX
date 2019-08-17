@@ -1,11 +1,28 @@
 package io.kurumi.ntt.fragment.qq;
 
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HtmlUtil;
+import cn.hutool.http.HttpUtil;
+import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.request.SendAnimation;
+import com.pengrad.telegrambot.request.SendPhoto;
+import io.kurumi.ntt.Env;
+import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.cqhttp.TinxListener;
 import io.kurumi.ntt.cqhttp.update.MessageUpdate;
 import io.kurumi.ntt.db.Data;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.Send;
+import io.kurumi.ntt.utils.Html;
+import java.io.File;
 import java.util.HashMap;
 
 public class TelegramBridge {
-	
+
 	public static Data<GroupBind> data = new Data<>(GroupBind.class);
 
 	public static class GroupBind {
@@ -26,13 +43,137 @@ public class TelegramBridge {
 			qqIndex.put(bind.groupId,bind.id);
 
 		}
+
+	}
+
+	public static void qqTotelegram(MessageUpdate update) {
+
+
+	}
+
+	public static class TelegramListener extends Fragment {
+		
+		
+
+		@Override
+		public void init(BotFragment origin) {
+
+			super.init(origin);
+
+			registerAdminFunction("tinx_bind","tinx_unbind","tinx_list");
+
+		}
+
+		@Override
+		public void onFunction(UserData user,Msg msg,String function,String[] params) {
+
+			if (function.endsWith("_bind")) {
+
+				if (params.length < 2 || !NumberUtil.isNumber(params[0]) || !NumberUtil.isNumber(params[1])) {
+
+					msg.invalidParams("chatId","groupId").async();
+
+					return;
+
+				}
+
+				GroupBind bind = new GroupBind();
+
+				bind.id = NumberUtil.parseLong(params[0]);
+				bind.groupId = NumberUtil.parseLong(params[1]);
+
+				telegramIndex.put(bind.id,bind.groupId);
+				qqIndex.put(bind.groupId,bind.id);
+
+				data.setById(bind.id,bind);
+
+				msg.send("完成 :)").async();
+
+			}
+
+		}
+
+
+		static String formarMessage(UserData user) {
+
+			String message = user.name() + " : ";
+
+			return message;
+
+		}
+		
+		@Override
+		public int checkMsg(UserData user,Msg msg) {
+
+			return msg.isGroup() && telegramIndex.containsKey(msg.chatId()) ? PROCESS_ASYNC : PROCESS_CONTINUE;
+
+		}
+
+		@Override
+		public void onGroup(UserData user,Msg msg) {
+
+			if (msg.hasText()) {
+
+				Launcher.TINX.api.sendGroupMsg(telegramIndex.get(msg.chatId()),formarMessage(user) + msg.text(),true);
+
+			} else if (msg.sticker() != null) {
+
+				Launcher.TINX.api.sendGroupMsg(telegramIndex.get(msg.chatId()),formarMessage(user) + msg.sticker().emoji(),true);
+
+			}
+
+		}
 		
 	}
 
-	
-	public static void qqTotelegram(MessageUpdate update) {
-		
-		
+	public static class QQListener extends TinxListener {
+
+		@Override
+		public void onGroup(MessageUpdate msg) {
+
+			if (!qqIndex.containsKey(msg.group_id)) return;
+
+			Long chatId = qqIndex.get(msg.group_id);
+
+			String user = Html.b(StrUtil.isBlank(msg.sender.card) ? msg.sender.nickname : msg.sender.card) + " : ";
+
+			if (msg.message.startsWith("[CQ:image,")) {
+
+				String file = StrUtil.subBetween(msg.message,"file=",",");
+				String url = StrUtil.subBetween(msg.message,"url=","]");
+
+				File imageCache = new File(Env.CACHE_DIR,"qq_image/" + file);
+
+				if (!imageCache.isFile()) {
+
+					HttpUtil.downloadFile(url,imageCache);
+
+				}
+
+				if (imageCache.getName().endsWith(".gif")) {
+
+					Launcher.INSTANCE.execute(new SendAnimation(chatId,imageCache).caption(user + " [GIF]").parseMode(ParseMode.HTML));
+
+				} else {
+
+					Launcher.INSTANCE.execute(new SendPhoto(chatId,imageCache).caption(user + " [图片]").parseMode(ParseMode.HTML));
+
+				}
+
+			} else {
+
+				String message = user;
+
+				msg.message = CqCodeUtil.replaceFace(msg.message);
+
+				message += " " + HtmlUtil.escape(msg.message);
+
+				new Send(chatId,message).html().async();
+
+			}
+
+		}
+
 	}
-	
+
 }

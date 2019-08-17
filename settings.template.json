@@ -17,5 +17,6 @@
   "cqhttp_ws": "ws://127.0.1.1:5701/event/",
   "cqhttp_url": "http://127.0.0.1:5700/",
   "cqhttp_path": "/root/coolq",
+  "qq_admins": [],
   "help_message": "快戳 <b>说明书</b>！ : https://manual.kurumi.io ("
 }

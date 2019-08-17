@@ -43,6 +43,7 @@ public class Env {
 	public static String CQHTTP_URL;
 	public static String CQHTTP_WS;
 	public static File CQHTTP_PATH;
+	public static Long[] QQ_ADMINS;
 	
 	public static String MODULES_REPO = "https://kurumi.io/NTT-Modules-Repo";
 	
@@ -90,6 +91,7 @@ public class Env {
 		CQHTTP_URL = conf.getStr("cqhttp_url");
 		CQHTTP_WS = conf.getStr("cqhttp_ws");
 		CQHTTP_PATH = new File(conf.getStr("cqhttp_path"));
+		QQ_ADMINS = (Long[]) conf.getJSONArray("qq_admins").toArray(Long.class);
 		
     }
 
