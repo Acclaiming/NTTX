@@ -12,29 +12,6 @@ import io.kurumi.ntt.utils.Html;
 
 public class BindGroup extends Fragment {
 
-	public static Data<GroupBind> data = new Data<>(GroupBind.class);
-
-	public static class GroupBind {
-
-		public Long id;
-		public Long groupId;
-
-	}
-
-	public static HashMap<Long,Long> telegramIndex = new HashMap<>();
-	public static HashMap<Long,Long> groupIndex = new HashMap<>();
-
-	static {
-
-		for (GroupBind bind : data.getAll()) {
-
-			telegramIndex.put(bind.id,bind.groupId);
-			groupIndex.put(bind.groupId,bind.id);
-
-		}
-
-	}
-
 	@Override
 	public void init(BotFragment origin) {
 
