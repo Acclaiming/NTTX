@@ -36,7 +36,6 @@ public class CqCodeUtil {
 
 				Thumbnails
 					.of(cache)
-					.size(512, 512)
 					.outputFormat("jpg")
 					.toFile(local);
 
