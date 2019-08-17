@@ -303,8 +303,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 			user = UserData.get(update.message().from());
 
-			System.out.println("[ " + update.message().chat().title() + " ] " + user.name() + " : " + update.message().text());
-
         } else if (update.editedMessage() != null) {
 
 			update.lock.send(null);
@@ -338,8 +336,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
         } else if (update.callbackQuery() != null) {
 
             user = UserData.get(update.callbackQuery().from());
-
-			System.out.println("call : " + update.callbackQuery().data());
 
         } else if (update.inlineQuery() != null) {
 
