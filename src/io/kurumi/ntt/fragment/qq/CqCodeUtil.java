@@ -22,7 +22,7 @@ public class CqCodeUtil {
 
 	public static String inputSticker(Sticker sticker) {
 
-		File local = new File(Env.CACHE_DIR, "sticker_cache/" + sticker.fileId() + ".png");
+		File local = new File(Env.CACHE_DIR, "sticker_cache/" + sticker.fileId() + ".jpg");
 
 		if (!local.isFile()) {
 
