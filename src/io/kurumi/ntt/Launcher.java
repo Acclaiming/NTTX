@@ -91,10 +91,9 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.Html;
 import java.util.TimeZone;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
-import java.util.TimerThread;
-import java.util.TimerTask;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
