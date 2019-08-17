@@ -216,6 +216,8 @@ public class TinxApi {
 
 		for (int index = 0;index < params.length;index += 2) {
 
+			if (params[index + 1] == null) continue;
+			
 			body.put(params[index].toString(),params[index + 1]);
 
 		}

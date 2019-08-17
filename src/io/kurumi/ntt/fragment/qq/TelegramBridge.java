@@ -20,6 +20,10 @@ import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
 import java.io.File;
 import java.util.HashMap;
+import io.kurumi.ntt.cqhttp.update.GroupRequest;
+import cn.hutool.core.util.ArrayUtil;
+import com.mongodb.client.model.Variable;
+import io.kurumi.ntt.cqhttp.Variants;
 
 public class TelegramBridge {
 
@@ -53,8 +57,6 @@ public class TelegramBridge {
 
 	public static class TelegramListener extends Fragment {
 		
-		
-
 		@Override
 		public void init(BotFragment origin) {
 
@@ -130,6 +132,21 @@ public class TelegramBridge {
 
 	public static class QQListener extends TinxListener {
 
+		@Override
+		public void onGroupInviteRequest(GroupRequest request) {
+			
+			if (ArrayUtil.contains(Env.QQ_ADMINS,request.user_id)) {
+				
+				Launcher.TINX.api.setGroupAddRequest(request.flag,Variants.GR_INVITE,true,null);
+				
+			} else {
+				
+				Launcher.TINX.api.setGroupAddRequest(request.flag,Variants.GR_INVITE,false,null);
+				
+			}
+			
+		}
+		
 		@Override
 		public void onGroup(MessageUpdate msg) {
 
