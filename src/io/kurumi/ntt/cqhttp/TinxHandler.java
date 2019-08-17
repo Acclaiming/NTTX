@@ -122,7 +122,7 @@ public class TinxHandler extends SimpleChannelInboundHandler<Object> {
 
         } else if (frame instanceof CloseWebSocketFrame) {
 
-			BotLog.debug("cqhttp-api 连接关闭");
+			BotLog.info("cqhttp-api 连接关闭");
 
             ch.close();
 

@@ -1,6 +1,8 @@
 package io.kurumi.ntt.cqhttp;
 
+import io.kurumi.ntt.Launcher;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -11,13 +13,14 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakerFactory;
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketClientCompressionHandler;
 import java.net.URI;
 import java.net.URISyntaxException;
-import io.kurumi.ntt.utils.BotLog;
-import io.kurumi.ntt.Launcher;
+import cn.hutool.core.thread.ThreadUtil;
 
 public final class TinxBot {
 
@@ -93,7 +96,27 @@ public final class TinxBot {
 			return;
 
 		}
+		
+		new Thread("CqHttp Ping Thread") {
 
+			@Override
+			public void run() {
+
+				while (client.isActive()) {
+
+					WebSocketFrame frame = new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[] { 8, 1, 8, 1 }));
+                   
+					client.writeAndFlush(frame);
+					
+					ThreadUtil.safeSleep(60 * 1000L);
+					
+				}
+
+			}
+
+		}.start();
+		
+		
 		new Thread("CqHttp Ws Thread") {
 
 			@Override
