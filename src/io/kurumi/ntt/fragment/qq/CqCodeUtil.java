@@ -8,55 +8,70 @@ import io.kurumi.ntt.Env;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.core.codec.Base64;
+import net.coobird.thumbnailator.Thumbnailator;
+import net.coobird.thumbnailator.Thumbnails;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class CqCodeUtil {
 
 	private static HashMap<Integer,String> emojiMap = new HashMap<>();
 
 	public static String inputImage(File file) {
-		
-		return "[CQ:image,file=base64://" + Base64.encode(file) + "]";
-		
+
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+
+		try {
+
+			Thumbnails.of(file)
+				.outputFormat("png")
+				.outputQuality(1.0f)
+				.toOutputStream(bytes);
+			
+		} catch (IOException e) {}
+
+		return "[CQ:image,file=base64://" + Base64.encode(bytes.toByteArray()) + "]";
+
 	}
-	
+
 	public static String makeImage(File file) {
-		
+
 		String type = FileUtil.getType(file);
 
 		String md5 = SecureUtil.md5(file);
 
 		File targetFile = new File(Env.CQHTTP_PATH,"data/image/" + md5 + "." + type);
-		
+
 		if (!targetFile.isFile()) FileUtil.copyContent(file,targetFile,true);
-		
+
 		return "[CQ:image,file=" + md5 + "." + type + "]";
-		
+
 	}
-	
+
 	public static String replaceFace(String message) {
-		
+
 		String cqFace = "[CQ:face,id=";
-		
+
 		while (message.contains(cqFace)) {
-			
+
 			String left = StrUtil.subBefore(message,cqFace,false);
-			
+
 			message = StrUtil.subAfter(message,cqFace,false);
-			
+
 			String face = StrUtil.subBefore(message,"]",false);
-			
+
 			face = emojiMap.get(NumberUtil.parseInt(face));
-			
+
 			message = left + face + StrUtil.subAfter(message,"]",false);
-			
+
 		}
-		
+
 		return message;
-		
+
 	}
-	
+
 	static {
-			
+
 		emojiMap.put(0,"\u0001\uF62E");
 		emojiMap.put(1,"\u0001\uF623");
 		emojiMap.put(2,"\u0001\uF60D");
@@ -149,7 +164,7 @@ public class CqCodeUtil {
 		emojiMap.put(182,"\u0001\uF602");
 		emojiMap.put(183,"\u0001\uF913");
 		emojiMap.put(212,"\u0001\uF633");
-		
+
 	}
-	
+
 }
