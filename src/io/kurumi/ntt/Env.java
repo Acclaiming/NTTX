@@ -89,6 +89,7 @@ public class Env {
 		
 		CQHTTP_URL = conf.getStr("cqhttp_url");
 		CQHTTP_WS = conf.getStr("cqhttp_ws");
+		CQHTTP_PATH = new File(conf.getStr("cqhttp_path"));
 		
     }
 
