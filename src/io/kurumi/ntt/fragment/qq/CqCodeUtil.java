@@ -11,7 +11,7 @@ import cn.hutool.core.codec.Base64;
 
 public class CqCodeUtil {
 
-	public static HashMap<Integer,String> emojiMap = new HashMap<>();
+	private static HashMap<Integer,String> emojiMap = new HashMap<>();
 
 	public static String inputImage(File file) {
 		
