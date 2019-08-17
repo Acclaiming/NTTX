@@ -26,6 +26,8 @@ public class BindListener extends TinxListener {
 		
 		String message = Html.b(StrUtil.isBlank(update.sender.card) ? update.sender.nickname : update.sender.card);
 		
+		update.message = CqCodeUtil.replaceFace(update.message);
+		
 		message += " : " + update.message;
 		
 		return message;
