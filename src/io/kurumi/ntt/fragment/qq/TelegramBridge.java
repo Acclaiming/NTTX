@@ -25,6 +25,7 @@ import cn.hutool.core.util.ArrayUtil;
 import com.mongodb.client.model.Variable;
 import io.kurumi.ntt.cqhttp.Variants;
 import io.kurumi.ntt.fragment.qq.TelegramBridge.GroupBind;
+import io.kurumi.ntt.utils.NTT;
 
 public class TelegramBridge {
 
@@ -136,6 +137,8 @@ public class TelegramBridge {
 					
 				}
 				
+				if (NTT.checkGroupAdmin(msg)) return;
+				
 				if (!disable.containsKey(msg.chatId())) {
 					
 					msg.send("没有关闭 :)").async();
@@ -165,6 +168,8 @@ public class TelegramBridge {
 					return;
 
 				}
+				
+				if (NTT.checkGroupAdmin(msg)) return;
 
 				if (disable.containsKey(msg.chatId())) {
 
