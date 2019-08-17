@@ -10,7 +10,7 @@ import cn.hutool.core.util.StrUtil;
 public class BindListener extends TinxListener {
 
 	@Override
-	public void onMsg(MessageUpdate msg) {
+	public void onGroup(MessageUpdate msg) {
 		
 		if (BindGroup.groupIndex.containsKey(msg.group_id)) {
 			

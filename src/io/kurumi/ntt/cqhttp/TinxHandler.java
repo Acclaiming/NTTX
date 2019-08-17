@@ -140,11 +140,11 @@ public class TinxHandler extends SimpleChannelInboundHandler<Object> {
 
 			for (TinxListener listener : listeners) listener.onMsg(msg);
 
-			if (Variants.MSG_PRIVATE.equals(msg.sub_type)) {
+			if (Variants.MSG_PRIVATE.equals(msg.message_type)) {
 
 				for (TinxListener listener : listeners) listener.onPrivate(msg);
 
-			} else if (Variants.MSG_GROUP.equals(msg.sub_type)) {
+			} else if (Variants.MSG_GROUP.equals(msg.message_type)) {
 
 				for (TinxListener listener : listeners) listener.onGroup(msg);
 
