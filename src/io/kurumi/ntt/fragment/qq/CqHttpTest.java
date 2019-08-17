@@ -29,27 +29,27 @@ public class CqHttpTest extends Fragment {
 		GetGroupListResponse list = bot.api.getGroupList();
 
 		if (!list.isOk()) {
-			
-			msg.send("get_group_list failed : " +list.retcode).async();
-			
-			return;
-			
+
+			msg.send("get_group_list failed : " + list.retcode).async();
+
+		} else {
+
+			String message = "所有群组 :\n";
+
+			for (GetGroupListResponse.Group group : list.data) {
+
+				message += "\n" + group.group_name;
+
+			}
+
+			msg.send(message).async();
+
 		}
-		
-		String message = "所有群组 :\n";
-		
-		for (GetGroupListResponse.Group group : list.data) {
-			
-			message += "\n" + group.group_name;
-			
-		}
-		
-		msg.send(message).async();
-		
+
 		bot.addListener(new TinxListener() {
 
 				@Override
-				public void onGroup(MessageUpdate groupMsg) {
+				public void onMsg(MessageUpdate groupMsg) {
 
 					msg.send(groupMsg.sender.nickname + " : " + groupMsg.raw_message).async();
 
@@ -60,5 +60,5 @@ public class CqHttpTest extends Fragment {
 		bot.start();
 
 	}
-	
+
 }
