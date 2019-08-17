@@ -232,6 +232,8 @@ public class TinxApi {
 
 			HttpResponse result = HttpUtil.createPost(url + method).body(body).execute();
 
+			System.out.println(result);
+			
 			return Launcher.GSON.fromJson(result.body(),clazz);
 
 		} catch (Exception httpExc) {

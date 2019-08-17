@@ -122,7 +122,7 @@ public class TelegramBridge {
 
 			} else if (msg.sticker() != null) {
 
-				Launcher.TINX.api.sendGroupMsg(groupId,formarMessage(user) + CqCodeUtil.makeImage(getFile(msg.sticker().fileId())),false);
+				Launcher.TINX.api.sendGroupMsg(groupId,formarMessage(user) + CqCodeUtil.inputSticker(msg.sticker()),false);
 				
 			}
 
