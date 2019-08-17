@@ -3,10 +3,35 @@ package io.kurumi.ntt.fragment.qq;
 import java.util.HashMap;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.NumberUtil;
+import java.io.File;
+import io.kurumi.ntt.Env;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.core.codec.Base64;
 
 public class CqCodeUtil {
 
 	public static HashMap<Integer,String> emojiMap = new HashMap<>();
+
+	public static String inputImage(File file) {
+		
+		return "[CQ:image,file=base64://" + Base64.encode(file) + "]";
+		
+	}
+	
+	public static String makeImage(File file) {
+		
+		String type = FileUtil.getType(file);
+
+		String md5 = SecureUtil.md5(file);
+
+		File targetFile = new File(Env.CQHTTP_PATH,"data/image/" + md5 + "." + type);
+		
+		if (!targetFile.isFile()) FileUtil.copyContent(file,targetFile,true);
+		
+		return "[CQ:image,file=" + md5 + "." + type + "]";
+		
+	}
 	
 	public static String replaceFace(String message) {
 		

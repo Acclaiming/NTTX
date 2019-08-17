@@ -112,14 +112,16 @@ public class TelegramBridge {
 		@Override
 		public void onGroup(UserData user,Msg msg) {
 
+			Long groupId = telegramIndex.get(msg.chatId());
+
 			if (msg.hasText()) {
 
-				Launcher.TINX.api.sendGroupMsg(telegramIndex.get(msg.chatId()),formarMessage(user) + msg.text(),true);
+				Launcher.TINX.api.sendGroupMsg(groupId,formarMessage(user) + msg.text(),true);
 
 			} else if (msg.sticker() != null) {
 
-				Launcher.TINX.api.sendGroupMsg(telegramIndex.get(msg.chatId()),formarMessage(user) + msg.sticker().emoji(),true);
-
+				Launcher.TINX.api.sendGroupMsg(groupId,CqCodeUtil.makeImage();;
+				
 			}
 
 		}
@@ -137,8 +139,12 @@ public class TelegramBridge {
 
 			String user = Html.b(StrUtil.isBlank(msg.sender.card) ? msg.sender.nickname : msg.sender.card) + " : ";
 
-			if (msg.message.startsWith("[CQ:image,")) {
+			String cqImage = "[CQ:image,";
+			
+			if (msg.message.contains(cqImage)) {
 
+				String left = StrUtil.subBefore(msg.message,cqImage,false);
+				
 				String file = StrUtil.subBetween(msg.message,"file=",",");
 				String url = StrUtil.subBetween(msg.message,"url=","]");
 
@@ -152,11 +158,11 @@ public class TelegramBridge {
 
 				if (imageCache.getName().endsWith(".gif")) {
 
-					Launcher.INSTANCE.execute(new SendAnimation(chatId,imageCache).caption(user + " [GIF]").parseMode(ParseMode.HTML));
+					Launcher.INSTANCE.execute(new SendAnimation(chatId,imageCache).caption(user + left + " [GIF]").parseMode(ParseMode.HTML));
 
 				} else {
 
-					Launcher.INSTANCE.execute(new SendPhoto(chatId,imageCache).caption(user + " [图片]").parseMode(ParseMode.HTML));
+					Launcher.INSTANCE.execute(new SendPhoto(chatId,imageCache).caption(user + left + " [图片]").parseMode(ParseMode.HTML));
 
 				}
 
