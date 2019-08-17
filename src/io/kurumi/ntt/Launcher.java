@@ -204,26 +204,28 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 	
 	static void tryTinxConnect() {
 		
-		mainTimer.schedule(new TimerTask() {
+		try {
 
-				@Override
-				public void run() {
+			TINX.start();
 
-					try {
-						
-						TINX.start();
-						
-					} catch (Exception e) {
-						
-						BotLog.debug("CQHTTP连接失败 正在等待重试");
-						
+		} catch (Exception e) {
+
+			BotLog.debug("CQHTTP连接失败 正在等待重试");
+
+			mainTimer.schedule(new TimerTask() {
+
+					@Override
+					public void run() {
+
 						tryTinxConnect();
-						
+
 					}
 
-				}
+				},2 * 60 * 1000L);
 
-			},2 * 60 * 1000L);
+		}
+		
+		
 			
 	}
 
