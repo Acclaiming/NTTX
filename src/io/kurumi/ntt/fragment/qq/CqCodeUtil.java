@@ -29,9 +29,11 @@ public class CqCodeUtil {
 			local.getParentFile().mkdirs();
 
 			try {
+				
+				FileUtil.copyFile(Launcher.INSTANCE.getFile(sticker.fileId()),local);
 
 				Thumbnails
-					.of(Launcher.INSTANCE.getFile(sticker.fileId()))
+					.of(local)
 					.size(512, 512)
 					.outputFormat("jpg")
 					.toFile(local);
