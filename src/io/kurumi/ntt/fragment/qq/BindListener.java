@@ -16,7 +16,7 @@ public class BindListener extends TinxListener {
 			
 			Long chatId = BindGroup.groupIndex.get(msg.group_id);
 			
-			new Send(chatId,formatMessage(msg)).async();
+			new Send(chatId,formatMessage(msg)).html().async();
 			
 		}
 		
