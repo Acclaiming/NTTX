@@ -630,7 +630,7 @@ public class StatusArchive {
 
     public StatusArchive loop(Twitter api) {
 
-        return loop(api,true);
+        return loop(api,false);
 
     }
 
@@ -690,7 +690,7 @@ public class StatusArchive {
 
                     StatusArchive inReplyTo = StatusArchive.save(status);
 
-                    inReplyTo.loop(api);
+                   // inReplyTo.loop(api);
 
                 }
 
@@ -706,7 +706,7 @@ public class StatusArchive {
 
                         StatusArchive inReplyTo = StatusArchive.save(status);
 
-                        inReplyTo.loop(api);
+                      //  inReplyTo.loop(api);
 
                     } catch (TwitterException e) {
                     }
@@ -731,7 +731,7 @@ public class StatusArchive {
 
                     StatusArchive quoted = StatusArchive.save(status);
 
-                    quoted.loop(api);
+                 //   quoted.loop(api);
 
                 }
 
@@ -750,7 +750,7 @@ public class StatusArchive {
 
                             StatusArchive quoted = StatusArchive.save(status);
 
-                            quoted.loop(api);
+                         //   quoted.loop(api);
 
                         } catch (TwitterException e) {
                         }
