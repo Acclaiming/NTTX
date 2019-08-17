@@ -14,9 +14,17 @@ import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import cn.hutool.http.HtmlUtil;
 import cn.hutool.http.HttpUtil;
+import io.kurumi.ntt.cqhttp.update.GroupDecreaseNotice;
 
 public class BindListener extends TinxListener {
 
+	@Override
+	public void onGroupKickMember(GroupDecreaseNotice member) {
+		
+		
+		
+	}
+	
 	@Override
 	public void onGroup(MessageUpdate msg) {
 
