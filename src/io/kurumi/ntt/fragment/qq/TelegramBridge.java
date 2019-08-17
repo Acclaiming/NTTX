@@ -24,6 +24,7 @@ import io.kurumi.ntt.cqhttp.update.GroupRequest;
 import cn.hutool.core.util.ArrayUtil;
 import com.mongodb.client.model.Variable;
 import io.kurumi.ntt.cqhttp.Variants;
+import io.kurumi.ntt.fragment.qq.TelegramBridge.GroupBind;
 
 public class TelegramBridge {
 
@@ -34,17 +35,23 @@ public class TelegramBridge {
 		public Long id;
 		public Long groupId;
 
+		public Boolean disable;
+		
 	}
 
 	public static HashMap<Long,Long> telegramIndex = new HashMap<>();
 	public static HashMap<Long,Long> qqIndex = new HashMap<>();
-
+	
+	public static HashMap<Long,Boolean> disable = new HashMap<>();
+	
 	static {
 
 		for (GroupBind bind : data.getAll()) {
 
 			telegramIndex.put(bind.id,bind.groupId);
 			qqIndex.put(bind.groupId,bind.id);
+			
+			if (bind.disable != null) disable.put(bind.id,true);
 
 		}
 
@@ -64,6 +71,8 @@ public class TelegramBridge {
 
 			registerAdminFunction("tinx_bind","tinx_unbind","tinx_list");
 
+			registerFunction("tinx_enable","tinx_disable");
+			
 		}
 
 		@Override
@@ -117,6 +126,66 @@ public class TelegramBridge {
 				
 				msg.send(message).async();
 				
+			} else if (function.endsWith("_enable")) {
+				
+				if (!telegramIndex.containsKey(msg.chatId())) {
+					
+					msg.send("本群没有开启QQ群组消息同步, 请联系机器人管理者.").async();
+					
+					return;
+					
+				}
+				
+				if (!disable.containsKey(msg.chatId())) {
+					
+					msg.send("没有关闭 :)").async();
+					
+				} else {
+					
+					disable.remove(msg.chatId());
+					
+					GroupBind bind = data.getById(msg.chatId());
+
+					bind.disable = null;
+					
+					data.setById(bind.id,bind);
+					
+					msg.send("已开启 :) 使用 /tinx_disable 关闭.").async();
+					
+					return;
+					
+				}
+				
+			} else if (function.endsWith("_disable")) {
+
+				if (!telegramIndex.containsKey(msg.chatId())) {
+
+					msg.send("本群没有开启QQ群组消息同步, 请联系机器人管理者.").async();
+
+					return;
+
+				}
+
+				if (disable.containsKey(msg.chatId())) {
+
+					msg.send("没有开启 :)").async();
+
+				} else {
+
+					disable.put(msg.chatId(),true);
+
+					GroupBind bind = data.getById(msg.chatId());
+
+					bind.disable = true;
+
+					data.setById(bind.id,bind);
+
+					msg.send("已关闭 :) 使用 /tinx_enable 重新开启.").async();
+
+					return;
+
+				}
+
 			}
 
 		}
@@ -133,7 +202,7 @@ public class TelegramBridge {
 		@Override
 		public int checkMsg(UserData user,Msg msg) {
 
-			return msg.isGroup() && telegramIndex.containsKey(msg.chatId()) ? PROCESS_ASYNC : PROCESS_CONTINUE;
+			return msg.isGroup() && !disable.containsKey(msg.chatId()) && telegramIndex.containsKey(msg.chatId()) ? PROCESS_ASYNC : PROCESS_CONTINUE;
 
 		}
 
@@ -195,6 +264,8 @@ public class TelegramBridge {
 
 			Long chatId = qqIndex.get(msg.group_id);
 
+			if (disable.containsKey(chatId)) return;
+			
 			String user = Html.b(StrUtil.isBlank(msg.sender.card) ? msg.sender.nickname : msg.sender.card) + " : ";
 
 			String cqImage = "[CQ:image,";
