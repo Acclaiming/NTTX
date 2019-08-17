@@ -85,15 +85,19 @@ public class BindGroup extends Fragment {
 		
 		if (msg.hasText()) {
 
-			Launcher.TINX.api.sendGroupMsg(telegramIndex.get(msg.chatId()),formarMessage(user,msg),true);
+			Launcher.TINX.api.sendGroupMsg(telegramIndex.get(msg.chatId()),formarMessage(user) + msg.text(),true);
 
+		} else if (msg.sticker() != null) {
+			
+			Launcher.TINX.api.sendGroupMsg(telegramIndex.get(msg.chatId()),formarMessage(user) + msg.sticker().emoji(),true);
+			
 		}
 
 	}
 
-	static String formarMessage(UserData user,Msg msg) {
+	static String formarMessage(UserData user) {
 		
-		String message = user.name() + " : " + msg.text();
+		String message = user.name() + " : ";
 		
 		return message;
 		
