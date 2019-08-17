@@ -57,7 +57,9 @@ public class StatusArchive {
     }
 
     public static boolean contains(Long id) {
-        return data.containsId(id);
+        
+		return data.containsId(id);
+		
     }
 
     public static StatusArchive save(Status status) {
@@ -628,7 +630,7 @@ public class StatusArchive {
 
     public StatusArchive loop(Twitter api) {
 
-        return loop(api,false);
+        return loop(api,true);
 
     }
 
@@ -680,7 +682,7 @@ public class StatusArchive {
 
                 if (StatusArchive.contains(inReplyToStatusId)) {
 
-                    StatusArchive.get(inReplyToStatusId).loop(api);
+                   // StatusArchive.get(inReplyToStatusId).loop(api);
 
                 } else {
 
