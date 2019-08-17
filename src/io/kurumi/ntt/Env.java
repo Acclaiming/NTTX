@@ -33,11 +33,16 @@ public class Env {
     public static long[] ADMINS;
     public static Long LOG_CHANNEL;
     public static Long TEP_CHANNEL;
+	
 	public static String SPAM_CHANNEL = "@TwitterSpam";
 	
     public static String HELP_MESSAGE;
-
+	
 	public static String NETEASE_COOKIE;
+	
+	public static String CQHTTP_URL;
+	public static String CQHTTP_WS;
+	public static File CQHTTP_PATH;
 	
 	public static String MODULES_REPO = "https://kurumi.io/NTT-Modules-Repo";
 	
@@ -81,6 +86,9 @@ public class Env {
         HELP_MESSAGE = conf.getStr("help_message");
 
 		NETEASE_COOKIE = conf.getStr("netease_cookie");
+		
+		CQHTTP_URL = conf.getStr("cqhttp_url");
+		CQHTTP_WS = conf.getStr("cqhttp_ws");
 		
     }
 

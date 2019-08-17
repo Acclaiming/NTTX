@@ -24,7 +24,7 @@ public class CqHttpTest extends Fragment {
 	@Override
 	public void onFunction(UserData user,final Msg msg,String function,String[] params) {
 
-		TinxBot bot = new TinxBot("ws://127.0.1.1:5701/event/","http://127.0.0.1:5700/");
+		TinxBot bot = new TinxBot("","");
 
 		GetGroupListResponse list = bot.api.getGroupList();
 

@@ -7,11 +7,13 @@ import com.pengrad.telegrambot.model.ChatMember;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.GetChatMember;
 import com.pengrad.telegrambot.response.GetChatMemberResponse;
+import io.kurumi.ntt.cqhttp.TinxBot;
 import io.kurumi.ntt.db.BotDB;
 import io.kurumi.ntt.db.GroupData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.BotServer;
+import io.kurumi.ntt.fragment.RpcApi;
 import io.kurumi.ntt.fragment.admin.DelMsg;
 import io.kurumi.ntt.fragment.admin.Notice;
 import io.kurumi.ntt.fragment.admin.NoticePuhlish;
@@ -50,6 +52,8 @@ import io.kurumi.ntt.fragment.mods.PackageManager;
 import io.kurumi.ntt.fragment.mstd.ui.MsMain;
 import io.kurumi.ntt.fragment.netease.NeteaseMusic;
 import io.kurumi.ntt.fragment.other.ZeroPadEncode;
+import io.kurumi.ntt.fragment.qq.BindGroup;
+import io.kurumi.ntt.fragment.qq.BindListener;
 import io.kurumi.ntt.fragment.qr.QrDecoder;
 import io.kurumi.ntt.fragment.qr.QrEncoder;
 import io.kurumi.ntt.fragment.rss.FeedFetchTask;
@@ -89,8 +93,6 @@ import io.kurumi.ntt.utils.Html;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
-import io.kurumi.ntt.fragment.RpcApi;
-import io.kurumi.ntt.fragment.qq.CqHttpTest;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -98,6 +100,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 	public static OkHttpClient.Builder OKHTTP = new OkHttpClient.Builder();
 	public static Gson GSON = new Gson();
+	
+	public static TinxBot TINX;
 	
     public static void main(String[] args) {
 
@@ -140,7 +144,13 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         try {
 
             BotServer.INSTANCE.start();
-
+			
+			TINX = new TinxBot(Env.CQHTTP_WS,Env.CQHTTP_URL);
+		
+			TINX.addListener(new BindListener());
+			
+			TINX.start();
+			
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -393,7 +403,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		addFragment(new WhoisLookup());
 		addFragment(new MMPITest());
 	
-		addFragment(new CqHttpTest());
+		addFragment(new BindGroup());
 		
 		// Mods
 		
