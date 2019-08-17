@@ -235,7 +235,7 @@ public class TinxApi {
 		} catch (Exception httpExc) {
 
 			BotLog.info("URL : " + url + method);
-			BotLog.info(httpExc.getMessage());
+			BotLog.info("ERR",httpExc);
 			
 			try {
 
