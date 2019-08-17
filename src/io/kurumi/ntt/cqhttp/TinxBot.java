@@ -54,7 +54,7 @@ public final class TinxBot {
 
 	}
 
-    public void start() {
+    public void start() throws Exception {
 
         final EventLoopGroup group = new NioEventLoopGroup();
 
@@ -78,6 +78,18 @@ public final class TinxBot {
 				}
 			});
 
+		try {
+
+			client = boot.connect(uri.getHost(),uri.getPort()).sync().channel();
+			
+			handler.handshakeFuture().sync();
+
+		} catch (InterruptedException e) {
+
+			return;
+
+		}
+
 		new Thread("CqHttp Ws Thread") {
 
 			@Override
@@ -85,16 +97,12 @@ public final class TinxBot {
 
 				try {
 
-					client = boot.connect(uri.getHost(),uri.getPort()).sync().channel();
-
-					handler.handshakeFuture().sync();
-					
 					client.closeFuture().sync();
 
 				} catch (Exception e) {
-					
+
 					BotLog.info("WS",e);
-					
+
 				} finally {
 
 					group.shutdownGracefully();

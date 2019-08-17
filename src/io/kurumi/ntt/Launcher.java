@@ -93,6 +93,8 @@ import io.kurumi.ntt.utils.Html;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
+import java.util.TimerThread;
+import java.util.TimerTask;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -145,12 +147,6 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
             BotServer.INSTANCE.start();
 			
-			TINX = new TinxBot(Env.CQHTTP_WS,Env.CQHTTP_URL);
-		
-			TINX.addListener(new BindListener());
-			
-			TINX.start();
-			
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -158,6 +154,12 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
             return;
 
         }
+		
+		TINX = new TinxBot(Env.CQHTTP_WS,Env.CQHTTP_URL);
+
+		TINX.addListener(new BindListener());
+
+		tryTinxConnect();
 
         INSTANCE = new Launcher() {
 
@@ -201,6 +203,31 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		}
 		
     }
+	
+	static void tryTinxConnect() {
+		
+		mainTimer.schedule(new TimerTask() {
+
+				@Override
+				public void run() {
+
+					try {
+						
+						TINX.start();
+						
+					} catch (Exception e) {
+						
+						BotLog.debug("CQHTTP连接失败 正在等待重试");
+						
+						tryTinxConnect();
+						
+					}
+
+				}
+
+			},2 * 60 * 1000L);
+			
+	}
 
     @Override
     public abstract String getToken();
