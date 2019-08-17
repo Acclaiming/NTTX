@@ -26,6 +26,7 @@ import com.mongodb.client.model.Variable;
 import io.kurumi.ntt.cqhttp.Variants;
 import io.kurumi.ntt.fragment.qq.TelegramBridge.GroupBind;
 import io.kurumi.ntt.utils.NTT;
+import io.kurumi.ntt.db.GroupData;
 
 public class TelegramBridge {
 
@@ -121,7 +122,7 @@ public class TelegramBridge {
 				
 				for (GroupBind bind : data.getAll()) {
 					
-					message += "\n" + Html.code(bind.id) + " -> " + Html.code(bind.groupId);
+					message += "\n" + Html.code(bind.id) + " ( " + GroupData.get(bind.id).title + " ) -> " + Html.code(bind.groupId);
 					
 				}
 				
