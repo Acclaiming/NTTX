@@ -20,17 +20,6 @@ public class CqCodeUtil {
 
 	private static HashMap<Integer,String> emojiMap = new HashMap<>();
 
-	public static String inputSticker(Sticker sticker) {
-
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-
-
-
-
-		return "[CQ:image,file=base64://" + Base64.encode(bytes.toByteArray()) + "]";
-
-	}
-
 	public static String makeImage(File file) {
 
 		String type = file.getName().contains(".") ? FileUtil.getType(file) : "png";
