@@ -5,8 +5,8 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.NumberUtil;
 
 public class CqCodeUtil {
-	
-	public static HashMap<Integer,String> emojiMap;
+
+	public static HashMap<Integer,String> emojiMap = new HashMap<>();
 	
 	public static String replaceFace(String message) {
 		
