@@ -28,7 +28,7 @@ public class CqCodeUtil {
 
 			Thumbnails
 				.of(Launcher.INSTANCE.getFile(sticker.fileId()))
-				.size(500,500)
+				// .size(500,500)
 				.outputFormat("png")
 				.outputQuality(1.0f)
 				.toOutputStream(bytes);
