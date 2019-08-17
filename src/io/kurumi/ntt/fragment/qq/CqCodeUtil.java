@@ -33,7 +33,7 @@ public class CqCodeUtil {
 
 	public static String makeImage(File file) {
 
-		String type = file.getName().contains(".") ? FileUtil.getType(file) : "jpg";
+		String type = file.getName().contains(".") ? FileUtil.getType(file) : "png";
 		String md5 = SecureUtil.md5(file);
 		File targetFile = new File(Env.CQHTTP_PATH,"data/image/" + md5 + "." + type);
 
@@ -45,7 +45,7 @@ public class CqCodeUtil {
 					.of(file)
 					// .size(500,500)
 					.scale(1.0f)
-					.outputFormat("jpg")
+					.outputFormat("png")
 					.outputQuality(1.0f)
 					.toFile(targetFile);
 
