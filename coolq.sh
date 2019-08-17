@@ -3,6 +3,7 @@ docker run -ti --name ntt \
              -p 9000:9000 \
              -p 5700:5700 \
              -p 5701:5701 \
+             -e COOLQ_URL=https://dlsec.cqp.me/cqp-full \
              -e COOLQ_ACCOUNT= \
              -e CQHTTP_HOST=0.0.0.0 \
              -e CQHTTP_PORT=5700 \
