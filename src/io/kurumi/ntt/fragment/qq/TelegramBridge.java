@@ -191,7 +191,7 @@ public class TelegramBridge {
 
 				message += " " + HtmlUtil.escape(msg.message);
 
-				new Send(chatId,message).html().async();
+				new Send(chatId,message).html().exec();
 
 			}
 
