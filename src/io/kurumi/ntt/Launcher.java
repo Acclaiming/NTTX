@@ -202,7 +202,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		
     }
 	
-	static void tryTinxConnect() {
+	public static void tryTinxConnect() {
 		
 		try {
 
