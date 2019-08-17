@@ -37,31 +37,33 @@ public class CqCodeUtil {
 		String md5 = SecureUtil.md5(file);
 		File targetFile = new File(Env.CQHTTP_PATH,"data/image/" + md5 + "." + type);
 
-		if (!file.getName().contains(".")) {
+		if (!targetFile.isFile()) {
 
-			try {
+			if (!file.getName().contains(".")) {
 
-				Thumbnails
-					.of(file)
-					// .size(500,500)
-					.scale(1.0f)
-					.outputFormat("png")
-					.outputQuality(1.0f)
-					.toFile(targetFile);
+				try {
 
-			} catch (IOException e) {
+					Thumbnails
+						.of(file)
+						// .size(500,500)
+						.scale(1.0f)
+						.outputFormat("png")
+						.outputQuality(1.0f)
+						.toFile(targetFile);
 
-				BotLog.info("转码失败",e);
+				} catch (IOException e) {
 
-				return "";
+					BotLog.info("转码失败",e);
+
+					return "";
+
+				}
+
+			} else {
+
+				FileUtil.copyContent(file,targetFile,true);
 
 			}
-
-		} else {
-
-			type = FileUtil.getType(file);
-
-			if (!targetFile.isFile()) FileUtil.copyContent(file,targetFile,true);
 
 		}
 
