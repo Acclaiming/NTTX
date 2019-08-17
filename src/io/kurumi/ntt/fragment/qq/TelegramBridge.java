@@ -124,7 +124,7 @@ public class TelegramBridge {
 					
 				}
 				
-				msg.send(message).async();
+				msg.send(message).html().async();
 				
 			} else if (function.endsWith("_enable")) {
 				
