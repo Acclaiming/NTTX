@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import com.pengrad.telegrambot.model.Sticker;
 import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.utils.BotLog;
 
 public class CqCodeUtil {
 
@@ -36,6 +37,11 @@ public class CqCodeUtil {
 					.toFile(local);
 
 			} catch (IOException e) {
+				
+				BotLog.info("转码失败",e);
+				
+				return "";
+				
 			}
 
 		}
