@@ -22,38 +22,27 @@ public class CqCodeUtil {
 
 	public static String inputSticker(Sticker sticker) {
 
-		File local = new File(Env.CACHE_DIR, "sticker_to_qq/" + sticker.fileId() + ".jpg");
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 
-		if (!local.isFile()) {
+		try {
 
-			local.getParentFile().mkdirs();
+			Thumbnails
+				.of(Launcher.INSTANCE.getFile(sticker.fileId()))
+				.size(500,500)
+				.outputFormat("jpg")
+				.outputQuality(1.0f)
+				.toOutputStream(bytes);
 
-			try {
-				
-				File cache = new File(Env.CACHE_DIR,"sticker_cache/" + sticker.fileId() + ".webp");
-				
-				FileUtil.copy(Launcher.INSTANCE.getFile(sticker.fileId()),cache,true);
+		} catch (IOException e) {
 
-				Thumbnails
-					.of(cache)
-					.size(500,500)
-					.outputFormat("jpg")
-					.toFile(local);
+			BotLog.info("转码失败",e);
 
-				FileUtil.del(cache);
-					
-			} catch (IOException e) {
-				
-				BotLog.info("转码失败",e);
-				
-				return "";
-				
-			}
+			return "";
 
 		}
-		
 
-		return "[CQ:image,file=base64://" + Base64.encode(local) + "]";
+
+		return "[CQ:image,file=base64://" + Base64.encode(bytes.toByteArray()) + "]";
 
 	}
 
