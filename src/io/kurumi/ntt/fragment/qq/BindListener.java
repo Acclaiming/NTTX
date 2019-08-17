@@ -18,7 +18,7 @@ import cn.hutool.http.HttpUtil;
 public class BindListener extends TinxListener {
 
 	@Override
-	public void onMsg(MessageUpdate msg) {
+	public void onGroup(MessageUpdate msg) {
 
 		if (BindGroup.groupIndex.containsKey(msg.group_id)) {
 
@@ -53,7 +53,7 @@ public class BindListener extends TinxListener {
 				
 				String message = user;
 				
-				msg.message = CqCodeUtil.replaceFace(msg.message);
+				// msg.message = CqCodeUtil.replaceFace(msg.message);
 
 				message += " " + HtmlUtil.escape(msg.message);
 				
