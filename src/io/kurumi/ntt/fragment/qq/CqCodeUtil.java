@@ -20,6 +20,32 @@ public class CqCodeUtil {
 
 	private static HashMap<Integer,String> emojiMap = new HashMap<>();
 
+	public static String inputSticker(Sticker sticker) {
+		
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		
+		try {
+
+			Thumbnails
+				.of(Launcher.INSTANCE.getFile(sticker.fileId()))
+				// .size(500,500)
+				.scale(1.0f)
+				.outputFormat("jpg")
+				.outputQuality(1.0f)
+				.toOutputStream(bytes);
+
+		} catch (IOException e) {
+
+			BotLog.info("转码失败",e);
+
+			return "";
+
+		}
+		
+		return "[CQ:image,file=base64://" + Base64.encode(bytes.toByteArray()) + "]";
+		
+	}
+	
 	public static String makeImage(File file) {
 
 		String type = file.getName().contains(".") ? FileUtil.getType(file) : "jpg";
