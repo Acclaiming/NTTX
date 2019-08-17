@@ -24,23 +24,7 @@ public class CqCodeUtil {
 
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 
-		try {
 
-			Thumbnails
-				.of(Launcher.INSTANCE.getFile(sticker.fileId()))
-				// .size(500,500)
-				.scale(1.0f)
-				.outputFormat("png")
-				.outputQuality(1.0f)
-				.toOutputStream(bytes);
-
-		} catch (IOException e) {
-
-			BotLog.info("转码失败",e);
-
-			return "";
-
-		}
 
 
 		return "[CQ:image,file=base64://" + Base64.encode(bytes.toByteArray()) + "]";
@@ -49,13 +33,39 @@ public class CqCodeUtil {
 
 	public static String makeImage(File file) {
 
-		String type = FileUtil.getType(file);
-
+		String type = file.getName().contains(".") ? FileUtil.getType(file) : "jpg";
 		String md5 = SecureUtil.md5(file);
-
 		File targetFile = new File(Env.CQHTTP_PATH,"data/image/" + md5 + "." + type);
 
-		if (!targetFile.isFile()) FileUtil.copyContent(file,targetFile,true);
+		if (!file.getName().contains(".")) {
+
+			try {
+
+				Thumbnails
+					.of(file)
+					// .size(500,500)
+					.scale(1.0f)
+					.outputFormat("jpg")
+					.outputQuality(1.0f)
+					.toFile(targetFile);
+
+			} catch (IOException e) {
+
+				BotLog.info("转码失败",e);
+
+				return "";
+
+			}
+
+		} else {
+
+			type = FileUtil.getType(file);
+
+			targetFile = new File(Env.CQHTTP_PATH,"data/image/" + md5 + "." + type);
+
+			if (!targetFile.isFile()) FileUtil.copyContent(file,targetFile,true);
+
+		}
 
 		return "[CQ:image,file=" + md5 + "." + type + "]";
 
