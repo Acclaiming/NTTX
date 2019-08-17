@@ -56,7 +56,7 @@ public class CqCodeUtil {
 
 		}
 
-		return "[CQ:image,file=" + md5 + "." + type + "]";
+		return "[CQ:image,file=base64://" + Base64.encode(targetFile) + "]";
 
 	}
 
