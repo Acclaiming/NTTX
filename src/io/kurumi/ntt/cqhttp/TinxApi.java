@@ -234,7 +234,8 @@ public class TinxApi {
 
 		} catch (Exception httpExc) {
 
-			BotLog.info("CQHTTP",httpExc);
+			BotLog.info("URL : " + url + method);
+			BotLog.info(httpExc.getMessage());
 			
 			try {
 
