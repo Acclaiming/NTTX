@@ -8,7 +8,7 @@ import io.kurumi.ntt.model.request.Send;
 public class BindListener extends TinxListener {
 
 	@Override
-	public void onGroup(MessageUpdate msg) {
+	public void onMsg(MessageUpdate msg) {
 		
 		if (BindGroup.groupIndex.containsKey(msg.group_id)) {
 			
