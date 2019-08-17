@@ -7,6 +7,8 @@ import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import java.util.HashMap;
+import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.utils.Html;
 
 public class BindGroup extends Fragment {
 
@@ -19,8 +21,8 @@ public class BindGroup extends Fragment {
 
 	}
 
-	public static HashMap<Long,Long> telegramIndex = new HashMap<> ();
-	public static HashMap<Long,Long> groupIndex = new HashMap<> ();
+	public static HashMap<Long,Long> telegramIndex = new HashMap<>();
+	public static HashMap<Long,Long> groupIndex = new HashMap<>();
 
 	static {
 
@@ -28,6 +30,7 @@ public class BindGroup extends Fragment {
 
 			telegramIndex.put(bind.id,bind.groupId);
 			groupIndex.put(bind.groupId,bind.id);
+
 		}
 
 	}
@@ -68,6 +71,32 @@ public class BindGroup extends Fragment {
 
 		}
 
+	}
+
+	@Override
+	public int checkMsg(UserData user,Msg msg) {
+
+		return msg.isGroup() && telegramIndex.containsKey(msg.chatId()) ? PROCESS_ASYNC : PROCESS_CONTINUE;
+
+	}
+
+	@Override
+	public void onGroup(UserData user,Msg msg) {
+		
+		if (msg.hasText()) {
+
+			Launcher.TINX.api.sendGroupMsg(telegramIndex.get(msg.chatId()),formarMessage(user,msg),true);
+
+		}
+
+	}
+
+	static String formarMessage(UserData user,Msg msg) {
+		
+		String message = Html.b(user.name()) + " : " + msg.text();
+		
+		return message;
+		
 	}
 
 }

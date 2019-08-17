@@ -26,19 +26,19 @@ public class TinxApi {
 
 	}
 	
-	public SendMessageResponse sendPrivateMsg(int user_id,String message,boolean auto_escape) {
+	public SendMessageResponse sendPrivateMsg(long user_id,String message,boolean auto_escape) {
 		
 		return send("send_private_msg",params("user_id",user_id,"message",message,"auto_escape",auto_escape),SendMessageResponse.class);
 		
 	}
 	
-	public SendMessageResponse sendGroupMsg(int group_id,String message,boolean auto_escape) {
+	public SendMessageResponse sendGroupMsg(long group_id,String message,boolean auto_escape) {
 
 		return send("send_group_msg",params("group_id",group_id,"message",message,"auto_escape",auto_escape),SendMessageResponse.class);
 
 	}
 	
-	public SendMessageResponse sendDiscussMsg(int discuss_id,String message,boolean auto_escape) {
+	public SendMessageResponse sendDiscussMsg(long discuss_id,String message,boolean auto_escape) {
 
 		return send("send_discuss_msg",params("discuss_id",discuss_id,"message",message,"auto_escape",auto_escape),SendMessageResponse.class);
 
@@ -52,25 +52,25 @@ public class TinxApi {
 		
 	}
 	
-	public BaseResponse sendLike(int user_id,int times) {
+	public BaseResponse sendLike(long user_id,int times) {
 		
 		return send("send_like",params("user_id",user_id,"times",times),BaseResponse.class);
 		
 	}
 	
-	public BaseResponse setGroupKick(int group_id,int user_id,boolean reject_add_request) {
+	public BaseResponse setGroupKick(long group_id,long user_id,boolean reject_add_request) {
 		
 		return send("set_group_kick",params("group_id",group_id,"user_id",user_id,"reject_add_request",reject_add_request),BaseResponse.class);
 		
 	}
 	
-	public BaseResponse setGroupBan(int group_id,int user_id,int duration) {
+	public BaseResponse setGroupBan(long group_id,long user_id,int duration) {
 
 		return send("set_group_ban",params("group_id",group_id,"user_id",user_id,"duration",duration),BaseResponse.class);
 
 	}
 	
-	public BaseResponse setGroupWholeBan(int group_id,boolean enable) {
+	public BaseResponse setGroupWholeBan(long group_id,boolean enable) {
 		
 		return send("set_group_whole_ban",params("group_id",group_id,"enable",enable),BaseResponse.class);
 		
@@ -81,12 +81,12 @@ public class TinxApi {
 	// set_group_anonymous
 	// set_group_card
 	
-	public BaseResponse setGroupLeave(int group_id) {
+	public BaseResponse setGroupLeave(long group_id) {
 
 		return send("set_group_leave",params("group_id",group_id),BaseResponse.class);
 
 	}
-	public BaseResponse setGroupLeave(int group_id,boolean is_dismiss) {
+	public BaseResponse setGroupLeave(long group_id,boolean is_dismiss) {
 		
 		return send("set_group_leave",params("group_id",group_id,"is_dismiss",is_dismiss),BaseResponse.class);
 		
@@ -94,13 +94,13 @@ public class TinxApi {
 	
 	// set_group_special_title
 	
-	public BaseResponse setDiscussLeave(int discuss_id) {
+	public BaseResponse setDiscussLeave(long discuss_id) {
 
 		return send("set_discuss_leave",params("discuss_id",discuss_id),BaseResponse.class);
 
 	}
 	
-	public BaseResponse setDiscussLeave(int discuss_id,boolean is_dismiss) {
+	public BaseResponse setDiscussLeave(long discuss_id,boolean is_dismiss) {
 
 		return send("set_discuss_leave",params("discuss_id",discuss_id,"is_dismiss",is_dismiss),BaseResponse.class);
 
@@ -125,13 +125,13 @@ public class TinxApi {
 		
 	}
 	
-	public GetStrangerInfoResponse getStrangerInfo(int user_id) {
+	public GetStrangerInfoResponse getStrangerInfo(long user_id) {
 
 		return send("get_stranger_info",params("user_id",user_id),GetStrangerInfoResponse.class);
 
 	}
 	
-	public GetStrangerInfoResponse getStrangerInfo(int user_id,boolean no_cache) {
+	public GetStrangerInfoResponse getStrangerInfo(long user_id,boolean no_cache) {
 		
 		return send("get_stranger_info",params("user_id",user_id,"no_cache",no_cache),GetStrangerInfoResponse.class);
 		
@@ -143,20 +143,20 @@ public class TinxApi {
 		
 	}
 	
-	public GetGroupMemberInfoResponse getGroupMenberInfo(int group_id,int user_id) {
+	public GetGroupMemberInfoResponse getGroupMenberInfo(long group_id,long user_id) {
 
 		return send("get_group_member_info",params("group_id",group_id,"user_id",user_id),GetGroupMemberInfoResponse.class);
 
 	}
 	
 	
-	public GetGroupMemberInfoResponse getGroupMenberInfo(int group_id,int user_id,boolean no_cache) {
+	public GetGroupMemberInfoResponse getGroupMenberInfo(long group_id,long user_id,boolean no_cache) {
 		
 		return send("get_group_member_info",params("group_id",group_id,"user_id",user_id,"no_cache",no_cache),GetGroupMemberInfoResponse.class);
 		
 	}
 	
-	public GetGroupMemberListResponse getGroupMemberList(int group_id) {
+	public GetGroupMemberListResponse getGroupMemberList(long group_id) {
 		
 		return send("get_group_member_list",params("group_id",group_id),GetGroupMemberListResponse.class);
 		
@@ -196,7 +196,7 @@ public class TinxApi {
 	// clean_data_dir
 	// clean_plugin_log
 	
-	public GetGroupInfoResponse _getGroupInfo(int group_id) {
+	public GetGroupInfoResponse _getGroupInfo(long group_id) {
 		
 		return send("_get_group_info",params("group_id",group_id),GetGroupInfoResponse.class);
 		
