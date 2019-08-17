@@ -104,7 +104,7 @@ public class TelegramBridge {
 
 			} else if (function.endsWith("_unbind")) {
 				
-				if (params.length < 2 || !NumberUtil.isNumber(params[0])) {
+				if (params.length < 1 || !NumberUtil.isNumber(params[0])) {
 					
 					msg.invalidParams("chatId").async();
 
