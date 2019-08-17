@@ -4,6 +4,7 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.cqhttp.TinxListener;
 import io.kurumi.ntt.cqhttp.update.MessageUpdate;
 import io.kurumi.ntt.model.request.Send;
+import io.kurumi.ntt.utils.Html;
 
 public class BindListener extends TinxListener {
 
@@ -22,7 +23,7 @@ public class BindListener extends TinxListener {
 	
 	String formatMessage(MessageUpdate update) {
 		
-		String message = "「 " + update.sender.card == null ? update.sender.nickname : update.sender.card + " 」";
+		String message = Html.b(update.sender.card == null ? update.sender.nickname : update.sender.card);
 		
 		message += " : " + update.message;
 		
