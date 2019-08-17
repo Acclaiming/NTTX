@@ -32,7 +32,7 @@ public class CqCodeUtil {
 				
 				File cache = new File(Env.CACHE_DIR,"sticker_cache/" + sticker.fileId() + ".webp");
 				
-				FileUtil.copyFile(Launcher.INSTANCE.getFile(sticker.fileId()),cache);
+				FileUtil.copyFile(Launcher.INSTANCE.getFile(sticker.fileId()),cache,true);
 
 				Thumbnails
 					.of(cache)
