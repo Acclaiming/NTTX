@@ -22,7 +22,7 @@ public class CqCodeUtil {
 
 	public static String inputSticker(Sticker sticker) {
 
-		File local = new File(Env.CACHE_DIR, "sticker_cache/" + sticker.fileId() + ".jpg");
+		File local = new File(Env.CACHE_DIR, "sticker_to_qq/" + sticker.fileId() + ".jpg");
 
 		if (!local.isFile()) {
 
@@ -30,14 +30,18 @@ public class CqCodeUtil {
 
 			try {
 				
-				FileUtil.copyFile(Launcher.INSTANCE.getFile(sticker.fileId()),local);
+				File cache = new File(Env.CACHE_DIR,"sticker_cache/" + sticker.fileId() + ".webp");
+				
+				FileUtil.copyFile(Launcher.INSTANCE.getFile(sticker.fileId()),cache);
 
 				Thumbnails
-					.of(local)
+					.of(cache)
 					.size(512, 512)
 					.outputFormat("jpg")
 					.toFile(local);
 
+				FileUtil.del(cache);
+					
 			} catch (IOException e) {
 				
 				BotLog.info("转码失败",e);
