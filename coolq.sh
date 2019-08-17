@@ -9,5 +9,5 @@ docker run -ti --rm --name ntt \
              -e CQHTTP_WS_HOST=127.0.0.1 \
              -e CQHTTP_WS_PORT=5701 \
              -e CQHTTP_USE_WS=true \
-             -e CQHTTP_CONVERT_UNICODE_EMOJI=true
+             -e CQHTTP_CONVERT_UNICODE_EMOJI=true \
              richardchien/cqhttp:latest
