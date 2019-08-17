@@ -53,7 +53,7 @@ public class BindListener extends TinxListener {
 				
 				String message = user;
 				
-				// msg.message = CqCodeUtil.replaceFace(msg.message);
+				msg.message = CqCodeUtil.replaceFace(msg.message);
 
 				message += " " + HtmlUtil.escape(msg.message);
 				
