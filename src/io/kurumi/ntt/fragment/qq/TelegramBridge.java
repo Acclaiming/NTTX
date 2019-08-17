@@ -91,6 +91,32 @@ public class TelegramBridge {
 
 				msg.send("完成 :)").async();
 
+			} else if (function.endsWith("_unbind")) {
+				
+				if (params.length < 2 || !NumberUtil.isNumber(params[0])) {
+					
+					msg.invalidParams("chatId").async();
+
+					return;
+
+				}
+				
+				data.deleteById(NumberUtil.parseLong(params[0]));
+				
+				msg.send("完成 :)").async();
+				
+			} else if (function.endsWith("_list")) {
+				
+				String message = "所有群组 :\n";
+				
+				for (GroupBind bind : data.getAll()) {
+					
+					message += "\n" + Html.code(bind.id) + " -> " + Html.code(bind.groupId);
+					
+				}
+				
+				msg.send(message).async();
+				
 			}
 
 		}
