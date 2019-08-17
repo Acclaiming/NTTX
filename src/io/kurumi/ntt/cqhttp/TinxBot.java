@@ -104,15 +104,13 @@ public final class TinxBot {
 					client.closeFuture().sync();
 
 				} catch (Exception e) {
-
-					Launcher.tryTinxConnect();
-
 				} finally {
 
 					group.shutdownGracefully();
 
-
 				}
+				
+				Launcher.tryTinxConnect();
 
 			}
 
