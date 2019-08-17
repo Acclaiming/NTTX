@@ -45,6 +45,9 @@ public final class TinxBot {
 
 	public void addListener(TinxListener listener) {
 
+		listener.bot = this;
+		listener.api = this.api;
+		
 		this.handler.listeners.add(listener);
 
 	}

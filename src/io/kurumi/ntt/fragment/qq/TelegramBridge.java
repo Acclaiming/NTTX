@@ -141,11 +141,22 @@ public class TelegramBridge {
 			
 			if (ArrayUtil.contains(Env.QQ_ADMINS,request.user_id)) {
 				
-				Launcher.TINX.api.setGroupAddRequest(request.flag,Variants.GR_INVITE,true,null);
+				api.setGroupAddRequest(request.flag,Variants.GR_INVITE,true,null);
 				
 			} else {
 				
-				Launcher.TINX.api.setGroupAddRequest(request.flag,Variants.GR_INVITE,false,null);
+				api.setGroupAddRequest(request.flag,Variants.GR_INVITE,false,null);
+				
+			}
+			
+		}
+
+		@Override
+		public void onPrivate(MessageUpdate msg) {
+			
+			if ("/ping".equals(msg.message)) {
+				
+				api.sendPrivateMsg(msg.user_id,"pong",false);
 				
 			}
 			
