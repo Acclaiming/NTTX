@@ -120,7 +120,7 @@ public class TelegramBridge {
 
 			} else if (msg.sticker() != null) {
 
-				Launcher.TINX.api.sendGroupMsg(groupId,formarMessage(user) + "[贴纸]" + CqCodeUtil.inputImage(getFile(msg.sticker().fileId())),false);
+				Launcher.TINX.api.sendGroupMsg(groupId,formarMessage(user) + "[贴纸]" + CqCodeUtil.inputSticker(msg.sticker()),false);
 				
 			}
 
