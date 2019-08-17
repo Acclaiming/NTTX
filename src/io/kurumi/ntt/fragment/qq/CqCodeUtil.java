@@ -82,7 +82,7 @@ public class CqCodeUtil {
 
 		}
 
-		return "[CQ:image,file=base64://" + Base64.encode(targetFile) + "]";
+		return "[CQ:image,file=" + md5 + "." + type + "]";
 
 	}
 

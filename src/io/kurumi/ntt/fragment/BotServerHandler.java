@@ -2,10 +2,10 @@ package io.kurumi.ntt.fragment;
 
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.json.JSONObject;
 import com.pengrad.telegrambot.BotUtils;
-import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.request.DeleteWebhook;
+import com.pengrad.telegrambot.request.BaseRequest;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.model.request.Send;
@@ -23,21 +23,12 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.stream.ChunkedFile;
-
 import java.io.File;
 import javax.activation.MimetypesFileTypeMap;
 
 import static io.netty.handler.codec.http.HttpMethod.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.*;
 import static io.netty.handler.codec.http.HttpVersion.*;
-
-import com.pengrad.telegrambot.request.BaseRequest;
-import com.mongodb.internal.connection.tlschannel.impl.ByteBufferUtil;
-
-import java.nio.ByteBuffer;
-
-import io.netty.buffer.ByteBuf;
-import cn.hutool.json.JSONObject;
 
 public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
@@ -196,7 +187,6 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                     RuntimeUtil.exec("service mongod restart");
 
                     RuntimeUtil.exec("service ntt restart");
-
 
                 }
 
