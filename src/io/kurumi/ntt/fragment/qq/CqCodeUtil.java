@@ -12,25 +12,36 @@ import net.coobird.thumbnailator.Thumbnailator;
 import net.coobird.thumbnailator.Thumbnails;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import com.pengrad.telegrambot.model.Sticker;
+import io.kurumi.ntt.Launcher;
 
 public class CqCodeUtil {
 
 	private static HashMap<Integer,String> emojiMap = new HashMap<>();
 
-	public static String inputImage(File file) {
+	public static String inputSticker(Sticker sticker) {
 
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		File local = new File(Env.CACHE_DIR, "sticker_cache/" + sticker.fileId() + ".png");
 
-		try {
+		if (!local.isFile()) {
 
-			Thumbnails.of(file)
-				.outputFormat("png")
-				.outputQuality(1.0f)
-				.toOutputStream(bytes);
-			
-		} catch (IOException e) {}
+			local.getParentFile().mkdirs();
 
-		return "[CQ:image,file=base64://" + Base64.encode(bytes.toByteArray()) + "]";
+			try {
+
+				Thumbnails
+					.of(Launcher.INSTANCE.getFile(sticker.fileId()))
+					.size(512, 512)
+					.outputFormat("jpg")
+					.toFile(local);
+
+			} catch (IOException e) {
+			}
+
+		}
+		
+
+		return "[CQ:image,file=base64://" + Base64.encode(local) + "]";
 
 	}
 
