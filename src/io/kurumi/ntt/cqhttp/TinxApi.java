@@ -231,15 +231,10 @@ public class TinxApi {
 		try {
 
 			HttpResponse result = HttpUtil.createPost(url + method).body(body).execute();
-
-			System.out.println(result);
 			
 			return Launcher.GSON.fromJson(result.body(),clazz);
 
 		} catch (Exception httpExc) {
-
-			BotLog.info("URL : " + url + method);
-			BotLog.info("ERR",httpExc);
 			
 			try {
 
