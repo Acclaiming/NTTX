@@ -15,11 +15,11 @@ import io.kurumi.ntt.cqhttp.response.GetFileResponse;
 import io.kurumi.ntt.cqhttp.response.CheckResponse;
 import io.kurumi.ntt.cqhttp.response.GetGroupInfoResponse;
 
-public class CoolqHttpApi {
+public class TinxApi {
 
 	private String url;
 
-	public CoolqHttpApi(String url) {
+	public TinxApi(String url) {
 
 		this.url = url;
 

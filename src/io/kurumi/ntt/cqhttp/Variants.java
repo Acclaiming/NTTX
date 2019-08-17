@@ -7,6 +7,9 @@ public class Variants {
 	public static String POST_REQUEST = "request";
 	public static String POST_META_EVENT = "meta_event";
 	
+	public static String MSG_PRIVATE = "private";
+	public static String MSG_GROUP = "group";
+	
 	public static String NOTICE_GROUP_UPLOAD = "group_upload";
 	public static String NOTICE_GROUP_ADMIN = "group_admin";
 	public static String NOTICE_GROUP_DEC = "group_decrease";
@@ -15,6 +18,9 @@ public class Variants {
 	
 	public static String REQUEST_FRIEND = "friend";
 	public static String REQUEST_GROUP = "group";
+	
+	public static String GR_ADD = "add";
+	public static String GR_INVITE = "invite";
 	
 	public static String PM_FRIEND = "friend";
 	public static String PM_GROUP = "group";

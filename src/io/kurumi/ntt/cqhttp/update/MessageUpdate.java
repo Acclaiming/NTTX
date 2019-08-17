@@ -7,6 +7,7 @@ public class MessageUpdate extends Update {
 	public Integer message_id;
 	public Long user_id;
 	public String message;
+	public String raw_message;
 	public Integer font;
 	public Sender sender;
 	

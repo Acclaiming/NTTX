@@ -90,6 +90,7 @@ import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
 import io.kurumi.ntt.fragment.RpcApi;
+import io.kurumi.ntt.fragment.qq.CqHttpTest;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -392,6 +393,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		addFragment(new WhoisLookup());
 		addFragment(new MMPITest());
 	
+		addFragment(new CqHttpTest());
+		
 		// Mods
 		
 		addFragment(new PackageManager());
