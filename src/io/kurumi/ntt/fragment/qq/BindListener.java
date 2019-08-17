@@ -18,7 +18,7 @@ import cn.hutool.http.HttpUtil;
 public class BindListener extends TinxListener {
 
 	@Override
-	public void onGroup(MessageUpdate msg) {
+	public void onMsg(MessageUpdate msg) {
 
 		if (BindGroup.groupIndex.containsKey(msg.group_id)) {
 
@@ -50,24 +50,18 @@ public class BindListener extends TinxListener {
 				}
 
 			} else {
+				
+				String message = user;
+				
+				msg.message = CqCodeUtil.replaceFace(msg.message);
 
-				new Send(chatId,formatMessage(msg)).html().async();
+				message += " " + HtmlUtil.escape(msg.message);
+				
+				new Send(chatId,message).html().async();
 
 			}
 
 		}
-
-	}
-
-	String formatMessage(MessageUpdate update) {
-
-		String message = Html.b(StrUtil.isBlank(update.sender.card) ? update.sender.nickname : update.sender.card);
-
-		update.message = CqCodeUtil.replaceFace(update.message);
-
-		message += " : " + HtmlUtil.escape(update.message);
-
-		return message;
 
 	}
 
