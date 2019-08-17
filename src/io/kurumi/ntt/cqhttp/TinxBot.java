@@ -16,6 +16,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketClientCompressionHandler;
 import java.net.URI;
 import java.net.URISyntaxException;
+import io.kurumi.ntt.utils.BotLog;
 
 public final class TinxBot {
 
@@ -90,7 +91,10 @@ public final class TinxBot {
 					
 					client.closeFuture().sync();
 
-				} catch (InterruptedException e) {
+				} catch (Exception e) {
+					
+					BotLog.info("WS",e);
+					
 				} finally {
 
 					group.shutdownGracefully();
