@@ -93,7 +93,7 @@ public class BindGroup extends Fragment {
 
 	static String formarMessage(UserData user,Msg msg) {
 		
-		String message = "[ " + user.name() + " ] : " + msg.text();
+		String message = user.name() + " : " + msg.text();
 		
 		return message;
 		
