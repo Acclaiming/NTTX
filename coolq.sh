@@ -10,4 +10,5 @@ docker run -ti --rm --name ntt \
              -e CQHTTP_WS_PORT=5701 \
              -e CQHTTP_USE_WS=true \
              -e CQHTTP_CONVERT_UNICODE_EMOJI=true \
+             -e FORCE_ENV=true \
              richardchien/cqhttp:latest
