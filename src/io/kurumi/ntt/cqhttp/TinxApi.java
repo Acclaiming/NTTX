@@ -14,6 +14,7 @@ import io.kurumi.ntt.cqhttp.response.GetGroupMemberListResponse;
 import io.kurumi.ntt.cqhttp.response.GetFileResponse;
 import io.kurumi.ntt.cqhttp.response.CheckResponse;
 import io.kurumi.ntt.cqhttp.response.GetGroupInfoResponse;
+import io.kurumi.ntt.utils.BotLog;
 
 public class TinxApi {
 
@@ -233,6 +234,8 @@ public class TinxApi {
 
 		} catch (Exception httpExc) {
 
+			BotLog.info("CQHTTP",httpExc);
+			
 			try {
 
 				T result = clazz.newInstance();
