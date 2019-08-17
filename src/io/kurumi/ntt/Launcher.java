@@ -52,8 +52,6 @@ import io.kurumi.ntt.fragment.mods.PackageManager;
 import io.kurumi.ntt.fragment.mstd.ui.MsMain;
 import io.kurumi.ntt.fragment.netease.NeteaseMusic;
 import io.kurumi.ntt.fragment.other.ZeroPadEncode;
-import io.kurumi.ntt.fragment.qq.BindGroup;
-import io.kurumi.ntt.fragment.qq.BindListener;
 import io.kurumi.ntt.fragment.qr.QrDecoder;
 import io.kurumi.ntt.fragment.qr.QrEncoder;
 import io.kurumi.ntt.fragment.rss.FeedFetchTask;
@@ -94,6 +92,7 @@ import java.util.TimeZone;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
+import io.kurumi.ntt.fragment.qq.TelegramBridge;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -156,7 +155,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		
 		TINX = new TinxBot(Env.CQHTTP_WS,Env.CQHTTP_URL);
 
-		TINX.addListener(new BindListener());
+		TINX.addListener(new TelegramBridge.QQListener());
 
 		tryTinxConnect();
 
@@ -429,7 +428,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		addFragment(new WhoisLookup());
 		addFragment(new MMPITest());
 	
-		addFragment(new BindGroup());
+		addFragment(new TelegramBridge.TelegramListener());
 		
 		// Mods
 		
