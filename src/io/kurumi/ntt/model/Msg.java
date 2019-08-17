@@ -438,7 +438,9 @@ public class Msg extends Context {
     public File photo() {
 
 		PhotoSize[] sizes = message.photo();
-
+		
+		if (sizes == null) return null;
+		
         File local = new File(Env.CACHE_DIR,"files/" + sizes[sizes.length - 1].fileId());
 
         if (local.isFile()) return local;
