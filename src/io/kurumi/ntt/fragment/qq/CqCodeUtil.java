@@ -61,8 +61,6 @@ public class CqCodeUtil {
 
 			type = FileUtil.getType(file);
 
-			targetFile = new File(Env.CQHTTP_PATH,"data/image/" + md5 + "." + type);
-
 			if (!targetFile.isFile()) FileUtil.copyContent(file,targetFile,true);
 
 		}
