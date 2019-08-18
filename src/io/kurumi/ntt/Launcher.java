@@ -274,7 +274,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 			
 		} catch (Exception e) {
 
-			StaticLog.warn("CqHttp WebSocket 连接失败 正在等待重试",e);
+			StaticLog.warn(e,"CqHttp WebSocket 连接失败 正在等待重试");
 
 			mainTimer.schedule(new TimerTask() {
 
