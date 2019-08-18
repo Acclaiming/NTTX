@@ -412,9 +412,9 @@ public class FeedHtmlFormater {
 
         }
 		
-		if (html.contains("br")) {
+		if (html.contains("<br")) {
 			
-			StaticLog.warn("BR",html);
+			StaticLog.warn("BR : {}",html);
 			
 		}
 
