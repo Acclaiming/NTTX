@@ -64,6 +64,10 @@ import io.kurumi.ntt.fragment.sticker.PackExport;
 import io.kurumi.ntt.fragment.sticker.RemoveSticker;
 import io.kurumi.ntt.fragment.sticker.StickerExport;
 import io.kurumi.ntt.fragment.tests.MMPITest;
+import io.kurumi.ntt.fragment.tinx.QQListener;
+import io.kurumi.ntt.fragment.tinx.TelegramAdminFN;
+import io.kurumi.ntt.fragment.tinx.TelegramFN;
+import io.kurumi.ntt.fragment.tinx.TelegramListener;
 import io.kurumi.ntt.fragment.twitter.archive.TEPH;
 import io.kurumi.ntt.fragment.twitter.ext.MediaDownload;
 import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
@@ -92,8 +96,6 @@ import java.util.TimeZone;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
-import io.kurumi.ntt.fragment.qq.TelegramBridge;
-import io.kurumi.ntt.fragment.tinx.QQListener;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -431,7 +433,9 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		addFragment(new WhoisLookup());
 		addFragment(new MMPITest());
 	
-		addFragment(new TelegramBridge.TelegramListener());
+		addFragment(new TelegramListener());
+		addFragment(new TelegramFN());
+		addFragment(new TelegramAdminFN());
 		
 		// Mods
 		
