@@ -23,10 +23,11 @@ import java.net.URISyntaxException;
 import cn.hutool.core.thread.ThreadUtil;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
 public final class TinxBot {
 
-	private AtomicBoolean stopped = new AtomicBoolean(false);
+	private AtomicBoolean stopped = new AtomicBoolean(true);
 
 	private URI uri;
 	private Channel client;
@@ -65,6 +66,18 @@ public final class TinxBot {
 		this.listeners.clear();
 
 	}
+	
+	public boolean send(String json) {
+		
+		if (client == null || stopped.get()) return false;
+		
+		WebSocketFrame frame = new TextWebSocketFrame(json);
+		
+		client.writeAndFlush(frame);
+		
+		return true;
+		
+	}
 
     public void start() throws Exception {
 
@@ -102,6 +115,8 @@ public final class TinxBot {
 			return;
 
 		}
+		
+		stopped.set(false);
 
 		new Thread("CqHttp Ping Thread") {
 

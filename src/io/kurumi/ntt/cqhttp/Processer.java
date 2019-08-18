@@ -20,6 +20,14 @@ public class Processer {
 
 		JSONObject obj = new JSONObject(json);
 
+		if (obj.containsKey("retcode")) {
+			
+			// api result
+			
+			return null;
+			
+		}
+		
 		String postType = obj.getStr("post_type");
 
 		if (Variants.POST_MESSAGE.equals(postType)) {
@@ -86,6 +94,8 @@ public class Processer {
 
 		Update update = parseUpdate(updateJSON);
 
+		if (update == null) return;
+		
 		for (TinxListener listener : bot.listeners) listener.onUpdate(update);
 
 		if (update instanceof MessageUpdate) {

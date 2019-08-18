@@ -15,14 +15,26 @@ import io.kurumi.ntt.cqhttp.response.GetFileResponse;
 import io.kurumi.ntt.cqhttp.response.CheckResponse;
 import io.kurumi.ntt.cqhttp.response.GetGroupInfoResponse;
 import io.kurumi.ntt.utils.BotLog;
+import java.util.HashMap;
+import io.kurumi.ntt.cqhttp.model.GroupMember;
+import io.kurumi.ntt.cqhttp.model.GroupInfo;
 
 public class TinxApi {
 
 	private String url;
-
+	
 	public TinxApi(String url) {
 
 		this.url = url;
+
+	}
+	
+	private HashMap<Long,GroupInfo> groupInfoCache = new HashMap<>();
+	private HashMap<Long,GroupMember> groupMemberCache = new HashMap<>();
+	
+	public SendMessageResponse sendPrivateMsg(long user_id,String message) {
+
+		return send("send_private_msg",params("user_id",user_id,"message",message),SendMessageResponse.class);
 
 	}
 	
@@ -210,6 +222,155 @@ public class TinxApi {
 	// .check_update
 	// .handle_quick_operation
 	
+	// ASYNC API
+	
+	public SendMessageResponse sendPrivateMsgAsync(long user_id,String message) {
+
+		return send("send_private_msg",params("user_id",user_id,"message",message),SendMessageResponse.class);
+
+	}
+
+	public SendMessageResponse sendPrivateMsgAsync(long user_id,String message,boolean auto_escape) {
+
+		return send("send_private_msg",params("user_id",user_id,"message",message,"auto_escape",auto_escape),SendMessageResponse.class);
+
+	}
+
+	public SendMessageResponse sendGroupMsgAsync(long group_id,String message,boolean auto_escape) {
+
+		return send("send_group_msg",params("group_id",group_id,"message",message,"auto_escape",auto_escape),SendMessageResponse.class);
+
+	}
+
+	public SendMessageResponse sendDiscussMsgAync(long discuss_id,String message,boolean auto_escape) {
+
+		return send("send_discuss_msg",params("discuss_id",discuss_id,"message",message,"auto_escape",auto_escape),SendMessageResponse.class);
+
+	}
+
+	// send_msg
+
+	public BaseResponse deleteMsgAsync(int message_id) {
+
+		return send("delete_msg",params("message_id",message_id),BaseResponse.class);
+
+	}
+
+	public BaseResponse sendLikeAsync(long user_id,int times) {
+
+		return send("send_like",params("user_id",user_id,"times",times),BaseResponse.class);
+
+	}
+
+	public BaseResponse setGroupKickAsync(long group_id,long user_id,boolean reject_add_request) {
+
+		return send("set_group_kick",params("group_id",group_id,"user_id",user_id,"reject_add_request",reject_add_request),BaseResponse.class);
+
+	}
+
+	public BaseResponse setGroupBanAsync(long group_id,long user_id,int duration) {
+
+		return send("set_group_ban",params("group_id",group_id,"user_id",user_id,"duration",duration),BaseResponse.class);
+
+	}
+
+	public BaseResponse setGroupWholeBanAsync(long group_id,boolean enable) {
+
+		return send("set_group_whole_ban",params("group_id",group_id,"enable",enable),BaseResponse.class);
+
+	}
+
+	// set_group_anonymous_ban
+	// set_group_admin
+	// set_group_anonymous
+	// set_group_card
+
+	public BaseResponse setGroupLeaveAsync(long group_id) {
+
+		return send("set_group_leave",params("group_id",group_id),BaseResponse.class);
+
+	}
+	public BaseResponse setGroupLeaveAsync(long group_id,boolean is_dismiss) {
+
+		return send("set_group_leave",params("group_id",group_id,"is_dismiss",is_dismiss),BaseResponse.class);
+
+	}
+
+	// set_group_special_title
+
+	public BaseResponse setDiscussLeaveAsync(long discuss_id) {
+
+		return send("set_discuss_leave",params("discuss_id",discuss_id),BaseResponse.class);
+
+	}
+
+	public BaseResponse setDiscussLeaveAsync(long discuss_id,boolean is_dismiss) {
+
+		return send("set_discuss_leave",params("discuss_id",discuss_id,"is_dismiss",is_dismiss),BaseResponse.class);
+
+	}
+
+
+	public BaseResponse setFriendAddRequestAsync(String flag,boolean approve,String remark) {
+
+		return send("set_friend_add_request",params("flag",flag,"approve",approve,"remark",remark),BaseResponse.class);
+
+	}
+
+	public BaseResponse setGroupAddRequestAsync(String flag,String type,boolean approve,String reason) {
+
+		return send("set_group_add_request",params("flag",flag,"type",type,"approve",approve,"reason",reason),BaseResponse.class);
+
+	}
+
+	public GetLoginInfoResponse getLoginInfoAsync() {
+
+		return send("get_login_info",params(),GetLoginInfoResponse.class);
+
+	}
+
+	public GetStrangerInfoResponse getStrangerInfoAsync(long user_id) {
+
+		return send("get_stranger_info",params("user_id",user_id),GetStrangerInfoResponse.class);
+
+	}
+
+	public GetStrangerInfoResponse getStrangerInfoAsync(long user_id,boolean no_cache) {
+
+		return send("get_stranger_info",params("user_id",user_id,"no_cache",no_cache),GetStrangerInfoResponse.class);
+
+	}
+
+
+	// get_group_list
+	// get_group_member_info
+	// get_group_member_list
+
+	// get_cookies
+	// get_csrf_token
+	// get_credentials
+	
+	// get_record
+	// get_image
+	// can_send_image
+	// can_send_record
+
+	// get_status
+	// get_version_info
+	// set_restart_plugin
+	// clean_data_dir
+	// clean_plugin_log
+
+	// _get_group_info
+	// _get_vip_info
+	// _get_group_notice
+	// _send_group_notice
+	// _set_restart
+
+	// .check_update
+	// .handle_quick_operation
+	
+	
 	JSONObject params(Object... params) {
 
 		JSONObject body = new JSONObject();
@@ -225,12 +386,31 @@ public class TinxApi {
 		return body;
 		
 	}
+	
+	public void sendAsync(String method,JSONObject body) {
+		
+		method += "_async";
+		
+		JSONObject query = new JSONObject();
+		
+		query.put("action",method);
+		query.put("params",body);
+		
+		if (!Launcher.TINX.send(query.toString())) {
+			
+			send(method,body,null);
+			
+		}
+		
+	}
 
 	public <T extends BaseResponse> T send(String method,JSONObject body,Class<T> clazz) {
 
 		try {
 
 			HttpResponse result = HttpUtil.createPost(url + method).body(body).execute();
+			
+			if (clazz == null) return null;
 			
 			return Launcher.GSON.fromJson(result.body(),clazz);
 
