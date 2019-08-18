@@ -91,7 +91,7 @@ public class TelegramListener extends Fragment {
 	@Override
 	public int checkMsg(UserData user,Msg msg) {
 
-		return msg.isGroup() && !TelegramBridge.disable.containsKey(msg.chatId()) && TelegramBridge.telegramIndex.containsKey(msg.chatId()) ? PROCESS_ASYNC : PROCESS_CONTINUE;
+		return (msg.isGroup() && !TelegramBridge.disable.containsKey(msg.chatId()) && TelegramBridge.telegramIndex.containsKey(msg.chatId())) ? PROCESS_ASYNC : PROCESS_CONTINUE;
 
 	}
 
