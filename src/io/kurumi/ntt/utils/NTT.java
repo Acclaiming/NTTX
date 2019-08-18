@@ -602,7 +602,7 @@ public class NTT {
 
     public static boolean checkGroupAdmin(Msg msg) {
 
-        if (isGroupAdmin(msg.fragment, msg.chatId(), msg.from().id)) {
+        if (msg.from().admin() || isGroupAdmin(msg.fragment, msg.chatId(), msg.from().id)) {
 
             return false;
 
