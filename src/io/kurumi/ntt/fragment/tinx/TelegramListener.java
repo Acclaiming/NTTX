@@ -27,7 +27,7 @@ public class TelegramListener extends Fragment {
 	@Override
 	public void init(BotFragment origin) {
 		
-		origin.init(origin);
+		super.init(origin);
 		
 		registerCallback(POINT_ACCEPT,POINT_REJECT,POINT_BLOCK,POINT_IGNORE);
 		
