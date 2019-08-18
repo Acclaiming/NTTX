@@ -419,7 +419,7 @@ public class TinxApi {
 			try {
 
 				T result = clazz.newInstance();
-				result.status = ExceptionUtil.getSimpleMessage(httpExc);
+				result.status = httpExc.getMessage();
 				result.retcode = -1;
 
 				return result;
