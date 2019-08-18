@@ -54,6 +54,7 @@ import io.kurumi.ntt.db.PointData;
 import com.rometools.rome.io.WireFeedInput;
 import cn.hutool.core.exceptions.UtilException;
 import cn.hutool.http.HtmlUtil;
+import cn.hutool.core.thread.ThreadUtil;
 
 public class RssSub extends Fragment {
 
@@ -695,6 +696,8 @@ public class RssSub extends Fragment {
 
                     msg.send(request.request().getText()).async();
 
+					ThreadUtil.sleep(1000);
+					
 
                 }
 
