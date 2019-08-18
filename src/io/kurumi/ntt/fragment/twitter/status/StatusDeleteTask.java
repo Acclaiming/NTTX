@@ -48,7 +48,7 @@ public class StatusDeleteTask extends TimerTask {
 
 				if (count > 0) {
 					
-					new Send(account.user,"[推文定时删除] 已删除 " + count + " 条 .").async();
+					// new Send(account.user,"[推文定时删除] 已删除 " + count + " 条 .").async();
 					
 				}
 				
