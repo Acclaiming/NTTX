@@ -424,7 +424,7 @@ public class Send extends AbstractSend<Send> {
 
 				if (resp != null) {
 
-					BotLog.debug("发送出错 : " + request.toWebhookResponse() + "\n" + resp.description());
+					BotLog.debug("发送出错 : " + request.toWebhookResponse() + "\n" + resp.errorCode() + " : " + resp.description());
 
 				}
 
