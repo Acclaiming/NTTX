@@ -3,23 +3,29 @@ package io.kurumi.ntt.fragment.group;
 import cn.hutool.captcha.generator.RandomGenerator;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.ReUtil;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONObject;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.DeleteMessage;
+import com.pengrad.telegrambot.request.KickChatMember;
 import com.pengrad.telegrambot.request.SendPhoto;
+import com.pengrad.telegrambot.request.SendSticker;
 import com.pengrad.telegrambot.response.SendResponse;
 import io.kurumi.ntt.db.GroupData;
 import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.fragment.admin.Firewall;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Img;
 import io.kurumi.ntt.utils.NTT;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,17 +35,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
-
-import io.kurumi.ntt.fragment.admin.Firewall;
-import com.pengrad.telegrambot.request.SendSticker;
-import com.pengrad.telegrambot.request.*;
-import cn.hutool.http.*;
-import cn.hutool.json.*;
-
-import java.util.regex.*;
-
-import cn.hutool.core.util.*;
-import io.kurumi.ntt.utils.BotLog;
+import java.util.regex.Pattern;
 
 public class JoinCaptcha extends Fragment {
 
@@ -94,7 +90,7 @@ public class JoinCaptcha extends Fragment {
 
                     }
 
-                    SendResponse resp = new Send(this,data.id,"你好，新成员 " + user.userName() +"\n因为服务中断，已将你暂时禁言。请点击下方重新验证。")
+                    SendResponse resp = new Send(this,data.id,"你好，新成员 " + user.userName() + "\n因为服务中断，已将你暂时禁言。请点击下方重新验证。")
 						.buttons(new ButtonMarkup() {{
 
                                 newButtonLine("开始验证",POINT_AUTH,user.id);
@@ -197,7 +193,7 @@ public class JoinCaptcha extends Fragment {
                             msg.send(newData.userName() + " 在 Combot Anit-Spam 黑名单内，已禁言。\n详情请查看 : https://combot.org/cas/query?u=" + newData.id).html().async();
 
 							return;
-							
+
                         }
 
                     }
@@ -1155,23 +1151,23 @@ public class JoinCaptcha extends Fragment {
 
         } else if (POINT_ACC.equals(point) || POINT_REJ.equals(point)) {
 
-            if (user.id.equals(target)) {
+            if (NTT.checkGroupAdmin(callback)) {
 
-                failed(user,callback,auth,gd,"点击按钮");
+				if (POINT_ACC.equals(point)) {
 
-            } else if (NTT.checkGroupAdmin(callback)) {
+					success(UserData.get(target),callback,auth,gd,"管理员通过");
 
-                return;
+				} else {
 
-            }
+					failed(UserData.get(target),callback,auth,gd,true,"点击按钮");
 
-            if (POINT_ACC.equals(point)) {
+				}
 
-                success(UserData.get(target),callback,auth,gd,"管理员通过");
+			} else if (user.id.equals(target)) {
 
-            } else {
+				failed(user,callback,auth,gd,"点击按钮");
 
-                failed(UserData.get(target),callback,auth,gd,true,"点击按钮");
+				return;
 
             }
 
