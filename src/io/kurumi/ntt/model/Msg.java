@@ -177,28 +177,27 @@ public class Msg extends Context {
 
     }
 
-    public Send sendWithAtIfGroup(String... msg) {
-
-        if (msg.length > 0 && !isPrivate() && message.from() != null) {
-
-            ArrayUtil.setOrAppend(msg,0,from().userName() + " " + ArrayUtil.get(msg,0));
-
-        }
-
-        return super.send(msg);
-    }
-
-    public AbstractSend sendOrEdit(boolean edit,String... msg) {
+ 
+    public AbstractSend sendOrEdit(boolean edit,String msg) {
 
         if (edit) return edit(msg);
         else return send(msg);
 
     }
+	
+	public Send send(String msg) {
 
-    @Override
-    public Send send(String... msg) {
+        Send send = new Send(fragment,chatId(),msg);
 
-        Send send = super.send(msg);
+        send.origin = this;
+
+        return send;
+
+    }
+
+    public Send send(String msg,Object... params) {
+
+        Send send = new Send(fragment,chatId(),msg,params);
 
         send.origin = this;
 
@@ -308,9 +307,9 @@ public class Msg extends Context {
 
     }
 
-    public Send reply(String... msg) {
+    public Send reply(String msg,Object... params) {
 
-        return send(msg).replyTo(this);
+        return send(msg,params).replyTo(this);
 
     }
 

@@ -56,12 +56,6 @@ public class Context {
         return chat.type() == Chat.Type.channel;
     }
 
-    public Send send(String... msg) {
-
-        return new Send(fragment, chatId(), msg);
-
-    }
-
 
 }
 

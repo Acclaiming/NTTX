@@ -232,7 +232,7 @@ public class TwitterDelete extends Fragment {
 
         } catch (IOException e) {
 
-            msg.send("读取文件错误...", e.toString()).exec();
+            msg.send("读取文件错误...\n\n{}", e).exec();
 
             return;
 
@@ -274,7 +274,7 @@ public class TwitterDelete extends Fragment {
         @Override
         public void run() {
 
-            Msg status = new Send(userId, "正在删除... ", "取消删除使用 /delete_cancel").send();
+            Msg status = new Send(userId, "正在删除... \n取消删除使用 /delete_cancel").send();
 
             if (!fetch) {
 

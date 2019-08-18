@@ -60,7 +60,7 @@ public class PackageManager extends Fragment {
 
 		if (params.length == 0) {
 
-			msg.send(mainHelp).async();
+			msg.send(ArrayUtil.join(mainHelp,"\n")).async();
 
 			return;
 
@@ -102,7 +102,7 @@ public class PackageManager extends Fragment {
 
 			if (params.length == 0) {
 
-				msg.send(mainHelp).async();
+				msg.send(ArrayUtil.join(mainHelp,"\n")).async();
 
 				return;
 

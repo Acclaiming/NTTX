@@ -93,7 +93,7 @@ public class MediaDownload extends Fragment {
 
             }
 
-            msg.send("媒体链接 :\n", urls.toString()).enableLinkPreview().async();
+            msg.send("媒体链接 :\n\n{}", urls.toString()).enableLinkPreview().async();
 
         } catch (TwitterException e) {
 

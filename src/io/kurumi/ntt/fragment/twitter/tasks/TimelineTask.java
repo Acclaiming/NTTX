@@ -38,7 +38,7 @@ public class TimelineTask extends TimerTask {
 
 				account.tl = null;
 
-				new Send(account.user,"时间流已关闭 :",NTT.parseTwitterException(e)).exec();
+				new Send(account.user,"时间流已关闭 :\n\n{}",NTT.parseTwitterException(e)).exec();
 
 				if (TAuth.data.containsId(account.id)) {
 

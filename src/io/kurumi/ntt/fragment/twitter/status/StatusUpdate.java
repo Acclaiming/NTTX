@@ -252,7 +252,7 @@ public class StatusUpdate extends Fragment {
 
 			update.text = msg.text();
 
-			// msg.send("文本已设定",submitAndCancel).exec(update);
+			// msg.send("文本已设定\n{}",submitAndCancel).exec(update);
 
 		} else if (message.sticker() != null) {
 
@@ -262,11 +262,11 @@ public class StatusUpdate extends Fragment {
 
 				update.images.add(NTT.telegramToTwitter(auth.createApi(),message.sticker().fileId(),"sticker.png",0));
 
-				// msg.send("图片添加成功 已设置 1 / 4 张图片",submitAndCancel).exec(update);
+				// msg.send("图片添加成功 已设置 1 / 4 张图片\n{}",submitAndCancel).exec(update);
 
 			} catch (TwitterException e) {
 
-				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec(update);
+				msg.send("图片上传失败\n\n{}",NTT.parseTwitterException(e)).exec(update);
 
 			}
 
@@ -298,11 +298,11 @@ public class StatusUpdate extends Fragment {
 
 				update.images.add(NTT.telegramToTwitter(auth.createApi(),max.fileId(),"image.png",0));
 
-				// msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ",submitAndCancel).exec(update);
+				// msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 \n{}",submitAndCancel).exec(update);
 
 			} catch (TwitterException e) {
 
-				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec(update);
+				msg.send("图片上传失败\n\n{}",NTT.parseTwitterException(e)).exec(update);
 
 			}
 
@@ -328,11 +328,11 @@ public class StatusUpdate extends Fragment {
 
 				msg.sendUpdatingVideo();
 
-				// msg.send("动图添加成功",submitAndCancel).exec(update);
+				// msg.send("动图添加成功\n{}",submitAndCancel).exec(update);
 
 			} catch (TwitterException e) {
 
-				msg.send("动图上传失败",NTT.parseTwitterException(e)).exec(update);
+				msg.send("动图上传失败\n\n{}",NTT.parseTwitterException(e)).exec(update);
 
 			}
 
@@ -353,11 +353,11 @@ public class StatusUpdate extends Fragment {
 
 				update.video = NTT.telegramToTwitter(auth.createApi(),message.video().fileId(),"video.mp4",1);
 
-				// msg.send("视频添加成功",submitAndCancel).exec(update);
+				// msg.send("视频添加成功\n{}",submitAndCancel).exec(update);
 
 			} catch (TwitterException e) {
 
-				msg.send("视频上传失败",NTT.parseTwitterException(e)).exec(update);
+				msg.send("视频上传失败\n\n{}",NTT.parseTwitterException(e)).exec(update);
 
 			}
 
@@ -378,11 +378,11 @@ public class StatusUpdate extends Fragment {
 
 				update.video = NTT.telegramToTwitter(auth.createApi(),message.videoNote().fileId(),"video.mp4",1);
 
-				// msg.send("视频添加成功",submitAndCancel).exec(update);
+				// msg.send("视频添加成功\n{}",submitAndCancel).exec(update);
 
 			} catch (TwitterException e) {
 
-				msg.send("视频上传失败",NTT.parseTwitterException(e)).exec(update);
+				msg.send("视频上传失败\n\n{}",NTT.parseTwitterException(e)).exec(update);
 
 			}
 
@@ -548,7 +548,7 @@ public class StatusUpdate extends Fragment {
 
 			TimedStatus.schedule(timed);
 
-			msg.send("已创建定时推文 : " + timed.id,"使用 /timed 管理定时推文").exec();
+			msg.send("已创建定时推文 ( 使用 /timed 管理 )").async();
 
 			clearPrivatePoint(user);
 
@@ -640,11 +640,11 @@ public class StatusUpdate extends Fragment {
 
 				StatusArchive archive = StatusArchive.save(status);
 
-				msg.send(update.toReply == null ? "发送成功 :" : "回复成功 :",StatusArchive.split_tiny,archive.toHtml(0,update.auth)).buttons(StatusAction.createMarkup(update.auth.id,archive.id,true,archive.depth() == 0,false,false)).html().exec();
+				msg.send(update.toReply == null ? "发送成功 :" : "回复成功 : {}\n{}",StatusArchive.split_tiny,archive.toHtml(0,update.auth)).buttons(StatusAction.createMarkup(update.auth.id,archive.id,true,archive.depth() == 0,false,false)).html().exec();
 
 			} catch (TwitterException e) {
 
-				msg.send(update.toReply == null ? "发送失败 :(" : "回复失败 :(",NTT.parseTwitterException(e)).exec();
+				msg.send(update.toReply == null ? "发送失败 :(" : "回复失败\n\n{}",NTT.parseTwitterException(e)).exec();
 
 			}
 
@@ -680,7 +680,7 @@ public class StatusUpdate extends Fragment {
 
 			update.text = msg.text();
 
-			msg.send("文本已设定",submitAndCancel).exec(update);
+			msg.send("文本已设定\n{}",submitAndCancel).exec(update);
 
 		}
 
@@ -708,11 +708,11 @@ public class StatusUpdate extends Fragment {
 
 				update.images.add(NTT.telegramToTwitter(update.auth.createApi(),message.sticker().fileId(),"sticker.png",0));
 
-				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ",submitAndCancel).exec(update);
+				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 \n{}",submitAndCancel).exec(update);
 
 			} catch (TwitterException e) {
 
-				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec(update);
+				msg.send("图片上传失败\n\n{}",NTT.parseTwitterException(e)).exec(update);
 
 			}
 
@@ -760,11 +760,11 @@ public class StatusUpdate extends Fragment {
 
 				update.images.add(NTT.telegramToTwitter(update.auth.createApi(),max.fileId(),"image.png",0));
 
-				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 ",submitAndCancel).exec(update);
+				msg.send("图片添加成功 已设置 " + update.images.size() + " / 4 张图片 \n{}",submitAndCancel).exec(update);
 
 			} catch (TwitterException e) {
 
-				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec(update);
+				msg.send("图片上传失败\n\n{}",NTT.parseTwitterException(e)).exec(update);
 
 			}
 
@@ -804,11 +804,11 @@ public class StatusUpdate extends Fragment {
 
 				msg.sendUpdatingVideo();
 
-				msg.send("动图添加成功",submitAndCancel).exec(update);
+				msg.send("动图添加成功\n{}",submitAndCancel).exec(update);
 
 			} catch (TwitterException e) {
 
-				msg.send("动图上传失败",NTT.parseTwitterException(e)).exec(update);
+				msg.send("动图上传失败\n\n{}",NTT.parseTwitterException(e)).exec(update);
 
 			}
 
@@ -842,11 +842,11 @@ public class StatusUpdate extends Fragment {
 
 				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.video().fileId(),"video.mp4",1);
 
-				msg.send("视频添加成功",submitAndCancel).exec(update);
+				msg.send("视频添加成功\n{}",submitAndCancel).exec(update);
 
 			} catch (TwitterException e) {
 
-				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec(update);
+				msg.send("图片上传失败\n\n{}",NTT.parseTwitterException(e)).exec(update);
 
 			}
 
@@ -881,11 +881,11 @@ public class StatusUpdate extends Fragment {
 
 				update.video = NTT.telegramToTwitter(update.auth.createApi(),message.videoNote().fileId(),"video.mp4",1);
 
-				msg.send("视频添加成功",submitAndCancel).exec(update);
+				msg.send("视频添加成功\n{}",submitAndCancel).exec(update);
 
 			} catch (TwitterException e) {
 
-				msg.send("图片上传失败",NTT.parseTwitterException(e)).exec(update);
+				msg.send("图片上传失败\n\n{}",NTT.parseTwitterException(e)).exec(update);
 
 			}
 

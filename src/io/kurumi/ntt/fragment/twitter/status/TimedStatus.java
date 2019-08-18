@@ -123,11 +123,11 @@ public class TimedStatus extends Fragment {
 
                 StatusArchive archive = StatusArchive.save(status);
 
-                new Send(auth.user, "定时推文 " + update.id + " 发送成功 : ", StatusArchive.split_tiny, archive.toHtml(0,auth)).buttons(StatusAction.createMarkup(auth.id,archive.id, true, archive.depth() == 0, false, false)).html().exec();
+                new Send(auth.user, "定时推文 " + update.id + " 发送成功 : \n{}", StatusArchive.split_tiny, archive.toHtml(0,auth)).buttons(StatusAction.createMarkup(auth.id,archive.id, true, archive.depth() == 0, false, false)).html().exec();
 				
             } catch (TwitterException e) {
 
-                new Send(auth.user, "定时推文 " + update.id + " 发送失败 : ", NTT.parseTwitterException(e)).exec();
+                new Send(auth.user, "定时推文 " + update.id + " 发送失败 : \n{}", NTT.parseTwitterException(e)).exec();
 
             }
 
@@ -236,11 +236,11 @@ public class TimedStatus extends Fragment {
 
                 StatusArchive archive = StatusArchive.save(status);
 
-                msg.reply("发送成功 : ", StatusArchive.split_tiny, archive.toHtml(0,auth)).buttons(StatusAction.createMarkup(auth.id,archive.id, true, archive.depth() == 0, false, false)).html().exec();
+                msg.reply("发送成功 : {}\n{}", StatusArchive.split_tiny, archive.toHtml(0,auth)).buttons(StatusAction.createMarkup(auth.id,archive.id, true, archive.depth() == 0, false, false)).html().exec();
 
             } catch (TwitterException e) {
 
-                msg.reply("发送失败 : ", NTT.parseTwitterException(e)).exec();
+                msg.reply("发送失败 : {}\n{}", NTT.parseTwitterException(e)).exec();
 
             }
 

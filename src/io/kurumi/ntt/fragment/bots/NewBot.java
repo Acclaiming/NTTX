@@ -42,7 +42,7 @@ public class NewBot extends Fragment {
 
         CreateBot create = new CreateBot(msg);
 
-        msg.send("现在请输入BotToken :", "", "BotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。").withCancel().exec(create);
+        msg.send("现在请输入BotToken :\n\nBotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。").withCancel().exec(create);
 
         setPrivatePoint(user, POINT_CREATE_BOT, create);
 
@@ -59,7 +59,7 @@ public class NewBot extends Fragment {
 
                 if (!msg.hasText() || !msg.text().contains(":")) {
 
-                    msg.send("无效的Token.请重试. ", "Token 看起来像这样: '12345678:ABCDEfgHIDUROVjkLmNOPQRSTUvw-cdEfgHI'").withCancel().exec(data);
+                    msg.send("无效的Token.请重试. \n\nToken 看起来像这样: '12345678:ABCDEfgHIDUROVjkLmNOPQRSTUvw-cdEfgHI'").withCancel().exec(data);
 
                     return;
 

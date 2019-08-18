@@ -19,41 +19,42 @@ import io.kurumi.ntt.utils.NTT;
 import cn.hutool.http.HtmlUtil;
 import io.kurumi.ntt.fragment.BotFragment;
 import com.pengrad.telegrambot.model.Update;
+import cn.hutool.core.util.StrUtil;
 
 public class Send extends AbstractSend<Send> {
 
     private SendMessage request;
+	
+	public Send(Fragment fragment,String chatId,String msg,Object... params) {
 
-    public Send(Fragment fragment,String chatId,String... msg) {
+        this(null,fragment,chatId,msg,params);
 
-        this(null,fragment,chatId,msg);
+    }
+	
+    public Send(Fragment fragment,long chatId,String msg,Object... params) {
+
+        this(null,fragment,chatId,msg,params);
+
+    }
+	
+    public Send(String chatId,String msg,Object... params) {
+
+        this(null,Launcher.INSTANCE,chatId,msg,params);
 
     }
 
-    public Send(Fragment fragment,long chatId,String... msg) {
+    public Send(long chatId,String msg,Object... params) {
 
-        this(null,fragment,chatId,msg);
-
-    }
-
-    public Send(String chatId,String... msg) {
-
-        this(null,Launcher.INSTANCE,chatId,msg);
-
-    }
-
-    public Send(long chatId,String... msg) {
-
-        this(null,Launcher.INSTANCE,chatId,msg);
+        this(null,Launcher.INSTANCE,chatId,msg,params);
 
     }
 
 
-    private Send(Void v,Fragment fragment,Object chatId,String... msg) {
+    private Send(Void v,Fragment fragment,Object chatId,String msg,Object... params) {
 
         super(fragment);
 
-        request = new SendMessage(chatId,ArrayUtil.join(msg,"\n").replace("\t",""));
+        request = new SendMessage(chatId,StrUtil.format(msg,params));
 
         this.fragment = fragment;
 
@@ -456,7 +457,7 @@ public class Send extends AbstractSend<Send> {
 
     }
 
-    public Send fork(String... msg) {
+    public Send fork(String msg) {
 
         Send send = new Send(null,fragment,request.chatId,msg);
 

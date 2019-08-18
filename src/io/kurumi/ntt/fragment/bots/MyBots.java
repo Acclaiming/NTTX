@@ -156,7 +156,7 @@ public class MyBots extends Fragment {
 
         }
 
-        AbstractSend send = msg.sendOrEdit(edit, "自定义" + bot.typeName() + " : @" + bot.userName, "", bot.information());
+        AbstractSend send = msg.sendOrEdit(edit, "自定义" + bot.typeName() + " : @" + bot.userName + "\n\n" + bot.information());
         send.buttons(new ButtonMarkup() {{
 
             if (bot.type == 0) {

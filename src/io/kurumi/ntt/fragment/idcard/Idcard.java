@@ -167,7 +167,7 @@ public class Idcard extends Fragment {
 
                 }
 
-                msg.send("生成完成 : " + Html.code(code.getFull()) + "\n", ArrayUtil.join(ics, "\n")).html().async();
+                msg.send("生成完成 : {}\n\n{}" + Html.code(code.getFull()), ArrayUtil.join(ics, "\n")).html().async();
 
                 return;
 
@@ -296,7 +296,7 @@ public class Idcard extends Fragment {
 
             }
 
-            msg.send("生成完成 : " + Html.code(code.getFull()) + "\n", ArrayUtil.join(ics, "\n")).html().exec();
+            msg.send("生成完成 : {}\n\n{}",Html.code(code.getFull()), ArrayUtil.join(ics, "\n")).html().exec();
 
         }
 
@@ -451,7 +451,7 @@ public class Idcard extends Fragment {
 
                 if (!provinceMap.containsKey(province)) {
 
-                    msg.send("不存在的省/直辖市码 : " + province + " 对照 : \n", MapUtil.join(provinceMap, "\n", " : ")).exec();
+                    msg.send("不存在的省/直辖市码 : " + province + " 对照 : \n\n" + MapUtil.join(provinceMap, "\n", " : ")).exec();
 
                     return;
 
@@ -479,7 +479,7 @@ public class Idcard extends Fragment {
 
                 if (!detailList.containsKey(detail)) {
 
-                    msg.send(pStr + " " + cStr + " 不存在的地址 : " + detail + " 对照 : \n", MapUtil.join(detailList, "\n", " : ")).exec();
+                    msg.send(pStr + " " + cStr + " 不存在的地址 : " + detail + " 对照 : \n\n" + MapUtil.join(detailList, "\n", " : ")).exec();
 
                     return;
 

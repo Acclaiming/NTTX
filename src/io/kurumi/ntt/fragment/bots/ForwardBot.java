@@ -96,7 +96,7 @@ public class ForwardBot extends UserBotFragment {
 
             }
 
-            msg.send("回复 " + target.userName() + " : ","直接发送信息即可 (非文本，表情，文件 会直接转发) : ","使用 /cancel 退出").html().exec();
+            msg.send("回复 " + target.userName() + " : \n直接发送信息即可 (非文本，表情，文件 会直接转发) : ","使用 /cancel 退出").html().exec();
 
             setPrivatePointData(user,POINT_REPLY,target.id);
 
@@ -270,7 +270,7 @@ public class ForwardBot extends UserBotFragment {
 
                 if (!resp.isOk()) {
 
-                    msg.send("发送失败 (˚☐˚! )/","-----------------------",resp.description()).exec();
+                    msg.send("发送失败 (˚☐˚! )/\n-----------------------",resp.description()).exec();
 
                 } else {
 
@@ -286,7 +286,7 @@ public class ForwardBot extends UserBotFragment {
 
                 if (!resp.isOk()) {
 
-                    msg.send("发送失败 (˚☐˚! )/","-----------------------",resp.description()).exec();
+                    msg.send("发送失败 (˚☐˚! )/\n-----------------------",resp.description()).exec();
 
                 } else {
 
@@ -302,7 +302,7 @@ public class ForwardBot extends UserBotFragment {
 
                 if (!resp.isOk()) {
 
-                    msg.send("发送失败 (˚☐˚! )/","-----------------------",resp.description()).exec();
+                    msg.send("发送失败 (˚☐˚! )/\n-----------------------",resp.description()).exec();
 
                 } else {
 
@@ -318,7 +318,7 @@ public class ForwardBot extends UserBotFragment {
 
                 if (!resp.isOk()) {
 
-                    msg.send("发送失败 (˚☐˚! )/","-----------------------",resp.description()).exec();
+                    msg.send("发送失败 (˚☐˚! )/\n-----------------------",resp.description()).exec();
 
                 } else {
 
@@ -330,7 +330,7 @@ public class ForwardBot extends UserBotFragment {
 
             if (sended != -1) {
 
-                msg.reply("发送成功 [ " + Html.a("删除","https://t.me/" + me.username() + "?start=del" + PAYLOAD_SPLIT + target + PAYLOAD_SPLIT + sended) + " ]","退出回复使用 /cancel ").html().exec();
+                msg.reply("发送成功 [ " + Html.a("删除","https://t.me/" + me.username() + "?start=del" + PAYLOAD_SPLIT + target + PAYLOAD_SPLIT + sended) + " ]\n退出回复使用 /cancel ").html().exec();
 
 				Launcher.INSTANCE.execute(new ForwardMessage(Env.LOG_CHANNEL,msg.chatId(),msg.messageId()));
 				

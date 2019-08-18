@@ -174,13 +174,13 @@ public class GroupOptions extends Fragment {
 
             buttons.newButtonLine("打开", POINT_OPTIONS, user.id);
 
-            msg.reply("点击按钮在私聊打开设置面板 :)", "\n如果没有反应 请检查是否停用了BOT (私聊内点击 '取消屏蔽' 解除) 然后重新点击下方 '打开' 按钮 ~").buttons(buttons).async();
+            msg.reply("点击按钮在私聊打开设置面板 :)\n\n如果没有反应 请检查是否停用了BOT (私聊内点击 '取消屏蔽' 解除) 然后重新点击下方 '打开' 按钮 ~").buttons(buttons).async();
 
             return;
 
         }
 
-        new Send(this, user.id,
+        new Send(this, user.id, "{}\n{}\n{}",
 
                 Html.b(data.title),
                 Html.i("更改群组的设定"),
@@ -210,7 +210,8 @@ public class GroupOptions extends Fragment {
         final GroupData data = GroupData.get(groupId);
 
         msg.send(
-
+		
+		        "{}\n{}\n{}",
                 Html.b(data.title),
                 Html.i("更改群组的设定"),
 
@@ -1386,7 +1387,7 @@ public class GroupOptions extends Fragment {
 
                     EditCustom edit = new EditCustom(5, callback, data);
 
-                    callback.send("现在发送贴纸来设定", "注意 : 如果发送贴纸包链接，则每次随机一张作为欢迎信息").exec(edit);
+                    callback.send("现在发送贴纸来设定\n注意 : 如果发送贴纸包链接，则每次随机一张作为欢迎信息").exec(edit);
 
                     setPrivatePoint(user, POINT_SET_CUST, edit);
 
@@ -1603,7 +1604,7 @@ public class GroupOptions extends Fragment {
 
             } else if (!valid) {
 
-                msg.send("没有包含一个正确选项", "再说一遍 : 每行一个选项，正确选项以+开头").exec(data);
+                msg.send("没有包含一个正确选项 :\n\n每行一个选项，正确选项以+开头").exec(data);
 
                 return;
 

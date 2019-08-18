@@ -60,7 +60,7 @@ public class RemoveSticker extends Fragment {
 
         if (all.isEmpty()) {
 
-            msg.send("你没有使用NTT创建过贴纸包....", "使用 /new_sticker_set 创建").exec();
+            msg.send("你没有使用NTT创建过贴纸包....\n使用 /new_sticker_set 创建").exec();
 
             return;
 
@@ -184,7 +184,7 @@ public class RemoveSticker extends Fragment {
 
             if (!resp.isOk()) {
 
-                msg.send("移除失败！请重试", resp.description()).withCancel().exec(data);
+                msg.send("移除失败！请重试\n\n{}", resp.description()).withCancel().exec(data);
 
                 return;
 
@@ -198,7 +198,7 @@ public class RemoveSticker extends Fragment {
 
             }
 
-            msg.reply("移除成功！ ", "这可能需要几个小时的时间来生效。", "\n退出移除模式使用 /cancel")
+            msg.reply("移除成功！\n这可能需要几个小时的时间来生效。\n\n退出移除模式使用 /cancel")
                     .buttons(new ButtonMarkup() {{
 
                         newCurrentInlineButtonLine("继续选择", ShowSticker.PREFIX);

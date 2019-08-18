@@ -38,7 +38,7 @@ public class StickerExport extends Fragment {
 
         PointData data = setPrivatePoint(user, POINT_EXPORT_STICKER).with(msg);
 
-        msg.send("进入贴纸制作模式 :", "\n发送任意贴纸将返回原文件", "发送任意图片将返回可用于添加贴纸的.png格式文件", "\n使用 /cancel 结束导出").exec(data);
+        msg.send("已进入贴纸制作模式\n\n发送任意贴纸将返回原文件\n发送任意图片将返回可用于添加贴纸的.png格式文件\n\n使用 /cancel 结束导出").exec(data);
 
     }
 

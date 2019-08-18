@@ -147,7 +147,7 @@ public class RssSub extends Fragment {
 
             } catch (Exception ex) {
 
-                msg.send("导入失败",BotLog.parseError(ex)).async();
+                msg.send("导入失败 \n{}",BotLog.parseError(ex)).async();
 
                 return;
 
@@ -163,8 +163,8 @@ public class RssSub extends Fragment {
 
             data.data = opml;
             data.step = 1;
-
-            msg.send("将要导入 :",notice.toString(),"\n现在发送目标频道的用户名或者ID ~").html().async();
+			
+            msg.send("将要导入 : {}\n现在发送目标频道的用户名或者ID ~",notice).html().async();
 
         } else {
 
@@ -193,7 +193,7 @@ public class RssSub extends Fragment {
 
                 } else if (!resp.isOk()) {
 
-                    msg.send("错误 : BOT不在该频道","( " + resp.description() + " )").async();
+                    msg.send("错误 : BOT不在该频道\n( {} )",resp.description()).async();
 
                     return;
 
@@ -224,7 +224,7 @@ public class RssSub extends Fragment {
 
                 } else if (!resp.isOk()) {
 
-                    msg.send("错误 : BOT不在该频道 : @" + username,"( " + resp.description() + " )").async();
+                    msg.send("错误 : BOT不在该频道\n( {} )",resp.description()).async();
 
                     return;
 
@@ -235,7 +235,6 @@ public class RssSub extends Fragment {
                     return;
 
                 }
-
 
                 channelId = resp.chat().id();
 
@@ -253,7 +252,7 @@ public class RssSub extends Fragment {
 
                 } else if (!resp.isOk()) {
 
-                    msg.send("错误 : 频道读取失败","( " + resp.description() + " )").async();
+                    msg.send("错误 : 频道读取失败\n( {} )",resp.description()).async();
 
                     return;
 
@@ -343,24 +342,24 @@ public class RssSub extends Fragment {
 
             if (resp == null) {
 
-                msg.send("Telegram 服务器连接错误").async();
+				msg.send("Telegram 服务器连接错误").async();
 
-                return;
+				return;
 
-            } else if (!resp.isOk()) {
+			} else if (!resp.isOk()) {
 
-                msg.send("错误 : BOT不在该频道","( " + resp.description() + " )").async();
+				msg.send("错误 : BOT不在该频道\n( {} )",resp.description()).async();
 
-                return;
+				return;
 
-            } else if (resp.chat().type() != Chat.Type.channel) {
+			} else if (resp.chat().type() != Chat.Type.channel) {
 
-                msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").async();
+				msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").async();
 
-                return;
+				return;
 
-            }
-
+			}
+			
             channelId = resp.chat().id();
 
 
@@ -374,25 +373,23 @@ public class RssSub extends Fragment {
 
             if (resp == null) {
 
-                msg.send("Telegram 服务器连接错误").async();
+				msg.send("Telegram 服务器连接错误").async();
 
-                return;
+				return;
 
-            } else if (!resp.isOk()) {
+			} else if (!resp.isOk()) {
 
-                msg.send("错误 : BOT不在该频道 : @" + username,"( " + resp.description() + " )").async();
+				msg.send("错误 : BOT不在该频道\n( {} )",resp.description()).async();
 
-                return;
+				return;
 
-            } else if (resp.chat().type() != Chat.Type.channel) {
+			} else if (resp.chat().type() != Chat.Type.channel) {
 
-                msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").async();
+				msg.send("这不是一个频道 注意 : 如果需要为群组订阅RSS，可以将该群组绑定为频道的讨论群组。").async();
 
-                return;
+				return;
 
-            }
-
-
+			}
             channelId = resp.chat().id();
 
         }
@@ -403,23 +400,23 @@ public class RssSub extends Fragment {
 
             if (resp == null) {
 
-                msg.send("Telegram 服务器连接错误").async();
+				msg.send("Telegram 服务器连接错误").async();
 
-                return;
+				return;
 
-            } else if (!resp.isOk()) {
+			} else if (!resp.isOk()) {
 
-                msg.send("错误 : 频道读取失败","( " + resp.description() + " )").async();
+				msg.send("错误 : 频道读取失败\n( {} )",resp.description()).async();
 
-                return;
+				return;
 
-            } else if (!(resp.chatMember().status() == ChatMember.Status.creator || resp.chatMember().status() == ChatMember.Status.administrator)) {
+			} else if (!(resp.chatMember().status() == ChatMember.Status.creator || resp.chatMember().status() == ChatMember.Status.administrator)) {
 
-                msg.send("错误 : 你不是频道管理员").async();
+				msg.send("错误 : 你不是频道管理员").async();
 
-                return;
+				return;
 
-            }
+			}
 
         }
 
@@ -475,7 +472,7 @@ public class RssSub extends Fragment {
 
             } catch (Exception e) {
 
-                msg.send("导出失败",BotLog.parseError(e)).async();
+                msg.send("导出失败\n{}",BotLog.parseError(e)).async();
 
                 return;
 
@@ -617,7 +614,7 @@ public class RssSub extends Fragment {
 
                 } catch (HttpException ex) {
 
-                    msg.send("拉取失败 :",ex.getMessage()).async();
+                    msg.send("拉取失败 :\n\n{}",ex.getMessage()).async();
 
                     return;
 
@@ -647,7 +644,7 @@ public class RssSub extends Fragment {
 
 					}
 
-                    msg.send("拉取失败",error.toString()).html().async();
+                    msg.send("拉取失败\n\n{}").html().async();
 
                     return;
 
@@ -703,7 +700,7 @@ public class RssSub extends Fragment {
 
             } catch (FeedException e) {
 
-                msg.send("拉取出错 : ",BotLog.parseError(e)).async();
+                msg.send("拉取出错 : \n\n{}",BotLog.parseError(e)).async();
 
             } catch (UtilException e) {
 
@@ -740,7 +737,7 @@ public class RssSub extends Fragment {
 
                 } catch (IORuntimeException ex) {
 
-                    msg.send("拉取失败 :",ex.getMessage()).async();
+                    msg.send("拉取失败 :\n\n{}",ex.getMessage()).async();
 
                     return;
 
@@ -762,8 +759,7 @@ public class RssSub extends Fragment {
 
                     }
 
-
-                    msg.send("拉取失败",error.toString()).async();
+                    msg.send("拉取失败\n\n{}",error.toString()).async();
 
                     return;
 

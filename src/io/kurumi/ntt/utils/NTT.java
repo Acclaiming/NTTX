@@ -457,7 +457,7 @@ public class NTT {
 
             } else {
 
-                msg.send(user.userName(), notContactableMsg).publicFailed();
+                msg.send("{}\n{}",user.userName(), notContactableMsg).publicFailed();
 
             }
 

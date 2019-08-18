@@ -37,7 +37,7 @@ public class AutoTask {
 
             } catch (TwitterException e) {
 
-                new Send(auth.user, "回Fo失败 : " + archive.urlHtml(), NTT.parseTwitterException(e), "账号 : " + auth.archive().urlHtml()).html().exec();
+                new Send(auth.user, "回Fo失败 : {}\n\n{}" + archive.urlHtml(), NTT.parseTwitterException(e), "账号 : " + auth.archive().urlHtml()).html().exec();
 
 
             }

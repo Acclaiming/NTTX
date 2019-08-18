@@ -58,7 +58,7 @@ public class ListExport extends Fragment {
         PointData data = setPrivatePointData(user,msg, POINT_LIST_EXPORT, account);
 
         msg
-                .send("请选择将要导出的列表 :", "将会以 .csv 官方格式导出")
+                .send("请选择将要导出的列表 :\n将会以 .csv 官方格式导出")
                 .keyboard(new Keyboard() {{
 
                     newButtonLine().newButton(FOLLOWING).newButton(FOLLOWER);
@@ -106,7 +106,7 @@ public class ListExport extends Fragment {
 
                 } catch (TwitterException e) {
 
-                    msg.send("导出失败", NTT.parseTwitterException(e)).exec();
+                    msg.send("导出失败\n\n{}", NTT.parseTwitterException(e)).exec();
 
                 }
 
@@ -132,7 +132,7 @@ public class ListExport extends Fragment {
 
                 } catch (TwitterException e) {
 
-                    msg.send("导出失败", NTT.parseTwitterException(e)).exec();
+                    msg.send("导出失败\n\n{}", NTT.parseTwitterException(e)).exec();
 
                 }
 
@@ -159,7 +159,7 @@ public class ListExport extends Fragment {
 
                 } catch (TwitterException e) {
 
-                    msg.send("导出失败", NTT.parseTwitterException(e)).exec();
+                    msg.send("导出失败\n\n{}", NTT.parseTwitterException(e)).exec();
 
                 }
 
@@ -186,7 +186,7 @@ public class ListExport extends Fragment {
 
                 } catch (TwitterException e) {
 
-                    msg.send("导出失败", NTT.parseTwitterException(e)).exec();
+                    msg.send("导出失败\n\n{}", NTT.parseTwitterException(e)).exec();
 
                 }
 
@@ -212,7 +212,7 @@ public class ListExport extends Fragment {
 
                 } catch (TwitterException e) {
 
-                    msg.send("导出失败", NTT.parseTwitterException(e)).exec();
+                    msg.send("导出失败\n\n{}", NTT.parseTwitterException(e)).exec();
 
                 }
 
@@ -269,7 +269,7 @@ public class ListExport extends Fragment {
 
             } catch (TwitterException e) {
 
-                msg.send("查找列表失败", NTT.parseTwitterException(e)).exec();
+                msg.send("查找列表失败\n\n{}", NTT.parseTwitterException(e)).exec();
 
                 return;
 
@@ -300,7 +300,7 @@ public class ListExport extends Fragment {
 
             } catch (TwitterException e) {
 
-                msg.send("导出列表失败", NTT.parseTwitterException(e)).exec();
+                msg.send("导出列表失败\n\n{}", NTT.parseTwitterException(e)).exec();
 
                 return;
 

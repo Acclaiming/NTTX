@@ -562,7 +562,7 @@ public class Fragment {
 
         if (msg.isGroup()) {
 
-            msg.send("咱已经在私聊回复了你。","如果BOT有删除信息权限,命令和此回复将被自动删除。:)").failedWith();
+            msg.send("咱已经在私聊回复了你。\n如果BOT有删除信息权限,命令和此回复将被自动删除。:)").failedWith();
 
             msg.targetChatId = user.id;
 

@@ -117,7 +117,7 @@ public class StatusAction extends Fragment {
 
 				}});
 
-        msg.send("当前操作账号已设为 : " + account.archive().urlHtml(),"当多用户时，可用此命令设置默认账号。").html().exec();
+        msg.send("当前操作账号已设为 : {} \n当多用户时，可用此命令设置默认账号。",account.archive().urlHtml()).html().exec();
 
     }
 

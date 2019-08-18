@@ -84,7 +84,7 @@ public class ModuleEnv extends Fragment {
 
 		if (mod.error != null) {
 
-			msg.send("命令 [ /" + function + " ] 所在模块 " + mod.format() + " 出错 :(","\n" + BotLog.parseError(mod.error)).async();
+			msg.send("命令 [ /" + function + " ] 所在模块 " + mod.format() + " 出错 :(\n\n" + BotLog.parseError(mod.error)).async();
 
 			return;
 

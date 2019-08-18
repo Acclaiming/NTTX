@@ -81,7 +81,7 @@ public class TEPH extends Fragment {
 
             } else {
 
-                new Send(Env.TEP_CHANNEL, "#通知 #隐藏更改", "\n现在开始隐藏对 " + archive.urlHtml() + " ( #" + archive.screenName + " ) 的公开通知。", "\n原因是 : " + reason).html().async();
+                new Send(Env.TEP_CHANNEL, "#通知 #隐藏更改\n\n现在开始隐藏对 " + archive.urlHtml() + " ( #" + archive.screenName + " ) 的公开通知。", "\n原因是 : " + reason).html().async();
 
             }
 
@@ -93,7 +93,7 @@ public class TEPH extends Fragment {
 
             } else {
 
-                new Send(Env.TEP_CHANNEL, "#通知 #消失更改", "\n现在开始显示对 " + archive.urlHtml() + " ( #" + archive.screenName + " ) 的公开通知。", "\n原因是 : " + reason).html().async();
+                new Send(Env.TEP_CHANNEL, "#通知 #消失更改\n\n现在开始显示对 " + archive.urlHtml() + " ( #" + archive.screenName + " ) 的公开通知。", "\n原因是 : " + reason).html().async();
 
             }
 

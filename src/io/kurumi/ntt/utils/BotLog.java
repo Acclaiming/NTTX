@@ -64,7 +64,7 @@ public class BotLog extends ConsoleLog {
 
         log.info(message);
 
-		new Send(Env.LOG_CHANNEL,"[INFO]", message).exec();
+		new Send(Env.LOG_CHANNEL,"[INFO]{}", message).exec();
 		
     }
 
@@ -72,7 +72,7 @@ public class BotLog extends ConsoleLog {
 
         log.info(err, message);
 
-		new Send(Env.LOG_CHANNEL,"[WARN]", message,parseError(err)).exec();
+		new Send(Env.LOG_CHANNEL,"[WARN]{}", message,parseError(err)).exec();
 		
     }
 
@@ -86,7 +86,7 @@ public class BotLog extends ConsoleLog {
 
         log.warn(message);
 
-		new Send(Env.LOG_CHANNEL,"[WARN]", message).exec();
+		new Send(Env.LOG_CHANNEL,"[WARN]{}", message).exec();
 		
         //   new Send(Env.DEVELOPER_ID,"WARN : " + message).exec();
 
@@ -96,7 +96,7 @@ public class BotLog extends ConsoleLog {
 
         log.warn(err, message);
 
-		new Send(Env.LOG_CHANNEL,"[WARN]", message,parseError(err)).exec();
+		new Send(Env.LOG_CHANNEL,"[WARN]{}", message,parseError(err)).exec();
 		
         //   sendToDeveloper(new Exception(message,err));
 
@@ -106,7 +106,7 @@ public class BotLog extends ConsoleLog {
 
         log.warn(new RuntimeException(), message);
 
-		new Send(Env.LOG_CHANNEL,"[WARN]", message).exec();
+		new Send(Env.LOG_CHANNEL,"[WARN]{}", message).exec();
 		
     }
 
@@ -122,7 +122,7 @@ public class BotLog extends ConsoleLog {
 
         log.error(err, message);
 
-        new Send(Env.LOG_CHANNEL, message, parseError(err)).exec();
+        new Send(Env.LOG_CHANNEL,"{}\n\n{}", message, parseError(err)).exec();
 
     }
 

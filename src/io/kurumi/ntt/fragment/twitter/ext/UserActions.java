@@ -184,7 +184,7 @@ public class UserActions extends Fragment {
 
                 } catch (TwitterException e) {
 
-                    msg.send("关注失败 :",NTT.parseTwitterException(e)).exec();
+                    msg.send("关注失败 :\n\n{}",NTT.parseTwitterException(e)).exec();
 
                 }
 
@@ -212,7 +212,7 @@ public class UserActions extends Fragment {
 
                 } catch (TwitterException e) {
 
-                    msg.send("取关失败 :",NTT.parseTwitterException(e)).exec();
+                    msg.send("取关失败 :\n\n{}",NTT.parseTwitterException(e)).exec();
 
                 }
 
@@ -234,7 +234,7 @@ public class UserActions extends Fragment {
 
                 } catch (TwitterException e) {
 
-                    msg.send("静音失败 :",NTT.parseTwitterException(e)).exec();
+                    msg.send("静音失败 :\n\n{}",NTT.parseTwitterException(e)).exec();
 
                 }
 
@@ -256,7 +256,7 @@ public class UserActions extends Fragment {
 
                 } catch (TwitterException e) {
 
-                    msg.send("启用失败 :",NTT.parseTwitterException(e)).exec();
+                    msg.send("启用失败 :\n\n{}",NTT.parseTwitterException(e)).exec();
 
                 }
 
@@ -278,7 +278,7 @@ public class UserActions extends Fragment {
 
                 } catch (TwitterException e) {
 
-                    msg.send("屏蔽转推失败 :",NTT.parseTwitterException(e)).exec();
+                    msg.send("屏蔽转推失败 :\n\n{}",NTT.parseTwitterException(e)).exec();
 
                 }
 
@@ -300,7 +300,7 @@ public class UserActions extends Fragment {
 
                 } catch (TwitterException e) {
 
-                    msg.send("取消屏蔽转推失败 :",NTT.parseTwitterException(e)).exec();
+                    msg.send("取消屏蔽转推失败 :\n\n{}",NTT.parseTwitterException(e)).exec();
 
                 }
 
@@ -328,7 +328,7 @@ public class UserActions extends Fragment {
 
                 } catch (TwitterException e) {
 
-                    msg.send("屏蔽失败 :",NTT.parseTwitterException(e)).exec();
+                    msg.send("屏蔽失败 :\n\n{}",NTT.parseTwitterException(e)).exec();
 
                 }
 
@@ -350,7 +350,7 @@ public class UserActions extends Fragment {
 
                 } catch (TwitterException e) {
 
-                    msg.send("解除屏蔽失败 :",NTT.parseTwitterException(e)).exec();
+                    msg.send("解除屏蔽失败 :\n\n{}",NTT.parseTwitterException(e)).exec();
 
                 }
 
@@ -380,7 +380,7 @@ public class UserActions extends Fragment {
 
                 } catch (TwitterException e) {
 
-                    msg.send("双向取关失败 :",NTT.parseTwitterException(e)).exec();
+                    msg.send("双向取关失败 :\n\n{}",NTT.parseTwitterException(e)).exec();
 
                 }
 
@@ -390,7 +390,7 @@ public class UserActions extends Fragment {
 
         } catch (TwitterException e) {
 
-            msg.send("读取对方状态错误 :",NTT.parseTwitterException(e)).exec();
+            msg.send("读取对方状态错误 :\n\n{}",NTT.parseTwitterException(e)).exec();
 
         }
 

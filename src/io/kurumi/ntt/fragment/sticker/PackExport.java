@@ -144,7 +144,7 @@ public class PackExport extends Fragment {
 
         downloading.remove(user.id);
 
-        msg.send("继续导出请发送简称/链接或目标贴纸包的贴纸","退出导出使用 /cancel").exec(data);
+        msg.send("继续导出请发送简称/链接或目标贴纸包的贴纸\n\n退出导出使用 /cancel").exec(data);
 
         RuntimeUtil.exec("rm -rf " + cachePath.getPath());
 

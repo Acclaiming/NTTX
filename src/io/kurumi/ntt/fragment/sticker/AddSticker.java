@@ -57,7 +57,7 @@ public class AddSticker extends Fragment {
 
         if (all.isEmpty()) {
 
-            msg.send("你没有使用NTT创建过贴纸包....", "使用 /new_sticker_set 创建").exec();
+            msg.send("你没有使用NTT创建过贴纸包....\n使用 /new_sticker_set 创建").exec();
 
             return;
 
@@ -134,7 +134,7 @@ public class AddSticker extends Fragment {
             add.type = 1;
             add.setName = target;
 
-            msg.send("好，现在发送任意贴纸 / 图片 / 图片文件 :", "不建议直接发送图片，会被压到看不清").withCancel().exec(data);
+            msg.send("好，现在发送任意贴纸 / 图片 / 图片文件 :\n不建议直接发送图片，会被压到看不清").withCancel().exec(data);
 
         } else if (msg.message().sticker() != null) {
 
@@ -156,13 +156,13 @@ public class AddSticker extends Fragment {
 
             } else if (!resp.isOk()) {
 
-                msg.send("添加失败！请重试", resp.description()).withCancel().exec(data);
+                msg.send("添加失败！请重试\n\n{}", resp.description()).withCancel().exec(data);
 
                 return;
 
             }
 
-            msg.reply("添加成功！", "这可能需要几个小时的时间来生效。", "\n退出添加使用 /cancel")
+            msg.reply("添加成功！\n\n这可能需要几个小时的时间来生效。\n\n退出添加使用 /cancel")
                     .buttons(new ButtonMarkup() {{
 
                         newCurrentInlineButtonLine("查看贴纸包", ShowSticker.PREFIX + " " + add.setName);
@@ -252,7 +252,7 @@ public class AddSticker extends Fragment {
             }
 
             msg
-                    .reply("添加成功！", "这可能需要几个小时的时间来生效", "\n退出添加使用 /cancel")
+                    .reply("添加成功！\n\n这可能需要几个小时的时间来生效\n\n退出添加使用 /cancel")
                     .buttons(new ButtonMarkup() {{
 
                         newCurrentInlineButtonLine("查看贴纸包", ShowSticker.PREFIX + " " + add.setName);

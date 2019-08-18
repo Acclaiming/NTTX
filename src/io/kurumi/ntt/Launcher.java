@@ -1,18 +1,12 @@
 package io.kurumi.ntt;
 
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.lang.Console;
-import cn.hutool.core.lang.Dict;
-import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.RuntimeUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.cookie.GlobalCookieManager;
-import cn.hutool.log.AbstractLog;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
+import cn.hutool.log.StaticLog;
+import cn.hutool.log.dialect.console.ConsoleLog;
 import cn.hutool.log.dialect.console.ConsoleLogFactory;
-import cn.hutool.log.level.Level;
 import com.google.gson.Gson;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.ChatMember;
@@ -87,7 +81,6 @@ import io.kurumi.ntt.fragment.twitter.ext.TLScanner;
 import io.kurumi.ntt.fragment.twitter.ext.TwitterDelete;
 import io.kurumi.ntt.fragment.twitter.ext.UserActions;
 import io.kurumi.ntt.fragment.twitter.list.ListExport;
-import io.kurumi.ntt.fragment.twitter.list.ListImport;
 import io.kurumi.ntt.fragment.twitter.status.StatusAction;
 import io.kurumi.ntt.fragment.twitter.status.StatusDeleteTask;
 import io.kurumi.ntt.fragment.twitter.status.StatusFetch;
@@ -95,7 +88,6 @@ import io.kurumi.ntt.fragment.twitter.status.StatusSearch;
 import io.kurumi.ntt.fragment.twitter.status.StatusUpdate;
 import io.kurumi.ntt.fragment.twitter.status.TimedStatus;
 import io.kurumi.ntt.fragment.twitter.tasks.MargedNoticeTask;
-import io.kurumi.ntt.fragment.twitter.tasks.NameUpdateTask;
 import io.kurumi.ntt.fragment.twitter.tasks.TrackTask;
 import io.kurumi.ntt.fragment.twitter.tasks.UserTrackTask;
 import io.kurumi.ntt.fragment.twitter.ui.TimelineMain;
@@ -108,9 +100,6 @@ import java.util.TimeZone;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
-import cn.hutool.log.dialect.console.ConsoleLog;
-import cn.hutool.log.StaticLog;
-import java.util.concurrent.TimeUnit;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -316,7 +305,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         if ("start".equals(function)) {
 
-            msg.send("start failed successfully ~\n",Env.HELP_MESSAGE).html().async();
+            msg.send("start failed successfully ~\n{}",Env.HELP_MESSAGE).html().async();
 
         } else if ("help".equals(function)) {
 
@@ -324,7 +313,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         } else if (!functions.containsKey(function) && msg.isPrivate()) {
 
-            msg.send("没有这个命令 " + function,Env.HELP_MESSAGE).html().failedWith(10 * 1000);
+            msg.send("没有这个命令 {}\n{}",function,Env.HELP_MESSAGE).html().failedWith(10 * 1000);
 
         }
 
@@ -436,7 +425,6 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         addFragment(new StatusAction());
         addFragment(new TwitterDelete());
         addFragment(new ListExport());
-        addFragment(new ListImport());
 
         addFragment(new Disappeared());
         addFragment(new TEPH());

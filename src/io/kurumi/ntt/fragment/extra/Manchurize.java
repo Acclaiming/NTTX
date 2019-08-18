@@ -1,17 +1,14 @@
 package io.kurumi.ntt.fragment.extra;
 
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.BotFragment;
+import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
-import cn.hutool.core.util.ArrayUtil;
 import io.kurumi.ntt.model.Query;
 import io.kurumi.ntt.utils.Cndic;
-import cn.hutool.core.util.StrUtil;
-
+import io.kurumi.ntt.utils.Html;
 import java.util.regex.Pattern;
-
-import cn.hutool.core.util.ReUtil;
 
 /*
 
@@ -23,12 +20,24 @@ import cn.hutool.core.util.ReUtil;
  
 public class Manchurize extends Fragment {
 
-    Cndic cndic = new Cndic();
+    private Cndic cndic = new Cndic();
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 		
 		if ("manchurize".equals(function)) {
+			
+			String result = cndic.cn_ma(manchurize(msg.param()),false,false);
+
+			if (StrUtil.isBlank(result)) {
+				
+				msg.send("翻译失败 :(").async();
+				
+			} else {
+				
+				msg.send("结果 : " + Html.code(result)).html().async();
+				
+			}
 			
 		}
 		

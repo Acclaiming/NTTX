@@ -331,7 +331,7 @@ public class UserArchive {
 
             if (Env.TEP_CHANNEL != null && TEPH.needPuhlish(this)) {
 
-				new Send(Env.TEP_CHANNEL,"#推友回档\n",formatToChannel()).html().async();
+				new Send(Env.TEP_CHANNEL,"#推友回档\n\n{}",formatToChannel()).html().async();
 
 			}
 

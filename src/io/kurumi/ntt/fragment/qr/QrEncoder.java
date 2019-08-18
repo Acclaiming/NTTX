@@ -42,7 +42,7 @@ public class QrEncoder extends Fragment {
 
 		if (params.length == 0) {
 
-			msg.send("/qr_encode <文本...>","/qr_encode [背景] <文本...>","/qr_encode [背景] [颜色] <文本...>").async();
+			msg.send("/qr_encode <文本...>\n/qr_encode [背景] <文本...>\n/qr_encode [背景] [颜色] <文本...>").async();
 
 			return;
 

@@ -94,7 +94,7 @@ public class JoinCaptcha extends Fragment {
 
                     }
 
-                    SendResponse resp = new Send(this,data.id,"你好，新成员 " + user.userName(),"因为服务中断，已将你暂时禁言。请点击下方重新验证。")
+                    SendResponse resp = new Send(this,data.id,"你好，新成员 " + user.userName() +"\n因为服务中断，已将你暂时禁言。请点击下方重新验证。")
 						.buttons(new ButtonMarkup() {{
 
                                 newButtonLine("开始验证",POINT_AUTH,user.id);
@@ -194,7 +194,7 @@ public class JoinCaptcha extends Fragment {
 
                             msg.restrict();
 
-                            msg.send(newData.userName() + " 在 Combot Anit-Spam 黑名单内，已禁言。","详情请查看 : https://combot.org/cas/query?u=" + newData.id).async();
+                            msg.send(newData.userName() + " 在 Combot Anit-Spam 黑名单内，已禁言。\n详情请查看 : https://combot.org/cas/query?u=" + newData.id).async();
 
                         }
 
@@ -918,11 +918,11 @@ public class JoinCaptcha extends Fragment {
 
                 if (left != null) {
 
-                    auth.authMsg = msg.send(user.userName() + " , 请重试 : 你有 " + data.parse_time() + " 的时间","\n" + code.question()).buttons(buttons).html().send();
+                    auth.authMsg = msg.send(user.userName() + " , 请重试 : 你有 " + data.parse_time() + " 的时间\n\n" + code.question()).buttons(buttons).html().send();
 
                 } else {
 
-                    auth.authMsg = msg.send(user.userName() + " , 你有 " + data.parse_time() + " 的时间","\n" + code.question()).buttons(buttons).html().send();
+                    auth.authMsg = msg.send(user.userName() + " , 你有 " + data.parse_time() + " 的时间\n\n" + code.question()).buttons(buttons).html().send();
 
 
                 }
@@ -931,11 +931,11 @@ public class JoinCaptcha extends Fragment {
 
                 if (left != null) {
 
-                    auth.authMsg = msg.send(user.userName() + " , 请重试  : 你有 " + data.parse_time() + " 的时间","\n\n" + code.question(),"\n" + code.code()).buttons(buttons).html().send();
+                    auth.authMsg = msg.send(user.userName() + " , 请重试  : 你有 " + data.parse_time() + " 的时间\n\n" + code.question(),"\n\n" + code.code()).buttons(buttons).html().send();
 
                 } else {
 
-                    auth.authMsg = msg.send(user.userName() + " , 请验证  : 你有 " + data.parse_time() + " 的时间","\n\n" + code.question(),"\n\n" + code.code()).buttons(buttons).html().send();
+                    auth.authMsg = msg.send(user.userName() + " , 请验证  : 你有 " + data.parse_time() + " 的时间\n\n" + code.question(),"\n\n" + code.code()).buttons(buttons).html().send();
 
                 }
 
@@ -1269,7 +1269,7 @@ public class JoinCaptcha extends Fragment {
 
                     msg.kick(true);
 
-                    msg.send(user.userName() + " 在 Combot Anit-Spam 黑名单内，已封锁。","详情请查看 : https://combot.org/cas/query?u=" + user.id).async();
+                    msg.send(user.userName() + " 在 Combot Anit-Spam 黑名单内，已封锁。\n详情请查看 : https://combot.org/cas/query?u=" + user.id).async();
 
                     return;
 

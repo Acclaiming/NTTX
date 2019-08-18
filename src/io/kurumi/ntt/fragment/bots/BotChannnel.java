@@ -246,7 +246,7 @@ public class BotChannnel extends Fragment {
                 return;
             }
 
-            Send send = new Send(this, NumberUtil.parseLong(params[0]), ArrayUtil.sub(params, 1, params.length));
+            Send send = new Send(this, NumberUtil.parseLong(params[0]), ArrayUtil.join(ArrayUtil.sub(msg.params(), 1, msg.params().length)," "));
 
             ExtraParam param = new ExtraParam(5, send);
 

@@ -901,7 +901,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 		}
 
-		msg.send(LocalString.get(user).UNPROCESSED,str.toString()).replyTo(msg).html().removeKeyboard().async();
+		msg.send("{}\n{}",LocalString.get(user).UNPROCESSED,str.toString()).replyTo(msg).html().removeKeyboard().async();
 
 		if (msg.message().photo() != null) {
 
@@ -916,7 +916,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 							if (!StrUtil.isBlank(result)) {
 
-								msg.send("二维码解析结果 :\n",Html.code(result)).html().async();
+								msg.send("二维码解析结果 :\n{}",Html.code(result)).html().async();
 
 							}
 

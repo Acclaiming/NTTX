@@ -43,7 +43,7 @@ public class Telegraph {
 
         if (!resp.isOk()) {
 
-            new Send(Env.LOG_CHANNEL, request.toString(), resp.toString()).exec();
+            new Send(Env.LOG_CHANNEL,"{}\n\n{}", request.toString(), resp.toString()).exec();
 
             return null;
 

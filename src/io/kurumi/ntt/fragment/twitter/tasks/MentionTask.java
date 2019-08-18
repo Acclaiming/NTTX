@@ -44,7 +44,7 @@ public class MentionTask extends TimerTask {
 
 							account.mention = null;
 
-							new Send(account.user,"回复流已关闭 :",NTT.parseTwitterException(e)).exec();
+							new Send(account.user,"回复流已关闭 :\n\n{}",NTT.parseTwitterException(e)).exec();
 
 							if (TAuth.data.containsId(account.id)) {
 

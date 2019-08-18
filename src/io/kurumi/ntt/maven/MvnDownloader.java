@@ -61,7 +61,7 @@ public class MvnDownloader extends Fragment {
 
         } catch (Exception e) {
 
-            msg.send("解析失败 :\n", BotLog.parseError(e)).async();
+            msg.send("解析失败 :\n\n{}", BotLog.parseError(e)).async();
 
             return;
 

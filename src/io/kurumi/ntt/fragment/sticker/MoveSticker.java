@@ -62,7 +62,7 @@ public class MoveSticker extends Fragment {
 
         if (all.isEmpty()) {
 
-            msg.send("你没有使用NTT创建过贴纸包....","使用 /new_sticker_set 创建").exec();
+            msg.send("你没有使用NTT创建过贴纸包....\n使用 /new_sticker_set 创建").exec();
 
             return;
 
@@ -232,7 +232,7 @@ public class MoveSticker extends Fragment {
 
             } else {
 
-                msg.send("修改失败！",resp.description());
+                msg.send("修改失败！\n\n{}",resp.description());
 
             }
 

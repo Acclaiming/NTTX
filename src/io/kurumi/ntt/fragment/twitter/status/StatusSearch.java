@@ -187,17 +187,8 @@ public class StatusSearch extends Fragment {
 
         if (params.length == 0) {
 
-            msg.send("推文查询 /search [参数...] 内容",
-
-                    "from=<发送用户ID|用户名>", "",
-                    "to=<回复用户ID|用户名>", "",
-                    "reply=<回复推文ID>", "",
-                    "start=<时间上限>", "",
-                    "end=<时间下限>", "",
-                    "(格式 yyyy-MM-dd HH:mm)", "",
-                    "media=<true|false> (筛选是否有媒体)", "",
-                    "regex (使用正则表达式匹配)").publicFailed();
-
+            msg.send("推文查询 /search [参数...] 内容").async();
+			
             return;
 
         }

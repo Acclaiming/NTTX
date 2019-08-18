@@ -35,7 +35,7 @@ public class RssBot extends UserBotFragment {
 
         } else {
 
-            msg.send(Html.b("没有这个命令") + " : /" + function, "为什么不看看 " + Html.a("文档", link) + " 呢？").html().async();
+            msg.send(Html.b("没有这个命令") + " : /" + function + "\n\n为什么不看看 " + Html.a("文档", link) + " 呢？").html().async();
 
         }
 

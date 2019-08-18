@@ -115,7 +115,7 @@ public class MsMain extends Fragment {
 
 			if (!msg.hasText() || !msg.text().contains(".")) {
 
-				msg.send("这不是一个 Mastodon 实例的域名，你知道吗？你刚刚点了认证 Mastodon 账号，但是你没有点取消就在发送其他内容 :(","每次给你这种人写这种提示很麻烦的，理解一下好吗？").exec(login);
+				msg.send("这不是一个 Mastodon 实例的域名，你知道吗？你刚刚点了认证 Mastodon 账号，但是你没有点取消就在发送其他内容 :(\n每次给你这种人写这种提示很麻烦的，理解一下好吗？").exec(login);
 
 				return;
 
@@ -163,7 +163,7 @@ public class MsMain extends Fragment {
 
 			login.step = 1;
 
-			msg.send("戳这里验证 : " + Html.a("戳这里",url),"发送得到的验证码给咱就可以了 :)").withCancel().html().exec(login);
+			msg.send("戳这里验证 : " + Html.a("戳这里",url) + "\n发送得到的验证码给咱就可以了 :)").withCancel().html().exec(login);
 
 			return;
 

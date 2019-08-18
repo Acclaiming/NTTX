@@ -61,7 +61,7 @@ public class MakeGif extends Fragment {
 			data.step = 1;
 			data.data = temp;
 
-			msg.send("请输入文字，一行一句。 默认 : \n",Html.code(ArrayUtil.join(temp.hint,"\n"))).html().withCancel().async();
+			msg.send("请输入文字，一行一句。 默认 : \n\n" + Html.code(ArrayUtil.join(temp.hint,"\n"))).html().withCancel().async();
 
 			return;
 

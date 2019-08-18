@@ -48,7 +48,7 @@ public class QrDecoder extends Fragment {
 
 			} else {
 
-				msg.send("结果 :\n",Html.code(result)).html().async();
+				msg.send("结果 :\n\n{}",Html.code(result)).html().async();
 
 			}
 
