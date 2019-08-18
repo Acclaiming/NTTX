@@ -52,7 +52,7 @@ public class Notice extends Fragment {
     @Override
     public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-        PointData data = setPrivatePointData(user,msg,POINT_FPRWARD,ArrayUtil.join(params," "));
+        PointData data = setPrivatePointData(user,msg,POINT_FPRWARD,msg.param());
 
         msg.send("现在发送群发内容 :").exec(data);
 

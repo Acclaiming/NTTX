@@ -533,7 +533,7 @@ public class Fragment {
 
 			} else {
 
-				int checked = checkTwitterFunction(user,msg,msg.command(),msg.params(),account);
+				int checked = checkTwitterFunction(user,msg,msg.command(),msg.fixedParams(),account);
 
 				if (checked == PROCESS_ASYNC) {
 
@@ -542,7 +542,7 @@ public class Fragment {
 							@Override
 							public void run() {
 
-								onTwitterFunction(user,msg,msg.command(),msg.params(),account);
+								onTwitterFunction(user,msg,msg.command(),msg.fixedParams(),account);
 
 							}
 
@@ -550,7 +550,7 @@ public class Fragment {
 
 				} else {
 
-					onTwitterFunction(user,msg,msg.command(),msg.params(),account);
+					onTwitterFunction(user,msg,msg.command(),msg.fixedParams(),account);
 
 				}
 

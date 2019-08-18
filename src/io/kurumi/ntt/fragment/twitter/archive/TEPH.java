@@ -71,7 +71,7 @@ public class TEPH extends Fragment {
 
         }
 
-        String reason = ArrayUtil.join(ArrayUtil.remove(params, 0), " ");
+        String reason = ArrayUtil.join(ArrayUtil.remove(msg.params(), 0), " ");
 
         if (function.endsWith("h")) {
 

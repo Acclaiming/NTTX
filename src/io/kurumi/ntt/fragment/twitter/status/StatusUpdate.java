@@ -660,7 +660,7 @@ public class StatusUpdate extends Fragment {
 
 		if (msg.isCommand()) {
 
-			onPointedFunction(user,msg,msg.command(),msg.params(),point,data);
+			onPointedFunction(user,msg,msg.command(),msg.fixedParams(),point,data);
 
 			return;
 

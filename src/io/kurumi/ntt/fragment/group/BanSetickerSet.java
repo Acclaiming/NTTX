@@ -48,7 +48,7 @@ public class BanSetickerSet extends Fragment {
 
             if (msg.replyTo() == null || msg.replyTo().message().sticker() == null) {
 
-                if (msg.params().length == 0) {
+                if (params.length == 0) {
 
                     msg.send("/banss <贴纸集名称> 或者对sticker使用啦...").publicFailed();
 
@@ -56,7 +56,7 @@ public class BanSetickerSet extends Fragment {
 
                 }
 
-                setName = msg.params()[0];
+                setName = params[0];
 
             } else {
 
@@ -90,7 +90,7 @@ public class BanSetickerSet extends Fragment {
 
             if (msg.replyTo() == null || msg.replyTo().message().sticker() == null) {
 
-                if (msg.params().length == 0) {
+                if (params.length == 0) {
 
                     msg.send("/unbanss <贴纸集名称> 或者对sticker使用啦...").publicFailed();
 
@@ -98,7 +98,7 @@ public class BanSetickerSet extends Fragment {
 
                 }
 
-                setName = msg.params()[0];
+                setName = params[0];
 
             } else {
 

@@ -20,17 +20,20 @@ import cn.hutool.core.util.ReUtil;
  源码 : https://github.com/OverflowCat/ManchuBot/blob/master/Manchurize.gs
 
  */
+ 
 public class Manchurize extends Fragment {
-
-    @Override
-    public boolean query() {
-
-        return true;
-
-    }
 
     Cndic cndic = new Cndic();
 
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+		
+		if ("manchurize".equals(function)) {
+			
+		}
+		
+	}
+	
     @Override
     public void onQuery(UserData user, Query inlineQuery) {
 

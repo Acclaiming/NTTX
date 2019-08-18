@@ -184,7 +184,7 @@ public class ForwardBot extends UserBotFragment {
 
         } else if (msg.isStartPayload()) {
 
-            onFunction(user,msg,msg.command(),msg.params());
+            onFunction(user,msg,msg.command(),msg.fixedParams());
 
         } else {
 

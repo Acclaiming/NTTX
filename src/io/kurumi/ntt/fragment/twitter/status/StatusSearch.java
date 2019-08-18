@@ -38,6 +38,8 @@ public class StatusSearch extends Fragment {
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
+		params = msg.params();
+		
         int index = 0;
 
         long from = -1;

@@ -97,7 +97,7 @@ public class Users extends Fragment {
             }
 
 
-        } else if (msg.params().length == 0) {
+        } else if (params.length == 0) {
 
             export = new StringBuilder(HtmlUtil.escape(" 「 All Users 」\n"));
 
@@ -161,7 +161,7 @@ public class Users extends Fragment {
 
         } else {
 
-            String kw = msg.params()[0];
+            String kw = params[0];
 
             export = new StringBuilder(HtmlUtil.escape(" 「 Search User 」 \n"));
 

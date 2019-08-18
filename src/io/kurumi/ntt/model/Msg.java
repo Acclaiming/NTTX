@@ -44,7 +44,10 @@ public class Msg extends Context {
     private Message message;
     private String name;
 	private String function;
+	
     private String[] params;
+	private String[] fixedParams;
+	private String param;
 
     public Msg(Message message) {
 
@@ -571,6 +574,87 @@ public class Msg extends Context {
         return payload;
 
     }
+	
+	public String param() {
+		
+		if (param != null) return param;
+		
+		if (noParams) {
+
+            return null;
+
+        }
+		
+		if (!isCommand()) {
+
+            noParams = true;
+
+            return null;
+
+        }
+		
+		String body = StrUtil.subAfter(text(),"/",false);
+
+        if (body.contains(" ")) {
+
+            param = StrUtil.subAfter(body," ",false);
+			params = param.split(" ");
+			fixedParams = param.replace("  "," ").split(" ");
+
+        } else {
+
+            noParams = true;
+
+			param = "";
+			params = NO_PARAMS;
+            params = NO_PARAMS;
+
+        }
+		
+		return param;
+		
+	}
+	
+	public String[] fixedParams() {
+
+		if (fixedParams != null) return fixedParams;
+
+		if (noParams) {
+
+            return NO_PARAMS;
+
+        }
+
+		if (!isCommand()) {
+
+            noParams = true;
+
+            return NO_PARAMS;
+
+        }
+
+		String body = StrUtil.subAfter(text(),"/",false);
+
+        if (body.contains(" ")) {
+
+            param = StrUtil.subAfter(body," ",false);
+			params = param.split(" ");
+			fixedParams = param.replace("  "," ").split(" ");
+
+        } else {
+
+            noParams = true;
+
+			param = "";
+			params = NO_PARAMS;
+            params = NO_PARAMS;
+
+        }
+
+		return fixedParams;
+
+	}
+	
 
     public String[] params() {
 
@@ -594,12 +678,16 @@ public class Msg extends Context {
 
         if (body.contains(" ")) {
 
-            params = StrUtil.subAfter(body," ",false).split(" ");
+            param = StrUtil.subAfter(body," ",false);
+			params = param.split(" ");
+			fixedParams = param.replace("  "," ").split(" ");
 
         } else {
 
             noParams = true;
 
+			param = "";
+			params = NO_PARAMS;
             params = NO_PARAMS;
 
         }

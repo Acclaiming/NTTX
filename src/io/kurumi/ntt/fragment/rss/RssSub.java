@@ -491,7 +491,7 @@ public class RssSub extends Fragment {
 
             } else {
 
-                conf.copyright = ArrayUtil.join(ArrayUtil.remove(params,0)," ");
+                conf.copyright = ArrayUtil.join(ArrayUtil.remove(msg.params(),0)," ");
 
                 msg.send("设置成功 ~").async();
 

@@ -204,7 +204,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             } else {
 
-                int checked = request.fragment.checkTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
+                int checked = request.fragment.checkTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.fixedParams(),account);
 
                 if (checked == PROCESS_ASYNC) {
 
@@ -213,7 +213,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 							@Override
 							public void run() {
 
-								request.fragment.onTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
+								request.fragment.onTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.fixedParams(),account);
 
 							}
 
@@ -221,7 +221,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                 } else {
 
-                    request.fragment.onTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.params(),account);
+                    request.fragment.onTwitterFunction(user,request.originMsg,request.originMsg.command(),request.originMsg.fixedParams(),account);
 
                 }
 
@@ -512,7 +512,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                         final Fragment function = adminFunctions.get(msg.command());
 
-                        int checked = function.checkFunction(user,msg,msg.command(),msg.params());
+                        int checked = function.checkFunction(user,msg,msg.command(),msg.fixedParams());
 
                         if (checked == PROCESS_REJECT) return;
 
@@ -523,7 +523,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 									@Override
 									public void run() {
 
-										function.onFunction(user,msg,msg.command(),msg.params());
+										function.onFunction(user,msg,msg.command(),msg.fixedParams());
 
 									}
 
@@ -531,7 +531,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                         } else {
 
-                            function.onFunction(user,msg,msg.command(),msg.params());
+                            function.onFunction(user,msg,msg.command(),msg.fixedParams());
 
                         }
 
@@ -559,7 +559,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 						}
 
-						int checked = function.checkFunction(user,msg,msg.command(),msg.params());
+						int checked = function.checkFunction(user,msg,msg.command(),msg.fixedParams());
 
                         if (checked == PROCESS_REJECT) return;
 
@@ -569,13 +569,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 						}
 
-                        if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.params()) == FUNCTION_GROUP && !msg.isGroup()) {
+                        if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.fixedParams()) == FUNCTION_GROUP && !msg.isGroup()) {
 
                             msg.send(LocalString.get(user).COMMAND_GROUP_ONLY).async();
 
                         }
 
-						if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.params()) == FUNCTION_PRIVATE && !msg.isPrivate()) {
+						if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.fixedParams()) == FUNCTION_PRIVATE && !msg.isPrivate()) {
 
                             asyncPool.execute(new Runnable() {
 
@@ -597,7 +597,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 									@Override
 									public void run() {
 
-										function.onFunction(user,msg,msg.command(),msg.params());
+										function.onFunction(user,msg,msg.command(),msg.fixedParams());
 
 									}
 
@@ -605,7 +605,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                         } else {
 
-                            function.onFunction(user,msg,msg.command(),msg.params());
+                            function.onFunction(user,msg,msg.command(),msg.fixedParams());
 
                         }
 
@@ -895,7 +895,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 			msg.setFunctionAndParam("status",statusId.toString());
 
-			getInstance(StatusGetter.class).onFunction(user,msg,null,msg.params());
+			getInstance(StatusGetter.class).onFunction(user,msg,null,msg.fixedParams());
 
 			return;
 
