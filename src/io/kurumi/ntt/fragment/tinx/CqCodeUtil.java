@@ -1,4 +1,4 @@
-package io.kurumi.ntt.fragment.qq;
+package io.kurumi.ntt.fragment.tinx;
 
 import java.util.HashMap;
 import cn.hutool.core.util.StrUtil;

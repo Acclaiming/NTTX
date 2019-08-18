@@ -1,4 +1,4 @@
-package io.kurumi.ntt.fragment.qq;
+package io.kurumi.ntt.fragment.tinx;
 
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
