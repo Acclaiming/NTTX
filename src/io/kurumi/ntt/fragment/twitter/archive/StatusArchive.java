@@ -57,9 +57,9 @@ public class StatusArchive {
     }
 
     public static boolean contains(Long id) {
-        
+
 		return data.containsId(id);
-		
+
     }
 
     public static StatusArchive save(Status status) {
@@ -143,27 +143,27 @@ public class StatusArchive {
                 }
 
             }
-			
+
 			if (cache.isFile() && cache.getName().endsWith(".png")) {
-				
+
 				File trans = new File(Env.CACHE_DIR,"twitter_media/" + name + ".jpg");
-				
+
 				if (!trans.isFile()) {
-					
+
 					try {
-						
+
 						Thumbnails
 							.of(cache)
 							.outputFormat("jpg")
 							.scale(1.0f)
 							.toFile(trans);
-							
+
 					} catch (IOException e) {}
 
 				}
-				
+
 				cache = trans;
-				
+
 			}
 
             if (cache.isFile()) {
@@ -496,7 +496,7 @@ public class StatusArchive {
 				archive.append(Html.b(user().name)).append(" ").append(Html.a("@" + user().screenName,user().url())).append(" ");
 
 			}
-			
+
             archive.append("的 ").append(Html.a("回复",current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id));
 
 
@@ -513,7 +513,7 @@ public class StatusArchive {
 				archive.append(Html.b(user().name)).append(" ").append(Html.a("@" + user().screenName,user().url())).append(" ");
 
 			}
-			
+
             archive.append("的").append(" ").append(Html.a("转推",current ? url() : "https://t.me/" + Launcher.INSTANCE.me.username() + "?start=status_" + id)).append(" : ");
 
             archive.append(split);
@@ -630,7 +630,15 @@ public class StatusArchive {
 
     public StatusArchive loop(Twitter api) {
 
-        return loop(api,false);
+		try {
+
+			return loop(api,false);
+
+		} catch (StackOverflowError ex) {
+
+			return loop(api,true);
+
+		}
 
     }
 
@@ -682,7 +690,7 @@ public class StatusArchive {
 
                 if (StatusArchive.contains(inReplyToStatusId)) {
 
-                   // StatusArchive.get(inReplyToStatusId).loop(api);
+                    if (!avoid) StatusArchive.get(inReplyToStatusId).loop(api);
 
                 } else {
 
@@ -690,7 +698,7 @@ public class StatusArchive {
 
                     StatusArchive inReplyTo = StatusArchive.save(status);
 
-                   // inReplyTo.loop(api);
+					if (!avoid)  inReplyTo.loop(api);
 
                 }
 
@@ -706,7 +714,7 @@ public class StatusArchive {
 
                         StatusArchive inReplyTo = StatusArchive.save(status);
 
-                      //  inReplyTo.loop(api);
+						if (!avoid)  inReplyTo.loop(api);
 
                     } catch (TwitterException e) {
                     }
@@ -723,7 +731,7 @@ public class StatusArchive {
 
                 if (StatusArchive.contains(quotedStatusId)) {
 
-                    StatusArchive.get(quotedStatusId).loop(api);
+					if (!avoid)  StatusArchive.get(quotedStatusId).loop(api);
 
                 } else {
 
@@ -731,7 +739,7 @@ public class StatusArchive {
 
                     StatusArchive quoted = StatusArchive.save(status);
 
-                 //   quoted.loop(api);
+					if (!avoid)   quoted.loop(api);
 
                 }
 
@@ -750,7 +758,7 @@ public class StatusArchive {
 
                             StatusArchive quoted = StatusArchive.save(status);
 
-                         //   quoted.loop(api);
+							if (!avoid)  quoted.loop(api);
 
                         } catch (TwitterException e) {
                         }
