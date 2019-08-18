@@ -18,6 +18,9 @@ import io.kurumi.ntt.utils.BotLog;
 import java.util.HashMap;
 import io.kurumi.ntt.cqhttp.model.GroupMember;
 import io.kurumi.ntt.cqhttp.model.GroupInfo;
+import cn.hutool.log.StaticLog;
+import org.apache.http.util.ExceptionUtils;
+import cn.hutool.core.exceptions.ExceptionUtil;
 
 public class TinxApi {
 
@@ -416,7 +419,7 @@ public class TinxApi {
 			try {
 
 				T result = clazz.newInstance();
-				result.status = "error";
+				result.status = ExceptionUtil.getSimpleMessage(httpExc);
 				result.retcode = -1;
 
 				return result;
