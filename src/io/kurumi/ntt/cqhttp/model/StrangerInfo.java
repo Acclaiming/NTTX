@@ -7,7 +7,7 @@ import io.kurumi.ntt.cqhttp.response.GetStrangerInfoResponse;
 
 	public class StrangerInfo {
 		
-	public int user_id;
+	public Long user_id;
 	public String nickname;
 	public String sex;
 	public int age;
