@@ -933,11 +933,11 @@ public class JoinCaptcha extends Fragment {
 
                 if (left != null) {
 
-                    auth.authMsg = msg.send(user.userName() + " , 请重试  : 你有 " + data.parse_time() + " 的时间\n\n" + code.question(),"\n\n" + code.code()).buttons(buttons).html().send();
+                    auth.authMsg = msg.send(user.userName() + " , 请重试  : 你有 " + data.parse_time() + " 的时间\n\n" + code.question() + "\n\n" + code.code()).buttons(buttons).html().send();
 
                 } else {
 
-                    auth.authMsg = msg.send(user.userName() + " , 请验证  : 你有 " + data.parse_time() + " 的时间\n\n" + code.question(),"\n\n" + code.code()).buttons(buttons).html().send();
+                    auth.authMsg = msg.send(user.userName() + " , 请验证  : 你有 " + data.parse_time() + " 的时间\n\n" + code.question() + "\n\n" + code.code()).buttons(buttons).html().send();
 
                 }
 
