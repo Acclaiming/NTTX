@@ -88,7 +88,7 @@ public final class TinxBot {
 
 		GetLoginInfoResponse info = api.getLoginInfo();
 
-		if (info.isOk()) {
+		if (info.data != null) {
 			
 			me = info.data;
 			
