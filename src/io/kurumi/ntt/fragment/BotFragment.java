@@ -45,6 +45,7 @@ import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
 import cn.hutool.extra.qrcode.QrCodeException;
+import cn.hutool.log.StaticLog;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener, ExceptionHandler {
 
@@ -302,6 +303,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 			}
 
 			user = UserData.get(update.message().from());
+			
+			StaticLog.debug("{} : {}",update.message().chat().title() == null ? user.name() : update.message().chat().title(),update.message().text());
 
         } else if (update.editedMessage() != null) {
 
