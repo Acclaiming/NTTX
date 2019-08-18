@@ -17,6 +17,7 @@ import io.kurumi.ntt.fragment.*;
 import io.kurumi.ntt.fragment.bots.*;
 import com.pengrad.telegrambot.request.GetChat;
 import com.pengrad.telegrambot.response.GetChatResponse;
+import com.pengrad.telegrambot.response.SendResponse;
 
 public class FeedFetchTask extends TimerTask {
 
@@ -260,8 +261,20 @@ public class FeedFetchTask extends TimerTask {
 
                         }
 
-                        request.html().exec();
+                        SendResponse result = request.html().exec();
 
+						if (!result.isOk() && result.description().contains("not found")) {
+							
+							if (channel.fromBot != null) {
+								
+								channel.fromBot = null;
+
+								RssSub.channel.setById(channel.id,channel);
+								
+							}
+							
+						}
+						
                     }
 
                 }
