@@ -1151,7 +1151,7 @@ public class JoinCaptcha extends Fragment {
 
         } else if (POINT_ACC.equals(point) || POINT_REJ.equals(point)) {
 
-            if (NTT.checkGroupAdmin(callback)) {
+            if (!NTT.checkGroupAdmin(callback)) {
 
 				if (POINT_ACC.equals(point)) {
 
@@ -1166,9 +1166,7 @@ public class JoinCaptcha extends Fragment {
 			} else if (user.id.equals(target)) {
 
 				failed(user,callback,auth,gd,"点击按钮");
-
-				return;
-
+				
             }
 
         } else if (POINT_ANSWER.equals(point)) {
