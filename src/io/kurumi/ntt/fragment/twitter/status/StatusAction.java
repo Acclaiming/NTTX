@@ -44,7 +44,7 @@ public class StatusAction extends Fragment {
 				if (retweeted) {
 
 					line.newButton("❎️",POINT_DESTROY_RETWEET,statusId);
-					
+
 				} else {
 
 					line.newButton("🔄",POINT_RETWEET_STATUS,statusId);
@@ -69,8 +69,8 @@ public class StatusAction extends Fragment {
 
 				if (!full) {
 
-					line.newButton("🔎",POINT_SHOW_FULL,accountId,statusId,1,retweeted ? 1 : 0,liked ? 1 :0);
-					
+					line.newButton("🔎",POINT_SHOW_FULL,accountId,statusId,1,retweeted ? 1 : 0,liked ? 1 : 0);
+
 				}
 
 				// line.newButton("🔇",POINT_MUTE_USER,status.getUser().getId());
@@ -125,20 +125,20 @@ public class StatusAction extends Fragment {
     public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
 		InlineKeyboardButton[] buttons = callback.message().replyMarkup().inlineKeyboard()[0];
-	
+
 		params = ArrayUtil.remove(buttons[2].callbackData().split(","),0);
-		
+
 		if (params.length != 3) {
-			
+
 			callback.invalidQuery();
-			
+
 			return;
-			
+
 		}
-		
+
 		long accountId = NumberUtil.parseLong(ArrayUtil.remove(buttons[0].callbackData().split(","),0)[0]);
 		long statusId = NumberUtil.parseLong(ArrayUtil.remove(buttons[1].callbackData().split(","),0)[0]);
-		
+
 		boolean isFull = "true".equals(params[0]);
         boolean retweeted = "true".equals(params[1]);
         boolean liked = "true".equals(params[2]);
@@ -151,7 +151,7 @@ public class StatusAction extends Fragment {
 
 		}
 
-        
+
         long count = TAuth.data.countByField("user",user.id);
 
         if (count == 0) {
@@ -196,20 +196,20 @@ public class StatusAction extends Fragment {
 
 				}
 
-			} else {
-
-				auth = TAuth.getByUser(user.id).first();
-
 			}
-			
+
+		} else {
+
+			auth = TAuth.getByUser(user.id).first();
+
 		}
 		
 		if (auth == null) {
-			
+
 			callback.alert("你还没有认证账号...");
-			
+
 			return;
-			
+
 		}
 
 		Twitter api = auth.createApi();
