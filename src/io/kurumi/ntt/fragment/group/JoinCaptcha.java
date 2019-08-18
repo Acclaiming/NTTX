@@ -194,8 +194,10 @@ public class JoinCaptcha extends Fragment {
 
                             msg.restrict();
 
-                            msg.send(newData.userName() + " 在 Combot Anit-Spam 黑名单内，已禁言。\n详情请查看 : https://combot.org/cas/query?u=" + newData.id).async();
+                            msg.send(newData.userName() + " 在 Combot Anit-Spam 黑名单内，已禁言。\n详情请查看 : https://combot.org/cas/query?u=" + newData.id).html().async();
 
+							return;
+							
                         }
 
                     }
@@ -1269,7 +1271,7 @@ public class JoinCaptcha extends Fragment {
 
                     msg.kick(true);
 
-                    msg.send(user.userName() + " 在 Combot Anit-Spam 黑名单内，已封锁。\n详情请查看 : https://combot.org/cas/query?u=" + user.id).async();
+                    msg.send(user.userName() + " 在 Combot Anit-Spam 黑名单内，已封锁。\n详情请查看 : https://combot.org/cas/query?u=" + user.id).html().async();
 
                     return;
 
