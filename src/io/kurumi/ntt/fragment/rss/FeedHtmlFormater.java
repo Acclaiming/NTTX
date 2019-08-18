@@ -414,13 +414,7 @@ public class FeedHtmlFormater {
         }
 		
 		html = html.replace("<br />", "\n").replace("<br>","\n");
-		
-		if (html.contains("<br")) {
-			
-			BotLog.info("BR : "+ html);
-			
-		}
-
+	
         return html;
     }
 
