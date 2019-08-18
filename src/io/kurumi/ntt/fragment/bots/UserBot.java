@@ -9,6 +9,7 @@ import java.util.HashMap;
 import io.kurumi.ntt.fragment.BotServer;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.fragment.admin.Firewall;
+import cn.hutool.log.StaticLog;
 
 public class UserBot {
 
@@ -38,7 +39,7 @@ public class UserBot {
 			}
 			
 			*/
-
+			
             bot.startBot();
 			
         }
@@ -74,9 +75,13 @@ public class UserBot {
                     client.silentStart();
 
                 }
+				
+				StaticLog.info("已挂载机器人 : @" + userName);
 
             } catch (Exception e) {
 
+				StaticLog.info("机器人令牌已失效 : @" + userName);
+				
                 data.deleteById(id);
 
                 new Send(user,"对不起，但是你的机器人 : @" + userName + " 的令牌已失效，已自动移除。").exec();

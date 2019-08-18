@@ -109,6 +109,8 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
 import cn.hutool.log.dialect.console.ConsoleLog;
+import cn.hutool.log.StaticLog;
+import java.util.concurrent.TimeUnit;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -150,15 +152,19 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 				}
 
 			});
+			
+		long startAt = System.currentTimeMillis();
 
+		StaticLog.info("NTT 主程序正在启动 (๑•̀ㅂ•́)√");
+		
         try {
 
             Env.init();
 
         } catch (Exception e) {
 
-            e.printStackTrace();
-
+			StaticLog.error("配置文件格式错误",e);
+            
             return;
 
         }
@@ -177,9 +183,11 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
             BotDB.init(Env.DB_ADDRESS,Env.DB_PORT);
 
-        } catch (Exception ex) {
+			StaticLog.info("MongoDB 数据库 已连接");
+			
+        } catch (Exception e) {
 
-            ex.printStackTrace();
+            StaticLog.error("MongoDB 连接失败",e);
 
             return;
 
@@ -189,10 +197,12 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
             BotServer.INSTANCE.start();
 
+			StaticLog.info("本地HTTP服务器 已启动");
+			
         } catch (Exception e) {
 
-            e.printStackTrace();
-
+            StaticLog.error("本地HTTP服务器 启动失败",e);
+			
             return;
 
         }
@@ -213,6 +223,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 			}
 
 		};
+		
+		StaticLog.info("正在启动本体 _(:з」∠)_");
 
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
 
@@ -229,6 +241,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         INSTANCE.start();
 
+		StaticLog.info("启动所有旧式分体");
+		
 		for (final String aliasToken : Env.ALIAS) {
 
 			new Launcher() {
@@ -243,6 +257,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 			}.start();
 
 		}
+		
+		StaticLog.info("启动完成 用时 {}s _(:з」∠)_",(System.currentTimeMillis() - startAt) / 1000);
 
     }
 
@@ -251,15 +267,17 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		try {
 
 			TINX.start();
-
+			
 		} catch (Exception e) {
 
-			BotLog.debug("CQHTTP连接失败 正在等待重试");
+			StaticLog.warn("CqHttp WebSocket 连接失败 正在等待重试");
 
 			mainTimer.schedule(new TimerTask() {
 
 					@Override
 					public void run() {
+						
+						StaticLog.info("正在重新连接 CqHttp WebSocket");
 
 						tryTinxConnect();
 
@@ -345,24 +363,40 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
     void startTasks() {
 
+		StaticLog.info("挂载定时推文");
+		
         TimedStatus.start();
 
+		StaticLog.info("挂载时间线拉取");
+		
         TimelineMain.start();
 
+		StaticLog.info("挂载跟随者监听");
+		
         TrackTask.start();
+		
+		StaticLog.info("挂载推文定时删除");
 
 		StatusDeleteTask.start();
 
+		StaticLog.info("挂载跟随者合并推送");
+		
 		MargedNoticeTask.start();
 
+		StaticLog.info("挂载所有用户托管机器人");
+		
         UserBot.startAll();
 
+		StaticLog.info("挂载RSS拉取任务");
+		
         FeedFetchTask.start();
+		
+		StaticLog.info("挂载定时备份");
 
         Backup.start();
 
-		NameUpdateTask.start();
-
+		StaticLog.info("挂载用户拉取");
+		
         userTrackTask.start();
 
     }
