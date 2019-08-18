@@ -1,11 +1,9 @@
 package io.kurumi.ntt.fragment.tinx;
 
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.db.UserData;
-import cn.hutool.core.util.NumberUtil;
-import io.kurumi.ntt.fragment.qq.TelegramBridge;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.NTT;
 
 public class TelegramFN extends Fragment {

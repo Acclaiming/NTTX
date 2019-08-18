@@ -1,21 +1,17 @@
 package io.kurumi.ntt.fragment.tinx;
 
-import io.kurumi.ntt.Launcher;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.qq.CqCodeUtil;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.fragment.qq.TelegramBridge;
-import io.kurumi.ntt.cqhttp.TinxApi;
-import io.kurumi.ntt.model.Callback;
-import io.kurumi.ntt.utils.NTT;
-import io.kurumi.ntt.model.request.ButtonMarkup;
-import io.kurumi.ntt.cqhttp.Variants;
-import io.kurumi.ntt.cqhttp.response.BaseResponse;
-import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
-import javax.print.attribute.standard.NumberUp;
 import cn.hutool.core.util.NumberUtil;
+import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
+import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.cqhttp.TinxApi;
+import io.kurumi.ntt.cqhttp.Variants;
+import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Callback;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.ButtonMarkup;
+import io.kurumi.ntt.utils.NTT;
 
 public class TelegramListener extends Fragment {
 

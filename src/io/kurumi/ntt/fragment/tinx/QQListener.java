@@ -11,18 +11,16 @@ import io.kurumi.ntt.Env;
 import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.cqhttp.TinxListener;
 import io.kurumi.ntt.cqhttp.Variants;
+import io.kurumi.ntt.cqhttp.model.GroupMember;
+import io.kurumi.ntt.cqhttp.model.StrangerInfo;
+import io.kurumi.ntt.cqhttp.update.GroupDecreaseNotice;
+import io.kurumi.ntt.cqhttp.update.GroupIncreaseNotice;
 import io.kurumi.ntt.cqhttp.update.GroupRequest;
 import io.kurumi.ntt.cqhttp.update.MessageUpdate;
-import io.kurumi.ntt.fragment.qq.CqCodeUtil;
+import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
 import java.io.File;
-import io.kurumi.ntt.fragment.qq.TelegramBridge;
-import io.kurumi.ntt.cqhttp.update.GroupDecreaseNotice;
-import io.kurumi.ntt.cqhttp.model.StrangerInfo;
-import io.kurumi.ntt.cqhttp.update.GroupIncreaseNotice;
-import io.kurumi.ntt.cqhttp.model.GroupMember;
-import io.kurumi.ntt.model.request.ButtonMarkup;
 
 public class QQListener extends TinxListener {
 
