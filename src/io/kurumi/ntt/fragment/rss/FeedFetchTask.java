@@ -18,6 +18,7 @@ import io.kurumi.ntt.fragment.bots.*;
 import com.pengrad.telegrambot.request.GetChat;
 import com.pengrad.telegrambot.response.GetChatResponse;
 import com.pengrad.telegrambot.response.SendResponse;
+import cn.hutool.core.thread.ThreadUtil;
 
 public class FeedFetchTask extends TimerTask {
 
@@ -274,6 +275,8 @@ public class FeedFetchTask extends TimerTask {
 							}
 							
 						}
+						
+						ThreadUtil.sleep(1000);
 						
                     }
 
