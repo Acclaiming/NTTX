@@ -325,8 +325,6 @@ public class FeedHtmlFormater {
 
         //	html = URLUtil.decode(html);
 
-        html = html.replaceAll("< *br */? *>", "\n");
-
         html = html.replace("<strong>", "<b>").replace("</strong>", "</b>");
 
         html = removeADs(html);
@@ -418,8 +416,8 @@ public class FeedHtmlFormater {
 			
 		}
 
-        return html.trim();
-
+        return html.replace("<br />", "\n").replace("<br>","\n");
+		
     }
 
     private static String removeADs(String content) {
