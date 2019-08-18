@@ -13,6 +13,7 @@ import cn.hutool.log.StaticLog;
 import io.kurumi.ntt.fragment.BotFragment;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import io.kurumi.ntt.db.UserData;
 
 public class UserBot {
 
@@ -43,16 +44,7 @@ public class UserBot {
 			
 			*/
 			
-			BotFragment.waitPool.execute(new Runnable() {
-
-					@Override
-					public void run() {
-						
-						bot.startBot();
-						
-					}
-					
-				});
+			bot.startBot();
 				
         }
 
@@ -63,6 +55,8 @@ public class UserBot {
         if (!BotServer.fragments.containsKey(token)) {
 
             try {
+				
+				UserBotFragment bot;
 
                 if (type == 0) {
 
@@ -71,6 +65,8 @@ public class UserBot {
                     client.botId = id;
 
                     client.silentStart();
+					
+					bot = client;
 
                 } else if (type == 1) {
 
@@ -79,18 +75,24 @@ public class UserBot {
                     client.botId = id;
                     client.silentStart();
 
+					bot = client;
+					
                 } else if (type == 2) {
 
                     RssBot client = new RssBot();
 
                     client.botId = id;
                     client.silentStart();
+					
+					bot = client;
 
-                }
+                } else return false;
+				
+				StaticLog.info("已挂载托管机器人 : {} ( @{} )",UserData.get(bot.me).name(),userName);
 				
             } catch (Exception e) {
 
-				StaticLog.info("机器人令牌已失效 : @" + userName);
+				StaticLog.info("机器人令牌已失效 : {}" + userName);
 				
                 data.deleteById(id);
 

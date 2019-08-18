@@ -258,6 +258,10 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 		}
 		
+		StaticLog.info("挂载机器人托管");
+		
+		UserBot.startAll();
+		
 		StaticLog.info("启动完成 用时 {}s _(:з」∠)_",(System.currentTimeMillis() - startAt) / 1000);
 
     }
@@ -372,9 +376,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		StatusDeleteTask.start();
 
 		MargedNoticeTask.start();
-
-        UserBot.startAll();
-
+        
         FeedFetchTask.start();
 	
         Backup.start();
