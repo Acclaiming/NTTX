@@ -492,7 +492,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		addFragment(new WhoisLookup());
 		addFragment(new MMPITest());
 
-		addFragment(new TelegramListener());
+		// addFragment(new TelegramListener());
 		addFragment(new TelegramFN());
 		addFragment(new TelegramAdminFN());
 
