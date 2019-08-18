@@ -3,6 +3,7 @@ package io.kurumi.ntt.cqhttp.model;
 import io.kurumi.ntt.Launcher;
 import java.util.HashMap;
 import io.kurumi.ntt.cqhttp.response.GetGroupMemberInfoResponse;
+import cn.hutool.core.util.StrUtil;
 
 public class GroupMember {
 
@@ -28,6 +29,20 @@ public class GroupMember {
 
 		return null;
 
+	}
+	
+	public String name() {
+		
+		if (StrUtil.isBlank(card)) {
+			
+			return nickname;
+			
+		} else {
+			
+			return card;
+			
+		}
+		
 	}
 	
 	public Integer group_id;

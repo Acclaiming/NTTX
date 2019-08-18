@@ -19,6 +19,10 @@ import io.kurumi.ntt.utils.Html;
 import java.io.File;
 import io.kurumi.ntt.fragment.qq.TelegramBridge;
 import io.kurumi.ntt.cqhttp.update.GroupDecreaseNotice;
+import io.kurumi.ntt.cqhttp.model.StrangerInfo;
+import io.kurumi.ntt.cqhttp.update.GroupIncreaseNotice;
+import io.kurumi.ntt.cqhttp.model.GroupMember;
+import io.kurumi.ntt.model.request.ButtonMarkup;
 
 public class QQListener extends TinxListener {
 
@@ -50,13 +54,72 @@ public class QQListener extends TinxListener {
 
 	@Override
 	public void onGroupKickMember(GroupDecreaseNotice member) {
-		
+
 		Long chatId = TelegramBridge.qqIndex.get(member.group_id);
 
 		if (TelegramBridge.disable.containsKey(chatId)) return;
-		
+
+		String message = StrangerInfo.get(member.user_id,false).nickname + " ( " + member.user_id + " )  被管理员移出了群组.";
+
+		new Send(chatId,message).html().exec();
+
 	}
-	
+
+	@Override
+	public void onGroupLeftMember(GroupDecreaseNotice member) {
+
+		Long chatId = TelegramBridge.qqIndex.get(member.group_id);
+
+		if (TelegramBridge.disable.containsKey(chatId)) return;
+
+		String message = StrangerInfo.get(member.user_id,false).nickname  + " ( " + member.user_id + " ) 退出了群组.";
+
+		new Send(chatId,message).html().exec();
+
+	}
+
+	@Override
+	public void onGroupIncrease(GroupIncreaseNotice member) {
+
+		Long chatId = TelegramBridge.qqIndex.get(member.group_id);
+
+		if (TelegramBridge.disable.containsKey(chatId)) return;
+
+		String message = GroupMember.get(member.group_id,member.user_id,false).name() + " ( " + member.user_id + " ) 加入了群组.";
+
+		new Send(chatId,message).html().exec();
+
+	}
+
+	@Override
+	public void onGroupAddRequest(GroupRequest request) {
+
+		Long chatId = TelegramBridge.qqIndex.get(request.group_id);
+
+		if (TelegramBridge.disable.containsKey(chatId)) return;
+
+		String message = Html.b(StrangerInfo.get(request.user_id,false).nickname) + " ( " + request.user_id + " ) 申请加群.";
+
+		if (StrUtil.isBlank(request.comment)) {
+
+			message += "\n\n验证消息 : " + Html.code(request.comment);
+
+		}
+
+		ButtonMarkup buttons = new ButtonMarkup();
+
+		buttons.newButtonLine("同意",TelegramListener.POINT_ACCEPT,request.flag);
+
+		buttons.newButtonLine()
+			.newButton("拒绝",TelegramListener.POINT_REJECT,request.user_id)
+			.newButton("拒绝并禁止",TelegramListener.POINT_BLOCK);
+
+		buttons.newButtonLine("忽略",TelegramListener.POINT_IGNORE);
+
+		new Send(chatId,message).buttons(buttons).html().exec();
+
+	}
+
 	@Override
 	public void onGroup(MessageUpdate msg) {
 

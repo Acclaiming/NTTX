@@ -31,10 +31,16 @@ public class GroupInfo {
 		
 	}
 	
-	public Integer group_id;
+	public GroupMember getMember(long userId) {
+		
+		return GroupMember.get(group_id,userId,false);
+		
+	}
+	
+	public Long group_id;
 	public String group_name;
-	public Integer create_time;
-	public Integer category;
+	public Long create_time;
+	public Long category;
 	public Integer member_count;
 	public Integer max_member_count;
 	public String introduction;

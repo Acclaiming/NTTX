@@ -321,7 +321,7 @@ public class Msg extends Context {
 
     public void editMarkup(ButtonMarkup markup) {
 
-        fragment.bot().execute(new EditMessageReplyMarkup(chatId(),messageId()).replyMarkup(markup.markup()));
+        fragment.executeAsync(update,new EditMessageReplyMarkup(chatId(),messageId()).replyMarkup(markup.markup()));
 
     }
 
