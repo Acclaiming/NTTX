@@ -43,27 +43,15 @@ public class PointStore {
 
     public PointData getPrivate(Long userId) {
 
-        if (containsPrivate(userId)) {
-
-            return privatePoints.get(userId);
-
-        }
-
-        return null;
+		return privatePoints.get(userId);
 
     }
 
     public PointData getGroup(long userId) {
 
-        if (containsGroup(userId)) {
+		return groupPoints.get(userId);
 
-            return groupPoints.get(userId);
-
-        }
-
-        return null;
-
-    }
+	}
 
     public PointData setPrivate(Long userId,final String pointTo,final PointData data) {
 
@@ -110,8 +98,8 @@ public class PointStore {
 
 		pointData.point = pointTo;
 		pointData.data = content;
-		
-		
+
+
         groupPoints.put(userId,pointData);
 
         return pointData;

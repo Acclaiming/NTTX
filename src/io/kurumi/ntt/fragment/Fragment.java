@@ -39,7 +39,6 @@ import java.util.LinkedList;
 import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.i18n.LocalString;
-import cn.hutool.log.StaticLog;
 
 public class Fragment {
 
@@ -267,17 +266,8 @@ public class Fragment {
 	
     public PointData setGroupPoint(UserData user,String pointTo,PointData content) {
 
-		PointData data =  point().setGroup(user.id,pointTo,content);
+        return point().setGroup(user.id,pointTo,content);
 
-		if (user.admin()) {
-		
-		StaticLog.debug("set {} get {}",pointTo,point().getGroup(user.id));
-
-			
-	}
-	
-	return data;
-		
     }
 
     public PointData setGroupPointData(UserData user,Msg command,String pointTo,Object content) {
