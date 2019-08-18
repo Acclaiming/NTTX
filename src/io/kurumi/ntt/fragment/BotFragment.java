@@ -53,7 +53,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
     public static Timer trackTimer = new Timer();
 
     public static ExecutorService asyncPool = Executors.newCachedThreadPool();
-
+	public static ExecutorService waitPool = Executors.newFixedThreadPool(3);
+	
     public User me;
     private TelegramBot bot;
     public LinkedList<Fragment> fragments = new LinkedList<>();

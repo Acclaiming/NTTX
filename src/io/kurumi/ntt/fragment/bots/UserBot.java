@@ -10,6 +10,9 @@ import io.kurumi.ntt.fragment.BotServer;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.fragment.admin.Firewall;
 import cn.hutool.log.StaticLog;
+import io.kurumi.ntt.fragment.BotFragment;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 
 public class UserBot {
 
@@ -24,7 +27,7 @@ public class UserBot {
 
     public static void startAll() {
 
-        for (UserBot bot : data.collection.find()) {
+        for (final UserBot bot : data.collection.find()) {
 
 			/*
 			
@@ -40,8 +43,17 @@ public class UserBot {
 			
 			*/
 			
-            bot.startBot();
-			
+			BotFragment.waitPool.execute(new Runnable() {
+
+					@Override
+					public void run() {
+						
+						bot.startBot();
+						
+					}
+					
+				});
+				
         }
 
     }
@@ -76,8 +88,6 @@ public class UserBot {
 
                 }
 				
-				StaticLog.info("已挂载机器人 : @" + userName);
-
             } catch (Exception e) {
 
 				StaticLog.info("机器人令牌已失效 : @" + userName);
