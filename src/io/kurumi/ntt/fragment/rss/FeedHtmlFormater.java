@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
+import cn.hutool.log.StaticLog;
 
 public class FeedHtmlFormater {
 
@@ -410,6 +411,12 @@ public class FeedHtmlFormater {
             html = html + "...";
 
         }
+		
+		if (html.contains("br")) {
+			
+			StaticLog.warn("BR",html);
+			
+		}
 
         return html.trim();
 
