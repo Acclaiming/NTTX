@@ -416,10 +416,12 @@ public class TinxApi {
 
 		} catch (Exception httpExc) {
 			
+			httpExc.printStackTrace();
+			
 			try {
 
 				T result = clazz.newInstance();
-				result.status = httpExc.getMessage();
+				result.status = "error";
 				result.retcode = -1;
 
 				return result;
