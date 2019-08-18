@@ -285,7 +285,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
     public void processAsync(final Update update) {
 
-		final UserData user;
+		final UserData user = null;
 
         long targetId = -1;
 
@@ -299,6 +299,14 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 					update.lock.send(null);
 
+				}
+				
+				if (user.admin()) {
+					
+					final PointData groupPoint = point().getGroup(user.id);
+					
+					StaticLog.debug("point+ : {}",groupPoint);
+					
 				}
 
 			}

@@ -47,7 +47,7 @@ public class PointStore {
 
     }
 
-    public PointData getGroup(long userId) {
+    public PointData getGroup(Long userId) {
 
 		return groupPoints.get(userId);
 
