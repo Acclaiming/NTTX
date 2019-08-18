@@ -309,7 +309,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 				final PointData groupPoint = point().getGroup(user.id);
 
-				StaticLog.debug("point+ : {}",groupPoint);
+				StaticLog.debug("point {} : {}",user.id,groupPoint);
 
 			}
 

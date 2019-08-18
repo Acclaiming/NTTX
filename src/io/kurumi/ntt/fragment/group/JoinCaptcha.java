@@ -896,6 +896,8 @@ public class JoinCaptcha extends Fragment {
 
         if (msg.message().newChatMembers() != null) auth.serviceMsg = msg;
 
+		clearGroupPoint(user);
+		
         if (data.with_image == null) {
 
             if (auth.input) {
@@ -940,8 +942,6 @@ public class JoinCaptcha extends Fragment {
             }
 
             if (auth.authMsg == null) return;
-
-            clearGroupPoint(user);
 
             AuthCache old = group.put(user.id,auth);
 
