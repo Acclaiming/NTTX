@@ -45,6 +45,7 @@ import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import okhttp3.OkHttpClient;
+import cn.hutool.log.StaticLog;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener, ExceptionHandler {
 
@@ -357,6 +358,12 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
             final PointData privatePoint = point().getPrivate(user.id);
             final PointData groupPoint = point().getGroup(user.id);
 
+			if (user.admin() && msg.isGroup()) {
+			
+			StaticLog.debug("point : {}",groupPoint);
+			
+			}
+			
             if (msg.isGroup() && groupPoint != null) {
 
                 final Fragment function = points.containsKey(groupPoint.point) ? points.get(groupPoint.point) : this;
