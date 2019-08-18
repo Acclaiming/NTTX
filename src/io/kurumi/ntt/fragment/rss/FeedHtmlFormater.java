@@ -326,8 +326,7 @@ public class FeedHtmlFormater {
 
         //	html = URLUtil.decode(html);
 
-		html = html.replaceAll("< *br */? *>", "\n");
-
+		// html = html.replaceAll("< *br */? *>", "\n");
 		
         html = html.replace("<strong>", "<b>").replace("</strong>", "</b>");
 
@@ -414,14 +413,15 @@ public class FeedHtmlFormater {
 
         }
 		
+		html = html.replace("<br />", "\n").replace("<br>","\n");
+		
 		if (html.contains("<br")) {
 			
 			BotLog.info("BR : "+ html);
 			
 		}
 
-        return html.replace("<br />", "\n").replace("< br >","\n");
-		
+        return html;
     }
 
     private static String removeADs(String content) {
