@@ -9,6 +9,7 @@ import io.kurumi.ntt.model.Query;
 import io.kurumi.ntt.utils.Cndic;
 import io.kurumi.ntt.utils.Html;
 import java.util.regex.Pattern;
+import io.kurumi.ntt.fragment.BotFragment;
 
 /*
 
@@ -17,63 +18,70 @@ import java.util.regex.Pattern;
  源码 : https://github.com/OverflowCat/ManchuBot/blob/master/Manchurize.gs
 
  */
- 
+
 public class Manchurize extends Fragment {
 
     private Cndic cndic = new Cndic();
 
 	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-		
-		if ("manchurize".equals(function)) {
-			
-			String result = cndic.cn_ma(manchurize(msg.param()),false,false);
+	public void init(BotFragment origin) {
+		// TODO: Implement this method
+		super.init(origin);
 
-			if (StrUtil.isBlank(result)) {
-				
-				msg.send("翻译失败 :(").async();
-				
-			} else {
-				
-				msg.send("结果 : " + Html.code(result)).html().async();
-				
-			}
+		registerFunction("manchurize","demanchurize");
+	}
+
+
+
+	@Override
+	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+
+		if (StrUtil.isBlank(msg.param())) {
+			
+			msg.send("请输入将要翻译的内容.").async();
+			
+			return;
 			
 		}
 		
+		if ("manchurize".equals(function)) {
+
+			String result = cndic.cn_ma(msg.param(),false,false);
+
+			if (StrUtil.isBlank(result)) {
+
+				msg.send("翻译失败 :(").async();
+
+			} else {
+
+				msg.send("结果 : " + Html.code(manchurize(result))).html().async();
+
+			}
+
+		} else {
+
+			String result = cndic.cn_ma(deManchurize(msg.param()),false,true);
+
+			if (StrUtil.isBlank(result)) {
+
+				msg.send("翻译失败 :(").async();
+
+			} else {
+
+				msg.send("结果 : " + Html.code(result)).html().async();
+
+			}
+
+
+		}
+
 	}
-	
-    @Override
-    public void onQuery(UserData user, Query inlineQuery) {
 
-        if (inlineQuery.text == null || !inlineQuery.text.startsWith("M ")) return;
-
-        String str = inlineQuery.text.substring(2).trim();
-
-        if (StrUtil.isBlank(str)) return;
-
-        str = cndic.cn_ma(isManchuScript(str) ? deManchurize(str) : str, isManchuScript(str), false);
-
-        if (str != null) {
-
-            inlineQuery.article("完成", manchurize(str), null, null);
-
-        } else {
-
-            inlineQuery.article("翻译失败", ":(", null, null);
-
-
-        }
-
-        executeAsync(inlineQuery.update, inlineQuery.reply().cacheTime(114514));
-
-    }
-
-    private static Pattern manchuMatcher = Pattern.compile("(([\u1800-\u18AA\u00AB\u00BB\u2039\u203A\\?\\!\u203D\u2E2E])+\\s*((-*—?[0-9])+\\s+)*)+$", Pattern.MULTILINE);
+    private static Pattern manchuMatcher = Pattern.compile("(([\u1800-\u18AA\u00AB\u00BB\u2039\u203A\\?\\!\u203D\u2E2E])+\\s*((-*—?[0-9])+\\s+)*)+$",Pattern.MULTILINE);
 
     public static boolean isManchuScript(String str) {
 
-        return ReUtil.contains(manchuMatcher, str);
+        return ReUtil.contains(manchuMatcher,str);
 
     }
 
@@ -381,7 +389,7 @@ public class Manchurize extends Fragment {
 
                     if (prev == 'ᠨ' || prev == 'n') {
 
-                        tmp = tmp.substring(0, tmp.length() - 1);
+                        tmp = tmp.substring(0,tmp.length() - 1);
 
                         tmp += 'ᠩ';
 
@@ -415,7 +423,7 @@ public class Manchurize extends Fragment {
 
                     if (prev == 'ᡨ' || prev == 't') {
 
-                        tmp = tmp.substring(0, tmp.length() - 1);
+                        tmp = tmp.substring(0,tmp.length() - 1);
 
                         tmp += 'ᡮ';
 
@@ -477,7 +485,7 @@ public class Manchurize extends Fragment {
 
                     if (prev == 'ᡩ' || prev == 'd') {
 
-                        tmp = tmp.substring(0, tmp.length() - 1);
+                        tmp = tmp.substring(0,tmp.length() - 1);
 
                         tmp += 'ᡯ';
 
