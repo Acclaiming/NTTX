@@ -1007,24 +1007,15 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             BotServer.fragments.put(token,this);
 
-			waitPool.execute(new Runnable() {
+			BaseResponse resp = bot.execute(new SetWebhook().url(url));
 
-					@Override
-					public void run() {
+			if (!resp.isOk()) {
 
-						BaseResponse resp = bot.execute(new SetWebhook().url(url));
+				BotLog.debug("SET WebHook for " + botName() + " Failed : " + resp.description());
 
-						if (!resp.isOk()) {
+				BotServer.fragments.remove(token);
 
-							BotLog.debug("SET WebHook for " + botName() + " Failed : " + resp.description());
-
-							BotServer.fragments.remove(token);
-
-						}
-
-					}
-
-				});
+			}
 
         }
 
