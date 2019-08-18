@@ -100,8 +100,8 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 			return;
 
 		}
-
-        if (request.uri().equals("/data/" + Launcher.INSTANCE.getToken())) {
+		
+        if (Launcher.INSTANCE != null && request.uri().equals("/data/" + Launcher.INSTANCE.getToken())) {
 
             File dataFile = new File(Env.CACHE_DIR,"data.zip");
 
@@ -144,7 +144,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
             return;
 
-        } else if (request.uri().equals("/upgrade/" + Launcher.INSTANCE.getToken())) {
+        } else if (Launcher.INSTANCE != null && request.uri().equals("/upgrade/" + Launcher.INSTANCE.getToken())) {
 
             try {
 
