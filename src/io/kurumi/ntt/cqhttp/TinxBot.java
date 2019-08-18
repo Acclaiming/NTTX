@@ -22,16 +22,19 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import cn.hutool.core.thread.ThreadUtil;
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class TinxBot {
 
+	private AtomicBoolean stopped = new AtomicBoolean(false);
+
 	private URI uri;
 	private Channel client;
+
 	public TinxApi api;
-	public TinxHandler handler;
 
 	public LinkedList<TinxListener> listeners = new LinkedList<>();
-	
+
 	public TinxBot(String wsUrl,String httpUrl) {
 
 		try {
@@ -45,14 +48,14 @@ public final class TinxBot {
 		}
 
 		this.api = new TinxApi(httpUrl);
-		
+
 	}
 
 	public void addListener(TinxListener listener) {
 
 		listener.bot = this;
 		listener.api = this.api;
-		
+
 		this.listeners.add(listener);
 
 	}
@@ -69,6 +72,8 @@ public final class TinxBot {
 
 		final Bootstrap boot = new Bootstrap();
 
+		final TinxHandler handler = new TinxHandler(TinxBot.this,WebSocketClientHandshakerFactory.newHandshaker(uri,WebSocketVersion.V13,null,true,new DefaultHttpHeaders()));
+
 		boot.group(group);
 		boot.channel(NioSocketChannel.class);
 		boot.handler(new ChannelInitializer<SocketChannel>() {
@@ -81,8 +86,7 @@ public final class TinxBot {
 					pipeline.addLast(new HttpClientCodec());
 					pipeline.addLast(new HttpObjectAggregator(8192));
 					pipeline.addLast(WebSocketClientCompressionHandler.INSTANCE);
-					pipeline.addLast(new TinxHandler(TinxBot.this,WebSocketClientHandshakerFactory.newHandshaker(uri,WebSocketVersion.V13,null,true,new DefaultHttpHeaders())));
-
+					pipeline.addLast(handler);
 
 				}
 			});
@@ -90,7 +94,7 @@ public final class TinxBot {
 		try {
 
 			client = boot.connect(uri.getHost(),uri.getPort()).sync().channel();
-			
+
 			handler.handshakeFuture().sync();
 
 		} catch (InterruptedException e) {
@@ -98,7 +102,7 @@ public final class TinxBot {
 			return;
 
 		}
-		
+
 		new Thread("CqHttp Ping Thread") {
 
 			@Override
@@ -107,18 +111,26 @@ public final class TinxBot {
 				while (client.isActive()) {
 
 					WebSocketFrame frame = new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[] { 8, 1, 8, 1 }));
-                   
+
 					client.writeAndFlush(frame);
-					
-					ThreadUtil.safeSleep(60 * 1000L);
-					
+
+					try {
+
+						Thread.sleep(60 * 1000L);
+
+					} catch (InterruptedException e) {
+
+						return;
+
+					}
+
 				}
 
 			}
 
 		}.start();
-		
-		
+
+
 		new Thread("CqHttp Ws Thread") {
 
 			@Override
@@ -134,15 +146,29 @@ public final class TinxBot {
 					group.shutdownGracefully();
 
 				}
-				
-				Launcher.tryTinxConnect();
+
+				if (!stopped.get()) {
+
+					Launcher.tryTinxConnect();
+
+				}
 
 			}
 
 		}.start();
 
-
-
     }
+
+	public void stop() {
+
+		if (client != null) {
+
+			client.close();
+
+			client = null;
+
+		}
+
+	}
 
 }
