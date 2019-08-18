@@ -29,9 +29,6 @@ public class TinxApi {
 
 	}
 	
-	private HashMap<Long,GroupInfo> groupInfoCache = new HashMap<>();
-	private HashMap<Long,GroupMember> groupMemberCache = new HashMap<>();
-	
 	public SendMessageResponse sendPrivateMsg(long user_id,String message) {
 
 		return send("send_private_msg",params("user_id",user_id,"message",message),SendMessageResponse.class);
@@ -160,7 +157,6 @@ public class TinxApi {
 		return send("get_group_member_info",params("group_id",group_id,"user_id",user_id),GetGroupMemberInfoResponse.class);
 
 	}
-	
 	
 	public GetGroupMemberInfoResponse getGroupMenberInfo(long group_id,long user_id,boolean no_cache) {
 		
@@ -396,6 +392,8 @@ public class TinxApi {
 		query.put("params",body);
 		
 		if (!Launcher.TINX.send(query.toString())) {
+			
+			BotLog.debug("连接已关闭, 向 HTTP API 发送异步操作.");
 			
 			send(method,body,null);
 			

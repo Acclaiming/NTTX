@@ -1,6 +1,18 @@
 package io.kurumi.ntt;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.Console;
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.cookie.GlobalCookieManager;
+import cn.hutool.log.AbstractLog;
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
+import cn.hutool.log.dialect.console.ConsoleLogFactory;
+import cn.hutool.log.level.Level;
 import com.google.gson.Gson;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.ChatMember;
@@ -96,6 +108,7 @@ import java.util.TimeZone;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
+import cn.hutool.log.dialect.console.ConsoleLog;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -103,13 +116,41 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 	public static OkHttpClient.Builder OKHTTP = new OkHttpClient.Builder();
 	public static Gson GSON = new Gson();
-	
+
 	public static TinxBot TINX;
-	
+
     public static void main(String[] args) {
 
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
-		
+
+		LogFactory.setCurrentLogFactory(new ConsoleLogFactory() {
+
+				@Override
+				public Log createLog(Class<?> clazz) {
+
+					if (clazz.equals(GlobalCookieManager.class)) {
+
+						return new ConsoleLog(clazz) {
+							
+							@Override public boolean isDebugEnabled() {
+								
+								return false;
+								
+							}
+							
+							@Override public void debug(String fqcn,Throwable t,String format,Object... arguments) {
+							}
+							
+						};
+
+					}
+
+					return super.createLog(clazz);
+
+				}
+
+			});
+
         try {
 
             Env.init();
@@ -124,17 +165,17 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         if (Env.USE_UNIX_SOCKET) {
 
-            BotServer.INSTANCE = new BotServer(Env.UDS_PATH, Env.SERVER_DOMAIN);
+            BotServer.INSTANCE = new BotServer(Env.UDS_PATH,Env.SERVER_DOMAIN);
 
         } else {
 
-            BotServer.INSTANCE = new BotServer(Env.LOCAL_PORT, Env.SERVER_DOMAIN);
+            BotServer.INSTANCE = new BotServer(Env.LOCAL_PORT,Env.SERVER_DOMAIN);
 
         }
 
         try {
 
-            BotDB.init(Env.DB_ADDRESS, Env.DB_PORT);
+            BotDB.init(Env.DB_ADDRESS,Env.DB_PORT);
 
         } catch (Exception ex) {
 
@@ -147,7 +188,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         try {
 
             BotServer.INSTANCE.start();
-			
+
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -155,7 +196,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
             return;
 
         }
-		
+
 		TINX = new TinxBot(Env.CQHTTP_WS,Env.CQHTTP_URL);
 
 		TINX.addListener(new QQListener());
@@ -166,25 +207,25 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 			@Override
 			public String getToken() {
-				
+
 				return Env.BOT_TOKEN;
-				
+
 			}
-			
+
 		};
-		
+
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
 
         RuntimeUtil.addShutdownHook(new Runnable() {
 
-            @Override
-            public void run() {
+				@Override
+				public void run() {
 
-                INSTANCE.stop();
+					INSTANCE.stop();
 
-            }
+				}
 
-        });
+			});
 
         INSTANCE.start();
 
@@ -202,11 +243,11 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 			}.start();
 
 		}
-		
+
     }
-	
+
 	public static void tryTinxConnect() {
-		
+
 		try {
 
 			TINX.start();
@@ -227,9 +268,9 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 				},2 * 60 * 1000L);
 
 		}
-		
-		
-			
+
+
+
 	}
 
     @Override
@@ -242,18 +283,18 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         super.init(origin);
 
-        registerFunction("start", "help");
+        registerFunction("start","help");
 
     }
 
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-        super.onFunction(user, msg, function, params);
+        super.onFunction(user,msg,function,params);
 
         if ("start".equals(function)) {
 
-            msg.send("start failed successfully ~\n", Env.HELP_MESSAGE).html().async();
+            msg.send("start failed successfully ~\n",Env.HELP_MESSAGE).html().async();
 
         } else if ("help".equals(function)) {
 
@@ -261,7 +302,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         } else if (!functions.containsKey(function) && msg.isPrivate()) {
 
-            msg.send("没有这个命令 " + function, Env.HELP_MESSAGE).html().failedWith(10 * 1000);
+            msg.send("没有这个命令 " + function,Env.HELP_MESSAGE).html().failedWith(10 * 1000);
 
         }
 
@@ -309,9 +350,9 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         TimelineMain.start();
 
         TrackTask.start();
-		
+
 		StatusDeleteTask.start();
-		
+
 		MargedNoticeTask.start();
 
         UserBot.startAll();
@@ -319,7 +360,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         FeedFetchTask.start();
 
         Backup.start();
-		
+
 		NameUpdateTask.start();
 
         userTrackTask.start();
@@ -350,7 +391,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 		addFragment(new StatusDel());
         addFragment(new DebugUF());
-		
+
 		addFragment(new GetRepliesTest());
 
         // GROUP
@@ -366,7 +407,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         // Twitter
 
 		addFragment(new TwitterMain());
-		
+
         addFragment(new UserActions());
         addFragment(new StatusUpdate());
         addFragment(new TimedStatus());
@@ -378,16 +419,16 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         addFragment(new TwitterDelete());
         addFragment(new ListExport());
         addFragment(new ListImport());
-		
+
         addFragment(new Disappeared());
         addFragment(new TEPH());
-		
+
 		addFragment(new TLScanner());
 
 		// Mastodon
-		
+
 		addFragment(new MsMain());
-		
+
         // BOTS
 
         addFragment(new NewBot());
@@ -414,9 +455,9 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         // IC
 
         addFragment(new Idcard());
-		
+
 		// Gif
-		
+
 		addFragment(new MakeGif());
 
         // Extra
@@ -432,24 +473,24 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		addFragment(new DNSLookup());
 		addFragment(new WhoisLookup());
 		addFragment(new MMPITest());
-	
+
 		addFragment(new TelegramListener());
 		addFragment(new TelegramFN());
 		addFragment(new TelegramAdminFN());
-		
+
 		// Mods
-		
+
 		addFragment(new PackageManager());
-		
+
 		addFragment(new RpcApi());
-		
+
     }
 
 	@Override
 	public void processAsync(Update update) {
-		
+
 		super.processAsync(update);
-		
+
 	}
 
     @Override
@@ -464,9 +505,9 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         trackTimer.cancel();
 
         userTrackTask.interrupt();
-		
+
 		TimelineMain.stop();
-		
+
 		StatusDeleteTask.stop();
 
         GroupData.data.saveAll();
@@ -500,7 +541,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
     }
 
     @Override
-    public boolean onUpdate(final UserData user, final Update update) {
+    public boolean onUpdate(final UserData user,final Update update) {
 
         if (update.message() != null) {
 
@@ -508,9 +549,9 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
                 user.contactable = true;
 
-                UserData.userDataIndex.put(user.id, user);
+                UserData.userDataIndex.put(user.id,user);
 
-                UserData.data.setById(user.id, user);
+                UserData.data.setById(user.id,user);
 
             }
 
@@ -523,52 +564,52 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 	@Override
 	public int checkMsg(UserData user,Msg msg) {
-	
+
 		if (msg.newUser() != null && msg.newUser().id.equals(origin.me.id())) {
-			
+
 			return PROCESS_ASYNC_REJ;
-			
+
 		}
-		
+
 		return PROCESS_CONTINUE;
-		
+
 	}
 
 	@Override
 	public void onGroup(UserData user,Msg msg) {
-		
+
 		if (!msg.isSuperGroup()) {
-			
+
 			msg.reply("对不起, NTT 只能在 " + Html.b("超级群组") + " 工作, 如果需要继续, 请群组创建者将群组转换为超级群组再重新添加咱.").html().async();
-			
+
 			msg.exit();
-			
+
 			return;
-			
+
 		}
-		
-		GetChatMemberResponse resp = execute(new GetChatMember(msg.chatId(), origin.me.id().intValue()));
+
+		GetChatMemberResponse resp = execute(new GetChatMember(msg.chatId(),origin.me.id().intValue()));
 
         ChatMember curr = resp.chatMember();
 
 		if (resp.isOk() && curr.canRestrictMembers() != null && curr.canRestrictMembers() && curr.canDeleteMessages() != null && curr.canDeleteMessages()) {
-			
+
 			msg.reply("这里是NTT. 使用 /options 调出设置选单.").async();
-			
+
 		} else {
-			
+
 			msg.reply("很抱歉, NTT需要 " + Html.b("限制成员") + " 和 " + Html.b("删除消息") + " 权限以正常运行, 如果需要继续, 请管理员将机器人添加为管理员.").html().async();
-			
+
 			msg.exit();
-			
+
 		}
-		
+
 	}
 
     @Override
-    public void uncaughtException(Thread thread, Throwable throwable) {
+    public void uncaughtException(Thread thread,Throwable throwable) {
 
-        BotLog.error("NTT出错", throwable);
+        BotLog.error("NTT出错",throwable);
 
         System.exit(1);
 
