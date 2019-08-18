@@ -224,59 +224,59 @@ public class TinxApi {
 	
 	// ASYNC API
 	
-	public SendMessageResponse sendPrivateMsgAsync(long user_id,String message) {
+	public void sendPrivateMsgAsync(long user_id,String message) {
 
-		return send("send_private_msg",params("user_id",user_id,"message",message),SendMessageResponse.class);
-
-	}
-
-	public SendMessageResponse sendPrivateMsgAsync(long user_id,String message,boolean auto_escape) {
-
-		return send("send_private_msg",params("user_id",user_id,"message",message,"auto_escape",auto_escape),SendMessageResponse.class);
+		sendAsync("send_private_msg",params("user_id",user_id,"message",message));
 
 	}
 
-	public SendMessageResponse sendGroupMsgAsync(long group_id,String message,boolean auto_escape) {
+	public void sendPrivateMsgAsync(long user_id,String message,boolean auto_escape) {
 
-		return send("send_group_msg",params("group_id",group_id,"message",message,"auto_escape",auto_escape),SendMessageResponse.class);
+		sendAsync("send_private_msg",params("user_id",user_id,"message",message,"auto_escape",auto_escape));
 
 	}
 
-	public SendMessageResponse sendDiscussMsgAync(long discuss_id,String message,boolean auto_escape) {
+	public void sendGroupMsgAsync(long group_id,String message,boolean auto_escape) {
 
-		return send("send_discuss_msg",params("discuss_id",discuss_id,"message",message,"auto_escape",auto_escape),SendMessageResponse.class);
+		sendAsync("send_group_msg",params("group_id",group_id,"message",message,"auto_escape",auto_escape));
+
+	}
+
+	public void sendDiscussMsgAync(long discuss_id,String message,boolean auto_escape) {
+
+		sendAsync("send_discuss_msg",params("discuss_id",discuss_id,"message",message,"auto_escape",auto_escape));
 
 	}
 
 	// send_msg
 
-	public BaseResponse deleteMsgAsync(int message_id) {
+	public void deleteMsgAsync(int message_id) {
 
-		return send("delete_msg",params("message_id",message_id),BaseResponse.class);
-
-	}
-
-	public BaseResponse sendLikeAsync(long user_id,int times) {
-
-		return send("send_like",params("user_id",user_id,"times",times),BaseResponse.class);
+		sendAsync("delete_msg",params("message_id",message_id));
 
 	}
 
-	public BaseResponse setGroupKickAsync(long group_id,long user_id,boolean reject_add_request) {
+	public void sendLikeAsync(long user_id,int times) {
 
-		return send("set_group_kick",params("group_id",group_id,"user_id",user_id,"reject_add_request",reject_add_request),BaseResponse.class);
-
-	}
-
-	public BaseResponse setGroupBanAsync(long group_id,long user_id,int duration) {
-
-		return send("set_group_ban",params("group_id",group_id,"user_id",user_id,"duration",duration),BaseResponse.class);
+		sendAsync("send_like",params("user_id",user_id,"times",times));
 
 	}
 
-	public BaseResponse setGroupWholeBanAsync(long group_id,boolean enable) {
+	public void setGroupKickAsync(long group_id,long user_id,boolean reject_add_request) {
 
-		return send("set_group_whole_ban",params("group_id",group_id,"enable",enable),BaseResponse.class);
+		sendAsync("set_group_kick",params("group_id",group_id,"user_id",user_id,"reject_add_request",reject_add_request));
+
+	}
+
+	public void setGroupBanAsync(long group_id,long user_id,int duration) {
+
+		sendAsync("set_group_ban",params("group_id",group_id,"user_id",user_id,"duration",duration));
+
+	}
+
+	public void setGroupWholeBanAsync(long group_id,boolean enable) {
+
+		sendAsync("set_group_whole_ban",params("group_id",group_id,"enable",enable));
 
 	}
 
@@ -285,59 +285,59 @@ public class TinxApi {
 	// set_group_anonymous
 	// set_group_card
 
-	public BaseResponse setGroupLeaveAsync(long group_id) {
+	public void setGroupLeaveAsync(long group_id) {
 
-		return send("set_group_leave",params("group_id",group_id),BaseResponse.class);
+		sendAsync("set_group_leave",params("group_id",group_id));
 
 	}
-	public BaseResponse setGroupLeaveAsync(long group_id,boolean is_dismiss) {
+	public void setGroupLeaveAsync(long group_id,boolean is_dismiss) {
 
-		return send("set_group_leave",params("group_id",group_id,"is_dismiss",is_dismiss),BaseResponse.class);
+		sendAsync("set_group_leave",params("group_id",group_id,"is_dismiss",is_dismiss));
 
 	}
 
 	// set_group_special_title
 
-	public BaseResponse setDiscussLeaveAsync(long discuss_id) {
+	public void setDiscussLeaveAsync(long discuss_id) {
 
-		return send("set_discuss_leave",params("discuss_id",discuss_id),BaseResponse.class);
-
-	}
-
-	public BaseResponse setDiscussLeaveAsync(long discuss_id,boolean is_dismiss) {
-
-		return send("set_discuss_leave",params("discuss_id",discuss_id,"is_dismiss",is_dismiss),BaseResponse.class);
+		sendAsync("set_discuss_leave",params("discuss_id",discuss_id));
 
 	}
 
+	public void setDiscussLeaveAsync(long discuss_id,boolean is_dismiss) {
 
-	public BaseResponse setFriendAddRequestAsync(String flag,boolean approve,String remark) {
-
-		return send("set_friend_add_request",params("flag",flag,"approve",approve,"remark",remark),BaseResponse.class);
-
-	}
-
-	public BaseResponse setGroupAddRequestAsync(String flag,String type,boolean approve,String reason) {
-
-		return send("set_group_add_request",params("flag",flag,"type",type,"approve",approve,"reason",reason),BaseResponse.class);
+		sendAsync("set_discuss_leave",params("discuss_id",discuss_id,"is_dismiss",is_dismiss));
 
 	}
 
-	public GetLoginInfoResponse getLoginInfoAsync() {
 
-		return send("get_login_info",params(),GetLoginInfoResponse.class);
+	public void setFriendAddRequestAsync(String flag,boolean approve,String remark) {
 
-	}
-
-	public GetStrangerInfoResponse getStrangerInfoAsync(long user_id) {
-
-		return send("get_stranger_info",params("user_id",user_id),GetStrangerInfoResponse.class);
+		sendAsync("set_friend_add_request",params("flag",flag,"approve",approve,"remark",remark));
 
 	}
 
-	public GetStrangerInfoResponse getStrangerInfoAsync(long user_id,boolean no_cache) {
+	public void setGroupAddRequestAsync(String flag,String type,boolean approve,String reason) {
 
-		return send("get_stranger_info",params("user_id",user_id,"no_cache",no_cache),GetStrangerInfoResponse.class);
+		sendAsync("set_group_add_request",params("flag",flag,"type",type,"approve",approve,"reason",reason));
+
+	}
+
+	public void getLoginInfoAsync() {
+
+		sendAsync("get_login_info",params());
+
+	}
+
+	public void getStrangerInfoAsync(long user_id) {
+
+		sendAsync("get_stranger_info",params("user_id",user_id));
+
+	}
+
+	public void getStrangerInfoAsync(long user_id,boolean no_cache) {
+
+		sendAsync("get_stranger_info",params("user_id",user_id,"no_cache",no_cache));
 
 	}
 
@@ -349,7 +349,7 @@ public class TinxApi {
 	// get_cookies
 	// get_csrf_token
 	// get_credentials
-	
+
 	// get_record
 	// get_image
 	// can_send_image
@@ -369,7 +369,6 @@ public class TinxApi {
 
 	// .check_update
 	// .handle_quick_operation
-	
 	
 	JSONObject params(Object... params) {
 

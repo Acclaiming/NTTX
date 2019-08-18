@@ -21,15 +21,15 @@ public class TelegramFN extends Fragment {
 
 	@Override
 	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
-		
+
 		return FUNCTION_GROUP;
-		
+
 	}
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-	 if (function.endsWith("_enable")) {
+		if (function.endsWith("_enable")) {
 
 			if (!TelegramBridge.telegramIndex.containsKey(msg.chatId())) {
 
@@ -41,19 +41,19 @@ public class TelegramFN extends Fragment {
 
 			if (NTT.checkGroupAdmin(msg)) return;
 
-		 if (!TelegramBridge.disable.containsKey(msg.chatId())) {
+			if (!TelegramBridge.disable.containsKey(msg.chatId())) {
 
 				msg.send("没有关闭 :)").async();
 
 			} else {
 
-			 TelegramBridge.disable.remove(msg.chatId());
+				TelegramBridge.disable.remove(msg.chatId());
 
-			 TelegramBridge.GroupBind bind = TelegramBridge.data.getById(msg.chatId());
+				TelegramBridge.GroupBind bind = TelegramBridge.data.getById(msg.chatId());
 
 				bind.disable = null;
 
-			 TelegramBridge.data.setById(bind.id,bind);
+				TelegramBridge.data.setById(bind.id,bind);
 
 				msg.send("已开启 :) 使用 /tinx_disable 关闭.").async();
 
