@@ -572,6 +572,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                         if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.fixedParams()) == FUNCTION_GROUP && !msg.isGroup()) {
 
                             msg.send(LocalString.get(user).COMMAND_GROUP_ONLY).async();
+							
+							return;
 
                         }
 
