@@ -24,6 +24,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
+import io.kurumi.ntt.cqhttp.model.LoginInfo;
+import io.kurumi.ntt.cqhttp.response.GetLoginInfoResponse;
+import cn.hutool.core.exceptions.ExceptionUtil;
 
 public final class TinxBot {
 
@@ -33,6 +36,8 @@ public final class TinxBot {
 	private Channel client;
 
 	public TinxApi api;
+	
+	public LoginInfo me;
 
 	public LinkedList<TinxListener> listeners = new LinkedList<>();
 
@@ -81,6 +86,18 @@ public final class TinxBot {
 
     public void start() throws Exception {
 
+		GetLoginInfoResponse info = api.getLoginInfo();
+
+		if (info.isOk()) {
+			
+			me = info.data;
+			
+		} else {
+			
+			throw new IllegalStateException("HTTP API 无法连接 / 未登录");
+			
+		}
+		
         final EventLoopGroup group = new NioEventLoopGroup();
 
 		final Bootstrap boot = new Bootstrap();
