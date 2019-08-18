@@ -5,13 +5,17 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import com.pengrad.telegrambot.model.Document;
 import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.PhotoSize;
 import com.pengrad.telegrambot.model.Sticker;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.EditMessageReplyMarkup;
 import com.pengrad.telegrambot.request.ForwardMessage;
 import com.pengrad.telegrambot.request.GetFile;
+import com.pengrad.telegrambot.request.KickChatMember;
 import com.pengrad.telegrambot.request.LeaveChat;
+import com.pengrad.telegrambot.request.RestrictChatMember;
+import com.pengrad.telegrambot.request.UnbanChatMember;
 import com.pengrad.telegrambot.response.SendResponse;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.Launcher;
@@ -21,24 +25,22 @@ import io.kurumi.ntt.model.request.AbstractSend;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Edit;
 import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.utils.NTT;
-
-import java.io.File;
-
-import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntt.utils.BotLog;
-import com.pengrad.telegrambot.model.PhotoSize;
+import io.kurumi.ntt.utils.NTT;
+import java.io.File;
 
 public class Msg extends Context {
 
     public Update update;
 
     public static String[] NO_PARAMS = new String[0];
-    Msg replyTo;
-    int isCommand = 0;
-    boolean noPayload = false;
-    String payload[];
-    boolean noParams = false;
+    
+	private Msg replyTo;
+    private int isCommand = 0;
+    private boolean noPayload = false;
+    private String payload[];
+    private boolean noParams = false;
+	
     private Message message;
     private String name;
 	private String function;
