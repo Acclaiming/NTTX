@@ -21,6 +21,7 @@ import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketCl
 import java.net.URI;
 import java.net.URISyntaxException;
 import cn.hutool.core.thread.ThreadUtil;
+import java.util.LinkedList;
 
 public final class TinxBot {
 
@@ -29,6 +30,8 @@ public final class TinxBot {
 	public TinxApi api;
 	public TinxHandler handler;
 
+	public LinkedList<TinxListener> listeners = new LinkedList<>();
+	
 	public TinxBot(String wsUrl,String httpUrl) {
 
 		try {
@@ -42,8 +45,7 @@ public final class TinxBot {
 		}
 
 		this.api = new TinxApi(httpUrl);
-		this.handler = new TinxHandler(this,WebSocketClientHandshakerFactory.newHandshaker(uri,WebSocketVersion.V13,null,true,new DefaultHttpHeaders()));
-
+		
 	}
 
 	public void addListener(TinxListener listener) {
@@ -51,13 +53,13 @@ public final class TinxBot {
 		listener.bot = this;
 		listener.api = this.api;
 		
-		this.handler.listeners.add(listener);
+		this.listeners.add(listener);
 
 	}
 
 	public void removeListeners() {
 
-		this.handler.listeners.clear();
+		this.listeners.clear();
 
 	}
 
@@ -79,7 +81,7 @@ public final class TinxBot {
 					pipeline.addLast(new HttpClientCodec());
 					pipeline.addLast(new HttpObjectAggregator(8192));
 					pipeline.addLast(WebSocketClientCompressionHandler.INSTANCE);
-					pipeline.addLast(handler);
+					pipeline.addLast(new TinxHandler(TinxBot.this,WebSocketClientHandshakerFactory.newHandshaker(uri,WebSocketVersion.V13,null,true,new DefaultHttpHeaders())));
 
 
 				}

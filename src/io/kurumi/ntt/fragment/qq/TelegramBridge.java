@@ -27,6 +27,7 @@ import io.kurumi.ntt.cqhttp.Variants;
 import io.kurumi.ntt.fragment.qq.TelegramBridge.GroupBind;
 import io.kurumi.ntt.utils.NTT;
 import io.kurumi.ntt.db.GroupData;
+import io.kurumi.ntt.cqhttp.update.GroupDecreaseNotice;
 
 public class TelegramBridge {
 

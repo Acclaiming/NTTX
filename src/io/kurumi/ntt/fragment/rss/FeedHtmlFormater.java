@@ -81,7 +81,9 @@ public class FeedHtmlFormater {
             final List<Node> content = removeTagsWithoutImg.formatTelegraph(str, host);
 
             content.add(new NodeElement() {{
+				
                 tag = "hr";
+				
             }});
 
             if (channel.copyright == null) {
@@ -101,20 +103,26 @@ public class FeedHtmlFormater {
                     children = new LinkedList<>();
 
                     children.add(new Node() {{
-                        text = "NTT";
+						
+                        text = "NTTX";
+						
                     }});
 
 
                 }});
 
                 content.add(new Node() {{
+					
                     text = " 解析 | 源站版权所有";
+					
                 }});
 
             } else {
 
                 content.add(new Node() {{
+					
                     text = channel.copyright;
+					
                 }});
 
             }
@@ -316,7 +324,7 @@ public class FeedHtmlFormater {
 
         //	html = URLUtil.decode(html);
 
-        html = html.replaceAll("< ?br ?/? ?>", "\n");
+        html = html.replaceAll("< *br */? *>", "\n");
 
         html = html.replace("<strong>", "<b>").replace("</strong>", "</b>");
 

@@ -74,7 +74,6 @@ public final class HTMLFilter {
 
         }
 
-
         vAllowed.put("b", no_atts);
         vAllowed.put("i", no_atts);
         vAllowed.put("pre", no_atts);
