@@ -88,8 +88,6 @@ public class UserBot {
 
                 } else return false;
 				
-				StaticLog.info("已挂载托管机器人 : {} ( @{} )",UserData.get(bot.me).name(),userName);
-				
             } catch (Exception e) {
 
 				StaticLog.info("机器人令牌已失效 : {}" + userName);
