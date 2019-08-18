@@ -94,7 +94,7 @@ public final class TinxBot {
 			
 		} else {
 			
-			throw new IllegalStateException("HTTP API 无法连接 / 未登录 : ( " + info.status + " ) : " + info.retcode);
+			// throw new IllegalStateException("HTTP API 无法连接 / 未登录 : ( " + info.status + " ) : " + info.retcode);
 			
 		}
 		
