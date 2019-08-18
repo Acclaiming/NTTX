@@ -257,8 +257,11 @@ public class BotChannnel extends Fragment {
         } else if ("edit".equals(function)) {
 
             if (params.length < 3) {
+				
                 invalidParams(msg, "chatId", "messageId", "text...");
+				
                 return;
+				
             }
 
             Edit send = new Edit(this, NumberUtil.parseLong(params[0]), NumberUtil.parseInt(params[1]), ArrayUtil.sub(params, 2, params.length));

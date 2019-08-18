@@ -362,41 +362,23 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
     UserTrackTask userTrackTask = new UserTrackTask();
 
     void startTasks() {
-
-		StaticLog.info("挂载定时推文");
 		
         TimedStatus.start();
 
-		StaticLog.info("挂载时间线拉取");
-		
         TimelineMain.start();
 
-		StaticLog.info("挂载跟随者监听");
-		
         TrackTask.start();
-		
-		StaticLog.info("挂载推文定时删除");
-
+	
 		StatusDeleteTask.start();
 
-		StaticLog.info("挂载跟随者合并推送");
-		
 		MargedNoticeTask.start();
 
-		StaticLog.info("挂载所有用户托管机器人");
-		
         UserBot.startAll();
 
-		StaticLog.info("挂载RSS拉取任务");
-		
         FeedFetchTask.start();
-		
-		StaticLog.info("挂载定时备份");
-
+	
         Backup.start();
 
-		StaticLog.info("挂载用户拉取");
-		
         userTrackTask.start();
 
     }

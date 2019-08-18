@@ -1,5 +1,6 @@
 package io.kurumi.ntt.cqhttp;
 
+import cn.hutool.log.StaticLog;
 import io.kurumi.ntt.Launcher;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
@@ -14,16 +15,15 @@ import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakerFactory;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketClientCompressionHandler;
 import java.net.URI;
 import java.net.URISyntaxException;
-import cn.hutool.core.thread.ThreadUtil;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
 public final class TinxBot {
 
@@ -117,6 +117,8 @@ public final class TinxBot {
 		}
 		
 		stopped.set(false);
+		
+		StaticLog.info("CqHttp WebSocket 已连接");
 
 		new Thread("CqHttp Ping Thread") {
 

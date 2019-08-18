@@ -311,8 +311,6 @@ public class Msg extends Context {
 
     public Edit edit(String... msg) {
 
-        System.out.println("edit调用 : " + ArrayUtil.join(msg,"\n"));
-
         Edit edit = new Edit(fragment,chatId(),messageId(),msg);
 
         edit.origin = this;
