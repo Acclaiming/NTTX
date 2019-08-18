@@ -93,6 +93,7 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
 import io.kurumi.ntt.fragment.qq.TelegramBridge;
+import io.kurumi.ntt.fragment.tinx.QQListener;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -155,7 +156,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		
 		TINX = new TinxBot(Env.CQHTTP_WS,Env.CQHTTP_URL);
 
-		TINX.addListener(new TelegramBridge.QQListener());
+		TINX.addListener(new QQListener());
 
 		tryTinxConnect();
 
