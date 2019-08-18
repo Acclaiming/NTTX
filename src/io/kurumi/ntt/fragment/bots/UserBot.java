@@ -44,7 +44,16 @@ public class UserBot {
 			
 			*/
 			
-			bot.startBot();
+			BotFragment.waitPool.execute(new Runnable() {
+
+					@Override
+					public void run() {
+						
+						bot.startBot();
+						
+					}
+					
+				});
 				
         }
 
