@@ -1,26 +1,20 @@
 package io.kurumi.ntt.cqhttp;
 
-import io.kurumi.ntt.cqhttp.response.BaseResponse;
-import cn.hutool.json.JSONObject;
-import cn.hutool.http.HttpUtil;
 import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONObject;
 import io.kurumi.ntt.Launcher;
-import io.kurumi.ntt.cqhttp.response.SendMessageResponse;
-import io.kurumi.ntt.cqhttp.response.GetLoginInfoResponse;
-import io.kurumi.ntt.cqhttp.response.GetStrangerInfoResponse;
+import io.kurumi.ntt.cqhttp.response.BaseResponse;
+import io.kurumi.ntt.cqhttp.response.CheckResponse;
+import io.kurumi.ntt.cqhttp.response.GetFileResponse;
+import io.kurumi.ntt.cqhttp.response.GetGroupInfoResponse;
 import io.kurumi.ntt.cqhttp.response.GetGroupListResponse;
 import io.kurumi.ntt.cqhttp.response.GetGroupMemberInfoResponse;
 import io.kurumi.ntt.cqhttp.response.GetGroupMemberListResponse;
-import io.kurumi.ntt.cqhttp.response.GetFileResponse;
-import io.kurumi.ntt.cqhttp.response.CheckResponse;
-import io.kurumi.ntt.cqhttp.response.GetGroupInfoResponse;
+import io.kurumi.ntt.cqhttp.response.GetLoginInfoResponse;
+import io.kurumi.ntt.cqhttp.response.GetStrangerInfoResponse;
+import io.kurumi.ntt.cqhttp.response.SendMessageResponse;
 import io.kurumi.ntt.utils.BotLog;
-import java.util.HashMap;
-import io.kurumi.ntt.cqhttp.model.GroupMember;
-import io.kurumi.ntt.cqhttp.model.GroupInfo;
-import cn.hutool.log.StaticLog;
-import org.apache.http.util.ExceptionUtils;
-import cn.hutool.core.exceptions.ExceptionUtil;
 
 public class TinxApi {
 

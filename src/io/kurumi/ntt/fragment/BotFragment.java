@@ -1,6 +1,9 @@
 package io.kurumi.ntt.fragment;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.qrcode.QrCodeException;
+import cn.hutool.extra.qrcode.QrCodeUtil;
 import com.pengrad.telegrambot.ExceptionHandler;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.TelegramException;
@@ -25,6 +28,7 @@ import io.kurumi.ntt.fragment.extra.ShowFile;
 import io.kurumi.ntt.fragment.mods.ModuleEnv;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
 import io.kurumi.ntt.i18n.LocalString;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
@@ -41,11 +45,6 @@ import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import okhttp3.OkHttpClient;
-import cn.hutool.extra.qrcode.QrCodeUtil;
-import cn.hutool.core.util.StrUtil;
-import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
-import cn.hutool.extra.qrcode.QrCodeException;
-import cn.hutool.log.StaticLog;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener, ExceptionHandler {
 
