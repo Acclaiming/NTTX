@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 import cn.hutool.log.StaticLog;
+import io.kurumi.ntt.utils.BotLog;
 
 public class FeedHtmlFormater {
 
@@ -412,7 +413,7 @@ public class FeedHtmlFormater {
 		
 		if (html.contains("<br")) {
 			
-			StaticLog.warn("BR : {}",html);
+			BotLog.info("BR : "+ html);
 			
 		}
 
