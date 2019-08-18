@@ -305,8 +305,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 			user = UserData.get(update.message().from());
 
-			StaticLog.debug("{} : {}",update.message().chat().title() == null ? user.name() : update.message().chat().title(),update.message().text());
-
         } else if (update.editedMessage() != null) {
 
 			update.lock.send(null);
