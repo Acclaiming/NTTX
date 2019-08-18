@@ -54,7 +54,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
     public static ExecutorService asyncPool = Executors.newCachedThreadPool();
 	public static ExecutorService waitPool = Executors.newFixedThreadPool(3);
-	
+
     public User me;
     private TelegramBot bot;
     public LinkedList<Fragment> fragments = new LinkedList<>();
@@ -128,7 +128,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
     public void onPoint(final UserData user,Msg msg,String point,PointData data) {
 
 		data.with(msg);
-		
+
         if ("cancel".equals(msg.command())) {
 
             if (data.type == 1) {
@@ -304,7 +304,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 			}
 
 			user = UserData.get(update.message().from());
-			
+
 			StaticLog.debug("{} : {}",update.message().chat().title() == null ? user.name() : update.message().chat().title(),update.message().text());
 
         } else if (update.editedMessage() != null) {
@@ -810,7 +810,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
     public void onFinalMsg(UserData user,final Msg msg) {
 
 		if (!msg.isPrivate()) return;
-		
+
         StringBuilder str = new StringBuilder();
 
         Message message = msg.message();
@@ -1005,20 +1005,28 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 			 */
 
-            String url = "https://" + BotServer.INSTANCE.domain + "/" + token;
+            final String url = "https://" + BotServer.INSTANCE.domain + "/" + token;
 
             BotServer.fragments.put(token,this);
 
-            BaseResponse resp = bot.execute(new SetWebhook().url(url));
+			waitPool.execute(new Runnable() {
 
-            if (!resp.isOk()) {
+					@Override
+					public void run() {
 
-                BotLog.debug("SET WebHook for " + botName() + " Failed : " + resp.description());
+						BaseResponse resp = bot.execute(new SetWebhook().url(url));
 
-                BotServer.fragments.remove(token);
+						if (!resp.isOk()) {
 
-            }
+							BotLog.debug("SET WebHook for " + botName() + " Failed : " + resp.description());
 
+							BotServer.fragments.remove(token);
+
+						}
+
+					}
+
+				});
 
         }
 
