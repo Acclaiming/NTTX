@@ -80,7 +80,7 @@ public class TinxHandler extends SimpleChannelInboundHandler<Object> {
             try {
                 handshaker.finishHandshake(ch,(FullHttpResponse) msg);
 
-                BotLog.debug("cqhttp-api 完成握手");
+               // BotLog.debug("cqhttp-api 完成握手");
                 handshakeFuture.setSuccess();
 
             } catch (WebSocketHandshakeException e) {
@@ -108,14 +108,12 @@ public class TinxHandler extends SimpleChannelInboundHandler<Object> {
 
             TextWebSocketFrame textFrame = (TextWebSocketFrame) frame;
 
-            BotLog.debug("cqhttp-api 收到消息");
-			BotLog.debug(textFrame.text());
-
+            
 			Processer.processUpdate(bot,textFrame.text());
 
         } else if (frame instanceof PongWebSocketFrame) {
 
-            BotLog.debug("cqhttp-api 收到心跳");
+            // BotLog.debug("cqhttp-api 收到心跳");
 
         } else if (frame instanceof CloseWebSocketFrame) {
 
