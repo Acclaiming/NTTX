@@ -89,20 +89,17 @@ public class MDListener implements StatusListener {
 
 				if (urls.toString().isEmpty()) {
 
-					mkReply(status,"[媒体下载] 这条推文没有视频/GIF");
+					mkReply(status,"This tweet has no video/GIF");
 
 					return;
 
 				}
 
 
-				mkReply(status,"[媒体下载] 所有下载链接 :\n" + urls.toString());
+				mkReply(status,"Download Links :\n" + urls.toString());
 
 
 			} catch (TwitterException e) {
-
-				BotLog.error("[VDB]",e);
-
 			}
 
 		}

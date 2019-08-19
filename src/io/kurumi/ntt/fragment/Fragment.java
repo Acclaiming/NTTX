@@ -39,6 +39,8 @@ import java.util.LinkedList;
 import com.pengrad.telegrambot.request.*;
 import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.i18n.LocalString;
+import cn.hutool.log.StaticLog;
+import cn.hutool.core.lang.caller.CallerUtil;
 
 public class Fragment {
 
@@ -132,7 +134,7 @@ public class Fragment {
 
 					} catch (Exception ex) {
 
-						BotLog.error("出错",ex);
+						StaticLog.get(getClass()).error(ex,"出错");
 
 					}
 
@@ -710,8 +712,6 @@ public class Fragment {
 
         if (file == null || !file.isOk()) {
 
-            BotLog.debug("取文件失败 : " + file.errorCode() + " " + file.description());
-
             return null;
 
         }
@@ -731,8 +731,6 @@ public class Fragment {
         if (local.isFile()) return local;
 
         if (!file.isOk()) {
-
-            BotLog.debug("取文件失败 : " + file.errorCode() + " " + file.description());
 
             return null;
 

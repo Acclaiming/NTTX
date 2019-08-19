@@ -82,9 +82,7 @@ public class Query {
         GetFileResponse resp = fragment.bot().execute(new GetFile(fileId));
 
         if (!resp.isOk()) {
-
-            BotLog.warnWithStack("没有那样的fileId对应的文件 : " + fileId);
-
+ 
             return this;
 
         }

@@ -232,11 +232,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
             Update update = BotUtils.parseUpdate(request.content().toString(CharsetUtil.CHARSET_UTF_8));
 
-			// StaticLog.debug("收到消息 : {}",new JSONObject(update.json).toStringPretty());
-
 			update.lock = lock;
-
-			long start = System.currentTimeMillis();
 
 			BotServer.fragments.get(botToken).processAsync(update);
 
@@ -244,7 +240,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         } catch (Exception ex) {
 
-            BotLog.error("出错",ex);
+			StaticLog.error("出错 {} \n\n{}","");
 
             webhookResponse = null;
 

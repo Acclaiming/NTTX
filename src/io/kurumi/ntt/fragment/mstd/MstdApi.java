@@ -8,26 +8,29 @@ import com.sys1yagi.mastodon4j.api.method.Blocks;
 import com.sys1yagi.mastodon4j.api.method.Favourites;
 import com.sys1yagi.mastodon4j.api.method.Statuses;
 import com.sys1yagi.mastodon4j.api.method.Timelines;
+import okhttp3.OkHttpClient;
 
 public class MstdApi {
 	
 	public final MastodonClient client;
 	
+	public static OkHttpClient.Builder OKHTTP = new OkHttpClient.Builder();
+	
 	public MstdApi(String app) {
 
-		client = new MastodonClient.Builder(app,Launcher.OKHTTP,Launcher.GSON).build();
+		client = new MastodonClient.Builder(app,OKHTTP,Launcher.GSON).build();
 
 	}
 	
 	public MstdApi(MstdApp app) {
 		
-		client = new MastodonClient.Builder(app.id,Launcher.OKHTTP,Launcher.GSON).build();
+		client = new MastodonClient.Builder(app.id,OKHTTP,Launcher.GSON).build();
 		
 	}
 	
 	public MstdApi(MstdAuth auth) {
-	
-		client = new MastodonClient.Builder(auth.appId,Launcher.OKHTTP,Launcher.GSON).accessToken(auth.accessToken).build();
+
+		client = new MastodonClient.Builder(auth.appId,OKHTTP,Launcher.GSON).accessToken(auth.accessToken).build();
 
 	}
 	

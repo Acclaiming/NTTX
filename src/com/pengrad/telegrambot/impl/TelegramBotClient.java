@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.gson.*;
 import io.kurumi.ntt.utils.*;
+import cn.hutool.log.StaticLog;
 
 /**
  * stas
@@ -79,7 +80,7 @@ public class TelegramBotClient {
 
             } catch (JsonSyntaxException e) {
 
-                BotLog.error("回复解析失败\n\n" + json, e);
+                StaticLog.warn("回复解析失败\n\n" + json, e);
 
             }
 

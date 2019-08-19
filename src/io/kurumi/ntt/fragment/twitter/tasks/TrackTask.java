@@ -35,6 +35,7 @@ import twitter4j.User;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import io.kurumi.ntt.fragment.twitter.ui.extra.OWUnfoPublish;
+import cn.hutool.log.StaticLog;
 
 public class TrackTask extends TimerTask {
 
@@ -228,7 +229,7 @@ public class TrackTask extends TimerTask {
 
                 } else if (e.getErrorCode() != 130) {
 
-                    BotLog.error("UserArchive ERROR",e);
+                    StaticLog.warn(e,"UserArchive ERROR");
 
                 }
             }

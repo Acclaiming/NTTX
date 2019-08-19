@@ -713,16 +713,16 @@ public class JoinCaptcha extends Fragment {
 
         List<String> validCode = new ArrayList<>();
 		List<String> invalidCode = new ArrayList<>();
-		
+
 		String a_question;
-		
+
 		List<String> custom_kw;
-		
+
 
         public CustomCode(boolean input,GroupData data) {
 
             super(input);
-			
+
             if (!input) {
 
                 for (GroupData.CustomItem item : data.custom_items) {
@@ -735,7 +735,7 @@ public class JoinCaptcha extends Fragment {
             }
 
 			this.custom_kw = data.custom_kw;
-			
+
 			this.i_question = data.custom_i_question;
 			this.a_question = data.custom_a_question;
 
@@ -850,7 +850,17 @@ public class JoinCaptcha extends Fragment {
 
         } else {
 
-            code = new CustomCode(data.require_input != null,data);
+			if (data.require_input != null && data.custom_kw == null) {
+
+				data.captcha_mode = null;
+
+				code = new BaseCode(data.require_input != null);
+
+			} else {
+
+				code = new CustomCode(data.require_input != null,data);
+
+			}
 
         }
 

@@ -18,6 +18,7 @@ import cn.hutool.core.util.ArrayUtil;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.NTT;
+import cn.hutool.log.StaticLog;
 
 public class StatusDeleteTask extends TimerTask {
 
@@ -54,7 +55,7 @@ public class StatusDeleteTask extends TimerTask {
 				
 			} catch (TwitterException e) {
 
-				BotLog.error("DELETE STATUS",e);
+				StaticLog.warn(e,"Delete Status Error");
 
 			}
 

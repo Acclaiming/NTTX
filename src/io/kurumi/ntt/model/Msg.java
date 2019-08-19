@@ -28,6 +28,7 @@ import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.NTT;
 import java.io.File;
+import cn.hutool.log.StaticLog;
 
 public class Msg extends Context {
 
@@ -371,7 +372,7 @@ public class Msg extends Context {
 
         if (userId.equals(fragment.origin.me.id())) {
 
-            BotLog.errorWithStack("错误 : 移除自己");
+            StaticLog.warn("错误 : 移除自己");
 
         } else {
 

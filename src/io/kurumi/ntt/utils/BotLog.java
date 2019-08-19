@@ -1,155 +1,205 @@
 package io.kurumi.ntt.utils;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.Console;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HtmlUtil;
-import cn.hutool.log.Log;
-import cn.hutool.log.dialect.console.ConsoleLog;
+import cn.hutool.log.AbstractLog;
 import cn.hutool.log.level.Level;
-import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.User;
-import com.pengrad.telegrambot.request.ExportChatInviteLink;
-import com.pengrad.telegrambot.response.SendResponse;
-import com.pengrad.telegrambot.response.StringResponse;
 import io.kurumi.ntt.Env;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.model.request.Send;
-
 import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.HashSet;
 
-public class BotLog extends ConsoleLog {
+public class BotLog extends AbstractLog {
 
-    public static Log log = new BotLog();
-    public static PrintStream out = System.out;
+	private static String logFormat = "[{level}] {name}: {msg}";
 
-    private static String logFormat = "[#{level}] : {msg}";
+	private static Level currentLevel = Level.DEBUG;
 
-    public BotLog() {
+	private String name;
 
-        super("NTTBot");
+	//------------------------------------------------------------------------- Constructor
 
-    }
+	/**
+	 * 构造
+	 * 
+	 * @param clazz 类
+	 */
+	public BotLog(Class<?> clazz) {
 
-    public static void log(Throwable t, String template, Object... values) {
+		this.name = (null == clazz) ? StrUtil.NULL : clazz.getSimpleName();
 
-        String str = StrUtil.format(template, values);
+	}
 
-        //new Send(Env.GROUP,str).noLog().exec();
+	/**
+	 * 构造
+	 * 
+	 * @param name 类名
+	 */
+	public BotLog(String name) {
 
-        out.println(str);
+		this.name = name;
 
-        if (null != t) {
+	}
 
-            out.println(parseError(t));
+	@Override
+	public String getName() {
 
-        }
+		return this.name;
 
-        out.flush();
+	}
 
-    }
+	public static void setLevel(Level customLevel) {
 
-    public static void debug(String message) {
+		Assert.notNull(customLevel);
+		currentLevel = customLevel;
 
-        log.debug(message);
+	}
 
-    }
+	//------------------------------------------------------------------------- Trace
+	@Override
+	public boolean isTraceEnabled() {
 
-    public static void info(String message) {
+		return isEnabled(Level.TRACE);
 
-        log.info(message);
+	}
 
-		new Send(Env.LOG_CHANNEL,"[INFO]{}", message).exec();
-		
-    }
+	@Override
+	public void trace(String fqcn,Throwable t,String format,Object... arguments) {
 
-    public static void info(String message, Throwable err) {
+		log(fqcn,Level.TRACE,t,format,arguments);
 
-        log.info(err, message);
+	}
 
-		new Send(Env.LOG_CHANNEL,"[WARN]{}", message,parseError(err)).exec();
-		
-    }
+	//------------------------------------------------------------------------- Debug
 
-    public static void infoWithStack(String message) {
+	@Override
+	public boolean isDebugEnabled() {
 
-        info(message,new Exception());
-		
-    }
+		return isEnabled(Level.DEBUG);
 
-    public static void warn(String message) {
+	}
 
-        log.warn(message);
+	@Override
+	public void debug(String fqcn,Throwable t,String format,Object... arguments) {
 
-		new Send(Env.LOG_CHANNEL,"[WARN]{}", message).exec();
-		
-        //   new Send(Env.DEVELOPER_ID,"WARN : " + message).exec();
+		log(fqcn,Level.DEBUG,t,format,arguments);
 
-    }
+	}
 
-    public static void warn(String message, Throwable err) {
+	//------------------------------------------------------------------------- Info
+	@Override
+	public boolean isInfoEnabled() {
 
-        log.warn(err, message);
+		return isEnabled(Level.INFO);
 
-		new Send(Env.LOG_CHANNEL,"[WARN]{}", message,parseError(err)).exec();
-		
-        //   sendToDeveloper(new Exception(message,err));
+	}
 
-    }
+	@Override
+	public void info(String fqcn,Throwable t,String format,Object... arguments) {
 
-    public static void warnWithStack(String message) {
+		log(fqcn,Level.INFO,t,format,arguments);
 
-        log.warn(new RuntimeException(), message);
+	}
 
-		new Send(Env.LOG_CHANNEL,"[WARN]{}", message).exec();
-		
-    }
+	//------------------------------------------------------------------------- Warn
+	@Override
+	public boolean isWarnEnabled() {
 
-    public static void error(String message) {
+		return isEnabled(Level.WARN);
 
-        log.error(message);
+	}
 
-        new Send(Env.LOG_CHANNEL, message).exec();
+	@Override
+	public void warn(String fqcn,Throwable t,String format,Object... arguments) {
 
-    }
+		log(fqcn,Level.WARN,t,format,arguments);
 
-    public static void error(String message, Throwable err) {
+	}
 
-        log.error(err, message);
+	//------------------------------------------------------------------------- Error
+	@Override
+	public boolean isErrorEnabled() {
 
-        new Send(Env.LOG_CHANNEL,"{}\n\n{}", message, parseError(err)).exec();
+		return isEnabled(Level.ERROR);
 
-    }
+	}
 
-    public static void errorWithStack(String message) {
+	@Override
+	public void error(String fqcn,Throwable t,String format,Object... arguments) {
 
-        error( message,new Exception());
+		log(fqcn,Level.ERROR,t,format,arguments);
 
-    }
+	}
 
-    public static String parseError(Throwable error) {
+	//------------------------------------------------------------------------- Log
+	@Override
+	public void log(String fqcn,Level level,Throwable t,String format,Object... arguments) {
+		// fqcn 无效
+		if (false == isEnabled(level)) {
+			return;
+		}
+
+		final Dict dict = Dict.create()
+			.set("date",DateUtil.now())
+			.set("level",level.toString())
+			.set("name",this.name)
+			.set("msg",StrUtil.format(format,arguments));
+
+		final String logMsg = StrUtil.format(logFormat,dict);
+
+		if (level.ordinal() >= Level.WARN.ordinal()) {
+
+			Console.error(t,logMsg);
+
+			if (Launcher.INSTANCE == null) {
+
+				if (Env.BOT_TOKEN == null) return;
+
+				// 强制 初始化
+
+				Launcher.INSTANCE = new Launcher() {
+
+					@Override
+					public String getToken() {
+
+						return Env.BOT_TOKEN;
+
+					}
+
+				};
+				
+				Launcher.INSTANCE.init();
+
+			}
+
+			new Send(Env.LOG_CHANNEL,logMsg).async();
+
+		} else {
+
+			Console.log(t,logMsg);
+
+		}
+
+	}
+
+	@Override
+	public boolean isEnabled(Level level) {
+
+		return currentLevel.compareTo(level) <= 0;
+
+	}
+	
+	public static String parseError(Throwable error) {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         error.printStackTrace(new PrintWriter(out, true));
 
         return StrUtil.utf8Str(out);
-
-    }
-
-    public static HashSet<Long> exportFailed = new HashSet<>();
-
-
-    public static String formatName(User u) {
-
-        if (u == null) return "匿名用户";
-
-        return UserData.get(u).userName();
 
     }
 

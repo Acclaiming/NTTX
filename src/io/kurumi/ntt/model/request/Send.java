@@ -20,6 +20,7 @@ import cn.hutool.http.HtmlUtil;
 import io.kurumi.ntt.fragment.BotFragment;
 import com.pengrad.telegrambot.model.Update;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.log.StaticLog;
 
 public class Send extends AbstractSend<Send> {
 
@@ -332,6 +333,7 @@ public class Send extends AbstractSend<Send> {
     @Override
     public SendResponse exec() {
 
+		if (fragment == null) return null;
         if (request.getText() == null) return null;
 
         char[] arr = request.getText().toCharArray();
@@ -424,7 +426,7 @@ public class Send extends AbstractSend<Send> {
 
 				if (resp != null) {
 
-					BotLog.debug("发送出错 : " + request.toWebhookResponse() + "\n" + resp.errorCode() + " : " + resp.description());
+					StaticLog.debug("发送出错 : \n\n{}\n\n{} {}",request.getText(),resp.errorCode(),resp.description());
 
 				}
 

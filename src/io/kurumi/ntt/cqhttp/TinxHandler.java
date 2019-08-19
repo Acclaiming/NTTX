@@ -1,5 +1,6 @@
 package io.kurumi.ntt.cqhttp;
 
+import io.kurumi.ntt.cqhttp.Processer;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -13,21 +14,6 @@ import io.netty.handler.codec.http.websocketx.WebSocketClientHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketHandshakeException;
 import io.netty.util.CharsetUtil;
-import io.kurumi.ntt.cqhttp.Processer;
-import io.kurumi.ntt.utils.BotLog;
-import io.kurumi.ntt.cqhttp.update.Update;
-import java.util.LinkedList;
-import io.kurumi.ntt.cqhttp.update.MessageUpdate;
-import io.kurumi.ntt.cqhttp.update.NoticeUpdate;
-import io.kurumi.ntt.cqhttp.update.GroupUploadNotice;
-import io.kurumi.ntt.cqhttp.update.GroupAdminNotice;
-import io.kurumi.ntt.cqhttp.update.GroupIncreaseNotice;
-import io.kurumi.ntt.cqhttp.update.GroupDecreaseNotice;
-import io.kurumi.ntt.cqhttp.update.FriendAddNotice;
-import io.kurumi.ntt.cqhttp.update.RequestUpdate;
-import io.kurumi.ntt.fragment.spam.GroupReport;
-import io.kurumi.ntt.cqhttp.update.GroupRequest;
-import io.kurumi.ntt.cqhttp.update.FriendRequest;
 
 public class TinxHandler extends SimpleChannelInboundHandler<Object> {
 
@@ -65,9 +51,6 @@ public class TinxHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-
-		BotLog.debug("cqhttp-api 已连接");
-
     }
 
     @Override
@@ -78,15 +61,14 @@ public class TinxHandler extends SimpleChannelInboundHandler<Object> {
         if (!handshaker.isHandshakeComplete()) {
 
             try {
+				
                 handshaker.finishHandshake(ch,(FullHttpResponse) msg);
 
                // BotLog.debug("cqhttp-api 完成握手");
                 handshakeFuture.setSuccess();
 
             } catch (WebSocketHandshakeException e) {
-
-				BotLog.info("cqhttp-api 握手失败",e);
-
+				
                 handshakeFuture.setFailure(e);
             }
 
@@ -112,13 +94,8 @@ public class TinxHandler extends SimpleChannelInboundHandler<Object> {
 			Processer.processUpdate(bot,textFrame.text());
 
         } else if (frame instanceof PongWebSocketFrame) {
-
-            // BotLog.debug("cqhttp-api 收到心跳");
-
         } else if (frame instanceof CloseWebSocketFrame) {
-
-			BotLog.info("cqhttp-api 连接关闭");
-
+			
             ch.close();
 
         }

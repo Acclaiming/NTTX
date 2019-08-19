@@ -10,6 +10,7 @@ import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.utils.*;
+import cn.hutool.log.StaticLog;
 
 public class Edit extends AbstractSend<Edit> {
 
@@ -146,7 +147,7 @@ public class Edit extends AbstractSend<Edit> {
 
             if (resp != null && !resp.isOk()) {
 
-                BotLog.infoWithStack("消息发送失败 " + resp.errorCode() + " : " + resp.description());
+               StaticLog.warn("消息编辑失败 : {} {}",resp.errorCode(),resp.description());
 
             }
 

@@ -114,8 +114,6 @@ public class Notice extends Fragment {
 
                     failed++;
 
-                    BotLog.info("NF : " + resp.description());
-
 					userData.contactable = false;
 
 					UserData.userDataIndex.remove(userData.id);

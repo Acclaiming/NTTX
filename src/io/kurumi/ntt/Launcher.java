@@ -100,60 +100,37 @@ import java.util.TimeZone;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
+import io.kurumi.ntt.utils.BotLogFactory;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
     public static Launcher INSTANCE;
 
-	public static OkHttpClient.Builder OKHTTP = new OkHttpClient.Builder();
+	// public static OkHttpClient.Builder OKHTTP = new OkHttpClient.Builder();
 	public static Gson GSON = new Gson();
 
 	public static TinxBot TINX;
+
+	public static Log log = LogFactory.get(Launcher.class);
 
     public static void main(String[] args) {
 
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 
-		LogFactory.setCurrentLogFactory(new ConsoleLogFactory() {
+		LogFactory.setCurrentLogFactory(new BotLogFactory());
 
-				@Override
-				public Log createLog(Class<?> clazz) {
-
-					if (clazz.equals(GlobalCookieManager.class)) {
-
-						return new ConsoleLog(clazz) {
-							
-							@Override public boolean isDebugEnabled() {
-								
-								return false;
-								
-							}
-							
-							@Override public void debug(String fqcn,Throwable t,String format,Object... arguments) {
-							}
-							
-						};
-
-					}
-
-					return super.createLog(clazz);
-
-				}
-
-			});
-			
 		long startAt = System.currentTimeMillis();
 
-		StaticLog.info("NTT 主程序正在启动 (๑•̀ㅂ•́)√");
-		
+		log.debug("NTT 主程序正在启动 (๑•̀ㅂ•́)√");
+
         try {
 
             Env.init();
 
         } catch (Exception e) {
 
-			StaticLog.error("配置文件格式错误",e);
-            
+			log.error("配置文件格式错误",e);
+
             return;
 
         }
@@ -172,11 +149,9 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
             BotDB.init(Env.DB_ADDRESS,Env.DB_PORT);
 
-			StaticLog.info("MongoDB 数据库 已连接");
-			
         } catch (Exception e) {
 
-            StaticLog.error("MongoDB 连接失败",e);
+            log.error("MongoDB 连接失败",e);
 
             return;
 
@@ -186,12 +161,10 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
             BotServer.INSTANCE.start();
 
-			StaticLog.info("本地HTTP服务器 已启动");
-			
         } catch (Exception e) {
 
-            StaticLog.error("本地HTTP服务器 启动失败",e);
-			
+            log.error("本地HTTP服务器 启动失败",e);
+
             return;
 
         }
@@ -212,7 +185,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 			}
 
 		};
-		
+
 		StaticLog.info("正在启动本体 _(:з」∠)_");
 
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
@@ -230,8 +203,6 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         INSTANCE.start();
 
-		StaticLog.info("启动所有旧式分体");
-		
 		for (final String aliasToken : Env.ALIAS) {
 
 			new Launcher() {
@@ -246,12 +217,12 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 			}.start();
 
 		}
-		
-		StaticLog.info("挂载机器人托管");
-		
+
+		log.debug("正在挂载机器人托管");
+
 		UserBot.startAll();
-		
-		StaticLog.info("启动完成 用时 {}s _(:з」∠)_",(System.currentTimeMillis() - startAt) / 1000);
+
+		log.debug("启动完成 用时 {}s _(:з」∠)_",(System.currentTimeMillis() - startAt) / 1000);
 
     }
 
@@ -260,17 +231,17 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		try {
 
 			TINX.start();
-			
+
 		} catch (Exception e) {
 
-			StaticLog.warn(e,"CqHttp WebSocket 连接失败 正在等待重试");
+			log.debug(e,"CqHttp WebSocket 连接失败 正在等待重试");
 
 			mainTimer.schedule(new TimerTask() {
 
 					@Override
 					public void run() {
-						
-						StaticLog.info("正在重新连接 CqHttp WebSocket");
+
+						StaticLog.debug("正在重新连接 CqHttp WebSocket");
 
 						tryTinxConnect();
 
@@ -355,19 +326,19 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
     UserTrackTask userTrackTask = new UserTrackTask();
 
     void startTasks() {
-		
+
         TimedStatus.start();
 
         TimelineMain.start();
 
         TrackTask.start();
-	
+
 		StatusDeleteTask.start();
 
 		MargedNoticeTask.start();
-        
+
         FeedFetchTask.start();
-	
+
         Backup.start();
 
         userTrackTask.start();
@@ -615,7 +586,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
     @Override
     public void uncaughtException(Thread thread,Throwable throwable) {
 
-        BotLog.error("NTT出错",throwable);
+		StaticLog.error(throwable,"出错 (全局)");
 
         System.exit(1);
 

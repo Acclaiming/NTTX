@@ -46,6 +46,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import okhttp3.OkHttpClient;
 import cn.hutool.log.StaticLog;
+import cn.hutool.core.lang.caller.CallerUtil;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener, ExceptionHandler {
 
@@ -253,9 +254,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             } catch (Exception e) {
 
-                BotLog.error("更新出错",e);
-
-                Launcher.INSTANCE.uncaughtException(Thread.currentThread(),e);
+                StaticLog.get(getClass()).error(e,"出错");
 
             }
 
@@ -965,10 +964,10 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
         return true;
 
     }
-
-    public void start() throws Exception {
-
-        reload();
+	
+	public void init() {
+		
+		reload();
 
         token = getToken();
 
@@ -976,9 +975,14 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
         okhttpClient.networkInterceptors().clear();
 
-        bot = new TelegramBot.Builder(token)
-			.okHttpClient(okhttpClient.build()).build();
+        bot = new TelegramBot.Builder(token).okHttpClient(okhttpClient.build()).build();
+		
+	}
 
+    public void start() throws Exception {
+
+		init();
+        
         me = bot.execute(new GetMe()).user();
 
         realStart();
@@ -1014,9 +1018,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 			BaseResponse resp = bot.execute(new SetWebhook().url(url));
 
 			if (!resp.isOk()) {
-
-				BotLog.debug("SET WebHook for " + botName() + " Failed : " + resp.description());
-
+				
 				BotServer.fragments.remove(token);
 
 			}
@@ -1054,8 +1056,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
     @Override
     public void onException(TelegramException e) {
 
-        BotLog.debug(UserData.get(me).userName() + " : " + BotLog.parseError(e));
-
+        StaticLog.warn(e.getMessage());
+		
     }
 
 

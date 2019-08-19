@@ -1,5 +1,9 @@
 package io.kurumi.ntt.fragment.twitter.status;
 
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.log.StaticLog;
+import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.EditMessageCaption;
 import com.pengrad.telegrambot.response.BaseResponse;
@@ -13,14 +17,10 @@ import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonLine;
 import io.kurumi.ntt.model.request.ButtonMarkup;
-import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.NTT;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.NumberUtil;
 
 public class StatusAction extends Fragment {
 
@@ -117,7 +117,7 @@ public class StatusAction extends Fragment {
 
 				}});
 
-        msg.send("当前操作账号已设为 : {} \n当多用户时，可用此命令设置默认账号。",account.archive().urlHtml()).html().exec();
+        msg.send("当前操作账号已设为 : {}\n当多用户时，可用此命令设置默认账号。",account.archive().urlHtml()).html().exec();
 
     }
 
@@ -203,7 +203,7 @@ public class StatusAction extends Fragment {
 			auth = TAuth.getByUser(user.id).first();
 
 		}
-		
+
 		if (auth == null) {
 
 			callback.alert("你还没有认证账号...");
@@ -338,7 +338,7 @@ public class StatusAction extends Fragment {
 
 				if (!resp.isOk()) {
 
-					BotLog.debug("显示全文失败 :" + resp.errorCode() + " " + resp.description());
+					StaticLog.warn("显示全文失败 : {} {}",resp.errorCode(),resp.description());
 
 				}
 

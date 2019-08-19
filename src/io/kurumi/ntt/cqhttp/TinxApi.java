@@ -15,6 +15,7 @@ import io.kurumi.ntt.cqhttp.response.GetLoginInfoResponse;
 import io.kurumi.ntt.cqhttp.response.GetStrangerInfoResponse;
 import io.kurumi.ntt.cqhttp.response.SendMessageResponse;
 import io.kurumi.ntt.utils.BotLog;
+import cn.hutool.log.StaticLog;
 
 public class TinxApi {
 
@@ -390,7 +391,7 @@ public class TinxApi {
 		
 		if (!Launcher.TINX.send(query.toString())) {
 			
-			BotLog.debug("连接已关闭, 向 HTTP API 发送异步操作.");
+			StaticLog.warn("连接已关闭, 向 HTTP API 发送异步操作.");
 			
 			send(method,body,null);
 			
