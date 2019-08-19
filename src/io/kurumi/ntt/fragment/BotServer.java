@@ -108,7 +108,7 @@ public class BotServer {
 
         } else {
 
-            server = boot.bind(new InetSocketAddress("0.0.0.0", 11222)).sync().channel();
+            server = boot.bind(new InetSocketAddress("127.0.0.1", port)).sync().channel();
 
         }
 
