@@ -358,6 +358,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
             final PointData privatePoint = point().getPrivate(user.id);
             final PointData groupPoint = point().getGroup(user.id);
 
+			StaticLog.debug("{} : {}",user.name(),msg.text());
+			
             if (msg.isGroup() && groupPoint != null) {
 
                 final Fragment function = points.containsKey(groupPoint.point) ? points.get(groupPoint.point) : this;
