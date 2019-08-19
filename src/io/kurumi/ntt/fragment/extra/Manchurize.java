@@ -37,7 +37,7 @@ public class Manchurize extends Fragment {
 
 		if (StrUtil.isBlank(msg.param())) {
 			
-			msg.send("请输入将要翻译的内容.").async();
+			msg.invalidParams("内容...").async();
 			
 			return;
 			

@@ -1,9 +1,11 @@
 package io.kurumi.ntt.fragment.twitter.ext;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.fragment.twitter.TApi;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.model.Msg;
@@ -19,9 +21,6 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserMentionEntity;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HtmlUtil;
-import io.kurumi.ntt.fragment.twitter.TApi;
 
 public class TLScanner extends Fragment {
 
