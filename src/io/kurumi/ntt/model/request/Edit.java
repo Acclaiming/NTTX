@@ -112,7 +112,7 @@ public class Edit extends AbstractSend<Edit> {
 
     public void async() {
 
-        if (origin == null || origin.update == null || origin.update.lock.used.get()) {
+        if (origin == null || origin.update == null || origin.update.lock == null || origin.update.lock.used.get()) {
 
             BotFragment.asyncPool.execute(new Runnable() {
 

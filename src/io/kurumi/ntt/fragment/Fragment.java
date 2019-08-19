@@ -94,7 +94,7 @@ public class Fragment {
 
     public void executeAsync(Update update,final BaseRequest request) {
 
-        if (update != null && !update.lock.used.get()) {
+        if (update != null && update.lock != null && !update.lock.used.get()) {
 
             update.lock.send(request);
 
