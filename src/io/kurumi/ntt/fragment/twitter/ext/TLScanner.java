@@ -102,7 +102,7 @@ public class TLScanner extends Fragment {
 
 				for (Status status : tl) {
 
-					if (count == 5) break;
+					if (count == 9) break;
 
 					if (status.isRetweet()) {
 
