@@ -15,7 +15,7 @@ public class GroupActions extends Fragment {
 		
 		super.init(origin);
 		
-		registerFunction("d","r","k","b");
+		registerFunction("d","warn","rest","kick","ban");
 		
 	}
 
@@ -54,11 +54,11 @@ public class GroupActions extends Fragment {
 			
 		}
 		
-		msg.delete();
-		
 		long targetId = -1;
 		
 		if (msg.replyTo() != null) {
+			
+			msg.delete();
 			
 			msg.replyTo().delete();
 			
@@ -68,7 +68,7 @@ public class GroupActions extends Fragment {
 			
 			for (MessageEntity entry : msg.message().entities()) {
 				
-				if (entry.type() == MessageEntity.Type.mention) {
+				if (entry.type() == MessageEntity.Type.mention ||  entry.type() == MessageEntity.Type.text_mention) {
 					
 					targetId = UserData.get(entry.user()).id;
 					
@@ -85,6 +85,8 @@ public class GroupActions extends Fragment {
 			}
 			
 		}
+		
+		msg.delete();
 		
 		if ("r".equals(function)) {
 			
