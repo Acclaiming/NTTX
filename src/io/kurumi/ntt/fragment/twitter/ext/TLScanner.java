@@ -95,10 +95,14 @@ public class TLScanner extends Fragment {
 
 			try {
 
-				ResponseList<Status> tl = api.getUserTimeline(userId,new Paging().count(10));
+				ResponseList<Status> tl = api.getUserTimeline(userId,new Paging().count(200));
 
+				int count = 0;
+				
 				for (Status status : tl) {
-
+					
+					if (count == 5) break;
+					
 					if (status.isRetweet()) {
 
 						target.add(status.getRetweetedStatus().getUser().getId());
@@ -108,7 +112,8 @@ public class TLScanner extends Fragment {
 						target.add(status.getInReplyToUserId());
 						
 					}
-
+					
+					count ++;
 				}
 
 			} catch (TwitterException e) {
