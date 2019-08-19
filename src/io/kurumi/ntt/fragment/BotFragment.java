@@ -297,7 +297,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 				if (!point().containsGroup(update.message().from().id())) {
 
-					update.lock.send(null);
+					// update.lock.send(null);
 
 				}
 
