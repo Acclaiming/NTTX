@@ -115,16 +115,7 @@ public class Edit extends AbstractSend<Edit> {
 
         if (origin == null || origin.update == null || origin.update.lock == null || origin.update.lock.used.get()) {
 
-            BotFragment.asyncPool.execute(new Runnable() {
-
-                @Override
-                public void run() {
-
-                    fragment.execute(request);
-
-                }
-
-            });
+            fragment.execute(request);
 
         } else {
 
