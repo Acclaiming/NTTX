@@ -65,6 +65,20 @@ public class TLScanner extends Fragment {
 
 			}
 
+			long maxId = tl.get(tl.size() - 1).getId() - 1;
+
+			tl = api.getHomeTimeline(new Paging().count(200).maxId(maxId));
+
+			for (Status status : tl) {
+
+				ids.add(status.getUser().getId());
+
+				if (status.isRetweet()) ids.add(status.getRetweetedStatus().getUser().getId());
+
+				else for (UserMentionEntity m : status.getUserMentionEntities()) ids.add(m.getId());
+
+			}
+
 		} catch (TwitterException e) {
 
 			stat.edit(NTT.parseTwitterException(e)).async();
@@ -89,7 +103,7 @@ public class TLScanner extends Fragment {
 		String locked = "";
 
 		int len = (1500 - ids.size()) / ids.size();
-		
+
 		for (int index = 0;iter.hasNext();index ++) {
 
 			Long userId = iter.next();
@@ -105,7 +119,7 @@ public class TLScanner extends Fragment {
 				for (Status status : tl) {
 
 					count ++;
-					
+
 					if (count > len) break;
 
 					if (status.isRetweet()) {
@@ -159,7 +173,7 @@ public class TLScanner extends Fragment {
 			locked = "\n这些用户锁推了，所以这个结果可能不准确 :\n" + locked + "\n";
 
 		} else {
-			
+
 			locked = "\n时间线上下文没有未关注的锁推用户。";
 
 		}
@@ -175,54 +189,54 @@ public class TLScanner extends Fragment {
 			blockedBy = "没有被时间线上下文的任何人屏蔽。";
 
 		}
-		
+
 		String mute = "";
 		String block = "";
 
 		LinkedList<Long> blocks;
 		LinkedList<Long> mutes;
-		
+
 		try {
 
 			blocks = TApi.getAllBlockIDs(api);
 			mutes = TApi.getAllMuteIDs(api);
-			
+
 			mutes.removeAll(blocks);
-			
+
 			mutes.retainAll(target);
 			blocks.retainAll(target);
-			
+
 		} catch (TwitterException e) {
-			
+
 			msg.send(NTT.parseTwitterException(e)).async();
-			
+
 			return;
-			
+
 		}
-		
+
 		if (mutes.isEmpty()) {
-			
+
 			mute = "没有静音时间线上下文任何人";
-			
+
 		} else {
-			
+
 			for (Long mutedId : mutes) {
-				
+
 				value -= 4;
-				
+
 				UserArchive muted = UserArchive.show(api,mutedId);
-				
+
 				if (muted == null) continue;
-				
+
 				mute += "\n" + muted.bName();
-				
-				
+
+
 			}
-			
+
 			mute = "\n你静音了时间线上下文的这些人 :\n" + mute;
-			
+
 		}
-		
+
 		if (blocks.isEmpty()) {
 
 			block = "没有屏蔽时间线上下文的任何人";
@@ -245,8 +259,8 @@ public class TLScanner extends Fragment {
 			block = "\n屏蔽了时间线上下文的这些人 :\n" + block;
 
 		}
-		
-		
+
+
 		float max = target.size();
 
 		int fr = 0;
