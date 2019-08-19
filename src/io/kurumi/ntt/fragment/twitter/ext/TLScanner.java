@@ -21,6 +21,7 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserMentionEntity;
+import twitter4j.User;
 
 public class TLScanner extends Fragment {
 
@@ -43,11 +44,11 @@ public class TLScanner extends Fragment {
 
 	@Override
 	public int checkTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
-		
+
 		return PROCESS_ASYNC;
-		
+
 	}
-	
+
 	@Override
 	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
@@ -107,6 +108,7 @@ public class TLScanner extends Fragment {
 
 		String blockedBy = "";
 		String locked = "";
+		String unavilable = "";
 
 		int len = (1500 - ids.size()) / ids.size();
 
@@ -150,9 +152,34 @@ public class TLScanner extends Fragment {
 
 				} else if (e.getStatusCode() == 401 && e.getErrorCode() == -1) {
 
-					UserArchive bb = UserArchive.show(api,userId);
+					UserArchive bb;
 
-					locked += "\n" + Html.b(bb.name) + " " + Html.a("@" + bb.screenName,bb.url());
+					try {
+
+						User t = api.showUser(userId);
+
+						bb = UserArchive.save(t);
+
+						locked += "\n" + Html.b(bb.name) + " " + Html.a("@" + bb.screenName,bb.url());
+
+					} catch (TwitterException ex) {
+
+						bb = UserArchive.get(userId);
+
+						if (bb == null) {
+
+							unavilable += "\n[ " + NTT.parseTwitterException(ex) + " ] 本地无存档用户 ( " + userId + " )";
+
+						} else {
+
+							unavilable += "\n[ " + NTT.parseTwitterException(ex) + " ] " + Html.b(bb.name) + " " + Html.a("@" + bb.screenName,bb.url());
+
+						}
+
+						continue;
+
+					}
+
 
 				} else {
 
@@ -181,6 +208,18 @@ public class TLScanner extends Fragment {
 		} else {
 
 			locked = "\n时间线上下文没有未关注的锁推用户。";
+
+		}
+		
+		if (!StrUtil.isEmpty(unavilable)) {
+
+			value -= unavilable.split("\n").length * 2;
+
+			unavilable = "\n这些用户不见了，所以结果可能不准确 :\n" + unavilable + "\n";
+
+		} else {
+
+			unavilable = "\n时间线上下文没有不见的用户。";
 
 		}
 
@@ -343,7 +382,7 @@ public class TLScanner extends Fragment {
 
 		Float result = ((value / (max * 2)) * 100);
 
-		stat.edit(Html.b("你的结果是 : " + result + "%\n"),status,locked,blockedBy,mute,block).html().async();
+		stat.edit(Html.b("你的结果是 : " + result + "%\n"),status,locked,unavilable,blockedBy,mute,block).html().async();
 
 	}
 
