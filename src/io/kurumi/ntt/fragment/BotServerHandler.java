@@ -39,6 +39,8 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
     public void channelRead0(ChannelHandlerContext ctx,FullHttpRequest request) throws Exception {
 
         this.request = request;
+		
+		StaticLog.debug("收到HTTP请求 : {}",request.uri());
 
         if (new File("/etc/ntt/safe").isFile()) {
 
