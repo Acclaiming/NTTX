@@ -29,6 +29,7 @@ import javax.activation.MimetypesFileTypeMap;
 import static io.netty.handler.codec.http.HttpMethod.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.*;
 import static io.netty.handler.codec.http.HttpVersion.*;
+import cn.hutool.log.StaticLog;
 
 public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
@@ -207,6 +208,8 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         if (!BotServer.fragments.containsKey(botToken)) {
 
+			StaticLog.warn("未预期的消息 : {}",request.content().toString());
+			
             sendError(ctx,INTERNAL_SERVER_ERROR);
 
             return;
@@ -221,6 +224,8 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
             Update update = BotUtils.parseUpdate(request.content().toString(CharsetUtil.CHARSET_UTF_8));
 
+			StaticLog.debug("收到消息 : {}",new JSONObject(update.json).toStringPretty());
+			
             update.lock = lock;
 
 			// long start = System.currentTimeMillis();
