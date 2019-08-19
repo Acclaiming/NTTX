@@ -44,7 +44,6 @@ public class TimelineMain extends Fragment {
 
     final String POINT_SETTING_MENTION = "twi_mention";
 	final String POINT_SETTING_MDB = "twi_mdb";
-	final String POINT_SETTING_ANU = "twi_anu";
 	
     @Override
     public void init(BotFragment origin) {
@@ -67,8 +66,7 @@ public class TimelineMain extends Fragment {
 
 			POINT_SETTING_MENTION,
 
-			POINT_SETTING_MDB,
-			POINT_SETTING_ANU);
+			POINT_SETTING_MDB);
 
     }
 
@@ -135,10 +133,6 @@ public class TimelineMain extends Fragment {
 				.newButton("下载机器人")
 				.newButton(account.mdb != null ? "✅" : "☑",POINT_SETTING_MDB,account.id);
 
-			config.newButtonLine()
-				.newButton("名称更新")
-				.newButton(account.anu != null ? "✅" : "☑",POINT_SETTING_ANU,account.id);
-			
 		}
 
 		config.newButtonLine("🔙",AccountMain.POINT_ACCOUNT,account.id);
@@ -229,20 +223,6 @@ public class TimelineMain extends Fragment {
 
 			}
 			
-			tlMain(user,callback,account);
-			
-		} else if (POINT_SETTING_ANU.equals(point)) {
-
-			if (account.anu == null) {
-
-				account.anu = true;
-
-			} else {
-
-				account.anu = null;
-
-			}
-
 			tlMain(user,callback,account);
 
 		} else if (POINT_TL_DN.equals(point)) {

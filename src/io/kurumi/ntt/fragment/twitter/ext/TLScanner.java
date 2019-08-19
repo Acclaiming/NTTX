@@ -233,7 +233,7 @@ public class TLScanner extends Fragment {
 
 			}
 
-			mute = "\n你静音了时间线上下文的这些人 :\n" + mute;
+			mute = "\n你静音了时间线上下文的这些人 :\n" + mute + "\n";
 
 		}
 
