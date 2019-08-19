@@ -709,17 +709,20 @@ public class JoinCaptcha extends Fragment {
 
     static class CustomCode extends VerifyCode {
 
-        private GroupData data;
+		String i_question;
 
         List<String> validCode = new ArrayList<>();
-        List<String> invalidCode = new ArrayList<>();
+		List<String> invalidCode = new ArrayList<>();
+		
+		String a_question;
+		
+		List<String> custom_kw;
+		
 
         public CustomCode(boolean input,GroupData data) {
 
             super(input);
-
-            this.data = data;
-
+			
             if (!input) {
 
                 for (GroupData.CustomItem item : data.custom_items) {
@@ -731,12 +734,17 @@ public class JoinCaptcha extends Fragment {
 
             }
 
+			this.custom_kw = data.custom_kw;
+			
+			this.i_question = data.custom_i_question;
+			this.a_question = data.custom_a_question;
+
         }
 
         @Override
         public String question() {
 
-            return input ? data.custom_a_question : data.custom_i_question;
+            return input ? a_question : i_question;
 
         }
 
@@ -788,7 +796,9 @@ public class JoinCaptcha extends Fragment {
 
             if (input) {
 
-                for (String kw : data.custom_kw) {
+				if (custom_kw == null) return true;
+
+                for (String kw : custom_kw) {
 
                     if (text.contains(kw)) return true;
 
@@ -897,7 +907,7 @@ public class JoinCaptcha extends Fragment {
         if (msg.message().newChatMembers() != null) auth.serviceMsg = msg;
 
 		clearGroupPoint(user);
-		
+
         if (data.with_image == null) {
 
             if (auth.input) {
@@ -1166,7 +1176,7 @@ public class JoinCaptcha extends Fragment {
 			} else if (user.id.equals(target)) {
 
 				failed(user,callback,auth,gd,"点击按钮");
-				
+
             }
 
         } else if (POINT_ANSWER.equals(point)) {
