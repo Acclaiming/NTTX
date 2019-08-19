@@ -586,7 +586,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
     @Override
     public void uncaughtException(Thread thread,Throwable throwable) {
 
-		log.error(throwable,"出错 (全局)");
+		log.error("出错 (全局)\n\n{}",BotLog.parseError(throwable));
 
         System.exit(1);
 
