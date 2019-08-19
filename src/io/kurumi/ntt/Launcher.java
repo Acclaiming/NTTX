@@ -101,6 +101,7 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.OkHttpClient;
 import io.kurumi.ntt.utils.BotLogFactory;
+import io.kurumi.ntt.fragment.group.GroupActions;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -374,7 +375,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         // GROUP
 
-		addFragment(new GroupAdmin());
+		addFragment(new GroupActions());
         addFragment(new GroupAdmin());
         addFragment(new GroupOptions());
         addFragment(new BanSetickerSet());
