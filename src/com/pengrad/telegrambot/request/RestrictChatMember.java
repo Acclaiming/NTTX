@@ -9,12 +9,12 @@ import com.pengrad.telegrambot.response.BaseResponse;
  */
 public class RestrictChatMember extends BaseRequest<RestrictChatMember, BaseResponse> {
 
-    public RestrictChatMember(Object chatId, int userId) {
+    public RestrictChatMember(Object chatId, Long userId) {
         super(BaseResponse.class);
         add("chat_id", chatId).add("user_id", userId);
     }
 
-    public RestrictChatMember(Object chatId, int userId, ChatPermissions permissions) {
+    public RestrictChatMember(Object chatId, Long userId, ChatPermissions permissions) {
         super(BaseResponse.class);
         add("chat_id", chatId).add("user_id", userId).add("permissions", serialize(permissions));
     }

@@ -189,7 +189,7 @@ public class BotChannnel extends Fragment {
                 return;
             }
 
-            RestrictChatMember send = new RestrictChatMember(NumberUtil.parseLong(params[0]), NumberUtil.parseInt(params[1]));
+            RestrictChatMember send = new RestrictChatMember(NumberUtil.parseLong(params[0]), NumberUtil.parseLong(params[1]));
 
             ExtraParam param = new ExtraParam(4, send);
 

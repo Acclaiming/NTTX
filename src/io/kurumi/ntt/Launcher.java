@@ -374,6 +374,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         // GROUP
 
+		addFragment(new GroupAdmin());
         addFragment(new GroupAdmin());
         addFragment(new GroupOptions());
         addFragment(new BanSetickerSet());

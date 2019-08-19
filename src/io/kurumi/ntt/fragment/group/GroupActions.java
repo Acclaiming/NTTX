@@ -1,11 +1,12 @@
 package io.kurumi.ntt.fragment.group;
 
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.Function;
-import io.kurumi.ntt.model.Msg;
+import com.pengrad.telegrambot.model.MessageEntity;
+import com.pengrad.telegrambot.request.RestrictChatMember;
+import io.kurumi.ntt.db.GroupData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.db.GroupData;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Msg;
 
 public class GroupActions extends Fragment {
 
@@ -49,14 +50,56 @@ public class GroupActions extends Fragment {
 			msg.delete();
 			msg.replyTo().delete();
 			
+			return;
+			
+		}
+		
+		msg.delete();
+		
+		long targetId = -1;
+		
+		if (msg.replyTo() != null) {
+			
+			msg.replyTo().delete();
+			
+			targetId = msg.replyTo().from().id;
+			
+		} else {
+			
+			for (MessageEntity entry : msg.message().entities()) {
+				
+				if (entry.type() == MessageEntity.Type.mention) {
+					
+					targetId = UserData.get(entry.user()).id;
+					
+				}
+				
+			}
+			
+			if (targetId == -1) {
+				
+				msg.invalidParams("用户引用 / 对消息回复").async();
+				
+				return;
+				
+			}
+			
+		}
+		
+		if ("r".equals(function)) {
+			
+			msg.restrict();
+			
+		} else if ("k".equals(function)) {
+			
+			msg.kick(targetId,false);
+			
+		} else {
+			
+			msg.kick(targetId,true);
+	
 		}
 		
 	}
-	
-	void doAction(UserData user,Msg msg,long target) {
-		
-		
-		
-	}
-	
+
 }

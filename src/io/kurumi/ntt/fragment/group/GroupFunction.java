@@ -444,11 +444,11 @@ public class GroupFunction extends Fragment {
 
 			if ("name".equals("发送烂俗消息")) {
 
-				execute(new RestrictChatMember(msg.chatId(),user.id.intValue()).canSendMessages(false).canSendMediaMessages(false).canSendOtherMessages(false).canAddWebPagePreviews(false));
+				execute(new RestrictChatMember(msg.chatId(),user.id).canSendMessages(false).canSendMediaMessages(false).canSendOtherMessages(false).canAddWebPagePreviews(false));
 
 			} else {
 
-				execute(new RestrictChatMember(msg.chatId(),user.id.intValue()).canSendMessages(true).canSendMediaMessages(false).canSendOtherMessages(false).canAddWebPagePreviews(false));
+				execute(new RestrictChatMember(msg.chatId(),user.id).canSendMessages(true).canSendMediaMessages(false).canSendOtherMessages(false).canAddWebPagePreviews(false));
 
 			}
 

@@ -35,17 +35,17 @@ public class Msg extends Context {
     public Update update;
 
     public static String[] NO_PARAMS = new String[0];
-    
+
 	private Msg replyTo;
     private int isCommand = 0;
     private boolean noPayload = false;
     private String payload[];
     private boolean noParams = false;
-	
+
     private Message message;
     private String name;
 	private String function;
-	
+
     private String[] params;
 	private String[] fixedParams;
 	private String param;
@@ -103,7 +103,7 @@ public class Msg extends Context {
 
     public Send invalidParams(String... params) {
 
-        return send("/" + command() + " <" + ArrayUtil.join(params,"> <") + ">");
+        return reply("/" + command() + " <" + ArrayUtil.join(params,"> <") + ">");
 
     }
 
@@ -179,14 +179,14 @@ public class Msg extends Context {
 
     }
 
- 
+
     public AbstractSend sendOrEdit(boolean edit,String msg) {
 
         if (edit) return edit(msg);
         else return send(msg);
 
     }
-	
+
 	public Send send(String msg) {
 
         Send send = new Send(fragment,chatId(),msg);
@@ -392,9 +392,16 @@ public class Msg extends Context {
 
     }
 
-    public void unrestrict() {
+	public void unrestrict() {
 
-        fragment.executeAsync(update,new RestrictChatMember(chatId(),from().id.intValue())
+		unrestrict(from().id);
+
+	}
+
+
+    public void unrestrict(Long userId) {
+
+        fragment.executeAsync(update,new RestrictChatMember(chatId(),userId)
 							  .canSendMessages(true)
 							  .canSendMediaMessages(true)
 							  .canSendOtherMessages(true)
@@ -402,9 +409,15 @@ public class Msg extends Context {
 							  );
     }
 
-    public void restrict() {
+	public void restrict() {
 
-        fragment.executeAsync(update,new RestrictChatMember(chatId(),from().id.intValue())
+		restrict(from().id);
+
+	}
+
+    public void restrict(Long userId) {
+
+        fragment.executeAsync(update,new RestrictChatMember(chatId(),userId)
 							  .canSendMessages(false)
 							  .canSendMediaMessages(false)
 							  .canSendOtherMessages(false)
@@ -413,9 +426,9 @@ public class Msg extends Context {
 
     }
 
-    public void restrict(long until) {
+    public void restrict(Long userId,long until) {
 
-        fragment.executeAsync(update,new RestrictChatMember(chatId(),from().id.intValue())
+        fragment.executeAsync(update,new RestrictChatMember(chatId(),from().id)
 							  .canSendMessages(false)
 							  .canSendMediaMessages(false)
 							  .canSendOtherMessages(false)
@@ -442,9 +455,9 @@ public class Msg extends Context {
     public File photo() {
 
 		PhotoSize[] sizes = message.photo();
-		
+
 		if (sizes == null) return null;
-		
+
         File local = new File(Env.CACHE_DIR,"files/" + sizes[sizes.length - 1].fileId());
 
         if (local.isFile()) return local;
@@ -575,17 +588,17 @@ public class Msg extends Context {
         return payload;
 
     }
-	
+
 	public String param() {
-		
+
 		if (param != null) return param;
-		
+
 		if (noParams) {
 
             return null;
 
         }
-		
+
 		if (!isCommand()) {
 
             noParams = true;
@@ -593,7 +606,7 @@ public class Msg extends Context {
             return null;
 
         }
-		
+
 		String body = StrUtil.subAfter(text(),"/",false);
 
         if (body.contains(" ")) {
@@ -611,11 +624,11 @@ public class Msg extends Context {
             params = NO_PARAMS;
 
         }
-		
+
 		return param;
-		
+
 	}
-	
+
 	public String[] fixedParams() {
 
 		if (fixedParams != null) return fixedParams;
@@ -655,7 +668,7 @@ public class Msg extends Context {
 		return fixedParams;
 
 	}
-	
+
 
     public String[] params() {
 
