@@ -15,7 +15,7 @@ public class GroupActions extends Fragment {
 		
 		super.init(origin);
 		
-		registerFunction("d","warn","rest","kick","ban");
+		registerFunction("d","rest","kick","ban");
 		
 	}
 
