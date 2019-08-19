@@ -240,7 +240,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         } catch (Exception ex) {
 
-			StaticLog.error(ex,"出错");
+			StaticLog.error("出错\n\n{}",BotLog.parseError(ex));
 
             webhookResponse = null;
 
