@@ -15,6 +15,8 @@ import java.util.HashMap;
 import com.pengrad.telegrambot.model.ChatMember;
 import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.fragment.BotFragment;
+import cn.hutool.core.util.ArrayUtil;
+import io.kurumi.ntt.Env;
 
 public class GroupAdmin extends Fragment {
 
@@ -28,6 +30,8 @@ public class GroupAdmin extends Fragment {
 
     public static boolean fastAdminCheck(Fragment fragment, GroupData data, long userId, boolean full) {
 
+		if (ArrayUtil.contains(Env.ADMINS,userId)) return true;
+		
         updateGroupAdmins(fragment, data);
 
         if (full) {
