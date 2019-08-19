@@ -211,7 +211,7 @@ public class TLScanner extends Fragment {
 				
 				if (muted == null) continue;
 				
-				mute += "\n" + muted.formatSimple();
+				mute += "\n" + muted.bName();
 				
 				
 			}
@@ -234,7 +234,7 @@ public class TLScanner extends Fragment {
 
 				if (blocked == null) continue;
 
-				mute += "\n" + blocked.formatSimple();
+				block += "\n" + blocked.bName();
 
 
 			}
