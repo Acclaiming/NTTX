@@ -827,8 +827,8 @@ public class RssSub extends Fragment {
             for (String url : conf.subscriptions) {
 
                 RssInfo rss = info.getById(url);
-
-                list.append("\n\n").append(Html.b(rss.title)).append(" : ").append(Html.code(url));
+				
+                list.append("\n\n").append(Html.b(rss == null ?url : rss.title)).append(" : ").append(Html.code(url));
 
             }
 
