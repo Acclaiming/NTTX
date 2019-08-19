@@ -676,6 +676,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                     onFinalMsg(user,msg);
 
+					update.lock.send(null);
+					
                 }
 
             }
