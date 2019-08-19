@@ -28,12 +28,10 @@ public class Manchurize extends Fragment {
 	
 		super.init(origin);
 
-		registerFunction("manchurize","demanchurize");
+		registerFunction("manchurize" /*,"demanchurize" */);
 		
 	}
-
-
-
+	
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
@@ -60,6 +58,8 @@ public class Manchurize extends Fragment {
 			}
 
 		} else {
+			
+			
 
 			if (!isManchuScript(msg.param())) {
 				
