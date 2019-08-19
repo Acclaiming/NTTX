@@ -21,6 +21,7 @@ import twitter4j.TwitterException;
 import twitter4j.UserMentionEntity;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HtmlUtil;
+import io.kurumi.ntt.fragment.twitter.TApi;
 
 public class TLScanner extends Fragment {
 
@@ -98,21 +99,21 @@ public class TLScanner extends Fragment {
 				ResponseList<Status> tl = api.getUserTimeline(userId,new Paging().count(200));
 
 				int count = 0;
-				
+
 				for (Status status : tl) {
-					
+
 					if (count == 5) break;
-					
+
 					if (status.isRetweet()) {
 
 						target.add(status.getRetweetedStatus().getUser().getId());
 
 					} else if (status.getInReplyToStatusId() != -1) {
-						
+
 						target.add(status.getInReplyToUserId());
-						
+
 					}
-					
+
 					count ++;
 				}
 
@@ -150,28 +151,99 @@ public class TLScanner extends Fragment {
 
 		if (!StrUtil.isEmpty(locked)) {
 
-			value -= locked.split("\n").length * 2;
+			value -= locked.split("\n").length * 4;
 
 			locked = "\n这些用户锁推了，所以这个结果可能不准确 :\n" + locked + "\n";
 
 		} else {
-
-			locked = "\n圈子里没有未关注的锁推用户。";
+			
+			locked = "\n时间线上下文没有未关注的锁推用户。";
 
 		}
-		
+
 		if (!StrUtil.isEmpty(blockedBy)) {
 
-			value -= blockedBy.split("\n").length * 4;
+			value -= blockedBy.split("\n").length * 6;
 
-			blockedBy = "\n被这些人，所以这个结果可能不准确 :\n" + blockedBy;
+			blockedBy = "\n被这些人屏蔽，所以这个结果可能不准确 :\n" + blockedBy;
 
 		} else {
 
-			blockedBy = "没有被圈子里的任何人屏蔽。";
+			blockedBy = "没有被时间线上下文的任何人屏蔽。";
 
 		}
+		
+		String mute = "";
+		String block = "";
 
+		LinkedList<Long> blocks;
+		LinkedList<Long> mutes;
+		
+		try {
+
+			blocks = TApi.getAllBlockIDs(api);
+			mutes = TApi.getAllMuteIDs(api);
+			
+			mutes.removeAll(blocks);
+			
+			mutes.retainAll(target);
+			blocks.retainAll(target);
+			
+		} catch (TwitterException e) {
+			
+			msg.send(NTT.parseTwitterException(e)).async();
+			
+			return;
+			
+		}
+		
+		if (mutes.isEmpty()) {
+			
+			mute = "没有静音时间线上下文任何人";
+			
+		} else {
+			
+			for (Long mutedId : mutes) {
+				
+				value -= 4;
+				
+				UserArchive muted = UserArchive.show(api,mutedId);
+				
+				if (muted == null) continue;
+				
+				mute += "\n" + muted.formatSimple();
+				
+				
+			}
+			
+			mute = "\n你静音了时间线上下文的这些人 :\n" + mute;
+			
+		}
+		
+		if (blocks.isEmpty()) {
+
+			block = "没有屏蔽时间线上下文的任何人";
+
+		} else {
+
+			for (Long blockedId : blocks) {
+
+				value -= 6;
+
+				UserArchive blocked = UserArchive.show(api,blockedId);
+
+				if (blocked == null) continue;
+
+				mute += "\n" + blocked.formatSimple();
+
+
+			}
+
+			block = "\n屏蔽了时间线上下文的这些人 :\n" + block;
+
+		}
+		
+		
 		float max = target.size();
 
 		int fr = 0;
@@ -248,7 +320,7 @@ public class TLScanner extends Fragment {
 
 		Float result = ((value / (max * 2)) * 100);
 
-		stat.edit(Html.b("你的结果是 : " + result + "%\n"),status,locked,blockedBy).html().async();
+		stat.edit(Html.b("你的结果是 : " + result + "%\n"),status,locked,blockedBy,mute,block).html().async();
 
 	}
 
