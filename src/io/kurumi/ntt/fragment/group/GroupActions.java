@@ -40,9 +40,7 @@ public class GroupActions extends Fragment {
 		if ("d".equals(function)) {
 			
 			if (msg.replyTo() == null) {
-				
-				msg.reply("用法 : 对消息回复.").async();
-				
+	
 				return;
 				
 			}
@@ -68,7 +66,7 @@ public class GroupActions extends Fragment {
 			
 			for (MessageEntity entry : msg.message().entities()) {
 				
-				if (entry.type() == MessageEntity.Type.mention ||  entry.type() == MessageEntity.Type.text_mention) {
+				if (entry.type() == MessageEntity.Type.text_mention) {
 					
 					targetId = UserData.get(entry.user()).id;
 					
