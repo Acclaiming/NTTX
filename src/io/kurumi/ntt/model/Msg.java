@@ -75,6 +75,7 @@ public class Msg extends Context {
 
 		this.function = function;
 		this.params = params;
+		this.fixedParams = params;
 
 	}
 
