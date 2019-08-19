@@ -186,7 +186,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 		};
 
-		StaticLog.info("正在启动本体 _(:з」∠)_");
+		log.info("正在启动本体 _(:з」∠)_");
 
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
 
@@ -586,7 +586,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
     @Override
     public void uncaughtException(Thread thread,Throwable throwable) {
 
-		StaticLog.error(throwable,"出错 (全局)");
+		log.error(throwable,"出错 (全局)");
 
         System.exit(1);
 
