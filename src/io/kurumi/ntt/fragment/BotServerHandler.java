@@ -212,7 +212,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         if (!BotServer.fragments.containsKey(botToken)) {
 
-			StaticLog.warn("未预期的消息 : {}",request.content().toString());
+			StaticLog.debug("未预期的消息 : {}",request.content().toString(CharsetUtil.CHARSET_UTF_8));
 
 			FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,OK,Unpooled.copiedBuffer(new DeleteWebhook().toWebhookResponse(),CharsetUtil.CHARSET_UTF_8));
 
