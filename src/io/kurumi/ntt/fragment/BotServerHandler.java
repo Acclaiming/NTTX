@@ -228,13 +228,13 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 			// StaticLog.debug("收到消息 : {}",new JSONObject(update.json).toStringPretty());
 
-            // update.lock = lock;
+          update.lock = lock;
 
-			// long start = System.currentTimeMillis();
+		 long start = System.currentTimeMillis();
 
 			BotServer.fragments.get(botToken).processAsync(update);
 
-			webhookResponse = null;//lock.waitFor();
+			webhookResponse = lock.waitFor();
 
         } catch (Exception ex) {
 

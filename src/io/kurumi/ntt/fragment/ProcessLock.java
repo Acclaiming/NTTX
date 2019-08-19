@@ -23,7 +23,7 @@ public class ProcessLock<T> extends ReentrantLock {
 
 			if (obj != null) return obj;
 
-            condition.await(1000,TimeUnit.MILLISECONDS);
+            condition.await(666,TimeUnit.MILLISECONDS);
 
 			used.set(true);
 
