@@ -39,7 +39,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
     public void channelRead0(ChannelHandlerContext ctx,FullHttpRequest request) throws Exception {
 
         this.request = request;
-		
+
 		StaticLog.debug("收到HTTP请求 : {}",request.uri());
 
         if (new File("/etc/ntt/safe").isFile()) {
@@ -81,7 +81,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 				return;
 
 			}
-			
+
 			FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,OK,Unpooled.copiedBuffer(RpcApi.execute(json).toStringPretty(),CharsetUtil.CHARSET_UTF_8));
 
             resp.headers().set(HttpHeaderNames.CONTENT_TYPE,"application/json; charset=UTF-8");
@@ -99,11 +99,11 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                 ctx.writeAndFlush(resp);
 
             }
-			
+
 			return;
 
 		}
-		
+
         if (Launcher.INSTANCE != null && request.uri().equals("/data/" + Launcher.INSTANCE.getToken())) {
 
             File dataFile = new File(Env.CACHE_DIR,"data.zip");
@@ -211,7 +211,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
         if (!BotServer.fragments.containsKey(botToken)) {
 
 			StaticLog.warn("未预期的消息 : {}",request.content().toString());
-			
+
             sendError(ctx,INTERNAL_SERVER_ERROR);
 
             return;
@@ -227,7 +227,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
             Update update = BotUtils.parseUpdate(request.content().toString(CharsetUtil.CHARSET_UTF_8));
 
 			StaticLog.debug("收到消息 : {}",new JSONObject(update.json).toStringPretty());
-			
+
             update.lock = lock;
 
 			// long start = System.currentTimeMillis();
