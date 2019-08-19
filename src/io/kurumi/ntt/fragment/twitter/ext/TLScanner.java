@@ -88,7 +88,7 @@ public class TLScanner extends Fragment {
 		String blockedBy = "";
 		String locked = "";
 
-		int max = (1500 - ids.size()) / ids.size();
+		int len = (1500 - ids.size()) / ids.size();
 		
 		for (int index = 0;iter.hasNext();index ++) {
 
@@ -106,7 +106,7 @@ public class TLScanner extends Fragment {
 
 					count ++;
 					
-					if (count > max) break;
+					if (count > len) break;
 
 					if (status.isRetweet()) {
 
