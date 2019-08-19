@@ -30,6 +30,8 @@ import static io.netty.handler.codec.http.HttpMethod.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.*;
 import static io.netty.handler.codec.http.HttpVersion.*;
 import cn.hutool.log.StaticLog;
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.request.DeleteWebhook;
 
 public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
@@ -212,7 +214,11 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 			StaticLog.warn("未预期的消息 : {}",request.content().toString());
 
-            sendError(ctx,INTERNAL_SERVER_ERROR);
+			FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,OK,Unpooled.copiedBuffer(new DeleteWebhook().toWebhookResponse(),CharsetUtil.CHARSET_UTF_8));
+
+            resp.headers().set(HttpHeaderNames.CONTENT_TYPE,"application/json; charset=UTF-8");
+
+			ctx.writeAndFlush(resp).addListener(ChannelFutureListener.CLOSE);
 
             return;
 
@@ -228,9 +234,9 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 			// StaticLog.debug("收到消息 : {}",new JSONObject(update.json).toStringPretty());
 
-          update.lock = lock;
+			update.lock = lock;
 
-		 long start = System.currentTimeMillis();
+			long start = System.currentTimeMillis();
 
 			BotServer.fragments.get(botToken).processAsync(update);
 
@@ -246,7 +252,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         }
 
-       if (webhookResponse == null) {
+		if (webhookResponse == null) {
 
 			sendOk(ctx);
 
