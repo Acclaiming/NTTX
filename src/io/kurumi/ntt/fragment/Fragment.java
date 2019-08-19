@@ -134,7 +134,7 @@ public class Fragment {
 
 					} catch (Exception ex) {
 
-						StaticLog.get(getClass()).error(ex,"出错");
+						StaticLog.get(getClass()).error("出错 (异步) \n\n{}",BotLog.parseError(ex));
 
 					}
 
