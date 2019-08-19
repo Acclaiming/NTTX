@@ -304,14 +304,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 			}
 
 			user = UserData.get(update.message().from());
-			
-			if (user.admin()) {
-
-				final PointData groupPoint = point().getGroup(user.id);
-
-				StaticLog.debug("point {} : {}",user.id,groupPoint);
-
-			}
 
         } else if (update.editedMessage() != null) {
 
