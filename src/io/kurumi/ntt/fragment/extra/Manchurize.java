@@ -25,10 +25,11 @@ public class Manchurize extends Fragment {
 
 	@Override
 	public void init(BotFragment origin) {
-		// TODO: Implement this method
+	
 		super.init(origin);
 
 		registerFunction("manchurize","demanchurize");
+		
 	}
 
 
@@ -60,6 +61,14 @@ public class Manchurize extends Fragment {
 
 		} else {
 
+			if (!isManchuScript(msg.param())) {
+				
+				msg.send("没有满洲语字符, 无法翻译.").async();
+				
+				return;
+				
+			}
+			
 			String result = cndic.cn_ma(deManchurize(msg.param()),false,true);
 
 			if (StrUtil.isBlank(result)) {
