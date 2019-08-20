@@ -253,7 +253,7 @@ public class CryptoFN extends Fragment {
 
 				}
 
-				msg.send("结果 : {}",Html.code(result)).async();
+				msg.send("结果 : {}",Html.code(result)).html().async();
 
 			}
 
@@ -351,7 +351,7 @@ public class CryptoFN extends Fragment {
 
 				}
 
-				msg.send("结果 : {}",Html.code(result)).async();
+				msg.send("结果 : {}",Html.code(result)).html().async();
 
 			}
 
@@ -413,7 +413,7 @@ public class CryptoFN extends Fragment {
 
 				}
 
-				msg.send("结果 : {}",Html.code(result)).async();
+				msg.send("结果 : {}",Html.code(result)).html().async();
 
 
 			}
