@@ -162,7 +162,7 @@ public class CryptoFN extends Fragment {
 
 				data.step = 1;
 
-				msg.send("选择对齐方式 :").keyboardVertical(Padding.values()).withCancel().exec(data);
+				msg.send("选择对齐方式 :").keyboardVertical((Object[])Padding.values()).withCancel().exec(data);
 
 			} else if (data.step == 1) {
 
