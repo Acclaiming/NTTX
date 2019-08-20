@@ -3,8 +3,12 @@ package io.kurumi.ntt.fragment.secure;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.Mode;
 import cn.hutool.crypto.Padding;
+import cn.hutool.crypto.asymmetric.AbstractAsymmetricCrypto;
+import cn.hutool.crypto.asymmetric.KeyType;
+import cn.hutool.crypto.asymmetric.RSA;
 import cn.hutool.crypto.symmetric.AES;
 import cn.hutool.crypto.symmetric.DES;
+import cn.hutool.crypto.symmetric.DESede;
 import cn.hutool.crypto.symmetric.SymmetricCrypto;
 import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
@@ -12,24 +16,24 @@ import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.Html;
-import cn.hutool.crypto.SecureUtil;
-import cn.hutool.crypto.symmetric.DESede;
-import cn.hutool.crypto.asymmetric.RSA;
-import cn.hutool.crypto.asymmetric.KeyType;
+import cn.hutool.crypto.asymmetric.SM2;
+import cn.hutool.crypto.symmetric.RC4;
+import cn.hutool.core.util.CharsetUtil;
 
 public class CryptoFN extends Fragment {
 
 	final String POINT_SE = "crypto_se";
-	final String POINT_RSA = "crypto_rsa";
+	final String POINT_AE = "crypto_ae";
+	final String POINT_RC4 = "crypto_rc4";
 	
 	@Override
 	public void init(BotFragment origin) {
 
 		super.init(origin);
 
-		registerFunction("aes","aesd","des","desd","desede","deseded","rsa","rsad","rc4","rc4d");
+		registerFunction("aes","aesd","des","desd","desede","deseded","rsa","rsad","sm2","sm2d","rc4","rc4d");
 
-		registerFunction(POINT_SE);
+		registerFunction(POINT_SE,POINT_AE,POINT_RC4);
 
 	}
 
@@ -47,19 +51,37 @@ public class CryptoFN extends Fragment {
 
 		byte[] iv;
 
+		boolean toBase64;
+
 		public SymmetricEncryption(Msg command) { super(command); }
 
 	}
-	
-	class RsaEncryption extends PointData {
-	
+
+	class AsymmetricEncryption extends PointData {
+
 		boolean dec;
 
 		boolean isPublic;
+
+		String method;
+
+		String key;
+
+		boolean toBase64;
+
+		public AsymmetricEncryption(Msg command) { super(command); }
+
+	}
+	
+	class RC4Encryption extends PointData {
+
+		boolean dec;
 		
 		String key;
-		
-		public RsaEncryption(Msg command) { super(command); }
+
+		boolean toBase64;
+
+		public RC4Encryption(Msg command) { super(command); }
 
 	}
 
@@ -67,28 +89,39 @@ public class CryptoFN extends Fragment {
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
 		msg.sendTyping();
-		
+
 		if (function.startsWith("aes") || function.startsWith("des")) {
 
 			SymmetricEncryption se = new SymmetricEncryption(msg);
 
 			se.dec = function.endsWith("d");
-			
+
 			se.method = se.dec ? function.substring(0,function.length() - 1) : function;
 
 			setPrivatePoint(user,POINT_SE,se);
 
 			msg.send("选择加密方式 :").keyboardVertical(Mode.values()).withCancel().exec(se);
 
-		} else if (function.startsWith("rsa")) {
-		
-			RsaEncryption rsa = new RsaEncryption(msg);
+		} else if (function.startsWith("rsa") || function.startsWith("sm2")) {
+
+			AsymmetricEncryption ae = new AsymmetricEncryption(msg);
+
+			ae.dec = function.endsWith("d");
+			ae.method = ae.dec ? function.substring(0,function.length() - 1) : function;
+
+			setPrivatePoint(user,POINT_AE,ae);
+
+			msg.send("请选择使用的秘钥 :").keyboardHorizontal("公钥","私钥").withCancel().exec(ae);
+
+		} else {
 			
-			rsa.dec = function.endsWith("d");
+			RC4Encryption re = new RC4Encryption(msg);
 			
-			setPrivatePoint(user,POINT_RSA,rsa);
+			re.dec = function.endsWith("d");
 			
-			msg.send("请输入使用的秘钥 :").keyboardHorizontal("公钥","私钥").withCancel().exec(rsa);
+			setPrivatePoint(user,POINT_RC4,re);
+			
+			msg.send("输入密码 ( 5 - 256 ): ").withCancel().exec(re);
 			
 		}
 
@@ -106,7 +139,7 @@ public class CryptoFN extends Fragment {
 		}
 
 		msg.sendTyping();
-		
+
 		if (POINT_SE.equals(point)) {
 
 			SymmetricEncryption se = (SymmetricEncryption) data.with(msg);
@@ -155,14 +188,33 @@ public class CryptoFN extends Fragment {
 
 				se.password = StrUtil.utf8Bytes(msg.text());
 
-				data.step = 4;
+				if (se.dec) {
 
-				msg.send("请输入" + (se.dec ? "密文" : "文本")).withCancel().exec(data);
+					data.step = 5;
+
+					msg.send("请输入密文 ( Hex 或 Base 64)").withCancel().exec(data);
+
+				} else {
+
+					data.step = 4;
+
+					msg.send("选择输出格式").keyboardHorizontal("Hex","Base64").withCancel().exec(data);
+
+				}
+
+
+			} else if (data.step == 4) {
+
+				se.toBase64 = "base64".equals(msg.text());
+
+				data.step = 5;
+
+				msg.send("请输入文本").withCancel().exec(data);
 
 			} else {
 
 				clearPrivatePoint(user);
-				
+
 				String result;
 
 				try {
@@ -176,16 +228,16 @@ public class CryptoFN extends Fragment {
 					} else if ("desede".equals(se.method)) {
 
 						sc = new DESede(se.mode,se.padding,se.password);
-					
-						} else {
-						
+
+					} else {
+
 						sc = new DES(se.mode,se.padding,se.password);
 
 					}
-					
+
 					if (!se.dec) {
 
-						result = sc.encryptHex(msg.text());
+						result = se.toBase64 ? sc.encryptBase64(msg.text()) : sc.encryptHex(msg.text());
 
 					} else {
 
@@ -200,58 +252,94 @@ public class CryptoFN extends Fragment {
 					return;
 
 				}
-			
+
 				msg.send("结果 : {}",Html.code(result)).async();
 
 			}
 
-		} else if (POINT_RSA.equals(point)) {
-			
-			RsaEncryption rsa = (RsaEncryption) data;
-			
+		} else if (POINT_AE.equals(point)) {
+
+			AsymmetricEncryption ae = (AsymmetricEncryption) data;
+
 			if (data.type == 0) {
-				
-				rsa.isPublic = "公钥".equals(msg.text());
-				
-				rsa.step = 1;
-				
+
+				ae.isPublic = "公钥".equals(msg.text());
+
+				ae.step = 1;
+
 				msg.send("请输入秘钥文本 ( Hex 或 Base64 ) :").withCancel().exec(data);
-				
+
 			} else if (data.type == 1) {
-				
-				rsa.key = msg.text();
 
-				rsa.step = 2;
+				ae.key = msg.text();
 
-				msg.send("请输入" + (rsa.dec ? "密文" : "文本")).withCancel().exec(data);
-				
+				if (ae.dec) {
+
+					data.step = 3;
+
+					msg.send("请输入密文 ( Hex 或 Base 64)").withCancel().exec(data);
+
+				} else {
+
+					data.step = 2;
+
+					msg.send("选择输出格式").keyboardHorizontal("Hex","Base64").withCancel().exec(data);
+
+				}
+
+
+			} else if (data.step == 2) {
+
+				ae.toBase64 = "base64".equals(msg.text());
+
+				data.step = 3;
+
+				msg.send("请输入文本").withCancel().exec(data);
+
 			} else {
-				
+
 				clearPrivatePoint(user);
 
 				String result;
 
 				try {
 
-					RSA re;
-					
-					if (rsa.isPublic) {
-						
-						re = new RSA(null,rsa.key);
+					AbstractAsymmetricCrypto aa;
+
+					if ("rsa".equals(ae.method)) {
+
+						if (ae.isPublic) {
+
+							aa = new RSA(null,ae.key);
+
+						} else {
+
+							aa = new RSA(ae.key,null);
+
+						}
 
 					} else {
-						
-						re = new RSA(rsa.key,null);
-						
+
+						if (ae.isPublic) {
+
+							aa = new SM2(null,ae.key);
+
+						} else {
+
+							aa = new SM2(ae.key,null);
+
+						}
+
+
 					}
-						
-					if (!rsa.dec) {
 
-						result = re.encryptHex(msg.text(),rsa.isPublic ? KeyType.PublicKey : KeyType.PrivateKey);
+					if (!ae.dec) {
+
+						result = ae.toBase64 ? aa.encryptBase64(msg.text(),ae.isPublic ? KeyType.PublicKey : KeyType.PrivateKey): aa.encryptHex(msg.text(),ae.isPublic ? KeyType.PublicKey : KeyType.PrivateKey);
 
 					} else {
 
-						result = re.decryptStr(msg.text(),rsa.isPublic ? KeyType.PublicKey : KeyType.PrivateKey);
+						result = aa.decryptStr(msg.text(),ae.isPublic ? KeyType.PublicKey : KeyType.PrivateKey);
 
 					}
 
@@ -265,10 +353,72 @@ public class CryptoFN extends Fragment {
 
 				msg.send("结果 : {}",Html.code(result)).async();
 
-				
-				
 			}
+
+		} else if (POINT_RC4.equals(point)) {
 			
+			RC4Encryption re = (RC4Encryption) data;
+			
+			if (data.step == 0) {
+				
+				re.key = msg.text();
+
+				if (re.dec) {
+
+					data.step = 2;
+
+					msg.send("请输入密文 ( Hex 或 Base 64)").withCancel().exec(data);
+
+				} else {
+
+					data.step = 1;
+
+					msg.send("选择输出格式").keyboardHorizontal("Hex","Base64").withCancel().exec(data);
+
+				}
+			
+			} else if (data.step == 1) {
+
+				re.toBase64 = "base64".equals(msg.text());
+
+				data.step = 2;
+
+				msg.send("请输入文本").withCancel().exec(data);
+				
+			
+		} else {
+			
+			clearPrivatePoint(user);
+
+			String result;
+
+			try {
+
+				RC4 rc4 = new RC4(re.key);
+
+				if (!re.dec) {
+
+					result = re.toBase64 ? rc4.encryptBase64(msg.text(),CharsetUtil.CHARSET_UTF_8) : rc4.encryptHex(msg.text(),CharsetUtil.CHARSET_UTF_8);
+					
+				} else {
+
+					result = rc4.decrypt(StrUtil.utf8Bytes(msg.text()),CharsetUtil.CHARSET_UTF_8);
+					
+				}
+
+			} catch (Exception ex) {
+
+				msg.send("错误 : {}",ex.getMessage()).async();
+
+				return;
+
+			}
+
+			msg.send("结果 : {}",Html.code(result)).async();
+			
+			
+		}
+		
 		}
 
 	}
