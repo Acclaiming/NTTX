@@ -263,7 +263,7 @@ public class CryptoFN extends Fragment {
 
 			AsymmetricEncryption ae = (AsymmetricEncryption) data;
 
-			if (data.type == 0) {
+			if (data.step == 0) {
 
 				ae.isPublic = "公钥".equals(msg.text());
 
@@ -271,7 +271,7 @@ public class CryptoFN extends Fragment {
 
 				msg.send("请输入秘钥文本 ( Hex 或 Base64 ) :").withCancel().exec(data);
 
-			} else if (data.type == 1) {
+			} else if (data.step == 1) {
 
 				ae.key = msg.text();
 
