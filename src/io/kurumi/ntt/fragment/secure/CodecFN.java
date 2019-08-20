@@ -51,7 +51,7 @@ public class CodecFN extends Fragment {
 
 		if (function.startsWith("base32")) {
 
-			if (function.endsWith("d")) {
+			if (!function.endsWith("d")) {
 
 				msg.send(Base32.encode(msg.param())).async();
 
@@ -79,7 +79,7 @@ public class CodecFN extends Fragment {
 
 		} else if (function.startsWith("base62")) {
 
-			if (function.endsWith("d")) {
+			if (!function.endsWith("d")) {
 
 				msg.send(Base62.encode(msg.param())).async();
 
@@ -107,7 +107,7 @@ public class CodecFN extends Fragment {
 
 		} else if (function.startsWith("base64")) {
 
-			if (function.endsWith("d")) {
+			if (!function.endsWith("d")) {
 
 				msg.send(Base64.encode(msg.param())).async();
 
@@ -143,7 +143,7 @@ public class CodecFN extends Fragment {
 
 			}
 
-			if (function.endsWith("d")) {
+			if (!function.endsWith("d")) {
 
 				msg.send(Caesar.encode(ArrayUtil.join(ArrayUtil.remove(params,0)," "),NumberUtil.parseInt(params[0]))).async();
 
@@ -171,7 +171,7 @@ public class CodecFN extends Fragment {
 
 		} else if (function.startsWith("morse")) {
 
-			if (function.endsWith("d")) {
+			if (!function.endsWith("d")) {
 
 				msg.send(new Morse().encode(msg.param())).async();
 
@@ -207,7 +207,7 @@ public class CodecFN extends Fragment {
 
 			}
 
-			if (function.endsWith("d")) {
+			if (!function.endsWith("d")) {
 
 				msg.send(Rot.encode(ArrayUtil.join(ArrayUtil.remove(params,0)," "),NumberUtil.parseInt(params[0]),true)).async();
 
