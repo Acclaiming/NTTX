@@ -139,10 +139,12 @@ public class CryptoFN extends Fragment {
 		}
 
 		msg.sendTyping();
+		
+		data.with(msg);
 
 		if (POINT_SE.equals(point)) {
 
-			SymmetricEncryption se = (SymmetricEncryption) data.with(msg);
+			SymmetricEncryption se = (SymmetricEncryption) data;
 
 			if (data.type == 0) {
 
