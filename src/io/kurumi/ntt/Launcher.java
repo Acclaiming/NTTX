@@ -98,6 +98,8 @@ import io.kurumi.ntt.utils.Html;
 import java.util.TimeZone;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
+import io.kurumi.ntt.fragment.secure.DigestFN;
+import io.kurumi.ntt.fragment.secure.CodecFN;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -449,6 +451,9 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		addFragment(new WhoisLookup());
 		addFragment(new MMPITest());
 
+		addFragment(new CodecFN());
+		addFragment(new DigestFN());
+		
         // QQ
 
 		addFragment(new TelegramListener());

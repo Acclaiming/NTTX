@@ -126,25 +126,25 @@ public class Send extends AbstractSend<Send> {
 
     }
 
-    public Send keyboardVertical(final String... buttons) {
+    public Send keyboardVertical(final Object... buttons) {
 
 		Keyboard keyboard = new Keyboard();
 
-		for (String button : buttons) keyboard.newButtonLine(button);
+		for (Object button : buttons) keyboard.newButtonLine(button.toString());
 
 		keyboard(keyboard);
 		
 		return this;
 
     }
-	
-	public Send keyboardHorizontal(final String... buttons) {
+
+	public Send keyboardHorizontal(final Object... buttons) {
 
 		Keyboard keyboard = new Keyboard();
 
 		KeyboradButtonLine line = keyboard.newButtonLine();
 
-		for (String button : buttons) line.newButton(button);
+		for (Object button : buttons) line.newButton(button.toString());
 
 		keyboard(keyboard);
 		
