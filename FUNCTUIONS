@@ -1,0 +1,92 @@
+ping - 可达性测试
+options - 群组功能选单
+twitter - Twitter 账号管理
+follow - 关注用户
+unfo - 取关用户
+mute - 静音用户
+unmute - 取消静音
+mute_rt - 静音转推
+unmute_rt - 取消静音
+block - 屏蔽用户
+unblock - 取消屏蔽
+twuf - 双向取关
+current - 设置默认用户
+delete - 删除推文打心
+update - 发推
+reply - 回复推文
+timed - 定时推文
+export - 列表导出
+media - 推文媒体链接得到
+status - 推文存档
+fetch - 拉取用户所有推文与上下文
+search - 推文搜索
+banss - 群组屏蔽贴纸包
+unbanss - 取消屏蔽贴纸包
+update_admins_cache - 更新群组管理员缓存
+newbot - 创建新BOT
+mybots - 修改/删除 BOT
+sticker - 贴纸制作模式
+download_sticker_set - 下载贴纸包
+new_sticker_set - 新建贴纸包
+add_sticker - 添加贴纸
+move_sticker - 移动贴纸
+remove_sticker - 移除贴纸
+rss_sub - RSS订阅
+rss_unsub - 取消订阅
+rss_unsub_all - 取消所有订阅
+rss_list - 查看订阅
+rss_import - 导入OPML订阅
+rss_export - 导出OPML订阅
+rss_fetch - 直接输出源
+rss_set_format - 设置输出格式
+rss_set_delay - 设置拉取间隔
+rss_set_current - 设置输出BOT
+rss_set_copyright - 设置版权文本
+ic_check - 身份证检查
+ic_18 - 校验位生成
+ic_gen - 身份证生成
+base32 - base32 编码
+base32d - base32 解码
+base62 - base62 编码
+base62d - base62 解码
+base64 - base64 编码
+base64d - base64 解码
+caesar - 凯撒密码 编码
+caesard - 凯撒密码 解码
+morse - 摩尔斯 编码
+morsed - 摩尔斯 解码
+rot - RotN 编码
+rotd - RotN 解码
+md5 - md5 散列
+sha1 - sha1 散列
+sha256 - sha256 散列
+aes - AES 加密
+aesd - AES 解密
+des - DES 加密
+desd - DES 解密
+desede - DESede 加密
+deseded - DESede 解密
+rsa - RSA 加密
+rsad - RSA 解密
+sm2 - SM2 加密
+sm2d - SM2 解密
+rc4 - RC4 加密
+rc4d - RC4 解密
+mvn - Maven Lib 下载
+mkgif - 动图制作
+zp_encode - 零宽字符水印编码
+zp_decode - 零宽字符水印解码
+mmpi - 明尼苏达多项人格测验
+qr_encode - 二维码生成
+qr_decode - 二维码解码
+dns - 域名解析记录查询
+whois - 域名所有者查询
+api_key - 查看授权令牌
+api_key_regenerate - 重置授权令牌
+api_key_revoke - 删除授权令牌
+tinx_enable - 开启QQ消息同步
+tinx_disable - 关闭QQ消息同步
+manchurize - 简中 -> 满洲。语
+demanchurize - 满洲语 -> 简中
+tl_scan - 一个测试 :)
+cancel - 重置会话状态
