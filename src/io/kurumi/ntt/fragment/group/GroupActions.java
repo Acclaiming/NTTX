@@ -86,11 +86,11 @@ public class GroupActions extends Fragment {
 		
 		msg.delete();
 		
-		if ("r".equals(function)) {
+		if ("rest".equals(function)) {
 			
 			msg.restrict();
 			
-		} else if ("k".equals(function)) {
+		} else if ("kick".equals(function)) {
 			
 			msg.kick(targetId,false);
 			
