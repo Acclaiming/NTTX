@@ -130,8 +130,9 @@ public class JoinCaptcha extends Fragment {
 
         super.init(origin);
 
-        registerPoints(POINT_AUTH,POINT_DELETE,POINT_ANSWER,POINT_ACC,POINT_REJ);
-
+        registerCallback(POINT_AUTH,POINT_DELETE,POINT_ANSWER,POINT_ACC,POINT_REJ);
+		registerPoint(POINT_AUTH,POINT_DELETE,POINT_ANSWER);
+		
     }
 
 	@Override
@@ -447,12 +448,6 @@ public class JoinCaptcha extends Fragment {
 
     }
 
-
-
-
-
-
-
     void startAuth(final UserData user,final Msg msg,final GroupData data,VerifyCode left) {
 
         final HashMap<Long, AuthCache> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, AuthCache>();
@@ -685,8 +680,11 @@ public class JoinCaptcha extends Fragment {
     public void onPoint(final UserData user,Msg msg,String point,PointData data) {
 
         if (POINT_DELETE.equals(point)) {
+			
             msg.delete();
+			
             return;
+			
         }
 
         final GroupData gd = GroupData.get(msg.chat());

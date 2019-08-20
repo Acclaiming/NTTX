@@ -1,12 +1,9 @@
 package io.kurumi.ntt;
 
 import cn.hutool.core.util.RuntimeUtil;
-import cn.hutool.http.cookie.GlobalCookieManager;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import cn.hutool.log.StaticLog;
-import cn.hutool.log.dialect.console.ConsoleLog;
-import cn.hutool.log.dialect.console.ConsoleLogFactory;
 import com.google.gson.Gson;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.ChatMember;
@@ -45,11 +42,12 @@ import io.kurumi.ntt.fragment.dns.WhoisLookup;
 import io.kurumi.ntt.fragment.extra.Manchurize;
 import io.kurumi.ntt.fragment.extra.ShowFile;
 import io.kurumi.ntt.fragment.group.BanSetickerSet;
+import io.kurumi.ntt.fragment.group.GroupActions;
 import io.kurumi.ntt.fragment.group.GroupAdmin;
 import io.kurumi.ntt.fragment.group.GroupFunction;
-import io.kurumi.ntt.fragment.group.GroupOptions;
 import io.kurumi.ntt.fragment.group.JoinCaptcha;
 import io.kurumi.ntt.fragment.group.RemoveKeyboard;
+import io.kurumi.ntt.fragment.group.options.OptionsMain;
 import io.kurumi.ntt.fragment.idcard.Idcard;
 import io.kurumi.ntt.fragment.inline.CoreValueEncode;
 import io.kurumi.ntt.fragment.inline.MakeButtons;
@@ -95,13 +93,11 @@ import io.kurumi.ntt.fragment.twitter.ui.TwitterMain;
 import io.kurumi.ntt.maven.MvnDownloader;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.utils.BotLogFactory;
 import io.kurumi.ntt.utils.Html;
 import java.util.TimeZone;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
-import okhttp3.OkHttpClient;
-import io.kurumi.ntt.utils.BotLogFactory;
-import io.kurumi.ntt.fragment.group.GroupActions;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -377,7 +373,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 		addFragment(new GroupActions());
         addFragment(new GroupAdmin());
-        addFragment(new GroupOptions());
+        addFragment(new OptionsMain());
         addFragment(new BanSetickerSet());
         addFragment(new GroupFunction());
         addFragment(new JoinCaptcha());

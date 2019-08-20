@@ -473,7 +473,7 @@ public class RestMain extends Fragment {
 
 		}
 		
-		executeAsync(callback.update, new EditMessageReplyMarkup(callback.chatId(), callback.messageId()).replyMarkup(restMenu(data).markup()));
+		callback.editMarkup(restMenu(data));
 		
 	}
 

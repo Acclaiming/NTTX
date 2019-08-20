@@ -41,8 +41,9 @@ public class ListExport extends Fragment {
 
         registerFunction("export");
 
-        registerPoints(POINT_LIST_EXPORT);
-
+        registerCallback(POINT_LIST_EXPORT);
+		registerPoint(POINT_LIST_EXPORT);
+		
     }
 
     @Override

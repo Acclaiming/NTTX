@@ -1,11 +1,12 @@
 package io.kurumi.ntt.fragment.bots;
 
+import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.group.GroupAdmin;
 import io.kurumi.ntt.fragment.group.GroupFunction;
-import io.kurumi.ntt.fragment.group.GroupOptions;
 import io.kurumi.ntt.fragment.group.JoinCaptcha;
-import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.fragment.group.options.OptionsMain;
+import io.kurumi.ntt.fragment.group.GroupActions;
 
 public class GroupBot extends UserBotFragment {
 
@@ -14,16 +15,16 @@ public class GroupBot extends UserBotFragment {
 
         super.reload();
 
-        addFragment(new GroupOptions());
+        addFragment(new OptionsMain());
         addFragment(new GroupFunction());
         addFragment(new GroupAdmin());
         addFragment(new JoinCaptcha());
+		addFragment(new GroupActions());
 
     }
 
 	@Override
 	public void onFinalMsg(UserData user,Msg msg) {
 	}
-
 
 }

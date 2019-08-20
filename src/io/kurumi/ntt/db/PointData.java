@@ -42,7 +42,7 @@ public class PointData {
 
     public void onFinish() {
 
-		BotFragment.asyncPool.execute(new Runnable() {
+		BotFragment.waitPool.execute(new Runnable() {
 
 				@Override
 				public void run() {

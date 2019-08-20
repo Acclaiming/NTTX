@@ -34,14 +34,15 @@ public class MyBots extends Fragment {
 
         registerFunction("mybots");
 
-        registerPoints(
+        registerCallback(
 			POINT_CHOOSE_BOT,
 			POINT_BACK_TO_LIST,
 			POINT_DELETE_BOT,
 			POINT_CONFIRM_DEL,
 			POINT_CHAT_BOT_EDIT_MESSAGE);
 
-
+		registerPoint(
+			POINT_CHAT_BOT_EDIT_MESSAGE);
     }
 
     @Override

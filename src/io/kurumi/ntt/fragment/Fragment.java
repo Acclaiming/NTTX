@@ -392,18 +392,6 @@ public class Fragment {
 
     }
 
-    public void registerPoints(String... points) {
-
-        for (String point : points) {
-
-            origin.callbacks.put(point,this);
-            origin.points.put(point,this);
-
-        }
-
-    }
-
-
     public void registerCallback(String... points) {
 
         for (String point : points) {

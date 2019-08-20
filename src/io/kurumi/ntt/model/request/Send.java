@@ -194,7 +194,7 @@ public class Send extends AbstractSend<Send> {
 
         if (origin == null) return;
 
-        BotFragment.execute(new Runnable() {
+        BotFragment.waitPool.execute(new Runnable() {
 
 				@Override
 				public void run() {

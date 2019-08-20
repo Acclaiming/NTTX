@@ -28,7 +28,12 @@ public class OptionsMain extends Fragment {
         registerPayload(PAYLOAD_OPTIONS);
 
 		origin.addFragment(new ServiceMain());
-
+		origin.addFragment(new RestMain());
+		origin.addFragment(new CaptchaMain());
+		origin.addFragment(new WelcomeMain());
+		origin.addFragment(new SpamMain());
+		origin.addFragment(new LogMain());
+		
     }
 
     @Override
@@ -172,10 +177,10 @@ public class OptionsMain extends Fragment {
 
 				newButtonLine("🛠️  功能 选项",ServiceMain.POINT_SERVICE,data.id);
 				newButtonLine("📝  成员 限制",RestMain.POINT_REST,data.id);
-				newButtonLine("🚪  加群 验证",POINT_MENU_JOIN,data.id);
-				newButtonLine("📢  欢迎 消息",POINT_MENU_SHOW,data.id);
-				newButtonLine("🔎  Anti Spam",POINT_MENU_SPAM,data.id);
-				newButtonLine("🎥  日志 记录",POINT_MENU_CLOG,data.id);
+				newButtonLine("🚪  加群 验证",RestMain.POINT_REST,data.id);
+				newButtonLine("📢  欢迎 消息",WelcomeMain.POINT_WELCOME,data.id);
+				newButtonLine("🔎  Anti Spam",SpamMain.POINT_SPAM,data.id);
+				newButtonLine("🎥  日志 记录",LogMain.POINT_LOG,data.id);
 
 
 			}};
