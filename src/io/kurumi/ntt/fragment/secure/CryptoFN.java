@@ -12,7 +12,7 @@ import cn.hutool.crypto.symmetric.AES;
 public class CryptoFN extends Fragment {
 
 	final String POINT_SE = "crypto_se";
-	
+
 	@Override
 	public void init(BotFragment origin) {
 
@@ -21,40 +21,67 @@ public class CryptoFN extends Fragment {
 		registerFunction("aes","aesd","des","desd","rsa","rsad","rc4","rc4d");
 
 		registerFunction(POINT_SE);
-		
+
 	}
-	
+
 	class SymmetricEncryption extends PointData {
-		
+
 		String method;
-		
+
 		boolean dec;
-		
+
 		Mode mode;
-		
+
 		Padding padding;
-		
+
 		byte[] iv;
-		
+
 	}
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
 		if (function.startsWith("aes") || function.startsWith("des")) {
-			
+
 			SymmetricEncryption se = new SymmetricEncryption();
-			
+
 			se.method = function.substring(0,3);
-			
+
 			se.dec = function.endsWith("d");
-			
-			//setPrivatePoint(
-			
-			//msg.send("选择加密方式 :").keyboardVertical((Mode.values())).async();
-			
+
+			setPrivatePoint(user,POINT_SE,se);
+
+			msg.send("选择加密方式 :").keyboardVertical((Mode.values())).withCancel().async();
+
 		}
-		
+
+	}
+
+	@Override
+	public void onPoint(UserData user,Msg msg,String point,PointData data) {
+
+		if (POINT_SE.equals(point)) {
+
+			SymmetricEncryption se = (SymmetricEncryption) data;
+
+			if (data.type == 0) {
+
+				try {
+
+					se.mode = Mode.valueOf(msg.text());
+
+				} catch (Exception ex) {}
+
+				if (se.mode == null) {
+
+					clearPrivatePoint(user);
+
+				}
+
+			}
+
+		}
+
 	}
 
 }
