@@ -25,7 +25,7 @@ public class CryptoFN extends Fragment {
 	final String POINT_SE = "crypto_se";
 	final String POINT_AE = "crypto_ae";
 	final String POINT_RC4 = "crypto_rc4";
-	
+
 	@Override
 	public void init(BotFragment origin) {
 
@@ -33,7 +33,7 @@ public class CryptoFN extends Fragment {
 
 		registerFunction("aes","aesd","des","desd","desede","deseded","rsa","rsad","sm2","sm2d","rc4","rc4d");
 
-		registerFunction(POINT_SE,POINT_AE,POINT_RC4);
+		registerPoint(POINT_SE,POINT_AE,POINT_RC4);
 
 	}
 
@@ -72,11 +72,11 @@ public class CryptoFN extends Fragment {
 		public AsymmetricEncryption(Msg command) { super(command); }
 
 	}
-	
+
 	class RC4Encryption extends PointData {
 
 		boolean dec;
-		
+
 		String key;
 
 		boolean toBase64;
@@ -114,15 +114,15 @@ public class CryptoFN extends Fragment {
 			msg.send("请选择使用的秘钥 :").keyboardHorizontal("公钥","私钥").withCancel().exec(ae);
 
 		} else {
-			
+
 			RC4Encryption re = new RC4Encryption(msg);
-			
+
 			re.dec = function.endsWith("d");
-			
+
 			setPrivatePoint(user,POINT_RC4,re);
-			
+
 			msg.send("输入密码 ( 5 - 256 ): ").withCancel().exec(re);
-			
+
 		}
 
 	}
@@ -356,11 +356,11 @@ public class CryptoFN extends Fragment {
 			}
 
 		} else if (POINT_RC4.equals(point)) {
-			
+
 			RC4Encryption re = (RC4Encryption) data;
-			
+
 			if (data.step == 0) {
-				
+
 				re.key = msg.text();
 
 				if (re.dec) {
@@ -376,7 +376,7 @@ public class CryptoFN extends Fragment {
 					msg.send("选择输出格式").keyboardHorizontal("Hex","Base64").withCancel().exec(data);
 
 				}
-			
+
 			} else if (data.step == 1) {
 
 				re.toBase64 = "base64".equals(msg.text());
@@ -384,41 +384,40 @@ public class CryptoFN extends Fragment {
 				data.step = 2;
 
 				msg.send("请输入文本").withCancel().exec(data);
-				
-			
-		} else {
-			
-			clearPrivatePoint(user);
 
-			String result;
+			} else {
 
-			try {
+				clearPrivatePoint(user);
 
-				RC4 rc4 = new RC4(re.key);
+				String result;
 
-				if (!re.dec) {
+				try {
 
-					result = re.toBase64 ? rc4.encryptBase64(msg.text(),CharsetUtil.CHARSET_UTF_8) : rc4.encryptHex(msg.text(),CharsetUtil.CHARSET_UTF_8);
-					
-				} else {
+					RC4 rc4 = new RC4(re.key);
 
-					result = rc4.decrypt(StrUtil.utf8Bytes(msg.text()),CharsetUtil.CHARSET_UTF_8);
-					
+					if (!re.dec) {
+
+						result = re.toBase64 ? rc4.encryptBase64(msg.text(),CharsetUtil.CHARSET_UTF_8) : rc4.encryptHex(msg.text(),CharsetUtil.CHARSET_UTF_8);
+
+					} else {
+
+						result = rc4.decrypt(StrUtil.utf8Bytes(msg.text()),CharsetUtil.CHARSET_UTF_8);
+
+					}
+
+				} catch (Exception ex) {
+
+					msg.send("错误 : {}",ex.getMessage()).async();
+
+					return;
+
 				}
 
-			} catch (Exception ex) {
+				msg.send("结果 : {}",Html.code(result)).async();
 
-				msg.send("错误 : {}",ex.getMessage()).async();
-
-				return;
 
 			}
 
-			msg.send("结果 : {}",Html.code(result)).async();
-			
-			
-		}
-		
 		}
 
 	}
