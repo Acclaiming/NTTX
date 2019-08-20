@@ -146,7 +146,7 @@ public class CryptoFN extends Fragment {
 
 			SymmetricEncryption se = (SymmetricEncryption) data;
 
-			if (data.type == 0) {
+			if (data.step == 0) {
 
 				try {
 
