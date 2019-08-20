@@ -351,7 +351,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         // ADMIN
 
-        addFragment(new BotChannnel());
+      //  addFragment(new BotChannnel());
 
         addFragment(new PingFunction());
         addFragment(new GetID());
