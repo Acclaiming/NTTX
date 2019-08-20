@@ -52,7 +52,7 @@ public class RestMain extends Fragment {
 			
 			message += "\n\n" + OptionsMain.doc;
 			
-			callback.edit(message).buttons(restMenu(data)).async();
+			callback.edit(message).buttons(restMenu(data)).html().async();
 
 			return;
 

@@ -50,7 +50,7 @@ public class SpamMain extends Fragment {
 
 			message += "\n\n" + OptionsMain.doc;
 
-			callback.edit(message).buttons(spamMenu(data)).async();
+			callback.edit(message).buttons(spamMenu(data)).html().async();
 
 			return;
 

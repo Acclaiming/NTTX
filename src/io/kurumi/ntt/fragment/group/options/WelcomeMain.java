@@ -47,11 +47,7 @@ public class WelcomeMain extends Fragment {
 
 		if (params.length == 1) {
 
-			String message = "群组的管理设定. 点击名称查看功能说明";
-
-			message += "\n\n" + OptionsMain.doc;
-
-			callback.edit(message).buttons(showMenu(data)).async();
+			callback.edit(showStats(data)).buttons(showMenu(data)).async();
 
 			return;
 

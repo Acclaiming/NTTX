@@ -53,7 +53,7 @@ public class ServiceMain extends Fragment {
 			
 			message += "\n\n" + OptionsMain.doc;
 			
-			callback.edit(message).buttons(mainMenu(data)).async();
+			callback.edit(message).buttons(mainMenu(data)).html().async();
 			
 			return;
 			

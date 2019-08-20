@@ -51,7 +51,7 @@ public class LogMain extends Fragment {
 
 		if (params.length == 1) {
 
-			callback.edit(logStat(data)).buttons(logMenu(data)).async();
+			callback.edit(logStat(data)).buttons(logMenu(data)).html().async();
 
 			return;
 

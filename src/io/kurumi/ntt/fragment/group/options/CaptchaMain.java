@@ -59,7 +59,7 @@ public class CaptchaMain extends Fragment {
 
 			message += "\n\n" + OptionsMain.doc;
 
-			callback.edit(message).buttons(joinMenu(data)).async();
+			callback.edit(message).buttons(joinMenu(data)).html().async();
 
 			return;
 
