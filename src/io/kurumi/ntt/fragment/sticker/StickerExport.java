@@ -18,6 +18,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import net.coobird.thumbnailator.Thumbnails;
+import com.pengrad.telegrambot.request.UploadStickerFile;
+import com.pengrad.telegrambot.response.GetFileResponse;
+import com.pengrad.telegrambot.request.SendSticker;
 
 public class StickerExport extends Fragment {
 
@@ -156,8 +159,16 @@ public class StickerExport extends Fragment {
 
                 }
 
-                bot().execute(new SendDocument(msg.chatId(), local).fileName("sticker.png"));
+                execute(new SendDocument(msg.chatId(), local).fileName("sticker.png"));
 
+				GetFileResponse result = execute(new UploadStickerFile(msg.chatId().intValue(),local));
+
+				if (result.isOk()) {
+					
+					execute(new SendSticker(msg.chatId(),result.file().fileId()));
+					
+				}
+				
             }
 
         } else {
