@@ -63,13 +63,6 @@ public class GroupOptions extends Fragment {
 
     }
 
-    @Override
-    public int checkFunctionContext(UserData user, Msg msg, String function, String[] params) {
-
-        return FUNCTION_GROUP;
-
-    }
-
     final String POINT_OPTIONS = "group_options";
 
     final String PAYLOAD_OPTIONS = "go";
@@ -99,9 +92,11 @@ public class GroupOptions extends Fragment {
         GroupData data;
 
         public EditCustom(int type, Callback origin, GroupData data) {
-            this.type = type;
+        
+			this.type = type;
             this.origin = origin;
             this.data = data;
+			
         }
 
         @Override
@@ -126,124 +121,11 @@ public class GroupOptions extends Fragment {
         }
 
     }
-
-    @Override
-    public void onFunction(UserData user, final Msg msg, String function, String[] params) {
-
-        if (user.blocked()) {
-
-            msg.send("你不能这么做 (为什么？)").failedWith();
-
-            return;
-
-        }
-
-        final GroupData data = GroupData.get(msg.chat());
-
-        if (!NTT.isGroupAdmin(this, msg.chatId(), user.id)) {
-
-            msg.reply("你不是绒布球").failedWith();
-
-            return;
-
-        }
-
-        if (data.full_admins != null && data.not_trust_admin != null) {
-
-            if ((!(origin instanceof GroupBot) || !((GroupBot) origin).userId.equals(user.id)) && !data.full_admins.contains(user.id)) {
-
-                msg.reply("根据群组设定，你不可以更改群组选项 , 除非本群组没有群主与全权限管理员").send();
-
-                return;
-
-            }
-
-        }
-
-        if (!NTT.isGroupAdmin(msg.fragment, msg.chatId(), origin.me.id())) {
-
-            msg.reply("BOT不是群组管理员 :)").async();
-
-            return;
-
-        }
-
-        if (!NTT.isUserContactable(this, user.id)) {
-
-            ButtonMarkup buttons = new ButtonMarkup();
-
-            buttons.newButtonLine("打开", POINT_OPTIONS, user.id);
-
-            msg.reply("点击按钮在私聊打开设置面板 :)\n\n如果没有反应 请检查是否停用了BOT (私聊内点击 '取消屏蔽' 解除) 然后重新点击下方 '打开' 按钮 ~").buttons(buttons).async();
-
-            return;
-
-        }
-
-        new Send(this, user.id, "{}\n{}\n{}",
-
-                Html.b(data.title),
-                Html.i("更改群组的设定"),
-
-                "\n" + Html.b("注意 : ") + "使用前请阅读 " + Html.a("文档", "https://manual.kurumi.io/group")
-
-
-        ).buttons(menuMarkup(data)).html().async();
-
-        msg.reply("已经通过私聊发送群组设置选项").failedWith();
-
-    }
-
-    @Override
-    public void onPayload(UserData user, Msg msg, String payload, String[] params) {
-
-        long groupId = NumberUtil.parseLong(params[0]);
-
-        if (!GroupAdmin.fastAdminCheck(this, groupId, user.id, false)) {
-
-            msg.reply("你不是该群组的管理员 如果最近半小时更改 请在群组中使用 /update_admins_cache 更新缓存.");
-
-            return;
-
-        }
-
-        final GroupData data = GroupData.get(groupId);
-
-        msg.send(
-		
-		        "{}\n{}\n{}",
-                Html.b(data.title),
-                Html.i("更改群组的设定"),
-
-                "\n" + Html.b("注意 : ") + "使用前请阅读 " + Html.a("文档", "https://manual.kurumi.io/group")
-
-
-        ).buttons(menuMarkup(data)).html().exec();
-
-
-    }
-
+	
     @Override
     public void onCallback(UserData user, Callback callback, String point, String[] params) {
 
-        if (POINT_OPTIONS.equals(point)) {
-
-            long userId = NumberUtil.parseLong(params[0]);
-
-            if (user.id.equals(userId)) {
-
-                callback.url("https://t.me/" + origin.me.username() + "?start=" + PAYLOAD_OPTIONS + PAYLOAD_SPLIT + callback.chatId() + PAYLOAD_SPLIT + user.id);
-
-			} else {
-				
-				callback.alert("你不是绒布球 :)");
-				
-			}
-			
-            return;
-   
-
-        } else if (POINT_HELP.equals(point)) {
+        if (POINT_HELP.equals(point)) {
 
             if ("dcm".equals(params[0])) {
 
@@ -1803,85 +1685,7 @@ public class GroupOptions extends Fragment {
 
     }
 
-    ButtonMarkup restMenu(final GroupData data) {
-
-        return new ButtonMarkup() {{
-
-            newButtonLine()
-                    .newButton("邀请新成员", POINT_HELP, "invite_user")
-                    .newButton(data.no_invite_user == null ? "✅" : data.no_invite_user == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "invite_user");
-
-            newButtonLine()
-                    .newButton("邀请机器人", POINT_HELP, "invite_bot")
-                    .newButton(data.no_invite_bot == null ? "✅" : data.no_invite_bot == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "invite_bot");
-
-			newButtonLine()
-                    .newButton("烂俗文本", POINT_HELP, "esu_words")
-                    .newButton(data.no_esu_words == null ? "✅" : data.no_esu_words == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "esu_words");
-			
-			newButtonLine()
-                    .newButton("烂俗贴纸", POINT_HELP, "esu_stickers")
-                    .newButton(data.no_esu_stickers == null ? "✅" : data.no_esu_stickers == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "esu_stickers");
-				
-					
-            newButtonLine()
-                    .newButton("发送贴纸", POINT_HELP, "sticker")
-                    .newButton(data.no_sticker == null ? "✅" : data.no_sticker == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "sticker");
-
-            newButtonLine()
-                    .newButton("动态贴纸", POINT_HELP, "animated")
-                    .newButton(data.no_animated_sticker == null ? "✅" : data.no_animated_sticker == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "animated");
-
-            newButtonLine()
-                    .newButton("发送图片", POINT_HELP, "image")
-                    .newButton(data.no_image == null ? "✅" : data.no_image == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "image");
-
-            newButtonLine()
-                    .newButton("发送动图", POINT_HELP, "animation")
-                    .newButton(data.no_animation == null ? "✅" : data.no_animation == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "animation");
-
-            newButtonLine()
-                    .newButton("发送音频", POINT_HELP, "audio")
-                    .newButton(data.no_audio == null ? "✅" : data.no_audio == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "audio");
-
-            newButtonLine()
-                    .newButton("录制语音", POINT_HELP, "voice")
-                    .newButton(data.no_voice == null ? "✅" : data.no_voice == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "voice");
-
-            newButtonLine()
-                    .newButton("发送视频", POINT_HELP, "video")
-                    .newButton(data.no_video == null ? "✅" : data.no_video == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "video");
-
-            newButtonLine()
-                    .newButton("录制视频", POINT_HELP, "video_note")
-                    .newButton(data.no_video_note == null ? "✅" : data.no_video_note == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "video_note");
-
-            newButtonLine()
-                    .newButton("发送名片", POINT_HELP, "contact")
-                    .newButton(data.no_contact == null ? "✅" : data.no_contact == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "contact");
-
-            newButtonLine()
-                    .newButton("发送位置", POINT_HELP, "location")
-                    .newButton(data.no_location == null ? "✅" : data.no_location == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "location");
-
-            newButtonLine()
-                    .newButton("发送游戏", POINT_HELP, "game")
-                    .newButton(data.no_game == null ? "✅" : data.no_game == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "game");
-
-            newButtonLine()
-                    .newButton("发送文件", POINT_HELP, "file")
-                    .newButton(data.no_file == null ? "✅" : data.no_file == 0 ? "🗑" : "❌", POINT_SET_REST, data.id, "file");
-
-            newButtonLine("警告 " + (data.max_count == null ? 1 : data.max_count) + " 次 : " + data.actionName(), POINT_SET_REST, data.id, "action");
-
-            newButtonLine().newButton("➖", POINT_SET_REST, data.id, "dec").newButton("➕", POINT_SET_REST, data.id, "inc");
-
-            newButtonLine("🔙", POINT_BACK, data.id);
-
-        }};
-
-
-    }
+    
 
     ButtonMarkup joinMenu(final GroupData data) {
 

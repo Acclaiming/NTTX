@@ -453,6 +453,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		addFragment(new WhoisLookup());
 		addFragment(new MMPITest());
 
+        // QQ
+
 		addFragment(new TelegramListener());
 		addFragment(new TelegramFN());
 		addFragment(new TelegramAdminFN());
@@ -464,13 +466,6 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		addFragment(new RpcApi());
 
     }
-
-	@Override
-	public void processAsync(Update update) {
-
-		super.processAsync(update);
-
-	}
 
     @Override
     public void stop() {
