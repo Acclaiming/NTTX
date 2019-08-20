@@ -160,14 +160,6 @@ public class StickerExport extends Fragment {
                 }
 
                 execute(new SendDocument(msg.chatId(), local).fileName("sticker.png"));
-
-				GetFileResponse result = execute(new UploadStickerFile(msg.chatId().intValue(),local));
-
-				if (result.isOk()) {
-					
-					execute(new SendSticker(msg.chatId(),result.file().fileId()));
-					
-				}
 				
             }
 
