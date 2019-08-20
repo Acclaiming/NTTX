@@ -147,7 +147,7 @@ public class OptionsMain extends Fragment {
 
 			long id = NumberUtil.parseLong(params[0]);
 
-			if (callback.isPrivate()) {
+			if (callback.isGroup()) {
 
 				if (user.id.equals(id)) {
 
