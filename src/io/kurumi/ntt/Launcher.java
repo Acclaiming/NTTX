@@ -100,6 +100,7 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import io.kurumi.ntt.fragment.secure.DigestFN;
 import io.kurumi.ntt.fragment.secure.CodecFN;
+import io.kurumi.ntt.fragment.secure.CryptoFN;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -452,6 +453,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 		addFragment(new CodecFN());
 		addFragment(new DigestFN());
+		addFragment(new CryptoFN());
 		
         // QQ
 
