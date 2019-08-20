@@ -100,7 +100,7 @@ public class CryptoFN extends Fragment {
 
 			setPrivatePoint(user,POINT_SE,se);
 
-			msg.send("选择加密方式 :").keyboardVertical(Mode.values()).withCancel().exec(se);
+			msg.send("选择加密方式 :").keyboardVertical((Object[])Mode.values()).withCancel().exec(se);
 
 		} else if (function.startsWith("rsa") || function.startsWith("sm2")) {
 
