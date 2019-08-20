@@ -159,7 +159,7 @@ public class OptionsMain extends Fragment {
 
 				}
 
-			} else {
+			} else if (callback.isPrivate()) {
 
 				final GroupData data = GroupData.get(id);
 
