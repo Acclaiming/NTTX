@@ -5,6 +5,7 @@ import io.kurumi.ntt.model.Msg;
 import java.util.LinkedList;
 import java.util.HashMap;
 import io.kurumi.ntt.fragment.BotFragment;
+import java.util.Collections;
 
 public class PointData {
 	
@@ -46,6 +47,8 @@ public class PointData {
 
 				@Override
 				public void run() {
+					
+					Collections.reverse(context);
 					
 					for (Msg toDelete : context) toDelete.delete();
 					
