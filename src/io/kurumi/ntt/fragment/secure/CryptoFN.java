@@ -186,26 +186,26 @@ public class CryptoFN extends Fragment {
 
 				msg.send("请输入密码 :").withCancel().exec(data);
 
-			} else if (data.step == 3) {
+			} else if (data.step == 2) {
 
 				se.password = StrUtil.utf8Bytes(msg.text());
 
 				if (se.dec) {
 
-					data.step = 5;
+					data.step = 4;
 
 					msg.send("请输入密文 ( Hex 或 Base 64)").withCancel().exec(data);
 
 				} else {
 
-					data.step = 4;
+					data.step = 3;
 
 					msg.send("选择输出格式").keyboardHorizontal("Hex","Base64").withCancel().exec(data);
 
 				}
 
 
-			} else if (data.step == 4) {
+			} else if (data.step == 3) {
 
 				se.toBase64 = "base64".equals(msg.text());
 
