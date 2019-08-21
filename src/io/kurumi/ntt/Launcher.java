@@ -25,7 +25,6 @@ import io.kurumi.ntt.fragment.admin.StatusDel;
 import io.kurumi.ntt.fragment.admin.Users;
 import io.kurumi.ntt.fragment.base.GetID;
 import io.kurumi.ntt.fragment.base.PingFunction;
-import io.kurumi.ntt.fragment.bots.BotChannnel;
 import io.kurumi.ntt.fragment.bots.MyBots;
 import io.kurumi.ntt.fragment.bots.NewBot;
 import io.kurumi.ntt.fragment.bots.UserBot;
@@ -60,6 +59,9 @@ import io.kurumi.ntt.fragment.qr.QrDecoder;
 import io.kurumi.ntt.fragment.qr.QrEncoder;
 import io.kurumi.ntt.fragment.rss.FeedFetchTask;
 import io.kurumi.ntt.fragment.rss.RssSub;
+import io.kurumi.ntt.fragment.secure.CodecFN;
+import io.kurumi.ntt.fragment.secure.CryptoFN;
+import io.kurumi.ntt.fragment.secure.DigestFN;
 import io.kurumi.ntt.fragment.sorry.MakeGif;
 import io.kurumi.ntt.fragment.sticker.AddSticker;
 import io.kurumi.ntt.fragment.sticker.MoveSticker;
@@ -95,12 +97,11 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.BotLogFactory;
 import io.kurumi.ntt.utils.Html;
+import java.security.Security;
 import java.util.TimeZone;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
-import io.kurumi.ntt.fragment.secure.DigestFN;
-import io.kurumi.ntt.fragment.secure.CodecFN;
-import io.kurumi.ntt.fragment.secure.CryptoFN;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -117,6 +118,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 
+		Security.addProvider(new BouncyCastleProvider());
+		
 		LogFactory.setCurrentLogFactory(new BotLogFactory());
 
 		long startAt = System.currentTimeMillis();
