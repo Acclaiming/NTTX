@@ -719,7 +719,7 @@ public class TrackTask extends TimerTask {
 
             UserArchive archive = UserArchive.get(id);
 
-            if (archive.isDisappeared) return;
+            if (archive != null && archive.isDisappeared) return;
 
             UserArchive.saveDisappeared(id);
 
