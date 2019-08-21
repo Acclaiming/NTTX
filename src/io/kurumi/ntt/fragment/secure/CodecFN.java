@@ -140,6 +140,8 @@ public class CodecFN extends Fragment {
 			if (params.length < 2 || !NumberUtil.isNumber(params[0])) {
 
 				msg.invalidParams("偏移量","文本...").async();
+				
+				return;
 
 			}
 
@@ -204,6 +206,8 @@ public class CodecFN extends Fragment {
 			if (params.length < 2 || !NumberUtil.isNumber(params[0])) {
 
 				msg.invalidParams("偏移量","文本...").async();
+				
+				return;
 
 			}
 
