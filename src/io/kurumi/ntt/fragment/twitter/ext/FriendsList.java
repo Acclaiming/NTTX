@@ -192,7 +192,7 @@ public class FriendsList extends Fragment {
 
 			InReplyTo to = iter.next();
 
-			message += "\n" + to.replyCount + " · " + UserArchive.show(api,to.userId).bName();
+			message += "\n" + (index + 1) + " · " + UserArchive.show(api,to.userId).bName();
 
 		}
 
