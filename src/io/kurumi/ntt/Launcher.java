@@ -119,7 +119,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 
-		Security.addProvider(new BouncyCastleProvider());
+		// Security.addProvider(new BouncyCastleProvider());
 		
 		LogFactory.setCurrentLogFactory(new BotLogFactory());
 
