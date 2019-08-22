@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
+import com.pengrad.telegrambot.request.GetChatMember;
+import com.pengrad.telegrambot.response.GetChatMemberResponse;
 
 public class JoinCaptcha extends Fragment {
 
@@ -921,6 +923,15 @@ public class JoinCaptcha extends Fragment {
             }
 
         }
+		
+		GetChatMemberResponse target = execute(new GetChatMember(gd.id,user.id.intValue()));
+
+		if (!target.isOk() || !target.chatMember().isMember()) {
+
+			return;
+
+		}
+		
 
         if (gd.captcha_del == null) {
 
@@ -1111,12 +1122,35 @@ public class JoinCaptcha extends Fragment {
             }
 
         }
+		
+		GetChatMemberResponse target = execute(new GetChatMember(gd.id,user.id.intValue()));
 
+		if (!target.isOk() || !target.chatMember().isMember()) {
+
+			msg.delete();
+
+			gd.waitForCaptcha.remove(user.id);
+
+			if (gd.require_input == null) {
+
+				msg.unrestrict();
+
+			}
+
+			if (!(msg instanceof Callback)) {
+
+				clearGroupPoint(user);
+
+			}
+
+			return;
+
+		}
+		
 
         if (!noRetey && gd.ft_count != null && (gd.captchaFailed == null || !gd.captchaFailed.containsKey(user.id.toString()) || (gd.captchaFailed.get(user.id.toString()) <= gd.ft_count))) {
 
             if (gd.captchaFailed == null) {
-
                 gd.captchaFailed = new HashMap<>();
 
                 gd.captchaFailed.put(user.id.toString(),1);
