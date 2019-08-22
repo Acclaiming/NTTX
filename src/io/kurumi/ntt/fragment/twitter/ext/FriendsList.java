@@ -120,7 +120,7 @@ public class FriendsList extends Fragment {
 
 		List<Status> tl = timeline;
 
-		while (!tl.isEmpty() && timeline.size() < 1000) {
+		while (!tl.isEmpty()) {
 
 			Long maxId = tl.get(tl.size() - 1).getId() - 1;
 
@@ -146,6 +146,8 @@ public class FriendsList extends Fragment {
 
 			long replyTo = status.getInReplyToUserId();
 
+			if (target.id.equals(replyTo)) continue;
+			
 			if (replyTo != -1) {
 
 				if (replyCount.containsKey(replyTo)) {
@@ -186,7 +188,7 @@ public class FriendsList extends Fragment {
 
 			InReplyTo to = iter.next();
 
-			message += (index  + 1) + " · " + to.replyCount + "· " + UserArchive.show(api,to.userId).bName();
+			message += "\n" + (index  + 1) + " · " + to.replyCount + "· " + UserArchive.show(api,to.userId).bName();
 
 		}
 
