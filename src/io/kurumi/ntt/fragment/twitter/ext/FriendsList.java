@@ -72,6 +72,8 @@ public class FriendsList extends Fragment {
 
 		}
 
+		msg.send("读取推文").async();
+		
 		LinkedList<Status> timeline;
 
 		try {
@@ -133,6 +135,8 @@ public class FriendsList extends Fragment {
 			}
 
 		}
+		
+		msg.send("解析回复").async();
 
 		// 解析回复
 
@@ -171,6 +175,8 @@ public class FriendsList extends Fragment {
 			idList.add(to.userId);
 
 		}
+		
+		msg.send("开始输出").async();
 
 		String message = params[1] + " 和谁互动最多？仅列出前十 ~\n";
 
