@@ -134,7 +134,7 @@ public class JoinCaptcha extends Fragment {
 
         registerCallback(POINT_AUTH,POINT_DELETE,POINT_ANSWER,POINT_ACC,POINT_REJ);
 		registerPoint(POINT_AUTH,POINT_DELETE,POINT_ANSWER);
-		
+
     }
 
 	@Override
@@ -672,9 +672,52 @@ public class JoinCaptcha extends Fragment {
 
         };
 
+		TimerTask check = new TimerTask() {
+
+            @Override
+            public void run() {
+
+                if (!group.containsKey(user.id)) return;
+
+				GetChatMemberResponse target = execute(new GetChatMember(data.id,user.id.intValue()));
+
+				if (!target.isOk() || !target.chatMember().isMember()) {
+
+					if (auth.authMsg != null) auth.authMsg.delete();
+
+					auth.task.cancel();
+
+					if (auth.serviceMsg != null) {
+
+						auth.serviceMsg.delete();
+
+						auth.serviceMsg = null;
+
+					}
+
+					msg.delete();
+
+					data.waitForCaptcha.remove(user.id);
+					
+					if (!(msg instanceof Callback)) {
+
+						clearGroupPoint(user);
+
+					}
+
+
+				}
+
+
+            }
+
+        };
+
+
         cache.put(msg.chatId(),group);
 
-        BotFragment.mainTimer.schedule(auth.task,new Date(System.currentTimeMillis() + ((data.captcha_time == null ? 50 : data.captcha_time) * 1000)));
+		BotFragment.mainTimer.schedule(check,new Date(System.currentTimeMillis() + 9 * 1000L));
+        BotFragment.mainTimer.schedule(auth.task,new Date(System.currentTimeMillis() + ((data.captcha_time == null ? 50 : data.captcha_time) * 1000L)));
 
     }
 
@@ -682,11 +725,11 @@ public class JoinCaptcha extends Fragment {
     public void onPoint(final UserData user,Msg msg,String point,PointData data) {
 
         if (POINT_DELETE.equals(point)) {
-			
+
             msg.delete();
-			
+
             return;
-			
+
         }
 
         final GroupData gd = GroupData.get(msg.chat());
@@ -923,7 +966,7 @@ public class JoinCaptcha extends Fragment {
             }
 
         }
-		
+
 		GetChatMemberResponse target = execute(new GetChatMember(gd.id,user.id.intValue()));
 
 		if (!target.isOk() || !target.chatMember().isMember()) {
@@ -931,7 +974,7 @@ public class JoinCaptcha extends Fragment {
 			return;
 
 		}
-		
+
 
         if (gd.captcha_del == null) {
 
@@ -1122,7 +1165,7 @@ public class JoinCaptcha extends Fragment {
             }
 
         }
-		
+
 		GetChatMemberResponse target = execute(new GetChatMember(gd.id,user.id.intValue()));
 
 		if (!target.isOk() || !target.chatMember().isMember()) {
@@ -1146,7 +1189,7 @@ public class JoinCaptcha extends Fragment {
 			return;
 
 		}
-		
+
 
         if (!noRetey && gd.ft_count != null && (gd.captchaFailed == null || !gd.captchaFailed.containsKey(user.id.toString()) || (gd.captchaFailed.get(user.id.toString()) <= gd.ft_count))) {
 
