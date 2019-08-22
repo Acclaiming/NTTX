@@ -120,7 +120,7 @@ public class FriendsList extends Fragment {
 
 		while (!tl.isEmpty() && timeline.size() < 1000) {
 
-			Long maxId = timeline.get(timeline.size() - 1).getId();
+			Long maxId = tl.get(timeline.size() - 1).getId();
 
 			try {
 
