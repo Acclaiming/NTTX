@@ -180,11 +180,11 @@ public class FriendsList extends Fragment {
 		
 		msg.send("开始输出").async();
 
-		String message = params[1] + " 和谁互动最多？仅列出前十 ~\n";
+		String message = params[1] + " 和谁互动最多 ~\n";
 		
 		iter = result.iterator();
 		
-		for (int index = 0;iter.hasNext() && index < 10;index ++) {
+		for (int index = 0;iter.hasNext() && index < 25;index ++) {
 
 			InReplyTo to = iter.next();
 
