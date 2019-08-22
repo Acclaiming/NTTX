@@ -194,7 +194,7 @@ public class FriendsList extends Fragment {
 
 		}
 
-		message += "\n\n其中哪些是正在关注的用户？\n";
+		message += "\n\n" + params[1] + "有哪些是正在关注的关注者？\n";
 
 		List<Long> ids;
 
@@ -218,7 +218,17 @@ public class FriendsList extends Fragment {
 
 		}
 
-		ids.retainAll(idList);
+		try {
+			
+			ids.retainAll(TApi.getAllFoIDs(api,target.id));
+			
+		} catch (TwitterException e) {
+			
+			msg.send(NTT.parseTwitterException(e)).async();
+			
+			return;
+			
+		}
 
 		for (Long follwing : ids) {
 
