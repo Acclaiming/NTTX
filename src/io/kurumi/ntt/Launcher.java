@@ -75,6 +75,7 @@ import io.kurumi.ntt.fragment.tinx.TelegramAdminFN;
 import io.kurumi.ntt.fragment.tinx.TelegramFN;
 import io.kurumi.ntt.fragment.tinx.TelegramListener;
 import io.kurumi.ntt.fragment.twitter.archive.TEPH;
+import io.kurumi.ntt.fragment.twitter.ext.FriendsList;
 import io.kurumi.ntt.fragment.twitter.ext.MediaDownload;
 import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
 import io.kurumi.ntt.fragment.twitter.ext.TLScanner;
@@ -97,12 +98,9 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.BotLogFactory;
 import io.kurumi.ntt.utils.Html;
-import java.security.Security;
 import java.util.TimeZone;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import io.kurumi.ntt.fragment.twitter.ext.FriendsList;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
