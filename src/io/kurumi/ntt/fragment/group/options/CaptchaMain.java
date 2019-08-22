@@ -65,7 +65,7 @@ public class CaptchaMain extends Fragment {
 
 		}
 
-		if (POINT_CUSTOM.equals(point)) {
+		if (POINT_CAPTCHA.equals(point)) {
 
 			if ("enable".equals(params[1])) {
 
