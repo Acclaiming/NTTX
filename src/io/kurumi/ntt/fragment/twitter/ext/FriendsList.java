@@ -146,7 +146,9 @@ public class FriendsList extends Fragment {
 
 		for (Status status : timeline) {
 
-			long replyTo = status.getInReplyToUserId();
+			if (status.isRetweet()) {}
+			
+			long replyTo = status.isRetweet() ? status.getRetweetedStatus().getUser().getId() : status.getInReplyToUserId();
 
 			if (target.id.equals(replyTo)) continue;
 			
