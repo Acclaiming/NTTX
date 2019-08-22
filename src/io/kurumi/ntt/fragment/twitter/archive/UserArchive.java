@@ -123,6 +123,24 @@ public class UserArchive {
         }
 
     }
+	
+	public static UserArchive get(Twitter api,Long id) {
+
+        try {
+			
+			if (contains(id)) return get(id);
+
+            User user = api.showUser(id);
+
+            return save(user);
+
+        } catch (TwitterException e) {
+
+            return null;
+
+        }
+
+    }
 
     public static UserArchive show(Twitter api,String screenName) {
 

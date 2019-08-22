@@ -192,7 +192,7 @@ public class FriendsList extends Fragment {
 
 			InReplyTo to = iter.next();
 
-			message += "\n" + (index + 1) + " · " + UserArchive.show(api,to.userId).bName();
+			message += "\n" + (index + 1) + " · " + UserArchive.get(api,to.userId).bName();
 
 		}
 
@@ -234,7 +234,7 @@ public class FriendsList extends Fragment {
 
 		for (Long follwing : ids) {
 
-			message += "\n" + UserArchive.show(api,follwing).bName();
+			message += "\n" + UserArchive.get(api,follwing).bName();
 
 		}
 
