@@ -234,7 +234,7 @@ public class FriendsList extends Fragment {
 
 		for (Long follwing : ids) {
 
-			message += "\n" + UserArchive.get(api,follwing).bName();
+			message += "\n" + UserArchive.get(api,follwing).name();
 
 		}
 
