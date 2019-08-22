@@ -130,7 +130,9 @@ public class FriendsList extends Fragment {
 
 			} catch (TwitterException e) {
 
-				break;
+				msg.send(NTT.parseTwitterException(e)).async();
+				
+				return;
 
 			}
 
