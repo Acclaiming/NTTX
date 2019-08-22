@@ -1179,9 +1179,9 @@ public class JoinCaptcha extends Fragment {
         }
 
 		GetChatMemberResponse target = execute(new GetChatMember(gd.id,user.id.intValue()));
-
-		if (!target.isOk() || !target.chatMember().isMember()) {
-
+		
+		if (target != null && target.isOk() && !target.chatMember().isMember()) {
+			
 			msg.delete();
 
 			gd.waitForCaptcha.remove(user.id);
