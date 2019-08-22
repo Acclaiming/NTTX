@@ -182,15 +182,15 @@ public class FriendsList extends Fragment {
 		
 		msg.send("开始输出").async();
 
-		String message = params[1] + " 和谁互动最多 ~\n";
+		String message = params[1] + "和谁互动最多 。\n";
 		
 		iter = result.iterator();
 		
-		for (int index = 0;iter.hasNext() && index < 25;index ++) {
+		for (int index = 0;iter.hasNext();index ++) {
 
 			InReplyTo to = iter.next();
 
-			message += "\n" + (index  + 1) + " · " + to.replyCount + "· " + UserArchive.show(api,to.userId).bName();
+			message += "\n" + to.replyCount + " · " + UserArchive.show(api,to.userId).bName();
 
 		}
 
