@@ -184,7 +184,7 @@ public class FriendsList extends Fragment {
 		
 		msg.send("开始输出").async();
 
-		String message = params[1] + "和谁互动最多 。\n";
+		String message = params[1] + "最近和谁互动最多 ？\n";
 		
 		iter = result.iterator();
 		
@@ -196,7 +196,7 @@ public class FriendsList extends Fragment {
 
 		}
 
-		message += "\n\n" + params[1] + "有哪些是正在关注的关注者？\n";
+		message += "\n\n" + params[1] + "有哪些正在关注的关注者？\n";
 
 		List<Long> ids;
 
