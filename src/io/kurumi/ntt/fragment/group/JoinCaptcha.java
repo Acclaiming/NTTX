@@ -987,14 +987,6 @@ public class JoinCaptcha extends Fragment {
 
         }
 
-		GetChatMemberResponse target = execute(new GetChatMember(gd.id,user.id.intValue()));
-
-		if (!target.isOk() || !target.chatMember().isMember()) {
-
-			return;
-
-		}
-
 
         if (gd.captcha_del == null) {
 
