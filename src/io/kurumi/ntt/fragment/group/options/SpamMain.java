@@ -50,7 +50,7 @@ public class SpamMain extends Fragment {
 
 			message += "\n\n" + OptionsMain.doc;
 
-			callback.edit(message).buttons(spamMenu(data)).html().async();
+			callback.edit(message).buttons(spamMenu(user,data)).html().async();
 
 			return;
 
@@ -107,13 +107,13 @@ public class SpamMain extends Fragment {
 
 
 		}
-		
-		callback.editMarkup(spamMenu(data));
+
+		callback.editMarkup(spamMenu(user,data));
 
 	}
 
 
-	ButtonMarkup spamMenu(final GroupData data) {
+	ButtonMarkup spamMenu(final UserData user,final GroupData data) {
 
         return new ButtonMarkup() {{
 
@@ -125,9 +125,13 @@ public class SpamMain extends Fragment {
                     .newButton("CAS")
                     .newButton(data.cas_spam != null ? "✅" : "☑",POINT_SPAM,data.id,"cas");
 
-				newButtonLine()
-                    .newButton("黑箱")
-                    .newButton(data.backhole != null ? "✅" : "☑",POINT_SPAM,data.id,"backhole");
+				if (user.admin() && data.backhole != null) {
+
+					newButtonLine()
+						.newButton("黑箱")
+						.newButton(data.backhole != null ? "✅" : "☑",POINT_SPAM,data.id,"backhole");
+
+				}
 
 				newButtonLine("🔙",OptionsMain.POINT_OPTIONS,data.id);
 
