@@ -11,6 +11,7 @@ import io.kurumi.ntt.utils.NTT;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import io.kurumi.ntt.utils.NTT.Accessable;
 
 public class StatusGetter extends Fragment {
 
@@ -138,11 +139,11 @@ public class StatusGetter extends Fragment {
 
         } catch (TwitterException ex) {
 
-            TAuth auth = NTT.loopFindAccessable(NTT.parseScreenName(params[0]));
+            NTT.Accessable auth = NTT.loopFindAccessable(NTT.parseScreenName(params[0]));
 
             if (auth != null) {
 
-                api = auth.createApi();
+                api = auth.auth.createApi();
 
             }
 

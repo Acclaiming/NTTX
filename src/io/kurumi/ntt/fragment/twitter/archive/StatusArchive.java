@@ -31,6 +31,7 @@ import twitter4j.TwitterException;
 import twitter4j.URLEntity;
 import twitter4j.UserMentionEntity;
 import java.io.IOException;
+import io.kurumi.ntt.utils.NTT.Accessable;
 
 public class StatusArchive {
 
@@ -704,13 +705,13 @@ public class StatusArchive {
 
             } catch (TwitterException ex) {
 
-                TAuth accessable = NTT.loopFindAccessable(inReplyToUserId);
+                NTT.Accessable accessable = NTT.loopFindAccessable(inReplyToUserId);
 
                 if (accessable != null) {
 
                     try {
 
-                        Status status = accessable.createApi().showStatus(inReplyToStatusId);
+                        Status status = accessable.auth.createApi().showStatus(inReplyToStatusId);
 
                         StatusArchive inReplyTo = StatusArchive.save(status);
 
@@ -748,13 +749,13 @@ public class StatusArchive {
 
                 if (quotedUserId != -1) {
 
-                    TAuth accessable = NTT.loopFindAccessable(quotedUserId);
+                    NTT.Accessable accessable = NTT.loopFindAccessable(quotedUserId);
 
                     if (accessable != null) {
 
                         try {
 
-                            Status status = accessable.createApi().showStatus(quotedStatusId);
+                            Status status = accessable.auth.createApi().showStatus(quotedStatusId);
 
                             StatusArchive quoted = StatusArchive.save(status);
 

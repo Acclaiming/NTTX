@@ -77,6 +77,20 @@ public class NTT {
 
 	 */
 	 
+	public static UserArchive findUser(Twitter api,String idOrName) throws TwitterException {
+		
+		if (NumberUtil.isNumber(idOrName)) {
+			
+			return UserArchive.save(api.showUser(NumberUtil.parseLong(idOrName)));
+			
+		} else {
+			
+			return UserArchive.save(api.showUser(NTT.parseScreenName(idOrName)));
+			
+		}
+		
+	}
+	 
 	public static Date nextHour(int offset) {
 		
 		Date next = new Date();
@@ -190,8 +204,20 @@ public class NTT {
         return true;
 
     }
+	
+	public static class Accessable {
+		
+		public TAuth auth;
+		public ResponseList<Status> timeline;
 
-    public static TAuth loopFindAccessable(Object idOrScreenName) {
+		public Accessable(TAuth auth,ResponseList<Status> timeline) {
+			this.auth = auth;
+			this.timeline = timeline;
+		}
+		
+	}
+
+    public static Accessable loopFindAccessable(Object idOrScreenName) {
 
         long targetL = NumberUtil.isNumber(idOrScreenName.toString()) ? NumberUtil.parseLong(idOrScreenName.toString()) : -1;
         String targetS = idOrScreenName.toString();
@@ -212,7 +238,7 @@ public class NTT {
 
                         TAuth newAuth = TAuth.getById(acc.id);
 
-                        if (newAuth != null) return newAuth;
+                        if (newAuth != null) return new Accessable(newAuth,null);
 
                     }
 
@@ -220,11 +246,9 @@ public class NTT {
 
                 } else {
 
-                    api.getUserTimeline(user.id, new Paging().count(1));
+                    return new Accessable(auth,api.getUserTimeline(user.id, new Paging().count(200)));
 
                 }
-
-                return auth;
 
             } catch (TwitterException e) {
 

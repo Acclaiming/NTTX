@@ -15,6 +15,7 @@ import java.util.HashSet;
 import cn.hutool.core.util.ArrayUtil;
 import twitter4j.ResponseList;
 import java.util.TreeSet;
+import io.kurumi.ntt.utils.NTT.Accessable;
 
 public class GetRepliesTest extends Fragment {
 
@@ -77,9 +78,9 @@ public class GetRepliesTest extends Fragment {
 
 			} catch (TwitterException ex) {
 
-				TAuth auth = NTT.loopFindAccessable(NTT.parseScreenName(params[0]));
+				NTT.Accessable accessable = NTT.loopFindAccessable(NTT.parseScreenName(params[0]));
 
-				if (auth == null) {
+				if (accessable == null) {
 
 					msg.send(NTT.parseTwitterException(ex)).async();
 
@@ -87,7 +88,7 @@ public class GetRepliesTest extends Fragment {
 
 				}
 
-                api = auth.createApi();
+                api = accessable.auth.createApi();
 
 			}
 

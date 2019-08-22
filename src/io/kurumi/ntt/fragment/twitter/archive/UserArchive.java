@@ -1,15 +1,24 @@
 package io.kurumi.ntt.fragment.twitter.archive;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.Data;
+import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.tasks.TrackTask;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import twitter4j.URLEntity;
 import twitter4j.User;
 
 import static com.mongodb.client.model.Filters.*;
@@ -22,11 +31,6 @@ import static com.mongodb.client.model.Updates.set;
 import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
-import cn.hutool.core.date.DateUtil;
-import java.util.Date;
-import twitter4j.URLEntity;
-import io.kurumi.ntt.fragment.twitter.TAuth;
-import cn.hutool.core.util.ArrayUtil;
 
 public class UserArchive {
 
@@ -49,6 +53,60 @@ public class UserArchive {
     public transient String oldPhotoUrl;
     public transient String oldBannerUrl;
     private transient String oldScreename;
+
+	public static LinkedList<UserArchive> lookupAll(Twitter api,LinkedList<Long> ids) {
+
+		LinkedList<UserArchive> all = new LinkedList<>();
+
+		while (ids != null && !ids.isEmpty()) {
+
+			List<Long> target;
+
+			if (ids.size() > 100) {
+
+				target = CollectionUtil.sub(ids,0,100);
+				ids.removeAll(target);
+
+			} else {
+
+				target = new LinkedList<>();
+				target.addAll(ids);
+
+				ids.clear();
+
+			}
+
+			try {
+
+				ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
+
+				for (User tuser : result) {
+
+					target.remove(tuser.getId());
+
+					all.add(UserArchive.save(tuser));
+
+				}
+
+				for (Long da : target) {
+
+					if (contains(da)) {
+
+						all.add(get(da));
+
+					}
+
+				}
+
+			} catch (TwitterException e) {
+
+			}
+
+		}
+		
+		return all;
+		
+	}
 
     public static UserArchive show(Twitter api,Long id) {
 
@@ -162,7 +220,7 @@ public class UserArchive {
 		boolean change = false;
         StringBuilder str = new StringBuilder();
         String split = "\n--------------------------------\n";
-		
+
         if (user == null && !isDisappeared) {
 
             isDisappeared = true;
@@ -213,7 +271,7 @@ public class UserArchive {
 
         }
 
-        
+
         String nameL = name;
 
         if (!(name = user.getName()).equals(nameL)) {
@@ -279,15 +337,15 @@ public class UserArchive {
         if (!ObjectUtil.equal(bannerUrl = user.getProfileBannerURL(),oldBannerUrl)) {
 
             str.append(split).append("横幅更改 : ");
-			
+
 			if (photoUrl != null) {
-				
+
 				str.append(Html.a("新横幅",photoUrl));
-				
+
 			} else {
-				
+
 				str.append("移除横幅");
-				
+
 			}
 
             change = true;
@@ -322,7 +380,7 @@ public class UserArchive {
             change = false;
 
         }
-		
+
 		if (isDisappeared) {
 
             isDisappeared = false;
@@ -338,39 +396,39 @@ public class UserArchive {
 			change = true;
 
         }
-		
+
 		following = user.getFriendsCount();
 		followers = user.getFollowersCount();
 		location = user.getLocation();
-		
+
 		if (TAuth.contains(id) && ArrayUtil.contains(Env.ADMINS,TAuth.getById(id).user)) return false;
-		
+
         if (change) {
 
             TrackTask.onUserChange(this,str.toString());
 
         }
-		
+
         return change;
 
     }
-	
+
 	public String bName() {
-		
+
 		return Html.b(name) + " " + Html.a("@" + screenName,url());
-		
+
 	}
-	
+
 	public String formatSimple() {
-	
+
 		String message = "ID : " + Html.code(id);
-		
+
 		message += "\nName : " + name;
-		
+
 		message += "\nSN : " + Html.a("@" + screenName,url());
-		
+
 		return message;
-		
+
 	}
 
 	public String formatToChannel() {

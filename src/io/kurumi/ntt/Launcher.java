@@ -102,6 +102,7 @@ import java.util.TimeZone;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import io.kurumi.ntt.fragment.twitter.ext.FriendsList;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -457,6 +458,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		addFragment(new CodecFN());
 		addFragment(new DigestFN());
 		addFragment(new CryptoFN());
+		
+		addFragment(new FriendsList());
 		
         // QQ
 

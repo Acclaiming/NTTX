@@ -16,6 +16,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.Env;
+import io.kurumi.ntt.utils.NTT.Accessable;
 
 public class StatusFetch extends Fragment {
 
@@ -128,7 +129,7 @@ public class StatusFetch extends Fragment {
 
 				status.edit("尝试拉取...").exec();
 
-				TAuth accessableAuth = NTT.loopFindAccessable(targetL == -1 ? target : targetL);
+				NTT.Accessable accessableAuth = NTT.loopFindAccessable(targetL == -1 ? target : targetL);
 
 				if (accessableAuth == null) {
 
@@ -148,7 +149,7 @@ public class StatusFetch extends Fragment {
 
 				}
 
-				api = accessableAuth.createApi();
+				api = accessableAuth.auth.createApi();
 
 				if (archive == null) {
 
