@@ -27,7 +27,7 @@ public class GroupFunction extends Fragment {
 			return PROCESS_SYNC;
 
         }
-		
+
         GroupData data = GroupData.get(msg.chat());
 
         synchronized (data) {
@@ -47,9 +47,9 @@ public class GroupFunction extends Fragment {
 					data.log(this,"#删除频道消息 删除了来自频道的置顶消息");
 
                 }
-				
+
 				return PROCESS_REJECT;
-				
+
             } else if (msg.message().leftChatMember() != null) {
 
                 if (msg.message().leftChatMember().id().equals(origin.me.id())) {
@@ -64,13 +64,13 @@ public class GroupFunction extends Fragment {
 
             } else if (GroupAdmin.fastAdminCheck(this,data,user.id,false)) {
 
-             //   if (msg.message().newChatMembers() != null) msg.delete();
-				
+				//   if (msg.message().newChatMembers() != null) msg.delete();
+
             } else if (msg.message().newChatMembers() != null) {
 
                 User newUser = msg.message().newChatMembers()[0];
 
-                if (newUser.id().equals(origin.me.id())) {
+                if (newUser.id().equals(user.id) || newUser.id().equals(origin.me.id())) {
 
                     return PROCESS_CONTINUE;
 
@@ -98,7 +98,7 @@ public class GroupFunction extends Fragment {
 
 
                         }
-						
+
                     } else {
 
                         if (data.invite_user_ban != null) {
@@ -115,13 +115,13 @@ public class GroupFunction extends Fragment {
 
                         }
 
-                    
-						}
+
+					}
 
                     data.waitForCaptcha.remove(user.id);
-					
-						return PROCESS_REJECT;
-						
+
+					return PROCESS_REJECT;
+
 
                 } else if (data.no_invite_bot != null && newUser.isBot()) {
 
@@ -140,7 +140,7 @@ public class GroupFunction extends Fragment {
 					data.log(this,"#成员限制 #邀请 #邀请机器人","机器人 : @" + newUser.username(),"用户 : " + user.userName());
 
 					return PROCESS_REJECT;
-					
+
                 } else if (data.no_invite_user != null && !newUser.isBot()) {
 
                     msg.delete();
@@ -156,7 +156,7 @@ public class GroupFunction extends Fragment {
 					data.log(this,"#成员限制 #邀请 #邀请用户","被邀请用户 : " + UserData.get(newUser).userName(),"用户 : " + user.userName());
 
 					return PROCESS_REJECT;
-					
+
                 }
 
                 if (data.delete_service_msg != null) {
@@ -182,7 +182,7 @@ public class GroupFunction extends Fragment {
 						data.log(this,"#删除服务消息 删除了加群消息");
 
                     }
-					
+
 					return PROCESS_REJECT;
 
                 }
@@ -204,7 +204,7 @@ public class GroupFunction extends Fragment {
 				data.log(this,"#成员限制 #烂俗消息",user.format());
 
 				return PROCESS_REJECT;
-				
+
             } else if (msg.sticker() != null) {
 
                 if (msg.sticker().isAnimated() && data.no_animated_sticker != null) {
@@ -234,7 +234,7 @@ public class GroupFunction extends Fragment {
 					data.log(this,"#成员限制 #动态贴纸",user.format());
 
 					return PROCESS_REJECT;
-					
+
                 } else if (data.no_esu_stickers != null && ArrayUtil.contains(MaliciousMessage.esuStickers,msg.sticker().setName())) {
 
 					msg.delete();
@@ -246,9 +246,9 @@ public class GroupFunction extends Fragment {
                     }
 
 					data.log(this,"#成员限制 #烂俗贴纸",user.format());
-				
+
 					return PROCESS_REJECT;
-					
+
 				}
 
             } else if (msg.message().photo() != null && data.no_image != null) {
@@ -264,7 +264,7 @@ public class GroupFunction extends Fragment {
 				data.log(this,"#成员限制 #图片",user.format());
 
 				return PROCESS_REJECT;
-				
+
             } else if (msg.message().animation() != null && data.no_animation != null) {
 
                 msg.delete();
@@ -278,7 +278,7 @@ public class GroupFunction extends Fragment {
 				data.log(this,"#成员限制 #动图",user.format());
 
 				return PROCESS_REJECT;
-			
+
             } else if (msg.message().audio() != null && data.no_audio != null) {
 
                 msg.delete();
@@ -292,7 +292,7 @@ public class GroupFunction extends Fragment {
 				data.log(this,"#成员限制 #音频",user.format());
 
 				return PROCESS_REJECT;
-				
+
             } else if (msg.message().voice() != null && data.no_voice != null) {
 
                 msg.delete();
@@ -306,7 +306,7 @@ public class GroupFunction extends Fragment {
 				data.log(this,"#成员限制 #语音",user.format());
 
 				return PROCESS_REJECT;
-				
+
             } else if (msg.message().video() != null && data.no_video != null) {
 
                 msg.delete();
@@ -320,7 +320,7 @@ public class GroupFunction extends Fragment {
 				data.log(this,"#成员限制 #视频",user.format());
 
 				return PROCESS_REJECT;
-				
+
             } else if (msg.message().videoNote() != null && data.no_video_note != null) {
 
                 msg.delete();
@@ -334,7 +334,7 @@ public class GroupFunction extends Fragment {
 				data.log(this,"#成员限制 #录制视频",user.format());
 
 				return PROCESS_REJECT;
-				
+
             } else if (msg.message().contact() != null && data.no_contact != null) {
 
                 msg.delete();
@@ -348,7 +348,7 @@ public class GroupFunction extends Fragment {
 				data.log(this,"#成员限制 #名片",user.format());
 
 				return PROCESS_REJECT;
-				
+
             } else if (msg.message().location() != null && data.no_location != null) {
 
                 msg.delete();
@@ -362,7 +362,7 @@ public class GroupFunction extends Fragment {
 				data.log(this,"#成员限制 #分享位置",user.format());
 
 				return PROCESS_REJECT;
-				
+
             } else if (msg.doc() != null && msg.message().animation() == null && data.no_file != null) {
 
                 msg.delete();
@@ -376,13 +376,13 @@ public class GroupFunction extends Fragment {
 				data.log(this,"#成员限制 #文件",user.format());
 
 				return PROCESS_REJECT;
-				
+
             }
 
         }
-		
+
 		return PROCESS_CONTINUE;
-		
+
 
     }
 
