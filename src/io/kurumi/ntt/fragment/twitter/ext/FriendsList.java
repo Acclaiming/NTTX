@@ -128,6 +128,8 @@ public class FriendsList extends Fragment {
 
 				tl = api.getUserTimeline(target.id,new Paging().count(200).maxId(maxId));
 
+				timeline.addAll(tl);
+				
 			} catch (TwitterException e) {
 
 				msg.send(NTT.parseTwitterException(e)).async();
