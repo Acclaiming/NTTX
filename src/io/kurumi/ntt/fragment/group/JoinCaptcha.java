@@ -6,12 +6,16 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.DeleteMessage;
+import com.pengrad.telegrambot.request.GetChatMember;
 import com.pengrad.telegrambot.request.KickChatMember;
 import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.request.SendSticker;
+import com.pengrad.telegrambot.response.GetChatMemberResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import io.kurumi.ntt.db.GroupData;
 import io.kurumi.ntt.db.PointData;
@@ -40,13 +44,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
-import com.pengrad.telegrambot.request.GetChatMember;
-import com.pengrad.telegrambot.response.GetChatMemberResponse;
 
 public class JoinCaptcha extends Fragment {
 
     public static Pattern arabicCharacter = Pattern.compile("\\x{0600}-\\x{06FF}\\x{0750}-\\x{077F}\\x{08A0}-\\x{08FF}\\x{FB50}-\\x{FDFF}\\x{FE70}-\\x{FEFF}\\x{10E60}-\\x{10E7F}\\x{1EC70}-\\x{1ECBF}\\x{1ED00}-\\x{1ED4F}\\x{1EE00}-\\x{1EEFF}");
 
+	public static Log log = LogFactory.get(JoinCaptcha.class);
+	
     // static Pattern arabicCharacter = Pattern.compile("\\p{Arabic}",Pattern.UNICODE_CHARACTER_CLASS);
 
     final String POINT_AUTH = "join_auth";
@@ -161,6 +165,8 @@ public class JoinCaptcha extends Fragment {
 
                 if (ReUtil.isMatch(arabicCharacter,newData.name())) {
 
+					log.debug("移除了清真用户 {} ( {} )",newData.name(),newData.id);
+					
                     msg.delete();
 
                     msg.kick();
@@ -179,6 +185,8 @@ public class JoinCaptcha extends Fragment {
 
                     msg.delete();
 
+					log.debug("移除了黑名单用户 {} ( {} )",newData.name(),newData.id);
+					
                     return;
 
                 }
@@ -199,6 +207,8 @@ public class JoinCaptcha extends Fragment {
 
                             msg.send(newData.userName() + " 在 Combot Anit-Spam 黑名单内，已禁言。\n详情请查看 : https://combot.org/cas/query?u=" + newData.id).html().async();
 
+							log.debug("禁言了 ComBot Spam {} ( {} )",newData.name(),newData.id);
+							
 							return;
 
                         }
@@ -364,6 +374,8 @@ public class JoinCaptcha extends Fragment {
                 if (data.passive_mode != null) {
 
                     msg.restrict();
+					
+					log.debug("限制了新成员 {} ( {} ) 等待被动验证",newData.name(),newData.id);
 
                     if (data.delete_service_msg != null) {
 
@@ -425,6 +437,8 @@ public class JoinCaptcha extends Fragment {
 
                 failed(user,msg,group.get(newData.id),data,"主动退群");
 
+				log.debug("验证中的 {} ( {} ) 退群了",newData.name(),newData.id);
+				
             }
 
         } else if (data.waitForCaptcha != null && data.waitForCaptcha.contains(user.id)) {
@@ -452,6 +466,8 @@ public class JoinCaptcha extends Fragment {
 
     void startAuth(final UserData user,final Msg msg,final GroupData data,VerifyCode left) {
 
+		long start = System.currentTimeMillis();
+		
         final HashMap<Long, AuthCache> group = cache.containsKey(msg.chatId()) ? cache.get(msg.chatId()) : new HashMap<Long, AuthCache>();
 
         setGroupPoint(user,POINT_DELETE);
@@ -533,6 +549,8 @@ public class JoinCaptcha extends Fragment {
 			}};
 
 
+		log.debug("正在为用户 {} ( {} ) 拉起验证",user.name(),user.id);
+		
         final AuthCache auth = new AuthCache();
 
         auth.user = user;
@@ -719,6 +737,8 @@ public class JoinCaptcha extends Fragment {
 		BotFragment.mainTimer.schedule(check,new Date(System.currentTimeMillis() + 5 * 1000L));
         BotFragment.mainTimer.schedule(auth.task,new Date(System.currentTimeMillis() + ((data.captcha_time == null ? 50 : data.captcha_time) * 1000L)));
 
+		log.debug("已拉起验证 {} ( {} ) 用时 {}s",user.name(),user.id,(System.currentTimeMillis() - start) / 1000d);
+		
     }
 
     @Override
