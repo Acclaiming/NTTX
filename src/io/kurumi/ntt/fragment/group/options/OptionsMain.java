@@ -177,7 +177,7 @@ public class OptionsMain extends Fragment {
 
 				newButtonLine("🛠️  功能 选项",ServiceMain.POINT_SERVICE,data.id);
 				newButtonLine("📝  成员 限制",RestMain.POINT_REST,data.id);
-				newButtonLine("🚪  加群 验证",RestMain.POINT_REST,data.id);
+				newButtonLine("🚪  加群 验证",CaptchaMain.POINT_CAPTCHA,data.id);
 				newButtonLine("📢  欢迎 消息",WelcomeMain.POINT_WELCOME,data.id);
 				newButtonLine("🔎  Anti Spam",SpamMain.POINT_SPAM,data.id);
 				newButtonLine("🎥  日志 记录",LogMain.POINT_LOG,data.id);
