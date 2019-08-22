@@ -716,7 +716,7 @@ public class JoinCaptcha extends Fragment {
 
         cache.put(msg.chatId(),group);
 
-		BotFragment.mainTimer.schedule(check,new Date(System.currentTimeMillis() + 9 * 1000L));
+		BotFragment.mainTimer.schedule(check,new Date(System.currentTimeMillis() + 5 * 1000L));
         BotFragment.mainTimer.schedule(auth.task,new Date(System.currentTimeMillis() + ((data.captcha_time == null ? 50 : data.captcha_time) * 1000L)));
 
     }
