@@ -699,7 +699,7 @@ public class JoinCaptcha extends Fragment {
 
 				GetChatMemberResponse target = execute(new GetChatMember(data.id,user.id.intValue()));
 
-				if (!target.isOk() || !target.chatMember().isMember()) {
+				if (target != null && target.isOk() && !target.chatMember().isMember()) {
 
 					if (auth.authMsg != null) auth.authMsg.delete();
 
