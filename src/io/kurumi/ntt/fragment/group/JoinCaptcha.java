@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
+import com.pengrad.telegrambot.model.ChatMember;
 
 public class JoinCaptcha extends Fragment {
 
@@ -699,7 +700,7 @@ public class JoinCaptcha extends Fragment {
 
 				GetChatMemberResponse target = execute(new GetChatMember(data.id,user.id.intValue()));
 
-				if (target != null && target.isOk() && !target.chatMember().isMember()) {
+				if (target.isOk() && (target.chatMember().status() == ChatMember.Status.left && target.chatMember().status() == ChatMember.Status.kicked)) {
 
 					if (auth.authMsg != null) auth.authMsg.delete();
 
@@ -1180,7 +1181,7 @@ public class JoinCaptcha extends Fragment {
 
 		GetChatMemberResponse target = execute(new GetChatMember(gd.id,user.id.intValue()));
 		
-		if (target != null && target.isOk() && !target.chatMember().isMember()) {
+		if (target.isOk() && (target.chatMember().status() == ChatMember.Status.left && target.chatMember().status() == ChatMember.Status.kicked)) {
 			
 			msg.delete();
 
