@@ -36,10 +36,10 @@ public class StatusSearch extends Fragment {
     }
 
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
 		params = msg.params();
-		
+
         int index = 0;
 
         long from = -1;
@@ -47,6 +47,8 @@ public class StatusSearch extends Fragment {
         long to = -1;
 
         long reply = -1;
+
+		long quoted = -1;
 
         int media = 0;
 
@@ -64,7 +66,7 @@ public class StatusSearch extends Fragment {
 
             if (param.startsWith("from=")) {
 
-                String fromC = StrUtil.subAfter(param, "=", false);
+                String fromC = StrUtil.subAfter(param,"=",false);
 
                 if (NumberUtil.isNumber(fromC)) {
 
@@ -90,7 +92,7 @@ public class StatusSearch extends Fragment {
 
             } else if (param.startsWith("to=")) {
 
-                String toC = StrUtil.subAfter(param, "=", false);
+                String toC = StrUtil.subAfter(param,"=",false);
 
                 if (NumberUtil.isNumber(toC)) {
 
@@ -114,11 +116,18 @@ public class StatusSearch extends Fragment {
 
                 }
 
+			} else if (param.startsWith("q=")) {
+
+				String replyC = StrUtil.subAfter(param,"=",false);
+
+				reply = NTT.parseStatusId(replyC);
+
+
             } else if (param.startsWith("reply=")) {
 
-                String replyC = StrUtil.subAfter(param, "=", false);
+                String replyC = StrUtil.subAfter(param,"=",false);
 
-                reply = NumberUtil.parseLong(replyC);
+                reply = NTT.parseStatusId(replyC);
 
             } else if (param.startsWith("media=")) {
 
@@ -130,7 +139,7 @@ public class StatusSearch extends Fragment {
 
             } else if (param.startsWith("utc=")) {
 
-                String utcS = StrUtil.subAfter(param, "=", false);
+                String utcS = StrUtil.subAfter(param,"=",false);
 
                 try {
 
@@ -146,11 +155,11 @@ public class StatusSearch extends Fragment {
 
             } else if (param.startsWith("start=")) {
 
-                String startS = StrUtil.subAfter(param, "=", false);
+                String startS = StrUtil.subAfter(param,"=",false);
 
                 try {
 
-                    start = DateUtil.parse(startS, "yyyy-MM-dd/HH:mm").toCalendar(TimeZone.getTimeZone("UTC")).getTimeInMillis();
+                    start = DateUtil.parse(startS,"yyyy-MM-dd/HH:mm").toCalendar(TimeZone.getTimeZone("UTC")).getTimeInMillis();
 
                 } catch (Exception ex) {
 
@@ -162,11 +171,11 @@ public class StatusSearch extends Fragment {
 
             } else if (param.startsWith("end=")) {
 
-                String endS = StrUtil.subAfter(param, "=", false);
+                String endS = StrUtil.subAfter(param,"=",false);
 
                 try {
 
-                    end = DateUtil.parse(endS, "yyyy-MM-dd/HH:mm").toCalendar(TimeZone.getTimeZone("UTC")).getTimeInMillis();
+                    end = DateUtil.parse(endS,"yyyy-MM-dd/HH:mm").toCalendar(TimeZone.getTimeZone("UTC")).getTimeInMillis();
 
                 } catch (Exception ex) {
 
@@ -188,12 +197,12 @@ public class StatusSearch extends Fragment {
         if (params.length == 0) {
 
             msg.send("推文查询 /search [参数...] 内容").async();
-			
+
             return;
 
         }
 
-        String content = ArrayUtil.join(ArrayUtil.sub(params, index, params.length), " ");
+        String content = ArrayUtil.join(ArrayUtil.sub(params,index,params.length)," ");
 
         if (content.toCharArray().length > 100) {
         }
@@ -232,7 +241,7 @@ public class StatusSearch extends Fragment {
 
         search.id = MongoIDs.getNextId(SavedSearch.class.getSimpleName());
 
-        SavedSearch.data.setById(search.id, search);
+        SavedSearch.data.setById(search.id,search);
 
         status.edit("创建查询√\n正在查询...").exec();
 
@@ -248,12 +257,12 @@ public class StatusSearch extends Fragment {
 
         }
 
-        status.edit(exportContent(search, 1)).buttons(makeButtons(search.id, count, 1)).html().exec();
+        status.edit(exportContent(search,1)).buttons(makeButtons(search.id,count,1)).html().exec();
 
     }
 
     @Override
-    public void onCallback(UserData user, Callback callback, String point, String[] params) {
+    public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
         callback.sendTyping();
 
@@ -274,11 +283,11 @@ public class StatusSearch extends Fragment {
 
         long count = search.count();
 
-        callback.edit(exportContent(search, cursor)).buttons(makeButtons(searchId, count, cursor)).html().exec();
+        callback.edit(exportContent(search,cursor)).buttons(makeButtons(searchId,count,cursor)).html().exec();
 
     }
 
-    String exportContent(SavedSearch search, long cursor) {
+    String exportContent(SavedSearch search,long cursor) {
 
         StringBuilder format = new StringBuilder("------------------ 查询结果 -------------------");
 
@@ -288,17 +297,17 @@ public class StatusSearch extends Fragment {
 
         }
 
-        for (StatusArchive archive : search.query((int) (cursor - 1) * 10, 10)) {
+        for (StatusArchive archive : search.query((int) (cursor - 1) * 10,10)) {
 
             String text = archive.text;
 
             if (text.length() > 100) {
 
-                text = StrUtil.subPre(text, 27) + "...";
+                text = StrUtil.subPre(text,27) + "...";
 
             }
 
-            format.append("\n\n").append(Html.a(archive.user().name + " : " + text, "https://t.me/" + origin.me.username() + "?start=" + StatusGetter.PAYLOAD_SHOW_STATUS + PAYLOAD_SPLIT + archive.id));
+            format.append("\n\n").append(Html.a(archive.user().name + " : " + text,"https://t.me/" + origin.me.username() + "?start=" + StatusGetter.PAYLOAD_SHOW_STATUS + PAYLOAD_SPLIT + archive.id));
 
         }
 
@@ -306,39 +315,39 @@ public class StatusSearch extends Fragment {
 
     }
 
-    ButtonMarkup makeButtons(final long searchId, final long count, final long current) {
+    ButtonMarkup makeButtons(final long searchId,final long count,final long current) {
 
         return new ButtonMarkup() {{
 
-            ButtonLine line = newButtonLine();
+				ButtonLine line = newButtonLine();
 
-            if (current > 1) {
+				if (current > 1) {
 
-                line.newButton(" □ ", POINT_SHOW_PAGE, searchId, 1);
+					line.newButton(" □ ",POINT_SHOW_PAGE,searchId,1);
 
-                line.newButton(" << ", POINT_SHOW_PAGE, searchId, current - 1);
+					line.newButton(" << ",POINT_SHOW_PAGE,searchId,current - 1);
 
-            }
+				}
 
-            int max = (int) count / 10;
+				int max = (int) count / 10;
 
-            if (count % 10 != 0) {
+				if (count % 10 != 0) {
 
-                max++;
+					max++;
 
-            }
+				}
 
-            line.newButton(current + " / " + max, "null");
+				line.newButton(current + " / " + max,"null");
 
-            if (current < max) {
+				if (current < max) {
 
-                line.newButton(" >> ", POINT_SHOW_PAGE, searchId, current + 1);
+					line.newButton(" >> ",POINT_SHOW_PAGE,searchId,current + 1);
 
-                line.newButton(" ■ ", POINT_SHOW_PAGE, searchId, max);
+					line.newButton(" ■ ",POINT_SHOW_PAGE,searchId,max);
 
-            }
+				}
 
-        }};
+			}};
 
     }
 
