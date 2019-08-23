@@ -578,9 +578,9 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 		} else {
 
-			msg.reply("很抱歉, NTT需要 " + Html.b("限制成员") + " 和 " + Html.b("删除消息") + " 权限以正常运行, 如果需要继续, 请管理员将机器人添加为管理员.").html().async();
-
-			msg.exit();
+			msg.reply("这里是NTT, 使用 /options 调出设置选单, 群组管理相关功能需要删除消息与限制用户权限.").async();
+			
+			// msg.exit();
 
 		}
 
