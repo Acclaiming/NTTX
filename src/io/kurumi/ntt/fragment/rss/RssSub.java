@@ -309,14 +309,6 @@ public class RssSub extends Fragment {
     @Override
     public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-        if (user.blocked()) {
-
-            msg.send("你不能这么做 (为什么？)").async();
-
-            return;
-
-        }
-
         if (function.endsWith("import")) {
 
             PointData data = setPrivatePoint(user,msg,POINT_IMPORT_OPML);

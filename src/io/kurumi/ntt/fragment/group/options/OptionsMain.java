@@ -64,14 +64,6 @@ public class OptionsMain extends Fragment {
 	@Override
     public void onFunction(UserData user,final Msg msg,String function,String[] params) {
 
-        if (user.blocked()) {
-
-            msg.send("你不能这么做 (为什么？)").failedWith();
-
-            return;
-
-        }
-
         final GroupData data = GroupData.get(msg.chat());
 
         if (!NTT.isGroupAdmin(this,msg.chatId(),user.id)) {

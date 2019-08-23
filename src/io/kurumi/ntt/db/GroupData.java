@@ -131,7 +131,7 @@ public class GroupData {
 
         if (time == null) {
 
-            return "50s";
+            return "50秒";
 
         } else if (time < 60) {
 

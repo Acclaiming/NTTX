@@ -32,14 +32,6 @@ public class NewBot extends Fragment {
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        if (user.blocked()) {
-
-            msg.send("你不能这么做 (为什么？)").async();
-
-            return;
-
-        }
-
         CreateBot create = new CreateBot(msg);
 
         msg.send("现在请输入BotToken :\n\nBotToken可以当成TelegramBot登录的账号密码、需要在 @BotFather 申请。").withCancel().exec(create);

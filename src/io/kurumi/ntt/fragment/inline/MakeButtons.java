@@ -32,14 +32,6 @@ public class MakeButtons extends Fragment {
 
         }
 
-        if (user.blocked()) {
-
-            executeAsync(inlineQuery.update, inlineQuery.article("你不能这么做 (为什么？)", ":(", null, null).reply().cacheTime(114514));
-
-            return;
-
-        }
-
         String text = inlineQuery.text;
 
         boolean html = false;
