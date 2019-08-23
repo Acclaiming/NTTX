@@ -43,7 +43,7 @@ public class AccountMain extends Fragment {
 			return;
 
 		}
-		
+
 		long accountId = NumberUtil.parseLong(params[0]);
 
 		TAuth account = TAuth.getById(accountId);
@@ -65,6 +65,10 @@ public class AccountMain extends Fragment {
 		} else if (POINT_LOGOUT.equals(point)) {
 
 			accountLogout(user,callback,account);
+
+		} else if (POINT_LOGOUT_CONFIRM.equals(point)) {
+
+			confirmLogout(user,callback,account);
 
 		} else if (POINT_EXPORT.equals(point)) {
 
@@ -95,7 +99,7 @@ public class AccountMain extends Fragment {
 		functions.newButtonLine("推文流 >>",TimelineMain.POINT_TL,account.id);
 		functions.newButtonLine("自动删除 >>",DeleteMain.POINT_DELETE,account.id);
 		functions.newButtonLine("实验性 >>",ExtraMain.POINT_EXTRA,account.id);
-		
+
 		functions.newButtonLine()
 			.newButton(LocalString.get(user).TWITTER_AUTH_EXPORT,POINT_EXPORT,account.id)
 			.newButton(LocalString.get(user).TWITTER_AUTH_REMOVE,POINT_LOGOUT,account.id);
