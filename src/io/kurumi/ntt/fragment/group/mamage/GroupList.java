@@ -32,6 +32,8 @@ public class GroupList extends Fragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 		
+		GroupData.data.saveAll();
+		
 		String message = exportContent(1);
 		
 		msg.send(message).buttons(makeButtons(GroupData.data.collection.countDocuments(),1)).html().async();
@@ -40,6 +42,8 @@ public class GroupList extends Fragment {
 
 	@Override
 	public void onCallback(UserData user,Callback callback,String point,String[] params) {
+		
+		GroupData.data.saveAll();
 		
 		int cursor = NumberUtil.parseInt(params[0]);
 
