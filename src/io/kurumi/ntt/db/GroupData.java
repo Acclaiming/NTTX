@@ -89,6 +89,7 @@ public class GroupData {
             group.title = chat.title();
 			group.username = chat.username();
 			group.bot = fragment.origin.me.id();
+			group.last = System.currentTimeMillis();
 			
 			if (group.username == null && group.link == null) {
 				
@@ -120,6 +121,7 @@ public class GroupData {
 	public String link;
 	public String username;
 	public Long bot;
+	public Long last;
 	
     public Long owner;
 

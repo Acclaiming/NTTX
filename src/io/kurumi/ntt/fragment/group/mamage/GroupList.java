@@ -1,19 +1,16 @@
 package io.kurumi.ntt.fragment.group.mamage;
 
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
+import io.kurumi.ntt.db.GroupData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
-import io.kurumi.ntt.fragment.twitter.ext.StatusGetter;
-import io.kurumi.ntt.fragment.twitter.status.SavedSearch;
+import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonLine;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.utils.Html;
-import io.kurumi.ntt.db.GroupData;
-import io.kurumi.ntt.model.Callback;
-import cn.hutool.core.util.NumberUtil;
 
 public class GroupList extends Fragment {
 
