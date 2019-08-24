@@ -34,6 +34,8 @@ public class FetchGroup extends Fragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
+		msg.send("正在开始刷新 ~").async();
+		
 		GroupData.data.saveAll();
 
 		LinkedList<Long> failed = new LinkedList<>();
@@ -45,7 +47,7 @@ public class FetchGroup extends Fragment {
 
 			for (GroupData data : GroupData.data.getAll()) {
 
-				if (data.id > 0) {
+				if (data.id >= 0) {
 
 					execute(new LeaveChat(data.id));
 
@@ -109,6 +111,8 @@ public class FetchGroup extends Fragment {
 
 		msg.send("完成 非本体刷新了 {} 个群组, 移除了 {} 条无效数据.",success,remove).async();
 
+		GroupData.data.saveAll();
+		
 	}
 
 }
