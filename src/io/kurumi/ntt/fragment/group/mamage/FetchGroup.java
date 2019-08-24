@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import com.pengrad.telegrambot.request.GetChat;
 import com.pengrad.telegrambot.response.GetChatResponse;
 import com.pengrad.telegrambot.request.LeaveChat;
+import io.kurumi.ntt.fragment.BotServer;
+import io.kurumi.ntt.fragment.bots.GroupBot;
 
 public class FetchGroup extends Fragment {
 
@@ -28,38 +30,73 @@ public class FetchGroup extends Fragment {
 		GroupData.data.saveAll();
 
 		LinkedList<Long> failed = new LinkedList<>();
+
+		int success = 0;
+		int remove = 0;
 		
 		synchronized (GroupData.data.idIndex) {
 
 			for (GroupData data : GroupData.data.getAll()) {
 
 				if (data.id > 0) {
-					
+
 					execute(new LeaveChat(data.id));
-					
+
 					GroupData.data.deleteById(data.id);
+
+					remove ++;
 					
 					return;
-					
+
 				}
-				
-				if (data.last != null) continue;
-				
+
+				// if (data.last != null) continue;
+
 				GetChatResponse chatR = Launcher.INSTANCE.execute(new GetChat(data.id));
 
 				if (chatR.isOk()) {
-					
+
 					GroupData.get(Launcher.INSTANCE,chatR.chat());
+
+					success ++;
 					
 				} else {
-					
+
 					failed.add(data.id);
-					
+
 				}
-				
+
 			}
 
 		}
+
+		groups:for (Long group : failed) {
+
+			for (BotFragment bot :  BotServer.fragments.values()) {
+
+				if (!(bot instanceof GroupBot)) continue;
+
+				GetChatResponse chatR = bot.execute(new GetChat(group));
+
+				if (chatR.isOk()) {
+
+					GroupData.get(bot,chatR.chat());
+
+					success ++;
+					
+					continue groups;
+
+				}
+
+			}
+			
+			remove ++;
+
+			GroupData.data.deleteById(group);
+
+		}
+
+		msg.send("完成 刷新了 {} 个群组, 移除了 {} 条无效数据.",success,remove).async();
 
 	}
 
