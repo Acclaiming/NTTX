@@ -103,6 +103,7 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import io.kurumi.ntt.fragment.group.mamage.GroupList;
 import com.pengrad.telegrambot.request.DeleteWebhook;
+import io.kurumi.ntt.fragment.group.mamage.FetchGroup;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -387,6 +388,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         addFragment(new RemoveKeyboard());
 		
 		addFragment(new GroupList());
+		addFragment(new FetchGroup());
 
         // Twitter
 
