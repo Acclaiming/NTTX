@@ -124,19 +124,9 @@ public class StatusAction extends Fragment {
     @Override
     public void onCallback(UserData user,Callback callback,String point,String[] params) {
 
-		try {
+		InlineKeyboardButton[] buttons = callback.message().replyMarkup().inlineKeyboard()[0];
 
-			InlineKeyboardButton[] buttons = callback.message().replyMarkup().inlineKeyboard()[0];
-
-			params = ArrayUtil.remove(buttons[2].callbackData().split(","),0);
-
-		} catch (Exception e) {
-
-			callback.invalidQuery();
-
-			return;
-
-		}
+		params = ArrayUtil.remove(buttons[2].callbackData().split(","),0);
 
 		if (params.length != 3) {
 
