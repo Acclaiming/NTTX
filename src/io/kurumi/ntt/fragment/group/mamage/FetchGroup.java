@@ -65,7 +65,7 @@ public class FetchGroup extends Fragment {
 
 					remove ++;
 
-					return;
+					continue;
 
 				}
 
