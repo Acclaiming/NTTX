@@ -14,24 +14,30 @@ public class CachedData<T> extends Data<T> {
 
     }
 
-    public CachedData(String collectionName, Class<T> clazz) {
+    public CachedData(String collectionName,Class<T> clazz) {
 
-        super(collectionName, clazz);
+        super(collectionName,clazz);
 
     }
 
     public void saveAll() {
 
-        for (Map.Entry<Long, T> data : idIndex.entrySet()) {
+		synchronized (idIndex) {
 
-            super.setById(data.getKey(), data.getValue());
+			for (Map.Entry<Long, T> data : idIndex.entrySet()) {
 
-        }
+				super.setById(data.getKey(),data.getValue());
+
+			}
+
+			idIndex.clear();
+
+		}
 
     }
 
     @Override
-    public T setById(Long id, T object) {
+    public T setById(Long id,T object) {
 
         synchronized (idIndex) {
 
@@ -39,7 +45,7 @@ public class CachedData<T> extends Data<T> {
 
         }
 
-        return super.setById(id, object);
+        return super.setById(id,object);
 
     }
 
@@ -55,7 +61,7 @@ public class CachedData<T> extends Data<T> {
         if (idIndex.size() > 233) {
 
 			saveAll();
-			
+
             idIndex.clear();
 
         } else if (idIndex.containsKey(id)) return idIndex.get(id);
@@ -72,7 +78,7 @@ public class CachedData<T> extends Data<T> {
 
             if (data != null) {
 
-                idIndex.put(id, data);
+                idIndex.put(id,data);
             }
 
             return data;

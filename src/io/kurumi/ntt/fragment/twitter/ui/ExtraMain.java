@@ -69,11 +69,11 @@ public class ExtraMain extends Fragment {
 		message += "\n\n ( 已发布但不适合加入标准的功能 )";
 
 		ButtonMarkup buttons = new ButtonMarkup();
-
-		buttons.newButtonLine("单向取关推送 >>",OWUnfoPublish.POINT_OUP,account.id);
-
+		
 		if (user.admin()) {
 
+			buttons.newButtonLine("单向取关推送 >>",OWUnfoPublish.POINT_OUP,account.id);
+			
 			buttons.newButtonLine("联合封禁 >>",SpamMain.POINT_SPAM,account.id);
 
 		}

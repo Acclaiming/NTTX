@@ -28,6 +28,8 @@ public class OWUnfoPublish extends Fragment {
 
 	public static void onUnfo(TAuth auth,Twitter api,UserArchive archive) {
 		
+		/*
+		
 		if (auth.oup == null) return;
 		
 		try {
@@ -41,6 +43,8 @@ public class OWUnfoPublish extends Fragment {
 			new Send(auth.user,"单向取关推送失败 :\n\n",NTT.parseTwitterException(e)).async();
 			
 		}
+		
+		*/
 
 	}
 
