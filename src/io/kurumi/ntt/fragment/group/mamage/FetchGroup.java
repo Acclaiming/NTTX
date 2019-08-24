@@ -97,7 +97,7 @@ public class FetchGroup extends Fragment {
 
 			groups:for (Long group : failed) {
 
-				log.debug("非本体群组已刷新 {} 条, 失败 {} 条",success,failed.size()); 
+				log.debug("非本体群组已刷新 {} 条, 失败 {} 条",success,remove); 
 
 				for (BotFragment bot :  BotServer.fragments.values()) {
 
