@@ -55,7 +55,7 @@ public class GroupList extends Fragment {
 
 		String message = "";
   
-        for (GroupData group : GroupData.data.collection.find().skip((cursor - 1) * 10).limit(cursor * 10)) {
+        for (GroupData group : GroupData.data.collection.find().skip((cursor - 1) * 10).limit(10)) {
 
 			message += "\n";
 			
