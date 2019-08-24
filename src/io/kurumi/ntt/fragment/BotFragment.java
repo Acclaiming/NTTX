@@ -741,6 +741,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             final Callback callback = new Callback(this,update.callbackQuery());
 
+			if (NTT.checkDropped(user,callback)) return;
+			
             final String point = callback.params.length == 0 ? "" : callback.params[0];
             final String[] params = callback.params.length > 1 ? ArrayUtil.sub(callback.params,1,callback.params.length) : new String[0];
 
