@@ -18,9 +18,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class FetchGroup extends Fragment {
-	
+
 	static Log log = LogFactory.get(FetchGroup.class);
-	
+
 	@Override
 	public void init(BotFragment origin) {
 
@@ -32,28 +32,26 @@ public class FetchGroup extends Fragment {
 
 	@Override
 	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
-		
+
 		return PROCESS_ASYNC;
-		
+
 	}
 
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
 		msg.send("正在开始刷新 ~").async();
-		
+
 		GroupData.data.saveAll();
 
 		LinkedList<Long> failed = new LinkedList<>();
 
 		int success = 0;
 		int remove = 0;
-		
+
 		synchronized (GroupData.data.idIndex) {
 
-			List<GroupData> all = GroupData.data.getAll();
-
-			for (GroupData data : all) {
+			for (GroupData data : GroupData.data.getAll()) {
 
 				if (data.id >= 0) {
 
@@ -62,7 +60,7 @@ public class FetchGroup extends Fragment {
 					GroupData.data.deleteById(data.id);
 
 					remove ++;
-					
+
 					return;
 
 				}
@@ -76,7 +74,7 @@ public class FetchGroup extends Fragment {
 					GroupData.get(Launcher.INSTANCE,chatR.chat());
 
 					success ++;
-					
+
 				} else {
 
 					failed.add(data.id);
@@ -84,47 +82,47 @@ public class FetchGroup extends Fragment {
 				}
 
 				log.debug("群组消息已刷新 {} 条, 失败 {} 条",success,failed.size()); 
-				
+
 			}
 
-		}
-		
-		msg.send("本体刷新了 {} 个群组, 剩余 {} 条数据",success,failed.size()).async();
-		
-		success = 0;
+			msg.send("本体刷新了 {} 个群组, 剩余 {} 条数据",success,failed.size()).async();
 
-		groups:for (Long group : failed) {
+			success = 0;
 
-			log.debug("非本体群组已刷新 {} 条, 失败 {} 条",success,failed.size()); 
-			
-			for (BotFragment bot :  BotServer.fragments.values()) {
+			groups:for (Long group : failed) {
 
-				if (!(bot instanceof GroupBot)) continue;
+				log.debug("非本体群组已刷新 {} 条, 失败 {} 条",success,failed.size()); 
 
-				GetChatResponse chatR = bot.execute(new GetChat(group));
+				for (BotFragment bot :  BotServer.fragments.values()) {
 
-				if (chatR.isOk()) {
+					if (!(bot instanceof GroupBot)) continue;
 
-					GroupData.get(bot,chatR.chat());
+					GetChatResponse chatR = bot.execute(new GetChat(group));
 
-					success ++;
-					
-					continue groups;
+					if (chatR.isOk()) {
+
+						GroupData.get(bot,chatR.chat());
+
+						success ++;
+
+						continue groups;
+
+					}
 
 				}
 
-			}
-			
-			remove ++;
+				remove ++;
 
-			GroupData.data.deleteById(group);
+				GroupData.data.deleteById(group);
+
+			}
+
+			msg.send("完成 非本体刷新了 {} 个群组, 移除了 {} 条无效数据.",success,remove).async();
 
 		}
-
-		msg.send("完成 非本体刷新了 {} 个群组, 移除了 {} 条无效数据.",success,remove).async();
-
-		GroupData.data.saveAll();
 		
+		GroupData.data.saveAll();
+
 	}
 
 }
