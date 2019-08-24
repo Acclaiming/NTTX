@@ -121,6 +121,7 @@ public class GroupData {
 	public String link;
 	public String username;
 	public Long bot;
+	public Boolean bot_admin;
 	public Long last;
 	
     public Long owner;
