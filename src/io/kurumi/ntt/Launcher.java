@@ -102,6 +102,7 @@ import java.util.TimeZone;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import io.kurumi.ntt.fragment.group.mamage.GroupList;
+import com.pengrad.telegrambot.request.DeleteWebhook;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -495,6 +496,10 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         GroupData.data.saveAll();
 
+		super.stop();
+		
+		execute(new DeleteWebhook());
+		
         for (BotFragment bot : BotServer.fragments.values()) {
 
             if (bot != this) {
@@ -504,8 +509,6 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
             }
 
         }
-
-        super.stop();
 
     }
 

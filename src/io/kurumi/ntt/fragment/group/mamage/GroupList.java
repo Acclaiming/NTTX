@@ -43,7 +43,7 @@ public class GroupList extends Fragment {
 	@Override
 	public void onCallback(UserData user,Callback callback,String point,String[] params) {
 		
-		GroupData.data.saveAll();
+		// GroupData.data.saveAll();
 		
 		int cursor = NumberUtil.parseInt(params[0]);
 
