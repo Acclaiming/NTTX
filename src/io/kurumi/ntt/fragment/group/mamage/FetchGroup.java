@@ -19,6 +19,7 @@ import io.kurumi.ntt.fragment.group.mamage.FetchGroup;
 import io.kurumi.ntt.model.Msg;
 import java.util.LinkedList;
 import java.util.List;
+import com.pengrad.telegrambot.model.Chat;
 
 public class FetchGroup extends Fragment {
 
@@ -140,7 +141,17 @@ public class FetchGroup extends Fragment {
 					GetChatResponse chatR = Launcher.INSTANCE.execute(new GetChat(data.id));
 
 					if (chatR != null && chatR.isOk()) {
+						
+						if (chatR.chat().type() == Chat.Type.channel) {
+							
+							GroupData.data.deleteById(data.id);
 
+							remove ++;
+
+							continue;
+							
+						}
+						
 						GroupData.get(Launcher.INSTANCE,chatR.chat());
 
 						success ++;
@@ -149,7 +160,7 @@ public class FetchGroup extends Fragment {
 
 						failed.add(data.id);
 
-					}
+					} 
 
 					log.debug("群组消息已刷新 {} 条, 失败 {} 条, 剩余 {} 条.",success,failed.size(),all.size() - index - 1); 
 
