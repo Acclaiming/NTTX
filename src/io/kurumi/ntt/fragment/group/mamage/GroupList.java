@@ -78,7 +78,7 @@ public class GroupList extends Fragment {
 	
 			if (group.username != null) {
 				
-				message += Html.a(group.title,"@" + group.username);
+				message += Html.a(group.title,"https://t.me/" + group.username);
 				
 			} else if (!StrUtil.isBlank(group.link)) {
 				
