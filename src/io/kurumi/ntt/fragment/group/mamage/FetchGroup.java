@@ -49,8 +49,6 @@ public class FetchGroup extends Fragment {
 
 			GroupData.data.saveAll();
 
-			LinkedList<Long> failed = new LinkedList<>();
-
 			synchronized (GroupData.data.idIndex) {
 
 				List<GroupData> all = GroupData.data.getAll();
@@ -64,9 +62,9 @@ public class FetchGroup extends Fragment {
 
 					GroupData data = all.get(index);
 					
-					if (!BotServer.fragments.containsKey(data.bot)) { error ++;continue; }
+					if (!BotServer.idIndex.containsKey(data.bot)) { error ++;continue; }
 
-					BotFragment originBot = BotServer.fragments.get(data.bot);
+					BotFragment originBot = BotServer.idIndex.get(data.bot);
 					
 					GetChatMemberResponse member = originBot.execute(new GetChatMember(data.id,data.bot.intValue()));
 

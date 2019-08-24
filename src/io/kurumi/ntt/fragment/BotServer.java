@@ -34,7 +34,8 @@ public class BotServer {
     public static BotServer INSTANCE;
 
     public static HashMap<String, BotFragment> fragments = new HashMap<>();
-
+	public static HashMap<Long, BotFragment> idIndex = new HashMap<>();
+	
     public int port;
     public File socketFile;
     public String domain;

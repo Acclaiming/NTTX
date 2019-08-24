@@ -1018,7 +1018,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 				BotServer.fragments.remove(token);
 
 			}
-
+			
+			if (me != null) BotServer.idIndex.put(me.id(),this);
+			
         }
 
     }
