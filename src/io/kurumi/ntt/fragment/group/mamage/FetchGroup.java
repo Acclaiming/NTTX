@@ -25,6 +25,13 @@ public class FetchGroup extends Fragment {
 	}
 
 	@Override
+	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
+		
+		return PROCESS_ASYNC;
+		
+	}
+
+	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
 		GroupData.data.saveAll();
@@ -69,6 +76,10 @@ public class FetchGroup extends Fragment {
 			}
 
 		}
+		
+		msg.send("本体刷新了 {} 个群组, 剩余 {} 条数据",success,failed.size()).async();
+		
+		success = 0;
 
 		groups:for (Long group : failed) {
 
@@ -96,7 +107,7 @@ public class FetchGroup extends Fragment {
 
 		}
 
-		msg.send("完成 刷新了 {} 个群组, 移除了 {} 条无效数据.",success,remove).async();
+		msg.send("完成 非本体刷新了 {} 个群组, 移除了 {} 条无效数据.",success,remove).async();
 
 	}
 
