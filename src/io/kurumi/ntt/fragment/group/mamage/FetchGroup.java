@@ -137,8 +137,12 @@ public class FetchGroup extends Fragment {
 					}
 
 					// if (data.last != null) continue;
+					
+					if (!BotServer.idIndex.containsKey(data.bot)) { failed.add(data.id); continue; }
 
-					GetChatResponse chatR = Launcher.INSTANCE.execute(new GetChat(data.id));
+					BotFragment originBot = BotServer.idIndex.get(data.bot);
+					
+					GetChatResponse chatR = originBot.execute(new GetChat(data.id));
 
 					if (chatR != null && chatR.isOk()) {
 						
@@ -152,7 +156,7 @@ public class FetchGroup extends Fragment {
 							
 						}
 						
-						GroupData.get(Launcher.INSTANCE,chatR.chat());
+						GroupData.get(originBot,chatR.chat());
 
 						success ++;
 
@@ -178,7 +182,7 @@ public class FetchGroup extends Fragment {
 
 					for (BotFragment bot :  BotServer.fragments.values()) {
 
-						if (!(bot instanceof GroupBot)) continue;
+						if (!(bot instanceof GroupBot) || !(bot instanceof Launcher)) continue;
 
 						GetChatResponse chatR = bot.execute(new GetChat(group));
 
