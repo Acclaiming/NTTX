@@ -101,6 +101,7 @@ import io.kurumi.ntt.utils.Html;
 import java.util.TimeZone;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
+import io.kurumi.ntt.fragment.group.mamage.GroupList;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -383,6 +384,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         addFragment(new GroupFunction());
         addFragment(new JoinCaptcha());
         addFragment(new RemoveKeyboard());
+		
+		addFragment(new GroupList());
 
         // Twitter
 

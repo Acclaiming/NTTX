@@ -64,7 +64,7 @@ public class OptionsMain extends Fragment {
 	@Override
     public void onFunction(UserData user,final Msg msg,String function,String[] params) {
 
-        final GroupData data = GroupData.get(msg.chat());
+        final GroupData data = GroupData.get(this,msg.chat());
 
         if (!NTT.isGroupAdmin(this,msg.chatId(),user.id)) {
 

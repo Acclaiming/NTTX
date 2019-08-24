@@ -56,7 +56,7 @@ public class BanSetickerSet extends Fragment {
 
             }
 
-            GroupData data = GroupData.get(msg.chat());
+            GroupData data = GroupData.get(this,msg.chat());
 
             if (data.ban_sticker_set != null && data.ban_sticker_set.contains(setName)) {
 
@@ -98,7 +98,7 @@ public class BanSetickerSet extends Fragment {
 
             }
 
-            GroupData data = GroupData.get(msg.chat());
+            GroupData data = GroupData.get(this,msg.chat());
 
             if (data.ban_sticker_set == null || !data.ban_sticker_set.contains(setName)) {
 

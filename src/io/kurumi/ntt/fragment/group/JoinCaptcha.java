@@ -154,7 +154,7 @@ public class JoinCaptcha extends Fragment {
 
         if (!msg.isSuperGroup()) return;
 
-        GroupData data = GroupData.get(msg.chat());
+        GroupData data = GroupData.get(this,msg.chat());
 
         if (msg.message().newChatMembers() != null) {
 
@@ -753,7 +753,7 @@ public class JoinCaptcha extends Fragment {
 
         }
 
-        final GroupData gd = GroupData.get(msg.chat());
+        final GroupData gd = GroupData.get(this,msg.chat());
 
         final AuthCache auth = (AuthCache) data;
 
@@ -840,14 +840,14 @@ public class JoinCaptcha extends Fragment {
 
             callback.delete();
 
-            startAuth(user,callback,GroupData.get(callback.chat()),null);
+            startAuth(user,callback,GroupData.get(this,callback.chat()),null);
 
             return;
 
         }
 
         final HashMap<Long, AuthCache> group = cache.containsKey(callback.chatId()) ? cache.get(callback.chatId()) : new HashMap<Long, AuthCache>();
-        final GroupData gd = GroupData.get(callback.chat());
+        final GroupData gd = GroupData.get(this,callback.chat());
         AuthCache auth = group.get(user.id);
 
         if (POINT_INTERFERE.equals(point)) {

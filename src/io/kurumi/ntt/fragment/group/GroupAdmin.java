@@ -126,7 +126,7 @@ public class GroupAdmin extends Fragment {
 
         if (NTT.checkGroupAdmin(msg)) return;
 
-        updateGroupAdmins(this, GroupData.get(msg.chat()));
+        updateGroupAdmins(this, GroupData.get(this,msg.chat()));
 
         msg.send("管理员缓存更新完成！").failedWith();
 

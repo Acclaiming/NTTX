@@ -29,7 +29,7 @@ public class GroupActions extends Fragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 		
-		if (!GroupAdmin.fastAdminCheck(this,GroupData.get(msg.chat()),user.id,false)) {
+		if (!GroupAdmin.fastAdminCheck(this,GroupData.get(this,msg.chat()),user.id,false)) {
 			
 			msg.reply("permission denied.").failedWith(500);
 			

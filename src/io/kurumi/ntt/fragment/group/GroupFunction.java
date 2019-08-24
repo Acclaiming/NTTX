@@ -28,7 +28,7 @@ public class GroupFunction extends Fragment {
 
         }
 
-        GroupData data = GroupData.get(msg.chat());
+        GroupData data = GroupData.get(this,msg.chat());
 
         synchronized (data) {
 

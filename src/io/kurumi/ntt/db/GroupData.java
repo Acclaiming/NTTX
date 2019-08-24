@@ -18,6 +18,8 @@ import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import io.kurumi.ntt.utils.BotLog;
+import com.pengrad.telegrambot.request.ExportChatInviteLink;
+import com.pengrad.telegrambot.response.StringResponse;
 
 public class GroupData {
 
@@ -64,7 +66,7 @@ public class GroupData {
     }
 
 
-    public static GroupData get(Chat chat) {
+    public static GroupData get(Fragment fragment,Chat chat) {
 
         synchronized (data.idIndex) {
 
@@ -85,6 +87,24 @@ public class GroupData {
             }
 
             group.title = chat.title();
+			group.username = chat.username();
+			group.bot = fragment.origin.me.id();
+			
+			if (group.username == null && group.link == null) {
+				
+				StringResponse exported = fragment.execute(new ExportChatInviteLink(group.id));
+
+				if (exported.isOk()) {
+					
+					group.link = exported.result();
+					
+				} else {
+					
+					group.link = "";
+					
+				}
+				
+			}
 
             data.idIndex.put(chat.id().longValue(),group);
 
@@ -97,7 +117,10 @@ public class GroupData {
     public long id;
 
     public String title;
-
+	public String link;
+	public String username;
+	public Long bot;
+	
     public Long owner;
 
     public List<Long> admins;
