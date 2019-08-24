@@ -84,6 +84,8 @@ public class FetchGroup extends Fragment {
 				log.debug("群组消息已刷新 {} 条, 失败 {} 条",success,failed.size()); 
 
 			}
+			
+			log.debug("剩余 {} 条无效数据",failed.size());
 
 			msg.send("本体刷新了 {} 个群组, 剩余 {} 条数据",success,failed.size()).async();
 
