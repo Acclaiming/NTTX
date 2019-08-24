@@ -321,6 +321,8 @@ public class Manchurize extends Fragment {
     public static String manchurize(String str) {
 
         String tmp = "";
+		
+		str = str.toLowerCase();
 
         if (str.length() > 0) {
 
