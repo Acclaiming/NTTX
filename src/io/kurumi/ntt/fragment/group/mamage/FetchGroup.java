@@ -57,6 +57,7 @@ public class FetchGroup extends Fragment {
 
 				int ok = 0;
 				int error = 0;
+				int base = 0;
 				int remove = 0;
 				
 				for (int index = 0;index < all.size();index ++) {
@@ -83,19 +84,25 @@ public class FetchGroup extends Fragment {
 						
 						data.bot_admin = false;
 						
+						base ++;
+						
 					} else {
 						
 						originBot.execute(new LeaveChat(data.id));
 						
 						GroupData.data.deleteById(data.id);
 						
+						remove ++;
+						
 					}
+					
+					log.debug("管理 {} 个群组, 非管理 {} 个群组, 退出了 {} 个群组, 出错 {} 个群组, 剩余 {} 个群组.",ok,base,remove,error,all.size() - index - 1);
+					
 					
 				}
 				
-
-				msg.send("完成 非本体刷新了 {} 个群组, 移除了 {} 条无效数据.",success,remove).async();
-
+				msg.send("完成 管理 {} 个群组, 非管理 {} 个群组, 退出了 {} 个群组, 出错 {} 个群组.",ok,base,remove,error).async();
+				
 			}
 
 			GroupData.data.saveAll();
