@@ -28,7 +28,7 @@ public class Manchurize extends Fragment {
 	
 		super.init(origin);
 
-		registerFunction("manchurize" /*,"demanchurize" */);
+		registerFunction("manchurize" ,"demanchurize" );
 		
 	}
 	
@@ -59,8 +59,6 @@ public class Manchurize extends Fragment {
 
 		} else {
 			
-			
-
 			if (!isManchuScript(msg.param())) {
 				
 				msg.send("没有满洲语字符, 无法翻译.").async();
