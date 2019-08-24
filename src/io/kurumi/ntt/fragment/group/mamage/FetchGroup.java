@@ -73,13 +73,13 @@ public class FetchGroup extends Fragment {
 
 				GetChatResponse chatR = Launcher.INSTANCE.execute(new GetChat(data.id));
 
-				if (chatR.isOk()) {
+				if (chatR != null && chatR.isOk()) {
 
 					GroupData.get(Launcher.INSTANCE,chatR.chat());
 
 					success ++;
 
-				} else {
+				} else if (chatR != null) {
 
 					failed.add(data.id);
 
@@ -105,7 +105,7 @@ public class FetchGroup extends Fragment {
 
 					GetChatResponse chatR = bot.execute(new GetChat(group));
 
-					if (chatR.isOk()) {
+					if (chatR == null && chatR.isOk()) {
 
 						GroupData.get(bot,chatR.chat());
 
