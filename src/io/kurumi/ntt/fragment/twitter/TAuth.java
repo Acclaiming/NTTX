@@ -112,7 +112,7 @@ public class TAuth {
 	public Boolean oup;
 	public String oup_msg;
 	
-	public Boolean anu;
+	// public Boolean anu;
 	
 	/*
 	
