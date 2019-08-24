@@ -413,7 +413,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                 if (msg.isCommand()) {
 
-					// if (NTT.checkDropped(user,msg)) return;
+					if (NTT.checkDropped(user,msg)) return;
 
                     if (msg.isStartPayload()) {
 

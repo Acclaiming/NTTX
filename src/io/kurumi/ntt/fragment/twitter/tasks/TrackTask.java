@@ -189,9 +189,7 @@ public class TrackTask extends TimerTask {
         }
 
         for (TAuth account : all) {
-
-			/*
-
+			
 			 if (Firewall.block.containsId(account.user)) {
 
 			 remove.add(account);
@@ -199,8 +197,6 @@ public class TrackTask extends TimerTask {
 			 continue;
 
 			 }
-
-			 */
 
             Twitter api = account.createApi();
 
