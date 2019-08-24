@@ -51,7 +51,11 @@ public class FetchGroup extends Fragment {
 
 		synchronized (GroupData.data.idIndex) {
 
-			for (GroupData data : GroupData.data.getAll()) {
+			List<GroupData> all = GroupData.data.getAll();
+			
+			for (int index = 0;index < all.size();index ++) {
+
+				GroupData data = all.get(index);
 
 				if (data.id >= 0) {
 
@@ -81,7 +85,7 @@ public class FetchGroup extends Fragment {
 
 				}
 
-				log.debug("群组消息已刷新 {} 条, 失败 {} 条",success,failed.size()); 
+				log.debug("群组消息已刷新 {} 条, 失败 {} 条, 剩余 {} 条.",success,failed.size(),all.size() - index - 1); 
 
 			}
 			
