@@ -1,20 +1,26 @@
 package io.kurumi.ntt.fragment.group.mamage;
 
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
+import com.pengrad.telegrambot.request.GetChat;
+import com.pengrad.telegrambot.request.LeaveChat;
+import com.pengrad.telegrambot.response.GetChatResponse;
+import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.db.GroupData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.Launcher;
-import java.util.LinkedList;
-import com.pengrad.telegrambot.request.GetChat;
-import com.pengrad.telegrambot.response.GetChatResponse;
-import com.pengrad.telegrambot.request.LeaveChat;
 import io.kurumi.ntt.fragment.BotServer;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.bots.GroupBot;
+import io.kurumi.ntt.fragment.group.mamage.FetchGroup;
+import io.kurumi.ntt.model.Msg;
+import java.util.LinkedList;
+import java.util.List;
 
 public class FetchGroup extends Fragment {
-
+	
+	static Log log = LogFactory.get(FetchGroup.class);
+	
 	@Override
 	public void init(BotFragment origin) {
 
@@ -45,7 +51,9 @@ public class FetchGroup extends Fragment {
 		
 		synchronized (GroupData.data.idIndex) {
 
-			for (GroupData data : GroupData.data.getAll()) {
+			List<GroupData> all = GroupData.data.getAll();
+
+			for (GroupData data : all) {
 
 				if (data.id >= 0) {
 
@@ -75,6 +83,8 @@ public class FetchGroup extends Fragment {
 
 				}
 
+				log.debug("群组消息已刷新 {} 条, 失败 {} 条",success,failed.size()); 
+				
 			}
 
 		}
@@ -85,6 +95,8 @@ public class FetchGroup extends Fragment {
 
 		groups:for (Long group : failed) {
 
+			log.debug("非本体群组已刷新 {} 条, 失败 {} 条",success,failed.size()); 
+			
 			for (BotFragment bot :  BotServer.fragments.values()) {
 
 				if (!(bot instanceof GroupBot)) continue;
