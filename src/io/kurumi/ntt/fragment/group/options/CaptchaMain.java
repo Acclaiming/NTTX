@@ -496,8 +496,8 @@ public class CaptchaMain extends Fragment {
 					data.captcha_mode = 2;
 
 				}
-
-				callback.edit("编辑自定义问题. 对错选项或正确内容.\n\n" + OptionsMain.doc,cusStats(data)).buttons(cusMenu(data)).async();
+				
+				callback.editMarkup(cusMenu(data));
 
 			} else if ("reset_i_question".equals(params[1])) {
 
@@ -565,8 +565,8 @@ public class CaptchaMain extends Fragment {
 
 			super.onFinish();
 
-			origin.edit("编辑自定义问题. 对错选项或正确内容.\n\n" + OptionsMain.doc,cusStats(data)).buttons(cusMenu(data)).async();
-
+			callback.edit("编辑自定义问题. 对错选项或正确内容.\n\n" + cusStats(data) + "\n\n" + OptionsMain.doc).buttons(cusMenu(data)).html().async();
+			
         }
 
     }
