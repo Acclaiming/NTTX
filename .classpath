@@ -21,4 +21,5 @@
 <classpathentry kind="lib" path="libs/dnsjava-2.1.9.jar"/>
 <classpathentry kind="lib" path="libs/netty-all-4.1.39.Final.jar"/>
 <classpathentry kind="lib" path="libs/bouncycastle/bcprov-jdk15on-162.jar"/>
+<classpathentry kind="lib" path="libs/JTDlib-WITH-LIBS.jar"/>
 </classpath>
