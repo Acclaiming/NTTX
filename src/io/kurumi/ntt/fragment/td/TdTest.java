@@ -16,7 +16,7 @@ public class TdTest extends Fragment {
 	
 		super.init(origin);
 		
-		registerAdminFunction("test_get_members");
+		// registerAdminFunction("test_get_members");
 		
 	}
 
