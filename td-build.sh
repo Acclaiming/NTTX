@@ -4,4 +4,16 @@ cmake3 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=../example/java/td
 
 cmake3 --build . --target install
 
-cmake3 -DCMAKE_BUILD_TYPE=Release -DTd_DIR=/root/td/jnibuild/example/java/td/lib/cmake/Td -DCMAKE_INSTALL_PREFIX:PATH=.. ..
+cd ..
+
+cd example/java
+
+rm -rf build
+
+mkdir build
+
+cd build
+
+cmake3 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=../../../tdlib -DTd_DIR:PATH=$(readlink -e ../td/lib/cmake/Td) ..
+
+cmake3 --build . --target install
