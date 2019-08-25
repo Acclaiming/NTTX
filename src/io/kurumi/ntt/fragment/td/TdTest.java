@@ -39,7 +39,7 @@ public class TdTest extends Fragment {
 		
 		bot.create();
 		
-		Response result = bot.execute(new TdApi.GetSupergroupMembers());
+		Response result = bot.execute(new TdApi.GetSupergroupMembers((int)(msg.chatId() / -100L),new TdApi.SupergroupMembersFilterRecent(),0,200));
 
 		TdApi.ChatMembers members = (TdApi.ChatMembers) result.getObject();
 
