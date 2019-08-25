@@ -565,7 +565,7 @@ public class CaptchaMain extends Fragment {
 
 			super.onFinish();
 
-			callback.edit("编辑自定义问题. 对错选项或正确内容.\n\n" + cusStats(data) + "\n\n" + OptionsMain.doc).buttons(cusMenu(data)).html().async();
+			origin.edit("编辑自定义问题. 对错选项或正确内容.\n\n" + cusStats(data) + "\n\n" + OptionsMain.doc).buttons(cusMenu(data)).html().async();
 			
         }
 
