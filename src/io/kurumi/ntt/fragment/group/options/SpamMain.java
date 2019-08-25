@@ -125,7 +125,7 @@ public class SpamMain extends Fragment {
                     .newButton("CAS")
                     .newButton(data.cas_spam != null ? "✅" : "☑",POINT_SPAM,data.id,"cas");
 
-				if (user.admin() && data.backhole != null) {
+				if (user.admin() || data.backhole != null) {
 
 					newButtonLine()
 						.newButton("黑箱")
