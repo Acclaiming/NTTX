@@ -444,7 +444,7 @@ public class CaptchaMain extends Fragment {
 
 			} else if ("mode_cus".equals(params[1])) {
 
-				callback.edit("编辑自定义问题. 对错选项或正确内容.\n\n" + OptionsMain.doc,cusStats(data)).buttons(cusMenu(data)).async();
+				callback.edit("编辑自定义问题. 对错选项或正确内容.\n\n" + cusStats(data) + "\n\n" + OptionsMain.doc).buttons(cusMenu(data)).async();
 
 				return;
 
