@@ -30,7 +30,7 @@ public class FetchGroup extends Fragment {
 
 		super.init(origin);
 
-		registerAdminFunction("_fetch_chats","_fetch_status");
+		registerAdminFunction("_fetch_groups","_fetch_groups_status");
 
 	}
 
