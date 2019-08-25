@@ -53,7 +53,7 @@ public class LoadLibrary {
       
         try {
 			
-            System.load("../libs/td/" + libname + ".so");
+            System.load("/usr/local/ntt/libs/td/" + libname + ".so");
 			
         } catch (Exception | UnsatisfiedLinkError e) {
 			
