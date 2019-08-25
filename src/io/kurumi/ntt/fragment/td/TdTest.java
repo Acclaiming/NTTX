@@ -43,6 +43,16 @@ public class TdTest extends Fragment {
 
 		TdApi.ChatMembers members = (TdApi.ChatMembers) result.getObject();
 
+		String message = "所有用户 : \n";
+		
+		for (TdApi.ChatMember member : members.members) {
+			
+			message += "\n" + member.userId;
+			
+		}
+		
+		msg.send(message).async();
+		
 		bot.close();
 		
 		
