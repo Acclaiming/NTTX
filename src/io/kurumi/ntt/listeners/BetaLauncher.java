@@ -21,7 +21,7 @@ public class BetaLauncher extends TdBot {
 		StaticLog.debug("new message {}",update);
 
 		TdMessage msg = new TdMessage(this,update);
-
+		
 		// send(msg.send(plainText("喵")));
 
 	}

@@ -15,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class TdClient extends TdListener {
 
 	private Client client = new Client();
-	//private ExecutorService executors = Executors.newFixedThreadPool(10);
+	// private ExecutorService executors = Executors.newFixedThreadPool(10);
 	private AtomicLong requestId = new AtomicLong(1);
 	private ReentrantLock executionLock = new ReentrantLock();
 	private AtomicBoolean status;
@@ -33,7 +33,7 @@ public class TdClient extends TdListener {
 		params = new SetTdlibParameters(options.build());
 
 		send(params);
-	
+
 		// send(new LogOut());
 
 	}
@@ -53,7 +53,7 @@ public class TdClient extends TdListener {
 	public void addListener(ITdListener listener) {
 
 		listeners.add(listener);
-		
+
 		listener.onInit(this);
 
 	}
@@ -80,16 +80,12 @@ public class TdClient extends TdListener {
 		} else if (authState instanceof AuthorizationStateReady) {
 
 			hasAuth.set(true);
-			
-			/*
-			
+
 			try {
 
-			 me = execute(new GetMe());
+				me = execute(new GetMe());
 
 			} catch (TdException e) {}
-			
-			*/
 
 		}
 
@@ -209,13 +205,13 @@ public class TdClient extends TdListener {
 					LinkedList<Client.Event> responseList = client.receive(120,1000);
 
 					StaticLog.debug("Evevts : {}",responseList.size());
-					
+
 					long start = System.currentTimeMillis();
-					
+
 					for (Client.Event event : responseList) processEvent(event);
 
 					StaticLog.debug("Finish : {}s",(System.currentTimeMillis() - start) / 1000L);
-				
+
 				}
 
 			}
@@ -227,7 +223,7 @@ public class TdClient extends TdListener {
 	private void processEvent(Client.Event event) {
 
 		StaticLog.debug("event : {}",event.object.getClass().getSimpleName());
-		
+
 		if (event.requestId != 0L) {
 
 			if (!handlers.containsKey(event.requestId)) return;
