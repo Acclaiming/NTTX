@@ -29,7 +29,7 @@ public class TdClient extends TdListener {
 
 	public TdClient(TdOptions options) {
 
-		addListener(this);
+		listeners.add(this);
 
 		params = new SetTdlibParameters(options.build());
 
@@ -52,6 +52,8 @@ public class TdClient extends TdListener {
 	public void addListener(ITdListener listener) {
 
 		listeners.add(listener);
+		
+		listener.onInit(this);
 
 	}
 
@@ -78,8 +80,8 @@ public class TdClient extends TdListener {
 
 			hasAuth.set(true);
 
-			addListener(this);
-
+			onInit(this);
+			
 		}
 
 	}
