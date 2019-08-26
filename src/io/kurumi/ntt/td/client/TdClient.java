@@ -28,7 +28,7 @@ public class TdClient extends TdListener {
 
 	public TdClient(TdOptions options) {
 
-		listeners.add(this);
+		addListener(this);
 
 		params = new SetTdlibParameters(options.build());
 
@@ -80,21 +80,14 @@ public class TdClient extends TdListener {
 		} else if (authState instanceof AuthorizationStateReady) {
 
 			hasAuth.set(true);
-
-			onInit(this);
 			
+			try {
+
+				me = execute(new GetMe());
+
+			} catch (TdException e) {}
+
 		}
-
-	}
-
-	@Override
-	public void onInit(TdClient client) {
-
-		try {
-
-			me = execute(new GetMe());
-			
-		} catch (TdException e) {}
 
 	}
 
