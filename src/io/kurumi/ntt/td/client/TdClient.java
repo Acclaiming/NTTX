@@ -231,7 +231,7 @@ public class TdClient extends TdListener {
 
 	private void processEvent(Client.Event event) {
 
-		StaticLog.debug("event : {}",event);
+		StaticLog.debug("event : {}",event.object.getClass().getSimpleName());
 		
 		if (event.requestId != 0L) {
 
