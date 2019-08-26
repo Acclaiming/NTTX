@@ -1,6 +1,7 @@
 package io.kurumi.ntt.td.client;
 
 import io.kurumi.ntt.td.TdApi.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 
 import cn.hutool.core.thread.ThreadUtil;
@@ -9,13 +10,12 @@ import io.kurumi.ntt.td.Client;
 import io.kurumi.ntt.td.TdApi;
 import io.kurumi.ntt.td.TdApi.Object;
 import java.util.LinkedList;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class TdClient extends TdListener {
 
 	private Client client = new Client();
-	// private ExecutorService executors = Executors.newFixedThreadPool(10);
+	private ExecutorService updates = Executors.newSingleThreadExecutor();
 	private AtomicLong requestId = new AtomicLong(1);
 	private ReentrantLock executionLock = new ReentrantLock();
 	private AtomicBoolean status;
@@ -201,7 +201,7 @@ public class TdClient extends TdListener {
 			public void run() {
 
 				while (status.get()) {
-
+					
 					LinkedList<Client.Event> responseList = client.receive(120,1000);
 
 					StaticLog.debug("Evevts : {}",responseList.size());
@@ -242,12 +242,16 @@ public class TdClient extends TdListener {
 
 		} else {
 
-			for (ITdListener listener : listeners) {
+			updates.execute(new Runnable() {
 
-				listener.onEvent(event.object);
-
-			}
-
+					@Override
+					public void run() {
+						
+						for (ITdListener listener : listeners) listener.onEvent(event.object);
+						
+					}
+				});
+		
 		}
 
 	}
