@@ -21,22 +21,22 @@ public class TdMain extends TdBot {
 
 	@Override
 	public void onNewMessage(final UpdateNewMessage update) {
-		
+
 		if (update.message.senderUserId == me.id) return;
 
 		TdMessage msg = new TdMessage(this,update);
 
-		//if (msg.isText()) {
+		if (msg.isText()) {
 
 			log.debug("{} : {}",msg.sender,msg.text());
 
-			//if ("ping".equals(msg.command())) {
+			if ("ping".equals(msg.command())) {
 
 				send(new SendMessage(msg.chatId,0,true,false,null,plainText("喵")));
 
-			//}
+			}
 
-		//}
+		}
 
 	}
 
