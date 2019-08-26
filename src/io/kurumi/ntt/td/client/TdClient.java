@@ -1,16 +1,15 @@
 package io.kurumi.ntt.td.client;
 
+import io.kurumi.ntt.td.TdApi.*;
+import java.util.concurrent.atomic.*;
+
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.log.StaticLog;
 import io.kurumi.ntt.td.Client;
 import io.kurumi.ntt.td.TdApi;
-import io.kurumi.ntt.td.TdApi.*;
+import io.kurumi.ntt.td.TdApi.Object;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class TdClient extends TdListener {
@@ -232,6 +231,8 @@ public class TdClient extends TdListener {
 
 	private void processEvent(Client.Event event) {
 
+		StaticLog.debug("event : {}",event);
+		
 		if (event.requestId != 0L) {
 
 			if (!handlers.containsKey(event.requestId)) return;

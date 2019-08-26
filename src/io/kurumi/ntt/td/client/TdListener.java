@@ -21,7 +21,7 @@ public class TdListener implements ITdListener {
 	@Override
 	public void onEvent(TdApi.Object event) {
 
-		StaticLog.debug("event : {}",event);
+		// StaticLog.debug("event : {}",event);
 		
 		if (event instanceof UpdateActiveNotifications) {
 
