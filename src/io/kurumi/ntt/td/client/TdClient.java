@@ -35,7 +35,7 @@ public class TdClient extends TdListener {
 
 		send(params);
 	
-		send(new LogOut());
+		// send(new LogOut());
 
 	}
 
