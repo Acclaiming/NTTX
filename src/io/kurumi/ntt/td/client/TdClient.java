@@ -2,6 +2,7 @@ package io.kurumi.ntt.td.client;
 
 import cn.hutool.core.thread.ThreadUtil;
 import io.kurumi.ntt.td.Client;
+import io.kurumi.ntt.td.TdApi;
 import io.kurumi.ntt.td.TdApi.AuthorizationState;
 import io.kurumi.ntt.td.TdApi.AuthorizationStateReady;
 import io.kurumi.ntt.td.TdApi.AuthorizationStateWaitEncryptionKey;
@@ -18,6 +19,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class TdClient extends TdListener {
@@ -91,21 +93,47 @@ public class TdClient extends TdListener {
 
 	}
 
-	public <T extends Object> T execute(Function function) throws TdException {
+	public <T extends TdApi.Object> T execute(Function function) throws TdException {
 
 		if (this.executionLock.isLocked()) {
 
             throw new IllegalStateException("ClientActor is destroyed");
 
 		}
-		
+
 		while (!hasAuth()) {
-			
+
 			ThreadUtil.safeSleep(233);
-			
+
 		}
 
-        Object response = this.client.execute(function);
+		final AtomicReference<TdApi.Object> responseAtomicReference = new AtomicReference<>();
+        final AtomicBoolean executedAtomicBoolean = new AtomicBoolean(false);
+
+		execute(function,new TdCallback<T>() {
+
+				@Override
+				public void onCallback(boolean isOk,T result,Error error) {
+
+					if (isOk) {
+
+						responseAtomicReference.set(result);
+
+					} else {
+
+						responseAtomicReference.set(error);
+
+					}
+
+					executedAtomicBoolean.set(true);
+
+				}
+
+			});
+
+		while (!executedAtomicBoolean.get()) {}
+
+        Object response = responseAtomicReference.get();
 
 		if (response instanceof Error) {
 
@@ -166,7 +194,7 @@ public class TdClient extends TdListener {
 		stop();
 
 		this.status = new AtomicBoolean(false);
-		
+
 		final AtomicBoolean status = this.status;
 
 		status.set(true);
