@@ -6,7 +6,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-final class Client {
+public final class Client {
 
     private final long clientId;
     private final ReentrantLock receiveLock = new ReentrantLock();
