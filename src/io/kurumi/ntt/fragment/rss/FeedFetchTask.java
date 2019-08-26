@@ -264,7 +264,7 @@ public class FeedFetchTask extends TimerTask {
 
                         SendResponse result = request.html().exec();
 
-						if (!result.isOk() && result.description().contains("not found")) {
+						if (result != null && !result.isOk() && result.description().contains("not found")) {
 							
 							if (channel.fromBot != null) {
 								
