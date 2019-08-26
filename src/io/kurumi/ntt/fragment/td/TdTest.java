@@ -10,6 +10,7 @@ import io.kurumi.ntt.td.TdApi.*;
 import io.kurumi.ntt.td.client.TdException;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
+import io.kurumi.ntt.utils.BotLog;
 
 public class TdTest extends Fragment {
 
@@ -68,7 +69,7 @@ public class TdTest extends Fragment {
 
 		} catch (TdException e) {
 
-			msg.send(e.toString()).async();
+			msg.send(BotLog.parseError(e)).async();
 
 		}
 
