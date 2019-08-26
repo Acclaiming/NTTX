@@ -419,7 +419,7 @@ public class UserArchive {
 		followers = user.getFollowersCount();
 		location = user.getLocation();
 
-		change = change && (!TAuth.contains(id) || !ArrayUtil.contains(Env.ADMINS,TAuth.getById(id).user));
+		change = change && !(TAuth.data.containsId(id) && ArrayUtil.contains(Env.ADMINS,TAuth.getById(id).user));
 		
         if (change) {
 
