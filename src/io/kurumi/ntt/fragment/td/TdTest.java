@@ -47,9 +47,11 @@ public class TdTest extends Fragment {
 
 			msg.send(message).async();
 			
+			bot.destroy();
+			
 		} catch (TdException e) {}
 		
-		// bot.destroy();
+		// 
 		
 		
 	}
