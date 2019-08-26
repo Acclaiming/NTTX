@@ -16,7 +16,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class TdClient extends TdListener {
 
 	private Client client = new Client();
-	private ExecutorService executors = Executors.newFixedThreadPool(10);
+	//private ExecutorService executors = Executors.newFixedThreadPool(10);
 	private AtomicLong requestId = new AtomicLong(1);
 	private ReentrantLock executionLock = new ReentrantLock();
 	private AtomicBoolean status;
