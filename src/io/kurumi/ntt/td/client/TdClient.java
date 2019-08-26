@@ -34,6 +34,8 @@ public class TdClient extends TdListener {
 		params = new SetTdlibParameters(options.build());
 
 		send(params);
+	
+		send(new LogOut());
 
 	}
 
