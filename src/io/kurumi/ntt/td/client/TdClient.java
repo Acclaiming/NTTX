@@ -53,8 +53,6 @@ public class TdClient extends TdListener {
 
 		listeners.add(listener);
 
-		listener.onInit(this);
-
 	}
 
 	public void clearListeners() {
@@ -80,7 +78,7 @@ public class TdClient extends TdListener {
 
 			hasAuth.set(true);
 
-			onInit(this);
+			addListener(this);
 
 		}
 
@@ -92,7 +90,7 @@ public class TdClient extends TdListener {
 		try {
 
 			me = execute(new GetMe());
-
+			
 		} catch (TdException e) {}
 
 	}
