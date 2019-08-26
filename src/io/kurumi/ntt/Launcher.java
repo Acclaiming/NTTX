@@ -211,13 +211,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 			});
 
-		BETA = new BetaLauncher();
-
-		BETA.start();
-
         INSTANCE.start();
-
-
+		
 		for (final String aliasToken : Env.ALIAS) {
 
 			new Launcher() {
@@ -237,6 +232,12 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 		UserBot.startAll();
 
+		log.debug("正在挂载实验版本");
+		
+		BETA = new BetaLauncher();
+
+		BETA.start();
+		
 		log.debug("启动完成 用时 {}s _(:з」∠)_",(System.currentTimeMillis() - startAt) / 1000);
 
     }
