@@ -238,7 +238,7 @@ public class TdClient extends TdListener {
 
 			if (event.object instanceof Error) {
 
-				callback.onCallback(false,null,(Error)event.object);
+				callback.onCallback(false,null,(TdApi.Error)event.object);
 
 			} else {
 
