@@ -12,6 +12,7 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.utils.BotLog;
 import cn.hutool.log.StaticLog;
+import cn.hutool.http.HtmlUtil;
 
 public class TdTest extends Fragment {
 
@@ -56,11 +57,11 @@ public class TdTest extends Fragment {
 
 				StaticLog.debug("GetUser : {}",memberId.userId);
 				
-				message += "\n<a href=\"tg://user?id=" + memberId.userId + "\">" + member.firstName;
+				message += "\n<a href=\"tg://user?id=" + memberId.userId + "\">" + HtmlUtil.escape(member.firstName);
 				
 				if (!StrUtil.isBlank(member.lastName)) {
 					
-					message += " " + member.lastName;
+					message += " " + HtmlUtil.escape(member.lastName);
 					
 				}
 				
