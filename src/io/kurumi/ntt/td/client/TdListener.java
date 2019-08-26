@@ -357,21 +357,6 @@ public class TdListener implements ITdListener {
 	public void onLanguagePackStrings(UpdateLanguagePackStrings update) {}
 
 	public void onMessageContent(UpdateMessageContent update) {
-
-		if (update.newContent instanceof MessageText) {
-
-			FormattedText format = ((MessageText)update.newContent).text;
-
-			String message = format.text;
-
-			if (message == null || !(message.startsWith("/") || message.startsWith("!")) || message.length() == 1) return;
-			
-			TdMessage function = new TdMessage(client,update);
-
-			onFunction(function,function.command(),function.fixedParams());
-			
-		}
-
 	}
 	
 	public void onFunction(TdMessage msg,String function,String[] params) {}
@@ -404,7 +389,21 @@ public class TdListener implements ITdListener {
 
 	public void onNewInlineQuery(UpdateNewInlineQuery update) {}
 
-	public void onNewMessage(UpdateNewMessage update) {}
+	public void onNewMessage(UpdateNewMessage update) {
+		
+		if (update.message.content instanceof MessageText) {
+
+			String message = ((MessageText)update.message.content).text.text;
+
+			if (message == null || !(message.startsWith("/") || message.startsWith("!")) || message.length() == 1) return;
+
+			TdMessage function = new TdMessage(client,update);
+
+			onFunction(function,function.command(),function.fixedParams());
+
+		}
+		
+	}
 
 	public void onNewPreCheckoutQuery(UpdateNewPreCheckoutQuery update) {}
 

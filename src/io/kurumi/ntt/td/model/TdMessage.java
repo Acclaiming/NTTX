@@ -8,11 +8,8 @@ import io.kurumi.ntt.td.client.TdClient;
 
 public class TdMessage {
 
-	public long chatId;
-	public long messageId;
-	
 	public TdClient client;
-	public MessageText message;
+	public Message message;
 
 	private int isCommand = 0;
     private boolean noPayload = false;
@@ -28,18 +25,28 @@ public class TdMessage {
 
 	private static String[] NO_PARAMS = new String[0];
 
-	public TdMessage(TdClient client,UpdateMessageContent update) {
+	public TdMessage(TdClient client,UpdateNewMessage update) {
 
 		this.client = client;
-		this.chatId = update.chatId;
-		this.messageId = update.messageId;
-		this.message = (MessageText)update.newContent;
+		this.message = update.message;
+
+	}
+
+	public SendMessage send(InputMessageContent input) {
+
+		return new SendMessage(message.chatId,0,false,false,null,input);
 
 	}
 	
-	public SendMessage send(InputMessageContent input) {
+	public String text() {
 		
-		return new SendMessage(chatId,0,false,false,null,input);
+		if (message.content instanceof MessageText) {
+			
+			return ((MessageText)message.content).text.text;
+			
+		}
+		
+		return null;
 		
 	}
 
@@ -47,7 +54,7 @@ public class TdMessage {
 
         if (isCommand == 0) {
 
-			String message = this.message.text.text;
+			String message = text();
 
             if (message != null && (message.startsWith("/")) && message.length() > 1) {
 
@@ -96,10 +103,8 @@ public class TdMessage {
         if (!isCommand()) return null;
 
 		if (function != null) return function;
-
-		String message = this.message.text.text;
-
-        String body = message.substring(1);
+		
+        String body = text().substring(1);
 
         if (body.contains(" ")) {
 
@@ -174,10 +179,8 @@ public class TdMessage {
             return null;
 
         }
-
-		String message = this.message.text.text;
-
-		String body = StrUtil.subAfter(message,"/",false);
+		
+		String body = StrUtil.subAfter(text(),"/",false);
 
         if (body.contains(" ")) {
 
@@ -217,9 +220,7 @@ public class TdMessage {
 
         }
 
-		String message = this.message.text.text;
-
-		String body = StrUtil.subAfter(message,"/",false);
+		String body = StrUtil.subAfter(text(),"/",false);
 
         if (body.contains(" ")) {
 
@@ -259,10 +260,8 @@ public class TdMessage {
             return NO_PARAMS;
 
         }
-
-		String message = this.message.text.text;
-
-        String body = StrUtil.subAfter(message,"/",false);
+		
+        String body = StrUtil.subAfter(text(),"/",false);
 
         if (body.contains(" ")) {
 
