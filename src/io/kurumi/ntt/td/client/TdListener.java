@@ -19,415 +19,415 @@ public class TdListener implements ITdListener {
 
 		if (event instanceof UpdateActiveNotifications) {
 
-			onUpdateActiveNotifications((UpdateActiveNotifications)event);
+			onActiveNotifications((UpdateActiveNotifications)event);
 
 		} else if (event instanceof UpdateAuthorizationState) {
 
-			onUpdateAuthorizationState((UpdateAuthorizationState)event);
+			onAuthorizationState((UpdateAuthorizationState)event);
 
 		} else if (event instanceof UpdateBasicGroup) {
 
-			onUpdateBasicGroup((UpdateBasicGroup)event);
+			onBasicGroup((UpdateBasicGroup)event);
 
 		} else if (event instanceof UpdateBasicGroupFullInfo) {
 
-			onUpdateBasicGroupFullInfo((UpdateBasicGroupFullInfo)event);
+			onBasicGroupFullInfo((UpdateBasicGroupFullInfo)event);
 
 		} else if (event instanceof UpdateCall) {
 
-			onUpdateCall((UpdateCall)event);
+			onCall((UpdateCall)event);
 
 		} else if (event instanceof UpdateChatDefaultDisableNotification) {
 
-			onUpdateChatDefaultDisableNotification((UpdateChatDefaultDisableNotification)event);
+			onChatDefaultDisableNotification((UpdateChatDefaultDisableNotification)event);
 
 		} else if (event instanceof UpdateChatDraftMessage) {
 
-			onUpdateChatDraftMessage((UpdateChatDraftMessage)event);
+			onChatDraftMessage((UpdateChatDraftMessage)event);
 
 		} else if (event instanceof UpdateChatIsMarkedAsUnread) {
 
-			onUpdateChatIsMarkedAsUnread((UpdateChatIsMarkedAsUnread)event);
+			onChatIsMarkedAsUnread((UpdateChatIsMarkedAsUnread)event);
 
 		} else if (event instanceof UpdateChatIsPinned) {
 
-			onUpdateChatIsPinned((UpdateChatIsPinned)event);
+			onChatIsPinned((UpdateChatIsPinned)event);
 
 		} else if (event instanceof UpdateChatIsSponsored) {
 
-			onUpdateChatIsSponsored((UpdateChatIsSponsored)event);
+			onChatIsSponsored((UpdateChatIsSponsored)event);
 
 		} else if (event instanceof UpdateChatLastMessage) {
 
-			onUpdateChatLastMessage((UpdateChatLastMessage)event);
+			onChatLastMessage((UpdateChatLastMessage)event);
 
 		} else if (event instanceof UpdateChatNotificationSettings) {
 
-			onUpdateChatNotificationSettings((UpdateChatNotificationSettings)event);
+			onChatNotificationSettings((UpdateChatNotificationSettings)event);
 
 		} else if (event instanceof UpdateChatOnlineMemberCount) {
 
-			onUpdateChatOnlineMemberCount((UpdateChatOnlineMemberCount)event);
+			onChatOnlineMemberCount((UpdateChatOnlineMemberCount)event);
 
 		} else if (event instanceof UpdateChatOrder) {
 
-			onUpdateChatOrder((UpdateChatOrder)event);
+			onChatOrder((UpdateChatOrder)event);
 
 		} else if (event instanceof UpdateChatPhoto) {
 
-			onUpdateChatPhoto((UpdateChatPhoto)event);
+			onChatPhoto((UpdateChatPhoto)event);
 
 		} else if (event instanceof UpdateChatPinnedMessage) {
 
-			onUpdateChatPinnedMessage((UpdateChatPinnedMessage)event);
+			onChatPinnedMessage((UpdateChatPinnedMessage)event);
 
 		} else if (event instanceof UpdateChatReadInbox) {
 
-			onUpdateChatReadInbox((UpdateChatReadInbox)event);
+			onChatReadInbox((UpdateChatReadInbox)event);
 
 		} else if (event instanceof UpdateChatReadOutbox) {
 
-			onUpdateChatReadOutbox((UpdateChatReadOutbox)event);
+			onChatReadOutbox((UpdateChatReadOutbox)event);
 
 		} else if (event instanceof UpdateChatReplyMarkup) {
 
-			onUpdateChatReplyMarkup((UpdateChatReplyMarkup)event);
+			onChatReplyMarkup((UpdateChatReplyMarkup)event);
 
 		} else if (event instanceof UpdateChatTitle) {
 
-			onUpdateChatTitle((UpdateChatTitle)event);
+			onChatTitle((UpdateChatTitle)event);
 
 		} else if (event instanceof UpdateChatUnreadMentionCount) {
 
-			onUpdateChatUnreadMentionCount((UpdateChatUnreadMentionCount)event);
+			onChatUnreadMentionCount((UpdateChatUnreadMentionCount)event);
 
 		} else if (event instanceof UpdateConnectionState) {
 
-			onUpdateConnectionState((UpdateConnectionState)event);
+			onConnectionState((UpdateConnectionState)event);
 
 		} else if (event instanceof UpdateDeleteMessages) {
 
-			onUpdateDeleteMessages((UpdateDeleteMessages)event);
+			onDeleteMessages((UpdateDeleteMessages)event);
 
 		} else if (event instanceof UpdateFavoriteStickers) {
 
-			onUpdateFavoriteStickers((UpdateFavoriteStickers)event);
+			onFavoriteStickers((UpdateFavoriteStickers)event);
 
 		} else if (event instanceof UpdateFile) {
 
-			onUpdateFile((UpdateFile)event);
+			onFile((UpdateFile)event);
 
 		} else if (event instanceof UpdateFileGenerationStart) {
 
-			onUpdateFileGenerationStart((UpdateFileGenerationStart)event);
+			onFileGenerationStart((UpdateFileGenerationStart)event);
 
 		} else if (event instanceof UpdateFileGenerationStop) {
 
-			onUpdateFileGenerationStop((UpdateFileGenerationStop)event);
+			onFileGenerationStop((UpdateFileGenerationStop)event);
 
 		} else if (event instanceof UpdateHavePendingNotifications) {
 
-			onUpdateHavePendingNotifications((UpdateHavePendingNotifications)event);
+			onHavePendingNotifications((UpdateHavePendingNotifications)event);
 
 		} else if (event instanceof UpdateInstalledStickerSets) {
 
-			onUpdateInstalledStickerSets((UpdateInstalledStickerSets)event);
+			onInstalledStickerSets((UpdateInstalledStickerSets)event);
 
 		} else if (event instanceof UpdateLanguagePackStrings) {
 
-			onUpdateLanguagePackStrings((UpdateLanguagePackStrings)event);
+			onLanguagePackStrings((UpdateLanguagePackStrings)event);
 
 		} else if (event instanceof UpdateMessageContent) {
 
-			onUpdateMessageContent((UpdateMessageContent)event);
+			onMessageContent((UpdateMessageContent)event);
 
 		} else if (event instanceof UpdateMessageContentOpened) {
 
-			onUpdateMessageContentOpened((UpdateMessageContentOpened)event);
+			onMessageContentOpened((UpdateMessageContentOpened)event);
 
 		} else if (event instanceof UpdateMessageEdited) {
 
-			onUpdateMessageEdited((UpdateMessageEdited)event);
+			onMessageEdited((UpdateMessageEdited)event);
 
 		} else if (event instanceof UpdateMessageMentionRead) {
 
-			onUpdateMessageMentionRead((UpdateMessageMentionRead)event);
+			onMessageMentionRead((UpdateMessageMentionRead)event);
 
 		} else if (event instanceof UpdateMessageSendAcknowledged) {
 
-			onUpdateMessageSendAcknowledged((UpdateMessageSendAcknowledged)event);
+			onMessageSendAcknowledged((UpdateMessageSendAcknowledged)event);
 
 		} else if (event instanceof UpdateMessageSendFailed) {
 
-			onUpdateMessageSendFailed((UpdateMessageSendFailed)event);
+			onMessageSendFailed((UpdateMessageSendFailed)event);
 
 		} else if (event instanceof UpdateMessageSendSucceeded) {
 
-			onUpdateMessageSendSucceeded((UpdateMessageSendSucceeded)event);
+			onMessageSendSucceeded((UpdateMessageSendSucceeded)event);
 
 		} else if (event instanceof UpdateMessageViews) {
 
-			onUpdateMessageViews((UpdateMessageViews)event);
+			onMessageViews((UpdateMessageViews)event);
 
 		} else if (event instanceof UpdateNewCallbackQuery) {
 
-			onUpdateNewCallbackQuery((UpdateNewCallbackQuery)event);
+			onNewCallbackQuery((UpdateNewCallbackQuery)event);
 
 		} else if (event instanceof UpdateNewChat) {
 
-			onUpdateNewChat((UpdateNewChat)event);
+			onNewChat((UpdateNewChat)event);
 
 		} else if (event instanceof UpdateNewChosenInlineResult) {
 
-			onUpdateNewChosenInlineResult((UpdateNewChosenInlineResult)event);
+			onNewChosenInlineResult((UpdateNewChosenInlineResult)event);
 
 		} else if (event instanceof UpdateNewCustomEvent) {
 
-			onUpdateNewCustomEvent((UpdateNewCustomEvent)event);
+			onNewCustomEvent((UpdateNewCustomEvent)event);
 
 		} else if (event instanceof UpdateNewCustomQuery) {
 
-			onUpdateNewCustomQuery((UpdateNewCustomQuery)event);
+			onNewCustomQuery((UpdateNewCustomQuery)event);
 
 		} else if (event instanceof UpdateNewInlineCallbackQuery) {
 
-			onUpdateNewInlineCallbackQuery((UpdateNewInlineCallbackQuery)event);
+			onNewInlineCallbackQuery((UpdateNewInlineCallbackQuery)event);
 
 		} else if (event instanceof UpdateNewInlineQuery) {
 
-			onUpdateNewInlineQuery((UpdateNewInlineQuery)event);
+			onNewInlineQuery((UpdateNewInlineQuery)event);
 
 		} else if (event instanceof UpdateNewMessage) {
 
-			onUpdateNewMessage((UpdateNewMessage)event);
+			onNewMessage((UpdateNewMessage)event);
 
 		} else if (event instanceof UpdateNewPreCheckoutQuery) {
 
-			onUpdateNewPreCheckoutQuery((UpdateNewPreCheckoutQuery)event);
+			onNewPreCheckoutQuery((UpdateNewPreCheckoutQuery)event);
 
 		} else if (event instanceof UpdateNewShippingQuery) {
 
-			onUpdateNewShippingQuery((UpdateNewShippingQuery)event);
+			onNewShippingQuery((UpdateNewShippingQuery)event);
 
 		} else if (event instanceof UpdateNotification) {
 
-			onUpdateNotification((UpdateNotification)event);
+			onNotification((UpdateNotification)event);
 
 		} else if (event instanceof UpdateNotificationGroup) {
 
-			onUpdateNotificationGroup((UpdateNotificationGroup)event);
+			onNotificationGroup((UpdateNotificationGroup)event);
 
 		} else if (event instanceof UpdateOption) {
 
-			onUpdateOption((UpdateOption)event);
+			onOption((UpdateOption)event);
 
 		} else if (event instanceof UpdatePoll) {
 
-			onUpdatePoll((UpdatePoll)event);
+			onPoll((UpdatePoll)event);
 
 		} else if (event instanceof UpdateRecentStickers) {
 
-			onUpdateRecentStickers((UpdateRecentStickers)event);
+			onRecentStickers((UpdateRecentStickers)event);
 
 		} else if (event instanceof UpdateSavedAnimations) {
 
-			onUpdateSavedAnimations((UpdateSavedAnimations)event);
+			onSavedAnimations((UpdateSavedAnimations)event);
 
 		} else if (event instanceof UpdateScopeNotificationSettings) {
 
-			onUpdateScopeNotificationSettings((UpdateScopeNotificationSettings)event);
+			onScopeNotificationSettings((UpdateScopeNotificationSettings)event);
 
 		} else if (event instanceof UpdateSecretChat) {
 
-			onUpdateSecretChat((UpdateSecretChat)event);
+			onSecretChat((UpdateSecretChat)event);
 
 		} else if (event instanceof UpdateServiceNotification) {
 
-			onUpdateServiceNotification((UpdateServiceNotification)event);
+			onServiceNotification((UpdateServiceNotification)event);
 
 		} else if (event instanceof UpdateSupergroup) {
 
-			onUpdateSupergroup((UpdateSupergroup)event);
+			onSupergroup((UpdateSupergroup)event);
 
 		} else if (event instanceof UpdateSupergroupFullInfo) {
 
-			onUpdateSupergroupFullInfo((UpdateSupergroupFullInfo)event);
+			onSupergroupFullInfo((UpdateSupergroupFullInfo)event);
 
 		} else if (event instanceof UpdateTermsOfService) {
 
-			onUpdateTermsOfService((UpdateTermsOfService)event);
+			onTermsOfService((UpdateTermsOfService)event);
 
 		} else if (event instanceof UpdateTrendingStickerSets) {
 
-			onUpdateTrendingStickerSets((UpdateTrendingStickerSets)event);
+			onTrendingStickerSets((UpdateTrendingStickerSets)event);
 
 		} else if (event instanceof UpdateUnreadChatCount) {
 
-			onUpdateUnreadChatCount((UpdateUnreadChatCount)event);
+			onUnreadChatCount((UpdateUnreadChatCount)event);
 
 		} else if (event instanceof UpdateUnreadMessageCount) {
 
-			onUpdateUnreadMessageCount((UpdateUnreadMessageCount)event);
+			onUnreadMessageCount((UpdateUnreadMessageCount)event);
 
 		} else if (event instanceof UpdateUser) {
 
-			onUpdateUser((UpdateUser)event);
+			onUser((UpdateUser)event);
 
 		} else if (event instanceof UpdateUserChatAction) {
 
-			onUpdateUserChatAction((UpdateUserChatAction)event);
+			onUserChatAction((UpdateUserChatAction)event);
 
 		} else if (event instanceof UpdateUserFullInfo) {
 
-			onUpdateUserFullInfo((UpdateUserFullInfo)event);
+			onUserFullInfo((UpdateUserFullInfo)event);
 
 		} else if (event instanceof UpdateUserPrivacySettingRules) {
 
-			onUpdateUserPrivacySettingRules((UpdateUserPrivacySettingRules)event);
+			onUserPrivacySettingRules((UpdateUserPrivacySettingRules)event);
 
 		} else if (event instanceof UpdateUserStatus) {
 
-			onUpdateUserStatus((UpdateUserStatus)event);
+			onUserStatus((UpdateUserStatus)event);
 			
 		}
 
 	}
 	
-	public void onUpdateActiveNotifications(UpdateActiveNotifications update) {}
+	public void onActiveNotifications(UpdateActiveNotifications update) {}
 
-	public void onUpdateAuthorizationState(UpdateAuthorizationState update) {}
+	public void onAuthorizationState(UpdateAuthorizationState update) {}
 
-	public void onUpdateBasicGroup(UpdateBasicGroup update) {}
+	public void onBasicGroup(UpdateBasicGroup update) {}
 
-	public void onUpdateBasicGroupFullInfo(UpdateBasicGroupFullInfo update) {}
+	public void onBasicGroupFullInfo(UpdateBasicGroupFullInfo update) {}
 
-	public void onUpdateCall(UpdateCall update) {}
+	public void onCall(UpdateCall update) {}
 
-	public void onUpdateChatDefaultDisableNotification(UpdateChatDefaultDisableNotification update) {}
+	public void onChatDefaultDisableNotification(UpdateChatDefaultDisableNotification update) {}
 
-	public void onUpdateChatDraftMessage(UpdateChatDraftMessage update) {}
+	public void onChatDraftMessage(UpdateChatDraftMessage update) {}
 
-	public void onUpdateChatIsMarkedAsUnread(UpdateChatIsMarkedAsUnread update) {}
+	public void onChatIsMarkedAsUnread(UpdateChatIsMarkedAsUnread update) {}
 
-	public void onUpdateChatIsPinned(UpdateChatIsPinned update) {}
+	public void onChatIsPinned(UpdateChatIsPinned update) {}
 
-	public void onUpdateChatIsSponsored(UpdateChatIsSponsored update) {}
+	public void onChatIsSponsored(UpdateChatIsSponsored update) {}
 
-	public void onUpdateChatLastMessage(UpdateChatLastMessage update) {}
+	public void onChatLastMessage(UpdateChatLastMessage update) {}
 
-	public void onUpdateChatNotificationSettings(UpdateChatNotificationSettings update) {}
+	public void onChatNotificationSettings(UpdateChatNotificationSettings update) {}
 
-	public void onUpdateChatOnlineMemberCount(UpdateChatOnlineMemberCount update) {}
+	public void onChatOnlineMemberCount(UpdateChatOnlineMemberCount update) {}
 
-	public void onUpdateChatOrder(UpdateChatOrder update) {}
+	public void onChatOrder(UpdateChatOrder update) {}
 
-	public void onUpdateChatPhoto(UpdateChatPhoto update) {}
+	public void onChatPhoto(UpdateChatPhoto update) {}
 
-	public void onUpdateChatPinnedMessage(UpdateChatPinnedMessage update) {}
+	public void onChatPinnedMessage(UpdateChatPinnedMessage update) {}
 
-	public void onUpdateChatReadInbox(UpdateChatReadInbox update) {}
+	public void onChatReadInbox(UpdateChatReadInbox update) {}
 
-	public void onUpdateChatReadOutbox(UpdateChatReadOutbox update) {}
+	public void onChatReadOutbox(UpdateChatReadOutbox update) {}
 
-	public void onUpdateChatReplyMarkup(UpdateChatReplyMarkup update) {}
+	public void onChatReplyMarkup(UpdateChatReplyMarkup update) {}
 
-	public void onUpdateChatTitle(UpdateChatTitle update) {}
+	public void onChatTitle(UpdateChatTitle update) {}
 
-	public void onUpdateChatUnreadMentionCount(UpdateChatUnreadMentionCount update) {}
+	public void onChatUnreadMentionCount(UpdateChatUnreadMentionCount update) {}
 
-	public void onUpdateConnectionState(UpdateConnectionState update) {}
+	public void onConnectionState(UpdateConnectionState update) {}
 
-	public void onUpdateDeleteMessages(UpdateDeleteMessages update) {}
+	public void onDeleteMessages(UpdateDeleteMessages update) {}
 
-	public void onUpdateFavoriteStickers(UpdateFavoriteStickers update) {}
+	public void onFavoriteStickers(UpdateFavoriteStickers update) {}
 
-	public void onUpdateFile(UpdateFile update) {}
+	public void onFile(UpdateFile update) {}
 
-	public void onUpdateFileGenerationStart(UpdateFileGenerationStart update) {}
+	public void onFileGenerationStart(UpdateFileGenerationStart update) {}
 
-	public void onUpdateFileGenerationStop(UpdateFileGenerationStop update) {}
+	public void onFileGenerationStop(UpdateFileGenerationStop update) {}
 
-	public void onUpdateHavePendingNotifications(UpdateHavePendingNotifications update) {}
+	public void onHavePendingNotifications(UpdateHavePendingNotifications update) {}
 
-	public void onUpdateInstalledStickerSets(UpdateInstalledStickerSets update) {}
+	public void onInstalledStickerSets(UpdateInstalledStickerSets update) {}
 
-	public void onUpdateLanguagePackStrings(UpdateLanguagePackStrings update) {}
+	public void onLanguagePackStrings(UpdateLanguagePackStrings update) {}
 
-	public void onUpdateMessageContent(UpdateMessageContent update) {}
+	public void onMessageContent(UpdateMessageContent update) {}
 
-	public void onUpdateMessageContentOpened(UpdateMessageContentOpened update) {}
+	public void onMessageContentOpened(UpdateMessageContentOpened update) {}
 
-	public void onUpdateMessageEdited(UpdateMessageEdited update) {}
+	public void onMessageEdited(UpdateMessageEdited update) {}
 
-	public void onUpdateMessageMentionRead(UpdateMessageMentionRead update) {}
+	public void onMessageMentionRead(UpdateMessageMentionRead update) {}
 
-	public void onUpdateMessageSendAcknowledged(UpdateMessageSendAcknowledged update) {}
+	public void onMessageSendAcknowledged(UpdateMessageSendAcknowledged update) {}
 
-	public void onUpdateMessageSendFailed(UpdateMessageSendFailed update) {}
+	public void onMessageSendFailed(UpdateMessageSendFailed update) {}
 
-	public void onUpdateMessageSendSucceeded(UpdateMessageSendSucceeded update) {}
+	public void onMessageSendSucceeded(UpdateMessageSendSucceeded update) {}
 
-	public void onUpdateMessageViews(UpdateMessageViews update) {}
+	public void onMessageViews(UpdateMessageViews update) {}
 
-	public void onUpdateNewCallbackQuery(UpdateNewCallbackQuery update) {}
+	public void onNewCallbackQuery(UpdateNewCallbackQuery update) {}
 
-	public void onUpdateNewChat(UpdateNewChat update) {}
+	public void onNewChat(UpdateNewChat update) {}
 
-	public void onUpdateNewChosenInlineResult(UpdateNewChosenInlineResult update) {}
+	public void onNewChosenInlineResult(UpdateNewChosenInlineResult update) {}
 
-	public void onUpdateNewCustomEvent(UpdateNewCustomEvent update) {}
+	public void onNewCustomEvent(UpdateNewCustomEvent update) {}
 
-	public void onUpdateNewCustomQuery(UpdateNewCustomQuery update) {}
+	public void onNewCustomQuery(UpdateNewCustomQuery update) {}
 
-	public void onUpdateNewInlineCallbackQuery(UpdateNewInlineCallbackQuery update) {}
+	public void onNewInlineCallbackQuery(UpdateNewInlineCallbackQuery update) {}
 
-	public void onUpdateNewInlineQuery(UpdateNewInlineQuery update) {}
+	public void onNewInlineQuery(UpdateNewInlineQuery update) {}
 
-	public void onUpdateNewMessage(UpdateNewMessage update) {}
+	public void onNewMessage(UpdateNewMessage update) {}
 
-	public void onUpdateNewPreCheckoutQuery(UpdateNewPreCheckoutQuery update) {}
+	public void onNewPreCheckoutQuery(UpdateNewPreCheckoutQuery update) {}
 
-	public void onUpdateNewShippingQuery(UpdateNewShippingQuery update) {}
+	public void onNewShippingQuery(UpdateNewShippingQuery update) {}
 
-	public void onUpdateNotification(UpdateNotification update) {}
+	public void onNotification(UpdateNotification update) {}
 
-	public void onUpdateNotificationGroup(UpdateNotificationGroup update) {}
+	public void onNotificationGroup(UpdateNotificationGroup update) {}
 
-	public void onUpdateOption(UpdateOption update) {}
+	public void onOption(UpdateOption update) {}
 
-	public void onUpdatePoll(UpdatePoll update) {}
+	public void onPoll(UpdatePoll update) {}
 
-	public void onUpdateRecentStickers(UpdateRecentStickers update) {}
+	public void onRecentStickers(UpdateRecentStickers update) {}
 
-	public void onUpdateSavedAnimations(UpdateSavedAnimations update) {}
+	public void onSavedAnimations(UpdateSavedAnimations update) {}
 
-	public void onUpdateScopeNotificationSettings(UpdateScopeNotificationSettings update) {}
+	public void onScopeNotificationSettings(UpdateScopeNotificationSettings update) {}
 
-	public void onUpdateSecretChat(UpdateSecretChat update) {}
+	public void onSecretChat(UpdateSecretChat update) {}
 
-	public void onUpdateServiceNotification(UpdateServiceNotification update) {}
+	public void onServiceNotification(UpdateServiceNotification update) {}
 
-	public void onUpdateSupergroup(UpdateSupergroup update) {}
+	public void onSupergroup(UpdateSupergroup update) {}
 
-	public void onUpdateSupergroupFullInfo(UpdateSupergroupFullInfo update) {}
+	public void onSupergroupFullInfo(UpdateSupergroupFullInfo update) {}
 
-	public void onUpdateTermsOfService(UpdateTermsOfService update) {}
+	public void onTermsOfService(UpdateTermsOfService update) {}
 
-	public void onUpdateTrendingStickerSets(UpdateTrendingStickerSets update) {}
+	public void onTrendingStickerSets(UpdateTrendingStickerSets update) {}
 
-	public void onUpdateUnreadChatCount(UpdateUnreadChatCount update) {}
+	public void onUnreadChatCount(UpdateUnreadChatCount update) {}
 
-	public void onUpdateUnreadMessageCount(UpdateUnreadMessageCount update) {}
+	public void onUnreadMessageCount(UpdateUnreadMessageCount update) {}
 
-	public void onUpdateUser(UpdateUser update) {}
+	public void onUser(UpdateUser update) {}
 
-	public void onUpdateUserChatAction(UpdateUserChatAction update) {}
+	public void onUserChatAction(UpdateUserChatAction update) {}
 
-	public void onUpdateUserFullInfo(UpdateUserFullInfo update) {}
+	public void onUserFullInfo(UpdateUserFullInfo update) {}
 
-	public void onUpdateUserPrivacySettingRules(UpdateUserPrivacySettingRules update) {}
+	public void onUserPrivacySettingRules(UpdateUserPrivacySettingRules update) {}
 
-	public void onUpdateUserStatus(UpdateUserStatus update) {}
+	public void onUserStatus(UpdateUserStatus update) {}
 	
 
 }

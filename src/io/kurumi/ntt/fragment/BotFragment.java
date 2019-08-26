@@ -64,8 +64,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
     public List<Long> localAdmins = new ArrayList<>();
 
-	public TdBot td;
-	
     @Override
     public TelegramBot bot() {
 

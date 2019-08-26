@@ -106,6 +106,7 @@ import com.pengrad.telegrambot.request.DeleteWebhook;
 import io.kurumi.ntt.fragment.group.mamage.FetchGroup;
 import io.kurumi.ntt.fragment.td.TdTest;
 import io.kurumi.ntt.td.client.TdBot;
+import io.kurumi.ntt.listeners.BetaLauncher;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -118,12 +119,14 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 	public static Log log = LogFactory.get(Launcher.class);
 
+	public static BetaLauncher BETA;
+
     public static void main(String[] args) {
 
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 
 		// Security.addProvider(new BouncyCastleProvider());
-		
+
 		LogFactory.setCurrentLogFactory(new BotLogFactory());
 
 		long startAt = System.currentTimeMillis();
@@ -192,7 +195,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 			}
 
 		};
-		
+
 		log.info("正在启动本体 _(:з」∠)_");
 
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
@@ -207,13 +210,13 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 				}
 
 			});
-			
-		INSTANCE.td = new TdBot(Env.BOT_TOKEN);
-		
-		INSTANCE.td.start();
+
+		BETA = new BetaLauncher();
+
+		BETA.start();
 
         INSTANCE.start();
-		
+
 
 		for (final String aliasToken : Env.ALIAS) {
 
@@ -364,7 +367,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         // ADMIN
 
-      //  addFragment(new BotChannnel());
+		//  addFragment(new BotChannnel());
 
         addFragment(new PingFunction());
         addFragment(new GetID());
@@ -385,7 +388,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		addFragment(new GetRepliesTest());
 
 		addFragment(new TdTest());
-		
+
         // GROUP
 
 		addFragment(new GroupActions());
@@ -395,7 +398,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         addFragment(new GroupFunction());
         addFragment(new JoinCaptcha());
         addFragment(new RemoveKeyboard());
-		
+
 		addFragment(new GroupList());
 		addFragment(new FetchGroup());
 
@@ -471,9 +474,9 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		addFragment(new CodecFN());
 		addFragment(new DigestFN());
 		addFragment(new CryptoFN());
-		
+
 		addFragment(new FriendsList());
-		
+
         // QQ
 
 		addFragment(new TelegramListener());
@@ -508,9 +511,9 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         GroupData.data.saveAll();
 
 		super.stop();
-		
+
 		execute(new DeleteWebhook());
-		
+
         for (BotFragment bot : BotServer.fragments.values()) {
 
             if (bot != this) {
@@ -596,7 +599,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		} else {
 
 			msg.reply("这里是NTT, 使用 /options 调出设置选单, 群组管理相关功能需要删除消息与限制用户权限.").async();
-			
+
 			// msg.exit();
 
 		}

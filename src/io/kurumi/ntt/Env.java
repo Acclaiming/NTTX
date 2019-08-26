@@ -29,6 +29,7 @@ public class Env {
 
     public static boolean DEBUG_MODE;
     public static String BOT_TOKEN;
+	public static String BETA_TOKEN;
 	public static String[] ALIAS;
     public static long[] ADMINS;
     public static Long LOG_CHANNEL;
@@ -79,6 +80,7 @@ public class Env {
         CACHE_DIR = new File(conf.getStr("cache_path"));
 
         BOT_TOKEN = conf.getStr("bot_token");
+		BETA_TOKEN = conf.getStr("beta_token");
 		ALIAS = (String[]) conf.getJSONArray("alias").toArray(String.class);
         ADMINS = (long[]) conf.getJSONArray("admins").toArray(long.class);
         LOG_CHANNEL = conf.getLong("log_channel");
