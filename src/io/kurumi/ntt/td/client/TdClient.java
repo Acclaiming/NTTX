@@ -186,9 +186,9 @@ public class TdClient extends TdListener {
 
 					for (Client.Event event : responseList) processEvent(event);
 
-					executionLock.lock();
-
 				}
+				
+				executionLock.lock();
 
 			}
 
