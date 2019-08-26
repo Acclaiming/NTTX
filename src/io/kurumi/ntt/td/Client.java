@@ -21,7 +21,7 @@ public final class Client {
 		
 		System.load("/usr/local/ntt/libs/td/libtdjni.so");
 		
-		Log.setVerbosityLevel(2);
+		Log.setVerbosityLevel(3);
 		
 	}
 	
