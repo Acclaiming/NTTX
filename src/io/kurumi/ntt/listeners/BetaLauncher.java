@@ -22,7 +22,7 @@ public class BetaLauncher extends TdBot {
 
 		TdMessage msg = new TdMessage(this,update);
 
-		send(msg.send(plainText("喵")));
+		// send(msg.send(plainText("喵")));
 
 	}
 
