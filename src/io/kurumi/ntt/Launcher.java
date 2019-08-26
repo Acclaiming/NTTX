@@ -205,6 +205,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 				@Override
 				public void run() {
 
+					BETA.destroy();
+					
 					INSTANCE.stop();
 
 				}
