@@ -24,7 +24,7 @@ public class BetaLauncher extends TdBot {
 
 		if ("ping".equals(msg.command())) {
 
-			send(new SendMessage(msg.chatId,msg.messageId,true,false,null,plainText("喵")));
+			send(new SendMessage(msg.chatId,0,true,false,null,plainText("喵")));
 
 		}
 
