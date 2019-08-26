@@ -242,7 +242,7 @@ public class TdClient extends TdListener {
 
 			} else {
 
-				((TdCallback<Object>)callback).onCallback(true,event.object,null);
+				((TdCallback<TdApi.Object>)callback).onCallback(true,event.object,null);
 
 			}
 
