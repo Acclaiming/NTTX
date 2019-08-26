@@ -25,13 +25,19 @@ public class TdTest extends Fragment {
 		return FUNCTION_PUBLIC;
 		
 	}
-
+	
+	TdBot bot;
+	
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 		
-		TdBot bot = new TdBot(origin.getToken());
-		
-		bot.start();
+		if (bot == null) {
+			
+			new TdBot(origin.getToken());
+
+			bot.start();
+			
+		}
 		
 		try {
 			
