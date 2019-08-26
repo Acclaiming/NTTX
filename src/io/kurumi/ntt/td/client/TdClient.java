@@ -117,7 +117,7 @@ public class TdClient extends TdListener {
 		execute(function,new TdCallback<T>() {
 
 				@Override
-				public void onCallback(boolean isOk,T result,Error error) {
+				public void onCallback(boolean isOk,T result,TdApi.Error error) {
 
 					if (isOk) {
 
@@ -137,7 +137,7 @@ public class TdClient extends TdListener {
 
 		while (!executedAtomicBoolean.get()) {}
 
-        Object response = responseAtomicReference.get();
+        TdApi.Object response = responseAtomicReference.get();
 
 		if (response instanceof Error) {
 
