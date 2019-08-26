@@ -194,6 +194,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		
 		System.load("/usr/local/ntt/libs/td/libtdjni.so");
 
+		io.kurumi.ntt.td.Log.setVerbosityLevel(2);
+		
 		log.info("正在启动本体 _(:з」∠)_");
 
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
