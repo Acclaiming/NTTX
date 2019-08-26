@@ -9,9 +9,9 @@ public class TdOptions {
     private boolean useTestDc = false;
 	private String databaseDirectory = "td";
 	private String filesDirectory = Env.CACHE_DIR.getPath() + "/td-files";
-    private boolean useFileDatabase = false;
-    private boolean useChatInfoDatabase = false;
-    private boolean useMessageDatabase = false;
+    private boolean useFileDatabase = true;
+    private boolean useChatInfoDatabase = true;
+    private boolean useMessageDatabase = true;
     private static boolean useSecretChats = false;
     private int apiId = 971882;
     private String apiHash = "1232533dd027dc2ec952ba91fc8e3f27";
