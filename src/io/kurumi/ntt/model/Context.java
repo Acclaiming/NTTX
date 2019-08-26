@@ -35,6 +35,13 @@ public class Context {
         return targetChatId == -1 ? chat.id() : targetChatId;
 
     }
+	
+	public int chatIdInt() {
+
+        return (int) (chatId()  + 1000000000000L);
+		
+    }
+	
 
     public boolean isPrivate() {
         return chat.type() == Chat.Type.Private;
