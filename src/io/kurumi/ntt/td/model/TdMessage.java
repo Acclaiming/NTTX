@@ -11,6 +11,8 @@ public class TdMessage {
 	public TdClient client;
 	public Message message;
 
+	public MessageContent content;
+
 	private int isCommand = 0;
     private boolean noPayload = false;
     private String payload[];
@@ -28,33 +30,36 @@ public class TdMessage {
 	public Long chatId;
 	public Long messageId;
 	public int sender;
-	
+
 	public TdMessage(TdClient client,UpdateNewMessage update) {
 
 		this.client = client;
 		this.message = update.message;
+		this.content = message.content;
 		this.chatId = message.chatId;
 		this.messageId = message.id;
 		this.sender = message.senderUserId;
 
 	}
 
-	public SendMessage send(InputMessageContent input) {
+	public SendMessage send(long replyTo,InputMessageContent input) {
 
-		return new SendMessage(message.chatId,0,false,false,null,input);
+		return new SendMessage(message.chatId,replyTo,false,false,null,input);
 
 	}
-	
+
+	public boolean isText() {
+
+		return content instanceof MessageText;
+
+	}
+
 	public String text() {
-		
-		if (message.content instanceof MessageText) {
-			
-			return ((MessageText)message.content).text.text;
-			
-		}
-		
-		return null;
-		
+
+		if (!(content instanceof MessageText)) return null;
+
+		return ((MessageText)content).text.text;
+
 	}
 
 	public boolean isCommand() {
@@ -110,7 +115,7 @@ public class TdMessage {
         if (!isCommand()) return null;
 
 		if (function != null) return function;
-		
+
         String body = text().substring(1);
 
         if (body.contains(" ")) {
@@ -186,7 +191,7 @@ public class TdMessage {
             return null;
 
         }
-		
+
 		String body = StrUtil.subAfter(text(),"/",false);
 
         if (body.contains(" ")) {
@@ -267,7 +272,7 @@ public class TdMessage {
             return NO_PARAMS;
 
         }
-		
+
         String body = StrUtil.subAfter(text(),"/",false);
 
         if (body.contains(" ")) {

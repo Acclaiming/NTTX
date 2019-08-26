@@ -106,7 +106,7 @@ import com.pengrad.telegrambot.request.DeleteWebhook;
 import io.kurumi.ntt.fragment.group.mamage.FetchGroup;
 import io.kurumi.ntt.fragment.td.TdTest;
 import io.kurumi.ntt.td.client.TdBot;
-import io.kurumi.ntt.listeners.BetaLauncher;
+import io.kurumi.ntt.listeners.TdMain;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -119,7 +119,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 	public static Log log = LogFactory.get(Launcher.class);
 
-	public static BetaLauncher BETA;
+	public static TdMain BETA;
 
     public static void main(String[] args) {
 
@@ -236,7 +236,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 		log.debug("正在挂载实验版本");
 		
-		BETA = new BetaLauncher();
+		BETA = new TdMain();
 
 		BETA.start();
 		
