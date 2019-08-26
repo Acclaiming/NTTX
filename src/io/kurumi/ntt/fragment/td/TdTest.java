@@ -4,10 +4,9 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.db.UserData;
-import it.ernytech.tdbot.BotClient;
-import it.ernytech.tdlib.TdApi;
-import it.ernytech.tdlib.Response;
-import it.ernytech.tdlib.TdApi.SupergroupFullInfo;
+import io.kurumi.ntt.td.client.TdBot;
+import io.kurumi.ntt.td.TdApi;
+import io.kurumi.ntt.td.client.TdException;
 
 public class TdTest extends Fragment {
 
@@ -16,7 +15,7 @@ public class TdTest extends Fragment {
 	
 		super.init(origin);
 		
-		// registerAdminFunction("test_get_members");
+		registerAdminFunction("test_get_members");
 		
 	}
 
@@ -30,30 +29,27 @@ public class TdTest extends Fragment {
 	@Override
 	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 		
-		BotClient bot = new BotClient(origin.getToken());
+		TdBot bot = new TdBot(origin.getToken());
 		
-		bot.useChatInfoDatabase(false);
-		bot.useMessageDatabase(false);
-		bot.apiId(971882);
-		bot.apiHash("1232533dd027dc2ec952ba91fc8e3f27");
+		bot.start();
 		
-		bot.create();
-		
-		Response result = bot.execute(new TdApi.GetSupergroupMembers((int)(msg.chatId() / -100L),new TdApi.SupergroupMembersFilterRecent(),0,200));
-
-		TdApi.ChatMembers members = (TdApi.ChatMembers) result.getObject();
-
-		String message = "所有用户 : \n";
-		
-		for (TdApi.ChatMember member : members.members) {
+		try {
 			
-			message += "\n" + member.userId;
+			TdApi.ChatMembers members = bot.execute(new TdApi.GetSupergroupMembers((int)(msg.chatId() / -100L),new TdApi.SupergroupMembersFilterRecent(),0,200));
 			
-		}
+			String message = "所有用户 : \n";
+
+			for (TdApi.ChatMember member : members.members) {
+
+				message += "\n" + member.userId;
+
+			}
+
+			msg.send(message).async();
+			
+		} catch (TdException e) {}
 		
-		msg.send(message).async();
-		
-		bot.close();
+		bot.destroy();
 		
 		
 	}

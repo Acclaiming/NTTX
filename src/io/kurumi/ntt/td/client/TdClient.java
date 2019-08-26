@@ -1,59 +1,115 @@
 package io.kurumi.ntt.td.client;
 
+import cn.hutool.core.thread.ThreadUtil;
 import io.kurumi.ntt.td.Client;
-import io.kurumi.ntt.td.TdApi;
-import java.util.HashMap;
+import io.kurumi.ntt.td.TdApi.AuthorizationState;
+import io.kurumi.ntt.td.TdApi.AuthorizationStateReady;
+import io.kurumi.ntt.td.TdApi.AuthorizationStateWaitEncryptionKey;
+import io.kurumi.ntt.td.TdApi.AuthorizationStateWaitTdlibParameters;
+import io.kurumi.ntt.td.TdApi.CheckDatabaseEncryptionKey;
+import io.kurumi.ntt.td.TdApi.Error;
+import io.kurumi.ntt.td.TdApi.Function;
+import io.kurumi.ntt.td.TdApi.Object;
+import io.kurumi.ntt.td.TdApi.SetTdlibParameters;
+import io.kurumi.ntt.td.TdApi.UpdateAuthorizationState;
+import java.util.LinkedList;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
-import io.kurumi.ntt.td.TdApi.Object;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.LinkedList;
-import io.kurumi.ntt.td.Client.Event;
-import cn.hutool.core.thread.ThreadUtil;
 
-public class TdClient {
+public class TdClient extends TdListener {
 
 	private Client client = new Client();
+	private ExecutorService executors = Executors.newFixedThreadPool(10);
 	private AtomicLong requestId = new AtomicLong(1);
 	private ReentrantLock executionLock = new ReentrantLock();
 	private AtomicBoolean status;
 	private ConcurrentHashMap<Long, TdCallback<?>> handlers = new ConcurrentHashMap<>();
 	private LinkedList<ITdListener> listeners = new LinkedList<>();
-	
+	private AtomicBoolean hasAuth = new AtomicBoolean(false);
+	private SetTdlibParameters params;
+
 	public TdClient(TdOptions options) {
 
-		send(new TdApi.SetTdlibParameters(options.build()));
+		addListener(this);
+
+		params = new SetTdlibParameters(options.build());
+
+		send(params);
 
 	}
-	
+
+	public boolean hasAuth() {
+
+		return this.hasAuth.get();
+
+	}
+
+	void setAuth(boolean hasAuth) {
+
+		this.hasAuth.set(hasAuth);
+
+	}
+
 	public void addListener(ITdListener listener) {
-		
+
 		listeners.add(listener);
-		
+
 		listener.onInit(this);
-		
+
 	}
-	
+
 	public void clearListeners() {
-		
+
 		listeners.clear();
-		
+
 	}
-	
-	public <T extends TdApi.Object> T execute(TdApi.Function function) throws TdException {
+
+	@Override
+	public void onUpdateAuthorizationState(UpdateAuthorizationState state) {
+
+		AuthorizationState authState = state.authorizationState;
+
+		if (authState instanceof AuthorizationStateWaitTdlibParameters) {
+
+			send(params);
+
+		} else if (authState instanceof AuthorizationStateWaitEncryptionKey) {
+
+			send(new CheckDatabaseEncryptionKey());
+
+		} else if (authState instanceof AuthorizationStateReady) {
+
+			hasAuth.set(true);
+
+			onInit(this);
+
+		}
+
+	}
+
+	public <T extends Object> T execute(Function function) throws TdException {
 
 		if (this.executionLock.isLocked()) {
 
             throw new IllegalStateException("ClientActor is destroyed");
 
 		}
+		
+		while (!hasAuth()) {
+			
+			ThreadUtil.safeSleep(233);
+			
+		}
 
-        TdApi.Object response = this.client.execute(function);
+        Object response = this.client.execute(function);
 
-		if (response instanceof TdApi.Error) {
+		if (response instanceof Error) {
 
-			throw new TdException((TdApi.Error)response);
+			throw new TdException((Error)response);
 
 		}
 
@@ -61,7 +117,7 @@ public class TdClient {
 
 	}
 
-	public void execute(TdApi.Function function,TdCallback callback) {
+	public void execute(Function function,TdCallback<?> callback) {
 
 		if (this.executionLock.isLocked()) {
 
@@ -77,7 +133,7 @@ public class TdClient {
 
 	}
 
-	public long send(TdApi.Function function) {
+	public long send(Function function) {
 
         if (this.executionLock.isLocked()) {
 
@@ -93,7 +149,7 @@ public class TdClient {
 
     }
 
-	public void send(long requestId,TdApi.Function function) {
+	public void send(long requestId,Function function) {
 
         if (this.executionLock.isLocked()) {
 
@@ -143,29 +199,29 @@ public class TdClient {
 	private void processEvent(Client.Event event) {
 
 		if (event.requestId != 0L) {
-			
+
 			if (!handlers.containsKey(event.requestId)) return;
-			
+
 			TdCallback<?> callback = handlers.get(event.requestId);
 
-			if (event.object instanceof TdApi.Error) {
-				
-				callback.onCallback(false,null,(TdApi.Error)event.object);
-				
+			if (event.object instanceof Error) {
+
+				callback.onCallback(false,null,(Error)event.object);
+
 			} else {
-				
-				((TdCallback<TdApi.Object>)callback).onCallback(true,event.object,null);
-				
+
+				((TdCallback<Object>)callback).onCallback(true,event.object,null);
+
 			}
-			
+
 		} else {
-			
+
 			for (ITdListener listener : listeners) {
-				
+
 				listener.onEvent(event.object);
-				
+
 			}
-			
+
 		}
 
 	}
