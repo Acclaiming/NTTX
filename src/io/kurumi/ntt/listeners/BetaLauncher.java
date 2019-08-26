@@ -13,21 +13,13 @@ public class BetaLauncher extends TdBot {
 		super(Env.BETA_TOKEN);
 
 	}
-	
+
 	@Override
-	public void onFunction(TdMessage msg,String function,String[] params) {
+	public void onNewMessage(UpdateNewMessage update) {
 		
-		if (msg.message.chatId > 0) {
-			
-			send(msg.send(plainText("喵")));
-			
-		}
-		
-		if ("ping".equals(function)) {
-			
-			send(msg.send(plainText("pong")));
-			
-		}
+		TdMessage msg = new TdMessage(this,update);
+
+		send(msg.send(plainText("喵")));
 		
 	}
 	
