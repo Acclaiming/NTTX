@@ -198,11 +198,9 @@ public class TdClient extends TdListener {
 
 		stop();
 
-		this.status = new AtomicBoolean(false);
+		this.status = new AtomicBoolean(true);
 
 		final AtomicBoolean status = this.status;
-
-		status.set(true);
 
 		new Thread() {
 
