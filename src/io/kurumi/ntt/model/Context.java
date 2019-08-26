@@ -11,6 +11,7 @@ import io.kurumi.ntt.model.request.Send;
 
 import java.util.Date;
 import java.util.TimerTask;
+import cn.hutool.core.util.NumberUtil;
 
 public class Context {
 
@@ -38,7 +39,7 @@ public class Context {
 	
 	public int chatIdInt() {
 
-        return (int) ((chatId() * -1L)  - 1000000000000L);
+        return NumberUtil.parseInt(chatId().toString().substring(4));
 		
     }
 	
