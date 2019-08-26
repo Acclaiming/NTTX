@@ -38,7 +38,7 @@ public class Context {
 	
 	public int chatIdInt() {
 
-        return (int) (chatId()  + 1000000000000L);
+        return (int) ((chatId() / -1L)  - 1000000000000L);
 		
     }
 	
