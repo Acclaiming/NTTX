@@ -105,6 +105,7 @@ import io.kurumi.ntt.fragment.group.mamage.GroupList;
 import com.pengrad.telegrambot.request.DeleteWebhook;
 import io.kurumi.ntt.fragment.group.mamage.FetchGroup;
 import io.kurumi.ntt.fragment.td.TdTest;
+import io.kurumi.ntt.td.client.TdBot;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -192,10 +193,6 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 		};
 		
-		System.load("/usr/local/ntt/libs/td/libtdjni.so");
-
-		io.kurumi.ntt.td.Log.setVerbosityLevel(2);
-		
 		log.info("正在启动本体 _(:з」∠)_");
 
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
@@ -210,8 +207,13 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 				}
 
 			});
+			
+		INSTANCE.td = new TdBot(Env.BOT_TOKEN);
+		
+		INSTANCE.td.start();
 
         INSTANCE.start();
+		
 
 		for (final String aliasToken : Env.ALIAS) {
 

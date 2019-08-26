@@ -50,7 +50,7 @@ public class TdTest extends Fragment {
 			TdApi.ChatMembers members = bot.execute(new TdApi.GetSupergroupMembers(msg.chatIdInt(),new TdApi.SupergroupMembersFilterRecent(),0,200));
 
 			String message = "所有用户 : \n";
-
+			
 			for (ChatMember memberId : members.members) {
 
 				TdApi.User member = bot.execute(new GetUser(memberId.userId));
@@ -73,7 +73,7 @@ public class TdTest extends Fragment {
 
 		} catch (TdException e) {
 
-			msg.send(BotLog.parseError(e)).async();
+			msg.send(e.getMessage()).async();
 
 		}
 

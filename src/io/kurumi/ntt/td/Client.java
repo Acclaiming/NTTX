@@ -17,6 +17,14 @@ public final class Client {
     private static native TdApi.Object nativeClientExecute(TdApi.Function function);
     private static native void destroyNativeClient(long nativeClientId);
 
+	static {
+		
+		System.load("/usr/local/ntt/libs/td/libtdjni.so");
+		
+		Log.setVerbosityLevel(2);
+		
+	}
+	
     public Client() {
 
         this.clientId = createNativeClient();

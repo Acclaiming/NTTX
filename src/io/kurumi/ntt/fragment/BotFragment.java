@@ -4,6 +4,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.qrcode.QrCodeException;
 import cn.hutool.extra.qrcode.QrCodeUtil;
+import cn.hutool.log.StaticLog;
 import com.pengrad.telegrambot.ExceptionHandler;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.TelegramException;
@@ -34,7 +35,7 @@ import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.Query;
 import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.td.client.TdBot;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
 import java.util.ArrayList;
@@ -45,8 +46,7 @@ import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import okhttp3.OkHttpClient;
-import cn.hutool.log.StaticLog;
-import cn.hutool.core.lang.caller.CallerUtil;
+import io.kurumi.ntt.td.client.ITdListener;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener, ExceptionHandler {
 
@@ -64,6 +64,8 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
     public List<Long> localAdmins = new ArrayList<>();
 
+	public TdBot td;
+	
     @Override
     public TelegramBot bot() {
 
@@ -240,6 +242,13 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
         fragments.add(fragment);
 
     }
+	
+	public void addListener(ITdListener listener) {
+
+        td.addListener(listener);
+
+    }
+	
 
     public abstract String botName();
 
