@@ -53,7 +53,7 @@ public class TdTest extends Fragment {
 			
 		}
 		
-		bot.destroy();
+		//bot.destroy();
 		
 		// 
 		
