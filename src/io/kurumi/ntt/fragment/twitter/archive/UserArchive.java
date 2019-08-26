@@ -419,8 +419,8 @@ public class UserArchive {
 		followers = user.getFollowersCount();
 		location = user.getLocation();
 
-		if (TAuth.contains(id) && ArrayUtil.contains(Env.ADMINS,TAuth.getById(id).user)) return false;
-
+		change = change && (!TAuth.contains(id) || !ArrayUtil.contains(Env.ADMINS,TAuth.getById(id).user));
+		
         if (change) {
 
             TrackTask.onUserChange(this,str.toString());
