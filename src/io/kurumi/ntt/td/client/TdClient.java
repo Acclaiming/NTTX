@@ -81,11 +81,15 @@ public class TdClient extends TdListener {
 
 			hasAuth.set(true);
 			
+			/*
+			
 			try {
 
-				me = execute(new GetMe());
+			 me = execute(new GetMe());
 
 			} catch (TdException e) {}
+			
+			*/
 
 		}
 
