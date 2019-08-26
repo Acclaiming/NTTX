@@ -68,7 +68,7 @@ public class TdTest extends Fragment {
 
 		} catch (TdException e) {
 
-			msg.send(e.getError().message).async();
+			msg.send(e.toString()).async();
 
 		}
 

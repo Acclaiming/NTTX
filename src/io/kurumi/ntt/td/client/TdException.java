@@ -8,12 +8,16 @@ public class TdException extends Exception {
 
 	public TdException(TdApi.Error error) {
 		
+		super(error.message);
+		
 		this.error = error;
 		
 	}
 
 	public TdApi.Error getError() {
+		
 		return error;
+		
 	}
-	
+
 }
