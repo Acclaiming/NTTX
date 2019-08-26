@@ -5,6 +5,7 @@ import io.kurumi.ntt.td.TdApi.*;
 import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.td.TdApi;
 import io.kurumi.ntt.td.model.TdMessage;
+import cn.hutool.log.StaticLog;
 
 public class TdListener implements ITdListener {
 
@@ -20,6 +21,8 @@ public class TdListener implements ITdListener {
 	@Override
 	public void onEvent(TdApi.Object event) {
 
+		StaticLog.debug("event : {}",event);
+		
 		if (event instanceof UpdateActiveNotifications) {
 
 			onActiveNotifications((UpdateActiveNotifications)event);
