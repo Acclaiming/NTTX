@@ -13,7 +13,7 @@ public class BetaLauncher extends TdBot {
 		super(Env.BETA_TOKEN);
 
 	}
-
+	
 	@Override
 	public void onFunction(TdMessage msg,String function,String[] params) {
 		
