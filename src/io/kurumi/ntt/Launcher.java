@@ -192,7 +192,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 		};
 		
-		System.loadLibrary("/usr/local/ntt/libs/td/libtdjni.so");
+		System.load("/usr/local/ntt/libs/td/libtdjni.so");
 
 		log.info("正在启动本体 _(:з」∠)_");
 
