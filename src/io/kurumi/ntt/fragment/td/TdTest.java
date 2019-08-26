@@ -49,7 +49,7 @@ public class TdTest extends Fragment {
 			
 		} catch (TdException e) {}
 		
-		bot.destroy();
+		// bot.destroy();
 		
 		
 	}
