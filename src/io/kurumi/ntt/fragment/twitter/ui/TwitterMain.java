@@ -93,16 +93,6 @@ public class TwitterMain extends Fragment {
 
 		} else if (POINT_NEW_AUTH.equals(point)) {
 
-			if (!user.admin()) {
-				
-				String message = "正在维护 :)";
-				
-				callback.alert(message);
-				
-				return;
-				
-			}
-			
 			loginAccount(user,callback);
 
 		} else if (POINT_LOGIN_METHOD.equals(point)) {
