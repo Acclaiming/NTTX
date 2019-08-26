@@ -211,10 +211,14 @@ public class TdClient extends TdListener {
 
 					LinkedList<Client.Event> responseList = client.receive(120,10);
 
-					StaticLog.debug("Evevts : {}",responseList);
+					StaticLog.debug("Evevts : {}",responseList.size());
+					
+					long start = System.currentTimeMillis();
 					
 					for (Client.Event event : responseList) processEvent(event);
 
+					StaticLog.debug("Finish : {}s",(System.currentTimeMillis() - start) / 1000L);
+				
 				}
 
 			}
