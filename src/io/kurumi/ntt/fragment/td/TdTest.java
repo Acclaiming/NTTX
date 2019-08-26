@@ -52,7 +52,7 @@ public class TdTest extends Fragment {
 
 				TdApi.User member = bot.execute(new GetUser(memberId.userId));
 
-				message += "\n<a href=\"" + memberId.userId + "\">" + member.firstName;
+				message += "\n<a href=\"tg://user?id=" + memberId.userId + "\">" + member.firstName;
 				
 				if (!StrUtil.isBlank(member.lastName)) {
 					
