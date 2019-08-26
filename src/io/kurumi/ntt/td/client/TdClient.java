@@ -139,9 +139,9 @@ public class TdClient extends TdListener {
 
         TdApi.Object response = responseAtomicReference.get();
 
-		if (response instanceof Error) {
+		if (response instanceof TdApi.Error) {
 
-			throw new TdException((Error)response);
+			throw new TdException((TdApi.Error)response);
 
 		}
 
