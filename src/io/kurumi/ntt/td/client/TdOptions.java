@@ -11,7 +11,7 @@ public class TdOptions {
 	private String filesDirectory = Env.CACHE_DIR.getPath() + "/td-files";
     private boolean useFileDatabase = true;
     private boolean useChatInfoDatabase = true;
-    private boolean useMessageDatabase = true;
+    private boolean useMessageDatabase = false;
     private static boolean useSecretChats = false;
     private int apiId = 971882;
     private String apiHash = "1232533dd027dc2ec952ba91fc8e3f27";

@@ -206,7 +206,7 @@ public class TdClient extends TdListener {
 
 				while (status.get()) {
 
-					LinkedList<Client.Event> responseList = client.receive(120,10);
+					LinkedList<Client.Event> responseList = client.receive(120,1000);
 
 					StaticLog.debug("Evevts : {}",responseList.size());
 					
