@@ -236,7 +236,7 @@ public class TdClient extends TdListener {
 
 			TdCallback<?> callback = handlers.get(event.requestId);
 
-			if (event.object instanceof Error) {
+			if (event.object instanceof TdApi.Error) {
 
 				callback.onCallback(false,null,(TdApi.Error)event.object);
 
