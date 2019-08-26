@@ -17,6 +17,12 @@ public class BetaLauncher extends TdBot {
 	@Override
 	public void onFunction(TdMessage msg,String function,String[] params) {
 		
+		if (msg.message.chatId > 0) {
+			
+			send(msg.send(plainText("喵")));
+			
+		}
+		
 		if ("ping".equals(function)) {
 			
 			send(msg.send(plainText("pong")));
