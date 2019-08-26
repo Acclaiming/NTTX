@@ -16,15 +16,17 @@ public class BetaLauncher extends TdBot {
 	}
 
 	@Override
-	public void onNewMessage(UpdateNewMessage update) {
-
-		StaticLog.debug("new message {}",update);
+	public void onNewMessage(final UpdateNewMessage update) {
 
 		if (update.message.senderUserId == me.id) return;
 
 		TdMessage msg = new TdMessage(this,update);
 
-		send(msg.send(plainText("喵")));
+		if ("ping".equals(msg.command())) {
+
+			send(new SendMessage(msg.chatId,msg.messageId,true,false,null,plainText("喵")));
+
+		}
 
 	}
 

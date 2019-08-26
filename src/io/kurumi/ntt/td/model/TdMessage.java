@@ -25,10 +25,17 @@ public class TdMessage {
 
 	private static String[] NO_PARAMS = new String[0];
 
+	public Long chatId;
+	public Long messageId;
+	public int sender;
+	
 	public TdMessage(TdClient client,UpdateNewMessage update) {
 
 		this.client = client;
 		this.message = update.message;
+		this.chatId = message.chatId;
+		this.messageId = message.id;
+		this.sender = message.senderUserId;
 
 	}
 
