@@ -165,6 +165,8 @@ public class TdClient extends TdListener {
 
 		stop();
 
+		this.status = new AtomicBoolean(false);
+		
 		final AtomicBoolean status = this.status;
 
 		status.set(true);
@@ -187,8 +189,6 @@ public class TdClient extends TdListener {
 					for (Client.Event event : responseList) processEvent(event);
 
 				}
-				
-				executionLock.lock();
 
 			}
 
@@ -230,8 +230,6 @@ public class TdClient extends TdListener {
 
 		if (status != null && status.get()) { status.set(false); }
 
-		status = new AtomicBoolean(false);
-
 	}
 
 	public void destroy() {
@@ -240,7 +238,7 @@ public class TdClient extends TdListener {
 
 			stop();
 
-			while (!executionLock.isLocked()) { ThreadUtil.safeSleep(233); }
+			while (status.get()) { ThreadUtil.safeSleep(233); }
 
 		} else {
 
