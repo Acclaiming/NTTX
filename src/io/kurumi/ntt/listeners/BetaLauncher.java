@@ -20,9 +20,11 @@ public class BetaLauncher extends TdBot {
 
 		StaticLog.debug("new message {}",update);
 
+		if (update.message.senderUserId == me.id) return;
+
 		TdMessage msg = new TdMessage(this,update);
-		
-		// send(msg.send(plainText("喵")));
+
+		send(msg.send(plainText("喵")));
 
 	}
 
