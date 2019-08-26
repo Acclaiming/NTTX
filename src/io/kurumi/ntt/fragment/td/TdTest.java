@@ -33,7 +33,7 @@ public class TdTest extends Fragment {
 		
 		if (bot == null) {
 			
-			new TdBot(origin.getToken());
+			bot = new TdBot(origin.getToken());
 
 			bot.start();
 			
