@@ -11,6 +11,7 @@ import io.kurumi.ntt.td.client.TdException;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.utils.BotLog;
+import cn.hutool.log.StaticLog;
 
 public class TdTest extends Fragment {
 
@@ -53,6 +54,8 @@ public class TdTest extends Fragment {
 
 				TdApi.User member = bot.execute(new GetUser(memberId.userId));
 
+				StaticLog.debug("GetUser : {}",memberId.userId);
+				
 				message += "\n<a href=\"tg://user?id=" + memberId.userId + "\">" + member.firstName;
 				
 				if (!StrUtil.isBlank(member.lastName)) {
