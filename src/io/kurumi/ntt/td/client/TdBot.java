@@ -21,9 +21,9 @@ public class TdBot extends TdClient {
 	}
 	
 	@Override
-	public void onUpdateAuthorizationState(TdApi.UpdateAuthorizationState state) {
+	public void onAuthorizationState(TdApi.UpdateAuthorizationState state) {
 	
-		super.onUpdateAuthorizationState(state);
+		super.onAuthorizationState(state);
 		
 		TdApi.AuthorizationState authState = state.authorizationState;
 		

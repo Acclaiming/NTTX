@@ -3,16 +3,7 @@ package io.kurumi.ntt.td.client;
 import cn.hutool.core.thread.ThreadUtil;
 import io.kurumi.ntt.td.Client;
 import io.kurumi.ntt.td.TdApi;
-import io.kurumi.ntt.td.TdApi.AuthorizationState;
-import io.kurumi.ntt.td.TdApi.AuthorizationStateReady;
-import io.kurumi.ntt.td.TdApi.AuthorizationStateWaitEncryptionKey;
-import io.kurumi.ntt.td.TdApi.AuthorizationStateWaitTdlibParameters;
-import io.kurumi.ntt.td.TdApi.CheckDatabaseEncryptionKey;
-import io.kurumi.ntt.td.TdApi.Error;
-import io.kurumi.ntt.td.TdApi.Function;
-import io.kurumi.ntt.td.TdApi.Object;
-import io.kurumi.ntt.td.TdApi.SetTdlibParameters;
-import io.kurumi.ntt.td.TdApi.UpdateAuthorizationState;
+import io.kurumi.ntt.td.TdApi.*;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -33,6 +24,8 @@ public class TdClient extends TdListener {
 	private LinkedList<ITdListener> listeners = new LinkedList<>();
 	private AtomicBoolean hasAuth = new AtomicBoolean(false);
 	private SetTdlibParameters params;
+
+	public User me;
 
 	public TdClient(TdOptions options) {
 
@@ -71,7 +64,7 @@ public class TdClient extends TdListener {
 	}
 
 	@Override
-	public void onUpdateAuthorizationState(UpdateAuthorizationState state) {
+	public void onAuthorizationState(UpdateAuthorizationState state) {
 
 		AuthorizationState authState = state.authorizationState;
 
@@ -90,6 +83,17 @@ public class TdClient extends TdListener {
 			onInit(this);
 
 		}
+
+	}
+
+	@Override
+	public void onInit(TdClient client) {
+
+		try {
+
+			me = execute(new GetMe());
+
+		} catch (TdException e) {}
 
 	}
 

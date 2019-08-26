@@ -1,7 +1,10 @@
 package io.kurumi.ntt.td.client;
 
-import io.kurumi.ntt.td.TdApi;
 import io.kurumi.ntt.td.TdApi.*;
+
+import cn.hutool.core.util.StrUtil;
+import io.kurumi.ntt.td.TdApi;
+import io.kurumi.ntt.td.model.TdMessage;
 
 public class TdListener implements ITdListener {
 
@@ -353,8 +356,26 @@ public class TdListener implements ITdListener {
 
 	public void onLanguagePackStrings(UpdateLanguagePackStrings update) {}
 
-	public void onMessageContent(UpdateMessageContent update) {}
+	public void onMessageContent(UpdateMessageContent update) {
 
+		if (update.newContent instanceof MessageText) {
+
+			FormattedText format = ((MessageText)update.newContent).text;
+
+			String message = format.text;
+
+			if (message == null || !(message.startsWith("/") || message.startsWith("!")) || message.length() == 1) return;
+			
+			TdMessage function = new TdMessage(client,update);
+
+			onFunction(function,function.command(),function.fixedParams());
+			
+		}
+
+	}
+	
+	public void onFunction(TdMessage msg,String function,String[] params) {}
+	
 	public void onMessageContentOpened(UpdateMessageContentOpened update) {}
 
 	public void onMessageEdited(UpdateMessageEdited update) {}

@@ -240,13 +240,6 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
         fragments.add(fragment);
 
     }
-	
-	public void addListener(ITdListener listener) {
-
-        td.addListener(listener);
-
-    }
-	
 
     public abstract String botName();
 
