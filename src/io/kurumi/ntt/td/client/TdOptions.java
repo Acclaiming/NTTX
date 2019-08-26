@@ -1,13 +1,14 @@
 package io.kurumi.ntt.td.client;
 
 import io.kurumi.ntt.td.TdApi;
+import io.kurumi.ntt.Env;
 
 public class TdOptions {
 
 	private TdApi.TdlibParameters parameters;
     private boolean useTestDc = false;
-	private String databaseDirectory = "tdlib";
-	private String filesDirectory = "files";
+	private String databaseDirectory = "td";
+	private String filesDirectory = Env.CACHE_DIR.getPath() + "/td-files";
     private boolean useFileDatabase = false;
     private boolean useChatInfoDatabase = false;
     private boolean useMessageDatabase = false;

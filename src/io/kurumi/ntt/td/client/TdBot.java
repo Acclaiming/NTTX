@@ -1,6 +1,7 @@
 package io.kurumi.ntt.td.client;
 
 import io.kurumi.ntt.td.TdApi;
+import io.kurumi.ntt.Env;
 
 public class TdBot extends TdClient {
 
@@ -8,7 +9,7 @@ public class TdBot extends TdClient {
 
 	public TdBot(String botToken) {
 		
-		this(botToken,new TdOptions());
+		this(botToken,new TdOptions().databaseDirectory(Env.CACHE_DIR.getPath() + "/bot/" + botToken));
 		
 	}
 	
