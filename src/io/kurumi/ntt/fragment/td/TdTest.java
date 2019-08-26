@@ -7,6 +7,7 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.td.client.TdBot;
 import io.kurumi.ntt.td.TdApi;
 import io.kurumi.ntt.td.client.TdException;
+import cn.hutool.core.util.NumberUtil;
 
 public class TdTest extends Fragment {
 
@@ -41,7 +42,7 @@ public class TdTest extends Fragment {
 		
 		try {
 			
-			TdApi.ChatMembers members = bot.execute(new TdApi.GetSupergroupMembers((int)(msg.chatId() / -100L),new TdApi.SupergroupMembersFilterRecent(),0,200));
+			TdApi.ChatMembers members = bot.execute(new TdApi.GetSupergroupMembers(NumberUtil.parseInt(msg.chatId().toString().substring(4)),new TdApi.SupergroupMembersFilterRecent(),0,200));
 			
 			String message = "所有用户 : \n";
 
