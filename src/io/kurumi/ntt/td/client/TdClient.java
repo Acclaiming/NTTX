@@ -12,15 +12,17 @@ import io.kurumi.ntt.td.TdApi.Object;
 import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class TdClient extends TdListener {
+public class TdClient extends TdHandler {
 
 	private Client client = new Client();
-	private ExecutorService updates = Executors.newFixedThreadPool(8);
+
+	private ExecutorService otherUpdate = Executors.newFixedThreadPool(4);
+
 	private AtomicLong requestId = new AtomicLong(1);
 	private ReentrantLock executionLock = new ReentrantLock();
 	private AtomicBoolean status;
 	private ConcurrentHashMap<Long, TdCallback<?>> handlers = new ConcurrentHashMap<>();
-	private LinkedList<ITdListener> listeners = new LinkedList<>();
+	private LinkedList<TdHandler> listeners = new LinkedList<>();
 	private AtomicBoolean hasAuth = new AtomicBoolean(false);
 	private SetTdlibParameters params;
 
@@ -50,11 +52,9 @@ public class TdClient extends TdListener {
 
 	}
 
-	public void addListener(ITdListener listener) {
+	public void addListener(TdHandler listener) {
 
 		listeners.add(listener);
-
-		listener.onInit(this);
 
 	}
 
@@ -201,7 +201,7 @@ public class TdClient extends TdListener {
 			public void run() {
 
 				while (status.get()) {
-					
+
 					LinkedList<Client.Event> responseList = client.receive(120,10);
 
 					for (Client.Event event : responseList) processEvent(event);
@@ -236,16 +236,19 @@ public class TdClient extends TdListener {
 
 		} else {
 
-			updates.execute(new Runnable() {
+			 otherUpdate.execute(new Runnable() {
 
 					@Override
 					public void run() {
-						
-						for (ITdListener listener : listeners) listener.onEvent(event.object);
-						
+
+						for (TdHandler listener : listeners) listener.onEvent(event.object);
+
 					}
+
 				});
-		
+
+
+
 		}
 
 	}

@@ -46,7 +46,7 @@ import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import okhttp3.OkHttpClient;
-import io.kurumi.ntt.td.client.ITdListener;
+import io.kurumi.ntt.td.client.TdHandler;
 
 public abstract class BotFragment extends Fragment implements UpdatesListener, ExceptionHandler {
 

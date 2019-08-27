@@ -1,9 +1,8 @@
 package io.kurumi.ntt.td.model;
 
-import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.td.TdApi.*;
-import io.kurumi.ntt.td.client.TdListener;
-import io.kurumi.ntt.td.client.TdBot;
+
+import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.td.client.TdClient;
 
 public class TdMessage {
@@ -43,7 +42,7 @@ public class TdMessage {
 	}
 
 	public SendMessage send(long replyTo,InputMessageContent input) {
-
+		
 		return new SendMessage(message.chatId,replyTo,false,false,null,input);
 
 	}
