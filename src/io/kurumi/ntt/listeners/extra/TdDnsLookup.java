@@ -7,7 +7,7 @@ import io.kurumi.ntt.td.client.TdFunction;
 import io.kurumi.ntt.td.model.TMsg;
 import io.kurumi.ntt.utils.Html;
 
-public class DnsLookup extends TdFunction {
+public class TdDnsLookup extends TdFunction {
 
 	@Override
 	public String functionName() {
