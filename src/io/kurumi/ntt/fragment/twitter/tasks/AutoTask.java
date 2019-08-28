@@ -25,27 +25,7 @@ public class AutoTask {
 
     }
 
-    public static void onNewFollower(TAuth auth, Twitter api, UserArchive archive, Relationship ship) {
-
-        if (!ship.isSourceFollowingTarget() && auth.fb != null) {
-
-            try {
-
-                api.createFriendship(archive.id);
-
-             //   new Send(auth.user, (archive.isProtected ? "已发送关注请求 :" : "已回Fo : ") + archive.urlHtml(), "账号 : " + auth.archive().urlHtml()).html().point(0, archive.id);
-
-            } catch (TwitterException e) {
-
-                new Send(auth.user, "回Fo失败 : {}\n\n{}" + archive.urlHtml(), NTT.parseTwitterException(e), "账号 : " + auth.archive().urlHtml()).html().exec();
-
-
-            }
-
-        }
-
-    }
-	
+  
 	/*
 
 	@Override

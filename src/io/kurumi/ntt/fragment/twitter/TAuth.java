@@ -69,7 +69,6 @@ public class TAuth {
 	public Boolean pm;
 	
 	public Boolean mrt;
-	public Boolean fb;
 	
 	public Boolean fo;
 	
@@ -115,6 +114,12 @@ public class TAuth {
 	public Boolean bbb;
 	public Boolean bbp;
 	public String bbp_msg;
+	
+	public Boolean fb;
+	public Boolean fbi;
+	public Boolean fbp;
+	public Boolean fbp_msg;
+	
 	
 	/*
 	
