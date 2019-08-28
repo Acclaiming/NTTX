@@ -154,7 +154,7 @@ public class TdClient extends TdListener {
 				command = msg.payload()[0];
 				params = ArrayUtil.remove(msg.payload(),0);
 				
-				if (isAdmin(user.id) && adminPayloads.containsKey(command)) {
+				if (isAdmin(msg.sender) && adminPayloads.containsKey(command)) {
 
 					adminPayloads.get(command).onPayload(user,msg,command,params);
 
@@ -168,7 +168,7 @@ public class TdClient extends TdListener {
 				
 			}
 			
-			if (isAdmin(user.id) && adminFunctions.containsKey(command)) {
+			if (isAdmin(msg.sender) && adminFunctions.containsKey(command)) {
 				
 				adminFunctions.get(command).onFunction(user,msg,command,params);
 				
