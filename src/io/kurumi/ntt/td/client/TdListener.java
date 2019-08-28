@@ -1,7 +1,7 @@
 package io.kurumi.ntt.td.client;
 
 import io.kurumi.ntt.td.TdApi.*;
-import io.kurumi.ntt.td.model.TMessage;
+import io.kurumi.ntt.td.model.TMsg;
 import io.kurumi.ntt.td.TdApi;
 
 public class TdListener {
@@ -14,10 +14,10 @@ public class TdListener {
 		
 	}
 	
-	public void onMessage(TMessage message) {
+	public void onPrivateMessage(User user,TMsg message) {
 	}
 	
-	public void onFunction(TMessage message) {
+	public void onFunction(TMsg message) {
 	}
 	
 }

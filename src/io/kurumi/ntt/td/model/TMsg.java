@@ -5,7 +5,7 @@ import io.kurumi.ntt.td.TdApi.*;
 import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.td.client.TdClient;
 
-public class TMessage {
+public class TMsg {
 
 	public TdClient client;
 	public Message message;
@@ -30,7 +30,7 @@ public class TMessage {
 	public Long messageId;
 	public int sender;
 
-	public TMessage(TdClient client,UpdateNewMessage update) {
+	public TMsg(TdClient client,UpdateNewMessage update) {
 
 		this.client = client;
 		this.message = update.message;

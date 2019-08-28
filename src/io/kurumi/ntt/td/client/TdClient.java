@@ -11,6 +11,7 @@ import io.kurumi.ntt.td.TdApi;
 import io.kurumi.ntt.td.TdApi.Object;
 import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
+import io.kurumi.ntt.td.model.TMsg;
 
 public class TdClient extends TdHandler {
 
@@ -89,6 +90,19 @@ public class TdClient extends TdHandler {
 
 		}
 
+	}
+
+	@Override
+	public void onNewMessage(UpdateNewMessage update) {
+		
+		TMsg msg = new TMsg(this,update);
+		
+		if (msg.chatId == msg.sender) {
+			
+			
+			
+		}
+		
 	}
 
 	public <T extends TdApi.Object> T execute(Function function) throws TdException {

@@ -6,7 +6,7 @@ import cn.hutool.log.Log;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.listeners.TdMain;
 import io.kurumi.ntt.td.client.TdBot;
-import io.kurumi.ntt.td.model.TMessage;
+import io.kurumi.ntt.td.model.TMsg;
 import cn.hutool.log.LogFactory;
 import io.kurumi.ntt.td.client.TdException;
 import cn.hutool.core.util.StrUtil;
@@ -26,7 +26,7 @@ public class TdMain extends TdBot {
 
 		if (update.message.senderUserId == me.id) return;
 
-		TMessage msg = new TMessage(this,update);
+		TMsg msg = new TMsg(this,update);
 
 		if (msg.isText()) {
 
@@ -34,23 +34,11 @@ public class TdMain extends TdBot {
 
 			if ("ping".equals(msg.command())) {
 
-				send(new SendMessage(msg.chatId,0,true,false,null,plainText("喵")));
-
+				sendPlainText(msg.chatId,"喵....");
+				
 			} else if ("test".equals(msg.command())) {
 				
-				long start = System.currentTimeMillis();
-				
-				try {
-					
-					User user = execute(new GetUser(msg.sender));
-
-					sendPlainText(msg.chatId,"完成 : {}ms",(System.currentTimeMillis() - start));
-					
-				} catch (TdException e) {
-					
-					sendPlainText(msg.chatId,e.getMessage());
-					
-				}
+				sendPlainText(msg.chatId,"ChatId : {},Sender : {}",msg.chatId,msg.sender);
 
 			}
 
