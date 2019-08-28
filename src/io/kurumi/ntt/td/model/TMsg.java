@@ -61,7 +61,7 @@ public class TMsg {
 
 	public boolean isChannel() {
 
-		return chatId < 0 && !message.isChannelPost;
+		return chatId < 0 && message.isChannelPost;
 		
 	}
 	
