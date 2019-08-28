@@ -5,13 +5,14 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.log.StaticLog;
 import io.kurumi.ntt.td.Client;
 import io.kurumi.ntt.td.TdApi;
 import io.kurumi.ntt.td.TdApi.Object;
+import io.kurumi.ntt.td.model.TMsg;
 import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
-import io.kurumi.ntt.td.model.TMsg;
 
 public class TdClient extends TdHandler {
 
@@ -22,8 +23,11 @@ public class TdClient extends TdHandler {
 	private AtomicLong requestId = new AtomicLong(1);
 	private ReentrantLock executionLock = new ReentrantLock();
 	private AtomicBoolean status;
-	private ConcurrentHashMap<Long, TdCallback<?>> handlers = new ConcurrentHashMap<>();
-	private LinkedList<TdHandler> listeners = new LinkedList<>();
+	private ConcurrentHashMap<Long, TdCallback<?>> callbacks = new ConcurrentHashMap<>();
+
+	private LinkedList<TdHandler> handlers = new LinkedList<>();
+	private LinkedList<TdListener> listeners = new LinkedList<>();
+
 	private AtomicBoolean hasAuth = new AtomicBoolean(false);
 	private SetTdlibParameters params;
 
@@ -31,13 +35,9 @@ public class TdClient extends TdHandler {
 
 	public TdClient(TdOptions options) {
 
-		addListener(this);
+		handlers.add(this);
 
 		params = new SetTdlibParameters(options.build());
-
-		send(params);
-
-		// send(new LogOut());
 
 	}
 
@@ -50,12 +50,6 @@ public class TdClient extends TdHandler {
 	void setAuth(boolean hasAuth) {
 
 		this.hasAuth.set(hasAuth);
-
-	}
-
-	public void addListener(TdHandler listener) {
-
-		listeners.add(listener);
 
 	}
 
@@ -94,15 +88,35 @@ public class TdClient extends TdHandler {
 
 	@Override
 	public void onNewMessage(UpdateNewMessage update) {
+
+		Message message = update.message;
+
+		User user = message.isChannelPost ? null : E(new GetUser(message.senderUserId));
+
+		TMsg msg = new TMsg(this,update.message);
 		
-		TMsg msg = new TMsg(this,update);
 		
-		if (msg.chatId == msg.sender) {
-			
-			
-			
+
+	}
+
+	int superGroupId(Long chatId) {
+
+		return NumberUtil.parseInt(chatId.toString().substring(4));
+
+	}
+
+	public <T extends TdApi.Object> T E(Function function) {
+
+		try {
+
+			return execute(function);
+
+		} catch (TdException e) {
+
+			throw new RuntimeException(e);
+
 		}
-		
+
 	}
 
 	public <T extends TdApi.Object> T execute(Function function) throws TdException {
@@ -167,7 +181,7 @@ public class TdClient extends TdHandler {
 
 		long requestId = this.requestId.getAndIncrement();
 
-		handlers.put(requestId,callback);
+		callbacks.put(requestId,callback);
 
 		send(requestId,function);
 
@@ -234,9 +248,9 @@ public class TdClient extends TdHandler {
 
 		if (event.requestId != 0L) {
 
-			if (!handlers.containsKey(event.requestId)) return;
+			if (!callbacks.containsKey(event.requestId)) return;
 
-			TdCallback<?> callback = handlers.get(event.requestId);
+			TdCallback<?> callback = callbacks.get(event.requestId);
 
 			if (event.object instanceof TdApi.Error) {
 
@@ -250,12 +264,12 @@ public class TdClient extends TdHandler {
 
 		} else {
 
-			 otherUpdate.execute(new Runnable() {
+			otherUpdate.execute(new Runnable() {
 
 					@Override
 					public void run() {
 
-						for (TdHandler listener : listeners) listener.onEvent(event.object);
+						for (TdHandler handler : handlers) handler.onEvent(event.object);
 
 					}
 

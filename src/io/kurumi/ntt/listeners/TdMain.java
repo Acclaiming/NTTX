@@ -26,7 +26,7 @@ public class TdMain extends TdBot {
 
 		if (update.message.senderUserId == me.id) return;
 
-		TMsg msg = new TMsg(this,update);
+		TMsg msg = new TMsg(this,update.message);
 
 		if (msg.isText()) {
 

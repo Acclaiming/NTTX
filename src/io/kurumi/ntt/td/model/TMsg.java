@@ -7,7 +7,7 @@ import io.kurumi.ntt.td.client.TdClient;
 
 public class TMsg {
 
-	public TdClient client;
+	private TdClient client;
 	public Message message;
 
 	public MessageContent content;
@@ -26,14 +26,14 @@ public class TMsg {
 
 	private static String[] NO_PARAMS = new String[0];
 
-	public Long chatId;
-	public Long messageId;
+	public long chatId;
+	public long messageId;
 	public int sender;
 
-	public TMsg(TdClient client,UpdateNewMessage update) {
-
+	public TMsg(TdClient client,Message message) {
+		
 		this.client = client;
-		this.message = update.message;
+		this.message = message;
 		this.content = message.content;
 		this.chatId = message.chatId;
 		this.messageId = message.id;
@@ -41,12 +41,30 @@ public class TMsg {
 
 	}
 
-	public SendMessage send(long replyTo,InputMessageContent input) {
+	public boolean isPrivate() {
+
+		return chatId == sender;
 		
-		return new SendMessage(message.chatId,replyTo,false,false,null,input);
+	}
+
+	public boolean isBasicGroup() {
+
+		return chatId > 0;
 
 	}
 
+	public boolean isSuperGroup() {
+
+		return chatId < 0 && !message.isChannelPost;
+		
+	}
+
+	public boolean isChannel() {
+
+		return chatId < 0 && !message.isChannelPost;
+		
+	}
+	
 	public boolean isText() {
 
 		return content instanceof MessageText;
