@@ -216,7 +216,7 @@ public class FollowedBy extends Fragment {
 
 	public static String defaultMessage() {
 
-		String message = "@<用户名> 👋";
+		String message = "@<用户名> 感谢你的关注 👋";
 
 		return message;
 
@@ -254,7 +254,7 @@ public class FollowedBy extends Fragment {
 			
 		buttons.newButtonLine()
 			.newButton("关注对方")
-			.newButton(account.fb != null ? "✅" : "☑",POINT_FB,account.id,"fbb");
+			.newButton(account.fb != null ? "✅" : "☑",POINT_FB,account.id,"fb");
 
 		buttons.newButtonLine()
 			.newButton("自动推送")
