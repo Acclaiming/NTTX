@@ -10,10 +10,31 @@ import cn.hutool.core.util.ArrayUtil;
 
 public abstract class TdInterface {
 	
-	public abstract long send(Function function);
-	public abstract <T extends TdApi.Object> T execute(Function function) throws TdException;
-	public abstract void execute(Function function,TdCallback<?> callback);
-	public abstract TdPoint getPointStore();
+	public TdClient client;
+	
+	public long send(Function function) {
+
+		return client.send(function);
+
+	}
+	
+	public <T extends TdApi.Object> T execute(TdApi.Function function) throws TdException {
+
+		return client.execute(function);
+
+	}
+	
+	public void execute(Function function,TdCallback<?> callback) {
+
+		client.execute(function,callback);
+
+	}
+	
+	public TdPoint getPointStore() {
+
+		return client.point;
+
+	}
 	
 	public void send(SMBuilder function) {
 		

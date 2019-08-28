@@ -9,36 +9,6 @@ import cn.hutool.log.StaticLog;
 
 public class TdHandler extends TdInterface {
 
-	public TdClient client;
-	
-	@Override
-	public long send(Function function) {
-		
-		return client.send(function);
-		
-	}
-
-	@Override
-	public <T extends TdApi.Object> T execute(TdApi.Function function) throws TdException {
-
-		return client.execute(function);
-		
-	}
-	
-	@Override
-	public void execute(Function function,TdCallback<?> callback) {
-		
-		client.execute(function,callback);
-		
-	}
-
-	@Override
-	public TdPoint getPointStore() {
-	
-		return client.point;
-		
-	}
-	
 	public void onEvent(TdApi.Object event) {
 
 		if (event instanceof UpdateActiveNotifications) {
