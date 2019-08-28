@@ -54,13 +54,13 @@ public class CleanDeleteAccount extends TdListener {
 
 			if (deletedAccounts.isEmpty()) {
 
-				send(status.editText(text("没有找到 DA ...")));
+				send(chatId(msg.chatId).input(inputText(text("没有找到 DA ..."))));
 				
 				return;
 
 			} else {
 
-				send(status.editText(text("发现 " + deletedAccounts.size() + " 个 DA, 正在爆破 ...")));
+				send(chatId(msg.chatId).input(inputText(text("发现 " + deletedAccounts.size() + " 个 DA, 正在爆破 ..."))));
 
 			}
 
@@ -119,17 +119,16 @@ public class CleanDeleteAccount extends TdListener {
 
 			if (deletedAccounts.isEmpty()) {
 
-				execute(new EditMessageText(status.chatId,status.messageId,null,inputText(text("没有找到 DA ..."))));
-			
+				send(chatId(msg.chatId).input(inputText(text("没有找到 DA ..."))));
+
 				return;
-				
 
 			} else {
 
-				send(status.editText(text("发现 " + deletedAccounts.size() + " 个 DA, 正在爆破 ...")));
+				send(chatId(msg.chatId).input(inputText(text("发现 " + deletedAccounts.size() + " 个 DA, 正在爆破 ..."))));
 
 			}
-
+			
 			long start = System.currentTimeMillis();
 
 			for (Integer deleted : deletedAccounts) {
