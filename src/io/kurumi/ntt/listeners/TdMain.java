@@ -12,6 +12,7 @@ import io.kurumi.ntt.td.client.TdException;
 import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.listeners.base.TdPingFunction;
 import io.kurumi.ntt.listeners.base.TdGetIdFunction;
+import io.kurumi.ntt.listeners.group.CleanDeleteAccount;
 
 public class TdMain extends TdBot {
 
@@ -23,6 +24,8 @@ public class TdMain extends TdBot {
 		
 		addListener(new TdPingFunction());
 		addListener(new TdGetIdFunction());
+		
+		addListener(new CleanDeleteAccount());
 		
 	}
 

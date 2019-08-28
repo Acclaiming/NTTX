@@ -4,10 +4,10 @@ import io.kurumi.ntt.td.TdApi.*;
 
 import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.td.client.TdClient;
+import io.kurumi.ntt.td.client.TdInterface;
 
-public class TMsg {
+public class TMsg extends TdInterface {
 
-	private TdClient client;
 	public Message message;
 
 	public MessageContent content;
@@ -27,6 +27,8 @@ public class TMsg {
 	private static String[] NO_PARAMS = new String[0];
 
 	public long chatId;
+	public int groupId;
+	
 	public long messageId;
 	public int sender;
 
@@ -39,7 +41,45 @@ public class TMsg {
 		this.messageId = message.id;
 		this.sender = message.senderUserId;
 
+		if (chatId < 0) {
+			
+			if (chatId < -1000000000000L) {
+				
+				groupId = (int)((chatId + 1000000000000L) * -1);
+				
+			} else {
+				
+				groupId = (int)(groupId * -1L);
+				
+			}
+			
+		}
+		
 	}
+	
+	public EditMessageText editText(InputMessageContent content) {
+		
+		return editText(null,content);
+		
+	}
+	
+	public EditMessageText editText(ReplyMarkup markup,InputMessageContent content) {
+		
+		return new EditMessageText(chatId,messageId,markup,content);
+		
+	}
+	
+	public EditMessageText editText(TextBuilder content) {
+
+		return editText(null,content);
+
+	}
+
+	public EditMessageText editText(ReplyMarkup markup,TextBuilder content) {
+
+		return new EditMessageText(chatId,messageId,markup,inputText(content.build()));
+	}
+	
 
 	public boolean isPrivate() {
 
@@ -49,19 +89,19 @@ public class TMsg {
 
 	public boolean isBasicGroup() {
 
-		return chatId > 0;
+		return chatId > -1000000000000L;
 
 	}
 
 	public boolean isSuperGroup() {
 
-		return chatId < 0 && !message.isChannelPost;
+		return chatId < -1000000000000L && !message.isChannelPost;
 		
 	}
 
 	public boolean isChannel() {
 
-		return chatId < 0 && message.isChannelPost;
+		return message.isChannelPost;
 		
 	}
 	

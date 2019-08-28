@@ -2,71 +2,81 @@ package io.kurumi.ntt.td.client;
 
 import io.kurumi.ntt.td.TdApi.*;
 
-import cn.hutool.core.util.NumberUtil;
-import java.util.LinkedList;
-import io.kurumi.ntt.td.TdApi;
-import io.kurumi.ntt.Env;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.NumberUtil;
+import io.kurumi.ntt.Env;
+import io.kurumi.ntt.td.TdApi;
+import io.kurumi.ntt.td.TdApi.Object;
+import io.kurumi.ntt.td.model.TMsg;
+import java.util.LinkedList;
 
 public abstract class TdInterface {
-	
+
 	public TdClient client;
-	
+
 	public long send(Function function) {
 
 		return client.send(function);
 
 	}
-	
-	public <T extends TdApi.Object> T execute(TdApi.Function function) throws TdException {
 
-		return client.execute(function);
+	public <T extends TdApi.Object> T execute(TdApi.Function function) {
+
+		try {
+
+			return client.execute(function);
+
+		} catch (TdException e) {
+
+			throw new RuntimeException(e);
+
+		}
 
 	}
-	
+
 	public void execute(Function function,TdCallback<?> callback) {
 
 		client.execute(function,callback);
 
 	}
-	
+
 	public TdPoint getPointStore() {
 
 		return client.point;
 
 	}
-	
+
 	public void send(SMBuilder function) {
-		
+
 		send(function.build());
-		
+
 	}
-	
-	public  Message execute(SMBuilder function) throws TdException {
+
+	public TMsg execute(SMBuilder function)  {
 		
-		return execute(function.build());
-		
+		return new TMsg(client,(Message)execute(function.build()));
+
 	}
-	
+
 	public boolean isAdmin(int userId) {
-		
+
 		return ArrayUtil.contains(Env.ADMINS,userId);
-		
+
 	}
-	
+
 	public int superGroupId(Long chatId) {
-		
+
 		return NumberUtil.parseInt(chatId.toString().substring(4));
 
 	}
 
-	public SMBuilder chatId(long chatId) {
+	public static SMBuilder chatId(long chatId) {
 
 		return new SMBuilder(chatId);
 
 	}
 
-	public class SMBuilder {
+	public static class SMBuilder {
 
 		long chatId;
 
@@ -97,94 +107,62 @@ public abstract class TdInterface {
 		InputMessageContent content;
 
 		public SMBuilder input(InputMessageContent input) { this.content = input;return this; }
-
-		public SMBuilder input(FormattedText text) { 
-
-			this.content = new InputMessageText(text,true,false);
-
-			return this;
-
-		}
-
-		public SMBuilder input(FormattedText text,boolean enablePreview) { 
-
-			this.content = new InputMessageText(text,!enablePreview,false);
-
-			return this;
-
-		}
-
-		public SMBuilder input(FormattedText text,boolean enablePreview,boolean clearDraft) { 
-
-			this.content = new InputMessageText(text,!enablePreview,clearDraft);
-
-			return this;
-
-		}
-
-		public SMBuilder input(TextBuilder text) { 
-
-			this.content = new InputMessageText(text.build(),true,false);
-
-			return this;
-
-		}
-
-		public SMBuilder input(TextBuilder text,boolean enablePreview) { 
-
-			this.content = new InputMessageText(text.build(),!enablePreview,false);
-
-			return this;
-
-		}
-
-		public SMBuilder input(TextBuilder text,boolean enablePreview,boolean clearDraft) { 
-
-			this.content = new InputMessageText(text.build(),!enablePreview,clearDraft);
-
-			return this;
-
-		}
-
-		public SMBuilder inputHtml(String content) {
-
-			try {
-				
-				input(html(content));
-				
-			} catch (TdException e) {
-				
-				input(text(content));
-				
-			}
-
-			return this;
-			
-		}
-
-		public SMBuilder inputMarldown(String content) {
-
-			try {
-
-				input(markdown(content));
-
-			} catch (TdException e) {
-
-				input(text(content));
-
-			}
-
-			return this;
-
-		}
+		
 		public SendMessage build() {
 
 			return new SendMessage(chatId,replyToMessageId,disableNotification,fromBackground,replyMarkup,content);
 
 		}
-		
+
+	}
+	
+	public InputMessageText inputHtml(String html) { 
+	
+		return new InputMessageText(html(html),true,false);
+
 	}
 
+	public InputMessageText inputMarkdown(String html) { 
+
+		return new InputMessageText(html(html),true,false);
+
+	}
+	
+	public InputMessageText inputText(FormattedText text) { 
+
+		return new InputMessageText(text,true,false);
+
+	}
+
+	public InputMessageText inputText(FormattedText text,boolean enablePreview) { 
+
+		return new InputMessageText(text,!enablePreview,false);
+
+	}
+
+	public InputMessageText inputText(FormattedText text,boolean enablePreview,boolean clearDraft) { 
+
+		return new InputMessageText(text,!enablePreview,clearDraft);
+
+	}
+
+	public InputMessageText inputText(TextBuilder text) { 
+
+		return new InputMessageText(text.build(),true,false);
+
+	}
+
+	public InputMessageText inputText(TextBuilder text,boolean enablePreview) { 
+
+		return new InputMessageText(text.build(),!enablePreview,false);
+
+	}
+
+	public InputMessageText inputText(TextBuilder text,boolean enablePreview,boolean clearDraft) { 
+
+		return new InputMessageText(text.build(),!enablePreview,clearDraft);
+
+	}
 	public TextBuilder text(String text) {
 
 		return new TextBuilder().text(text);
@@ -419,18 +397,18 @@ public abstract class TdInterface {
 
 	}
 
-	public FormattedText html(String text) throws TdException {
+	public FormattedText html(String text) {
 
 		return execute(new ParseTextEntities(text,new TextParseModeHTML()));
 
 	}
 
-	public FormattedText markdown(String text) throws TdException {
+	public FormattedText markdown(String text) {
 
 		return execute(new ParseTextEntities(text,new TextParseModeMarkdown()));
 
 	}
-	
+
 	public TdPointData getPrivatePoint(int userId) {
 
 		synchronized (getPointStore().privatePoints) {
@@ -501,6 +479,6 @@ public abstract class TdInterface {
 
 	}
 
-	
-	
+
+
 }

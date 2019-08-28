@@ -2,7 +2,7 @@ package io.kurumi.ntt.td.client;
 
 import io.kurumi.ntt.td.TdApi;
 
-public class TdException extends Exception {
+public class TdException extends RuntimeException {
 	
 	private TdApi.Error error;
 

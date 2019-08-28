@@ -33,7 +33,7 @@ public class TdGetIdFunction extends TdFunction {
 			
 		}
 		
-		send(chatId(msg.chatId).input(message));
+		send(chatId(msg.chatId).input(inputText(message)));
 
 	}
 
