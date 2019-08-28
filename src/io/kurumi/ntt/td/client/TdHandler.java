@@ -4,7 +4,7 @@ import io.kurumi.ntt.td.TdApi.*;
 
 import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.td.TdApi;
-import io.kurumi.ntt.td.model.TdMessage;
+import io.kurumi.ntt.td.model.TMessage;
 import cn.hutool.log.StaticLog;
 
 public class TdHandler {

@@ -6,8 +6,10 @@ import cn.hutool.log.Log;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.listeners.TdMain;
 import io.kurumi.ntt.td.client.TdBot;
-import io.kurumi.ntt.td.model.TdMessage;
+import io.kurumi.ntt.td.model.TMessage;
 import cn.hutool.log.LogFactory;
+import io.kurumi.ntt.td.client.TdException;
+import cn.hutool.core.util.StrUtil;
 
 public class TdMain extends TdBot {
 
@@ -24,7 +26,7 @@ public class TdMain extends TdBot {
 
 		if (update.message.senderUserId == me.id) return;
 
-		TdMessage msg = new TdMessage(this,update);
+		TMessage msg = new TMessage(this,update);
 
 		if (msg.isText()) {
 
@@ -34,10 +36,32 @@ public class TdMain extends TdBot {
 
 				send(new SendMessage(msg.chatId,0,true,false,null,plainText("喵")));
 
+			} else if ("test".equals(msg.command())) {
+				
+				long start = System.currentTimeMillis();
+				
+				try {
+					
+					User user = execute(new GetUser(msg.sender));
+
+					sendPlainText(msg.chatId,"完成 : {}s",(System.currentTimeMillis() - start) / 1000);
+					
+				} catch (TdException e) {
+					
+					sendPlainText(msg.chatId,e.getMessage());
+					
+				}
+
 			}
 
 		}
 
+	}
+	
+	void sendPlainText(long chatId,String text,java.lang.Object... params) {
+		
+		send(new SendMessage(chatId,0,true,false,null,plainText(StrUtil.format(text,params))));
+		
 	}
 
 	InputMessageText plainText(String text) {
