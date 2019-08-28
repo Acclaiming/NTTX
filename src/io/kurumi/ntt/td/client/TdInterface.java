@@ -66,7 +66,7 @@ public abstract class TdInterface {
 
 	}
 
-	public static class SMBuilder {
+	public class SMBuilder {
 
 		long chatId;
 
@@ -146,8 +146,37 @@ public abstract class TdInterface {
 
 		}
 
+		public SMBuilder inputHtml(String content) {
 
+			try {
+				
+				input(html(content));
+				
+			} catch (TdException e) {
+				
+				input(text(content));
+				
+			}
 
+			return this;
+			
+		}
+
+		public SMBuilder inputMarldown(String content) {
+
+			try {
+
+				input(markdown(content));
+
+			} catch (TdException e) {
+
+				input(text(content));
+
+			}
+
+			return this;
+
+		}
 		public SendMessage build() {
 
 			return new SendMessage(chatId,replyToMessageId,disableNotification,fromBackground,replyMarkup,content);

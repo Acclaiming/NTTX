@@ -3,6 +3,8 @@ package io.kurumi.ntt.listeners.base;
 import io.kurumi.ntt.td.TdApi.*;
 import io.kurumi.ntt.td.client.TdFunction;
 import io.kurumi.ntt.td.model.TMsg;
+import io.kurumi.ntt.td.client.TdException;
+import io.kurumi.ntt.td.client.TdInterface.TextBuilder;
 
 public class TdGetIdFunction extends TdFunction {
 
@@ -15,7 +17,11 @@ public class TdGetIdFunction extends TdFunction {
 	@Override
 	public void onFunction(User user,TMsg msg,String function,String[] params) {
 
-		send(chatId(msg.chatId).input(text("CID : ").code(msg.chatId + "").text("\nUID : ").code(user.id + ""))));
+		TextBuilder message = bold("CID").text(" : ").code(msg.chatId + "");
+
+		message.text("\n").bold("UID").text(" : ").code(user.id + "");
+		
+		send(chatId(msg.chatId).input(message));
 
 	}
 

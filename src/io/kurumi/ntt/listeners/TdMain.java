@@ -11,6 +11,7 @@ import cn.hutool.log.LogFactory;
 import io.kurumi.ntt.td.client.TdException;
 import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.listeners.base.TdPingFunction;
+import io.kurumi.ntt.listeners.base.TdGetIdFunction;
 
 public class TdMain extends TdBot {
 
@@ -21,7 +22,8 @@ public class TdMain extends TdBot {
 		super(Env.BETA_TOKEN);
 		
 		addListener(new TdPingFunction());
-
+		addListener(new TdGetIdFunction());
+		
 	}
 
 }
