@@ -187,7 +187,9 @@ public class UserData {
     }
 
     public boolean admin() {
-        return ArrayUtil.contains(Env.ADMINS, id);
+		
+        return ArrayUtil.contains(Env.ADMINS, id.intValue());
+		
     }
 
 }

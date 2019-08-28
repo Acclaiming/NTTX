@@ -284,15 +284,6 @@ public class Send extends AbstractSend<Send> {
 
     }
 
-    public void debug() {
-
-        if (!(request.chatId instanceof String) && ArrayUtil.contains(Env.ADMINS,(long) request.chatId)) {
-
-            exec();
-
-        }
-
-    }
 
     public SendMessage request() {
 

@@ -1,18 +1,21 @@
 package io.kurumi.ntt.td.client;
 
+import cn.hutool.log.*;
 import io.kurumi.ntt.td.TdApi.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.NumberUtil;
-import cn.hutool.log.StaticLog;
 import io.kurumi.ntt.td.Client;
 import io.kurumi.ntt.td.TdApi;
 import io.kurumi.ntt.td.TdApi.Object;
+import io.kurumi.ntt.td.client.TdClient;
 import io.kurumi.ntt.td.model.TMsg;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
+import cn.hutool.core.util.ArrayUtil;
 
 public class TdClient extends TdHandler {
 
@@ -30,6 +33,7 @@ public class TdClient extends TdHandler {
 
 	private AtomicBoolean hasAuth = new AtomicBoolean(false);
 	private SetTdlibParameters params;
+	private Log log = LogFactory.get(TdClient.class);
 
 	public User me;
 
@@ -41,6 +45,93 @@ public class TdClient extends TdHandler {
 
 	}
 
+	private HashMap<Integer,TdPointData> privatePoints = new HashMap<>();
+
+	private HashMap<Long,Group> groupPoints = new HashMap<>();
+
+	private class Group {
+
+		public HashMap<Integer,TdPointData> points = new HashMap<>();
+
+	}
+
+	public TdPointData getPrivatePoint(int userId) {
+
+		synchronized (privatePoints) {
+
+			return privatePoints.get(userId);
+
+		}
+
+	}
+
+	public void setPrivatePoint(int userId,String point,String actionName) {
+
+		setPrivatePoint(userId,point,actionName,new TdPointData());
+
+	}
+
+	public void setPrivatePoint(int userId,String point,String actionName,TdPointData data) {
+
+		data.chatType = 0;
+		data.point = point;
+		data.actionName = actionName;
+
+		synchronized (privatePoints) {
+
+			privatePoints.put(userId,data);
+
+		}
+
+	}
+
+	public TdPointData getGroupPoint(long chatId,int userId) {
+
+		synchronized (groupPoints) {
+
+			if (!groupPoints.containsKey(chatId)) return null;
+
+			return groupPoints.get(chatId).points.get(userId);
+
+		}
+
+	}
+
+	public void setGroupPoint(long chatId,int userId,String point,String actionName) {
+
+		setGroupPoint(chatId,userId,point,actionName,new TdPointData());
+
+	}
+
+	public void setGroupPoint(long chatId,final int userId,String point,String actionName,final TdPointData data) {
+
+		data.chatType = 1;
+		data.point = point;
+		data.actionName = actionName;
+
+		synchronized (groupPoints) {
+
+			if (groupPoints.containsKey(chatId)) {
+
+				groupPoints.get(chatId).points.put(userId,data);
+
+			} else {
+
+				groupPoints.put(chatId,new Group() {{ points.put(userId,data); }});
+
+			}
+
+		}
+
+	}
+
+	public HashMap<String, TdListener> functions = new HashMap<>();
+    public HashMap<String, TdListener> adminFunctions = new HashMap<>();
+    public HashMap<String, TdListener> payloads = new HashMap<>();
+    public HashMap<String, TdListener> adminPayloads = new HashMap<>();
+    public HashMap<String, TdListener> points = new HashMap<>();
+    public HashMap<String, TdListener> callbackQuerys = new HashMap<>();
+	
 	public boolean hasAuth() {
 
 		return this.hasAuth.get();
@@ -94,17 +185,89 @@ public class TdClient extends TdHandler {
 		User user = message.isChannelPost ? null : E(new GetUser(message.senderUserId));
 
 		TMsg msg = new TMsg(this,update.message);
-		
-		
+
+		TdPointData data = null;
+
+		if (msg.isPrivate()) {
+
+			synchronized (privatePoints) {
+
+				data = privatePoints.get(user.id);
+
+			}
+
+		} else if (msg.isBasicGroup() || msg.isSuperGroup()) {
+
+			synchronized (groupPoints) {
+
+				if (groupPoints.containsKey(msg.chatId)) {
+
+					data = groupPoints.get(msg.chatId).points.get(user.id);
+
+				}
+
+			}
+
+
+		}
+
+		if (data != null) {
+
+			if (!points.containsKey(data.point)) {
+
+				log.warn("无效的指针 : {}",data.point);
+
+				return;
+
+			}
+
+			points.get(data.point).onPoint(user,msg,data.point,data);
+
+			return;
+
+		}
+
+		if (msg.isCommand()) {
+			
+			String command = msg.command();
+			String[] params = msg.fixedParams();
+			
+			if (msg.isStartPayload()) {
+				
+				command = msg.payload()[0];
+				params = ArrayUtil.remove(msg.payload(),0);
+				
+				if (isAdmin(user.id) && adminPayloads.containsKey(command)) {
+
+					adminPayloads.get(command).onPayload(user,msg,command,params);
+
+				} else if (payloads.containsKey(command)) {
+
+					payloads.get(command).onPayload(user,msg,command,params);
+
+				}
+				
+				return;
+				
+			}
+			
+			if (isAdmin(user.id) && adminFunctions.containsKey(command)) {
+				
+				adminFunctions.get(command).onFunction(user,msg,command,params);
+				
+			} else if (functions.containsKey(command)) {
+				
+				functions.get(command).onFunction(user,msg,command,params);
+				
+			}
+			
+			return;
+			
+		}
 
 	}
 
-	int superGroupId(Long chatId) {
-
-		return NumberUtil.parseInt(chatId.toString().substring(4));
-
-	}
-
+	
 	public <T extends TdApi.Object> T E(Function function) {
 
 		try {
@@ -119,6 +282,7 @@ public class TdClient extends TdHandler {
 
 	}
 
+	@Override
 	public <T extends TdApi.Object> T execute(Function function) throws TdException {
 
 		if (this.executionLock.isLocked()) {
@@ -129,7 +293,7 @@ public class TdClient extends TdHandler {
 
 		while (!hasAuth()) {
 
-			ThreadUtil.safeSleep(233);
+			ThreadUtil.safeSleep(10);
 
 		}
 
@@ -171,6 +335,7 @@ public class TdClient extends TdHandler {
 
 	}
 
+	@Override
 	public void execute(Function function,TdCallback<?> callback) {
 
 		if (this.executionLock.isLocked()) {
@@ -187,6 +352,7 @@ public class TdClient extends TdHandler {
 
 	}
 
+	@Override
 	public long send(Function function) {
 
         if (this.executionLock.isLocked()) {

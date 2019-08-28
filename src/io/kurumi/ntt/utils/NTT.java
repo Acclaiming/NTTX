@@ -580,11 +580,11 @@ public class NTT {
 
     }
 
-    public static boolean isGroupAdmin(Fragment fragment, Long chatId, Long userId) {
+    public static boolean isGroupAdmin(Fragment fragment, Long chatId, long userId) {
 
-        if (ArrayUtil.contains(Env.ADMINS, userId)) return true;
+        if (ArrayUtil.contains(Env.ADMINS, (int)userId)) return true;
 
-        GetChatMemberResponse resp = fragment.bot().execute(new GetChatMember(chatId, userId.intValue()));
+        GetChatMemberResponse resp = fragment.bot().execute(new GetChatMember(chatId, (int)userId));
 
         if (resp.isOk() && ((resp.chatMember().status() == ChatMember.Status.administrator) || resp.chatMember().status() == ChatMember.Status.creator)) {
 

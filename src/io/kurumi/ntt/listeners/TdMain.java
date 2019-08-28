@@ -34,29 +34,11 @@ public class TdMain extends TdBot {
 
 			if ("ping".equals(msg.command())) {
 
-				sendPlainText(msg.chatId,"喵....");
+				send(chatId(msg.chatId).input(text("喵...")));
 				
-			} else if ("test".equals(msg.command())) {
-				
-				sendPlainText(msg.chatId,"ChatId : {},Sender : {}",msg.chatId,msg.sender);
-
 			}
 
 		}
-
-	}
-	
-	void sendPlainText(long chatId,String text,java.lang.Object... params) {
-		
-		send(new SendMessage(chatId,0,true,false,null,plainText(StrUtil.format(text,params))));
-		
-	}
-
-	InputMessageText plainText(String text) {
-
-		FormattedText format = new FormattedText(text,new TextEntity[0]);
-
-		return new InputMessageText(format,true,true);
 
 	}
 

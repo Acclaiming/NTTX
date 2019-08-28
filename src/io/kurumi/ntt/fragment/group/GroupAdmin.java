@@ -30,7 +30,7 @@ public class GroupAdmin extends Fragment {
 
     public static boolean fastAdminCheck(Fragment fragment, GroupData data, long userId, boolean full) {
 
-		if (ArrayUtil.contains(Env.ADMINS,userId)) return true;
+		if (ArrayUtil.contains(Env.ADMINS,(int)userId)) return true;
 		
         updateGroupAdmins(fragment, data);
 
