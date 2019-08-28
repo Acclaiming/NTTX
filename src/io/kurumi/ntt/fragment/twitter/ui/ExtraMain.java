@@ -11,6 +11,7 @@ import io.kurumi.ntt.fragment.twitter.ui.extra.OWUnfoPublish;
 import io.kurumi.ntt.fragment.twitter.ui.extra.SpamMain;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.fragment.twitter.ui.extra.BlockedBy;
+import io.kurumi.ntt.fragment.twitter.ui.extra.FollowedBy;
 
 public class ExtraMain extends Fragment {
 
@@ -28,6 +29,7 @@ public class ExtraMain extends Fragment {
 		origin.addFragment(new OWUnfoPublish());
 		origin.addFragment(new BlockedBy());
 		origin.addFragment(new SpamMain());
+		origin.addFragment(new FollowedBy());
 
 	}
 
@@ -72,7 +74,8 @@ public class ExtraMain extends Fragment {
 
 		ButtonMarkup buttons = new ButtonMarkup();
 
-		buttons.newButtonLine("取关推送 >>",OWUnfoPublish.POINT_OUP,account.id);
+		buttons.newButtonLine("被关注处理 >>",FollowedBy.POINT_FB,account.id);
+		buttons.newButtonLine("被单向取关 >>",OWUnfoPublish.POINT_OUP,account.id);
 		buttons.newButtonLine("被屏蔽处理 >>",BlockedBy.POINT_BB,account.id);
 		
 		if (user.admin()) {
