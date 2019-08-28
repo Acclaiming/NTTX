@@ -140,6 +140,8 @@ public class BlockedBy extends Fragment {
 
 			}
 
+			bbMain(user,callback,account);
+			
 		} else if ("bbp".equals(action)) {
 
 			if (account.bbp == null) {
@@ -151,6 +153,8 @@ public class BlockedBy extends Fragment {
 				account.bbp = null;
 
 			}
+			
+			bbMain(user,callback,account);
 
 		} else if ("temp".equals(action)) {
 
