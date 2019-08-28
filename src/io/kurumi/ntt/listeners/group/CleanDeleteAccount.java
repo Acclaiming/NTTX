@@ -21,14 +21,18 @@ public class CleanDeleteAccount extends TdListener {
 
 	@Override
 	public void onFunction(User user,TMsg msg,String function,String[] params) {
-
-		TMsg status = execute(chatId(msg.chatId).replyToMessageId(msg.messageId).input(inputText(text("正在查找..."))));
-
+		
 		if (msg.isPrivate()) {
 			
 			send(chatId(msg.chatId).input(inputText(text("你不能清理你自己..."))));
 		
-		} else if (msg.isBasicGroup()) {
+			return;
+			
+		} 
+		
+		TMsg status = execute(chatId(msg.chatId).replyToMessageId(msg.messageId).input(inputText(text("正在查找..."))));
+		
+		if (msg.isBasicGroup()) {
 
 			BasicGroupFullInfo info = execute(new GetBasicGroupFullInfo(msg.groupId));
 
