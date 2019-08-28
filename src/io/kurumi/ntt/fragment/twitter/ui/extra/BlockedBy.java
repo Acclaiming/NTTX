@@ -1,5 +1,7 @@
 package io.kurumi.ntt.fragment.twitter.ui.extra;
 
+import twitter4j.*;
+
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.http.HtmlUtil;
 import io.kurumi.ntt.db.PointData;
@@ -7,50 +9,66 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.fragment.twitter.ui.ExtraMain;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonMarkup;
+import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
-import twitter4j.Twitter;
+import io.kurumi.ntt.utils.NTT;
 
 public class BlockedBy extends Fragment {
-	
+
 	public static void onBlocked(TAuth auth,Twitter api,UserArchive archive) {
 
-		/*
+		if (auth.bbb != null) {
+			
+			try {
+				
+				api.createBlock(archive.id);
+				
+				new Send(auth.user,"屏蔽 {} 成功",archive.urlHtml()).html().async();
+				
+			} catch (TwitterException e) {
+				
+				new Send(auth.user,"屏蔽 {} 失败 : \n\n{}",archive.urlHtml(),NTT.parseTwitterException(e)).html().async();
+				
+			}
 
-		 if (auth.oup == null) return;
+		}
+		
+		if (auth.bbp != null) {
 
-		 try {
+			try {
 
-		 Status status = api.updateStatus(formatMessage(auth,archive));
+				Status status = api.updateStatus(formatMessage(auth,archive));
 
-		 new Send(auth.user,"单向取关已推送 :\n\n",StatusArchive.save(status).url()).enableLinkPreview().async();
+				new Send(auth.user,"被屏蔽已推送 :\n\n{}",StatusArchive.save(status).url()).enableLinkPreview().async();
 
-		 } catch (TwitterException e) {
+			} catch (TwitterException e) {
 
-		 new Send(auth.user,"单向取关推送失败 :\n\n",NTT.parseTwitterException(e)).async();
+				new Send(auth.user,"被屏蔽推送失败 :\n\n{}",NTT.parseTwitterException(e)).async();
 
-		 }
+			}
 
-		 */
+		}
 
 	}
-	
+
 	public static String POINT_BB = "twi_bb";
-	
+
 	@Override
 	public void init(BotFragment origin) {
-	
+
 		super.init(origin);
-		
+
 		registerCallback(POINT_BB);
 		registerPoint(POINT_BB);
-		
+
 	}
-	
+
 	class BBSet extends PointData {
 
 		Callback origin;
@@ -60,7 +78,7 @@ public class BlockedBy extends Fragment {
 
 			this.origin = origin;
 			this.account = account;
-			
+
 		}
 
 		@Override
@@ -77,7 +95,7 @@ public class BlockedBy extends Fragment {
 
 	@Override
 	public void onCallback(UserData user,Callback callback,String point,String[] params) {
-		
+
 		if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
 
 			callback.invalidQuery();
@@ -105,23 +123,23 @@ public class BlockedBy extends Fragment {
 			bbMain(user,callback,account);
 
 			return;
-			
+
 		}
-		
+
 		String action = params[1];
-		
+
 		if ("bbb".equals(action)) {
-			
+
 			if (account.bbb == null) {
-				
+
 				account.bbb = true;
-				
+
 			} else {
-				
+
 				account.bbb = null;
-				
+
 			}
-			
+
 		} else if ("bbp".equals(action)) {
 
 			if (account.bbp == null) {
@@ -141,10 +159,10 @@ public class BlockedBy extends Fragment {
 			callback.edit("请发送新的消息模板 : ","\n默认模板 : " + Html.code(defaultMessage()),"\n可用变量 : " + HtmlUtil.escape(" <名称> 、 <用户名>")).withCancel().html().async();
 
 		}
-		
-		 
+
+
 	}
-	
+
 	@Override
 	public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
@@ -171,7 +189,7 @@ public class BlockedBy extends Fragment {
 
 	}
 
-	
+
 	public static String defaultMessage() {
 
 		String message = "被 '@<用户名> 屏蔽了, 真可惜。";
@@ -184,8 +202,7 @@ public class BlockedBy extends Fragment {
 
 	public static String formatMessage(TAuth account,UserArchive target) {
 
-		String message = account.oup_msg == null ? defaultMessage() : account.oup_msg;
-
+		String message = account.bbp_msg == null ? defaultMessage() : account.bbp_msg;
 		message = message.replace("<名称>",target.name);
 		message = message.replace("<用户名>",target.screenName);
 
@@ -212,7 +229,7 @@ public class BlockedBy extends Fragment {
 		buttons.newButtonLine()
 			.newButton("屏蔽对方")
 			.newButton(account.bbb != null ? "✅" : "☑",POINT_BB,account.id,"bbb");
-		
+
 		buttons.newButtonLine()
 			.newButton("自动推送")
 			.newButton(account.bbp != null ? "✅" : "☑",POINT_BB,account.id,"bbp");
@@ -225,6 +242,6 @@ public class BlockedBy extends Fragment {
 
 	}
 
-	
-	
+
+
 }
