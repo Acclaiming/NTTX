@@ -77,25 +77,23 @@ public class TdDnsLookup extends TdFunction {
 
 		Record[] records = lookup.getAnswers();
 
-		String message;
+		TextBuilder message = new TextBuilder();
 		
 		if (records.length == 0) {
 
-			message = getLocale(user).DNS_NOT_FOUND;
+			message.text(getLocale(user).DNS_NOT_FOUND);
 
 		} else {
 			
-			message = "";
-			
 			for (Record record : records) {
 
-				message += "\n" + Type.string(record.getType()) + " " + Html.code(record.rdataToString());
+				message.text("\n").text(Type.string(record.getType())).text(" ").code(record.rdataToString());
 
 			}
 
 		}
 
-		sendText(msg,message);
+		send(msg.sendText(message));
 		
 	}
 

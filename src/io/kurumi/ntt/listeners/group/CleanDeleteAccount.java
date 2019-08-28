@@ -17,7 +17,7 @@ public class CleanDeleteAccount extends TdListener {
 	@Override
 	public void init() {
 
-		registerFunction("cls_da");
+		registerFunction("clean_da");
 
 	}
 

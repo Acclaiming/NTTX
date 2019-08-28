@@ -16,7 +16,7 @@ public class TdPingFunction extends TdFunction {
 	@Override
 	public void onFunction(User user,TMsg msg,String function,String[] params) {
 		
-		sendText(msg,"喵...");
+		sendText(msg,getLocale(user).PING_RESULT);
 		
 	}
 	

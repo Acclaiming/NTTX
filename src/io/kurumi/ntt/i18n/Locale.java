@@ -7,12 +7,14 @@ public class Locale {
 	public static Locale DEFAULT = new Locale();
 	public static Locale ENG = new ENG();
 
+	public String PING_RESULT = "喵...";
+	
 	public String FN_PUBLIC_ONLY = "你只能在 群组或频道 使用这个命令.";
 	public String NOT_CHAT_ADMIN = "你不是绒布球.";
 
 	// DA
 
-	public String DA_NOT_FOUND = "这个 群组 / 频道 中没有已删除的账号.";
+	public String DA_NOT_FOUND = "这个聊天中没有已删除的账号.";
 	public String DA_FOUND = "发现 {} 个已删除的账号, 正在清理.";
 	public String DA_FINISH = "完成, 耗时 {}s.";
 
@@ -26,6 +28,8 @@ public class Locale {
 
 		{
 
+			PING_RESULT = "pong";
+			
 			FN_PUBLIC_ONLY = "you can only use this command in groups or channels.";
 			NOT_CHAT_ADMIN = "you are not the administrator of this chat.";
 
