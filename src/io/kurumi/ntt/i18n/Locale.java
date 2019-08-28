@@ -16,6 +16,12 @@ public class Locale {
 	public String DA_FOUND = "发现 {} 个已删除的账号, 正在清理.";
 	public String DA_FINISH = "完成, 已清理 {}个 DA, 耗时 {}s.";
 
+	// DNS
+	
+	public String DNS_TYPE_INVALID = "无效的DNS记录类型.";
+	public String DNS_DOMAIN_INVALID = "无效的域名.";
+	public String DNS_NOT_FOUND = "没有DNS记录.";
+	
 	public static class ENG extends Locale {
 
 		{
@@ -26,6 +32,10 @@ public class Locale {
 			DA_NOT_FOUND = "There is no deleted account in this chat.";
 			DA_FOUND = "Found {} deleted account(s) in this group, now removing ...";
 			DA_FINISH = "Successful removed {} deleted account(s), time : {}s";
+
+			DNS_TYPE_INVALID = "Invalid dns type.";
+			DNS_DOMAIN_INVALID = "Invalid domain.";
+			DNS_NOT_FOUND = "Records not found.";
 			
 		}
 
