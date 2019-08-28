@@ -377,7 +377,7 @@ public class TwitterMain extends Fragment {
             account.user = user.id;
 
             account.accToken = auth.accessToken;
-			account.accTokenSec = auth.accessSec;
+			account.accTokenSec = msg.text();
 
             try {
 
