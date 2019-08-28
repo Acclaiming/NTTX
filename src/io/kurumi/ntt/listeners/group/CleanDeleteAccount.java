@@ -10,6 +10,7 @@ import cn.hutool.core.util.StrUtil;
 import java.util.LinkedList;
 import io.kurumi.ntt.td.TdApi;
 import cn.hutool.log.StaticLog;
+import io.kurumi.ntt.Launcher;
 
 public class CleanDeleteAccount extends TdListener {
 
@@ -33,7 +34,8 @@ public class CleanDeleteAccount extends TdListener {
 		
 		TMsg status = execute(chatId(msg.chatId).replyToMessageId(msg.messageId).input(inputText(text("正在查找..."))));
 		
-		send(chatId(msg.chatId).input(inputText(text("messageId : " + status.messageId))));
+		send(chatId(msg.chatId).input(inputText(text(Launcher.GSON.toJson(msg.message)))));
+		send(chatId(msg.chatId).input(inputText(text(Launcher.GSON.toJson(status.message)))));
 		
 		if (msg.isBasicGroup()) {
 
