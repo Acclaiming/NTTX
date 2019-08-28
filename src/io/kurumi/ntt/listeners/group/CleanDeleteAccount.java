@@ -33,6 +33,8 @@ public class CleanDeleteAccount extends TdListener {
 		
 		TMsg status = execute(chatId(msg.chatId).replyToMessageId(msg.messageId).input(inputText(text("正在查找..."))));
 		
+		send(chatId(msg.chatId).input(inputText(text("messageId : " + status.messageId))));
+		
 		if (msg.isBasicGroup()) {
 
 			BasicGroupFullInfo info = execute(new GetBasicGroupFullInfo(msg.groupId));
@@ -53,9 +55,7 @@ public class CleanDeleteAccount extends TdListener {
 
 			if (deletedAccounts.isEmpty()) {
 
-				Message result = execute(status.editText(text("没有找到 DA ...")));
-
-				StaticLog.warn("EDIT RESULT : {}",result);
+				send(status.editText(text("没有找到 DA ...")));
 				
 				return;
 
@@ -120,9 +120,7 @@ public class CleanDeleteAccount extends TdListener {
 
 			if (deletedAccounts.isEmpty()) {
 
-				Message result = execute(status.editText(text("没有找到 DA ...")));
-
-				StaticLog.warn("EDIT RESULT : {}",result);
+				send(status.editText(text("没有找到 DA ...")));
 
 				return;
 				
