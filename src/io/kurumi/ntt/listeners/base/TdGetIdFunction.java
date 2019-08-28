@@ -17,9 +17,21 @@ public class TdGetIdFunction extends TdFunction {
 	@Override
 	public void onFunction(User user,TMsg msg,String function,String[] params) {
 
-		TextBuilder message = bold("CID").text(" : ").code(msg.chatId + "");
-
-		message.text("\n").bold("UID").text(" : ").code(user.id + "");
+		TextBuilder message = new TextBuilder();
+		
+		if (!msg.isPrivate()) {
+			
+			message.bold("CID").text(" : ").code(msg.chatId + "");
+	
+			if (!msg.isChannel()) message.text("\n");
+			
+		}
+		
+		if (!msg.isChannel()) {
+			
+			message.bold("UID").text(" : ").code(user.id + "");
+			
+		}
 		
 		send(chatId(msg.chatId).input(message));
 
