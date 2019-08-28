@@ -57,6 +57,54 @@ public class TMsg extends TdInterface {
 		
 	}
 	
+	public SMBuilder replyTo() {
+		
+		return chatId(chatId).replyToMessageId(messageId);
+		
+	}
+	
+	
+	public SMBuilder input(InputMessageContent input) { 
+	
+		return chatId(chatId).input(input);
+	
+	}
+
+	public SMBuilder sendText(FormattedText text) { 
+
+		return chatId(chatId).inputText(text);
+		
+	}
+
+	public SMBuilder sendText(FormattedText text,boolean enablePreview) { 
+
+		return chatId(chatId).inputText(text,enablePreview);
+	}
+
+	public SMBuilder sendText(FormattedText text,boolean enablePreview,boolean clearDraft) { 
+
+		return chatId(chatId).inputText(text,enablePreview,clearDraft);
+	
+	}
+
+	public SMBuilder sendText(TextBuilder text) { 
+
+		return chatId(chatId).inputText(text);
+	}
+
+	public SMBuilder sendText(TextBuilder text,boolean enablePreview) { 
+
+		return chatId(chatId).inputText(text,enablePreview);
+
+	}
+
+	public SMBuilder sendText(TextBuilder text,boolean enablePreview,boolean clearDraft) { 
+
+		return chatId(chatId).inputText(text,enablePreview,clearDraft);
+
+	}
+	
+	
 	public EditMessageText editText(InputMessageText content) {
 		
 		return editText(null,content);

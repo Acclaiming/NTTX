@@ -1,10 +1,10 @@
 package io.kurumi.ntt.td.client;
 
+import cn.hutool.core.util.*;
 import io.kurumi.ntt.td.TdApi.*;
 
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.NumberUtil;
 import io.kurumi.ntt.Env;
+import io.kurumi.ntt.i18n.Locale;
 import io.kurumi.ntt.td.TdApi;
 import io.kurumi.ntt.td.TdApi.Object;
 import io.kurumi.ntt.td.model.TMsg;
@@ -57,6 +57,12 @@ public abstract class TdInterface {
 		return new TMsg(client,(Message)execute(function.build()));
 
 	}
+	
+	public Locale getLocale(User user) {
+		
+		return Locale.get(user);
+		
+	}
 
 	public boolean isAdmin(int userId) {
 
@@ -107,6 +113,54 @@ public abstract class TdInterface {
 		InputMessageContent content;
 
 		public SMBuilder input(InputMessageContent input) { this.content = input;return this; }
+
+		public SMBuilder inputText(FormattedText text) { 
+
+			this.content = new InputMessageText(text,true,false);
+
+			return this;
+			
+		}
+
+		public SMBuilder inputText(FormattedText text,boolean enablePreview) { 
+
+			this.content = new InputMessageText(text,!enablePreview,false);
+
+			return this;
+			
+		}
+
+		public SMBuilder inputText(FormattedText text,boolean enablePreview,boolean clearDraft) { 
+
+			this.content = new InputMessageText(text,!enablePreview,clearDraft);
+			
+			return this;
+			
+		}
+
+		public SMBuilder inputText(TextBuilder text) { 
+
+			this.content = new InputMessageText(text.build(),true,false);
+
+			return this;
+			
+		}
+
+		public SMBuilder inputText(TextBuilder text,boolean enablePreview) { 
+
+			this.content = new InputMessageText(text.build(),!enablePreview,false);
+			
+			return this;
+			
+		}
+
+		public SMBuilder inputText(TextBuilder text,boolean enablePreview,boolean clearDraft) { 
+
+			this.content = new InputMessageText(text.build(),!enablePreview,clearDraft);
+
+			return this;
+			
+		}
 		
 		public SendMessage build() {
 
@@ -163,6 +217,7 @@ public abstract class TdInterface {
 		return new InputMessageText(text.build(),!enablePreview,clearDraft);
 
 	}
+	
 	public TextBuilder text(String text) {
 
 		return new TextBuilder().text(text);
@@ -408,7 +463,25 @@ public abstract class TdInterface {
 		return execute(new ParseTextEntities(text,new TextParseModeMarkdown()));
 
 	}
+	
+	public void sendText(long chatId,String text,java.lang.Object... params) {
+		
+		send(chatId(chatId).inputText(text(StrUtil.format(text,params))));
+		
+	}
+	
+	public void sendText(TMsg msg,String text,java.lang.Object... params) {
 
+		send(msg.sendText(text(StrUtil.format(text,params))));
+
+	}
+	
+	public void replyText(TMsg msg,String text,java.lang.Object... params) {
+
+		send(msg.replyTo().inputText(text(StrUtil.format(text,params))));
+
+	}
+	
 	public TdPointData getPrivatePoint(int userId) {
 
 		synchronized (getPointStore().privatePoints) {

@@ -23,22 +23,38 @@ public class CleanDeleteAccount extends TdListener {
 
 	@Override
 	public void onFunction(User user,TMsg msg,String function,String[] params) {
-		
+
 		if (msg.isPrivate()) {
-			
-			send(chatId(msg.chatId).input(inputText(text("你不能清理你自己..."))));
-		
+
+			send(msg.sendText(text(getLocale(user).FN_PUBLIC_ONLY)));
+
 			return;
-			
+
 		} 
-		
-		TMsg status = execute(chatId(msg.chatId).replyToMessageId(msg.messageId).input(inputText(text("正在查找..."))));
-		
+
+		if (!msg.isChannel()) {
+
+			ChatMember chatMember = execute(new GetChatMember(msg.chatId,user.id));
+
+			if (!(chatMember.status instanceof ChatMemberStatusCreator || chatMember.status instanceof ChatMemberStatusAdministrator)) {
+
+				sendText(msg,getLocale(user).NOT_CHAT_ADMIN);
+
+				return;
+
+			}
+
+		}
+
+		int size;
+
+		LinkedList<Integer> deletedAccounts = new LinkedList<>();
+
 		if (msg.isBasicGroup()) {
 
 			BasicGroupFullInfo info = execute(new GetBasicGroupFullInfo(msg.groupId));
 
-			LinkedList<Integer> deletedAccounts = new LinkedList<>();
+			size = info.members.length;
 
 			for (ChatMember memberId : info.members) {
 
@@ -52,37 +68,13 @@ public class CleanDeleteAccount extends TdListener {
 
 			}
 
-			if (deletedAccounts.isEmpty()) {
-
-				send(chatId(msg.chatId).input(inputText(text("没有找到 DA ..."))));
-				
-				return;
-
-			} else {
-
-				send(chatId(msg.chatId).input(inputText(text("发现 " + deletedAccounts.size() + " 个 DA, 正在爆破 ..."))));
-
-			}
-
-			long start = System.currentTimeMillis();
-
-			for (Integer deleted : deletedAccounts) {
-
-				send(new SetChatMemberStatus(msg.chatId,deleted,new ChatMemberStatusLeft()));
-				
-			}
-
-			send(chatId(msg.chatId).input(inputText(text("清理完成 : 耗时 " + ((System.currentTimeMillis() - start) / 1000) + "s"))));
-
 		} else {
 
 			SupergroupFullInfo group = execute(new GetSupergroupFullInfo(msg.groupId));
 
-			int memberCount = group.memberCount;
+			size = group.memberCount;
 
-			LinkedList<Integer> deletedAccounts = new LinkedList<>();
-
-			for (int index = 0;index < memberCount;index += 200) {
+			for (int index = 0;index < size;index += 200) {
 
 				ChatMembers members = null;
 
@@ -97,12 +89,12 @@ public class CleanDeleteAccount extends TdListener {
 						members = execute(new GetSupergroupMembers(msg.groupId,new SupergroupMembersFilterRecent(),index,200));
 
 						// TDLib 第一次取 会出错
-						
+
 					} catch (TdException ex) {
 					}
 
 				}
-				
+
 				for (ChatMember memberId : members.members) {
 
 					User member = execute(new GetUser(memberId.userId));
@@ -119,25 +111,25 @@ public class CleanDeleteAccount extends TdListener {
 
 			if (deletedAccounts.isEmpty()) {
 
-				send(chatId(msg.chatId).input(inputText(text("没有找到 DA ..."))));
+				sendText(msg,getLocale(user).DA_NOT_FOUND);
 
 				return;
 
 			} else {
 
-				send(chatId(msg.chatId).input(inputText(text("发现 " + deletedAccounts.size() + " 个 DA, 正在爆破 ..."))));
+				sendText(msg,getLocale(user).DA_FINISH,deletedAccounts.size());
 
 			}
-			
+
 			long start = System.currentTimeMillis();
 
 			for (Integer deleted : deletedAccounts) {
 
 				send(new SetChatMemberStatus(msg.chatId,deleted,new ChatMemberStatusLeft()));
-				
-			}
 
-			send(chatId(msg.chatId).input(inputText(text("清理完成 : 耗时 " + ((System.currentTimeMillis() - start) / 1000) + "s"))));
+			}
+			
+			sendText(msg,getLocale(user).DA_FINISH,size,(System.currentTimeMillis() - start) / 1000);
 
 		}
 

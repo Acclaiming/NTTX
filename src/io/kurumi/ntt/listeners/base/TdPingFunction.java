@@ -16,7 +16,7 @@ public class TdPingFunction extends TdFunction {
 	@Override
 	public void onFunction(User user,TMsg msg,String function,String[] params) {
 		
-		send(chatId(msg.chatId).input(inputText(text("喵..."))));
+		sendText(msg,"喵...");
 		
 	}
 	
