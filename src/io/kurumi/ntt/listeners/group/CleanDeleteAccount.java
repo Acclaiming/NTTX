@@ -117,7 +117,7 @@ public class CleanDeleteAccount extends TdListener {
 
 			} else {
 
-				sendText(msg,getLocale(user).DA_FINISH,deletedAccounts.size());
+				sendText(msg,getLocale(user).DA_FOUND,deletedAccounts.size());
 
 			}
 
@@ -129,7 +129,7 @@ public class CleanDeleteAccount extends TdListener {
 
 			}
 			
-			sendText(msg,getLocale(user).DA_FINISH,size,(System.currentTimeMillis() - start) / 1000);
+			sendText(msg,getLocale(user).DA_FINISH,(System.currentTimeMillis() - start) / 1000);
 
 		}
 

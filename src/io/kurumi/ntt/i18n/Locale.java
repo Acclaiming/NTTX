@@ -14,7 +14,7 @@ public class Locale {
 
 	public String DA_NOT_FOUND = "这个 群组 / 频道 中没有已删除的账号.";
 	public String DA_FOUND = "发现 {} 个已删除的账号, 正在清理.";
-	public String DA_FINISH = "完成, 已清理 {}个 DA, 耗时 {}s.";
+	public String DA_FINISH = "完成, 耗时 {}s.";
 
 	// DNS
 	
@@ -26,12 +26,12 @@ public class Locale {
 
 		{
 
-			FN_PUBLIC_ONLY = "You can only use this command in groups or channels.";
-			NOT_CHAT_ADMIN = "You are not the administrator of this chat.";
+			FN_PUBLIC_ONLY = "you can only use this command in groups or channels.";
+			NOT_CHAT_ADMIN = "you are not the administrator of this chat.";
 
-			DA_NOT_FOUND = "There is no deleted account in this chat.";
-			DA_FOUND = "Found {} deleted account(s) in this group, now removing ...";
-			DA_FINISH = "Successful removed {} deleted account(s), time : {}s";
+			DA_NOT_FOUND = "there is no deleted account in this chat.";
+			DA_FOUND = "found {} deleted account(s) in this group, now removing ...";
+			DA_FINISH = "successful , time : {}s";
 
 			DNS_TYPE_INVALID = "Invalid dns type.";
 			DNS_DOMAIN_INVALID = "Invalid domain.";
