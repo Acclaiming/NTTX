@@ -10,6 +10,7 @@ import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.fragment.twitter.ui.extra.OWUnfoPublish;
 import io.kurumi.ntt.fragment.twitter.ui.extra.SpamMain;
 import io.kurumi.ntt.Env;
+import io.kurumi.ntt.fragment.twitter.ui.extra.BlockedBy;
 
 public class ExtraMain extends Fragment {
 
@@ -26,7 +27,7 @@ public class ExtraMain extends Fragment {
 
 		origin.addFragment(new OWUnfoPublish());
 		origin.addFragment(new SpamMain());
-		
+
 	}
 
 	@Override
@@ -69,11 +70,12 @@ public class ExtraMain extends Fragment {
 		message += "\n\n ( 已发布但不适合加入标准的功能 )";
 
 		ButtonMarkup buttons = new ButtonMarkup();
+
+		buttons.newButtonLine("取关推送 >>",OWUnfoPublish.POINT_OUP,account.id);
+		buttons.newButtonLine("被屏蔽处理 >>",BlockedBy.POINT_BB,account.id);
 		
 		if (user.admin()) {
 
-			buttons.newButtonLine("单向取关推送 >>",OWUnfoPublish.POINT_OUP,account.id);
-			
 			buttons.newButtonLine("联合封禁 >>",SpamMain.POINT_SPAM,account.id);
 
 		}

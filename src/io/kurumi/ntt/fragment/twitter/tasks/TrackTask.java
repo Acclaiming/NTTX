@@ -36,6 +36,8 @@ import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import io.kurumi.ntt.fragment.twitter.ui.extra.OWUnfoPublish;
 import cn.hutool.log.StaticLog;
+import com.mongodb.Block;
+import io.kurumi.ntt.fragment.twitter.ui.extra.BlockedBy;
 
 public class TrackTask extends TimerTask {
 
@@ -668,10 +670,16 @@ public class TrackTask extends TimerTask {
 
             UserArchive archive = UserArchive.save(follower);
 
-            Relationship ship = api.showFriendship(auth.id,id);
+            Relationship ship = api.showFriendship(id,auth.id);
 
             AutoTask.onNewFriend(auth,api,archive,ship);
 
+			if (ship.isSourceBlockingTarget()) {
+
+				BlockedBy.onBlocked(auth,api,archive);
+
+			}
+			
         } catch (TwitterException e) {}
 
     }
@@ -683,9 +691,9 @@ public class TrackTask extends TimerTask {
             User follower = api.showUser(id);
             UserArchive archive = UserArchive.save(follower);
 
-            Relationship ship = api.showFriendship(auth.id,id);
+            Relationship ship = api.showFriendship(id,auth.id);
 
-            if (ship.isSourceFollowedByTarget()) {
+            if (ship.isSourceFollowingTarget()) {
 
                 latest.add(id);
 
@@ -697,7 +705,7 @@ public class TrackTask extends TimerTask {
 
                 StringBuilder msg = new StringBuilder();
 
-                msg.append(ship.isSourceFollowingTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 取关了你 :)").append(parseStatus(api,follower));
+                msg.append(ship.isSourceFollowedByTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 取关了你 :)").append(parseStatus(api,follower));
 
                 if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
@@ -705,10 +713,16 @@ public class TrackTask extends TimerTask {
 
             }
 
-			if (ship.isSourceFollowingTarget()) {
+			if (ship.isSourceFollowedByTarget()) {
 
 				OWUnfoPublish.onUnfo(auth,api,archive);
 
+			}
+			
+			if (ship.isSourceBlockingTarget()) {
+				
+				BlockedBy.onBlocked(auth,api,archive);
+				
 			}
 
         } catch (TwitterException e) {

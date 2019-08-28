@@ -112,6 +112,10 @@ public class TAuth {
 	public Boolean oup;
 	public String oup_msg;
 	
+	public Boolean bbb;
+	public Boolean bbp;
+	public String bbp_msg;
+	
 	/*
 	
 	public boolean directMessages = false;
