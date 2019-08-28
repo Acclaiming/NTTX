@@ -155,11 +155,11 @@ public class TwitterMain extends Fragment {
 
 		} else if (method == 5) {
 
-			startCustomAuth(user,callback);
+			startCustomAuth(user,callback,POINT_CUSTOM_API);
 
 		} else if (method == 6) {
 
-			startCustomAuth(user,callback);
+			startCustomAuth(user,callback,POINT_CUSTOM_TOKEN);
 
 		}
 
@@ -307,9 +307,9 @@ public class TwitterMain extends Fragment {
 
 	}
 
-	void startCustomAuth(UserData user,Callback callback) {
+	void startCustomAuth(UserData user,Callback callback,String point) {
 
-		setPrivatePoint(user,POINT_CUSTOM_API,new CustomTokenAuth(callback));
+		setPrivatePoint(user,point,new CustomTokenAuth(callback));
 
 		String message = LocalString.get(user).INPUT + "Consumer Key : ";
 
