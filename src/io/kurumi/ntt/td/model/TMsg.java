@@ -57,13 +57,13 @@ public class TMsg extends TdInterface {
 		
 	}
 	
-	public EditMessageText editText(InputMessageContent content) {
+	public EditMessageText editText(InputMessageText content) {
 		
 		return editText(null,content);
 		
 	}
 	
-	public EditMessageText editText(ReplyMarkup markup,InputMessageContent content) {
+	public EditMessageText editText(ReplyMarkup markup,InputMessageText content) {
 		
 		return new EditMessageText(chatId,messageId,markup,content);
 		

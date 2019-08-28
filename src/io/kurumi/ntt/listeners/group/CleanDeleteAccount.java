@@ -9,6 +9,7 @@ import io.kurumi.ntt.td.client.TdListener;
 import cn.hutool.core.util.StrUtil;
 import java.util.LinkedList;
 import io.kurumi.ntt.td.TdApi;
+import cn.hutool.log.StaticLog;
 
 public class CleanDeleteAccount extends TdListener {
 
@@ -52,8 +53,10 @@ public class CleanDeleteAccount extends TdListener {
 
 			if (deletedAccounts.isEmpty()) {
 
-				execute(status.editText(text("没有找到 DA ...")));
+				Message result = execute(status.editText(text("没有找到 DA ...")));
 
+				StaticLog.warn("EDIT RESULT : {}",result);
+				
 				return;
 
 			} else {
@@ -66,9 +69,8 @@ public class CleanDeleteAccount extends TdListener {
 
 			for (Integer deleted : deletedAccounts) {
 
-				send(new SetChatMemberStatus(msg.chatId,deleted,new ChatMemberStatusBanned()));
-				send(new SetChatMemberStatus(msg.chatId,deleted,new ChatMemberStatusMember()));
-
+				send(new SetChatMemberStatus(msg.chatId,deleted,new ChatMemberStatusLeft()));
+				
 			}
 
 			send(chatId(msg.chatId).input(inputText(text("清理完成 : 耗时 " + ((System.currentTimeMillis() - start) / 1000) + "s"))));
@@ -118,9 +120,12 @@ public class CleanDeleteAccount extends TdListener {
 
 			if (deletedAccounts.isEmpty()) {
 
-				send(status.editText(text("没有找到 DA ...")));
+				Message result = execute(status.editText(text("没有找到 DA ...")));
+
+				StaticLog.warn("EDIT RESULT : {}",result);
 
 				return;
+				
 
 			} else {
 
@@ -132,9 +137,8 @@ public class CleanDeleteAccount extends TdListener {
 
 			for (Integer deleted : deletedAccounts) {
 
-				send(new SetChatMemberStatus(msg.chatId,deleted,new ChatMemberStatusBanned()));
-				send(new SetChatMemberStatus(msg.chatId,deleted,new ChatMemberStatusMember()));
-
+				send(new SetChatMemberStatus(msg.chatId,deleted,new ChatMemberStatusLeft()));
+				
 			}
 
 			send(chatId(msg.chatId).input(inputText(text("清理完成 : 耗时 " + ((System.currentTimeMillis() - start) / 1000) + "s"))));
