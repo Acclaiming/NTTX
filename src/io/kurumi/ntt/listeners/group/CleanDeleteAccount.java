@@ -52,7 +52,7 @@ public class CleanDeleteAccount extends TdListener {
 
 			if (deletedAccounts.isEmpty()) {
 
-				send(status.editText(text("没有找到 DA ...")));
+				execute(status.editText(text("没有找到 DA ...")));
 
 				return;
 
