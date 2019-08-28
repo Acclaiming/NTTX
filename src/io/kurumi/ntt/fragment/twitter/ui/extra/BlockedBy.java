@@ -139,7 +139,9 @@ public class BlockedBy extends Fragment {
 				account.bbb = null;
 
 			}
-
+			
+			TAuth.data.setById(account.id,account);
+			
 			bbMain(user,callback,account);
 			
 		} else if ("bbp".equals(action)) {
@@ -153,6 +155,8 @@ public class BlockedBy extends Fragment {
 				account.bbp = null;
 
 			}
+			
+			TAuth.data.setById(account.id,account);
 			
 			bbMain(user,callback,account);
 
