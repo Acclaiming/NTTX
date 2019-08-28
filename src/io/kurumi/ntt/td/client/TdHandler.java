@@ -31,6 +31,13 @@ public class TdHandler extends TdInterface {
 		client.execute(function,callback);
 		
 	}
+
+	@Override
+	public TdPoint getPointStore() {
+	
+		return client.point;
+		
+	}
 	
 	public void onEvent(TdApi.Object event) {
 

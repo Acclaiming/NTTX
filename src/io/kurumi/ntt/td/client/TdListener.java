@@ -9,6 +9,69 @@ import io.kurumi.ntt.td.TdApi.Object;
 
 public class TdListener extends TdHandler {
 	
+	public void init() {}
+
+	public void registerFunction(String... functions) {
+
+        for (String function : functions) {
+
+            client.functions.put(function,this);
+
+        }
+
+    }
+
+    public void registerAdminFunction(String... functions) {
+
+        for (String function : functions) {
+
+            client.adminFunctions.put(function,this);
+
+        }
+
+    }
+
+    public void registerPayload(String... payloads) {
+
+        for (String payload : payloads) {
+
+            client.payloads.put(payload,this);
+
+        }
+
+    }
+
+    public void registerAdminPayload(String... payloads) {
+
+        for (String payload : payloads) {
+
+            client.adminPayloads.put(payload,this);
+
+        }
+
+    }
+
+    public void registerPoint(String... points) {
+
+        for (String point : points) {
+
+            client.points.put(point,this);
+
+        }
+
+    }
+
+    public void registerCallback(String... points) {
+
+        for (String point : points) {
+
+            client.callbackQuerys.put(point,this);
+
+        }
+
+
+    }
+	
 	public void onMessage(User user,TMsg msg) {
 	}
 	

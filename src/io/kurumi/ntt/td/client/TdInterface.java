@@ -13,6 +13,7 @@ public abstract class TdInterface {
 	public abstract long send(Function function);
 	public abstract <T extends TdApi.Object> T execute(Function function) throws TdException;
 	public abstract void execute(Function function,TdCallback<?> callback);
+	public abstract TdPoint getPointStore();
 	
 	public void send(SMBuilder function) {
 		
@@ -44,7 +45,7 @@ public abstract class TdInterface {
 
 	}
 
-	public class SMBuilder {
+	public static class SMBuilder {
 
 		long chatId;
 
@@ -379,5 +380,77 @@ public abstract class TdInterface {
 		return execute(new ParseTextEntities(text,new TextParseModeMarkdown()));
 
 	}
+	
+	public TdPointData getPrivatePoint(int userId) {
+
+		synchronized (getPointStore().privatePoints) {
+
+			return getPointStore().privatePoints.get(userId);
+
+		}
+
+	}
+
+	public void setPrivatePoint(int userId,String point,String actionName) {
+
+		setPrivatePoint(userId,point,actionName,new TdPointData());
+
+	}
+
+	public void setPrivatePoint(int userId,String point,String actionName,TdPointData data) {
+
+		data.chatType = 0;
+		data.point = point;
+		data.actionName = actionName;
+
+		synchronized (getPointStore().privatePoints) {
+
+			getPointStore().privatePoints.put(userId,data);
+
+		}
+
+	}
+
+	public TdPointData getGroupPoint(long chatId,int userId) {
+
+		synchronized (getPointStore().groupPoints) {
+
+			if (!getPointStore().groupPoints.containsKey(chatId)) return null;
+
+			return getPointStore().groupPoints.get(chatId).points.get(userId);
+
+		}
+
+	}
+
+	public void setGroupPoint(long chatId,int userId,String point,String actionName) {
+
+		setGroupPoint(chatId,userId,point,actionName,new TdPointData());
+
+	}
+
+	public void setGroupPoint(long chatId,final int userId,String point,String actionName,final TdPointData data) {
+
+		data.chatType = 1;
+		data.point = point;
+		data.actionName = actionName;
+
+		synchronized (getPointStore().groupPoints) {
+
+			if (getPointStore().groupPoints.containsKey(chatId)) {
+
+				getPointStore().groupPoints.get(chatId).points.put(userId,data);
+
+			} else {
+
+				getPointStore().groupPoints.put(chatId,new TdPoint.Group() {{ points.put(userId,data); }});
+
+			}
+
+		}
+
+	}
+
+	
 	
 }

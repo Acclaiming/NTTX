@@ -17,7 +17,7 @@ import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
 import cn.hutool.core.util.ArrayUtil;
 
-public class TdClient extends TdHandler {
+public class TdClient extends TdListener {
 
 	private Client client = new Client();
 
@@ -39,91 +39,13 @@ public class TdClient extends TdHandler {
 
 	public TdClient(TdOptions options) {
 
-		handlers.add(this);
+		addListener(this);
 
 		params = new SetTdlibParameters(options.build());
 
 	}
-
-	private HashMap<Integer,TdPointData> privatePoints = new HashMap<>();
-
-	private HashMap<Long,Group> groupPoints = new HashMap<>();
-
-	private class Group {
-
-		public HashMap<Integer,TdPointData> points = new HashMap<>();
-
-	}
-
-	public TdPointData getPrivatePoint(int userId) {
-
-		synchronized (privatePoints) {
-
-			return privatePoints.get(userId);
-
-		}
-
-	}
-
-	public void setPrivatePoint(int userId,String point,String actionName) {
-
-		setPrivatePoint(userId,point,actionName,new TdPointData());
-
-	}
-
-	public void setPrivatePoint(int userId,String point,String actionName,TdPointData data) {
-
-		data.chatType = 0;
-		data.point = point;
-		data.actionName = actionName;
-
-		synchronized (privatePoints) {
-
-			privatePoints.put(userId,data);
-
-		}
-
-	}
-
-	public TdPointData getGroupPoint(long chatId,int userId) {
-
-		synchronized (groupPoints) {
-
-			if (!groupPoints.containsKey(chatId)) return null;
-
-			return groupPoints.get(chatId).points.get(userId);
-
-		}
-
-	}
-
-	public void setGroupPoint(long chatId,int userId,String point,String actionName) {
-
-		setGroupPoint(chatId,userId,point,actionName,new TdPointData());
-
-	}
-
-	public void setGroupPoint(long chatId,final int userId,String point,String actionName,final TdPointData data) {
-
-		data.chatType = 1;
-		data.point = point;
-		data.actionName = actionName;
-
-		synchronized (groupPoints) {
-
-			if (groupPoints.containsKey(chatId)) {
-
-				groupPoints.get(chatId).points.put(userId,data);
-
-			} else {
-
-				groupPoints.put(chatId,new Group() {{ points.put(userId,data); }});
-
-			}
-
-		}
-
-	}
+	
+	public TdPoint point = new TdPoint();
 
 	public HashMap<String, TdListener> functions = new HashMap<>();
     public HashMap<String, TdListener> adminFunctions = new HashMap<>();
@@ -132,20 +54,28 @@ public class TdClient extends TdHandler {
     public HashMap<String, TdListener> points = new HashMap<>();
     public HashMap<String, TdListener> callbackQuerys = new HashMap<>();
 	
-	public boolean hasAuth() {
+	public void addListener(TdHandler handler) {
+		
+		handlers.add(handler);
+		
+		if (handler instanceof TdListener) {
+			
+			TdListener listener = (TdListener) handler;
+			
+			listener.client = this;
+			
+			listeners.add(listener);
+			
+			listener.init();
 
-		return this.hasAuth.get();
-
-	}
-
-	void setAuth(boolean hasAuth) {
-
-		this.hasAuth.set(hasAuth);
-
+			
+		}
+		
 	}
 
 	public void clearListeners() {
 
+		handlers.clear();
 		listeners.clear();
 
 	}
@@ -190,24 +120,11 @@ public class TdClient extends TdHandler {
 
 		if (msg.isPrivate()) {
 
-			synchronized (privatePoints) {
-
-				data = privatePoints.get(user.id);
-
-			}
+			data = getPrivatePoint(user.id);
 
 		} else if (msg.isBasicGroup() || msg.isSuperGroup()) {
 
-			synchronized (groupPoints) {
-
-				if (groupPoints.containsKey(msg.chatId)) {
-
-					data = groupPoints.get(msg.chatId).points.get(user.id);
-
-				}
-
-			}
-
+			data = getGroupPoint(msg.chatId,user.id);
 
 		}
 
@@ -291,7 +208,7 @@ public class TdClient extends TdHandler {
 
 		}
 
-		while (!hasAuth()) {
+		while (!hasAuth.get()) {
 
 			ThreadUtil.safeSleep(10);
 

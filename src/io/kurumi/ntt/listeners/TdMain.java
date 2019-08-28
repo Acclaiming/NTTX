@@ -10,6 +10,7 @@ import io.kurumi.ntt.td.model.TMsg;
 import cn.hutool.log.LogFactory;
 import io.kurumi.ntt.td.client.TdException;
 import cn.hutool.core.util.StrUtil;
+import io.kurumi.ntt.listeners.base.TdPingFunction;
 
 public class TdMain extends TdBot {
 
@@ -18,27 +19,8 @@ public class TdMain extends TdBot {
 	public TdMain() {
 
 		super(Env.BETA_TOKEN);
-
-	}
-
-	@Override
-	public void onNewMessage(final UpdateNewMessage update) {
-
-		if (update.message.senderUserId == me.id) return;
-
-		TMsg msg = new TMsg(this,update.message);
-
-		if (msg.isText()) {
-
-			log.debug("{} : {}",msg.sender,msg.text());
-
-			if ("ping".equals(msg.command())) {
-
-				send(chatId(msg.chatId).input(text("喵...")));
-				
-			}
-
-		}
+		
+		addListener(new TdPingFunction());
 
 	}
 
