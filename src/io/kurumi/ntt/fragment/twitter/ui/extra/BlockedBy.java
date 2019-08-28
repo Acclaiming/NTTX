@@ -196,7 +196,7 @@ public class BlockedBy extends Fragment {
 
 	public static String defaultMessage() {
 
-		String message = "被 '@<用户名> 屏蔽了, 真可惜。";
+		String message = "被 @<用户名> 屏蔽了, 真可惜。";
 
 		message += "\n\n( 由NTT自动推送 )";
 
