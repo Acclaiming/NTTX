@@ -70,10 +70,14 @@ public class AutoMain extends Fragment {
 			.newButton("屏蔽新关注中的转推")
 			.newButton(account.mrt != null ? "✅" : "☑",POINT_SETTING_MRT,account.id);
 
+		/*
+			
 		config.newButtonLine()
 			.newButton("自动关注新关注者")
 			.newButton(account.fb != null ? "✅" : "☑",POINT_SETTING_FOBACK,account.id);
 		
+		*/
+			
 		config.newButtonLine("🔙",AccountMain.POINT_ACCOUNT,account.id);
 		
 		callback.edit(message).buttons(config).async();
