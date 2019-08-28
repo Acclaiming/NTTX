@@ -44,7 +44,7 @@ public class TdMain extends TdBot {
 					
 					User user = execute(new GetUser(msg.sender));
 
-					sendPlainText(msg.chatId,"完成 : {}s",(System.currentTimeMillis() - start) / 1000);
+					sendPlainText(msg.chatId,"完成 : {}ms",(System.currentTimeMillis() - start));
 					
 				} catch (TdException e) {
 					
