@@ -26,6 +26,7 @@ public class ExtraMain extends Fragment {
 		registerCallback(POINT_EXTRA);
 
 		origin.addFragment(new OWUnfoPublish());
+		origin.addFragment(new BlockedBy());
 		origin.addFragment(new SpamMain());
 
 	}
