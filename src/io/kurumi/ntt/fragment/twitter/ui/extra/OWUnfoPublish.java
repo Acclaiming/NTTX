@@ -28,24 +28,20 @@ public class OWUnfoPublish extends Fragment {
 
 	public static void onUnfo(TAuth auth,Twitter api,UserArchive archive) {
 		
-		/*
-		
 		if (auth.oup == null) return;
 		
 		try {
 			
 			Status status = api.updateStatus(formatMessage(auth,archive));
 
-			new Send(auth.user,"单向取关已推送 :\n\n",StatusArchive.save(status).url()).enableLinkPreview().async();
+			new Send(auth.user,"单向取关已推送 :\n\n{}",StatusArchive.save(status).url()).enableLinkPreview().async();
 			
 		} catch (TwitterException e) {
 			
-			new Send(auth.user,"单向取关推送失败 :\n\n",NTT.parseTwitterException(e)).async();
+			new Send(auth.user,"单向取关推送失败 :\n\n{}",NTT.parseTwitterException(e)).async();
 			
 		}
 		
-		*/
-
 	}
 
 	@Override
