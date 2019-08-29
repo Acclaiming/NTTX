@@ -10,6 +10,7 @@ public class Locale {
 	public String PING_RESULT = "喵...";
 	
 	public String FN_PUBLIC_ONLY = "你只能在 群组或频道 使用这个命令.";
+	public String FN_GROUP_ONLY = "你只能在 群组 使用这个命令.";
 	public String NOT_CHAT_ADMIN = "你不是绒布球.";
 
 	// DA

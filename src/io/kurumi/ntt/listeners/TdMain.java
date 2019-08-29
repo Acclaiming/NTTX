@@ -14,6 +14,7 @@ import io.kurumi.ntt.listeners.base.TdPingFunction;
 import io.kurumi.ntt.listeners.base.TdGetIdFunction;
 import io.kurumi.ntt.listeners.group.CleanAccounts;
 import io.kurumi.ntt.listeners.extra.TdDnsLookup;
+import io.kurumi.ntt.listeners.group.GroupExport;
 
 public class TdMain extends TdBot {
 
@@ -29,6 +30,8 @@ public class TdMain extends TdBot {
 		addListener(new TdDnsLookup());
 		
 		addListener(new CleanAccounts());
+		
+		addListener(new GroupExport());
 		
 	}
 
