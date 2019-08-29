@@ -101,9 +101,9 @@ public class UserBot {
 
 				StaticLog.info("机器人令牌已失效 : {}" + userName);
 				
-                data.deleteById(id);
+               // data.deleteById(id);
 
-                new Send(user,"对不起，但是你的机器人 : @" + userName + " 的令牌已失效，已自动移除。").exec();
+              //  new Send(user,"对不起，但是你的机器人 : @" + userName + " 的令牌已失效，已自动移除。").exec();
 
                 return false;
 
