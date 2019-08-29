@@ -87,7 +87,7 @@ public class TdGetUser extends TdFunction {
 			
 			int userId = NumberUtil.parseInt(msg.param());
 			
-			User target = E(new GetUser(userId));
+			User target = execute(new GetUser(userId));
 
 			if (target == null) {
 
