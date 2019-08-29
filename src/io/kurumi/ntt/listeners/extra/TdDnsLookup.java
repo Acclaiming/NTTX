@@ -19,7 +19,7 @@ public class TdDnsLookup extends TdFunction {
 	@Override
 	public void onFunction(User user,TMsg msg,String function,String[] params) {
 
-		if (params.length == 0) {
+		if (params.length < 2) {
 
 			sendText(msg,"/dns <type> <domain>");
 
