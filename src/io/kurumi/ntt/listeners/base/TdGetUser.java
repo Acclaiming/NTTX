@@ -83,9 +83,9 @@ public class TdGetUser extends TdFunction {
 
 		}
 		
-		if (NumberUtil.isInteger(msg.param().trim())) {
+		if (NumberUtil.isInteger(msg.param())) {
 			
-			int userId = NumberUtil.parseInt(msg.param().trim());
+			int userId = NumberUtil.parseInt(msg.param());
 			
 			User target = E(new GetUser(userId));
 
@@ -95,7 +95,7 @@ public class TdGetUser extends TdFunction {
 
 			} else {
 
-				replyText(msg,getLocale(user).GET_USER_NOT_FOUND);
+				replyText(msg,mention("TARGET",userId));
 				
 			}
 			
