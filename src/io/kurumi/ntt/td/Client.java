@@ -6,6 +6,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.HashMap;
 import java.util.LinkedList;
 import cn.hutool.core.util.RuntimeUtil;
+import io.kurumi.ntt.Env;
 
 public final class Client {
 
@@ -20,7 +21,7 @@ public final class Client {
 
 	static {
 		
-		System.load("/usr/local/libs/td/libtdjni.so");
+		System.load(Env.ROOT_DIR + "/libs/td/libtdjni.so");
 		
 		Log.setVerbosityLevel(2);
 		

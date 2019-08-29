@@ -18,6 +18,7 @@ public class Env {
     public static int DB_PORT;
     public static String SERVER_DOMAIN;
 
+	public static File ROOT_DIR;
     public static File CACHE_DIR;
     public static File DATA_DIR;
 
@@ -66,7 +67,7 @@ public class Env {
 
         DB_ADDRESS = conf.getStr("db_address");
 
-
+		ROOT_DIR = new File(conf.getStr("root_path"));
         DB_PORT = conf.getInt("db_port");
         SERVER_DOMAIN = conf.getStr("server_domain");
 

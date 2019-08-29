@@ -2,6 +2,7 @@
   "db_address": "127.0.0.1",
   "db_port": 27017,
   "service_name": "ntt",
+  "roor_path": "/usr/local/ntt",
   "cache_path": "/var/cache/ntt",
   "use_unix_socket": true,
   "uds_path": "/var/run/ntt.sock",
