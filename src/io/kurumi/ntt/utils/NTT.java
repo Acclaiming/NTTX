@@ -290,6 +290,10 @@ public class NTT {
             case 50:
                 return "账号不存在";
 
+			case 32:
+				
+				return "无法认证";
+				
             case 34:
                 return "找不到内容";
 

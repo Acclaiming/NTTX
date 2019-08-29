@@ -409,7 +409,7 @@ public class TwitterMain extends Fragment {
 
             } catch (TwitterException e) {
 
-                msg.send("{}\n{}",LocalString.get(user).TWITTER_REQEUST_AUTH_FAILED,NTT.parseTwitterException(e)).exec();
+                msg.send("认证失败\n\n{}",LocalString.get(user).TWITTER_REQEUST_AUTH_FAILED,NTT.parseTwitterException(e)).exec();
 
 				clearPrivatePoint(user);
 
