@@ -309,11 +309,11 @@ public class TwitterMain extends Fragment {
 
 	void startCustomAuth(UserData user,Callback callback,String point) {
 
-		setPrivatePoint(user,point,new CustomTokenAuth(callback));
+		PointData data = setPrivatePoint(user,point,new CustomTokenAuth(callback));
 
 		String message = LocalString.get(user).INPUT + "Consumer Key : ";
 
-		callback.edit(message).withCancel().async();
+		callback.edit(message).withCancel().exec(data);
 
 	}
 
@@ -409,7 +409,7 @@ public class TwitterMain extends Fragment {
 
             } catch (TwitterException e) {
 
-                msg.send("认证失败\n\n{}",LocalString.get(user).TWITTER_REQEUST_AUTH_FAILED,NTT.parseTwitterException(e)).exec();
+                msg.send("认证失败\n\n{}",NTT.parseTwitterException(e)).exec();
 
 				clearPrivatePoint(user);
 
