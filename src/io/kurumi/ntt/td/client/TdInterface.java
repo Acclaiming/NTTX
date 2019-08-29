@@ -19,8 +19,22 @@ public abstract class TdInterface {
 		return client.send(function);
 
 	}
+	
+	public String userName(User user) {
+		
+		String name = user.firstName;
+		
+		if (!StrUtil.isBlank(user.lastName)) {
+			
+			name += " " + user.lastName;
+			
+		}
+		
+		return name;
+		
+	}
 
-	public <T extends TdApi.Object> T execute(TdApi.Function function) {
+	public <T extends TdApi.Object> T E(TdApi.Function function) {
 
 		try {
 
@@ -28,9 +42,16 @@ public abstract class TdInterface {
 
 		} catch (TdException e) {
 
-			throw new RuntimeException(e);
+			return null;
 
 		}
+
+	}
+
+
+	public <T extends TdApi.Object> T execute(TdApi.Function function) {
+
+		return client.execute(function);
 
 	}
 
@@ -53,15 +74,15 @@ public abstract class TdInterface {
 	}
 
 	public TMsg execute(SMBuilder function)  {
-		
+
 		return new TMsg(client,(Message)execute(function.build()));
 
 	}
-	
+
 	public Locale getLocale(User user) {
-		
+
 		return Locale.get(user);
-		
+
 	}
 
 	public boolean isAdmin(int userId) {
@@ -119,7 +140,7 @@ public abstract class TdInterface {
 			this.content = new InputMessageText(text,true,false);
 
 			return this;
-			
+
 		}
 
 		public SMBuilder inputText(FormattedText text,boolean enablePreview) { 
@@ -127,15 +148,15 @@ public abstract class TdInterface {
 			this.content = new InputMessageText(text,!enablePreview,false);
 
 			return this;
-			
+
 		}
 
 		public SMBuilder inputText(FormattedText text,boolean enablePreview,boolean clearDraft) { 
 
 			this.content = new InputMessageText(text,!enablePreview,clearDraft);
-			
+
 			return this;
-			
+
 		}
 
 		public SMBuilder inputText(TextBuilder text) { 
@@ -143,15 +164,15 @@ public abstract class TdInterface {
 			this.content = new InputMessageText(text.build(),true,false);
 
 			return this;
-			
+
 		}
 
 		public SMBuilder inputText(TextBuilder text,boolean enablePreview) { 
 
 			this.content = new InputMessageText(text.build(),!enablePreview,false);
-			
+
 			return this;
-			
+
 		}
 
 		public SMBuilder inputText(TextBuilder text,boolean enablePreview,boolean clearDraft) { 
@@ -159,9 +180,9 @@ public abstract class TdInterface {
 			this.content = new InputMessageText(text.build(),!enablePreview,clearDraft);
 
 			return this;
-			
+
 		}
-		
+
 		public SendMessage build() {
 
 			return new SendMessage(chatId,replyToMessageId,disableNotification,fromBackground,replyMarkup,content);
@@ -169,9 +190,9 @@ public abstract class TdInterface {
 		}
 
 	}
-	
+
 	public InputMessageText inputHtml(String html) { 
-	
+
 		return new InputMessageText(html(html),true,false);
 
 	}
@@ -181,7 +202,7 @@ public abstract class TdInterface {
 		return new InputMessageText(html(html),true,false);
 
 	}
-	
+
 	public InputMessageText inputText(FormattedText text) { 
 
 		return new InputMessageText(text,true,false);
@@ -217,7 +238,7 @@ public abstract class TdInterface {
 		return new InputMessageText(text.build(),!enablePreview,clearDraft);
 
 	}
-	
+
 	public TextBuilder text(String text) {
 
 		return new TextBuilder().text(text);
@@ -463,25 +484,97 @@ public abstract class TdInterface {
 		return execute(new ParseTextEntities(text,new TextParseModeMarkdown()));
 
 	}
-	
+
 	public void sendText(long chatId,String text,java.lang.Object... params) {
-		
+
 		send(chatId(chatId).inputText(text(StrUtil.format(text,params))));
-		
+
 	}
-	
+
 	public void sendText(TMsg msg,String text,java.lang.Object... params) {
 
 		send(msg.sendText(text(StrUtil.format(text,params))));
 
 	}
-	
+
 	public void replyText(TMsg msg,String text,java.lang.Object... params) {
 
 		send(msg.replyTo().inputText(text(StrUtil.format(text,params))));
 
 	}
 	
+	public void sendHTML(long chatId,String text,java.lang.Object... params) {
+
+		send(chatId(chatId).inputText(html(StrUtil.format(text,params))));
+
+	}
+
+	public void sendHTML(TMsg msg,String text,java.lang.Object... params) {
+
+		send(msg.sendText(html(StrUtil.format(text,params))));
+
+	}
+
+	public void replyHTML(TMsg msg,String text,java.lang.Object... params) {
+
+		send(msg.replyTo().inputText(html(StrUtil.format(text,params))));
+
+	}
+	
+	public void sendMD(long chatId,String text,java.lang.Object... params) {
+
+		send(chatId(chatId).inputText(markdown(StrUtil.format(text,params))));
+
+	}
+
+	public void sendMD(TMsg msg,String text,java.lang.Object... params) {
+
+		send(msg.sendText(markdown(StrUtil.format(text,params))));
+
+	}
+
+	public void replyMD(TMsg msg,String text,java.lang.Object... params) {
+
+		send(msg.replyTo().inputText(markdown(StrUtil.format(text,params))));
+
+	}
+
+	public void sendText(long chatId,FormattedText text) {
+
+		send(chatId(chatId).inputText(text));
+
+	}
+
+	public void sendText(TMsg msg,FormattedText text) {
+
+		send(msg.sendText(text));
+
+	}
+
+	public void replyText(TMsg msg,FormattedText text) {
+
+		send(msg.replyTo().inputText(text));
+
+	}
+	
+	public void sendText(long chatId,TextBuilder text) {
+
+		send(chatId(chatId).inputText(text));
+
+	}
+
+	public void sendText(TMsg msg,TextBuilder text) {
+
+		send(msg.sendText(text));
+
+	}
+
+	public void replyText(TMsg msg,TextBuilder text) {
+
+		send(msg.replyTo().inputText(text));
+
+	}
+
 	public TdPointData getPrivatePoint(int userId) {
 
 		synchronized (getPointStore().privatePoints) {

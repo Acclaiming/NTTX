@@ -33,8 +33,8 @@ public class CleanAccounts extends TdListener {
 
 		if (msg.isPrivate()) {
 
-			send(msg.sendText(text(getLocale(user).FN_PUBLIC_ONLY)));
-
+			sendMD(msg,getLocale(user).CA_HELP);
+			
 			return;
 
 		}
