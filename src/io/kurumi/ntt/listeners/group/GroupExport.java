@@ -13,7 +13,7 @@ public class GroupExport extends TdFunction {
 	@Override
 	public String functionName() {
 
-		return "group_export";
+		return "_export";
 	}
 
 	@Override
@@ -30,21 +30,6 @@ public class GroupExport extends TdFunction {
 		if (!isAdmin(msg.chatId,user.id)) {
 
 			sendText(msg,getLocale(user).NOT_CHAT_ADMIN);
-
-			return;
-
-		}
-
-
-		try {
-
-			TMsg test = execute(msg.sendText(text("~")).disableNotification());
-
-			execute(new DeleteMessages(user.id,new long[] { test.messageId },true));
-
-		} catch (Exception ex) {
-
-			sendText(msg,"BOT 无法给您发送私信");
 
 			return;
 
