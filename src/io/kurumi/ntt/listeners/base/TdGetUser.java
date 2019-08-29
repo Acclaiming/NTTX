@@ -19,10 +19,40 @@ public class TdGetUser extends TdFunction {
 
 		if (params.length == 0 || !msg.isText()) {
 
-			sendMD(msg,getLocale(user).GET_USER);
+			sendText(msg,getLocale(user).GET_USER);
 
 			return;
 
+		}
+		
+		if (msg.replyTo != 0L) {
+			
+			Message replyTo = E(new GetMessage(msg.chatId,msg.replyTo));
+			
+			if (replyTo == null) {
+				
+				sendText(msg,getLocale(user).GET_USER_NOT_FOUND);
+				
+				return;
+				
+			}
+			
+			int userId = replyTo.senderUserId;
+			
+			User target = E(new GetUser(userId));
+
+			if (target == null) {
+
+				sendText(msg,mention(userName(target),userId));
+
+			} else {
+
+				sendText(msg,getLocale(user).GET_USER_NOT_FOUND);
+				
+			}
+			
+			return;
+			
 		}
 
 		MessageText content = (MessageText) msg.content;
@@ -33,7 +63,7 @@ public class TdGetUser extends TdFunction {
 
 				TextEntityTypeMentionName mention = (TextEntityTypeMentionName) entity.type;
 
-				User target = execute(new GetUser(mention.userId));
+				User target = E(new GetUser(mention.userId));
 
 				if (target == null) {
 
@@ -55,7 +85,7 @@ public class TdGetUser extends TdFunction {
 			
 			int userId = NumberUtil.parseInt(msg.text());
 			
-			User target = execute(new GetUser(userId));
+			User target = E(new GetUser(userId));
 
 			if (target == null) {
 
@@ -71,13 +101,19 @@ public class TdGetUser extends TdFunction {
 			
 		}
 		
-		if (msg.param().trim().contains(" ")) {
-			
-			sendMD(msg,getLocale(user).GET_USER);
+		// BOT METHOD INVALID
 
+		//if (msg.param().trim().contains(" ")) {
+			
+			sendText(msg,getLocale(user).GET_USER);
+
+			/*
+			
 			return;
 			
 		}
+		
+		
 		
 		String userName = msg.param().trim();
 		
@@ -97,7 +133,7 @@ public class TdGetUser extends TdFunction {
 			
 		}
 		
-		User target = execute(new GetUser((int)chat.id));
+		User target = E(new GetUser((int)chat.id));
 
 		if (target == null) {
 
@@ -108,6 +144,8 @@ public class TdGetUser extends TdFunction {
 			sendText(msg,getLocale(user).GET_USER_NOT_FOUND);
 
 		}
+		
+		*/
 		
 	}
 

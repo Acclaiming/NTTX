@@ -9,7 +9,7 @@ import io.kurumi.ntt.td.client.TdInterface;
 public class TMsg extends TdInterface {
 
 	public Message message;
-
+	public long replyTo;
 	public MessageContent content;
 
 	private int isCommand = 0;
@@ -36,6 +36,7 @@ public class TMsg extends TdInterface {
 		
 		this.client = client;
 		this.message = message;
+		this.replyTo = message.replyToMessageId;
 		this.content = message.content;
 		this.chatId = message.chatId;
 		this.messageId = message.id;

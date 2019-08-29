@@ -38,9 +38,9 @@ public class Locale {
 
 	// USER
 
-	public String GET_USER = "取得一个用户的**永久链接** :" + "\n\n" +
+	public String GET_USER = "取得一个用户的永久链接 :" + "\n\n" +
 	
-	"/get_user @用户名 / 文本引用 / 用户ID";
+	"/get_user 文本引用 / 用户ID";
 	
 	public String GET_USER_NOT_FOUND = "这个用户不存在";
  
@@ -71,7 +71,7 @@ public class Locale {
 
 			GET_USER = "Get a permanent link of a user : " + "\n\n" + 
 
-				"/get_user @user_name / text mention / user id";
+				"/get_user text mention / user id";
 				
 			GET_USER_NOT_FOUND = "user not found.";
 
