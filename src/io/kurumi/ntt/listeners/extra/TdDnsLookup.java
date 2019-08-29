@@ -39,7 +39,7 @@ public class TdDnsLookup extends TdFunction {
 
 			if (type < 0) {
 
-				sendText(msg,getLocale(user).DNS_TYPE_INVALID);
+				sendHTML(msg,getLocale(user).DNS_TYPE_INVALID);
 
 				return;
 
@@ -59,7 +59,7 @@ public class TdDnsLookup extends TdFunction {
 
 		} catch (TextParseException e) {
 
-			sendText(msg,getLocale(user).DNS_DOMAIN_INVALID);
+			sendHTML(msg,getLocale(user).DNS_DOMAIN_INVALID);
 
 			return;
 
