@@ -75,6 +75,8 @@ public class TdListener extends TdHandler {
 	public void onMessage(User user,TMsg msg) {
 	}
 	
+	public boolean asyncFunction() { return false; }
+	
 	public void onFunction(User user,TMsg msg,String function,String[] params) {
 	}
 	

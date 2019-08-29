@@ -22,6 +22,13 @@ public class CleanAccounts extends TdListener {
 	}
 
 	@Override
+	public boolean asyncFunction() {
+		
+		return true;
+		
+	}
+
+	@Override
 	public void onFunction(User user,TMsg msg,String function,String[] params) {
 
 		if (msg.isPrivate()) {

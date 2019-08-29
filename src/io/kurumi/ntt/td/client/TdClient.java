@@ -16,12 +16,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
 import cn.hutool.core.util.ArrayUtil;
+import io.kurumi.ntt.utils.BotLog;
 
 public class TdClient extends TdListener {
 
 	private Client client = new Client();
 
-	private ExecutorService updatePool = Executors.newFixedThreadPool(4);
+	private ExecutorService updatePool = Executors.newSingleThreadExecutor();
+	private ExecutorService asyncPool = Executors.newFixedThreadPool(16);
 
 	private AtomicLong requestId = new AtomicLong(1);
 	private ReentrantLock executionLock = new ReentrantLock();
@@ -44,7 +46,7 @@ public class TdClient extends TdListener {
 		params = new SetTdlibParameters(options.build());
 
 	}
-	
+
 	public TdPoint point = new TdPoint();
 
 	public HashMap<String, TdListener> functions = new HashMap<>();
@@ -53,24 +55,24 @@ public class TdClient extends TdListener {
     public HashMap<String, TdListener> adminPayloads = new HashMap<>();
     public HashMap<String, TdListener> points = new HashMap<>();
     public HashMap<String, TdListener> callbackQuerys = new HashMap<>();
-	
+
 	public void addListener(TdHandler handler) {
-		
+
 		handlers.add(handler);
-		
+
 		if (handler instanceof TdListener) {
-			
+
 			TdListener listener = (TdListener) handler;
-			
+
 			listener.client = this;
-			
+
 			listeners.add(listener);
-			
+
 			listener.init();
 
-			
+
 		}
-		
+
 	}
 
 	public void clearListeners() {
@@ -112,9 +114,9 @@ public class TdClient extends TdListener {
 
 		Message message = update.message;
 
-		User user = message.isChannelPost ? null : E(new GetUser(message.senderUserId));
+		final User user = message.isChannelPost ? null : E(new GetUser(message.senderUserId));
 
-		TMsg msg = new TMsg(this,update.message);
+		final TMsg msg = new TMsg(this,update.message);
 
 		TdPointData data = null;
 
@@ -145,15 +147,15 @@ public class TdClient extends TdListener {
 		}
 
 		if (msg.isCommand()) {
-			
-			String command = msg.command();
-			String[] params = msg.fixedParams();
-			
+
+			final String command;
+			final String[] params;
+
 			if (msg.isStartPayload()) {
-				
+
 				command = msg.payload()[0];
 				params = ArrayUtil.remove(msg.payload(),0);
-				
+
 				if (isAdmin(msg.sender) && adminPayloads.containsKey(command)) {
 
 					adminPayloads.get(command).onPayload(user,msg,command,params);
@@ -163,34 +165,66 @@ public class TdClient extends TdListener {
 					payloads.get(command).onPayload(user,msg,command,params);
 
 				} else {
-					
+
 					onPayload(user,msg,command,params);
-				
+
 				}
-				
+
 				return;
-				
+
 			}
 			
+			command = msg.command();
+			params = msg.fixedParams();
+			
+			final TdListener function;
+
 			if (isAdmin(msg.sender) && adminFunctions.containsKey(command)) {
-				
-				adminFunctions.get(command).onFunction(user,msg,command,params);
-				
+
+				function = adminFunctions.get(command);
+
 			} else if (functions.containsKey(command)) {
-				
-				functions.get(command).onFunction(user,msg,command,params);
-				
+
+				function = functions.get(command);
+
+			} else {
+
+				function = this;
+
+			}
+
+			if (function.asyncFunction()) {
+
+				asyncPool.execute(new Runnable() {
+
+						@Override
+						public void run() {
+
+							try {
+
+								function.onFunction(user,msg,command,params);
+
+							} catch (Exception e) {
+
+								log.error("TdError - Async\n\n{}",BotLog.parseError(e));
+
+							}
+
+						}
+
+					});
+
 			} else {
 				
-				onFunction(user,msg,command,params);
+				function.onFunction(user,msg,command,params);
 				
 			}
-			
+
 		}
 
 	}
 
-	
+
 	public <T extends TdApi.Object> T E(Function function) {
 
 		try {
@@ -358,7 +392,19 @@ public class TdClient extends TdListener {
 					@Override
 					public void run() {
 
-						for (TdHandler handler : handlers) handler.onEvent(event.object);
+						for (TdHandler handler : handlers) {
+							
+							try {
+							
+							handler.onEvent(event.object);
+							
+							} catch (Exception e) {
+								
+								log.error("TdError - Sync\n\n{}",BotLog.parseError(e));
+								
+							}
+						
+						}
 
 					}
 
