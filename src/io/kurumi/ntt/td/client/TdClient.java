@@ -353,7 +353,7 @@ public class TdClient extends TdListener {
 
 				while (status.get()) {
 
-					LinkedList<Client.Event> responseList = client.receive(1000,1000);
+					LinkedList<Client.Event> responseList = client.receive(20,1000);
 
 					for (Client.Event event : responseList) processEvent(event);
 
