@@ -173,10 +173,10 @@ public class TdClient extends TdListener {
 				return;
 
 			}
-			
+
 			command = msg.command();
 			params = msg.fixedParams();
-			
+
 			final TdListener function;
 
 			if (isAdmin(msg.sender) && adminFunctions.containsKey(command)) {
@@ -215,9 +215,9 @@ public class TdClient extends TdListener {
 					});
 
 			} else {
-				
+
 				function.onFunction(user,msg,command,params);
-				
+
 			}
 
 		}
@@ -367,21 +367,29 @@ public class TdClient extends TdListener {
 
 	private void processEvent(final Client.Event event) {
 
-		StaticLog.debug("Event : {}",event.object.getClass().getSimpleName());
+		// StaticLog.debug("Event : {}",event.object.getClass().getSimpleName());
 
 		if (event.requestId != 0L) {
 
 			if (!callbacks.containsKey(event.requestId)) return;
 
-			TdCallback<?> callback = callbacks.get(event.requestId);
+			try {
 
-			if (event.object instanceof TdApi.Error) {
+				TdCallback<?> callback = callbacks.get(event.requestId);
 
-				callback.onCallback(false,null,(TdApi.Error)event.object);
+				if (event.object instanceof TdApi.Error) {
 
-			} else {
+					callback.onCallback(false,null,(TdApi.Error)event.object);
 
-				((TdCallback<TdApi.Object>)callback).onCallback(true,event.object,null);
+				} else {
+
+					((TdCallback<TdApi.Object>)callback).onCallback(true,event.object,null);
+
+				}
+
+			} catch (Exception e) {
+
+				log.error("TdError - Sync\n\n{}",BotLog.parseError(e));
 
 			}
 
@@ -393,17 +401,17 @@ public class TdClient extends TdListener {
 					public void run() {
 
 						for (TdHandler handler : handlers) {
-							
+
 							try {
-							
-							handler.onEvent(event.object);
-							
+
+								handler.onEvent(event.object);
+
 							} catch (Exception e) {
-								
+
 								log.error("TdError - Sync\n\n{}",BotLog.parseError(e));
-								
+
 							}
-						
+
 						}
 
 					}
