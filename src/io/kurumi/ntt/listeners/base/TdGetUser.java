@@ -17,9 +17,11 @@ public class TdGetUser extends TdFunction {
 	@Override
 	public void onFunction(User user,TMsg msg,String function,String[] params) {
 
+		if (msg.isChannel()) return;
+		
 		if (params.length == 0 || !msg.isText()) {
 
-			sendText(msg,getLocale(user).GET_USER);
+			replyText(msg,getLocale(user).GET_USER);
 
 			return;
 
@@ -28,10 +30,10 @@ public class TdGetUser extends TdFunction {
 		if (msg.replyTo != 0L) {
 			
 			Message replyTo = E(new GetMessage(msg.chatId,msg.replyTo));
-			
+		
 			if (replyTo == null) {
 				
-				sendText(msg,getLocale(user).GET_USER_NOT_FOUND);
+				replyText(msg,getLocale(user).GET_USER_NOT_FOUND);
 				
 				return;
 				
@@ -43,11 +45,11 @@ public class TdGetUser extends TdFunction {
 
 			if (target == null) {
 
-				sendText(msg,mention(userName(target),userId));
+				replyText(msg,mention(userName(target),userId));
 
 			} else {
 
-				sendText(msg,getLocale(user).GET_USER_NOT_FOUND);
+				replyText(msg,getLocale(user).GET_USER_NOT_FOUND);
 				
 			}
 			
@@ -67,11 +69,11 @@ public class TdGetUser extends TdFunction {
 
 				if (target == null) {
 
-					sendText(msg,mention(userName(target),mention.userId));
+					replyText(msg,mention(userName(target),mention.userId));
 
 				} else {
 
-					sendText(msg,mention(msg.text().substring(entity.offset,entity.offset + entity.length),mention.userId));
+					replyText(msg,mention(msg.text().substring(entity.offset,entity.offset + entity.length),mention.userId));
 
 				}
 
@@ -89,11 +91,11 @@ public class TdGetUser extends TdFunction {
 
 			if (target == null) {
 
-				sendText(msg,mention(userName(target),userId));
+				replyText(msg,mention(userName(target),userId));
 
 			} else {
 
-				sendText(msg,getLocale(user).GET_USER_NOT_FOUND);
+				replyText(msg,getLocale(user).GET_USER_NOT_FOUND);
 				
 			}
 			
@@ -105,7 +107,7 @@ public class TdGetUser extends TdFunction {
 
 		//if (msg.param().trim().contains(" ")) {
 			
-			sendText(msg,getLocale(user).GET_USER);
+		replyText(msg,getLocale(user).GET_USER);
 
 			/*
 			
