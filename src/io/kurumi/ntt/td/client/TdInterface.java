@@ -9,6 +9,7 @@ import io.kurumi.ntt.td.TdApi;
 import io.kurumi.ntt.td.TdApi.Object;
 import io.kurumi.ntt.td.model.TMsg;
 import java.util.LinkedList;
+import cn.hutool.log.StaticLog;
 
 public abstract class TdInterface {
 
@@ -42,6 +43,8 @@ public abstract class TdInterface {
 
 		} catch (TdException e) {
 
+			StaticLog.debug("{} : {}",function.getClass().getSimpleName(),e.getMessage());
+			
 			return null;
 
 		}
