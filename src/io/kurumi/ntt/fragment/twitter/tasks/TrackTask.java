@@ -629,7 +629,7 @@ public class TrackTask extends TimerTask {
 
             }
 
-			if (auth.fb && !(auth.fbi != null && ship.isSourceFollowingTarget())) {
+			if (auth.fb != null && !(auth.fbi != null && ship.isSourceFollowingTarget())) {
 
 				FollowedBy.onFollowed(auth,api,archive);
 
