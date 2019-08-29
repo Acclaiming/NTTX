@@ -372,8 +372,6 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 		addFragment(new TLScanner());
 		
-		addFragment(new SiteStream());
-
 		// Mastodon
 
 		addFragment(new MsMain());
