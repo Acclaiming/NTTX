@@ -31,7 +31,7 @@ public class TdDnsLookup extends TdFunction {
 
 		String domain;
 
-		if (params.length > 1) {
+		if (params.length == 2) {
 
 			type = Type.value(params[0]);
 
