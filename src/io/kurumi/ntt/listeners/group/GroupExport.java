@@ -124,9 +124,9 @@ public class GroupExport extends TdFunction {
 			
 			message.bold(target.id + "");
 			
-			String name = target.lastName;
+			String name = target.firstName;
 			
-			if (StrUtil.isBlank(target.firstName)) name += " " + target.firstName;
+			if (!StrUtil.isBlank(target.firstName)) name += " " + target.lastName;
 			
 			message.text(" : ").mention(name,target.id).text("\n");
 			
