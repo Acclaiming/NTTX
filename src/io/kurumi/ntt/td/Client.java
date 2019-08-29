@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.HashMap;
 import java.util.LinkedList;
+import cn.hutool.core.util.RuntimeUtil;
 
 public final class Client {
 
@@ -19,7 +20,7 @@ public final class Client {
 
 	static {
 		
-		System.load("./libs/td/libtdjni.so");
+		System.load(RuntimeUtil.execForStr("pwd") + "/libs/td/libtdjni.so");
 		
 		Log.setVerbosityLevel(2);
 		
