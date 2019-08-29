@@ -21,7 +21,7 @@ public class TdClient extends TdListener {
 
 	private Client client = new Client();
 
-	private ExecutorService otherUpdate = Executors.newFixedThreadPool(4);
+	private ExecutorService updatePool = Executors.newFixedThreadPool(4);
 
 	private AtomicLong requestId = new AtomicLong(1);
 	private ReentrantLock executionLock = new ReentrantLock();
@@ -319,7 +319,7 @@ public class TdClient extends TdListener {
 
 				while (status.get()) {
 
-					LinkedList<Client.Event> responseList = client.receive(120,10);
+					LinkedList<Client.Event> responseList = client.receive(1000,1000);
 
 					for (Client.Event event : responseList) processEvent(event);
 
@@ -351,9 +351,9 @@ public class TdClient extends TdListener {
 
 			}
 
-		} else {
+		} else if (event.object instanceof Update) {
 
-			otherUpdate.execute(new Runnable() {
+			updatePool.execute(new Runnable() {
 
 					@Override
 					public void run() {
@@ -363,8 +363,6 @@ public class TdClient extends TdListener {
 					}
 
 				});
-
-
 
 		}
 
