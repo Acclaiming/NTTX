@@ -43,7 +43,7 @@ public class TdGetUser extends TdFunction {
 			
 			User target = E(new GetUser(userId));
 
-			if (target == null) {
+			if (target != null) {
 
 				replyText(msg,mention(userName(target),userId));
 
@@ -67,7 +67,7 @@ public class TdGetUser extends TdFunction {
 
 				User target = E(new GetUser(mention.userId));
 
-				if (target == null) {
+				if (target != null) {
 
 					replyText(msg,mention(userName(target),mention.userId));
 
@@ -87,15 +87,15 @@ public class TdGetUser extends TdFunction {
 			
 			int userId = NumberUtil.parseInt(msg.param());
 			
-			User target = execute(new GetUser(userId));
+			User target = E(new GetUser(userId));
 
-			if (target == null) {
+			if (target != null) {
 
 				replyText(msg,mention(userName(target),userId));
 
 			} else {
 
-				replyText(msg,mention("TARGET",userId));
+				replyText(msg,getLocale(user).GET_USER_NOT_FOUND);
 				
 			}
 			
