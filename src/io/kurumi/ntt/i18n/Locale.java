@@ -14,9 +14,9 @@ public class Locale {
 
 	// DA
 
-	public String DA_NOT_FOUND = "这个聊天中没有已删除的账号.";
-	public String DA_FOUND = "发现 {} 个已删除的账号, 正在清理.";
-	public String DA_FINISH = "完成, 耗时 {}s.";
+	public String CA_NOT_FOUND = "这个聊天中没有妇产账号.";
+	public String CA_FOUND = "发现 {} 个目标账号, 正在清理.";
+	public String CA_FINISH = "完成, 耗时 {}s.";
 
 	// DNS
 	

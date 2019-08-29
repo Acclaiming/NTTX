@@ -12,12 +12,12 @@ import io.kurumi.ntt.td.TdApi;
 import cn.hutool.log.StaticLog;
 import io.kurumi.ntt.Launcher;
 
-public class CleanDeleteAccount extends TdListener {
+public class CleanAccounts extends TdListener {
 
 	@Override
 	public void init() {
 
-		registerFunction("clean_da");
+		registerFunction("clean_da","clean_all");
 
 	}
 
@@ -31,6 +31,8 @@ public class CleanDeleteAccount extends TdListener {
 			return;
 
 		} 
+
+		boolean cleanAll = function.endsWith("all");
 
 		if (!msg.isChannel()) {
 
@@ -48,7 +50,7 @@ public class CleanDeleteAccount extends TdListener {
 
 		int size;
 
-		LinkedList<Integer> deletedAccounts = new LinkedList<>();
+		LinkedList<Integer> targetAccounts = new LinkedList<>();
 
 		if (msg.isBasicGroup()) {
 
@@ -58,11 +60,21 @@ public class CleanDeleteAccount extends TdListener {
 
 			for (ChatMember memberId : info.members) {
 
-				User member = execute(new GetUser(memberId.userId));
+				if (memberId.status instanceof ChatMemberStatusCreator || memberId.status instanceof ChatMemberStatusAdministrator || memberId.userId == client.me.id) continue;
+				
+				if (cleanAll) {
 
-				if (member.type instanceof UserTypeDeleted) {
+					targetAccounts.add(memberId.userId);
 
-					deletedAccounts.add(member.id);
+				} else {
+
+					User member = execute(new GetUser(memberId.userId));
+
+					if (member.type instanceof UserTypeDeleted) {
+
+						targetAccounts.add(member.id);
+
+					}
 
 				}
 
@@ -97,39 +109,49 @@ public class CleanDeleteAccount extends TdListener {
 
 				for (ChatMember memberId : members.members) {
 
-					User member = execute(new GetUser(memberId.userId));
+					if (memberId.status instanceof ChatMemberStatusCreator || memberId.status instanceof ChatMemberStatusAdministrator || memberId.userId == client.me.id) continue;
+					
+					if (cleanAll) {
 
-					if (member.type instanceof UserTypeDeleted) {
+						targetAccounts.add(memberId.userId);
 
-						deletedAccounts.add(member.id);
+					} else {
+
+						User member = execute(new GetUser(memberId.userId));
+
+						if (member.type instanceof UserTypeDeleted) {
+
+							targetAccounts.add(member.id);
+
+						}
 
 					}
-
+					
 				}
 
 			}
 
-			if (deletedAccounts.isEmpty()) {
+			if (targetAccounts.isEmpty()) {
 
-				sendText(msg,getLocale(user).DA_NOT_FOUND);
+				sendText(msg,getLocale(user).CA_NOT_FOUND);
 
 				return;
 
 			} else {
 
-				sendText(msg,getLocale(user).DA_FOUND,deletedAccounts.size());
+				sendText(msg,getLocale(user).CA_FOUND,targetAccounts.size());
 
 			}
 
 			long start = System.currentTimeMillis();
 
-			for (Integer deleted : deletedAccounts) {
+			for (Integer deleted : targetAccounts) {
 
 				send(new SetChatMemberStatus(msg.chatId,deleted,new ChatMemberStatusLeft()));
 
 			}
-			
-			sendText(msg,getLocale(user).DA_FINISH,(System.currentTimeMillis() - start) / 1000);
+
+			sendText(msg,getLocale(user).CA_FINISH,(System.currentTimeMillis() - start) / 1000);
 
 		}
 
