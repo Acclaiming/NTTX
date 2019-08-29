@@ -86,7 +86,7 @@ public class SorryApi {
 
 	private static File make(String template,String[] lines) {
 
-		File templateDir = FileUtil.file("/usr/local/ntt/res/templates",template);
+		File templateDir = FileUtil.file("res/templates",template);
 		File mp4File = FileUtil.file(templateDir,"template.mp4");
 		File cache;
 		
