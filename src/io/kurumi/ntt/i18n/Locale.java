@@ -33,9 +33,9 @@ public class Locale {
 			FN_PUBLIC_ONLY = "you can only use this command in groups or channels.";
 			NOT_CHAT_ADMIN = "you are not the administrator of this chat.";
 
-			DA_NOT_FOUND = "there is no deleted account in this chat.";
-			DA_FOUND = "found {} deleted account(s) in this group, now removing ...";
-			DA_FINISH = "successful , time : {}s";
+			CA_NOT_FOUND = "there is no target account in this chat.";
+			CA_FOUND = "found {} target account(s) in this group, now removing ...";
+			CA_FINISH = "successful , time : {}s";
 
 			DNS_TYPE_INVALID = "Invalid dns type.";
 			DNS_DOMAIN_INVALID = "Invalid domain.";
