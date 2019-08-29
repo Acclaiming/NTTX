@@ -38,6 +38,17 @@ public class TdMain extends TdBot {
 
 	@Override
 	public void onFunction(User user,TMsg msg,String function,String[] params) {
+		
+		if ("start".equals(function)) {
+			
+			sendText(msg,"喵.... _(:з」∠)_");
+			
+			return;
+			
+		}
+		
+		sendText(msg,"没有这个命令啦 _(:з」∠)_");
+		
 	}
 
 }
