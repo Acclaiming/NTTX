@@ -19,7 +19,7 @@ public class TdGetUser extends TdFunction {
 
 		if (msg.isChannel()) return;
 		
-		if (params.length == 0 || !msg.isText()) {
+		if ((params.length == 0 || !msg.isText()) && msg.replyTo == 0L) {
 
 			replyText(msg,getLocale(user).GET_USER);
 
