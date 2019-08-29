@@ -19,13 +19,13 @@ public class Html {
 
     public static String b(Object text) {
 
-        return "<b>" + HtmlUtil.escape(text.toString()) + "</b>";
+        return "<b>" + HtmlUtil.escape(text == null ? "" : text.toString()) + "</b>";
 
     }
 
     public static String i(Object text) {
 
-        return "<i>" + HtmlUtil.escape(text.toString()) + "</i>";
+        return "<i>" + HtmlUtil.escape(text == null ? "" : text.toString()) + "</i>";
 
     }
 
