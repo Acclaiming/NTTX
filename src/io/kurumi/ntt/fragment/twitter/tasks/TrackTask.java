@@ -385,13 +385,29 @@ public class TrackTask extends TimerTask {
 
 				if (account.fo_marge != null) {
 
-					if (account.fo_lost != null) account.fo_lost.removeAll(newFollowers);
+					if (account.fo_lost != null) {
+						
+						account.fo_lost.removeAll(newFollowers);
+						
+						lostFolowers.removeAll(account.fo_lost);
 
-					else account.fo_lost = new LinkedList<>();
+					} else {
+						
+						account.fo_lost = new LinkedList<>();
+						
+					}
 
-					if (account.fo_new != null) account.fo_new.removeAll(lostFolowers);
+					if (account.fo_new != null) {
+						
+						account.fo_new.removeAll(lostFolowers);
+						
+						newFollowers.removeAll(account.fo_new);
 
-					else account.fo_new = new LinkedList<>();
+					} else {
+						
+						account.fo_new = new LinkedList<>();
+						
+					}
 
 					account.fo_new.addAll(newFollowers);
 					account.fo_lost.addAll(lostFolowers);
