@@ -14,40 +14,52 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import io.kurumi.ntt.fragment.group.MaliciousMessage;
 import cn.hutool.core.util.ReUtil;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class TimelineTask extends TimerTask {
+
+	public static ExecutorService timelinePool = Executors.newFixedThreadPool(8);
 
 	@Override
 	public void run() {
 
-		for (TAuth account : TAuth.data.getAll()) {
+		for (final TAuth account : TAuth.data.getAll()) {
 
 			if (account.tl == null) continue;
 
-			final Twitter api = account.createApi();
+			timelinePool.execute(new Runnable() {
 
-			try {
+					@Override
+					public void run() {
 
-				processTimeline(account,api);
+						final Twitter api = account.createApi();
 
-			} catch (TwitterException e) {
+						try {
 
-				if (account.tl == null) continue;
+							processTimeline(account,api);
 
-				if (e.getStatusCode() == 503 || e.getErrorCode() == -1 || e.getStatusCode() == 429) return;
+						} catch (TwitterException e) {
 
-				account.tl = null;
+							if (account.tl == null) return;
+							
+							if (e.getStatusCode() == 503 || e.getErrorCode() == -1 || e.getStatusCode() == 429) return;
 
-				new Send(account.user,"时间流已关闭 :\n\n{}",NTT.parseTwitterException(e)).exec();
+							account.tl = null;
 
-				if (TAuth.data.containsId(account.id)) {
+							new Send(account.user,"时间流已关闭 :\n\n{}",NTT.parseTwitterException(e)).exec();
 
-					TAuth.data.setById(account.id,account);
+							if (TAuth.data.containsId(account.id)) {
 
-				}
+								TAuth.data.setById(account.id,account);
 
-			}
+							}
 
+						}
+
+					}
+
+				});
 		}
 
 	}
