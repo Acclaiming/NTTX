@@ -20,7 +20,7 @@ public final class Client {
 
 	static {
 		
-		System.load(RuntimeUtil.execForStr("pwd") + "/libs/td/libtdjni.so");
+		System.load("/usr/local/libs/td/libtdjni.so");
 		
 		Log.setVerbosityLevel(2);
 		
