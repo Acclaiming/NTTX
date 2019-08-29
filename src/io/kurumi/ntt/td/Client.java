@@ -19,7 +19,7 @@ public final class Client {
 
 	static {
 		
-		System.load("libs/td/libtdjni.so");
+		System.load("./libs/td/libtdjni.so");
 		
 		Log.setVerbosityLevel(2);
 		
