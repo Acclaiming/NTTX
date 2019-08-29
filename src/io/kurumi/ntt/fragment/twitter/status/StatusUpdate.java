@@ -640,11 +640,11 @@ public class StatusUpdate extends Fragment {
 
 				StatusArchive archive = StatusArchive.save(status);
 
-				msg.send(update.toReply == null ? "发送成功 :" : "回复成功 : {}\n{}",StatusArchive.split_tiny,archive.toHtml(0,update.auth)).buttons(StatusAction.createMarkup(update.auth.id,archive.id,true,archive.depth() == 0,false,false)).html().exec();
+				msg.send((update.toReply == null ? "发送成功 :" : "回复成功 : ") + "\n{}\n{}",StatusArchive.split_tiny,archive.toHtml(0,update.auth)).buttons(StatusAction.createMarkup(update.auth.id,archive.id,true,archive.depth() == 0,false,false)).html().exec();
 
 			} catch (TwitterException e) {
 
-				msg.send(update.toReply == null ? "发送失败 :(" : "回复失败\n\n{}",NTT.parseTwitterException(e)).exec();
+				msg.send((update.toReply == null ? "发送失败 :(" : "回复失败") + "\n\n{}",NTT.parseTwitterException(e)).exec();
 
 			}
 
