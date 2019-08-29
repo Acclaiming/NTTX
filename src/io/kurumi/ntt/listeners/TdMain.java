@@ -32,4 +32,8 @@ public class TdMain extends TdBot {
 		
 	}
 
+	@Override
+	public void onFunction(User user,TMsg msg,String function,String[] params) {
+	}
+
 }

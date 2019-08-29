@@ -162,6 +162,10 @@ public class TdClient extends TdListener {
 
 					payloads.get(command).onPayload(user,msg,command,params);
 
+				} else {
+					
+					onPayload(user,msg,command,params);
+				
 				}
 				
 				return;
@@ -176,9 +180,11 @@ public class TdClient extends TdListener {
 				
 				functions.get(command).onFunction(user,msg,command,params);
 				
+			} else {
+				
+				onFunction(user,msg,command,params);
+				
 			}
-			
-			return;
 			
 		}
 
