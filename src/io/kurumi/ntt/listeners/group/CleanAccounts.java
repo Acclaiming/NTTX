@@ -30,7 +30,7 @@ public class CleanAccounts extends TdListener {
 
 			return;
 
-		} 
+		}
 
 		boolean cleanAll = function.endsWith("all");
 
