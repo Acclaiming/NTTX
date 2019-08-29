@@ -112,7 +112,7 @@ public class GroupExport extends TdFunction {
 			
 			if (count == 50) {
 				
-				send(msg.sendText(message));
+				send(chatId(user.id).inputText(message));
 				
 				message = new TextBuilder();
 				
@@ -128,7 +128,7 @@ public class GroupExport extends TdFunction {
 			
 			if (StrUtil.isBlank(target.firstName)) name += " " + target.firstName;
 			
-			message.text(" : ").mention(name,target.id);
+			message.text(" : ").mention(name,target.id).text("\n");
 			
 			count ++;
 			
@@ -136,8 +136,8 @@ public class GroupExport extends TdFunction {
 		
 		if (count != 0) {
 			
-			send(msg.sendText(message));
-
+			send(chatId(user.id).inputText(message));
+			
 		}
 
 	}
