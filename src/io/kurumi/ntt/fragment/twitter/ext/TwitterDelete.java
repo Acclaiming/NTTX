@@ -24,6 +24,7 @@ import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import cn.hutool.core.util.NumberUtil;
 
 public class TwitterDelete extends Fragment {
 
@@ -35,35 +36,35 @@ public class TwitterDelete extends Fragment {
 
         super.init(origin);
 
-        registerFunction("delete", "delete_cancel");
+        registerFunction("delete","delete_cancel");
 
         registerPoint(POINT_DELETE);
 
     }
 
     @Override
-    public int checkFunction(UserData user, Msg msg, String function, String[] params) {
+    public int checkFunction(UserData user,Msg msg,String function,String[] params) {
 
         return PROCESS_SYNC;
 
     }
 
     @Override
-    public int checkPoint(UserData user, Msg msg, String point, PointData data) {
+    public int checkPoint(UserData user,Msg msg,String point,PointData data) {
 
         return PROCESS_SYNC;
 
     }
 
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-        requestTwitter(user, msg);
+        requestTwitter(user,msg);
 
     }
 
     @Override
-    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
+    public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
         if (function.endsWith("cancel")) {
 
@@ -88,20 +89,20 @@ public class TwitterDelete extends Fragment {
 
         } else {
 
-            setPrivatePointData(user,msg,POINT_DELETE, account);
+            setPrivatePointData(user,msg,POINT_DELETE,account);
 
             msg.send("这个功能需要从 Twitter应用/网页 - 设置 - 账号 - 你的Twitter数据 输入密码下载数据zip，并找到 tweet.js .").exec();
 
             msg.send("现在发送 tweet.js 来删除所有推文 (如果文件超过20m 需要打zip包发送").withCancel().exec();
 
-          //  msg.send("也可以发送 FETCH 执行拉取推文并删除 (无法读取久远的推文、通常是几个月之前)").exec();
+			//  msg.send("也可以发送 FETCH 执行拉取推文并删除 (无法读取久远的推文、通常是几个月之前)").exec();
 
         }
 
     }
 
     @Override
-    public void onPoint(UserData user, Msg msg, String point, PointData data) {
+    public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
         if ("FETCH".equals(msg.text())) {
 
@@ -117,7 +118,7 @@ public class TwitterDelete extends Fragment {
 
             thread.fetch = true;
 
-            threads.put(thread.account.id, thread);
+            threads.put(thread.account.id,thread);
 
             thread.start();
 
@@ -155,7 +156,7 @@ public class TwitterDelete extends Fragment {
 
         }
 
-        File zipOut = new File(Env.CACHE_DIR, "unzip/" + msg.doc().fileId());
+        File zipOut = new File(Env.CACHE_DIR,"unzip/" + msg.doc().fileId());
 
         if (!zipOut.isDirectory() || zipOut.list().length == 0) {
 
@@ -163,9 +164,9 @@ public class TwitterDelete extends Fragment {
 
                 try {
 
-                    ZipUtil.unzip(file, zipOut);
+                    ZipUtil.unzip(file,zipOut);
 
-                    file = new File(zipOut, like ? "like.js" : "tweet.js");
+                    file = new File(zipOut,like ? "like.js" : "tweet.js");
 
                     if (!file.isFile()) {
 
@@ -192,7 +193,7 @@ public class TwitterDelete extends Fragment {
 
         clearPrivatePoint(user);
 
-        BufferedReader reader = IoUtil.getReader(IoUtil.toStream(file), CharsetUtil.CHARSET_UTF_8);
+        BufferedReader reader = IoUtil.getReader(IoUtil.toStream(file),CharsetUtil.CHARSET_UTF_8);
 
         LinkedList<Long> ids = new LinkedList<>();
 
@@ -208,13 +209,19 @@ public class TwitterDelete extends Fragment {
 
                     if (line.contains("tweetId")) {
 
-                        ids.add(Long.parseLong(StrUtil.subBetween(line, "\" : \"", "\"")));
+                        ids.add(Long.parseLong(StrUtil.subBetween(line,"\" : \"","\"")));
 
                     }
 
                 } else if (isRC) {
 
-                    ids.add(Long.parseLong(StrUtil.subBetween(line, "\" : \"", "\"")));
+					String statusId = StrUtil.subBetween(line,"\" : \"","\"");
+
+					if (NumberUtil.isNumber(statusId)) {
+
+						ids.add(Long.parseLong(statusId));
+
+					}
 
                     isRC = false;
 
@@ -232,7 +239,7 @@ public class TwitterDelete extends Fragment {
 
         } catch (IOException e) {
 
-            msg.send("读取文件错误...\n\n{}", e).exec();
+            msg.send("读取文件错误...\n\n{}",e).exec();
 
             return;
 
@@ -252,7 +259,7 @@ public class TwitterDelete extends Fragment {
 
         thread.tweet = !like;
 
-        threads.put(thread.account.id, thread);
+        threads.put(thread.account.id,thread);
 
         thread.start();
 
@@ -274,7 +281,7 @@ public class TwitterDelete extends Fragment {
         @Override
         public void run() {
 
-            Msg status = new Send(userId, "正在删除... \n取消删除使用 /delete_cancel").send();
+            Msg status = new Send(userId,"正在删除... \n取消删除使用 /delete_cancel").send();
 
             if (!fetch) {
 
@@ -302,7 +309,7 @@ public class TwitterDelete extends Fragment {
 
                     } catch (TwitterException e) {
 
-                       //  BotLog.info("删除，错误", e);
+						//  BotLog.info("删除，错误", e);
 
                     }
 
@@ -320,7 +327,7 @@ public class TwitterDelete extends Fragment {
 
                     if (progress != last) {
 
-                        status.edit("删除中 : " + progress + "%", "取消删除使用 /delete_cancel ...").exec();
+                        status.edit("删除中 : " + progress + "%","取消删除使用 /delete_cancel ...").exec();
 
                     }
 
@@ -354,7 +361,7 @@ public class TwitterDelete extends Fragment {
 
                                 if (current % 20 == 0) {
 
-                                    status.edit("拉取中 已删除 " + current + " 条", "取消删除使用 /delete_cancel ...").exec();
+                                    status.edit("拉取中 已删除 " + current + " 条","取消删除使用 /delete_cancel ...").exec();
 
                                 }
 
@@ -370,11 +377,11 @@ public class TwitterDelete extends Fragment {
 
                     }
 
-                    status.edit("删除完成 : 已拉取并删除 " + current + " 条", "如果有剩余推文，请使用tweet.js以删除程序无法拉取的久远推文").exec();
+                    status.edit("删除完成 : 已拉取并删除 " + current + " 条","如果有剩余推文，请使用tweet.js以删除程序无法拉取的久远推文").exec();
 
                 } catch (TwitterException e) {
 
-                    status.edit("删除出错 已停止 :", NTT.parseTwitterException(e)).exec();
+                    status.edit("删除出错 已停止 :",NTT.parseTwitterException(e)).exec();
 
                 }
 
