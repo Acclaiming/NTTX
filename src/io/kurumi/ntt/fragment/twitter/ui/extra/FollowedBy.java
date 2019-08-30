@@ -29,11 +29,27 @@ public class FollowedBy extends Fragment {
 				
 				api.createFriendship(archive.id);
 				
-				new Send(auth.user,"关注 {} 成功",archive.urlHtml()).html().async();
+				String message = "关注 {} 成功{}";
+				
+				if (auth.multiUser()) {
+					
+					message += "\n\n账号 : " + auth.archive().bName();
+					
+				}
+				
+				new Send(auth.user,message,archive.urlHtml()).html().async();
 				
 			} catch (TwitterException e) {
 				
-				new Send(auth.user,"关注 {} 失败 : \n\n{}",archive.urlHtml(),NTT.parseTwitterException(e)).html().async();
+				String message = "关注 {} 失败 : \n\n{}";
+				
+				if (auth.multiUser()) {
+
+					message += "\n\n账号 : " + auth.archive().bName();
+
+				}
+				
+				new Send(auth.user,message,archive.urlHtml(),NTT.parseTwitterException(e)).html().async();
 				
 			}
 
@@ -45,11 +61,27 @@ public class FollowedBy extends Fragment {
 
 				Status status = api.updateStatus(formatMessage(auth,archive));
 
-				new Send(auth.user,"新关注者已推送 :\n\n{}",StatusArchive.save(status).url()).enableLinkPreview().async();
+				String message = "新关注者已推送 :\n\n{}";
+				
+				if (auth.multiUser()) {
+
+					message += "\n\n账号 : " + auth.archive().bName();
+
+				}
+				
+				new Send(auth.user,message,StatusArchive.save(status).url()).enableLinkPreview().async();
 
 			} catch (TwitterException e) {
 
-				new Send(auth.user,"新关注者推送失败 :\n\n{}",NTT.parseTwitterException(e)).async();
+				String message = "新关注者推送失败 :\n\n{}";
+				
+				if (auth.multiUser()) {
+
+					message += "\n\n账号 : " + auth.archive().bName();
+
+				}
+				
+				new Send(auth.user,message,NTT.parseTwitterException(e)).async();
 
 			}
 
