@@ -29,7 +29,7 @@ public class FollowedBy extends Fragment {
 				
 				api.createFriendship(archive.id);
 				
-				String message = "关注 {} 成功{}";
+				String message = "关注 {} 成功";
 				
 				if (auth.multiUser()) {
 					
@@ -41,7 +41,7 @@ public class FollowedBy extends Fragment {
 				
 			} catch (TwitterException e) {
 				
-				String message = "关注 {} 失败 : \n\n{}";
+				String message = "关注 {} 失败 : \n\n";
 				
 				if (auth.multiUser()) {
 
