@@ -96,7 +96,7 @@ public class OWUnfoPublish extends Fragment {
 
 	public static String defaultMessage() {
 
-		String message = "被 @<用户名> 取关了，真可惜。";
+		String message = "被关注的 @<用户名> 取关了，真可惜。";
 
 		message += "\n\n由NTT自动推送 也有可能是账号异常误报 (小声";
 
