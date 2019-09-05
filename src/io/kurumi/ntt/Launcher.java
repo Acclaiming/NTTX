@@ -177,15 +177,15 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 		}
 
-		log.debug("正在挂载机器人托管");
-
-		UserBot.startAll();
-
 		log.debug("正在挂载实验版本");
 		
 		BETA = new TdMain();
 
 		BETA.start();
+		
+		log.debug("正在挂载机器人托管");
+
+		UserBot.startAll();
 		
 		log.debug("启动完成 用时 {}s _(:з」∠)_",(System.currentTimeMillis() - startAt) / 1000);
 
