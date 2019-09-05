@@ -24,6 +24,7 @@ import java.io.IOException;
 import io.kurumi.ntt.utils.Img;
 import cn.hutool.core.util.ImageUtil;
 import java.awt.image.BufferedImage;
+import java.awt.Color;
 
 public class PackExport extends Fragment {
 
@@ -136,7 +137,7 @@ public class PackExport extends Fragment {
 					
 					BufferedImage image = ImageUtil.read(src);
 					
-					Img img = new Img(image.getWidth(),image.getHeight());
+					Img img = new Img(image.getWidth(),image.getHeight(),Color.WHITE);
 
 					img.drawImage(0,0,image,image.getWidth(),image.getHeight());
 					

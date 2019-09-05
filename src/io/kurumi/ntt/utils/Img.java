@@ -54,7 +54,6 @@ public class Img {
 
         graphics = image.createGraphics();
 
-
         if (backgroundColor != null) {
 
             graphics.setBackground(backgroundColor);
