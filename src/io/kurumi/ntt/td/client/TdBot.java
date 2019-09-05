@@ -2,6 +2,7 @@ package io.kurumi.ntt.td.client;
 
 import io.kurumi.ntt.td.TdApi;
 import io.kurumi.ntt.Env;
+import cn.hutool.core.util.StrUtil;
 
 public class TdBot extends TdClient {
 
@@ -9,7 +10,7 @@ public class TdBot extends TdClient {
 
 	public TdBot(String botToken) {
 		
-		this(botToken,new TdOptions().databaseDirectory(Env.CACHE_DIR.getPath() + "/bot/" + botToken));
+		this(botToken,new TdOptions().databaseDirectory(Env.CACHE_DIR.getPath() + "/td-files/" + StrUtil.subBefore(botToken,":",false)));
 		
 	}
 	
