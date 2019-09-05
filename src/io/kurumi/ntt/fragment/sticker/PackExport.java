@@ -117,9 +117,8 @@ public class PackExport extends Fragment {
 
         File cacheDir = new File(cachePath,set.stickerSet().title());
 
-		new File(cacheDir,"src").mkdirs();
 		new File(cacheDir,"jpg").mkdirs();
-		new File(cacheDir,"png").mkdirs();
+		// new File(cacheDir,"png").mkdirs();
 		
         for (int index = 0; index < set.stickerSet().stickers().length; index++) {
 
@@ -129,7 +128,7 @@ public class PackExport extends Fragment {
 
 			if (sticker != null) {
 
-				File src = new File(cacheDir,"src/" + index + ".webp");
+				File src = new File(cacheDir,index + ".webp");
 				
 				FileUtil.copy(stickerFile,src,true);
 				
