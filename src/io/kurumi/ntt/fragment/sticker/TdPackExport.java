@@ -139,7 +139,7 @@ public class TdPackExport extends Fragment {
 
 			if (stickerFile.local.isDownloadingCompleted || stickerFile.local.isDownloadingActive) continue;
 
-			td.execute(new TdApi.DownloadFile(stickerFile.id,32,0,0,true));
+			sticker.sticker = td.execute(new TdApi.DownloadFile(stickerFile.id,32,0,0,true));
 
 		}
 		
