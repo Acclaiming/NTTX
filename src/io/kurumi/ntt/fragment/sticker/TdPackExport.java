@@ -38,7 +38,7 @@ public class TdPackExport extends Fragment {
 
         super.init(origin);
 
-        registerFunction("td_ds");
+        registerFunction("download_sticker_set");
         registerPoint(POINT_EXPORT_SET);
 
     }
