@@ -417,6 +417,8 @@ public class StatusUpdate extends Fragment {
 
 			long time = -1;
 
+			msg.send("{} params : {}",params.length,ArrayUtil.join(params,",")).exec();
+			
 			if (params.length == 0 || (params.length > 0 && !params[0].contains(":"))) {
 
 				msg.send("/timed 小时:分钟 [年-月-日 可选] [时区 (默认为 +8) 可选]").exec(update);
