@@ -29,6 +29,7 @@ import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.listeners.TdMain;
 import io.kurumi.ntt.td.TdApi;
 import io.kurumi.ntt.td.client.TdException;
+import cn.hutool.log.StaticLog;
 
 public class TdPackExport extends Fragment {
 
@@ -148,7 +149,9 @@ public class TdPackExport extends Fragment {
 			
             TdApi.File stickerFile = sticker.sticker;
 
-			File localFile = new File(Env.CACHE_DIR,"td-files/" +  stickerFile.local.path);
+			StaticLog.debug("贴纸路径 : {}",stickerFile.local.path);
+			
+			File localFile = new File(Env.CACHE_DIR,stickerFile.local.path);
 
 			if (localFile.isFile()) {
 
