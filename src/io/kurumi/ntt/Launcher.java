@@ -383,7 +383,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         // SETS
 
-		addFragment(new PackExport());
+		// addFragment(new PackExport());
         addFragment(new TdPackExport());
         addFragment(new StickerExport());
         addFragment(new NewStickerSet());
