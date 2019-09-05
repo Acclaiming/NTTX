@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import io.kurumi.ntt.utils.NTT;
 import net.coobird.thumbnailator.Thumbnails;
 import java.io.IOException;
+import io.kurumi.ntt.utils.Img;
+import cn.hutool.core.util.ImageUtil;
+import java.awt.image.BufferedImage;
 
 public class PackExport extends Fragment {
 
@@ -132,7 +135,14 @@ public class PackExport extends Fragment {
 				
 				try {
 					
-					Thumbnails.of(src).outputFormat("jpg").scale(1.0f).outputQuality(1.0f).toFile(new File(cacheDir,"jpg/" + index + ".jpg"));
+					BufferedImage image = ImageUtil.read(src);
+					
+					Img img = new Img(image.getWidth(),image.getHeight());
+
+					img.drawImage(0,0,image,image.getWidth(),image.getHeight());
+					
+					img.toFile(new File(cacheDir,"png/" + index + ".png"));
+					
 					Thumbnails.of(src).outputFormat("png").scale(1.0f).outputQuality(1.0f).toFile(new File(cacheDir,"png/" + index + ".png"));
 					
 				} catch (IOException e) {}
