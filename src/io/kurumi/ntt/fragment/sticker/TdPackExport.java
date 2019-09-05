@@ -150,8 +150,8 @@ public class TdPackExport extends Fragment {
             TdApi.File stickerFile = sticker.sticker;
 
 			StaticLog.debug("贴纸路径 : {}",stickerFile.local.path);
-			
-			File localFile = new File(Env.CACHE_DIR,stickerFile.local.path);
+		
+			File localFile = new File(stickerFile.local.path);
 
 			if (localFile.isFile()) {
 
