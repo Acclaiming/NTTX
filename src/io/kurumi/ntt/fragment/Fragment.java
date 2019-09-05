@@ -41,6 +41,7 @@ import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.i18n.LocalString;
 import cn.hutool.log.StaticLog;
 import cn.hutool.core.lang.caller.CallerUtil;
+import cn.hutool.json.JSONObject;
 
 public class Fragment {
 
@@ -120,8 +121,14 @@ public class Fragment {
         return origin.point();
 
     }
+	
+	public static void execute(final Runnable runnable) {
+		
+		execute(null,runnable);
+		
+	}
 
-    public static void execute(final Runnable runnable) {
+    public static void execute(final Update update,final Runnable runnable) {
 
         BotFragment.asyncPool.execute(new Runnable() {
 
@@ -134,7 +141,7 @@ public class Fragment {
 
 					} catch (Exception ex) {
 
-						StaticLog.get(getClass()).error("出错 (异步) \n\n{}",BotLog.parseError(ex));
+						StaticLog.get(getClass()).error("出错 (异步) {}\n\n{}",update == null ? "" : "\n\n" + new JSONObject(update.json).toStringPretty(),BotLog.parseError(ex));
 
 					}
 
@@ -504,7 +511,7 @@ public class Fragment {
 
 				if (checked == PROCESS_ASYNC) {
 
-					execute(new Runnable() {
+					execute(msg.update,new Runnable() {
 
 							@Override
 							public void run() {
@@ -527,7 +534,7 @@ public class Fragment {
 
 				if (checked == PROCESS_ASYNC) {
 
-					execute(new Runnable() {
+					execute(msg.update,new Runnable() {
 
 							@Override
 							public void run() {

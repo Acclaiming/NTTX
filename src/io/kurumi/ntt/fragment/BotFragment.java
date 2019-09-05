@@ -186,7 +186,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                 if (checked == PROCESS_ASYNC) {
 
-                    asyncPool.execute(new Runnable() {
+                    execute(msg.update,new Runnable() {
 
 							@Override
 							public void run() {
@@ -210,7 +210,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                 if (checked == PROCESS_ASYNC) {
 
-                    asyncPool.execute(new Runnable() {
+                    execute(msg.update,new Runnable() {
 
 							@Override
 							public void run() {
@@ -363,7 +363,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                 if (checked == PROCESS_ASYNC) {
 
-                    asyncPool.execute(new Runnable() {
+                    execute(update,new Runnable() {
 
 							@Override
 							public void run() {
@@ -392,7 +392,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                 if (checked == PROCESS_ASYNC) {
 
-                    asyncPool.execute(new Runnable() {
+                    execute(update,new Runnable() {
 
 							@Override
 							public void run() {
@@ -430,7 +430,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                             if (checked == PROCESS_ASYNC) {
 
-                                asyncPool.execute(new Runnable() {
+                                execute(update,new Runnable() {
 
 										@Override
 										public void run() {
@@ -458,7 +458,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                             if (checked == PROCESS_ASYNC) {
 
-                                asyncPool.execute(new Runnable() {
+                                execute(update,new Runnable() {
 
 										@Override
 										public void run() {
@@ -484,7 +484,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                             if (checked == PROCESS_ASYNC) {
 
-                                asyncPool.execute(new Runnable() {
+                                execute(update,new Runnable() {
 
 										@Override
 										public void run() {
@@ -514,7 +514,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                         if (checked == PROCESS_ASYNC) {
 
-                            asyncPool.execute(new Runnable() {
+                            execute(update,new Runnable() {
 
 									@Override
 									public void run() {
@@ -575,7 +575,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 						if (function != this && function.checkFunctionContext(user,msg,msg.command(),msg.fixedParams()) == FUNCTION_PRIVATE && !msg.isPrivate()) {
 
-                            asyncPool.execute(new Runnable() {
+                            execute(update,new Runnable() {
 
 									@Override
 									public void run() {
@@ -590,7 +590,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                         } else if (checked == PROCESS_ASYNC) {
 
-                            asyncPool.execute(new Runnable() {
+                            execute(update,new Runnable() {
 
 									@Override
 									public void run() {
@@ -617,7 +617,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                         if (checked == PROCESS_ASYNC || checked == PROCESS_ASYNC_REJ || checked == PROCESS_ASYNC_CONTINUE) {
 
-                            asyncPool.execute(new Runnable() {
+                            execute(update,new Runnable() {
 
 									@Override
 									public void run() {
@@ -693,7 +693,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                 if (checked == PROCESS_ASYNC || checked == PROCESS_ASYNC_REJ || checked == PROCESS_ASYNC_CONTINUE) {
 
-                    asyncPool.execute(new Runnable() {
+                    execute(update,new Runnable() {
 
 							@Override
 							public void run() {
@@ -754,7 +754,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
             if (checked == PROCESS_ASYNC) {
 
-                asyncPool.execute(new Runnable() {
+                execute(update,new Runnable() {
 
 						@Override
 						public void run() {
@@ -907,7 +907,7 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
 		if (msg.message().photo() != null) {
 
-			execute(new Runnable() {
+			execute(msg.update,new Runnable() {
 
 					@Override
 					public void run() {

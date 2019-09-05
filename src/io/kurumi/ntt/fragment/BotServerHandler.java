@@ -226,13 +226,13 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         BaseRequest webhookResponse;
 
+		ProcessLock<BaseRequest> lock = new ProcessLock<>();
+
+		Update update = BotUtils.parseUpdate(request.content().toString(CharsetUtil.CHARSET_UTF_8));
+
+		update.lock = lock;
+		
         try {
-
-            ProcessLock<BaseRequest> lock = new ProcessLock<>();
-
-            Update update = BotUtils.parseUpdate(request.content().toString(CharsetUtil.CHARSET_UTF_8));
-
-			update.lock = lock;
 
 			BotServer.fragments.get(botToken).processAsync(update);
 
@@ -240,7 +240,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         } catch (Exception ex) {
 
-			StaticLog.error("出错 (同步) \n\n{}",BotLog.parseError(ex));
+			StaticLog.error("出错 (同步) \n\n{}\n\n{}",new JSONObject(update.json).toStringPretty(),BotLog.parseError(ex));
 
             webhookResponse = null;
 
