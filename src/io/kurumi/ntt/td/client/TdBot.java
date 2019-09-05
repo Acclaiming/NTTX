@@ -10,7 +10,10 @@ public class TdBot extends TdClient {
 
 	public TdBot(String botToken) {
 		
-		this(botToken,new TdOptions().databaseDirectory(Env.CACHE_DIR.getPath() + "/td-files/" + StrUtil.subBefore(botToken,":",false)));
+		this(botToken,
+		new TdOptions()
+		.databaseDirectory(Env.CACHE_DIR.getPath() + "/td/" + StrUtil.subBefore(botToken,":",false))
+			 .filesDirectory(Env.CACHE_DIR.getPath() + "/td/" + StrUtil.subBefore(botToken,":",false) + "/files"));
 		
 	}
 	
