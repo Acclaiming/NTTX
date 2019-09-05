@@ -136,7 +136,7 @@ public class TdPackExport extends Fragment {
 
 			if (stickerFile.local.isDownloadingCompleted || stickerFile.local.isDownloadingActive) continue;
 
-			td.E(new TdApi.DownloadFile(stickerFile.id,0,0,0,true));
+			td.E(new TdApi.DownloadFile(stickerFile.id,32,0,0,true));
 
 			status.edit("正在下载贴纸 这可能需要几分钟的时间...").async();
 			
