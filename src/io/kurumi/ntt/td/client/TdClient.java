@@ -235,8 +235,8 @@ public class TdClient extends TdListener {
 
 		} catch (TdException e) {
 
-			throw new RuntimeException(e);
-
+			return null;
+			
 		}
 
 	}
