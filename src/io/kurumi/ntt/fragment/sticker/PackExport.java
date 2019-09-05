@@ -19,6 +19,8 @@ import io.kurumi.ntt.utils.Html;
 import java.io.File;
 import java.util.ArrayList;
 import io.kurumi.ntt.utils.NTT;
+import net.coobird.thumbnailator.Thumbnails;
+import java.io.IOException;
 
 public class PackExport extends Fragment {
 
@@ -112,8 +114,10 @@ public class PackExport extends Fragment {
 
         File cacheDir = new File(cachePath,set.stickerSet().title());
 
-        cacheDir.mkdirs();
-
+		new File(cacheDir,"src").mkdirs();
+		new File(cacheDir,"jpg").mkdirs();
+		new File(cacheDir,"png").mkdirs();
+		
         for (int index = 0; index < set.stickerSet().stickers().length; index++) {
 
             Sticker sticker = set.stickerSet().stickers()[index];
@@ -122,10 +126,20 @@ public class PackExport extends Fragment {
 
 			if (sticker != null) {
 
-				FileUtil.copy(stickerFile,new File(cacheDir,index + ".png"),true);
+				File src = new File(cacheDir,"src/" + index + ".webp");
+				
+				FileUtil.copy(stickerFile,src,true);
+				
+				try {
+					
+					Thumbnails.of(src).outputFormat("jpg").outputQuality(1.0).toFile(new File(cacheDir,"jpg/" + index + ".jpg"));
+					Thumbnails.of(src).outputFormat("png").outputQuality(1.0).toFile(new File(cacheDir,"png/" + index + ".png"));
+					
+				} catch (IOException e) {}
 
 			}
-
+			
+		
             status.edit("正在下载贴纸 : " + (index + 1) + " / " + set.stickerSet().stickers().length + " ...").exec();
 
         }
