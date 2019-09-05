@@ -132,8 +132,8 @@ public class PackExport extends Fragment {
 				
 				try {
 					
-					Thumbnails.of(src).outputFormat("jpg").outputQuality(1.0).toFile(new File(cacheDir,"jpg/" + index + ".jpg"));
-					Thumbnails.of(src).outputFormat("png").outputQuality(1.0).toFile(new File(cacheDir,"png/" + index + ".png"));
+					Thumbnails.of(src).outputFormat("jpg").scale(1.0f).outputQuality(1.0f).toFile(new File(cacheDir,"jpg/" + index + ".jpg"));
+					Thumbnails.of(src).outputFormat("png").scale(1.0f).outputQuality(1.0f).toFile(new File(cacheDir,"png/" + index + ".png"));
 					
 				} catch (IOException e) {}
 
