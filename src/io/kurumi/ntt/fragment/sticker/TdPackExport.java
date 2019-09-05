@@ -131,17 +131,19 @@ public class TdPackExport extends Fragment {
 		new File(cacheDir,"src").mkdirs();
 		// new File(cacheDir,"png").mkdirs();
 
+		status.edit("正在下载贴纸 这可能需要几分钟的时间...").async();
+		
 		for (TdApi.Sticker sticker : stickerSet.stickers) {
 
 			TdApi.File stickerFile = sticker.sticker;
 
 			if (stickerFile.local.isDownloadingCompleted || stickerFile.local.isDownloadingActive) continue;
 
-			td.E(new TdApi.DownloadFile(stickerFile.id,32,0,0,true));
+			td.execute(new TdApi.DownloadFile(stickerFile.id,32,0,0,true));
 
-			status.edit("正在下载贴纸 这可能需要几分钟的时间...").async();
-			
 		}
+		
+		status.edit("下载完成 正在转换格式...").async();
 		
 		int index = 0;
 
@@ -176,9 +178,7 @@ public class TdPackExport extends Fragment {
             index ++;
 			
         }
-
-        status.edit("下载完成 正在转换格式...").exec();
-
+        
         File zip = new File(cachePath,stickerSet.title + ".zip");
 
         ZipUtil.zip(cacheDir.getPath(),zip.getPath(),true);
