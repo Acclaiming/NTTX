@@ -661,7 +661,7 @@ public class Msg extends Context {
 
 			param = "";
 			params = NO_PARAMS;
-            params = NO_PARAMS;
+            fixedParams = NO_PARAMS;
 
         }
 
