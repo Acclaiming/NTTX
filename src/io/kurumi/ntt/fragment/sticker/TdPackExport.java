@@ -65,7 +65,7 @@ public class TdPackExport extends Fragment {
     @Override
     public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
-        if (downloading.contains(user.id)) {
+        if (!user.admin() && downloading.contains(user.id)) {
 
             msg.send("请等待上一个贴纸包导出完成").withCancel().exec(data.with(msg));
 
