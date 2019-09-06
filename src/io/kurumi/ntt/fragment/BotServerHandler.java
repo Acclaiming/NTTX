@@ -118,8 +118,8 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 		} else {
 
-			String message;
 			UserArchive archive;
+			TwitterException err;
 
 			try {
 
@@ -127,21 +127,29 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 				archive = UserArchive.save(user);
 
-				message = "";
-
+				err = null;
+				
 			} catch (TwitterException ex) {
-
-				message = NTT.parseTwitterException(ex) + " Σ(ﾟ∀ﾟﾉ)ﾉ<br /><br />";
-
+				
+				err = ex;
+				
 				archive = UserArchive.get(NumberUtil.parseLong(uri));
 
 			}
+			
+			String message = "";
 
 			if (archive != null) {
 				
 				message += "<img src=\"" + archive.photoUrl + "\"></img><br />";
 
 				message += "<br />" + HtmlUtil.escape(archive.name);
+				
+				if (err != null) {
+					
+					message += " 「 " + Html.b(NTT.parseTwitterException(err)) + " 」";
+					
+				}
 				
 				if (!StrUtil.isBlank(archive.bio)) {
 
@@ -184,7 +192,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 				message += "<br />" + Html.b("用户链接") + " : " + Html.twitterUser("@" + archive.screenName,archive.screenName) + "<br />";
 			}
 			
-			message += Html.b("永久链接") + " : " + Html.a(tug_domain + uri);
+			message += Html.b("永久链接") + " : " + Html.a("长按复制",tug_domain + uri);
 			
 			sendHtml(ctx,result(archive == null ? "Twitter User Getway" : archive.name,message));
 
