@@ -68,7 +68,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 	String result(String title,String message) {
 
-		return StrUtil.format(FileUtil.readUtf8String(new File(Env.ROOT_DIR,"res/twi-get/result.html")),message);
+		return StrUtil.format(FileUtil.readUtf8String(new File(Env.ROOT_DIR,"res/twi-get/result.html")),title,message);
 
 	}
 
