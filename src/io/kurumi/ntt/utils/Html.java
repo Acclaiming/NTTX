@@ -29,6 +29,16 @@ public class Html {
 
     }
 
+	public static String a(String link) {
+
+        if (link == null) return link;
+
+		if (link.startsWith("http")) link = URLUtil.url(link).toString();
+
+        return "<a href=\"" + link + "\">" + HtmlUtil.escape(link) + "</a>";
+
+    }
+	
 
     public static String a(String text, String href) {
 
