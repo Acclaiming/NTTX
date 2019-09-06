@@ -76,13 +76,13 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 		String uri = URLUtil.decode(request.uri());
 
-		if (((StrUtil.count(uri,"/") < 2 && !uri.endsWith("/")) && !uri.contains("?screenName="))) {
+		if (!NumberUtil.isLong(uri) && !uri.startsWith("?screenName=")) {
 
 			sendHtml(ctx,index());
 
 			return;
 
-		} else if (uri.contains("?screenName=")) {
+		} else if (uri.startsWith("?screenName=")) {
 
 			String screenName = StrUtil.subAfter(uri,"?screenName=",false);
 
