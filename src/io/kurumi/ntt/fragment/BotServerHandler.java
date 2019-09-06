@@ -76,7 +76,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 		String uri = URLUtil.decode(request.uri().substring(4));
 
-		if (uri.length() < 2 || (!uri.startsWith("?screenName=") && !NumberUtil.isLong(uri.substring(1)))) {
+		if (uri.length() < 2 || (!uri.startsWith("?screenName=") && !NumberUtil.isLong(uri))) {
 
 			sendHtml(ctx,index());
 
@@ -121,25 +121,23 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 			try {
 
-				User user = TAuth.next().createApi().showUser(NumberUtil.parseLong(uri.substring(1)));
+				User user = TAuth.next().createApi().showUser(NumberUtil.parseLong(uri));
 
 				archive = UserArchive.save(user);
 
 				message = "找到了 ( ￣▽￣)σ<br /><br />";
 
-				return;
-
 			} catch (TwitterException ex) {
 
 				message = "不见了 Σ(ﾟ∀ﾟﾉ)ﾉ<br /><br />";
 
-				message += Html.b(ex.getMessage()) + "<br /><br />";
+				message += Html.b(NTT.parseTwitterException(ex)) + "<br /><br />";
 
 			}
 
 			message += Html.b("UID") + " : " + uri;
 
-			archive = UserArchive.get(NumberUtil.parseLong(uri.substring(1)));
+			archive = UserArchive.get(NumberUtil.parseLong(uri));
 
 			if (archive != null) {
 
