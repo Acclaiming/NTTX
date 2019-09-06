@@ -46,6 +46,7 @@ import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import cn.hutool.http.HtmlUtil;
 import cn.hutool.core.date.DateUtil;
 import java.util.Date;
+import cn.hutool.core.util.URLUtil;
 
 public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
@@ -73,7 +74,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 	public void channelRead1(ChannelHandlerContext ctx,FullHttpRequest request) throws Exception {
 
-		String uri = request.uri();
+		String uri = URLUtil.decode(request.uri());
 
 		if (((StrUtil.count(uri,"/") < 2 && !uri.endsWith("/")) && !uri.contains("?screenName="))) {
 
