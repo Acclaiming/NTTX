@@ -152,7 +152,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 				if (archive.followers != null) {
 
-					message += "<br />" + archive.following + " 正在关注           " + archive.followers + " 关注者<br />";
+					message += "<br />" + archive.following + " " + Html.b("正在关注") + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + archive.followers + " " + Html.b("关注者") + "<br />";
 
 				}
 
