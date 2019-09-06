@@ -178,7 +178,7 @@ public class UserArchive {
 
     public static boolean contains(String screenName) {
 
-        return data.collection.count(regex("user",ReUtil.escape(screenName),"i")) > 0;
+        return data.collection.count(regex("screenName",ReUtil.escape(screenName),"i")) > 0;
 
     }
 

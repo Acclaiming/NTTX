@@ -95,9 +95,9 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 				User user = TAuth.next().createApi().showUser(screenName);
 
 				UserArchive.save(user);
-				
+
 				sendRedirect(ctx,tug_domain + user.getId());
-				
+
 				return;
 
 			} catch (TwitterException ex) {
@@ -106,11 +106,11 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 					sendRedirect(ctx,tug_domain + UserArchive.get(screenName).id);
 
-					return;
+				} else {
+
+					sendHtml(ctx,error(NTT.parseTwitterException(ex)));
 
 				}
-
-				sendHtml(ctx,error(NTT.parseTwitterException(ex)));
 
 				return;
 
@@ -134,11 +134,11 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 				message = NTT.parseTwitterException(ex) + " Σ(ﾟ∀ﾟﾉ)ﾉ<br /><br />";
 
 				archive = UserArchive.get(NumberUtil.parseLong(uri));
-				
+
 			}
 
 			message += Html.b("UID") + " : " + uri;
-			
+
 			if (archive != null) {
 
 				message += "<br />" + Html.b("名字") + " : " + HtmlUtil.escape(archive.name);
@@ -191,7 +191,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
             return;
 
         }
-		
+
 		if (request.uri().startsWith("/tug")) {
 
 			channelRead1(ctx,request);
