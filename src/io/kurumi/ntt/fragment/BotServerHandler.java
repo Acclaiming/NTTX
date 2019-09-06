@@ -76,7 +76,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 		String uri = URLUtil.decode(request.uri());
 
-		if (uri.length() < 2) {
+		if (uri.length() < 2 && !uri.startsWith("?screenName=") && !NumberUtil.isLong(uri.substring(1))) {
 
 			sendHtml(ctx,index());
 
@@ -101,13 +101,13 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 			} catch (TwitterException ex) {
 
 				if (UserArchive.contains(screenName)) {
-					
+
 					sendRedirect(ctx,tug_domain + UserArchive.get(screenName).id);
-					
+
 					return;
-					
+
 				}
-				
+
 				sendHtml(ctx,error(NTT.parseTwitterException(ex)));
 
 				return;
@@ -116,53 +116,56 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 		} else {
 
+			String message;
+			UserArchive archive;
+
 			try {
 
-				User user = TAuth.next().createApi().showUser(NumberUtil.parseLong(uri));
+				User user = TAuth.next().createApi().showUser(NumberUtil.parseLong(uri.substring(1)));
 
-				UserArchive.save(user);
+				archive = UserArchive.save(user);
 
-				sendRedirect(ctx,"https://twitter.com/" + user.getScreenName());
+				message = "找到了 ( ￣▽￣)σ<br /><br />";
 
 				return;
 
 			} catch (TwitterException ex) {
 
-				String message = "不见了 Σ(ﾟ∀ﾟﾉ)ﾉ<br /><br />";
+				message = "不见了 Σ(ﾟ∀ﾟﾉ)ﾉ<br /><br />";
 
 				message += Html.b(ex.getMessage()) + "<br /><br />";
 
-				message += Html.b("UID") + " : " + uri;
+			}
 
-				UserArchive archive = UserArchive.get(NumberUtil.parseLong(uri));
+			message += Html.b("UID") + " : " + uri;
 
-				if (archive != null) {
+			archive = UserArchive.get(NumberUtil.parseLong(uri));
 
-					message += "<br />" + Html.b("Name") + " : " + HtmlUtil.escape(archive.name);
-					message += "<br />" + Html.b("SN") + " : " + Html.twitterUser("@" + archive.screenName,archive.screenName);
+			if (archive != null) {
 
-					if (!StrUtil.isBlank(archive.bio)) {
+				message += "<br />" + Html.b("名字") + " : " + HtmlUtil.escape(archive.name);
+				message += "<br />" + Html.b("链接") + " : " + Html.twitterUser("@" + archive.screenName,archive.screenName);
 
-						message += "<br /><br />" + Html.b("BIO") + " : " + HtmlUtil.escape(archive.bio) + "<br />";
-						
-					}
-					
-					if (archive.followers != null) {
-						
-						message += "<br />" + archive.following + " Following         " + archive.followers + " Followers<br />";
-						
-					}
-					
-					message += "<br />" + "Joined : " + DateUtil.formatDate(new Date(archive.createdAt));
+				if (!StrUtil.isBlank(archive.bio)) {
 
+					message += "<br /><br />" + Html.b("BIO") + " : " + HtmlUtil.escape(archive.bio) + "<br />";
 
 				}
 
-				sendOk(ctx,message);
+				if (archive.followers != null) {
 
-				return;
+					message += "<br />" + archive.following + " 正在关注    " + archive.followers + " 关注者<br />";
+
+				}
+
+				message += "<br />" + Html.b("加入时间") + " : " + DateUtil.formatChineseDate(new Date(archive.createdAt),false);
+
 
 			}
+
+			sendOk(ctx,message);
+
+			return;
 
 		}
 
