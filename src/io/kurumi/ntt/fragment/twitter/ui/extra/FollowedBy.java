@@ -37,7 +37,7 @@ public class FollowedBy extends Fragment {
 					
 				}
 				
-				new Send(auth.user,message,archive.urlHtml()).html().async();
+				//new Send(auth.user,message,archive.urlHtml()).html().async();
 				
 			} catch (TwitterException e) {
 				
