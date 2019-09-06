@@ -116,14 +116,6 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 		} else {
 
-			if (!NumberUtil.isLong(uri)) {
-
-				sendHtml(ctx,result("喵... ？"));
-
-				return;
-
-			}
-
 			try {
 
 				User user = TAuth.next().createApi().showUser(NumberUtil.parseLong(uri));
