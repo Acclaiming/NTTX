@@ -94,9 +94,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 			}
 
-		}
-
-		if (request.uri().equals("/api")) {
+		} else if (request.uri().equals("/api")) {
 
 			if (request.getMethod() != POST) {
 
