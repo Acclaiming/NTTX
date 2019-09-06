@@ -137,8 +137,6 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 			}
 
-			message += Html.b("UID") + " : " + uri;
-
 			if (archive != null) {
 				
 				message += "<br /><img src=\"" + archive.photoUrl + "\"></img>";
@@ -162,6 +160,8 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 
 			}
+			
+			message += "<br />" + Html.b("永久链接") + " : " + tug_domain + uri;
 
 			sendHtml(ctx,result(archive == null ? "Twitter User Getway" : archive.name,message));
 
