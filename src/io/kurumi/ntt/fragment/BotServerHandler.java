@@ -47,6 +47,8 @@ import cn.hutool.http.HtmlUtil;
 import cn.hutool.core.date.DateUtil;
 import java.util.Date;
 import cn.hutool.core.util.URLUtil;
+import io.netty.handler.codec.Headers;
+import io.netty.handler.codec.http.HttpHeaders;
 
 public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
@@ -139,7 +141,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 			message += Html.b("UID") + " : " + uri;
 
-			archive = UserArchive.get(NumberUtil.parseLong(uri));
+			archive = UserArchive.get(NumberUtil.parseLong(uri.substring(1)));
 
 			if (archive != null) {
 
@@ -194,7 +196,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         }
 
-		if (request.uri().startsWith("/twi-get")) {
+		if (HttpHeaders.getHost(request).equals("get-twi.me")) {
 
 			channelRead1(ctx,request);
 
