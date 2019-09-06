@@ -72,8 +72,8 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 			if (StrUtil.isBlank(screenName)) {
 
-				sendError(ctx,BAD_REQUEST,"用户名不能为空 _(:з」∠)_");
-
+				sendOk(ctx,"{ ok: true, message: '用户名不能为空 _(:з」∠)_' }");
+				
 				return;
 
 			}
@@ -82,14 +82,14 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 				User user = TAuth.next().createApi().showUser(screenName);
 
-				sendOk(ctx,user.getId() + "");
+				sendOk(ctx,"{ ok: true, id: " + user.getId() + " }");
 				
 				return;
 				
 			} catch (TwitterException ex) {
 
-				sendError(ctx,BAD_REQUEST,NTT.parseTwitterException(ex));
-
+				sendOk(ctx,"{ ok: true, message: '" + NTT.parseTwitterException(ex) + "' }");
+				
 				return;
 
 			}
