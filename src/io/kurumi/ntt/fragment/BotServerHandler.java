@@ -163,7 +163,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 			}
 
-			sendOk(ctx,message);
+			sendHtml(ctx,message);
 
 			return;
 
