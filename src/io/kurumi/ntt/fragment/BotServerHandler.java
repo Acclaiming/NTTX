@@ -335,7 +335,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 	void sendOk(ChannelHandlerContext ctx,String content) {
 
-		FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,OK,Unpooled.copiedBuffer(new DeleteWebhook().toWebhookResponse(),CharsetUtil.CHARSET_UTF_8));
+		FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,OK,Unpooled.copiedBuffer(content,CharsetUtil.CHARSET_UTF_8));
 
 		response.headers().set(HttpHeaderNames.CONTENT_TYPE,"application/json; charset=UTF-8");
 
