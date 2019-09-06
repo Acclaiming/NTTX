@@ -100,6 +100,14 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 			} catch (TwitterException ex) {
 
+				if (UserArchive.contains(screenName)) {
+					
+					sendRedirect(ctx,tug_domain + UserArchive.get(screenName).id);
+					
+					return;
+					
+				}
+				
 				sendHtml(ctx,error(NTT.parseTwitterException(ex)));
 
 				return;
@@ -108,11 +116,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 		} else {
 
-			String userId = StrUtil.subAfter(uri,"/",true);
-
-			if (userId.contains("?")) userId = StrUtil.subBefore(userId,"?",false);
-
-			if (!NumberUtil.isLong(userId)) {
+			if (!NumberUtil.isLong(uri)) {
 
 				sendHtml(ctx,result("喵... ？"));
 
@@ -122,7 +126,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 			try {
 
-				User user = TAuth.next().createApi().showUser(NumberUtil.parseLong(userId));
+				User user = TAuth.next().createApi().showUser(NumberUtil.parseLong(uri));
 
 				UserArchive.save(user);
 
@@ -136,9 +140,9 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 				message += Html.b(ex.getMessage()) + "<br /><br />";
 
-				message += Html.b("UID") + " : " + userId;
+				message += Html.b("UID") + " : " + uri;
 
-				UserArchive archive = UserArchive.get(NumberUtil.parseLong(userId));
+				UserArchive archive = UserArchive.get(NumberUtil.parseLong(uri));
 
 				if (archive != null) {
 
