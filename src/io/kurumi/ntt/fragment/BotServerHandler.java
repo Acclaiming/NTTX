@@ -133,12 +133,12 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 				message = NTT.parseTwitterException(ex) + " Σ(ﾟ∀ﾟﾉ)ﾉ<br /><br />";
 
+				archive = UserArchive.get(NumberUtil.parseLong(uri));
+				
 			}
 
 			message += Html.b("UID") + " : " + uri;
-
-			archive = UserArchive.get(NumberUtil.parseLong(uri));
-
+			
 			if (archive != null) {
 
 				message += "<br />" + Html.b("名字") + " : " + HtmlUtil.escape(archive.name);
