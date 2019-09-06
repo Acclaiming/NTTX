@@ -93,13 +93,13 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 				User user = TAuth.next().createApi().showUser(screenName);
 
-				sendOk(ctx,result(user.getName() + " 的永久链接是 : " + tug_domain + user.getName()));
+				sendHtml(ctx,result(user.getName() + " 的永久链接是 : " + tug_domain + user.getName()));
 
 				return;
 
 			} catch (TwitterException ex) {
 
-				sendOk(ctx,error(NTT.parseTwitterException(ex)));
+				sendHtml(ctx,error(NTT.parseTwitterException(ex)));
 
 				return;
 
@@ -125,7 +125,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 				UserArchive.save(user);
 
-				sendRedirect(ctx,tug_domain + user.getScreenName());
+				sendRedirect(ctx,"https://twitter.com/" + user.getScreenName());
 
 				return;
 
