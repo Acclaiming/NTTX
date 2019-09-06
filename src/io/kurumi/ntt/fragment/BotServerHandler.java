@@ -66,7 +66,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 	}
 
-	String result(String message) {
+	String result(String title,String message) {
 
 		return StrUtil.format(FileUtil.readUtf8String(new File(Env.ROOT_DIR,"res/twi-get/result.html")),message);
 
@@ -94,8 +94,10 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 				User user = TAuth.next().createApi().showUser(screenName);
 
-				sendHtml(ctx,result("完成 ( ￣▽￣)σ<br /><br />" + user.getName() + " 的永久链接是 : " + Html.a(tug_domain + user.getId())));
-
+				UserArchive.save(user);
+				
+				sendRedirect(ctx,tug_domain + user.getId());
+				
 				return;
 
 			} catch (TwitterException ex) {
@@ -152,7 +154,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 				if (archive.followers != null) {
 
-					message += "<br />" + archive.following + " 正在关注    " + archive.followers + " 关注者<br />";
+					message += "<br />" + archive.following + " 正在关注           " + archive.followers + " 关注者<br />";
 
 				}
 
