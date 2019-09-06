@@ -154,6 +154,18 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 					message += "<br />" + archive.following + " " + Html.b("正在关注") + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + archive.followers + " " + Html.b("关注者") + "<br />";
 
 				}
+				
+				if (archive.url != null) {
+					
+					message += "<br />" + Html.b("个人链接") + " : " + Html.a(archive.url);
+					
+				}
+				
+				if (archive.location != null) {
+					
+					message += "<br />" + Html.b("位置") + " : " + HtmlUtil.escape(archive.location);
+					
+				}
 
 				message += "<br />" + Html.b("加入时间") + " : " + DateUtil.formatChineseDate(new Date(archive.createdAt),false);
 
