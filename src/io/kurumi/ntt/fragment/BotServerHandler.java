@@ -40,8 +40,16 @@ import io.kurumi.ntt.utils.NTT;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import cn.hutool.core.io.FileUtil;
 import io.kurumi.ntt.utils.Html;
+import javax.print.attribute.standard.NumberUp;
+import cn.hutool.core.util.NumberUtil;
+import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import cn.hutool.http.HtmlUtil;
+import cn.hutool.core.date.DateUtil;
+import java.util.Date;
 
 public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+
+	private String tug_domain = "https://get-twi.me/";
 
     private FullHttpRequest request;
 
@@ -56,7 +64,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 		return StrUtil.format(FileUtil.readUtf8String(new File(Env.ROOT_DIR,"res/twi-get/error.html")),message);
 
 	}
-	
+
 	String result(String message) {
 
 		return StrUtil.format(FileUtil.readUtf8String(new File(Env.ROOT_DIR,"res/twi-get/result.html")),message);
@@ -74,16 +82,18 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 			return;
 
 		} else if (uri.contains("?userName=")) {
-			
+
 			String screenName = StrUtil.subAfter(uri,"?userName=",false);
-			
+
 			if (screenName.contains("&")) screenName = StrUtil.subBefore(screenName,"&",false);
-			
+
+			screenName = NTT.parseScreenName(screenName);
+
 			try {
 
 				User user = TAuth.next().createApi().showUser(screenName);
 
-				sendOk(ctx,result(user.getName() + " 的永久链接是 : https://get-twi.me/" + user.getName()));
+				sendOk(ctx,result(user.getName() + " 的永久链接是 : " + tug_domain + user.getName()));
 
 				return;
 
@@ -94,6 +104,69 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 				return;
 
 			}
+
+		} else {
+
+			String userId = StrUtil.subAfter(uri,"/",true);
+
+			if (userId.contains("?")) userId = StrUtil.subBefore(userId,"?",false);
+
+			if (!NumberUtil.isLong(userId)) {
+
+				sendRedirect(ctx,tug_domain);
+
+				return;
+
+			}
+
+			try {
+
+				User user = TAuth.next().createApi().showUser(NumberUtil.parseLong(userId));
+
+				UserArchive.save(user);
+
+				sendRedirect(ctx,tug_domain + user.getScreenName());
+
+				return;
+
+			} catch (TwitterException ex) {
+
+				String message = "不见了 Σ(ﾟ∀ﾟﾉ)ﾉ<br /><br />";
+
+				message += Html.b(ex.getMessage()) + "<br /><br />";
+
+				message += Html.b("UID") + " : " + userId;
+
+				UserArchive archive = UserArchive.get(NumberUtil.parseLong(userId));
+
+				if (archive != null) {
+
+					message += "<br />" + Html.b("Name") + " : " + HtmlUtil.escape(archive.name);
+					message += "<br />" + Html.b("SN") + " : " + Html.twitterUser("@" + archive.screenName,archive.screenName);
+
+					if (!StrUtil.isBlank(archive.bio)) {
+
+						message += "<br /><br />" + Html.b("BIO") + " : " + HtmlUtil.escape(archive.bio) + "<br />";
+						
+					}
+					
+					if (archive.followers != null) {
+						
+						message += "<br />" + archive.following + " Following         " + archive.followers + " Followers<br />";
+						
+					}
+					
+					message += "<br />" + "Joined : " + DateUtil.formatDate(new Date(archive.createdAt));
+
+
+				}
+
+				sendOk(ctx,message);
+
+				return;
+
+			}
+
 		}
 
 	}
