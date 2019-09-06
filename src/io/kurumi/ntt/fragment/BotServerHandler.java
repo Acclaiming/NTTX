@@ -194,7 +194,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         }
 
-		if (request.headers().get(HttpHeaderNames.ORIGIN).contains("get-twi.me")) {
+		if (request.headers().get(HttpHeaderNames.HOST).contains("get-twi.me")) {
 
 			channelRead1(ctx,request);
 
