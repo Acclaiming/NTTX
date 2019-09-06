@@ -46,7 +46,8 @@ public class UserArchive {
     public String url;
     public Boolean isProtected;
     public Boolean isDisappeared;
-
+	public Long disappearedAt;
+	
 	public String location;
 	public Integer following;
 	public Integer followers;
@@ -248,6 +249,8 @@ public class UserArchive {
         if (user == null && !isDisappeared) {
 
             isDisappeared = true;
+			
+			disappearedAt = System.currentTimeMillis();
 
             TrackTask.onUserChange(this,split + "用户被冻结或已停用 :)");
 
