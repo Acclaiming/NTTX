@@ -181,8 +181,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 				
 				message += "<br />" + Html.b("加入时间") + " : " + DateUtil.formatChineseDate(new Date(archive.createdAt),false);
 
-				message += "<br />" + Html.b("用户链接") + " : " + Html.a("https://twitter.com/" + archive.screenName) + "<br />";
-
+				message += "<br />" + Html.b("用户链接") + " : " + Html.twitterUser("@" + archive.screenName,archive.screenName);
 			}
 			
 			message += Html.b("永久链接") + " : " + Html.a(tug_domain + uri);
