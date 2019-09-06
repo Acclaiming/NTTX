@@ -151,13 +151,13 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 			
 				if (archive.followers != null) {
 
-					message += "<br />" + archive.following + " " + Html.b("正在关注") + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + archive.followers + " " + Html.b("关注者");
+					message += "<br />" + archive.following + " 正在关注" + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + archive.followers + " 关注者";
 
 				}
 				
 				if (archive.statuses != null) {
 
-					message += "<br />" + archive.statuses + " " + Html.b("条推文") + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + archive.likes + " " + Html.b("个打心") + "<br />";
+					message += "<br />" + archive.statuses + " 条推文" + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + archive.likes + " 个打心<br />";
 
 				}
 				
@@ -181,7 +181,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 				
 				message += "<br />" + Html.b("加入时间") + " : " + DateUtil.formatChineseDate(new Date(archive.createdAt),false);
 
-				message += "<br />" + Html.b("用户链接") + " : " + Html.twitterUser("@" + archive.screenName,archive.screenName);
+				message += "<br />" + Html.b("用户链接") + " : " + Html.twitterUser("@" + archive.screenName,archive.screenName) + "<br />";
 			}
 			
 			message += Html.b("永久链接") + " : " + Html.a(tug_domain + uri);
