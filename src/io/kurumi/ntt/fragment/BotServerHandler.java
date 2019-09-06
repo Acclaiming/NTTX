@@ -94,7 +94,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 				User user = TAuth.next().createApi().showUser(screenName);
 
-				sendHtml(ctx,result(user.getName() + " 的永久链接是 : " + tug_domain + user.getName()));
+				sendHtml(ctx,result(user.getName() + " 的永久链接是 : " + tug_domain + user.getId()));
 
 				return;
 
