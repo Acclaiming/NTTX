@@ -32,6 +32,11 @@ import static io.netty.handler.codec.http.HttpVersion.*;
 import cn.hutool.log.StaticLog;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.DeleteWebhook;
+import cn.hutool.core.util.StrUtil;
+import io.kurumi.ntt.fragment.twitter.ApiToken;
+import twitter4j.User;
+import twitter4j.TwitterException;
+import io.kurumi.ntt.utils.NTT;
 
 public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
@@ -59,6 +64,34 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
             return;
 
         }
+
+		if (request.uri().startsWith("/check")) {
+
+			String screenName = request.uri().substring(5);
+
+			if (StrUtil.isBlank(screenName)) {
+
+				sendError(ctx,BAD_REQUEST,"用户名不能为空 _(:з」∠)_");
+
+				return;
+
+			}
+
+			try {
+
+				User user = ApiToken.defaultToken.createAppOnlyApi().showUser(screenName);
+
+				sendOk(ctx,user.getId() + "");
+				
+			} catch (TwitterException ex) {
+
+				sendError(ctx,BAD_REQUEST,NTT.parseTwitterException(ex));
+
+				return;
+
+			}
+
+		}
 
 		if (request.uri().equals("/api")) {
 
@@ -231,7 +264,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 		Update update = BotUtils.parseUpdate(request.content().toString(CharsetUtil.CHARSET_UTF_8));
 
 		update.lock = lock;
-		
+
         try {
 
 			BotServer.fragments.get(botToken).processAsync(update);
@@ -299,6 +332,15 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
     }
 
+	void sendOk(ChannelHandlerContext ctx,String content) {
+
+		FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,OK,Unpooled.copiedBuffer(new DeleteWebhook().toWebhookResponse(),CharsetUtil.CHARSET_UTF_8));
+
+		response.headers().set(HttpHeaderNames.CONTENT_TYPE,"application/json; charset=UTF-8");
+
+		this.sendAndCleanupConnection(ctx,response);
+
+	}
 
     void sendRedirect(ChannelHandlerContext ctx,String newUri) {
 
@@ -312,8 +354,16 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
     void sendError(ChannelHandlerContext ctx,HttpResponseStatus status) {
 
-        FullHttpResponse response = new DefaultFullHttpResponse(
-			HTTP_1_1,status,Unpooled.copiedBuffer("Failure: " + status + "\r\n",CharsetUtil.CHARSET_UTF_8));
+		FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,status);
+
+        this.sendAndCleanupConnection(ctx,response);
+
+
+    }
+
+	void sendError(ChannelHandlerContext ctx,HttpResponseStatus status,String content) {
+
+        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,status,Unpooled.copiedBuffer(content,CharsetUtil.CHARSET_UTF_8));
 
         response.headers().set(HttpHeaderNames.CONTENT_TYPE,"text/plain; charset=UTF-8");
 
