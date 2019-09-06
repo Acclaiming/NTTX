@@ -37,6 +37,7 @@ public class UserArchive {
     public static Data<UserArchive> data = new Data<UserArchive>(UserArchive.class);
     public Long id;
     public Long createdAt;
+	public Long lastUpdate;
     public String name;
     public String screenName;
     public String bio;
@@ -426,6 +427,8 @@ public class UserArchive {
 		statuses = user.getStatusesCount();
 		likes = user.getFavouritesCount();
 		lang = user.getLang();
+		
+		lastUpdate = System.currentTimeMillis();
 
 		change = change && !(TAuth.data.containsId(id) && ArrayUtil.contains(Env.ADMINS,TAuth.getById(id).user.intValue()));
 		
