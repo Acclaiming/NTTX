@@ -75,15 +75,15 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 		String uri = request.uri();
 
-		if ((StrUtil.count(uri,"/") == 1 && !uri.endsWith("/")) && !uri.contains("?userName=")) {
+		if ((StrUtil.count(uri,"/") == 1 && !uri.endsWith("/")) && !uri.contains("?screenName=")) {
 
 			sendHtml(ctx,index());
 
 			return;
 
-		} else if (uri.contains("?userName=")) {
+		} else if (uri.contains("?screenName=")) {
 
-			String screenName = StrUtil.subAfter(uri,"?userName=",false);
+			String screenName = StrUtil.subAfter(uri,"?screenName=",false);
 
 			if (screenName.contains("&")) screenName = StrUtil.subBefore(screenName,"&",false);
 
