@@ -38,10 +38,65 @@ import twitter4j.User;
 import twitter4j.TwitterException;
 import io.kurumi.ntt.utils.NTT;
 import io.kurumi.ntt.fragment.twitter.TAuth;
+import cn.hutool.core.io.FileUtil;
+import io.kurumi.ntt.utils.Html;
 
 public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
     private FullHttpRequest request;
+
+	String index() {
+
+		return FileUtil.readUtf8String(new File(Env.ROOT_DIR,"res/twi-get/index.html"));
+
+	}
+
+	String error(String message) {
+
+		return StrUtil.format(FileUtil.readUtf8String(new File(Env.ROOT_DIR,"res/twi-get/error.html")),message);
+
+	}
+	
+	String result(String message) {
+
+		return StrUtil.format(FileUtil.readUtf8String(new File(Env.ROOT_DIR,"res/twi-get/result.html")),message);
+
+	}
+
+	public void channelRead1(ChannelHandlerContext ctx,FullHttpRequest request) throws Exception {
+
+		String uri = request.uri();
+
+		if (StrUtil.count(uri,"/") == 1 && !uri.contains("?userName=")) {
+
+			sendHtml(ctx,index());
+
+			return;
+
+		} else if (uri.contains("?userName=")) {
+			
+			String screenName = StrUtil.subAfter(uri,"?userName=",false);
+			
+			if (screenName.contains("&")) screenName = StrUtil.subBefore(screenName,"&",false);
+			
+			try {
+
+				User user = TAuth.next().createApi().showUser(screenName);
+
+				sendOk(ctx,result(user.getName() + " 的永久链接是 : https://get-twi.me/" + user.getName()));
+
+				return;
+
+			} catch (TwitterException ex) {
+
+				sendOk(ctx,error(NTT.parseTwitterException(ex)));
+
+				return;
+
+			}
+		}
+
+	}
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx,FullHttpRequest request) throws Exception {
@@ -66,33 +121,11 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         }
 
-		if (request.uri().startsWith("/check/")) {
+		if (request.uri().startsWith("/twi-get/")) {
 
-			String screenName = request.uri().substring(7);
+			channelRead1(ctx,request);
 
-			if (StrUtil.isBlank(screenName)) {
-
-				sendOk(ctx,"{ ok: true, message: '用户名不能为空 _(:з」∠)_' }");
-				
-				return;
-
-			}
-
-			try {
-
-				User user = TAuth.next().createApi().showUser(screenName);
-
-				sendOk(ctx,"{ ok: true, id: " + user.getId() + " }");
-				
-				return;
-				
-			} catch (TwitterException ex) {
-
-				sendOk(ctx,"{ ok: true, message: '" + NTT.parseTwitterException(ex) + "' }");
-				
-				return;
-
-			}
+			return;
 
 		} else if (request.uri().equals("/api")) {
 
@@ -338,6 +371,16 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 		FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,OK,Unpooled.copiedBuffer(content,CharsetUtil.CHARSET_UTF_8));
 
 		response.headers().set(HttpHeaderNames.CONTENT_TYPE,"application/json; charset=UTF-8");
+
+		this.sendAndCleanupConnection(ctx,response);
+
+	}
+
+	void sendHtml(ChannelHandlerContext ctx,String content) {
+
+		FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,OK,Unpooled.copiedBuffer(content,CharsetUtil.CHARSET_UTF_8));
+
+		response.headers().set(HttpHeaderNames.CONTENT_TYPE,"text/html; charset=UTF-8");
 
 		this.sendAndCleanupConnection(ctx,response);
 

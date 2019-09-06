@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Twitter User Getway</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta id="theme-color" name="theme-color" content="#E91E63" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdui/0.4.3/css/mdui.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/0.4.3/js/mdui.min.js"></script>
+  
+</head>
+<body class="mdui-appbar-with-toolbar mdui-theme-primary-pink mdui-theme-accent-pink">
+  
+  <script>
+  
+    var $ = mdui.JQ;
+	
+	function get() {
+
+	    var userName = $('#user').val().trim();
+	    
+	    if ('' == userName) {
+	    
+	        alert('用户名不能为空 _(:з」∠)_');
+	        
+	        return;
+	    
+	    }
+	   
+	   window.location.href = '?screenName=' + userName;
+	
+	}
+	
+  </script>
+  
+  <header class="mdui-appbar mdui-appbar-fixed">
+    <div class="mdui-toolbar mdui-color-theme">
+      <a href="javascript:;" class="mdui-typo-title">Twitter User Getway</a>
+    </div>
+  </header>
+  <div class="mdui-container"><div class="mdui-m-y-2"><div class="mdui-card">
+    <div class="mdui-card-content mdui-typo">
+    
+      取得一个 Twitter 用户的永久链接 :)
+  
+      <div class="mdui-textfield mdui-textfield-floating-label">
+        <label class="mdui-textfield-label">用户名 或 链接</label>
+        <input id="user" class="mdui-textfield-input" type="text"/>
+      </div>
+      
+      <button onclick="get()" style="width: 100%" class="mdui-m-t-1 mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent">取得</button>
+    
+    </div>
+  </div></div></div>
+</body>
