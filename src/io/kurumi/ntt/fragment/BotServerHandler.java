@@ -139,11 +139,10 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 			if (archive != null) {
 				
-				message += "<br /><img src=\"" + archive.photoUrl + "\"></img>";
+				message += "<br /><img src=\"" + archive.photoUrl + "\"></img><br />";
 
 				message += "<br />" + Html.b("名字") + " : " + HtmlUtil.escape(archive.name);
-				message += "<br />" + Html.b("链接") + " : " + Html.twitterUser("@" + archive.screenName,archive.screenName);
-
+				
 				if (!StrUtil.isBlank(archive.bio)) {
 
 					message += "<br /><br />" + Html.b("BIO") + " : " + HtmlUtil.escape(archive.bio) + "<br />";
@@ -158,11 +157,12 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 				message += "<br />" + Html.b("加入时间") + " : " + DateUtil.formatChineseDate(new Date(archive.createdAt),false);
 
+				message += "<br />" + Html.b("用户链接") + " : " + Html.a("https://twitter.com/" + archive.screenName);
 
 			}
 			
-			message += "<br />" + Html.b("永久链接") + " : " + tug_domain + uri;
-
+			message += "<br />" + Html.b("永久链接") + " : " + Html.a(tug_domain + uri);
+			
 			sendHtml(ctx,result(archive == null ? "Twitter User Getway" : archive.name,message));
 
 			return;
