@@ -12,6 +12,8 @@ import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 import java.util.List;
 import io.kurumi.ntt.db.CachedData;
+import cn.hutool.core.util.RandomUtil;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TAuth {
 
@@ -22,6 +24,33 @@ public class TAuth {
         return data.countByField("user", user) > 1;
 
     }
+	
+	private static TAuth current;
+	private static AtomicInteger count = new AtomicInteger(0);
+	
+	public static TAuth next() {
+		
+		synchronized (count) {
+			
+			if (current == null && count.get() == 33) {
+				
+				count.set(0);
+				
+				int max = (int)data.collection.count();
+
+				int target = RandomUtil.randomInt(max);
+
+				current = data.collection.find().skip(target).limit(1).first();
+				
+			}
+		
+			count.incrementAndGet();
+			
+			return current;
+			
+		}
+		
+	}
 
     static {
         

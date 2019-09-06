@@ -37,6 +37,7 @@ import io.kurumi.ntt.fragment.twitter.ApiToken;
 import twitter4j.User;
 import twitter4j.TwitterException;
 import io.kurumi.ntt.utils.NTT;
+import io.kurumi.ntt.fragment.twitter.TAuth;
 
 public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
@@ -67,7 +68,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 		if (request.uri().startsWith("/check/")) {
 
-			String screenName = request.uri().substring(6);
+			String screenName = request.uri().substring(7);
 
 			if (StrUtil.isBlank(screenName)) {
 
@@ -79,7 +80,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 			try {
 
-				User user = ApiToken.defaultToken.createAppOnlyApi().showUser(screenName);
+				User user = TAuth.next().createApi().showUser(screenName);
 
 				sendOk(ctx,user.getId() + "");
 				
