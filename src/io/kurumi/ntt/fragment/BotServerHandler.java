@@ -140,6 +140,8 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 			message += Html.b("UID") + " : " + uri;
 
 			if (archive != null) {
+				
+				message += "<br /><img src=\"" + archive.photoUrl + "\"></img>";
 
 				message += "<br />" + Html.b("名字") + " : " + HtmlUtil.escape(archive.name);
 				message += "<br />" + Html.b("链接") + " : " + Html.twitterUser("@" + archive.screenName,archive.screenName);
