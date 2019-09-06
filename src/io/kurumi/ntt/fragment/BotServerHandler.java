@@ -74,9 +74,9 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 	public void channelRead1(ChannelHandlerContext ctx,FullHttpRequest request) throws Exception {
 
-		String uri = URLUtil.decode(request.uri());
+		String uri = URLUtil.decode(request.uri().substring(3));
 
-		if (uri.length() < 2 && !uri.startsWith("?screenName=") && !NumberUtil.isLong(uri.substring(1))) {
+		if (uri.length() < 1 && !uri.startsWith("?screenName=") && !NumberUtil.isLong(uri.substring(1))) {
 
 			sendHtml(ctx,index());
 
@@ -194,11 +194,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         }
 		
-		String host = request.headers().get(HttpHeaderNames.HOST);
-		
-		StaticLog.debug("HOST : {}",host);
-
-		if (host.contains("get-twi.me")) {
+		if (request.uri().startsWith("/tug")) {
 
 			channelRead1(ctx,request);
 
