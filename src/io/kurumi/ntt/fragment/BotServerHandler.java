@@ -65,9 +65,9 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         }
 
-		if (request.uri().startsWith("/check")) {
+		if (request.uri().startsWith("/check/")) {
 
-			String screenName = request.uri().substring(5);
+			String screenName = request.uri().substring(6);
 
 			if (StrUtil.isBlank(screenName)) {
 
