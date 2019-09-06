@@ -75,7 +75,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 		String uri = request.uri();
 
-		if (StrUtil.count(uri,"/") < 2 || uri.endsWith("/") && !uri.contains("?screenName=")) {
+		if ((StrUtil.count(uri,"/") < 2 && uri.endsWith("/") && !uri.contains("?screenName="))) {
 
 			sendHtml(ctx,index());
 
