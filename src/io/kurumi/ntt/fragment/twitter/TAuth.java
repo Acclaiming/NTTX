@@ -32,7 +32,7 @@ public class TAuth {
 		
 		synchronized (count) {
 			
-			if (current == null && count.get() == 33) {
+			if (current == null || count.incrementAndGet() == 100) {
 				
 				count.set(0);
 				
@@ -44,8 +44,6 @@ public class TAuth {
 				
 			}
 		
-			count.incrementAndGet();
-			
 			return current;
 			
 		}
