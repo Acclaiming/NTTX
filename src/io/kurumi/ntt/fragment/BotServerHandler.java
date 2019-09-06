@@ -148,10 +148,22 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 					message += "<br /><br />" + Html.b("BIO") + " : " + HtmlUtil.escape(archive.bio) + "<br />";
 
 				}
+				
+				if (archive.location != null) {
+
+					message += "<br />" + Html.b("位置") + " : " + HtmlUtil.escape(archive.location);
+
+				}
 
 				if (archive.followers != null) {
 
 					message += "<br />" + archive.following + " " + Html.b("正在关注") + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + archive.followers + " " + Html.b("关注者") + "<br />";
+
+				}
+				
+				if (archive.statuses != null) {
+
+					message += "<br />" + archive.statuses + " " + Html.b("条推文") + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + archive.likes + " " + Html.b("个打心") + "<br />";
 
 				}
 				
@@ -161,12 +173,13 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 					
 				}
 				
-				if (archive.location != null) {
-					
-					message += "<br />" + Html.b("位置") + " : " + HtmlUtil.escape(archive.location);
-					
-				}
+				if (archive.lang != null) {
 
+					message += "<br />" + Html.b("语言") + " : " + archive.lang;
+
+				}
+				
+				
 				message += "<br />" + Html.b("加入时间") + " : " + DateUtil.formatChineseDate(new Date(archive.createdAt),false);
 
 				message += "<br />" + Html.b("用户链接") + " : " + Html.a("https://twitter.com/" + archive.screenName) + "<br />";

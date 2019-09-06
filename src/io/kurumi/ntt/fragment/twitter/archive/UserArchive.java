@@ -49,7 +49,12 @@ public class UserArchive {
 	public String location;
 	public Integer following;
 	public Integer followers;
-
+	
+	public Integer statuses;
+	public Integer likes;
+	
+	public String lang;
+	
     public transient String oldPhotoUrl;
     public transient String oldBannerUrl;
     private transient String oldScreename;
@@ -418,6 +423,9 @@ public class UserArchive {
 		following = user.getFriendsCount();
 		followers = user.getFollowersCount();
 		location = user.getLocation();
+		statuses = user.getStatusesCount();
+		likes = user.getFavouritesCount();
+		lang = user.getLang();
 
 		change = change && !(TAuth.data.containsId(id) && ArrayUtil.contains(Env.ADMINS,TAuth.getById(id).user.intValue()));
 		
