@@ -113,7 +113,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 			if (!NumberUtil.isLong(userId)) {
 
-				sendRedirect(ctx,tug_domain);
+				sendHtml(ctx,result("喵... ？"));
 
 				return;
 
