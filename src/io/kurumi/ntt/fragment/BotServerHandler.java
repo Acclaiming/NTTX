@@ -127,7 +127,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 				archive = UserArchive.save(user);
 
-				message = "找到了 ( ￣▽￣)σ<br /><br />";
+				message = "";
 
 			} catch (TwitterException ex) {
 
@@ -141,23 +141,17 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 				
 				message += "<img src=\"" + archive.photoUrl + "\"></img><br />";
 
-				message += "<br />" + Html.b("名字") + " : " + HtmlUtil.escape(archive.name);
+				message += "<br />" + HtmlUtil.escape(archive.name);
 				
 				if (!StrUtil.isBlank(archive.bio)) {
 
 					message += "<br /><br />" + Html.b("BIO") + " : " + HtmlUtil.escape(archive.bio) + "<br />";
 
 				}
-				
-				if (archive.location != null) {
-
-					message += "<br />" + Html.b("位置") + " : " + HtmlUtil.escape(archive.location);
-
-				}
-
+			
 				if (archive.followers != null) {
 
-					message += "<br />" + archive.following + " " + Html.b("正在关注") + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + archive.followers + " " + Html.b("关注者") + "<br />";
+					message += "<br />" + archive.following + " " + Html.b("正在关注") + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + archive.followers + " " + Html.b("关注者");
 
 				}
 				
@@ -179,6 +173,11 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 				}
 				
+				if (!StrUtil.isBlank(archive.location)) {
+
+					message += "<br />" + Html.b("位置") + " : " + HtmlUtil.escape(archive.location);
+
+				}
 				
 				message += "<br />" + Html.b("加入时间") + " : " + DateUtil.formatChineseDate(new Date(archive.createdAt),false);
 
