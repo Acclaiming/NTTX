@@ -31,6 +31,7 @@ import static com.mongodb.client.model.Updates.set;
 import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+import java.util.LinkedHashSet;
 
 public class UserArchive {
 
@@ -38,8 +39,13 @@ public class UserArchive {
     public Long id;
     public Long createdAt;
 	public Long lastUpdate;
+	
     public String name;
     public String screenName;
+	
+	public List<String> nameHistory;
+	public List<String> snHistory;
+	
     public String bio;
     public String photoUrl;
     public String bannerUrl;
@@ -305,6 +311,24 @@ public class UserArchive {
 
             str.append(split).append("名称更改 : ").append(nameL).append(" ------> ").append(name);
 
+			if (nameHistory == null) {
+
+				nameHistory = new LinkedList<>();
+
+				nameHistory.add(nameL);
+
+			} else {
+
+				LinkedList<String> history = new LinkedList<String>(nameHistory);
+
+				history.remove(nameL);
+
+				history.addFirst(nameL);
+
+				nameHistory = history;
+
+			}
+			
             change = true;
 
         }
@@ -317,6 +341,24 @@ public class UserArchive {
 
             oldScreename = screenNameL;
 
+			if (snHistory == null) {
+
+				snHistory = new LinkedList<>();
+
+				snHistory.add(screenNameL);
+
+			} else {
+
+				LinkedList<String> history = new LinkedList<String>(snHistory);
+
+				history.remove(screenNameL);
+
+				history.addFirst(screenNameL);
+
+				snHistory = history;
+
+			}
+			
             change = true;
 
         }
