@@ -83,6 +83,8 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 				sendOk(ctx,user.getId() + "");
 				
+				return;
+				
 			} catch (TwitterException ex) {
 
 				sendError(ctx,BAD_REQUEST,NTT.parseTwitterException(ex));
