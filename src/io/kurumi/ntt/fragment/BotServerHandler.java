@@ -131,9 +131,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 			} catch (TwitterException ex) {
 
-				message = "不见了 Σ(ﾟ∀ﾟﾉ)ﾉ<br /><br />";
-
-				message += Html.b(NTT.parseTwitterException(ex)) + "<br /><br />";
+				message = NTT.parseTwitterException(ex) + " Σ(ﾟ∀ﾟﾉ)ﾉ<br /><br />";
 
 			}
 
@@ -163,7 +161,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 			}
 
-			sendHtml(ctx,result(message));
+			sendHtml(ctx,result(archive == null ? "Twitter User Getway" : archive.name,message));
 
 			return;
 
