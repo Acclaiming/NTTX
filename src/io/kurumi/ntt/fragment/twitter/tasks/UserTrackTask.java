@@ -31,6 +31,8 @@ public class UserTrackTask extends Thread {
         while (!isInterrupted()) {
 
 			try {
+				
+				long start = System.currentTimeMillis();
 
 				for (TrackTask.IdsList ids : TrackTask.friends.collection.find()) {
 
@@ -58,7 +60,6 @@ public class UserTrackTask extends Thread {
 				
 				int size = waitFor.size();
 
-				
 				step++;
 
 				List<TAuth> allAuth = TAuth.data.getAll();
@@ -127,7 +128,7 @@ public class UserTrackTask extends Thread {
 
 				}
 				
-				StaticLog.debug("刷新了 {} 个用户, 用时 {}s",size,(System.currentTimeMillis() - start) / 1000);
+				StaticLog.info("刷新了 {} 个用户, 用时 {}s",size,(System.currentTimeMillis() - start) / 1000);
 
 			} catch (Exception ex) {}
 
