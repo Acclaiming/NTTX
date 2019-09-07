@@ -18,6 +18,7 @@ import twitter4j.User;
 import java.util.concurrent.atomic.AtomicBoolean;
 import com.mongodb.MongoInterruptedException;
 import cn.hutool.log.StaticLog;
+import io.kurumi.ntt.utils.BotLog;
 
 public class UserTrackTask extends Thread {
 
@@ -130,7 +131,12 @@ public class UserTrackTask extends Thread {
 				
 				StaticLog.info("刷新了 {} 个用户, 用时 {}s",size,(System.currentTimeMillis() - start) / 1000);
 
-			} catch (Exception ex) {}
+			} catch (Exception ex) {
+				
+				
+				StaticLog.warn("UTT {}",BotLog.parseError(ex));
+				
+			}
 
 
         }
