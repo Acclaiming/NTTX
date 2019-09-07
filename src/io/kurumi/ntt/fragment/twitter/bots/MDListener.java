@@ -13,6 +13,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserMentionEntity;
 import cn.hutool.core.util.StrUtil;
+import io.kurumi.ntt.utils.NTT;
 
 public class MDListener implements StatusListener {
 
@@ -89,17 +90,24 @@ public class MDListener implements StatusListener {
 
 				if (urls.toString().isEmpty()) {
 
-					mkReply(status,"This tweet has no video/GIF");
+					mkReply(status,"这条推文没有包含 视频 / GIF");
 
 					return;
 
 				}
 
 
-				mkReply(status,"Download Links :\n" + urls.toString());
+				mkReply(status,"媒体下载链接 :\n" + urls.toString());
 
 
 			} catch (TwitterException e) {
+				
+				try {
+					
+					mkReply(status,"对不起，推文无法取得，因为 : " + NTT.parseTwitterException(e));
+					
+				} catch (TwitterException ex) {}
+
 			}
 
 		}
