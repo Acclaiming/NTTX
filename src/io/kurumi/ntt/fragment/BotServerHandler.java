@@ -153,9 +153,11 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 					
 				}
 				
+				message += "<br />";
+				
 				if (archive.nameHistory != null && !archive.nameHistory.isEmpty()) {
 					
-					message += "<br /><br />" + Html.b("历史名称") + " : ";
+					message += "<br />" + Html.b("历史名称") + " : ";
 					
 					for (String name : archive.nameHistory) {
 						
@@ -169,7 +171,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 				
 				if (!StrUtil.isBlank(archive.bio)) {
 
-					message += "<br /><br />" + Html.b("BIO") + " : " + HtmlUtil.escape(archive.bio) + "<br />";
+					message += "<br />" + Html.b("BIO") + " : " + HtmlUtil.escape(archive.bio) + "<br />";
 
 				}
 			
