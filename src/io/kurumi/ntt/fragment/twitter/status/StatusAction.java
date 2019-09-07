@@ -224,7 +224,7 @@ public class StatusAction extends Fragment {
 
 				status = api.showStatus(statusId);
 
-				StatusArchive.save(status).loop(api);
+				archive = StatusArchive.save(status).loop(api);
 
 				liked = status.isFavorited();
 
