@@ -145,9 +145,25 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
 				message += "<br />" + HtmlUtil.escape(archive.name);
 				
+				if (archive.isProtected) message += Html.b(" [ 锁推 ] ");
+				
 				if (err != null) {
 					
 					message += " 「 " + Html.b(NTT.parseTwitterException(err)) + " 」";
+					
+				}
+				
+				if (archive.nameHistory != null && !archive.nameHistory.isEmpty()) {
+					
+					message += "<br /><br />" + Html.b("历史名称") + " : ";
+					
+					for (String name : archive.nameHistory) {
+						
+						message += "<br />" + Html.code(name);
+						
+					}
+					
+					message += "<br />";
 					
 				}
 				
@@ -172,6 +188,18 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 				if (archive.url != null) {
 					
 					message += "<br />" + Html.b("个人链接") + " : " + Html.a(archive.url);
+					
+				}
+				
+				if (archive.snHistory != null && !archive.snHistory.isEmpty()) {
+
+					message += "<br />" + Html.b("历史用户名") + " :";
+
+					for (String sn : archive.snHistory) {
+
+						message += Html.b(" @" + sn);
+
+					}
 					
 				}
 				
