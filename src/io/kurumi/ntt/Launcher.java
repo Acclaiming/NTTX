@@ -439,6 +439,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		addFragment(new PackageManager());
 
 		addFragment(new RpcApi());
+		
+		addFragment(new GeoTest());
 
     }
 
