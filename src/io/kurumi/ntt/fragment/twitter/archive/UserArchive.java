@@ -39,13 +39,13 @@ public class UserArchive {
     public Long id;
     public Long createdAt;
 	public Long lastUpdate;
-	
+
     public String name;
     public String screenName;
-	
+
 	public List<String> nameHistory;
 	public List<String> snHistory;
-	
+
     public String bio;
     public String photoUrl;
     public String bannerUrl;
@@ -53,16 +53,16 @@ public class UserArchive {
     public Boolean isProtected;
     public Boolean isDisappeared;
 	public Long disappearedAt;
-	
+
 	public String location;
 	public Integer following;
 	public Integer followers;
-	
+
 	public Integer statuses;
 	public Integer likes;
-	
+
 	public String lang;
-	
+
     public transient String oldPhotoUrl;
     public transient String oldBannerUrl;
     private transient String oldScreename;
@@ -116,9 +116,9 @@ public class UserArchive {
 			}
 
 		}
-		
+
 		return all;
-		
+
 	}
 
     public static UserArchive show(Twitter api,Long id) {
@@ -136,11 +136,11 @@ public class UserArchive {
         }
 
     }
-	
+
 	public static UserArchive get(Twitter api,Long id) {
 
         try {
-			
+
 			if (contains(id)) return get(id);
 
             User user = api.showUser(id);
@@ -255,7 +255,7 @@ public class UserArchive {
         if (user == null && !isDisappeared) {
 
             isDisappeared = true;
-			
+
 			disappearedAt = System.currentTimeMillis();
 
             TrackTask.onUserChange(this,split + "用户被冻结或已停用 :)");
@@ -311,24 +311,28 @@ public class UserArchive {
 
             str.append(split).append("名称更改 : ").append(nameL).append(" ------> ").append(name);
 
-			if (nameHistory == null) {
+			if (nameL != null) {
 
-				nameHistory = new LinkedList<>();
+				if (nameHistory == null) {
 
-				nameHistory.add(nameL);
+					nameHistory = new LinkedList<>();
 
-			} else {
+					nameHistory.add(nameL);
 
-				LinkedList<String> history = new LinkedList<String>(nameHistory);
+				} else {
 
-				history.remove(nameL);
+					LinkedList<String> history = new LinkedList<String>(nameHistory);
 
-				history.addFirst(nameL);
+					history.remove(nameL);
 
-				nameHistory = history;
+					history.addFirst(nameL);
+
+					nameHistory = history;
+
+				}
 
 			}
-			
+
             change = true;
 
         }
@@ -341,24 +345,28 @@ public class UserArchive {
 
             oldScreename = screenNameL;
 
-			if (snHistory == null) {
+			if (screenNameL != null) {
 
-				snHistory = new LinkedList<>();
+				if (snHistory == null) {
 
-				snHistory.add(screenNameL);
+					snHistory = new LinkedList<>();
 
-			} else {
+					snHistory.add(screenNameL);
 
-				LinkedList<String> history = new LinkedList<String>(snHistory);
+				} else {
 
-				history.remove(screenNameL);
+					LinkedList<String> history = new LinkedList<String>(snHistory);
 
-				history.addFirst(screenNameL);
+					history.remove(screenNameL);
 
-				snHistory = history;
+					history.addFirst(screenNameL);
+
+					snHistory = history;
+
+				}
 
 			}
-			
+
             change = true;
 
         }
@@ -472,11 +480,11 @@ public class UserArchive {
 		statuses = user.getStatusesCount();
 		likes = user.getFavouritesCount();
 		lang = user.getLang();
-		
+
 		lastUpdate = System.currentTimeMillis();
 
 		change = change && !(TAuth.data.containsId(id) && ArrayUtil.contains(Env.ADMINS,TAuth.getById(id).user.intValue()));
-		
+
         if (change) {
 
             TrackTask.onUserChange(this,str.toString());
