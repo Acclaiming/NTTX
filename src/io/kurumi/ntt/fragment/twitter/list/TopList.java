@@ -12,6 +12,7 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.Html;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import cn.hutool.log.StaticLog;
 
 public class TopList extends Fragment {
 
@@ -58,8 +59,14 @@ public class TopList extends Fragment {
 		HashMap<Long,Score> mutes = new HashMap<>();
 		HashMap<Long,Score> blocks = new HashMap<>();
 		
-		for (TAuth auth : TAuth.data.getAll()) {
+		List<TAuth> all = TAuth.data.getAll();
+
+		for (int index = 0;index < all.size();index ++) {
 			
+			StaticLog.debug("TL : {} / {}",index + 1,all.size());
+			
+			TAuth auth = all.get(index);
+
 			try {
 				
 				for (long block : TApi.getAllBlockIDs(auth.createApi())) {
