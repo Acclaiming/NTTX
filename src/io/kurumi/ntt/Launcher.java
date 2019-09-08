@@ -173,8 +173,6 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 			});
 
-        INSTANCE.start();
-		
 		for (final String aliasToken : Env.ALIAS) {
 
 			new Launcher() {
