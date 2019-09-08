@@ -54,6 +54,8 @@ import io.kurumi.ntt.model.Msg;
 import java.util.TimeZone;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
+import io.kurumi.ntt.fragment.twitter.list.FriendsClean;
+import io.kurumi.ntt.fragment.twitter.list.FollowersClean;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -371,6 +373,9 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         addFragment(new TEPH());
 
 		addFragment(new TLScanner());
+		
+		addFragment(new FriendsClean());
+		addFragment(new FollowersClean());
 		
 		// Mastodon
 
