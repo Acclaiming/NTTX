@@ -57,6 +57,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import io.kurumi.ntt.fragment.twitter.list.FriendsClean;
 import io.kurumi.ntt.fragment.twitter.list.FollowersClean;
 import io.kurumi.ntt.fragment.twitter.list.CleanMutes;
+import com.pengrad.telegrambot.request.GetMe;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -116,6 +117,19 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
             return;
 
         }
+		
+		INSTANCE = new Launcher() {
+
+			@Override
+			public String getToken() {
+
+				return Env.BOT_TOKEN;
+
+			}
+
+		};
+		
+		INSTANCE.init();
 
         try {
 
@@ -128,7 +142,12 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
             return;
 
         }
+		
+		INSTANCE.me = INSTANCE.execute(new GetMe()).user();
 
+        INSTANCE.realStart();
+		
+		
 		/*
 		
 		TINX = new TinxBot(Env.CQHTTP_WS,Env.CQHTTP_URL);
@@ -138,19 +157,6 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		tryTinxConnect();
 		
 		*/
-
-        INSTANCE = new Launcher() {
-
-			@Override
-			public String getToken() {
-
-				return Env.BOT_TOKEN;
-
-			}
-
-		};
-
-		log.info("正在启动本体 _(:з」∠)_");
 
         Thread.setDefaultUncaughtExceptionHandler(INSTANCE);
 
