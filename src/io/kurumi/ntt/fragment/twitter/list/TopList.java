@@ -29,7 +29,7 @@ public class TopList extends Fragment {
 
 		long id;
 
-		int val = 0;
+		int val = 1;
 
 		public Score(long id) {
 
@@ -107,7 +107,7 @@ public class TopList extends Fragment {
 			for (int index = 0;index < 10 && iter.hasNext();index ++) {
 
 				Score target = iter.next();
-
+				
 				message += "\n" + Html.b(UserArchive.show(api,target.id).name) + " : " + target.val + " 次";
 
 			}
@@ -122,7 +122,7 @@ public class TopList extends Fragment {
 
 			Iterator<Score> iter = bR.iterator();
 
-			for (int index = 0;index < 10 && iter.hasNext();index ++) {
+			for (int index = 0;index < 20 && iter.hasNext();index ++) {
 
 				Score target = iter.next();
 
