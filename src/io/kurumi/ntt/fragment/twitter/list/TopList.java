@@ -104,7 +104,7 @@ public class TopList extends Fragment {
 
 			Iterator<Score> iter = mR.iterator();
 
-			for (int index = 0;index < 10 && iter.hasNext();index ++) {
+			for (int index = 0;iter.hasNext();index ++) {
 
 				Score target = iter.next();
 				
@@ -122,7 +122,7 @@ public class TopList extends Fragment {
 
 			Iterator<Score> iter = bR.iterator();
 
-			for (int index = 0;index < 20 && iter.hasNext();index ++) {
+			for (int index = 0;iter.hasNext();index ++) {
 
 				Score target = iter.next();
 
