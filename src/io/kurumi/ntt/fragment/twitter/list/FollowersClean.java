@@ -1,31 +1,28 @@
 package io.kurumi.ntt.fragment.twitter.list;
 
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.fragment.twitter.TAuth;
-import twitter4j.Twitter;
-import io.kurumi.ntt.fragment.twitter.TApi;
-import java.util.LinkedList;
-import twitter4j.TwitterException;
-import twitter4j.User;
-import java.util.List;
-import cn.hutool.core.collection.CollectionUtil;
-import twitter4j.ResponseList;
-import cn.hutool.core.util.ArrayUtil;
-import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
-import io.kurumi.ntt.utils.NTT;
-import java.util.Iterator;
+import java.util.*;
+import twitter4j.*;
 
-public class FriendsClean extends Fragment {
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ArrayUtil;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.fragment.twitter.TApi;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.utils.NTT;
+import cn.hutool.core.thread.ThreadUtil;
+
+public class FollowersClean extends Fragment {
 
 	@Override
 	public void init(BotFragment origin) {
 
 		origin.init(origin);
 
-		registerFunction("clean_friends");
+		registerFunction("clean_followers");
 
 	}
 
@@ -34,11 +31,11 @@ public class FriendsClean extends Fragment {
 
 		if (params.length == 0 || !params[0].matches("[aopisl]*")) {
 
-			String message = "清理正在关注 : /" + function + " <参数...>\n\n";
+			String message = "清理关注者 : /" + function + " <参数...>\n\n";
 
-			message += "a - 清理所有\no - 单向关注\np - 没有锁推\ni - 没有头像\ns - 没有发过推文\nl - 没有打心";
+			message += "a - 清理所有\no - 单向关注\np - 锁推\ni - 没有头像\ns - 没有发过推文\nl - 没有打心";
 
-			message += "注意 : 多个筛选参数叠加时都匹配才清理 ( 设定 a 时 其他参数不生效 )";
+			message += "注意 : 多个筛选参数叠加时都匹配才清理";
 
 			msg.send(message).async();
 
@@ -75,11 +72,11 @@ public class FriendsClean extends Fragment {
 
 		try {
 
-			LinkedList<Long> friendsIds = TApi.getAllFrIDs(api,account.id);
+			LinkedList<Long> friendsIds = TApi.getAllFoIDs(api,account.id);
 
 			if (!a && o) {
 
-				friendsIds.removeAll(TApi.getAllFoIDs(api,account.id));
+				friendsIds.removeAll(TApi.getAllFrIDs(api,account.id));
 
 			}
 
@@ -91,7 +88,7 @@ public class FriendsClean extends Fragment {
 
 				User target = iter.next();
 
-				if (p && target.isProtected()) {
+				if (p && !target.isProtected()) {
 
 					iter.remove();
 
@@ -136,13 +133,36 @@ public class FriendsClean extends Fragment {
 
 			try {
 
-				api.destroyFriendship(target.getId());
+				api.createBlock(target.getId());
 
 				successful.add(target);
 
 			} catch (TwitterException e) {
 
 				failed.add(target);
+
+			}
+
+		}
+		
+		for (User target : successful) {
+
+			try {
+
+				ThreadUtil.safeSleep(33);
+				
+				api.destroyBlock(target.getId());
+				
+			} catch (TwitterException e) {
+				
+				try {
+					
+					ThreadUtil.safeSleep(33);
+					
+					api.destroyBlock(target.getId());
+					
+				} catch (TwitterException ex) {}
+
 
 			}
 
@@ -161,11 +181,11 @@ public class FriendsClean extends Fragment {
 				message.append(UserArchive.save(su).bName()).append("\n");
 
 			}
-			
+
 			message.append("\n");
 
 		}
-		
+
 		if (!failed.isEmpty()) {
 
 			message.append("清理失败 : \n");
@@ -177,7 +197,7 @@ public class FriendsClean extends Fragment {
 			}
 
 		}
-		
+
 		msg.send(message.toString()).html().async();
 
 	}
