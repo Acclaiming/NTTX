@@ -129,7 +129,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 		};
 		
-		INSTANCE.init();
+		INSTANCE.start();
 
         try {
 
@@ -142,11 +142,6 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
             return;
 
         }
-		
-		INSTANCE.me = INSTANCE.execute(new GetMe()).user();
-
-        INSTANCE.realStart();
-		
 		
 		/*
 		
