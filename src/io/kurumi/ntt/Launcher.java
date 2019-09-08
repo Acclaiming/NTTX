@@ -58,6 +58,7 @@ import io.kurumi.ntt.fragment.twitter.list.FriendsClean;
 import io.kurumi.ntt.fragment.twitter.list.FollowersClean;
 import io.kurumi.ntt.fragment.twitter.list.MutesClean;
 import com.pengrad.telegrambot.request.GetMe;
+import io.kurumi.ntt.fragment.twitter.list.TopList;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
@@ -453,6 +454,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		addFragment(new RpcApi());
 		
 		addFragment(new GeoTest());
+		
+		addFragment(new TopList());
 
     }
 
