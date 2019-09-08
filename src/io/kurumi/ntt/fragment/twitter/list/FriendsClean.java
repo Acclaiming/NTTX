@@ -192,7 +192,7 @@ public class FriendsClean extends Fragment {
 
 			if (users.size() > 100) {
 
-				target = CollectionUtil.sub(users,0,100);
+				target = new LinkedList<Long>(CollectionUtil.sub(users,0,100));
 				users.removeAll(target);
 
 			} else {

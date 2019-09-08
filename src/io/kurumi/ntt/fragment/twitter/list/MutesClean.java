@@ -14,7 +14,7 @@ import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.NTT;
 
-public class CleanMutes extends Fragment {
+public class MutesClean extends Fragment {
 
 	@Override
 	public void init(BotFragment origin) {
@@ -170,7 +170,7 @@ public class CleanMutes extends Fragment {
 
 			if (users.size() > 100) {
 
-				target = CollectionUtil.sub(users,0,100);
+				target = new LinkedList<Long>(CollectionUtil.sub(users,0,100));
 				users.removeAll(target);
 
 			} else {

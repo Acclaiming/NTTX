@@ -56,7 +56,7 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import io.kurumi.ntt.fragment.twitter.list.FriendsClean;
 import io.kurumi.ntt.fragment.twitter.list.FollowersClean;
-import io.kurumi.ntt.fragment.twitter.list.CleanMutes;
+import io.kurumi.ntt.fragment.twitter.list.MutesClean;
 import com.pengrad.telegrambot.request.GetMe;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
@@ -382,7 +382,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 		
 		addFragment(new FriendsClean());
 		addFragment(new FollowersClean());
-		addFragment(new CleanMutes());
+		addFragment(new MutesClean());
 		
 		// Mastodon
 
