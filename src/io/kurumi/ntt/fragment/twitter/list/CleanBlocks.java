@@ -17,6 +17,8 @@ import java.util.List;
 
 public class CleanBlocks extends Fragment {
 
+	/*
+	
 	@Override
 	public void init(BotFragment origin) {
 
@@ -78,6 +80,8 @@ public class CleanBlocks extends Fragment {
 			return;
 
 		}
+		
+		
 
 		if (mutes.isEmpty()) {
 
@@ -189,5 +193,7 @@ public class CleanBlocks extends Fragment {
 		return results;
 
 	}
+	
+	*/
 
 }
