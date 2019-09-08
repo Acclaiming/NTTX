@@ -219,6 +219,12 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 				
 				message += "<br />" + Html.b("加入时间") + " : " + DateUtil.formatChineseDate(new Date(archive.createdAt),false);
 
+				if (archive.isDisappeared && archive.disappearedAt != null) {
+					
+					message += "<br />" + Html.b("消失时间") + " : " + DateUtil.formatChineseDate(new Date(archive.disappearedAt),false);
+					
+				}
+				
 				message += "<br />" + Html.b("用户链接") + " : " + Html.twitterUser("@" + archive.screenName,archive.screenName) + "<br />";
 			}
 			
