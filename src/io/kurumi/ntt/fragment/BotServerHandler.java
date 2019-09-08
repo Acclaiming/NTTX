@@ -243,7 +243,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         this.request = request;
 
-		StaticLog.debug("收到HTTP请求 : {}",request.uri());
+		// StaticLog.debug("收到HTTP请求 : {}",request.uri());
 
         if (new File("/etc/ntt/safe").isFile()) {
 
@@ -419,7 +419,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         if (!BotServer.fragments.containsKey(botToken)) {
 
-			StaticLog.debug("未预期的消息 : {}",request.content().toString(CharsetUtil.CHARSET_UTF_8));
+			// StaticLog.debug("未预期的消息 : {}",request.content().toString(CharsetUtil.CHARSET_UTF_8));
 
 			FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,OK,Unpooled.copiedBuffer(new DeleteWebhook().toWebhookResponse(),CharsetUtil.CHARSET_UTF_8));
 
