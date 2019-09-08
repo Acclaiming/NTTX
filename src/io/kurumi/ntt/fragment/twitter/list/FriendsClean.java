@@ -77,7 +77,7 @@ public class FriendsClean extends Fragment {
 
 			LinkedList<Long> friendsIds = TApi.getAllFrIDs(api,account.id);
 
-			if (!a && o) {
+			if (o) {
 
 				friendsIds.removeAll(TApi.getAllFoIDs(api,account.id));
 
