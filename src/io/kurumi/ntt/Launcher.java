@@ -129,11 +129,15 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         }
 
+		/*
+		
 		TINX = new TinxBot(Env.CQHTTP_WS,Env.CQHTTP_URL);
 
 		TINX.addListener(new QQListener());
 
 		tryTinxConnect();
+		
+		*/
 
         INSTANCE = new Launcher() {
 
@@ -196,6 +200,8 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 	public static void tryTinxConnect() {
 
+		/*
+		
 		try {
 
 			TINX.start();
@@ -219,7 +225,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 		}
 
-
+		*/
 
 	}
 
@@ -437,9 +443,9 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         // QQ
 
-		addFragment(new TelegramListener());
-		addFragment(new TelegramFN());
-		addFragment(new TelegramAdminFN());
+		//addFragment(new TelegramListener());
+		//addFragment(new TelegramFN());
+		//addFragment(new TelegramAdminFN());
 
 		// Mods
 
