@@ -1,10 +1,11 @@
 package io.kurumi.ntt.utils;
 
+import cn.hutool.core.util.*;
+import java.util.*;
+import twitter4j.*;
+
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.StrUtil;
 import com.mongodb.client.FindIterable;
 import com.pengrad.telegrambot.model.ChatMember;
 import com.pengrad.telegrambot.request.DeleteMessage;
@@ -23,15 +24,6 @@ import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.Send;
 import java.io.File;
-import java.util.Date;
-import java.util.TimerTask;
-import twitter4j.Paging;
-import twitter4j.QueryResult;
-import twitter4j.ResponseList;
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import cn.hutool.core.date.DateUtil;
 
 public class NTT {
 
@@ -76,6 +68,54 @@ public class NTT {
 	 }
 
 	 */
+	 
+	public static LinkedList<User> lookupUsers(Twitter api,LinkedList<Long> users) throws TwitterException {
+
+		LinkedList<User> results = new LinkedList<>();
+
+		while (!users.isEmpty()) {
+
+			List<Long> target;
+
+			if (users.size() > 100) {
+
+				target = new LinkedList<Long>(users.subList(0,100));
+				users.removeAll(target);
+
+			} else {
+
+				target = new LinkedList<>();
+				target.addAll(users);
+
+				users.clear();
+
+			}
+
+			try {
+
+				ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
+
+				results.addAll(result);
+
+			} catch (TwitterException e) {
+
+				if (e.getErrorCode() == 17) {
+
+					for (Long da : target) {
+
+						UserArchive.saveDisappeared(da);
+
+					}
+
+				} else throw e;
+
+			}
+
+		}
+
+		return results;
+
+	}
 	 
 	public static UserArchive findUser(Twitter api,String idOrName) throws TwitterException {
 		

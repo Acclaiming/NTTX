@@ -80,7 +80,7 @@ public class FollowersClean extends Fragment {
 
 			}
 
-			friends = lookupUsers(api,friendsIds);
+			friends = NTT.lookupUsers(api,friendsIds);
 
 			Iterator<User> iter = friends.iterator();
 
@@ -202,52 +202,5 @@ public class FollowersClean extends Fragment {
 
 	}
 
-	LinkedList<User> lookupUsers(Twitter api,LinkedList<Long> users) throws TwitterException {
-
-		LinkedList<User> results = new LinkedList<>();
-
-		while (!users.isEmpty()) {
-
-			List<Long> target;
-
-			if (users.size() > 100) {
-
-				target = new LinkedList<Long>(CollectionUtil.sub(users,0,100));
-				users.removeAll(target);
-
-			} else {
-
-				target = new LinkedList<>();
-				target.addAll(users);
-
-				users.clear();
-
-			}
-
-			try {
-
-				ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
-
-				result.addAll(result);
-
-			} catch (TwitterException e) {
-
-				if (e.getErrorCode() == 17) {
-
-					for (Long da : target) {
-
-						UserArchive.saveDisappeared(da);
-
-					}
-
-				} else throw e;
-
-			}
-
-		}
-
-		return results;
-
-	}
 
 }
