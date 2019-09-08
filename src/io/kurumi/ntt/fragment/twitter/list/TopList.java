@@ -13,6 +13,7 @@ import io.kurumi.ntt.utils.Html;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import cn.hutool.log.StaticLog;
+import io.kurumi.ntt.utils.BotLog;
 
 public class TopList extends Fragment {
 
@@ -77,7 +78,11 @@ public class TopList extends Fragment {
 
 				}
 
-			} catch (TwitterException e) {}
+			} catch (TwitterException e) {
+				
+				StaticLog.error(e);
+				
+			}
 
 			try {
 
@@ -89,7 +94,12 @@ public class TopList extends Fragment {
 
 				}
 
-			} catch (TwitterException e) {}
+			} catch (TwitterException e) {
+				
+				StaticLog.error(e);
+			
+				
+			}
 
 		}
 
