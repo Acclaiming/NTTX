@@ -243,7 +243,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         this.request = request;
 
-		// StaticLog.debug("收到HTTP请求 : {}",request.uri());
+		StaticLog.debug("收到HTTP请求 : {}",request.uri());
 
         if (new File("/etc/ntt/safe").isFile()) {
 
