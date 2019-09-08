@@ -34,7 +34,7 @@ public class MutesClean extends Fragment {
 
 			message += "a - 清理所有\nr - 正在关注\no - 关注者\nb - 屏蔽的用户";
 
-			message += "注意 : 多个筛选参数叠加时都匹配才清理";
+			message += "\n\n注意 : 多个筛选参数叠加时都匹配才清理";
 
 			msg.send(message).async();
 

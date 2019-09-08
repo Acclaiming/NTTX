@@ -35,7 +35,7 @@ public class FollowersClean extends Fragment {
 
 			message += "a - 清理所有\no - 单向关注\np - 锁推\ni - 没有头像\ns - 没有发过推文\nl - 没有打心";
 
-			message += "注意 : 多个筛选参数叠加时都匹配才清理";
+			message += "\n\n注意 : 多个筛选参数叠加时都匹配才清理";
 
 			msg.send(message).async();
 
