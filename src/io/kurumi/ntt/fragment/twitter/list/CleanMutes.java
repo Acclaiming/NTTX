@@ -19,7 +19,7 @@ public class CleanMutes extends Fragment {
 	@Override
 	public void init(BotFragment origin) {
 
-		origin.init(origin);
+		super.init(origin);
 
 		registerFunction("clean_mutes");
 

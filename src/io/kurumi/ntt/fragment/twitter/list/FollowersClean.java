@@ -20,7 +20,7 @@ public class FollowersClean extends Fragment {
 	@Override
 	public void init(BotFragment origin) {
 
-		origin.init(origin);
+		super.init(origin);
 
 		registerFunction("clean_followers");
 
