@@ -43,7 +43,7 @@ public class FollowersClean extends Fragment {
 
 		}
 
-		requestTwitter(user,msg);
+		requestTwitter(user,msg,true);
 
 	}
 

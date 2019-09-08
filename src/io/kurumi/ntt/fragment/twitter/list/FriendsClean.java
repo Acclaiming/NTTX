@@ -46,7 +46,7 @@ public class FriendsClean extends Fragment {
 
 		}
 
-		requestTwitter(user,msg);
+		requestTwitter(user,msg,true);
 
 	}
 
