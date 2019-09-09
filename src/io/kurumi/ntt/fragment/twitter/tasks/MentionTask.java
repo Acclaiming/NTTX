@@ -3,71 +3,68 @@ package io.kurumi.ntt.fragment.twitter.tasks;
 import cn.hutool.core.util.ArrayUtil;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
+import io.kurumi.ntt.fragment.twitter.bots.MDListener;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.NTT;
-import java.util.TimerTask;
-import twitter4j.Paging;
-import twitter4j.ResponseList;
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
+import twitter4j.*;
+
 import java.util.HashMap;
-import io.kurumi.ntt.fragment.twitter.bots.MDListener;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MentionTask extends TimerTask {
 
-	public static ExecutorService mentionPool = Executors.newFixedThreadPool(3);
-	
-	@Override
-	public void run() {
+    public static ExecutorService mentionPool = Executors.newFixedThreadPool(3);
 
-		for (final TAuth account : TAuth.data.getAll()) {
+    @Override
+    public void run() {
 
-		 if (account.mention == null && account.mdb == null) continue;
+        for (final TAuth account : TAuth.data.getAll()) {
 
-			final Twitter api = account.createApi();
+            if (account.mention == null && account.mdb == null) continue;
 
-			mentionPool.execute(new Runnable() {
+            final Twitter api = account.createApi();
 
-					@Override
-					public void run() {
-						
-						try {
+            mentionPool.execute(new Runnable() {
 
-							processMention(account,api);
+                @Override
+                public void run() {
 
-						} catch (TwitterException e) {
+                    try {
 
-							if (e.getStatusCode() == 503 || e.getErrorCode() == -1 || e.getStatusCode() == 429) return;
+                        processMention(account, api);
 
-							account.mention = null;
+                    } catch (TwitterException e) {
 
-							new Send(account.user,"回复流已关闭 :\n\n{}",NTT.parseTwitterException(e)).exec();
+                        if (e.getStatusCode() == 503 || e.getErrorCode() == -1 || e.getStatusCode() == 429) return;
 
-							if (TAuth.data.containsId(account.id)) {
+                        account.mention = null;
 
-								TAuth.data.setById(account.id,account);
+                        new Send(account.user, "回复流已关闭 :\n\n{}", NTT.parseTwitterException(e)).exec();
 
-							}
+                        if (TAuth.data.containsId(account.id)) {
 
-						}
-						
-						
-					}
-					
-				});
-		
-		}
+                            TAuth.data.setById(account.id, account);
 
-	}
+                        }
 
-	static HashMap<Long,MDListener> bots = new HashMap<>();
+                    }
 
-	static void processMention(TAuth auth,Twitter api) throws TwitterException {
 
-		long offset = -1;
+                }
+
+            });
+
+        }
+
+    }
+
+    static HashMap<Long, MDListener> bots = new HashMap<>();
+
+    static void processMention(TAuth auth, Twitter api) throws TwitterException {
+
+        long offset = -1;
 
         if (auth.mention_offset != null) {
 
@@ -87,27 +84,27 @@ public class MentionTask extends TimerTask {
 
                 if (auth.mention != null && !archive.from.equals(auth.id)) {
 
-                    archive.sendTo(auth.user,1,auth,mention);
+                    archive.sendTo(auth.user, 1, auth, mention);
 
                 }
 
-				if (auth.mdb != null) { 	
+                if (auth.mdb != null) {
 
-					if (bots.containsKey(auth.id)) {
+                    if (bots.containsKey(auth.id)) {
 
-						bots.get(auth.id).onStatus(mention);
+                        bots.get(auth.id).onStatus(mention);
 
-					} else {
+                    } else {
 
-						MDListener bot = new MDListener(auth);
+                        MDListener bot = new MDListener(auth);
 
-						bots.put(auth.id,bot);
+                        bots.put(auth.id, bot);
 
-						bot.onStatus(mention);
+                        bot.onStatus(mention);
 
-					}
+                    }
 
-				}
+                }
 
             }
 
@@ -117,7 +114,7 @@ public class MentionTask extends TimerTask {
 
             if (mention.isEmpty()) {
 
-				offset = 0;
+                offset = 0;
 
             } else {
 
@@ -127,11 +124,11 @@ public class MentionTask extends TimerTask {
 
         }
 
-		long rt_offset = 0;
+        long rt_offset = 0;
 
         if (auth.rt_offset != null) {
 
-			rt_offset = auth.rt_offset;
+            rt_offset = auth.rt_offset;
 
             ResponseList<Status> retweets = api.getRetweetsOfMe(new Paging().count(200).sinceId(rt_offset + 1));
 
@@ -147,7 +144,7 @@ public class MentionTask extends TimerTask {
 
                 if (!archive.from.equals(auth.id)) {
 
-                    archive.sendTo(auth.user,1,auth,retweet);
+                    archive.sendTo(auth.user, 1, auth, retweet);
 
                 }
 
@@ -171,12 +168,12 @@ public class MentionTask extends TimerTask {
 
         if (auth.mention_offset == null || !auth.mention_offset.equals(offset) || auth.rt_offset == null || !auth.rt_offset.equals(rt_offset)) {
 
-			auth.mention_offset = offset;
-			auth.rt_offset = rt_offset;
-			
-			TAuth.data.setById(auth.id,auth);
+            auth.mention_offset = offset;
+            auth.rt_offset = rt_offset;
 
-		}
+            TAuth.data.setById(auth.id, auth);
+
+        }
 
     }
 

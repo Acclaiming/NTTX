@@ -16,7 +16,6 @@ import io.kurumi.ntt.model.request.Keyboard;
 import io.kurumi.ntt.model.request.KeyboradButtonLine;
 
 import java.util.List;
-import io.kurumi.ntt.utils.NTT;
 
 public class RemoveSticker extends Fragment {
 
@@ -40,16 +39,16 @@ public class RemoveSticker extends Fragment {
 
         @Override
         public void onCancel(UserData user, Msg msg) {
-			
+
             ShowSticker.current.remove(user.id);
 
-			super.onCancel(user,msg);
-			
+            super.onCancel(user, msg);
+
         }
-		
-		StickerRemove(Msg command) {
-			super(command);
-		}
+
+        StickerRemove(Msg command) {
+            super(command);
+        }
 
     }
 

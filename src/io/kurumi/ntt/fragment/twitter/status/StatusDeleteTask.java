@@ -1,179 +1,174 @@
 package io.kurumi.ntt.fragment.twitter.status;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.log.StaticLog;
+import io.kurumi.ntt.fragment.twitter.TApi;
 import io.kurumi.ntt.fragment.twitter.TAuth;
-import java.util.Timer;
-import java.util.TimerTask;
-import twitter4j.Paging;
-import twitter4j.ResponseList;
+import io.kurumi.ntt.utils.NTT;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import cn.hutool.core.date.DateUtil;
+
 import java.util.Date;
-import io.kurumi.ntt.utils.BotLog;
-import java.util.Collections;
-import io.kurumi.ntt.fragment.twitter.TApi;
 import java.util.LinkedList;
-import cn.hutool.core.util.ArrayUtil;
-import io.kurumi.ntt.Env;
-import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.utils.NTT;
-import cn.hutool.log.StaticLog;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class StatusDeleteTask extends TimerTask {
 
-	public static Timer timer = new Timer();
+    public static Timer timer = new Timer();
 
-	public static void start() {
+    public static void start() {
 
-		timer.scheduleAtFixedRate(new StatusDeleteTask(),NTT.nextHour(1),60 * 60 * 1000L);
+        timer.scheduleAtFixedRate(new StatusDeleteTask(), NTT.nextHour(1), 60 * 60 * 1000L);
 
-	}
+    }
 
-	public static void stop() {
+    public static void stop() {
 
-		timer.cancel();
+        timer.cancel();
 
-	}
+    }
 
-	@Override
-	public void run() {
+    @Override
+    public void run() {
 
-		for (TAuth account : TAuth.data.getAll()) {
+        for (TAuth account : TAuth.data.getAll()) {
 
-			if (account.ad_s == null && account.ad_r == null && account.ad_t == null) continue;
+            if (account.ad_s == null && account.ad_r == null && account.ad_t == null) continue;
 
-			try {
+            try {
 
-				int count = executeDelete(account);
+                int count = executeDelete(account);
 
-				if (count > 0) {
-					
-					// new Send(account.user,"[推文定时删除] 已删除 " + count + " 条 .").async();
-					
-				}
-				
-			} catch (TwitterException e) {
+                if (count > 0) {
 
-				StaticLog.warn(e,"Delete Status Error");
+                    // new Send(account.user,"[推文定时删除] 已删除 " + count + " 条 .").async();
 
-			}
+                }
 
-		}
+            } catch (TwitterException e) {
 
-	}
+                StaticLog.warn(e, "Delete Status Error");
 
-	public static int executeDelete(TAuth account) throws TwitterException {
+            }
 
-		int count = 0;
+        }
 
-		Twitter api = account.createApi();
+    }
 
-		LinkedList<Status> statues = TApi.getAllStatus(api,account.id);
+    public static int executeDelete(TAuth account) throws TwitterException {
 
-		for (Status s : statues) {
+        int count = 0;
 
-			if (account.ad_a != null) {
+        Twitter api = account.createApi();
 
-				long day = 24L * 60L * 60L * 1000L;
-				
-				// 绝对时间
+        LinkedList<Status> statues = TApi.getAllStatus(api, account.id);
 
-				if (account.ad_d == null) {
+        for (Status s : statues) {
 
-					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < day) break;
+            if (account.ad_a != null) {
 
-				} else if (account.ad_d == 0) {
+                long day = 24L * 60L * 60L * 1000L;
 
-					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 3L * day) break;
+                // 绝对时间
 
-				} else if (account.ad_d == 1) {
+                if (account.ad_d == null) {
 
-					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 7L * day) break;
+                    if (DateUtil.betweenMs(s.getCreatedAt(), new Date()) < day) break;
 
-				} else if (account.ad_d == 2) {
+                } else if (account.ad_d == 0) {
 
-					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 30L * day) break;
+                    if (DateUtil.betweenMs(s.getCreatedAt(), new Date()) < 3L * day) break;
 
-				} else if (account.ad_d == 3) {
+                } else if (account.ad_d == 1) {
 
-					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 60L * day) break;
+                    if (DateUtil.betweenMs(s.getCreatedAt(), new Date()) < 7L * day) break;
 
-				} else if (account.ad_d == 4) {
+                } else if (account.ad_d == 2) {
 
-					if (DateUtil.betweenMs(s.getCreatedAt(),new Date()) < 90L * day) break;
+                    if (DateUtil.betweenMs(s.getCreatedAt(), new Date()) < 30L * day) break;
 
-				}
-				
-			} else {
+                } else if (account.ad_d == 3) {
 
-				if (account.ad_d == null) {
+                    if (DateUtil.betweenMs(s.getCreatedAt(), new Date()) < 60L * day) break;
 
-					if (DateUtil.betweenDay(s.getCreatedAt(),new Date(),true) < 1) break;
+                } else if (account.ad_d == 4) {
 
-				} else if (account.ad_d == 0) {
+                    if (DateUtil.betweenMs(s.getCreatedAt(), new Date()) < 90L * day) break;
 
-					if (DateUtil.betweenDay(s.getCreatedAt(),new Date(),true) < 3) break;
+                }
 
-				} else if (account.ad_d == 1) {
+            } else {
 
-					if (DateUtil.betweenDay(s.getCreatedAt(),new Date(),true) < 7) break;
+                if (account.ad_d == null) {
 
-				} else if (account.ad_d == 2) {
+                    if (DateUtil.betweenDay(s.getCreatedAt(), new Date(), true) < 1) break;
 
-					if (DateUtil.betweenMonth(s.getCreatedAt(),new Date(),true) < 1) break;
+                } else if (account.ad_d == 0) {
 
-				} else if (account.ad_d == 3) {
+                    if (DateUtil.betweenDay(s.getCreatedAt(), new Date(), true) < 3) break;
 
-					if (DateUtil.betweenMonth(s.getCreatedAt(),new Date(),true) < 2) break;
+                } else if (account.ad_d == 1) {
 
-				} else if (account.ad_d == 4) {
+                    if (DateUtil.betweenDay(s.getCreatedAt(), new Date(), true) < 7) break;
 
-					if (DateUtil.betweenMonth(s.getCreatedAt(),new Date(),true) < 3) break;
+                } else if (account.ad_d == 2) {
 
-				}
+                    if (DateUtil.betweenMonth(s.getCreatedAt(), new Date(), true) < 1) break;
 
+                } else if (account.ad_d == 3) {
 
-			}
+                    if (DateUtil.betweenMonth(s.getCreatedAt(), new Date(), true) < 2) break;
 
-			if (s.isRetweet()) {
+                } else if (account.ad_d == 4) {
 
-				if (account.ad_t == null) {
+                    if (DateUtil.betweenMonth(s.getCreatedAt(), new Date(), true) < 3) break;
 
-					continue;
+                }
 
-				}
 
-			} if (s.getInReplyToStatusId() != -1) {
+            }
 
-				if (account.ad_r == null) {
+            if (s.isRetweet()) {
 
-					continue;
+                if (account.ad_t == null) {
 
-				}
+                    continue;
 
-			} else if (account.ad_s == null) {
+                }
 
-				continue;
+            }
+            if (s.getInReplyToStatusId() != -1) {
 
-			}
+                if (account.ad_r == null) {
 
-			try {
+                    continue;
 
-				api.destroyStatus(s.getId());
+                }
 
-				count ++;
+            } else if (account.ad_s == null) {
 
-			} catch (TwitterException e) {
+                continue;
 
-				if (e.getErrorCode() != 144) throw e;
+            }
 
-			}
+            try {
 
-		}
+                api.destroyStatus(s.getId());
 
-		return count;
+                count++;
 
-	}
+            } catch (TwitterException e) {
+
+                if (e.getErrorCode() != 144) throw e;
+
+            }
+
+        }
+
+        return count;
+
+    }
 
 }

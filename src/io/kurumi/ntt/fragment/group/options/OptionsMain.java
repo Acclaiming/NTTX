@@ -16,7 +16,7 @@ import io.kurumi.ntt.utils.NTT;
 
 public class OptionsMain extends Fragment {
 
-	@Override
+    @Override
     public void init(BotFragment origin) {
 
         super.init(origin);
@@ -27,17 +27,17 @@ public class OptionsMain extends Fragment {
 
         registerPayload(PAYLOAD_OPTIONS);
 
-		origin.addFragment(new ServiceMain());
-		origin.addFragment(new RestMain());
-		origin.addFragment(new CaptchaMain());
-		origin.addFragment(new WelcomeMain());
-		origin.addFragment(new SpamMain());
-		origin.addFragment(new LogMain());
-		
+        origin.addFragment(new ServiceMain());
+        origin.addFragment(new RestMain());
+        origin.addFragment(new CaptchaMain());
+        origin.addFragment(new WelcomeMain());
+        origin.addFragment(new SpamMain());
+        origin.addFragment(new LogMain());
+
     }
 
     @Override
-    public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
+    public int checkFunctionContext(UserData user, Msg msg, String function, String[] params) {
 
         return FUNCTION_GROUP;
 
@@ -47,26 +47,26 @@ public class OptionsMain extends Fragment {
 
     final String PAYLOAD_OPTIONS = "go";
 
-	public static String doc = Html.b("注意 : ") + "使用前请阅读 " + Html.a("文档","https://manual.kurumi.io/group");
+    public static String doc = Html.b("注意 : ") + "使用前请阅读 " + Html.a("文档", "https://manual.kurumi.io/group");
 
-	private String optionsMessage(GroupData data) {
+    private String optionsMessage(GroupData data) {
 
-		String message = Html.b(data.title);
+        String message = Html.b(data.title);
 
-		message += "\n" + Html.i("更改群组的设定");
+        message += "\n" + Html.i("更改群组的设定");
 
-		message += "\n\n" + doc;
+        message += "\n\n" + doc;
 
-		return message;
+        return message;
 
-	}
+    }
 
-	@Override
-    public void onFunction(UserData user,final Msg msg,String function,String[] params) {
+    @Override
+    public void onFunction(UserData user, final Msg msg, String function, String[] params) {
 
-        final GroupData data = GroupData.get(this,msg.chat());
+        final GroupData data = GroupData.get(this, msg.chat());
 
-        if (!NTT.isGroupAdmin(this,msg.chatId(),user.id)) {
+        if (!NTT.isGroupAdmin(this, msg.chatId(), user.id)) {
 
             msg.reply("你不是绒布球").failedWith();
 
@@ -86,7 +86,7 @@ public class OptionsMain extends Fragment {
 
         }
 
-        if (!NTT.isGroupAdmin(msg.fragment,msg.chatId(),origin.me.id())) {
+        if (!NTT.isGroupAdmin(msg.fragment, msg.chatId(), origin.me.id())) {
 
             msg.reply("BOT不是群组管理员 :)").async();
 
@@ -94,11 +94,11 @@ public class OptionsMain extends Fragment {
 
         }
 
-        if (!NTT.isUserContactable(this,user.id)) {
+        if (!NTT.isUserContactable(this, user.id)) {
 
             ButtonMarkup buttons = new ButtonMarkup();
 
-            buttons.newButtonLine("打开",POINT_OPTIONS,user.id);
+            buttons.newButtonLine("打开", POINT_OPTIONS, user.id);
 
             msg.reply("点击按钮在私聊打开设置面板 :)\n\n如果没有反应 请检查是否停用了BOT (私聊内点击 '取消屏蔽' 解除) 然后重新点击下方 '打开' 按钮 ~").buttons(buttons).async();
 
@@ -106,18 +106,18 @@ public class OptionsMain extends Fragment {
 
         }
 
-        new Send(this,user.id,optionsMessage(data)).buttons(menuMarkup(data)).html().async();
+        new Send(this, user.id, optionsMessage(data)).buttons(menuMarkup(data)).html().async();
 
         msg.reply("已经通过私聊发送群组设置选项").failedWith();
 
     }
 
-	@Override
-    public void onPayload(UserData user,Msg msg,String payload,String[] params) {
+    @Override
+    public void onPayload(UserData user, Msg msg, String payload, String[] params) {
 
         long groupId = NumberUtil.parseLong(params[0]);
 
-        if (!GroupAdmin.fastAdminCheck(this,groupId,user.id,false)) {
+        if (!GroupAdmin.fastAdminCheck(this, groupId, user.id, false)) {
 
             msg.reply("你不是该群组的管理员 如果最近半小时更改 请在群组中使用 /update_admins_cache 更新缓存.");
 
@@ -133,49 +133,49 @@ public class OptionsMain extends Fragment {
     }
 
     @Override
-    public void onCallback(UserData user,Callback callback,String point,String[] params) {
+    public void onCallback(UserData user, Callback callback, String point, String[] params) {
 
         if (POINT_OPTIONS.equals(point)) {
 
-			long id = NumberUtil.parseLong(params[0]);
+            long id = NumberUtil.parseLong(params[0]);
 
-			if (callback.isGroup()) {
+            if (callback.isGroup()) {
 
-				if (user.id.equals(id)) {
+                if (user.id.equals(id)) {
 
-					callback.url("https://t.me/" + origin.me.username() + "?start=" + PAYLOAD_OPTIONS + PAYLOAD_SPLIT + callback.chatId() + PAYLOAD_SPLIT + user.id);
+                    callback.url("https://t.me/" + origin.me.username() + "?start=" + PAYLOAD_OPTIONS + PAYLOAD_SPLIT + callback.chatId() + PAYLOAD_SPLIT + user.id);
 
-				} else {
+                } else {
 
-					callback.alert("你不是绒布球 :)");
+                    callback.alert("你不是绒布球 :)");
 
-				}
+                }
 
-			} else if (callback.isPrivate()) {
+            } else if (callback.isPrivate()) {
 
-				final GroupData data = GroupData.get(id);
+                final GroupData data = GroupData.get(id);
 
-				callback.edit(optionsMessage(data)).buttons(menuMarkup(data)).html().async();
+                callback.edit(optionsMessage(data)).buttons(menuMarkup(data)).html().async();
 
-			}
+            }
 
-		}
+        }
 
-	}
+    }
 
-	ButtonMarkup menuMarkup(final GroupData data) {
+    ButtonMarkup menuMarkup(final GroupData data) {
 
         return new ButtonMarkup() {{
 
-				newButtonLine("🛠️  功能 选项",ServiceMain.POINT_SERVICE,data.id);
-				newButtonLine("📝  成员 限制",RestMain.POINT_REST,data.id);
-				newButtonLine("🚪  加群 验证",CaptchaMain.POINT_CAPTCHA,data.id);
-				newButtonLine("📢  欢迎 消息",WelcomeMain.POINT_WELCOME,data.id);
-				newButtonLine("🔎  Anti Spam",SpamMain.POINT_SPAM,data.id);
-				newButtonLine("🎥  日志 记录",LogMain.POINT_LOG,data.id);
+            newButtonLine("🛠️  功能 选项", ServiceMain.POINT_SERVICE, data.id);
+            newButtonLine("📝  成员 限制", RestMain.POINT_REST, data.id);
+            newButtonLine("🚪  加群 验证", CaptchaMain.POINT_CAPTCHA, data.id);
+            newButtonLine("📢  欢迎 消息", WelcomeMain.POINT_WELCOME, data.id);
+            newButtonLine("🔎  Anti Spam", SpamMain.POINT_SPAM, data.id);
+            newButtonLine("🎥  日志 记录", LogMain.POINT_LOG, data.id);
 
 
-			}};
+        }};
 
 
     }

@@ -1,40 +1,38 @@
 package io.kurumi.ntt.listeners.base;
 
-import io.kurumi.ntt.td.TdApi.*;
+import io.kurumi.ntt.td.TdApi.User;
 import io.kurumi.ntt.td.client.TdFunction;
 import io.kurumi.ntt.td.model.TMsg;
-import io.kurumi.ntt.td.client.TdException;
-import io.kurumi.ntt.td.client.TdInterface.TextBuilder;
 
 public class TdGetIdFunction extends TdFunction {
 
-	@Override
-	public String functionName() {
+    @Override
+    public String functionName() {
 
-		return "id";
-	}
+        return "id";
+    }
 
-	@Override
-	public void onFunction(User user,TMsg msg,String function,String[] params) {
+    @Override
+    public void onFunction(User user, TMsg msg, String function, String[] params) {
 
-		TextBuilder message = new TextBuilder();
-		
-		if (!msg.isPrivate()) {
-			
-			message.bold("CID").text(" : ").code(msg.chatId + "");
-	
-			if (!msg.isChannel()) message.text("\n");
-			
-		}
-		
-		if (!msg.isChannel()) {
-			
-			message.bold("UID").text(" : ").code(user.id + "");
-			
-		}
-		
-		send(chatId(msg.chatId).input(inputText(message)));
+        TextBuilder message = new TextBuilder();
 
-	}
+        if (!msg.isPrivate()) {
+
+            message.bold("CID").text(" : ").code(msg.chatId + "");
+
+            if (!msg.isChannel()) message.text("\n");
+
+        }
+
+        if (!msg.isChannel()) {
+
+            message.bold("UID").text(" : ").code(user.id + "");
+
+        }
+
+        send(chatId(msg.chatId).input(inputText(message)));
+
+    }
 
 }

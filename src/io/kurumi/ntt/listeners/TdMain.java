@@ -1,58 +1,53 @@
 package io.kurumi.ntt.listeners;
 
-import io.kurumi.ntt.td.TdApi.*;
-
 import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
 import io.kurumi.ntt.Env;
-import io.kurumi.ntt.listeners.TdMain;
+import io.kurumi.ntt.listeners.base.TdGetIdFunction;
+import io.kurumi.ntt.listeners.base.TdGetUser;
+import io.kurumi.ntt.listeners.base.TdPingFunction;
+import io.kurumi.ntt.listeners.extra.TdDnsLookup;
+import io.kurumi.ntt.listeners.group.CleanAccounts;
+import io.kurumi.ntt.td.TdApi.User;
 import io.kurumi.ntt.td.client.TdBot;
 import io.kurumi.ntt.td.model.TMsg;
-import cn.hutool.log.LogFactory;
-import io.kurumi.ntt.td.client.TdException;
-import cn.hutool.core.util.StrUtil;
-import io.kurumi.ntt.listeners.base.TdPingFunction;
-import io.kurumi.ntt.listeners.base.TdGetIdFunction;
-import io.kurumi.ntt.listeners.group.CleanAccounts;
-import io.kurumi.ntt.listeners.extra.TdDnsLookup;
-import io.kurumi.ntt.listeners.group.GroupExport;
-import io.kurumi.ntt.listeners.base.TdGetUser;
 
 public class TdMain extends TdBot {
 
-	public static Log log = LogFactory.get(TdMain.class);
+    public static Log log = LogFactory.get(TdMain.class);
 
-	public TdMain() {
+    public TdMain() {
 
-		super(Env.BETA_TOKEN);
+        super(Env.BETA_TOKEN);
 
-		addListener(new TdPingFunction());
-		addListener(new TdGetIdFunction());
+        addListener(new TdPingFunction());
+        addListener(new TdGetIdFunction());
 
-		addListener(new TdDnsLookup());
+        addListener(new TdDnsLookup());
 
-		addListener(new CleanAccounts());
+        addListener(new CleanAccounts());
 
-		addListener(new TdGetUser());
+        addListener(new TdGetUser());
 
-	}
+    }
 
-	@Override
-	public void onFunction(User user,TMsg msg,String function,String[] params) {
+    @Override
+    public void onFunction(User user, TMsg msg, String function, String[] params) {
 
-		if ("start".equals(function)) {
+        if ("start".equals(function)) {
 
-			sendText(msg,"喵.... _(:з」∠)_");
+            sendText(msg, "喵.... _(:з」∠)_");
 
-			return;
+            return;
 
-		}
+        }
 
-		if (msg.isPrivate()) {
+        if (msg.isPrivate()) {
 
-			sendText(msg,"没有这个命令啦 _(:з」∠)_");
+            sendText(msg, "没有这个命令啦 _(:з」∠)_");
 
-		}
+        }
 
-	}
+    }
 
 }

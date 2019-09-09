@@ -11,16 +11,13 @@ import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.BotLog;
-import io.kurumi.ntt.utils.NTT;
+import net.coobird.thumbnailator.Thumbnails;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import net.coobird.thumbnailator.Thumbnails;
-import com.pengrad.telegrambot.request.UploadStickerFile;
-import com.pengrad.telegrambot.response.GetFileResponse;
-import com.pengrad.telegrambot.request.SendSticker;
 
 public class StickerExport extends Fragment {
 
@@ -49,7 +46,7 @@ public class StickerExport extends Fragment {
     public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
         data.with(msg);
-		
+
         Message message = msg.message();
 
         if (message.sticker() != null) {
@@ -160,7 +157,7 @@ public class StickerExport extends Fragment {
                 }
 
                 execute(new SendDocument(msg.chatId(), local).fileName("sticker.png"));
-				
+
             }
 
         } else {

@@ -15,103 +15,111 @@ import io.kurumi.ntt.utils.NTT;
 
 public class TelegramListener extends Fragment {
 
-	public static final String POINT_ACCEPT = "qj_accept";
-	public static final String POINT_REJECT = "qj_reject";
-	public static final String POINT_BLOCK = "qj_block";
-	public static final String POINT_IGNORE = "qj_ignore";
+    public static final String POINT_ACCEPT = "qj_accept";
+    public static final String POINT_REJECT = "qj_reject";
+    public static final String POINT_BLOCK = "qj_block";
+    public static final String POINT_IGNORE = "qj_ignore";
 
-	@Override
-	public void init(BotFragment origin) {
-		
-		super.init(origin);
-		
-		registerCallback(POINT_ACCEPT,POINT_REJECT,POINT_BLOCK,POINT_IGNORE);
-		
-	}
-	
-	@Override
-	public void onCallback(UserData user,Callback callback,String point,String[] params) {
+    @Override
+    public void init(BotFragment origin) {
 
-		if (NTT.checkGroupAdmin(callback)) return;
+        super.init(origin);
 
-		if (POINT_IGNORE.equals(point)) {
+        registerCallback(POINT_ACCEPT, POINT_REJECT, POINT_BLOCK, POINT_IGNORE);
 
-			callback.editMarkup(new ButtonMarkup() {{ newButtonLine("已忽略"); }});
+    }
 
-			return;
+    @Override
+    public void onCallback(UserData user, Callback callback, String point, String[] params) {
 
-		}
-		
-		Long groupId = TelegramBridge.telegramIndex.get(callback.chatId());
+        if (NTT.checkGroupAdmin(callback)) return;
 
-		InlineKeyboardButton[][] buttons = callback.message().replyMarkup().inlineKeyboard();
+        if (POINT_IGNORE.equals(point)) {
 
-		String flag = buttons[0][0].callbackData().split(",")[1];
-		
-		Long userId  = NumberUtil.parseLong(buttons[0][1].callbackData().split(",")[1]);
-		
+            callback.editMarkup(new ButtonMarkup() {{
+                newButtonLine("已忽略");
+            }});
 
-		TinxApi api = Launcher.TINX.api;
+            return;
 
-		if (POINT_ACCEPT.equals(point)) {
+        }
 
-			api.setGroupAddRequestAsync(flag,Variants.GR_ADD,true,null);
+        Long groupId = TelegramBridge.telegramIndex.get(callback.chatId());
 
-			callback.editMarkup(new ButtonMarkup() {{ newButtonLine("已同意"); }});
-			
-		} else if (POINT_REJECT.equals(point)) {
+        InlineKeyboardButton[][] buttons = callback.message().replyMarkup().inlineKeyboard();
 
-			api.setGroupAddRequestAsync(flag,Variants.GR_ADD,false,null);
+        String flag = buttons[0][0].callbackData().split(",")[1];
 
-			callback.editMarkup(new ButtonMarkup() {{ newButtonLine("已拒绝"); }});
+        Long userId = NumberUtil.parseLong(buttons[0][1].callbackData().split(",")[1]);
 
-		} else if (POINT_BLOCK.equals(point)) {
 
-			api.setGroupAddRequest(flag,Variants.GR_ADD,true,null);
-			api.setGroupKickAsync(groupId,userId,true);
-			
-			callback.editMarkup(new ButtonMarkup() {{ newButtonLine("已屏蔽"); }});
+        TinxApi api = Launcher.TINX.api;
 
-		}
+        if (POINT_ACCEPT.equals(point)) {
 
-	}
+            api.setGroupAddRequestAsync(flag, Variants.GR_ADD, true, null);
 
-	static String formarMessage(UserData user) {
+            callback.editMarkup(new ButtonMarkup() {{
+                newButtonLine("已同意");
+            }});
 
-		String message = user.name() + " : ";
+        } else if (POINT_REJECT.equals(point)) {
 
-		return message;
+            api.setGroupAddRequestAsync(flag, Variants.GR_ADD, false, null);
 
-	}
+            callback.editMarkup(new ButtonMarkup() {{
+                newButtonLine("已拒绝");
+            }});
 
-	@Override
-	public int checkMsg(UserData user,Msg msg) {
+        } else if (POINT_BLOCK.equals(point)) {
 
-		return (msg.isGroup() && !TelegramBridge.disable.containsKey(msg.chatId()) && TelegramBridge.telegramIndex.containsKey(msg.chatId())) ? PROCESS_ASYNC : PROCESS_CONTINUE;
+            api.setGroupAddRequest(flag, Variants.GR_ADD, true, null);
+            api.setGroupKickAsync(groupId, userId, true);
 
-	}
+            callback.editMarkup(new ButtonMarkup() {{
+                newButtonLine("已屏蔽");
+            }});
 
-	@Override
-	public void onGroup(UserData user,Msg msg) {
+        }
 
-		Long groupId = TelegramBridge.telegramIndex.get(msg.chatId());
+    }
 
-		TinxApi api = Launcher.TINX.api;
+    static String formarMessage(UserData user) {
 
-		if (msg.hasText()) {
+        String message = user.name() + " : ";
 
-			api.sendGroupMsgAsync(groupId,formarMessage(user) + msg.text(),true);
+        return message;
 
-		} else if (msg.sticker() != null) {
+    }
 
-			api.sendGroupMsgAsync(groupId,formarMessage(user) + CqCodeUtil.inputSticker(msg.sticker()),false);
+    @Override
+    public int checkMsg(UserData user, Msg msg) {
 
-		} else if (msg.photo() != null) {
+        return (msg.isGroup() && !TelegramBridge.disable.containsKey(msg.chatId()) && TelegramBridge.telegramIndex.containsKey(msg.chatId())) ? PROCESS_ASYNC : PROCESS_CONTINUE;
 
-			api.sendGroupMsgAsync(groupId,formarMessage(user) + CqCodeUtil.makeImage(msg.photo()),false);
+    }
 
-		}
+    @Override
+    public void onGroup(UserData user, Msg msg) {
 
-	}
+        Long groupId = TelegramBridge.telegramIndex.get(msg.chatId());
+
+        TinxApi api = Launcher.TINX.api;
+
+        if (msg.hasText()) {
+
+            api.sendGroupMsgAsync(groupId, formarMessage(user) + msg.text(), true);
+
+        } else if (msg.sticker() != null) {
+
+            api.sendGroupMsgAsync(groupId, formarMessage(user) + CqCodeUtil.inputSticker(msg.sticker()), false);
+
+        } else if (msg.photo() != null) {
+
+            api.sendGroupMsgAsync(groupId, formarMessage(user) + CqCodeUtil.makeImage(msg.photo()), false);
+
+        }
+
+    }
 
 }

@@ -7,33 +7,28 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import io.kurumi.ntt.db.AbsData;
 
-import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Updates.*;
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.gt;
-import static com.mongodb.client.model.Filters.not;
-import static com.mongodb.client.model.Updates.combine;
-import static com.mongodb.client.model.Updates.set;
+import static com.mongodb.client.model.Filters.exists;
+import static com.mongodb.client.model.Filters.lt;
 
 public class MessagePoint {
 
     public static AbsData<Integer, MessagePoint> data = new AbsData<Integer, MessagePoint>(MessagePoint.class) {{
 
-			collection.deleteMany(exists("createAt",false));
-			collection.deleteMany(lt("createAt",System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000L));
+        collection.deleteMany(exists("createAt", false));
+        collection.deleteMany(lt("createAt", System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000L));
 
-		}};
+    }};
 
     public int id;
     public int type;
 
-	public long accountId;
+    public long accountId;
     public long userId;
     public long targetId;
 
     public long createAt;
 
-    public static MessagePoint setDM(final int messageId,long userId,long dmId) {
+    public static MessagePoint setDM(final int messageId, long userId, long dmId) {
 
         MessagePoint point = new MessagePoint();
 
@@ -45,14 +40,14 @@ public class MessagePoint {
 
         point.targetId = dmId;
 
-        data.setById(messageId,point);
+        data.setById(messageId, point);
 
         return point;
 
 
     }
 
-    public static MessagePoint set(final int messageId,int type,long targetId) {
+    public static MessagePoint set(final int messageId, int type, long targetId) {
 
         MessagePoint point = new MessagePoint();
 
@@ -64,7 +59,7 @@ public class MessagePoint {
 
         point.targetId = targetId;
 
-        data.setById(messageId,point);
+        data.setById(messageId, point);
 
         return point;
 
@@ -80,30 +75,30 @@ public class MessagePoint {
 
     }
 
-	public static MessagePoint getFromStatus(Message msg) {
+    public static MessagePoint getFromStatus(Message msg) {
 
-		InlineKeyboardMarkup markup = msg.replyMarkup();
+        InlineKeyboardMarkup markup = msg.replyMarkup();
 
-		if (markup == null) return null;
+        if (markup == null) return null;
 
-		MessagePoint point = new MessagePoint();
+        MessagePoint point = new MessagePoint();
 
-		point.type = 1;
+        point.type = 1;
 
-		InlineKeyboardButton[] buttons = markup.inlineKeyboard()[0];
+        InlineKeyboardButton[] buttons = markup.inlineKeyboard()[0];
 
-		String[] params = ArrayUtil.remove(buttons[2].callbackData().split(","),0);
+        String[] params = ArrayUtil.remove(buttons[2].callbackData().split(","), 0);
 
-		if (params.length != 3) {
+        if (params.length != 3) {
 
-			return null;
+            return null;
 
-		}
+        }
 
-		point.accountId = NumberUtil.parseLong(ArrayUtil.remove(buttons[0].callbackData().split(","),0)[0]);
-		point.targetId = NumberUtil.parseLong(ArrayUtil.remove(buttons[1].callbackData().split(","),0)[0]);
-		
-		return point;
+        point.accountId = NumberUtil.parseLong(ArrayUtil.remove(buttons[0].callbackData().split(","), 0)[0]);
+        point.targetId = NumberUtil.parseLong(ArrayUtil.remove(buttons[1].callbackData().split(","), 0)[0]);
+
+        return point;
 
     }
 

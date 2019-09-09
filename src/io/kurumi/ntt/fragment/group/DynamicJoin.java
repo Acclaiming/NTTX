@@ -1,8 +1,9 @@
 package io.kurumi.ntt.fragment.group;
 
-import io.kurumi.ntt.fragment.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.model.*;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Msg;
 
 public class DynamicJoin extends Fragment {
 

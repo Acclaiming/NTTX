@@ -1,76 +1,72 @@
 package io.kurumi.ntt.fragment.twitter.tasks;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ReUtil;
+import io.kurumi.ntt.fragment.group.MaliciousMessage;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.NTT;
-import java.util.LinkedList;
+import twitter4j.*;
+
 import java.util.TimerTask;
-import twitter4j.Paging;
-import twitter4j.ResponseList;
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import io.kurumi.ntt.fragment.group.MaliciousMessage;
-import cn.hutool.core.util.ReUtil;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class TimelineTask extends TimerTask {
 
-	public static ExecutorService timelinePool = Executors.newFixedThreadPool(8);
+    public static ExecutorService timelinePool = Executors.newFixedThreadPool(8);
 
-	@Override
-	public void run() {
+    @Override
+    public void run() {
 
-		for (final TAuth account : TAuth.data.getAll()) {
+        for (final TAuth account : TAuth.data.getAll()) {
 
-			if (account.tl == null) continue;
+            if (account.tl == null) continue;
 
-			timelinePool.execute(new Runnable() {
+            timelinePool.execute(new Runnable() {
 
-					@Override
-					public void run() {
+                @Override
+                public void run() {
 
-						final Twitter api = account.createApi();
+                    final Twitter api = account.createApi();
 
-						try {
+                    try {
 
-							processTimeline(account,api);
+                        processTimeline(account, api);
 
-						} catch (TwitterException e) {
+                    } catch (TwitterException e) {
 
-							if (account.tl == null) return;
-							
-							if (e.getStatusCode() == 503 || e.getErrorCode() == -1 || e.getStatusCode() == 429) return;
+                        if (account.tl == null) return;
 
-							account.tl = null;
+                        if (e.getStatusCode() == 503 || e.getErrorCode() == -1 || e.getStatusCode() == 429) return;
 
-							new Send(account.user,"时间流已关闭 :\n\n{}",NTT.parseTwitterException(e)).exec();
+                        account.tl = null;
 
-							if (TAuth.data.containsId(account.id)) {
+                        new Send(account.user, "时间流已关闭 :\n\n{}", NTT.parseTwitterException(e)).exec();
 
-								TAuth.data.setById(account.id,account);
+                        if (TAuth.data.containsId(account.id)) {
 
-							}
+                            TAuth.data.setById(account.id, account);
 
-						}
+                        }
 
-					}
+                    }
 
-				});
-		}
+                }
 
-	}
+            });
+        }
 
-    void processTimeline(TAuth auth,Twitter api) throws TwitterException {
+    }
 
-		long offset = 0;
+    void processTimeline(TAuth auth, Twitter api) throws TwitterException {
+
+        long offset = 0;
 
         if (auth.tl_offset != null) {
 
-			offset = auth.tl_offset;
+            offset = auth.tl_offset;
 
             ResponseList<Status> timeline = api.getHomeTimeline(new Paging().count(200).sinceId(offset + 1));
 
@@ -82,57 +78,58 @@ public class TimelineTask extends TimerTask {
 
                 }
 
-				if (auth.tl_na != null) {
+                if (auth.tl_na != null) {
 
-					if (status.getSource().contains("IFTTT")) continue;
+                    if (status.getSource().contains("IFTTT")) continue;
 
-					if (status.getSource().contains("ツイ廃あらーと")) continue;
+                    if (status.getSource().contains("ツイ廃あらーと")) continue;
 
-					if (status.getSource().contains("今日のツイライフ")) continue;
+                    if (status.getSource().contains("今日のツイライフ")) continue;
 
-					if (status.getSource().contains("fllwrs")) continue;
+                    if (status.getSource().contains("fllwrs")) continue;
 
-					if (status.getSource().contains("twittbot.net")) continue;
+                    if (status.getSource().contains("twittbot.net")) continue;
 
-				}
+                }
 
                 StatusArchive archive = StatusArchive.save(status).loop(api);
 
-				if (auth.tl == null) continue;
+                if (auth.tl == null) continue;
 
                 if (archive.from.equals(auth.id)) continue;
 
-				if (auth.tl_dn != null) {
+                if (auth.tl_dn != null) {
 
-					if (!DeviceNotificationFilter.isDeviceNotificationEnabled(auth,api,status.getUser().getId())) continue;
+                    if (!DeviceNotificationFilter.isDeviceNotificationEnabled(auth, api, status.getUser().getId()))
+                        continue;
 
-				}
+                }
 
-				if (archive.retweetedStatus != -1) {
+                if (archive.retweetedStatus != -1) {
 
-					if (auth.tl_nt != null) continue;
+                    if (auth.tl_nt != null) continue;
 
-				} else if (archive.inReplyToStatusId == -1) {
+                } else if (archive.inReplyToStatusId == -1) {
 
-					if (auth.tl_ns != null) continue;
+                    if (auth.tl_ns != null) continue;
 
-				} else {
+                } else {
 
-					if (auth.tl_nr != null) continue;
+                    if (auth.tl_nr != null) continue;
 
-				}
+                }
 
-				if (auth.tl_nesu != null) {
+                if (auth.tl_nesu != null) {
 
-					if (ReUtil.contains(MaliciousMessage.esuWordsRegex,archive.text)) {
+                    if (ReUtil.contains(MaliciousMessage.esuWordsRegex, archive.text)) {
 
-						continue;
+                        continue;
 
-					}
+                    }
 
-				}
+                }
 
-				archive.sendTo(auth.user,1,auth,status);
+                archive.sendTo(auth.user, 1, auth, status);
 
             }
 
@@ -152,13 +149,13 @@ public class TimelineTask extends TimerTask {
 
         }
 
-		if (auth.tl_offset == null || !auth.tl_offset.equals(offset)) {
+        if (auth.tl_offset == null || !auth.tl_offset.equals(offset)) {
 
-			auth.tl_offset = offset;
+            auth.tl_offset = offset;
 
-			TAuth.data.setById(auth.id,auth);
+            TAuth.data.setById(auth.id, auth);
 
-		}
+        }
 
     }
 

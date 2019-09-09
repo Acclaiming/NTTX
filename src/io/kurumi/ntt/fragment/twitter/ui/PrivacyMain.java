@@ -10,60 +10,59 @@ import io.kurumi.ntt.model.request.ButtonMarkup;
 
 public class PrivacyMain extends Fragment {
 
-	public static final String POINT_PRIVACY = "twi_pri";
-	
-	@Override
-	public void init(BotFragment origin) {
-	
-		super.init(origin);
-		
-		registerCallback(POINT_PRIVACY);
-		
-	}
+    public static final String POINT_PRIVACY = "twi_pri";
 
-	@Override
-	public void onCallback(UserData user,Callback callback,String point,String[] params) {
-		
-		if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
+    @Override
+    public void init(BotFragment origin) {
 
-			callback.invalidQuery();
+        super.init(origin);
 
-			return;
+        registerCallback(POINT_PRIVACY);
 
-		}
+    }
 
-		long accountId = NumberUtil.parseLong(params[0]);
+    @Override
+    public void onCallback(UserData user, Callback callback, String point, String[] params) {
 
-		TAuth account = TAuth.getById(accountId);
+        if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
 
-		if (account == null) {
+            callback.invalidQuery();
 
-			callback.alert("无效的账号 .");
+            return;
 
-			callback.delete();
+        }
 
-			return;
+        long accountId = NumberUtil.parseLong(params[0]);
 
-		}
+        TAuth account = TAuth.getById(accountId);
 
-		
-		if (POINT_PRIVACY.equals(point)) {
-			
-			privacyMain(user,callback,account);
-			
-		}
-		
-	}
+        if (account == null) {
 
-	void privacyMain(UserData user,Callback callback,TAuth account) {
-		
-		String message = "隐私模式设定选单 : [ " + account.archive().name + " ]";
-		
-		ButtonMarkup buttons = new ButtonMarkup();
-		
-		
-		
-	}
-	
-	
+            callback.alert("无效的账号 .");
+
+            callback.delete();
+
+            return;
+
+        }
+
+
+        if (POINT_PRIVACY.equals(point)) {
+
+            privacyMain(user, callback, account);
+
+        }
+
+    }
+
+    void privacyMain(UserData user, Callback callback, TAuth account) {
+
+        String message = "隐私模式设定选单 : [ " + account.archive().name + " ]";
+
+        ButtonMarkup buttons = new ButtonMarkup();
+
+
+    }
+
+
 }

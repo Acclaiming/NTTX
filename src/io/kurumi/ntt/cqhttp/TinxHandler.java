@@ -1,18 +1,8 @@
 package io.kurumi.ntt.cqhttp;
 
-import io.kurumi.ntt.cqhttp.Processer;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPromise;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
 import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketClientHandshaker;
-import io.netty.handler.codec.http.websocketx.WebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketHandshakeException;
+import io.netty.handler.codec.http.websocketx.*;
 import io.netty.util.CharsetUtil;
 
 public class TinxHandler extends SimpleChannelInboundHandler<Object> {
@@ -20,12 +10,12 @@ public class TinxHandler extends SimpleChannelInboundHandler<Object> {
     private final WebSocketClientHandshaker handshaker;
     private ChannelPromise handshakeFuture;
 
-	public TinxBot bot;
+    public TinxBot bot;
 
-    public TinxHandler(TinxBot bot,WebSocketClientHandshaker handshaker) {
+    public TinxHandler(TinxBot bot, WebSocketClientHandshaker handshaker) {
 
         this.handshaker = handshaker;
-		this.bot = bot;
+        this.bot = bot;
 
     }
 
@@ -54,21 +44,21 @@ public class TinxHandler extends SimpleChannelInboundHandler<Object> {
     }
 
     @Override
-    public void channelRead0(ChannelHandlerContext ctx,Object msg) throws Exception {
+    public void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
 
         Channel ch = ctx.channel();
 
         if (!handshaker.isHandshakeComplete()) {
 
             try {
-				
-                handshaker.finishHandshake(ch,(FullHttpResponse) msg);
 
-               // BotLog.debug("cqhttp-api 完成握手");
+                handshaker.finishHandshake(ch, (FullHttpResponse) msg);
+
+                // BotLog.debug("cqhttp-api 完成握手");
                 handshakeFuture.setSuccess();
 
             } catch (WebSocketHandshakeException e) {
-				
+
                 handshakeFuture.setFailure(e);
             }
 
@@ -90,23 +80,23 @@ public class TinxHandler extends SimpleChannelInboundHandler<Object> {
 
             TextWebSocketFrame textFrame = (TextWebSocketFrame) frame;
 
-            
-			Processer.processUpdate(bot,textFrame.text());
+
+            Processer.processUpdate(bot, textFrame.text());
 
         } else if (frame instanceof PongWebSocketFrame) {
         } else if (frame instanceof CloseWebSocketFrame) {
-			
+
             ch.close();
 
         }
 
 
-	}
+    }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx,Throwable cause) {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 
-		cause.printStackTrace();
+        cause.printStackTrace();
 
         if (!handshakeFuture.isDone()) {
 

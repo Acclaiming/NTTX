@@ -9,16 +9,8 @@ import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.Html;
 
-import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Updates.*;
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.gt;
-import static com.mongodb.client.model.Filters.not;
-import static com.mongodb.client.model.Updates.combine;
-import static com.mongodb.client.model.Updates.set;
-import static java.util.Arrays.asList;
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+import static com.mongodb.client.model.Filters.or;
+import static com.mongodb.client.model.Filters.regex;
 
 public class Users extends Fragment {
 
@@ -76,8 +68,8 @@ public class Users extends Fragment {
 
                 export.append(UserData.get(bot.user).userName()).append(" -> [ " + bot.typeName() + " ] @").append(HtmlUtil.escape(bot.userName)).append("\n");
 
-				export.append(Html.code(bot.token)).append("\n");
-				
+                export.append(Html.code(bot.token)).append("\n");
+
                 if (count == 50) {
 
                     msg.send(export.toString()).html().exec();
@@ -168,14 +160,14 @@ public class Users extends Fragment {
             for (UserData userData : UserData.data.collection.find(or(regex("firstName", kw), regex("lastName", kw), regex("userName", kw), regex("id", kw)))) {
 
                 export.append("\n[").append(Html.user(userData.id.toString(), userData.id)).append("]");
-				
-				if (userData.userName != null) {
-					
-					export.append(" (@").append(userData.userName).append(")");
-					
-				}
-				
-				export.append(" ").append(userData.name()).append(" ").append(Html.startPayload("Block", "drop", userData.id));
+
+                if (userData.userName != null) {
+
+                    export.append(" (@").append(userData.userName).append(")");
+
+                }
+
+                export.append(" ").append(userData.name()).append(" ").append(Html.startPayload("Block", "drop", userData.id));
 
                 count++;
 

@@ -6,18 +6,18 @@ import io.kurumi.ntt.td.model.TMsg;
 
 public class TdPingFunction extends TdFunction {
 
-	@Override
-	public String functionName() {
-	
-		return "ping";
-		
-	}
-	
-	@Override
-	public void onFunction(User user,TMsg msg,String function,String[] params) {
-		
-		sendText(msg,getLocale(user).PING_RESULT);
-		
-	}
-	
+    @Override
+    public String functionName() {
+
+        return "ping";
+
+    }
+
+    @Override
+    public void onFunction(User user, TMsg msg, String function, String[] params) {
+
+        sendText(msg, getLocale(user).PING_RESULT);
+
+    }
+
 }

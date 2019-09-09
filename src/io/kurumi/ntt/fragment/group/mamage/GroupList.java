@@ -14,122 +14,122 @@ import io.kurumi.ntt.utils.Html;
 
 public class GroupList extends Fragment {
 
-	final String POINT_SHOW_PAGE = "_groups";
-	
-	@Override
-	public void init(BotFragment origin) {
-		
-		super.init(origin);
-		
-		registerAdminFunction("_group_list");
-		registerCallback(POINT_SHOW_PAGE);
-		
-	}
+    final String POINT_SHOW_PAGE = "_groups";
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-		
-		GroupData.data.saveAll();
-		
-		String message = exportContent(1);
-		
-		msg.send(message).buttons(makeButtons(GroupData.data.collection.countDocuments(),1)).html().async();
-	
-	}
+    @Override
+    public void init(BotFragment origin) {
 
-	@Override
-	public void onCallback(UserData user,Callback callback,String point,String[] params) {
-		
-		// GroupData.data.saveAll();
-		
-		int cursor = NumberUtil.parseInt(params[0]);
+        super.init(origin);
+
+        registerAdminFunction("_group_list");
+        registerCallback(POINT_SHOW_PAGE);
+
+    }
+
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+
+        GroupData.data.saveAll();
+
+        String message = exportContent(1);
+
+        msg.send(message).buttons(makeButtons(GroupData.data.collection.countDocuments(), 1)).html().async();
+
+    }
+
+    @Override
+    public void onCallback(UserData user, Callback callback, String point, String[] params) {
+
+        // GroupData.data.saveAll();
+
+        int cursor = NumberUtil.parseInt(params[0]);
 
         callback.text("正在加载...");
 
         long count = GroupData.data.collection.countDocuments();
 
-        callback.edit(exportContent(cursor)).buttons(makeButtons(count,cursor)).html().exec();
-		
-	}
+        callback.edit(exportContent(cursor)).buttons(makeButtons(count, cursor)).html().exec();
+
+    }
 
     String exportContent(int cursor) {
 
-		String message = "";
-  
+        String message = "";
+
         for (GroupData group : GroupData.data.collection.find().skip((cursor - 1) * 10).limit(10)) {
 
-			message += "\n";
-			
-			if (group.username != null) {
-				
-				message += "🌐";
-				
-			} else {
-				
-				message += "🔒";
-				
-			}
-			
-			message += " | ";
-			
-			message += Html.code(group.id);
-            
-			message += " | ";
-	
-			if (group.username != null) {
-				
-				message += Html.a(group.title,"https://t.me/" + group.username);
-				
-			} else if (!StrUtil.isBlank(group.link)) {
-				
-				message += Html.a(group.title,group.link);
-				
-			} else {
-				
-				message += group.title;
-				
-			}
-			
+            message += "\n";
+
+            if (group.username != null) {
+
+                message += "🌐";
+
+            } else {
+
+                message += "🔒";
+
+            }
+
+            message += " | ";
+
+            message += Html.code(group.id);
+
+            message += " | ";
+
+            if (group.username != null) {
+
+                message += Html.a(group.title, "https://t.me/" + group.username);
+
+            } else if (!StrUtil.isBlank(group.link)) {
+
+                message += Html.a(group.title, group.link);
+
+            } else {
+
+                message += group.title;
+
+            }
+
         }
 
         return message;
-		
+
     }
 
-    ButtonMarkup makeButtons(final long count,final long current) {
+    ButtonMarkup makeButtons(final long count, final long current) {
 
         return new ButtonMarkup() {{
 
-				ButtonLine line = newButtonLine();
+            ButtonLine line = newButtonLine();
 
-				if (current > 1) {
+            if (current > 1) {
 
-					line.newButton(" □ ",POINT_SHOW_PAGE,1);
+                line.newButton(" □ ", POINT_SHOW_PAGE, 1);
 
-					line.newButton(" << ",POINT_SHOW_PAGE,current - 1);
+                line.newButton(" << ", POINT_SHOW_PAGE, current - 1);
 
-				}
+            }
 
-				int max = (int) count / 10;
+            int max = (int) count / 10;
 
-				if (count % 10 != 0) {
+            if (count % 10 != 0) {
 
-					max++;
+                max++;
 
-				}
+            }
 
-				line.newButton(current + " / " + max,"null");
+            line.newButton(current + " / " + max, "null");
 
-				if (current < max) {
+            if (current < max) {
 
-					line.newButton(" >> ",POINT_SHOW_PAGE,current + 1);
+                line.newButton(" >> ", POINT_SHOW_PAGE, current + 1);
 
-					line.newButton(" ■ ",POINT_SHOW_PAGE,max);
+                line.newButton(" ■ ", POINT_SHOW_PAGE, max);
 
-				}
+            }
 
-			}};
+        }};
 
     }
-	
+
 }

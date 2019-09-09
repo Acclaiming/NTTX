@@ -4,6 +4,6 @@ import io.kurumi.ntt.cqhttp.model.LoginInfo;
 
 public class GetLoginInfoResponse extends BaseResponse {
 
-	public LoginInfo data;
-	
+    public LoginInfo data;
+
 }

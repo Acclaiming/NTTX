@@ -1,13 +1,12 @@
 package io.kurumi.ntt.utils;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.EscapeUtil;
+import cn.hutool.core.util.URLUtil;
 import cn.hutool.http.HtmlUtil;
 import cn.hutool.json.JSONObject;
 import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.fragment.Fragment;
-import cn.hutool.core.text.escape.Html4Unescape;
-import cn.hutool.core.util.EscapeUtil;
-import cn.hutool.core.util.URLUtil;
 
 public class Html {
 
@@ -29,22 +28,22 @@ public class Html {
 
     }
 
-	public static String a(String link) {
+    public static String a(String link) {
 
         if (link == null) return link;
 
-		if (link.startsWith("http")) link = URLUtil.url(link).toString();
+        if (link.startsWith("http")) link = URLUtil.url(link).toString();
 
         return "<a href=\"" + link + "\">" + HtmlUtil.escape(link) + "</a>";
 
     }
-	
+
 
     public static String a(String text, String href) {
 
         if (href == null) return text;
-		
-		if (href.startsWith("http")) href = URLUtil.url(href).toString();
+
+        if (href.startsWith("http")) href = URLUtil.url(href).toString();
 
         return "<a href=\"" + href + "\">" + HtmlUtil.escape(text) + "</a>";
 

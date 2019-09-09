@@ -5,17 +5,9 @@ import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.model.Msg;
 
+import java.util.*;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashSet;
-
-import cn.hutool.core.util.NumberUtil;
-import com.pengrad.telegrambot.model.User;
-import com.pengrad.telegrambot.request.LeaveChat;
-import com.pengrad.telegrambot.request.KickChatMember;
-
-import java.util.List;
-import java.util.*;
 
 public class UserBotFragment extends BotFragment {
 
@@ -38,7 +30,7 @@ public class UserBotFragment extends BotFragment {
 
         super.reload();
 
-		// addFragment(new BotChannnel());
+        // addFragment(new BotChannnel());
 
         bot = UserBot.data.getById(botId);
 

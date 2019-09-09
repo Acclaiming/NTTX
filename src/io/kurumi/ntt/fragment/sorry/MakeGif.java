@@ -8,90 +8,91 @@ import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.Html;
+
 import java.io.File;
 
 public class MakeGif extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerFunction("mkgif");
+        registerFunction("mkgif");
 
-		registerPoint(POINT_MAKE_GIF);
+        registerPoint(POINT_MAKE_GIF);
 
-	}
+    }
 
-	final String POINT_MAKE_GIF = "make_gif";
+    final String POINT_MAKE_GIF = "make_gif";
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		setPrivatePoint(user,msg,POINT_MAKE_GIF);
+        setPrivatePoint(user, msg, POINT_MAKE_GIF);
 
-		msg.send("请选择模板 :").withCancel().keyboardVertical(SorryApi.templates.keySet().toArray()).async();
+        msg.send("请选择模板 :").withCancel().keyboardVertical(SorryApi.templates.keySet().toArray()).async();
 
-	}
+    }
 
-	@Override
-	public int checkPoint(UserData user,Msg msg,String point,PointData data) {
+    @Override
+    public int checkPoint(UserData user, Msg msg, String point, PointData data) {
 
-		return PROCESS_ASYNC;
+        return PROCESS_ASYNC;
 
-	}
+    }
 
-	@Override
-	public void onPoint(UserData user,Msg msg,String point,PointData data) {
+    @Override
+    public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
-		if (data.step == 0) {
+        if (data.step == 0) {
 
-			if (!SorryApi.templates.containsKey(msg.text())) {
+            if (!SorryApi.templates.containsKey(msg.text())) {
 
-				clearPrivatePoint(user);
+                clearPrivatePoint(user);
 
-				msg.send("没有这个模板 :(").async();
+                msg.send("没有这个模板 :(").async();
 
-				return;
+                return;
 
-			}
+            }
 
-			SorryApi temp = SorryApi.templates.get(msg.text());
+            SorryApi temp = SorryApi.templates.get(msg.text());
 
-			data.step = 1;
-			data.data = temp;
+            data.step = 1;
+            data.data = temp;
 
-			msg.send("请输入文字，一行一句。 默认 : \n\n" + Html.code(ArrayUtil.join(temp.hint,"\n"))).html().withCancel().async();
+            msg.send("请输入文字，一行一句。 默认 : \n\n" + Html.code(ArrayUtil.join(temp.hint, "\n"))).html().withCancel().async();
 
-			return;
+            return;
 
-		} else if (data.step == 1) {
+        } else if (data.step == 1) {
 
-			clearPrivatePoint(user);
+            clearPrivatePoint(user);
 
-			Msg status = msg.send("正在制作....").send();
+            Msg status = msg.send("正在制作....").send();
 
-			SorryApi api = data.data();
+            SorryApi api = data.data();
 
-			File file = api.make(msg.hasText() ? msg.text().split("\n") : new String[0]);
+            File file = api.make(msg.hasText() ? msg.text().split("\n") : new String[0]);
 
-			if (file == null) {
+            if (file == null) {
 
-				status.edit("服务器繁忙 请重试....").async();
+                status.edit("服务器繁忙 请重试....").async();
 
-				return;
+                return;
 
-			}
+            }
 
-			status.delete();
-			
-			msg.sendUpdatingVideo();
+            status.delete();
 
-			executeAsync(new SendAnimation(msg.chatId(),file));
+            msg.sendUpdatingVideo();
 
-		}
+            executeAsync(new SendAnimation(msg.chatId(), file));
 
-	}
+        }
+
+    }
 
 
 }

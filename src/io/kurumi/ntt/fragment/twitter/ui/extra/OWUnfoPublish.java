@@ -16,211 +16,211 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
+import io.kurumi.ntt.utils.NTT;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import io.kurumi.ntt.utils.NTT;
 
 public class OWUnfoPublish extends Fragment {
 
-	public static String POINT_OUP = "twi_oup";
-	public static String POINT_OUP_SET = "twi_oup_set";
+    public static String POINT_OUP = "twi_oup";
+    public static String POINT_OUP_SET = "twi_oup_set";
 
-	public static void onUnfo(TAuth auth,Twitter api,UserArchive archive) {
-		
-		if (auth.oup == null) return;
-		
-		try {
-			
-			Status status = api.updateStatus(formatMessage(auth,archive));
+    public static void onUnfo(TAuth auth, Twitter api, UserArchive archive) {
 
-			new Send(auth.user,"单向取关已推送 :\n\n{}",StatusArchive.save(status).url()).enableLinkPreview().async();
-			
-		} catch (TwitterException e) {
-			
-			new Send(auth.user,"单向取关推送失败 :\n\n{}",NTT.parseTwitterException(e)).async();
-			
-		}
-		
-	}
+        if (auth.oup == null) return;
 
-	@Override
-	public void init(BotFragment origin) {
+        try {
 
-		super.init(origin);
+            Status status = api.updateStatus(formatMessage(auth, archive));
 
-		registerCallback(POINT_OUP,POINT_OUP_SET);
+            new Send(auth.user, "单向取关已推送 :\n\n{}", StatusArchive.save(status).url()).enableLinkPreview().async();
 
-		registerPoint(POINT_OUP_SET);
-		
-	}
+        } catch (TwitterException e) {
 
-	@Override
-	public void onCallback(UserData user,Callback callback,String point,String[] params) {
+            new Send(auth.user, "单向取关推送失败 :\n\n{}", NTT.parseTwitterException(e)).async();
 
-		if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
-			
-			callback.invalidQuery();
-			
-			return;
-			
-		}
+        }
 
-		long accountId = NumberUtil.parseLong(params[0]);
+    }
 
-		TAuth account = TAuth.getById(accountId);
+    @Override
+    public void init(BotFragment origin) {
 
-		if (account == null) {
+        super.init(origin);
 
-			callback.alert("无效的账号 .");
+        registerCallback(POINT_OUP, POINT_OUP_SET);
 
-			callback.delete();
+        registerPoint(POINT_OUP_SET);
 
-			return;
+    }
 
-		}
+    @Override
+    public void onCallback(UserData user, Callback callback, String point, String[] params) {
 
-		if (POINT_OUP.equals(point)) {
+        if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
 
-			oupMain(user,callback,account);
+            callback.invalidQuery();
 
-		} else {
+            return;
 
-			params = ArrayUtil.remove(params,0);
-			
-			oupConfig(user,callback,params,account);
+        }
 
-		}
+        long accountId = NumberUtil.parseLong(params[0]);
 
-	}
+        TAuth account = TAuth.getById(accountId);
 
-	public static String defaultMessage() {
+        if (account == null) {
 
-		String message = "被关注的 @<用户名> 取关了，真可惜。";
+            callback.alert("无效的账号 .");
 
-		message += "\n\n由NTT自动推送 也有可能是账号异常误报 (小声";
+            callback.delete();
 
-		return message;
+            return;
 
-	}
+        }
 
-	public static String formatMessage(TAuth account,UserArchive target) {
+        if (POINT_OUP.equals(point)) {
 
-		String message = account.oup_msg == null ? defaultMessage() : account.oup_msg;
+            oupMain(user, callback, account);
 
-		message = message.replace("<名称>",target.name);
-		message = message.replace("<用户名>",target.screenName);
+        } else {
 
-		return message;
+            params = ArrayUtil.remove(params, 0);
 
-	}
+            oupConfig(user, callback, params, account);
 
-	void oupMain(UserData user,Callback callback,TAuth account) {
+        }
 
-		String message = "被单向取关自动推文推送 : [ " + account.archive().name + " ]";
-		
-		message += "\n\n推文模板 : ";
+    }
 
-		if (account.oup_msg == null) {
+    public static String defaultMessage() {
 
-			message += "[ 默认 ]";
+        String message = "被关注的 @<用户名> 取关了，真可惜。";
 
-		}
+        message += "\n\n由NTT自动推送 也有可能是账号异常误报 (小声";
 
-		message += "\n\n" + Html.code(account.oup_msg == null ? defaultMessage() : account.oup_msg);
+        return message;
 
-		ButtonMarkup buttons = new ButtonMarkup();
+    }
 
-		buttons.newButtonLine()
-			.newButton("开启")
-			.newButton(account.oup != null ? "✅" : "☑",POINT_OUP_SET,account.id);
+    public static String formatMessage(TAuth account, UserArchive target) {
 
-		buttons.newButtonLine("设置消息推送模板",POINT_OUP_SET,account.id,"temp");
+        String message = account.oup_msg == null ? defaultMessage() : account.oup_msg;
 
-		buttons.newButtonLine("🔙",ExtraMain.POINT_EXTRA,account.id);
+        message = message.replace("<名称>", target.name);
+        message = message.replace("<用户名>", target.screenName);
 
-		callback.edit(message).buttons(buttons).html().async();
+        return message;
 
-	}
+    }
 
-	class OupSet extends PointData {
+    void oupMain(UserData user, Callback callback, TAuth account) {
 
-		Callback origin;
-		TAuth account;
-		String targte;
+        String message = "被单向取关自动推文推送 : [ " + account.archive().name + " ]";
 
-		public OupSet(Callback origin,TAuth account,String targte) {
+        message += "\n\n推文模板 : ";
 
-			this.origin = origin;
-			this.account = account;
-			this.targte = targte;
+        if (account.oup_msg == null) {
 
-		}
+            message += "[ 默认 ]";
 
-		@Override
-		public void onFinish() {
+        }
 
-			oupMain(origin.from(),origin,account);
+        message += "\n\n" + Html.code(account.oup_msg == null ? defaultMessage() : account.oup_msg);
 
-			super.onFinish();
+        ButtonMarkup buttons = new ButtonMarkup();
 
-		}
+        buttons.newButtonLine()
+                .newButton("开启")
+                .newButton(account.oup != null ? "✅" : "☑", POINT_OUP_SET, account.id);
 
+        buttons.newButtonLine("设置消息推送模板", POINT_OUP_SET, account.id, "temp");
 
-	}
+        buttons.newButtonLine("🔙", ExtraMain.POINT_EXTRA, account.id);
 
-	void oupConfig(UserData user,Callback callback,String[] params,TAuth account) {
+        callback.edit(message).buttons(buttons).html().async();
 
-		if (params.length == 0) {
+    }
 
-			if (account.oup == null) {
+    class OupSet extends PointData {
 
-				account.oup = true;
+        Callback origin;
+        TAuth account;
+        String targte;
 
-			} else {
+        public OupSet(Callback origin, TAuth account, String targte) {
 
-				account.oup = null;
+            this.origin = origin;
+            this.account = account;
+            this.targte = targte;
 
-			}
-			
-			oupMain(user,callback,account);
+        }
 
-			TAuth.data.setById(account.id,account);
-			
-		} else if ("temp".equals(params[0])) {
+        @Override
+        public void onFinish() {
 
-			setPrivatePoint(user,POINT_OUP_SET,new OupSet(callback,account,"temp"));
-			
-			callback.edit("请发送新的消息模板 : ","\n默认模板 : " + Html.code(defaultMessage()),"\n可用变量 : " + HtmlUtil.escape(" <名称> 、 <用户名>")).withCancel().html().async();
-			
-		}
+            oupMain(origin.from(), origin, account);
 
-	}
+            super.onFinish();
 
-	@Override
-	public void onPoint(UserData user,Msg msg,String point,PointData data) {
+        }
 
-		if (POINT_OUP_SET.equals(point)) {
 
-			OupSet set = (OupSet) data.with(msg);
-			
-			if (!msg.hasText()) {
+    }
 
-				clearPrivatePoint(user);
+    void oupConfig(UserData user, Callback callback, String[] params, TAuth account) {
 
-				return;
+        if (params.length == 0) {
 
-			}
+            if (account.oup == null) {
 
-			set.account.oup_msg = msg.text().trim().equals(defaultMessage()) ? null : msg.text();
-			
-			clearPrivatePoint(user);
-			
-			TAuth.data.setById(set.account.id,set.account);
-			
+                account.oup = true;
 
-		}
+            } else {
 
-	}
+                account.oup = null;
+
+            }
+
+            oupMain(user, callback, account);
+
+            TAuth.data.setById(account.id, account);
+
+        } else if ("temp".equals(params[0])) {
+
+            setPrivatePoint(user, POINT_OUP_SET, new OupSet(callback, account, "temp"));
+
+            callback.edit("请发送新的消息模板 : ", "\n默认模板 : " + Html.code(defaultMessage()), "\n可用变量 : " + HtmlUtil.escape(" <名称> 、 <用户名>")).withCancel().html().async();
+
+        }
+
+    }
+
+    @Override
+    public void onPoint(UserData user, Msg msg, String point, PointData data) {
+
+        if (POINT_OUP_SET.equals(point)) {
+
+            OupSet set = (OupSet) data.with(msg);
+
+            if (!msg.hasText()) {
+
+                clearPrivatePoint(user);
+
+                return;
+
+            }
+
+            set.account.oup_msg = msg.text().trim().equals(defaultMessage()) ? null : msg.text();
+
+            clearPrivatePoint(user);
+
+            TAuth.data.setById(set.account.id, set.account);
+
+
+        }
+
+    }
 
 }

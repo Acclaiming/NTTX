@@ -1,16 +1,14 @@
 package io.kurumi.ntt.model.request;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.log.StaticLog;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.response.BaseResponse;
+import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.utils.BotLog;
-import io.kurumi.ntt.db.PointData;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.utils.*;
-import cn.hutool.log.StaticLog;
+import io.kurumi.ntt.utils.NTT;
 
 public class Edit extends AbstractSend<Edit> {
 
@@ -138,7 +136,7 @@ public class Edit extends AbstractSend<Edit> {
 
             if (resp != null && !resp.isOk()) {
 
-               StaticLog.warn("消息编辑失败 : {} {}",resp.errorCode(),resp.description());
+                StaticLog.warn("消息编辑失败 : {} {}", resp.errorCode(), resp.description());
 
             }
 

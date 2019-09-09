@@ -1,22 +1,18 @@
 package io.kurumi.ntt.maven;
 
+import cn.hutool.core.util.ZipUtil;
+import cn.hutool.http.HttpUtil;
+import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.utils.BotLog;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
-
-import io.kurumi.ntt.Env;
-
-import java.util.Iterator;
-
-import cn.hutool.http.HttpUtil;
-import cn.hutool.core.util.ZipUtil;
-import io.kurumi.ntt.utils.NTT;
-import io.kurumi.ntt.utils.BotLog;
 
 public class MvnDownloader extends Fragment {
 
@@ -57,7 +53,7 @@ public class MvnDownloader extends Fragment {
 
         try {
 
-            result = resolver.resolve(params[0], params[1], version, null, log,null);
+            result = resolver.resolve(params[0], params[1], version, null, log, null);
 
         } catch (Exception e) {
 

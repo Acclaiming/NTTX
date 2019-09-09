@@ -8,24 +8,25 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
+import com.pengrad.telegrambot.request.SendAudio;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
+
 import java.io.File;
-import com.pengrad.telegrambot.request.SendAudio;
 
 public class NeteaseMusic extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
-		
-		super.init(origin);
-		
-		registerFunction("music");
-		
-	}
+    @Override
+    public void init(BotFragment origin) {
+
+        super.init(origin);
+
+        registerFunction("music");
+
+    }
 
 	/*
 	
@@ -51,95 +52,95 @@ public class NeteaseMusic extends Fragment {
 	}
 	
 	*/
-	
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-		String text = ArrayUtil.join(params," ");
-	
-		String name = null;
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		if (text.contains("《")) {
+        String text = ArrayUtil.join(params, " ");
 
-			name = StrUtil.subBetween(text,"《","》");
+        String name = null;
 
-		}
-		
-		if (text.contains("song/")) {
-			
-			text = StrUtil.subAfter(text,"song/",false);
-			
-		}
+        if (text.contains("《")) {
 
-		if (text.contains("song?id=")) {
-			
-			text = StrUtil.subAfter(text,"id=",false);
-			
-		}
-		
-		if (text.contains("/")) {
+            name = StrUtil.subBetween(text, "《", "》");
 
-			text = StrUtil.subBefore(text,"/",false);
+        }
 
-		}
-		
-		if (text.contains("&")) {
+        if (text.contains("song/")) {
 
-			text = StrUtil.subBefore(text,"&",false);
+            text = StrUtil.subAfter(text, "song/", false);
 
-		}
-	
-		
-		if (!NumberUtil.isNumber(text)) {
-			
-			msg.send("请输入正确的链接、音乐ID！").async();
-			
-			return;
-			
-		}
-		
-		String link = getDownloadLink(text,Env.NETEASE_COOKIE);
-	
-		String suffix = StrUtil.subAfter(link,".",true);
-		
-		File cache = new File(Env.CACHE_DIR,"music/" + text + "." + suffix);
-		
-		if (name == null) name = text;
-		
-		name += "." + suffix;
-		
-		if (!cache.isFile()) {
-			
-			HttpUtil.downloadFile(link,cache);
-			
-		}
-		
-		msg.sendUpdatingAudio();
-		
-		executeAsync(new SendAudio(msg.chatId(),cache).fileName(name));
-		
-	}
-	
+        }
 
-	public static String getDownloadLink(String musicId,String cookie) {
+        if (text.contains("song?id=")) {
 
-		// String path = "/api/song/enhance/download/url";
+            text = StrUtil.subAfter(text, "id=", false);
 
-		// 320000 极高 999000 无损
-		
-		String url = "https://interface3.music.163.com/api/song/enhance/download/url?br=1145141919&id=" + musicId + "_0";
+        }
 
-		String userAgent = "NeteaseMusic/6.3.0.1563892465(149);Dalvik/2.1.0 (Linux; U; Android 9; TEST Build/114514)";
+        if (text.contains("/")) {
 
-		HttpRequest request = HttpUtil.createGet(url);
+            text = StrUtil.subBefore(text, "/", false);
 
-		request.header(Header.USER_AGENT,userAgent);
-		
-		request.cookie(cookie);
+        }
 
-		HttpResponse result = request.execute();
-	
-		return new JSONObject(result.body()).getByPath("data.url",String.class);
+        if (text.contains("&")) {
+
+            text = StrUtil.subBefore(text, "&", false);
+
+        }
+
+
+        if (!NumberUtil.isNumber(text)) {
+
+            msg.send("请输入正确的链接、音乐ID！").async();
+
+            return;
+
+        }
+
+        String link = getDownloadLink(text, Env.NETEASE_COOKIE);
+
+        String suffix = StrUtil.subAfter(link, ".", true);
+
+        File cache = new File(Env.CACHE_DIR, "music/" + text + "." + suffix);
+
+        if (name == null) name = text;
+
+        name += "." + suffix;
+
+        if (!cache.isFile()) {
+
+            HttpUtil.downloadFile(link, cache);
+
+        }
+
+        msg.sendUpdatingAudio();
+
+        executeAsync(new SendAudio(msg.chatId(), cache).fileName(name));
+
+    }
+
+
+    public static String getDownloadLink(String musicId, String cookie) {
+
+        // String path = "/api/song/enhance/download/url";
+
+        // 320000 极高 999000 无损
+
+        String url = "https://interface3.music.163.com/api/song/enhance/download/url?br=1145141919&id=" + musicId + "_0";
+
+        String userAgent = "NeteaseMusic/6.3.0.1563892465(149);Dalvik/2.1.0 (Linux; U; Android 9; TEST Build/114514)";
+
+        HttpRequest request = HttpUtil.createGet(url);
+
+        request.header(Header.USER_AGENT, userAgent);
+
+        request.cookie(cookie);
+
+        HttpResponse result = request.execute();
+
+        return new JSONObject(result.body()).getByPath("data.url", String.class);
 
 		/*
 		
@@ -203,7 +204,7 @@ public class NeteaseMusic extends Fragment {
 		
 		*/
 
-	}
+    }
 
 	/*
 	
@@ -295,5 +296,5 @@ public class NeteaseMusic extends Fragment {
 	}
 	
 	*/
-	
+
 }

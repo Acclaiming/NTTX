@@ -1,6 +1,6 @@
 package io.kurumi.ntt.fragment.spam;
 
-import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.db.Data;
 
 public class VolunteerUser {
 

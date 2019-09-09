@@ -1,6 +1,8 @@
 package com.pengrad.telegrambot.impl;
 
+import cn.hutool.log.StaticLog;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.pengrad.telegrambot.Callback;
 import com.pengrad.telegrambot.request.BaseRequest;
 import com.pengrad.telegrambot.response.BaseResponse;
@@ -10,10 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import com.google.gson.*;
-import io.kurumi.ntt.utils.*;
-import cn.hutool.log.StaticLog;
 
 /**
  * stas

@@ -1,7 +1,6 @@
 package io.kurumi.ntt.fragment.twitter.list;
 
-import java.util.*;
-
+import cn.hutool.log.StaticLog;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
@@ -12,143 +11,143 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.Html;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import cn.hutool.log.StaticLog;
-import io.kurumi.ntt.utils.BotLog;
+
+import java.util.*;
 
 public class TopList extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerAdminFunction("top");
+        registerAdminFunction("top");
 
-	}
+    }
 
-	class Score implements Comparable<Score> {
+    class Score implements Comparable<Score> {
 
-		long id;
+        long id;
 
-		int val = 1;
+        int val = 1;
 
-		public Score(long id) {
+        public Score(long id) {
 
-			this.id = id;
+            this.id = id;
 
-		}
+        }
 
-		@Override
-		public int compareTo(Score s) {
+        @Override
+        public int compareTo(Score s) {
 
-			return s.val - val;
+            return s.val - val;
 
-		}
+        }
 
-	}
+    }
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		requestTwitter(user,msg);
+        requestTwitter(user, msg);
 
-	}
+    }
 
-	@Override
-	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+    @Override
+    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
-		HashMap<Long,Score> mutes = new HashMap<>();
-		HashMap<Long,Score> blocks = new HashMap<>();
+        HashMap<Long, Score> mutes = new HashMap<>();
+        HashMap<Long, Score> blocks = new HashMap<>();
 
-		List<TAuth> all = TAuth.data.getAll();
+        List<TAuth> all = TAuth.data.getAll();
 
-		for (int index = 0;index < all.size();index ++) {
+        for (int index = 0; index < all.size(); index++) {
 
-			StaticLog.debug("TL : {} / {}",index + 1,all.size());
+            StaticLog.debug("TL : {} / {}", index + 1, all.size());
 
-			TAuth auth = all.get(index);
+            TAuth auth = all.get(index);
 
-			try {
+            try {
 
-				for (long block : TApi.getAllBlockIDs(auth.createApi())) {
+                for (long block : TApi.getAllBlockIDs(auth.createApi())) {
 
-					Score score = blocks.get(block);
+                    Score score = blocks.get(block);
 
-					if (score == null)  blocks.put(block,new Score(block)); else score.val ++;
+                    if (score == null) blocks.put(block, new Score(block));
+                    else score.val++;
 
-				}
+                }
 
-			} catch (TwitterException e) {
-				
-				StaticLog.error(e);
-				
-			}
+            } catch (TwitterException e) {
 
-			try {
+                StaticLog.error(e);
 
-				for (long mute : TApi.getAllMuteIDs(auth.createApi())) {
+            }
 
-					Score score = mutes.get(mute);
+            try {
 
-					if (score == null) mutes.put(mute,new Score(mute)); else score.val ++;
+                for (long mute : TApi.getAllMuteIDs(auth.createApi())) {
 
-				}
+                    Score score = mutes.get(mute);
 
-			} catch (TwitterException e) {
-				
-				StaticLog.error(e);
-			
-				
-			}
+                    if (score == null) mutes.put(mute, new Score(mute));
+                    else score.val++;
 
-		}
+                }
 
-		Twitter api = account.createApi();
+            } catch (TwitterException e) {
 
-		TreeSet<Score> mR = new TreeSet<Score>(mutes.values());
-		TreeSet<Score> bR = new TreeSet<Score>(blocks.values());
-
-		if (!mR.isEmpty()) {
-
-			String message = "被静音最多的 :\n";
-
-			Iterator<Score> iter = mR.iterator();
-
-			for (int index = 0;iter.hasNext();index ++) {
-
-				Score target = iter.next();
-				
-				message += "\n" + Html.b(UserArchive.show(api,target.id).name) + " : " + target.val + " 次";
-
-			}
-
-			msg.send(message).html().async();
-
-		}
-
-		if (!bR.isEmpty()) {
-
-			String message = "被屏蔽最多的 :\n";
-
-			Iterator<Score> iter = bR.iterator();
-
-			for (int index = 0;iter.hasNext();index ++) {
-
-				Score target = iter.next();
-
-				message += "\n" + Html.b(UserArchive.show(api,target.id).name) + " : " + target.val + " 次";
-
-			}
-
-			msg.send(message).html().async();
+                StaticLog.error(e);
 
 
-		}
+            }
+
+        }
+
+        Twitter api = account.createApi();
+
+        TreeSet<Score> mR = new TreeSet<Score>(mutes.values());
+        TreeSet<Score> bR = new TreeSet<Score>(blocks.values());
+
+        if (!mR.isEmpty()) {
+
+            String message = "被静音最多的 :\n";
+
+            Iterator<Score> iter = mR.iterator();
+
+            for (int index = 0; iter.hasNext(); index++) {
+
+                Score target = iter.next();
+
+                message += "\n" + Html.b(UserArchive.show(api, target.id).name) + " : " + target.val + " 次";
+
+            }
+
+            msg.send(message).html().async();
+
+        }
+
+        if (!bR.isEmpty()) {
+
+            String message = "被屏蔽最多的 :\n";
+
+            Iterator<Score> iter = bR.iterator();
+
+            for (int index = 0; iter.hasNext(); index++) {
+
+                Score target = iter.next();
+
+                message += "\n" + Html.b(UserArchive.show(api, target.id).name) + " : " + target.val + " 次";
+
+            }
+
+            msg.send(message).html().async();
 
 
+        }
 
-	}
 
+    }
 
 
 }

@@ -6,10 +6,6 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
 import tool.sysinfo.linux.cpu.Handler4stat;
 import tool.sysinfo.linux.memory.Handler4meminfo;
-import cn.hutool.core.thread.ThreadUtil;
-import java.lang.management.ManagementFactory;
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.RuntimeUtil;
 
 public class Stat extends Fragment {
 
@@ -40,12 +36,12 @@ public class Stat extends Fragment {
         long total = handler4stat.getTotalCPUTime();
         long idle = handler4stat.getIdleCPUTime();
 
-		// int processId = NumberUtil.parseInt(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
-		
+        // int processId = NumberUtil.parseInt(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
+
         status.append("\nCPU占用 : ").append((100 - ((float) (idle) / total) * 100)).append("%");
 
-		// status.append("\n进程ID : ").append(processId);
-		
+        // status.append("\n进程ID : ").append(processId);
+
         msg.send(status.toString()).exec();
 
     }

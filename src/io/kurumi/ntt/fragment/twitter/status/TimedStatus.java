@@ -12,13 +12,12 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
+import twitter4j.Status;
+import twitter4j.TwitterException;
 
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.TimerTask;
-
-import twitter4j.Status;
-import twitter4j.TwitterException;
 
 public class TimedStatus extends Fragment {
 
@@ -123,8 +122,8 @@ public class TimedStatus extends Fragment {
 
                 StatusArchive archive = StatusArchive.save(status);
 
-                new Send(auth.user, "定时推文 " + update.id + " 发送成功 : \n{}", StatusArchive.split_tiny, archive.toHtml(0,auth)).buttons(StatusAction.createMarkup(auth.id,archive.id, true, archive.depth() == 0, false, false)).html().exec();
-				
+                new Send(auth.user, "定时推文 " + update.id + " 发送成功 : \n{}", StatusArchive.split_tiny, archive.toHtml(0, auth)).buttons(StatusAction.createMarkup(auth.id, archive.id, true, archive.depth() == 0, false, false)).html().exec();
+
             } catch (TwitterException e) {
 
                 new Send(auth.user, "定时推文 " + update.id + " 发送失败 : \n{}", NTT.parseTwitterException(e)).exec();
@@ -236,7 +235,7 @@ public class TimedStatus extends Fragment {
 
                 StatusArchive archive = StatusArchive.save(status);
 
-                msg.reply("发送成功 : {}\n{}", StatusArchive.split_tiny, archive.toHtml(0,auth)).buttons(StatusAction.createMarkup(auth.id,archive.id, true, archive.depth() == 0, false, false)).html().exec();
+                msg.reply("发送成功 : {}\n{}", StatusArchive.split_tiny, archive.toHtml(0, auth)).buttons(StatusAction.createMarkup(auth.id, archive.id, true, archive.depth() == 0, false, false)).html().exec();
 
             } catch (TwitterException e) {
 

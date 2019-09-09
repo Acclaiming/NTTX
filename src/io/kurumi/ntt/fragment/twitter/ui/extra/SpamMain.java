@@ -1,656 +1,652 @@
 package io.kurumi.ntt.fragment.twitter.ui.extra;
 
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
+import io.kurumi.ntt.Env;
+import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.twitter.TAuth;
-import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import io.kurumi.ntt.fragment.twitter.spam.SpamTag;
+import io.kurumi.ntt.fragment.twitter.ui.ExtraMain;
 import io.kurumi.ntt.model.Callback;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.NTT;
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import io.kurumi.ntt.model.request.ButtonMarkup;
-import io.kurumi.ntt.fragment.twitter.spam.SpamTag;
-import java.util.List;
-import io.kurumi.ntt.fragment.twitter.ui.ExtraMain;
-import io.kurumi.ntt.db.PointData;
-import io.kurumi.ntt.model.Msg;
+
 import java.util.HashMap;
 import java.util.LinkedList;
-import io.kurumi.ntt.Env;
+import java.util.List;
 
 public class SpamMain extends Fragment {
 
-	public static String POINT_SPAM = "twi_spam";
-	public static String POINT_SPAM_TAG = "twi_stag";
-	public static String POINT_SPAM_SET = "twi_sset";
+    public static String POINT_SPAM = "twi_spam";
+    public static String POINT_SPAM_TAG = "twi_stag";
+    public static String POINT_SPAM_SET = "twi_sset";
 
-	public static String POINT_NEW_TAG = "twi_stn";
-	public static String POINT_RN_TAG = "twi_srn";
-	public static String POINT_RD_TAG = "twi_srd";
-	public static String POINT_DEL_TAG = "twi_ssd";
-	public static String POINT_CONFIRM_DEL_TAG = "twi_sfd";
+    public static String POINT_NEW_TAG = "twi_stn";
+    public static String POINT_RN_TAG = "twi_srn";
+    public static String POINT_RD_TAG = "twi_srd";
+    public static String POINT_DEL_TAG = "twi_ssd";
+    public static String POINT_CONFIRM_DEL_TAG = "twi_sfd";
 
-	public static String POINT_SHOW_RECORDS = "twi_ssow";
-	public static String POINT_ADD_RECORD = "twi_sadd";
-	public static String POINT_REMOVE_RECORD = "twi_srem";
+    public static String POINT_SHOW_RECORDS = "twi_ssow";
+    public static String POINT_ADD_RECORD = "twi_sadd";
+    public static String POINT_REMOVE_RECORD = "twi_srem";
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerCallback(
+        registerCallback(
 
-			POINT_SPAM,
-			POINT_NEW_TAG,
-			POINT_SPAM_TAG,
-			POINT_SPAM_SET,
+                POINT_SPAM,
+                POINT_NEW_TAG,
+                POINT_SPAM_TAG,
+                POINT_SPAM_SET,
 
-			POINT_RN_TAG,
-			POINT_RD_TAG,
-			POINT_DEL_TAG,
-			POINT_CONFIRM_DEL_TAG,
+                POINT_RN_TAG,
+                POINT_RD_TAG,
+                POINT_DEL_TAG,
+                POINT_CONFIRM_DEL_TAG,
 
-			POINT_ADD_RECORD,
-			POINT_REMOVE_RECORD
+                POINT_ADD_RECORD,
+                POINT_REMOVE_RECORD
 
-		);
+        );
 
-		registerPoint(
+        registerPoint(
 
-			POINT_NEW_TAG,
+                POINT_NEW_TAG,
 
-			POINT_RN_TAG,
-			POINT_RD_TAG,
-			POINT_DEL_TAG,
+                POINT_RN_TAG,
+                POINT_RD_TAG,
+                POINT_DEL_TAG,
 
-			POINT_ADD_RECORD,
-			POINT_REMOVE_RECORD
+                POINT_ADD_RECORD,
+                POINT_REMOVE_RECORD
 
 
-		);
+        );
 
-	}
+    }
 
-	@Override
-	public void onCallback(UserData user,Callback callback,String point,String[] params) {
+    @Override
+    public void onCallback(UserData user, Callback callback, String point, String[] params) {
 
-		if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
+        if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
 
-			callback.invalidQuery();
+            callback.invalidQuery();
 
-			return;
+            return;
 
-		}
+        }
 
-		long accountId = NumberUtil.parseLong(params[0]);
+        long accountId = NumberUtil.parseLong(params[0]);
 
-		TAuth account = TAuth.getById(accountId);
+        TAuth account = TAuth.getById(accountId);
 
-		if (account == null) {
+        if (account == null) {
 
-			callback.alert("无效的账号 .");
+            callback.alert("无效的账号 .");
 
-			callback.delete();
+            callback.delete();
 
-			return;
+            return;
 
-		}
+        }
 
-		if (POINT_SPAM.equals(point)) {
+        if (POINT_SPAM.equals(point)) {
 
-			spamMain(user,callback,account);
+            spamMain(user, callback, account);
 
-		} else if (POINT_NEW_TAG.equals(point)) {
+        } else if (POINT_NEW_TAG.equals(point)) {
 
-			newTag(user,callback,account);
+            newTag(user, callback, account);
 
-		} else if (POINT_SPAM_TAG.equals(point)) {
+        } else if (POINT_SPAM_TAG.equals(point)) {
 
-			if (params.length < 2) {
+            if (params.length < 2) {
 
-				callback.invalidQuery();
+                callback.invalidQuery();
 
-				return;
+                return;
 
-			}
+            }
 
-			spamTag(user,callback,params[1],account);
+            spamTag(user, callback, params[1], account);
 
-		} else if (POINT_SPAM_SET.equals(point)) {
+        } else if (POINT_SPAM_SET.equals(point)) {
 
-			if (params.length < 2) {
+            if (params.length < 2) {
 
-				callback.invalidQuery();
+                callback.invalidQuery();
 
-				return;
+                return;
 
-			}
+            }
 
-			spamSet(user,callback,params[1],account);
+            spamSet(user, callback, params[1], account);
 
-		} else if (POINT_RN_TAG.equals(point)) {
+        } else if (POINT_RN_TAG.equals(point)) {
 
-			if (params.length < 2) {
+            if (params.length < 2) {
 
-				callback.invalidQuery();
+                callback.invalidQuery();
 
-				return;
+                return;
 
-			}
+            }
 
-			rnTag(user,callback,params[1],account);
+            rnTag(user, callback, params[1], account);
 
-		} else if (POINT_RD_TAG.equals(point)) {
+        } else if (POINT_RD_TAG.equals(point)) {
 
-			if (params.length < 2) {
+            if (params.length < 2) {
 
-				callback.invalidQuery();
+                callback.invalidQuery();
 
-				return;
+                return;
 
-			}
+            }
 
-			rdTag(user,callback,params[1],account);
+            rdTag(user, callback, params[1], account);
 
-		} else if (POINT_DEL_TAG.equals(point)) {
+        } else if (POINT_DEL_TAG.equals(point)) {
 
-			if (params.length < 2) {
+            if (params.length < 2) {
 
-				callback.invalidQuery();
+                callback.invalidQuery();
 
-				return;
+                return;
 
-			}
+            }
 
-			delTag(user,callback,params[1],account);
+            delTag(user, callback, params[1], account);
 
-		} else if (POINT_CONFIRM_DEL_TAG.equals(point)) {
+        } else if (POINT_CONFIRM_DEL_TAG.equals(point)) {
 
-			if (params.length < 2) {
+            if (params.length < 2) {
 
-				callback.invalidQuery();
+                callback.invalidQuery();
 
-				return;
+                return;
 
-			}
+            }
 
-			confirmDelTag(user,callback,params[1],account);
+            confirmDelTag(user, callback, params[1], account);
 
-		} else if (POINT_ADD_RECORD.equals(point)) {
+        } else if (POINT_ADD_RECORD.equals(point)) {
 
-			if (params.length < 2) {
+            if (params.length < 2) {
 
-				callback.invalidQuery();
+                callback.invalidQuery();
 
-				return;
+                return;
 
-			}
+            }
 
-			addRecord(user,callback,params[1],account);
+            addRecord(user, callback, params[1], account);
 
-		} else if (POINT_REMOVE_RECORD.equals(point)) {
+        } else if (POINT_REMOVE_RECORD.equals(point)) {
 
-			if (params.length < 2) {
+            if (params.length < 2) {
 
-				callback.invalidQuery();
+                callback.invalidQuery();
 
-				return;
+                return;
 
-			}
+            }
 
-			removeRecord(user,callback,params[1],account);
+            removeRecord(user, callback, params[1], account);
 
-		}
+        }
 
 
-	}
+    }
 
-	class MainPoint extends PointData {
+    class MainPoint extends PointData {
 
-		UserData user;
-		Callback origin;
-		TAuth auth;
+        UserData user;
+        Callback origin;
+        TAuth auth;
 
-		public MainPoint(UserData user,Callback origin,TAuth auth) {
+        public MainPoint(UserData user, Callback origin, TAuth auth) {
 
-			this.user = user;
-			this.origin = origin;
-			this.auth = auth;
+            this.user = user;
+            this.origin = origin;
+            this.auth = auth;
 
-		}
+        }
 
-		@Override
-		public void onFinish() {
+        @Override
+        public void onFinish() {
 
-			spamMain(user,origin,auth);
+            spamMain(user, origin, auth);
 
-			super.onFinish();
+            super.onFinish();
 
-		}
+        }
 
-	}
+    }
 
-	class TagPoint extends PointData {
+    class TagPoint extends PointData {
 
-		UserData user;
-		Callback origin;
-		TAuth auth;
-		String tagName;
+        UserData user;
+        Callback origin;
+        TAuth auth;
+        String tagName;
 
-		public TagPoint(UserData user,Callback origin,TAuth auth,String tagName) {
+        public TagPoint(UserData user, Callback origin, TAuth auth, String tagName) {
 
-			this.user = user;
-			this.origin = origin;
-			this.auth = auth;
-			this.tagName = tagName;
+            this.user = user;
+            this.origin = origin;
+            this.auth = auth;
+            this.tagName = tagName;
 
-		}
+        }
 
-		@Override
-		public void onFinish() {
+        @Override
+        public void onFinish() {
 
-			spamTag(user,origin,tagName,auth);
+            spamTag(user, origin, tagName, auth);
 
-			super.onFinish();
+            super.onFinish();
 
-		}
+        }
 
-	}
+    }
 
 
-	void newTag(UserData user,Callback callback,TAuth account) {
+    void newTag(UserData user, Callback callback, TAuth account) {
 
-		setPrivatePoint(user,POINT_NEW_TAG,new MainPoint(user,callback,account));
+        setPrivatePoint(user, POINT_NEW_TAG, new MainPoint(user, callback, account));
 
-		callback.edit("输入新分类名称 :").withCancel().async();
+        callback.edit("输入新分类名称 :").withCancel().async();
 
-	}
+    }
 
-	void rnTag(UserData user,Callback callback,String tagName,TAuth account) {
+    void rnTag(UserData user, Callback callback, String tagName, TAuth account) {
 
-		setPrivatePoint(user,POINT_RN_TAG,new TagPoint(user,callback,account,tagName));
+        setPrivatePoint(user, POINT_RN_TAG, new TagPoint(user, callback, account, tagName));
 
-		callback.edit("输入新分类名 :").withCancel().async();
+        callback.edit("输入新分类名 :").withCancel().async();
 
-	}
+    }
 
-	void rdTag(UserData user,Callback callback,String tagName,TAuth account) {
+    void rdTag(UserData user, Callback callback, String tagName, TAuth account) {
 
-		setPrivatePoint(user,POINT_RD_TAG,new TagPoint(user,callback,account,tagName));
+        setPrivatePoint(user, POINT_RD_TAG, new TagPoint(user, callback, account, tagName));
 
-		callback.edit("输入新说明 :").withCancel().async();
+        callback.edit("输入新说明 :").withCancel().async();
 
-	}
+    }
 
-	void delTag(UserData user,Callback callback,String tagName,TAuth account) {
+    void delTag(UserData user, Callback callback, String tagName, TAuth account) {
 
-		String message = "确认删除分类 : " + tagName + " ？";
+        String message = "确认删除分类 : " + tagName + " ？";
 
-		ButtonMarkup buttons = new ButtonMarkup();
+        ButtonMarkup buttons = new ButtonMarkup();
 
-		buttons.newButtonLine("确认",POINT_CONFIRM_DEL_TAG,account.id,tagName);
+        buttons.newButtonLine("确认", POINT_CONFIRM_DEL_TAG, account.id, tagName);
 
-		buttons.newButtonLine("🔙",POINT_SPAM_TAG,account.id,tagName);
+        buttons.newButtonLine("🔙", POINT_SPAM_TAG, account.id, tagName);
 
-		callback.edit(message).buttons(buttons).async();
+        callback.edit(message).buttons(buttons).async();
 
-	}
+    }
 
-	void confirmDelTag(UserData user,Callback callback,String tagName,TAuth account) {
+    void confirmDelTag(UserData user, Callback callback, String tagName, TAuth account) {
 
-		SpamTag.data.deleteById(tagName);
+        SpamTag.data.deleteById(tagName);
 
-		spamMain(user,callback,account);
+        spamMain(user, callback, account);
 
-	}
+    }
 
-	void addRecord(UserData user,Callback callback,String tagName,TAuth account) {
+    void addRecord(UserData user, Callback callback, String tagName, TAuth account) {
 
-		setPrivatePoint(user,POINT_ADD_RECORD,new TagPoint(user,callback,account,tagName));
+        setPrivatePoint(user, POINT_ADD_RECORD, new TagPoint(user, callback, account, tagName));
 
-		callback.edit("输入对方 ID 或 链接:").withCancel().async();
+        callback.edit("输入对方 ID 或 链接:").withCancel().async();
 
-	}
+    }
 
-	void removeRecord(UserData user,Callback callback,String tagName,TAuth account) {
+    void removeRecord(UserData user, Callback callback, String tagName, TAuth account) {
 
-		setPrivatePoint(user,POINT_REMOVE_RECORD,new TagPoint(user,callback,account,tagName));
+        setPrivatePoint(user, POINT_REMOVE_RECORD, new TagPoint(user, callback, account, tagName));
 
-		callback.edit("输入对方 ID 或 链接:").withCancel().async();
+        callback.edit("输入对方 ID 或 链接:").withCancel().async();
 
-	}
+    }
 
-	@Override
-	public void onPoint(UserData user,Msg msg,String point,PointData data) {
+    @Override
+    public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
-		data.with(msg);
+        data.with(msg);
 
-		if (POINT_NEW_TAG.equals(point)) {
+        if (POINT_NEW_TAG.equals(point)) {
 
-			if (!msg.hasText()) {
+            if (!msg.hasText()) {
 
-				clearPrivatePoint(user);
+                clearPrivatePoint(user);
 
-				return;
+                return;
 
-			}
+            }
 
-			if (SpamTag.data.containsId(msg.text())) {
+            if (SpamTag.data.containsId(msg.text())) {
 
-				msg.send("该分类已存在").exec(data);
+                msg.send("该分类已存在").exec(data);
 
-				return;
+                return;
 
-			}
+            }
 
-			SpamTag newTag = new SpamTag();
+            SpamTag newTag = new SpamTag();
 
-			newTag.id = msg.text();
+            newTag.id = msg.text();
 
-			newTag.description = ":)";
+            newTag.description = ":)";
 
-			newTag.records = new HashMap<>();
+            newTag.records = new HashMap<>();
 
-			newTag.subscribers = new LinkedList<>();
+            newTag.subscribers = new LinkedList<>();
 
-			SpamTag.data.setById(newTag.id,newTag);
+            SpamTag.data.setById(newTag.id, newTag);
 
-			clearPrivatePoint(user);
+            clearPrivatePoint(user);
 
-		} else if (POINT_RN_TAG.equals(point)) {
+        } else if (POINT_RN_TAG.equals(point)) {
 
-			TagPoint edit = (TagPoint) data;
+            TagPoint edit = (TagPoint) data;
 
-			if (!msg.hasText()) {
+            if (!msg.hasText()) {
 
-				clearPrivatePoint(user);
+                clearPrivatePoint(user);
 
-				return;
+                return;
 
-			}
+            }
 
-			if (!SpamTag.data.containsId(edit.tagName)) {
+            if (!SpamTag.data.containsId(edit.tagName)) {
 
-				clearPrivatePoint(user);
+                clearPrivatePoint(user);
 
-				return;
+                return;
 
-			}
+            }
 
-			if (SpamTag.data.containsId(msg.text())) {
+            if (SpamTag.data.containsId(msg.text())) {
 
-				msg.send("该分类已存在").exec(data);
+                msg.send("该分类已存在").exec(data);
 
-				return;
+                return;
 
-			}
+            }
 
-			SpamTag tag = SpamTag.data.getById(edit.tagName);
+            SpamTag tag = SpamTag.data.getById(edit.tagName);
 
-			tag.id = msg.text();
+            tag.id = msg.text();
 
-			SpamTag.data.deleteById(edit.tagName);
+            SpamTag.data.deleteById(edit.tagName);
 
-			SpamTag.data.setById(tag.id,tag);
+            SpamTag.data.setById(tag.id, tag);
 
-			clearPrivatePoint(user);
+            clearPrivatePoint(user);
 
-		} else if (POINT_RD_TAG.equals(point)) {
+        } else if (POINT_RD_TAG.equals(point)) {
 
-			TagPoint edit = (TagPoint) data;
+            TagPoint edit = (TagPoint) data;
 
-			if (!msg.hasText()) {
+            if (!msg.hasText()) {
 
-				clearPrivatePoint(user);
+                clearPrivatePoint(user);
 
-				return;
+                return;
 
-			}
+            }
 
-			if (!SpamTag.data.containsId(edit.tagName)) {
+            if (!SpamTag.data.containsId(edit.tagName)) {
 
-				clearPrivatePoint(user);
+                clearPrivatePoint(user);
 
-				return;
+                return;
 
-			}
+            }
 
-			SpamTag tag = SpamTag.data.getById(edit.tagName);
+            SpamTag tag = SpamTag.data.getById(edit.tagName);
 
-			tag.description = msg.text();
+            tag.description = msg.text();
 
-			SpamTag.data.setById(tag.id,tag);
+            SpamTag.data.setById(tag.id, tag);
 
-			clearPrivatePoint(user);
+            clearPrivatePoint(user);
 
-		} else if (POINT_ADD_RECORD.equals(point)) {
+        } else if (POINT_ADD_RECORD.equals(point)) {
 
-			TagPoint edit = (TagPoint) data;
+            TagPoint edit = (TagPoint) data;
 
-			if (!msg.hasText()) {
+            if (!msg.hasText()) {
 
-				clearPrivatePoint(user);
+                clearPrivatePoint(user);
 
-				return;
+                return;
 
-			}
+            }
 
-			UserArchive archive;
+            UserArchive archive;
 
-			if (NumberUtil.isNumber(msg.text())) {
+            if (NumberUtil.isNumber(msg.text())) {
 
-				archive = UserArchive.show(edit.auth.createApi(),NumberUtil.parseLong(msg.text()));
+                archive = UserArchive.show(edit.auth.createApi(), NumberUtil.parseLong(msg.text()));
 
 
-			} else {
+            } else {
 
-				archive = UserArchive.show(edit.auth.createApi(),NTT.parseScreenName(msg.text()));
+                archive = UserArchive.show(edit.auth.createApi(), NTT.parseScreenName(msg.text()));
 
-			}
+            }
 
-			if (archive == null) {
+            if (archive == null) {
 
-				msg.send("查无此人").withCancel().exec(data);
+                msg.send("查无此人").withCancel().exec(data);
 
-				return;
+                return;
 
-			}
+            }
 
-			if (!SpamTag.data.containsId(edit.tagName)) {
+            if (!SpamTag.data.containsId(edit.tagName)) {
 
-				clearPrivatePoint(user);
+                clearPrivatePoint(user);
 
-				return;
+                return;
 
-			}
+            }
 
-			SpamTag tag = SpamTag.data.getById(edit.tagName);
+            SpamTag tag = SpamTag.data.getById(edit.tagName);
 
-			Msg record = new Send(Env.SPAM_CHANNEL,"#新增记录 [ " + edit.tagName + " ]\n",archive.formatSimple()).html().send();
+            Msg record = new Send(Env.SPAM_CHANNEL, "#新增记录 [ " + edit.tagName + " ]\n", archive.formatSimple()).html().send();
 
-			tag.records.put(archive.id.toString(),record.messageId());
+            tag.records.put(archive.id.toString(), record.messageId());
 
-			SpamTag.data.setById(tag.id,tag);
+            SpamTag.data.setById(tag.id, tag);
 
-			clearPrivatePoint(user);
+            clearPrivatePoint(user);
 
-		} else if (POINT_REMOVE_RECORD.equals(point)) {
+        } else if (POINT_REMOVE_RECORD.equals(point)) {
 
-			TagPoint edit = (TagPoint) data;
+            TagPoint edit = (TagPoint) data;
 
-			if (!msg.hasText()) {
+            if (!msg.hasText()) {
 
-				clearPrivatePoint(user);
+                clearPrivatePoint(user);
 
-				return;
+                return;
 
-			}
+            }
 
-			UserArchive archive;
+            UserArchive archive;
 
-			if (NumberUtil.isNumber(msg.text())) {
+            if (NumberUtil.isNumber(msg.text())) {
 
-				archive = UserArchive.show(edit.auth.createApi(),NumberUtil.parseLong(msg.text()));
+                archive = UserArchive.show(edit.auth.createApi(), NumberUtil.parseLong(msg.text()));
 
 
-			} else {
+            } else {
 
-				archive = UserArchive.show(edit.auth.createApi(),NTT.parseScreenName(msg.text()));
+                archive = UserArchive.show(edit.auth.createApi(), NTT.parseScreenName(msg.text()));
 
-			}
+            }
 
-			if (archive == null) {
+            if (archive == null) {
 
-				msg.send("查无此人").withCancel().exec(data);
+                msg.send("查无此人").withCancel().exec(data);
 
-				return;
+                return;
 
-			}
+            }
 
-			if (!SpamTag.data.containsId(edit.tagName)) {
+            if (!SpamTag.data.containsId(edit.tagName)) {
 
-				clearPrivatePoint(user);
+                clearPrivatePoint(user);
 
-				return;
+                return;
 
-			}
-			
-			new Send(Env.SPAM_CHANNEL,"#移除记录 [ " + edit.tagName + " ]\n",archive.formatSimple()).html().send();
+            }
 
-			SpamTag tag = SpamTag.data.getById(edit.tagName);
+            new Send(Env.SPAM_CHANNEL, "#移除记录 [ " + edit.tagName + " ]\n", archive.formatSimple()).html().send();
 
-			tag.records.remove(archive.id.toString());
+            SpamTag tag = SpamTag.data.getById(edit.tagName);
 
-			SpamTag.data.setById(tag.id,tag);
+            tag.records.remove(archive.id.toString());
 
-			clearPrivatePoint(user);
+            SpamTag.data.setById(tag.id, tag);
 
-		}
+            clearPrivatePoint(user);
 
-	}
+        }
 
-	void spamTag(UserData user,Callback callback,String tagName,TAuth account) {
+    }
 
-		SpamTag tag = SpamTag.data.getById(tagName);
+    void spamTag(UserData user, Callback callback, String tagName, TAuth account) {
 
-		if (tag == null) {
+        SpamTag tag = SpamTag.data.getById(tagName);
 
-			callback.invalidQuery();
+        if (tag == null) {
 
-			spamMain(user,callback,account);
+            callback.invalidQuery();
 
-			return;
+            spamMain(user, callback, account);
 
-		}
+            return;
 
-		String message = tag.id + " [ " + account.archive().name + " ]";
+        }
 
-		message += "\n\n" + tag.description;
+        String message = tag.id + " [ " + account.archive().name + " ]";
 
-		ButtonMarkup buttons = new ButtonMarkup();
+        message += "\n\n" + tag.description;
 
-		if (user.admin()) {
+        ButtonMarkup buttons = new ButtonMarkup();
 
-			buttons.newButtonLine()
-				.newButton("重命名",POINT_RN_TAG,account.id,tag.id)
-				.newButton("设置介绍",POINT_RD_TAG,account.id,tag.id);
+        if (user.admin()) {
 
-		}
+            buttons.newButtonLine()
+                    .newButton("重命名", POINT_RN_TAG, account.id, tag.id)
+                    .newButton("设置介绍", POINT_RD_TAG, account.id, tag.id);
 
-		boolean subed = tag.subscribers.contains(account.id);
+        }
 
-		buttons.newButtonLine()
-			.newButton("同步")
-			.newButton(subed ? "✅" : "☑",POINT_SPAM_SET,account.id,tag.id);
+        boolean subed = tag.subscribers.contains(account.id);
 
-		// buttons.newButtonLine("查看所有",POINT_SHOW_RECORDS,account.id,tag.id);
+        buttons.newButtonLine()
+                .newButton("同步")
+                .newButton(subed ? "✅" : "☑", POINT_SPAM_SET, account.id, tag.id);
 
-		if (user.admin()) {
+        // buttons.newButtonLine("查看所有",POINT_SHOW_RECORDS,account.id,tag.id);
 
-			buttons.newButtonLine()
-				.newButton("添加记录",POINT_ADD_RECORD,account.id,tag.id)
-				.newButton("移除记录",POINT_REMOVE_RECORD,account.id,tag.id);
+        if (user.admin()) {
 
-			buttons.newButtonLine("删除分类",POINT_DEL_TAG,account.id,tag.id);
+            buttons.newButtonLine()
+                    .newButton("添加记录", POINT_ADD_RECORD, account.id, tag.id)
+                    .newButton("移除记录", POINT_REMOVE_RECORD, account.id, tag.id);
 
-		}
+            buttons.newButtonLine("删除分类", POINT_DEL_TAG, account.id, tag.id);
 
-		buttons.newButtonLine("🔙",POINT_SPAM,account.id);
+        }
 
-		callback.edit(message).buttons(buttons).async();
+        buttons.newButtonLine("🔙", POINT_SPAM, account.id);
 
-	}
+        callback.edit(message).buttons(buttons).async();
 
-	void spamSet(UserData user,Callback callback,String tagName,TAuth account) {
+    }
 
-		SpamTag tag = SpamTag.data.getById(tagName);
+    void spamSet(UserData user, Callback callback, String tagName, TAuth account) {
 
-		if (tag == null) {
+        SpamTag tag = SpamTag.data.getById(tagName);
 
-			callback.invalidQuery();
+        if (tag == null) {
 
-			spamMain(user,callback,account);
+            callback.invalidQuery();
 
-			return;
+            spamMain(user, callback, account);
 
-		}
+            return;
 
-		if (tag.subscribers.contains(account.id)) {
+        }
 
-			tag.subscribers.remove(account.id);
+        if (tag.subscribers.contains(account.id)) {
 
-		} else {
+            tag.subscribers.remove(account.id);
 
-			tag.subscribers.add(account.id);
+        } else {
 
-		}
+            tag.subscribers.add(account.id);
 
-		SpamTag.data.setById(tag.id,tag);
+        }
 
-		spamTag(user,callback,tagName,account);
+        SpamTag.data.setById(tag.id, tag);
 
-	}
+        spamTag(user, callback, tagName, account);
 
-	void spamMain(UserData user,Callback callback,TAuth account) {
+    }
 
-		String message = "Twitter 联合联合封禁分类 [ " + account.archive().name + " ]";
+    void spamMain(UserData user, Callback callback, TAuth account) {
 
-		ButtonMarkup buttons = new ButtonMarkup();
+        String message = "Twitter 联合联合封禁分类 [ " + account.archive().name + " ]";
 
-		if (user.admin()) {
+        ButtonMarkup buttons = new ButtonMarkup();
 
-			buttons.newButtonLine(">> 新建 <<",POINT_NEW_TAG,account.id);
+        if (user.admin()) {
 
-		}
+            buttons.newButtonLine(">> 新建 <<", POINT_NEW_TAG, account.id);
 
-		List<SpamTag> tags = SpamTag.data.getAll();
+        }
 
-		if (tags.isEmpty()) {
+        List<SpamTag> tags = SpamTag.data.getAll();
 
-			buttons.newButtonLine("暂无分类");
+        if (tags.isEmpty()) {
 
-		} else {
+            buttons.newButtonLine("暂无分类");
 
-			for (SpamTag tag : tags) {
+        } else {
 
-				buttons.newButtonLine(tag.id,POINT_SPAM_TAG,account.id,tag.id);
+            for (SpamTag tag : tags) {
 
-			}
+                buttons.newButtonLine(tag.id, POINT_SPAM_TAG, account.id, tag.id);
 
-		}
+            }
 
-		buttons.newButtonLine("🔙",ExtraMain.POINT_EXTRA,account.id);
+        }
 
-		callback.edit(message).buttons(buttons).async();
+        buttons.newButtonLine("🔙", ExtraMain.POINT_EXTRA, account.id);
 
-	}
+        callback.edit(message).buttons(buttons).async();
+
+    }
 
 
 }

@@ -1,19 +1,6 @@
 package io.kurumi.ntt.fragment.twitter.list;
 
-import twitter4j.*;
-
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.ArrayUtil;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.twitter.TApi;
-import io.kurumi.ntt.fragment.twitter.TAuth;
-import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.utils.NTT;
-import java.util.LinkedList;
-import java.util.List;
 
 public class CleanBlocks extends Fragment {
 

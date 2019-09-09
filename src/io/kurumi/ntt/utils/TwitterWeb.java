@@ -1,12 +1,11 @@
 package io.kurumi.ntt.utils;
 
-import cn.hutool.http.HttpUtil;
-import cn.hutool.http.HttpResponse;
-import io.netty.handler.codec.HeadersUtils;
-import cn.hutool.http.Header;
-import cn.hutool.core.util.StrUtil;
-import java.util.HashSet;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.Header;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
+
 import java.util.TreeSet;
 
 public class TwitterWeb {
@@ -34,54 +33,54 @@ public class TwitterWeb {
 	
 	*/
 
-	public static TreeSet<Long> fetchStatusReplies(String screenName,Long statusId,boolean loop) {
+    public static TreeSet<Long> fetchStatusReplies(String screenName, Long statusId, boolean loop) {
 
-		TreeSet<Long> replies = new TreeSet<>();
+        TreeSet<Long> replies = new TreeSet<>();
 
-		HttpResponse result = HttpUtil
-			.createGet("https://mobile.twitter.com/" + screenName + "/status/" + statusId)
-			.header(Header.USER_AGENT,"MSIE 6.0")
-			.execute();
+        HttpResponse result = HttpUtil
+                .createGet("https://mobile.twitter.com/" + screenName + "/status/" + statusId)
+                .header(Header.USER_AGENT, "MSIE 6.0")
+                .execute();
 
-		if (result.getStatus() == 301) {
+        if (result.getStatus() == 301) {
 
-			result = HttpUtil
-				.createGet("https://mobile.twitter.com" + result.header(Header.LOCATION))
-				.header(Header.USER_AGENT,"MSIE 6.0")
-				.execute();
+            result = HttpUtil
+                    .createGet("https://mobile.twitter.com" + result.header(Header.LOCATION))
+                    .header(Header.USER_AGENT, "MSIE 6.0")
+                    .execute();
 
-		}
+        }
 
-		if (!result.isOk()) return replies;
+        if (!result.isOk()) return replies;
 
-		String statusHtml = result.body();
+        String statusHtml = result.body();
 
-		if (!statusHtml.contains("<div class=\"timeline replies\">")) return replies;
-		
-		statusHtml = StrUtil.subAfter(statusHtml,"<div class=\"timeline replies\">",false);
+        if (!statusHtml.contains("<div class=\"timeline replies\">")) return replies;
 
-		while (statusHtml.contains("timestamp")) {
+        statusHtml = StrUtil.subAfter(statusHtml, "<div class=\"timeline replies\">", false);
 
-			statusHtml = StrUtil.subAfter(statusHtml,"timestamp",false);
+        while (statusHtml.contains("timestamp")) {
 
-			String replyUrl = StrUtil.subBefore(statusHtml,"</a>",false);
+            statusHtml = StrUtil.subAfter(statusHtml, "timestamp", false);
 
-			String replyFrom = StrUtil.subBetween(replyUrl,"href=\"/","/status");
+            String replyUrl = StrUtil.subBefore(statusHtml, "</a>", false);
 
-			Long replyId = NumberUtil.parseLong(StrUtil.subBetween(replyUrl,"status/","?"));
+            String replyFrom = StrUtil.subBetween(replyUrl, "href=\"/", "/status");
 
-			replies.add(replyId);
+            Long replyId = NumberUtil.parseLong(StrUtil.subBetween(replyUrl, "status/", "?"));
 
-			if (loop) {
+            replies.add(replyId);
 
-				replies.addAll(fetchStatusReplies(replyFrom,replyId,loop));
+            if (loop) {
 
-			}
+                replies.addAll(fetchStatusReplies(replyFrom, replyId, loop));
 
-		}
+            }
 
-		return replies;
+        }
 
-	}
+        return replies;
+
+    }
 
 }

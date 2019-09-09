@@ -1,11 +1,10 @@
 package io.kurumi.ntt.utils;
 
-import cn.hutool.core.util.*;
-import java.util.*;
-import twitter4j.*;
-
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 import com.mongodb.client.FindIterable;
 import com.pengrad.telegrambot.model.ChatMember;
 import com.pengrad.telegrambot.request.DeleteMessage;
@@ -23,7 +22,10 @@ import io.kurumi.ntt.fragment.twitter.tasks.TrackTask;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.Send;
+import twitter4j.*;
+
 import java.io.File;
+import java.util.*;
 
 public class NTT {
 
@@ -68,94 +70,94 @@ public class NTT {
 	 }
 
 	 */
-	 
-	public static LinkedList<User> lookupUsers(Twitter api,LinkedList<Long> users) throws TwitterException {
 
-		LinkedList<User> results = new LinkedList<>();
+    public static LinkedList<User> lookupUsers(Twitter api, LinkedList<Long> users) throws TwitterException {
 
-		while (!users.isEmpty()) {
+        LinkedList<User> results = new LinkedList<>();
 
-			List<Long> target;
+        while (!users.isEmpty()) {
 
-			if (users.size() > 100) {
+            List<Long> target;
 
-				target = new LinkedList<Long>(users.subList(0,100));
-				users.removeAll(target);
+            if (users.size() > 100) {
 
-			} else {
+                target = new LinkedList<Long>(users.subList(0, 100));
+                users.removeAll(target);
 
-				target = new LinkedList<>();
-				target.addAll(users);
+            } else {
 
-				users.clear();
+                target = new LinkedList<>();
+                target.addAll(users);
 
-			}
+                users.clear();
 
-			try {
+            }
 
-				ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
+            try {
 
-				results.addAll(result);
+                ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
 
-			} catch (TwitterException e) {
+                results.addAll(result);
 
-				if (e.getErrorCode() == 17) {
+            } catch (TwitterException e) {
 
-					for (Long da : target) {
+                if (e.getErrorCode() == 17) {
 
-						UserArchive.saveDisappeared(da);
+                    for (Long da : target) {
 
-					}
+                        UserArchive.saveDisappeared(da);
 
-				} else throw e;
+                    }
 
-			}
+                } else throw e;
 
-		}
+            }
 
-		return results;
+        }
 
-	}
-	 
-	public static UserArchive findUser(Twitter api,String idOrName) throws TwitterException {
-		
-		if (NumberUtil.isNumber(idOrName)) {
-			
-			return UserArchive.save(api.showUser(NumberUtil.parseLong(idOrName)));
-			
-		} else {
-			
-			return UserArchive.save(api.showUser(NTT.parseScreenName(idOrName)));
-			
-		}
-		
-	}
-	 
-	public static Date nextHour(int offset) {
-		
-		Date next = new Date();
-		
-		next.setMinutes(0);
-		next.setSeconds(0);
-		
-		int nextHour = next.getHours();
-		
-		nextHour += offset;
-		
-		if (nextHour > 23) {
-			
-			next.setHours(nextHour - 24);
-			next.setDate(next.getDate() + 1);
-			
-		} else {
-			
-			next.setHours(nextHour);
-			
-		}
-		
-		return next;
-		
-	}
+        return results;
+
+    }
+
+    public static UserArchive findUser(Twitter api, String idOrName) throws TwitterException {
+
+        if (NumberUtil.isNumber(idOrName)) {
+
+            return UserArchive.save(api.showUser(NumberUtil.parseLong(idOrName)));
+
+        } else {
+
+            return UserArchive.save(api.showUser(NTT.parseScreenName(idOrName)));
+
+        }
+
+    }
+
+    public static Date nextHour(int offset) {
+
+        Date next = new Date();
+
+        next.setMinutes(0);
+        next.setSeconds(0);
+
+        int nextHour = next.getHours();
+
+        nextHour += offset;
+
+        if (nextHour > 23) {
+
+            next.setHours(nextHour - 24);
+            next.setDate(next.getDate() + 1);
+
+        } else {
+
+            next.setHours(nextHour);
+
+        }
+
+        return next;
+
+    }
 
     public static long telegramToTwitter(Twitter api, String fileId, String fileName, int type) throws TwitterException {
 
@@ -244,18 +246,18 @@ public class NTT {
         return true;
 
     }
-	
-	public static class Accessable {
-		
-		public TAuth auth;
-		public ResponseList<Status> timeline;
 
-		public Accessable(TAuth auth,ResponseList<Status> timeline) {
-			this.auth = auth;
-			this.timeline = timeline;
-		}
-		
-	}
+    public static class Accessable {
+
+        public TAuth auth;
+        public ResponseList<Status> timeline;
+
+        public Accessable(TAuth auth, ResponseList<Status> timeline) {
+            this.auth = auth;
+            this.timeline = timeline;
+        }
+
+    }
 
     public static Accessable loopFindAccessable(Object idOrScreenName) {
 
@@ -278,7 +280,7 @@ public class NTT {
 
                         TAuth newAuth = TAuth.getById(acc.id);
 
-                        if (newAuth != null) return new Accessable(newAuth,null);
+                        if (newAuth != null) return new Accessable(newAuth, null);
 
                     }
 
@@ -286,7 +288,7 @@ public class NTT {
 
                 } else {
 
-                    return new Accessable(auth,api.getUserTimeline(user.id, new Paging().count(200)));
+                    return new Accessable(auth, api.getUserTimeline(user.id, new Paging().count(200)));
 
                 }
 
@@ -316,7 +318,7 @@ public class NTT {
             case 413:
                 return "这是个官方文档都没写的错误";
 
-           case TwitterException.TOO_MANY_REQUESTS:
+            case TwitterException.TOO_MANY_REQUESTS:
                 return "服务器繁忙";
 
             case TwitterException.ENHANCE_YOUR_CLAIM:
@@ -330,10 +332,10 @@ public class NTT {
             case 50:
                 return "账号不存在";
 
-			case 32:
-				
-				return "无法认证";
-				
+            case 32:
+
+                return "无法认证";
+
             case 34:
                 return "找不到内容";
 
@@ -502,16 +504,14 @@ public class NTT {
 	 }
 
 	 */
-	 
-	public static boolean checkDropped(UserData user,Msg msg) {
-		
-		if (!user.blocked()) return false;
-		
-		// do domething
-		
-		return true;
-		
-	}
+
+    public static boolean checkDropped(UserData user, Msg msg) {
+
+        return user.blocked();
+
+        // do domething
+
+    }
 
     public static boolean checkNonContactable(UserData user, Msg msg) {
 
@@ -525,7 +525,7 @@ public class NTT {
 
             } else {
 
-                msg.send("{}\n{}",user.userName(), notContactableMsg).publicFailed();
+                msg.send("{}\n{}", user.userName(), notContactableMsg).publicFailed();
 
             }
 
@@ -571,8 +571,8 @@ public class NTT {
 
         Long statusId = -1L;
 
-		if (input == null) return statusId;
-		
+        if (input == null) return statusId;
+
         if (NumberUtil.isLong(input)) {
 
             statusId = NumberUtil.parseLong(input);
@@ -626,17 +626,11 @@ public class NTT {
 
     public static boolean isGroupAdmin(Fragment fragment, Long chatId, long userId) {
 
-        if (ArrayUtil.contains(Env.ADMINS, (int)userId)) return true;
+        if (ArrayUtil.contains(Env.ADMINS, (int) userId)) return true;
 
-        GetChatMemberResponse resp = fragment.bot().execute(new GetChatMember(chatId, (int)userId));
+        GetChatMemberResponse resp = fragment.bot().execute(new GetChatMember(chatId, (int) userId));
 
-        if (resp.isOk() && ((resp.chatMember().status() == ChatMember.Status.administrator) || resp.chatMember().status() == ChatMember.Status.creator)) {
-
-            return true;
-
-        }
-
-        return false;
+        return resp.isOk() && ((resp.chatMember().status() == ChatMember.Status.administrator) || resp.chatMember().status() == ChatMember.Status.creator);
 
     }
 
@@ -670,7 +664,7 @@ public class NTT {
 
     public static boolean checkGroupAdmin(Msg msg) {
 
-        if (msg.from().admin() ||isGroupAdmin(msg.fragment, msg.chatId(), msg.from().id)) {
+        if (msg.from().admin() || isGroupAdmin(msg.fragment, msg.chatId(), msg.from().id)) {
 
             return false;
 

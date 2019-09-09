@@ -1,9 +1,9 @@
 package com.pengrad.telegrambot.model;
 
-import java.io.Serializable;
-
-import io.kurumi.ntt.fragment.ProcessLock;
 import com.pengrad.telegrambot.request.BaseRequest;
+import io.kurumi.ntt.fragment.ProcessLock;
+
+import java.io.Serializable;
 
 /**
  * stas
@@ -12,7 +12,7 @@ import com.pengrad.telegrambot.request.BaseRequest;
 public class Update implements Serializable {
     private final static long serialVersionUID = 0L;
 
-	public transient long createAt = System.currentTimeMillis();
+    public transient long createAt = System.currentTimeMillis();
     public transient String json;
     public transient ProcessLock<BaseRequest> lock;
 

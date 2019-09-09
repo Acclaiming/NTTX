@@ -1,102 +1,102 @@
 package io.kurumi.ntt.fragment.admin;
 
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.utils.NTT;
-import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.twitter.TAuth;
-import twitter4j.TwitterException;
+import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.utils.NTT;
+import twitter4j.TwitterException;
 
 public class StatusDel extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
-		
-		super.init(origin);
-		
-		registerAdminFunction("del_status");
-		
-	}
+    @Override
+    public void init(BotFragment origin) {
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-		
-		if (params.length == 0) {
-			
-			msg.invalidParams("statusId").async();
-			
-			return;
-			
-		}
-		
-		Long statusId = NTT.parseStatusId(params[0]);
-		
-		if (StatusArchive.contains(statusId)) {
-			
-			long userId = StatusArchive.get(statusId).user().id;
-			
-			TAuth auth = TAuth.getById(userId);
-			
-			if (auth == null) {
-				
-				msg.send("不在范围内").async();
-				
-				return;
-				
-			}
-			
-			try {
-				
-				auth.createApi().destroyStatus(statusId);
-				
-				msg.send("完成").async();
-				
-			} catch (TwitterException e) {
-				
-				msg.send(NTT.parseTwitterException(e)).async();
-				
-			}
-			
-			return;
+        super.init(origin);
 
-		}
-		
-		String sn = NTT.parseScreenName(params[0]);
-		
-		if (UserArchive.contains(sn)) {
-			
-			long userId = UserArchive.get(sn).id;
+        registerAdminFunction("del_status");
 
-			TAuth auth = TAuth.getById(userId);
+    }
 
-			if (auth == null) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-				msg.send("不在范围内").async();
+        if (params.length == 0) {
 
-				return;
+            msg.invalidParams("statusId").async();
 
-			}
+            return;
 
-			try {
+        }
 
-				auth.createApi().destroyStatus(statusId);
+        Long statusId = NTT.parseStatusId(params[0]);
 
-				msg.send("完成").async();
+        if (StatusArchive.contains(statusId)) {
 
-			} catch (TwitterException e) {
+            long userId = StatusArchive.get(statusId).user().id;
 
-				msg.send(NTT.parseTwitterException(e)).async();
+            TAuth auth = TAuth.getById(userId);
 
-			}
+            if (auth == null) {
 
-			return;
-			
-			
-		}
+                msg.send("不在范围内").async();
 
-	}
-	
+                return;
+
+            }
+
+            try {
+
+                auth.createApi().destroyStatus(statusId);
+
+                msg.send("完成").async();
+
+            } catch (TwitterException e) {
+
+                msg.send(NTT.parseTwitterException(e)).async();
+
+            }
+
+            return;
+
+        }
+
+        String sn = NTT.parseScreenName(params[0]);
+
+        if (UserArchive.contains(sn)) {
+
+            long userId = UserArchive.get(sn).id;
+
+            TAuth auth = TAuth.getById(userId);
+
+            if (auth == null) {
+
+                msg.send("不在范围内").async();
+
+                return;
+
+            }
+
+            try {
+
+                auth.createApi().destroyStatus(statusId);
+
+                msg.send("完成").async();
+
+            } catch (TwitterException e) {
+
+                msg.send(NTT.parseTwitterException(e)).async();
+
+            }
+
+            return;
+
+
+        }
+
+    }
+
 }

@@ -2,24 +2,13 @@ package io.kurumi.ntt.db;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.pengrad.telegrambot.model.Chat;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.model.request.Send;
-import java.util.List;
-import java.util.Map;
-
-import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Updates.*;
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.gt;
-import static com.mongodb.client.model.Filters.not;
-import static com.mongodb.client.model.Updates.combine;
-import static com.mongodb.client.model.Updates.set;
-import static java.util.Arrays.asList;
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
-import io.kurumi.ntt.utils.BotLog;
 import com.pengrad.telegrambot.request.ExportChatInviteLink;
 import com.pengrad.telegrambot.response.StringResponse;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.request.Send;
+
+import java.util.List;
+import java.util.Map;
 
 public class GroupData {
 
@@ -57,7 +46,7 @@ public class GroupData {
 
             }
 
-            data.idIndex.put(id,group);
+            data.idIndex.put(id, group);
 
             return group;
 
@@ -66,7 +55,7 @@ public class GroupData {
     }
 
 
-    public static GroupData get(Fragment fragment,Chat chat) {
+    public static GroupData get(Fragment fragment, Chat chat) {
 
         synchronized (data.idIndex) {
 
@@ -87,27 +76,27 @@ public class GroupData {
             }
 
             group.title = chat.title();
-			group.username = chat.username();
-			group.bot = fragment.origin.me.id();
-			group.last = System.currentTimeMillis();
-			
-			if (group.username == null && group.link == null) {
-				
-				StringResponse exported = fragment.execute(new ExportChatInviteLink(group.id));
+            group.username = chat.username();
+            group.bot = fragment.origin.me.id();
+            group.last = System.currentTimeMillis();
 
-				if (exported.isOk()) {
-					
-					group.link = exported.result();
-					
-				} else {
-					
-					group.link = "";
-					
-				}
-				
-			}
+            if (group.username == null && group.link == null) {
 
-            data.idIndex.put(chat.id().longValue(),group);
+                StringResponse exported = fragment.execute(new ExportChatInviteLink(group.id));
+
+                if (exported.isOk()) {
+
+                    group.link = exported.result();
+
+                } else {
+
+                    group.link = "";
+
+                }
+
+            }
+
+            data.idIndex.put(chat.id().longValue(), group);
 
             return group;
 
@@ -118,12 +107,12 @@ public class GroupData {
     public long id;
 
     public String title;
-	public String link;
-	public String username;
-	public Long bot;
-	public Boolean bot_admin;
-	public Long last;
-	
+    public String link;
+    public String username;
+    public Long bot;
+    public Boolean bot_admin;
+    public Long last;
+
     public Long owner;
 
     public List<Long> admins;
@@ -163,10 +152,10 @@ public class GroupData {
 
             return time + "秒";
 
-		} else if (time % 60 == 0) {
-			
-			return (time / 60) + "分钟";
-			
+        } else if (time % 60 == 0) {
+
+            return (time / 60) + "分钟";
+
         } else {
 
             return time / 60 + "分 " + (time % 60) + "秒";
@@ -213,8 +202,8 @@ public class GroupData {
     public Integer no_invite_user;
     public Integer no_invite_bot;
 
-	public Integer no_esu_words;
-	public Integer no_esu_stickers;
+    public Integer no_esu_words;
+    public Integer no_esu_stickers;
 
     public Integer no_sticker;
     public Integer no_animated_sticker;
@@ -239,8 +228,8 @@ public class GroupData {
     public String actionName() {
 
         return rest_action == null ? "限制" :
-			rest_action == 0 ? "禁言" :
-			/* rest_action == 1 ? */"封锁";
+                rest_action == 0 ? "禁言" :
+                        /* rest_action == 1 ? */"封锁";
 
     }
 
@@ -263,18 +252,18 @@ public class GroupData {
     public Boolean cas_spam;
     public Boolean backhole;
 
-	public Boolean enable_log;
+    public Boolean enable_log;
 
-	public Long log_channel;
+    public Long log_channel;
 
-	public void log(Fragment fragment,Object... str) {
-		
-		if (enable_log != null && log_channel != null) {
+    public void log(Fragment fragment, Object... str) {
 
-			new Send(fragment,log_channel,ArrayUtil.join(str,"\n")).html().async();
+        if (enable_log != null && log_channel != null) {
 
-		}
+            new Send(fragment, log_channel, ArrayUtil.join(str, "\n")).html().async();
 
-	}
+        }
+
+    }
 
 }

@@ -2,11 +2,10 @@ package io.kurumi.ntt.model;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.pengrad.telegrambot.model.CallbackQuery;
+import com.pengrad.telegrambot.request.AnswerCallbackQuery;
 import io.kurumi.ntt.Launcher;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.model.request.AnswerCallback;
 import io.kurumi.ntt.db.UserData;
-import com.pengrad.telegrambot.request.*;
+import io.kurumi.ntt.fragment.Fragment;
 
 public class Callback extends Msg {
 
@@ -62,7 +61,7 @@ public class Callback extends Msg {
 
     public void payload(String... text) {
 
-        url("https://t.me/" + fragment.origin.me.username() + "?start=" + ArrayUtil.join(text, fragment.PAYLOAD_SPLIT));
+        url("https://t.me/" + fragment.origin.me.username() + "?start=" + ArrayUtil.join(text, Fragment.PAYLOAD_SPLIT));
 
     }
 

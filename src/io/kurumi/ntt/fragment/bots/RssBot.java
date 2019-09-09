@@ -1,8 +1,8 @@
 package io.kurumi.ntt.fragment.bots;
 
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.model.*;
-import io.kurumi.ntt.fragment.rss.*;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.rss.RssSub;
+import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.Html;
 
 public class RssBot extends UserBotFragment {

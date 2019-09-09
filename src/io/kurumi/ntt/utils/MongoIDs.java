@@ -1,26 +1,12 @@
 package io.kurumi.ntt.utils;
 
-import io.kurumi.ntt.db.*;
-
-import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Updates.*;
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.gt;
-import static com.mongodb.client.model.Filters.not;
-import static com.mongodb.client.model.Updates.combine;
-import static com.mongodb.client.model.Updates.set;
-import static java.util.Arrays.asList;
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
-
-import io.kurumi.ntt.db.BotDB.*;
+import com.mongodb.client.model.FindOneAndUpdateOptions;
+import io.kurumi.ntt.db.AbsData;
 
 import java.util.*;
 
-import com.mongodb.operation.*;
-import com.mongodb.client.model.*;
-import com.mongodb.*;
-import org.bson.*;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.inc;
 
 public class MongoIDs {
 

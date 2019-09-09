@@ -8,90 +8,90 @@ import io.kurumi.ntt.utils.NTT;
 
 public class TelegramFN extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerFunction("tinx_enable","tinx_disable");
+        registerFunction("tinx_enable", "tinx_disable");
 
-	}
+    }
 
-	@Override
-	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public int checkFunctionContext(UserData user, Msg msg, String function, String[] params) {
 
-		return FUNCTION_GROUP;
+        return FUNCTION_GROUP;
 
-	}
+    }
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		if (function.endsWith("_enable")) {
+        if (function.endsWith("_enable")) {
 
-			if (!TelegramBridge.telegramIndex.containsKey(msg.chatId())) {
+            if (!TelegramBridge.telegramIndex.containsKey(msg.chatId())) {
 
-				msg.send("本群没有开启QQ群组消息同步, 请联系机器人管理者.").async();
+                msg.send("本群没有开启QQ群组消息同步, 请联系机器人管理者.").async();
 
-				return;
+                return;
 
-			}
+            }
 
-			if (NTT.checkGroupAdmin(msg)) return;
+            if (NTT.checkGroupAdmin(msg)) return;
 
-			if (!TelegramBridge.disable.containsKey(msg.chatId())) {
+            if (!TelegramBridge.disable.containsKey(msg.chatId())) {
 
-				msg.send("没有关闭 :)").async();
+                msg.send("没有关闭 :)").async();
 
-			} else {
+            } else {
 
-				TelegramBridge.disable.remove(msg.chatId());
+                TelegramBridge.disable.remove(msg.chatId());
 
-				TelegramBridge.GroupBind bind = TelegramBridge.data.getById(msg.chatId());
+                TelegramBridge.GroupBind bind = TelegramBridge.data.getById(msg.chatId());
 
-				bind.disable = null;
+                bind.disable = null;
 
-				TelegramBridge.data.setById(bind.id,bind);
+                TelegramBridge.data.setById(bind.id, bind);
 
-				msg.send("已开启 :) 使用 /tinx_disable 关闭.").async();
+                msg.send("已开启 :) 使用 /tinx_disable 关闭.").async();
 
-				return;
+                return;
 
-			}
+            }
 
-		} else if (function.endsWith("_disable")) {
+        } else if (function.endsWith("_disable")) {
 
-			if (!TelegramBridge.telegramIndex.containsKey(msg.chatId())) {
+            if (!TelegramBridge.telegramIndex.containsKey(msg.chatId())) {
 
-				msg.send("本群没有开启QQ群组消息同步, 请联系机器人管理者.").async();
+                msg.send("本群没有开启QQ群组消息同步, 请联系机器人管理者.").async();
 
-				return;
+                return;
 
-			}
+            }
 
-			if (NTT.checkGroupAdmin(msg)) return;
+            if (NTT.checkGroupAdmin(msg)) return;
 
-			if (TelegramBridge.disable.containsKey(msg.chatId())) {
+            if (TelegramBridge.disable.containsKey(msg.chatId())) {
 
-				msg.send("没有开启 :)").async();
+                msg.send("没有开启 :)").async();
 
-			} else {
+            } else {
 
-				TelegramBridge.disable.put(msg.chatId(),true);
+                TelegramBridge.disable.put(msg.chatId(), true);
 
-				TelegramBridge.GroupBind bind = TelegramBridge.data.getById(msg.chatId());
+                TelegramBridge.GroupBind bind = TelegramBridge.data.getById(msg.chatId());
 
-				bind.disable = true;
+                bind.disable = true;
 
-				TelegramBridge.data.setById(bind.id,bind);
+                TelegramBridge.data.setById(bind.id, bind);
 
-				msg.send("已关闭 :) 使用 /tinx_enable 重新开启.").async();
+                msg.send("已关闭 :) 使用 /tinx_enable 重新开启.").async();
 
-				return;
+                return;
 
-			}
+            }
 
-		}
+        }
 
-	}
+    }
 }

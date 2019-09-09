@@ -50,40 +50,40 @@ public class MediaDownload extends Fragment {
 
             MediaEntity[] medias = status.getMediaEntities();
 
-			StringBuilder urls = new StringBuilder();
+            StringBuilder urls = new StringBuilder();
 
-			for (MediaEntity entry : medias) {
+            for (MediaEntity entry : medias) {
 
-				MediaEntity.Variant[] varints = entry.getVideoVariants();
+                MediaEntity.Variant[] varints = entry.getVideoVariants();
 
-				for (MediaEntity.Variant variant : varints) {
+                for (MediaEntity.Variant variant : varints) {
 
-					urls.append("\n\n");
+                    urls.append("\n\n");
 
-					if (variant.getUrl().contains("mp4")) {
+                    if (variant.getUrl().contains("mp4")) {
 
-						if (variant.getUrl().contains("?")) {
+                        if (variant.getUrl().contains("?")) {
 
-							urls.append("[mp4 ").append(StrUtil.subBetween(variant.getUrl(),"vid/","/")).append("] ");
+                            urls.append("[mp4 ").append(StrUtil.subBetween(variant.getUrl(), "vid/", "/")).append("] ");
 
-						} else {
+                        } else {
 
-							urls.append("[mp4] ");
+                            urls.append("[mp4] ");
 
-						}
+                        }
 
-					} else {
+                    } else {
 
-						urls.append("[").append(StrUtil.subBefore(StrUtil.subAfter(variant.getUrl(),".",true),"?",false)).append("] ");
+                        urls.append("[").append(StrUtil.subBefore(StrUtil.subAfter(variant.getUrl(), ".", true), "?", false)).append("] ");
 
-					}
-					
+                    }
 
-					urls.append(variant.getUrl());
 
-				}
+                    urls.append(variant.getUrl());
 
-			}
+                }
+
+            }
 
             if (urls.toString().isEmpty()) {
 

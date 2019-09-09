@@ -2,6 +2,7 @@ package io.kurumi.ntt.fragment.group.mamage;
 
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
+import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.ChatMember;
 import com.pengrad.telegrambot.request.GetChat;
 import com.pengrad.telegrambot.request.GetChatMember;
@@ -15,203 +16,212 @@ import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.BotServer;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.bots.GroupBot;
-import io.kurumi.ntt.fragment.group.mamage.FetchGroup;
 import io.kurumi.ntt.model.Msg;
+
 import java.util.LinkedList;
 import java.util.List;
-import com.pengrad.telegrambot.model.Chat;
 
 public class FetchGroup extends Fragment {
 
-	static Log log = LogFactory.get(FetchGroup.class);
+    static Log log = LogFactory.get(FetchGroup.class);
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerAdminFunction("_fetch_groups","_fetch_groups_status");
+        registerAdminFunction("_fetch_groups", "_fetch_groups_status");
 
-	}
+    }
 
-	@Override
-	public int checkFunction(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public int checkFunction(UserData user, Msg msg, String function, String[] params) {
 
-		return PROCESS_ASYNC;
+        return PROCESS_ASYNC;
 
-	}
+    }
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		msg.send("正在开始刷新 ~").async();
+        msg.send("正在开始刷新 ~").async();
 
-		if (function.endsWith("status")) {
+        if (function.endsWith("status")) {
 
-			GroupData.data.saveAll();
+            GroupData.data.saveAll();
 
-			synchronized (GroupData.data.idIndex) {
+            synchronized (GroupData.data.idIndex) {
 
-				List<GroupData> all = GroupData.data.getAll();
+                List<GroupData> all = GroupData.data.getAll();
 
-				int ok = 0;
-				int error = 0;
-				int base = 0;
-				int remove = 0;
-				
-				for (int index = 0;index < all.size();index ++) {
+                int ok = 0;
+                int error = 0;
+                int base = 0;
+                int remove = 0;
 
-					GroupData data = all.get(index);
-					
-					if (!BotServer.idIndex.containsKey(data.bot)) { error ++;continue; }
+                for (int index = 0; index < all.size(); index++) {
 
-					BotFragment originBot = BotServer.idIndex.get(data.bot);
-					
-					GetChatMemberResponse member = originBot.execute(new GetChatMember(data.id,data.bot.intValue()));
+                    GroupData data = all.get(index);
 
-					if (member == null || !member.isOk()) { error ++;continue; }
-					
-					ChatMember.Status status = member.chatMember().status();
+                    if (!BotServer.idIndex.containsKey(data.bot)) {
+                        error++;
+                        continue;
+                    }
 
-					if (status == ChatMember.Status.administrator) {
-						
-						data.bot_admin = true;
-						
-						ok ++;
-						
-					} else if (status == ChatMember.Status.member) {
-						
-						data.bot_admin = false;
-						
-						base ++;
-						
-					} else {
-						
-						originBot.execute(new LeaveChat(data.id));
-						
-						GroupData.data.deleteById(data.id);
-						
-						remove ++;
-						
-					}
-					
-					log.debug("管理 {} 个群组, 非管理 {} 个群组, 退出了 {} 个群组, 出错 {} 个群组, 剩余 {} 个群组.",ok,base,remove,error,all.size() - index - 1);
-					
-					
-				}
-				
-				msg.send("完成 管理 {} 个群组, 非管理 {} 个群组, 退出了 {} 个群组, 出错 {} 个群组.",ok,base,remove,error).async();
-				
-			}
+                    BotFragment originBot = BotServer.idIndex.get(data.bot);
 
-			GroupData.data.saveAll();
+                    GetChatMemberResponse member = originBot.execute(new GetChatMember(data.id, data.bot.intValue()));
 
-			
-		} else {
+                    if (member == null || !member.isOk()) {
+                        error++;
+                        continue;
+                    }
 
-			GroupData.data.saveAll();
+                    ChatMember.Status status = member.chatMember().status();
 
-			LinkedList<Long> failed = new LinkedList<>();
+                    if (status == ChatMember.Status.administrator) {
 
-			int success = 0;
-			int remove = 0;
+                        data.bot_admin = true;
 
-			synchronized (GroupData.data.idIndex) {
+                        ok++;
 
-				List<GroupData> all = GroupData.data.getAll();
+                    } else if (status == ChatMember.Status.member) {
 
-				for (int index = 0;index < all.size();index ++) {
+                        data.bot_admin = false;
 
-					GroupData data = all.get(index);
+                        base++;
 
-					if (data.id >= 0) {
+                    } else {
 
-						execute(new LeaveChat(data.id));
+                        originBot.execute(new LeaveChat(data.id));
 
-						GroupData.data.deleteById(data.id);
+                        GroupData.data.deleteById(data.id);
 
-						remove ++;
+                        remove++;
 
-						continue;
+                    }
 
-					}
+                    log.debug("管理 {} 个群组, 非管理 {} 个群组, 退出了 {} 个群组, 出错 {} 个群组, 剩余 {} 个群组.", ok, base, remove, error, all.size() - index - 1);
 
-					// if (data.last != null) continue;
-					
-					if (!BotServer.idIndex.containsKey(data.bot)) { failed.add(data.id); continue; }
 
-					BotFragment originBot = BotServer.idIndex.get(data.bot);
-					
-					GetChatResponse chatR = originBot.execute(new GetChat(data.id));
+                }
 
-					if (chatR != null && chatR.isOk()) {
-						
-						if (chatR.chat().type() == Chat.Type.channel) {
-							
-							GroupData.data.deleteById(data.id);
+                msg.send("完成 管理 {} 个群组, 非管理 {} 个群组, 退出了 {} 个群组, 出错 {} 个群组.", ok, base, remove, error).async();
 
-							remove ++;
+            }
 
-							continue;
-							
-						}
-						
-						GroupData.get(originBot,chatR.chat());
+            GroupData.data.saveAll();
 
-						success ++;
 
-					} else if (chatR != null) {
+        } else {
 
-						failed.add(data.id);
+            GroupData.data.saveAll();
 
-					} 
+            LinkedList<Long> failed = new LinkedList<>();
 
-					log.debug("群组消息已刷新 {} 条, 失败 {} 条, 剩余 {} 条.",success,failed.size(),all.size() - index - 1); 
+            int success = 0;
+            int remove = 0;
 
-				}
+            synchronized (GroupData.data.idIndex) {
 
-				log.debug("剩余 {} 条无效数据",failed.size());
+                List<GroupData> all = GroupData.data.getAll();
 
-				msg.send("本体刷新了 {} 个群组, 剩余 {} 条数据",success,failed.size()).async();
+                for (int index = 0; index < all.size(); index++) {
 
-				success = 0;
+                    GroupData data = all.get(index);
 
-				groups:for (Long group : failed) {
+                    if (data.id >= 0) {
 
-					log.debug("非本体群组已刷新 {} 条, 失败 {} 条",success,remove); 
+                        execute(new LeaveChat(data.id));
 
-					for (BotFragment bot :  BotServer.fragments.values()) {
+                        GroupData.data.deleteById(data.id);
 
-						if (!(bot instanceof GroupBot) || !(bot instanceof Launcher)) continue;
+                        remove++;
 
-						GetChatResponse chatR = bot.execute(new GetChat(group));
+                        continue;
 
-						if (chatR == null && chatR.isOk()) {
+                    }
 
-							GroupData.get(bot,chatR.chat());
+                    // if (data.last != null) continue;
 
-							success ++;
+                    if (!BotServer.idIndex.containsKey(data.bot)) {
+                        failed.add(data.id);
+                        continue;
+                    }
 
-							continue groups;
+                    BotFragment originBot = BotServer.idIndex.get(data.bot);
 
-						}
+                    GetChatResponse chatR = originBot.execute(new GetChat(data.id));
 
-					}
+                    if (chatR != null && chatR.isOk()) {
 
-					remove ++;
+                        if (chatR.chat().type() == Chat.Type.channel) {
 
-					GroupData.data.deleteById(group);
+                            GroupData.data.deleteById(data.id);
 
-				}
+                            remove++;
 
-				msg.send("完成 非本体刷新了 {} 个群组, 移除了 {} 条无效数据.",success,remove).async();
+                            continue;
 
-			}
+                        }
 
-			GroupData.data.saveAll();
+                        GroupData.get(originBot, chatR.chat());
 
-		}
+                        success++;
 
-	}
+                    } else if (chatR != null) {
+
+                        failed.add(data.id);
+
+                    }
+
+                    log.debug("群组消息已刷新 {} 条, 失败 {} 条, 剩余 {} 条.", success, failed.size(), all.size() - index - 1);
+
+                }
+
+                log.debug("剩余 {} 条无效数据", failed.size());
+
+                msg.send("本体刷新了 {} 个群组, 剩余 {} 条数据", success, failed.size()).async();
+
+                success = 0;
+
+                groups:
+                for (Long group : failed) {
+
+                    log.debug("非本体群组已刷新 {} 条, 失败 {} 条", success, remove);
+
+                    for (BotFragment bot : BotServer.fragments.values()) {
+
+                        if (!(bot instanceof GroupBot) || !(bot instanceof Launcher)) continue;
+
+                        GetChatResponse chatR = bot.execute(new GetChat(group));
+
+                        if (chatR == null && chatR.isOk()) {
+
+                            GroupData.get(bot, chatR.chat());
+
+                            success++;
+
+                            continue groups;
+
+                        }
+
+                    }
+
+                    remove++;
+
+                    GroupData.data.deleteById(group);
+
+                }
+
+                msg.send("完成 非本体刷新了 {} 个群组, 移除了 {} 条无效数据.", success, remove).async();
+
+            }
+
+            GroupData.data.saveAll();
+
+        }
+
+    }
 
 }

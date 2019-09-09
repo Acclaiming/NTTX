@@ -1,23 +1,6 @@
 package io.kurumi.ntt.fragment.group;
 
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.json.JSONArray;
-import io.kurumi.ntt.db.GroupData;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.utils.Html;
-import io.kurumi.ntt.utils.NTT;
-
-import java.util.HashSet;
-
-import net.sourceforge.pinyin4j.PinyinHelper;
-import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
-import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
-import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
-import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
-import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
 public class AntiEsu extends Fragment {
 

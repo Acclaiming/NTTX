@@ -1,76 +1,76 @@
 package io.kurumi.ntt.fragment.twitter.ui;
 
-import io.kurumi.ntt.fragment.twitter.ui.extra.*;
-
 import cn.hutool.core.util.NumberUtil;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.twitter.TAuth;
-import io.kurumi.ntt.fragment.twitter.ui.AccountMain;
+import io.kurumi.ntt.fragment.twitter.ui.extra.BlockedBy;
+import io.kurumi.ntt.fragment.twitter.ui.extra.FollowedBy;
+import io.kurumi.ntt.fragment.twitter.ui.extra.OWUnfoPublish;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 
 public class CleanMain extends Fragment {
-	
-	public static String POINT_CLEAN = "twi_cl";
-	
-	@Override
-	public void init(BotFragment origin) {
 
-		super.init(origin);
+    public static String POINT_CLEAN = "twi_cl";
 
-		registerCallback(POINT_CLEAN);
+    @Override
+    public void init(BotFragment origin) {
 
-	}
+        super.init(origin);
 
-	@Override
-	public void onCallback(UserData user,Callback callback,String point,String[] params) {
+        registerCallback(POINT_CLEAN);
 
-		if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
+    }
 
-			callback.invalidQuery();
+    @Override
+    public void onCallback(UserData user, Callback callback, String point, String[] params) {
 
-			return;
+        if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
 
-		}
+            callback.invalidQuery();
 
-		long accountId = NumberUtil.parseLong(params[0]);
+            return;
 
-		TAuth account = TAuth.getById(accountId);
+        }
 
-		if (account == null) {
+        long accountId = NumberUtil.parseLong(params[0]);
 
-			callback.alert("无效的账号 .");
+        TAuth account = TAuth.getById(accountId);
 
-			callback.delete();
+        if (account == null) {
 
-			return;
+            callback.alert("无效的账号 .");
 
-		}
+            callback.delete();
 
-		if (params.length == 1) {
+            return;
 
-			cleanMain(user,callback,account);
+        }
 
-		}
+        if (params.length == 1) {
 
-	}
+            cleanMain(user, callback, account);
 
-	void cleanMain(UserData user,Callback callback,TAuth account) {
+        }
 
-		String message = "账号清理 : [ " + account.archive().name + " ]";
+    }
 
-		ButtonMarkup buttons = new ButtonMarkup();
+    void cleanMain(UserData user, Callback callback, TAuth account) {
 
-		buttons.newButtonLine("清理正在关注 >>",FollowedBy.POINT_FB,account.id);
-		buttons.newButtonLine("清理关注者 >>",OWUnfoPublish.POINT_OUP,account.id);
-		buttons.newButtonLine("清理静音屏蔽 >>",BlockedBy.POINT_BB,account.id);
+        String message = "账号清理 : [ " + account.archive().name + " ]";
 
-		buttons.newButtonLine("🔙",AccountMain.POINT_ACCOUNT,account.id);
+        ButtonMarkup buttons = new ButtonMarkup();
 
-		callback.edit(message).buttons(buttons).async();
+        buttons.newButtonLine("清理正在关注 >>", FollowedBy.POINT_FB, account.id);
+        buttons.newButtonLine("清理关注者 >>", OWUnfoPublish.POINT_OUP, account.id);
+        buttons.newButtonLine("清理静音屏蔽 >>", BlockedBy.POINT_BB, account.id);
 
-	}
-	
+        buttons.newButtonLine("🔙", AccountMain.POINT_ACCOUNT, account.id);
+
+        callback.edit(message).buttons(buttons).async();
+
+    }
+
 }

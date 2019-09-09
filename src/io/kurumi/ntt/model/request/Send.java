@@ -1,61 +1,56 @@
 package io.kurumi.ntt.model.request;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.log.StaticLog;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
-import io.kurumi.ntt.Env;
 import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.twitter.status.MessagePoint;
 import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.utils.BotLog;
-import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
-import cn.hutool.http.HtmlUtil;
-import io.kurumi.ntt.fragment.BotFragment;
-import com.pengrad.telegrambot.model.Update;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.log.StaticLog;
 
 public class Send extends AbstractSend<Send> {
 
     private SendMessage request;
-	
-	public Send(Fragment fragment,String chatId,String msg,Object... params) {
 
-        this(null,fragment,chatId,msg,params);
+    public Send(Fragment fragment, String chatId, String msg, Object... params) {
 
-    }
-	
-    public Send(Fragment fragment,long chatId,String msg,Object... params) {
-
-        this(null,fragment,chatId,msg,params);
-
-    }
-	
-    public Send(String chatId,String msg,Object... params) {
-
-        this(null,Launcher.INSTANCE,chatId,msg,params);
+        this(null, fragment, chatId, msg, params);
 
     }
 
-    public Send(long chatId,String msg,Object... params) {
+    public Send(Fragment fragment, long chatId, String msg, Object... params) {
 
-        this(null,Launcher.INSTANCE,chatId,msg,params);
+        this(null, fragment, chatId, msg, params);
+
+    }
+
+    public Send(String chatId, String msg, Object... params) {
+
+        this(null, Launcher.INSTANCE, chatId, msg, params);
+
+    }
+
+    public Send(long chatId, String msg, Object... params) {
+
+        this(null, Launcher.INSTANCE, chatId, msg, params);
 
     }
 
 
-    private Send(Void v,Fragment fragment,Object chatId,String msg,Object... params) {
+    private Send(Void v, Fragment fragment, Object chatId, String msg, Object... params) {
 
         super(fragment);
 
-        request = new SendMessage(chatId,StrUtil.format(msg,params));
+        request = new SendMessage(chatId, StrUtil.format(msg, params));
 
         this.fragment = fragment;
 
@@ -128,30 +123,30 @@ public class Send extends AbstractSend<Send> {
 
     public Send keyboardVertical(final Object... buttons) {
 
-		Keyboard keyboard = new Keyboard();
+        Keyboard keyboard = new Keyboard();
 
-		for (Object button : buttons) keyboard.newButtonLine(button.toString());
+        for (Object button : buttons) keyboard.newButtonLine(button.toString());
 
-		keyboard(keyboard);
-		
-		return this;
+        keyboard(keyboard);
+
+        return this;
+
+    }
+
+    public Send keyboardHorizontal(final Object... buttons) {
+
+        Keyboard keyboard = new Keyboard();
+
+        KeyboradButtonLine line = keyboard.newButtonLine();
+
+        for (Object button : buttons) line.newButton(button.toString());
+
+        keyboard(keyboard);
+
+        return this;
 
     }
 
-	public Send keyboardHorizontal(final Object... buttons) {
-
-		Keyboard keyboard = new Keyboard();
-
-		KeyboradButtonLine line = keyboard.newButtonLine();
-
-		for (Object button : buttons) line.newButton(button.toString());
-
-		keyboard(keyboard);
-		
-		return this;
-
-    }
-	
 
     public Send keyboard(Keyboard keyboard) {
 
@@ -196,20 +191,20 @@ public class Send extends AbstractSend<Send> {
 
         BotFragment.waitPool.execute(new Runnable() {
 
-				@Override
-				public void run() {
+            @Override
+            public void run() {
 
-					SendResponse resp = exec();
+                SendResponse resp = exec();
 
-					if (resp.isOk()) {
+                if (resp.isOk()) {
 
-						NTT.tryDelete(delay,new Msg(fragment,resp.message()));
+                    NTT.tryDelete(delay, new Msg(fragment, resp.message()));
 
-					}
+                }
 
-				}
+            }
 
-			});
+        });
 
 
     }
@@ -226,7 +221,7 @@ public class Send extends AbstractSend<Send> {
 
         if (resp.isOk()) {
 
-            NTT.tryDelete(delay,new Msg(fragment,resp.message()),origin);
+            NTT.tryDelete(delay, new Msg(fragment, resp.message()), origin);
 
         }
 
@@ -246,7 +241,7 @@ public class Send extends AbstractSend<Send> {
 
         if (resp.isOk()) {
 
-            NTT.tryDelete(delay,new Msg(fragment,resp.message()));
+            NTT.tryDelete(delay, new Msg(fragment, resp.message()));
 
         }
 
@@ -266,17 +261,17 @@ public class Send extends AbstractSend<Send> {
 
         if (!resp.isOk()) return null;
 
-        return new Msg(fragment,resp.message());
+        return new Msg(fragment, resp.message());
 
     }
 
-    public SendResponse point(int type,long targetId) {
+    public SendResponse point(int type, long targetId) {
 
         SendResponse resp = exec();
 
         if (resp != null && resp.isOk() && resp.message().chat().type() == Chat.Type.Private) {
 
-            MessagePoint.set(resp.message().messageId(),type,targetId);
+            MessagePoint.set(resp.message().messageId(), type, targetId);
 
         }
 
@@ -324,14 +319,14 @@ public class Send extends AbstractSend<Send> {
     @Override
     public SendResponse exec() {
 
-		if (fragment == null) return null;
+        if (fragment == null) return null;
         if (request.getText() == null) return null;
 
         char[] arr = request.getText().toCharArray();
 
         while (arr.length > 4096) {
 
-            Character[] chars = (Character[]) ArrayUtil.sub(ArrayUtil.wrap((Object) arr),0,4096);
+            Character[] chars = (Character[]) ArrayUtil.sub(ArrayUtil.wrap((Object) arr), 0, 4096);
 
             int index = chars.length;
 
@@ -345,13 +340,13 @@ public class Send extends AbstractSend<Send> {
 
                     char[] send = new char[index];
 
-                    ArrayUtil.copy(arr,send,index);
+                    ArrayUtil.copy(arr, send, index);
 
                     fork(String.valueOf(send)).exec();
 
                     char[] subed = new char[arr.length - index];
 
-                    ArrayUtil.copy(arr,index,subed,0,subed.length);
+                    ArrayUtil.copy(arr, index, subed, 0, subed.length);
 
                     request.setText(String.valueOf(subed));
 
@@ -369,13 +364,13 @@ public class Send extends AbstractSend<Send> {
 
                 char[] send = new char[4096];
 
-                ArrayUtil.copy(arr,send,4096);
+                ArrayUtil.copy(arr, send, 4096);
 
                 fork(String.valueOf(send)).exec();
 
                 char[] subed = new char[arr.length - 4096];
 
-                ArrayUtil.copy(arr,4095,subed,0,subed.length);
+                ArrayUtil.copy(arr, 4095, subed, 0, subed.length);
 
                 request.setText(String.valueOf(subed));
 
@@ -389,7 +384,7 @@ public class Send extends AbstractSend<Send> {
 
             if (async) {
 
-                fragment.executeAsync(origin == null ? null : origin.update,request);
+                fragment.executeAsync(origin == null ? null : origin.update, request);
 
                 return null;
 
@@ -407,19 +402,19 @@ public class Send extends AbstractSend<Send> {
 
                         user.contactable = false;
 
-                        UserData.userDataIndex.put(user.id,user);
+                        UserData.userDataIndex.put(user.id, user);
 
-                        UserData.data.setById(user.id,user);
+                        UserData.data.setById(user.id, user);
 
                     }
 
                 }
 
-				if (resp != null) {
+                if (resp != null) {
 
-					StaticLog.debug("发送出错 : \n\n{}\n\n{} {}",request.getText(),resp.errorCode(),resp.description());
+                    StaticLog.debug("发送出错 : \n\n{}\n\n{} {}", request.getText(), resp.errorCode(), resp.description());
 
-				}
+                }
 
             }
 
@@ -430,14 +425,14 @@ public class Send extends AbstractSend<Send> {
         }
 
 
-		return new SendResponse("Telegram 服务器超时");
+        return new SendResponse("Telegram 服务器超时");
 
 
     }
 
     public Send fork(Long chatId) {
 
-        Send send = new Send(null,fragment,chatId,request.getText());
+        Send send = new Send(null, fragment, chatId, request.getText());
 
         if (request.mode != null) {
 
@@ -452,7 +447,7 @@ public class Send extends AbstractSend<Send> {
 
     public Send fork(String msg) {
 
-        Send send = new Send(null,fragment,request.chatId,msg);
+        Send send = new Send(null, fragment, request.chatId, msg);
 
         if (request.mode != null) {
 

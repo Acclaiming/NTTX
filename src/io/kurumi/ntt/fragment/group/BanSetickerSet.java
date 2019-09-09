@@ -1,7 +1,5 @@
 package io.kurumi.ntt.fragment.group;
 
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
 import io.kurumi.ntt.db.GroupData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
@@ -56,7 +54,7 @@ public class BanSetickerSet extends Fragment {
 
             }
 
-            GroupData data = GroupData.get(this,msg.chat());
+            GroupData data = GroupData.get(this, msg.chat());
 
             if (data.ban_sticker_set != null && data.ban_sticker_set.contains(setName)) {
 
@@ -72,8 +70,8 @@ public class BanSetickerSet extends Fragment {
 
             data.ban_sticker_set.add(setName);
 
-			msg.delete();
-           
+            msg.delete();
+
         } else if ("unbanss".equals(function)) {
 
             if (NTT.checkGroupAdmin(msg)) return;
@@ -98,7 +96,7 @@ public class BanSetickerSet extends Fragment {
 
             }
 
-            GroupData data = GroupData.get(this,msg.chat());
+            GroupData data = GroupData.get(this, msg.chat());
 
             if (data.ban_sticker_set == null || !data.ban_sticker_set.contains(setName)) {
 
@@ -115,7 +113,7 @@ public class BanSetickerSet extends Fragment {
             msg.send("屏蔽成功 ~").exec();
         }
 
-	}
+    }
 
 }
 

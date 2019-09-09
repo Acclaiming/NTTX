@@ -10,7 +10,7 @@ public class ChatMember implements Serializable {
     private final static long serialVersionUID = 0L;
 
     public enum Status {
-        creator, administrator, member, restricted, left, kicked;
+        creator, administrator, member, restricted, left, kicked
     }
 
     private User user;
@@ -115,7 +115,8 @@ public class ChatMember implements Serializable {
         if (user != null ? !user.equals(that.user) : that.user != null) return false;
         if (status != that.status) return false;
         if (until_date != null ? !until_date.equals(that.until_date) : that.until_date != null) return false;
-        if (can_be_edited != null ? !can_be_edited.equals(that.can_be_edited) : that.can_be_edited != null) return false;
+        if (can_be_edited != null ? !can_be_edited.equals(that.can_be_edited) : that.can_be_edited != null)
+            return false;
         if (can_post_messages != null ? !can_post_messages.equals(that.can_post_messages) : that.can_post_messages != null)
             return false;
         if (can_edit_messages != null ? !can_edit_messages.equals(that.can_edit_messages) : that.can_edit_messages != null)
@@ -137,7 +138,8 @@ public class ChatMember implements Serializable {
             return false;
         if (can_send_media_messages != null ? !can_send_media_messages.equals(that.can_send_media_messages) : that.can_send_media_messages != null)
             return false;
-        if (can_send_polls != null ? !can_send_polls.equals(that.can_send_polls) : that.can_send_polls != null) return false;
+        if (can_send_polls != null ? !can_send_polls.equals(that.can_send_polls) : that.can_send_polls != null)
+            return false;
         if (can_send_other_messages != null ? !can_send_other_messages.equals(that.can_send_other_messages) : that.can_send_other_messages != null)
             return false;
         return can_add_web_page_previews != null ? can_add_web_page_previews.equals(that.can_add_web_page_previews) : that.can_add_web_page_previews == null;

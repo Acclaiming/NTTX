@@ -12,12 +12,12 @@ public interface MemInfo {
      *
      * @return
      */
-    public double getMemUsage();
+    double getMemUsage();
 
     /**
      * Memory usage rate in format: used/total - 111/1111 - unit(KB)
      *
      * @return
      */
-    public String getMemUsageStr();
+    String getMemUsageStr();
 }

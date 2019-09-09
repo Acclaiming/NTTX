@@ -9,69 +9,69 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.Html;
 
 public class TelegramAdminFN extends Fragment {
-	
-	@Override
-	public void init(BotFragment origin) {
 
-		super.init(origin);
+    @Override
+    public void init(BotFragment origin) {
 
-		registerAdminFunction("tinx_bind","tinx_unbind","tinx_list");
+        super.init(origin);
 
-	}
+        registerAdminFunction("tinx_bind", "tinx_unbind", "tinx_list");
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    }
 
-		if (function.endsWith("_bind")) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-			if (params.length < 2 || !NumberUtil.isNumber(params[0]) || !NumberUtil.isNumber(params[1])) {
+        if (function.endsWith("_bind")) {
 
-				msg.invalidParams("chatId","groupId").async();
+            if (params.length < 2 || !NumberUtil.isNumber(params[0]) || !NumberUtil.isNumber(params[1])) {
 
-				return;
+                msg.invalidParams("chatId", "groupId").async();
 
-			}
+                return;
 
-			TelegramBridge.GroupBind bind = new TelegramBridge.GroupBind();
+            }
 
-			bind.id = NumberUtil.parseLong(params[0]);
-			bind.groupId = NumberUtil.parseLong(params[1]);
+            TelegramBridge.GroupBind bind = new TelegramBridge.GroupBind();
 
-			TelegramBridge.telegramIndex.put(bind.id,bind.groupId);
-			TelegramBridge.qqIndex.put(bind.groupId,bind.id);
+            bind.id = NumberUtil.parseLong(params[0]);
+            bind.groupId = NumberUtil.parseLong(params[1]);
 
-			TelegramBridge.data.setById(bind.id,bind);
+            TelegramBridge.telegramIndex.put(bind.id, bind.groupId);
+            TelegramBridge.qqIndex.put(bind.groupId, bind.id);
 
-			msg.send("完成 :)").async();
+            TelegramBridge.data.setById(bind.id, bind);
 
-		} else if (function.endsWith("_unbind")) {
+            msg.send("完成 :)").async();
 
-			if (params.length < 1 || !NumberUtil.isNumber(params[0])) {
+        } else if (function.endsWith("_unbind")) {
 
-				msg.invalidParams("chatId").async();
+            if (params.length < 1 || !NumberUtil.isNumber(params[0])) {
 
-				return;
+                msg.invalidParams("chatId").async();
 
-			}
+                return;
 
-			TelegramBridge.data.deleteById(NumberUtil.parseLong(params[0]));
+            }
 
-			msg.send("完成 :)").async();
+            TelegramBridge.data.deleteById(NumberUtil.parseLong(params[0]));
 
-		} else if (function.endsWith("_list")) {
+            msg.send("完成 :)").async();
 
-			String message = "所有群组 :\n";
+        } else if (function.endsWith("_list")) {
 
-			for (TelegramBridge.GroupBind bind : TelegramBridge.data.getAll()) {
+            String message = "所有群组 :\n";
 
-				message += "\n" + Html.code(bind.id) + " ( " + GroupData.get(bind.id).title + " ) -> " + Html.code(bind.groupId);
+            for (TelegramBridge.GroupBind bind : TelegramBridge.data.getAll()) {
 
-			}
+                message += "\n" + Html.code(bind.id) + " ( " + GroupData.get(bind.id).title + " ) -> " + Html.code(bind.groupId);
 
-			msg.send(message).html().async();
+            }
 
-		}
-		
-	}
-	
+            msg.send(message).html().async();
+
+        }
+
+    }
+
 }

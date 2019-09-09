@@ -1,24 +1,16 @@
 package io.kurumi.ntt.model;
 
+import cn.hutool.core.util.StrUtil;
 import com.pengrad.telegrambot.model.InlineQuery;
-import com.pengrad.telegrambot.model.request.InlineQueryResult;
-import com.pengrad.telegrambot.model.request.InlineQueryResultArticle;
-import com.pengrad.telegrambot.model.request.InlineQueryResultDocument;
-import com.pengrad.telegrambot.model.request.InputMessageContent;
-import com.pengrad.telegrambot.model.request.InputTextMessageContent;
-import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.request.*;
 import com.pengrad.telegrambot.request.AnswerInlineQuery;
 import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.response.GetFileResponse;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.request.ButtonMarkup;
-import io.kurumi.ntt.utils.BotLog;
 
 import java.util.LinkedList;
-
-import com.pengrad.telegrambot.model.request.InlineQueryResultCachedSticker;
-import com.pengrad.telegrambot.model.*;
-import cn.hutool.core.util.StrUtil;
 
 public class Query {
 
@@ -35,17 +27,17 @@ public class Query {
         this.text = query.query();
     }
 
-	public boolean startsWith(String prefix) {
-		
-		return text != null && text.startsWith(prefix + " ") && !StrUtil.isEmpty(text.substring(prefix.length()));
-		
-	}
-	
-	public String queryString() {
-		
-		return StrUtil.subAfter(text," ",false).trim();
-		
-	}
+    public boolean startsWith(String prefix) {
+
+        return text != null && text.startsWith(prefix + " ") && !StrUtil.isEmpty(text.substring(prefix.length()));
+
+    }
+
+    public String queryString() {
+
+        return StrUtil.subAfter(text, " ", false).trim();
+
+    }
 
     public Query article(String title, String content, ParseMode parseMode, ButtonMarkup buttons) {
 
@@ -82,7 +74,7 @@ public class Query {
         GetFileResponse resp = fragment.bot().execute(new GetFile(fileId));
 
         if (!resp.isOk()) {
- 
+
             return this;
 
         }

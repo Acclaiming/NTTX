@@ -11,7 +11,6 @@ import io.kurumi.ntt.utils.NTT;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import io.kurumi.ntt.utils.NTT.Accessable;
 
 public class StatusGetter extends Fragment {
 

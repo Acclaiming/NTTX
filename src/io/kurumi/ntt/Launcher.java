@@ -1,38 +1,41 @@
 package io.kurumi.ntt;
 
-import cn.hutool.log.*;
-import com.pengrad.telegrambot.model.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.fragment.*;
-import io.kurumi.ntt.fragment.admin.*;
-import io.kurumi.ntt.fragment.bots.*;
-import io.kurumi.ntt.fragment.debug.*;
-import io.kurumi.ntt.fragment.group.*;
-import io.kurumi.ntt.fragment.inline.*;
-import io.kurumi.ntt.fragment.secure.*;
-import io.kurumi.ntt.fragment.sticker.*;
-import io.kurumi.ntt.fragment.tinx.*;
-import io.kurumi.ntt.fragment.twitter.ext.*;
-import io.kurumi.ntt.fragment.twitter.status.*;
-import io.kurumi.ntt.fragment.twitter.tasks.*;
-import io.kurumi.ntt.utils.*;
-
 import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
 import com.google.gson.Gson;
+import com.pengrad.telegrambot.model.Chat;
+import com.pengrad.telegrambot.model.ChatMember;
+import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.DeleteWebhook;
 import com.pengrad.telegrambot.request.GetChatMember;
 import com.pengrad.telegrambot.response.GetChatMemberResponse;
 import io.kurumi.ntt.cqhttp.TinxBot;
+import io.kurumi.ntt.db.BotDB;
+import io.kurumi.ntt.db.GroupData;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.BotServer;
+import io.kurumi.ntt.fragment.RpcApi;
+import io.kurumi.ntt.fragment.admin.*;
 import io.kurumi.ntt.fragment.base.GetID;
 import io.kurumi.ntt.fragment.base.PingFunction;
+import io.kurumi.ntt.fragment.bots.MyBots;
+import io.kurumi.ntt.fragment.bots.NewBot;
+import io.kurumi.ntt.fragment.bots.UserBot;
+import io.kurumi.ntt.fragment.debug.*;
 import io.kurumi.ntt.fragment.dns.DNSLookup;
 import io.kurumi.ntt.fragment.dns.WhoisLookup;
 import io.kurumi.ntt.fragment.extra.Manchurize;
 import io.kurumi.ntt.fragment.extra.ShowFile;
+import io.kurumi.ntt.fragment.group.*;
 import io.kurumi.ntt.fragment.group.mamage.FetchGroup;
 import io.kurumi.ntt.fragment.group.mamage.GroupList;
 import io.kurumi.ntt.fragment.group.options.OptionsMain;
 import io.kurumi.ntt.fragment.idcard.Idcard;
+import io.kurumi.ntt.fragment.inline.CoreValueEncode;
+import io.kurumi.ntt.fragment.inline.MakeButtons;
+import io.kurumi.ntt.fragment.inline.ShowSticker;
 import io.kurumi.ntt.fragment.mods.PackageManager;
 import io.kurumi.ntt.fragment.mstd.ui.MsMain;
 import io.kurumi.ntt.fragment.netease.NeteaseMusic;
@@ -41,49 +44,56 @@ import io.kurumi.ntt.fragment.qr.QrDecoder;
 import io.kurumi.ntt.fragment.qr.QrEncoder;
 import io.kurumi.ntt.fragment.rss.FeedFetchTask;
 import io.kurumi.ntt.fragment.rss.RssSub;
+import io.kurumi.ntt.fragment.secure.CodecFN;
+import io.kurumi.ntt.fragment.secure.CryptoFN;
+import io.kurumi.ntt.fragment.secure.DigestFN;
 import io.kurumi.ntt.fragment.sorry.MakeGif;
+import io.kurumi.ntt.fragment.sticker.*;
 import io.kurumi.ntt.fragment.td.TdTest;
 import io.kurumi.ntt.fragment.tests.MMPITest;
 import io.kurumi.ntt.fragment.twitter.archive.TEPH;
-import io.kurumi.ntt.fragment.twitter.list.ListExport;
+import io.kurumi.ntt.fragment.twitter.ext.*;
+import io.kurumi.ntt.fragment.twitter.list.*;
+import io.kurumi.ntt.fragment.twitter.status.*;
+import io.kurumi.ntt.fragment.twitter.tasks.MargedNoticeTask;
+import io.kurumi.ntt.fragment.twitter.tasks.TrackTask;
+import io.kurumi.ntt.fragment.twitter.tasks.UserTrackTask;
 import io.kurumi.ntt.fragment.twitter.ui.TimelineMain;
 import io.kurumi.ntt.fragment.twitter.ui.TwitterMain;
 import io.kurumi.ntt.listeners.TdMain;
 import io.kurumi.ntt.maven.MvnDownloader;
 import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.utils.BotLogFactory;
+import io.kurumi.ntt.utils.Html;
+
 import java.util.TimeZone;
-import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
-import io.kurumi.ntt.fragment.twitter.list.FriendsClean;
-import io.kurumi.ntt.fragment.twitter.list.FollowersClean;
-import io.kurumi.ntt.fragment.twitter.list.MutesClean;
-import com.pengrad.telegrambot.request.GetMe;
-import io.kurumi.ntt.fragment.twitter.list.TopList;
 
 public abstract class Launcher extends BotFragment implements Thread.UncaughtExceptionHandler {
 
     public static Launcher INSTANCE;
 
-	// public static OkHttpClient.Builder OKHTTP = new OkHttpClient.Builder();
-	public static Gson GSON = new Gson();
+    // public static OkHttpClient.Builder OKHTTP = new OkHttpClient.Builder();
+    public static Gson GSON = new Gson();
 
-	public static TinxBot TINX;
+    public static TinxBot TINX;
 
-	public static Log log = LogFactory.get(Launcher.class);
+    public static Log log = LogFactory.get(Launcher.class);
 
-	public static TdMain BETA;
+    public static TdMain BETA;
 
     public static void main(String[] args) {
 
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 
-		// Security.addProvider(new BouncyCastleProvider());
+        // Security.addProvider(new BouncyCastleProvider());
 
-		LogFactory.setCurrentLogFactory(new BotLogFactory());
+        LogFactory.setCurrentLogFactory(new BotLogFactory());
 
-		long startAt = System.currentTimeMillis();
+        long startAt = System.currentTimeMillis();
 
-		log.debug("NTT 主程序正在启动 (๑•̀ㅂ•́)√");
+        log.debug("NTT 主程序正在启动 (๑•̀ㅂ•́)√");
 
         try {
 
@@ -91,7 +101,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         } catch (Exception e) {
 
-			log.error("配置文件格式错误",e);
+            log.error("配置文件格式错误", e);
 
             return;
 
@@ -99,38 +109,38 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         if (Env.USE_UNIX_SOCKET) {
 
-            BotServer.INSTANCE = new BotServer(Env.UDS_PATH,Env.SERVER_DOMAIN);
+            BotServer.INSTANCE = new BotServer(Env.UDS_PATH, Env.SERVER_DOMAIN);
 
         } else {
 
-            BotServer.INSTANCE = new BotServer(Env.LOCAL_PORT,Env.SERVER_DOMAIN);
+            BotServer.INSTANCE = new BotServer(Env.LOCAL_PORT, Env.SERVER_DOMAIN);
 
         }
 
         try {
 
-            BotDB.init(Env.DB_ADDRESS,Env.DB_PORT);
+            BotDB.init(Env.DB_ADDRESS, Env.DB_PORT);
 
         } catch (Exception e) {
 
-            log.error("MongoDB 连接失败",e);
+            log.error("MongoDB 连接失败", e);
 
             return;
 
         }
-		
-		INSTANCE = new Launcher() {
 
-			@Override
-			public String getToken() {
+        INSTANCE = new Launcher() {
 
-				return Env.BOT_TOKEN;
+            @Override
+            public String getToken() {
 
-			}
+                return Env.BOT_TOKEN;
 
-		};
-		
-		INSTANCE.start();
+            }
+
+        };
+
+        INSTANCE.start();
 
         try {
 
@@ -138,7 +148,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         } catch (Exception e) {
 
-            log.error("本地HTTP服务器 启动失败",e);
+            log.error("本地HTTP服务器 启动失败", e);
 
             return;
 
@@ -158,47 +168,47 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         RuntimeUtil.addShutdownHook(new Runnable() {
 
-				@Override
-				public void run() {
+            @Override
+            public void run() {
 
-					BETA.destroy();
-					
-					INSTANCE.stop();
+                BETA.destroy();
 
-				}
+                INSTANCE.stop();
 
-			});
+            }
 
-		for (final String aliasToken : Env.ALIAS) {
+        });
 
-			new Launcher() {
+        for (final String aliasToken : Env.ALIAS) {
 
-				@Override
-				public String getToken() {
+            new Launcher() {
 
-					return aliasToken;
+                @Override
+                public String getToken() {
 
-				}
+                    return aliasToken;
 
-			}.start();
+                }
 
-		}
+            }.start();
 
-		log.debug("正在挂载实验版本");
-		
-		BETA = new TdMain();
+        }
 
-		BETA.start();
-		
-		log.debug("正在挂载机器人托管");
+        log.debug("正在挂载实验版本");
 
-		UserBot.startAll();
-		
-		log.debug("启动完成 用时 {}s _(:з」∠)_",(System.currentTimeMillis() - startAt) / 1000);
+        BETA = new TdMain();
+
+        BETA.start();
+
+        log.debug("正在挂载机器人托管");
+
+        UserBot.startAll();
+
+        log.debug("启动完成 用时 {}s _(:з」∠)_", (System.currentTimeMillis() - startAt) / 1000);
 
     }
 
-	public static void tryTinxConnect() {
+    public static void tryTinxConnect() {
 
 		/*
 		
@@ -227,7 +237,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
 		*/
 
-	}
+    }
 
     @Override
     public abstract String getToken();
@@ -239,18 +249,18 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         super.init(origin);
 
-        registerFunction("start","help");
+        registerFunction("start", "help");
 
     }
 
     @Override
-    public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        super.onFunction(user,msg,function,params);
+        super.onFunction(user, msg, function, params);
 
         if ("start".equals(function)) {
 
-            msg.send("start failed successfully ~\n{}",Env.HELP_MESSAGE).html().async();
+            msg.send("start failed successfully ~\n{}", Env.HELP_MESSAGE).html().async();
 
         } else if ("help".equals(function)) {
 
@@ -258,7 +268,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         } else if (!functions.containsKey(function) && msg.isPrivate()) {
 
-            msg.send("没有这个命令 {}\n{}",function,Env.HELP_MESSAGE).html().failedWith(10 * 1000);
+            msg.send("没有这个命令 {}\n{}", function, Env.HELP_MESSAGE).html().failedWith(10 * 1000);
 
         }
 
@@ -307,9 +317,9 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         TrackTask.start();
 
-		StatusDeleteTask.start();
+        StatusDeleteTask.start();
 
-		MargedNoticeTask.start();
+        MargedNoticeTask.start();
 
         FeedFetchTask.start();
 
@@ -326,7 +336,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         // ADMIN
 
-		//  addFragment(new BotChannnel());
+        //  addFragment(new BotChannnel());
 
         addFragment(new PingFunction());
         addFragment(new GetID());
@@ -336,21 +346,21 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         addFragment(new Users());
         addFragment(new Stat());
         addFragment(new DebugMsg());
-		addFragment(new NoticePuhlish());
+        addFragment(new NoticePuhlish());
         addFragment(new DebugUser());
         addFragment(new DebugStatus());
         addFragment(new DebugStickerSet());
 
-		addFragment(new StatusDel());
+        addFragment(new StatusDel());
         addFragment(new DebugUF());
 
-		addFragment(new GetRepliesTest());
+        addFragment(new GetRepliesTest());
 
-		addFragment(new TdTest());
+        addFragment(new TdTest());
 
         // GROUP
 
-		addFragment(new GroupActions());
+        addFragment(new GroupActions());
         addFragment(new GroupAdmin());
         addFragment(new OptionsMain());
         addFragment(new BanSetickerSet());
@@ -358,12 +368,12 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         addFragment(new JoinCaptcha());
         addFragment(new RemoveKeyboard());
 
-		addFragment(new GroupList());
-		addFragment(new FetchGroup());
+        addFragment(new GroupList());
+        addFragment(new FetchGroup());
 
         // Twitter
 
-		addFragment(new TwitterMain());
+        addFragment(new TwitterMain());
 
         addFragment(new UserActions());
         addFragment(new StatusUpdate());
@@ -379,15 +389,15 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
         addFragment(new Disappeared());
         addFragment(new TEPH());
 
-		addFragment(new TLScanner());
-		
-		addFragment(new FriendsClean());
-		addFragment(new FollowersClean());
-		addFragment(new MutesClean());
-		
-		// Mastodon
+        addFragment(new TLScanner());
 
-		addFragment(new MsMain());
+        addFragment(new FriendsClean());
+        addFragment(new FollowersClean());
+        addFragment(new MutesClean());
+
+        // Mastodon
+
+        addFragment(new MsMain());
 
         // BOTS
 
@@ -396,7 +406,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         // SETS
 
-		// addFragment(new PackExport());
+        // addFragment(new PackExport());
         addFragment(new TdPackExport());
         addFragment(new StickerExport());
         addFragment(new NewStickerSet());
@@ -417,45 +427,45 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         addFragment(new Idcard());
 
-		// Gif
+        // Gif
 
-		addFragment(new MakeGif());
+        addFragment(new MakeGif());
 
         // Extra
 
         addFragment(new Manchurize());
         addFragment(new MvnDownloader());
-		addFragment(new ShowFile());
-		addFragment(new CoreValueEncode());
-		addFragment(new NeteaseMusic());
-		addFragment(new ZeroPadEncode());
-		addFragment(new QrDecoder());
-		addFragment(new QrEncoder());
-		addFragment(new DNSLookup());
-		addFragment(new WhoisLookup());
-		addFragment(new MMPITest());
+        addFragment(new ShowFile());
+        addFragment(new CoreValueEncode());
+        addFragment(new NeteaseMusic());
+        addFragment(new ZeroPadEncode());
+        addFragment(new QrDecoder());
+        addFragment(new QrEncoder());
+        addFragment(new DNSLookup());
+        addFragment(new WhoisLookup());
+        addFragment(new MMPITest());
 
-		addFragment(new CodecFN());
-		addFragment(new DigestFN());
-		addFragment(new CryptoFN());
+        addFragment(new CodecFN());
+        addFragment(new DigestFN());
+        addFragment(new CryptoFN());
 
-		addFragment(new FriendsList());
+        addFragment(new FriendsList());
 
         // QQ
 
-		//addFragment(new TelegramListener());
-		//addFragment(new TelegramFN());
-		//addFragment(new TelegramAdminFN());
+        //addFragment(new TelegramListener());
+        //addFragment(new TelegramFN());
+        //addFragment(new TelegramAdminFN());
 
-		// Mods
+        // Mods
 
-		addFragment(new PackageManager());
+        addFragment(new PackageManager());
 
-		addFragment(new RpcApi());
-		
-		addFragment(new GeoTest());
-		
-		addFragment(new TopList());
+        addFragment(new RpcApi());
+
+        addFragment(new GeoTest());
+
+        addFragment(new TopList());
 
     }
 
@@ -464,7 +474,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         if (stopeed.getAndSet(true)) return;
 
-        BotServer.INSTANCE.stop();
+        BotServer.stop();
 
         mainTimer.cancel();
 
@@ -472,15 +482,15 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         userTrackTask.interrupt();
 
-		TimelineMain.stop();
+        TimelineMain.stop();
 
-		StatusDeleteTask.stop();
+        StatusDeleteTask.stop();
 
         GroupData.data.saveAll();
 
-		super.stop();
+        super.stop();
 
-		execute(new DeleteWebhook());
+        execute(new DeleteWebhook());
 
         for (BotFragment bot : BotServer.fragments.values()) {
 
@@ -509,7 +519,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
     }
 
     @Override
-    public boolean onUpdate(final UserData user,final Update update) {
+    public boolean onUpdate(final UserData user, final Update update) {
 
         if (update.message() != null) {
 
@@ -517,9 +527,9 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
                 user.contactable = true;
 
-                UserData.userDataIndex.put(user.id,user);
+                UserData.userDataIndex.put(user.id, user);
 
-                UserData.data.setById(user.id,user);
+                UserData.data.setById(user.id, user);
 
             }
 
@@ -530,54 +540,54 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
     }
 
-	@Override
-	public int checkMsg(UserData user,Msg msg) {
+    @Override
+    public int checkMsg(UserData user, Msg msg) {
 
-		if (msg.newUser() != null && msg.newUser().id.equals(origin.me.id())) {
+        if (msg.newUser() != null && msg.newUser().id.equals(origin.me.id())) {
 
-			return PROCESS_ASYNC_REJ;
+            return PROCESS_ASYNC_REJ;
 
-		}
+        }
 
-		return PROCESS_CONTINUE;
+        return PROCESS_CONTINUE;
 
-	}
+    }
 
-	@Override
-	public void onGroup(UserData user,Msg msg) {
+    @Override
+    public void onGroup(UserData user, Msg msg) {
 
-		if (!msg.isSuperGroup()) {
+        if (!msg.isSuperGroup()) {
 
-			msg.reply("对不起, NTT 只能在 " + Html.b("超级群组") + " 工作, 如果需要继续, 请群组创建者将群组转换为超级群组再重新添加咱.").html().async();
+            msg.reply("对不起, NTT 只能在 " + Html.b("超级群组") + " 工作, 如果需要继续, 请群组创建者将群组转换为超级群组再重新添加咱.").html().async();
 
-			msg.exit();
+            msg.exit();
 
-			return;
+            return;
 
-		}
+        }
 
-		GetChatMemberResponse resp = execute(new GetChatMember(msg.chatId(),origin.me.id().intValue()));
+        GetChatMemberResponse resp = execute(new GetChatMember(msg.chatId(), origin.me.id().intValue()));
 
         ChatMember curr = resp.chatMember();
 
-		if (resp.isOk() && curr.canRestrictMembers() != null && curr.canRestrictMembers() && curr.canDeleteMessages() != null && curr.canDeleteMessages()) {
+        if (resp.isOk() && curr.canRestrictMembers() != null && curr.canRestrictMembers() && curr.canDeleteMessages() != null && curr.canDeleteMessages()) {
 
-			msg.reply("这里是NTT. 使用 /options 调出设置选单.").async();
+            msg.reply("这里是NTT. 使用 /options 调出设置选单.").async();
 
-		} else {
+        } else {
 
-			msg.reply("这里是NTT, 使用 /options 调出设置选单, 群组管理相关功能需要删除消息与限制用户权限.").async();
+            msg.reply("这里是NTT, 使用 /options 调出设置选单, 群组管理相关功能需要删除消息与限制用户权限.").async();
 
-			// msg.exit();
+            // msg.exit();
 
-		}
+        }
 
-	}
+    }
 
     @Override
-    public void uncaughtException(Thread thread,Throwable throwable) {
+    public void uncaughtException(Thread thread, Throwable throwable) {
 
-		log.error("出错 (全局)\n\n{}",BotLog.parseError(throwable));
+        log.error("出错 (全局)\n\n{}", BotLog.parseError(throwable));
 
         System.exit(1);
 

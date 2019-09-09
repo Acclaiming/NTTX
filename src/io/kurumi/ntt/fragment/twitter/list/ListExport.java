@@ -13,13 +13,12 @@ import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.Keyboard;
 import io.kurumi.ntt.utils.NTT;
-
-import java.util.LinkedList;
-
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
 import twitter4j.UserList;
+
+import java.util.LinkedList;
 
 public class ListExport extends Fragment {
 
@@ -42,8 +41,8 @@ public class ListExport extends Fragment {
         registerFunction("export");
 
         registerCallback(POINT_LIST_EXPORT);
-		registerPoint(POINT_LIST_EXPORT);
-		
+        registerPoint(POINT_LIST_EXPORT);
+
     }
 
     @Override
@@ -56,7 +55,7 @@ public class ListExport extends Fragment {
     @Override
     public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
-        PointData data = setPrivatePointData(user,msg, POINT_LIST_EXPORT, account);
+        PointData data = setPrivatePointData(user, msg, POINT_LIST_EXPORT, account);
 
         msg
                 .send("请选择将要导出的列表 :\n将会以 .csv 官方格式导出")
@@ -220,11 +219,11 @@ public class ListExport extends Fragment {
 
             } else if (USER.equals(msg.text())) {
 
-				data.command = null;
-				
-				clearPrivatePoint(user);
-				
-                setPrivatePointData(user,data.command, POINT_USER_LIST_EXPORT, data);
+                data.command = null;
+
+                clearPrivatePoint(user);
+
+                setPrivatePointData(user, data.command, POINT_USER_LIST_EXPORT, data);
 
                 msg.send("现在请发送列表的链接 可以在列表 -> 分享 中导出。它看起来像这样 : twitter.com/用户名/lists/列表名").withCancel().exec();
 

@@ -6,7 +6,6 @@ import com.pengrad.telegrambot.request.GetStickerSet;
 import com.pengrad.telegrambot.response.GetStickerSetResponse;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.sticker.PackOwner;
 import io.kurumi.ntt.model.Query;
 
 import java.util.HashMap;

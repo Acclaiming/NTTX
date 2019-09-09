@@ -1,249 +1,238 @@
 package io.kurumi.ntt.fragment;
 
-import cn.hutool.core.util.CharsetUtil;
-import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.*;
+import cn.hutool.http.HtmlUtil;
 import cn.hutool.json.JSONObject;
+import cn.hutool.log.StaticLog;
 import com.pengrad.telegrambot.BotUtils;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.BaseRequest;
+import com.pengrad.telegrambot.request.DeleteWebhook;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.BotLog;
+import io.kurumi.ntt.utils.Html;
+import io.kurumi.ntt.utils.NTT;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpHeaderValues;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http.*;
 import io.netty.handler.stream.ChunkedFile;
-import java.io.File;
-import javax.activation.MimetypesFileTypeMap;
-
-import static io.netty.handler.codec.http.HttpMethod.*;
-import static io.netty.handler.codec.http.HttpResponseStatus.*;
-import static io.netty.handler.codec.http.HttpVersion.*;
-import cn.hutool.log.StaticLog;
-import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.request.DeleteWebhook;
-import cn.hutool.core.util.StrUtil;
-import io.kurumi.ntt.fragment.twitter.ApiToken;
-import twitter4j.User;
 import twitter4j.TwitterException;
-import io.kurumi.ntt.utils.NTT;
-import io.kurumi.ntt.fragment.twitter.TAuth;
-import cn.hutool.core.io.FileUtil;
-import io.kurumi.ntt.utils.Html;
-import javax.print.attribute.standard.NumberUp;
-import cn.hutool.core.util.NumberUtil;
-import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
-import cn.hutool.http.HtmlUtil;
-import cn.hutool.core.date.DateUtil;
+import twitter4j.User;
+
+import javax.activation.MimetypesFileTypeMap;
+import java.io.File;
 import java.util.Date;
-import cn.hutool.core.util.URLUtil;
+
+import static io.netty.handler.codec.http.HttpMethod.POST;
+import static io.netty.handler.codec.http.HttpResponseStatus.*;
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_0;
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
-	private String tug_domain = "https://get-twi.me/";
+    private String tug_domain = "https://get-twi.me/";
 
     private FullHttpRequest request;
 
-	String index() {
+    String index() {
 
-		return FileUtil.readUtf8String(new File(Env.ROOT_DIR,"res/twi-get/index.html"));
+        return FileUtil.readUtf8String(new File(Env.ROOT_DIR, "res/twi-get/index.html"));
 
-	}
+    }
 
-	String error(String message) {
+    String error(String message) {
 
-		return StrUtil.format(FileUtil.readUtf8String(new File(Env.ROOT_DIR,"res/twi-get/error.html")),message);
+        return StrUtil.format(FileUtil.readUtf8String(new File(Env.ROOT_DIR, "res/twi-get/error.html")), message);
 
-	}
+    }
 
-	String result(String title,String message) {
+    String result(String title, String message) {
 
-		return StrUtil.format(FileUtil.readUtf8String(new File(Env.ROOT_DIR,"res/twi-get/result.html")),title,message);
+        return StrUtil.format(FileUtil.readUtf8String(new File(Env.ROOT_DIR, "res/twi-get/result.html")), title, message);
 
-	}
+    }
 
-	public void channelRead1(ChannelHandlerContext ctx,FullHttpRequest request) throws Exception {
+    public void channelRead1(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
 
-		String uri = URLUtil.decode(request.uri().substring(4));
+        String uri = URLUtil.decode(request.uri().substring(4));
 
-		if (uri.length() < 2 || (!uri.startsWith("?screenName=") && !NumberUtil.isLong(uri))) {
+        if (uri.length() < 2 || (!uri.startsWith("?screenName=") && !NumberUtil.isLong(uri))) {
 
-			sendHtml(ctx,index());
+            sendHtml(ctx, index());
 
-			return;
+            return;
 
-		} else if (uri.startsWith("?screenName=")) {
+        } else if (uri.startsWith("?screenName=")) {
 
-			String screenName = StrUtil.subAfter(uri,"?screenName=",false);
+            String screenName = StrUtil.subAfter(uri, "?screenName=", false);
 
-			if (screenName.contains("&")) screenName = StrUtil.subBefore(screenName,"&",false);
+            if (screenName.contains("&")) screenName = StrUtil.subBefore(screenName, "&", false);
 
-			screenName = NTT.parseScreenName(screenName);
+            screenName = NTT.parseScreenName(screenName);
 
-			try {
+            try {
 
-				User user = TAuth.next().createApi().showUser(screenName);
+                User user = TAuth.next().createApi().showUser(screenName);
 
-				UserArchive.save(user);
+                UserArchive.save(user);
 
-				sendRedirect(ctx,tug_domain + user.getId());
+                sendRedirect(ctx, tug_domain + user.getId());
 
-				return;
+                return;
 
-			} catch (TwitterException ex) {
+            } catch (TwitterException ex) {
 
-				if (UserArchive.contains(screenName)) {
+                if (UserArchive.contains(screenName)) {
 
-					sendRedirect(ctx,tug_domain + UserArchive.get(screenName).id);
+                    sendRedirect(ctx, tug_domain + UserArchive.get(screenName).id);
 
-				} else {
+                } else {
 
-					sendHtml(ctx,error(NTT.parseTwitterException(ex)));
+                    sendHtml(ctx, error(NTT.parseTwitterException(ex)));
 
-				}
+                }
 
-				return;
+                return;
 
-			}
+            }
 
-		} else {
+        } else {
 
-			UserArchive archive;
-			TwitterException err;
+            UserArchive archive;
+            TwitterException err;
 
-			try {
+            try {
 
-				User user = TAuth.next().createApi().showUser(NumberUtil.parseLong(uri));
+                User user = TAuth.next().createApi().showUser(NumberUtil.parseLong(uri));
 
-				archive = UserArchive.save(user);
+                archive = UserArchive.save(user);
 
-				err = null;
-				
-			} catch (TwitterException ex) {
-				
-				err = ex;
-				
-				archive = UserArchive.get(NumberUtil.parseLong(uri));
+                err = null;
 
-			}
-			
-			String message = "";
+            } catch (TwitterException ex) {
 
-			if (archive != null) {
-				
-				message += "<img src=\"" + archive.photoUrl + "\"></img><br />";
+                err = ex;
 
-				message += "<br />" + HtmlUtil.escape(archive.name);
-				
-				if (archive.isProtected) message += Html.b(" [ 锁推 ] ");
-				
-				if (err != null) {
-					
-					message += " 「 " + Html.b(NTT.parseTwitterException(err)) + " 」";
-					
-				}
-				
-				message += "<br />";
-				
-				if (archive.nameHistory != null && !archive.nameHistory.isEmpty()) {
-					
-					message += "<br />" + Html.b("历史名称") + " : ";
-					
-					for (String name : archive.nameHistory) {
-						
-						message += "<br />" + Html.code(name);
-						
-					}
-					
-					message += "<br />";
-					
-				}
-				
-				if (!StrUtil.isBlank(archive.bio)) {
+                archive = UserArchive.get(NumberUtil.parseLong(uri));
 
-					message += "<br />" + Html.b("BIO") + " : " + HtmlUtil.escape(archive.bio) + "<br />";
+            }
 
-				}
-			
-				if (archive.followers != null) {
+            String message = "";
 
-					message += "<br />" + archive.following + " 正在关注" + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + archive.followers + " 关注者";
+            if (archive != null) {
 
-				}
-				
-				if (archive.statuses != null) {
+                message += "<img src=\"" + archive.photoUrl + "\"></img><br />";
 
-					message += "<br />" + archive.statuses + " 条推文" + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + archive.likes + " 个打心<br />";
+                message += "<br />" + HtmlUtil.escape(archive.name);
 
-				}
-				
-				if (archive.url != null) {
-					
-					message += "<br />" + Html.b("个人链接") + " : " + Html.a(archive.url);
-					
-				}
-				
-				if (archive.snHistory != null && !archive.snHistory.isEmpty()) {
+                if (archive.isProtected) message += Html.b(" [ 锁推 ] ");
 
-					message += "<br />" + Html.b("历史用户名") + " :";
+                if (err != null) {
 
-					for (String sn : archive.snHistory) {
+                    message += " 「 " + Html.b(NTT.parseTwitterException(err)) + " 」";
 
-						message += Html.b(" @" + sn);
+                }
 
-					}
-					
-				}
-				
-				if (archive.lang != null) {
+                message += "<br />";
 
-					message += "<br />" + Html.b("语言") + " : " + archive.lang;
+                if (archive.nameHistory != null && !archive.nameHistory.isEmpty()) {
 
-				}
-				
-				if (!StrUtil.isBlank(archive.location)) {
+                    message += "<br />" + Html.b("历史名称") + " : ";
 
-					message += "<br />" + Html.b("位置") + " : " + HtmlUtil.escape(archive.location);
+                    for (String name : archive.nameHistory) {
 
-				}
-				
-				message += "<br />" + Html.b("加入时间") + " : " + DateUtil.formatChineseDate(new Date(archive.createdAt),false);
+                        message += "<br />" + Html.code(name);
 
-				if (archive.isDisappeared && archive.disappearedAt != null) {
-					
-					message += "<br />" + Html.b("消失时间") + " : " + DateUtil.formatChineseDate(new Date(archive.disappearedAt),false);
-					
-				}
-				
-				message += "<br />" + Html.b("用户链接") + " : " + Html.twitterUser("@" + archive.screenName,archive.screenName) + "<br />";
-			}
-			
-			message += Html.b("永久链接") + " : " + Html.a("长按复制",tug_domain + uri);
-			
-			sendHtml(ctx,result(archive == null ? "Twitter User Getway" : archive.name,message));
+                    }
 
-			return;
+                    message += "<br />";
 
-		}
+                }
 
-	}
+                if (!StrUtil.isBlank(archive.bio)) {
+
+                    message += "<br />" + Html.b("BIO") + " : " + HtmlUtil.escape(archive.bio) + "<br />";
+
+                }
+
+                if (archive.followers != null) {
+
+                    message += "<br />" + archive.following + " 正在关注" + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + archive.followers + " 关注者";
+
+                }
+
+                if (archive.statuses != null) {
+
+                    message += "<br />" + archive.statuses + " 条推文" + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + archive.likes + " 个打心<br />";
+
+                }
+
+                if (archive.url != null) {
+
+                    message += "<br />" + Html.b("个人链接") + " : " + Html.a(archive.url);
+
+                }
+
+                if (archive.snHistory != null && !archive.snHistory.isEmpty()) {
+
+                    message += "<br />" + Html.b("历史用户名") + " :";
+
+                    for (String sn : archive.snHistory) {
+
+                        message += Html.b(" @" + sn);
+
+                    }
+
+                }
+
+                if (archive.lang != null) {
+
+                    message += "<br />" + Html.b("语言") + " : " + archive.lang;
+
+                }
+
+                if (!StrUtil.isBlank(archive.location)) {
+
+                    message += "<br />" + Html.b("位置") + " : " + HtmlUtil.escape(archive.location);
+
+                }
+
+                message += "<br />" + Html.b("加入时间") + " : " + DateUtil.formatChineseDate(new Date(archive.createdAt), false);
+
+                if (archive.isDisappeared && archive.disappearedAt != null) {
+
+                    message += "<br />" + Html.b("消失时间") + " : " + DateUtil.formatChineseDate(new Date(archive.disappearedAt), false);
+
+                }
+
+                message += "<br />" + Html.b("用户链接") + " : " + Html.twitterUser("@" + archive.screenName, archive.screenName) + "<br />";
+            }
+
+            message += Html.b("永久链接") + " : " + Html.a("长按复制", tug_domain + uri);
+
+            sendHtml(ctx, result(archive == null ? "Twitter User Getway" : archive.name, message));
+
+            return;
+
+        }
+
+    }
 
     @Override
-    public void channelRead0(ChannelHandlerContext ctx,FullHttpRequest request) throws Exception {
+    public void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
 
         this.request = request;
 
-		// StaticLog.debug("收到HTTP请求 : {}",request.uri());
+        // StaticLog.debug("收到HTTP请求 : {}",request.uri());
 
         if (new File("/etc/ntt/safe").isFile()) {
 
@@ -255,45 +244,45 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         if (!request.decoderResult().isSuccess()) {
 
-            sendError(ctx,BAD_REQUEST);
+            sendError(ctx, BAD_REQUEST);
 
             return;
 
         }
 
-		if (request.uri().startsWith("/tug")) {
+        if (request.uri().startsWith("/tug")) {
 
-			channelRead1(ctx,request);
+            channelRead1(ctx, request);
 
-			return;
+            return;
 
-		} else if (request.uri().equals("/api")) {
+        } else if (request.uri().equals("/api")) {
 
-			if (request.getMethod() != POST) {
+            if (request.getMethod() != POST) {
 
-				sendError(ctx,BAD_REQUEST);
+                sendError(ctx, BAD_REQUEST);
 
-				return;
+                return;
 
-			}
+            }
 
-			JSONObject json;
+            JSONObject json;
 
-			try {
+            try {
 
-				json = new JSONObject(request.content().toString(CharsetUtil.CHARSET_UTF_8));
+                json = new JSONObject(request.content().toString(CharsetUtil.CHARSET_UTF_8));
 
-			} catch (Exception ex) {
+            } catch (Exception ex) {
 
-				sendError(ctx,BAD_REQUEST);
+                sendError(ctx, BAD_REQUEST);
 
-				return;
+                return;
 
-			}
+            }
 
-			FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,OK,Unpooled.copiedBuffer(RpcApi.execute(json).toStringPretty(),CharsetUtil.CHARSET_UTF_8));
+            FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.copiedBuffer(RpcApi.execute(json).toStringPretty(), CharsetUtil.CHARSET_UTF_8));
 
-            resp.headers().set(HttpHeaderNames.CONTENT_TYPE,"application/json; charset=UTF-8");
+            resp.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json; charset=UTF-8");
 
             boolean keepAlive = HttpUtil.isKeepAlive(request);
 
@@ -303,44 +292,44 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
             } else {
 
-                resp.headers().set(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
+                resp.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
 
                 ctx.writeAndFlush(resp);
 
             }
 
-			return;
+            return;
 
-		}
+        }
 
         if (Launcher.INSTANCE != null && request.uri().equals("/data/" + Launcher.INSTANCE.getToken())) {
 
-            File dataFile = new File(Env.CACHE_DIR,"data.zip");
+            File dataFile = new File(Env.CACHE_DIR, "data.zip");
 
             if (!dataFile.isFile()) {
 
-                sendError(ctx,NOT_FOUND);
+                sendError(ctx, NOT_FOUND);
 
                 return;
 
             }
 
-            FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,OK);
+            FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1, OK);
 
             MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
 
-            resp.headers().set(HttpHeaderNames.CONTENT_TYPE,mimeTypesMap.getContentType(dataFile));
-            resp.headers().set(HttpHeaderNames.CONTENT_LENGTH,dataFile.length());
+            resp.headers().set(HttpHeaderNames.CONTENT_TYPE, mimeTypesMap.getContentType(dataFile));
+            resp.headers().set(HttpHeaderNames.CONTENT_LENGTH, dataFile.length());
 
             final boolean keepAlive = HttpUtil.isKeepAlive(request);
 
             if (!keepAlive) {
 
-                resp.headers().set(HttpHeaderNames.CONNECTION,HttpHeaderValues.CLOSE);
+                resp.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
 
             } else if (request.protocolVersion().equals(HTTP_1_0)) {
 
-                resp.headers().set(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
+                resp.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
 
             }
 
@@ -380,19 +369,19 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                 @Override
                 public void run() {
 
-                    new Send(Env.LOG_CHANNEL,"Bot Update Executed : By WebHook").exec();
+                    new Send(Env.LOG_CHANNEL, "Bot Update Executed : By WebHook").exec();
 
                     try {
 
                         String str = RuntimeUtil.execForStr("bash update.sh");
 
-                        new Send(Env.LOG_CHANNEL,str).exec();
+                        new Send(Env.LOG_CHANNEL, str).exec();
 
                         Launcher.INSTANCE.stop();
 
                     } catch (Exception e) {
 
-                        new Send(Env.LOG_CHANNEL,BotLog.parseError(e)).exec();
+                        new Send(Env.LOG_CHANNEL, BotLog.parseError(e)).exec();
 
                     }
 
@@ -409,7 +398,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         } else if (request.getMethod() != POST || request.uri().length() <= 1) {
 
-            sendError(ctx,NOT_FOUND);
+            sendError(ctx, NOT_FOUND);
 
             return;
 
@@ -419,13 +408,13 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         if (!BotServer.fragments.containsKey(botToken)) {
 
-			// StaticLog.debug("未预期的消息 : {}",request.content().toString(CharsetUtil.CHARSET_UTF_8));
+            // StaticLog.debug("未预期的消息 : {}",request.content().toString(CharsetUtil.CHARSET_UTF_8));
 
-			FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,OK,Unpooled.copiedBuffer(new DeleteWebhook().toWebhookResponse(),CharsetUtil.CHARSET_UTF_8));
+            FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.copiedBuffer(new DeleteWebhook().toWebhookResponse(), CharsetUtil.CHARSET_UTF_8));
 
-            resp.headers().set(HttpHeaderNames.CONTENT_TYPE,"application/json; charset=UTF-8");
+            resp.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json; charset=UTF-8");
 
-			ctx.writeAndFlush(resp).addListener(ChannelFutureListener.CLOSE);
+            ctx.writeAndFlush(resp).addListener(ChannelFutureListener.CLOSE);
 
             return;
 
@@ -433,21 +422,21 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         BaseRequest webhookResponse;
 
-		ProcessLock<BaseRequest> lock = new ProcessLock<>();
+        ProcessLock<BaseRequest> lock = new ProcessLock<>();
 
-		Update update = BotUtils.parseUpdate(request.content().toString(CharsetUtil.CHARSET_UTF_8));
+        Update update = BotUtils.parseUpdate(request.content().toString(CharsetUtil.CHARSET_UTF_8));
 
-		update.lock = lock;
+        update.lock = lock;
 
         try {
 
-			BotServer.fragments.get(botToken).processAsync(update);
+            BotServer.fragments.get(botToken).processAsync(update);
 
-			webhookResponse = lock.waitFor();
+            webhookResponse = lock.waitFor();
 
         } catch (Exception ex) {
 
-			StaticLog.error("出错 (同步) \n\n{}\n\n{}",new JSONObject(update.json).toStringPretty(),BotLog.parseError(ex));
+            StaticLog.error("出错 (同步) \n\n{}\n\n{}", new JSONObject(update.json).toStringPretty(), BotLog.parseError(ex));
 
             webhookResponse = null;
 
@@ -455,17 +444,17 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
         }
 
-		if (webhookResponse == null) {
+        if (webhookResponse == null) {
 
-			sendOk(ctx);
+            sendOk(ctx);
 
         } else {
 
             // System.out.println(webhookResponse.toWebhookResponse());
 
-            FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1,OK,Unpooled.copiedBuffer(webhookResponse.toWebhookResponse(),CharsetUtil.CHARSET_UTF_8));
+            FullHttpResponse resp = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.copiedBuffer(webhookResponse.toWebhookResponse(), CharsetUtil.CHARSET_UTF_8));
 
-            resp.headers().set(HttpHeaderNames.CONTENT_TYPE,"application/json; charset=UTF-8");
+            resp.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json; charset=UTF-8");
 
             boolean keepAlive = HttpUtil.isKeepAlive(request);
 
@@ -475,7 +464,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
             } else {
 
-                resp.headers().set(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
+                resp.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
 
                 ctx.writeAndFlush(resp);
 
@@ -486,13 +475,13 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx,Throwable cause) {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 
         cause.printStackTrace();
 
         if (ctx.channel().isActive()) {
 
-            sendError(ctx,INTERNAL_SERVER_ERROR);
+            sendError(ctx, INTERNAL_SERVER_ERROR);
 
         }
 
@@ -500,79 +489,79 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
     void sendOk(ChannelHandlerContext ctx) {
 
-        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,OK);
+        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK);
 
-        this.sendAndCleanupConnection(ctx,response);
-
-    }
-
-	void sendOk(ChannelHandlerContext ctx,String content) {
-
-		FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,OK,Unpooled.copiedBuffer(content,CharsetUtil.CHARSET_UTF_8));
-
-		response.headers().set(HttpHeaderNames.CONTENT_TYPE,"application/json; charset=UTF-8");
-
-		this.sendAndCleanupConnection(ctx,response);
-
-	}
-
-	void sendHtml(ChannelHandlerContext ctx,String content) {
-
-		FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,OK,Unpooled.copiedBuffer(content,CharsetUtil.CHARSET_UTF_8));
-
-		response.headers().set(HttpHeaderNames.CONTENT_TYPE,"text/html; charset=UTF-8");
-
-		this.sendAndCleanupConnection(ctx,response);
-
-	}
-
-    void sendRedirect(ChannelHandlerContext ctx,String newUri) {
-
-        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,FOUND);
-
-        response.headers().set(HttpHeaderNames.LOCATION,newUri);
-
-        this.sendAndCleanupConnection(ctx,response);
+        this.sendAndCleanupConnection(ctx, response);
 
     }
 
-    void sendError(ChannelHandlerContext ctx,HttpResponseStatus status) {
+    void sendOk(ChannelHandlerContext ctx, String content) {
 
-		FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,status);
+        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.copiedBuffer(content, CharsetUtil.CHARSET_UTF_8));
 
-        this.sendAndCleanupConnection(ctx,response);
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json; charset=UTF-8");
+
+        this.sendAndCleanupConnection(ctx, response);
+
+    }
+
+    void sendHtml(ChannelHandlerContext ctx, String content) {
+
+        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.copiedBuffer(content, CharsetUtil.CHARSET_UTF_8));
+
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html; charset=UTF-8");
+
+        this.sendAndCleanupConnection(ctx, response);
+
+    }
+
+    void sendRedirect(ChannelHandlerContext ctx, String newUri) {
+
+        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, FOUND);
+
+        response.headers().set(HttpHeaderNames.LOCATION, newUri);
+
+        this.sendAndCleanupConnection(ctx, response);
+
+    }
+
+    void sendError(ChannelHandlerContext ctx, HttpResponseStatus status) {
+
+        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, status);
+
+        this.sendAndCleanupConnection(ctx, response);
 
 
     }
 
-	void sendError(ChannelHandlerContext ctx,HttpResponseStatus status,String content) {
+    void sendError(ChannelHandlerContext ctx, HttpResponseStatus status, String content) {
 
-        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,status,Unpooled.copiedBuffer(content,CharsetUtil.CHARSET_UTF_8));
+        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, status, Unpooled.copiedBuffer(content, CharsetUtil.CHARSET_UTF_8));
 
-        response.headers().set(HttpHeaderNames.CONTENT_TYPE,"text/plain; charset=UTF-8");
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain; charset=UTF-8");
 
-        this.sendAndCleanupConnection(ctx,response);
+        this.sendAndCleanupConnection(ctx, response);
 
     }
 
-    void sendAndCleanupConnection(ChannelHandlerContext ctx,FullHttpResponse response) {
+    void sendAndCleanupConnection(ChannelHandlerContext ctx, FullHttpResponse response) {
 
         final FullHttpRequest request = this.request;
 
         final boolean keepAlive = HttpUtil.isKeepAlive(request);
 
-        HttpUtil.setContentLength(response,response.content().readableBytes());
+        HttpUtil.setContentLength(response, response.content().readableBytes());
 
         if (!keepAlive) {
 
             // We're going to close the connection as soon as the response is sent,
             // so we should also make it clear for the client.
 
-            response.headers().set(HttpHeaderNames.CONNECTION,HttpHeaderValues.CLOSE);
+            response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
 
         } else if (request.protocolVersion().equals(HTTP_1_0)) {
 
-            response.headers().set(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
+            response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
 
         }
 

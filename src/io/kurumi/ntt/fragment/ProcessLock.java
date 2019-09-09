@@ -1,9 +1,9 @@
 package io.kurumi.ntt.fragment;
 
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ProcessLock<T> extends ReentrantLock {
 
@@ -15,17 +15,17 @@ public class ProcessLock<T> extends ReentrantLock {
 
     public T waitFor() {
 
-		if (obj != null || used.get()) return obj;
+        if (obj != null || used.get()) return obj;
 
         try {
 
             lock();
 
-			if (obj != null) return obj;
+            if (obj != null) return obj;
 
-            condition.await(1000,TimeUnit.MILLISECONDS);
+            condition.await(1000, TimeUnit.MILLISECONDS);
 
-			used.set(true);
+            used.set(true);
 
             return obj;
 
@@ -43,7 +43,7 @@ public class ProcessLock<T> extends ReentrantLock {
 
     public void send(T obj) {
 
-		if (used.getAndSet(true)) return;
+        if (used.getAndSet(true)) return;
 
         try {
 

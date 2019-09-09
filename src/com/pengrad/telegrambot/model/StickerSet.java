@@ -46,7 +46,8 @@ public class StickerSet implements Serializable {
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (title != null ? !title.equals(that.title) : that.title != null) return false;
         if (is_animated != null ? !is_animated.equals(that.is_animated) : that.is_animated != null) return false;
-        if (contains_masks != null ? !contains_masks.equals(that.contains_masks) : that.contains_masks != null) return false;
+        if (contains_masks != null ? !contains_masks.equals(that.contains_masks) : that.contains_masks != null)
+            return false;
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
         return Arrays.equals(stickers, that.stickers);
     }

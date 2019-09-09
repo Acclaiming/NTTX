@@ -1,6 +1,7 @@
 package io.kurumi.ntt.fragment.twitter.status;
 
 import cn.hutool.core.util.NumberUtil;
+import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
@@ -8,15 +9,9 @@ import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.StatusArchive;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.utils.NTT;
-import twitter4j.Paging;
-import twitter4j.ResponseList;
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.Env;
-import io.kurumi.ntt.utils.NTT.Accessable;
+import io.kurumi.ntt.utils.NTT;
+import twitter4j.*;
 
 public class StatusFetch extends Fragment {
 
@@ -30,7 +25,7 @@ public class StatusFetch extends Fragment {
     }
 
     @Override
-    public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
         if (params.length == 0) {
 
@@ -40,19 +35,19 @@ public class StatusFetch extends Fragment {
 
         }
 
-        requestTwitter(user,msg);
+        requestTwitter(user, msg);
 
     }
 
     @Override
-    public int checkTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+    public int checkTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
         return PROCESS_ASYNC;
 
     }
 
     @Override
-    public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
         Twitter api = account.createApi();
 
@@ -99,7 +94,7 @@ public class StatusFetch extends Fragment {
 
                 try {
 
-                    tl = api.getUserTimeline(archive.id,new Paging().count(200));
+                    tl = api.getUserTimeline(archive.id, new Paging().count(200));
 
                     status.edit("检查完成...").exec();
 
@@ -115,9 +110,9 @@ public class StatusFetch extends Fragment {
 
                 //if (ex.getErrorCode() == 136) {
 
-                    exc = ex;
+                exc = ex;
 
-               // }
+                // }
 
             }
         }
@@ -125,45 +120,45 @@ public class StatusFetch extends Fragment {
 
         if (!accessable) {
 
-			if (user.admin()) {
+            if (user.admin()) {
 
-				status.edit("尝试拉取...").exec();
+                status.edit("尝试拉取...").exec();
 
-				NTT.Accessable accessableAuth = NTT.loopFindAccessable(targetL == -1 ? target : targetL);
+                NTT.Accessable accessableAuth = NTT.loopFindAccessable(targetL == -1 ? target : targetL);
 
-				if (accessableAuth == null) {
+                if (accessableAuth == null) {
 
-					if (exc != null) {
+                    if (exc != null) {
 
-						status.edit("尝试失败",NTT.parseTwitterException(exc)).exec();
+                        status.edit("尝试失败", NTT.parseTwitterException(exc)).exec();
 
-						return;
+                        return;
 
-					} else {
+                    } else {
 
-						status.edit("尝试失败","这个人锁推了...").exec();
+                        status.edit("尝试失败", "这个人锁推了...").exec();
 
-						return;
+                        return;
 
-					}
+                    }
 
-				}
+                }
 
-				api = accessableAuth.auth.createApi();
+                api = accessableAuth.auth.createApi();
 
-				if (archive == null) {
+                if (archive == null) {
 
-					archive = targetL == -1 ? UserArchive.get(target) : UserArchive.get(targetL);
+                    archive = targetL == -1 ? UserArchive.get(target) : UserArchive.get(targetL);
 
-				}
+                }
 
-			} else {
+            } else {
 
-				msg.send(NTT.parseTwitterException(exc)).async();
+                msg.send(NTT.parseTwitterException(exc)).async();
 
-				return;
+                return;
 
-			}
+            }
 
         }
 
@@ -173,13 +168,13 @@ public class StatusFetch extends Fragment {
 
         boolean all = params.length > 1 && params[1].equals("--all");
 
-        new Send(Env.LOG_CHANNEL,"对 " + archive.url() + " 的推文拉取由 " + user.userName() + " 执行").html().exec();
+        new Send(Env.LOG_CHANNEL, "对 " + archive.url() + " 的推文拉取由 " + user.userName() + " 执行").html().exec();
 
         try {
 
             if (tl == null) {
 
-                tl = api.getUserTimeline(archive.id,new Paging().count(200));
+                tl = api.getUserTimeline(archive.id, new Paging().count(200));
 
             }
             if (tl.isEmpty()) {
@@ -228,12 +223,12 @@ public class StatusFetch extends Fragment {
 
             }
 
-            status.edit("正在拉取中... : ",count + "条推文已拉取").exec();
+            status.edit("正在拉取中... : ", count + "条推文已拉取").exec();
 
             w:
             while (!tl.isEmpty()) {
 
-                tl = api.getUserTimeline(archive.id,new Paging().count(200).maxId(sinceId - 1));
+                tl = api.getUserTimeline(archive.id, new Paging().count(200).maxId(sinceId - 1));
 
                 if (exists >= 10) {
 
@@ -281,15 +276,15 @@ public class StatusFetch extends Fragment {
 
                 if (tl.isEmpty()) break;
 
-                status.edit("正在拉取中...",count + "条推文已拉取").exec();
+                status.edit("正在拉取中...", count + "条推文已拉取").exec();
 
             }
 
-            status.edit("已拉取完成 :",count + "条推文已拉取").exec();
+            status.edit("已拉取完成 :", count + "条推文已拉取").exec();
 
         } catch (TwitterException e) {
 
-            status.edit("拉取失败",NTT.parseTwitterException(e)).exec();
+            status.edit("拉取失败", NTT.parseTwitterException(e)).exec();
 
         }
 

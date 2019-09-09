@@ -7,6 +7,7 @@ import com.sys1yagi.mastodon4j.api.entity.auth.AppRegistration;
 import com.sys1yagi.mastodon4j.api.exception.Mastodon4jRequestException;
 import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.mstd.MstdApi;
 import io.kurumi.ntt.fragment.mstd.MstdApp;
@@ -15,190 +16,189 @@ import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.utils.Html;
-import io.kurumi.ntt.fragment.BotFragment;
 
 public class MsMain extends Fragment {
 
-	public static final String POINT_MS_MAIN = "ms_main";
+    public static final String POINT_MS_MAIN = "ms_main";
 
-	final String POINT_LOGIN = "ms_login";
-	final String POINT_LOGOUT = "ms_logout";
+    final String POINT_LOGIN = "ms_login";
+    final String POINT_LOGOUT = "ms_logout";
 
-	@Override
-	public void init(BotFragment origin) {
-		
-		super.init(origin);
-		
-		registerFunction("mstd");
-		
-		registerCallback(POINT_LOGIN,POINT_LOGOUT);
-		
-		registerPoint(POINT_LOGIN);
-		
-	}
+    @Override
+    public void init(BotFragment origin) {
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-		
-		msMain(user,msg,false);
-		
-	}
+        super.init(origin);
 
-	void msMain(UserData user,Msg msg,boolean edit) {
+        registerFunction("mstd");
 
-		String message;
+        registerCallback(POINT_LOGIN, POINT_LOGOUT);
 
-		ButtonMarkup buttons = new ButtonMarkup();
+        registerPoint(POINT_LOGIN);
 
-		if (MstdAuth.data.containsId(user.id)) {
+    }
 
-			message = "查看你的账号 ~";
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-			buttons.newButtonLine("移除账号",POINT_LOGOUT);
+        msMain(user, msg, false);
 
-		} else {
+    }
 
-			message = "还没有认证账号 :)";
+    void msMain(UserData user, Msg msg, boolean edit) {
 
-			buttons.newButtonLine("认证账号",POINT_LOGIN);
+        String message;
 
-		}
+        ButtonMarkup buttons = new ButtonMarkup();
 
-		msg.sendOrEdit(edit,message).buttons(buttons).async();
+        if (MstdAuth.data.containsId(user.id)) {
 
-	}
+            message = "查看你的账号 ~";
 
-	class LoginMstd extends PointData {
+            buttons.newButtonLine("移除账号", POINT_LOGOUT);
 
-		Callback origin;
+        } else {
 
-		MstdApp app;
-		MstdApi api;
+            message = "还没有认证账号 :)";
 
-		public LoginMstd(Callback origin) {
-			this.origin = origin;
-		}
+            buttons.newButtonLine("认证账号", POINT_LOGIN);
 
-		@Override
-		public void onFinish() {
+        }
 
-			msMain(origin.from(),origin,true);
+        msg.sendOrEdit(edit, message).buttons(buttons).async();
 
-			super.onFinish();
+    }
 
-		}
+    class LoginMstd extends PointData {
 
-	}
+        Callback origin;
 
-	@Override
-	public void onCallback(UserData user,Callback callback,String point,String[] params) {
+        MstdApp app;
+        MstdApi api;
 
-		if (POINT_LOGIN.equals(point)) {
+        public LoginMstd(Callback origin) {
+            this.origin = origin;
+        }
 
-			LoginMstd login = (LoginMstd) setPrivatePoint(user,POINT_LOGIN,new LoginMstd(callback));
+        @Override
+        public void onFinish() {
 
-			callback.edit("请输入实例域名 :)").withCancel().exec(login);
+            msMain(origin.from(), origin, true);
 
-			return;
+            super.onFinish();
 
-		}
+        }
 
-	}
+    }
 
+    @Override
+    public void onCallback(UserData user, Callback callback, String point, String[] params) {
 
-	@Override
-	public void onPoint(UserData user,Msg msg,String point,PointData data) {
+        if (POINT_LOGIN.equals(point)) {
 
-		LoginMstd login = (LoginMstd) data;
+            LoginMstd login = (LoginMstd) setPrivatePoint(user, POINT_LOGIN, new LoginMstd(callback));
 
-		if (login.step == 0) {
+            callback.edit("请输入实例域名 :)").withCancel().exec(login);
 
-			if (!msg.hasText() || !msg.text().contains(".")) {
+            return;
 
-				msg.send("这不是一个 Mastodon 实例的域名，你知道吗？你刚刚点了认证 Mastodon 账号，但是你没有点取消就在发送其他内容 :(\n每次给你这种人写这种提示很麻烦的，理解一下好吗？").exec(login);
+        }
 
-				return;
+    }
 
-			}
 
-			MstdApp app;
+    @Override
+    public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
-			MstdApi api = new MstdApi(msg.text());
+        LoginMstd login = (LoginMstd) data;
 
-			if (MstdApp.data.containsId(msg.text())) {
+        if (login.step == 0) {
 
-				app = MstdApp.data.getById(msg.text());
+            if (!msg.hasText() || !msg.text().contains(".")) {
 
-			} else {
+                msg.send("这不是一个 Mastodon 实例的域名，你知道吗？你刚刚点了认证 Mastodon 账号，但是你没有点取消就在发送其他内容 :(\n每次给你这种人写这种提示很麻烦的，理解一下好吗？").exec(login);
 
-				AppRegistration reg;
+                return;
 
-				try {
+            }
 
-					reg = api.apps().createApp("NTT","urn:ietf:wg:oauth:2.0:oob",new Scope(Scope.Name.ALL),"https://manual.kurumi.io").execute();
+            MstdApp app;
 
-				} catch (Mastodon4jRequestException e) {
+            MstdApi api = new MstdApi(msg.text());
 
-					msg.send("实例登记失败 : " + e.getMessage()).async();
+            if (MstdApp.data.containsId(msg.text())) {
 
-					return;
+                app = MstdApp.data.getById(msg.text());
 
-				}
+            } else {
 
-				app = new MstdApp();
+                AppRegistration reg;
 
-				app.id = msg.text();
-				app.appId = reg.getId();
-				app.clientId = reg.getClientId();
-				app.clientSecret = reg.getClientSecret();
+                try {
 
-				app.data.setById(app.id,app);
+                    reg = api.apps().createApp("NTT", "urn:ietf:wg:oauth:2.0:oob", new Scope(Scope.Name.ALL), "https://manual.kurumi.io").execute();
 
-			}
+                } catch (Mastodon4jRequestException e) {
 
-			String url = api.apps().getOAuthUrl(app.clientId,new Scope(Scope.Name.ALL),"urn:ietf:wg:oauth:2.0:oob");
+                    msg.send("实例登记失败 : " + e.getMessage()).async();
 
-			login.app = app;
-			login.api = api;
+                    return;
 
-			login.step = 1;
+                }
 
-			msg.send("戳这里验证 : " + Html.a("戳这里",url) + "\n发送得到的验证码给咱就可以了 :)").withCancel().html().exec(login);
+                app = new MstdApp();
 
-			return;
+                app.id = msg.text();
+                app.appId = reg.getId();
+                app.clientId = reg.getClientId();
+                app.clientSecret = reg.getClientSecret();
 
-		}
+                MstdApp.data.setById(app.id, app);
 
-		MstdApp app = login.app;
-		MstdApi api = login.api;
+            }
 
-		try {
+            String url = api.apps().getOAuthUrl(app.clientId, new Scope(Scope.Name.ALL), "urn:ietf:wg:oauth:2.0:oob");
 
-			AccessToken token = api.apps().getAccessToken(app.clientId,app.clientSecret,msg.text()).execute();
+            login.app = app;
+            login.api = api;
 
-			clearPrivatePoint(user);
+            login.step = 1;
 
-			MstdAuth auth = new MstdAuth();
+            msg.send("戳这里验证 : " + Html.a("戳这里", url) + "\n发送得到的验证码给咱就可以了 :)").withCancel().html().exec(login);
 
-			auth.id = user.id;
-			auth.appId = app.id;
-			auth.accessToken = token.getAccessToken();
+            return;
 
-			Account account = auth.createApi().accounts().getVerifyCredentials().execute();
+        }
 
-			MstdAuth.data.setById(auth.id,auth);
+        MstdApp app = login.app;
+        MstdApi api = login.api;
 
-			msg.send("好，认证成功 : " + account.getDisplayName() + " (@" + account.getUserName() + "@" + app.id + ") .").async();
+        try {
 
-		} catch (Mastodon4jRequestException e) {
+            AccessToken token = api.apps().getAccessToken(app.clientId, app.clientSecret, msg.text()).execute();
 
-			msg.send("验证码错误 : " + e.getMessage()).async();
+            clearPrivatePoint(user);
 
-		}
-	
-		api.favs();
+            MstdAuth auth = new MstdAuth();
 
-	}
+            auth.id = user.id;
+            auth.appId = app.id;
+            auth.accessToken = token.getAccessToken();
+
+            Account account = auth.createApi().accounts().getVerifyCredentials().execute();
+
+            MstdAuth.data.setById(auth.id, auth);
+
+            msg.send("好，认证成功 : " + account.getDisplayName() + " (@" + account.getUserName() + "@" + app.id + ") .").async();
+
+        } catch (Mastodon4jRequestException e) {
+
+            msg.send("验证码错误 : " + e.getMessage()).async();
+
+        }
+
+        api.favs();
+
+    }
 
 
 }

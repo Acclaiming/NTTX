@@ -1,100 +1,101 @@
 package io.kurumi.ntt.listeners.extra;
 
-import org.xbill.DNS.*;
-
 import io.kurumi.ntt.td.TdApi.User;
 import io.kurumi.ntt.td.client.TdFunction;
 import io.kurumi.ntt.td.model.TMsg;
-import io.kurumi.ntt.utils.Html;
+import org.xbill.DNS.Lookup;
+import org.xbill.DNS.Record;
+import org.xbill.DNS.TextParseException;
+import org.xbill.DNS.Type;
 
 public class TdDnsLookup extends TdFunction {
 
-	@Override
-	public String functionName() {
+    @Override
+    public String functionName() {
 
-		return "dns";
+        return "dns";
 
-	}
+    }
 
-	@Override
-	public void onFunction(User user,TMsg msg,String function,String[] params) {
+    @Override
+    public void onFunction(User user, TMsg msg, String function, String[] params) {
 
-		if (params.length < 2) {
+        if (params.length < 2) {
 
-			sendText(msg,"/dns <type> <domain>");
+            sendText(msg, "/dns <type> <domain>");
 
-			return;
+            return;
 
-		}
+        }
 
-		int type = Type.A;
+        int type = Type.A;
 
-		String domain;
+        String domain;
 
-		if (params.length == 2) {
+        if (params.length == 2) {
 
-			type = Type.value(params[0]);
+            type = Type.value(params[0]);
 
-			domain = params[1];
+            domain = params[1];
 
-			if (type < 0) {
+            if (type < 0) {
 
-				sendHTML(msg,getLocale(user).DNS_TYPE_INVALID);
+                sendHTML(msg, getLocale(user).DNS_TYPE_INVALID);
 
-				return;
+                return;
 
-			}
+            }
 
-		} else {
+        } else {
 
-			domain = params[0];
+            domain = params[0];
 
-		}
+        }
 
-		Lookup lookup;
+        Lookup lookup;
 
-		try {
+        try {
 
-			lookup = new Lookup(domain,type);
+            lookup = new Lookup(domain, type);
 
-		} catch (TextParseException e) {
+        } catch (TextParseException e) {
 
-			sendHTML(msg,getLocale(user).DNS_DOMAIN_INVALID);
+            sendHTML(msg, getLocale(user).DNS_DOMAIN_INVALID);
 
-			return;
+            return;
 
-		}
+        }
 
-		lookup.run();
+        lookup.run();
 
-		if (lookup.getResult() != Lookup.SUCCESSFUL) {
+        if (lookup.getResult() != Lookup.SUCCESSFUL) {
 
-			sendText(msg,lookup.getErrorString());
+            sendText(msg, lookup.getErrorString());
 
-			return;
+            return;
 
-		}
+        }
 
-		Record[] records = lookup.getAnswers();
+        Record[] records = lookup.getAnswers();
 
-		TextBuilder message = new TextBuilder();
-		
-		if (records.length == 0) {
+        TextBuilder message = new TextBuilder();
 
-			message.text(getLocale(user).DNS_NOT_FOUND);
+        if (records.length == 0) {
 
-		} else {
-			
-			for (Record record : records) {
+            message.text(getLocale(user).DNS_NOT_FOUND);
 
-				message.text("\n").text(Type.string(record.getType())).text(" ").code(record.rdataToString());
+        } else {
 
-			}
+            for (Record record : records) {
 
-		}
+                message.text("\n").text(Type.string(record.getType())).text(" ").code(record.rdataToString());
 
-		send(msg.sendText(message));
-		
-	}
+            }
+
+        }
+
+        send(msg.sendText(message));
+
+    }
 
 }

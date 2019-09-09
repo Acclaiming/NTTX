@@ -12,6 +12,6 @@ public interface CPUInfo {
      *
      * @return
      */
-    public double getCPUUsage(int interval) throws InterruptedException;
+    double getCPUUsage(int interval) throws InterruptedException;
 
 }

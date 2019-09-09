@@ -1,17 +1,8 @@
 package io.kurumi.ntt.model;
 
-import com.pengrad.telegrambot.model.Chat;
-import com.pengrad.telegrambot.request.KickChatMember;
-import com.pengrad.telegrambot.request.RestrictChatMember;
-import com.pengrad.telegrambot.request.UnbanChatMember;
-import com.pengrad.telegrambot.response.BaseResponse;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.model.request.Send;
-
-import java.util.Date;
-import java.util.TimerTask;
 import cn.hutool.core.util.NumberUtil;
+import com.pengrad.telegrambot.model.Chat;
+import io.kurumi.ntt.fragment.Fragment;
 
 public class Context {
 
@@ -36,13 +27,13 @@ public class Context {
         return targetChatId == -1 ? chat.id() : targetChatId;
 
     }
-	
-	public int chatIdInt() {
+
+    public int chatIdInt() {
 
         return NumberUtil.parseInt(chatId().toString().substring(4));
-		
+
     }
-	
+
 
     public boolean isPrivate() {
         return chat.type() == Chat.Type.Private;

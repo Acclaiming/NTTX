@@ -1,13 +1,15 @@
 package io.kurumi.ntt.utils;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.UUID;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.crypto.SecureUtil;
+import io.kurumi.ntt.Env;
+
 import java.io.*;
 import java.util.*;
-
-import cn.hutool.core.util.*;
-import io.kurumi.ntt.*;
-import cn.hutool.core.lang.UUID;
-import cn.hutool.core.io.*;
-import cn.hutool.crypto.SecureUtil;
 
 public class FFMpeg {
 
@@ -21,8 +23,8 @@ public class FFMpeg {
 
         File cacheFile = new File(Env.CACHE_DIR, "palette_pic/" + SecureUtil.md5(media) + ".png");
 
-		if (cacheFile.isFile()) return cacheFile;
-		
+        if (cacheFile.isFile()) return cacheFile;
+
         cacheFile.getParentFile().mkdirs();
 
         try {
@@ -36,9 +38,9 @@ public class FFMpeg {
 
 
     }
-	
-	
-	public static boolean makeGif(File template,File ass, File out) {
+
+
+    public static boolean makeGif(File template, File ass, File out) {
 
         out.getParentFile().mkdirs();
 
@@ -53,7 +55,7 @@ public class FFMpeg {
         }
 
     }
-	
+
     public static boolean toGif(File globalPalettePicPath, File in, File out) {
 
         out.getParentFile().mkdirs();

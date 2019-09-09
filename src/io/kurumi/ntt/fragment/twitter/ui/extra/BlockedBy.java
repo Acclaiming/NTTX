@@ -1,7 +1,5 @@
 package io.kurumi.ntt.fragment.twitter.ui.extra;
 
-import twitter4j.*;
-
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.http.HtmlUtil;
 import io.kurumi.ntt.db.PointData;
@@ -18,238 +16,240 @@ import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
 
 public class BlockedBy extends Fragment {
 
-	public static void onBlocked(TAuth auth,Twitter api,UserArchive archive) {
+    public static void onBlocked(TAuth auth, Twitter api, UserArchive archive) {
 
-		if (auth.bbb != null) {
-			
-			try {
-				
-				api.createBlock(archive.id);
-				
-				new Send(auth.user,"屏蔽 {} 成功",archive.urlHtml()).html().async();
-				
-			} catch (TwitterException e) {
-				
-				new Send(auth.user,"屏蔽 {} 失败 : \n\n{}",archive.urlHtml(),NTT.parseTwitterException(e)).html().async();
-				
-			}
+        if (auth.bbb != null) {
 
-		}
-		
-		if (auth.bbp != null) {
+            try {
 
-			try {
+                api.createBlock(archive.id);
 
-				Status status = api.updateStatus(formatMessage(auth,archive));
+                new Send(auth.user, "屏蔽 {} 成功", archive.urlHtml()).html().async();
 
-				new Send(auth.user,"被屏蔽已推送 :\n\n{}",StatusArchive.save(status).url()).enableLinkPreview().async();
+            } catch (TwitterException e) {
 
-			} catch (TwitterException e) {
+                new Send(auth.user, "屏蔽 {} 失败 : \n\n{}", archive.urlHtml(), NTT.parseTwitterException(e)).html().async();
 
-				new Send(auth.user,"被屏蔽推送失败 :\n\n{}",NTT.parseTwitterException(e)).async();
+            }
 
-			}
+        }
 
-		}
+        if (auth.bbp != null) {
 
-	}
+            try {
 
-	public static String POINT_BB = "twi_bb";
+                Status status = api.updateStatus(formatMessage(auth, archive));
 
-	@Override
-	public void init(BotFragment origin) {
+                new Send(auth.user, "被屏蔽已推送 :\n\n{}", StatusArchive.save(status).url()).enableLinkPreview().async();
 
-		super.init(origin);
+            } catch (TwitterException e) {
 
-		registerCallback(POINT_BB);
-		registerPoint(POINT_BB);
+                new Send(auth.user, "被屏蔽推送失败 :\n\n{}", NTT.parseTwitterException(e)).async();
 
-	}
+            }
 
-	class BBSet extends PointData {
+        }
 
-		Callback origin;
-		TAuth account;
+    }
 
-		public BBSet(Callback origin,TAuth account) {
+    public static String POINT_BB = "twi_bb";
 
-			this.origin = origin;
-			this.account = account;
+    @Override
+    public void init(BotFragment origin) {
 
-		}
+        super.init(origin);
 
-		@Override
-		public void onFinish() {
+        registerCallback(POINT_BB);
+        registerPoint(POINT_BB);
 
-			bbMain(origin.from(),origin,account);
+    }
 
-			super.onFinish();
+    class BBSet extends PointData {
 
-		}
+        Callback origin;
+        TAuth account;
 
+        public BBSet(Callback origin, TAuth account) {
 
-	}
+            this.origin = origin;
+            this.account = account;
 
-	@Override
-	public void onCallback(UserData user,Callback callback,String point,String[] params) {
+        }
 
-		if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
+        @Override
+        public void onFinish() {
 
-			callback.invalidQuery();
+            bbMain(origin.from(), origin, account);
 
-			return;
+            super.onFinish();
 
-		}
+        }
 
-		long accountId = NumberUtil.parseLong(params[0]);
 
-		TAuth account = TAuth.getById(accountId);
+    }
 
-		if (account == null) {
+    @Override
+    public void onCallback(UserData user, Callback callback, String point, String[] params) {
 
-			callback.alert("无效的账号 .");
+        if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
 
-			callback.delete();
+            callback.invalidQuery();
 
-			return;
+            return;
 
-		}
+        }
 
-		if (params.length == 1) {
+        long accountId = NumberUtil.parseLong(params[0]);
 
-			bbMain(user,callback,account);
+        TAuth account = TAuth.getById(accountId);
 
-			return;
+        if (account == null) {
 
-		}
+            callback.alert("无效的账号 .");
 
-		String action = params[1];
+            callback.delete();
 
-		if ("bbb".equals(action)) {
+            return;
 
-			if (account.bbb == null) {
+        }
 
-				account.bbb = true;
+        if (params.length == 1) {
 
-			} else {
+            bbMain(user, callback, account);
 
-				account.bbb = null;
+            return;
 
-			}
-			
-			TAuth.data.setById(account.id,account);
-			
-			bbMain(user,callback,account);
-			
-		} else if ("bbp".equals(action)) {
+        }
 
-			if (account.bbp == null) {
+        String action = params[1];
 
-				account.bbp = true;
+        if ("bbb".equals(action)) {
 
-			} else {
+            if (account.bbb == null) {
 
-				account.bbp = null;
+                account.bbb = true;
 
-			}
-			
-			TAuth.data.setById(account.id,account);
-			
-			bbMain(user,callback,account);
+            } else {
 
-		} else if ("temp".equals(action)) {
+                account.bbb = null;
 
-			setPrivatePoint(user,POINT_BB,new BBSet(callback,account));
+            }
 
-			callback.edit("请发送新的消息模板 : ","\n默认模板 : " + Html.code(defaultMessage()),"\n可用变量 : " + HtmlUtil.escape(" <名称> 、 <用户名>")).withCancel().html().async();
+            TAuth.data.setById(account.id, account);
 
-		}
+            bbMain(user, callback, account);
 
+        } else if ("bbp".equals(action)) {
 
-	}
+            if (account.bbp == null) {
 
-	@Override
-	public void onPoint(UserData user,Msg msg,String point,PointData data) {
+                account.bbp = true;
 
-		if (POINT_BB.equals(point)) {
+            } else {
 
-			BBSet set = (BBSet) data.with(msg);
+                account.bbp = null;
 
-			if (!msg.hasText()) {
+            }
 
-				clearPrivatePoint(user);
+            TAuth.data.setById(account.id, account);
 
-				return;
+            bbMain(user, callback, account);
 
-			}
+        } else if ("temp".equals(action)) {
 
-			set.account.bbp_msg = msg.text().trim().equals(defaultMessage()) ? null : msg.text();
+            setPrivatePoint(user, POINT_BB, new BBSet(callback, account));
 
-			clearPrivatePoint(user);
+            callback.edit("请发送新的消息模板 : ", "\n默认模板 : " + Html.code(defaultMessage()), "\n可用变量 : " + HtmlUtil.escape(" <名称> 、 <用户名>")).withCancel().html().async();
 
-			TAuth.data.setById(set.account.id,set.account);
+        }
 
 
-		}
+    }
 
-	}
+    @Override
+    public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
+        if (POINT_BB.equals(point)) {
 
-	public static String defaultMessage() {
+            BBSet set = (BBSet) data.with(msg);
 
-		String message = "被 @<用户名> 屏蔽了, 真可惜。";
+            if (!msg.hasText()) {
 
-		message += "\n\n( 由NTT自动推送 )";
+                clearPrivatePoint(user);
 
-		return message;
+                return;
 
-	}
+            }
 
-	public static String formatMessage(TAuth account,UserArchive target) {
+            set.account.bbp_msg = msg.text().trim().equals(defaultMessage()) ? null : msg.text();
 
-		String message = account.bbp_msg == null ? defaultMessage() : account.bbp_msg;
-		message = message.replace("<名称>",target.name);
-		message = message.replace("<用户名>",target.screenName);
+            clearPrivatePoint(user);
 
-		return message;
+            TAuth.data.setById(set.account.id, set.account);
 
-	}
 
-	void bbMain(UserData user,Callback callback,TAuth account) {
+        }
 
-		String message = "被屏蔽处理 : [ " + account.archive().name + " ]";
+    }
 
-		message += "\n\n推文模板 : ";
 
-		if (account.oup_msg == null) {
+    public static String defaultMessage() {
 
-			message += "[ 默认 ]";
+        String message = "被 @<用户名> 屏蔽了, 真可惜。";
 
-		}
+        message += "\n\n( 由NTT自动推送 )";
 
-		message += "\n\n" + Html.code(account.oup_msg == null ? defaultMessage() : account.oup_msg);
+        return message;
 
-		ButtonMarkup buttons = new ButtonMarkup();
+    }
 
-		buttons.newButtonLine()
-			.newButton("屏蔽对方")
-			.newButton(account.bbb != null ? "✅" : "☑",POINT_BB,account.id,"bbb");
+    public static String formatMessage(TAuth account, UserArchive target) {
 
-		buttons.newButtonLine()
-			.newButton("自动推送")
-			.newButton(account.bbp != null ? "✅" : "☑",POINT_BB,account.id,"bbp");
+        String message = account.bbp_msg == null ? defaultMessage() : account.bbp_msg;
+        message = message.replace("<名称>", target.name);
+        message = message.replace("<用户名>", target.screenName);
 
-		buttons.newButtonLine("设置消息推送模板",POINT_BB,account.id,"temp");
+        return message;
 
-		buttons.newButtonLine("🔙",ExtraMain.POINT_EXTRA,account.id);
+    }
 
-		callback.edit(message).buttons(buttons).html().async();
+    void bbMain(UserData user, Callback callback, TAuth account) {
 
-	}
+        String message = "被屏蔽处理 : [ " + account.archive().name + " ]";
 
+        message += "\n\n推文模板 : ";
+
+        if (account.oup_msg == null) {
+
+            message += "[ 默认 ]";
+
+        }
+
+        message += "\n\n" + Html.code(account.oup_msg == null ? defaultMessage() : account.oup_msg);
+
+        ButtonMarkup buttons = new ButtonMarkup();
+
+        buttons.newButtonLine()
+                .newButton("屏蔽对方")
+                .newButton(account.bbb != null ? "✅" : "☑", POINT_BB, account.id, "bbb");
+
+        buttons.newButtonLine()
+                .newButton("自动推送")
+                .newButton(account.bbp != null ? "✅" : "☑", POINT_BB, account.id, "bbp");
+
+        buttons.newButtonLine("设置消息推送模板", POINT_BB, account.id, "temp");
+
+        buttons.newButtonLine("🔙", ExtraMain.POINT_EXTRA, account.id);
+
+        callback.edit(message).buttons(buttons).html().async();
+
+    }
 
 
 }

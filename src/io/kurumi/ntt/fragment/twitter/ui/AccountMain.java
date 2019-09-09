@@ -14,107 +14,107 @@ import io.kurumi.ntt.utils.Html;
 
 public class AccountMain extends Fragment {
 
-	public static final String POINT_ACCOUNT = "twi_show";
+    public static final String POINT_ACCOUNT = "twi_show";
 
-	final String POINT_EXPORT = "twi_export";
-	final String POINT_LOGOUT = "twi_logout";
-	final String POINT_LOGOUT_CONFIRM = "twi_logout_confim";
+    final String POINT_EXPORT = "twi_export";
+    final String POINT_LOGOUT = "twi_logout";
+    final String POINT_LOGOUT_CONFIRM = "twi_logout_confim";
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerCallback(POINT_ACCOUNT,POINT_EXPORT,POINT_LOGOUT,POINT_LOGOUT_CONFIRM);
+        registerCallback(POINT_ACCOUNT, POINT_EXPORT, POINT_LOGOUT, POINT_LOGOUT_CONFIRM);
 
-		origin.addFragment(new AutoMain());
-		origin.addFragment(new TrackMain());
-		origin.addFragment(new TimelineMain());
-		origin.addFragment(new DeleteMain());
-		origin.addFragment(new ExtraMain());
+        origin.addFragment(new AutoMain());
+        origin.addFragment(new TrackMain());
+        origin.addFragment(new TimelineMain());
+        origin.addFragment(new DeleteMain());
+        origin.addFragment(new ExtraMain());
 
-	}
+    }
 
-	@Override
-	public void onCallback(UserData user,Callback callback,String point,String[] params) {
+    @Override
+    public void onCallback(UserData user, Callback callback, String point, String[] params) {
 
-		if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
+        if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
 
-			callback.invalidQuery();
+            callback.invalidQuery();
 
-			return;
+            return;
 
-		}
+        }
 
-		long accountId = NumberUtil.parseLong(params[0]);
+        long accountId = NumberUtil.parseLong(params[0]);
 
-		TAuth account = TAuth.getById(accountId);
+        TAuth account = TAuth.getById(accountId);
 
-		if (account == null) {
+        if (account == null) {
 
-			callback.alert(LocalString.get(user).TWITTER_INVALID_ACCOUNT);
+            callback.alert(LocalString.get(user).TWITTER_INVALID_ACCOUNT);
 
-			callback.delete();
+            callback.delete();
 
-			return;
+            return;
 
-		}
+        }
 
-		if (POINT_ACCOUNT.equals(point)) {
+        if (POINT_ACCOUNT.equals(point)) {
 
-			accountMain(user,callback,account);
+            accountMain(user, callback, account);
 
-		} else if (POINT_LOGOUT.equals(point)) {
+        } else if (POINT_LOGOUT.equals(point)) {
 
-			accountLogout(user,callback,account);
+            accountLogout(user, callback, account);
 
-		} else if (POINT_LOGOUT_CONFIRM.equals(point)) {
+        } else if (POINT_LOGOUT_CONFIRM.equals(point)) {
 
-			confirmLogout(user,callback,account);
+            confirmLogout(user, callback, account);
 
-		} else if (POINT_EXPORT.equals(point)) {
+        } else if (POINT_EXPORT.equals(point)) {
 
-			accountExport(user,callback,account);
+            accountExport(user, callback, account);
 
-		}
+        }
 
-	}
+    }
 
-	void accountMain(UserData user,Callback callback,TAuth account) {
+    void accountMain(UserData user, Callback callback, TAuth account) {
 
-		String message = "==========================";
+        String message = "==========================";
 
-		message += "\n" + Html.b("User") + " [ " + Html.code(account.id) + " ]";
+        message += "\n" + Html.b("User") + " [ " + Html.code(account.id) + " ]";
 
-		message += "\n";
+        message += "\n";
 
-		message += "\nName : " + account.archive().name;
+        message += "\nName : " + account.archive().name;
 
-		message += "\nSN : " + Html.code("@" + account.archive().screenName);
+        message += "\nSN : " + Html.code("@" + account.archive().screenName);
 
-		message += "\n==========================";
+        message += "\n==========================";
 
-		ButtonMarkup functions = new ButtonMarkup();
+        ButtonMarkup functions = new ButtonMarkup();
 
-		functions.newButtonLine("自动处理 >>",AutoMain.POINT_AUTO,account.id);
-		functions.newButtonLine("通知 >>",TrackMain.POINT_TRACK,account.id);
-		functions.newButtonLine("推文流 >>",TimelineMain.POINT_TL,account.id);
-		functions.newButtonLine("自动删除 >>",DeleteMain.POINT_DELETE,account.id);
-		functions.newButtonLine("实验性 >>",ExtraMain.POINT_EXTRA,account.id);
+        functions.newButtonLine("自动处理 >>", AutoMain.POINT_AUTO, account.id);
+        functions.newButtonLine("通知 >>", TrackMain.POINT_TRACK, account.id);
+        functions.newButtonLine("推文流 >>", TimelineMain.POINT_TL, account.id);
+        functions.newButtonLine("自动删除 >>", DeleteMain.POINT_DELETE, account.id);
+        functions.newButtonLine("实验性 >>", ExtraMain.POINT_EXTRA, account.id);
 
-		functions.newButtonLine()
-			.newButton(LocalString.get(user).TWITTER_AUTH_EXPORT,POINT_EXPORT,account.id)
-			.newButton(LocalString.get(user).TWITTER_AUTH_REMOVE,POINT_LOGOUT,account.id);
+        functions.newButtonLine()
+                .newButton(LocalString.get(user).TWITTER_AUTH_EXPORT, POINT_EXPORT, account.id)
+                .newButton(LocalString.get(user).TWITTER_AUTH_REMOVE, POINT_LOGOUT, account.id);
 
-		functions.newButtonLine("🔙",TwitterMain.POINT_BACK);
+        functions.newButtonLine("🔙", TwitterMain.POINT_BACK);
 
-		callback.edit(message).buttons(functions).html().async();
+        callback.edit(message).buttons(functions).html().async();
 
-	}
+    }
 
-	void accountExport(UserData user,Callback callback,TAuth account) {
+    void accountExport(UserData user, Callback callback, TAuth account) {
 
-		String message = "认证信息 [ " + account.archive().name + " ]";
+        String message = "认证信息 [ " + account.archive().name + " ]";
 
         message += "\n\n" + Html.b("Consumer Key") + " : " + Html.code(account.apiKey);
         message += "\n\n" + Html.b("Consumer Key Secret") + " : " + Html.code(account.apiKeySec);
@@ -123,36 +123,36 @@ public class AccountMain extends Fragment {
 
         ButtonMarkup back = new ButtonMarkup();
 
-		back.newButtonLine("🔙",POINT_ACCOUNT,account.id);
+        back.newButtonLine("🔙", POINT_ACCOUNT, account.id);
 
-		callback.edit(message).buttons(back).html().async();
+        callback.edit(message).buttons(back).html().async();
 
-	}
+    }
 
-	void accountLogout(UserData user,Callback callback,TAuth account) {
+    void accountLogout(UserData user, Callback callback, TAuth account) {
 
-		String message = "点击来确认移除你的账号 [ " + account.archive().name + " ]\n\n服务器端记录会被完全删除 , 但 Twitter 中的会话管理中仍会显示NTT , 在会话管理中移除NTT使导出功能导出的认证失效 .";
+        String message = "点击来确认移除你的账号 [ " + account.archive().name + " ]\n\n服务器端记录会被完全删除 , 但 Twitter 中的会话管理中仍会显示NTT , 在会话管理中移除NTT使导出功能导出的认证失效 .";
 
-		ButtonMarkup logout = new ButtonMarkup();
+        ButtonMarkup logout = new ButtonMarkup();
 
-		logout.newButtonLine("删除",POINT_LOGOUT_CONFIRM,account.id);
+        logout.newButtonLine("删除", POINT_LOGOUT_CONFIRM, account.id);
 
-		logout.newButtonLine("🔙",POINT_ACCOUNT,account.id);
+        logout.newButtonLine("🔙", POINT_ACCOUNT, account.id);
 
-		callback.edit(message).buttons(logout).async();
+        callback.edit(message).buttons(logout).async();
 
-	}
+    }
 
-	void confirmLogout(UserData user,Callback callback,TAuth account) {
+    void confirmLogout(UserData user, Callback callback, TAuth account) {
 
-		TAuth.data.deleteById(account.id);
+        TAuth.data.deleteById(account.id);
 
-		callback.alert("好. 账号数据已删除.");
+        callback.alert("好. 账号数据已删除.");
 
-		new Send(Env.LOG_CHANNEL,"Removed Auth : " + user.userName() + " -> " + account.archive().urlHtml()).html().exec();
-		
-		getInstance(TwitterMain.class).mainMenu(user,callback,true,false);
+        new Send(Env.LOG_CHANNEL, "Removed Auth : " + user.userName() + " -> " + account.archive().urlHtml()).html().exec();
 
-	}
+        getInstance(TwitterMain.class).mainMenu(user, callback, true, false);
+
+    }
 
 }

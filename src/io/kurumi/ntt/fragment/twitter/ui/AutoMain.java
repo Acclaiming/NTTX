@@ -10,7 +10,7 @@ import io.kurumi.ntt.model.request.ButtonMarkup;
 
 public class AutoMain extends Fragment {
 
-	public static final String POINT_AUTO = "twi_auto";
+    public static final String POINT_AUTO = "twi_auto";
 
     final String POINT_SETTING_MRT = "twi_mrt";
     final String POINT_SETTING_FOBACK = "twi_foback";
@@ -19,56 +19,56 @@ public class AutoMain extends Fragment {
 
         super.init(origin);
 
-        registerCallback(POINT_AUTO,POINT_SETTING_MRT,POINT_SETTING_FOBACK);
+        registerCallback(POINT_AUTO, POINT_SETTING_MRT, POINT_SETTING_FOBACK);
 
     }
 
-	@Override
-	public void onCallback(UserData user,Callback callback,String point,String[] params) {
+    @Override
+    public void onCallback(UserData user, Callback callback, String point, String[] params) {
 
-		if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
+        if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
 
-			callback.invalidQuery();
+            callback.invalidQuery();
 
-			return;
+            return;
 
-		}
-		
-		long accountId = NumberUtil.parseLong(params[0]);
+        }
 
-		TAuth account = TAuth.getById(accountId);
+        long accountId = NumberUtil.parseLong(params[0]);
 
-		if (account == null) {
+        TAuth account = TAuth.getById(accountId);
 
-			callback.alert("无效的账号 .");
+        if (account == null) {
 
-			callback.delete();
+            callback.alert("无效的账号 .");
 
-			return;
+            callback.delete();
 
-		}
+            return;
 
-		if (POINT_AUTO.equals(point)) {
+        }
 
-			autoMain(user,callback,account);
+        if (POINT_AUTO.equals(point)) {
 
-		} else {
-			
-			setConfig(user,callback,point,account);
-			
-		}
+            autoMain(user, callback, account);
 
-	}
+        } else {
 
-	void autoMain(UserData user,Callback callback,TAuth account) {
+            setConfig(user, callback, point, account);
 
-		String message = "自动处理设置选单 : [ " + account.archive().name + " ]";
+        }
 
-		ButtonMarkup config = new ButtonMarkup();
+    }
 
-		config.newButtonLine()
-			.newButton("屏蔽新关注中的转推")
-			.newButton(account.mrt != null ? "✅" : "☑",POINT_SETTING_MRT,account.id);
+    void autoMain(UserData user, Callback callback, TAuth account) {
+
+        String message = "自动处理设置选单 : [ " + account.archive().name + " ]";
+
+        ButtonMarkup config = new ButtonMarkup();
+
+        config.newButtonLine()
+                .newButton("屏蔽新关注中的转推")
+                .newButton(account.mrt != null ? "✅" : "☑", POINT_SETTING_MRT, account.id);
 
 		/*
 			
@@ -77,53 +77,53 @@ public class AutoMain extends Fragment {
 			.newButton(account.fb != null ? "✅" : "☑",POINT_SETTING_FOBACK,account.id);
 		
 		*/
-			
-		config.newButtonLine("🔙",AccountMain.POINT_ACCOUNT,account.id);
-		
-		callback.edit(message).buttons(config).async();
 
-	}
-	
-	void setConfig(UserData user,Callback callback,String point,TAuth account) {
-		
-		if (POINT_SETTING_MRT.equals(point)) {
-			
-			if (account.mrt == null) {
-				
-				account.mrt = true;
-				
-				callback.text("✅ 已开启");
-				
-			} else {
-				
-				account.mrt = null;
-				
-				callback.text("✅ 已关闭");
-				
-			}
-			
-		} else if (POINT_SETTING_FOBACK.equals(point)) {
+        config.newButtonLine("🔙", AccountMain.POINT_ACCOUNT, account.id);
 
-			if (account.fb == null) {
+        callback.edit(message).buttons(config).async();
 
-				account.fb = true;
+    }
 
-				callback.text("✅ 已开启");
+    void setConfig(UserData user, Callback callback, String point, TAuth account) {
 
-			} else {
+        if (POINT_SETTING_MRT.equals(point)) {
 
-				account.fb = null;
+            if (account.mrt == null) {
 
-				callback.text("✅ 已关闭");
+                account.mrt = true;
 
-			}
+                callback.text("✅ 已开启");
 
-		}
-		
-		TAuth.data.setById(account.id,account);
-		
-		autoMain(user,callback,account);
-		
-	}
+            } else {
+
+                account.mrt = null;
+
+                callback.text("✅ 已关闭");
+
+            }
+
+        } else if (POINT_SETTING_FOBACK.equals(point)) {
+
+            if (account.fb == null) {
+
+                account.fb = true;
+
+                callback.text("✅ 已开启");
+
+            } else {
+
+                account.fb = null;
+
+                callback.text("✅ 已关闭");
+
+            }
+
+        }
+
+        TAuth.data.setById(account.id, account);
+
+        autoMain(user, callback, account);
+
+    }
 
 }

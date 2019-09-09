@@ -3,13 +3,13 @@ package io.kurumi.ntt.fragment.extra;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.model.Query;
 import io.kurumi.ntt.utils.Cndic;
 import io.kurumi.ntt.utils.Html;
+
 import java.util.regex.Pattern;
-import io.kurumi.ntt.fragment.BotFragment;
 
 /*
 
@@ -23,72 +23,72 @@ public class Manchurize extends Fragment {
 
     private Cndic cndic = new Cndic();
 
-	@Override
-	public void init(BotFragment origin) {
-	
-		super.init(origin);
+    @Override
+    public void init(BotFragment origin) {
 
-		registerFunction("manchurize" ,"demanchurize" );
-		
-	}
-	
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+        super.init(origin);
 
-		if (StrUtil.isBlank(msg.param())) {
-			
-			msg.invalidParams("内容...").async();
-			
-			return;
-			
-		}
-		
-		if ("manchurize".equals(function)) {
+        registerFunction("manchurize", "demanchurize");
 
-			String result = cndic.cn_ma(msg.param(),false,false);
+    }
 
-			if (StrUtil.isBlank(result)) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-				msg.send("翻译失败 :(").async();
+        if (StrUtil.isBlank(msg.param())) {
 
-			} else {
+            msg.invalidParams("内容...").async();
 
-				msg.send("结果 : " + Html.code(manchurize(result))).html().async();
+            return;
 
-			}
+        }
 
-		} else {
-			
-			if (!isManchuScript(msg.param())) {
-				
-				msg.send("没有满洲语字符, 无法翻译.").async();
-				
-				return;
-				
-			}
-			
-			String result = cndic.cn_ma(deManchurize(msg.param()),false,true);
+        if ("manchurize".equals(function)) {
 
-			if (StrUtil.isBlank(result)) {
+            String result = cndic.cn_ma(msg.param(), false, false);
 
-				msg.send("翻译失败 :(").async();
+            if (StrUtil.isBlank(result)) {
 
-			} else {
+                msg.send("翻译失败 :(").async();
 
-				msg.send("结果 : " + Html.code(result)).html().async();
+            } else {
 
-			}
+                msg.send("结果 : " + Html.code(manchurize(result))).html().async();
+
+            }
+
+        } else {
+
+            if (!isManchuScript(msg.param())) {
+
+                msg.send("没有满洲语字符, 无法翻译.").async();
+
+                return;
+
+            }
+
+            String result = cndic.cn_ma(deManchurize(msg.param()), false, true);
+
+            if (StrUtil.isBlank(result)) {
+
+                msg.send("翻译失败 :(").async();
+
+            } else {
+
+                msg.send("结果 : " + Html.code(result)).html().async();
+
+            }
 
 
-		}
+        }
 
-	}
+    }
 
-    private static Pattern manchuMatcher = Pattern.compile("(([\u1800-\u18AA\u00AB\u00BB\u2039\u203A\\?\\!\u203D\u2E2E])+\\s*((-*—?[0-9])+\\s+)*)+$",Pattern.MULTILINE);
+    private static Pattern manchuMatcher = Pattern.compile("(([\u1800-\u18AA\u00AB\u00BB\u2039\u203A\\?\\!\u203D\u2E2E])+\\s*((-*—?[0-9])+\\s+)*)+$", Pattern.MULTILINE);
 
     public static boolean isManchuScript(String str) {
 
-        return ReUtil.contains(manchuMatcher,str);
+        return ReUtil.contains(manchuMatcher, str);
 
     }
 
@@ -321,8 +321,8 @@ public class Manchurize extends Fragment {
     public static String manchurize(String str) {
 
         String tmp = "";
-		
-		str = str.toLowerCase();
+
+        str = str.toLowerCase();
 
         if (str.length() > 0) {
 
@@ -398,7 +398,7 @@ public class Manchurize extends Fragment {
 
                     if (prev == 'ᠨ' || prev == 'n') {
 
-                        tmp = tmp.substring(0,tmp.length() - 1);
+                        tmp = tmp.substring(0, tmp.length() - 1);
 
                         tmp += 'ᠩ';
 
@@ -432,7 +432,7 @@ public class Manchurize extends Fragment {
 
                     if (prev == 'ᡨ' || prev == 't') {
 
-                        tmp = tmp.substring(0,tmp.length() - 1);
+                        tmp = tmp.substring(0, tmp.length() - 1);
 
                         tmp += 'ᡮ';
 
@@ -494,7 +494,7 @@ public class Manchurize extends Fragment {
 
                     if (prev == 'ᡩ' || prev == 'd') {
 
-                        tmp = tmp.substring(0,tmp.length() - 1);
+                        tmp = tmp.substring(0, tmp.length() - 1);
 
                         tmp += 'ᡯ';
 

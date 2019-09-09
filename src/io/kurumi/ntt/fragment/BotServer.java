@@ -1,16 +1,10 @@
 package io.kurumi.ntt.fragment;
 
-import com.pengrad.telegrambot.request.BaseRequest;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerDomainSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.unix.DomainSocketAddress;
 import io.netty.handler.codec.http.HttpObjectAggregator;
@@ -20,22 +14,14 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
-
-import static io.netty.handler.codec.http.HttpMethod.*;
-import static io.netty.handler.codec.http.HttpResponseStatus.*;
-import static io.netty.handler.codec.http.HttpVersion.*;
 
 public class BotServer {
 
     public static BotServer INSTANCE;
 
     public static HashMap<String, BotFragment> fragments = new HashMap<>();
-	public static HashMap<Long, BotFragment> idIndex = new HashMap<>();
-	
+    public static HashMap<Long, BotFragment> idIndex = new HashMap<>();
+
     public int port;
     public File socketFile;
     public String domain;

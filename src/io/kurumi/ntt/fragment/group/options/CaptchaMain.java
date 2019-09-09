@@ -3,7 +3,6 @@ package io.kurumi.ntt.fragment.group.options;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
-import com.pengrad.telegrambot.request.EditMessageReplyMarkup;
 import io.kurumi.ntt.db.GroupData;
 import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
@@ -12,549 +11,550 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonMarkup;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class CaptchaMain extends Fragment {
 
-	public static String POINT_CAPTCHA = "group_join";
+    public static String POINT_CAPTCHA = "group_join";
 
-	final String POINT_CUSTOM = "group_cus";
+    final String POINT_CUSTOM = "group_cus";
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerCallback(POINT_CAPTCHA,POINT_CUSTOM);
-		registerPoint(POINT_CUSTOM);
+        registerCallback(POINT_CAPTCHA, POINT_CUSTOM);
+        registerPoint(POINT_CUSTOM);
 
-	}
+    }
 
-	@Override
-	public void onCallback(UserData user,Callback callback,String point,String[] params) {
+    @Override
+    public void onCallback(UserData user, Callback callback, String point, String[] params) {
 
-		if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
+        if (params.length == 0 || !NumberUtil.isNumber(params[0])) {
 
-			callback.invalidQuery();
+            callback.invalidQuery();
 
-			return;
+            return;
 
-		}
+        }
 
         final GroupData data = GroupData.data.getById(NumberUtil.parseLong(params[0]));
 
-		if (data == null) {
+        if (data == null) {
 
-			callback.invalidQuery();
+            callback.invalidQuery();
 
-			return;
+            return;
 
-		}
+        }
 
-		if (params.length == 1) {
+        if (params.length == 1) {
 
-			String message = "编辑群组的新成员加群验证设置.";
+            String message = "编辑群组的新成员加群验证设置.";
 
-			message += "\n\n" + OptionsMain.doc;
+            message += "\n\n" + OptionsMain.doc;
 
-			callback.edit(message).buttons(joinMenu(data)).html().async();
+            callback.edit(message).buttons(joinMenu(data)).html().async();
 
-			return;
+            return;
 
-		}
+        }
 
-		if (POINT_CAPTCHA.equals(point)) {
+        if (POINT_CAPTCHA.equals(point)) {
 
-			if ("enable".equals(params[1])) {
+            if ("enable".equals(params[1])) {
 
-				if (data.join_captcha == null) {
+                if (data.join_captcha == null) {
 
-					data.join_captcha = true;
+                    data.join_captcha = true;
 
-					callback.text("🚪  已开启");
+                    callback.text("🚪  已开启");
 
-				} else {
+                } else {
 
-					data.join_captcha = null;
+                    data.join_captcha = null;
 
-					callback.text("🚪  已关闭");
+                    callback.text("🚪  已关闭");
 
-				}
+                }
 
-			} else if ("passive".equals(params[1])) {
+            } else if ("passive".equals(params[1])) {
 
-				if (data.passive_mode == null) {
+                if (data.passive_mode == null) {
 
-					data.passive_mode = true;
+                    data.passive_mode = true;
 
-					callback.text("🚪  已开启");
+                    callback.text("🚪  已开启");
 
-				} else {
+                } else {
 
-					data.passive_mode = null;
+                    data.passive_mode = null;
 
-					callback.text("🚪  已关闭");
+                    callback.text("🚪  已关闭");
 
-				}
+                }
 
-			} else if ("ft_inc".equals(params[1])) {
+            } else if ("ft_inc".equals(params[1])) {
 
-				if (data.ft_count != null && data.ft_count >= 5) {
+                if (data.ft_count != null && data.ft_count >= 5) {
 
-					callback.text("🚪  新数值太高 (> 5)");
+                    callback.text("🚪  新数值太高 (> 5)");
 
-					return;
+                    return;
 
-				}
+                }
 
-				if (data.ft_count == null) {
+                if (data.ft_count == null) {
 
-					data.ft_count = 0;
+                    data.ft_count = 0;
 
-				}
+                }
 
-				callback.text("🚪  " + data.ft_count + " -> " + (data.ft_count = data.ft_count + 1));
+                callback.text("🚪  " + data.ft_count + " -> " + (data.ft_count = data.ft_count + 1));
 
-			} else if ("captcha_del".equals(params[1])) {
+            } else if ("captcha_del".equals(params[1])) {
 
-				if (data.captcha_del == null) {
+                if (data.captcha_del == null) {
 
-					data.captcha_del = 0;
+                    data.captcha_del = 0;
 
-					callback.text("🚪  保留一条");
+                    callback.text("🚪  保留一条");
 
-				} else if (data.captcha_del == 0) {
+                } else if (data.captcha_del == 0) {
 
-					data.captcha_del = 1;
+                    data.captcha_del = 1;
 
-					callback.text("🚪  全部保留");
+                    callback.text("🚪  全部保留");
 
-				} else {
+                } else {
 
-					data.captcha_del = null;
+                    data.captcha_del = null;
 
-					callback.text("🚪  延时删除");
+                    callback.text("🚪  延时删除");
 
-				}
+                }
 
 
-			} else if ("ft_dec".equals(params[1])) {
+            } else if ("ft_dec".equals(params[1])) {
 
-				if (data.ft_count == null) {
+                if (data.ft_count == null) {
 
-					callback.text("🚪  再低就没了 (ﾟ⊿ﾟ)ﾂ");
+                    callback.text("🚪  再低就没了 (ﾟ⊿ﾟ)ﾂ");
 
-					return;
+                    return;
 
-				}
+                }
 
-				callback.text("🚪  " + data.ft_count + " -> " + (data.ft_count = data.ft_count - 1));
+                callback.text("🚪  " + data.ft_count + " -> " + (data.ft_count = data.ft_count - 1));
 
-				if (data.ft_count == 0) {
+                if (data.ft_count == 0) {
 
-					data.ft_count = null;
+                    data.ft_count = null;
 
-				}
+                }
 
-			} else if ("jt_inc".equals(params[1])) {
+            } else if ("jt_inc".equals(params[1])) {
 
-				if (data.captcha_time != null && (data.captcha_time >= 5 * 60)) {
+                if (data.captcha_time != null && (data.captcha_time >= 5 * 60)) {
 
-					callback.text("🚪  新数值太高 (> 5min)");
+                    callback.text("🚪  新数值太高 (> 5min)");
 
-					return;
+                    return;
 
-				}
+                }
 
-				if (data.captcha_time == null) {
+                if (data.captcha_time == null) {
 
-					data.captcha_time = 50;
+                    data.captcha_time = 50;
 
-				}
+                }
 
-				callback.text("🚪  " + data.parse_time() + " -> " + (data.parse_time(data.captcha_time = data.captcha_time + 10)));
+                callback.text("🚪  " + data.parse_time() + " -> " + (data.parse_time(data.captcha_time = data.captcha_time + 10)));
 
-				if (data.captcha_time == 50) {
+                if (data.captcha_time == 50) {
 
-					data.captcha_time = null;
+                    data.captcha_time = null;
 
-				}
+                }
 
-			} else if ("jt_inc_t".equals(params[1])) {
+            } else if ("jt_inc_t".equals(params[1])) {
 
-				if (data.captcha_time != null && (data.captcha_time >= 5 * 60)) {
+                if (data.captcha_time != null && (data.captcha_time >= 5 * 60)) {
 
-					callback.text("🚪  新数值太高 (> 5min)");
+                    callback.text("🚪  新数值太高 (> 5min)");
 
-					return;
+                    return;
 
-				}
+                }
 
-				if (data.captcha_time == null) {
+                if (data.captcha_time == null) {
 
-					data.captcha_time = 50;
+                    data.captcha_time = 50;
 
-				}
+                }
 
-				int time = data.captcha_time;
+                int time = data.captcha_time;
 
-				if (time + 30 > 5 * 60) {
+                if (time + 30 > 5 * 60) {
 
-					data.captcha_time = 5 * 60;
+                    data.captcha_time = 5 * 60;
 
-				} else {
+                } else {
 
-					data.captcha_time = time + 30;
+                    data.captcha_time = time + 30;
 
-				}
+                }
 
-				callback.text("🚪  " + data.parse_time(time) + " -> " + data.parse_time());
+                callback.text("🚪  " + data.parse_time(time) + " -> " + data.parse_time());
 
-				if (data.captcha_time == 50) {
+                if (data.captcha_time == 50) {
 
-					data.captcha_time = null;
+                    data.captcha_time = null;
 
-				}
+                }
 
-			} else if ("jt_dec".equals(params[1])) {
+            } else if ("jt_dec".equals(params[1])) {
 
-				if (data.captcha_time != null && data.captcha_time < 21) {
+                if (data.captcha_time != null && data.captcha_time < 21) {
 
-					callback.text("🚪  再低还能验证吗 (ﾟ⊿ﾟ)ﾂ");
+                    callback.text("🚪  再低还能验证吗 (ﾟ⊿ﾟ)ﾂ");
 
-					return;
+                    return;
 
-				}
+                }
 
-				if (data.captcha_time == null) {
+                if (data.captcha_time == null) {
 
-					data.captcha_time = 50;
+                    data.captcha_time = 50;
 
-				}
+                }
 
-				callback.text("🚪  " + data.parse_time() + " -> " + data.parse_time(data.captcha_time = data.captcha_time - 10));
+                callback.text("🚪  " + data.parse_time() + " -> " + data.parse_time(data.captcha_time = data.captcha_time - 10));
 
-				if (data.captcha_time == 50) {
+                if (data.captcha_time == 50) {
 
-					data.captcha_time = null;
+                    data.captcha_time = null;
 
-				}
+                }
 
 
-			} else if ("jt_dec_t".equals(params[1])) {
+            } else if ("jt_dec_t".equals(params[1])) {
 
-				if (data.captcha_time != null && data.captcha_time < 21) {
+                if (data.captcha_time != null && data.captcha_time < 21) {
 
-					callback.text("🚪  再低还能验证吗 (ﾟ⊿ﾟ)ﾂ");
+                    callback.text("🚪  再低还能验证吗 (ﾟ⊿ﾟ)ﾂ");
 
-					return;
+                    return;
 
-				}
+                }
 
-				if (data.captcha_time == null) {
+                if (data.captcha_time == null) {
 
-					data.captcha_time = 50;
+                    data.captcha_time = 50;
 
-				}
+                }
 
-				int time = data.captcha_time;
+                int time = data.captcha_time;
 
-				if (time - 30 > 20) {
+                if (time - 30 > 20) {
 
-					data.captcha_time = time - 30;
+                    data.captcha_time = time - 30;
 
-				} else {
+                } else {
 
-					data.captcha_time = 20;
+                    data.captcha_time = 20;
 
-				}
+                }
 
-				callback.text("🚪  " + data.parse_time(time) + " -> " + data.parse_time());
+                callback.text("🚪  " + data.parse_time(time) + " -> " + data.parse_time());
 
-				if (data.captcha_time == 50) {
+                if (data.captcha_time == 50) {
 
-					data.captcha_time = null;
+                    data.captcha_time = null;
 
-				}
+                }
 
 
-			} else if ("fail_ban".equals(params[1])) {
+            } else if ("fail_ban".equals(params[1])) {
 
-				if (data.fail_ban == null) {
+                if (data.fail_ban == null) {
 
-					data.fail_ban = true;
+                    data.fail_ban = true;
 
-					callback.text("🚪  封锁该用户");
+                    callback.text("🚪  封锁该用户");
 
-				} else {
+                } else {
 
-					data.fail_ban = null;
+                    data.fail_ban = null;
 
-					callback.text("🚪  移除该用户");
+                    callback.text("🚪  移除该用户");
 
-				}
+                }
 
 
-			} else if ("mode_def".equals(params[1])) {
+            } else if ("mode_def".equals(params[1])) {
 
-				callback.text("🚪  默认模式");
+                callback.text("🚪  默认模式");
 
-				if (data.captcha_mode == null) {
+                if (data.captcha_mode == null) {
 
-					return;
+                    return;
 
-				}
+                }
 
-				data.captcha_mode = null;
+                data.captcha_mode = null;
 
-			} else if ("mode_code".equals(params[1])) {
+            } else if ("mode_code".equals(params[1])) {
 
-				callback.text("🚪  验证码验证");
+                callback.text("🚪  验证码验证");
 
-				if (((Integer) 0).equals(data.captcha_mode)) {
+                if (((Integer) 0).equals(data.captcha_mode)) {
 
-					return;
+                    return;
 
-				}
+                }
 
-				data.captcha_mode = 0;
+                data.captcha_mode = 0;
 
-			} else if ("mode_math".equals(params[1])) {
+            } else if ("mode_math".equals(params[1])) {
 
-				callback.text("🚪  算数验证");
+                callback.text("🚪  算数验证");
 
-				if (((Integer) 1).equals(data.captcha_mode)) {
+                if (((Integer) 1).equals(data.captcha_mode)) {
 
-					return;
+                    return;
 
-				}
+                }
 
-				data.captcha_mode = 1;
+                data.captcha_mode = 1;
 
-			} else if ("with_image".equals(params[1])) {
+            } else if ("with_image".equals(params[1])) {
 
-				if (data.with_image == null) {
+                if (data.with_image == null) {
 
-					data.with_image = true;
+                    data.with_image = true;
 
-					callback.text("🚪  以图片显示问题");
+                    callback.text("🚪  以图片显示问题");
 
-				} else {
+                } else {
 
-					data.with_image = null;
+                    data.with_image = null;
 
-					callback.text("🚪  以文字显示问题");
+                    callback.text("🚪  以文字显示问题");
 
-				}
+                }
 
-			} else if ("interfere".equals(params[1])) {
+            } else if ("interfere".equals(params[1])) {
 
-				if (data.interfere == null) {
+                if (data.interfere == null) {
 
-					data.interfere = true;
+                    data.interfere = true;
 
-					callback.text("🚪  开启按钮干扰");
+                    callback.text("🚪  开启按钮干扰");
 
-				} else {
+                } else {
 
-					data.interfere = null;
+                    data.interfere = null;
 
-					callback.text("🚪  关闭按钮干扰");
+                    callback.text("🚪  关闭按钮干扰");
 
-				}
+                }
 
-			} else if ("require_input".equals(params[1])) {
+            } else if ("require_input".equals(params[1])) {
 
-				if (data.require_input == null) {
+                if (data.require_input == null) {
 
-					if (((Integer) 2).equals(data.captcha_mode) && (data.custom_a_question == null || data.custom_kw == null)) {
+                    if (((Integer) 2).equals(data.captcha_mode) && (data.custom_a_question == null || GroupData.custom_kw == null)) {
 
-						callback.alert(
+                        callback.alert(
 
-							"你正在使用自定义验证模式",
+                                "你正在使用自定义验证模式",
 
-							"需要设定回答模式的问题与答案才能开启回答模式"
+                                "需要设定回答模式的问题与答案才能开启回答模式"
 
-						);
+                        );
 
-						return;
+                        return;
 
-					}
+                    }
 
-					data.require_input = true;
+                    data.require_input = true;
 
-					callback.text("🚪  要求输入答案");
+                    callback.text("🚪  要求输入答案");
 
 
-				} else {
+                } else {
 
-					if (((Integer) 2).equals(data.captcha_mode) && (data.custom_i_question == null || data.custom_items == null)) {
+                    if (((Integer) 2).equals(data.captcha_mode) && (data.custom_i_question == null || data.custom_items == null)) {
 
-						callback.alert(
+                        callback.alert(
 
-							"你正在使用自定义验证模式",
+                                "你正在使用自定义验证模式",
 
-							"需要设定选择模式的问题与选项才能关闭回答模式"
+                                "需要设定选择模式的问题与选项才能关闭回答模式"
 
-						);
+                        );
 
-						return;
+                        return;
 
-					}
+                    }
 
-					data.require_input = null;
+                    data.require_input = null;
 
-					callback.text("🚪  要求选择答案");
+                    callback.text("🚪  要求选择答案");
 
-				}
+                }
 
-			} else if ("invite_user".equals(params[1])) {
+            } else if ("invite_user".equals(params[1])) {
 
-				if (data.invite_user_ban == null) {
+                if (data.invite_user_ban == null) {
 
-					data.invite_user_ban = true;
+                    data.invite_user_ban = true;
 
-					callback.text("🚪  封锁");
+                    callback.text("🚪  封锁");
 
-				} else {
+                } else {
 
-					data.invite_user_ban = null;
+                    data.invite_user_ban = null;
 
-					callback.text("🚪  移除");
+                    callback.text("🚪  移除");
 
-				}
+                }
 
-			} else if ("invite_bot".equals(params[1])) {
+            } else if ("invite_bot".equals(params[1])) {
 
-				if (data.invite_bot_ban == null) {
+                if (data.invite_bot_ban == null) {
 
-					data.invite_bot_ban = true;
+                    data.invite_bot_ban = true;
 
-					callback.text("🚪  封锁");
+                    callback.text("🚪  封锁");
 
-				} else {
+                } else {
 
-					data.invite_bot_ban = null;
+                    data.invite_bot_ban = null;
 
-					callback.text("🚪  移除");
+                    callback.text("🚪  移除");
 
-				}
+                }
 
-			} else if ("mode_cus".equals(params[1])) {
+            } else if ("mode_cus".equals(params[1])) {
 
-				callback.edit("编辑自定义问题. 对错选项或正确内容.\n\n" + cusStats(data) + "\n\n" + OptionsMain.doc).buttons(cusMenu(data)).html().async();
+                callback.edit("编辑自定义问题. 对错选项或正确内容.\n\n" + cusStats(data) + "\n\n" + OptionsMain.doc).buttons(cusMenu(data)).html().async();
 
-				return;
+                return;
 
-			}
+            }
 
-			callback.editMarkup(joinMenu(data));
+            callback.editMarkup(joinMenu(data));
 
 
-		} else {
+        } else {
 
-			if ("enable_cus".equals(params[1])) {
+            if ("enable_cus".equals(params[1])) {
 
-				if (((Integer) 2).equals(data.captcha_mode)) {
+                if (((Integer) 2).equals(data.captcha_mode)) {
 
-					callback.text("🚪  已关闭");
+                    callback.text("🚪  已关闭");
 
-					data.captcha_mode = null;
+                    data.captcha_mode = null;
 
-				} else if (data.require_input == null && (data.custom_i_question == null || data.custom_items == null)) {
+                } else if (data.require_input == null && (data.custom_i_question == null || data.custom_items == null)) {
 
-					callback.alert(
+                    callback.alert(
 
-						"你正在使用选项模式",
+                            "你正在使用选项模式",
 
-						"需要设定选项模式的问题与选项才能继续"
+                            "需要设定选项模式的问题与选项才能继续"
 
 
-					);
+                    );
 
-					return;
+                    return;
 
-				} else if (data.require_input != null && (data.custom_a_question == null || data.custom_kw == null)) {
+                } else if (data.require_input != null && (data.custom_a_question == null || GroupData.custom_kw == null)) {
 
-					callback.alert(
+                    callback.alert(
 
-						"你正在使用回答模式",
+                            "你正在使用回答模式",
 
-						"需要设定回答模式的问题与正确回答才能继续"
+                            "需要设定回答模式的问题与正确回答才能继续"
 
 
-					);
+                    );
 
-					return;
+                    return;
 
-				} else {
+                } else {
 
-					callback.text("🚪  已开启");
+                    callback.text("🚪  已开启");
 
-					data.captcha_mode = 2;
+                    data.captcha_mode = 2;
 
-				}
-				
-				callback.editMarkup(cusMenu(data));
+                }
 
-			} else if ("reset_i_question".equals(params[1])) {
+                callback.editMarkup(cusMenu(data));
 
-				callback.confirm();
+            } else if ("reset_i_question".equals(params[1])) {
 
-				EditCustom edit = new EditCustom(0,callback,data);
+                callback.confirm();
 
-				callback.send("现在发送问题 :").exec(edit);
+                EditCustom edit = new EditCustom(0, callback, data);
 
-				setPrivatePoint(user,POINT_CUSTOM,edit);
+                callback.send("现在发送问题 :").exec(edit);
 
-			} else if ("reset_items".equals(params[1])) {
+                setPrivatePoint(user, POINT_CUSTOM, edit);
 
-				callback.confirm();
+            } else if ("reset_items".equals(params[1])) {
 
-				EditCustom edit = new EditCustom(1,callback,data);
+                callback.confirm();
 
-				callback.send("现在发送选项 每行一个 至少一个 最多六个 正确答案以 + 号开头 :").exec(edit);
+                EditCustom edit = new EditCustom(1, callback, data);
 
-				setPrivatePoint(user,POINT_CUSTOM,edit);
+                callback.send("现在发送选项 每行一个 至少一个 最多六个 正确答案以 + 号开头 :").exec(edit);
 
-			} else if ("reset_a_question".equals(params[1])) {
+                setPrivatePoint(user, POINT_CUSTOM, edit);
 
-				callback.confirm();
+            } else if ("reset_a_question".equals(params[1])) {
 
-				EditCustom edit = new EditCustom(2,callback,data);
+                callback.confirm();
 
-				callback.send("现在发送问题 :").exec(edit);
+                EditCustom edit = new EditCustom(2, callback, data);
 
-				setPrivatePoint(user,POINT_CUSTOM,edit);
+                callback.send("现在发送问题 :").exec(edit);
 
-			} else if ("reset_answer".equals(params[1])) {
+                setPrivatePoint(user, POINT_CUSTOM, edit);
 
-				callback.confirm();
+            } else if ("reset_answer".equals(params[1])) {
 
-				EditCustom edit = new EditCustom(3,callback,data);
+                callback.confirm();
 
-				callback.send("现在发送正确关键字 每行一个 :").exec(edit);
+                EditCustom edit = new EditCustom(3, callback, data);
 
-				setPrivatePoint(user,POINT_CUSTOM,edit);
+                callback.send("现在发送正确关键字 每行一个 :").exec(edit);
 
-			}
+                setPrivatePoint(user, POINT_CUSTOM, edit);
 
-		}
+            }
 
+        }
 
-	}
 
-	class EditCustom extends PointData {
+    }
+
+    class EditCustom extends PointData {
 
         int type;
         Callback origin;
         GroupData data;
 
-        public EditCustom(int type,Callback origin,GroupData data) {
+        public EditCustom(int type, Callback origin, GroupData data) {
 
-			this.type = type;
+            this.type = type;
             this.origin = origin;
             this.data = data;
 
@@ -563,16 +563,16 @@ public class CaptchaMain extends Fragment {
         @Override
         public void onFinish() {
 
-			super.onFinish();
+            super.onFinish();
 
-			origin.edit("编辑自定义问题. 对错选项或正确内容.\n\n" + cusStats(data) + "\n\n" + OptionsMain.doc).buttons(cusMenu(data)).html().async();
-			
+            origin.edit("编辑自定义问题. 对错选项或正确内容.\n\n" + cusStats(data) + "\n\n" + OptionsMain.doc).buttons(cusMenu(data)).html().async();
+
         }
 
     }
 
-	@Override
-    public void onPoint(UserData user,Msg msg,String point,PointData data) {
+    @Override
+    public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
         EditCustom edit = (EditCustom) data.with(msg);
 
@@ -625,10 +625,10 @@ public class CaptchaMain extends Fragment {
 
                     items.add(new GroupData.CustomItem() {{
 
-								this.isValid = true;
-								this.text = line.substring(1);
+                        this.isValid = true;
+                        this.text = line.substring(1);
 
-							}});
+                    }});
 
                 } else {
 
@@ -636,10 +636,10 @@ public class CaptchaMain extends Fragment {
 
                     items.add(new GroupData.CustomItem() {{
 
-								this.isValid = false;
-								this.text = line;
+                        this.isValid = false;
+                        this.text = line;
 
-							}});
+                    }});
 
                 }
 
@@ -713,91 +713,91 @@ public class CaptchaMain extends Fragment {
 
             }
 
-            edit.data.custom_kw = custom_kw;
+            GroupData.custom_kw = custom_kw;
 
             clearPrivatePoint(user);
 
-		}
+        }
 
-	}
+    }
 
 
     ButtonMarkup joinMenu(final GroupData data) {
 
         return new ButtonMarkup() {{
 
-				newButtonLine()
+            newButtonLine()
                     .newButton("开启验证")
-                    .newButton(data.join_captcha != null ? "✅" : "☑",POINT_CAPTCHA,data.id,"enable");
+                    .newButton(data.join_captcha != null ? "✅" : "☑", POINT_CAPTCHA, data.id, "enable");
 
-				newButtonLine()
+            newButtonLine()
                     .newButton("被动模式")
-                    .newButton(data.passive_mode != null ? "✅" : "☑",POINT_CAPTCHA,data.id,"passive");
+                    .newButton(data.passive_mode != null ? "✅" : "☑", POINT_CAPTCHA, data.id, "passive");
 
-				newButtonLine("容错次数 : " + (data.ft_count == null ? 0 : data.ft_count),"null");
+            newButtonLine("容错次数 : " + (data.ft_count == null ? 0 : data.ft_count), "null");
 
-				newButtonLine().newButton("➖",POINT_CAPTCHA,data.id,"ft_dec").newButton("➕",POINT_CAPTCHA,data.id,"ft_inc");
+            newButtonLine().newButton("➖", POINT_CAPTCHA, data.id, "ft_dec").newButton("➕", POINT_CAPTCHA, data.id, "ft_inc");
 
-				newButtonLine("时间上限 : " + data.parse_time(),"null");
+            newButtonLine("时间上限 : " + data.parse_time(), "null");
 
-				newButtonLine()
-                    .newButton("➖",POINT_CAPTCHA,data.id,"jt_dec")
-                    .newButton("➖➖",POINT_CAPTCHA,data.id,"jt_dec_t")
-                    .newButton("➕",POINT_CAPTCHA,data.id,"jt_inc")
-                    .newButton("➕➕",POINT_CAPTCHA,data.id,"jt_inc_t");
+            newButtonLine()
+                    .newButton("➖", POINT_CAPTCHA, data.id, "jt_dec")
+                    .newButton("➖➖", POINT_CAPTCHA, data.id, "jt_dec_t")
+                    .newButton("➕", POINT_CAPTCHA, data.id, "jt_inc")
+                    .newButton("➕➕", POINT_CAPTCHA, data.id, "jt_inc_t");
 
-				newButtonLine()
+            newButtonLine()
                     .newButton("验证失败")
-                    .newButton(data.fail_ban == null ? "移除" : "封锁",POINT_CAPTCHA,data.id,"fail_ban");
+                    .newButton(data.fail_ban == null ? "移除" : "封锁", POINT_CAPTCHA, data.id, "fail_ban");
 
-				newButtonLine()
+            newButtonLine()
                     .newButton("保留验证消息")
-                    .newButton(data.captcha_del == null ? "延时删除" : data.captcha_del == 0 ? "保留一条" : "全部保留",POINT_CAPTCHA,data.id,"captcha_del");
+                    .newButton(data.captcha_del == null ? "延时删除" : data.captcha_del == 0 ? "保留一条" : "全部保留", POINT_CAPTCHA, data.id, "captcha_del");
 
 
-				newButtonLine("验证期间邀请用户");
+            newButtonLine("验证期间邀请用户");
 
-				newButtonLine()
+            newButtonLine()
                     .newButton("邀请用户")
-                    .newButton(data.invite_user_ban == null ? "移除" : "封锁",POINT_CAPTCHA,data.id,"invite_user");
+                    .newButton(data.invite_user_ban == null ? "移除" : "封锁", POINT_CAPTCHA, data.id, "invite_user");
 
-				newButtonLine()
+            newButtonLine()
                     .newButton("邀请机器人")
-                    .newButton(data.invite_bot_ban == null ? "移除" : "封锁",POINT_CAPTCHA,data.id,"invite_bot");
+                    .newButton(data.invite_bot_ban == null ? "移除" : "封锁", POINT_CAPTCHA, data.id, "invite_bot");
 
-				newButtonLine("审核模式","null");
+            newButtonLine("审核模式", "null");
 
-				newButtonLine()
+            newButtonLine()
                     .newButton("默认模式")
-                    .newButton(data.captcha_mode == null ? "●" : "○",POINT_CAPTCHA,data.id,"mode_def");
+                    .newButton(data.captcha_mode == null ? "●" : "○", POINT_CAPTCHA, data.id, "mode_def");
 
-				newButtonLine()
+            newButtonLine()
                     .newButton("验证码")
-                    .newButton(((Integer) 0).equals(data.captcha_mode) ? "●" : "○",POINT_CAPTCHA,data.id,"mode_code");
+                    .newButton(((Integer) 0).equals(data.captcha_mode) ? "●" : "○", POINT_CAPTCHA, data.id, "mode_code");
 
-				newButtonLine()
+            newButtonLine()
                     .newButton("算数题")
-                    .newButton(((Integer) 1).equals(data.captcha_mode) ? "●" : "○",POINT_CAPTCHA,data.id,"mode_math");
+                    .newButton(((Integer) 1).equals(data.captcha_mode) ? "●" : "○", POINT_CAPTCHA, data.id, "mode_math");
 
-				newButtonLine()
+            newButtonLine()
                     .newButton("自定义")
-                    .newButton(((Integer) 2).equals(data.captcha_mode) ? "●" : "○",POINT_CAPTCHA,data.id,"mode_cus");
+                    .newButton(((Integer) 2).equals(data.captcha_mode) ? "●" : "○", POINT_CAPTCHA, data.id, "mode_cus");
 
-				newButtonLine()
+            newButtonLine()
                     .newButton("图片描述")
-                    .newButton(data.with_image != null ? "✅" : "☑",POINT_CAPTCHA,data.id,"with_image");
+                    .newButton(data.with_image != null ? "✅" : "☑", POINT_CAPTCHA, data.id, "with_image");
 
-				newButtonLine()
+            newButtonLine()
                     .newButton("干扰按钮")
-                    .newButton(data.interfere != null ? "✅" : "☑",POINT_CAPTCHA,data.id,"interfere");
+                    .newButton(data.interfere != null ? "✅" : "☑", POINT_CAPTCHA, data.id, "interfere");
 
-				newButtonLine()
+            newButtonLine()
                     .newButton("回答模式")
-                    .newButton(data.require_input != null ? "✅" : "☑",POINT_CAPTCHA,data.id,"require_input");
+                    .newButton(data.require_input != null ? "✅" : "☑", POINT_CAPTCHA, data.id, "require_input");
 
-				newButtonLine("🔙",OptionsMain.POINT_OPTIONS,data.id);
+            newButtonLine("🔙", OptionsMain.POINT_OPTIONS, data.id);
 
-			}};
+        }};
 
     }
 
@@ -825,7 +825,7 @@ public class CaptchaMain extends Fragment {
 
         } else {
 
-            stats.append("\n").append(ArrayUtil.join(data.custom_items.toArray(),"\n"));
+            stats.append("\n").append(ArrayUtil.join(data.custom_items.toArray(), "\n"));
 
         }
 
@@ -845,13 +845,13 @@ public class CaptchaMain extends Fragment {
 
         stats.append("\n正确关键字 : ");
 
-        if (data.custom_kw == null) {
+        if (GroupData.custom_kw == null) {
 
             stats.append("未设定");
 
         } else {
 
-            stats.append(ArrayUtil.join(data.custom_kw.toArray(),"\n"));
+            stats.append(ArrayUtil.join(GroupData.custom_kw.toArray(), "\n"));
 
         }
 
@@ -863,19 +863,19 @@ public class CaptchaMain extends Fragment {
 
         return new ButtonMarkup() {{
 
-				newButtonLine()
+            newButtonLine()
                     .newButton("使用自定义问题")
-                    .newButton(((Integer) 2).equals(data.captcha_mode) ? "✅" : "☑",POINT_CUSTOM,data.id,"enable_cus");
+                    .newButton(((Integer) 2).equals(data.captcha_mode) ? "✅" : "☑", POINT_CUSTOM, data.id, "enable_cus");
 
-				newButtonLine("设置选择模式问题",POINT_CUSTOM,data.id,"reset_i_question");
-				newButtonLine("设置选择模式选项",POINT_CUSTOM,data.id,"reset_items");
+            newButtonLine("设置选择模式问题", POINT_CUSTOM, data.id, "reset_i_question");
+            newButtonLine("设置选择模式选项", POINT_CUSTOM, data.id, "reset_items");
 
-				newButtonLine("设置回答模式问题",POINT_CUSTOM,data.id,"reset_a_question");
-				newButtonLine("设置回答模式答案",POINT_CUSTOM,data.id,"reset_answer");
+            newButtonLine("设置回答模式问题", POINT_CUSTOM, data.id, "reset_a_question");
+            newButtonLine("设置回答模式答案", POINT_CUSTOM, data.id, "reset_answer");
 
-				newButtonLine("🔙",POINT_CAPTCHA,data.id);
+            newButtonLine("🔙", POINT_CAPTCHA, data.id);
 
-			}};
+        }};
 
     }
 

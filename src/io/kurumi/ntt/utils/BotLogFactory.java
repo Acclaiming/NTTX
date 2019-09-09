@@ -7,41 +7,43 @@ import cn.hutool.log.dialect.console.ConsoleLog;
 
 public class BotLogFactory extends LogFactory {
 
-	public BotLogFactory() {
-		
-		super("NTT Logging");
-		
-	}
-	
-	@Override
-	public Log createLog(String name) {
+    public BotLogFactory() {
 
-		return new BotLog(name);
-		
-	}
+        super("NTT Logging");
 
-	@Override
-	public Log createLog(Class<?> clazz) {
-		
-		if (clazz.equals(GlobalCookieManager.class)) {
+    }
 
-			return new ConsoleLog(clazz) {
+    @Override
+    public Log createLog(String name) {
 
-				@Override public boolean isDebugEnabled() {
+        return new BotLog(name);
 
-					return false;
+    }
 
-				}
+    @Override
+    public Log createLog(Class<?> clazz) {
 
-				@Override public void debug(String fqcn,Throwable t,String format,Object... arguments) {
-				}
+        if (clazz.equals(GlobalCookieManager.class)) {
 
-			};
-			
-		}
-			
-		return new BotLog(clazz);
-		
-	}
+            return new ConsoleLog(clazz) {
+
+                @Override
+                public boolean isDebugEnabled() {
+
+                    return false;
+
+                }
+
+                @Override
+                public void debug(String fqcn, Throwable t, String format, Object... arguments) {
+                }
+
+            };
+
+        }
+
+        return new BotLog(clazz);
+
+    }
 
 }

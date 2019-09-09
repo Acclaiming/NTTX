@@ -1,167 +1,164 @@
 package io.kurumi.ntt.listeners.group;
 
-import io.kurumi.ntt.td.client.TdFunction;
 import io.kurumi.ntt.td.TdApi.*;
-import io.kurumi.ntt.td.model.TMsg;
-import io.kurumi.ntt.td.client.TdInterface.TextBuilder;
 import io.kurumi.ntt.td.client.TdException;
 import io.kurumi.ntt.td.client.TdListener;
-import cn.hutool.core.util.StrUtil;
+import io.kurumi.ntt.td.model.TMsg;
+
 import java.util.LinkedList;
-import io.kurumi.ntt.td.TdApi;
-import cn.hutool.log.StaticLog;
-import io.kurumi.ntt.Launcher;
 
 public class CleanAccounts extends TdListener {
 
-	@Override
-	public void init() {
+    @Override
+    public void init() {
 
-		registerFunction("clean_da","clean_all");
+        registerFunction("clean_da", "clean_all");
 
-	}
+    }
 
-	@Override
-	public boolean asyncFunction() {
-		
-		return true;
-		
-	}
+    @Override
+    public boolean asyncFunction() {
 
-	@Override
-	public void onFunction(User user,TMsg msg,String function,String[] params) {
+        return true;
 
-		if (msg.isPrivate()) {
+    }
 
-			sendHTML(msg,getLocale(user).CA_HELP);
-			
-			return;
+    @Override
+    public void onFunction(User user, TMsg msg, String function, String[] params) {
 
-		}
+        if (msg.isPrivate()) {
 
-		boolean cleanAll = function.endsWith("all");
+            sendHTML(msg, getLocale(user).CA_HELP);
 
-		if (!msg.isChannel()) {
+            return;
 
-			ChatMember chatMember = execute(new GetChatMember(msg.chatId,user.id));
+        }
 
-			if (!(chatMember.status instanceof ChatMemberStatusCreator || chatMember.status instanceof ChatMemberStatusAdministrator)) {
+        boolean cleanAll = function.endsWith("all");
 
-				sendText(msg,getLocale(user).NOT_CHAT_ADMIN);
+        if (!msg.isChannel()) {
 
-				return;
+            ChatMember chatMember = execute(new GetChatMember(msg.chatId, user.id));
 
-			}
+            if (!(chatMember.status instanceof ChatMemberStatusCreator || chatMember.status instanceof ChatMemberStatusAdministrator)) {
 
-		}
+                sendText(msg, getLocale(user).NOT_CHAT_ADMIN);
 
-		int size;
+                return;
 
-		LinkedList<Integer> targetAccounts = new LinkedList<>();
+            }
 
-		if (msg.isBasicGroup()) {
+        }
 
-			BasicGroupFullInfo info = execute(new GetBasicGroupFullInfo(msg.groupId));
+        int size;
 
-			size = info.members.length;
+        LinkedList<Integer> targetAccounts = new LinkedList<>();
 
-			for (ChatMember memberId : info.members) {
+        if (msg.isBasicGroup()) {
 
-				if (memberId.status instanceof ChatMemberStatusCreator || memberId.status instanceof ChatMemberStatusAdministrator || memberId.userId == client.me.id) continue;
-				
-				if (cleanAll) {
+            BasicGroupFullInfo info = execute(new GetBasicGroupFullInfo(msg.groupId));
 
-					targetAccounts.add(memberId.userId);
+            size = info.members.length;
 
-				} else {
+            for (ChatMember memberId : info.members) {
 
-					User member = execute(new GetUser(memberId.userId));
+                if (memberId.status instanceof ChatMemberStatusCreator || memberId.status instanceof ChatMemberStatusAdministrator || memberId.userId == client.me.id)
+                    continue;
 
-					if (member.type instanceof UserTypeDeleted) {
+                if (cleanAll) {
 
-						targetAccounts.add(member.id);
+                    targetAccounts.add(memberId.userId);
 
-					}
+                } else {
 
-				}
+                    User member = execute(new GetUser(memberId.userId));
 
-			}
+                    if (member.type instanceof UserTypeDeleted) {
 
-		} else {
+                        targetAccounts.add(member.id);
 
-			SupergroupFullInfo group = execute(new GetSupergroupFullInfo(msg.groupId));
+                    }
 
-			size = group.memberCount;
+                }
 
-			for (int index = 0;index < size;index += 200) {
+            }
 
-				ChatMembers members = null;
+        } else {
 
-				try {
+            SupergroupFullInfo group = execute(new GetSupergroupFullInfo(msg.groupId));
 
-					members = execute(new GetSupergroupMembers(msg.groupId,new SupergroupMembersFilterRecent(),index,200));
+            size = group.memberCount;
 
-				} catch (TdException e) {
+            for (int index = 0; index < size; index += 200) {
 
-					try {
+                ChatMembers members = null;
 
-						members = execute(new GetSupergroupMembers(msg.groupId,new SupergroupMembersFilterRecent(),index,200));
+                try {
 
-						// TDLib 第一次取 会出错
+                    members = execute(new GetSupergroupMembers(msg.groupId, new SupergroupMembersFilterRecent(), index, 200));
 
-					} catch (TdException ex) {
-					}
+                } catch (TdException e) {
 
-				}
+                    try {
 
-				for (ChatMember memberId : members.members) {
+                        members = execute(new GetSupergroupMembers(msg.groupId, new SupergroupMembersFilterRecent(), index, 200));
 
-					if (memberId.status instanceof ChatMemberStatusCreator || memberId.status instanceof ChatMemberStatusAdministrator || memberId.userId == client.me.id) continue;
-					
-					if (cleanAll) {
+                        // TDLib 第一次取 会出错
 
-						targetAccounts.add(memberId.userId);
+                    } catch (TdException ex) {
+                    }
 
-					} else {
+                }
 
-						User member = execute(new GetUser(memberId.userId));
+                for (ChatMember memberId : members.members) {
 
-						if (member.type instanceof UserTypeDeleted) {
+                    if (memberId.status instanceof ChatMemberStatusCreator || memberId.status instanceof ChatMemberStatusAdministrator || memberId.userId == client.me.id)
+                        continue;
 
-							targetAccounts.add(member.id);
+                    if (cleanAll) {
 
-						}
+                        targetAccounts.add(memberId.userId);
 
-					}
-					
-				}
+                    } else {
 
-			}
+                        User member = execute(new GetUser(memberId.userId));
 
-			if (targetAccounts.isEmpty()) {
+                        if (member.type instanceof UserTypeDeleted) {
 
-				sendText(msg,getLocale(user).CA_NOT_FOUND);
+                            targetAccounts.add(member.id);
 
-				return;
+                        }
 
-			} else {
+                    }
 
-				sendText(msg,getLocale(user).CA_FOUND,targetAccounts.size());
+                }
 
-			}
+            }
 
-			long start = System.currentTimeMillis();
+            if (targetAccounts.isEmpty()) {
 
-			for (Integer deleted : targetAccounts) {
+                sendText(msg, getLocale(user).CA_NOT_FOUND);
 
-				send(new SetChatMemberStatus(msg.chatId,deleted,new ChatMemberStatusLeft()));
+                return;
 
-			}
+            } else {
 
-			sendText(msg,getLocale(user).CA_FINISH,(System.currentTimeMillis() - start) / 1000);
+                sendText(msg, getLocale(user).CA_FOUND, targetAccounts.size());
 
-		}
+            }
 
-	}
+            long start = System.currentTimeMillis();
+
+            for (Integer deleted : targetAccounts) {
+
+                send(new SetChatMemberStatus(msg.chatId, deleted, new ChatMemberStatusLeft()));
+
+            }
+
+            sendText(msg, getLocale(user).CA_FINISH, (System.currentTimeMillis() - start) / 1000);
+
+        }
+
+    }
 
 }

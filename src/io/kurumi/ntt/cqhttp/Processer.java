@@ -2,220 +2,210 @@ package io.kurumi.ntt.cqhttp;
 
 import cn.hutool.json.JSONObject;
 import io.kurumi.ntt.Launcher;
-import io.kurumi.ntt.cqhttp.update.Update;
-import io.kurumi.ntt.cqhttp.update.MessageUpdate;
-import io.kurumi.ntt.cqhttp.update.GroupUploadNotice;
-import io.kurumi.ntt.cqhttp.update.GroupIncreaseNotice;
-import io.kurumi.ntt.cqhttp.update.GroupDecreaseNotice;
-import io.kurumi.ntt.cqhttp.update.GroupAdminNotice;
-import io.kurumi.ntt.cqhttp.update.FriendAddNotice;
-import io.kurumi.ntt.cqhttp.update.NoticeUpdate;
-import io.kurumi.ntt.cqhttp.update.FriendRequest;
-import io.kurumi.ntt.cqhttp.update.GroupRequest;
-import io.kurumi.ntt.cqhttp.update.RequestUpdate;
+import io.kurumi.ntt.cqhttp.update.*;
 
 public class Processer {
 
-	public static Update parseUpdate(String json) {
+    public static Update parseUpdate(String json) {
 
-		JSONObject obj = new JSONObject(json);
+        JSONObject obj = new JSONObject(json);
 
-		if (obj.containsKey("retcode")) {
-			
-			// api result
-			
-			return null;
-			
-		}
-		
-		String postType = obj.getStr("post_type");
+        if (obj.containsKey("retcode")) {
 
-		if (Variants.POST_MESSAGE.equals(postType)) {
+            // api result
 
-			return Launcher.GSON.fromJson(json,MessageUpdate.class);
+            return null;
 
-		} else if (Variants.POST_NOTICE.equals(postType)) {
+        }
 
-			String noticeType = obj.getStr("notice_type");
+        String postType = obj.getStr("post_type");
 
-			if (Variants.NOTICE_GROUP_UPLOAD.equals(noticeType)) {
+        if (Variants.POST_MESSAGE.equals(postType)) {
 
-				return Launcher.GSON.fromJson(json,GroupUploadNotice.class);
+            return Launcher.GSON.fromJson(json, MessageUpdate.class);
 
-			} else if (Variants.NOTICE_GROUP_INC.equals(noticeType)) {
+        } else if (Variants.POST_NOTICE.equals(postType)) {
 
-				return Launcher.GSON.fromJson(json,GroupIncreaseNotice.class);
+            String noticeType = obj.getStr("notice_type");
 
-			} else if (Variants.NOTICE_GROUP_DEC.equals(noticeType)) {
+            if (Variants.NOTICE_GROUP_UPLOAD.equals(noticeType)) {
 
-				return Launcher.GSON.fromJson(json,GroupDecreaseNotice.class);
+                return Launcher.GSON.fromJson(json, GroupUploadNotice.class);
 
-			} else if (Variants.NOTICE_GROUP_ADMIN.equals(noticeType)) {
+            } else if (Variants.NOTICE_GROUP_INC.equals(noticeType)) {
 
-				return Launcher.GSON.fromJson(json,GroupAdminNotice.class);
+                return Launcher.GSON.fromJson(json, GroupIncreaseNotice.class);
 
-			} else if (Variants.NOTICE_FRIEND_ADD.equals(noticeType)) {
+            } else if (Variants.NOTICE_GROUP_DEC.equals(noticeType)) {
 
-				return Launcher.GSON.fromJson(json,FriendAddNotice.class);
+                return Launcher.GSON.fromJson(json, GroupDecreaseNotice.class);
 
-			} else {
+            } else if (Variants.NOTICE_GROUP_ADMIN.equals(noticeType)) {
 
-				return Launcher.GSON.fromJson(json,NoticeUpdate.class);
+                return Launcher.GSON.fromJson(json, GroupAdminNotice.class);
 
-			}
+            } else if (Variants.NOTICE_FRIEND_ADD.equals(noticeType)) {
 
-		} else if (Variants.POST_REQUEST.equals(postType)) {
+                return Launcher.GSON.fromJson(json, FriendAddNotice.class);
 
-			String requestType = obj.getStr("request_type");
+            } else {
 
-			if (Variants.REQUEST_FRIEND.equals(requestType)) {
+                return Launcher.GSON.fromJson(json, NoticeUpdate.class);
 
-				return Launcher.GSON.fromJson(json,FriendRequest.class);
+            }
 
-			} else if (Variants.REQUEST_GROUP.equals(requestType)) {
+        } else if (Variants.POST_REQUEST.equals(postType)) {
 
-				return Launcher.GSON.fromJson(json,GroupRequest.class);
+            String requestType = obj.getStr("request_type");
 
-			} else {
+            if (Variants.REQUEST_FRIEND.equals(requestType)) {
 
-				return Launcher.GSON.fromJson(json,RequestUpdate.class);
+                return Launcher.GSON.fromJson(json, FriendRequest.class);
 
-			}
+            } else if (Variants.REQUEST_GROUP.equals(requestType)) {
 
-		} else {
+                return Launcher.GSON.fromJson(json, GroupRequest.class);
 
-			return Launcher.GSON.fromJson(json,Update.class);
-			
-		}
+            } else {
 
-	}
-	
-	public static void processUpdate(TinxBot bot,String updateJSON) {
+                return Launcher.GSON.fromJson(json, RequestUpdate.class);
 
-		Update update = parseUpdate(updateJSON);
+            }
 
-		if (update == null) return;
-		
-		for (TinxListener listener : bot.listeners) listener.onUpdate(update);
+        } else {
 
-		if (update instanceof MessageUpdate) {
+            return Launcher.GSON.fromJson(json, Update.class);
 
-			MessageUpdate msg = (MessageUpdate) update;
+        }
 
-			for (TinxListener listener : bot.listeners) listener.onMsg(msg);
+    }
 
-			if (Variants.MSG_PRIVATE.equals(msg.message_type)) {
+    public static void processUpdate(TinxBot bot, String updateJSON) {
 
-				for (TinxListener listener : bot.listeners) listener.onPrivate(msg);
+        Update update = parseUpdate(updateJSON);
 
-			} else if (Variants.MSG_GROUP.equals(msg.message_type)) {
+        if (update == null) return;
 
-				for (TinxListener listener : bot.listeners) listener.onGroup(msg);
+        for (TinxListener listener : bot.listeners) listener.onUpdate(update);
 
-			}
+        if (update instanceof MessageUpdate) {
 
-		} else if (update instanceof NoticeUpdate) {
+            MessageUpdate msg = (MessageUpdate) update;
 
-			NoticeUpdate notice = (NoticeUpdate) update;
+            for (TinxListener listener : bot.listeners) listener.onMsg(msg);
 
-			for (TinxListener listener : bot.listeners) listener.onNotice(notice);
+            if (Variants.MSG_PRIVATE.equals(msg.message_type)) {
 
-			if (notice instanceof GroupUploadNotice) {
+                for (TinxListener listener : bot.listeners) listener.onPrivate(msg);
 
-				GroupUploadNotice upload = (GroupUploadNotice) notice;
+            } else if (Variants.MSG_GROUP.equals(msg.message_type)) {
 
-				for (TinxListener listener : bot.listeners) listener.onGroupUpload(upload);
+                for (TinxListener listener : bot.listeners) listener.onGroup(msg);
 
-			} else if (notice instanceof GroupAdminNotice) {
+            }
 
-				GroupAdminNotice admin = (GroupAdminNotice) notice;
+        } else if (update instanceof NoticeUpdate) {
 
-				if (Variants.GROUP_ADMIN_SET.equals(admin.sub_type)) {
+            NoticeUpdate notice = (NoticeUpdate) update;
 
-					for (TinxListener listener : bot.listeners) listener.onGroupAdminSet(admin);
+            for (TinxListener listener : bot.listeners) listener.onNotice(notice);
 
-				} else if (Variants.GROUP_ADMIN_UNSET.equals(admin.sub_type)) {
+            if (notice instanceof GroupUploadNotice) {
 
-					for (TinxListener listener : bot.listeners) listener.onGroupAdminUnSet(admin);
+                GroupUploadNotice upload = (GroupUploadNotice) notice;
 
-				}
+                for (TinxListener listener : bot.listeners) listener.onGroupUpload(upload);
 
-			} else if (notice instanceof GroupIncreaseNotice) {
+            } else if (notice instanceof GroupAdminNotice) {
 
-				GroupIncreaseNotice inc = (GroupIncreaseNotice) notice;
+                GroupAdminNotice admin = (GroupAdminNotice) notice;
 
-				for (TinxListener listener : bot.listeners) listener.onGroupIncrease(inc);
+                if (Variants.GROUP_ADMIN_SET.equals(admin.sub_type)) {
 
-				if (Variants.GROUP_INC_INVITE.equals(inc.sub_type)) {
+                    for (TinxListener listener : bot.listeners) listener.onGroupAdminSet(admin);
 
-					for (TinxListener listener : bot.listeners) listener.onGroupInviteMember(inc);
+                } else if (Variants.GROUP_ADMIN_UNSET.equals(admin.sub_type)) {
 
-				} else if (Variants.GROUP_INC_APPROVE.equals(inc.sub_type)) {
+                    for (TinxListener listener : bot.listeners) listener.onGroupAdminUnSet(admin);
 
-					for (TinxListener listener : bot.listeners) listener.onGroupApproveMember(inc);
+                }
 
-				}
+            } else if (notice instanceof GroupIncreaseNotice) {
 
-			} else if (notice instanceof GroupDecreaseNotice) {
+                GroupIncreaseNotice inc = (GroupIncreaseNotice) notice;
 
-				GroupDecreaseNotice dec = (GroupDecreaseNotice) notice;
+                for (TinxListener listener : bot.listeners) listener.onGroupIncrease(inc);
 
-				for (TinxListener listener : bot.listeners) listener.onGroupDecrease(dec);
+                if (Variants.GROUP_INC_INVITE.equals(inc.sub_type)) {
 
-				if (Variants.GROUP_DEC_LEAVE.equals(dec.sub_type)) {
+                    for (TinxListener listener : bot.listeners) listener.onGroupInviteMember(inc);
 
-					for (TinxListener listener : bot.listeners) listener.onGroupLeftMember(dec);
+                } else if (Variants.GROUP_INC_APPROVE.equals(inc.sub_type)) {
 
-				} else if (Variants.GROUP_DEC_KICK.equals(dec.sub_type)) {
+                    for (TinxListener listener : bot.listeners) listener.onGroupApproveMember(inc);
 
-					for (TinxListener listener : bot.listeners) listener.onGroupKickMember(dec);
+                }
 
-				} else if (Variants.GROUP_DEC_KICK_ME.equals(dec.sub_type)) {
+            } else if (notice instanceof GroupDecreaseNotice) {
 
-					for (TinxListener listener : bot.listeners) listener.onGroupKickMe(dec);
+                GroupDecreaseNotice dec = (GroupDecreaseNotice) notice;
 
-				}
+                for (TinxListener listener : bot.listeners) listener.onGroupDecrease(dec);
 
-			} else if (notice instanceof FriendAddNotice) {
+                if (Variants.GROUP_DEC_LEAVE.equals(dec.sub_type)) {
 
-				FriendAddNotice add = (FriendAddNotice) notice;
+                    for (TinxListener listener : bot.listeners) listener.onGroupLeftMember(dec);
 
-				for (TinxListener listener : bot.listeners) listener.onFriendAdd(add);
+                } else if (Variants.GROUP_DEC_KICK.equals(dec.sub_type)) {
 
-			}
+                    for (TinxListener listener : bot.listeners) listener.onGroupKickMember(dec);
 
-		} else if (update instanceof RequestUpdate) {
+                } else if (Variants.GROUP_DEC_KICK_ME.equals(dec.sub_type)) {
 
-			RequestUpdate request = (RequestUpdate) update;
+                    for (TinxListener listener : bot.listeners) listener.onGroupKickMe(dec);
 
-			for (TinxListener listener : bot.listeners) listener.onUpdate(request);
+                }
 
-			if (request instanceof GroupRequest) {
+            } else if (notice instanceof FriendAddNotice) {
 
-				GroupRequest group = (GroupRequest) update;
+                FriendAddNotice add = (FriendAddNotice) notice;
 
-				for (TinxListener listener : bot.listeners) listener.onGroupRequest(group);
+                for (TinxListener listener : bot.listeners) listener.onFriendAdd(add);
 
-				if (Variants.GR_ADD.equals(group.sub_type)) {
+            }
 
-					for (TinxListener listener : bot.listeners) listener.onGroupAddRequest(group);
+        } else if (update instanceof RequestUpdate) {
 
-				} else if (Variants.GR_INVITE.equals(group.sub_type)) {
+            RequestUpdate request = (RequestUpdate) update;
 
-					for (TinxListener listener : bot.listeners) listener.onGroupInviteRequest(group);
+            for (TinxListener listener : bot.listeners) listener.onUpdate(request);
 
-				}
+            if (request instanceof GroupRequest) {
 
-			} else if (request instanceof FriendRequest) {
+                GroupRequest group = (GroupRequest) update;
 
-				FriendRequest friend = (FriendRequest) request;
+                for (TinxListener listener : bot.listeners) listener.onGroupRequest(group);
 
-				for (TinxListener listener : bot.listeners) listener.onFriendAddRequest(friend);
+                if (Variants.GR_ADD.equals(group.sub_type)) {
 
-			}
+                    for (TinxListener listener : bot.listeners) listener.onGroupAddRequest(group);
 
-		}
+                } else if (Variants.GR_INVITE.equals(group.sub_type)) {
 
-	}
+                    for (TinxListener listener : bot.listeners) listener.onGroupInviteRequest(group);
+
+                }
+
+            } else if (request instanceof FriendRequest) {
+
+                FriendRequest friend = (FriendRequest) request;
+
+                for (TinxListener listener : bot.listeners) listener.onFriendAddRequest(friend);
+
+            }
+
+        }
+
+    }
 
 }

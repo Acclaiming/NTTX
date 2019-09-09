@@ -1,23 +1,15 @@
 package io.kurumi.ntt.fragment.bots;
 
+import cn.hutool.log.StaticLog;
 import io.kurumi.ntt.db.Data;
-import io.kurumi.ntt.fragment.bots.UserBot;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.BotServer;
 
 import java.util.Map;
-import java.util.HashMap;
-
-import io.kurumi.ntt.fragment.BotServer;
-import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.fragment.admin.Firewall;
-import cn.hutool.log.StaticLog;
-import io.kurumi.ntt.fragment.BotFragment;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
-import io.kurumi.ntt.db.UserData;
 
 public class UserBot {
 
-    public static Data<UserBot> data = new Data<UserBot>("UserCustomBot",UserBot.class);
+    public static Data<UserBot> data = new Data<UserBot>("UserCustomBot", UserBot.class);
 
     public Long id;
     public String userName;
@@ -43,18 +35,18 @@ public class UserBot {
 			}
 			
 			*/
-			
-			BotFragment.waitPool.execute(new Runnable() {
 
-					@Override
-					public void run() {
-						
-						bot.startBot();
-						
-					}
-					
-				});
-				
+            BotFragment.waitPool.execute(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    bot.startBot();
+
+                }
+
+            });
+
         }
 
     }
@@ -64,8 +56,8 @@ public class UserBot {
         if (!BotServer.fragments.containsKey(token)) {
 
             try {
-				
-				UserBotFragment bot;
+
+                UserBotFragment bot;
 
                 if (type == 0) {
 
@@ -74,8 +66,8 @@ public class UserBot {
                     client.botId = id;
 
                     client.silentStart();
-					
-					bot = client;
+
+                    bot = client;
 
                 } else if (type == 1) {
 
@@ -84,26 +76,26 @@ public class UserBot {
                     client.botId = id;
                     client.silentStart();
 
-					bot = client;
-					
+                    bot = client;
+
                 } else if (type == 2) {
 
                     RssBot client = new RssBot();
 
                     client.botId = id;
                     client.silentStart();
-					
-					bot = client;
+
+                    bot = client;
 
                 } else return false;
-				
+
             } catch (Exception e) {
 
-				StaticLog.info("机器人令牌已失效 : {}" + userName);
-				
-               // data.deleteById(id);
+                StaticLog.info("机器人令牌已失效 : {}" + userName);
 
-              //  new Send(user,"对不起，但是你的机器人 : @" + userName + " 的令牌已失效，已自动移除。").exec();
+                // data.deleteById(id);
+
+                //  new Send(user,"对不起，但是你的机器人 : @" + userName + " 的令牌已失效，已自动移除。").exec();
 
                 return false;
 

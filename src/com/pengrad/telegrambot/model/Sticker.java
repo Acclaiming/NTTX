@@ -69,7 +69,8 @@ public class Sticker implements Serializable {
         if (thumb != null ? !thumb.equals(sticker.thumb) : sticker.thumb != null) return false;
         if (emoji != null ? !emoji.equals(sticker.emoji) : sticker.emoji != null) return false;
         if (set_name != null ? !set_name.equals(sticker.set_name) : sticker.set_name != null) return false;
-        if (mask_position != null ? !mask_position.equals(sticker.mask_position) : sticker.mask_position != null) return false;
+        if (mask_position != null ? !mask_position.equals(sticker.mask_position) : sticker.mask_position != null)
+            return false;
         return file_size != null ? file_size.equals(sticker.file_size) : sticker.file_size == null;
     }
 

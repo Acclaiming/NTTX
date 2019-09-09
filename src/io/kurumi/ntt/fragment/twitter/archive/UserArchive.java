@@ -12,39 +12,26 @@ import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.tasks.TrackTask;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Html;
+import twitter4j.*;
+
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import twitter4j.ResponseList;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.URLEntity;
-import twitter4j.User;
 
-import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Updates.*;
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.gt;
-import static com.mongodb.client.model.Filters.not;
-import static com.mongodb.client.model.Updates.combine;
-import static com.mongodb.client.model.Updates.set;
-import static java.util.Arrays.asList;
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
-import java.util.LinkedHashSet;
+import static com.mongodb.client.model.Filters.regex;
 
 public class UserArchive {
 
     public static Data<UserArchive> data = new Data<UserArchive>(UserArchive.class);
     public Long id;
     public Long createdAt;
-	public Long lastUpdate;
+    public Long lastUpdate;
 
     public String name;
     public String screenName;
 
-	public List<String> nameHistory;
-	public List<String> snHistory;
+    public List<String> nameHistory;
+    public List<String> snHistory;
 
     public String bio;
     public String photoUrl;
@@ -52,76 +39,76 @@ public class UserArchive {
     public String url;
     public Boolean isProtected;
     public Boolean isDisappeared;
-	public Long disappearedAt;
+    public Long disappearedAt;
 
-	public String location;
-	public Integer following;
-	public Integer followers;
+    public String location;
+    public Integer following;
+    public Integer followers;
 
-	public Integer statuses;
-	public Integer likes;
+    public Integer statuses;
+    public Integer likes;
 
-	public String lang;
+    public String lang;
 
     public transient String oldPhotoUrl;
     public transient String oldBannerUrl;
     private transient String oldScreename;
 
-	public static LinkedList<UserArchive> lookupAll(Twitter api,LinkedList<Long> ids) {
+    public static LinkedList<UserArchive> lookupAll(Twitter api, LinkedList<Long> ids) {
 
-		LinkedList<UserArchive> all = new LinkedList<>();
+        LinkedList<UserArchive> all = new LinkedList<>();
 
-		while (ids != null && !ids.isEmpty()) {
+        while (ids != null && !ids.isEmpty()) {
 
-			List<Long> target;
+            List<Long> target;
 
-			if (ids.size() > 100) {
+            if (ids.size() > 100) {
 
-				target = CollectionUtil.sub(ids,0,100);
-				ids.removeAll(target);
+                target = CollectionUtil.sub(ids, 0, 100);
+                ids.removeAll(target);
 
-			} else {
+            } else {
 
-				target = new LinkedList<>();
-				target.addAll(ids);
+                target = new LinkedList<>();
+                target.addAll(ids);
 
-				ids.clear();
+                ids.clear();
 
-			}
+            }
 
-			try {
+            try {
 
-				ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
+                ResponseList<User> result = api.lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
 
-				for (User tuser : result) {
+                for (User tuser : result) {
 
-					target.remove(tuser.getId());
+                    target.remove(tuser.getId());
 
-					all.add(UserArchive.save(tuser));
+                    all.add(UserArchive.save(tuser));
 
-				}
+                }
 
-				for (Long da : target) {
+                for (Long da : target) {
 
-					if (contains(da)) {
+                    if (contains(da)) {
 
-						all.add(get(da));
+                        all.add(get(da));
 
-					}
+                    }
 
-				}
+                }
 
-			} catch (TwitterException e) {
+            } catch (TwitterException e) {
 
-			}
+            }
 
-		}
+        }
 
-		return all;
+        return all;
 
-	}
+    }
 
-    public static UserArchive show(Twitter api,Long id) {
+    public static UserArchive show(Twitter api, Long id) {
 
         try {
 
@@ -137,11 +124,11 @@ public class UserArchive {
 
     }
 
-	public static UserArchive get(Twitter api,Long id) {
+    public static UserArchive get(Twitter api, Long id) {
 
         try {
 
-			if (contains(id)) return get(id);
+            if (contains(id)) return get(id);
 
             User user = api.showUser(id);
 
@@ -155,7 +142,7 @@ public class UserArchive {
 
     }
 
-    public static UserArchive show(Twitter api,String screenName) {
+    public static UserArchive show(Twitter api, String screenName) {
 
         try {
 
@@ -179,7 +166,7 @@ public class UserArchive {
 
     public static UserArchive get(String screenName) {
 
-        return data.collection.find(regex("screenName",ReUtil.escape(screenName),"i")).first();
+        return data.collection.find(regex("screenName", ReUtil.escape(screenName), "i")).first();
 
     }
 
@@ -191,7 +178,7 @@ public class UserArchive {
 
     public static boolean contains(String screenName) {
 
-        return data.collection.count(regex("screenName",ReUtil.escape(screenName),"i")) > 0;
+        return data.collection.count(regex("screenName", ReUtil.escape(screenName), "i")) > 0;
 
     }
 
@@ -205,7 +192,7 @@ public class UserArchive {
 
             archive = data.getById(user.getId());
 
-            if (archive.read(user)) data.setById(archive.id,archive);
+            if (archive.read(user)) data.setById(archive.id, archive);
 
         } else {
 
@@ -217,7 +204,7 @@ public class UserArchive {
 
             archive.read(user);
 
-            data.setById(user.getId(),archive);
+            data.setById(user.getId(), archive);
 
         }
 
@@ -234,7 +221,7 @@ public class UserArchive {
 
             user.read(null);
 
-            data.setById(da,user);
+            data.setById(da, user);
 
         }
 
@@ -248,7 +235,7 @@ public class UserArchive {
 
     public boolean read(User user) {
 
-		boolean change = false;
+        boolean change = false;
         StringBuilder str = new StringBuilder();
         String split = "\n--------------------------------\n";
 
@@ -256,9 +243,9 @@ public class UserArchive {
 
             isDisappeared = true;
 
-			disappearedAt = System.currentTimeMillis();
+            disappearedAt = System.currentTimeMillis();
 
-            TrackTask.onUserChange(this,split + "用户被冻结或已停用 :)");
+            TrackTask.onUserChange(this, split + "用户被冻结或已停用 :)");
 
             if (Env.TEP_CHANNEL != -1 && TEPH.needPuhlish(this)) {
 
@@ -288,7 +275,7 @@ public class UserArchive {
 
 				 */
 
-                new Send(Env.TEP_CHANNEL,notice).html().exec();
+                new Send(Env.TEP_CHANNEL, notice).html().exec();
 
                 //}
 
@@ -311,27 +298,27 @@ public class UserArchive {
 
             str.append(split).append("名称更改 : ").append(nameL).append(" ------> ").append(name);
 
-			if (nameL != null) {
+            if (nameL != null) {
 
-				if (nameHistory == null) {
+                if (nameHistory == null) {
 
-					nameHistory = new LinkedList<>();
+                    nameHistory = new LinkedList<>();
 
-					nameHistory.add(nameL);
+                    nameHistory.add(nameL);
 
-				} else {
+                } else {
 
-					LinkedList<String> history = new LinkedList<String>(nameHistory);
+                    LinkedList<String> history = new LinkedList<String>(nameHistory);
 
-					history.remove(nameL);
+                    history.remove(nameL);
 
-					history.addFirst(nameL);
+                    history.addFirst(nameL);
 
-					nameHistory = history;
+                    nameHistory = history;
 
-				}
+                }
 
-			}
+            }
 
             change = true;
 
@@ -345,27 +332,27 @@ public class UserArchive {
 
             oldScreename = screenNameL;
 
-			if (screenNameL != null) {
+            if (screenNameL != null) {
 
-				if (snHistory == null) {
+                if (snHistory == null) {
 
-					snHistory = new LinkedList<>();
+                    snHistory = new LinkedList<>();
 
-					snHistory.add(screenNameL);
+                    snHistory.add(screenNameL);
 
-				} else {
+                } else {
 
-					LinkedList<String> history = new LinkedList<String>(snHistory);
+                    LinkedList<String> history = new LinkedList<String>(snHistory);
 
-					history.remove(screenNameL);
+                    history.remove(screenNameL);
 
-					history.addFirst(screenNameL);
+                    history.addFirst(screenNameL);
 
-					snHistory = history;
+                    snHistory = history;
 
-				}
+                }
 
-			}
+            }
 
             change = true;
 
@@ -373,15 +360,15 @@ public class UserArchive {
 
         String bioL = bio;
 
-		String newBio = user.getDescription();
+        String newBio = user.getDescription();
 
-		for (URLEntity entry : user.getDescriptionURLEntities()) {
+        for (URLEntity entry : user.getDescriptionURLEntities()) {
 
-			newBio = newBio.replace(entry.getURL(),entry.getExpandedURL());
+            newBio = newBio.replace(entry.getURL(), entry.getExpandedURL());
 
-		}
+        }
 
-        if ((bio == null || !bio.contains("://t.co/")) && !ObjectUtil.equal(bio = newBio,bioL)) {
+        if ((bio == null || !bio.contains("://t.co/")) && !ObjectUtil.equal(bio = newBio, bioL)) {
 
             str.append(split).append("简介更改 : \n\n").append(bioL).append(" \n\n ------> \n\n").append(bio);
 
@@ -391,9 +378,9 @@ public class UserArchive {
 
         oldPhotoUrl = photoUrl;
 
-        if ((!ObjectUtil.equal(photoUrl = user.getOriginalProfileImageURLHttps(),oldPhotoUrl))) {
+        if ((!ObjectUtil.equal(photoUrl = user.getOriginalProfileImageURLHttps(), oldPhotoUrl))) {
 
-            str.append(split).append("头像更改 : " + Html.a("新头像",photoUrl));
+            str.append(split).append("头像更改 : " + Html.a("新头像", photoUrl));
 
             change = true;
 
@@ -411,19 +398,19 @@ public class UserArchive {
 
         oldBannerUrl = bannerUrl;
 
-        if (!ObjectUtil.equal(bannerUrl = user.getProfileBannerURL(),oldBannerUrl)) {
+        if (!ObjectUtil.equal(bannerUrl = user.getProfileBannerURL(), oldBannerUrl)) {
 
             str.append(split).append("横幅更改 : ");
 
-			if (photoUrl != null) {
+            if (photoUrl != null) {
 
-				str.append(Html.a("新横幅",photoUrl));
+                str.append(Html.a("新横幅", photoUrl));
 
-			} else {
+            } else {
 
-				str.append("移除横幅");
+                str.append("移除横幅");
 
-			}
+            }
 
             change = true;
 
@@ -432,17 +419,17 @@ public class UserArchive {
 
         String urlL = url;
 
-		String newUrl = user.getURL();
+        String newUrl = user.getURL();
 
-		if (newUrl != null && user.getURLEntity() != null) {
+        if (newUrl != null && user.getURLEntity() != null) {
 
-			URLEntity entry = user.getURLEntity();
+            URLEntity entry = user.getURLEntity();
 
-			newUrl = newUrl.replace(entry.getURL(),entry.getExpandedURL());
+            newUrl = newUrl.replace(entry.getURL(), entry.getExpandedURL());
 
-		}
+        }
 
-        if ((urlL == null || !urlL.contains("://t.co/")) && !ObjectUtil.equal(url = newUrl,urlL)) {
+        if ((urlL == null || !urlL.contains("://t.co/")) && !ObjectUtil.equal(url = newUrl, urlL)) {
 
             str.append(split).append("链接更改 : \n\n").append(urlL).append(" \n\n ------> \n\n").append(url);
 
@@ -458,7 +445,7 @@ public class UserArchive {
 
         }
 
-		if (isDisappeared) {
+        if (isDisappeared) {
 
             isDisappeared = false;
 
@@ -466,28 +453,28 @@ public class UserArchive {
 
             if (Env.TEP_CHANNEL != null && TEPH.needPuhlish(this)) {
 
-				new Send(Env.TEP_CHANNEL,"#推友回档\n\n{}",formatToChannel()).html().async();
+                new Send(Env.TEP_CHANNEL, "#推友回档\n\n{}", formatToChannel()).html().async();
 
-			}
+            }
 
-			change = true;
+            change = true;
 
         }
 
-		following = user.getFriendsCount();
-		followers = user.getFollowersCount();
-		location = user.getLocation();
-		statuses = user.getStatusesCount();
-		likes = user.getFavouritesCount();
-		lang = user.getLang();
+        following = user.getFriendsCount();
+        followers = user.getFollowersCount();
+        location = user.getLocation();
+        statuses = user.getStatusesCount();
+        likes = user.getFavouritesCount();
+        lang = user.getLang();
 
-		lastUpdate = System.currentTimeMillis();
+        lastUpdate = System.currentTimeMillis();
 
-		change = change && !(TAuth.data.containsId(id) && ArrayUtil.contains(Env.ADMINS,TAuth.getById(id).user.intValue()));
+        change = change && !(TAuth.data.containsId(id) && ArrayUtil.contains(Env.ADMINS, TAuth.getById(id).user.intValue()));
 
         if (change) {
 
-            TrackTask.onUserChange(this,str.toString());
+            TrackTask.onUserChange(this, str.toString());
 
         }
 
@@ -495,59 +482,59 @@ public class UserArchive {
 
     }
 
-	public String bName() {
+    public String bName() {
 
-		return Html.b(name) + " " + Html.a("@" + screenName,url());
+        return Html.b(name) + " " + Html.a("@" + screenName, url());
 
-	}
+    }
 
-	public String formatSimple() {
+    public String formatSimple() {
 
-		String message = "ID : " + Html.code(id);
+        String message = "ID : " + Html.code(id);
 
-		message += "\nName : " + name;
+        message += "\nName : " + name;
 
-		message += "\nSN : " + Html.a("@" + screenName,url());
+        message += "\nSN : " + Html.a("@" + screenName, url());
 
-		return message;
+        return message;
 
-	}
+    }
 
-	public String formatToChannel() {
+    public String formatToChannel() {
 
-		String message = urlHtml() + " (#" + screenName + ")";
+        String message = urlHtml() + " (#" + screenName + ")";
 
-		if (isProtected) message += " [ 锁推 ]";
+        if (isProtected) message += " [ 锁推 ]";
 
-		if (!StrUtil.isBlank(bio)) {
+        if (!StrUtil.isBlank(bio)) {
 
-			message += "\n\nBIO : " + bio + "\n";
+            message += "\n\nBIO : " + bio + "\n";
 
-		}
+        }
 
-		message += "\nUID : " + Html.code(id);
+        message += "\nUID : " + Html.code(id);
 
-		if (!(StrUtil.isBlank(url))) {
+        if (!(StrUtil.isBlank(url))) {
 
-			message += "\n个人链接 : " + url;
+            message += "\n个人链接 : " + url;
 
-		}
+        }
 
-		if (followers != null) {
+        if (followers != null) {
 
-			message += "\n" + following + " 正在关注   " + followers + " 关注者";
+            message += "\n" + following + " 正在关注   " + followers + " 关注者";
 
-		}
+        }
 
-		message += "\n加入时间 : " + DateUtil.formatChineseDate(new Date(createdAt),false);
+        message += "\n加入时间 : " + DateUtil.formatChineseDate(new Date(createdAt), false);
 
-		return message;
+        return message;
 
-	}
+    }
 
     public String urlHtml() {
 
-        return Html.a(name.replaceAll(" ?\n ?",""),url());
+        return Html.a(name.replaceAll(" ?\n ?", ""), url());
 
     }
 

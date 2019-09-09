@@ -101,7 +101,8 @@ public class ChatPermissions implements Serializable {
             return false;
         if (can_send_media_messages != null ? !can_send_media_messages.equals(that.can_send_media_messages) : that.can_send_media_messages != null)
             return false;
-        if (can_send_polls != null ? !can_send_polls.equals(that.can_send_polls) : that.can_send_polls != null) return false;
+        if (can_send_polls != null ? !can_send_polls.equals(that.can_send_polls) : that.can_send_polls != null)
+            return false;
         if (can_send_other_messages != null ? !can_send_other_messages.equals(that.can_send_other_messages) : that.can_send_other_messages != null)
             return false;
         if (can_add_web_page_previews != null ? !can_add_web_page_previews.equals(that.can_add_web_page_previews) : that.can_add_web_page_previews != null)

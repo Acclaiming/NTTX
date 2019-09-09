@@ -1,10 +1,6 @@
 package io.kurumi.ntt.fragment.twitter.list;
 
-import java.util.*;
-import twitter4j.*;
-
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.thread.ThreadUtil;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
@@ -13,194 +9,199 @@ import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.NTT;
-import cn.hutool.core.thread.ThreadUtil;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.User;
+
+import java.util.*;
 
 public class FollowersClean extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerFunction("clean_followers");
+        registerFunction("clean_followers");
 
-	}
+    }
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		if (params.length == 0 || !params[0].matches("[aopisl]*")) {
+        if (params.length == 0 || !params[0].matches("[aopisl]*")) {
 
-			String message = "清理关注者 : /" + function + " <参数...>\n\n";
+            String message = "清理关注者 : /" + function + " <参数...>\n\n";
 
-			message += "a - 清理所有\no - 单向关注\np - 锁推\ni - 没有头像\ns - 没有发过推文\nl - 没有打心";
+            message += "a - 清理所有\no - 单向关注\np - 锁推\ni - 没有头像\ns - 没有发过推文\nl - 没有打心";
 
-			message += "\n\n注意 : 多个筛选参数叠加时都匹配才清理";
+            message += "\n\n注意 : 多个筛选参数叠加时都匹配才清理";
 
-			msg.send(message).async();
+            msg.send(message).async();
 
-			return;
+            return;
 
-		}
+        }
 
-		requestTwitter(user,msg,true);
+        requestTwitter(user, msg, true);
 
-	}
+    }
 
-	@Override
-	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+    @Override
+    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
-		Msg status = msg.send("正在查找...").send();
+        Msg status = msg.send("正在查找...").send();
 
-		String param = params[0];
+        String param = params[0];
 
-		boolean a = param.contains("a");
+        boolean a = param.contains("a");
 
-		boolean o = param.contains("o");
+        boolean o = param.contains("o");
 
-		boolean p = param.contains("p");
+        boolean p = param.contains("p");
 
-		boolean i = param.contains("i");
+        boolean i = param.contains("i");
 
-		boolean s = param.contains("s");
+        boolean s = param.contains("s");
 
-		boolean l = param.contains("l");
+        boolean l = param.contains("l");
 
-		Twitter api = account.createApi();
+        Twitter api = account.createApi();
 
-		LinkedList<User> friends;
+        LinkedList<User> friends;
 
-		try {
+        try {
 
-			LinkedList<Long> friendsIds = TApi.getAllFoIDs(api,account.id);
+            LinkedList<Long> friendsIds = TApi.getAllFoIDs(api, account.id);
 
-			if (!a && o) {
+            if (!a && o) {
 
-				friendsIds.removeAll(TApi.getAllFrIDs(api,account.id));
+                friendsIds.removeAll(TApi.getAllFrIDs(api, account.id));
 
-			}
+            }
 
-			friends = NTT.lookupUsers(api,friendsIds);
+            friends = NTT.lookupUsers(api, friendsIds);
 
-			Iterator<User> iter = friends.iterator();
+            Iterator<User> iter = friends.iterator();
 
-			while (iter.hasNext()) {
+            while (iter.hasNext()) {
 
-				User target = iter.next();
+                User target = iter.next();
 
-				if (p && !target.isProtected()) {
+                if (p && !target.isProtected()) {
 
-					iter.remove();
+                    iter.remove();
 
-				} else if (i && !target.isDefaultProfileImage()) {
+                } else if (i && !target.isDefaultProfileImage()) {
 
-					iter.remove();
+                    iter.remove();
 
-				} else if (s && target.getStatusesCount() > 0) {
+                } else if (s && target.getStatusesCount() > 0) {
 
-					iter.remove();
+                    iter.remove();
 
-				} else if (l && target.getFavouritesCount() > 0) {
+                } else if (l && target.getFavouritesCount() > 0) {
 
-					iter.remove();
+                    iter.remove();
 
-				}
+                }
 
-			}
+            }
 
-		} catch (TwitterException e) {
+        } catch (TwitterException e) {
 
-			status.edit(NTT.parseTwitterException(e)).async();
+            status.edit(NTT.parseTwitterException(e)).async();
 
-			return;
+            return;
 
-		}
+        }
 
-		if (friends.isEmpty()) {
+        if (friends.isEmpty()) {
 
-			status.edit("没有目标用户 )").async();
+            status.edit("没有目标用户 )").async();
 
-			return;
+            return;
 
-		}
+        }
 
-		status.edit("正在清理...").async();
+        status.edit("正在清理...").async();
 
-		LinkedList<User> successful = new LinkedList<>();
-		LinkedList<User> failed = new LinkedList<>();
+        LinkedList<User> successful = new LinkedList<>();
+        LinkedList<User> failed = new LinkedList<>();
 
-		for (User target : friends) {
+        for (User target : friends) {
 
-			try {
+            try {
 
-				api.createBlock(target.getId());
+                api.createBlock(target.getId());
 
-				successful.add(target);
+                successful.add(target);
 
-			} catch (TwitterException e) {
+            } catch (TwitterException e) {
 
-				failed.add(target);
+                failed.add(target);
 
-			}
+            }
 
-		}
-		
-		for (User target : successful) {
+        }
 
-			try {
+        for (User target : successful) {
 
-				ThreadUtil.safeSleep(33);
-				
-				api.destroyBlock(target.getId());
-				
-			} catch (TwitterException e) {
-				
-				try {
-					
-					ThreadUtil.safeSleep(33);
-					
-					api.destroyBlock(target.getId());
-					
-				} catch (TwitterException ex) {}
+            try {
 
+                ThreadUtil.safeSleep(33);
 
-			}
+                api.destroyBlock(target.getId());
 
-		}
+            } catch (TwitterException e) {
 
-		status.delete();
+                try {
 
-		StringBuilder message = new StringBuilder();
+                    ThreadUtil.safeSleep(33);
 
-		if (!successful.isEmpty()) {
+                    api.destroyBlock(target.getId());
 
-			message.append("已清理 : \n\n");
+                } catch (TwitterException ex) {
+                }
 
-			for (User su : successful) {
 
-				message.append(UserArchive.save(su).bName()).append("\n");
+            }
 
-			}
+        }
 
-			message.append("\n");
+        status.delete();
 
-		}
+        StringBuilder message = new StringBuilder();
 
-		if (!failed.isEmpty()) {
+        if (!successful.isEmpty()) {
 
-			message.append("清理失败 : \n");
+            message.append("已清理 : \n\n");
 
-			for (User su : failed) {
+            for (User su : successful) {
 
-				message.append("\n").append(UserArchive.save(su).bName());
+                message.append(UserArchive.save(su).bName()).append("\n");
 
-			}
+            }
 
-		}
+            message.append("\n");
 
-		msg.send(message.toString()).html().async();
+        }
 
-	}
+        if (!failed.isEmpty()) {
+
+            message.append("清理失败 : \n");
+
+            for (User su : failed) {
+
+                message.append("\n").append(UserArchive.save(su).bName());
+
+            }
+
+        }
+
+        msg.send(message.toString()).html().async();
+
+    }
 
 
 }

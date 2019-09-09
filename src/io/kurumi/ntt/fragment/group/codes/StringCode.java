@@ -4,63 +4,63 @@ import cn.hutool.captcha.generator.RandomGenerator;
 
 public class StringCode extends VerifyCode {
 
-	public StringCode(boolean input) {
-		super(input);
-	}
+    public StringCode(boolean input) {
+        super(input);
+    }
 
-	RandomGenerator gen = new RandomGenerator("喵呜",5);
+    RandomGenerator gen = new RandomGenerator("喵呜", 5);
 
-	String code = gen.generate();
+    String code = gen.generate();
 
-	@Override
-	public String question() {
+    @Override
+    public String question() {
 
-		return "请" + (input ? "发送" : "选择") + " 验证码以通过验证 ~";
+        return "请" + (input ? "发送" : "选择") + " 验证码以通过验证 ~";
 
-	}
+    }
 
-	@Override
-	public VerifyCode fork() {
+    @Override
+    public VerifyCode fork() {
 
-		return new StringCode(input);
+        return new StringCode(input);
 
-	}
+    }
 
-	@Override
-	public String code() {
+    @Override
+    public String code() {
 
-		return code;
+        return code;
 
-	}
+    }
 
-	@Override
-	public String validCode() {
+    @Override
+    public String validCode() {
 
-		return code;
+        return code;
 
-	}
+    }
 
 
-	@Override
-	public String[] invalidCode() {
+    @Override
+    public String[] invalidCode() {
 
-		return new String[]{
+        return new String[]{
 
-			gen.generate(),
-			gen.generate(),
-			gen.generate(),
-			gen.generate()
+                gen.generate(),
+                gen.generate(),
+                gen.generate(),
+                gen.generate()
 
-		};
+        };
 
-	}
+    }
 
-	@Override
-	public boolean verify(String input) {
+    @Override
+    public boolean verify(String input) {
 
-		return code.equals(input.trim().replace("國","国"));
+        return code.equals(input.trim().replace("國", "国"));
 
-	}
+    }
 
 }
 

@@ -12,12 +12,11 @@ import io.kurumi.ntt.telegraph.model.Node;
 import io.kurumi.ntt.telegraph.model.NodeElement;
 import io.kurumi.ntt.telegraph.model.Page;
 import io.kurumi.ntt.utils.Html;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
-import cn.hutool.log.StaticLog;
-import io.kurumi.ntt.utils.BotLog;
 
 public class FeedHtmlFormater {
 
@@ -83,9 +82,9 @@ public class FeedHtmlFormater {
             final List<Node> content = removeTagsWithoutImg.formatTelegraph(str, host);
 
             content.add(new NodeElement() {{
-				
+
                 tag = "hr";
-				
+
             }});
 
             if (channel.copyright == null) {
@@ -105,26 +104,26 @@ public class FeedHtmlFormater {
                     children = new LinkedList<>();
 
                     children.add(new Node() {{
-						
+
                         text = "NTTX";
-						
+
                     }});
 
 
                 }});
 
                 content.add(new Node() {{
-					
+
                     text = " 解析 | 源站版权所有";
-					
+
                 }});
 
             } else {
 
                 content.add(new Node() {{
-					
+
                     text = channel.copyright;
-					
+
                 }});
 
             }
@@ -326,8 +325,8 @@ public class FeedHtmlFormater {
 
         //	html = URLUtil.decode(html);
 
-		// html = html.replaceAll("< *br */? *>", "\n");
-		
+        // html = html.replaceAll("< *br */? *>", "\n");
+
         html = html.replace("<strong>", "<b>").replace("</strong>", "</b>");
 
         html = removeADs(html);
@@ -412,9 +411,9 @@ public class FeedHtmlFormater {
             html = html + "...";
 
         }
-		
-		html = html.replace("<br />", "\n").replace("<br>","\n");
-	
+
+        html = html.replace("<br />", "\n").replace("<br>", "\n");
+
         return html;
     }
 

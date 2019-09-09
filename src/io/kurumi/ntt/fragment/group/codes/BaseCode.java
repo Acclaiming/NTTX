@@ -4,54 +4,54 @@ import cn.hutool.core.util.RandomUtil;
 
 public class BaseCode extends VerifyCode {
 
-	public BaseCode(boolean input) {
-		
-		super(input);
-		
-	}
+    public BaseCode(boolean input) {
 
-	boolean code = RandomUtil.randomBoolean();
+        super(input);
 
-	@Override
-	public VerifyCode fork() {
+    }
 
-		return new BaseCode(input);
+    boolean code = RandomUtil.randomBoolean();
 
-	}
+    @Override
+    public VerifyCode fork() {
 
-	@Override
-	public String question() {
+        return new BaseCode(input);
 
-		return "请" + (input ? "发送" : "选择") + " " + (code ? "喵" : "嘤") + " 以通过验证 ~";
+    }
 
-	}
+    @Override
+    public String question() {
 
-	@Override
-	public String code() {
+        return "请" + (input ? "发送" : "选择") + " " + (code ? "喵" : "嘤") + " 以通过验证 ~";
 
-		return null;
+    }
 
-	}
+    @Override
+    public String code() {
 
-	@Override
-	public String validCode() {
+        return null;
 
-		return code ? "喵" : "嘤";
+    }
 
-	}
+    @Override
+    public String validCode() {
 
-	@Override
-	public String[] invalidCode() {
+        return code ? "喵" : "嘤";
 
-		return new String[]{code ? "嘤" : "喵"};
+    }
 
-	}
+    @Override
+    public String[] invalidCode() {
 
-	@Override
-	public boolean verify(String input) {
+        return new String[]{code ? "嘤" : "喵"};
 
-		return code ? input.contains("喵") : (input.contains("嘤") || input.contains("嚶"));
+    }
 
-	}
+    @Override
+    public boolean verify(String input) {
+
+        return code ? input.contains("喵") : (input.contains("嘤") || input.contains("嚶"));
+
+    }
 
 }

@@ -1,7 +1,5 @@
 package io.kurumi.ntt.db;
 
-import com.mongodb.client.MongoCollection;
-
 public class LongArrayData extends AbsData<Long, DataLongArray> {
 
     public LongArrayData(Class clazz) {

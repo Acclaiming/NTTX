@@ -1,113 +1,113 @@
 package io.kurumi.ntt.listeners.base;
 
-import io.kurumi.ntt.td.client.TdFunction;
-import io.kurumi.ntt.td.TdApi.*;
-import io.kurumi.ntt.td.model.TMsg;
 import cn.hutool.core.util.NumberUtil;
+import io.kurumi.ntt.td.TdApi.*;
+import io.kurumi.ntt.td.client.TdFunction;
+import io.kurumi.ntt.td.model.TMsg;
 
 public class TdGetUser extends TdFunction {
 
-	@Override
-	public String functionName() {
+    @Override
+    public String functionName() {
 
-		return "get_user";
+        return "get_user";
 
-	}
+    }
 
-	@Override
-	public void onFunction(User user,TMsg msg,String function,String[] params) {
+    @Override
+    public void onFunction(User user, TMsg msg, String function, String[] params) {
 
-		if (msg.isChannel()) return;
-		
-		if ((params.length == 0 || !msg.isText()) && msg.replyTo == 0L) {
+        if (msg.isChannel()) return;
 
-			replyText(msg,getLocale(user).GET_USER);
+        if ((params.length == 0 || !msg.isText()) && msg.replyTo == 0L) {
 
-			return;
+            replyText(msg, getLocale(user).GET_USER);
 
-		}
-		
-		if (msg.replyTo != 0L) {
-			
-			Message replyTo = E(new GetMessage(msg.chatId,msg.replyTo));
-		
-			if (replyTo == null) {
-				
-				replyText(msg,getLocale(user).GET_USER_NOT_FOUND);
-				
-				return;
-				
-			}
-			
-			int userId = replyTo.senderUserId;
-			
-			User target = E(new GetUser(userId));
+            return;
 
-			if (target != null) {
+        }
 
-				replyText(msg,mention(userName(target),userId));
+        if (msg.replyTo != 0L) {
 
-			} else {
+            Message replyTo = E(new GetMessage(msg.chatId, msg.replyTo));
 
-				replyText(msg,getLocale(user).GET_USER_NOT_FOUND);
-				
-			}
-			
-			return;
-			
-		}
+            if (replyTo == null) {
 
-		MessageText content = (MessageText) msg.content;
+                replyText(msg, getLocale(user).GET_USER_NOT_FOUND);
 
-		for (TextEntity entity : content.text.entities) {
+                return;
 
-			if (entity.type instanceof TextEntityTypeMentionName) {
+            }
 
-				TextEntityTypeMentionName mention = (TextEntityTypeMentionName) entity.type;
+            int userId = replyTo.senderUserId;
 
-				User target = E(new GetUser(mention.userId));
+            User target = E(new GetUser(userId));
 
-				if (target != null) {
+            if (target != null) {
 
-					replyText(msg,mention(userName(target),mention.userId));
+                replyText(msg, mention(userName(target), userId));
 
-				} else {
+            } else {
 
-					replyText(msg,mention(msg.text().substring(entity.offset,entity.offset + entity.length),mention.userId));
+                replyText(msg, getLocale(user).GET_USER_NOT_FOUND);
 
-				}
+            }
 
-				return;
+            return;
 
-			}
+        }
 
-		}
-		
-		if (NumberUtil.isInteger(msg.param())) {
-			
-			int userId = NumberUtil.parseInt(msg.param());
-			
-			User target = E(new GetUser(userId));
+        MessageText content = (MessageText) msg.content;
 
-			if (target != null) {
+        for (TextEntity entity : content.text.entities) {
 
-				replyText(msg,mention(userName(target),userId));
+            if (entity.type instanceof TextEntityTypeMentionName) {
 
-			} else {
+                TextEntityTypeMentionName mention = (TextEntityTypeMentionName) entity.type;
 
-				replyText(msg,getLocale(user).GET_USER_NOT_FOUND);
-				
-			}
-			
-			return;
-			
-		}
-		
-		// BOT METHOD INVALID
+                User target = E(new GetUser(mention.userId));
 
-		//if (msg.param().trim().contains(" ")) {
-			
-		replyText(msg,getLocale(user).GET_USER);
+                if (target != null) {
+
+                    replyText(msg, mention(userName(target), mention.userId));
+
+                } else {
+
+                    replyText(msg, mention(msg.text().substring(entity.offset, entity.offset + entity.length), mention.userId));
+
+                }
+
+                return;
+
+            }
+
+        }
+
+        if (NumberUtil.isInteger(msg.param())) {
+
+            int userId = NumberUtil.parseInt(msg.param());
+
+            User target = E(new GetUser(userId));
+
+            if (target != null) {
+
+                replyText(msg, mention(userName(target), userId));
+
+            } else {
+
+                replyText(msg, getLocale(user).GET_USER_NOT_FOUND);
+
+            }
+
+            return;
+
+        }
+
+        // BOT METHOD INVALID
+
+        //if (msg.param().trim().contains(" ")) {
+
+        replyText(msg, getLocale(user).GET_USER);
 
 			/*
 			
@@ -148,7 +148,7 @@ public class TdGetUser extends TdFunction {
 		}
 		
 		*/
-		
-	}
+
+    }
 
 }

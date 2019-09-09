@@ -1,99 +1,94 @@
 package io.kurumi.ntt.fragment.mstd;
 
 import com.sys1yagi.mastodon4j.MastodonClient;
-import com.sys1yagi.mastodon4j.api.method.Apps;
+import com.sys1yagi.mastodon4j.api.method.*;
 import io.kurumi.ntt.Launcher;
-import com.sys1yagi.mastodon4j.api.method.Accounts;
-import com.sys1yagi.mastodon4j.api.method.Blocks;
-import com.sys1yagi.mastodon4j.api.method.Favourites;
-import com.sys1yagi.mastodon4j.api.method.Statuses;
-import com.sys1yagi.mastodon4j.api.method.Timelines;
 import okhttp3.OkHttpClient;
 
 public class MstdApi {
-	
-	public final MastodonClient client;
-	
-	public static OkHttpClient.Builder OKHTTP = new OkHttpClient.Builder();
-	
-	public MstdApi(String app) {
 
-		client = new MastodonClient.Builder(app,OKHTTP,Launcher.GSON).build();
+    public final MastodonClient client;
 
-	}
-	
-	public MstdApi(MstdApp app) {
-		
-		client = new MastodonClient.Builder(app.id,OKHTTP,Launcher.GSON).build();
-		
-	}
-	
-	public MstdApi(MstdAuth auth) {
+    public static OkHttpClient.Builder OKHTTP = new OkHttpClient.Builder();
 
-		client = new MastodonClient.Builder(auth.appId,OKHTTP,Launcher.GSON).accessToken(auth.accessToken).build();
+    public MstdApi(String app) {
 
-	}
-	
-	private Accounts accounts;
+        client = new MastodonClient.Builder(app, OKHTTP, Launcher.GSON).build();
 
-	public Accounts accounts() {
+    }
 
-		if (accounts == null) accounts = new Accounts(client);
-		
-		return accounts;
+    public MstdApi(MstdApp app) {
 
-	}
+        client = new MastodonClient.Builder(app.id, OKHTTP, Launcher.GSON).build();
 
-	private Apps apps;
-	
-	public Apps apps() {
-		
-		if (apps == null) apps = new Apps(client);
-		
-		return apps;
-		
-	}
-	
-	private Blocks blocks;
+    }
 
-	public Blocks blocks() {
+    public MstdApi(MstdAuth auth) {
 
-		if (blocks == null) blocks = new Blocks(client);
+        client = new MastodonClient.Builder(auth.appId, OKHTTP, Launcher.GSON).accessToken(auth.accessToken).build();
 
-		return blocks;
+    }
 
-	}
-	
-	private Favourites favs;
+    private Accounts accounts;
 
-	public Favourites favs() {
+    public Accounts accounts() {
 
-		if (favs == null) favs = new Favourites(client);
+        if (accounts == null) accounts = new Accounts(client);
 
-		return favs;
+        return accounts;
 
-	}
-	
-	private Timelines tls;
+    }
 
-	public Timelines tls() {
+    private Apps apps;
 
-		if (tls == null) tls = new Timelines(client);
+    public Apps apps() {
 
-		return tls;
+        if (apps == null) apps = new Apps(client);
 
-	}
-	
-	
-	private Statuses statuses;
+        return apps;
 
-	public Statuses statuses() {
+    }
 
-		if (statuses == null) statuses = new Statuses(client);
+    private Blocks blocks;
 
-		return statuses;
+    public Blocks blocks() {
 
-	}
-	
-	
+        if (blocks == null) blocks = new Blocks(client);
+
+        return blocks;
+
+    }
+
+    private Favourites favs;
+
+    public Favourites favs() {
+
+        if (favs == null) favs = new Favourites(client);
+
+        return favs;
+
+    }
+
+    private Timelines tls;
+
+    public Timelines tls() {
+
+        if (tls == null) tls = new Timelines(client);
+
+        return tls;
+
+    }
+
+
+    private Statuses statuses;
+
+    public Statuses statuses() {
+
+        if (statuses == null) statuses = new Statuses(client);
+
+        return statuses;
+
+    }
+
+
 }

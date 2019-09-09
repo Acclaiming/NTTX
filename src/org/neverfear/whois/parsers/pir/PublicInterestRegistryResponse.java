@@ -1,230 +1,227 @@
 package org.neverfear.whois.parsers.pir;
 
+import org.neverfear.whois.WhoisResponse;
+import org.neverfear.whois.parsers.WhoisParseException;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.neverfear.whois.WhoisResponse;
-import org.neverfear.whois.parsers.WhoisParseException;
-
 public class PublicInterestRegistryResponse extends ParsedPIRResponse {
 
-	/*
-	 * Status:CLIENT DELETE PROHIBITED Status:CLIENT RENEW PROHIBITED
-	 * Status:CLIENT TRANSFER PROHIBITED Status:CLIENT UPDATE PROHIBITED
-	 */
+    /*
+     * Status:CLIENT DELETE PROHIBITED Status:CLIENT RENEW PROHIBITED
+     * Status:CLIENT TRANSFER PROHIBITED Status:CLIENT UPDATE PROHIBITED
+     */
 
-	private String				ID;
-	private String				name;
-	private Date				createdOn;
-	private Date				lastUpdated;
-	private Date				expirationDate;
-	private String				registrar;
-	// TODO: Status
-	private List<String>		nameservers;
-	private String				dnsSecurity;	// Should
-	// this
-	// be a
-	// Boolean?
-	private RegistrantContact	registrant;
-	private AdminContact		admin;
-	private TechContact			tech;
+    private String ID;
+    private String name;
+    private Date createdOn;
+    private Date lastUpdated;
+    private Date expirationDate;
+    private String registrar;
+    // TODO: Status
+    private List<String> nameservers;
+    private String dnsSecurity;    // Should
+    // this
+    // be a
+    // Boolean?
+    private RegistrantContact registrant;
+    private AdminContact admin;
+    private TechContact tech;
 
 
-	/**
-	 * Construct a PIR response around a query name. This object will need configuring.
-	 * Then when you call getData() it will generate appropriate PIR formatted text.
-	 * @param name
-	 * @throws ParseException
-	 * @throws IOException
-	 */
-	public PublicInterestRegistryResponse( String name ) {
-		super( name );
-		initCommon();
-	}
-	
-	/**
-	 * Construct a PIR response around a query name and some response data.
-	 * @param name
-	 * @param data
-	 * @throws ParseException
-	 * @throws IOException
-	 */
-	public PublicInterestRegistryResponse( String name, String data ) throws WhoisParseException {
-		super( name, data );
-		initCommon();
-		parse( data );
-	}
-	
-	public PublicInterestRegistryResponse( WhoisResponse response) throws WhoisParseException {
-		this(response.getName(), response.getData());
-	}
-	
-	private void initCommon() {
-		nameservers = new ArrayList<String>();
-	}
+    /**
+     * Construct a PIR response around a query name. This object will need configuring.
+     * Then when you call getData() it will generate appropriate PIR formatted text.
+     *
+     * @param name
+     * @throws ParseException
+     * @throws IOException
+     */
+    public PublicInterestRegistryResponse(String name) {
+        super(name);
+        initCommon();
+    }
 
-	public String getID() {
-		return ID;
-	}
+    /**
+     * Construct a PIR response around a query name and some response data.
+     *
+     * @param name
+     * @param data
+     * @throws ParseException
+     * @throws IOException
+     */
+    public PublicInterestRegistryResponse(String name, String data) throws WhoisParseException {
+        super(name, data);
+        initCommon();
+        parse(data);
+    }
 
-	@Override
-	protected void setID( String iD ) {
-		ID = iD;
-	}
+    public PublicInterestRegistryResponse(WhoisResponse response) throws WhoisParseException {
+        this(response.getName(), response.getData());
+    }
 
-	public String getName() {
-		return name;
-	}
+    private void initCommon() {
+        nameservers = new ArrayList<String>();
+    }
 
-	@Override
-	protected void setName( String name ) {
-		this.name = name;
-	}
+    public String getID() {
+        return ID;
+    }
 
-	public Date getCreatedOn() {
-		return createdOn;
-	}
+    @Override
+    protected void setID(String iD) {
+        ID = iD;
+    }
 
-	@Override
-	protected void setCreatedOn( Date createdOn ) {
-		this.createdOn = createdOn;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public Date getLastUpdated() {
-		return lastUpdated;
-	}
+    @Override
+    protected void setName(String name) {
+        this.name = name;
+    }
 
-	@Override
-	protected void setLastUpdated( Date lastUpdated ) {
-		this.lastUpdated = lastUpdated;
-	}
+    public Date getCreatedOn() {
+        return createdOn;
+    }
 
-	public Date getExpirationDate() {
-		return expirationDate;
-	}
+    @Override
+    protected void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
 
-	@Override
-	protected void setExpirationDate( Date expirationDate ) {
-		this.expirationDate = expirationDate;
-	}
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
 
-	public String getRegistrar() {
-		return registrar;
-	}
+    @Override
+    protected void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
 
-	@Override
-	protected void setRegistrar( String registrar ) {
-		this.registrar = registrar;
-	}
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
 
-	public String getDnsSecurity() {
-		return dnsSecurity;
-	}
+    @Override
+    protected void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
 
-	@Override
-	protected void setDnsSecurity( String dnsSecurity ) {
-		this.dnsSecurity = dnsSecurity;
-	}
+    public String getRegistrar() {
+        return registrar;
+    }
 
-	/**
-	 * Clears all current name servers out.
-	 * 
-	 * @return true or false.
-	 */
-	@Override
-	protected void clearNameServers() {
-		nameservers.clear();
-	}
+    @Override
+    protected void setRegistrar(String registrar) {
+        this.registrar = registrar;
+    }
 
-	/**
-	 * Add the given name server.
-	 * 
-	 * @param nameserver
-	 *            A hostname.
-	 * @return true or false.
-	 */
-	@Override
-	protected boolean addNameServer( String nameserver ) {
-		return nameservers.add( nameserver );
-	}
+    public String getDnsSecurity() {
+        return dnsSecurity;
+    }
 
-	/**
-	 * Remove the given name server.
-	 * 
-	 * @param nameserver
-	 *            A hostname.
-	 * @return true or false.
-	 */
-	@Override
-	protected boolean removeNameServer( String nameserver ) {
-		return nameservers.remove( nameserver );
-	}
+    @Override
+    protected void setDnsSecurity(String dnsSecurity) {
+        this.dnsSecurity = dnsSecurity;
+    }
 
-	/**
-	 * If this domain info has the given name server.
-	 * 
-	 * @param nameserver
-	 *            A hostname.
-	 * @return true or false.
-	 */
-	public boolean hasNameServer( String nameserver ) {
-		return nameservers.contains( nameserver );
-	}
+    /**
+     * Clears all current name servers out.
+     *
+     * @return true or false.
+     */
+    @Override
+    protected void clearNameServers() {
+        nameservers.clear();
+    }
 
-	/**
-	 * Get a copy of the internal nameservers.
-	 * 
-	 * @return A List of Strings
-	 */
-	public List<String> getNameServers() {
-		return new ArrayList<String>( nameservers );
-	}
+    /**
+     * Add the given name server.
+     *
+     * @param nameserver A hostname.
+     * @return true or false.
+     */
+    @Override
+    protected boolean addNameServer(String nameserver) {
+        return nameservers.add(nameserver);
+    }
 
-	public RegistrantContact getRegistrant() {
-		return registrant;
-	}
+    /**
+     * Remove the given name server.
+     *
+     * @param nameserver A hostname.
+     * @return true or false.
+     */
+    @Override
+    protected boolean removeNameServer(String nameserver) {
+        return nameservers.remove(nameserver);
+    }
 
-	protected void setRegistrant( RegistrantContact registrant ) {
-		this.registrant = registrant;
-	}
+    /**
+     * If this domain info has the given name server.
+     *
+     * @param nameserver A hostname.
+     * @return true or false.
+     */
+    public boolean hasNameServer(String nameserver) {
+        return nameservers.contains(nameserver);
+    }
 
-	public AdminContact getAdmin() {
-		return admin;
-	}
+    /**
+     * Get a copy of the internal nameservers.
+     *
+     * @return A List of Strings
+     */
+    public List<String> getNameServers() {
+        return new ArrayList<String>(nameservers);
+    }
 
-	protected void setAdmin( AdminContact admin ) {
-		this.admin = admin;
-	}
+    public RegistrantContact getRegistrant() {
+        return registrant;
+    }
 
-	public TechContact getTech() {
-		return tech;
-	}
+    protected void setRegistrant(RegistrantContact registrant) {
+        this.registrant = registrant;
+    }
 
-	protected void setTech( TechContact tech ) {
-		this.tech = tech;
-	}
+    public AdminContact getAdmin() {
+        return admin;
+    }
 
-	@Override
-	public String toString() {
-		return "PublicInterestRegistryResponse [ID=" + ID + ", admin=" + admin + ", createdOn=" + createdOn + ", dnsSecurity=" + dnsSecurity
-				+ ", expirationDate=" + expirationDate + ", lastUpdated=" + lastUpdated + ", name=" + name + ", nameservers=" + nameservers
-				+ ", registrant=" + registrant + ", registrar=" + registrar + ", tech=" + tech + "]";
-	}
+    protected void setAdmin(AdminContact admin) {
+        this.admin = admin;
+    }
 
-	/**
-	 * Parse the data and create a ParsedPIRResponse object.
-	 * 
-	 * @param name
-	 *            The queried name.
-	 * @param data
-	 *            The whois response data.
-	 * @return A built ParsedPIRResponse.
-	 */
-	public static PublicInterestRegistryResponse create( String name, String data ) throws WhoisParseException {
-		return new PublicInterestRegistryResponse( name, data );
-	}
+    public TechContact getTech() {
+        return tech;
+    }
+
+    protected void setTech(TechContact tech) {
+        this.tech = tech;
+    }
+
+    @Override
+    public String toString() {
+        return "PublicInterestRegistryResponse [ID=" + ID + ", admin=" + admin + ", createdOn=" + createdOn + ", dnsSecurity=" + dnsSecurity
+                + ", expirationDate=" + expirationDate + ", lastUpdated=" + lastUpdated + ", name=" + name + ", nameservers=" + nameservers
+                + ", registrant=" + registrant + ", registrar=" + registrar + ", tech=" + tech + "]";
+    }
+
+    /**
+     * Parse the data and create a ParsedPIRResponse object.
+     *
+     * @param name The queried name.
+     * @param data The whois response data.
+     * @return A built ParsedPIRResponse.
+     */
+    public static PublicInterestRegistryResponse create(String name, String data) throws WhoisParseException {
+        return new PublicInterestRegistryResponse(name, data);
+    }
 
 }

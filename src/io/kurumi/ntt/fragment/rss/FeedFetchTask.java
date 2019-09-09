@@ -1,24 +1,29 @@
 package io.kurumi.ntt.fragment.rss;
 
-import cn.hutool.core.io.*;
-import cn.hutool.core.util.*;
-import cn.hutool.crypto.digest.*;
-import cn.hutool.http.*;
-import com.rometools.rome.feed.synd.*;
-import com.rometools.rome.io.*;
-import io.kurumi.ntt.model.request.*;
-import io.kurumi.ntt.utils.*;
-
-import java.io.*;
-import java.util.*;
-
-import io.kurumi.ntt.*;
-import io.kurumi.ntt.fragment.*;
-import io.kurumi.ntt.fragment.bots.*;
+import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
+import cn.hutool.crypto.digest.DigestUtil;
+import cn.hutool.http.Header;
+import cn.hutool.http.HttpException;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
 import com.pengrad.telegrambot.request.GetChat;
 import com.pengrad.telegrambot.response.GetChatResponse;
 import com.pengrad.telegrambot.response.SendResponse;
-import cn.hutool.core.thread.ThreadUtil;
+import com.rometools.rome.feed.synd.SyndEntry;
+import com.rometools.rome.feed.synd.SyndFeed;
+import com.rometools.rome.io.FeedException;
+import com.rometools.rome.io.SyndFeedInput;
+import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.fragment.bots.UserBotFragment;
+import io.kurumi.ntt.model.request.Send;
+import io.kurumi.ntt.utils.Html;
+
+import java.io.*;
+import java.util.*;
 
 public class FeedFetchTask extends TimerTask {
 
@@ -240,14 +245,14 @@ public class FeedFetchTask extends TimerTask {
 
                         Fragment sender = Launcher.INSTANCE;
 
-						if (Launcher.INSTANCE.me.id().equals(channel.fromBot)) {
-							
-							channel.fromBot = null;
-							
-							RssSub.channel.setById(channel.id,channel);
-							
-						}
-						
+                        if (Launcher.INSTANCE.me.id().equals(channel.fromBot)) {
+
+                            channel.fromBot = null;
+
+                            RssSub.channel.setById(channel.id, channel);
+
+                        }
+
                         if (channel.fromBot != null && UserBotFragment.bots.containsKey(channel.fromBot)) {
 
                             sender = UserBotFragment.bots.get(channel.fromBot);
@@ -264,20 +269,20 @@ public class FeedFetchTask extends TimerTask {
 
                         SendResponse result = request.html().exec();
 
-						if (result != null && !result.isOk() && result.description().contains("not found")) {
-							
-							if (channel.fromBot != null) {
-								
-								channel.fromBot = null;
+                        if (result != null && !result.isOk() && result.description().contains("not found")) {
 
-								RssSub.channel.setById(channel.id,channel);
-								
-							}
-							
-						}
-						
-						ThreadUtil.sleep(1000);
-						
+                            if (channel.fromBot != null) {
+
+                                channel.fromBot = null;
+
+                                RssSub.channel.setById(channel.id, channel);
+
+                            }
+
+                        }
+
+                        ThreadUtil.sleep(1000);
+
                     }
 
                 }
@@ -343,22 +348,22 @@ public class FeedFetchTask extends TimerTask {
 
     static String generateSign(SyndEntry entry) {
 
-		StringBuilder str = new StringBuilder();
-		
-		if (entry.getPublishedDate() != null) {
-		
-        str.append(entry.getPublishedDate().getTime());
+        StringBuilder str = new StringBuilder();
 
-		}
-		
-		str.append(entry.getTitle());
-		
-		if (!StrUtil.isBlank(entry.getLink())) {
-			
-			str.append(entry.getLink());
-			
-		}
-		
+        if (entry.getPublishedDate() != null) {
+
+            str.append(entry.getPublishedDate().getTime());
+
+        }
+
+        str.append(entry.getTitle());
+
+        if (!StrUtil.isBlank(entry.getLink())) {
+
+            str.append(entry.getLink());
+
+        }
+
         return DigestUtil.md5Hex(str.toString());
 
     }

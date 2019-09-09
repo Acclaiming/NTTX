@@ -2,7 +2,6 @@ package io.kurumi.ntt.db;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
 
 public class CachedData<T> extends Data<T> {
 
@@ -14,38 +13,38 @@ public class CachedData<T> extends Data<T> {
 
     }
 
-    public CachedData(String collectionName,Class<T> clazz) {
+    public CachedData(String collectionName, Class<T> clazz) {
 
-        super(collectionName,clazz);
+        super(collectionName, clazz);
 
     }
 
     public void saveAll() {
 
-		synchronized (idIndex) {
+        synchronized (idIndex) {
 
-			for (Map.Entry<Long, T> data : idIndex.entrySet()) {
+            for (Map.Entry<Long, T> data : idIndex.entrySet()) {
 
-				super.setById(data.getKey(),data.getValue());
+                super.setById(data.getKey(), data.getValue());
 
-			}
+            }
 
-			idIndex.clear();
+            idIndex.clear();
 
-		}
+        }
 
     }
 
     @Override
-    public T setById(Long id,T object) {
+    public T setById(Long id, T object) {
 
         synchronized (idIndex) {
 
-            idIndex.put(id,object);
+            idIndex.put(id, object);
 
         }
 
-        return super.setById(id,object);
+        return super.setById(id, object);
 
     }
 
@@ -60,7 +59,7 @@ public class CachedData<T> extends Data<T> {
 
         if (idIndex.size() > 233) {
 
-			saveAll();
+            saveAll();
 
             idIndex.clear();
 
@@ -78,7 +77,7 @@ public class CachedData<T> extends Data<T> {
 
             if (data != null) {
 
-                idIndex.put(id,data);
+                idIndex.put(id, data);
             }
 
             return data;

@@ -1,8 +1,8 @@
 package io.kurumi.ntt.utils;
 
-import cn.hutool.http.HttpUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
 
 public class Cndic {
 

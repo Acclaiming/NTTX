@@ -1,31 +1,37 @@
 package io.kurumi.ntt.td.request;
 
-import com.pengrad.telegrambot.model.request.InputMessageContent;
-import com.pengrad.telegrambot.request.SendMessage;
 import io.kurumi.ntt.listeners.TdMain;
-import io.kurumi.ntt.td.TdApi.*;
 
 public class TdSendText extends TdAbsSend {
 
-	public TdSendText(TdMain main,long chatId) {
-		
-		super(main,chatId);
-		
-	}
-	
-	private long replyToMessageId = 0;
+    public TdSendText(TdMain main, long chatId) {
 
-	public TdSendText replyToMessageId(long replyToMessageId) { this.replyToMessageId = replyToMessageId; return this; }
-		
-	private boolean disableNotification = false;
+        super(main, chatId);
 
-	public TdSendText disableNotification() { this.disableNotification = true;return this; }
+    }
 
-		boolean fromBackground = false;
+    private long replyToMessageId = 0;
 
-	public TdSendText fromBackground() { this.fromBackground = true;return this; }
+    public TdSendText replyToMessageId(long replyToMessageId) {
+        this.replyToMessageId = replyToMessageId;
+        return this;
+    }
 
-	TdSendText replyMarkup;
+    private boolean disableNotification = false;
+
+    public TdSendText disableNotification() {
+        this.disableNotification = true;
+        return this;
+    }
+
+    boolean fromBackground = false;
+
+    public TdSendText fromBackground() {
+        this.fromBackground = true;
+        return this;
+    }
+
+    TdSendText replyMarkup;
 	
 	/*
 

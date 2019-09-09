@@ -2,6 +2,7 @@ package io.kurumi.ntt.db;
 
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.model.Msg;
+
 import java.util.HashMap;
 
 public class PointStore {
@@ -23,7 +24,7 @@ public class PointStore {
 
         PointStore instance = new PointStore(bot);
 
-        point.put(bot,instance);
+        point.put(bot, instance);
 
         return instance;
 
@@ -43,64 +44,64 @@ public class PointStore {
 
     public PointData getPrivate(Long userId) {
 
-		return privatePoints.get(userId);
+        return privatePoints.get(userId);
 
     }
 
     public PointData getGroup(Long userId) {
 
-		return groupPoints.get(userId);
+        return groupPoints.get(userId);
 
-	}
+    }
 
-    public PointData setPrivate(Long userId,final String pointTo,final PointData data) {
+    public PointData setPrivate(Long userId, final String pointTo, final PointData data) {
 
         data.point = pointTo;
         data.type = 1;
 
-        privatePoints.put(userId,data);
+        privatePoints.put(userId, data);
 
         return data;
 
     }
 
 
-    public PointData setPrivateData(Long userId,Msg command,final String pointTo,final Object content) {
+    public PointData setPrivateData(Long userId, Msg command, final String pointTo, final Object content) {
 
         PointData pointData = new PointData(command);
 
-		pointData.point = pointTo;
-		pointData.data = content;
+        pointData.point = pointTo;
+        pointData.data = content;
 
-		pointData.type = 1;
+        pointData.type = 1;
 
-        privatePoints.put(userId,pointData);
+        privatePoints.put(userId, pointData);
 
         return pointData;
 
     }
 
-    public PointData setGroup(Long userId,final String pointTo,final PointData data) {
+    public PointData setGroup(Long userId, final String pointTo, final PointData data) {
 
         data.type = 2;
         data.point = pointTo;
 
-        groupPoints.put(userId,data);
+        groupPoints.put(userId, data);
 
         return data;
 
     }
 
 
-    public PointData setGroupData(Long userId,Msg command,final String pointTo,final Object content) {
+    public PointData setGroupData(Long userId, Msg command, final String pointTo, final Object content) {
 
         PointData pointData = new PointData(command);
 
-		pointData.point = pointTo;
-		pointData.data = content;
+        pointData.point = pointTo;
+        pointData.data = content;
 
 
-        groupPoints.put(userId,pointData);
+        groupPoints.put(userId, pointData);
 
         return pointData;
 

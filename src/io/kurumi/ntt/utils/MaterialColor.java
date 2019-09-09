@@ -1,7 +1,6 @@
 package io.kurumi.ntt.utils;
 
-import java.awt.Color;
-import java.util.LinkedList;
+import java.awt.*;
 
 public class MaterialColor {
 

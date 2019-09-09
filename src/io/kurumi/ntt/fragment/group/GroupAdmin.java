@@ -1,22 +1,20 @@
 package io.kurumi.ntt.fragment.group;
 
+import cn.hutool.core.util.ArrayUtil;
+import com.pengrad.telegrambot.model.ChatMember;
 import com.pengrad.telegrambot.request.GetChatAdministrators;
 import com.pengrad.telegrambot.response.GetChatAdministratorsResponse;
+import io.kurumi.ntt.Env;
+import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.db.GroupData;
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import com.pengrad.telegrambot.model.ChatMember;
-import io.kurumi.ntt.Launcher;
-import io.kurumi.ntt.fragment.BotFragment;
-import cn.hutool.core.util.ArrayUtil;
-import io.kurumi.ntt.Env;
 
 public class GroupAdmin extends Fragment {
 
@@ -30,8 +28,8 @@ public class GroupAdmin extends Fragment {
 
     public static boolean fastAdminCheck(Fragment fragment, GroupData data, long userId, boolean full) {
 
-		if (ArrayUtil.contains(Env.ADMINS,(int)userId)) return true;
-		
+        if (ArrayUtil.contains(Env.ADMINS, (int) userId)) return true;
+
         updateGroupAdmins(fragment, data);
 
         if (full) {
@@ -126,7 +124,7 @@ public class GroupAdmin extends Fragment {
 
         if (NTT.checkGroupAdmin(msg)) return;
 
-        updateGroupAdmins(this, GroupData.get(this,msg.chat()));
+        updateGroupAdmins(this, GroupData.get(this, msg.chat()));
 
         msg.send("管理员缓存更新完成！").failedWith();
 

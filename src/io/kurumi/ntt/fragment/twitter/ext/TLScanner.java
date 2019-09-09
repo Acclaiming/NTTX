@@ -11,379 +11,373 @@ import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
+import twitter4j.*;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import twitter4j.Friendship;
-import twitter4j.Paging;
-import twitter4j.ResponseList;
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.UserMentionEntity;
-import twitter4j.User;
 
 public class TLScanner extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerFunction("tl_scan");
+        registerFunction("tl_scan");
 
-	}
+    }
 
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		requestTwitter(user,msg,true);
+        requestTwitter(user, msg, true);
 
-	}
+    }
 
-	@Override
-	public int checkTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+    @Override
+    public int checkTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
-		return PROCESS_ASYNC;
+        return PROCESS_ASYNC;
 
-	}
+    }
 
-	@Override
-	public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
+    @Override
+    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
 
-		Twitter api = account.createApi();
+        Twitter api = account.createApi();
 
-		Msg stat = msg.send("正在读取时间线").send();
+        Msg stat = msg.send("正在读取时间线").send();
 
-		HashSet<Long> ids = new HashSet<>();
+        HashSet<Long> ids = new HashSet<>();
 
-		try {
+        try {
 
-			ResponseList<Status> tl = api.getHomeTimeline(new Paging().count(200));
+            ResponseList<Status> tl = api.getHomeTimeline(new Paging().count(200));
 
-			for (Status status : tl) {
+            for (Status status : tl) {
 
-				ids.add(status.getUser().getId());
+                ids.add(status.getUser().getId());
 
-				if (status.isRetweet()) ids.add(status.getRetweetedStatus().getUser().getId());
+                if (status.isRetweet()) ids.add(status.getRetweetedStatus().getUser().getId());
 
-				else for (UserMentionEntity m : status.getUserMentionEntities()) ids.add(m.getId());
+                else for (UserMentionEntity m : status.getUserMentionEntities()) ids.add(m.getId());
 
-			}
+            }
 
-			long maxId = tl.get(tl.size() - 1).getId() - 1;
+            long maxId = tl.get(tl.size() - 1).getId() - 1;
 
-			tl = api.getHomeTimeline(new Paging().count(200).maxId(maxId));
+            tl = api.getHomeTimeline(new Paging().count(200).maxId(maxId));
 
-			for (Status status : tl) {
+            for (Status status : tl) {
 
-				ids.add(status.getUser().getId());
+                ids.add(status.getUser().getId());
 
-				if (status.isRetweet()) ids.add(status.getRetweetedStatus().getUser().getId());
+                if (status.isRetweet()) ids.add(status.getRetweetedStatus().getUser().getId());
 
-				else for (UserMentionEntity m : status.getUserMentionEntities()) ids.add(m.getId());
+                else for (UserMentionEntity m : status.getUserMentionEntities()) ids.add(m.getId());
 
-			}
+            }
 
-		} catch (TwitterException e) {
+        } catch (TwitterException e) {
 
-			stat.edit(NTT.parseTwitterException(e)).async();
+            stat.edit(NTT.parseTwitterException(e)).async();
 
-			return;
+            return;
 
-		}
+        }
 
-		if (ids.isEmpty()) {
+        if (ids.isEmpty()) {
 
-			stat.edit("时间线上什么也没有....").async();
+            stat.edit("时间线上什么也没有....").async();
 
-			return;
+            return;
 
-		}
+        }
 
-		HashSet<Long> target = new HashSet<>();
+        HashSet<Long> target = new HashSet<>();
 
-		Iterator<Long> iter = ids.iterator();
+        Iterator<Long> iter = ids.iterator();
 
-		String blockedBy = "";
-		String locked = "";
-		String unavilable = "";
+        String blockedBy = "";
+        String locked = "";
+        String unavilable = "";
 
-		int len = (1500 - ids.size()) / ids.size();
+        int len = (1500 - ids.size()) / ids.size();
 
-		for (int index = 0;iter.hasNext();index ++) {
+        for (int index = 0; iter.hasNext(); index++) {
 
-			Long userId = iter.next();
+            Long userId = iter.next();
 
-			target.add(userId);
+            target.add(userId);
 
-			try {
+            try {
 
-				ResponseList<Status> tl = api.getUserTimeline(userId,new Paging().count(200));
+                ResponseList<Status> tl = api.getUserTimeline(userId, new Paging().count(200));
 
-				int count = 0;
+                int count = 0;
 
-				for (Status status : tl) {
+                for (Status status : tl) {
 
-					count ++;
+                    count++;
 
-					if (count > len) break;
+                    if (count > len) break;
 
-					if (status.isRetweet()) {
+                    if (status.isRetweet()) {
 
-						target.add(status.getRetweetedStatus().getUser().getId());
+                        target.add(status.getRetweetedStatus().getUser().getId());
 
-					} else if (status.getInReplyToStatusId() != -1) {
+                    } else if (status.getInReplyToStatusId() != -1) {
 
-						target.add(status.getInReplyToUserId());
+                        target.add(status.getInReplyToUserId());
 
-					}
+                    }
 
-				}
+                }
 
-			} catch (TwitterException e) {
+            } catch (TwitterException e) {
 
-				if (e.getErrorCode() == 136) {
+                if (e.getErrorCode() == 136) {
 
-					UserArchive bb = UserArchive.show(api,userId);
+                    UserArchive bb = UserArchive.show(api, userId);
 
-					blockedBy += "\n" + Html.b(bb.name) + " " + Html.a("@" + bb.screenName,bb.url());
+                    blockedBy += "\n" + Html.b(bb.name) + " " + Html.a("@" + bb.screenName, bb.url());
 
-				} else if (e.getStatusCode() == 401 && e.getErrorCode() == -1) {
+                } else if (e.getStatusCode() == 401 && e.getErrorCode() == -1) {
 
-					UserArchive bb;
+                    UserArchive bb;
 
-					try {
+                    try {
 
-						User t = api.showUser(userId);
+                        User t = api.showUser(userId);
 
-						bb = UserArchive.save(t);
+                        bb = UserArchive.save(t);
 
-						locked += "\n" + Html.b(bb.name) + " " + Html.a("@" + bb.screenName,bb.url());
+                        locked += "\n" + Html.b(bb.name) + " " + Html.a("@" + bb.screenName, bb.url());
 
-					} catch (TwitterException ex) {
+                    } catch (TwitterException ex) {
 
-						bb = UserArchive.get(userId);
+                        bb = UserArchive.get(userId);
 
-						if (bb == null) {
+                        if (bb == null) {
 
-							unavilable += "\n[ " + NTT.parseTwitterException(ex) + " ] 本地无存档用户 ( " + userId + " )";
+                            unavilable += "\n[ " + NTT.parseTwitterException(ex) + " ] 本地无存档用户 ( " + userId + " )";
 
-						} else {
+                        } else {
 
-							unavilable += "\n[ " + NTT.parseTwitterException(ex) + " ] " + Html.b(bb.name) + " " + Html.a("@" + bb.screenName,bb.url());
+                            unavilable += "\n[ " + NTT.parseTwitterException(ex) + " ] " + Html.b(bb.name) + " " + Html.a("@" + bb.screenName, bb.url());
 
-						}
+                        }
 
-						continue;
+                        continue;
 
-					}
+                    }
 
 
-				} else {
+                } else {
 
-					stat.edit(NTT.parseTwitterException(e)).async();
+                    stat.edit(NTT.parseTwitterException(e)).async();
 
-					return;
+                    return;
 
-				}
+                }
 
-			}
+            }
 
-			stat.edit("正在扫描 已发现 " + target.size() + " 项 ( " + (index + 1) + " / " + ids.size() + " )").async();
+            stat.edit("正在扫描 已发现 " + target.size() + " 项 ( " + (index + 1) + " / " + ids.size() + " )").async();
 
-		}
+        }
 
-		stat.edit("扫描完成 已发现 " + target.size() + " 项 正在解析...").async();
+        stat.edit("扫描完成 已发现 " + target.size() + " 项 正在解析...").async();
 
-		float value = 0;
+        float value = 0;
 
-		if (!StrUtil.isEmpty(locked)) {
+        if (!StrUtil.isEmpty(locked)) {
 
-			value -= locked.split("\n").length * 4;
+            value -= locked.split("\n").length * 4;
 
-			locked = "\n这些用户锁推了，所以这个结果可能不准确 :\n" + locked + "\n";
+            locked = "\n这些用户锁推了，所以这个结果可能不准确 :\n" + locked + "\n";
 
-		} else {
+        } else {
 
-			locked = "\n时间线上下文没有未关注的锁推用户。";
+            locked = "\n时间线上下文没有未关注的锁推用户。";
 
-		}
-		
-		if (!StrUtil.isEmpty(unavilable)) {
+        }
 
-			value -= unavilable.split("\n").length * 2;
+        if (!StrUtil.isEmpty(unavilable)) {
 
-			unavilable = "\n这些用户不见了，所以结果可能不准确 :\n" + unavilable + "\n";
+            value -= unavilable.split("\n").length * 2;
 
-		} else {
+            unavilable = "\n这些用户不见了，所以结果可能不准确 :\n" + unavilable + "\n";
 
-			unavilable = "\n时间线上下文没有不见的用户。";
+        } else {
 
-		}
+            unavilable = "\n时间线上下文没有不见的用户。";
 
-		if (!StrUtil.isEmpty(blockedBy)) {
+        }
 
-			value -= blockedBy.split("\n").length * 6;
+        if (!StrUtil.isEmpty(blockedBy)) {
 
-			blockedBy = "\n被这些人屏蔽，所以这个结果可能不准确 :\n" + blockedBy;
+            value -= blockedBy.split("\n").length * 6;
 
-		} else {
+            blockedBy = "\n被这些人屏蔽，所以这个结果可能不准确 :\n" + blockedBy;
 
-			blockedBy = "没有被时间线上下文的任何人屏蔽。";
+        } else {
 
-		}
+            blockedBy = "没有被时间线上下文的任何人屏蔽。";
 
-		String mute = "";
-		String block = "";
+        }
 
-		LinkedList<Long> blocks;
-		LinkedList<Long> mutes;
+        String mute = "";
+        String block = "";
 
-		try {
+        LinkedList<Long> blocks;
+        LinkedList<Long> mutes;
 
-			blocks = TApi.getAllBlockIDs(api);
-			mutes = TApi.getAllMuteIDs(api);
+        try {
 
-			mutes.removeAll(blocks);
+            blocks = TApi.getAllBlockIDs(api);
+            mutes = TApi.getAllMuteIDs(api);
 
-			mutes.retainAll(target);
-			blocks.retainAll(target);
+            mutes.removeAll(blocks);
 
-		} catch (TwitterException e) {
+            mutes.retainAll(target);
+            blocks.retainAll(target);
 
-			msg.send(NTT.parseTwitterException(e)).async();
+        } catch (TwitterException e) {
 
-			return;
+            msg.send(NTT.parseTwitterException(e)).async();
 
-		}
+            return;
 
-		if (mutes.isEmpty()) {
+        }
 
-			mute = "没有静音时间线上下文任何人";
+        if (mutes.isEmpty()) {
 
-		} else {
+            mute = "没有静音时间线上下文任何人";
 
-			for (Long mutedId : mutes) {
+        } else {
 
-				value -= 4;
+            for (Long mutedId : mutes) {
 
-				UserArchive muted = UserArchive.show(api,mutedId);
+                value -= 4;
 
-				if (muted == null) continue;
+                UserArchive muted = UserArchive.show(api, mutedId);
 
-				mute += "\n" + muted.bName();
+                if (muted == null) continue;
 
+                mute += "\n" + muted.bName();
 
-			}
 
-			mute = "\n你静音了时间线上下文的这些人 :\n" + mute + "\n";
+            }
 
-		}
+            mute = "\n你静音了时间线上下文的这些人 :\n" + mute + "\n";
 
-		if (blocks.isEmpty()) {
+        }
 
-			block = "没有屏蔽时间线上下文的任何人";
+        if (blocks.isEmpty()) {
 
-		} else {
+            block = "没有屏蔽时间线上下文的任何人";
 
-			for (Long blockedId : blocks) {
+        } else {
 
-				value -= 6;
+            for (Long blockedId : blocks) {
 
-				UserArchive blocked = UserArchive.show(api,blockedId);
+                value -= 6;
 
-				if (blocked == null) continue;
+                UserArchive blocked = UserArchive.show(api, blockedId);
 
-				block += "\n" + blocked.bName();
+                if (blocked == null) continue;
 
+                block += "\n" + blocked.bName();
 
-			}
 
-			block = "\n屏蔽了时间线上下文的这些人 :\n" + block;
+            }
 
-		}
+            block = "\n屏蔽了时间线上下文的这些人 :\n" + block;
 
+        }
 
-		float max = target.size();
 
-		int fr = 0;
-		int fo = 0;
-		int tw = 0;
+        float max = target.size();
 
-		while (!target.isEmpty()) {
+        int fr = 0;
+        int fo = 0;
+        int tw = 0;
 
-			// 被屏蔽 -3 互相关注 +2 单向关注 -1 单向被关注 +1 无 0 / size * 2
+        while (!target.isEmpty()) {
 
-			iter = target.iterator();
+            // 被屏蔽 -3 互相关注 +2 单向关注 -1 单向被关注 +1 无 0 / size * 2
 
-			LinkedList<Long> current = new LinkedList<>();
+            iter = target.iterator();
 
-			for (int index = 0;index < 100;index ++) {
+            LinkedList<Long> current = new LinkedList<>();
 
-				if (iter.hasNext()) current.add(iter.next());
+            for (int index = 0; index < 100; index++) {
 
-				else break;
+                if (iter.hasNext()) current.add(iter.next());
 
-			}
+                else break;
 
-			target.removeAll(current);
+            }
 
-			try {
+            target.removeAll(current);
 
-				ResponseList<Friendship> ships = api.lookupFriendships(ArrayUtil.unWrap(current.toArray(new Long[current.size()])));
+            try {
 
-				for (Friendship ship : ships) {
+                ResponseList<Friendship> ships = api.lookupFriendships(ArrayUtil.unWrap(current.toArray(new Long[current.size()])));
 
-					if (ship.isFollowedBy() && ship.isFollowing()) {
+                for (Friendship ship : ships) {
 
-						value += 2;
+                    if (ship.isFollowedBy() && ship.isFollowing()) {
 
-						tw ++;
+                        value += 2;
 
-					} else if (ship.isFollowedBy()) {
+                        tw++;
 
-						value ++;
+                    } else if (ship.isFollowedBy()) {
 
-						fo ++;
+                        value++;
 
-					} else if (ship.isFollowing()) {
+                        fo++;
 
-						value --;
+                    } else if (ship.isFollowing()) {
 
-						fr ++;
+                        value--;
 
-					}
+                        fr++;
 
-				}
+                    }
 
-			} catch (TwitterException e) {
+                }
 
-				stat.edit(NTT.parseTwitterException(e)).exec();
+            } catch (TwitterException e) {
 
-				return;
+                stat.edit(NTT.parseTwitterException(e)).exec();
 
-			}
+                return;
 
-			if (!target.isEmpty()) {
+            }
 
-				stat.edit("正在解析... " + ((int)(max - target.size())) + " / " + ((int)max)).exec();
+            if (!target.isEmpty()) {
 
-			}
+                stat.edit("正在解析... " + max - target.size() + " / " + ((int) max)).exec();
 
-		}
+            }
 
-		String status = "圈子共有 " + ids.size() + " 人 外扩至 " + ((int)max) + " 人 :";
+        }
 
-		status += "\n\n与 " + Html.b(tw) + " 人互相关注";
-		status += "\n单向关注 " + Html.b(fr) + " 人";
-		status += "\n被 " + Html.b(fo) + " 人单向关注";
+        String status = "圈子共有 " + ids.size() + " 人 外扩至 " + ((int) max) + " 人 :";
 
-		Float result = ((value / (max * 2)) * 100);
+        status += "\n\n与 " + Html.b(tw) + " 人互相关注";
+        status += "\n单向关注 " + Html.b(fr) + " 人";
+        status += "\n被 " + Html.b(fo) + " 人单向关注";
 
-		stat.edit(Html.b("你的结果是 : " + result + "%\n"),status,locked,unavilable,blockedBy,mute,block).html().async();
+        Float result = ((value / (max * 2)) * 100);
 
-	}
+        stat.edit(Html.b("你的结果是 : " + result + "%\n"), status, locked, unavilable, blockedBy, mute, block).html().async();
+
+    }
 
 }

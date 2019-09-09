@@ -1,14 +1,14 @@
 package io.kurumi.ntt.td.client;
 
-import io.kurumi.ntt.td.TdApi;
 import io.kurumi.ntt.Env;
+import io.kurumi.ntt.td.TdApi;
 
 public class TdOptions {
 
-	private TdApi.TdlibParameters parameters;
+    private TdApi.TdlibParameters parameters;
     private boolean useTestDc = false;
-	private String databaseDirectory = "td";
-	private String filesDirectory = Env.CACHE_DIR.getPath() + "/td-files";
+    private String databaseDirectory = "td";
+    private String filesDirectory = Env.CACHE_DIR.getPath() + "/td-files";
     private boolean useFileDatabase = true;
     private boolean useChatInfoDatabase = true;
     private boolean useMessageDatabase = false;
@@ -21,10 +21,10 @@ public class TdOptions {
     private String applicationVersion = "1.0";
     private boolean enableStorageOptimizer = false;
     private boolean ignoreFileNames = false;
-	
-	TdApi.TdlibParameters build() {
 
-		if (parameters == null) {
+    TdApi.TdlibParameters build() {
+
+        if (parameters == null) {
 
             parameters = new TdApi.TdlibParameters();
             parameters.useTestDc = this.useTestDc;
@@ -33,7 +33,7 @@ public class TdOptions {
             parameters.useFileDatabase = this.useFileDatabase;
             parameters.useChatInfoDatabase = this.useChatInfoDatabase;
             parameters.useMessageDatabase = this.useMessageDatabase;
-            parameters.useSecretChats = this.useSecretChats;
+            parameters.useSecretChats = useSecretChats;
             parameters.apiId = this.apiId;
             parameters.apiHash = this.apiHash;
             parameters.systemLanguageCode = this.systemLanguageCode;
@@ -43,13 +43,13 @@ public class TdOptions {
             parameters.enableStorageOptimizer = this.enableStorageOptimizer;
             parameters.ignoreFileNames = this.ignoreFileNames;
 
-		}
+        }
 
-		return parameters;
+        return parameters;
 
-	}
+    }
 
-	public TdOptions useTestDc(boolean useTestDc) {
+    public TdOptions useTestDc(boolean useTestDc) {
 
         this.useTestDc = useTestDc;
 
@@ -65,7 +65,7 @@ public class TdOptions {
 
     }
 
-	public TdOptions useFileDatabase(boolean useFileDatabase) {
+    public TdOptions useFileDatabase(boolean useFileDatabase) {
 
         this.useFileDatabase = useFileDatabase;
 
@@ -73,12 +73,12 @@ public class TdOptions {
 
     }
 
-	public TdOptions filesDirectory(String filesDirectory) {
+    public TdOptions filesDirectory(String filesDirectory) {
 
         this.filesDirectory = filesDirectory;
 
         return this;
-		
+
     }
 
     public TdOptions useChatInfoDatabase(boolean useChatInfoDatabase) {
@@ -91,19 +91,19 @@ public class TdOptions {
 
     public TdOptions useMessageDatabase(boolean useMessageDatabase) {
 
-        this.useMessageDatabase  = useMessageDatabase;
+        this.useMessageDatabase = useMessageDatabase;
 
         return this;
 
     }
 
-	public TdOptions useSecretChats(boolean useSecretChats) {
+    public TdOptions useSecretChats(boolean useSecretChats) {
 
-		this.useSecretChats = useSecretChats;
+        TdOptions.useSecretChats = useSecretChats;
 
-		return this;
+        return this;
 
-	}
+    }
 
     public TdOptions apiId(int apiId) {
 
@@ -129,7 +129,7 @@ public class TdOptions {
 
     }
 
-	public TdOptions deviceModel(String deviceModel) {
+    public TdOptions deviceModel(String deviceModel) {
 
         this.deviceModel = deviceModel;
 

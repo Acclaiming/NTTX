@@ -1,147 +1,148 @@
 package io.kurumi.ntt.td.request;
 
 import io.kurumi.ntt.td.TdApi.*;
+
 import java.util.LinkedList;
 
 public class TextBuilder {
 
-	private StringBuilder builder = new StringBuilder();
-	private LinkedList<TextEntity> entities = new LinkedList<>();
+    private StringBuilder builder = new StringBuilder();
+    private LinkedList<TextEntity> entities = new LinkedList<>();
 
-	public TextBuilder text(String text) {
+    public TextBuilder text(String text) {
 
-		builder.append(text);
+        builder.append(text);
 
-		return this;
+        return this;
 
-	}
+    }
 
-	void entity(String text,TextEntityType type) {
+    void entity(String text, TextEntityType type) {
 
-		TextEntity entity = new TextEntity(builder.length(),text.length(),type);
+        TextEntity entity = new TextEntity(builder.length(), text.length(), type);
 
-		entities.add(entity);
+        entities.add(entity);
 
-		builder.append(text);
+        builder.append(text);
 
-	}
+    }
 
-	public TextBuilder mention(String text) {
+    public TextBuilder mention(String text) {
 
-		entity(text,new TextEntityTypeMention());
+        entity(text, new TextEntityTypeMention());
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public TextBuilder hashTag(String text) {
+    public TextBuilder hashTag(String text) {
 
-		entity(text,new TextEntityTypeHashtag());
+        entity(text, new TextEntityTypeHashtag());
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public TextBuilder cashTag(String text) {
+    public TextBuilder cashTag(String text) {
 
-		entity(text,new TextEntityTypeCashtag());
+        entity(text, new TextEntityTypeCashtag());
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public TextBuilder command(String text) {
+    public TextBuilder command(String text) {
 
-		entity(text,new TextEntityTypeBotCommand());
+        entity(text, new TextEntityTypeBotCommand());
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public TextBuilder url(String text) {
+    public TextBuilder url(String text) {
 
-		entity(text,new TextEntityTypeUrl());
+        entity(text, new TextEntityTypeUrl());
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public TextBuilder email(String text) {
+    public TextBuilder email(String text) {
 
-		entity(text,new TextEntityTypeEmailAddress());
+        entity(text, new TextEntityTypeEmailAddress());
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public TextBuilder bold(String text) {
+    public TextBuilder bold(String text) {
 
-		entity(text,new TextEntityTypeBold());
+        entity(text, new TextEntityTypeBold());
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public TextBuilder italic(String text) {
+    public TextBuilder italic(String text) {
 
-		entity(text,new TextEntityTypeItalic());
+        entity(text, new TextEntityTypeItalic());
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public TextBuilder code(String text) {
+    public TextBuilder code(String text) {
 
-		entity(text,new TextEntityTypeCode());
+        entity(text, new TextEntityTypeCode());
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public TextBuilder pre(String text) {
+    public TextBuilder pre(String text) {
 
-		entity(text,new TextEntityTypePre());
+        entity(text, new TextEntityTypePre());
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public TextBuilder preCode(String text,String lang) {
+    public TextBuilder preCode(String text, String lang) {
 
-		entity(text,new TextEntityTypePreCode(lang));
+        entity(text, new TextEntityTypePreCode(lang));
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public TextBuilder url(String text,String url) {
+    public TextBuilder url(String text, String url) {
 
-		entity(text,new TextEntityTypeTextUrl(url));
+        entity(text, new TextEntityTypeTextUrl(url));
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public TextBuilder mention(String text,int userId) {
+    public TextBuilder mention(String text, int userId) {
 
-		entity(text,new TextEntityTypeMentionName(userId));
+        entity(text, new TextEntityTypeMentionName(userId));
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public TextBuilder phoneNumber(String text) {
+    public TextBuilder phoneNumber(String text) {
 
-		entity(text,new TextEntityTypePhoneNumber());
+        entity(text, new TextEntityTypePhoneNumber());
 
-		return this;
+        return this;
 
-	}
+    }
 
-	public FormattedText build() {
+    public FormattedText build() {
 
-		return new FormattedText(builder.toString(),entities.toArray(new TextEntity[entities.size()]));
+        return new FormattedText(builder.toString(), entities.toArray(new TextEntity[entities.size()]));
 
-	}
+    }
 
 }

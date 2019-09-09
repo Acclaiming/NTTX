@@ -1,80 +1,80 @@
 package io.kurumi.ntt.fragment.dns;
 
 import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
-import java.io.IOException;
 import org.neverfear.whois.ResolveDefault;
 import org.neverfear.whois.WhoisQuery;
-import org.neverfear.whois.WhoisResponse;
-import io.kurumi.ntt.fragment.BotFragment;
+
+import java.io.IOException;
 
 public class WhoisLookup extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
-		
-		super.init(origin);
-		
-		registerFunction("whois");
-		
-	}
+    @Override
+    public void init(BotFragment origin) {
 
-	@Override
-	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
-		
-		return FUNCTION_PUBLIC;
-		
-	}
+        super.init(origin);
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+        registerFunction("whois");
 
-		if (params.length == 0) {
+    }
 
-			msg.invalidParams("domain").async();
+    @Override
+    public int checkFunctionContext(UserData user, Msg msg, String function, String[] params) {
 
-			return;
+        return FUNCTION_PUBLIC;
 
-		}
+    }
 
-		String result;
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		try {
+        if (params.length == 0) {
 
-			result = new WhoisQuery(params[0]).getResponse().getData();
+            msg.invalidParams("domain").async();
 
-		} catch (Exception e) {
+            return;
 
-			try {
+        }
 
-				result = new ResolveDefault("whois.iana.org").query(params[0]).getData();
+        String result;
 
-			} catch (IOException ex) {
+        try {
 
-				msg.send(ex.getMessage()).async();
+            result = new WhoisQuery(params[0]).getResponse().getData();
 
-				return;
-				
-			}
+        } catch (Exception e) {
 
-		}
-		
-		String message = null;
-		
-		for (String line : result.split("\n")) {
-			
-			if (line.trim().startsWith("%")) continue;
-			
-			if (message == null) message = line;
-			else message += "\n" + line;
-			
-			if (line.contains("<<<")) break;
-			
-		}
-		
-		msg.send(message).async();
-		
-	}
+            try {
+
+                result = new ResolveDefault("whois.iana.org").query(params[0]).getData();
+
+            } catch (IOException ex) {
+
+                msg.send(ex.getMessage()).async();
+
+                return;
+
+            }
+
+        }
+
+        String message = null;
+
+        for (String line : result.split("\n")) {
+
+            if (line.trim().startsWith("%")) continue;
+
+            if (message == null) message = line;
+            else message += "\n" + line;
+
+            if (line.contains("<<<")) break;
+
+        }
+
+        msg.send(message).async();
+
+    }
 
 }

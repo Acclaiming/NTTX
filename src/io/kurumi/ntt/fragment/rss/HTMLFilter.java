@@ -3,11 +3,8 @@ package io.kurumi.ntt.fragment.rss;
 import cn.hutool.core.util.StrUtil;
 import io.kurumi.ntt.telegraph.model.Node;
 import io.kurumi.ntt.telegraph.model.NodeElement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Matcher;

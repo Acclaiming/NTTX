@@ -3,6 +3,7 @@ package io.kurumi.ntt.fragment.twitter.tasks;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.http.HttpException;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.log.StaticLog;
 import com.mongodb.client.FindIterable;
 import com.neovisionaries.i18n.CountryCode;
 import com.pengrad.telegrambot.model.request.ParseMode;
@@ -18,38 +19,31 @@ import io.kurumi.ntt.fragment.twitter.TApi;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.fragment.twitter.status.MessagePoint;
+import io.kurumi.ntt.fragment.twitter.ui.extra.BlockedBy;
+import io.kurumi.ntt.fragment.twitter.ui.extra.FollowedBy;
+import io.kurumi.ntt.fragment.twitter.ui.extra.OWUnfoPublish;
 import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.NTT;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.TimerTask;
 import twitter4j.Relationship;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
 
-import static com.mongodb.client.model.Filters.and;
+import java.io.File;
+import java.util.*;
+
 import static com.mongodb.client.model.Filters.eq;
-import io.kurumi.ntt.fragment.twitter.ui.extra.OWUnfoPublish;
-import cn.hutool.log.StaticLog;
-import com.mongodb.Block;
-import io.kurumi.ntt.fragment.twitter.ui.extra.BlockedBy;
-import io.kurumi.ntt.fragment.twitter.ui.extra.FollowedBy;
 
 public class TrackTask extends TimerTask {
 
     public static TrackTask INSTANCE = new TrackTask();
-    public static Data<IdsList> followers = new Data<IdsList>("Followers",IdsList.class);
-    public static Data<IdsList> friends = new Data<IdsList>("Friends",IdsList.class);
+    public static Data<IdsList> followers = new Data<IdsList>("Followers", IdsList.class);
+    public static Data<IdsList> friends = new Data<IdsList>("Friends", IdsList.class);
 
-    public static void onUserChange(UserArchive archive,String change) {
+    public static void onUserChange(UserArchive archive, String change) {
 
-        FindIterable<IdsList> subFr = friends.collection.find(eq("ids",archive.id));
-        FindIterable<IdsList> subFo = followers.collection.find(eq("ids",archive.id));
+        FindIterable<IdsList> subFr = friends.collection.find(eq("ids", archive.id));
+        FindIterable<IdsList> subFo = followers.collection.find(eq("ids", archive.id));
 
         LinkedList<Long> processed = new LinkedList<>();
 
@@ -65,9 +59,9 @@ public class TrackTask extends TimerTask {
 
             }
 
-			if (account.fr_info != null) {
+            if (account.fr_info != null) {
 
-                processChangeSend(archive,account,change);
+                processChangeSend(archive, account, change);
 
                 processed.add(account.id);
                 processed.add(account.user);
@@ -97,7 +91,7 @@ public class TrackTask extends TimerTask {
 
             if (account.fo_info != null) {
 
-                processChangeSend(archive,account,change);
+                processChangeSend(archive, account, change);
 
                 processed.add(account.id);
                 processed.add(account.user);
@@ -108,12 +102,12 @@ public class TrackTask extends TimerTask {
 
     }
 
-    static void processChangeSend(UserArchive archive,TAuth account,String change) {
+    static void processChangeSend(UserArchive archive, TAuth account, String change) {
 
-        StringBuilder msg = new StringBuilder(TAuth.data.countByField("user",account.user) > 1 ? account.archive().urlHtml() + " : " : "");
+        StringBuilder msg = new StringBuilder(TAuth.data.countByField("user", account.user) > 1 ? account.archive().urlHtml() + " : " : "");
 
-        boolean isfo = followers.fieldEquals(account.id,"ids",archive.id);
-        boolean isfr = friends.fieldEquals(account.id,"ids",archive.id);
+        boolean isfo = followers.fieldEquals(account.id, "ids", archive.id);
+        boolean isfr = friends.fieldEquals(account.id, "ids", archive.id);
 
         if (isfo && isfr) msg.append("与乃互关");
         else if (isfo) msg.append("关注乃");
@@ -123,49 +117,53 @@ public class TrackTask extends TimerTask {
 
         if ((archive.oldPhotoUrl == null || archive.photoUrl == null) && (archive.oldBannerUrl == null || archive.bannerUrl == null)) {
 
-            new Send(account.user,msg.toString()).html().point(0,archive.id);
+            new Send(account.user, msg.toString()).html().point(0, archive.id);
 
         } else if (archive.oldPhotoUrl != null) {
 
-            File photo = new File(Env.CACHE_DIR,"twitter_profile_images/" + FileUtil.getName(archive.photoUrl));
+            File photo = new File(Env.CACHE_DIR, "twitter_profile_images/" + FileUtil.getName(archive.photoUrl));
 
             if (!photo.isFile()) {
 
-				try {
+                try {
 
-					HttpUtil.downloadFile(archive.photoUrl,photo);
+                    HttpUtil.downloadFile(archive.photoUrl, photo);
 
-				} catch (HttpException ex) { return; }
+                } catch (HttpException ex) {
+                    return;
+                }
 
             }
 
-            SendResponse resp = Launcher.INSTANCE.bot().execute(new SendPhoto(account.user,photo).caption(msg.toString()).parseMode(ParseMode.HTML));
+            SendResponse resp = Launcher.INSTANCE.bot().execute(new SendPhoto(account.user, photo).caption(msg.toString()).parseMode(ParseMode.HTML));
 
             if (resp.isOk()) {
 
-                MessagePoint.set(resp.message().messageId(),0,archive.id);
+                MessagePoint.set(resp.message().messageId(), 0, archive.id);
 
             }
 
         } else {
 
-            File photo = new File(Env.CACHE_DIR,"twitter_banner_images/" + archive.id + "/" + System.currentTimeMillis() + ".jpg");
+            File photo = new File(Env.CACHE_DIR, "twitter_banner_images/" + archive.id + "/" + System.currentTimeMillis() + ".jpg");
 
             if (!photo.isFile()) {
 
-				try {
+                try {
 
-					HttpUtil.downloadFile(archive.bannerUrl,photo);
+                    HttpUtil.downloadFile(archive.bannerUrl, photo);
 
-				} catch (HttpException ex) { return; }
+                } catch (HttpException ex) {
+                    return;
+                }
 
             }
 
-            SendResponse resp = Launcher.INSTANCE.bot().execute(new SendPhoto(account.user,photo).caption(msg.toString()).parseMode(ParseMode.HTML));
+            SendResponse resp = Launcher.INSTANCE.bot().execute(new SendPhoto(account.user, photo).caption(msg.toString()).parseMode(ParseMode.HTML));
 
             if (resp.isOk()) {
 
-                MessagePoint.set(resp.message().messageId(),0,archive.id);
+                MessagePoint.set(resp.message().messageId(), 0, archive.id);
 
             }
 
@@ -175,7 +173,7 @@ public class TrackTask extends TimerTask {
 
     public static void start() {
 
-        BotFragment.trackTimer.scheduleAtFixedRate(INSTANCE,new Date(System.currentTimeMillis() + 5 * 60 * 1000),60 * 1000);
+        BotFragment.trackTimer.scheduleAtFixedRate(INSTANCE, new Date(System.currentTimeMillis() + 5 * 60 * 1000), 60 * 1000);
 
     }
 
@@ -193,13 +191,13 @@ public class TrackTask extends TimerTask {
 
         for (TAuth account : all) {
 
-			if (Firewall.block.containsId(account.user)) {
+            if (Firewall.block.containsId(account.user)) {
 
-				remove.add(account);
+                remove.add(account);
 
-				continue;
+                continue;
 
-			}
+            }
 
             Twitter api = account.createApi();
 
@@ -209,7 +207,7 @@ public class TrackTask extends TimerTask {
 
                 //if (setting.followers || setting.followersInfo || setting.followingInfo) {
 
-                doTracking(account,api,UserData.get(account.user));
+                doTracking(account, api, UserData.get(account.user));
 
                 //}
 
@@ -228,7 +226,7 @@ public class TrackTask extends TimerTask {
 
                 } else if (e.getErrorCode() != 130) {
 
-                    StaticLog.warn(e,"UserArchive ERROR");
+                    StaticLog.warn(e, "UserArchive ERROR");
 
                 }
             }
@@ -241,15 +239,15 @@ public class TrackTask extends TimerTask {
 
             if (Firewall.block.containsId(account.user)) {
 
-                new Send(account.user,"已将你的认证移除 (为什么？)").exec();
+                new Send(account.user, "已将你的认证移除 (为什么？)").exec();
 
-                new Send(Env.LOG_CHANNEL,"Blocked Auth : " + UserData.get(account.user).userName() + " -> " + account.archive().urlHtml()).html().exec();
+                new Send(Env.LOG_CHANNEL, "Blocked Auth : " + UserData.get(account.user).userName() + " -> " + account.archive().urlHtml()).html().exec();
 
             } else {
 
-                new Send(account.user,"对不起，但是因为 (NTT API被停用 或 乃的账号已停用 / 冻结 / NTT被取消授权，已移除 .").exec();
+                new Send(account.user, "对不起，但是因为 (NTT API被停用 或 乃的账号已停用 / 冻结 / NTT被取消授权，已移除 .").exec();
 
-                new Send(Env.LOG_CHANNEL,"Invalid Auth : " + UserData.get(account.user).userName() + " -> " + account.archive().urlHtml()).html().exec();
+                new Send(Env.LOG_CHANNEL, "Invalid Auth : " + UserData.get(account.user).userName() + " -> " + account.archive().urlHtml()).html().exec();
 
             }
 
@@ -355,18 +353,18 @@ public class TrackTask extends TimerTask {
 
     //LinkedHashSet<Long> waitFor = new LinkedHashSet<>();
 
-    void doTracking(TAuth account,Twitter api,UserData user) throws TwitterException {
+    void doTracking(TAuth account, Twitter api, UserData user) throws TwitterException {
 
         //BotLog.debug("T S : " + account.archive().urlHtml());
 
         List<Long> lostFolowers = followers.containsId(account.id) ? followers.getById(account.id).ids : null;
-        List<Long> newFollowers = TApi.getAllFoIDs(api,account.id);
+        List<Long> newFollowers = TApi.getAllFoIDs(api, account.id);
         List<Long> latestFollowers = new LinkedList<Long>(newFollowers);
 
         List<Long> lostFriends = friends.containsId(account.id) ? friends.getById(account.id).ids : null;
-        List<Long> newFriends = TApi.getAllFrIDs(api,account.id);
+        List<Long> newFriends = TApi.getAllFrIDs(api, account.id);
 
-        friends.setById(account.id,new IdsList(account.id,newFriends));
+        friends.setById(account.id, new IdsList(account.id, newFriends));
 
         //if (lostFolowers == null) lostFolowers = new LinkedList<>();
         //if (lostFriends == null) lostFriends = new LinkedList<>();
@@ -381,88 +379,88 @@ public class TrackTask extends TimerTask {
             lostFolowers.removeAll(retains);
             newFollowers.removeAll(retains);
 
-			if (!newFollowers.isEmpty() || !lostFolowers.isEmpty()) {
+            if (!newFollowers.isEmpty() || !lostFolowers.isEmpty()) {
 
-				if (account.fo_marge != null) {
+                if (account.fo_marge != null) {
 
-					if (account.fo_lost != null) {
-						
-						account.fo_lost.removeAll(newFollowers);
-						
-						lostFolowers.removeAll(account.fo_lost);
+                    if (account.fo_lost != null) {
 
-					} else {
-						
-						account.fo_lost = new LinkedList<>();
-						
-					}
+                        account.fo_lost.removeAll(newFollowers);
 
-					if (account.fo_new != null) {
-						
-						account.fo_new.removeAll(lostFolowers);
-						
-						newFollowers.removeAll(account.fo_new);
+                        lostFolowers.removeAll(account.fo_lost);
 
-					} else {
-						
-						account.fo_new = new LinkedList<>();
-						
-					}
+                    } else {
 
-					account.fo_new.addAll(newFollowers);
-					account.fo_lost.addAll(lostFolowers);
+                        account.fo_lost = new LinkedList<>();
 
-					if (account.fo_new.isEmpty()) account.fo_new = null;
-					if (account.fo_lost.isEmpty()) account.fo_lost = null;
+                    }
 
-					TAuth.data.setById(account.id,account);
+                    if (account.fo_new != null) {
 
-				}
+                        account.fo_new.removeAll(lostFolowers);
 
-				for (Long newfollower : newFollowers) {
+                        newFollowers.removeAll(account.fo_new);
 
-					newFollower(account,api,newfollower,account.fo != null);
+                    } else {
 
-				}
+                        account.fo_new = new LinkedList<>();
 
-				for (Long lostFolower : lostFolowers) {
+                    }
 
-					lostFollower(account,api,lostFolower,account.fo != null,latestFollowers);
+                    account.fo_new.addAll(newFollowers);
+                    account.fo_lost.addAll(lostFolowers);
 
-				}
+                    if (account.fo_new.isEmpty()) account.fo_new = null;
+                    if (account.fo_lost.isEmpty()) account.fo_lost = null;
 
-			}
+                    TAuth.data.setById(account.id, account);
 
-		}
+                }
 
-		followers.setById(account.id,new IdsList(account.id,latestFollowers));
+                for (Long newfollower : newFollowers) {
 
-		if (lostFriends != null) {
+                    newFollower(account, api, newfollower, account.fo != null);
 
-			List<Long> frr = new LinkedList<>();
+                }
 
-			frr.addAll(lostFriends);
-			frr.retainAll(newFriends);
+                for (Long lostFolower : lostFolowers) {
 
-			lostFriends.removeAll(frr);
-			newFriends.removeAll(frr);
+                    lostFollower(account, api, lostFolower, account.fo != null, latestFollowers);
 
-			for (Long newFriend : newFriends) {
+                }
 
-				newFriend(account,api,newFriend,account.fo != null);
+            }
 
-			}
+        }
 
-			for (Long lostFriend : lostFriends) {
+        followers.setById(account.id, new IdsList(account.id, latestFollowers));
 
-				lostFriend(account,api,lostFriend,account.fo != null);
+        if (lostFriends != null) {
 
-			}
+            List<Long> frr = new LinkedList<>();
 
-		}
+            frr.addAll(lostFriends);
+            frr.retainAll(newFriends);
 
-		//waitFor.addAll(retains);
-		//waitFor.addAll(frr);
+            lostFriends.removeAll(frr);
+            newFriends.removeAll(frr);
+
+            for (Long newFriend : newFriends) {
+
+                newFriend(account, api, newFriend, account.fo != null);
+
+            }
+
+            for (Long lostFriend : lostFriends) {
+
+                lostFriend(account, api, lostFriend, account.fo != null);
+
+            }
+
+        }
+
+        //waitFor.addAll(retains);
+        //waitFor.addAll(frr);
 
 		/*
 
@@ -527,13 +525,13 @@ public class TrackTask extends TimerTask {
 		 */
     }
 
-    String parseStatus(Twitter api,User user) {
+    String parseStatus(Twitter api, User user) {
 
         StringBuilder status = new StringBuilder();
 
         try {
 
-            if (!api.showFriendship(api.getId(),user.getId()).isSourceFollowingTarget() && !user.isFollowRequestSent()) {
+            if (!api.showFriendship(api.getId(), user.getId()).isSourceFollowingTarget() && !user.isFollowRequestSent()) {
 
                 if (user.isProtected()) status.append("\n这是一个是锁推用户");
 
@@ -593,7 +591,7 @@ public class TrackTask extends TimerTask {
 
         if (statusR.endsWith("\n")) {
 
-            statusR.substring(0,statusR.length() - 1);
+            statusR.substring(0, statusR.length() - 1);
 
         }
 
@@ -607,7 +605,7 @@ public class TrackTask extends TimerTask {
 
     }
 
-    void newFollower(TAuth auth,Twitter api,long id,boolean notice) {
+    void newFollower(TAuth auth, Twitter api, long id, boolean notice) {
 
         try {
 
@@ -615,25 +613,25 @@ public class TrackTask extends TimerTask {
 
             UserArchive archive = UserArchive.save(follower);
 
-            Relationship ship = api.showFriendship(auth.id,id);
+            Relationship ship = api.showFriendship(auth.id, id);
 
             if (notice && auth.fo_marge == null) {
 
                 StringBuilder msg = new StringBuilder();
 
-                msg.append(ship.isSourceFollowingTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 关注了你 :)").append(parseStatus(api,follower));
+                msg.append(ship.isSourceFollowingTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 关注了你 :)").append(parseStatus(api, follower));
 
                 if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
-                new Send(auth.user,msg.toString()).html().point(0,archive.id);
+                new Send(auth.user, msg.toString()).html().point(0, archive.id);
 
             }
 
-			if (auth.fb != null && !(auth.fbi != null && ship.isSourceFollowingTarget())) {
+            if (auth.fb != null && !(auth.fbi != null && ship.isSourceFollowingTarget())) {
 
-				FollowedBy.onFollowed(auth,api,archive);
+                FollowedBy.onFollowed(auth, api, archive);
 
-			}
+            }
 
 
         } catch (TwitterException e) {
@@ -641,24 +639,24 @@ public class TrackTask extends TimerTask {
 
     }
 
-	void lostFriend(TAuth auth,Twitter api,long id,boolean notice) {
+    void lostFriend(TAuth auth, Twitter api, long id, boolean notice) {
 
         try {
 
             User follower = api.showUser(id);
             UserArchive archive = UserArchive.save(follower);
 
-            Relationship ship = api.showFriendship(id,auth.id);
+            Relationship ship = api.showFriendship(id, auth.id);
 
-            if (notice && ship.isSourceBlockingTarget())  {
+            if (notice && ship.isSourceBlockingTarget()) {
 
                 StringBuilder msg = new StringBuilder();
 
-                msg.append("关注的 ").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" ").append(" 屏蔽了你 :)").append(parseStatus(api,follower));
+                msg.append("关注的 ").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" ").append(" 屏蔽了你 :)").append(parseStatus(api, follower));
 
                 if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
-                new Send(auth.user,msg.toString()).html().point(0,archive.id);
+                new Send(auth.user, msg.toString()).html().point(0, archive.id);
 
             }
 
@@ -684,7 +682,7 @@ public class TrackTask extends TimerTask {
     }
 
 
-    void newFriend(TAuth auth,Twitter api,long id,boolean notice) {
+    void newFriend(TAuth auth, Twitter api, long id, boolean notice) {
 
         try {
 
@@ -692,28 +690,29 @@ public class TrackTask extends TimerTask {
 
             UserArchive archive = UserArchive.save(follower);
 
-            Relationship ship = api.showFriendship(id,auth.id);
+            Relationship ship = api.showFriendship(id, auth.id);
 
-            AutoTask.onNewFriend(auth,api,archive,ship);
+            AutoTask.onNewFriend(auth, api, archive, ship);
 
-			if (ship.isSourceBlockingTarget()) {
+            if (ship.isSourceBlockingTarget()) {
 
-				BlockedBy.onBlocked(auth,api,archive);
+                BlockedBy.onBlocked(auth, api, archive);
 
-			}
+            }
 
-        } catch (TwitterException e) {}
+        } catch (TwitterException e) {
+        }
 
     }
 
-    void lostFollower(TAuth auth,Twitter api,long id,boolean notice,List<Long> latest) {
+    void lostFollower(TAuth auth, Twitter api, long id, boolean notice, List<Long> latest) {
 
         try {
 
             User follower = api.showUser(id);
             UserArchive archive = UserArchive.save(follower);
 
-            Relationship ship = api.showFriendship(id,auth.id);
+            Relationship ship = api.showFriendship(id, auth.id);
 
             if (ship.isSourceFollowingTarget()) {
 
@@ -727,25 +726,25 @@ public class TrackTask extends TimerTask {
 
                 StringBuilder msg = new StringBuilder();
 
-                msg.append(ship.isSourceFollowedByTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 取关了你 :)").append(parseStatus(api,follower));
+                msg.append(ship.isSourceFollowedByTarget() ? "已关注的 " : "").append(archive.urlHtml()).append(" #").append(archive.screenName).append(" 取关了你 :)").append(parseStatus(api, follower));
 
                 if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
-                new Send(auth.user,msg.toString()).html().point(0,archive.id);
+                new Send(auth.user, msg.toString()).html().point(0, archive.id);
 
             }
 
-			if (ship.isSourceFollowedByTarget()) {
+            if (ship.isSourceFollowedByTarget()) {
 
-				OWUnfoPublish.onUnfo(auth,api,archive);
+                OWUnfoPublish.onUnfo(auth, api, archive);
 
-			}
+            }
 
-			if (ship.isSourceBlockingTarget()) {
+            if (ship.isSourceBlockingTarget()) {
 
-				BlockedBy.onBlocked(auth,api,archive);
+                BlockedBy.onBlocked(auth, api, archive);
 
-			}
+            }
 
         } catch (TwitterException e) {
 
@@ -761,7 +760,7 @@ public class TrackTask extends TimerTask {
 
             if (auth.multiUser()) msg.append("\n\n账号 : #").append(auth.archive().screenName);
 
-            new Send(auth.user,msg.toString()).html().point(0,id);
+            new Send(auth.user, msg.toString()).html().point(0, id);
 
         }
 
@@ -778,7 +777,7 @@ public class TrackTask extends TimerTask {
         public IdsList() {
         }
 
-        public IdsList(Long id,List<Long> ids) {
+        public IdsList(Long id, List<Long> ids) {
 
             this.id = id;
             this.ids = ids;

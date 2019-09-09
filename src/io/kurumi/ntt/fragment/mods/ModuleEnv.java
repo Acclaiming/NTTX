@@ -3,191 +3,192 @@ package io.kurumi.ntt.fragment.mods;
 import cn.hutool.core.io.FileUtil;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.BotLog;
-import java.io.File;
-import java.util.HashMap;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.db.UserData;
-import org.mozilla.javascript.Function;
+
+import java.io.File;
+import java.util.HashMap;
 
 public class ModuleEnv extends Fragment {
 
-	public static HashMap<Long,ModuleEnv> envs = new HashMap<>();
+    public static HashMap<Long, ModuleEnv> envs = new HashMap<>();
 
-	public static File mainPath = new File(Env.DATA_DIR,"mods/users");
+    public static File mainPath = new File(Env.DATA_DIR, "mods/users");
 
-	public static ModuleEnv get(Long userId) {
+    public static ModuleEnv get(Long userId) {
 
-		if (exiting.containsKey(userId)) return null;
+        if (exiting.containsKey(userId)) return null;
 
-		if (envs.containsKey(userId)) {
+        if (envs.containsKey(userId)) {
 
-			return envs.get(userId);
+            return envs.get(userId);
 
-		}
+        }
 
-		ModuleEnv mod = new ModuleEnv(userId);
+        ModuleEnv mod = new ModuleEnv(userId);
 
-		envs.put(userId,mod);
+        envs.put(userId, mod);
 
-		return mod;
+        return mod;
 
-	}
+    }
 
-	public static HashMap<Long,Boolean> exiting = new HashMap<>();
+    public static HashMap<Long, Boolean> exiting = new HashMap<>();
 
-	public static void exitEnv(Long userId) {
+    public static void exitEnv(Long userId) {
 
-		exiting.put(userId,true);
+        exiting.put(userId, true);
 
-		envs.remove(userId);
+        envs.remove(userId);
 
-		ModuleEnv toExit = envs.get(userId);
+        ModuleEnv toExit = envs.get(userId);
 
-		if (toExit != null) toExit.env.ctx.exit();
+        if (toExit != null) Context.exit();
 
-	}
+    }
 
-	public long userId;
-	public File path;
+    public long userId;
+    public File path;
 
-	public JavaScriptEnv env;
+    public JavaScriptEnv env;
 
-	public Scriptable functions;
+    public Scriptable functions;
 
-	public ModuleEnv(long userId) {
+    public ModuleEnv(long userId) {
 
-		this.userId = userId;
-		this.path = new File(mainPath,userId + "");
+        this.userId = userId;
+        this.path = new File(mainPath, userId + "");
 
-		env = new JavaScriptEnv();
+        env = new JavaScriptEnv();
 
-		functions = env.ctx.newObject(env.env);
+        functions = env.ctx.newObject(env.env);
 
-		env.putConst("__F",functions);
+        env.putConst("__F", functions);
 
-		reLoadModules();
+        reLoadModules();
 
-	}
+    }
 
-	public HashMap<String,NModule> modules = new HashMap<>();
+    public HashMap<String, NModule> modules = new HashMap<>();
 
-	public HashMap<String,NModule> functionIndex = new HashMap<>();
+    public HashMap<String, NModule> functionIndex = new HashMap<>();
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		NModule mod = functionIndex.get(function);
+        NModule mod = functionIndex.get(function);
 
-		if (mod.error != null) {
+        if (mod.error != null) {
 
-			msg.send("命令 [ /" + function + " ] 所在模块 " + mod.format() + " 出错 :(\n\n" + BotLog.parseError(mod.error)).async();
+            msg.send("命令 [ /" + function + " ] 所在模块 " + mod.format() + " 出错 :(\n\n" + BotLog.parseError(mod.error)).async();
 
-			return;
+            return;
 
-		}
+        }
 
-		Object functionObj = functions.get(function,functions);
+        Object functionObj = functions.get(function, functions);
 
-		if (functionObj == null || !(functionObj instanceof Function)) {
+        if (functionObj == null || !(functionObj instanceof Function)) {
 
-			msg.send("命令 [ /" + function + " ] 所在模块 " + mod.format() + " 没有定义该函数 : " + functionObj).async();
+            msg.send("命令 [ /" + function + " ] 所在模块 " + mod.format() + " 没有定义该函数 : " + functionObj).async();
 
-			return;
+            return;
 
-		}
+        }
 
-		Function fn = ((Function)functionObj);
+        Function fn = ((Function) functionObj);
 
-		try {
+        try {
 
-			fn.call(env.ctx,mod.env,mod.env,new Object[] { user,msg,function,params });
+            fn.call(env.ctx, mod.env, mod.env, new Object[]{user, msg, function, params});
 
-		} catch (Exception ex) {
+        } catch (Exception ex) {
 
-			mod.error = new ModuleException("方法 : " + function + " 执行中出错\n\n" + BotLog.parseError(ex));
+            mod.error = new ModuleException("方法 : " + function + " 执行中出错\n\n" + BotLog.parseError(ex));
 
-			msg.send("方法执行中出错 : " + BotLog.parseError(ex));
+            msg.send("方法执行中出错 : " + BotLog.parseError(ex));
 
-		}
+        }
 
-	}
+    }
 
-	public void reLoadModules() {
+    public void reLoadModules() {
 
-		File[] files = path.listFiles();
+        File[] files = path.listFiles();
 
-		if (files == null || files.length == 0) return;
+        if (files == null || files.length == 0) return;
 
-		for (File modDir : path.listFiles()) {
+        for (File modDir : path.listFiles()) {
 
-			NModule mod = Launcher.GSON.fromJson(FileUtil.readUtf8String(new File(modDir,"package.json")),NModule.class);
+            NModule mod = Launcher.GSON.fromJson(FileUtil.readUtf8String(new File(modDir, "package.json")), NModule.class);
 
-			mod.modPath = modDir;
+            mod.modPath = modDir;
 
-			modules.put(mod.id,mod);
+            modules.put(mod.id, mod);
 
-		}
+        }
 
-		for (NModule mod : modules.values()) {
+        for (NModule mod : modules.values()) {
 
-			for (String dep : mod.dependencies) {
+            for (String dep : mod.dependencies) {
 
-				if (!modules.containsKey(dep)) {
+                if (!modules.containsKey(dep)) {
 
-					mod.error = new ModuleException("模块 " + mod.id + " 缺少依赖 " + dep);
+                    mod.error = new ModuleException("模块 " + mod.id + " 缺少依赖 " + dep);
 
-					continue;
+                    continue;
 
-				}
+                }
 
-			}
+            }
 
-			for (String fn : mod.cmds.keySet()) {
+            for (String fn : mod.cmds.keySet()) {
 
-				NModule err = functionIndex.put(fn,mod);
+                NModule err = functionIndex.put(fn, mod);
 
-				if (err != null) {
+                if (err != null) {
 
-					mod.error = new ModuleException("模块函数重复 " + fn + " 在 : " + mod.id + " 与 " + err.id);
+                    mod.error = new ModuleException("模块函数重复 " + fn + " 在 : " + mod.id + " 与 " + err.id);
 
-					continue;
+                    continue;
 
-				}
+                }
 
-			}
+            }
 
-			File mainPath = new File(mod.modPath,mod.main);
+            File mainPath = new File(mod.modPath, mod.main);
 
-			if (!mainPath.exists()) {
+            if (!mainPath.exists()) {
 
-				mod.error = new ModuleException("入口文件 " + mod.main + " 不存在");
+                mod.error = new ModuleException("入口文件 " + mod.main + " 不存在");
 
-				continue;
+                continue;
 
-			}
+            }
 
-			mod.env = env.ctx.newObject(env.env);
+            mod.env = env.ctx.newObject(env.env);
 
-			ScriptableObject.putConstProperty(mod.env,"mod",mod);
+            ScriptableObject.putConstProperty(mod.env, "mod", mod);
 
-			try {
+            try {
 
-				env.ctx.evaluateReader(mod.env,FileUtil.getUtf8Reader(mainPath),mainPath.getName(),1,null);
+                env.ctx.evaluateReader(mod.env, FileUtil.getUtf8Reader(mainPath), mainPath.getName(), 1, null);
 
-			} catch (Exception e) {
+            } catch (Exception e) {
 
-				mod.error = new ModuleException("初始化出错 : \n\n" + BotLog.parseError(e));
+                mod.error = new ModuleException("初始化出错 : \n\n" + BotLog.parseError(e));
 
-			}
+            }
 
-		}
+        }
 
 
-
-	}
+    }
 
 }

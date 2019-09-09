@@ -1,18 +1,14 @@
 package io.kurumi.ntt.fragment.twitter;
 
+import cn.hutool.core.util.RandomUtil;
 import com.mongodb.client.FindIterable;
 import io.kurumi.ntt.db.Data;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
-import twitter4j.AsyncTwitter;
-import twitter4j.AsyncTwitterFactory;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
+import twitter4j.*;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
+
 import java.util.List;
-import io.kurumi.ntt.db.CachedData;
-import cn.hutool.core.util.RandomUtil;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TAuth {
@@ -24,31 +20,31 @@ public class TAuth {
         return data.countByField("user", user) > 1;
 
     }
-	
-	private static TAuth current;
-	private static AtomicInteger count = new AtomicInteger(0);
-	
-	public static TAuth next() {
-		
-		synchronized (count) {
-			
-			if (current == null || count.incrementAndGet() == 100) {
-				
-				count.set(0);
-				
-				int max = (int)data.collection.count();
 
-				int target = RandomUtil.randomInt(max);
+    private static TAuth current;
+    private static AtomicInteger count = new AtomicInteger(0);
 
-				current = data.collection.find().skip(target).limit(1).first();
-				
-			}
-		
-			return current;
-			
-		}
-		
-	}
+    public static TAuth next() {
+
+        synchronized (count) {
+
+            if (current == null || count.incrementAndGet() == 100) {
+
+                count.set(0);
+
+                int max = (int) data.collection.count();
+
+                int target = RandomUtil.randomInt(max);
+
+                current = data.collection.find().skip(target).limit(1).first();
+
+            }
+
+            return current;
+
+        }
+
+    }
 
     static {
         
@@ -92,60 +88,60 @@ public class TAuth {
     public String apiKeySec;
     public String accToken;
     public String accTokenSec;
-	
-	public Boolean pm;
-	
-	public Boolean mrt;
-	
-	public Boolean fo;
-	
-	public Boolean fo_marge;
-	public List<Long> fo_new;
-	public List<Long> fo_lost;
-	
-	public List<Long> nf;
-	public List<Long> lf;
-	
-	public Boolean fo_info;
-	public Boolean fr_info;
 
-	public Boolean ign_target;
-	
-	public Boolean tl;
-	public Long tl_offset;
+    public Boolean pm;
 
-	public Boolean tl_dn;
-	public Boolean tl_ns;
-	public Boolean tl_na;
-	public Boolean tl_nr;
-	public Boolean tl_nt;
-	public Boolean tl_nesu;
-	
-	public Boolean mention;
+    public Boolean mrt;
 
-	public Long mention_offset;
-	public Long rt_offset;
-	
-	public Boolean mdb;
+    public Boolean fo;
 
-	public Boolean ad_s;
-	public Boolean ad_r;
-	public Boolean ad_t;
-	
-	public Boolean ad_a;
-	public Integer ad_d;
-	
-	public Boolean oup;
-	public String oup_msg;
-	
-	public Boolean bbb;
-	public Boolean bbp;
-	public String bbp_msg;
-	
-	public Boolean fb;
-	public Boolean fbi;
-	public Boolean fbp;
-	public Boolean fbp_msg;
+    public Boolean fo_marge;
+    public List<Long> fo_new;
+    public List<Long> fo_lost;
+
+    public List<Long> nf;
+    public List<Long> lf;
+
+    public Boolean fo_info;
+    public Boolean fr_info;
+
+    public Boolean ign_target;
+
+    public Boolean tl;
+    public Long tl_offset;
+
+    public Boolean tl_dn;
+    public Boolean tl_ns;
+    public Boolean tl_na;
+    public Boolean tl_nr;
+    public Boolean tl_nt;
+    public Boolean tl_nesu;
+
+    public Boolean mention;
+
+    public Long mention_offset;
+    public Long rt_offset;
+
+    public Boolean mdb;
+
+    public Boolean ad_s;
+    public Boolean ad_r;
+    public Boolean ad_t;
+
+    public Boolean ad_a;
+    public Integer ad_d;
+
+    public Boolean oup;
+    public String oup_msg;
+
+    public Boolean bbb;
+    public Boolean bbp;
+    public String bbp_msg;
+
+    public Boolean fb;
+    public Boolean fbi;
+    public Boolean fbp;
+    public Boolean fbp_msg;
 	
 	
 	/*
@@ -154,7 +150,7 @@ public class TAuth {
 	public long directMessageOffset = -1;
 	
 	*/
-	
+
     public static TAuth getById(Long accountid) {
 
         return data.getById(accountid);

@@ -1,13 +1,14 @@
 package io.kurumi.ntt.fragment.spam;
 
-import io.kurumi.ntt.fragment.*;
-import io.kurumi.ntt.db.*;
-import io.kurumi.ntt.model.*;
-import io.kurumi.ntt.model.request.*;
-import cn.hutool.core.util.*;
-import com.pengrad.telegrambot.request.*;
-import com.mongodb.internal.connection.*;
-import io.kurumi.ntt.utils.*;
+import cn.hutool.core.util.NumberUtil;
+import io.kurumi.ntt.db.PointData;
+import io.kurumi.ntt.db.UserData;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Callback;
+import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.ButtonMarkup;
+import io.kurumi.ntt.utils.Html;
 
 public class GroupReport extends Fragment {
 

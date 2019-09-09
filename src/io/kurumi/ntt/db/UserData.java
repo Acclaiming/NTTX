@@ -1,15 +1,17 @@
 package io.kurumi.ntt.db;
 
-import cn.hutool.core.util.*;
-import com.pengrad.telegrambot.model.*;
-import io.kurumi.ntt.utils.*;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.pengrad.telegrambot.model.User;
+import io.kurumi.ntt.Env;
+import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.fragment.admin.Firewall;
+import io.kurumi.ntt.utils.Html;
+import io.kurumi.ntt.utils.NTT;
 
 import java.util.*;
-
-import io.kurumi.ntt.Env;
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.Launcher;
-import io.kurumi.ntt.fragment.admin.*;
 
 public class UserData {
 
@@ -17,7 +19,7 @@ public class UserData {
 
     public static HashMap<Long, UserData> userDataIndex = new HashMap<>();
     public Long id;
-	public Boolean isBot;
+    public Boolean isBot;
     public String firstName;
     public String lastName;
     public String userName;
@@ -132,8 +134,8 @@ public class UserData {
         firstName = user.firstName();
 
         lastName = user.lastName();
-		
-		isBot = user.isBot();
+
+        isBot = user.isBot();
 
     }
 
@@ -179,17 +181,17 @@ public class UserData {
         return Html.a(StrUtil.isBlank(name()) ? "[已重置]" : name(), "tg://user?id=" + id);
 
     }
-	
-	public String format() {
 
-        return Html.a("ID","tg://user?id=" + id) + " : " + Html.code(id) + "\n" + "用户名 : " + Html.code(name());
-		
+    public String format() {
+
+        return Html.a("ID", "tg://user?id=" + id) + " : " + Html.code(id) + "\n" + "用户名 : " + Html.code(name());
+
     }
 
     public boolean admin() {
-		
+
         return ArrayUtil.contains(Env.ADMINS, id.intValue());
-		
+
     }
 
 }

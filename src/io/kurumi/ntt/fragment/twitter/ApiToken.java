@@ -1,8 +1,9 @@
 package io.kurumi.ntt.fragment.twitter;
 
-import cn.hutool.json.*;
-import twitter4j.*;
-import twitter4j.conf.*;
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
+import twitter4j.conf.Configuration;
+import twitter4j.conf.ConfigurationBuilder;
 
 public class ApiToken {
 

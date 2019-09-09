@@ -5,17 +5,16 @@ import com.pengrad.telegrambot.model.ChatMember;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.GetChatAdministrators;
-import com.pengrad.telegrambot.request.LeaveChat;
 import com.pengrad.telegrambot.response.GetChatAdministratorsResponse;
+import io.kurumi.ntt.Env;
 import io.kurumi.ntt.db.Data;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.Launcher;
 import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.Env;
 import io.kurumi.ntt.utils.Html;
+
 import java.util.HashMap;
 
 public class Firewall extends Fragment {
@@ -172,27 +171,26 @@ public class Firewall extends Fragment {
 
     }
 
-	public static HashMap<Long,Lock> instances = new HashMap<>();
-	
-	static class Lock {
-		
-		public static Lock getInstcnae(UserData user) {
-			
-			synchronized (user) {
-				
-				if (instances.containsKey(user.id)) {
-					
-					
-					
-				}
-				
-			}
-			
-			return null;
-			
-		}
-		
-	}
+    public static HashMap<Long, Lock> instances = new HashMap<>();
+
+    static class Lock {
+
+        public static Lock getInstcnae(UserData user) {
+
+            synchronized (user) {
+
+                if (instances.containsKey(user.id)) {
+
+
+                }
+
+            }
+
+            return null;
+
+        }
+
+    }
 
     @Override
     public boolean onUpdate(UserData user, Update update) {
@@ -207,7 +205,7 @@ public class Firewall extends Fragment {
 
             if (block.containsId(user.id)) {
 
-               // if (isMainInstance()) bot().execute(new LeaveChat(msg.chat().id()));
+                // if (isMainInstance()) bot().execute(new LeaveChat(msg.chat().id()));
 
                 new Send(Env.LOG_CHANNEL, "BOT " + UserData.get(origin.me).userName() + " 被 " + user.userName() + " 邀请到 " + msg.chat().title() + " [" + Html.code(msg.chat().id()) + "]").html().async();
 
@@ -225,11 +223,11 @@ public class Firewall extends Fragment {
 
                 if (!block.containsId(current.id)) continue;
 
-               // if (isMainInstance()) bot().execute(new LeaveChat(msg.chat().id()));
+                // if (isMainInstance()) bot().execute(new LeaveChat(msg.chat().id()));
 
                 new Send(Env.LOG_CHANNEL, "BOT " + UserData.get(origin.me).userName() + " 被 " + user.userName() + " 邀请到 " + msg.chat().title() + " [" + Html.code(msg.chat().id()) + "] 因为管理员 " + current.userName()).html().async();
 
-               // return true;
+                // return true;
 
             }
 

@@ -24,7 +24,7 @@ import twitter4j.TwitterException;
 
 public class StatusAction extends Fragment {
 
-	static final String POINT_REPLY = "s_reply";
+    static final String POINT_REPLY = "s_reply";
     static final String POINT_RETWEET_STATUS = "s_rt";
     static final String POINT_DESTROY_RETWEET = "s_unrt";
     static final String POINT_DESTROY_STATUS = "s_del";
@@ -33,50 +33,50 @@ public class StatusAction extends Fragment {
     static final String POINT_UNLIKE_STATUS = "s_ul";
     public static Data<CurrentAccount> current = new Data<CurrentAccount>(CurrentAccount.class);
 
-    public static ButtonMarkup createMarkup(final long accountId,final long statusId,final boolean del,final boolean full,final boolean retweeted,final boolean liked) {
+    public static ButtonMarkup createMarkup(final long accountId, final long statusId, final boolean del, final boolean full, final boolean retweeted, final boolean liked) {
 
         return new ButtonMarkup() {{
 
-				ButtonLine line = newButtonLine();
+            ButtonLine line = newButtonLine();
 
-				line.newButton("↪",POINT_REPLY,accountId);
+            line.newButton("↪", POINT_REPLY, accountId);
 
-				if (retweeted) {
+            if (retweeted) {
 
-					line.newButton("❎️",POINT_DESTROY_RETWEET,statusId);
+                line.newButton("❎️", POINT_DESTROY_RETWEET, statusId);
 
-				} else {
+            } else {
 
-					line.newButton("🔄",POINT_RETWEET_STATUS,statusId);
+                line.newButton("🔄", POINT_RETWEET_STATUS, statusId);
 
-				}
+            }
 
-				if (liked) {
+            if (liked) {
 
-					line.newButton("💔",POINT_UNLIKE_STATUS,full,retweeted,liked);
+                line.newButton("💔", POINT_UNLIKE_STATUS, full, retweeted, liked);
 
-				} else {
+            } else {
 
-					line.newButton("❤",POINT_LIKE_STATUS,full,retweeted,liked);
+                line.newButton("❤", POINT_LIKE_STATUS, full, retweeted, liked);
 
-				}
+            }
 
-				if (del) {
+            if (del) {
 
-					line.newButton("❌️",POINT_DESTROY_STATUS);
+                line.newButton("❌️", POINT_DESTROY_STATUS);
 
-				}
+            }
 
-				if (!full) {
+            if (!full) {
 
-					line.newButton("🔎",POINT_SHOW_FULL,accountId,statusId,1,retweeted ? 1 : 0,liked ? 1 : 0);
+                line.newButton("🔎", POINT_SHOW_FULL, accountId, statusId, 1, retweeted ? 1 : 0, liked ? 1 : 0);
 
-				}
+            }
 
-				// line.newButton("🔇",POINT_MUTE_USER,status.getUser().getId());
+            // line.newButton("🔇",POINT_MUTE_USER,status.getUser().getId());
 
 
-			}};
+        }};
 
     }
 
@@ -88,71 +88,71 @@ public class StatusAction extends Fragment {
         registerFunction("current");
 
         registerCallback(
-			POINT_REPLY,
-			POINT_LIKE_STATUS,
-			POINT_UNLIKE_STATUS,
-			POINT_RETWEET_STATUS,
-			POINT_DESTROY_RETWEET,
-			POINT_DESTROY_STATUS,
-			POINT_SHOW_FULL);
+                POINT_REPLY,
+                POINT_LIKE_STATUS,
+                POINT_UNLIKE_STATUS,
+                POINT_RETWEET_STATUS,
+                POINT_DESTROY_RETWEET,
+                POINT_DESTROY_STATUS,
+                POINT_SHOW_FULL);
 
 
     }
 
     @Override
-    public void onFunction(UserData user,Msg msg,String function,String[] params) {
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-        requestTwitter(user,msg,true);
-
-    }
-
-    @Override
-    public void onTwitterFunction(final UserData user,Msg msg,String function,String[] params,final TAuth account) {
-
-        current.setById(user.id,new CurrentAccount() {{
-
-					id = user.id;
-
-					accountId = account.id;
-
-				}});
-
-        msg.send("当前操作账号已设为 : {}\n当多用户时，可用此命令设置默认账号。",account.archive().urlHtml()).html().exec();
+        requestTwitter(user, msg, true);
 
     }
 
     @Override
-    public void onCallback(UserData user,Callback callback,String point,String[] params) {
+    public void onTwitterFunction(final UserData user, Msg msg, String function, String[] params, final TAuth account) {
 
-		InlineKeyboardButton[] buttons = callback.message().replyMarkup().inlineKeyboard()[0];
+        current.setById(user.id, new CurrentAccount() {{
 
-		params = ArrayUtil.remove(buttons[2].callbackData().split(","),0);
+            id = user.id;
 
-		if (params.length != 3) {
+            accountId = account.id;
 
-			callback.invalidQuery();
+        }});
 
-			return;
+        msg.send("当前操作账号已设为 : {}\n当多用户时，可用此命令设置默认账号。", account.archive().urlHtml()).html().exec();
 
-		}
+    }
 
-		long accountId = NumberUtil.parseLong(ArrayUtil.remove(buttons[0].callbackData().split(","),0)[0]);
-		long statusId = NumberUtil.parseLong(ArrayUtil.remove(buttons[1].callbackData().split(","),0)[0]);
+    @Override
+    public void onCallback(UserData user, Callback callback, String point, String[] params) {
 
-		boolean isFull = "true".equals(params[0]);
+        InlineKeyboardButton[] buttons = callback.message().replyMarkup().inlineKeyboard()[0];
+
+        params = ArrayUtil.remove(buttons[2].callbackData().split(","), 0);
+
+        if (params.length != 3) {
+
+            callback.invalidQuery();
+
+            return;
+
+        }
+
+        long accountId = NumberUtil.parseLong(ArrayUtil.remove(buttons[0].callbackData().split(","), 0)[0]);
+        long statusId = NumberUtil.parseLong(ArrayUtil.remove(buttons[1].callbackData().split(","), 0)[0]);
+
+        boolean isFull = "true".equals(params[0]);
         boolean retweeted = "true".equals(params[1]);
         boolean liked = "true".equals(params[2]);
 
-		if (POINT_REPLY.equals(point)) {
+        if (POINT_REPLY.equals(point)) {
 
-			getInstance(StatusUpdate.class).reply(user,callback,accountId,statusId);
+            getInstance(StatusUpdate.class).reply(user, callback, accountId, statusId);
 
-			return;
+            return;
 
-		}
+        }
 
 
-        long count = TAuth.data.countByField("user",user.id);
+        long count = TAuth.data.countByField("user", user.id);
 
         if (count == 0) {
 
@@ -166,197 +166,197 @@ public class StatusAction extends Fragment {
 
         if (count > 1) {
 
-			if (accountId != -1) {
+            if (accountId != -1) {
 
-				auth = TAuth.getById(accountId);
+                auth = TAuth.getById(accountId);
 
-			}
+            }
 
-			if (auth == null || !auth.user.equals(user.id)) {
+            if (auth == null || !auth.user.equals(user.id)) {
 
-				CurrentAccount currentAccount = current.getById(user.id);
+                CurrentAccount currentAccount = current.getById(user.id);
 
-				if (currentAccount != null) {
+                if (currentAccount != null) {
 
-					auth = TAuth.getById(currentAccount.accountId);
+                    auth = TAuth.getById(currentAccount.accountId);
 
-					if (auth == null || !auth.user.equals(user.id)) {
+                    if (auth == null || !auth.user.equals(user.id)) {
 
-						callback.alert("乃认证了多个账号 请使用 /current 选择默认账号再操作 ~");
+                        callback.alert("乃认证了多个账号 请使用 /current 选择默认账号再操作 ~");
 
-						return;
+                        return;
 
-					}
+                    }
 
-				} else {
+                } else {
 
-					callback.alert("乃认证了多个账号 请使用 /current 选择默认账号再操作 ~");
+                    callback.alert("乃认证了多个账号 请使用 /current 选择默认账号再操作 ~");
 
-					return;
+                    return;
 
-				}
+                }
 
-			}
+            }
 
-		} else {
+        } else {
 
-			auth = TAuth.getByUser(user.id).first();
+            auth = TAuth.getByUser(user.id).first();
 
-		}
+        }
 
-		if (auth == null) {
+        if (auth == null) {
 
-			callback.alert("你还没有认证账号...");
+            callback.alert("你还没有认证账号...");
 
-			return;
+            return;
 
-		}
+        }
 
-		Twitter api = auth.createApi();
+        Twitter api = auth.createApi();
 
-		StatusArchive archive = StatusArchive.get(statusId);
+        StatusArchive archive = StatusArchive.get(statusId);
 
-		if (archive == null) {
+        if (archive == null) {
 
-			Status status;
+            Status status;
 
-			try {
+            try {
 
-				status = api.showStatus(statusId);
+                status = api.showStatus(statusId);
 
-				archive = StatusArchive.save(status).loop(api);
+                archive = StatusArchive.save(status).loop(api);
 
-				liked = status.isFavorited();
+                liked = status.isFavorited();
 
-				retweeted = status.isRetweetedByMe();
+                retweeted = status.isRetweetedByMe();
 
-			} catch (TwitterException e) {
+            } catch (TwitterException e) {
 
-				callback.alert(NTT.parseTwitterException(e));
+                callback.alert(NTT.parseTwitterException(e));
 
-				return;
+                return;
 
-			}
+            }
 
-		}
+        }
 
-		if (POINT_LIKE_STATUS.equals(point)) {
+        if (POINT_LIKE_STATUS.equals(point)) {
 
-			try {
+            try {
 
-				api.createFavorite(statusId);
+                api.createFavorite(statusId);
 
-				callback.text("已打心 ~");
+                callback.text("已打心 ~");
 
-				liked = true;
+                liked = true;
 
-			} catch (TwitterException e) {
+            } catch (TwitterException e) {
 
-				liked = true;
+                liked = true;
 
-				callback.alert(NTT.parseTwitterException(e));
+                callback.alert(NTT.parseTwitterException(e));
 
-			}
+            }
 
-		} else if (POINT_UNLIKE_STATUS.equals(point)) {
+        } else if (POINT_UNLIKE_STATUS.equals(point)) {
 
-			try {
+            try {
 
-				api.destroyFavorite(statusId);
+                api.destroyFavorite(statusId);
 
-				liked = false;
+                liked = false;
 
-				callback.text("已取消打心 ~");
+                callback.text("已取消打心 ~");
 
-			} catch (TwitterException e) {
+            } catch (TwitterException e) {
 
-				liked = false;
+                liked = false;
 
-				callback.alert(NTT.parseTwitterException(e));
+                callback.alert(NTT.parseTwitterException(e));
 
-			}
+            }
 
-		} else if (POINT_RETWEET_STATUS.equals(point)) {
+        } else if (POINT_RETWEET_STATUS.equals(point)) {
 
-			try {
+            try {
 
-				api.retweetStatus(statusId);
+                api.retweetStatus(statusId);
 
-				retweeted = true;
+                retweeted = true;
 
-				callback.text("已转推 ~");
+                callback.text("已转推 ~");
 
-			} catch (TwitterException e) {
+            } catch (TwitterException e) {
 
-				retweeted = true;
+                retweeted = true;
 
-				callback.alert(NTT.parseTwitterException(e));
+                callback.alert(NTT.parseTwitterException(e));
 
-			}
+            }
 
-		} else if (POINT_DESTROY_STATUS.equals(point)) {
+        } else if (POINT_DESTROY_STATUS.equals(point)) {
 
-			try {
+            try {
 
-				api.destroyStatus(statusId);
+                api.destroyStatus(statusId);
 
-				callback.text("已删除推文 ~");
+                callback.text("已删除推文 ~");
 
-				callback.delete();
+                callback.delete();
 
-				return;
+                return;
 
-			} catch (TwitterException e) {
+            } catch (TwitterException e) {
 
-				callback.alert(NTT.parseTwitterException(e));
+                callback.alert(NTT.parseTwitterException(e));
 
-			}
+            }
 
-		} else if (POINT_DESTROY_RETWEET.equals(point)) {
+        } else if (POINT_DESTROY_RETWEET.equals(point)) {
 
-			try {
+            try {
 
-				api.unRetweetStatus(statusId);
+                api.unRetweetStatus(statusId);
 
-				retweeted = false;
+                retweeted = false;
 
-				callback.text("已撤销转推 ~");
+                callback.text("已撤销转推 ~");
 
-			} catch (TwitterException e) {
+            } catch (TwitterException e) {
 
-				callback.alert(NTT.parseTwitterException(e));
+                callback.alert(NTT.parseTwitterException(e));
 
-			}
+            }
 
-		} else if (POINT_SHOW_FULL.equals(point)) {
+        } else if (POINT_SHOW_FULL.equals(point)) {
 
-			archive.loop(api);
+            archive.loop(api);
 
-			if (callback.message().caption() != null) {
+            if (callback.message().caption() != null) {
 
-				BaseResponse resp = bot().execute(new EditMessageCaption(callback.chatId(),callback.messageId()).caption(archive.toHtml(auth)).parseMode(ParseMode.HTML).replyMarkup(createMarkup(auth.id,archive.id,archive.from.equals(auth.id),true,retweeted,liked).markup()));
+                BaseResponse resp = bot().execute(new EditMessageCaption(callback.chatId(), callback.messageId()).caption(archive.toHtml(auth)).parseMode(ParseMode.HTML).replyMarkup(createMarkup(auth.id, archive.id, archive.from.equals(auth.id), true, retweeted, liked).markup()));
 
-				if (!resp.isOk()) {
+                if (!resp.isOk()) {
 
-					StaticLog.warn("显示全文失败 : {} {}",resp.errorCode(),resp.description());
+                    StaticLog.warn("显示全文失败 : {} {}", resp.errorCode(), resp.description());
 
-				}
+                }
 
-			} else {
+            } else {
 
-				callback.edit(archive.toHtml(auth)).buttons(createMarkup(auth.id,archive.id,archive.from.equals(auth.id),true,retweeted,liked)).html().exec();
+                callback.edit(archive.toHtml(auth)).buttons(createMarkup(auth.id, archive.id, archive.from.equals(auth.id), true, retweeted, liked)).html().exec();
 
-			}
+            }
 
-			callback.text("已展开 ~");
+            callback.text("已展开 ~");
 
-			return;
+            return;
 
-		}
+        }
 
-		callback.editMarkup(createMarkup(auth.id,archive.id,archive.from.equals(auth.id),isFull,retweeted,liked));
+        callback.editMarkup(createMarkup(auth.id, archive.id, archive.from.equals(auth.id), isFull, retweeted, liked));
 
-	}
+    }
 
     public static class CurrentAccount {
 

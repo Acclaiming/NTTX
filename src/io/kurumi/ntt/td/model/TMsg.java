@@ -1,178 +1,177 @@
 package io.kurumi.ntt.td.model;
 
-import io.kurumi.ntt.td.TdApi.*;
-
 import cn.hutool.core.util.StrUtil;
+import io.kurumi.ntt.td.TdApi.*;
 import io.kurumi.ntt.td.client.TdClient;
 import io.kurumi.ntt.td.client.TdInterface;
 
 public class TMsg extends TdInterface {
 
-	public Message message;
-	public long replyTo;
-	public MessageContent content;
+    public Message message;
+    public long replyTo;
+    public MessageContent content;
 
-	private int isCommand = 0;
+    private int isCommand = 0;
     private boolean noPayload = false;
-    private String payload[];
+    private String[] payload;
     private boolean noParams = false;
 
     private String name;
-	private String function;
+    private String function;
 
     private String[] params;
-	private String[] fixedParams;
-	private String param;
+    private String[] fixedParams;
+    private String param;
 
-	private static String[] NO_PARAMS = new String[0];
+    private static String[] NO_PARAMS = new String[0];
 
-	public long chatId;
-	public int groupId;
-	
-	public long messageId;
-	public int sender;
+    public long chatId;
+    public int groupId;
 
-	public TMsg(TdClient client,Message message) {
-		
-		this.client = client;
-		this.message = message;
-		this.replyTo = message.replyToMessageId;
-		this.content = message.content;
-		this.chatId = message.chatId;
-		this.messageId = message.id;
-		this.sender = message.senderUserId;
+    public long messageId;
+    public int sender;
 
-		if (chatId < 0) {
-			
-			if (chatId < -1000000000000L) {
-				
-				groupId = (int)((chatId + 1000000000000L) * -1);
-				
-			} else {
-				
-				groupId = (int)(groupId * -1L);
-				
-			}
-			
-		}
-		
-	}
-	
-	public SMBuilder replyTo() {
-		
-		return chatId(chatId).replyToMessageId(messageId);
-		
-	}
-	
-	
-	public SMBuilder input(InputMessageContent input) { 
-	
-		return chatId(chatId).input(input);
-	
-	}
+    public TMsg(TdClient client, Message message) {
 
-	public SMBuilder sendText(FormattedText text) { 
+        this.client = client;
+        this.message = message;
+        this.replyTo = message.replyToMessageId;
+        this.content = message.content;
+        this.chatId = message.chatId;
+        this.messageId = message.id;
+        this.sender = message.senderUserId;
 
-		return chatId(chatId).inputText(text);
-		
-	}
+        if (chatId < 0) {
 
-	public SMBuilder sendText(FormattedText text,boolean enablePreview) { 
+            if (chatId < -1000000000000L) {
 
-		return chatId(chatId).inputText(text,enablePreview);
-	}
+                groupId = (int) ((chatId + 1000000000000L) * -1);
 
-	public SMBuilder sendText(FormattedText text,boolean enablePreview,boolean clearDraft) { 
+            } else {
 
-		return chatId(chatId).inputText(text,enablePreview,clearDraft);
-	
-	}
+                groupId = (int) (groupId * -1L);
 
-	public SMBuilder sendText(TextBuilder text) { 
+            }
 
-		return chatId(chatId).inputText(text);
-	}
+        }
 
-	public SMBuilder sendText(TextBuilder text,boolean enablePreview) { 
+    }
 
-		return chatId(chatId).inputText(text,enablePreview);
+    public SMBuilder replyTo() {
 
-	}
+        return chatId(chatId).replyToMessageId(messageId);
 
-	public SMBuilder sendText(TextBuilder text,boolean enablePreview,boolean clearDraft) { 
+    }
 
-		return chatId(chatId).inputText(text,enablePreview,clearDraft);
 
-	}
-	
-	
-	public EditMessageText editText(InputMessageText content) {
-		
-		return editText(null,content);
-		
-	}
-	
-	public EditMessageText editText(ReplyMarkup markup,InputMessageText content) {
-		
-		return new EditMessageText(chatId,messageId,markup,content);
-		
-	}
-	
-	public EditMessageText editText(TextBuilder content) {
+    public SMBuilder input(InputMessageContent input) {
 
-		return editText(null,content);
+        return chatId(chatId).input(input);
 
-	}
+    }
 
-	public EditMessageText editText(ReplyMarkup markup,TextBuilder content) {
+    public SMBuilder sendText(FormattedText text) {
 
-		return new EditMessageText(chatId,messageId,markup,inputText(content.build()));
-	}
-	
+        return chatId(chatId).inputText(text);
 
-	public boolean isPrivate() {
+    }
 
-		return chatId == sender;
-		
-	}
+    public SMBuilder sendText(FormattedText text, boolean enablePreview) {
 
-	public boolean isBasicGroup() {
+        return chatId(chatId).inputText(text, enablePreview);
+    }
 
-		return chatId > -1000000000000L;
+    public SMBuilder sendText(FormattedText text, boolean enablePreview, boolean clearDraft) {
 
-	}
+        return chatId(chatId).inputText(text, enablePreview, clearDraft);
 
-	public boolean isSuperGroup() {
+    }
 
-		return chatId < -1000000000000L && !message.isChannelPost;
-		
-	}
+    public SMBuilder sendText(TextBuilder text) {
 
-	public boolean isChannel() {
+        return chatId(chatId).inputText(text);
+    }
 
-		return message.isChannelPost;
-		
-	}
-	
-	public boolean isText() {
+    public SMBuilder sendText(TextBuilder text, boolean enablePreview) {
 
-		return content instanceof MessageText;
+        return chatId(chatId).inputText(text, enablePreview);
 
-	}
+    }
 
-	public String text() {
+    public SMBuilder sendText(TextBuilder text, boolean enablePreview, boolean clearDraft) {
 
-		if (!(content instanceof MessageText)) return null;
+        return chatId(chatId).inputText(text, enablePreview, clearDraft);
 
-		return ((MessageText)content).text.text;
+    }
 
-	}
 
-	public boolean isCommand() {
+    public EditMessageText editText(InputMessageText content) {
+
+        return editText(null, content);
+
+    }
+
+    public EditMessageText editText(ReplyMarkup markup, InputMessageText content) {
+
+        return new EditMessageText(chatId, messageId, markup, content);
+
+    }
+
+    public EditMessageText editText(TextBuilder content) {
+
+        return editText(null, content);
+
+    }
+
+    public EditMessageText editText(ReplyMarkup markup, TextBuilder content) {
+
+        return new EditMessageText(chatId, messageId, markup, inputText(content.build()));
+    }
+
+
+    public boolean isPrivate() {
+
+        return chatId == sender;
+
+    }
+
+    public boolean isBasicGroup() {
+
+        return chatId > -1000000000000L;
+
+    }
+
+    public boolean isSuperGroup() {
+
+        return chatId < -1000000000000L && !message.isChannelPost;
+
+    }
+
+    public boolean isChannel() {
+
+        return message.isChannelPost;
+
+    }
+
+    public boolean isText() {
+
+        return content instanceof MessageText;
+
+    }
+
+    public String text() {
+
+        if (!(content instanceof MessageText)) return null;
+
+        return ((MessageText) content).text.text;
+
+    }
+
+    public boolean isCommand() {
 
         if (isCommand == 0) {
 
-			String message = text();
+            String message = text();
 
             if (message != null && (message.startsWith("/")) && message.length() > 1) {
 
@@ -180,11 +179,11 @@ public class TMsg extends TdInterface {
 
                 if (body.contains(" ")) {
 
-                    String cmdAndUser = StrUtil.subBefore(body," ",false);
+                    String cmdAndUser = StrUtil.subBefore(body, " ", false);
 
                     if (cmdAndUser.contains("@" + client.me.username)) {
 
-                        name = StrUtil.subBefore(cmdAndUser,"@",false);
+                        name = StrUtil.subBefore(cmdAndUser, "@", false);
 
                     } else {
 
@@ -194,7 +193,7 @@ public class TMsg extends TdInterface {
 
                 } else if (body.contains("@" + client.me.username)) {
 
-                    name = StrUtil.subBefore(body,"@",false);
+                    name = StrUtil.subBefore(body, "@", false);
 
                 } else {
 
@@ -204,7 +203,7 @@ public class TMsg extends TdInterface {
 
                 isCommand = 1;
 
- 			} else {
+            } else {
 
                 isCommand = 2;
 
@@ -220,17 +219,17 @@ public class TMsg extends TdInterface {
 
         if (!isCommand()) return null;
 
-		if (function != null) return function;
+        if (function != null) return function;
 
         String body = text().substring(1);
 
         if (body.contains(" ")) {
 
-            String cmdAndUser = StrUtil.subBefore(body," ",false);
+            String cmdAndUser = StrUtil.subBefore(body, " ", false);
 
             if (cmdAndUser.contains("@" + client.me.username)) {
 
-                name = StrUtil.subBefore(cmdAndUser,"@",false);
+                name = StrUtil.subBefore(cmdAndUser, "@", false);
 
             } else {
 
@@ -240,7 +239,7 @@ public class TMsg extends TdInterface {
 
         } else if (body.contains("@" + client.me.username)) {
 
-            name = StrUtil.subBefore(body,"@",false);
+            name = StrUtil.subBefore(body, "@", false);
 
         } else {
 
@@ -248,13 +247,13 @@ public class TMsg extends TdInterface {
 
         }
 
-		function = name;
+        function = name;
 
         return name;
 
     }
 
-	public boolean isStartPayload() {
+    public boolean isStartPayload() {
 
         return "start".equals(command()) && params().length > 0;
 
@@ -262,7 +261,7 @@ public class TMsg extends TdInterface {
 
     public String[] payload() {
 
-		if (noPayload) return NO_PARAMS;
+        if (noPayload) return NO_PARAMS;
 
         if (payload != null) return payload;
 
@@ -280,57 +279,57 @@ public class TMsg extends TdInterface {
 
     }
 
-	public String param() {
+    public String param() {
 
-		if (param != null) return param;
+        if (param != null) return param;
 
-		if (noParams) {
-
-            return null;
-
-        }
-
-		if (!isCommand()) {
-
-            noParams = true;
+        if (noParams) {
 
             return null;
 
         }
 
-		String body = StrUtil.subAfter(text(),"/",false);
+        if (!isCommand()) {
+
+            noParams = true;
+
+            return null;
+
+        }
+
+        String body = StrUtil.subAfter(text(), "/", false);
 
         if (body.contains(" ")) {
 
-            param = StrUtil.subAfter(body," ",false);
-			params = param.split(" ");
-			fixedParams = param.replace("  "," ").split(" ");
+            param = StrUtil.subAfter(body, " ", false);
+            params = param.split(" ");
+            fixedParams = param.replace("  ", " ").split(" ");
 
         } else {
 
             noParams = true;
 
-			param = "";
-			params = NO_PARAMS;
+            param = "";
+            params = NO_PARAMS;
             fixedParams = NO_PARAMS;
 
         }
 
-		return param;
+        return param;
 
-	}
+    }
 
-	public String[] fixedParams() {
+    public String[] fixedParams() {
 
-		if (fixedParams != null) return fixedParams;
+        if (fixedParams != null) return fixedParams;
 
-		if (noParams) {
+        if (noParams) {
 
             return NO_PARAMS;
 
         }
 
-		if (!isCommand()) {
+        if (!isCommand()) {
 
             noParams = true;
 
@@ -338,27 +337,27 @@ public class TMsg extends TdInterface {
 
         }
 
-		String body = StrUtil.subAfter(text(),"/",false);
+        String body = StrUtil.subAfter(text(), "/", false);
 
         if (body.contains(" ")) {
 
-            param = StrUtil.subAfter(body," ",false);
-			params = param.split(" ");
-			fixedParams = param.replace("  "," ").split(" ");
+            param = StrUtil.subAfter(body, " ", false);
+            params = param.split(" ");
+            fixedParams = param.replace("  ", " ").split(" ");
 
         } else {
 
             noParams = true;
 
-			param = "";
-			params = NO_PARAMS;
+            param = "";
+            params = NO_PARAMS;
             fixedParams = NO_PARAMS;
 
         }
 
-		return fixedParams;
+        return fixedParams;
 
-	}
+    }
 
 
     public String[] params() {
@@ -379,20 +378,20 @@ public class TMsg extends TdInterface {
 
         }
 
-        String body = StrUtil.subAfter(text(),"/",false);
+        String body = StrUtil.subAfter(text(), "/", false);
 
         if (body.contains(" ")) {
 
-            param = StrUtil.subAfter(body," ",false);
-			params = param.split(" ");
-			fixedParams = param.replace("  "," ").split(" ");
+            param = StrUtil.subAfter(body, " ", false);
+            params = param.split(" ");
+            fixedParams = param.replace("  ", " ").split(" ");
 
         } else {
 
             noParams = true;
 
-			param = "";
-			params = NO_PARAMS;
+            param = "";
+            params = NO_PARAMS;
             fixedParams = NO_PARAMS;
 
         }

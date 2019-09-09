@@ -2,23 +2,18 @@ package io.kurumi.ntt.fragment.twitter.tasks;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.log.StaticLog;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
+import io.kurumi.ntt.utils.BotLog;
+import twitter4j.ResponseList;
+import twitter4j.TwitterException;
+import twitter4j.User;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.TimerTask;
-
-import twitter4j.ResponseList;
-import twitter4j.TwitterException;
-import twitter4j.User;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-import com.mongodb.MongoInterruptedException;
-import cn.hutool.log.StaticLog;
-import io.kurumi.ntt.utils.BotLog;
 
 public class UserTrackTask extends Thread {
 
@@ -31,112 +26,112 @@ public class UserTrackTask extends Thread {
 
         while (!isInterrupted()) {
 
-			try {
-				
-				long start = System.currentTimeMillis();
+            try {
 
-				for (TrackTask.IdsList ids : TrackTask.friends.collection.find()) {
+                long start = System.currentTimeMillis();
 
-					waitFor.addAll(ids.ids);
+                for (TrackTask.IdsList ids : TrackTask.friends.collection.find()) {
 
-				}
+                    waitFor.addAll(ids.ids);
 
-				for (TrackTask.IdsList ids : TrackTask.followers.collection.find()) {
+                }
 
-					waitFor.addAll(ids.ids);
+                for (TrackTask.IdsList ids : TrackTask.followers.collection.find()) {
 
-				}
+                    waitFor.addAll(ids.ids);
 
-				if (step == 10) {
+                }
 
-					step = 0;
+                if (step == 10) {
 
-					for (UserArchive u : UserArchive.data.getAllByField("isDisappeared",true)) {
+                    step = 0;
 
-						waitFor.add(u.id);
+                    for (UserArchive u : UserArchive.data.getAllByField("isDisappeared", true)) {
 
-					}
+                        waitFor.add(u.id);
 
-				}
-				
-				int size = waitFor.size();
+                    }
 
-				step++;
+                }
 
-				List<TAuth> allAuth = TAuth.data.getAll();
+                int size = waitFor.size();
 
-				Iterator<TAuth> iter = allAuth.iterator();
+                step++;
 
-				while (allAuth != null && !waitFor.isEmpty()) {
+                List<TAuth> allAuth = TAuth.data.getAll();
 
-					if (!iter.hasNext()) iter = allAuth.iterator();
+                Iterator<TAuth> iter = allAuth.iterator();
 
-					List<Long> target;
+                while (allAuth != null && !waitFor.isEmpty()) {
 
-					if (waitFor.size() > 100) {
+                    if (!iter.hasNext()) iter = allAuth.iterator();
 
-						target = CollectionUtil.sub(waitFor,0,100);
-						waitFor.removeAll(target);
+                    List<Long> target;
 
-					} else {
+                    if (waitFor.size() > 100) {
 
-						target = new LinkedList<>();
-						target.addAll(waitFor);
+                        target = CollectionUtil.sub(waitFor, 0, 100);
+                        waitFor.removeAll(target);
 
-						waitFor.clear();
+                    } else {
 
-					}
+                        target = new LinkedList<>();
+                        target.addAll(waitFor);
 
-					try {
+                        waitFor.clear();
 
-						ResponseList<User> result = iter.next().createApi().lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
+                    }
 
-						for (User tuser : result) {
+                    try {
 
-							target.remove(tuser.getId());
+                        ResponseList<User> result = iter.next().createApi().lookupUsers(ArrayUtil.unWrap(target.toArray(new Long[target.size()])));
 
-							UserArchive.save(tuser);
+                        for (User tuser : result) {
 
-						}
+                            target.remove(tuser.getId());
 
-						for (Long da : target) {
+                            UserArchive.save(tuser);
 
-							UserArchive.saveDisappeared(da);
+                        }
 
-						}
+                        for (Long da : target) {
 
-					} catch (TwitterException e) {
+                            UserArchive.saveDisappeared(da);
 
-						if (e.getStatusCode() == 503) {
+                        }
 
-							return;
+                    } catch (TwitterException e) {
 
-						} else if (e.getErrorCode() == 17) {
+                        if (e.getStatusCode() == 503) {
 
-							for (Long da : target) {
+                            return;
 
-								UserArchive.saveDisappeared(da);
+                        } else if (e.getErrorCode() == 17) {
 
-							}
+                            for (Long da : target) {
 
-						} else {
+                                UserArchive.saveDisappeared(da);
 
-							waitFor.addAll(target);
+                            }
 
-						}
+                        } else {
 
-					}
+                            waitFor.addAll(target);
 
-				}
-				
-				StaticLog.info("刷新了 {} 个用户, 用时 {}s",size,(System.currentTimeMillis() - start) / 1000);
+                        }
 
-			} catch (Exception ex) {
-				
-				
-				StaticLog.warn("UTT {}",BotLog.parseError(ex));
-				
-			}
+                    }
+
+                }
+
+                StaticLog.info("刷新了 {} 个用户, 用时 {}s", size, (System.currentTimeMillis() - start) / 1000);
+
+            } catch (Exception ex) {
+
+
+                StaticLog.warn("UTT {}", BotLog.parseError(ex));
+
+            }
 
 
         }

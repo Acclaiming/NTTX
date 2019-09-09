@@ -18,14 +18,14 @@ public class BaseResponse {
     BaseResponse() {
     }
 
-	BaseResponse(String description) {
-		
-		this.ok = false;
-		this.error_code = -1;
-		this.description = description;
-		
+    BaseResponse(String description) {
+
+        this.ok = false;
+        this.error_code = -1;
+        this.description = description;
+
     }
-	
+
     public boolean isOk() {
         return ok;
     }

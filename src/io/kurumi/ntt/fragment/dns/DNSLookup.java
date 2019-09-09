@@ -1,114 +1,114 @@
 package io.kurumi.ntt.fragment.dns;
 
-import io.kurumi.ntt.fragment.Fragment;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.db.UserData;
-import org.xbill.DNS.Lookup;
-import org.xbill.DNS.TextParseException;
-import org.xbill.DNS.Record;
-import org.xbill.DNS.Type;
+import io.kurumi.ntt.fragment.BotFragment;
+import io.kurumi.ntt.fragment.Fragment;
+import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.Html;
+import org.xbill.DNS.Lookup;
+import org.xbill.DNS.Record;
+import org.xbill.DNS.TextParseException;
+import org.xbill.DNS.Type;
 
 public class DNSLookup extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
+        super.init(origin);
 
-		registerFunction("dns");
+        registerFunction("dns");
 
-	}
-	
-	@Override
-	public int checkFunctionContext(UserData user,Msg msg,String function,String[] params) {
+    }
 
-		return FUNCTION_PUBLIC;
+    @Override
+    public int checkFunctionContext(UserData user, Msg msg, String function, String[] params) {
 
-	}
-	
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
+        return FUNCTION_PUBLIC;
 
-		if (params.length == 0) {
+    }
 
-			msg.invalidParams("type","domain").async();
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-			return;
+        if (params.length == 0) {
 
-		}
+            msg.invalidParams("type", "domain").async();
 
-		int type = Type.A;
+            return;
 
-		String domain;
-		
-		if (params.length > 1) {
+        }
 
-			type = Type.value(params[0]);
-			
-			domain = params[1];
+        int type = Type.A;
 
-			if (type < 0) {
+        String domain;
 
-				msg.send("Invalid DNS Type").async();
+        if (params.length > 1) {
 
-				return;
+            type = Type.value(params[0]);
 
-			}
+            domain = params[1];
 
-		} else {
-			
-			domain = params[0];
-			
-		}
+            if (type < 0) {
 
-		Lookup lookup;
+                msg.send("Invalid DNS Type").async();
 
-		try {
+                return;
 
-			lookup = new Lookup(domain,type);
+            }
 
-		} catch (TextParseException e) {
+        } else {
 
-			msg.send("Invalid Domain Name").async();
+            domain = params[0];
 
-			return;
+        }
 
-		}
+        Lookup lookup;
 
-		lookup.run();
+        try {
 
-		if (lookup.getResult() != Lookup.SUCCESSFUL) {
+            lookup = new Lookup(domain, type);
 
-			msg.send(lookup.getErrorString()).async();
+        } catch (TextParseException e) {
 
-			return;
+            msg.send("Invalid Domain Name").async();
 
-		}
+            return;
 
-		String message = "域名 : " + domain + " 查询结果 (" + Type.string(type) + ") : ";
+        }
 
-		Record[] records = lookup.getAnswers();
+        lookup.run();
 
-		if (records.length == 0) {
+        if (lookup.getResult() != Lookup.SUCCESSFUL) {
 
-			message += "没有记录";
+            msg.send(lookup.getErrorString()).async();
 
-		} else {
+            return;
 
-			message += "\n";
+        }
 
-			for (Record record : records) {
+        String message = "域名 : " + domain + " 查询结果 (" + Type.string(type) + ") : ";
 
-				message += "\n" + Type.string(record.getType()) + " " + Html.code(record.rdataToString());
+        Record[] records = lookup.getAnswers();
 
-			}
+        if (records.length == 0) {
 
-		}
+            message += "没有记录";
 
-		msg.send(message).html().async();
+        } else {
 
-	}
+            message += "\n";
+
+            for (Record record : records) {
+
+                message += "\n" + Type.string(record.getType()) + " " + Html.code(record.rdataToString());
+
+            }
+
+        }
+
+        msg.send(message).html().async();
+
+    }
 
 }

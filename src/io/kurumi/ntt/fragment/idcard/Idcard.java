@@ -2,36 +2,20 @@ package io.kurumi.ntt.fragment.idcard;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import com.google.gson.Gson;
+import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.model.request.Keyboard;
+import io.kurumi.ntt.model.request.KeyboradButtonLine;
 import io.kurumi.ntt.utils.Html;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map;
-
-import io.kurumi.ntt.model.request.ButtonMarkup;
-import io.kurumi.ntt.model.request.ButtonLine;
-import io.kurumi.ntt.model.request.Keyboard;
-import com.pengrad.telegrambot.model.request.KeyboardButton;
-import io.kurumi.ntt.model.request.KeyboradButtonLine;
-import io.kurumi.ntt.db.PointData;
-
-import java.util.Set;
-
-import cn.hutool.core.util.StrUtil;
-
-import java.util.List;
-import java.util.ArrayList;
-
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.core.util.ArrayUtil;
+import java.util.*;
 
 public class Idcard extends Fragment {
 
@@ -112,8 +96,10 @@ public class Idcard extends Fragment {
         List<AreaCode> code;
         Map<String, AreaCode> detailMap;
 
-		ICGen(Msg command) { super(command); }
-		
+        ICGen(Msg command) {
+            super(command);
+        }
+
     }
 
     @Override
@@ -296,7 +282,7 @@ public class Idcard extends Fragment {
 
             }
 
-            msg.send("生成完成 : {}\n\n{}",Html.code(code.getFull()), ArrayUtil.join(ics, "\n")).html().exec();
+            msg.send("生成完成 : {}\n\n{}", Html.code(code.getFull()), ArrayUtil.join(ics, "\n")).html().exec();
 
         }
 

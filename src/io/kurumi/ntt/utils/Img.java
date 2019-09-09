@@ -1,25 +1,15 @@
 package io.kurumi.ntt.utils;
 
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ImageUtil;
 import cn.hutool.core.util.RandomUtil;
+import net.coobird.thumbnailator.Thumbnails;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Paint;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
-import java.awt.Transparency;
-import java.awt.geom.Rectangle2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
-
-import net.coobird.thumbnailator.Thumbnails;
 
 /*
 import org.jfree.chart.ChartFactory;

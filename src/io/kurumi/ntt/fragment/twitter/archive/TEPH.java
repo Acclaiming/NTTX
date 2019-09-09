@@ -16,20 +16,18 @@ import io.kurumi.ntt.utils.NTT;
 public class TEPH extends Fragment {
 
     public static LongArrayData data = new LongArrayData(TEPH.class);
-	
-	public static boolean needPuhlish(UserArchive archive) {
-		
-		if (data.containsId(archive.id)) return false;
-		
-		if (archive.name.contains("\u200F") || (archive.bio != null && archive.bio.contains("\u200F"))) return false;
-		
-		if (ReUtil.contains(JoinCaptcha.arabicCharacter,archive.name)) return false;
-		
-		if (archive.bio != null && ReUtil.contains(JoinCaptcha.arabicCharacter,archive.bio)) return false;
-		
-		return true;
-		
-	}
+
+    public static boolean needPuhlish(UserArchive archive) {
+
+        if (data.containsId(archive.id)) return false;
+
+        if (archive.name.contains("\u200F") || (archive.bio != null && archive.bio.contains("\u200F"))) return false;
+
+        if (ReUtil.contains(JoinCaptcha.arabicCharacter, archive.name)) return false;
+
+        return archive.bio == null || !ReUtil.contains(JoinCaptcha.arabicCharacter, archive.bio);
+
+    }
 
     @Override
     public void init(BotFragment origin) {

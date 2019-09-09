@@ -1,5 +1,6 @@
 package io.kurumi.ntt.fragment.sticker;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.pengrad.telegrambot.model.Sticker;
 import com.pengrad.telegrambot.request.AddStickerToSet;
@@ -17,14 +18,11 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.Keyboard;
 import io.kurumi.ntt.utils.BotLog;
 import io.kurumi.ntt.utils.Html;
+import net.coobird.thumbnailator.Thumbnails;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import net.coobird.thumbnailator.Thumbnails;
-import cn.hutool.core.io.FileUtil;
-import io.kurumi.ntt.utils.NTT;
 
 public class NewStickerSet extends Fragment {
 
@@ -52,10 +50,10 @@ public class NewStickerSet extends Fragment {
         String title;
 
         public File file;
-		
-		CreateSet(Msg command) {
-			super(command);
-		}
+
+        CreateSet(Msg command) {
+            super(command);
+        }
 
     }
 

@@ -9,381 +9,380 @@ import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.twitter.ApiToken;
 import io.kurumi.ntt.fragment.twitter.TAuth;
+import io.kurumi.ntt.i18n.LocalString;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.utils.Html;
 import io.kurumi.ntt.utils.NTT;
 import twitter4j.TwitterException;
 import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
-import io.kurumi.ntt.i18n.LocalString;
 
 public class TwitterMain extends Fragment {
 
-	@Override
-	public void init(BotFragment origin) {
+    @Override
+    public void init(BotFragment origin) {
 
-		super.init(origin);
-		
-		registerFunction("twitter");
+        super.init(origin);
 
-		registerAdminFunction("twitter_all");
-		
-		registerCallback(POINT_BACK,POINT_NEW_AUTH,POINT_LOGIN_METHOD);
+        registerFunction("twitter");
 
-		registerPoint(POINT_INPUT_CODE,POINT_CUSTOM_API,POINT_CUSTOM_TOKEN);
+        registerAdminFunction("twitter_all");
 
-		origin.addFragment(new AccountMain());
-		
-	}
+        registerCallback(POINT_BACK, POINT_NEW_AUTH, POINT_LOGIN_METHOD);
 
-	static final String POINT_BACK = "twi_back";
-	final String POINT_NEW_AUTH = "twi_auth";
+        registerPoint(POINT_INPUT_CODE, POINT_CUSTOM_API, POINT_CUSTOM_TOKEN);
 
-	final String POINT_LOGIN_METHOD = "twi_method";
-	final String POINT_INPUT_CODE = "twi_code";
+        origin.addFragment(new AccountMain());
 
-	final String POINT_CUSTOM_API = "twi_capi";
-	final String POINT_CUSTOM_TOKEN = "twi_ctoken";
+    }
 
-	@Override
-	public void onFunction(UserData user,Msg msg,String function,String[] params) {
-		
-		mainMenu(user,msg,false,function.endsWith("all"));
+    static final String POINT_BACK = "twi_back";
+    final String POINT_NEW_AUTH = "twi_auth";
 
-	}
+    final String POINT_LOGIN_METHOD = "twi_method";
+    final String POINT_INPUT_CODE = "twi_code";
 
-	void mainMenu(UserData user,Msg msg,boolean edit,boolean all) {
+    final String POINT_CUSTOM_API = "twi_capi";
+    final String POINT_CUSTOM_TOKEN = "twi_ctoken";
 
-		ButtonMarkup accounts = new ButtonMarkup();
+    @Override
+    public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
-		accounts.newButtonLine(LocalString.get(user).TWITTER_NEW_AUTH,POINT_NEW_AUTH);
+        mainMenu(user, msg, false, function.endsWith("all"));
 
-		String message;
+    }
 
-		if (TAuth.contains(user.id)) {
+    void mainMenu(UserData user, Msg msg, boolean edit, boolean all) {
 
-			for (TAuth account : all ? TAuth.data.getAll() : TAuth.data.getAllByField("user",user.id)) {
+        ButtonMarkup accounts = new ButtonMarkup();
 
-				accounts.newButtonLine(account.archive().name,AccountMain.POINT_ACCOUNT,account.id);
+        accounts.newButtonLine(LocalString.get(user).TWITTER_NEW_AUTH, POINT_NEW_AUTH);
 
-			}
+        String message;
 
-			message = LocalString.get(user).TWITTER_CHOOSE_ACCOUNT;
+        if (TAuth.contains(user.id)) {
 
-		} else {
+            for (TAuth account : all ? TAuth.data.getAll() : TAuth.data.getAllByField("user", user.id)) {
 
-			message = LocalString.get(user).TWITTER_NO_ACCOUNT;
+                accounts.newButtonLine(account.archive().name, AccountMain.POINT_ACCOUNT, account.id);
 
-		}
+            }
 
-		msg.sendOrEdit(edit,message).buttons(accounts).async();
+            message = LocalString.get(user).TWITTER_CHOOSE_ACCOUNT;
 
-	}
+        } else {
 
-	@Override
-	public void onCallback(UserData user,Callback callback,String point,String[] params) {
+            message = LocalString.get(user).TWITTER_NO_ACCOUNT;
 
-		if (POINT_BACK.equals(point)) {
+        }
 
-			mainMenu(user,callback,true,false);
+        msg.sendOrEdit(edit, message).buttons(accounts).async();
 
-		} else if (POINT_NEW_AUTH.equals(point)) {
+    }
 
-			loginAccount(user,callback);
+    @Override
+    public void onCallback(UserData user, Callback callback, String point, String[] params) {
 
-		} else if (POINT_LOGIN_METHOD.equals(point)) {
+        if (POINT_BACK.equals(point)) {
 
-			if (params.length != 1 || !NumberUtil.isNumber(params[0])) {
-				
-				callback.invalidQuery();
-				
-				return;
-				
-			}
+            mainMenu(user, callback, true, false);
 
-			accountLogin(user,callback,NumberUtil.parseInt(params[0]));
+        } else if (POINT_NEW_AUTH.equals(point)) {
 
-		}
+            loginAccount(user, callback);
 
-	}
+        } else if (POINT_LOGIN_METHOD.equals(point)) {
 
-	void loginAccount(UserData user,Callback callback) {
+            if (params.length != 1 || !NumberUtil.isNumber(params[0])) {
 
-		String message = LocalString.get(user).TWITTER_AUTH_API;
+                callback.invalidQuery();
 
-		ButtonMarkup methods = new ButtonMarkup();
+                return;
 
-		methods.newButtonLine("NTT",POINT_LOGIN_METHOD,0);
-		methods.newButtonLine("Android",POINT_LOGIN_METHOD,1);
-		methods.newButtonLine("iPhone",POINT_LOGIN_METHOD,2);
-		methods.newButtonLine("Web App",POINT_LOGIN_METHOD,3);
-		methods.newButtonLine("Web Client",POINT_LOGIN_METHOD,4);
-		methods.newButtonLine(LocalString.get(user).TWITTER_AUTH_CUSTOM,POINT_LOGIN_METHOD,5);
-		methods.newButtonLine(LocalString.get(user).TWITTER_AUTH_IMPORT,POINT_LOGIN_METHOD,6);
+            }
 
-		methods.newButtonLine("🔙",POINT_BACK);
+            accountLogin(user, callback, NumberUtil.parseInt(params[0]));
 
-		callback.edit(message).buttons(methods).async();
+        }
 
-	}
+    }
 
-	void accountLogin(UserData user,Callback callback,int method) {
+    void loginAccount(UserData user, Callback callback) {
 
-		if (method == 0) {
+        String message = LocalString.get(user).TWITTER_AUTH_API;
 
-			startAuth(user,callback,ApiToken.defaultToken);
+        ButtonMarkup methods = new ButtonMarkup();
 
-		} else if (method == 1) {
+        methods.newButtonLine("NTT", POINT_LOGIN_METHOD, 0);
+        methods.newButtonLine("Android", POINT_LOGIN_METHOD, 1);
+        methods.newButtonLine("iPhone", POINT_LOGIN_METHOD, 2);
+        methods.newButtonLine("Web App", POINT_LOGIN_METHOD, 3);
+        methods.newButtonLine("Web Client", POINT_LOGIN_METHOD, 4);
+        methods.newButtonLine(LocalString.get(user).TWITTER_AUTH_CUSTOM, POINT_LOGIN_METHOD, 5);
+        methods.newButtonLine(LocalString.get(user).TWITTER_AUTH_IMPORT, POINT_LOGIN_METHOD, 6);
 
-			startAuth(user,callback,ApiToken.androidToken);
+        methods.newButtonLine("🔙", POINT_BACK);
 
-		} else if (method == 2) {
+        callback.edit(message).buttons(methods).async();
 
-			startAuth(user,callback,ApiToken.iPhoneToken);
+    }
 
-		} else if (method == 3) {
+    void accountLogin(UserData user, Callback callback, int method) {
 
-			startAuth(user,callback,ApiToken.webAppToken);
+        if (method == 0) {
 
-		} else if (method == 4) {
+            startAuth(user, callback, ApiToken.defaultToken);
 
-			startAuth(user,callback,ApiToken.webClientToken);
+        } else if (method == 1) {
 
-		} else if (method == 5) {
+            startAuth(user, callback, ApiToken.androidToken);
 
-			startCustomAuth(user,callback,POINT_CUSTOM_API);
+        } else if (method == 2) {
 
-		} else if (method == 6) {
+            startAuth(user, callback, ApiToken.iPhoneToken);
 
-			startCustomAuth(user,callback,POINT_CUSTOM_TOKEN);
+        } else if (method == 3) {
 
-		}
+            startAuth(user, callback, ApiToken.webAppToken);
 
-	}
+        } else if (method == 4) {
 
-	class LoginPoint extends PointData {
+            startAuth(user, callback, ApiToken.webClientToken);
 
-		Callback origin;
+        } else if (method == 5) {
 
-		ApiToken token;
-		RequestToken request;
+            startCustomAuth(user, callback, POINT_CUSTOM_API);
 
-		public LoginPoint(Callback origin,ApiToken token,RequestToken request) {
+        } else if (method == 6) {
 
-			this.origin = origin;
-			this.token = token;
-			this.request = request;
+            startCustomAuth(user, callback, POINT_CUSTOM_TOKEN);
 
-		}
+        }
 
-		@Override
-		public void onCancel(UserData user,Msg msg) {
-		
-			loginAccount(user,origin);
+    }
 
-		}
+    class LoginPoint extends PointData {
 
-	}
+        Callback origin;
 
-	void startAuth(UserData user,Callback callback,ApiToken api) {
+        ApiToken token;
+        RequestToken request;
 
-		try {
+        public LoginPoint(Callback origin, ApiToken token, RequestToken request) {
+
+            this.origin = origin;
+            this.token = token;
+            this.request = request;
+
+        }
+
+        @Override
+        public void onCancel(UserData user, Msg msg) {
+
+            loginAccount(user, origin);
+
+        }
+
+    }
+
+    void startAuth(UserData user, Callback callback, ApiToken api) {
+
+        try {
 
             RequestToken request = api.createApi().getOAuthRequestToken("oob");
 
-            LoginPoint login = new LoginPoint(callback,api,request);
+            LoginPoint login = new LoginPoint(callback, api, request);
 
-            setPrivatePoint(user,POINT_INPUT_CODE,login);
+            setPrivatePoint(user, POINT_INPUT_CODE, login);
 
-            callback.edit(LocalString.get(user).TWITTER_AUTH_LINK,request.getAuthorizationURL()).async();
+            callback.edit(LocalString.get(user).TWITTER_AUTH_LINK, request.getAuthorizationURL()).async();
 
             callback.send(LocalString.get(user).TWITTER_AUTH_PIN).withCancel().exec(login);
 
         } catch (TwitterException e) {
 
-            callback.alert(LocalString.get(user).TWITTER_REQEUST_AUTH_FAILED,NTT.parseTwitterException(e));
+            callback.alert(LocalString.get(user).TWITTER_REQEUST_AUTH_FAILED, NTT.parseTwitterException(e));
 
         }
 
-	}
+    }
 
-	@Override
-	public void onPoint(UserData user,Msg msg,String point,PointData data) {
+    @Override
+    public void onPoint(UserData user, Msg msg, String point, PointData data) {
 
-		if (POINT_INPUT_CODE.equals(point)) {
+        if (POINT_INPUT_CODE.equals(point)) {
 
-			onInputCode(user,msg,(LoginPoint) data.with(msg));
+            onInputCode(user, msg, (LoginPoint) data.with(msg));
 
-		} else if (POINT_CUSTOM_API.equals(point) || POINT_CUSTOM_TOKEN.equals(point)) {
+        } else if (POINT_CUSTOM_API.equals(point) || POINT_CUSTOM_TOKEN.equals(point)) {
 
-			onCustomAuth(user,msg,point,(CustomTokenAuth)data.with(msg));
+            onCustomAuth(user, msg, point, (CustomTokenAuth) data.with(msg));
 
-		}
+        }
 
-	}
+    }
 
-	void onInputCode(UserData user,Msg msg,LoginPoint login) {
+    void onInputCode(UserData user, Msg msg, LoginPoint login) {
 
-		ApiToken token = login.token;
-		RequestToken request = login.request;
+        ApiToken token = login.token;
+        RequestToken request = login.request;
 
-		if (!msg.hasText() || msg.text().length() != 7) {
+        if (!msg.hasText() || msg.text().length() != 7) {
 
-			clearPrivatePoint(user);
-			
-			return;
+            clearPrivatePoint(user);
 
-		}
+            return;
 
-		try {
+        }
 
-			AccessToken access = token.createApi().getOAuthAccessToken(request,msg.text());
+        try {
 
-			clearPrivatePoint(user);
+            AccessToken access = token.createApi().getOAuthAccessToken(request, msg.text());
 
-			long accountId = access.getUserId();
+            clearPrivatePoint(user);
 
-			TAuth old = TAuth.getById(accountId);
+            long accountId = access.getUserId();
 
-			if (old != null) {
+            TAuth old = TAuth.getById(accountId);
 
-				if (!user.id.equals(old.user)) {
+            if (old != null) {
 
-					new Send(old.user,LocalString.get(user).twitterAuthedByOther(old.archive().urlHtml(),user.userName())).html().exec();
+                if (!user.id.equals(old.user)) {
 
-				}
+                    new Send(old.user, LocalString.get(user).twitterAuthedByOther(old.archive().urlHtml(), user.userName())).html().exec();
 
-			}
+                }
 
-			TAuth auth = new TAuth();
+            }
 
-			auth.apiKey = token.apiToken;
-			auth.apiKeySec = token.apiSecToken;
+            TAuth auth = new TAuth();
 
-			auth.id = accountId;
-			auth.user = user.id;
-			auth.accToken = access.getToken();
-			auth.accTokenSec = access.getTokenSecret();
+            auth.apiKey = token.apiToken;
+            auth.apiKeySec = token.apiSecToken;
 
-			TAuth.data.setById(accountId,auth);
+            auth.id = accountId;
+            auth.user = user.id;
+            auth.accToken = access.getToken();
+            auth.accTokenSec = access.getTokenSecret();
 
-			mainMenu(user,login.origin,true,false);
-			
-			new Send(Env.LOG_CHANNEL,"New Auth : " + user.userName() + " -> " + auth.archive().urlHtml()).html().exec();
+            TAuth.data.setById(accountId, auth);
 
-		} catch (TwitterException e) {
+            mainMenu(user, login.origin, true, false);
 
-			msg.send("{}\n{}",LocalString.get(user).TWITTER_AUTH_FAILED,NTT.parseTwitterException(e)).exec();
+            new Send(Env.LOG_CHANNEL, "New Auth : " + user.userName() + " -> " + auth.archive().urlHtml()).html().exec();
 
-		}
+        } catch (TwitterException e) {
 
-	}
+            msg.send("{}\n{}", LocalString.get(user).TWITTER_AUTH_FAILED, NTT.parseTwitterException(e)).exec();
 
-	class CustomTokenAuth extends PointData {
+        }
 
-		Callback origin;
+    }
 
-		String apiKey;
-		String apiSec;
-		String accessToken;
-		String accessSec;
+    class CustomTokenAuth extends PointData {
 
-		public CustomTokenAuth(Callback origin) {
+        Callback origin;
 
-			this.origin = origin;
+        String apiKey;
+        String apiSec;
+        String accessToken;
+        String accessSec;
 
-		}
+        public CustomTokenAuth(Callback origin) {
 
-		@Override
-		public void onCancel(UserData user,Msg msg) {
+            this.origin = origin;
 
-			loginAccount(user,origin);
+        }
 
-		}
+        @Override
+        public void onCancel(UserData user, Msg msg) {
 
-	}
+            loginAccount(user, origin);
 
-	void startCustomAuth(UserData user,Callback callback,String point) {
+        }
 
-		PointData data = setPrivatePoint(user,point,new CustomTokenAuth(callback));
+    }
 
-		String message = LocalString.get(user).INPUT + "Consumer Key : ";
+    void startCustomAuth(UserData user, Callback callback, String point) {
 
-		callback.edit(message).withCancel().exec(data);
+        PointData data = setPrivatePoint(user, point, new CustomTokenAuth(callback));
 
-	}
+        String message = LocalString.get(user).INPUT + "Consumer Key : ";
 
-	void onCustomAuth(UserData user,Msg msg,String point,CustomTokenAuth auth) {
+        callback.edit(message).withCancel().exec(data);
 
-		if (StrUtil.isBlank(msg.text())) {
+    }
 
-			clearPrivatePoint(user);
+    void onCustomAuth(UserData user, Msg msg, String point, CustomTokenAuth auth) {
 
-			return;
+        if (StrUtil.isBlank(msg.text())) {
 
-		}
+            clearPrivatePoint(user);
 
-		if (auth.step == 0) {
+            return;
 
-			auth.step = 1;
+        }
 
-			auth.apiKey = msg.text();
+        if (auth.step == 0) {
 
-			String message = LocalString.get(user).INPUT + "Consumer Key Secret : ";
+            auth.step = 1;
 
-			msg.send(message).withCancel().exec(auth);
+            auth.apiKey = msg.text();
 
-		} else if (auth.step == 1) {
+            String message = LocalString.get(user).INPUT + "Consumer Key Secret : ";
 
-			auth.step = 2;
+            msg.send(message).withCancel().exec(auth);
 
-			auth.apiSec = msg.text();
+        } else if (auth.step == 1) {
 
-			if (POINT_CUSTOM_API.equals(point)) {
+            auth.step = 2;
 
-				clearPrivatePoint(user);
+            auth.apiSec = msg.text();
 
-				startAuth(user,auth.origin,new ApiToken(auth.apiKey,auth.apiSec));
+            if (POINT_CUSTOM_API.equals(point)) {
 
-				return;
+                clearPrivatePoint(user);
 
-			}
+                startAuth(user, auth.origin, new ApiToken(auth.apiKey, auth.apiSec));
 
-			String message = LocalString.get(user).INPUT + "Access Token : ";
+                return;
 
-			msg.send(message).withCancel().exec(auth);
+            }
 
-		} else if (auth.step == 2) {
+            String message = LocalString.get(user).INPUT + "Access Token : ";
 
-			auth.step = 3;
+            msg.send(message).withCancel().exec(auth);
 
-			auth.accessToken = msg.text();
+        } else if (auth.step == 2) {
 
-			String message = LocalString.get(user).INPUT + "Access Token Secret : ";
+            auth.step = 3;
 
-			msg.send(message).withCancel().exec(auth);
+            auth.accessToken = msg.text();
 
-		} else if (auth.step == 3) {
+            String message = LocalString.get(user).INPUT + "Access Token Secret : ";
 
-			TAuth account = new TAuth();
+            msg.send(message).withCancel().exec(auth);
+
+        } else if (auth.step == 3) {
+
+            TAuth account = new TAuth();
 
             account.apiKey = auth.apiKey;
-			account.apiKeySec = auth.apiSec;
+            account.apiKeySec = auth.apiSec;
 
             account.user = user.id;
 
             account.accToken = auth.accessToken;
-			account.accTokenSec = msg.text();
+            account.accTokenSec = msg.text();
 
             try {
 
                 User u = account.createApi().verifyCredentials();
 
-				clearPrivatePoint(user);
+                clearPrivatePoint(user);
 
                 account.id = u.getId();
 
@@ -393,33 +392,33 @@ public class TwitterMain extends Fragment {
 
                     if (!user.id.equals(old.user)) {
 
-                        new Send(old.user,LocalString.get(user).twitterAuthedByOther(old.archive().urlHtml(),user.userName())).html().exec();
-						
+                        new Send(old.user, LocalString.get(user).twitterAuthedByOther(old.archive().urlHtml(), user.userName())).html().exec();
+
                     }
 
                 }
 
-                TAuth.data.setById(account.id,account);
+                TAuth.data.setById(account.id, account);
 
-				mainMenu(user,auth.origin,true,false);
+                mainMenu(user, auth.origin, true, false);
 
-                new Send(Env.LOG_CHANNEL,"New Auth : " + user.userName() + " -> " + account.archive().urlHtml()).html().exec();
+                new Send(Env.LOG_CHANNEL, "New Auth : " + user.userName() + " -> " + account.archive().urlHtml()).html().exec();
 
                 return;
 
             } catch (TwitterException e) {
 
-                msg.send("认证失败\n\n{}",NTT.parseTwitterException(e)).exec();
+                msg.send("认证失败\n\n{}", NTT.parseTwitterException(e)).exec();
 
-				clearPrivatePoint(user);
+                clearPrivatePoint(user);
 
                 return;
 
             }
 
 
-		}
+        }
 
-	}
+    }
 
 }

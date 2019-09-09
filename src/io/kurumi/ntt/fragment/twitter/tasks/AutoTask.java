@@ -2,8 +2,6 @@ package io.kurumi.ntt.fragment.twitter.tasks;
 
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
-import io.kurumi.ntt.model.request.Send;
-import io.kurumi.ntt.utils.NTT;
 import twitter4j.Relationship;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;

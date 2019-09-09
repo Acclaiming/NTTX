@@ -16,13 +16,11 @@ import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Keyboard;
 import io.kurumi.ntt.model.request.KeyboradButtonLine;
 import io.kurumi.ntt.utils.BotLog;
+import net.coobird.thumbnailator.Thumbnails;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
-import net.coobird.thumbnailator.Thumbnails;
-import io.kurumi.ntt.utils.NTT;
 
 public class AddSticker extends Fragment {
 
@@ -43,9 +41,11 @@ public class AddSticker extends Fragment {
         String setName;
 
         File sticker;
-		
-		StickerAdd(Msg command) { super(command); }
-		
+
+        StickerAdd(Msg command) {
+            super(command);
+        }
+
     }
 
     final String POINT_ADD_STICKER = "add_sticker";
