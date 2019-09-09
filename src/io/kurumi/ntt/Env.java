@@ -77,7 +77,7 @@ public class Env {
 
         BOT_TOKEN = conf.getStr("bot_token");
         BETA_TOKEN = conf.getStr("beta_token");
-        ALIAS = conf.getJSONArray("alias").toArray(String.class);
+        ALIAS = (String[]) conf.getJSONArray("alias").toArray(String.class);
         ADMINS = (int[]) conf.getJSONArray("admins").toArray(int.class);
         LOG_CHANNEL = conf.getLong("log_channel");
         TEP_CHANNEL = conf.getLong("tep_channel");
@@ -89,7 +89,7 @@ public class Env {
         CQHTTP_URL = conf.getStr("cqhttp_url");
         CQHTTP_WS = conf.getStr("cqhttp_ws");
         CQHTTP_PATH = new File(conf.getStr("cqhttp_path"));
-        QQ_ADMINS = conf.getJSONArray("qq_admins").toArray(Long.class);
+        QQ_ADMINS = (Long[])conf.getJSONArray("qq_admins").toArray(Long.class);
 
     }
 
