@@ -79,7 +79,7 @@ public abstract class TdInterface {
 
     public TMsg execute(SMBuilder function) {
 
-        return new TMsg(client, execute(function.build()));
+        return new TMsg(client, (Message)execute(function.build()));
 
     }
 

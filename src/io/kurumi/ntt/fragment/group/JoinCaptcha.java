@@ -1,8 +1,11 @@
 package io.kurumi.ntt.fragment.group;
 
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.*;
+import com.pengrad.telegrambot.request.*;
+import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.fragment.group.codes.*;
+import java.util.*;
+
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
@@ -11,25 +14,21 @@ import cn.hutool.log.LogFactory;
 import com.pengrad.telegrambot.model.ChatMember;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.ParseMode;
-import com.pengrad.telegrambot.request.*;
 import com.pengrad.telegrambot.response.GetChatMemberResponse;
 import com.pengrad.telegrambot.response.SendResponse;
-import io.kurumi.ntt.db.GroupData;
-import io.kurumi.ntt.db.PointData;
-import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.admin.Firewall;
-import io.kurumi.ntt.fragment.group.codes.*;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.model.request.Send;
 import io.kurumi.ntt.utils.Img;
 import io.kurumi.ntt.utils.NTT;
+import java.awt.Color;
+import java.util.regex.Pattern;
+import org.apache.http.client.AuthCache;
 
-import java.awt.*;
-import java.util.*;
 import java.util.regex.Pattern;
 
 public class JoinCaptcha extends Fragment {

@@ -362,7 +362,7 @@ public class TLScanner extends Fragment {
 
             if (!target.isEmpty()) {
 
-                stat.edit("正在解析... " + max - target.size() + " / " + ((int) max)).exec();
+                stat.edit("正在解析... " + (max - target.size()) + " / " + ((int) max)).exec();
 
             }
 
