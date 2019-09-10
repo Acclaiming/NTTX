@@ -11,6 +11,7 @@ import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.model.request.ButtonLine;
 import io.kurumi.ntt.model.request.ButtonMarkup;
 import io.kurumi.ntt.utils.Html;
+import cn.hutool.http.HtmlUtil;
 
 public class GroupList extends Fragment {
 
@@ -86,7 +87,7 @@ public class GroupList extends Fragment {
 
             } else {
 
-                message += group.title;
+                message += HtmlUtil.escape(group.title);
 
             }
 
