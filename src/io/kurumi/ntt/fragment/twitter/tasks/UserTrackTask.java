@@ -41,6 +41,8 @@ public class UserTrackTask extends Thread {
                     waitFor.addAll(ids.ids);
 
                 }
+				
+				step ++;
 
                 if (step == 10) {
 
@@ -55,8 +57,6 @@ public class UserTrackTask extends Thread {
                 }
 
                 int size = waitFor.size();
-
-                step++;
 
                 List<TAuth> allAuth = TAuth.data.getAll();
 
@@ -127,7 +127,6 @@ public class UserTrackTask extends Thread {
                 StaticLog.info("刷新了 {} 个用户, 用时 {}s", size, (System.currentTimeMillis() - start) / 1000);
 
             } catch (Exception ex) {
-
 
                 StaticLog.warn("UTT {}", BotLog.parseError(ex));
 
