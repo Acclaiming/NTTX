@@ -80,7 +80,7 @@ public class FetchGroup extends Fragment {
 
                     ChatMember.Status status = member.chatMember().status();
 
-					if (member.chatMember().canInviteUsers()) {
+					if (member.chatMember().canInviteUsers() != null && member.chatMember().canInviteUsers()) {
 						
 						data.link = execute(new ExportChatInviteLink(data.id)).result();
 						
