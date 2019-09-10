@@ -19,7 +19,7 @@ public class MDListener implements StatusListener {
 
     }
 
-    void mkReply(Status replyTo, String str) throws TwitterException {
+    void mkReply(Status replyTo,String str) throws TwitterException {
 
         String reply = "@" + replyTo.getUser().getScreenName() + " ";
 
@@ -58,7 +58,7 @@ public class MDListener implements StatusListener {
 
                             if (variant.getUrl().contains("?")) {
 
-                                urls.append("[mp4 ").append(StrUtil.subBetween(variant.getUrl(), "vid/", "/")).append("] ");
+                                urls.append("[mp4 ").append(StrUtil.subBetween(variant.getUrl(),"vid/","/")).append("] ");
 
                             } else {
 
@@ -68,7 +68,7 @@ public class MDListener implements StatusListener {
 
                         } else {
 
-                            urls.append("[").append(StrUtil.subBefore(StrUtil.subAfter(variant.getUrl(), ".", true), "?", false)).append("] ");
+                            urls.append("[").append(StrUtil.subBefore(StrUtil.subAfter(variant.getUrl(),".",true),"?",false)).append("] ");
 
                         }
 
@@ -80,21 +80,30 @@ public class MDListener implements StatusListener {
 
                 if (urls.toString().isEmpty()) {
 
-                    mkReply(status, "这条推文没有包含 视频 / GIF");
+                    mkReply(status,"这条推文没有包含 视频 / GIF");
 
                     return;
 
                 }
 
 
-                mkReply(status, "媒体下载链接 :\n" + urls.toString());
+                mkReply(status,"媒体下载链接 :\n" + urls.toString());
 
 
             } catch (TwitterException e) {
 
-                try {
+				try {
 
-                    mkReply(status, "对不起，推文无法取得，因为 : " + NTT.parseTwitterException(e));
+					if (e.getErrorCode() == 136) {
+
+						mkReply(status,StrUtil.format("對不起，無法查看 @{} 的推文，因為被 @{} 封鎖了。",status.getInReplyToScreenName()));
+
+						
+					} else {
+
+						mkReply(status,"对不起，推文无法取得，因为 : " + NTT.parseTwitterException(e));
+
+					}
 
                 } catch (TwitterException ex) {
                 }
@@ -114,7 +123,7 @@ public class MDListener implements StatusListener {
     }
 
     @Override
-    public void onScrubGeo(long userId, long upToStatusId) {
+    public void onScrubGeo(long userId,long upToStatusId) {
     }
 
     @Override
