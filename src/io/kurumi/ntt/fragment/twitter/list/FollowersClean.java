@@ -1,6 +1,9 @@
 package io.kurumi.ntt.fragment.twitter.list;
 
+import twitter4j.*;
+
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.NumberUtil;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
@@ -9,11 +12,8 @@ import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.fragment.twitter.archive.UserArchive;
 import io.kurumi.ntt.model.Msg;
 import io.kurumi.ntt.utils.NTT;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.User;
-
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 public class FollowersClean extends Fragment {
 
@@ -31,7 +31,7 @@ public class FollowersClean extends Fragment {
 
         if (params.length == 0 || !params[0].matches("[aopisl]*")) {
 
-            String message = "清理关注者 : /" + function + " <参数...>\n\n";
+            String message = "清理关注者 : /" + function + " <参数...> [最大数量]\n\n";
 
             message += "a - 清理所有\no - 单向关注\np - 锁推\ni - 没有头像\ns - 没有发过推文\nl - 没有打心";
 
@@ -54,6 +54,32 @@ public class FollowersClean extends Fragment {
 
         String param = params[0];
 
+		int limit = -1;
+		
+		if (params.length > 1) {
+
+			try {
+
+				limit = NumberUtil.parseInt(params[1]);
+
+				if (limit < 1) {
+
+					msg.send("无效的数量 : {} ( < 1 )",limit).async();
+
+					return;
+
+				}
+
+			} catch (Exception ex) {
+
+				msg.send("无效的数量 : {}",params[1]).async();
+
+				return;
+
+			}
+
+		}
+		
         boolean a = param.contains("a");
 
         boolean o = param.contains("o");
@@ -85,6 +111,10 @@ public class FollowersClean extends Fragment {
             Iterator<User> iter = friends.iterator();
 
             while (iter.hasNext()) {
+				
+				if (limit == 0) break;
+				
+				limit --;
 
                 User target = iter.next();
 

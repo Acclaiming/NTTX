@@ -14,6 +14,8 @@ import twitter4j.User;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import javax.print.attribute.standard.NumberUp;
+import cn.hutool.core.util.NumberUtil;
 
 public class FriendsClean extends Fragment {
 
@@ -27,11 +29,11 @@ public class FriendsClean extends Fragment {
     }
 
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
         if (params.length == 0 || !params[0].matches("[aopisl]*")) {
 
-            String message = "清理正在关注 : /" + function + " <参数...>\n\n";
+            String message = "清理正在关注 : /" + function + " <参数...> [最大数量]\n\n";
 
             message += "a - 清理所有\no - 单向关注\np - 没有锁推\ni - 没有头像\ns - 没有发过推文\nl - 没有打心";
 
@@ -43,16 +45,42 @@ public class FriendsClean extends Fragment {
 
         }
 
-        requestTwitter(user, msg, true);
+        requestTwitter(user,msg,true);
 
     }
 
     @Override
-    public void onTwitterFunction(UserData user, Msg msg, String function, String[] params, TAuth account) {
+    public void onTwitterFunction(UserData user,Msg msg,String function,String[] params,TAuth account) {
 
         Msg status = msg.send("正在查找...").send();
 
         String param = params[0];
+
+		int limit = -1;
+
+		if (params.length > 1) {
+
+			try {
+
+				limit = NumberUtil.parseInt(params[1]);
+				
+				if (limit < 1) {
+					
+					msg.send("无效的数量 : {} ( < 1 )",limit).async();
+					
+					return;
+					
+				}
+
+			} catch (Exception ex) {
+
+				msg.send("无效的数量 : {}",params[1]).async();
+
+				return;
+
+			}
+
+		}
 
         boolean a = param.contains("a");
 
@@ -72,20 +100,24 @@ public class FriendsClean extends Fragment {
 
         try {
 
-            LinkedList<Long> friendsIds = TApi.getAllFrIDs(api, account.id);
+            LinkedList<Long> friendsIds = TApi.getAllFrIDs(api,account.id);
 
             if (o) {
 
-                friendsIds.removeAll(TApi.getAllFoIDs(api, account.id));
+                friendsIds.removeAll(TApi.getAllFoIDs(api,account.id));
 
             }
 
-            friends = NTT.lookupUsers(api, friendsIds);
+            friends = NTT.lookupUsers(api,friendsIds);
 
             Iterator<User> iter = friends.iterator();
 
             while (iter.hasNext()) {
 
+				if (limit == 0) break;
+
+				limit --;
+				
                 User target = iter.next();
 
                 if (p && target.isProtected()) {
@@ -130,7 +162,7 @@ public class FriendsClean extends Fragment {
         LinkedList<User> failed = new LinkedList<>();
 
         for (User target : friends) {
-
+			
             try {
 
                 api.destroyFriendship(target.getId());
