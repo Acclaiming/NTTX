@@ -33,6 +33,7 @@ import java.io.File;
 import java.util.*;
 
 import static com.mongodb.client.model.Filters.eq;
+import cn.hutool.core.util.ObjectUtil;
 
 public class TrackTask extends TimerTask {
 
@@ -191,7 +192,7 @@ public class TrackTask extends TimerTask {
 
         for (TAuth account : all) {
 
-            if (Firewall.block.containsId(account.user)) {
+            if (account.accToken == null || account.accTokenSec == null) {
 
                 remove.add(account);
 
@@ -237,12 +238,10 @@ public class TrackTask extends TimerTask {
 
             TAuth.data.deleteById(account.id);
 
-            if (Firewall.block.containsId(account.user)) {
+            if (account.accToken == null || account.accTokenSec == null) {
 
-                new Send(account.user, "已将你的认证移除 (为什么？)").exec();
-
-                new Send(Env.LOG_CHANNEL, "Blocked Auth : " + UserData.get(account.user).userName() + " -> " + account.archive().urlHtml()).html().exec();
-
+				new Send(account.user, "对不起，因为数据库的未知错误，乃的认证已失效，已移除 .").exec();
+          
             } else {
 
                 new Send(account.user, "对不起，但是因为 (NTT API被停用 或 乃的账号已停用 / 冻结 / NTT被取消授权，已移除 .").exec();
