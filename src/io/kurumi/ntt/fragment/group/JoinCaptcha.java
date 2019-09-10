@@ -27,7 +27,6 @@ import io.kurumi.ntt.utils.Img;
 import io.kurumi.ntt.utils.NTT;
 import java.awt.Color;
 import java.util.regex.Pattern;
-import org.apache.http.client.AuthCache;
 
 import java.util.regex.Pattern;
 
