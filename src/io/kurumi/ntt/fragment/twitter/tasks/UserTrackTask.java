@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import cn.hutool.core.thread.ThreadUtil;
 
 public class UserTrackTask extends Thread {
 
@@ -26,6 +27,9 @@ public class UserTrackTask extends Thread {
 
         while (!isInterrupted()) {
 
+			ThreadUtil.safeSleep(60 * 1000L);
+			
+			
             try {
 
                 long start = System.currentTimeMillis();
