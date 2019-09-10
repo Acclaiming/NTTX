@@ -1,41 +1,39 @@
 package io.kurumi.ntt;
 
+import com.pengrad.telegrambot.model.*;
+import io.kurumi.ntt.db.*;
+import io.kurumi.ntt.fragment.*;
+import io.kurumi.ntt.fragment.admin.*;
+import io.kurumi.ntt.fragment.bots.*;
+import io.kurumi.ntt.fragment.debug.*;
+import io.kurumi.ntt.fragment.group.*;
+import io.kurumi.ntt.fragment.inline.*;
+import io.kurumi.ntt.fragment.secure.*;
+import io.kurumi.ntt.fragment.sticker.*;
+import io.kurumi.ntt.fragment.twitter.ext.*;
+import io.kurumi.ntt.fragment.twitter.list.*;
+import io.kurumi.ntt.fragment.twitter.status.*;
+import io.kurumi.ntt.fragment.twitter.tasks.*;
+import io.kurumi.ntt.utils.*;
+
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.google.gson.Gson;
-import com.pengrad.telegrambot.model.Chat;
-import com.pengrad.telegrambot.model.ChatMember;
-import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.DeleteWebhook;
 import com.pengrad.telegrambot.request.GetChatMember;
 import com.pengrad.telegrambot.response.GetChatMemberResponse;
 import io.kurumi.ntt.cqhttp.TinxBot;
-import io.kurumi.ntt.db.BotDB;
-import io.kurumi.ntt.db.GroupData;
-import io.kurumi.ntt.db.UserData;
-import io.kurumi.ntt.fragment.BotFragment;
-import io.kurumi.ntt.fragment.BotServer;
-import io.kurumi.ntt.fragment.RpcApi;
-import io.kurumi.ntt.fragment.admin.*;
 import io.kurumi.ntt.fragment.base.GetID;
 import io.kurumi.ntt.fragment.base.PingFunction;
-import io.kurumi.ntt.fragment.bots.MyBots;
-import io.kurumi.ntt.fragment.bots.NewBot;
-import io.kurumi.ntt.fragment.bots.UserBot;
-import io.kurumi.ntt.fragment.debug.*;
 import io.kurumi.ntt.fragment.dns.DNSLookup;
 import io.kurumi.ntt.fragment.dns.WhoisLookup;
 import io.kurumi.ntt.fragment.extra.Manchurize;
 import io.kurumi.ntt.fragment.extra.ShowFile;
-import io.kurumi.ntt.fragment.group.*;
 import io.kurumi.ntt.fragment.group.mamage.FetchGroup;
 import io.kurumi.ntt.fragment.group.mamage.GroupList;
 import io.kurumi.ntt.fragment.group.options.OptionsMain;
 import io.kurumi.ntt.fragment.idcard.Idcard;
-import io.kurumi.ntt.fragment.inline.CoreValueEncode;
-import io.kurumi.ntt.fragment.inline.MakeButtons;
-import io.kurumi.ntt.fragment.inline.ShowSticker;
 import io.kurumi.ntt.fragment.mods.PackageManager;
 import io.kurumi.ntt.fragment.mstd.ui.MsMain;
 import io.kurumi.ntt.fragment.netease.NeteaseMusic;
@@ -44,29 +42,15 @@ import io.kurumi.ntt.fragment.qr.QrDecoder;
 import io.kurumi.ntt.fragment.qr.QrEncoder;
 import io.kurumi.ntt.fragment.rss.FeedFetchTask;
 import io.kurumi.ntt.fragment.rss.RssSub;
-import io.kurumi.ntt.fragment.secure.CodecFN;
-import io.kurumi.ntt.fragment.secure.CryptoFN;
-import io.kurumi.ntt.fragment.secure.DigestFN;
 import io.kurumi.ntt.fragment.sorry.MakeGif;
-import io.kurumi.ntt.fragment.sticker.*;
 import io.kurumi.ntt.fragment.td.TdTest;
 import io.kurumi.ntt.fragment.tests.MMPITest;
 import io.kurumi.ntt.fragment.twitter.archive.TEPH;
-import io.kurumi.ntt.fragment.twitter.ext.*;
-import io.kurumi.ntt.fragment.twitter.list.*;
-import io.kurumi.ntt.fragment.twitter.status.*;
-import io.kurumi.ntt.fragment.twitter.tasks.MargedNoticeTask;
-import io.kurumi.ntt.fragment.twitter.tasks.TrackTask;
-import io.kurumi.ntt.fragment.twitter.tasks.UserTrackTask;
 import io.kurumi.ntt.fragment.twitter.ui.TimelineMain;
 import io.kurumi.ntt.fragment.twitter.ui.TwitterMain;
 import io.kurumi.ntt.listeners.TdMain;
 import io.kurumi.ntt.maven.MvnDownloader;
 import io.kurumi.ntt.model.Msg;
-import io.kurumi.ntt.utils.BotLog;
-import io.kurumi.ntt.utils.BotLogFactory;
-import io.kurumi.ntt.utils.Html;
-
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -336,7 +320,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
         // ADMIN
 
-        //  addFragment(new BotChannnel());
+         addFragment(new BotChannnel());
 
         addFragment(new PingFunction());
         addFragment(new GetID());

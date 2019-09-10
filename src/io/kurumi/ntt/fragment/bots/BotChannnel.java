@@ -24,7 +24,7 @@ public class BotChannnel extends Fragment {
 
         super.init(origin);
 
-        registerAdminFunction("send", "edit", "delete_message", "forward", "export_link", "restrict", "promote", "kick", "pin", "unpin", "unban", "exit", "get_file", "send_file", "get_chat", "get_admins", "get_members_count", "get_member", "get_me");
+        registerAdminFunction("_send", "_edit", "_delete_message", "_forward", "_export_link", "_restrict", "_promote", "_kick", "_pin", "_unpin", "_unban", "_exit", "_get_file", "_send_file", "_get_chat", "_get_admins", "_get_members_count", "_get_member", "_get_me");
         registerPoint(POINT_INPUT_EXTRA_PARAM);
 
     }
@@ -49,6 +49,8 @@ public class BotChannnel extends Fragment {
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
         if (msg.isGroup()) return;
+		
+		function = function.substring(1);
 
         if ("delete_chat_photo".equals(function)) {
 

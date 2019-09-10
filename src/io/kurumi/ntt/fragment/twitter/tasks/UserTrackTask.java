@@ -29,7 +29,6 @@ public class UserTrackTask extends Thread {
 
 			ThreadUtil.safeSleep(60 * 1000L);
 			
-			
             try {
 
                 long start = System.currentTimeMillis();
@@ -128,7 +127,7 @@ public class UserTrackTask extends Thread {
 
                 }
 
-                StaticLog.info("刷新了 {} 个用户, 用时 {}s", size, (System.currentTimeMillis() - start) / 1000);
+              //  StaticLog.info("刷新了 {} 个用户, 用时 {}s", size, (System.currentTimeMillis() - start) / 1000);
 
             } catch (Exception ex) {
 
