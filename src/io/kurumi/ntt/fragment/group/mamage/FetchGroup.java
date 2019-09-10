@@ -20,6 +20,7 @@ import io.kurumi.ntt.model.Msg;
 
 import java.util.LinkedList;
 import java.util.List;
+import com.pengrad.telegrambot.request.ExportChatInviteLink;
 
 public class FetchGroup extends Fragment {
 
@@ -79,6 +80,16 @@ public class FetchGroup extends Fragment {
 
                     ChatMember.Status status = member.chatMember().status();
 
+					if (member.chatMember().canInviteUsers()) {
+						
+						data.link = execute(new ExportChatInviteLink(data.id)).result();
+						
+					} else {
+						
+						data.link = null;
+						
+					}
+					
                     if (status == ChatMember.Status.administrator) {
 
                         data.bot_admin = true;
