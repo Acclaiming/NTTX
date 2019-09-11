@@ -28,7 +28,7 @@ public class Locale {
 
     public String CA_NOT_FOUND = "这个聊天中没有目标账号.";
     public String CA_FOUND = "发现 {} 个目标账号, 正在清理.";
-    public String CA_FINISH = "完成, 耗时 {}.";
+    public String CA_FINISH = "完成, 耗时 {}s.";
 
     // DNS
 
