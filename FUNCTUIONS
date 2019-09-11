@@ -10,6 +10,9 @@ unmute_rt - 取消静音
 block - 屏蔽用户
 unblock - 取消屏蔽
 twuf - 双向取关
+clean_friends - 清理正在关注
+clean_followers - 清理关注者
+clean_mutes - 清理静音
 current - 设置默认用户
 delete - 删除推文打心
 update - 发推
@@ -86,7 +89,9 @@ api_key_regenerate - 重置授权令牌
 api_key_revoke - 删除授权令牌
 tinx_enable - 开启QQ消息同步
 tinx_disable - 关闭QQ消息同步
-manchurize - 简中 -> 满洲。语
+manchurize - 简中 -> 满洲语
 demanchurize - 满洲语 -> 简中
+clean_da - 炸死号
+clean_all - 炸裙
 tl_scan - 一个测试 :)
 cancel - 重置会话状态
