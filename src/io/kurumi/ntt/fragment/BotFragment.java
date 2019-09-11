@@ -414,6 +414,9 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                         final String payload = msg.payload()[0];
                         final String[] params = msg.payload().length > 1 ? ArrayUtil.sub(msg.payload(), 1, msg.payload().length) : new String[0];
 
+                        if (isMainInstance() && (Launcher.TD.payloads.containsKey(payload) || Launcher.TD.adminPayloads.containsKey(payload)))
+                            return;
+
                         if (payloads.containsKey(payload)) {
 
                             final Fragment function = payloads.get(payload);
@@ -498,44 +501,54 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
                         }
 
 
-                    } else if ((user.admin() || localAdmins.contains(user.id)) && adminFunctions.containsKey(msg.command())) {
+                    } else {
 
-                        final Fragment function = adminFunctions.get(msg.command());
+                        if ((user.admin() || localAdmins.contains(user.id)) && adminFunctions.containsKey(msg.command())) {
 
-                        int checked = function.checkFunction(user, msg, msg.command(), msg.fixedParams());
+                            final Fragment function = adminFunctions.get(msg.command());
 
-                        if (checked == PROCESS_REJECT) return;
+                            int checked = function.checkFunction(user, msg, msg.command(), msg.fixedParams());
 
-                        if (checked == PROCESS_ASYNC) {
+                            if (checked == PROCESS_REJECT) return;
 
-                            execute(update, new Runnable() {
+                            if (checked == PROCESS_ASYNC) {
 
-                                @Override
-                                public void run() {
+                                execute(update, new Runnable() {
 
-                                    function.onFunction(user, msg, msg.command(), msg.fixedParams());
+                                    @Override
+                                    public void run() {
 
-                                }
+                                        function.onFunction(user, msg, msg.command(), msg.fixedParams());
 
-                            });
+                                    }
+
+                                });
+
+                            } else {
+
+                                function.onFunction(user, msg, msg.command(), msg.fixedParams());
+
+                            }
 
                         } else {
 
-                            function.onFunction(user, msg, msg.command(), msg.fixedParams());
+                            if (isMainInstance() && (Launcher.TD.functions.containsKey(msg.command()) || Launcher.TD.adminFunctions.containsKey(msg.command()))) return;
 
-                        }
+                            final Fragment function;
 
-                    } else {
+                            if (user.admin() && isLauncher()) {
 
-                        final Fragment function;
+                                ModuleEnv env = ModuleEnv.get(user.id);
 
-                        if (user.admin() && isLauncher()) {
+                                if (env != null && env.functionIndex.containsKey(msg.command())) {
 
-                            ModuleEnv env = ModuleEnv.get(user.id);
+                                    function = env;
 
-                            if (env != null && env.functionIndex.containsKey(msg.command())) {
+                                } else {
 
-                                function = env;
+                                    function = functions.containsKey(msg.command()) ? functions.get(msg.command()) : this;
+
+                                }
 
                             } else {
 
@@ -543,64 +556,59 @@ public abstract class BotFragment extends Fragment implements UpdatesListener, E
 
                             }
 
-                        } else {
+                            int checked = function.checkFunction(user, msg, msg.command(), msg.fixedParams());
 
-                            function = functions.containsKey(msg.command()) ? functions.get(msg.command()) : this;
+                            if (checked == PROCESS_REJECT) return;
 
-                        }
+                            if (isLauncher() && !isMainInstance()) {
 
-                        int checked = function.checkFunction(user, msg, msg.command(), msg.fixedParams());
+                                msg.send("警告！这里是旧式实例，已经无法控制，请尽快切换到 @" + Launcher.INSTANCE.me.username() + " :(").async();
 
-                        if (checked == PROCESS_REJECT) return;
+                            }
 
-                        if (isLauncher() && !isMainInstance()) {
+                            if (function != this && function.checkFunctionContext(user, msg, msg.command(), msg.fixedParams()) == FUNCTION_GROUP && !msg.isGroup()) {
 
-                            msg.send("警告！这里是旧式实例，已经无法控制，请尽快切换到 @" + Launcher.INSTANCE.me.username() + " :(").async();
+                                msg.send(LocalString.get(user).COMMAND_GROUP_ONLY).async();
 
-                        }
+                                return;
 
-                        if (function != this && function.checkFunctionContext(user, msg, msg.command(), msg.fixedParams()) == FUNCTION_GROUP && !msg.isGroup()) {
+                            }
 
-                            msg.send(LocalString.get(user).COMMAND_GROUP_ONLY).async();
+                            if (function != this && function.checkFunctionContext(user, msg, msg.command(), msg.fixedParams()) == FUNCTION_PRIVATE && !msg.isPrivate()) {
 
-                            return;
+                                execute(update, new Runnable() {
 
-                        }
+                                    @Override
+                                    public void run() {
 
-                        if (function != this && function.checkFunctionContext(user, msg, msg.command(), msg.fixedParams()) == FUNCTION_PRIVATE && !msg.isPrivate()) {
-
-                            execute(update, new Runnable() {
-
-                                @Override
-                                public void run() {
-
-                                    msg.send(LocalString.get(user).COMMAND_PRIVATE_ONLY).failedWith();
+                                        msg.send(LocalString.get(user).COMMAND_PRIVATE_ONLY).failedWith();
 
 
-                                }
+                                    }
 
-                            });
+                                });
 
 
-                        } else if (checked == PROCESS_ASYNC) {
+                            } else if (checked == PROCESS_ASYNC) {
 
-                            execute(update, new Runnable() {
+                                execute(update, new Runnable() {
 
-                                @Override
-                                public void run() {
+                                    @Override
+                                    public void run() {
 
-                                    function.onFunction(user, msg, msg.command(), msg.fixedParams());
+                                        function.onFunction(user, msg, msg.command(), msg.fixedParams());
 
-                                }
+                                    }
 
-                            });
+                                });
 
-                        } else {
+                            } else {
 
-                            function.onFunction(user, msg, msg.command(), msg.fixedParams());
+                                function.onFunction(user, msg, msg.command(), msg.fixedParams());
+
+                            }
 
                         }
-
                     }
 
                 } else {

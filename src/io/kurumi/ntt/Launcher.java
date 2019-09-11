@@ -66,6 +66,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
     public static Log log = LogFactory.get(Launcher.class);
 
     public static TdMain BETA;
+    public static TdLauncher TD;
 
     public static void main(String[] args) {
 
@@ -137,6 +138,10 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
             return;
 
         }
+
+        TD = new TdLauncher(Env.BOT_TOKEN);
+
+        TD.start();
 		
 		/*
 		
