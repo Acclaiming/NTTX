@@ -1,7 +1,5 @@
 package io.kurumi.ntt.td.request;
 
-import io.kurumi.ntt.listeners.TdMain;
-
 public class TdSendText extends TdAbsSend {
 
     public TdSendText(TdMain main, long chatId) {

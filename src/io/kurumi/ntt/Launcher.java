@@ -48,7 +48,6 @@ import io.kurumi.ntt.fragment.tests.MMPITest;
 import io.kurumi.ntt.fragment.twitter.archive.TEPH;
 import io.kurumi.ntt.fragment.twitter.ui.TimelineMain;
 import io.kurumi.ntt.fragment.twitter.ui.TwitterMain;
-import io.kurumi.ntt.listeners.TdMain;
 import io.kurumi.ntt.maven.MvnDownloader;
 import io.kurumi.ntt.model.Msg;
 import java.util.TimeZone;
@@ -65,7 +64,6 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
 
     public static Log log = LogFactory.get(Launcher.class);
 
-    public static TdMain BETA;
     public static TdLauncher TD;
 
     public static void main(String[] args) {
@@ -160,7 +158,7 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
             @Override
             public void run() {
 
-                BETA.destroy();
+                TD.destroy();
 
                 INSTANCE.stop();
 
@@ -182,12 +180,6 @@ public abstract class Launcher extends BotFragment implements Thread.UncaughtExc
             }.start();
 
         }
-
-        log.debug("正在挂载实验版本");
-
-        BETA = new TdMain();
-
-        BETA.start();
 
         log.debug("正在挂载机器人托管");
 
