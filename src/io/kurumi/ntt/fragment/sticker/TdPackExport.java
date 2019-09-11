@@ -9,6 +9,7 @@ import cn.hutool.log.StaticLog;
 import com.pengrad.telegrambot.request.SendDocument;
 import io.kurumi.ntt.Env;
 import io.kurumi.ntt.Launcher;
+import io.kurumi.ntt.TdLauncher;
 import io.kurumi.ntt.db.PointData;
 import io.kurumi.ntt.db.UserData;
 import io.kurumi.ntt.fragment.BotFragment;
@@ -99,7 +100,7 @@ public class TdPackExport extends Fragment {
 
         TdApi.StickerSet stickerSet;
 
-        TdMain td = Launcher.BETA;
+        TdLauncher td = Launcher.TD;
 
         try {
 
