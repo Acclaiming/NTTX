@@ -115,7 +115,7 @@ public class TdClient extends TdListener {
 
         if (message.senderUserId == me.id) return;
 
-        final User user = message.isChannelPost ? null : E(new GetUser(message.senderUserId));
+        final User user = message.isChannelPost ? null : (User) E(new GetUser(message.senderUserId));
 
         final TMsg msg = new TMsg(this, update.message);
 
