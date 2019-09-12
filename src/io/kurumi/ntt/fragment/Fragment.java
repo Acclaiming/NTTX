@@ -486,7 +486,7 @@ public class Fragment {
 
         } else account = null;
 
-        if (account != null) {
+        if (account != null && account.ign_target) {
 
             if (isPayload) {
 
