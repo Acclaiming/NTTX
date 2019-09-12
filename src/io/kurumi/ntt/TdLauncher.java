@@ -13,6 +13,11 @@ public class TdLauncher extends TdBot {
 
         super(botToken);
 
+    }
+
+    @Override
+    public void init() {
+
         addListener(new TdPingFunction());
         addListener(new TdGetIdFunction());
 
@@ -21,15 +26,7 @@ public class TdLauncher extends TdBot {
         addListener(new CleanAccounts());
 
         addListener(new TdGetUser());
-
-
-    }
-
-    @Override
-    public void init() {
-
-        addListener(new TdPingFunction());
-
+		
     }
 
 }
