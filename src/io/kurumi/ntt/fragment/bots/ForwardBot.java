@@ -325,8 +325,6 @@ public class ForwardBot extends UserBotFragment {
 
                 msg.reply("发送成功 [ " + Html.a("删除", "https://t.me/" + me.username() + "?start=del" + PAYLOAD_SPLIT + target + PAYLOAD_SPLIT + sended) + " ]\n退出回复使用 /cancel ").html().exec();
 
-                Launcher.INSTANCE.execute(new ForwardMessage(Env.LOG_CHANNEL, msg.chatId(), msg.messageId()));
-
             }
 
 
