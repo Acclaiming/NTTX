@@ -410,6 +410,18 @@ public class StatusArchive {
 
         user = UserArchive.get(from);
 
+		if (user == null) {
+			
+			user = new UserArchive();
+			
+			user.id = from;
+			
+			user.name = "不存在的用户";
+			
+			user.screenName = "?";
+			
+		}
+		
         return user;
 
     }
