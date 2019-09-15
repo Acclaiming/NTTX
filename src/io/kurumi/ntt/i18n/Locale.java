@@ -78,7 +78,7 @@ public class Locale {
 
     public static Locale get(TdApi.User user) {
 
-        if (user.languageCode.contains("zh")) {
+        if (user != null && user.languageCode.contains("zh")) {
 
             return DEFAULT;
 
