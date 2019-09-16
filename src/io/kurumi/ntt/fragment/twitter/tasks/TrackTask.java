@@ -34,6 +34,7 @@ import java.util.*;
 
 import static com.mongodb.client.model.Filters.eq;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.*;
 
 public class TrackTask extends TimerTask {
 
@@ -747,11 +748,13 @@ public class TrackTask extends TimerTask {
 
         } catch (TwitterException e) {
 
+			if (!ArrayUtil.contains(new int[] { 17,50,63 },e.getErrorCode())) return;
+			
             UserArchive archive = UserArchive.get(id);
 
             if (archive != null && archive.isDisappeared) return;
 
-            UserArchive.saveDisappeared(id);
+           UserArchive.saveDisappeared(id);
 
             if (!notice && auth.fo_marge == null) return;
 

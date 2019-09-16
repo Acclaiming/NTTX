@@ -99,7 +99,7 @@ public class UserTrackTask extends Thread {
 
                         for (Long da : target) {
 
-                            //UserArchive.saveDisappeared(da);
+                            UserArchive.saveDisappeared(da);
 
                         }
 
