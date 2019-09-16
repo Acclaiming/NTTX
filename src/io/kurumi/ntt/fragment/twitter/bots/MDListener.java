@@ -96,7 +96,7 @@ public class MDListener implements StatusListener {
 
 					if (e.getErrorCode() == 136) {
 
-						mkReply(status,StrUtil.format("對不起，無法查看 @{} 的推文，因為被 @{} 封鎖了。",status.getInReplyToScreenName()));
+						mkReply(status,StrUtil.format("對不起，無法查看 @{} 的推文，因為被对方封鎖了。",status.getInReplyToScreenName()));
 
 						
 					} else {
