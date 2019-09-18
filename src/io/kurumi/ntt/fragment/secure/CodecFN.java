@@ -31,6 +31,13 @@ public class CodecFN extends Fragment {
 
     }
 
+	@Override
+	public int checkFunctionContext(UserData user, Msg msg, String function, String[] params) {
+		
+		return FUNCTION_PUBLIC;
+		
+	}
+
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
@@ -47,7 +54,7 @@ public class CodecFN extends Fragment {
 
             if (!function.endsWith("d")) {
 
-                msg.send(Base32.encode(msg.param())).async();
+                msg.reply(Base32.encode(msg.param())).async();
 
             } else {
 
@@ -62,11 +69,11 @@ public class CodecFN extends Fragment {
 
                 if (StrUtil.isBlank(result)) {
 
-                    msg.send("解码失败 :)").async();
+                    msg.reply("解码失败 :)").async();
 
                 } else {
 
-                    msg.send("结果 : {}", Html.code(result)).html().async();
+                    msg.reply("结果 : {}", Html.code(result)).html().async();
 
                 }
 
@@ -76,7 +83,7 @@ public class CodecFN extends Fragment {
 
             if (!function.endsWith("d")) {
 
-                msg.send(Base62.encode(msg.param())).async();
+                msg.reply(Base62.encode(msg.param())).async();
 
             } else {
 
@@ -91,11 +98,11 @@ public class CodecFN extends Fragment {
 
                 if (StrUtil.isBlank(result)) {
 
-                    msg.send("解码失败 :)").async();
+                    msg.reply("解码失败 :)").async();
 
                 } else {
 
-                    msg.send("结果 : {}", Html.code(result)).html().async();
+                    msg.reply("结果 : {}", Html.code(result)).html().async();
 
                 }
 
@@ -105,7 +112,7 @@ public class CodecFN extends Fragment {
 
             if (!function.endsWith("d")) {
 
-                msg.send(Base64.encode(msg.param())).async();
+                msg.reply(Base64.encode(msg.param())).async();
 
             } else {
 
@@ -120,11 +127,11 @@ public class CodecFN extends Fragment {
 
                 if (StrUtil.isBlank(result)) {
 
-                    msg.send("解码失败 :)").async();
+                    msg.reply("解码失败 :)").async();
 
                 } else {
 
-                    msg.send("结果 : {}", Html.code(result)).html().async();
+                    msg.reply("结果 : {}", Html.code(result)).html().async();
 
                 }
 
@@ -144,7 +151,7 @@ public class CodecFN extends Fragment {
 
             if (!function.endsWith("d")) {
 
-                msg.send(Caesar.encode(ArrayUtil.join(ArrayUtil.remove(params, 0), " "), NumberUtil.parseInt(params[0]))).async();
+                msg.reply(Caesar.encode(ArrayUtil.join(ArrayUtil.remove(params, 0), " "), NumberUtil.parseInt(params[0]))).async();
 
             } else {
 
@@ -159,11 +166,11 @@ public class CodecFN extends Fragment {
 
                 if (StrUtil.isBlank(result)) {
 
-                    msg.send("解码失败 :)").async();
+                    msg.reply("解码失败 :)").async();
 
                 } else {
 
-                    msg.send("结果 : {}", Html.code(result)).html().async();
+                    msg.reply("结果 : {}", Html.code(result)).html().async();
 
                 }
 
@@ -173,7 +180,7 @@ public class CodecFN extends Fragment {
 
             if (!function.endsWith("d")) {
 
-                msg.send(new Morse().encode(msg.param())).async();
+                msg.reply(new Morse().encode(msg.param())).async();
 
             } else {
 
@@ -188,11 +195,11 @@ public class CodecFN extends Fragment {
 
                 if (StrUtil.isBlank(result)) {
 
-                    msg.send("解码失败 :)").async();
+                    msg.reply("解码失败 :)").async();
 
                 } else {
 
-                    msg.send("结果 : {}", Html.code(result)).html().async();
+                    msg.reply("结果 : {}", Html.code(result)).html().async();
 
                 }
 
@@ -212,7 +219,7 @@ public class CodecFN extends Fragment {
 
             if (!function.endsWith("d")) {
 
-                msg.send(Rot.encode(ArrayUtil.join(ArrayUtil.remove(params, 0), " "), NumberUtil.parseInt(params[0]), true)).async();
+                msg.reply(Rot.encode(ArrayUtil.join(ArrayUtil.remove(params, 0), " "), NumberUtil.parseInt(params[0]), true)).async();
 
             } else {
 
@@ -227,11 +234,11 @@ public class CodecFN extends Fragment {
 
                 if (StrUtil.isBlank(result)) {
 
-                    msg.send("解码失败 :)").async();
+                    msg.reply("解码失败 :)").async();
 
                 } else {
 
-                    msg.send("结果 : {}", Html.code(result)).html().async();
+                    msg.reply("结果 : {}", Html.code(result)).html().async();
 
                 }
 

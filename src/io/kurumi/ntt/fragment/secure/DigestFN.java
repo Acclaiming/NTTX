@@ -18,6 +18,14 @@ public class DigestFN extends Fragment {
 
     }
 
+	@Override
+	public int checkFunctionContext(UserData user, Msg msg, String function, String[] params) {
+
+		return FUNCTION_PUBLIC;
+
+	}
+	
+
     @Override
     public void onFunction(UserData user, Msg msg, String function, String[] params) {
 
@@ -31,15 +39,15 @@ public class DigestFN extends Fragment {
 
         if ("md5".equals(function)) {
 
-            msg.send(SecureUtil.md5(msg.param())).async();
+            msg.reply(SecureUtil.md5(msg.param())).async();
 
         } else if ("sha1".equals(function)) {
 
-            msg.send(SecureUtil.sha1(msg.param())).async();
+            msg.reply(SecureUtil.sha1(msg.param())).async();
 
         } else if ("sha256".equals(function)) {
 
-            msg.send(SecureUtil.sha256(msg.param())).async();
+            msg.reply(SecureUtil.sha256(msg.param())).async();
 
         }
 
