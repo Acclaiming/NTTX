@@ -80,7 +80,7 @@ public class MDListener implements StatusListener {
 
                 if (urls.toString().isEmpty()) {
 
-                    mkReply(status,"这条推文没有包含 视频 / GIF");
+                    //mkReply(status,"这条推文没有包含 视频 / GIF");
 
                     return;
 
