@@ -7,6 +7,7 @@ import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.model.Callback;
 import io.kurumi.ntt.model.request.ButtonMarkup;
+import io.kurumi.ntt.fragment.twitter.tasks.*;
 
 public class TrackMain extends Fragment {
 
@@ -133,6 +134,9 @@ public class TrackMain extends Fragment {
 
                 callback.text("✅ 已关闭");
 
+				MargedNoticeTask.doNotice(account);
+				
+				
             }
 
         } else if (POINT_SETTING_FOLLOWERS_INFO.equals(point)) {
