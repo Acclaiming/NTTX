@@ -470,9 +470,7 @@ public class UserArchive {
 
         lastUpdate = System.currentTimeMillis();
 
-        change = change && !(TAuth.data.containsId(id) && ArrayUtil.contains(Env.ADMINS, TAuth.getById(id).user.intValue()));
-
-        if (change) {
+        if (change  && !(TAuth.data.containsId(id) && ArrayUtil.contains(Env.ADMINS, TAuth.getById(id).user.intValue()))) {
 
             TrackTask.onUserChange(this, str.toString());
 
