@@ -205,7 +205,7 @@ public class TrackTask extends TimerTask {
 
             try {
 
-                api.verifyCredentials();
+                UserArchive.save(api.verifyCredentials());
 
                 //if (setting.followers || setting.followersInfo || setting.followingInfo) {
 
