@@ -34,6 +34,23 @@
 	
 	}
 	
+	function search() {
+
+	    var text = $('#text').val().trim();
+	    
+	    if ('' == text) {
+	    
+	        alert('内容不能为空 _(:з」∠)_');
+	        
+	        return;
+	    
+	    }
+	   
+	   location.href = '/?search=' + text;
+	
+	}
+	
+	
   </script>
   
   <header class="mdui-appbar mdui-appbar-fixed">
@@ -41,7 +58,9 @@
       <a href="javascript:;" class="mdui-typo-title">Twitter User Getway</a>
     </div>
   </header>
-  <div class="mdui-container"><div class="mdui-m-y-2"><div class="mdui-card">
+  <div class="mdui-container">
+  
+  <div class="mdui-m-y-2"><div class="mdui-card">
     <div class="mdui-card-content mdui-typo">
     
       取得一个 Twitter 用户的永久链接 :)
@@ -54,5 +73,23 @@
       <button onclick="get()" style="width: 100%" class="mdui-m-t-1 mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent">取得</button>
     
     </div>
-  </div></div></div>
+  </div>
+  
+  <div class="mdui-m-y-2"><div class="mdui-card">
+    <div class="mdui-card-content mdui-typo">
+   
+      找什么东西 _(:з」∠)_ (未完成)
+  
+      <div class="mdui-textfield mdui-textfield-floating-label">
+        <label class="mdui-textfield-label">任何东西...</label>
+        <input id="text" class="mdui-textfield-input" type="text"/>
+      </div>
+      
+      <button onclick="search()" style="width: 100%" class="mdui-m-t-1 mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent">搜索</button>
+    
+    </div>
+  </div>
+  
+  
+  </div></div>
 </body>
