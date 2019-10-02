@@ -20,7 +20,7 @@ public class Notice extends Fragment {
 
         super.init(origin);
 
-        registerAdminFunction("notice");
+        registerAdminFunction("notice","notice_group");
 
         registerPoint(POINT_FPRWARD);
 
@@ -28,25 +28,27 @@ public class Notice extends Fragment {
 
 
     @Override
-    public int checkPoint(UserData user, Msg msg, String point, PointData data) {
+    public int checkPoint(UserData user,Msg msg,String point,PointData data) {
 
         return PROCESS_ASYNC;
 
     }
 
     @Override
-    public void onFunction(UserData user, Msg msg, String function, String[] params) {
+    public void onFunction(UserData user,Msg msg,String function,String[] params) {
 
-        PointData data = setPrivatePointData(user, msg, POINT_FPRWARD, msg.param());
+        PointData data = setPrivatePointData(user,msg,POINT_FPRWARD,msg);
 
         msg.send("现在发送群发内容 :").exec(data);
 
     }
 
     @Override
-    public void onPoint(UserData user, Msg msg, String point, PointData data) {
+    public void onPoint(UserData user,Msg msg,String point,PointData data) {
 
-        String params = data.data();
+        Msg fn = data.data();
+
+		String params = fn.param();
 
         boolean mute = params.contains("mute");
         boolean login = params.contains("login");
@@ -60,78 +62,86 @@ public class Notice extends Fragment {
 
         clearPrivatePoint(user);
 
-        long count = UserData.data.collection.countDocuments();
+		if (msg.command().endsWith("_group")) {
 
-        long success = 0;
-        long failed = 0;
+			for (GroupData group : GroupData.data.getAll()) {
 
-        Msg status = msg.send("正在群发 : 0 / 0 / " + count).send();
+				ForwardMessage forward = new ForwardMessage(group.id,msg.chatId(),msg.messageId());
 
-		for (GroupData group : GroupData.data.getAll()) {
+				if (mute) forward.disableNotification(true);
+
+				execute(forward);
+
+
+			}
+
+		} else {
+
+
+			long count = UserData.data.collection.countDocuments();
+
+			long success = 0;
+			long failed = 0;
+
+			Msg status = msg.send("正在群发 : 0 / 0 / " + count).send();
 			
-			ForwardMessage forward = new ForwardMessage(group.id, msg.chatId(), msg.messageId());
-			
-			if (mute) forward.disableNotification(true);
 
-			execute(forward);
+			for (UserData userData : UserData.data.collection.find()) {
 
-			
+				if (tryAll || userData.contactable == null || userData.contactable) {
+
+					if (login && TAuth.data.countByField("user",userData.id) == 0) {
+
+						failed++;
+
+						continue;
+
+					}
+
+					ForwardMessage forward = new ForwardMessage(userData.id,msg.chatId(),msg.messageId());
+
+					if (mute) forward.disableNotification(true);
+
+					SendResponse resp = bot().execute(forward);
+
+					if (resp.isOk()) {
+
+						success++;
+
+						userData.contactable = true;
+
+						UserData.data.setById(userData.id,userData);
+
+
+					} else {
+
+						failed++;
+
+						userData.contactable = false;
+
+						UserData.userDataIndex.remove(userData.id);
+
+						UserData.data.setById(userData.id,userData);
+
+					}
+
+				} else {
+
+					failed++;
+
+					continue;
+
+				}
+
+
+				status.edit("正在群发 : " + success + " / " + (success + failed) + " / " + count).exec();
+
+			}
+
+			status.edit("正在群发 : " + success + " / " + (success + failed) + " / " + count).exec();
+
 		}
-		
-        for (UserData userData : UserData.data.collection.find()) {
 
-            if (tryAll || userData.contactable == null || userData.contactable) {
-
-                if (login && TAuth.data.countByField("user", userData.id) == 0) {
-
-                    failed++;
-
-                    continue;
-
-                }
-
-                ForwardMessage forward = new ForwardMessage(userData.id, msg.chatId(), msg.messageId());
-
-                if (mute) forward.disableNotification(true);
-
-                SendResponse resp = bot().execute(forward);
-
-                if (resp.isOk()) {
-
-                    success++;
-
-                    userData.contactable = true;
-
-                    UserData.data.setById(userData.id, userData);
-
-
-                } else {
-
-                    failed++;
-
-                    userData.contactable = false;
-
-                    UserData.userDataIndex.remove(userData.id);
-
-                    UserData.data.setById(userData.id, userData);
-
-                }
-
-            } else {
-
-                failed++;
-
-                continue;
-
-            }
-
-
-            status.edit("正在群发 : " + success + " / " + (success + failed) + " / " + count).exec();
-
-        }
-
-        status.edit("正在群发 : " + success + " / " + (success + failed) + " / " + count).exec();
-
-    }
+	}
 
 }
