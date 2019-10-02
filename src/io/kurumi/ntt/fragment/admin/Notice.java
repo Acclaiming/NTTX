@@ -62,7 +62,7 @@ public class Notice extends Fragment {
 
         clearPrivatePoint(user);
 
-		if (msg.command().endsWith("_group")) {
+		if (fn.command().endsWith("_group")) {
 
 			for (GroupData group : GroupData.data.getAll()) {
 
