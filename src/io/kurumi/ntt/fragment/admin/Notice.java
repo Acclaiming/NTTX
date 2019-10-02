@@ -8,6 +8,7 @@ import io.kurumi.ntt.fragment.BotFragment;
 import io.kurumi.ntt.fragment.Fragment;
 import io.kurumi.ntt.fragment.twitter.TAuth;
 import io.kurumi.ntt.model.Msg;
+import io.kurumi.ntt.db.GroupData;
 
 
 public class Notice extends Fragment {
@@ -66,10 +67,20 @@ public class Notice extends Fragment {
 
         Msg status = msg.send("正在群发 : 0 / 0 / " + count).send();
 
+		for (GroupData group : GroupData.data.getAll()) {
+			
+			ForwardMessage forward = new ForwardMessage(group.id, msg.chatId(), msg.messageId());
+			
+			if (mute) forward.disableNotification(true);
+
+			execute(forward);
+
+			
+		}
+		
         for (UserData userData : UserData.data.collection.find()) {
 
             if (tryAll || userData.contactable == null || userData.contactable) {
-
 
                 if (login && TAuth.data.countByField("user", userData.id) == 0) {
 
